@@ -12,7 +12,8 @@
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!
-!!      subroutine const_surface_infos(id_rank, mesh, group)
+!!      subroutine const_surface_infos(id_rank, node, ele, surf_grp,    &
+!!     &                               surf, surf_nod_grp)
 !!      subroutine const_nod_ele_infos                                  &
 !!     &         (id_rank, node, ele, nod_grp, ele_grp, surf_grp)
 !!
@@ -99,7 +100,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_surface_infos(id_rank, mesh, group)
+      subroutine const_surface_infos(id_rank, node, ele, surf_grp,      &
+     &                               surf, surf_nod_grp)
 !
       use t_element_group_table
       use cal_mesh_position
@@ -110,32 +112,36 @@
 !      use check_surface_groups
 !
       integer, intent(in) :: id_rank
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) ::   group
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_group_data), intent(in) :: surf_grp
+!
+      type(surface_data), intent(inout) :: surf
+      type(surface_node_grp_data), intent(inout) :: surf_nod_grp
 !
 !
 !     set connectivity and geometry for surface and edge
       if(iflag_debug .gt. 0) write(*,*) 'const_surf_connectivity'
-      call const_surf_connectivity(mesh%node, mesh%ele, mesh%surf)
+      call const_surf_connectivity(node, ele, surf)
 !     set connection relation of element and surface
       if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
-      call const_ele_list_4_surface(mesh%ele, mesh%surf)
+      call const_ele_list_4_surface(ele, surf)
 !
 !     connectivity for surface group data and node info for each of them
 !     also the smp info for surface group data
       if (iflag_debug.gt.0) write(*,*) 'set_node_4_surf_group'
-      call set_node_4_surf_group(mesh%node, mesh%ele,                   &
-     &    mesh%surf, group%surf_grp, group%surf_nod_grp)
-!       call check_surface_node_id(id_rank, group%surf_nod_grp)
+      call set_node_4_surf_group(node, ele,                             &
+     &    surf, surf_grp, surf_nod_grp)
+!       call check_surface_node_id(id_rank, surf_nod_grp)
 !
 !      if (iflag_debug.gt.0) then
 !        call check_surf_nod_4_sheard_para                              &
-!     &     (id_rank, group%surf_grp%num_grp, group%surf_nod_grp)
+!     &     (id_rank, surf_grp%num_grp, surf_nod_grp)
 !      end if
 !
       if (iflag_debug.gt.0) write(*,*) 'set_center_of_surface'
-      call alloc_surface_geometory(mesh%surf)
-      call set_center_of_surface(mesh%node, mesh%surf)
+      call alloc_surface_geometory(surf)
+      call set_center_of_surface(node, surf)
 !
       end subroutine const_surface_infos
 !

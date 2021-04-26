@@ -45,6 +45,7 @@
       use m_machine_parameter
       use set_edge_hash_by_ele
       use set_edge_data_by_ele
+      use set_local_id_table_4_1ele
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele

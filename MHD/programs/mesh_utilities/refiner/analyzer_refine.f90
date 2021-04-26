@@ -122,9 +122,12 @@
         if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
         call const_nod_ele_infos(my_rank, org_fem%mesh, org_fem%group)
         if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
-        call const_surface_infos(my_rank, org_fem%mesh, org_fem%group)
+        call const_surface_infos(my_rank, org_fem%mesh%node,            &
+     &      org_fem%mesh%ele, org_fem%group%surf_grp,                   &
+     &      org_fem%mesh%surf, org_fem%group%surf_nod_grp)
         if (iflag_debug.gt.0) write(*,*) 'const_single_edge_infos'
-        call const_single_edge_infos(my_rank, org_fem%mesh)
+        call const_single_edge_infos(my_rank, org_fem%mesh%node,        &
+     &      org_fem%mesh%ele, org_fem%mesh%surf, org_fem%mesh%edge)
 !
         write(*,*) 'allocate_refine_flags'
         call alloc_refine_flags(org_fem%mesh%ele, org_fem%mesh%surf,    &

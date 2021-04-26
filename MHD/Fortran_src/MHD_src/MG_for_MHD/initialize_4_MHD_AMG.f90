@@ -80,6 +80,7 @@
       use set_MHD_idx_4_mat_type
       use link_MG_MHD_mesh_data
       use const_element_comm_tables
+      use parallel_edge_information
 !
       real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -123,9 +124,12 @@
      &                             MGCG_FEM%MG_mesh(i_level)%group)
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_surface_infos', i_level
-          call const_surface_infos                                      &
-     &       (my_rank, MGCG_FEM%MG_mesh(i_level)%mesh,                  &
-     &        MGCG_FEM%MG_mesh(i_level)%group)
+          call const_surface_infos(my_rank,                             &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%ele,                       &
+     &        MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                 &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%surf,                      &
+     &        MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp)
           if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
           call const_para_edge_infos                                    &
      &       (MGCG_FEM%MG_mesh(i_level)%mesh%nod_comm,                  &

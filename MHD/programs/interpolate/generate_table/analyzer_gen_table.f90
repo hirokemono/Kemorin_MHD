@@ -51,6 +51,7 @@
       use t_shape_functions
 !
       use const_mesh_information
+      use parallel_edge_information
       use set_table_4_RHS_assemble
       use set_2nd_geometry_4_table
       use const_jacobians_3d
@@ -79,10 +80,12 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
       call const_nod_ele_infos                                          &
-     &   (id_rank, org_femmesh%mesh, org_femmesh%group)
+     &   (my_rank, org_femmesh%mesh, org_femmesh%group)
       if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
       call const_surface_infos                                          &
-     &   (my_rank, org_femmesh%mesh, org_femmesh%group)
+     &   (my_rank, org_femmesh%mesh%node, org_femmesh%mesh%ele,         &
+     &    org_femmesh%group%surf_grp, org_femmesh%mesh%surf,            &
+     &    org_femmesh%group%surf_nod_grp)
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos(org_femmesh%mesh%nod_comm,             &
      &    org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &

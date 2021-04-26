@@ -118,9 +118,12 @@
 !      write(*,*) 'const_nod_ele_infos'
       call const_nod_ele_infos(my_rank, org_fem%mesh, org_fem%group)
 !      write(*,*) 'const_surface_infos'
-      call const_surface_infos(my_rank, org_fem%mesh, org_fem%group)
+      call const_surface_infos(my_rank, org_fem%mesh%node,              &
+     &    org_fem%mesh%ele, org_fem%group%surf_grp,                     &
+     &    org_fem%mesh%surf, org_fem%group%surf_nod_grp)
 !      write(*,*) 'const_single_edge_infos'
-      call const_single_edge_infos(my_rank, org_fem%mesh)
+      call const_single_edge_infos(my_rank, org_fem%mesh%node,          &
+     &    org_fem%mesh%ele, org_fem%mesh%surf, org_fem%mesh%edge)
 !
 !  ========= Read global field data for load balance partition =======
       write(*,*) 'read control_merge'

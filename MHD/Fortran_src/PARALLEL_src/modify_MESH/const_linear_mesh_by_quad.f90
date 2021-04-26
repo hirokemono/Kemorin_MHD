@@ -86,12 +86,11 @@
       call gen_linear_group_info(group_q%ele_grp, group_q%surf_grp,     &
      &   group_l%ele_grp, group_l%surf_grp)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_surf_connectivity'
-      call const_surf_connectivity(mesh_l%node, mesh_l%ele,             &
-     &                             mesh_l%surf)
-!
-      call const_edge_connectivity(mesh_l%node, mesh_l%ele, mesh_l%surf,    &
-     &                         irank_local, inod_local, mesh_l%edge)
+      call const_surface_infos                                          &
+     &   (0, mesh_l%node, mesh_l%ele, group_l%surf_grp,                 &
+     &    mesh_l%surf, group_l%surf_nod_grp)
+      call const_single_edge_infos                                      &
+     &   (0, mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge)
 !
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
 !
@@ -110,6 +109,7 @@
       use const_mesh_information
       use set_size_4_smp_types
       use set_surf_edge_mesh
+      use single_edge_information
 !
       type(mesh_geometry), intent(in), target :: mesh_q
       type(mesh_groups), intent(in), target :: group_q
@@ -136,12 +136,11 @@
       call gen_linear_group_info(group_q%ele_grp, group_q%surf_grp,     &
      &   group_l%ele_grp, group_l%surf_grp)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_surf_connectivity'
-      call const_surf_connectivity(mesh_l%node, mesh_l%ele,             &
-     &                             mesh_l%surf)
-!
-      call const_edge_connectivity(mesh_l%node, mesh_l%ele, mesh_l%surf,    &
-     &                         irank_local, inod_local, mesh_l%edge)
+      call const_surface_infos                                          &
+     &   (0, mesh_l%node, mesh_l%ele, group_l%surf_grp,                 &
+     &    mesh_l%surf, group_l%surf_nod_grp)
+      call const_single_edge_infos                                      &
+     &   (0, mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge)
 !
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
 !
@@ -154,6 +153,7 @@
      &         (mesh_l, group_l, nod_fld_l)
 !
       use set_size_4_smp_types
+      use single_edge_information
 !
       type(mesh_geometry_p), intent(inout) :: mesh_l
       type(mesh_groups_p), intent(inout) :: group_l

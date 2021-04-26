@@ -38,6 +38,7 @@
       use m_ctl_params_test_bc_temp
       use mpi_load_mesh_data
       use const_mesh_information
+      use parallel_edge_information
 !
 !
 !     ----- read control data
@@ -56,7 +57,10 @@
       if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
       call const_nod_ele_infos(my_rank, femmesh%mesh, femmesh%group)
       if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
-      call const_surface_infos(my_rank, femmesh%mesh, femmesh%group)
+      call const_surface_infos                                          &
+     &   (my_rank, femmesh%mesh%node, femmesh%mesh%ele,                 &
+     &    femmesh%group%surf_grp, femmesh%mesh%surf,                    &
+     &    femmesh%group%surf_nod_grp)
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos                                        &
      &   (femmesh%mesh%nod_comm, femmesh%mesh%node, femmesh%mesh%ele,   &

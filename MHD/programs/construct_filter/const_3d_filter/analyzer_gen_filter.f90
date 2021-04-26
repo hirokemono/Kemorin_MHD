@@ -72,6 +72,7 @@
       use m_filter_file_names
 !
       use const_mesh_information
+      use parallel_edge_information
       use cal_1d_moments_4_fliter
 !
       use set_element_data_4_IO
@@ -125,7 +126,10 @@
       if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
       call const_nod_ele_infos(my_rank, fem_f%mesh, fem_f%group)
       if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
-      call const_surface_infos(my_rank, fem_f%mesh, fem_f%group)
+      call const_surface_infos                                          &
+     &   (my_rank, fem_f%mesh%node, fem_f%mesh%ele,                     &
+     &    fem_f%group%surf_grp, fem_f%mesh%surf,                        &
+     &    fem_f%group%surf_nod_grp)
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos                                        &
      &   (fem_f%mesh%nod_comm, fem_f%mesh%node, fem_f%mesh%ele,         &

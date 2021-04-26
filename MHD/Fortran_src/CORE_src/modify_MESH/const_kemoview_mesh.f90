@@ -53,6 +53,7 @@
       use set_nodes_4_groups_viewer
       use const_mesh_information
       use const_surface_data
+      use set_local_id_table_4_1ele
 !
       type(mesh_groups), intent(in) :: group
       type(mesh_geometry), intent(inout) :: mesh
