@@ -79,8 +79,14 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, fem_MG%mesh, fem_MG%group)
+      if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos(my_rank, fem_MG%mesh, fem_MG%group)
+      if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
+      call const_surface_infos(my_rank, fem_MG%mesh, fem_MG%group)
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos                                        &
+     &   (fem_MG%mesh%nod_comm, fem_MG%mesh%node, fem_MG%mesh%ele,      &
+     &    fem_MG%mesh%surf, fem_MG%mesh%edge)
 !
 !  -------------------------------
 !  -------------------------------

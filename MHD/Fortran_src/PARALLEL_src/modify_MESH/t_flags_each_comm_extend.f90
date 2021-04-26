@@ -204,7 +204,7 @@
 !
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
-      integer(kind = kint) :: inum, inod
+      integer(kind = kint) :: inum, inod, iflag
       integer(kind = kint) :: jst, jed, jnum, jele, jnod, k1
       real(kind = kreal) :: dist
 !
@@ -235,6 +235,23 @@
           end do
         end do
       end do
+!
+      inum = 0
+      do jele = 1, ele%numele
+        if(each_exp_flags%iflag_ele(jele) .gt. 0) cycle
+!
+        iflag = 1
+        do k1 = 1, ele%nnod_4_ele
+          jnod = ele%ie(jele,k1)
+          if(each_exp_flags%iflag_node(jnod) .eq. 0) then
+            iflag = 0
+            exit
+          end if
+        end do
+        each_exp_flags%iflag_ele(jele) = iflag
+        inum = inum + iflag
+      end do
+!      write(*,*) 'Missing filled element: ', inum
 !
       end subroutine cal_min_dist_from_last_export
 !

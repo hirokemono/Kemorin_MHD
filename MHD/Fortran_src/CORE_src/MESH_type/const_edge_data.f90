@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine construct_edge_data                                  &
-!!     &         (nod, ele, surf, irank_local, inod_local, edge)
+!!     &         (node, ele, surf, irank_local, inod_local, edge)
 !!      subroutine empty_edge_connect_type(ele, surf, edge)
-!!        type(node_data),    intent(in) :: nod
+!!        type(node_data),    intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data),    intent(inout) :: edge
@@ -40,22 +40,27 @@
 !------------------------------------------------------------------
 !
       subroutine construct_edge_data                                    &
-     &         (nod, ele, surf, irank_local, inod_local, edge)
+     &         (node, ele, surf, irank_local, inod_local, edge)
 !
       use m_machine_parameter
       use set_edge_hash_by_ele
       use set_edge_data_by_ele
 !
-      type(node_data),    intent(in) :: nod
+      type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      integer(kind = kint), intent(in) :: irank_local(nod%numnod)
-      integer(kind = kint), intent(in) :: inod_local(nod%numnod)
+      integer(kind = kint), intent(in) :: irank_local(node%numnod)
+      integer(kind = kint), intent(in) :: inod_local(node%numnod)
 !
       type(edge_data),    intent(inout) :: edge
 !
 !
-      call alloc_sum_hash(nod%numnod, ele%numele, nedge_4_ele,          &
+      if (iflag_debug.eq.1) write(*,*) 'alloc_inod_in_edge'
+      call alloc_inod_in_edge(edge)
+      call copy_inod_in_edge(edge%nnod_4_edge,                          &
+     &    edge%node_on_edge, edge%node_on_edge_sf)
+!
+      call alloc_sum_hash(node%numnod, ele%numele, nedge_4_ele,         &
      &    edge%nnod_4_edge, edge_ele_tbl)
 !
 !   set hash data for edge elements using sum of local node ID
@@ -75,7 +80,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
       call set_edges_connect_by_ele                                     &
-     &   (nod%numnod, ele%numele, edge%numedge, ele%nnod_4_ele,         &
+     &   (node%numnod, ele%numele, edge%numedge, ele%nnod_4_ele,        &
      &    edge%nnod_4_edge, ele%ie, irank_local, inod_local,            &
      &    edge_ele_tbl%ntot_id, edge_ele_tbl%ntot_list,                 &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &

@@ -284,11 +284,15 @@
       use t_edge_data
       use t_element_group_table
 !
+      use cal_mesh_position
       use const_surface_data
+      use nod_and_ele_derived_info
       use set_surf_edge_mesh
       use set_connects_4_surf_group
       use const_mesh_information
       use set_size_4_smp_types
+      use set_smp_4_group_types
+      use parallel_edge_information
 !      use check_surface_groups
 !
       integer, intent(in) :: id_rank
@@ -296,19 +300,24 @@
       type(mesh_groups_p), intent(inout) ::   group_p
 !
 !
-       if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos(id_rank, mesh_p%node, mesh_p%ele,        &
-     &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
-      call set_local_element_info(mesh_p%surf, mesh_p%edge)
+      if (iflag_debug.gt.0) write(*,*) 'set_nod_and_ele_infos'
+      call set_nod_and_ele_infos(mesh_p%node, mesh_p%ele)
+      call count_num_groups_smp                                         &
+     &   (id_rank, group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_surf_connectivity'
       call const_surf_connectivity(mesh_p%node, mesh_p%ele,             &
      &                             mesh_p%surf)
-      if(iflag_debug .gt. 0) write(*,*) 'const_edge_connectivity'
-      call const_edge_connectivity(mesh_p%node, mesh_p%ele,             &
-     &                             mesh_p%surf, mesh_p%edge)
+      if (iflag_debug.gt.0) write(*,*) 'set_center_of_surface'
+      call alloc_surface_geometory(mesh_p%surf)
+      call set_center_of_surface(mesh_p%node, mesh_p%surf)
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos(mesh_p%nod_comm, mesh_p%node,          &
+     &    mesh_p%ele, mesh_p%surf, mesh_p%edge)
+      if (iflag_debug.gt.0) write(*,*) 'set_center_of_edge'
+      call alloc_edge_geometory(mesh_p%edge)
+      call set_center_of_edge(mesh_p%node, mesh_p%edge)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
       call const_ele_list_4_surface(mesh_p%ele, mesh_p%surf)
@@ -323,9 +332,6 @@
 !        call check_surf_nod_4_sheard_para                              &
 !     &     (id_rank, group_p%surf_grp%num_grp, group_p%surf_nod_grp)
 !      end if
-!
-      call init_surface_and_edge_geometry                               &
-     &   (mesh_p%node, mesh_p%surf, mesh_p%edge)
 !
       end subroutine const_mesh_infos_p
 !

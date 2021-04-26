@@ -53,6 +53,7 @@
       use const_mesh_information
       use cvt_quad_2_linear_mesh
       use set_size_4_smp_types
+      use set_surf_edge_mesh
 !
       type(mesh_geometry), intent(in), target :: mesh_q
       type(mesh_groups), intent(in), target :: group_q
@@ -65,8 +66,6 @@
 !
       type(node_ele_double_number) :: inod_dbl_l
 !
-!
-      call set_local_element_info(mesh_l%surf, mesh_l%edge)
 !
       allocate(mesh_l%node)
       allocate(mesh_l%ele)
@@ -87,14 +86,14 @@
       call gen_linear_group_info(group_q%ele_grp, group_q%surf_grp,     &
      &   group_l%ele_grp, group_l%surf_grp)
 !
-      if (iflag_debug.eq.1) write(*,*) 'construct_surface_data'
-      call construct_surface_data(mesh_l%node,                          &
-     &    mesh_l%ele, mesh_l%surf)
-      call construct_edge_data(mesh_l%node, mesh_l%ele, mesh_l%surf,    &
+      if (iflag_debug.eq.1) write(*,*) 'const_surf_connectivity'
+      call const_surf_connectivity(mesh_l%node, mesh_l%ele,             &
+     &                             mesh_l%surf)
+!
+      call const_edge_connectivity(mesh_l%node, mesh_l%ele, mesh_l%surf,    &
      &                         irank_local, inod_local, mesh_l%edge)
 !
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
-      call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
 !
       call init_linear_nod_phys(mesh_l%node, nod_fld_q, nod_fld_l)
 !
@@ -110,6 +109,7 @@
       use const_edge_data
       use const_mesh_information
       use set_size_4_smp_types
+      use set_surf_edge_mesh
 !
       type(mesh_geometry), intent(in), target :: mesh_q
       type(mesh_groups), intent(in), target :: group_q
@@ -123,7 +123,6 @@
       allocate(mesh_l%ele)
       allocate(group_l%ele_grp)
       allocate(group_l%surf_grp)
-      call set_local_element_info(mesh_l%surf, mesh_l%edge)
 !
       mesh_l%node => mesh_q%node
 !
@@ -137,14 +136,14 @@
       call gen_linear_group_info(group_q%ele_grp, group_q%surf_grp,     &
      &   group_l%ele_grp, group_l%surf_grp)
 !
-      if (iflag_debug.eq.1) write(*,*) 'construct_surface_data'
-      call construct_surface_data(mesh_l%node,                          &
-     &    mesh_l%ele, mesh_l%surf)
-      call construct_edge_data(mesh_l%node, mesh_l%ele, mesh_l%surf,    &
+      if (iflag_debug.eq.1) write(*,*) 'const_surf_connectivity'
+      call const_surf_connectivity(mesh_l%node, mesh_l%ele,             &
+     &                             mesh_l%surf)
+!
+      call const_edge_connectivity(mesh_l%node, mesh_l%ele, mesh_l%surf,    &
      &                         irank_local, inod_local, mesh_l%edge)
 !
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
-      call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
 !
       end subroutine const_linear_data_by_lag_data
 !

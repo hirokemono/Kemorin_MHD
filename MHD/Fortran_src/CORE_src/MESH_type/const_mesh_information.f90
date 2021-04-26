@@ -7,16 +7,15 @@
 !> @brief Construct mesh strucuture informations
 !!
 !!@verbatim
-!!      subroutine empty_mesh_info(mesh, group)
+!!      subroutine empty_mesh_info(id_rank, mesh, group)
 !!      subroutine dealloc_empty_mesh_info(mesh, group)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!
-!!      subroutine const_mesh_infos(id_rank, mesh, group)
+!!      subroutine const_surface_infos(id_rank, mesh, group)
 !!      subroutine const_nod_ele_infos                                  &
 !!     &         (id_rank, node, ele, nod_grp, ele_grp, surf_grp)
 !!
-!!      subroutine set_local_element_info(surf, edge)
 !!      subroutine set_nod_and_ele_infosiflag_ele_mesh, (node, ele)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -51,7 +50,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine empty_mesh_info(mesh, group)
+      subroutine empty_mesh_info(id_rank, mesh, group)
 !
       use t_element_group_table
       use set_smp_4_group_types
@@ -59,6 +58,7 @@
       use set_surf_edge_mesh
       use nod_and_ele_derived_info
 !
+      integer, intent(in) :: id_rank
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
 !
@@ -74,7 +74,7 @@
       group%ele_grp%num_grp_smp =  0
       group%surf_grp%num_grp_smp = 0
       call count_num_groups_smp                                         &
-     &   (group%nod_grp, group%ele_grp, group%surf_grp)
+     &   (id_rank, group%nod_grp, group%ele_grp, group%surf_grp)
 !
      if (iflag_debug.eq.1) write(*,*) 'empty_surface_node_grp_type'
       call empty_surface_node_grp_type                                  &
@@ -99,9 +99,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_mesh_infos(id_rank, mesh, group)
+      subroutine const_surface_infos(id_rank, mesh, group)
 !
       use t_element_group_table
+      use cal_mesh_position
       use const_surface_data
       use set_surf_edge_mesh
       use set_connects_4_surf_group
@@ -112,24 +113,10 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
 !
-!     initial const info in node and element data structure
-!     like center of element
-!     also initial smp processor address depends on multiprocessing
-       if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos(id_rank, mesh%node, mesh%ele,            &
-     &    group%nod_grp, group%ele_grp, group%surf_grp)
-!
-!     allocate and set node info for surface and edge
-      if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
-      call set_local_element_info(mesh%surf, mesh%edge)
 !
 !     set connectivity and geometry for surface and edge
       if(iflag_debug .gt. 0) write(*,*) 'const_surf_connectivity'
       call const_surf_connectivity(mesh%node, mesh%ele, mesh%surf)
-      if(iflag_debug .gt. 0) write(*,*) 'const_edge_connectivity'
-      call const_edge_connectivity(mesh%node, mesh%ele,                 &
-     &                             mesh%surf, mesh%edge)
-!
 !     set connection relation of element and surface
       if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
       call const_ele_list_4_surface(mesh%ele, mesh%surf)
@@ -146,66 +133,38 @@
 !     &     (id_rank, group%surf_grp%num_grp, group%surf_nod_grp)
 !      end if
 !
-      call init_surface_and_edge_geometry                               &
-     &   (mesh%node, mesh%surf, mesh%edge)
+      if (iflag_debug.gt.0) write(*,*) 'set_center_of_surface'
+      call alloc_surface_geometory(mesh%surf)
+      call set_center_of_surface(mesh%node, mesh%surf)
 !
-      end subroutine const_mesh_infos
+      end subroutine const_surface_infos
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_nod_ele_infos                                    &
-     &         (id_rank, node, ele, nod_grp, ele_grp, surf_grp)
+!>     initial const info in node and element data structure
+!>     like center of element
+!>     and initial smp processor address depends on multiprocessing
+      subroutine const_nod_ele_infos(id_rank, mesh, group)
 !
       use nod_and_ele_derived_info
       use set_smp_4_group_types
 !
       integer, intent(in) :: id_rank
-      type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-!
-      type(group_data), intent(inout) ::         nod_grp
-      type(group_data), intent(inout) ::         ele_grp
-      type(surface_group_data), intent(inout) :: surf_grp
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_nod_and_ele_infos'
-      call set_nod_and_ele_infos(node, ele)
+      call set_nod_and_ele_infos(mesh%node, mesh%ele)
 !      if (iflag_debug.gt.0) then
-!        call check_nod_size_smp_type(node, id_rank)
+!        call check_nod_size_smp_type(mesh%node, id_rank)
 !      end if
 !
-       if (iflag_debug.gt.0) write(*,*) 'count_num_groups_smp'
-      call count_num_groups_smp(nod_grp, ele_grp, surf_grp)
-!
-!       if (iflag_debug.gt.0) then
-!         call check_grp_4_sheard_para(id_rank, nod_grp)
-!         call check_grp_4_sheard_para(id_rank, ele_grp)
-!         call check_surf_grp_4_sheard_para(id_rank, surf_grp)
-!       end if
+      if (iflag_debug.gt.0) write(*,*) 'count_num_groups_smp'
+      call count_num_groups_smp                                         &
+     &   (id_rank, group%nod_grp, group%ele_grp, group%surf_grp)
 !
       end subroutine const_nod_ele_infos
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_local_element_info(surf, edge)
-!
-      use set_local_id_table_4_1ele
-!
-      type(surface_data), intent(inout) :: surf
-      type(edge_data),    intent(inout) :: edge
-!
-!
-      if (iflag_debug.eq.1) write(*,*) 'allocate_inod_in_surf'
-      call allocate_inod_in_surf(surf)
-      call set_inod_in_surf(surf%nnod_4_surf,                           &
-     &    surf%node_on_sf, surf%node_on_sf_n)
-!
-      if (iflag_debug.eq.1) write(*,*) 'alloc_inod_in_edge'
-      call alloc_inod_in_edge(edge)
-      call copy_inod_in_edge(edge%nnod_4_edge,                          &
-     &    edge%node_on_edge, edge%node_on_edge_sf)
-!
-      end subroutine set_local_element_info
 !
 ! ----------------------------------------------------------------------
 !

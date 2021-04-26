@@ -45,6 +45,7 @@
 !
       use load_mesh_data
       use const_mesh_information
+      use single_edge_information
 !
       use int_volume_of_single_domain
       use mesh_IO_select
@@ -114,8 +115,12 @@
      &    org_fem%mesh, org_fem%group, ierr)
       if(ierr .gt. 0) stop 'Global mesh is wrong!'
 !
-!      write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, org_fem%mesh, org_fem%group)
+!      write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos(my_rank, org_fem%mesh, org_fem%group)
+!      write(*,*) 'const_surface_infos'
+      call const_surface_infos(my_rank, org_fem%mesh, org_fem%group)
+!      write(*,*) 'const_single_edge_infos'
+      call const_single_edge_infos(my_rank, org_fem%mesh)
 !
 !  ========= Read global field data for load balance partition =======
       write(*,*) 'read control_merge'

@@ -67,7 +67,6 @@
       type(viewer_ele_grp_surface) :: mgd_sf_grp
 !
 !
-      call set_local_element_info(mesh%surf, mesh%edge)
       call construct_surface_data(mesh%node, mesh%ele, mesh%surf)
 !
 !       write(*,*) 'const_merged_surface_4_ele_grp'
@@ -91,6 +90,10 @@
        call set_surf_domain_id_viewer(mesh%surf, view_mesh)
 !
 !       write(*,*)  'construct_edge_4_viewer'
+      call alloc_inod_in_edge(mesh%edge)
+      call copy_inod_in_edge(mesh%edge%nnod_4_edge,                     &
+     &    mesh%edge%node_on_edge, mesh%edge%node_on_edge_sf)
+!
        call construct_edge_4_viewer(mesh%surf%nnod_4_surf, mesh%edge,   &
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*)  's_set_nodes_4_groups_viewer'

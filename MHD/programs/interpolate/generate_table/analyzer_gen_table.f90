@@ -77,9 +77,16 @@
       call mpi_input_mesh(gen_itp_p1%itp_dest_mesh_file,                &
      &    nprocs, org_femmesh)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos                                             &
+      if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos                                          &
+     &   (id_rank, org_femmesh%mesh, org_femmesh%group)
+      if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
+      call const_surface_infos                                          &
      &   (my_rank, org_femmesh%mesh, org_femmesh%group)
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos(org_femmesh%mesh%nod_comm,             &
+     &    org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
+     &    org_femmesh%mesh%surf, org_femmesh%mesh%edge)
 !
 !     ----- construct mesh informations for original mesh
 !

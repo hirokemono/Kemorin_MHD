@@ -117,17 +117,29 @@
      &       (FEM_prm, MGCG_FEM%MG_mesh(i_level)%mesh,                  &
      &        MGCG_FEM%MG_mesh(i_level)%group,                          &
      &        MGCG_MHD_FEM%MG_MHD_mesh(i_level) )
+          if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+          call const_nod_ele_infos(my_rank,                             &
+     &                             MGCG_FEM%MG_mesh(i_level)%mesh,      &
+     &                             MGCG_FEM%MG_mesh(i_level)%group)
           if(iflag_debug .gt. 0) write(*,*)                             &
-     &            'const_mesh_infos', i_level
-          call const_mesh_infos                                         &
+     &            'const_surface_infos', i_level
+          call const_surface_infos                                      &
      &       (my_rank, MGCG_FEM%MG_mesh(i_level)%mesh,                  &
      &        MGCG_FEM%MG_mesh(i_level)%group)
+          if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+          call const_para_edge_infos                                    &
+     &       (MGCG_FEM%MG_mesh(i_level)%mesh%nod_comm,                  &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%ele,                       &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%surf,                      &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%edge)
 !
           call const_global_mesh_infos(MGCG_FEM%MG_mesh(i_level)%mesh)
         else
           call set_empty_layers_type_4_MHD                              &
      &       (MGCG_MHD_FEM%MG_MHD_mesh(i_level) )
-          call empty_mesh_info(MGCG_FEM%MG_mesh(i_level)%mesh,          &
+          call empty_mesh_info(my_rank,                                 &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh,                           &
      &        MGCG_FEM%MG_mesh(i_level)%group)
         end if
       end do

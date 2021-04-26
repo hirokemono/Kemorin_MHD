@@ -1,8 +1,12 @@
-!set_edge_data_by_ele.f90
-!      module set_edge_data_by_ele
+!>@file   set_edge_data_by_ele.f90
+!!@brief  module set_edge_data_by_ele
+!!
+!!@author H. Matsui
+!!@date Programmed in ????
 !
-!      Written by H. Matsui
-!
+!> @brief Edge construction routine
+!!
+!!@verbatim
 !!      subroutine count_num_edges_by_ele(ntot_id, ntot_list,           &
 !!     &          istack_edge_hash, iend_edge_hash, iedge_flag, numedge)
 !!     subroutine set_edges_connect_by_ele(numnod, numele, numedge,     &
@@ -19,6 +23,7 @@
 !!     &        (numele, nunmedge_part, iedge_4_ele, ntot_id, ntot_list,&
 !!     &         istack_edge_hash, iend_edge_hash, iedge_hash,          &
 !!     &         iedge_flag, iedge_part)
+!!@endverbatim
 !
       module set_edge_data_by_ele
 !
@@ -88,7 +93,7 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: node_on_edge(nnod_4_edge,nedge_4_ele)
 !
-      integer(kind = kint) :: i, iele, is, iedge
+      integer(kind = kint) :: iele, is, iedge
       integer(kind = kint) :: j, jele, js, j1, j2, inod1, inod2
       integer(kind = kint_gl) :: ihash
       integer(kind = kint_gl) :: k1, k2, ist, ied
@@ -126,11 +131,12 @@
                 iedge_4_ele(iele,is) = -iedge
                 ie_edge(iedge,1) =      inod2
                 ie_edge(iedge,2) =      inod1
+              end if
             end if
 !
             if(nnod_4_edge .eq. 3) then
               j = node_on_edge(3,is)
-              ie_edge(iedge,i) = ie(iele,j)
+              ie_edge(iedge,3) = ie(iele,j)
             end if
 !
           end if
@@ -143,7 +149,7 @@
         ied = istack_edge_hash(ihash)
         do k1 = ist, ied
 !
-          if (iedge_flag(k1) .ne. k1) then
+          if(iedge_flag(k1) .ne. k1) then
             k2 = abs(iedge_flag(k1))
             iele = iedge_hash(k1,1)
             is =   iedge_hash(k1,2)

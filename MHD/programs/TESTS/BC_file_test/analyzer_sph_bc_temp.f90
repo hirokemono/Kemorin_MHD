@@ -53,8 +53,14 @@
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(mesh_file_TEC, nprocs, femmesh)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, femmesh%mesh, femmesh%group)
+      if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos(my_rank, femmesh%mesh, femmesh%group)
+      if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
+      call const_surface_infos(my_rank, femmesh%mesh, femmesh%group)
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos                                        &
+     &   (femmesh%mesh%nod_comm, femmesh%mesh%node, femmesh%mesh%ele,   &
+     &    femmesh%mesh%surf, femmesh%mesh%edge)
 !
        end subroutine initilize_bc_temp
 !
