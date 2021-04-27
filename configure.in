@@ -10,6 +10,7 @@ AM_CONDITIONAL([am__fastdepOBJC], false)
 AM_CONDITIONAL([am__fastdepCXX], false)
 AC_CANONICAL_HOST
 AM_PROG_AS
+AC_SUBST(CCAS)
 
 dnl Include OpenMP related definitions
 builtin(include,MHD/confdb/ax_pthread.m4)
