@@ -3,8 +3,6 @@
 !
 !      Written by H. Matsui on Apr., 2006
 !
-!!      subroutine generate_linear_nod_by_quad                          &
-!!     &         (node_q, ele_q, surf_q, node_l)
 !!      subroutine connect_quad_mesh_2_linear                           &
 !!     &         (node_q, ele_q, surf_q, node_l, ele_l)
 !!      subroutine connect_lag_mesh_2_linear(ele_q, node_l, ele_l)
@@ -21,85 +19,15 @@
 !
       use m_precision
 !
-      implicit none
-!
-      integer(kind = kint), allocatable :: ie_4_333(:,:)
-      private :: ie_4_333
-!
-!  ---------------------------------------------------------------------
-!
-      contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine generate_linear_nod_by_quad                            &
-     &         (node_q, ele_q, surf_q, node_l)
-!
       use t_mesh_data
       use t_geometry_data
       use t_surface_data
 !
-      use set_geometry_4_quad27
-      use cal_mesh_position
-!
-      type(node_data), intent(in) ::    node_q
-      type(element_data), intent(in) :: ele_q
-      type(surface_data), intent(in) :: surf_q
-!
-      type(node_data), intent(inout) ::    node_l
-!
-!
-      node_l%numnod = node_q%numnod + surf_q%numsurf + ele_q%numele
-!
-      call alloc_node_geometry_w_sph(node_l)
-!
-      call set_position_on_surf                                         &
-     &   (node_q%numnod, surf_q%numsurf, ele_q%numele,                  &
-     &    node_q%xx, ele_q%x_ele, surf_q%x_surf,                        &
-     &    node_l%numnod, node_l%xx)
-!
-      call set_spherical_position(node_l)
-!
-      end subroutine generate_linear_nod_by_quad
+      implicit none
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine connect_quad_mesh_2_linear                             &
-     &         (node_q, ele_q, surf_q, node_l, ele_l)
-!
-      use m_geometry_constants
-      use t_mesh_data
-      use t_geometry_data
-!
-      use m_27quad_2_8x8linear
-!
-      type(node_data), intent(in) ::    node_q
-      type(element_data), intent(in) :: ele_q
-      type(surface_data), intent(in) :: surf_q
-      type(node_data), intent(inout) ::    node_l
-      type(element_data), intent(inout) :: ele_l
-!
-!
-      ele_l%numele = 8 * ele_q%numele
-      ele_l%nnod_4_ele = num_t_linear
-!
-      call alloc_ele_connect(ele_l)
-      call alloc_overlapped_ele(ele_l)
-      call alloc_ele_geometry(ele_l)
-!
-      allocate(ie_4_333(ele_q%numele,27) )
-!
-      call gen_connect_quad27_from_quad20                               &
-     &   (node_q%numnod, ele_q%numele, surf_q%numsurf, ele_q%ie,        &
-     &    surf_q%isf_4_ele, ie_4_333)
-!
-      call set_27quad_2_8x8linear(ele_q%numele, ie_4_333,               &
-     &    node_l%numnod, ele_l%ie)
-!
-      deallocate(ie_4_333)
-!
-      end subroutine connect_quad_mesh_2_linear
+      contains
 !
 !  ---------------------------------------------------------------------
 !

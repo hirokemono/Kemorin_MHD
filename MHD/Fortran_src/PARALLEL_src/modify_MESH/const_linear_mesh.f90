@@ -107,22 +107,25 @@
       type(mesh_groups_p), intent(inout) :: group_l
 !
 !
-      mesh_l%ele%nnod_4_ele = num_t_linear
+      mesh_l%ele%nnod_4_ele =    num_t_linear
       mesh_l%surf%nnod_4_surf =  num_linear_sf
       mesh_l%edge%nnod_4_edge =  num_linear_edge
 !
       if      (mesh_q%ele%nnod_4_ele .eq. num_t_linear) then
-        call init_element_mesh_type(mesh_l)
         call link_pointer_mesh(mesh_q, group_q, mesh_l, group_l)
 
         nod_fld_l => nod_fld_q
       else if (mesh_q%ele%nnod_4_ele .eq. num_t_quad) then
         call set_linear_data_by_quad_data                               &
      &     (mesh_q, group_q, nod_fld_q, mesh_l, group_l, nod_fld_l)
+!
+        call init_element_mesh_type(mesh_l)
       else if (mesh_q%ele%nnod_4_ele .eq. num_t_lag) then
         call const_linear_data_by_lag_data                              &
      &     (mesh_q, group_q, mesh_l, group_l)
         nod_fld_l => nod_fld_q
+!
+        call init_element_mesh_type(mesh_l)
       end if 
 !
       end subroutine const_linear_mesh_by_q
