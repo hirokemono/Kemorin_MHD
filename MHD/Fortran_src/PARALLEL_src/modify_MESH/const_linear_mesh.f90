@@ -8,10 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine const_linear_mesh_by_t                               &
-!!     &         (femmesh_q, nod_fld_q, femmesh_l)
+!!     &         (femmesh_q, ele_comm_q, surf_comm_q, nod_fld_q,        &
+!!     &          femmesh_l)
 !!      subroutine set_linear_phys_from_t                               &
 !!     &         (femmesh_q, nod_fld_q, femmesh_l, nod_fld_l)
 !!        type(mesh_data_p), intent(in) :: femmesh_q
+!!        type(communication_table), intent(in) :: ele_comm_q
+!!        type(communication_table), intent(in) :: surf_comm_q
 !!        type(phys_data), intent(in) :: nod_fld_q
 !!        type(mesh_data_p), intent(inout) :: femmesh_l
 !!        type(phys_data), intent(inout) :: nod_fld_l
@@ -51,9 +54,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_linear_mesh_by_t                                 &
-     &         (femmesh_q, nod_fld_q, femmesh_l)
+     &         (femmesh_q, ele_comm_q, surf_comm_q, nod_fld_q,          &
+     &          femmesh_l)
 !
       type(mesh_data), intent(in), target :: femmesh_q
+      type(communication_table), intent(in) :: ele_comm_q
+      type(communication_table), intent(in) :: surf_comm_q
       type(phys_data), intent(in), target :: nod_fld_q
 !
       type(mesh_data_p), intent(inout) :: femmesh_l
@@ -61,8 +67,8 @@
 !
 !      call init_element_mesh_type(mesh_q)
 !
-      call const_linear_mesh_by_q                                       &
-     &   (femmesh_q%mesh, femmesh_q%group, nod_fld_q,                   &
+      call const_linear_mesh_by_q(femmesh_q%mesh, femmesh_q%group,      &
+     &    ele_comm_q, surf_comm_q, nod_fld_q,                           &
      &    femmesh_l%mesh, femmesh_l%group)
 !
       end subroutine const_linear_mesh_by_t
@@ -90,7 +96,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_linear_mesh_by_q(mesh_q, group_q, nod_fld_q,     &
+      subroutine const_linear_mesh_by_q                                 &
+     &         (mesh_q, group_q, ele_comm_q, surf_comm_q, nod_fld_q,    &
      &          mesh_l, group_l)
 !
       use t_mesh_data
@@ -101,6 +108,8 @@
 !
       type(mesh_geometry), intent(in), target :: mesh_q
       type(mesh_groups), intent(in), target :: group_q
+      type(communication_table), intent(in) :: ele_comm_q
+      type(communication_table), intent(in) :: surf_comm_q
       type(phys_data), intent(in), target :: nod_fld_q
 !
       type(mesh_geometry_p), intent(inout) :: mesh_l
@@ -117,7 +126,8 @@
         nod_fld_l => nod_fld_q
       else if (mesh_q%ele%nnod_4_ele .eq. num_t_quad) then
         call set_linear_data_by_quad_data                               &
-     &     (mesh_q, group_q, nod_fld_q, mesh_l, group_l, nod_fld_l)
+     &     (mesh_q, group_q, ele_comm_q, surf_comm_q, nod_fld_q,        &
+     &      mesh_l, group_l, nod_fld_l)
 !
         call init_element_mesh_type(mesh_l)
       else if (mesh_q%ele%nnod_4_ele .eq. num_t_lag) then

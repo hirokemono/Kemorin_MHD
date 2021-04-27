@@ -32,7 +32,7 @@ const_node_and_element_q2l.o: $(MODIFY_PARA_MESHDIR)/const_node_and_element_q2l.
 	$(F90) -c $(F90OPTFLAGS) $<
 const_node_comm_table_q2l.o: $(MODIFY_PARA_MESHDIR)/const_node_comm_table_q2l.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_comm_table.o t_calypso_comm_table.o t_quad_to_linear_list.o cvt_calypso_geofem_comm_tbl.o append_communication_table.o t_linear_to_quad_list.o t_linear_to_lag_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_node_group_item_q2l.o: $(MODIFY_PARA_MESHDIR)/const_node_group_item_q2l.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_quad_to_linear_list.o t_linear_to_lag_list.o
+const_node_group_item_q2l.o: $(MODIFY_PARA_MESHDIR)/const_node_group_item_q2l.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_quad_to_linear_list.o t_linear_to_quad_list.o t_linear_to_lag_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_repart_comm_tbl.o: $(MODIFY_PARA_MESHDIR)/const_repart_comm_tbl.f90 m_precision.o m_constants.o m_machine_parameter.o t_comm_table.o calypso_mpi.o reverse_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<

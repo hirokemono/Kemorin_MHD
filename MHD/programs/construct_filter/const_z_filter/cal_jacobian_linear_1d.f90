@@ -125,7 +125,11 @@
 !
 !  data allocation
 !
-      call count_size_4_smp_surf_edge(surf, edge)
+      call alloc_surf_param_smp(surf)
+      call count_surf_size_smp(surf)
+!
+      call alloc_edge_param_smp(edge)
+      call count_edge_size_smp(edge)
 !
       call set_max_integration_points(num_int, g_FEM)
       call num_of_int_points(g_FEM)

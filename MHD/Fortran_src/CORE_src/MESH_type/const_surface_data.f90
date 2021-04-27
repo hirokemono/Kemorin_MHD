@@ -95,7 +95,7 @@
       type(surface_data), intent(inout) :: surf
 !
 !
-      call alloc_ele_4_surf_type(surf)
+      call alloc_element_4_surface(surf)
       call set_ele_list_4_surf(ele%numele, surf%numsurf,                &
      &     nsurf_4_ele, surf%isf_4_ele, surf%iele_4_surf)
 !
