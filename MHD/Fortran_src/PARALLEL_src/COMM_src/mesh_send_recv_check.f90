@@ -11,8 +11,6 @@
 !!     &         (node, nod_comm, nod_check)
 !!      subroutine ele_send_recv_test                                   &
 !!     &         (node, ele, ele_comm, ele_check)
-!!      subroutine surf_send_recv_test                                  &
-!!     &         (node, surf, surf_comm, surf_check)
 !!      subroutine edge_send_recv_test                                  &
 !!     &         (node, edge, edge_comm, edge_check)
 !!        type(node_data), intent(in) :: node
@@ -21,9 +19,6 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(work_for_comm_check), intent(inout) :: ele_check
-!!        type(surface_data), intent(in) :: surf
-!!        type(communication_table), intent(in) :: surf_comm
-!!        type(work_for_comm_check), intent(inout) :: surf_check
 !!        type(edge_data), intent(in) :: edge
 !!        type(communication_table), intent(in) :: edge_comm
 !!        type(work_for_comm_check), intent(inout) :: edge_check
@@ -131,40 +126,6 @@
      &    ele_check%istack_diff_pe(nprocs)
 !
       end subroutine ele_send_recv_test
-!
-! ----------------------------------------------------------------------
-!
-      subroutine surf_send_recv_test                                    &
-     &         (node, surf, surf_comm, surf_check)
-!
-      use m_solver_SR
-      use diff_geometory_comm_test
-      use nod_phys_send_recv
-      use solver_SR_type
-!
-      type(node_data), intent(in) :: node
-      type(surface_data), intent(in) :: surf
-      type(communication_table), intent(in) :: surf_comm
-      type(work_for_comm_check), intent(inout) :: surf_check
-!
-!
-      call alloc_geom_4_comm_test(surf%numsurf, surf_check)
-      call set_element_4_comm_test(surf%numsurf, surf%interior_surf,    &
-     &                             surf%x_surf, surf_check%xx_test)
-      call SOLVER_SEND_RECV_3_type(surf%numsurf, surf_comm,             &
-     &                             SR_sig1, SR_r1, surf_check%xx_test)
-!
-      call ele_send_recv_check                                          &
-     &   (surf%numsurf, surf%isurf_global, surf%x_surf, surf_check)
-!
-      if(i_debug .gt. 0)  write(*,*) my_rank,                           &
-     &     'Failed communication for surface', surf_check%num_diff
-      call collect_failed_comm(surf_check)
-      if(my_rank .eq. 0) write(*,*) my_rank,                            &
-     &   'Total Failed communication for surface',                      &
-     &    surf_check%istack_diff_pe(nprocs)
-!
-      end subroutine surf_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !

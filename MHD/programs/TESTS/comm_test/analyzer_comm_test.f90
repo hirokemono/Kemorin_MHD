@@ -128,6 +128,7 @@
 !
       use set_ele_id_4_node_type
       use const_element_comm_tables
+      use const_surface_comm_table
 !
       integer(kind = kint), parameter :: N12 = 12
 !
