@@ -1,5 +1,5 @@
-!>@file   t_geometry_data.f90
-!!@brief  module t_geometry_data
+!>@file   t_noise_node_data.f90
+!!@brief  module t_noise_node_data
 !!
 !!@author  Yangguang Liao
 !!@date Programmed in 2018
