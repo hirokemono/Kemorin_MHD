@@ -155,5 +155,145 @@
       end subroutine dealloc_linear_data_by_quad
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine const_quad_mesh_by_linear                              &
+     &         (mesh_l, group_l, ele_comm_l, surf_comm_l, edge_comm_l,  &
+     &          mesh_q, group_q)
+!
+      use t_linear_to_quad_list
+      use const_quad_mesh_from_linear
+!
+      type(mesh_geometry), intent(in) :: mesh_l
+      type(mesh_groups), intent(in) :: group_l
+      type(communication_table), intent(in), target :: ele_comm_l
+      type(communication_table), intent(in), target :: surf_comm_l
+      type(communication_table), intent(in), target :: edge_comm_l
+!
+      type(mesh_geometry_p), intent(inout) :: mesh_q
+      type(mesh_groups_p), intent(inout) :: group_q
+!
+      type(communication_table), pointer :: ele_comm_q
+      type(communication_table), pointer :: surf_comm_q
+      type(communication_table), pointer :: edge_comm_q
+!
+      type(linear_to_quad_list) :: l_to_q
+!
+!
+      call init_linear_to_quad_list(mesh_l, edge_comm_l, l_to_q)
+!
+      allocate(mesh_q%node)
+      call const_quad_node_by_linear                                    &
+     &   (mesh_l%node, mesh_l%edge, l_to_q, mesh_q%node)
+      allocate(mesh_q%ele)
+      call const_quad_ele_by_linear                                     &
+     &   (mesh_l%ele, mesh_l%edge, l_to_q, mesh_q%ele)
+!
+      allocate(mesh_q%nod_comm)
+      call const_node_comm_table_l2q                                    &
+     &   (mesh_l%node, mesh_l%edge, mesh_l%nod_comm, edge_comm_l,       &
+     &    l_to_q, mesh_q%nod_comm)
+!
+      allocate(group_q%nod_grp)
+      call const_node_group_item_l2q                                    &
+     &   (mesh_l%node, mesh_l%edge, group_l%nod_grp,                    &
+     &    l_to_q, group_q%nod_grp)
+      call link_ele_and_surf_group(group_l%ele_grp, group_l%surf_grp,   &
+     &                             group_q)
+!
+      ele_comm_q => ele_comm_l
+!
+      allocate(mesh_q%surf)
+      call const_quad_surf_by_linear                                    &
+     &   (mesh_l%surf, mesh_l%edge, l_to_q, mesh_q%ele, mesh_q%surf)
+      surf_comm_q => surf_comm_l
+!
+      allocate(mesh_q%edge)
+      call const_quad_edge_by_linear                                    &
+     &   (mesh_l%edge, l_to_q, mesh_q%ele, mesh_q%surf, mesh_q%edge)
+      edge_comm_q => edge_comm_l
+!
+      call dealloc_linear_to_quad_list(l_to_q)
+!
+      end subroutine const_quad_mesh_by_linear
+!
+!-----------------------------------------------------------------------
+!
+      subroutine const_lag_mesh_by_linear                               &
+     &         (mesh_l, group_l, ele_comm_l, surf_comm_l, edge_comm_l,  &
+     &          mesh_q, group_q)
+!
+      use t_linear_to_lag_list
+      use const_lag_mesh_from_linear
+!
+      type(mesh_geometry), intent(in) :: mesh_l
+      type(mesh_groups), intent(in) :: group_l
+      type(communication_table), intent(in), target :: ele_comm_l
+      type(communication_table), intent(in), target :: surf_comm_l
+      type(communication_table), intent(in), target :: edge_comm_l
+!
+      type(mesh_geometry_p), intent(inout) :: mesh_q
+      type(mesh_groups_p), intent(inout) :: group_q
+!
+      type(communication_table), pointer :: ele_comm_q
+      type(communication_table), pointer :: surf_comm_q
+      type(communication_table), pointer :: edge_comm_q
+!
+      type(linear_to_lag_list) :: l_to_lag
+!
+!
+      call init_linear_to_lag_list                                      &
+     &   (mesh_l, ele_comm_l, surf_comm_l, edge_comm_l, l_to_lag)
+!
+      allocate(mesh_q%node)
+      call const_lag_node_by_linear                                     &
+     &   (mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge,            &
+     &    l_to_lag, mesh_q%node)
+      allocate(mesh_q%ele)
+      call const_lag_ele_by_linear                                      &
+     &   (mesh_l%ele, mesh_l%surf, mesh_l%edge, l_to_lag, mesh_q%ele)
+!
+      allocate(mesh_q%nod_comm)
+      call const_node_comm_table_l2lag                                  &
+     &   (mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge,            &
+     &    mesh_l%nod_comm, ele_comm_l, surf_comm_l, edge_comm_l,        &
+     &    l_to_lag, mesh_q%nod_comm)
+!
+      allocate(group_q%nod_grp)
+      call const_node_group_item_l2lag                                  &
+     &   (mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge,            &
+     &    group_l%nod_grp, l_to_lag, group_q%nod_grp)
+      call link_ele_and_surf_group(group_l%ele_grp, group_l%surf_grp,   &
+     &                             group_q)
+!
+      ele_comm_q => ele_comm_l
+!
+      allocate(mesh_q%surf)
+      call const_lag_surf_by_linear                                     &
+     &   (mesh_l%surf, mesh_l%edge, l_to_lag, mesh_q%ele, mesh_q%surf)
+      surf_comm_q => surf_comm_l
+!
+      call const_lag_edge_by_linear                                     &
+     &   (mesh_l%edge, l_to_lag, mesh_q%ele, mesh_q%surf, mesh_q%edge)
+      edge_comm_q => edge_comm_l
+!
+      call dealloc_linear_to_lag_list(l_to_lag)
+!
+      end subroutine const_lag_mesh_by_linear
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine link_ele_and_surf_group(ele_grp, surf_grp, group_p)
+!
+      type(group_data), intent(in), target :: ele_grp
+      type(surface_group_data), intent(in), target :: surf_grp
+      type(mesh_groups_p), intent(inout) :: group_p
+!
+      group_p%ele_grp => ele_grp
+      group_p%surf_grp => surf_grp
+!
+      end subroutine link_ele_and_surf_group
+!
+!  ---------------------------------------------------------------------
 !
       end module const_linear_mesh_by_quad

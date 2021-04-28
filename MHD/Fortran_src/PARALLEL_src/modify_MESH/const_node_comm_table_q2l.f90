@@ -14,12 +14,6 @@
 !!        type(communication_table), intent(in) :: surf_comm_q
 !!        type(quad_to_linear_list), intent(in) :: q_to_l
 !!        type(communication_table), intent(inout) :: nod_comm_l
-!!      subroutine const_node_comm_table_l2q(mesh_l, edge_comm_l,       &
-!!     &                                     l_to_q, nod_comm_q)
-!!        type(mesh_geometry), intent(in) :: mesh_l
-!!        type(communication_table), intent(in) :: edge_comm_l
-!!        type(linear_to_quad_list), intent(in) :: l_to_q
-!!        type(communication_table), intent(inout) :: nod_comm_q
 !!      subroutine const_node_comm_table_l2lag                          &
 !!     &         (mesh_l, ele_comm_l, surf_comm_l, edge_comm_l,         &
 !!     &          l_to_lag, nod_comm_lag)
@@ -41,6 +35,8 @@
       use t_surface_data
       use t_comm_table
       use t_calypso_comm_table
+!
+      implicit none
 !
       private :: convert_comm_item_q2l
 !
@@ -102,48 +98,6 @@
       call dealloc_comm_table(comm_tmp2)
 !
       end subroutine s_const_node_comm_table_q2l
-!
-!-----------------------------------------------------------------------
-!
-      subroutine const_node_comm_table_l2q(mesh_l, edge_comm_l,         &
-     &                                     l_to_q, nod_comm_q)
-!
-      use t_linear_to_quad_list
-      use cvt_calypso_geofem_comm_tbl
-      use append_communication_table
-!
-      type(mesh_geometry), intent(in) :: mesh_l
-      type(communication_table), intent(in) :: edge_comm_l
-      type(linear_to_quad_list), intent(in) :: l_to_q
-!
-      type(communication_table), intent(inout) :: nod_comm_q
-!
-      type(communication_table) :: comm_tmp1
-      type(calypso_comm_table) :: cps_nod_comm, cps_edge_comm
-!
-!
-      call dup_comm_tbl_to_calypso_comm(my_rank, nprocs,                &
-     &    mesh_l%node%numnod, mesh_l%nod_comm, cps_nod_comm)
-      call convert_comm_item_q2l                                        &
-     &   (mesh_l%node%numnod, l_to_q%inod_linear_to_quad,               &
-     &    cps_nod_comm%ntot_import, cps_nod_comm%item_import,           &
-     &    cps_nod_comm%ntot_export, cps_nod_comm%item_export)
-      call dup_calypso_comm_to_comm_tbl                                 &
-     &   (my_rank, nprocs, cps_nod_comm, comm_tmp1)
-      call dealloc_calypso_comm_table(cps_nod_comm)
-!
-      call dup_comm_tbl_to_calypso_comm(my_rank, nprocs,                &
-     &    mesh_l%edge%numedge, edge_comm_l, cps_edge_comm)
-      call convert_comm_item_q2l                                        &
-     &   (mesh_l%edge%numedge, l_to_q%iedge_linear_to_quad,             &
-     &    cps_edge_comm%ntot_import, cps_edge_comm%item_import,         &
-     &    cps_edge_comm%ntot_export, cps_edge_comm%item_export)
-      call append_ele_communication_table                               &
-     &   (comm_tmp1, cps_edge_comm, nod_comm_q)
-      call dealloc_calypso_comm_table(cps_edge_comm)
-      call dealloc_comm_table(comm_tmp1)
-!
-      end subroutine const_node_comm_table_l2q
 !
 !-----------------------------------------------------------------------
 !

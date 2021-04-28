@@ -21,7 +21,8 @@
 !!        type(edge_data), intent(in) :: edge_l
 !!        type(linear_to_quad_list), intent(in) :: l_to_q
 !!        integer(kind = kint), intent(in) :: numele_q
-!!        integer(kind = kint), intent(inout) :: ie_q(numele_q,num_t_lag)
+!!        integer(kind = kint), intent(inout)                           &
+!!       &                     :: ie_q(numele_q,num_t_quad)
 !!      subroutine set_quad_surf_connect_by_linear                      &
 !!     &         (surf_l, edge_l, l_to_q, numsurf_q, ie_sf_q)
 !!        type(surface_data), intent(in) :: surf_l
@@ -106,7 +107,8 @@
       type(linear_to_quad_list), intent(in) :: l_to_q
 !
       integer(kind = kint), intent(in) :: numele_q
-      integer(kind = kint), intent(inout) :: ie_q(numele_q,num_t_quad)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: ie_q(numele_q,num_t_quad)
 !
       integer(kind = kint) :: inod, iele, iedge, k1, is
 !

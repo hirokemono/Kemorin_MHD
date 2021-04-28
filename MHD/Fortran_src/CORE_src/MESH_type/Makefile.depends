@@ -24,11 +24,13 @@ coordinate_convert_4_sph.o: $(MESH_TYPE_DIR)/coordinate_convert_4_sph.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_edge_data.o: $(MESH_TYPE_DIR)/copy_edge_data.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_edge_data.o set_local_id_table_4_1ele.o set_size_4_smp_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
-copy_element_data.o: $(MESH_TYPE_DIR)/copy_element_data.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o set_local_id_table_4_1ele.o set_size_4_smp_types.o
+copy_element_data.o: $(MESH_TYPE_DIR)/copy_element_data.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o set_size_4_smp_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_mesh_structures.o: $(MESH_TYPE_DIR)/copy_mesh_structures.f90 m_precision.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o set_nnod_4_ele_by_type.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_near_node_ele_type.o: $(MESH_TYPE_DIR)/copy_near_node_ele_type.f90 m_precision.o t_next_node_ele_4_node.o t_near_mesh_id_4_node.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_node_data.o: $(MESH_TYPE_DIR)/copy_node_data.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_surface_data.o: $(MESH_TYPE_DIR)/copy_surface_data.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_surface_data.o set_local_id_table_4_1ele.o set_size_4_smp_types.o
 	$(F90) -c $(F90OPTFLAGS) $<

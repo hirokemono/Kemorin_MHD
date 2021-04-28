@@ -7,14 +7,12 @@
 !>@brief node list to construct quad mesh from tri-linear mesh
 !!
 !!@verbatim
-!!      subroutine init_linear_to_quad_list(mesh_q, edge_comm_q,        &
-!!     &          numnod_l, internal_node_l, l_to_q)
+!!      subroutine init_linear_to_quad_list(mesh_l, edge_comm_l,        &
+!!     &                                    l_to_q)
 !!      subroutine dealloc_linear_to_quad_list(l_to_q)
-!!        type(mesh_geometry), intent(in) :: mesh_q
-!!        type(communication_table), intent(in) :: edge_comm_q
+!!        type(mesh_geometry), intent(in) :: mesh_l
+!!        type(communication_table), intent(in) :: edge_comm_l
 !!        type(linear_to_quad_list), intent(inout) :: l_to_q
-!!        integer(kind = kint), intent(inout) :: numnod_l
-!!        integer(kind = kint), intent(inout) :: internal_node_l
 !!@endverbatim
 !
       module t_linear_to_quad_list
@@ -48,26 +46,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_linear_to_quad_list(mesh_q, edge_comm_q,          &
-     &          numnod_l, internal_node_l, l_to_q)
+      subroutine init_linear_to_quad_list(mesh_l, edge_comm_l,          &
+     &                                    l_to_q)
 !
-      type(mesh_geometry), intent(in) :: mesh_q
-      type(communication_table), intent(in) :: edge_comm_q
+      type(mesh_geometry), intent(in) :: mesh_l
+      type(communication_table), intent(in) :: edge_comm_l
 !
       type(linear_to_quad_list), intent(inout) :: l_to_q
-      integer(kind = kint), intent(inout) :: numnod_l
-      integer(kind = kint), intent(inout) :: internal_node_l
 !
 !
       call alloc_linear_to_quad_list                                    &
-     &   (mesh_q%node, mesh_q%edge, l_to_q)
+     &   (mesh_l%node, mesh_l%edge, l_to_q)
       call set_linear_to_quad_list                                      &
-     &   (mesh_q%node, mesh_q%edge, mesh_q%nod_comm, edge_comm_q,       &
-     &    numnod_l, internal_node_l, l_to_q)
+     &   (mesh_l%node, mesh_l%edge, mesh_l%nod_comm, edge_comm_l,       &
+     &    l_to_q)
 !
       if(i_debug .eq. 0) return
-      call check_linear_to_quad_list                                    &
-     &   (mesh_q%node, mesh_q%edge, numnod_l, l_to_q)
+      call check_linear_to_quad_list(mesh_l%node, mesh_l%edge, l_to_q)
 !
       end subroutine init_linear_to_quad_list
 !
@@ -118,8 +113,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_linear_to_quad_list                                &
-     &         (node, edge, nod_comm, edge_comm,                        &
-     &          numnod_l, internal_node_l, l_to_q)
+     &         (node, edge, nod_comm, edge_comm, l_to_q)
 !
       use calypso_mpi_int
 !
@@ -129,10 +123,8 @@
       type(communication_table), intent(in) :: nod_comm, edge_comm
 !
       type(linear_to_quad_list), intent(inout) :: l_to_q
-      integer(kind = kint), intent(inout) :: numnod_l
-      integer(kind = kint), intent(inout) :: internal_node_l
 !
-      integer(kind = kint) :: i, icou, inum
+      integer(kind = kint) :: i, icou, inum, internal_node_l
 !
 !
 !$omp parallel do
@@ -172,30 +164,20 @@
       end do
 !$omp end parallel do
 !
-      numnod_l = icou + edge_comm%ntot_import
-!
       end subroutine set_linear_to_quad_list
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_linear_to_quad_list(node, edge,                  &
-     &                                     numnod_l, l_to_q)
+      subroutine check_linear_to_quad_list(node, edge, l_to_q)
 !
       use calypso_mpi_int
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in) :: edge
       type(linear_to_quad_list), intent(in) :: l_to_q
-      integer(kind = kint), intent(in) :: numnod_l
 !
       integer(kind = kint) :: i, icou, ntot_gl
 !
-!
-      icou = node%numnod + edge%numedge
-      if(numnod_l .ne. icou) then
-        write(*,*) 'Wrong number of node for linear mesh at ', my_rank, &
-     &            ':  ', numnod_l, icou
-      end if
 !
       icou = 0
 !$omp parallel do reduction(+:icou)
