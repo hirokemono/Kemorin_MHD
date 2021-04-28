@@ -7,7 +7,8 @@
 !> @brief Routines to copy surface data
 !!
 !!@verbatim
-!!        subroutine dup_surface_data(surf_org, ele_new, surf_new)
+!!      subroutine dup_surface_data(surf_org, ele_new, surf_new)
+!!      subroutine dup_derived_surface_data(surf_org, surf_new)
 !!        type(surface_data), intent(in) :: surf_org
 !!        type(element_data), intent(in) :: ele_new
 !!        type(surface_data), intent(in) :: surf_new
@@ -93,14 +94,29 @@
       call set_inod_in_surf(surf_new%nnod_4_surf,                       &
      &                      surf_new%node_on_sf, surf_new%node_on_sf_n)
 !
-      call alloc_surf_param_smp(surf_new)
-      call count_surf_size_smp(surf_new)
-!
       call alloc_surface_connect(surf_new, ele_new%numele)
       call copy_surface_connect(surf_org,                               &
      &    surf_new%numsurf, surf_new%nnod_4_surf, surf_new%ie_surf)
       call copy_surface_to_element (surf_org, ele_new%numele,           &
      &    surf_new%isf_4_ele, surf_new%isf_rot_ele)
+!
+      call dup_derived_surface_data(surf_org, surf_new)
+!
+      end subroutine dup_surface_data
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dup_derived_surface_data(surf_org, surf_new)
+!
+      use set_size_4_smp_types
+!
+      type(surface_data), intent(in) :: surf_org
+!
+      type(surface_data), intent(inout) :: surf_new
+!
+!
+      call alloc_surf_param_smp(surf_new)
+      call count_surf_size_smp(surf_new)
 !
       call alloc_interior_surf(surf_new)
       call copy_global_surface_id(surf_org, surf_new%numsurf,           &
@@ -128,7 +144,7 @@
       call copy_normal_vectors(surf_org, surf_new%numsurf,              &
      &   surf_new%area_surf, surf_new%a_area_surf, surf_new%vnorm_surf)
 !
-      end subroutine dup_surface_data
+      end subroutine dup_derived_surface_data
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -146,7 +162,7 @@
 !
       if(numsurf .le. 0) return
 !$omp parallel private(k1)
-      do k1 = 1, nsurf_4_ele
+      do k1 = 1, nnod_4_surf
 !$omp workshare
         ie_surf(1:numsurf,k1) =   surf_org%ie_surf(1:numsurf,k1)
 !$omp end workshare nowait
