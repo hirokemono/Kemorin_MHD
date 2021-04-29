@@ -11,8 +11,6 @@
 !!     &         (node, nod_comm, nod_check)
 !!      subroutine ele_send_recv_test                                   &
 !!     &         (node, ele, ele_comm, ele_check)
-!!      subroutine edge_send_recv_test                                  &
-!!     &         (node, edge, edge_comm, edge_check)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(work_for_comm_check), intent(inout) :: nod_check
@@ -134,39 +132,6 @@
      &    ele_check%istack_diff_pe(nprocs)
 !
       end subroutine ele_send_recv_test
-!
-! ----------------------------------------------------------------------
-!
-      subroutine edge_send_recv_test                                    &
-     &         (node, edge, edge_comm, edge_check)
-!
-      use m_solver_SR
-      use diff_geometory_comm_test
-      use solver_SR_type
-!
-      type(node_data), intent(in) :: node
-      type(edge_data), intent(in) :: edge
-      type(communication_table), intent(in) :: edge_comm
-      type(work_for_comm_check), intent(inout) :: edge_check
-!
-!
-      call alloc_geom_4_comm_test(edge%numedge, edge_check)
-      call set_element_4_comm_test(edge%numedge ,edge%interior_edge,    &
-     &                             edge%x_edge, edge_check%xx_test)
-      call SOLVER_SEND_RECV_3_type(edge%numedge, edge_comm,             &
-     &                             SR_sig1, SR_r1, edge_check%xx_test)
-!
-      call ele_send_recv_check                                          &
-     &   (edge%numedge, edge%iedge_global, edge%x_edge, edge_check)
-!
-      if(i_debug .gt. 0)  write(*,*) my_rank,                           &
-     &     'Failed communication for edge', edge_check%num_diff
-      call collect_failed_comm(edge_check)
-      if(my_rank .eq. 0) write(*,*) my_rank,                            &
-     &   'Total Failed communication for edge',                         &
-     &    edge_check%istack_diff_pe(nprocs)
-!
-      end subroutine edge_send_recv_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

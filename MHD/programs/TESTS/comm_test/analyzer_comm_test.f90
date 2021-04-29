@@ -37,6 +37,7 @@
       type(communication_table), save :: T_surf_comm
       type(communication_table), save :: T_edge_comm
       type(global_surface_data), save :: T_surf_gl
+      type(global_edge_data), save :: T_edge_gl
 !
 !>      Structure for communicatiors for solver
       type(vectors_4_solver), save :: v_sol_T
@@ -57,6 +58,7 @@
       use mpi_load_mesh_data
       use const_element_comm_tables
       use const_surface_comm_table
+      use const_edge_comm_table
 !
       integer :: i, num_in, num_ex
 !
@@ -105,10 +107,10 @@
      &    test_fem%mesh%nod_comm, T_surf_comm, T_surf_gl)
 !
 !
-      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
-      call const_edge_comm_table                                       &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_edge_comm,     &
-     &    test_fem%mesh%edge)
+      if(iflag_debug.gt.0) write(*,*) 's_const_edge_comm_table'
+      call s_const_edge_comm_table                                      &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
+     &    test_fem%mesh%edge, T_edge_comm, T_edge_gl)
 !
 !      call calypso_mpi_barrier
 !      call calypso_mpi_abort(0, 'manuke')
@@ -131,6 +133,7 @@
       use set_ele_id_4_node_type
       use const_element_comm_tables
       use const_surface_comm_table
+      use const_edge_comm_table
 !
       integer(kind = kint), parameter :: N12 = 12
 !
@@ -149,9 +152,10 @@
      &    T_ele_comm, ele_check)
       call surf_send_recv_test                                          &
      &   (test_fem%mesh%surf, T_surf_gl, T_surf_comm, surf_check)
-      call edge_send_recv_test(test_fem%mesh%node, test_fem%mesh%edge,  &
-     &    T_edge_comm, edge_check)
+      call edge_send_recv_test                                          &
+     &   (test_fem%mesh%edge, T_edge_gl, T_edge_comm, edge_check)
       call dealloc_surf_comm_table(T_surf_comm, T_surf_gl)
+      call dealloc_edge_comm_table(T_edge_comm, T_edge_gl)
 !
       call output_diff_mesh_comm_test(comm_test_name,                   &
      &    nod_check, ele_check, surf_check, edge_check)

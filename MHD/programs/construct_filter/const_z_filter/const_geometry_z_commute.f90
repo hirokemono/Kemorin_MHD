@@ -1,11 +1,23 @@
+!>@file   const_geometry_z_commute.f90
+!!@brief  module const_geometry_z_commute
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2008
 !
-!      module const_geometry_z_commute
-!
-!     Written by Hiroaki Matsui
-!     Modified by Hiroaki Matsui on Apr., 2008
-!
+!> @brief Construct vertical position data
+!!
+!!@verbatim
 !!      subroutine set_geometry_z_commute                               &
-!!     &         (nod_comm, node, ele, surf, edge_z_filter)
+!!     &         (nod_comm, node, ele, surf, edge_z_filter, edge_z_gl)
+!!      subroutine dealloc_geometry_z_commute                           &
+!!     &         (nod_comm, node, ele, surf, edge_z_filter, edge_z_gl)
+!!        type(communication_table), intent(inout) :: nod_comm
+!!        type(node_data), intent(inout) :: node
+!!        type(element_data), intent(inout) :: ele
+!!        type(surface_data), intent(inout) :: surf
+!!        type(edge_data), intent(inout) :: edge_z_filter
+!!        type(global_edge_data), intent(inout) :: edge_z_gl
+!!@endverbatim
 !
       module const_geometry_z_commute
 !
@@ -33,7 +45,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_geometry_z_commute                                 &
-     &         (nod_comm, node, ele, surf, edge_z_filter)
+     &         (nod_comm, node, ele, surf, edge_z_filter, edge_z_gl)
 !
       use m_spheric_constants
 !
@@ -42,6 +54,7 @@
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge_z_filter
+      type(global_edge_data), intent(inout) :: edge_z_gl
 !
 !
       ncomp_mat = ncomp_norm + 2
@@ -50,13 +63,14 @@
       end if
 !
       call set_numnod_z_commute(node, ele, surf, edge_z_filter)
+      call alloc_interior_edge(edge_z_filter, edge_z_gl)
 !
       call alloc_node_geometry_w_sph(node)
       call alloc_edge_connect(edge_z_filter, surf%numsurf)
-      call dealloc_interior_edge(edge_z_filter)
 !
       call set_element_z_commute(node, edge_z_filter)
-      call set_global_id_z_commute(node, ele, edge_z_filter)
+      call set_global_id_z_commute(node, ele, edge_z_filter,            &
+     &                             edge_z_gl%iedge_global)
 !
       if (iflag_grid .eq. igrid_Chebyshev) then
         call set_chebyshev_grids                                        &
@@ -80,6 +94,18 @@
       call alloc_comm_table_item(nod_comm)
 !
       end subroutine set_geometry_z_commute
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_geometry_z_commute(edge_z_gl)
+!     &         (nod_comm, node, ele, surf, edge_z_filter, edge_z_gl)
+!
+      type(global_edge_data), intent(inout) :: edge_z_gl
+!
+!
+      call dealloc_interior_edge(edge_z_gl)
+!
+      end subroutine dealloc_geometry_z_commute
 !
 ! ----------------------------------------------------------------------
 !
@@ -117,11 +143,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_global_id_z_commute(node, ele, edge_z_filter)
+      subroutine set_global_id_z_commute(node, ele, edge_z_filter,      &
+     &                                   iedge_z_gl)
 !
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
       type(edge_data), intent(inout) :: edge_z_filter
+      integer(kind = kint_gl), intent(inout)                            &
+     &                        :: iedge_z_gl(edge_z_filter%numedge)
 !
       integer (kind = kint) :: i
 !
@@ -130,8 +159,7 @@
       end do
 !
       do i = 1, ele%numele
-        edge_z_filter%iedge_global(i)                                   &
-     &     = node%inod_global(edge_z_filter%ie_edge(i,1))
+        iedge_z_gl(i) = node%inod_global(edge_z_filter%ie_edge(i,1))
       end do
 !
       end subroutine set_global_id_z_commute

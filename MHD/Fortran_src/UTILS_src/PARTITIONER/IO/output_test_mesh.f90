@@ -49,7 +49,9 @@
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !
       type(communication_table) :: surf_comm1
+      type(communication_table) :: edge_comm1
       type(global_surface_data) :: surf_gl1
+      type(global_edge_data) :: edge_gl1
 !
 !  ---------------------------------------------
 !     output node data
@@ -98,15 +100,19 @@
 !     output edge data
 !  -------------------------------
 !
+      call s_const_edge_comm_table                                      &
+     &   (mesh%node, mesh%nod_comm, mesh%edge, edge_comm1, edge_gl1)
+      call copy_comm_tbl_type(edge_comm1, ele_mesh_IO%comm)
       call empty_comm_table(ele_mesh_IO%comm)
       call copy_edge_connect_to_IO                                      &
-     &   (mesh%edge, mesh%ele%numele, mesh%surf%numsurf,                &
+     &   (mesh%edge, edge_gl1, mesh%ele%numele, mesh%surf%numsurf,      &
      &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
-      call copy_edge_geometry_to_IO(mesh%edge,                          &
+      call copy_edge_geometry_to_IO(mesh%edge, edge_gl1,                &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_edge_sph_file'
       call output_edge_xyz_file                                         &
      &   (id_rank, def_edge_mesh_head, ele_mesh_IO)
+      call dealloc_edge_comm_table(edge_comm1, edge_gl1)
 !
        end subroutine output_test_mesh_informations
 !

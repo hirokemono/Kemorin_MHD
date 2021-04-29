@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine const_quad_node_by_linear                            &
-!!     &         (node_l, edge_l, l_to_q, node_q)
+!!     &         (node_l, edge_l, edge_gl_l, l_to_q, node_q)
 !!        type(node_data), intent(in) :: node_l
 !!        type(edge_data), intent(in) :: edge_l
+!!        type(global_edge_data), intent(in) :: edge_gl_l
 !!        type(linear_to_quad_list), intent(in) :: l_to_q
 !!        type(node_data), intent(inout) :: node_q
 !!      subroutine const_quad_ele_by_linear                             &
@@ -74,13 +75,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_quad_node_by_linear                              &
-     &         (node_l, edge_l, l_to_q, node_q)
+     &         (node_l, edge_l, edge_gl_l, l_to_q, node_q)
 !
       use copy_node_data
       use set_quad_node_ele_by_linear
 !
       type(node_data), intent(in) :: node_l
       type(edge_data), intent(in) :: edge_l
+      type(global_edge_data), intent(in) :: edge_gl_l
       type(linear_to_quad_list), intent(in) :: l_to_q
 !
       type(node_data), intent(inout) :: node_q
@@ -90,7 +92,7 @@
       node_q%internal_node = node_l%internal_node                       &
      &                      + l_to_q%internal_edge_l2q
       call alloc_node_geometry_base(node_q)
-      call set_quad_node_by_linear(node_l, edge_l, l_to_q,              &
+      call set_quad_node_by_linear(node_l, edge_l, edge_gl_l, l_to_q,   &
      &    node_q%numnod, node_q%inod_global, node_q%xx)
 !
       call dup_derived_node_data(nprocs, node_l, node_q)

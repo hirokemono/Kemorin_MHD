@@ -56,9 +56,11 @@
       use const_crs_connect_commute_z
       use cal_jacobian_linear_1d
       use cal_delta_z_4_z_filter
+      use const_geometry_z_commute
 !
       integer (kind= kint), parameter :: id_delta_z = 15
       integer (kind= kint) :: i, n_int
+      type(global_edge_data) :: edge_z_gl2
 !
       nprocs = 1
 !C
@@ -66,8 +68,9 @@
 !C-- CNTL DATA
       call s_input_control_4_z_commute(z_filter_mesh2%nod_comm,         &
      &    z_filter_mesh2%node, z_filter_mesh2%ele,                      &
-     &    surf_z_filter2, edge_z_filter2, mat_crs_z,                    &
-     &    CG_param_z, DJDS_param_z)
+     &    surf_z_filter2, edge_z_filter2, edge_z_gl2,                   &
+     &    mat_crs_z, CG_param_z, DJDS_param_z)
+      call dealloc_geometry_z_commute(edge_z_gl2)
 !C
 !C     set gauss points
 !C===

@@ -63,6 +63,7 @@
       use m_int_edge_data
       use m_matrix_4_LU
       use const_delta_z_analytical
+      use const_geometry_z_commute
 
       use const_crs_connect_commute_z
       use solve_precond_DJDS
@@ -99,6 +100,7 @@
 !
       type(DJDS_ordering_table) :: djds_tbl_z
       type(DJDS_MATRIX) :: djds_mat_z
+      type(global_edge_data) :: edge_z_gl1
 !
       integer(kind=kint) :: itr_res, ierr
 !
@@ -106,8 +108,8 @@
 !C-- read CNTL DATA
       call s_input_control_4_z_commute                                  &
      &  (z_filter_mesh1%nod_comm, z_filter_mesh1%node,                  &
-     &   z_filter_mesh1%ele, surf_z_filter1, edge_z_filter1, mat_crs_z, &
-     &   CG_param_z, DJDS_param_z)
+     &   z_filter_mesh1%ele, surf_z_filter1, edge_z_filter1,            &
+     &   edge_z_gl1, mat_crs_z, CG_param_z, DJDS_param_z)
 !
 !C
 !C     set gauss points
@@ -288,12 +290,12 @@
      &    (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,       &
      &     edge_z_filter1, i_int_z_filter, spf_1d_z,                    &
      &     jacs_z1%g_FEM, jacs_z1%jac_1d_l)
-       call dealloc_edge_shape_func(spf_1d_z)
 !
 !    output results
 !
        call write_filter_4_nod(z_filter_mesh1%node, z_filter_mesh1%ele, &
-     &     edge_z_filter1)
+     &     edge_z_filter1, edge_z_gl1)
+       call dealloc_geometry_z_commute(edge_z_gl1)
 !
        call deallocate_filter_values
        call dealloc_work_4_integration(g_z_int)

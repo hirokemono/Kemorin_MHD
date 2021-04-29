@@ -31,6 +31,7 @@
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
+      use FEM_to_PSF_bridge
       use init_sph_MHD_elapsed_label
 !
       implicit none
@@ -44,7 +45,7 @@
 !>      Structure of spectr grid and data
       type(SPH_mesh_field_data), save, private :: SPH_MHD1
 !>      Structure of edge communication table
-      type(communication_table), save, private :: edge_comm_M
+      type(PSF_mesh_field), save, private :: PSF_DAT_M
 !
 ! ----------------------------------------------------------------------
 !
@@ -56,7 +57,6 @@
 !
       use t_ctl_data_sph_MHD_psf
       use input_control_sph_MHD
-      use FEM_to_PSF_bridge
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -86,7 +86,7 @@
      &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys,                    &
      &    MHD_IO1, FEM_d1%v_sol)
       call init_FEM_to_PSF_bridge                                       &
-     &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M)
+     &   (MHD_step1%viz_step, FEM_d1%geofem, PSF_DAT_M)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'

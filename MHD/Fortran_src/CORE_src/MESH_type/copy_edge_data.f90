@@ -30,12 +30,6 @@
 !!        integer(kind=kint), intent(in) :: numele
 !!        integer(kind=kint), intent(inout)                             &
 !!     &                   :: iedge_4_ele(numele,nedge_4_ele)
-!!      subroutine copy_global_edge_id                                  &
-!!     &         (org_edge, numedge, iedge_global, interior_edge)
-!!        type(edge_data), intent(in) :: org_edge
-!!        integer(kind=kint), intent(in) ::  numedge
-!!        integer(kind=kint_gl), intent(inout) :: iedge_global(numedge)
-!!        integer(kind=kint), intent(inout) ::    interior_edge(numedge)
 !!      subroutine copy_isolate_edge                                    &
 !!     &         (org_edge, numedge_iso, iedge_isolate)
 !!        type(edge_data), intent(in) :: org_edge
@@ -115,10 +109,6 @@
 !
       call alloc_edge_param_smp(new_edge)
       call count_edge_size_smp(new_edge)
-!
-      call alloc_interior_edge(new_edge)
-      call copy_global_edge_id(org_edge, new_edge%numedge,              &
-     &    new_edge%iedge_global, new_edge%interior_edge)
 !
       new_edge%numedge_iso = org_edge%numedge_iso
       call alloc_isolate_edge(new_edge)
@@ -206,25 +196,6 @@
 !$omp end parallel
 !
       end subroutine copy_edge_to_element
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_global_edge_id                                    &
-     &         (org_edge, numedge, iedge_global, interior_edge)
-!
-      type(edge_data), intent(in) :: org_edge
-      integer(kind=kint), intent(in) ::  numedge
-      integer(kind=kint_gl), intent(inout) :: iedge_global(numedge)
-      integer(kind=kint), intent(inout) ::    interior_edge(numedge)
-!
-!
-      if(numedge .le. 0) return
-!$omp parallel workshare
-      iedge_global(1:numedge) =   org_edge%iedge_global(1:numedge)
-      interior_edge(1:numedge) = org_edge%interior_edge(1:numedge)
-!$omp end parallel workshare
-!
-      end subroutine copy_global_edge_id
 !
 !-----------------------------------------------------------------------
 !

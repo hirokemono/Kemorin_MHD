@@ -16,9 +16,12 @@
 !!        type(surface_data), intent(inout) :: surf
 !!        type(global_surface_data), intent(inout) :: surf_gl
 !!      subroutine dup_global_surface_id                                &
-!!     &         (org_surf_gl, new_surf, new_surf_gl)
+!!     &         (org_surf_comm, org_surf_gl, new_surf,                 &
+!!     &         new_surf_comm, new_surf_gl)
+!!        type(communication_table), intent(in) :: org_surf_comm
 !!        type(global_surface_data), intent(in) :: org_surf_gl
 !!        type(surface_data), intent(in) :: new_surf
+!!        type(communication_table), intent(inout) :: new_surf_comm
 !!        type(global_surface_data), intent(inout) :: new_surf_gl
 !!      subroutine copy_global_surface_id                               &
 !!     &         (org_surf_gl, numsurf, isurf_global, interior_surf)
@@ -134,13 +137,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine dup_global_surface_id                                  &
-     &         (org_surf_gl, new_surf, new_surf_gl)
+     &         (org_surf_comm, org_surf_gl, new_surf,                   &
+     &         new_surf_comm, new_surf_gl)
 !
+      type(communication_table), intent(in) :: org_surf_comm
       type(global_surface_data), intent(in) :: org_surf_gl
       type(surface_data), intent(in) :: new_surf
+!
+      type(communication_table), intent(inout) :: new_surf_comm
       type(global_surface_data), intent(inout) :: new_surf_gl
 !
 !
+      call copy_comm_tbl_type(org_surf_comm, new_surf_comm)
       call alloc_interior_surf(new_surf, new_surf_gl)
       call copy_global_surface_id(org_surf_gl, new_surf%numsurf,        &
      &    new_surf_gl%isurf_global, new_surf_gl%interior_surf)

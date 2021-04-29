@@ -7,10 +7,11 @@
 !>@brief node list to construct tri-linear mesh from quad mesh
 !!
 !!@verbatim
-!!      subroutine set_quad_node_by_linear                              &
-!!     &         (node_l, edge_l, l_to_q, nnod_20, inod_gl20, xx20)
+!!      subroutine set_quad_node_by_linear(node_l, edge_l, edge_gl_l,   &
+!!     &          l_to_q, nnod_20, inod_gl20, xx20)
 !!        type(node_data), intent(in) :: node_l
 !!        type(edge_data), intent(in) :: edge_l
+!!        type(global_edge_data), intent(in) :: edge_gl_l
 !!        type(linear_to_quad_list), intent(in) :: l_to_q
 !!        integer(kind = kint), intent(in) :: nnod_20
 !!        integer(kind = kint_gl), intent(inout) :: inod_gl20(nnod_20)
@@ -59,11 +60,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_quad_node_by_linear                                &
-     &         (node_l, edge_l, l_to_q, nnod_20, inod_gl20, xx20)
+      subroutine set_quad_node_by_linear(node_l, edge_l, edge_gl_l,     &
+     &          l_to_q, nnod_20, inod_gl20, xx20)
 !
       type(node_data), intent(in) :: node_l
       type(edge_data), intent(in) :: edge_l
+      type(global_edge_data), intent(in) :: edge_gl_l
       type(linear_to_quad_list), intent(in) :: l_to_q
       integer(kind = kint), intent(in) :: nnod_20
 !
@@ -86,8 +88,8 @@
 !$omp parallel do private(iedge,inod)
       do iedge = 1, edge_l%numedge
         inod = l_to_q%iedge_linear_to_quad(iedge)
-        inod_gl20(inod) = edge_l%iedge_global(iedge)                    &
-     &                       + l_to_q%numnod_gl_l2q
+        inod_gl20(inod) = edge_gl_l%iedge_global(iedge)                 &
+     &                   + l_to_q%numnod_gl_l2q
         xx20(inod,1) = edge_l%x_edge(iedge,1)
         xx20(inod,2) = edge_l%x_edge(iedge,2)
         xx20(inod,3) = edge_l%x_edge(iedge,3)

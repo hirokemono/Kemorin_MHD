@@ -24,6 +24,7 @@
 !
       use t_mesh_data
       use t_comm_table
+      use t_edge_data
       use t_phys_data
       use t_next_node_ele_4_node
       use t_shape_functions
@@ -63,6 +64,8 @@
 !
 !>        Structure of edge communication table
         type(communication_table) :: edge_comm
+!>        Structure of global edge data
+        type(global_edge_data) :: edge_gl
       end type VIZ_mesh_field
 !
 ! ----------------------------------------------------------------------

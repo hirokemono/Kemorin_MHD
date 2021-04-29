@@ -1,10 +1,14 @@
-!
-!      module input_control_gen_z_filter
-!
-!     Written by H. Matsui on June, 2007
-!
+!>@file   input_control_gen_z_filter.f90
+!!@brief  module input_control_gen_z_filter
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2007
+!!
+!>@brief Data input for vertical filter
+!!
+!!@verbatim
 !!      subroutine s_input_control_4_z_commute                          &
-!!     &         (nod_comm, node, ele, surf, edge,                      &
+!!     &         (nod_comm, node, ele, surf, edge, edge_z_gl,           &
 !!     &          mat_crs, CG_param, DJDS_param)
 !!        type(communication_table), intent(inout) :: nod_comm
 !!        type(node_data), intent(inout) :: node
@@ -14,7 +18,8 @@
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(inout) :: DJDS_param
-!
+!!        type(global_edge_data), intent(inout) :: edge_z_gl
+!!@endverbatim
       module input_control_gen_z_filter
 !
       use m_precision
@@ -38,7 +43,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_input_control_4_z_commute                            &
-     &         (nod_comm, node, ele, surf, edge,                        &
+     &         (nod_comm, node, ele, surf, edge, edge_z_gl,             &
      &          mat_crs, CG_param, DJDS_param)
 !
       use m_machine_parameter
@@ -55,6 +60,7 @@
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param
+      type(global_edge_data), intent(inout) :: edge_z_gl
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_z_filter'
@@ -66,7 +72,8 @@
 !  --  set geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'set_geometry_z_commute'
-      call set_geometry_z_commute(nod_comm, node, ele, surf, edge)
+      call set_geometry_z_commute(nod_comm, node, ele, surf,            &
+     &                            edge, edge_z_gl)
 !
       end subroutine s_input_control_4_z_commute
 !

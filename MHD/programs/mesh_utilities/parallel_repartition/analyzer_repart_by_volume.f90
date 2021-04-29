@@ -109,6 +109,7 @@
       use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables
       use const_surface_comm_table
+      use const_edge_comm_table
       use check_data_for_repartition
       use mesh_send_recv_check
       use write_diff_4_comm_test
@@ -122,6 +123,7 @@
       type(communication_table), save :: T_surf_comm
       type(communication_table), save :: T_edge_comm
       type(global_surface_data), save :: T_surf_gl
+      type(global_edge_data), save :: T_edge_gl
 !
       type(work_for_comm_check), save :: nod_check
       type(work_for_comm_check), save :: ele_check
@@ -155,22 +157,22 @@
       if(my_rank .eq. 0) write(*,*) 'check table reading end!'
 !
 !
-      if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
+      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group)
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      if(iflag_debug.gt.0) write(*,*) 'const_ele_comm_table'
       call const_ele_comm_table                                         &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
      &    T_ele_comm, new_fem%mesh%ele)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+      if(iflag_debug.gt.0) write(*,*) 'const_surf_comm_table'
       call const_surf_comm_table                                        &
      &   (new_fem%mesh%node, new_fem%mesh%surf, new_fem%mesh%nod_comm,  &
      &    T_surf_comm, T_surf_gl)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
-      call const_edge_comm_table                                        &
+      if(iflag_debug.gt.0) write(*,*) 's_const_edge_comm_table'
+      call s_const_edge_comm_table                                      &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_edge_comm, new_fem%mesh%edge)
+     &    new_fem%mesh%edge, T_edge_comm, T_edge_gl)
 !
 !
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
@@ -183,9 +185,10 @@
      &    T_ele_comm, ele_check)
       call surf_send_recv_test                                          &
      &   (new_fem%mesh%surf, T_surf_gl, T_surf_comm, surf_check)
-      call edge_send_recv_test(new_fem%mesh%node, new_fem%mesh%edge,    &
-     &    T_edge_comm, edge_check)
+      call edge_send_recv_test                                          &
+     &   (new_fem%mesh%edge, T_edge_gl, T_edge_comm, edge_check)
       call dealloc_surf_comm_table(T_surf_comm, T_surf_gl)
+      call dealloc_edge_comm_table(T_edge_comm, T_edge_gl)
 !
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)

@@ -165,8 +165,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_quad_mesh_by_linear                              &
-     &         (mesh_l, group_l, ele_comm_l, edge_comm_l,               &
-     &          mesh_q, group_q)
+     &         (mesh_l, group_l, ele_comm_l, mesh_q, group_q)
 !
       use t_linear_to_quad_list
       use const_quad_mesh_from_linear
@@ -174,22 +173,26 @@
       type(mesh_geometry), intent(in) :: mesh_l
       type(mesh_groups), intent(in) :: group_l
       type(communication_table), intent(in), target :: ele_comm_l
-      type(communication_table), intent(in), target :: edge_comm_l
 !
       type(mesh_geometry_p), intent(inout) :: mesh_q
       type(mesh_groups_p), intent(inout) :: group_q
 !
+      type(global_edge_data) ::    edge_gl_l
+      type(communication_table) :: edge_comm_l
       type(communication_table), pointer :: ele_comm_q
-      type(communication_table), pointer :: edge_comm_q
 !
       type(linear_to_quad_list) :: l_to_q
 !
 !
+      call s_const_edge_comm_table                                      &
+     &   (mesh_l%node, mesh_l%nod_comm, mesh_l%edge,                    &
+     &    edge_comm_l, edge_gl_l)
       call init_linear_to_quad_list(mesh_l, edge_comm_l, l_to_q)
 !
       allocate(mesh_q%node)
       call const_quad_node_by_linear                                    &
-     &   (mesh_l%node, mesh_l%edge, l_to_q, mesh_q%node)
+     &   (mesh_l%node, mesh_l%edge, edge_gl_l, l_to_q, mesh_q%node)
+!
       allocate(mesh_q%ele)
       call const_quad_ele_by_linear                                     &
      &   (mesh_l%ele, mesh_l%edge, l_to_q, mesh_q%ele)
@@ -215,7 +218,7 @@
       allocate(mesh_q%edge)
       call const_quad_edge_by_linear                                    &
      &   (mesh_l%edge, l_to_q, mesh_q%ele, mesh_q%surf, mesh_q%edge)
-      edge_comm_q => edge_comm_l
+      call dealloc_edge_comm_table(edge_comm_l, edge_gl_l)
 !
       call dealloc_linear_to_quad_list(l_to_q)
 !
@@ -224,8 +227,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_lag_mesh_by_linear                               &
-     &         (mesh_l, group_l, ele_comm_l, edge_comm_l,               &
-     &          mesh_q, group_q)
+     &         (mesh_l, group_l, ele_comm_l, mesh_q, group_q)
 !
       use t_linear_to_lag_list
       use const_lag_mesh_from_linear
@@ -234,30 +236,33 @@
       type(mesh_geometry), intent(in) :: mesh_l
       type(mesh_groups), intent(in) :: group_l
       type(communication_table), intent(in), target :: ele_comm_l
-      type(communication_table), intent(in), target :: edge_comm_l
 !
       type(mesh_geometry_p), intent(inout) :: mesh_q
       type(mesh_groups_p), intent(inout) :: group_q
 !
       type(communication_table), pointer :: ele_comm_q
-      type(communication_table), pointer :: edge_comm_q
 !
       type(communication_table) :: surf_comm_l
+      type(communication_table) :: edge_comm_l
       type(global_surface_data) :: surf_gl_l
-      type(linear_to_lag_list) :: l_to_lag
+      type(global_edge_data) ::    edge_gl_l
+      type(linear_to_lag_list) ::  l_to_lag
 !
 !
       call const_surf_comm_table                                        &
      &   (mesh_l%node, mesh_l%surf, mesh_l%nod_comm,                    &
      &    surf_comm_l, surf_gl_l)
+      call s_const_edge_comm_table                                      &
+     &   (mesh_l%node, mesh_l%nod_comm, mesh_l%edge,                    &
+     &    edge_comm_l, edge_gl_l)
 !
       call init_linear_to_lag_list                                      &
      &   (mesh_l, ele_comm_l, surf_comm_l, edge_comm_l, l_to_lag)
 !
       allocate(mesh_q%node)
       call const_lag_node_by_linear                                     &
-     &   (mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge, surf_gl_l, &
-     &    l_to_lag, mesh_q%node)
+     &   (mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge,            &
+     &    surf_gl_l, edge_gl_l, l_to_lag, mesh_q%node)
       allocate(mesh_q%ele)
       call const_lag_ele_by_linear                                      &
      &   (mesh_l%ele, mesh_l%surf, mesh_l%edge, l_to_lag, mesh_q%ele)
@@ -284,7 +289,7 @@
 !
       call const_lag_edge_by_linear                                     &
      &   (mesh_l%edge, l_to_lag, mesh_q%ele, mesh_q%surf, mesh_q%edge)
-      edge_comm_q => edge_comm_l
+      call dealloc_edge_comm_table(edge_comm_l, edge_gl_l)
 !
       call dealloc_linear_to_lag_list(l_to_lag)
 !

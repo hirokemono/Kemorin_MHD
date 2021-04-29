@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine const_lag_node_by_linear                             &
-!!     &         (node_l, ele_l, surf_l, edge_l, surf_gl_l,             &
+!!     &         (node_l, ele_l, surf_l, edge_l, surf_gl_l, edge_gl_l,  &
 !!     &          l_to_lag, node_q)
 !!        type(node_data), intent(in) :: node_l
 !!        type(element_data), intent(in) :: ele_l
 !!        type(surface_data), intent(in) :: surf_l
 !!        type(edge_data), intent(in) :: edge_l
 !!        type(global_surface_data), intent(in) :: surf_gl_l
+!!        type(global_edge_data), intent(in) :: edge_gl_l
 !!        type(linear_to_lag_list), intent(in) :: l_to_lag
 !!        type(node_data), intent(inout) :: node_q
 !!      subroutine const_lag_ele_by_linear                              &
@@ -87,7 +88,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_lag_node_by_linear                               &
-     &         (node_l, ele_l, surf_l, edge_l, surf_gl_l,               &
+     &         (node_l, ele_l, surf_l, edge_l, surf_gl_l, edge_gl_l,    &
      &          l_to_lag, node_q)
 !
       use copy_node_data
@@ -98,6 +99,7 @@
       type(surface_data), intent(in) :: surf_l
       type(edge_data), intent(in) :: edge_l
       type(global_surface_data), intent(in) :: surf_gl_l
+      type(global_edge_data), intent(in) :: edge_gl_l
       type(linear_to_lag_list), intent(in) :: l_to_lag
 !
       type(node_data), intent(inout) :: node_q
@@ -111,7 +113,7 @@
      &                      + l_to_lag%internal_ele_l2lag
       call alloc_node_geometry_base(node_q)
       call set_lag_node_by_linear                                       &
-     &   (node_l, ele_l, surf_l, edge_l, surf_gl_l,                     &
+     &   (node_l, ele_l, surf_l, edge_l, surf_gl_l, edge_gl_l,          &
      &    l_to_lag, node_q%numnod, node_q%inod_global, node_q%xx)
 !
       call dup_derived_node_data(nprocs, node_l, node_q)

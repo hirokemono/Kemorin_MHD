@@ -17,9 +17,6 @@
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
-!!
-!!      subroutine set_edge_mesh_to_IO                                  &
-!!     &         (ele, surf, edge, edge_mesh_IO)
 !!@endverbatim
 !
       module load_element_mesh_data
@@ -82,30 +79,6 @@
       call dealloc_edge_mesh_IO(edge_mesh_IO)
 !
       end subroutine set_edge_mesh_from_IO
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine set_edge_mesh_to_IO                                    &
-     &         (ele, surf, edge, edge_mesh_IO)
-!
-      use set_edge_data_4_IO
-!
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
-!
-      type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
-!
-!
-      call empty_comm_table(edge_mesh_IO%comm)
-      call copy_edge_connect_to_IO(edge, ele%numele, surf%numsurf,      &
-     &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
-!
-!      call copy_edge_geometry_to_IO                                    &
-!     &   (edge, edge_mesh_IO%node, edge_mesh_IO%sfed)
-!
-      end subroutine set_edge_mesh_to_IO
 !
 !  ---------------------------------------------------------------------
 !
