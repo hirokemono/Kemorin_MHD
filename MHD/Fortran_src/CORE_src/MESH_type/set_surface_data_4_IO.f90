@@ -7,9 +7,12 @@
 !>@brief Surface data transfer for IO
 !!
 !!@verbatim
-!!      subroutine copy_surf_connect_to_IO(surf, nele, ele_IO, sfed_IO)
-!!      subroutine copy_surf_geometry_to_IO(surf, nod_IO, sfed_IO)
-!!        type(surface_data), intent(inout) :: surf
+ !!     subroutine copy_surf_connect_to_IO                              &
+!!     &         (surf, surf_gl, nele, ele_IO, sfed_IO)
+!!      subroutine copy_surf_geometry_to_IO                             &
+!!     &         (surf, surf_gl, nod_IO, sfed_IO)
+!!        type(surface_data), intent(in) :: surf
+!!        type(global_surface_data), intent(in) :: surf_gl
 !!        type(node_data), intent(inout) :: nod_IO
 !!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
@@ -41,12 +44,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_connect_to_IO(surf, nele, ele_IO, sfed_IO)
+      subroutine copy_surf_connect_to_IO                                &
+     &         (surf, surf_gl, nele, ele_IO, sfed_IO)
 !
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nele
       type(surface_data), intent(in) :: surf
+      type(global_surface_data), intent(in) :: surf_gl
 !
       type(element_data), intent(inout) :: ele_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
@@ -69,7 +74,7 @@
 !$omp workshare
       ele_IO%nodelm(1:surf%numsurf) = surf%nnod_4_surf
       ele_IO%iele_global(1:surf%numsurf)                                &
-     &        = surf%isurf_global(1:surf%numsurf)
+     &        = surf_gl%isurf_global(1:surf%numsurf)
 !$omp end workshare
 !$omp workshare
       ele_IO%ie(1:surf%numsurf,1:surf%nnod_4_surf)                      &
@@ -85,9 +90,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_geometry_to_IO(surf, nod_IO, sfed_IO)
+      subroutine copy_surf_geometry_to_IO                               &
+     &         (surf, surf_gl, nod_IO, sfed_IO)
 !
       type(surface_data), intent(in) :: surf
+      type(global_surface_data), intent(in) :: surf_gl
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
@@ -95,7 +102,7 @@
 !
 !
       nod_IO%numnod =        surf%numsurf
-      nod_IO%internal_node = sum(surf%interior_surf)
+      nod_IO%internal_node = sum(surf_gl%interior_surf)
 !
       call alloc_node_geometry_base(nod_IO)
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
@@ -104,7 +111,7 @@
 !
 !omp parallel do
       do isurf = 1, surf%numsurf
-        nod_IO%inod_global(isurf) = surf%isurf_global(isurf)
+        nod_IO%inod_global(isurf) = surf_gl%isurf_global(isurf)
         nod_IO%xx(isurf,1) =        surf%x_surf(isurf,1)
         nod_IO%xx(isurf,2) =        surf%x_surf(isurf,2)
         nod_IO%xx(isurf,3) =        surf%x_surf(isurf,3)

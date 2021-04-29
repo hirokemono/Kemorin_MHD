@@ -41,11 +41,15 @@
       use set_edge_data_4_IO
       use element_file_IO
       use element_geometry_file_IO
+      use const_surface_comm_table
 !
       integer, intent(in) :: id_rank
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_geometry), intent(inout) :: mesh_IO
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
+!
+      type(communication_table) :: surf_comm1
+      type(global_surface_data) :: surf_gl1
 !
 !  ---------------------------------------------
 !     output node data
@@ -78,14 +82,17 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
-      call empty_comm_table(ele_mesh_IO%comm)
-      call copy_surf_connect_to_IO(mesh%surf, mesh%ele%numele,          &
-     &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
+      call const_surf_comm_table                                        &
+     &   (mesh%node, mesh%surf, mesh%nod_comm, surf_comm1, surf_gl1)
+      call copy_comm_tbl_type(surf_comm1, ele_mesh_IO%comm)
+      call copy_surf_connect_to_IO(mesh%surf, surf_gl1,                 &
+     &    mesh%ele%numele, ele_mesh_IO%ele, ele_mesh_IO%sfed)
       call copy_surf_geometry_to_IO                                     &
-     &   (mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
+     &   (mesh%surf, surf_gl1, ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_surface_sph_file'
       call output_surface_xyz_file                                      &
      &   (id_rank, def_surf_mesh_head, ele_mesh_IO)
+      call dealloc_surf_comm_table(surf_comm1, surf_gl1)
 !
 !  -------------------------------
 !     output edge data

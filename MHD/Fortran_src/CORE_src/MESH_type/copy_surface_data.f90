@@ -27,12 +27,6 @@
 !!     &                   :: isf_4_ele(numele,nsurf_4_ele)
 !!        integer(kind=kint), intent(inout)                             &
 !!     &                   :: isf_rot_ele(numele,nsurf_4_ele)
-!!      subroutine copy_global_surface_id                               &
-!!     &         (org_surf, numsurf, isurf_global, interior_surf)
-!!        type(surface_data), intent(in) :: org_surf
-!!        integer(kind=kint), intent(in) ::  numsurf
-!!        integer(kind=kint_gl), intent(inout) :: isurf_global(numsurf)
-!!        integer(kind=kint), intent(inout) ::    interior_surf(numsurf)
 !!      subroutine copy_ext_surface                                     &
 !!     &         (org_surf, numsurf_ext, isf_external)
 !!        type(surface_data), intent(in) :: org_surf
@@ -118,10 +112,6 @@
       call alloc_surf_param_smp(new_surf)
       call count_surf_size_smp(new_surf)
 !
-      call alloc_interior_surf(new_surf)
-      call copy_global_surface_id(org_surf, new_surf%numsurf,           &
-     &    new_surf%isurf_global, new_surf%interior_surf)
-!
       new_surf%numsurf_ext = org_surf%numsurf_ext
       call alloc_ext_surface(new_surf)
       call copy_ext_surface                                             &
@@ -197,25 +187,6 @@
 !$omp end parallel
 !
       end subroutine copy_surface_to_element
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_global_surface_id                                 &
-     &         (org_surf, numsurf, isurf_global, interior_surf)
-!
-      type(surface_data), intent(in) :: org_surf
-      integer(kind=kint), intent(in) ::  numsurf
-      integer(kind=kint_gl), intent(inout) :: isurf_global(numsurf)
-      integer(kind=kint), intent(inout) ::    interior_surf(numsurf)
-!
-!
-      if(numsurf .le. 0) return
-!$omp parallel workshare
-      isurf_global(1:numsurf) =   org_surf%isurf_global(1:numsurf)
-      interior_surf(1:numsurf) = org_surf%interior_surf(1:numsurf)
-!$omp end parallel workshare
-!
-      end subroutine copy_global_surface_id
 !
 !-----------------------------------------------------------------------
 !

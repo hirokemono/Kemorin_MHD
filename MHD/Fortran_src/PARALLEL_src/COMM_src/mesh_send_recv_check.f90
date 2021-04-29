@@ -29,6 +29,15 @@
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(calypso_comm_table), intent(in) :: trans_tbl
 !!        type(work_for_comm_check), intent(inout) :: nod_check
+!!
+!!      subroutine ele_send_recv_check(numele, iele_gl, x_ele, wk_check)
+!!        integer(kind = kint), intent(in) :: numele
+!!        integer(kind = kint_gl), intent(in) :: iele_gl(numele)
+!!        real(kind = kreal), intent(in) :: x_ele(numele,3)
+!!        type(work_for_comm_check), intent(inout) :: wk_check
+!!
+!!      subroutine collect_failed_comm(wk_check)
+!!        type(work_for_comm_check), intent(inout) :: wk_check
 !!@endverbatim
 !
       module mesh_send_recv_check
@@ -52,8 +61,7 @@
 !
       type(send_recv_status), save, private :: SR_sig_c
 !
-      private :: collect_failed_comm
-      private :: nod_send_recv_check, ele_send_recv_check
+      private :: nod_send_recv_check
 !
 ! ----------------------------------------------------------------------
 !

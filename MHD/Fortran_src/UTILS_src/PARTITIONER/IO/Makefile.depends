@@ -4,7 +4,7 @@ error_exit_4_part.o: $(PART_IODIR)/error_exit_4_part.f90 m_precision.o m_error_I
 	$(F90) -c $(F90OPTFLAGS) $<
 m_elapsed_labels_4_PART.o: $(PART_IODIR)/m_elapsed_labels_4_PART.f90 m_precision.o m_work_time.o
 	$(F90) -c $(F90OPTFLAGS) $<
-output_test_mesh.o: $(PART_IODIR)/output_test_mesh.f90 m_precision.o m_machine_parameter.o m_default_file_prefix.o t_mesh_data.o t_read_mesh_data.o copy_mesh_structures.o mesh_file_IO.o set_element_data_4_IO.o set_surface_data_4_IO.o set_edge_data_4_IO.o element_file_IO.o element_geometry_file_IO.o
+output_test_mesh.o: $(PART_IODIR)/output_test_mesh.f90 m_precision.o m_machine_parameter.o m_default_file_prefix.o t_mesh_data.o t_read_mesh_data.o copy_mesh_structures.o mesh_file_IO.o set_element_data_4_IO.o set_surface_data_4_IO.o set_edge_data_4_IO.o element_file_IO.o element_geometry_file_IO.o const_surface_comm_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
 quick_mesh_check_for_part.o: $(PART_IODIR)/quick_mesh_check_for_part.f90 m_precision.o m_constants.o m_error_IDs.o t_geometry_data.o t_group_data.o set_nnod_for_ele_by_type.o check_domain_prop_4_part.o error_exit_4_part.o
 	$(F90) -c $(F90OPTFLAGS) $<

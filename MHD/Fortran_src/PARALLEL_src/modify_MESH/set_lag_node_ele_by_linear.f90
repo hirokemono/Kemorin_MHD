@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine set_lag_node_by_linear                               &
-!!     &         (node_l, ele_l, surf_l, edge_l, l_to_lag,              &
+!!     &         (node_l, ele_l, surf_l, edge_l, surf_gl_l, l_to_lag,   &
 !!     &          nnod_27, inod_gl27, xx27)
 !!        type(node_data), intent(in) :: node_l
 !!        type(element_data), intent(in) :: ele_l
 !!        type(surface_data), intent(in) :: surf_l
 !!        type(edge_data), intent(in) :: edge_l
+!!        type(global_surface_data), intent(in) :: surf_gl_l
 !!        type(linear_to_lag_list), intent(in) :: l_to_lag
 !!        integer(kind = kint), intent(in) :: nnod_27
 !!        integer(kind = kint_gl), intent(inout) :: inod_gl27(nnod_27)
@@ -63,13 +64,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_lag_node_by_linear                                 &
-     &         (node_l, ele_l, surf_l, edge_l, l_to_lag,                &
+     &         (node_l, ele_l, surf_l, edge_l, surf_gl_l, l_to_lag,     &
      &          nnod_27, inod_gl27, xx27)
 !
       type(node_data), intent(in) :: node_l
       type(element_data), intent(in) :: ele_l
       type(surface_data), intent(in) :: surf_l
       type(edge_data), intent(in) :: edge_l
+      type(global_surface_data), intent(in) :: surf_gl_l
       type(linear_to_lag_list), intent(in) :: l_to_lag
       integer(kind = kint), intent(in) :: nnod_27
 !
@@ -103,7 +105,7 @@
 !$omp parallel do private(isurf,inod)
       do isurf = 1, surf_l%numsurf
         inod = l_to_lag%isurf_linear_to_lag(isurf)
-        inod_gl27(inod) = surf_l%isurf_global(isurf)                    &
+        inod_gl27(inod) = surf_gl_l%isurf_global(isurf)                 &
      &                       + l_to_lag%numnod_gl_l2lag                 &
      &                       + l_to_lag%numedge_gl_l2lag
         xx27(inod,1) = surf_l%x_surf(isurf,1)

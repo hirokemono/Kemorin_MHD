@@ -7,11 +7,12 @@
 !>@brief node list to construct tri-linear mesh from quad mesh
 !!
 !!@verbatim
-!!      subroutine set_linear_node_by_quad(node, ele, surf, q_to_l,     &
-!!     &                                   nnod_8, inod_gl8, xx8)
+!!      subroutine set_linear_node_by_quad(node, ele, surf, surf_gl_q,  &
+!!     &                                   q_to_l, nnod_8, inod_gl8, xx8)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(global_surface_data), intent(in) :: surf_gl_q
 !!        type(quad_to_linear_list), intent(in) :: q_to_l
 !!        integer(kind = kint), intent(in) :: nnod_8
 !!        integer(kind = kint_gl), intent(inout) :: inod_gl8(nnod_8)
@@ -47,12 +48,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_linear_node_by_quad(node, ele, surf, q_to_l,       &
-     &                                   nnod_8, inod_gl8, xx8)
+      subroutine set_linear_node_by_quad(node, ele, surf, surf_gl_q,    &
+     &                                   q_to_l, nnod_8, inod_gl8, xx8)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(global_surface_data), intent(in) :: surf_gl_q
       type(quad_to_linear_list), intent(in) :: q_to_l
       integer(kind = kint), intent(in) :: nnod_8
 !
@@ -75,8 +77,8 @@
 !$omp parallel do private(isurf,inod)
       do isurf = 1, surf%numsurf
         inod = q_to_l%isurf_quad_to_linear(isurf)
-        inod_gl8(inod) = surf%isurf_global(isurf)                       &
-     &                       + q_to_l%numnod_gl_q2l
+        inod_gl8(inod) = surf_gl_q%isurf_global(isurf)                  &
+     &                  + q_to_l%numnod_gl_q2l
         xx8(inod,1) = surf%x_surf(isurf,1)
         xx8(inod,2) = surf%x_surf(isurf,2)
         xx8(inod,3) = surf%x_surf(isurf,3)

@@ -8,17 +8,30 @@
 !!
 !!@verbatim
 !!      subroutine const_surf_comm_table                                &
-!!     &         (node, nod_comm, surf_comm, surf)
-!!      subroutine dealloc_surf_comm_table(surf_comm, surf)
+!!     &         (node, surf, nod_comm, surf_comm, surf_gl)
+!!      subroutine dealloc_surf_comm_table(surf_comm, surf_gl)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: surf_comm
 !!        type(surface_data), intent(inout) :: surf
+!!        type(global_surface_data), intent(inout) :: surf_gl
+!!      subroutine dup_global_surface_id                                &
+!!     &         (org_surf_gl, new_surf, new_surf_gl)
+!!        type(global_surface_data), intent(in) :: org_surf_gl
+!!        type(surface_data), intent(in) :: new_surf
+!!        type(global_surface_data), intent(inout) :: new_surf_gl
+!!      subroutine copy_global_surface_id                               &
+!!     &         (org_surf_gl, numsurf, isurf_global, interior_surf)
+!!        type(global_surface_data), intent(inout) :: org_surf_gl
+!!        integer(kind=kint), intent(in) ::  numsurf
+!!        integer(kind=kint_gl), intent(inout) :: isurf_global(numsurf)
+!!        integer(kind=kint), intent(inout) ::    interior_surf(numsurf)
 !!
 !!      subroutine surf_send_recv_test                                  &
-!!     &         (node, surf, surf_comm, surf_check)
+!!     &         (node, surf, surf_gl, surf_comm, surf_check)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
+!!        type(global_surface_data), intent(in) :: surf_gl
 !!        type(communication_table), intent(in) :: surf_comm
 !!        type(work_for_comm_check), intent(inout) :: surf_check
 !!@endverbatim
@@ -50,7 +63,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_surf_comm_table                                  &
-     &         (node, nod_comm, surf_comm, surf)
+     &         (node, surf, nod_comm, surf_comm, surf_gl)
 !
       use t_para_double_numbering
       use t_element_double_number
@@ -60,7 +73,8 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
-      type(surface_data), intent(inout) :: surf
+      type(surface_data), intent(in) :: surf
+      type(global_surface_data), intent(inout) :: surf_gl
       type(communication_table), intent(inout) :: surf_comm
 !
       type(node_ele_double_number) :: inod_dbl
@@ -72,7 +86,7 @@
       integer(kind = kint_gl), allocatable :: istack_inersurf(:)
 !
 !
-      call alloc_interior_surf(surf)
+      call alloc_interior_surf(surf, surf_gl)
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl)
@@ -80,7 +94,7 @@
       call alloc_ele_double_number(surf%numsurf, isurf_dbl)
       call find_belonged_pe_4_surf(my_rank, inod_dbl,                   &
      &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
-     &    internal_num, surf%interior_surf, isurf_dbl)
+     &    internal_num, surf_gl%interior_surf, isurf_dbl)
 !
       call set_surf_id_4_node(node, surf, neib_surf)
 !
@@ -100,48 +114,85 @@
       call count_number_of_node_stack(internal_num, istack_inersurf)
       call set_global_ele_id                                            &
      &   (txt_surf, surf%numsurf, istack_inersurf,                      &
-     &    surf%interior_surf, surf_comm, surf%isurf_global)
+     &    surf_gl%interior_surf, surf_comm, surf_gl%isurf_global)
       deallocate(istack_inersurf)
 !
       end subroutine const_surf_comm_table
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_surf_comm_table(surf_comm, surf)
+      subroutine dealloc_surf_comm_table(surf_comm, surf_gl)
 !
       type(communication_table), intent(inout) :: surf_comm
-      type(surface_data), intent(inout) :: surf
+      type(global_surface_data), intent(inout) :: surf_gl
 !
       call dealloc_comm_table(surf_comm)
-      call dealloc_interior_surf(surf)
+      call dealloc_interior_surf(surf_gl)
 !
       end subroutine dealloc_surf_comm_table
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dup_global_surface_id                                  &
+     &         (org_surf_gl, new_surf, new_surf_gl)
+!
+      type(global_surface_data), intent(in) :: org_surf_gl
+      type(surface_data), intent(in) :: new_surf
+      type(global_surface_data), intent(inout) :: new_surf_gl
+!
+!
+      call alloc_interior_surf(new_surf, new_surf_gl)
+      call copy_global_surface_id(org_surf_gl, new_surf%numsurf,        &
+     &    new_surf_gl%isurf_global, new_surf_gl%interior_surf)
+!
+      end subroutine dup_global_surface_id
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_global_surface_id                                 &
+     &         (org_surf_gl, numsurf, isurf_global, interior_surf)
+!
+      type(global_surface_data), intent(in) :: org_surf_gl
+      integer(kind=kint), intent(in) ::  numsurf
+      integer(kind=kint_gl), intent(inout) :: isurf_global(numsurf)
+      integer(kind=kint), intent(inout) ::    interior_surf(numsurf)
+!
+!
+      if(numsurf .le. 0) return
+!$omp parallel workshare
+      isurf_global(1:numsurf) =  org_surf_gl%isurf_global(1:numsurf)
+      interior_surf(1:numsurf) = org_surf_gl%interior_surf(1:numsurf)
+!$omp end parallel workshare
+!
+      end subroutine copy_global_surface_id
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine surf_send_recv_test                                    &
-     &         (surf, surf_comm, surf_check)
+     &         (surf, surf_gl, surf_comm, surf_check)
 !
       use t_work_for_comm_check
       use m_solver_SR
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
+      use mesh_send_recv_check
 !
       type(surface_data), intent(in) :: surf
+      type(global_surface_data), intent(in) :: surf_gl
       type(communication_table), intent(in) :: surf_comm
       type(work_for_comm_check), intent(inout) :: surf_check
 !
 !
       call alloc_geom_4_comm_test(surf%numsurf, surf_check)
-      call set_element_4_comm_test(surf%numsurf, surf%interior_surf,    &
+      call set_element_4_comm_test(surf%numsurf, surf_gl%interior_surf, &
      &                             surf%x_surf, surf_check%xx_test)
       call SOLVER_SEND_RECV_3_type(surf%numsurf, surf_comm,             &
      &                             SR_sig1, SR_r1, surf_check%xx_test)
 !
       call ele_send_recv_check                                          &
-     &   (surf%numsurf, surf%isurf_global, surf%x_surf, surf_check)
+     &   (surf%numsurf, surf_gl%isurf_global, surf%x_surf, surf_check)
 !
       if(i_debug .gt. 0)  write(*,*) my_rank,                           &
      &     'Failed communication for surface', surf_check%num_diff
