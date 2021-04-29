@@ -4,9 +4,9 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine s_extend_field_line(numnod, numele, numsurf,         &
-!!     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                  &
-!!     &          iele_4_surf, interior_surf, vnorm_surf,               &
+!!      subroutine s_extend_field_line                                  &
+!!     &         (numnod, internal_node, numele, numsurf, nnod_4_surf,  &
+!!     &          xx, ie_surf, isf_4_ele, iele_4_surf, vnorm_surf,      &
 !!     &          max_line_step, iflag_used_ele, iflag_dir,             &
 !!     &          vect_nod, color_nod, isurf_org, x4_start, v4_start,   &
 !!     &          c_field, icount_line, iflag_comm, fline_lc)
@@ -28,9 +28,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_extend_field_line(numnod, numele, numsurf,           &
-     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-     &          iele_4_surf, interior_surf, vnorm_surf,                 &
+      subroutine s_extend_field_line                                    &
+     &         (numnod, internal_node, numele, numsurf, nnod_4_surf,    &
+     &          xx, ie_surf, isf_4_ele, iele_4_surf, vnorm_surf,        &
      &          max_line_step, iflag_used_ele, iflag_dir,               &
      &          vect_nod, color_nod, isurf_org, x4_start, v4_start,     &
      &          c_field, icount_line, iflag_comm, fline_lc)
@@ -39,13 +39,13 @@
       use cal_field_on_surf_viz
       use cal_fline_in_cube
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
+      integer(kind = kint), intent(in) :: numnod, internal_node
+      integer(kind = kint), intent(in) :: numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
       real(kind = kreal), intent(in) :: xx(numnod,3)
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      integer(kind = kint), intent(in) :: interior_surf(numsurf)
       real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
 !
       integer(kind = kint), intent(in) :: iflag_dir, max_line_step
@@ -130,7 +130,7 @@
 !         write(60+my_rank,'(a6,i8,1p4e16.7)')  'x_tgt: ', icount_line, &
 !     &          v4_start(1:4), flux
 !
-        if(interior_surf(isurf_end) .eq. izero) then
+        if(ie_surf(isurf_end,1) .gt. internal_node) then
           isurf_org(1) = iele
           isurf_org(2) = isf_tgt
           isurf_org(3) = ie_surf(isurf_end,1)

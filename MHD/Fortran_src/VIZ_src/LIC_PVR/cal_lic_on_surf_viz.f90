@@ -5,8 +5,8 @@
 !      Written by Yangguang Liao 2018
 !
 !!      subroutine cal_lic_on_surf_vector                               &
-!!     &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,           &
-!!     &          iele_4_surf, interior_surf, xx,                       &
+!!     &         (nnod, internal_node, nsurf, nelem, nnod_4_surf,       &
+!!     &          isf_4_ele, iele_4_surf, xx,                           &
 !!     &          isurf_orgs, ie_surf, xi, lic_p,                       &
 !!     &          r_org, vec4_org, ref_nod,                             &
 !!     &          v_nod, xx4_org, isurf, xyz_min, xyz_max, iflag_comm,  &
@@ -36,8 +36,8 @@
 !   isurf is current surface subdomain id
 !   isurf_org is an array with element id and surface element id(1-6)
       subroutine cal_lic_on_surf_vector                                 &
-     &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,             &
-     &          iele_4_surf, interior_surf, xx,                         &
+     &         (nnod, internal_node, nsurf, nelem, nnod_4_surf,         &
+     &          isf_4_ele, iele_4_surf, xx,                             &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
      &          r_org, vec4_org, ref_nod,                               &
      &          v_nod, xx4_org, isurf, xyz_min, xyz_max, iflag_comm,    &
@@ -51,11 +51,11 @@
 
         integer(kind = kint), intent(in) :: isurf_orgs(2,3)
         integer(kind = kint), intent(in) :: nnod, nsurf, nelem
+        integer(kind = kint), intent(in) :: internal_node
         integer(kind = kint), intent(in) :: nnod_4_surf, isurf
         integer(kind = kint), intent(in)                                &
      &                :: isf_4_ele(nelem, nsurf_4_ele)
         integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
-        integer(kind = kint), intent(in) :: interior_surf(nsurf)
         integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
 !
         type(lic_parameters), intent(in) :: lic_p
@@ -122,7 +122,8 @@
         step_vec4(1:4) = vec4_org(1:4)
         new_pos4(1:4) =  xx4_org(1:4)
 ! if current surface is exterior surface, then return.
-!        if((interior_surf(icur_sf) .eq. izero) .or. (icur_sf .eq. izero)) then
+!        if((ie_surf(icur_sf,1) .gt. internal_node)                     &
+!     &       .or. (icur_sf .eq. izero)) then
         if(icur_sf .eq. izero) then
           if(i_debug .eq. 1) write(50+my_rank,*)                        &
      &       "extorior surface, end-------------------------", icur_sf
@@ -156,11 +157,11 @@
           if(i_debug .eq. 1) write(50+my_rank, *)                       &
      &                          "start cal lic, ele and surf: ",        &
      &                          ilic_suf_org(1), ilic_suf_org(2)
-          call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
-     &        nnod_4_surf, xx, ie_surf, isf_4_ele,                      &
-     &        iele_4_surf, interior_surf, lic_p, iflag_forward_line,    &
-     &        v_nod, ilic_suf_org, new_pos4, step_vec4, ref_nod,        &
-     &        rlic_grad_v, k_area, iflag_comm)
+          call s_cal_lic_from_point(nnod, internal_node, nelem, nsurf,  &
+     &        nnod_4_surf, xx, ie_surf, isf_4_ele, iele_4_surf, lic_p,  &
+     &        iflag_forward_line, v_nod, ilic_suf_org,                  &
+     &        new_pos4, step_vec4, ref_nod, rlic_grad_v, k_area,        &
+     &        iflag_comm)
           rlic_grad(0:3) = rlic_grad(0:3) + rlic_grad_v(0:3)
         end if
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
@@ -198,11 +199,11 @@
           if(i_debug .eq. 1) write(50+my_rank, *)                       &
      &       "start cal lic, ele and surf: ",                           &
      &       ilic_suf_org(1), ilic_suf_org(2)
-          call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
-     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-     &          iele_4_surf, interior_surf, lic_p, iflag_backward_line, &
-     &          v_nod, ilic_suf_org, new_pos4, step_vec4, ref_nod,      &
-     &          rlic_grad_v, k_area, iflag_comm)
+          call s_cal_lic_from_point(nnod, internal_node, nelem, nsurf,  &
+     &        nnod_4_surf, xx, ie_surf, isf_4_ele, iele_4_surf, lic_p,  &
+     &        iflag_backward_line, v_nod, ilic_suf_org,                 &
+     &        new_pos4, step_vec4, ref_nod, rlic_grad_v, k_area,        &
+     &        iflag_comm)
           rlic_grad(0:3) = rlic_grad(0:3) + rlic_grad_v(0:3)
         end if
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
@@ -222,9 +223,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_lic_from_point(numnod, numele, numsurf,          &
-     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-     &          iele_4_surf, interior_surf, lic_p,  iflag_dir,          &
+      subroutine s_cal_lic_from_point                                   &
+     &         (numnod, internal_node, numele, numsurf, nnod_4_surf,    &
+     &          xx, ie_surf, isf_4_ele, iele_4_surf, lic_p, iflag_dir,  &
      &          vect_nod, isurf_org, x4_start, v4_start, ref_nod,       &
      &          rlic_grad_v, k_area, iflag_comm)
 
@@ -232,13 +233,12 @@
       use cal_noise_value
       use get_geometry_reference
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
+      integer(kind = kint), intent(in) :: numnod, internal_node, numele
+      integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
       real(kind = kreal), intent(in) :: xx(numnod,3)
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      integer(kind = kint), intent(in) :: interior_surf(numsurf)
 !
       integer(kind = kint), intent(in) :: iflag_dir
       real(kind = kreal), intent(in) :: vect_nod(numnod,3)
@@ -303,7 +303,7 @@
           return
         end if
 !
-!        if(interior_surf(isurf_start) .eq. izero) then
+!        if(ie_surf(isurf_start,1) .gt. internal_node) then
 !          iflag_comm = 10
 !          return
 !        end if
@@ -473,7 +473,7 @@
      &     "nv: ", rnoise_grad(0),  "nv sum:", nv_sum,                  &
      &    "kernel area: ", k_area, "lic_v: ", rlic_grad_v(0)
 
-!        if(interior_surf(isurf_end) .eq. izero) then
+!        if(ie_surf(isurf_end,1) .gt. internal_node) then
 !          isurf_start = isurf_end
 !          iflag_comm = 10
 !          exit

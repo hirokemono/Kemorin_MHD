@@ -108,10 +108,10 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call lic_ray_trace_each_pixel(node%numnod, ele%numele,          &
-     &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
-     &      surf%isf_4_ele, surf%iele_4_surf, ele%interior_ele,         &
-     &      node%xx, surf%vnorm_surf, surf%interior_surf,               &
+        call lic_ray_trace_each_pixel(node%numnod, node%internal_node,  &
+     &      ele%numele, surf%numsurf, surf%nnod_4_surf,                 &
+     &      surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,             &
+     &      ele%interior_ele, node%xx, surf%vnorm_surf,                 &
      &      pvr_screen%arccos_sf, pvr_screen%x_nod_model,               &
      &      viewpoint_vec, lic_p, field_lic, draw_param, color_param,   &
      &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
@@ -129,9 +129,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_ray_trace_each_pixel                               &
-     &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
-     &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
-     &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
+     &       (numnod, internal_node, numele, numsurf, nnod_4_surf,      &
+     &        ie_surf, isf_4_ele, iele_4_surf, interior_ele,            &
+     &        xx, vnorm_surf, arccos_sf, x_nod_model, viewpoint_vec,    &
      &        lic_p, field_lic, draw_param, color_param, ray_vec4,      &
      &        iflag_check, isurf_org, screen4_st, xx4_st, xi, rgba_ray, &
      &        icount_line, xyz_min_gl, xyz_max_gl, iflag_comm)
@@ -143,13 +143,13 @@
       use t_noise_node_data
 !
       integer(kind = kint), intent(in) :: iflag_check
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: internal_node
+      integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
       integer(kind = kint), intent(in) :: interior_ele(numele)
-      integer(kind = kint), intent(in) :: interior_surf(numsurf)
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
 !
@@ -337,8 +337,8 @@
               vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
      &                       + vec4_tgt(1:4) * ratio
               call cal_lic_on_surf_vector                               &
-     &           (numnod, numsurf, numele, nnod_4_surf,                 &
-     &            isf_4_ele, iele_4_surf, interior_surf, xx,            &
+     &           (numnod, internal_node, numsurf, numele, nnod_4_surf,  &
+     &            isf_4_ele, iele_4_surf, xx,                           &
      &            isurf_orgs, ie_surf, xi, lic_p,                       &
      &            r_mid, vec4_mid, field_lic%s_lic,                     &
      &            field_lic%v_lic, xx4_lic, isurf_end,                  &
@@ -390,8 +390,8 @@
 !   calculate lic value at current location, lic value will be used as intensity
 !   as volume rendering
             call cal_lic_on_surf_vector                                 &
-     &         (numnod, numsurf, numele, nnod_4_surf,                   &
-     &          isf_4_ele, iele_4_surf, interior_surf, xx,              &
+     &         (numnod, internal_node, numsurf, numele, nnod_4_surf,    &
+     &          isf_4_ele, iele_4_surf, xx,                             &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
      &          r_mid, vec4_mid, field_lic%s_lic,                       &
      &          field_lic%v_lic, xx4_lic, isurf_end,                    &
