@@ -68,6 +68,7 @@
       subroutine dup_edge_data(org_edge, new_ele, new_surf, new_edge)
 !
       use set_local_id_table_4_1ele
+      use set_nnod_4_ele_by_type
 !
       type(edge_data), intent(in) :: org_edge
       type(element_data), intent(in) :: new_ele
@@ -76,12 +77,12 @@
       type(edge_data), intent(inout) :: new_edge
 !
 !
-      new_edge%numedge = org_edge%numedge
       new_edge%nnod_4_edge = org_edge%nnod_4_edge
       call allocate_inod_in_edge(new_edge)
       call copy_inod_in_edge(new_edge%nnod_4_edge,                      &
      &    new_edge%node_on_edge, new_edge%node_on_edge_sf)
 !
+      new_edge%numedge =     org_edge%numedge
       call alloc_edge_connect(new_edge, new_surf%numsurf)
       call copy_edge_connect(org_edge,                                  &
      &    new_edge%numedge, new_edge%nnod_4_edge, new_edge%ie_edge)

@@ -190,6 +190,7 @@
 !
       use set_local_id_table_4_1ele
       use set_lag_node_ele_by_linear
+      use set_nnod_4_ele_by_type
 !
       type(edge_data), intent(in) :: edge_l
       type(linear_to_lag_list), intent(in) :: l_to_lag

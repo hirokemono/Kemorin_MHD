@@ -19,8 +19,9 @@
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!
 !!      subroutine copy_edge_connect_from_IO                            &
-!!     &          (ele_IO, sfed_IO, edge, nele, nsurf)
+!!     &          (ele_IO, sfed_IO, edge, ele, nsurf)
 !!      subroutine copy_edge_geometry_from_IO(nod_IO, sfed_IO, edge)
+!!        type(element_data), intent(in) :: ele
 !!        type(node_data), intent(in) :: nod_IO
 !!        type(element_data), intent(in) :: ele_IO
 !!        type(surf_edge_IO_data), intent(in) :: sfed_IO
@@ -138,28 +139,43 @@
 !------------------------------------------------------------------
 !
       subroutine copy_edge_connect_from_IO                              &
-     &          (ele_IO, sfed_IO, edge, nele, nsurf)
+     &          (ele_IO, sfed_IO, edge, ele, nsurf)
 !
       use m_geometry_constants
+      use set_nnod_4_ele_by_type
 !
-      integer(kind = kint), intent(in) :: nele, nsurf
+      integer(kind = kint), intent(in) :: nsurf
+      type(element_data), intent(in) :: ele
       type(element_data), intent(in) :: ele_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO
       type(edge_data), intent(inout) :: edge
 !
 !
-      edge%numedge = ele_IO%numele
+      edge%numedge =     ele_IO%numele
+      edge%nnod_4_edge = set_nnod_4_edge_by_ele(ele%nnod_4_ele)
       call alloc_edge_connect(edge, nsurf)
-      call alloc_edge_4_ele(edge, nele)
+      call alloc_edge_4_ele(edge, ele%numele)
 !
-      edge%ie_edge(1:edge%numedge,1:edge%nnod_4_edge)                   &
+      if(edge%numedge .gt. 0) then
+!$omp parallel workshare
+        edge%ie_edge(1:edge%numedge,1:edge%nnod_4_edge)                 &
      &        = ele_IO%ie(1:edge%numedge,1:edge%nnod_4_edge)
+!$omp end parallel workshare
+      end if
 !
-      edge%iedge_4_sf(1:nsurf,1:nedge_4_surf)                           &
+      if(nsurf .gt. 0) then
+!$omp parallel workshare
+        edge%iedge_4_sf(1:nsurf,1:nedge_4_surf)                         &
      &        = sfed_IO%isf_for_ele(1:nsurf,1:nedge_4_surf)
+!$omp end parallel workshare
+      end if
 !
-      edge%iedge_4_ele(1:nele,1:nedge_4_ele)                            &
-     &        = sfed_IO%iedge_for_ele(1:nele,1:nedge_4_ele)
+      if(ele%numele .gt. 0) then
+!$omp parallel workshare
+        edge%iedge_4_ele(1:ele%numele,1:nedge_4_ele)                    &
+     &        = sfed_IO%iedge_for_ele(1:ele%numele,1:nedge_4_ele)
+!$omp end parallel workshare
+      end if
 !
       end subroutine copy_edge_connect_from_IO
 !

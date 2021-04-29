@@ -28,12 +28,6 @@
 !!        type(calypso_comm_table), intent(in) :: trans_tbl
 !!        type(work_for_comm_check), intent(inout) :: nod_check
 !!
-!!      subroutine ele_send_recv_check(numele, iele_gl, x_ele, wk_check)
-!!        integer(kind = kint), intent(in) :: numele
-!!        integer(kind = kint_gl), intent(in) :: iele_gl(numele)
-!!        real(kind = kreal), intent(in) :: x_ele(numele,3)
-!!        type(work_for_comm_check), intent(inout) :: wk_check
-!!
 !!      subroutine collect_failed_comm(wk_check)
 !!        type(work_for_comm_check), intent(inout) :: wk_check
 !!@endverbatim
@@ -108,6 +102,7 @@
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
+      use const_element_comm_tables
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

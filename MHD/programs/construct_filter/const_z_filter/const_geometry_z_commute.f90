@@ -48,6 +48,7 @@
      &         (nod_comm, node, ele, surf, edge_z_filter, edge_z_gl)
 !
       use m_spheric_constants
+      use set_nnod_4_ele_by_type
 !
       type(communication_table), intent(inout) :: nod_comm
       type(node_data), intent(inout) :: node
@@ -66,6 +67,9 @@
       call alloc_interior_edge(edge_z_filter, edge_z_gl)
 !
       call alloc_node_geometry_w_sph(node)
+!
+      edge_z_filter%nnod_4_edge                                         &
+     &    = set_nnod_4_edge_by_ele(ele%nnod_4_ele)
       call alloc_edge_connect(edge_z_filter, surf%numsurf)
 !
       call set_element_z_commute(node, edge_z_filter)
