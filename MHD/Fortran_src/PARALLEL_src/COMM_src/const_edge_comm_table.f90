@@ -191,6 +191,7 @@
       use diff_geometory_comm_test
       use solver_SR_type
       use mesh_send_recv_check
+      use const_element_comm_tables
 !
       type(edge_data), intent(in) :: edge
       type(global_edge_data), intent(in) :: edge_gl

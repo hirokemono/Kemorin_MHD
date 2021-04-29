@@ -16,6 +16,12 @@
 !!        type(element_data), intent(inout) :: ele
 !!
 !!      subroutine const_global_numnod_list(node)
+!!
+!!      subroutine ele_send_recv_check(numele, iele_gl, x_ele, wk_check)
+!!        integer(kind = kint), intent(in) :: numele
+!!        integer(kind = kint_gl), intent(in) :: iele_gl(numele)
+!!        real(kind = kreal), intent(in) :: x_ele(numele,3)
+!!        type(work_for_comm_check), intent(inout) :: wk_check
 !!@endverbatim
 !
       module const_element_comm_tables
@@ -209,5 +215,31 @@
       end subroutine set_node_ele_double_address
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine ele_send_recv_check(numele, iele_gl, x_ele, wk_check)
+!
+      use t_work_for_comm_check
+      use diff_geometory_comm_test
+      use solver_SR_type
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint_gl), intent(in) :: iele_gl(numele)
+      real(kind = kreal), intent(in) :: x_ele(numele,3)
+!
+      type(work_for_comm_check), intent(inout) :: wk_check
+!
+!
+      wk_check%num_diff =  count_ele_comm_test                          &
+     &               (numele, x_ele, wk_check%xx_test)
+      call alloc_diff_ele_comm_test(wk_check)
+      call compare_ele_comm_test(numele, x_ele,                         &
+     &    wk_check%xx_test, wk_check%num_diff,                          &
+     &    wk_check%i_diff, wk_check%x_diff)
+      call dealloc_ele_4_comm_test(wk_check)
+!
+      end subroutine ele_send_recv_check
+!
+! ----------------------------------------------------------------------
 !
       end module const_element_comm_tables

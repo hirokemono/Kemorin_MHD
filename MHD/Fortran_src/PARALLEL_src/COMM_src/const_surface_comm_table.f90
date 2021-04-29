@@ -186,6 +186,7 @@
       use nod_phys_send_recv
       use solver_SR_type
       use mesh_send_recv_check
+      use const_element_comm_tables
 !
       type(surface_data), intent(in) :: surf
       type(global_surface_data), intent(in) :: surf_gl
