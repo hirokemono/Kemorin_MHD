@@ -68,9 +68,9 @@
       call count_coarse_rect_shell                                      &
      &   (csph_p1, course_p1, c_sphere1, csph_mesh1)
 !
-      write(*,*) 'alloc_surface_connect(c_sphere1)'
+      write(*,*) 'alloc_c_sph_surface_connect(c_sphere1)'
       call set_ntot_ele_sf20(c_sphere1)
-      call alloc_surface_connect(c_sphere1)
+      call alloc_c_sph_surface_connect(c_sphere1)
       call alloc_coarse_surf_connect(c_sphere1)
 !
 ! set sphere cube data

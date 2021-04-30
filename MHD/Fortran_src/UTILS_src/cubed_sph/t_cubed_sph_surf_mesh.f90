@@ -5,13 +5,13 @@
 !
 !!      subroutine alloc_surface_geometries(c_sphere)
 !!      subroutine alloc_coarsing_stack(max_coarse_leve, c_spherel)
-!!      subroutine alloc_surface_connect(c_sphere)
+!!      subroutine alloc_c_sph_surface_connect(c_sphere)
 !!      subroutine alloc_coarse_surf_connect(c_sphere)
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !!
 !!      subroutine dealloc_surface_geometries(c_sphere)
 !!      subroutine dealloc_coarsing_stack(c_sphere)
-!!      subroutine dealloc_surface_connect(c_sphere)
+!!      subroutine dealloc_c_sph_surface_connect(c_sphere)
 !!      subroutine dealloc_coarse_surf_connect(c_sphere)
 !!        type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -150,7 +150,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine alloc_surface_connect(c_sphere)
+      subroutine alloc_c_sph_surface_connect(c_sphere)
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -165,7 +165,7 @@
       c_sphere%ie_sf_mid = 0
 !$omp end parallel workshare
 !
-      end subroutine alloc_surface_connect
+      end subroutine alloc_c_sph_surface_connect
 !
 !   --------------------------------------------------------------------
 !
@@ -236,7 +236,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_surface_connect(c_sphere)
+      subroutine dealloc_c_sph_surface_connect(c_sphere)
 !
       type(cubed_sph_surf_mesh), intent(inout) :: c_sphere
 !
@@ -245,7 +245,7 @@
       deallocate( c_sphere%iedge_sf20 )
       deallocate( c_sphere%ie_sf_mid  )
 !
-      end subroutine dealloc_surface_connect
+      end subroutine dealloc_c_sph_surface_connect
 !
 !   --------------------------------------------------------------------
 !

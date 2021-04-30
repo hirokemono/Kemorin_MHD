@@ -62,7 +62,7 @@
      &   (ip, org_ele, internals_part%itl_ele_part,                     &
      &    newmesh%ele, domain_grp%ele_d_grp)
 !
-      call const_local_surface(ip, org_surf%nnod_4_surf, newmesh%ele,   &
+      call const_local_surface(ip, org_surf, newmesh%ele,               &
      &    internals_part%itl_surf_part, new_surf,                       &
      &    domain_grp%surf_d_grp)
       call const_local_edge(ip, org_edge, newmesh%ele, new_surf,        &
@@ -74,14 +74,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine const_local_surface(ip, nnod_4_surf, new_ele,          &
+      subroutine const_local_surface(ip, org_surf, new_ele,             &
      &          itl_surf_part, new_surf, surf_d_grp)
 !
       use t_geometry_data
       use t_surface_data
 !
       integer(kind = kint), intent(in) :: ip
-      integer(kind = kint), intent(in) :: nnod_4_surf
+      type(surface_data), intent(in) :: org_surf
       type(element_data), intent(in) :: new_ele
       type(internal_4_partitioner), intent(in) :: itl_surf_part
 !
@@ -90,7 +90,7 @@
 !
 !
       new_surf%numsurf =     itl_surf_part%num_4_subdomain(ip)
-      new_surf%nnod_4_surf = nnod_4_surf
+      new_surf%nnod_4_surf = org_surf%nnod_4_surf
       call alloc_surface_connect(new_surf, new_ele%numele)
 !
       call set_local_surface(ip, itl_surf_part, new_surf, surf_d_grp)
