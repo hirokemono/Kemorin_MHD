@@ -49,9 +49,9 @@
       call alloc_surface_geometries(c_sphere1)
       call alloc_1d_position(csph_p1)
 !
-!       write(*,*) 'alloc_surface_connect(c_sphere1)'
+!       write(*,*) 'alloc_c_sph_surface_connect(c_sphere1)'
       call set_ntot_ele_sf20(c_sphere1)
-      call alloc_surface_connect(c_sphere1)
+      call alloc_c_sph_surface_connect(c_sphere1)
 !
 ! set sphere cube data
 !
