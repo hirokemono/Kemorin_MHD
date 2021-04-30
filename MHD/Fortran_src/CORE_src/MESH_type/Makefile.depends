@@ -26,7 +26,7 @@ copy_edge_data.o: $(MESH_TYPE_DIR)/copy_edge_data.f90 m_precision.o m_machine_pa
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_element_data.o: $(MESH_TYPE_DIR)/copy_element_data.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o set_size_4_smp_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
-copy_mesh_structures.o: $(MESH_TYPE_DIR)/copy_mesh_structures.f90 m_precision.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o set_nnod_4_ele_by_type.o m_geometry_constants.o
+copy_mesh_structures.o: $(MESH_TYPE_DIR)/copy_mesh_structures.f90 m_precision.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o m_geometry_constants.o set_nnod_4_ele_by_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_near_node_ele_type.o: $(MESH_TYPE_DIR)/copy_near_node_ele_type.f90 m_precision.o t_next_node_ele_4_node.o t_near_mesh_id_4_node.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -42,7 +42,7 @@ expand_next_nod_hang_type.o: $(MESH_TYPE_DIR)/expand_next_nod_hang_type.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 find_belonged_process.o: $(MESH_TYPE_DIR)/find_belonged_process.f90 m_geometry_constants.o t_geometry_data.o t_comm_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
-load_mesh_data.o: $(MESH_TYPE_DIR)/load_mesh_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_file_IO_parameter.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o mesh_IO_select.o set_nnod_4_ele_by_type.o cal_minmax_and_stacks.o set_element_data_4_IO.o copy_mesh_structures.o set_group_types_4_IO.o
+load_mesh_data.o: $(MESH_TYPE_DIR)/load_mesh_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_file_IO_parameter.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o mesh_IO_select.o cal_minmax_and_stacks.o set_element_data_4_IO.o copy_mesh_structures.o set_group_types_4_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 nod_and_ele_derived_info.o: $(MESH_TYPE_DIR)/nod_and_ele_derived_info.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o set_size_4_smp_types.o cal_mesh_position.o
 	$(F90) -c $(F90OPTFLAGS) $<
