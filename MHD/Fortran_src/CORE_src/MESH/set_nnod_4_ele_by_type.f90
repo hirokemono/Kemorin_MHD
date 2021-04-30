@@ -7,8 +7,6 @@
 !>@brief  Set Number of element from element type ID
 !!
 !!@verbatim
-!!      subroutine set_3D_nnod_4_ele_by_type(itype,                     &
-!!     &          nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !!      integer(kind = kint) function set_nnod_4_ele_by_eletype(itype)
 !!      subroutine set_3D_nnod_4_sfed_by_ele                            &
 !!     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge)
@@ -31,25 +29,6 @@
 !------------------------------------------------------------------
 !
       contains
-!
-!------------------------------------------------------------------
-!
-      subroutine set_3D_nnod_4_ele_by_type(itype,                       &
-     &          nnod_4_ele, nnod_4_surf, nnod_4_edge)
-!
-      use m_geometry_constants
-!
-      integer(kind = kint), intent(in) :: itype
-      integer(kind = kint), intent(inout) :: nnod_4_ele
-      integer(kind = kint), intent(inout) :: nnod_4_surf
-      integer(kind = kint), intent(inout) :: nnod_4_edge
-!
-!
-      nnod_4_ele = set_nnod_4_ele_by_eletype(itype)
-      call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (nnod_4_ele, nnod_4_surf, nnod_4_edge)
-!
-      end subroutine set_3D_nnod_4_ele_by_type
 !
 !------------------------------------------------------------------
 !

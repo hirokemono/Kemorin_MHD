@@ -56,7 +56,6 @@
      &          new_surf, new_edge)
 !
       use ele_trans_tbl_4_repart
-      use set_nnod_4_ele_by_type
 !
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
@@ -89,9 +88,6 @@
      &   (mesh%ele, ele_tbl, new_ids_on_org,                            &
      &    element_ids, new_numele, new_comm, new_node, new_ele)
       call dealloc_double_numbering(element_ids)
-!
-      call set_3D_nnod_4_sfed_by_ele(new_ele%nnod_4_ele,                &
-     &    new_surf%nnod_4_surf, new_edge%nnod_4_edge)
 !
       end subroutine s_const_repart_ele_connect
 !

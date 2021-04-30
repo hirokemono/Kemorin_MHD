@@ -204,7 +204,6 @@
       use t_file_IO_parameter
 !
       use mesh_MPI_IO_select
-      use set_nnod_4_ele_by_type
       use load_mesh_data
 !
       type(field_IO_params), intent(in) ::  mesh_file
@@ -224,9 +223,6 @@
      &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
       call dealloc_groups_data(fem_IO_m%group)
 !
-      call set_3D_nnod_4_sfed_by_ele(mesh_p%ele%nnod_4_ele,             &
-     &   mesh_p%surf%nnod_4_surf, mesh_p%edge%nnod_4_edge)
-!
       end subroutine mpi_input_mesh_p
 !
 ! -----------------------------------------------------------------------
@@ -243,7 +239,6 @@
       use t_file_IO_parameter
 !
       use mesh_IO_select
-      use set_nnod_4_ele_by_type
       use load_mesh_data
 !
       integer, intent(in) :: id_rank
@@ -264,9 +259,6 @@
       call set_grp_data_from_IO(fem_IO_i%group,                         &
      &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
       call dealloc_groups_data(fem_IO_i%group)
-!
-      call set_3D_nnod_4_sfed_by_ele(mesh_p%ele%nnod_4_ele,             &
-     &    mesh_p%surf%nnod_4_surf, mesh_p%edge%nnod_4_edge)
 !
       end subroutine input_mesh_p
 !
