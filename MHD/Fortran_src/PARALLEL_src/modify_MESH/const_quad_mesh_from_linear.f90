@@ -145,7 +145,7 @@
 !
       surf_q%numsurf =     surf_l%numsurf
       surf_q%nnod_4_surf = num_quad_sf
-      call allocate_inod_in_surf(surf_q)
+      call alloc_inod_in_surf(surf_q)
       call set_inod_in_surf(surf_q%nnod_4_surf,                         &
      &                      surf_q%node_on_sf, surf_q%node_on_sf_n)
 !
@@ -178,7 +178,7 @@
 !
       edge_q%numedge =     edge_l%numedge
       edge_q%nnod_4_edge = num_quad_edge
-      call allocate_inod_in_edge(edge_q)
+      call alloc_inod_in_edge(edge_q)
       call copy_inod_in_edge(edge_q%nnod_4_edge,                        &
      &    edge_q%node_on_edge, edge_q%node_on_edge_sf)
 !

@@ -90,7 +90,7 @@
 !
       new_surf%numsurf = org_surf%numsurf
       new_surf%nnod_4_surf = org_surf%nnod_4_surf
-      call allocate_inod_in_surf(new_surf)
+      call alloc_inod_in_surf(new_surf)
       call set_inod_in_surf(new_surf%nnod_4_surf,                       &
      &                      new_surf%node_on_sf, new_surf%node_on_sf_n)
 !

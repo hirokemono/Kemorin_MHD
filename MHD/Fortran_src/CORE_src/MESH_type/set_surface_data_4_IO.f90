@@ -15,9 +15,9 @@
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!
 !!      subroutine copy_surf_connect_from_IO                            &
-!!     &         (ele_IO, sfed_IO, surf, nele)
+!!     &         (ele_IO, sfed_IO, surf, ele)
 !!      subroutine copy_surf_geometry_from_IO(nod_IO, sfed_IO, surf)
-!!        integer(kind = kint), intent(in) :: nele
+!!        type(element_data), intent(in) :: ele
 !!        type(element_data), intent(in) :: ele_IO
 !!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!        type(surface_data), intent(inout) :: surf
@@ -122,19 +122,25 @@
 !------------------------------------------------------------------
 !
       subroutine copy_surf_connect_from_IO                              &
-     &         (ele_IO, sfed_IO, surf, nele)
+     &         (ele_IO, sfed_IO, surf, ele)
 !
       use m_geometry_constants
+      use set_nnod_4_ele_by_type
+      use set_local_id_table_4_1ele
 !
-      integer(kind = kint), intent(in) :: nele
+      type(element_data), intent(in) :: ele
       type(element_data), intent(in) :: ele_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO
       type(surface_data), intent(inout) :: surf
 !
 !
       surf%numsurf = ele_IO%numele
+      surf%nnod_4_surf = set_nnod_4_surf_by_ele(ele%nnod_4_ele)
+      call alloc_inod_in_surf(surf)
+      call set_inod_in_surf(surf%nnod_4_surf,                           &
+     &                      surf%node_on_sf, surf%node_on_sf_n)
 !
-      call alloc_surface_connect(surf, nele)
+      call alloc_surface_connect(surf, ele%numele)
 !
 !$omp workshare
       surf%ie_surf(1:surf%numsurf,1:surf%nnod_4_surf)                   &
@@ -142,8 +148,8 @@
 !$omp end workshare
 !
 !$omp workshare
-      surf%isf_4_ele(1:nele,1:nsurf_4_ele)                              &
-     &        = sfed_IO%isf_for_ele(1:nele,1:nsurf_4_ele)
+      surf%isf_4_ele(1:ele%numele,1:nsurf_4_ele)                        &
+     &        = sfed_IO%isf_for_ele(1:ele%numele,1:nsurf_4_ele)
 !$omp end workshare
 !
       end subroutine copy_surf_connect_from_IO

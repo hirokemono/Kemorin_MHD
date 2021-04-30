@@ -84,7 +84,7 @@
 !
 !
       new_edge%nnod_4_edge = org_edge%nnod_4_edge
-      call allocate_inod_in_edge(new_edge)
+      call alloc_inod_in_edge(new_edge)
       call copy_inod_in_edge(new_edge%nnod_4_edge,                      &
      &    new_edge%node_on_edge, new_edge%node_on_edge_sf)
 !
