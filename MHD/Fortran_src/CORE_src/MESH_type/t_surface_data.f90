@@ -7,7 +7,7 @@
 !> @brief structure of surface data (geometry and connectivity)
 !!
 !!@verbatim
-!!      subroutine allocate_inod_in_surf(surf)
+!!      subroutine alloc_inod_in_surf(surf)
 !!      subroutine alloc_surface_connect(surf, nele)
 !!      subroutine alloc_ext_surface(surf)
 !!      subroutine alloc_iso_surface(surf)
@@ -106,7 +106,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_inod_in_surf(surf)
+       subroutine alloc_inod_in_surf(surf)
 !
       use m_geometry_constants
 !
@@ -119,7 +119,7 @@
        surf%node_on_sf =   0
        surf%node_on_sf_n = 0
 !
-       end subroutine allocate_inod_in_surf
+       end subroutine alloc_inod_in_surf
 !
 !  ---------------------------------------------------------------------
 !

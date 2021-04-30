@@ -143,6 +143,7 @@
 !
       use m_geometry_constants
       use set_nnod_4_ele_by_type
+      use set_local_id_table_4_1ele
 !
       integer(kind = kint), intent(in) :: nsurf
       type(element_data), intent(in) :: ele
@@ -153,6 +154,10 @@
 !
       edge%numedge =     ele_IO%numele
       edge%nnod_4_edge = set_nnod_4_edge_by_ele(ele%nnod_4_ele)
+      call alloc_inod_in_edge(edge)
+      call copy_inod_in_edge(edge%nnod_4_edge,                          &
+     &    edge%node_on_edge, edge%node_on_edge_sf)
+!
       call alloc_edge_connect(edge, nsurf)
       call alloc_edge_4_ele(edge, ele%numele)
 !

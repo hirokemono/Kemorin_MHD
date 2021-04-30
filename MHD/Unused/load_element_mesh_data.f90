@@ -49,7 +49,7 @@
 !
 !
       call copy_surf_connect_from_IO                                    &
-     &   (surf_mesh_IO%ele, surf_mesh_IO%sfed, surf, ele%numele)
+     &   (surf_mesh_IO%ele, surf_mesh_IO%sfed, surf, ele)
       call dealloc_surface_mesh_IO(surf_mesh_IO)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
