@@ -6,7 +6,7 @@
 !
 !>@brief Copy FEM mesh data from IO structure
 !!
-!!@verbatim
+!!@verbatim 
 !!      subroutine set_surface_mesh_from_IO(ele, surf, surf_mesh_IO)
 !!      subroutine set_edge_mesh_from_IO(ele, surf, edge, edge_mesh_IO)
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
@@ -78,8 +78,7 @@
 !
 !
       call copy_edge_connect_from_IO                                    &
-     &   (edge_mesh_IO%ele, edge_mesh_IO%sfed,                          &
-     &    edge, ele%numele, surf%numsurf)
+     &   (edge_mesh_IO%ele, edge_mesh_IO%sfed, edge, ele, surf%numsurf)
       call dealloc_edge_mesh_IO(edge_mesh_IO)
 !
       end subroutine set_edge_mesh_from_IO

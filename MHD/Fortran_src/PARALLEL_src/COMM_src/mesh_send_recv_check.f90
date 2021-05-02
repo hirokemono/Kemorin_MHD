@@ -27,6 +27,9 @@
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(calypso_comm_table), intent(in) :: trans_tbl
 !!        type(work_for_comm_check), intent(inout) :: nod_check
+!!
+!!      subroutine collect_failed_comm(wk_check)
+!!        type(work_for_comm_check), intent(inout) :: wk_check
 !!@endverbatim
 !
       module mesh_send_recv_check
@@ -99,6 +102,7 @@
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
+      use const_element_comm_tables
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

@@ -65,8 +65,7 @@
       call const_local_surface(ip, org_surf%nnod_4_surf, newmesh%ele,   &
      &    internals_part%itl_surf_part, new_surf,                       &
      &    domain_grp%surf_d_grp)
-      call const_local_edge                                             &
-     &   (ip, org_edge%nnod_4_edge, newmesh%ele, new_surf,              &
+      call const_local_edge(ip, org_edge, newmesh%ele, new_surf,        &
      &    internals_part%itl_edge_part, new_edge,                       &
      &    domain_grp%edge_d_grp)
 !
@@ -100,7 +99,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_local_edge(ip, nnod_4_edge, new_ele, new_surf,   &
+      subroutine const_local_edge(ip, org_edge, new_ele, new_surf,      &
      &          itl_edge_part, new_edge, edge_d_grp)
 !
       use t_geometry_data
@@ -108,7 +107,7 @@
       use t_edge_data
 !
       integer(kind = kint), intent(in) :: ip
-      integer(kind = kint), intent(in) :: nnod_4_edge
+      type(edge_data), intent(in) ::    org_edge
       type(element_data), intent(in) :: new_ele
       type(surface_data), intent(in) :: new_surf
       type(internal_4_partitioner), intent(in) :: itl_edge_part
@@ -118,7 +117,7 @@
 !
 !
       new_edge%numedge = itl_edge_part%num_4_subdomain(ip)
-      new_edge%nnod_4_edge = nnod_4_edge
+      new_edge%nnod_4_edge = org_edge%nnod_4_edge
       call alloc_edge_connect(new_edge, new_surf%numsurf)
       call alloc_edge_4_ele(new_edge, new_ele%numele)
 !
