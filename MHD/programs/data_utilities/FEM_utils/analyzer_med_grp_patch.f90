@@ -38,7 +38,7 @@
       use nod_phys_send_recv
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
-      use const_element_comm_tables
+      use const_edge_comm_table
 !
       if (my_rank.eq.0) then
         write(*,*) 'diff. udt files'
@@ -60,7 +60,7 @@
       call FEM_mesh_initialization                                      &
      &   (FUTIL1%geofem%mesh, FUTIL1%geofem%group)
 !
-      call const_edge_comm_table                                        &
+      call s_const_edge_comm_table                                      &
      &   (FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%nod_comm,         &
      &    edge_comm_MG, FUTIL1%geofem%mesh%edge)
 !

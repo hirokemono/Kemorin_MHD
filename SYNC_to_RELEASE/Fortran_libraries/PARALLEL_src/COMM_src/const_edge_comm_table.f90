@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/PARALLEL_src/COMM_src/const_edge_comm_table.f90

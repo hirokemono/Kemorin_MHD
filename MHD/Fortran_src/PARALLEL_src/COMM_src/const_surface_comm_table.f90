@@ -103,6 +103,15 @@
      &    surf%interior_surf, surf_comm, surf%isurf_global)
       deallocate(istack_inersurf)
 !
+!      write(*,*) 'check_element_position', my_rank
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
+      call check_element_position                                       &
+     &   (txt_surf, node%numnod, node%inod_global,                      &
+     &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
+     &    surf%isurf_global, surf%x_surf, inod_dbl, isurf_dbl,          &
+     &    surf_comm)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+6)
+!
       end subroutine const_surf_comm_table
 !
 !-----------------------------------------------------------------------
@@ -128,6 +137,7 @@
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
+      use mesh_send_recv_check
 !
       type(surface_data), intent(in) :: surf
       type(communication_table), intent(in) :: surf_comm

@@ -108,6 +108,7 @@
       use copy_repart_and_itp_table
       use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables
+      use const_edge_comm_table
       use const_surface_comm_table
       use check_data_for_repartition
       use mesh_send_recv_check
@@ -166,8 +167,8 @@
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
      &    T_surf_comm, new_fem%mesh%surf)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
-      call const_edge_comm_table                                        &
+      if(iflag_debug.gt.0) write(*,*)' s_const_edge_comm_table'
+      call s_const_edge_comm_table                                      &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
      &    T_edge_comm, new_fem%mesh%edge)
 !
@@ -180,10 +181,10 @@
 !
       call ele_send_recv_test(new_fem%mesh%node, new_fem%mesh%ele,      &
      &    T_ele_comm, ele_check)
-      call surf_send_recv_test(new_fem%mesh%node, new_fem%mesh%surf,    &
-     &    T_surf_comm, surf_check)
-      call edge_send_recv_test(new_fem%mesh%node, new_fem%mesh%edge,    &
-     &    T_edge_comm, edge_check)
+      call surf_send_recv_test                                          &
+     &   (new_fem%mesh%surf, T_surf_comm, surf_check)
+      call edge_send_recv_test                                          &
+     &   (new_fem%mesh%edge, T_edge_comm, edge_check)
 !
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)

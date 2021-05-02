@@ -58,7 +58,7 @@
       use int_volume_of_domain
       use set_table_4_RHS_assemble
       use parallel_FEM_mesh_init
-      use const_element_comm_tables
+      use const_edge_comm_table
       use set_normal_vectors
 !
       type(VIZ_step_params), intent(in) :: viz_step
@@ -78,8 +78,8 @@
 !
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
-        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-        call const_edge_comm_table                                      &
+        if(iflag_debug .gt. 0) write(*,*) 's_const_edge_comm_table'
+        call s_const_edge_comm_table                                    &
      &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
      &      edge_comm, geofem%mesh%edge)
       end if
@@ -179,7 +179,7 @@
      &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT)
 !
       use field_to_new_partition
-      use const_element_comm_tables
+      use const_edge_comm_table
       use parallel_FEM_mesh_init
 !
       type(VIZ_step_params), intent(in) :: viz_step
@@ -212,8 +212,8 @@
 !
         iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
         if(iflag .gt. 0) then
-          if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-          call const_edge_comm_table                                    &
+          if(iflag_debug .gt. 0) write(*,*) 's_const_edge_comm_table'
+          call s_const_edge_comm_table                                  &
      &       (geofem%mesh%node, geofem%mesh%nod_comm,                   &
      &        VIZ_DAT%edge_comm, geofem%mesh%edge)
         end if

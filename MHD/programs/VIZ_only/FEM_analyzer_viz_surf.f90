@@ -102,6 +102,7 @@
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
       use const_element_comm_tables
+      use const_edge_comm_table
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
@@ -121,8 +122,8 @@
       call FEM_mesh_initialization(FEM_viz%geofem%mesh,                 &
      &                             FEM_viz%geofem%group)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-      call const_edge_comm_table                                        &
+      if(iflag_debug .gt. 0) write(*,*) 's_const_edge_comm_table'
+      call s_const_edge_comm_table                                      &
      &   (FEM_viz%geofem%mesh%node, FEM_viz%geofem%mesh%nod_comm,       &
      &    edge_comm, FEM_viz%geofem%mesh%edge)
 !
