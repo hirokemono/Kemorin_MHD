@@ -101,8 +101,6 @@
      &    surf%interior_surf, surf_comm, surf%isurf_global)
       deallocate(istack_inersurf)
 !
-      call check_element_position                                       &
-     &   (txt_surf, surf%numsurf, surf%x_surf, surf_comm)
       call calypso_mpi_barrier
       call check_element_position                                       &
      &   (txt_surf, node%numnod, node%inod_global, surf%numsurf,        &
