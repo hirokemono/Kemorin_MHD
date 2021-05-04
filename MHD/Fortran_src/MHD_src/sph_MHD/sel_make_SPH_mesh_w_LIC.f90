@@ -192,7 +192,7 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+9)
       call base_FEM_mesh_sph_mhd(sph_params, sph_rtp, sph_rj,           &
      &    mesh, group, gen_sph)
-      if(iflag_GSP_time) call end_elapsed_time(ied_elapsed_GSP+9)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+9)
 !
 ! Increase sleeve size
       if((flag_repartition .eqv. .FALSE.)                               &
@@ -205,7 +205,7 @@
 
         call sleeve_extension_loop(sleeve_exp_p, mesh, group, ele_comm)
         call dealloc_comm_table(ele_comm)
-        if(iflag_GSP_time) call end_elapsed_time(ied_elapsed_GSP+10)
+        if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+10)
       end if
 !
 ! Output mesh data
