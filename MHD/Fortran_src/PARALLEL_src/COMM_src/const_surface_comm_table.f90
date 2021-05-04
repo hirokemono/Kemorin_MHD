@@ -103,6 +103,11 @@
 !
       call check_element_position                                       &
      &   (txt_surf, surf%numsurf, surf%x_surf, surf_comm)
+      call calypso_mpi_barrier
+      call check_element_position                                       &
+     &   (txt_surf, node%numnod, node%inod_global, surf%numsurf,        &
+     &    surf%nnod_4_surf, surf%ie_surf, surf%isurf_global,            &
+     &    surf%x_surf, inod_dbl, isurf_dbl, surf_comm)
       call dealloc_ele_double_number(isurf_dbl)
       call dealloc_double_numbering(inod_dbl)
 !

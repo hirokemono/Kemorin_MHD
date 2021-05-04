@@ -163,9 +163,11 @@
      &    ele%interior_ele, ele_comm, ele%iele_global)
 !
       call check_element_position                                       &
-     &   (txt_ele, ele%numele, ele%x_ele, ele_comm)
-      call dealloc_ele_double_number(iele_dbl)
+     &   (txt_ele, node%numnod, node%inod_global, ele%numele,           &
+     &    ele%nnod_4_ele, ele%ie, ele%iele_global,                      &
+     &    ele%x_ele, inod_dbl, iele_dbl, ele_comm)
       call dealloc_double_numbering(inod_dbl)
+      call dealloc_ele_double_number(iele_dbl)
 !
       end subroutine const_ele_comm_table
 !
@@ -230,10 +232,13 @@
      &    edge%interior_edge, edge_comm, edge%iedge_global)
       deallocate(istack_ineredge)
 !
+      call calypso_mpi_barrier
       call check_element_position                                       &
-     &   (txt_edge, edge%numedge, edge%x_edge, edge_comm)
-      call dealloc_ele_double_number(iedge_dbl)
+     &   (txt_edge, node%numnod, node%inod_global, edge%numedge,        &
+     &    edge%nnod_4_edge, edge%ie_edge, edge%iedge_global,            &
+     &    edge%x_edge, inod_dbl, iedge_dbl, edge_comm)
       call dealloc_double_numbering(inod_dbl)
+      call dealloc_ele_double_number(iedge_dbl)
 !
       end subroutine const_edge_comm_table
 !
