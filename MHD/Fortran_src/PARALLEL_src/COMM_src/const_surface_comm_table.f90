@@ -134,6 +134,7 @@
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
+      use mesh_send_recv_check
 !
       type(surface_data), intent(in) :: surf
       type(communication_table), intent(in) :: surf_comm

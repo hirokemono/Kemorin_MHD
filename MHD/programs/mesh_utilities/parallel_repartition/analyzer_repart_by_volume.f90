@@ -178,12 +178,12 @@
      &    repart_nod_tbl1, nod_check)
 !
 !
-      call ele_send_recv_test(new_fem%mesh%node, new_fem%mesh%ele,      &
-     &    T_ele_comm, ele_check)
-      call surf_send_recv_test(new_fem%mesh%node, new_fem%mesh%surf,    &
-     &    T_surf_comm, surf_check)
-      call edge_send_recv_test(new_fem%mesh%node, new_fem%mesh%edge,    &
-     &    T_edge_comm, edge_check)
+      call ele_send_recv_test                                           &
+     &   (new_fem%mesh%ele, T_ele_comm, ele_check)
+      call surf_send_recv_test                                          &
+     &   (new_fem%mesh%surf, T_surf_comm, surf_check)
+      call edge_send_recv_test                                          &
+     &   (new_fem%mesh%edge, T_edge_comm, edge_check)
 !
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)
