@@ -89,8 +89,6 @@
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
      &    surf%x_surf, node, nod_comm, inod_dbl, isurf_dbl,             &
      &    neib_surf, surf_comm, fail_tbl_s)
-      call dealloc_ele_double_number(isurf_dbl)
-      call dealloc_double_numbering(inod_dbl)
       call dealloc_iele_belonged(neib_surf)
       call dealloc_failed_export(fail_tbl_s)
 !
@@ -102,6 +100,11 @@
      &   (txt_surf, surf%numsurf, istack_inersurf,                      &
      &    surf%interior_surf, surf_comm, surf%isurf_global)
       deallocate(istack_inersurf)
+!
+      call check_element_position                                       &
+     &   (txt_surf, surf%numsurf, surf%x_surf, surf_comm)
+      call dealloc_ele_double_number(isurf_dbl)
+      call dealloc_double_numbering(inod_dbl)
 !
       end subroutine const_surf_comm_table
 !

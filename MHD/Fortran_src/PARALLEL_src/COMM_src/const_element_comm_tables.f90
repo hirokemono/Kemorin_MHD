@@ -42,9 +42,8 @@
 !
       character(len=kchara), parameter :: txt_ele =  'element'
       character(len=kchara), parameter :: txt_edge = 'edge'
-      character(len=kchara), parameter :: txt_surf = 'surface'
 !
-      private :: txt_ele, txt_edge, txt_surf
+      private :: txt_ele, txt_edge
 !
 !-----------------------------------------------------------------------
 !
@@ -152,11 +151,9 @@
 !
       call alloc_failed_export(0, fail_tbl_e)
       call const_comm_table_by_connenct                                 &
-     &   (txt_surf, ele%numele, ele%nnod_4_ele, ele%ie,                 &
+     &   (txt_ele, ele%numele, ele%nnod_4_ele, ele%ie,                  &
      &    ele%x_ele, node, nod_comm, inod_dbl, iele_dbl,                &
      &    neib_ele, ele_comm, fail_tbl_e)
-      call dealloc_ele_double_number(iele_dbl)
-      call dealloc_double_numbering(inod_dbl)
       call dealloc_iele_belonged(neib_ele)
       call dealloc_failed_export(fail_tbl_e)
 !
@@ -164,6 +161,11 @@
       call const_global_numele_list(ele)
       call check_global_ele_id(txt_ele, ele%numele,                     &
      &    ele%interior_ele, ele_comm, ele%iele_global)
+!
+      call check_element_position                                       &
+     &   (txt_ele, ele%numele, ele%x_ele, ele_comm)
+      call dealloc_ele_double_number(iele_dbl)
+      call dealloc_double_numbering(inod_dbl)
 !
       end subroutine const_ele_comm_table
 !
@@ -215,8 +217,6 @@
      &   (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,       &
      &    edge%x_edge, node, nod_comm, inod_dbl, iedge_dbl,             &
      &    neib_edge, edge_comm, fail_tbl_d)
-      call dealloc_ele_double_number(iedge_dbl)
-      call dealloc_double_numbering(inod_dbl)
       call dealloc_iele_belonged(neib_edge)
       call dealloc_failed_export(fail_tbl_d)
 !
@@ -229,6 +229,11 @@
      &   (txt_edge, edge%numedge, istack_ineredge,                      &
      &    edge%interior_edge, edge_comm, edge%iedge_global)
       deallocate(istack_ineredge)
+!
+      call check_element_position                                       &
+     &   (txt_edge, edge%numedge, edge%x_edge, edge_comm)
+      call dealloc_ele_double_number(iedge_dbl)
+      call dealloc_double_numbering(inod_dbl)
 !
       end subroutine const_edge_comm_table
 !
