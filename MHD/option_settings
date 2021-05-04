@@ -154,7 +154,7 @@ MPIFC=mpif90 \
 MPICC=mpicc \
 CFLAGS='-O3 -Wall -g' FCFLAGS='-O3 -Wall -g' \
 --with-blas --enable-fftw3 --enable-cocoa --with-libpng \
---enable-gl --with-gtk --with-glfw --with-zlib \
+--enable-gl --with-gtk --with-glfw --with-zlib=/usr/local/opt/zlib \
 --with-hdf5=/usr/local/bin/h5pcc \
 --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks \
 PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
