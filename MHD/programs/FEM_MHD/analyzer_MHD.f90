@@ -68,8 +68,8 @@
       call init_FEM_MHD_to_VIZ_bridge(MHD_step1%viz_step,               &
      &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
      &    FEM_MHD1%geofem, VIZ_DAT2)
-      call init_visualize(FEM_MHD1%geofem, FEM_MHD1%field, VIZ_DAT2,    &
-     &                    vizs_ctl_F, vizs_F)
+      call init_visualize(MHD_step1%viz_step, FEM_MHD1%geofem,          &
+     &    FEM_MHD1%field, VIZ_DAT2, vizs_ctl_F, vizs_F)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
       end subroutine initialization_MHD

@@ -81,8 +81,8 @@
      &                            FEM_STR1%geofem, VIZ_D_STR1)
 !
 !  ------  initialize visualization
-      call init_visualize(FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1,  &
-     &                    spt_ctl1%viz_ctls, FEM_STR1%vizs)
+      call init_visualize(FEM_STR1%viz_step, FEM_STR1%geofem,           &
+     &    FEM_STR1%field, VIZ_D_STR1, spt_ctl1%viz_ctls, FEM_STR1%vizs)
 !
       end subroutine init_analyzer
 !

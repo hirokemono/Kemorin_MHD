@@ -78,8 +78,8 @@
 !
 !  ------  initialize visualization
       if (iflag_debug.gt.0) write(*,*) 'init_visualize'
-      call init_visualize(FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1,  &
-     &                    spt_ctl1%viz_ctls, FEM_STR1%vizs)
+      call init_visualize(FEM_STR1%viz_step, FEM_STR1%geofem,           &
+     &    FEM_STR1%field, VIZ_D_STR1, spt_ctl1%viz_ctls, FEM_STR1%vizs)
 !
       end subroutine init_zm_streamfunc
 !

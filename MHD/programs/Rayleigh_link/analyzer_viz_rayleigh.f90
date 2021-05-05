@@ -82,7 +82,8 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize(FEM_Rayleigh1%geofem, FEM_Rayleigh1%field,    &
+      call init_visualize                                               &
+     &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, FEM_Rayleigh1%field,  &
      &    VIZ_DAT_r, rayleigh_vizs_ctl1%viz_ctl_v, vizs_v)
 !
       end subroutine init_viz_rayleigh

@@ -78,8 +78,9 @@
       call init_FEM_to_VIZ_bridge                                       &
      &   (t_VIZ1%viz_step, FEM_viz1%geofem, VIZ_DAT1)
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize(FEM_viz1%geofem, FEM_viz1%field, VIZ_DAT1,    &
-     &                    vizs_ctl1%viz_ctl_v, vizs_v)
+      call init_visualize(t_VIZ1%viz
+_step, FEM_viz1%geofem,             &
+     &    FEM_viz1%field, VIZ_DAT1, vizs_ctl1%viz_ctl_v, vizs_v)
 !
       end subroutine initialize_vizs
 !
