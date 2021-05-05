@@ -81,13 +81,12 @@
      &    viz_ctls%psf_ctls, vizs%psf)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
-      if(viz_step%ISO_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
-        call ISOSURF_initialize                                         &
-     &     (geofem, nod_fld, viz_ctls%iso_ctls, vizs%iso)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
-        call calypso_mpi_barrier
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
+      call ISOSURF_initialize                                           &
+     &   (viz_step%ISO_t%increment , geofem, nod_fld,                   &
+     &    viz_ctls%iso_ctls, vizs%iso)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
+      call calypso_mpi_barrier
 !
       if(viz_step%PVR_t%increment .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
@@ -140,12 +139,10 @@
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
       end if
 !
-      if(viz_step%ISO_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-        call ISOSURF_visualize(viz_step%istep_iso, time_d,              &
-     &      geofem, VIZ_DAT%edge_comm, nod_fld, vizs%iso)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
+      call ISOSURF_visualize(viz_step%istep_iso, time_d,                &
+     &    geofem, VIZ_DAT%edge_comm, nod_fld, vizs%iso)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(viz_step%PVR_t%increment .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
