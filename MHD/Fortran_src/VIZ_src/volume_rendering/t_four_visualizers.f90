@@ -82,15 +82,11 @@
      &   (viz_step%ISO_t%increment, geofem, nod_fld,                    &
      &    viz_ctls%iso_ctls, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
-      call calypso_mpi_barrier
 !
-      if(viz_step%PVR_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
-        call PVR_initialize                                             &
-     &   (geofem, nod_fld, viz_ctls%pvr_ctls, vizs%pvr)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
-        call calypso_mpi_barrier
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
+      call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
+     &    viz_ctls%pvr_ctls, vizs%pvr)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(viz_step%FLINE_t%increment .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
@@ -129,12 +125,10 @@
      &    VIZ_DAT%edge_comm, nod_fld, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
-      if(viz_step%PVR_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-        call PVR_visualize(viz_step%istep_pvr, time_d%time,             &
-     &      geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
+      call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
+     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(viz_step%FLINE_t%increment .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)

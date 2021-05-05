@@ -9,7 +9,8 @@
 !!      subroutine check_PVR_update                                     &
 !!     &         (id_control, pvr_ctls, pvr, iflag_redraw)
 !!      subroutine read_ctl_pvr_files_4_update(id_control, pvr_ctls)
-!!      subroutine PVR_initialize(geofem, nod_fld, pvr)
+!!      subroutine PVR_initialize                                       &
+!!     &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
 !!      subroutine PVR_visualize                                        &
 !!     &         (istep_pvr, time, geofem, jacs, nod_fld, pvr)
 !!      subroutine alloc_pvr_data(pvr)
@@ -161,12 +162,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine PVR_initialize(geofem, nod_fld, pvr_ctls, pvr)
+      subroutine PVR_initialize                                         &
+     &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
       use rendering_and_image_nums
 !
+      integer(kind = kint), intent(in) :: increment_pvr
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
@@ -175,19 +178,22 @@
       integer(kind = kint) :: i_pvr, ist_rdr, ist_img
 !
 !
-      if(pvr_ctls%num_pvr_ctl .le. 0) then
+      pvr%num_pvr = pvr_ctls%num_pvr_ctl
+      if(increment_pvr .le. 0) pvr%num_pvr = 0
+!
+      if(pvr%num_pvr .le. 0) then
         pvr%num_pvr = 0
         return
       end if
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+5)
-      call bcast_pvr_controls(pvr_ctls%num_pvr_ctl,                     &
+      call bcast_pvr_controls(pvr%num_pvr,                              &
      &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
       call count_num_rendering_and_images                               &
-     &   (pvr_ctls%num_pvr_ctl, pvr_ctls%pvr_ctl_type, pvr%num_pvr,     &
+     &   (pvr%num_pvr, pvr_ctls%pvr_ctl_type,                           &
      &    pvr%num_pvr_rendering, pvr%num_pvr_images)
 !
       call alloc_pvr_data(pvr)
@@ -326,6 +332,7 @@
       integer(kind = kint) :: i_pvr
 !
 !
+      if(pvr%num_pvr.le.0) return
       do i_pvr = 1, pvr%num_pvr
         call dealloc_nod_data_4_pvr(pvr%field_pvr(i_pvr))
       end do

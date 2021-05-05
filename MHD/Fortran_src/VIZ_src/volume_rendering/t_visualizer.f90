@@ -86,30 +86,24 @@
      &   (viz_step%ISO_t%increment , geofem, nod_fld,                   &
      &    viz_ctls%iso_ctls, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
-      call calypso_mpi_barrier
 !
-      if(viz_step%PVR_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
-        call PVR_initialize                                             &
-     &     (geofem, nod_fld, viz_ctls%pvr_ctls, vizs%pvr)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
-        call calypso_mpi_barrier
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
+      call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
+     &    viz_ctls%pvr_ctls, vizs%pvr)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
+!
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
+      call LIC_initialize(viz_step%FLINE_t%increment, VIZ_DAT%repart_p, &
+     &                    VIZ_DAT%viz_fem, geofem, nod_fld,             &
+     &                    viz_ctls%lic_ctls, vizs%lic)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       if(viz_step%LIC_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
-        call FLINE_initialize                                           &
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
+      call FLINE_initialize                                             &
      &     (geofem, nod_fld, viz_ctls%fline_ctls, vizs%fline)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)
-        call calypso_mpi_barrier
-      end if
-!
-      if(viz_step%FLINE_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-        call LIC_initialize(VIZ_DAT%repart_p, VIZ_DAT%viz_fem,          &
-     &      geofem, nod_fld, viz_ctls%lic_ctls, vizs%lic)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
-        call calypso_mpi_barrier
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)
+      call calypso_mpi_barrier
       end if
 !
       call dealloc_viz_controls(viz_ctls)
@@ -144,20 +138,16 @@
      &    geofem, VIZ_DAT%edge_comm, nod_fld, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
-      if(viz_step%PVR_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-        call PVR_visualize(viz_step%istep_pvr, time_d%time,             &
-     &      geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
+      call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
+     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
-      if(viz_step%LIC_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-        call LIC_visualize(viz_step%istep_lic, time_d%time,             &
-     &      VIZ_DAT%repart_p, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl, &
-     &      geofem, nod_fld, vizs%lic, v_sol)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
+      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
+     &    VIZ_DAT%repart_p, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl,   &
+     &    geofem, nod_fld, vizs%lic, v_sol)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       if(viz_step%FLINE_t%increment .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)

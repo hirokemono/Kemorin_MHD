@@ -10,8 +10,8 @@
 !!      subroutine check_LIC_update                                     &
 !!     &         (id_control, lic_ctls, lic, iflag_update)
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
-!!      subroutine LIC_initialize                                       &
-!!     &         (repart_p, viz_fem, geofem, nod_fld, lic_ctls, lic)
+!!      subroutine LIC_initialize(increment_lic, repart_p, viz_fem,     &
+!!     &                          geofem, nod_fld, lic_ctls, lic)
 !!      subroutine LIC_visualize                                        &
 !!     &         (istep_lic, time, repart_p, viz_fem, mesh_to_viz_tbl,  &
 !!     &          geofem, nod_fld, lic, v_sol)
@@ -143,14 +143,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine LIC_initialize                                         &
-     &         (repart_p, viz_fem, geofem, nod_fld, lic_ctls, lic)
+      subroutine LIC_initialize(increment_lic, repart_p, viz_fem,       &
+     &                          geofem, nod_fld, lic_ctls, lic)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
 !
+      integer(kind = kint), intent(in) :: increment_lic
       type(mesh_data), intent(in) :: viz_fem
       type(volume_partioning_param), intent(in) :: repart_p
       type(mesh_data), intent(in) :: geofem
@@ -161,17 +162,20 @@
       integer(kind = kint) :: i_lic, ist_rdr, ist_img
 !
 !
-      if(lic_ctls%num_lic_ctl .le. 0) then
+      lic%pvr%num_pvr = lic_ctls%num_lic_ctl
+      if(increment_lic .le. 0) lic%pvr%num_pvr = 0
+!
+      if(lic%pvr%num_pvr .le. 0) then
         lic%pvr%num_pvr = 0
         return
       end if
 !
-      call bcast_lic_controls(lic_ctls%num_lic_ctl,                     &
+      call bcast_lic_controls(lic%pvr%num_pvr,                          &
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%pvr%cflag_update)
 !
       call count_num_rendering_and_images                               &
-     &   (lic_ctls%num_lic_ctl, lic_ctls%pvr_ctl_type, lic%pvr%num_pvr, &
+     &   (lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,                       &
      &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
       call alloc_LIC_data(lic)
 !
@@ -208,7 +212,7 @@
         end if
       end do
 !
-      do i_lic = 1, lic_ctls%num_lic_ctl
+      do i_lic = 1, lic%pvr%num_pvr
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
      &      .or. my_rank .ne. 0) then
           call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
@@ -323,6 +327,7 @@
 !
       integer(kind = kint) :: i_lic
 !
+      if(lic%pvr%num_pvr .le. 0) return
       do i_lic = 1, lic%pvr%num_pvr
         call dealloc_each_lic_data(repart_p, lic%lic_fld_pm(i_lic))
       end do

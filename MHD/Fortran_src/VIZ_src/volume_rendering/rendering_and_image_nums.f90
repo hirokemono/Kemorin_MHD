@@ -6,16 +6,11 @@
 !>@brief Set PVR parameters from control files
 !!
 !!@verbatim
-!!      subroutine count_num_rendering_and_images(num_pvr_ctl, pvr_ctls,&
-!!     &          num_pvr, num_pvr_rendering, num_pvr_images)
+!!      subroutine count_num_rendering_and_images(num_pvr, pvr_ctls,    &
+!!     &          num_pvr_rendering, num_pvr_images)
 !!      subroutine s_num_rendering_and_images(num_pe, num_pvr, pvr_ctl, &
 !!     &          num_pvr_rendering, num_pvr_images,                    &
 !!     &          istack_pvr_render, istack_pvr_images, pvr_rgb)
-!!
-!!      subroutine set_num_rendering_and_images(num_pvr_ctl, pvr_ctls,  &
-!!     &          istack_pvr_render, istack_pvr_images)
-!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctls(num_pvr_ctl)
-!!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !!@endverbatim
 !
       module rendering_and_image_nums
@@ -38,24 +33,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_num_rendering_and_images(num_pvr_ctl, pvr_ctls,  &
-     &          num_pvr, num_pvr_rendering, num_pvr_images)
+      subroutine count_num_rendering_and_images(num_pvr, pvr_ctls,      &
+     &          num_pvr_rendering, num_pvr_images)
 !
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: num_pvr_ctl
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctls(num_pvr_ctl)
+      integer(kind = kint), intent(in) :: num_pvr
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctls(num_pvr)
 !
-      integer(kind = kint), intent(inout) :: num_pvr
       integer(kind = kint), intent(inout) :: num_pvr_rendering
       integer(kind = kint), intent(inout) :: num_pvr_images
 !
       integer(kind = kint) :: i_pvr
 !
 !
-      num_pvr = num_pvr_ctl
-      num_pvr_rendering = num_pvr_ctl
-      num_pvr_images = num_pvr_ctl
+      num_pvr_rendering = num_pvr
+      num_pvr_images =    num_pvr
       do i_pvr = 1, num_pvr
         if(yes_flag(pvr_ctls(i_pvr)%streo_ctl%charavalue)) then
           num_pvr_rendering = num_pvr_rendering + 1
@@ -123,18 +116,18 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_file_parameters(num_pvr_ctl, pvr_ctls,         &
+      subroutine set_pvr_file_parameters(num_pvr, pvr_ctls,             &
      &          istack_pvr_images, num_pvr_images, pvr_rgb)
 !
       use skip_comment_f
       use set_control_each_pvr
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: num_pvr_ctl
+      integer(kind = kint), intent(in) :: num_pvr
       integer(kind = kint), intent(in) :: num_pvr_images
       integer(kind = kint), intent(inout)                               &
-     &              :: istack_pvr_images(0:num_pvr_ctl)
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctls(num_pvr_ctl)
+     &              :: istack_pvr_images(0:num_pvr)
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctls(num_pvr)
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
@@ -142,7 +135,7 @@
       character(len=kchara) :: pvr_prefix
 !
 !
-      do i_pvr = 1, num_pvr_ctl
+      do i_pvr = 1, num_pvr
         ist = istack_pvr_images(i_pvr-1) + 1
 !
         call set_pvr_file_prefix(pvr_ctls(i_pvr), pvr_prefix)

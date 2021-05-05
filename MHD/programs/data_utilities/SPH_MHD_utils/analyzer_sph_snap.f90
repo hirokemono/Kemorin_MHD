@@ -310,8 +310,9 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call read_ctl_pvr_files_4_update                              &
      &       (ctl_file_code, MHD_ctl1%viz_ctls%pvr_ctls)
-          call PVR_initialize(FEM_d1%geofem, FEM_d1%field,              &
-     &        MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr)
+          call PVR_initialize(MHD_step1%viz_step%PVR_t%increment,       &
+     &        FEM_d1%geofem, FEM_d1%field, MHD_ctl1%viz_ctls%pvr_ctls,  &
+     &        vizs1%pvr)
           call PVR_visualize                                            &
      &       (MHD_step1%viz_step%istep_pvr, MHD_step1%time_d%time,      &
      &        FEM_d1%geofem, VIZ_DAT1%jacobians, FEM_d1%field,          &
