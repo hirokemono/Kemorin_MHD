@@ -153,6 +153,8 @@
      &    VIZ_DAT%ele_4_nod, nod_fld, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !
+      call calypso_mpi_barrier
+!
       end subroutine visualize_all
 !
 !  ---------------------------------------------------------------------
