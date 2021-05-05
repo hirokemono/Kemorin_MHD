@@ -59,7 +59,8 @@
      &    t_VIZ6%viz_step, FEM_viz6, VIZ_DAT6)
 !
 !  VIZ Initialization
-      call FLINE_initialize(FEM_viz6%geofem, FEM_viz6%field,            &
+      call FLINE_initialize(t_VIZ6%viz_step%FLINE_t%increment,          &
+     &    FEM_viz6%geofem, FEM_viz6%field,                              &
      &    vizs_ctl6%viz_ctl_v%fline_ctls, fline_v6)
 !
       end subroutine initialize_fline

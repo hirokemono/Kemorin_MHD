@@ -7,7 +7,8 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine FLINE_initialize(fem, nod_fld, fline_ctls, fline)
+!!      subroutine FLINE_initialize                                     &
+!!     &         (increment_fline, fem, nod_fld, fline_ctls, fline)
 !!      subroutine FLINE_visualize                                      &
 !!     &         (istep_fline, fem, ele_4_nod, nod_fld, fline)
 !!      subroutine FLINE_finalize(fline)
@@ -52,12 +53,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine FLINE_initialize(fem, nod_fld, fline_ctls, fline)
+      subroutine FLINE_initialize                                       &
+     &         (increment_fline, fem, nod_fld, fline_ctls, fline)
 !
       use calypso_mpi
       use t_control_data_flines
       use set_fline_control
 !
+      integer(kind = kint), intent(in) :: increment_fline
       type(mesh_data), intent(in) :: fem
       type(phys_data), intent(in) :: nod_fld
       type(fieldline_controls), intent(inout) :: fline_ctls
@@ -67,6 +70,7 @@
 !
 !
       fline%num_fline = fline_ctls%num_fline_ctl
+      if(increment_fline .le. 0) fline%num_fline = 0
       if(fline%num_fline .le. 0) return
 !
       allocate(fline%fln_prm(fline%num_fline))
@@ -152,6 +156,8 @@
 !
       integer(kind = kint) :: i
 !
+!
+      if (fline%num_fline .le. 0) return
 !
       call dealloc_local_fline(fline%fline_lc)
       call dealloc_global_fline_num(fline%fline_gl)

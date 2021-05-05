@@ -93,19 +93,18 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      call LIC_initialize(viz_step%FLINE_t%increment, VIZ_DAT%repart_p, &
+      call LIC_initialize(viz_step%LIC_t%increment, VIZ_DAT%repart_p,   &
      &                    VIZ_DAT%viz_fem, geofem, nod_fld,             &
      &                    viz_ctls%lic_ctls, vizs%lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
-      if(viz_step%LIC_t%increment .gt. 0) then
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
       call FLINE_initialize                                             &
-     &     (geofem, nod_fld, viz_ctls%fline_ctls, vizs%fline)
+     &   (viz_step%FLINE_t%increment, geofem, nod_fld,                  &
+     &    viz_ctls%fline_ctls, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)
-      call calypso_mpi_barrier
-      end if
 !
+      call calypso_mpi_barrier
       call dealloc_viz_controls(viz_ctls)
 !
       end subroutine init_visualize
@@ -149,12 +148,10 @@
      &    geofem, nod_fld, vizs%lic, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
-      if(viz_step%FLINE_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
-        call FLINE_visualize(viz_step%istep_fline, geofem,              &
-     &      VIZ_DAT%ele_4_nod, nod_fld, vizs%fline)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
+      call FLINE_visualize(viz_step%istep_fline, geofem,              &
+     &    VIZ_DAT%ele_4_nod, nod_fld, vizs%fline)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !
       end subroutine visualize_all
 !
