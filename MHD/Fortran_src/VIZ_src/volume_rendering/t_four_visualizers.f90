@@ -71,13 +71,11 @@
       type(four_visualize_modules), intent(inout) :: vizs
 !
 !
-      if(viz_step%PSF_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
-        call SECTIONING_initialize(geofem, VIZ_DAT%edge_comm, nod_fld,  &
-     &      viz_ctls%psf_ctls, vizs%psf)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
-        call calypso_mpi_barrier
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
+      call SECTIONING_initialize                                        &
+     &   (viz_step%PSF_t%increment, geofem, VIZ_DAT%edge_comm, nod_fld, &
+     &    viz_ctls%psf_ctls, vizs%psf)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       if(viz_step%ISO_t%increment .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
@@ -122,23 +120,21 @@
       type(four_visualize_modules), intent(inout) :: vizs
 !
 !
-      if(viz_step%PSF_t%increment .gt. 0) then
-        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
-        call SECTIONING_visualize                                     &
-     &     (viz_step%istep_psf, time_d, geofem, nod_fld, vizs%psf)
-        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
-      end if
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
+      call SECTIONING_visualize                                         &
+     &   (viz_step%istep_psf, time_d, geofem, nod_fld, vizs%psf)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       if(viz_step%ISO_t%increment .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-        call ISOSURF_visualize(viz_step%istep_iso, time_d, geofem,    &
+        call ISOSURF_visualize(viz_step%istep_iso, time_d, geofem,      &
      &      VIZ_DAT%edge_comm, nod_fld, vizs%iso)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
       end if
 !
       if(viz_step%PVR_t%increment .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-        call PVR_visualize(viz_step%istep_pvr, time_d%time,           &
+        call PVR_visualize(viz_step%istep_pvr, time_d%time,             &
      &      geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
       end if

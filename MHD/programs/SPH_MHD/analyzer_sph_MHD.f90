@@ -104,8 +104,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(MHD_step1%viz_step, FEM_d1%geofem,            &
      &    FEM_d1%field, VIZ_DAT1, MHD_ctl1%viz_ctls, vizs1)
-      call init_zonal_mean_sections(FEM_d1%geofem, VIZ_DAT1%edge_comm,  &
-     &    FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1)
+      call init_zonal_mean_sections(MHD_step1%viz_step, FEM_d1%geofem,  &
+     &    VIZ_DAT1%edge_comm, FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call reset_elapse_4_init_sph_mhd
@@ -185,7 +185,7 @@
 !*  ----------- Zonal means --------------
 !*
           if(MHD_step1%viz_step%istep_psf .ge. 0) then
-            call SGS_MHD_zmean_sections(MHD_step1%viz_step%istep_psf,   &
+            call SGS_MHD_zmean_sections(MHD_step1%viz_step,             &
      &          MHD_step1%time_d, SPH_MHD1%sph, FEM_d1%geofem,          &
      &          SPH_WK1%trns_WK, SPH_SGS1, FEM_d1%field,                &
      &          zmeans1, FEM_d1%v_sol)
