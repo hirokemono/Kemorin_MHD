@@ -95,7 +95,11 @@
       iflag_debug = 0
 !
       sample_cnt = 0
-
+!
+      do inum = 1, lic_p%kernel_t%n_knl
+        write(*,*) i_lic, my_rank, 'k_ary', inum, &
+     &            lic_p%kernel_t%x_ary(inum), lic_p%kernel_t%k_ary(inum)
+      end do
 !      range_min = 3.0
 !      range_max = 14.0
 !      allocate(n_mask)
@@ -309,7 +313,6 @@
      &          arccos_sf(isurf_end),  color_param, rgba_ray)
           end if
 !
-          if(i_lic .gt. 1) go to 200
 !   3d lic calculation at current xx position
 !   if sampling by fixed step size
           ray_len = sqrt( (xx4_tgt(1) - xx4_st(1))**2                   &
@@ -423,7 +426,6 @@
      &            color_param, ave_ray_len, rgba_ray)
             end if
           end if
- 200      continue
         end if
 !       write(*,*) 'rgba_ray end', rgba_ray
 !
