@@ -138,6 +138,7 @@
         call s_set_pvr_modelview_matrix                                 &
      &     (pvr_ctl_type(i_lic)%mat, pvr_param(i_lic)%view)
       end do
+      call finish_kemo_mt19937
 !
       end subroutine s_set_lic_controls
 !

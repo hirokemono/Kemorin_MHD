@@ -7,6 +7,8 @@
 !> @brief Construct 3D noise data for LIC
 !!
 !!@verbatim
+!!      subroutine init_kemo_mt19937
+!!      subroutine finish_kemo_mt19937
 !!      subroutine const_3d_noise                                       &
 !!     &         (i_stepsize, nidx, nnod_gl, rnoise_grad)
 !!        integer(kind = kint), intent(in) :: i_stepsize
@@ -39,8 +41,12 @@
       use m_precision
       use m_constants
 !
+      use mt_stream
+!
       implicit none
 !
+      logical, save :: flag_mts = .FALSE.
+      type(mt_state), save, private :: mts(1)
       integer(kind = kint), parameter :: ifix_seed =  1337
 !
       private :: whitenoise3D, halton_sequence
@@ -51,18 +57,38 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine init_kemo_mt19937
+!
+      integer :: iseeda(4) = (/ 123, 234, 345, 456 /)
+!
+      if(flag_mts) return
+!
+      call set_mt19937
+      call new(mts(1))
+!      call init(mts,iseed)  ! init by scalar
+      call init(mts(1),iseeda)  ! init by array
+      flag_mts = .TRUE.
+!
+      end subroutine init_kemo_mt19937
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine finish_kemo_mt19937
+!
+!
+      if(flag_mts) call delete(mts(1))
+!
+      end subroutine finish_kemo_mt19937
+!
+!  ---------------------------------------------------------------------
+!
       subroutine const_3d_noise                                         &
      &         (i_stepsize, nidx, nnod_gl, rnoise_grad)
-!
-      use mt_stream
 !
       integer(kind = kint), intent(in) :: i_stepsize
       integer(kind = kint), intent(in) :: nidx(3)
       integer(kind = kint_gl), intent(in) :: nnod_gl
       real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
-!
-      type(mt_state) :: mts(1)
-      integer :: iseeda(4) = (/ 123, 234, 345, 456 /)
 !
       integer(kind = kint_gl), parameter :: ibase = 17
       integer(kind = kint_gl), parameter :: jbase = 31
@@ -74,11 +100,6 @@
       real(kind = kreal) :: frand
 !      real(kind = kreal) :: x, y, z, length
 !
-!
-      call set_mt19937
-      call new(mts(1))
-!      call init(mts,iseed)  ! init by scalar
-      call init(mts(1),iseeda)  ! init by array
 !
       icou_gl = 0
       do
@@ -102,7 +123,6 @@
 !
         rnoise_grad(0,inod_gl) = genrand_double1(mts(1))
       end do
-      call delete(mts(1))
 !
       end subroutine const_3d_noise
 !
