@@ -52,12 +52,13 @@
      &          lic_p, pvr_screen, field_lic, draw_param, color_param,  &
      &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check,   &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
-     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
+     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray, i_lic)
 !
       use t_geometry_data
       use t_surface_data
       use t_noise_node_data
 !
+      integer(kind = kint), intent(in) :: i_lic
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -117,7 +118,7 @@
      &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
      &      xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),           &
      &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
-     &      node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
+     &      node%xyz_min_gl, node%xyz_max_gl, iflag_comm, i_lic)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
         sample_cnt = sample_cnt + icount_pvr_trace(inum)
       end do
@@ -134,7 +135,7 @@
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
      &        lic_p, field_lic, draw_param, color_param, ray_vec4,      &
      &        iflag_check, isurf_org, screen4_st, xx4_st, xi, rgba_ray, &
-     &        icount_line, xyz_min_gl, xyz_max_gl, iflag_comm)
+     &        icount_line, xyz_min_gl, xyz_max_gl, iflag_comm, i_lic)
 !
       use cal_field_on_surf_viz
       use cal_fline_in_cube
@@ -142,6 +143,7 @@
       use set_rgba_4_each_pixel
       use t_noise_node_data
 !
+      integer(kind = kint), intent(in) :: i_lic
       integer(kind = kint), intent(in) :: iflag_check
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -307,6 +309,7 @@
      &          arccos_sf(isurf_end),  color_param, rgba_ray)
           end if
 !
+          if(i_lic .gt. 1) go to 200
 !   3d lic calculation at current xx position
 !   if sampling by fixed step size
           ray_len = sqrt( (xx4_tgt(1) - xx4_st(1))**2                   &
@@ -420,6 +423,7 @@
      &            color_param, ave_ray_len, rgba_ray)
             end if
           end if
+ 200      continue
         end if
 !       write(*,*) 'rgba_ray end', rgba_ray
 !

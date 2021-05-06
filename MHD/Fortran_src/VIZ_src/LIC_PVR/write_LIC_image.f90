@@ -44,7 +44,7 @@
       subroutine rendering_image_4_lic                                  &
      &         (istep_pvr, time, mesh, lic_p, color_param,              &
      &          cbar_param, field_lic, draw_param, view_param,          &
-     &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
+     &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb, i_lic)
 !
       use m_geometry_constants
       use m_elapsed_labels_4_VIZ
@@ -64,6 +64,7 @@
       use write_PVR_image
 !      use composit_by_segmentad_image
 !
+      integer(kind = kint), intent(in) :: i_lic
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
@@ -92,7 +93,7 @@
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &
-     &    pvr_start%xx4_pvr_ray_start, pvr_start%rgba_ray)
+     &    pvr_start%xx4_pvr_ray_start, pvr_start%rgba_ray, i_lic)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
 !
 !

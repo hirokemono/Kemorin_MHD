@@ -53,10 +53,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_rendering_with_fixed_view(istep_pvr, time, mesh,   &
-     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
+     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb, i_lic)
 !
       use write_LIC_image
 !
+      integer(kind = kint), intent(in) :: i_lic
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
@@ -75,7 +76,7 @@
       call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
-     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
+     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb, i_lic)
 !
       end subroutine lic_rendering_with_fixed_view
 !
@@ -83,12 +84,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_lic_at_once(istep_pvr, time, mesh, group,    &
-     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
+     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb, i_lic)
 !
       use cal_pvr_modelview_mat
       use write_LIC_image
       use t_pvr_stencil_buffer
 !
+      integer(kind = kint), intent(in) :: i_lic
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
@@ -115,7 +117,7 @@
       call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
-     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
+     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb, i_lic)
 !
       end subroutine rendering_lic_at_once
 !
