@@ -125,7 +125,7 @@
 !
         call set_control_lic_parameter                                  &
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      lic_ctl_type(i_lic), lic_fld_pm(i_lic)%lic_param, i_lic)
+     &      lic_ctl_type(i_lic), lic_fld_pm(i_lic)%lic_param)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
@@ -140,14 +140,38 @@
      &     (pvr_ctl_type(i_lic)%mat, pvr_param(i_lic)%view)
       end do
 !
-      do i_lic = 1, num_lic
-        call set_control_lic_noise                                      &
-     &     ( lic_ctl_type(i_lic), lic_fld_pm(i_lic)%lic_param, i_lic)
-      end do
+      call set_control_lic_noise(num_lic, lic_fld_pm)
 !
       end subroutine s_set_lic_controls
 !
 !   --------------------------------------------------------------------
+!
+      subroutine set_control_lic_noise(num_lic, lic_fld_pm)
+!
+      use t_control_data_LIC
+      use bcast_3d_noise
+!
+      integer(kind = kint), intent(in) :: num_lic
+      type(LIC_field_params), intent(inout) :: lic_fld_pm(num_lic)
+!
+      integer(kind = kint) :: ierr, i_lic
+!
+!
+      if(my_rank .eq. 0) then
+        do i_lic = 1, num_lic
+          call sel_const_3d_cube_noise(my_rank,                         &
+     &        lic_fld_pm(i_lic)%lic_param%noise_t, ierr, i_lic)
+          if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
+        end do
+      end if
+      do i_lic = 1, num_lic
+        call bcast_3d_cube_noise(lic_fld_pm(i_lic)%lic_param%noise_t)
+      end do
+!
+!
+      end subroutine set_control_lic_noise
+!
+!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine flush_each_lic_control(lic_fld_pm)
