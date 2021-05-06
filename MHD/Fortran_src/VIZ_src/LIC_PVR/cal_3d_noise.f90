@@ -48,7 +48,7 @@
       logical, save :: flag_mts = .FALSE.
       type(mt_state), save, private :: mts(1)
       integer(kind = kint), parameter :: ifix_seed =  1337
-      integer(kind = kint_gl), private :: index = 23
+      integer(kind = kint_gl), save, private :: index = 23
 !
       private :: whitenoise3D, halton_sequence
 !
