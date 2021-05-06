@@ -162,7 +162,6 @@
         call init_kemo_mt_stream
         call const_3d_noise                                             &
      &     (nze%i_stepsize, nze%nidx_xyz, nze%n_cube, nze%rnoise_grad)
-        call finalize_kemo_mt_stream
       end if
 !
       do inum = 1, nze%n_cube
