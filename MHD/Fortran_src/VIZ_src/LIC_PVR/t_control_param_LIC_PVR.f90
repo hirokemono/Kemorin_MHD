@@ -102,6 +102,7 @@
       use set_control_each_pvr
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
+      use cal_3d_noise
 !
       integer(kind = kint), intent(in) :: num_lic
       type(mesh_groups), intent(in) :: group
