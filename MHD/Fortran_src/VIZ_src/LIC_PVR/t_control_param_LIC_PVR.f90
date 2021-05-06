@@ -112,7 +112,7 @@
       type(LIC_field_params), intent(inout) :: lic_fld_pm(num_lic)
       type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
 !
-      integer(kind = kint) :: i_lic, inum
+      integer(kind = kint) :: i_lic
 !
 !
       do i_lic = 1, num_lic
@@ -124,7 +124,7 @@
 !
         call set_control_lic_parameter                                  &
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      lic_ctl_type(i_lic), lic_fld_pm(i_lic)%lic_param)
+     &      lic_ctl_type(i_lic), lic_fld_pm(i_lic)%lic_param, i_lic)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
@@ -139,13 +139,6 @@
      &     (pvr_ctl_type(i_lic)%mat, pvr_param(i_lic)%view)
       end do
 !
-      do i_lic = 1, num_lic
-      do inum = 1, lic_fld_pm(i_lic)%lic_param%noise_t%n_cube
-        write(*,*) i_lic, my_rank, 'noise_t', inum, &
-     &     lic_fld_pm(i_lic)%lic_param%noise_t%rnoise_grad(0:3,inum)
-      end do
-      end do
-
       end subroutine s_set_lic_controls
 !
 !   --------------------------------------------------------------------

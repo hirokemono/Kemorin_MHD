@@ -144,16 +144,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_const_3d_cube_noise(my_rank, nze, ierr)
+      subroutine sel_const_3d_cube_noise(my_rank, nze, ierr, i_lic)
 !
       use m_error_IDs
       use delete_data_files
       use cal_3d_noise
 !
+      integer(kind = kint), intent(in) :: i_lic
       integer, intent(in) :: my_rank
       type(noise_cube), intent(inout) :: nze
       integer(kind = kint), intent(inout) :: ierr
 !
+      integer :: inum
 !
       ierr = 0
       if(nze%iflag_noise_type .eq. iflag_from_file) then
@@ -187,6 +189,11 @@
      &   (nze%n_cube, nze%nidx_xyz, nze%rnoise_grad)
       call grad_3d_noise                                                &
      &   (nze%n_cube, nze%nidx_xyz, nze%asize_cube, nze%rnoise_grad)
+!
+      do inum = 1, nze%n_cube
+        write(*,*) i_lic, my_rank, 'noise_t', inum, &
+     &     nze%rnoise_grad(0:3,inum)
+      end do
 !
       end subroutine sel_const_3d_cube_noise
 !
