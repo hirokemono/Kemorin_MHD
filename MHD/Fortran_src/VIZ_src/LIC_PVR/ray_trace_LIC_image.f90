@@ -96,10 +96,6 @@
 !
       sample_cnt = 0
 !
-      do inum = 1, lic_p%noise_t%n_cube
-        write(*,*) i_lic, my_rank, 'noise_t', inum, &
-     &     lic_p%noise_t%rnoise_grad(0:3,inum)
-      end do
 !      range_min = 3.0
 !      range_max = 14.0
 !      allocate(n_mask)
