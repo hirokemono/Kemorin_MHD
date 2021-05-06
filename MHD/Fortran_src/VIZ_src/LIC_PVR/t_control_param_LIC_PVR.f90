@@ -155,21 +155,10 @@
       integer(kind = kint), intent(in) :: num_lic
       type(LIC_field_params), intent(inout) :: lic_fld_pm(num_lic)
 !
-      integer(kind = kint) :: ierr, i_lic, iflag
-      integer(kind = kint_gl) :: ntot_noise
+      integer(kind = kint) :: ierr, i_lic
 !
 !
       if(my_rank .eq. 0) then
-        ntot_noise = 0
-        do i_lic = 1, num_lic
-          iflag = lic_fld_pm(i_lic)%lic_param%noise_t%iflag_noise_type
-          if(iflag .ne. iflag_from_file) then
-            ntot_noise = ntot_noise                                     &
-     &                + lic_fld_pm(i_lic)%lic_param%noise_t%n_cube
-          end if
-        end do
-        write(*,*) 'ntot_noise', ntot_noise
-!
         do i_lic = 1, num_lic
           call sel_const_3d_cube_noise                                  &
      &       (lic_fld_pm(i_lic)%lic_param%noise_t, i_lic)

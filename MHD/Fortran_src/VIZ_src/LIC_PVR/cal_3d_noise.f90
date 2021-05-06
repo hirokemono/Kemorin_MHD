@@ -44,7 +44,6 @@
 !
       logical, save :: flag_mt_stream = .FALSE.
       type(mt_state), save, private :: mts(1)
-      integer(kind = kint_gl), save, private :: index = 23
       real(kind = kreal), save, private :: frand
 !
       integer(kind = kint), parameter :: ifix_seed =  1337
@@ -93,16 +92,19 @@
       integer(kind = kint_gl), intent(in) :: nnod_gl
       real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
 !
+      integer(kind = kint_gl), parameter :: init_index = 1
       integer(kind = kint_gl), parameter :: ibase = 17
       integer(kind = kint_gl), parameter :: jbase = 31
       integer(kind = kint_gl), parameter :: kbase = 57
 !
+      integer(kind = kint_gl) :: index
       integer(kind = kint) :: i, j, k
       integer(kind = kint_gl) :: inod_gl, itmp_gl, icou_gl
 !      real(kind = kreal) :: x, y, z, length
 !
 !
       icou_gl = 0
+      index = init_index
       do
         i = int(dble(nidx(1)) * halton_sequence(index, ibase)) + 1
         j = int(dble(nidx(2)) * halton_sequence(index, jbase)) + 1
@@ -124,6 +126,7 @@
 !
         rnoise_grad(0,inod_gl) = genrand_double1(mts(1))
       end do
+      write(*,*) 'icou_gl', icou_gl
 !
       end subroutine const_3d_noise
 !

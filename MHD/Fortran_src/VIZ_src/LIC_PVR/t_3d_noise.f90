@@ -155,7 +155,6 @@
       integer(kind = kint), intent(in) :: i_lic
       type(noise_cube), intent(inout) :: nze
 !
-      integer :: inum
 !
       if(nze%iflag_noise_type .ne. iflag_from_file) then
         call alloc_3d_cube_noise(nze)
@@ -163,10 +162,6 @@
         call const_3d_noise                                             &
      &     (nze%i_stepsize, nze%nidx_xyz, nze%n_cube, nze%rnoise_grad)
       end if
-!
-      do inum = 1, nze%n_cube
-        write(*,*) i_lic, 'noise_t', inum, nze%rnoise_grad(0,inum)
-      end do
 !
       end subroutine sel_const_3d_cube_noise
 !
