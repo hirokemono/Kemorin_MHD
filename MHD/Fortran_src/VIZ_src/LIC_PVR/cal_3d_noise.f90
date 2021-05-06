@@ -45,6 +45,8 @@
       logical, save :: flag_mt_stream = .FALSE.
       type(mt_state), save, private :: mts(1)
       integer(kind = kint_gl), save, private :: index = 23
+      real(kind = kreal), save, private :: frand
+!
       integer(kind = kint), parameter :: ifix_seed =  1337
 !
       private :: whitenoise3D, halton_sequence
@@ -97,7 +99,6 @@
 !
       integer(kind = kint) :: i, j, k
       integer(kind = kint_gl) :: inod_gl, itmp_gl, icou_gl
-      real(kind = kreal) :: frand
 !      real(kind = kreal) :: x, y, z, length
 !
 !
