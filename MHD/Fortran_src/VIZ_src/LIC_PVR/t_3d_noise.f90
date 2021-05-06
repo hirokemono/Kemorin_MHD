@@ -9,7 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine set_control_3d_cube_noise(noise_ctl, nze)
-!!      subroutine sel_const_3d_cube_noise(my_rank, nze, ierr)
+!!      subroutine sel_const_3d_cube_noise(nze)
+!!      subroutine sel_input_3d_cube_noise(my_rank, nze, ierr)
+!!      subroutine sel_output_3d_cube_noise(nze)
 !!        type(cube_noise_ctl), intent(in) :: noise_ctl
 !!        type(noise_cube), intent(inout) :: nze
 !!
@@ -144,18 +146,41 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_const_3d_cube_noise(my_rank, nze, ierr, i_lic)
+      subroutine sel_const_3d_cube_noise(nze, i_lic)
 !
       use m_error_IDs
       use delete_data_files
       use cal_3d_noise
 !
       integer(kind = kint), intent(in) :: i_lic
+      type(noise_cube), intent(inout) :: nze
+!
+      integer :: inum
+!
+      if(nze%iflag_noise_type .ne. iflag_from_file) then
+        call alloc_3d_cube_noise(nze)
+        call const_3d_noise                                             &
+     &     (nze%i_stepsize, nze%nidx_xyz, nze%n_cube, nze%rnoise_grad)
+      end if
+!
+      do inum = 1, nze%n_cube
+        write(*,*) i_lic, 'noise_t', inum, nze%rnoise_grad(0,inum)
+      end do
+!
+      end subroutine sel_const_3d_cube_noise
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sel_input_3d_cube_noise(my_rank, nze, ierr)
+!
+      use m_error_IDs
+      use delete_data_files
+      use cal_3d_noise
+!
       integer, intent(in) :: my_rank
       type(noise_cube), intent(inout) :: nze
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer :: inum
 !
       ierr = 0
       if(nze%iflag_noise_type .eq. iflag_from_file) then
@@ -171,31 +196,27 @@
      &       trim(nze%noise_file_name), ' is missing'
           ierr = ierr_file
         end if
-      else
-        call alloc_3d_cube_noise(nze)
-        call const_3d_noise                                             &
-     &     (nze%i_stepsize, nze%nidx_xyz, nze%n_cube, nze%rnoise_grad)
-!
-        if(nze%noise_file_name .ne. no_file_name) then
-          call alloc_3d_cube_noise_IO(nze)
-          call cvt_rnoise_to_chara                                      &
-     &       (nze%n_cube, nze%rnoise_grad, nze%cnoise)
-          call write_3d_charanoise(nze%noise_file_name, nze)
-          call dealloc_3d_cube_noise_IO(nze)
-        end if
       end if
 !
-      call noise_normalization                                          &
-     &   (nze%n_cube, nze%nidx_xyz, nze%rnoise_grad)
-      call grad_3d_noise                                                &
-     &   (nze%n_cube, nze%nidx_xyz, nze%asize_cube, nze%rnoise_grad)
+      end subroutine sel_input_3d_cube_noise
 !
-      do inum = 1, nze%n_cube
-        write(*,*) i_lic, my_rank, 'noise_t', inum, &
-     &     nze%rnoise_grad(0:3,inum)
-      end do
+!  ---------------------------------------------------------------------
 !
-      end subroutine sel_const_3d_cube_noise
+      subroutine sel_output_3d_cube_noise(nze)
+!
+      use cal_3d_noise
+!
+      type(noise_cube), intent(inout) :: nze
+!
+!
+      if(nze%iflag_noise_type .eq. iflag_from_file) return
+      if(nze%noise_file_name .eq. no_file_name) return
+      call alloc_3d_cube_noise_IO(nze)
+      call cvt_rnoise_to_chara(nze%n_cube, nze%rnoise_grad, nze%cnoise)
+      call write_3d_charanoise(nze%noise_file_name, nze)
+      call dealloc_3d_cube_noise_IO(nze)
+!
+      end subroutine sel_output_3d_cube_noise
 !
 !  ---------------------------------------------------------------------
 !

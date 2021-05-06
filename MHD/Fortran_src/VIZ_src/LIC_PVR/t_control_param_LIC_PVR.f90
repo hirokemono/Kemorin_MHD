@@ -149,6 +149,7 @@
       subroutine set_control_lic_noise(num_lic, lic_fld_pm)
 !
       use t_control_data_LIC
+      use cal_3d_noise
       use bcast_3d_noise
 !
       integer(kind = kint), intent(in) :: num_lic
@@ -170,15 +171,32 @@
         write(*,*) 'ntot_noise', ntot_noise
 !
         do i_lic = 1, num_lic
-          call sel_const_3d_cube_noise(my_rank,                         &
-     &        lic_fld_pm(i_lic)%lic_param%noise_t, ierr, i_lic)
+          call sel_const_3d_cube_noise                                  &
+     &       (lic_fld_pm(i_lic)%lic_param%noise_t, i_lic)
+        end do
+!
+        do i_lic = 1, num_lic
+          call sel_input_3d_cube_noise(my_rank,                         &
+     &        lic_fld_pm(i_lic)%lic_param%noise_t, ierr)
           if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
+!
+          call noise_normalization                                      &
+     &       (lic_fld_pm(i_lic)%lic_param%noise_t%n_cube,               &
+     &        lic_fld_pm(i_lic)%lic_param%noise_t%nidx_xyz,             &
+     &        lic_fld_pm(i_lic)%lic_param%noise_t%rnoise_grad)
+          call grad_3d_noise                                            &
+     &       (lic_fld_pm(i_lic)%lic_param%noise_t%n_cube,               &
+     &        lic_fld_pm(i_lic)%lic_param%noise_t%nidx_xyz,             &
+     &        lic_fld_pm(i_lic)%lic_param%noise_t%asize_cube,           &
+     &        lic_fld_pm(i_lic)%lic_param%noise_t%rnoise_grad)
+          call sel_output_3d_cube_noise                                 &
+     &       (lic_fld_pm(i_lic)%lic_param%noise_t)
         end do
       end if
+!
       do i_lic = 1, num_lic
         call bcast_3d_cube_noise(lic_fld_pm(i_lic)%lic_param%noise_t)
       end do
-!
 !
       end subroutine set_control_lic_noise
 !
