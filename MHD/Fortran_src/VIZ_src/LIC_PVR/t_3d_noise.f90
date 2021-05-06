@@ -173,7 +173,6 @@
         end if
       else
         call alloc_3d_cube_noise(nze)
-        call init_kemo_mt19937
         call const_3d_noise                                             &
      &     (nze%i_stepsize, nze%nidx_xyz, nze%n_cube, nze%rnoise_grad)
 !

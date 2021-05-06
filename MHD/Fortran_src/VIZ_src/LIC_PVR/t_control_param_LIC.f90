@@ -97,6 +97,32 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine set_control_lic_noise(lic_ctl, lic_p, i_lic)
+!
+      use t_control_data_LIC
+      use bcast_3d_noise
+!
+      integer(kind = kint), intent(in) :: i_lic
+!
+      type(lic_parameter_ctl), intent(in) :: lic_ctl
+      type(lic_parameters), intent(inout) :: lic_p
+!
+      integer(kind = kint) :: ierr
+!
+!
+      if(my_rank .eq. 0) then
+        call set_control_3d_cube_noise                                  &
+     &     (lic_ctl%noise_ctl, lic_p%noise_t)
+        call sel_const_3d_cube_noise(my_rank, lic_p%noise_t, ierr, i_lic)
+        if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
+      end if
+!
+      call bcast_3d_cube_noise(lic_p%noise_t)
+!
+      end subroutine set_control_lic_noise
+!
+!  ---------------------------------------------------------------------
+!
       subroutine set_control_lic_parameter                              &
      &         (num_nod_phys, phys_nod_name, lic_ctl, lic_p, i_lic)
 !
@@ -105,7 +131,6 @@
       use set_components_flags
       use set_parallel_file_name
       use set_ucd_extensions
-      use bcast_3d_noise
 !
       integer(kind = kint), intent(in) :: i_lic
       integer(kind = kint), intent(in) :: num_nod_phys
@@ -120,7 +145,7 @@
       character(len = kchara) :: tmpfield(1), tmpcomp(1)
       character(len = kchara) :: tmpchara
 !
-      integer(kind = kint) :: i, ierr
+      integer(kind = kint) :: i
 !
 !
       if(lic_ctl%LIC_field_ctl%iflag .ne. 0) then
@@ -196,15 +221,6 @@
         end do
       end if
 !
-!
-      if(my_rank .eq. 0) then
-        call set_control_3d_cube_noise                                  &
-     &     (lic_ctl%noise_ctl, lic_p%noise_t)
-        call sel_const_3d_cube_noise(my_rank, lic_p%noise_t, ierr, i_lic)
-        if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
-      end if
-!
-      call bcast_3d_cube_noise(lic_p%noise_t)
 !
       if(my_rank .eq. 0) then
         call set_control_LIC_kernel(lic_ctl%kernel_ctl, lic_p%kernel_t)

@@ -139,7 +139,11 @@
         call s_set_pvr_modelview_matrix                                 &
      &     (pvr_ctl_type(i_lic)%mat, pvr_param(i_lic)%view)
       end do
-      call finish_kemo_mt19937
+!
+      do i_lic = 1, num_lic
+        call set_control_lic_noise                                      &
+     &     ( lic_ctl_type(i_lic), lic_fld_pm(i_lic)%lic_param, i_lic)
+      end do
 !
       end subroutine s_set_lic_controls
 !

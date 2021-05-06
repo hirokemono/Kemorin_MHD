@@ -7,8 +7,10 @@
 !> @brief Construct 3D noise data for LIC
 !!
 !!@verbatim
-!!      subroutine init_kemo_mt19937
-!!      subroutine finish_kemo_mt19937
+!!      subroutine alloc_random_for_LIC(nnod_gl, rnd)
+!!      subroutine dealloc_random_for_LIC(rnd)
+!!        integer(kind = kint_gl), intent(in) :: nnod_gl
+!!        type(random_for_LIC), intent(inout) :: rnd
 !!      subroutine const_3d_noise                                       &
 !!     &         (i_stepsize, nidx, nnod_gl, rnoise_grad)
 !!        integer(kind = kint), intent(in) :: i_stepsize
@@ -41,14 +43,14 @@
       use m_precision
       use m_constants
 !
-      use mt_stream
-!
       implicit none
 !
-      logical, save :: flag_mts = .FALSE.
-      type(mt_state), save, private :: mts(1)
+      type random_for_LIC
+        integer(kind = kint_gl) :: n_random
+        real(kind = kreal), allocatable :: d_random(:)
+      end type random_for_LIC
+!
       integer(kind = kint), parameter :: ifix_seed =  1337
-      integer(kind = kint_gl), save, private :: index = 23
 !
       private :: whitenoise3D, halton_sequence
 !
@@ -58,48 +60,61 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_kemo_mt19937
+      subroutine alloc_random_for_LIC(nnod_gl, rnd)
 !
-      integer :: iseeda(4) = (/ 123, 234, 345, 456 /)
+      integer(kind = kint_gl), intent(in) :: nnod_gl
+      type(random_for_LIC), intent(inout) :: rnd
 !
-      if(flag_mts) return
+      rnd%n_random = nnod_gl
+      allocate(rnd%d_random(rnd%n_random))
 !
-      call set_mt19937
-      call new(mts(1))
-!      call init(mts,iseed)  ! init by scalar
-      call init(mts(1),iseeda)  ! init by array
-      flag_mts = .TRUE.
+      if(rnd%n_random .le. 0) return
+!$omp parallel workshare
+      rnd%d_random(1:rnd%n_random) = 0.0d0
+!$omp end parallel workshare
 !
-      end subroutine init_kemo_mt19937
+      end subroutine alloc_random_for_LIC
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine finish_kemo_mt19937
+      subroutine dealloc_random_for_LIC(rnd)
 !
+      type(random_for_LIC), intent(inout) :: rnd
 !
-      if(flag_mts) call delete(mts(1))
+      deallocate(rnd%d_random)
 !
-      end subroutine finish_kemo_mt19937
+      end subroutine dealloc_random_for_LIC
 !
 !  ---------------------------------------------------------------------
 !
       subroutine const_3d_noise                                         &
      &         (i_stepsize, nidx, nnod_gl, rnoise_grad)
 !
+      use mt_stream
+!
       integer(kind = kint), intent(in) :: i_stepsize
       integer(kind = kint), intent(in) :: nidx(3)
       integer(kind = kint_gl), intent(in) :: nnod_gl
       real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
 !
+      type(mt_state) :: mts(1)
+      integer :: iseeda(4) = (/ 123, 234, 345, 456 /)
+!
       integer(kind = kint_gl), parameter :: ibase = 17
       integer(kind = kint_gl), parameter :: jbase = 31
       integer(kind = kint_gl), parameter :: kbase = 57
+      integer(kind = kint_gl) :: index = 23
 !
       integer(kind = kint) :: i, j, k
       integer(kind = kint_gl) :: inod_gl, itmp_gl, icou_gl
       real(kind = kreal) :: frand
 !      real(kind = kreal) :: x, y, z, length
 !
+!
+      call set_mt19937
+      call new(mts(1))
+!      call init(mts,iseed)  ! init by scalar
+      call init(mts(1),iseeda)  ! init by array
 !
       icou_gl = 0
       do
@@ -123,6 +138,7 @@
 !
         rnoise_grad(0,inod_gl) = genrand_double1(mts(1))
       end do
+      call delete(mts(1))
 !
       end subroutine const_3d_noise
 !
