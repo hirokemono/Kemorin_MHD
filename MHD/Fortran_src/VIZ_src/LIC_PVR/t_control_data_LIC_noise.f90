@@ -21,7 +21,7 @@
 !!      subroutine set_ctl_label_LIC_noise(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags  (Not used currently)
-!!    noise_type:             'external_file' or 'randum'
+!!    noise_type:             'external_file' or 'random'
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin cube_noise_ctl

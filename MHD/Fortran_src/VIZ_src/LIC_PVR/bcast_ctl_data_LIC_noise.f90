@@ -15,7 +15,7 @@
 !!        type(cube_noise_ctl), intent(inout) :: new_noise_c
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags  (Not used currently)
-!!    noise_type:             'external_file' or 'randum'
+!!    noise_type:             'external_file' or 'random'
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin cube_noise_ctl

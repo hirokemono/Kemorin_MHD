@@ -31,7 +31,7 @@
       character(len = kchara), parameter, private                       &
      &                        :: cflag_from_file = 'file'
       character(len = kchara), parameter, private                       &
-     &                        :: cflag_randum = 'randum'
+     &                        :: cflag_random = 'random'
 !
       character(len = kchara), parameter, private                       &
      &                        :: no_file_name = 'NO_FILE'
@@ -42,7 +42,7 @@
       type noise_cube
 !>        integer flag for LIC kernel function
 !>          cflag_from_file: Read noise data file
-!>          iflag_randum:    generate fram randum number
+!>          iflag_randum:    generate fram random number
         integer(kind = kint) :: iflag_noise_type = 0
 !
 !>         Noise file name to read/write
@@ -108,7 +108,7 @@
         tmpchara = noise_ctl%noise_type_ctl%charavalue
         if(cmp_no_case(tmpchara, cflag_from_file)) then
           nze%iflag_noise_type = iflag_from_file
-        else if(cmp_no_case(tmpchara, cflag_randum)) then
+        else if(cmp_no_case(tmpchara, cflag_random)) then
           nze%iflag_noise_type = iflag_randum
         end if
       end if
