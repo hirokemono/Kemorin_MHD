@@ -55,7 +55,7 @@
 !
       subroutine lic_rendering_with_rotation                            &
      &         (istep_pvr, time, mesh, group, lic_p, field_lic,         &
-     &          pvr_param, pvr_proj, pvr_rgb, i_lic)
+     &          pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -63,7 +63,6 @@
       use write_LIC_image
       use write_PVR_image
 !
-      integer(kind = kint), intent(in) :: i_lic
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
@@ -86,7 +85,7 @@
      &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
         call rendering_lic_at_once(istep_pvr, time, mesh, group,        &
-     &      lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb, i_lic)
+     &      lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
@@ -102,7 +101,7 @@
 !
       subroutine anaglyph_lic_rendering_w_rot                           &
      &         (istep_pvr, time, mesh, group, lic_p, field_lic,         &
-     &          pvr_param, pvr_proj, pvr_rgb, i_lic)
+     &          pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -110,7 +109,6 @@
       use write_LIC_image
       use write_PVR_image
 !
-      integer(kind = kint), intent(in) :: i_lic
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
@@ -134,12 +132,12 @@
 !
 !    Left eye
         call rendering_lic_at_once(istep_pvr, time, mesh, group,        &
-     &      lic_p, field_lic, pvr_param, pvr_proj(1), pvr_rgb, i_lic)
+     &      lic_p, field_lic, pvr_param, pvr_proj(1), pvr_rgb)
         call store_left_eye_image(pvr_rgb)
 !
 !    Right eye
         call rendering_lic_at_once(istep_pvr, time, mesh, group,        &
-     &      lic_p, field_lic, pvr_param, pvr_proj(2), pvr_rgb, i_lic)
+     &      lic_p, field_lic, pvr_param, pvr_proj(2), pvr_rgb)
         call add_left_eye_image(pvr_rgb)
 !
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)

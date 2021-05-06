@@ -269,8 +269,7 @@
         call s_each_LIC_rendering(istep_lic, time,                      &
      &      repart_p, viz_fem, mesh_to_viz_tbl, geofem%mesh, nod_fld,   &
      &      lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),            &
-     &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img), v_sol, &
-     &      i_lic)
+     &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img), v_sol)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -297,7 +296,7 @@
      &        repart_p, viz_fem, mesh_to_viz_tbl, geofem%mesh, nod_fld, &
      &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
-     &        v_sol, i_lic)
+     &        v_sol)
         end if
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)

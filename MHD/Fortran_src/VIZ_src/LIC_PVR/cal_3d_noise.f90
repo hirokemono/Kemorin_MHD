@@ -126,7 +126,6 @@
 !
         rnoise_grad(0,inod_gl) = genrand_double1(mts(1))
       end do
-      write(*,*) 'icou_gl', icou_gl
 !
       end subroutine const_3d_noise
 !

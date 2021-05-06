@@ -146,13 +146,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_const_3d_cube_noise(nze, i_lic)
+      subroutine sel_const_3d_cube_noise(nze)
 !
       use m_error_IDs
       use delete_data_files
       use cal_3d_noise
 !
-      integer(kind = kint), intent(in) :: i_lic
       type(noise_cube), intent(inout) :: nze
 !
 !

@@ -161,7 +161,7 @@
       if(my_rank .eq. 0) then
         do i_lic = 1, num_lic
           call sel_const_3d_cube_noise                                  &
-     &       (lic_fld_pm(i_lic)%lic_param%noise_t, i_lic)
+     &       (lic_fld_pm(i_lic)%lic_param%noise_t)
         end do
         call finalize_kemo_mt_stream
 !

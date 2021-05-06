@@ -54,7 +54,7 @@
       call  read_cube_noise_control_file(id_control, ctl_file_name,     &
      &    hd_cube_noise, noise_c1)
       call set_control_3d_cube_noise(noise_c1, noise_t1)
-      call sel_const_3d_cube_noise(noise_t1, 1)
+      call sel_const_3d_cube_noise(noise_t1)
       call finalize_kemo_mt_stream
       call sel_input_3d_cube_noise(my_rank, noise_t1, ierr)
       call sel_output_3d_cube_noise(noise_t1)
