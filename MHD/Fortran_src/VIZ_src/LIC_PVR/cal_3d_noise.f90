@@ -76,6 +76,7 @@
       if(flag_mt_stream .EQV. .FALSE.) return
       write(*,*) 'Finalize kemo_mt_stream'
       call delete(mts(1))
+      flag_mt_stream = .FALSE.
 !
       end subroutine finalize_kemo_mt_stream
 !

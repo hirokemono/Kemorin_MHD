@@ -6,6 +6,7 @@
       use m_machine_parameter
       use t_3d_noise
       use t_control_data_LIC_noise
+      use cal_3d_noise
 !
       implicit none
 !
@@ -22,6 +23,7 @@
      &    hd_cube_noise, noise_c1)
       call set_control_3d_cube_noise(noise_c1, noise_t1)
       call sel_const_3d_cube_noise(noise_t1, 1)
+      call finalize_kemo_mt_stream
       call sel_input_3d_cube_noise(0, noise_t1, ierr)
       call sel_output_3d_cube_noise(noise_t1)
       call dealloc_3d_cube_noise(noise_t1)
