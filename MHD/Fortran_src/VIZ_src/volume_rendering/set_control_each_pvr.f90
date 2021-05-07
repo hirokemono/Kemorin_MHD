@@ -44,7 +44,7 @@
 !
       implicit  none
 !
-      private :: set_control_pvr_render_area, set_control_pvr_isosurf
+      private :: set_control_pvr_render_area, set_control_pvr_isosurfs
 !
 !  ---------------------------------------------------------------------
 !
@@ -139,7 +139,7 @@
 !
       call set_control_pvr_sections(pvr_ctl%pvr_scts_c, draw_param)
 !
-      call set_control_pvr_isosurf(pvr_ctl%pvr_isos_c, draw_param)
+      call set_control_pvr_isosurfs(pvr_ctl%pvr_isos_c, draw_param)
 !
 !    set colormap setting
       call set_control_pvr_lighting(pvr_ctl%light, color_param)
@@ -241,7 +241,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_pvr_isosurf(pvr_isos_c, draw_param)
+      subroutine set_control_pvr_isosurfs(pvr_isos_c, draw_param)
 !
       use t_control_data_pvr_isosurfs
       use t_geometries_in_pvr_screen
@@ -289,7 +289,7 @@
         end if
       end do
 !
-      end subroutine set_control_pvr_isosurf
+      end subroutine set_control_pvr_isosurfs
 !
 !  ---------------------------------------------------------------------
 !

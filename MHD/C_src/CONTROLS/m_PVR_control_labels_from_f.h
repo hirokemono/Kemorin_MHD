@@ -111,10 +111,12 @@ label[0]   surface_define
 label[1]   opacity_ctl 
 
 Check pvr_ctl_labls->label_pvr_isosurf
-ctl_list->num_labels 3 
-label[0]   isosurf_value 
-label[1]   opacity_ctl 
-label[2]   surface_direction 
+ctl_list->num_labels 5
+label[0]   isosurf_field
+label[1]   isosurf_component
+label[2]   isosurf_value
+label[3]   opacity_ctl
+label[4]   surface_direction
 
 Check pvr_ctl_labls->num_label_pvr_movie_c 6
 Check lic_ctl_labls->label_lic_movie

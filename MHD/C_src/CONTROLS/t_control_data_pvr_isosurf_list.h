@@ -20,6 +20,8 @@
 struct pvr_isosurf_ctl_c{
 	struct control_labels_f *label_pvr_isosurf;
 	
+    struct chara_ctl_item *isosurf_data_ctl;
+    struct chara_ctl_item *isosurf_cmp_ctl;
 	struct real_ctl_item *iso_value_ctl;
 	struct real_ctl_item *opacity_ctl;
 	struct chara_ctl_item *isosurf_type_ctl;

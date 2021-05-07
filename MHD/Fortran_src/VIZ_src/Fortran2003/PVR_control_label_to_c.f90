@@ -296,7 +296,7 @@
 !
       integer(c_int) function num_label_pvr_isosurface_f() bind(c)
 !
-      use t_control_data_pvr_isosurfs
+      use t_ctl_data_pvr_isosurface
 !
       num_label_pvr_isosurface_f = num_label_pvr_isosurface()
       return
@@ -306,7 +306,7 @@
 !
       subroutine set_label_pvr_isosurface_f(names)  bind(c)
 !
-      use t_control_data_pvr_isosurfs
+      use t_ctl_data_pvr_isosurface
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
