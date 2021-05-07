@@ -15,12 +15,12 @@
 !!        type(lic_parameter_ctl), intent(inout)                        &
 !!     &                        :: lic_ctl_type(num_lic_ctl)
 !!      subroutine s_set_lic_controls(group, nod_fld, num_lic,          &
-!!     &           pvr_ctl_type, lic_ctl_type, lic_fld_pm, pvr_param)
+!!     &          lic_ctl_type, pvr_ctl_type, lic_fld_pm, pvr_param)
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
+!!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type(num_lic)
 !!        type(LIC_field_params), intent(inout) :: lic_fld_pm(num_lic)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
 !!      subroutine flush_each_lic_control(lic_fld_pm)
@@ -91,7 +91,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_lic_controls(group, nod_fld, num_lic,            &
-     &           pvr_ctl_type, lic_ctl_type, lic_fld_pm, pvr_param)
+     &          lic_ctl_type, pvr_ctl_type, lic_fld_pm, pvr_param)
 !
       use m_error_IDs
       use t_phys_data
@@ -107,9 +107,9 @@
       integer(kind = kint), intent(in) :: num_lic
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
       type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
 !
+      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type(num_lic)
       type(LIC_field_params), intent(inout) :: lic_fld_pm(num_lic)
       type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
 !
@@ -129,9 +129,9 @@
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
-     &     (pvr_ctl_type(i_lic), group%ele_grp, group%surf_grp,         &
-     &      pvr_param(i_lic)%area_def, pvr_param(i_lic)%draw_param,     &
-     &      pvr_param(i_lic)%color, pvr_param(i_lic)%colorbar)
+     &    (group%ele_grp, group%surf_grp, nod_fld, pvr_ctl_type(i_lic), &
+     &     pvr_param(i_lic)%area_def, pvr_param(i_lic)%draw_param,      &
+     &     pvr_param(i_lic)%color, pvr_param(i_lic)%colorbar)
 !        pvr_param(i_lic)%colorbar%iflag_opacity = 0
 !
 !   set transfer matrix

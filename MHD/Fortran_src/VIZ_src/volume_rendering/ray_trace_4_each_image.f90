@@ -94,7 +94,8 @@
      &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,            &
      &       ele%interior_ele, node%xx, surf%vnorm_surf,                &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
-     &       viewpoint_vec, field_pvr, draw_param, color_param,         &
+     &       viewpoint_vec, field_pvr, draw_param,                      &
+     &       draw_param%pvr_iso_p, color_param,                         &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
@@ -112,10 +113,11 @@
      &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
      &        arccos_sf, x_nod_model, viewpoint_vec, field_pvr,         &
-     &        draw_param, color_param, ray_vec4, iflag_check,           &
-     &        isurf_org, screen4_st, xx4_st, xi, rgba_ray,              &
+     &        draw_param, pvr_iso_p, color_param, ray_vec4,             &
+     &        iflag_check, isurf_org, screen4_st, xx4_st, xi, rgba_ray, &
      &        icount_line, iflag_comm)
 !
+      use t_control_param_pvr_isosurf
       use cal_field_on_surf_viz
       use cal_fline_in_cube
       use set_coefs_of_sections
@@ -137,6 +139,7 @@
 !
       type(pvr_field_data), intent(in) :: field_pvr
       type(rendering_parameter), intent(in) :: draw_param
+      type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
@@ -253,16 +256,16 @@
             end if
           end do
 !
-          do i_iso = 1, draw_param%num_isosurf
-            rflag =  (c_org(1) - draw_param%iso_value(i_iso))           &
-     &             * (c_tgt(1) - draw_param%iso_value(i_iso))
-            if((c_tgt(1) - draw_param%iso_value(i_iso)) .eq. zero       &
+          do i_iso = 1, pvr_iso_p%num_isosurf
+            rflag =  (c_org(1) - pvr_iso_p%iso_value(i_iso))            &
+     &             * (c_tgt(1) - pvr_iso_p%iso_value(i_iso))
+            if((c_tgt(1) - pvr_iso_p%iso_value(i_iso)) .eq. zero        &
      &        .or. rflag .lt. zero) then
               grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)              &
-     &                       * draw_param%itype_isosurf(i_iso)
+     &                       * pvr_iso_p%itype_isosurf(i_iso)
               call color_plane_with_light(viewpoint_vec, xx4_tgt,       &
-     &            draw_param%iso_value(i_iso), grad_tgt,                &
-     &            draw_param%iso_opacity(i_iso), color_param, rgba_ray)
+     &            pvr_iso_p%iso_value(i_iso), grad_tgt,                 &
+     &            pvr_iso_p%iso_opacity(i_iso), color_param, rgba_ray)
             end if
           end do
 !

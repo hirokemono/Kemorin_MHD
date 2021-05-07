@@ -25,6 +25,7 @@
       use m_error_IDs
       use skip_comment_f
       use t_control_params_4_pvr
+      use t_control_param_4_pvr_field
       use t_control_param_LIC_masking
       use t_noise_node_data
       use t_3d_noise

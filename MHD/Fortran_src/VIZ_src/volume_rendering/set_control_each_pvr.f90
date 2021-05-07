@@ -6,16 +6,12 @@
 !>@brief Set each PVR parameters from control
 !!
 !!@verbatim
-!!      subroutine check_pvr_field_control                              &
-!!     &         (pvr_ctl, num_nod_phys, phys_nod_name)
-!!
-!!      subroutine set_control_field_4_pvr(field_ctl, comp_ctl,         &
-!!     &          num_nod_phys, phys_nod_name, fld_param, icheck_ncomp)
-!!      subroutine set_control_pvr(pvr_ctl, ele_grp, surf_grp, pvr_area,&
-!!     &          view_param, draw_param, color_param, cbar_param)
+!!      subroutine set_control_pvr(ele_grp, surf_grp, nod_fld, pvr_ctl, &
+!!     &          pvr_area, draw_param, color_param, cbar_param)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: surf_grp
-!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
 !!        type(pvr_field_parameter), intent(inout) :: fld_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(rendering_parameter), intent(inout) :: draw_param
@@ -44,7 +40,7 @@
 !
       implicit  none
 !
-      private :: set_control_pvr_render_area, set_control_pvr_isosurfs
+      private :: set_control_pvr_render_area
 !
 !  ---------------------------------------------------------------------
 !
@@ -52,69 +48,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_pvr_field_control                                &
-     &         (pvr_ctl, num_nod_phys, phys_nod_name)
+      subroutine set_control_pvr(ele_grp, surf_grp, nod_fld, pvr_ctl,   &
+     &          pvr_area, draw_param, color_param, cbar_param)
 !
-      use t_control_params_4_pvr
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
-!
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl
-!
-      integer(kind = kint) :: num_field, num_phys_viz
-      character(len = kchara) :: tmpfield(1)
-!
-!
-      tmpfield(1) = pvr_ctl%pvr_field_ctl%charavalue
-      call check_field_4_viz(num_nod_phys, phys_nod_name,               &
-     &    ione, tmpfield, num_field, num_phys_viz)
-      if(num_field .eq. 0) then
-        call calypso_MPI_abort(ierr_PVR,'set correct field name')
-      end if
-!
-      end subroutine check_pvr_field_control
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine set_control_field_4_pvr(field_ctl, comp_ctl,           &
-     &          num_nod_phys, phys_nod_name, fld_param, icheck_ncomp)
-!
-      use t_control_array_character
-      use t_control_params_4_pvr
-!
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
-      type(read_character_item), intent(in) :: field_ctl
-      type(read_character_item), intent(in) :: comp_ctl
-!
-      type(pvr_field_parameter), intent(inout) :: fld_param
-      integer(kind = kint), intent(inout) :: icheck_ncomp(1)
-!
-      integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
-      character(len = kchara) :: fldname_tmp(1)
-      character(len = kchara) :: tmpfield(1), tmpcomp(1)
-!
-!
-      tmpfield(1) = field_ctl%charavalue
-      tmpcomp(1) =  comp_ctl%charavalue
-      call set_components_4_viz                                         &
-     &   (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp, ione,   &
-     &    ifld_tmp, icomp_tmp, icheck_ncomp, ncomp_tmp, fldname_tmp)
-      fld_param%id_field =          ifld_tmp(1)
-      fld_param%id_component =      icomp_tmp(1)
-      fld_param%num_original_comp = ncomp_tmp(1)
-      fld_param%field_name =        fldname_tmp(1)
-!
-      end subroutine set_control_field_4_pvr
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_control_pvr(pvr_ctl, ele_grp, surf_grp, pvr_area,  &
-     &          draw_param, color_param, cbar_param)
-!
+      use t_phys_data
       use t_group_data
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
@@ -126,8 +63,9 @@
 !
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: surf_grp
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl
+      type(phys_data), intent(in) :: nod_fld
 !
+      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
       type(rendering_parameter), intent(inout) :: draw_param
       type(viz_area_parameter), intent(inout) :: pvr_area
       type(pvr_colormap_parameter), intent(inout) :: color_param
@@ -139,7 +77,10 @@
 !
       call set_control_pvr_sections(pvr_ctl%pvr_scts_c, draw_param)
 !
-      call set_control_pvr_isosurfs(pvr_ctl%pvr_isos_c, draw_param)
+      call set_control_pvr_isosurfs                                     &
+     &   (nod_fld%num_phys, nod_fld%phys_name,                          &
+     &    pvr_ctl%pvr_field_ctl, pvr_ctl%pvr_comp_ctl,                  &
+     &    pvr_ctl%pvr_isos_c, draw_param%pvr_iso_p)
 !
 !    set colormap setting
       call set_control_pvr_lighting(pvr_ctl%light, color_param)
@@ -238,58 +179,6 @@
       end if
 !
       end subroutine set_control_pvr_sections
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_control_pvr_isosurfs(pvr_isos_c, draw_param)
-!
-      use t_control_data_pvr_isosurfs
-      use t_geometries_in_pvr_screen
-      use pvr_surface_enhancement
-!
-      type(pvr_isosurfs_ctl), intent(in) :: pvr_isos_c
-!
-      type(rendering_parameter), intent(inout) :: draw_param
-!
-      integer(kind = kint) ::  i
-      character(len = kchara) :: tmpchara
-!
-      integer(kind = kint) :: iflag
-!
-!
-      draw_param%num_isosurf = pvr_isos_c%num_pvr_iso_ctl
-      if(draw_param%num_isosurf .le. 0) return
-!
-      call alloc_pvr_isosurfaces(draw_param)
-!
-      do i = 1, draw_param%num_isosurf
-        iflag = pvr_isos_c%pvr_iso_ctl(i)%iso_value_ctl%iflag
-        if(iflag .gt. 0) then
-          draw_param%iso_value(i)                                       &
-     &        = pvr_isos_c%pvr_iso_ctl(i)%iso_value_ctl%realvalue
-        end if
-!
-        iflag = pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%iflag
-        if(iflag .gt. 0) then
-          draw_param%iso_opacity(i)                                     &
-     &        = pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%realvalue
-        end if
-!
-        iflag = pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%iflag
-        if(iflag .gt. 0) then
-          tmpchara                                                      &
-     &      = pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%charavalue
-          if(cmp_no_case(tmpchara, LABEL_DECREASE)) then
-            draw_param%itype_isosurf(i) = IFLAG_SHOW_REVERSE
-          else if(cmp_no_case(tmpchara, LABEL_DECREASE)) then
-            draw_param%itype_isosurf(i) = IFLAG_SHOW_FORWARD
-          else
-            draw_param%itype_isosurf(i) = IFLAG_SHOW_FORWARD
-          end if
-        end if
-      end do
-!
-      end subroutine set_control_pvr_isosurfs
 !
 !  ---------------------------------------------------------------------
 !

@@ -17,7 +17,6 @@
 !!      subroutine dealloc_rendering_params_4_pvr(draw_param)
 !!
 !!      subroutine alloc_pvr_sections(draw_param)
-!!      subroutine alloc_pvr_isosurfaces(draw_param)
 !!
 !!      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
 !!      subroutine dealloc_data_4_pvr(draw_param)
@@ -34,6 +33,8 @@
 !
       use m_precision
       use m_constants
+!
+      use t_control_param_pvr_isosurf
 !
       implicit  none
 !
@@ -74,14 +75,8 @@
 !>    Opacity value for isosurfaces
         real(kind = kreal), allocatable :: sect_opacity(:)
 !
-!>    Number of isosurfaces
-        integer(kind = kint) :: num_isosurf
-!>    Number of isosurfaces
-        integer(kind = kint), allocatable :: itype_isosurf(:)
-!>    fiale value for isosurfaces
-        real(kind = kreal), allocatable :: iso_value(:)
-!>    Opacity value for isosurfaces
-        real(kind = kreal), allocatable :: iso_opacity(:)
+!>  Structure of parameters for isosurfaces in PVR
+        type(pvr_isosurf_parameter) :: pvr_iso_p
       end type rendering_parameter
 !
 !>  Structure for pixel position
@@ -214,23 +209,6 @@
       end subroutine alloc_pvr_sections
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine alloc_pvr_isosurfaces(draw_param)
-!
-      type(rendering_parameter), intent(inout) :: draw_param
-!
-!
-      allocate(draw_param%itype_isosurf(draw_param%num_isosurf))
-      allocate(draw_param%iso_value(draw_param%num_isosurf))
-      allocate(draw_param%iso_opacity(draw_param%num_isosurf))
-!
-      if(draw_param%num_isosurf .gt. 0) draw_param%itype_isosurf = 0
-      if(draw_param%num_isosurf .gt. 0) draw_param%iso_value = zero
-      if(draw_param%num_isosurf .gt. 0) draw_param%iso_opacity = zero
-!
-      end subroutine alloc_pvr_isosurfaces
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_pvr_sections(draw_param)
@@ -241,18 +219,6 @@
       deallocate(draw_param%coefs, draw_param%sect_opacity)
 !
       end subroutine dealloc_pvr_sections
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_pvr_isosurfaces(draw_param)
-!
-      type(rendering_parameter), intent(inout) :: draw_param
-!
-!
-      deallocate(draw_param%itype_isosurf)
-      deallocate(draw_param%iso_value, draw_param%iso_opacity)
-!
-      end subroutine dealloc_pvr_isosurfaces
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -17,7 +17,7 @@
 !!        integer(kind = kint), intent(in) :: num_pvr
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_pvr)
+!!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type(num_pvr)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
 !!
 !!      subroutine read_control_pvr_update                              &
@@ -77,6 +77,7 @@
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_sections
+      use t_control_param_4_pvr_field
       use set_control_each_pvr
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
@@ -84,8 +85,8 @@
       integer(kind = kint), intent(in) :: num_pvr
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_pvr)
 !
+      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type(num_pvr)
       type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
 !
       integer(kind = kint) :: i_pvr
@@ -98,7 +99,7 @@
         call set_pvr_stereo_control                                     &
      &     (pvr_ctl_type(i_pvr), pvr_param(i_pvr)%view)
 !
-        call check_pvr_field_control(pvr_ctl_type(i_pvr),               &
+        call check_pvr_field_control(pvr_ctl_type(i_pvr)%pvr_field_ctl, &
      &      nod_fld%num_phys, nod_fld%phys_name)
 !
         call set_control_field_4_pvr                                    &
@@ -111,9 +112,9 @@
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
-     &     (pvr_ctl_type(i_pvr), group%ele_grp, group%surf_grp,         &
-     &      pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%draw_param,     &
-     &      pvr_param(i_pvr)%color, pvr_param(i_pvr)%colorbar)
+     &    (group%ele_grp, group%surf_grp, nod_fld, pvr_ctl_type(i_pvr), &
+     &     pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%draw_param,      &
+     &     pvr_param(i_pvr)%color, pvr_param(i_pvr)%colorbar)
 !
 !   set transfer matrix
 !
@@ -138,9 +139,7 @@
         call dealloc_pvr_sections(pvr_param%draw_param)
       end if
 !
-      if(pvr_param%draw_param%num_isosurf .gt. 0) then
-        call dealloc_pvr_isosurfaces(pvr_param%draw_param)
-      end if
+      call dealloc_pvr_isosurf_param(pvr_param%draw_param%pvr_iso_p)
 !
       call dealloc_pvr_element_group(pvr_param%area_def)
       call dealloc_pvr_color_parameteres(pvr_param%color)

@@ -72,7 +72,6 @@
 !
       type(pvr_isosurf_ctl) :: pvr_iso_tmp
       integer(kind = kint) :: inum
-      integer :: i
 !
       if(allocated(pvr_isos_c%pvr_iso_ctl)) return
       pvr_isos_c%num_pvr_iso_ctl = 0
@@ -235,7 +234,7 @@
 !
       subroutine check_pvr_isosurfs_ctl(num_pvr_iso_ctl, pvr_iso_ctl)
 !
-      integer(kind = kint), intent(in) :: num_pvr_iso_ctl = 0
+      integer(kind = kint), intent(in) :: num_pvr_iso_ctl
       type(pvr_isosurf_ctl), intent(in) :: pvr_iso_ctl(num_pvr_iso_ctl)
 !
       integer :: i

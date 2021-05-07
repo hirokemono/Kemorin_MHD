@@ -5,5 +5,5 @@ test_zlib_lines.o: $(ZLIB_TEST_DIR)/test_zlib_lines.f90 m_precision.o t_buffer_4
 
 #
 comptest_zlib.o: \
-  $(MHDDIR)/programs/TESTS/zlib_test/comptest_zlib.c
+ $(MHDDIR)/programs/TESTS/zlib_test/comptest_zlib.c
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<

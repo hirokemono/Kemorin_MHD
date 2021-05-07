@@ -79,7 +79,7 @@
       use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_geometries_in_pvr_screen
-      use t_control_params_4_pvr
+      use t_control_param_4_pvr_field
       use cal_gradient_on_element
       use convert_components_4_viz
 !

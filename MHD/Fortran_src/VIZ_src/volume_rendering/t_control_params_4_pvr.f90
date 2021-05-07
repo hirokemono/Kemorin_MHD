@@ -45,18 +45,6 @@
       character(len=kchara), parameter                                  &
      &             :: c_movie_lic_kernel = 'LIC_kernel'
 !
-!>  Structure for field parameter for PVR
-      type pvr_field_parameter
-!>     Field type for PVR data
-        integer(kind = kint) :: id_field =          0
-!>     Component flag for PVR data
-        integer(kind = kint) :: id_component =      0
-!>     Number of component of data for Rendering
-        integer(kind = kint) :: num_original_comp = 0
-!>     Field name of data for Rendering
-        character(len = kchara) :: field_name
-      end type pvr_field_parameter
-!
 !>  Structure for rendering area by element group
       type viz_area_parameter
 !>     Number of Element group for volume rendering
