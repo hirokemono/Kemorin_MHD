@@ -164,7 +164,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
      &    jacs%g_FEM, jacs%jac_3d, nod_fld,                             &
-     &    pvr_param%field_def, field_pvr)
+     &    pvr_param%field_def, pvr_param%pvr_iso_p, field_pvr)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -223,7 +223,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
      &    jacs%g_FEM, jacs%jac_3d, nod_fld,                             &
-     &    pvr_param%field_def, field_pvr)
+     &    pvr_param%field_def, pvr_param%pvr_iso_p, field_pvr)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &

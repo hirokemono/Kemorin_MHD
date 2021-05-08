@@ -44,6 +44,7 @@
       use t_pvr_stencil_buffer
       use t_pvr_field_data
       use t_control_param_4_pvr_field
+      use t_control_param_pvr_isosurf
       use generate_vr_image
 !
       implicit  none
@@ -63,6 +64,9 @@
         type(rendering_parameter) :: draw_param
 !>        Structure for PVR colormap
         type(pvr_colorbar_parameter):: colorbar
+!
+!>        Structure of parameters for isosurfaces in PVR
+        type(pvr_isosurf_parameter) :: pvr_iso_p
 !
 !>        Viewer coordinate information
         type(pvr_view_parameter) :: view
@@ -145,7 +149,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
-     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
+     &    pvr_param%draw_param, pvr_param%pvr_iso_p,                    &
+     &    pvr_param%view, pvr_proj%screen,                              &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_with_fixed_view
@@ -200,8 +205,9 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
-     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
-     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
+     &    pvr_param%draw_param, pvr_param%pvr_iso_p, pvr_param%view,    &
+     &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
+     &    pvr_rgb)
 !
       end subroutine rendering_at_once
 !

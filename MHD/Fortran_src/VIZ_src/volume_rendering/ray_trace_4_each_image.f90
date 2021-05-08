@@ -7,8 +7,8 @@
 !>@brief structure of control data for multiple volume rendering
 !!
 !!@verbatim
-!!      subroutine s_ray_trace_4_each_image(node, ele, surf,            &
-!!     &          pvr_screen, field_pvr, draw_param, color_param,       &
+!!      subroutine s_ray_trace_4_each_image(node, ele, surf, pvr_screen,&
+!!     &          field_pvr, draw_param, pvr_iso_p, color_param,        &
 !!     &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check, &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
@@ -32,6 +32,7 @@
       use t_control_params_4_pvr
       use t_pvr_field_data
       use t_geometries_in_pvr_screen
+      use t_control_param_pvr_isosurf
 !
       implicit  none
 !
@@ -43,8 +44,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_ray_trace_4_each_image(node, ele, surf,              &
-     &          pvr_screen, field_pvr, draw_param, color_param,         &
+      subroutine s_ray_trace_4_each_image(node, ele, surf, pvr_screen,  &
+     &          field_pvr, draw_param, pvr_iso_p, color_param,          &
      &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check,   &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
@@ -59,6 +60,7 @@
 !
       type(pvr_field_data), intent(in) :: field_pvr
       type(rendering_parameter), intent(in) :: draw_param
+      type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
@@ -95,8 +97,8 @@
      &       ele%interior_ele, node%xx, surf%vnorm_surf,                &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
      &       viewpoint_vec, field_pvr, draw_param,                      &
-     &       draw_param%pvr_iso_p, color_param,                         &
-     &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
+     &       pvr_iso_p, color_param, ray_vec4,                          &
+     &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),           &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
      &       iflag_comm)
@@ -117,7 +119,6 @@
      &        iflag_check, isurf_org, screen4_st, xx4_st, xi, rgba_ray, &
      &        icount_line, iflag_comm)
 !
-      use t_control_param_pvr_isosurf
       use cal_field_on_surf_viz
       use cal_fline_in_cube
       use set_coefs_of_sections
@@ -153,6 +154,8 @@
       integer(kind = kint) :: i_iso, i_psf, iflag, iflag_hit
       real(kind = kreal) :: screen4_tgt(4), c_tgt(1), c_org(1)
       real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), rflag, rflag2
+      real(kind = kreal) :: ci_tgt(pvr_iso_p%num_isosurf)
+      real(kind = kreal) :: ci_org(pvr_iso_p%num_isosurf)
 !
 !
       if(isurf_org(1) .eq. 0) return
@@ -165,6 +168,11 @@
      &    ie_surf, isurf_end, xi, xx, xx4_st)
       call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
      &    ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1) )
+      do i_iso = 1, pvr_iso_p%num_isosurf
+        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+     &      ie_surf, isurf_end, xi, field_pvr%d_iso(1,i_iso),           &
+     &      ci_org(i_iso))
+      end do
 !
       if(iflag_check .gt. 0) then
         iflag_hit = 0
@@ -221,6 +229,11 @@
      &      ie_surf, isurf_end, xi, xx, xx4_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
+        do i_iso = 1, pvr_iso_p%num_isosurf
+          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
+     &        ie_surf, isurf_end, xi, field_pvr%d_iso(1,i_iso),         &
+     &        ci_tgt(i_iso))
+        end do
 !
         if(interior_ele(iele) .gt. 0) then
 !    Set color if exit surface is colourd
@@ -257,8 +270,8 @@
           end do
 !
           do i_iso = 1, pvr_iso_p%num_isosurf
-            rflag =  (c_org(1) - pvr_iso_p%iso_value(i_iso))            &
-     &             * (c_tgt(1) - pvr_iso_p%iso_value(i_iso))
+            rflag =  (ci_org(i_iso) - pvr_iso_p%iso_value(i_iso))       &
+     &             * (ci_tgt(i_iso) - pvr_iso_p%iso_value(i_iso))
             if((c_tgt(1) - pvr_iso_p%iso_value(i_iso)) .eq. zero        &
      &        .or. rflag .lt. zero) then
               grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)              &
@@ -284,6 +297,9 @@
         screen4_st(1:4) = screen4_tgt(1:4)
         xx4_st(1:4) = xx4_tgt(1:4)
         c_org(1) =   c_tgt(1)
+        do i_iso = 1, pvr_iso_p%num_isosurf
+          ci_org(i_iso) = ci_tgt(i_iso)
+        end do
       end do
 !
 !      if(iflag_check*draw_param%num_sections .gt. 0) then

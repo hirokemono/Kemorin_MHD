@@ -42,8 +42,6 @@
         type(pvr_field_parameter), allocatable :: iso_fld_param(:)
 !>        field paramters for isosurface
         integer(kind = kint), allocatable :: icheck_iso_ncomp(:)
-!>
-        real(kind = kreal), allocatable :: d_iso(:,:)
       end type pvr_isosurf_parameter
 !
       private :: alloc_pvr_isosurf_param, set_control_pvr_isosurf

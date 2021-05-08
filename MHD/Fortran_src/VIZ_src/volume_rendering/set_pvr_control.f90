@@ -114,7 +114,8 @@
         call set_control_pvr                                            &
      &    (group%ele_grp, group%surf_grp, nod_fld, pvr_ctl_type(i_pvr), &
      &     pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%draw_param,      &
-     &     pvr_param(i_pvr)%color, pvr_param(i_pvr)%colorbar)
+     &     pvr_param(i_pvr)%pvr_iso_p, pvr_param(i_pvr)%color,          &
+     &     pvr_param(i_pvr)%colorbar)
 !
 !   set transfer matrix
 !

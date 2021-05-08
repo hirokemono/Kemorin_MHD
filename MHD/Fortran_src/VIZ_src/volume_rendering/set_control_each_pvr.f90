@@ -6,8 +6,9 @@
 !>@brief Set each PVR parameters from control
 !!
 !!@verbatim
-!!      subroutine set_control_pvr(ele_grp, surf_grp, nod_fld, pvr_ctl, &
-!!     &          pvr_area, draw_param, color_param, cbar_param)
+!!      subroutine set_control_pvr                                      &
+!!     &         (ele_grp, surf_grp, nod_fld, pvr_ctl, pvr_area,        &
+!!     &          draw_param, pvr_iso_p, color_param, cbar_param)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!        type(phys_data), intent(in) :: nod_fld
@@ -15,6 +16,7 @@
 !!        type(pvr_field_parameter), intent(inout) :: fld_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(rendering_parameter), intent(inout) :: draw_param
+!!        type(pvr_isosurf_parameter), intent(inout) :: pvr_iso_p
 !!        type(viz_area_parameter), intent(inout) :: pvr_area
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !!        type(pvr_colorbar_parameter), intent(inout) :: cbar_param
@@ -48,8 +50,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_pvr(ele_grp, surf_grp, nod_fld, pvr_ctl,   &
-     &          pvr_area, draw_param, color_param, cbar_param)
+      subroutine set_control_pvr                                        &
+     &         (ele_grp, surf_grp, nod_fld, pvr_ctl, pvr_area,          &
+     &          draw_param, pvr_iso_p, color_param, cbar_param)
 !
       use t_phys_data
       use t_group_data
@@ -67,6 +70,7 @@
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
       type(rendering_parameter), intent(inout) :: draw_param
+      type(pvr_isosurf_parameter), intent(inout) :: pvr_iso_p
       type(viz_area_parameter), intent(inout) :: pvr_area
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
@@ -80,7 +84,7 @@
       call set_control_pvr_isosurfs                                     &
      &   (nod_fld%num_phys, nod_fld%phys_name,                          &
      &    pvr_ctl%pvr_field_ctl, pvr_ctl%pvr_comp_ctl,                  &
-     &    pvr_ctl%pvr_isos_c, draw_param%pvr_iso_p)
+     &    pvr_ctl%pvr_isos_c, pvr_iso_p)
 !
 !    set colormap setting
       call set_control_pvr_lighting(pvr_ctl%light, color_param)

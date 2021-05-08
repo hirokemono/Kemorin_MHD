@@ -205,9 +205,6 @@
 !
 !
       do i_pvr = 1, pvr%num_pvr
-        call alloc_nod_data_4_pvr                                       &
-     &     (geofem%mesh%node%numnod, geofem%mesh%ele%numele,            &
-     &      pvr%field_pvr(i_pvr))
         call alloc_rendering_params_4_pvr                               &
      &     (geofem%mesh%ele%numele, geofem%group%surf_grp%num_grp,      &
      &      pvr%pvr_param(i_pvr)%draw_param)
@@ -217,6 +214,12 @@
       call s_set_pvr_controls(geofem%group, nod_fld, pvr%num_pvr,       &
      &    pvr_ctls%pvr_ctl_type, pvr%pvr_param)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+6)
+!
+      do i_pvr = 1, pvr%num_pvr
+        call alloc_nod_data_4_pvr                                       &
+     &     (geofem%mesh%node%numnod, geofem%mesh%ele%numele,            &
+     &      pvr_param(i_pvr)%pvr_iso_p, pvr%field_pvr(i_pvr))
+      end do
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       do i_pvr = 1, pvr%num_pvr
