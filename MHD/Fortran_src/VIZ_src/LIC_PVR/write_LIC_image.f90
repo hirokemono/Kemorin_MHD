@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine rendering_image_4_lic                                &
-!!     &         (istep_pvr, time, mesh, lic_p, color_param,            &
-!!     &          cbar_param, field_lic, draw_param, view_param,        &
+!!     &         (istep_pvr, time, mesh, lic_p, color_param, cbar_param,&
+!!     &          field_lic, draw_param, pvr_iso_p, view_param,         &
 !!     &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(lic_field_data), intent(in) :: field_lic
 !!        type(rendering_parameter), intent(in) :: draw_param
+!!        type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_view_parameter), intent(in) :: view_param
@@ -42,8 +43,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image_4_lic                                  &
-     &         (istep_pvr, time, mesh, lic_p, color_param,              &
-     &          cbar_param, field_lic, draw_param, view_param,          &
+     &         (istep_pvr, time, mesh, lic_p, color_param, cbar_param,  &
+     &          field_lic, draw_param, pvr_iso_p, view_param,           &
      &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
 !
       use m_geometry_constants
@@ -55,6 +56,7 @@
       use t_control_param_LIC
       use t_lic_field_data
       use t_geometries_in_pvr_screen
+      use t_control_param_pvr_isosurf
       use t_pvr_image_array
       use t_pvr_ray_startpoints
       use t_pvr_stencil_buffer
@@ -71,6 +73,7 @@
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
       type(rendering_parameter), intent(in) :: draw_param
+      type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_view_parameter), intent(in) :: view_param
@@ -87,7 +90,7 @@
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+3)
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
       call ray_trace_each_lic_image(mesh%node, mesh%ele, mesh%surf,     &
-     &    lic_p, pvr_screen, field_lic, draw_param,                     &
+     &    lic_p, pvr_screen, field_lic, draw_param, pvr_iso_p,          &
      &    color_param, view_param%viewpoint_vec, ray_vec4,              &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &

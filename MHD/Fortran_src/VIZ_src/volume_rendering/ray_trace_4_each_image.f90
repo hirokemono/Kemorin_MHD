@@ -152,7 +152,7 @@
       integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       integer(kind = kint) :: i_iso, i_psf, iflag, iflag_hit
-      real(kind = kreal) :: screen4_tgt(4), c_tgt(1), c_org(1)
+      real(kind = kreal) :: screen4_tgt(4), c_tgt(1), c_org(1), c_mid(1)
       real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), rflag, rflag2
       real(kind = kreal) :: ci_tgt(pvr_iso_p%num_isosurf)
       real(kind = kreal) :: ci_org(pvr_iso_p%num_isosurf)
@@ -271,22 +271,25 @@
 !
           do i_iso = 1, pvr_iso_p%num_isosurf
             rflag =  (ci_org(i_iso) - pvr_iso_p%iso_value(i_iso))       &
-     &             * (ci_tgt(i_iso) - pvr_iso_p%iso_value(i_iso))
+     &              * (ci_tgt(i_iso) - pvr_iso_p%iso_value(i_iso))
             if((c_tgt(1) - pvr_iso_p%iso_value(i_iso)) .eq. zero        &
      &        .or. rflag .lt. zero) then
-              grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)              &
+              ratio = (pvr_iso_p%iso_value(i_iso) - ci_org(i_iso))      &
+     &               / (ci_tgt(i_iso) - ci_org(i_iso))
+              c_mid(1) = ratio * c_tgt(1) + (1.0d0 - ratio) * c_org(1)
+              grad_tgt(1:3) = field_pvr%grad_iso(iele,1:3)              &
      &                       * pvr_iso_p%itype_isosurf(i_iso)
               call color_plane_with_light(viewpoint_vec, xx4_tgt,       &
-     &            pvr_iso_p%iso_value(i_iso), grad_tgt,                 &
-     &            pvr_iso_p%iso_opacity(i_iso), color_param, rgba_ray)
+     &            c_mid(1), grad_tgt, pvr_iso_p%iso_opacity(i_iso),     &
+     &            color_param, rgba_ray)
             end if
           end do
 !
           grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)
-          c_tgt(1) = half*(c_tgt(1) + c_org(1))
+          c_mid(1) = half*(c_tgt(1) + c_org(1))
           call s_set_rgba_4_each_pixel                                  &
      &       (viewpoint_vec, xx4_st, xx4_tgt,                           &
-     &        c_tgt(1), grad_tgt, color_param, rgba_ray)
+     &        c_mid(1), grad_tgt, color_param, rgba_ray)
         end if
 !
         if(isurf_org(1).eq.0) then

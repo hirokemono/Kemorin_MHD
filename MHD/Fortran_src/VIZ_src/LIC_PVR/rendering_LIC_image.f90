@@ -74,7 +74,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
-     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
+     &    pvr_param%draw_param, pvr_param%pvr_iso_p,                    &
+     &    pvr_param%view, pvr_proj%screen,                              &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine lic_rendering_with_fixed_view
@@ -114,7 +115,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
-     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
+     &    pvr_param%draw_param, pvr_param%pvr_iso_p,                    &
+     &    pvr_param%view, pvr_proj%screen,                              &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_lic_at_once

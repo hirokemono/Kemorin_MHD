@@ -1,0 +1,1 @@
+../../../../MHD/programs/TESTS/comm_test/t_control_param_comm_test.f90

@@ -34,8 +34,6 @@
       use m_precision
       use m_constants
 !
-      use t_control_param_pvr_isosurf
-!
       implicit  none
 !
 !>  Structure for start points of ray tracing
@@ -74,9 +72,6 @@
         real(kind = kreal), allocatable :: coefs(:,:)
 !>    Opacity value for isosurfaces
         real(kind = kreal), allocatable :: sect_opacity(:)
-!
-!>  Structure of parameters for isosurfaces in PVR
-        type(pvr_isosurf_parameter) :: pvr_iso_p
       end type rendering_parameter
 !
 !>  Structure for pixel position
