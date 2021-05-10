@@ -114,8 +114,8 @@
         call set_control_pvr                                            &
      &    (group%ele_grp, group%surf_grp, nod_fld, pvr_ctl_type(i_pvr), &
      &     pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%draw_param,      &
-     &     pvr_param(i_pvr)%pvr_iso_p, pvr_param(i_pvr)%color,          &
-     &     pvr_param(i_pvr)%colorbar)
+     &     pvr_param(i_pvr)%pvr_section_p, pvr_param(i_pvr)%pvr_isos_p, &
+     &     pvr_param(i_pvr)%color, pvr_param(i_pvr)%colorbar)
 !
 !   set transfer matrix
 !
@@ -132,15 +132,14 @@
 !
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
+      use t_control_param_pvr_section
+      use t_control_param_pvr_isosurf
 !
       type(PVR_control_params), intent(inout) :: pvr_param
 !
 !
-      if(pvr_param%draw_param%num_sections .gt. 0) then
-        call dealloc_pvr_sections(pvr_param%draw_param)
-      end if
-!
-      call dealloc_pvr_isosurf_param(pvr_param%draw_param%pvr_iso_p)
+      call dealloc_pvr_sections(pvr_param%pvr_section_p)
+      call dealloc_pvr_isosurfs_param(pvr_param%pvr_isos_p)
 !
       call dealloc_pvr_element_group(pvr_param%area_def)
       call dealloc_pvr_color_parameteres(pvr_param%color)

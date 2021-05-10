@@ -9,11 +9,11 @@
 !!@verbatim
 !!      subroutine set_fixed_view_and_image(mesh, group,                &
 !!     &          pvr_param, pvr_rgb, pvr_proj)
-!!      subroutine rendering_with_fixed_view(istep_pvr, time, mesh,     &
+!!      subroutine rendering_with_fixed_view(time, mesh,                &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine flush_rendering_4_fixed_view(pvr_proj)
 !!
-!!      subroutine rendering_at_once(istep_pvr, time, mesh, group,      &
+!!      subroutine rendering_at_once(time, mesh, group,                 &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
@@ -44,6 +44,7 @@
       use t_pvr_stencil_buffer
       use t_pvr_field_data
       use t_control_param_4_pvr_field
+      use t_control_param_pvr_section
       use t_control_param_pvr_isosurf
       use generate_vr_image
 !
@@ -65,8 +66,10 @@
 !>        Structure for PVR colormap
         type(pvr_colorbar_parameter):: colorbar
 !
+!>  Structure for cross sections for volume rendering
+        type(pvr_section_parameter) :: pvr_section_p
 !>        Structure of parameters for isosurfaces in PVR
-        type(pvr_isosurf_parameter) :: pvr_iso_p
+        type(pvr_isosurfs_parameter) :: pvr_isos_p
 !
 !>        Viewer coordinate information
         type(pvr_view_parameter) :: view
@@ -128,12 +131,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_fixed_view(istep_pvr, time, mesh,       &
+      subroutine rendering_with_fixed_view(time, mesh,                  &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use write_PVR_image
 !
-      integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
       type(pvr_field_data), intent(in) :: field_pvr
@@ -147,9 +149,9 @@
      &   (pvr_proj%start_save, pvr_proj%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, time, mesh,                       &
-     &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
-     &    pvr_param%draw_param, pvr_param%pvr_iso_p,                    &
+      call rendering_image(time, mesh, pvr_param%color,                 &
+     &    pvr_param%colorbar, field_pvr, pvr_param%draw_param,          &
+     &    pvr_param%pvr_section_p, pvr_param%pvr_isos_p,                &
      &    pvr_param%view, pvr_proj%screen,                              &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
@@ -173,14 +175,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once(istep_pvr, time, mesh, group,        &
+      subroutine rendering_at_once(time, mesh, group,                   &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
       use t_pvr_stencil_buffer
 !
-      integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
@@ -203,11 +204,11 @@
      &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, time, mesh,                       &
-     &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
-     &    pvr_param%draw_param, pvr_param%pvr_iso_p, pvr_param%view,    &
-     &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
-     &    pvr_rgb)
+      call rendering_image(time, mesh, pvr_param%color,                 &
+     &    pvr_param%colorbar, field_pvr, pvr_param%draw_param,          &
+     &    pvr_param%pvr_section_p, pvr_param%pvr_isos_p,                &
+     &    pvr_param%view, pvr_proj%screen, pvr_proj%start_pt,           &
+     &    pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_at_once
 !

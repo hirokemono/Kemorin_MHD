@@ -208,6 +208,7 @@
       real(kind = kreal) ::  mint, t
 !
 !
+      min_type = 1
       opacity_local = zero
       if     (transfer_function_style .eq. iflag_anbient) then
         opacity_local = opa_value

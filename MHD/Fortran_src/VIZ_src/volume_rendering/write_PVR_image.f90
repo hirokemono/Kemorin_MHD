@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine rendering_image                                      &
-!!     &         (istep_pvr, time, mesh, color_param, cbar_param,       &
-!!     &          field_pvr, draw_param, pvr_iso_p, view_param,         &
+!!     &         (time, mesh, color_param, cbar_param, field_pvr,       &
+!!     &          draw_param, pvr_section_p, pvr_isos_p, view_param,    &
 !!     &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(rendering_parameter), intent(in) :: draw_param
-!!        type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p
+!!        type(pvr_section_parameter), intent(in) :: pvr_section_p
+!!        type(pvr_isosurfs_parameter), intent(in) :: pvr_isos_p
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_view_parameter), intent(in) :: view_param
@@ -47,8 +48,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image                                        &
-     &         (istep_pvr, time, mesh, color_param, cbar_param,         &
-     &          field_pvr, draw_param, pvr_iso_p, view_param,           &
+     &         (time, mesh, color_param, cbar_param, field_pvr,         &
+     &          draw_param, pvr_section_p, pvr_isos_p, view_param,      &
      &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
 !
       use m_geometry_constants
@@ -57,6 +58,7 @@
       use t_geometry_data
       use t_surface_data
       use t_control_params_4_pvr
+      use t_control_param_pvr_section
       use t_control_param_pvr_isosurf
       use t_geometries_in_pvr_screen
       use t_pvr_image_array
@@ -68,13 +70,13 @@
       use pvr_axis_label
 !      use composit_by_segmentad_image
 !
-      integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_geometry), intent(in) :: mesh
       type(pvr_field_data), intent(in) :: field_pvr
       type(rendering_parameter), intent(in) :: draw_param
-      type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p
+      type(pvr_section_parameter), intent(in) :: pvr_section_p
+      type(pvr_isosurfs_parameter), intent(in) :: pvr_isos_p
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_view_parameter), intent(in) :: view_param
@@ -89,7 +91,7 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+3)
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image(mesh%node, mesh%ele, mesh%surf,     &
-     &    pvr_screen, field_pvr, draw_param, pvr_iso_p,                 &
+     &    pvr_screen, field_pvr, draw_param, pvr_section_p, pvr_isos_p, &
      &    color_param, view_param%viewpoint_vec, ray_vec4,              &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &

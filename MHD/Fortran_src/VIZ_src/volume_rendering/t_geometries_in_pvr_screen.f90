@@ -16,15 +16,8 @@
 !!     &         (numele, num_sf_grp, draw_param)
 !!      subroutine dealloc_rendering_params_4_pvr(draw_param)
 !!
-!!      subroutine alloc_pvr_sections(draw_param)
-!!
-!!      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
-!!      subroutine dealloc_data_4_pvr(draw_param)
-!!
-!!      subroutine deallocate_projected_data_pvr                        &
-!!      &        (num_pvr, proj, draw_param)
-!!      subroutine deallocate_pixel_position_pvr(pixel_xy)
 !!      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
+!!      subroutine dealloc_pixel_position_pvr(pixel_xy)
 !!        type(pvr_view_parameter), intent(in) :: view
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!@endverbatim
@@ -65,13 +58,6 @@
         integer(kind = kint), allocatable :: iflag_enhanse(:)
 !>    Opacity value for surface boundaries
         real(kind = kreal), allocatable :: enhansed_opacity(:)
-!
-!>    Number of sections
-        integer(kind = kint) :: num_sections
-!>    fiale value for isosurfaces
-        real(kind = kreal), allocatable :: coefs(:,:)
-!>    Opacity value for isosurfaces
-        real(kind = kreal), allocatable :: sect_opacity(:)
       end type rendering_parameter
 !
 !>  Structure for pixel position
@@ -88,6 +74,7 @@
 !
       private :: alloc_iflag_pvr_used_ele
       private :: alloc_iflag_pvr_boundaries
+      private :: alloc_pixel_position_pvr
 !
 ! -----------------------------------------------------------------------
 !
@@ -145,7 +132,6 @@
       end subroutine alloc_rendering_params_4_pvr
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine dealloc_rendering_params_4_pvr(draw_param)
 !
@@ -190,35 +176,37 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_pvr_sections(draw_param)
+      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
 !
-      type(rendering_parameter), intent(inout) :: draw_param
+      use t_control_params_4_pvr
+      use set_projection_matrix
+!
+      type(pvr_view_parameter), intent(in) :: view
+      type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
 !
-      allocate(draw_param%coefs(10,draw_param%num_sections))
-      allocate(draw_param%sect_opacity(draw_param%num_sections))
+      call alloc_pixel_position_pvr(view%n_pvr_pixel, pixel_xy)
 !
-      if(draw_param%num_sections .gt. 0) draw_param%coefs =        zero
-      if(draw_param%num_sections .gt. 0) draw_param%sect_opacity = zero
+      call set_pixel_points_on_project                                  &
+     &   (view%n_pvr_pixel(1), view%n_pvr_pixel(2),                     &
+          pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
 !
-      end subroutine alloc_pvr_sections
+      end subroutine set_pixel_on_pvr_screen
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_pixel_position_pvr(pixel_xy)
+!
+      type(pvr_pixel_position_type), intent(inout) :: pixel_xy
+!
+!
+      deallocate(pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
+!
+      end subroutine dealloc_pixel_position_pvr
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine dealloc_pvr_sections(draw_param)
-!
-      type(rendering_parameter), intent(inout) :: draw_param
-!
-!
-      deallocate(draw_param%coefs, draw_param%sect_opacity)
-!
-      end subroutine dealloc_pvr_sections
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
+      subroutine alloc_pixel_position_pvr(n_pvr_pixel, pixel_xy)
 !
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
@@ -232,39 +220,8 @@
       pixel_xy%pixel_point_x =  0.0d0
       pixel_xy%pixel_point_y =  0.0d0
 !
-      end subroutine allocate_pixel_position_pvr
+      end subroutine alloc_pixel_position_pvr
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine deallocate_pixel_position_pvr(pixel_xy)
-!
-      type(pvr_pixel_position_type), intent(inout) :: pixel_xy
-!
-!
-      deallocate(pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
-!
-      end subroutine deallocate_pixel_position_pvr
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
-!
-      use t_control_params_4_pvr
-      use set_projection_matrix
-!
-      type(pvr_view_parameter), intent(in) :: view
-      type(pvr_pixel_position_type), intent(inout) :: pixel_xy
-!
-!
-      call allocate_pixel_position_pvr(view%n_pvr_pixel, pixel_xy)
-!
-      call set_pixel_points_on_project                                  &
-     &   (view%n_pvr_pixel(1), view%n_pvr_pixel(2),                     &
-          pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
-!
-      end subroutine set_pixel_on_pvr_screen
-!
-!  ---------------------------------------------------------------------
 !
       end module t_geometries_in_pvr_screen

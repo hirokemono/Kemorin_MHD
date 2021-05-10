@@ -218,7 +218,9 @@
       do i_pvr = 1, pvr%num_pvr
         call alloc_nod_data_4_pvr                                       &
      &     (geofem%mesh%node%numnod, geofem%mesh%ele%numele,            &
-     &      pvr_param(i_pvr)%pvr_iso_p, pvr%field_pvr(i_pvr))
+     &      pvr%field_pvr(i_pvr))
+        call alloc_pvr_isosurfs_data(pvr%field_pvr(i_pvr),              &
+     &      pvr%pvr_param(i_pvr)%pvr_isos_p)
       end do
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
@@ -268,8 +270,7 @@
       do i_pvr = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        call each_PVR_rendering                                         &
-     &     (istep_pvr, time, geofem, jacs, nod_fld,                     &
+        call each_PVR_rendering(time, geofem, jacs, nod_fld,            &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
       end do
@@ -353,6 +354,10 @@
       integer(kind = kint) :: i_pvr
 !
 !
+      do i_pvr = 1, pvr%num_pvr
+        call dealloc_pvr_isosurfs_data(pvr%pvr_param(i_pvr)%pvr_isos_p)
+        call dealloc_pvr_isosurf_param(pvr%pvr_param(i_pvr)%pvr_isos_p)
+      end do
       do i_pvr = 1, pvr%num_pvr
         call dealloc_rendering_params_4_pvr                             &
      &     (pvr%pvr_param(i_pvr)%draw_param)

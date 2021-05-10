@@ -77,7 +77,7 @@
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
-        call rendering_at_once(istep_pvr, time, mesh, group,            &
+        call rendering_at_once(time, mesh, group,                       &
      &      field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
@@ -120,12 +120,12 @@
      &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
 !    Left eye
-        call rendering_at_once(istep_pvr, time, mesh, group,            &
+        call rendering_at_once(time, mesh, group,                       &
      &      field_pvr, pvr_param, pvr_proj(1), pvr_rgb)
         call store_left_eye_image(pvr_rgb)
 !
 !    Right eye
-        call rendering_at_once(istep_pvr, time, mesh, group,            &
+        call rendering_at_once(time, mesh, group,                       &
      &      field_pvr, pvr_param, pvr_proj(2), pvr_rgb)
         call add_left_eye_image(pvr_rgb)
 !
