@@ -29,6 +29,8 @@
       use calypso_mpi
       use set_rgba_4_each_pixel
 !
+      use t_geometry_data
+      use t_surface_data
       use t_control_params_4_pvr
       use t_pvr_field_data
       use t_geometries_in_pvr_screen
@@ -49,8 +51,6 @@
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
 !
-      use t_geometry_data
-      use t_surface_data
       use t_geometries_in_pvr_screen
 !
       type(node_data), intent(in) :: node
@@ -90,9 +90,8 @@
 !
         rgba_tmp(1:4) = zero
         call ray_trace_each_pixel                                       &
-     &      (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,   &
-     &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,            &
-     &       ele%interior_ele, node%xx, surf%vnorm_surf,                &
+     &      (node%numnod, ele%numele, surf,   &
+     &       ele%interior_ele, node%xx,                &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
      &       viewpoint_vec, field_pvr, draw_param, color_param,         &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
@@ -109,8 +108,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_pixel                                   &
-     &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
-     &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
+     &       (numnod, numele, surf,            &
+     &        interior_ele, xx,     &
      &        arccos_sf, x_nod_model, viewpoint_vec, field_pvr,         &
      &        draw_param, color_param, ray_vec4, iflag_check,           &
      &        isurf_org, screen4_st, xx4_st, xi, rgba_ray,              &
@@ -120,18 +119,14 @@
       use cal_fline_in_cube
       use set_coefs_of_sections
 !
+      type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in) :: iflag_check
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
+      integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
 !
       real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
-      real(kind = kreal), intent(in) :: arccos_sf(numsurf)
+      real(kind = kreal), intent(in) :: arccos_sf(surf%numsurf)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
 !
@@ -157,11 +152,13 @@
       iflag_notrace = 1
       iele =    isurf_org(1)
       isf_org = isurf_org(2)
-      isurf_end = abs(isf_4_ele(iele,isf_org))
-      call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,        &
-     &    ie_surf, isurf_end, xi, xx, xx4_st)
-      call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-     &    ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1) )
+      isurf_end = abs(surf%isf_4_ele(iele,isf_org))
+      call cal_field_on_surf_vect4                                      &
+     &   (numnod, surf%numsurf, surf%nnod_4_surf,        &
+     &    surf%ie_surf, isurf_end, xi, xx, xx4_st)
+      call cal_field_on_surf_scalar                                     &
+     &   (numnod, surf%numsurf, surf%nnod_4_surf,       &
+     &    surf%ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1) )
 !
       if(iflag_check .gt. 0) then
         iflag_hit = 0
@@ -170,7 +167,7 @@
 !        Set color if starting surface is colourd
       if(interior_ele(iele) .gt. 0) then
         if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
-          grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
+          grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
           call plane_rendering_with_light                               &
      &       (viewpoint_vec, xx4_st, grad_tgt,                          &
      &        arccos_sf(isurf_end),  color_param, rgba_ray)
@@ -190,9 +187,10 @@
 !   extend to surface of element
 !
         call find_line_end_in_1ele                                      &
-     &     (iflag_backward_line, numnod, numele, numsurf, nnod_4_surf,  &
-     &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
-     &      ray_vec4, screen4_st, isf_tgt, screen4_tgt, xi)
+     &     (iflag_backward_line, numnod, numele, surf%numsurf,          &
+     &      surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,             &
+     &      x_nod_model, iele, isf_org, ray_vec4, screen4_st,           &
+     &      isf_tgt, screen4_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen_tgt',                &
 !     &         my_rank, screen4_tgt(1:4), interior_ele(iele)
 !
@@ -204,25 +202,27 @@
 !   set backside element and surface 
 !
         iflag_notrace = 0
-        isurf_end = abs(isf_4_ele(iele,isf_tgt))
+        isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
 !
-        if(isf_4_ele(iele,isf_tgt) .lt. 0) then
-          isurf_org(1) = iele_4_surf(isurf_end,1,1)
-          isurf_org(2) = iele_4_surf(isurf_end,1,2)
+        if(surf%isf_4_ele(iele,isf_tgt) .lt. 0) then
+          isurf_org(1) = surf%iele_4_surf(isurf_end,1,1)
+          isurf_org(2) = surf%iele_4_surf(isurf_end,1,2)
         else
-          isurf_org(1) = iele_4_surf(isurf_end,2,1)
-          isurf_org(2) = iele_4_surf(isurf_end,2,2)
+          isurf_org(1) = surf%iele_4_surf(isurf_end,2,1)
+          isurf_org(2) = surf%iele_4_surf(isurf_end,2,2)
         end if
 !
-        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
-     &      ie_surf, isurf_end, xi, xx, xx4_tgt)
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
+        call cal_field_on_surf_vect4                                    &
+     &     (numnod, surf%numsurf, surf%nnod_4_surf,      &
+     &      surf%ie_surf, isurf_end, xi, xx, xx4_tgt)
+        call cal_field_on_surf_scalar                                   &
+     &     (numnod, surf%numsurf, surf%nnod_4_surf,     &
+     &      surf%ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
 !
         if(interior_ele(iele) .gt. 0) then
 !    Set color if exit surface is colourd
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
-            grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
+            grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light                             &
      &         (viewpoint_vec, xx4_tgt, grad_tgt,                       &
      &          arccos_sf(isurf_end),  color_param, rgba_ray)
