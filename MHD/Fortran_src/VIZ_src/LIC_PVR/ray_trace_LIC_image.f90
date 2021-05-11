@@ -108,7 +108,7 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call lic_ray_trace_each_pixel(node%numnod, ele, surf, node%xx,  &
+        call lic_ray_trace_each_pixel(node, ele, surf,                  &
      &      pvr_screen%arccos_sf, pvr_screen%x_nod_model,               &
      &      viewpoint_vec, lic_p, field_lic, draw_param, color_param,   &
      &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
@@ -126,9 +126,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_ray_trace_each_pixel                               &
-     &       (numnod, ele, surf,            &
-     &        xx,     &
-     &        arccos_sf, x_nod_model, viewpoint_vec,     &
+     &       (node, ele, surf, arccos_sf, x_nod_model, viewpoint_vec,   &
      &        lic_p, field_lic, draw_param, color_param, ray_vec4,      &
      &        iflag_check, isurf_org, screen4_st, xx4_st, xi, rgba_ray, &
      &        icount_line, xyz_min_gl, xyz_max_gl, iflag_comm)
@@ -139,13 +137,12 @@
       use set_rgba_4_each_pixel
       use t_noise_node_data
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in) :: iflag_check
-      integer(kind = kint), intent(in) :: numnod
-      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
-      real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
+      real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
       real(kind = kreal), intent(in) :: arccos_sf(surf%numsurf)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
@@ -200,13 +197,13 @@
       end if
 !   get original value of sampling point
       call cal_field_on_surf_vect4                                      &
-     &   (numnod, surf%numsurf, surf%nnod_4_surf,   &
-     &    surf%ie_surf, isurf_end, xi, xx, xx4_st)
+     &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                  &
+     &    surf%ie_surf, isurf_end, xi, node%xx, xx4_st)
       call cal_field_on_surf_vect4                                      &
-     &   (numnod, surf%numsurf, surf%nnod_4_surf,   &
+     &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                  &
      &    surf%ie_surf, isurf_end, xi, field_lic%v_lic, vec4_org)
       call cal_field_on_surf_scalar                                     &
-     &   (numnod, surf%numsurf, surf%nnod_4_surf,  &
+     &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                  &
      &    surf%ie_surf, isurf_end, xi, field_lic%d_lic, scl_org)
 
       allocate(r_org(lic_p%num_masking))
@@ -215,8 +212,8 @@
       do i = 1, lic_p%num_masking
         if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
           call cal_field_on_surf_scalar                                 &
-     &       (numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,     &
-     &        isurf_end, xi, field_lic%s_lic(1,i), r_org(i))
+     &      (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf, &
+     &       isurf_end, xi, field_lic%s_lic(1,i), r_org(i))
         end if
       end do
 !
@@ -248,7 +245,7 @@
 !   find ray exit surface loacal id on current element isf_tgt
 !
         call find_line_end_in_1ele                                      &
-     &     (iflag_backward_line, numnod, ele%numele,                    &
+     &     (iflag_backward_line, node%numnod, ele%numele,               &
      &      surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele,             &
      &      surf%ie_surf, x_nod_model, iele, isf_org,                   &
      &      ray_vec4, screen4_st, isf_tgt, screen4_tgt, xi)
@@ -282,19 +279,19 @@
         end do
 !   find 3D coordinate of exit point on exit surface
         call cal_field_on_surf_vect4                                    &
-     &     (numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
-     &      isurf_end, xi, xx, xx4_tgt)
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
+     &      isurf_end, xi, node%xx, xx4_tgt)
         call cal_field_on_surf_vect4                                    &
-     &     (numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
      &      isurf_end, xi, field_lic%v_lic, vec4_tgt)
         call cal_field_on_surf_scalar                                   &
-     &     (numnod, surf%numsurf, surf%nnod_4_surf,                     &
-     &      surf%ie_surf, isurf_end, xi, field_lic%d_lic, scl_tgt)
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
+     &      isurf_end, xi, field_lic%d_lic, scl_tgt)
 
         do i = 1, lic_p%num_masking
           if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
-            call cal_field_on_surf_scalar                               &
-     &         (numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,   &
+            call cal_field_on_surf_scalar(node%numnod,                  &
+     &          surf%numsurf, surf%nnod_4_surf, surf%ie_surf,           &
      &          isurf_end, xi, field_lic%s_lic(1,i), r_tgt(i))
           end if
         end do
@@ -339,10 +336,10 @@
 
               vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
      &                       + vec4_tgt(1:4) * ratio
-              call cal_lic_on_surf_vector                               &
-     &           (numnod, surf%numsurf, ele%numele, surf%nnod_4_surf,   &
+              call cal_lic_on_surf_vector(node%numnod,                  &
+     &            surf%numsurf, ele%numele, surf%nnod_4_surf,           &
      &            surf%isf_4_ele, surf%iele_4_surf, surf%interior_surf, &
-     &            xx, isurf_orgs, surf%ie_surf, xi, lic_p,              &
+     &            node%xx, isurf_orgs, surf%ie_surf, xi, lic_p,         &
      &            r_mid, vec4_mid, field_lic%s_lic,                     &
      &            field_lic%v_lic, xx4_lic, isurf_end,                  &
      &            xyz_min_gl, xyz_max_gl, iflag_lic, rlic_grad)
@@ -392,10 +389,10 @@
             vec4_mid(1:4) = half*(vec4_org(1:4) + vec4_tgt(1:4))
 !   calculate lic value at current location, lic value will be used as intensity
 !   as volume rendering
-            call cal_lic_on_surf_vector                                 &
-     &         (numnod, surf%numsurf, ele%numele, surf%nnod_4_surf,     &
+            call cal_lic_on_surf_vector(node%numnod,                    &
+     &          surf%numsurf, ele%numele, surf%nnod_4_surf,             &
      &          surf%isf_4_ele, surf%iele_4_surf, surf%interior_surf,   &
-     &          xx, isurf_orgs, surf%ie_surf, xi, lic_p,                &
+     &          node%xx, isurf_orgs, surf%ie_surf, xi, lic_p,           &
      &          r_mid, vec4_mid, field_lic%s_lic,                       &
      &          field_lic%v_lic, xx4_lic, isurf_end,                    &
      &          xyz_min_gl, xyz_max_gl, iflag_lic, rlic_grad)

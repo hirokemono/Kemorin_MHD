@@ -89,8 +89,7 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call ray_trace_each_pixel                                       &
-     &      (node%numnod, ele, surf, node%xx,                           &
+        call ray_trace_each_pixel(node, ele, surf,                      &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
      &       viewpoint_vec, field_pvr, draw_param, color_param,         &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
@@ -106,9 +105,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine ray_trace_each_pixel                                   &
-     &       (numnod, ele, surf,            &
-     &        interior_ele, xx,     &
+      subroutine ray_trace_each_pixel(node, ele, surf,                  &
      &        arccos_sf, x_nod_model, viewpoint_vec, field_pvr,         &
      &        draw_param, color_param, ray_vec4, iflag_check,           &
      &        isurf_org, screen4_st, xx4_st, xi, rgba_ray,              &
@@ -118,13 +115,12 @@
       use cal_fline_in_cube
       use set_coefs_of_sections
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in) :: iflag_check
-      integer(kind = kint), intent(in) :: numnod
-      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
-      real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
+      real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
       real(kind = kreal), intent(in) :: arccos_sf(surf%numsurf)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
@@ -153,10 +149,10 @@
       isf_org = isurf_org(2)
       isurf_end = abs(surf%isf_4_ele(iele,isf_org))
       call cal_field_on_surf_vect4                                      &
-     &   (numnod, surf%numsurf, surf%nnod_4_surf,        &
-     &    surf%ie_surf, isurf_end, xi, xx, xx4_st)
+     &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                  &
+     &    surf%ie_surf, isurf_end, xi, node%xx, xx4_st)
       call cal_field_on_surf_scalar                                     &
-     &   (numnod, surf%numsurf, surf%nnod_4_surf,       &
+     &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                  &
      &    surf%ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1) )
 !
       if(iflag_check .gt. 0) then
@@ -186,7 +182,7 @@
 !   extend to surface of element
 !
         call find_line_end_in_1ele                                      &
-     &     (iflag_backward_line, numnod, ele%numele, surf%numsurf,      &
+     &     (iflag_backward_line, node%numnod, ele%numele, surf%numsurf, &
      &      surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,             &
      &      x_nod_model, iele, isf_org, ray_vec4, screen4_st,           &
      &      isf_tgt, screen4_tgt, xi)
@@ -212,10 +208,10 @@
         end if
 !
         call cal_field_on_surf_vect4                                    &
-     &     (numnod, surf%numsurf, surf%nnod_4_surf,      &
-     &      surf%ie_surf, isurf_end, xi, xx, xx4_tgt)
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+     &      surf%ie_surf, isurf_end, xi, node%xx, xx4_tgt)
         call cal_field_on_surf_scalar                                   &
-     &     (numnod, surf%numsurf, surf%nnod_4_surf,     &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
      &      surf%ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
 !
         if(ele%interior_ele(iele) .gt. 0) then
