@@ -170,7 +170,7 @@
       elps1%labels(ist_elapsed_LIC+3)                                   &
      &                    = 'LIC V. Rendering ray trace   '
       elps1%labels(ist_elapsed_LIC+4)                                   &
-     &                    = 'LIC V. Rendering subimage composit   '
+     &                    = 'Line integration for LIC   '
       elps1%labels(ist_elapsed_LIC+5)                                   &
      &                    = 'LIC V. Rendering subimage composit   '
 !

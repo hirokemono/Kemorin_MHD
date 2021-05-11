@@ -96,11 +96,11 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
 !
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+4)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+5)
       if(iflag_debug .gt. 0) write(*,*) 'collect_rendering_image'
       call collect_rendering_image(pvr_start,                           &
      &    pvr_rgb%num_pixel_actual, pvr_rgb%rgba_real_gl, pvr_stencil)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+4)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+5)
 !
 !      call s_composit_by_segmentad_image                               &
 !     &   (istep_pvr, iflag_LIC_time, ist_elapsed_LIC,                  &
