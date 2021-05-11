@@ -31,6 +31,8 @@
       use calypso_mpi
       use lic_rgba_4_each_pixel
 !
+      use t_geometry_data
+      use t_surface_data
       use t_control_params_4_pvr
       use t_control_param_LIC
       use t_geometries_in_pvr_screen
@@ -54,8 +56,6 @@
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
 !
-      use t_geometry_data
-      use t_surface_data
       use t_noise_node_data
 !
       type(node_data), intent(in) :: node
@@ -168,13 +168,13 @@
 !      type(noise_mask), intent(inout) :: n_mask
 !
       integer(kind = kint) :: iflag_notrace
-      integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
-      integer(kind = kint) :: iflag_hit
+      integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org, i_psf
+      integer(kind = kint) :: iflag_hit, iflag
       real(kind = kreal) :: screen4_tgt(4)
       real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
-      real(kind = kreal) :: xx4_tgt(4), grad_len
+      real(kind = kreal) :: xx4_tgt(4), grad_len, rflag, rflag2
 
-      real(kind = kreal) :: rlic_grad(0:3)
+      real(kind = kreal) :: rlic_grad(0:3), grad_tgt(3)
       real(kind = kreal) :: xx4_lic(4), xx4_lic_last(4)
       real(kind = kreal) :: scl_org(1), scl_tgt(1), scl_mid(1)
       real(kind = kreal) :: vec4_org(4), vec4_tgt(4), vec4_mid(4)
