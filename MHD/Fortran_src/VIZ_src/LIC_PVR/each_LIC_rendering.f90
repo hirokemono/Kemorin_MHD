@@ -92,11 +92,16 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_lic(mesh%node, nod_fld,                     &
      &    lic_fld_pm%lic_param, lic_fld_pm%nod_fld_lic)
+!      call cal_field_4_each_lic_isosurf(mesh%node, nod_fld,            &
+!     &    lic_fld_pm%lic_param, lic_fld_pm%nod_fld_lic)
 !
       if(repart_p%flag_repartition) then
         call repartition_lic_field(mesh%node, viz_fem%mesh,             &
      &      mesh_to_viz_tbl, lic_fld_pm%nod_fld_lic,                    &
      &      lic_fld_pm%field_lic, v_sol)
+!        call repartition_lic_isosurf_field(mesh%node, viz_fem%mesh,    &
+!     &      mesh_to_viz_tbl, lic_fld_pm%nod_fld_lic,                   &
+!     &      lic_fld_pm%field_lic, v_sol)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'

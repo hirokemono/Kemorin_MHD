@@ -193,7 +193,7 @@
       end do
 !
       call s_set_lic_controls(viz_fem%group, nod_fld, lic%pvr%num_pvr,  &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
+     &    lic_ctls%lic_ctl_type, lic_ctls%pvr_ctl_type,                 &
      &    lic%lic_fld_pm, lic%pvr%pvr_param)
 !
       do i_lic = 1, lic%pvr%num_pvr
@@ -206,6 +206,9 @@
           call alloc_nod_vector_4_lic(viz_fem%mesh%node%numnod,         &
      &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
      &        lic%lic_fld_pm(i_lic)%field_lic)
+!          call alloc_lic_isosurfs_data                                 &
+!     &       (viz_fem%mesh%node%numnod, viz_fem%mesh%ele%numele,       &
+!     &        lic%lic_fld_pm(i_lic)%lic_isos_p)
         else
           lic%lic_fld_pm(i_lic)%field_lic                               &
      &           => lic%lic_fld_pm(i_lic)%nod_fld_lic

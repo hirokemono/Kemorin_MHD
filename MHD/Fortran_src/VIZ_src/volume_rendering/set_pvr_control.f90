@@ -139,7 +139,7 @@
 !
 !
       call dealloc_pvr_sections(pvr_param%pvr_section_p)
-      call dealloc_pvr_isosurfs_param(pvr_param%pvr_isos_p)
+      call dealloc_pvr_isosurf_param(pvr_param%pvr_isos_p)
 !
       call dealloc_pvr_element_group(pvr_param%area_def)
       call dealloc_pvr_color_parameteres(pvr_param%color)

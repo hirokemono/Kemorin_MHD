@@ -278,7 +278,7 @@
           do i_iso = 1, num_isosurf
             rflag =  (ci_org(i_iso) - pvr_iso_p(i_iso)%iso_value)       &
      &              * (ci_tgt(i_iso) - pvr_iso_p(i_iso)%iso_value)
-            if((c_tgt(1) - pvr_iso_p(i_iso)%iso_value) .eq. zero        &
+            if((ci_tgt(1) - pvr_iso_p(i_iso)%iso_value) .eq. zero       &
      &        .or. rflag .lt. zero) then
               ratio = (pvr_iso_p(i_iso)%iso_value - ci_org(i_iso))      &
      &               / (ci_tgt(i_iso) - ci_org(i_iso))

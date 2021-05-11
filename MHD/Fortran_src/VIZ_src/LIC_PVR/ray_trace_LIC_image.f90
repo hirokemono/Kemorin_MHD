@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine ray_trace_each_lic_image                             &
 !!     &         (node, ele, surf, lic_p, pvr_screen, field_lic,        &
-!!     &          draw_param, pvr_iso_p, color_param,                   &
+!!     &          draw_param, pvr_section_p, pvr_isos_p, color_param,   &
 !!     &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check, &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
@@ -19,7 +19,8 @@
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(lic_field_data), intent(in) :: field_lic
 !!        type(rendering_parameter), intent(in) :: draw_param
-!!        type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p
+!!        type(pvr_section_parameter), intent(in) :: pvr_section_p
+!!        type(pvr_isosurfs_parameter), intent(in) :: pvr_isos_p
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!@endverbatim
@@ -33,9 +34,12 @@
       use calypso_mpi
       use lic_rgba_4_each_pixel
 !
+      use t_geometry_data
+      use t_surface_data
       use t_control_params_4_pvr
       use t_control_param_LIC
       use t_geometries_in_pvr_screen
+      use t_control_param_pvr_section
       use t_control_param_pvr_isosurf
       use t_lic_field_data
       use m_machine_parameter
@@ -53,13 +57,11 @@
 !
       subroutine ray_trace_each_lic_image                               &
      &         (node, ele, surf, lic_p, pvr_screen, field_lic,          &
-     &          draw_param, pvr_iso_p, color_param,                     &
+     &          draw_param, pvr_section_p, pvr_isos_p, color_param,     &
      &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check,   &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
 !
-      use t_geometry_data
-      use t_surface_data
       use t_noise_node_data
 !
       type(node_data), intent(in) :: node
@@ -69,7 +71,8 @@
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
       type(rendering_parameter), intent(in) :: draw_param
-      type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p
+      type(pvr_section_parameter), intent(in) :: pvr_section_p
+      type(pvr_isosurfs_parameter), intent(in) :: pvr_isos_p
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
@@ -113,16 +116,13 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call lic_ray_trace_each_pixel(node%numnod, ele%numele,          &
-     &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
-     &      surf%isf_4_ele, surf%iele_4_surf, ele%interior_ele,         &
-     &      node%xx, surf%vnorm_surf, surf%interior_surf,               &
+        call lic_ray_trace_each_pixel(node, ele, surf,                  &
      &      pvr_screen%arccos_sf, pvr_screen%x_nod_model,               &
-     &      viewpoint_vec, lic_p, field_lic, draw_param, pvr_iso_p,     &
-     &      color_param, ray_vec4, id_pixel_check(inum),                &
-     &      isf_pvr_ray_start(1,inum), xx4_pvr_ray_start(1,inum),       &
-     &      xx4_pvr_start(1,inum), xi_pvr_start(1,inum), rgba_tmp(1),   &
-     &      icount_pvr_trace(inum), node%xyz_min_gl, node%xyz_max_gl,   &
+     &      viewpoint_vec, lic_p, field_lic, draw_param, pvr_section_p, &
+     &      pvr_isos_p%num_isosurf, pvr_isos_p%pvr_iso_p, color_param,  &
+     &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
+     &      xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),           &
+     &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
      &      iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
         sample_cnt = sample_cnt + icount_pvr_trace(inum)
@@ -135,13 +135,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_ray_trace_each_pixel                               &
-     &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
-     &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
-     &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
-     &        lic_p, field_lic, draw_param, pvr_iso_p, color_param,     &
-     &        ray_vec4, iflag_check, isurf_org, screen4_st, xx4_st, xi, &
-     &        rgba_ray, icount_line, xyz_min_gl, xyz_max_gl,            &
-     &        iflag_comm)
+     &       (node, ele, surf, arccos_sf, x_nod_model,                  &
+     &        viewpoint_vec, lic_p, field_lic, draw_param,              &
+     &        pvr_section_p, num_isosurf, pvr_iso_p, color_param,       &
+     &        ray_vec4, iflag_check, isurf_org, screen4_st, xx4_st,     &
+     &        xi, rgba_ray, icount_line, iflag_comm)
 !
       use cal_field_on_surf_viz
       use cal_fline_in_cube
@@ -149,29 +147,23 @@
       use set_rgba_4_each_pixel
       use t_noise_node_data
 !
-      integer(kind = kint), intent(in) :: iflag_check
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      integer(kind = kint), intent(in) :: interior_surf(numsurf)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
 !
-      real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
-      real(kind = kreal), intent(in) :: arccos_sf(numsurf)
+      integer(kind = kint), intent(in) :: iflag_check
+!
+      real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
+      real(kind = kreal), intent(in) :: arccos_sf(surf%numsurf)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
-!
-      real(kind = kreal), intent(in) :: xyz_min_gl(3)
-      real(kind = kreal), intent(in) :: xyz_max_gl(3)
 !
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
       type(rendering_parameter), intent(in) :: draw_param
-      type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p
+      type(pvr_section_parameter), intent(in) :: pvr_section_p
+      integer(kind = kint), intent(in) :: num_isosurf
+      type(pvr_isosurf_parameter), intent(in) :: pvr_iso_p(num_isosurf)
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
@@ -184,11 +176,11 @@
 !
       integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
-      integer(kind = kint) :: iflag_hit
+      integer(kind = kint) :: iflag_hit, iflag
       real(kind = kreal) :: screen4_tgt(4)
       real(kind = kreal) :: xx4_tgt(4), grad_len
 
-      real(kind = kreal) :: rlic_grad(0:3)
+      real(kind = kreal) :: rlic_grad(0:3), grad_tgt(3), rflag, rflag2
       real(kind = kreal) :: xx4_lic(4), xx4_lic_last(4)
       real(kind = kreal) :: scl_org(1), scl_tgt(1), scl_mid(1)
       real(kind = kreal) :: vec4_org(4), vec4_tgt(4), vec4_mid(4)
@@ -197,10 +189,11 @@
       real(kind = kreal) :: r_tgt(lic_p%num_masking)
       real(kind = kreal) :: r_mid(lic_p%num_masking)
 
-      real(kind = kreal) :: ci_org(pvr_iso_p%num_isosurf)
-      real(kind = kreal) :: ci_tgt(pvr_iso_p%num_isosurf)
-      real(kind = kreal) :: ci_mid(pvr_iso_p%num_isosurf)
+      real(kind = kreal) :: ci_org(num_isosurf)
+      real(kind = kreal) :: ci_tgt(num_isosurf)
+      real(kind = kreal) :: ci_mid(num_isosurf)
 
+      integer(kind = kint) :: i_iso, i_psf
       integer(kind = kint) :: isurf_orgs(2,3), i, iflag_lic
 
       real(kind = kreal) :: ray_total_len = zero, ave_ray_len, step_size
@@ -217,36 +210,41 @@
       iflag_lic = 1
       iele =    isurf_org(1)
       isf_org = isurf_org(2)
-      isurf_end = abs(isf_4_ele(iele,isf_org))
+      isurf_end = abs(surf%isf_4_ele(iele,isf_org))
 !
       if(iflag_check .gt. 0) then
         iflag_hit = 0
       end if
 !   get original value of sampling point
-      call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,        &
-      &   ie_surf, isurf_end, xi, xx, xx4_st)
-      call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,        &
-      &   ie_surf, isurf_end, xi, field_lic%v_lic, vec4_org)
-      call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-      &   ie_surf, isurf_end, xi, field_lic%d_lic, scl_org)
+      call cal_field_on_surf_vect4                                      &
+     &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                  &
+     &    surf%ie_surf, isurf_end, xi, node%xx, xx4_st)
+      call cal_field_on_surf_vect4                                      &
+     &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                  &
+     &    surf%ie_surf, isurf_end, xi, field_lic%v_lic, vec4_org)
+      call cal_field_on_surf_scalar                                     &
+     &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                  &
+     &    surf%ie_surf, isurf_end, xi, field_lic%d_lic, scl_org)
 
       do i = 1, lic_p%num_masking
         if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
-          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
-       &      ie_surf, isurf_end, xi, field_lic%s_lic(1,i), r_org(i))
+          call cal_field_on_surf_scalar(node%numnod,                    &
+     &        surf%numsurf, surf%nnod_4_surf, surf%ie_surf,             &
+     &        isurf_end, xi, field_lic%s_lic(1,i), r_org(i))
         end if
       end do
-      do i_iso = 1, pvr_iso_p%num_isosurf
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_lic%d_iso(1,i_iso),           &
+      do i_iso = 1, num_isosurf
+        call cal_field_on_surf_scalar                                   &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
+     &      isurf_end, xi, pvr_iso_p(i_iso)%field_iso%d_pvr,            &
      &      ci_org(i_iso))
       end do
 !
 !
 !        Set color if starting surface is colourd
-      if(interior_ele(iele) .gt. 0) then
+      if(ele%interior_ele(iele) .gt. 0) then
         if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
-          rlic_grad(1:3) = vnorm_surf(isurf_end,1:3)
+          rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
           call plane_rendering_with_light                               &
      &       (viewpoint_vec, xx4_st, rlic_grad(1),                      &
      &        arccos_sf(isurf_end),  color_param, rgba_ray)
@@ -268,12 +266,12 @@
 !   extend to surface of element
 !   find ray exit surface loacal id on current element isf_tgt
 !
-        call find_line_end_in_1ele                                      &
-     &     (iflag_backward_line, numnod, numele, numsurf, nnod_4_surf,  &
-     &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
+        call find_line_end_in_1ele(iflag_backward_line,                 &
+     &      node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,    &
+     &      surf%isf_4_ele, surf%ie_surf, x_nod_model, iele, isf_org,   &
      &      ray_vec4, screen4_st, isf_tgt, screen4_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen4_tgt',               &
-!     &                  my_rank, screen4_tgt(1:3), interior_ele(iele)
+!     &             my_rank, screen4_tgt(1:3), ele%interior_ele(iele)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
@@ -283,54 +281,60 @@
 !   set backside element and surface
 !
         iflag_notrace = 0
-        isurf_end = abs(isf_4_ele(iele,isf_tgt))
+        isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
 !
-        if(isf_4_ele(iele,isf_tgt) .lt. 0) then
-          isurf_org(1) = iele_4_surf(isurf_end,1,1) ! element on one side share the surface
-          isurf_org(2) = iele_4_surf(isurf_end,1,2) ! the surface id of one side element(1-6)
+        if(surf%isf_4_ele(iele,isf_tgt) .lt. 0) then
+! element on one side share the surface
+          isurf_org(1) = surf%iele_4_surf(isurf_end,1,1) 
+! the surface id of one side element(1-6)
+          isurf_org(2) = surf%iele_4_surf(isurf_end,1,2) 
         else
-          isurf_org(1) = iele_4_surf(isurf_end,2,1)
-          isurf_org(2) = iele_4_surf(isurf_end,2,2)
+          isurf_org(1) = surf%iele_4_surf(isurf_end,2,1)
+          isurf_org(2) = surf%iele_4_surf(isurf_end,2,2)
         end if
-        ! new element surface info
+! new element surface info
         do i = 1, 2
-          isurf_orgs(i,1) = iele_4_surf(isurf_end,i,1)
-          isurf_orgs(i,2) = iele_4_surf(isurf_end,i,2)
+          isurf_orgs(i,1) = surf%iele_4_surf(isurf_end,i,1)
+          isurf_orgs(i,2) = surf%iele_4_surf(isurf_end,i,2)
           isurf_orgs(i,3) = isurf_org(3)
         end do
 !   find 3D coordinate of exit point on exit surface
-        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
-     &      ie_surf, isurf_end, xi, xx, xx4_tgt)
-        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
-     &      ie_surf, isurf_end, xi, field_lic%v_lic, vec4_tgt)
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_lic%d_lic, scl_tgt)
+        call cal_field_on_surf_vect4                                    &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+     &      surf%ie_surf, isurf_end, xi, node%xx, xx4_tgt)
+        call cal_field_on_surf_vect4                                    &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+     &      surf%ie_surf, isurf_end, xi, field_lic%v_lic, vec4_tgt)
+        call cal_field_on_surf_scalar                                   &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+     &      surf%ie_surf, isurf_end, xi, field_lic%d_lic, scl_tgt)
 
         do i = 1, lic_p%num_masking
           if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
-            call cal_field_on_surf_scalar                               &
-     &         (numnod, numsurf, nnod_4_surf, ie_surf, isurf_end, xi,   &
-     &          field_lic%s_lic(1,i), r_tgt(i))
+            call cal_field_on_surf_scalar(node%numnod,                  &
+     &          surf%numsurf, surf%nnod_4_surf, surf%ie_surf,           &
+     &          isurf_end, xi, field_lic%s_lic(1,i), r_tgt(i))
           end if
         end do
-        do i_iso = 1, pvr_iso_p%num_isosurf
-          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
-     &        ie_surf, isurf_end, xi, field_lic%d_iso(1,i_iso),         &
+        do i_iso = 1, num_isosurf
+          call cal_field_on_surf_scalar(node%numnod,                    &
+     &        surf%numsurf, surf%nnod_4_surf, surf%ie_surf,             &
+     &        isurf_end, xi, pvr_iso_p(i_iso)%field_iso%d_pvr,          &
      &        ci_tgt(i_iso))
         end do
 
         rlic_grad(0) = 0.0d0
 !
-        if(interior_ele(iele) .gt. 0) then
+        if(ele%interior_ele(iele) .gt. 0) then
 !   rendering boundery
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
-            rlic_grad(1:3) = vnorm_surf(isurf_end,1:3)
+            rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light                             &
      &         (viewpoint_vec, xx4_tgt, rlic_grad(1),                   &
      &          arccos_sf(isurf_end),  color_param, rgba_ray)
           end if
 !
-!   3d lic calculation at current xx position
+!   3d lic calculation at current node position
 !   if sampling by fixed step size
           ray_len = sqrt( (xx4_tgt(1) - xx4_st(1))**2                   &
      &                  + (xx4_tgt(2) - xx4_st(2))**2                   &
@@ -363,13 +367,12 @@
 
               vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
      &                       + vec4_tgt(1:4) * ratio
-              call cal_lic_on_surf_vector                               &
-     &           (numnod, numsurf, numele, nnod_4_surf,                 &
-     &            isf_4_ele, iele_4_surf, interior_surf, xx,            &
-     &            isurf_orgs, ie_surf, xi, lic_p,                       &
-     &            r_mid, vec4_mid, field_lic%s_lic,                     &
-     &            field_lic%v_lic, xx4_lic, isurf_end,                  &
-     &            xyz_min_gl, xyz_max_gl, iflag_lic, rlic_grad)
+              call cal_lic_on_surf_vector (node%numnod,                 &
+     &            surf%numsurf, ele%numele, surf%nnod_4_surf,           &
+     &            surf%isf_4_ele, surf%iele_4_surf, surf%interior_surf, &
+     &            node%xx, isurf_orgs, surf%ie_surf, xi, lic_p,         &
+     &            r_mid, vec4_mid, field_lic%s_lic, field_lic%v_lic,    &
+     &            xx4_lic, isurf_end, iflag_lic, rlic_grad)
 !
   !   normalize gradient
               grad_len = sqrt(rlic_grad(1)*rlic_grad(1)                 &
@@ -380,22 +383,47 @@
               end if
 !
 ! render section (clipping surface)
+              do i_psf = 1, pvr_section_p%num_sections
+                rflag = side_of_plane(pvr_section_p%coefs(1:10,i_psf),  &
+     &                                xx4_st(1))
+                rflag2 = side_of_plane(pvr_section_p%coefs(1:10,i_psf), &
+     &                                 xx4_tgt(1))
+                if     (rflag .ge. -TINY9 .and. rflag2 .le. TINY9) then
+                  iflag = 1
+                  iflag_hit = 1
+                else if(rflag .le. TINY9 .and. rflag2 .ge. -TINY9) then
+                  iflag = 1
+                  iflag_hit = 1
+                else
+                  iflag = 0
+                end if
+
+                if(iflag .ne. 0) then
+                  call cal_normal_of_plane                              &
+     &               (pvr_section_p%coefs(1:10,i_psf),                  &
+     &                xx4_tgt(1), grad_tgt)
+                  call color_plane_with_light                           &
+     &               (viewpoint_vec, xx4_tgt, rlic_grad(0), grad_tgt,   &
+     &                pvr_section_p%sect_opacity(i_psf), color_param,   &
+     &                rgba_ray)
+                end if
+              end do
 !
 ! render isosurface (clipping surface)
-              do i_iso = 1, pvr_iso_p%num_isosurf
-                rflag =  (ci_org(i_iso) - pvr_iso_p%iso_value(i_iso))   &
-     &                  * (ci_tgt(i_iso) - pvr_iso_p%iso_value(i_iso))
-                if((c_tgt(1) - pvr_iso_p%iso_value(i_iso)) .eq. zero    &
+              do i_iso = 1, num_isosurf
+                rflag =  (ci_org(i_iso) - pvr_iso_p(i_iso)%iso_value)   &
+     &                  * (ci_tgt(i_iso) - pvr_iso_p(i_iso)%iso_value)
+                if((ci_tgt(1) - pvr_iso_p(i_iso)%iso_value) .eq. zero   &
      &             .or. rflag .lt. zero) then
-                  ratio = (pvr_iso_p%iso_value(i_iso) - ci_org(i_iso))  &
+                  ratio = (pvr_iso_p(i_iso)%iso_value - ci_org(i_iso))  &
      &                   / (ci_tgt(i_iso) - ci_org(i_iso))
-                  scl_mid(1) = ratio * scl_tgt(1)                       &
-     &                        + (1.0d0 - ratio) * scl_org(1)
-                  grad_tgt(1:3) = field_lic%grad_iso(iele,1:3)          &
-     &                       * pvr_iso_p%itype_isosurf(i_iso)
-                  call color_plane_with_light(viewpoint_vec, xx4_tgt,   &
-     &            scl_mid(1), grad_tgt, pvr_iso_p%iso_opacity(i_iso),   &
-     &            color_param, rgba_ray)
+                  grad_tgt(1:3)                                         &
+     &                 = pvr_iso_p(i_iso)%field_iso%grad_ele(iele,1:3)  &
+     &                  * pvr_iso_p(i_iso)%itype_isosurf
+                  call color_plane_with_light                           &
+     &               (viewpoint_vec, xx4_tgt, rlic_grad(0), grad_tgt,   &
+     &                pvr_iso_p(i_iso)%iso_opacity, color_param,        &
+     &                rgba_ray)
                 end if
               end do
 !
@@ -425,7 +453,7 @@
             xx4_lic(1:4) = half*(xx4_st(1:4) + xx4_tgt(1:4))
 !
 !   reference data at origin of lic iteration
-            do i_iso = 1, pvr_iso_p%num_isosurf
+            do i_iso = 1, num_isosurf
               ci_mid(i_iso) = half*(ci_org(i_iso) + ci_tgt(i_iso))
             end do
             do i = 1, lic_p%num_masking
@@ -437,13 +465,12 @@
             vec4_mid(1:4) = half*(vec4_org(1:4) + vec4_tgt(1:4))
 !   calculate lic value at current location, lic value will be used as intensity
 !   as volume rendering
-            call cal_lic_on_surf_vector                                 &
-     &         (numnod, numsurf, numele, nnod_4_surf,                   &
-     &          isf_4_ele, iele_4_surf, interior_surf, xx,              &
-     &          isurf_orgs, ie_surf, xi, lic_p,                         &
-     &          r_mid, vec4_mid, field_lic%s_lic,                       &
-     &          field_lic%v_lic, xx4_lic, isurf_end,                    &
-     &          xyz_min_gl, xyz_max_gl, iflag_lic, rlic_grad)
+            call cal_lic_on_surf_vector(node%numnod,                    &
+     &          surf%numsurf, ele%numele, surf%nnod_4_surf,             &
+     &          surf%isf_4_ele, surf%iele_4_surf, surf%interior_surf,   &
+     &          node%xx, isurf_orgs, surf%ie_surf, xi, lic_p,           &
+     &          r_mid, vec4_mid, field_lic%s_lic, field_lic%v_lic,      &
+     &          xx4_lic, isurf_end, iflag_lic, rlic_grad)
 !
             ave_ray_len = ray_total_len / icount_line_cur_ray
 !
@@ -455,19 +482,48 @@
               rlic_grad(1:3) = rlic_grad(1:3) / grad_len
             endif
 
-              do i_iso = 1, pvr_iso_p%num_isosurf
-                rflag =  (ci_org(i_iso) - pvr_iso_p%iso_value(i_iso))   &
-     &                  * (ci_tgt(i_iso) - pvr_iso_p%iso_value(i_iso))
-                if((c_tgt(1) - pvr_iso_p%iso_value(i_iso)) .eq. zero    &
+! render section (clipping surface)
+              do i_psf = 1, pvr_section_p%num_sections
+                rflag = side_of_plane(pvr_section_p%coefs(1:10,i_psf),  &
+     &                                xx4_st(1))
+                rflag2 = side_of_plane(pvr_section_p%coefs(1:10,i_psf), &
+     &                                 xx4_tgt(1))
+                if     (rflag .ge. -TINY9 .and. rflag2 .le. TINY9) then
+                  iflag = 1
+                  iflag_hit = 1
+                else if(rflag .le. TINY9 .and. rflag2 .ge. -TINY9) then
+                  iflag = 1
+                  iflag_hit = 1
+                else
+                  iflag = 0
+                end if
+
+                if(iflag .ne. 0) then
+                  call cal_normal_of_plane                              &
+     &               (pvr_section_p%coefs(1:10,i_psf),                  &
+     &                xx4_tgt(1), grad_tgt)
+                  call color_plane_with_light                           &
+     &               (viewpoint_vec, xx4_tgt, rlic_grad(0), grad_tgt,   &
+     &                pvr_section_p%sect_opacity(i_psf), color_param,   &
+     &                rgba_ray)
+                end if
+              end do
+!
+! render isosurface (clipping surface)
+              do i_iso = 1, num_isosurf
+                rflag =  (ci_org(i_iso) - pvr_iso_p(i_iso)%iso_value)   &
+     &                  * (ci_tgt(i_iso) - pvr_iso_p(i_iso)%iso_value)
+                if((ci_tgt(1) - pvr_iso_p(i_iso)%iso_value) .eq. zero   &
      &             .or. rflag .lt. zero) then
-                  ratio = (pvr_iso_p%iso_value(i_iso) - ci_org(i_iso))  &
+                  ratio = (pvr_iso_p(i_iso)%iso_value - ci_org(i_iso))  &
      &                   / (ci_tgt(i_iso) - ci_org(i_iso))
                   scl_mid(1) = ratio * scl_tgt(1)                       &
      &                        + (1.0d0 - ratio) * scl_org(1)
-                  grad_tgt(1:3) = field_lic%grad_iso(iele,1:3)          &
-     &                       * pvr_iso_p%itype_isosurf(i_iso)
+                  grad_tgt(1:3)                                         &
+     &               = pvr_iso_p(i_iso)%field_iso%grad_ele(iele,1:3)    &
+     &                * pvr_iso_p(i_iso)%itype_isosurf
                   call color_plane_with_light(viewpoint_vec, xx4_tgt,   &
-     &            scl_mid(1), grad_tgt, pvr_iso_p%iso_opacity(i_iso),   &
+     &            scl_mid(1), grad_tgt, pvr_iso_p(i_iso)%iso_opacity,   &
      &            color_param, rgba_ray)
                 end if
               end do
@@ -500,7 +556,7 @@
             r_org(i) = r_tgt(i)
           end if
         end do
-        do i_iso = 1, pvr_iso_p%num_isosurf
+        do i_iso = 1, num_isosurf
           ci_org(i_iso) = ci_tgt(i_iso)
         end do
         scl_org(1) =    scl_tgt(1)

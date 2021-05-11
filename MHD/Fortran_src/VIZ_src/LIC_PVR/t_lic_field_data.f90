@@ -25,6 +25,11 @@
 !!        type(lic_field_data), intent(inout) :: nod_fld_lic
 !!        type(lic_field_data), intent(inout) :: field_lic
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!
+!!      subroutine alloc_lic_isosurfs_data(numnod, numele, lic_isos_p)
+!!      subroutine dealloc_lic_isosurfs_data(lic_isos_p)
+!!        integer(kind = kint), intent(in) :: numnod, numele
+!!        type(pvr_isosurfs_parameter), intent(inout) :: lic_isos_p
 !!@endverbatim
 !
       module t_lic_field_data
@@ -203,6 +208,44 @@
       end do
 !
       end subroutine repartition_lic_field
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_lic_isosurfs_data(numnod, numele, lic_isos_p)
+!
+      use t_control_param_pvr_isosurf
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+!
+      type(pvr_isosurfs_parameter), intent(inout) :: lic_isos_p
+!
+      integer(kind = kint) ::  i
+!
+      do i = 1, lic_isos_p%num_isosurf
+        allocate(lic_isos_p%pvr_iso_p(i)%field_iso)
+        call alloc_nod_data_4_pvr(numnod, numele,                       &
+     &      lic_isos_p%pvr_iso_p(i)%field_iso)
+      end do
+!
+      end subroutine alloc_lic_isosurfs_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_lic_isosurfs_data(lic_isos_p)
+!
+      use t_control_param_pvr_isosurf
+!
+      type(pvr_isosurfs_parameter), intent(inout) :: lic_isos_p
+!
+      integer(kind = kint) ::  i
+!
+      do i = 1, lic_isos_p%num_isosurf
+        call dealloc_nod_data_4_pvr(lic_isos_p%pvr_iso_p(i)%field_iso)
+        deallocate(lic_isos_p%pvr_iso_p(i)%field_iso)
+      end do
+!
+      end subroutine dealloc_lic_isosurfs_data
 !
 !  ---------------------------------------------------------------------
 !
