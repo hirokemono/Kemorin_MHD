@@ -90,8 +90,7 @@
 !
         rgba_tmp(1:4) = zero
         call ray_trace_each_pixel                                       &
-     &      (node%numnod, ele%numele, surf,   &
-     &       ele%interior_ele, node%xx,                &
+     &      (node%numnod, ele, surf, node%xx,                           &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
      &       viewpoint_vec, field_pvr, draw_param, color_param,         &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
@@ -108,7 +107,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_pixel                                   &
-     &       (numnod, numele, surf,            &
+     &       (numnod, ele, surf,            &
      &        interior_ele, xx,     &
      &        arccos_sf, x_nod_model, viewpoint_vec, field_pvr,         &
      &        draw_param, color_param, ray_vec4, iflag_check,           &
@@ -119,10 +118,10 @@
       use cal_fline_in_cube
       use set_coefs_of_sections
 !
+      type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in) :: iflag_check
-      integer(kind = kint), intent(in) :: numnod, numele
-      integer(kind = kint), intent(in) :: interior_ele(numele)
+      integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
@@ -165,7 +164,7 @@
       end if
 !
 !        Set color if starting surface is colourd
-      if(interior_ele(iele) .gt. 0) then
+      if(ele%interior_ele(iele) .gt. 0) then
         if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
           grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
           call plane_rendering_with_light                               &
@@ -187,12 +186,12 @@
 !   extend to surface of element
 !
         call find_line_end_in_1ele                                      &
-     &     (iflag_backward_line, numnod, numele, surf%numsurf,          &
+     &     (iflag_backward_line, numnod, ele%numele, surf%numsurf,      &
      &      surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,             &
      &      x_nod_model, iele, isf_org, ray_vec4, screen4_st,           &
      &      isf_tgt, screen4_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen_tgt',                &
-!     &         my_rank, screen4_tgt(1:4), interior_ele(iele)
+!     &         my_rank, screen4_tgt(1:4), ele%interior_ele(iele)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
@@ -219,7 +218,7 @@
      &     (numnod, surf%numsurf, surf%nnod_4_surf,     &
      &      surf%ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
 !
-        if(interior_ele(iele) .gt. 0) then
+        if(ele%interior_ele(iele) .gt. 0) then
 !    Set color if exit surface is colourd
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
             grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)

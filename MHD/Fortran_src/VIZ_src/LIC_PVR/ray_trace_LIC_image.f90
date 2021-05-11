@@ -108,8 +108,7 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call lic_ray_trace_each_pixel(node%numnod, ele%numele,          &
-     &      surf, ele%interior_ele, node%xx,               &
+        call lic_ray_trace_each_pixel(node%numnod, ele, surf, node%xx,  &
      &      pvr_screen%arccos_sf, pvr_screen%x_nod_model,               &
      &      viewpoint_vec, lic_p, field_lic, draw_param, color_param,   &
      &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
@@ -127,8 +126,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_ray_trace_each_pixel                               &
-     &       (numnod, numele, surf,            &
-     &        interior_ele, xx,     &
+     &       (numnod, ele, surf,            &
+     &        xx,     &
      &        arccos_sf, x_nod_model, viewpoint_vec,     &
      &        lic_p, field_lic, draw_param, color_param, ray_vec4,      &
      &        iflag_check, isurf_org, screen4_st, xx4_st, xi, rgba_ray, &
@@ -140,10 +139,10 @@
       use set_rgba_4_each_pixel
       use t_noise_node_data
 !
+      type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in) :: iflag_check
-      integer(kind = kint), intent(in) :: numnod, numele
-      integer(kind = kint), intent(in) :: interior_ele(numele)
+      integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
@@ -223,7 +222,7 @@
 !
 !
 !        Set color if starting surface is colourd
-      if(interior_ele(iele) .gt. 0) then
+      if(ele%interior_ele(iele) .gt. 0) then
 !   rendering boundery
         if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
           rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
@@ -249,12 +248,12 @@
 !   find ray exit surface loacal id on current element isf_tgt
 !
         call find_line_end_in_1ele                                      &
-     &     (iflag_backward_line, numnod, numele,                        &
+     &     (iflag_backward_line, numnod, ele%numele,                    &
      &      surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele,             &
      &      surf%ie_surf, x_nod_model, iele, isf_org,                   &
      &      ray_vec4, screen4_st, isf_tgt, screen4_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen4_tgt',               &
-!     &                  my_rank, screen4_tgt(1:3), interior_ele(iele)
+!     &      my_rank, screen4_tgt(1:3), ele%interior_ele(iele)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
@@ -302,7 +301,7 @@
 
         rlic_grad(0) = 0.0d0
 !
-        if(interior_ele(iele) .gt. 0) then
+        if(ele%interior_ele(iele) .gt. 0) then
 !   rendering boundery
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
             rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
@@ -341,7 +340,7 @@
               vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
      &                       + vec4_tgt(1:4) * ratio
               call cal_lic_on_surf_vector                               &
-     &           (numnod, surf%numsurf, numele, surf%nnod_4_surf,       &
+     &           (numnod, surf%numsurf, ele%numele, surf%nnod_4_surf,   &
      &            surf%isf_4_ele, surf%iele_4_surf, surf%interior_surf, &
      &            xx, isurf_orgs, surf%ie_surf, xi, lic_p,              &
      &            r_mid, vec4_mid, field_lic%s_lic,                     &
@@ -394,7 +393,7 @@
 !   calculate lic value at current location, lic value will be used as intensity
 !   as volume rendering
             call cal_lic_on_surf_vector                                 &
-     &         (numnod, surf%numsurf, numele, surf%nnod_4_surf,         &
+     &         (numnod, surf%numsurf, ele%numele, surf%nnod_4_surf,     &
      &          surf%isf_4_ele, surf%iele_4_surf, surf%interior_surf,   &
      &          xx, isurf_orgs, surf%ie_surf, xi, lic_p,                &
      &          r_mid, vec4_mid, field_lic%s_lic,                       &
