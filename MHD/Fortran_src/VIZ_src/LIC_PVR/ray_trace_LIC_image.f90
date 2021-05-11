@@ -28,6 +28,9 @@
 !
       use m_constants
       use m_geometry_constants
+      use m_machine_parameter
+      use m_elapsed_labels_4_VIZ
+      use m_work_time
       use calypso_mpi
       use lic_rgba_4_each_pixel
 !
@@ -37,7 +40,6 @@
       use t_control_param_LIC
       use t_geometries_in_pvr_screen
       use t_lic_field_data
-      use m_machine_parameter
       use cal_lic_on_surf_viz
 !
       implicit  none
@@ -86,14 +88,17 @@
 !
       integer(kind = kint) :: inum, iflag_comm
       real(kind = kreal) :: rgba_tmp(4)
+      real(kind = kreal) :: elapse_trace
 !
 !      type(noise_mask), allocatable :: n_mask
       integer(kind = kint) :: sample_cnt
 
       sample_cnt = 0
+      elapse_trace = 0.0d0
 !
       if(lic_p%iflag_vr_sample_mode .eq. iflag_fixed_size) then
-!$omp parallel do private(inum, iflag_comm,rgba_tmp)
+!$omp parallel do private(inum, iflag_comm,rgba_tmp)                    &
+!$omp& reduction(+:elapse_trace)
         do inum = 1, num_pvr_ray
 !         if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
 !           write(*,*) 'check section trace for ', my_rank, inum
@@ -106,14 +111,15 @@
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
-     &       node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
+     &       elapse_trace, iflag_comm)
           rgba_ray(1:4,inum) = rgba_tmp(1:4)
           sample_cnt = sample_cnt + icount_pvr_trace(inum)
         end do
 !$omp end parallel do
 !
       else
-!$omp parallel do private(inum, iflag_comm,rgba_tmp)
+!$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
+!$omp& reduction(+:elapse_trace)
         do inum = 1, num_pvr_ray
 !         if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
 !           write(*,*) 'check section trace for ', my_rank, inum
@@ -126,13 +132,17 @@
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
-     &       node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
+     &       elapse_trace, iflag_comm)
           rgba_ray(1:4,inum) = rgba_tmp(1:4)
           sample_cnt = sample_cnt + icount_pvr_trace(inum)
         end do
 !$omp end parallel do
       end if
       write(*,*) "pvr sampling cnt:", my_rank, sample_cnt
+!
+      elps1%start_time(ist_elapsed_LIC+4)                               &
+     &       = elps1%start_time(ist_elapsed_LIC+4)                      &
+     &        +  elapse_trace / dble(np_smp)
 !
       end subroutine ray_trace_each_lic_image
 !

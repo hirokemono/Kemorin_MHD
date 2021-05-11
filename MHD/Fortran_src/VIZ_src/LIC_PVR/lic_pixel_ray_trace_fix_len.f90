@@ -11,8 +11,7 @@
 !!     &          arccos_sf, x_nod_model, viewpoint_vec, lic_p,         &
 !!     &          field_lic, draw_param, color_param, ray_vec4,         &
 !!     &          iflag_check, isurf_org, screen4_st, xx4_st, xi,       &
-!!     &          rgba_ray, icount_line, xyz_min_gl, xyz_max_gl,        &
-!!     &          iflag_comm)
+!!     &          rgba_ray, icount_line, elapse_trace, iflag_comm)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -53,8 +52,7 @@
      &          arccos_sf, x_nod_model, viewpoint_vec, lic_p,           &
      &          field_lic, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
-     &          rgba_ray, icount_line, xyz_min_gl, xyz_max_gl,          &
-     &          iflag_comm)
+     &          rgba_ray, icount_line, elapse_trace, iflag_comm)
 !
       use cal_field_on_surf_viz
       use cal_fline_in_cube
@@ -72,9 +70,6 @@
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
 !
-      real(kind = kreal), intent(in) :: xyz_min_gl(3)
-      real(kind = kreal), intent(in) :: xyz_max_gl(3)
-!
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
       type(rendering_parameter), intent(in) :: draw_param
@@ -85,6 +80,7 @@
       real(kind = kreal), intent(inout) :: screen4_st(4)
       real(kind = kreal), intent(inout) :: xx4_st(4), xi(2)
       real(kind = kreal), intent(inout) :: rgba_ray(4)
+      real(kind = kreal), intent(inout) :: elapse_trace
 !
 !      type(noise_mask), intent(inout) :: n_mask
 !
@@ -104,6 +100,7 @@
       real(kind = kreal) :: ray_total_len = zero, ave_ray_len, step_size
       integer(kind = kint) :: icount_line_cur_ray = 0
       real(kind = kreal) :: ray_left, ray_len
+      real(kind = kreal) :: start_trace
 !
       if(isurf_org(1) .eq. 0) return
 !
@@ -253,13 +250,13 @@
           vec4_mid(1:4) = half*(vec4_org(1:4) + vec4_tgt(1:4))
 !   calculate lic value at current location, lic value will be used as intensity
 !   as volume rendering
+          start_trace =  MPI_WTIME()
           call cal_lic_on_surf_vector                                   &
      &       (node%numnod, surf%numsurf, ele%numele, surf%nnod_4_surf,  &
      &        surf%isf_4_ele, surf%iele_4_surf, surf%interior_surf,     &
      &        node%xx, isurf_orgs, surf%ie_surf, xi, lic_p,             &
-     &        r_mid, vec4_mid, field_lic%s_lic,                         &
-     &        field_lic%v_lic, xx4_lic, isurf_end,                      &
-     &        xyz_min_gl, xyz_max_gl, iflag_lic, rlic_grad)
+     &        r_mid, vec4_mid, field_lic%s_lic, field_lic%v_lic,        &
+     &        xx4_lic, isurf_end, iflag_lic, rlic_grad)
 !
           ave_ray_len = ray_total_len / icount_line_cur_ray
 !
@@ -269,7 +266,8 @@
      &                  + rlic_grad(3)*rlic_grad(3))
           if(grad_len .ne. 0.0) then
             rlic_grad(1:3) = rlic_grad(1:3) / grad_len
-          endif
+          end if
+          elapse_trace =  elapse_trace + MPI_WTIME() - start_trace
 
           do i_psf = 1, draw_param%num_sections
             rflag =  side_of_plane(draw_param%coefs(1:10,i_psf),        &

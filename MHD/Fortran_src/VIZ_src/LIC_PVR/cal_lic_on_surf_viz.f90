@@ -9,8 +9,7 @@
 !!     &          iele_4_surf, interior_surf, xx,                       &
 !!     &          isurf_orgs, ie_surf, xi, lic_p,                       &
 !!     &          r_org, vec4_org, ref_nod,                             &
-!!     &          v_nod, xx4_org, isurf, xyz_min, xyz_max, iflag_comm,  &
-!!     &          rlic_grad)
+!!     &          v_nod, xx4_org, isurf, iflag_comm, rlic_grad)
 !!
 !!      subroutine cal_surf_field_value_2d(nd, xi, fd, ft)
 !
@@ -40,8 +39,7 @@
      &          iele_4_surf, interior_surf, xx,                         &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
      &          r_org, vec4_org, ref_nod,                               &
-     &          v_nod, xx4_org, isurf, xyz_min, xyz_max, iflag_comm,    &
-     &          rlic_grad)
+     &          v_nod, xx4_org, isurf, iflag_comm, rlic_grad)
 
         use m_geometry_constants
         use calypso_mpi
@@ -67,9 +65,6 @@
         real(kind = kreal), intent(inout) :: rlic_grad(0:3), r_org(:)
         integer(kind = kint), intent(inout) :: iflag_comm
 !        type(noise_mask), intent(inout) :: n_mask
-
-        real(kind = kreal), intent(in) :: xyz_min(3)
-        real(kind = kreal), intent(in) :: xyz_max(3)
 
       real(kind = kreal) :: step_vec4(4), new_pos4(4)
       real(kind = kreal) :: rlic_grad_v(0:3)

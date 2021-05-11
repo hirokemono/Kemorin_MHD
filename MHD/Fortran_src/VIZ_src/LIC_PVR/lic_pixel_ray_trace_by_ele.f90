@@ -11,8 +11,7 @@
 !!     &          arccos_sf, x_nod_model, viewpoint_vec, lic_p,         &
 !!     &          field_lic, draw_param, color_param, ray_vec4,         &
 !!     &          iflag_check, isurf_org, screen4_st, xx4_st, xi,       &
-!!     &          rgba_ray, icount_line, xyz_min_gl, xyz_max_gl,        &
-!!     &          iflag_comm)
+!!     &          rgba_ray, icount_line, elapse_trace, iflag_comm)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -52,8 +51,7 @@
      &          arccos_sf, x_nod_model, viewpoint_vec, lic_p,           &
      &          field_lic, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
-     &          rgba_ray, icount_line, xyz_min_gl, xyz_max_gl,          &
-     &          iflag_comm)
+     &          rgba_ray, icount_line, elapse_trace, iflag_comm)
 !
       use cal_field_on_surf_viz
       use cal_fline_in_cube
@@ -71,9 +69,6 @@
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
 !
-      real(kind = kreal), intent(in) :: xyz_min_gl(3)
-      real(kind = kreal), intent(in) :: xyz_max_gl(3)
-!
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
       type(rendering_parameter), intent(in) :: draw_param
@@ -84,6 +79,7 @@
       real(kind = kreal), intent(inout) :: screen4_st(4)
       real(kind = kreal), intent(inout) :: xx4_st(4), xi(2)
       real(kind = kreal), intent(inout) :: rgba_ray(4)
+      real(kind = kreal), intent(inout) :: elapse_trace
 !
 !      type(noise_mask), intent(inout) :: n_mask
 !
@@ -102,6 +98,7 @@
 
       integer(kind = kint) :: icount_line_cur_ray = 0, step_cnt
       real(kind = kreal) :: ray_len_left, ray_left, ray_len, ratio
+      real(kind = kreal) :: start_trace
 !
       if(isurf_org(1) .eq. 0) return
 !
@@ -255,6 +252,7 @@
 ! masking on sampling point
 !              if(mask_flag(lic_p, r_mid)) then
 
+              start_trace =  MPI_WTIME()
               vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
      &                       + vec4_tgt(1:4) * ratio
               call cal_lic_on_surf_vector(node%numnod,                  &
@@ -263,7 +261,8 @@
      &            node%xx, isurf_orgs, surf%ie_surf, xi, lic_p,         &
      &            r_mid, vec4_mid, field_lic%s_lic,                     &
      &            field_lic%v_lic, xx4_lic, isurf_end,                  &
-     &            xyz_min_gl, xyz_max_gl, iflag_lic, rlic_grad)
+     &            iflag_lic, rlic_grad)
+              elapse_trace =  elapse_trace + MPI_WTIME() - start_trace
 !
   !   normalize gradient
               grad_len = sqrt(rlic_grad(1)*rlic_grad(1)                 &

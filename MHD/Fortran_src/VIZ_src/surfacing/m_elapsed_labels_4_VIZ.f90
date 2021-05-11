@@ -157,7 +157,7 @@
 !
       subroutine elpsed_label_4_LIC
 !
-      integer(kind = kint), parameter :: num_append = 4
+      integer(kind = kint), parameter :: num_append = 5
 !
 !
       call append_elapsed_times                                         &
@@ -170,6 +170,8 @@
       elps1%labels(ist_elapsed_LIC+3)                                   &
      &                    = 'LIC V. Rendering ray trace   '
       elps1%labels(ist_elapsed_LIC+4)                                   &
+     &                    = 'LIC V. Rendering subimage composit   '
+      elps1%labels(ist_elapsed_LIC+5)                                   &
      &                    = 'LIC V. Rendering subimage composit   '
 !
       iflag_LIC_time = .TRUE.
