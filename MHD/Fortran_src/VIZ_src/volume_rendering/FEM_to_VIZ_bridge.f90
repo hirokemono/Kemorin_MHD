@@ -55,7 +55,6 @@
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
       use set_table_4_RHS_assemble
-      use parallel_FEM_mesh_init
       use const_element_comm_tables
       use set_normal_vectors
 !
@@ -69,11 +68,7 @@
       type(shape_finctions_at_points) :: spfs
 !
 !
-      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
-!
-!     --------------------- init for fieldline and PVR
-!
+! ------  init for fieldline and PVR ---------------------
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
@@ -127,14 +122,13 @@
       type(communication_table) :: ele_comm_T
       type(jacobians_type) :: jacobians_T
       type(shape_finctions_at_points) :: spfs_T
-      type(jacobians_type) :: jac_viz
+!
+!
+      call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
-!
-        if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
-        call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
 !  -----  Const Element communication table
         write(e_message,*)                                              &
@@ -162,25 +156,15 @@
      &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
         call dealloc_next_nod_ele_table(next_tbl_T)
         call dealloc_comm_table(ele_comm_T)
-        call dealloc_mesh_infomations(geofem%mesh, geofem%group)
-        call FEM_mesh_initialization(VIZ_DAT%viz_fem%mesh,              &
-     &                               VIZ_DAT%viz_fem%group)
       else
         call link_FEM_field_4_viz(geofem, VIZ_DAT)
       end if
 !
       call link_jacobians_4_viz                                         &
      &   (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
-!
+      if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
      &    VIZ_DAT%edge_comm, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
-      if((viz_step%LIC_t%increment .gt. 0)                              &
-     &           .and. VIZ_DAT%repart_p%flag_repartition) then
-        if(iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
-        call set_max_integration_points(ione, jac_viz%g_FEM)
-        call surf_jacobian_sf_grp_normal(my_rank, nprocs,               &
-     &      VIZ_DAT%viz_fem%mesh, VIZ_DAT%viz_fem%group, spfs_T, jac_viz)
-      end if
 !
       end subroutine init_FEM_to_VIZ_bridge
 !
@@ -211,8 +195,7 @@
       integer(kind = kint) :: iflag
 !
       type(communication_table) :: ele_comm_T
-      type(shape_finctions_at_points) :: spfs
-      type(jacobians_type) :: jac_viz
+!
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
@@ -229,21 +212,6 @@
      &     (VIZ_DAT%repart_p, geofem, ele_comm_T, next_tbl,             &
      &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
         call dealloc_comm_table(ele_comm_T)
-!
-        call FEM_mesh_initialization(VIZ_DAT%viz_fem%mesh,              &
-     &                               VIZ_DAT%viz_fem%group)
-!
-        call link_jacobians_4_viz                                       &
-     &     (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
-        call normals_and_jacobians_4_VIZ(viz_step, geofem,              &
-     &      VIZ_DAT%edge_comm, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
-!
-        if(viz_step%LIC_t%increment .gt. 0) then
-          if(iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
-          call set_max_integration_points(ione, jac_viz%g_FEM)
-          call surf_jacobian_sf_grp_normal(my_rank, nprocs,             &
-     &        VIZ_DAT%viz_fem%mesh, VIZ_DAT%viz_fem%group, spfs, jac_viz)
-        end if
       else
         call link_FEM_field_4_viz(geofem, VIZ_DAT)
         call link_jacobians_4_viz                                       &

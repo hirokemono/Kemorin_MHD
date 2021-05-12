@@ -66,6 +66,12 @@
       subroutine init_visualize(viz_step, geofem, nod_fld, VIZ_DAT,     &
      &                          viz_ctls, vizs)
 !
+      use t_fem_gauss_int_coefs
+      use t_shape_functions
+      use t_jacobians
+      use parallel_FEM_mesh_init
+      use set_normal_vectors
+!
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
@@ -73,6 +79,9 @@
 !
       type(visualization_controls), intent(inout) :: viz_ctls
       type(visualize_modules), intent(inout) :: vizs
+!
+      type(shape_finctions_at_points) :: spfs_T
+      type(jacobians_type) :: jac_viz
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
@@ -93,6 +102,17 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
+      if((viz_step%LIC_t%increment .gt. 0)                              &
+     &           .and. VIZ_DAT%repart_p%flag_repartition) then
+        if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
+        call FEM_mesh_initialization(VIZ_DAT%viz_fem%mesh,              &
+     &                               VIZ_DAT%viz_fem%group)
+        if(iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
+        call set_max_integration_points(ione, jac_viz%g_FEM)
+        call surf_jacobian_sf_grp_normal(my_rank, nprocs,               &
+     &      VIZ_DAT%viz_fem%mesh, VIZ_DAT%viz_fem%group,                &
+     &      spfs_T, jac_viz)
+      end if
       call LIC_initialize(viz_step%LIC_t%increment, VIZ_DAT%repart_p,   &
      &                    VIZ_DAT%viz_fem, geofem, nod_fld,             &
      &                    viz_ctls%lic_ctls, vizs%lic)
