@@ -57,16 +57,27 @@
       use m_error_IDs
       use m_file_format_switch
 !
+      use t_next_node_ele_4_node
+      use t_jacobians
+      use t_shape_functions
+!
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use field_to_new_partition
       use nod_and_ele_derived_info
       use const_element_comm_tables
+      use parallel_FEM_mesh_init
+      use int_volume_of_single_domain
+      use set_table_4_RHS_assemble
 !
 !
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
+      type(next_nod_ele_table) :: next_tbl1
+      type(communication_table) :: ele_comm1
+      type(jacobians_type) :: jacobians1
+      type(shape_finctions_at_points) :: spfs1
 !
       integer(kind = kint) :: irank_read
       integer(kind = kint) :: ierr
@@ -100,8 +111,38 @@
 !
 !  -------------------------------
 !
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
+!
+!  -----  Const Element communication table
+      write(e_message,*)                                                &
+     &      'Construct repartitioned mesh and transfer table'
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      call const_ele_comm_table                                         &
+     &   (fem_T%mesh%node, fem_T%mesh%nod_comm,                         &
+     &    ele_comm1, fem_T%mesh%ele)
+!
+!  -----  Const volume of each element
+      if(iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
+      call const_jacobian_and_single_vol                                &
+     &   (fem_T%mesh, fem_T%group, spfs1, jacobians1)
+      call finalize_jac_and_single_vol                                  &
+     &   (fem_T%mesh, spfs1, jacobians1)
+!
+!  -----  Const Neighboring information
+      if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
+      call set_belonged_ele_and_next_nod                                &
+     &   (fem_T%mesh, next_tbl1%neib_ele, next_tbl1%neib_nod)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'load_or_const_new_partition'
       call load_or_const_new_partition(part_p1%repart_p, fem_T,         &
-     &    new_fem, repart_nod_tbl1)
+     &    ele_comm1, next_tbl1, new_fem, repart_nod_tbl1)
+      call dealloc_next_nod_ele_table(next_tbl1)
+      call dealloc_comm_table(ele_comm1)
+      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
+!
       call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
       call const_global_mesh_infos(new_fem%mesh)
 !
