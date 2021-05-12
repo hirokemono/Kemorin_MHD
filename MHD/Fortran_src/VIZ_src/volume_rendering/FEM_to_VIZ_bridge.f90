@@ -55,7 +55,6 @@
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
       use set_table_4_RHS_assemble
-      use const_element_comm_tables
       use set_normal_vectors
 !
       logical, intent(in) ::  flag_repartition
@@ -87,8 +86,8 @@
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
       use set_table_4_RHS_assemble
-      use const_element_comm_tables
       use set_normal_vectors
+      use const_element_comm_tables
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
@@ -146,7 +145,6 @@
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
       type(next_nod_ele_table) :: next_tbl_T
-      type(communication_table) :: ele_comm_T
       type(jacobians_type) :: jacobians_T
       type(shape_finctions_at_points) :: spfs_T
 !
@@ -162,7 +160,6 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
 !
-!
 !  -----  Const volume of each element
         if(iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
         call const_jacobian_and_single_vol                              &
@@ -170,18 +167,11 @@
         call finalize_jac_and_single_vol                                &
      &     (geofem%mesh, spfs_T, jacobians_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
-!  -----  Const Element communication table
-        write(e_message,*)                                              &
-     &      'Construct repartitioned mesh and transfer table'
-        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-        call const_ele_comm_table                                       &
-     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      ele_comm_T, geofem%mesh%ele)
 !
+!  -----  Repartition
         call load_or_const_new_partition                                &
-     &     (VIZ_DAT%repart_p, geofem, ele_comm_T, VIZ_DAT%next_tbl,     &
+     &     (VIZ_DAT%repart_p, geofem, VIZ_DAT%next_tbl,                 &
      &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
-        call dealloc_comm_table(ele_comm_T)
       else
         call link_FEM_field_4_viz(geofem, VIZ_DAT)
       end if
@@ -220,24 +210,12 @@
 !
       integer(kind = kint) :: iflag
 !
-      type(communication_table) :: ele_comm_T
-!
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
-!
-        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-        write(e_message,*)                                              &
-     &      'Construct repartitioned mesh and transfer table'
-        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-        call const_ele_comm_table(geofem%mesh%node,                     &
-     &      geofem%mesh%nod_comm, ele_comm_T, geofem%mesh%ele)
-        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
-!
         call load_or_const_new_partition                                &
-     &     (VIZ_DAT%repart_p, geofem, ele_comm_T, next_tbl,             &
+     &     (VIZ_DAT%repart_p, geofem, next_tbl,                         &
      &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
-        call dealloc_comm_table(ele_comm_T)
       else
         call link_FEM_field_4_viz(geofem, VIZ_DAT)
         call link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)

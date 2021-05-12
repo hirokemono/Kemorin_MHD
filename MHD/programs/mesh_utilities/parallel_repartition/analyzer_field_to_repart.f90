@@ -75,7 +75,6 @@
 !
       type(new_patition_test_control) :: part_tctl1
       type(next_nod_ele_table) :: next_tbl1
-      type(communication_table) :: ele_comm1
       type(jacobians_type) :: jacobians1
       type(shape_finctions_at_points) :: spfs1
 !
@@ -116,14 +115,6 @@
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
 !
 !
-!  -----  Const Element communication table
-      write(e_message,*)                                                &
-     &      'Construct repartitioned mesh and transfer table'
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-      call const_ele_comm_table                                         &
-     &   (fem_T%mesh%node, fem_T%mesh%nod_comm,                         &
-     &    ele_comm1, fem_T%mesh%ele)
-!
 !  -----  Const volume of each element
       if(iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
       call const_jacobian_and_single_vol                                &
@@ -139,9 +130,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'load_or_const_new_partition'
       call load_or_const_new_partition(part_p1%repart_p, fem_T,         &
-     &    ele_comm1, next_tbl1, new_fem, repart_nod_tbl1)
+     &    next_tbl1, new_fem, repart_nod_tbl1)
       call dealloc_next_nod_ele_table(next_tbl1)
-      call dealloc_comm_table(ele_comm1)
       call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
 !
       call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)

@@ -71,6 +71,7 @@
       use t_jacobians
       use parallel_FEM_mesh_init
       use set_normal_vectors
+      use const_element_comm_tables
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
