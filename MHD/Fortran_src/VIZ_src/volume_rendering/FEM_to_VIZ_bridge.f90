@@ -162,13 +162,6 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
 !
-!  -----  Const Element communication table
-        write(e_message,*)                                              &
-     &      'Construct repartitioned mesh and transfer table'
-        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-        call const_ele_comm_table                                       &
-     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      ele_comm_T, geofem%mesh%ele)
 !
 !  -----  Const volume of each element
         if(iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
@@ -177,6 +170,13 @@
         call finalize_jac_and_single_vol                                &
      &     (geofem%mesh, spfs_T, jacobians_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
+!  -----  Const Element communication table
+        write(e_message,*)                                              &
+     &      'Construct repartitioned mesh and transfer table'
+        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+        call const_ele_comm_table                                       &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
+     &      ele_comm_T, geofem%mesh%ele)
 !
         call load_or_const_new_partition                                &
      &     (VIZ_DAT%repart_p, geofem, ele_comm_T, VIZ_DAT%next_tbl,     &
