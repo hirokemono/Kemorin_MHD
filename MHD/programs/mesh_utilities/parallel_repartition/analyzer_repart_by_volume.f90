@@ -95,6 +95,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
 !
+!
 !  -----  Const Element communication table
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
       call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
@@ -191,6 +192,7 @@
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group)
+!
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
       call const_ele_comm_table                                         &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &

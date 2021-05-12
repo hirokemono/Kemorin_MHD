@@ -48,8 +48,6 @@
       ele_l%nnod_4_ele = num_t_linear
 !
       call alloc_ele_connect(ele_l)
-      call alloc_overlapped_ele(ele_l)
-      call alloc_ele_geometry(ele_l)
 !
       call set_27quad_2_8x8linear(ele_q%numele, ele_q%ie,               &
      &    node_l%numnod, ele_l%ie)

@@ -141,12 +141,15 @@
 !     --------------------- init for fieldline and PVR
 !
       call link_FEM_field_4_viz(FEM_viz%geofem, pvr)
-      call link_jacobians_4_viz(pvr%ele_4_nod_v, pvr%jacobians_v, pvr)
+      call link_jacobians_4_viz(pvr%next_tbl_v, pvr%jacobians_v, pvr)
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization                                      &
      &   (FEM_viz%geofem%mesh, FEM_viz%geofem%group)
+      call normals_and_jacobians_VIZ_pre                                &
+     &   ((.FALSE.), viz_step, FEM_viz%geofem,                          &
+     &    pvr%edge_comm, pvr%next_tbl, pvr%jacobians)
       call normals_and_jacobians_4_VIZ(viz_step, FEM_viz%geofem,        &
-     &    pvr%edge_comm, pvr%ele_4_nod, pvr%jacobians)
+     &    pvr%edge_comm, pvr%next_tbl, pvr%jacobians)
       call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_four_vizs

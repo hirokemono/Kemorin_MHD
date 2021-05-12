@@ -115,6 +115,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
 !
+!
 !  -----  Const Element communication table
       write(e_message,*)                                                &
      &      'Construct repartitioned mesh and transfer table'

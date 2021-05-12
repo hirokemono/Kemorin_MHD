@@ -141,6 +141,7 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group)
+!
       if(iflag_debug.gt.0) write(*,*) ' const_ele_comm_table'
       call const_ele_comm_table                                         &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &

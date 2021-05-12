@@ -49,8 +49,40 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine normals_and_jacobians_VIZ_pre                          &
+     &         (flag_repartition, viz_step, geofem, edge_comm, next_tbl, jacobians)
+!
+      use t_fem_gauss_int_coefs
+      use int_volume_of_domain
+      use set_table_4_RHS_assemble
+      use const_element_comm_tables
+      use set_normal_vectors
+!
+      logical, intent(in) ::  flag_repartition
+      type(VIZ_step_params), intent(in) :: viz_step
+      type(mesh_data), intent(inout) :: geofem
+      type(communication_table), intent(inout) :: edge_comm
+      type(next_nod_ele_table), intent(inout) :: next_tbl
+      type(jacobians_type), intent(inout) :: jacobians
+!
+      integer(kind = kint) :: iflag
+      type(shape_finctions_at_points) :: spfs
+!
+!
+!  -----  Const Neighboring information
+      if((viz_step%FLINE_t%increment .gt. 0)                            &
+     &     .or. flag_repartition) then
+        if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
+        call set_belonged_ele_and_next_nod                              &
+     &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
+      end if
+!
+      end subroutine normals_and_jacobians_VIZ_pre
+!
+! ----------------------------------------------------------------------
+!
       subroutine normals_and_jacobians_4_VIZ                            &
-     &         (viz_step, geofem, edge_comm, ele_4_nod, jacobians)
+     &         (viz_step, geofem, edge_comm, next_tbl, jacobians)
 !
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
@@ -61,7 +93,7 @@
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
       type(communication_table), intent(inout) :: edge_comm
-      type(element_around_node), intent(inout) :: ele_4_nod
+      type(next_nod_ele_table), intent(inout) :: next_tbl
       type(jacobians_type), intent(inout) :: jacobians
 !
       integer(kind = kint) :: iflag
@@ -75,11 +107,6 @@
         call const_edge_comm_table                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
      &      edge_comm, geofem%mesh%edge)
-      end if
-!
-      if(viz_step%FLINE_t%increment .gt. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
-        call set_element_on_node_in_mesh(geofem%mesh, ele_4_nod)
       end if
 !
       iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
@@ -126,6 +153,11 @@
 !
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
+      if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_VIZ_pre'
+      call normals_and_jacobians_VIZ_pre                                &
+     &   (VIZ_DAT%repart_p%flag_repartition, viz_step, geofem,          &
+     &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians)
+!
       if(VIZ_DAT%repart_p%flag_repartition) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
@@ -144,27 +176,21 @@
      &     (geofem%mesh, geofem%group, spfs_T, jacobians_T)
         call finalize_jac_and_single_vol                                &
      &     (geofem%mesh, spfs_T, jacobians_T)
-!
-!  -----  Const Neighboring information
-        if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
-        call set_belonged_ele_and_next_nod                              &
-     &     (geofem%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
         call load_or_const_new_partition                                &
-     &     (VIZ_DAT%repart_p, geofem, ele_comm_T, next_tbl_T,           &
+     &     (VIZ_DAT%repart_p, geofem, ele_comm_T, VIZ_DAT%next_tbl,     &
      &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
-        call dealloc_next_nod_ele_table(next_tbl_T)
         call dealloc_comm_table(ele_comm_T)
       else
         call link_FEM_field_4_viz(geofem, VIZ_DAT)
       end if
 !
       call link_jacobians_4_viz                                         &
-     &   (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
+     &   (VIZ_DAT%next_tbl_v, VIZ_DAT%jacobians_v, VIZ_DAT)
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
-     &    VIZ_DAT%edge_comm, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
+     &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians)
 !
       end subroutine init_FEM_to_VIZ_bridge
 !
@@ -214,8 +240,7 @@
         call dealloc_comm_table(ele_comm_T)
       else
         call link_FEM_field_4_viz(geofem, VIZ_DAT)
-        call link_jacobians_4_viz                                       &
-     &     (next_tbl%neib_ele, jacobians, VIZ_DAT)
+        call link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
 !
         iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
         if(iflag .gt. 0) then

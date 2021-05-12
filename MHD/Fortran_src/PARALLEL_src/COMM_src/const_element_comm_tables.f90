@@ -145,8 +145,7 @@
 !
       call alloc_ele_double_number(ele%numele, iele_dbl)
       call find_belonged_pe_4_ele                                       &
-     &   (my_rank, inod_dbl, ele%numele, ele%ie(1,1),                   &
-     &    ele%internal_ele, ele%interior_ele, iele_dbl)
+     &   (inod_dbl, ele%numele, ele%ie(1,1), iele_dbl)
 !
       call set_ele_id_4_node(node, ele, neib_ele)
 !

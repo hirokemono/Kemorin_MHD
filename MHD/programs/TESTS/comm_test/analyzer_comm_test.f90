@@ -93,6 +93,7 @@
       call FEM_comm_initialization(test_fem%mesh, v_sol_T)
       call FEM_mesh_initialization(test_fem%mesh, test_fem%group)
 !
+!
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
       call const_ele_comm_table                                         &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &

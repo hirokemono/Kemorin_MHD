@@ -89,6 +89,7 @@
 ! Increase sleeve size
       if(part_param%sleeve_exp_p%iflag_expand .ne. iflag_turn_off) then
         call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
+!
         call const_ele_comm_table                                       &
      &     (new_fem%mesh%node, new_fem%mesh%nod_comm,                   &
      &      new_ele_comm, new_fem%mesh%ele)

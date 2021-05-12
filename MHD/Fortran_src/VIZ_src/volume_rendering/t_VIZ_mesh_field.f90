@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine link_FEM_field_4_viz(geofem, VIZ_DAT)
-!!      subroutine link_jacobians_4_viz(ele_4_nod, jacobians, VIZ_DAT)
+!!      subroutine link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
 !!      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
 !!      subroutine unlink_jacobians_4_viz(VIZ_DAT)
 !!        type(mesh_data), intent(inout), target :: geofem
-!!        type(element_around_node), intent(in), target :: ele_4_nod
+!!        type(next_nod_ele_table), intent(in), target :: next_tbl
 !!        type(jacobians_type), intent(in), target :: jacobians
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!@endverbatim
@@ -44,7 +44,7 @@
 !>        Stracture for Jacobians
         type(jacobians_type) :: jacobians_v
 !>        Structure of included element list for each node
-        type(element_around_node) :: ele_4_nod_v
+        type(next_nod_ele_table) :: next_tbl_v
 !
 !
 !>         Structure for mesh data for visualization
@@ -58,8 +58,8 @@
 !        type(shape_finctions_at_points) :: spfs
 !>        Stracture for Jacobians
         type(jacobians_type), pointer :: jacobians
-!>        Structure of included element list for each node
-        type(element_around_node), pointer :: ele_4_nod
+!>        Structure of neighboring list for each node
+        type(next_nod_ele_table), pointer :: next_tbl
 !
 !>        Structure of edge communication table
         type(communication_table) :: edge_comm
@@ -82,13 +82,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine link_jacobians_4_viz(ele_4_nod, jacobians, VIZ_DAT)
+      subroutine link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
 !
-      type(element_around_node), intent(in), target :: ele_4_nod
+      type(next_nod_ele_table), intent(in), target :: next_tbl
       type(jacobians_type), intent(in), target :: jacobians
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      VIZ_DAT%ele_4_nod => ele_4_nod
+      VIZ_DAT%next_tbl =>  next_tbl
       VIZ_DAT%jacobians => jacobians
 !
       end subroutine link_jacobians_4_viz
@@ -109,7 +109,7 @@
 !
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      nullify(VIZ_DAT%jacobians, VIZ_DAT%ele_4_nod)
+      nullify(VIZ_DAT%jacobians, VIZ_DAT%next_tbl)
 !
       end subroutine unlink_jacobians_4_viz
 !
