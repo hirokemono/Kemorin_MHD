@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine s_repartiton_by_volume                               &
-!!     &         (part_param, geofem, ele_comm_T, next_tbl_T,           &
+!!     &         (part_param, geofem, ele_comm, next_tbl,               &
 !!     &          new_fem, repart_nod_tbl)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
-!!        type(communication_table), intent(in) :: ele_comm_T
-!!        type(next_nod_ele_table), intent(in) :: next_tbl_T
+!!        type(communication_table), intent(in) :: ele_comm
+!!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !!      subroutine load_repartitoned_file                               &
@@ -46,7 +46,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_repartiton_by_volume                                 &
-     &         (part_param, geofem, ele_comm_T, next_tbl_T,             &
+     &         (part_param, geofem, ele_comm, next_tbl,                 &
      &          new_fem, repart_nod_tbl)
 !
       use t_next_node_ele_4_node
@@ -69,8 +69,8 @@
 !
       type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: geofem
-      type(communication_table), intent(in) :: ele_comm_T
-      type(next_nod_ele_table), intent(in) :: next_tbl_T
+      type(communication_table), intent(in) :: ele_comm
+      type(next_nod_ele_table), intent(in) :: next_tbl
 !
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
@@ -82,7 +82,7 @@
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
       call s_mesh_repartition_by_volume                                 &
-     &   (geofem, ele_comm_T, next_tbl_T%neib_nod, part_param,          &
+     &   (geofem, ele_comm, next_tbl%neib_nod, part_param,              &
      &    new_fem%mesh, new_fem%group, repart_nod_tbl)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
@@ -119,7 +119,7 @@
      &          'No transfer table output for repartition'
       else
         call copy_repart_tbl_to_itp_table(geofem%mesh,                  &
-     &      next_tbl_T%neib_ele, repart_nod_tbl, itp_nod_tbl_IO)
+     &      next_tbl%neib_ele, repart_nod_tbl, itp_nod_tbl_IO)
         call sel_mpi_write_interpolate_table(my_rank,                   &
      &      part_param%trans_tbl_file, itp_nod_tbl_IO)
         call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)

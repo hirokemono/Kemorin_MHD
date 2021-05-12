@@ -62,6 +62,10 @@
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
+      type(communication_table), save :: ele_comm1
+      type(jacobians_type), save :: jacobians1
+      type(shape_finctions_at_points), save :: spfs1
+      type(next_nod_ele_table), save :: next_tbl1
 !
 !     --------------------- 
 !
@@ -87,9 +91,39 @@
 !
 !  -------------------------------
 !
-      if(iflag_debug .gt. 0) write(*,*) 'const_new_partition_mesh'
-      call const_new_partition_mesh(part_p1%repart_p, fem_T,            &
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
+!
+!  -----  Const Element communication table
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
+     &                          ele_comm1, fem_T%mesh%ele)
+!
+!  -----  Const volume of each element
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
+      call const_jacobian_and_single_vol                                &
+     &   (fem_T%mesh, fem_T%group, spfs1, jacobians1)
+      call finalize_jac_and_single_vol                                  &
+     &   (fem_T%mesh, spfs1, jacobians1)
+!
+!  -----  Const Neighboring information
+      if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
+      call set_belonged_ele_and_next_nod                                &
+     &   (fem_T%mesh, next_tbl1%neib_ele, next_tbl1%neib_nod)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
+!
+!  -----  Re-partitioning
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
+      if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
+      call s_repartiton_by_volume                                       &
+     &   (part_p1%repart_p, fem_T, ele_comm1, next_tbl1,                &
      &    new_fem, repart_nod_tbl1)
+      call dealloc_comm_table(ele_comm1)
+      call dealloc_next_nod_ele_table(next_tbl1)
+      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
+!
       call dealloc_node_param_smp(new_fem%mesh%node)
       call dealloc_ele_param_smp(new_fem%mesh%ele)
 !
@@ -154,6 +188,7 @@
       if(my_rank .eq. 0) write(*,*) 'check table reading end!'
 !
 !
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group)
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'

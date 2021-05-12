@@ -95,9 +95,42 @@
      &                              repart_nod_tbl)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
       else
-        if(iflag_debug .gt. 0) write(*,*) 'const_new_partition_mesh'
-        call const_new_partition_mesh(part_param, geofem, new_fem,      &
-     &                                repart_nod_tbl)
+!
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+        if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+        call FEM_mesh_initialization(geofem%mesh, geofem%group)
+!
+!  -----  Const Element communication table
+        write(e_message,*)                                              &
+     &      'Construct repartitioned mesh and transfer table'
+        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+        call const_ele_comm_table                                       &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
+     &      ele_comm_T, geofem%mesh%ele)
+!
+!  -----  Const volume of each element
+        if(iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
+        call const_jacobian_and_single_vol                              &
+     &     (geofem%mesh, geofem%group, spfs_T, jacobians_T)
+        call finalize_jac_and_single_vol                                &
+     &     (geofem%mesh, spfs_T, jacobians_T)
+!
+!  -----  Const Neighboring information
+        if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
+        call set_belonged_ele_and_next_nod                              &
+     &     (geofem%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
+!
+!  -----  Re-partitioning
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
+        if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
+        call s_repartiton_by_volume                                     &
+     &     (part_param, geofem, ele_comm_T, next_tbl_T,                 &
+     &      new_fem, repart_nod_tbl)
+        call dealloc_comm_table(ele_comm_T)
+        call dealloc_next_nod_ele_table(next_tbl_T)
+        call dealloc_mesh_infomations(geofem%mesh, geofem%group)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !
       end subroutine load_or_const_new_partition
@@ -124,7 +157,6 @@
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !
       logical :: flag
-      type(communication_table) :: ele_comm
 !
 !
       if(my_rank .eq. 0) then
@@ -141,88 +173,24 @@
      &                              repart_nod_tbl)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
       else
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
         write(e_message,*)                                              &
      &      'Construct repartitioned mesh and transfer table'
-        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_ele_comm_table(geofem%mesh%node,                     &
-     &      geofem%mesh%nod_comm, ele_comm, geofem%mesh%ele)
+     &      geofem%mesh%nod_comm, ele_comm_T, geofem%mesh%ele)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
+!
+!  -----  Re-partitioning
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
         call s_repartiton_by_volume                                     &
-     &     (part_param, geofem, ele_comm, next_tbl,                     &
+     &     (part_param, geofem, ele_comm_T, next_tbl,                   &
      &      new_fem, repart_nod_tbl)
-        call dealloc_comm_table(ele_comm)
+        call dealloc_comm_table(ele_comm_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !
       end subroutine load_const_new_part_FEM_MHD
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine const_new_partition_mesh                               &
-     &         (part_param, geofem, new_fem, repart_nod_tbl)
-!
-      use t_next_node_ele_4_node
-      use t_jacobians
-      use t_shape_functions
-      use m_work_time
-      use m_elapsed_labels_4_REPART
-      use calypso_mpi_logical
-      use repartiton_by_volume
-      use mesh_file_name_by_param
-      use set_interpolate_file_name
-      use parallel_FEM_mesh_init
-      use const_element_comm_tables
-      use set_table_4_RHS_assemble
-      use int_volume_of_single_domain
-!
-      type(volume_partioning_param), intent(in) ::  part_param
-!
-      type(mesh_data), intent(inout) :: geofem
-      type(mesh_data), intent(inout) :: new_fem
-      type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-!
-!
-      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
-!
-!  -----  Const Element communication table
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-      call const_ele_comm_table(geofem%mesh%node, geofem%mesh%nod_comm, &
-     &                          ele_comm_T, geofem%mesh%ele)
-!
-!  -----  Const Neighboring information
-      if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
-      call set_belonged_ele_and_next_nod                                &
-     &   (geofem%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
-!
-!  -----  Const volume of each element
-      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
-      call const_jacobian_and_single_vol                                &
-     &   (geofem%mesh, geofem%group, spfs_T, jacobians_T)
-      call finalize_jac_and_single_vol                                  &
-     &     (geofem%mesh, spfs_T, jacobians_T)
-      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
-!
-!  -------------------------------
-!
-      write(e_message,*)                                                &
-     &      'Construct repartitioned mesh and transfer table'
-      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
-      call s_repartiton_by_volume                                       &
-     &   (part_param, geofem, ele_comm_T, next_tbl_T,                   &
-     &    new_fem, repart_nod_tbl)
-      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
-!
-!   Clear work arrays
-      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-      call dealloc_next_nod_ele_table(next_tbl_T)
-      call dealloc_comm_table(ele_comm_T)
-      call dealloc_mesh_infomations(geofem%mesh, geofem%group)
-      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
-!
-      end subroutine const_new_partition_mesh
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
