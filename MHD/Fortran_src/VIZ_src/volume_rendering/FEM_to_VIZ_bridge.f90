@@ -63,10 +63,9 @@
       integer(kind = kint) :: iflag
       type(shape_finctions_at_points) :: spfs
 !
-!
-!
 !  -----  Const Neighboring information
-      if((viz_step%FLINE_t%increment.gt.0) .or. flag_repartition) then
+      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
+      if(iflag .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
         call set_belonged_ele_and_next_nod                              &
      &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
