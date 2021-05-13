@@ -137,20 +137,10 @@
       call alloc_phys_data(FEM_viz%geofem%mesh%node%numnod,             &
      &                     FEM_viz%field)
 !
-!     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      allocate(pvr%next_tbl)
-      allocate(pvr%jacobians)
-
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization                                      &
-     &   (FEM_viz%geofem%mesh, FEM_viz%geofem%group)
-      call normals_and_jacobians_VIZ_pre                                &
-     &   ((.FALSE.), viz_step, FEM_viz%geofem,                          &
-     &    pvr%edge_comm, pvr%next_tbl, pvr%jacobians)
-      call normals_and_jacobians_4_VIZ(viz_step, FEM_viz%geofem,        &
-     &    pvr%edge_comm, pvr%next_tbl, pvr%jacobians)
+      call init_FEM_to_VIZ_bridge(viz_step, FEM_viz%geofem, pvr)
       call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_four_vizs
