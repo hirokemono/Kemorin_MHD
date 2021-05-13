@@ -7,7 +7,6 @@
 !>@brief Data structuresa for visualizers
 !!
 !!@verbatim
-!!      subroutine link_FEM_field_4_viz(geofem, VIZ_DAT)
 !!      subroutine link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
 !!      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
 !!      subroutine unlink_jacobians_4_viz(VIZ_DAT)
@@ -68,17 +67,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine link_FEM_field_4_viz(geofem, VIZ_DAT)
-!
-      type(mesh_data), intent(in), target :: geofem
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      VIZ_DAT%viz_fem => geofem
-!
-      end subroutine link_FEM_field_4_viz
 !
 ! ----------------------------------------------------------------------
 !
