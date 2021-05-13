@@ -49,37 +49,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine normals_and_jacobians_VIZ_pre                          &
-     &         (flag_repartition, viz_step, geofem, edge_comm, next_tbl, jacobians)
-!
-      use t_fem_gauss_int_coefs
-      use int_volume_of_domain
-      use set_table_4_RHS_assemble
-      use set_normal_vectors
-!
-      logical, intent(in) ::  flag_repartition
-      type(VIZ_step_params), intent(in) :: viz_step
-      type(mesh_data), intent(inout) :: geofem
-      type(communication_table), intent(inout) :: edge_comm
-      type(next_nod_ele_table), intent(inout) :: next_tbl
-      type(jacobians_type), intent(inout) :: jacobians
-!
-      integer(kind = kint) :: iflag
-      type(shape_finctions_at_points) :: spfs
-!
-!
-!  -----  Const Neighboring information
-      if((viz_step%FLINE_t%increment .gt. 0)                            &
-     &     .or. flag_repartition) then
-        if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
-        call set_belonged_ele_and_next_nod                              &
-     &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
-      end if
-!
-      end subroutine normals_and_jacobians_VIZ_pre
-!
-! ----------------------------------------------------------------------
-!
       subroutine normals_and_jacobians_4_VIZ                            &
      &         (viz_step, geofem, edge_comm, next_tbl, jacobians)
 !
@@ -98,6 +67,14 @@
       integer(kind = kint) :: iflag
       type(shape_finctions_at_points) :: spfs
 !
+!
+!  -----  Const Neighboring information
+      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
+        call set_belonged_ele_and_next_nod                              &
+     &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
+      end if
 !
 ! ------  init for fieldline and PVR ---------------------
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
@@ -154,10 +131,6 @@
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_VIZ_pre'
       call link_jacobians_4_viz                                         &
      &   (VIZ_DAT%next_tbl_v, VIZ_DAT%jacobians_v, VIZ_DAT)
-      call normals_and_jacobians_VIZ_pre                                &
-     &   (VIZ_DAT%repart_p%flag_repartition, viz_step, geofem,          &
-     &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians)
-!
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
      &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians)
