@@ -166,8 +166,8 @@
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
       end if
 !
-      call link_jacobians_4_viz                                         &
-     &   (VIZ_DAT%next_tbl_v, VIZ_DAT%jacobians_v, VIZ_DAT)
+      allocate(VIZ_DAT%next_tbl)
+      allocate(VIZ_DAT%jacobians)
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
      &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians)
@@ -179,16 +179,7 @@
       subroutine init_FEM_MHD_to_VIZ_bridge                             &
      &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT)
 !
-      use m_work_time
-      use m_elapsed_labels_4_REPART
       use const_element_comm_tables
-      use parallel_FEM_mesh_init
-!
-      use int_volume_of_domain
-      use set_table_4_RHS_assemble
-      use parallel_FEM_mesh_init
-      use const_element_comm_tables
-      use set_normal_vectors
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(next_nod_ele_table), intent(in), target :: next_tbl
@@ -200,16 +191,15 @@
       integer(kind = kint) :: iflag
 !
 !
-      if(VIZ_DAT%repart_p%flag_repartition .EQV. .FALSE.) then
-        call link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
+      VIZ_DAT%next_tbl =>  next_tbl
+      VIZ_DAT%jacobians => jacobians
 !
-        iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
-        if(iflag .gt. 0) then
-          if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-          call const_edge_comm_table                                    &
-     &       (geofem%mesh%node, geofem%mesh%nod_comm,                   &
-     &        VIZ_DAT%edge_comm, geofem%mesh%edge)
-        end if
+      iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+        call const_edge_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
+     &      VIZ_DAT%edge_comm, geofem%mesh%edge)
       end if
       call calypso_mpi_barrier
 !
