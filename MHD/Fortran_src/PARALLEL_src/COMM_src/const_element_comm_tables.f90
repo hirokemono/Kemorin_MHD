@@ -9,11 +9,11 @@
 !!@verbatim
 !!      subroutine const_global_mesh_infos(mesh)
 !!
-!!      subroutine const_ele_comm_table(node, nod_comm, ele_comm, ele)
+!!      subroutine const_ele_comm_table(node, nod_comm, ele, ele_comm)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
+!!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(inout) :: ele_comm
-!!        type(element_data), intent(inout) :: ele
 !!      subroutine const_edge_comm_table                                &
 !!     &         (node, nod_comm, edge_comm, edge)
 !!      subroutine dealloc_edge_comm_table(edge_comm, edge)
@@ -120,7 +120,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_ele_comm_table                                   &
-     &         (node, nod_comm, ele_comm, ele)
+     &         (node, nod_comm, ele, ele_comm)
 !
       use m_geometry_constants
       use t_para_double_numbering
@@ -131,7 +131,7 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
-      type(element_data), intent(inout) :: ele
+      type(element_data), intent(in) :: ele
       type(communication_table), intent(inout) :: ele_comm
 !
       type(node_ele_double_number) :: inod_dbl
@@ -157,7 +157,6 @@
       call dealloc_iele_belonged(neib_ele)
       call dealloc_failed_export(fail_tbl_e)
 !
-      call const_global_numele_list(ele)
       call check_global_ele_id(txt_ele, ele%numele,                     &
      &    ele%interior_ele, ele_comm, ele%iele_global)
 !

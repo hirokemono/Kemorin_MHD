@@ -59,7 +59,7 @@
       use const_element_comm_tables
 !
       type(volume_partioning_param), intent(in) ::  part_param
-      type(mesh_data), intent(inout) :: geofem
+      type(mesh_data), intent(in) :: geofem
       type(next_nod_ele_table), intent(in) :: next_tbl
 !
       type(mesh_data), intent(inout) :: new_fem
@@ -89,8 +89,8 @@
      &      'Construct repartitioned mesh and transfer table'
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_ele_comm_table                                       &
-     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      ele_comm_T, geofem%mesh%ele)
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
+     &      ele_comm_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
 !  -----  Re-partitioning

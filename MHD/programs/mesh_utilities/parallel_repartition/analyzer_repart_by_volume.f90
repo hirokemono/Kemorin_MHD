@@ -98,8 +98,9 @@
 !
 !  -----  Const Element communication table
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      call const_global_numele_list(fem_T%mesh%ele)
       call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
-     &                          ele_comm1, fem_T%mesh%ele)
+     &                          fem_T%mesh%ele, ele_comm1)
 !
 !  -----  Const volume of each element
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
@@ -194,9 +195,10 @@
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group)
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      call const_global_numele_list(new_fem%mesh%ele)
       call const_ele_comm_table                                         &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_ele_comm, new_fem%mesh%ele)
+     &    new_fem%mesh%ele, T_ele_comm)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                        &

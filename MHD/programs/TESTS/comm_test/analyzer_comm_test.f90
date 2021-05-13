@@ -95,9 +95,10 @@
 !
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      call const_global_numele_list(test_fem%mesh%ele)
       call const_ele_comm_table                                         &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
-     &    T_ele_comm, test_fem%mesh%ele)
+     &    test_fem%mesh%ele, T_ele_comm)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                       &
