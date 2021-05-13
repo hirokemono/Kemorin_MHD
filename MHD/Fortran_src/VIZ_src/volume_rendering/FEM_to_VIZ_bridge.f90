@@ -129,6 +129,8 @@
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
+      call link_jacobians_4_viz                                         &
+     &   (VIZ_DAT%next_tbl_v, VIZ_DAT%jacobians_v, VIZ_DAT)
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
      &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians)
 !
