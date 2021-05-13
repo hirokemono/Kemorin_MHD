@@ -110,8 +110,6 @@
       use field_to_new_partition
       use parallel_FEM_mesh_init
 !
-      use int_volume_of_domain
-      use int_volume_of_single_domain
       use set_table_4_RHS_assemble
       use parallel_FEM_mesh_init
       use const_element_comm_tables
@@ -120,10 +118,6 @@
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      type(next_nod_ele_table) :: next_tbl_T
-      type(jacobians_type) :: jacobians_T
-      type(shape_finctions_at_points) :: spfs_T
 !
 !
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
@@ -137,14 +131,6 @@
       if(VIZ_DAT%repart_p%flag_repartition) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
-!
-!  -----  Const volume of each element
-        if(iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
-        call const_jacobian_and_single_vol                              &
-     &     (geofem%mesh, geofem%group, spfs_T, jacobians_T)
-        call finalize_jac_and_single_vol                                &
-     &     (geofem%mesh, spfs_T, jacobians_T)
-        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
 !  -----  Repartition
         call load_or_const_new_partition                                &
