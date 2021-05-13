@@ -130,7 +130,6 @@
 !
       use m_work_time
       use m_elapsed_labels_4_REPART
-      use field_to_new_partition
       use parallel_FEM_mesh_init
 !
       use int_volume_of_domain
@@ -167,11 +166,6 @@
         call finalize_jac_and_single_vol                                &
      &     (geofem%mesh, spfs_T, jacobians_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
-!
-!  -----  Repartition
-        call load_or_const_new_partition                                &
-     &     (VIZ_DAT%repart_p, geofem, VIZ_DAT%next_tbl,                 &
-     &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
       else
         call link_FEM_field_4_viz(geofem, VIZ_DAT)
       end if
@@ -191,7 +185,6 @@
 !
       use m_work_time
       use m_elapsed_labels_4_REPART
-      use field_to_new_partition
       use const_element_comm_tables
       use parallel_FEM_mesh_init
 !
@@ -213,9 +206,6 @@
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
-        call load_or_const_new_partition                                &
-     &     (VIZ_DAT%repart_p, geofem, next_tbl,                         &
-     &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
       else
         call link_FEM_field_4_viz(geofem, VIZ_DAT)
         call link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)

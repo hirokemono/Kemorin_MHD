@@ -69,6 +69,8 @@
       use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobians
+!
+      use field_to_new_partition
       use parallel_FEM_mesh_init
       use set_normal_vectors
       use const_element_comm_tables
@@ -76,7 +78,7 @@
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
-      type(VIZ_mesh_field), intent(in) :: VIZ_DAT
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
       type(visualization_controls), intent(inout) :: viz_ctls
       type(visualize_modules), intent(inout) :: vizs
@@ -103,6 +105,11 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
+!  -----  Repartition
+      call load_or_const_new_partition                                  &
+     &     (VIZ_DAT%repart_p, geofem, VIZ_DAT%next_tbl,                 &
+     &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
+!
       if((viz_step%LIC_t%increment .gt. 0)                              &
      &           .and. VIZ_DAT%repart_p%flag_repartition) then
         if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
