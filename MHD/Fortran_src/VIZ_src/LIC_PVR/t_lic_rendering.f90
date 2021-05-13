@@ -10,16 +10,14 @@
 !!      subroutine check_LIC_update                                     &
 !!     &         (id_control, lic_ctls, lic, iflag_update)
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
-!!      subroutine LIC_initialize(increment_lic, repart_p, viz_fem,     &
-!!     &                          geofem, nod_fld, lic_ctls, lic)
-!!      subroutine LIC_visualize                                        &
-!!     &         (istep_lic, time, repart_p, viz_fem, mesh_to_viz_tbl,  &
+!!      subroutine LIC_initialize                                       &
+!!     &         (increment_lic, repart_p, geofem, next_tbl,            &
+!!     &          nod_fld, lic_ctls, lic)
+!!      subroutine LIC_visualize(istep_lic, time, repart_p,             &
 !!     &          geofem, nod_fld, lic, v_sol)
 !!      subroutine dealloc_LIC_data(repart_p, lic)
-!!        type(mesh_data), intent(in) :: viz_fem
 !!        type(volume_partioning_param), intent(in) :: repart_p
-!!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-!!        type(mesh_data), intent(in) :: geofem
+!!        type(mesh_data), intent(in), target :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
@@ -37,6 +35,7 @@
 !
       use t_mesh_data
       use t_phys_data
+      use t_calypso_comm_table
 !
       use t_rendering_vr_image
       use t_control_params_4_pvr
@@ -50,6 +49,7 @@
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_vector_for_solver
+      use t_next_node_ele_4_node
 !
       use each_volume_rendering
 !
@@ -62,6 +62,11 @@
 !
 !
       type lic_volume_rendering_module
+!>         Structure for mesh data for visualization
+        type(mesh_data), pointer :: viz_fem
+!>        Transfer table to visualization mesh
+        type(calypso_comm_table) :: mesh_to_viz_tbl
+!
 !>        Structure of LIC field parameters
         type(LIC_field_params), allocatable :: lic_fld_pm(:)
 !
@@ -143,19 +148,21 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine LIC_initialize(increment_lic, repart_p, viz_fem,       &
-     &                          geofem, nod_fld, lic_ctls, lic)
+      subroutine LIC_initialize                                         &
+     &         (increment_lic, repart_p, geofem, next_tbl,              &
+     &          nod_fld, lic_ctls, lic)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
+      use LIC_re_partition
 !
       integer(kind = kint), intent(in) :: increment_lic
-      type(mesh_data), intent(in) :: viz_fem
       type(volume_partioning_param), intent(in) :: repart_p
-      type(mesh_data), intent(in) :: geofem
+      type(mesh_data), intent(in), target :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(next_nod_ele_table), intent(in) :: next_tbl
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
@@ -186,31 +193,15 @@
      &    lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
-        call alloc_rendering_params_4_pvr                               &
-     &     (viz_fem%mesh%ele%numele, viz_fem%group%surf_grp%num_grp,    &
+        call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
      &      lic%pvr%pvr_param(i_lic)%draw_param)
         call reset_pvr_view_parameteres(lic%pvr%pvr_param(i_lic)%view)
       end do
 !
-      call s_set_lic_controls(viz_fem%group, nod_fld, lic%pvr%num_pvr,  &
+      call s_set_lic_controls                                           &
+     &   (geofem%group, nod_fld, lic%pvr%num_pvr,                       &
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%lic_fld_pm, lic%pvr%pvr_param)
-!
-      do i_lic = 1, lic%pvr%num_pvr
-        allocate(lic%lic_fld_pm(i_lic)%nod_fld_lic)
-        call alloc_nod_vector_4_lic(geofem%mesh%node%numnod,            &
-     &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
-     &      lic%lic_fld_pm(i_lic)%nod_fld_lic)
-!
-        if(repart_p%flag_repartition) then
-          call alloc_nod_vector_4_lic(viz_fem%mesh%node%numnod,         &
-     &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
-     &        lic%lic_fld_pm(i_lic)%field_lic)
-        else
-          lic%lic_fld_pm(i_lic)%field_lic                               &
-     &           => lic%lic_fld_pm(i_lic)%nod_fld_lic
-        end if
-      end do
 !
       do i_lic = 1, lic%pvr%num_pvr
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
@@ -220,10 +211,37 @@
         end if
       end do
 !
+!
+      if(repart_p%flag_repartition) then
+        allocate(lic%viz_fem)
+        if(iflag_debug .gt. 0) write(*,*) 's_LIC_re_partition'
+        call s_LIC_re_partition(repart_p, geofem, next_tbl,             &
+     &                          lic%viz_fem, lic%mesh_to_viz_tbl)
+      else
+        lic%viz_fem => geofem
+      end if
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        allocate(lic%lic_fld_pm(i_lic)%nod_fld_lic)
+        call alloc_nod_vector_4_lic(geofem%mesh%node%numnod,            &
+     &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
+     &      lic%lic_fld_pm(i_lic)%nod_fld_lic)
+!
+        if(repart_p%flag_repartition) then
+          call alloc_nod_vector_4_lic(lic%viz_fem%mesh%node%numnod,     &
+     &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
+     &        lic%lic_fld_pm(i_lic)%field_lic)
+        else
+          lic%lic_fld_pm(i_lic)%field_lic                               &
+     &           => lic%lic_fld_pm(i_lic)%nod_fld_lic
+        end if
+      end do
+!
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call each_PVR_initialize(i_lic, viz_fem%mesh, viz_fem%group,    &
+        call each_PVR_initialize                                        &
+     &    (i_lic, lic%viz_fem%mesh, lic%viz_fem%group,                  &
      &     lic%pvr%pvr_param(i_lic)%area_def, lic%pvr%pvr_param(i_lic), &
      &     lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
@@ -235,9 +253,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_visualize                                          &
-     &         (istep_lic, time, repart_p, viz_fem, mesh_to_viz_tbl,    &
-     &          geofem, nod_fld, lic, v_sol)
+      subroutine LIC_visualize(istep_lic, time, repart_p,               &
+     &          geofem, next_tbl, nod_fld, lic, v_sol)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -247,12 +264,11 @@
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
-      type(mesh_data), intent(in) :: viz_fem
       type(volume_partioning_param), intent(in) :: repart_p
-      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
 !
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(next_nod_ele_table), intent(in) :: next_tbl
 !
       type(lic_volume_rendering_module), intent(inout) :: lic
       type(vectors_4_solver), intent(inout) :: v_sol
@@ -266,8 +282,8 @@
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call s_each_LIC_rendering(istep_lic, time,                      &
-     &      repart_p, viz_fem, mesh_to_viz_tbl, geofem%mesh, nod_fld,   &
+        call s_each_LIC_rendering(istep_lic, time, repart_p,            &
+     &      lic%viz_fem, lic%mesh_to_viz_tbl, geofem%mesh, nod_fld,     &
      &      lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),            &
      &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img), v_sol)
       end do
@@ -292,8 +308,8 @@
         if(lic%pvr%pvr_param(i_lic)%view%iflag_rotate_snap .gt. 0) then
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-          call s_each_LIC_rendering_w_rot(istep_lic, time,              &
-     &        repart_p, viz_fem, mesh_to_viz_tbl, geofem%mesh, nod_fld, &
+          call s_each_LIC_rendering_w_rot(istep_lic, time, repart_p,    &
+     &        lic%viz_fem, lic%mesh_to_viz_tbl, geofem%mesh, nod_fld,   &
      &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
      &        v_sol)

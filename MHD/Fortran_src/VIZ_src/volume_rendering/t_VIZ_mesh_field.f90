@@ -28,19 +28,14 @@
       use t_jacobians
       use t_VIZ_step_parameter
       use t_control_param_vol_grping
-      use t_calypso_comm_table
 !
       implicit none
 !
 !
 !>      Structure of data for visualization
       type VIZ_mesh_field
-!>         Structure for mesh data for visualization
-        type(mesh_data), pointer :: viz_fem
 !>        Structure for repartitioning parameters
         type(volume_partioning_param) :: repart_p
-!>        Transfer table to visualization mesh
-        type(calypso_comm_table) :: mesh_to_viz_tbl
 !
 !!>        Structure of shape function for PVR and fieldline
 !        type(shape_finctions_at_points) :: spfs
@@ -56,16 +51,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
-!
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      nullify(VIZ_DAT%viz_fem)
-!
-      end subroutine unlink_FEM_field_4_viz
 !
 ! ----------------------------------------------------------------------
 !

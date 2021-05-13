@@ -9,8 +9,8 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(viz_area_parameter), intent(in) :: pvr_area
+!!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-!!        type(rendering_parameter), intent(inout) :: draw_param
 !!      subroutine set_pvr_domain_surface_data                          &
 !!     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,      &
 !!     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
@@ -50,15 +50,14 @@
       use t_geometries_in_pvr_screen
       use t_group_data
       use find_selected_domain_bd
-      use set_iflag_for_used_ele
       use pvr_surface_enhancement
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
-!
       type(viz_area_parameter), intent(in) :: pvr_area
-      type(rendering_parameter), intent(inout) :: draw_param
+      type(rendering_parameter), intent(in) :: draw_param
+!
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
       integer(kind = kint) :: num_pvr_sf_local
@@ -68,12 +67,6 @@
 !$omp parallel workshare
       imark_sf(1:surf%numsurf) = 0
 !$omp end parallel workshare
-!
-      call s_set_iflag_for_used_ele(ele%numele, ele%interior_ele,       &
-     &    ele_grp%num_grp, ele_grp%num_item,                            &
-     &    ele_grp%istack_grp, ele_grp%item_grp,                         &
-     &    pvr_area%nele_grp_area_pvr, pvr_area%id_ele_grp_area_pvr,     &
-     &    draw_param%iflag_used_ele)
 !
       call mark_selected_domain_bd                                      &
      &   (ele%numele, surf%numsurf, surf%isf_4_ele,                     &

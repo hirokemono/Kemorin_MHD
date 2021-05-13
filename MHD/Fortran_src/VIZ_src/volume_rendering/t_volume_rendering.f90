@@ -208,8 +208,7 @@
         call alloc_nod_data_4_pvr                                       &
      &     (geofem%mesh%node%numnod, geofem%mesh%ele%numele,            &
      &      pvr%field_pvr(i_pvr))
-        call alloc_rendering_params_4_pvr                               &
-     &     (geofem%mesh%ele%numele, geofem%group%surf_grp%num_grp,      &
+        call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
      &      pvr%pvr_param(i_pvr)%draw_param)
         call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)
       end do
@@ -351,7 +350,11 @@
 !
 !
       do i_pvr = 1, pvr%num_pvr
-        call dealloc_rendering_params_4_pvr                             &
+        call dealloc_iflag_pvr_boundaries                               &
+     &     (pvr%pvr_param(i_pvr)%draw_param)
+      end do
+      do i_pvr = 1, pvr%num_pvr
+        call dealloc_iflag_pvr_used_ele                                 &
      &     (pvr%pvr_param(i_pvr)%draw_param)
       end do
       deallocate(pvr%pvr_param)

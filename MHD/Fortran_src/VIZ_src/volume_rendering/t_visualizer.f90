@@ -66,8 +66,6 @@
       subroutine init_visualize(viz_step, geofem, nod_fld, VIZ_DAT,     &
      &                          viz_ctls, vizs)
 !
-      use LIC_re_partition
-!
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in), target :: geofem
       type(phys_data), intent(in) :: nod_fld
@@ -95,9 +93,9 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      call LIC_initialize(viz_step%LIC_t%increment, VIZ_DAT%repart_p,   &
-     &                    VIZ_DAT%viz_fem, geofem, nod_fld,             &
-     &                    viz_ctls%lic_ctls, vizs%lic)
+      call LIC_initialize                                               &
+     &   (viz_step%LIC_t%increment, VIZ_DAT%repart_p, geofem,           &
+     &    VIZ_DAT%next_tbl, nod_fld, viz_ctls%lic_ctls, vizs%lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
@@ -145,13 +143,13 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &    VIZ_DAT%repart_p, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl,   &
-     &    geofem, nod_fld, vizs%lic, v_sol)
+      call LIC_visualize                                                &
+     &   (viz_step%istep_lic, time_d%time, VIZ_DAT%repart_p, geofem,    &
+     &    VIZ_DAT%next_tbl, nod_fld, vizs%lic, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
-      call FLINE_visualize(viz_step%istep_fline, geofem,              &
+      call FLINE_visualize(viz_step%istep_fline, geofem,                &
      &    VIZ_DAT%next_tbl, nod_fld, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !

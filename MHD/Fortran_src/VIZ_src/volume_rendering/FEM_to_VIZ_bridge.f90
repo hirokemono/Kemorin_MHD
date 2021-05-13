@@ -43,8 +43,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine normals_and_jacobians_4_VIZ                            &
-     &         (flag_repartition, viz_step, geofem,                     &
+      subroutine normals_and_jacobians_4_VIZ(viz_step, geofem,          &
      &          edge_comm, next_tbl, jacobians)
 !
       use t_fem_gauss_int_coefs
@@ -53,7 +52,6 @@
       use set_normal_vectors
       use const_element_comm_tables
 !
-      logical, intent(in) ::  flag_repartition
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
       type(communication_table), intent(inout) :: edge_comm
@@ -106,18 +104,11 @@
 !
       use int_volume_of_domain
       use int_volume_of_single_domain
-      use set_table_4_RHS_assemble
       use parallel_FEM_mesh_init
-      use const_element_comm_tables
-      use set_normal_vectors
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      type(next_nod_ele_table) :: next_tbl_T
-      type(jacobians_type) :: jacobians_T
-      type(shape_finctions_at_points) :: spfs_T
 !
 !
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
@@ -125,8 +116,7 @@
       allocate(VIZ_DAT%next_tbl)
       allocate(VIZ_DAT%jacobians)
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
-      call normals_and_jacobians_4_VIZ                                  &
-     &   (VIZ_DAT%repart_p%flag_repartition, viz_step, geofem,          &
+      call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
      &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians)
 !
       end subroutine init_FEM_to_VIZ_bridge

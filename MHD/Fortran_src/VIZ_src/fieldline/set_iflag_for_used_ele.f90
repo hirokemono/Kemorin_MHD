@@ -1,18 +1,25 @@
-!set_iflag_for_used_ele
-!      module set_iflag_for_used_ele
+!>@file   set_iflag_for_used_ele.f90
+!!@brief  module set_iflag_for_used_ele
+!!
+!!@author  H. Matsui
+!!@date Programmed in May. 2006
 !
-!        programmed by H.Matsui on May. 2006
-!
-!      subroutine s_set_iflag_for_used_ele(numele, interior_ele,        &
-!     &          num_mat, num_mat_bc, mat_istack, mat_item,             &
-!     &          ngrp_ele, id_ele_grp, iflag_used_ele)
-!      subroutine set_iflag_for_used_ele_overlap(numele,                &
-!     &          num_mat, num_mat_bc, mat_istack, mat_item,             &
-!     &          ngrp_ele, id_ele_grp, iflag_used_ele)
+!>@brief Mark used elements for field line and PVR
+!!
+!!@verbatim
+!!      subroutine s_set_iflag_for_used_ele                             &
+!!     &         (ele, ele_grp, ngrp_ele, id_ele_grp, iflag_used_ele)
+!!      subroutine set_iflag_for_used_ele_overlap(ele, ele_grp,         &
+!!     &          ngrp_ele, id_ele_grp, iflag_used_ele)
+!!        type(element_data), intent(in) :: ele
+!!        type(group_data), intent(in) :: ele_grp
+!!@endverbatim
 !
       module set_iflag_for_used_ele
 !
       use m_precision
+      use t_geometry_data
+      use t_group_data
 !
       implicit  none
 !
@@ -22,37 +29,40 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_iflag_for_used_ele(numele, interior_ele,         &
-     &          num_mat, num_mat_bc, mat_istack, mat_item,              &
-     &          ngrp_ele, id_ele_grp, iflag_used_ele)
+      subroutine s_set_iflag_for_used_ele                               &
+     &         (ele, ele_grp, ngrp_ele, id_ele_grp, iflag_used_ele)
 !
-      integer(kind = kint), intent(in) :: numele
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      integer(kind = kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind = kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind = kint), intent(in) :: mat_item(num_mat_bc)
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint), intent(in) :: ngrp_ele
       integer(kind = kint), intent(in) :: id_ele_grp(ngrp_ele)
-      integer(kind = kint), intent(inout) :: iflag_used_ele(numele)
+      integer(kind = kint), intent(inout) :: iflag_used_ele(ele%numele)
 !
       integer(kind = kint) :: jgrp, jnum, jele, jg, jst, jed
 !
 !
-      iflag_used_ele(1:numele) = 0
+!$omp parallel workshare
+      iflag_used_ele(1:ele%numele) = 0
+!$omp end parallel workshare
+!
       do jgrp = 1, ngrp_ele
         jg = id_ele_grp(jgrp)
         if(jg .le. 0) then
-          do jele = 1, numele
-            if(interior_ele(jele) .gt. 0) iflag_used_ele(jele) = 1
+!$omp parallel do
+          do jele = 1, ele%numele
+            if(ele%interior_ele(jele) .gt. 0) iflag_used_ele(jele) = 1
           end do
+!$omp end parallel do
         else
-          jst = mat_istack(jg-1) + 1
-          jed = mat_istack(jg)
+          jst = ele_grp%istack_grp(jg-1) + 1
+          jed = ele_grp%istack_grp(jg)
+!$omp parallel do private(jnum,jele)
           do jnum = jst, jed
-            jele = mat_item(jnum)
-            if(interior_ele(jele) .gt. 0) iflag_used_ele(jele) = 1
+            jele = ele_grp%item_grp(jnum)
+            if(ele%interior_ele(jele) .gt. 0) iflag_used_ele(jele) = 1
           end do
+!$omp end parallel do
         end if
       end do
 !
@@ -60,35 +70,40 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_iflag_for_used_ele_overlap(numele,                 &
-     &          num_mat, num_mat_bc, mat_istack, mat_item,              &
+      subroutine set_iflag_for_used_ele_overlap(ele, ele_grp,           &
      &          ngrp_ele, id_ele_grp, iflag_used_ele)
 !
-      integer(kind=kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: ele_grp
 !
-      integer(kind = kint), intent(in) :: numele, ngrp_ele
+      integer(kind = kint), intent(in) :: ngrp_ele
       integer(kind = kint), intent(in) :: id_ele_grp(ngrp_ele)
-      integer(kind = kint), intent(inout) :: iflag_used_ele(numele)
+      integer(kind = kint), intent(inout) :: iflag_used_ele(ele%numele)
 !
       integer(kind = kint) :: jgrp, jnum, jele, jg, jst, jed
 !
 !
-      iflag_used_ele(1:numele) = 0
+!$omp parallel workshare
+      iflag_used_ele(1:ele%numele) = 0
+!$omp end parallel workshare
+!
       do jgrp = 1, ngrp_ele
         jg = id_ele_grp(jgrp)
         if(jg .le. 0) then
-          do jele = 1, numele
+!$omp parallel do
+          do jele = 1, ele%numele
             iflag_used_ele(jele) = 1
           end do
+!$omp end parallel do
         else
-          jst = mat_istack(jg-1) + 1
-          jed = mat_istack(jg)
+          jst = ele_grp%istack_grp(jg-1) + 1
+          jed = ele_grp%istack_grp(jg)
+!$omp parallel do private(jnum,jele)
           do jnum = jst, jed
-            jele = mat_item(jnum)
+            jele = ele_grp%item_grp(jnum)
             iflag_used_ele(jele) = 1
           end do
+!$omp end parallel do
         end if
       end do
 !

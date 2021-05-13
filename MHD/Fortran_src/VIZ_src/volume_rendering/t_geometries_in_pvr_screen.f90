@@ -12,9 +12,14 @@
 !!        type(surface_data), intent(in) :: surf
 !!      subroutine dealloc_projected_position(pvr_screen)
 !!
-!!      subroutine alloc_rendering_params_4_pvr                         &
-!!     &         (numele, num_sf_grp, draw_param)
-!!      subroutine dealloc_rendering_params_4_pvr(draw_param)
+!!      subroutine alloc_iflag_pvr_used_ele(ele, draw_param)
+!!      subroutine dealloc_iflag_pvr_used_ele(draw_param)
+!!        type(element_data), intent(in) :: ele
+!!        type(rendering_parameter), intent(inout) :: draw_param
+!!      subroutine alloc_iflag_pvr_boundaries(surf_grp, draw_param)
+!!      subroutine dealloc_iflag_pvr_boundaries(draw_param)
+!!        type(surface_group_data), intent(in) :: surf_grp
+!!        type(rendering_parameter), intent(inout) :: draw_param
 !!
 !!      subroutine alloc_pvr_sections(draw_param)
 !!      subroutine alloc_pvr_isosurfaces(draw_param)
@@ -96,9 +101,6 @@
         real(kind = kreal), allocatable :: pixel_point_y(:)
       end type pvr_pixel_position_type
 !
-      private :: alloc_iflag_pvr_used_ele
-      private :: alloc_iflag_pvr_boundaries
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -140,62 +142,59 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_rendering_params_4_pvr                           &
-     &         (numele, num_sf_grp, draw_param)
+      subroutine alloc_iflag_pvr_used_ele(ele, draw_param)
 !
-      integer(kind = kint), intent(in) :: numele
-      integer(kind = kint), intent(in) :: num_sf_grp
+      use t_geometry_data
+!
+      type(element_data), intent(in) :: ele
       type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-        call alloc_iflag_pvr_used_ele(numele, draw_param)
-        call alloc_iflag_pvr_boundaries                                 &
-     &     (num_sf_grp, draw_param)
-!
-      end subroutine alloc_rendering_params_4_pvr
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_rendering_params_4_pvr(draw_param)
-!
-      type(rendering_parameter), intent(inout) :: draw_param
-!
-!
-      deallocate(draw_param%iflag_enhanse, draw_param%enhansed_opacity)
-      deallocate(draw_param%iflag_used_ele)
-!
-      end subroutine dealloc_rendering_params_4_pvr
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_iflag_pvr_used_ele(nele, draw_param)
-!
-      integer(kind = kint), intent(in) :: nele
-      type(rendering_parameter), intent(inout) :: draw_param
-!
-!
-      allocate(draw_param%iflag_used_ele(nele))
-      if(nele .gt. 0) draw_param%iflag_used_ele = 0
+      allocate(draw_param%iflag_used_ele(ele%numele))
+      if(ele%numele .gt. 0) draw_param%iflag_used_ele = 0
 !
       end subroutine alloc_iflag_pvr_used_ele
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_iflag_pvr_boundaries(num_sf_grp, draw_param)
+      subroutine dealloc_iflag_pvr_used_ele(draw_param)
 !
-      integer(kind = kint), intent(in) :: num_sf_grp
       type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-      allocate(draw_param%iflag_enhanse(num_sf_grp))
-      allocate(draw_param%enhansed_opacity(num_sf_grp))
+      deallocate(draw_param%iflag_used_ele)
 !
-      if(num_sf_grp .gt. 0) draw_param%iflag_enhanse = 0
-      if(num_sf_grp .gt. 0) draw_param%enhansed_opacity = 0
+      end subroutine dealloc_iflag_pvr_used_ele
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_iflag_pvr_boundaries(surf_grp, draw_param)
+!
+      use t_group_data
+!
+      type(surface_group_data), intent(in) :: surf_grp
+      type(rendering_parameter), intent(inout) :: draw_param
+!
+!
+      allocate(draw_param%iflag_enhanse(surf_grp%num_grp))
+      allocate(draw_param%enhansed_opacity(surf_grp%num_grp))
+!
+      if(surf_grp%num_grp .gt. 0) draw_param%iflag_enhanse = 0
+      if(surf_grp%num_grp .gt. 0) draw_param%enhansed_opacity = 0
 !
       end subroutine alloc_iflag_pvr_boundaries
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_iflag_pvr_boundaries(draw_param)
+!
+      type(rendering_parameter), intent(inout) :: draw_param
+!
+!
+      deallocate(draw_param%iflag_enhanse, draw_param%enhansed_opacity)
+!
+      end subroutine dealloc_iflag_pvr_boundaries
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

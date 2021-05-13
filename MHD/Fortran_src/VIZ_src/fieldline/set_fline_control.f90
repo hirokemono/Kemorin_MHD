@@ -59,6 +59,7 @@
       use t_control_params_4_fline
       use t_source_of_filed_line
       use set_control_each_fline
+      use set_iflag_for_used_ele
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
@@ -81,8 +82,9 @@
       call set_control_4_fline(fline_ctl_struct,                        &
      &    mesh%ele, group%ele_grp, group%surf_grp, nod_fld,             &
      &    fln_prm, fln_src)
-      call set_iflag_fline_used_ele                                     &
-     &   (mesh%ele, group%ele_grp, fln_prm)
+      call s_set_iflag_for_used_ele(mesh%ele, group%ele_grp,            &
+&         fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline,   &
+&         fln_prm%iflag_fline_used_ele)
       call deallocate_cont_dat_fline(fline_ctl_struct)
 !
       if(iflag_debug .gt. 0) then

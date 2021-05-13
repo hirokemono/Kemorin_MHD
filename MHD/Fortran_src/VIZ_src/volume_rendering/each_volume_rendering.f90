@@ -67,6 +67,7 @@
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
       use find_pvr_surf_domain
+      use set_iflag_for_used_ele
 !
       integer(kind = kint), intent(in) :: i_pvr
       type(mesh_geometry), intent(in) :: mesh
@@ -77,6 +78,11 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
+!
+      call alloc_iflag_pvr_used_ele(mesh%ele, pvr_param%draw_param)
+      call s_set_iflag_for_used_ele(mesh%ele, group%ele_grp,            &
+     &    area_def%nele_grp_area_pvr, area_def%id_ele_grp_area_pvr,     &
+     &    pvr_param%draw_param%iflag_used_ele)
 !
       call find_each_pvr_surf_domain                                    &
      &   (mesh%ele, mesh%surf, group%ele_grp, area_def,                 &
