@@ -25,10 +25,8 @@
       use m_elapsed_labels_4_VIZ
       use calypso_mpi
 !
-      use t_time_data
       use t_mesh_data
       use t_comm_table
-      use t_phys_data
       use t_calypso_comm_table
       use t_next_node_ele_4_node
       use t_jacobians
@@ -46,7 +44,6 @@
 !
       use t_fem_gauss_int_coefs
       use t_shape_functions
-      use t_jacobians
 !
       use field_to_new_partition
       use parallel_FEM_mesh_init
