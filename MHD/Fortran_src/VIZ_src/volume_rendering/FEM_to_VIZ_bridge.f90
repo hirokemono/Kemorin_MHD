@@ -131,7 +131,6 @@
      &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT)
 !
       use m_work_time
-      use field_to_new_partition
       use const_element_comm_tables
       use parallel_FEM_mesh_init
 !

@@ -72,6 +72,7 @@
       use parallel_FEM_mesh_init
       use set_normal_vectors
       use const_element_comm_tables
+      use field_to_new_partition
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
