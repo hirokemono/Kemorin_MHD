@@ -1,3 +1,5 @@
+LIC_re_partition.o: $(LIC_DIR)/LIC_re_partition.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_mesh_data.o t_comm_table.o t_calypso_comm_table.o t_next_node_ele_4_node.o t_jacobians.o t_fem_gauss_int_coefs.o t_shape_functions.o field_to_new_partition.o parallel_FEM_mesh_init.o set_normal_vectors.o const_element_comm_tables.o
+	$(F90) -c $(F90OPTFLAGS) $<
 bcast_3d_noise.o: $(LIC_DIR)/bcast_3d_noise.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_3d_noise.o calypso_mpi_real.o calypso_mpi_int.o calypso_mpi_int8.o calypso_mpi_char.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_control_data_4_lic.o: $(LIC_DIR)/bcast_control_data_4_lic.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_control_data_LIC.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_LIC_masking.o t_control_data_LIC_noise.o t_control_data_LIC_kernel.o calypso_mpi_int.o bcast_control_arrays.o bcast_ctl_data_LIC_noise.o
