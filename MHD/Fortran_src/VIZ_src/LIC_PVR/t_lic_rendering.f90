@@ -211,12 +211,12 @@
 !
       do i_lic = 1, lic%pvr%num_pvr
         allocate(lic%lic_fld_pm(i_lic)%nod_fld_lic)
-        call alloc_nod_vector_4_lic(geofem%mesh%node%numnod,            &
+        call alloc_nod_vector_4_lic(geofem%mesh%node,                   &
      &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
      &      lic%lic_fld_pm(i_lic)%nod_fld_lic)
 !
         if(repart_p%flag_repartition) then
-          call alloc_nod_vector_4_lic(lic%viz_fem%mesh%node%numnod,     &
+          call alloc_nod_vector_4_lic(lic%viz_fem%mesh%node,            &
      &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
      &        lic%lic_fld_pm(i_lic)%field_lic)
         else
@@ -236,7 +236,8 @@
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call each_PVR_initialize(i_lic, lic%viz_fem%mesh, lic%viz_fem%group,    &
+        call each_PVR_initialize                                        &
+     &    (i_lic, lic%viz_fem%mesh, lic%viz_fem%group,                  &
      &     lic%pvr%pvr_param(i_lic)%area_def, lic%pvr%pvr_param(i_lic), &
      &     lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do

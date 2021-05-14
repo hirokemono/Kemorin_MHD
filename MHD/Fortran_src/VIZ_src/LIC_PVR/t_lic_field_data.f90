@@ -7,8 +7,7 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine alloc_nod_vector_4_lic                               &
-!!     &         (numnod, num_masking, field_lic)
+!!      subroutine alloc_nod_vector_4_lic(node, num_masking, field_lic)
 !!      subroutine dealloc_nod_data_4_lic(field_lic)
 !!      subroutine cal_field_4_each_lic                                 &
 !!     &         (node, nod_fld, lic_p, field_lic)
@@ -55,23 +54,25 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_nod_vector_4_lic                                 &
-     &         (numnod, num_masking, field_lic)
+      subroutine alloc_nod_vector_4_lic(node, num_masking, field_lic)
 !
-      integer(kind = kint), intent(in) :: numnod, num_masking
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: num_masking
       type(lic_field_data), intent(inout) :: field_lic
 !
 !
-      allocate(field_lic%d_lic(numnod))
-      allocate(field_lic%v_lic(numnod,3))
-!      allocate(field_lic%o_lic(numnod))
-      if(numnod .gt. 0) field_lic%d_lic =    0.0d0
-      if(numnod .gt. 0) field_lic%v_lic =    0.0d0
-!      if(numnod .gt. 0) field_lic%o_lic =    0.0d0
+      allocate(field_lic%d_lic(node%numnod))
+      allocate(field_lic%v_lic(node%numnod,3))
+!      allocate(field_lic%o_lic(node%numnod))
+      if(node%numnod .gt. 0) field_lic%d_lic =    0.0d0
+      if(node%numnod .gt. 0) field_lic%v_lic =    0.0d0
+!      if(node%numnod .gt. 0) field_lic%o_lic =    0.0d0
 !
       field_lic%num_mask = num_masking
-      allocate(field_lic%s_lic(numnod,field_lic%num_mask))
-      if(numnod*num_masking .gt. 0) field_lic%s_lic = 0.0d0
+      allocate(field_lic%s_lic(node%numnod,field_lic%num_mask))
+      if(node%numnod*num_masking .gt. 0) field_lic%s_lic = 0.0d0
 !
       end subroutine alloc_nod_vector_4_lic
 !
