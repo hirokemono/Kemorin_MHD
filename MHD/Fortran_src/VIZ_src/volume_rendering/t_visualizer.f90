@@ -69,7 +69,6 @@
       use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobians
-      use LIC_re_partition
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
@@ -98,18 +97,8 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      if(viz_step%LIC_t%increment .gt. 0) then
-       if(VIZ_DAT%repart_p%flag_repartition) then
-!  -----  Repartition
-        call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
-        call s_LIC_re_partition(VIZ_DAT%repart_p, geofem,               &
-     &      VIZ_DAT%next_tbl, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
-       else
-        call link_FEM_field_4_viz(geofem, VIZ_DAT)
-       end if
-      end if
       call LIC_initialize(viz_step%LIC_t%increment, VIZ_DAT%repart_p,   &
-     &                    VIZ_DAT%viz_fem, geofem, nod_fld,             &
+     &                    geofem, VIZ_DAT%next_tbl, nod_fld,            &
      &                    viz_ctls%lic_ctls, vizs%lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
@@ -159,8 +148,7 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &    VIZ_DAT%repart_p, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl,   &
-     &    geofem, nod_fld, vizs%lic, v_sol)
+     &    VIZ_DAT%repart_p, geofem, nod_fld, vizs%lic, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)

@@ -140,7 +140,6 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      call link_FEM_field_4_viz(FEM_viz%geofem, pvr)
       call link_jacobians_4_viz(pvr%next_tbl_v, pvr%jacobians_v, pvr)
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization                                      &

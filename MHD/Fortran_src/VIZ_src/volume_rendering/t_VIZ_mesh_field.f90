@@ -7,9 +7,7 @@
 !>@brief Data structuresa for visualizers
 !!
 !!@verbatim
-!!      subroutine link_FEM_field_4_viz(geofem, VIZ_DAT)
 !!      subroutine link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
-!!      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
 !!      subroutine unlink_jacobians_4_viz(VIZ_DAT)
 !!        type(mesh_data), intent(inout), target :: geofem
 !!        type(next_nod_ele_table), intent(in), target :: next_tbl
@@ -22,7 +20,6 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_mesh_data
       use t_comm_table
       use t_phys_data
       use t_next_node_ele_4_node
@@ -30,15 +27,12 @@
       use t_jacobians
       use t_VIZ_step_parameter
       use t_control_param_vol_grping
-      use t_calypso_comm_table
 !
       implicit none
 !
 !
 !>      Structure of data for visualization
       type VIZ_mesh_field
-!>         Structure for mesh data for visualization
-        type(mesh_data) :: geofem_v
 !!>        Structure of shape function for PVR and fieldline
 !        type(shape_finctions_at_points) :: spfs
 !>        Stracture for Jacobians
@@ -47,12 +41,8 @@
         type(next_nod_ele_table) :: next_tbl_v
 !
 !
-!>         Structure for mesh data for visualization
-        type(mesh_data), pointer :: viz_fem
 !>        Structure for repartitioning parameters
         type(volume_partioning_param) :: repart_p
-!>        Transfer table to visualization mesh
-        type(calypso_comm_table) :: mesh_to_viz_tbl
 !
 !!>        Structure of shape function for PVR and fieldline
 !        type(shape_finctions_at_points) :: spfs
@@ -71,17 +61,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine link_FEM_field_4_viz(geofem, VIZ_DAT)
-!
-      type(mesh_data), intent(in), target :: geofem
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      VIZ_DAT%viz_fem => geofem
-!
-      end subroutine link_FEM_field_4_viz
-!
-! ----------------------------------------------------------------------
-!
       subroutine link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
 !
       type(next_nod_ele_table), intent(in), target :: next_tbl
@@ -92,16 +71,6 @@
       VIZ_DAT%jacobians => jacobians
 !
       end subroutine link_jacobians_4_viz
-!
-! ----------------------------------------------------------------------
-!
-      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
-!
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      nullify(VIZ_DAT%viz_fem)
-!
-      end subroutine unlink_FEM_field_4_viz
 !
 ! ----------------------------------------------------------------------
 !
