@@ -206,7 +206,7 @@
         call s_LIC_re_partition(repart_p, geofem,                       &
      &      next_tbl, lic%viz_fem, lic%mesh_to_viz_tbl)
        else
-        lic%viz_fem = geofem
+        lic%viz_fem => geofem
       end if
 !
       do i_lic = 1, lic%pvr%num_pvr
