@@ -107,16 +107,7 @@
       subroutine init_FEM_to_VIZ_bridge(viz_step, geofem, VIZ_DAT)
 !
       use m_work_time
-      use m_elapsed_labels_4_REPART
-      use field_to_new_partition
       use parallel_FEM_mesh_init
-!
-      use int_volume_of_domain
-      use int_volume_of_single_domain
-      use set_table_4_RHS_assemble
-      use parallel_FEM_mesh_init
-      use const_element_comm_tables
-      use set_normal_vectors
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
@@ -132,18 +123,6 @@
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
      &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians)
 !
-      if(VIZ_DAT%repart_p%flag_repartition) then
-        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-        call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
-!
-!  -----  Repartition
-        call load_or_const_new_partition                                &
-     &     (VIZ_DAT%repart_p, geofem, VIZ_DAT%next_tbl,                 &
-     &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
-      else
-        call link_FEM_field_4_viz(geofem, VIZ_DAT)
-      end if
-!
       end subroutine init_FEM_to_VIZ_bridge
 !
 ! ----------------------------------------------------------------------
@@ -152,7 +131,6 @@
      &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT)
 !
       use m_work_time
-      use m_elapsed_labels_4_REPART
       use field_to_new_partition
       use const_element_comm_tables
       use parallel_FEM_mesh_init
@@ -173,22 +151,14 @@
       integer(kind = kint) :: iflag
 !
 !
-      if(VIZ_DAT%repart_p%flag_repartition) then
-        call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
-        call load_or_const_new_partition                                &
-     &     (VIZ_DAT%repart_p, geofem, next_tbl,                         &
-     &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
-      else
-        call link_FEM_field_4_viz(geofem, VIZ_DAT)
-        call link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
+      call link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
 !
-        iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
-        if(iflag .gt. 0) then
-          if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-          call const_edge_comm_table                                    &
-     &       (geofem%mesh%node, geofem%mesh%nod_comm,                   &
-     &        VIZ_DAT%edge_comm, geofem%mesh%edge)
-        end if
+      iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+        call const_edge_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
+     &      VIZ_DAT%edge_comm, geofem%mesh%edge)
       end if
       call calypso_mpi_barrier
 !

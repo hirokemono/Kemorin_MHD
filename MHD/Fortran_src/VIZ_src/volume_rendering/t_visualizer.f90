@@ -103,8 +103,13 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      if((viz_step%LIC_t%increment .gt. 0)                              &
-     &           .and. VIZ_DAT%repart_p%flag_repartition) then
+      if(viz_step%LIC_t%increment .gt. 0) then
+       if(VIZ_DAT%repart_p%flag_repartition) then
+!  -----  Repartition
+        call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
+        call load_or_const_new_partition                                &
+     &     (VIZ_DAT%repart_p, geofem, VIZ_DAT%next_tbl,                 &
+     &      VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
         if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
         call FEM_mesh_initialization(VIZ_DAT%viz_fem%mesh,              &
      &                               VIZ_DAT%viz_fem%group)
@@ -113,6 +118,9 @@
         call surf_jacobian_sf_grp_normal(my_rank, nprocs,               &
      &      VIZ_DAT%viz_fem%mesh, VIZ_DAT%viz_fem%group,                &
      &      spfs_T, jac_viz)
+       else
+        call link_FEM_field_4_viz(geofem, VIZ_DAT)
+       end if
       end if
       call LIC_initialize(viz_step%LIC_t%increment, VIZ_DAT%repart_p,   &
      &                    VIZ_DAT%viz_fem, geofem, nod_fld,             &
