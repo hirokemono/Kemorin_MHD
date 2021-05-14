@@ -77,8 +77,8 @@
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
-      type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
       type(visualization_controls), intent(inout) :: viz_ctls
       type(visualize_modules), intent(inout) :: vizs
 !
