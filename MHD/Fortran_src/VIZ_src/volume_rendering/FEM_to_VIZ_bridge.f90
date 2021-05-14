@@ -7,14 +7,6 @@
 !>@brief Data structuresa for visualizers
 !!
 !!@verbatim
-!!      subroutine normals_and_jacobians_4_VIZ                          &
-!!     &         (viz_step, geofem, edge_comm, ele_4_nod, jacobians)
-!!        type(VIZ_step_params), intent(in) :: viz_step
-!!        type(mesh_data), intent(inout) :: geofem
-!!        type(communication_table), intent(inout) :: edge_comm
-!!        type(element_around_node), intent(inout) :: ele_4_nod
-!!        type(jacobians_type), intent(inout) :: jacobians
-!!
 !!      subroutine init_FEM_to_VIZ_bridge(viz_step, geofem, VIZ_DAT)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_data), intent(inout) :: geofem
@@ -43,65 +35,12 @@
 !
       implicit none
 !
+      private :: normals_and_jacobians_4_VIZ
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine normals_and_jacobians_4_VIZ                            &
-     &         (viz_step, geofem, edge_comm, next_tbl, jacobians)
-!
-      use t_fem_gauss_int_coefs
-      use int_volume_of_domain
-      use set_table_4_RHS_assemble
-      use set_normal_vectors
-      use const_element_comm_tables
-!
-      type(VIZ_step_params), intent(in) :: viz_step
-      type(mesh_data), intent(inout) :: geofem
-      type(communication_table), intent(inout) :: edge_comm
-      type(next_nod_ele_table), intent(inout) :: next_tbl
-      type(jacobians_type), intent(inout) :: jacobians
-!
-      integer(kind = kint) :: iflag
-      type(shape_finctions_at_points) :: spfs
-!
-!
-!  -----  Const Neighboring information
-!      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
-      iflag = viz_step%FLINE_t%increment
-      if(iflag .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
-        call set_belonged_ele_and_next_nod                              &
-     &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
-      end if
-!
-! ------  init for fieldline and PVR ---------------------
-      iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
-      if(iflag .gt. 0) then
-        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-        call const_edge_comm_table                                      &
-     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      edge_comm, geofem%mesh%edge)
-      end if
-!
-      iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
-      if(iflag .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'jacobian_and_element_volume'
-!        call sel_max_int_point_by_etype                                &
-!     &     (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
-        call set_max_integration_points(ione, jacobians%g_FEM)
-        call jacobian_and_element_volume(my_rank, nprocs,               &
-     &      geofem%mesh, geofem%group, spfs, jacobians)
-        if (iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
-        call surf_jacobian_sf_grp_normal(my_rank, nprocs,               &
-     &      geofem%mesh, geofem%group, spfs, jacobians)
-      end if
-!
-      end subroutine normals_and_jacobians_4_VIZ
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine init_FEM_to_VIZ_bridge(viz_step, geofem, VIZ_DAT)
@@ -162,6 +101,61 @@
       call calypso_mpi_barrier
 !
       end subroutine init_FEM_MHD_to_VIZ_bridge
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine normals_and_jacobians_4_VIZ                            &
+     &         (viz_step, geofem, edge_comm, next_tbl, jacobians)
+!
+      use t_fem_gauss_int_coefs
+      use int_volume_of_domain
+      use set_table_4_RHS_assemble
+      use set_normal_vectors
+      use const_element_comm_tables
+!
+      type(VIZ_step_params), intent(in) :: viz_step
+      type(mesh_data), intent(inout) :: geofem
+      type(communication_table), intent(inout) :: edge_comm
+      type(next_nod_ele_table), intent(inout) :: next_tbl
+      type(jacobians_type), intent(inout) :: jacobians
+!
+      integer(kind = kint) :: iflag
+      type(shape_finctions_at_points) :: spfs
+!
+!
+!  -----  Const Neighboring information
+!      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
+      iflag = viz_step%FLINE_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
+        call set_belonged_ele_and_next_nod                              &
+     &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
+      end if
+!
+! ------  init for fieldline and PVR ---------------------
+      iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+        call const_edge_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
+     &      edge_comm, geofem%mesh%edge)
+      end if
+!
+      iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*) 'jacobian_and_element_volume'
+!        call sel_max_int_point_by_etype                                &
+!     &     (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
+        call set_max_integration_points(ione, jacobians%g_FEM)
+        call jacobian_and_element_volume(my_rank, nprocs,               &
+     &      geofem%mesh, geofem%group, spfs, jacobians)
+        if (iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
+        call surf_jacobian_sf_grp_normal(my_rank, nprocs,               &
+     &      geofem%mesh, geofem%group, spfs, jacobians)
+      end if
+!
+      end subroutine normals_and_jacobians_4_VIZ
 !
 ! ----------------------------------------------------------------------
 !

@@ -140,12 +140,8 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      call link_jacobians_4_viz(pvr%next_tbl_v, pvr%jacobians_v, pvr)
-      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization                                      &
-     &   (FEM_viz%geofem%mesh, FEM_viz%geofem%group)
-      call normals_and_jacobians_4_VIZ(viz_step, FEM_viz%geofem,        &
-     &    pvr%edge_comm, pvr%next_tbl, pvr%jacobians)
+      if(iflag_debug.gt.0) write(*,*) 'init_FEM_to_VIZ_bridge'
+      call init_FEM_to_VIZ_bridge(viz_step, FEM_viz%geofem, pvr)
       call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_four_vizs
