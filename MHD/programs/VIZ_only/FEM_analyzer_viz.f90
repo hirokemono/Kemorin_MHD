@@ -8,9 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine set_control_params_4_viz                             &
-!!     &         (vizs_ctl, FEM_viz, VIZ_DAT, t_viz_param, ierr)
+!!     &         (vizs_ctl, FEM_viz, t_viz_param, ierr)
 !!        type(control_data_vizs), intent(in) :: vizs_ctl
-!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!      subroutine FEM_initialize_viz                                   &
@@ -35,7 +34,6 @@
 !
       use t_step_parameter
       use t_FEM_mesh_field_4_viz
-      use t_VIZ_mesh_field
       use t_ucd_data
       use t_VIZ_step_parameter
 !
@@ -50,7 +48,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_params_4_viz                               &
-     &         (vizs_ctl, FEM_viz, VIZ_DAT, t_viz_param, ierr)
+     &         (vizs_ctl, FEM_viz, t_viz_param, ierr)
 !
       use t_control_data_all_vizs
       use t_VIZ_only_step_parameter
@@ -63,7 +61,6 @@
 !
       type(control_data_vizs), intent(in) :: vizs_ctl
 !
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
       integer(kind = kint), intent(inout) :: ierr
@@ -81,9 +78,6 @@
       call set_fixed_t_step_params_w_viz                                &
      &   (vizs_ctl%t_viz_ctl, t_viz_param, ierr, e_message)
       call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
-!
-      call set_ctl_param_vol_repart(vizs_ctl%viz_ctl_v%repart_ctl,      &
-     &                              VIZ_DAT%repart_p)
 !
       end subroutine set_control_params_4_viz
 !
@@ -107,8 +101,7 @@
       type(VIZ_step_params), intent(inout) :: viz_step
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !
-      integer(kind = kint) :: istep_ucd, iflag
-      logical :: flag
+      integer(kind = kint) :: istep_ucd
 !
 !   --------------------------------
 !       setup mesh information

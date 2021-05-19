@@ -63,8 +63,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
       call read_control_file_vizs(vizs_ctl1)
-      call set_control_params_4_viz(vizs_ctl1, FEM_viz1, VIZ_DAT1,      &
-     &                              t_VIZ1, ierr)
+      call set_control_params_4_viz(vizs_ctl1, FEM_viz1, t_VIZ1, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !

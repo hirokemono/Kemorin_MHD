@@ -51,7 +51,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans(spt_ctl1, t_STR, SPH_TRNS,        &
-     &                                FEM_STR1, SPH_STR1, VIZ_D_STR1)
+     &                                FEM_STR1, SPH_STR1)
       call set_ctl_data_4_pick_zm(spt_ctl1, FEM_STR1)
 !
 !  ------    set spectr grids

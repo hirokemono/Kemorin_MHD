@@ -26,7 +26,6 @@
       use t_shape_functions
       use t_jacobians
       use t_VIZ_step_parameter
-      use t_control_param_vol_grping
 !
       implicit none
 !
@@ -39,10 +38,6 @@
         type(jacobians_type) :: jacobians_v
 !>        Structure of included element list for each node
         type(next_nod_ele_table) :: next_tbl_v
-!
-!
-!>        Structure for repartitioning parameters
-        type(volume_partioning_param) :: repart_p
 !
 !!>        Structure of shape function for PVR and fieldline
 !        type(shape_finctions_at_points) :: spfs

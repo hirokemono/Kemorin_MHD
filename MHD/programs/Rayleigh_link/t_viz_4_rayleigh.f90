@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_params_rayleigh_viz(rayleigh_vctl,           &
-!!     &          t_viz_param, FEM_Rayleigh, VIZ_DAT, ierr)
+!!     &          t_viz_param, FEM_Rayleigh, ierr)
 !!        type(control_data_rayleigh_vizs), intent(in) :: rayleigh_vctl
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!        type(FEM_mesh_field_rayleigh_viz),                            &
 !!     &                  intent(inout) :: FEM_Rayleigh
-!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!@endverbatim
 !
       module t_viz_4_rayleigh
@@ -26,7 +25,6 @@
       use t_time_data
       use t_mesh_data
       use t_phys_data
-      use t_VIZ_mesh_field
       use t_vector_for_solver
       use t_VIZ_only_step_parameter
 !
@@ -57,7 +55,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ctl_params_rayleigh_viz(rayleigh_vctl,             &
-     &          t_viz_param, FEM_Rayleigh, VIZ_DAT, ierr)
+     &          t_viz_param, FEM_Rayleigh, ierr)
 !
       use m_error_IDs
       use t_file_IO_parameter
@@ -72,7 +70,6 @@
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
       type(FEM_mesh_field_rayleigh_viz), intent(inout) :: FEM_Rayleigh
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
 !
       call turn_off_debug_flag_by_ctl                                   &
@@ -91,9 +88,6 @@
       call set_ctl_params_rayleigh_domains                              &
      &   (rayleigh_vctl%sdctl, FEM_Rayleigh%rayleigh_rtp,               &
      &    e_message, ierr)
-!
-      call set_ctl_param_vol_repart(rayleigh_vctl%viz_ctl_v%repart_ctl, &
-     &                              VIZ_DAT%repart_p)
 !
       end subroutine set_ctl_params_rayleigh_viz
 !

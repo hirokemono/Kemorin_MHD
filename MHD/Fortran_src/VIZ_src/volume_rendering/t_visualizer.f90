@@ -97,9 +97,9 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      call LIC_initialize(viz_step%LIC_t%increment, VIZ_DAT%repart_p,   &
-     &                    geofem, VIZ_DAT%next_tbl, nod_fld,            &
-     &                    viz_ctls%lic_ctls, vizs%lic)
+      call LIC_initialize                                               &
+     &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
+     &    viz_ctls%lic_ctls, viz_ctls%repart_ctl, vizs%lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
@@ -148,7 +148,7 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &    VIZ_DAT%repart_p, geofem, nod_fld, vizs%lic, v_sol)
+     &                   geofem, nod_fld, vizs%lic, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)

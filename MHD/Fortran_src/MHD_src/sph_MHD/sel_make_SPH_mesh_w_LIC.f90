@@ -8,9 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_w_LIC(FEM_mesh_flags,          &
-!!     &          sph_file_param, repart_p, SPH_MHD, geofem, mesh_file)
+!!     &          sph_file_param, SPH_MHD, geofem, mesh_file)
 !!        type(field_IO_params), intent(in) :: sph_file_param
-!!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(mesh_data), intent(inout) ::   geofem
 !!        type(MHD_file_IO_params), intent(inout) ::  MHD_files
@@ -35,7 +34,6 @@
       use t_file_IO_parameter
       use t_sph_trans_arrays_MHD
       use t_SPH_mesh_field_data
-      use t_control_param_vol_grping
 !
       implicit none
 !
@@ -49,7 +47,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_w_LIC(FEM_mesh_flags,            &
-     &          sph_file_param, repart_p, SPH_MHD, geofem, mesh_file)
+     &          sph_file_param, SPH_MHD, geofem, mesh_file)
 !
       use calypso_mpi
       use m_elapsed_labels_gen_SPH
@@ -63,7 +61,6 @@
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(field_IO_params), intent(in) ::  sph_file_param
-      type(volume_partioning_param), intent(in) :: repart_p
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(mesh_data), intent(inout) :: geofem
@@ -84,8 +81,7 @@
 !  --  Construct FEM mesh
         if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+3)
         mesh_file%file_prefix = sph_file_param%file_prefix
-        call load_FEM_mesh_4_SPH_w_LIC                                  &
-     &     (FEM_mesh_flags, repart_p, mesh_file,                        &
+        call load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, mesh_file,       &
      &      SPH_MHD%groups, SPH_MHD%sph, geofem, SPH_MHD%sph_maker)
         if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
       end if
@@ -94,7 +90,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, repart_p,    &
+      subroutine load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags,              &
      &           mesh_file, sph_grps, sph, geofem, sph_maker)
 !
       use calypso_mpi
@@ -111,7 +107,6 @@
       use set_nnod_4_ele_by_type
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
-      type(volume_partioning_param), intent(in) :: repart_p
       type(field_IO_params), intent(in) ::  mesh_file
       type(sph_group_data), intent(in) :: sph_grps
 !
@@ -135,8 +130,7 @@
       call copy_sph_radial_groups(sph_grps, sph_maker%gen_sph)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_MHD_w_LIC'
-      call const_FEM_mesh_4_sph_MHD_w_LIC(repart_p%flag_repartition,    &
-     &    FEM_mesh_flags, repart_p%sleeve_exp_p, mesh_file,             &
+      call const_FEM_mesh_4_sph_MHD_w_LIC(FEM_mesh_flags, mesh_file,    &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    femmesh_s%mesh, femmesh_s%group, sph_maker%gen_sph)
 !      call compare_mesh_type                                           &
@@ -157,9 +151,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_FEM_mesh_4_sph_MHD_w_LIC(flag_repartition,       &
-     &          FEM_mesh_flags, sleeve_exp_p, mesh_file,                &
-     &          sph_params, sph_rtp, sph_rj, mesh, group, gen_sph)
+      subroutine const_FEM_mesh_4_sph_MHD_w_LIC                         &
+     &         (FEM_mesh_flags, mesh_file, sph_params,                  &
+     &          sph_rtp, sph_rj, mesh, group, gen_sph)
 !
       use t_ctl_param_sleeve_extend
       use m_elapsed_labels_gen_SPH
@@ -167,14 +161,9 @@
       use sph_file_IO_select
       use mpi_load_mesh_data
       use para_const_kemoview_mesh
-      use sleeve_extend
       use const_FEM_mesh_sph_mhd
-      use const_element_comm_tables
-      use nod_and_ele_derived_info
 !
-      logical, intent(in) :: flag_repartition
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
-      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(field_IO_params), intent(in) ::  mesh_file
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -185,7 +174,6 @@
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
-      type(communication_table) :: ele_comm
       type(parallel_make_vierwer_mesh) :: par_view
 !
 !
@@ -193,20 +181,6 @@
       call base_FEM_mesh_sph_mhd(sph_params, sph_rtp, sph_rj,           &
      &    mesh, group, gen_sph)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+9)
-!
-! Increase sleeve size
-      if((flag_repartition .eqv. .FALSE.)                               &
-     &     .and. (sleeve_exp_p%iflag_expand .ne. iflag_turn_off)) then
-        if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+10)
-        call set_nod_and_ele_infos(mesh%node, mesh%ele)
-!
-        call const_ele_comm_table(mesh%node, mesh%nod_comm,             &
-     &                            mesh%ele, ele_comm)
-
-        call sleeve_extension_loop(sleeve_exp_p, mesh, group, ele_comm)
-        call dealloc_comm_table(ele_comm)
-        if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+10)
-      end if
 !
 ! Output mesh data
       if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then

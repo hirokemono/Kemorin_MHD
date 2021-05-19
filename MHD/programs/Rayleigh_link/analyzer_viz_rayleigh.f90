@@ -64,7 +64,7 @@
       if (iflag_debug.gt.0) write(*,*) 'read_ctl_file_rayleigh_viz'
       call read_ctl_file_rayleigh_viz(rayleigh_vizs_ctl1)
       call set_ctl_params_rayleigh_viz(rayleigh_vizs_ctl1,              &
-     &    t_VIZ_r, FEM_Rayleigh1, VIZ_DAT_r, ierr)
+     &    t_VIZ_r, FEM_Rayleigh1, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !      call check_rayleigh_field_address(FEM_Rayleigh1%iphys_ftb)
