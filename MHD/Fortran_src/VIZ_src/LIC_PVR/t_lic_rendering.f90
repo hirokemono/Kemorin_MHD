@@ -59,6 +59,8 @@
 !
 !
       type lic_volume_rendering_module
+!>         Logical flag to make re-patitioning each rendering
+        logical :: flag_each_repart = .FALSE.
 !>         Structure for mesh data for visualization
         type(mesh_data), pointer :: viz_fem
 !>        Transfer table to visualization mesh
@@ -196,7 +198,7 @@
 !
       call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%lic_fld_pm, lic%pvr%pvr_param)
+     &    lic%lic_fld_pm, lic%pvr%pvr_param, lic%flag_each_repart)
 !
 !
 !

@@ -50,9 +50,9 @@
 !!    i_step_field_ctl         800
 !!    output_field_file_fmt_ctl   'VTK'
 !!
-!!    begin viz_repartition_ctl
+!!    begin LIC_repartition_ctl
 !!      ....
-!!    end viz_repartition_ctl
+!!    end LIC_repartition_ctl
 !!  end visual_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -121,7 +121,7 @@
      &       :: hd_output_fld_file_fmt = 'output_field_file_fmt_ctl'
 !
       character(len=kchara), parameter, private                         &
-     &                    :: hd_viz_partition = 'viz_repartition_ctl'
+     &                    :: hd_lic_partition = 'LIC_repartition_ctl'
 !
 !      Deprecated labels
       character(len=kchara), parameter, private                         &
@@ -159,7 +159,7 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
-        call read_control_vol_repart(id_control, hd_viz_partition,      &
+        call read_control_vol_repart(id_control, hd_lic_partition,      &
      &                           viz_ctls%repart_ctl, c_buf)
 !
         if(check_array_flag(c_buf, hd_psf_ctl)) then
@@ -277,7 +277,7 @@
       call set_control_labels(hd_delta_t_ucd,         names(17))
       call set_control_labels(hd_output_fld_file_fmt, names(18))
 !
-      call set_control_labels(hd_viz_partition,       names(19))
+      call set_control_labels(hd_lic_partition,       names(19))
 !
       call set_control_labels(hd_psf_ctl,             names(20))
       call set_control_labels(hd_iso_ctl,             names(21))

@@ -83,6 +83,7 @@
       use t_control_data_LIC_masking
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
+      use t_ctl_data_volume_repart
 !
       use calypso_mpi_int
       use bcast_control_arrays
@@ -111,6 +112,7 @@
 !
       call bcast_cube_noise_control_data(lic_ctl%noise_ctl)
       call bcast_kernel_control_data(lic_ctl%kernel_ctl)
+      call bcast_control_vol_repart(lic_ctl%repart_ctl)
 !
       if(my_rank .ne. 0) call alloc_lic_masking_ctl(lic_ctl)
       do i = 1, lic_ctl%num_masking_ctl

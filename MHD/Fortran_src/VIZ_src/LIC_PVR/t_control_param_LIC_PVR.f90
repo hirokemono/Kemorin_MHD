@@ -15,7 +15,8 @@
 !!        type(lic_parameter_ctl), intent(inout)                        &
 !!     &                        :: lic_ctl_type(num_lic_ctl)
 !!      subroutine s_set_lic_controls(group, nod_fld, num_lic,          &
-!!     &           pvr_ctl_type, lic_ctl_type, lic_fld_pm, pvr_param)
+!!     &           pvr_ctl_type, lic_ctl_type, lic_fld_pm, pvr_param,   &
+!!     &           flag_each_repart)
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
@@ -91,7 +92,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_lic_controls(group, nod_fld, num_lic,            &
-     &           pvr_ctl_type, lic_ctl_type, lic_fld_pm, pvr_param)
+     &           pvr_ctl_type, lic_ctl_type, lic_fld_pm, pvr_param,     &
+     &           flag_each_repart)
 !
       use m_error_IDs
       use t_phys_data
@@ -112,10 +114,12 @@
 !
       type(LIC_field_params), intent(inout) :: lic_fld_pm(num_lic)
       type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
+      logical, intent(inout) :: flag_each_repart
 !
       integer(kind = kint) :: i_lic
 !
 !
+      flag_each_repart = .FALSE.
       do i_lic = 1, num_lic
         if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
         call set_control_pvr_movie                                      &
@@ -125,7 +129,8 @@
 !
         call set_control_lic_parameter                                  &
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      lic_ctl_type(i_lic), lic_fld_pm(i_lic)%lic_param)
+     &      lic_ctl_type(i_lic), lic_fld_pm(i_lic)%lic_param,           &
+     &      flag_each_repart)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &

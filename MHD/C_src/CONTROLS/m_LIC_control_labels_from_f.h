@@ -10,16 +10,16 @@
 Labels for LIC module controls
 Check lic_ctl_labls->label_LIC_pvr_ctl_f
 ctl_list->num_labels 18 
-label[0]   updated_sign 
-label[1]   lic_file_prefix 
-label[2]   lic_image_format 
-label[3]   monitoring_mode 
-label[4]   image_tranceparency 
-label[5]   max_pe_4_composit 
-label[6]   streo_imaging 
-label[7]   anaglyph_image 
-label[8]   LIC_ctl 
-label[9]   plot_area_ctl 
+label[ 0]   updated_sign
+label[ 1]   lic_file_prefix
+label[ 2]   lic_image_format
+label[ 3]   monitoring_mode
+label[ 4]   image_tranceparency
+label[ 5]   max_pe_4_composit
+label[ 6]   streo_imaging
+label[ 7]   anaglyph_image
+label[ 8]   LIC_ctl
+label[ 9]   plot_area_ctl
 label[10]   view_transform_ctl 
 label[11]   LIC_color_ctl 
 label[12]   colormap_ctl 
@@ -43,6 +43,7 @@ label[8]   vr_sample_mode
 label[9]   step_size 
 label[10]   normalization_type 
 label[11]   normalization_value 
+label[12]   normalization_value
 
 Check lic_ctl_labls->label_LIC_noise_f
 ctl_list->num_labels 7 

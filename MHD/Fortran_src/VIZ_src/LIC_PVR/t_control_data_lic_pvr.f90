@@ -58,7 +58,6 @@
 !!  begin image_rotation_ctl
 !!   ...
 !!  end image_rotation_ctl
-!!!
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -79,63 +78,56 @@
 !
 !     2nd level for volume_rendering
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_updated =     'updated_sign'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_lic_file_head =   'lic_file_prefix'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_lic_out_type =    'lic_image_format'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_monitor =   'monitoring_mode'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_rgba_type = 'image_tranceparency'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_maxpe_composit = 'max_pe_4_composit'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_streo =    'streo_imaging'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_anaglyph = 'anaglyph_image'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_lic_control = 'LIC_ctl'
 !
 !     3rd level for surface_define
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_plot_area =   'plot_area_ctl'
 !
 !     3rd level for rotation
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_view_transform = 'view_transform_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_lic_colordef =  'LIC_color_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_colormap =      'colormap_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_colorbar =  'colorbar_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_lighting =  'lighting_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_sections = 'section_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_isosurf =  'isosurface_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_movie =    'movie_mode_ctl'
 !
       integer(kind = kint), parameter :: n_label_LIC_pvr = 18
 !
 !
-      private :: hd_view_transform, hd_pvr_lighting, hd_lic_colordef
-      private :: hd_colormap, n_label_LIC_pvr
-!
-      private :: hd_lic_file_head, hd_lic_out_type, hd_pvr_rgba_type
-      private :: hd_pvr_streo, hd_pvr_anaglyph, hd_pvr_updated
-      private :: hd_lic_control, hd_pvr_monitor, hd_pvr_movie
-      private :: hd_pvr_sections, hd_pvr_isosurf, hd_pvr_colorbar
-      private :: hd_plot_area, hd_pvr_maxpe_composit
+      private :: n_label_LIC_pvr
 !
 !  ---------------------------------------------------------------------
 !
