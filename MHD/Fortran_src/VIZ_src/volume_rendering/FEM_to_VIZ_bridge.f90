@@ -125,8 +125,7 @@
 !
 !
 !  -----  Const Neighboring information
-!      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
-      iflag = viz_step%FLINE_t%increment
+      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
       if(iflag .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
         call set_belonged_ele_and_next_nod                              &
