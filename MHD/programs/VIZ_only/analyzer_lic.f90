@@ -48,6 +48,7 @@
       use m_elapsed_labels_4_REPART
       use m_work_time_4_sleeve_extend
       use FEM_to_VIZ_bridge
+      use lic_rendering_test
 !
       integer(kind = kint) :: ierr
 !
@@ -87,6 +88,7 @@
       subroutine analyze_lic
 !
       use FEM_to_VIZ_bridge
+      use lic_rendering_test
 !
       integer(kind=kint ) :: i_step
 !
