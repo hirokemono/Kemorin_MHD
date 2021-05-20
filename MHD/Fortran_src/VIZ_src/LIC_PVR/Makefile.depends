@@ -1,4 +1,4 @@
-LIC_re_partition.o: $(LIC_DIR)/LIC_re_partition.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_mesh_data.o t_comm_table.o t_calypso_comm_table.o t_next_node_ele_4_node.o t_jacobians.o t_fem_gauss_int_coefs.o t_shape_functions.o field_to_new_partition.o parallel_FEM_mesh_init.o set_normal_vectors.o const_element_comm_tables.o
+LIC_re_partition.o: $(LIC_DIR)/LIC_re_partition.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_mesh_data.o t_comm_table.o t_calypso_comm_table.o t_next_node_ele_4_node.o t_jacobians.o t_fem_gauss_int_coefs.o t_shape_functions.o field_to_new_partition.o parallel_FEM_mesh_init.o set_normal_vectors.o const_element_comm_tables.o const_jacobians_3d.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_3d_noise.o: $(LIC_DIR)/bcast_3d_noise.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_3d_noise.o calypso_mpi_real.o calypso_mpi_int.o calypso_mpi_int8.o calypso_mpi_char.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -18,6 +18,8 @@ lic_pixel_ray_trace_by_ele.o: $(LIC_DIR)/lic_pixel_ray_trace_by_ele.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 lic_pixel_ray_trace_fix_len.o: $(LIC_DIR)/lic_pixel_ray_trace_fix_len.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o lic_rgba_4_each_pixel.o t_geometry_data.o t_surface_data.o t_control_params_4_pvr.o t_control_param_LIC.o t_geometries_in_pvr_screen.o t_lic_field_data.o m_machine_parameter.o cal_lic_on_surf_viz.o cal_field_on_surf_viz.o cal_fline_in_cube.o set_coefs_of_sections.o set_rgba_4_each_pixel.o t_noise_node_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
+lic_rendering_test.o: $(LIC_DIR)/lic_rendering_test.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_work_time.o t_mesh_data.o t_phys_data.o t_lic_rendering.o t_rendering_vr_image.o t_control_params_4_pvr.o t_control_param_LIC_PVR.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_geometries_in_pvr_screen.o t_control_data_LIC_pvrs.o t_ctl_data_volume_repart.o t_volume_rendering.o t_calypso_comm_table.o t_control_param_vol_grping.o t_vector_for_solver.o each_volume_rendering.o t_control_data_pvr_sections.o set_pvr_control.o each_LIC_rendering.o rendering_and_image_nums.o LIC_re_partition.o m_elapsed_labels_4_VIZ.o cal_pvr_modelview_mat.o write_PVR_image.o
+	$(F90) -c $(F90OPTFLAGS) $<
 lic_rgba_4_each_pixel.o: $(LIC_DIR)/lic_rgba_4_each_pixel.f90 m_precision.o m_constants.o t_control_params_4_pvr.o set_color_4_pvr.o set_rgba_4_each_pixel.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_consts_for_FastNoise.o: $(LIC_DIR)/m_consts_for_FastNoise.f90 m_precision.o
@@ -35,6 +37,8 @@ t_3d_noise.o: $(LIC_DIR)/t_3d_noise.f90 m_precision.o m_constants.o m_machine_pa
 t_FastNoise.o: $(LIC_DIR)/t_FastNoise.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_LIC_kernel.o: $(LIC_DIR)/t_LIC_kernel.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_control_data_LIC_kernel.o skip_comment_f.o calypso_mpi_real.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_LIC_visualizer.o: $(LIC_DIR)/t_LIC_visualizer.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_VIZ_step_parameter.o t_VIZ_mesh_field.o t_time_data.o t_mesh_data.o t_comm_table.o t_phys_data.o t_next_node_ele_4_node.o t_jacobians.o t_control_data_vizs.o t_lic_rendering.o t_vector_for_solver.o t_fem_gauss_int_coefs.o t_shape_functions.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_LIC.o: $(LIC_DIR)/t_control_data_LIC.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_LIC_masking.o t_control_data_LIC_noise.o t_control_data_LIC_kernel.o t_ctl_data_volume_repart.o skip_comment_f.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
