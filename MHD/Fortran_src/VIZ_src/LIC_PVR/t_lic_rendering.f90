@@ -12,8 +12,8 @@
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
 !!      subroutine LIC_initialize(increment_lic, geofem, next_tbl,      &
 !!     &                          nod_fld, lic_ctls, repart_ctl, lic)
-!!      subroutine LIC_visualize                                        &
-!!     &         (istep_lic, time, geofem, nod_fld, lic, v_sol)
+!!      subroutine LIC_visualize(istep_lic, time, geofem, next_tbl,     &
+!!     &                         nod_fld, lic, v_sol)
 !!      subroutine dealloc_LIC_data(lic)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
@@ -34,6 +34,7 @@
 !
       use t_mesh_data
       use t_phys_data
+      use t_next_node_ele_4_node
 !
       use t_rendering_vr_image
       use t_control_params_4_pvr
@@ -257,8 +258,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_visualize                                          &
-     &         (istep_lic, time, geofem, nod_fld, lic, v_sol)
+      subroutine LIC_visualize(istep_lic, time, geofem, next_tbl,       &
+     &                         nod_fld, lic, v_sol)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -269,6 +270,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_data), intent(in) :: geofem
+      type(next_nod_ele_table), intent(in) :: next_tbl
       type(phys_data), intent(in) :: nod_fld
 !
       type(lic_volume_rendering_module), intent(inout) :: lic

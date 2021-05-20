@@ -108,7 +108,7 @@
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_LIC(t_VIZ1%viz_step, t_VIZ1%time_d,              &
      &                     FEM_viz1%geofem, FEM_viz1%field,             &
-     &                     lic_v, FEM_viz1%v_sol)
+     &                     VIZ_DAT1, lic_v, FEM_viz1%v_sol)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

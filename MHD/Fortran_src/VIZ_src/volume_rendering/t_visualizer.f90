@@ -148,11 +148,11 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &                   geofem, nod_fld, vizs%lic, v_sol)
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, vizs%lic, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
-      call FLINE_visualize(viz_step%istep_fline, geofem,              &
+      call FLINE_visualize(viz_step%istep_fline, geofem,                &
      &    VIZ_DAT%next_tbl, nod_fld, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !

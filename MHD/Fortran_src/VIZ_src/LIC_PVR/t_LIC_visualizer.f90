@@ -62,8 +62,8 @@
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+      type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
       type(visualization_controls), intent(inout) :: viz_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic_v
 !
@@ -82,15 +82,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_LIC(viz_step, time_d, geofem, nod_fld,       &
-     &                         lic_v, v_sol)
+     &                         VIZ_DAT, lic_v, v_sol)
 !
       use lic_rendering_test
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
-!
       type(phys_data), intent(in) :: nod_fld
+      type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
       type(lic_volume_rendering_module), intent(inout) :: lic_v
       type(vectors_4_solver), intent(inout) :: v_sol
@@ -98,7 +98,7 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize_test(viz_step%istep_lic, time_d%time,          &
-     &                   geofem, nod_fld, lic_v, v_sol)
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       call calypso_mpi_barrier
