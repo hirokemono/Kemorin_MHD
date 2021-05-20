@@ -206,6 +206,13 @@
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%lic_fld_pm, lic%pvr%pvr_param, lic%flag_each_repart)
 !
+      do i_lic = 1, lic%pvr%num_pvr
+        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
+     &      .or. my_rank .ne. 0) then
+          call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
+     &        lic_ctls%lic_ctl_type(i_lic))
+        end if
+      end do
 !
 !
       if(lic%repart_p%flag_repartition) then
@@ -231,14 +238,6 @@
         else
           lic%lic_fld_pm(i_lic)%field_lic                               &
      &           => lic%lic_fld_pm(i_lic)%nod_fld_lic
-        end if
-      end do
-!
-      do i_lic = 1, lic%pvr%num_pvr
-        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
-     &      .or. my_rank .ne. 0) then
-          call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
-     &        lic_ctls%lic_ctl_type(i_lic))
         end if
       end do
 !
