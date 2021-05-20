@@ -70,9 +70,15 @@
 !
 !
       if(my_rank .eq. 0) then
-        flag = (check_exist_mesh(my_rank, part_param%viz_mesh_file))    &
-     &   .and. (check_exist_interpolate_file(my_rank,                   &
+        if(part_param%viz_mesh_file%iflag_format .eq. id_no_file        &
+     &    .or. part_param%trans_tbl_file%iflag_format .eq. id_no_file)  &
+     &   then
+        flag = .FALSE.
+        else
+          flag = (check_exist_mesh(my_rank, part_param%viz_mesh_file))  &
+     &     .and. (check_exist_interpolate_file(my_rank,                 &
      &                                      part_param%trans_tbl_file))
+        end if
       end if
       call calypso_MPI_barrier
       call calypso_mpi_bcast_one_logical(flag, 0)
