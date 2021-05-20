@@ -94,7 +94,9 @@
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,                       &
      &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
-      call alloc_LIC_data(lic)
+!
+      call alloc_pvr_data(lic%pvr)
+      allocate(lic%lic_fld_pm(lic%pvr%num_pvr))
 !
       call s_num_rendering_and_images                                   &
      &   (nprocs, lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,               &
