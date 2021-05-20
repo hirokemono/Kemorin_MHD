@@ -16,6 +16,10 @@
 !!      subroutine dealloc_control_vol_repart(viz_repart_c)
 !!      subroutine bcast_control_vol_repart(viz_repart_c)
 !!        type(viz_repartition_ctl), intent(inout) :: viz_repart_c
+!!      subroutine dup_control_vol_repart(org_viz_repart_c,             &
+!!     &                                  new_viz_repart_c)
+!!        type(viz_repartition_ctl), intent(in) :: org_viz_repart_c
+!!        type(viz_repartition_ctl), intent(inout) :: new_viz_repart_c
 !!
 !!   --------------------------------------------------------------------
 !!    Example of control block
@@ -157,6 +161,30 @@
      &   (viz_repart_c%i_viz_repartition_ctl, 0)
 !
       end subroutine bcast_control_vol_repart
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dup_control_vol_repart(org_viz_repart_c,              &
+      &                                  new_viz_repart_c)
+!
+      type(viz_repartition_ctl), intent(in) :: org_viz_repart_c
+      type(viz_repartition_ctl), intent(inout) :: new_viz_repart_c
+!
+!
+      call copy_ctl_data_4_platform(org_viz_repart_c%viz_plt,           &
+     &                              new_viz_repart_c%viz_plt)
+!
+      call copy_FEM_mesh_control(org_viz_repart_c%Fmesh_ctl,            &
+     &                           new_viz_repart_c%Fmesh_ctl)
+      call dup_ctl_data_new_decomp(org_viz_repart_c%new_part_ctl,       &
+     &                             new_viz_repart_c%new_part_ctl)
+      call dup_FEM_sleeve_control(org_viz_repart_c%Fsleeve_ctl,         &
+     &                            new_viz_repart_c%Fsleeve_ctl)
+!
+      new_viz_repart_c%i_viz_repartition_ctl                            &
+     &      = org_viz_repart_c%i_viz_repartition_ctl
+!
+      end subroutine dup_control_vol_repart
 !
 !   --------------------------------------------------------------------
 !

@@ -163,9 +163,11 @@
      &                    new_lic_c%normalization_value_ctl)
 !
       call copy_cube_noise_control_data(org_lic_c%noise_ctl,            &
-     &    new_lic_c%noise_ctl)
+     &                                  new_lic_c%noise_ctl)
       call copy_kernel_control_data(org_lic_c%kernel_ctl,               &
-     &    new_lic_c%kernel_ctl)
+     &                              new_lic_c%kernel_ctl)
+      call dup_control_vol_repart(org_lic_c%repart_ctl,                 &
+     &                            new_lic_c%repart_ctl)
 !
       new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
       if(new_lic_c%num_masking_ctl .gt. 0) then

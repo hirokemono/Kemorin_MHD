@@ -13,7 +13,10 @@
 !!      subroutine bcast_ctl_data_new_decomp(new_part_ctl)
 !!        type(new_patition_control), intent(inout) :: new_part_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!
+!!      subroutine dup_ctl_data_new_decomp(org_new_part_c,              &
+!!     &                                   new_new_part_c)
+!!        type(new_patition_control), intent(in) :: org_new_part_c
+!!        type(new_patition_control), intent(inout) :: new_new_part_c
 !!
 !! --------------------------------------------------------------------
 !!    Example of control block
@@ -170,6 +173,36 @@
      &   (new_part_ctl%i_new_patition_ctl, 0)
 !
       end subroutine bcast_ctl_data_new_decomp
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine dup_ctl_data_new_decomp(org_new_part_c,                &
+     &                                   new_new_part_c)
+!
+      type(new_patition_control), intent(in) :: org_new_part_c
+      type(new_patition_control), intent(inout) :: new_new_part_c
+!
+!
+      call copy_chara_ctl(org_new_part_c%repart_table_head_ctl,         &
+     &                    new_new_part_c%repart_table_head_ctl)
+      call copy_chara_ctl(org_new_part_c%repart_table_fmt_ctl,          &
+     &                    new_new_part_c%repart_table_fmt_ctl)
+!
+      call copy_chara_ctl(org_new_part_c%new_part_method_ctl,           &
+     &                    new_new_part_c%new_part_method_ctl)
+!
+      call dup_control_array_c_i(org_new_part_c%ndomain_section_ctl,    &
+     &                           new_new_part_c%ndomain_section_ctl)
+      call copy_integer_ctl(org_new_part_c%sleeve_level_ctl,            &
+     &                      new_new_part_c%sleeve_level_ctl)
+      call copy_integer_ctl(org_new_part_c%ratio_of_grouping_ctl,       &
+     &                      new_new_part_c%ratio_of_grouping_ctl)
+!
+      new_new_part_c%i_new_patition_ctl                                 &
+     &      = org_new_part_c%i_new_patition_ctl
+!
+      end subroutine dup_ctl_data_new_decomp
 !
 ! -----------------------------------------------------------------------
 !

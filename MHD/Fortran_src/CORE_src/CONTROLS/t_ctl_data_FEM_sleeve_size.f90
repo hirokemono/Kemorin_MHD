@@ -13,6 +13,9 @@
 !!      subroutine write_FEM_sleeve_control                             &
 !!     &         (id_file, hd_block, sleeve_ctl, level)
 !!      subroutine dealloc_ctl_data_FEM_sleeve(sleeve_ctl)
+!!      subroutine dup_FEM_sleeve_control(org_sleeve_c, new_sleeve_c)
+!!        type(FEM_sleeve_control), intent(in) :: org_sleeve_c
+!!        type(FEM_sleeve_control), intent(inout) :: new_sleeve_c
 !!
 !! ------------------------------------------------------------------
 !!      Example of control parameters
@@ -160,6 +163,29 @@
       sleeve_ctl%i_FEM_sleeve_ctl = 0
 !
       end subroutine dealloc_ctl_data_FEM_sleeve
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dup_FEM_sleeve_control(org_sleeve_c, new_sleeve_c)
+!
+      type(FEM_sleeve_control), intent(in) :: org_sleeve_c
+      type(FEM_sleeve_control), intent(inout) :: new_sleeve_c
+!
+!
+      call dup_control_array_c1(org_sleeve_c%ref_vector_ctl,            &
+     &                          new_sleeve_c%ref_vector_ctl)
+!
+      call copy_chara_ctl(org_sleeve_c%sleeve_extension_mode_ctl,       &
+     &                    new_sleeve_c%sleeve_extension_mode_ctl)
+      call copy_integer_ctl(org_sleeve_c%sleeve_level_ctl,              &
+     &                      new_sleeve_c%sleeve_level_ctl)
+      call copy_real_ctl(org_sleeve_c%sleeve_size_ctl,                  &
+     &                   new_sleeve_c%sleeve_size_ctl)
+!
+      new_sleeve_c%i_FEM_sleeve_ctl = org_sleeve_c%i_FEM_sleeve_ctl
+!
+      end subroutine dup_FEM_sleeve_control
 !
 !  ---------------------------------------------------------------------
 !
