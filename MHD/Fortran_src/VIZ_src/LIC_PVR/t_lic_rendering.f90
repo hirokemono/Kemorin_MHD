@@ -224,6 +224,7 @@
      &      lic%lic_fld_pm(i_lic)%nod_fld_lic)
 !
         if(lic%repart_p%flag_repartition) then
+          allocate(lic%lic_fld_pm(i_lic)%field_lic)
           call alloc_nod_vector_4_lic(lic%viz_fem%mesh%node,            &
      &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
      &        lic%lic_fld_pm(i_lic)%field_lic)
