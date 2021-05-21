@@ -30,6 +30,7 @@
 !
       use t_mesh_data
       use t_phys_data
+      use t_next_node_ele_4_node
 !
       use t_lic_rendering
       use t_rendering_vr_image
@@ -123,50 +124,15 @@
       end do
 !
 !
-      if(lic%repart_p%flag_repartition) then
-!  -----  Repartition
-        allocate(lic%viz_fem)
-        call s_LIC_re_partition(lic%repart_p, geofem,                   &
-     &      next_tbl, lic%viz_fem, lic%mesh_to_viz_tbl)
-       else
-        lic%viz_fem => geofem
-      end if
-!
-      do i_lic = 1, lic%pvr%num_pvr
-        allocate(lic%lic_fld_pm(i_lic)%nod_fld_lic)
-        call alloc_nod_vector_4_lic(geofem%mesh%node,                   &
-     &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
-     &      lic%lic_fld_pm(i_lic)%nod_fld_lic)
-!
-        if(lic%repart_p%flag_repartition) then
-          allocate(lic%lic_fld_pm(i_lic)%field_lic)
-          call alloc_nod_vector_4_lic(lic%viz_fem%mesh%node,            &
-     &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
-     &        lic%lic_fld_pm(i_lic)%field_lic)
-        else
-          lic%lic_fld_pm(i_lic)%field_lic                               &
-     &           => lic%lic_fld_pm(i_lic)%nod_fld_lic
-        end if
-      end do
-!
-      do i_lic = 1, lic%pvr%num_pvr
-        ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call each_PVR_initialize                                        &
-     &    (i_lic, lic%viz_fem%mesh, lic%viz_fem%group,                  &
-     &     lic%pvr%pvr_param(i_lic)%area_def, lic%pvr%pvr_param(i_lic), &
-     &     lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
-      end do
-!
-!      call check_surf_rng_pvr_domain(my_rank)
-!      call check_surf_norm_pvr_domain(my_rank)
+      if(lic%flag_each_repart) return
+      call LIC_init_shared_mesh(geofem, next_tbl, nod_fld, lic)
 !
       end subroutine LIC_initialize_test
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_visualize_test                                     &
-     &         (istep_lic, time, geofem, nod_fld, lic, v_sol)
+      subroutine LIC_visualize_test(istep_lic, time, geofem, next_tbl,  &
+     &                              nod_fld, lic, v_sol)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -177,6 +143,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_data), intent(in) :: geofem
+      type(next_nod_ele_table), intent(in) :: next_tbl
       type(phys_data), intent(in) :: nod_fld
 !
       type(lic_volume_rendering_module), intent(inout) :: lic
@@ -187,16 +154,48 @@
 !
       if(lic%pvr%num_pvr.le.0 .or. istep_lic.le.0) return
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-      do i_lic = 1, lic%pvr%num_pvr
-        ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call s_each_LIC_rendering(istep_lic, time, lic%repart_p,        &
-     &      lic%viz_fem, lic%mesh_to_viz_tbl, geofem%mesh, nod_fld,     &
-     &      lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),            &
-     &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img), v_sol)
-      end do
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+      if(lic%flag_each_repart) then
+        do i_lic = 1, lic%pvr%num_pvr
+          ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
+          ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
+          if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
+          call LIC_init_each_mesh(i_lic, geofem, next_tbl, nod_fld,     &
+     &        lic%repart_p, lic%repart_data, lic%lic_fld_pm(i_lic),     &
+     &        lic%pvr%pvr_param(i_lic), lic%pvr%pvr_proj(ist_rdr),      &
+     &        lic%pvr%pvr_rgb(ist_img))
+!
+          if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering each'
+          if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+          call s_each_LIC_rendering                                     &
+     &       (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,   &
+     &        lic%repart_data%mesh_to_viz_tbl, geofem%mesh, nod_fld,    &
+     &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
+     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
+     &        v_sol)
+          if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+!
+          call dealloc_PVR_initialize(lic%pvr%pvr_param(i_lic),         &
+     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
+          call dealloc_LIC_each_mesh(lic%repart_p, lic%repart_data,     &
+     &                               lic%lic_fld_pm(i_lic))
+        end do
+      else
+        if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering at once'
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+        do i_lic = 1, lic%pvr%num_pvr
+          ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
+          ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
+          call s_each_LIC_rendering                                     &
+     &       (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,   &
+     &        lic%repart_data%mesh_to_viz_tbl, geofem%mesh, nod_fld,    &
+     &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
+     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
+     &        v_sol)
+        end do
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+      end if
+      return
+!
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, lic%pvr%num_pvr
@@ -218,8 +217,8 @@
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot                               &
-     &       (istep_lic, time, lic%repart_p, lic%viz_fem,               &
-     &        lic%mesh_to_viz_tbl, geofem%mesh, nod_fld,                &
+     &       (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,   &
+     &        lic%repart_data%mesh_to_viz_tbl, geofem%mesh, nod_fld,    &
      &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
      &        v_sol)
@@ -228,6 +227,194 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       end subroutine LIC_visualize_test
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine LIC_init_each_mesh(i_lic, geofem, next_tbl, nod_fld,   &
+     &          repart_p, repart_data, lic_fld_pm,                      &
+     &          pvr_param, pvr_proj, pvr_rgb)
+!
+      use set_pvr_control
+      use each_LIC_rendering
+      use rendering_and_image_nums
+      use LIC_re_partition
+!
+      integer(kind = kint), intent(in) :: i_lic
+      type(mesh_data), intent(in), target :: geofem
+      type(phys_data), intent(in) :: nod_fld
+      type(next_nod_ele_table), intent(in) :: next_tbl
+      type(volume_partioning_param), intent(in) :: repart_p
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(LIC_field_params), intent(inout) :: lic_fld_pm
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+!
+!
+      allocate(lic_fld_pm%nod_fld_lic)
+      call alloc_nod_vector_4_lic(geofem%mesh%node,                     &
+     &    lic_fld_pm%lic_param%num_masking, lic_fld_pm%nod_fld_lic)
+!
+!  -----  Repartition
+      if(lic_fld_pm%lic_param%each_part_p%flag_repartition) then
+        allocate(repart_data%viz_fem)
+        call s_LIC_re_partition                                         &
+     &     (lic_fld_pm%lic_param%each_part_p, geofem, next_tbl,         &
+     &      repart_data%viz_fem, repart_data%mesh_to_viz_tbl)
+!
+        allocate(lic_fld_pm%field_lic)
+        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
+     &      lic_fld_pm%lic_param%num_masking, lic_fld_pm%field_lic)
+      else if(repart_p%flag_repartition) then
+        allocate(repart_data%viz_fem)
+        call s_LIC_re_partition(repart_p, geofem, next_tbl,             &
+     &      repart_data%viz_fem, repart_data%mesh_to_viz_tbl)
+!
+        allocate(lic_fld_pm%field_lic)
+        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
+     &      lic_fld_pm%lic_param%num_masking, lic_fld_pm%field_lic)
+      else
+        repart_data%viz_fem =>  geofem
+        lic_fld_pm%field_lic => lic_fld_pm%nod_fld_lic
+      end if
+!
+      call each_PVR_initialize(i_lic,                                   &
+     &   repart_data%viz_fem%mesh, repart_data%viz_fem%group,           &
+     &   pvr_param%area_def, pvr_param, pvr_proj(1), pvr_rgb(1))
+!
+      end subroutine LIC_init_each_mesh
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine LIC_init_shared_mesh(geofem, next_tbl, nod_fld, lic)
+!
+      use set_pvr_control
+      use each_LIC_rendering
+      use rendering_and_image_nums
+      use LIC_re_partition
+!
+      type(mesh_data), intent(in), target :: geofem
+      type(phys_data), intent(in) :: nod_fld
+      type(next_nod_ele_table), intent(in) :: next_tbl
+      type(lic_volume_rendering_module), intent(inout) :: lic
+!
+      integer(kind = kint) :: i_lic, ist_rdr, ist_img
+!
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        allocate(lic%lic_fld_pm(i_lic)%nod_fld_lic)
+        call alloc_nod_vector_4_lic(geofem%mesh%node,                   &
+     &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
+     &      lic%lic_fld_pm(i_lic)%nod_fld_lic)
+      end do
+!
+      if(lic%repart_p%flag_repartition) then
+!  -----  Repartition
+        allocate(lic%repart_data%viz_fem)
+        call s_LIC_re_partition(lic%repart_p, geofem, next_tbl,         &
+     &      lic%repart_data%viz_fem, lic%repart_data%mesh_to_viz_tbl)
+!
+        do i_lic = 1, lic%pvr%num_pvr
+          allocate(lic%lic_fld_pm(i_lic)%field_lic)
+          call alloc_nod_vector_4_lic                                   &
+     &       (lic%repart_data%viz_fem%mesh%node,                        &
+     &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
+     &        lic%lic_fld_pm(i_lic)%field_lic)
+        end do
+      else
+        lic%repart_data%viz_fem => geofem
+        do i_lic = 1, lic%pvr%num_pvr
+          lic%lic_fld_pm(i_lic)%field_lic                               &
+     &           => lic%lic_fld_pm(i_lic)%nod_fld_lic
+        end do
+      end if
+!
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
+        ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
+        call each_PVR_initialize(i_lic,                                 &
+     &     lic%repart_data%viz_fem%mesh, lic%repart_data%viz_fem%group, &
+     &     lic%pvr%pvr_param(i_lic)%area_def, lic%pvr%pvr_param(i_lic), &
+     &     lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
+      end do
+!
+!      call check_surf_rng_pvr_domain(my_rank)
+!      call check_surf_norm_pvr_domain(my_rank)
+!
+      end subroutine LIC_init_shared_mesh
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_PVR_initialize(pvr_param, pvr_proj, pvr_rgb)
+!
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+!
+!
+      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
+        call deallocate_item_pvr_ray_start(pvr_proj(2)%start_save)
+        call deallocate_pvr_ray_start(pvr_proj(2)%start_pt)
+        call dealloc_pvr_stencil_buffer(pvr_proj(2)%stencil)
+        call dealloc_projected_position(pvr_proj(2)%screen)
+        call dealloc_pvr_surf_domain_item(pvr_proj(2)%bound)
+        if(pvr_param%view%iflag_anaglyph .eq. 0) then
+          call dealloc_pvr_image_array_type(pvr_rgb(2))
+        end if
+      end if
+!
+      call deallocate_item_pvr_ray_start(pvr_proj(1)%start_save)
+      call deallocate_pvr_ray_start(pvr_proj(1)%start_pt)
+      call dealloc_pvr_stencil_buffer(pvr_proj(1)%stencil)
+      call dealloc_projected_position(pvr_proj(1)%screen)
+      call dealloc_pvr_surf_domain_item(pvr_proj(1)%bound)
+      call dealloc_pvr_image_array_type(pvr_rgb(1))
+!
+      call deallocate_pixel_position_pvr(pvr_param%pixel)
+      call dealloc_iflag_pvr_used_ele(pvr_param%draw_param)
+!
+      end subroutine dealloc_PVR_initialize
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_LIC_each_mesh                                  &
+     &         (repart_p, repart_data, lic_fld_pm)
+!
+      type(volume_partioning_param), intent(in) :: repart_p
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(LIC_field_params), intent(inout) :: lic_fld_pm
+!
+!
+      if(lic_fld_pm%lic_param%each_part_p%flag_repartition) then
+        call dealloc_calypso_comm_table(repart_data%mesh_to_viz_tbl)
+!
+        call dealloc_vectors_surf_group                                 &
+     &     (repart_data%viz_fem%group%surf_grp_norm)
+        call dealloc_normal_vector(repart_data%viz_fem%mesh%surf)
+        call dealloc_numnod_stack(repart_data%viz_fem%mesh%node)
+        call dealloc_mesh_infos_w_normal(repart_data%viz_fem%mesh,      &
+     &                                   repart_data%viz_fem%group)
+      else if(repart_p%flag_repartition) then
+        call dealloc_calypso_comm_table(repart_data%mesh_to_viz_tbl)
+!
+        call dealloc_vectors_surf_group                                 &
+     &     (repart_data%viz_fem%group%surf_grp_norm)
+        call dealloc_normal_vector(repart_data%viz_fem%mesh%surf)
+        call dealloc_numnod_stack(repart_data%viz_fem%mesh%node)
+        call dealloc_mesh_infos_w_normal(repart_data%viz_fem%mesh,      &
+     &                                   repart_data%viz_fem%group)
+      else
+        nullify(repart_data%viz_fem)
+        nullify(lic_fld_pm%field_lic)
+      end if
+!
+      call dealloc_nod_data_4_lic(lic_fld_pm%nod_fld_lic)
+      deallocate(lic_fld_pm%nod_fld_lic)
+!
+      end subroutine dealloc_LIC_each_mesh
 !
 !  ---------------------------------------------------------------------
 !
