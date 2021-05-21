@@ -52,7 +52,7 @@
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: irank_image_file
-      integer, intent(in) :: npe_img_composit
+      integer(kind = kint), intent(in) :: npe_img_composit
       integer(kind = kint), intent(in) :: num_pixel_xy
       type(pvr_ray_start_type), intent(in) :: pvr_start
 !
@@ -173,7 +173,8 @@
       use calypso_mpi_int
       use transfer_to_long_integers
 !
-      integer, intent(in) :: irank_image_file, npe_img_composit
+      integer(kind = kint), intent(in) :: irank_image_file
+      integer(kind = kint), intent(in) :: npe_img_composit
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint_gl), intent(in) :: num_pvr_ray_gl
       integer(kind = kint_gl), intent(in)                               &
