@@ -162,6 +162,8 @@
 !
       if(lic%flag_each_repart) then
         do i_lic = 1, lic%pvr%num_pvr
+          ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
+          ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
           call LIC_init_each_mesh(i_lic, geofem, next_tbl, nod_fld,     &
      &        lic%repart_p, lic%repart_data, lic%lic_fld_pm(i_lic),     &
