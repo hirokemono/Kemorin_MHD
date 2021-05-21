@@ -25,14 +25,14 @@
 !!      subroutine alloc_pvr_isosurfaces(draw_param)
 !!        type(rendering_parameter), intent(inout) :: draw_param
 !!
-!!      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
+!!      subroutine alloc_pixel_position_pvr(n_pvr_pixel, pixel_xy)
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!      subroutine dealloc_data_4_pvr(draw_param)
 !!        type(rendering_parameter), intent(inout) :: draw_param
 !!
 !!      subroutine deallocate_projected_data_pvr                        &
 !!      &        (num_pvr, proj, draw_param)
-!!      subroutine deallocate_pixel_position_pvr(pixel_xy)
+!!      subroutine dealloc_pixel_position_pvr(pixel_xy)
 !!      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
 !!        type(pvr_view_parameter), intent(in) :: view
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
@@ -259,7 +259,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
+      subroutine alloc_pixel_position_pvr(n_pvr_pixel, pixel_xy)
 !
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
@@ -273,18 +273,18 @@
       pixel_xy%pixel_point_x =  0.0d0
       pixel_xy%pixel_point_y =  0.0d0
 !
-      end subroutine allocate_pixel_position_pvr
+      end subroutine alloc_pixel_position_pvr
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_pixel_position_pvr(pixel_xy)
+      subroutine dealloc_pixel_position_pvr(pixel_xy)
 !
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
 !
       deallocate(pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
 !
-      end subroutine deallocate_pixel_position_pvr
+      end subroutine dealloc_pixel_position_pvr
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -298,7 +298,7 @@
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
 !
-      call allocate_pixel_position_pvr(view%n_pvr_pixel, pixel_xy)
+      call alloc_pixel_position_pvr(view%n_pvr_pixel, pixel_xy)
 !
       call set_pixel_points_on_project                                  &
      &   (view%n_pvr_pixel(1), view%n_pvr_pixel(2),                     &

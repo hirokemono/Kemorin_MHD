@@ -74,7 +74,7 @@
       type(viz_repartition_ctl), intent(inout) :: repart_ctl
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_lic, ist_rdr, ist_img
+      integer(kind = kint) :: i_lic, ist_img
 !
 !
       lic%pvr%num_pvr = lic_ctls%num_lic_ctl
@@ -124,6 +124,12 @@
       end do
 !
 !
+      do i_lic = 1, lic%pvr%num_pvr
+        ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
+        call init_each_PVR_image(lic%pvr%pvr_param(i_lic),              &
+     &                           lic%pvr%pvr_rgb(ist_img))
+      end do
+!
       if(lic%flag_each_repart) return
       call LIC_init_shared_mesh(geofem, next_tbl, nod_fld, lic)
 !
@@ -156,8 +162,6 @@
 !
       if(lic%flag_each_repart) then
         do i_lic = 1, lic%pvr%num_pvr
-          ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
-          ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
           call LIC_init_each_mesh(i_lic, geofem, next_tbl, nod_fld,     &
      &        lic%repart_p, lic%repart_data, lic%lic_fld_pm(i_lic),     &
@@ -175,7 +179,7 @@
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
           call dealloc_PVR_initialize(lic%pvr%pvr_param(i_lic),         &
-     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
+     &                                lic%pvr%pvr_proj(ist_rdr))
           call dealloc_LIC_each_mesh(lic%repart_p, lic%repart_data,     &
      &                               lic%lic_fld_pm(i_lic))
         end do
@@ -195,7 +199,6 @@
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
       end if
       return
-!
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, lic%pvr%num_pvr
@@ -280,8 +283,8 @@
       end if
 !
       call each_PVR_initialize(i_lic,                                   &
-     &   repart_data%viz_fem%mesh, repart_data%viz_fem%group,           &
-     &   pvr_param%area_def, pvr_param, pvr_proj(1), pvr_rgb(1))
+     &    repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
+     &    pvr_rgb(1), pvr_param, pvr_proj(1))
 !
       end subroutine LIC_init_each_mesh
 !
@@ -334,10 +337,12 @@
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
+        call init_each_PVR_image(lic%pvr%pvr_param(i_lic),              &
+     &                           lic%pvr%pvr_rgb(ist_img))
         call each_PVR_initialize(i_lic,                                 &
      &     lic%repart_data%viz_fem%mesh, lic%repart_data%viz_fem%group, &
-     &     lic%pvr%pvr_param(i_lic)%area_def, lic%pvr%pvr_param(i_lic), &
-     &     lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
+     &     lic%pvr%pvr_rgb(ist_img), lic%pvr%pvr_param(i_lic),          &
+     &     lic%pvr%pvr_proj(ist_rdr))
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -347,11 +352,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_PVR_initialize(pvr_param, pvr_proj, pvr_rgb)
+      subroutine dealloc_PVR_initialize(pvr_param, pvr_proj)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
@@ -360,9 +364,6 @@
         call dealloc_pvr_stencil_buffer(pvr_proj(2)%stencil)
         call dealloc_projected_position(pvr_proj(2)%screen)
         call dealloc_pvr_surf_domain_item(pvr_proj(2)%bound)
-        if(pvr_param%view%iflag_anaglyph .eq. 0) then
-          call dealloc_pvr_image_array_type(pvr_rgb(2))
-        end if
       end if
 !
       call deallocate_item_pvr_ray_start(pvr_proj(1)%start_save)
@@ -370,9 +371,8 @@
       call dealloc_pvr_stencil_buffer(pvr_proj(1)%stencil)
       call dealloc_projected_position(pvr_proj(1)%screen)
       call dealloc_pvr_surf_domain_item(pvr_proj(1)%bound)
-      call dealloc_pvr_image_array_type(pvr_rgb(1))
 !
-      call deallocate_pixel_position_pvr(pvr_param%pixel)
+      call dealloc_pixel_position_pvr(pvr_param%pixel)
       call dealloc_iflag_pvr_used_ele(pvr_param%draw_param)
 !
       end subroutine dealloc_PVR_initialize
