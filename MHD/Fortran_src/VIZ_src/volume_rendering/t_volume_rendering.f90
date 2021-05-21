@@ -16,6 +16,7 @@
 !!      subroutine alloc_pvr_data(pvr)
 !!
 !!      subroutine dealloc_pvr_data(pvr)
+!!      subroutine alloc_pvr_images(pvr)
 !!      subroutine dealloc_pvr_and_lic_data(pvr)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(node_data), intent(in) :: node
@@ -191,19 +192,7 @@
      &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
-      call count_num_rendering_and_images                               &
-     &   (pvr%num_pvr, pvr_ctls%pvr_ctl_type,                           &
-     &    pvr%num_pvr_rendering, pvr%num_pvr_images)
-!
       call alloc_pvr_data(pvr)
-!
-      call s_num_rendering_and_images                                   &
-     &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type,                   &
-     &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
-     &    pvr%istack_pvr_render,  pvr%istack_pvr_images, pvr%pvr_rgb)
-!
-!
       do i_pvr = 1, pvr%num_pvr
         call alloc_nod_data_4_pvr                                       &
      &     (geofem%mesh%node%numnod, geofem%mesh%ele%numele,            &
@@ -216,6 +205,18 @@
       call s_set_pvr_controls(geofem%group, nod_fld, pvr%num_pvr,       &
      &    pvr_ctls%pvr_ctl_type, pvr%pvr_param)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+6)
+!
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
+      call count_num_rendering_and_images                               &
+     &   (pvr%num_pvr, pvr_ctls%pvr_ctl_type,                           &
+     &    pvr%num_pvr_rendering, pvr%num_pvr_images)
+      call alloc_pvr_images(pvr)
+!
+      call s_num_rendering_and_images                                   &
+     &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type,                   &
+     &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
+     &    pvr%istack_pvr_render,  pvr%istack_pvr_images, pvr%pvr_rgb)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       do i_pvr = 1, pvr%num_pvr
@@ -324,6 +325,18 @@
       allocate(pvr%pvr_rgb(pvr%num_pvr_images))
 !
       end subroutine alloc_pvr_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_pvr_images(pvr)
+!
+      type(volume_rendering_module), intent(inout) :: pvr
+!
+!
+      allocate(pvr%pvr_proj(pvr%num_pvr_rendering))
+      allocate(pvr%pvr_rgb(pvr%num_pvr_images))
+!
+      end subroutine alloc_pvr_images
 !
 !  ---------------------------------------------------------------------
 !

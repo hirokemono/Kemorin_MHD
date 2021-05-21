@@ -86,8 +86,6 @@
      &             :: hd_lic_ctl = 'LIC_rendering'
       private :: hd_lic_ctl
 !
-      private :: alloc_LIC_data
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -191,16 +189,8 @@
       call set_ctl_param_vol_repart(repart_ctl, lic%repart_p)
       call dealloc_control_vol_repart(repart_ctl)
 !
-      call count_num_rendering_and_images                               &
-     &   (lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,                       &
-     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
-      call alloc_LIC_data(lic)
-!
-      call s_num_rendering_and_images                                   &
-     &   (nprocs, lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,               &
-     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
-     &    lic%pvr%istack_pvr_render, lic%pvr%istack_pvr_images,         &
-     &    lic%pvr%pvr_rgb)
+      call alloc_pvr_data(lic%pvr)
+      allocate(lic%lic_fld_pm(lic%pvr%num_pvr))
 !
       do i_lic = 1, lic%pvr%num_pvr
         call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
@@ -219,6 +209,17 @@
      &        lic_ctls%lic_ctl_type(i_lic))
         end if
       end do
+!
+      call count_num_rendering_and_images                               &
+     &   (lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,                       &
+     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
+!
+      call alloc_pvr_images(lic%pvr)
+      call s_num_rendering_and_images                                   &
+     &   (nprocs, lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,               &
+     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
+     &    lic%pvr%istack_pvr_render, lic%pvr%istack_pvr_images,         &
+     &    lic%pvr%pvr_rgb)
 !
 !
       if(lic%repart_p%flag_repartition) then
@@ -333,18 +334,6 @@
       end subroutine LIC_visualize
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_LIC_data(lic)
-!
-      type(lic_volume_rendering_module), intent(inout) :: lic
-!
-!
-      call alloc_pvr_data(lic%pvr)
-      allocate(lic%lic_fld_pm(lic%pvr%num_pvr))
-!
-      end subroutine alloc_LIC_data
-!
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_LIC_data(lic)
