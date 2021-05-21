@@ -11,6 +11,7 @@
 !!      subroutine allocate_item_pvr_ray_start(num_ray, pvr_start)
 !!      subroutine allocate_item_pvr_ray_pixels(pvr_start)
 !!      subroutine deallocate_pvr_ray_start(pvr_start)
+!!      subroutine deallocate_num_pvr_ray_start(pvr_start)
 !!      subroutine deallocate_item_pvr_ray_start(pvr_start)
 !!
 !!      subroutine copy_item_pvr_ray_start(pvr_st_org, pvr_start)
@@ -75,7 +76,7 @@
       real(kind = kreal), parameter                                     &
      &                   :: ray_vec4(4) = (/zero, zero, -one, zero/)
 !
-      private :: deallocate_num_pvr_ray_start
+!      private :: deallocate_num_pvr_ray_start
 !
 !  ---------------------------------------------------------------------
 !
