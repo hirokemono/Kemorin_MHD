@@ -200,7 +200,6 @@
         end do
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
       end if
-      return
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, lic%pvr%num_pvr
@@ -215,6 +214,7 @@
      &     (iminus, istep_lic, lic%pvr%pvr_rgb(i_lic))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+      return
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, lic%pvr%num_pvr
