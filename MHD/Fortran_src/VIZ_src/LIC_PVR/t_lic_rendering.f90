@@ -306,12 +306,12 @@
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
         if(lic%pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
           call sel_write_pvr_image_file                                 &
-     &       (iminus, iminus, lic%pvr%pvr_rgb(ist_img))
+     &       ((-i_lic), iminus, lic%pvr%pvr_rgb(ist_img))
         end if
       end do
       do i_lic = 1, lic%pvr%num_pvr_images
         call sel_write_pvr_image_file                                   &
-     &     (iminus, istep_lic, lic%pvr%pvr_rgb(i_lic))
+     &     ((-i_lic), istep_lic, lic%pvr%pvr_rgb(i_lic))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !

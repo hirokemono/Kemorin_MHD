@@ -279,12 +279,12 @@
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
           call sel_write_pvr_image_file                                 &
-     &       (iminus, iminus,  pvr%pvr_rgb(ist_img))
+     &       ((-i_pvr), iminus,  pvr%pvr_rgb(ist_img))
         end if
       end do
       do i_pvr = 1, pvr%num_pvr_images
         call sel_write_pvr_image_file                                   &
-     &     (iminus, istep_pvr, pvr%pvr_rgb(i_pvr))
+     &     ((-i_pvr), istep_pvr, pvr%pvr_rgb(i_pvr))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !

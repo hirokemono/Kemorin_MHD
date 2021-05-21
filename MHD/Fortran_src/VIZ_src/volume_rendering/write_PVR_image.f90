@@ -144,7 +144,7 @@
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
-!      write(*,*) 'output file from ', my_rank
+      write(*,*) abs(i_rot), '-th output file from process', my_rank
 !
       if(istep_pvr .ge. 0) then
         tmpchara = add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix)
