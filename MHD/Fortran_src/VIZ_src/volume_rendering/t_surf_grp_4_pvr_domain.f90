@@ -107,7 +107,7 @@
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
 !
-      deallocate(pvr_bound%item_pvr_surf)
+      deallocate(pvr_bound%item_pvr_surf, pvr_bound%screen_w)
       deallocate(pvr_bound%screen_posi, pvr_bound%screen_norm)
       deallocate(pvr_bound%screen_xrng, pvr_bound%screen_yrng)
       deallocate(pvr_bound%screen_zrng)

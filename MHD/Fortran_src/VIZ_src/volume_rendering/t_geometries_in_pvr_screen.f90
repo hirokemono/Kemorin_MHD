@@ -23,9 +23,12 @@
 !!
 !!      subroutine alloc_pvr_sections(draw_param)
 !!      subroutine alloc_pvr_isosurfaces(draw_param)
+!!        type(rendering_parameter), intent(inout) :: draw_param
 !!
 !!      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
+!!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!      subroutine dealloc_data_4_pvr(draw_param)
+!!        type(rendering_parameter), intent(inout) :: draw_param
 !!
 !!      subroutine deallocate_projected_data_pvr                        &
 !!      &        (num_pvr, proj, draw_param)
