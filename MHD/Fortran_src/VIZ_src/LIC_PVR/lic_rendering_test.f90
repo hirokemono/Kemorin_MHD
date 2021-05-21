@@ -337,8 +337,6 @@
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call init_each_PVR_image(lic%pvr%pvr_param(i_lic),              &
-     &                           lic%pvr%pvr_rgb(ist_img))
         call each_PVR_initialize(i_lic,                                 &
      &     lic%repart_data%viz_fem%mesh, lic%repart_data%viz_fem%group, &
      &     lic%pvr%pvr_rgb(ist_img), lic%pvr%pvr_param(i_lic),          &
