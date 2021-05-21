@@ -144,8 +144,7 @@
 !
       rot_pvr_rgb(ied_rot)%irank_end_composit = nprocs - 1
       rot_pvr_rgb(ied_rot)%npe_img_composit                             &
-     &        = rot_pvr_rgb(ied_rot+1)%irank_end_composit               &
-     &         - rot_pvr_rgb(ied_rot)%irank_image_file + 1
+     &        = nprocs - rot_pvr_rgb(ied_rot)%irank_image_file
 !
       end subroutine set_rank_to_write_rot_images
 !
