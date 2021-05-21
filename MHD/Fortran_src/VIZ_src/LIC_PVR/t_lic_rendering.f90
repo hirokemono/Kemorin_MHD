@@ -202,14 +202,6 @@
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%lic_fld_pm, lic%pvr%pvr_param, lic%flag_each_repart)
 !
-      do i_lic = 1, lic%pvr%num_pvr
-        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
-     &      .or. my_rank .ne. 0) then
-          call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
-     &        lic_ctls%lic_ctl_type(i_lic))
-        end if
-      end do
-!
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
      &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
@@ -220,6 +212,14 @@
      &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
      &    lic%pvr%istack_pvr_render, lic%pvr%istack_pvr_images,         &
      &    lic%pvr%pvr_rgb)
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
+     &      .or. my_rank .ne. 0) then
+          call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
+     &        lic_ctls%lic_ctl_type(i_lic))
+        end if
+      end do
 !
 !
       if(lic%repart_p%flag_repartition) then
