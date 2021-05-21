@@ -59,16 +59,21 @@
 !      integer(kind = kint), parameter :: IFLAG_DRAW =       0
 !      integer(kind = kint), parameter :: IFLAG_TERMINATE = -1
 !
+!>      Structure of repartition data
+      type lic_repartioned_mesh
+!>         Structure for mesh data for visualization
+        type(mesh_data), pointer :: viz_fem
+!>        Transfer table to visualization mesh
+        type(calypso_comm_table) :: mesh_to_viz_tbl
+      end type lic_repartioned_mesh
 !
       type lic_volume_rendering_module
 !>         Logical flag to make re-patitioning each rendering
         logical :: flag_each_repart = .FALSE.
 !>         Structure for repartitiong parameter
         type(volume_partioning_param) :: repart_p
-!>         Structure for mesh data for visualization
-        type(mesh_data), pointer :: viz_fem
-!>        Transfer table to visualization mesh
-        type(calypso_comm_table) :: mesh_to_viz_tbl
+!>        Structure of repartition data
+        type(lic_repartioned_mesh) :: repart_data
 !
 !>        Structure of LIC field parameters
         type(LIC_field_params), allocatable :: lic_fld_pm(:)
@@ -218,11 +223,11 @@
 !
       if(lic%repart_p%flag_repartition) then
 !  -----  Repartition
-        allocate(lic%viz_fem)
-        call s_LIC_re_partition(lic%repart_p, geofem,                   &
-     &      next_tbl, lic%viz_fem, lic%mesh_to_viz_tbl)
+        allocate(lic%repart_data%viz_fem)
+        call s_LIC_re_partition(lic%repart_p, geofem, next_tbl,         &
+     &      lic%repart_data%viz_fem, lic%repart_data%mesh_to_viz_tbl)
        else
-        lic%viz_fem => geofem
+        lic%repart_data%viz_fem => geofem
       end if
 !
       do i_lic = 1, lic%pvr%num_pvr
@@ -233,7 +238,8 @@
 !
         if(lic%repart_p%flag_repartition) then
           allocate(lic%lic_fld_pm(i_lic)%field_lic)
-          call alloc_nod_vector_4_lic(lic%viz_fem%mesh%node,            &
+          call alloc_nod_vector_4_lic                                   &
+     &       (lic%repart_data%viz_fem%mesh%node,                        &
      &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
      &        lic%lic_fld_pm(i_lic)%field_lic)
         else
@@ -245,8 +251,8 @@
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call each_PVR_initialize                                        &
-     &    (i_lic, lic%viz_fem%mesh, lic%viz_fem%group,                  &
+        call each_PVR_initialize(i_lic,                                 &
+     &     lic%repart_data%viz_fem%mesh, lic%repart_data%viz_fem%group, &
      &     lic%pvr%pvr_param(i_lic)%area_def, lic%pvr%pvr_param(i_lic), &
      &     lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
@@ -285,8 +291,9 @@
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call s_each_LIC_rendering(istep_lic, time, lic%repart_p,        &
-     &      lic%viz_fem, lic%mesh_to_viz_tbl, geofem%mesh, nod_fld,     &
+        call s_each_LIC_rendering                                       &
+     &     (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,     &
+     &      lic%repart_data%mesh_to_viz_tbl, geofem%mesh, nod_fld,      &
      &      lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),            &
      &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img), v_sol)
       end do
@@ -312,8 +319,8 @@
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot                               &
-     &       (istep_lic, time, lic%repart_p, lic%viz_fem,               &
-     &        lic%mesh_to_viz_tbl, geofem%mesh, nod_fld,                &
+     &       (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,   &
+     &        lic%repart_data%mesh_to_viz_tbl, geofem%mesh, nod_fld,    &
      &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
      &        v_sol)
