@@ -334,9 +334,11 @@
       if(view_param%iflag_rotate_snap .eq. 0) then
         view_param%istart_rot = 0
         view_param%iend_rot =   0
+        view_param%num_rot =    0
       else
         view_param%istart_rot = 1
         view_param%iend_rot =   view_param%iprm_pvr_rot(2)
+        view_param%num_rot =    view_param%iprm_pvr_rot(2)
       end if
 !
       end subroutine set_control_pvr_movie

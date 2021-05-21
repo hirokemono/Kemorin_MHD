@@ -246,6 +246,7 @@
       call set_default_pvr_data_params                                  &
      &   (pvr_param%outline, pvr_param%color)
 !
+!
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
         if(pvr_param%view%iflag_anaglyph .gt. 0) then
           call anaglyph_rendering_w_rotation                            &

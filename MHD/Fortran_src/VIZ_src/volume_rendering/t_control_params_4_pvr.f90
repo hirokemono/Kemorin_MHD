@@ -148,6 +148,8 @@
         integer(kind = kint) :: istart_rot = 0
 !>     Rotation end step
         integer(kind = kint) :: iend_rot =   0
+!>     Number of frames
+        integer(kind = kint) :: num_rot =    0
       end type pvr_view_parameter
 !
 !

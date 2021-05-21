@@ -101,8 +101,8 @@
       integer(kind = kint) :: i_pvr, ist
 !
 !
-      call s_set_composition_pe_range(num_pe, num_pvr, pvr_ctl,         &
-     &    num_pvr_rendering, num_pvr_images,                            &
+      call s_set_composition_pe_range(num_pe, num_pvr,                  &
+     &    pvr_param, pvr_ctl,  num_pvr_rendering, num_pvr_images,       &
      &    istack_pvr_render, istack_pvr_images, pvr_rgb)
 !
       do i_pvr = 1, num_pvr
