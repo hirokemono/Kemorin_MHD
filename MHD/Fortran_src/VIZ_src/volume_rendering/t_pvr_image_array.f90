@@ -8,12 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine alloc_pvr_image_array(n_pvr_pixel, pvr_rgb)
-!!        type(pvr_image_type), intent(inout) :: pvr_rgb
-!!
 !!      subroutine dealloc_pvr_image_array(pvr_rgb)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
 !!      subroutine store_left_eye_image(pvr_rgb)
 !!      subroutine add_left_eye_image(pvr_rgb)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!
+!!      subroutine copy_pvr_image_file_param(org_pvr_rgb, rot_pvr_rgb)
+!!        type(pvr_image_type), intent(in) :: org_pvr_rgb
+!!        type(pvr_image_type), intent(inout) :: rot_pvr_rgb
 !!@endverbatim
 !
       module t_pvr_image_array
@@ -42,7 +46,7 @@
 !>        MPI rank for each PVR composttion arnge
         integer(kind = kint) :: irank_end_composit = 0
 !>        Number of MPI rank to composit image
-        integer(kind = kint) :: npe_img_composit =  0
+        integer :: npe_img_composit =  0
 !
 !>        Number of pixels in each direction
         integer(kind = kint) :: num_pixels(2)
@@ -153,6 +157,22 @@
 !$omp end parallel workshare
 !
       end subroutine add_left_eye_image
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_pvr_image_file_param(org_pvr_rgb, rot_pvr_rgb)
+!
+      type(pvr_image_type), intent(in) :: org_pvr_rgb
+      type(pvr_image_type), intent(inout) :: rot_pvr_rgb
+!
+!
+      rot_pvr_rgb%iflag_monitoring =   org_pvr_rgb%iflag_monitoring
+      rot_pvr_rgb%id_pvr_file_type =   org_pvr_rgb%id_pvr_file_type
+      rot_pvr_rgb%id_pvr_transparent = org_pvr_rgb%id_pvr_transparent
+      rot_pvr_rgb%pvr_prefix =         org_pvr_rgb%pvr_prefix
+!
+      end subroutine copy_pvr_image_file_param
 !
 !  ---------------------------------------------------------------------
 !
