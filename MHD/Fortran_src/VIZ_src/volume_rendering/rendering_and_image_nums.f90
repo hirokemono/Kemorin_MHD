@@ -6,7 +6,7 @@
 !>@brief Set PVR parameters from control files
 !!
 !!@verbatim
-!!      subroutine count_num_rendering_and_images(num_pvr, pvr_ctls,    &
+!!      subroutine count_num_rendering_and_images(num_pvr, pvr_param,   &
 !!     &          num_pvr_rendering, num_pvr_images)
 !!      subroutine s_num_rendering_and_images(num_pe, num_pvr,          &
 !!     &          pvr_param, pvr_ctl, num_pvr_rendering, num_pvr_images,&
@@ -147,8 +147,8 @@
       call set_pvr_file_control(pvr_ctl,                                &
      &    pvr_rgb(1)%iflag_monitoring, pvr_rgb(1)%id_pvr_file_type,     &
      &    pvr_rgb(1)%id_pvr_transparent)
-      if(view_param%view%iflag_stereo_pvr .gt. 0) then
-        if(view_param%view%iflag_anaglyph .gt. 0) then
+      if(view_param%iflag_stereo_pvr .gt. 0) then
+        if(view_param%iflag_anaglyph .gt. 0) then
           pvr_rgb(1)%pvr_prefix = pvr_prefix
         else
           pvr_rgb(1)%pvr_prefix = add_left_label(pvr_prefix)
