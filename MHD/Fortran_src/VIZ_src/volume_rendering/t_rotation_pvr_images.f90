@@ -67,7 +67,7 @@
       if(iflag_debug .eq. 0) return
       do i_rot = view_param%istart_rot, view_param%iend_rot
         write(*,*) i_rot, 'rot_pvr_rgb%irank_image_file', &
-     &                  rot_imgs%rot_pvr_rgb(i_rot)%irank_image_file, &
+     &                  rot_imgs%rot_pvr_rgb(i_rot)%irank_image_file,   &
      &                  rot_imgs%rot_pvr_rgb(i_rot)%irank_end_composit, &
      &                  rot_imgs%rot_pvr_rgb(i_rot)%npe_img_composit
       end do
