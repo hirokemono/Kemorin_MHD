@@ -360,15 +360,13 @@
 !
 !
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        call deallocate_item_pvr_ray_start(pvr_proj(2)%start_save)
-        call deallocate_pvr_ray_start(pvr_proj(2)%start_pt)
+        call deallocate_pvr_ray_start(pvr_proj(2)%start_fix)
         call dealloc_pvr_stencil_buffer(pvr_proj(2)%stencil)
         call dealloc_projected_position(pvr_proj(2)%screen)
         call dealloc_pvr_surf_domain_item(pvr_proj(2)%bound)
       end if
 !
-      call deallocate_item_pvr_ray_start(pvr_proj(1)%start_save)
-      call deallocate_pvr_ray_start(pvr_proj(1)%start_pt)
+      call deallocate_pvr_ray_start(pvr_proj(1)%start_fix)
       call dealloc_pvr_stencil_buffer(pvr_proj(1)%stencil)
       call dealloc_projected_position(pvr_proj(1)%screen)
       call dealloc_pvr_surf_domain_item(pvr_proj(1)%bound)

@@ -79,12 +79,10 @@
         type(pvr_bounds_surf_ctl) :: bound
 !>        Data on screen coordinate
         type(pvr_projected_position) :: screen
-!>        Start point structure for volume rendering
-        type(pvr_ray_start_type) :: start_pt
 !>        Parallel stencil buffer
         type(pvr_stencil_buffer) :: stencil
-!>        Work area of  point structure for volume rendering
-        type(pvr_ray_start_type) :: start_save
+!>        Start point structure for volume rendering with fixed view
+        type(pvr_ray_start_type) :: start_fix
       end type PVR_projection_data
 !
 !  ---------------------------------------------------------------------
@@ -110,14 +108,9 @@
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
-     &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
+     &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
-!
-      call allocate_item_pvr_ray_start                                  &
-     &   (pvr_proj%start_pt%num_pvr_ray, pvr_proj%start_save)
-      call copy_item_pvr_ray_start                                      &
-     &   (pvr_proj%start_pt, pvr_proj%start_save)
+     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil)
 !
       end subroutine set_fixed_view_and_image
 !
@@ -138,14 +131,11 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      call copy_item_pvr_ray_start                                      &
-     &   (pvr_proj%start_save, pvr_proj%start_pt)
-!
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
-     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
+     &    pvr_proj%start_fix, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_with_fixed_view
 !
@@ -158,8 +148,6 @@
 !
       call dealloc_pvr_surf_domain_item(pvr_proj%bound)
       call dealloc_projected_position(pvr_proj%screen)
-      call deallocate_pvr_ray_start(pvr_proj%start_pt)
-      call deallocate_pvr_ray_start(pvr_proj%start_save)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
       end subroutine flush_rendering_4_fixed_view
@@ -184,23 +172,26 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
-!
-      call deallocate_pvr_ray_start(pvr_proj%start_pt)
-      call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
+!>      Start point structure for volume rendering with rotation
+      type(pvr_ray_start_type) :: start_rot
+!>        Parallel stencil buffer
+        type(pvr_stencil_buffer) :: stencil_rot
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm,                          &
      &    pvr_param%draw_param, pvr_param%view,                         &
      &    pvr_proj%projection_mat, pvr_param%pixel,  pvr_proj%bound,    &
-     &    pvr_proj%screen, pvr_proj%start_pt)
+     &    pvr_proj%screen, pvr_proj%start_rot)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
+     &   (pvr_rgb, pvr_proj%start_rot, pvr_proj%stencil_rot)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
-     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
+     &    pvr_proj%start_rot, pvr_proj%stencil_rot, pvr_rgb)
+      call deallocate_pvr_ray_start(pvr_proj%start_rot)
+      call dealloc_pvr_stencil_buffer(pvr_proj%stencil_rot)
 !
       end subroutine rendering_at_once
 !
