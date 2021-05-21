@@ -320,8 +320,6 @@
 !
       allocate(pvr%pvr_param(pvr%num_pvr))
       allocate(pvr%field_pvr(pvr%num_pvr))
-      allocate(pvr%pvr_proj(pvr%num_pvr_rendering))
-      allocate(pvr%pvr_rgb(pvr%num_pvr_images))
 !
       end subroutine alloc_pvr_data
 !
