@@ -20,6 +20,7 @@
 !
       use calypso_mpi
       use m_constants
+      use m_machine_parameter
       use t_pvr_image_array
       use t_control_params_4_pvr
 !
@@ -63,7 +64,7 @@
      &     (pvr_rgb%num_pixels, rot_imgs%rot_pvr_rgb(i_rot))
       end do
 !
-      if(my_rank .gt. 0) return
+      if(iflag_debug .eq. 0) return
       do i_rot = view_param%istart_rot, view_param%iend_rot
         write(*,*) i_rot, 'rot_pvr_rgb%irank_image_file', &
      &                  rot_imgs%rot_pvr_rgb(i_rot)%irank_image_file, &
