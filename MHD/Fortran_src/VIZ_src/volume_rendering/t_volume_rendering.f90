@@ -363,7 +363,7 @@
 !
 !
       do i_pvr = 1, pvr%num_pvr_images
-        call dealloc_pvr_image_array_type(pvr%pvr_rgb(i_pvr))
+        call dealloc_pvr_image_array(pvr%pvr_rgb(i_pvr))
       end do
       deallocate(pvr%pvr_rgb)
 !

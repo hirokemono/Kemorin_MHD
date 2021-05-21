@@ -66,11 +66,11 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
-      call alloc_pvr_image_array_type                                   &
+      call alloc_pvr_image_array                                        &
      &   (pvr_param%view%n_pvr_pixel, pvr_rgb(1))
       if(pvr_param%view%iflag_stereo_pvr .gt. 0                         &
      &     .and. pvr_param%view%iflag_anaglyph .eq. 0) then
-        call alloc_pvr_image_array_type                                 &
+        call alloc_pvr_image_array                                      &
      &     (pvr_param%view%n_pvr_pixel, pvr_rgb(2))
       end if
 !

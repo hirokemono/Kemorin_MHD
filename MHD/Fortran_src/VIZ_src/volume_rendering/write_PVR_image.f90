@@ -187,6 +187,11 @@
       integer(kind = kint), intent(in) :: index, istep_pvr
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
+!>      Local real image data
+      real(kind = kreal), allocatable :: rgba_real_lc(:,:)
+!>      RGB byte image data
+      character(len = 1), allocatable :: rgb_chara_lc(:,:)
+!
       character(len=kchara) :: tmpchara, img_head
 !
 !
@@ -197,12 +202,20 @@
       end if
       img_head = add_int_suffix(index, tmpchara)
 !
+      allocate(rgb_chara_lc(3,pvr_rgb%num_pixel_xy))
+      allocate(rgba_real_lc(4,pvr_rgb%num_pixel_xy))
+!
+!$omp parallel workshare
+      rgba_real_lc = 0.0d0
+!$omp end parallel workshare
+!
       call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,            &
-     &    pvr_rgb%rgba_real_lc, pvr_rgb%rgb_chara_lc)
+     &                                 rgba_real_lc, rgb_chara_lc)
 !
       call sel_output_image_file(pvr_rgb%id_pvr_file_type,              &
      &    img_head, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),       &
-     &    pvr_rgb%rgb_chara_lc)
+     &    rgb_chara_lc)
+      deallocate(rgba_real_lc, rgb_chara_lc)
 !
       end subroutine sel_write_pvr_local_img
 !
