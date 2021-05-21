@@ -85,7 +85,10 @@
 !
         call rendering_at_once(istep_pvr, time, mesh, group, field_pvr, &
      &      pvr_param, pvr_proj, rot_imgs1%rot_pvr_rgb(i_rot))
+      end do
+      call calypso_mpi_barrier
 !
+      do i_rot = ist_rot, ied_rot
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
         if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
         call sel_write_pvr_image_file                                   &
@@ -142,7 +145,10 @@
         call rendering_at_once(istep_pvr, time, mesh, group, field_pvr, &
      &      pvr_param, pvr_proj(2), rot_imgs1%rot_pvr_rgb(i_rot))
         call add_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
+      end do
+      call calypso_mpi_barrier
 !
+      do i_rot = ist_rot, ied_rot
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
         if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
         call sel_write_pvr_image_file                                   &
