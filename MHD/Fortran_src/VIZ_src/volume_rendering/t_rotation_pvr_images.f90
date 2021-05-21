@@ -66,9 +66,9 @@
       if(my_rank .gt. 0) return
       do i_rot = view_param%istart_rot, view_param%iend_rot
         write(*,*) i_rot, 'rot_pvr_rgb%irank_image_file', &
-     &                  rot_pvr_rgb%irank_image_file(i_rot), &
-     &                  rot_pvr_rgb%irank_end_composit(i_rot), &
-     &                  rot_pvr_rgb%npe_img_composit(i_rot)
+     &                  rot_imgs%rot_pvr_rgb(i_rot)%irank_image_file, &
+     &                  rot_imgs%rot_pvr_rgb(i_rot)%irank_end_composit, &
+     &                  rot_imgs%rot_pvr_rgb(i_rot)%npe_img_composit
       end do
 !
       end subroutine init_rot_pvr_image_arrays
