@@ -388,7 +388,7 @@
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering each', i_lic
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         call s_each_LIC_rendering(istep_lic, time, repart_data%viz_fem, &
-     &      lic_fld_pm(i_lic), pvr%pvr_param(i_lic),                    &
+     &      lic_fld_pm(i_lic)%field_lic, lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),                    &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -415,7 +415,7 @@
 !
           call s_each_LIC_rendering_w_rot                               &
      &     (istep_lic, time, repart_data%viz_fem,                       &
-     &      lic_fld_pm(i_lic), pvr%pvr_param(i_lic),                    &
+     &      lic_fld_pm(i_lic)%field_lic, lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),                    &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
         end if
 !
@@ -484,7 +484,7 @@
         ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         call s_each_LIC_rendering(istep_lic, time, repart_data%viz_fem, &
-     &      lic_fld_pm(i_lic), pvr%pvr_param(i_lic),                    &
+     &      lic_fld_pm(i_lic)%field_lic, lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),                    &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -523,7 +523,7 @@
           ist_img = pvr%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot                               &
      &       (istep_lic, time, repart_data%viz_fem,                     &
-     &        lic_fld_pm(i_lic), pvr%pvr_param(i_lic),                  &
+     &        lic_fld_pm(i_lic)%field_lic, lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),                  &
      &        pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
         end if
       end do

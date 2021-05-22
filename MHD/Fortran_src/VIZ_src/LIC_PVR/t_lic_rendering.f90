@@ -297,7 +297,7 @@
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
         call s_each_LIC_rendering                                       &
      &     (istep_lic, time, lic%repart_data%viz_fem,                   &
-     &      lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),            &
+     &      lic%lic_fld_pm(i_lic)%field_lic, lic%lic_fld_pm(i_lic)%lic_param, lic%pvr%pvr_param(i_lic),            &
      &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -335,7 +335,7 @@
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot                               &
      &       (istep_lic, time, lic%repart_data%viz_fem,                 &
-     &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
+     &        lic%lic_fld_pm(i_lic)%field_lic, lic%lic_fld_pm(i_lic)%lic_param, lic%pvr%pvr_param(i_lic),          &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
         end if
       end do
@@ -363,6 +363,26 @@
       call dealloc_pvr_and_lic_data(lic%pvr)
 !
       end subroutine dealloc_LIC_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_each_lic_data(repart_p, lic_fld_pm)
+!
+      use set_pvr_control
+!
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(LIC_field_params), intent(inout) :: lic_fld_pm
+!
+!
+      if(repart_p%flag_repartition) then
+        call dealloc_nod_data_4_lic(lic_fld_pm%field_lic)
+      else
+        nullify(lic_fld_pm%field_lic)
+      end if
+      call dealloc_nod_data_4_lic(lic_fld_pm%nod_fld_lic)
+      call flush_each_lic_control(lic_fld_pm)
+!
+      end subroutine dealloc_each_lic_data
 !
 !  ---------------------------------------------------------------------
 !
