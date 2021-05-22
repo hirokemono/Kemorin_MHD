@@ -105,14 +105,6 @@
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%lic_fld_pm, lic%pvr%pvr_param, lic%flag_each_repart)
 !
-      do i_lic = 1, lic%pvr%num_pvr
-        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
-     &      .or. my_rank .ne. 0) then
-          call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
-     &        lic_ctls%lic_ctl_type(i_lic))
-        end if
-      end do
-!
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
      &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
@@ -123,6 +115,14 @@
      &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
      &    lic%pvr%istack_pvr_render, lic%pvr%istack_pvr_images,         &
      &    lic%pvr%pvr_rgb)
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
+     &      .or. my_rank .ne. 0) then
+          call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
+     &        lic_ctls%lic_ctl_type(i_lic))
+        end if
+      end do
 !
 !
       do i_lic = 1, lic%pvr%num_pvr
@@ -186,6 +186,20 @@
           call dealloc_LIC_each_mesh(lic%repart_p, lic%repart_data,     &
      &                               lic%lic_fld_pm(i_lic))
         end do
+!
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+        do i_lic = 1, lic%pvr%num_pvr
+          ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
+          if(lic%pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
+            call sel_write_pvr_image_file                               &
+     &         (i_lic, iminus, lic%pvr%pvr_rgb(ist_img))
+          end if
+        end do
+        do i_lic = 1, lic%pvr%num_pvr_images
+          call sel_write_pvr_image_file                                 &
+     &       (i_lic, istep_lic, lic%pvr%pvr_rgb(i_lic))
+      end do
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
       else
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering at once'
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
@@ -200,21 +214,21 @@
      &        v_sol)
         end do
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
-      end if
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-      do i_lic = 1, lic%pvr%num_pvr
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        if(lic%pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+        do i_lic = 1, lic%pvr%num_pvr
+          ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
+          if(lic%pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
+            call sel_write_pvr_image_file                               &
+     &         (i_lic, iminus, lic%pvr%pvr_rgb(ist_img))
+          end if
+        end do
+        do i_lic = 1, lic%pvr%num_pvr_images
           call sel_write_pvr_image_file                                 &
-     &       (i_lic, iminus, lic%pvr%pvr_rgb(ist_img))
-        end if
-      end do
-      do i_lic = 1, lic%pvr%num_pvr_images
-        call sel_write_pvr_image_file                                   &
-     &     (i_lic, istep_lic, lic%pvr%pvr_rgb(i_lic))
-      end do
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+     &       (i_lic, istep_lic, lic%pvr%pvr_rgb(i_lic))
+        end do
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+      end if
       return
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
