@@ -196,7 +196,7 @@
 !
           call dealloc_PVR_initialize(lic%pvr%pvr_param(i_lic),         &
      &                                lic%pvr%pvr_proj(ist_rdr))
-          call dealloc_LIC_re_partition(lic%repart_p, lic%repart_data,  &
+          call dealloc_LIC_each_mesh(lic%repart_p, lic%repart_data,     &
      &                                  lic%lic_fld_pm(i_lic))
         end do
 !
@@ -293,7 +293,7 @@
       if(lic_fld_pm%lic_param%each_part_p%flag_repartition) then
         call s_LIC_re_partition                                         &
      &     (lic_fld_pm%lic_param%each_part_p, geofem, next_tbl,         &
-     &      repart_data%viz_fem)
+     &      repart_data)
 !
         allocate(lic_fld_pm%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
@@ -323,7 +323,6 @@
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
-      use LIC_re_partition
 !
       type(mesh_data), intent(in), target :: geofem
       type(phys_data), intent(in) :: nod_fld
@@ -401,6 +400,31 @@
       call dealloc_iflag_pvr_used_ele(pvr_param%draw_param)
 !
       end subroutine dealloc_PVR_initialize
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_LIC_each_mesh                                  &
+     &         (repart_p, repart_data, lic_fld_pm)
+!
+      type(volume_partioning_param), intent(in) :: repart_p
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(LIC_field_params), intent(inout) :: lic_fld_pm
+!
+!
+      if(lic_fld_pm%lic_param%each_part_p%flag_repartition) then
+        call dealloc_LIC_re_partition(repart_data)
+      else if(repart_p%flag_repartition) then
+        call dealloc_LIC_re_partition(repart_data)
+      else
+        nullify(repart_data%viz_fem)
+        nullify(lic_fld_pm%field_lic)
+      end if
+!
+      call dealloc_nod_data_4_lic(lic_fld_pm%nod_fld_lic)
+      deallocate(lic_fld_pm%nod_fld_lic)
+!
+      end subroutine dealloc_LIC_each_mesh
 !
 !  ---------------------------------------------------------------------
 !

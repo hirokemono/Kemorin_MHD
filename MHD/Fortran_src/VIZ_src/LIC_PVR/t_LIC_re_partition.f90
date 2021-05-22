@@ -9,6 +9,7 @@
 !!@verbatim
 !!      subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,       &
 !!     &                              repart_data)
+!!      subroutine dealloc_LIC_re_partition(repart_data)
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(in), target :: geofem
@@ -88,40 +89,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_LIC_re_partition                               &
-     &         (repart_p, repart_data, lic_fld_pm)
-!
-      type(volume_partioning_param), intent(in) :: repart_p
+      subroutine dealloc_LIC_re_partition(repart_data)
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
-      type(LIC_field_params), intent(inout) :: lic_fld_pm
 !
 !
-      if(lic_fld_pm%lic_param%each_part_p%flag_repartition) then
-        call dealloc_calypso_comm_table(repart_data%mesh_to_viz_tbl)
+      call dealloc_calypso_comm_table(repart_data%mesh_to_viz_tbl)
 !
-        call dealloc_vectors_surf_group                                 &
-     &     (repart_data%viz_fem%group%surf_grp_norm)
-        call dealloc_normal_vector(repart_data%viz_fem%mesh%surf)
-        call dealloc_numnod_stack(repart_data%viz_fem%mesh%node)
-        call dealloc_mesh_infos_w_normal(repart_data%viz_fem%mesh,      &
-     &                                   repart_data%viz_fem%group)
-      else if(repart_p%flag_repartition) then
-        call dealloc_calypso_comm_table(repart_data%mesh_to_viz_tbl)
-!
-        call dealloc_vectors_surf_group                                 &
-     &     (repart_data%viz_fem%group%surf_grp_norm)
-        call dealloc_normal_vector(repart_data%viz_fem%mesh%surf)
-        call dealloc_numnod_stack(repart_data%viz_fem%mesh%node)
-        call dealloc_mesh_infos_w_normal(repart_data%viz_fem%mesh,      &
-     &                                   repart_data%viz_fem%group)
-      else
-        nullify(repart_data%viz_fem)
-        nullify(lic_fld_pm%field_lic)
-      end if
-!
-      call dealloc_nod_data_4_lic(lic_fld_pm%nod_fld_lic)
-      deallocate(lic_fld_pm%nod_fld_lic)
+      call dealloc_vectors_surf_group                                   &
+     &   (repart_data%viz_fem%group%surf_grp_norm)
+      call dealloc_normal_vector(repart_data%viz_fem%mesh%surf)
+      call dealloc_numnod_stack(repart_data%viz_fem%mesh%node)
+      call dealloc_mesh_infos_w_normal(repart_data%viz_fem%mesh,        &
+     &                                 repart_data%viz_fem%group)
 !
       end subroutine dealloc_LIC_re_partition
 !
