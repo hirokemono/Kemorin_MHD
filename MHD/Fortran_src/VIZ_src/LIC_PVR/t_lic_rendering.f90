@@ -354,6 +354,7 @@
       subroutine dealloc_LIC_data(lic)
 !
       use each_LIC_rendering
+      use set_lic_controls
 !
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
@@ -361,36 +362,16 @@
 !
       if(lic%pvr%num_pvr .le. 0) return
       do i_lic = 1, lic%pvr%num_pvr
-        call dealloc_each_lic_data(lic%repart_p, lic%lic_param(i_lic),  &
-     &      lic%repart_data)
+        call flush_each_lic_control(lic%lic_param(i_lic))
       end do
       deallocate(lic%lic_param)
+!
+      call dealloc_LIC_shared_mesh                                      &
+     &   (lic%pvr%num_pvr, lic%repart_p, lic%repart_data)
 !
       call dealloc_pvr_and_lic_data(lic%pvr)
 !
       end subroutine dealloc_LIC_data
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_each_lic_data(repart_p, lic_param, repart_data)
-!
-      use set_pvr_control
-      use set_lic_controls
-!
-      type(volume_partioning_param), intent(in) :: repart_p
-      type(lic_parameters), intent(inout) :: lic_param
-      type(lic_repartioned_mesh), intent(inout) :: repart_data
-!
-!
-      if(repart_p%flag_repartition) then
-        call dealloc_nod_data_4_lic(repart_data%field_lic(1))
-      else
-        nullify(repart_data%field_lic)
-      end if
-      call dealloc_nod_data_4_lic(repart_data%nod_fld_lic(1))
-      call flush_each_lic_control(lic_param)
-!
-      end subroutine dealloc_each_lic_data
 !
 !  ---------------------------------------------------------------------
 !

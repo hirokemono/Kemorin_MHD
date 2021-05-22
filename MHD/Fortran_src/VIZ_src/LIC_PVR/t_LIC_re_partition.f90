@@ -28,7 +28,11 @@
       use t_mesh_data
       use t_comm_table
       use t_calypso_comm_table
+      use t_phys_data
       use t_lic_field_data
+      use t_control_param_LIC
+      use t_control_param_vol_grping
+      use t_vector_for_solver
 !
       implicit  none
 !
@@ -45,10 +49,198 @@
         type(lic_field_data), pointer :: field_lic(:)
       end type lic_repartioned_mesh
 !
+      private :: dealloc_LIC_re_partition
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine LIC_init_shared_mesh(num_lic, repart_p,                &
+     &          geofem, next_tbl, repart_data, lic_param)
+!
+      use t_next_node_ele_4_node
+!
+      integer(kind = kint), intent(in) :: num_lic
+      type(mesh_data), intent(in), target :: geofem
+      type(next_nod_ele_table), intent(in) :: next_tbl
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(lic_parameters), intent(inout) :: lic_param(num_lic)
+!
+      integer(kind = kint) :: i_lic
+!
+!
+      allocate(repart_data%nod_fld_lic(num_lic))
+      do i_lic = 1, num_lic
+        call alloc_nod_vector_4_lic(geofem%mesh%node,                   &
+     &      lic_param(i_lic)%num_masking,                               &
+     &      repart_data%nod_fld_lic(i_lic))
+      end do
+!
+      if(repart_p%flag_repartition) then
+!  -----  Repartition
+        call s_LIC_re_partition                                         &
+     &     (repart_p, geofem, next_tbl, repart_data)
+!
+        allocate(repart_data%field_lic(num_lic))
+        do i_lic = 1, num_lic
+          call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,    &
+     &        lic_param(i_lic)%num_masking,                             &
+     &        repart_data%field_lic(i_lic))
+        end do
+      else
+        repart_data%viz_fem => geofem
+        repart_data%field_lic => repart_data%nod_fld_lic
+      end if
+!
+      end subroutine LIC_init_shared_mesh
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_LIC_shared_mesh_field(num_lic, geofem, nod_fld,    &
+     &          repart_p, lic_param, repart_data, v_sol)
+!
+      integer(kind = kint), intent(in) :: num_lic
+      type(mesh_data), intent(in) :: geofem
+      type(phys_data), intent(in) :: nod_fld
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_parameters), intent(in) :: lic_param(num_lic)
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(vectors_4_solver), intent(inout) :: v_sol
+!
+      integer(kind = kint) :: i_lic
+!
+!
+      do i_lic = 1, num_lic
+        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
+     &      lic_param(i_lic), repart_data%nod_fld_lic(i_lic))
+!
+        if(repart_p%flag_repartition) then
+          call repartition_lic_field                                    &
+     &       (geofem%mesh%node, repart_data%viz_fem%mesh,               &
+     &        repart_data%mesh_to_viz_tbl,                              &
+     &        repart_data%nod_fld_lic(i_lic),                           &
+     &        repart_data%field_lic(i_lic), v_sol)
+        end if
+      end do
+!
+      end subroutine set_LIC_shared_mesh_field
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_LIC_shared_mesh                                &
+     &         (num_lic, repart_p, repart_data)
+!
+      integer(kind = kint), intent(in) :: num_lic
+      type(volume_partioning_param), intent(in) :: repart_p
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+!
+      integer(kind = kint) :: i_lic
+!
+!
+      if(repart_p%flag_repartition) then
+        call dealloc_LIC_re_partition(repart_data)
+        do i_lic = 1, num_lic
+          call dealloc_nod_data_4_lic(repart_data%field_lic(1))
+        end do
+        deallocate(repart_data%field_lic)
+      else
+        nullify(repart_data%viz_fem)
+        nullify(repart_data%field_lic)
+      end if
+!
+      do i_lic = 1, num_lic
+        call dealloc_nod_data_4_lic(repart_data%nod_fld_lic(1))
+      end do
+      deallocate(repart_data%nod_fld_lic)
+!
+      end subroutine dealloc_LIC_shared_mesh
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine set_LIC_each_mesh_field(geofem, next_tbl, nod_fld,     &
+     &          repart_p, lic_param, repart_data, v_sol)
+!
+      use t_next_node_ele_4_node
+!
+      type(mesh_data), intent(in), target :: geofem
+      type(next_nod_ele_table), intent(in) :: next_tbl
+      type(phys_data), intent(in) :: nod_fld
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_parameters), intent(in) :: lic_param
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(vectors_4_solver), intent(inout) :: v_sol
+!
+!
+      allocate(repart_data%nod_fld_lic(1))
+      call alloc_nod_vector_4_lic(geofem%mesh%node,                     &
+     &    lic_param%num_masking, repart_data%nod_fld_lic(1))
+      call cal_field_4_each_lic(geofem%mesh%node, nod_fld,              &
+     &    lic_param, repart_data%nod_fld_lic(1))
+!
+!  -----  Repartition
+      if(lic_param%each_part_p%flag_repartition                         &
+     &    .or. repart_p%flag_repartition) then
+        call s_LIC_re_partition                                         &
+     &     (lic_param%each_part_p, geofem, next_tbl, repart_data)
+      else if(repart_p%flag_repartition) then
+        call s_LIC_re_partition                                         &
+     &     (repart_p, geofem, next_tbl, repart_data)
+      else
+        repart_data%viz_fem =>  geofem
+      end if
+!
+      if(lic_param%each_part_p%flag_repartition                         &
+     &     .or. repart_p%flag_repartition) then
+        call repartition_lic_field                                      &
+     &     (geofem%mesh%node, repart_data%viz_fem%mesh,                 &
+     &      repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic(1),    &
+     &      repart_data%field_lic(1), v_sol)
+!
+        allocate(repart_data%field_lic(1))
+        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
+     &      lic_param%num_masking, repart_data%field_lic(1))
+      else
+        repart_data%field_lic => repart_data%nod_fld_lic
+      end if
+!
+      end subroutine set_LIC_each_mesh_field
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_LIC_each_mesh                                  &
+     &         (repart_p, each_part_p, repart_data)
+!
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(volume_partioning_param), intent(in) :: each_part_p
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+!
+!
+      if(each_part_p%flag_repartition                                   &
+     &     .or. repart_p%flag_repartition) then
+        call dealloc_LIC_re_partition(repart_data)
+        call dealloc_nod_data_4_lic(repart_data%field_lic(1))
+        deallocate(repart_data%field_lic)
+      else
+        nullify(repart_data%viz_fem)
+        nullify(repart_data%field_lic)
+      end if
+!
+      call dealloc_nod_data_4_lic(repart_data%nod_fld_lic(1))
+      deallocate(repart_data%nod_fld_lic)
+!
+      end subroutine dealloc_LIC_each_mesh
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,         &
