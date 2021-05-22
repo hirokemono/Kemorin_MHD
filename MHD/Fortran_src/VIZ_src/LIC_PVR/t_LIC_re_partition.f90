@@ -28,7 +28,6 @@
       use t_mesh_data
       use t_comm_table
       use t_calypso_comm_table
-      use t_control_param_LIC_PVR
 !
       implicit  none
 !
@@ -38,9 +37,6 @@
         type(mesh_data), pointer :: viz_fem
 !>        Transfer table to visualization mesh
         type(calypso_comm_table) :: mesh_to_viz_tbl
-!
-!>        Structure of LIC field parameters
-        type(LIC_field_params), allocatable :: lic_fld_pm(:)
       end type lic_repartioned_mesh
 !
 !  ---------------------------------------------------------------------
