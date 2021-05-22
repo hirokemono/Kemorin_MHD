@@ -250,20 +250,20 @@
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
         if(pvr_param%view%iflag_anaglyph .gt. 0) then
           call anaglyph_rendering_w_rotation                            &
-     &       (istep_pvr, time, geofem%mesh, geofem%group,               &
-     &        field_pvr, pvr_param, pvr_proj, pvr_rgb(1))
+     &       (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,    &
+     &        pvr_rgb(1), pvr_param, pvr_proj)
         else
           call rendering_with_rotation                                  &
-     &       (istep_pvr, time, geofem%mesh, geofem%group,               &
-     &        field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
+     &       (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,    &
+     &        pvr_rgb(1), pvr_param, pvr_proj(1))
           call rendering_with_rotation                                  &
-     &       (istep_pvr, time, geofem%mesh, geofem%group,               &
-     &        field_pvr, pvr_param, pvr_proj(2), pvr_rgb(2))
+     &       (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,    &
+     &        pvr_rgb(2), pvr_param, pvr_proj(2))
         end if
       else
         call rendering_with_rotation                                    &
-     &     (istep_pvr, time, geofem%mesh, geofem%group,                 &
-     &      field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
+     &     (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,      &
+     &      pvr_rgb(1), pvr_param, pvr_proj(1))
       end if
 !
       end subroutine each_PVR_rendering_w_rot

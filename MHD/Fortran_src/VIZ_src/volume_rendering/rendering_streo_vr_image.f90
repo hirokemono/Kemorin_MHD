@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine rendering_with_rotation(istep_pvr, time, mesh, group,&
-!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+!!     &          field_pvr, pvr_rgb, pvr_param, pvr_proj)
 !!      subroutine anaglyph_rendering_w_rotation                        &
-!!     &         (istep_pvr, time, mesh, group,                         &
-!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+!!     &         (istep_pvr, time, mesh, group, field_pvr, pvr_rgb,     &
+!!     &          pvr_param, pvr_proj)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(pvr_field_data), intent(in) :: field_pvr
+!!        type(pvr_image_type), intent(in) :: pvr_rgb
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
-!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
       module rendering_streo_vr_image
@@ -51,7 +51,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_with_rotation(istep_pvr, time, mesh, group,  &
-     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+     &          field_pvr, pvr_rgb, pvr_param, pvr_proj)
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
@@ -64,10 +64,10 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(pvr_field_data), intent(in) :: field_pvr
+      type(pvr_image_type), intent(in) :: pvr_rgb
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj
-      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       integer(kind = kint) :: i_rot
       type(rotation_pvr_images) :: rot_imgs1
@@ -86,14 +86,14 @@
       end do
       call calypso_mpi_barrier
 !
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       do i_rot = 1, pvr_param%view%num_frame
-        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
-        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
         call sel_write_pvr_image_file                                   &
      &     (i_rot, istep_pvr, rot_imgs1%rot_pvr_rgb(i_rot))
-        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
-        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call dealloc_rot_pvr_image_arrays(pvr_param%view, rot_imgs1)
 !
       end subroutine rendering_with_rotation
@@ -101,8 +101,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_rendering_w_rotation                          &
-     &         (istep_pvr, time, mesh, group,                           &
-     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+     &         (istep_pvr, time, mesh, group, field_pvr, pvr_rgb,       &
+     &          pvr_param, pvr_proj)
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
@@ -115,10 +115,10 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(pvr_field_data), intent(in) :: field_pvr
+      type(pvr_image_type), intent(in) :: pvr_rgb
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       integer(kind = kint) :: i_rot
       type(rotation_pvr_images) :: rot_imgs1
@@ -144,14 +144,14 @@
       end do
       call calypso_mpi_barrier
 !
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       do i_rot = 1, pvr_param%view%num_frame
-        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
-        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
         call sel_write_pvr_image_file                                   &
      &     (i_rot, istep_pvr, rot_imgs1%rot_pvr_rgb(i_rot))
-        if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
-        if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call dealloc_rot_pvr_image_arrays(pvr_param%view, rot_imgs1)
 !
       end subroutine anaglyph_rendering_w_rotation

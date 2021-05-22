@@ -171,7 +171,7 @@
      &        lic%pvr%pvr_param(i_lic), lic%pvr%pvr_proj(ist_rdr),      &
      &        lic%pvr%pvr_rgb(ist_img))
 !
-          if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering each'
+          if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering each', i_lic
           if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
           call s_each_LIC_rendering                                     &
      &       (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,   &
@@ -180,6 +180,19 @@
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
      &        v_sol)
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+!
+          write(*,*) 'iflag_movie_mode each', i_lic, &
+     &              lic%pvr%pvr_param(i_lic)%view%iflag_movie_mode 
+          if(lic%pvr%pvr_param(i_lic)%view%iflag_movie_mode             &
+     &                                    .ne. IFLAG_NO_MOVIE) then
+            write(*,*) 's_each_LIC_rendering_w_rot each', i_lic
+            call s_each_LIC_rendering_w_rot                             &
+     &       (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,   &
+     &        lic%repart_data%mesh_to_viz_tbl, geofem%mesh, nod_fld,    &
+     &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
+     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
+     &        v_sol)
+          end if
 !
           call dealloc_PVR_initialize(lic%pvr%pvr_param(i_lic),         &
      &                                lic%pvr%pvr_proj(ist_rdr))
@@ -192,12 +205,12 @@
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           if(lic%pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
             call sel_write_pvr_image_file                               &
-     &         (i_lic, iminus, lic%pvr%pvr_rgb(ist_img))
+     &         ((-i_lic), iminus, lic%pvr%pvr_rgb(ist_img))
           end if
         end do
         do i_lic = 1, lic%pvr%num_pvr_images
           call sel_write_pvr_image_file                                 &
-     &       (i_lic, istep_lic, lic%pvr%pvr_rgb(i_lic))
+     &       ((-i_lic), istep_lic, lic%pvr%pvr_rgb(i_lic))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
       else
@@ -220,32 +233,32 @@
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           if(lic%pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
             call sel_write_pvr_image_file                               &
-     &         (i_lic, iminus, lic%pvr%pvr_rgb(ist_img))
+     &         ((-i_lic), iminus, lic%pvr%pvr_rgb(ist_img))
           end if
         end do
         do i_lic = 1, lic%pvr%num_pvr_images
           call sel_write_pvr_image_file                                 &
-     &       (i_lic, istep_lic, lic%pvr%pvr_rgb(i_lic))
+     &       ((-i_lic), istep_lic, lic%pvr%pvr_rgb(i_lic))
         end do
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
-      end if
-      return
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-      do i_lic = 1, lic%pvr%num_pvr
-        if(lic%pvr%pvr_param(i_lic)%view%iflag_movie_mode               &
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+        do i_lic = 1, lic%pvr%num_pvr
+          write(*,*) 's_each_LIC_rendering_w_rot once', i_lic
+          if(lic%pvr%pvr_param(i_lic)%view%iflag_movie_mode             &
      &                                    .ne. IFLAG_NO_MOVIE) then
-          ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
-          ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-          call s_each_LIC_rendering_w_rot                               &
+            ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
+            ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
+            call s_each_LIC_rendering_w_rot                             &
      &       (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,   &
      &        lic%repart_data%mesh_to_viz_tbl, geofem%mesh, nod_fld,    &
      &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
      &        v_sol)
-        end if
-      end do
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+          end if
+        end do
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+      end if
 !
       end subroutine LIC_visualize_test
 !

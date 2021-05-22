@@ -187,23 +187,23 @@
         if(pvr_param%view%iflag_anaglyph .gt. 0) then
           call anaglyph_lic_rendering_w_rot                             &
      &       (istep_pvr, time, viz_fem%mesh, viz_fem%group,             &
-     &        lic_fld_pm%lic_param, lic_fld_pm%field_lic,               &
-     &        pvr_param, pvr_proj, pvr_rgb(1))
+     &        lic_fld_pm%lic_param, lic_fld_pm%field_lic, pvr_rgb(1),   &
+     &        pvr_param, pvr_proj)
         else
           call lic_rendering_with_rotation                              &
      &       (istep_pvr, time, viz_fem%mesh, viz_fem%group,             &
-     &        lic_fld_pm%lic_param, lic_fld_pm%field_lic,               &
-     &        pvr_param, pvr_proj(1), pvr_rgb(1))
+     &        lic_fld_pm%lic_param, lic_fld_pm%field_lic, pvr_rgb(1),   &
+     &        pvr_param, pvr_proj(1))
           call lic_rendering_with_rotation                              &
      &       (istep_pvr, time, viz_fem%mesh, viz_fem%group,             &
-     &        lic_fld_pm%lic_param, lic_fld_pm%field_lic,               &
-     &        pvr_param, pvr_proj(2), pvr_rgb(2))
+     &        lic_fld_pm%lic_param, lic_fld_pm%field_lic, pvr_rgb(2),   &
+     &        pvr_param, pvr_proj(2))
         end if
       else
         call lic_rendering_with_rotation                                &
      &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
-     &      lic_fld_pm%lic_param, lic_fld_pm%field_lic,                 &
-     &      pvr_param, pvr_proj(1), pvr_rgb(1))
+     &      lic_fld_pm%lic_param, lic_fld_pm%field_lic, pvr_rgb(1),     &
+     &      pvr_param, pvr_proj(1))
       end if
 !
       end subroutine s_each_LIC_rendering_w_rot

@@ -9,15 +9,16 @@
 !!@verbatim
 !!      subroutine lic_rendering_with_rotation                          &
 !!     &         (istep_pvr, time, mesh, group, lic_p, field_lic,       &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!     &          pvr_rgb, pvr_param, pvr_proj)
 !!      subroutine anaglyph_lic_rendering_w_rot                         &
 !!     &         (istep_pvr, time, mesh, group, lic_p, field_lic,       &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!     &          pvr_rgb, pvr_param, pvr_proj)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(lic_field_data), intent(in) :: field_lic
 !!        type(PVR_control_params), intent(in) :: pvr_param
+!!        type(pvr_image_type), intent(in) :: pvr_rgb
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
@@ -55,8 +56,9 @@
 !
       subroutine lic_rendering_with_rotation                            &
      &         (istep_pvr, time, mesh, group, lic_p, field_lic,         &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &          pvr_rgb, pvr_param, pvr_proj)
 !
+      use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -70,28 +72,37 @@
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
+      type(pvr_image_type), intent(in) :: pvr_rgb
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj
-      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       integer(kind = kint) :: i_rot
+      type(rotation_pvr_images) :: rot_imgs1
 !
+!
+      if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
+      call init_rot_pvr_image_arrays                                    &
+     &   (pvr_param%view, pvr_rgb, rot_imgs1)
 !
       do i_rot = 1, pvr_param%view%num_frame
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
         call rendering_lic_at_once(istep_pvr, time, mesh, group,        &
-     &      lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
-!
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-        call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
-
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+     &      lic_p, field_lic, pvr_param, pvr_proj,                      &
+     &      rot_imgs1%rot_pvr_rgb(i_rot))
       end do
+!
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+      do i_rot = 1, pvr_param%view%num_frame
+        call sel_write_pvr_image_file                                   &
+     &     (i_rot, istep_pvr, rot_imgs1%rot_pvr_rgb(i_rot))
+      end do
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+      call dealloc_rot_pvr_image_arrays(pvr_param%view, rot_imgs1)
 !
       end subroutine lic_rendering_with_rotation
 !
@@ -99,8 +110,9 @@
 !
       subroutine anaglyph_lic_rendering_w_rot                           &
      &         (istep_pvr, time, mesh, group, lic_p, field_lic,         &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &          pvr_rgb, pvr_param, pvr_proj)
 !
+      use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -114,12 +126,18 @@
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
+      type(pvr_image_type), intent(in) :: pvr_rgb
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       integer(kind = kint) :: i_rot
+      type(rotation_pvr_images) :: rot_imgs1
+!
+!
+      if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
+      call init_rot_pvr_image_arrays                                    &
+     &   (pvr_param%view, pvr_rgb, rot_imgs1)
 !
 !
       do i_rot = 1, pvr_param%view%num_frame
@@ -128,21 +146,26 @@
 !
 !    Left eye
         call rendering_lic_at_once(istep_pvr, time, mesh, group,        &
-     &      lic_p, field_lic, pvr_param, pvr_proj(1), pvr_rgb)
-        call store_left_eye_image(pvr_rgb)
+     &      lic_p, field_lic, pvr_param, pvr_proj(1),                   &
+     &      rot_imgs1%rot_pvr_rgb(i_rot))
+        call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
 !
 !    Right eye
         call rendering_lic_at_once(istep_pvr, time, mesh, group,        &
-     &      lic_p, field_lic, pvr_param, pvr_proj(2), pvr_rgb)
-        call add_left_eye_image(pvr_rgb)
-!
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-        call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
-
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+     &      lic_p, field_lic, pvr_param, pvr_proj(2),                   &
+     &      rot_imgs1%rot_pvr_rgb(i_rot))
+        call add_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
       end do
+!
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+      do i_rot = 1, pvr_param%view%num_frame
+        call sel_write_pvr_image_file                                   &
+     &     (i_rot, istep_pvr, rot_imgs1%rot_pvr_rgb(i_rot))
+      end do
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+      call dealloc_rot_pvr_image_arrays(pvr_param%view, rot_imgs1)
 !
       end subroutine anaglyph_lic_rendering_w_rot
 !
