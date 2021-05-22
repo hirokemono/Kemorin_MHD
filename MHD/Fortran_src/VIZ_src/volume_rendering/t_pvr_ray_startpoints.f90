@@ -14,7 +14,7 @@
 !!      subroutine deallocate_num_pvr_ray_start(pvr_start)
 !!      subroutine deallocate_item_pvr_ray_start(pvr_start)
 !!
-!!      subroutine copy_item_pvr_ray_start(pvr_st_org, pvr_start)
+!!      subroutine copy_item_pvr_ray_start(org_pvr_st, new_pvr_st)
 !!
 !!      subroutine check_pvr_ray_startpoints(id_rank, pvr_start)
 !!@endverbatim
@@ -226,22 +226,24 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_item_pvr_ray_start(pvr_st_org, pvr_start)
+      subroutine copy_item_pvr_ray_start(org_pvr_st, new_pvr_st)
 !
-      type(pvr_ray_start_type), intent(in) :: pvr_st_org
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
+      type(pvr_ray_start_type), intent(in) :: org_pvr_st
+      type(pvr_ray_start_type), intent(inout) :: new_pvr_st
 !
+!
+      new_pvr_st%irank_composit_ref =  org_pvr_st%irank_composit_ref
 !
 !$omp parallel workshare
-       pvr_start%id_pixel_start(:) = pvr_st_org%id_pixel_start(:)
-       pvr_start%icount_pvr_trace(:) = pvr_st_org%icount_pvr_trace(:)
+      new_pvr_st%id_pixel_start(:) = org_pvr_st%id_pixel_start(:)
+      new_pvr_st%icount_pvr_trace(:) = org_pvr_st%icount_pvr_trace(:)
 !
-       pvr_start%isf_pvr_ray_start(:,:)                                 &
-     &     = pvr_st_org%isf_pvr_ray_start(:,:)
-       pvr_start%xi_pvr_start(:,:) = pvr_st_org%xi_pvr_start(:,:)
-       pvr_start%xx4_pvr_ray_start(:,:)                                 &
-     &     = pvr_st_org%xx4_pvr_ray_start(:,:)
-       pvr_start%xx4_pvr_start(:,:) = pvr_st_org%xx4_pvr_start(:,:)
+      new_pvr_st%isf_pvr_ray_start(:,:)                                 &
+     &     = org_pvr_st%isf_pvr_ray_start(:,:)
+      new_pvr_st%xi_pvr_start(:,:) = org_pvr_st%xi_pvr_start(:,:)
+      new_pvr_st%xx4_pvr_ray_start(:,:)                                 &
+     &     = org_pvr_st%xx4_pvr_ray_start(:,:)
+      new_pvr_st%xx4_pvr_start(:,:) = org_pvr_st%xx4_pvr_start(:,:)
 !$omp end parallel workshare
 !
       end subroutine copy_item_pvr_ray_start
