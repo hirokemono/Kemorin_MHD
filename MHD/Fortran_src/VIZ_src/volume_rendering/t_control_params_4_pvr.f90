@@ -48,10 +48,10 @@
 !
       integer(kind = kint), parameter :: IFLAG_NO_MOVIE =   0
       integer(kind = kint), parameter :: I_ROTATE_MOVIE =   1
-      integer(kind = kint), parameter :: I_ZOOM =           1
-      integer(kind = kint), parameter :: I_START_END_VIEW = 1
-      integer(kind = kint), parameter :: I_LOOKINGLASS =    1
-      integer(kind = kint), parameter :: I_LIC_KERNEL =     1
+      integer(kind = kint), parameter :: I_ZOOM =           2
+      integer(kind = kint), parameter :: I_START_END_VIEW = 3
+      integer(kind = kint), parameter :: I_LOOKINGLASS =    4
+      integer(kind = kint), parameter :: I_LIC_KERNEL =     5
 !
 !>  Structure for field parameter for PVR
       type pvr_field_parameter

@@ -25,6 +25,9 @@
 !!      subroutine set_label_pvr_movie(names)
 !!      subroutine set_label_LIC_movie(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!    Avaiable parameters for movie_mode_ctl:
+!!      rotation, zoom, view_matrices, LIC_kernel, looking_glass
+!!
 !!  begin image_rotation_ctl
 !!    movie_mode_ctl       rotation
 !!    num_frames_ctl        120
