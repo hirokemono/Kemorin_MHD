@@ -74,7 +74,7 @@
       type(viz_repartition_ctl), intent(inout) :: repart_ctl
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_lic, ist_img
+      integer(kind = kint) :: i_lic, ist_img, ist_rdr
 !
 !
       lic%pvr%num_pvr = lic_ctls%num_lic_ctl
@@ -93,7 +93,6 @@
       call dealloc_control_vol_repart(repart_ctl)
 !
       call alloc_pvr_data(lic%pvr)
-      allocate(lic%repart_data%lic_fld_pm(lic%pvr%num_pvr))
 !
       do i_lic = 1, lic%pvr%num_pvr
         call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
@@ -101,9 +100,11 @@
         call reset_pvr_view_parameteres(lic%pvr%pvr_param(i_lic)%view)
       end do
 !
+      allocate(lic%repart_data%lic_fld_pm(lic%pvr%num_pvr))
       call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%repart_data%lic_fld_pm, lic%pvr%pvr_param, lic%flag_each_repart)
+     &    lic%repart_data%lic_fld_pm, lic%pvr%pvr_param,                &
+     &    lic%flag_each_repart)
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
@@ -117,6 +118,12 @@
      &    lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
+        ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
+        call init_each_PVR_image(lic%pvr%pvr_param(i_lic),              &
+     &                           lic%pvr%pvr_rgb(ist_img))
+      end do
+!
+      do i_lic = 1, lic%pvr%num_pvr
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
      &      .or. my_rank .ne. 0) then
           call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
@@ -124,15 +131,21 @@
         end if
       end do
 !
+      if(lic%flag_each_repart) return
+      call LIC_init_shared_mesh(lic%pvr%num_pvr, lic%repart_p,          &
+     &    geofem, next_tbl, nod_fld, lic%repart_data)
 !
       do i_lic = 1, lic%pvr%num_pvr
+        ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call init_each_PVR_image(lic%pvr%pvr_param(i_lic),              &
-     &                           lic%pvr%pvr_rgb(ist_img))
+        call each_PVR_initialize(i_lic,                                 &
+     &     lic%repart_data%viz_fem%mesh, lic%repart_data%viz_fem%group, &
+     &     lic%pvr%pvr_rgb(ist_img), lic%pvr%pvr_param(i_lic),          &
+     &     lic%pvr%pvr_proj(ist_rdr))
       end do
 !
-      if(lic%flag_each_repart) return
-      call LIC_init_shared_mesh(geofem, next_tbl, nod_fld, lic)
+!      call check_surf_rng_pvr_domain(my_rank)
+!      call check_surf_norm_pvr_domain(my_rank)
 !
       end subroutine LIC_initialize_test
 !
@@ -176,8 +189,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_init_each_mesh(i_lic, geofem, next_tbl, nod_fld,   &
-     &          repart_p, repart_data, lic_fld_pm,                      &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &                              repart_p, repart_data, lic_fld_pm)
 !
       use set_pvr_control
       use each_LIC_rendering
@@ -191,9 +203,6 @@
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(LIC_field_params), intent(inout) :: lic_fld_pm
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
       allocate(lic_fld_pm%nod_fld_lic)
@@ -221,67 +230,52 @@
         lic_fld_pm%field_lic => lic_fld_pm%nod_fld_lic
       end if
 !
-      call each_PVR_initialize(i_lic,                                   &
-     &    repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
-     &    pvr_rgb(1), pvr_param, pvr_proj(1))
-!
       end subroutine LIC_init_each_mesh
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_init_shared_mesh(geofem, next_tbl, nod_fld, lic)
+      subroutine LIC_init_shared_mesh(num_lic, repart_p,                &
+     &          geofem, next_tbl, nod_fld, repart_data)
 !
       use set_pvr_control
-      use each_LIC_rendering
       use rendering_and_image_nums
 !
+      integer(kind = kint), intent(in) :: num_lic
       type(mesh_data), intent(in), target :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(next_nod_ele_table), intent(in) :: next_tbl
-      type(lic_volume_rendering_module), intent(inout) :: lic
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
-      integer(kind = kint) :: i_lic, ist_rdr, ist_img
+      integer(kind = kint) :: i_lic
 !
 !
-      do i_lic = 1, lic%pvr%num_pvr
-        allocate(lic%repart_data%lic_fld_pm(i_lic)%nod_fld_lic)
+      do i_lic = 1, num_lic
+        allocate(repart_data%lic_fld_pm(i_lic)%nod_fld_lic)
         call alloc_nod_vector_4_lic(geofem%mesh%node,                   &
-     &      lic%repart_data%lic_fld_pm(i_lic)%lic_param%num_masking,                &
-     &      lic%repart_data%lic_fld_pm(i_lic)%nod_fld_lic)
+     &      repart_data%lic_fld_pm(i_lic)%lic_param%num_masking,        &
+     &      repart_data%lic_fld_pm(i_lic)%nod_fld_lic)
       end do
 !
-      if(lic%repart_p%flag_repartition) then
+      if(repart_p%flag_repartition) then
 !  -----  Repartition
-        call s_LIC_re_partition(lic%repart_p, geofem, next_tbl,         &
-     &                          lic%repart_data)
+        call s_LIC_re_partition                                         &
+     &     (repart_p, geofem, next_tbl, repart_data)
 !
-        do i_lic = 1, lic%pvr%num_pvr
-          allocate(lic%repart_data%lic_fld_pm(i_lic)%field_lic)
+        do i_lic = 1, num_lic
+          allocate(repart_data%lic_fld_pm(i_lic)%field_lic)
           call alloc_nod_vector_4_lic                                   &
-     &       (lic%repart_data%viz_fem%mesh%node,                        &
-     &        lic%repart_data%lic_fld_pm(i_lic)%lic_param%num_masking,              &
-     &        lic%repart_data%lic_fld_pm(i_lic)%field_lic)
+     &       (repart_data%viz_fem%mesh%node,                            &
+     &        repart_data%lic_fld_pm(i_lic)%lic_param%num_masking,      &
+     &        repart_data%lic_fld_pm(i_lic)%field_lic)
         end do
       else
-        lic%repart_data%viz_fem => geofem
-        do i_lic = 1, lic%pvr%num_pvr
-          lic%repart_data%lic_fld_pm(i_lic)%field_lic                               &
-     &           => lic%repart_data%lic_fld_pm(i_lic)%nod_fld_lic
+        repart_data%viz_fem => geofem
+        do i_lic = 1, num_lic
+          repart_data%lic_fld_pm(i_lic)%field_lic                       &
+     &           => repart_data%lic_fld_pm(i_lic)%nod_fld_lic
         end do
       end if
-!
-!
-      do i_lic = 1, lic%pvr%num_pvr
-        ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call each_PVR_initialize(i_lic,                                 &
-     &     lic%repart_data%viz_fem%mesh, lic%repart_data%viz_fem%group, &
-     &     lic%pvr%pvr_rgb(ist_img), lic%pvr%pvr_param(i_lic),          &
-     &     lic%pvr%pvr_proj(ist_rdr))
-      end do
-!
-!      call check_surf_rng_pvr_domain(my_rank)
-!      call check_surf_norm_pvr_domain(my_rank)
 !
       end subroutine LIC_init_shared_mesh
 !
@@ -368,9 +362,13 @@
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
         call LIC_init_each_mesh(i_lic, geofem, next_tbl, nod_fld,       &
-     &      repart_p, repart_data, repart_data%lic_fld_pm(i_lic),       &
-     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),                &
-     &      pvr%pvr_rgb(ist_img))
+     &      repart_p, repart_data, repart_data%lic_fld_pm(i_lic))
+!
+        if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
+        call each_PVR_initialize(i_lic,                                 &
+     &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+     &      pvr%pvr_rgb(ist_img), pvr%pvr_param(i_lic),                 &
+     &      pvr%pvr_proj(ist_rdr))
 !
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering each', i_lic
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
