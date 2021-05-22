@@ -292,7 +292,8 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%view%iflag_rotate_snap .gt. 0) then
+        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+     &                                 .ne. IFLAG_NO_MOVIE) then
           ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
           ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
           call each_PVR_rendering_w_rot                                 &

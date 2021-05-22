@@ -34,6 +34,7 @@
 !!    file start_view_control    'ctl_view_start'
 !!    file end_view_control      'ctl_view_end'
 !!
+!!    angle_range             0.0   360.0
 !!    apature_range           10.0  1.0
 !!
 !!    LIC_kernel_peak_range      -0.8  0.8
@@ -70,6 +71,8 @@
 !>        Structure of rotation axis control
         type(read_character_item) :: rotation_axis_ctl
 !
+!>        Structure of start and end of angle
+        type(read_real2_item) :: angle_range_ctl
 !>        Structure of start and end of apature
         type(read_real2_item) :: apature_range_ctl
 !
@@ -91,29 +94,28 @@
 !
 !     3rd level for rotation
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_movie_mode =  'movie_mode_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_movie_num_frame = 'num_frames_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_movie_rot_axis =  'rotation_axis_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_start_view_control = 'start_view_control'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_end_view_control = 'end_view_control'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
+     &             :: hd_angle_range =   'angle_range'
+      character(len=kchara), parameter, private                         &
      &             :: hd_apature_range = 'apature_range'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &             :: hd_LIC_kernel_peak = 'LIC_kernel_peak_range'
 !
-      integer(kind = kint), parameter :: n_label_pvr_movie =   6
-      integer(kind = kint), parameter :: n_label_LIC_movie =   7
+      integer(kind = kint), parameter :: n_label_pvr_movie =   7
+      integer(kind = kint), parameter :: n_label_LIC_movie =   8
 !
-      private :: hd_movie_rot_axis,     hd_movie_num_frame
-      private :: hd_start_view_control, hd_end_view_control
-      private :: hd_apature_range,      hd_LIC_kernel_peak
       private :: n_label_pvr_movie, n_label_LIC_movie
 !
 !  ---------------------------------------------------------------------
@@ -173,6 +175,8 @@
         call read_chara_ctl_type(c_buf, hd_movie_rot_axis,              &
      &      movie%rotation_axis_ctl)
 !
+        call read_real2_ctl_type(c_buf, hd_angle_range,                 &
+     &      movie%angle_range_ctl)
         call read_real2_ctl_type(c_buf, hd_apature_range,               &
      &      movie%apature_range_ctl)
         call read_real2_ctl_type(c_buf, hd_LIC_kernel_peak,             &
@@ -201,6 +205,8 @@
       call copy_chara_ctl(org_movie%rotation_axis_ctl,                  &
      &                    new_movie%rotation_axis_ctl)
 !
+      call copy_real2_ctl(org_movie%angle_range_ctl,                    &
+     &                    new_movie%angle_range_ctl)
       call copy_real2_ctl(org_movie%apature_range_ctl,                  &
      &                    new_movie%apature_range_ctl)
       call copy_real2_ctl(org_movie%LIC_kernel_peak_range_ctl,          &
@@ -227,6 +233,7 @@
       movie%movie_mode_ctl%iflag =    0
       movie%num_frames_ctl%iflag =    0
       movie%rotation_axis_ctl%iflag = 0
+      movie%angle_range_ctl%iflag =   0
       movie%apature_range_ctl%iflag = 0
 !
       movie%LIC_kernel_peak_range_ctl%iflag = 0
@@ -259,6 +266,7 @@
       call bcast_ctl_type_i1(movie%num_frames_ctl)
       call bcast_ctl_type_c1(movie%rotation_axis_ctl)
 !
+      call bcast_ctl_type_r2(movie%angle_range_ctl)
       call bcast_ctl_type_r2(movie%apature_range_ctl)
       call bcast_ctl_type_r2(movie%LIC_kernel_peak_range_ctl)
 !
@@ -301,7 +309,8 @@
 !
       call set_control_labels(hd_start_view_control, names( 4))
       call set_control_labels(hd_end_view_control,   names( 5))
-      call set_control_labels(hd_apature_range,      names( 6))
+      call set_control_labels(hd_angle_range,        names( 6))
+      call set_control_labels(hd_apature_range,      names( 7))
 !
       end subroutine set_label_pvr_movie
 !
@@ -320,9 +329,10 @@
 !
       call set_control_labels(hd_start_view_control, names( 4))
       call set_control_labels(hd_end_view_control,   names( 5))
-      call set_control_labels(hd_apature_range,      names( 6))
+      call set_control_labels(hd_angle_range,        names( 6))
+      call set_control_labels(hd_apature_range,      names( 7))
 !
-      call set_control_labels(hd_LIC_kernel_peak,   names( 7))
+      call set_control_labels(hd_LIC_kernel_peak,   names( 8))
 !
       end subroutine set_label_LIC_movie
 !

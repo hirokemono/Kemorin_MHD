@@ -219,7 +219,8 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, lic%pvr%num_pvr
-        if(lic%pvr%pvr_param(i_lic)%view%iflag_rotate_snap .gt. 0) then
+        if(lic%pvr%pvr_param(i_lic)%view%iflag_movie_mode               &
+     &                                    .ne. IFLAG_NO_MOVIE) then
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot                               &

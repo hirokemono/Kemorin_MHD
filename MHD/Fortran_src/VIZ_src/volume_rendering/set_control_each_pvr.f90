@@ -306,39 +306,102 @@
       character(len = kchara) :: tmpchara
 !
 !
-      if      (movie%num_frames_ctl%iflag .gt.    0                     &
-     &   .and. movie%rotation_axis_ctl%iflag .gt. 0) then
-        tmpchara = movie%rotation_axis_ctl%charavalue
-        if     (cmp_no_case(tmpchara, 'x')) then
-          view_param%iprm_pvr_rot(1) = 1
-          view_param%iflag_rotate_snap = 1
-        else if(cmp_no_case(tmpchara, 'y')) then
-          view_param%iprm_pvr_rot(1) = 2
-          view_param%iflag_rotate_snap = 1
-        else if(cmp_no_case(tmpchara, 'z')) then
-          view_param%iprm_pvr_rot(1) = 3
-          view_param%iflag_rotate_snap = 1
+      view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+      if(movie%movie_mode_ctl%iflag .gt. 0) then
+        tmpchara = movie%movie_mode_ctl%charavalue
+        if(cmp_no_case(tmpchara, FLAG_ROTATE_MOVIE)) then
+          view_param%iflag_movie_mode = I_ROTATE_MOVIE
+        else if(cmp_no_case(tmpchara, FLAG_ZOOM)) then
+          view_param%iflag_movie_mode = I_ZOOM
+        else if(cmp_no_case(tmpchara, FLAG_START_END_VIEW)) then
+          view_param%iflag_movie_mode = I_START_END_VIEW
+        else if(cmp_no_case(tmpchara, FLAG_LOOKINGLASS)) then
+          view_param%iflag_movie_mode = I_LOOKINGLASS
+        else if(cmp_no_case(tmpchara, FLAG_LIC_KERNEL)) then
+          view_param%iflag_movie_mode = I_LIC_KERNEL
         else
-          view_param%iprm_pvr_rot(1) =   0
-          view_param%iflag_rotate_snap = 0
+          view_param%iflag_movie_mode = I_ROTATE_MOVIE
         end if
-!
-        view_param%iprm_pvr_rot(2) = movie%num_frames_ctl%intvalue
-      else
-        view_param%iflag_rotate_snap = 0
-        view_param%iprm_pvr_rot(1) = 0
-        view_param%iprm_pvr_rot(2) = 1
-        view_param%iflag_rotate_snap = 0
       end if
 !
-      if(view_param%iflag_rotate_snap .eq. 0) then
-        view_param%istart_rot = 0
-        view_param%iend_rot =   0
-        view_param%num_rot =    0
-      else
-        view_param%istart_rot = 1
-        view_param%iend_rot =   view_param%iprm_pvr_rot(2)
-        view_param%num_rot =    view_param%iprm_pvr_rot(2)
+      if(view_param%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
+        if(movie%num_frames_ctl%iflag .eq. 0) then
+          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+        else
+          view_param%num_frame = movie%num_frames_ctl%intvalue
+        end if
+!
+        if(movie%rotation_axis_ctl%iflag .eq. 0) then
+          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+        else
+          tmpchara = movie%rotation_axis_ctl%charavalue
+          if     (cmp_no_case(tmpchara, 'x')) then
+            view_param%id_rot_axis = 1
+          else if(cmp_no_case(tmpchara, 'y')) then
+            view_param%id_rot_axis = 2
+          else if(cmp_no_case(tmpchara, 'z')) then
+            view_param%id_rot_axis = 3
+          end if
+        end if
+        if(movie%angle_range_ctl%iflag .eq. 0) then
+          view_param%angle_range(1) =   0.0d0
+          view_param%angle_range(2) = 360.0d0
+        else
+          view_param%angle_range(1:2)                                   &
+     &          = movie%angle_range_ctl%realvalue(1:2)
+        end if
+      else if(view_param%iflag_movie_mode .eq. I_LOOKINGLASS) then
+        view_param%id_rot_axis = 2
+        if(movie%num_frames_ctl%iflag .eq. 0) then
+          view_param%num_frame = 48
+        else
+          view_param%num_frame = movie%num_frames_ctl%intvalue
+        end if
+        if(movie%angle_range_ctl%iflag .eq. 0) then
+          view_param%angle_range(1) =  -17.5d0
+          view_param%angle_range(2) =   17.5d0
+        else
+          view_param%angle_range(1:2)                                   &
+     &          = movie%angle_range_ctl%realvalue(1:2)
+        end if
+!
+      else if(view_param%iflag_movie_mode .eq. I_ZOOM) then
+        if(movie%num_frames_ctl%iflag .eq. 0) then
+          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+        else
+          view_param%num_frame = movie%num_frames_ctl%intvalue
+        end if
+!
+        if(movie%apature_range_ctl%iflag .eq. 0) then
+          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+        else
+          view_param%apature_range(1:2)                                 &
+     &          = movie%apature_range_ctl%realvalue(1:2)
+        end if
+!
+      else if(view_param%iflag_movie_mode .eq. I_LIC_KERNEL) then
+        if(movie%num_frames_ctl%iflag .eq. 0) then
+          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+        else
+          view_param%num_frame = movie%num_frames_ctl%intvalue
+        end if
+!
+        if(movie%LIC_kernel_peak_range_ctl%iflag .eq. 0) then
+          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+          view_param%peak_range(1) =  -0.5d0
+          view_param%peak_range(2) =   0.5d0
+        else
+          view_param%peak_range(1:2)                                    &
+     &          = movie%LIC_kernel_peak_range_ctl%realvalue(1:2)
+        end if
+!
+      else if(view_param%iflag_movie_mode .eq. I_START_END_VIEW) then
+        if(movie%view_start_ctl%i_view_transform .eq. 0) then
+          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+        end if
+        if(movie%view_end_ctl%i_view_transform .eq. 0) then
+          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+        end if
       end if
 !
       end subroutine set_control_pvr_movie

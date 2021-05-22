@@ -34,16 +34,24 @@
       real(kind = kreal), parameter :: SMALL_RAY_TRACE = 0.1d0
       real(kind = kreal), parameter :: SMALL_NORM = -0.1d0
 !
-      integer(kind = kint), parameter :: n_flag_pvr_movie_mode =   3
-      integer(kind = kint), parameter :: n_flag_LIC_movie_mode =   4
+      integer(kind = kint), parameter :: n_flag_pvr_movie_mode =   4
+      integer(kind = kint), parameter :: n_flag_LIC_movie_mode =   5
       character(len=kchara), parameter                                  &
-     &             :: c_movie_rotaion =    'rotation'
+     &                      :: FLAG_ROTATE_MOVIE =    'rotation'
+      character(len=kchara), parameter :: FLAG_ZOOM = 'zoom'
       character(len=kchara), parameter                                  &
-     &             :: c_movie_apature =    'apature'
+     &                      :: FLAG_START_END_VIEW =  'view_matrices'
       character(len=kchara), parameter                                  &
-     &             :: c_movie_modelview =  'view_matrices'
+     &                      :: FLAG_LIC_KERNEL = 'LIC_kernel'
       character(len=kchara), parameter                                  &
-     &             :: c_movie_lic_kernel = 'LIC_kernel'
+     &                      :: FLAG_LOOKINGLASS =     'looking_glass'
+!
+      integer(kind = kint), parameter :: IFLAG_NO_MOVIE =   0
+      integer(kind = kint), parameter :: I_ROTATE_MOVIE =   1
+      integer(kind = kint), parameter :: I_ZOOM =           1
+      integer(kind = kint), parameter :: I_START_END_VIEW = 1
+      integer(kind = kint), parameter :: I_LOOKINGLASS =    1
+      integer(kind = kint), parameter :: I_LIC_KERNEL =     1
 !
 !>  Structure for field parameter for PVR
       type pvr_field_parameter
@@ -138,18 +146,19 @@
 !>    Eye separation for streo view
         real(kind = kreal) :: eye_separation = zero
 !
-!>    Rotation flag
-        integer(kind = kint) :: iflag_rotate_snap = 0
-!>    Prametere for rotation
-!!@n        rotatin axis:    iprm_pvr_rot(1)
-!!@n        number of frame: iprm_pvr_rot(2)
-        integer(kind = kint) :: iprm_pvr_rot(2) = (/0,0/)
-!>     Rotation start step
-        integer(kind = kint) :: istart_rot = 0
-!>     Rotation end step
-        integer(kind = kint) :: iend_rot =   0
+!>    Integer flag for movie output
+        integer(kind = kint) :: iflag_movie_mode = IFLAG_NO_MOVIE
 !>     Number of frames
-        integer(kind = kint) :: num_rot =    0
+        integer(kind = kint) :: num_frame =   0
+!>     Rotatin axis:    id_rot_axis
+        integer(kind = kint) :: id_rot_axis = 3
+!>     Rotation range
+        real(kind = kint) :: angle_range(2) = 0.0d0
+!
+!>     Apature range
+        real(kind = kint) :: apature_range(2) = 0.0d0
+!>     Apature range
+        real(kind = kint) :: peak_range(2) =    0.0d0
       end type pvr_view_parameter
 !
 !
@@ -339,9 +348,10 @@
      &                         :: names(n_flag_pvr_movie_mode)
 !
 !
-      call set_control_labels(c_movie_rotaion,    names( 1))
-      call set_control_labels(c_movie_apature,    names( 2))
-      call set_control_labels(c_movie_modelview,  names( 3))
+      call set_control_labels(FLAG_ROTATE_MOVIE,   names( 1))
+      call set_control_labels(FLAG_ZOOM,           names( 2))
+      call set_control_labels(FLAG_START_END_VIEW, names( 3))
+      call set_control_labels(FLAG_LOOKINGLASS,    names( 4))
 !
       end subroutine set_flag_pvr_movie_mode
 !
@@ -355,10 +365,11 @@
      &                         :: names(n_flag_LIC_movie_mode)
 !
 !
-      call set_control_labels(c_movie_rotaion,    names( 1))
-      call set_control_labels(c_movie_apature,    names( 2))
-      call set_control_labels(c_movie_modelview,  names( 3))
-      call set_control_labels(c_movie_lic_kernel, names( 4))
+      call set_control_labels(FLAG_ROTATE_MOVIE,   names( 1))
+      call set_control_labels(FLAG_ZOOM,           names( 2))
+      call set_control_labels(FLAG_START_END_VIEW, names( 3))
+      call set_control_labels(FLAG_LOOKINGLASS,    names( 4))
+      call set_control_labels(FLAG_LIC_KERNEL,     names( 5))
 !
       end subroutine set_flag_LIC_movie_mode
 !

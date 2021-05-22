@@ -75,12 +75,10 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
-      integer(kind = kint) :: i_rot, ist_rot, ied_rot
+      integer(kind = kint) :: i_rot
 !
 !
-      ist_rot = pvr_param%view%istart_rot
-      ied_rot = pvr_param%view%iend_rot
-      do i_rot = ist_rot, ied_rot
+      do i_rot = 1, pvr_param%view%num_frame
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
@@ -121,12 +119,10 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
-      integer(kind = kint) :: i_rot, ist_rot, ied_rot
+      integer(kind = kint) :: i_rot
 !
 !
-      ist_rot = pvr_param%view%istart_rot
-      ied_rot = pvr_param%view%iend_rot
-      do i_rot = ist_rot, ied_rot
+      do i_rot = 1, pvr_param%view%num_frame
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !

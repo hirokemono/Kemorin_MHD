@@ -124,8 +124,9 @@ label[1]   num_frames_ctl
 label[2]   rotation_axis_ctl 
 label[3]   start_view_control 
 label[4]   end_view_control 
-label[5]   apature_range 
-label[6]   LIC_kernel_peak_range 
+label[5]   angle_range
+label[6]   apature_range
+label[7]   LIC_kernel_peak_range
 
 Check pvr_ctl_labls->label_pvr_dirs
 ctl_list->num_labels 3 

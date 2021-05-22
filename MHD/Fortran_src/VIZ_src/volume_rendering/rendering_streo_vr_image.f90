@@ -69,7 +69,7 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
-      integer(kind = kint) :: i_rot, ist_rot, ied_rot
+      integer(kind = kint) :: i_rot
       type(rotation_pvr_images) :: rot_imgs1
 !
 !
@@ -77,9 +77,7 @@
       call init_rot_pvr_image_arrays                                    &
      &   (pvr_param%view, pvr_rgb, rot_imgs1)
 !
-      ist_rot = pvr_param%view%istart_rot
-      ied_rot = pvr_param%view%iend_rot
-      do i_rot = ist_rot, ied_rot
+      do i_rot = 1, pvr_param%view%num_frame
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
@@ -88,7 +86,7 @@
       end do
       call calypso_mpi_barrier
 !
-      do i_rot = ist_rot, ied_rot
+      do i_rot = 1, pvr_param%view%num_frame
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
         if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
         call sel_write_pvr_image_file                                   &
@@ -122,7 +120,7 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
-      integer(kind = kint) :: i_rot, ist_rot, ied_rot
+      integer(kind = kint) :: i_rot
       type(rotation_pvr_images) :: rot_imgs1
 !
 !
@@ -130,9 +128,7 @@
       call init_rot_pvr_image_arrays                                    &
      &   (pvr_param%view, pvr_rgb, rot_imgs1)
 !
-      ist_rot = pvr_param%view%istart_rot
-      ied_rot = pvr_param%view%iend_rot
-      do i_rot = ist_rot, ied_rot
+      do i_rot = 1, pvr_param%view%num_frame
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
@@ -148,7 +144,7 @@
       end do
       call calypso_mpi_barrier
 !
-      do i_rot = ist_rot, ied_rot
+      do i_rot = 1, pvr_param%view%num_frame
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
         if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
         call sel_write_pvr_image_file                                   &

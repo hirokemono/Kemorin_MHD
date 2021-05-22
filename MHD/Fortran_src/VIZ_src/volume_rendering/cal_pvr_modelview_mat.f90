@@ -182,7 +182,6 @@
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_view_parameter), intent(inout) :: view_param
 !
-      integer(kind = kint) :: iaxis_rot
       real(kind = kreal) :: rotation_axis(3), rev_lookat(3)
       real(kind = kreal) :: rev_eye(3)
       real(kind = kreal) :: angle_deg
@@ -203,19 +202,32 @@
       end if
 !
 !
-      if (view_param%iflag_rotate_snap .gt. 0) then
+      if(view_param%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
         call Kemo_Unit(view_param%modelview_mat)
 !
-        iaxis_rot = view_param%iprm_pvr_rot(1)
         rotation_axis(1:3) =       zero
-        rotation_axis(iaxis_rot) = one
-        angle_deg = 360.0d0 * dble(i_rot-1)                             &
-     &           / dble(view_param%iprm_pvr_rot(2))
+        rotation_axis(view_param%id_rot_axis) = one
+        angle_deg = view_param%angle_range(1)                           &
+     &        + (view_param%angle_range(2) - view_param%angle_range(1)) &
+     &         * dble(i_rot-1) / dble(view_param%num_frame)
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &    angle_deg, rotation_axis(1) )
 !
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
+!
+      else if(view_param%iflag_movie_mode .eq. I_LOOKINGLASS) then
+        call Kemo_Unit(view_param%modelview_mat)
+        call Kemo_Rotate(view_param%modelview_mat,                      &
+     &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
+!
+        rotation_axis(1:3) =                    zero
+        rotation_axis(view_param%id_rot_axis) = one
+        angle_deg = view_param%angle_range(2)                           &
+     &        - (view_param%angle_range(2) - view_param%angle_range(1)) &
+     &         * dble(i_rot-1) / dble(view_param%num_frame)
+        call Kemo_Rotate(view_param%modelview_mat,                      &
+     &    angle_deg, rotation_axis(1) )
       else
         call set_rot_mat_from_viewpts(view_param)
       end if
