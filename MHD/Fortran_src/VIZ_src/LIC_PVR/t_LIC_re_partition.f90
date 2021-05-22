@@ -42,7 +42,7 @@
 !>        Structure for field data for LIC
         type(lic_field_data), pointer :: nod_fld_lic(:)
 !>        Structure for field data for LIC
-!        type(lic_field_data), pointer :: field_lic(:)
+        type(lic_field_data), pointer :: field_lic(:)
       end type lic_repartioned_mesh
 !
 !  ---------------------------------------------------------------------
