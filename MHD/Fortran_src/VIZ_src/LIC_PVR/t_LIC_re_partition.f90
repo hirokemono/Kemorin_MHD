@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,       &
-!!     &                              viz_fem, mesh_to_viz_tbl)
+!!     &                              repart_data)
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(in), target :: geofem
-!!        type(mesh_data), intent(inout) :: viz_fem
-!!        type(calypso_comm_table), intent(inout) :: mesh_to_viz_tbl
+!!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!@endverbatim
 !
       module t_LIC_re_partition
@@ -70,6 +69,7 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
+      allocate(repart_data%viz_fem)
       call load_or_const_new_partition(repart_p, geofem, next_tbl,      &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl)
 !
