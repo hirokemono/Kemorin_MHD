@@ -46,6 +46,7 @@
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_vector_for_solver
+      use t_LIC_re_partition
 !
       use each_volume_rendering
 !
@@ -64,7 +65,6 @@
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
-      use LIC_re_partition
 !
       integer(kind = kint), intent(in) :: increment_lic
       type(mesh_data), intent(in), target :: geofem
@@ -196,8 +196,8 @@
 !
           call dealloc_PVR_initialize(lic%pvr%pvr_param(i_lic),         &
      &                                lic%pvr%pvr_proj(ist_rdr))
-          call dealloc_LIC_each_mesh(lic%repart_p, lic%repart_data,     &
-     &                               lic%lic_fld_pm(i_lic))
+          call dealloc_LIC_re_partition(lic%repart_p, lic%repart_data,  &
+     &                                  lic%lic_fld_pm(i_lic))
         end do
 !
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
@@ -271,7 +271,6 @@
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
-      use LIC_re_partition
 !
       integer(kind = kint), intent(in) :: i_lic
       type(mesh_data), intent(in), target :: geofem
@@ -292,18 +291,16 @@
 !
 !  -----  Repartition
       if(lic_fld_pm%lic_param%each_part_p%flag_repartition) then
-        allocate(repart_data%viz_fem)
         call s_LIC_re_partition                                         &
      &     (lic_fld_pm%lic_param%each_part_p, geofem, next_tbl,         &
-     &      repart_data%viz_fem, repart_data%mesh_to_viz_tbl)
+     &      repart_data%viz_fem)
 !
         allocate(lic_fld_pm%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_fld_pm%lic_param%num_masking, lic_fld_pm%field_lic)
       else if(repart_p%flag_repartition) then
-        allocate(repart_data%viz_fem)
         call s_LIC_re_partition(repart_p, geofem, next_tbl,             &
-     &      repart_data%viz_fem, repart_data%mesh_to_viz_tbl)
+     &                          repart_data)
 !
         allocate(lic_fld_pm%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
@@ -345,9 +342,8 @@
 !
       if(lic%repart_p%flag_repartition) then
 !  -----  Repartition
-        allocate(lic%repart_data%viz_fem)
         call s_LIC_re_partition(lic%repart_p, geofem, next_tbl,         &
-     &      lic%repart_data%viz_fem, lic%repart_data%mesh_to_viz_tbl)
+     &                          lic%repart_data)
 !
         do i_lic = 1, lic%pvr%num_pvr
           allocate(lic%lic_fld_pm(i_lic)%field_lic)
@@ -405,45 +401,6 @@
       call dealloc_iflag_pvr_used_ele(pvr_param%draw_param)
 !
       end subroutine dealloc_PVR_initialize
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_LIC_each_mesh                                  &
-     &         (repart_p, repart_data, lic_fld_pm)
-!
-      type(volume_partioning_param), intent(in) :: repart_p
-!
-      type(lic_repartioned_mesh), intent(inout) :: repart_data
-      type(LIC_field_params), intent(inout) :: lic_fld_pm
-!
-!
-      if(lic_fld_pm%lic_param%each_part_p%flag_repartition) then
-        call dealloc_calypso_comm_table(repart_data%mesh_to_viz_tbl)
-!
-        call dealloc_vectors_surf_group                                 &
-     &     (repart_data%viz_fem%group%surf_grp_norm)
-        call dealloc_normal_vector(repart_data%viz_fem%mesh%surf)
-        call dealloc_numnod_stack(repart_data%viz_fem%mesh%node)
-        call dealloc_mesh_infos_w_normal(repart_data%viz_fem%mesh,      &
-     &                                   repart_data%viz_fem%group)
-      else if(repart_p%flag_repartition) then
-        call dealloc_calypso_comm_table(repart_data%mesh_to_viz_tbl)
-!
-        call dealloc_vectors_surf_group                                 &
-     &     (repart_data%viz_fem%group%surf_grp_norm)
-        call dealloc_normal_vector(repart_data%viz_fem%mesh%surf)
-        call dealloc_numnod_stack(repart_data%viz_fem%mesh%node)
-        call dealloc_mesh_infos_w_normal(repart_data%viz_fem%mesh,      &
-     &                                   repart_data%viz_fem%group)
-      else
-        nullify(repart_data%viz_fem)
-        nullify(lic_fld_pm%field_lic)
-      end if
-!
-      call dealloc_nod_data_4_lic(lic_fld_pm%nod_fld_lic)
-      deallocate(lic_fld_pm%nod_fld_lic)
-!
-      end subroutine dealloc_LIC_each_mesh
 !
 !  ---------------------------------------------------------------------
 !

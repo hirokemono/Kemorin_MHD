@@ -49,6 +49,7 @@
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_vector_for_solver
+      use t_LIC_re_partition
 !
       use each_volume_rendering
 !
@@ -58,14 +59,6 @@
 !      integer(kind = kint), parameter :: IFLAG_THROUGH =    1
 !      integer(kind = kint), parameter :: IFLAG_DRAW =       0
 !      integer(kind = kint), parameter :: IFLAG_TERMINATE = -1
-!
-!>      Structure of repartition data
-      type lic_repartioned_mesh
-!>         Structure for mesh data for visualization
-        type(mesh_data), pointer :: viz_fem
-!>        Transfer table to visualization mesh
-        type(calypso_comm_table) :: mesh_to_viz_tbl
-      end type lic_repartioned_mesh
 !
       type lic_volume_rendering_module
 !>         Logical flag to make re-patitioning each rendering
@@ -161,7 +154,6 @@
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
-      use LIC_re_partition
 !
       integer(kind = kint), intent(in) :: increment_lic
       type(mesh_data), intent(in), target :: geofem
@@ -224,9 +216,8 @@
 !
       if(lic%repart_p%flag_repartition) then
 !  -----  Repartition
-        allocate(lic%repart_data%viz_fem)
         call s_LIC_re_partition(lic%repart_p, geofem, next_tbl,         &
-     &      lic%repart_data%viz_fem, lic%repart_data%mesh_to_viz_tbl)
+     &                          lic%repart_data)
        else
         lic%repart_data%viz_fem => geofem
       end if
