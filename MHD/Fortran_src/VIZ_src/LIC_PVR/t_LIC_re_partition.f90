@@ -200,14 +200,14 @@
 !
       if(lic_param%each_part_p%flag_repartition                         &
      &     .or. repart_p%flag_repartition) then
+        allocate(repart_data%field_lic(1))
+        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
+     &      lic_param%num_masking, repart_data%field_lic(1))
+!
         call repartition_lic_field                                      &
      &     (geofem%mesh%node, repart_data%viz_fem%mesh,                 &
      &      repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic(1),    &
      &      repart_data%field_lic(1), v_sol)
-!
-        allocate(repart_data%field_lic(1))
-        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
-     &      lic_param%num_masking, repart_data%field_lic(1))
       else
         repart_data%field_lic => repart_data%nod_fld_lic
       end if
