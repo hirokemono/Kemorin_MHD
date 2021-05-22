@@ -283,13 +283,22 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, lic%pvr%num_pvr
+        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
+     &      lic%lic_fld_pm(i_lic)%lic_param, lic%lic_fld_pm(i_lic)%nod_fld_lic)
+!
+        if(lic%repart_p%flag_repartition) then
+          call repartition_lic_field(geofem%mesh%node, lic%repart_data%viz_fem%mesh,    &
+     &        lic%repart_data%mesh_to_viz_tbl, lic%lic_fld_pm(i_lic)%nod_fld_lic,           &
+     &        lic%lic_fld_pm(i_lic)%field_lic, v_sol)
+        end if
+!
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
         call s_each_LIC_rendering                                       &
-     &     (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,     &
-     &      lic%repart_data%mesh_to_viz_tbl, geofem%mesh, nod_fld,      &
+     &     (istep_lic, time, lic%repart_data%viz_fem,                   &
      &      lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),            &
-     &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img), v_sol)
+     &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -311,14 +320,23 @@
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%pvr%pvr_param(i_lic)%view%iflag_movie_mode               &
      &                                   .ne. IFLAG_NO_MOVIE) then
+          if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+          call cal_field_4_each_lic(geofem%mesh%node, nod_fld,          &
+     &        lic%lic_fld_pm(i_lic)%lic_param, lic%lic_fld_pm(i_lic)%nod_fld_lic)
+!
+          if(lic%repart_p%flag_repartition) then
+            call repartition_lic_field(geofem%mesh%node, lic%repart_data%viz_fem%mesh,  &
+     &          lic%repart_data%mesh_to_viz_tbl,                            &
+     &          lic%lic_fld_pm(i_lic)%nod_fld_lic,                          &
+     &          lic%lic_fld_pm(i_lic)%field_lic, v_sol)
+          end if
+!
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot                               &
-     &       (istep_lic, time, lic%repart_p, lic%repart_data%viz_fem,   &
-     &        lic%repart_data%mesh_to_viz_tbl, geofem%mesh, nod_fld,    &
+     &       (istep_lic, time, lic%repart_data%viz_fem,                 &
      &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
-     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
-     &        v_sol)
+     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
         end if
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)

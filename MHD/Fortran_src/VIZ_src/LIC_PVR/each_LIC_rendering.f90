@@ -49,7 +49,6 @@
       use t_lic_field_data
       use t_calypso_comm_table
       use t_control_param_vol_grping
-      use t_vector_for_solver
 !
       use set_default_pvr_params
       use set_position_pvr_screen
@@ -64,9 +63,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_each_LIC_rendering(istep_pvr, time,                  &
-     &          repart_p, viz_fem, mesh_to_viz_tbl, mesh, nod_fld,      &
-     &          lic_fld_pm, pvr_param, pvr_proj, pvr_rgb, v_sol)
+      subroutine s_each_LIC_rendering(istep_pvr, time, viz_fem,         &
+     &          lic_fld_pm, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -76,28 +74,12 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_data), intent(in) :: viz_fem
-      type(volume_partioning_param), intent(in) :: repart_p
-      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(phys_data), intent(in) :: nod_fld
 !
       type(LIC_field_params), intent(inout) :: lic_fld_pm
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
-      type(vectors_4_solver), intent(inout) :: v_sol
 !
-!
-      if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-      call cal_field_4_each_lic(mesh%node, nod_fld,                     &
-     &    lic_fld_pm%lic_param, lic_fld_pm%nod_fld_lic)
-!
-      if(repart_p%flag_repartition) then
-        call repartition_lic_field(mesh%node, viz_fem%mesh,             &
-     &      mesh_to_viz_tbl, lic_fld_pm%nod_fld_lic,                    &
-     &      lic_fld_pm%field_lic, v_sol)
-      end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -144,9 +126,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_each_LIC_rendering_w_rot(istep_pvr, time,            &
-     &          repart_p, viz_fem, mesh_to_viz_tbl, mesh, nod_fld,      &
-     &          lic_fld_pm, pvr_param, pvr_proj, pvr_rgb, v_sol)
+      subroutine s_each_LIC_rendering_w_rot(istep_pvr, time, viz_fem,   &
+     &          lic_fld_pm, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -156,28 +137,12 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_data), intent(in) :: viz_fem
-      type(volume_partioning_param), intent(in) :: repart_p
-      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(phys_data), intent(in) :: nod_fld
 !
       type(LIC_field_params), intent(inout) :: lic_fld_pm
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
-      type(vectors_4_solver), intent(inout) :: v_sol
 !
-!
-      if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-      call cal_field_4_each_lic(mesh%node, nod_fld,                     &
-     &    lic_fld_pm%lic_param, lic_fld_pm%nod_fld_lic)
-!
-      if(repart_p%flag_repartition) then
-        call repartition_lic_field(mesh%node, viz_fem%mesh,             &
-     &      mesh_to_viz_tbl, lic_fld_pm%nod_fld_lic,                    &
-     &      lic_fld_pm%field_lic, v_sol)
-      end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
