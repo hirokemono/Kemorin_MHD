@@ -28,8 +28,7 @@
       use t_mesh_data
       use t_comm_table
       use t_calypso_comm_table
-      use t_next_node_ele_4_node
-      use t_jacobians
+      use t_control_param_LIC_PVR
 !
       implicit  none
 !
@@ -39,6 +38,9 @@
         type(mesh_data), pointer :: viz_fem
 !>        Transfer table to visualization mesh
         type(calypso_comm_table) :: mesh_to_viz_tbl
+!
+!>        Structure of LIC field parameters
+        type(LIC_field_params), allocatable :: lic_fld_pm(:)
       end type lic_repartioned_mesh
 !
 !  ---------------------------------------------------------------------
@@ -50,6 +52,8 @@
       subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,         &
      &                              repart_data)
 !
+      use t_next_node_ele_4_node
+      use t_jacobians
       use t_fem_gauss_int_coefs
       use t_shape_functions
 !
