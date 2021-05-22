@@ -68,6 +68,9 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_proj%start_save, pvr_proj%start_fix)
+!
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
