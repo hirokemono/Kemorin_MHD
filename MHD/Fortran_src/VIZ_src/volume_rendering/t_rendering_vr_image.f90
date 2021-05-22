@@ -83,6 +83,9 @@
         type(pvr_stencil_buffer) :: stencil
 !>        Start point structure for volume rendering with fixed view
         type(pvr_ray_start_type) :: start_fix
+!
+!>        Start point structure for volume rendering with fixed view
+        type(pvr_ray_start_type) :: start_save
       end type PVR_projection_data
 !
 !  ---------------------------------------------------------------------
@@ -112,6 +115,11 @@
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil)
 !
+      call allocate_item_pvr_ray_start                                  &
+     &   (pvr_proj%start_pt%num_pvr_ray, pvr_proj%start_save)
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_proj%start_pt, pvr_proj%start_save)
+!
       end subroutine set_fixed_view_and_image
 !
 !  ---------------------------------------------------------------------
@@ -130,6 +138,9 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
+!
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_proj%start_save, pvr_proj%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh,                       &
