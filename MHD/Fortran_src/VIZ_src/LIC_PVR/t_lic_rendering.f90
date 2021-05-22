@@ -222,11 +222,11 @@
         lic%repart_data%viz_fem => geofem
       end if
 !
+      allocate(lic%repart_data%nod_fld_lic(lic%pvr%num_pvr))
       do i_lic = 1, lic%pvr%num_pvr
-        allocate(lic%lic_fld_pm(i_lic)%nod_fld_lic)
         call alloc_nod_vector_4_lic(geofem%mesh%node,                   &
      &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
-     &      lic%lic_fld_pm(i_lic)%nod_fld_lic)
+     &      lic%repart_data%nod_fld_lic(i_lic))
 !
         if(lic%repart_p%flag_repartition) then
           allocate(lic%lic_fld_pm(i_lic)%field_lic)
@@ -236,7 +236,7 @@
      &        lic%lic_fld_pm(i_lic)%field_lic)
         else
           lic%lic_fld_pm(i_lic)%field_lic                               &
-     &           => lic%lic_fld_pm(i_lic)%nod_fld_lic
+     &           => lic%repart_data%nod_fld_lic(i_lic)
         end if
       end do
 !
@@ -285,11 +285,11 @@
       do i_lic = 1, lic%pvr%num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
-     &      lic%lic_fld_pm(i_lic)%lic_param, lic%lic_fld_pm(i_lic)%nod_fld_lic)
+     &      lic%lic_fld_pm(i_lic)%lic_param, lic%repart_data%nod_fld_lic(i_lic))
 !
         if(lic%repart_p%flag_repartition) then
           call repartition_lic_field(geofem%mesh%node, lic%repart_data%viz_fem%mesh,    &
-     &        lic%repart_data%mesh_to_viz_tbl, lic%lic_fld_pm(i_lic)%nod_fld_lic,           &
+     &        lic%repart_data%mesh_to_viz_tbl, lic%repart_data%nod_fld_lic(i_lic),           &
      &        lic%lic_fld_pm(i_lic)%field_lic, v_sol)
         end if
 !
@@ -322,12 +322,12 @@
      &                                   .ne. IFLAG_NO_MOVIE) then
           if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
           call cal_field_4_each_lic(geofem%mesh%node, nod_fld,          &
-     &        lic%lic_fld_pm(i_lic)%lic_param, lic%lic_fld_pm(i_lic)%nod_fld_lic)
+     &        lic%lic_fld_pm(i_lic)%lic_param, lic%repart_data%nod_fld_lic(i_lic))
 !
           if(lic%repart_p%flag_repartition) then
             call repartition_lic_field(geofem%mesh%node, lic%repart_data%viz_fem%mesh,  &
      &          lic%repart_data%mesh_to_viz_tbl,                            &
-     &          lic%lic_fld_pm(i_lic)%nod_fld_lic,                          &
+     &          lic%repart_data%nod_fld_lic(i_lic),                          &
      &          lic%lic_fld_pm(i_lic)%field_lic, v_sol)
           end if
 !
@@ -356,7 +356,8 @@
 !
       if(lic%pvr%num_pvr .le. 0) return
       do i_lic = 1, lic%pvr%num_pvr
-        call dealloc_each_lic_data(lic%repart_p, lic%lic_fld_pm(i_lic))
+        call dealloc_each_lic_data(lic%repart_p, lic%lic_fld_pm(i_lic), &
+     &      lic%repart_data)
       end do
       deallocate(lic%lic_fld_pm)
 !
@@ -366,12 +367,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_lic_data(repart_p, lic_fld_pm)
+      subroutine dealloc_each_lic_data(repart_p, lic_fld_pm, repart_data)
 !
       use set_pvr_control
 !
       type(volume_partioning_param), intent(in) :: repart_p
       type(LIC_field_params), intent(inout) :: lic_fld_pm
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
 !
       if(repart_p%flag_repartition) then
@@ -379,7 +381,7 @@
       else
         nullify(lic_fld_pm%field_lic)
       end if
-      call dealloc_nod_data_4_lic(lic_fld_pm%nod_fld_lic)
+      call dealloc_nod_data_4_lic(repart_data%nod_fld_lic(1))
       call flush_each_lic_control(lic_fld_pm)
 !
       end subroutine dealloc_each_lic_data

@@ -28,6 +28,7 @@
       use t_mesh_data
       use t_comm_table
       use t_calypso_comm_table
+      use t_lic_field_data
 !
       implicit  none
 !
@@ -37,6 +38,11 @@
         type(mesh_data), pointer :: viz_fem
 !>        Transfer table to visualization mesh
         type(calypso_comm_table) :: mesh_to_viz_tbl
+!
+!>        Structure for field data for LIC
+        type(lic_field_data), pointer :: nod_fld_lic(:)
+!>        Structure for field data for LIC
+!        type(lic_field_data), pointer :: field_lic(:)
       end type lic_repartioned_mesh
 !
 !  ---------------------------------------------------------------------
