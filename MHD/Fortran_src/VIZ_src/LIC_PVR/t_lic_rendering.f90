@@ -380,7 +380,7 @@
 !
 !
       if(repart_p%flag_repartition) then
-        call dealloc_nod_data_4_lic(repart_data%field_lic)
+        call dealloc_nod_data_4_lic(repart_data%field_lic(1))
       else
         nullify(repart_data%field_lic)
       end if
