@@ -31,6 +31,7 @@
         integer(kind = kint) :: numnod
         integer(kind = kint), allocatable :: id_block(:,:)
         real(kind = kreal), allocatable :: volume_nod(:)
+        real(kind = kreal) :: volume_min_gl
         real(kind = kreal) :: volume_nod_tot
         real(kind = kreal) :: sub_volume
 !
@@ -74,8 +75,8 @@
 !
       call alloc_node_volume_and_sort(mesh%node, vol_sort)
 !
-      call set_volume_at_node                                           &
-     &   (mesh, vol_sort%volume_nod, vol_sort%volume_nod_tot)
+      call set_volume_at_node(mesh, vol_sort%volume_nod,                &
+     &    vol_sort%volume_nod_tot, vol_sort%volume_min_gl)
       call set_xyz_block_id_by_nod_vol(mesh%node, part_param,           &
      &                                 vol_sort%id_block)
 !

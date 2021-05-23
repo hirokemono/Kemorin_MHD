@@ -7,7 +7,8 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine set_volume_at_node(mesh, volume_nod, volume_nod_tot)
+!!      subroutine set_volume_at_node(mesh, volume_nod,                 &
+!!     &                              volume_nod_tot, volume_min_gl)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!      subroutine set_xyz_block_id_by_nod_vol                          &
 !!     &         (node, part_param, id_block)
@@ -48,7 +49,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_volume_at_node(mesh, volume_nod, volume_nod_tot)
+      subroutine set_volume_at_node(mesh, volume_nod,                   &
+     &                              volume_nod_tot, volume_min_gl)
 !
       use m_solver_SR
       use calypso_mpi_real
@@ -58,6 +60,7 @@
       type(mesh_geometry), intent(in) :: mesh
       real(kind = kreal), intent(inout) :: volume_nod(mesh%node%numnod)
       real(kind = kreal), intent(inout) :: volume_nod_tot
+      real(kind = kreal), intent(inout) :: volume_min_gl
 !
       real(kind = kreal) :: vol_lc
       integer(kind = kint) :: inod
@@ -73,6 +76,13 @@
       end do
       call calypso_mpi_allreduce_one_real                               &
      &   (vol_lc, volume_nod_tot, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (vol_lc, volume_min_gl, MPI_MIN)
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'volume_nod_tot', volume_nod_tot
+        write(*,*) 'volume_min_gl', volume_min_gl
+      end if
 !
       end subroutine set_volume_at_node
 !
