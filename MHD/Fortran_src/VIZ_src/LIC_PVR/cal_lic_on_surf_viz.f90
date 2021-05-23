@@ -45,7 +45,6 @@
         use calypso_mpi
         use t_noise_node_data
         use cal_noise_value
-        use get_geometry_reference
 
         integer(kind = kint), intent(in) :: isurf_orgs(2,3)
         integer(kind = kint), intent(in) :: nnod, nsurf, nelem
@@ -219,7 +218,6 @@
 
       use t_noise_node_data
       use cal_noise_value
-      use get_geometry_reference
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
