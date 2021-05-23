@@ -343,17 +343,9 @@
      &      pvr%pvr_proj(ist_rdr))
 !
 !
-        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
-     &      lic_param(i_lic), repart_data%nod_fld_lic)
-!
-        if(lic_param(i_lic)%each_part_p%flag_repartition                &
-     &                           .or. repart_p%flag_repartition) then
-          call repartition_lic_field                                    &
-     &       (geofem%mesh%node, repart_data%viz_fem%mesh,               &
-     &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,     &
-     &        repart_data%field_lic, v_sol)
-        end if
+        if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
+        call set_LIC_each_field(geofem, nod_fld,                        &
+     &      repart_p, lic_param(i_lic), repart_data, v_sol)
 !
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering each', i_lic
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
@@ -427,16 +419,9 @@
       if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering at once'
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, pvr%num_pvr
-        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
-     &      lic_param(i_lic), repart_data%nod_fld_lic)
-!
-        if(repart_p%flag_repartition) then
-          call repartition_lic_field                                    &
-     &       (geofem%mesh%node, repart_data%viz_fem%mesh,               &
-     &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,     &
-     &        repart_data%field_lic, v_sol)
-        end if
+        if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
+        call set_LIC_each_field(geofem, nod_fld,                        &
+     &      repart_p, lic_param(i_lic), repart_data, v_sol)
 !
         ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
@@ -466,16 +451,9 @@
         write(*,*) 's_each_LIC_rendering_w_rot once', i_lic
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                    .ne. IFLAG_NO_MOVIE) then
-          if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-          call cal_field_4_each_lic(geofem%mesh%node, nod_fld,          &
-     &      lic_param(i_lic), repart_data%nod_fld_lic)
-!
-          if(repart_p%flag_repartition) then
-            call repartition_lic_field                                  &
-     &        (geofem%mesh%node, repart_data%viz_fem%mesh,              &
-     &         repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,    &
-     &         repart_data%field_lic, v_sol)
-          end if
+          if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
+          call set_LIC_each_field(geofem, nod_fld,                      &
+     &        repart_p, lic_param(i_lic), repart_data, v_sol)
 !
           ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = pvr%istack_pvr_images(i_lic-1) + 1

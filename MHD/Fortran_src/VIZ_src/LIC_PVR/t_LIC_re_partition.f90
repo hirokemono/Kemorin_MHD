@@ -7,11 +7,16 @@
 !>@brief Main module to access all visualization programs
 !!
 !!@verbatim
+!!      subroutine set_LIC_each_field(geofem, nod_fld,                  &
+!!     &          repart_p, lic_param, repart_data, v_sol)
 !!      subroutine dealloc_LIC_each_mesh                                &
 !!     &         (repart_p, lic_param, repart_data)
+!!        type(mesh_data), intent(in), target :: geofem
+!!        type(phys_data), intent(in) :: nod_fld
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_parameters), intent(in) :: lic_param
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!
 !!      subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,       &
 !!     &                              repart_data)
@@ -62,6 +67,34 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine set_LIC_each_field(geofem, nod_fld,                    &
+     &          repart_p, lic_param, repart_data, v_sol)
+!
+      type(mesh_data), intent(in), target :: geofem
+      type(phys_data), intent(in) :: nod_fld
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_parameters), intent(in) :: lic_param
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(vectors_4_solver), intent(inout) :: v_sol
+!
+!
+        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
+     &      lic_param, repart_data%nod_fld_lic)
+!
+        if(repart_p%flag_repartition                                    &
+     &        .or. lic_param%each_part_p%flag_repartition) then
+          call repartition_lic_field                                    &
+     &       (geofem%mesh%node, repart_data%viz_fem%mesh,               &
+     &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,     &
+     &        repart_data%field_lic, v_sol)
+        end if
+!
+      end subroutine set_LIC_each_field
+!
+!  ---------------------------------------------------------------------
+!
       subroutine dealloc_LIC_each_mesh                                  &
      &         (repart_p, lic_param, repart_data)
 !
@@ -71,8 +104,8 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
 !
-      if(lic_param%each_part_p%flag_repartition                         &
-     &     .or. repart_p%flag_repartition) then
+      if(repart_p%flag_repartition                                      &
+     &        .or. lic_param%each_part_p%flag_repartition) then
         call dealloc_LIC_re_partition(repart_data)
         call dealloc_nod_data_4_lic(repart_data%field_lic)
         deallocate(repart_data%field_lic)
