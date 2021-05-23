@@ -18,7 +18,7 @@
 !!      subroutine set_control_lic_masking                            &
 !!     &         (num_nod_phys, phys_nod_name, mask_ctl, masking)
 !!      subroutine dealloc_lic_masking_range(masking)
-!!        type(lic_masking_ctl), intent(in) :: mask_ctl
+!!        type(masking_by_field_ctl), intent(in) :: mask_ctl
 !!        type(masking_parameter), intent(inout) :: masking
 !!@endverbatim
 !
@@ -114,14 +114,14 @@
       subroutine set_control_lic_masking                                &
      &         (num_nod_phys, phys_nod_name, mask_ctl, masking)
 !
-      use t_control_data_LIC_masking
+      use t_control_data_masking
       use set_field_comp_for_viz
       use set_components_flags
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      type(lic_masking_ctl), intent(in) :: mask_ctl
+      type(masking_by_field_ctl), intent(in) :: mask_ctl
       type(masking_parameter), intent(inout) :: masking
 !
       integer(kind = kint) :: icheck_ncomp(1)
