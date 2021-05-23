@@ -193,9 +193,9 @@
         write(*,*) 'num_masking: ', lic_p%num_masking
         do i = 1, lic_p%num_masking
           write(*,*) 'LIC masking field: ',  i,                         &
-     &              lic_p%masking(i)%field_info%id_field,               &
-     &              lic_p%masking(i)%field_info%id_component,           &
-     &              trim(lic_p%masking(i)%field_info%field_name)
+     &              lic_p%masking(i)%id_mask_field,                     &
+     &              lic_p%masking(i)%id_mask_comp,                      &
+     &              trim(lic_ctl%mask_ctl(i)%field_name_ctl%charavalue)
           write(*,*) 'LIC masking range min: ',                         &
      &              lic_p%masking(i)%range_min(:)
           write(*,*) 'LIC masking range max: ',                         &

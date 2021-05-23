@@ -22,7 +22,6 @@
       use m_constants
       use m_error_IDs
       use skip_comment_f
-      use t_control_params_4_pvr
 !
       implicit  none
 !
@@ -36,8 +35,12 @@
       type lic_masking_parameter
 !>        Mask type 1: geometry 2: field data
         integer(kind = kint) :: mask_type =   iflag_geometrymask
-!>        Structure of soure decision field parameter for LIC
-        type(pvr_field_parameter) :: field_info
+!
+!>     Field type for masking data
+        integer(kind = kint) :: id_mask_field = 0
+!>     Component flag for masking data
+        integer(kind = kint) :: id_mask_comp =  0
+!
 !>        Geometry mask component index
         integer(kind = kint) :: idx_comp =  0
 !>        Number of masking range
@@ -114,10 +117,8 @@
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
      &      ione, tmpfield, tmpcomp, ione, ifld_tmp, icomp_tmp,         &
      &      icheck_ncomp, ncomp_tmp, fldname_tmp)
-        masking%field_info%id_field = ifld_tmp(1)
-        masking%field_info%id_component = icomp_tmp(1)
-        masking%field_info%num_original_comp = ncomp_tmp(1)
-        masking%field_info%field_name = fldname_tmp(1)
+        masking%id_mask_field = ifld_tmp(1)
+        masking%id_mask_comp = icomp_tmp(1)
       end if
 !
       call alloc_lic_masking_range                                      &
