@@ -76,7 +76,7 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
-      use t_control_data_LIC_masking
+      use t_control_data_masking
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
       use t_ctl_data_volume_repart

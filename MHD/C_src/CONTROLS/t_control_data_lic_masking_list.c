@@ -8,16 +8,16 @@
 #include "t_control_data_lic_masking_list.h"
 
 int lengthchara_f();
-int num_ctl_label_LIC_masking_f();
-void set_ctl_label_LIC_masking_f(char *label_1d);
+int num_ctl_label_masking_f();
+void set_ctl_label_masking_f(char *label_1d);
 
 struct label_list_f * init_ctl_label_LIC_masking_f(){
 	int len_fix = lengthchara_f();
 	struct label_list_f *label_list = alloc_ctl_label();
-	label_list->num_labels = num_ctl_label_LIC_masking_f();
+	label_list->num_labels = num_ctl_label_masking_f();
 	
     char *packed_name = alloc_string((long) (len_fix*label_list->num_labels));	
-	set_ctl_label_LIC_masking_f(packed_name);
+    set_ctl_label_masking_f(packed_name);
 	set_labels_from_packed(len_fix, packed_name, label_list);
 	free(packed_name);
 	return label_list;

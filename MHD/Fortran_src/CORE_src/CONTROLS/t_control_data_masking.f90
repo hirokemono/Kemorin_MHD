@@ -30,6 +30,8 @@
 !!
 !!      integer(kind = kint) function num_ctl_label_masking()
 !!      subroutine set_ctl_label_masking(names)
+!!        character(len = kchara), intent(inout)                        &
+!!                                :: names(n_label_masking)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      begin masking_control
 !!        masking_type         field or geometry

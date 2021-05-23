@@ -80,13 +80,14 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
-      use t_control_data_LIC_masking
+      use t_control_data_masking
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
       use t_ctl_data_volume_repart
 !
       use calypso_mpi_int
       use bcast_control_arrays
+      use bcast_masking_control_data
       use bcast_ctl_data_LIC_noise
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
@@ -116,7 +117,7 @@
 !
       if(my_rank .ne. 0) call alloc_lic_masking_ctl(lic_ctl)
       do i = 1, lic_ctl%num_masking_ctl
-        call bcast_lic_masking_ctl_data(lic_ctl%mask_ctl(i))
+        call bcast_masking_ctl_data(lic_ctl%mask_ctl(i))
       end do
 !
       end subroutine bcast_lic_control_data
@@ -129,7 +130,7 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
-      use t_control_data_LIC_masking
+      use t_control_data_masking
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
 !
@@ -172,7 +173,7 @@
       new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
       if(new_lic_c%num_masking_ctl .gt. 0) then
         allocate(new_lic_c%mask_ctl(new_lic_c%num_masking_ctl))
-        call dup_lic_masking_ctls(org_lic_c%num_masking_ctl,            &
+        call dup_masking_ctls(org_lic_c%num_masking_ctl,                &
      &      org_lic_c%mask_ctl, new_lic_c%mask_ctl)
       end if
 !
