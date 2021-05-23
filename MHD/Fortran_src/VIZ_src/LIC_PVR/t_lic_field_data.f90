@@ -66,13 +66,22 @@
       allocate(field_lic%d_lic(node%numnod))
       allocate(field_lic%v_lic(node%numnod,3))
 !      allocate(field_lic%o_lic(node%numnod))
-      if(node%numnod .gt. 0) field_lic%d_lic =    0.0d0
-      if(node%numnod .gt. 0) field_lic%v_lic =    0.0d0
-!      if(node%numnod .gt. 0) field_lic%o_lic =    0.0d0
+      if(node%numnod .gt. 0) then
+!$omp parallel workshare
+        field_lic%d_lic(1:node%numnod) =   0.0d0
+        field_lic%v_lic(1:node%numnod,1) = 0.0d0
+        field_lic%v_lic(1:node%numnod,2) = 0.0d0
+        field_lic%v_lic(1:node%numnod,3) = 0.0d0
+!        field_lic%o_lic(1:node%numnod) =   0.0d0
+!$omp end parallel workshare
 !
       field_lic%num_mask = num_masking
       allocate(field_lic%s_lic(node%numnod,field_lic%num_mask))
-      if(node%numnod*num_masking .gt. 0) field_lic%s_lic = 0.0d0
+      if(node%numnod*num_masking .gt. 0) then
+!$omp parallel workshare
+        field_lic%s_lic(1:node%numnod,1:field_lic%num_mask) = 0.0d0
+!$omp end parallel workshare
+      end if
 !
       end subroutine alloc_nod_vector_4_lic
 !

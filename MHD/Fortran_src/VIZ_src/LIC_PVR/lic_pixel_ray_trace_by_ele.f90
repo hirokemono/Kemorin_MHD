@@ -259,7 +259,7 @@
      &            surf%numsurf, ele%numele, surf%nnod_4_surf,           &
      &            surf%isf_4_ele, surf%iele_4_surf, surf%interior_surf, &
      &            node%xx, isurf_orgs, surf%ie_surf, xi, lic_p,         &
-     &            r_mid, vec4_mid, field_lic%s_lic,                     &
+     &            r_mid, vec4_mid, field_lic%s_lic(1,1),                &
      &            field_lic%v_lic, xx4_lic, isurf_end,                  &
      &            iflag_lic, rlic_grad)
               elapse_trace =  elapse_trace + MPI_WTIME() - start_trace
