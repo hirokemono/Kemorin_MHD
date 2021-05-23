@@ -376,12 +376,8 @@
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
 !
-        if(lic_param(i_lic)%each_part_p%flag_repartition) then
-          call repartition_lic_field                                    &
-     &       (geofem%mesh%node, repart_data%viz_fem%mesh,               &
-     &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,     &
-     &        repart_data%field_lic, v_sol)
-        else if(repart_p%flag_repartition) then
+        if(lic_param(i_lic)%each_part_p%flag_repartition                &
+     &                           .or. repart_p%flag_repartition) then
           call repartition_lic_field                                    &
      &       (geofem%mesh%node, repart_data%viz_fem%mesh,               &
      &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,     &
