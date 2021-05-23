@@ -38,7 +38,6 @@
 !
       use t_rendering_vr_image
       use t_control_params_4_pvr
-      use t_control_param_LIC_PVR
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
       use t_pvr_image_array
@@ -50,6 +49,7 @@
       use t_control_param_vol_grping
       use t_vector_for_solver
       use t_LIC_re_partition
+      use t_control_param_LIC
 !
       use each_volume_rendering
 !
@@ -69,7 +69,7 @@
         type(lic_repartioned_mesh) :: repart_data
 !
 !>        Structure of LIC field parameters
-        type(LIC_field_params), allocatable :: lic_fld_pm(:)
+        type(lic_parameters), allocatable :: lic_param(:)
 !
 !>        Structure for LIC images
         type(volume_rendering_module) :: pvr
@@ -154,6 +154,7 @@
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
+      use set_lic_controls
 !
       integer(kind = kint), intent(in) :: increment_lic
       type(mesh_data), intent(in), target :: geofem
@@ -182,7 +183,7 @@
       call dealloc_control_vol_repart(repart_ctl)
 !
       call alloc_pvr_data(lic%pvr)
-      allocate(lic%lic_fld_pm(lic%pvr%num_pvr))
+      allocate(lic%lic_param(lic%pvr%num_pvr))
 !
       do i_lic = 1, lic%pvr%num_pvr
         call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
@@ -192,7 +193,7 @@
 !
       call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%lic_fld_pm, lic%pvr%pvr_param, lic%flag_each_repart)
+     &    lic%lic_param, lic%pvr%pvr_param, lic%flag_each_repart)
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
@@ -225,7 +226,7 @@
       allocate(lic%repart_data%nod_fld_lic(lic%pvr%num_pvr))
       do i_lic = 1, lic%pvr%num_pvr
         call alloc_nod_vector_4_lic(geofem%mesh%node,                   &
-     &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
+     &      lic%lic_param(i_lic)%num_masking,                           &
      &      lic%repart_data%nod_fld_lic(i_lic))
       end do
 !
@@ -234,7 +235,7 @@
         do i_lic = 1, lic%pvr%num_pvr
           call alloc_nod_vector_4_lic                                   &
      &       (lic%repart_data%viz_fem%mesh%node,                        &
-     &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
+     &        lic%lic_param(i_lic)%num_masking,                         &
      &        lic%repart_data%field_lic(i_lic))
         end do
       else
@@ -286,7 +287,7 @@
       do i_lic = 1, lic%pvr%num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
-     &      lic%lic_fld_pm(i_lic)%lic_param, lic%repart_data%nod_fld_lic(i_lic))
+     &      lic%lic_param(i_lic), lic%repart_data%nod_fld_lic(i_lic))
 !
         if(lic%repart_p%flag_repartition) then
           call repartition_lic_field(geofem%mesh%node, lic%repart_data%viz_fem%mesh,    &
@@ -299,7 +300,7 @@
         call s_each_LIC_rendering                                       &
      &     (istep_lic, time, lic%repart_data%viz_fem,                   &
      &      lic%repart_data%field_lic(i_lic),                           &
-     &      lic%lic_fld_pm(i_lic)%lic_param, lic%pvr%pvr_param(i_lic),  &
+     &      lic%lic_param(i_lic), lic%pvr%pvr_param(i_lic),             &
      &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -324,12 +325,13 @@
      &                                   .ne. IFLAG_NO_MOVIE) then
           if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
           call cal_field_4_each_lic(geofem%mesh%node, nod_fld,          &
-     &        lic%lic_fld_pm(i_lic)%lic_param, lic%repart_data%nod_fld_lic(i_lic))
+     &        lic%lic_param(i_lic), lic%repart_data%nod_fld_lic(i_lic))
 !
           if(lic%repart_p%flag_repartition) then
-            call repartition_lic_field(geofem%mesh%node, lic%repart_data%viz_fem%mesh,  &
-     &          lic%repart_data%mesh_to_viz_tbl,                            &
-     &          lic%repart_data%nod_fld_lic(i_lic),                          &
+            call repartition_lic_field                                  &
+     &         (geofem%mesh%node, lic%repart_data%viz_fem%mesh,         &
+     &          lic%repart_data%mesh_to_viz_tbl,                        &
+     &          lic%repart_data%nod_fld_lic(i_lic),                     &
      &          lic%repart_data%field_lic(i_lic), v_sol)
           end if
 !
@@ -338,7 +340,7 @@
           call s_each_LIC_rendering_w_rot                               &
      &       (istep_lic, time, lic%repart_data%viz_fem,                 &
      &        lic%repart_data%field_lic(i_lic),                         &
-     &        lic%lic_fld_pm(i_lic)%lic_param, lic%pvr%pvr_param(i_lic), &
+     &        lic%lic_param(i_lic), lic%pvr%pvr_param(i_lic),           &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
         end if
       end do
@@ -359,10 +361,10 @@
 !
       if(lic%pvr%num_pvr .le. 0) return
       do i_lic = 1, lic%pvr%num_pvr
-        call dealloc_each_lic_data(lic%repart_p, lic%lic_fld_pm(i_lic), &
+        call dealloc_each_lic_data(lic%repart_p, lic%lic_param(i_lic),  &
      &      lic%repart_data)
       end do
-      deallocate(lic%lic_fld_pm)
+      deallocate(lic%lic_param)
 !
       call dealloc_pvr_and_lic_data(lic%pvr)
 !
@@ -370,12 +372,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_lic_data(repart_p, lic_fld_pm, repart_data)
+      subroutine dealloc_each_lic_data(repart_p, lic_param, repart_data)
 !
       use set_pvr_control
+      use set_lic_controls
 !
       type(volume_partioning_param), intent(in) :: repart_p
-      type(LIC_field_params), intent(inout) :: lic_fld_pm
+      type(lic_parameters), intent(inout) :: lic_param
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
 !
@@ -385,7 +388,7 @@
         nullify(repart_data%field_lic)
       end if
       call dealloc_nod_data_4_lic(repart_data%nod_fld_lic(1))
-      call flush_each_lic_control(lic_fld_pm)
+      call flush_each_lic_control(lic_param)
 !
       end subroutine dealloc_each_lic_data
 !
