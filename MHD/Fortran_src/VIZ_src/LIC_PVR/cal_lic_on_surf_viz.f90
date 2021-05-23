@@ -97,12 +97,6 @@
           end if
         end do
 
-        do i = 1, lic_p%num_masking
-          if(lic_p%masking(i)%mask_type .eq. iflag_geometrymask) then
-            r_org(i) = s_get_geometry_reference                         &
-     &               (lic_p%masking(i)%idx_comp, xx4_org)
-          end if
-        end do
         if(mask_flag(lic_p, r_org)) then
           call interpolate_noise_at_node                                &
      &       (xx4_org(1), lic_p%noise_t, rlic_grad_v)
@@ -224,7 +218,6 @@
 
       use t_noise_node_data
       use cal_noise_value
-      use get_geometry_reference
 !
       integer(kind = kint), intent(in) :: nnod, nelem, nsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -381,15 +374,10 @@
         v4_start(1:4) =  v4_tgt(1:4)
 !
         rnoise_grad(0:3) = 0.0
-        ref_value(:) = 0.0
+        ref_value(1:lic_p%num_masking) = 0.0
         do i = 1, lic_p%num_masking
-          if(lic_p%masking(i)%mask_type .eq. iflag_geometrymask) then
-            ref_value(i) = s_get_geometry_reference                     &
-      &                  (lic_p%masking(i)%idx_comp, x4_tgt)
-          else
-            call cal_field_on_surf_scalar(nnod, nsurf, nnod_4_surf,     &
-      &         ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
-          end if
+          call cal_field_on_surf_scalar(nnod, nsurf, nnod_4_surf,       &
+      &       ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
         end do
 !
         if(mask_flag(lic_p, ref_value)) then
