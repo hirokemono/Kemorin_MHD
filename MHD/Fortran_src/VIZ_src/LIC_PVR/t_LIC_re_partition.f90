@@ -27,10 +27,11 @@
 !!      subroutine set_LIC_each_field(geofem, nod_fld,                  &
 !!     &          repart_p, lic_param, repart_data, v_sol)
 !!      subroutine dealloc_LIC_each_mesh                                &
-!!     &         (repart_p, lic_param, repart_data)
+!!     &         (repart_p, each_part_p, repart_data)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(volume_partioning_param), intent(in) :: repart_p
+!!        type(volume_partioning_param), intent(in) :: each_part_p
 !!        type(lic_parameters), intent(in) :: lic_param
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(vectors_4_solver), intent(inout) :: v_sol
@@ -194,16 +195,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_LIC_each_mesh                                  &
-     &         (repart_p, lic_param, repart_data)
+     &         (repart_p, each_part_p, repart_data)
 !
       type(volume_partioning_param), intent(in) :: repart_p
-      type(lic_parameters), intent(in) :: lic_param
+      type(volume_partioning_param), intent(in) :: each_part_p
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
 !
       if(repart_p%flag_repartition                                      &
-     &        .or. lic_param%each_part_p%flag_repartition) then
+     &        .or. each_part_p%flag_repartition) then
         call dealloc_LIC_re_partition(repart_data)
         call dealloc_nod_data_4_lic(repart_data%field_lic)
         deallocate(repart_data%field_lic)

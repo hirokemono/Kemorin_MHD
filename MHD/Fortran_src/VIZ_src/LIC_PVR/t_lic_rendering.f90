@@ -164,7 +164,7 @@
       type(viz_repartition_ctl), intent(inout) :: repart_ctl
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_lic, ist_img, ist_rdr
+      integer(kind = kint) :: i_lic, ist_img
 !
 !
       lic%pvr%num_pvr = lic_ctls%num_lic_ctl
@@ -244,10 +244,8 @@
       type(lic_volume_rendering_module), intent(inout) :: lic
       type(vectors_4_solver), intent(inout) :: v_sol
 !
-      integer(kind = kint) :: i_lic, ist_img, ist_rdr
 !
-!
-      if(increment_lic .le. 0) lic%pvr%num_pvr = 0
+      if(lic%pvr%num_pvr .le. 0) return
 !
       if(lic%flag_each_repart) then
         call LIC_visualize_w_each_repart                                &
@@ -274,7 +272,7 @@
       integer(kind = kint) :: i_lic
 !
       if(lic%pvr%num_pvr .le. 0) return
-      call dealloc_LIC_each_mesh(lic%repart_p, lic%lic_param,           &
+      call dealloc_LIC_each_mesh(lic%repart_p, lic%repart_p,            &
      &                           lic%repart_data)
 !
       do i_lic = 1, lic%pvr%num_pvr

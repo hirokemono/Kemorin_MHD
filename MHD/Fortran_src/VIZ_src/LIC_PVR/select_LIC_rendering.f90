@@ -258,8 +258,8 @@
 !
         call dealloc_PVR_initialize(pvr%pvr_param(i_lic),               &
      &                              pvr%pvr_proj(ist_rdr))
-        call dealloc_LIC_each_mesh(repart_p, lic_param(i_lic),          &
-     &                             repart_data)
+        call dealloc_LIC_each_mesh                                      &
+     &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)

@@ -75,7 +75,7 @@
       type(viz_repartition_ctl), intent(inout) :: repart_ctl
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_lic, ist_img, ist_rdr
+      integer(kind = kint) :: i_lic, ist_img
 !
 !
       lic%pvr%num_pvr = lic_ctls%num_lic_ctl
