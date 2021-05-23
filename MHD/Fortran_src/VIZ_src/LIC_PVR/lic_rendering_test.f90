@@ -214,19 +214,19 @@
      &     (lic_fld_pm%lic_param%each_part_p, geofem, next_tbl,         &
      &      repart_data)
 !
-        allocate(lic_fld_pm%field_lic)
+        allocate(repart_data%field_lic(1))
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
-     &      lic_fld_pm%lic_param%num_masking, lic_fld_pm%field_lic)
+     &      lic_fld_pm%lic_param%num_masking, repart_data%field_lic(1))
       else if(repart_p%flag_repartition) then
         call s_LIC_re_partition(repart_p, geofem, next_tbl,             &
      &                          repart_data)
 !
-        allocate(lic_fld_pm%field_lic)
+        allocate(repart_data%field_lic(1))
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
-     &      lic_fld_pm%lic_param%num_masking, lic_fld_pm%field_lic)
+     &      lic_fld_pm%lic_param%num_masking, repart_data%field_lic(1))
       else
         repart_data%viz_fem =>  geofem
-        lic_fld_pm%field_lic => repart_data%nod_fld_lic(1)
+        repart_data%field_lic => repart_data%nod_fld_lic
       end if
 !
       end subroutine LIC_init_each_mesh
@@ -262,18 +262,16 @@
         call s_LIC_re_partition                                         &
      &     (repart_p, geofem, next_tbl, repart_data)
 !
+        allocate(repart_data%field_lic(num_lic))
         do i_lic = 1, num_lic
-          allocate(lic_fld_pm(i_lic)%field_lic)
           call alloc_nod_vector_4_lic                                   &
      &       (repart_data%viz_fem%mesh%node,                            &
      &        lic_fld_pm(i_lic)%lic_param%num_masking,                  &
-     &        lic_fld_pm(i_lic)%field_lic)
+     &        repart_data%field_lic(i_lic))
         end do
       else
         repart_data%viz_fem => geofem
-        do i_lic = 1, num_lic
-          lic_fld_pm(i_lic)%field_lic => repart_data%nod_fld_lic(i_lic)
-        end do
+        repart_data%field_lic => repart_data%nod_fld_lic
       end if
 !
       end subroutine LIC_init_shared_mesh
@@ -318,11 +316,15 @@
 !
       if(lic_fld_pm%lic_param%each_part_p%flag_repartition) then
         call dealloc_LIC_re_partition(repart_data)
+        call dealloc_nod_data_4_lic(repart_data%field_lic(1))
+        deallocate(repart_data%field_lic)
       else if(repart_p%flag_repartition) then
         call dealloc_LIC_re_partition(repart_data)
+        call dealloc_nod_data_4_lic(repart_data%field_lic(1))
+        deallocate(repart_data%field_lic)
       else
         nullify(repart_data%viz_fem)
-        nullify(lic_fld_pm%field_lic)
+        nullify(repart_data%field_lic)
       end if
 !
       call dealloc_nod_data_4_lic(repart_data%nod_fld_lic(1))
@@ -378,17 +380,17 @@
         if(lic_fld_pm(i_lic)%lic_param%each_part_p%flag_repartition) then
           call repartition_lic_field(geofem%mesh%node, repart_data%viz_fem%mesh,      &
      &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic(1),             &
-     &        lic_fld_pm(i_lic)%field_lic, v_sol)
+     &        repart_data%field_lic(1), v_sol)
         else if(repart_p%flag_repartition) then
           call repartition_lic_field(geofem%mesh%node, repart_data%viz_fem%mesh,      &
      &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic(1),             &
-     &        lic_fld_pm(i_lic)%field_lic, v_sol)
+     &        repart_data%field_lic(1), v_sol)
         end if
 !
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering each', i_lic
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         call s_each_LIC_rendering(istep_lic, time, repart_data%viz_fem, &
-     &      lic_fld_pm(i_lic)%field_lic, lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),                    &
+     &      repart_data%field_lic(1), lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),                    &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -404,17 +406,18 @@
           if(lic_fld_pm(i_lic)%lic_param%each_part_p%flag_repartition) then
             call repartition_lic_field(geofem%mesh%node, repart_data%viz_fem%mesh,  &
      &         repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic(1), &
-     &         lic_fld_pm(i_lic)%field_lic, v_sol)
+     &         repart_data%field_lic(1), v_sol)
           else if(repart_p%flag_repartition) then
             call repartition_lic_field(geofem%mesh%node, repart_data%viz_fem%mesh,  &
      &         repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic(1), &
-     &          lic_fld_pm(i_lic)%field_lic, v_sol)
+     &         repart_data%field_lic(1), v_sol)
           end if
 !
           call s_each_LIC_rendering_w_rot                               &
      &     (istep_lic, time, repart_data%viz_fem,                       &
-     &      lic_fld_pm(i_lic)%field_lic, lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),                    &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+     &      repart_data%field_lic(1), lic_fld_pm(i_lic)%lic_param,      &
+     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),                &
+     &      pvr%pvr_rgb(ist_img))
         end if
 !
         call dealloc_PVR_initialize(pvr%pvr_param(i_lic),               &
@@ -476,14 +479,15 @@
         if(repart_p%flag_repartition) then
           call repartition_lic_field(geofem%mesh%node, repart_data%viz_fem%mesh,    &
      &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic(i_lic),           &
-     &        lic_fld_pm(i_lic)%field_lic, v_sol)
+     &        repart_data%field_lic(i_lic), v_sol)
         end if
 !
         ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         call s_each_LIC_rendering(istep_lic, time, repart_data%viz_fem, &
-     &      lic_fld_pm(i_lic)%field_lic, lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),                    &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+     &      repart_data%field_lic(i_lic), lic_fld_pm(i_lic)%lic_param,  &
+     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),                &
+     &      pvr%pvr_rgb(ist_img))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -511,17 +515,19 @@
      &      lic_fld_pm(i_lic)%lic_param, repart_data%nod_fld_lic(i_lic))
 !
           if(repart_p%flag_repartition) then
-            call repartition_lic_field(geofem%mesh%node, repart_data%viz_fem%mesh,  &
+            call repartition_lic_field                                  &
+     &         (geofem%mesh%node, repart_data%viz_fem%mesh,             &
      &          repart_data%mesh_to_viz_tbl,                            &
-     &          repart_data%nod_fld_lic(i_lic),                          &
-     &          lic_fld_pm(i_lic)%field_lic, v_sol)
+     &          repart_data%nod_fld_lic(i_lic),                         &
+     &          repart_data%field_lic(i_lic), v_sol)
           end if
 !
           ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = pvr%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot                               &
      &       (istep_lic, time, repart_data%viz_fem,                     &
-     &        lic_fld_pm(i_lic)%field_lic, lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),                  &
+     &        repart_data%field_lic(i_lic),                             &
+     &        lic_fld_pm(i_lic)%lic_param, pvr%pvr_param(i_lic),        &
      &        pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
         end if
       end do
