@@ -14,8 +14,8 @@
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) :: group
 !!        type(communication_table), intent(inout) :: ele_comm
-!!      subroutine extend_mesh_sleeve                                   &
-!!     &         (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,  &
+!!      subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm, &
+!!     &          org_node, org_ele, neib_ele, sleeve_exp_WK,           &
 !!     &          new_nod_comm, new_node, new_ele, new_ele_comm,        &
 !!     &          dist_4_comm, iflag_process_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
@@ -97,7 +97,7 @@
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
       call init_min_dist_from_import                                    &
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
-     &    sleeve_exp_WK%d_sleeve, dist_4_comm%distance_in_export)
+     &    sleeve_exp_WK, dist_4_comm%distance_in_export)
 !
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
@@ -105,7 +105,7 @@
       do iloop = 1, 10
         if(iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve', iloop
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
-     &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK%d_sleeve,      &
+     &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,               &
      &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
      &      new_ele_comm, dist_4_comm, iflag_process_extend)
         call s_extended_groups                                          &
@@ -149,7 +149,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm,   &
-     &          org_node, org_ele, neib_ele, vect_ref,                  &
+     &          org_node, org_ele, neib_ele, sleeve_exp_WK,             &
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
      &          dist_4_comm, iflag_process_extend)
 !
@@ -180,7 +180,7 @@
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
       type(element_around_node), intent(in) :: neib_ele
-      real(kind = kreal), intent(in) :: vect_ref(org_node%numnod,3)
+      type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       type(communication_table), intent(inout) :: new_nod_comm
       type(node_data), intent(inout) :: new_node
@@ -223,7 +223,7 @@
       call alloc_sleeve_extension_marks(nod_comm, marks_4_extend)
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
-     &    neib_ele, dist_4_comm, vect_ref, marks_4_extend)
+     &    neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend)
 !
 !
 !

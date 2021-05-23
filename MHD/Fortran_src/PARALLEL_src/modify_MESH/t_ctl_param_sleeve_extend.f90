@@ -30,12 +30,12 @@
 !!        type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
 !!
 !!      real(kind = kreal) function distance_select(sleeve_exp_p, i, j, &
-!!     &                                            node, vect)
+!!     &                                            node, sleeve_exp_WK)
 !!        integer(kind = kint), intent(in) :: i, j
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(node_data), intent(in) :: node
 !!        real(kind = kreal), intent(in) :: dist_max
-!!        real(kind = kreal), intent(in) :: vect(node%numnod,3)
+!!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !!@endverbatim
 !
       module t_ctl_param_sleeve_extend
@@ -245,17 +245,19 @@
 !  ---------------------------------------------------------------------
 !
       real(kind = kreal) function distance_select(sleeve_exp_p, i, j,   &
-     &                                            node, vect)
+     &                                            node, sleeve_exp_WK)
 !
       integer(kind = kint), intent(in) :: i, j
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(node_data), intent(in) :: node
-      real(kind = kreal), intent(in) :: vect(node%numnod,3)
+      type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
 !
       if(sleeve_exp_p%iflag_expand .eq. iflag_vector_trace) then
-        distance_select = distance_by_trace(sleeve_exp_p%dist_max,      &
-     &                                      i, j, node, vect)
+        distance_select                                                &
+     &     = distance_by_trace(sleeve_exp_p%dist_max, i, j, node,      &
+     &                         sleeve_exp_WK%nnod_sleeve,              &
+     &                         sleeve_exp_WK%d_sleeve)
       else if(sleeve_exp_p%iflag_expand .eq. iflag_distance) then
         distance_select = distance_by_length(i, j, node)
       else
@@ -267,13 +269,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      real(kind = kreal) function distance_by_trace(dist_max, i, j,     &
-     &                                              node, vect)
+      real(kind = kreal) function distance_by_trace                     &
+     &                (dist_max, i, j, node, nnod_vect, vect)
 !
-      integer(kind = kint), intent(in) :: i, j
+      integer(kind = kint), intent(in) :: i, j, nnod_vect
       type(node_data), intent(in) :: node
       real(kind = kreal), intent(in) :: dist_max
-      real(kind = kreal), intent(in) :: vect(node%numnod,3)
+      real(kind = kreal), intent(in) :: vect(nnod_vect,3)
 !
       real(kind = kreal) :: prod, dist
 !
