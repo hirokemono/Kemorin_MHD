@@ -188,33 +188,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_PVR_initialize(pvr_param, pvr_proj)
-!
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-!
-!
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        call deallocate_item_pvr_ray_start(pvr_proj(2)%start_save)
-        call deallocate_pvr_ray_start(pvr_proj(2)%start_fix)
-        call dealloc_pvr_stencil_buffer(pvr_proj(2)%stencil)
-        call dealloc_projected_position(pvr_proj(2)%screen)
-        call dealloc_pvr_surf_domain_item(pvr_proj(2)%bound)
-      end if
-!
-      call deallocate_item_pvr_ray_start(pvr_proj(1)%start_save)
-      call deallocate_pvr_ray_start(pvr_proj(1)%start_fix)
-      call dealloc_pvr_stencil_buffer(pvr_proj(1)%stencil)
-      call dealloc_projected_position(pvr_proj(1)%screen)
-      call dealloc_pvr_surf_domain_item(pvr_proj(1)%bound)
-!
-      call dealloc_pixel_position_pvr(pvr_param%pixel)
-      call dealloc_iflag_pvr_used_ele(pvr_param%draw_param)
-!
-      end subroutine dealloc_PVR_initialize
-!
-!  ---------------------------------------------------------------------
-!
       subroutine LIC_visualize_w_each_repart                            &
      &         (istep_lic, time, geofem, next_tbl, nod_fld,             &
      &          repart_p, repart_data, pvr, lic_param, v_sol)

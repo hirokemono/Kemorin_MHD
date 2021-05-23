@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in July, 2006
 !
-!>@brief Main module to access all visualization programs
+!>@brief Main module for re-partitiong for LIC
 !!
 !!@verbatim
 !!      subroutine LIC_init_shared_mesh(geofem, next_tbl, nod_fld,      &

@@ -1,11 +1,17 @@
+!>@file   each_volume_rendering.f90
+!!@brief  module each_volume_rendering
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2006
 !
-!      module each_volume_rendering
-!
-!      Written by H. Matsui on July, 2006
-!
+!>@brief Main module for each volume rendering
+!!
+!!@verbatim
 !!      subroutine init_each_PVR_image(pvr_param, pvr_rgb)
 !!      subroutine each_PVR_initialize(i_pvr, mesh, group, pvr_rgb,     &
 !!     &                               pvr_param, pvr_proj)
+!!      subroutine dealloc_PVR_initialize(pvr_param, pvr_proj)
+!!
 !!      subroutine each_PVR_rendering                                   &
 !!     &         (istep_pvr, time, geofem, jacs, nod_fld,               &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
@@ -23,7 +29,7 @@
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(2)
-!
+!!@endverbatim
 !
       module each_volume_rendering
 !
@@ -157,6 +163,34 @@
 !
       end subroutine each_PVR_initialize
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_PVR_initialize(pvr_param, pvr_proj)
+!
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+!
+!
+      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
+        call deallocate_item_pvr_ray_start(pvr_proj(2)%start_save)
+        call deallocate_pvr_ray_start(pvr_proj(2)%start_fix)
+        call dealloc_pvr_stencil_buffer(pvr_proj(2)%stencil)
+        call dealloc_projected_position(pvr_proj(2)%screen)
+        call dealloc_pvr_surf_domain_item(pvr_proj(2)%bound)
+      end if
+!
+      call deallocate_item_pvr_ray_start(pvr_proj(1)%start_save)
+      call deallocate_pvr_ray_start(pvr_proj(1)%start_fix)
+      call dealloc_pvr_stencil_buffer(pvr_proj(1)%stencil)
+      call dealloc_projected_position(pvr_proj(1)%screen)
+      call dealloc_pvr_surf_domain_item(pvr_proj(1)%bound)
+!
+      call dealloc_pixel_position_pvr(pvr_param%pixel)
+      call dealloc_iflag_pvr_used_ele(pvr_param%draw_param)
+!
+      end subroutine dealloc_PVR_initialize
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_rendering                                     &
