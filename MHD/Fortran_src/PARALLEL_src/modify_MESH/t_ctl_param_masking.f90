@@ -15,9 +15,9 @@
 !!        type(masking_parameter), intent(in) :: masking
 !!        real(kind=kreal), intent(in) :: value
 !!
-!!      subroutine set_control_lic_masking                            &
+!!      subroutine set_control_masking                                  &
 !!     &         (num_nod_phys, phys_nod_name, mask_ctl, masking)
-!!      subroutine dealloc_lic_masking_range(masking)
+!!      subroutine dealloc_masking_range(masking)
 !!        type(masking_by_field_ctl), intent(in) :: mask_ctl
 !!        type(masking_parameter), intent(inout) :: masking
 !!@endverbatim
@@ -64,7 +64,7 @@
         real(kind = kreal), allocatable :: range_max(:)
       end type masking_parameter
 !
-      private :: alloc_lic_masking_range
+      private :: alloc_masking_range
 !
 !  ---------------------------------------------------------------------
 !
@@ -111,7 +111,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_lic_masking                                &
+      subroutine set_control_masking                                    &
      &         (num_nod_phys, phys_nod_name, mask_ctl, masking)
 !
       use t_control_data_masking
@@ -170,30 +170,29 @@
         masking%id_mask_comp = icomp_tmp(1)
       end if
 !
-      call alloc_lic_masking_range                                      &
-     &   (mask_ctl%mask_range_ctl%num, masking)
+      call alloc_masking_range(mask_ctl%mask_range_ctl%num, masking)
 !
       do j = 1, masking%num_range
         masking%range_min(j) = mask_ctl%mask_range_ctl%vec1(j)
         masking%range_max(j) = mask_ctl%mask_range_ctl%vec2(j)
       end do
 !
-      end subroutine set_control_lic_masking
+      end subroutine set_control_masking
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_lic_masking_range(masking)
+      subroutine dealloc_masking_range(masking)
 !
       type(masking_parameter), intent(inout) :: masking
 !
       deallocate(masking%range_min, masking%range_max)
 !
-      end subroutine dealloc_lic_masking_range
+      end subroutine dealloc_masking_range
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_lic_masking_range(num, masking)
+      subroutine alloc_masking_range(num, masking)
 !
       integer(kind = kint), intent(in) :: num
       type(masking_parameter), intent(inout) :: masking
@@ -207,7 +206,7 @@
         masking%range_max(1:masking%num_range) =  1.0e15
       end if
 !
-      end subroutine alloc_lic_masking_range
+      end subroutine alloc_masking_range
 !
 !  ---------------------------------------------------------------------
 !

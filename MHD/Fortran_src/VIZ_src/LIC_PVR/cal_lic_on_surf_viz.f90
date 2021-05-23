@@ -97,7 +97,7 @@
           end if
         end do
 
-        if(mask_flag(lic_p, r_org)) then
+        if(lic_mask_flag(lic_p, r_org)) then
           call interpolate_noise_at_node                                &
      &       (xx4_org(1), lic_p%noise_t, rlic_grad_v)
         end if
@@ -380,7 +380,7 @@
       &       ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
         end do
 !
-        if(mask_flag(lic_p, ref_value)) then
+        if(lic_mask_flag(lic_p, ref_value)) then
           do i = 1, nstep_int(1)
             x4(1:4) = x4_org(1:4)                                       &
      &               + lic_p%noise_t%delta_noise * step_unit(1:4,1)

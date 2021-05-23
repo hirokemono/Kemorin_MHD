@@ -12,6 +12,9 @@
 !!     &          lic_p, flag_each_repart)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
+!!      logical function lic_mask_flag(lic_p, value)
+!!        type(lic_parameters), intent(in) :: lic_p
+!!        real(kind=kreal), intent(in) :: value(:)
 !!      subroutine dealloc_lic_noise_data(lic_p)
 !!      subroutine dealloc_lic_masking_ranges(lic_p)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
@@ -26,7 +29,7 @@
       use m_error_IDs
       use skip_comment_f
       use t_control_params_4_pvr
-      use t_control_param_LIC_masking
+      use t_ctl_param_masking
       use t_noise_node_data
       use t_3d_noise
       use t_LIC_kernel
@@ -49,7 +52,7 @@
 !>        Number of masking field
         integer(kind = kint) :: num_masking =   0
 !>        Structure of masking parameter
-        type(lic_masking_parameter), allocatable :: masking(:)
+        type(masking_parameter), allocatable :: masking(:)
 !
 !>        Structure for repartitioning parameters
         type(volume_partioning_param) :: each_part_p
@@ -178,7 +181,7 @@
         allocate(lic_p%masking(lic_p%num_masking))
 !
         do i = 1, lic_p%num_masking
-          call set_control_lic_masking(num_nod_phys, phys_nod_name,     &
+          call set_control_masking(num_nod_phys, phys_nod_name,         &
      &        lic_ctl%mask_ctl(i), lic_p%masking(i))
         end do
       end if
@@ -259,30 +262,17 @@
 !  ---------------------------------------------------------------------
 !
 !     if true, the reference value is in the mask range, so it can be visualized
-      logical function mask_flag(lic_p, value)
+      logical function lic_mask_flag(lic_p, value)
 !
       type(lic_parameters), intent(in) :: lic_p
       real(kind=kreal), intent(in) :: value(:)
 !
       integer(kind=kint) :: i,j, iFlag_inmask
 !
-      mask_flag = .true.
-      do i = 1, lic_p%num_masking
-        iFlag_inmask = izero
-        do j = 1, lic_p%masking(i)%num_range
-          if((value(i) .ge. lic_p%masking(i)%range_min(j)) .and.        &
-          &   (value(i) .le. lic_p%masking(i)%range_max(j))) then
-            iFlag_inmask = 1
-            exit
-          end if
-        end do
-        if(iFlag_inmask .eq. izero) then
-          mask_flag = .false.
-          return
-        end if
-      end do
+      lic_mask_flag                                                     &
+     &    = multi_mask_flag(lic_p%num_masking, lic_p%masking, value)
 
-      end function mask_flag
+      end function lic_mask_flag
 !
 !-----------------------------------------------------------------------
 !
@@ -293,10 +283,10 @@
       integer(kind = kint) :: i
 !
 !
-        do i = 1, lic_p%num_masking
-          call dealloc_lic_masking_range(lic_p%masking(i))
-        end do
-        deallocate(lic_p%masking)
+      do i = 1, lic_p%num_masking
+        call dealloc_masking_range(lic_p%masking(i))
+      end do
+      deallocate(lic_p%masking)
 !
       end subroutine dealloc_lic_masking_ranges
 !

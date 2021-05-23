@@ -80,7 +80,6 @@
       integer(kind = kint), intent(inout) :: ierr
 !
       character(len = kchara) :: tmpchara
-      integer(kind = kint) :: i
 !
       ierr = 0
       sleeve_exp_p%iflag_expand = iflag_turn_off
@@ -140,7 +139,6 @@
         write(*,*) 'sleeve_exp_p%dist_max', sleeve_exp_p%dist_max
         write(*,*) 'sleeve_exp_p%ref_vector_name',                      &
      &            trim(sleeve_exp_p%ref_vector_name)
-        end do
       end if
 !
       end subroutine set_ctl_param_sleeve_extension

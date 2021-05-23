@@ -242,7 +242,7 @@
 !write(*,*) "org", r_org, "tgt", r_tgt, "ratio", ratio
               end do
 ! masking on sampling point
-!              if(mask_flag(lic_p, r_mid)) then
+!              if(lic_mask_flag(lic_p, r_mid)) then
 
               start_trace =  MPI_WTIME()
               vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
