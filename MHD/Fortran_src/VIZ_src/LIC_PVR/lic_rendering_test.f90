@@ -401,22 +401,6 @@
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) then
           write(*,*) 's_each_LIC_rendering_w_rot each', i_lic
-          if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-          call cal_field_4_each_lic(geofem%mesh%node, nod_fld,          &
-     &      lic_param(i_lic), repart_data%nod_fld_lic)
-!
-          if(lic_param(i_lic)%each_part_p%flag_repartition) then
-            call repartition_lic_field                                  &
-     &        (geofem%mesh%node, repart_data%viz_fem%mesh,              &
-     &         repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,    &
-     &         repart_data%field_lic, v_sol)
-          else if(repart_p%flag_repartition) then
-            call repartition_lic_field                                  &
-     &        (geofem%mesh%node, repart_data%viz_fem%mesh,              &
-     &         repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,    &
-     &         repart_data%field_lic, v_sol)
-          end if
-!
           call s_each_LIC_rendering_w_rot                               &
      &     (istep_lic, time, repart_data%viz_fem,                       &
      &      repart_data%field_lic, lic_param(i_lic),                    &
