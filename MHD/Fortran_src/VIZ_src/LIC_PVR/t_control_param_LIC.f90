@@ -34,6 +34,7 @@
       use t_3d_noise
       use t_LIC_kernel
       use t_control_param_vol_grping
+      use t_ctl_param_masking
 !
       implicit  none
 !

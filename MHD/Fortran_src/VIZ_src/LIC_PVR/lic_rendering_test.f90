@@ -170,8 +170,7 @@
       else
         call LIC_visualize_w_shared_mesh                                &
      &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
-     &      lic%repart_data, lic%sleeve_exp_WK, lic%pvr, lic%lic_param, &
-     &      v_sol)
+     &      lic%repart_data, lic%pvr, lic%lic_param, v_sol)
       end if
 !
       end subroutine LIC_visualize_test

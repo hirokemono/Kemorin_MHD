@@ -123,8 +123,7 @@
 !
       subroutine LIC_visualize_w_shared_mesh                            &
      &         (istep_lic, time, geofem, nod_fld,                       &
-     &          repart_p, repart_data, sleeve_exp_WK,                   &
-     &          pvr, lic_param, v_sol)
+     &          repart_p, repart_data, pvr, lic_param, v_sol)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -139,7 +138,6 @@
       type(volume_partioning_param), intent(in) :: repart_p
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
-      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
       type(volume_rendering_module), intent(inout) :: pvr
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
