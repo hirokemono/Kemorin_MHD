@@ -7,27 +7,30 @@
 !>@brief Main module for re-partitiong for LIC
 !!
 !!@verbatim
-!!      subroutine LIC_init_nodal_field                                 &
-!!     &         (geofem, num_lic, lic_param, repart_data)
+!!      subroutine LIC_init_nodal_field(geofem, num_lic, lic_param,     &
+!!     &                                repart_data, sleeve_exp_WK)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(lic_parameters), intent(inout) :: lic_param(num_lic)
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!
 !!      subroutine LIC_init_shared_mesh(geofem, next_tbl, repart_p,     &
-!!     &                                repart_data)
+!!     &                                repart_data, sleeve_exp_WK)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!      subroutine LIC_init_each_mesh(geofem, next_tbl, repart_p,       &
-!!     &                              lic_param, repart_data)
+!!     &          lic_param, repart_data, sleeve_exp_WK)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(lic_parameters), intent(inout) :: lic_param
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!
 !!      subroutine set_LIC_each_field(geofem, nod_fld,                  &
 !!     &          repart_p, lic_param, repart_data, v_sol)
@@ -42,11 +45,12 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!
 !!      subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,       &
-!!     &                              repart_data)
+!!     &                              repart_data, sleeve_exp_WK)
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!@endverbatim
 !
       module t_LIC_re_partition
@@ -91,14 +95,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_init_nodal_field                                   &
-     &         (geofem, num_lic, lic_param, repart_data)
+      subroutine LIC_init_nodal_field(geofem, num_lic, lic_param,       &
+     &                                repart_data, sleeve_exp_WK)
 !
       integer(kind = kint), intent(in) :: num_lic
       type(mesh_data), intent(in), target :: geofem
 !
       type(lic_parameters), intent(inout) :: lic_param(num_lic)
       type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
       integer(kind = kint) :: i_lic, nmax_masking
 !
@@ -118,7 +123,7 @@
      &      geofem%mesh%node, repart_data%nod_fld_lic%num_mask,         &
      &      repart_data%nod_fld_lic%s_lic,                              &
      &      repart_data%nod_fld_lic%v_lic,                              &
-     &      lic_param(i_lic)%each_part_p)
+     &      lic_param(i_lic)%each_part_p, sleeve_exp_WK)
       end do
 !
       end subroutine LIC_init_nodal_field
@@ -127,19 +132,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_init_shared_mesh(geofem, next_tbl, repart_p,       &
-     &                                repart_data)
+     &                                repart_data, sleeve_exp_WK)
 !
       type(mesh_data), intent(in), target :: geofem
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
 !
       if(repart_p%flag_repartition) then
 !  -----  Repartition
         call s_LIC_re_partition                                         &
-     &     (repart_p, geofem, next_tbl, repart_data)
+     &     (repart_p, geofem, next_tbl, repart_data, sleeve_exp_WK)
 !
         allocate(repart_data%field_lic)
           call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,    &
@@ -154,7 +160,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_init_each_mesh(geofem, next_tbl, repart_p,         &
-     &                              lic_param, repart_data)
+     &          lic_param, repart_data, sleeve_exp_WK)
 !
       type(mesh_data), intent(in), target :: geofem
       type(next_nod_ele_table), intent(in) :: next_tbl
@@ -162,19 +168,20 @@
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(lic_parameters), intent(inout) :: lic_param
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
 !
 !  -----  Repartition
       if(lic_param%each_part_p%flag_repartition) then
-        call s_LIC_re_partition                                         &
-     &     (lic_param%each_part_p, geofem, next_tbl, repart_data)
+        call s_LIC_re_partition(lic_param%each_part_p,                  &
+     &      geofem, next_tbl, repart_data, sleeve_exp_WK)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_param%num_masking, repart_data%field_lic)
       else if(repart_p%flag_repartition) then
         call s_LIC_re_partition(repart_p, geofem, next_tbl,             &
-     &                          repart_data)
+     &                          repart_data, sleeve_exp_WK)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
@@ -241,7 +248,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,         &
-     &                              repart_data)
+     &                              repart_data, sleeve_exp_WK)
 !
       use t_next_node_ele_4_node
       use t_jacobians
@@ -259,6 +266,7 @@
       type(mesh_data), intent(in), target :: geofem
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
       type(shape_finctions_at_points) :: spfs_T
       type(jacobians_type) :: jac_viz
@@ -267,7 +275,8 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(repart_p, geofem, next_tbl,      &
-     &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl)
+     &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
+     &    sleeve_exp_WK)
 !
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
       call FEM_mesh_initialization                                      &

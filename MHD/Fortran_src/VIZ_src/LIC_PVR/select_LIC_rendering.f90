@@ -8,28 +8,32 @@
 !!
 !!@verbatim
 !!      subroutine LIC_initialize_w_shared_mesh(geofem, next_tbl,       &
-!!     &          repart_p, repart_data, pvr)
+!!     &          repart_p, repart_data, sleeve_exp_WK, pvr)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!      subroutine LIC_visualize_w_shared_mesh                          &
 !!     &         (istep_lic, time, geofem, nod_fld,                     &
-!!     &          repart_p, repart_data, pvr, lic_param, v_sol)
+!!     &          repart_p, repart_data, sleeve_exp_WK,                 &
+!!     &          pvr, lic_param, v_sol)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!
 !!      subroutine LIC_visualize_w_each_repart                          &
 !!     &         (istep_lic, time, geofem, next_tbl, nod_fld,           &
-!!     &          repart_p, repart_data, pvr, lic_param, v_sol)
+!!     &          repart_p, repart_data, sleeve_exp_WK,                 &
+!!     &          pvr, lic_param, v_sol)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: geofem
@@ -37,6 +41,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
 !!        type(vectors_4_solver), intent(inout) :: v_sol
@@ -82,7 +87,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_initialize_w_shared_mesh(geofem, next_tbl,         &
-     &          repart_p, repart_data, pvr)
+     &          repart_p, repart_data, sleeve_exp_WK, pvr)
 !
       use each_LIC_rendering
 !
@@ -91,13 +96,14 @@
       type(volume_partioning_param), intent(in) :: repart_p
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
       type(volume_rendering_module), intent(inout) :: pvr
 !
       integer(kind = kint) :: i_lic, ist_rdr, ist_img
 !
 !
       call LIC_init_shared_mesh                                         &
-     &   (geofem, next_tbl, repart_p, repart_data)
+     &   (geofem, next_tbl, repart_p, repart_data, sleeve_exp_WK)
 !
       do i_lic = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
@@ -117,7 +123,8 @@
 !
       subroutine LIC_visualize_w_shared_mesh                            &
      &         (istep_lic, time, geofem, nod_fld,                       &
-     &          repart_p, repart_data, pvr, lic_param, v_sol)
+     &          repart_p, repart_data, sleeve_exp_WK,                   &
+     &          pvr, lic_param, v_sol)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -132,6 +139,7 @@
       type(volume_partioning_param), intent(in) :: repart_p
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
       type(volume_rendering_module), intent(inout) :: pvr
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
@@ -196,7 +204,8 @@
 !
       subroutine LIC_visualize_w_each_repart                            &
      &         (istep_lic, time, geofem, next_tbl, nod_fld,             &
-     &          repart_p, repart_data, pvr, lic_param, v_sol)
+     &          repart_p, repart_data, sleeve_exp_WK,                   &
+     &          pvr, lic_param, v_sol)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -212,6 +221,7 @@
       type(volume_partioning_param), intent(in) :: repart_p
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
       type(volume_rendering_module), intent(inout) :: pvr
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
@@ -224,7 +234,7 @@
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
         call LIC_init_each_mesh(geofem, next_tbl, repart_p,             &
-     &                          lic_param(i_lic), repart_data)
+     &      lic_param(i_lic), repart_data, sleeve_exp_WK)
 !
         if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
         call each_PVR_initialize(i_lic,                                 &

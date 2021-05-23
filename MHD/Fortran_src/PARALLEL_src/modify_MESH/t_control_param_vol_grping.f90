@@ -9,14 +9,16 @@
 !!@verbatim
 !!      subroutine link_repart_masking_param(num_mask_org, masking_org, &
 !!     &          node, nmax_mask_org, d_mask_org, vect_ref_ext,        &
-!!     &          part_param)
-!!      subroutine unlink_repart_masking_param(part_param)
+!!     &          part_param, sleeve_exp_WK)
+!!      subroutine unlink_repart_masking_param                          &
+!!     &         (part_param, sleeve_exp_WK)
+!!      subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
 !!        integer(kind = kint), intent(in) :: num_mask_org, nmax_mask_org
 !!        type(masking_parameter), intent(in), target                   &
 !!       &                    :: masking_org(num_mask_org)
 !!        type(node_data), intent(in) :: node
 !!        real(kind = kreal), intent(in), target                        &
-!!     &                        :: vect_ref_ext(node%numnod,3)
+!!      &                        :: vect_ref_ext(node%numnod,3)
 !!        real(kind = kreal), intent(in), target                        &
 !!       &                    :: d_mask_org(node%numnod,nmax_mask_org)
 !!        type(volume_partioning_param), intent(inout) :: part_param
@@ -102,7 +104,7 @@
 !
       subroutine link_repart_masking_param(num_mask_org, masking_org,   &
      &          node, nmax_mask_org, d_mask_org, vect_ref_ext,          &
-     &          part_param)
+     &          part_param, sleeve_exp_WK)
 !
       use t_geometry_data
 !
@@ -116,6 +118,7 @@
      &                        :: d_mask_org(node%numnod,nmax_mask_org)
 !
       type(volume_partioning_param), intent(inout) :: part_param
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
       if(part_param%flag_mask_repart .EQV. .FALSE.) then
         part_param%num_mask_repart = 0
@@ -126,15 +129,17 @@
       part_param%d_mask =>         d_mask_org
 !
       call link_sleeve_extend_ref_vect(node, vect_ref_ext,              &
-     &                                 part_param%sleeve_exp_p)
+     &    part_param%sleeve_exp_p, sleeve_exp_WK)
 !
       end subroutine link_repart_masking_param
 !
 !   --------------------------------------------------------------------
 !
-      subroutine unlink_repart_masking_param(part_param)
+      subroutine unlink_repart_masking_param                            &
+     &         (part_param, sleeve_exp_WK)
 !
       type(volume_partioning_param), intent(inout) :: part_param
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
       if(associated(part_param%masking_repart) .EQV. .FALSE.) return
 !
@@ -142,7 +147,7 @@
       nullify(part_param%d_mask)
       part_param%num_mask_repart = 0
 !
-      call unlink_sleeve_extend_ref_vect(part_param%sleeve_exp_p)
+      call unlink_sleeve_extend_ref_vect(sleeve_exp_WK)
 !
       end subroutine unlink_repart_masking_param
 !

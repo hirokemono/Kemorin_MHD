@@ -106,8 +106,8 @@
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%lic_param, lic%pvr%pvr_param, lic%flag_each_repart)
 !
-      call LIC_init_nodal_field                                         &
-     &   (geofem, lic%pvr%num_pvr, lic%lic_param, lic%repart_data)
+      call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
+     &    lic%repart_data, lic%sleeve_exp_WK)
 !
 !
       call count_num_rendering_and_images                               &
@@ -137,7 +137,7 @@
 !
       if(lic%flag_each_repart) return
       call LIC_initialize_w_shared_mesh(geofem, next_tbl,               &
-     &    lic%repart_p, lic%repart_data, lic%pvr)
+     &    lic%repart_p, lic%repart_data, lic%sleeve_exp_WK, lic%pvr)
 !
       end subroutine LIC_initialize_test
 !
@@ -165,11 +165,13 @@
       if(lic%flag_each_repart) then
         call LIC_visualize_w_each_repart                                &
      &     (istep_lic, time, geofem, next_tbl, nod_fld, lic%repart_p,   &
-     &      lic%repart_data, lic%pvr, lic%lic_param, v_sol)
+     &      lic%repart_data, lic%sleeve_exp_WK, lic%pvr, lic%lic_param, &
+     &      v_sol)
       else
         call LIC_visualize_w_shared_mesh                                &
      &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
-     &      lic%repart_data, lic%pvr, lic%lic_param, v_sol)
+     &      lic%repart_data, lic%sleeve_exp_WK, lic%pvr, lic%lic_param, &
+     &      v_sol)
       end if
 !
       end subroutine LIC_visualize_test

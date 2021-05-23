@@ -7,13 +7,21 @@
 !> @brief Control parameter for sleeve extension
 !!
 !!@verbatim
+!!      subroutine init_work_vector_sleeve_ext                          &
+!!     &         (node, sleeve_exp_p, sleeve_exp_WK)
+!!      subroutine dealloc_work_vector_sleeve_ext(sleeve_exp_WK)
+!!        type(node_data), intent(in) :: node
+!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+!!
 !!      subroutine link_sleeve_extend_ref_vect(node, ref_vect,          &
-!!     &                                       sleeve_exp_p)
-!!      subroutine unlink_sleeve_extend_ref_vect(sleeve_exp_p)
+!!     &          sleeve_exp_p, sleeve_exp_WK)
+!!      subroutine unlink_sleeve_extend_ref_vect(sleeve_exp_WK)
 !!        type(node_data), intent(in) :: node
 !!        real(kind = kreal), intent(in), target                        &
 !!     &                              :: ref_vect(node%numnod,3)
-!!        type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
+!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!
 !!      subroutine set_ctl_param_sleeve_extension                       &
 !!     &         (ext_mode_ctl, ext_size_ctl, sleeve_exp_p, ierr)
@@ -59,13 +67,22 @@
 !>        Size of sleeve extension
         real(kind = kreal) ::   dist_max
 !
-!>        Filed name for reference
+!>        Field name for reference
         character(len = kchara) :: ref_vector_name
-!>        Filed ID for reference
+!>        Field ID for reference
         character(len = kchara) :: i_ref_vector
-!>
-        real(kind = kreal), pointer :: vect_ref(:,:)
       end type sleeve_extension_param
+!
+!>      Work area of sleeve extension parameter
+      type sleeve_extension_work
+!>        pointer of original reference vector
+        real(kind = kreal), pointer :: vect_ref(:,:)
+!
+!>        number of node  temporal reference vecto
+        integer(kind = kint) :: nnod_sleeve
+!>        temporal reference vector for sleeve extension
+        real(kind = kreal), allocatable :: d_sleeve(:,:)
+      end type sleeve_extension_work
 !
       private :: distance_by_trace, distance_by_length
       private :: distance_by_element_num
@@ -76,30 +93,73 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine init_work_vector_sleeve_ext                            &
+     &         (node, sleeve_exp_p, sleeve_exp_WK)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+!
+      integer(kind = kint) :: inod
+!
+      if(sleeve_exp_p%iflag_expand .ne. iflag_vector_trace) return
+!
+      sleeve_exp_WK%nnod_sleeve = node%numnod
+      allocate(sleeve_exp_WK%d_sleeve(node%numnod,3))
+!
+!$omp parallel do
+      do inod = 1, node%internal_node
+        sleeve_exp_WK%d_sleeve(inod,1) = sleeve_exp_WK%vect_ref(inod,1)
+        sleeve_exp_WK%d_sleeve(inod,2) = sleeve_exp_WK%vect_ref(inod,2)
+        sleeve_exp_WK%d_sleeve(inod,3) = sleeve_exp_WK%vect_ref(inod,3)
+      end do
+!$omp end parallel do
+!
+      end subroutine init_work_vector_sleeve_ext
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_work_vector_sleeve_ext(sleeve_exp_WK)
+!
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+!
+!
+      if(allocated(sleeve_exp_WK%d_sleeve) .eqv. .FALSE.) return
+      deallocate(sleeve_exp_WK%d_sleeve)
+      sleeve_exp_WK%nnod_sleeve = 0
+!
+      end subroutine dealloc_work_vector_sleeve_ext
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine link_sleeve_extend_ref_vect(node, ref_vect,            &
-     &                                       sleeve_exp_p)
+     &          sleeve_exp_p, sleeve_exp_WK)
 !
       use t_geometry_data
 !
       type(node_data), intent(in) :: node
       real(kind = kreal), intent(in), target :: ref_vect(node%numnod,3)
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !
-      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
 !
       if(sleeve_exp_p%iflag_expand .ne. iflag_vector_trace) return
-      sleeve_exp_p%vect_ref => ref_vect
+      sleeve_exp_WK%vect_ref => ref_vect
 !
       end subroutine link_sleeve_extend_ref_vect
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine unlink_sleeve_extend_ref_vect(sleeve_exp_p)
+      subroutine unlink_sleeve_extend_ref_vect(sleeve_exp_WK)
 !
-      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
-      if(associated(sleeve_exp_p%vect_ref) .EQV. .FALSE.) return
-      nullify(sleeve_exp_p%vect_ref)
+      if(associated(sleeve_exp_WK%vect_ref) .EQV. .FALSE.) return
+      nullify(sleeve_exp_WK%vect_ref)
 !
       end subroutine unlink_sleeve_extend_ref_vect
 !
