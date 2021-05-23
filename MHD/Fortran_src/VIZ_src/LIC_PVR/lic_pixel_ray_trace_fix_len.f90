@@ -132,11 +132,9 @@
       allocate(r_tgt(lic_p%num_masking))
       allocate(r_mid(lic_p%num_masking))
       do i = 1, lic_p%num_masking
-        if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
-          call cal_field_on_surf_scalar                                 &
-     &      (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf, &
-     &       isurf_end, xi, field_lic%s_lic(1,i), r_org(i))
-        end if
+        call cal_field_on_surf_scalar                                   &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
+     &      isurf_end, xi, field_lic%s_lic(1,i), r_org(i))
       end do
 !
 !
@@ -211,11 +209,9 @@
      &      isurf_end, xi, field_lic%d_lic, scl_tgt)
 
         do i = 1, lic_p%num_masking
-          if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
-            call cal_field_on_surf_scalar(node%numnod,                  &
-     &          surf%numsurf, surf%nnod_4_surf, surf%ie_surf,           &
-     &          isurf_end, xi, field_lic%s_lic(1,i), r_tgt(i))
-          end if
+          call cal_field_on_surf_scalar(node%numnod,                    &
+     &        surf%numsurf, surf%nnod_4_surf, surf%ie_surf,             &
+     &        isurf_end, xi, field_lic%s_lic(1,i), r_tgt(i))
         end do
 
         rlic_grad(0) = 0.0d0
@@ -242,9 +238,7 @@
 !
 !   reference data at origin of lic iteration
           do i = 1, lic_p%num_masking
-            if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
-              r_mid(i) = half*(r_org(i)+r_tgt(i))
-            end if
+            r_mid(i) = half*(r_org(i)+r_tgt(i))
           end do
 !   the vector interpolate from entry and exit point
           vec4_mid(1:4) = half*(vec4_org(1:4) + vec4_tgt(1:4))
@@ -316,11 +310,7 @@
 !
         screen4_st(1:4) = screen4_tgt(1:4)
         xx4_st(1:4) =     xx4_tgt(1:4)
-        do i = 1, lic_p%num_masking
-          if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
-            r_org(i) = r_tgt(i)
-          end if
-        end do
+        r_org(1:lic_p%num_masking) = r_tgt(1:lic_p%num_masking)
         scl_org(1) =    scl_tgt(1)
         vec4_org(1:4) = vec4_tgt(1:4)
       end do
