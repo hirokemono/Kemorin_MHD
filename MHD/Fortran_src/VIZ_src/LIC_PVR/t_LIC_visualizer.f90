@@ -57,7 +57,6 @@
       use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobians
-      use lic_rendering_test
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
@@ -69,7 +68,7 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      call LIC_initialize_test                                          &
+      call LIC_initialize                                               &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
      &    viz_ctls%lic_ctls, viz_ctls%repart_ctl, lic_v)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
@@ -84,8 +83,6 @@
       subroutine visualize_LIC(viz_step, time_d, geofem, nod_fld,       &
      &                         VIZ_DAT, lic_v, v_sol)
 !
-      use lic_rendering_test
-!
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
@@ -97,7 +94,7 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-      call LIC_visualize_test(viz_step%istep_lic, time_d%time,          &
+      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
      &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
