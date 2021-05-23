@@ -7,8 +7,8 @@
 !>@brief Main module for re-partitiong for LIC
 !!
 !!@verbatim
-!!      subroutine LIC_init_shared_mesh(geofem, next_tbl, nod_fld,      &
-!!     &          repart_p, num_lic, lic_param, repart_data)
+!!      subroutine LIC_init_shared_mesh(geofem, next_tbl, repart_p,     &
+!!     &                                num_lic, lic_param, repart_data)
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
@@ -16,10 +16,9 @@
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_parameters), intent(in) :: lic_param(num_lic)
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
-!!      subroutine LIC_init_each_mesh(geofem, next_tbl, nod_fld,        &
-!!     &                              repart_p, lic_param, repart_data)
+!!      subroutine LIC_init_each_mesh(geofem, next_tbl, repart_p,       &
+!!     &                              lic_param, repart_data)
 !!        type(mesh_data), intent(in), target :: geofem
-!!        type(phys_data), intent(in) :: nod_fld
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
@@ -86,12 +85,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_init_shared_mesh(geofem, next_tbl, nod_fld,        &
-     &          repart_p, num_lic, lic_param, repart_data)
+      subroutine LIC_init_shared_mesh(geofem, next_tbl, repart_p,       &
+     &                                num_lic, lic_param, repart_data)
 !
       integer(kind = kint), intent(in) :: num_lic
       type(mesh_data), intent(in), target :: geofem
-      type(phys_data), intent(in) :: nod_fld
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
       type(lic_parameters), intent(in) :: lic_param(num_lic)
@@ -128,11 +126,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_init_each_mesh(geofem, next_tbl, nod_fld,          &
-     &                              repart_p, lic_param, repart_data)
+      subroutine LIC_init_each_mesh(geofem, next_tbl, repart_p,         &
+     &                              lic_param, repart_data)
 !
       type(mesh_data), intent(in), target :: geofem
-      type(phys_data), intent(in) :: nod_fld
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
 !
