@@ -155,8 +155,6 @@
       type(lic_volume_rendering_module), intent(inout) :: lic
       type(vectors_4_solver), intent(inout) :: v_sol
 !
-      integer(kind = kint) :: i_lic, ist_rdr, ist_img
-!
 !
       if(lic%pvr%num_pvr.le.0 .or. istep_lic.le.0) return
 !
