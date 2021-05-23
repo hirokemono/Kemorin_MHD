@@ -109,6 +109,7 @@
      &         (node, nod_fld, lic_p, field_lic)
 !
       use m_error_IDs
+      use m_phys_constants
       use t_control_param_LIC
       use t_geometry_data
       use t_phys_data
@@ -161,6 +162,12 @@
      &     (node%numnod, node%istack_nod_smp, node%xx, node%rr,         &
      &      node%a_r, node%ss, node%a_s, ione, num_comp,                &
      &      lic_p%masking(i)%id_mask_comp, nod_fld%d_fld(1,ist_fld+1),  &
+     &      field_lic%s_lic(1,i))
+        else
+          call convert_comps_4_viz                                      &
+     &     (node%numnod, node%istack_nod_smp, node%xx, node%rr,         &
+     &      node%a_r, node%ss, node%a_s, ione, n_vector,                &
+     &      lic_p%masking(i)%id_mask_comp, node%xx(1,1),                &
      &      field_lic%s_lic(1,i))
         end if
       end do
