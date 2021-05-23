@@ -228,15 +228,15 @@
         nmax_masking = max(nmax_masking, lic%lic_param(i_lic)%num_masking)
       end do
 !
-      allocate(lic%repart_data%nod_fld_lic(1))
+      allocate(lic%repart_data%nod_fld_lic)
       call alloc_nod_vector_4_lic(geofem%mesh%node, nmax_masking,       &
-     &    lic%repart_data%nod_fld_lic(1))
+     &    lic%repart_data%nod_fld_lic)
 !
       if(lic%repart_p%flag_repartition) then
-        allocate(lic%repart_data%field_lic(1))
+        allocate(lic%repart_data%field_lic)
         call alloc_nod_vector_4_lic                                     &
      &     (lic%repart_data%viz_fem%mesh%node, nmax_masking,            &
-     &      lic%repart_data%field_lic(1))
+     &      lic%repart_data%field_lic)
       else
         lic%repart_data%field_lic => lic%repart_data%nod_fld_lic
       end if
@@ -286,20 +286,20 @@
       do i_lic = 1, lic%pvr%num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
-     &      lic%lic_param(i_lic), lic%repart_data%nod_fld_lic(1))
+     &      lic%lic_param(i_lic), lic%repart_data%nod_fld_lic)
 !
         if(lic%repart_p%flag_repartition) then
           call repartition_lic_field                                    &
      &       (geofem%mesh%node, lic%repart_data%viz_fem%mesh,           &
-     &        lic%repart_data%mesh_to_viz_tbl, lic%repart_data%nod_fld_lic(1),           &
-     &        lic%repart_data%field_lic(1), v_sol)
+     &        lic%repart_data%mesh_to_viz_tbl,                          &
+     &        lic%repart_data%nod_fld_lic,                              &
+     &        lic%repart_data%field_lic, v_sol)
         end if
 !
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call s_each_LIC_rendering                                       &
-     &     (istep_lic, time, lic%repart_data%viz_fem,                   &
-     &      lic%repart_data%field_lic(1),                               &
+        call s_each_LIC_rendering(istep_lic, time,                      &
+     &      lic%repart_data%viz_fem, lic%repart_data%field_lic,         &
      &      lic%lic_param(i_lic), lic%pvr%pvr_param(i_lic),             &
      &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
@@ -325,21 +325,20 @@
      &                                   .ne. IFLAG_NO_MOVIE) then
           if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
           call cal_field_4_each_lic(geofem%mesh%node, nod_fld,          &
-     &        lic%lic_param(i_lic), lic%repart_data%nod_fld_lic(1))
+     &        lic%lic_param(i_lic), lic%repart_data%nod_fld_lic)
 !
           if(lic%repart_p%flag_repartition) then
             call repartition_lic_field                                  &
      &         (geofem%mesh%node, lic%repart_data%viz_fem%mesh,         &
      &          lic%repart_data%mesh_to_viz_tbl,                        &
-     &          lic%repart_data%nod_fld_lic(1),                         &
-     &          lic%repart_data%field_lic(1), v_sol)
+     &          lic%repart_data%nod_fld_lic,                            &
+     &          lic%repart_data%field_lic, v_sol)
           end if
 !
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-          call s_each_LIC_rendering_w_rot                               &
-     &       (istep_lic, time, lic%repart_data%viz_fem,                 &
-     &        lic%repart_data%field_lic(1),                             &
+          call s_each_LIC_rendering_w_rot(istep_lic, time,              &
+     &        lic%repart_data%viz_fem, lic%repart_data%field_lic,       &
      &        lic%lic_param(i_lic), lic%pvr%pvr_param(i_lic),           &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
         end if
@@ -383,11 +382,11 @@
 !
 !
       if(repart_p%flag_repartition) then
-        call dealloc_nod_data_4_lic(repart_data%field_lic(1))
+        call dealloc_nod_data_4_lic(repart_data%field_lic)
       else
         nullify(repart_data%field_lic)
       end if
-      call dealloc_nod_data_4_lic(repart_data%nod_fld_lic(1))
+      call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
       call flush_each_lic_control(lic_param)
 !
       end subroutine dealloc_each_lic_data
