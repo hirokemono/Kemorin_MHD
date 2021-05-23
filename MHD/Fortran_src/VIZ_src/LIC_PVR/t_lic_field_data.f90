@@ -74,6 +74,7 @@
         field_lic%v_lic(1:node%numnod,3) = 0.0d0
 !        field_lic%o_lic(1:node%numnod) =   0.0d0
 !$omp end parallel workshare
+      end if
 !
       field_lic%num_mask = num_masking
       allocate(field_lic%s_lic(node%numnod,field_lic%num_mask))
