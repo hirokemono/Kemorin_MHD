@@ -7,9 +7,14 @@
 !>@brief Main module to access all visualization programs
 !!
 !!@verbatim
+!!      subroutine dealloc_LIC_each_mesh                                &
+!!     &         (repart_p, lic_param, repart_data)
+!!        type(volume_partioning_param), intent(in) :: repart_p
+!!        type(lic_parameters), intent(in) :: lic_param
+!!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!
 !!      subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,       &
 !!     &                              repart_data)
-!!      subroutine dealloc_LIC_re_partition(repart_data)
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(in), target :: geofem
@@ -28,7 +33,11 @@
       use t_mesh_data
       use t_comm_table
       use t_calypso_comm_table
+      use t_phys_data
       use t_lic_field_data
+      use t_control_param_LIC
+      use t_control_param_vol_grping
+      use t_vector_for_solver
 !
       implicit  none
 !
@@ -45,10 +54,39 @@
         type(lic_field_data), pointer :: field_lic
       end type lic_repartioned_mesh
 !
+      private :: dealloc_LIC_re_partition
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_LIC_each_mesh                                  &
+     &         (repart_p, lic_param, repart_data)
+!
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_parameters), intent(in) :: lic_param
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+!
+!
+      if(lic_param%each_part_p%flag_repartition                         &
+     &     .or. repart_p%flag_repartition) then
+        call dealloc_LIC_re_partition(repart_data)
+        call dealloc_nod_data_4_lic(repart_data%field_lic)
+        deallocate(repart_data%field_lic)
+      else
+        nullify(repart_data%viz_fem)
+        nullify(repart_data%field_lic)
+      end if
+!
+      call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
+      deallocate(repart_data%nod_fld_lic)
+!
+      end subroutine dealloc_LIC_each_mesh
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,         &

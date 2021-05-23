@@ -304,35 +304,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_LIC_each_mesh                                  &
-     &         (repart_p, repart_data, lic_param)
-!
-      type(volume_partioning_param), intent(in) :: repart_p
-!
-      type(lic_repartioned_mesh), intent(inout) :: repart_data
-      type(lic_parameters), intent(inout) :: lic_param
-!
-!
-      if(lic_param%each_part_p%flag_repartition) then
-        call dealloc_LIC_re_partition(repart_data)
-        call dealloc_nod_data_4_lic(repart_data%field_lic)
-        deallocate(repart_data%field_lic)
-      else if(repart_p%flag_repartition) then
-        call dealloc_LIC_re_partition(repart_data)
-        call dealloc_nod_data_4_lic(repart_data%field_lic)
-        deallocate(repart_data%field_lic)
-      else
-        nullify(repart_data%viz_fem)
-        nullify(repart_data%field_lic)
-      end if
-!
-      call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
-      deallocate(repart_data%nod_fld_lic)
-!
-      end subroutine dealloc_LIC_each_mesh
-!
-!  ---------------------------------------------------------------------
-!
       subroutine LIC_visualize_w_each_repart                            &
      &         (istep_lic, time, geofem, next_tbl, nod_fld,             &
      &          repart_p, repart_data, pvr, lic_param, v_sol)
@@ -406,8 +377,8 @@
 !
         call dealloc_PVR_initialize(pvr%pvr_param(i_lic),               &
      &                              pvr%pvr_proj(ist_rdr))
-        call dealloc_LIC_each_mesh(repart_p, repart_data,               &
-     &                             lic_param(i_lic))
+        call dealloc_LIC_each_mesh(repart_p, lic_param(i_lic),          &
+     &                             repart_data)
       end do
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
