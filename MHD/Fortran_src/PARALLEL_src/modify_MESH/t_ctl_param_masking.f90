@@ -19,7 +19,7 @@
 !!     &         (num_nod_phys, phys_nod_name, mask_ctl, masking)
 !!      subroutine dealloc_lic_masking_range(masking)
 !!        type(lic_masking_ctl), intent(in) :: mask_ctl
-!!        type(lic_masking_parameter), intent(inout) :: masking
+!!        type(masking_parameter), intent(inout) :: masking
 !!@endverbatim
 !
       module t_ctl_param_masking
@@ -45,11 +45,15 @@
 !
 
 !>      Structure of masking parameter
-      type lic_masking_parameter
+      type masking_parameter
 !>        Mask type 1: geometry 2: field data
         integer(kind = kint) :: mask_type =   iflag_geometrymask
-!>        Structure of soure decision field parameter for LIC
-        type(pvr_field_parameter) :: field_info
+!
+!>     Field type for masking data
+        integer(kind = kint) :: id_mask_field = 0
+!>     Component flag for masking data
+        integer(kind = kint) :: id_mask_comp =  0
+!
 !>        Geometry mask component index
         integer(kind = kint) :: idx_comp =  0
 !>        Number of masking range
@@ -58,7 +62,7 @@
         real(kind = kreal), allocatable :: range_min(:)
 !>        maximum value of source point range
         real(kind = kreal), allocatable :: range_max(:)
-      end type lic_masking_parameter
+      end type masking_parameter
 !
       private :: alloc_lic_masking_range
 !
@@ -118,7 +122,7 @@
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
       type(lic_masking_ctl), intent(in) :: mask_ctl
-      type(lic_masking_parameter), intent(inout) :: masking
+      type(masking_parameter), intent(inout) :: masking
 !
       integer(kind = kint) :: icheck_ncomp(1)
       integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
@@ -162,10 +166,8 @@
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
      &      ione, tmpfield, tmpcomp, ione, ifld_tmp, icomp_tmp,         &
      &      icheck_ncomp, ncomp_tmp, fldname_tmp)
-        masking%field_info%id_field = ifld_tmp(1)
-        masking%field_info%id_component = icomp_tmp(1)
-        masking%field_info%num_original_comp = ncomp_tmp(1)
-        masking%field_info%field_name = fldname_tmp(1)
+        masking%id_mask_field = ifld_tmp(1)
+        masking%id_mask_comp = icomp_tmp(1)
       end if
 !
       call alloc_lic_masking_range                                      &
@@ -182,7 +184,7 @@
 !
       subroutine dealloc_lic_masking_range(masking)
 !
-      type(lic_masking_parameter), intent(inout) :: masking
+      type(masking_parameter), intent(inout) :: masking
 !
       deallocate(masking%range_min, masking%range_max)
 !
@@ -194,7 +196,7 @@
       subroutine alloc_lic_masking_range(num, masking)
 !
       integer(kind = kint), intent(in) :: num
-      type(lic_masking_parameter), intent(inout) :: masking
+      type(masking_parameter), intent(inout) :: masking
 !
       masking%num_range = num
       allocate(masking%range_min(masking%num_range))

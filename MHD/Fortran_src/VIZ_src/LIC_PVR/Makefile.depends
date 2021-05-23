@@ -6,7 +6,7 @@ bcast_ctl_data_LIC_noise.o: $(LIC_DIR)/bcast_ctl_data_LIC_noise.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_3d_noise.o: $(LIC_DIR)/cal_3d_noise.f90 m_precision.o m_constants.o mt_stream.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_lic_on_surf_viz.o: $(LIC_DIR)/cal_lic_on_surf_viz.f90 m_precision.o m_constants.o t_control_param_LIC.o cal_field_on_surf_viz.o cal_fline_in_cube.o m_geometry_constants.o calypso_mpi.o t_noise_node_data.o cal_noise_value.o
+cal_lic_on_surf_viz.o: $(LIC_DIR)/cal_lic_on_surf_viz.f90 m_precision.o m_constants.o t_control_param_LIC.o cal_field_on_surf_viz.o cal_fline_in_cube.o m_geometry_constants.o calypso_mpi.o t_noise_node_data.o cal_noise_value.o get_geometry_reference.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_noise_value.o: $(LIC_DIR)/cal_noise_value.f90 m_precision.o m_constants.o m_machine_parameter.o t_LIC_kernel.o t_3d_noise.o
 	$(F90) -c $(F90OPTFLAGS) $<
