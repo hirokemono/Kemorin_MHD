@@ -16,11 +16,12 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(lic_field_data), intent(inout) :: field_lic
 !!      subroutine repartition_lic_field                                &
-!!     &         (node, viz_mesh, mesh_to_viz_tbl,                      &
+!!     &         (node, viz_mesh, mesh_to_viz_tbl, lic_p,               &
 !!     &          nod_fld_lic, field_lic, v_sol)
 !!        type(node_data), intent(in) :: node
 !!        type(mesh_geometry), intent(in) :: viz_mesh
 !!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
+!!        type(lic_parameters), intent(in) :: lic_p
 !!        type(lic_field_data), intent(inout) :: nod_fld_lic
 !!        type(lic_field_data), intent(inout) :: field_lic
 !!        type(vectors_4_solver), intent(inout) :: v_sol
@@ -177,17 +178,19 @@
 !  ---------------------------------------------------------------------
 !
       subroutine repartition_lic_field                                  &
-     &         (node, viz_mesh, mesh_to_viz_tbl,                        &
+     &         (node, viz_mesh, mesh_to_viz_tbl, lic_p,                 &
      &          nod_fld_lic, field_lic, v_sol)
 !
       use m_error_IDs
       use t_geometry_data
       use t_phys_data
       use t_vector_for_solver
+      use t_control_param_LIC
       use select_copy_from_recv
       use field_to_new_partition
       use transfer_to_new_partition
 !
+      type(lic_parameters), intent(in) :: lic_p
       type(node_data), intent(in) :: node
 !
       type(mesh_geometry), intent(in) :: viz_mesh
@@ -213,7 +216,7 @@
 !     &    node%numnod, viz_mesh%node%numnod,                           &
 !     &    nod_fld_lic%o_lic, field_lic%o_lic, v_sol)
 !
-      do i = 1, field_lic%num_mask
+      do i = 1, lic_p%num_masking
         call scalar_to_new_partition                                    &
      &     (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,      &
      &      node%numnod, viz_mesh%node%numnod,                          &

@@ -34,7 +34,6 @@
      &          icomp_viz, dat_xyz, dat_viz)
 !
       use set_components_flags
-      use set_nodal_field_for_psf
       use mag_of_field_smp
       use copy_field_smp
       use cvt_xyz_vector_2_sph_smp
@@ -183,7 +182,6 @@
      &          icomp_viz, dat_viz)
 !
       use set_components_flags
-      use set_nodal_field_for_psf
       use mag_of_field_smp
       use copy_field_smp
       use cvt_xyz_vector_2_sph_smp

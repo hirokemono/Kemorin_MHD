@@ -14,7 +14,7 @@
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!
 !!      subroutine init_min_dist_from_import(sleeve_exp_p,              &
-!!     &          nod_comm, node, ele, neib_ele, d_vec, dist_export)
+!!     &          nod_comm, node, ele, neib_ele, dist_export)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -22,9 +22,9 @@
 !!        type(element_around_node), intent(in) :: neib_ele
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: dist_export(nod_comm%ntot_export)
-!!      subroutine cal_min_dist_from_last_export(sleeve_exp_p,          &
-!!     &         node, ele, neib_ele, num_each_export, item_each_export,&
-!!     &         d_vec, each_exp_flags)
+!!      subroutine cal_min_dist_from_last_export                        &
+!!     &         (sleeve_exp_p, node, ele, neib_ele,                    &
+!!     &          num_each_export, item_each_export, each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele

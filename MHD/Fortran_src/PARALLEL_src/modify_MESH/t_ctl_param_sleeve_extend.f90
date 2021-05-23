@@ -7,6 +7,14 @@
 !> @brief Control parameter for sleeve extension
 !!
 !!@verbatim
+!!      subroutine link_sleeve_extend_ref_vect(node, ref_vect,          &
+!!     &                                       sleeve_exp_p)
+!!      subroutine unlink_sleeve_extend_ref_vect(sleeve_exp_p)
+!!        type(node_data), intent(in) :: node
+!!        real(kind = kreal), intent(in), target                        &
+!!     &                              :: ref_vect(node%numnod,3)
+!!        type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
+!!
 !!      subroutine set_ctl_param_sleeve_extension                       &
 !!     &         (ext_mode_ctl, ext_size_ctl, sleeve_exp_p, ierr)
 !!        type(read_character_item), intent(in) :: ext_mode_ctl
@@ -55,6 +63,8 @@
         character(len = kchara) :: ref_vector_name
 !>        Filed ID for reference
         character(len = kchara) :: i_ref_vector
+!>
+        real(kind = kreal), pointer :: vect_ref(:,:)
       end type sleeve_extension_param
 !
       private :: distance_by_trace, distance_by_length
@@ -63,6 +73,35 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine link_sleeve_extend_ref_vect(node, ref_vect,            &
+     &                                       sleeve_exp_p)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+      real(kind = kreal), intent(in), target :: ref_vect(node%numnod,3)
+!
+      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
+!
+!
+      if(sleeve_exp_p%iflag_expand .ne. iflag_vector_trace) return
+      sleeve_exp_p%vect_ref => ref_vect
+!
+      end subroutine link_sleeve_extend_ref_vect
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_sleeve_extend_ref_vect(sleeve_exp_p)
+!
+      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
+!
+      if(associated(sleeve_exp_p%vect_ref) .EQV. .FALSE.) return
+      nullify(sleeve_exp_p%vect_ref)
+!
+      end subroutine unlink_sleeve_extend_ref_vect
 !
 !  ---------------------------------------------------------------------
 !

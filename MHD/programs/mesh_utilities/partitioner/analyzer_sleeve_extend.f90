@@ -108,8 +108,8 @@
      &   (fem_EXT%mesh%node, fem_EXT%mesh%nod_comm, fem_EXT%mesh%ele,   &
      &    ele_comm)
 !
-      call sleeve_extension_loop                                        &
-     &   (sleeve_exp_p1, fem_EXT%mesh, fem_EXT%group, ele_comm)
+      call sleeve_extension_loop(sleeve_exp_p1, fem_EXT%mesh,           &
+     &                           fem_EXT%group, ele_comm)
 !
       call mpi_output_mesh                                              &
      &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)

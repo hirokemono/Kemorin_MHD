@@ -42,7 +42,7 @@ begin visualizer
         repartition_table_prefix   'repartition_table'
         repartition_table_format   'merged_gz'
 !
-        partitioning_method_ctl  VOLUME_BASED
+        partition_reference_ctl  VOLUME_BASED
         array dir_domain_ctl
           dir_domain_ctl  x     3
           dir_domain_ctl  y     4

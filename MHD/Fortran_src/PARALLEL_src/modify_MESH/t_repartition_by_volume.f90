@@ -75,7 +75,7 @@
 !
       call alloc_node_volume_and_sort(mesh%node, vol_sort)
 !
-      call set_volume_at_node(mesh, vol_sort%volume_nod,                &
+      call set_volume_at_node(part_param, mesh, vol_sort%volume_nod,    &
      &    vol_sort%volume_nod_tot, vol_sort%volume_min_gl)
       call set_xyz_block_id_by_nod_vol(mesh%node, part_param,           &
      &                                 vol_sort%id_block)

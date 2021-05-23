@@ -57,6 +57,7 @@
       subroutine sleeve_extension_loop                                  &
      &         (sleeve_exp_p, mesh, group, ele_comm)
 !
+      use m_solver_SR
       use t_next_node_ele_4_node
       use t_flags_each_comm_extend
       use set_ele_id_4_node_type
@@ -64,6 +65,7 @@
       use copy_mesh_structures
       use nod_and_ele_derived_info
       use const_element_comm_tables
+      use solver_SR_type
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !
@@ -86,6 +88,17 @@
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
       allocate(vect_tmp(mesh%node%numnod,3))
+!$omp parallel workshare
+      vect_tmp(1:mesh%node%internal_node,1)                             &
+     &    = sleeve_exp_p%vect_ref(1:mesh%node%internal_node,1)
+      vect_tmp(1:mesh%node%internal_node,2)                             &
+     &    = sleeve_exp_p%vect_ref(1:mesh%node%internal_node,2)
+      vect_tmp(1:mesh%node%internal_node,3)                             &
+     &    = sleeve_exp_p%vect_ref(1:mesh%node%internal_node,3)
+!$omp end parallel workshare
+      call SOLVER_SEND_RECV_3_type                                      &
+     &   (mesh%node%numnod, mesh%nod_comm, SR_sig1, SR_r1, vect_tmp)
+!
       call alloc_dist_from_wall_export                                  &
      &   (mesh%nod_comm%ntot_export, dist_4_comm)
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
@@ -129,8 +142,21 @@
         call set_nod_and_ele_infos(mesh%node, mesh%ele)
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
+!
         allocate(vect_tmp(mesh%node%numnod,3))
+!$omp parallel workshare
+        vect_tmp(1:mesh%node%internal_node,1)                           &
+     &    = sleeve_exp_p%vect_ref(1:mesh%node%internal_node,1)
+        vect_tmp(1:mesh%node%internal_node,2)                           &
+     &    = sleeve_exp_p%vect_ref(1:mesh%node%internal_node,2)
+        vect_tmp(1:mesh%node%internal_node,3)                           &
+     &    = sleeve_exp_p%vect_ref(1:mesh%node%internal_node,3)
+!$omp end parallel workshare
+        call SOLVER_SEND_RECV_3_type                                    &
+     &   (mesh%node%numnod, mesh%nod_comm, SR_sig1, SR_r1, vect_tmp)
       end do
+!
+      deallocate(vect_tmp)
       call dealloc_dist_from_wall_export(dist_4_comm)
 !
       end subroutine sleeve_extension_loop

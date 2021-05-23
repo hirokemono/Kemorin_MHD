@@ -177,8 +177,8 @@
       if(lic_p%each_part_p%flag_repartition) flag_each_repart = .TRUE.
 !
       lic_p%num_masking = lic_ctl%num_masking_ctl
+      allocate(lic_p%masking(lic_p%num_masking))
       if(lic_p%num_masking .gt. 0) then
-        allocate(lic_p%masking(lic_p%num_masking))
 !
         do i = 1, lic_p%num_masking
           call set_control_masking(num_nod_phys, phys_nod_name,         &
@@ -265,9 +265,8 @@
       logical function lic_mask_flag(lic_p, value)
 !
       type(lic_parameters), intent(in) :: lic_p
-      real(kind=kreal), intent(in) :: value(:)
+      real(kind=kreal), intent(in) :: value(lic_p%num_masking)
 !
-      integer(kind=kint) :: i,j, iFlag_inmask
 !
       lic_mask_flag                                                     &
      &    = multi_mask_flag(lic_p%num_masking, lic_p%masking, value)
