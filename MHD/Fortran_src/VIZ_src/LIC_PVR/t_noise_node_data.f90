@@ -92,7 +92,7 @@
         use t_geometries_in_pvr_screen
       !
         type(noise_mask), intent(inout) :: n_mask
-        integer(kind=kint) :: num_ref
+        integer(kind=kint), intent(in) :: num_ref
         real(kind=kreal), intent(in) :: min, max
         real(kind=kreal), intent(in) :: ref_data(num_ref)
 

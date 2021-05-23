@@ -178,8 +178,8 @@
      &                           new_viz_repart_c%Fmesh_ctl)
       call dup_ctl_data_new_decomp(org_viz_repart_c%new_part_ctl,       &
      &                             new_viz_repart_c%new_part_ctl)
-      call dup_FEM_sleeve_control(org_viz_repart_c%Fsleeve_ctl,         &
-     &                            new_viz_repart_c%Fsleeve_ctl)
+      call copy_FEM_sleeve_control(org_viz_repart_c%Fsleeve_ctl,        &
+     &                             new_viz_repart_c%Fsleeve_ctl)
 !
       new_viz_repart_c%i_viz_repartition_ctl                            &
      &      = org_viz_repart_c%i_viz_repartition_ctl

@@ -51,43 +51,18 @@
 !>        Size of sleeve extension
         real(kind = kreal) ::   dist_max
 !
-!>        Number of field for reference
-        integer(kind = kint) :: num_ref = 0
 !>        Filed name for reference
-        character(len = kchara), allocatable :: ref_vector_name(:)
+        character(len = kchara) :: ref_vector_name
 !>        Filed ID for reference
-        character(len = kchara), allocatable :: i_ref_vector(:)
+        character(len = kchara) :: i_ref_vector
       end type sleeve_extension_param
 !
-      private :: alloc_sleeve_ext_ref_vector
       private :: distance_by_trace, distance_by_length
       private :: distance_by_element_num
 !
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_sleeve_ext_ref_vector(sleeve_exp_p)
-!
-      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
-!
-      allocate(sleeve_exp_p%ref_vector_name(sleeve_exp_p%num_ref))
-      allocate(sleeve_exp_p%i_ref_vector(sleeve_exp_p%num_ref))
-!
-      end subroutine alloc_sleeve_ext_ref_vector
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_sleeve_ext_ref_vector(sleeve_exp_p)
-!
-      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
-!
-      deallocate(sleeve_exp_p%ref_vector_name)
-      deallocate(sleeve_exp_p%i_ref_vector)
-!
-      end subroutine dealloc_sleeve_ext_ref_vector
 !
 !  ---------------------------------------------------------------------
 !
@@ -110,7 +85,6 @@
       ierr = 0
       sleeve_exp_p%iflag_expand = iflag_turn_off
       sleeve_exp_p%dist_max =     one
-      sleeve_exp_p%num_ref =  0
 !
       if(sleeve_ctl%sleeve_extension_mode_ctl%iflag .gt. 0) then
         tmpchara = sleeve_ctl%sleeve_extension_mode_ctl%charavalue
@@ -149,17 +123,14 @@
       end if
 !
       if(sleeve_exp_p%iflag_expand .eq. iflag_vector_trace) then
-        sleeve_exp_p%num_ref = sleeve_ctl%ref_vector_ctl%num
-!
-        call alloc_sleeve_ext_ref_vector(sleeve_exp_p)
-!
-        if(sleeve_exp_p%num_ref .le. 0) then
-          write(e_message,'(a)') 'Set size for sleeve extension'
+        if(sleeve_ctl%ref_vector_ctl%iflag .eq. 0) then
+          write(e_message,'(a)')                                        &
+     &               'Set vector for reference of slleve extension'
           ierr = ierr_mesh
           return
         else
-          sleeve_exp_p%ref_vector_name(1:sleeve_exp_p%num_ref)          &
-     &        = sleeve_ctl%ref_vector_ctl%c_tbl(1:sleeve_exp_p%num_ref)
+          sleeve_exp_p%ref_vector_name                                  &
+     &        = sleeve_ctl%ref_vector_ctl%charavalue
         end if
       end if
 !
@@ -167,10 +138,8 @@
         write(*,*) 'sleeve_exp_p%iflag_expand',                         &
      &            sleeve_exp_p%iflag_expand
         write(*,*) 'sleeve_exp_p%dist_max', sleeve_exp_p%dist_max
-        write(*,*) 'sleeve_exp_p%num_ref', sleeve_exp_p%num_ref
-        do i = 1, sleeve_exp_p%num_ref
-          write(*,*) 'sleeve_exp_p%num_ref', i,                         &
-     &              trim(sleeve_exp_p%ref_vector_name(i))
+        write(*,*) 'sleeve_exp_p%ref_vector_name',                      &
+     &            trim(sleeve_exp_p%ref_vector_name)
         end do
       end if
 !
