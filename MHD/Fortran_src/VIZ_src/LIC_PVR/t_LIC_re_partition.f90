@@ -249,9 +249,6 @@
         nullify(repart_data%field_lic)
       end if
 !
-      call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
-      deallocate(repart_data%nod_fld_lic)
-!
       end subroutine dealloc_LIC_each_mesh
 !
 !  ---------------------------------------------------------------------
