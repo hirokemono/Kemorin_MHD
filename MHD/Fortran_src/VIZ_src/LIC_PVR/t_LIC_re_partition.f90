@@ -151,9 +151,9 @@
       integer(kind = kint) :: i_lic
 !
 !
-!      do i_lic = 1, num_lic
-!        call unlink_repart_masking_param(lic_param(i_lic)%each_part_p)
-!      end do
+      do i_lic = 1, num_lic
+        call unlink_repart_masking_param(lic_param(i_lic)%each_part_p)
+      end do
 !
       call unlink_repart_masking_data(repart_data%repart_WK)
       call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
