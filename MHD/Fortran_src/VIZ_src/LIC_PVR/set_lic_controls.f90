@@ -94,6 +94,7 @@
       use set_control_each_pvr
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
+      use set_control_pvr_movie
       use cal_3d_noise
 !
       integer(kind = kint), intent(in) :: num_lic
@@ -112,7 +113,7 @@
       flag_each_repart = .FALSE.
       do i_lic = 1, num_lic
         if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
-        call set_control_pvr_movie                                      &
+        call s_set_control_pvr_movie                                    &
      &     (pvr_ctl_type(i_lic)%movie, pvr_param(i_lic)%view)
         call set_pvr_stereo_control                                     &
      &     (pvr_ctl_type(i_lic), pvr_param(i_lic)%view)

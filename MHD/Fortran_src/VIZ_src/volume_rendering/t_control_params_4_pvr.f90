@@ -150,6 +150,11 @@
         integer(kind = kint) :: iflag_movie_mode = IFLAG_NO_MOVIE
 !>     Number of frames
         integer(kind = kint) :: num_frame =   0
+!>     Number of row of image array
+        integer(kind = kint) :: n_row =    0
+!>     Number of column of image array
+        integer(kind = kint) :: n_column = 0
+!
 !>     Rotatin axis:    id_rot_axis
         integer(kind = kint) :: id_rot_axis = 3
 !>     Rotation range
