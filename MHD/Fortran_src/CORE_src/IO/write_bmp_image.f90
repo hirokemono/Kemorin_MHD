@@ -12,6 +12,9 @@
 !!
 !!      character(len=kchara), intent(in) :: fhead
 !!      integer, intent(in) :: ihpixf, jvpixf
+!!
+!!       character(len=54) function BMP_header(ihpixf, jvpixf)
+!!         integer, intent(in) :: ihpixf, jvpixf
 !! RGB data array
 !!      character(len=1), intent(in) :: rgb(3,ihpixf,jvpixf)
 !!
@@ -150,17 +153,13 @@
        integer :: i, j, ihpixf, jvpixf
        integer :: itmp
        character(len=14) :: frmtstr
-       character(len=54) :: headmsw
-       character(len=4) ::  byt4
-       character(len=2) ::  byt2
 !
        ihpixf = int(npixel_x)
        jvpixf = int(npixel_y)
 !
 !* BMP (24bit depth)... this part works only when width is multiple of 4.
 
-      itmp = mod(ihpixf, 4)
-      if (itmp .NE. 0) then
+      if (mod(ihpixf, 4) .NE. 0) then
         write(*,*) 'width must be multiple of 4'
         stop
       endif
@@ -173,6 +172,29 @@
 !
       open(unit=id_img,file=fname,status='unknown')
       write(*,*) 'Now writing BMP(24bit) file : ', trim(fname)
+!* writing header part
+      write(id_img,'(a54,$)') BMP_header(ihpixf, jvpixf)
+!* image data
+      itmp = ihpixf * jvpixf * 3
+      write(frmtstr,'(''('',i8.8,''A,$)'')') itmp
+      write(id_img,fmt=frmtstr) ((rgb(3:1:-1,i,j),i=1,ihpixf),j=1,jvpixf)
+! writing in BGR order, not RGB.
+      close(id_img)
+!
+      end subroutine pixout_BMP
+!
+!------------------------------------------------------------------------
+!
+       character(len=54) function BMP_header(ihpixf, jvpixf)
+!* interface arg.
+       integer, intent(in) :: ihpixf, jvpixf
+       character(len=54) :: headmsw
+!* local
+       integer :: itmp
+       character(len=4) ::  byt4
+       character(len=2) ::  byt2
+!
+!
 !* header 1 (file header ; 1--14 byte)
       headmsw( 1: 2) = 'BM'             ! declaring this is BMP file
       itmp = 54 + ihpixf * jvpixf * 3 ! total file size = header + data
@@ -221,17 +243,10 @@
       itmp = 0                        ! may be 0 here : num. of important color
       call num2bit4(itmp,byt4)
       headmsw(51:54) = byt4(1:4)
-
-!* writing header part
-      write(id_img,'(a54,$)') headmsw(1:54)
-!* image data
-      itmp = ihpixf * jvpixf * 3
-      write(frmtstr,'(''('',i8.8,''A,$)'')') itmp
-      write(id_img,fmt=frmtstr) ((rgb(3:1:-1,i,j),i=1,ihpixf),j=1,jvpixf)
-! writing in BGR order, not RGB.
-      close(id_img)
 !
-      end subroutine pixout_BMP
+      BMP_header(1:54) = headmsw(1:54)
+!
+      end function BMP_header
 !
 !------------------------------------------------------------------------
 !------------------------------------------------------------------------

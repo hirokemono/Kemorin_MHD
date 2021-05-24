@@ -110,6 +110,7 @@
         write(*,*) 'Bitmap output for image: ', ip, ' from ', my_rank
         file_name = add_int_suffix(ip, file_prefix)
         call pixout_BMP(file_name, npixel_x, npixel_y, rgb(1,1,1,icou))
+!
         file_name = add_int_suffix(ip, file_prefix)
         file_name = add_int_suffix(ip, file_name)
         call write_png_rgb_f                                            &
