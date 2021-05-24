@@ -72,7 +72,7 @@
 !
 !       Re-partitioning
       call grouping_by_volume                                           &
-     &   (org_fem%mesh, part_param, part_grp, repart_WK)
+     &   (org_fem%mesh, part_param, repart_WK, part_grp)
 !
       call alloc_double_numbering                                       &
      &   (org_fem%mesh%node%numnod, new_ids_on_org)
