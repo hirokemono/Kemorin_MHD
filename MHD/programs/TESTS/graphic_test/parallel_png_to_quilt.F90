@@ -32,7 +32,7 @@
       integer(kind = kint) :: npixel_x
       integer(kind = kint) :: npixel_y
       character(len=1), allocatable :: rgb(:,:,:,:)
-      character(len=1), allocatable :: bgr(:,:,:)
+      character(len=1), allocatable :: bgr_line(:,:)
       character(len=1), allocatable :: gray(:,:)
 !
       type(calypso_MPI_IO_params), save :: IO_param
@@ -74,7 +74,7 @@
 !
       nmax_image_pe = 1 + (num_image-1) / nprocs
       allocate(rgb(3,npixel_x,npixel_y,nmax_image_pe))
-      allocate(bgr(3,npixel_x,npixel_y))
+      allocate(bgr_line(3,npixel_x))
       allocate(icou_image_pe(nmax_image_pe))
       icou_image_pe(1:nmax_image_pe) = -1
 !
@@ -128,22 +128,26 @@
 !#endif
 !
       file_name = add_bmp_suffix(file_prefix)
+      if(my_rank .eq. 0) write(*,*) 'Write Quilt Bitmap: ',             &
+     &                  trim(file_name)
       call open_write_mpi_file(file_name, IO_param)
       call mpi_write_charahead(IO_param, 54,                            &
-     &    BMP_header(int(npixel_x), int(6*npixel_y)))
+     &    BMP_header(int(num_row*npixel_x), int(num_column*npixel_y)))
 !
       do icou = 1, num_image_pe
         ip = icou_image_pe(icou)
+        ix = mod(ip,num_row)
+        iy = ip / num_row
         ilength = 3*int(npixel_x)
         do j = 1, npixel_y
-          bgr(1,1:npixel_x,1) = rgb(3,1:npixel_x,j,icou)
-          bgr(2,1:npixel_x,1) = rgb(2,1:npixel_x,j,icou)
-          bgr(3,1:npixel_x,1) = rgb(1,1:npixel_x,j,icou)
+          bgr_line(1,1:npixel_x) = rgb(3,1:npixel_x,j,icou)
+          bgr_line(2,1:npixel_x) = rgb(2,1:npixel_x,j,icou)
+          bgr_line(3,1:npixel_x) = rgb(1,1:npixel_x,j,icou)
 !
           ioffset = IO_param%ioff_gl                                   &
-     &             + ilength * (ip*int(npixel_y) + j-1)
+     &             + ilength * (ix + num_row * ((j-1) + iy*npixel_y))
           call mpi_write_one_chara_b                                   &
-     &       (IO_param%id_file, ioffset, ilength, bgr(1,1,1))
+     &       (IO_param%id_file, ioffset, ilength, bgr_line(1,1))
         end do
       end do
       call close_mpi_file(IO_param)
