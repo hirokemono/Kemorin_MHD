@@ -1,6 +1,6 @@
 fortran_png_test.o: $(GRAPHIC_TEST_DIR)/fortran_png_test.f90 m_precision.o t_png_file_access.o convert_real_rgb_2_bite.o png_test_from_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-parallel_png_to_quilt.o: $(GRAPHIC_TEST_DIR)/parallel_png_to_quilt.F90 calypso_mpi.o calypso_mpi_char.o calypso_mpi_int.o m_calypso_mpi_IO.o t_calypso_mpi_IO_param.o t_png_file_access.o write_bmp_image.o transfer_to_long_integers.o set_parallel_file_name.o
+parallel_png_to_quilt.o: $(GRAPHIC_TEST_DIR)/parallel_png_to_quilt.F90 m_precision.o calypso_mpi.o calypso_mpi_char.o calypso_mpi_int.o MPI_ascii_data_IO.o m_calypso_mpi_IO.o t_calypso_mpi_IO_param.o t_png_file_access.o t_MPI_quilt_bitmap_IO.o write_bmp_image.o transfer_to_long_integers.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 png_to_bmp_f.o: $(GRAPHIC_TEST_DIR)/png_to_bmp_f.F90 t_png_file_access.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<

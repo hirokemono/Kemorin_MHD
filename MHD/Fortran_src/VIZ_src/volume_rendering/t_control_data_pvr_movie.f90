@@ -7,7 +7,8 @@
 !> @brief control data for PVR movie from snapshot
 !!
 !!@verbatim
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      !!      subroutine read_pvr_rotation_ctl                                &
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine read_pvr_rotation_ctl                                &
 !!     &         (id_control, hd_block, movie, c_buf)
 !!        type(pvr_movie_ctl), intent(inout) :: movie
 !!

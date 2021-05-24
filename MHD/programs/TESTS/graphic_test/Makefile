@@ -39,6 +39,7 @@ png_to_bmp_f.o
 
 MOD_PNG_2_QUILT = \
 write_bmp_image.o \
+t_MPI_quilt_bitmap_IO.o \
 parallel_png_to_quilt.o
 
 #
