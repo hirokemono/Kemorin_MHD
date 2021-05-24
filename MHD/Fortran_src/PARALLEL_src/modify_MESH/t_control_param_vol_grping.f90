@@ -143,10 +143,10 @@
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
 !
-!      if(flag_mask) then
-!        repart_WK%nmax_mask_repart = nmax_mask_org
-!        repart_WK%d_mask =>          d_mask_org
-!      end if
+      if(flag_mask) then
+        repart_WK%nmax_mask_repart = nmax_mask_org
+        repart_WK%d_mask =>          d_mask_org
+      end if
 !
       if(flag_sleeve_wk) then
         call link_sleeve_extend_ref_vect(node, vect_ref_ext,            &
@@ -164,9 +164,10 @@
 !
       call unlink_sleeve_extend_ref_vect(repart_WK%sleeve_exp_WK)
 !
-!      if(associated(repart_WK%d_mask) .EQV. .FALSE.) return
-!      repart_WK%nmax_mask_repart = 0
-!      nullify(repart_WK%d_mask)
+      if(associated(repart_WK%d_mask)) then
+        repart_WK%nmax_mask_repart = 0
+        nullify(repart_WK%d_mask)
+      end if
 !
       end subroutine unlink_repart_masking_data
 !
