@@ -10,6 +10,8 @@
 !!      subroutine pixout_ppm_p6(fhead, npixel_x, npixel_y, rgb)
 !!      subroutine pixout_BMP(fhead, npixel_x, npixel_y, rgb)
 !!
+!!      character(len=kchara) function add_bmp_suffix(file_header)
+!!        character(len=kchara), intent(in) :: file_header
 !!      character(len=kchara), intent(in) :: fhead
 !!      integer, intent(in) :: ihpixf, jvpixf
 !!
@@ -71,7 +73,7 @@
 !
 !* PPM P3 ! rather "safer" choice for many Fortran compiler(s).
 
-      call add_ppm_suffix(fhead, fname)
+      fname = add_ppm_suffix(fhead)
       open(unit=id_img,file=fname,status='unknown')
       write(*,*) 'Now writing PPM (P3) file : ', fname
 !* header
@@ -122,7 +124,7 @@
       jvpixf = int(npixel_y)
 !
 !* PPM P6
-      call add_ppm_suffix(fhead, fname)
+      fname = add_ppm_suffix(fhead)
       open(unit=id_img,file=fname,status='unknown')
       write(*,*) 'Now writing PPM (P6) file : ', fname
 !* header
@@ -164,8 +166,7 @@
         stop
       endif
 !
-      call add_bmp_suffix(fhead, fname)
-!
+      fname = add_bmp_suffix(fhead)
 !      open(unit=id_img,file=fname,status='unknown')
 !      write(id_img,'(a)')
 !      close(id_img)
@@ -295,27 +296,25 @@
 !------------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_ppm_suffix(file_header, file_name)
+      character(len=kchara) function add_ppm_suffix(file_header)
 !
       character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
 !
-       write(file_name,1011) trim(file_header)
+       write(add_ppm_suffix,1011) trim(file_header)
  1011 format (a,".ppm")
 !
-      end subroutine add_ppm_suffix
+      end function add_ppm_suffix
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_bmp_suffix(file_header, file_name)
+      character(len=kchara) function add_bmp_suffix(file_header)
 !
       character(len=kchara), intent(in) :: file_header
-      character(len=kchara), intent(inout) :: file_name
 !
-       write(file_name,1011) trim(file_header)
+       write(add_bmp_suffix,1011) trim(file_header)
  1011 format (a,".bmp")
 !
-      end subroutine add_bmp_suffix
+      end function add_bmp_suffix
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

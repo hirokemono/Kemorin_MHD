@@ -55,8 +55,7 @@
         stop
       endif
 !
-      call add_bmp_suffix(fhead, fname)
-!
+      fname = add_bmp_suffix(fhead)
       open(unit=id_img,file=fname,status='unknown')
       write(*,*) 'Now reading BMP(24bit) file : ', fname
       read(id_img,'(54a1,$)') headmsw(1:54)

@@ -11,7 +11,10 @@
       use calypso_mpi
       use calypso_mpi_char
       use calypso_mpi_int
+      use MPI_ascii_data_IO
+      use m_calypso_mpi_IO
 !
+      use t_calypso_mpi_IO_param
       use t_png_file_access
       use write_bmp_image
 !
@@ -29,7 +32,12 @@
       integer(kind = kint) :: npixel_x
       integer(kind = kint) :: npixel_y
       character(len=1), allocatable :: rgb(:,:,:,:)
+      character(len=1), allocatable :: bgr(:,:,:)
       character(len=1), allocatable :: gray(:,:)
+!
+      type(calypso_MPI_IO_params), save :: IO_param
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer :: ilength
 !
       type(buffer_4_png) :: pbuf_t
 !
@@ -66,6 +74,7 @@
 !
       nmax_image_pe = 1 + (num_image-1) / nprocs
       allocate(rgb(3,npixel_x,npixel_y,nmax_image_pe))
+      allocate(bgr(3,npixel_x,npixel_y))
       allocate(icou_image_pe(nmax_image_pe))
       icou_image_pe(1:nmax_image_pe) = -1
 !
@@ -117,6 +126,28 @@
      &     (file_name, npixel_x, npixel_y, rgb(1,1,1,icou), pbuf_t)
       end do
 !#endif
+!
+      file_name = add_bmp_suffix(file_prefix)
+      call open_write_mpi_file(file_name, IO_param)
+      call mpi_write_charahead(IO_param, 54,                            &
+     &    BMP_header(int(npixel_x), int(6*npixel_y)))
+!
+      do icou = 1, num_image_pe
+        ip = icou_image_pe(icou)
+        ilength = 3*int(npixel_x)
+        do j = 1, npixel_y
+          bgr(1,1:npixel_x,1) = rgb(3,1:npixel_x,j,icou)
+          bgr(2,1:npixel_x,1) = rgb(2,1:npixel_x,j,icou)
+          bgr(3,1:npixel_x,1) = rgb(1,1:npixel_x,j,icou)
+!
+          ioffset = IO_param%ioff_gl                                   &
+     &             + ilength * (ip*int(npixel_y) + j-1)
+          call mpi_write_one_chara_b                                   &
+     &       (IO_param%id_file, ioffset, ilength, bgr(1,1,1))
+        end do
+      end do
+      call close_mpi_file(IO_param)
+      call calypso_MPI_barrier
 !
       call calypso_MPI_finalize
 !

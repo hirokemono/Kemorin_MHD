@@ -114,12 +114,12 @@ target_task:
 	'$$(OBJ_PNG_2_BMP_F)' \
 	'-L. $$(LIB_MESH) $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_PNG_2_QUILT)': '$$(MOD_PNG_2_QUILT) $$(LIB_SOLVER_FILE) $$(LIB_MESH_FILE) $$(LIB_KEMO_C_FILE)' \
+	@echo '$$(TARGET_PNG_2_QUILT)': '$$(MOD_PNG_2_QUILT)  $$(LIB_PARA_FILE) $$(LIB_SOLVER_FILE) $$(LIB_MESH_FILE) $$(LIB_KEMO_C_FILE)' \
 	 >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_PNG_2_QUILT)' \
 	'$$(MOD_PNG_2_QUILT)' \
-	'-L. $$(LIB_SOLVER) $$(LIB_MESH) $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
+	'-L. $$(LIB_SOLVER) $$(LIB_PARA) $$(LIB_MESH) $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 
