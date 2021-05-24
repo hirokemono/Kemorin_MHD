@@ -173,7 +173,7 @@
       open(unit=id_img,file=fname,status='unknown')
       write(*,*) 'Now writing BMP(24bit) file : ', trim(fname)
 !* writing header part
-      write(id_img,'(a54,$)') BMP_header(ihpixf, jvpixf)
+      write(id_img,'(a54)',ADVANCE='NO') BMP_header(ihpixf, jvpixf)
 !* image data
       itmp = ihpixf * jvpixf * 3
       write(frmtstr,'(''('',i8.8,''A,$)'')') itmp
