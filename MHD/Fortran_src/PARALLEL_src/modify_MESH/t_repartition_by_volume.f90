@@ -7,7 +7,8 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine grouping_by_volume(mesh, part_param, part_grp)
+!!      subroutine grouping_by_volume                                   &
+!!     &         (mesh, part_param, part_grp, repart_WK)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(group_data), intent(inout) :: part_grp
@@ -53,13 +54,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine grouping_by_volume(mesh, part_param, part_grp)
+      subroutine grouping_by_volume                                     &
+     &         (mesh, part_param, part_grp, repart_WK)
 !
       use xyz_block_id_by_nod_vol
 !
       type(mesh_geometry), intent(in) :: mesh
       type(volume_partioning_param), intent(in) :: part_param
       type(group_data), intent(inout) :: part_grp
+      type(volume_partioning_work), intent(inout) :: repart_WK
 !
       type(group_data) :: z_part_grp
       type(group_data) :: yz_part_grp
@@ -76,6 +79,7 @@
 !
       call set_volume_at_node                                           &
      &   (mesh, vol_sort%volume_nod, vol_sort%volume_nod_tot)
+!
       call set_xyz_block_id_by_nod_vol(mesh%node, part_param,           &
      &                                 vol_sort%id_block)
 !

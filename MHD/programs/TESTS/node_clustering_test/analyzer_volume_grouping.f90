@@ -85,6 +85,11 @@
       type(shape_finctions_at_points) :: spfs_T
 !
       type(group_data) :: part_grp
+      type(volume_partioning_work), save :: repart_WK1
+!
+      type(masking_parameter), allocatable, target :: masking1(:)
+      real(kind = kreal), allocatable :: d_mask_org1(:,:)
+      real(kind = kreal), allocatable :: vect_ref1(:,:)
 !
 !     --------------------- 
 !
@@ -132,8 +137,15 @@
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
 !       Re-partitioning
+      allocate(masking1(0))
+      allocate(d_mask_org1(fem_T%mesh%node%numnod,0))
+      allocate(vect_ref1(fem_T%mesh%node%numnod,3))
+      call link_repart_masking_data((.FALSE.), (.FALSE.),               &
+     &    fem_T%mesh%node, izero, d_mask_org1, vect_ref1, repart_WK1)
       call grouping_by_volume                                           &
-     &   (fem_T%mesh, part_prog_p1%repart_p, part_grp)
+     &   (fem_T%mesh, part_prog_p1%repart_p, part_grp, repart_WK1)
+      call unlink_repart_masking_data(repart_WK1)
+      deallocate(d_mask_org1, vect_ref1, masking1)
 !
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
