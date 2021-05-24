@@ -85,7 +85,7 @@
         type(lic_field_data), pointer :: field_lic
 !
 !>        Structure of work area
-!        type(volume_partioning_work) :: repart_WK
+        type(volume_partioning_work) :: repart_WK
       end type lic_repartioned_mesh
 !
       private :: dealloc_LIC_re_partition

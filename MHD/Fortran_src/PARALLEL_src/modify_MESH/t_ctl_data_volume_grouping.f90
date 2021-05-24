@@ -25,7 +25,6 @@
 !!      repartition_table_prefix      'mesh_new/transfer_table'
 !!      repartition_table_format      'merged_bin_gz'
 !!
-!!      partitioning_method_ctl   
 !!      array dir_domain_ctl
 !!        dir_domain_ctl  x     3
 !!        dir_domain_ctl  y     4
@@ -35,7 +34,11 @@
 !!
 !!      sleeve_level_ctl             2
 !!
-!!      array masking_control    1
+!!         partition_reference_ctl:  VOLUME_BASED or NUMBER_BASED
+!!      partition_reference_ctl         VOLUME_BASED
+!!      masking_switch_ctl          On
+!!      masking_weight_ctl          0.1
+!!      array masking_control
 !!        begin masking_control
 !!          masking_field        magnetic_field
 !!          masking_component    amplitude
@@ -55,6 +58,7 @@
       use m_machine_parameter
 !
       use t_read_control_elements
+      use t_control_array_real
       use t_control_array_integer
       use t_control_array_character
       use t_control_array_charaint
@@ -70,7 +74,7 @@
         type(read_character_item) :: repart_table_fmt_ctl
 !
 !>        Flag for new patitioning method
-        type(read_character_item) :: new_part_method_ctl
+        type(read_character_item) :: partition_reference_ctl
 !
 !>        Structure for number of subdomains
 !!@n        ndomain_section_ctl%c_tbl:  Direction of sectioning
@@ -82,6 +86,10 @@
 !>        Number of sleeve level
         type(read_integer_item) :: sleeve_level_ctl
 !
+!>        Flag for masking
+        type(read_character_item) :: masking_switch_ctl
+!>        Number of sleeve level
+        type(read_real_item) :: masking_weight_ctl
 !>        Number of field masking
         integer(kind = kint) :: num_masking_ctl = 0
 !>        field masking list
@@ -98,7 +106,7 @@
      &       :: hd_repart_table_fmt =  'repartition_table_format'
 !
       character(len=kchara), parameter, private                         &
-     &                 :: hd_part_method =  'partitioning_method_ctl'
+     &                 :: hd_part_ref =  'partition_reference_ctl'
       character(len=kchara), parameter, private                         &
      &                 :: hd_sleeve_level = 'sleeve_level_ctl'
       character(len=kchara), parameter, private                         &
@@ -106,6 +114,10 @@
       character(len=kchara), parameter, private                         &
      &                 :: hd_ratio_divide = 'group_ratio_to_domain_ctl'
 !
+      character(len=kchara), parameter, private                         &
+     &              :: hd_masking_switch = 'masking_switch_ctl'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_masking_weight = 'masking_weight_ctl'
       character(len=kchara), parameter, private                         &
      &              :: hd_masking_ctl = 'masking_control'
 !
@@ -149,7 +161,12 @@
      &                           new_part_ctl%repart_table_fmt_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf, hd_part_method, new_part_ctl%new_part_method_ctl)
+     &     (c_buf, hd_part_ref, new_part_ctl%partition_reference_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_masking_switch, new_part_ctl%masking_switch_ctl)
+!
+        call read_real_ctl_type                                        &
+     &     (c_buf, hd_masking_weight, new_part_ctl%masking_weight_ctl)
 !
         if(check_array_flag(c_buf, hd_masking_ctl)) then
           call read_repart_masking_ctl_array                            &
@@ -172,7 +189,9 @@
       new_part_ctl%repart_table_head_ctl%iflag = 0
       new_part_ctl%repart_table_fmt_ctl%iflag =  0
 !
-      new_part_ctl%new_part_method_ctl%iflag = 0
+      new_part_ctl%partition_reference_ctl%iflag = 0
+      new_part_ctl%masking_switch_ctl%iflag = 0
+      new_part_ctl%masking_weight_ctl%iflag = 0
       new_part_ctl%sleeve_level_ctl%iflag = 0
 !
       new_part_ctl%ratio_of_grouping_ctl%iflag = 0
@@ -203,7 +222,9 @@
       call bcast_ctl_type_c1(new_part_ctl%repart_table_fmt_ctl)
 !
       call bcast_ctl_array_ci(new_part_ctl%ndomain_section_ctl)
-      call bcast_ctl_type_c1(new_part_ctl%new_part_method_ctl)
+      call bcast_ctl_type_c1(new_part_ctl%partition_reference_ctl)
+      call bcast_ctl_type_c1(new_part_ctl%masking_switch_ctl)
+      call bcast_ctl_type_r1(new_part_ctl%masking_weight_ctl)
       call bcast_ctl_type_i1(new_part_ctl%sleeve_level_ctl)
       call bcast_ctl_type_i1(new_part_ctl%ratio_of_grouping_ctl)
 !
@@ -233,8 +254,12 @@
       call copy_chara_ctl(org_new_part_c%repart_table_fmt_ctl,          &
      &                    new_new_part_c%repart_table_fmt_ctl)
 !
-      call copy_chara_ctl(org_new_part_c%new_part_method_ctl,           &
-     &                    new_new_part_c%new_part_method_ctl)
+      call copy_chara_ctl(org_new_part_c%partition_reference_ctl,       &
+     &                    new_new_part_c%partition_reference_ctl)
+      call copy_chara_ctl(org_new_part_c%masking_switch_ctl,            &
+     &                    new_new_part_c%masking_switch_ctl)
+      call copy_real_ctl(org_new_part_c%masking_weight_ctl,             &
+     &                   new_new_part_c%masking_weight_ctl)
 !
       call dup_control_array_c_i(org_new_part_c%ndomain_section_ctl,    &
      &                           new_new_part_c%ndomain_section_ctl)
