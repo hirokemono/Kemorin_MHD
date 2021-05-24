@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine LIC_init_nodal_field(geofem, num_lic, lic_param,     &
 !!     &                                repart_data)
+!!      subroutine dealloc_LIC_nodal_field(num_lic, lic_param,          &
+!!     &                                   repart_data)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(lic_parameters), intent(inout) :: lic_param(num_lic)
@@ -83,7 +85,7 @@
         type(lic_field_data), pointer :: field_lic
 !
 !>        Structure of work area
-        type(sleeve_extension_work) :: sleeve_exp_WK
+        type(volume_partioning_work) :: repart_WK
       end type lic_repartioned_mesh
 !
       private :: dealloc_LIC_re_partition
@@ -104,10 +106,11 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
       integer(kind = kint) :: i_lic, nmax_masking, iflag
-      logical :: flag_sleeve_wk
+      logical :: flag_mask, flag_sleeve_wk
 !
 !
       nmax_masking = 0
+      flag_mask =      .TRUE.
       flag_sleeve_wk = .TRUE.
       do i_lic = 1, num_lic
         nmax_masking = max(nmax_masking, lic_param(i_lic)%num_masking)
@@ -115,27 +118,47 @@
         if(lic_param(i_lic)%each_part_p%sleeve_exp_p%iflag_expand       &
      &       .ne. iflag_vector_trace) flag_sleeve_wk = .FALSE.
       end do
+      if(nmax_masking .le. 0) flag_mask = .FALSE.
 !
       allocate(repart_data%nod_fld_lic)
       call alloc_nod_vector_4_lic(geofem%mesh%node, nmax_masking,       &
      &    repart_data%nod_fld_lic)
 !
-      write(*,*) 'flag_sleeve_wk', flag_sleeve_wk
-      if(flag_sleeve_wk) then
-        call link_sleeve_extend_ref_vect(geofem%mesh%node,              &
-     &      repart_data%nod_fld_lic%v_lic, repart_data%sleeve_exp_WK)
-      end if
+      do i_lic = 1, num_lic
+        call link_repart_masking_param                                  &
+     &     (lic_param(i_lic)%num_masking, lic_param(i_lic)%masking,     &
+     &      lic_param(i_lic)%each_part_p)
+      end do
 !
-!      do i_lic = 1, num_lic
-!        call link_repart_masking_param                                 &
-!     &     (lic_param(i_lic)%num_masking, lic_param(i_lic)%masking,    &
-!     &      geofem%mesh%node, repart_data%nod_fld_lic%num_mask,        &
-!     &      repart_data%nod_fld_lic%s_lic,                             &
-!     &      repart_data%nod_fld_lic%v_lic,                             &
-!     &      lic_param(i_lic)%each_part_p, repart_data%sleeve_exp_WK)
-!      end do
+      write(*,*) 'flag_mask, flag_sleeve_wk', flag_mask, flag_sleeve_wk
+      call link_repart_masking_data(flag_mask, flag_sleeve_wk,          &
+     &   geofem%mesh%node, nmax_masking, repart_data%nod_fld_lic%s_lic, &
+     &   repart_data%nod_fld_lic%v_lic, repart_data%repart_WK)
 !
       end subroutine LIC_init_nodal_field
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_LIC_nodal_field(num_lic, lic_param,            &
+     &                                   repart_data)
+!
+      integer(kind = kint), intent(in) :: num_lic
+!
+      type(lic_parameters), intent(inout) :: lic_param(num_lic)
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+!
+      integer(kind = kint) :: i_lic
+!
+!
+      do i_lic = 1, num_lic
+        call unlink_repart_masking_param(lic_param(i_lic)%each_part_p)
+      end do
+!
+      call unlink_repart_masking_data(repart_data%repart_WK)
+      call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
+      deallocate(repart_data%nod_fld_lic)
+!
+      end subroutine dealloc_LIC_nodal_field
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -282,7 +305,7 @@
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(repart_p, geofem, next_tbl,      &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
-     &    repart_data%sleeve_exp_WK)
+     &    repart_data%repart_WK)
 !
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
       call FEM_mesh_initialization                                      &

@@ -277,9 +277,8 @@
       if(lic%pvr%num_pvr .le. 0) return
       call dealloc_LIC_each_mesh(lic%repart_p, lic%repart_p,            &
      &                           lic%repart_data)
-!
-      call dealloc_nod_data_4_lic(lic%repart_data%nod_fld_lic)
-      deallocate(lic%repart_data%nod_fld_lic)
+      call dealloc_LIC_nodal_field(lic%pvr%num_pvr, lic%lic_param,      &
+     &                             lic%repart_data)
 !
       do i_lic = 1, lic%pvr%num_pvr
         call flush_each_lic_control(lic%lic_param(i_lic))

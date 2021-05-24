@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine s_mesh_repartition_by_volume                         &
-!!     &         (org_fem, ele_comm, neib_nod, part_param,              &
+!!     &         (org_fem, ele_comm, neib_nod, part_param, repart_WK,   &
 !!     &          new_mesh, new_groups, repart_nod_tbl)
-!!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: org_fem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
+!!        type(volume_partioning_param), intent(in) ::  part_param
+!!        type(volume_partioning_work), intent(in) :: repart_WK
 !!        type(mesh_geometry), intent(inout) :: new_mesh
 !!        type(mesh_groups), intent(inout) :: new_groups
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
@@ -41,7 +42,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_mesh_repartition_by_volume                           &
-     &         (org_fem, ele_comm, neib_nod, part_param,                &
+     &         (org_fem, ele_comm, neib_nod, part_param, repart_WK,     &
      &          new_mesh, new_groups, repart_nod_tbl)
 !
       use t_para_double_numbering
@@ -53,10 +54,11 @@
       use const_repart_ele_connect
       use redistribute_groups
 !
-      type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: org_fem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_id_4_nod), intent(in) :: neib_nod
+      type(volume_partioning_param), intent(in) ::  part_param
+      type(volume_partioning_work), intent(in) :: repart_WK
 !
       type(mesh_geometry), intent(inout) :: new_mesh
       type(mesh_groups), intent(inout) :: new_groups
@@ -69,7 +71,8 @@
 !
 !
 !       Re-partitioning
-      call grouping_by_volume(org_fem%mesh, part_param, part_grp)
+      call grouping_by_volume                                           &
+     &   (org_fem%mesh, part_param, repart_WK, part_grp)
 !
       call alloc_double_numbering                                       &
      &   (org_fem%mesh%node%numnod, new_ids_on_org)
