@@ -77,11 +77,13 @@
       type(next_nod_ele_table) :: next_tbl1
       type(jacobians_type) :: jacobians1
       type(shape_finctions_at_points) :: spfs1
-      type(sleeve_extension_work), save :: sleeve_exp_WK1
+      type(volume_partioning_work), save :: repart_WK1
 !
-      integer(kind = kint) :: irank_read
+      type(masking_parameter), allocatable, target :: masking1(:)
+      real(kind = kreal), allocatable :: d_mask_org1(:,:)
+      real(kind = kreal), allocatable :: vect_ref1(:,:)
+!
       integer(kind = kint) :: ierr
-      logical :: flag
 !
 !     --------------------- 
 !
@@ -130,11 +132,18 @@
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
       if(iflag_debug .gt. 0) write(*,*) 'load_or_const_new_partition'
-      call alloc_sleeve_extend_nul_vect(fem_T%mesh%node,                &
-     &    part_p1%repart_p%sleeve_exp_p, sleeve_exp_WK1)
+      allocate(masking1(0))
+      allocate(d_mask_org1(fem_T%mesh%node%numnod,0))
+      allocate(vect_ref1(fem_T%mesh%node%numnod,3))
+      call link_repart_masking_param(0, masking1, part_p1%repart_p)
+      call link_repart_masking_data((.FALSE.), (.FALSE.),               &
+     &    fem_T%mesh%node, izero, d_mask_org1, vect_ref1, repart_WK1)
       call load_or_const_new_partition(part_p1%repart_p, fem_T,         &
-     &    next_tbl1, new_fem, repart_nod_tbl1, sleeve_exp_WK1)
-      call dealloc_sleeve_extend_nul_vect(sleeve_exp_WK1)
+     &    next_tbl1, new_fem, repart_nod_tbl1, repart_WK1%sleeve_exp_WK)
+      call unlink_repart_masking_data(repart_WK1)
+      call unlink_repart_masking_param(part_p1%repart_p)
+      deallocate(d_mask_org1, vect_ref1, masking1)
+!
       call dealloc_next_nod_ele_table(next_tbl1)
       call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
 !

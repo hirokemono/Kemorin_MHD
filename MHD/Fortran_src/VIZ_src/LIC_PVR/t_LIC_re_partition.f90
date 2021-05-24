@@ -299,7 +299,6 @@
       type(mesh_data), intent(in), target :: geofem
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
-      type(sleeve_extension_work), save :: sleeve_exp_WK1
 !
       type(shape_finctions_at_points) :: spfs_T
       type(jacobians_type) :: jac_viz
@@ -309,7 +308,7 @@
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(repart_p, geofem, next_tbl,      &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
-     &    sleeve_exp_WK1)
+     &    repart_data%repart_WK%sleeve_exp_WK)
 !
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
       call FEM_mesh_initialization                                      &
