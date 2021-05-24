@@ -113,6 +113,7 @@
       use set_components_flags
       use set_parallel_file_name
       use set_ucd_extensions
+      use set_control_LIC_masking
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -181,7 +182,7 @@
         allocate(lic_p%masking(lic_p%num_masking))
 !
         do i = 1, lic_p%num_masking
-          call set_control_masking(num_nod_phys, phys_nod_name,         &
+          call s_set_control_LIC_masking(num_nod_phys, phys_nod_name,   &
      &        lic_ctl%mask_ctl(i), lic_p%masking(i))
         end do
       end if
