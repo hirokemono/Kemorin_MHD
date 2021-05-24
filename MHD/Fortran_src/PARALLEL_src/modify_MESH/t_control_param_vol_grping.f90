@@ -184,11 +184,12 @@
 !
       type(volume_partioning_param), intent(inout) :: part_param
 !
-      if(part_param%flag_mask_repart .EQV. .FALSE.) then
-        part_param%num_mask_repart = 0
+      part_param%num_mask_repart = 0
+      if(part_param%flag_mask_repart) then
+        part_param%num_mask_repart = num_mask_org
       end if
 !
-      part_param%num_mask_repart = num_mask_org
+      if(part_param%num_mask_repart .le. 0) return
       part_param%masking_repart => masking_org
 !
       end subroutine link_repart_masking_param
