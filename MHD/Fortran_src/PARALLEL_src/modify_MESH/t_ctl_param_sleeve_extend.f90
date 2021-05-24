@@ -25,12 +25,11 @@
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!
 !!      subroutine link_sleeve_extend_ref_vect(node, ref_vect,          &
-!!     &          sleeve_exp_p, sleeve_exp_WK)
+!!     &                                       sleeve_exp_WK)
 !!      subroutine unlink_sleeve_extend_ref_vect(sleeve_exp_WK)
 !!        type(node_data), intent(in) :: node
 !!        real(kind = kreal), intent(in), target                        &
 !!     &                              :: ref_vect(node%numnod,3)
-!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!
 !!      subroutine set_ctl_param_sleeve_extension                       &
@@ -189,18 +188,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine link_sleeve_extend_ref_vect(node, ref_vect,            &
-     &          sleeve_exp_p, sleeve_exp_WK)
+     &                                       sleeve_exp_WK)
 !
       use t_geometry_data
 !
       type(node_data), intent(in) :: node
       real(kind = kreal), intent(in), target :: ref_vect(node%numnod,3)
-      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !
       type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
 !
-      if(sleeve_exp_p%iflag_expand .ne. iflag_vector_trace) return
       sleeve_exp_WK%vect_ref => ref_vect
 !
       end subroutine link_sleeve_extend_ref_vect

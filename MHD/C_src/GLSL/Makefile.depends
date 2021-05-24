@@ -1,7 +1,7 @@
 #
 shaders.o: $(C_SRCDIR)/GLSL/shaders.c \
- $(C_SRCDIR)/GLSL/shaders.h \
- $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
- $(C_SRCDIR)/CORE_C/skip_comment_c.h \
- $(C_SRCDIR)/CORE_C/calypso_param_c.h
+  $(C_SRCDIR)/GLSL/shaders.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/calypso_param_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<

@@ -195,6 +195,9 @@
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%lic_param, lic%pvr%pvr_param, lic%flag_each_repart)
 !
+      call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
+     &    lic%repart_data)
+!
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
      &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
@@ -222,7 +225,7 @@
 !
       if(lic%flag_each_repart) return
       call LIC_initialize_w_shared_mesh(geofem, next_tbl,               &
-     &    lic%repart_p, lic%repart_data, lic%pvr, lic%lic_param)
+     &    lic%repart_p, lic%repart_data, lic%pvr)
 !
       end subroutine LIC_initialize
 !
