@@ -93,6 +93,7 @@
       use t_ctl_data_pvr_light
       use t_control_data_pvr_sections
       use t_control_data_pvr_movie
+      use t_control_data_quilt_image
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_area
       use skip_comment_f
@@ -117,6 +118,8 @@
 !
 !>    Structure for image rotation
         type(pvr_movie_ctl) :: movie
+!>    Structure of quilt image controls
+        type(quilt_image_ctl) :: quilt_c
 !
         type(read_character_item) :: updated_ctl
 !
@@ -158,6 +161,7 @@
 !
 !
       call reset_pvr_light_flags(pvr_ctl%light)
+      call reset_quilt_image_ctl(pvr_ctl%quilt_c)
       call reset_pvr_movie_control_flags(pvr_ctl%movie)
 !
       call dealloc_view_transfer_ctl(pvr_ctl%mat)

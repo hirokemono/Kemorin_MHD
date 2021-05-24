@@ -44,6 +44,9 @@
 !!      integer(c_int) function num_label_pvr_movie_f() bind(c)
 !!      subroutine set_label_pvr_movie_f(names)  bind(c)
 !!
+!!      integer(c_int) function num_label_quilt_image_f() bind(c)
+!!      subroutine set_label_quilt_image_f(names)  bind(c)
+!!
 !!      integer(c_int) function num_flag_pvr_movie_mode_f() bind(c)
 !!      subroutine set_flag_pvr_movie_mode_f(names)  bind(c)
 !!
@@ -356,6 +359,28 @@
 !
       call set_label_pvr_movie(names)
       end subroutine set_label_pvr_movie_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_label_quilt_image_f() bind(c)
+!
+      use t_control_data_quilt_image
+!
+      num_label_quilt_image_f = num_label_quilt_image()
+      return
+      end function num_label_quilt_image_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_quilt_image_f(names)  bind(c)
+!
+      use t_control_data_quilt_image
+!
+      character(C_CHAR), intent(inout) :: names(*)
+!
+      call set_label_quilt_image(names)
+      end subroutine set_label_quilt_image_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

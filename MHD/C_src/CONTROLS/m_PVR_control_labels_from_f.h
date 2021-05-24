@@ -180,9 +180,12 @@ struct pvr_control_labels{
 	struct control_labels_f *label_pvr_isosurf;
 	
 	int num_label_pvr_movie_c;
-	struct control_labels_f *label_lic_movie;
+	struct control_labels_f *label_pvr_movie;
 	
-	struct control_labels_f *label_pvr_dirs;
+    int num_label_quilt_image_c;
+    struct control_labels_f *label_quilt_image;
+
+    struct control_labels_f *label_pvr_dirs;
 	struct control_labels_f *flag_pvr_isosurf_dir;
 	
 	int num_flag_pvr_movie_mode_c;

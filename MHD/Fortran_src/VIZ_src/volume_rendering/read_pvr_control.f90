@@ -72,10 +72,13 @@
 !!     ...
 !!  end array isosurface_ctl
 !!!
-!!  begin image_rotation_ctl
+!!  begin quilt_image_ctl
 !!   ...
-!!  end image_rotation_ctl
+!!  end quilt_image_ctl
 !!!
+!!  begin movie_mode_ctl
+!!   ...
+!!  end movie_mode_ctl
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -95,6 +98,7 @@
       use t_ctl_data_pvr_colormap_bar
       use t_ctl_data_pvr_light
       use t_control_data_pvr_sections
+      use t_control_data_quilt_image
       use t_control_data_pvr_movie
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_area
@@ -136,6 +140,8 @@
      &             :: hd_pvr_isosurf =  'isosurface_ctl'
 !
       character(len=kchara), parameter, private                         &
+     &             :: hd_quilt_image =  'quilt_image_ctl'
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_movie =     'movie_mode_ctl'
 !
 !     3rd level for surface_define
@@ -158,8 +164,8 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_rotation =  'image_rotation_ctl'
 !
-      integer(kind = kint), parameter :: n_label_pvr_ctl =       19
-      integer(kind = kint), parameter :: n_label_pvr_ctl_w_dup = 20
+      integer(kind = kint), parameter :: n_label_pvr_ctl =       20
+      integer(kind = kint), parameter :: n_label_pvr_ctl_w_dup = 21
 !
       private :: n_label_pvr_ctl, n_label_pvr_ctl_w_dup
 !
@@ -236,6 +242,8 @@
      &      pvr_ctl%render_area_c, c_buf)
         call read_lighting_ctl(id_control, hd_pvr_lighting,             &
      &      pvr_ctl%light, c_buf)
+        call read_quilt_image_ctl(id_control, hd_quilt_image,           &
+     &      pvr_ctl%quilt_c, c_buf)
         call read_pvr_rotation_ctl(id_control, hd_pvr_movie,            &
      &      pvr_ctl%movie, c_buf)
         call read_pvr_rotation_ctl(id_control, hd_pvr_rotation,         &
@@ -343,8 +351,9 @@
 !
       call set_control_labels(hd_pvr_sections, names(17))
       call set_control_labels(hd_pvr_isosurf,  names(18))
-      call set_control_labels(hd_pvr_movie,    names(19))
-      call set_control_labels(hd_pvr_rotation, names(20))
+      call set_control_labels(hd_quilt_image,  names(19))
+      call set_control_labels(hd_pvr_movie,    names(20))
+      call set_control_labels(hd_pvr_rotation, names(21))
 !
       end subroutine set_label_pvr_ctl_w_dup
 !

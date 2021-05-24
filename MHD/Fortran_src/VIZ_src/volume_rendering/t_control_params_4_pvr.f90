@@ -153,12 +153,12 @@
 !>     Rotatin axis:    id_rot_axis
         integer(kind = kint) :: id_rot_axis = 3
 !>     Rotation range
-        real(kind = kint) :: angle_range(2) = 0.0d0
+        real(kind = kreal) :: angle_range(2) = 0.0d0
 !
 !>     Apature range
-        real(kind = kint) :: apature_range(2) = 0.0d0
+        real(kind = kreal) :: apature_range(2) = 0.0d0
 !>     Apature range
-        real(kind = kint) :: peak_range(2) =    0.0d0
+        real(kind = kreal) :: peak_range(2) =    0.0d0
       end type pvr_view_parameter
 !
 !

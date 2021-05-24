@@ -59,6 +59,7 @@
       call bcast_pvr_colorbar_ctl(pvr%cmap_cbar_c%cbar_ctl)
       call bcast_pvr_colordef_ctl(pvr%cmap_cbar_c%color)
 !
+      call bcast_quilt_image_ctl(pvr%quilt_c)
       call bcast_pvr_rotation_ctl(pvr%movie)
       call bcast_pvr_render_area_ctl(pvr%render_area_c)
 !
@@ -116,6 +117,7 @@
       call dup_lighting_ctl(org_pvr%light, new_pvr%light)
       call dup_pvr_cmap_cbar(org_pvr%cmap_cbar_c, new_pvr%cmap_cbar_c)
 !
+      call dup_quilt_image_ctl(org_pvr%quilt_c, new_pvr%quilt_c)
       call dup_pvr_movie_control_flags(org_pvr%movie, new_pvr%movie)
       call dup_pvr_render_area_ctl(org_pvr%render_area_c,               &
      &                             new_pvr%render_area_c)

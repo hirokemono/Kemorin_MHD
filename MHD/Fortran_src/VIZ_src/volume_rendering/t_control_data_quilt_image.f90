@@ -11,9 +11,9 @@
 !!     &         (id_control, hd_block, quilt_c, c_buf)
 !!        type(quilt_image_ctl), intent(inout) :: quilt_c
 !!
-!!      subroutine dup_quilt_image_ctl(org_movie, new_movie)
-!!        type(quilt_image_ctl), intent(in) :: org_movie
-!!        type(quilt_image_ctl), intent(inout) :: new_movie
+!!      subroutine dup_quilt_image_ctl(org_quilt, new_quilt)
+!!        type(quilt_image_ctl), intent(in) :: org_quilt
+!!        type(quilt_image_ctl), intent(inout) :: new_quilt
 !!      subroutine reset_quilt_image_ctl(quilt_c)
 !!        type(quilt_image_ctl), intent(inout) :: quilt_c
 !!
@@ -25,12 +25,12 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    Avaiable parameters for quilt_mode_ctl: BITMAP
 !!
-!!  begin image_rotation_ctl
+!!  begin quilt_image_ctl
 !!    quilt_mode_ctl           BITMAP
 !!    num_frames_ctl           45
 !!    num_row_column_ctl       5     9
 !!    angle_range            -17.5  17.5
-!!  end image_rotation_ctl
+!!  end quilt_image_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    quilt_mode_ctl:   view_matrices, rotation, apature, LIC_kernel
@@ -53,8 +53,9 @@
       implicit  none
 !
 !
+!>       Structure of quilt image controls
       type quilt_image_ctl
-!>        Structure of quilt_c mode control
+!>        Structure of quilt mode control
         type(read_character_item) :: quilt_mode_ctl
 !>        Structure of number of flame control
         type(read_integer_item) ::   num_frames_ctl
@@ -115,7 +116,7 @@
 !
         call read_real2_ctl_type(c_buf, hd_angle_range,                 &
      &      quilt_c%angle_range_ctl)
-        call read_int2_ctl_type(c_buf, hd_row_column,                   &
+        call read_integer2_ctl_type(c_buf, hd_row_column,               &
      &      quilt_c%num_row_column_ctl)
       end do
       quilt_c%i_quilt_image = 1
@@ -125,25 +126,25 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine dup_quilt_image_ctl(org_movie, new_movie)
+      subroutine dup_quilt_image_ctl(org_quilt, new_quilt)
 !
       use bcast_dup_view_transfer_ctl
 !
-      type(quilt_image_ctl), intent(in) :: org_movie
-      type(quilt_image_ctl), intent(inout) :: new_movie
+      type(quilt_image_ctl), intent(in) :: org_quilt
+      type(quilt_image_ctl), intent(inout) :: new_quilt
 !
 !
-      call copy_chara_ctl(org_movie%quilt_mode_ctl,                     &
-     &                    new_movie%quilt_mode_ctl)
-      call copy_integer_ctl(org_movie%num_frames_ctl,                   &
-     &                      new_movie%num_frames_ctl)
+      call copy_chara_ctl(org_quilt%quilt_mode_ctl,                     &
+     &                    new_quilt%quilt_mode_ctl)
+      call copy_integer_ctl(org_quilt%num_frames_ctl,                   &
+     &                      new_quilt%num_frames_ctl)
 !
-      call copy_real2_ctl(org_movie%angle_range_ctl,                    &
-     &                    new_movie%angle_range_ctl)
-      call copy_int2_ctl(org_movie%num_row_column_ctl,                  &
-     &                    new_movie%num_row_column_ctl)
+      call copy_real2_ctl(org_quilt%angle_range_ctl,                    &
+     &                    new_quilt%angle_range_ctl)
+      call copy_integer2_ctl(org_quilt%num_row_column_ctl,              &
+     &                       new_quilt%num_row_column_ctl)
 !
-      new_movie%i_quilt_image = org_movie%i_quilt_image
+      new_quilt%i_quilt_image = org_quilt%i_quilt_image
 !
       end subroutine dup_quilt_image_ctl
 !

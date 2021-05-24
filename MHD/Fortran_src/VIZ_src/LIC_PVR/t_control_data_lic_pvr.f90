@@ -55,9 +55,13 @@
 !!   ...
 !!  end colorbar_ctl
 !!!
-!!  begin image_rotation_ctl
+!!  begin quilt_image_ctl
 !!   ...
-!!  end image_rotation_ctl
+!!  end quilt_image_ctl
+!!
+!!  begin movie_mode_ctl
+!!   ...
+!!  end movie_mode_ctl
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -122,9 +126,11 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_isosurf =  'isosurface_ctl'
       character(len=kchara), parameter, private                         &
+     &             :: hd_quilt_image =  'quilt_image_ctl'
+      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_movie =    'movie_mode_ctl'
 !
-      integer(kind = kint), parameter :: n_label_LIC_pvr = 18
+      integer(kind = kint), parameter :: n_label_LIC_pvr = 19
 !
 !
       private :: n_label_LIC_pvr
@@ -170,6 +176,7 @@
       use t_ctl_data_4_view_transfer
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_movie
+      use t_control_data_quilt_image
       use t_control_data_pvr_area
       use read_lic_control_data
       use read_control_pvr_modelview
@@ -237,6 +244,8 @@
      &      pvr%render_area_c, c_buf)
         call read_lighting_ctl(id_control, hd_pvr_lighting,             &
      &      pvr%light, c_buf)
+        call read_quilt_image_ctl(id_control, hd_quilt_image,           &
+     &      pvr%quilt_c, c_buf)
         call read_pvr_rotation_ctl(id_control, hd_pvr_movie,            &
      &      pvr%movie, c_buf)
 !
@@ -317,7 +326,8 @@
 !
       call set_control_labels(hd_pvr_sections,   names(16))
       call set_control_labels(hd_pvr_isosurf,    names(17))
-      call set_control_labels(hd_pvr_movie,      names(18))
+      call set_control_labels(hd_quilt_image,    names(18))
+      call set_control_labels(hd_pvr_movie,      names(19))
 !
       end subroutine set_ctl_label_LIC_pvr
 !
