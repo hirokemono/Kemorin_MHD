@@ -130,10 +130,10 @@
      &      lic_param(i_lic)%each_part_p)
       end do
 !
-!      write(*,*) 'flag_mask, flag_sleeve_wk', flag_mask, flag_sleeve_wk
-!      call link_repart_masking_data(flag_mask, flag_sleeve_wk,          &
-!     &   geofem%mesh%node, nmax_masking, repart_data%nod_fld_lic%s_lic, &
-!     &   repart_data%nod_fld_lic%v_lic, repart_data%repart_WK)
+      write(*,*) 'flag_mask, flag_sleeve_wk', flag_mask, flag_sleeve_wk
+      call link_repart_masking_data(flag_mask, flag_sleeve_wk,          &
+     &   geofem%mesh%node, nmax_masking, repart_data%nod_fld_lic%s_lic, &
+     &   repart_data%nod_fld_lic%v_lic, repart_data%repart_WK)
 !
       end subroutine LIC_init_nodal_field
 !

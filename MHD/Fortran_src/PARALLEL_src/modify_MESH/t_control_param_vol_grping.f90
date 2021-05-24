@@ -9,9 +9,8 @@
 !!@verbatim
 !!      subroutine link_repart_masking_data(flag_mask, flag_sleeve_wk,  &
 !!     &          node, nmax_mask_org, d_mask_org, vect_ref_ext,        &
-!!     &          part_param, repart_WK)
+!!     &          repart_WK)
 !!      subroutine unlink_repart_masking_data(repart_WK)
-!!        type(volume_partioning_param), intent(in) :: part_param
 !!        logical, intent(in) :: flag_mask, flag_sleeve_wk
 !!        integer(kind = kint), intent(in) :: nmax_mask_org
 !!        type(node_data), intent(in) :: node
@@ -129,11 +128,10 @@
 !
       subroutine link_repart_masking_data(flag_mask, flag_sleeve_wk,    &
      &          node, nmax_mask_org, d_mask_org, vect_ref_ext,          &
-     &          part_param, repart_WK)
+     &          repart_WK)
 !
       use t_geometry_data
 !
-      type(volume_partioning_param), intent(in) :: part_param
       logical, intent(in) :: flag_mask, flag_sleeve_wk
       integer(kind = kint), intent(in) :: nmax_mask_org
       type(node_data), intent(in) :: node
@@ -152,7 +150,7 @@
 !
       if(flag_sleeve_wk) then
         call link_sleeve_extend_ref_vect(node, vect_ref_ext,            &
-     &      part_param%sleeve_exp_p, repart_WK%sleeve_exp_WK)
+     &      flag_sleeve_wk, repart_WK%sleeve_exp_WK)
       end if
 !
       end subroutine link_repart_masking_data
