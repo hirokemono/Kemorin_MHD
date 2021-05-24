@@ -47,7 +47,7 @@
 !
       subroutine s_repartiton_by_volume                                 &
      &         (part_param, geofem, ele_comm, next_tbl,                 &
-     &          new_fem, repart_nod_tbl)
+     &          new_fem, repart_nod_tbl, sleeve_exp_WK)
 !
       use t_next_node_ele_4_node
       use t_interpolate_table
@@ -74,6 +74,7 @@
 !
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
       type(interpolate_table) :: itp_nod_tbl_IO
       type(communication_table) :: new_ele_comm
@@ -96,7 +97,7 @@
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
         call sleeve_extension_loop(part_param%sleeve_exp_p,             &
-     &      new_fem%mesh, new_fem%group, new_ele_comm)
+     &      new_fem%mesh, new_fem%group, new_ele_comm, sleeve_exp_WK)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
 !
         call dealloc_comm_table(new_ele_comm)

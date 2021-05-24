@@ -77,6 +77,7 @@
       type(next_nod_ele_table) :: next_tbl1
       type(jacobians_type) :: jacobians1
       type(shape_finctions_at_points) :: spfs1
+      type(sleeve_extension_work), save :: sleeve_exp_WK1
 !
       integer(kind = kint) :: irank_read
       integer(kind = kint) :: ierr
@@ -129,8 +130,11 @@
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
       if(iflag_debug .gt. 0) write(*,*) 'load_or_const_new_partition'
+      call alloc_sleeve_extend_nul_vect(fem_T%mesh%node,                &
+     &    part_p1%repart_p%sleeve_exp_p, sleeve_exp_WK1)
       call load_or_const_new_partition(part_p1%repart_p, fem_T,         &
-     &    next_tbl1, new_fem, repart_nod_tbl1)
+     &    next_tbl1, new_fem, repart_nod_tbl1, sleeve_exp_WK1)
+      call dealloc_sleeve_extend_nul_vect(sleeve_exp_WK1)
       call dealloc_next_nod_ele_table(next_tbl1)
       call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
 !

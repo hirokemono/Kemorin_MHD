@@ -14,15 +14,15 @@
 !!
 !!      subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,       &
 !!     &          nod_comm, ele_comm, node, ele, neib_ele,              &
-!!     &          dist_4_comm, d_vec, each_comm, mark_nod, mark_ele,    &
-!!     &          each_exp_flags)
+!!     &          dist_4_comm, sleeve_exp_WK, each_comm,                &
+!!     &          mark_nod, mark_ele, each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
 !!        type(dist_from_wall_in_export), intent(in) :: dist_4_comm
-!!        real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
+!!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !!        type(comm_table_for_each_pe), intent(inout) :: each_comm
 !!        type(mark_for_each_comm), intent(inout) :: mark_nod
 !!        type(mark_for_each_comm), intent(inout) :: mark_ele
@@ -99,8 +99,8 @@
 !
       subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,         &
      &          nod_comm, ele_comm, node, ele, neib_ele,                &
-     &          dist_4_comm, d_vec, each_comm, mark_nod, mark_ele,      &
-     &          each_exp_flags)
+     &          dist_4_comm, sleeve_exp_WK, each_comm,                  &
+     &          mark_nod, mark_ele, each_exp_flags)
 !
       use calypso_mpi
       use t_ctl_param_sleeve_extend
@@ -113,7 +113,7 @@
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
       type(dist_from_wall_in_export), intent(in) :: dist_4_comm
-      real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
+      type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       type(comm_table_for_each_pe), intent(inout) :: each_comm
       type(mark_for_each_comm), intent(inout) :: mark_nod
@@ -140,7 +140,7 @@
         call cal_min_dist_from_last_export                              &
      &     (sleeve_exp_p, node, ele, neib_ele,                          &
      &      each_comm%num_each_export, each_comm%item_each_export,      &
-     &      d_vec, each_exp_flags)
+     &      sleeve_exp_WK, each_exp_flags)
 !
         call set_new_export_to_extend                                   &
      &     (sleeve_exp_p%dist_max, node, each_exp_flags%distance,       &

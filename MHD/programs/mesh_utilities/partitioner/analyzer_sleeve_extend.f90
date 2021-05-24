@@ -100,7 +100,8 @@
       use nod_and_ele_derived_info
       use const_element_comm_tables
 !
-      type(communication_table), save:: ele_comm
+      type(communication_table), save :: ele_comm
+      type(sleeve_extension_work), save :: sleeve_exp_WK1
 !
 !
       call set_nod_and_ele_infos(fem_EXT%mesh%node, fem_EXT%mesh%ele)
@@ -108,8 +109,11 @@
      &   (fem_EXT%mesh%node, fem_EXT%mesh%nod_comm, fem_EXT%mesh%ele,   &
      &    ele_comm)
 !
-      call sleeve_extension_loop                                        &
-     &   (sleeve_exp_p1, fem_EXT%mesh, fem_EXT%group, ele_comm)
+      call alloc_sleeve_extend_nul_vect                                 &
+     &   (fem_EXT%mesh%node, sleeve_exp_p1, sleeve_exp_WK1)
+      call sleeve_extension_loop(sleeve_exp_p1, fem_EXT%mesh,           &
+     &    fem_EXT%group, ele_comm, sleeve_exp_WK1)
+      call dealloc_sleeve_extend_nul_vect(sleeve_exp_WK1)
 !
       call mpi_output_mesh                                              &
      &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)

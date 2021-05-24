@@ -14,7 +14,8 @@
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!
 !!      subroutine init_min_dist_from_import(sleeve_exp_p,              &
-!!     &          nod_comm, node, ele, neib_ele, d_vec, dist_export)
+!!     &          nod_comm, node, ele, neib_ele,                        &
+!!     &          sleeve_exp_WK, dist_export)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -24,12 +25,12 @@
 !!     &                   :: dist_export(nod_comm%ntot_export)
 !!      subroutine cal_min_dist_from_last_export(sleeve_exp_p,          &
 !!     &         node, ele, neib_ele, num_each_export, item_each_export,&
-!!     &         d_vec, each_exp_flags)
+!!     &         sleeve_exp_WK, each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
-!!        real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
+!!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!
 !!      subroutine set_new_export_to_extend(dist_max, node, distance,   &
@@ -105,7 +106,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_min_dist_from_import(sleeve_exp_p,                &
-     &          nod_comm, node, ele, neib_ele, d_vec, dist_export)
+     &          nod_comm, node, ele, neib_ele,                          &
+     &          sleeve_exp_WK, dist_export)
 !
       use t_ctl_param_sleeve_extend
       use t_next_node_ele_4_node
@@ -115,7 +117,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
-      real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
+      type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: dist_export(nod_comm%ntot_export)
@@ -160,7 +162,7 @@
                 if(dist_tmp(jnod,ip) .eq. -1.0d0) cycle
 !
                 dist = distance_select(sleeve_exp_p, inod, jnod,        &
-     &                                 node, d_vec)
+     &                                 node, sleeve_exp_WK)
                 if(dist_tmp(jnod,ip) .eq. 0.0d0) then
                   dist_tmp(jnod,ip) = dist + dist_start
                 else
@@ -188,7 +190,7 @@
 !
       subroutine cal_min_dist_from_last_export(sleeve_exp_p,            &
      &         node, ele, neib_ele, num_each_export, item_each_export,  &
-     &         d_vec, each_exp_flags)
+     &         sleeve_exp_WK, each_exp_flags)
 !
       use t_ctl_param_sleeve_extend
       use t_next_node_ele_4_node
@@ -197,10 +199,10 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
+      type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
       integer(kind = kint), intent(in) :: num_each_export
       integer(kind = kint), intent(in)                                  &
      &                     :: item_each_export(num_each_export)
-      real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
 !
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
@@ -222,7 +224,7 @@
             if(each_exp_flags%iflag_node(jnod) .lt. 0) cycle
 !
             dist = distance_select(sleeve_exp_p, inod, jnod,            &
-     &                             node, d_vec)
+     &                             node, sleeve_exp_WK)
             if(each_exp_flags%iflag_node(jnod) .eq. 0) then
               each_exp_flags%iflag_node(jnod) = 1
               each_exp_flags%distance(jnod)                             &
