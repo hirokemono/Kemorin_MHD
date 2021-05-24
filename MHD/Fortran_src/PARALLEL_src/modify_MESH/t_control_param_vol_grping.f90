@@ -9,8 +9,9 @@
 !!@verbatim
 !!      subroutine link_repart_masking_data(flag_mask, flag_sleeve_wk,  &
 !!     &          node, nmax_mask_org, d_mask_org, vect_ref_ext,        &
-!!     &          repart_WK)
+!!     &          part_param, repart_WK)
 !!      subroutine unlink_repart_masking_data(repart_WK)
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!        logical, intent(in) :: flag_mask, flag_sleeve_wk
 !!        integer(kind = kint), intent(in) :: nmax_mask_org
 !!        type(node_data), intent(in) :: node
@@ -128,10 +129,11 @@
 !
       subroutine link_repart_masking_data(flag_mask, flag_sleeve_wk,    &
      &          node, nmax_mask_org, d_mask_org, vect_ref_ext,          &
-     &          repart_WK)
+     &          part_param, repart_WK)
 !
       use t_geometry_data
 !
+      type(volume_partioning_param), intent(in) :: part_param
       logical, intent(in) :: flag_mask, flag_sleeve_wk
       integer(kind = kint), intent(in) :: nmax_mask_org
       type(node_data), intent(in) :: node
@@ -143,15 +145,15 @@
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
 !
-      if(flag_mask) then
-        repart_WK%nmax_mask_repart = nmax_mask_org
-        repart_WK%d_mask =>          d_mask_org
-      end if
-!
-!      if(flag_sleeve_wk) then
-!        call link_sleeve_extend_ref_vect(node, vect_ref_ext,           &
-!     &                                   repart_WK%sleeve_exp_WK)
+!      if(flag_mask) then
+!        repart_WK%nmax_mask_repart = nmax_mask_org
+!        repart_WK%d_mask =>          d_mask_org
 !      end if
+!
+      if(flag_sleeve_wk) then
+        call link_sleeve_extend_ref_vect(node, vect_ref_ext,            &
+     &      part_param%sleeve_exp_p, repart_WK%sleeve_exp_WK)
+      end if
 !
       end subroutine link_repart_masking_data
 !
@@ -162,11 +164,11 @@
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
 !
-!      call unlink_sleeve_extend_ref_vect(repart_WK%sleeve_exp_WK)
+      call unlink_sleeve_extend_ref_vect(repart_WK%sleeve_exp_WK)
 !
-      if(associated(repart_WK%d_mask) .EQV. .FALSE.) return
-      repart_WK%nmax_mask_repart = 0
-      nullify(repart_WK%d_mask)
+!      if(associated(repart_WK%d_mask) .EQV. .FALSE.) return
+!      repart_WK%nmax_mask_repart = 0
+!      nullify(repart_WK%d_mask)
 !
       end subroutine unlink_repart_masking_data
 !

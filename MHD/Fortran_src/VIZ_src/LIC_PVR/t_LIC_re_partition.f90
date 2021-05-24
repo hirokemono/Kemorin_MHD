@@ -124,11 +124,11 @@
       call alloc_nod_vector_4_lic(geofem%mesh%node, nmax_masking,       &
      &    repart_data%nod_fld_lic)
 !
-!      do i_lic = 1, num_lic
-!        call link_repart_masking_param                                 &
-!     &     (lic_param(i_lic)%num_masking, lic_param(i_lic)%masking,    &
-!     &      lic_param(i_lic)%each_part_p)
-!      end do
+      do i_lic = 1, num_lic
+        call link_repart_masking_param                                  &
+     &     (lic_param(i_lic)%num_masking, lic_param(i_lic)%masking,     &
+     &      lic_param(i_lic)%each_part_p)
+      end do
 !
 !      write(*,*) 'flag_mask, flag_sleeve_wk', flag_mask, flag_sleeve_wk
 !      call link_repart_masking_data(flag_mask, flag_sleeve_wk,          &
