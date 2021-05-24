@@ -8,13 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine LIC_initialize_w_shared_mesh(geofem, next_tbl,       &
-!!     &          repart_p, repart_data, pvr, lic_param)
+!!     &          repart_p, repart_data, pvr)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(volume_rendering_module), intent(inout) :: pvr
-!!        type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
 !!      subroutine LIC_visualize_w_shared_mesh                          &
 !!     &         (istep_lic, time, geofem, nod_fld,                     &
 !!     &          repart_p, repart_data, pvr, lic_param, v_sol)
@@ -83,7 +82,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_initialize_w_shared_mesh(geofem, next_tbl,         &
-     &          repart_p, repart_data, pvr, lic_param)
+     &          repart_p, repart_data, pvr)
 !
       use each_LIC_rendering
 !
@@ -93,13 +92,12 @@
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
-      type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
 !
       integer(kind = kint) :: i_lic, ist_rdr, ist_img
 !
 !
       call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
-     &    pvr%num_pvr, lic_param, repart_data)
+     &                          repart_data)
 !
       do i_lic = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1

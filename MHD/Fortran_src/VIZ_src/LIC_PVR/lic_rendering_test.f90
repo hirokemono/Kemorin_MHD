@@ -123,6 +123,9 @@
      &                           lic%pvr%pvr_rgb(ist_img))
       end do
 !
+      call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
+     &                          lic%repart_data)
+!
       do i_lic = 1, lic%pvr%num_pvr
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
      &      .or. my_rank .ne. 0) then
@@ -133,7 +136,7 @@
 !
       if(lic%flag_each_repart) return
       call LIC_initialize_w_shared_mesh(geofem, next_tbl,               &
-     &    lic%repart_p, lic%repart_data, lic%pvr, lic%lic_param)
+     &    lic%repart_p, lic%repart_data, lic%pvr)
 !
       end subroutine LIC_initialize_test
 !
