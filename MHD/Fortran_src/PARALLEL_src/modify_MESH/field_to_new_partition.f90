@@ -9,12 +9,13 @@
 !!@verbatim
 !!      subroutine load_or_const_new_partition(part_param,              &
 !!     &          geofem, next_tbl, new_fem,                            &
-!!     &          repart_nod_tbl, sleeve_exp_WK)
+!!     &          repart_nod_tbl, repart_WK)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
+!!        type(volume_partioning_work), intent(inout) :: repart_WK
 !!
 !!      subroutine init_fld_to_new_partition(new_mesh, org_fld, new_fld)
 !!      subroutine nod_field_to_new_partition(iflag_recv,               &
@@ -50,7 +51,7 @@
 !
       subroutine load_or_const_new_partition(part_param,                &
      &          geofem, next_tbl, new_fem,                              &
-     &          repart_nod_tbl, sleeve_exp_WK)
+     &          repart_nod_tbl, repart_WK)
 !
       use m_work_time
       use m_elapsed_labels_4_REPART
@@ -66,7 +67,7 @@
 !
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+      type(volume_partioning_work), intent(inout) :: repart_WK
 !
       type(communication_table) :: ele_comm_T
 !
@@ -108,7 +109,7 @@
         if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
         call s_repartiton_by_volume                                     &
      &     (part_param, geofem, ele_comm_T, next_tbl,                   &
-     &      new_fem, repart_nod_tbl, sleeve_exp_WK)
+     &      new_fem, repart_nod_tbl, repart_WK)
         call dealloc_comm_table(ele_comm_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if

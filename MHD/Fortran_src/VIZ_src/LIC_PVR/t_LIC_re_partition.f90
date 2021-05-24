@@ -308,7 +308,7 @@
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(repart_p, geofem, next_tbl,      &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
-     &    repart_data%repart_WK%sleeve_exp_WK)
+     &    repart_data%repart_WK)
 !
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
       call FEM_mesh_initialization                                      &
