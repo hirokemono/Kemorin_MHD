@@ -272,8 +272,8 @@
       icou = 0
       do i_rot = 1, view_param%num_frame
         if(my_rank .eq. rot_rgb(i_rot)%irank_image_file) then
-          quilt_d%icou_each_pe(icou) = icou
           icou = icou + 1
+          quilt_d%icou_each_pe(icou) = i_rot - 1
           call cvt_double_rgba_to_char_rgb                              &
      &       (rot_rgb(i_rot)%num_pixel_xy, rot_rgb(i_rot)%rgba_real_gl, &
      &        quilt_d%images(icou)%rgb(1,1,1))
