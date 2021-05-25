@@ -72,7 +72,7 @@
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj
 !
-      character(len=kchara) :: file_w_step
+      character(len=kchara) :: file_tmp, file_w_step
       integer(kind = kint) :: i_rot, iflag_img_fmt
       type(rotation_pvr_images) :: rot_imgs1
       type(MPI_quilt_bitmap_IO) :: quilt_d1
@@ -91,21 +91,31 @@
       end do
       call calypso_mpi_barrier
 !
+      call calypso_mpi_barrier
       call set_sequence_rgb_data                                        &
      &   (pvr_param%view, rot_imgs1%rot_pvr_rgb, quilt_d1)
 !
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       if(pvr_param%view%iflag_movie_fmt .eq. iflag_UNDEFINED) then
-        iflag_img_fmt = pvr_param%view%iflag_movie_fmt
-      else
         iflag_img_fmt = pvr_rgb%id_pvr_file_type
-      end if
-      if(istep_pvr .ge. 0) then
-        file_w_step = add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix)
       else
-        file_w_step = pvr_rgb%pvr_prefix
+        iflag_img_fmt = pvr_param%view%iflag_movie_fmt
       end if
+!
+      if(iflag_img_fmt .eq. iflag_QUILT_BMP) then
+        write(file_tmp,'(2a)') trim(pvr_rgb%pvr_prefix), '_quilt'
+      else
+        file_tmp = pvr_rgb%pvr_prefix
+      end if
+!
+      if(istep_pvr .ge. 0) then
+        file_w_step = add_int_suffix(istep_pvr, file_tmp)
+      else
+        file_w_step = file_tmp
+      end if
+!
+      call calypso_mpi_barrier
       call sel_write_pvr_image_files                                    &
      &   (iflag_img_fmt, file_w_step, quilt_d1)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
@@ -199,6 +209,7 @@
       end do
       quilt_d%num_image_lc = icou
 !
+      call calypso_mpi_barrier
       call alloc_quilt_rgb_images                                       &
      &   (rot_rgb(1)%num_pixels(1), rot_rgb(1)%num_pixels(2), quilt_d)
 !
@@ -209,7 +220,7 @@
           quilt_d%icou_each_pe(icou) = my_rank
           call cvt_double_rgba_to_char_rgb                              &
      &       (rot_rgb(i_rot)%num_pixel_xy, rot_rgb(i_rot)%rgba_real_gl, &
-     &        quilt_d%images(i_rot)%rgb(1,1,1))
+     &        quilt_d%images(icou)%rgb(1,1,1))
         end if
       end do
 !
