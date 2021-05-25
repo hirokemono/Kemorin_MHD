@@ -114,9 +114,11 @@
      &          pvr_param, pvr_proj)
 !
       use t_rotation_pvr_images
+      use t_MPI_quilt_bitmap_IO
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use write_PVR_image
+      use output_image_sel_4_png
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
@@ -129,8 +131,9 @@
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !
-      integer(kind = kint) :: i_rot
+      integer(kind = kint) :: i_rot, iflag_img_fmt
       type(rotation_pvr_images) :: rot_imgs1
+      type(MPI_quilt_bitmap_IO) :: quilt_d1
 !
 !
       if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
@@ -154,11 +157,19 @@
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      do i_rot = 1, pvr_param%view%num_frame
-        call sel_write_pvr_image_file                                   &
-     &     (i_rot, istep_pvr, rot_imgs1%rot_pvr_rgb(i_rot))
-      end do
+      if(pvr_param%view%iflag_movie_fmt .eq. iflag_UNDEFINED            &
+      &  .or. pvr_param%view%iflag_movie_fmt .eq. iflag_QUILT_BMP) then
+        iflag_img_fmt = pvr_rgb%id_pvr_file_type
+      else
+        iflag_img_fmt = pvr_param%view%iflag_movie_fmt
+      end if
+!
+      call set_sequence_rgb_data(istep_pvr, iflag_img_fmt,              &
+     &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb,    &
+     &    quilt_d1)
+      call dealloc_quilt_rgb_images(quilt_d1)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
+!
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call dealloc_rot_pvr_image_arrays(pvr_param%view, rot_imgs1)
 !
