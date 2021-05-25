@@ -266,6 +266,18 @@
       end do
       quilt_d%num_image_lc = icou
 !
+      if(iflag_img_fmt .eq. iflag_QUILT_BMP) then
+        write(file_tmp,'(2a)') trim(file_prefix), '_quilt'
+      else
+        file_tmp = file_prefix
+      end if
+!
+      if(istep_pvr .ge. 0) then
+        file_w_step = add_int_suffix(istep_pvr, file_tmp)
+      else
+        file_w_step = file_tmp
+      end if
+!
       call alloc_quilt_rgb_images(rot_rgb(1)%num_pixels, quilt_d)
       do i_rot = 1, quilt_d%num_image_lc
         call alloc_each_rgb_image                                       &
@@ -284,18 +296,6 @@
      &        quilt_d%images(icou)%rgb(1,1,1))
         end if
       end do
-!
-      if(iflag_img_fmt .eq. iflag_QUILT_BMP) then
-        write(file_tmp,'(2a)') trim(file_prefix), '_quilt'
-      else
-        file_tmp = file_prefix
-      end if
-!
-      if(istep_pvr .ge. 0) then
-        file_w_step = add_int_suffix(istep_pvr, file_tmp)
-      else
-        file_w_step = file_tmp
-      end if
 !
       call sel_write_pvr_image_files                                    &
      &   (iflag_img_fmt, file_w_step, quilt_d)
