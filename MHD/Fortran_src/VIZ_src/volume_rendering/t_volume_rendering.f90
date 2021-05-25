@@ -285,8 +285,11 @@
 !
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
-          call sel_write_pvr_image_file                                 &
-     &       ((-i_pvr), iminus,  pvr%pvr_rgb(ist_img))
+          ied_img = pvr%istack_pvr_images(i_pvr  )
+          do i_img = ist_img, ied_img
+            call sel_write_pvr_image_file                               &
+     &         ((-i_pvr), iminus,  pvr%pvr_rgb(ist_img))
+          end do
         end if
       end do
 !
@@ -296,7 +299,7 @@
 !
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         ied_img = pvr%istack_pvr_images(i_pvr  )
-        do i_img = 1, pvr%num_pvr_images
+        do i_img = ist_img, ied_img
           call sel_write_pvr_image_file                                 &
      &     ((-i_img), istep_pvr, pvr%pvr_rgb(i_img))
         end do

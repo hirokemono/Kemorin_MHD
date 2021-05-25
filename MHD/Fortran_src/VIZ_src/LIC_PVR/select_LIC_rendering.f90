@@ -164,9 +164,12 @@
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        ied_img = pvr%istack_pvr_images(i_lic  )
         if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
-          call sel_write_pvr_image_file                                 &
+          do i_img = ist_img, ied_img
+            call sel_write_pvr_image_file                               &
      &       ((-i_lic), iminus, pvr%pvr_rgb(ist_img))
+          end do
         end if
       end do
       do i_lic = 1, pvr%num_pvr
