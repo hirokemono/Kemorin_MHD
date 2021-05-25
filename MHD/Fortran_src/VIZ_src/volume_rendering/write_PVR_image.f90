@@ -266,8 +266,7 @@
       end do
       quilt_d%num_image_lc = icou
 !
-      call alloc_quilt_rgb_images                                       &
-     &   (rot_rgb(1)%num_pixels(1), rot_rgb(1)%num_pixels(2), quilt_d)
+      call alloc_quilt_rgb_images(rot_rgb(1)%num_pixels, quilt_d)
 !
       icou = 0
       do i_rot = 1, view_param%num_frame

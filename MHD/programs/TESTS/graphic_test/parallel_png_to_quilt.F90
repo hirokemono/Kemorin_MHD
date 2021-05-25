@@ -29,12 +29,10 @@
       character(len=kchara) :: file_prefix
 !
       integer(kind = kint), parameter :: num_image =  6
-      integer(kind = kint), parameter :: num_row =    2
-      integer(kind = kint), parameter :: num_column = 3
+      integer(kind = kint), parameter :: nimage_xy(2) = (/2,3/)
       type(MPI_quilt_bitmap_IO) :: quilt_d1
 !
-      integer(kind = kint) :: npixel_x
-      integer(kind = kint) :: npixel_y
+      integer(kind = kint) :: npixel_xy(2)
       character(len=1), allocatable :: gray(:,:)
 !
       type(buffer_4_png) :: pbuf_t
@@ -52,7 +50,8 @@
 !
 !#ifdef PNG_OUTPUT
         file_name = add_int_suffix(0, file_prefix)
-        call read_png_file_f(file_name, npixel_x, npixel_y, pbuf_t)
+        call read_png_file_f                                            &
+     &     (file_name, npixel_xy(1), npixel_xy(2), pbuf_t)
 !
         if(pbuf_t%iflag_cmode .eq. iflag_rgba)                          &
      &                     write(*,*) 'RGBA image file'
@@ -67,11 +66,10 @@
 !
       call calypso_mpi_bcast_character                                  &
      &   (file_prefix, cast_long(kchara), 0)
-      call calypso_mpi_bcast_one_int(npixel_x, 0)
-      call calypso_mpi_bcast_one_int(npixel_y, 0)
+      call calypso_mpi_bcast_one_int(npixel_xy(1), 0)
+      call calypso_mpi_bcast_one_int(npixel_xy(2), 0)
 !
-      call init_quilt_rgb_images                                        &
-     &   (num_row, num_column, npixel_x, npixel_y, quilt_d1)
+      call init_quilt_rgb_images(nimage_xy, npixel_xy, quilt_d1)
 !
       icou = 0
       do ip = 0, num_image-1
@@ -81,13 +79,13 @@
           call read_png_file_f(file_name, ntmp_x, ntmp_y, pbuf_t)
 !
           if(pbuf_t%iflag_cmode .ge. iflag_bw) then
-            allocate(gray(npixel_x,npixel_y))
+            allocate(gray(npixel_xy(1),npixel_xy(2)))
 !
             call copy_grayscale_from_png_f                              &
-     &         (npixel_x, npixel_y, gray, pbuf_t)
+     &         (npixel_xy(1), npixel_xy(2), gray, pbuf_t)
 !
-            write(*,*) 'pixel data along with x', npixel_x, npixel_y
-            do i = 1, npixel_x
+            write(*,*) 'pixel data along with x', npixel_xy(1:2)
+            do i = 1, npixel_xy(1)
               write(*,*) i, iachar(gray(i,1))
             end do
 !

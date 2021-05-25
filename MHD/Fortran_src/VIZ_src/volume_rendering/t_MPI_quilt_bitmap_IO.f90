@@ -7,19 +7,18 @@
 !>@brief Quilt format bitmap data IO with MPI-IO
 !!
 !!@verbatim
-!!      subroutine init_quilt_rgb_images                                &
-!!     &         (nimage_x, nimage_y, npixel_x, npixel_y, quilt_d)
-!!        integer(kind = kint), intent(in) :: nimage_x, nimage_y
-!!        integer(kind = kint), intent(in) :: npixel_x, npixel_y
+!!      subroutine init_quilt_rgb_images(nimage_xy, npixel_xy, quilt_d)
+!!        integer(kind = kint), intent(in) :: nimage_xy(2)
+!!        integer(kind = kint), intent(in) :: npixel_xy(2)
 !!        type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
 !!      subroutine sel_write_pvr_image_files                            &
 !!     &         (id_file_type, file_prefix, quilt_d)
 !!        integer(kind = kint), intent(in) :: id_file_type
 !!        character(len=kchara), intent(in) :: file_prefix
 !!        type(MPI_quilt_bitmap_IO), intent(in) :: quilt_d
-!!      subroutine alloc_quilt_rgb_images(npixel_x, npixel_y, quilt_d)
+!!      subroutine alloc_quilt_rgb_images(npixel_xy, quilt_d)
 !!      subroutine dealloc_quilt_rgb_images(quilt_d)
-!!        integer(kind = kint), intent(in) :: npixel_x, npixel_y
+!!        integer(kind = kint), intent(in) :: npixel_xy(2)
 !!        type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
 !!
 !!      subroutine mpi_write_quilt_BMP_file(file_prefix, n_column,      &
@@ -53,10 +52,8 @@
 !
 !>        Number of images in each process
         integer(kind = kint) :: num_image_lc
-!>        Horizontal number of pixel
-        integer(kind = kint) :: npixel_x
-!>        Vertical number of pixel
-        integer(kind = kint) :: npixel_y
+!>        Number of pixel (Horizontal, Vertical)
+        integer(kind = kint) :: npixel_xy(2)
 !>        RGB images
         type(each_rgb_image), allocatable :: images(:)
 !>        Image index in each process
@@ -71,22 +68,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_quilt_rgb_images                                  &
-     &         (nimage_x, nimage_y, npixel_x, npixel_y, quilt_d)
+      subroutine init_quilt_rgb_images(nimage_xy, npixel_xy, quilt_d)
 !
-      integer(kind = kint), intent(in) :: nimage_x, nimage_y
-      integer(kind = kint), intent(in) :: npixel_x, npixel_y
+      integer(kind = kint), intent(in) :: nimage_xy(2)
+      integer(kind = kint), intent(in) :: npixel_xy(2)
 !
       type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
 !
 !
-      quilt_d%n_column(1) = nimage_x
-      quilt_d%n_column(2) = nimage_y
-      quilt_d%n_image = nimage_x * nimage_y
+      quilt_d%n_column(1:2) = nimage_xy(1:2)
+      quilt_d%n_image = nimage_xy(1) * nimage_xy(2)
       call count_local_image_pe_quilt                                   &
      &   (quilt_d%n_image, quilt_d%num_image_lc)
 !
-      call alloc_quilt_rgb_images(npixel_x, npixel_y, quilt_d)
+      call alloc_quilt_rgb_images(npixel_xy, quilt_d)
       call set_local_image_pe_quilt(quilt_d%n_image,                    &
      &          quilt_d%num_image_lc, quilt_d%icou_each_pe)
 !
@@ -107,11 +102,11 @@
       if(id_file_type .eq. iflag_QUILT_BMP) then
         call mpi_write_quilt_BMP_file(file_prefix, quilt_d%n_column,    &
      &      quilt_d%num_image_lc, quilt_d%icou_each_pe,                 &
-     &      quilt_d%npixel_x, quilt_d%npixel_y, quilt_d%images)
+     &      quilt_d%npixel_xy(1), quilt_d%npixel_xy(2), quilt_d%images)
       else
         call sel_write_seq_image_files(id_file_type, file_prefix,       &
      &      quilt_d%num_image_lc, quilt_d%icou_each_pe,                 &
-     &      quilt_d%npixel_x, quilt_d%npixel_y, quilt_d%images)
+     &      quilt_d%npixel_xy(1), quilt_d%npixel_xy(2), quilt_d%images)
       end if
 !
       end subroutine sel_write_pvr_image_files
@@ -133,20 +128,19 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_quilt_rgb_images(npixel_x, npixel_y, quilt_d)
+      subroutine alloc_quilt_rgb_images(npixel_xy, quilt_d)
 !
-      integer(kind = kint), intent(in) :: npixel_x, npixel_y
+      integer(kind = kint), intent(in) :: npixel_xy(2)
       type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
       integer(kind = kint) :: i
 !
-      quilt_d%npixel_x = npixel_x
-      quilt_d%npixel_y = npixel_y
+      quilt_d%npixel_xy(1:2) = npixel_xy(1:2)
 !
       allocate(quilt_d%icou_each_pe(quilt_d%num_image_lc))
       allocate(quilt_d%images(quilt_d%num_image_lc))
 !
       do i = 1, quilt_d%num_image_lc
-        allocate(quilt_d%images(i)%rgb(3,npixel_x,npixel_y))
+        allocate(quilt_d%images(i)%rgb(3,npixel_xy(1),npixel_xy(2)))
       end do
 !
       end subroutine alloc_quilt_rgb_images
@@ -236,6 +230,7 @@
         ix = mod(ip,n_column(1))
         iy = ip / n_column(1)
         ilength = 3*int(npixel_x)
+        write(*,*) 'ilength', ilength, icou, icou_each_pe(icou), n_column
         do j = 1, npixel_y
           bgr_line(1,1:npixel_x) = images(icou)%rgb(3,1:npixel_x,j)
           bgr_line(2,1:npixel_x) = images(icou)%rgb(2,1:npixel_x,j)
