@@ -61,6 +61,11 @@
       end type each_rgb_image
 !
       type MPI_quilt_bitmap_IO
+!>        Sequence of file prefix
+        character(len = kchara) :: image_seq_prefix
+!>        File format flag (BMP, PNG, or Quilt BMP)
+        integer(kind = kint) :: image_seq_format
+!
 !>        Number of images
         integer(kind = kint) :: n_image
 !>        Number of row and columns of images
@@ -133,9 +138,8 @@
      &      quilt_d%num_image_lc, quilt_d%icou_each_pe,                 &
      &      quilt_d%npixel_xy(1), quilt_d%npixel_xy(2), quilt_d%images)
       else
-        call sel_write_seq_image_files(id_file_type, file_prefix,       &
-     &      quilt_d%num_image_lc, quilt_d%icou_each_pe,                 &
-     &      quilt_d%npixel_xy(1), quilt_d%npixel_xy(2), quilt_d%images)
+        call sel_write_seq_image_files                                  &
+     &     (quilt_d%num_image_lc, quilt_d%icou_each_pe, quilt_d%images)
       end if
 !
       end subroutine sel_write_pvr_image_files
@@ -274,30 +278,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_write_seq_image_files(id_file_type, file_prefix,   &
-     &                                     num_image_lc, icou_each_pe,  &
-     &                                     npixel_x, npixel_y, images)
+      subroutine sel_write_seq_image_files(num_image_lc, icou_each_pe,  &
+     &                                     images)
 !
       use set_parallel_file_name
       use output_image_sel_4_png
 !
-      integer(kind = kint), intent(in) :: id_file_type
-      character(len=kchara), intent(in) :: file_prefix
       integer(kind = kint), intent(in) :: num_image_lc
       integer(kind = kint), intent(in)  :: icou_each_pe(num_image_lc)
 !
-      integer(kind = kint), intent(in) :: npixel_x, npixel_y
       type(each_rgb_image), intent(in) :: images(num_image_lc)
 !
       integer(kind = kint) :: icou, ip
-      character(len=kchara) :: fname_tmp
 !
       do icou = 1, num_image_lc
         ip = icou_each_pe(icou) + 1
-        fname_tmp = add_int_suffix(ip, file_prefix)
         write(*,*) ip, '-th output file from process', my_rank
-        call sel_output_image_file(id_file_type, fname_tmp,             &
-     &      npixel_x, npixel_y, images(icou)%rgb)
+        call sel_output_image_file                                      &
+     &     (images(icou)%image_format, images(icou)%each_prefix,        &
+     &      images(icou)%npix_xy(1), images(icou)%npix_xy(2),           &
+     &      images(icou)%rgb)
       end do
 !
       end subroutine sel_write_seq_image_files
