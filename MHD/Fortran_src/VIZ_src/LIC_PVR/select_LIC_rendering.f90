@@ -136,7 +136,8 @@
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
 !
-      integer(kind = kint) :: i_lic, ist_rdr, ist_img
+      integer(kind = kint) :: i_lic, ist_rdr
+      integer(kind = kint) :: i_img, ist_img, ied_img
 !
 !
       if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering at once'
@@ -146,6 +147,8 @@
         call set_LIC_each_field(geofem, nod_fld,                        &
      &      repart_p, lic_param(i_lic), repart_data, v_sol)
 !
+        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
         ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         call s_each_LIC_rendering(istep_lic, time, repart_data%viz_fem, &
@@ -157,15 +160,25 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, pvr%num_pvr
+        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
+!
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
           call sel_write_pvr_image_file                                 &
      &       ((-i_lic), iminus, pvr%pvr_rgb(ist_img))
         end if
       end do
-      do i_lic = 1, pvr%num_pvr_images
-        call sel_write_pvr_image_file                                   &
-     &     ((-i_lic), istep_lic, pvr%pvr_rgb(i_lic))
+      do i_lic = 1, pvr%num_pvr
+        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
+!
+        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        ied_img = pvr%istack_pvr_images(i_lic  )
+        do i_img = ist_img, ied_img
+          call sel_write_pvr_image_file                                 &
+     &     ((-i_img), istep_lic, pvr%pvr_rgb(i_img))
+        end do
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
@@ -173,19 +186,18 @@
       do i_lic = 1, pvr%num_pvr
         write(*,*) 's_each_LIC_rendering_w_rot once', i_lic
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
-     &                                    .ne. IFLAG_NO_MOVIE) then
-          if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
-          call set_LIC_each_field(geofem, nod_fld,                      &
-     &        repart_p, lic_param(i_lic), repart_data, v_sol)
+     &                                    .eq. IFLAG_NO_MOVIE) cycle
 !
-          ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
-          ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-          call s_each_LIC_rendering_w_rot                               &
-     &       (istep_lic, time, repart_data%viz_fem,                     &
-     &        repart_data%field_lic,                                    &
-     &        lic_param(i_lic), pvr%pvr_param(i_lic),                   &
-     &        pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
-        end if
+        if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
+        call set_LIC_each_field(geofem, nod_fld,                        &
+     &      repart_p, lic_param(i_lic), repart_data, v_sol)
+!
+        ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
+        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        call s_each_LIC_rendering_w_rot(istep_lic, time,                &
+     &      repart_data%viz_fem, repart_data%field_lic,                 &
+     &      lic_param(i_lic), pvr%pvr_param(i_lic),                     &
+     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -237,16 +249,18 @@
         call set_LIC_each_field(geofem, nod_fld,                        &
      &      repart_p, lic_param(i_lic), repart_data, v_sol)
 !
-        if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering each', i_lic
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-        call s_each_LIC_rendering(istep_lic, time, repart_data%viz_fem, &
-     &      repart_data%field_lic, lic_param(i_lic),                    &
-     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),                &
-     &      pvr%pvr_rgb(ist_img))
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
-!
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
-     &                                  .ne. IFLAG_NO_MOVIE) then
+     &                                  .eq. IFLAG_NO_MOVIE) then
+          if(my_rank .eq. 0) write(*,*)                                 &
+     &                     's_each_LIC_rendering each', i_lic
+          if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+          call s_each_LIC_rendering                                     &
+     &       (istep_lic, time, repart_data%viz_fem,                     &
+     &        repart_data%field_lic, lic_param(i_lic),                  &
+     &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),              &
+     &        pvr%pvr_rgb(ist_img))
+          if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+        else
           call s_each_LIC_rendering_w_rot                               &
      &     (istep_lic, time, repart_data%viz_fem,                       &
      &      repart_data%field_lic, lic_param(i_lic),                    &
@@ -262,6 +276,9 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, pvr%num_pvr
+        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
+!
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
           call sel_write_pvr_image_file                                 &
@@ -269,6 +286,9 @@
         end if
       end do
       do i_lic = 1, pvr%num_pvr_images
+        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
+!
         call sel_write_pvr_image_file                                   &
      &     ((-i_lic), istep_lic, pvr%pvr_rgb(i_lic))
       end do
