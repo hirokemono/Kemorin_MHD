@@ -109,8 +109,8 @@
       quilt_d%npixel_xy(1:2) = npixel_xy(1:2)
       call alloc_quilt_rgb_images(quilt_d)
       do i = 1, quilt_d%num_image_lc
-        quilt_d%images(i)%each_prefix = iflag_QUILT_BMP
-        quilt_d%images(i)%image_format = add_int_suffix(i, file_prefix)
+        quilt_d%images(i)%image_format = iflag_QUILT_BMP
+        quilt_d%images(i)%each_prefix = add_int_suffix(i, file_prefix)
         call alloc_each_rgb_image(quilt_d%npixel_xy, quilt_d%images(i))
       end do
 !
