@@ -22,7 +22,7 @@
 !!        type(pvr_segmented_img), intent(inout) :: pvr_img
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
-!!      subroutine sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
+!!      subroutine sel_write_pvr_image_file(istep_pvr, pvr_rgb)
 !!      subroutine sel_write_pvr_local_img(index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
@@ -140,7 +140,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
+      subroutine sel_write_pvr_image_file(istep_pvr, pvr_rgb)
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
@@ -148,39 +148,26 @@
       use set_parallel_file_name
       use convert_real_rgb_2_bite
 !
-      integer(kind = kint), intent(in) :: i_rot, istep_pvr
+      integer(kind = kint), intent(in) :: istep_pvr
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
-      character(len=kchara) :: tmpchara, img_head
+      character(len=kchara) :: img_head
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
-      write(*,*) abs(i_rot), '-th output file from process', my_rank
 !
-      if(istep_pvr .ge. 0) then
-        tmpchara = add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix)
-      else
-        tmpchara = pvr_rgb%pvr_prefix
-      end if
+      call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,            &
+     &    pvr_rgb%rgba_real_gl,  pvr_rgb%rgb_chara_gl)
 !
-      if(i_rot .gt. 0) then
-        img_head = add_int_suffix(i_rot, tmpchara)
-      else
-        img_head = tmpchara
-      end if
-!
-      if(pvr_rgb%id_pvr_transparent .eq. 1) then
-          call cvt_double_rgba_to_char_rgba(pvr_rgb%num_pixel_xy,       &
-     &        pvr_rgb%rgba_real_gl,  pvr_rgb%rgba_chara_gl)
-          call sel_rgba_image_file(pvr_rgb%id_pvr_file_type,            &
-     &        img_head, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),   &
-     &        pvr_rgb%rgba_chara_gl)
-      else
-          call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,        &
-     &        pvr_rgb%rgba_real_gl,  pvr_rgb%rgb_chara_gl)
-          call sel_output_image_file(pvr_rgb%id_pvr_file_type,          &
-     &        img_head, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),   &
-     &        pvr_rgb%rgb_chara_gl)
+      call sel_output_image_file(pvr_rgb%id_pvr_file_type,              &
+     &    add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix),                &
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    pvr_rgb%rgb_chara_gl)
+      if(pvr_rgb%iflag_monitoring .gt. 0) then
+        call sel_output_image_file  &
+     &     (pvr_rgb%id_pvr_file_type, pvr_rgb%pvr_prefix,               &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      pvr_rgb%rgb_chara_gl)
       end if
 !
       end subroutine sel_write_pvr_image_file

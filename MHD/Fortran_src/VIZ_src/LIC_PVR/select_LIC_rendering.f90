@@ -163,23 +163,24 @@
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .le. 0) cycle
+        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
+     &                                 .eq. iflag_QUILT_BMP) cycle
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file                                 &
-     &       ((-i_lic), iminus, pvr%pvr_rgb(ist_img))
+          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
         end do
       end do
       do i_lic = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
+        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
+     &                                 .ne. iflag_QUILT_BMP) cycle
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file                                 &
-     &     ((-i_img), istep_lic, pvr%pvr_rgb(i_img))
+          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
         end do
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
@@ -284,25 +285,10 @@
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
      &                                 .eq. iflag_QUILT_BMP) cycle
-        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .le. 0) cycle
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file                                 &
-     &     ((-i_img), iminus, pvr%pvr_rgb(i_img))
-        end do
-      end do
-      do i_lic = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
-     &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
-     &                                 .eq. iflag_QUILT_BMP) cycle
-!
-        ied_img = pvr%istack_pvr_images(i_lic  )
-        do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file                                 &
-     &     ((-i_img), istep_lic, pvr%pvr_rgb(i_img))
+          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
         end do
       end do
 !
@@ -312,25 +298,10 @@
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
      &                                 .ne. iflag_QUILT_BMP) cycle
-        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .le. 0) cycle
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file                                 &
-     &     ((-i_img), iminus, pvr%pvr_rgb(i_img))
-        end do
-      end do
-      do i_lic = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
-     &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
-     &                                 .ne. iflag_QUILT_BMP) cycle
-!
-        ied_img = pvr%istack_pvr_images(i_lic  )
-        do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file                                 &
-     &     ((-i_img), istep_lic, pvr%pvr_rgb(i_img))
+          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
         end do
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
