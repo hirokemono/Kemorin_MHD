@@ -69,7 +69,8 @@
       call calypso_mpi_bcast_one_int(npixel_xy(1), 0)
       call calypso_mpi_bcast_one_int(npixel_xy(2), 0)
 !
-      call init_quilt_rgb_images(nimage_xy, npixel_xy, quilt_d1)
+      call init_quilt_rgb_images                                        &
+     &   (file_prefix,  nimage_xy, npixel_xy, quilt_d1)
 !
       icou = 0
       do ip = 0, num_image-1

@@ -267,6 +267,12 @@
       quilt_d%num_image_lc = icou
 !
       call alloc_quilt_rgb_images(rot_rgb(1)%num_pixels, quilt_d)
+      do i_rot = 1, quilt_d%num_image_lc
+        call alloc_each_rgb_image                                       &
+     &     (iflag_img_fmt, add_int_suffix(i_rot, file_w_step),          &
+     &      rot_rgb(1)%num_pixels, quilt_d%images(i_rot))
+      end do
+!
 !
       icou = 0
       do i_rot = 1, view_param%num_frame

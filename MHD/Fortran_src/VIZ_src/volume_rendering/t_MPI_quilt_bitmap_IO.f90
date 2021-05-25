@@ -7,7 +7,9 @@
 !>@brief Quilt format bitmap data IO with MPI-IO
 !!
 !!@verbatim
-!!      subroutine init_quilt_rgb_images(nimage_xy, npixel_xy, quilt_d)
+!!      subroutine init_quilt_rgb_images                                &
+!!     &         (file_prefix, nimage_xy, npixel_xy, quilt_d)
+!!        character(len = kchara), intent(in) :: file_prefix
 !!        integer(kind = kint), intent(in) :: nimage_xy(2)
 !!        integer(kind = kint), intent(in) :: npixel_xy(2)
 !!        type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
@@ -30,6 +32,14 @@
 !!        integer(kind = kint), intent(in) :: icou_each_pe(num_image_lc)
 !!        integer(kind = kint), intent(in) :: npixel_x, npixel_y
 !!        type(each_rgb_image), intent(in) :: images(num_image_lc)
+!!
+!!      subroutine alloc_each_rgb_image                                 &
+!!     &         (image_format, each_prefix, npix_xy, image)
+!!      subroutine dealloc_each_rgb_image(image)
+!!        character(len = kchara), intent(in) :: each_prefix
+!!        integer(kind = kint), intent(in) :: image_format
+!!        integer(kind = kint), intent(in) :: npix_xy(2)
+!!        type(each_rgb_image), intent(inout) :: image
 !!@endverbatim
 !
       module t_MPI_quilt_bitmap_IO
@@ -41,6 +51,12 @@
       implicit none
 !
       type each_rgb_image
+!>        Independent file prefix
+        character(len = kchara) :: each_prefix
+!>        File format flag (BMP or PNG)
+        integer(kind = kint) :: image_format
+!>        Horizontal number of pixel
+        integer(kind = kint) :: npix_xy(2)
         character(len=1), allocatable :: rgb(:,:,:)
       end type each_rgb_image
 !
@@ -68,12 +84,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_quilt_rgb_images(nimage_xy, npixel_xy, quilt_d)
+      subroutine init_quilt_rgb_images                                  &
+     &         (file_prefix, nimage_xy, npixel_xy, quilt_d)
 !
+      use set_parallel_file_name
+      use output_image_sel_4_png
+!
+      character(len = kchara), intent(in) :: file_prefix
       integer(kind = kint), intent(in) :: nimage_xy(2)
       integer(kind = kint), intent(in) :: npixel_xy(2)
 !
       type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
+!
+      integer(kind = kint) :: i
 !
 !
       quilt_d%n_column(1:2) = nimage_xy(1:2)
@@ -82,6 +105,12 @@
      &   (quilt_d%n_image, quilt_d%num_image_lc)
 !
       call alloc_quilt_rgb_images(npixel_xy, quilt_d)
+      do i = 1, quilt_d%num_image_lc
+        call alloc_each_rgb_image                                       &
+     &     (iflag_QUILT_BMP, add_int_suffix(i, file_prefix),            &
+     &      npixel_xy, quilt_d%images(i))
+      end do
+!
       call set_local_image_pe_quilt(quilt_d%n_image,                    &
      &          quilt_d%num_image_lc, quilt_d%icou_each_pe)
 !
@@ -119,7 +148,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, quilt_d%num_image_lc
-        deallocate(quilt_d%images(i)%rgb)
+        call dealloc_each_rgb_image(quilt_d%images(i))
       end do
       deallocate(quilt_d%images, quilt_d%icou_each_pe)
 !
@@ -132,16 +161,10 @@
 !
       integer(kind = kint), intent(in) :: npixel_xy(2)
       type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
-      integer(kind = kint) :: i
 !
-      quilt_d%npixel_xy(1:2) = npixel_xy(1:2)
 !
       allocate(quilt_d%icou_each_pe(quilt_d%num_image_lc))
       allocate(quilt_d%images(quilt_d%num_image_lc))
-!
-      do i = 1, quilt_d%num_image_lc
-        allocate(quilt_d%images(i)%rgb(3,npixel_xy(1),npixel_xy(2)))
-      end do
 !
       end subroutine alloc_quilt_rgb_images
 !
@@ -278,6 +301,37 @@
       end do
 !
       end subroutine sel_write_seq_image_files
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_each_rgb_image                                   &
+     &         (image_format, each_prefix, npix_xy, image)
+!
+      character(len = kchara), intent(in) :: each_prefix
+      integer(kind = kint), intent(in) :: image_format
+      integer(kind = kint), intent(in) :: npix_xy(2)
+      type(each_rgb_image), intent(inout) :: image
+!
+      image%each_prefix = each_prefix
+      image%image_format = image_format
+      image%npix_xy(1:2) = npix_xy(1:2)
+      allocate(image%rgb(3,image%npix_xy(1),image%npix_xy(2)))
+!
+      end subroutine alloc_each_rgb_image
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_each_rgb_image(image)
+!
+      type(each_rgb_image), intent(inout) :: image
+!
+      if(allocated(image%rgb) .eqv. .FALSE.) return
+      deallocate(image%rgb)
+      image%npix_xy(1:2) = 0
+      image%image_format = 0
+!
+      end subroutine dealloc_each_rgb_image
 !
 ! ----------------------------------------------------------------------
 !
