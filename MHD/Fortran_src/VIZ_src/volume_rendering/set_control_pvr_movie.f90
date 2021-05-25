@@ -55,17 +55,6 @@
         end if
       end if
 !
-      if(view_param%iflag_movie_fmt .eq. iflag_QUILT_BMP) then
-        if(movie%quilt_row_column_ctl%iflag .eq. 0) then
-          view_param%n_row =     1
-          view_param%n_column =  movie%num_frames_ctl%intvalue
-        else
-          view_param%n_row =    movie%quilt_row_column_ctl%intvalue(1)
-          view_param%n_column = movie%quilt_row_column_ctl%intvalue(2)
-        end if
-        view_param%num_frame = view_param%n_row * view_param%n_column
-      end if
-!
 !
       view_param%iflag_movie_mode = IFLAG_NO_MOVIE
       if(movie%movie_mode_ctl%iflag .gt. 0) then
@@ -113,6 +102,11 @@
         end if
       else if(view_param%iflag_movie_mode .eq. I_LOOKINGLASS) then
         view_param%id_rot_axis = 2
+        if(movie%num_frames_ctl%iflag .eq. 0) then
+          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+        else
+          view_param%num_frame = movie%num_frames_ctl%intvalue
+        end if
 !
         if(movie%angle_range_ctl%iflag .eq. 0) then
           view_param%angle_range(1) =  -17.5d0
@@ -159,6 +153,18 @@
         if(movie%view_end_ctl%i_view_transform .eq. 0) then
           view_param%iflag_movie_mode = IFLAG_NO_MOVIE
         end if
+      end if
+!
+!
+      if(view_param%iflag_movie_fmt .eq. iflag_QUILT_BMP) then
+        if(movie%quilt_row_column_ctl%iflag .eq. 0) then
+          view_param%n_row =     1
+          view_param%n_column =  movie%num_frames_ctl%intvalue
+        else
+          view_param%n_row =    movie%quilt_row_column_ctl%intvalue(1)
+          view_param%n_column = movie%quilt_row_column_ctl%intvalue(2)
+        end if
+        view_param%num_frame = view_param%n_row * view_param%n_column
       end if
 !
       end subroutine s_set_control_pvr_movie
