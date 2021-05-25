@@ -160,23 +160,22 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, pvr%num_pvr
+        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
+        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .le. 0) cycle
 !
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         ied_img = pvr%istack_pvr_images(i_lic  )
-        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
-          do i_img = ist_img, ied_img
-            call sel_write_pvr_image_file                               &
+        do i_img = ist_img, ied_img
+          call sel_write_pvr_image_file                                 &
      &       ((-i_lic), iminus, pvr%pvr_rgb(ist_img))
-          end do
-        end if
+        end do
       end do
       do i_lic = 1, pvr%num_pvr
+        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
           call sel_write_pvr_image_file                                 &
@@ -231,7 +230,8 @@
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
 !
-      integer(kind = kint) :: i_lic, ist_rdr, ist_img
+      integer(kind = kint) :: i_lic, ist_rdr
+      integer(kind = kint) :: i_img, ist_img, ied_img
 !
 !
       do i_lic = 1, pvr%num_pvr
@@ -279,21 +279,59 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
-     &                                  .ne. IFLAG_NO_MOVIE) cycle
-!
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .gt. 0) then
-          call sel_write_pvr_image_file                                 &
-     &       ((-i_lic), iminus, pvr%pvr_rgb(ist_img))
-        end if
-      end do
-      do i_lic = 1, pvr%num_pvr_images
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
+        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
+     &                                 .eq. iflag_QUILT_BMP) cycle
+        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .le. 0) cycle
 !
-        call sel_write_pvr_image_file                                   &
-     &     ((-i_lic), istep_lic, pvr%pvr_rgb(i_lic))
+        ied_img = pvr%istack_pvr_images(i_lic  )
+        do i_img = ist_img, ied_img
+          call sel_write_pvr_image_file                                 &
+     &     ((-i_img), iminus, pvr%pvr_rgb(i_img))
+        end do
+      end do
+      do i_lic = 1, pvr%num_pvr
+        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
+        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
+     &                                 .eq. iflag_QUILT_BMP) cycle
+!
+        ied_img = pvr%istack_pvr_images(i_lic  )
+        do i_img = ist_img, ied_img
+          call sel_write_pvr_image_file                                 &
+     &     ((-i_img), istep_lic, pvr%pvr_rgb(i_img))
+        end do
+      end do
+!
+      do i_lic = 1, pvr%num_pvr
+        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
+        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
+     &                                 .ne. iflag_QUILT_BMP) cycle
+        if(pvr%pvr_rgb(ist_img)%iflag_monitoring .le. 0) cycle
+!
+        ied_img = pvr%istack_pvr_images(i_lic  )
+        do i_img = ist_img, ied_img
+          call sel_write_pvr_image_file                                 &
+     &     ((-i_img), iminus, pvr%pvr_rgb(i_img))
+        end do
+      end do
+      do i_lic = 1, pvr%num_pvr
+        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
+        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
+     &                                 .ne. iflag_QUILT_BMP) cycle
+!
+        ied_img = pvr%istack_pvr_images(i_lic  )
+        do i_img = ist_img, ied_img
+          call sel_write_pvr_image_file                                 &
+     &     ((-i_img), istep_lic, pvr%pvr_rgb(i_img))
+        end do
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
