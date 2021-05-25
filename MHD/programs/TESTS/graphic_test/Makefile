@@ -120,7 +120,7 @@ target_task:
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_PNG_2_QUILT)' \
 	'$$(MOD_PNG_2_QUILT)' \
-	'-L. $$(LIB_SOLVER) $$(LIB_PARA) $$(LIB_MESH) $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
+	'-L. $$(LIB_PARA) $$(LIB_SOLVER) $$(LIB_MESH) $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 
