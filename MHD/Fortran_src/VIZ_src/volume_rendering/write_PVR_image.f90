@@ -278,11 +278,12 @@
         file_w_step = file_tmp
       end if
 !
-      call alloc_quilt_rgb_images(rot_rgb(1)%num_pixels, quilt_d)
+      quilt_d%npixel_xy(1:2) = rot_rgb(1)%num_pixels(1:2)
+      call alloc_quilt_rgb_images(quilt_d)
       do i_rot = 1, quilt_d%num_image_lc
         call alloc_each_rgb_image                                       &
      &     (iflag_img_fmt, add_int_suffix(i_rot, file_w_step),          &
-     &      rot_rgb(1)%num_pixels, quilt_d%images(i_rot))
+     &      quilt_d%npixel_xy, quilt_d%images(i_rot))
       end do
 !
 !

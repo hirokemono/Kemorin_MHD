@@ -109,11 +109,12 @@
       call count_local_image_pe_quilt                                   &
      &   (quilt_d%n_image, quilt_d%num_image_lc)
 !
-      call alloc_quilt_rgb_images(npixel_xy, quilt_d)
+      quilt_d%npixel_xy(1:2) = npixel_xy(1:2)
+      call alloc_quilt_rgb_images(quilt_d)
       do i = 1, quilt_d%num_image_lc
         call alloc_each_rgb_image                                       &
      &     (iflag_QUILT_BMP, add_int_suffix(i, file_prefix),            &
-     &      npixel_xy, quilt_d%images(i))
+     &       quilt_d%npixel_xy, quilt_d%images(i))
       end do
 !
       call set_local_image_pe_quilt(quilt_d%n_image,                    &
@@ -161,14 +162,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_quilt_rgb_images(npixel_xy, quilt_d)
+      subroutine alloc_quilt_rgb_images(quilt_d)
 !
-      integer(kind = kint), intent(in) :: npixel_xy(2)
       type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
 !
 !
       allocate(quilt_d%icou_each_pe(quilt_d%num_image_lc))
       allocate(quilt_d%images(quilt_d%num_image_lc))
+!
+      quilt_d%icou_each_pe(1:quilt_d%num_image_lc) = -1
 !
       end subroutine alloc_quilt_rgb_images
 !
