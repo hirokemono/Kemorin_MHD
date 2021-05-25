@@ -13,10 +13,7 @@
 !!        integer(kind = kint), intent(in) :: nimage_xy(2)
 !!        integer(kind = kint), intent(in) :: npixel_xy(2)
 !!        type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
-!!      subroutine sel_write_pvr_image_files                            &
-!!     &         (id_file_type, file_prefix, quilt_d)
-!!        integer(kind = kint), intent(in) :: id_file_type
-!!        character(len=kchara), intent(in) :: file_prefix
+!!      subroutine sel_write_pvr_image_files(quilt_d)
 !!        type(MPI_quilt_bitmap_IO), intent(in) :: quilt_d
 !!      subroutine alloc_quilt_rgb_images(npixel_xy, quilt_d)
 !!      subroutine dealloc_quilt_rgb_images(quilt_d)
@@ -106,11 +103,14 @@
       call count_local_image_pe_quilt                                   &
      &   (quilt_d%n_image, quilt_d%num_image_lc)
 !
+      quilt_d%image_seq_prefix = file_prefix
+      quilt_d%image_seq_format = iflag_QUILT_BMP
       quilt_d%npixel_xy(1:2) = npixel_xy(1:2)
       call alloc_quilt_rgb_images(quilt_d)
       do i = 1, quilt_d%num_image_lc
-        quilt_d%images(i)%image_format = iflag_QUILT_BMP
-        quilt_d%images(i)%each_prefix = add_int_suffix(i, file_prefix)
+        quilt_d%images(i)%image_format = quilt_d%image_seq_format
+        quilt_d%images(i)%each_prefix                                   &
+     &     = add_int_suffix(i, quilt_d%image_seq_prefix)
         call alloc_each_rgb_image(quilt_d%npixel_xy, quilt_d%images(i))
       end do
 !
@@ -121,18 +121,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_image_files                              &
-     &         (id_file_type, file_prefix, quilt_d)
+      subroutine sel_write_pvr_image_files(quilt_d)
 !
       use output_image_sel_4_png
 !
-      integer(kind = kint), intent(in) :: id_file_type
-      character(len=kchara), intent(in) :: file_prefix
       type(MPI_quilt_bitmap_IO), intent(in) :: quilt_d
 !
 !
-      if(id_file_type .eq. iflag_QUILT_BMP) then
-        call mpi_write_quilt_BMP_file(file_prefix, quilt_d%n_column,    &
+      if(quilt_d%image_seq_format .eq. iflag_QUILT_BMP) then
+        call mpi_write_quilt_BMP_file                                   &
+     &     (quilt_d%image_seq_prefix, quilt_d%n_column,                 &
      &      quilt_d%num_image_lc, quilt_d%icou_each_pe,                 &
      &      quilt_d%npixel_xy(1), quilt_d%npixel_xy(2), quilt_d%images)
       else

@@ -39,7 +39,7 @@
 !
       integer(kind = kint) :: ntmp_x, ntmp_y
       integer(kind = kint) :: icou, ix, iy, ip, i
-      character(len=kchara) :: file_name
+      character(len=kchara) :: file_name, file_tmp
 !
 !
       call calypso_MPI_init
@@ -69,8 +69,9 @@
       call calypso_mpi_bcast_one_int(npixel_xy(1), 0)
       call calypso_mpi_bcast_one_int(npixel_xy(2), 0)
 !
+      write(file_tmp,'(2a)') trim(file_prefix), '_quilt'
       call init_quilt_rgb_images                                        &
-     &   (file_prefix,  nimage_xy, npixel_xy, quilt_d1)
+     &   (file_tmp, nimage_xy, npixel_xy, quilt_d1)
 !
       icou = 0
       do ip = 0, num_image-1
@@ -109,8 +110,7 @@
         end if
       end do
 !
-      call sel_write_pvr_image_files                                    &
-     &   (iflag_QUILT_BMP, file_prefix, quilt_d1)
+      call sel_write_pvr_image_files(quilt_d1)
       call dealloc_quilt_rgb_images(quilt_d1)
 !
       call calypso_MPI_finalize

@@ -273,16 +273,17 @@
       end if
 !
       if(istep_pvr .ge. 0) then
-        file_w_step = add_int_suffix(istep_pvr, file_tmp)
+        quilt_d%image_seq_prefix = add_int_suffix(istep_pvr, file_tmp)
       else
-        file_w_step = file_tmp
+        quilt_d%image_seq_prefix = file_tmp
       end if
-!
+      quilt_d%image_seq_format = iflag_img_fmt
       quilt_d%npixel_xy(1:2) = rot_rgb(1)%num_pixels(1:2)
       call alloc_quilt_rgb_images(quilt_d)
       do i_rot = 1, quilt_d%num_image_lc
-        quilt_d%images(i_rot)%each_prefix = add_int_suffix(i_rot, file_w_step)
-        quilt_d%images(i_rot)%image_format = iflag_img_fmt
+        quilt_d%images(i_rot)%each_prefix                               &
+     &         = add_int_suffix(i_rot, quilt_d%image_seq_prefix)
+        quilt_d%images(i_rot)%image_format = quilt_d%image_seq_format
         call alloc_each_rgb_image                                       &
      &     (quilt_d%npixel_xy, quilt_d%images(i_rot))
       end do
@@ -299,8 +300,7 @@
         end if
       end do
 !
-      call sel_write_pvr_image_files                                    &
-     &   (iflag_img_fmt, file_w_step, quilt_d)
+      call sel_write_pvr_image_files(quilt_d)
 !
       end subroutine set_output_rot_sequence_image
 !
