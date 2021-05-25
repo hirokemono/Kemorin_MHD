@@ -199,9 +199,9 @@
 !
 !
       tmpchara = pvr_ctl%file_fmt_ctl%charavalue
-      if(cmp_no_case(tmpchara, 'png')) then
+      if(cmp_no_case(tmpchara, hd_PNG)) then
         id_pvr_file_type = iflag_PNG
-      else if(cmp_no_case(tmpchara, 'bmp')) then
+      else if(cmp_no_case(tmpchara, hd_BMP)) then
         id_pvr_file_type = iflag_BMP
       else
         id_pvr_file_type = iflag_BMP

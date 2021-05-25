@@ -19,6 +19,7 @@
       use t_png_file_access
       use t_MPI_quilt_bitmap_IO
       use write_bmp_image
+      use output_image_sel_4_png
 !
       use transfer_to_long_integers
       use set_parallel_file_name
@@ -30,18 +31,11 @@
       integer(kind = kint), parameter :: num_image =  6
       integer(kind = kint), parameter :: num_row =    2
       integer(kind = kint), parameter :: num_column = 3
-      integer(kind = kint) :: nmax_image_lc, num_image_lc
-      integer(kind = kint), allocatable :: icou_image_pe(:)
+      type(MPI_quilt_bitmap_IO) :: quilt_d1
 !
       integer(kind = kint) :: npixel_x
       integer(kind = kint) :: npixel_y
-      character(len=1), allocatable :: rgb(:,:,:,:)
-      character(len=1), allocatable :: bgr_line(:,:)
       character(len=1), allocatable :: gray(:,:)
-!
-      type(calypso_MPI_IO_params), save :: IO_param
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer :: ilength
 !
       type(buffer_4_png) :: pbuf_t
 !
@@ -76,17 +70,13 @@
       call calypso_mpi_bcast_one_int(npixel_x, 0)
       call calypso_mpi_bcast_one_int(npixel_y, 0)
 !
-      nmax_image_lc = 1 + (num_image-1) / nprocs
-      allocate(rgb(3,npixel_x,npixel_y,nmax_image_lc))
-      allocate(bgr_line(3,npixel_x))
-      allocate(icou_image_pe(nmax_image_lc))
-      icou_image_pe(1:nmax_image_lc) = -1
+      call init_quilt_rgb_images                                        &
+     &   (num_row, num_column, npixel_x, npixel_y, quilt_d1)
 !
       icou = 0
       do ip = 0, num_image-1
         if(mod(ip,nprocs) .eq. my_rank) then
           icou = icou + 1
-          icou_image_pe(icou) = ip
           file_name = add_int_suffix(ip, file_prefix)
           call read_png_file_f(file_name, ntmp_x, ntmp_y, pbuf_t)
 !
@@ -102,25 +92,27 @@
             end do
 !
 !$omp workshare
-            rgb(1,1:ntmp_x,1:ntmp_y,icou) = gray(1:ntmp_x,1:ntmp_y)
-            rgb(2,1:ntmp_x,1:ntmp_y,icou) = gray(1:ntmp_x,1:ntmp_y)
-            rgb(3,1:ntmp_x,1:ntmp_y,icou) = gray(1:ntmp_x,1:ntmp_y)
+            quilt_d1%images(icou)%rgb(1,1:ntmp_x,1:ntmp_y)              &
+     &           = gray(1:ntmp_x,1:ntmp_y)
+            quilt_d1%images(icou)%rgb(2,1:ntmp_x,1:ntmp_y)              &
+     &           = gray(1:ntmp_x,1:ntmp_y)
+            quilt_d1%images(icou)%rgb(3,1:ntmp_x,1:ntmp_y)              &
+     &           = gray(1:ntmp_x,1:ntmp_y)
 !$omp end workshare
             deallocate(gray)
 !   For color image
           else
             call copy_rgb_from_png_f(ntmp_x, ntmp_y,                    &
-     &                               rgb(1,1,1,icou), pbuf_t)
+     &          quilt_d1%images(icou)%rgb, pbuf_t)
           end if
 !
           nullify(pbuf_t%cimage_p)
         end if
       end do
-      num_image_lc = icou
 !
-      call mpi_write_quilt_bitmap(file_prefix, num_row, num_column,     &
-     &    nmax_image_lc, num_image_lc, icou_image_pe,                   &
-     &    npixel_x, npixel_y, rgb)
+      call sel_write_pvr_image_files                                    &
+     &   (iflag_QUILT_BMP, file_prefix, quilt_d1)
+      call dealloc_quilt_rgb_images(quilt_d1)
 !
       call calypso_MPI_finalize
 !

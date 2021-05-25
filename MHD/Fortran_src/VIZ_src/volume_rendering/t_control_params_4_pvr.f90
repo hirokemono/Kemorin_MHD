@@ -27,6 +27,7 @@
 !
       use m_precision
       use m_constants
+      use output_image_sel_4_png
 !
       implicit  none
 !
@@ -146,6 +147,8 @@
 !>    Eye separation for streo view
         real(kind = kreal) :: eye_separation = zero
 !
+!>    Integer flag for movie file format
+        integer(kind = kint) :: iflag_movie_fmt = iflag_BMP
 !>    Integer flag for movie output
         integer(kind = kint) :: iflag_movie_mode = IFLAG_NO_MOVIE
 !>     Number of frames

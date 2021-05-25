@@ -22,9 +22,15 @@
 !
       implicit none
 !
+      character(len = kchara), parameter :: hd_BMP =       'BMP'
+      character(len = kchara), parameter :: hd_PNG =       'PNG'
+      character(len = kchara), parameter :: hd_QUILT_BMP = 'QUILT'
+
+      integer(kind = kint), parameter :: iflag_UNDEFINED =  -1
       integer(kind = kint), parameter :: iflag_BMP = 11
       integer(kind = kint), parameter :: iflag_PNG = 12
-!
+      integer(kind = kint), parameter :: iflag_QUILT_BMP = 111
+
       type(buffer_4_png), private :: pbuf
 !
 !------------------------------------------------------------------
