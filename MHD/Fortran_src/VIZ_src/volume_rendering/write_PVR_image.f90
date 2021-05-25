@@ -25,6 +25,17 @@
 !!      subroutine sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
 !!      subroutine sel_write_pvr_local_img(index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!
+!!      subroutine set_output_rot_sequence_image                        &
+!!     &         (istep_pvr, iflag_img_fmt, file_prefix, view_param,    &
+!!     &          rot_rgb, quilt_d)
+!!        integer(kind = kint), intent(in) :: istep_pvr
+!!        integer(kind = kint), intent(in) :: iflag_img_fmt
+!!        character(len=kchara), intent(in) :: file_prefix
+!!        type(pvr_view_parameter), intent(in) :: view_param
+!!        type(pvr_image_type), intent(in)                              &
+!!       &                      :: rot_rgb(view_param%num_frame)
+!!        type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
 !!@endverbatim
 !
       module write_PVR_image
@@ -218,6 +229,73 @@
       deallocate(rgba_real_lc, rgb_chara_lc)
 !
       end subroutine sel_write_pvr_local_img
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine set_output_rot_sequence_image                          &
+     &         (istep_pvr, iflag_img_fmt, file_prefix, view_param,      &
+     &          rot_rgb, quilt_d)
+!
+      use t_control_params_4_pvr
+      use t_pvr_image_array
+      use t_MPI_quilt_bitmap_IO
+      use convert_real_rgb_2_bite
+      use set_parallel_file_name
+      use output_image_sel_4_png
+!
+      integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: iflag_img_fmt
+      character(len=kchara), intent(in) :: file_prefix
+      type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_image_type), intent(in)                                  &
+     &                     :: rot_rgb(view_param%num_frame)
+      type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
+!
+      integer(kind = kint) :: i_rot, icou
+      character(len=kchara) :: file_tmp, file_w_step
+!
+!
+      quilt_d%n_column(1) = view_param%n_row
+      quilt_d%n_column(2) = view_param%n_column
+      quilt_d%n_image = view_param%num_frame
+!
+      icou = 0
+      do i_rot = 1, view_param%num_frame
+        if(my_rank .eq. rot_rgb(i_rot)%irank_image_file) icou = icou+1
+      end do
+      quilt_d%num_image_lc = icou
+!
+      call alloc_quilt_rgb_images                                       &
+     &   (rot_rgb(1)%num_pixels(1), rot_rgb(1)%num_pixels(2), quilt_d)
+!
+      icou = 0
+      do i_rot = 1, view_param%num_frame
+        if(my_rank .eq. rot_rgb(i_rot)%irank_image_file) then
+          icou = icou + 1
+          quilt_d%icou_each_pe(icou) = my_rank
+          call cvt_double_rgba_to_char_rgb                              &
+     &       (rot_rgb(i_rot)%num_pixel_xy, rot_rgb(i_rot)%rgba_real_gl, &
+     &        quilt_d%images(icou)%rgb(1,1,1))
+        end if
+      end do
+!
+      if(iflag_img_fmt .eq. iflag_QUILT_BMP) then
+        write(file_tmp,'(2a)') trim(file_prefix), '_quilt'
+      else
+        file_tmp = file_prefix
+      end if
+!
+      if(istep_pvr .ge. 0) then
+        file_w_step = add_int_suffix(istep_pvr, file_tmp)
+      else
+        file_w_step = file_tmp
+      end if
+!
+      call sel_write_pvr_image_files                                    &
+     &   (iflag_img_fmt, file_w_step, quilt_d)
+!
+      end subroutine set_output_rot_sequence_image
 !
 !  ---------------------------------------------------------------------
 !
