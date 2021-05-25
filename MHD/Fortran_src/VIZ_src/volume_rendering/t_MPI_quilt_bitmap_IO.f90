@@ -33,11 +33,8 @@
 !!        integer(kind = kint), intent(in) :: npixel_x, npixel_y
 !!        type(each_rgb_image), intent(in) :: images(num_image_lc)
 !!
-!!      subroutine alloc_each_rgb_image                                 &
-!!     &         (image_format, each_prefix, npix_xy, image)
+!!      subroutine alloc_each_rgb_image(npix_xy, image)
 !!      subroutine dealloc_each_rgb_image(image)
-!!        character(len = kchara), intent(in) :: each_prefix
-!!        integer(kind = kint), intent(in) :: image_format
 !!        integer(kind = kint), intent(in) :: npix_xy(2)
 !!        type(each_rgb_image), intent(inout) :: image
 !!@endverbatim
@@ -112,9 +109,9 @@
       quilt_d%npixel_xy(1:2) = npixel_xy(1:2)
       call alloc_quilt_rgb_images(quilt_d)
       do i = 1, quilt_d%num_image_lc
-        call alloc_each_rgb_image                                       &
-     &     (iflag_QUILT_BMP, add_int_suffix(i, file_prefix),            &
-     &       quilt_d%npixel_xy, quilt_d%images(i))
+        quilt_d%images(i)%each_prefix = iflag_QUILT_BMP
+        quilt_d%images(i)%image_format = add_int_suffix(i, file_prefix)
+        call alloc_each_rgb_image(quilt_d%npixel_xy, quilt_d%images(i))
       end do
 !
       call set_local_image_pe_quilt(quilt_d%n_image,                    &
@@ -307,16 +304,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_each_rgb_image                                   &
-     &         (image_format, each_prefix, npix_xy, image)
+      subroutine alloc_each_rgb_image(npix_xy, image)
 !
-      character(len = kchara), intent(in) :: each_prefix
-      integer(kind = kint), intent(in) :: image_format
       integer(kind = kint), intent(in) :: npix_xy(2)
       type(each_rgb_image), intent(inout) :: image
 !
-      image%each_prefix = each_prefix
-      image%image_format = image_format
       image%npix_xy(1:2) = npix_xy(1:2)
       allocate(image%rgb(3,image%npix_xy(1),image%npix_xy(2)))
 !
