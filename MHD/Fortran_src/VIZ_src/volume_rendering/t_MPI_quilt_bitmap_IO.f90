@@ -206,7 +206,7 @@
       do ip = 0, num_image-1
         if(mod(ip,nprocs) .eq. my_rank) then
           icou = icou + 1
-          icou_each_pe(icou) = ip
+          icou_each_pe(icou) = ip + 1
         end if
       end do
 !
@@ -253,7 +253,7 @@
      &    BMP_header(ntot_pixel_x, ntot_pixel_y))
 !
       do icou = 1, num_image_lc
-        ip = icou_each_pe(icou)
+        ip = icou_each_pe(icou) - 1
         ix = mod(ip,n_column(1))
         iy = ip / n_column(1)
         ilength = 3*int(npixel_x)
@@ -292,7 +292,7 @@
       integer(kind = kint) :: icou, ip
 !
       do icou = 1, num_image_lc
-        ip = icou_each_pe(icou) + 1
+        ip = icou_each_pe(icou)
         write(*,*) ip, '-th output file from process', my_rank
         call sel_output_image_file                                      &
      &     (images(icou)%image_format, images(icou)%each_prefix,        &
