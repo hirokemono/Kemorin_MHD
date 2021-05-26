@@ -67,13 +67,22 @@ begin visualizer
       file  volume_rendering  'ctl_pvr_temp'
     end array volume_rendering
 !
+    array  LIC_rendering
+      file  LIC_rendering  'ctl_LIC_magne'
+    end array LIC_rendering
+!
     array  fieldline
       file  fieldline  'ctl_fline_magne'
     end array fieldline
 !
-    array  LIC_rendering
-      file  LIC_rendering  'ctl_LIC_magne'
-    end array LIC_rendering
+!
+    array  anaglyph_volume_rendering
+      file  anaglyph_volume_rendering  'ctl_pvr_temp'
+    end array anaglyph_volume_rendering
+!
+    array  anaglyph_LIC_rendering
+      file  anaglyph_LIC_rendering  'ctl_LIC_magne'
+    end array anaglyph_LIC_rendering
   end  visual_control
 !
 end  visualizer
