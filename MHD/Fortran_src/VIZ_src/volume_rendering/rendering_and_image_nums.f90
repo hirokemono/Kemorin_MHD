@@ -115,7 +115,7 @@
       integer(kind = kint), intent(in) :: istack_pvr_images(0:num_pvr)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
-      integer(kind = kint) :: i_pvr, ist
+      integer(kind = kint) :: i_pvr, ist_img, num_img, i_img
 !
 !
       call s_set_composition_pe_range(num_pe, num_pvr,                  &
@@ -123,9 +123,10 @@
      &    istack_pvr_render, istack_pvr_images, pvr_rgb)
 !
       do i_pvr = 1, num_pvr
-        ist = istack_pvr_images(i_pvr-1)
-        call set_pvr_file_parameters                                    &
-     &     (pvr_ctl(i_pvr), pvr_param(i_pvr)%view, pvr_rgb(ist+1))
+        ist_img = istack_pvr_images(i_pvr-1)
+        num_img = istack_pvr_images(i_pvr-1) - ist_img
+        call set_pvr_file_parameters(num_img, pvr_ctl(i_pvr),           &
+     &      pvr_param(i_pvr)%view, pvr_rgb(ist_img+1))
       end do
 !
 !      if(iflag_debug .eq. 0) return
@@ -133,12 +134,17 @@
 !      write(*,*) 'istack_pvr_render', istack_pvr_render
 !      write(*,*) 'istack_pvr_images', istack_pvr_images
       write(*,*) 'ID, File, ouput_PE, end_composition_PE, Num_PE'
-      do i_pvr = 1, num_pvr_images
-        write(*,*) i_pvr, trim(pvr_rgb(i_pvr)%pvr_prefix), '  ',        &
-     &             pvr_rgb(i_pvr)%irank_image_file, &
-     &                               pvr_rgb(i_pvr)%irank_end_composit, &
-     &                                 pvr_rgb(i_pvr)%npe_img_composit, &
-     &                                 trim(pvr_rgb(i_pvr)%pvr_prefix)
+      do i_pvr = 1, num_pvr
+        ist_img = istack_pvr_images(i_pvr-1)
+        num_img = istack_pvr_images(i_pvr-1) - ist_img
+        do i_img = 1, num_img
+          write(*,*) i_pvr, i_img,                                      &
+     &              trim(pvr_rgb(ist_img+i_img)%pvr_prefix), '  ',      &
+     &                   pvr_rgb(ist_img+i_img)%irank_image_file,       &
+     &                   pvr_rgb(ist_img+i_img)%irank_end_composit,     &
+     &                   pvr_rgb(ist_img+i_img)%npe_img_composit,       &
+     &                   trim(pvr_rgb(ist_img+i_img)%pvr_prefix)
+        end do
       end do
 !
       end subroutine s_num_rendering_and_images
@@ -146,18 +152,22 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_file_parameters(pvr_ctl, view_param, pvr_rgb)
+      subroutine set_pvr_file_parameters                                &
+     &         (num_img, pvr_ctl, view_param, pvr_rgb)
 !
       use skip_comment_f
       use set_control_each_pvr
       use set_parallel_file_name
 !
+      integer(kind = kint) :: num_img
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
       type(pvr_view_parameter), intent(in) :: view_param
 !
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !
       character(len=kchara) :: pvr_prefix
+!
+      integer(kind = kint) :: i_img
 !
 !
       call set_pvr_file_prefix(pvr_ctl, pvr_prefix)
@@ -174,6 +184,15 @@
      &        pvr_rgb(2)%iflag_monitoring, pvr_rgb(2)%id_pvr_file_type, &
      &        pvr_rgb(2)%id_pvr_transparent)
         end if
+      else if(view_param%flag_quilt) then
+        do i_img = 2, num_img
+          write(pvr_rgb(i_img)%pvr_prefix,'(2a)')                       &
+     &                                  trim(pvr_prefix), '_quilt'
+          call set_pvr_file_control(pvr_ctl,                            &
+     &        pvr_rgb(i_img)%iflag_monitoring,                          &
+     &        pvr_rgb(i_img)%id_pvr_file_type,                          &
+     &        pvr_rgb(i_img)%id_pvr_transparent)
+        end do
       else
         pvr_rgb(1)%pvr_prefix = pvr_prefix
       end if
