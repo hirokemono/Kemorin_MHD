@@ -46,7 +46,7 @@ label[7]   scale_factor_vec_ctl
 label[8]   viewpoint_in_viewer_ctl 
 label[9]   projection_matrix_ctl 
 label[10]   modelview_matrix_ctl 
-label[11]   streo_view_parameter_ctl 
+label[11]   stereo_view_parameter_ctl 
 
 Check pvr_ctl_labls->label_pvr_pixels
 ctl_list->num_labels 2 

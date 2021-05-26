@@ -21,12 +21,12 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !!
-!!    begin streo_view_parameter_ctl
+!!    begin stereo_view_parameter_ctl
 !!      focal_point_ctl           40.0
 !!      eye_separation_ctl        0.5
 !!      eye_separation_angle      35.0
 !!      eye_separation_step_by_angle     ON
-!!    end streo_view_parameter_ctl
+!!    end stereo_view_parameter_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
