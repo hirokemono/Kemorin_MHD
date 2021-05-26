@@ -11,15 +11,15 @@
 !!        type(PVR_control_params), intent(in) :: pvr_param
 !!        integer(kind = kint), intent(in) :: num_img
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
-!!      subroutine each_PVR_initialize(i_pvr, mesh, group, pvr_rgb,     &
-!!     &                               pvr_param, pvr_proj)
-!!      subroutine dealloc_PVR_initialize(pvr_param, pvr_proj)
+!!      subroutine each_PVR_initialize(i_pvr, num_img, num_rdr,         &
+!!     &          mesh, group, pvr_rgb, pvr_param, pvr_proj)
+!!      subroutine dealloc_PVR_initialize(num_rdr, pvr_param, pvr_proj)
 !!
-!!      subroutine each_PVR_rendering                                   &
-!!     &         (istep_pvr, time, geofem, jacs, nod_fld,               &
+!!      subroutine each_PVR_rendering(istep_pvr, time,                  &
+!!     &          geofem, jacs, nod_fld, num_img, num_rdr,              &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
-!!      subroutine each_PVR_rendering_w_rot                             &
-!!     &         (istep_pvr, time, geofem, jacs, nod_fld,               &
+!!      subroutine each_PVR_rendering_w_rot(istep_pvr, time,            &
+!!     &          geofem, jacs, nod_fld, num_img, num_rdr,              &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(viz_area_parameter), intent(in) :: area_def
@@ -30,8 +30,8 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(pvr_field_data), intent(inout) :: field_pvr
 !!        type(PVR_control_params), intent(inout) :: pvr_param
-!!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-!!        type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+!!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_rdr)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !!@endverbatim
 !
       module each_volume_rendering
@@ -75,6 +75,7 @@
       integer(kind = kint), intent(in) :: num_img
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !
+      integer(kind = kint) :: i_img
 !
       do i_img = 1, num_img
         call alloc_pvr_image_array                                      &
@@ -85,8 +86,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_initialize(i_pvr, mesh, group, pvr_rgb,       &
-     &                               pvr_param, pvr_proj)
+      subroutine each_PVR_initialize(i_pvr, num_img, num_rdr,           &
+     &          mesh, group, pvr_rgb, pvr_param, pvr_proj)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
@@ -96,12 +97,15 @@
       use set_iflag_for_used_ele
 !
       integer(kind = kint), intent(in) :: i_pvr
+      integer(kind = kint), intent(in) :: num_img, num_rdr
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
-      type(pvr_image_type), intent(in) :: pvr_rgb(2)
+      type(pvr_image_type), intent(in) :: pvr_rgb(num_img)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(num_rdr)
+!
+      integer(kind = kint) :: i_img
 !
 !
       call alloc_iflag_pvr_used_ele(mesh%ele, pvr_param%draw_param)
@@ -117,6 +121,12 @@
         call find_each_pvr_surf_domain                                  &
      &     (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,     &
      &      pvr_param%draw_param, pvr_proj(2)%bound)
+      else if(pvr_param%view%flag_quilt) then
+        do i_img = 2, num_img
+          call find_each_pvr_surf_domain                                &
+     &       (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,   &
+     &        pvr_param%draw_param, pvr_proj(i_img)%bound)
+        end do
       end if
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
@@ -136,6 +146,14 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
         call set_pvr_projection_right_mat                               &
      &     (i_pvr, pvr_param%view, pvr_proj(2)%projection_mat)
+      else if(pvr_param%view%flag_quilt) then
+        do i_img = 1, num_img
+          pvr_proj(i_img)%start_fix%irank_composit_ref                  &
+                                          = mod(i_img-1,nprocs)
+          if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
+          call set_pvr_step_projection_mat(i_img, num_img,              &
+     &        pvr_param%view, pvr_proj(i_img)%projection_mat)
+        end do
       else
         pvr_proj(1)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
 !
@@ -145,46 +163,51 @@
 !        call set_pvr_orthogonal_params(i_pvr, pvr_param%view)
       end if
 !
-      call alloc_projected_position                                     &
-     &   (mesh%node, mesh%surf, pvr_proj(1)%screen)
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
+      do i_img = 1, num_img
         call alloc_projected_position                                   &
-     &     (mesh%node, mesh%surf, pvr_proj(2)%screen)
-      end if
+     &     (mesh%node, mesh%surf, pvr_proj(i_img)%screen)
+      end do
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call cal_pvr_modelview_matrix                                     &
      &   (izero, pvr_param%outline, pvr_param%view, pvr_param%color)
+!
       call set_fixed_view_and_image                                     &
      &   (mesh, group, pvr_param, pvr_rgb(1), pvr_proj(1))
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        call set_fixed_view_and_image                                   &
-     &     (mesh, group, pvr_param, pvr_rgb(1), pvr_proj(2))
+        if(pvr_param%view%iflag_anaglyph .eq. 0) then
+          call set_fixed_view_and_image                                 &
+     &       (mesh, group, pvr_param, pvr_rgb(2), pvr_proj(2))
+        else
+          call set_fixed_view_and_image                                 &
+     &       (mesh, group, pvr_param, pvr_rgb(1), pvr_proj(2))
+        end if
+      else if(pvr_param%view%flag_quilt) then
+        do i_img = 2, num_img
+          call set_fixed_view_and_image                                 &
+     &       (mesh, group, pvr_param, pvr_rgb(i_img), pvr_proj(i_img))
+        end do
       end if
 !
       end subroutine each_PVR_initialize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_PVR_initialize(pvr_param, pvr_proj)
+      subroutine dealloc_PVR_initialize(num_rdr, pvr_param, pvr_proj)
 !
+      integer(kind = kint), intent(in) :: num_rdr
       type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(num_rdr)
 !
+      integer(kind = kint) :: i_rdr
 !
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        call deallocate_item_pvr_ray_start(pvr_proj(2)%start_save)
-        call deallocate_pvr_ray_start(pvr_proj(2)%start_fix)
-        call dealloc_pvr_stencil_buffer(pvr_proj(2)%stencil)
-        call dealloc_projected_position(pvr_proj(2)%screen)
-        call dealloc_pvr_surf_domain_item(pvr_proj(2)%bound)
-      end if
-!
-      call deallocate_item_pvr_ray_start(pvr_proj(1)%start_save)
-      call deallocate_pvr_ray_start(pvr_proj(1)%start_fix)
-      call dealloc_pvr_stencil_buffer(pvr_proj(1)%stencil)
-      call dealloc_projected_position(pvr_proj(1)%screen)
-      call dealloc_pvr_surf_domain_item(pvr_proj(1)%bound)
+      do i_rdr = 1, num_rdr
+        call deallocate_item_pvr_ray_start(pvr_proj(i_rdr)%start_save)
+        call deallocate_pvr_ray_start(pvr_proj(i_rdr)%start_fix)
+        call dealloc_pvr_stencil_buffer(pvr_proj(i_rdr)%stencil)
+        call dealloc_projected_position(pvr_proj(i_rdr)%screen)
+        call dealloc_pvr_surf_domain_item(pvr_proj(i_rdr)%bound)
+      end do
 !
       call dealloc_pixel_position_pvr(pvr_param%pixel)
       call dealloc_iflag_pvr_used_ele(pvr_param%draw_param)
@@ -194,8 +217,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_rendering                                     &
-     &         (istep_pvr, time, geofem, jacs, nod_fld,                 &
+      subroutine each_PVR_rendering(istep_pvr, time,                    &
+     &          geofem, jacs, nod_fld, num_img, num_rdr,                &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -206,11 +229,14 @@
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
+      integer(kind = kint), intent(in) :: num_img, num_rdr
 !
       type(pvr_field_data), intent(inout) :: field_pvr
       type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(num_rdr)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
+!
+      integer(kind = kint) :: i_img
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
@@ -244,6 +270,11 @@
           call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,  &
      &        field_pvr, pvr_param, pvr_proj(2), pvr_rgb(2))
         end if
+      else if(pvr_param%view%flag_quilt) then
+        do i_img = 1, num_img
+          call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,  &
+     &        field_pvr, pvr_param, pvr_proj(i_img), pvr_rgb(i_img))
+        end do
       else
         call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,    &
      &      field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
@@ -253,8 +284,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_rendering_w_rot                               &
-     &         (istep_pvr, time, geofem, jacs, nod_fld,                 &
+      subroutine each_PVR_rendering_w_rot(istep_pvr, time,              &
+     &          geofem, jacs, nod_fld, num_img, num_rdr,                &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -265,11 +296,14 @@
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
+      integer(kind = kint), intent(in) :: num_img, num_rdr
 !
       type(pvr_field_data), intent(inout) :: field_pvr
       type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(num_rdr)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
+!
+      integer(kind = kint) :: i_img
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
@@ -295,6 +329,12 @@
      &       (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,    &
      &        pvr_rgb(2), pvr_param, pvr_proj(2))
         end if
+      else if(pvr_param%view%flag_quilt) then
+        do i_img = 1, num_img
+          call rendering_with_rotation                                  &
+     &       (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,    &
+     &        pvr_rgb(i_img), pvr_param, pvr_proj(i_img))
+        end do
       else
         call rendering_with_rotation                                    &
      &     (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,      &

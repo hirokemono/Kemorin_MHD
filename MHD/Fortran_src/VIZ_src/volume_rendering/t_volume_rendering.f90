@@ -176,7 +176,7 @@
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr, ist_rdr, ist_img, num_img
+      integer(kind = kint) :: i_pvr, ist_rdr, ist_img, num_img, num_rdr
 !
 !
       pvr%num_pvr = pvr_ctls%num_pvr_ctl
@@ -220,14 +220,15 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       do i_pvr = 1, pvr%num_pvr
-        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
+        ist_rdr = pvr%istack_pvr_render(i_pvr-1)
+        num_rdr = pvr%istack_pvr_render(i_pvr  ) - ist_rdr
         ist_img = pvr%istack_pvr_images(i_pvr-1)
-        num_img = pvr%istack_pvr_images(i_pvr  )
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call init_each_PVR_image(pvr%pvr_param(i_pvr), num_img,         &
-     &                           pvr%pvr_rgb(ist_img+1))
-        call each_PVR_initialize(i_pvr, geofem%mesh, geofem%group,      &
-     &      pvr%pvr_rgb(ist_img+1),  pvr%pvr_param(i_pvr),              &
-     &      pvr%pvr_proj(ist_rdr))
+     &      pvr%pvr_rgb(ist_img+1))
+        call each_PVR_initialize(i_pvr, num_img, num_rdr,               &
+     &      geofem%mesh, geofem%group, pvr%pvr_rgb(ist_img+1),          &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr+1))
       end do
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
@@ -259,8 +260,8 @@
 !
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr, ist_rdr
-      integer(kind = kint) :: i_img, ist_img, ied_img
+      integer(kind = kint) :: i_pvr, ist_rdr, num_rdr
+      integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
@@ -270,12 +271,14 @@
         if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
-        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        ist_rdr = pvr%istack_pvr_render(i_pvr-1) 
+        num_rdr = pvr%istack_pvr_render(i_pvr  ) - ist_rdr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call each_PVR_rendering                                         &
-     &     (istep_pvr, time, geofem, jacs, nod_fld,                     &
+     &     (istep_pvr, time, geofem, jacs, nod_fld, num_img, num_rdr,   &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+     &      pvr%pvr_proj(ist_rdr+1), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -316,11 +319,14 @@
         if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
 !
-        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        call each_PVR_rendering_w_rot(istep_pvr, time, geofem, jacs,    &
-     &      nod_fld, pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),        &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+        ist_rdr = pvr%istack_pvr_render(i_pvr-1)
+        num_rdr = pvr%istack_pvr_render(i_pvr  ) - ist_rdr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        call each_PVR_rendering_w_rot                                   &
+     &     (istep_pvr, time, geofem, jacs, nod_fld, num_img, num_rdr,   &
+     &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
+     &      pvr%pvr_proj(ist_rdr+1), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !

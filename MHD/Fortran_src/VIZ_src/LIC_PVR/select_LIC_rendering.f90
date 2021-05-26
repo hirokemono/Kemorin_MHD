@@ -93,19 +93,21 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_lic, ist_rdr, ist_img
+      integer(kind = kint) :: i_lic, ist_rdr, ist_img, num_img, num_rdr
 !
 !
       call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
      &                          repart_data)
 !
       do i_lic = 1, pvr%num_pvr
-        ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        call each_PVR_initialize(i_lic,                                 &
+        ist_rdr = pvr%istack_pvr_render(i_lic-1)
+        num_rdr = pvr%istack_pvr_render(i_lic  ) - ist_rdr
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
+        call each_PVR_initialize(i_lic, num_img, num_rdr,               &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(ist_img), pvr%pvr_param(i_lic),                 &
-     &      pvr%pvr_proj(ist_rdr))
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
+     &      pvr%pvr_proj(ist_rdr+1))
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -136,7 +138,7 @@
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
 !
-      integer(kind = kint) :: i_lic, ist_rdr
+      integer(kind = kint) :: i_lic, ist_rdr, num_img
       integer(kind = kint) :: i_img, ist_img, ied_img
 !
 !
@@ -231,22 +233,24 @@
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
 !
-      integer(kind = kint) :: i_lic, ist_rdr
-      integer(kind = kint) :: i_img, ist_img, ied_img
+      integer(kind = kint) :: i_lic, ist_rdr, num_rdr
+      integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
       do i_lic = 1, pvr%num_pvr
-        ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        ist_rdr = pvr%istack_pvr_render(i_lic-1)
+        num_rdr = pvr%istack_pvr_render(i_lic  ) - ist_rdr
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
         call LIC_init_each_mesh(geofem, next_tbl, repart_p,             &
      &                          lic_param(i_lic), repart_data)
 !
         if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
-        call each_PVR_initialize(i_lic,                                 &
+        call each_PVR_initialize(i_lic, num_img, num_rdr,               &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(ist_img), pvr%pvr_param(i_lic),                 &
-     &      pvr%pvr_proj(ist_rdr))
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
+     &      pvr%pvr_proj(ist_rdr+1))
 !
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
@@ -261,19 +265,19 @@
           call s_each_LIC_rendering                                     &
      &       (istep_lic, time, repart_data%viz_fem,                     &
      &        repart_data%field_lic, lic_param(i_lic),                  &
-     &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),              &
-     &        pvr%pvr_rgb(ist_img))
+     &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr+1),            &
+     &        pvr%pvr_rgb(ist_img+1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         else
           call s_each_LIC_rendering_w_rot                               &
      &     (istep_lic, time, repart_data%viz_fem,                       &
      &      repart_data%field_lic, lic_param(i_lic),                    &
-     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),                &
-     &      pvr%pvr_rgb(ist_img))
+     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr+1),              &
+     &      pvr%pvr_rgb(ist_img+1))
         end if
 !
-        call dealloc_PVR_initialize(pvr%pvr_param(i_lic),               &
-     &                              pvr%pvr_proj(ist_rdr))
+        call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),      &
+     &                              pvr%pvr_proj(ist_rdr+1))
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
