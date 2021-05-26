@@ -53,8 +53,11 @@
         type(sectioning_module) :: psf
         type(isosurface_module) :: iso
         type(volume_rendering_module) :: pvr
-        type(fieldline_module) :: fline
         type(lic_volume_rendering_module) :: lic
+        type(fieldline_module) :: fline
+
+        type(volume_rendering_module) :: anaglyph_pvr
+        type(lic_volume_rendering_module) :: anaglyph_lic
       end type visualize_modules
 !
 !  ---------------------------------------------------------------------
@@ -94,12 +97,18 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
       call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
      &    viz_ctls%pvr_ctls, vizs%pvr)
+      call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
+     &    viz_ctls%pvr_anaglyph_ctls, vizs%anaglyph_pvr)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
       call LIC_initialize                                               &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
      &    viz_ctls%lic_ctls, viz_ctls%repart_ctl, vizs%lic)
+      call LIC_initialize                                               &
+     &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
+     &    viz_ctls%lic_anaglyph_ctls, viz_ctls%repart_ctl,              &
+     &    vizs%anaglyph_lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
@@ -144,11 +153,15 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
       call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
      &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr)
+      call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
+     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%anaglyph_pvr)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%istep_lic, time_d%time,               &
      &    geofem, VIZ_DAT%next_tbl, nod_fld, vizs%lic, v_sol)
+      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, vizs%anaglyph_lic, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)

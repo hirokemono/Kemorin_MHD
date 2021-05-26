@@ -33,7 +33,7 @@
 !>      Structure of data for visualization
       type(VIZ_mesh_field), save :: VIZ_DAT1
 !>      Structure of viualization modules
-      type(lic_volume_rendering_module), save :: lic_v
+      type(lic_visualize_modules), save :: lic_v1
 !
 !  ---------------------------------------------------------------------
 !
@@ -79,7 +79,7 @@
      &   (t_VIZ1%viz_step, FEM_viz1%geofem, VIZ_DAT1)
       if(iflag_debug .gt. 0)  write(*,*) 'init_LIC_visualize'
       call init_LIC_visualize(t_VIZ1%viz_step, FEM_viz1%geofem,         &
-     &    FEM_viz1%field, VIZ_DAT1, vizs_ctl1%viz_ctl_v, lic_v)
+     &    FEM_viz1%field, VIZ_DAT1, vizs_ctl1%viz_ctl_v, lic_v1)
 !
       end subroutine initialize_lic
 !
@@ -108,7 +108,7 @@
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_LIC(t_VIZ1%viz_step, t_VIZ1%time_d,              &
      &                     FEM_viz1%geofem, FEM_viz1%field,             &
-     &                     VIZ_DAT1, lic_v, FEM_viz1%v_sol)
+     &                     VIZ_DAT1, lic_v1, FEM_viz1%v_sol)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

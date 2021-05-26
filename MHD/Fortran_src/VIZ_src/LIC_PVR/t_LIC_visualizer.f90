@@ -17,7 +17,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !!        type(visualization_controls), intent(inout) :: viz_ctls
-!!        type(lic_volume_rendering_module), intent(inout) :: lic_v
+!!        type(lic_visualize_modules), intent(inout) :: lic_v
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!@endverbatim
 !
@@ -45,6 +45,11 @@
 !
       implicit  none
 !
+      type lic_visualize_modules
+        type(lic_volume_rendering_module) :: lic
+        type(lic_volume_rendering_module) :: anaglyph_lic
+      end type lic_visualize_modules
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -64,13 +69,17 @@
       type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
       type(visualization_controls), intent(inout) :: viz_ctls
-      type(lic_volume_rendering_module), intent(inout) :: lic_v
+      type(lic_visualize_modules), intent(inout) :: lic_v
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
       call LIC_initialize                                               &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
-     &    viz_ctls%lic_ctls, viz_ctls%repart_ctl, lic_v)
+     &    viz_ctls%lic_ctls, viz_ctls%repart_ctl, lic_v%lic)
+      call LIC_initialize                                               &
+     &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
+     &    viz_ctls%lic_anaglyph_ctls, viz_ctls%repart_ctl,              &
+     &    lic_v%anaglyph_lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       call calypso_mpi_barrier
@@ -89,13 +98,15 @@
       type(phys_data), intent(in) :: nod_fld
       type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
-      type(lic_volume_rendering_module), intent(inout) :: lic_v
+      type(lic_visualize_modules), intent(inout) :: lic_v
       type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v, v_sol)
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%lic, v_sol)
+      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%anaglyph_lic, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       call calypso_mpi_barrier
