@@ -93,6 +93,16 @@ lib_name:
 	done
 
 lib_tasks:
+	@for dir in Rayleigh_link; do \
+		( cd $${dir};  \
+		echo 'generate library for ' $$dir ; \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		lib_tasks \
+		) \
+	done
 
 
 mod_list:

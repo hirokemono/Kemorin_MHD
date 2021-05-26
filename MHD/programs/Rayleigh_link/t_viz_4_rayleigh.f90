@@ -72,8 +72,6 @@
       type(FEM_mesh_field_rayleigh_viz), intent(inout) :: FEM_Rayleigh
 !
 !
-      call turn_off_debug_flag_by_ctl                                   &
-     &   (my_rank, rayleigh_vctl%viz_plt)
       call set_control_smp_def(my_rank, rayleigh_vctl%viz_plt)
 !
       call set_fixed_t_step_params_w_viz                                &
