@@ -7,7 +7,10 @@
 !>@brief Main module for each volume rendering
 !!
 !!@verbatim
-!!      subroutine init_each_PVR_image(pvr_param, pvr_rgb)
+!!      subroutine init_each_PVR_image(pvr_param, num_img, pvr_rgb)
+!!        type(PVR_control_params), intent(in) :: pvr_param
+!!        integer(kind = kint), intent(in) :: num_img
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !!      subroutine each_PVR_initialize(i_pvr, mesh, group, pvr_rgb,     &
 !!     &                               pvr_param, pvr_proj)
 !!      subroutine dealloc_PVR_initialize(pvr_param, pvr_proj)
@@ -66,19 +69,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_each_PVR_image(pvr_param, pvr_rgb)
+      subroutine init_each_PVR_image(pvr_param, num_img, pvr_rgb)
 !
       type(PVR_control_params), intent(in) :: pvr_param
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+      integer(kind = kint), intent(in) :: num_img
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !
 !
-      call alloc_pvr_image_array                                        &
-     &   (pvr_param%view%n_pvr_pixel, pvr_rgb(1))
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0                         &
-     &     .and. pvr_param%view%iflag_anaglyph .eq. 0) then
+      do i_img = 1, num_img
         call alloc_pvr_image_array                                      &
-     &     (pvr_param%view%n_pvr_pixel, pvr_rgb(2))
-      end if
+     &     (pvr_param%view%n_pvr_pixel, pvr_rgb(i_img))
+      end do
 !
       end subroutine init_each_PVR_image
 !

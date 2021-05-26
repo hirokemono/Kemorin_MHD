@@ -176,7 +176,7 @@
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr, ist_rdr, ist_img
+      integer(kind = kint) :: i_pvr, ist_rdr, ist_img, num_img
 !
 !
       pvr%num_pvr = pvr_ctls%num_pvr_ctl
@@ -221,11 +221,12 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       do i_pvr = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        call init_each_PVR_image(pvr%pvr_param(i_pvr),                  &
-     &                           pvr%pvr_rgb(ist_img))
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  )
+        call init_each_PVR_image(pvr%pvr_param(i_pvr), num_img,         &
+     &                           pvr%pvr_rgb(ist_img+1))
         call each_PVR_initialize(i_pvr, geofem%mesh, geofem%group,      &
-     &      pvr%pvr_rgb(ist_img),  pvr%pvr_param(i_pvr),                &
+     &      pvr%pvr_rgb(ist_img+1),  pvr%pvr_param(i_pvr),              &
      &      pvr%pvr_proj(ist_rdr))
       end do
 !

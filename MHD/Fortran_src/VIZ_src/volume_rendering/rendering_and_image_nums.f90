@@ -159,7 +159,7 @@
       use set_control_each_pvr
       use set_parallel_file_name
 !
-      integer(kind = kint) :: num_img
+      integer(kind = kint), intent(in) :: num_img
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
       type(pvr_view_parameter), intent(in) :: view_param
 !

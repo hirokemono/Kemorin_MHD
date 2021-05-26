@@ -11,6 +11,8 @@
 !!
 !!      subroutine set_pvr_projection_matrix                            &
 !!     &         (i_pvr, view_param, projection_mat)
+!!      subroutine set_pvr_step_projection_mat                          &
+!!     &          (i_img, num_img, view_param, projection_step)
 !!      subroutine set_pvr_projection_left_mat                          &
 !!     &          (i_pvr, view_param, projection_left)
 !!      subroutine set_pvr_projection_right_mat                         &
@@ -85,6 +87,74 @@
         end if
 !
       end subroutine set_pvr_projection_matrix
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_pvr_step_projection_mat                            &
+     &          (i_img, num_img, view_param, projection_step)
+!
+      use set_projection_matrix
+!
+      integer(kind = kint), intent(in) :: i_img, num_img
+      type(pvr_view_parameter), intent(in) :: view_param
+      real(kind = kreal), intent(inout) :: projection_step(4,4)
+!
+      integer(kind = kint) :: i
+!
+      real(kind = kreal) :: pi_180, wd2, ndfl
+      real(kind = kreal) :: view_right, view_left
+      real(kind = kreal) :: view_top, view_bottom
+      real(kind = kreal) :: view_far, view_near
+      real(kind = kreal) :: range, rstep, each_eye, separation
+!
+!
+      view_near = view_param%perspective_near
+      view_far =  view_param%perspective_far
+!
+      pi_180 = four * atan(one) / 180.0d0
+      wd2 =  view_near                                                  &
+     &     * tan( view_param%perspective_angle*pi_180*half )
+      ndfl = view_near / view_param%focalLength
+!
+      rstep = half - dble(i_img-1) / dble(num_img-1)
+      if(view_param%flag_setp_eye_separation_angle) then
+        if(view_param%flag_eye_separation_angle) then
+          each_eye = view_param%focalLength                             &
+     &              * tan(pi_180 * rstep * view_param%eye_sep_angle)
+        else
+          range = two * atan(half*view_param%eye_separation             &
+     &                       / view_param%focalLength)
+          each_eye = view_param%focalLength * tan(rstep * range)
+        end if
+      else
+        if(view_param%flag_eye_separation_angle) then
+          separation = view_param%focalLength                           &
+     &                * tan(half * pi_180 * view_param%eye_sep_angle)
+        else
+          separation = view_param%eye_separation
+        end if
+        each_eye = separation * rstep
+      end if
+!
+      view_bottom = - wd2
+      view_top =      wd2
+      view_left  = - view_param%perspective_xy_ratio * wd2              &
+     &              + half * each_eye * ndfl
+      view_right =   view_param%perspective_xy_ratio * wd2              &
+     &              + half * each_eye * ndfl
+!
+      call set_perspective_mat_by_area(view_left, view_right,           &
+     &    view_bottom, view_top, view_near, view_far,                   &
+     &    projection_step)
+!
+      if (iflag_debug .gt. 0) then
+        write(*,*) 'projection_step for PVR ', i_img
+        do i = 1, 4
+          write(*,'(1p4e16.7)') projection_step(i,1:4)
+        end do
+      end if
+!
+      end subroutine set_pvr_step_projection_mat
 !
 ! -----------------------------------------------------------------------
 !

@@ -149,10 +149,16 @@
 !>    Number of column of image array
         integer(kind = kint) :: n_column = 0
 !
+!>    Flag to defeine eye separation by angle
+        logical :: flag_eye_separation_angle =  .FALSE.
+!>    Flag to stepping eye position by angle
+        logical :: flag_setp_eye_separation_angle =  .FALSE.
 !>    Focal length for streo view
         real(kind = kreal) :: focalLength = one
 !>    Eye separation for streo view
         real(kind = kreal) :: eye_separation = zero
+!>    Eye separation angle for streo view
+        real(kind = kreal) :: eye_sep_angle = zero
 !
 !>    Integer flag for movie file format
         integer(kind = kint) :: iflag_movie_fmt = iflag_BMP

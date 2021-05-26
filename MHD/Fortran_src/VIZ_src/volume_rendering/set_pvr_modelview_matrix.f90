@@ -146,13 +146,23 @@
       if(streo%focalpoint_ctl%iflag .gt. 0) then
         view_param%focalLength = streo%focalpoint_ctl%realvalue
       else
-        view_param%focalLength = 1.0d1
+        view_param%focalLength = 1.0d+1
       end if
 !
-      if(streo%eye_separation_ctl%iflag .gt. 0) then
+      view_param%flag_eye_separation_angle = .FALSE.
+      if(streo%eye_sep_angle_ctl%iflag .gt. 0) then
+        view_param%flag_eye_separation_angle = .TRUE.
+        view_param%eye_sep_angle = streo%eye_sep_angle_ctl%realvalue
+      else if(streo%eye_separation_ctl%iflag .gt. 0) then
         view_param%eye_separation = streo%eye_separation_ctl%realvalue
       else
         view_param%eye_separation = 1.0d-1
+      end if
+!
+      view_param%flag_setp_eye_separation_angle = .FALSE.
+      if(streo%step_eye_sep_angle_ctl%iflag .gt. 0                      &
+     &   .and. yes_flag(streo%step_eye_sep_angle_ctl%charavalue)) then
+        view_param%flag_setp_eye_separation_angle = .TRUE.
       end if
 !
       if(view_param%iflag_stereo_pvr .gt. 0) then
