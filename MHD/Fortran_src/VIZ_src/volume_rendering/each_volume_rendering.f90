@@ -163,6 +163,7 @@
         else
           call set_fixed_view_and_image                                 &
      &     (mesh, group, pvr_param, pvr_rgb(2), pvr_proj(2))
+        end if
       end if
 !
       end subroutine each_PVR_initialize
