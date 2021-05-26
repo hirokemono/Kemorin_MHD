@@ -142,6 +142,13 @@
 !>    Flag to make an anaglyph
         integer(kind = kint) :: iflag_anaglyph = 0
 !
+!>    Flag to make quilt images with fixed view
+        logical :: flag_quilt =  .FALSE.
+!>    Number of row of image array
+        integer(kind = kint) :: n_row =    0
+!>    Number of column of image array
+        integer(kind = kint) :: n_column = 0
+!
 !>    Focal length for streo view
         real(kind = kreal) :: focalLength = one
 !>    Eye separation for streo view
@@ -153,10 +160,6 @@
         integer(kind = kint) :: iflag_movie_mode = IFLAG_NO_MOVIE
 !>     Number of frames
         integer(kind = kint) :: num_frame =   0
-!>     Number of row of image array
-        integer(kind = kint) :: n_row =    0
-!>     Number of column of image array
-        integer(kind = kint) :: n_column = 0
 !
 !>     Rotatin axis:    id_rot_axis
         integer(kind = kint) :: id_rot_axis = 3

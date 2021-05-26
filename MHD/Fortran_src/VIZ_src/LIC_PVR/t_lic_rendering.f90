@@ -197,7 +197,8 @@
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
-     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
+     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
+     &    lic%pvr%istack_pvr_render, lic%pvr%istack_pvr_images)
       call alloc_pvr_images(lic%pvr)
 !
       call s_num_rendering_and_images(nprocs,                           &
