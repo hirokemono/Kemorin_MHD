@@ -157,8 +157,12 @@
       call set_fixed_view_and_image                                     &
      &   (mesh, group, pvr_param, pvr_rgb(1), pvr_proj(1))
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        call set_fixed_view_and_image                                   &
+        if(view_param%iflag_anaglyph .gt. 0) then
+          call set_fixed_view_and_image                                 &
      &     (mesh, group, pvr_param, pvr_rgb(1), pvr_proj(2))
+        else
+          call set_fixed_view_and_image                                 &
+     &     (mesh, group, pvr_param, pvr_rgb(2), pvr_proj(2))
       end if
 !
       end subroutine each_PVR_initialize
