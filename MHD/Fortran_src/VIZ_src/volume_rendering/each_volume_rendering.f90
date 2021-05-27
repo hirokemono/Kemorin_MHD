@@ -220,7 +220,7 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !
-      integer(kind = kint), intent(in) :: i_img
+      integer(kind = kint) :: i_img
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
