@@ -108,8 +108,9 @@
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
-     &    num_img, lic%pvr%istack_pvr_images)
-      call alloc_pvr_images(num_img, num_img, lic%pvr)
+     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
+     &    lic%pvr%istack_pvr_images)
+      call alloc_pvr_images(lic%pvr)
 !
       call set_rendering_and_image_pes(nprocs,                          &
      &    lic%pvr%num_pvr, lic%pvr%pvr_param, lic_ctls%pvr_ctl_type,    &

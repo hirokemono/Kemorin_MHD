@@ -211,8 +211,9 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
       call count_num_rendering_and_images(pvr%num_pvr, pvr%pvr_param,   &
-     &    num_img, pvr%istack_pvr_images)
-      call alloc_pvr_images(num_img, num_img, pvr)
+     &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
+     &    pvr%istack_pvr_images)
+      call alloc_pvr_images(pvr)
 !
       call set_rendering_and_image_pes                                  &
      &   (nprocs, pvr%num_pvr, pvr%pvr_param, pvr_ctls%pvr_ctl_type,    &
@@ -290,7 +291,9 @@
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
-      call alloc_pvr_images(pvr%num_pvr, (2*pvr%num_pvr), pvr)
+      call count_num_anaglyph_and_images(pvr%num_pvr,                   &
+     &    pvr%num_pvr_rendering, pvr%num_pvr_images)
+      call alloc_pvr_images(pvr)
 !
       call set_anaglyph_rendering_pes(nprocs, pvr%num_pvr,              &
      &    pvr_ctls%pvr_ctl_type, pvr%pvr_rgb)
@@ -479,14 +482,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_pvr_images(num_rendering, num_images, pvr)
+      subroutine alloc_pvr_images(pvr)
 !
-      integer(kind = kint), intent(in) :: num_rendering, num_images
       type(volume_rendering_module), intent(inout) :: pvr
 !
 !
-      pvr%num_pvr_rendering = num_rendering
-      pvr%num_pvr_images =    num_images
       allocate(pvr%pvr_proj(pvr%num_pvr_rendering))
       allocate(pvr%pvr_rgb(pvr%num_pvr_images))
 !
