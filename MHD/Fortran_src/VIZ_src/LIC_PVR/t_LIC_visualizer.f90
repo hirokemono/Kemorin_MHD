@@ -76,7 +76,7 @@
       call LIC_initialize                                               &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
      &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, lic_v%lic)
-      call LIC_initialize                                               &
+      call anaglyph_LIC_initialize                                      &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
      &    viz_ctls%repart_ctl, viz_ctls%lic_anaglyph_ctls,              &
      &    lic_v%anaglyph_lic)
@@ -105,7 +105,7 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%istep_lic, time_d%time,               &
      &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%lic, v_sol)
-      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
+      call anaglyph_LIC_visualize(viz_step%istep_lic, time_d%time,      &
      &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%anaglyph_lic, v_sol)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !

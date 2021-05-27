@@ -11,7 +11,11 @@
 !!      subroutine read_ctl_pvr_files_4_update(id_control, pvr_ctls)
 !!      subroutine PVR_initialize                                       &
 !!     &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
+!!      subroutine anaglyph_PVR_initialize                              &
+!!     &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
 !!      subroutine PVR_visualize                                        &
+!!     &         (istep_pvr, time, geofem, jacs, nod_fld, pvr)
+!!      subroutine anaglyph_PVR_visualize                               &
 !!     &         (istep_pvr, time, geofem, jacs, nod_fld, pvr)
 !!      subroutine alloc_pvr_data(pvr)
 !!
@@ -243,6 +247,88 @@
       end subroutine PVR_initialize
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine anaglyph_PVR_initialize                                &
+     &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
+!
+      use t_control_data_pvr_sections
+      use set_pvr_control
+      use rendering_and_image_nums
+!
+      integer(kind = kint), intent(in) :: increment_pvr
+      type(mesh_data), intent(in) :: geofem
+      type(phys_data), intent(in) :: nod_fld
+      type(volume_rendering_controls), intent(inout) :: pvr_ctls
+      type(volume_rendering_module), intent(inout) :: pvr
+!
+      integer(kind = kint) :: i_pvr, ist_rdr, ist_img
+!
+!
+      pvr%num_pvr = pvr_ctls%num_pvr_ctl
+      if(increment_pvr .le. 0) pvr%num_pvr = 0
+!
+      if(pvr%num_pvr .le. 0) then
+        pvr%num_pvr = 0
+        return
+      end if
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+5)
+      call bcast_pvr_controls(pvr%num_pvr,                              &
+     &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
+!
+      call alloc_pvr_data(pvr)
+      do i_pvr = 1, pvr%num_pvr
+        call alloc_nod_data_4_pvr                                       &
+     &     (geofem%mesh%node%numnod, geofem%mesh%ele%numele,            &
+     &      pvr%field_pvr(i_pvr))
+        call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
+     &      pvr%pvr_param(i_pvr)%draw_param)
+        call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)
+      end do
+!
+      call s_set_pvr_controls(geofem%group, nod_fld, pvr%num_pvr,       &
+     &    pvr_ctls%pvr_ctl_type, pvr%pvr_param)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+6)
+!
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
+      call count_num_rendering_and_images(pvr%num_pvr, pvr%pvr_param,   &
+     &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
+     &    pvr%istack_pvr_render, pvr%istack_pvr_images)
+      call alloc_pvr_images(pvr)
+!
+      call s_num_rendering_and_images                                   &
+     &   (nprocs, pvr%num_pvr, pvr%pvr_param, pvr_ctls%pvr_ctl_type,    &
+     &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
+     &    pvr%istack_pvr_render,  pvr%istack_pvr_images, pvr%pvr_rgb)
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
+      do i_pvr = 1, pvr%num_pvr
+        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
+        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        call init_each_PVR_image(pvr%pvr_param(i_pvr),                  &
+     &                           pvr%pvr_rgb(ist_img))
+        call each_PVR_initialize(i_pvr, geofem%mesh, geofem%group,      &
+     &      pvr%pvr_rgb(ist_img),  pvr%pvr_param(i_pvr),                &
+     &      pvr%pvr_proj(ist_rdr))
+      end do
+!
+      do i_pvr = 1, pvr_ctls%num_pvr_ctl
+        if(pvr_ctls%fname_pvr_ctl(i_pvr) .ne. 'NO_FILE'                 &
+     &      .or. my_rank .ne. 0) then
+          call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
+        end if
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
+!
+!      call check_surf_rng_pvr_domain(my_rank)
+!      call check_surf_norm_pvr_domain(my_rank)
+!
+      end subroutine anaglyph_PVR_initialize
+!
+!  ---------------------------------------------------------------------
 !
       subroutine PVR_visualize                                          &
      &         (istep_pvr, time, geofem, jacs, nod_fld, pvr)
@@ -324,6 +410,89 @@
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       end subroutine PVR_visualize
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine anaglyph_PVR_visualize                                 &
+     &         (istep_pvr, time, geofem, jacs, nod_fld, pvr)
+!
+      use cal_pvr_modelview_mat
+      use write_PVR_image
+!
+      integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
+      type(mesh_data), intent(in) :: geofem
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_type), intent(in) :: jacs
+!
+      type(volume_rendering_module), intent(inout) :: pvr
+!
+      integer(kind = kint) :: i_pvr, ist_rdr
+      integer(kind = kint) :: i_img, ist_img, ied_img
+!
+!
+      if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
+      do i_pvr = 1, pvr%num_pvr
+        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+     &                                 .ne. IFLAG_NO_MOVIE) cycle
+!
+        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
+        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        call each_PVR_rendering                                         &
+     &     (istep_pvr, time, geofem, jacs, nod_fld,                     &
+     &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
+     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+!
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
+      do i_pvr = 1, pvr%num_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+     &                                 .ne. IFLAG_NO_MOVIE) cycle
+        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
+     &                                 .eq. iflag_QUILT_BMP) cycle
+!
+        ied_img = pvr%istack_pvr_images(i_pvr  )
+        do i_img = ist_img, ied_img
+          call sel_write_pvr_image_file(istep_pvr, pvr%pvr_rgb(i_img))
+        end do
+      end do
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
+      do i_pvr = 1, pvr%num_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+     &                                 .ne. IFLAG_NO_MOVIE) cycle
+        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
+     &                                 .ne. iflag_QUILT_BMP) cycle
+!
+        ied_img = pvr%istack_pvr_images(i_pvr  )
+        do i_img = ist_img, ied_img
+          call sel_write_pvr_image_file(istep_pvr, pvr%pvr_rgb(i_img))
+        end do
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
+!
+!      generate snapshot movie images
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
+      do i_pvr = 1, pvr%num_pvr
+        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+     &                                 .eq. IFLAG_NO_MOVIE) cycle
+!
+        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
+        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        call each_PVR_rendering_w_rot(istep_pvr, time, geofem, jacs,    &
+     &      nod_fld, pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),        &
+     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+!
+      end subroutine anaglyph_PVR_visualize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
