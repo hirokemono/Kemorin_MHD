@@ -7,9 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine count_num_rendering_and_images(num_pvr, pvr_param,   &
-!!     &          num_pvr_rendering, num_pvr_images, istack_pvr_images)
-!!      subroutine count_num_anaglyph_and_images                        &
-!!     &         (num_pvr, num_pvr_rendering, num_pvr_images)
+!!     &          num_pvr_images, istack_pvr_images)
 !!      subroutine set_rendering_and_image_pes                          &
 !!     &         (num_pe, num_pvr, pvr_param, pvr_ctl,                  &
 !!     &          num_pvr_images, istack_pvr_images, pvr_rgb)
@@ -17,7 +15,6 @@
 !!     &         (num_pe, num_pvr, pvr_ctl, pvr_rgb)
 !!        integer, intent(in) :: num_pe
 !!        integer(kind = kint), intent(in) :: num_pvr
-!!        integer(kind = kint), intent(in) :: num_pvr_rendering
 !!        integer(kind = kint), intent(in) :: num_pvr_images
 !!        type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
@@ -47,14 +44,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_num_rendering_and_images(num_pvr, pvr_param,     &
-     &          num_pvr_rendering, num_pvr_images, istack_pvr_images)
+     &          num_pvr_images, istack_pvr_images)
 !
       integer(kind = kint), intent(in) :: num_pvr
       type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
 !
       integer(kind = kint), intent(inout)                               &
      &              :: istack_pvr_images(0:num_pvr)
-      integer(kind = kint), intent(inout) :: num_pvr_rendering
       integer(kind = kint), intent(inout) :: num_pvr_images
 !
       integer(kind = kint) :: i_pvr
@@ -72,36 +68,13 @@
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
         end if
       end do
-      num_pvr_rendering = istack_pvr_images(num_pvr)
       num_pvr_images =    istack_pvr_images(num_pvr)
 !
       if(iflag_debug .eq. 0) return
       write(*,*) 'num_pvr',           num_pvr
-      write(*,*) 'num_pvr_rendering', num_pvr_rendering
       write(*,*) 'num_pvr_images',    num_pvr_images
 !
       end subroutine count_num_rendering_and_images
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_num_anaglyph_and_images                          &
-     &         (num_pvr, num_pvr_rendering, num_pvr_images)
-!
-      integer(kind = kint), intent(in) :: num_pvr
-!
-      integer(kind = kint), intent(inout) :: num_pvr_rendering
-      integer(kind = kint), intent(inout) :: num_pvr_images
-!
-!
-      num_pvr_rendering = 2*num_pvr
-      num_pvr_images =    num_pvr
-!
-      if(iflag_debug .eq. 0) return
-      write(*,*) 'num_pvr',           num_pvr
-      write(*,*) 'num_pvr_rendering', num_pvr_rendering
-      write(*,*) 'num_pvr_images',    num_pvr_images
-!
-      end subroutine count_num_anaglyph_and_images
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

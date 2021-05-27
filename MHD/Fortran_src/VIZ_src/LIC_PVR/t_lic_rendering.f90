@@ -200,9 +200,8 @@
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
-     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
-     &    lic%pvr%istack_pvr_images)
-      call alloc_pvr_images(lic%pvr)
+     &    num_img, lic%pvr%istack_pvr_images)
+      call alloc_pvr_images(num_img, num_img, lic%pvr)
 !
       call set_rendering_and_image_pes(nprocs,                          &
      &    lic%pvr%num_pvr, lic%pvr%pvr_param, lic_ctls%pvr_ctl_type,    &
@@ -282,9 +281,8 @@
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%lic_param, lic%pvr%pvr_param, lic%flag_each_repart)
 !
-      call count_num_anaglyph_and_images(lic%pvr%num_pvr,               &
-     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
-      call alloc_pvr_images(lic%pvr)
+      call alloc_pvr_images                                             &
+     &   (lic%pvr%num_pvr, (2*lic%pvr%num_pvr), lic%pvr)
 !
       call set_anaglyph_rendering_pes(nprocs, lic%pvr%num_pvr,          &
      &    lic_ctls%pvr_ctl_type, lic%pvr%pvr_rgb)

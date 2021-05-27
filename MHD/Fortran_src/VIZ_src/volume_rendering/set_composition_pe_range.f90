@@ -206,19 +206,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_maxpe_composit_tmp(num_pe, num_pvr, pvr_ctl,       &
-     &          num_pvr_rendering, istack_pvr_images,                   &
-     &          maxpe_composit_tmp)
+     &          num_pvr_images, istack_pvr_images, maxpe_composit_tmp)
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: num_pvr
       integer(kind = kint), intent(in)                                  &
      &              :: istack_pvr_images(0:num_pvr)
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
-!
-      integer(kind = kint), intent(in) :: num_pvr_rendering
+      integer(kind = kint), intent(in) :: num_pvr_images
 !
       integer(kind = kint), intent(inout)                               &
-     &              :: maxpe_composit_tmp(num_pvr_rendering)
+     &              :: maxpe_composit_tmp(num_pvr_images)
 !
       integer(kind = kint) :: i_pvr, nmax
       integer(kind = kint) :: i_img, ist_img, num_img
