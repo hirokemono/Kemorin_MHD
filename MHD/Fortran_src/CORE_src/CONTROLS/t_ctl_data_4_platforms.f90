@@ -44,7 +44,7 @@
 !!      spectr_field_file_prefix    'sph_spectr/spectr'
 !!
 !!      rayleigh_spectr_dir            'Checkpoints/'
-!!      rayleigh_field_dir             'Spherical3D/'
+!!      rayleigh_field_dir             'Spherical_3D/'
 !!
 !!      mesh_file_fmt_ctl           'ascii'
 !!      restart_file_fmt_ctl        'ascii'

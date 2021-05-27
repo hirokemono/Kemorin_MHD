@@ -3,7 +3,7 @@ begin rayleigh_visualizer
     num_subdomain_ctl           4
     num_smp_ctl                 2
 !
-    rayleigh_field_dir             'Spherical3D/'
+    rayleigh_field_dir             'Spherical_3D/'
   end data_files_def
 !
   begin phys_values_ctl

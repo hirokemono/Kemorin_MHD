@@ -7,8 +7,7 @@
 !>@brief  Main loop of visualization of Rayleigh data
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_viz_rayleigh(init_d, FEM_Rayleigh)
-!!        type(time_data), intent(in) :: init_d
+!!      subroutine FEM_initialize_viz_rayleigh(FEM_Rayleigh)
 !!        type(FEM_mesh_field_rayleigh_viz), intent(inout)              &
 !!     &                                      :: FEM_Rayleigh
 !!      subroutine FEM_analyze_viz_rayleigh                             &
@@ -62,7 +61,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_viz_rayleigh(init_d, FEM_Rayleigh)
+      subroutine FEM_initialize_viz_rayleigh(FEM_Rayleigh)
 !
       use const_fem_nodes_4_rayleigh
       use const_FEM_mesh_sph_mhd
@@ -72,23 +71,17 @@
       use mpi_load_mesh_data
       use nod_phys_send_recv
 !
-      type(time_data), intent(in) :: init_d
       type(FEM_mesh_field_rayleigh_viz), intent(inout)                  &
      &                                      :: FEM_Rayleigh
 !
-      character(len=kchara) :: file_name
+      character(len=kchara), parameter :: file_name = 'grid_info'
 !
 !   --------------------------------
 !       setup Rayleigh information
 !   --------------------------------
-!
-      file_name = 'Spherical_3D/00007000_grid'
-      write(file_name,'(a,a1,i8.8,a5)')                                 &
-     &             trim(FEM_Rayleigh%iphys_ftb%field_dir), '/',         &
-     &             init_d%i_time_step, '_grid'
-      call read_rayleigh_field_param                                    &
+      call read_rayleigh_grid_info                                      &
      &   (file_name, FEM_Rayleigh%rayleigh_rtp)
-      call bcast_rayleigh_field_param(FEM_Rayleigh%rayleigh_rtp)
+      call bcast_rayleigh_grid_info(FEM_Rayleigh%rayleigh_rtp)
       call set_rayleigh_parallel_param(FEM_Rayleigh%rayleigh_rtp)
 !
       call fem_nodes_4_rayleigh_file(FEM_Rayleigh%rayleigh_rtp,         &

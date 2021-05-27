@@ -59,7 +59,7 @@
 !
       rayleigh_rtp%radius_gl(1:rayleigh_rtp%nri_gl)                     &
      &      = radius(1:rayleigh_rtp%nri_gl)
-      rayleigh_rtp%cos_theta(1:rayleigh_rtp%nth_gl)                     &
+      rayleigh_rtp%costheta_gl(1:rayleigh_rtp%nth_gl)                   &
      &      = cos_theta(1:rayleigh_rtp%nth_gl)
       rayleigh_rtp%theta_gl(1:rayleigh_rtp%nth_gl)                      &
      &      = acos(cos_theta(1:rayleigh_rtp%nth_gl))
@@ -113,10 +113,10 @@
 !
         read(13,*) rayleigh_rtp%ltr, rayleigh_rtp%nth_gl
         allocate(rayleigh_rtp%theta_gl(rayleigh_rtp%nth_gl))
-        allocate(rayleigh_rtp%cos_theta(rayleigh_rtp%nth_gl))
+        allocate(rayleigh_rtp%costheta_gl(rayleigh_rtp%nth_gl))
 !
         do lt = 1, rayleigh_rtp%nth_gl
-          read(13,*) itmp, rayleigh_rtp%cos_theta(lt),                  &
+          read(13,*) itmp, rayleigh_rtp%costheta_gl(lt),                &
      &                     rayleigh_rtp%theta_gl(lt)
         end do
         close(13)
@@ -140,13 +140,13 @@
 !
       if(my_rank .ne. 0) then
         allocate(rayleigh_rtp%radius_gl(rayleigh_rtp%nri_gl))
-        allocate(rayleigh_rtp%cos_theta(rayleigh_rtp%nth_gl))
+        allocate(rayleigh_rtp%costheta_gl(rayleigh_rtp%nth_gl))
         allocate(rayleigh_rtp%theta_gl(rayleigh_rtp%nth_gl))
       end if
       call calypso_mpi_bcast_real                                       &
      &   (rayleigh_rtp%radius_gl, cast_long(rayleigh_rtp%nri_gl), 0)
       call calypso_mpi_bcast_real                                       &
-     &   (rayleigh_rtp%cos_theta, cast_long(rayleigh_rtp%nth_gl), 0)
+     &   (rayleigh_rtp%costheta_gl, cast_long(rayleigh_rtp%nth_gl), 0)
       call calypso_mpi_bcast_real                                       &
      &   (rayleigh_rtp%theta_gl, cast_long(rayleigh_rtp%nth_gl), 0)
 !
@@ -200,7 +200,7 @@
      &                      'lt, cos_theta, theta'
         do lt = 1, rayleigh_rtp%nth_gl
           write(12,'(i16,1p2e25.15)')                                   &
-     &       lt, rayleigh_rtp%cos_theta(lt), rayleigh_rtp%theta_gl(lt)
+     &      lt, rayleigh_rtp%costheta_gl(lt), rayleigh_rtp%theta_gl(lt)
         end do
         close(12)
         deallocate(r_rank, h_rank)

@@ -71,7 +71,7 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz_rayleigh'
-      call FEM_initialize_viz_rayleigh(t_VIZ_r%init_d, FEM_Rayleigh1)
+      call FEM_initialize_viz_rayleigh(FEM_Rayleigh1)
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----
