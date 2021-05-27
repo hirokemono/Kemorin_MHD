@@ -217,7 +217,7 @@
      &    pvr%istack_pvr_render, pvr%istack_pvr_images)
       call alloc_pvr_images(pvr)
 !
-      call s_num_rendering_and_images                                   &
+      call set_rendering_and_image_pes                                  &
      &   (nprocs, pvr%num_pvr, pvr%pvr_param, pvr_ctls%pvr_ctl_type,    &
      &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
      &    pvr%istack_pvr_render,  pvr%istack_pvr_images, pvr%pvr_rgb)
@@ -295,12 +295,12 @@
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
-      call count_num_rendering_and_images(pvr%num_pvr, pvr%pvr_param,   &
+      call count_num_anaglyph_and_images(pvr%num_pvr, pvr%pvr_param,    &
      &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
      &    pvr%istack_pvr_render, pvr%istack_pvr_images)
       call alloc_pvr_images(pvr)
 !
-      call s_num_rendering_and_images                                   &
+      call set_anaglyph_rendering_pes                                   &
      &   (nprocs, pvr%num_pvr, pvr%pvr_param, pvr_ctls%pvr_ctl_type,    &
      &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
      &    pvr%istack_pvr_render,  pvr%istack_pvr_images, pvr%pvr_rgb)

@@ -9,7 +9,13 @@
 !!      subroutine count_num_rendering_and_images(num_pvr, pvr_param,   &
 !!     &          istack_pvr_render, istack_pvr_images,                 &
 !!     &          num_pvr_rendering, num_pvr_images)
-!!      subroutine s_num_rendering_and_images(num_pe, num_pvr,          &
+!!      subroutine count_num_anaglyph_and_images(num_pvr, pvr_param,    &
+!!     &          num_pvr_rendering, num_pvr_images,                    &
+!!     &          istack_pvr_render, istack_pvr_images)
+!!      subroutine set_rendering_and_image_pes(num_pe, num_pvr,         &
+!!     &          pvr_param, pvr_ctl, num_pvr_rendering, num_pvr_images,&
+!!     &          istack_pvr_render, istack_pvr_images, pvr_rgb)
+!!      subroutine set_anaglyph_rendering_pes(num_pe, num_pvr,          &
 !!     &          pvr_param, pvr_ctl, num_pvr_rendering, num_pvr_images,&
 !!     &          istack_pvr_render, istack_pvr_images, pvr_rgb)
 !!        integer, intent(in) :: num_pe
@@ -95,9 +101,60 @@
       end subroutine count_num_rendering_and_images
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine count_num_anaglyph_and_images(num_pvr, pvr_param,      &
+     &          num_pvr_rendering, num_pvr_images,                      &
+     &          istack_pvr_render, istack_pvr_images)
+!
+      integer(kind = kint), intent(in) :: num_pvr
+      type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
+!
+      integer(kind = kint), intent(inout)                               &
+     &              :: istack_pvr_render(0:num_pvr)
+      integer(kind = kint), intent(inout)                               &
+     &              :: istack_pvr_images(0:num_pvr)
+      integer(kind = kint), intent(inout) :: num_pvr_rendering
+      integer(kind = kint), intent(inout) :: num_pvr_images
+!
+      integer(kind = kint) :: i_pvr
+!
+!
+      istack_pvr_render(0) = 0
+      istack_pvr_images(0) = 0
+      do i_pvr = 1, num_pvr
+        if(pvr_param(i_pvr)%view%iflag_stereo_pvr .gt. 0) then
+          istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1) + 2
+          if(pvr_param(i_pvr)%view%iflag_anaglyph .gt. 0) then
+            istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
+          else
+            istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
+          end if
+        else if(pvr_param(i_pvr)%view%flag_quilt) then
+          istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1)         &
+     &                            + pvr_param(i_pvr)%view%n_row         &
+     &                             * pvr_param(i_pvr)%view%n_column
+          istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1)         &
+     &                            + pvr_param(i_pvr)%view%n_row         &
+     &                             * pvr_param(i_pvr)%view%n_column
+        else
+          istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1) + 1
+          istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
+        end if
+      end do
+      num_pvr_rendering = istack_pvr_render(num_pvr)
+      num_pvr_images =    istack_pvr_images(num_pvr)
+!
+      if(iflag_debug .eq. 0) return
+      write(*,*) 'num_pvr',           num_pvr
+      write(*,*) 'num_pvr_rendering', num_pvr_rendering
+      write(*,*) 'num_pvr_images',    num_pvr_images
+!
+      end subroutine count_num_anaglyph_and_images
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_num_rendering_and_images(num_pe, num_pvr,            &
+      subroutine set_rendering_and_image_pes(num_pe, num_pvr,           &
      &          pvr_param, pvr_ctl, num_pvr_rendering, num_pvr_images,  &
      &          istack_pvr_render, istack_pvr_images, pvr_rgb)
 !
@@ -130,8 +187,6 @@
 !
 !      if(iflag_debug .eq. 0) return
       if(my_rank .gt. 0) return
-!      write(*,*) 'istack_pvr_render', istack_pvr_render
-!      write(*,*) 'istack_pvr_images', istack_pvr_images
       write(*,*) 'ID, File, ouput_PE, end_composition_PE, Num_PE'
       do i_pvr = 1, num_pvr_images
         write(*,*) i_pvr, trim(pvr_rgb(i_pvr)%pvr_prefix), '  ',        &
@@ -141,7 +196,53 @@
      &                                 trim(pvr_rgb(i_pvr)%pvr_prefix)
       end do
 !
-      end subroutine s_num_rendering_and_images
+      end subroutine set_rendering_and_image_pes
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_anaglyph_rendering_pes(num_pe, num_pvr,            &
+     &          pvr_param, pvr_ctl, num_pvr_rendering, num_pvr_images,  &
+     &          istack_pvr_render, istack_pvr_images, pvr_rgb)
+!
+      use set_composition_pe_range
+!
+      integer, intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: num_pvr
+      integer(kind = kint), intent(in) :: num_pvr_rendering
+      integer(kind = kint), intent(in) :: num_pvr_images
+!
+      type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
+!
+      integer(kind = kint), intent(in) :: istack_pvr_render(0:num_pvr)
+      integer(kind = kint), intent(in) :: istack_pvr_images(0:num_pvr)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
+!
+      integer(kind = kint) :: i_pvr, ist
+!
+!
+      call set_anaglyph_composite_pe_range(num_pe, num_pvr,             &
+     &    pvr_param, pvr_ctl,  num_pvr_rendering, num_pvr_images,       &
+     &    istack_pvr_render, istack_pvr_images, pvr_rgb)
+!
+      do i_pvr = 1, num_pvr
+        ist = istack_pvr_images(i_pvr-1)
+        call set_pvr_file_parameters                                    &
+     &     (pvr_ctl(i_pvr), pvr_param(i_pvr)%view, pvr_rgb(ist+1))
+      end do
+!
+!      if(iflag_debug .eq. 0) return
+      if(my_rank .gt. 0) return
+      write(*,*) 'ID, File, ouput_PE, end_composition_PE, Num_PE'
+      do i_pvr = 1, num_pvr_images
+        write(*,*) i_pvr, trim(pvr_rgb(i_pvr)%pvr_prefix), '  ',        &
+     &             pvr_rgb(i_pvr)%irank_image_file, &
+     &                               pvr_rgb(i_pvr)%irank_end_composit, &
+     &                                 pvr_rgb(i_pvr)%npe_img_composit, &
+     &                                 trim(pvr_rgb(i_pvr)%pvr_prefix)
+      end do
+!
+      end subroutine set_anaglyph_rendering_pes
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
