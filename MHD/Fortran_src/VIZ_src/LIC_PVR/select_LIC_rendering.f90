@@ -101,7 +101,7 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_lic, ist_rdr, ist_img
+      integer(kind = kint) :: i_lic, ist_rdr, ist_img, num_img
 !
 !
       call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
@@ -109,10 +109,11 @@
 !
       do i_lic = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        call each_PVR_initialize(i_lic,                                 &
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic) - ist_img
+        call each_PVR_initialize(i_lic, num_img,                        &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(ist_img), pvr%pvr_param(i_lic),                 &
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
      &      pvr%pvr_proj(ist_rdr))
       end do
 !
@@ -383,7 +384,7 @@
      &                          lic_param(i_lic), repart_data)
 !
         if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
-        call each_PVR_initialize(i_lic,                                 &
+        call each_PVR_initialize(i_lic, num_img,                        &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
      &      pvr%pvr_proj(ist_rdr))

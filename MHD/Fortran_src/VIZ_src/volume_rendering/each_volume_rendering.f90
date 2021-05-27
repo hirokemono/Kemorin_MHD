@@ -8,8 +8,22 @@
 !!
 !!@verbatim
 !!      subroutine init_each_PVR_image(pvr_param, pvr_rgb)
-!!      subroutine each_PVR_initialize(i_pvr, mesh, group, pvr_rgb,     &
-!!     &                               pvr_param, pvr_proj)
+!!      subroutine each_PVR_initialize(i_pvr, num_img, mesh, group,     &
+!!     &                               pvr_rgb, pvr_param, pvr_proj)
+!!        integer(kind = kint), intent(in) :: i_pvr, num_img
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) :: group
+!!        type(pvr_image_type), intent(in) :: pvr_rgb(num_img)
+!!        type(PVR_control_params), intent(inout) :: pvr_param
+!!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
+!!      subroutine each_anaglyph_PVR_init(i_pvr, mesh, group, pvr_rgb,  &
+!!     &                                  pvr_param, pvr_proj)
+!!        integer(kind = kint), intent(in) :: i_pvr, num_img
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) :: group
+!!        type(pvr_image_type), intent(in) :: pvr_rgb
+!!        type(PVR_control_params), intent(inout) :: pvr_param
+!!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
 !!      subroutine dealloc_PVR_initialize(num_proj, pvr_param, pvr_proj)
 !!        integer(kind = kint), intent(in) :: num_proj
 !!        type(PVR_control_params), intent(inout) :: pvr_param
@@ -90,8 +104,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_initialize(i_pvr, mesh, group, pvr_rgb,       &
-     &                               pvr_param, pvr_proj)
+      subroutine each_PVR_initialize(i_pvr, num_img, mesh, group,       &
+     &                               pvr_rgb, pvr_param, pvr_proj)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
@@ -100,14 +114,15 @@
       use find_pvr_surf_domain
       use set_iflag_for_used_ele
 !
-      integer(kind = kint), intent(in) :: i_pvr
+      integer(kind = kint), intent(in) :: i_pvr, num_img
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
-      type(pvr_image_type), intent(in) :: pvr_rgb(2)
+      type(pvr_image_type), intent(in) :: pvr_rgb(num_img)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
 !
+      integer(kind = kint) :: i_img
 !
       call alloc_iflag_pvr_used_ele(mesh%ele, pvr_param%draw_param)
       call s_set_iflag_for_used_ele(mesh%ele, group%ele_grp,            &
@@ -115,14 +130,11 @@
      &    pvr_param%area_def%id_ele_grp_area_pvr,                       &
      &    pvr_param%draw_param%iflag_used_ele)
 !
-      call find_each_pvr_surf_domain                                    &
-     &   (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,       &
-     &    pvr_param%draw_param, pvr_proj(1)%bound)
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
+      do i_img = 1, num_img
         call find_each_pvr_surf_domain                                  &
      &     (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,     &
-     &      pvr_param%draw_param, pvr_proj(2)%bound)
-      end if
+     &      pvr_param%draw_param, pvr_proj(i_img)%bound)
+      end do
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
       call check_pvr_parameters                                         &
@@ -130,6 +142,10 @@
 !
       call set_pixel_on_pvr_screen(pvr_param%view, pvr_param%pixel)
 !
+      do i_img = 1, num_img
+        pvr_proj(i_img)%start_fix%irank_composit_ref                    &
+     &                                   = mod(i_pvr-1,nprocs)
+      end do
 !
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
         pvr_proj(1)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
@@ -142,35 +158,24 @@
         call set_pvr_projection_right_mat                               &
      &     (i_pvr, pvr_param%view, pvr_proj(2)%projection_mat)
       else
-        pvr_proj(1)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
-!
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
         call set_pvr_projection_matrix                                  &
      &     (i_pvr, pvr_param%view, pvr_proj(1)%projection_mat)
 !        call set_pvr_orthogonal_params(i_pvr, pvr_param%view)
       end if
 !
-      call alloc_projected_position                                     &
-     &   (mesh%node, mesh%surf, pvr_proj(1)%screen)
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
+      do i_img = 1, num_img
         call alloc_projected_position                                   &
-     &     (mesh%node, mesh%surf, pvr_proj(2)%screen)
-      end if
+     &     (mesh%node, mesh%surf, pvr_proj(i_img)%screen)
+      end do
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call cal_pvr_modelview_matrix                                     &
      &   (izero, pvr_param%outline, pvr_param%view, pvr_param%color)
-      call set_fixed_view_and_image                                     &
-     &   (mesh, group, pvr_param, pvr_rgb(1), pvr_proj(1))
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        if(pvr_param%view%iflag_anaglyph .gt. 0) then
-          call set_fixed_view_and_image                                 &
-     &     (mesh, group, pvr_param, pvr_rgb(1), pvr_proj(2))
-        else
-          call set_fixed_view_and_image                                 &
-     &     (mesh, group, pvr_param, pvr_rgb(2), pvr_proj(2))
-        end if
-      end if
+      do i_img = 1, num_img
+        call set_fixed_view_and_image                                   &
+     &     (mesh, group, pvr_param, pvr_rgb(i_img), pvr_proj(i_img))
+      end do
 !
       end subroutine each_PVR_initialize
 !
@@ -189,7 +194,7 @@
       integer(kind = kint), intent(in) :: i_pvr
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
-      type(pvr_image_type), intent(in) :: pvr_rgb(2)
+      type(pvr_image_type), intent(in) :: pvr_rgb
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
@@ -247,16 +252,9 @@
       call cal_pvr_modelview_matrix                                     &
      &   (izero, pvr_param%outline, pvr_param%view, pvr_param%color)
       call set_fixed_view_and_image                                     &
-     &   (mesh, group, pvr_param, pvr_rgb(1), pvr_proj(1))
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        if(pvr_param%view%iflag_anaglyph .gt. 0) then
-          call set_fixed_view_and_image                                 &
-     &     (mesh, group, pvr_param, pvr_rgb(1), pvr_proj(2))
-        else
-          call set_fixed_view_and_image                                 &
-     &     (mesh, group, pvr_param, pvr_rgb(2), pvr_proj(2))
-        end if
-      end if
+     &   (mesh, group, pvr_param, pvr_rgb, pvr_proj(1))
+      call set_fixed_view_and_image                                     &
+     &   (mesh, group, pvr_param, pvr_rgb, pvr_proj(2))
 !
       end subroutine each_anaglyph_PVR_init
 !
