@@ -474,13 +474,10 @@
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
 !
-      integer(kind = kint) :: i_lic, ist_rdr
-      integer(kind = kint) :: i_img, ist_img, ied_img
+      integer(kind = kint) :: i_lic
 !
 !
       do i_lic = 1, pvr%num_pvr
-        ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
         call LIC_init_each_mesh(geofem, next_tbl, repart_p,             &
      &                          lic_param(i_lic), repart_data)
@@ -488,8 +485,8 @@
         if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
         call each_anaglyph_PVR_init(i_lic,                              &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(ist_img), pvr%pvr_param(i_lic),                 &
-     &      pvr%pvr_proj(ist_rdr))
+     &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
+     &      pvr%pvr_proj(2*i_lic-1))
 !
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
@@ -504,47 +501,28 @@
           call s_each_LIC_anaglyph                                      &
      &       (istep_lic, time, repart_data%viz_fem,                     &
      &        repart_data%field_lic, lic_param(i_lic),                  &
-     &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),              &
-     &        pvr%pvr_rgb(ist_img))
+     &        pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),            &
+     &        pvr%pvr_rgb(i_lic))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         else
           call anaglyph_lic_rendering_w_rot(istep_lic, time,            &
-     &        repart_data%viz_fem, repart_data%field_lic, &
-     &        lic_param(i_lic), pvr%pvr_rgb(ist_img), &
-     &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr))
+     &        repart_data%viz_fem, repart_data%field_lic,               &
+     &        lic_param(i_lic), pvr%pvr_rgb(i_lic),                     &
+     &        pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1))
         end if
 !
         call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),         &
-     &                              pvr%pvr_proj(ist_rdr))
+     &                              pvr%pvr_proj(2*i_lic-1))
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
-     &                                 .eq. iflag_QUILT_BMP) cycle
 !
-        ied_img = pvr%istack_pvr_images(i_lic  )
-        do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
-        end do
-      end do
-!
-      do i_lic = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
-     &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
-     &                                 .ne. iflag_QUILT_BMP) cycle
-!
-        ied_img = pvr%istack_pvr_images(i_lic  )
-        do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
-        end do
+        call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_lic))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
