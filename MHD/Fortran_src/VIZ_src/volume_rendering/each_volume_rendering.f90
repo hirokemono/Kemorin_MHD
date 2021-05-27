@@ -21,7 +21,7 @@
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
-!!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !!      subroutine each_PVR_anaglyph(istep_pvr, time, geofem,           &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
@@ -227,8 +227,8 @@
       type(pvr_field_data), intent(in) :: field_pvr
 !
       type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !
       integer(kind = kint) :: i_img
 !
