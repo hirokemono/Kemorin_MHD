@@ -159,8 +159,8 @@
       call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,            &
      &    pvr_rgb%rgba_real_gl,  pvr_rgb%rgb_chara_gl)
 !
-      write(*,'(a,i6,a2)',ADVANCE='NO') 'Output from process ',        &
-     &          my_rank, ': '
+      write(*,*) trim(pvr_rgb%pvr_prefix), ' is written from process ', &
+     &          my_rank
       call sel_output_image_file(pvr_rgb%id_pvr_file_type,              &
      &    add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix),                &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
