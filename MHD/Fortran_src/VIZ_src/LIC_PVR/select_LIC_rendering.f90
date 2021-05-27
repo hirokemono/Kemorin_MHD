@@ -101,20 +101,19 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_lic, ist_rdr, ist_img, num_img
+      integer(kind = kint) :: i_lic, ist_img, num_img
 !
 !
       call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
      &                          repart_data)
 !
       do i_lic = 1, pvr%num_pvr
-        ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic) - ist_img
         call each_PVR_initialize(i_lic, num_img,                        &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_proj(ist_rdr))
+     &      pvr%pvr_proj(ist_img+1))
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -136,19 +135,17 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_lic, ist_rdr, ist_img
+      integer(kind = kint) :: i_lic
 !
 !
       call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
      &                          repart_data)
 !
       do i_lic = 1, pvr%num_pvr
-        ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         call each_anaglyph_PVR_init(i_lic,                              &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(ist_img), pvr%pvr_param(i_lic),                 &
-     &      pvr%pvr_proj(ist_rdr))
+     &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
+     &      pvr%pvr_proj(2*i_lic-1))
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -180,7 +177,7 @@
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
 !
-      integer(kind = kint) :: i_lic, ist_rdr
+      integer(kind = kint) :: i_lic
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
@@ -192,14 +189,13 @@
 !
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
-        ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic  )
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering', i_lic
         call s_each_LIC_rendering(istep_lic, time, num_img,             &
      &      repart_data%viz_fem, repart_data%field_lic,                 &
      &      lic_param(i_lic), pvr%pvr_param(i_lic),                     &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img+1))
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -239,14 +235,13 @@
         call set_LIC_each_field(geofem, nod_fld,                        &
      &      repart_p, lic_param(i_lic), repart_data, v_sol)
 !
-        ist_rdr = pvr%istack_pvr_render(i_lic-1)
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic) - ist_img
         write(*,*) 's_each_LIC_rendering_w_rot once', i_lic
         call s_each_LIC_rendering_w_rot(istep_lic, time, num_img,       &
      &      repart_data%viz_fem, repart_data%field_lic,                 &
      &      lic_param(i_lic), pvr%pvr_param(i_lic),                     &
-     &      pvr%pvr_proj(ist_rdr+1), pvr%pvr_rgb(ist_img+1))
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -349,12 +344,11 @@
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(vectors_4_solver), intent(inout) :: v_sol
 !
-      integer(kind = kint) :: i_lic, ist_rdr
+      integer(kind = kint) :: i_lic
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
       do i_lic = 1, pvr%num_pvr
-        ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic) - ist_img
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
@@ -365,7 +359,7 @@
         call each_PVR_initialize(i_lic, num_img,                        &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_proj(ist_rdr))
+     &      pvr%pvr_proj(ist_img+1))
 !
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
@@ -380,19 +374,19 @@
           call s_each_LIC_rendering                                     &
      &       (istep_lic, time, num_img, repart_data%viz_fem,            &
      &        repart_data%field_lic, lic_param(i_lic),                  &
-     &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),              &
+     &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),            &
      &        pvr%pvr_rgb(ist_img+1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         else
           call s_each_LIC_rendering_w_rot                               &
      &     (istep_lic, time, num_img, repart_data%viz_fem,              &
      &      repart_data%field_lic, lic_param(i_lic),                    &
-     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),                &
+     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
      &      pvr%pvr_rgb(ist_img+1))
         end if
 !
         call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),      &
-     &                                       pvr%pvr_proj(ist_rdr))
+     &                                       pvr%pvr_proj(ist_img+1))
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do

@@ -79,8 +79,6 @@
 !
 !>        Number of rendering for volume rendering
         integer(kind = kint) :: num_pvr_rendering = 0
-!>        Number of rendreing for volume rendering
-        integer(kind = kint), allocatable :: istack_pvr_render(:)
 !>        Structure for projection data
         type(PVR_projection_data), allocatable :: pvr_proj(:)
 !
@@ -180,7 +178,7 @@
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr, ist_rdr, ist_img, num_img
+      integer(kind = kint) :: i_pvr, ist_img, num_img
 !
 !
       pvr%num_pvr = pvr_ctls%num_pvr_ctl
@@ -214,24 +212,22 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
       call count_num_rendering_and_images(pvr%num_pvr, pvr%pvr_param,   &
      &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
-     &    pvr%istack_pvr_render, pvr%istack_pvr_images)
+     &    pvr%istack_pvr_images)
       call alloc_pvr_images(pvr)
 !
       call set_rendering_and_image_pes                                  &
      &   (nprocs, pvr%num_pvr, pvr%pvr_param, pvr_ctls%pvr_ctl_type,    &
-     &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
-     &    pvr%istack_pvr_render,  pvr%istack_pvr_images, pvr%pvr_rgb)
+     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       do i_pvr = 1, pvr%num_pvr
-        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call init_each_PVR_image(num_img, pvr%pvr_param(i_pvr),         &
      &                           pvr%pvr_rgb(ist_img+1))
         call each_PVR_initialize(i_pvr, num_img,                        &
      &      geofem%mesh, geofem%group, pvr%pvr_rgb(ist_img+1),          &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr))
+     &      pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_img+1))
       end do
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
@@ -300,7 +296,7 @@
       call alloc_pvr_images(pvr)
 !
       call set_anaglyph_rendering_pes(nprocs, pvr%num_pvr,              &
-     &    pvr%pvr_param, pvr_ctls%pvr_ctl_type, pvr%pvr_rgb)
+     &    pvr_ctls%pvr_ctl_type, pvr%pvr_rgb)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       do i_pvr = 1, pvr%num_pvr
@@ -340,7 +336,7 @@
 !
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr, ist_rdr
+      integer(kind = kint) :: i_pvr
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
@@ -351,13 +347,12 @@
         if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
-        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call each_PVR_rendering                                         &
      &     (istep_pvr, time, num_img, geofem, jacs, nod_fld,            &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img+1))
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -398,13 +393,12 @@
         if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
 !
-        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr-1) - ist_img
         call each_PVR_rendering_w_rot                                   &
      &     (istep_pvr, time, num_img, geofem, jacs,                     &
      &      nod_fld, pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),        &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img+1))
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -478,9 +472,7 @@
       type(volume_rendering_module), intent(inout) :: pvr
 !
 !
-      allocate(pvr%istack_pvr_render(0:pvr%num_pvr))
       allocate(pvr%istack_pvr_images(0:pvr%num_pvr))
-      pvr%istack_pvr_render = 0
       pvr%istack_pvr_images = 0
 !
       allocate(pvr%pvr_param(pvr%num_pvr))
@@ -547,8 +539,6 @@
         call flush_rendering_4_fixed_view(pvr%pvr_proj(i_pvr))
       end do
       deallocate(pvr%pvr_proj)
-!
-      deallocate(pvr%istack_pvr_render)
       deallocate(pvr%istack_pvr_images)
 !
       end subroutine dealloc_pvr_and_lic_data
