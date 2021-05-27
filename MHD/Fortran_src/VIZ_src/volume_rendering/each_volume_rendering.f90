@@ -257,6 +257,65 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine each_PVR_anaglyph                                      &
+     &         (istep_pvr, time, geofem, jacs, nod_fld,                 &
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+!
+      use cal_pvr_modelview_mat
+!
+      integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
+!
+      type(mesh_data), intent(in) :: geofem
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_type), intent(in) :: jacs
+!
+      type(pvr_field_data), intent(inout) :: field_pvr
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+!
+!
+      if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+      call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
+     &    jacs%g_FEM, jacs%jac_3d, nod_fld,                             &
+     &    pvr_param%field_def, field_pvr)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
+      call set_default_pvr_data_params                                  &
+     &   (pvr_param%outline, pvr_param%color)
+!
+      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
+        if(pvr_param%view%iflag_anaglyph .gt. 0) then
+!
+!   Left eye
+          call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,  &
+     &        field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
+          call store_left_eye_image(pvr_rgb(1))
+!
+!   right eye
+          call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,  &
+     &        field_pvr, pvr_param, pvr_proj(2), pvr_rgb(1))
+          call add_left_eye_image(pvr_rgb(1))
+        else
+!
+!   Left eye
+          call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,  &
+     &        field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
+!
+!   right eye
+          call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,  &
+     &        field_pvr, pvr_param, pvr_proj(2), pvr_rgb(2))
+        end if
+      else
+        call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,    &
+     &      field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
+      end if
+!
+      end subroutine each_PVR_anaglyph
+!
+!  ---------------------------------------------------------------------
+!
       subroutine each_PVR_rendering_w_rot                               &
      &         (istep_pvr, time, geofem, jacs, nod_fld,                 &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
