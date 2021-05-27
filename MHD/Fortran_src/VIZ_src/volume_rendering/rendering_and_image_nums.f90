@@ -71,11 +71,7 @@
       do i_pvr = 1, num_pvr
         if(pvr_param(i_pvr)%view%iflag_stereo_pvr .gt. 0) then
           istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1) + 2
-          if(pvr_param(i_pvr)%view%iflag_anaglyph .gt. 0) then
-            istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
-          else
-            istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
-          end if
+          istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
         else if(pvr_param(i_pvr)%view%flag_quilt) then
           istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1)         &
      &                            + pvr_param(i_pvr)%view%n_row         &
