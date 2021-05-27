@@ -168,7 +168,7 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_lic, ist_img
+      integer(kind = kint) :: i_lic, ist_img, num_img
 !
 !
       lic%pvr%num_pvr = lic_ctls%num_lic_ctl
@@ -211,9 +211,10 @@
      &    lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call init_each_PVR_image(lic%pvr%pvr_param(i_lic),              &
-     &                           lic%pvr%pvr_rgb(ist_img))
+        ist_img = lic%pvr%istack_pvr_images(i_lic-1)
+        num_img = lic%pvr%istack_pvr_images(i_lic  ) - ist_img
+        call init_each_PVR_image(num_img, lic%pvr%pvr_param(i_lic),     &
+     &                           lic%pvr%pvr_rgb(ist_img+1))
       end do
 !
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
@@ -295,9 +296,8 @@
      &    lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call init_each_PVR_image(lic%pvr%pvr_param(i_lic),              &
-     &                           lic%pvr%pvr_rgb(ist_img))
+        call init_each_PVR_image(ione, lic%pvr%pvr_param(i_lic),        &
+     &                           lic%pvr%pvr_rgb(i_lic))
       end do
 !
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
