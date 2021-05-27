@@ -42,7 +42,7 @@
 !
       implicit none
 !
-      private :: set_pvr_file_parameters
+      private :: set_each_pvr_file_param, set_stereo_pvr_file_param
       private :: set_pvr_file_prefix, set_pvr_file_control
 !
 !  ---------------------------------------------------------------------
@@ -180,9 +180,12 @@
      &    istack_pvr_render, istack_pvr_images, pvr_rgb)
 !
       do i_pvr = 1, num_pvr
-        ist = istack_pvr_images(i_pvr-1)
-        call set_pvr_file_parameters                                    &
-     &     (pvr_ctl(i_pvr), pvr_param(i_pvr)%view, pvr_rgb(ist+1))
+        ist = istack_pvr_images(i_pvr-1) + 1
+        if(pvr_param(i_pvr)%view%iflag_stereo_pvr .gt. 0) then
+          call set_stereo_pvr_file_param(pvr_ctl(i_pvr), pvr_rgb(ist))
+        else
+          call set_each_pvr_file_param(pvr_ctl(i_pvr), pvr_rgb(ist))
+        end if
       end do
 !
 !      if(iflag_debug .eq. 0) return
@@ -218,7 +221,7 @@
       integer(kind = kint), intent(in) :: istack_pvr_images(0:num_pvr)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
-      integer(kind = kint) :: i_pvr, ist
+      integer(kind = kint) :: i_pvr
 !
 !
       call set_anaglyph_composite_pe_range(num_pe, num_pvr,             &
@@ -226,9 +229,7 @@
      &    istack_pvr_render, istack_pvr_images, pvr_rgb)
 !
       do i_pvr = 1, num_pvr
-        ist = istack_pvr_images(i_pvr-1)
-        call set_pvr_file_parameters                                    &
-     &     (pvr_ctl(i_pvr), pvr_param(i_pvr)%view, pvr_rgb(ist+1))
+        call set_each_pvr_file_param(pvr_ctl(i_pvr), pvr_rgb(i_pvr))
       end do
 !
 !      if(iflag_debug .eq. 0) return
@@ -247,56 +248,64 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_file_parameters(pvr_ctl, view_param, pvr_rgb)
+      subroutine set_each_pvr_file_param(pvr_ctl, pvr_rgb)
 !
       use skip_comment_f
       use set_control_each_pvr
       use set_parallel_file_name
 !
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
-      type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
+!
+      call set_pvr_file_control(pvr_ctl,                                &
+     &    pvr_rgb%iflag_monitoring, pvr_rgb%id_pvr_file_type,           &
+     &    pvr_rgb%id_pvr_transparent)
+      pvr_rgb%pvr_prefix = set_pvr_file_prefix(pvr_ctl)
+!
+      end subroutine set_each_pvr_file_param
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_stereo_pvr_file_param(pvr_ctl, pvr_rgb)
+!
+      use skip_comment_f
+      use set_control_each_pvr
+      use set_parallel_file_name
+!
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
       character(len=kchara) :: pvr_prefix
 !
 !
-      call set_pvr_file_prefix(pvr_ctl, pvr_prefix)
+      pvr_prefix = set_pvr_file_prefix(pvr_ctl)
       call set_pvr_file_control(pvr_ctl,                                &
      &    pvr_rgb(1)%iflag_monitoring, pvr_rgb(1)%id_pvr_file_type,     &
      &    pvr_rgb(1)%id_pvr_transparent)
-      if(view_param%iflag_stereo_pvr .gt. 0) then
-        if(view_param%iflag_anaglyph .gt. 0) then
-          pvr_rgb(1)%pvr_prefix = pvr_prefix
-        else
-          pvr_rgb(1)%pvr_prefix = add_left_label(pvr_prefix)
-          pvr_rgb(2)%pvr_prefix = add_right_label(pvr_prefix)
-          call set_pvr_file_control(pvr_ctl,                            &
-     &        pvr_rgb(2)%iflag_monitoring, pvr_rgb(2)%id_pvr_file_type, &
-     &        pvr_rgb(2)%id_pvr_transparent)
-        end if
-      else
-        pvr_rgb(1)%pvr_prefix = pvr_prefix
-      end if
+      call set_pvr_file_control(pvr_ctl,                                &
+     &    pvr_rgb(2)%iflag_monitoring, pvr_rgb(2)%id_pvr_file_type,     &
+     &    pvr_rgb(2)%id_pvr_transparent)
+      pvr_rgb(1)%pvr_prefix = add_left_label(pvr_prefix)
+      pvr_rgb(2)%pvr_prefix = add_right_label(pvr_prefix)
 !
-      end subroutine set_pvr_file_parameters
+      end subroutine set_stereo_pvr_file_param
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_file_prefix(pvr_ctl, pvr_prefix)
+      character(len = kchara) function set_pvr_file_prefix(pvr_ctl)
 !
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
-      character(len = kchara), intent(inout) :: pvr_prefix
 !
 !
       if(pvr_ctl%file_head_ctl%iflag .gt. 0) then
-        pvr_prefix = pvr_ctl%file_head_ctl%charavalue
+        set_pvr_file_prefix = pvr_ctl%file_head_ctl%charavalue
       else 
-        pvr_prefix = 'pvr'
+        set_pvr_file_prefix = 'pvr'
       end if
 !
-      end subroutine set_pvr_file_prefix
+      end function set_pvr_file_prefix
 !
 !  ---------------------------------------------------------------------
 !
