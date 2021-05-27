@@ -36,6 +36,9 @@
 !!     &         (istep_pvr, time, geofem, jacs, nod_fld,               &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering_w_rot                             &
+!!     &         (istep_pvr, time, num_img, geofem, jacs, nod_fld,      &
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+!!      subroutine each_PVR_anaglyph_w_rot                              &
 !!     &         (istep_pvr, time, geofem, jacs, nod_fld,               &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!        type(mesh_data), intent(in) :: geofem
@@ -368,6 +371,47 @@
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_rendering_w_rot                               &
+     &         (istep_pvr, time, num_img, geofem, jacs, nod_fld,        &
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+!
+      use cal_pvr_modelview_mat
+!
+      integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
+      integer(kind = kint) :: num_img
+!
+      type(mesh_data), intent(in) :: geofem
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_type), intent(in) :: jacs
+!
+      type(pvr_field_data), intent(inout) :: field_pvr
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+!
+      integer(kind = kint) :: i_img
+!
+      if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+      call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
+     &    jacs%g_FEM, jacs%jac_3d, nod_fld,                             &
+     &    pvr_param%field_def, field_pvr)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
+      call set_default_pvr_data_params                                  &
+     &   (pvr_param%outline, pvr_param%color)
+!
+!
+      do i_img = 1, num_img
+        call rendering_with_rotation                                    &
+     &     (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,      &
+     &      pvr_rgb(i_img), pvr_param, pvr_proj(i_img))
+      end do
+!
+      end subroutine each_PVR_rendering_w_rot
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine each_PVR_anaglyph_w_rot                                &
      &         (istep_pvr, time, geofem, jacs, nod_fld,                 &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
@@ -396,26 +440,11 @@
      &   (pvr_param%outline, pvr_param%color)
 !
 !
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        if(pvr_param%view%iflag_anaglyph .gt. 0) then
-          call anaglyph_rendering_w_rotation                            &
-     &       (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,    &
-     &        pvr_rgb(1), pvr_param, pvr_proj)
-        else
-          call rendering_with_rotation                                  &
-     &       (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,    &
-     &        pvr_rgb(1), pvr_param, pvr_proj(1))
-          call rendering_with_rotation                                  &
-     &       (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,    &
-     &        pvr_rgb(2), pvr_param, pvr_proj(2))
-        end if
-      else
-        call rendering_with_rotation                                    &
-     &     (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,      &
-     &      pvr_rgb(1), pvr_param, pvr_proj(1))
-      end if
+      call anaglyph_rendering_w_rotation                                &
+     &   (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,        &
+     &    pvr_rgb(1), pvr_param, pvr_proj)
 !
-      end subroutine each_PVR_rendering_w_rot
+      end subroutine each_PVR_anaglyph_w_rot
 !
 !  ---------------------------------------------------------------------
 !

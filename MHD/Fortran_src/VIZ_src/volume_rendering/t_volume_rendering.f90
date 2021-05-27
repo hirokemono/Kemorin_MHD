@@ -399,10 +399,12 @@
      &                                 .eq. IFLAG_NO_MOVIE) cycle
 !
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        call each_PVR_rendering_w_rot(istep_pvr, time, geofem, jacs,    &
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr-1) - ist_img
+        call each_PVR_rendering_w_rot                                   &
+     &     (istep_pvr, time, num_img, geofem, jacs,                     &
      &      nod_fld, pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),        &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -460,7 +462,7 @@
         if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
 !
-        call each_PVR_rendering_w_rot(istep_pvr, time, geofem, jacs,    &
+        call each_PVR_anaglyph_w_rot(istep_pvr, time, geofem, jacs,     &
      &      nod_fld, pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),        &
      &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr))
       end do
