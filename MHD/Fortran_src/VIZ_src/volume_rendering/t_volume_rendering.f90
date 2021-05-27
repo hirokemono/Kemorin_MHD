@@ -345,7 +345,7 @@
       type(volume_rendering_module), intent(inout) :: pvr
 !
       integer(kind = kint) :: i_pvr, ist_rdr
-      integer(kind = kint) :: i_img, ist_img, ied_img
+      integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
@@ -356,11 +356,12 @@
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  )
         call each_PVR_rendering                                         &
-     &     (istep_pvr, time, geofem, jacs, nod_fld,                     &
+     &     (istep_pvr, time, num_img, geofem, jacs, nod_fld,            &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
