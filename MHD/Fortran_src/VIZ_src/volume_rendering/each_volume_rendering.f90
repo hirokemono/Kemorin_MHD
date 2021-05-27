@@ -214,11 +214,9 @@
       call find_each_pvr_surf_domain                                    &
      &   (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,       &
      &    pvr_param%draw_param, pvr_proj(1)%bound)
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        call find_each_pvr_surf_domain                                  &
-     &     (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,     &
-     &      pvr_param%draw_param, pvr_proj(2)%bound)
-      end if
+      call find_each_pvr_surf_domain                                    &
+     &   (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,       &
+     &    pvr_param%draw_param, pvr_proj(2)%bound)
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
       call check_pvr_parameters                                         &
@@ -227,31 +225,21 @@
       call set_pixel_on_pvr_screen(pvr_param%view, pvr_param%pixel)
 !
 !
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        pvr_proj(1)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
-        pvr_proj(2)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
+      pvr_proj(1)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
+      pvr_proj(2)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
 !
-        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
-        call set_pvr_projection_left_mat                                &
-     &     (i_pvr, pvr_param%view, pvr_proj(1)%projection_mat)
-        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
-        call set_pvr_projection_right_mat                               &
-     &     (i_pvr, pvr_param%view, pvr_proj(2)%projection_mat)
-      else
-        pvr_proj(1)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
+      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
+      call set_pvr_projection_left_mat                                  &
+     &   (i_pvr, pvr_param%view, pvr_proj(1)%projection_mat)
+      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
+      call set_pvr_projection_right_mat                                 &
+     &   (i_pvr, pvr_param%view, pvr_proj(2)%projection_mat)
 !
-        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
-        call set_pvr_projection_matrix                                  &
-     &     (i_pvr, pvr_param%view, pvr_proj(1)%projection_mat)
-!        call set_pvr_orthogonal_params(i_pvr, pvr_param%view)
-      end if
 !
       call alloc_projected_position                                     &
      &   (mesh%node, mesh%surf, pvr_proj(1)%screen)
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        call alloc_projected_position                                   &
-     &     (mesh%node, mesh%surf, pvr_proj(2)%screen)
-      end if
+      call alloc_projected_position                                     &
+     &   (mesh%node, mesh%surf, pvr_proj(2)%screen)
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call cal_pvr_modelview_matrix                                     &

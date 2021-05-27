@@ -170,7 +170,7 @@
      &      =  streo%focalpoint_ctl%iflag                               &
      &       * streo%eye_separation_ctl%iflag
         if(view_param%iflag_stereo_pvr.eq.0 .and. my_rank.eq.0) then
-          write(*,*) 'Streo view paramters are missing.'
+          write(*,*) 'Stereo view paramters are missing.'
           write(*,*) 'Turn off streo view.'
         end if
       end if
