@@ -139,8 +139,6 @@
 !
 !>    Defined flag for stereo view
         integer(kind = kint) :: iflag_stereo_pvr = 0
-!>    Flag to make an anaglyph
-        integer(kind = kint) :: iflag_anaglyph = 0
 !
 !>    Flag to make quilt images with fixed view
         logical :: flag_quilt =  .FALSE.

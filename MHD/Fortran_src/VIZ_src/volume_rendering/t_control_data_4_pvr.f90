@@ -26,7 +26,6 @@
 !!  image_tranceparency  tranceparent
 !!
 !!  streo_imaging        YES
-!!  anaglyph_image       YES
 !!!
 !!  max_pe_4_composit     32
 !!

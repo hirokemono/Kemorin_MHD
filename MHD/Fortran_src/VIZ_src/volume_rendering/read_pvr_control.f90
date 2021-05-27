@@ -29,7 +29,6 @@
 !!  image_tranceparency  tranceparent
 !!
 !!  streo_imaging        YES
-!!  anaglyph_image       YES
 !!!
 !!  max_pe_4_composit     32
 !!
@@ -126,8 +125,6 @@
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_streo =    'streo_imaging'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_anaglyph = 'anaglyph_image'
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_output_field_def = 'output_field'
@@ -164,8 +161,8 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_rotation =  'image_rotation_ctl'
 !
-      integer(kind = kint), parameter :: n_label_pvr_ctl =       20
-      integer(kind = kint), parameter :: n_label_pvr_ctl_w_dup = 21
+      integer(kind = kint), parameter :: n_label_pvr_ctl =       19
+      integer(kind = kint), parameter :: n_label_pvr_ctl_w_dup = 20
 !
       private :: n_label_pvr_ctl, n_label_pvr_ctl_w_dup
 !
@@ -264,9 +261,6 @@
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_streo, pvr_ctl%streo_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf, hd_pvr_anaglyph, pvr_ctl%anaglyph_ctl)
-!
-        call read_chara_ctl_type                                        &
      &     (c_buf, hd_output_field_def, pvr_ctl%pvr_field_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
@@ -337,23 +331,22 @@
 !
       call set_control_labels(hd_pvr_maxpe_composit, names( 6))
       call set_control_labels(hd_pvr_streo,          names( 7))
-      call set_control_labels(hd_pvr_anaglyph,       names( 8))
 !
-      call set_control_labels(hd_output_field_def, names( 9))
-      call set_control_labels(hd_output_comp_def,  names(10))
+      call set_control_labels(hd_output_field_def, names( 8))
+      call set_control_labels(hd_output_comp_def,  names( 9))
 !
-      call set_control_labels(hd_plot_area,      names(11))
-      call set_control_labels(hd_view_transform, names(12))
-      call set_control_labels(hd_pvr_colordef,   names(13))
-      call set_control_labels(hd_colormap,       names(14))
-      call set_control_labels(hd_pvr_lighting,   names(15))
-      call set_control_labels(hd_pvr_colorbar,   names(16))
+      call set_control_labels(hd_plot_area,      names(10))
+      call set_control_labels(hd_view_transform, names(11))
+      call set_control_labels(hd_pvr_colordef,   names(12))
+      call set_control_labels(hd_colormap,       names(13))
+      call set_control_labels(hd_pvr_lighting,   names(14))
+      call set_control_labels(hd_pvr_colorbar,   names(15))
 !
-      call set_control_labels(hd_pvr_sections, names(17))
-      call set_control_labels(hd_pvr_isosurf,  names(18))
-      call set_control_labels(hd_quilt_image,  names(19))
-      call set_control_labels(hd_pvr_movie,    names(20))
-      call set_control_labels(hd_pvr_rotation, names(21))
+      call set_control_labels(hd_pvr_sections, names(16))
+      call set_control_labels(hd_pvr_isosurf,  names(17))
+      call set_control_labels(hd_quilt_image,  names(18))
+      call set_control_labels(hd_pvr_movie,    names(19))
+      call set_control_labels(hd_pvr_rotation, names(20))
 !
       end subroutine set_label_pvr_ctl_w_dup
 !
