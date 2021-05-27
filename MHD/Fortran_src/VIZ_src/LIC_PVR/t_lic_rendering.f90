@@ -312,7 +312,7 @@
       end do
 !
       if(lic%flag_each_repart) return
-      call LIC_initialize_w_shared_mesh(geofem, next_tbl,               &
+      call LIC_anaglyph_init_shared_mesh(geofem, next_tbl,              &
      &    lic%repart_p, lic%repart_data, lic%pvr)
 !
       end subroutine anaglyph_LIC_initialize

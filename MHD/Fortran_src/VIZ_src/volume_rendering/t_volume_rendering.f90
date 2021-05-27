@@ -310,7 +310,7 @@
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         call init_each_PVR_image(pvr%pvr_param(i_pvr),                  &
      &                           pvr%pvr_rgb(ist_img))
-        call each_PVR_initialize(i_pvr, geofem%mesh, geofem%group,      &
+        call each_anaglyph_PVR_init(i_pvr, geofem%mesh, geofem%group,   &
      &      pvr%pvr_rgb(ist_img),  pvr%pvr_param(i_pvr),                &
      &      pvr%pvr_proj(ist_rdr))
       end do
