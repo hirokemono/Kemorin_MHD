@@ -372,11 +372,11 @@
       if(lic%pvr%num_pvr .le. 0) return
 !
       if(lic%flag_each_repart) then
-        call LIC_visualize_w_each_repart                                &
+        call LIC_anaglyph_w_each_repart                                 &
      &     (istep_lic, time, geofem, next_tbl, nod_fld, lic%repart_p,   &
      &      lic%repart_data, lic%pvr, lic%lic_param, v_sol)
       else
-        call LIC_visualize_w_shared_mesh                                &
+        call LIC_anaglyph_w_shared_mesh                                 &
      &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
      &      lic%repart_data, lic%pvr, lic%lic_param, v_sol)
       end if
