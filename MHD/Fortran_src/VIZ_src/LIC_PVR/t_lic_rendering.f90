@@ -284,7 +284,7 @@
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
      &    lic%lic_param, lic%pvr%pvr_param, lic%flag_each_repart)
 !
-      call count_num_rendering_and_images                               &
+      call count_num_anaglyph_rendering                                 &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
      &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
      &    lic%pvr%istack_pvr_render, lic%pvr%istack_pvr_images)

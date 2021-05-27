@@ -67,11 +67,7 @@
       do i_pvr = 1, num_pvr
         if(pvr_param(i_pvr)%view%iflag_stereo_pvr .gt. 0) then
           istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1) + 2
-          if(pvr_param(i_pvr)%view%iflag_anaglyph .gt. 0) then
-            istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
-          else
-            istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
-          end if
+          istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
         else if(pvr_param(i_pvr)%view%flag_quilt) then
           istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1)         &
      &                            + pvr_param(i_pvr)%view%n_row         &
@@ -93,6 +89,41 @@
       write(*,*) 'num_pvr_images',    num_pvr_images
 !
       end subroutine count_num_rendering_and_images
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_num_anaglyph_rendering(num_pvr, pvr_param,       &
+     &          num_pvr_rendering, num_pvr_images,                      &
+     &          istack_pvr_render, istack_pvr_images)
+!
+      integer(kind = kint), intent(in) :: num_pvr
+      type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
+!
+      integer(kind = kint), intent(inout)                               &
+     &              :: istack_pvr_render(0:num_pvr)
+      integer(kind = kint), intent(inout)                               &
+     &              :: istack_pvr_images(0:num_pvr)
+      integer(kind = kint), intent(inout) :: num_pvr_rendering
+      integer(kind = kint), intent(inout) :: num_pvr_images
+!
+      integer(kind = kint) :: i_pvr
+!
+!
+      istack_pvr_render(0) = 0
+      istack_pvr_images(0) = 0
+      do i_pvr = 1, num_pvr
+        istack_pvr_render(i_pvr) = istack_pvr_render(i_pvr-1) + 2
+        istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
+      end do
+      num_pvr_rendering = istack_pvr_render(num_pvr)
+      num_pvr_images =    istack_pvr_images(num_pvr)
+!
+      if(iflag_debug .eq. 0) return
+      write(*,*) 'num_pvr',           num_pvr
+      write(*,*) 'num_pvr_rendering', num_pvr_rendering
+      write(*,*) 'num_pvr_images',    num_pvr_images
+!
+      end subroutine count_num_anaglyph_rendering
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
