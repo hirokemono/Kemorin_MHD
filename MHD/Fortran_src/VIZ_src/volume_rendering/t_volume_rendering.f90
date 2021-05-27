@@ -357,7 +357,7 @@
 !
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1)
-        num_img = pvr%istack_pvr_images(i_pvr  )
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist
         call each_PVR_rendering                                         &
      &     (istep_pvr, time, num_img, geofem, jacs, nod_fld,            &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &

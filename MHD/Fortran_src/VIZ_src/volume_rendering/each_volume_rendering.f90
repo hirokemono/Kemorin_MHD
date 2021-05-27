@@ -256,7 +256,7 @@
       type(pvr_field_data), intent(inout) :: field_pvr
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
@@ -270,13 +270,13 @@
 !
 !   Left eye
       call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,      &
-     &    field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
-      call store_left_eye_image(pvr_rgb(1))
+     &    field_pvr, pvr_param, pvr_proj(1), pvr_rgb)
+      call store_left_eye_image(pvr_rgb)
 !
 !   right eye
       call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,      &
-     &    field_pvr, pvr_param, pvr_proj(2), pvr_rgb(1))
-      call add_left_eye_image(pvr_rgb(1))
+     &    field_pvr, pvr_param, pvr_proj(2), pvr_rgb)
+      call add_left_eye_image(pvr_rgb)
 !
       end subroutine each_PVR_anaglyph
 !
