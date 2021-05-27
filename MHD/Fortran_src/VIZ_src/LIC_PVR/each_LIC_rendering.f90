@@ -17,8 +17,9 @@
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(2)
-!!      subroutine s_each_LIC_rendering_w_rot(istep_pvr, time, viz_fem, &
-!!     &          field_lic, lic_param, pvr_param, pvr_proj, pvr_rgb)
+!!      subroutine s_each_LIC_rendering_w_rot                           &
+!!     &         (istep_pvr, time, num_img, viz_fem, field_lic,         &
+!!     &          lic_param, pvr_param, pvr_proj, pvr_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: viz_fem
@@ -123,13 +124,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_each_LIC_rendering_w_rot(istep_pvr, time, viz_fem,   &
-     &          field_lic, lic_param, pvr_param, pvr_proj, pvr_rgb)
+      subroutine s_each_LIC_rendering_w_rot                             &
+     &         (istep_pvr, time, num_img, viz_fem, field_lic,           &
+     &          lic_param, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
       use rendering_streo_LIC_image
 !
+      integer(kind = kint), intent(in) :: num_img
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
 !
@@ -138,32 +141,21 @@
       type(lic_parameters), intent(in) :: lic_param
 !
       type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
+!
+      integer(kind = kint) :: i_img
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
      &   (pvr_param%outline, pvr_param%color)
 !
-      if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
-        if(pvr_param%view%iflag_anaglyph .gt. 0) then
-          call anaglyph_lic_rendering_w_rot                             &
-     &       (istep_pvr, time, viz_fem%mesh, viz_fem%group,             &
-     &        lic_param, field_lic, pvr_rgb(1), pvr_param, pvr_proj)
-        else
-          call lic_rendering_with_rotation                              &
-     &       (istep_pvr, time, viz_fem%mesh, viz_fem%group,             &
-     &        lic_param, field_lic, pvr_rgb(1), pvr_param, pvr_proj(1))
-          call lic_rendering_with_rotation                              &
-     &       (istep_pvr, time, viz_fem%mesh, viz_fem%group,             &
-     &        lic_param, field_lic, pvr_rgb(2), pvr_param, pvr_proj(2))
-        end if
-      else
-        call lic_rendering_with_rotation                                &
-     &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
-     &      lic_param, field_lic, pvr_rgb(1), pvr_param, pvr_proj(1))
-      end if
+      do i_img = 1, num_img
+        call lic_rendering_with_rotation(istep_pvr, time,               &
+     &      viz_fem%mesh, viz_fem%group, lic_param, field_lic,          &
+     &      pvr_rgb(i_img), pvr_param, pvr_proj(i_img))
+      end do
 !
       end subroutine s_each_LIC_rendering_w_rot
 !
