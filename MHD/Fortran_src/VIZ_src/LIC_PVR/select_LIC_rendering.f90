@@ -146,7 +146,6 @@
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
-      if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering at once'
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, pvr%num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
@@ -157,10 +156,12 @@
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        call s_each_LIC_rendering(istep_lic, time, repart_data%viz_fem, &
-     &      repart_data%field_lic, lic_param(i_lic),                    &
-     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),                &
-     &      pvr%pvr_rgb(ist_img))
+        num_img = pvr%istack_pvr_images(i_lic  )
+        if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering', i_lic
+        call s_each_LIC_rendering(istep_lic, time, num_img,             &
+     &      repart_data%viz_fem, repart_data%field_lic,                 &
+     &      lic_param(i_lic), pvr%pvr_param(i_lic),                     &
+     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -241,7 +242,6 @@
       integer(kind = kint) :: i_img, ist_img, ied_img
 !
 !
-      if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering at once'
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, pvr%num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
@@ -252,7 +252,8 @@
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        call s_each_LIC_rendering(istep_lic, time, repart_data%viz_fem, &
+      if(my_rank .eq. 0) write(*,*) 's_each_LIC_anaglyph at once'
+        call s_each_LIC_anaglyph(istep_lic, time, repart_data%viz_fem,  &
      &      repart_data%field_lic, lic_param(i_lic),                    &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),                &
      &      pvr%pvr_rgb(ist_img))
@@ -361,7 +362,7 @@
      &                     's_each_LIC_rendering each', i_lic
           if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
           call s_each_LIC_rendering                                     &
-     &       (istep_lic, time, repart_data%viz_fem,                     &
+     &       (istep_lic, time, num_img, repart_data%viz_fem,            &
      &        repart_data%field_lic, lic_param(i_lic),                  &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),              &
      &        pvr%pvr_rgb(ist_img+1))
@@ -460,9 +461,9 @@
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .eq. IFLAG_NO_MOVIE) then
           if(my_rank .eq. 0) write(*,*)                                 &
-     &                     's_each_LIC_rendering each', i_lic
+     &                     's_each_LIC_anaglyph each', i_lic
           if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-          call s_each_LIC_rendering                                     &
+          call s_each_LIC_anaglyph                                      &
      &       (istep_lic, time, repart_data%viz_fem,                     &
      &        repart_data%field_lic, lic_param(i_lic),                  &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_rdr),              &
