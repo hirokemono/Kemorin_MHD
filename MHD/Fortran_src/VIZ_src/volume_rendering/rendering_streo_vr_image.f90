@@ -116,6 +116,7 @@
       use t_rotation_pvr_images
       use t_MPI_quilt_bitmap_IO
       use m_elapsed_labels_4_VIZ
+      use set_default_pvr_params
       use cal_pvr_modelview_mat
       use write_PVR_image
       use output_image_sel_4_png
@@ -135,6 +136,10 @@
       type(rotation_pvr_images) :: rot_imgs1
       type(MPI_quilt_bitmap_IO) :: quilt_d1
 !
+!
+      if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
+      call set_default_pvr_data_params                                  &
+     &   (pvr_param%outline, pvr_param%color)
 !
       if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
       call init_rot_pvr_image_arrays                                    &

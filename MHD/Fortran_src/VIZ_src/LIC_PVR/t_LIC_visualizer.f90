@@ -76,7 +76,7 @@
       call LIC_initialize                                               &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
      &    viz_ctls%lic_ctls, viz_ctls%repart_ctl, lic_v%lic)
-      call LIC_initialize                                               &
+      call anaglyph_LIC_initialize                                      &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
      &    viz_ctls%lic_anaglyph_ctls, viz_ctls%repart_ctl,              &
      &    lic_v%anaglyph_lic)

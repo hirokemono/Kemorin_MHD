@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine LIC_initialize_w_shared_mesh(geofem, next_tbl,       &
 !!     &          repart_p, repart_data, pvr)
+!!      subroutine LIC_anaglyph_init_shared_mesh(geofem, next_tbl,      &
+!!     &          repart_p, repart_data, pvr)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
@@ -211,6 +213,40 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       end subroutine LIC_visualize_w_shared_mesh
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine LIC_anaglyph_init_shared_mesh(geofem, next_tbl,        &
+     &          repart_p, repart_data, pvr)
+!
+      use each_LIC_rendering
+!
+      type(mesh_data), intent(in) :: geofem
+      type(next_nod_ele_table), intent(in) :: next_tbl
+      type(volume_partioning_param), intent(in) :: repart_p
+!
+      type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(volume_rendering_module), intent(inout) :: pvr
+!
+      integer(kind = kint) :: i_lic, ist_rdr, ist_img
+!
+!
+      call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
+     &                          repart_data)
+!
+      do i_lic = 1, pvr%num_pvr
+        ist_rdr = pvr%istack_pvr_render(i_lic-1) + 1
+        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        call each_anaglyph_PVR_initialize(i_lic,                        &
+     &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+     &      pvr%pvr_rgb(ist_img), pvr%pvr_param(i_lic),                 &
+     &      pvr%pvr_proj(ist_rdr))
+      end do
+!
+!      call check_surf_rng_pvr_domain(my_rank)
+!      call check_surf_norm_pvr_domain(my_rank)
+!
+      end subroutine LIC_anaglyph_init_shared_mesh
 !
 !  ---------------------------------------------------------------------
 !
@@ -446,8 +482,8 @@
         call LIC_init_each_mesh(geofem, next_tbl, repart_p,             &
      &                          lic_param(i_lic), repart_data)
 !
-        if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
-        call each_PVR_initialize(i_lic,                                 &
+        if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_initialize'
+        call each_anaglyph_PVR_initialize(i_lic,                        &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(ist_img), pvr%pvr_param(i_lic),                 &
      &      pvr%pvr_proj(ist_rdr))
