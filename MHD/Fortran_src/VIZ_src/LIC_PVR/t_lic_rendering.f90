@@ -11,14 +11,14 @@
 !!     &         (id_control, lic_ctls, lic, iflag_update)
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
 !!      subroutine LIC_initialize(increment_lic, geofem, next_tbl,      &
-!!     &                          nod_fld, lic_ctls, repart_ctl, lic)
+!!     &                          nod_fld, repart_ctl, lic_ctls, lic)
 !!      subroutine LIC_visualize(istep_lic, time, geofem, next_tbl,     &
 !!     &                         nod_fld, lic, v_sol)
 !!      subroutine dealloc_LIC_data(lic)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(viz_repartition_ctl), intent(in) :: repart_ctl
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
-!!        type(viz_repartition_ctl), intent(inout) :: repart_ctl
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
 !!@endverbatim
 !
@@ -148,7 +148,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine LIC_initialize(increment_lic, geofem, next_tbl,        &
-     &                          nod_fld, lic_ctls, repart_ctl, lic)
+     &                          nod_fld, repart_ctl, lic_ctls, lic)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
@@ -160,8 +160,8 @@
       type(mesh_data), intent(in), target :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(next_nod_ele_table), intent(in) :: next_tbl
+      type(viz_repartition_ctl), intent(in) :: repart_ctl
       type(lic_rendering_controls), intent(inout) :: lic_ctls
-      type(viz_repartition_ctl), intent(inout) :: repart_ctl
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
       integer(kind = kint) :: i_lic, ist_img
@@ -180,7 +180,6 @@
      &    lic%pvr%cflag_update)
 !
       call set_ctl_param_vol_repart(repart_ctl, lic%repart_p)
-      call dealloc_control_vol_repart(repart_ctl)
 !
       call alloc_pvr_data(lic%pvr)
 !
