@@ -12,8 +12,11 @@
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
 !!      subroutine LIC_initialize(increment_lic, geofem, next_tbl,      &
 !!     &                          nod_fld, lic_ctls, repart_ctl, lic)
+!!
 !!      subroutine LIC_visualize(istep_lic, time, geofem, next_tbl,     &
 !!     &                         nod_fld, lic, v_sol)
+!!      subroutine anaglyph_LIC_visualize(istep_lic, time,              &
+!!     &          geofem, next_tbl, nod_fld, lic, v_sol)
 !!      subroutine dealloc_LIC_data(lic)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
@@ -262,6 +265,39 @@
       end if
 !
       end subroutine LIC_visualize
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine anaglyph_LIC_visualize(istep_lic, time,                &
+     &          geofem, next_tbl, nod_fld, lic, v_sol)
+!
+      use m_elapsed_labels_4_VIZ
+      use select_LIC_rendering
+!
+      integer(kind = kint), intent(in) :: istep_lic
+      real(kind = kreal), intent(in) :: time
+!
+      type(mesh_data), intent(in) :: geofem
+      type(next_nod_ele_table), intent(in) :: next_tbl
+      type(phys_data), intent(in) :: nod_fld
+!
+      type(lic_volume_rendering_module), intent(inout) :: lic
+      type(vectors_4_solver), intent(inout) :: v_sol
+!
+!
+      if(lic%pvr%num_pvr .le. 0) return
+!
+      if(lic%flag_each_repart) then
+        call LIC_anaglyphs_w_each_repart                                &
+     &     (istep_lic, time, geofem, next_tbl, nod_fld, lic%repart_p,   &
+     &      lic%repart_data, lic%pvr, lic%lic_param, v_sol)
+      else
+        call LIC_anaglyphs_w_shared_mesh                                &
+     &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
+     &      lic%repart_data, lic%pvr, lic%lic_param, v_sol)
+      end if
+!
+      end subroutine anaglyph_LIC_visualize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
