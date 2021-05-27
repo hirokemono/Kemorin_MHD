@@ -253,7 +253,7 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_lic, ist_img
+      integer(kind = kint) :: i_lic
 !
 !
       lic%pvr%num_pvr = lic_ctls%num_lic_ctl

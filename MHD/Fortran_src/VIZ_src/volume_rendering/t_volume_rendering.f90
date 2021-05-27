@@ -263,7 +263,7 @@
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr, ist_rdr, ist_img
+      integer(kind = kint) :: i_pvr
 !
 !
       pvr%num_pvr = pvr_ctls%num_pvr_ctl
@@ -427,8 +427,7 @@
 !
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr, ist_rdr
-      integer(kind = kint) :: i_img, ist_img, ied_img
+      integer(kind = kint) :: i_pvr
 !
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
@@ -438,42 +437,22 @@
         if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
-        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_anaglyph                                          &
      &     (istep_pvr, time, geofem, jacs, nod_fld,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       do i_pvr = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
+        if(pvr%pvr_rgb(i_pvr)%id_pvr_file_type                          &
      &                                 .eq. iflag_QUILT_BMP) cycle
 !
-        ied_img = pvr%istack_pvr_images(i_pvr  )
-        do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file(istep_pvr, pvr%pvr_rgb(i_img))
-        end do
-      end do
-!
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      do i_pvr = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
-     &                                 .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
-     &                                 .ne. iflag_QUILT_BMP) cycle
-!
-        ied_img = pvr%istack_pvr_images(i_pvr  )
-        do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file(istep_pvr, pvr%pvr_rgb(i_img))
-        end do
+        call sel_write_pvr_image_file(istep_pvr, pvr%pvr_rgb(i_pvr))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
@@ -484,11 +463,9 @@
         if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
 !
-        ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_rendering_w_rot(istep_pvr, time, geofem, jacs,    &
      &      nod_fld, pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),        &
-     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
+     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
