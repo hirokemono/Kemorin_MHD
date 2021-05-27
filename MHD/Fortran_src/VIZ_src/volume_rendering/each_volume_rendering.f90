@@ -88,6 +88,7 @@
 !
       subroutine init_each_PVR_image(num_img, pvr_param, pvr_rgb)
 !
+      integer(kind = kint), intent(in) :: num_img
       type(PVR_control_params), intent(in) :: pvr_param
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !
