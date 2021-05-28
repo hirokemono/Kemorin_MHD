@@ -73,7 +73,8 @@
         end if
       end if
 !
-      if(view_param%iflag_movie_fmt .eq. iflag_QUILT_BMP) then
+      if((view_param%iflag_movie_fmt .eq. iflag_QUILT_BMP)                &
+     &    .or. view_param%flag_quilt) then
         if(movie%quilt_row_column_ctl%iflag .eq. 0) then
           view_param%n_row =     1
           view_param%n_column =  movie%num_frames_ctl%intvalue
