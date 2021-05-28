@@ -165,13 +165,19 @@
         view_param%flag_setp_eye_separation_angle = .TRUE.
       end if
 !
-      if(view_param%iflag_stereo_pvr .gt. 0) then
-        view_param%iflag_stereo_pvr                                     &
-     &      =  streo%focalpoint_ctl%iflag                               &
-     &       * streo%eye_separation_ctl%iflag
-        if(view_param%iflag_stereo_pvr.eq.0 .and. my_rank.eq.0) then
-          write(*,*) 'Stereo view paramters are missing.'
-          write(*,*) 'Turn off streo view.'
+      if(streo%i_stereo_view .eq. 0) then
+        if(view_param%iflag_stereo_pvr.gt.0) then
+          view_param%iflag_stereo_pvr = 0
+          if(my_rank.eq.0) then
+            write(*,*) 'Stereo view paramters are missing.'
+            write(*,*) 'Turn off streo view.'
+          end if
+         else if(view_param%flag_quilt) then
+           view_param%flag_quilt = .FALSE.
+          if(my_rank.eq.0) then
+            write(*,*) 'Stereo view paramters are missing.'
+            write(*,*) 'Turn off Quilt view.'
+          end if
         end if
       end if
 !

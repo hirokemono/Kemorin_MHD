@@ -204,8 +204,7 @@
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
-     &                                 .eq. iflag_QUILT_BMP) cycle
+        if(pvr%pvr_param(i_pvr)%view%flag_quilt) cycle
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
@@ -216,8 +215,7 @@
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
-     &                                 .ne. iflag_QUILT_BMP) cycle
+        if(pvr%pvr_param(i_pvr)%view%flag_quilt .eqv. .FALSE.) cycle
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
@@ -396,8 +394,7 @@
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
-     &                                 .eq. iflag_QUILT_BMP) cycle
+        if(pvr%pvr_param(i_pvr)%view%flag_quilt) cycle
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
@@ -409,8 +406,7 @@
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_rgb(ist_img)%id_pvr_file_type                        &
-     &                                 .ne. iflag_QUILT_BMP) cycle
+        if(pvr%pvr_param(i_pvr)%view%flag_quilt .eqv. .FALSE.) cycle
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
