@@ -28,14 +28,13 @@
 !!
 !!      subroutine set_output_rot_sequence_image                        &
 !!     &         (istep_pvr, iflag_img_fmt, file_prefix, view_param,    &
-!!     &          rot_rgb, quilt_d)
+!!     &          rot_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        integer(kind = kint), intent(in) :: iflag_img_fmt
 !!        character(len=kchara), intent(in) :: file_prefix
 !!        type(pvr_view_parameter), intent(in) :: view_param
 !!        type(pvr_image_type), intent(in)                              &
 !!       &                      :: rot_rgb(view_param%num_frame)
-!!        type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
 !!@endverbatim
 !
       module write_PVR_image
@@ -47,7 +46,11 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_MPI_quilt_bitmap_IO
+!
       implicit  none
+!
+      type(MPI_quilt_bitmap_IO), private, save :: quilt_d
 !
 !  ---------------------------------------------------------------------
 !
@@ -224,7 +227,7 @@
 !
       subroutine set_output_rot_sequence_image                          &
      &         (istep_pvr, iflag_img_fmt, file_prefix, view_param,      &
-     &          rot_rgb, quilt_d)
+     &          rot_rgb)
 !
       use t_control_params_4_pvr
       use t_pvr_image_array
@@ -239,7 +242,6 @@
       type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_image_type), intent(in)                                  &
      &                     :: rot_rgb(view_param%num_frame)
-      type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
 !
       integer(kind = kint) :: i_rot, icou
       character(len=kchara) :: file_tmp, file_w_step
@@ -290,6 +292,7 @@
       end do
 !
       call sel_write_pvr_image_files(quilt_d)
+      call dealloc_quilt_rgb_images(quilt_d)
 !
       end subroutine set_output_rot_sequence_image
 !

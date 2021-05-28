@@ -54,7 +54,6 @@
      &          field_pvr, pvr_rgb, pvr_param, pvr_proj)
 !
       use t_rotation_pvr_images
-      use t_MPI_quilt_bitmap_IO
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -73,7 +72,6 @@
 !
       integer(kind = kint) :: i_rot, iflag_img_fmt
       type(rotation_pvr_images) :: rot_imgs1
-      type(MPI_quilt_bitmap_IO) :: quilt_d1
 !
 !
       call init_rot_pvr_image_arrays                                    &
@@ -97,9 +95,7 @@
       end if
 !
       call set_output_rot_sequence_image(istep_pvr, iflag_img_fmt,      &
-     &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb,    &
-     &    quilt_d1)
-      call dealloc_quilt_rgb_images(quilt_d1)
+     &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
@@ -114,7 +110,6 @@
      &          pvr_param, pvr_proj)
 !
       use t_rotation_pvr_images
-      use t_MPI_quilt_bitmap_IO
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -133,7 +128,6 @@
 !
       integer(kind = kint) :: i_rot, iflag_img_fmt
       type(rotation_pvr_images) :: rot_imgs1
-      type(MPI_quilt_bitmap_IO) :: quilt_d1
 !
 !
       if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
@@ -165,9 +159,7 @@
       end if
 !
       call set_output_rot_sequence_image(istep_pvr, iflag_img_fmt,      &
-     &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb,    &
-     &    quilt_d1)
-      call dealloc_quilt_rgb_images(quilt_d1)
+     &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
