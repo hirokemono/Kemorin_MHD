@@ -300,9 +300,12 @@
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
-      view_param%iflag_stereo_pvr = 0
+      view_param%flag_stereo_pvr = .FALSE.
+      view_param%flag_quilt =      .FALSE.
       if(yes_flag(pvr_ctl%streo_ctl%charavalue)) then
-        view_param%iflag_stereo_pvr = 1
+        view_param%flag_stereo_pvr = .TRUE.
+      else if(yes_flag(pvr_ctl%quilt_ctl%charavalue)) then
+        view_param%flag_quilt =      .TRUE.
       end if
 !
       end subroutine set_pvr_stereo_control

@@ -29,7 +29,7 @@
 !!  image_tranceparency  tranceparent
 !!
 !!  streo_imaging        YES
-!!  anaglyph_image       YES
+!!  quilt_3d_imaging     YES
 !!!
 !!  max_pe_4_composit     32
 !!
@@ -127,7 +127,7 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_streo =    'streo_imaging'
       character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_anaglyph = 'anaglyph_image'
+     &             :: hd_pvr_quilt_3d = 'quilt_3d_imaging'
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_output_field_def = 'output_field'
@@ -264,7 +264,7 @@
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_streo, pvr_ctl%streo_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf, hd_pvr_anaglyph, pvr_ctl%anaglyph_ctl)
+     &     (c_buf, hd_pvr_quilt_3d, pvr_ctl%quilt_ctl)
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_output_field_def, pvr_ctl%pvr_field_ctl)
@@ -337,7 +337,7 @@
 !
       call set_control_labels(hd_pvr_maxpe_composit, names( 6))
       call set_control_labels(hd_pvr_streo,          names( 7))
-      call set_control_labels(hd_pvr_anaglyph,       names( 8))
+      call set_control_labels(hd_pvr_quilt_3d,       names( 8))
 !
       call set_control_labels(hd_output_field_def, names( 9))
       call set_control_labels(hd_output_comp_def,  names(10))

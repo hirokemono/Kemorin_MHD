@@ -26,7 +26,7 @@
 !!  image_tranceparency  tranceparent
 !!
 !!  streo_imaging        YES
-!!  anaglyph_image       YES
+!!  quilt_3d_imaging     YES
 !!!
 !!  max_pe_4_composit     32
 !!
@@ -129,7 +129,7 @@
         type(read_character_item) :: transparent_ctl
 !
         type(read_character_item) :: streo_ctl
-        type(read_character_item) :: anaglyph_ctl
+        type(read_character_item) :: quilt_ctl
 !
 !>      Structure for element group list for PVR
 !!@n      group_4_monitor_ctl%c_tbl: Name of element group for PVR

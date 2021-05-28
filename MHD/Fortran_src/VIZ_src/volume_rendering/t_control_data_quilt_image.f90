@@ -7,7 +7,8 @@
 !> @brief control data for PVR quilt_c from snapshot
 !!
 !!@verbatim
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      !!      subroutine read_quilt_image_ctl                                 &
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine read_quilt_image_ctl                                 &
 !!     &         (id_control, hd_block, quilt_c, c_buf)
 !!        type(quilt_image_ctl), intent(inout) :: quilt_c
 !!

@@ -61,7 +61,7 @@
 !
       istack_pvr_images(0) = 0
       do i_pvr = 1, num_pvr
-        if(pvr_param(i_pvr)%view%iflag_stereo_pvr .gt. 0) then
+        if(pvr_param(i_pvr)%view%flag_stereo_pvr) then
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
         else if(pvr_param(i_pvr)%view%flag_quilt) then
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1)         &
@@ -138,7 +138,7 @@
      &                            pvr_rgb(i)%id_pvr_file_type,          &
      &                            pvr_rgb(i)%id_pvr_transparent)
         end do
-        if(pvr_param(i_pvr)%view%iflag_stereo_pvr .gt. 0) then
+        if(pvr_param(i_pvr)%view%flag_stereo_pvr) then
           pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
           pvr_rgb(ist)%pvr_prefix = add_left_label(pvr_prefix)
           pvr_rgb(ied)%pvr_prefix = add_right_label(pvr_prefix)

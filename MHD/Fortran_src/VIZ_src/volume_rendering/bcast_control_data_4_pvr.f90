@@ -70,7 +70,7 @@
       call bcast_ctl_type_c1(pvr%transparent_ctl)
 !
       call bcast_ctl_type_c1(pvr%streo_ctl)
-      call bcast_ctl_type_c1(pvr%anaglyph_ctl)
+      call bcast_ctl_type_c1(pvr%quilt_ctl)
 !
       call bcast_ctl_type_c1(pvr%pvr_field_ctl)
       call bcast_ctl_type_c1(pvr%pvr_comp_ctl)
@@ -131,7 +131,7 @@
      &                    new_pvr%transparent_ctl)
 !
       call copy_chara_ctl(org_pvr%streo_ctl, new_pvr%streo_ctl)
-      call copy_chara_ctl(org_pvr%anaglyph_ctl, new_pvr%anaglyph_ctl)
+      call copy_chara_ctl(org_pvr%quilt_ctl, new_pvr%quilt_ctl)
 !
       call copy_chara_ctl(org_pvr%pvr_field_ctl, new_pvr%pvr_field_ctl)
       call copy_chara_ctl(org_pvr%pvr_comp_ctl, new_pvr%pvr_comp_ctl)

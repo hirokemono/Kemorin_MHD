@@ -17,7 +17,7 @@ label[ 3]   monitoring_mode
 label[ 4]   image_tranceparency
 label[ 5]   max_pe_4_composit
 label[ 6]   streo_imaging
-label[ 7]   anaglyph_image
+label[ 7]   quilt_3d_imaging
 label[ 8]   LIC_ctl
 label[ 9]   plot_area_ctl
 label[10]   view_transform_ctl 

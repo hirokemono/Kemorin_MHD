@@ -138,8 +138,7 @@
         real(kind = kreal) :: viewpoint_vec(3) = (/zero,zero,zero/)
 !
 !>    Defined flag for stereo view
-        integer(kind = kint) :: iflag_stereo_pvr = 0
-!
+        logical :: flag_stereo_pvr = .FALSE.
 !>    Flag to make quilt images with fixed view
         logical :: flag_quilt =  .FALSE.
 !>    Number of row of image array

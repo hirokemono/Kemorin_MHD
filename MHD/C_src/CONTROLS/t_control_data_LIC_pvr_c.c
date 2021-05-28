@@ -67,7 +67,7 @@ int read_LIC_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_ctl_item_c(buf, lic_pvr_c->label_lic_pvr->label[ 6],
 							  lic_pvr_c->pvr_c->streo_ctl);
 		read_chara_ctl_item_c(buf, lic_pvr_c->label_lic_pvr->label[ 7],
-							  lic_pvr_c->pvr_c->anaglyph_ctl);
+							  lic_pvr_c->pvr_c->quilt_ctl);
 	
 		if(right_begin_flag_c(buf, lic_pvr_c->label_lic_pvr->label[ 9]) > 0){
 			read_pvr_plot_area_ctl_c(fp, buf, lic_pvr_c->label_lic_pvr->label[ 9],
@@ -151,7 +151,7 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
 								   lic_pvr_c->pvr_c->streo_ctl);
 	level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, 
 								   lic_pvr_c->label_lic_pvr->label[ 7],
-								   lic_pvr_c->pvr_c->anaglyph_ctl);
+								   lic_pvr_c->pvr_c->quilt_ctl);
 	
 	level = write_pvr_plot_area_ctl_c(fp, level, lic_pvr_c->label_lic_pvr->label[ 9],
 									  lic_pvr_c->pvr_c->area_c);
