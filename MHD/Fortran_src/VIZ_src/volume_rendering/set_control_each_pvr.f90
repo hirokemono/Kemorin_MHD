@@ -308,6 +308,18 @@
         view_param%flag_quilt =      .TRUE.
       end if
 !
+      if(view_param%flag_quilt) then
+        if(pvr_ctl%quilt_c%i_quilt_image .eq. 0) then
+          view_param%flag_quilt =      .FALSE.
+        else
+          view_param%n_row                                              &
+     &        =    pvr_ctl%quilt_c%num_row_column_ctl%intvalue(1)
+          view_param%n_column                                           &
+     &        = pvr_ctl%quilt_c%num_row_column_ctl%intvalue(2)
+        end if
+        view_param%num_frame = view_param%n_row * view_param%n_column
+      end if
+!
       end subroutine set_pvr_stereo_control
 !
 !  ---------------------------------------------------------------------
