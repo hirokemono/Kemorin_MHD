@@ -372,15 +372,16 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       do i_pvr = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_pvr)%view%flag_quilt .eqv. .FALSE.) cycle
-!
-        ied_img = pvr%istack_pvr_images(i_pvr  )
-        do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file(istep_pvr, pvr%pvr_rgb(i_img))
-        end do
+        if(pvr%pvr_param(i_pvr)%view%flag_quilt) then
+          call set_output_rot_sequence_image(istep_pvr, num_img,        &
+     &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
+     &        pvr%pvr_rgb(ist_img+1)%pvr_prefix,                        &
+     &        pvr%pvr_param(i_pvr)%view, pvr%pvr_rgb(ist_img+1))
+        end if
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !

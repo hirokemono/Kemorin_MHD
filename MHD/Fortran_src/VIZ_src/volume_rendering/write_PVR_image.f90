@@ -27,8 +27,8 @@
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
 !!      subroutine set_output_rot_sequence_image                        &
-!!     &         (istep_pvr, iflag_img_fmt, file_prefix, view_param,    &
-!!     &          rot_rgb)
+!!     &         (istep_pvr, num_img, iflag_img_fmt, file_prefix,       &
+!!     &          view_param, rot_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        integer(kind = kint), intent(in) :: iflag_img_fmt
 !!        character(len=kchara), intent(in) :: file_prefix
@@ -226,8 +226,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_output_rot_sequence_image                          &
-     &         (istep_pvr, iflag_img_fmt, file_prefix, view_param,      &
-     &          rot_rgb)
+     &         (istep_pvr, num_img, iflag_img_fmt, file_prefix,         &
+     &          view_param, rot_rgb)
 !
       use t_control_params_4_pvr
       use t_pvr_image_array
@@ -237,11 +237,11 @@
       use output_image_sel_4_png
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: num_img
       integer(kind = kint), intent(in) :: iflag_img_fmt
       character(len=kchara), intent(in) :: file_prefix
       type(pvr_view_parameter), intent(in) :: view_param
-      type(pvr_image_type), intent(in)                                  &
-     &                     :: rot_rgb(view_param%num_frame)
+      type(pvr_image_type), intent(in) :: rot_rgb(num_img)
 !
       integer(kind = kint) :: i_rot, icou
       character(len=kchara) :: file_tmp, file_w_step
@@ -249,10 +249,10 @@
 !
       quilt_d%n_column(1) = view_param%n_row
       quilt_d%n_column(2) = view_param%n_column
-      quilt_d%n_image = view_param%num_frame
+      quilt_d%n_image = num_img
 !
       icou = 0
-      do i_rot = 1, view_param%num_frame
+      do i_rot = 1, num_img
         if(my_rank .eq. rot_rgb(i_rot)%irank_image_file) icou = icou+1
       end do
       quilt_d%num_image_lc = icou
@@ -281,7 +281,7 @@
 !
 !
       icou = 0
-      do i_rot = 1, view_param%num_frame
+      do i_rot = 1, num_img
         if(my_rank .eq. rot_rgb(i_rot)%irank_image_file) then
           icou = icou + 1
           quilt_d%icou_each_pe(icou) = i_rot

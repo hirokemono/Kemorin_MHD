@@ -94,7 +94,8 @@
         iflag_img_fmt = pvr_param%view%iflag_movie_fmt
       end if
 !
-      call set_output_rot_sequence_image(istep_pvr, iflag_img_fmt,      &
+      call set_output_rot_sequence_image                                &
+     &   (istep_pvr, pvr_param%view%num_frame, iflag_img_fmt,           &
      &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
@@ -158,7 +159,8 @@
         iflag_img_fmt = pvr_param%view%iflag_movie_fmt
       end if
 !
-      call set_output_rot_sequence_image(istep_pvr, iflag_img_fmt,      &
+      call set_output_rot_sequence_image                                &
+     &   (istep_pvr, pvr_param%view%num_frame, iflag_img_fmt,           &
      &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !

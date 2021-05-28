@@ -190,7 +190,7 @@
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         ist_img = pvr%istack_pvr_images(i_lic-1)
-        num_img = pvr%istack_pvr_images(i_lic  )
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering', i_lic
         call s_each_LIC_rendering(istep_lic, time, num_img,             &
      &      repart_data%viz_fem, repart_data%field_lic,                 &
@@ -212,15 +212,16 @@
         end do
       end do
       do i_lic = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_lic)%view%flag_quilt .eqv. .FALSE.) cycle
-!
-        ied_img = pvr%istack_pvr_images(i_lic  )
-        do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
-        end do
+        if(pvr%pvr_param(i_lic)%view%flag_quilt) then
+          call set_output_rot_sequence_image(istep_lic, num_img,        &
+     &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
+     &        pvr%pvr_rgb(ist_img+1)%pvr_prefix,                        &
+     &        pvr%pvr_param(i_lic)%view, pvr%pvr_rgb(ist_img+1))
+        end if
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
@@ -404,14 +405,15 @@
 !
       do i_lic = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_lic)%view%flag_quilt .eqv. .FALSE.) cycle
-!
-        ied_img = pvr%istack_pvr_images(i_lic  )
-        do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
-        end do
+        if(pvr%pvr_param(i_lic)%view%flag_quilt) then
+          call set_output_rot_sequence_image(istep_lic, num_img,        &
+     &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
+     &        pvr%pvr_rgb(ist_img+1)%pvr_prefix,                        &
+     &        pvr%pvr_param(i_lic)%view, pvr%pvr_rgb(ist_img+1))
+        end if
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !

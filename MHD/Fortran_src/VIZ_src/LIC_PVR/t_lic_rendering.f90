@@ -330,7 +330,7 @@
       type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
-      if(lic%pvr%num_pvr.le.0 .and. istep_lic.le.0) return
+      if(lic%pvr%num_pvr.le.0 .and. istep_lic.lt.0) return
 !
       if(lic%flag_each_repart) then
         call LIC_visualize_w_each_repart                                &
@@ -363,7 +363,7 @@
       type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
-      if(lic%pvr%num_pvr .le. 0 .and. istep_lic.le.0) return
+      if(lic%pvr%num_pvr .le. 0 .and. istep_lic.lt.0) return
 !
       if(lic%flag_each_repart) then
         call LIC_anaglyph_w_each_repart                                 &
