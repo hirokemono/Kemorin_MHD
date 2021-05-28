@@ -147,7 +147,7 @@
 !
       do i_img = 1, num_img
         pvr_proj(i_img)%start_fix%irank_composit_ref                    &
-     &                                   = mod(i_pvr-1,nprocs)
+     &                                = mod(i_img+i_pvr-1,nprocs)
       end do
 !
       if(num_img .eq. 1) then
