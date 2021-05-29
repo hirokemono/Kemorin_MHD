@@ -157,8 +157,6 @@
 !>    Eye separation angle for streo view
         real(kind = kreal) :: eye_sep_angle = zero
 !
-!>    Integer flag for movie file format
-        integer(kind = kint) :: iflag_movie_fmt = iflag_BMP
 !>    Integer flag for movie output
         integer(kind = kint) :: iflag_movie_mode = IFLAG_NO_MOVIE
 !
@@ -167,6 +165,9 @@
       end type pvr_view_parameter
 !
       type pvr_movie_parameter
+!>    Integer flag for movie file format
+        integer(kind = kint) :: iflag_movie_fmt = iflag_BMP
+!
 !>     Rotatin axis:    id_rot_axis
         integer(kind = kint) :: id_rot_axis = 3
 !>     Rotation range

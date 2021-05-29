@@ -45,17 +45,17 @@
       character(len = kchara) :: tmpchara
 !
 !
-      view_param%iflag_movie_fmt = iflag_UNDEFINED
+      movie_def%iflag_movie_fmt = iflag_UNDEFINED
       if(movie_ctl%movie_format_ctl%iflag .gt. 0) then
         tmpchara = movie_ctl%movie_format_ctl%charavalue
         if(cmp_no_case(tmpchara, hd_PNG)) then
-          view_param%iflag_movie_fmt = iflag_PNG
+          movie_def%iflag_movie_fmt = iflag_PNG
         else if(cmp_no_case(tmpchara, hd_BMP)) then
-          view_param%iflag_movie_fmt = iflag_BMP
+          movie_def%iflag_movie_fmt = iflag_BMP
         else if(cmp_no_case(tmpchara, hd_QUILT_BMP)) then
-          view_param%iflag_movie_fmt = iflag_QUILT_BMP
+          movie_def%iflag_movie_fmt = iflag_QUILT_BMP
         else
-          view_param%iflag_movie_fmt = iflag_UNDEFINED
+          movie_def%iflag_movie_fmt = iflag_UNDEFINED
         end if
       end if
 !
@@ -77,7 +77,7 @@
         end if
       end if
 !
-      if((view_param%iflag_movie_fmt .eq. iflag_QUILT_BMP)) then
+      if((movie_def%iflag_movie_fmt .eq. iflag_QUILT_BMP)) then
         if(movie_ctl%quilt_row_column_ctl%iflag .eq. 0) then
           view_param%n_row =     1
           view_param%n_column =  movie_ctl%num_frames_ctl%intvalue
