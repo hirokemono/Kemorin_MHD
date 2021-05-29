@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine rendering_image(istep_pvr, time, mesh, color_param,  &
-!!     &          cbar_param, field_pvr, draw_param, view_param,        &
+!!     &          cbar_param, field_pvr, draw_param, view_data,        &
 !!     &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
-!!        type(pvr_view_parameter), intent(in) :: view_param
+!!        type(pvr_modelview_data), intent(in) :: view_data
 !!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
 !!        type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
@@ -26,15 +26,14 @@
 !!      subroutine sel_write_pvr_local_img(index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
-!!      subroutine set_output_rot_sequence_image(istep_pvr,             &
-!!     &          iflag_img_fmt, file_prefix, num_img, n_row_column,    &
-!!     &          view_param, rot_rgb)
+!!      subroutine set_output_rot_sequence_image                        &
+!!     &         (istep_pvr, iflag_img_fmt, file_prefix,                &
+!!     &          num_img, n_row_column, rot_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: n_row_column(2)
 !!        integer(kind = kint), intent(in) :: iflag_img_fmt
 !!        character(len=kchara), intent(in) :: file_prefix
-!!        type(pvr_view_parameter), intent(in) :: view_param
 !!        type(pvr_image_type), intent(in) :: rot_rgb(num_img)
 !!@endverbatim
 !
@@ -60,7 +59,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image(istep_pvr, time, mesh, color_param,    &
-     &          cbar_param, field_pvr, draw_param, view_param,          &
+     &          cbar_param, field_pvr, draw_param, view_data,           &
      &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
 !
       use m_geometry_constants
@@ -87,7 +86,7 @@
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
-      type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_modelview_data), intent(in) :: view_data
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
@@ -100,7 +99,7 @@
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image(mesh%node, mesh%ele, mesh%surf,     &
      &    pvr_screen, field_pvr, draw_param,                            &
-     &    color_param, view_param%viewpoint_vec, ray_vec4,              &
+     &    color_param, view_data%viewpoint_vec, ray_vec4,               &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &
@@ -226,11 +225,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_output_rot_sequence_image(istep_pvr,               &
-     &          iflag_img_fmt, file_prefix, num_img, n_row_column,      &
-     &          view_param, rot_rgb)
+      subroutine set_output_rot_sequence_image                          &
+     &         (istep_pvr, iflag_img_fmt, file_prefix,                  &
+     &          num_img, n_row_column, rot_rgb)
 !
-      use t_control_params_4_pvr
       use t_pvr_image_array
       use t_MPI_quilt_bitmap_IO
       use convert_real_rgb_2_bite
@@ -242,7 +240,6 @@
       integer(kind = kint), intent(in) :: n_row_column(2)
       integer(kind = kint), intent(in) :: iflag_img_fmt
       character(len=kchara), intent(in) :: file_prefix
-      type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_image_type), intent(in) :: rot_rgb(num_img)
 !
       integer(kind = kint) :: i_rot, icou

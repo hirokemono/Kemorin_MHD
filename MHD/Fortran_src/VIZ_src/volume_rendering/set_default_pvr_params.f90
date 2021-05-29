@@ -4,10 +4,11 @@
 !        programmed by H.Matsui on May. 2009
 !
 !!      subroutine check_pvr_parameters                                 &
-!!     &         (outline, view_param, color_param)
+!!     &         (outline, view_param, view_data, color_param)
 !!      subroutine set_default_pvr_data_params(outline, color_param)
 !!        type(pvr_domain_outline), intent(in) :: outline
 !!        type(pvr_view_parameter), intent(inout) :: view_param
+!!        type(pvr_modelview_data), intent(inout) :: view_data
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !
       module set_default_pvr_params
@@ -30,19 +31,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_pvr_parameters                                   &
-     &         (outline, view_param, color_param)
+     &         (outline, view_param, view_data, color_param)
 !
       use t_surf_grp_4_pvr_domain
       use t_geometries_in_pvr_screen
 !
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_modelview_data), intent(inout) :: view_data
       type(pvr_colormap_parameter), intent(inout) :: color_param
 !
 !
-      if(view_param%iflag_viewpoint .eq. 0) then
+      if(view_data%iflag_viewpoint .eq. 0) then
         call set_default_viewpoint_pvr(outline%center_g,                &
-     &      outline%xx_minmax_g, view_param%viewpoint_vec)
+     &      outline%xx_minmax_g, view_data%viewpoint_vec)
       end if
 !
       if(view_param%iflag_lookpoint .eq. 0) then

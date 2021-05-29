@@ -57,7 +57,7 @@
       if (mat%modelview_mat_ctl%num .gt. 0) then
         call copy_pvr_modelview_matrix(mat, view_data)
       else
-        call set_viewpoint_vector_ctl(mat, view_param)
+        call set_viewpoint_vector_ctl(mat, view_param, view_data)
       end if
 !
       if(mat%view_rotation_deg_ctl%iflag .gt. 0                         &
@@ -235,10 +235,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_viewpoint_vector_ctl(mat, view_param)
+      subroutine set_viewpoint_vector_ctl(mat, view_param, view_data)
 !
       type(modeview_ctl), intent(in) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_modelview_data), intent(inout) :: view_data
 !
       integer(kind = kint) :: i, nd
 !
@@ -271,10 +272,10 @@
       do i = 1, mat%viewpoint_ctl%num
         nd = set_3direction_flag(mat%viewpoint_ctl%c_tbl(i))
         if(nd .eq. 0) cycle
-        view_param%viewpoint_vec(nd) = mat%viewpoint_ctl%vect(i)
+        view_data%viewpoint_vec(nd) = mat%viewpoint_ctl%vect(i)
       end do
       if(mat%viewpoint_ctl%num .ge. 3) then
-        view_param%iflag_viewpoint = 1
+        view_data%iflag_viewpoint = 1
       end if
 !
       do i = 1, mat%up_dir_ctl%num
@@ -289,8 +290,8 @@
       if (iflag_debug .gt. 0) then
         write(*,*) 'iflag_lookpoint_vec', view_param%iflag_lookpoint
         write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
-        write(*,*) 'iflag_viewpoint_vec', view_param%iflag_viewpoint
-        write(*,*) 'viewpoint_vec', view_param%viewpoint_vec(1:3)
+        write(*,*) 'iflag_viewpoint_vec', view_data%iflag_viewpoint
+        write(*,*) 'viewpoint_vec', view_data%viewpoint_vec(1:3)
         write(*,*) 'iflag_updir_vec', view_param%iflag_updir
         write(*,*) 'up_direction_vec',                                  &
      &            view_param%up_direction_vec(1:3)

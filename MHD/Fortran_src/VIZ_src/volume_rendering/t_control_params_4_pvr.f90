@@ -84,6 +84,11 @@
         real(kind = kreal) :: modelview_mat(4,4)
 !>    Inverse of modelview matrix
         real(kind = kreal) :: modelview_inv(4,4)
+!
+!>    Defined flag for viewpoint
+        integer(kind = kint) :: iflag_viewpoint = 0
+!>    Position of viewpoint
+        real(kind = kreal) :: viewpoint_vec(3) = (/zero,zero,zero/)
       end type pvr_modelview_data
 !
 !>  Structure for view parameteres
@@ -135,11 +140,6 @@
         integer(kind = kint) :: iflag_updir = 0
 !>    Vector for up-direction
         real(kind = kreal) :: up_direction_vec(3) = (/zero,zero,zero/)
-!
-!>    Defined flag for viewpoint
-        integer(kind = kint) :: iflag_viewpoint = 0
-!>    Position of viewpoint
-        real(kind = kreal) :: viewpoint_vec(3) = (/zero,zero,zero/)
       end type pvr_view_parameter
 !
 !>  Stereo view parameters

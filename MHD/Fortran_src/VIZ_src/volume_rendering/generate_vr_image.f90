@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine transfer_to_screen                                   &
 !!     &        (node, ele, surf, surf_grp, surf_grp_v,                 &
-!!     &         draw_param, view_param, view_data, projection_mat,     &
+!!     &         draw_param, view_data, n_pvr_pixel, projection_mat,    &
 !!     &         pixel_xy, pvr_bound, pvr_screen, pvr_start)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -19,8 +19,9 @@
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(rendering_parameter), intent(in) :: draw_param
-!!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_modelview_data), intent(in) :: view_data
+!!        integer(kind = kint), intent(in) :: n_pvr_pixel(2)
+!!        real(kind = kreal), intent(in) :: projection_mat(4,4)
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
@@ -53,7 +54,7 @@
 !
       subroutine transfer_to_screen                                     &
      &        (node, ele, surf, surf_grp, surf_grp_v,                   &
-     &         draw_param, view_param, view_data, projection_mat,       &
+     &         draw_param, view_data, n_pvr_pixel, projection_mat,      &
      &         pixel_xy, pvr_bound, pvr_screen, pvr_start)
 !
       use m_geometry_constants
@@ -72,9 +73,10 @@
       type(surface_group_data), intent(in) :: surf_grp
       type(surface_group_normals), intent(in) :: surf_grp_v
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
-      type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_modelview_data), intent(in) :: view_data
       type(rendering_parameter), intent(in) :: draw_param
+!
+      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       type(pvr_projected_position), intent(inout) :: pvr_screen
@@ -103,14 +105,14 @@
       call overwte_position_pvr_screen(projection_mat,                  &
      &    node%numnod, pvr_screen%x_nod_model)
 !
-      call set_pvr_domain_surface_data(view_param%n_pvr_pixel,          &
+      call set_pvr_domain_surface_data(n_pvr_pixel,                     &
      &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
      &    surf%ie_surf, surf%isf_4_ele, pvr_screen%x_nod_model,         &
      &    pvr_bound)
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
       call s_set_pvr_ray_start_point(node, ele, surf,                   &
-     &    view_param, pvr_bound, pixel_xy, pvr_screen, pvr_start)
+     &    view_data, pvr_bound, pixel_xy, pvr_screen, pvr_start)
 !
       end subroutine transfer_to_screen
 !
@@ -118,7 +120,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_pvr_ray_start_point                              &
-     &         (node, ele, surf, view_param, pvr_bound,                 &
+     &         (node, ele, surf, view_data, pvr_bound,                  &
      &          pixel_xy, pvr_screen, pvr_start)
 !
       use m_geometry_constants
@@ -132,7 +134,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
-      type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_modelview_data), intent(in) :: view_data
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_projected_position), intent(in) :: pvr_screen
@@ -174,7 +176,7 @@
      &   pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                    &
      &   pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,                &
      &   pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,               &
-     &   pvr_bound%screen_norm, view_param%viewpoint_vec, ray_vec4,     &
+     &   pvr_bound%screen_norm, view_data%viewpoint_vec, ray_vec4,      &
      &   pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,   &
      &   pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,           &
      &   pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,           &

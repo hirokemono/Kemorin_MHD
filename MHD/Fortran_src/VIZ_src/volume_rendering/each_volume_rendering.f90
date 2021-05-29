@@ -140,8 +140,8 @@
       end do
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
-      call check_pvr_parameters                                         &
-     &   (pvr_param%outline, pvr_param%view, pvr_param%color)
+      call check_pvr_parameters(pvr_param%outline, pvr_param%view,      &
+     &                          pvr_param%view_data, pvr_param%color)
 !
       call set_pixel_on_pvr_screen(pvr_param%view, pvr_param%pixel)
 !
@@ -223,8 +223,8 @@
      &    pvr_param%draw_param, pvr_proj(2)%bound)
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
-      call check_pvr_parameters                                         &
-     &   (pvr_param%outline, pvr_param%view, pvr_param%color)
+      call check_pvr_parameters(pvr_param%outline, pvr_param%view,      &
+     &                          pvr_param%view_data, pvr_param%color)
 !
       call set_pixel_on_pvr_screen(pvr_param%view, pvr_param%pixel)
 !

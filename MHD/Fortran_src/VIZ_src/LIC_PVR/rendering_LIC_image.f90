@@ -74,7 +74,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
-     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
+     &    pvr_param%draw_param, pvr_param%view_data, pvr_proj%screen,   &
      &    pvr_proj%start_fix, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine lic_rendering_with_fixed_view
@@ -108,15 +108,16 @@
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
-     &    pvr_param%view, pvr_param%view_data, pvr_proj%projection_mat, &
-     &    pvr_param%pixel, pvr_proj%bound, pvr_proj%screen, start_rot)
+     &    pvr_param%view_data, pvr_param%view%n_pvr_pixel,              &
+     &    pvr_proj%projection_mat, pvr_param%pixel,                     &
+     &    pvr_proj%bound, pvr_proj%screen, start_rot)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, start_rot, stencil_rot)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
-     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
+     &    pvr_param%draw_param, pvr_param%view_data, pvr_proj%screen,   &
      &    start_rot, stencil_rot, pvr_rgb)
 !
       call deallocate_pvr_ray_start(start_rot)

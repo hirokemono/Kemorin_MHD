@@ -379,11 +379,11 @@
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) then
-          call set_output_rot_sequence_image(istep_pvr,                 &
+          call set_output_sequence_image(istep_pvr,                     &
      &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
      &        pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,               &
      &        pvr%pvr_param(i_pvr)%stereo_def%n_row_column_view,        &
-     &        pvr%pvr_param(i_pvr)%view, pvr%pvr_rgb(ist_img+1))
+     &        pvr%pvr_rgb(ist_img+1))
         end if
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
