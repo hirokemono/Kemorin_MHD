@@ -59,21 +59,21 @@
         end if
       end if
 !
-      view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+      movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
       if(movie_ctl%movie_mode_ctl%iflag .gt. 0) then
         tmpchara = movie_ctl%movie_mode_ctl%charavalue
         if(cmp_no_case(tmpchara, FLAG_ROTATE_MOVIE)) then
-          view_param%iflag_movie_mode = I_ROTATE_MOVIE
+          movie_def%iflag_movie_mode = I_ROTATE_MOVIE
         else if(cmp_no_case(tmpchara, FLAG_ZOOM)) then
-          view_param%iflag_movie_mode = I_ZOOM
+          movie_def%iflag_movie_mode = I_ZOOM
         else if(cmp_no_case(tmpchara, FLAG_START_END_VIEW)) then
-          view_param%iflag_movie_mode = I_START_END_VIEW
+          movie_def%iflag_movie_mode = I_START_END_VIEW
         else if(cmp_no_case(tmpchara, FLAG_LOOKINGLASS)) then
-          view_param%iflag_movie_mode = I_LOOKINGLASS
+          movie_def%iflag_movie_mode = I_LOOKINGLASS
         else if(cmp_no_case(tmpchara, FLAG_LIC_KERNEL)) then
-          view_param%iflag_movie_mode = I_LIC_KERNEL
+          movie_def%iflag_movie_mode = I_LIC_KERNEL
         else
-          view_param%iflag_movie_mode = I_ROTATE_MOVIE
+          movie_def%iflag_movie_mode = I_ROTATE_MOVIE
         end if
       end if
 !
@@ -89,16 +89,16 @@
         view_param%num_frame = view_param%n_row * view_param%n_column
       else
         if(movie_ctl%num_frames_ctl%iflag .eq. 0) then
-          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+          movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
         else
           view_param%num_frame = movie_ctl%num_frames_ctl%intvalue
         end if
       end if
 !
-      if(view_param%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
+      if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
 !
         if(movie_ctl%rotation_axis_ctl%iflag .eq. 0) then
-          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+          movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
         else
           tmpchara = movie_ctl%rotation_axis_ctl%charavalue
           if     (cmp_no_case(tmpchara, 'x')) then
@@ -116,7 +116,7 @@
           movie_def%angle_range(1:2)                                    &
      &          = movie_ctl%angle_range_ctl%realvalue(1:2)
         end if
-      else if(view_param%iflag_movie_mode .eq. I_LOOKINGLASS) then
+      else if(movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
         movie_def%id_rot_axis = 2
 !
         if(movie_ctl%angle_range_ctl%iflag .eq. 0) then
@@ -127,17 +127,17 @@
      &          = movie_ctl%angle_range_ctl%realvalue(1:2)
         end if
 !
-      else if(view_param%iflag_movie_mode .eq. I_ZOOM) then
+      else if(movie_def%iflag_movie_mode .eq. I_ZOOM) then
         if(movie_ctl%apature_range_ctl%iflag .eq. 0) then
-          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+          movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
         else
           movie_def%apature_range(1:2)                                  &
      &          = movie_ctl%apature_range_ctl%realvalue(1:2)
         end if
 !
-      else if(view_param%iflag_movie_mode .eq. I_LIC_KERNEL) then
+      else if(movie_def%iflag_movie_mode .eq. I_LIC_KERNEL) then
         if(movie_ctl%LIC_kernel_peak_range_ctl%iflag .eq. 0) then
-          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+          movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
           movie_def%peak_range(1) =  -0.5d0
           movie_def%peak_range(2) =   0.5d0
         else
@@ -145,12 +145,12 @@
      &          = movie_ctl%LIC_kernel_peak_range_ctl%realvalue(1:2)
         end if
 !
-      else if(view_param%iflag_movie_mode .eq. I_START_END_VIEW) then
+      else if(movie_def%iflag_movie_mode .eq. I_START_END_VIEW) then
         if(movie_ctl%view_start_ctl%i_view_transform .eq. 0) then
-          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+          movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
         end if
         if(movie_ctl%view_end_ctl%i_view_transform .eq. 0) then
-          view_param%iflag_movie_mode = IFLAG_NO_MOVIE
+          movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
         end if
       end if
 !

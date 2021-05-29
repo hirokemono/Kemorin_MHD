@@ -344,7 +344,7 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
         ist_img = pvr%istack_pvr_images(i_pvr-1)
@@ -360,7 +360,7 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       do i_pvr = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%view%flag_quilt) cycle
 !
@@ -374,7 +374,7 @@
       do i_pvr = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
-        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%view%flag_quilt) then
           call set_output_rot_sequence_image(istep_pvr, num_img,        &
@@ -389,7 +389,7 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
 !
         ist_img = pvr%istack_pvr_images(i_pvr-1)
@@ -426,7 +426,7 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
         call each_PVR_anaglyph                                          &
@@ -439,7 +439,7 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
         call sel_write_pvr_image_file(istep_pvr, pvr%pvr_rgb(i_pvr))
@@ -450,7 +450,7 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
 !
         call each_PVR_anaglyph_w_rot(istep_pvr, time, geofem, jacs,     &

@@ -187,7 +187,7 @@
         call set_LIC_each_field(geofem, nod_fld,                        &
      &      repart_p, lic_param(i_lic), repart_data, v_sol)
 !
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
@@ -202,7 +202,7 @@
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_lic)%view%flag_quilt) cycle
 !
@@ -214,7 +214,7 @@
       do i_lic = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_lic)%view%flag_quilt) then
           call set_output_rot_sequence_image(istep_lic, num_img,        &
@@ -227,7 +227,7 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                    .eq. IFLAG_NO_MOVIE) cycle
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
@@ -279,7 +279,7 @@
         call set_LIC_each_field(geofem, nod_fld,                        &
      &      repart_p, lic_param(i_lic), repart_data, v_sol)
 !
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_anaglyph at once'
@@ -292,7 +292,7 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
         call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_lic))
@@ -301,7 +301,7 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                    .eq. IFLAG_NO_MOVIE) cycle
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
@@ -365,7 +365,7 @@
         call set_LIC_each_field(geofem, nod_fld,                        &
      &      repart_p, lic_param(i_lic), repart_data, v_sol)
 !
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .eq. IFLAG_NO_MOVIE) then
           if(my_rank .eq. 0) write(*,*)                                 &
      &                     's_each_LIC_rendering each', i_lic
@@ -393,7 +393,7 @@
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_lic)%view%flag_quilt) cycle
 !
@@ -406,7 +406,7 @@
       do i_lic = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_lic-1) + 1
         num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_lic)%view%flag_quilt) then
           call set_output_rot_sequence_image(istep_lic, num_img,        &
@@ -463,7 +463,7 @@
         call set_LIC_each_field(geofem, nod_fld,                        &
      &      repart_p, lic_param(i_lic), repart_data, v_sol)
 !
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .eq. IFLAG_NO_MOVIE) then
           if(my_rank .eq. 0) write(*,*)                                 &
      &                     's_each_LIC_anaglyph each', i_lic
@@ -489,7 +489,7 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       do i_lic = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_lic)%view%iflag_movie_mode                   &
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
         call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_lic))

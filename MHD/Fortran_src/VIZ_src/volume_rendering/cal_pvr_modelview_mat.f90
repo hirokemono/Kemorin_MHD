@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine cal_pvr_modelview_matrix                             &
-!!     &          (i_rot, outline, movie_param, view_param, color_param)
+!!     &          (i_rot, outline, movie_def, view_param, color_param)
 !!        type(pvr_domain_outline), intent(in) :: outline
-!!        type(pvr_movie_parameter), intent(in) :: movie_param
+!!        type(pvr_movie_parameter), intent(in) :: movie_def
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!@endverbatim
@@ -40,7 +40,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pvr_modelview_matrix                               &
-     &          (i_rot, outline, movie_param, view_param, color_param)
+     &          (i_rot, outline, movie_def, view_param, color_param)
 !
       use t_surf_grp_4_pvr_domain
       use cal_inverse_small_matrix
@@ -48,7 +48,7 @@
 !
       integer(kind = kint), intent(in) :: i_rot
       type(pvr_domain_outline), intent(in) :: outline
-      type(pvr_movie_parameter), intent(in) :: movie_param
+      type(pvr_movie_parameter), intent(in) :: movie_def
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_view_parameter), intent(inout) :: view_param
 !
@@ -64,7 +64,7 @@
           end if
         else
           call cal_pvr_rotate_mat_by_views                              &
-     &       (i_rot, outline, movie_param, view_param)
+     &       (i_rot, outline, movie_def, view_param)
         end if
 !
         call cal_inverse_44_matrix(view_param%modelview_mat,            &
@@ -175,7 +175,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pvr_rotate_mat_by_views                            &
-     &         (i_rot, outline, movie_param, view_param)
+     &         (i_rot, outline, movie_def, view_param)
 !
       use t_surf_grp_4_pvr_domain
       use transform_mat_operations
@@ -183,7 +183,7 @@
 !
       integer(kind = kint), intent(in) :: i_rot
       type(pvr_domain_outline), intent(in) :: outline
-      type(pvr_movie_parameter), intent(in) :: movie_param
+      type(pvr_movie_parameter), intent(in) :: movie_def
       type(pvr_view_parameter), intent(inout) :: view_param
 !
       real(kind = kreal) :: rotation_axis(3), rev_lookat(3)
@@ -206,13 +206,13 @@
       end if
 !
 !
-      if(view_param%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
+      if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
         call Kemo_Unit(view_param%modelview_mat)
 !
         rotation_axis(1:3) =       zero
-        rotation_axis(movie_param%id_rot_axis) = one
-        angle_deg = movie_param%angle_range(1)                          &
-     &      + (movie_param%angle_range(2) - movie_param%angle_range(1)) &
+        rotation_axis(movie_def%id_rot_axis) = one
+        angle_deg = movie_def%angle_range(1)                            &
+     &      + (movie_def%angle_range(2) - movie_def%angle_range(1))     &
      &       * dble(i_rot-1) / dble(view_param%num_frame)
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &    angle_deg, rotation_axis(1) )
@@ -220,15 +220,15 @@
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
 !
-      else if(view_param%iflag_movie_mode .eq. I_LOOKINGLASS) then
+      else if(movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
         call Kemo_Unit(view_param%modelview_mat)
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
 !
         rotation_axis(1:3) =                    zero
-        rotation_axis(movie_param%id_rot_axis) = one
-        angle_deg = movie_param%angle_range(2)                          &
-     &      - (movie_param%angle_range(2) - movie_param%angle_range(1)) &
+        rotation_axis(movie_def%id_rot_axis) = one
+        angle_deg = movie_def%angle_range(2)                            &
+     &      - (movie_def%angle_range(2) - movie_def%angle_range(1))     &
      &       * dble(i_rot-1) / dble(view_param%num_frame)
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &    angle_deg, rotation_axis(1) )
