@@ -139,16 +139,19 @@
      &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
+!
+!    Left eye
         call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
      &      pvr_param%movie_def, pvr_param%view,                        &
      &      pvr_param%color, pvr_param%view_data)
-!
-!    Left eye
         call rendering_at_once(istep_pvr, time, mesh, group, field_pvr, &
      &      pvr_param, pvr_proj(1), rot_imgs1%rot_pvr_rgb(i_rot))
         call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
 !
 !    Right eye
+        call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
+     &      pvr_param%movie_def, pvr_param%view,                        &
+     &      pvr_param%color, pvr_param%view_data)
         call rendering_at_once(istep_pvr, time, mesh, group, field_pvr, &
      &      pvr_param, pvr_proj(2), rot_imgs1%rot_pvr_rgb(i_rot))
         call add_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
