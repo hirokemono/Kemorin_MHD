@@ -26,11 +26,12 @@
 !!      subroutine sel_write_pvr_local_img(index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
-!!      subroutine set_output_rot_sequence_image                        &
-!!     &         (istep_pvr, num_img, iflag_img_fmt, file_prefix,       &
+!!      subroutine set_output_rot_sequence_image(istep_pvr,             &
+!!     &          iflag_img_fmt, file_prefix, num_img, n_row_column,    &
 !!     &          view_param, rot_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        integer(kind = kint), intent(in) :: num_img
+!!        integer(kind = kint), intent(in) :: n_row_column(2)
 !!        integer(kind = kint), intent(in) :: iflag_img_fmt
 !!        character(len=kchara), intent(in) :: file_prefix
 !!        type(pvr_view_parameter), intent(in) :: view_param
@@ -225,8 +226,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_output_rot_sequence_image                          &
-     &         (istep_pvr, num_img, iflag_img_fmt, file_prefix,         &
+      subroutine set_output_rot_sequence_image(istep_pvr,               &
+     &          iflag_img_fmt, file_prefix, num_img, n_row_column,      &
      &          view_param, rot_rgb)
 !
       use t_control_params_4_pvr
@@ -238,6 +239,7 @@
 !
       integer(kind = kint), intent(in) :: istep_pvr
       integer(kind = kint), intent(in) :: num_img
+      integer(kind = kint), intent(in) :: n_row_column(2)
       integer(kind = kint), intent(in) :: iflag_img_fmt
       character(len=kchara), intent(in) :: file_prefix
       type(pvr_view_parameter), intent(in) :: view_param
@@ -247,9 +249,8 @@
       character(len=kchara) :: file_tmp, file_w_step
 !
 !
-      quilt_d%n_column(1) = view_param%n_row
-      quilt_d%n_column(2) = view_param%n_column
       quilt_d%n_image = num_img
+      quilt_d%n_row_column(1:2) = n_row_column(1:2)
 !
       icou = 0
       do i_rot = 1, num_img

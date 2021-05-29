@@ -6,10 +6,8 @@
 !>@brief Set each PVR parameters from control
 !!
 !!@verbatim
-!!      subroutine s_set_control_pvr_movie                              &
-!!     &         (movie_ctl, view_param, movie_def)
+!!      subroutine s_set_control_pvr_movie(movie_ctl, movie_def)
 !!        type(pvr_movie_ctl), intent(in) :: movie_ctl
-!!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_movie_parameter), intent(inout) :: movie_def
 !!@endverbatim
 !
@@ -29,8 +27,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_control_pvr_movie                                &
-     &         (movie_ctl, view_param, movie_def)
+      subroutine s_set_control_pvr_movie(movie_ctl, movie_def)
 !
       use t_control_data_pvr_movie
       use t_control_params_4_pvr
@@ -39,7 +36,6 @@
       use skip_comment_f
 !
       type(pvr_movie_ctl), intent(in) :: movie_ctl
-      type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_movie_parameter), intent(inout) :: movie_def
 !
       character(len = kchara) :: tmpchara
@@ -79,14 +75,15 @@
 !
       if((movie_def%iflag_movie_fmt .eq. iflag_QUILT_BMP)) then
         if(movie_ctl%quilt_row_column_ctl%iflag .eq. 0) then
-          view_param%n_row =     1
-          view_param%n_column =  movie_ctl%num_frames_ctl%intvalue
+          movie_def%n_row_column_movie(1) =     1
+          movie_def%n_row_column_movie(2)                               &
+     &          = movie_ctl%num_frames_ctl%intvalue
         else
-          view_param%n_row = movie_ctl%quilt_row_column_ctl%intvalue(1)
-          view_param%n_column                                           &
-     &          = movie_ctl%quilt_row_column_ctl%intvalue(2)
+          movie_def%n_row_column_movie(1:2)                             &
+     &          = movie_ctl%quilt_row_column_ctl%intvalue(1:2)
         end if
-        movie_def%num_frame = view_param%n_row * view_param%n_column
+        movie_def%num_frame = movie_def%n_row_column_movie(1)           &
+     &                       * movie_def%n_row_column_movie(2)
       else
         if(movie_ctl%num_frames_ctl%iflag .eq. 0) then
           movie_def%iflag_movie_mode = IFLAG_NO_MOVIE

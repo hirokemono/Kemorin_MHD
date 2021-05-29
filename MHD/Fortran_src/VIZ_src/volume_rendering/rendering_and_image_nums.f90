@@ -65,8 +65,8 @@
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
         else if(pvr_param(i_pvr)%view%flag_quilt) then
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1)         &
-     &                            + pvr_param(i_pvr)%view%n_row         &
-     &                             * pvr_param(i_pvr)%view%n_column
+     &                + pvr_param(i_pvr)%view%n_row_column_view(1)      &
+     &                 * pvr_param(i_pvr)%view%n_row_column_view(2)
         else
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
         end if

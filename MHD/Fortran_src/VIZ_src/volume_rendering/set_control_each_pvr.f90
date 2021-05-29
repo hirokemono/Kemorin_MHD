@@ -312,10 +312,8 @@
         if(pvr_ctl%quilt_c%i_quilt_image .eq. 0) then
           view_param%flag_quilt =      .FALSE.
         else
-          view_param%n_row                                              &
-     &        =    pvr_ctl%quilt_c%num_row_column_ctl%intvalue(1)
-          view_param%n_column                                           &
-     &        = pvr_ctl%quilt_c%num_row_column_ctl%intvalue(2)
+          view_param%n_row_column_view(1:2)                             &
+     &        =    pvr_ctl%quilt_c%num_row_column_ctl%intvalue(1:2)
         end if
       end if
 !

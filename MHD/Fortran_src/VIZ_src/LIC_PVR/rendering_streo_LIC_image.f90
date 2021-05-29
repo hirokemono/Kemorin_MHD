@@ -105,8 +105,10 @@
       end if
 !
       call set_output_rot_sequence_image                                &
-     &   (istep_pvr, pvr_param%movie_def%num_frame, iflag_img_fmt,      &
-     &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb)
+     &   (istep_pvr, iflag_img_fmt, pvr_rgb%pvr_prefix,                 &
+     &    pvr_param%movie_def%num_frame,                                &
+     &    pvr_param%movie_def%n_row_column_movie,                       &
+     &    pvr_param%view, rot_imgs1%rot_pvr_rgb)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
@@ -182,8 +184,10 @@
       end if
 !
       call set_output_rot_sequence_image                                &
-     &   (istep_pvr, pvr_param%movie_def%num_frame, iflag_img_fmt,      &
-     &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb)
+     &   (istep_pvr, iflag_img_fmt, pvr_rgb%pvr_prefix,                 &
+     &    pvr_param%movie_def%num_frame,                                &
+     &    pvr_param%movie_def%n_row_column_movie,                       &
+     &    pvr_param%view, rot_imgs1%rot_pvr_rgb)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       call dealloc_rot_pvr_image_arrays(pvr_param%movie_def, rot_imgs1)

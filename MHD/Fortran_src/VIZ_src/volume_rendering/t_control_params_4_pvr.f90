@@ -141,10 +141,8 @@
         logical :: flag_stereo_pvr = .FALSE.
 !>    Flag to make quilt images with fixed view
         logical :: flag_quilt =  .FALSE.
-!>    Number of row of image array
-        integer(kind = kint) :: n_row =    0
-!>    Number of column of image array
-        integer(kind = kint) :: n_column = 0
+!>    Number of row and column of image array (horizontal, vertical)
+        integer(kind = kint) :: n_row_column_view(2) = 0
 !
 !>    Flag to defeine eye separation by angle
         logical :: flag_eye_separation_angle =  .FALSE.
@@ -166,6 +164,8 @@
 !
 !>     Number of frames
         integer(kind = kint) :: num_frame =   0
+!>    Number of row and column of image array (horizontal, vertical)
+        integer(kind = kint) :: n_row_column_movie(2) = 0
 !
 !>     Rotatin axis:    id_rot_axis
         integer(kind = kint) :: id_rot_axis = 3

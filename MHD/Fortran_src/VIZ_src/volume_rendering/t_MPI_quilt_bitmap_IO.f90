@@ -20,11 +20,11 @@
 !!        integer(kind = kint), intent(in) :: npixel_xy(2)
 !!        type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
 !!
-!!      subroutine mpi_write_quilt_BMP_file(file_prefix, n_column,      &
+!!      subroutine mpi_write_quilt_BMP_file(file_prefix, n_row_column,  &
 !!     &                                    num_image_lc, icou_each_pe  &
 !!     &                                    npixel_x, npixel_y, images)
 !!        character(len=kchara), intent(in) :: file_prefix
-!!        integer(kind = kint), intent(in) :: n_column(2)
+!!        integer(kind = kint), intent(in) :: n_row_column(2)
 !!        integer(kind = kint), intent(in) :: num_image_lc
 !!        integer(kind = kint), intent(in) :: icou_each_pe(num_image_lc)
 !!        integer(kind = kint), intent(in) :: npixel_x, npixel_y
@@ -63,7 +63,7 @@
 !>        Number of images
         integer(kind = kint) :: n_image
 !>        Number of row and columns of images
-        integer(kind = kint) :: n_column(2)
+        integer(kind = kint) :: n_row_column(2)
 !
 !>        Number of images in each process
         integer(kind = kint) :: num_image_lc
@@ -98,7 +98,7 @@
       integer(kind = kint) :: i
 !
 !
-      quilt_d%n_column(1:2) = nimage_xy(1:2)
+      quilt_d%n_row_column(1:2) = nimage_xy(1:2)
       quilt_d%n_image = nimage_xy(1) * nimage_xy(2)
       call count_local_image_pe_quilt                                   &
      &   (quilt_d%n_image, quilt_d%num_image_lc)
@@ -130,7 +130,7 @@
 !
       if(quilt_d%image_seq_format .eq. iflag_QUILT_BMP) then
         call mpi_write_quilt_BMP_file                                   &
-     &     (quilt_d%image_seq_prefix, quilt_d%n_column,                 &
+     &     (quilt_d%image_seq_prefix, quilt_d%n_row_column,             &
      &      quilt_d%num_image_lc, quilt_d%icou_each_pe,                 &
      &      quilt_d%npixel_xy(1), quilt_d%npixel_xy(2), quilt_d%images)
       else
@@ -211,7 +211,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_write_quilt_BMP_file(file_prefix, n_column,        &
+      subroutine mpi_write_quilt_BMP_file(file_prefix, n_row_column,    &
      &                                    num_image_lc, icou_each_pe,   &
      &                                    npixel_x, npixel_y, images)
 !
@@ -221,7 +221,7 @@
       use write_bmp_image
 !
       character(len=kchara), intent(in) :: file_prefix
-      integer(kind = kint), intent(in) :: n_column(2)
+      integer(kind = kint), intent(in) :: n_row_column(2)
       integer(kind = kint), intent(in) :: num_image_lc
       integer(kind = kint), intent(in)  :: icou_each_pe(num_image_lc)
 !
@@ -238,8 +238,8 @@
       character(len=kchara) :: file_name
       integer :: ntot_pixel_x, ntot_pixel_y
 !
-      ntot_pixel_x = int(n_column(1)*npixel_x)
-      ntot_pixel_y = int(n_column(2)*npixel_y)
+      ntot_pixel_x = int(n_row_column(1)*npixel_x)
+      ntot_pixel_y = int(n_row_column(2)*npixel_y)
       allocate(bgr_line(3,npixel_x))
 !
       file_name = add_bmp_suffix(file_prefix)
@@ -251,18 +251,17 @@
 !
       do icou = 1, num_image_lc
         ip = icou_each_pe(icou) - 1
-        ix = mod(ip,n_column(1))
-        iy = ip / n_column(1)
+        ix = mod(ip,n_row_column(1))
+        iy = ip / n_row_column(1)
         ilength = 3*int(npixel_x)
-        write(*,*) 'ilength', ilength, icou, icou_each_pe(icou), n_column
         do j = 1, npixel_y
           bgr_line(1,1:npixel_x) = images(icou)%rgb(3,1:npixel_x,j)
           bgr_line(2,1:npixel_x) = images(icou)%rgb(2,1:npixel_x,j)
           bgr_line(3,1:npixel_x) = images(icou)%rgb(1,1:npixel_x,j)
 !
-          ioffset = IO_param%ioff_gl                                   &
-     &          + ilength * (ix + n_column(1) * ((j-1) + iy*npixel_y))
-          call mpi_write_one_chara_b                                   &
+          ioffset = IO_param%ioff_gl                                    &
+     &       + ilength * (ix + n_row_column(1) * ((j-1) + iy*npixel_y))
+          call mpi_write_one_chara_b                                    &
      &       (IO_param%id_file, ioffset, ilength, bgr_line(1,1))
         end do
       end do
