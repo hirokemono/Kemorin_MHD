@@ -26,7 +26,7 @@
 !
       implicit none
 !
-      integer(kind = kint) :: ione_stack(0:1) = (/0,1/)
+      integer(kind = kint), parameter :: ione_stack(0:1) = (/0,1/)
       private :: ione_stack
 !
       private :: cal_modelview_mat_by_views
