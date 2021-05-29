@@ -61,55 +61,55 @@
       real(kind = kreal) ::  posi_zero(4) = (/zero,zero,zero,one/)
 !
 !
-        if(i_rot .eq. 0) then
-          if (view_data%iflag_modelview_mat .eq. 0) then
-            call cal_modelview_mat_by_views                             &
-     &         (outline, view_param, view_data)
-          end if
-        else
-          call cal_pvr_rotate_mat_by_views                              &
-     &       (i_rot, outline, movie_def, view_param, view_data)
+      if(i_rot .eq. 0) then
+        if (view_data%iflag_modelview_mat .eq. 0) then
+          call cal_modelview_mat_by_views                               &
+     &       (outline, view_param, view_data)
         end if
+      else
+        call cal_pvr_rotate_mat_by_views                                &
+     &     (i_rot, outline, movie_def, view_param, view_data)
+      end if
 !
-        call cal_inverse_44_matrix(view_data%modelview_mat,             &
-     &      view_data%modelview_inv, ierr2)
+      call cal_inverse_44_matrix(view_data%modelview_mat,               &
+     &    view_data%modelview_inv, ierr2)
 !
-        istack_l(0) = 0
-        istack_l(1) = color_param%num_pvr_lights
-        do i = 1, color_param%num_pvr_lights
-          call cal_mat44_vec3_on_node                                   &
-     &       (ione, ione, ione_stack, view_data%modelview_mat,          &
-     &        color_param%xyz_pvr_lights(1:3,i), vec_tmp(1))
-          color_param%view_pvr_lights(1:3,i) = vec_tmp(1:3)
+      istack_l(0) = 0
+      istack_l(1) = color_param%num_pvr_lights
+      do i = 1, color_param%num_pvr_lights
+        call cal_mat44_vec3_on_node                                     &
+     &     (ione, ione, ione_stack, view_data%modelview_mat,            &
+     &      color_param%xyz_pvr_lights(1:3,i), vec_tmp(1))
+        color_param%view_pvr_lights(1:3,i) = vec_tmp(1:3)
+      end do
+!
+      call cal_mat44_vec3_on_node(ione, ione, ione_stack,               &
+     &    view_data%modelview_inv, posi_zero(1), vec_tmp(1))
+      view_data%viewpoint_vec(1:3) = vec_tmp(1:3)
+!
+      if (iflag_debug .gt. 0) then
+        write(*,*) 'modelview_mat'
+        do i = 1, 4
+          write(*,'(1p4e16.7)') view_data%modelview_mat(i,1:4)
         end do
 !
-        call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &      view_data%modelview_inv, posi_zero(1), vec_tmp(1))
-        view_data%viewpoint_vec(1:3) = vec_tmp(1:3)
+        write(*,*) 'modelview_inv'
+        do i = 1, 4
+          write(*,'(1p4e16.7)') view_data%modelview_inv(i,1:4)
+        end do
 !
-        if (iflag_debug .gt. 0) then
-          write(*,*) 'modelview_mat'
-          do i = 1, 4
-            write(*,'(1p4e16.7)') view_data%modelview_mat(i,1:4)
-          end do
+        write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
+        write(*,*) 'scale_factor_pvr',                                  &
+     &            view_param%scale_factor_pvr(1:3)
+        write(*,*) 'viewpoint_vec', view_data%viewpoint_vec(1:3)
+        write(*,*) 'viewpt_in_view',                                    &
+     &            view_param%viewpt_in_viewer_pvr(1:3)
 !
-          write(*,*) 'modelview_inv'
-          do i = 1, 4
-            write(*,'(1p4e16.7)') view_data%modelview_inv(i,1:4)
-          end do
-!
-          write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
-          write(*,*) 'scale_factor_pvr',                                &
-     &              view_param%scale_factor_pvr(1:3)
-          write(*,*) 'viewpoint_vec', view_data%viewpoint_vec(1:3)
-          write(*,*) 'viewpt_in_view',                                  &
-     &              view_param%viewpt_in_viewer_pvr(1:3)
-!
-          do i = 1, color_param%num_pvr_lights
-            write(*,*) 'view_pvr_lights',                               &
-     &                i, color_param%view_pvr_lights(1:3,i)
-          end do
-        end if
+        do i = 1, color_param%num_pvr_lights
+          write(*,*) 'view_pvr_lights',                                 &
+     &              i, color_param%view_pvr_lights(1:3,i)
+        end do
+      end if
 !
       end subroutine cal_pvr_modelview_matrix
 !
@@ -163,12 +163,9 @@
       if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
      &      view_data%modelview_mat, view_data%viewpoint_vec, rev_eye)
-        call Kemo_Translate(view_data%modelview_mat,                    &
-     &      rev_eye)
         view_param%iflag_viewpt_in_view = 1
-      else
-        call Kemo_Translate(view_data%modelview_mat, rev_eye)
       end if
+      call Kemo_Translate(view_data%modelview_mat, rev_eye)
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'viewpt_in_view',                                    &
@@ -248,18 +245,14 @@
       call Kemo_Translate(view_data%modelview_mat, rev_lookat)
       view_data%iflag_modelview_mat = 1
 !
-!    rotation matrix for movie
-!
 !
       rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
      &    view_data%modelview_mat, view_data%viewpoint_vec, rev_eye)
-        call Kemo_Translate(view_data%modelview_mat, rev_eye)
         view_param%iflag_viewpt_in_view = 1
-      else
-        call Kemo_Translate(view_data%modelview_mat, rev_eye)
       end if
+      call Kemo_Translate(view_data%modelview_mat, rev_eye)
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'viewpt_in_view',                                    &
