@@ -161,9 +161,12 @@
         integer(kind = kint) :: iflag_movie_fmt = iflag_BMP
 !>    Integer flag for movie output
         integer(kind = kint) :: iflag_movie_mode = IFLAG_NO_MOVIE
+!
 !>     Number of frames
         integer(kind = kint) :: num_frame =   0
+      end type pvr_view_parameter
 !
+      type pvr_movie_parameter
 !>     Rotatin axis:    id_rot_axis
         integer(kind = kint) :: id_rot_axis = 3
 !>     Rotation range
@@ -173,8 +176,7 @@
         real(kind = kreal) :: apature_range(2) = 0.0d0
 !>     Apature range
         real(kind = kreal) :: peak_range(2) =    0.0d0
-      end type pvr_view_parameter
-!
+      end type pvr_movie_parameter
 !
 !>  Structure for PVR colormap parameters
       type pvr_colormap_parameter

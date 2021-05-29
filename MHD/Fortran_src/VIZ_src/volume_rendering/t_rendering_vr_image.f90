@@ -67,6 +67,8 @@
         type(pvr_view_parameter) :: view
 !>        color paramter for volume rendering
         type(pvr_colormap_parameter) :: color
+!>        Viewer coordinate information
+        type(pvr_movie_parameter) :: movie_def
       end type PVR_control_params
 !
 !
