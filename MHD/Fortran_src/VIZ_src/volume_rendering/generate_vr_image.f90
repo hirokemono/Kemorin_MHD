@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine transfer_to_screen                                   &
 !!     &        (node, ele, surf, surf_grp, surf_grp_v,                 &
-!!     &         draw_param, view_param, projection_mat, pixel_xy,      &
-!!     &         pvr_bound, pvr_screen, pvr_start)
+!!     &         draw_param, view_param, view_data, projection_mat,     &
+!!     &         pixel_xy, pvr_bound, pvr_screen, pvr_start)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -20,6 +20,7 @@
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
+!!        type(pvr_modelview_data), intent(in) :: view_data
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
@@ -52,8 +53,8 @@
 !
       subroutine transfer_to_screen                                     &
      &        (node, ele, surf, surf_grp, surf_grp_v,                   &
-     &         draw_param, view_param, projection_mat, pixel_xy,        &
-     &         pvr_bound, pvr_screen, pvr_start)
+     &         draw_param, view_param, view_data, projection_mat,       &
+     &         pixel_xy, pvr_bound, pvr_screen, pvr_start)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -72,6 +73,7 @@
       type(surface_group_normals), intent(in) :: surf_grp_v
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_modelview_data), intent(in) :: view_data
       type(rendering_parameter), intent(in) :: draw_param
       real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
@@ -80,16 +82,15 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
-      call set_opacity_for_boundaries                                   &
-     &   (surf_grp, surf_grp_v, view_param,                             &
+      call set_opacity_for_boundaries(surf_grp, surf_grp_v, view_data,  &
      &    draw_param%iflag_enhanse, draw_param%enhansed_opacity,        &
      &    ele%numele, surf%numsurf, surf%isf_4_ele,                     &
      &    pvr_screen%arccos_sf)
 !
       call axis_direction_in_screen                                     &
-     &   (view_param%modelview_mat, projection_mat, pvr_screen)
+     &   (view_data%modelview_mat, projection_mat, pvr_screen)
 !
-      call cal_position_pvr_modelview(view_param%modelview_mat,         &
+      call cal_position_pvr_modelview(view_data%modelview_mat,          &
      &    node%numnod, node%xx, pvr_screen%x_nod_model)
 !
       call norm_on_model_pvr_domains                                    &

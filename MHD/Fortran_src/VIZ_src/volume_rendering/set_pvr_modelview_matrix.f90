@@ -7,9 +7,11 @@
 !> @brief Evaluate model view matirx
 !!
 !!@verbatim
-!!      subroutine s_set_pvr_modelview_matrix(mat, view_param)
+!!      subroutine s_set_pvr_modelview_matrix                           &
+!!     &         (mat, view_param, stereo_def, view_data)
 !!        type(modeview_ctl), intent(in) :: mat
 !!        type(pvr_view_parameter), intent(inout) :: view_param
+!!        type(pvr_modelview_data), intent(inout) :: view_data
 !!@endverbatim
 !
       module set_pvr_modelview_matrix
@@ -40,11 +42,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_pvr_modelview_matrix                             &
-     &         (mat, view_param, stereo_def)
+     &         (mat, view_param, stereo_def, view_data)
 !
       type(modeview_ctl), intent(in) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_stereo_parameter), intent(inout) :: stereo_def
+      type(pvr_modelview_data), intent(inout) :: view_data
 !
 !
       call copy_pvr_image_size(mat%pixel, view_param)
@@ -52,7 +55,7 @@
       call copy_stereo_perspective_matrix(mat%streo, stereo_def)
 !
       if (mat%modelview_mat_ctl%num .gt. 0) then
-        call copy_pvr_modelview_matrix(mat, view_param)
+        call copy_pvr_modelview_matrix(mat, view_data)
       else
         call set_viewpoint_vector_ctl(mat, view_param)
       end if
@@ -201,12 +204,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_pvr_modelview_matrix(mat, view_param)
+      subroutine copy_pvr_modelview_matrix(mat, view_data)
 !
       use skip_comment_f
 !
       type(modeview_ctl), intent(in) :: mat
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_modelview_data), intent(inout) :: view_data
       integer(kind = kint) :: i, nd1, nd2
 !
 !
@@ -221,12 +224,12 @@
         nd2 = set_4direction_flag(mat%modelview_mat_ctl%c2_tbl(i))
 !
         if(nd1*nd2 .gt. 0) then
-          view_param%modelview_mat(nd2,nd1)                             &
+          view_data%modelview_mat(nd2,nd1)                              &
      &              = mat%modelview_mat_ctl%vect(i)
         end if
       end do
 !
-      view_param%iflag_modelview_mat = 1
+      view_data%iflag_modelview_mat = 1
 !
       end subroutine copy_pvr_modelview_matrix
 !

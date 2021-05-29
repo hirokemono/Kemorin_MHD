@@ -67,6 +67,9 @@
         type(pvr_view_parameter) :: view
 !>        Color paramter for volume rendering
         type(pvr_colormap_parameter) :: color
+!>        Viewer coordinate information
+        type(pvr_modelview_data) :: view_data
+!
 !>        Movie parameters
         type(pvr_movie_parameter) :: movie_def
 !>        Stereo view parameters
@@ -114,8 +117,9 @@
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
-     &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
-     &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_fix)
+     &    pvr_param%view, pvr_param%view_data, pvr_proj%projection_mat, &
+     &    pvr_param%pixel, pvr_proj%bound, pvr_proj%screen,             &
+     &    pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil)
 !
@@ -194,7 +198,7 @@
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm,                          &
-     &    pvr_param%draw_param, pvr_param%view,                         &
+     &    pvr_param%draw_param, pvr_param%view, pvr_param%view_data,    &
      &    pvr_proj%projection_mat, pvr_param%pixel,  pvr_proj%bound,    &
      &    pvr_proj%screen, start_rot)
       call const_pvr_stencil_buffer                                     &

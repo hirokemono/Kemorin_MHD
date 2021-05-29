@@ -179,7 +179,8 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call cal_pvr_modelview_matrix(izero, pvr_param%outline,           &
-     &    pvr_param%movie_def, pvr_param%view, pvr_param%color)
+     &    pvr_param%movie_def, pvr_param%view,                          &
+     &    pvr_param%color, pvr_param%view_data)
       do i_img = 1, num_img
         call set_fixed_view_and_image                                   &
      &     (mesh, group, pvr_param, pvr_rgb(i_img), pvr_proj(i_img))
@@ -248,7 +249,8 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call cal_pvr_modelview_matrix(izero, pvr_param%outline,           &
-     &    pvr_param%movie_def, pvr_param%view, pvr_param%color)
+     &    pvr_param%movie_def, pvr_param%view,                          &
+     &    pvr_param%color, pvr_param%view_data)
       call set_fixed_view_and_image                                     &
      &   (mesh, group, pvr_param, pvr_rgb, pvr_proj(1))
       call set_fixed_view_and_image                                     &

@@ -201,7 +201,8 @@
      &      pvr%field_pvr(i_pvr))
         call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
      &      pvr%pvr_param(i_pvr)%draw_param)
-        call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)
+        call reset_pvr_view_parameteres                                 &
+     &     (pvr%pvr_param(i_pvr)%view_data)
       end do
 !
       call s_set_pvr_controls(geofem%group, nod_fld, pvr%num_pvr,       &
@@ -282,7 +283,8 @@
      &      pvr%field_pvr(i_pvr))
         call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
      &      pvr%pvr_param(i_pvr)%draw_param)
-        call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)
+        call reset_pvr_view_parameteres                                 &
+     &     (pvr%pvr_param(i_pvr)%view_data)
       end do
 !
       call s_set_pvr_controls(geofem%group, nod_fld, pvr%num_pvr,       &

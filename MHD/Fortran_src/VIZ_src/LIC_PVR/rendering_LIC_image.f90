@@ -107,9 +107,9 @@
 !
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
-     &    group%surf_grp, group%surf_grp_norm,  pvr_param%draw_param,   &
-     &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
-     &    pvr_proj%bound, pvr_proj%screen, start_rot)
+     &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
+     &    pvr_param%view, pvr_param%view_data, pvr_proj%projection_mat, &
+     &    pvr_param%pixel, pvr_proj%bound, pvr_proj%screen, start_rot)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, start_rot, stencil_rot)
 !

@@ -88,7 +88,8 @@
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
         call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
-     &      pvr_param%movie_def, pvr_param%view, pvr_param%color)
+     &      pvr_param%movie_def, pvr_param%view,                        &
+     &      pvr_param%color, pvr_param%view_data)
 !
         call rendering_lic_at_once(istep_pvr, time, mesh, group,        &
      &      lic_p, field_lic, pvr_param, pvr_proj,                      &
@@ -156,7 +157,8 @@
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
         call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
-     &      pvr_param%movie_def, pvr_param%view, pvr_param%color)
+     &      pvr_param%movie_def, pvr_param%view,                        &
+     &      pvr_param%color, pvr_param%view_data)
 !
 !    Left eye
         call rendering_lic_at_once                                      &

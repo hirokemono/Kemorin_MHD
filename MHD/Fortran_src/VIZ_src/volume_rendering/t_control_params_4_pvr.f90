@@ -7,7 +7,8 @@
 !> @brief Structures for parameteres for volume rendering
 !!
 !!@verbatim
-!!      subroutine reset_pvr_view_parameteres(view_param)
+!!      subroutine reset_pvr_view_parameteres(view_data)
+!!        type(pvr_modelview_data), intent(inout) :: view_data
 !!      subroutine alloc_pvr_element_group(pvr_area)
 !!      subroutine dealloc_pvr_element_group(pvr_area)
 !!        type(viz_area_parameter), intent(inout) :: pvr_area
@@ -75,6 +76,17 @@
       end type viz_area_parameter
 !
 !>  Structure for view parameteres
+      type pvr_modelview_data
+!>    Defined flag for modelview matrix
+        integer(kind = kint) :: iflag_modelview_mat = 0
+!
+!>    Modelview matrix
+        real(kind = kreal) :: modelview_mat(4,4)
+!>    Inverse of modelview matrix
+        real(kind = kreal) :: modelview_inv(4,4)
+      end type pvr_modelview_data
+!
+!>  Structure for view parameteres
       type pvr_view_parameter
 !>    Number of pixels for image
         integer(kind = kint) :: n_pvr_pixel(2) = (/0,0/)
@@ -96,14 +108,6 @@
         real(kind = kreal) :: perspective_near = zero
 !>    Farther distance for perspective view
         real(kind = kreal) :: perspective_far = zero
-!
-!
-!>    Defined flag for modelview matrix
-        integer(kind = kint) :: iflag_modelview_mat = 0
-!>    Modelview matrix
-        real(kind = kreal) :: modelview_mat(4,4)
-!>    Inverse of modelview matrix
-        real(kind = kreal) :: modelview_inv(4,4)
 !
 !
 !>    Defined flag for view rotation
@@ -253,13 +257,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine reset_pvr_view_parameteres(view_param)
+      subroutine reset_pvr_view_parameteres(view_data)
 !
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_modelview_data), intent(inout) :: view_data
 !
 !
-        view_param%modelview_mat(1:4,1:4) =   0.0d0
-        view_param%modelview_inv(1:4,1:4) =   0.0d0
+      view_data%modelview_mat(1:4,1:4) =   0.0d0
+      view_data%modelview_inv(1:4,1:4) =   0.0d0
 !
       end subroutine reset_pvr_view_parameteres
 !
