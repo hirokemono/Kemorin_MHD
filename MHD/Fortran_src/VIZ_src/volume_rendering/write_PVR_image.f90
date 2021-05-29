@@ -26,7 +26,7 @@
 !!      subroutine sel_write_pvr_local_img(index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
-!!      subroutine set_output_rot_sequence_image                        &
+!!      subroutine set_output_sequence_image                            &
 !!     &         (istep_pvr, iflag_img_fmt, file_prefix,                &
 !!     &          num_img, n_row_column, rot_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
@@ -225,7 +225,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_output_rot_sequence_image                          &
+      subroutine set_output_sequence_image                              &
      &         (istep_pvr, iflag_img_fmt, file_prefix,                  &
      &          num_img, n_row_column, rot_rgb)
 !
@@ -292,7 +292,7 @@
       call sel_write_pvr_image_files(quilt_d)
       call dealloc_quilt_rgb_images(quilt_d)
 !
-      end subroutine set_output_rot_sequence_image
+      end subroutine set_output_sequence_image
 !
 !  ---------------------------------------------------------------------
 !
