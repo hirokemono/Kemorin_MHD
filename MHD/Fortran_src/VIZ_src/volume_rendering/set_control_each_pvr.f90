@@ -22,9 +22,9 @@
 !!        type(viz_area_parameter), intent(inout) :: pvr_area
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !!        type(pvr_colorbar_parameter), intent(inout) :: cbar_param
-!!      subroutine set_pvr_stereo_control(pvr_ctl, view_param)
+!!      subroutine set_pvr_stereo_control(pvr_ctl, stereo_def)
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl
-!!        type(pvr_view_parameter), intent(inout) :: view_param
+!!        type(pvr_stereo_parameter), intent(inout) :: stereo_def
 !!@endverbatim
 !
       module set_control_each_pvr
@@ -290,29 +290,29 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_stereo_control(pvr_ctl, view_param)
+      subroutine set_pvr_stereo_control(pvr_ctl, stereo_def)
 !
       use t_control_params_4_pvr
       use set_area_4_viz
       use skip_comment_f
 !
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_stereo_parameter), intent(inout) :: stereo_def
 !
 !
-      view_param%flag_stereo_pvr = .FALSE.
-      view_param%flag_quilt =      .FALSE.
+      stereo_def%flag_stereo_pvr = .FALSE.
+      stereo_def%flag_quilt =      .FALSE.
       if(yes_flag(pvr_ctl%streo_ctl%charavalue)) then
-        view_param%flag_stereo_pvr = .TRUE.
+        stereo_def%flag_stereo_pvr = .TRUE.
       else if(yes_flag(pvr_ctl%quilt_ctl%charavalue)) then
-        view_param%flag_quilt =      .TRUE.
+        stereo_def%flag_quilt =      .TRUE.
       end if
 !
-      if(view_param%flag_quilt) then
+      if(stereo_def%flag_quilt) then
         if(pvr_ctl%quilt_c%i_quilt_image .eq. 0) then
-          view_param%flag_quilt =      .FALSE.
+          stereo_def%flag_quilt =      .FALSE.
         else
-          view_param%n_row_column_view(1:2)                             &
+          stereo_def%n_row_column_view(1:2)                             &
      &        =    pvr_ctl%quilt_c%num_row_column_ctl%intvalue(1:2)
         end if
       end if

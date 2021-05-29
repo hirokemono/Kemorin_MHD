@@ -113,8 +113,8 @@
       flag_each_repart = .FALSE.
       do i_lic = 1, num_lic
         if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
-        call set_pvr_stereo_control                                     &
-     &     (pvr_ctl_type(i_lic), pvr_param(i_lic)%view)
+        call set_pvr_stereo_control(pvr_ctl_type(i_lic),                &
+     &                              pvr_param(i_lic)%stereo_def)
         call s_set_control_pvr_movie(pvr_ctl_type(i_lic)%movie,         &
      &                               pvr_param(i_lic)%movie_def)
 !
@@ -131,8 +131,8 @@
 !
 !   set transfer matrix
 !
-        call s_set_pvr_modelview_matrix                                 &
-     &     (pvr_ctl_type(i_lic)%mat, pvr_param(i_lic)%view)
+        call s_set_pvr_modelview_matrix(pvr_ctl_type(i_lic)%mat,        &
+     &      pvr_param(i_lic)%view, pvr_param(i_lic)%stereo_def)
       end do
 !
       call set_control_lic_noise(num_lic, lic_param)

@@ -94,8 +94,8 @@
 !
 !
       do i_pvr = 1, num_pvr
-        call set_pvr_stereo_control                                     &
-     &     (pvr_ctl_type(i_pvr), pvr_param(i_pvr)%view)
+        call set_pvr_stereo_control(pvr_ctl_type(i_pvr),                &
+     &                              pvr_param(i_pvr)%stereo_def)
         call s_set_control_pvr_movie(pvr_ctl_type(i_pvr)%movie,         &
      &                               pvr_param(i_pvr)%movie_def)
 !
@@ -118,8 +118,8 @@
 !
 !   set transfer matrix
 !
-        call s_set_pvr_modelview_matrix                                 &
-     &     (pvr_ctl_type(i_pvr)%mat, pvr_param(i_pvr)%view)
+        call s_set_pvr_modelview_matrix(pvr_ctl_type(i_pvr)%mat,        &
+     &      pvr_param(i_pvr)%view, pvr_param(i_pvr)%stereo_def)
       end do
 !
       end subroutine s_set_pvr_controls
