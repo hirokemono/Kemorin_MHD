@@ -146,29 +146,6 @@
      &       * proj%perspective_near_ctl%iflag                          &
      &       * proj%perspective_far_ctl%iflag
 !
-!
-      if(streo%focalpoint_ctl%iflag .gt. 0) then
-        view_param%focalLength = streo%focalpoint_ctl%realvalue
-      else
-        view_param%focalLength = 1.0d+1
-      end if
-!
-      view_param%flag_eye_separation_angle = .FALSE.
-      if(streo%eye_sep_angle_ctl%iflag .gt. 0) then
-        view_param%flag_eye_separation_angle = .TRUE.
-        view_param%eye_sep_angle = streo%eye_sep_angle_ctl%realvalue
-      else if(streo%eye_separation_ctl%iflag .gt. 0) then
-        view_param%eye_separation = streo%eye_separation_ctl%realvalue
-      else
-        view_param%eye_separation = 1.0d-1
-      end if
-!
-      view_param%flag_setp_eye_separation_angle = .FALSE.
-      if(streo%step_eye_sep_angle_ctl%iflag .gt. 0                      &
-     &   .and. yes_flag(streo%step_eye_sep_angle_ctl%charavalue)) then
-        view_param%flag_setp_eye_separation_angle = .TRUE.
-      end if
-!
       end subroutine copy_pvr_perspective_matrix
 !
 ! -----------------------------------------------------------------------
@@ -196,6 +173,28 @@
             write(*,*) 'Turn off Quilt view.'
           end if
         end if
+      end if
+!
+      if(streo%focalpoint_ctl%iflag .gt. 0) then
+        stereo_def%focalLength = streo%focalpoint_ctl%realvalue
+      else
+        stereo_def%focalLength = 1.0d+1
+      end if
+!
+      stereo_def%flag_eye_separation_angle = .FALSE.
+      if(streo%eye_sep_angle_ctl%iflag .gt. 0) then
+        stereo_def%flag_eye_separation_angle = .TRUE.
+        stereo_def%eye_sep_angle = streo%eye_sep_angle_ctl%realvalue
+      else if(streo%eye_separation_ctl%iflag .gt. 0) then
+        stereo_def%eye_separation = streo%eye_separation_ctl%realvalue
+      else
+        stereo_def%eye_separation = 1.0d-1
+      end if
+!
+      stereo_def%flag_setp_eye_separation_angle = .FALSE.
+      if(streo%step_eye_sep_angle_ctl%iflag .gt. 0                      &
+     &   .and. yes_flag(streo%step_eye_sep_angle_ctl%charavalue)) then
+        stereo_def%flag_setp_eye_separation_angle = .TRUE.
       end if
 !
       end subroutine copy_stereo_perspective_matrix

@@ -11,12 +11,14 @@
 !!
 !!      subroutine set_pvr_projection_matrix                            &
 !!     &         (i_pvr, view_param, projection_mat)
-!!      subroutine set_pvr_step_projection_mat                          &
-!!     &          (i_img, num_img, view_param, projection_step)
+!!      subroutine set_pvr_step_projection_mat(i_img, num_img,          &
+!!     &          view_param, stereo_def, projection_step)
 !!      subroutine set_pvr_projection_left_mat                          &
-!!     &          (i_pvr, view_param, projection_left)
+!!     &          (i_pvr, view_param, stereo_def, projection_left)
 !!      subroutine set_pvr_projection_right_mat                         &
-!!     &          (i_pvr, view_param, projection_right)
+!!     &          (i_pvr, view_param, stereo_def, projection_right)
+!!        type(pvr_view_parameter), intent(in) :: view_param
+!!        type(pvr_stereo_parameter), intent(in) :: stereo_def
 !!@endverbatim
 !
       module cal_pvr_projection_mat
@@ -28,6 +30,8 @@
       use t_control_params_4_pvr
 !
       implicit none
+!
+      private :: each_eye_from_middle
 !
 ! -----------------------------------------------------------------------
 !
@@ -90,51 +94,33 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_pvr_step_projection_mat                            &
-     &          (i_img, num_img, view_param, projection_step)
+      subroutine set_pvr_step_projection_mat(i_img, num_img,            &
+     &          view_param, stereo_def, projection_step)
 !
       use set_projection_matrix
 !
       integer(kind = kint), intent(in) :: i_img, num_img
       type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_stereo_parameter), intent(in) :: stereo_def
       real(kind = kreal), intent(inout) :: projection_step(4,4)
 !
       integer(kind = kint) :: i
 !
-      real(kind = kreal) :: pi_180, wd2, ndfl
+      real(kind = kreal) :: pi_180, wd2, ndfl, each_eye
       real(kind = kreal) :: view_right, view_left
       real(kind = kreal) :: view_top, view_bottom
       real(kind = kreal) :: view_far, view_near
-      real(kind = kreal) :: range, rstep, each_eye, separation
 !
 !
       view_near = view_param%perspective_near
       view_far =  view_param%perspective_far
 !
       pi_180 = four * atan(one) / 180.0d0
-      wd2 =  view_near                                                  &
-     &     * tan( view_param%perspective_angle*pi_180*half )
-      ndfl = view_near / view_param%focalLength
+      wd2 =  view_near * tan(view_param%perspective_angle*pi_180*half)
+      ndfl = view_near / stereo_def%focalLength
 !
-      rstep = half - dble(i_img-1) / dble(num_img-1)
-      if(view_param%flag_setp_eye_separation_angle) then
-        if(view_param%flag_eye_separation_angle) then
-          each_eye = view_param%focalLength                             &
-     &              * tan(pi_180 * rstep * view_param%eye_sep_angle)
-        else
-          range = two * atan(half*view_param%eye_separation             &
-     &                       / view_param%focalLength)
-          each_eye = view_param%focalLength * tan(rstep * range)
-        end if
-      else
-        if(view_param%flag_eye_separation_angle) then
-          separation = view_param%focalLength                           &
-     &                * tan(half * pi_180 * view_param%eye_sep_angle)
-        else
-          separation = view_param%eye_separation
-        end if
-        each_eye = separation * rstep
-      end if
+      each_eye                                                          &
+     &     = each_eye_from_middle(i_img, num_img, pi_180, stereo_def)
 !
       view_bottom = - wd2
       view_top =      wd2
@@ -159,36 +145,39 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_pvr_projection_left_mat                            &
-     &          (i_pvr, view_param, projection_left)
+     &          (i_pvr, view_param, stereo_def, projection_left)
 !
       use set_projection_matrix
 !
       integer(kind = kint), intent(in) :: i_pvr
       type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_stereo_parameter), intent(in) :: stereo_def
       real(kind = kreal), intent(inout) :: projection_left(4,4)
 !
       integer(kind = kint) :: i
 !
-      real(kind = kreal) :: pi_180, wd2, ndfl
+      real(kind = kreal) :: pi_180, wd2, ndfl, each_eye
       real(kind = kreal) :: view_right, view_left
       real(kind = kreal) :: view_top, view_bottom
       real(kind = kreal) :: view_far, view_near
 !
 !
-        view_near = view_param%perspective_near
-        view_far =  view_param%perspective_far
+      view_near = view_param%perspective_near
+      view_far =  view_param%perspective_far
 !
-        pi_180 = four * atan(one) / 180.0d0
-        wd2 =  view_near                                                &
-      &       * tan( view_param%perspective_angle*pi_180*half )
-        ndfl = view_near / view_param%focalLength
+      pi_180 = four * atan(one) / 180.0d0
+      wd2 =  view_near * tan(view_param%perspective_angle*pi_180*half)
+      ndfl = view_near / stereo_def%focalLength
+!
+      each_eye                                                          &
+     &     = each_eye_from_middle(ione, ione, pi_180, stereo_def)
 !
         view_bottom = - wd2
         view_top =      wd2
         view_left  = - view_param%perspective_xy_ratio * wd2            &
-     &               + half * view_param%eye_separation * ndfl
+     &                + half * each_eye * ndfl
         view_right =   view_param%perspective_xy_ratio * wd2            &
-     &               + half * view_param%eye_separation * ndfl
+     &                + half * each_eye * ndfl
 !
         call set_perspective_mat_by_area(view_left, view_right,         &
      &      view_bottom, view_top, view_near, view_far,                 &
@@ -206,36 +195,39 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_pvr_projection_right_mat                           &
-     &          (i_pvr, view_param, projection_right)
+     &          (i_pvr, view_param, stereo_def, projection_right)
 !
       use set_projection_matrix
 !
       integer(kind = kint), intent(in) :: i_pvr
       type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_stereo_parameter), intent(in) :: stereo_def
       real(kind = kreal), intent(inout) :: projection_right(4,4)
 !
       integer(kind = kint) :: i
 !
-      real(kind = kreal) :: pi_180, wd2, ndfl
+      real(kind = kreal) :: pi_180, wd2, ndfl, each_eye
       real(kind = kreal) :: view_right, view_left
       real(kind = kreal) :: view_top, view_bottom
       real(kind = kreal) :: view_far, view_near
 !
 !
-        view_near = view_param%perspective_near
-        view_far =  view_param%perspective_far
+      view_near = view_param%perspective_near
+      view_far =  view_param%perspective_far
 !
-        pi_180 = four * atan(one) / 180.0d0
-        wd2 =  view_near                                                &
-     &        * tan( view_param%perspective_angle*pi_180*half )
-        ndfl = view_near / view_param%focalLength
+      pi_180 = four * atan(one) / 180.0d0
+      wd2 =  view_near * tan(view_param%perspective_angle*pi_180*half)
+      ndfl = view_near / stereo_def%focalLength
+!
+      each_eye                                                          &
+     &     = each_eye_from_middle(ione, ione, pi_180, stereo_def)
 !
         view_bottom = - wd2
         view_top =      wd2
         view_left  = - view_param%perspective_xy_ratio * wd2            &
-     &               - half * view_param%eye_separation * ndfl
+     &                - half * each_eye * ndfl
         view_right =   view_param%perspective_xy_ratio * wd2            &
-     &               - half * view_param%eye_separation * ndfl
+     &                - half * each_eye * ndfl
 !
         call set_perspective_mat_by_area(view_left, view_right,         &
      &      view_bottom, view_top, view_near, view_far,                 &
@@ -249,6 +241,42 @@
         end if
 !
       end subroutine set_pvr_projection_right_mat
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      real(kind = kreal) function each_eye_from_middle                  &
+     &                 (i_img, num_img, pi_180, stereo_def)
+!
+      integer(kind = kint), intent(in) :: i_img, num_img
+      real(kind = kreal), intent(in) :: pi_180
+      type(pvr_stereo_parameter), intent(in) :: stereo_def
+!
+      real(kind = kreal) :: range, rstep, each_eye, separation
+!
+!
+      rstep = half - dble(i_img-1) / dble(num_img-1)
+      if(stereo_def%flag_setp_eye_separation_angle) then
+        if(stereo_def%flag_eye_separation_angle) then
+          each_eye = stereo_def%focalLength                             &
+     &              * tan(pi_180 * rstep * stereo_def%eye_sep_angle)
+        else
+          range = two * atan(half*stereo_def%eye_separation             &
+     &                       / stereo_def%focalLength)
+          each_eye = stereo_def%focalLength * tan(rstep * range)
+        end if
+      else
+        if(stereo_def%flag_eye_separation_angle) then
+          separation = stereo_def%focalLength                           &
+     &                * tan(half * pi_180 * stereo_def%eye_sep_angle)
+        else
+          separation = stereo_def%eye_separation
+        end if
+        each_eye = separation * rstep
+      end if
+      each_eye_from_middle = each_eye
+!
+      end function each_eye_from_middle
 !
 ! -----------------------------------------------------------------------
 !

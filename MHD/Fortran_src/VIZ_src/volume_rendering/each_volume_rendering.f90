@@ -158,14 +158,17 @@
       else if(num_img .eq. 2) then
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
         call set_pvr_projection_left_mat                                &
-     &     (i_pvr, pvr_param%view, pvr_proj(1)%projection_mat)
+     &     (i_pvr, pvr_param%view, pvr_param%stereo_def,                &
+     &      pvr_proj(1)%projection_mat)
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
         call set_pvr_projection_right_mat                               &
-     &     (i_pvr, pvr_param%view, pvr_proj(2)%projection_mat)
+     &     (i_pvr, pvr_param%view, pvr_param%stereo_def,                &
+     &      pvr_proj(2)%projection_mat)
       else
         do i_img = 1, num_img
           call set_pvr_step_projection_mat(i_img, num_img,              &
-     &        pvr_param%view, pvr_proj(i_img)%projection_mat)
+     &        pvr_param%view, pvr_param%stereo_def,                     &
+     &        pvr_proj(i_img)%projection_mat)
         end do
       end if
 !
@@ -230,10 +233,12 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
       call set_pvr_projection_left_mat                                  &
-     &   (i_pvr, pvr_param%view, pvr_proj(1)%projection_mat)
+     &   (i_pvr, pvr_param%view, pvr_param%stereo_def,                  &
+     &   pvr_proj(1)%projection_mat)
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
       call set_pvr_projection_right_mat                                 &
-     &   (i_pvr, pvr_param%view, pvr_proj(2)%projection_mat)
+     &   (i_pvr, pvr_param%view, pvr_param%stereo_def,                  &
+     &    pvr_proj(2)%projection_mat)
 !
 !
       call alloc_projected_position                                     &
