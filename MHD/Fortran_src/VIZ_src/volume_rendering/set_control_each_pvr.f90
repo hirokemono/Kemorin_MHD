@@ -317,7 +317,6 @@
           view_param%n_column                                           &
      &        = pvr_ctl%quilt_c%num_row_column_ctl%intvalue(2)
         end if
-        view_param%num_frame = view_param%n_row * view_param%n_column
       end if
 !
       end subroutine set_pvr_stereo_control

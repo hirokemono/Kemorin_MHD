@@ -7,9 +7,9 @@
 !!
 !!@verbatim
 !!      subroutine init_rot_pvr_image_arrays                            &
-!!     &         (view_param, pvr_rgb, rot_imgs)
-!!      subroutine dealloc_rot_pvr_image_arrays(view_param, rot_imgs)
-!!        type(pvr_view_parameter), intent(in) :: view_param
+!!     &         (movie_def, pvr_rgb, rot_imgs)
+!!      subroutine dealloc_rot_pvr_image_arrays(movie_def, rot_imgs)
+!!        type(pvr_movie_parameter), intent(in) :: movie_def
 !!        type(pvr_image_type), intent(in) :: pvr_rgb(2)
 !!        type(rotation_pvr_images), intent(inout) :: rot_imgs
 !!@endverbatim
@@ -43,9 +43,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_rot_pvr_image_arrays                              &
-     &         (view_param, pvr_rgb, rot_imgs)
+     &         (movie_def, pvr_rgb, rot_imgs)
 !
-      type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_movie_parameter), intent(in) :: movie_def
 !
       type(pvr_image_type), intent(in) :: pvr_rgb
       type(rotation_pvr_images), intent(inout) :: rot_imgs
@@ -53,18 +53,18 @@
       integer(kind = kint) :: i_rot
 !
 !
-      call alloc_rot_pvr_image_arrays(view_param%num_frame, rot_imgs)
+      call alloc_rot_pvr_image_arrays(movie_def%num_frame, rot_imgs)
 !
       call set_rank_to_write_rot_images(pvr_rgb,                        &
-     &    view_param%num_frame, rot_imgs%rot_pvr_rgb)
-      do i_rot = 1, view_param%num_frame
+     &    movie_def%num_frame, rot_imgs%rot_pvr_rgb)
+      do i_rot = 1, movie_def%num_frame
         call alloc_pvr_image_array                                      &
      &     (pvr_rgb%num_pixels, rot_imgs%rot_pvr_rgb(i_rot))
       end do
 !
       if(iflag_debug .eq. 0) return
-      do i_rot = 1, view_param%num_frame
-        write(*,*) i_rot, 'rot_pvr_rgb%irank_image_file', &
+      do i_rot = 1, movie_def%num_frame
+        write(*,*) i_rot, 'rot_pvr_rgb%irank_image_file',               &
      &                  rot_imgs%rot_pvr_rgb(i_rot)%irank_image_file,   &
      &                  rot_imgs%rot_pvr_rgb(i_rot)%irank_end_composit, &
      &                  rot_imgs%rot_pvr_rgb(i_rot)%npe_img_composit
@@ -74,15 +74,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_rot_pvr_image_arrays(view_param, rot_imgs)
+      subroutine dealloc_rot_pvr_image_arrays(movie_def, rot_imgs)
 !
-      type(pvr_view_parameter), intent(in) :: view_param
+      type(pvr_movie_parameter), intent(in) :: movie_def
       type(rotation_pvr_images), intent(inout) :: rot_imgs
 !
       integer(kind = kint) :: i_rot
 !
 !
-      do i_rot = 1, view_param%num_frame
+      do i_rot = 1, movie_def%num_frame
         call dealloc_pvr_image_array(rot_imgs%rot_pvr_rgb(i_rot))
       end do
       deallocate(rot_imgs%rot_pvr_rgb)

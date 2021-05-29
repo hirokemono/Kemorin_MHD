@@ -84,9 +84,9 @@
 !
       if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
       call init_rot_pvr_image_arrays                                    &
-     &   (pvr_param%view, pvr_rgb, rot_imgs1)
+     &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
 !
-      do i_rot = 1, pvr_param%view%num_frame
+      do i_rot = 1, pvr_param%movie_def%num_frame
         call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
      &      pvr_param%movie_def, pvr_param%view, pvr_param%color)
 !
@@ -105,12 +105,12 @@
       end if
 !
       call set_output_rot_sequence_image                                &
-     &   (istep_pvr, pvr_param%view%num_frame, iflag_img_fmt,           &
+     &   (istep_pvr, pvr_param%movie_def%num_frame, iflag_img_fmt,      &
      &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-      call dealloc_rot_pvr_image_arrays(pvr_param%view, rot_imgs1)
+      call dealloc_rot_pvr_image_arrays(pvr_param%movie_def, rot_imgs1)
 !
       end subroutine lic_rendering_with_rotation
 !
@@ -149,10 +149,10 @@
 !
       if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
       call init_rot_pvr_image_arrays                                    &
-     &   (pvr_param%view, pvr_rgb, rot_imgs1)
+     &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
 !
 !
-      do i_rot = 1, pvr_param%view%num_frame
+      do i_rot = 1, pvr_param%movie_def%num_frame
         call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
      &      pvr_param%movie_def, pvr_param%view, pvr_param%color)
 !
@@ -182,11 +182,11 @@
       end if
 !
       call set_output_rot_sequence_image                                &
-     &   (istep_pvr, pvr_param%view%num_frame, iflag_img_fmt,           &
+     &   (istep_pvr, pvr_param%movie_def%num_frame, iflag_img_fmt,      &
      &    pvr_rgb%pvr_prefix, pvr_param%view, rot_imgs1%rot_pvr_rgb)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-      call dealloc_rot_pvr_image_arrays(pvr_param%view, rot_imgs1)
+      call dealloc_rot_pvr_image_arrays(pvr_param%movie_def, rot_imgs1)
 !
       end subroutine anaglyph_lic_rendering_w_rot
 !

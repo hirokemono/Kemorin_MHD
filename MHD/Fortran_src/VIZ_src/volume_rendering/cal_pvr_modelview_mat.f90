@@ -213,7 +213,7 @@
         rotation_axis(movie_def%id_rot_axis) = one
         angle_deg = movie_def%angle_range(1)                            &
      &      + (movie_def%angle_range(2) - movie_def%angle_range(1))     &
-     &       * dble(i_rot-1) / dble(view_param%num_frame)
+     &       * dble(i_rot-1) / dble(movie_def%num_frame)
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &    angle_deg, rotation_axis(1) )
 !
@@ -229,7 +229,7 @@
         rotation_axis(movie_def%id_rot_axis) = one
         angle_deg = movie_def%angle_range(2)                            &
      &      - (movie_def%angle_range(2) - movie_def%angle_range(1))     &
-     &       * dble(i_rot-1) / dble(view_param%num_frame)
+     &       * dble(i_rot-1) / dble(movie_def%num_frame)
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &    angle_deg, rotation_axis(1) )
       else

@@ -86,12 +86,12 @@
           view_param%n_column                                           &
      &          = movie_ctl%quilt_row_column_ctl%intvalue(2)
         end if
-        view_param%num_frame = view_param%n_row * view_param%n_column
+        movie_def%num_frame = view_param%n_row * view_param%n_column
       else
         if(movie_ctl%num_frames_ctl%iflag .eq. 0) then
           movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
         else
-          view_param%num_frame = movie_ctl%num_frames_ctl%intvalue
+          movie_def%num_frame = movie_ctl%num_frames_ctl%intvalue
         end if
       end if
 !

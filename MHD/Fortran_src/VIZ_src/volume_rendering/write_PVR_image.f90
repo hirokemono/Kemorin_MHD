@@ -30,11 +30,11 @@
 !!     &         (istep_pvr, num_img, iflag_img_fmt, file_prefix,       &
 !!     &          view_param, rot_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
+!!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: iflag_img_fmt
 !!        character(len=kchara), intent(in) :: file_prefix
 !!        type(pvr_view_parameter), intent(in) :: view_param
-!!        type(pvr_image_type), intent(in)                              &
-!!       &                      :: rot_rgb(view_param%num_frame)
+!!        type(pvr_image_type), intent(in) :: rot_rgb(num_img)
 !!@endverbatim
 !
       module write_PVR_image
