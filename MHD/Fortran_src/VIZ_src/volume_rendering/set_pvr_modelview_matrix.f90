@@ -271,7 +271,7 @@
       do i = 1, mat%viewpoint_ctl%num
         nd = set_3direction_flag(mat%viewpoint_ctl%c_tbl(i))
         if(nd .eq. 0) cycle
-        view_data%viewpoint_vec(nd) = mat%viewpoint_ctl%vect(i)
+        view_data%viewpoint(nd) = mat%viewpoint_ctl%vect(i)
       end do
       if(mat%viewpoint_ctl%num .ge. 3) then
         view_data%iflag_viewpoint = 1
@@ -290,7 +290,7 @@
         write(*,*) 'iflag_lookpoint_vec', view_param%iflag_lookpoint
         write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
         write(*,*) 'iflag_viewpoint_vec', view_data%iflag_viewpoint
-        write(*,*) 'viewpoint_vec', view_data%viewpoint_vec(1:3)
+        write(*,*) 'viewpoint_vec', view_data%viewpoint(1:3)
         write(*,*) 'iflag_updir_vec', view_param%iflag_updir
         write(*,*) 'up_direction_vec',                                  &
      &            view_param%up_direction_vec(1:3)

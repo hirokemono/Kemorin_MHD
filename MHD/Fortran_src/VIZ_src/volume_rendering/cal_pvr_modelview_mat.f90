@@ -85,7 +85,7 @@
 !
       call cal_mat44_vec3_on_node(ione, ione, ione_stack,               &
      &    view_data%modelview_inv, posi_zero(1), vec_tmp(1))
-      view_data%viewpoint_vec(1:3) = vec_tmp(1:3)
+      view_data%viewpoint(1:3) = vec_tmp(1:3)
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'modelview'
@@ -101,7 +101,7 @@
         write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
         write(*,*) 'scale_factor_pvr',                                  &
      &            view_param%scale_factor_pvr(1:3)
-        write(*,*) 'viewpoint_vec', view_data%viewpoint_vec(1:3)
+        write(*,*) 'viewpoint_vec', view_data%viewpoint(1:3)
         write(*,*) 'viewpt_in_view',                                    &
      &            view_param%viewpt_in_viewer_pvr(1:3)
 !
@@ -162,7 +162,7 @@
       rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &      view_data%modelview, view_data%viewpoint_vec, rev_eye)
+     &      view_data%modelview, view_data%viewpoint, rev_eye)
         view_param%iflag_viewpt_in_view = 1
       end if
       call Kemo_Translate(view_data%modelview, rev_eye)
@@ -249,7 +249,7 @@
       rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &    view_data%modelview, view_data%viewpoint_vec, rev_eye)
+     &    view_data%modelview, view_data%viewpoint, rev_eye)
         view_param%iflag_viewpt_in_view = 1
       end if
       call Kemo_Translate(view_data%modelview, rev_eye)
@@ -278,7 +278,7 @@
 !
 !
       viewing_dir(1:3) = view_param%lookat_vec(1:3)                     &
-     &                  - view_data%viewpoint_vec(1:3)
+     &                  - view_data%viewpoint(1:3)
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack,                 &
      &    viewing_dir(1), size(1) )
@@ -293,9 +293,9 @@
 !
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack,                 &
-     &    view_data%viewpoint_vec, size(1) )
+     &    view_data%viewpoint, size(1) )
 !$omp end parallel
-      view_norm(1:3) = view_data%viewpoint_vec(1:3) / size(1)
+      view_norm(1:3) = view_data%viewpoint(1:3) / size(1)
 !
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack,                 &
