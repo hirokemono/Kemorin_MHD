@@ -90,9 +90,9 @@
      &    pvr_screen%arccos_sf)
 !
       call axis_direction_in_screen                                     &
-     &   (view_data%modelview_mat, projection_mat, pvr_screen)
+     &   (view_data%modelview, projection_mat, pvr_screen)
 !
-      call cal_position_pvr_modelview(view_data%modelview_mat,          &
+      call cal_position_pvr_modelview(view_data%modelview,              &
      &    node%numnod, node%xx, pvr_screen%x_nod_model)
 !
       call norm_on_model_pvr_domains                                    &

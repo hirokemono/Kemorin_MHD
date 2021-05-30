@@ -81,7 +81,7 @@
         integer(kind = kint) :: iflag_modelview_mat = 0
 !
 !>    Modelview matrix
-        real(kind = kreal) :: modelview_mat(4,4)
+        real(kind = kreal) :: modelview(4,4)
 !>    Inverse of modelview matrix
         real(kind = kreal) :: modelview_inv(4,4)
 !
@@ -262,7 +262,7 @@
       type(pvr_modelview_data), intent(inout) :: view_data
 !
 !
-      view_data%modelview_mat(1:4,1:4) =   0.0d0
+      view_data%modelview(1:4,1:4) =   0.0d0
       view_data%modelview_inv(1:4,1:4) =   0.0d0
 !
       end subroutine reset_pvr_view_parameteres

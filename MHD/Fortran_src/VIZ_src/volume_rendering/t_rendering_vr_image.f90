@@ -79,7 +79,9 @@
 !
 !>      Structure for projection data
       type PVR_projection_data
-!>        perspective projection matrix
+!>        Modelview matrix
+        real(kind = kreal) :: modelview_matrix(4,4)
+!>        Perspective projection matrix
         real(kind = kreal) :: projection_mat(4,4)
 !
 !>        Domain boundary information
