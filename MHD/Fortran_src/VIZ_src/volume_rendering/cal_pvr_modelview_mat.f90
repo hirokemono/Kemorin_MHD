@@ -139,8 +139,8 @@
       end if
 !
 !
+      call Kemo_Unit( view_param%modelview_mat)
       if (view_param%iflag_rotation .gt. 0) then
-        call Kemo_Unit( view_param%modelview_mat)
         call Kemo_Rotate( view_param%modelview_mat,                     &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
       else
@@ -206,8 +206,8 @@
       end if
 !
 !
+      call Kemo_Unit( view_param%modelview_mat)
       if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
-        call Kemo_Unit(view_param%modelview_mat)
 !
         rotation_axis(1:3) =       zero
         rotation_axis(movie_def%id_rot_axis) = one
@@ -221,7 +221,6 @@
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
 !
       else if(movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
-        call Kemo_Unit(view_param%modelview_mat)
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
 !
@@ -274,6 +273,7 @@
       integer(kind = kint) :: i
       real(kind = kreal) :: viewing_dir(3), u(3), v(3), size(1)
       real(kind = kreal) :: look_norm(3), view_norm(3)
+      real(kind = kreal) :: rotation_mat(4,4), mat_tmp(4,4)
 !
 !
       viewing_dir(1:3) = view_param%lookat_vec(1:3)                     &
@@ -321,13 +321,17 @@
       v(1:3) = v(1:3) / size(1)
 !
       do i = 1, 3
-        view_param%modelview_mat(1,i) = u(i)
-        view_param%modelview_mat(2,i) = v(i)
-        view_param%modelview_mat(3,i) = viewing_dir(i)
-        view_param%modelview_mat(4,i) = zero
+        rotation_mat(1,i) = u(i)
+        rotation_mat(2,i) = v(i)
+        rotation_mat(3,i) = viewing_dir(i)
+        rotation_mat(4,i) = zero
       end do
-      view_param%modelview_mat(1:3,4) = zero
-      view_param%modelview_mat(4,4) = one
+      rotation_mat(1:3,4) = zero
+      rotation_mat(4,4) = one
+!
+      mat_tmp(1:4,1:4) = view_param%modelview_mat(1:4,1:4)
+      call cal_matmat44(view_param%modelview_mat,                       &
+     &                  rotation_mat(1,1), mat_tmp(1,1))
 !
       end subroutine set_rot_mat_from_viewpts
 !
