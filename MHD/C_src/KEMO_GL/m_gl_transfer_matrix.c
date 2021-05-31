@@ -369,7 +369,7 @@ void modify_left_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
 				view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->eye_separation/3.0, ZERO, ZERO, view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->eye_separation/2.0, ZERO, ZERO, view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
 	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
 				view->mat_object_2_eye);
@@ -382,7 +382,7 @@ void modify_right_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
 				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->eye_separation/3.0, ZERO, ZERO,
+	Kemo_Translate_view_c(-view->eye_separation/2.0, ZERO, ZERO,
 				view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
 	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
@@ -416,7 +416,7 @@ void rotate_left_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
 				view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->eye_separation/3.0, ZERO, ZERO, 
+	Kemo_Translate_view_c(view->eye_separation/2.0, ZERO, ZERO, 
 				view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
@@ -431,7 +431,7 @@ void rotate_right_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
 				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->eye_separation/3.0, ZERO, ZERO, 
+	Kemo_Translate_view_c(-view->eye_separation/2.0, ZERO, ZERO, 
 				view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
