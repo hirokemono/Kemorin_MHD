@@ -28,13 +28,12 @@
 !!
 !!      subroutine set_output_rot_sequence_image(istep_pvr,             &
 !!     &          iflag_img_fmt, file_prefix, num_img, n_row_column,    &
-!!     &          view_param, rot_rgb)
+!!     &          rot_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: n_row_column(2)
 !!        integer(kind = kint), intent(in) :: iflag_img_fmt
 !!        character(len=kchara), intent(in) :: file_prefix
-!!        type(pvr_view_parameter), intent(in) :: view_param
 !!        type(pvr_image_type), intent(in) :: rot_rgb(num_img)
 !!@endverbatim
 !
@@ -228,7 +227,7 @@
 !
       subroutine set_output_rot_sequence_image(istep_pvr,               &
      &          iflag_img_fmt, file_prefix, num_img, n_row_column,      &
-     &          view_param, rot_rgb)
+     &          rot_rgb)
 !
       use t_control_params_4_pvr
       use t_pvr_image_array
@@ -242,7 +241,6 @@
       integer(kind = kint), intent(in) :: n_row_column(2)
       integer(kind = kint), intent(in) :: iflag_img_fmt
       character(len=kchara), intent(in) :: file_prefix
-      type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_image_type), intent(in) :: rot_rgb(num_img)
 !
       integer(kind = kint) :: i_rot, icou

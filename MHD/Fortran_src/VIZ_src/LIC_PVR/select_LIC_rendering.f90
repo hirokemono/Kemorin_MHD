@@ -221,7 +221,7 @@
      &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
      &        pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,               &
      &        pvr%pvr_param(i_lic)%stereo_def%n_row_column_view,        &
-     &        pvr%pvr_param(i_lic)%view, pvr%pvr_rgb(ist_img+1))
+     &        pvr%pvr_rgb(ist_img+1))
         end if
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
@@ -414,7 +414,7 @@
      &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
      &        pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,               &
      &        pvr%pvr_param(i_lic)%stereo_def%n_row_column_view,        &
-     &        pvr%pvr_param(i_lic)%view, pvr%pvr_rgb(ist_img+1))
+     &        pvr%pvr_rgb(ist_img+1))
         end if
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
