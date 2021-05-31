@@ -269,6 +269,7 @@
 !
       use mag_of_field_smp
       use cal_products_smp
+      use transform_mat_operations
 !
       type(pvr_view_parameter), intent(inout) :: view_param
 !

@@ -149,8 +149,9 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
-     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
-     &    pvr_proj%start_fix, pvr_proj%stencil, pvr_rgb)
+     &    pvr_param%draw_param, pvr_proj%screen,                        &
+     &    pvr_param%view%viewpoint, pvr_proj%start_fix,                 &
+     &    pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_with_fixed_view
 !
@@ -203,8 +204,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
-     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
-     &    start_rot, stencil_rot, pvr_rgb)
+     &    pvr_param%draw_param, pvr_proj%screen,                        &
+     &    pvr_param%view%viewpoint, start_rot, stencil_rot, pvr_rgb)
       call deallocate_pvr_ray_start(start_rot)
       call dealloc_pvr_stencil_buffer(stencil_rot)
 !
