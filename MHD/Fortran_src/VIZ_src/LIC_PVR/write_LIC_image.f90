@@ -88,7 +88,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
       call ray_trace_each_lic_image(mesh%node, mesh%ele, mesh%surf,     &
      &    lic_p, pvr_screen, field_lic, draw_param,                     &
-     &    color_param, view_param%viewpoint_vec, ray_vec4,              &
+     &    color_param, view_param%viewpoint, ray_vec4,                  &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &

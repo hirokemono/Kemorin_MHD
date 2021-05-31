@@ -100,7 +100,7 @@
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image(mesh%node, mesh%ele, mesh%surf,     &
      &    pvr_screen, field_pvr, draw_param,                            &
-     &    color_param, view_param%viewpoint_vec, ray_vec4,              &
+     &    color_param, view_param%viewpoint, ray_vec4,                  &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &

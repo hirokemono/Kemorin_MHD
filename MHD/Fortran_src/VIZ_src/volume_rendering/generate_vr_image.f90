@@ -173,7 +173,7 @@
      &   pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                    &
      &   pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,                &
      &   pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,               &
-     &   pvr_bound%screen_norm, view_param%viewpoint_vec, ray_vec4,     &
+     &   pvr_bound%screen_norm, view_param%viewpoint, ray_vec4,         &
      &   pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,   &
      &   pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,           &
      &   pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,           &

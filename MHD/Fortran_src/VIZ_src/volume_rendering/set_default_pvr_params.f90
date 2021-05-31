@@ -42,7 +42,7 @@
 !
       if(view_param%iflag_viewpoint .eq. 0) then
         call set_default_viewpoint_pvr(outline%center_g,                &
-     &      outline%xx_minmax_g, view_param%viewpoint_vec)
+     &      outline%xx_minmax_g, view_param%viewpoint)
       end if
 !
       if(view_param%iflag_lookpoint .eq. 0) then
