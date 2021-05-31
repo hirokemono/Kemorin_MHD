@@ -31,7 +31,7 @@
 !
       private :: cal_modelview_mat_by_views
       private :: cal_pvr_rotate_mat_by_views
-      private :: set_rot_mat_from_viewpts
+      private :: update_rot_mat_from_viewpts
 !
 ! -----------------------------------------------------------------------
 !
@@ -140,16 +140,17 @@
 !
 !
       call Kemo_Unit( view_param%modelview_mat)
+      call Kemo_Translate(view_param%modelview_mat, rev_lookat)
+      call Kemo_Scale(view_param%modelview_mat,                         &
+     &                view_param%scale_factor_pvr)
+!
       if (view_param%iflag_rotation .gt. 0) then
         call Kemo_Rotate( view_param%modelview_mat,                     &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
       else
-        call set_rot_mat_from_viewpts(view_param)
+        call update_rot_mat_from_viewpts(view_param)
       end if
 !
-      call Kemo_Scale(view_param%modelview_mat,                         &
-     &                view_param%scale_factor_pvr)
-      call Kemo_Translate(view_param%modelview_mat, rev_lookat)
       view_param%iflag_modelview_mat = 1
 !
 !
@@ -206,7 +207,11 @@
       end if
 !
 !
-      call Kemo_Unit( view_param%modelview_mat)
+      call Kemo_Unit(view_param%modelview_mat)
+      call Kemo_Translate(view_param%modelview_mat, rev_lookat)
+      call Kemo_Scale(view_param%modelview_mat,                         &
+     &    view_param%scale_factor_pvr)
+!
       if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
 !
         rotation_axis(1:3) =       zero
@@ -232,12 +237,9 @@
         call Kemo_Rotate(view_param%modelview_mat,                      &
      &    angle_deg, rotation_axis(1) )
       else
-        call set_rot_mat_from_viewpts(view_param)
+        call update_rot_mat_from_viewpts(view_param)
       end if
 !
-      call Kemo_Scale(view_param%modelview_mat,                         &
-     &    view_param%scale_factor_pvr)
-      call Kemo_Translate(view_param%modelview_mat, rev_lookat)
       view_param%iflag_modelview_mat = 1
 !
 !    rotation matrix for movie
@@ -263,7 +265,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rot_mat_from_viewpts(view_param)
+      subroutine update_rot_mat_from_viewpts(view_param)
 !
       use mag_of_field_smp
       use cal_products_smp
@@ -333,7 +335,7 @@
       call cal_matmat44(view_param%modelview_mat,                       &
      &                  rotation_mat(1,1), mat_tmp(1,1))
 !
-      end subroutine set_rot_mat_from_viewpts
+      end subroutine update_rot_mat_from_viewpts
 !
 ! -----------------------------------------------------------------------
 !
