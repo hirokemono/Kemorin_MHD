@@ -135,7 +135,7 @@
 !>    Defined flag for viewpoint
         integer(kind = kint) :: iflag_viewpoint = 0
 !>    Position of viewpoint
-        real(kind = kreal) :: viewpoint_vec(3) = (/zero,zero,zero/)
+        real(kind = kreal) :: viewpoint(3) = (/zero,zero,zero/)
       end type pvr_view_parameter
 !
 !>  Stereo view parameters
