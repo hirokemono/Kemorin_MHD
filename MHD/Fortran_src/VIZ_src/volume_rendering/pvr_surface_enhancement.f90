@@ -132,7 +132,7 @@
       norm_sf_model = zero
 !$omp end parallel workshare
 !
-      call chenge_direction_pvr_modelview(view_param%modelview_mat,     &
+      call chenge_direction_pvr_modelview(view_param%modelview,         &
      &    surf_grp%num_item, sf_grp_v%vnorm_sf_grp, norm_sf_model)
 !
 !$omp parallel do

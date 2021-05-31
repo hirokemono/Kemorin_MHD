@@ -9,8 +9,15 @@
 !!@verbatim
 !!      subroutine axis_direction_in_screen                             &
 !!     &         (modelview_mat, projection_mat, pvr_screen)
+!!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
+!!        real(kind = kreal), intent(in) :: projection_mat(4,4)
+!!        type(pvr_projected_position), intent(inout) :: pvr_screen
 !!      subroutine set_pvr_axislabel                                    &
 !!     &         (num_pixel, n_pvr_pixel, pvr_screen, rgba_gl)
+!!        integer(kind = kint), intent(in) :: num_pixel
+!!        integer(kind = kint), intent(in) :: n_pvr_pixel(2)
+!!        type(pvr_projected_position), intent(in) :: pvr_screen
+!!        real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)
 !!@endverbatim
 !
       module pvr_axis_label

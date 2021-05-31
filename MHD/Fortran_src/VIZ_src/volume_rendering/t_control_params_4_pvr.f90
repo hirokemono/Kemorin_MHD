@@ -101,7 +101,7 @@
 !>    Defined flag for modelview matrix
         integer(kind = kint) :: iflag_modelview_mat = 0
 !>    Modelview matrix
-        real(kind = kreal) :: modelview_mat(4,4)
+        real(kind = kreal) :: modelview(4,4)
 !>    Inverse of modelview matrix
         real(kind = kreal) :: modelview_inv(4,4)
 !
@@ -258,7 +258,7 @@
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
-        view_param%modelview_mat(1:4,1:4) =   0.0d0
+        view_param%modelview(1:4,1:4) =   0.0d0
         view_param%modelview_inv(1:4,1:4) =   0.0d0
 !
       end subroutine reset_pvr_view_parameteres

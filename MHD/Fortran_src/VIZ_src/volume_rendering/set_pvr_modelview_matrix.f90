@@ -221,8 +221,7 @@
         nd2 = set_4direction_flag(mat%modelview_mat_ctl%c2_tbl(i))
 !
         if(nd1*nd2 .gt. 0) then
-          view_param%modelview_mat(nd2,nd1)                             &
-     &              = mat%modelview_mat_ctl%vect(i)
+          view_param%modelview(nd2,nd1) = mat%modelview_mat_ctl%vect(i)
         end if
       end do
 !
