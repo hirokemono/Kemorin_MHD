@@ -8,9 +8,7 @@
 !!
 !!@verbatim
 !!      real(kind = kreal) function each_eye_from_middle                &
-!!     &                 (i_img, num_img, pi_180, stereo_def)
-!!        integer(kind = kint), intent(in) :: i_img, num_img
-!!        real(kind = kreal), intent(in) :: pi_180
+!!     &                          (i_img, stereo_def)
 !!        type(pvr_stereo_parameter), intent(in) :: stereo_def
 !!      subroutine set_pvr_stereo_control(pvr_ctl, stereo_def)
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl
@@ -32,6 +30,8 @@
 !>    Flag to make quilt images with fixed view
         logical :: flag_quilt =      .FALSE.
 !
+!>    Number of images
+        integer(kind = kint) :: num_views = 0
 !>    Number of row and column of image array (horizontal, vertical)
         integer(kind = kint) :: n_row_column_view(2) = 0
 !
@@ -55,16 +55,16 @@
 ! -----------------------------------------------------------------------
 !
       real(kind = kreal) function each_eye_from_middle                  &
-     &                 (i_img, num_img, pi_180, stereo_def)
+     &                          (i_img, stereo_def)
 !
-      integer(kind = kint), intent(in) :: i_img, num_img
-      real(kind = kreal), intent(in) :: pi_180
+      integer(kind = kint), intent(in) :: i_img
       type(pvr_stereo_parameter), intent(in) :: stereo_def
 !
-      real(kind = kreal) :: range, rstep, each_eye, separation
+      real(kind = kreal) :: pi_180, range, rstep, each_eye, separation
 !
 !
-      rstep = half - dble(i_img-1) / dble(num_img-1)
+      pi_180 = four * atan(one) / 180.0d0
+      rstep = half - dble(i_img-1) / dble(stereo_def%num_views-1)
       if(stereo_def%flag_setp_eye_separation_angle) then
         if(stereo_def%flag_eye_separation_angle) then
           each_eye = stereo_def%focalLength                             &
@@ -99,10 +99,12 @@
       type(pvr_stereo_parameter), intent(inout) :: stereo_def
 !
 !
+      stereo_def%num_views = 0
       stereo_def%flag_stereo_pvr = .FALSE.
       stereo_def%flag_quilt =      .FALSE.
       if(yes_flag(pvr_ctl%streo_ctl%charavalue)) then
         stereo_def%flag_stereo_pvr = .TRUE.
+        stereo_def%num_views = 2
       else if(yes_flag(pvr_ctl%quilt_ctl%charavalue)) then
         stereo_def%flag_quilt =      .TRUE.
       end if
@@ -113,6 +115,8 @@
         else
           stereo_def%n_row_column_view(1:2)                             &
      &        =    pvr_ctl%quilt_c%num_row_column_ctl%intvalue(1:2)
+          stereo_def%num_views = stereo_def%n_row_column_view(1)        &
+     &                          * stereo_def%n_row_column_view(2)
         end if
       end if
 !
