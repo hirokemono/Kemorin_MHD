@@ -272,8 +272,9 @@
       quilt_d%npixel_xy(1:2) = rot_rgb(1)%num_pixels(1:2)
       call alloc_quilt_rgb_images(quilt_d)
       do i_rot = 1, quilt_d%num_image_lc
+        icou = quilt_d%icou_each_pe(i_rot)
         quilt_d%images(i_rot)%each_prefix                               &
-     &         = add_int_suffix(i_rot, quilt_d%image_seq_prefix)
+     &         = add_int_suffix(icou, quilt_d%image_seq_prefix)
         quilt_d%images(i_rot)%image_format = quilt_d%image_seq_format
         call alloc_each_rgb_image                                       &
      &     (quilt_d%npixel_xy, quilt_d%images(i_rot))
