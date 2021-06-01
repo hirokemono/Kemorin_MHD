@@ -392,6 +392,7 @@
       integer(kind = kint) :: i_img
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+      call calypso_mpi_barrier
       call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
      &    jacs%g_FEM, jacs%jac_3d, nod_fld,                             &
      &    pvr_param%field_def, field_pvr)
@@ -431,6 +432,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+      call calypso_mpi_barrier
       call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
      &    jacs%g_FEM, jacs%jac_3d, nod_fld,                             &
      &    pvr_param%field_def, field_pvr)
