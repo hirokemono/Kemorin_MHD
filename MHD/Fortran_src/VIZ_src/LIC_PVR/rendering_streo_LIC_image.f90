@@ -160,7 +160,7 @@
 !    Left eye
         call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
      &      pvr_param%movie_def, pvr_param%view,                        &
-     &      pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
+     &      pvr_proj(1)%viewpoint_vec, pvr_proj(1)%modelview_mat)
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
      &      lic_p, field_lic, pvr_param, pvr_proj(1),                   &
@@ -170,7 +170,7 @@
 !    Right eye
         call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
      &      pvr_param%movie_def, pvr_param%view,                        &
-     &      pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
+     &      pvr_proj(2)%viewpoint_vec, pvr_proj(2)%modelview_mat)
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
      &      lic_p, field_lic, pvr_param, pvr_proj(2),                   &

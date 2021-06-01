@@ -260,6 +260,7 @@
       subroutine update_rot_mat_from_viewpts(view_param, rotation_mat)
 !
       use mag_of_field_smp
+      use cal_products_smp
       use transform_mat_operations
 !
       type(pvr_view_parameter), intent(in) :: view_param
