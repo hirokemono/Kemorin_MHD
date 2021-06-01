@@ -58,11 +58,6 @@
 !>    Global real image data
         real(kind = kreal), allocatable :: rgba_real_gl(:,:)
 !
-!>    RGB byte image data
-        character(len = 1), allocatable :: rgb_chara_gl(:,:)
-!>    RGBA byte image data
-        character(len = 1), allocatable :: rgba_chara_gl(:,:)
-!
 !>    Global real image data for left eye
         real(kind = kreal), allocatable :: rgba_left_gl(:,:)
 !>    Global real image data for right eye
@@ -93,9 +88,6 @@
         pvr_rgb%num_pixel_actual = 1
       end if
 !
-      allocate(pvr_rgb%rgb_chara_gl(3,pvr_rgb%num_pixel_actual))
-      allocate(pvr_rgb%rgba_chara_gl(4,pvr_rgb%num_pixel_actual))
-!
       allocate(pvr_rgb%rgba_left_gl(4,pvr_rgb%num_pixel_actual))
       allocate(pvr_rgb%rgba_right_gl(4,pvr_rgb%num_pixel_actual))
 !
@@ -117,7 +109,6 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      deallocate(pvr_rgb%rgb_chara_gl, pvr_rgb%rgba_chara_gl)
       deallocate(pvr_rgb%rgba_left_gl, pvr_rgb%rgba_right_gl)
       deallocate(pvr_rgb%rgba_real_gl)
 !
