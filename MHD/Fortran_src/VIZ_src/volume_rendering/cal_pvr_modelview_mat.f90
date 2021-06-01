@@ -64,13 +64,13 @@
       real(kind = kreal) :: modelview_inv(4,4)
 !
 !
-      if(i_rot .eq. 0) then
-        call cal_modelview_mat_by_views                                 &
-     &     (outline, view_param, modelview_mat)
-      else
+!      if(i_rot .eq. 0) then
+!        call cal_modelview_mat_by_views                                 &
+!     &     (outline, view_param, modelview_mat)
+!      else
         call cal_pvr_rotate_mat_by_views                                &
      &     (i_rot, outline, movie_def, view_param, modelview_mat)
-      end if
+!      end if
 !
       call cal_inverse_44_matrix(modelview_mat,                         &
      &                           modelview_inv, ierr2)
@@ -212,28 +212,19 @@
       call Kemo_Translate(modelview_mat, rev_lookat)
       call Kemo_Scale(modelview_mat, view_param%scale_factor_pvr)
 !
-      if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
-!
+      if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE                 &
+     &    .and. i_rot .gt. 0) then
         rotation_axis(1:3) =       zero
         rotation_axis(movie_def%id_rot_axis) = one
         angle_deg = movie_def%angle_range(1)                            &
      &      + (movie_def%angle_range(2) - movie_def%angle_range(1))     &
      &       * dble(i_rot-1) / dble(movie_def%num_frame)
         call Kemo_Rotate(modelview_mat, angle_deg, rotation_axis(1))
+      end if
 !
+      if(view_param%iflag_rotation .gt. 0) then
         call Kemo_Rotate(modelview_mat,                                 &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
-!
-      else if(movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
-        call Kemo_Rotate(modelview_mat,                                 &
-     &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
-!
-        rotation_axis(1:3) =                    zero
-        rotation_axis(movie_def%id_rot_axis) = one
-        angle_deg = movie_def%angle_range(2)                            &
-     &      - (movie_def%angle_range(2) - movie_def%angle_range(1))     &
-     &       * dble(i_rot-1) / dble(movie_def%num_frame)
-        call Kemo_Rotate(modelview_mat, angle_deg, rotation_axis(1))
       else
         mat_tmp(1:4,1:4) = modelview_mat(1:4,1:4)
         call update_rot_mat_from_viewpts(view_param, rotation_mat)

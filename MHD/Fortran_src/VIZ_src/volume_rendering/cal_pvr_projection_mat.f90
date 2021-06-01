@@ -28,6 +28,7 @@
       use m_constants
       use m_machine_parameter
       use t_control_params_4_pvr
+      use t_control_params_stereo_pvr
 !
       implicit none
 !
@@ -241,42 +242,6 @@
         end if
 !
       end subroutine set_pvr_projection_right_mat
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      real(kind = kreal) function each_eye_from_middle                  &
-     &                 (i_img, num_img, pi_180, stereo_def)
-!
-      integer(kind = kint), intent(in) :: i_img, num_img
-      real(kind = kreal), intent(in) :: pi_180
-      type(pvr_stereo_parameter), intent(in) :: stereo_def
-!
-      real(kind = kreal) :: range, rstep, each_eye, separation
-!
-!
-      rstep = half - dble(i_img-1) / dble(num_img-1)
-      if(stereo_def%flag_setp_eye_separation_angle) then
-        if(stereo_def%flag_eye_separation_angle) then
-          each_eye = stereo_def%focalLength                             &
-     &              * tan(pi_180 * rstep * stereo_def%eye_sep_angle)
-        else
-          range = two * atan(half*stereo_def%eye_separation             &
-     &                       / stereo_def%focalLength)
-          each_eye = stereo_def%focalLength * tan(rstep * range)
-        end if
-      else
-        if(stereo_def%flag_eye_separation_angle) then
-          separation = stereo_def%focalLength                           &
-     &                * tan(half * pi_180 * stereo_def%eye_sep_angle)
-        else
-          separation = stereo_def%eye_separation
-        end if
-        each_eye = separation * rstep
-      end if
-      each_eye_from_middle = each_eye
-!
-      end function each_eye_from_middle
 !
 ! -----------------------------------------------------------------------
 !

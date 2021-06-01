@@ -135,29 +135,6 @@
         real(kind = kreal) :: viewpoint(3) = (/zero,zero,zero/)
       end type pvr_view_parameter
 !
-!>  Stereo view parameters
-      type pvr_stereo_parameter
-!>    Defined flag for stereo view
-        logical :: flag_stereo_pvr = .FALSE.
-!>    Flag to make quilt images with fixed view
-        logical :: flag_quilt =      .FALSE.
-!
-!>    Number of row and column of image array (horizontal, vertical)
-        integer(kind = kint) :: n_row_column_view(2) = 0
-!
-!>    Flag to defeine eye separation by angle
-        logical :: flag_eye_separation_angle =  .FALSE.
-!>    Flag to stepping eye position by angle
-        logical :: flag_setp_eye_separation_angle =  .FALSE.
-!
-!>    Focal length for streo view
-        real(kind = kreal) :: focalLength = one
-!>    Eye separation for streo view
-        real(kind = kreal) :: eye_separation = zero
-!>    Eye separation angle for streo view
-        real(kind = kreal) :: eye_sep_angle = zero
-      end type pvr_stereo_parameter
-!
 !>  movie parameters
       type pvr_movie_parameter
 !>    Integer flag for movie file format

@@ -22,6 +22,7 @@
       use t_ctl_data_4_view_transfer
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
+      use t_control_params_stereo_pvr
 !
       implicit none
 !

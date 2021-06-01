@@ -43,6 +43,7 @@
       use t_pvr_image_array
       use t_pvr_stencil_buffer
       use t_pvr_field_data
+      use t_control_params_stereo_pvr
       use generate_vr_image
 !
       implicit  none
