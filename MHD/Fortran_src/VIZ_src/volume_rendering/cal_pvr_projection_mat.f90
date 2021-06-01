@@ -120,8 +120,7 @@
       wd2 =  view_near * tan(view_param%perspective_angle*pi_180*half)
       ndfl = view_near / stereo_def%focalLength
 !
-      each_eye                                                          &
-     &     = each_eye_from_middle(i_img, num_img, pi_180, stereo_def)
+      each_eye = each_eye_from_middle(i_img, stereo_def)
 !
       view_bottom = - wd2
       view_top =      wd2
@@ -170,8 +169,7 @@
       wd2 =  view_near * tan(view_param%perspective_angle*pi_180*half)
       ndfl = view_near / stereo_def%focalLength
 !
-      each_eye                                                          &
-     &     = each_eye_from_middle(ione, ione, pi_180, stereo_def)
+      each_eye = each_eye_from_middle(ione, stereo_def)
 !
         view_bottom = - wd2
         view_top =      wd2
@@ -220,8 +218,7 @@
       wd2 =  view_near * tan(view_param%perspective_angle*pi_180*half)
       ndfl = view_near / stereo_def%focalLength
 !
-      each_eye                                                          &
-     &     = each_eye_from_middle(ione, ione, pi_180, stereo_def)
+      each_eye = each_eye_from_middle(ione, stereo_def)
 !
         view_bottom = - wd2
         view_top =      wd2

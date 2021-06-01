@@ -87,8 +87,8 @@
      &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
-        call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
-     &      pvr_param%movie_def, pvr_param%view,                        &
+        call cal_pvr_modelview_matrix(izero, i_rot, pvr_param%outline,  &
+     &      pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,  &
      &      pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
         call rendering_lic_at_once(istep_pvr, time, mesh, group,        &
      &      lic_p, field_lic, pvr_param, pvr_proj,                      &
@@ -157,8 +157,8 @@
       do i_rot = 1, pvr_param%movie_def%num_frame
 !
 !    Left eye
-        call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
-     &      pvr_param%movie_def, pvr_param%view,                        &
+        call cal_pvr_modelview_matrix(ione, i_rot, pvr_param%outline,   &
+     &      pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,  &
      &      pvr_proj(1)%viewpoint_vec, pvr_proj(1)%modelview_mat)
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
@@ -167,8 +167,8 @@
         call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
 !
 !    Right eye
-        call cal_pvr_modelview_matrix(i_rot, pvr_param%outline,         &
-     &      pvr_param%movie_def, pvr_param%view,                        &
+        call cal_pvr_modelview_matrix(itwo, i_rot, pvr_param%outline,   &
+     &      pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,  &
      &      pvr_proj(2)%viewpoint_vec, pvr_proj(2)%modelview_mat)
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
