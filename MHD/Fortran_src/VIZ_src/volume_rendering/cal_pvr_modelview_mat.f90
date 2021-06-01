@@ -64,43 +64,42 @@
       real(kind = kreal) :: modelview_inv(4,4)
 !
 !
-        if(i_rot .eq. 0) then
-          if (view_param%iflag_modelview_mat .eq. 0) then
-            call cal_modelview_mat_by_views(outline, view_param)
-          end if
-        else
-          call cal_pvr_rotate_mat_by_views                              &
-     &       (i_rot, outline, movie_def, view_param)
+      if(i_rot .eq. 0) then
+        if (view_param%iflag_modelview_mat .eq. 0) then
+          call cal_modelview_mat_by_views(outline, view_param)
         end if
+      else
+        call cal_pvr_rotate_mat_by_views                                &
+     &     (i_rot, outline, movie_def, view_param)
+      end if
 !
-        call cal_inverse_44_matrix(view_param%modelview,                &
-     &      modelview_inv, ierr2)
+      modelview_mat(1:4,1:4) = view_param%modelview(1:4,1:4)
+      call cal_inverse_44_matrix(modelview_mat,                         &
+     &                           modelview_inv, ierr2)
+      call cal_mat44_vec3_on_node(ione, ione, ione_stack,               &
+     &    modelview_inv, posi_zero(1), vec_tmp(1))
+      view_param%viewpoint(1:3) = vec_tmp(1:3)
 !
-        call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &      modelview_inv, posi_zero(1), vec_tmp(1))
-        view_param%viewpoint(1:3) = vec_tmp(1:3)
+      viewpoint_vec(1:3) =     view_param%viewpoint(1:3)
 !
-        viewpoint_vec(1:3) =     view_param%viewpoint(1:3)
-        modelview_mat(1:4,1:4) = view_param%modelview(1:4,1:4)
+      if (iflag_debug .gt. 0) then
+        write(*,*) 'modelview'
+        do i = 1, 4
+          write(*,'(1p4e16.7)') modelview_mat(i,1:4)
+        end do
 !
-        if (iflag_debug .gt. 0) then
-          write(*,*) 'modelview'
-          do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%modelview(i,1:4)
-          end do
+        write(*,*) 'modelview_inv'
+        do i = 1, 4
+          write(*,'(1p4e16.7)') modelview_inv(i,1:4)
+        end do
 !
-          write(*,*) 'modelview_inv'
-          do i = 1, 4
-            write(*,'(1p4e16.7)') modelview_inv(i,1:4)
-          end do
-!
-          write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
-          write(*,*) 'scale_factor_pvr',                                &
-     &              view_param%scale_factor_pvr(1:3)
-          write(*,*) 'viewpoint_vec', view_param%viewpoint(1:3)
-          write(*,*) 'viewpt_in_view',                                  &
-     &              view_param%viewpt_in_viewer_pvr(1:3)
-        end if
+        write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
+        write(*,*) 'scale_factor_pvr',                                  &
+     &            view_param%scale_factor_pvr(1:3)
+        write(*,*) 'viewpoint_vec', view_param%viewpoint(1:3)
+        write(*,*) 'viewpt_in_view',                                    &
+     &            view_param%viewpt_in_viewer_pvr(1:3)
+      end if
 !
       end subroutine cal_pvr_modelview_matrix
 !
@@ -116,6 +115,7 @@
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_view_parameter), intent(inout) :: view_param
 !
+      real(kind = kreal) :: rotation_mat(4,4), mat_tmp(4,4)
       real(kind = kreal) :: rev_lookat(3)
       real(kind = kreal) :: rev_eye(3)
 !
@@ -143,7 +143,10 @@
         call Kemo_Rotate( view_param%modelview,                         &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
       else
-        call update_rot_mat_from_viewpts(view_param)
+        mat_tmp(1:4,1:4) = view_param%modelview(1:4,1:4)
+        call update_rot_mat_from_viewpts(view_param, rotation_mat)
+        call cal_matmat44(view_param%modelview,                         &
+     &                    rotation_mat(1,1), mat_tmp(1,1))
       end if
 !
       view_param%iflag_modelview_mat = 1
@@ -182,6 +185,7 @@
       type(pvr_movie_parameter), intent(in) :: movie_def
       type(pvr_view_parameter), intent(inout) :: view_param
 !
+      real(kind = kreal) :: rotation_mat(4,4), mat_tmp(4,4)
       real(kind = kreal) :: rotation_axis(3), rev_lookat(3)
       real(kind = kreal) :: rev_eye(3)
       real(kind = kreal) :: angle_deg
@@ -232,7 +236,10 @@
         call Kemo_Rotate(view_param%modelview,                          &
      &    angle_deg, rotation_axis(1) )
       else
-        call update_rot_mat_from_viewpts(view_param)
+        mat_tmp(1:4,1:4) = view_param%modelview(1:4,1:4)
+        call update_rot_mat_from_viewpts(view_param, rotation_mat)
+        call cal_matmat44(view_param%modelview,                         &
+     &                    rotation_mat(1,1), mat_tmp(1,1))
       end if
 !
       view_param%iflag_modelview_mat = 1
@@ -259,18 +266,18 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine update_rot_mat_from_viewpts(view_param)
+      subroutine update_rot_mat_from_viewpts(view_param, rotation_mat)
 !
       use mag_of_field_smp
       use cal_products_smp
       use transform_mat_operations
 !
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_view_parameter), intent(in) :: view_param
+      real(kind = kreal), intent(inout) :: rotation_mat(4,4)
 !
       integer(kind = kint) :: i
       real(kind = kreal) :: viewing_dir(3), u(3), v(3), size(1)
-      real(kind = kreal) :: look_norm(3), view_norm(3)
-      real(kind = kreal) :: rotation_mat(4,4), mat_tmp(4,4)
+      real(kind = kreal) :: look_norm(3), view_norm(3), up_norm(3)
 !
 !
       viewing_dir(1:3) = view_param%lookat_vec(1:3)                     &
@@ -297,12 +304,11 @@
       call cal_vector_magnitude(ione, ione, ione_stack,                 &
      &    view_param%up_direction_vec(1), size(1) )
 !$omp end parallel
-      view_param%up_direction_vec(1:3)                                  &
-     &     = view_param%up_direction_vec(1:3) / size(1)
+      up_norm(1:3) = view_param%up_direction_vec(1:3) / size(1)
 !
 !    /* find the direction of axis U */
       call cal_cross_prod_no_coef_smp                                   &
-     &   (ione, view_param%up_direction_vec(1), viewing_dir(1), u(1))
+     &   (ione, up_norm(1), viewing_dir(1), u(1))
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack,                 &
      &    u(1), size(1) )
@@ -325,10 +331,6 @@
       end do
       rotation_mat(1:3,4) = zero
       rotation_mat(4,4) = one
-!
-      mat_tmp(1:4,1:4) = view_param%modelview(1:4,1:4)
-      call cal_matmat44(view_param%modelview,                           &
-     &                  rotation_mat(1,1), mat_tmp(1,1))
 !
       end subroutine update_rot_mat_from_viewpts
 !
