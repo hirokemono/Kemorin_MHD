@@ -87,8 +87,8 @@
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
         call rendering_lic_at_once(istep_pvr, time, izero, i_rot,       &
-     &      mesh, group, lic_p, field_lic, pvr_param, pvr_proj,         &
-     &      rot_imgs1%rot_pvr_rgb(i_rot))
+     &      mesh, group, lic_p, field_lic, pvr_param,                   &
+     &      pvr_proj%bound, pvr_proj, rot_imgs1%rot_pvr_rgb(i_rot))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -153,15 +153,15 @@
 !   Left eye
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, ione, i_rot, viz_fem%mesh, viz_fem%group,  &
-     &      lic_p, field_lic, pvr_param, pvr_proj(1),                   &
-     &      rot_imgs1%rot_pvr_rgb(i_rot))
+     &      lic_p, field_lic, pvr_param, pvr_proj(1)%bound,             &
+     &      pvr_proj(1), rot_imgs1%rot_pvr_rgb(i_rot))
         call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
 !
 !   Right eye
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, itwo, i_rot, viz_fem%mesh, viz_fem%group,  &
-     &      lic_p, field_lic, pvr_param, pvr_proj(2),                   &
-     &      rot_imgs1%rot_pvr_rgb(i_rot))
+     &      lic_p, field_lic, pvr_param, pvr_proj(2)%bound,             &
+     &      pvr_proj(2), rot_imgs1%rot_pvr_rgb(i_rot))
         call add_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)

@@ -79,7 +79,8 @@
       do i_rot = 1, pvr_param%movie_def%num_frame
         call rendering_at_once                                          &
      &     (istep_pvr, time, izero, i_rot, mesh, group, field_pvr,      &
-     &      pvr_param, pvr_proj, rot_imgs1%rot_pvr_rgb(i_rot))
+     &      pvr_param, pvr_proj%bound, pvr_proj,                        &
+     &      rot_imgs1%rot_pvr_rgb(i_rot))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -138,13 +139,15 @@
 !    Left eye
         call rendering_at_once                                          &
      &     (istep_pvr, time, ione, i_rot,mesh, group, field_pvr,        &
-     &      pvr_param, pvr_proj(1), rot_imgs1%rot_pvr_rgb(i_rot))
+     &      pvr_param, pvr_proj(1)%bound, pvr_proj(1),                  &
+     &      rot_imgs1%rot_pvr_rgb(i_rot))
         call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
 !
 !    Right eye
         call rendering_at_once                                          &
      &     (istep_pvr, time, itwo, i_rot, mesh, group, field_pvr,       &
-     &      pvr_param, pvr_proj(2), rot_imgs1%rot_pvr_rgb(i_rot))
+     &      pvr_param, pvr_proj(2)%bound, pvr_proj(2),                  &
+     &      rot_imgs1%rot_pvr_rgb(i_rot))
         call add_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)

@@ -152,7 +152,7 @@
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       do i_img = 1, num_img
         call set_fixed_view_and_image(i_img, num_img, mesh, group,      &
-     &      pvr_param, pvr_rgb(i_img), pvr_proj(i_img))
+     &      pvr_param, pvr_rgb(i_img), pvr_proj(i_img)%bound, pvr_proj(i_img))
       end do
 !
       end subroutine each_PVR_initialize
@@ -212,9 +212,9 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call set_fixed_view_and_image(ione, itwo, mesh, group,            &
-     &    pvr_param, pvr_rgb, pvr_proj(1))
+     &    pvr_param, pvr_rgb, pvr_proj(1)%bound, pvr_proj(1))
       call set_fixed_view_and_image(itwo, itwo, mesh, group,            &
-     &    pvr_param, pvr_rgb, pvr_proj(2))
+     &    pvr_param, pvr_rgb, pvr_proj(2)%bound, pvr_proj(2))
 !
       end subroutine each_anaglyph_PVR_init
 !

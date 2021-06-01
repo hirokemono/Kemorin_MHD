@@ -11,17 +11,18 @@
 !!     &         (istep_pvr, time, node, ele, surf,                     &
 !!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine rendering_lic_at_once                                &
-!!     &         (istep_pvr, time, i_stereo, i_rot, mesh, group,        &
-!!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
+!!     &         (istep_pvr, time, i_stereo, i_rot, mesh, group, lic_p, &
+!!     &          field_lic, pvr_param, pvr_bound, pvr_proj, pvr_rgb)
 !!        integer(kind = kint), intent(in) :: i_stereo, i_rot
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(lic_parameters), intent(in) :: lic_p
-!!        type(PVR_projection_data), intent(inout) :: pvr_proj
 !!        type(PVR_control_params), intent(in) :: pvr_param
 !!        type(lic_field_data), intent(in) :: field_lic
+!!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
+!!        type(PVR_projection_data), intent(inout) :: pvr_proj
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
@@ -88,8 +89,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_lic_at_once                                  &
-     &         (istep_pvr, time, i_stereo, i_rot, mesh, group,          &
-     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
+     &         (istep_pvr, time, i_stereo, i_rot, mesh, group, lic_p,   &
+     &          field_lic, pvr_param, pvr_bound, pvr_proj, pvr_rgb)
 !
       use cal_pvr_projection_mat
       use cal_pvr_modelview_mat
@@ -105,6 +106,7 @@
       type(PVR_control_params), intent(in) :: pvr_param
       type(lic_field_data), intent(in) :: field_lic
 !
+      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -144,7 +146,7 @@
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
      &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat,               &
-     &    pvr_proj%projection_mat, pvr_proj%bound, pvr_proj%screen,     &
+     &    pvr_proj%projection_mat, pvr_bound, pvr_proj%screen,          &
      &    start_rot)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, start_rot, stencil_rot)
