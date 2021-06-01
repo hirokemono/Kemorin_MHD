@@ -54,6 +54,8 @@
       integer(kind = kint) :: istack_l(0:1)
       real(kind = kreal) ::  vec_tmp(4)
       real(kind = kreal) ::  posi_zero(4) = (/zero,zero,zero,one/)
+!>    Inverse of modelview matrix
+      real(kind = kreal) :: modelview_inv(4,4)
 !
 !
         if(i_rot .eq. 0) then
@@ -66,10 +68,10 @@
         end if
 !
         call cal_inverse_44_matrix(view_param%modelview,                &
-     &      view_param%modelview_inv, ierr2)
+     &      modelview_inv, ierr2)
 !
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &      view_param%modelview_inv, posi_zero(1), vec_tmp(1))
+     &      modelview_inv, posi_zero(1), vec_tmp(1))
         view_param%viewpoint(1:3) = vec_tmp(1:3)
 !
         if (iflag_debug .gt. 0) then
@@ -80,7 +82,7 @@
 !
           write(*,*) 'modelview_inv'
           do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%modelview_inv(i,1:4)
+            write(*,'(1p4e16.7)') modelview_inv(i,1:4)
           end do
 !
           write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)

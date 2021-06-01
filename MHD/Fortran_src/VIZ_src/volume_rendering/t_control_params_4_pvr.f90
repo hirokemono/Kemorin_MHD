@@ -101,8 +101,6 @@
         integer(kind = kint) :: iflag_modelview_mat = 0
 !>    Modelview matrix
         real(kind = kreal) :: modelview(4,4)
-!>    Inverse of modelview matrix
-        real(kind = kreal) :: modelview_inv(4,4)
 !
 !
 !>    Defined flag for view rotation
