@@ -171,11 +171,6 @@
         end do
       end if
 !
-      do i_img = 1, num_img
-        call alloc_projected_position                                   &
-     &     (mesh%node, mesh%surf, pvr_proj(i_img)%screen)
-      end do
-!
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       do i_img = 1, num_img
         call set_fixed_view_and_image(i_img, mesh, group, pvr_param,    &
@@ -236,11 +231,6 @@
      &   (i_pvr, pvr_param%view, pvr_param%stereo_def,                  &
      &    pvr_proj(2)%projection_mat)
 !
-!
-      call alloc_projected_position                                     &
-     &   (mesh%node, mesh%surf, pvr_proj(1)%screen)
-      call alloc_projected_position                                     &
-     &   (mesh%node, mesh%surf, pvr_proj(2)%screen)
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call set_fixed_view_and_image(ione, mesh, group, pvr_param,       &

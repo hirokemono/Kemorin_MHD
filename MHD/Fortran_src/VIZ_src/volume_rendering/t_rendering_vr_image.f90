@@ -125,6 +125,9 @@
       call cal_pvr_modelview_matrix(i_stereo, izero, pvr_param%outline, &
      &    pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,    &
      &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
+!
+      call alloc_projected_position                                     &
+     &   (mesh%node, mesh%surf, pvr_proj%screen)
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
@@ -209,17 +212,21 @@
       type(pvr_ray_start_type) :: start_rot
 !>      Parallel stencil buffer
       type(pvr_stencil_buffer) :: stencil_rot
+!>  Structure for start points of ray tracing
+      type(pvr_projected_position) :: screen_rot
 !
 !
       call cal_pvr_modelview_matrix(i_stereo, i_rot, pvr_param%outline, &
      &    pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,    &
      &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
 !
+      call alloc_projected_position(mesh%node, mesh%surf, screen_rot)
+!
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
      &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat,               &
-     &    pvr_proj%projection_mat, pvr_proj%bound, pvr_proj%screen,     &
+     &    pvr_proj%projection_mat, pvr_proj%bound, screen_rot,          &
      &    start_rot)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, start_rot, stencil_rot)
@@ -227,10 +234,11 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
-     &    pvr_param%draw_param, pvr_proj%screen,                        &
+     &    pvr_param%draw_param, screen_rot,                             &
      &    pvr_proj%viewpoint_vec, start_rot, stencil_rot, pvr_rgb)
       call deallocate_pvr_ray_start(start_rot)
       call dealloc_pvr_stencil_buffer(stencil_rot)
+      call dealloc_projected_position(screen_rot)
 !
       end subroutine rendering_at_once
 !
