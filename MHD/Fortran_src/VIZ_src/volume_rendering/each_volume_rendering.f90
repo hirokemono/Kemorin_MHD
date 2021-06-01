@@ -149,32 +149,10 @@
      &                                = mod(i_img+i_pvr-1,nprocs)
       end do
 !
-      if(num_img .eq. 1) then
-        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
-        call set_pvr_projection_matrix                                  &
-     &     (i_pvr, pvr_param%view, pvr_proj(1)%projection_mat)
-!        call set_pvr_orthogonal_params(i_pvr, pvr_param%view)
-      else if(num_img .eq. 2) then
-        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
-        call set_pvr_projection_left_mat                                &
-     &     (i_pvr, pvr_param%view, pvr_param%stereo_def,                &
-     &      pvr_proj(1)%projection_mat)
-        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
-        call set_pvr_projection_right_mat                               &
-     &     (i_pvr, pvr_param%view, pvr_param%stereo_def,                &
-     &      pvr_proj(2)%projection_mat)
-      else
-        do i_img = 1, num_img
-          call set_pvr_step_projection_mat(i_img, num_img,              &
-     &        pvr_param%view, pvr_param%stereo_def,                     &
-     &        pvr_proj(i_img)%projection_mat)
-        end do
-      end if
-!
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       do i_img = 1, num_img
-        call set_fixed_view_and_image(i_img, mesh, group, pvr_param,    &
-     &                                pvr_rgb(i_img), pvr_proj(i_img))
+        call set_fixed_view_and_image(i_img, num_img, mesh, group,      &
+     &      pvr_param, pvr_rgb(i_img), pvr_proj(i_img))
       end do
 !
       end subroutine each_PVR_initialize
@@ -224,19 +202,19 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
       call set_pvr_projection_left_mat                                  &
-     &   (i_pvr, pvr_param%view, pvr_param%stereo_def,                  &
+     &   (pvr_param%view, pvr_param%stereo_def,                         &
      &   pvr_proj(1)%projection_mat)
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
       call set_pvr_projection_right_mat                                 &
-     &   (i_pvr, pvr_param%view, pvr_param%stereo_def,                  &
+     &   (pvr_param%view, pvr_param%stereo_def,                         &
      &    pvr_proj(2)%projection_mat)
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-      call set_fixed_view_and_image(ione, mesh, group, pvr_param,       &
-     &                              pvr_rgb, pvr_proj(1))
-      call set_fixed_view_and_image(itwo, mesh, group, pvr_param,       &
-     &                              pvr_rgb, pvr_proj(2))
+      call set_fixed_view_and_image(ione, itwo, mesh, group,            &
+     &    pvr_param, pvr_rgb, pvr_proj(1))
+      call set_fixed_view_and_image(itwo, itwo, mesh, group,            &
+     &    pvr_param, pvr_rgb, pvr_proj(2))
 !
       end subroutine each_anaglyph_PVR_init
 !

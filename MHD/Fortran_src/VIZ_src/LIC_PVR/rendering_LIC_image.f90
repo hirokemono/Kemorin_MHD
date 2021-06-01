@@ -91,6 +91,7 @@
      &         (istep_pvr, time, i_stereo, i_rot, mesh, group,          &
      &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
+      use cal_pvr_projection_mat
       use cal_pvr_modelview_mat
       use write_LIC_image
       use t_pvr_stencil_buffer
@@ -113,9 +114,31 @@
       type(pvr_ray_start_type) :: start_rot
 !
 !
-      call cal_pvr_modelview_matrix(i_stereo, i_rot, pvr_param%outline, &
-     &    pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,    &
-     &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
+      if(pvr_param%movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
+        call set_pvr_step_projection_mat                                &
+     &     (i_rot, pvr_param%movie_def%num_frame,                       &
+     &      pvr_param%view, pvr_param%stereo_def,                       &
+     &      pvr_proj%projection_mat)
+!      else if(num_stereo .gt. 1) then
+!        call set_pvr_step_projection_mat(i_stereo, num_stereo,        &
+!     &      pvr_param%view, pvr_param%stereo_def,                     &
+!     &      pvr_proj%projection_mat)
+      else
+        call set_pvr_projection_matrix                                  &
+     &     (pvr_param%view, pvr_proj%projection_mat)
+      end if
+!
+      if(pvr_param%movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
+        call cal_pvr_modelview_matrix                                   &
+     &     (i_rot, izero, pvr_param%outline,                            &
+     &      pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,  &
+     &      pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
+      else
+        call cal_pvr_modelview_matrix                                   &
+     &     (i_stereo, i_rot, pvr_param%outline,                         &
+     &      pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,  &
+     &      pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
+      end if
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
