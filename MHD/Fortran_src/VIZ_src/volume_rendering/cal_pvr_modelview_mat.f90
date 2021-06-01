@@ -12,7 +12,7 @@
 !!     &           viewpoint_vec, modelview_mat)
 !!        type(pvr_domain_outline), intent(in) :: outline
 !!        type(pvr_movie_parameter), intent(in) :: movie_def
-!!        type(pvr_view_parameter), intent(inout) :: view_param
+!!        type(pvr_view_parameter), intent(in) :: view_param
 !!        real(kind = kreal), intent(inout) :: modelview_mat(4,4)
 !!        real(kind = kreal), intent(inout) :: viewpoint_vec(3)
 !!@endverbatim
@@ -53,7 +53,7 @@
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_movie_parameter), intent(in) :: movie_def
       type(pvr_stereo_parameter), intent(in) :: stereo_def
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_view_parameter), intent(in) :: view_param
 !
       real(kind = kreal), intent(inout) :: modelview_mat(4,4)
       real(kind = kreal), intent(inout) :: viewpoint_vec(3)
@@ -110,13 +110,13 @@
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_movie_parameter), intent(in) :: movie_def
       type(pvr_stereo_parameter), intent(in) :: stereo_def
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_view_parameter), intent(in) :: view_param
 !
       real(kind = kreal), intent(inout) :: modelview_mat(4,4)
 !
       real(kind = kreal) :: rotation_mat(4,4), mat_tmp(4,4)
       real(kind = kreal) :: rotation_axis(3), rev_lookat(3)
-      real(kind = kreal) :: rev_eye(3), streo_eye(3)
+      real(kind = kreal) :: rev_eye(3), streo_eye(3), scale(3)
       real(kind = kreal) :: angle_deg
 !
 !
@@ -126,16 +126,17 @@
       end if
 !
       if(view_param%iflag_lookpoint .eq. 0) then
-        view_param%lookat_vec(1:3) = outline%center_g(1:3)
-        view_param%iflag_lookpoint = 1
+        rev_lookat(1:3) = - outline%center_g(1:3)
+      else
+        rev_lookat(1:3) = - view_param%lookat_vec(1:3)
       end if
-      rev_lookat(1:3) =   - view_param%lookat_vec(1:3)
 !
       if(view_param%iflag_scale_fact .eq. 0) then
-        view_param%scale_factor_pvr(1) = 1.0d0 / outline%rmax_g
-        view_param%scale_factor_pvr(2) = 1.0d0 / outline%rmax_g
-        view_param%scale_factor_pvr(3) = 1.0d0 / outline%rmax_g
-        view_param%iflag_scale_fact = 1
+        scale(1) = 1.0d0 / outline%rmax_g
+        scale(2) = 1.0d0 / outline%rmax_g
+        scale(3) = 1.0d0 / outline%rmax_g
+      else
+        scale(1:3) = view_param%scale_factor_pvr(1:3)
       end if
 !
 !
@@ -143,7 +144,7 @@
       call Kemo_Translate(modelview_mat, rev_lookat)
 !
 !    Change scale
-      call Kemo_Scale(modelview_mat, view_param%scale_factor_pvr)
+      call Kemo_Scale(modelview_mat, scale)
 !
 !   Rotate by Movie
       if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE                 &
