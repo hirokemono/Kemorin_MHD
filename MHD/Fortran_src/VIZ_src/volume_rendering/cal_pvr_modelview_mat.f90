@@ -142,12 +142,8 @@
       call Kemo_Unit(modelview_mat)
       call Kemo_Translate(modelview_mat, rev_lookat)
 !
-!   Shift for stereo view
-      if(stereo_def%flag_stereo_pvr .or. stereo_def%flag_quilt) then
-        streo_eye(1) =   each_eye_from_middle(i_stereo, stereo_def)
-        streo_eye(2:3) = zero
-        call Kemo_Translate(modelview_mat, streo_eye)
-      end if
+!    Change scale
+      call Kemo_Scale(modelview_mat, view_param%scale_factor_pvr)
 !
 !   Rotate by Movie
       if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE                 &
@@ -171,8 +167,12 @@
      &                    rotation_mat(1,1), mat_tmp(1,1))
       end if
 !
-!    Change scale
-      call Kemo_Scale(modelview_mat, view_param%scale_factor_pvr)
+!   Shift for stereo view
+      if(stereo_def%flag_stereo_pvr .or. stereo_def%flag_quilt) then
+        streo_eye(1) =   each_eye_from_middle(i_stereo, stereo_def)
+        streo_eye(2:3) = zero
+        call Kemo_Translate(modelview_mat, streo_eye)
+      end if
 !
 !       Shift by viewpoint
       if(view_param%iflag_viewpt_in_view .eq. 0) then
