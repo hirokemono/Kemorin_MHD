@@ -98,7 +98,6 @@
       do i_lic = 1, lic%pvr%num_pvr
         call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
      &      lic%pvr%pvr_param(i_lic)%draw_param)
-        call reset_pvr_view_parameteres(lic%pvr%pvr_param(i_lic)%view)
       end do
 !
       allocate(lic%lic_param(lic%pvr%num_pvr))

@@ -7,7 +7,6 @@
 !> @brief Structures for parameteres for volume rendering
 !!
 !!@verbatim
-!!      subroutine reset_pvr_view_parameteres(view_param)
 !!      subroutine alloc_pvr_element_group(pvr_area)
 !!      subroutine dealloc_pvr_element_group(pvr_area)
 !!        type(viz_area_parameter), intent(inout) :: pvr_area
@@ -248,18 +247,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine reset_pvr_view_parameteres(view_param)
-!
-      type(pvr_view_parameter), intent(inout) :: view_param
-!
-!
-        view_param%modelview(1:4,1:4) =   0.0d0
-        view_param%modelview_inv(1:4,1:4) =   0.0d0
-!
-      end subroutine reset_pvr_view_parameteres
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
