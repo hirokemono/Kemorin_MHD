@@ -178,11 +178,11 @@
       end do
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-      call cal_pvr_modelview_matrix(izero, pvr_param%outline,           &
-     &    pvr_param%movie_def, pvr_param%view)
       do i_img = 1, num_img
-        pvr_proj(i_img)%viewpoint_vec(1:3) =     pvr_param%view%viewpoint(1:3)
-        pvr_proj(i_img)%modelview_mat(1:4,1:4) = pvr_param%view%modelview(1:4,1:4)
+        call cal_pvr_modelview_matrix(izero, pvr_param%outline,         &
+     &      pvr_param%movie_def, pvr_param%view,                        &
+     &      pvr_proj(i_img)%viewpoint_vec,                              &
+     &      pvr_proj(i_img)%modelview_mat)
         call set_fixed_view_and_image                                   &
      &     (mesh, group, pvr_param, pvr_rgb(i_img), pvr_proj(i_img))
       end do
@@ -250,13 +250,14 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call cal_pvr_modelview_matrix(izero, pvr_param%outline,           &
-     &    pvr_param%movie_def, pvr_param%view)
-      pvr_proj(1)%viewpoint_vec(1:3) =     pvr_param%view%viewpoint(1:3)
-      pvr_proj(1)%modelview_mat(1:4,1:4) = pvr_param%view%modelview(1:4,1:4)
+     &    pvr_param%movie_def, pvr_param%view,                          &
+     &    pvr_proj(1)%viewpoint_vec, pvr_proj(1)%modelview_mat)
       call set_fixed_view_and_image                                     &
      &   (mesh, group, pvr_param, pvr_rgb, pvr_proj(1))
-      pvr_proj(2)%viewpoint_vec(1:3) =     pvr_param%view%viewpoint(1:3)
-      pvr_proj(2)%modelview_mat(1:4,1:4) = pvr_param%view%modelview(1:4,1:4)
+!
+      call cal_pvr_modelview_matrix(izero, pvr_param%outline,           &
+     &    pvr_param%movie_def, pvr_param%view,                          &
+     &    pvr_proj(2)%viewpoint_vec, pvr_proj(2)%modelview_mat)
       call set_fixed_view_and_image                                     &
      &   (mesh, group, pvr_param, pvr_rgb, pvr_proj(2))
 !
