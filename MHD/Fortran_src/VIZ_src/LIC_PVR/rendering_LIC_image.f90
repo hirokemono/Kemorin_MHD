@@ -107,10 +107,14 @@
       type(pvr_ray_start_type) :: start_rot
 !
 !
+      pvr_proj%viewpoint_vec(1:3) =     pvr_param%view%viewpoint(1:3)
+      pvr_proj%modelview_mat(1:4,1:4) = pvr_param%view%modelview(1:4,1:4)
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
-     &    group%surf_grp, group%surf_grp_norm,  pvr_param%draw_param,   &
-     &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
-     &    pvr_proj%bound, pvr_proj%screen, start_rot)
+     &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
+     &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
+     &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat,               &
+     &    pvr_proj%projection_mat, pvr_proj%bound, pvr_proj%screen,     &
+     &    start_rot)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, start_rot, stencil_rot)
 !
@@ -118,7 +122,7 @@
       call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_proj%screen,                        &
-     &    pvr_param%view%viewpoint, start_rot, stencil_rot, pvr_rgb)
+     &    pvr_proj%viewpoint_vec, start_rot, stencil_rot, pvr_rgb)
 !
       call deallocate_pvr_ray_start(start_rot)
       call dealloc_pvr_stencil_buffer(stencil_rot)

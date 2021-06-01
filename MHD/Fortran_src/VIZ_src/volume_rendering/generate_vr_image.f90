@@ -52,7 +52,8 @@
 !
       subroutine transfer_to_screen                                     &
      &        (node, ele, surf, surf_grp, surf_grp_v,                   &
-     &         draw_param, view_param, projection_mat, pixel_xy,        &
+     &         draw_param, pixel_xy, n_pvr_pixel,                       &
+     &         viewpoint_vec, modelview_mat, projection_mat,            &
      &         pvr_bound, pvr_screen, pvr_start)
 !
       use m_geometry_constants
@@ -71,8 +72,10 @@
       type(surface_group_data), intent(in) :: surf_grp
       type(surface_group_normals), intent(in) :: surf_grp_v
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
-      type(pvr_view_parameter), intent(in) :: view_param
       type(rendering_parameter), intent(in) :: draw_param
+      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       type(pvr_projected_position), intent(inout) :: pvr_screen
@@ -81,15 +84,15 @@
 !
 !
       call set_opacity_for_boundaries                                   &
-     &   (surf_grp, surf_grp_v, view_param%modelview,                   &
+     &   (surf_grp, surf_grp_v, modelview_mat,                          &
      &    draw_param%iflag_enhanse, draw_param%enhansed_opacity,        &
      &    ele%numele, surf%numsurf, surf%isf_4_ele,                     &
      &    pvr_screen%arccos_sf)
 !
       call axis_direction_in_screen                                     &
-     &   (view_param%modelview, projection_mat, pvr_screen)
+     &   (modelview_mat, projection_mat, pvr_screen)
 !
-      call cal_position_pvr_modelview(view_param%modelview,             &
+      call cal_position_pvr_modelview(modelview_mat,                    &
      &    node%numnod, node%xx, pvr_screen%x_nod_model)
 !
       call norm_on_model_pvr_domains                                    &
@@ -102,14 +105,14 @@
       call overwte_position_pvr_screen(projection_mat,                  &
      &    node%numnod, pvr_screen%x_nod_model)
 !
-      call set_pvr_domain_surface_data(view_param%n_pvr_pixel,          &
+      call set_pvr_domain_surface_data(n_pvr_pixel,                     &
      &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
      &    surf%ie_surf, surf%isf_4_ele, pvr_screen%x_nod_model,         &
      &    pvr_bound)
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
       call s_set_pvr_ray_start_point(node, ele, surf, pvr_bound,        &
-     &    pixel_xy, pvr_screen, view_param%viewpoint, pvr_start)
+     &    pixel_xy, pvr_screen, viewpoint_vec, pvr_start)
 !
       end subroutine transfer_to_screen
 !
