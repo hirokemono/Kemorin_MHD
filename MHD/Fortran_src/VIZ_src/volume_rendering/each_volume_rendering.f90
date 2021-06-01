@@ -138,11 +138,9 @@
      &    pvr_param%area_def%id_ele_grp_area_pvr,                       &
      &    pvr_param%draw_param%iflag_used_ele)
 !
-      do i_img = 1, num_img
-        call find_each_pvr_surf_domain                                  &
-     &     (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,     &
-     &      pvr_param%draw_param, pvr_bound)
-      end do
+      call find_each_pvr_surf_domain                                    &
+     &   (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,       &
+     &    pvr_param%draw_param, pvr_bound)
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
       call check_pvr_parameters                                         &
