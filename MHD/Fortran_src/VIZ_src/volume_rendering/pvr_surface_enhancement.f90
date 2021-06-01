@@ -11,7 +11,7 @@
 !!     &         (surf_grp, num_enhanse_grp, enhanse_grp, draw_type,    &
 !!     &          fixed_opacity, iflag_enhanse, enhansed_opacity)
 !!      subroutine set_opacity_for_boundaries(surf_grp, sf_grp_v,       &
-!!     &          view_param, iflag_enhanse, enhansed_opacity,          &
+!!     &          modelview_mat, iflag_enhanse, enhansed_opacity,       &
 !!     &          numele, numsurf, isf_4_ele, arccos_sf)
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!
@@ -103,14 +103,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_opacity_for_boundaries(surf_grp, sf_grp_v,         &
-     &          view_param, iflag_enhanse, enhansed_opacity,            &
+     &          modelview_mat, iflag_enhanse, enhansed_opacity,         &
      &          numele, numsurf, isf_4_ele, arccos_sf)
 !
       use set_position_pvr_screen
 !
       type(surface_group_data), intent(in) :: surf_grp
       type(surface_group_normals), intent(in) :: sf_grp_v
-      type(pvr_view_parameter), intent(in) :: view_param
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
       integer(kind = kint), intent(in) :: numele, numsurf
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in)                                  &
@@ -132,7 +132,7 @@
       norm_sf_model = zero
 !$omp end parallel workshare
 !
-      call chenge_direction_pvr_modelview(view_param%modelview,         &
+      call chenge_direction_pvr_modelview(modelview_mat,                &
      &    surf_grp%num_item, sf_grp_v%vnorm_sf_grp, norm_sf_model)
 !
 !$omp parallel do

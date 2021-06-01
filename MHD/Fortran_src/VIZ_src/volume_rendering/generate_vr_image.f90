@@ -81,7 +81,7 @@
 !
 !
       call set_opacity_for_boundaries                                   &
-     &   (surf_grp, surf_grp_v, view_param,                             &
+     &   (surf_grp, surf_grp_v, view_param%modelview,                   &
      &    draw_param%iflag_enhanse, draw_param%enhansed_opacity,        &
      &    ele%numele, surf%numsurf, surf%isf_4_ele,                     &
      &    pvr_screen%arccos_sf)
