@@ -76,6 +76,8 @@
         type(PVR_control_params), allocatable :: pvr_param(:)
 !>        Structure of field for PVRs
         type(pvr_field_data), allocatable :: field_pvr(:)
+!>        Domain boundary information
+        type(pvr_bounds_surf_ctl), allocatable :: pvr_bound(:)
 !
 !>        Number of rendering for volume rendering
         integer(kind = kint) :: num_pvr_rendering = 0
@@ -224,9 +226,10 @@
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call init_each_PVR_image(num_img, pvr%pvr_param(i_pvr),         &
      &                           pvr%pvr_rgb(ist_img+1))
-        call each_PVR_initialize(i_pvr, num_img,                        &
-     &      geofem%mesh, geofem%group, pvr%pvr_rgb(ist_img+1),          &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_img+1))
+        call each_PVR_initialize                                        &
+     &     (i_pvr, num_img, geofem%mesh, geofem%group,                  &
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_pvr),               &
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1))
       end do
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
@@ -302,7 +305,7 @@
      &                           pvr%pvr_rgb(i_pvr))
         call each_anaglyph_PVR_init(i_pvr, geofem%mesh, geofem%group,   &
      &      pvr%pvr_rgb(i_pvr), pvr%pvr_param(i_pvr),                   &
-     &      pvr%pvr_proj(2*i_pvr-1))
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(2*i_pvr-1))
       end do
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
@@ -394,9 +397,10 @@
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call each_PVR_rendering_w_rot                                   &
-     &     (istep_pvr, time, num_img, geofem, jacs,                     &
-     &      nod_fld, pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),        &
-     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
+     &     (istep_pvr, time, num_img, geofem, jacs, nod_fld,            &
+     &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),              &
+     &      pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -454,7 +458,8 @@
 !
         call each_PVR_anaglyph_w_rot(istep_pvr, time, geofem, jacs,     &
      &      nod_fld, pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),        &
-     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr))
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(2*i_pvr-1),              &
+     &      pvr%pvr_rgb(i_pvr))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -473,6 +478,7 @@
 !
       allocate(pvr%pvr_param(pvr%num_pvr))
       allocate(pvr%field_pvr(pvr%num_pvr))
+      allocate(pvr%pvr_bound(pvr%num_pvr))
 !
       end subroutine alloc_pvr_data
 !
@@ -521,8 +527,9 @@
       do i_pvr = 1, pvr%num_pvr
         call dealloc_iflag_pvr_used_ele                                 &
      &     (pvr%pvr_param(i_pvr)%draw_param)
+        call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_pvr))
       end do
-      deallocate(pvr%pvr_param)
+      deallocate(pvr%pvr_bound, pvr%pvr_param)
 !
 !
       do i_pvr = 1, pvr%num_pvr_images
@@ -531,6 +538,8 @@
       deallocate(pvr%pvr_rgb)
 !
 !
+      do i_pvr = 1, pvr%num_pvr
+      end do
       do i_pvr = 1, pvr%num_pvr_rendering
         call flush_rendering_4_fixed_view(pvr%pvr_proj(i_pvr))
       end do

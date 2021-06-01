@@ -132,7 +132,7 @@ t_pvr_ray_startpoints.o: $(PVR_DIR)/t_pvr_ray_startpoints.f90 m_precision.o m_co
 	$(F90) -c $(F90OPTFLAGS) $<
 t_pvr_stencil_buffer.o: $(PVR_DIR)/t_pvr_stencil_buffer.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_calypso_comm_table.o t_pvr_ray_startpoints.o t_pvr_image_stack_table.o t_stencil_buffer_work.o t_pvr_image_array.o set_pvr_stencil_buffer.o calypso_SR_type.o select_copy_from_recv.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_rendering_vr_image.o: $(PVR_DIR)/t_rendering_vr_image.f90 m_precision.o m_machine_parameter.o m_constants.o m_work_time.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_pvr_stencil_buffer.o t_pvr_field_data.o t_control_params_stereo_pvr.o generate_vr_image.o cal_pvr_projection_mat.o cal_pvr_modelview_mat.o write_PVR_image.o
+t_rendering_vr_image.o: $(PVR_DIR)/t_rendering_vr_image.f90 m_precision.o m_machine_parameter.o m_constants.o m_work_time.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_pvr_stencil_buffer.o t_pvr_field_data.o t_control_params_stereo_pvr.o generate_vr_image.o cal_pvr_projection_mat.o cal_pvr_modelview_mat.o write_PVR_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_rotation_pvr_images.o: $(PVR_DIR)/t_rotation_pvr_images.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_pvr_image_array.o t_control_params_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<

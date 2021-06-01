@@ -8,16 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine rendering_with_rotation(istep_pvr, time, mesh, group,&
-!!     &          field_pvr, pvr_rgb, pvr_param, pvr_proj)
+!!     &          field_pvr, pvr_rgb, pvr_param, pvr_bound, pvr_proj)
 !!      subroutine anaglyph_rendering_w_rotation                        &
 !!     &         (istep_pvr, time, mesh, group, field_pvr, pvr_rgb,     &
-!!     &          pvr_param, pvr_proj)
+!!     &          pvr_param, pvr_bound, pvr_proj)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(pvr_image_type), intent(in) :: pvr_rgb
-!!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
+!!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
+!!        type(PVR_projection_data), intent(inout) :: pvr_proj
 !!@endverbatim
 !
       module rendering_streo_vr_image
@@ -51,7 +52,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_with_rotation(istep_pvr, time, mesh, group,  &
-     &          field_pvr, pvr_rgb, pvr_param, pvr_proj)
+     &          field_pvr, pvr_rgb, pvr_param, pvr_bound, pvr_proj)
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
@@ -67,6 +68,7 @@
       type(pvr_image_type), intent(in) :: pvr_rgb
 !
       type(PVR_control_params), intent(inout) :: pvr_param
+      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(PVR_projection_data), intent(inout) :: pvr_proj
 !
       integer(kind = kint) :: i_rot, iflag_img_fmt
@@ -77,9 +79,8 @@
      &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
-        call rendering_at_once                                          &
-     &     (istep_pvr, time, izero, i_rot, mesh, group, field_pvr,      &
-     &      pvr_param, pvr_proj%bound, pvr_proj,                        &
+        call rendering_at_once(istep_pvr, time, izero, i_rot,           &
+     &      mesh, group, field_pvr, pvr_param, pvr_bound, pvr_proj,     &
      &      rot_imgs1%rot_pvr_rgb(i_rot))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
@@ -108,7 +109,7 @@
 !
       subroutine anaglyph_rendering_w_rotation                          &
      &         (istep_pvr, time, mesh, group, field_pvr, pvr_rgb,       &
-     &          pvr_param, pvr_proj)
+     &          pvr_param, pvr_bound, pvr_proj)
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
@@ -124,6 +125,7 @@
       type(pvr_image_type), intent(in) :: pvr_rgb
 !
       type(PVR_control_params), intent(inout) :: pvr_param
+      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !
       integer(kind = kint) :: i_rot, iflag_img_fmt
@@ -137,16 +139,14 @@
       do i_rot = 1, pvr_param%movie_def%num_frame
 !
 !    Left eye
-        call rendering_at_once                                          &
-     &     (istep_pvr, time, ione, i_rot,mesh, group, field_pvr,        &
-     &      pvr_param, pvr_proj(1)%bound, pvr_proj(1),                  &
+        call rendering_at_once(istep_pvr, time, ione, i_rot,            &
+     &      mesh, group, field_pvr, pvr_param, pvr_bound, pvr_proj(1),  &
      &      rot_imgs1%rot_pvr_rgb(i_rot))
         call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
 !
 !    Right eye
-        call rendering_at_once                                          &
-     &     (istep_pvr, time, itwo, i_rot, mesh, group, field_pvr,       &
-     &      pvr_param, pvr_proj(2)%bound, pvr_proj(2),                  &
+        call rendering_at_once (istep_pvr, time, itwo, i_rot,           &
+     &      mesh, group, field_pvr, pvr_param, pvr_bound, pvr_proj(2),  &
      &      rot_imgs1%rot_pvr_rgb(i_rot))
         call add_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
       end do

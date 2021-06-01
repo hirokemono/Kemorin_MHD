@@ -113,7 +113,7 @@
         call each_PVR_initialize(i_lic, num_img,                        &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_proj(ist_img+1))
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -145,7 +145,7 @@
         call each_anaglyph_PVR_init(i_lic,                              &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
-     &      pvr%pvr_proj(2*i_lic-1))
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -241,7 +241,8 @@
         call s_each_LIC_rendering_w_rot(istep_lic, time, num_img,       &
      &      repart_data%viz_fem, repart_data%field_lic,                 &
      &      lic_param(i_lic), pvr%pvr_param(i_lic),                     &
-     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1),              &
+     &      pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -313,7 +314,8 @@
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
      &      repart_data%viz_fem, repart_data%field_lic,                 &
      &      lic_param(i_lic), pvr%pvr_rgb(i_lic),                       &
-     &      pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1))
+     &      pvr%pvr_param(i_lic),  pvr%pvr_bound(i_lic),                &
+     &      pvr%pvr_proj(2*i_lic-1))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -359,7 +361,7 @@
         call each_PVR_initialize(i_lic, num_img,                        &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_proj(ist_img+1))
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
 !
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
@@ -381,12 +383,12 @@
           call s_each_LIC_rendering_w_rot                               &
      &     (istep_lic, time, num_img, repart_data%viz_fem,              &
      &      repart_data%field_lic, lic_param(i_lic),                    &
-     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
-     &      pvr%pvr_rgb(ist_img+1))
+     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
         end if
 !
         call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),      &
-     &                                       pvr%pvr_proj(ist_img+1))
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
@@ -458,7 +460,7 @@
         call each_anaglyph_PVR_init(i_lic,                              &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
-     &      pvr%pvr_proj(2*i_lic-1))
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
 !
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
@@ -480,11 +482,12 @@
           call anaglyph_lic_rendering_w_rot(istep_lic, time,            &
      &        repart_data%viz_fem, repart_data%field_lic,               &
      &        lic_param(i_lic), pvr%pvr_rgb(i_lic),                     &
-     &        pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1))
+     &        pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),               &
+     &        pvr%pvr_proj(2*i_lic-1))
         end if
 !
         call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),         &
-     &                              pvr%pvr_proj(2*i_lic-1))
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do

@@ -43,7 +43,6 @@
       use t_group_data
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
-      use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
       use t_pvr_image_array
       use t_pvr_stencil_buffer
@@ -89,8 +88,6 @@
 !>        perspective projection matrix
         real(kind = kreal) :: projection_mat(4,4)
 !
-!>        Domain boundary information
-        type(pvr_bounds_surf_ctl) :: bound
 !>        Data on screen coordinate
         type(pvr_projected_position) :: screen
 !>        Parallel stencil buffer
@@ -194,7 +191,6 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj
 !
 !
-      call dealloc_pvr_surf_domain_item(pvr_proj%bound)
       call dealloc_projected_position(pvr_proj%screen)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
