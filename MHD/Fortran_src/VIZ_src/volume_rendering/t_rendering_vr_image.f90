@@ -116,8 +116,6 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj
 !
 !
-      pvr_proj%viewpoint_vec(1:3) =     pvr_param%view%viewpoint(1:3)
-      pvr_proj%modelview_mat(1:4,1:4) = pvr_param%view%modelview(1:4,1:4)
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
@@ -201,8 +199,7 @@
 !>      Parallel stencil buffer
       type(pvr_stencil_buffer) :: stencil_rot
 !
-      pvr_proj%viewpoint_vec(1:3) =     pvr_param%view%viewpoint(1:3)
-      pvr_proj%modelview_mat(1:4,1:4) = pvr_param%view%modelview(1:4,1:4)
+!
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
