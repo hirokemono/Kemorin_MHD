@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine cal_pvr_modelview_matrix                             &
-!!     &          (i_rot, outline, movie_def, view_param, color_param)
+!!     &          (i_rot, outline, movie_def, view_param)
 !!        type(pvr_domain_outline), intent(in) :: outline
 !!        type(pvr_movie_parameter), intent(in) :: movie_def
-!!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!@endverbatim
 !
@@ -40,7 +39,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pvr_modelview_matrix                               &
-     &          (i_rot, outline, movie_def, view_param, color_param)
+     &          (i_rot, outline, movie_def, view_param)
 !
       use t_surf_grp_4_pvr_domain
       use cal_inverse_small_matrix
@@ -49,7 +48,6 @@
       integer(kind = kint), intent(in) :: i_rot
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_movie_parameter), intent(in) :: movie_def
-      type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_view_parameter), intent(inout) :: view_param
 !
       integer(kind = kint) :: i, ierr2
@@ -69,15 +67,6 @@
 !
         call cal_inverse_44_matrix(view_param%modelview,                &
      &      view_param%modelview_inv, ierr2)
-!
-        istack_l(0) = 0
-        istack_l(1) = color_param%num_pvr_lights
-        do i = 1, color_param%num_pvr_lights
-          call cal_mat44_vec3_on_node                                   &
-     &       (ione, ione, ione_stack, view_param%modelview,             &
-     &        color_param%xyz_pvr_lights(1:3,i), vec_tmp(1))
-          color_param%view_pvr_lights(1:3,i) = vec_tmp(1:3)
-        end do
 !
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
      &      view_param%modelview_inv, posi_zero(1), vec_tmp(1))
@@ -100,11 +89,6 @@
           write(*,*) 'viewpoint_vec', view_param%viewpoint(1:3)
           write(*,*) 'viewpt_in_view',                                  &
      &              view_param%viewpt_in_viewer_pvr(1:3)
-!
-          do i = 1, color_param%num_pvr_lights
-            write(*,*) 'view_pvr_lights',                               &
-     &                i, color_param%view_pvr_lights(1:3,i)
-          end do
         end if
 !
       end subroutine cal_pvr_modelview_matrix

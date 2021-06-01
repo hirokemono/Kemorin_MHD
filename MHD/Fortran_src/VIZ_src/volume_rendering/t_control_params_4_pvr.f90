@@ -220,8 +220,6 @@
         real(kind = kreal) :: pvr_lighting_real(3) = (/zero,zero,zero/)
 !>    Position of lights
         real(kind = kreal), allocatable :: xyz_pvr_lights(:,:)
-!>    Position of lights in viewer coordinates
-        real(kind = kreal), allocatable :: view_pvr_lights(:,:)
       end type pvr_colormap_parameter
 !
 !>  Structure for PVR colorbar parameters
@@ -324,10 +322,8 @@
 !
 !
       allocate(color%xyz_pvr_lights(3,color%num_pvr_lights) )
-      allocate(color%view_pvr_lights(3,color%num_pvr_lights) )
       if (color%num_pvr_lights .le. 0) return
       color%xyz_pvr_lights =    0.0d0
-      color%view_pvr_lights =   0.0d0
 !
       end subroutine alloc_light_posi_in_view
 !
@@ -341,7 +337,6 @@
       deallocate(color%pvr_datamap_param)
       deallocate(color%pvr_opacity_param)
       deallocate(color%xyz_pvr_lights)
-      deallocate(color%view_pvr_lights)
 !
       end subroutine dealloc_pvr_color_parameteres
 !
