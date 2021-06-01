@@ -10,8 +10,12 @@
 !!      subroutine lic_rendering_with_fixed_view(istep_pvr, time, mesh, &
 !!     &         (istep_pvr, time, node, ele, surf,                     &
 !!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
-!!      subroutine rendering_lic_at_once(istep_pvr, time, mesh, group,  &
+!!      subroutine rendering_lic_at_once                                &
+!!     &         (istep_pvr, time, i_stereo, i_rot, mesh, group,        &
 !!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
+!!        integer(kind = kint), intent(in) :: i_stereo, i_rot
+!!        integer(kind = kint), intent(in) :: istep_pvr
+!!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(lic_parameters), intent(in) :: lic_p
@@ -83,13 +87,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_lic_at_once(istep_pvr, time, mesh, group,    &
+      subroutine rendering_lic_at_once                                  &
+     &         (istep_pvr, time, i_stereo, i_rot, mesh, group,          &
      &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_LIC_image
       use t_pvr_stencil_buffer
 !
+      integer(kind = kint), intent(in) :: i_stereo, i_rot
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
@@ -106,6 +112,10 @@
 !>      Start point structure for volume rendering with rotation
       type(pvr_ray_start_type) :: start_rot
 !
+!
+      call cal_pvr_modelview_matrix(i_stereo, i_rot, pvr_param%outline, &
+     &    pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,    &
+     &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &

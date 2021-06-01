@@ -112,7 +112,6 @@
 !
       use t_control_data_pvr_sections
       use set_pvr_control
-      use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
       use find_pvr_surf_domain
       use set_iflag_for_used_ele
@@ -179,12 +178,8 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       do i_img = 1, num_img
-        call cal_pvr_modelview_matrix(i_img, izero, pvr_param%outline,  &
-     &      pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,  &
-     &      pvr_proj(i_img)%viewpoint_vec,                              &
-     &      pvr_proj(i_img)%modelview_mat)
-        call set_fixed_view_and_image                                   &
-     &     (mesh, group, pvr_param, pvr_rgb(i_img), pvr_proj(i_img))
+        call set_fixed_view_and_image(i_img, mesh, group, pvr_param,    &
+     &                                pvr_rgb(i_img), pvr_proj(i_img))
       end do
 !
       end subroutine each_PVR_initialize
@@ -196,7 +191,6 @@
 !
       use t_control_data_pvr_sections
       use set_pvr_control
-      use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
       use find_pvr_surf_domain
       use set_iflag_for_used_ele
@@ -249,17 +243,10 @@
      &   (mesh%node, mesh%surf, pvr_proj(2)%screen)
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-      call cal_pvr_modelview_matrix(ione, izero, pvr_param%outline,     &
-     &    pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,    &
-     &    pvr_proj(1)%viewpoint_vec, pvr_proj(1)%modelview_mat)
-      call set_fixed_view_and_image                                     &
-     &   (mesh, group, pvr_param, pvr_rgb, pvr_proj(1))
-!
-      call cal_pvr_modelview_matrix(itwo, izero, pvr_param%outline,     &
-     &    pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,    &
-     &    pvr_proj(2)%viewpoint_vec, pvr_proj(2)%modelview_mat)
-      call set_fixed_view_and_image                                     &
-     &   (mesh, group, pvr_param, pvr_rgb, pvr_proj(2))
+      call set_fixed_view_and_image(ione, mesh, group, pvr_param,       &
+     &                              pvr_rgb, pvr_proj(1))
+      call set_fixed_view_and_image(itwo, mesh, group, pvr_param,       &
+     &                              pvr_rgb, pvr_proj(2))
 !
       end subroutine each_anaglyph_PVR_init
 !

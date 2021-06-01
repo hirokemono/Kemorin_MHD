@@ -7,8 +7,8 @@
 !> @brief Get model view matrix for PVR
 !!
 !!@verbatim
-!!      subroutine cal_pvr_modelview_matrix                             &
-!!     &          (i_stereo, i_rot, outline, movie_def, view_param,     &
+!!      subroutine cal_pvr_modelview_matrix(i_stereo, i_rot,            &
+!!     &           outline, movie_def, stereo_def, view_param,          &
 !!     &           viewpoint_vec, modelview_mat)
 !!        type(pvr_domain_outline), intent(in) :: outline
 !!        type(pvr_movie_parameter), intent(in) :: movie_def

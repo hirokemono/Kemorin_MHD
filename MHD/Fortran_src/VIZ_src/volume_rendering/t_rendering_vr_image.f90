@@ -7,14 +7,18 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine set_fixed_view_and_image(mesh, group,                &
+!!      subroutine set_fixed_view_and_image(i_stereo, mesh, group,      &
 !!     &          pvr_param, pvr_rgb, pvr_proj)
 !!      subroutine rendering_with_fixed_view(istep_pvr, time, mesh,     &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine flush_rendering_4_fixed_view(pvr_proj)
 !!
-!!      subroutine rendering_at_once(istep_pvr, time, mesh, group,      &
+!!      subroutine rendering_at_once                                    &
+!!     &         (istep_pvr, time, i_stereo, i_rot, mesh, group,        &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+!!        integer(kind = kint), intent(in) :: i_stereo, i_rot
+!!        integer(kind = kint), intent(in) :: istep_pvr
+!!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(pvr_field_data), intent(in) :: field_pvr
@@ -103,12 +107,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fixed_view_and_image(mesh, group,                  &
+      subroutine set_fixed_view_and_image(i_stereo, mesh, group,        &
      &          pvr_param, pvr_rgb, pvr_proj)
 !
       use cal_pvr_modelview_mat
       use t_pvr_stencil_buffer
 !
+      integer(kind = kint), intent(in) :: i_stereo
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(PVR_control_params), intent(in) :: pvr_param
@@ -117,6 +122,9 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj
 !
 !
+      call cal_pvr_modelview_matrix(i_stereo, izero, pvr_param%outline, &
+     &    pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,    &
+     &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
@@ -178,13 +186,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once(istep_pvr, time, mesh, group,        &
+      subroutine rendering_at_once                                      &
+     &         (istep_pvr, time, i_stereo, i_rot, mesh, group,          &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
       use t_pvr_stencil_buffer
 !
+      integer(kind = kint), intent(in) :: i_stereo, i_rot
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
@@ -200,6 +210,10 @@
 !>      Parallel stencil buffer
       type(pvr_stencil_buffer) :: stencil_rot
 !
+!
+      call cal_pvr_modelview_matrix(i_stereo, i_rot, pvr_param%outline, &
+     &    pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,    &
+     &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
