@@ -272,18 +272,7 @@
       quilt_d%npixel_xy(1:2) = rot_rgb(1)%num_pixels(1:2)
       call alloc_quilt_rgb_images(quilt_d)
 !
-      icou = 0
-      do i_rot = 1, num_img
-        if(my_rank .eq. rot_rgb(i_rot)%irank_image_file) then
-          icou = icou + 1
-          quilt_d%icou_each_pe(icou) = i_rot
-        end if
-      end do
-!
       do icou = 1, quilt_d%num_image_lc
-        i_rot = quilt_d%icou_each_pe(icou)
-        quilt_d%images(icou)%each_prefix                                &
-     &         = add_int_suffix(i_rot, quilt_d%image_seq_prefix)
         quilt_d%images(icou)%image_format = quilt_d%image_seq_format
         call alloc_each_rgb_image                                       &
      &     (quilt_d%npixel_xy, quilt_d%images(icou))
@@ -294,6 +283,9 @@
       do i_rot = 1, num_img
         if(my_rank .eq. rot_rgb(i_rot)%irank_image_file) then
           icou = icou + 1
+          quilt_d%icou_each_pe(icou) = i_rot
+          quilt_d%images(icou)%each_prefix                              &
+     &         = add_int_suffix(i_rot, quilt_d%image_seq_prefix)
           call cvt_double_rgba_to_char_rgb                              &
      &       (rot_rgb(i_rot)%num_pixel_xy, rot_rgb(i_rot)%rgba_real_gl, &
      &        quilt_d%images(icou)%rgb(1,1,1))
