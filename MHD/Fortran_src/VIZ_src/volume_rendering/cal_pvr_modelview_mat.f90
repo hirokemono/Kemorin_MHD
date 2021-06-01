@@ -65,22 +65,18 @@
 !
 !
       if(i_rot .eq. 0) then
-        if (view_param%iflag_modelview_mat .eq. 0) then
-          call cal_modelview_mat_by_views(outline, view_param)
-        end if
+        call cal_modelview_mat_by_views                                 &
+     &     (outline, view_param, modelview_mat)
       else
         call cal_pvr_rotate_mat_by_views                                &
-     &     (i_rot, outline, movie_def, view_param)
+     &     (i_rot, outline, movie_def, view_param, modelview_mat)
       end if
 !
-      modelview_mat(1:4,1:4) = view_param%modelview(1:4,1:4)
       call cal_inverse_44_matrix(modelview_mat,                         &
      &                           modelview_inv, ierr2)
       call cal_mat44_vec3_on_node(ione, ione, ione_stack,               &
      &    modelview_inv, posi_zero(1), vec_tmp(1))
-      view_param%viewpoint(1:3) = vec_tmp(1:3)
-!
-      viewpoint_vec(1:3) =     view_param%viewpoint(1:3)
+      viewpoint_vec(1:3) = vec_tmp(1:3)
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'modelview'
@@ -96,7 +92,7 @@
         write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
         write(*,*) 'scale_factor_pvr',                                  &
      &            view_param%scale_factor_pvr(1:3)
-        write(*,*) 'viewpoint_vec', view_param%viewpoint(1:3)
+        write(*,*) 'viewpoint_vec', viewpoint_vec(1:3)
         write(*,*) 'viewpt_in_view',                                    &
      &            view_param%viewpt_in_viewer_pvr(1:3)
       end if
@@ -106,7 +102,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_modelview_mat_by_views(outline, view_param)
+      subroutine cal_modelview_mat_by_views                             &
+     &         (outline, view_param, modelview_mat)
 !
       use t_surf_grp_4_pvr_domain
       use transform_mat_operations
@@ -115,10 +112,17 @@
       type(pvr_domain_outline), intent(in) :: outline
       type(pvr_view_parameter), intent(inout) :: view_param
 !
+      real(kind = kreal), intent(inout) :: modelview_mat(4,4)
+!
       real(kind = kreal) :: rotation_mat(4,4), mat_tmp(4,4)
       real(kind = kreal) :: rev_lookat(3)
       real(kind = kreal) :: rev_eye(3)
 !
+!
+      if(view_param%iflag_modelview_mat .gt. 0) then
+        modelview_mat(1:4,1:4) = view_param%modelview(1:4,1:4)
+        return
+      end if
 !
       if(view_param%iflag_lookpoint .eq. 0) then
         view_param%lookat_vec(1:3) = outline%center_g(1:3)
@@ -134,47 +138,39 @@
       end if
 !
 !
-      call Kemo_Unit( view_param%modelview)
-      call Kemo_Translate(view_param%modelview, rev_lookat)
-      call Kemo_Scale(view_param%modelview,                             &
-     &                view_param%scale_factor_pvr)
+      call Kemo_Unit(modelview_mat)
+      call Kemo_Translate(modelview_mat, rev_lookat)
+      call Kemo_Scale(modelview_mat, view_param%scale_factor_pvr)
 !
       if (view_param%iflag_rotation .gt. 0) then
-        call Kemo_Rotate( view_param%modelview,                         &
+        call Kemo_Rotate(modelview_mat,                                 &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
       else
-        mat_tmp(1:4,1:4) = view_param%modelview(1:4,1:4)
+        mat_tmp(1:4,1:4) = modelview_mat(1:4,1:4)
         call update_rot_mat_from_viewpts(view_param, rotation_mat)
-        call cal_matmat44(view_param%modelview,                         &
+        call cal_matmat44(modelview_mat,                                &
      &                    rotation_mat(1,1), mat_tmp(1,1))
       end if
 !
-      view_param%iflag_modelview_mat = 1
-!
-!
-      rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &    view_param%modelview, view_param%viewpoint, rev_eye)
-        call Kemo_Translate(view_param%modelview,                       &
-     &      rev_eye)
-        view_param%iflag_viewpt_in_view = 1
+     &    modelview_mat, view_param%viewpoint, rev_eye)
       else
-        call Kemo_Translate(view_param%modelview, rev_eye)
+        rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       end if
+      call Kemo_Translate(modelview_mat, rev_eye)
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'viewpt_in_view',                                    &
      &            view_param%viewpt_in_viewer_pvr(1:3)
       end if
 !
-!
       end subroutine cal_modelview_mat_by_views
 !
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pvr_rotate_mat_by_views                            &
-     &         (i_rot, outline, movie_def, view_param)
+     &         (i_rot, outline, movie_def, view_param, modelview_mat)
 !
       use t_surf_grp_4_pvr_domain
       use transform_mat_operations
@@ -185,12 +181,18 @@
       type(pvr_movie_parameter), intent(in) :: movie_def
       type(pvr_view_parameter), intent(inout) :: view_param
 !
+      real(kind = kreal), intent(inout) :: modelview_mat(4,4)
+!
       real(kind = kreal) :: rotation_mat(4,4), mat_tmp(4,4)
       real(kind = kreal) :: rotation_axis(3), rev_lookat(3)
       real(kind = kreal) :: rev_eye(3)
       real(kind = kreal) :: angle_deg
 !
 !
+      if(view_param%iflag_modelview_mat .gt. 0) then
+        modelview_mat(1:4,1:4) = view_param%modelview(1:4,1:4)
+        return
+      end if
 !
       if(view_param%iflag_lookpoint .eq. 0) then
         view_param%lookat_vec(1:3) = outline%center_g(1:3)
@@ -206,10 +208,9 @@
       end if
 !
 !
-      call Kemo_Unit(view_param%modelview)
-      call Kemo_Translate(view_param%modelview, rev_lookat)
-      call Kemo_Scale(view_param%modelview,                             &
-     &    view_param%scale_factor_pvr)
+      call Kemo_Unit(modelview_mat)
+      call Kemo_Translate(modelview_mat, rev_lookat)
+      call Kemo_Scale(modelview_mat, view_param%scale_factor_pvr)
 !
       if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE) then
 !
@@ -218,14 +219,13 @@
         angle_deg = movie_def%angle_range(1)                            &
      &      + (movie_def%angle_range(2) - movie_def%angle_range(1))     &
      &       * dble(i_rot-1) / dble(movie_def%num_frame)
-        call Kemo_Rotate(view_param%modelview,                          &
-     &    angle_deg, rotation_axis(1) )
+        call Kemo_Rotate(modelview_mat, angle_deg, rotation_axis(1))
 !
-        call Kemo_Rotate(view_param%modelview,                          &
+        call Kemo_Rotate(modelview_mat,                                 &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
 !
       else if(movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
-        call Kemo_Rotate(view_param%modelview,                          &
+        call Kemo_Rotate(modelview_mat,                                 &
      &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
 !
         rotation_axis(1:3) =                    zero
@@ -233,28 +233,23 @@
         angle_deg = movie_def%angle_range(2)                            &
      &      - (movie_def%angle_range(2) - movie_def%angle_range(1))     &
      &       * dble(i_rot-1) / dble(movie_def%num_frame)
-        call Kemo_Rotate(view_param%modelview,                          &
-     &    angle_deg, rotation_axis(1) )
+        call Kemo_Rotate(modelview_mat, angle_deg, rotation_axis(1))
       else
-        mat_tmp(1:4,1:4) = view_param%modelview(1:4,1:4)
+        mat_tmp(1:4,1:4) = modelview_mat(1:4,1:4)
         call update_rot_mat_from_viewpts(view_param, rotation_mat)
-        call cal_matmat44(view_param%modelview,                         &
+        call cal_matmat44(modelview_mat,                                &
      &                    rotation_mat(1,1), mat_tmp(1,1))
       end if
 !
-      view_param%iflag_modelview_mat = 1
-!
 !    rotation matrix for movie
 !
-      rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &    view_param%modelview, view_param%viewpoint, rev_eye)
-        call Kemo_Translate(view_param%modelview, rev_eye)
-        view_param%iflag_viewpt_in_view = 1
+     &    modelview_mat, view_param%viewpoint, rev_eye)
       else
-        call Kemo_Translate(view_param%modelview, rev_eye)
+        rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       end if
+      call Kemo_Translate(modelview_mat, rev_eye)
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'viewpt_in_view',                                    &
