@@ -378,7 +378,7 @@
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
-      integer(kind = kint) :: num_img
+      integer(kind = kint), intent(in) :: num_img
 !
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld

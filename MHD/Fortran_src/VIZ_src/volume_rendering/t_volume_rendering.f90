@@ -392,7 +392,7 @@
      &                                 .eq. IFLAG_NO_MOVIE) cycle
 !
         ist_img = pvr%istack_pvr_images(i_pvr-1)
-        num_img = pvr%istack_pvr_images(i_pvr-1) - ist_img
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call each_PVR_rendering_w_rot                                   &
      &     (istep_pvr, time, num_img, geofem, jacs,                     &
      &      nod_fld, pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),        &
