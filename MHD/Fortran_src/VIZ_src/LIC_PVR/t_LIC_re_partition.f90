@@ -239,10 +239,7 @@
       type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
-        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
-     &      lic_param, repart_data%nod_fld_lic)
-!
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
         if(repart_p%flag_repartition                                    &
      &        .or. lic_param%each_part_p%flag_repartition) then
           call repartition_lic_field                                    &
@@ -250,6 +247,7 @@
      &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,     &
      &        repart_data%field_lic, v_sol)
         end if
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
 !
       end subroutine set_LIC_each_field
 !
@@ -304,7 +302,7 @@
       type(jacobians_type) :: jac_viz
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(repart_p, geofem, next_tbl,      &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
@@ -320,6 +318,7 @@
       call surf_jacobian_sf_grp_normal(my_rank, nprocs,                 &
      &    repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
      &    spfs_T, jac_viz)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
 !
       end subroutine s_LIC_re_partition
 !
