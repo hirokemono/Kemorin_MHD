@@ -53,8 +53,6 @@
 !>     Component flag for masking data
         integer(kind = kint) :: id_mask_comp =  0
 !
-!>        Geometry mask component index
-        integer(kind = kint) :: idx_comp =  0
 !>        Number of masking range
         integer(kind = kint) :: num_range = 1
 !>        minimum value of source point range

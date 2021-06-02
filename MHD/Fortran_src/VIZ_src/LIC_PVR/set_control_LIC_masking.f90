@@ -75,7 +75,7 @@
       if(masking%mask_type .eq. iflag_geometrymask) then
         call s_set_components_flags                                     &
      &     (mask_ctl%component_ctl%charavalue, position_name,           &
-     &      masking%idx_comp, icheck_ncomp(1), ncomp_tmp(1),            &
+     &      masking%id_mask_comp, icheck_ncomp(1), ncomp_tmp(1),        &
      &      fldname_tmp(1))
       end if
 !
