@@ -231,6 +231,7 @@
       use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
       use FEM_to_VIZ_bridge
+      use volume_rendering
 !
       integer(kind = kint) :: iflag_redraw
       real(kind = kreal) :: total_max, total_time, total_prev

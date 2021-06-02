@@ -44,6 +44,7 @@
 !
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use volume_rendering
 !
       integer(kind = kint) :: ierr
 !
@@ -77,6 +78,7 @@
       subroutine analyze_pvr
 !
       use t_IO_step_parameter
+      use volume_rendering
 !
       integer(kind = kint) :: i_step, istep_pvr
 !

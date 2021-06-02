@@ -17,15 +17,6 @@
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
-!!      subroutine each_anaglyph_PVR_init(i_pvr, mesh, group,           &
-!!     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj)
-!!        integer(kind = kint), intent(in) :: i_pvr, num_img
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) :: group
-!!        type(pvr_image_type), intent(in) :: pvr_rgb
-!!        type(PVR_control_params), intent(inout) :: pvr_param
-!!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-!!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
 !!      subroutine dealloc_PVR_initialize                               &
 !!     &         (num_proj, pvr_param, pvr_bound, pvr_proj)
 !!        integer(kind = kint), intent(in) :: num_proj
@@ -36,14 +27,8 @@
 !!      subroutine each_PVR_rendering                                   &
 !!     &         (istep_pvr, time, num_img, geofem, jacs, nod_fld,      &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
-!!      subroutine each_PVR_anaglyph                                    &
-!!     &         (istep_pvr, time, geofem, jacs, nod_fld,               &
-!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering_w_rot                             &
 !!     &         (istep_pvr, time, num_img, geofem, jacs, nod_fld,      &
-!!     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb)
-!!      subroutine each_PVR_anaglyph_w_rot                              &
-!!     &         (istep_pvr, time, geofem, jacs, nod_fld,               &
 !!     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(viz_area_parameter), intent(in) :: area_def
@@ -161,63 +146,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_anaglyph_PVR_init(i_pvr, mesh, group,             &
-     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj)
-!
-      use t_control_data_pvr_sections
-      use set_pvr_control
-      use cal_pvr_projection_mat
-      use find_pvr_surf_domain
-      use set_iflag_for_used_ele
-!
-      integer(kind = kint), intent(in) :: i_pvr
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
-      type(pvr_image_type), intent(in) :: pvr_rgb
-!
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-!
-!
-      call alloc_iflag_pvr_used_ele(mesh%ele, pvr_param%draw_param)
-      call s_set_iflag_for_used_ele(mesh%ele, group%ele_grp,            &
-     &    pvr_param%area_def%nele_grp_area_pvr,                         &
-     &    pvr_param%area_def%id_ele_grp_area_pvr,                       &
-     &    pvr_param%draw_param%iflag_used_ele)
-!
-      call find_each_pvr_surf_domain                                    &
-     &   (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,       &
-     &    pvr_param%draw_param, pvr_bound)
-!
-      call pvr_mesh_outline(mesh%node, pvr_param%outline)
-      call check_pvr_parameters                                         &
-     &   (pvr_param%outline, pvr_param%view, pvr_param%color)
-!
-      call set_pixel_on_pvr_screen(pvr_param%view, pvr_param%pixel)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
-      call set_pvr_projection_left_mat                                  &
-     &   (pvr_param%view, pvr_param%stereo_def,                         &
-     &   pvr_proj(1)%projection_mat)
-      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
-      call set_pvr_projection_right_mat                                 &
-     &   (pvr_param%view, pvr_param%stereo_def,                         &
-     &    pvr_proj(2)%projection_mat)
-!
-!
-      if(pvr_param%movie_def%iflag_movie_mode                           &
-     &                                 .ne. IFLAG_NO_MOVIE) return
-      if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-      call set_fixed_view_and_image(ione, itwo, mesh, group,            &
-     &    pvr_param, pvr_rgb, pvr_bound, pvr_proj(1))
-      call set_fixed_view_and_image(itwo, itwo, mesh, group,            &
-     &    pvr_param, pvr_rgb, pvr_bound, pvr_proj(2))
-!
-      end subroutine each_anaglyph_PVR_init
-!
-!  ---------------------------------------------------------------------
-!
       subroutine dealloc_PVR_initialize                                 &
      &         (num_proj, pvr_param, pvr_bound, pvr_proj)
 !
@@ -283,48 +211,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_anaglyph                                      &
-     &         (istep_pvr, time, geofem, jacs, nod_fld,                 &
-     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
-!
-      use cal_pvr_modelview_mat
-!
-      integer(kind = kint), intent(in) :: istep_pvr
-      real(kind = kreal), intent(in) :: time
-!
-      type(mesh_data), intent(in) :: geofem
-      type(phys_data), intent(in) :: nod_fld
-      type(jacobians_type), intent(in) :: jacs
-!
-      type(pvr_field_data), intent(inout) :: field_pvr
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-!
-      if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-      call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
-     &    jacs%g_FEM, jacs%jac_3d, nod_fld,                             &
-     &    pvr_param%field_def, field_pvr)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
-      call set_default_pvr_data_params                                  &
-     &   (pvr_param%outline, pvr_param%color)
-!
-!   Left eye
-      call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,      &
-     &    field_pvr, pvr_param, pvr_proj(1), pvr_rgb)
-      call store_left_eye_image(pvr_rgb)
-!
-!   right eye
-      call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,      &
-     &    field_pvr, pvr_param, pvr_proj(2), pvr_rgb)
-      call add_left_eye_image(pvr_rgb)
-!
-      end subroutine each_PVR_anaglyph
-!
-!  ---------------------------------------------------------------------
-!
       subroutine each_PVR_rendering_w_rot                               &
      &         (istep_pvr, time, num_img, geofem, jacs, nod_fld,        &
      &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb)
@@ -365,45 +251,6 @@
       end do
 !
       end subroutine each_PVR_rendering_w_rot
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine each_PVR_anaglyph_w_rot                                &
-     &         (istep_pvr, time, geofem, jacs, nod_fld,                 &
-     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb)
-!
-      use cal_pvr_modelview_mat
-!
-      integer(kind = kint), intent(in) :: istep_pvr
-      real(kind = kreal), intent(in) :: time
-!
-      type(mesh_data), intent(in) :: geofem
-      type(phys_data), intent(in) :: nod_fld
-      type(jacobians_type), intent(in) :: jacs
-!
-      type(pvr_field_data), intent(inout) :: field_pvr
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
-!
-!
-      if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-      call calypso_mpi_barrier
-      call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
-     &    jacs%g_FEM, jacs%jac_3d, nod_fld,                             &
-     &    pvr_param%field_def, field_pvr)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
-      call set_default_pvr_data_params                                  &
-     &   (pvr_param%outline, pvr_param%color)
-!
-!
-      call anaglyph_rendering_w_rotation                                &
-     &   (istep_pvr, time, geofem%mesh, geofem%group, field_pvr,        &
-     &    pvr_rgb(1), pvr_param, pvr_bound, pvr_proj)
-!
-      end subroutine each_PVR_anaglyph_w_rot
 !
 !  ---------------------------------------------------------------------
 !

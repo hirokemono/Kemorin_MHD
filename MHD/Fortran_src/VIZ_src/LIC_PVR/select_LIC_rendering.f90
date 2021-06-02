@@ -127,6 +127,7 @@
      &          repart_p, repart_data, pvr)
 !
       use each_LIC_rendering
+      use each_anaglyph_PVR
 !
       type(mesh_data), intent(in) :: geofem
       type(next_nod_ele_table), intent(in) :: next_tbl
@@ -432,6 +433,7 @@
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use each_LIC_rendering
+      use each_anaglyph_PVR
       use rendering_streo_LIC_image
       use write_PVR_image
 !

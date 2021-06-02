@@ -64,6 +64,9 @@
       subroutine init_four_visualize(viz_step, geofem, nod_fld,         &
      &                               VIZ_DAT, viz_ctls, vizs)
 !
+      use volume_rendering
+      use anaglyph_volume_rendering
+!
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
@@ -107,6 +110,9 @@
 !
       subroutine visualize_four(viz_step, time_d, geofem,               &
      &                          nod_fld, VIZ_DAT, vizs)
+!
+      use volume_rendering
+      use anaglyph_volume_rendering
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
