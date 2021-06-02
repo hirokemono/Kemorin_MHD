@@ -138,10 +138,11 @@
         end do
 !$omp end parallel do
       end if
-      write(*,*) "pvr sampling cnt:", my_rank, sample_cnt
+      if(i_debug .gt. 0) write(*,*)                                     &
+     &                 &"pvr sampling cnt:", my_rank, sample_cnt
 !
-      elps1%elapsed(ist_elapsed_LIC+4)                                 &
-     &       = elps1%elapsed(ist_elapsed_LIC+4)                        &
+      elps1%elapsed(ist_elapsed_LIC+4)                                  &
+     &       = elps1%elapsed(ist_elapsed_LIC+4)                         &
      &        +  elapse_trace / dble(np_smp)
 !
       end subroutine ray_trace_each_lic_image
