@@ -243,7 +243,7 @@
         if(elps%elapsed_ave(i) .gt. zero) then
           write(id_timer_file,'(i3,a2,1p2e15.6,a2,a)')                  &
      &        i, ': ', elps%elapsed_ave(i), elps%elapsed_std(i),        &
-     &           ': ', trim(elps%labels(i)),
+     &           ': ', trim(elps%labels(i))
         end if
       end do
 !
