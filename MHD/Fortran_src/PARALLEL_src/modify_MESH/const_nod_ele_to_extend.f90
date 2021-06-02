@@ -147,7 +147,7 @@
 !
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       call calypso_mpi_reduce_one_int(jcou, nele_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Failed element list:',             &
+      if(iflag_debug .gt. 0) write(*,*) 'Failed element list:',         &
      &                             ntot_failed_gl, nele_failed_gl
 !
       if(i_debug .eq. 0) return

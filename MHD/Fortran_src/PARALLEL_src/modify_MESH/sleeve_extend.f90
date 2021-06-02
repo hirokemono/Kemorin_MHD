@@ -125,9 +125,8 @@
 !        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
         call calypso_mpi_barrier
-        if(my_rank .eq. 0) write(*,*) 'iflag_process_extend',           &
-     &                    iflag_process_extend
         if(iflag_process_extend .eq. 0) exit
+        if(my_rank .eq. 0) write(*,*) 'sleeve extension again'
 !
         call set_nod_and_ele_infos(mesh%node, mesh%ele)
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
@@ -374,7 +373,7 @@
       end do
 !
       call calypso_mpi_allreduce_one_int(icou, nerror, MPI_SUM)
-      if(my_rank .eq. 0) write(*,*)                                     &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &      'Number of wrong communication items:', nerror
 !
       deallocate(inod_lc_check, irank_lc_check)
