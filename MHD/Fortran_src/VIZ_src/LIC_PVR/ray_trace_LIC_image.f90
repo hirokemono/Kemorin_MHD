@@ -139,7 +139,7 @@
 !$omp end parallel do
       end if
       if(i_debug .gt. 0) write(*,*)                                     &
-     &                 &"pvr sampling cnt:", my_rank, sample_cnt
+     &                 "pvr sampling cnt:", my_rank, sample_cnt
 !
       elps1%elapsed(ist_elapsed_LIC+4)                                  &
      &       = elps1%elapsed(ist_elapsed_LIC+4)                         &
