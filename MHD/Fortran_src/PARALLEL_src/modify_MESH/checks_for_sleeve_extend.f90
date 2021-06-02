@@ -49,6 +49,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       use t_calypso_comm_table
       use t_geometry_data
@@ -133,14 +134,14 @@
       icou = check_zero_inod_added_import(expand_nod_comm%ntot_import,  &
      &                                    inod_added_import)
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Number of Zero address ',          &
+      if(iflag_debug .gt. 0) write(*,*) 'Number of Zero address ',      &
      &           'in inod_added_import', ntot_gl
 
       icou = check_wrong_inod_added_import                              &
      &           (inod_new_dbl, expand_nod_comm,                        &
      &            inod_added_import, exp_import_xx%irank_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
+      if(iflag_debug .gt. 0) write(*,*) 'Number of Wrong address ',     &
      &           'in inod_added_import', ntot_gl
 
       end subroutine check_expanded_import_node
@@ -163,13 +164,13 @@
       icou = check_zero_ie_new_import(ele, expand_ele_comm,             &
      &                                exp_import_ie%ie_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &     'zero exp_import_ie%ie_comm before fix', ntot_gl
 !
       icou = check_negative_ie_new_import(ele, expand_ele_comm,         &
      &                                    exp_import_ie%ie_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &     'Negative exp_import_ie%ie_comm before fix', ntot_gl
 !
       end subroutine check_expanded_import_ele
@@ -204,7 +205,7 @@
       icou = check_recieved_ext_ele_export(iele_dbl, add_ele_comm,      &
      &                                      irank_new_ele_export_trim)
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Failed double element ID ',        &
+      if(iflag_debug .gt. 0) write(*,*) 'Failed double element ID ',    &
      &                            'from returnrd table', ntot_gl
       deallocate(irank_new_ele_export_trim)
 !
@@ -236,7 +237,7 @@
         end do
       end do
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &       'Number of wrong trim_import_ie%ie_comm', ntot_gl
 !
       end subroutine check_trim_import_ele_connect
