@@ -150,6 +150,9 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       do i_img = 1, num_img
+        if(pvr_param%movie_def%iflag_movie_mode                         &
+     &                                 .ne. IFLAG_NO_MOVIE) cycle
+!
         call set_fixed_view_and_image(i_img, num_img, mesh, group,      &
      &      pvr_param, pvr_rgb(i_img), pvr_bound, pvr_proj(i_img))
       end do
@@ -203,6 +206,8 @@
      &    pvr_proj(2)%projection_mat)
 !
 !
+      if(pvr_param%movie_def%iflag_movie_mode                           &
+     &                                 .ne. IFLAG_NO_MOVIE) return
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call set_fixed_view_and_image(ione, itwo, mesh, group,            &
      &    pvr_param, pvr_rgb, pvr_bound, pvr_proj(1))

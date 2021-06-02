@@ -110,11 +110,6 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
-!>      Parallel stencil buffer
-      type(pvr_stencil_buffer) :: stencil_rot
-!>      Start point structure for volume rendering with rotation
-      type(pvr_ray_start_type) :: start_rot
-!
 !
       if(pvr_param%movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
         call set_pvr_step_projection_mat                                &
@@ -147,18 +142,20 @@
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
      &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat,               &
      &    pvr_proj%projection_mat, pvr_bound, pvr_proj%screen,          &
-     &    start_rot)
+     &    pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, start_rot, stencil_rot)
+     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_proj%screen,                        &
-     &    pvr_proj%viewpoint_vec, start_rot, stencil_rot, pvr_rgb)
+     &    pvr_proj%viewpoint_vec, pvr_proj%start_fix, pvr_proj%stencil, &
+     &    pvr_rgb)
 !
-      call deallocate_pvr_ray_start(start_rot)
-      call dealloc_pvr_stencil_buffer(stencil_rot)
+      call deallocate_pvr_ray_start(pvr_proj%pvr_proj%start_fix)
+      call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
+      call dealloc_projected_position(pvr_proj%screen)
 !
       end subroutine rendering_lic_at_once
 !
