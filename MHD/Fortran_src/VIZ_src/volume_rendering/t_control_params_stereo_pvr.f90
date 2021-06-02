@@ -33,7 +33,7 @@
 !>    Number of images
         integer(kind = kint) :: num_views = 0
 !>    Number of row and column of image array (horizontal, vertical)
-        integer(kind = kint) :: n_row_column_view(2) = 0
+        integer(kind = kint) :: n_column_row_view(2) = 0
 !
 !>    Flag to defeine eye separation by angle
         logical :: flag_eye_separation_angle =  .FALSE.
@@ -113,10 +113,10 @@
         if(pvr_ctl%quilt_c%i_quilt_image .eq. 0) then
           stereo_def%flag_quilt =      .FALSE.
         else
-          stereo_def%n_row_column_view(1:2)                             &
-     &        =    pvr_ctl%quilt_c%num_row_column_ctl%intvalue(1:2)
-          stereo_def%num_views = stereo_def%n_row_column_view(1)        &
-     &                          * stereo_def%n_row_column_view(2)
+          stereo_def%n_column_row_view(1:2)                             &
+     &        =    pvr_ctl%quilt_c%num_column_row_ctl%intvalue(1:2)
+          stereo_def%num_views = stereo_def%n_column_row_view(1)        &
+     &                          * stereo_def%n_column_row_view(2)
         end if
       end if
 !

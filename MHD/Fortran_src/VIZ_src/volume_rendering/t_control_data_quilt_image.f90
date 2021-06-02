@@ -29,7 +29,7 @@
 !!  begin quilt_image_ctl
 !!    quilt_mode_ctl           BITMAP
 !!    num_frames_ctl           45
-!!    num_row_column_ctl       5     9
+!!    num_column_row_ctl       5     9
 !!    angle_range            -17.5  17.5
 !!  end quilt_image_ctl
 !!
@@ -64,7 +64,7 @@
 !>        Structure of start and end of angle
         type(read_real2_item) :: angle_range_ctl
 !>        Structure of number of row and columns of image
-        type(read_int2_item) :: num_row_column_ctl
+        type(read_int2_item) :: num_column_row_ctl
 !
 !     2nd level for volume rendering
         integer (kind=kint) :: i_quilt_image = 0
@@ -78,7 +78,7 @@
      &             :: hd_quilt_num_frame = 'num_frames_ctl'
 !
       character(len=kchara), parameter, private                         &
-     &             :: hd_row_column =    'num_row_column_ctl'
+     &             :: hd_column_row =    'num_column_row_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_angle_range =   'angle_range'
 !
@@ -117,8 +117,8 @@
 !
         call read_real2_ctl_type(c_buf, hd_angle_range,                 &
      &      quilt_c%angle_range_ctl)
-        call read_integer2_ctl_type(c_buf, hd_row_column,               &
-     &      quilt_c%num_row_column_ctl)
+        call read_integer2_ctl_type(c_buf, hd_column_row,               &
+     &      quilt_c%num_column_row_ctl)
       end do
       quilt_c%i_quilt_image = 1
 !
@@ -142,8 +142,8 @@
 !
       call copy_real2_ctl(org_quilt%angle_range_ctl,                    &
      &                    new_quilt%angle_range_ctl)
-      call copy_integer2_ctl(org_quilt%num_row_column_ctl,              &
-     &                       new_quilt%num_row_column_ctl)
+      call copy_integer2_ctl(org_quilt%num_column_row_ctl,              &
+     &                       new_quilt%num_column_row_ctl)
 !
       new_quilt%i_quilt_image = org_quilt%i_quilt_image
 !
@@ -159,7 +159,7 @@
       quilt_c%quilt_mode_ctl%iflag =     0
       quilt_c%num_frames_ctl%iflag =     0
       quilt_c%angle_range_ctl%iflag =    0
-      quilt_c%num_row_column_ctl%iflag = 0
+      quilt_c%num_column_row_ctl%iflag = 0
 !
       quilt_c%i_quilt_image = 0
 !
@@ -183,7 +183,7 @@
       call bcast_ctl_type_i1(quilt_c%num_frames_ctl)
 !
       call bcast_ctl_type_r2(quilt_c%angle_range_ctl)
-      call bcast_ctl_type_i2(quilt_c%num_row_column_ctl)
+      call bcast_ctl_type_i2(quilt_c%num_column_row_ctl)
 !
       end subroutine bcast_quilt_image_ctl
 !
@@ -206,7 +206,7 @@
       call set_control_labels(hd_quilt_mode, names( 1))
       call set_control_labels(hd_quilt_num_frame, names( 1))
       call set_control_labels(hd_angle_range, names( 2))
-      call set_control_labels(hd_row_column, names( 3))
+      call set_control_labels(hd_column_row, names( 3))
 !
       end subroutine set_label_quilt_image
 !

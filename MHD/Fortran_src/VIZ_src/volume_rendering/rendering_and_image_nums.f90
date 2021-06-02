@@ -65,8 +65,8 @@
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
         else if(pvr_param(i_pvr)%stereo_def%flag_quilt) then
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1)         &
-     &          + pvr_param(i_pvr)%stereo_def%n_row_column_view(1)      &
-     &           * pvr_param(i_pvr)%stereo_def%n_row_column_view(2)
+     &          + pvr_param(i_pvr)%stereo_def%n_column_row_view(1)      &
+     &           * pvr_param(i_pvr)%stereo_def%n_column_row_view(2)
         else
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
         end if

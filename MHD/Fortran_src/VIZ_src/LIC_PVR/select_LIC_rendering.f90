@@ -180,7 +180,7 @@
           call set_output_rot_sequence_image(istep_lic,                 &
      &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
      &        pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,               &
-     &        pvr%pvr_param(i_lic)%stereo_def%n_row_column_view,        &
+     &        pvr%pvr_param(i_lic)%stereo_def%n_column_row_view,        &
      &        pvr%pvr_rgb(ist_img+1))
         end if
       end do
@@ -303,7 +303,7 @@
           call set_output_rot_sequence_image(istep_lic,                 &
      &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
      &        pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,               &
-     &        pvr%pvr_param(i_lic)%stereo_def%n_row_column_view,        &
+     &        pvr%pvr_param(i_lic)%stereo_def%n_column_row_view,        &
      &        pvr%pvr_rgb(ist_img+1))
         end if
       end do
