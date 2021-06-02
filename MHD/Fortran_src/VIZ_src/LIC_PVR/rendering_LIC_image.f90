@@ -137,6 +137,9 @@
      &      pvr_proj%viewpoint_vec, pvr_proj%modelview_mat)
       end if
 !
+      call alloc_projected_position                                     &
+     &   (mesh%node, mesh%surf, pvr_proj%screen)
+!
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
