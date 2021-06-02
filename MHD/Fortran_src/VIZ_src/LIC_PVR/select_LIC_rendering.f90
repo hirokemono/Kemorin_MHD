@@ -275,9 +275,10 @@
      &      repart_data%field_lic, lic_param(i_lic),                    &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
-         call dealloc_pvr_surf_domain_item(pvr_bound(i_lic))
-         call dealloc_pixel_position_pvr(pvr_param(i_lic)%pixel)
-         call dealloc_iflag_pvr_used_ele(pvr_param(i_lic)%draw_param)
+         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
+         call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
+         call dealloc_iflag_pvr_used_ele                                &
+     &      (pvr%pvr_param(i_lic)%draw_param)
         end if
 !
         call dealloc_LIC_each_mesh                                      &
