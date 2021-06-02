@@ -72,8 +72,8 @@
 !      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int                                 &
      &     (ext_trim%ntot_trimmed, ntot_gl, MPI_SUM, 0)
-        if(my_rank .eq. 0) write(*,*) 'Total ext_trim%ntot_trimmed:',   &
-     &                               ntot_gl
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                'Total ext_trim%ntot_trimmed:', ntot_gl
 !      end if
 !
       call count_trimmed_import_stack(nprocs, sort_import,              &
@@ -88,8 +88,8 @@
 !
 !      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-        if(my_rank .eq. 0) write(*,*) 'Missing import from original:',  &
-     &                               ntot_gl
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                'Missing import from original:', ntot_gl
 !      end if
 !
       call trim_internal_import_items                                   &
