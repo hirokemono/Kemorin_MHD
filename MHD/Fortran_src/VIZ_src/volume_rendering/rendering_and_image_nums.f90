@@ -149,8 +149,8 @@
         end if
       end do
 !
-!      if(iflag_debug .eq. 0) return
-      if(my_rank .gt. 0) return
+      if(iflag_debug .eq. 0) return
+!      if(my_rank .gt. 0) return
       write(*,*) 'ID, File, ouput_PE, end_composition_PE, Num_PE'
       do i_pvr = 1, num_pvr_images
         write(*,*) i_pvr, trim(pvr_rgb(i_pvr)%pvr_prefix), '  ',        &
