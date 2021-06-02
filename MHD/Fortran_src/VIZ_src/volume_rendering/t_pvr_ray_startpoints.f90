@@ -28,8 +28,6 @@
 !
 !>  Structure for start points of ray tracing
       type pvr_ray_start_type
-!>    Reference process to composit
-        integer :: irank_composit_ref = 0
 
 !>    Total number of ray tracing
         integer(kind = kint) :: ntot_pvr_ray = 0
@@ -231,8 +229,6 @@
       type(pvr_ray_start_type), intent(in) :: org_pvr_st
       type(pvr_ray_start_type), intent(inout) :: new_pvr_st
 !
-!
-      new_pvr_st%irank_composit_ref =  org_pvr_st%irank_composit_ref
 !
 !$omp parallel workshare
       new_pvr_st%id_pixel_start(:) = org_pvr_st%id_pixel_start(:)

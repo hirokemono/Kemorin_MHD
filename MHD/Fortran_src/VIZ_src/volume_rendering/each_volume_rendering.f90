@@ -148,11 +148,6 @@
 !
       call set_pixel_on_pvr_screen(pvr_param%view, pvr_param%pixel)
 !
-      do i_img = 1, num_img
-        pvr_proj(i_img)%start_fix%irank_composit_ref                    &
-     &                                = mod(i_img+i_pvr-1,nprocs)
-      end do
-!
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       do i_img = 1, num_img
         call set_fixed_view_and_image(i_img, num_img, mesh, group,      &
@@ -197,10 +192,6 @@
      &   (pvr_param%outline, pvr_param%view, pvr_param%color)
 !
       call set_pixel_on_pvr_screen(pvr_param%view, pvr_param%pixel)
-!
-!
-      pvr_proj(1)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
-      pvr_proj(2)%start_fix%irank_composit_ref = mod(i_pvr-1,nprocs)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
       call set_pvr_projection_left_mat                                  &
