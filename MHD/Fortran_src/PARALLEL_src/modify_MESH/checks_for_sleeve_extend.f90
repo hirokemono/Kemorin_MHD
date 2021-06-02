@@ -108,7 +108,7 @@
       icou = check_idx_home_for_import(expand_nod_comm,                 &
      &    exp_import_xx%irank_comm, trim_nod_to_ext%idx_extend_to_trim)
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-      if(iflag_debug .eq. 0) write(*,*) 'Number of Wrong address ',     &
+      if(iflag_debug .gt. 0) write(*,*) 'Number of Wrong address ',     &
      &         'in trim_nod_to_ext%idx_extend_to_trim ', ntot_gl
 !
       end subroutine check_appended_node_data
