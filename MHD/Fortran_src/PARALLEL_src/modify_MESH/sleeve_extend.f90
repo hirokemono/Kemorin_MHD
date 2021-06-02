@@ -60,6 +60,8 @@
 !
       use t_next_node_ele_4_node
       use t_flags_each_comm_extend
+      use calypso_mpi_int8
+      use transfer_to_long_integers
       use set_ele_id_4_node_type
       use extended_groups
       use copy_mesh_structures
@@ -79,6 +81,8 @@
 !
       type(dist_from_wall_in_export) :: dist_4_comm
 !
+      integer(kind = kint_gl) :: ntot_numnod, ntot_internal_nod
+      integer(kind = kint_gl) :: ntot_numele, ntot_import_ele
       integer(kind = kint) :: iflag_process_extend = 0
       integer(kind = kint) :: iloop
       type(element_around_node), save :: neib_ele
@@ -137,6 +141,22 @@
       end do
 !
       call dealloc_dist_from_wall_export(dist_4_comm)
+!
+      call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),     &
+     &                                 ntot_numnod, MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int8                                  &
+     &   (cast_long(mesh%node%internal_node), ntot_internal_nod,        &
+     &    MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int8(cast_long(mesh%ele%numele),      &
+     &                                 ntot_numele, MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int8(cast_long(ele_comm%ntot_import), &
+     &                                 ntot_import_ele, MPI_SUM, 0)
+!
+      if(my_rank .gt. 0) return
+      write(*,*) 'total, internal, sleve node: ',                       &
+     &  ntot_numnod, ntot_internal_nod, (ntot_numnod-ntot_internal_nod)
+      write(*,*) 'total, internal, sleve element: ',                    &
+     &  ntot_numele, (ntot_numele-ntot_import_ele), ntot_import_ele
 !
       end subroutine sleeve_extension_loop
 !
