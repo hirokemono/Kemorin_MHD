@@ -266,6 +266,8 @@
      &        repart_data%field_lic, lic_param(i_lic),                  &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),            &
      &        pvr%pvr_rgb(ist_img+1))
+          call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),    &
+     &        pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         else
           call s_each_LIC_rendering_w_rot                               &
@@ -273,10 +275,11 @@
      &      repart_data%field_lic, lic_param(i_lic),                    &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
+         call dealloc_pvr_surf_domain_item(pvr_bound(i_lic))
+         call dealloc_pixel_position_pvr(pvr_param(i_lic)%pixel)
+         call dealloc_iflag_pvr_used_ele(pvr_param(i_lic)%draw_param)
         end if
 !
-        call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),      &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do

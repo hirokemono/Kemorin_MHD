@@ -239,6 +239,8 @@
      &        repart_data%field_lic, lic_param(i_lic),                  &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),            &
      &        pvr%pvr_rgb(i_lic))
+          call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),       &
+     &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         else
           call anaglyph_lic_rendering_w_rot(istep_lic, time,            &
@@ -246,10 +248,11 @@
      &        lic_param(i_lic), pvr%pvr_rgb(i_lic),                     &
      &        pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),               &
      &        pvr%pvr_proj(2*i_lic-1))
+         call dealloc_pvr_surf_domain_item(pvr_bound(i_lic))
+         call dealloc_pixel_position_pvr(pvr_param(i_lic)%pixel)
+         call dealloc_iflag_pvr_used_ele(pvr_param(i_lic)%draw_param)
         end if
 !
-        call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),         &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
