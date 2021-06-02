@@ -148,7 +148,6 @@
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
-      use t_MPI_quilt_bitmap_IO
       use output_image_sel_4_png
       use set_parallel_file_name
       use convert_real_rgb_2_bite
@@ -157,26 +156,25 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       character(len=kchara) :: img_head
-      type(each_rgb_image) :: image
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
 !
-      call alloc_each_rgb_image(pvr_rgb%num_pixels, image)
       call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,            &
-     &    pvr_rgb%rgba_real_gl, image%rgb)
+     &    pvr_rgb%rgba_real_gl,  pvr_rgb%rgb_chara_gl)
 !
       write(*,*) trim(pvr_rgb%pvr_prefix), ' is written from process ', &
      &          my_rank
       call sel_output_image_file(pvr_rgb%id_pvr_file_type,              &
      &    add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix),                &
-     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), image%rgb)
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    pvr_rgb%rgb_chara_gl)
       if(pvr_rgb%iflag_monitoring .gt. 0) then
         call sel_output_image_file                                      &
      &     (pvr_rgb%id_pvr_file_type, pvr_rgb%pvr_prefix,               &
-     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2), image%rgb)
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      pvr_rgb%rgb_chara_gl)
       end if
-      call dealloc_each_rgb_image(image)
 !
       end subroutine sel_write_pvr_image_file
 !
