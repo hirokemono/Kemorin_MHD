@@ -260,15 +260,15 @@
      &    pvr_proj%projection_mat, pvr_bound, pvr_proj%screen,          &
      &    pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, pvr_proj%start_rot, pvr_proj%stencil)
+     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_proj%screen,                        &
-     &    pvr_proj%viewpoint_vec, pvr_proj%start_rot, pvr_proj%stencil, &
+     &    pvr_proj%viewpoint_vec, pvr_proj%start_fix, pvr_proj%stencil, &
      &    pvr_rgb)
-      call deallocate_pvr_ray_start(pvr_proj%start_rot)
+      call deallocate_pvr_ray_start(pvr_proj%start_fix)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
       call dealloc_projected_position(pvr_proj%screen)
 !
