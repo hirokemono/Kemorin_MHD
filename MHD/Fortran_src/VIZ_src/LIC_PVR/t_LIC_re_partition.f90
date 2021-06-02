@@ -105,7 +105,7 @@
       type(lic_parameters), intent(inout) :: lic_param(num_lic)
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
-      integer(kind = kint) :: i_lic, nmax_masking, iflag
+      integer(kind = kint) :: i_lic, nmax_masking
       logical :: flag_mask, flag_sleeve_wk
 !
 !
@@ -114,8 +114,7 @@
       flag_sleeve_wk = .TRUE.
       do i_lic = 1, num_lic
         nmax_masking = max(nmax_masking, lic_param(i_lic)%num_masking)
-        iflag = lic_param(i_lic)%each_part_p%sleeve_exp_p%iflag_expand
-        if(lic_param(i_lic)%each_part_p%sleeve_exp_p%iflag_expand       &
+        if(lic_param(i_lic)%each_part_p%sleeve_exp_p%iflag_expand_mode  &
      &       .ne. iflag_vector_trace) flag_sleeve_wk = .FALSE.
       end do
       if(nmax_masking .le. 0) flag_mask = .FALSE.

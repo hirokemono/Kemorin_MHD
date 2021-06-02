@@ -73,7 +73,7 @@
 !>      Structure of sleeve extension parameter
       type sleeve_extension_param
 !>        Sleeve extension mode flag
-        integer(kind = kint) :: iflag_expand = iflag_ele_count
+        integer(kind = kint) :: iflag_expand_mode = iflag_ele_count
 !>        Size of sleeve extension
         real(kind = kreal) ::   dist_max
 !
@@ -119,7 +119,7 @@
 !
       integer(kind = kint) :: inod
 !
-      if(sleeve_exp_p%iflag_expand .ne. iflag_vector_trace) return
+      if(sleeve_exp_p%iflag_expand_mode .ne. iflag_vector_trace) return
 !
       sleeve_exp_WK%nnod_sleeve = node%numnod
       allocate(sleeve_exp_WK%d_sleeve(node%numnod,3))
@@ -164,8 +164,8 @@
       type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
 !
-      if(sleeve_exp_p%iflag_expand .ne. iflag_vector_trace) return
-      sleeve_exp_p%iflag_expand = iflag_turn_off
+      if(sleeve_exp_p%iflag_expand_mode .ne. iflag_vector_trace) return
+      sleeve_exp_p%iflag_expand_mode = iflag_turn_off
       allocate(sleeve_exp_WK%vect_ref(node%numnod,3))
 !
 !$omp parallel workshare
@@ -234,22 +234,22 @@
       character(len = kchara) :: tmpchara
 !
       ierr = 0
-      sleeve_exp_p%iflag_expand = iflag_turn_off
+      sleeve_exp_p%iflag_expand_mode = iflag_turn_off
       sleeve_exp_p%dist_max =     one
 !
       if(sleeve_ctl%sleeve_extension_mode_ctl%iflag .gt. 0) then
         tmpchara = sleeve_ctl%sleeve_extension_mode_ctl%charavalue
         if(cmp_no_case(tmpchara, hd_vector_trace)) then
-          sleeve_exp_p%iflag_expand = iflag_vector_trace
+          sleeve_exp_p%iflag_expand_mode = iflag_vector_trace
         else if(cmp_no_case(tmpchara, hd_distance)) then
-          sleeve_exp_p%iflag_expand = iflag_distance
+          sleeve_exp_p%iflag_expand_mode = iflag_distance
         else if(cmp_no_case(tmpchara, hd_ele_count)) then
-          sleeve_exp_p%iflag_expand = iflag_ele_count
+          sleeve_exp_p%iflag_expand_mode = iflag_ele_count
         end if
       end if
 !
-      if(sleeve_exp_p%iflag_expand .eq. iflag_vector_trace              &
-     &   .or. sleeve_exp_p%iflag_expand .eq. iflag_distance) then
+      if(sleeve_exp_p%iflag_expand_mode .eq. iflag_vector_trace         &
+     &   .or. sleeve_exp_p%iflag_expand_mode .eq. iflag_distance) then
         if(sleeve_ctl%sleeve_size_ctl%iflag .eq. 0) then
           write(e_message,'(a)') 'Set size for sleeve extension'
           ierr = ierr_mesh
@@ -258,7 +258,7 @@
           sleeve_exp_p%dist_max = sleeve_ctl%sleeve_size_ctl%realvalue
         end if
 !
-      else if(sleeve_exp_p%iflag_expand .eq. iflag_ele_count) then
+      else if(sleeve_exp_p%iflag_expand_mode .eq. iflag_ele_count) then
         if(sleeve_ctl%sleeve_level_ctl%iflag .eq. 0                     &
      &      .and.  sleeve_ctl%sleeve_size_ctl%iflag .eq. 0) then
           write(e_message,'(a)') 'Set size for sleeve extension'
@@ -273,7 +273,7 @@
         end if
       end if
 !
-      if(sleeve_exp_p%iflag_expand .eq. iflag_vector_trace) then
+      if(sleeve_exp_p%iflag_expand_mode .eq. iflag_vector_trace) then
         if(sleeve_ctl%ref_vector_ctl%iflag .eq. 0) then
           write(e_message,'(a)')                                        &
      &               'Set vector for reference of slleve extension'
@@ -286,8 +286,8 @@
       end if
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'sleeve_exp_p%iflag_expand',                         &
-     &            sleeve_exp_p%iflag_expand
+        write(*,*) 'sleeve_exp_p%iflag_expand_mode',                    &
+     &            sleeve_exp_p%iflag_expand_mode
         write(*,*) 'sleeve_exp_p%dist_max', sleeve_exp_p%dist_max
         write(*,*) 'sleeve_exp_p%ref_vector_name',                      &
      &            trim(sleeve_exp_p%ref_vector_name)
@@ -306,12 +306,12 @@
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
 !
-      if(sleeve_exp_p%iflag_expand .eq. iflag_vector_trace) then
+      if(sleeve_exp_p%iflag_expand_mode .eq. iflag_vector_trace) then
         distance_select                                                &
      &     = distance_by_trace(sleeve_exp_p%dist_max, i, j, node,      &
      &                         sleeve_exp_WK%nnod_sleeve,              &
      &                         sleeve_exp_WK%d_sleeve)
-      else if(sleeve_exp_p%iflag_expand .eq. iflag_distance) then
+      else if(sleeve_exp_p%iflag_expand_mode .eq. iflag_distance) then
         distance_select = distance_by_length(i, j, node)
       else
         distance_select = distance_by_element_num()

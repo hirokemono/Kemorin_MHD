@@ -153,10 +153,12 @@
      &                                 ntot_import_ele, MPI_SUM, 0)
 !
       if(my_rank .gt. 0) return
-      write(*,*) 'total, internal, sleve node: ',                       &
-     &  ntot_numnod, ntot_internal_nod, (ntot_numnod-ntot_internal_nod)
-      write(*,*) 'total, internal, sleve element: ',                    &
-     &  ntot_numele, (ntot_numele-ntot_import_ele), ntot_import_ele
+      write(*,*) 'total, internal, sleve node '
+      write(*,*) ntot_numnod, ntot_internal_nod,                        &
+     &         (ntot_numnod-ntot_internal_nod)
+      write(*,*) 'total, internal, sleve element '
+      write(*,*) ntot_numele, (ntot_numele-ntot_import_ele),            &
+     &          ntot_import_ele
 !
       end subroutine sleeve_extension_loop
 !
