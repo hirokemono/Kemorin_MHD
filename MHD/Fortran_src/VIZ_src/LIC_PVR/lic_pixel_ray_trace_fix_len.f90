@@ -151,8 +151,6 @@
 !
 !   start ray casting
       do
-        icount_line = icount_line + 1
-        icount_line_cur_ray = icount_line_cur_ray + 1
         iele =    isurf_org(1)
         isf_org = isurf_org(2)
 !
@@ -160,6 +158,8 @@
           iflag_comm = 2
           exit
         end if
+        icount_line = icount_line + 1
+        icount_line_cur_ray = icount_line_cur_ray + 1
 !
 !   extend to surface of element
 !   find ray exit surface loacal id on current element isf_tgt
