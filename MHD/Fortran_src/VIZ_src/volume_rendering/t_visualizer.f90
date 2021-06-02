@@ -72,6 +72,9 @@
       use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobians
+      use volume_rendering
+      use anaglyph_volume_rendering
+      use anaglyph_lic_rendering
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
@@ -127,6 +130,10 @@
 !
       subroutine visualize_all(viz_step, time_d, geofem, nod_fld,       &
      &                         VIZ_DAT, vizs, v_sol)
+!
+      use volume_rendering
+      use anaglyph_volume_rendering
+      use anaglyph_lic_rendering
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step

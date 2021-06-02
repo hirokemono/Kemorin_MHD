@@ -145,7 +145,7 @@
 !>     Number of frames
         integer(kind = kint) :: num_frame =   0
 !>    Number of row and column of image array (horizontal, vertical)
-        integer(kind = kint) :: n_row_column_movie(2) = 0
+        integer(kind = kint) :: n_column_row_movie(2) = 0
 !
 !>     Rotatin axis:    id_rot_axis
         integer(kind = kint) :: id_rot_axis = 3

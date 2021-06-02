@@ -65,8 +65,8 @@
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
         else if(pvr_param(i_pvr)%stereo_def%flag_quilt) then
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1)         &
-     &          + pvr_param(i_pvr)%stereo_def%n_row_column_view(1)      &
-     &           * pvr_param(i_pvr)%stereo_def%n_row_column_view(2)
+     &          + pvr_param(i_pvr)%stereo_def%n_column_row_view(1)      &
+     &           * pvr_param(i_pvr)%stereo_def%n_column_row_view(2)
         else
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 1
         end if
@@ -149,8 +149,8 @@
         end if
       end do
 !
-!      if(iflag_debug .eq. 0) return
-      if(my_rank .gt. 0) return
+      if(iflag_debug .eq. 0) return
+!      if(my_rank .gt. 0) return
       write(*,*) 'ID, File, ouput_PE, end_composition_PE, Num_PE'
       do i_pvr = 1, num_pvr_images
         write(*,*) i_pvr, trim(pvr_rgb(i_pvr)%pvr_prefix), '  ',        &

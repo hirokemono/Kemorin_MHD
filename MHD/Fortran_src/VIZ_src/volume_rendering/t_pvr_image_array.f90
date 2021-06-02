@@ -65,8 +65,6 @@
 !
 !>    Global real image data for left eye
         real(kind = kreal), allocatable :: rgba_left_gl(:,:)
-!>    Global real image data for right eye
-        real(kind = kreal), allocatable :: rgba_right_gl(:,:)
       end type pvr_image_type
 !
 !  ---------------------------------------------------------------------
@@ -97,14 +95,12 @@
       allocate(pvr_rgb%rgba_chara_gl(4,pvr_rgb%num_pixel_actual))
 !
       allocate(pvr_rgb%rgba_left_gl(4,pvr_rgb%num_pixel_actual))
-      allocate(pvr_rgb%rgba_right_gl(4,pvr_rgb%num_pixel_actual))
 !
       allocate(pvr_rgb%rgba_real_gl(4,pvr_rgb%num_pixel_actual))
 !
 !$omp parallel workshare
       pvr_rgb%rgba_real_gl(1:4,1:pvr_rgb%num_pixel_actual) =  0.0d0
       pvr_rgb%rgba_left_gl(1:4,1:pvr_rgb%num_pixel_actual) =  0.0d0
-      pvr_rgb%rgba_right_gl(1:4,1:pvr_rgb%num_pixel_actual) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_pvr_image_array
@@ -118,7 +114,7 @@
 !
 !
       deallocate(pvr_rgb%rgb_chara_gl, pvr_rgb%rgba_chara_gl)
-      deallocate(pvr_rgb%rgba_left_gl, pvr_rgb%rgba_right_gl)
+      deallocate(pvr_rgb%rgba_left_gl)
       deallocate(pvr_rgb%rgba_real_gl)
 !
       end subroutine dealloc_pvr_image_array

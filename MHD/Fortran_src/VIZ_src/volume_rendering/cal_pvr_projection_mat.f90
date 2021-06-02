@@ -7,16 +7,15 @@
 !> @brief Evaluate projection matirx
 !!
 !!@verbatim
-!!      subroutine set_pvr_orthogonal_params(i_pvr, view_param)
+!!      subroutine set_pvr_orthogonal_params(view_param)
 !!
-!!      subroutine set_pvr_projection_matrix                            &
-!!     &         (i_pvr, view_param, projection_mat)
+!!      subroutine set_pvr_projection_matrix(view_param, projection_mat)
 !!      subroutine set_pvr_step_projection_mat(i_img, num_img,          &
 !!     &          view_param, stereo_def, projection_step)
 !!      subroutine set_pvr_projection_left_mat                          &
-!!     &          (i_pvr, view_param, stereo_def, projection_left)
+!!     &          (view_param, stereo_def, projection_left)
 !!      subroutine set_pvr_projection_right_mat                         &
-!!     &          (i_pvr, view_param, stereo_def, projection_right)
+!!     &          (view_param, stereo_def, projection_right)
 !!        type(pvr_view_parameter), intent(in) :: view_param
 !!        type(pvr_stereo_parameter), intent(in) :: stereo_def
 !!@endverbatim
@@ -40,9 +39,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_pvr_orthogonal_params(i_pvr, view_param)
+      subroutine set_pvr_orthogonal_params(view_param)
 !
-      integer(kind = kint), intent(in) :: i_pvr
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
@@ -53,7 +51,7 @@
         end if
 !
         if (iflag_debug .gt. 0) then
-          write(*,*) 'Orthogonal parameter for PVR ', i_pvr
+          write(*,*) 'Orthogonal parameter for PVR '
           write(*,*) 'perspective_angle',                               &
      &              view_param%perspective_angle
           write(*,*) 'perspective_xy_ratio',                            &
@@ -68,28 +66,26 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_projection_matrix                              &
-     &         (i_pvr, view_param, projection_mat)
+      subroutine set_pvr_projection_matrix(view_param, projection_mat)
 !
       use set_projection_matrix
 !
-      integer(kind = kint), intent(in) :: i_pvr
       type(pvr_view_parameter), intent(in) :: view_param
       real(kind = kreal), intent(inout) :: projection_mat(4,4)
 !
       integer(kind = kint) :: i
 !
 !
-        call set_perspective_mat_by_angle(view_param%perspective_angle, &
+      call set_perspective_mat_by_angle(view_param%perspective_angle,   &
      &    view_param%perspective_xy_ratio, view_param%perspective_near, &
-     &    view_param%perspective_far, projection_mat)
+     &     view_param%perspective_far, projection_mat)
 !
-        if (iflag_debug .gt. 0) then
-          write(*,*) 'projection_mat for PVR ', i_pvr
-          do i = 1, 4
-            write(*,'(1p4e16.7)') projection_mat(i,1:4)
-          end do
-        end if
+      if (iflag_debug .gt. 0) then
+        write(*,*) 'projection_mat for PVR '
+        do i = 1, 4
+          write(*,'(1p4e16.7)') projection_mat(i,1:4)
+        end do
+      end if
 !
       end subroutine set_pvr_projection_matrix
 !
@@ -145,11 +141,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_pvr_projection_left_mat                            &
-     &          (i_pvr, view_param, stereo_def, projection_left)
+     &          (view_param, stereo_def, projection_left)
 !
       use set_projection_matrix
 !
-      integer(kind = kint), intent(in) :: i_pvr
       type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_stereo_parameter), intent(in) :: stereo_def
       real(kind = kreal), intent(inout) :: projection_left(4,4)
@@ -183,7 +178,7 @@
      &      projection_left)
 !
         if (iflag_debug .gt. 0) then
-          write(*,*) 'projection_left for PVR ', i_pvr
+          write(*,*) 'projection_left for PVR '
           do i = 1, 4
             write(*,'(1p4e16.7)') projection_left(i,1:4)
           end do
@@ -194,11 +189,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_pvr_projection_right_mat                           &
-     &          (i_pvr, view_param, stereo_def, projection_right)
+     &          (view_param, stereo_def, projection_right)
 !
       use set_projection_matrix
 !
-      integer(kind = kint), intent(in) :: i_pvr
       type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_stereo_parameter), intent(in) :: stereo_def
       real(kind = kreal), intent(inout) :: projection_right(4,4)
@@ -232,7 +226,7 @@
      &      projection_right)
 !
         if (iflag_debug .gt. 0) then
-          write(*,*) 'projection_right for PVR ', i_pvr
+          write(*,*) 'projection_right for PVR '
           do i = 1, 4
             write(*,'(1p4e16.7)') projection_right(i,1:4)
           end do

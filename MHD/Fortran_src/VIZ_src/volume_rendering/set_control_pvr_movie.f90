@@ -74,16 +74,16 @@
       end if
 !
       if((movie_def%iflag_movie_fmt .eq. iflag_QUILT_BMP)) then
-        if(movie_ctl%quilt_row_column_ctl%iflag .eq. 0) then
-          movie_def%n_row_column_movie(1) =     1
-          movie_def%n_row_column_movie(2)                               &
+        if(movie_ctl%quilt_column_row_ctl%iflag .eq. 0) then
+          movie_def%n_column_row_movie(1) =     1
+          movie_def%n_column_row_movie(2)                               &
      &          = movie_ctl%num_frames_ctl%intvalue
         else
-          movie_def%n_row_column_movie(1:2)                             &
-     &          = movie_ctl%quilt_row_column_ctl%intvalue(1:2)
+          movie_def%n_column_row_movie(1:2)                             &
+     &          = movie_ctl%quilt_column_row_ctl%intvalue(1:2)
         end if
-        movie_def%num_frame = movie_def%n_row_column_movie(1)           &
-     &                       * movie_def%n_row_column_movie(2)
+        movie_def%num_frame = movie_def%n_column_row_movie(1)           &
+     &                       * movie_def%n_column_row_movie(2)
       else
         if(movie_ctl%num_frames_ctl%iflag .eq. 0) then
           movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
