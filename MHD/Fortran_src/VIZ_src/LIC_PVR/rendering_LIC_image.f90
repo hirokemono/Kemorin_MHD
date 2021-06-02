@@ -153,7 +153,7 @@
      &    pvr_proj%viewpoint_vec, pvr_proj%start_fix, pvr_proj%stencil, &
      &    pvr_rgb)
 !
-      call deallocate_pvr_ray_start(pvr_proj%pvr_proj%start_fix)
+      call deallocate_pvr_ray_start(pvr_proj%start_fix)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
       call dealloc_projected_position(pvr_proj%screen)
 !
