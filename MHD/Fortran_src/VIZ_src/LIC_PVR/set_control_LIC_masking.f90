@@ -60,10 +60,6 @@
         e_message = 'Set mask type for LIC source masking'
         call calypso_mpi_abort(ierr_fld, e_message)
       end if
-      if(mask_ctl%field_name_ctl%iflag .eq. 0) then
-        e_message = 'Set field for LIC source masking'
-        call calypso_mpi_abort(ierr_fld, e_message)
-      end if
       if(mask_ctl%component_ctl%iflag .eq. 0) then
         e_message = 'Set component for LIC source masking'
         call calypso_mpi_abort(ierr_fld, e_message)
@@ -84,6 +80,11 @@
       end if
 !
       if(masking%mask_type .eq. iflag_fieldmask) then
+        if(mask_ctl%field_name_ctl%iflag .eq. 0) then
+           e_message = 'Set field for LIC source masking'
+          call calypso_mpi_abort(ierr_fld, e_message)
+       end if
+!
         tmpfield(1) = mask_ctl%field_name_ctl%charavalue
         tmpcomp(1) =  mask_ctl%component_ctl%charavalue
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
