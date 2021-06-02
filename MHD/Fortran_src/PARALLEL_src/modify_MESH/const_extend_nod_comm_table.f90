@@ -96,7 +96,7 @@
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import,         &
      &    ext_nod_trim, trim_nod_to_ext%idx_extend_to_trim, icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
+      if(iflag_debug .gt. 0) write(*,*)                                 &
      &      'Missing import item in trimmed:', ntot_failed_gl
       call dealloc_sort_data_sleeve_ext(sort_nod_import)
 

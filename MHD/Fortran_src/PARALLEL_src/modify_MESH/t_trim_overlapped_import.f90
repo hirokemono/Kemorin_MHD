@@ -100,8 +100,8 @@
 !
 !      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-        if(my_rank .eq. 0) write(*,*) 'Missing import from internal:',  &
-     &                               ntot_gl
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &      'Missing import from internal:',  ntot_gl
 !      end if
 !
       call trim_external_import_items                                   &
@@ -112,8 +112,8 @@
 !
 !      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-        if(my_rank .eq. 0) write(*,*) 'Missing import from external:',  &
-     &                               ntot_gl
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &       'Missing import from external:', ntot_gl
 !      end if
 !
       call trim_orphaned_import_items(nprocs, sort_import,              &
@@ -123,7 +123,7 @@
 !
 !      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-       if(my_rank .eq. 0) write(*,*)                                    &
+        if(iflag_debug .gt. 0) write(*,*)                               &
      &      'Missing import from other domain:', ntot_gl
 !      end if
 !
