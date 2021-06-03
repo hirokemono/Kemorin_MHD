@@ -59,6 +59,7 @@
      &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
 !
       use t_control_data_pvr_sections
+      use t_surf_grp_list_each_surf
       use set_pvr_control
       use rendering_and_image_nums
       use each_anaglyph_PVR
@@ -96,6 +97,10 @@
           call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
         end if
       end do
+!
+!
+      call init_sf_grp_list_each_surf                                   &
+     &   (geofem%mesh%surf, geofem%group%surf_grp, pvr%sf_grp_4_sf)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       do i_pvr = 1, pvr%num_pvr

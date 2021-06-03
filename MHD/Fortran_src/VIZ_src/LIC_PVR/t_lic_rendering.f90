@@ -151,6 +151,7 @@
      &                          nod_fld, repart_ctl, lic_ctls, lic)
 !
       use t_control_data_pvr_sections
+      use t_surf_grp_list_each_surf
       use set_pvr_control
       use rendering_and_image_nums
       use set_lic_controls
@@ -223,6 +224,8 @@
      &                          lic%repart_data)
 !
       if(lic%flag_each_repart) return
+      call init_sf_grp_list_each_surf                                   &
+     &   (geofem%mesh%surf, geofem%group%surf_grp, lic%pvr%sf_grp_4_sf)
       call LIC_initialize_w_shared_mesh(geofem, next_tbl,               &
      &    lic%repart_p, lic%repart_data, lic%pvr)
 !

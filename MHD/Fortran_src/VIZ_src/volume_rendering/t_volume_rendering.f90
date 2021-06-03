@@ -44,6 +44,7 @@
       use t_phys_data
       use t_jacobians
 !
+      use t_surf_grp_list_each_surf
       use t_rendering_vr_image
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -66,6 +67,9 @@
       type volume_rendering_module
 !>        Character flag to update volume rendering
         character(len=kchara) :: cflag_update
+!
+!>        Structure of surface group list for each surface
+        type(sf_grp_list_each_surf) :: sf_grp_4_sf
 !
 !>        Number of volume rendering
         integer(kind = kint) :: num_pvr = 0
@@ -262,6 +266,8 @@
         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_pvr))
       end do
       deallocate(pvr%pvr_bound, pvr%pvr_param)
+!
+      call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
 !
 !
       do i_pvr = 1, pvr%num_pvr_images

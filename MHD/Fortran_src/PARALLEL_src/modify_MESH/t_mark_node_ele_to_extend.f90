@@ -11,6 +11,9 @@
 !!      subroutine dealloc_mark_for_each_comm(mark_comm)
 !!        integer(kind = kint), intent(in) :: num
 !!        type(mark_for_each_comm), intent(inout) :: mark_comm
+!!      subroutine copy_mark_for_each_comm(org_mark_comm, new_mark_comm)
+!!        type(mark_for_each_comm), intent(in) :: org_mark_comm
+!!        type(mark_for_each_comm), intent(inout) :: new_mark_comm
 !!
 !!      subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,       &
 !!     &          nod_comm, ele_comm, node, ele, neib_ele,              &
@@ -93,6 +96,24 @@
       deallocate(mark_comm%idx_marked, mark_comm%dist_marked)
 !
       end subroutine dealloc_mark_for_each_comm
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_mark_for_each_comm(org_mark_comm, new_mark_comm)
+!
+      type(mark_for_each_comm), intent(in) :: org_mark_comm
+      type(mark_for_each_comm), intent(inout) :: new_mark_comm
+!
+!
+      if(new_mark_comm%num_marked .le. 0) return
+!$omp parallel workshare
+      new_mark_comm%idx_marked(1:new_mark_comm%num_marked)              &
+     &   = org_mark_comm%idx_marked(1:new_mark_comm%num_marked)
+      new_mark_comm%dist_marked(1:new_mark_comm%num_marked)             &
+     &   = org_mark_comm%dist_marked(1:new_mark_comm%num_marked)
+!$omp end parallel workshare
+!
+      end subroutine copy_mark_for_each_comm
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

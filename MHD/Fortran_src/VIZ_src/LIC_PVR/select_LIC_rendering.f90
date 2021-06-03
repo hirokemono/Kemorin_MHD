@@ -222,6 +222,7 @@
      &          repart_p, repart_data, pvr, lic_param, v_sol)
 !
       use m_elapsed_labels_4_VIZ
+      use t_surf_grp_list_each_surf
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use write_PVR_image
@@ -253,6 +254,10 @@
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
         call LIC_init_each_mesh(geofem, next_tbl, repart_p,             &
      &                          lic_param(i_lic), repart_data)
+        if(iflag_debug .gt. 0) write(*,*) 'init_sf_grp_list_each_surf'
+        call init_sf_grp_list_each_surf                                 &
+     &     (repart_data%viz_fem%mesh%surf,                              &
+     &      repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
         call set_LIC_each_field(geofem, nod_fld,                        &
      &      repart_p, lic_param(i_lic), repart_data, v_sol)
@@ -288,6 +293,7 @@
      &      (pvr%pvr_param(i_lic)%draw_param)
         end if
 !
+        call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
