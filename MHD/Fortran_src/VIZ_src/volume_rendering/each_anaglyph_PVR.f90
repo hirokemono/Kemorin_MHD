@@ -19,7 +19,7 @@
 !!
 !!      subroutine each_PVR_anaglyph                                    &
 !!     &         (istep_pvr, time, geofem, jacs, nod_fld,               &
-!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+!!     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(viz_area_parameter), intent(in) :: area_def
 !!        type(node_data), intent(in) :: node
@@ -27,6 +27,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_type), intent(in) :: jacs
+!!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(pvr_field_data), intent(inout) :: field_pvr
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
@@ -47,6 +48,7 @@
       use t_phys_data
       use t_jacobians
 !
+      use t_surf_grp_list_each_surf
       use t_rendering_vr_image
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -128,7 +130,7 @@
 !
       subroutine each_PVR_anaglyph                                      &
      &         (istep_pvr, time, geofem, jacs, nod_fld,                 &
-     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+     &          sf_grp_4_sf, field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
 !
@@ -139,6 +141,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
 !
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(pvr_field_data), intent(inout) :: field_pvr
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
@@ -155,13 +158,15 @@
      &   (pvr_param%outline, pvr_param%color)
 !
 !   Left eye
-      call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,      &
-     &    field_pvr, pvr_param, pvr_proj(1), pvr_rgb)
+      call rendering_with_fixed_view(istep_pvr, time,                   &
+     &    geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,            &
+     &    pvr_param, pvr_proj(1), pvr_rgb)
       call store_left_eye_image(pvr_rgb)
 !
 !   right eye
-      call rendering_with_fixed_view(istep_pvr, time, geofem%mesh,      &
-     &    field_pvr, pvr_param, pvr_proj(2), pvr_rgb)
+      call rendering_with_fixed_view(istep_pvr, time,                   &
+     &    geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,            &
+     &    pvr_param, pvr_proj(2), pvr_rgb)
       call add_left_eye_image(pvr_rgb)
 !
       end subroutine each_PVR_anaglyph

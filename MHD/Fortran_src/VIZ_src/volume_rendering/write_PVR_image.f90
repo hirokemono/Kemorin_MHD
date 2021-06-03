@@ -7,10 +7,13 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_image(istep_pvr, time, mesh, color_param,  &
-!!     &          cbar_param, field_pvr, draw_param, pvr_screen,        &
-!!     &          viewpoint_vec, pvr_start, pvr_stencil, pvr_rgb)
+!!      subroutine rendering_image(istep_pvr, time, mesh, group,        &
+!!     &          sf_grp_4_sf, color_param, cbar_param, field_pvr,      &
+!!     &          draw_param, pvr_screen, viewpoint_vec, modelview_mat, &
+!!     &          pvr_start, pvr_stencil, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
+!!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
@@ -18,6 +21,7 @@
 !!        type(pvr_view_parameter), intent(in) :: view_param
 !!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
+!!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
 !!        type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
 !!        type(pvr_segmented_img), intent(inout) :: pvr_img
@@ -59,15 +63,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image(istep_pvr, time, mesh, color_param,    &
-     &          cbar_param, field_pvr, draw_param, pvr_screen,          &
-     &          viewpoint_vec, pvr_start, pvr_stencil, pvr_rgb)
+      subroutine rendering_image(istep_pvr, time, mesh, group,          &
+     &          sf_grp_4_sf, color_param, cbar_param, field_pvr,        &
+     &          draw_param, pvr_screen, viewpoint_vec, modelview_mat,   &
+     &          pvr_start, pvr_stencil, pvr_rgb)
 !
       use m_geometry_constants
       use m_elapsed_labels_4_VIZ
       use t_mesh_data
       use t_geometry_data
       use t_surface_data
+      use t_group_data
+      use t_surf_grp_list_each_surf
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
       use t_pvr_image_array
@@ -83,12 +90,15 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(pvr_field_data), intent(in) :: field_pvr
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_projected_position), intent(in) :: pvr_screen
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
@@ -99,8 +109,8 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+3)
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image                                     &
-     &    (mesh%node, mesh%ele, mesh%surf, pvr_screen, field_pvr,       &
-     &    draw_param, color_param, viewpoint_vec, ray_vec4,             &
+     &    (mesh, group, sf_grp_4_sf, modelview_mat, pvr_screen,         &
+     &    field_pvr,  draw_param, color_param, viewpoint_vec, ray_vec4, &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &
@@ -154,8 +164,6 @@
 !
       integer(kind = kint), intent(in) :: istep_pvr
       type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-      character(len=kchara) :: img_head
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
@@ -245,7 +253,7 @@
       type(pvr_image_type), intent(in) :: rot_rgb(num_img)
 !
       integer(kind = kint) :: i_rot, icou
-      character(len=kchara) :: file_tmp, file_w_step
+      character(len=kchara) :: file_tmp
 !
 !
       quilt_d%n_image = num_img

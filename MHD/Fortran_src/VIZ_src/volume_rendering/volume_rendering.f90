@@ -37,6 +37,7 @@
       use t_jacobians
 !
       use t_volume_rendering
+      use t_surf_grp_list_each_surf
       use t_rendering_vr_image
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -58,7 +59,6 @@
      &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
 !
       use t_control_data_pvr_sections
-      use t_surf_grp_list_each_surf
       use set_pvr_control
       use rendering_and_image_nums
       use each_volume_rendering
@@ -152,8 +152,8 @@
 !
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
-        call each_PVR_rendering                                         &
-     &     (istep_pvr, time, num_img, geofem, jacs, nod_fld,            &
+        call each_PVR_rendering(istep_pvr, time, num_img,               &
+     &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
       end do
@@ -198,8 +198,8 @@
 !
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
-        call each_PVR_rendering_w_rot                                   &
-     &     (istep_pvr, time, num_img, geofem, jacs, nod_fld,            &
+        call each_PVR_rendering_w_rot(istep_pvr, time, num_img,         &
+     &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
      &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),              &
      &      pvr%pvr_rgb(ist_img+1))

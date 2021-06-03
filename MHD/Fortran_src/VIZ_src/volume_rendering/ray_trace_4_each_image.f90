@@ -7,14 +7,15 @@
 !>@brief structure of control data for multiple volume rendering
 !!
 !!@verbatim
-!!      subroutine s_ray_trace_4_each_image(node, ele, surf,            &
+!!      subroutine s_ray_trace_4_each_image                             &
+!!     &         (mesh, group, sf_grp_4_sf, modelview_mat,              &
 !!     &          pvr_screen, field_pvr, draw_param, color_param,       &
 !!     &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check, &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_data), intent(in) :: surf
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
+!!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
@@ -29,8 +30,11 @@
       use calypso_mpi
       use set_rgba_4_each_pixel
 !
+      use t_mesh_data
       use t_geometry_data
       use t_surface_data
+      use t_group_data
+      use t_surf_grp_list_each_surf
       use t_control_params_4_pvr
       use t_pvr_field_data
       use t_geometries_in_pvr_screen
@@ -45,7 +49,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_ray_trace_4_each_image(node, ele, surf,              &
+      subroutine s_ray_trace_4_each_image                               &
+     &         (mesh, group, sf_grp_4_sf, modelview_mat,                &
      &          pvr_screen, field_pvr, draw_param, color_param,         &
      &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check,   &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
@@ -53,15 +58,16 @@
 !
       use t_geometries_in_pvr_screen
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !
       type(pvr_field_data), intent(in) :: field_pvr
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
       integer(kind = kint), intent(in) :: num_pvr_ray
@@ -89,7 +95,8 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call ray_trace_each_pixel(node, ele, surf,                      &
+        call ray_trace_each_pixel(mesh%node, mesh%ele, mesh%surf,       &
+     &       group%surf_grp, sf_grp_4_sf, modelview_mat,                &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
      &       viewpoint_vec, field_pvr, draw_param, color_param,         &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
@@ -105,21 +112,26 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine ray_trace_each_pixel(node, ele, surf,                  &
-     &        arccos_sf, x_nod_model, viewpoint_vec, field_pvr,         &
-     &        draw_param, color_param, ray_vec4, iflag_check,           &
-     &        isurf_org, screen4_st, xx4_st, xi, rgba_ray,              &
-     &        icount_line, iflag_comm)
+      subroutine ray_trace_each_pixel                                   &
+     &         (node, ele, surf, surf_grp, sf_grp_4_sf, modelview_mat,  &
+     &          arccos_sf, x_nod_model, viewpoint_vec, field_pvr,       &
+     &          draw_param, color_param, ray_vec4, iflag_check,         &
+     &          isurf_org, screen4_st, xx4_st, xi, rgba_ray,            &
+     &          icount_line, iflag_comm)
 !
       use cal_field_on_surf_viz
       use cal_fline_in_cube
       use set_coefs_of_sections
+      use pvr_surface_enhancement
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: surf_grp
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       integer(kind = kint), intent(in) :: iflag_check
 !
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
       real(kind = kreal), intent(in) :: arccos_sf(surf%numsurf)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
@@ -140,6 +152,7 @@
       integer(kind = kint) :: i_iso, i_psf, iflag, iflag_hit
       real(kind = kreal) :: screen4_tgt(4), c_tgt(1), c_org(1)
       real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), rflag, rflag2
+      real(kind = kreal) :: opacity_bc
 !
 !
       if(isurf_org(1) .eq. 0) return
@@ -161,6 +174,9 @@
 !
 !        Set color if starting surface is colourd
       if(ele%interior_ele(iele) .gt. 0) then
+        opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,     &
+     &          sf_grp_4_sf, modelview_mat,                             &
+     &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
         if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
           grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
           call plane_rendering_with_light                               &
@@ -216,6 +232,9 @@
 !
         if(ele%interior_ele(iele) .gt. 0) then
 !    Set color if exit surface is colourd
+          opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,   &
+     &          sf_grp_4_sf, modelview_mat,                             &
+     &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
             grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light                             &

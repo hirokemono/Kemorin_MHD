@@ -37,6 +37,7 @@
       use t_jacobians
 !
       use t_volume_rendering
+      use t_surf_grp_list_each_surf
       use t_rendering_vr_image
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -59,7 +60,6 @@
      &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
 !
       use t_control_data_pvr_sections
-      use t_surf_grp_list_each_surf
       use set_pvr_control
       use rendering_and_image_nums
       use each_anaglyph_PVR
@@ -146,7 +146,7 @@
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
         call each_PVR_anaglyph                                          &
-     &     (istep_pvr, time, geofem, jacs, nod_fld,                     &
+     &     (istep_pvr, time, geofem, jacs, nod_fld, pvr%sf_grp_4_sf,    &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
      &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr))
       end do
@@ -170,7 +170,7 @@
      &                                 .eq. IFLAG_NO_MOVIE) cycle
 !
         call anaglyph_rendering_w_rotation(istep_pvr, time,             &
-     &      geofem%mesh, geofem%group, nod_fld, jacs,                   &
+     &      geofem%mesh, geofem%group, nod_fld, jacs, pvr%sf_grp_4_sf,  &
      &      pvr%pvr_rgb(i_pvr), pvr%field_pvr(i_pvr),                   &
      &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
      &      pvr%pvr_proj(2*i_pvr-1))
