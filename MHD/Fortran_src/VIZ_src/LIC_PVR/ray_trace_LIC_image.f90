@@ -97,7 +97,7 @@
       elapse_trace = 0.0d0
 !
       if(lic_p%iflag_vr_sample_mode .eq. iflag_fixed_size) then
-!$omp parallel do private(inum, iflag_comm,rgba_tmp)                    &
+!$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
 !$omp& reduction(+:elapse_trace)
         do inum = 1, num_pvr_ray
 !         if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
@@ -105,7 +105,7 @@
 !         end if
 !
           rgba_tmp(1:4) = zero
-          call s_lic_pixel_ray_trace_by_ele(node, ele, surf,            &
+          call s_lic_pixel_ray_trace_fix_len(node, ele, surf,           &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
      &       viewpoint_vec, lic_p, field_lic, draw_param, color_param,  &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
@@ -118,7 +118,7 @@
 !$omp end parallel do
 !
       else
-!$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
+!$omp parallel do private(inum, iflag_comm,rgba_tmp)                    &
 !$omp& reduction(+:elapse_trace)
         do inum = 1, num_pvr_ray
 !         if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
@@ -126,7 +126,7 @@
 !         end if
 !
           rgba_tmp(1:4) = zero
-          call s_lic_pixel_ray_trace_fix_len(node, ele, surf,           &
+          call s_lic_pixel_ray_trace_by_ele(node, ele, surf,            &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
      &       viewpoint_vec, lic_p, field_lic, draw_param, color_param,  &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
