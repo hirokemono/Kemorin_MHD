@@ -365,7 +365,7 @@
 !
         nstep_int(1:2) = int(step_seg(1:2)*lic_p%noise_t%adelta_noise)
         residual(1:2) = step_seg(1:2)                                   &
-       &           - lic_p%noise_t%adelta_noise * dble(nstep_int(1:2))
+       &           - lic_p%noise_t%delta_noise * dble(nstep_int(1:2))
 !
         if(i_debug .eq. 1) write(50 + my_rank, *) "To  ",               &
        &                  isurf_end, "at elem", iele, "local", isf_tgt
