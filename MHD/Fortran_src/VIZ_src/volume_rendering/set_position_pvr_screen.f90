@@ -1,19 +1,62 @@
 !set_position_pvr_screen.f90
-!      module set_position_pvr_screen
+!>@file  set_position_pvr_screen.f90
+!!       module set_position_pvr_screen
+!!
+!!@author H. Matsui
+!!@date   Programmed in Aug., 2011
 !
-!        programmed by H.Matsui on Aug., 2011
-!
+!>@brief Convert position by modelview or projection matrix
+!!
+!!@verbatim
 !!      subroutine copy_node_position_pvr_domain(numnod, numele,        &
 !!     &          numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele,         &
 !!     &          num_pvr_surf, item_pvr_surf_domain, xx_pvr_domain)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        real(kind = kreal), intent(in) :: xx(numnod,3)
+!!        integer(kind = kint), intent(in) :: numele
+!!        integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
+!!        integer(kind = kint), intent(in)                              &
+!!     &                    :: ie_surf(numsurf,nnod_4_surf)
+!!        integer(kind = kint), intent(in)                              &
+!!     &                    :: isf_4_ele(numele,nsurf_4_ele)
+!!        integer(kind = kint), intent(in) :: num_pvr_surf
+!!        integer(kind = kint), intent(in)                              &
+!!     &                    :: item_pvr_surf_domain(2,num_pvr_surf)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                    :: xx_pvr_domain(4*num_pvr_surf,4)
 !!
+!!      subroutine modelview_position_each_ele                          &
+!!     &         (model_mat, numnod, x4, x4_each_model)
+!!        real(kind = kreal), intent(in) :: model_mat(4,4)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        real(kind = kreal), intent(in) :: x4(4,numnod)
+!!        real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
 !!      subroutine cal_position_pvr_modelview                           &
 !!     &         (model_mat, numnod, xx, x_nod_model)
+!!        real(kind = kreal), intent(in) :: model_mat(4,4)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        real(kind = kreal), intent(in) :: xx(numnod,3)
+!!        real(kind = kreal), intent(inout) :: x_nod_model(numnod,4)
 !!      subroutine chenge_direction_pvr_modelview                       &
 !!     &         (model_mat, numnod, xx, x_nod_model)
-!!      subroutine overwte_position_pvr_screen(model_mat, project_mat)
+!!        real(kind = kreal), intent(in) :: model_mat(4,4)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        real(kind = kreal), intent(in) :: xx(numnod,3)
+!!        real(kind = kreal), intent(inout) :: x_nod_model(numnod,4)
+!!
+!!      subroutine overwte_position_pvr_screen(project_mat, numnod,     &
+!!     &                                       x_nod_screen)
+!!        real(kind = kreal), intent(in) :: project_mat(4,4)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        real(kind = kreal), intent(inout) :: x_nod_screen(numnod,4)
 !!      subroutine overwte_pvr_domain_on_screen(model_mat, project_mat, &
 !!     &          num_pvr_surf, xx_pvr_domain)
+!!        real(kind = kreal), intent(in) :: model_mat(4,4)
+!!        real(kind = kreal), intent(in) :: project_mat(4,4)
+!!        integer(kind = kint), intent(in) :: num_pvr_surf
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: xx_pvr_domain(4*num_pvr_surf,4)
+!!@endverbatim
 !
       module set_position_pvr_screen
 !
@@ -38,9 +81,12 @@
 !
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
-      integer(kind = kint), intent(in) :: numele, numsurf, nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
+      integer(kind = kint), intent(in)                                  &
+     &                    :: ie_surf(numsurf,nnod_4_surf)
+      integer(kind = kint), intent(in)                                  &
+     &                    :: isf_4_ele(numele,nsurf_4_ele)
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
       integer(kind = kint), intent(in)                                  &
@@ -75,6 +121,41 @@
       end subroutine copy_node_position_pvr_domain
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine modelview_position_each_ele                            &
+     &         (model_mat, numnod, x4, x4_each_model)
+!
+      real(kind = kreal), intent(in) :: model_mat(4,4)
+!
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: x4(4,numnod)
+      real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
+!
+      integer(kind = kint) :: inod
+!
+!
+      do inod = 1, numnod
+        x4_each_model(1,inod) =  model_mat(1,1) * x4(1,inod)            &
+     &                         + model_mat(1,2) * x4(2,inod)            &
+     &                         + model_mat(1,3) * x4(3,inod)            &
+     &                         + model_mat(1,4) * x4(4,inod)
+        x4_each_model(2,inod) =  model_mat(2,1) * x4(1,inod)            &
+     &                         + model_mat(2,2) * x4(2,inod)            &
+     &                         + model_mat(2,3) * x4(3,inod)            &
+     &                         + model_mat(2,4) * x4(4,inod)
+        x4_each_model(3,inod) =  model_mat(3,1) * x4(1,inod)            &
+     &                         + model_mat(3,2) * x4(2,inod)            &
+     &                         + model_mat(3,3) * x4(3,inod)            &
+     &                         + model_mat(3,4) * x4(4,inod)
+        x4_each_model(4,inod) =  model_mat(4,1) * x4(1,inod)            &
+     &                         + model_mat(4,2) * x4(2,inod)            &
+     &                         + model_mat(4,3) * x4(3,inod)            &
+     &                         + model_mat(4,4) * x4(4,inod)
+      end do
+!
+      end subroutine modelview_position_each_ele
+!
 ! -----------------------------------------------------------------------
 !
       subroutine cal_position_pvr_modelview                             &
@@ -148,7 +229,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine overwte_position_pvr_screen(project_mat, numnod,       &
-     &          x_nod_screen)
+     &                                       x_nod_screen)
 !
       use cal_matrix_vector_smp
 !

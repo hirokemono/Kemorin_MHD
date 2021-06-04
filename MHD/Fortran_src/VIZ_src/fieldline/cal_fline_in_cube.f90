@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine position_on_each_ele_surfs                           &
 !!     &         (surf, numnod, xx, iele, xx4_ele_surf)
+!!      subroutine position_on_each_ele_sfs_wone                        &
+!!     &         (surf, numnod, xx, iele, xx4_ele_surf)
 !!        type(surface_data), intent(in) :: surf
 !!        integer(kind = kint), intent(in) :: numnod
 !!        real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -79,6 +81,36 @@
       end do
 !
       end subroutine position_on_each_ele_surfs
+!
+!------------------------------------------------------------------
+!
+      subroutine position_on_each_ele_sfs_wone                          &
+     &         (surf, numnod, xx, iele, xx4_ele_surf)
+!
+      type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: xx(numnod,3)
+      integer(kind = kint), intent(in) :: iele
+!
+      real(kind = kreal), intent(inout)                                 &
+     &             :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
+!
+      integer(kind = kint) :: ksf, k2
+      integer(kind = kint) :: inod, isurf
+!
+!
+      do ksf = 1, nsurf_4_ele
+        isurf = abs(surf%isf_4_ele(iele,ksf))
+        do k2 = 1, num_linear_sf
+          inod = surf%ie_surf(isurf,k2)
+          xx4_ele_surf(1,k2,ksf) = xx(inod,1)
+          xx4_ele_surf(2,k2,ksf) = xx(inod,2)
+          xx4_ele_surf(3,k2,ksf) = xx(inod,3)
+          xx4_ele_surf(4,k2,ksf) = one
+        end do
+      end do
+!
+      end subroutine position_on_each_ele_sfs_wone
 !
 !------------------------------------------------------------------
 !

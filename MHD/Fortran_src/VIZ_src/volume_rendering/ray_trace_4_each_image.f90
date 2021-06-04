@@ -119,6 +119,7 @@
      &          isurf_org, screen4_st, xx4_st, xi, rgba_ray,            &
      &          icount_line, iflag_comm)
 !
+      use set_position_pvr_screen
       use cal_field_on_surf_viz
       use cal_fline_in_cube
       use set_coefs_of_sections
@@ -151,6 +152,7 @@
       integer(kind = kint) :: i_iso, i_psf, iflag, iflag_hit
       real(kind = kreal) :: screen4_tgt(4), c_tgt(1), c_org(1)
       real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
+      real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), rflag, rflag2
       real(kind = kreal) :: opacity_bc
 !
@@ -197,9 +199,12 @@
 !   extend to surface of element
 !
         call position_on_each_ele_surfs                                 &
-     &     (surf, node%numnod, x_nod_model, iele, xx4_ele_surf)
+     &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
+        call modelview_position_each_ele                                &
+     &     (modelview_mat, (num_linear_sf*nsurf_4_ele),                 &
+     &      xx4_ele_surf(1,1,1), xx4_model_sf(1,1,1))
         call find_line_end_in_1ele(iflag_backward_line,                 &
-     &      isf_org, ray_vec4, screen4_st, xx4_ele_surf,                &
+     &      isf_org, ray_vec4, screen4_st, xx4_model_sf,                &
      &      isf_tgt, screen4_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen_tgt',                &
 !     &         my_rank, screen4_tgt(1:4), ele%interior_ele(iele)
