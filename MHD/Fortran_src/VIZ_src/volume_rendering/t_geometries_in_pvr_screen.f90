@@ -53,11 +53,6 @@
 !!@n    (Overwritten)
         real(kind = kreal), allocatable :: x_nod_model(:,:)
 !
-!>    Total number of surface in screen coordinate
-        integer(kind = kint) :: nsurf_screen = 0
-!>    Opacity value for surface boundaries
-        real(kind = kreal), allocatable :: arccos_sf(:)
-!
 !>    Direction of three axis in screen coordinate
         real(kind = kreal) :: axis_view(3,4)
 !>    Order of three axis in screen coordinate

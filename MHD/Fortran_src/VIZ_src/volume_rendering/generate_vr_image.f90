@@ -63,7 +63,6 @@
       use t_surface_group_normals
       use set_position_pvr_screen
       use find_pvr_surf_domain
-      use pvr_surface_enhancement
       use pvr_axis_label
 !
       type(node_data), intent(in) :: node
@@ -82,12 +81,6 @@
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
-!
-      call set_opacity_for_boundaries                                   &
-     &   (surf_grp, surf_grp_v, modelview_mat,                          &
-     &    draw_param%iflag_enhanse, draw_param%enhansed_opacity,        &
-     &    ele%numele, surf%numsurf, surf%isf_4_ele,                     &
-     &    pvr_screen%arccos_sf)
 !
       call axis_direction_in_screen                                     &
      &   (modelview_mat, projection_mat, pvr_screen)
