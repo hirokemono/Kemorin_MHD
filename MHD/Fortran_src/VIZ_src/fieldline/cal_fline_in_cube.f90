@@ -68,14 +68,22 @@
       integer(kind = kint), intent(inout) :: isf_tgt
 !
       real(kind = kreal) :: b_ray(4)
-      real(kind = kreal) :: x_quad(4,num_linear_sf)
       integer(kind = kint) :: ierr
-      integer(kind = kint) :: ist, ied, inc, k, k1, k2
+      integer(kind = kint) :: ist, ied, inc, k, ksf, k2
       integer(kind = kint) :: inod, isurf, jnod, k_surf
-      integer(kind = kint) :: ie_one(nnod_4_ele)
-      integer(kind = kint) :: ie_ele_surf(nnod_4_surf,nsurf_4_ele)
       real(kind = kreal) :: xx4_ele_surf(4,nnod_4_surf,nsurf_4_ele)
 !
+!
+      do ksf = 1, nsurf_4_ele
+        isurf = abs(isf_4_ele(iele,ksf))
+        do k2 = 1, nnod_4_surf
+          inod = ie_surf(isurf,k2)
+          xx4_ele_surf(1,k2,ksf) = xx(inod,1)
+          xx4_ele_surf(2,k2,ksf) = xx(inod,2)
+          xx4_ele_surf(3,k2,ksf) = xx(inod,3)
+          xx4_ele_surf(4,k2,ksf) = zero
+        end do
+      end do
 !
       if(iflag_dir .eq. iflag_forward_line) then
         b_ray(1:4) = -fline(1:4)
@@ -97,44 +105,13 @@
         inc = -1
       end if
 !
-      ie_one(1:nnod_4_ele) = ie(iele,1:nnod_4_ele)
-      do k1 = 1, nsurf_4_ele
-        isurf = abs(isf_4_ele(iele,k1))
-        ie_ele_surf(1:nnod_4_surf,k1) = ie_surf(isurf,1:nnod_4_surf)
-        xx4_ele_surf(1,1:nnod_4_surf,k1)      &
-     &       = xx(ie_surf(isurf,1:nnod_4_surf),1)
-        xx4_ele_surf(2,1:nnod_4_surf,k1)      &
-     &       = xx(ie_surf(isurf,1:nnod_4_surf),2)
-        xx4_ele_surf(3,1:nnod_4_surf,k1)      &
-     &       = xx(ie_surf(isurf,1:nnod_4_surf),3)
-        xx4_ele_surf(4,1:nnod_4_surf,k1) = zero
-      end do
-!
       isf_tgt = izero
       do k = ist, ied, inc
-        k1 = mod(isf_org+k-ione,nsurf_4_ele) + ione
-        isurf = abs(isf_4_ele(iele,k1))
-!
-        do k2 = 1, num_linear_sf
-          k_surf = node_on_sf(k2,k1)
-          jnod = ie_ele_surf(k2,k1)
-          inod = ie_surf(isurf,k2)
-          if(ie_surf(isurf,k2) .ne. ie_ele_surf(k2,k1)) write(*,*)   &
-     &           'someting wrong in node address', iele, isurf, k1, k2, &
-     &            iele, isurf, k_surf, ie_one(1:8), inod
-          if(xx(inod,1) .ne. xx4_ele_surf(1,k2,k1)) write(*,*)   &
-     &           'someting wrong in x position', iele, isurf, k1, k2
-          if(xx(inod,2) .ne. xx4_ele_surf(2,k2,k1)) write(*,*)   &
-     &           'someting wrong in y position', iele, isurf, k1, k2
-          if(xx(inod,3) .ne. xx4_ele_surf(3,k2,k1)) write(*,*)   &
-     &           'someting wrong in z position', iele, isurf, k1, k2
-          x_quad(1:3,k2) = xx(inod,1:3)
-          x_quad(4,k2) = 0.0d0
-        end do
-!
-        call cal_fline_to_square(x0, b_ray, x_quad, x4_tgt, xi, ierr)
+        ksf = mod(isf_org+k-ione,nsurf_4_ele) + ione
+        call cal_fline_to_square(x0, b_ray, xx4_ele_surf(1,1,ksf),      &
+     &                           x4_tgt, xi, ierr)
         if(ierr.eq.zero) then
-          isf_tgt = k1
+          isf_tgt = ksf
           exit
         end if
       end do
@@ -146,18 +123,9 @@
 !
 !
       do k = ist, ied, inc
-        k1 = mod(isf_org+k-ione,nsurf_4_ele) + ione
-!
-        isurf = abs(isf_4_ele(iele,k1))
-        do k2 = 1, num_linear_sf
-          k_surf = node_on_sf(k2,k1)
-          jnod = ie_one(k_surf)
-          inod = ie_surf(isurf,k2)
-          x_quad(1:3,k2) =  xx(inod,1:3)
-          x_quad(4,k2) = 0.0d0
-        end do
-!
-        call cal_fline_to_square(x0, b_ray, x_quad, x4_tgt, xi, ierr)
+        ksf = mod(isf_org+k-ione,nsurf_4_ele) + ione
+        call cal_fline_to_square(x0, b_ray, xx4_ele_surf(1,1,ksf),      &
+     &                           x4_tgt, xi, ierr)
       end do
 !
       end subroutine find_line_end_in_1ele
