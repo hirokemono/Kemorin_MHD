@@ -104,10 +104,7 @@
      &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
      &            fln_tce%num_current_fline(my_rank+1)
         do inum = ist, ied
-          call s_extend_field_line                                      &
-     &       (node%numnod, ele%numele, surf%numsurf,                    &
-     &        surf%nnod_4_surf, node%xx, surf%ie_surf, surf%isf_4_ele,  &
-     &        surf%iele_4_surf, surf%interior_surf, surf%vnorm_surf,    &
+          call s_extend_field_line(node, ele, surf,                     &
      &        fln_prm%max_line_stepping,                                &
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%iflag_fline(inum),                                &

@@ -4,9 +4,8 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine s_extend_field_line(numnod, numele, numsurf,         &
-!!     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                  &
-!!     &          iele_4_surf, interior_surf, vnorm_surf,               &
+!!      subroutine s_extend_field_line(numnod,         &
+!!     &          nnod_4_surf, node, ele, surf,               &
 !!     &          max_line_step, iflag_used_ele, iflag_dir,             &
 !!     &          vect_nod, color_nod, isurf_org, x4_start, v4_start,   &
 !!     &          c_field, icount_line, iflag_comm, fline_lc)
@@ -28,30 +27,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_extend_field_line(numnod, numele, numsurf,           &
-     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-     &          iele_4_surf, interior_surf, vnorm_surf,                 &
+      subroutine s_extend_field_line(node, ele, surf,                   &
      &          max_line_step, iflag_used_ele, iflag_dir,               &
      &          vect_nod, color_nod, isurf_org, x4_start, v4_start,     &
      &          c_field, icount_line, iflag_comm, fline_lc)
 !
+      use t_geometry_data
+      use t_surface_data
       use t_local_fline
       use cal_field_on_surf_viz
       use cal_fline_in_cube
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      integer(kind = kint), intent(in) :: interior_surf(numsurf)
-      real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
 !
       integer(kind = kint), intent(in) :: iflag_dir, max_line_step
-      integer(kind = kint), intent(in) :: iflag_used_ele(numele)
-      real(kind = kreal), intent(in) :: vect_nod(numnod,3)
-      real(kind = kreal), intent(in) :: color_nod(numnod)
+      integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
+      real(kind = kreal), intent(in) :: vect_nod(node%numnod,3)
+      real(kind = kreal), intent(in) :: color_nod(node%numnod)
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
@@ -79,8 +73,10 @@
 !
 !   extend in the middle of element
 !
-        call find_line_end_in_1ele(iflag_dir, numnod, numele, numsurf,  &
-     &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
+        call find_line_end_in_1ele(iflag_dir, node%numnod,       &
+     &      ele%numele, ele%nnod_4_ele, ele%ie,              &
+     &      surf%node_on_sf, surf%numsurf, surf%nnod_4_surf,  &
+     &      surf%isf_4_ele, surf%ie_surf, node%xx, iele, isf_org, &
      &      v4_start, x4_start, isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
@@ -88,11 +84,13 @@
           exit
         end if
 !
-        isurf_end = abs(isf_4_ele(iele,isf_tgt))
-        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
-     &      ie_surf, isurf_end, xi, vect_nod, v4_tgt)
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, color_nod, c_tgt(1))
+        isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
+        call cal_field_on_surf_vect4                                    &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+     &      surf%ie_surf, isurf_end, xi, vect_nod, v4_tgt)
+        call cal_field_on_surf_scalar                                   &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+     &      surf%ie_surf, isurf_end, xi, color_nod, c_tgt(1))
 !
         isf_org =  0
         x4_start(1:4) = half * (x4_start(1:4) + x4_tgt(1:4))
@@ -103,8 +101,10 @@
 !
 !   extend to surface of element
 !
-        call find_line_end_in_1ele(iflag_dir, numnod, numele, numsurf,  &
-     &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
+        call find_line_end_in_1ele(iflag_dir, node%numnod,   &
+     &      ele%numele, ele%nnod_4_ele, ele%ie,              &
+     &      surf%node_on_sf, surf%numsurf, surf%nnod_4_surf,  &
+     &      surf%isf_4_ele, surf%ie_surf, node%xx, iele, isf_org,   &
      &      v4_start, x4_start, isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
@@ -112,28 +112,30 @@
           exit
         end if
 !
-        isurf_end = abs(isf_4_ele(iele,isf_tgt))
-        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
-     &      ie_surf, isurf_end, xi, vect_nod, v4_start)
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, color_nod, c_field(1))
+        isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
+        call cal_field_on_surf_vect4                                    &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+     &      surf%ie_surf, isurf_end, xi, vect_nod, v4_start)
+        call cal_field_on_surf_scalar                                   &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+     &      surf%ie_surf, isurf_end, xi, color_nod, c_field(1))
         x4_start(1:4) =  x4_tgt(1:4)
 !
         call add_fline_list(x4_start, c_field(1), fline_lc)
 !
-        flux = (v4_start(1) * vnorm_surf(isurf_end,1)                   &
-     &        + v4_start(2) * vnorm_surf(isurf_end,2)                   &
-     &        + v4_start(3) * vnorm_surf(isurf_end,3))                  &
-     &         * dble(isf_4_ele(iele,isf_tgt) / isurf_end)              &
+        flux = (v4_start(1) * surf%vnorm_surf(isurf_end,1)              &
+     &        + v4_start(2) * surf%vnorm_surf(isurf_end,2)              &
+     &        + v4_start(3) * surf%vnorm_surf(isurf_end,3))             &
+     &         * dble(surf%isf_4_ele(iele,isf_tgt) / isurf_end)         &
      &         *(-one)**iflag_dir
 !
 !         write(60+my_rank,'(a6,i8,1p4e16.7)')  'x_tgt: ', icount_line, &
 !     &          v4_start(1:4), flux
 !
-        if(interior_surf(isurf_end) .eq. izero) then
+        if(surf%interior_surf(isurf_end) .eq. izero) then
           isurf_org(1) = iele
           isurf_org(2) = isf_tgt
-          isurf_org(3) = ie_surf(isurf_end,1)
+          isurf_org(3) = surf%ie_surf(isurf_end,1)
           iflag_comm = 1
           exit
         end if
@@ -141,12 +143,12 @@
 !   set backside element and surface 
 !
         if(flux.ge.zero) then
-          if(isf_4_ele(iele,isf_tgt) .lt. 0) then
-            isurf_org(1) = iele_4_surf(isurf_end,1,1)
-            isurf_org(2) = iele_4_surf(isurf_end,1,2)
+          if(surf%isf_4_ele(iele,isf_tgt) .lt. 0) then
+            isurf_org(1) = surf%iele_4_surf(isurf_end,1,1)
+            isurf_org(2) = surf%iele_4_surf(isurf_end,1,2)
           else
-            isurf_org(1) = iele_4_surf(isurf_end,2,1)
-            isurf_org(2) = iele_4_surf(isurf_end,2,2)
+            isurf_org(1) = surf%iele_4_surf(isurf_end,2,1)
+            isurf_org(2) = surf%iele_4_surf(isurf_end,2,2)
           end if
         else
           iflag_comm = -2
@@ -154,9 +156,9 @@
         end if
 !
 !         write(70+my_rank,*) 'isurf_end', icount_line, iele, isf_tgt,  &
-!     &                        isf_4_ele(iele,isf_tgt)
+!     &                        surf%isf_4_ele(iele,isf_tgt)
 !         write(70+my_rank,*) 'isurf_nxt', icount_line, isurf_org(1:2), &
-!     &                        isf_4_ele(isurf_org(1),isurf_org(2))
+!     &                        surf%isf_4_ele(isurf_org(1),isurf_org(2))
 !
         if(isurf_org(1).eq.0 .or.  iflag_used_ele(iele).eq.0            &
      &     .or. icount_line.gt.max_line_step) then

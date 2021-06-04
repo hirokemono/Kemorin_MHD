@@ -231,10 +231,7 @@
         allocate(time_cost(part_p1%num_domain))
 
         call seed_particles(domain_grp1%nod_d_grp,                      &
-     &      org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
-     &      org_fem%mesh%surf%numsurf, org_fem%mesh%surf%nnod_4_surf,   &
-     &      org_fem%mesh%surf%isf_4_ele, org_fem%mesh%surf%ie_surf,     &
-     &      org_fem%mesh%surf%iele_4_surf, org_fem%mesh%node%xx,        &
+     &      org_fem%mesh%node, org_fem%mesh%ele, org_fem%mesh%surf,     &
      &      data_field_vec%d_ucd,                                       &
      &      particles, num_particle, part_p1%num_domain, time_cost)
 

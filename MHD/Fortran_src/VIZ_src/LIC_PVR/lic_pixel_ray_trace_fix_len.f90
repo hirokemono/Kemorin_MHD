@@ -176,6 +176,7 @@
 !
         call find_line_end_in_1ele                                      &
      &     (iflag_backward_line, node%numnod, ele%numele,               &
+     &      ele%nnod_4_ele, ele%ie, surf%node_on_sf,    &
      &      surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele,             &
      &      surf%ie_surf, x_nod_model, iele, isf_org,                   &
      &      ray_vec4, screen4_st, isf_tgt, screen4_tgt, xi)
@@ -258,9 +259,7 @@
 !   as volume rendering
           start_trace =  MPI_WTIME()
           call cal_lic_on_surf_vector                                   &
-     &       (node%numnod, surf%numsurf, ele%numele, surf%nnod_4_surf,  &
-     &        surf%isf_4_ele, surf%iele_4_surf, surf%interior_surf,     &
-     &        node%xx, isurf_orgs, surf%ie_surf, xi, lic_p,             &
+     &       (node, ele, surf, isurf_orgs, xi, lic_p,                   &
      &        r_mid, vec4_mid, field_lic%s_lic, field_lic%v_lic,        &
      &        xx4_lic, isurf_end, iflag_lic, rlic_grad)
 !

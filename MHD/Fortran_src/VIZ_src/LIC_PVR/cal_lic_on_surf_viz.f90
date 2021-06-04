@@ -1,25 +1,39 @@
-!cal_lic_on_surf_viz.f90
+!>@file  cal_lic_on_surf_viz.f90
+!!       module cal_lic_on_surf_viz
+!!
+!!@author Yangguang Liao
+!!@date   Programmed in 2018
 !
-!      module cal_lic_on_surf_viz
-!
-!      Written by Yangguang Liao 2018
-!
-!!      subroutine cal_lic_on_surf_vector                               &
-!!     &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,           &
-!!     &          iele_4_surf, interior_surf, xx,                       &
-!!     &          isurf_orgs, ie_surf, xi, lic_p,                       &
-!!     &          r_org, vec4_org, ref_nod,                             &
+!> @brief LIC tracing for each point
+!!
+!!@verbatim
+!!      subroutine cal_lic_on_surf_vector(node, ele, surf,              &
+!!     &          isurf_orgs, xi, lic_p, r_org, vec4_org, ref_nod,      &
 !!     &          v_nod, xx4_org, isurf, iflag_comm, rlic_grad)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(lic_parameters), intent(in) :: lic_p
+!!        integer(kind = kint), intent(in) :: isurf
+!!        real(kind = kreal), intent(inout) :: xi(2)
+!!        real(kind = kreal), intent(in) :: v_nod(node%numnod,3)
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: ref_nod(node%numnod,lic_p%num_masking)
+!!        real(kind = kreal), intent(in) :: xx4_org(4), vec4_org(4)
+!!        real(kind = kreal), intent(inout) :: rlic_grad(0:3), r_org(:)
+!!        integer(kind = kint), intent(inout) :: iflag_comm
 !!
 !!      subroutine cal_surf_field_value_2d(nd, xi, fd, ft)
+!!@endverbatim
 !
       module cal_lic_on_surf_viz
 !
       use m_precision
       use m_constants
+!
+      use t_geometry_data
+      use t_surface_data
       use t_control_param_LIC
-      use cal_field_on_surf_viz
-      use cal_fline_in_cube
 !
       implicit  none
 !
@@ -31,14 +45,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-!   xx_org is the point 3D coord, xi is local 2D coord on the surface
-!   isurf is current surface subdomain id
-!   isurf_org is an array with element id and surface element id(1-6)
-      subroutine cal_lic_on_surf_vector                                 &
-     &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,             &
-     &          iele_4_surf, interior_surf, xx,                         &
-     &          isurf_orgs, ie_surf, xi, lic_p,                         &
-     &          r_org, vec4_org, ref_nod,                               &
+!>   xx_org is the point 3D coord, xi is local 2D coord on the surface
+!!   isurf is current surface subdomain id
+!!   isurf_org is an array with element id and surface element id(1-6)
+      subroutine cal_lic_on_surf_vector(node, ele, surf,                &
+     &          isurf_orgs, xi, lic_p, r_org, vec4_org, ref_nod,        &
      &          v_nod, xx4_org, isurf, iflag_comm, rlic_grad)
 
       use m_geometry_constants
@@ -46,20 +57,20 @@
       use t_noise_node_data
       use cal_noise_value
       use get_geometry_reference
-
-      integer(kind = kint), intent(in) :: isurf_orgs(2,3)
-      integer(kind = kint), intent(in) :: nnod, nsurf, nelem
-      integer(kind = kint), intent(in) :: nnod_4_surf, isurf
-      integer(kind = kint), intent(in) :: isf_4_ele(nelem, nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
-      integer(kind = kint), intent(in) :: interior_surf(nsurf)
-      integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
+      use cal_field_on_surf_viz
+      use cal_fline_in_cube
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(lic_parameters), intent(in) :: lic_p
+      integer(kind = kint), intent(in) :: isurf_orgs(2,3)
+      integer(kind = kint), intent(in) :: isurf
 !
       real(kind = kreal), intent(inout) :: xi(2)
-      real(kind = kreal), intent(in) :: v_nod(nnod,3), xx(nnod, 3)
-      real(kind = kreal), intent(in) :: ref_nod(nnod,lic_p%num_masking)
+      real(kind = kreal), intent(in) :: v_nod(node%numnod,3)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: ref_nod(node%numnod,lic_p%num_masking)
       real(kind = kreal), intent(in) :: xx4_org(4), vec4_org(4)
       real(kind = kreal), intent(inout) :: rlic_grad(0:3), r_org(:)
       integer(kind = kint), intent(inout) :: iflag_comm
@@ -88,8 +99,8 @@
      &              "ele: ", iele, "local surf: ", isf_org
           if(i_debug .eq. 1) write(50+my_rank,*)                        &
      &              "global surf: ", isurf, "surf of ele",              &
-     &               isf_4_ele(iele, isf_org)
-          if(iele .le. izero .or. iele .gt. nelem) then
+     &               surf%isf_4_ele(iele, isf_org)
+          if(iele .le. izero .or. iele .gt. ele%numele) then
             if(i_debug .eq. 1) write(50+my_rank,*)                      &
      &              "invalid element, end----------------------"
             iflag_comm = -5
@@ -110,7 +121,8 @@
         step_vec4(1:4) = vec4_org(1:4)
         new_pos4(1:4) =  xx4_org(1:4)
 ! if current surface is exterior surface, then return.
-!        if((interior_surf(icur_sf) .eq. izero) .or. (icur_sf .eq. izero)) then
+!        if((surf%interior_surf(icur_sf) .eq. izero)                    &
+!     &     .or. (icur_sf .eq. izero)) then
         if(icur_sf .eq. izero) then
           if(i_debug .eq. 1) write(50+my_rank,*)                        &
      &       "extorior surface, end-------------------------", icur_sf
@@ -123,9 +135,10 @@
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
-          call find_line_end_in_1ele                                    &
-     &       (iflag_forward_line, nnod, nelem, nsurf,                   &
-     &        nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,       &
+          call find_line_end_in_1ele(iflag_forward_line, node%numnod, &
+     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,    &
+     &        surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele, &
+     &        surf%ie_surf, node%xx, iele, isf_org,       &
      &        vec4_org, xx4_org, isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             !write(50+my_rank, *) "find exit point in neighbor element."
@@ -144,11 +157,9 @@
           if(i_debug .eq. 1) write(50+my_rank, *)                       &
      &                          "start cal lic, ele and surf: ",        &
      &                          ilic_suf_org(1), ilic_suf_org(2)
-          call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
-     &        nnod_4_surf, xx, ie_surf, isf_4_ele,                      &
-     &        iele_4_surf, interior_surf, lic_p, iflag_forward_line,    &
-     &        v_nod, ilic_suf_org, new_pos4, step_vec4, ref_nod,        &
-     &        rlic_grad_v, k_area, iflag_comm)
+          call s_cal_lic_from_point(node, ele, surf, lic_p,             &
+     &        iflag_forward_line, v_nod, ilic_suf_org, new_pos4,        &
+     &        step_vec4, ref_nod, rlic_grad_v, k_area, iflag_comm)
           rlic_grad(0:3) = rlic_grad(0:3) + rlic_grad_v(0:3)
         end if
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
@@ -164,10 +175,11 @@
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
-          call find_line_end_in_1ele                                    &
-     &     (iflag_backward_line, nnod, nelem, nsurf,                    &
-     &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
-     &      vec4_org, xx4_org, isf_tgt, new_pos4, xi)
+          call find_line_end_in_1ele(iflag_backward_line, node%numnod, &
+     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,     &
+     &        surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele,  &
+     &        surf%ie_surf, node%xx, iele, isf_org,    &
+     &        vec4_org, xx4_org, isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             !write(50+my_rank, *) "find exit point in neighbor element."
             iflag_found_sf = 1
@@ -186,11 +198,10 @@
           if(i_debug .eq. 1) write(50+my_rank, *)                       &
      &       "start cal lic, ele and surf: ",                           &
      &       ilic_suf_org(1), ilic_suf_org(2)
-          call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
-     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-     &          iele_4_surf, interior_surf, lic_p, iflag_backward_line, &
-     &          v_nod, ilic_suf_org, new_pos4, step_vec4, ref_nod,      &
-     &          rlic_grad_v, k_area, iflag_comm)
+          call s_cal_lic_from_point(node, ele, surf, lic_p,             &
+     &        iflag_backward_line, v_nod, ilic_suf_org,                 &
+     &        new_pos4, step_vec4, ref_nod, rlic_grad_v, k_area,        &
+     &        iflag_comm)
           rlic_grad(0:3) = rlic_grad(0:3) + rlic_grad_v(0:3)
         end if
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
@@ -210,27 +221,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_lic_from_point(nnod, nelem, nsurf,               &
-     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-     &          iele_4_surf, interior_surf, lic_p,  iflag_dir,          &
-     &          vect_nod, isurf_org, x4_start, v4_start, ref_nod,       &
-     &          rlic_grad_v, k_area, iflag_comm)
+      subroutine s_cal_lic_from_point(node, ele, surf, lic_p,           &
+     &          iflag_dir, vect_nod, isurf_org, x4_start, v4_start,     &
+     &          ref_nod, rlic_grad_v, k_area, iflag_comm)
 
       use t_noise_node_data
       use cal_noise_value
+      use cal_field_on_surf_viz
+      use cal_fline_in_cube
 !
-      integer(kind = kint), intent(in) :: nnod, nelem, nsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      real(kind = kreal), intent(in) :: xx(nnod,3)
-      integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(nelem,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(nsurf,2,2)
-      integer(kind = kint), intent(in) :: interior_surf(nsurf)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
 !
       integer(kind = kint), intent(in) :: iflag_dir
-      real(kind = kreal), intent(in) :: vect_nod(nnod,3)
+      real(kind = kreal), intent(in) :: vect_nod(node%numnod,3)
       type(lic_parameters), intent(in) :: lic_p
-      real(kind = kreal), intent(in) :: ref_nod(nnod,lic_p%num_masking)
+      real(kind = kreal), intent(in)                                    &
+     &                    :: ref_nod(node%numnod,lic_p%num_masking)
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
       integer(kind = kint), intent(inout) :: iflag_comm
@@ -277,7 +285,7 @@
 
       iele =    isurf_org(1)
       isf_org = isurf_org(2)
-      isurf_start = abs(isf_4_ele(iele, isf_org))
+      isurf_start = abs(surf%isf_4_ele(iele, isf_org))
 
 !write(50 + my_rank, *) "start ele: ", isurf_org(1), "surf:", isurf_org(2)
       do
@@ -285,24 +293,25 @@
         x4_org(1:4) = x4_start(1:4)
         v4_org(1:4) = v4_start(1:4)
         i_iter = i_iter + 1
-        if(isurf_start .lt. 1 .or. isurf_start .gt. nsurf) then
+        if(isurf_start .lt. 1 .or. isurf_start .gt. surf%numsurf) then
           iflag_comm = -10
           return
         end if
 !
-!        if(interior_surf(isurf_start) .eq. izero) then
+!        if(surf%interior_surf(isurf_start) .eq. izero) then
 !          iflag_comm = 10
 !          return
 !        end if
 !        isf_tgt = 0
 
         do i = 1, 2
-          iele = iele_4_surf(isurf_start,i,1)
-          isf_org = iele_4_surf(isurf_start,i,2)
+          iele = surf%iele_4_surf(isurf_start,i,1)
+          isf_org = surf%iele_4_surf(isurf_start,i,2)
           if(iele .gt. 0) then
-            call find_line_end_in_1ele                                  &
-     &         (iflag_dir, nnod, nelem, nsurf,                          &
-     &          nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,     &
+            call find_line_end_in_1ele(iflag_dir, node%numnod, &
+     &          ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,  &
+     &          surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele,       &
+     &          surf%ie_surf, node%xx, iele, isf_org,     &
      &          v4_org, x4_org, isf_tgt, x4_tgt, xi)
             if(isf_tgt .gt. 0) then
 ! find hit surface
@@ -320,9 +329,10 @@
      &         "From", isurf_start, "at elem", iele, "local", isf_org
         if(i_debug .eq. 1) write(50 + my_rank, *) "pos:", x4_org
 !
-        isurf_end = abs(isf_4_ele(iele,isf_tgt))
-        call cal_field_on_surf_vect4(nnod, nsurf, nnod_4_surf,          &
-     &      ie_surf, isurf_end, xi, vect_nod, v4_tgt)
+        isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
+        call cal_field_on_surf_vect4                                    &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+     &      surf%ie_surf, isurf_end, xi, vect_nod, v4_tgt)
 !
         isf_org =  0
         x4_mid(1:4) = half * (x4_org(1:4) + x4_tgt(1:4))
@@ -334,8 +344,10 @@
 !
 !   extend to surface of element
 !
-        call find_line_end_in_1ele(iflag_dir, nnod, nelem, nsurf,       &
-     &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
+        call find_line_end_in_1ele(iflag_dir, node%numnod,    &
+     &      ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf, &
+     &      surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele,   &
+     &      surf%ie_surf, node%xx, iele, isf_org,    &
      &      v4_mid, x4_mid, isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
@@ -343,9 +355,10 @@
           exit
         end if
 ! exit point after 2nd field line trace
-        isurf_end = abs(isf_4_ele(iele,isf_tgt))
-        call cal_field_on_surf_vect4(nnod, nsurf, nnod_4_surf,          &
-       &    ie_surf, isurf_end, xi, vect_nod, v4_tgt)
+        isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
+        call cal_field_on_surf_vect4                                    &
+       &   (node%numnod, surf%numsurf, surf%nnod_4_surf,                &
+       &    surf%ie_surf, isurf_end, xi, vect_nod, v4_tgt)
         step_seg(1) = sqrt( (x4_mid(1) - x4_org(1))**2                  &
        &                  + (x4_mid(2) - x4_org(2))**2                  &
        &                  + (x4_mid(3) - x4_org(3))**2)
@@ -376,8 +389,9 @@
         rnoise_grad(0:3) = 0.0
         ref_value(1:lic_p%num_masking) = 0.0
         do i = 1, lic_p%num_masking
-          call cal_field_on_surf_scalar(nnod, nsurf, nnod_4_surf,       &
-      &       ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+          call cal_field_on_surf_scalar                                 &
+      &      (node%numnod, surf%numsurf, surf%nnod_4_surf,              &
+      &       surf%ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
         end do
 !
         if(lic_mask_flag(lic_p, ref_value)) then
@@ -455,7 +469,7 @@
      &     "nv: ", rnoise_grad(0),  "nv sum:", nv_sum,                  &
      &    "kernel area: ", k_area, "lic_v: ", rlic_grad_v(0)
 
-!        if(interior_surf(isurf_end) .eq. izero) then
+!        if(surf%interior_surf(isurf_end) .eq. izero) then
 !          isurf_start = isurf_end
 !          iflag_comm = 10
 !          exit

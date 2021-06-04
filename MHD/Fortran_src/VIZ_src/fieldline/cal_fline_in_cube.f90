@@ -1,12 +1,16 @@
-!cal_fline_in_cube.f90
+!>@file  cal_fline_in_cube.f90
+!!       module cal_fline_in_cube
+!!
+!!@author H. Matsui
+!!@date   Programmed in Aug., 2011
 !
-!      module cal_fline_in_cube
-!
-!      Written by H. Matsui on Aug., 2011
-!
-!!      subroutine find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,  &
-!!     &          nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,   &
-!!     &          fline, x0, isf_tgt, x_tgt, xi)
+!> @brief trace field line in one cube element
+!!
+!!@verbatim
+!!      subroutine find_line_end_in_1ele                                &
+!!     &         (iflag_dir, nnod, nele, nnod_4_ele, ie, node_on_sf,    &
+!!     &          nsurf, nnod_4_surf, isf_4_ele, ie_surf, xx,           &
+!!     &          iele, isf_org, fline, x0, isf_tgt, x4_tgt, xi)
 !!        integer(kind = kint), intent(in) :: nnod, nele, nsurf
 !!        integer(kind = kint), intent(in) :: nnod_4_surf, iflag_dir
 !!        integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
@@ -19,6 +23,7 @@
 !!        integer(kind = kint), intent(inout) :: isf_tgt
 !!      subroutine cal_fline_to_square(x0, vec, x_quad, x_tgt, ierr)
 !!      subroutine cal_filne_to_triangle(x0, vec, x_tri, x_tgt, ierr)
+!!@endverbatim
 !
       module cal_fline_in_cube
 !
@@ -41,13 +46,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,    &
-     &          nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,     &
-     &          fline, x0, isf_tgt, x4_tgt, xi)
+      subroutine find_line_end_in_1ele                                  &
+     &         (iflag_dir, nnod, nele, nnod_4_ele, ie, node_on_sf,      &
+     &          nsurf, nnod_4_surf, isf_4_ele, ie_surf, xx,             &
+     &          iele, isf_org, fline, x0, isf_tgt, x4_tgt, xi)
 !
       integer(kind = kint), intent(in) :: nnod, nele, nsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf, iflag_dir
+      integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
+      integer(kind = kint), intent(in) :: iflag_dir
+      integer(kind = kint), intent(in) :: ie(nele,nnod_4_ele)
       integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
+      integer(kind = kint), intent(in)                                  &
+     &                  :: node_on_sf(nnod_4_surf,nsurf_4_ele)
       integer(kind = kint), intent(in) :: isf_4_ele(nele,nsurf_4_ele)
       real(kind = kreal), intent(in) :: xx(nnod,3)
       integer(kind = kint), intent(in) :: iele, isf_org
@@ -60,7 +70,9 @@
       real(kind = kreal) :: b_ray(4)
       real(kind = kreal) :: x_quad(4,num_linear_sf)
       integer(kind = kint) :: ierr
-      integer(kind = kint) :: ist, ied, inc, k, k1, k2, inod, isurf
+      integer(kind = kint) :: ist, ied, inc, k, k1, k2
+      integer(kind = kint) :: inod, isurf, jnod, k_surf
+      integer(kind = kint) :: ie_one(nnod_4_ele)
 !
 !
       if(iflag_dir .eq. iflag_forward_line) then
@@ -83,12 +95,16 @@
         inc = -1
       end if
 !
+      ie_one(1:8) = ie(iele,1:nnod_4_ele)
+!
       isf_tgt = izero
       do k = ist, ied, inc
         k1 = mod(isf_org+k-ione,nsurf_4_ele) + ione
         isurf = abs(isf_4_ele(iele,k1))
 !
         do k2 = 1, num_linear_sf
+          k_surf = node_on_sf(k2,k1)
+          jnod = ie_one(k_surf)
           inod = ie_surf(isurf,k2)
           x_quad(1:3,k2) = xx(inod,1:3)
           x_quad(4,k2) = 0.0d0
@@ -112,6 +128,8 @@
 !
         isurf = abs(isf_4_ele(iele,k1))
         do k2 = 1, num_linear_sf
+          k_surf = node_on_sf(k2,k1)
+          jnod = ie_one(k_surf)
           inod = ie_surf(isurf,k2)
           x_quad(1:3,k2) =  xx(inod,1:3)
           x_quad(4,k2) = 0.0d0

@@ -1,8 +1,12 @@
+!>@file  increase_overlapping.f90
+!!       module increase_overlapping
+!!
+!!@author Yangguang Liao and H. Matsui
+!!@date   Programmed in 2018
 !
-!     module increase_overlap
-!
-!     written by H. Matsui on Sep., 2007
-!
+!> @brief Increasing ooverlap with cnosidering field direction
+!!
+!!@verbatim
 !!      subroutine increase_overlapping                                 &
 !!     &       (part_p, node, ele, surf, field, nod_d_grp, included_ele)
 !!        type(ctl_param_partitioner), intent(in) :: part_p
@@ -12,6 +16,7 @@
 !!        type(vector_field), intent(in) :: field
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
 !!        type(near_mesh), intent(inout) :: included_ele
+!!@endverbatim
 !
       module increase_overlap
 !
@@ -306,7 +311,9 @@
             if(iwidth .eq. 2 .and. iflag_ele(icel) .eq. 1) then
               ! forward
               call find_line_end_in_1ele(iflag_forward_line,            &
-     &            node%numnod, ele%numele, surf%numsurf,                &
+     &            node%numnod, &
+     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,      &
+     &       surf%numsurf,                &
      &            surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,       &
      &            node%xx, icel, izero, v4_start, x4_start,             &
      &            isf_tgt, x4_tgt, xi)
@@ -321,7 +328,9 @@
               end if
               ! backward
               call find_line_end_in_1ele(iflag_backward_line,           &
-     &            node%numnod, ele%numele, surf%numsurf,                &
+     &            node%numnod, &
+     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,      &
+     &            surf%numsurf,                &
      &            surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,       &
      &            node%xx, icel, izero, v4_start, x4_start,             &
      &            isf_tgt, x4_tgt, xi)
@@ -339,7 +348,9 @@
               if(iflag_ele(icel) .eq. 2) then
                 ! forward
                 call find_line_end_in_1ele(iflag_forward_line,          &
-     &              node%numnod, ele%numele, surf%numsurf,              &
+     &              node%numnod, &
+     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,      &
+     &              surf%numsurf,              &
      &              surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,     &
      &              node%xx, icel, izero, v4_start, x4_start,           &
      &              isf_tgt, x4_tgt, xi)
@@ -355,7 +366,9 @@
               else if(iflag_ele(icel) .eq. -1) then
                 ! backward
                 call find_line_end_in_1ele(iflag_backward_line,         &
-     &              node%numnod, ele%numele, surf%numsurf,              &
+     &              node%numnod, &
+     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,      &
+     &         surf%numsurf,              &
      &              surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,     &
      &              node%xx, icel, izero, v4_start, x4_start,           &
      &              isf_tgt, x4_tgt, xi)
