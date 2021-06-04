@@ -7,15 +7,25 @@
 !> @brief trace field line in one cube element
 !!
 !!@verbatim
-!!      subroutine find_line_end_in_1ele(iflag_dir, surf, numond, xx,   &
-!!     &          iele, isf_org, fline, x0, isf_tgt, x4_tgt, xi)
-!!        integer(kind = kint), intent(in) :: iflag_dir
+!!      subroutine position_on_each_ele_surfs                           &
+!!     &         (surf, numnod, xx, iele, xx4_ele_surf)
+!!        type(surface_data), intent(in) :: surf
+!!        integer(kind = kint), intent(in) :: numnod
 !!        real(kind = kreal), intent(in) :: xx(numnod,3)
 !!        integer(kind = kint), intent(in) :: iele, isf_org
+!!        real(kind = kreal), intent(inout)                             &
+!!     &             :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
+!!      subroutine find_line_end_in_1ele(iflag_dir, isf_org, fline, x0, &
+!!     &          xx4_ele_surf, isf_tgt, x4_tgt, xi)
+!!        integer(kind = kint), intent(in) :: iflag_dir
+!!        integer(kind = kint), intent(in) :: isf_org
 !!        real(kind = kreal), intent(in) :: fline(4), x0(4)
+!!        real(kind = kreal), intent(in)                                &
+!!     &             :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
+!!        integer(kind = kint), intent(inout) :: isf_tgt
 !!        real(kind = kreal), intent(inout) :: x4_tgt(4)
 !!        real(kind = kreal), intent(inout) :: xi(2)
-!!        integer(kind = kint), intent(inout) :: isf_tgt
+!!
 !!      subroutine cal_fline_to_square(x0, vec, x_quad, x_tgt, ierr)
 !!      subroutine cal_filne_to_triangle(x0, vec, x_tri, x_tgt, ierr)
 !!@endverbatim
@@ -42,29 +52,24 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine find_line_end_in_1ele(iflag_dir, surf, numnod, xx,     &
-     &          iele, isf_org, fline, x0, isf_tgt, x4_tgt, xi)
+      subroutine position_on_each_ele_surfs                             &
+     &         (surf, numnod, xx, iele, xx4_ele_surf)
 !
       type(surface_data), intent(in) :: surf
-      integer(kind = kint), intent(in) :: iflag_dir, numnod
+      integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
-      integer(kind = kint), intent(in) :: iele, isf_org
-      real(kind = kreal), intent(in) :: fline(4), x0(4)
+      integer(kind = kint), intent(in) :: iele
 !
-      real(kind = kreal), intent(inout) :: x4_tgt(4)
-      real(kind = kreal), intent(inout) :: xi(2)
-      integer(kind = kint), intent(inout) :: isf_tgt
+      real(kind = kreal), intent(inout)                                 &
+     &             :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
-      real(kind = kreal) :: b_ray(4)
-      integer(kind = kint) :: ierr
-      integer(kind = kint) :: ist, ied, inc, k, ksf, k2
+      integer(kind = kint) :: ksf, k2
       integer(kind = kint) :: inod, isurf
-      real(kind = kreal) :: xx4_ele_surf(4,surf%nnod_4_surf,nsurf_4_ele)
 !
 !
       do ksf = 1, nsurf_4_ele
         isurf = abs(surf%isf_4_ele(iele,ksf))
-        do k2 = 1, surf%nnod_4_surf
+        do k2 = 1, num_linear_sf
           inod = surf%ie_surf(isurf,k2)
           xx4_ele_surf(1,k2,ksf) = xx(inod,1)
           xx4_ele_surf(2,k2,ksf) = xx(inod,2)
@@ -72,6 +77,28 @@
           xx4_ele_surf(4,k2,ksf) = zero
         end do
       end do
+!
+      end subroutine position_on_each_ele_surfs
+!
+!------------------------------------------------------------------
+!
+      subroutine find_line_end_in_1ele(iflag_dir, isf_org, fline, x0,   &
+     &          xx4_ele_surf, isf_tgt, x4_tgt, xi)
+!
+      integer(kind = kint), intent(in) :: iflag_dir
+      integer(kind = kint), intent(in) :: isf_org
+      real(kind = kreal), intent(in) :: fline(4), x0(4)
+      real(kind = kreal), intent(in)                                    &
+     &             :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
+!
+      integer(kind = kint), intent(inout) :: isf_tgt
+      real(kind = kreal), intent(inout) :: x4_tgt(4)
+      real(kind = kreal), intent(inout) :: xi(2)
+!
+      real(kind = kreal) :: b_ray(4)
+      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ist, ied, inc, k, ksf
+!
 !
       if(iflag_dir .eq. iflag_forward_line) then
         b_ray(1:4) = -fline(1:4)
@@ -108,7 +135,6 @@
 !
 !      write(my_rank+60,'(i3,1p3e16.7)') (-ione), b_ray(1:4)
 !      write(my_rank+60,'(i3,1p3e16.7)') izero, x0(1:4)
-!
 !
       do k = ist, ied, inc
         ksf = mod(isf_org+k-ione,nsurf_4_ele) + ione

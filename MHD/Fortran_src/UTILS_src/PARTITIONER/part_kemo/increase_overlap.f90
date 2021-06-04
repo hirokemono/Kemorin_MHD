@@ -22,6 +22,7 @@
 !
       use m_precision
       use m_constants
+      use m_geometry_constants
       use m_work_time
 !
       use t_near_mesh_id_4_node
@@ -276,6 +277,7 @@
       integer(kind = kint) :: ist, ied, isf_tgt, isurf_end
       integer(kind = kint), allocatable :: iflag_ele_tmp(:)
       real(kind = kreal) :: x4_start(4), v4_start(4), x4_tgt(4), xi(2)
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
 !      write(*,*) 'selective extend overlap:', 'n_overlap:', n_overlap
       icou = 0
@@ -310,9 +312,11 @@
             v4_start(1:4) = v4_start(1:4) / k
             if(iwidth .eq. 2 .and. iflag_ele(icel) .eq. 1) then
               ! forward
+              call position_on_each_ele_surfs                           &
+     &           (surf, node%numnod, node%xx, icel, xx4_ele_surf)
               call find_line_end_in_1ele(iflag_forward_line,            &
-     &            surf, node%numnod, node%xx, icel, izero,              &
-     &            v4_start, x4_start, isf_tgt, x4_tgt, xi)
+     &            izero, v4_start, x4_start, xx4_ele_surf,              &
+     &            isf_tgt, x4_tgt, xi)
               !
               if(isf_tgt .ne. 0) then
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -323,9 +327,11 @@
                 end do
               end if
               ! backward
+              call position_on_each_ele_surfs                           &
+     &           (surf, node%numnod, node%xx, icel, xx4_ele_surf)
               call find_line_end_in_1ele(iflag_backward_line,           &
-     &            surf, node%numnod, node%xx, icel, izero,              &
-     &            v4_start, x4_start, isf_tgt, x4_tgt, xi)
+     &            izero, v4_start, x4_start, xx4_ele_surf,              &
+     &            isf_tgt, x4_tgt, xi)
               !
               if(isf_tgt .ne. 0) then
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -339,9 +345,11 @@
             if(iwidth .gt. 2) then
               if(iflag_ele(icel) .eq. 2) then
                 ! forward
+                call position_on_each_ele_surfs                         &
+     &             (surf, node%numnod, node%xx, icel, xx4_ele_surf)
                 call find_line_end_in_1ele(iflag_forward_line,          &
-     &              surf, node%numnod, node%xx, icel, izero,            &
-     &              v4_start, x4_start, isf_tgt, x4_tgt, xi)
+     &              izero, v4_start, x4_start, xx4_ele_surf,            &
+     &              isf_tgt, x4_tgt, xi)
                 !
                 if(isf_tgt .ne. 0) then
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -353,9 +361,11 @@
                 end if
               else if(iflag_ele(icel) .eq. -1) then
                 ! backward
+                call position_on_each_ele_surfs                         &
+     &             (surf, node%numnod, node%xx, icel, xx4_ele_surf)
                 call find_line_end_in_1ele(iflag_backward_line,         &
-     &              surf, node%numnod, node%xx, icel, izero,            &
-     &              v4_start, x4_start, isf_tgt, x4_tgt, xi)
+     &              izero, v4_start, x4_start, xx4_ele_surf,            &
+     &              isf_tgt, x4_tgt, xi)
                 !
                 if(isf_tgt .ne. 0) then
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))

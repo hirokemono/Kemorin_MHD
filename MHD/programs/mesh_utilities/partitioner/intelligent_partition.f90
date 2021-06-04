@@ -1,5 +1,5 @@
 !>@file  intelligent_partition.f90
-!!       intelligent_partition
+!!       module intelligent_partition
 !!
 !!@author Yangguang Liao
 !!@date   Programmed 2018
@@ -106,22 +106,23 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-        type(domain_group_4_partition), intent(in)  :: nod_d_grp
-        integer(kind = kint), intent(in) :: group_id
-        real(kind = kreal), intent(in) :: field_vec(node%numnod,3)
-        real(kind = kreal), intent(in) :: line_len
-        real(kind = kreal), intent(inout) :: x4_start(4)
-        real(kind = kreal), intent(inout) :: v4_start(4)
-        integer(kind = kint), intent(in) :: isurf_org(3)
-        integer(kind=kint), intent(inout) :: itr_num
-        integer(kind=kint), intent(inout) :: iflag_comm, iflag_dir
+      type(domain_group_4_partition), intent(in)  :: nod_d_grp
+      integer(kind = kint), intent(in) :: group_id
+      real(kind = kreal), intent(in) :: field_vec(node%numnod,3)
+      real(kind = kreal), intent(in) :: line_len
+      real(kind = kreal), intent(inout) :: x4_start(4)
+      real(kind = kreal), intent(inout) :: v4_start(4)
+      integer(kind = kint), intent(in) :: isurf_org(3)
+      integer(kind=kint), intent(inout) :: itr_num
+      integer(kind=kint), intent(inout) :: iflag_comm, iflag_dir
 !
-        integer(kind = kint) :: i, node_id
-        integer(kind = kint) :: isurf_start, isurf_end
-        integer(kind = kint) ::  isf_org, isf_tgt, iele
-        real(kind = kreal) :: xi(2)
-        real(kind = kreal) :: step_len, integral_len
-        real(kind = kreal) :: x4_org(4), x4_tgt(4), v4_tgt(4)
+      integer(kind = kint) :: i, node_id
+      integer(kind = kint) :: isurf_start, isurf_end
+      integer(kind = kint) ::  isf_org, isf_tgt, iele
+      real(kind = kreal) :: xi(2)
+      real(kind = kreal) :: step_len, integral_len
+      real(kind = kreal) :: x4_org(4), x4_tgt(4), v4_tgt(4)
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
 !itr_num = 0
         integral_len = 0.0
@@ -142,9 +143,11 @@
             iele = surf%iele_4_surf(isurf_start,i,1)
             isf_org = surf%iele_4_surf(isurf_start,i,2)
             if(iele .gt. 0) then
+              call position_on_each_ele_surfs                           &
+     &           (surf, node%numnod, node%xx, iele, xx4_ele_surf)
               call find_line_end_in_1ele(iflag_dir,                     &
-     &            surf, node%numnod, node%xx, iele, isf_org,            &
-     &            v4_start, x4_start, isf_tgt, x4_tgt, xi)
+     &            isf_org, v4_start, x4_start, xx4_ele_surf,            &
+     &            isf_tgt, x4_tgt, xi)
               if(isf_tgt .gt. 0) then
 ! find hit surface
                 exit
@@ -163,9 +166,11 @@
           isf_org =  0
           x4_start(1:4) = half * (x4_start(1:4) + x4_tgt(1:4))
           v4_start(1:4) = half * (v4_start(1:4) + v4_tgt(1:4))
+          call position_on_each_ele_surfs                               &
+    &        (surf, node%numnod, node%xx, iele, xx4_ele_surf)
           call find_line_end_in_1ele(iflag_dir,                         &
-    &         surf, node%numnod, node%xx, iele, isf_org,                &
-    &         v4_start, x4_start, isf_tgt, x4_tgt, xi)
+    &         isf_org, v4_start, x4_start, xx4_ele_surf,                &
+    &         isf_tgt, x4_tgt, xi)
           if(isf_tgt .eq. 0) then
             iflag_comm = -12
             return
@@ -219,13 +224,14 @@
 !      real(kind = kreal), intent(inout) :: time_cost(num_domain)
       type(time_esti), intent(inout) :: time_cost(num_domain)
 !
-        integer(kind = kint) :: isurf_org(3), isurf_hit
-        integer(kind = kint) :: i, iele
-        integer(kind = kint) :: iflag_dir, iflag_found_sf, iflag_comm
-        integer(kind = kint) :: isf_tgt, itr_num, cnt
-        real(kind = kreal) :: xx4_org(4), vec4_org(4)
-        real(kind = kreal) :: new_pos4(4), new_vec4(4), xi(2)
-        real(kind = kreal) :: time_cost_cnt(num_domain), aver_time_cost
+      integer(kind = kint) :: isurf_org(3), isurf_hit
+      integer(kind = kint) :: i, iele
+      integer(kind = kint) :: iflag_dir, iflag_found_sf, iflag_comm
+      integer(kind = kint) :: isf_tgt, itr_num, cnt
+      real(kind = kreal) :: xx4_org(4), vec4_org(4)
+      real(kind = kreal) :: new_pos4(4), new_vec4(4), xi(2)
+      real(kind = kreal) :: time_cost_cnt(num_domain), aver_time_cost
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
         time_cost(:)%total_time = 0.0
         time_cost(:)%cnt = 0
@@ -243,9 +249,11 @@
           vec4_org(1:3) = particles(i)%vec(1:3)
           vec4_org(4) =   0.0d0
       
+          call position_on_each_ele_surfs                               &
+      &      (surf, node%numnod, node%xx, iele, xx4_ele_surf)
           call find_line_end_in_1ele(iflag_dir,                         &
-      &       surf, node%numnod, node%xx, iele, izero,                  &
-      &       vec4_org, xx4_org, isf_tgt, new_pos4, xi)
+      &       izero, vec4_org, xx4_org, xx4_ele_surf,                   &
+      &       isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             iflag_found_sf = 1
           else
@@ -270,9 +278,11 @@
           xx4_org(4) =   0.0d0
           vec4_org(1:3) = particles(i)%vec(1:3)
           vec4_org(4) =    0.0d0
+          call position_on_each_ele_surfs                               &
+      &      (surf, node%numnod, node%xx, iele, xx4_ele_surf)
           call find_line_end_in_1ele(iflag_dir,                         &
-      &       surf, node%numnod, node%xx, iele, izero,                  &
-      &       vec4_org, xx4_org, isf_tgt, new_pos4, xi)
+      &       izero, vec4_org, xx4_org, xx4_ele_surf,                   &
+      &       isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             iflag_found_sf = 1
           else

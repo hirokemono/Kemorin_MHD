@@ -150,6 +150,7 @@
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       integer(kind = kint) :: i_iso, i_psf, iflag, iflag_hit
       real(kind = kreal) :: screen4_tgt(4), c_tgt(1), c_org(1)
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), rflag, rflag2
       real(kind = kreal) :: opacity_bc
 !
@@ -195,9 +196,11 @@
 !
 !   extend to surface of element
 !
+        call position_on_each_ele_surfs                                 &
+     &     (surf, node%numnod, x_nod_model, iele, xx4_ele_surf)
         call find_line_end_in_1ele(iflag_backward_line,                 &
-     &      surf, node%numnod, x_nod_model, iele, isf_org,              &
-     &      ray_vec4, screen4_st, isf_tgt, screen4_tgt, xi)
+     &      isf_org, ray_vec4, screen4_st, xx4_ele_surf,                &
+     &      isf_tgt, screen4_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen_tgt',                &
 !     &         my_rank, screen4_tgt(1:4), ele%interior_ele(iele)
 !

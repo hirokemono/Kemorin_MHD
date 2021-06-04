@@ -1,15 +1,29 @@
-!extend_field_line.f90
+!>@file  extend_field_line.f90
+!!       module extend_field_line
+!!
+!!@author H. Matsui
+!!@date   Programmed in Aug., 2011
 !
-!      module extend_field_line
-!
-!      Written by H. Matsui on Aug., 2011
-!
-!!      subroutine s_extend_field_line(numnod,         &
-!!     &          nnod_4_surf, node, ele, surf,               &
+!> @brief extend field line in each domain
+!!
+!!@verbatim
+!!      subroutine s_extend_field_line(node, ele, surf,                 &
 !!     &          max_line_step, iflag_used_ele, iflag_dir,             &
 !!     &          vect_nod, color_nod, isurf_org, x4_start, v4_start,   &
 !!     &          c_field, icount_line, iflag_comm, fline_lc)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        integer(kind = kint), intent(in) :: iflag_dir, max_line_step
+!!        integer(kind = kint), intent(in) :: iflag_used_ele(ele%numele)
+!!        real(kind = kreal), intent(in) :: vect_nod(node%numnod,3)
+!!        real(kind = kreal), intent(in) :: color_nod(node%numnod)
+!!        integer(kind = kint), intent(inout) :: isurf_org(3)
+!!        integer(kind = kint), intent(inout) :: icount_line, iflag_comm
+!!        real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
+!!        real(kind = kreal), intent(inout) ::   c_field(1)
 !!        type(local_fieldline), intent(inout) :: fline_lc
+!!@endverbatim
 !
       module extend_field_line
 !
@@ -57,6 +71,7 @@
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       real(kind = kreal) :: x4_tgt(4), v4_tgt(4), c_tgt(1)
       real(kind = kreal) :: xi(2), flux
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
 !
       if(isurf_org(1) .eq. 0) then
@@ -72,10 +87,11 @@
         isf_org = isurf_org(2)
 !
 !   extend in the middle of element
-!
+        call position_on_each_ele_surfs                                 &
+     &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
         call find_line_end_in_1ele(iflag_dir,                           &
-     &      surf, node%numnod, node%xx, iele, isf_org,                  &
-     &      v4_start, x4_start, isf_tgt, x4_tgt, xi)
+     &      isf_org, v4_start, x4_start, xx4_ele_surf,                  &
+     &      isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
@@ -98,10 +114,11 @@
         call add_fline_list(x4_start, c_field(1), fline_lc)
 !
 !   extend to surface of element
-!
+        call position_on_each_ele_surfs                                 &
+     &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
         call find_line_end_in_1ele(iflag_dir,                           &
-     &      surf, node%numnod, node%xx, iele, isf_org,                  &
-     &      v4_start, x4_start, isf_tgt, x4_tgt, xi)
+     &      isf_org, v4_start, x4_start, xx4_ele_surf,                  &
+     &      isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1

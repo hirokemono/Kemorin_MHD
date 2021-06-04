@@ -94,6 +94,7 @@
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org, i_psf
       integer(kind = kint) :: iflag_hit, iflag
       real(kind = kreal) :: screen4_tgt(4)
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
       real(kind = kreal) :: xx4_tgt(4), grad_len, rflag, rflag2
 
@@ -171,9 +172,11 @@
 !   extend to surface of element
 !   find ray exit surface loacal id on current element isf_tgt
 !
+        call position_on_each_ele_surfs                                 &
+     &     (surf, node%numnod, x_nod_model, iele, xx4_ele_surf)
         call find_line_end_in_1ele(iflag_backward_line,                 &
-     &      surf, node%numnod, x_nod_model, iele, isf_org,              &
-     &      ray_vec4, screen4_st, isf_tgt, screen4_tgt, xi)
+     &      isf_org, ray_vec4, screen4_st, xx4_ele_surf,                &
+     &      isf_tgt, screen4_tgt, xi)
 !        if(iflag_check .gt. 0) write(*,*) 'screen4_tgt',               &
 !     &      my_rank, screen4_tgt(1:3), ele%interior_ele(iele)
 !
