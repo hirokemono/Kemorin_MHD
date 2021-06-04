@@ -97,7 +97,7 @@
         rgba_tmp(1:4) = zero
         call ray_trace_each_pixel(mesh%node, mesh%ele, mesh%surf,       &
      &       group%surf_grp, sf_grp_4_sf, modelview_mat,                &
-     &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
+     &       pvr_screen%x_nod_model,              &
      &       viewpoint_vec, field_pvr, draw_param, color_param,         &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
@@ -114,7 +114,7 @@
 !
       subroutine ray_trace_each_pixel                                   &
      &         (node, ele, surf, surf_grp, sf_grp_4_sf, modelview_mat,  &
-     &          arccos_sf, x_nod_model, viewpoint_vec, field_pvr,       &
+     &          x_nod_model, viewpoint_vec, field_pvr,                  &
      &          draw_param, color_param, ray_vec4, iflag_check,         &
      &          isurf_org, screen4_st, xx4_st, xi, rgba_ray,            &
      &          icount_line, iflag_comm)
@@ -133,7 +133,6 @@
 !
       real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
-      real(kind = kreal), intent(in) :: arccos_sf(surf%numsurf)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
 !
@@ -177,11 +176,10 @@
         opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,     &
      &          sf_grp_4_sf, modelview_mat,                             &
      &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
-        if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
+        if(opacity_bc .gt. SMALL_RAY_TRACE) then
           grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
-          call plane_rendering_with_light                               &
-     &       (viewpoint_vec, xx4_st, grad_tgt,                          &
-     &        arccos_sf(isurf_end),  color_param, rgba_ray)
+          call plane_rendering_with_light(viewpoint_vec,                &
+     &        xx4_st, grad_tgt, opacity_bc,  color_param, rgba_ray)
         end if
       end if
 !
@@ -235,11 +233,10 @@
           opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,   &
      &          sf_grp_4_sf, modelview_mat,                             &
      &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
-          if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
+          if(opacity_bc .gt. SMALL_RAY_TRACE) then
             grad_tgt(1:3) = surf%vnorm_surf(isurf_end,1:3)
-            call plane_rendering_with_light                             &
-     &         (viewpoint_vec, xx4_tgt, grad_tgt,                       &
-     &          arccos_sf(isurf_end),  color_param, rgba_ray)
+            call plane_rendering_with_light (viewpoint_vec,             &
+     &          xx4_tgt, grad_tgt, opacity_bc,  color_param, rgba_ray)
           end if
 !
           do i_psf = 1, draw_param%num_sections
