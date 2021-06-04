@@ -124,10 +124,6 @@
       allocate(pvr_screen%x_nod_model(pvr_screen%nnod_screen,4))
       if(pvr_screen%nnod_screen .gt. 0) pvr_screen%x_nod_model =  0.0d0
 !
-      pvr_screen%nsurf_screen = surf%numsurf
-      allocate(pvr_screen%arccos_sf(pvr_screen%nsurf_screen))
-      if(pvr_screen%nsurf_screen .gt. 0) pvr_screen%arccos_sf = 0.0d0
-!
       end subroutine alloc_projected_position
 !
 ! -----------------------------------------------------------------------
@@ -137,7 +133,6 @@
       type(pvr_projected_position), intent(inout) :: pvr_screen
 !
 !
-      deallocate(pvr_screen%arccos_sf)
       deallocate(pvr_screen%x_nod_model)
 !
       end subroutine dealloc_projected_position

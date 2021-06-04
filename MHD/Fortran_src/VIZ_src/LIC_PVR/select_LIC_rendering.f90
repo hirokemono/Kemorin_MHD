@@ -97,6 +97,9 @@
 !
       call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
      &                          repart_data)
+      call init_sf_grp_list_each_surf                                   &
+     &   (repart_data%viz_fem%mesh%surf,                                &
+     &    repart_data%viz_fem%group%surf_grp, lic%pvr%sf_grp_4_sf)
 !
       do i_lic = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_lic-1)

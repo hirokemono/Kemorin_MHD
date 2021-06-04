@@ -11,8 +11,8 @@
 !!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,     &
 !!     &          field_lic, pvr_rgb, pvr_param, pvr_bound, pvr_proj)
 !!      subroutine anaglyph_lic_rendering_w_rot                         &
-!!     &         (istep_pvr, time, viz_fem, sf_grp_4_sf, field_lic,     &
-!!     &          lic_p, pvr_rgb, pvr_param, pvr_bound, pvr_proj)
+!!     &         (istep_pvr, time, viz_fem, field_lic, lic_p,           &
+!!     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj)
 !!        type(mesh_data), intent(in) :: viz_fem
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
