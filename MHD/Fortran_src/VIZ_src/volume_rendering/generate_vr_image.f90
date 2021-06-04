@@ -88,8 +88,7 @@
       call cal_position_pvr_modelview(modelview_mat,                    &
      &    node%numnod, node%xx, pvr_screen%x_nod_model)
 !
-      call norm_on_model_pvr_domains                                    &
-     &   (node, surf, modelview_mat, projection_mat,                    &
+      call norm_on_model_pvr_domains(node, surf, modelview_mat,         &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
      &    pvr_bound%screen_norm)
 !
@@ -98,8 +97,7 @@
      &    node%numnod, pvr_screen%x_nod_model)
 !
       call set_pvr_domain_surface_data(n_pvr_pixel, node, surf,         &
-     &    modelview_mat, projection_mat, pvr_screen%x_nod_model,        &
-     &    pvr_bound)
+     &    modelview_mat, projection_mat, pvr_bound)
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
       call s_set_pvr_ray_start_point(node, ele, surf, pvr_bound,        &
