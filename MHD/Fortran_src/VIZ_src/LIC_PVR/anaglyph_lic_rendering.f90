@@ -129,9 +129,6 @@
      &                          lic%repart_data)
 !
       if(lic%flag_each_repart) return
-      call init_sf_grp_list_each_surf                                   &
-     &   (geofem%mesh%surf, geofem%group%surf_grp, lic%pvr%sf_grp_4_sf)
-!
       call LIC_anaglyph_init_shared_mesh(geofem, next_tbl,              &
      &    lic%repart_p, lic%repart_data, lic%pvr)
 !

@@ -97,6 +97,9 @@
 !
       call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
      &                          repart_data)
+      call init_sf_grp_list_each_surf                                   &
+     &   (repart_data%viz_fem%mesh%surf,                                &
+     &    repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
 !
       do i_lic = 1, pvr%num_pvr
         call each_anaglyph_PVR_init(i_lic,                              &
