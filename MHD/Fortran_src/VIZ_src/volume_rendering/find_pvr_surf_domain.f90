@@ -18,9 +18,19 @@
 !!      subroutine set_pvr_domain_surface_data                          &
 !!     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,      &
 !!     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
-!!      subroutine norm_on_model_pvr_domains(node, surf, x_nod_model,   &
-!!     &         num_pvr_surf, item_pvr_surf_domain,                    &
-!!     &         screen_norm_pvr_domain)
+!!      subroutine norm_on_model_pvr_domains                            &
+!!     &         (node, surf, modelview_mat, projection_mat,            &
+!!     &          num_pvr_surf, item_pvr_surf_domain,                   &
+!!     &          screen_norm_pvr_domain)
+!!        type(node_data), intent(in) :: node
+!!        type(surface_data), intent(in) :: surf
+!!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
+!!        real(kind = kreal), intent(in) :: projection_mat(4,4)
+!!        integer(kind = kint), intent(in) :: num_pvr_surf
+!!        integer(kind = kint), intent(in)                              &
+!!     &                    :: item_pvr_surf_domain(2,num_pvr_surf)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                    :: screen_norm_pvr_domain(3,num_pvr_surf)
 !!      subroutine deallocate_pvr_surf_domain(num_pvr, pvr_bound)
 !!@endverbatim
 !
@@ -130,17 +140,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine norm_on_model_pvr_domains(node, surf, x_nod_model,     &
-     &         num_pvr_surf, item_pvr_surf_domain,                      &
-     &         screen_norm_pvr_domain)
+      subroutine norm_on_model_pvr_domains                              &
+     &         (node, surf, modelview_mat, projection_mat,              &
+     &          num_pvr_surf, item_pvr_surf_domain,                     &
+     &          screen_norm_pvr_domain)
 !
       use t_geometry_data
       use t_surface_data
+      use cal_fline_in_cube
+      use set_position_pvr_screen
 !
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
-!
-      real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
       integer(kind = kint), intent(in)                                  &
@@ -152,6 +165,7 @@
       integer(kind = kint) :: inum, iele, k1, isurf
       integer(kind = kint) :: i1, i2, i3, i4
       real(kind = kreal) :: x31(3), x42(3), vlen
+      real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
 !
 !
 !$omp parallel do private (inum,iele,k1,isurf,i1,i2,i3,i4,x31,x42,vlen)
@@ -160,12 +174,14 @@
         k1 =   item_pvr_surf_domain(2,inum)
         isurf = abs(surf%isf_4_ele(iele,k1))
 !
-        i1 = surf%ie_surf(isurf,1)
-        i2 = surf%ie_surf(isurf,2)
-        i3 = surf%ie_surf(isurf,3)
-        i4 = surf%ie_surf(isurf,4)
-        x31(1:3) = x_nod_model(i3,1:3) - x_nod_model(i1,1:3)
-        x42(1:3) = x_nod_model(i4,1:3) - x_nod_model(i2,1:3)
+        call position_on_each_ele_sfs_wone                              &
+     &     (surf, node%numnod, node%xx, iele, xx4_model_sf)
+        call overwte_to_modelview_each_ele(modelview_mat,               &
+     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
+!        call overwte_to_screen_each_ele(projection_mat,                &
+!     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
+        x31(1:3) = xx4_model_sf(1:3,3,k1) - xx4_model_sf(1:3,1,k1)
+        x42(1:3) = xx4_model_sf(1:3,4,k1) - xx4_model_sf(1:3,2,k1)
 !
         screen_norm_pvr_domain(1,inum)                                  &
      &                  = (x31(2)*x42(3) - x31(3)*x42(2))               &
