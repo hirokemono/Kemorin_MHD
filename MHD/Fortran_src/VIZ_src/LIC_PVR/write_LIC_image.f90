@@ -11,7 +11,7 @@
 !!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf,            &
 !!     &          lic_p, color_param, cbar_param, field_lic,            &
 !!     &          draw_param, pvr_screen, viewpoint_vec, modelview_mat, &
-!!     &          pvr_start, pvr_stencil, pvr_rgb)
+!!     &          projection_mat, pvr_start, pvr_stencil, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -27,6 +27,7 @@
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
 !!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
+!!        real(kind = kreal), intent(in) :: projection_mat(4,4)
 !!@endverbatim
 !
       module write_LIC_image
@@ -50,7 +51,7 @@
      &         (istep_pvr, time, mesh, group, sf_grp_4_sf,              &
      &          lic_p, color_param, cbar_param, field_lic,              &
      &          draw_param, pvr_screen, viewpoint_vec, modelview_mat,   &
-     &          pvr_start, pvr_stencil, pvr_rgb)
+     &          projection_mat, pvr_start, pvr_stencil, pvr_rgb)
 !
       use m_geometry_constants
       use m_elapsed_labels_4_VIZ
@@ -86,6 +87,7 @@
       type(pvr_projected_position), intent(in) :: pvr_screen
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
@@ -99,7 +101,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
       call ray_trace_each_lic_image(mesh, group, sf_grp_4_sf,           &
      &    lic_p, pvr_screen, field_lic, draw_param, color_param,        &
-     &    viewpoint_vec, modelview_mat, ray_vec4,                       &
+     &    viewpoint_vec, modelview_mat, projection_mat, ray_vec4,       &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &

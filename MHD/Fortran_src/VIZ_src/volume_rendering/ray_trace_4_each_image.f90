@@ -51,7 +51,7 @@
 !
       subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,     &
      &          pvr_screen, field_pvr, draw_param, color_param,         &
-     &          viewpoint_vec, modelview_mat, ray_vec4, num_pvr_ray,    &
+     &          viewpoint_vec, modelview_mat, projection_mat, ray_vec4, num_pvr_ray,    &
      &          id_pixel_check, icount_pvr_trace, isf_pvr_ray_start,    &
      &          xi_pvr_start, xx4_pvr_start, xx4_pvr_ray_start,         &
      &          rgba_ray)
@@ -67,8 +67,9 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
-      real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
       real(kind = kreal), intent(in) :: ray_vec4(4)
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(in)                                  &
@@ -97,7 +98,7 @@
         rgba_tmp(1:4) = zero
         call ray_trace_each_pixel(mesh%node, mesh%ele, mesh%surf,       &
      &       group%surf_grp, sf_grp_4_sf, pvr_screen%x_nod_model,       &
-     &       viewpoint_vec, modelview_mat,                              &
+     &       viewpoint_vec, modelview_mat, projection_mat,              &
      &       field_pvr, draw_param, color_param,                        &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
@@ -114,7 +115,7 @@
 !
       subroutine ray_trace_each_pixel                                   &
      &         (node, ele, surf, surf_grp, sf_grp_4_sf,                 &
-     &          x_nod_model, viewpoint_vec, modelview_mat, field_pvr,   &
+     &          x_nod_model, viewpoint_vec, modelview_mat, projection_mat, field_pvr,   &
      &          draw_param, color_param, ray_vec4, iflag_check,         &
      &          isurf_org, screen4_st, xx4_st, xi, rgba_ray,            &
      &          icount_line, iflag_comm)
@@ -132,9 +133,10 @@
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       integer(kind = kint), intent(in) :: iflag_check
 !
-      real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
       real(kind = kreal), intent(in) :: ray_vec4(4)
 !
       type(pvr_field_data), intent(in) :: field_pvr
@@ -203,6 +205,9 @@
         call modelview_position_each_ele                                &
      &     (modelview_mat, (num_linear_sf*nsurf_4_ele),                 &
      &      xx4_ele_surf(1,1,1), xx4_model_sf(1,1,1))
+        call overwte_to_screen_each_ele                                 &
+     &     (projection_mat, (num_linear_sf*nsurf_4_ele),                &
+     &      xx4_model_sf(1,1,1))
         call find_line_end_in_1ele(iflag_backward_line,                 &
      &      isf_org, ray_vec4, screen4_st, xx4_model_sf,                &
      &      isf_tgt, screen4_tgt, xi)

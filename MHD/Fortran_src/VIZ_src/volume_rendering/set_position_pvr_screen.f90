@@ -31,6 +31,12 @@
 !!        integer(kind = kint), intent(in) :: numnod
 !!        real(kind = kreal), intent(in) :: x4(4,numnod)
 !!        real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
+!!      subroutine overwte_to_screen_each_ele(project_mat, numnod,      &
+!!     &                                      x4_each_model)
+!!        real(kind = kreal), intent(in) :: project_mat(4,4)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
+!!
 !!      subroutine cal_position_pvr_modelview                           &
 !!     &         (model_mat, numnod, xx, x_nod_model)
 !!        real(kind = kreal), intent(in) :: model_mat(4,4)
@@ -156,6 +162,50 @@
 !
       end subroutine modelview_position_each_ele
 !
+! -----------------------------------------------------------------------
+!
+      subroutine overwte_to_screen_each_ele(project_mat, numnod,        &
+     &                                      x4_each_model)
+!
+      use cal_matrix_vector_smp
+!
+      real(kind = kreal), intent(in) :: project_mat(4,4)
+!
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
+!
+      integer(kind = kint) :: inod
+      real(kind = kreal) :: coef, x(4)
+!
+!
+      do inod = 1, numnod
+        x(1) =  project_mat(1,1)*x4_each_model(1,inod)                  &
+     &        + project_mat(1,2)*x4_each_model(2,inod)                  &
+     &        + project_mat(1,3)*x4_each_model(3,inod)                  &
+     &        + project_mat(1,4)*x4_each_model(4,inod)
+        x(2) =  project_mat(2,1)*x4_each_model(1,inod)                  &
+     &        + project_mat(2,2)*x4_each_model(2,inod)                  &
+     &        + project_mat(2,3)*x4_each_model(3,inod)                  &
+     &        + project_mat(2,4)*x4_each_model(4,inod)
+        x(3) =  project_mat(3,1)*x4_each_model(1,inod)                  &
+     &        + project_mat(3,2)*x4_each_model(2,inod)                  &
+     &        + project_mat(3,3)*x4_each_model(3,inod)                  &
+     &        + project_mat(3,4)*x4_each_model(4,inod)
+        x(4) =  project_mat(4,1)*x4_each_model(1,inod)                  &
+     &        + project_mat(4,2)*x4_each_model(2,inod)                  &
+     &        + project_mat(4,3)*x4_each_model(3,inod)                  &
+     &        + project_mat(4,4)*x4_each_model(4,inod)
+!
+        coef = one / x(4)
+        x4_each_model(1,inod) = x(1) * coef
+        x4_each_model(2,inod) = x(2) * coef
+        x4_each_model(3,inod) = x(3) * coef
+        x4_each_model(4,inod) = zero
+      end do
+!
+      end subroutine overwte_to_screen_each_ele
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine cal_position_pvr_modelview                             &

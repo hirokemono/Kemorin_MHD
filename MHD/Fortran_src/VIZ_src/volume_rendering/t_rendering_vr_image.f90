@@ -186,7 +186,8 @@
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_proj%screen,                        &
      &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat,               &
-     &    pvr_proj%start_fix, pvr_proj%stencil, pvr_rgb)
+     &    pvr_proj%projection_mat, pvr_proj%start_fix,                  &
+     &    pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_with_fixed_view
 !
@@ -271,7 +272,8 @@
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_proj%screen,                        &
      &    pvr_proj%viewpoint_vec, pvr_proj%modelview_mat,               &
-     &    pvr_proj%start_fix, pvr_proj%stencil, pvr_rgb)
+     &    pvr_proj%projection_mat, pvr_proj%start_fix,                  &
+     &    pvr_proj%stencil, pvr_rgb)
       call deallocate_pvr_ray_start(pvr_proj%start_fix)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
       call dealloc_projected_position(pvr_proj%screen)

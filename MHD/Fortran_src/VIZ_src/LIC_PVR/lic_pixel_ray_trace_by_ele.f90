@@ -52,7 +52,7 @@
 !
       subroutine s_lic_pixel_ray_trace_by_ele                           &
      &         (node, ele, surf, surf_grp, sf_grp_4_sf,                 &
-     &          x_nod_model, viewpoint_vec, modelview_mat, lic_p,       &
+     &          x_nod_model, viewpoint_vec, modelview_mat, projection_mat, lic_p,       &
      &          field_lic, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
      &          rgba_ray, icount_line, elapse_trace, iflag_comm)
@@ -75,6 +75,7 @@
       real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
       real(kind = kreal), intent(in) :: ray_vec4(4)
 !
       type(lic_parameters), intent(in) :: lic_p
@@ -179,6 +180,9 @@
         call modelview_position_each_ele                                &
      &     (modelview_mat, (num_linear_sf*nsurf_4_ele),                 &
      &      xx4_ele_surf(1,1,1), xx4_model_sf(1,1,1))
+        call overwte_to_screen_each_ele                                 &
+     &     (projection_mat, (num_linear_sf*nsurf_4_ele),                &
+     &      xx4_model_sf(1,1,1))
         call find_line_end_in_1ele(iflag_backward_line,                 &
      &      isf_org, ray_vec4, screen4_st, xx4_model_sf,                &
      &      isf_tgt, screen4_tgt, xi)
