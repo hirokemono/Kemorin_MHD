@@ -7,15 +7,10 @@
 !> @brief trace field line in one cube element
 !!
 !!@verbatim
-!!      subroutine find_line_end_in_1ele                                &
-!!     &         (iflag_dir, nnod, nele, nnod_4_ele, ie, node_on_sf,    &
-!!     &          nsurf, nnod_4_surf, isf_4_ele, ie_surf, xx,           &
+!!      subroutine find_line_end_in_1ele(iflag_dir, surf, numond, xx,   &
 !!     &          iele, isf_org, fline, x0, isf_tgt, x4_tgt, xi)
-!!        integer(kind = kint), intent(in) :: nnod, nele, nsurf
-!!        integer(kind = kint), intent(in) :: nnod_4_surf, iflag_dir
-!!        integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
-!!        integer(kind = kint), intent(in) :: isf_4_ele(nele,nsurf_4_ele)
-!!        real(kind = kreal), intent(in) :: xx(nnod,3)
+!!        integer(kind = kint), intent(in) :: iflag_dir
+!!        real(kind = kreal), intent(in) :: xx(numnod,3)
 !!        integer(kind = kint), intent(in) :: iele, isf_org
 !!        real(kind = kreal), intent(in) :: fline(4), x0(4)
 !!        real(kind = kreal), intent(inout) :: x4_tgt(4)
@@ -31,6 +26,7 @@
 !
       use m_constants
       use m_geometry_constants
+      use t_surface_data
 !
 !
       implicit  none
@@ -46,20 +42,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine find_line_end_in_1ele                                  &
-     &         (iflag_dir, nnod, nele, nnod_4_ele, ie, node_on_sf,      &
-     &          nsurf, nnod_4_surf, isf_4_ele, ie_surf, xx,             &
+      subroutine find_line_end_in_1ele(iflag_dir, surf, numnod, xx,     &
      &          iele, isf_org, fline, x0, isf_tgt, x4_tgt, xi)
 !
-      integer(kind = kint), intent(in) :: nnod, nele, nsurf
-      integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
-      integer(kind = kint), intent(in) :: iflag_dir
-      integer(kind = kint), intent(in) :: ie(nele,nnod_4_ele)
-      integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
-      integer(kind = kint), intent(in)                                  &
-     &                  :: node_on_sf(nnod_4_surf,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: isf_4_ele(nele,nsurf_4_ele)
-      real(kind = kreal), intent(in) :: xx(nnod,3)
+      type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in) :: iflag_dir, numnod
+      real(kind = kreal), intent(in) :: xx(numnod,3)
       integer(kind = kint), intent(in) :: iele, isf_org
       real(kind = kreal), intent(in) :: fline(4), x0(4)
 !
@@ -70,14 +58,14 @@
       real(kind = kreal) :: b_ray(4)
       integer(kind = kint) :: ierr
       integer(kind = kint) :: ist, ied, inc, k, ksf, k2
-      integer(kind = kint) :: inod, isurf, jnod, k_surf
-      real(kind = kreal) :: xx4_ele_surf(4,nnod_4_surf,nsurf_4_ele)
+      integer(kind = kint) :: inod, isurf
+      real(kind = kreal) :: xx4_ele_surf(4,surf%nnod_4_surf,nsurf_4_ele)
 !
 !
       do ksf = 1, nsurf_4_ele
-        isurf = abs(isf_4_ele(iele,ksf))
-        do k2 = 1, nnod_4_surf
-          inod = ie_surf(isurf,k2)
+        isurf = abs(surf%isf_4_ele(iele,ksf))
+        do k2 = 1, surf%nnod_4_surf
+          inod = surf%ie_surf(isurf,k2)
           xx4_ele_surf(1,k2,ksf) = xx(inod,1)
           xx4_ele_surf(2,k2,ksf) = xx(inod,2)
           xx4_ele_surf(3,k2,ksf) = xx(inod,3)

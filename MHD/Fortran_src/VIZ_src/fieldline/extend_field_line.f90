@@ -73,10 +73,8 @@
 !
 !   extend in the middle of element
 !
-        call find_line_end_in_1ele(iflag_dir, node%numnod,       &
-     &      ele%numele, ele%nnod_4_ele, ele%ie,              &
-     &      surf%node_on_sf, surf%numsurf, surf%nnod_4_surf,  &
-     &      surf%isf_4_ele, surf%ie_surf, node%xx, iele, isf_org, &
+        call find_line_end_in_1ele(iflag_dir,                           &
+     &      surf, node%numnod, node%xx, iele, isf_org,                  &
      &      v4_start, x4_start, isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
@@ -101,10 +99,8 @@
 !
 !   extend to surface of element
 !
-        call find_line_end_in_1ele(iflag_dir, node%numnod,   &
-     &      ele%numele, ele%nnod_4_ele, ele%ie,              &
-     &      surf%node_on_sf, surf%numsurf, surf%nnod_4_surf,  &
-     &      surf%isf_4_ele, surf%ie_surf, node%xx, iele, isf_org,   &
+        call find_line_end_in_1ele(iflag_dir,                           &
+     &      surf, node%numnod, node%xx, iele, isf_org,                  &
      &      v4_start, x4_start, isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then

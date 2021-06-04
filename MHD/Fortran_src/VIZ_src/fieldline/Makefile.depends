@@ -1,6 +1,6 @@
 cal_field_on_surf_viz.o: $(FIELDLINE_DIR)/cal_field_on_surf_viz.f90 m_precision.o m_constants.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_fline_in_cube.o: $(FIELDLINE_DIR)/cal_fline_in_cube.f90 m_precision.o m_constants.o m_geometry_constants.o solver_33_array.o
+cal_fline_in_cube.o: $(FIELDLINE_DIR)/cal_fline_in_cube.f90 m_precision.o m_constants.o m_geometry_constants.o t_surface_data.o solver_33_array.o
 	$(F90) -c $(F90OPTFLAGS) $<
 collect_fline_connectivity.o: $(FIELDLINE_DIR)/collect_fline_connectivity.f90 m_precision.o calypso_mpi.o m_constants.o t_global_fieldline.o t_local_fline.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $<

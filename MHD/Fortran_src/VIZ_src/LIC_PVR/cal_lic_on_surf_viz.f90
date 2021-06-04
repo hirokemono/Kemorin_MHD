@@ -135,10 +135,8 @@
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
-          call find_line_end_in_1ele(iflag_forward_line, node%numnod, &
-     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,    &
-     &        surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele, &
-     &        surf%ie_surf, node%xx, iele, isf_org,       &
+          call find_line_end_in_1ele(iflag_forward_line,                &
+     &        surf, node%numnod, node%xx, iele, isf_org,                &
      &        vec4_org, xx4_org, isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             !write(50+my_rank, *) "find exit point in neighbor element."
@@ -175,10 +173,8 @@
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
-          call find_line_end_in_1ele(iflag_backward_line, node%numnod, &
-     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,     &
-     &        surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele,  &
-     &        surf%ie_surf, node%xx, iele, isf_org,    &
+          call find_line_end_in_1ele(iflag_backward_line,               &
+     &        surf, node%numnod, node%xx, iele, isf_org,                &
      &        vec4_org, xx4_org, isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             !write(50+my_rank, *) "find exit point in neighbor element."
@@ -308,10 +304,8 @@
           iele = surf%iele_4_surf(isurf_start,i,1)
           isf_org = surf%iele_4_surf(isurf_start,i,2)
           if(iele .gt. 0) then
-            call find_line_end_in_1ele(iflag_dir, node%numnod, &
-     &          ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,  &
-     &          surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele,       &
-     &          surf%ie_surf, node%xx, iele, isf_org,     &
+            call find_line_end_in_1ele(iflag_dir,                       &
+     &          surf, node%numnod, node%xx, iele, isf_org,              &
      &          v4_org, x4_org, isf_tgt, x4_tgt, xi)
             if(isf_tgt .gt. 0) then
 ! find hit surface
@@ -344,10 +338,8 @@
 !
 !   extend to surface of element
 !
-        call find_line_end_in_1ele(iflag_dir, node%numnod,    &
-     &      ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf, &
-     &      surf%numsurf, surf%nnod_4_surf, surf%isf_4_ele,   &
-     &      surf%ie_surf, node%xx, iele, isf_org,    &
+        call find_line_end_in_1ele(iflag_dir,                           &
+     &      surf, node%numnod, node%xx, iele, isf_org,                  &
      &      v4_mid, x4_mid, isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then

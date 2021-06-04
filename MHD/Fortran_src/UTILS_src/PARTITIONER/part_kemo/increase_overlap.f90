@@ -261,9 +261,9 @@
       integer(kind = kint), intent(in) :: ip
       integer(kind = kint), intent(in) :: n_overlap
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(node_data), intent(in) :: node
       type(vector_field), intent(in) :: field
 !
       integer(kind = kint), intent(in) :: ntot_ele_near_nod
@@ -311,12 +311,8 @@
             if(iwidth .eq. 2 .and. iflag_ele(icel) .eq. 1) then
               ! forward
               call find_line_end_in_1ele(iflag_forward_line,            &
-     &            node%numnod, &
-     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,      &
-     &       surf%numsurf,                &
-     &            surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,       &
-     &            node%xx, icel, izero, v4_start, x4_start,             &
-     &            isf_tgt, x4_tgt, xi)
+     &            surf, node%numnod, node%xx, icel, izero,              &
+     &            v4_start, x4_start, isf_tgt, x4_tgt, xi)
               !
               if(isf_tgt .ne. 0) then
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -328,12 +324,8 @@
               end if
               ! backward
               call find_line_end_in_1ele(iflag_backward_line,           &
-     &            node%numnod, &
-     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,      &
-     &            surf%numsurf,                &
-     &            surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,       &
-     &            node%xx, icel, izero, v4_start, x4_start,             &
-     &            isf_tgt, x4_tgt, xi)
+     &            surf, node%numnod, node%xx, icel, izero,              &
+     &            v4_start, x4_start, isf_tgt, x4_tgt, xi)
               !
               if(isf_tgt .ne. 0) then
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -348,12 +340,8 @@
               if(iflag_ele(icel) .eq. 2) then
                 ! forward
                 call find_line_end_in_1ele(iflag_forward_line,          &
-     &              node%numnod, &
-     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,      &
-     &              surf%numsurf,              &
-     &              surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,     &
-     &              node%xx, icel, izero, v4_start, x4_start,           &
-     &              isf_tgt, x4_tgt, xi)
+     &              surf, node%numnod, node%xx, icel, izero,            &
+     &              v4_start, x4_start, isf_tgt, x4_tgt, xi)
                 !
                 if(isf_tgt .ne. 0) then
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -366,12 +354,8 @@
               else if(iflag_ele(icel) .eq. -1) then
                 ! backward
                 call find_line_end_in_1ele(iflag_backward_line,         &
-     &              node%numnod, &
-     &        ele%numele, ele%nnod_4_ele, ele%ie, surf%node_on_sf,      &
-     &         surf%numsurf,              &
-     &              surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,     &
-     &              node%xx, icel, izero, v4_start, x4_start,           &
-     &              isf_tgt, x4_tgt, xi)
+     &              surf, node%numnod, node%xx, icel, izero,            &
+     &              v4_start, x4_start, isf_tgt, x4_tgt, xi)
                 !
                 if(isf_tgt .ne. 0) then
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
