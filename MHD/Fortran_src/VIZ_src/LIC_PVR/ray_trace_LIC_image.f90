@@ -116,7 +116,7 @@
           rgba_tmp(1:4) = zero
           call s_lic_pixel_ray_trace_fix_len(mesh%node, mesh%ele,       &
      &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
-     &       pvr_screen%x_nod_model, viewpoint_vec, modelview_mat, projection_mat, &
+     &       viewpoint_vec, modelview_mat, projection_mat,              &
      &       lic_p, field_lic, draw_param, color_param,                 &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
@@ -138,7 +138,7 @@
           rgba_tmp(1:4) = zero
           call s_lic_pixel_ray_trace_by_ele (mesh%node, mesh%ele,       &
      &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
-     &       pvr_screen%x_nod_model, viewpoint_vec, modelview_mat, projection_mat, &
+     &       viewpoint_vec, modelview_mat, projection_mat,              &
      &       lic_p, field_lic, draw_param, color_param,                 &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &

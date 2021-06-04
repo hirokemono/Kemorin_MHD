@@ -151,41 +151,41 @@
 !
 !
 !$omp parallel do private (inum,iele,k1,isurf,i1,i2,i3,i4,x31,x42,vlen)
-        do inum = 1, num_pvr_surf
-          iele = item_pvr_surf_domain(1,inum)
-          k1 =   item_pvr_surf_domain(2,inum)
-          isurf = abs(isf_4_ele(iele,k1))
+      do inum = 1, num_pvr_surf
+        iele = item_pvr_surf_domain(1,inum)
+        k1 =   item_pvr_surf_domain(2,inum)
+        isurf = abs(isf_4_ele(iele,k1))
 !
-          i1 = ie_surf(isurf,1)
-          i2 = ie_surf(isurf,2)
-          i3 = ie_surf(isurf,3)
-          i4 = ie_surf(isurf,4)
-          x31(1:3) = x_nod_model(i3,1:3) - x_nod_model(i1,1:3)
-          x42(1:3) = x_nod_model(i4,1:3) - x_nod_model(i2,1:3)
+        i1 = ie_surf(isurf,1)
+        i2 = ie_surf(isurf,2)
+        i3 = ie_surf(isurf,3)
+        i4 = ie_surf(isurf,4)
+        x31(1:3) = x_nod_model(i3,1:3) - x_nod_model(i1,1:3)
+        x42(1:3) = x_nod_model(i4,1:3) - x_nod_model(i2,1:3)
 !
-          screen_norm_pvr_domain(1,inum)                                &
+        screen_norm_pvr_domain(1,inum)                                  &
      &                  = (x31(2)*x42(3) - x31(3)*x42(2))               &
      &                   * dble(isf_4_ele(iele,k1) /isurf)
-          screen_norm_pvr_domain(2,inum)                                &
+        screen_norm_pvr_domain(2,inum)                                  &
      &                  = (x31(3)*x42(1) - x31(1)*x42(3))               &
      &                   * dble(isf_4_ele(iele,k1) /isurf)
-          screen_norm_pvr_domain(3,inum)                                &
+        screen_norm_pvr_domain(3,inum)                                  &
      &                  = (x31(1)*x42(2) - x31(2)*x42(1))               &
      &                   * dble(isf_4_ele(iele,k1) /isurf)
 !
-          vlen = sqrt(screen_norm_pvr_domain(1,inum)**2                 &
+        vlen = sqrt(screen_norm_pvr_domain(1,inum)**2                   &
      &              + screen_norm_pvr_domain(2,inum)**2                 &
      &              + screen_norm_pvr_domain(3,inum)**2)
 !
-          if(vlen .gt. zero) then
-            screen_norm_pvr_domain(1,inum)                              &
+        if(vlen .gt. zero) then
+          screen_norm_pvr_domain(1,inum)                                &
      &                  = screen_norm_pvr_domain(1,inum) / vlen
-            screen_norm_pvr_domain(2,inum)                              &
+          screen_norm_pvr_domain(2,inum)                                &
      &                  = screen_norm_pvr_domain(2,inum) / vlen
-            screen_norm_pvr_domain(3,inum)                              &
+          screen_norm_pvr_domain(3,inum)                                &
      &                  = screen_norm_pvr_domain(3,inum) / vlen
-          end if
-        end do
+        end if
+      end do
 !$omp end parallel do
 !
       end subroutine norm_on_model_pvr_domains

@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_lic_pixel_ray_trace_by_ele                         &
 !!     &         (node, ele, surf, surf_grp, sf_grp_4_sf,               &
-!!     &          x_nod_model, viewpoint_vec, modelview_mat, lic_p,     &
+!!     &          viewpoint_vec, modelview_mat, projection_mat, lic_p,  &
 !!     &          field_lic, draw_param, color_param, ray_vec4,         &
 !!     &          iflag_check, isurf_org, screen4_st, xx4_st, xi,       &
 !!     &          rgba_ray, icount_line, elapse_trace, iflag_comm)
@@ -52,7 +52,7 @@
 !
       subroutine s_lic_pixel_ray_trace_by_ele                           &
      &         (node, ele, surf, surf_grp, sf_grp_4_sf,                 &
-     &          x_nod_model, viewpoint_vec, modelview_mat, projection_mat, lic_p,       &
+     &          viewpoint_vec, modelview_mat, projection_mat, lic_p,    &
      &          field_lic, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
      &          rgba_ray, icount_line, elapse_trace, iflag_comm)
@@ -72,7 +72,6 @@
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       integer(kind = kint), intent(in) :: iflag_check
 !
-      real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: projection_mat(4,4)

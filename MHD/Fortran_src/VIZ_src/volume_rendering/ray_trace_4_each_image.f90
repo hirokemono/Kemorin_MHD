@@ -96,14 +96,14 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call ray_trace_each_pixel(mesh%node, mesh%ele, mesh%surf,       &
-     &       group%surf_grp, sf_grp_4_sf, pvr_screen%x_nod_model,       &
-     &       viewpoint_vec, modelview_mat, projection_mat,              &
-     &       field_pvr, draw_param, color_param,                        &
-     &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
-     &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
-     &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
-     &       iflag_comm)
+        call ray_trace_each_pixel                                       &
+     &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp,             &
+     &      sf_grp_4_sf, viewpoint_vec, modelview_mat, projection_mat,  &
+     &      field_pvr, draw_param, color_param,                         &
+     &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
+     &      xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),           &
+     &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
+     &      iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
       end do
 !$omp end parallel do
@@ -115,10 +115,10 @@
 !
       subroutine ray_trace_each_pixel                                   &
      &         (node, ele, surf, surf_grp, sf_grp_4_sf,                 &
-     &          x_nod_model, viewpoint_vec, modelview_mat, projection_mat, field_pvr,   &
-     &          draw_param, color_param, ray_vec4, iflag_check,         &
-     &          isurf_org, screen4_st, xx4_st, xi, rgba_ray,            &
-     &          icount_line, iflag_comm)
+     &          viewpoint_vec, modelview_mat, projection_mat,           &
+     &          field_pvr, draw_param, color_param, ray_vec4,           &
+     &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
+     &          rgba_ray, icount_line, iflag_comm)
 !
       use set_position_pvr_screen
       use cal_field_on_surf_viz
@@ -133,7 +133,6 @@
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       integer(kind = kint), intent(in) :: iflag_check
 !
-      real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: projection_mat(4,4)
