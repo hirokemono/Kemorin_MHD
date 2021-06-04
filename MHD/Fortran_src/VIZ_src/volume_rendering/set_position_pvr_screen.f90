@@ -201,7 +201,7 @@
         x4_each_model(1,inod) = x(1) * coef
         x4_each_model(2,inod) = x(2) * coef
         x4_each_model(3,inod) = x(3) * coef
-        x4_each_model(4,inod) = zero
+        x4_each_model(4,inod) = one
       end do
 !
       end subroutine overwte_to_screen_each_ele
