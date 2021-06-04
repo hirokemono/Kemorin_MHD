@@ -105,7 +105,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_pvr_domain_surface_data                            &
-     &         (n_pvr_pixel, node, surf, x_nod_screen, pvr_bound)
+     &         (n_pvr_pixel, node, surf, modelview_mat, projection_mat, &
+     &          x_nod_screen, pvr_bound)
 !
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -114,13 +115,16 @@
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
       real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
 !
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
 !
 !$omp parallel
-      call range_on_screen_pvr_domains(node, surf, x_nod_screen,        &
+      call range_on_screen_pvr_domains                                  &
+     &   (node, surf, x_nod_screen, modelview_mat, projection_mat,      &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
      &    pvr_bound%screen_posi, pvr_bound%screen_w,                    &
      &    pvr_bound%screen_xrng, pvr_bound%screen_yrng,                 &
@@ -207,16 +211,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine range_on_screen_pvr_domains(node, surf, x_nod_screen,  &
+      subroutine range_on_screen_pvr_domains                            &
+     &     (node, surf, x_nod_screen, modelview_mat, projection_mat,    &
      &      num_pvr_surf, item_pvr_surf_domain,                         &
      &      screen_posi_pvr_domain, screen_w_pvr_domain,                &
      &      screen_xrng_pvr_domain, screen_yrng_pvr_domain,             &
      &      screen_zrng_pvr_domain)
 !
+      use cal_fline_in_cube
+      use set_position_pvr_screen
+!
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
 !
       real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
       integer(kind = kint), intent(in)                                  &
@@ -234,38 +244,60 @@
       real(kind = kreal), intent(inout)                                 &
      &                    :: screen_zrng_pvr_domain(2,num_pvr_surf)
 !
-      integer(kind = kint) :: inum, iele, k1, isurf
-      integer(kind = kint) :: i1, i2, i3, i4
+      integer(kind = kint) :: inum, iele, k1, isurf, i
       real(kind = kreal) :: x1(3), x2(3), x3(3), x4(3), w(4)
+      real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
 !
 !
-!$omp do private (inum,iele,k1,isurf,i1,i2,i3,i4,x1,x2,x3,x4,w)
-        do inum = 1, num_pvr_surf
-          iele = item_pvr_surf_domain(1,inum)
-          k1 =   item_pvr_surf_domain(2,inum)
-          isurf = abs(surf%isf_4_ele(iele,k1))
+!$omp do private (inum,iele,k1,isurf,xx4_model_sf,x1,x2,x3,x4,w,i)
+      do inum = 1, num_pvr_surf
+        iele = item_pvr_surf_domain(1,inum)
+        k1 =   item_pvr_surf_domain(2,inum)
+        isurf = abs(surf%isf_4_ele(iele,k1))
 !
-          i1 = surf%ie_surf(isurf,1)
-          i2 = surf%ie_surf(isurf,2)
-          i3 = surf%ie_surf(isurf,3)
-          i4 = surf%ie_surf(isurf,4)
-          x1(1:3) = x_nod_screen(i1,1:3)
-          x2(1:3) = x_nod_screen(i2,1:3)
-          x3(1:3) = x_nod_screen(i3,1:3)
-          x4(1:3) = x_nod_screen(i4,1:3)
-          w(1:4) =  x_nod_screen(surf%ie_surf(isurf,1:4),4)
+        call position_on_each_ele_sfs_wone                              &
+     &     (surf, node%numnod, node%xx, iele, xx4_model_sf)
+        call overwte_to_modelview_each_ele(modelview_mat,               &
+     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
+        call overwte_to_screen_each_ele(projection_mat,                 &
+     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
+        x1(1:3) = xx4_model_sf(1:3,1,k1)
+        x2(1:3) = xx4_model_sf(1:3,2,k1)
+        x3(1:3) = xx4_model_sf(1:3,3,k1)
+        x4(1:3) = xx4_model_sf(1:3,4,k1)
+        w(1:4) =  xx4_model_sf(4,1:4,k1)
 !
-          screen_posi_pvr_domain(1:3,inum)                              &
-     &           = (x1(1:3) + x2(1:3) + x3(1:3) + x4(1:3)) / four
-          screen_w_pvr_domain(inum) = (w(1)+w(2)+w(3)+w(4)) / four
-!
-          screen_xrng_pvr_domain(1,inum) = min(x1(1),x2(1),x3(1),x4(1))
-          screen_xrng_pvr_domain(2,inum) = max(x1(1),x2(1),x3(1),x4(1))
-          screen_yrng_pvr_domain(1,inum) = min(x1(2),x2(2),x3(2),x4(2))
-          screen_yrng_pvr_domain(2,inum) = max(x1(2),x2(2),x3(2),x4(2))
-          screen_zrng_pvr_domain(1,inum) = min(x1(3),x2(3),x3(3),x4(3))
-          screen_zrng_pvr_domain(2,inum) = max(x1(3),x2(3),x3(3),x4(3))
+        do i = 1, 3
+          if(abs(x1(i)-x_nod_screen(surf%ie_surf(isurf,1),i)) .gt. 1.0e-12)  &
+     &       write(*,*) 'wrong x1 in commponent', i, &
+     &         x1(i), x1(i)-x_nod_screen(surf%ie_surf(isurf,1),i)
+          if(abs(x2(i)-x_nod_screen(surf%ie_surf(isurf,2),i)) .gt. 1.0e-12)  &
+     &       write(*,*) 'wrong x2 in commponent', i, &
+     &         x2(i), x2(i)-x_nod_screen(surf%ie_surf(isurf,2),i)
+          if(abs(x3(i)-x_nod_screen(surf%ie_surf(isurf,3),i)) .gt. 1.0e-12)  &
+     &       write(*,*) 'wrong x3 in commponent', i, &
+     &         x3(i), x3(i)-x_nod_screen(surf%ie_surf(isurf,3),i)
+          if(abs(x4(i)-x_nod_screen(surf%ie_surf(isurf,4),i)) .gt. 1.0e-12)  &
+     &       write(*,*) 'wrong x4 in commponent', i, &
+     &         x4(i), x4(i)-x_nod_screen(surf%ie_surf(isurf,4),i)
         end do
+        do i = 1, 4
+          if(abs(w(i)-x_nod_screen(surf%ie_surf(isurf,i),4)) .gt. 1.0e-12)  &
+     &       write(*,*) 'wrong w in commponent', i, &
+     &         w(i), w(i)-x_nod_screen(surf%ie_surf(isurf,i),4)
+        end do
+!
+        screen_posi_pvr_domain(1:3,inum)                                &
+     &           = (x1(1:3) + x2(1:3) + x3(1:3) + x4(1:3)) / four
+        screen_w_pvr_domain(inum) = (w(1)+w(2)+w(3)+w(4)) / four
+!
+        screen_xrng_pvr_domain(1,inum) = min(x1(1),x2(1),x3(1),x4(1))
+        screen_xrng_pvr_domain(2,inum) = max(x1(1),x2(1),x3(1),x4(1))
+        screen_yrng_pvr_domain(1,inum) = min(x1(2),x2(2),x3(2),x4(2))
+        screen_yrng_pvr_domain(2,inum) = max(x1(2),x2(2),x3(2),x4(2))
+        screen_zrng_pvr_domain(1,inum) = min(x1(3),x2(3),x3(3),x4(3))
+        screen_zrng_pvr_domain(2,inum) = max(x1(3),x2(3),x3(3),x4(3))
+      end do
 !$omp end do
 !
       end subroutine range_on_screen_pvr_domains

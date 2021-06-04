@@ -98,7 +98,8 @@
      &    node%numnod, pvr_screen%x_nod_model)
 !
       call set_pvr_domain_surface_data(n_pvr_pixel, node, surf,         &
-     &    pvr_screen%x_nod_model, pvr_bound)
+     &    modelview_mat, projection_mat, pvr_screen%x_nod_model,        &
+     &    pvr_bound)
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
       call s_set_pvr_ray_start_point(node, ele, surf, pvr_bound,        &
