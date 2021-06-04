@@ -131,7 +131,7 @@
               xi_pvr_start(1:2,jcou) =   xi_pvr_start_tmp(1:2,icou)
               xx4_pvr_ray_start(1,jcou) = pixel_point_x(ipix)
               xx4_pvr_ray_start(2,jcou) = pixel_point_y(jpix)
-              xx4_pvr_ray_start(4,jcou) = 0.0d0
+              xx4_pvr_ray_start(4,jcou) = one
 !
               call cal_field_on_surf_scalar(numnod, numsurf,            &
      &              nnod_4_surf, ie_surf, isurf, xi_pvr_start(1,jcou),  &

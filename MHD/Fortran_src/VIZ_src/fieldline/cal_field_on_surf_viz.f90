@@ -88,7 +88,7 @@
       do k1 = 1, 4
         inod = ie_surf(isurf,k1)
         fd(1:3,k1) = v_nod(inod,1:3)
-        fd(4,k1) =   0.0d0
+        fd(4,k1) =   one
       end do
 !
       call cal_surf_field_value_2d(ifour, xi, fd, v4_tgt(1))
