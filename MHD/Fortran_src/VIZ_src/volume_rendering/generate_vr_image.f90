@@ -149,8 +149,7 @@
       call allocate_tmp_pvr_ray_start(pvr_start)
 !
       call count_each_pvr_ray_start                                     &
-     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, pvr_screen%x_nod_model,         &
+     &   (node, surf, pvr_screen%x_nod_model, modelview_mat, projection_mat, &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
@@ -164,7 +163,7 @@
       call allocate_item_pvr_ray_pixels(pvr_start)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_each_pvr_ray_start'
-      call set_each_pvr_ray_start(node, surf, pvr_screen%x_nod_model,   &
+      call set_each_pvr_ray_start(node, surf,                           &
      &   pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                    &
      &   pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,                &
      &   pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,               &

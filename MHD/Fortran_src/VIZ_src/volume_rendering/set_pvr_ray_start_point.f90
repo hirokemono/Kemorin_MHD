@@ -7,7 +7,7 @@
 !> @brief Set start points for ray tracing
 !!
 !!@verbatim
-!!      subroutine set_each_pvr_ray_start(node, surf, x_nod_screen,     &
+!!      subroutine set_each_pvr_ray_start(node, surf,                   &
 !!     &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,     &
 !!     &          num_pvr_surf, item_pvr_surf_domain,                   &
 !!     &          screen_norm_pvr_domain, isurf_xrng_pvr_domain,        &
@@ -49,7 +49,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_each_pvr_ray_start(node, surf, x_nod_screen,       &
+      subroutine set_each_pvr_ray_start(node, surf,                     &
      &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,       &
      &          num_pvr_surf, item_pvr_surf_domain,                     &
      &          screen_norm_pvr_domain, viewpoint_vec, ray_vec4,        &
@@ -63,8 +63,6 @@
 !
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
-!
-      real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
 !
       integer(kind = kint), intent(in) :: npixel_x, npixel_y
       real(kind = kreal), intent(in) :: pixel_point_x(npixel_x)

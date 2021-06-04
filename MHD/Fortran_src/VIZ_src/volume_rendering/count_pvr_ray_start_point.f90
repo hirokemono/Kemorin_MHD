@@ -21,6 +21,9 @@
 !!     &         num_pvr_ray, istack_pvr_ray_sf, ntot_tmp_pvr_ray,      &
 !!     &         istack_tmp_pvr_ray_st, ipix_start_tmp, iflag_start_tmp,&
 !!     &         xi_pvr_start_tmp)
+!!        type(node_data), intent(in) :: node
+!!        type(surface_data), intent(in) :: surf
+!!@endverbatim
 !
       module count_pvr_ray_start_point
 !
@@ -88,9 +91,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_each_pvr_ray_start (numnod, numele, numsurf,     &
-     &         nnod_4_surf, ie_surf, isf_4_ele,                         &
-     &         x_nod_screen, npixel_x, npixel_y,                        &
+      subroutine count_each_pvr_ray_start(node, surf,                   &
+     &         x_nod_screen, modelview_mat, projection_mat, npixel_x, npixel_y,                        &
      &         pixel_point_x, pixel_point_y,num_pvr_surf,               &
      &         item_pvr_surf_domain, screen_norm_pvr_domain,            &
      &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec4,  &
@@ -98,12 +100,15 @@
      &         istack_tmp_pvr_ray_st, ipix_start_tmp, iflag_start_tmp,  &
      &         xi_pvr_start_tmp)
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      use t_geometry_data
+      use t_surface_data
 !
-      real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(in) :: surf
+!
+      real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       integer(kind = kint), intent(in) :: npixel_x, npixel_y
       real(kind = kreal), intent(in) :: pixel_point_x(npixel_x)
@@ -152,15 +157,15 @@
         istack_pvr_ray_sf(inum) = 0
         iele = item_pvr_surf_domain(1,inum)
         k1 =   item_pvr_surf_domain(2,inum)
-        isurf = abs(isf_4_ele(iele,k1))
+        isurf = abs(surf%isf_4_ele(iele,k1))
         icou = istack_tmp_pvr_ray_st(inum-1)
 !
         if((screen_norm_pvr_domain(3,inum)*ray_vec4(3))                 &
      &       .gt. SMALL_NORM) then
-          i1 = ie_surf(isurf,1)
-          i2 = ie_surf(isurf,2)
-          i3 = ie_surf(isurf,3)
-          i4 = ie_surf(isurf,4)
+          i1 = surf%ie_surf(isurf,1)
+          i2 = surf%ie_surf(isurf,2)
+          i3 = surf%ie_surf(isurf,3)
+          i4 = surf%ie_surf(isurf,4)
           x_surf(1:2,1) = x_nod_screen(i1,1:2)
           x_surf(1:2,2) = x_nod_screen(i2,1:2)
           x_surf(1:2,3) = x_nod_screen(i3,1:2)
