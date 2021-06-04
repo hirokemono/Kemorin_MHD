@@ -7,8 +7,9 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine s_lic_pixel_ray_trace_by_ele(node, ele, surf,        &
-!!     &          arccos_sf, x_nod_model, viewpoint_vec, lic_p,         &
+!!      subroutine s_lic_pixel_ray_trace_by_ele                         &
+!!     &         (node, ele, surf, surf_grp, sf_grp_4_sf,               &
+!!     &          x_nod_model, viewpoint_vec, modelview_mat, lic_p,     &
 !!     &          field_lic, draw_param, color_param, ray_vec4,         &
 !!     &          iflag_check, isurf_org, screen4_st, xx4_st, xi,       &
 !!     &          rgba_ray, icount_line, elapse_trace, iflag_comm)
@@ -33,6 +34,8 @@
 !
       use t_geometry_data
       use t_surface_data
+      use t_group_data
+      use t_surf_grp_list_each_surf
       use t_control_params_4_pvr
       use t_control_param_LIC
       use t_geometries_in_pvr_screen
@@ -47,8 +50,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_lic_pixel_ray_trace_by_ele(node, ele, surf,          &
-     &          arccos_sf, x_nod_model, viewpoint_vec, lic_p,           &
+      subroutine s_lic_pixel_ray_trace_by_ele                           &
+     &         (node, ele, surf, surf_grp, sf_grp_4_sf,                 &
+     &          x_nod_model, viewpoint_vec, modelview_mat, lic_p,       &
      &          field_lic, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
      &          rgba_ray, icount_line, elapse_trace, iflag_comm)
@@ -57,16 +61,19 @@
       use cal_fline_in_cube
       use set_coefs_of_sections
       use set_rgba_4_each_pixel
+      use pvr_surface_enhancement
       use t_noise_node_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: surf_grp
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       integer(kind = kint), intent(in) :: iflag_check
 !
       real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
-      real(kind = kreal), intent(in) :: arccos_sf(surf%numsurf)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: ray_vec4(4)
 !
       type(lic_parameters), intent(in) :: lic_p
@@ -99,6 +106,7 @@
       integer(kind = kint) :: icount_line_cur_ray = 0, step_cnt
       real(kind = kreal) :: ray_len_left, ray_left, ray_len, ratio
       real(kind = kreal) :: start_trace
+      real(kind = kreal) :: opacity_bc
 !
       if(isurf_org(1) .eq. 0) return
 !
@@ -135,14 +143,15 @@
       end do
 !
 !
-!        Set color if starting surface is colourd
       if(ele%interior_ele(iele) .gt. 0) then
 !   rendering boundery
-        if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
+        opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,     &
+     &          sf_grp_4_sf, modelview_mat,                             &
+     &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
+        if(opacity_bc .gt. SMALL_RAY_TRACE) then
           rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
-          call plane_rendering_with_light                               &
-     &       (viewpoint_vec, xx4_st, rlic_grad(1),                      &
-     &        arccos_sf(isurf_end),  color_param, rgba_ray)
+          call plane_rendering_with_light(viewpoint_vec,                &
+     &        xx4_st, rlic_grad(1), opacity_bc, color_param, rgba_ray)
         end if
       end if
 !
@@ -216,11 +225,13 @@
 !
         if(ele%interior_ele(iele) .gt. 0) then
 !   rendering boundery
-          if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
+          opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,   &
+     &          sf_grp_4_sf, modelview_mat,                             &
+     &          draw_param%iflag_enhanse, draw_param%enhansed_opacity)
+          if(opacity_bc .gt. SMALL_RAY_TRACE) then
             rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
-            call plane_rendering_with_light                             &
-     &         (viewpoint_vec, xx4_tgt, rlic_grad(1),                   &
-     &          arccos_sf(isurf_end),  color_param, rgba_ray)
+            call plane_rendering_with_light(viewpoint_vec, xx4_tgt,     &
+     &          rlic_grad(1), opacity_bc,  color_param, rgba_ray)
           end if
 !
 !   3d lic calculation at current xx position

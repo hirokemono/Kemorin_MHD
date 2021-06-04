@@ -151,7 +151,7 @@
 !
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_anaglyph at once'
         call s_each_LIC_anaglyph(istep_lic, time, repart_data%viz_fem,  &
-     &      repart_data%field_lic, lic_param(i_lic),                    &
+     &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      pvr%pvr_rgb(i_lic))
       end do
@@ -180,10 +180,10 @@
 !
         write(*,*) 'anaglyph_lic_rendering_w_rot once', i_lic
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
-     &      repart_data%viz_fem, repart_data%field_lic,                 &
-     &      lic_param(i_lic), pvr%pvr_rgb(i_lic),                       &
-     &      pvr%pvr_param(i_lic),  pvr%pvr_bound(i_lic),                &
-     &      pvr%pvr_proj(2*i_lic-1))
+     &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
+     &      repart_data%field_lic, lic_param(i_lic),                    &
+     &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -248,7 +248,7 @@
           if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
           call s_each_LIC_anaglyph                                      &
      &       (istep_lic, time, repart_data%viz_fem,                     &
-     &        repart_data%field_lic, lic_param(i_lic),                  &
+     &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),            &
      &        pvr%pvr_rgb(i_lic))
           call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),       &
@@ -256,10 +256,10 @@
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         else
           call anaglyph_lic_rendering_w_rot(istep_lic, time,            &
-     &        repart_data%viz_fem, repart_data%field_lic,               &
-     &        lic_param(i_lic), pvr%pvr_rgb(i_lic),                     &
-     &        pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),               &
-     &        pvr%pvr_proj(2*i_lic-1))
+     &        repart_data%viz_fem, pvr%sf_grp_4_sf,                     &
+     &        repart_data%field_lic, lic_param(i_lic),                  &
+     &        pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                 &
+     &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
          call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
          call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
          call dealloc_iflag_pvr_used_ele                                &

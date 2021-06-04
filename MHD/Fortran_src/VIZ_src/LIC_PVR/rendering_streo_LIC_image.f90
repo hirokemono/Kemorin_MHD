@@ -8,14 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine lic_rendering_with_rotation                          &
-!!     &         (istep_pvr, time, mesh, group, lic_p, field_lic,       &
-!!     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj)
+!!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,     &
+!!     &          field_lic, pvr_rgb, pvr_param, pvr_bound, pvr_proj)
 !!      subroutine anaglyph_lic_rendering_w_rot                         &
-!!     &         (istep_pvr, time, viz_fem, field_lic, lic_p,           &
-!!     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj)
+!!     &         (istep_pvr, time, viz_fem, sf_grp_4_sf, field_lic,     &
+!!     &          lic_p, pvr_rgb, pvr_param, pvr_bound, pvr_proj)
 !!        type(mesh_data), intent(in) :: viz_fem
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
+!!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(lic_field_data), intent(in) :: field_lic
 !!        type(PVR_control_params), intent(in) :: pvr_param
@@ -38,6 +39,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use t_surf_grp_list_each_surf
       use t_rendering_vr_image
       use t_control_params_4_pvr
       use t_control_param_LIC
@@ -57,8 +59,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_rendering_with_rotation                            &
-     &         (istep_pvr, time, mesh, group, lic_p, field_lic,         &
-     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj)
+     &         (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,       &
+     &          field_lic, pvr_rgb, pvr_param, pvr_bound, pvr_proj)
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
@@ -71,6 +73,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
       type(pvr_image_type), intent(in) :: pvr_rgb
@@ -89,7 +92,7 @@
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
         call rendering_lic_at_once(istep_pvr, time, izero, i_rot,       &
-     &      mesh, group, lic_p, field_lic, pvr_param,                   &
+     &      mesh, group, sf_grp_4_sf, lic_p, field_lic, pvr_param,      &
      &      pvr_bound, pvr_proj, rot_imgs1%rot_pvr_rgb(i_rot))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -117,8 +120,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_lic_rendering_w_rot                           &
-     &         (istep_pvr, time, viz_fem, field_lic, lic_p,             &
-     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj)
+     &         (istep_pvr, time, viz_fem, sf_grp_4_sf, field_lic,       &
+     &          lic_p, pvr_rgb, pvr_param, pvr_bound, pvr_proj)
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
@@ -131,6 +134,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_data), intent(in) :: viz_fem
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
       type(pvr_image_type), intent(in) :: pvr_rgb
@@ -156,14 +160,14 @@
 !   Left eye
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, ione, i_rot, viz_fem%mesh, viz_fem%group,  &
-     &      lic_p, field_lic, pvr_param, pvr_bound,                     &
+     &      sf_grp_4_sf, lic_p, field_lic, pvr_param, pvr_bound,        &
      &      pvr_proj(1), rot_imgs1%rot_pvr_rgb(i_rot))
         call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
 !
 !   Right eye
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, itwo, i_rot, viz_fem%mesh, viz_fem%group,  &
-     &      lic_p, field_lic, pvr_param, pvr_bound,                     &
+     &      sf_grp_4_sf, lic_p, field_lic, pvr_param, pvr_bound,        &
      &      pvr_proj(2), rot_imgs1%rot_pvr_rgb(i_rot))
         call add_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
       end do

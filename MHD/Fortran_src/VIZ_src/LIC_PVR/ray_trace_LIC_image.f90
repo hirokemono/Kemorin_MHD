@@ -7,19 +7,22 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine ray_trace_each_lic_image(node, ele, surf,            &
+!!      subroutine ray_trace_each_lic_image(mesh, group, sf_grp_4_sf,   &
 !!     &          lic_p, pvr_screen, field_lic, draw_param, color_param,&
-!!     &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check, &
-!!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
+!!     &          viewpoint_vec, modelview_mat, ray_vec4,               &
+!!     &          num_pvr_ray, id_pixel_check, icount_pvr_trace,        &
+!!     &          isf_pvr_ray_start, xi_pvr_start,                      &
 !!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_data), intent(in) :: surf
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
+!!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(lic_field_data), intent(in) :: field_lic
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_projected_position), intent(in) :: pvr_screen
+!!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
+!!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
 !!@endverbatim
 !
       module ray_trace_LIC_image
@@ -34,8 +37,11 @@
       use calypso_mpi
       use lic_rgba_4_each_pixel
 !
+      use t_mesh_data
       use t_geometry_data
       use t_surface_data
+      use t_group_data
+      use t_surf_grp_list_each_surf
       use t_control_params_4_pvr
       use t_control_param_LIC
       use t_geometries_in_pvr_screen
@@ -50,19 +56,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ray_trace_each_lic_image(node, ele, surf,              &
+      subroutine ray_trace_each_lic_image(mesh, group, sf_grp_4_sf,     &
      &          lic_p, pvr_screen, field_lic, draw_param, color_param,  &
-     &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check,   &
-     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
+     &          viewpoint_vec, modelview_mat, ray_vec4,                 &
+     &          num_pvr_ray, id_pixel_check, icount_pvr_trace,          &
+     &          isf_pvr_ray_start, xi_pvr_start,                        &
      &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
 !
       use t_noise_node_data
       use lic_pixel_ray_trace_fix_len
       use lic_pixel_ray_trace_by_ele
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
@@ -71,6 +78,7 @@
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: ray_vec4(4)
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(in)                                  &
@@ -105,9 +113,10 @@
 !         end if
 !
           rgba_tmp(1:4) = zero
-          call s_lic_pixel_ray_trace_fix_len(node, ele, surf,           &
-     &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
-     &       viewpoint_vec, lic_p, field_lic, draw_param, color_param,  &
+          call s_lic_pixel_ray_trace_fix_len(mesh%node, mesh%ele,       &
+     &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
+     &       pvr_screen%x_nod_model, viewpoint_vec, modelview_mat,      &
+     &       lic_p, field_lic, draw_param, color_param,                 &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
@@ -126,9 +135,10 @@
 !         end if
 !
           rgba_tmp(1:4) = zero
-          call s_lic_pixel_ray_trace_by_ele(node, ele, surf,            &
-     &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
-     &       viewpoint_vec, lic_p, field_lic, draw_param, color_param,  &
+          call s_lic_pixel_ray_trace_by_ele (mesh%node, mesh%ele,       &
+     &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
+     &       pvr_screen%x_nod_model, viewpoint_vec, modelview_mat,      &
+     &       lic_p, field_lic, draw_param, color_param,                 &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &

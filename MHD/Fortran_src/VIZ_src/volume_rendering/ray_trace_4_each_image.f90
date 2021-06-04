@@ -7,12 +7,12 @@
 !>@brief structure of control data for multiple volume rendering
 !!
 !!@verbatim
-!!      subroutine s_ray_trace_4_each_image                             &
-!!     &         (mesh, group, sf_grp_4_sf, modelview_mat,              &
+!!      subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,   &
 !!     &          pvr_screen, field_pvr, draw_param, color_param,       &
-!!     &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check, &
-!!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
-!!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
+!!     &          viewpoint_vec, modelview_mat, ray_vec4, num_pvr_ray,  &
+!!     &          id_pixel_check, icount_pvr_trace, isf_pvr_ray_start,  &
+!!     &          xi_pvr_start, xx4_pvr_start, xx4_pvr_ray_start,       &
+!!     &          rgba_ray)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -49,12 +49,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_ray_trace_4_each_image                               &
-     &         (mesh, group, sf_grp_4_sf, modelview_mat,                &
+      subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,     &
      &          pvr_screen, field_pvr, draw_param, color_param,         &
-     &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check,   &
-     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
-     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
+     &          viewpoint_vec, modelview_mat, ray_vec4, num_pvr_ray,    &
+     &          id_pixel_check, icount_pvr_trace, isf_pvr_ray_start,    &
+     &          xi_pvr_start, xx4_pvr_start, xx4_pvr_ray_start,         &
+     &          rgba_ray)
 !
       use t_geometries_in_pvr_screen
 !
@@ -96,9 +96,9 @@
 !
         rgba_tmp(1:4) = zero
         call ray_trace_each_pixel(mesh%node, mesh%ele, mesh%surf,       &
-     &       group%surf_grp, sf_grp_4_sf, modelview_mat,                &
-     &       pvr_screen%x_nod_model,              &
-     &       viewpoint_vec, field_pvr, draw_param, color_param,         &
+     &       group%surf_grp, sf_grp_4_sf, pvr_screen%x_nod_model,       &
+     &       viewpoint_vec, modelview_mat,                              &
+     &       field_pvr, draw_param, color_param,                        &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
@@ -113,8 +113,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_pixel                                   &
-     &         (node, ele, surf, surf_grp, sf_grp_4_sf, modelview_mat,  &
-     &          x_nod_model, viewpoint_vec, field_pvr,                  &
+     &         (node, ele, surf, surf_grp, sf_grp_4_sf,                 &
+     &          x_nod_model, viewpoint_vec, modelview_mat, field_pvr,   &
      &          draw_param, color_param, ray_vec4, iflag_check,         &
      &          isurf_org, screen4_st, xx4_st, xi, rgba_ray,            &
      &          icount_line, iflag_comm)

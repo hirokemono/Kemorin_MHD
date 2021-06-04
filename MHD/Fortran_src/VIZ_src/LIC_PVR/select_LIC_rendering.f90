@@ -155,10 +155,11 @@
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_rendering', i_lic
-        call s_each_LIC_rendering(istep_lic, time, num_img,             &
-     &      repart_data%viz_fem, repart_data%field_lic,                 &
-     &      lic_param(i_lic), pvr%pvr_param(i_lic),                     &
-     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
+        call s_each_LIC_rendering                                       &
+     &     (istep_lic, time, num_img, repart_data%viz_fem,              &
+     &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
+     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
+     &      pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -204,11 +205,11 @@
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic) - ist_img
         write(*,*) 's_each_LIC_rendering_w_rot once', i_lic
-        call s_each_LIC_rendering_w_rot(istep_lic, time, num_img,       &
-     &      repart_data%viz_fem, repart_data%field_lic,                 &
-     &      lic_param(i_lic), pvr%pvr_param(i_lic),                     &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1),              &
-     &      pvr%pvr_rgb(ist_img+1))
+        call s_each_LIC_rendering_w_rot                                 &
+     &     (istep_lic, time, num_img, repart_data%viz_fem,              &
+     &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
+     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -275,7 +276,7 @@
           if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
           call s_each_LIC_rendering                                     &
      &       (istep_lic, time, num_img, repart_data%viz_fem,            &
-     &        repart_data%field_lic, lic_param(i_lic),                  &
+     &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),            &
      &        pvr%pvr_rgb(ist_img+1))
           call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),    &
@@ -283,10 +284,10 @@
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         else
           call s_each_LIC_rendering_w_rot                               &
-     &     (istep_lic, time, num_img, repart_data%viz_fem,              &
-     &      repart_data%field_lic, lic_param(i_lic),                    &
-     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
-     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
+     &       (istep_lic, time, num_img, repart_data%viz_fem,            &
+     &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
+     &        pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),               &
+     &        pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
          call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
          call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
          call dealloc_iflag_pvr_used_ele                                &
