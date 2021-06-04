@@ -1,8 +1,12 @@
-!find_pvr_surf_domain.f90
-!      module find_pvr_surf_domain
+!>@file   find_pvr_surf_domain.f90
+!!@brief  module find_pvr_surf_domain
+!!
+!!@author  H. Matsui
+!!@date Programmed in Aug., 2011
 !
-!        programmed by H.Matsui on Aug., 2011
-!
+!>@brief Construct subdomain surface information for PVR
+!!
+!!@verbatim
 !!      subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,        &
 !!     &          pvr_area, draw_param, pvr_bound)
 !!        type(element_data), intent(in) :: ele
@@ -14,11 +18,11 @@
 !!      subroutine set_pvr_domain_surface_data                          &
 !!     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,      &
 !!     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
-!!      subroutine norm_on_model_pvr_domains(numnod, numele, numsurf,   &
-!!     &         nnod_4_surf, ie_surf, isf_4_ele, x_nod_model,          &
+!!      subroutine norm_on_model_pvr_domains(node, surf, x_nod_model,   &
 !!     &         num_pvr_surf, item_pvr_surf_domain,                    &
 !!     &         screen_norm_pvr_domain)
 !!      subroutine deallocate_pvr_surf_domain(num_pvr, pvr_bound)
+!!@endverbatim
 !
       module find_pvr_surf_domain
 !
@@ -126,17 +130,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine norm_on_model_pvr_domains(numnod, numele, numsurf,     &
-     &         nnod_4_surf, ie_surf, isf_4_ele, x_nod_model,            &
+      subroutine norm_on_model_pvr_domains(node, surf, x_nod_model,     &
      &         num_pvr_surf, item_pvr_surf_domain,                      &
      &         screen_norm_pvr_domain)
 !
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: numele, numsurf, nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      use t_geometry_data
+      use t_surface_data
 !
-      real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(in) :: surf
+!
+      real(kind = kreal), intent(in) :: x_nod_model(node%numnod,4)
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
       integer(kind = kint), intent(in)                                  &
@@ -154,24 +158,24 @@
       do inum = 1, num_pvr_surf
         iele = item_pvr_surf_domain(1,inum)
         k1 =   item_pvr_surf_domain(2,inum)
-        isurf = abs(isf_4_ele(iele,k1))
+        isurf = abs(surf%isf_4_ele(iele,k1))
 !
-        i1 = ie_surf(isurf,1)
-        i2 = ie_surf(isurf,2)
-        i3 = ie_surf(isurf,3)
-        i4 = ie_surf(isurf,4)
+        i1 = surf%ie_surf(isurf,1)
+        i2 = surf%ie_surf(isurf,2)
+        i3 = surf%ie_surf(isurf,3)
+        i4 = surf%ie_surf(isurf,4)
         x31(1:3) = x_nod_model(i3,1:3) - x_nod_model(i1,1:3)
         x42(1:3) = x_nod_model(i4,1:3) - x_nod_model(i2,1:3)
 !
         screen_norm_pvr_domain(1,inum)                                  &
      &                  = (x31(2)*x42(3) - x31(3)*x42(2))               &
-     &                   * dble(isf_4_ele(iele,k1) /isurf)
+     &                   * dble(surf%isf_4_ele(iele,k1) /isurf)
         screen_norm_pvr_domain(2,inum)                                  &
      &                  = (x31(3)*x42(1) - x31(1)*x42(3))               &
-     &                   * dble(isf_4_ele(iele,k1) /isurf)
+     &                   * dble(surf%isf_4_ele(iele,k1) /isurf)
         screen_norm_pvr_domain(3,inum)                                  &
      &                  = (x31(1)*x42(2) - x31(2)*x42(1))               &
-     &                   * dble(isf_4_ele(iele,k1) /isurf)
+     &                   * dble(surf%isf_4_ele(iele,k1) /isurf)
 !
         vlen = sqrt(screen_norm_pvr_domain(1,inum)**2                   &
      &              + screen_norm_pvr_domain(2,inum)**2                 &

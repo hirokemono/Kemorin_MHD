@@ -89,8 +89,7 @@
      &    node%numnod, node%xx, pvr_screen%x_nod_model)
 !
       call norm_on_model_pvr_domains                                    &
-     &   (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, pvr_screen%x_nod_model,         &
+     &   (node, surf, pvr_screen%x_nod_model,                           &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
      &    pvr_bound%screen_norm)
 !
