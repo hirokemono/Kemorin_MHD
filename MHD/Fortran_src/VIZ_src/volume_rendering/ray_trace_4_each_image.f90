@@ -198,7 +198,7 @@
 !
 !   extend to surface of element
 !
-        call position_on_each_ele_surfs                                 &
+        call position_on_each_ele_sfs_wone                              &
      &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
         call modelview_position_each_ele                                &
      &     (modelview_mat, (num_linear_sf*nsurf_4_ele),                 &
