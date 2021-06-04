@@ -137,9 +137,9 @@
 !
       do inum = ist, ied
         igrp = sf_grp_4_sf%igrp_4_surf(inum)
-        norm_sf_model(1:4) = zero
 !
         tmp_normal(1:3) = surf%vnorm_surf(isurf,1:3)
+        norm_sf_model(1:4) = zero
         call chenge_direction_pvr_modelview(modelview_mat,              &
      &      ione, tmp_normal(1), norm_sf_model(1))
         if(norm_sf_model(3) .eq. zero) norm_sf_model(3) =  1e-6
