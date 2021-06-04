@@ -97,10 +97,8 @@
       call overwte_position_pvr_screen(projection_mat,                  &
      &    node%numnod, pvr_screen%x_nod_model)
 !
-      call set_pvr_domain_surface_data(n_pvr_pixel,                     &
-     &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, pvr_screen%x_nod_model,         &
-     &    pvr_bound)
+      call set_pvr_domain_surface_data(n_pvr_pixel, node, surf,         &
+     &    pvr_screen%x_nod_model, pvr_bound)
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
       call s_set_pvr_ray_start_point(node, ele, surf, pvr_bound,        &

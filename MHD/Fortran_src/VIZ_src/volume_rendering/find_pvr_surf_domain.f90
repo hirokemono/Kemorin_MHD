@@ -16,8 +16,12 @@
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!      subroutine set_pvr_domain_surface_data                          &
-!!     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,      &
-!!     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
+!!     &         (n_pvr_pixel, node, surf, x_nod_screen, pvr_bound)
+!!        type(node_data), intent(in) :: node
+!!        type(surface_data), intent(in) :: surf
+!!        integer(kind = kint), intent(in) :: n_pvr_pixel(2)
+!!        real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
+!!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!      subroutine norm_on_model_pvr_domains                            &
 !!     &         (node, surf, modelview_mat, projection_mat,            &
 !!     &          num_pvr_surf, item_pvr_surf_domain,                   &
@@ -40,6 +44,8 @@
 !
       use m_constants
       use m_geometry_constants
+      use t_geometry_data
+      use t_surface_data
 !
       implicit  none
 !
@@ -57,8 +63,6 @@
       subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,          &
      &          pvr_area, draw_param, pvr_bound)
 !
-      use t_geometry_data
-      use t_surface_data
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use t_geometries_in_pvr_screen
@@ -101,28 +105,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_pvr_domain_surface_data                            &
-     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,        &
-     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
+     &         (n_pvr_pixel, node, surf, x_nod_screen, pvr_bound)
 !
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use ordering_pvr_sf_domain_grp
 !
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
-!
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: numele, numsurf, nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-!
-      real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
+      real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
 !
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
 !
 !$omp parallel
-      call range_on_screen_pvr_domains(numnod, numele, numsurf,         &
-     &    nnod_4_surf, ie_surf, isf_4_ele, x_nod_screen,                &
+      call range_on_screen_pvr_domains(node, surf, x_nod_screen,        &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
      &    pvr_bound%screen_posi, pvr_bound%screen_w,                    &
      &    pvr_bound%screen_xrng, pvr_bound%screen_yrng,                 &
@@ -145,8 +143,6 @@
      &          num_pvr_surf, item_pvr_surf_domain,                     &
      &          screen_norm_pvr_domain)
 !
-      use t_geometry_data
-      use t_surface_data
       use cal_fline_in_cube
       use set_position_pvr_screen
 !
@@ -163,12 +159,11 @@
      &                    :: screen_norm_pvr_domain(3,num_pvr_surf)
 !
       integer(kind = kint) :: inum, iele, k1, isurf
-      integer(kind = kint) :: i1, i2, i3, i4
       real(kind = kreal) :: x31(3), x42(3), vlen
       real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
 !
 !
-!$omp parallel do private (inum,iele,k1,isurf,i1,i2,i3,i4,x31,x42,vlen)
+!$omp parallel do private(inum,iele,k1,isurf,xx4_model_sf,x31,x42,vlen)
       do inum = 1, num_pvr_surf
         iele = item_pvr_surf_domain(1,inum)
         k1 =   item_pvr_surf_domain(2,inum)
@@ -212,19 +207,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine range_on_screen_pvr_domains(numnod, numele, numsurf,   &
-     &      nnod_4_surf, ie_surf, isf_4_ele, x_nod_screen,              &
+      subroutine range_on_screen_pvr_domains(node, surf, x_nod_screen,  &
      &      num_pvr_surf, item_pvr_surf_domain,                         &
      &      screen_posi_pvr_domain, screen_w_pvr_domain,                &
      &      screen_xrng_pvr_domain, screen_yrng_pvr_domain,             &
      &      screen_zrng_pvr_domain)
 !
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: numele, numsurf, nnod_4_surf
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(in) :: surf
 !
-      real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
+      real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
       integer(kind = kint), intent(in)                                  &
@@ -251,17 +243,17 @@
         do inum = 1, num_pvr_surf
           iele = item_pvr_surf_domain(1,inum)
           k1 =   item_pvr_surf_domain(2,inum)
-          isurf = abs(isf_4_ele(iele,k1))
+          isurf = abs(surf%isf_4_ele(iele,k1))
 !
-          i1 = ie_surf(isurf,1)
-          i2 = ie_surf(isurf,2)
-          i3 = ie_surf(isurf,3)
-          i4 = ie_surf(isurf,4)
+          i1 = surf%ie_surf(isurf,1)
+          i2 = surf%ie_surf(isurf,2)
+          i3 = surf%ie_surf(isurf,3)
+          i4 = surf%ie_surf(isurf,4)
           x1(1:3) = x_nod_screen(i1,1:3)
           x2(1:3) = x_nod_screen(i2,1:3)
           x3(1:3) = x_nod_screen(i3,1:3)
           x4(1:3) = x_nod_screen(i4,1:3)
-          w(1:4) =  x_nod_screen(ie_surf(isurf,1:4),4)
+          w(1:4) =  x_nod_screen(surf%ie_surf(isurf,1:4),4)
 !
           screen_posi_pvr_domain(1:3,inum)                              &
      &           = (x1(1:3) + x2(1:3) + x3(1:3) + x4(1:3)) / four
