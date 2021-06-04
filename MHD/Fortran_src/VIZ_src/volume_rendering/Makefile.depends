@@ -18,7 +18,7 @@ const_comm_tbl_img_composit.o: $(PVR_DIR)/const_comm_tbl_img_composit.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 convert_real_rgb_2_bite.o: $(PVR_DIR)/convert_real_rgb_2_bite.f90 m_precision.o m_constants.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
-count_pvr_ray_start_point.o: $(PVR_DIR)/count_pvr_ray_start_point.f90 m_precision.o calypso_mpi.o m_constants.o m_geometry_constants.o t_control_params_4_pvr.o
+count_pvr_ray_start_point.o: $(PVR_DIR)/count_pvr_ray_start_point.f90 m_precision.o calypso_mpi.o m_constants.o m_geometry_constants.o t_control_params_4_pvr.o t_geometry_data.o t_surface_data.o set_position_pvr_screen.o cal_fline_in_cube.o
 	$(F90) -c $(F90OPTFLAGS) $<
 draw_pvr_colorbar.o: $(PVR_DIR)/draw_pvr_colorbar.f90 m_precision.o m_constants.o t_control_params_4_pvr.o draw_pvr_colorbar_nums.o set_color_4_pvr.o set_rgba_4_each_pixel.o
 	$(F90) -c $(F90OPTFLAGS) $<

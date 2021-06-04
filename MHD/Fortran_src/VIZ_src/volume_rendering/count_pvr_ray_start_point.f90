@@ -12,9 +12,8 @@
 !!     &         (num_pvr_surf, screen_norm_pvr_domain,                 &
 !!     &          isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain,         &
 !!     &          ray_vec4, ntot_tmp_pvr_ray_sf, istack_tmp_pvr_ray_st)
-!!      subroutine count_each_pvr_ray_start (numnod, numele, numsurf,   &
-!!     &         nnod_4_surf, ie_surf, isf_4_ele,                       &
-!!     &         x_nod_screen, npixel_x, npixel_y,                      &
+!!      subroutine count_each_pvr_ray_start(node, surf,                 &
+!!     &         x_nod_screen, modelview_mat, projection_mat, npixel_x, npixel_y,                        &
 !!     &         pixel_point_x, pixel_point_y,num_pvr_surf,             &
 !!     &         item_pvr_surf_domain, screen_norm_pvr_domain,          &
 !!     &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec4,&
@@ -102,6 +101,8 @@
 !
       use t_geometry_data
       use t_surface_data
+      use set_position_pvr_screen
+      use cal_fline_in_cube
 !
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
@@ -142,7 +143,8 @@
 !
       integer(kind = kint) :: inum, iele, k1, isurf, icou
       integer(kind = kint) :: ist_pix, ied_pix, jst_pix, jed_pix
-      integer(kind = kint) :: ipix, jpix, i1, i2, i3, i4, iflag
+      integer(kind = kint) :: ipix, jpix, iflag
+      real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal) :: x_pix(2), xi(2)
       real(kind = kreal) :: x_surf(2,4)
 !
@@ -150,7 +152,7 @@
       real(kind = kreal) :: c1(3), c3(3), aj
 !
 !
-!$omp parallel do private(inum,iele,k1,isurf,x_surf,i1,i2,i3,i4,iflag,  &
+!$omp parallel do private(inum,iele,k1,isurf,x_surf,xx4_model_sf,iflag, &
 !$omp&        icou,ist_pix,ied_pix,jst_pix,jed_pix,ipix,jpix,x_pix,xi,  &
 !$omp&        xt1,a,c1,c3,aj)
       do inum = 1, num_pvr_surf
@@ -162,14 +164,16 @@
 !
         if((screen_norm_pvr_domain(3,inum)*ray_vec4(3))                 &
      &       .gt. SMALL_NORM) then
-          i1 = surf%ie_surf(isurf,1)
-          i2 = surf%ie_surf(isurf,2)
-          i3 = surf%ie_surf(isurf,3)
-          i4 = surf%ie_surf(isurf,4)
-          x_surf(1:2,1) = x_nod_screen(i1,1:2)
-          x_surf(1:2,2) = x_nod_screen(i2,1:2)
-          x_surf(1:2,3) = x_nod_screen(i3,1:2)
-          x_surf(1:2,4) = x_nod_screen(i4,1:2)
+          call position_on_each_ele_sfs_wone                            &
+     &       (surf, node%numnod, node%xx, iele, xx4_model_sf)
+          call overwte_to_modelview_each_ele(modelview_mat,             &
+     &        (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
+          call overwte_to_screen_each_ele(projection_mat,               &
+     &        (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
+          x_surf(1:2,1) = xx4_model_sf(1:2,1,k1)
+          x_surf(1:2,2) = xx4_model_sf(1:2,2,k1)
+          x_surf(1:2,3) = xx4_model_sf(1:2,3,k1)
+          x_surf(1:2,4) = xx4_model_sf(1:2,4,k1)
 !
           ist_pix = isurf_xrng_pvr_domain(1,inum)
           ied_pix = isurf_xrng_pvr_domain(2,inum)
