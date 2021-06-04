@@ -100,16 +100,19 @@
      &    modelview_mat, projection_mat, pvr_bound)
 !
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
-      call s_set_pvr_ray_start_point(node, ele, surf, pvr_bound,        &
-     &    pixel_xy, pvr_screen, viewpoint_vec, pvr_start)
+      call s_set_pvr_ray_start_point                                    &
+     &   (node, ele, surf, pvr_bound, pixel_xy, pvr_screen,             &
+     &    viewpoint_vec, modelview_mat, projection_mat, pvr_start)
 !
       end subroutine transfer_to_screen
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_pvr_ray_start_point(node, ele, surf, pvr_bound,  &
-     &          pixel_xy, pvr_screen, viewpoint_vec, pvr_start)
+      subroutine s_set_pvr_ray_start_point                              &
+     &         (node, ele, surf, pvr_bound, pixel_xy, pvr_screen,       &
+     &          viewpoint_vec, modelview_mat, projection_mat,           &
+     &          pvr_start)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -126,6 +129,8 @@
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_projected_position), intent(in) :: pvr_screen
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
@@ -170,7 +175,7 @@
      &   pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,       &
      &   pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start)
       call set_each_ray_projected_start                                 &
-     &  (node, surf, pvr_screen%x_nod_model,                      &
+     &  (node, surf, pvr_screen%x_nod_model, modelview_mat, projection_mat, &
      &   pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                    &
      &   pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,                &
      &   pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,               &

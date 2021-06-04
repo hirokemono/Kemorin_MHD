@@ -16,7 +16,7 @@
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx4_pvr_start)
 !!      subroutine set_each_ray_projected_start                         &
-!!     &         (node, surf, x_nod_screen,                             &
+!!     &         (node, surf, x_nod_screen, modelview_mat, projection_mat, &
 !!     &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,     &
 !!     &          num_pvr_surf, item_pvr_surf_domain,                   &
 !!     &          screen_norm_pvr_domain, ray_vec4,                     &
@@ -163,7 +163,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_each_ray_projected_start                           &
-     &         (node, surf, x_nod_screen,                               &
+     &         (node, surf, x_nod_screen, modelview_mat, projection_mat, &
      &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,       &
      &          num_pvr_surf, item_pvr_surf_domain,                     &
      &          screen_norm_pvr_domain, ray_vec4,                       &
@@ -178,6 +178,8 @@
       type(surface_data), intent(in) :: surf
 !
       real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       integer(kind = kint), intent(in) :: npixel_x, npixel_y
       real(kind = kreal), intent(in) :: pixel_point_x(npixel_x)
