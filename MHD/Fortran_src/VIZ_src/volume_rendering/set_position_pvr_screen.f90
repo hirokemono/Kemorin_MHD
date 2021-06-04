@@ -35,6 +35,12 @@
 !!        real(kind = kreal), intent(in) :: project_mat(4,4)
 !!        integer(kind = kint), intent(in) :: numnod
 !!        real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
+!!      subroutine project_once_each_ele_w_smp                          &
+!!     &         (model_mat, project_mat, numnod, x4_each_model)
+!!        real(kind = kreal), intent(in) :: model_mat(4,4)
+!!        real(kind = kreal), intent(in) :: project_mat(4,4)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
 !!
 !!      subroutine cal_position_pvr_modelview                           &
 !!     &         (model_mat, numnod, xx, x_nod_model)
@@ -205,6 +211,69 @@
       end do
 !
       end subroutine overwte_to_screen_each_ele
+!
+! -----------------------------------------------------------------------
+!
+      subroutine project_once_each_ele_w_smp                            &
+     &         (model_mat, project_mat, numnod, x4_projected)
+!
+      real(kind = kreal), intent(in) :: model_mat(4,4)
+      real(kind = kreal), intent(in) :: project_mat(4,4)
+      integer(kind = kint), intent(in) :: numnod
+!
+      real(kind = kreal), intent(inout) :: x4_projected(4,numnod)
+!
+      integer(kind = kint) :: inod
+      real(kind = kreal) :: coef
+      real(kind = kreal) :: x4_tmp(4)
+!
+!
+!$omp parallel do private(inod,x4_tmp,coef)
+      do inod = 1, numnod
+        x4_tmp(1) =  model_mat(1,1) * x4_projected(1,inod)              &
+     &             + model_mat(1,2) * x4_projected(2,inod)              &
+     &             + model_mat(1,3) * x4_projected(3,inod)              &
+     &             + model_mat(1,4) * x4_projected(4,inod)
+        x4_tmp(2) =  model_mat(2,1) * x4_projected(1,inod)              &
+     &             + model_mat(2,2) * x4_projected(2,inod)              &
+     &             + model_mat(2,3) * x4_projected(3,inod)              &
+     &             + model_mat(2,4) * x4_projected(4,inod)
+        x4_tmp(3) =  model_mat(3,1) * x4_projected(1,inod)              &
+     &             + model_mat(3,2) * x4_projected(2,inod)              &
+     &             + model_mat(3,3) * x4_projected(3,inod)              &
+     &             + model_mat(3,4) * x4_projected(4,inod)
+        x4_tmp(4) =  model_mat(4,1) * x4_projected(1,inod)              &
+     &             + model_mat(4,2) * x4_projected(2,inod)              &
+     &             + model_mat(4,3) * x4_projected(3,inod)              &
+     &             + model_mat(4,4) * x4_projected(4,inod)
+!
+        x4_projected(1,inod) =  project_mat(1,1)*x4_tmp(1)              &
+     &                        + project_mat(1,2)*x4_tmp(2)              &
+     &                        + project_mat(1,3)*x4_tmp(3)              &
+     &                        + project_mat(1,4)*x4_tmp(4)
+        x4_projected(2,inod) =  project_mat(2,1)*x4_tmp(1)              &
+     &                        + project_mat(2,2)*x4_tmp(2)              &
+     &                        + project_mat(2,3)*x4_tmp(3)              &
+     &                        + project_mat(2,4)*x4_tmp(4)
+        x4_projected(3,inod) =  project_mat(3,1)*x4_tmp(1)              &
+     &                        + project_mat(3,2)*x4_tmp(2)              &
+     &                        + project_mat(3,3)*x4_tmp(3)              &
+     &                        + project_mat(3,4)*x4_tmp(4)
+        x4_projected(4,inod) =  project_mat(4,1)*x4_tmp(1)              &
+     &                        + project_mat(4,2)*x4_tmp(2)              &
+     &                        + project_mat(4,3)*x4_tmp(3)              &
+     &                        + project_mat(4,4)*x4_tmp(4)
+!
+!
+        coef = one / x4_projected(4,inod)
+        x4_projected(1,inod) = x4_projected(1,inod) * coef
+        x4_projected(2,inod) = x4_projected(2,inod) * coef
+        x4_projected(3,inod) = x4_projected(3,inod) * coef
+        x4_projected(4,inod) = one
+      end do
+!$omp end parallel do
+!
+      end subroutine project_once_each_ele_w_smp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

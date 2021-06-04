@@ -118,6 +118,7 @@
       use t_geometry_data
       use t_surface_data
       use count_pvr_ray_start_point
+      use set_position_pvr_screen
       use set_pvr_ray_start_point
       use cal_field_on_surf_viz
 !
@@ -173,9 +174,13 @@
      &   pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,           &
      &   pvr_start%num_pvr_ray, pvr_start%id_pixel_start,               &
      &   pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,       &
-     &   pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start)
-      call set_each_ray_projected_start                                 &
-     &  (node, surf, pvr_screen%x_nod_model, modelview_mat, projection_mat, &
+     &   pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,               &
+     &   pvr_start%xx4_pvr_ray_start)
+!
+      call project_once_each_ele_w_smp(modelview_mat, projection_mat,   &
+     &   pvr_start%num_pvr_ray, pvr_start%xx4_pvr_ray_start)
+!
+      call set_each_ray_projected_start(node, surf,                     &
      &   pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                    &
      &   pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,                &
      &   pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,               &
@@ -183,8 +188,7 @@
      &   pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,   &
      &   pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,           &
      &   pvr_start%istack_pvr_ray_sf, pvr_start%num_pvr_ray,            &
-     &   pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,               &
-     &   pvr_start%xx4_pvr_ray_start)
+     &   pvr_start%xi_pvr_start, pvr_start%xx4_pvr_ray_start)
 !
 !      if(iflag_debug .gt. 0) then
 !        call check_pvr_ray_startpoint                                  &

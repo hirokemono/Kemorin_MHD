@@ -14,16 +14,14 @@
 !!     &          jsurf_yrng_pvr_domain, viewpoint_vec, ray_vec4,       &
 !!     &          istack_pvr_ray_sf, num_pvr_ray, id_pixel_start,       &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
-!!     &          xx4_pvr_start)
-!!      subroutine set_each_ray_projected_start                         &
-!!     &         (node, surf, x_nod_screen, modelview_mat, projection_mat, &
+!!     &          xx4_pvr_start, xx4_pvr_ray_start)
+!!      subroutine set_each_ray_projected_start(node, surf,             &
 !!     &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,     &
 !!     &          num_pvr_surf, item_pvr_surf_domain,                   &
 !!     &          screen_norm_pvr_domain, ray_vec4,                     &
 !!     &          ntot_tmp_pvr_ray, istack_tmp_pvr_ray_st,              &
 !!     &          ipix_start_tmp, iflag_start_tmp, istack_pvr_ray_sf,   &
-!!     &          num_pvr_ray, xi_pvr_start, xx4_pvr_start,             &
-!!     &          xx4_pvr_ray_start)
+!!     &          num_pvr_ray, xi_pvr_start, xx4_pvr_ray_start)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
 !!      subroutine check_pvr_ray_startpoint                             &
@@ -59,7 +57,7 @@
      &          ipix_start_tmp, iflag_start_tmp, xi_pvr_start_tmp,      &
      &          istack_pvr_ray_sf, num_pvr_ray, id_pixel_start,         &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
-     &          xx4_pvr_start)
+     &          xx4_pvr_start, xx4_pvr_ray_start)
 !
       use cal_field_on_surf_viz
 !
@@ -102,6 +100,8 @@
      &                    :: isf_pvr_ray_start(3,num_pvr_ray)
       real(kind = kreal), intent(inout) :: xi_pvr_start(2,num_pvr_ray)
       real(kind = kreal), intent(inout) :: xx4_pvr_start(4,num_pvr_ray)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: xx4_pvr_ray_start(4,num_pvr_ray)
 !      real(kind = kreal), intent(inout) :: pvr_ray_dir(3,num_pvr_ray)
 !
       integer(kind = kint) :: inum, icou, jcou, iele, k1, isurf
@@ -156,31 +156,28 @@
 !
       end do
 !$omp end parallel do
-!       write(*,*) 'set_each_pvr_ray_start end '
+!
+!$omp parallel workshare
+      xx4_pvr_ray_start(1:4,1:num_pvr_ray)                              &
+     &         = xx4_pvr_start(1:4,1:num_pvr_ray)
+!$omp end parallel workshare
 !
       end subroutine set_each_pvr_ray_start
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_each_ray_projected_start                           &
-     &         (node, surf, x_nod_screen, modelview_mat, projection_mat, &
+      subroutine set_each_ray_projected_start(node, surf,               &
      &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,       &
      &          num_pvr_surf, item_pvr_surf_domain,                     &
      &          screen_norm_pvr_domain, ray_vec4,                       &
      &          ntot_tmp_pvr_ray, istack_tmp_pvr_ray_st,                &
      &          ipix_start_tmp, iflag_start_tmp, istack_pvr_ray_sf,     &
-     &          num_pvr_ray, xi_pvr_start, xx4_pvr_start,               &
-     &          xx4_pvr_ray_start)
+     &          num_pvr_ray, xi_pvr_start, xx4_pvr_ray_start)
 !
       use cal_field_on_surf_viz
-      use set_position_pvr_screen
 !
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
-!
-      real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
-      real(kind = kreal), intent(in) :: modelview_mat(4,4)
-      real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       integer(kind = kint), intent(in) :: npixel_x, npixel_y
       real(kind = kreal), intent(in) :: pixel_point_x(npixel_x)
@@ -206,7 +203,6 @@
 !
       integer(kind = kint), intent(in) ::  num_pvr_ray
       real(kind = kreal), intent(in) :: xi_pvr_start(2,num_pvr_ray)
-      real(kind = kreal), intent(in) :: xx4_pvr_start(4,num_pvr_ray)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: xx4_pvr_ray_start(4,num_pvr_ray)
@@ -214,19 +210,7 @@
       integer(kind = kint) :: inum, icou, jcou, iele, k1, isurf
       integer(kind = kint) :: ist_pix, ied_pix
       integer(kind = kint) :: ipix, jpix
-      real(kind = kreal) :: zz_pvr_ray_test(num_pvr_ray)
 !
-!
-      if(num_pvr_ray .le. 0) return
-!$omp parallel workshare
-      xx4_pvr_ray_start(1:4,1:num_pvr_ray)                              &
-     &         = xx4_pvr_start(1:4,1:num_pvr_ray)
-!$omp end parallel workshare
-!
-      call overwte_to_modelview_each_ele(modelview_mat,                 &
-     &   num_pvr_ray, xx4_pvr_ray_start)
-      call overwte_to_screen_each_ele(projection_mat,                   &
-     &   num_pvr_ray, xx4_pvr_ray_start)
 !
 !$omp parallel do private(inum,icou,jcou,iele,k1,isurf,                 &
 !$omp&                    ipix,jpix,ist_pix,ied_pix)
@@ -249,27 +233,12 @@
               jcou = jcou + 1
               xx4_pvr_ray_start(1,jcou) = pixel_point_x(ipix)
               xx4_pvr_ray_start(2,jcou) = pixel_point_y(jpix)
-!              xx4_pvr_ray_start(4,jcou) = one
-!
-              call cal_field_on_surf_scalar(node%numnod, surf%numsurf,  &
-     &            surf%nnod_4_surf, surf%ie_surf, isurf,                &
-     &            xi_pvr_start(1,jcou), x_nod_screen(1,3),              &
-     &            zz_pvr_ray_test(jcou))
             end if
           end do
         end if
 !
       end do
 !$omp end parallel do
-!
-      do jcou = 1, num_pvr_ray
-        if(xx4_pvr_ray_start(4,jcou) .ne. 1.0d0)  &
-     &      write(*,*) 'Wrong w-component at ', jcou
-        if(abs(xx4_pvr_ray_start(3,jcou) - zz_pvr_ray_test(jcou)) .gt. 1.0d-8)  &
-     &      write(*,*) 'Wrong z-component at ', jcou, &
-     &        xx4_pvr_ray_start(3,jcou),  &
-     &         xx4_pvr_ray_start(3,jcou) - zz_pvr_ray_test(jcou)
-      end do
 !
       end subroutine set_each_ray_projected_start
 !
