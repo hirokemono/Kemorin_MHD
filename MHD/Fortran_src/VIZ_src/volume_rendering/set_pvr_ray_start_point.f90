@@ -173,6 +173,7 @@
      &          xx4_pvr_ray_start)
 !
       use cal_field_on_surf_viz
+      use set_position_pvr_screen
 !
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
@@ -213,7 +214,19 @@
       integer(kind = kint) :: inum, icou, jcou, iele, k1, isurf
       integer(kind = kint) :: ist_pix, ied_pix
       integer(kind = kint) :: ipix, jpix
+      real(kind = kreal) :: zz_pvr_ray_test(num_pvr_ray)
 !
+!
+      if(num_pvr_ray .le. 0) return
+!$omp parallel workshare
+      xx4_pvr_ray_start(1:4,1:num_pvr_ray)                              &
+     &         = xx4_pvr_start(1:4,1:num_pvr_ray)
+!$omp end parallel workshare
+!
+      call overwte_to_modelview_each_ele(modelview_mat,                 &
+     &   num_pvr_ray, xx4_pvr_ray_start)
+      call overwte_to_screen_each_ele(projection_mat,                   &
+     &   num_pvr_ray, xx4_pvr_ray_start)
 !
 !$omp parallel do private(inum,icou,jcou,iele,k1,isurf,                 &
 !$omp&                    ipix,jpix,ist_pix,ied_pix)
@@ -236,18 +249,27 @@
               jcou = jcou + 1
               xx4_pvr_ray_start(1,jcou) = pixel_point_x(ipix)
               xx4_pvr_ray_start(2,jcou) = pixel_point_y(jpix)
-              xx4_pvr_ray_start(4,jcou) = one
+!              xx4_pvr_ray_start(4,jcou) = one
 !
               call cal_field_on_surf_scalar(node%numnod, surf%numsurf,  &
      &            surf%nnod_4_surf, surf%ie_surf, isurf,                &
      &            xi_pvr_start(1,jcou), x_nod_screen(1,3),              &
-     &            xx4_pvr_ray_start(3,jcou))
+     &            zz_pvr_ray_test(jcou))
             end if
           end do
         end if
 !
       end do
 !$omp end parallel do
+!
+      do jcou = 1, num_pvr_ray
+        if(xx4_pvr_ray_start(4,jcou) .ne. 1.0d0)  &
+     &      write(*,*) 'Wrong w-component at ', jcou
+        if(abs(xx4_pvr_ray_start(3,jcou) - zz_pvr_ray_test(jcou)) .gt. 1.0d-8)  &
+     &      write(*,*) 'Wrong z-component at ', jcou, &
+     &        xx4_pvr_ray_start(3,jcou),  &
+     &         xx4_pvr_ray_start(3,jcou) - zz_pvr_ray_test(jcou)
+      end do
 !
       end subroutine set_each_ray_projected_start
 !
