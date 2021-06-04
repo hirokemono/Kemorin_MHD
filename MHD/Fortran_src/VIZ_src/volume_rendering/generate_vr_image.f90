@@ -149,7 +149,7 @@
       call allocate_tmp_pvr_ray_start(pvr_start)
 !
       call count_each_pvr_ray_start                                     &
-     &   (node, surf, pvr_screen%x_nod_model, modelview_mat, projection_mat, &
+     &   (node, surf, modelview_mat, projection_mat,                    &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &

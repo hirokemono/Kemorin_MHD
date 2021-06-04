@@ -13,7 +13,7 @@
 !!     &          isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain,         &
 !!     &          ray_vec4, ntot_tmp_pvr_ray_sf, istack_tmp_pvr_ray_st)
 !!      subroutine count_each_pvr_ray_start(node, surf,                 &
-!!     &         x_nod_screen, modelview_mat, projection_mat, npixel_x, npixel_y,                        &
+!!     &         modelview_mat, projection_mat, npixel_x, npixel_y,     &
 !!     &         pixel_point_x, pixel_point_y,num_pvr_surf,             &
 !!     &         item_pvr_surf_domain, screen_norm_pvr_domain,          &
 !!     &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec4,&
@@ -91,7 +91,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_each_pvr_ray_start(node, surf,                   &
-     &         x_nod_screen, modelview_mat, projection_mat, npixel_x, npixel_y,                        &
+     &         modelview_mat, projection_mat, npixel_x, npixel_y,       &
      &         pixel_point_x, pixel_point_y,num_pvr_surf,               &
      &         item_pvr_surf_domain, screen_norm_pvr_domain,            &
      &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec4,  &
@@ -107,7 +107,6 @@
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
 !
-      real(kind = kreal), intent(in) :: x_nod_screen(node%numnod,4)
       real(kind = kreal), intent(in) :: modelview_mat(4,4)
       real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
@@ -146,13 +145,12 @@
       integer(kind = kint) :: ipix, jpix, iflag
       real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal) :: x_pix(2), xi(2)
-      real(kind = kreal) :: x_surf(2,4)
 !
       real(kind = kreal) :: xt1(2), a(2,2)
       real(kind = kreal) :: c1(3), c3(3), aj
 !
 !
-!$omp parallel do private(inum,iele,k1,isurf,x_surf,xx4_model_sf,iflag, &
+!$omp parallel do private(inum,iele,k1,isurf,xx4_model_sf,iflag,        &
 !$omp&        icou,ist_pix,ied_pix,jst_pix,jed_pix,ipix,jpix,x_pix,xi,  &
 !$omp&        xt1,a,c1,c3,aj)
       do inum = 1, num_pvr_surf
@@ -170,10 +168,6 @@
      &        (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
           call overwte_to_screen_each_ele(projection_mat,               &
      &        (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
-          x_surf(1:2,1) = xx4_model_sf(1:2,1,k1)
-          x_surf(1:2,2) = xx4_model_sf(1:2,2,k1)
-          x_surf(1:2,3) = xx4_model_sf(1:2,3,k1)
-          x_surf(1:2,4) = xx4_model_sf(1:2,4,k1)
 !
           ist_pix = isurf_xrng_pvr_domain(1,inum)
           ied_pix = isurf_xrng_pvr_domain(2,inum)
@@ -187,18 +181,17 @@
               ipix_start_tmp(1,icou) = ipix
               ipix_start_tmp(2,icou) = jpix
 !
-!              call cal_coefs_on_surf(x_surf, x_pix, iflag, xi)
-              xt1(1:2) = x_pix(1:2) - x_surf(1:2,1)
-              a(1:2,1) = x_surf(1:2,2) - x_surf(1:2,1)
-              a(1:2,2) = x_surf(1:2,4) - x_surf(1:2,1)
+              xt1(1:2) = x_pix(1:2) - xx4_model_sf(1:2,1,k1)
+              a(1:2,1) = xx4_model_sf(1:2,2,k1) - xx4_model_sf(1:2,1,k1)
+              a(1:2,2) = xx4_model_sf(1:2,4,k1) - xx4_model_sf(1:2,1,k1)
               aj = one / (a(1,1)*a(2,2) - a(2,1)*a(1,2))
 !
               c1(1) = ( a(2,2)*xt1(1) - a(1,2)*xt1(2) ) * aj
               c1(2) = (-a(2,1)*xt1(1) + a(1,1)*xt1(2) ) * aj
 !
-              xt1(1:2) = x_pix(1:2) - x_surf(1:2,3)
-              a(1:2,1) = x_surf(1:2,2) - x_surf(1:2,3)
-              a(1:2,2) = x_surf(1:2,4) - x_surf(1:2,3)
+              xt1(1:2) = x_pix(1:2) - xx4_model_sf(1:2,3,k1)
+              a(1:2,1) = xx4_model_sf(1:2,2,k1) - xx4_model_sf(1:2,3,k1)
+              a(1:2,2) = xx4_model_sf(1:2,4,k1) - xx4_model_sf(1:2,3,k1)
               aj = one / (a(1,1)*a(2,2) - a(2,1)*a(1,2))
 !
               c3(1) = ( a(2,2)*xt1(1) - a(1,2)*xt1(2) ) * aj
@@ -228,13 +221,13 @@
 !
 !
 !              write(200+my_rank,*) inum, ipix, jpix, iflag, xi,        &
-!     &               x_pix, x_surf
+!     &               x_pix, xx4_model_sf(:,:,k1)
               iflag_start_tmp(icou) = iflag
               xi_pvr_start_tmp(1:2,icou) = xi
 !
 !              write(100+my_rank,*) inum, ipix, jpix, &
 !     &             iflag_start_tmp(icou), xi_pvr_start_tmp(1:2,icou), &
-!     &             x_pix, x_surf
+!     &             x_pix, xx4_model_sf(:,:,k1)
 !
               if(iflag_start_tmp(icou) .gt. 0) then
                 istack_pvr_ray_sf(inum) = istack_pvr_ray_sf(inum) + 1
