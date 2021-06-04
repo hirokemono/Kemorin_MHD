@@ -74,7 +74,7 @@ set_pvr_control.o: $(PVR_DIR)/set_pvr_control.f90 m_precision.o calypso_mpi.o t_
 	$(F90) -c $(F90OPTFLAGS) $<
 set_pvr_modelview_matrix.o: $(PVR_DIR)/set_pvr_modelview_matrix.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o t_ctl_data_4_view_transfer.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_control_params_stereo_pvr.o t_ctl_data_4_screen_pixel.o t_ctl_data_4_projection.o t_ctl_data_4_streo_view.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_pvr_ray_start_point.o: $(PVR_DIR)/set_pvr_ray_start_point.f90 m_precision.o calypso_mpi.o m_constants.o m_geometry_constants.o t_control_params_4_pvr.o cal_field_on_surf_viz.o calypso_mpi_int.o write_bmp_image.o
+set_pvr_ray_start_point.o: $(PVR_DIR)/set_pvr_ray_start_point.f90 m_precision.o calypso_mpi.o m_constants.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_control_params_4_pvr.o cal_field_on_surf_viz.o calypso_mpi_int.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_pvr_stencil_buffer.o: $(PVR_DIR)/set_pvr_stencil_buffer.f90 m_precision.o m_constants.o m_machine_parameter.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_calypso_comm_table.o t_pvr_ray_startpoints.o t_pvr_image_stack_table.o t_stencil_buffer_work.o quicksort.o calypso_SR_type.o const_comm_tbl_img_composit.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
