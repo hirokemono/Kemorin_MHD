@@ -25,11 +25,10 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                    :: xx_pvr_domain(4*num_pvr_surf,4)
 !!
-!!      subroutine modelview_position_each_ele                          &
-!!     &         (model_mat, numnod, x4, x4_each_model)
+!!      subroutine overwte_to_modelview_each_ele                        &
+!!     &         (model_mat, numnod, x4_each_model)
 !!        real(kind = kreal), intent(in) :: model_mat(4,4)
 !!        integer(kind = kint), intent(in) :: numnod
-!!        real(kind = kreal), intent(in) :: x4(4,numnod)
 !!        real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
 !!      subroutine overwte_to_screen_each_ele(project_mat, numnod,      &
 !!     &                                      x4_each_model)
@@ -129,38 +128,40 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine modelview_position_each_ele                            &
-     &         (model_mat, numnod, x4, x4_each_model)
+      subroutine overwte_to_modelview_each_ele                          &
+     &         (model_mat, numnod, x4_each_model)
 !
       real(kind = kreal), intent(in) :: model_mat(4,4)
 !
       integer(kind = kint), intent(in) :: numnod
-      real(kind = kreal), intent(in) :: x4(4,numnod)
       real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
 !
       integer(kind = kint) :: inod
+      real(kind = kreal) :: x4_tmp(4)
 !
 !
       do inod = 1, numnod
-        x4_each_model(1,inod) =  model_mat(1,1) * x4(1,inod)            &
-     &                         + model_mat(1,2) * x4(2,inod)            &
-     &                         + model_mat(1,3) * x4(3,inod)            &
-     &                         + model_mat(1,4) * x4(4,inod)
-        x4_each_model(2,inod) =  model_mat(2,1) * x4(1,inod)            &
-     &                         + model_mat(2,2) * x4(2,inod)            &
-     &                         + model_mat(2,3) * x4(3,inod)            &
-     &                         + model_mat(2,4) * x4(4,inod)
-        x4_each_model(3,inod) =  model_mat(3,1) * x4(1,inod)            &
-     &                         + model_mat(3,2) * x4(2,inod)            &
-     &                         + model_mat(3,3) * x4(3,inod)            &
-     &                         + model_mat(3,4) * x4(4,inod)
-        x4_each_model(4,inod) =  model_mat(4,1) * x4(1,inod)            &
-     &                         + model_mat(4,2) * x4(2,inod)            &
-     &                         + model_mat(4,3) * x4(3,inod)            &
-     &                         + model_mat(4,4) * x4(4,inod)
+        x4_tmp(1) =  model_mat(1,1) * x4_each_model(1,inod)             &
+     &             + model_mat(1,2) * x4_each_model(2,inod)             &
+     &             + model_mat(1,3) * x4_each_model(3,inod)             &
+     &             + model_mat(1,4) * x4_each_model(4,inod)
+        x4_tmp(2) =  model_mat(2,1) * x4_each_model(1,inod)             &
+     &             + model_mat(2,2) * x4_each_model(2,inod)             &
+     &             + model_mat(2,3) * x4_each_model(3,inod)             &
+     &             + model_mat(2,4) * x4_each_model(4,inod)
+        x4_tmp(3) =  model_mat(3,1) * x4_each_model(1,inod)             &
+     &             + model_mat(3,2) * x4_each_model(2,inod)             &
+     &             + model_mat(3,3) * x4_each_model(3,inod)             &
+     &             + model_mat(3,4) * x4_each_model(4,inod)
+        x4_tmp(4) =  model_mat(4,1) * x4_each_model(1,inod)             &
+     &             + model_mat(4,2) * x4_each_model(2,inod)             &
+     &             + model_mat(4,3) * x4_each_model(3,inod)             &
+     &             + model_mat(4,4) * x4_each_model(4,inod)
+!
+        x4_each_model(1:4,inod) = x4_tmp(1:4)
       end do
 !
-      end subroutine modelview_position_each_ele
+      end subroutine overwte_to_modelview_each_ele
 !
 ! -----------------------------------------------------------------------
 !

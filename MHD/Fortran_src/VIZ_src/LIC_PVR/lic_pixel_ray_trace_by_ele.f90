@@ -95,7 +95,6 @@
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org, i_psf
       integer(kind = kint) :: iflag_hit, iflag
       real(kind = kreal) :: screen4_tgt(4)
-      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
       real(kind = kreal) :: xx4_tgt(4), grad_len, rflag, rflag2
@@ -175,13 +174,11 @@
 !   find ray exit surface loacal id on current element isf_tgt
 !
         call position_on_each_ele_sfs_wone                              &
-     &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
-        call modelview_position_each_ele                                &
-     &     (modelview_mat, (num_linear_sf*nsurf_4_ele),                 &
-     &      xx4_ele_surf(1,1,1), xx4_model_sf(1,1,1))
-        call overwte_to_screen_each_ele                                 &
-     &     (projection_mat, (num_linear_sf*nsurf_4_ele),                &
-     &      xx4_model_sf(1,1,1))
+     &     (surf, node%numnod, node%xx, iele, xx4_model_sf)
+        call overwte_to_modelview_each_ele(modelview_mat,               &
+     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
+        call overwte_to_screen_each_ele(projection_mat,                 &
+     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
         call find_line_end_in_1ele(iflag_backward_line,                 &
      &      isf_org, ray_vec4, screen4_st, xx4_model_sf,                &
      &      isf_tgt, screen4_tgt, xi)
