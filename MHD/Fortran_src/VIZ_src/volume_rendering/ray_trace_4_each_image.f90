@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,   &
-!!     &          pvr_screen, field_pvr, draw_param, color_param,       &
-!!     &          viewpoint_vec, modelview_mat, ray_vec4, num_pvr_ray,  &
-!!     &          id_pixel_check, icount_pvr_trace, isf_pvr_ray_start,  &
+!!     &          field_pvr, draw_param, color_param,                   &
+!!     &          viewpoint_vec, modelview_mat, projection_mat,         &
+!!     &          ray_vec4, num_pvr_ray, id_pixel_check,                &
+!!     &          icount_pvr_trace, isf_pvr_ray_start,                  &
 !!     &          xi_pvr_start, xx4_pvr_start, xx4_pvr_ray_start,       &
 !!     &          rgba_ray)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -19,7 +20,6 @@
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
-!!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!@endverbatim
       module ray_trace_4_each_image
 !
@@ -50,9 +50,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,     &
-     &          pvr_screen, field_pvr, draw_param, color_param,         &
-     &          viewpoint_vec, modelview_mat, projection_mat, ray_vec4, num_pvr_ray,    &
-     &          id_pixel_check, icount_pvr_trace, isf_pvr_ray_start,    &
+     &          field_pvr, draw_param, color_param,                     &
+     &          viewpoint_vec, modelview_mat, projection_mat,           &
+     &          ray_vec4, num_pvr_ray, id_pixel_check,                  &
+     &          icount_pvr_trace, isf_pvr_ray_start,                    &
      &          xi_pvr_start, xx4_pvr_start, xx4_pvr_ray_start,         &
      &          rgba_ray)
 !
@@ -65,7 +66,6 @@
       type(pvr_field_data), intent(in) :: field_pvr
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
-      type(pvr_projected_position), intent(in) :: pvr_screen
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: modelview_mat(4,4)

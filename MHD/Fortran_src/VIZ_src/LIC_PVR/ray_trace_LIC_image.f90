@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine ray_trace_each_lic_image(mesh, group, sf_grp_4_sf,   &
-!!     &          lic_p, pvr_screen, field_lic, draw_param, color_param,&
+!!     &          lic_p, field_lic, draw_param, color_param,            &
 !!     &          viewpoint_vec, modelview_mat, projection_mat,         &
 !!     &          ray_vec4, num_pvr_ray, id_pixel_check,                &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
@@ -20,7 +20,6 @@
 !!        type(lic_field_data), intent(in) :: field_lic
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
-!!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
 !!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
 !!@endverbatim
@@ -57,7 +56,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_lic_image(mesh, group, sf_grp_4_sf,     &
-     &          lic_p, pvr_screen, field_lic, draw_param, color_param,  &
+     &          lic_p, field_lic, draw_param, color_param,              &
      &          viewpoint_vec, modelview_mat, projection_mat,           &
      &          ray_vec4, num_pvr_ray, id_pixel_check,                  &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
@@ -75,7 +74,6 @@
       type(lic_field_data), intent(in) :: field_lic
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
-      type(pvr_projected_position), intent(in) :: pvr_screen
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: modelview_mat(4,4)

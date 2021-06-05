@@ -96,9 +96,8 @@
      &    pvr_param%area_def%id_ele_grp_area_pvr,                       &
      &    pvr_param%draw_param%iflag_used_ele)
 !
-      call find_each_pvr_surf_domain                                    &
-     &   (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,       &
-     &    pvr_param%draw_param, pvr_bound)
+      call find_each_pvr_surf_domain(mesh%ele, mesh%surf,               &
+     &                               pvr_param%draw_param, pvr_bound)
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
       call check_pvr_parameters                                         &
@@ -109,19 +108,19 @@
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
       call set_pvr_projection_left_mat                                  &
      &   (pvr_param%view, pvr_param%stereo_def,                         &
-     &   pvr_proj(1)%projection_mat)
+     &    pvr_proj(1)%screen%projection_mat)
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
       call set_pvr_projection_right_mat                                 &
      &   (pvr_param%view, pvr_param%stereo_def,                         &
-     &    pvr_proj(2)%projection_mat)
+     &    pvr_proj(2)%screen%projection_mat)
 !
 !
       if(pvr_param%movie_def%iflag_movie_mode                           &
      &                                 .ne. IFLAG_NO_MOVIE) return
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-      call set_fixed_view_and_image(ione, itwo, mesh, group,            &
+      call set_fixed_view_and_image(ione, itwo, mesh,                   &
      &    pvr_param, pvr_rgb, pvr_bound, pvr_proj(1))
-      call set_fixed_view_and_image(itwo, itwo, mesh, group,            &
+      call set_fixed_view_and_image(itwo, itwo, mesh,                   &
      &    pvr_param, pvr_rgb, pvr_bound, pvr_proj(2))
 !
       end subroutine each_anaglyph_PVR_init

@@ -20,7 +20,6 @@
 !!        type(lic_field_data), intent(in) :: field_lic
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
-!!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!@endverbatim
 !
       module lic_pixel_ray_trace_fix_len

@@ -49,7 +49,7 @@
 !
 !
       call copy_pvr_image_size(mat%pixel, view_param)
-      call copy_pvr_perspective_matrix(mat%proj, mat%streo, view_param)
+      call copy_pvr_perspective_matrix(mat%proj, view_param)
       call copy_stereo_perspective_matrix(mat%streo, stereo_def)
 !
       if (mat%modelview_mat_ctl%num .gt. 0) then
@@ -103,13 +103,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_pvr_perspective_matrix(proj, streo, view_param)
+      subroutine copy_pvr_perspective_matrix(proj, view_param)
 !
       use t_ctl_data_4_projection
       use t_ctl_data_4_streo_view
 !
       type(projection_ctl), intent(in) :: proj
-      type(streo_view_ctl), intent(in) :: streo
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !

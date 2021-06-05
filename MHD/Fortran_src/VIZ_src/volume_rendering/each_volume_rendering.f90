@@ -125,9 +125,8 @@
      &    pvr_param%area_def%id_ele_grp_area_pvr,                       &
      &    pvr_param%draw_param%iflag_used_ele)
 !
-      call find_each_pvr_surf_domain                                    &
-     &   (mesh%ele, mesh%surf, group%ele_grp, pvr_param%area_def,       &
-     &    pvr_param%draw_param, pvr_bound)
+      call find_each_pvr_surf_domain(mesh%ele, mesh%surf,               &
+     &                               pvr_param%draw_param, pvr_bound)
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
       call check_pvr_parameters                                         &
@@ -140,7 +139,7 @@
         if(pvr_param%movie_def%iflag_movie_mode                         &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
-        call set_fixed_view_and_image(i_img, num_img, mesh, group,      &
+        call set_fixed_view_and_image(i_img, num_img, mesh,             &
      &      pvr_param, pvr_rgb(i_img), pvr_bound, pvr_proj(i_img))
       end do
 !
@@ -162,7 +161,6 @@
         call deallocate_item_pvr_ray_start(pvr_proj(i_proj)%start_save)
         call deallocate_pvr_ray_start(pvr_proj(i_proj)%start_fix)
         call dealloc_pvr_stencil_buffer(pvr_proj(i_proj)%stencil)
-        call dealloc_projected_position(pvr_proj(i_proj)%screen)
       end do
 !
       call dealloc_pvr_surf_domain_item(pvr_bound)

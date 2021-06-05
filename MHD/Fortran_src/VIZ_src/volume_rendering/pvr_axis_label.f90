@@ -7,10 +7,7 @@
 !> @brief Structures for parameteres for volume rendering
 !!
 !!@verbatim
-!!      subroutine axis_direction_in_screen                             &
-!!     &         (modelview_mat, projection_mat, pvr_screen)
-!!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
-!!        real(kind = kreal), intent(in) :: projection_mat(4,4)
+!!      subroutine axis_direction_in_screen(pvr_screen)
 !!        type(pvr_projected_position), intent(inout) :: pvr_screen
 !!      subroutine set_pvr_axislabel                                    &
 !!     &         (num_pixel, n_pvr_pixel, pvr_screen, rgba_gl)
@@ -41,22 +38,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine axis_direction_in_screen                               &
-     &         (modelview_mat, projection_mat, pvr_screen)
+      subroutine axis_direction_in_screen(pvr_screen)
 !
       use t_geometries_in_pvr_screen
       use set_position_pvr_screen
 !
-      real(kind = kreal), intent(in) :: modelview_mat(4,4)
-      real(kind = kreal), intent(in) :: projection_mat(4,4)
       type(pvr_projected_position), intent(inout) :: pvr_screen
 !
 !
-      call cal_position_pvr_modelview(modelview_mat,                    &
+      call cal_position_pvr_modelview(pvr_screen%modelview_mat,         &
      &    ithree, axis_vect, pvr_screen%axis_view)
       call find_draw_axis_order                                         &
      &   (pvr_screen%axis_view, pvr_screen%axis_order)
-      call overwte_position_pvr_screen(projection_mat,                  &
+      call overwte_position_pvr_screen(pvr_screen%projection_mat,       &
      &    ithree, pvr_screen%axis_view)
 !
      end subroutine axis_direction_in_screen

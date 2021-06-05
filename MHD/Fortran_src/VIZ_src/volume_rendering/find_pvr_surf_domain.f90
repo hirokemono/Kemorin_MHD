@@ -7,12 +7,10 @@
 !>@brief Construct subdomain surface information for PVR
 !!
 !!@verbatim
-!!      subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,        &
-!!     &          pvr_area, draw_param, pvr_bound)
+!!      subroutine find_each_pvr_surf_domain                            &
+!!     &         (ele, surf, draw_param, pvr_bound)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
-!!        type(group_data), intent(in) :: ele_grp
-!!        type(viz_area_parameter), intent(in) :: pvr_area
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!      subroutine set_pvr_domain_surface_data(n_pvr_pixel, node, surf, &
@@ -59,20 +57,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,          &
-     &          pvr_area, draw_param, pvr_bound)
+      subroutine find_each_pvr_surf_domain                              &
+     &         (ele, surf, draw_param, pvr_bound)
 !
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use t_geometries_in_pvr_screen
-      use t_group_data
       use find_selected_domain_bd
       use pvr_surface_enhancement
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(group_data), intent(in) :: ele_grp
-      type(viz_area_parameter), intent(in) :: pvr_area
       type(rendering_parameter), intent(in) :: draw_param
 !
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound

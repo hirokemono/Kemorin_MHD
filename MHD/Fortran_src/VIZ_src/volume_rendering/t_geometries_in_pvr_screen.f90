@@ -7,11 +7,6 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine alloc_projected_position(node, surf, pvr_screen)
-!!        type(node_data), intent(in) :: node
-!!        type(surface_data), intent(in) :: surf
-!!      subroutine dealloc_projected_position(pvr_screen)
-!!
 !!      subroutine alloc_iflag_pvr_used_ele(ele, draw_param)
 !!      subroutine dealloc_iflag_pvr_used_ele(draw_param)
 !!        type(element_data), intent(in) :: ele
@@ -47,11 +42,12 @@
 !
 !>  Structure for start points of ray tracing
       type pvr_projected_position
-!>    Total number of node in screen coordinate
-        integer(kind = kint) :: nnod_screen = 0
-!>    Position in modelview coordinate and screen coordinate
-!!@n    (Overwritten)
-        real(kind = kreal), allocatable :: x_nod_model(:,:)
+!>        viewpoint
+        real(kind = kreal) :: viewpoint_vec(3)
+!>        modelview matrix
+        real(kind = kreal) :: modelview_mat(4,4)
+!>        perspective projection matrix
+        real(kind = kreal) :: projection_mat(4,4)
 !
 !>    Direction of three axis in screen coordinate
         real(kind = kreal) :: axis_view(3,4)
@@ -103,36 +99,6 @@
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_projected_position(node, surf, pvr_screen)
-!
-      use t_geometry_data
-      use t_surface_data
-!
-      type(node_data), intent(in) :: node
-      type(surface_data), intent(in) :: surf
-      type(pvr_projected_position), intent(inout) :: pvr_screen
-!
-!
-      pvr_screen%nnod_screen = node%numnod
-      allocate(pvr_screen%x_nod_model(pvr_screen%nnod_screen,4))
-      if(pvr_screen%nnod_screen .gt. 0) pvr_screen%x_nod_model =  0.0d0
-!
-      end subroutine alloc_projected_position
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_projected_position(pvr_screen)
-!
-      type(pvr_projected_position), intent(inout) :: pvr_screen
-!
-!
-      deallocate(pvr_screen%x_nod_model)
-!
-      end subroutine dealloc_projected_position
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_iflag_pvr_used_ele(ele, draw_param)
