@@ -175,9 +175,7 @@
 !
         call position_on_each_ele_sfs_wone                              &
      &     (surf, node%numnod, node%xx, iele, xx4_model_sf)
-        call overwte_to_modelview_each_ele(modelview_mat,               &
-     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
-        call overwte_to_screen_each_ele(projection_mat,                 &
+        call project_once_each_element(modelview_mat, projection_mat,   &
      &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
         call find_line_end_in_1ele(iflag_backward_line,                 &
      &      isf_org, ray_vec4, screen4_st, xx4_model_sf,                &

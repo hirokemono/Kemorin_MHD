@@ -244,9 +244,7 @@
 !
         call position_on_each_ele_sfs_wone                              &
      &     (surf, node%numnod, node%xx, iele, xx4_model_sf)
-        call overwte_to_modelview_each_ele(modelview_mat,               &
-     &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
-        call overwte_to_screen_each_ele(projection_mat,                 &
+        call project_once_each_element(modelview_mat, projection_mat,   &
      &      (num_linear_sf*nsurf_4_ele), xx4_model_sf(1,1,1))
         x1(1:3) = xx4_model_sf(1:3,1,k1)
         x2(1:3) = xx4_model_sf(1:3,2,k1)
