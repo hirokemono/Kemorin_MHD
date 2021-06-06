@@ -141,6 +141,10 @@
       type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
+      type(mark_for_each_comm) :: mark_nod_done
+      type(mark_for_each_comm) :: mark_nod_checked
+      type(mark_for_each_comm) :: mark_ele_new
+!
       integer(kind = kint) :: inod, icou, idummy
 !
 !
@@ -190,6 +194,56 @@
       icou = count_mark_ele_to_extend(ele, each_exp_flags%iflag_ele)
       call alloc_mark_for_each_comm(icou, mark_ele)
       call set_mark_ele_to_extend(ele, each_exp_flags, mark_ele)
+!
+!
+      icou = count_num_marked_list(-2, node%numnod,                     &
+     &                             each_exp_flags%iflag_node)
+      call alloc_mark_for_each_comm(icou, mark_nod_done)
+      call set_distance_to_mark_list                                    &
+     &   (-2, node%numnod, each_exp_flags, mark_nod_done)
+!
+      icou = count_num_marked_list(-1, node%numnod,                     &
+     &                             each_exp_flags%iflag_node)
+      call alloc_mark_for_each_comm(icou, mark_nod_checked)
+      call set_distance_to_mark_list                                    &
+     &   (-1, node%numnod, each_exp_flags, mark_nod_checked)
+!
+      icou = count_num_marked_list( 1, ele%numele,                      &
+     &                             each_exp_flags%iflag_ele)
+      call alloc_mark_for_each_comm(icou, mark_ele_new)
+      call ele_distance_to_mark_list                                    &
+     &   ( 1, ele, each_exp_flags, mark_ele_new)
+!
+!      write(*,*) 'mark_nod_done', mark_nod_done%num_marked
+      if(mark_nod_checked%num_marked .ne. mark_nod%num_marked) then
+        write(*,*) 'mark_nod_checked', mark_nod_checked%num_marked,  &
+     &            mark_nod%num_marked
+      end if
+      do icou = 1, mark_nod_checked%num_marked
+        if(mark_nod_checked%idx_marked(icou)          &
+     &         .ne. mark_nod%idx_marked(icou)) write(*,*) &
+     &    'Wrong mark_nod_checked%idx_marked(icou)', icou
+        if(mark_nod_checked%dist_marked(icou)          &
+     &         .ne. mark_nod%dist_marked(icou)) write(*,*)   &
+     &    'Wrong mark_nod_checked%dist_marked(icou)', icou
+      end do
+!
+      if(mark_ele_new%num_marked .ne. mark_ele%num_marked) then
+        write(*,*) 'mark_ele_new', mark_ele_new%num_marked,  &
+     &          mark_ele%num_marked
+      end if
+      do icou = 1, mark_ele_new%num_marked
+        if(mark_ele_new%idx_marked(icou)          &
+     &         .ne. mark_ele%idx_marked(icou)) write(*,*) &
+     &    'Wrong mark_ele_new%idx_marked(icou)', icou
+        if(mark_ele_new%dist_marked(icou)          &
+     &         .ne. mark_ele%dist_marked(icou)) write(*,*)   &
+     &    'Wrong mark_ele_new%dist_marked(icou)', icou
+      end do
+!
+      call dealloc_mark_for_each_comm(mark_ele_new)
+      call dealloc_mark_for_each_comm(mark_nod_checked)
+      call dealloc_mark_for_each_comm(mark_nod_done)
 !
       end subroutine s_mark_node_ele_to_extend
 !
@@ -398,6 +452,134 @@
       end do
 !
       end subroutine set_mark_ele_to_extend
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function count_num_marked_list               &
+     &         (iflag_ref, numnod, iflag_node)
+!
+      integer, intent(in) :: iflag_ref
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: iflag_node(numnod)
+!
+      integer(kind = kint) :: icou, inod
+!
+!
+      icou = 0
+      do inod = 1, numnod
+        if(iflag_node(inod) .eq. iflag_ref) icou = icou + 1
+      end do
+      count_num_marked_list = icou
+!
+      end function count_num_marked_list
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_distance_to_mark_list                              &
+     &         (iflag_ref, numnod, each_exp_flags, mark_nod)
+!
+      integer, intent(in) :: iflag_ref
+      integer(kind = kint), intent(in) :: numnod
+      type(flags_each_comm_extend), intent(in) :: each_exp_flags
+!
+      type(mark_for_each_comm), intent(inout) :: mark_nod
+!
+      integer(kind = kint) :: icou, inod
+!
+!
+      icou = 0
+      do inod = 1, numnod
+        if(each_exp_flags%iflag_node(inod) .eq. iflag_ref) then
+          icou = icou + 1
+          mark_nod%idx_marked(icou) = inod
+          mark_nod%dist_marked(icou) = each_exp_flags%distance(inod)
+!          write(*,*) my_rank, 'mark_nod', inod,                       &
+!     &           mark_nod%idx_marked(icou), mark_nod%dist_marked(icou)
+        end if
+      end do
+!
+      end subroutine set_distance_to_mark_list
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_distance_from_mark_list                            &
+     &         (iflag_ref, mark_nod, each_exp_flags)
+!
+      integer, intent(in) :: iflag_ref
+      type(mark_for_each_comm), intent(in) :: mark_nod
+!
+      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+!
+      integer(kind = kint) :: icou, inod
+!
+!
+!$omp parallel do private(icou,inod)
+      do icou = 1, mark_nod%num_marked
+        inod = mark_nod%idx_marked(icou)
+        each_exp_flags%iflag_node(inod) = iflag_ref
+        each_exp_flags%distance(inod) = mark_nod%dist_marked(icou)
+      end do
+!$omp end parallel do
+!
+      end subroutine set_distance_from_mark_list
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine ele_distance_to_mark_list                              &
+     &         (iflag_ref, ele, each_exp_flags, mark_ele)
+!
+      integer, intent(in) :: iflag_ref
+      type(element_data), intent(in) :: ele
+      type(flags_each_comm_extend), intent(in) :: each_exp_flags
+!
+      type(mark_for_each_comm), intent(inout) :: mark_ele
+!
+      integer(kind = kint) :: inod, icou, iele, k1
+      real(kind = kreal) :: anum
+!
+!
+      anum = one / real(ele%nnod_4_ele)
+      icou = 0
+      do iele = 1, ele%numele
+        if(each_exp_flags%iflag_ele(iele) .eq. iflag_ref) then
+          icou = icou + 1
+          mark_ele%idx_marked(icou) = iele
+          mark_ele%dist_marked(icou) = 0.0d0
+          do k1 = 1, ele%nnod_4_ele
+            inod = ele%ie(iele,k1)
+            mark_ele%dist_marked(icou) = mark_ele%dist_marked(icou)     &
+                                      + each_exp_flags%distance(inod)
+          end do
+          mark_ele%dist_marked(icou)                                    &
+                 = mark_ele%dist_marked(icou) * anum
+        end if
+      end do
+!
+      end subroutine ele_distance_to_mark_list
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_ele_mark_from_mark_list                            &
+     &         (iflag_ref, mark_ele, each_exp_flags)
+!
+      integer, intent(in) :: iflag_ref
+      type(mark_for_each_comm), intent(in) :: mark_ele
+      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+!
+!
+      integer(kind = kint) :: inod, icou, iele, k1
+      real(kind = kreal) :: anum
+!
+!
+!$omp parallel do private(icou,inod)
+      do icou = 1, mark_ele%num_marked
+        iele = mark_ele%idx_marked(icou)
+        each_exp_flags%iflag_ele(iele) = iflag_ref
+      end do
+!$omp end parallel do
+!
+      end subroutine set_ele_mark_from_mark_list
 !
 !  ---------------------------------------------------------------------
 !
