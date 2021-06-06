@@ -18,7 +18,7 @@
 !!      subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,       &
 !!     &          nod_comm, ele_comm, node, ele, neib_ele,              &
 !!     &          dist_4_comm, sleeve_exp_WK, each_comm,                &
-!!     &          mark_nod, mark_ele, each_exp_flags)
+!!     &          mark_nod_checked, mark_ele, each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
@@ -60,7 +60,6 @@
 !
       private :: mark_by_last_import, mark_by_last_export
       private :: mark_surround_ele_of_import
-      private :: count_mark_ele_to_extend, set_mark_ele_to_extend
 !
 !  ---------------------------------------------------------------------
 !
@@ -121,7 +120,7 @@
       subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,         &
      &          nod_comm, ele_comm, node, ele, neib_ele,                &
      &          dist_4_comm, sleeve_exp_WK, each_comm,                  &
-     &          mark_nod, mark_ele, each_exp_flags)
+     &          mark_nod_checked, mark_ele, each_exp_flags)
 !
       use calypso_mpi
       use t_ctl_param_sleeve_extend
@@ -137,13 +136,11 @@
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       type(comm_table_for_each_pe), intent(inout) :: each_comm
-      type(mark_for_each_comm), intent(inout) :: mark_nod
+      type(mark_for_each_comm), intent(inout) :: mark_nod_checked
       type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
       type(mark_for_each_comm) :: mark_nod_done
-      type(mark_for_each_comm) :: mark_nod_checked
-      type(mark_for_each_comm) :: mark_ele_new
 !
       integer(kind = kint) :: inod, icou, idummy
 !
@@ -174,27 +171,6 @@
       end do
 !      write(*,*) my_rank, 'Maximum extend size is ', idummy
 !
-      icou = 0
-      do inod = 1, node%numnod
-        if(each_exp_flags%iflag_node(inod) .eq. -1) icou = icou + 1
-      end do
-      call alloc_mark_for_each_comm(icou, mark_nod)
-!
-      icou = 0
-      do inod = 1, node%numnod
-        if(each_exp_flags%iflag_node(inod) .eq. -1) then
-          icou = icou + 1
-          mark_nod%idx_marked(icou) = inod
-          mark_nod%dist_marked(icou) = each_exp_flags%distance(inod)
-!          write(*,*) my_rank, 'mark_nod', inod,                       &
-!     &           mark_nod%idx_marked(icou), mark_nod%dist_marked(icou)
-        end if
-      end do
-!
-      icou = count_mark_ele_to_extend(ele, each_exp_flags%iflag_ele)
-      call alloc_mark_for_each_comm(icou, mark_ele)
-      call set_mark_ele_to_extend(ele, each_exp_flags, mark_ele)
-!
 !
       icou = count_num_marked_list(-2, node%numnod,                     &
      &                             each_exp_flags%iflag_node)
@@ -210,39 +186,12 @@
 !
       icou = count_num_marked_list( 1, ele%numele,                      &
      &                             each_exp_flags%iflag_ele)
-      call alloc_mark_for_each_comm(icou, mark_ele_new)
+      call alloc_mark_for_each_comm(icou, mark_ele)
       call ele_distance_to_mark_list                                    &
-     &   ( 1, ele, each_exp_flags, mark_ele_new)
+     &   ( 1, ele, each_exp_flags, mark_ele)
 !
-!      write(*,*) 'mark_nod_done', mark_nod_done%num_marked
-      if(mark_nod_checked%num_marked .ne. mark_nod%num_marked) then
-        write(*,*) 'mark_nod_checked', mark_nod_checked%num_marked,  &
-     &            mark_nod%num_marked
-      end if
-      do icou = 1, mark_nod_checked%num_marked
-        if(mark_nod_checked%idx_marked(icou)          &
-     &         .ne. mark_nod%idx_marked(icou)) write(*,*) &
-     &    'Wrong mark_nod_checked%idx_marked(icou)', icou
-        if(mark_nod_checked%dist_marked(icou)          &
-     &         .ne. mark_nod%dist_marked(icou)) write(*,*)   &
-     &    'Wrong mark_nod_checked%dist_marked(icou)', icou
-      end do
-!
-      if(mark_ele_new%num_marked .ne. mark_ele%num_marked) then
-        write(*,*) 'mark_ele_new', mark_ele_new%num_marked,  &
-     &          mark_ele%num_marked
-      end if
-      do icou = 1, mark_ele_new%num_marked
-        if(mark_ele_new%idx_marked(icou)          &
-     &         .ne. mark_ele%idx_marked(icou)) write(*,*) &
-     &    'Wrong mark_ele_new%idx_marked(icou)', icou
-        if(mark_ele_new%dist_marked(icou)          &
-     &         .ne. mark_ele%dist_marked(icou)) write(*,*)   &
-     &    'Wrong mark_ele_new%dist_marked(icou)', icou
-      end do
-!
-      call dealloc_mark_for_each_comm(mark_ele_new)
-      call dealloc_mark_for_each_comm(mark_nod_checked)
+!      call dealloc_mark_for_each_comm(mark_ele)
+!      call dealloc_mark_for_each_comm(mark_nod_checked)
       call dealloc_mark_for_each_comm(mark_nod_done)
 !
       end subroutine s_mark_node_ele_to_extend
@@ -401,57 +350,6 @@
 !$omp end parallel do
 !
       end subroutine mark_surround_ele_of_import
-!
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function count_mark_ele_to_extend            &
-     &                                          (ele, iflag_ele)
-!
-      type(element_data), intent(in) :: ele
-      integer(kind = kint), intent(in) :: iflag_ele(ele%numele)
-!
-      integer(kind = kint) :: icou, iele
-!
-!
-      icou = 0
-      do iele = 1, ele%numele
-        if(iflag_ele(iele) .eq. 1) icou = icou + 1
-      end do
-      count_mark_ele_to_extend = icou
-!
-      end function count_mark_ele_to_extend
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_mark_ele_to_extend(ele, each_exp_flags, mark_ele)
-!
-      type(element_data), intent(in) :: ele
-      type(flags_each_comm_extend), intent(in) :: each_exp_flags
-!
-      type(mark_for_each_comm), intent(inout) :: mark_ele
-!
-      integer(kind = kint) :: inod, icou, iele, k1
-      real(kind = kreal) :: anum
-!
-!
-      anum = one / real(ele%nnod_4_ele)
-      icou = 0
-      do iele = 1, ele%numele
-        if(each_exp_flags%iflag_ele(iele) .eq. 1) then
-          icou = icou + 1
-          mark_ele%idx_marked(icou) = iele
-          mark_ele%dist_marked(icou) = 0.0d0
-          do k1 = 1, ele%nnod_4_ele
-            inod = ele%ie(iele,k1)
-            mark_ele%dist_marked(icou) = mark_ele%dist_marked(icou)     &
-                                      + each_exp_flags%distance(inod)
-          end do
-          mark_ele%dist_marked(icou)                                    &
-                 = mark_ele%dist_marked(icou) * anum
-        end if
-      end do
-!
-      end subroutine set_mark_ele_to_extend
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
