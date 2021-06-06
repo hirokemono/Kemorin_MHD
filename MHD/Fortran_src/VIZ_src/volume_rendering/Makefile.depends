@@ -28,9 +28,9 @@ each_anaglyph_PVR.o: $(PVR_DIR)/each_anaglyph_PVR.f90 m_precision.o calypso_mpi.
 	$(F90) -c $(F90OPTFLAGS) $<
 each_volume_rendering.o: $(PVR_DIR)/each_volume_rendering.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_mesh_data.o t_phys_data.o t_jacobians.o t_surf_grp_list_each_surf.o t_rendering_vr_image.o t_control_params_4_pvr.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_geometries_in_pvr_screen.o t_pvr_field_data.o set_default_pvr_params.o set_position_pvr_screen.o mesh_outline_4_pvr.o generate_vr_image.o rendering_streo_vr_image.o t_control_data_pvr_sections.o set_pvr_control.o cal_pvr_projection_mat.o find_pvr_surf_domain.o set_iflag_for_used_ele.o cal_pvr_modelview_mat.o
 	$(F90) -c $(F90OPTFLAGS) $<
-find_pvr_surf_domain.o: $(PVR_DIR)/find_pvr_surf_domain.f90 m_precision.o m_constants.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_control_params_4_pvr.o t_surf_grp_4_pvr_domain.o t_geometries_in_pvr_screen.o t_group_data.o find_selected_domain_bd.o pvr_surface_enhancement.o ordering_pvr_sf_domain_grp.o cal_fline_in_cube.o set_position_pvr_screen.o
+find_pvr_surf_domain.o: $(PVR_DIR)/find_pvr_surf_domain.f90 m_precision.o m_constants.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_control_params_4_pvr.o t_surf_grp_4_pvr_domain.o t_geometries_in_pvr_screen.o find_selected_domain_bd.o pvr_surface_enhancement.o ordering_pvr_sf_domain_grp.o cal_fline_in_cube.o set_position_pvr_screen.o
 	$(F90) -c $(F90OPTFLAGS) $<
-generate_vr_image.o: $(PVR_DIR)/generate_vr_image.f90 m_precision.o m_machine_parameter.o m_constants.o calypso_mpi.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_normals.o set_position_pvr_screen.o find_pvr_surf_domain.o pvr_axis_label.o count_pvr_ray_start_point.o set_pvr_ray_start_point.o cal_field_on_surf_viz.o
+generate_vr_image.o: $(PVR_DIR)/generate_vr_image.f90 m_precision.o m_machine_parameter.o m_constants.o calypso_mpi.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o m_geometry_constants.o t_geometry_data.o t_surface_data.o set_position_pvr_screen.o find_pvr_surf_domain.o pvr_axis_label.o count_pvr_ray_start_point.o set_pvr_ray_start_point.o cal_field_on_surf_viz.o
 	$(F90) -c $(F90OPTFLAGS) $<
 mesh_outline_4_pvr.o: $(PVR_DIR)/mesh_outline_4_pvr.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_surf_grp_4_pvr_domain.o t_geometry_data.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -124,7 +124,7 @@ t_ctl_data_pvr_light.o: $(PVR_DIR)/t_ctl_data_pvr_light.f90 m_precision.o calyps
 	$(F90) -c $(F90OPTFLAGS) $<
 t_four_visualizers.o: $(PVR_DIR)/t_four_visualizers.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_VIZ_step_parameter.o t_time_data.o t_mesh_data.o t_comm_table.o t_phys_data.o t_next_node_ele_4_node.o t_VIZ_mesh_field.o t_control_data_vizs.o t_cross_section.o t_isosurface.o t_volume_rendering.o t_fieldline.o volume_rendering.o anaglyph_volume_rendering.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_geometries_in_pvr_screen.o: $(PVR_DIR)/t_geometries_in_pvr_screen.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_control_params_4_pvr.o set_projection_matrix.o
+t_geometries_in_pvr_screen.o: $(PVR_DIR)/t_geometries_in_pvr_screen.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_control_params_4_pvr.o set_projection_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_pvr_field_data.o: $(PVR_DIR)/t_pvr_field_data.f90 m_precision.o m_constants.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_geometries_in_pvr_screen.o t_control_params_4_pvr.o cal_gradient_on_element.o convert_components_4_viz.o
 	$(F90) -c $(F90OPTFLAGS) $<

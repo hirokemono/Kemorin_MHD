@@ -30,17 +30,14 @@
 !!        real(kind = kreal), intent(in) :: model_mat(4,4)
 !!        integer(kind = kint), intent(in) :: numnod
 !!        real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
-!!      subroutine project_once_each_element(project_mat, numnod,       &
-!!     &                                     x4_each_model)
-!!        real(kind = kreal), intent(in) :: project_mat(4,4)
-!!        integer(kind = kint), intent(in) :: numnod
-!!        real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
+!!      subroutine project_once_each_element                            &
+!!     &         (model_mat, project_mat, numnod, x4_projected)
 !!      subroutine project_once_each_ele_w_smp                          &
-!!     &         (model_mat, project_mat, numnod, x4_each_model)
+!!     &         (model_mat, project_mat, numnod, x4_projected)
 !!        real(kind = kreal), intent(in) :: model_mat(4,4)
 !!        real(kind = kreal), intent(in) :: project_mat(4,4)
 !!        integer(kind = kint), intent(in) :: numnod
-!!        real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
+!!        real(kind = kreal), intent(inout) :: x4_projected(4,numnod)
 !!
 !!      subroutine cal_position_pvr_modelview                           &
 !!     &         (model_mat, numnod, xx, x_nod_model)
@@ -171,15 +168,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine project_once_each_element(project_mat, numnod,         &
-     &                                     x4_each_model)
+      subroutine project_once_each_element                              &
+     &         (model_mat, project_mat, numnod, x4_projected)
 !
       use cal_matrix_vector_smp
 !
+      real(kind = kreal), intent(in) :: model_mat(4,4)
       real(kind = kreal), intent(in) :: project_mat(4,4)
 !
       integer(kind = kint), intent(in) :: numnod
-      real(kind = kreal), intent(inout) :: x4_each_model(4,numnod)
+      real(kind = kreal), intent(inout) :: x4_projected(4,numnod)
 !
       integer(kind = kint) :: inod
       real(kind = kreal) :: coef
