@@ -141,6 +141,7 @@
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
       integer(kind = kint) :: inod, icou, idummy
+      type(mark_for_each_comm) :: mark_nod_done
 !
 !
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
@@ -169,28 +170,6 @@
       end do
 !      write(*,*) my_rank, 'Maximum extend size is ', idummy
 !
-      icou = 0
-      do inod = 1, node%numnod
-        if(each_exp_flags%iflag_node(inod) .eq. -1) icou = icou + 1
-      end do
-      call alloc_mark_for_each_comm(icou, mark_nod)
-!
-      icou = 0
-      do inod = 1, node%numnod
-        if(each_exp_flags%iflag_node(inod) .eq. -1) then
-          icou = icou + 1
-          mark_nod%idx_marked(icou) = inod
-          mark_nod%dist_marked(icou) = each_exp_flags%distance(inod)
-!          write(*,*) my_rank, 'mark_nod', inod,                       &
-!     &           mark_nod%idx_marked(icou), mark_nod%dist_marked(icou)
-        end if
-      end do
-!
-      icou = count_mark_ele_to_extend(ele, each_exp_flags%iflag_ele)
-      call alloc_mark_for_each_comm(icou, mark_ele)
-      call set_mark_ele_to_extend(ele, each_exp_flags, mark_ele)
-!
-!
       icou = count_num_marked_list(-2, node%numnod,                     &
      &                             each_exp_flags%iflag_node)
       call alloc_mark_for_each_comm(icou, mark_nod_done)
@@ -205,39 +184,11 @@
 !
       icou = count_num_marked_list( 1, ele%numele,                      &
      &                             each_exp_flags%iflag_ele)
-      call alloc_mark_for_each_comm(icou, mark_ele_new)
+      call alloc_mark_for_each_comm(icou, mark_ele)
       call ele_distance_to_mark_list                                    &
-     &   ( 1, ele, each_exp_flags, mark_ele_new)
+     &   ( 1, ele, each_exp_flags, mark_ele)
 !
-!      write(*,*) 'mark_nod_done', mark_nod_done%num_marked
-      if(mark_nod_checked%num_marked .ne. mark_nod%num_marked) then
-        write(*,*) 'mark_nod_checked', mark_nod_checked%num_marked,  &
-     &            mark_nod%num_marked
-      end if
-      do icou = 1, mark_nod_checked%num_marked
-        if(mark_nod_checked%idx_marked(icou)          &
-     &         .ne. mark_nod%idx_marked(icou)) write(*,*) &
-     &    'Wrong mark_nod_checked%idx_marked(icou)', icou
-        if(mark_nod_checked%dist_marked(icou)          &
-     &         .ne. mark_nod%dist_marked(icou)) write(*,*)   &
-     &    'Wrong mark_nod_checked%dist_marked(icou)', icou
-      end do
 !
-      if(mark_ele_new%num_marked .ne. mark_ele%num_marked) then
-        write(*,*) 'mark_ele_new', mark_ele_new%num_marked,  &
-     &          mark_ele%num_marked
-      end if
-      do icou = 1, mark_ele_new%num_marked
-        if(mark_ele_new%idx_marked(icou)          &
-     &         .ne. mark_ele%idx_marked(icou)) write(*,*) &
-     &    'Wrong mark_ele_new%idx_marked(icou)', icou
-        if(mark_ele_new%dist_marked(icou)          &
-     &         .ne. mark_ele%dist_marked(icou)) write(*,*)   &
-     &    'Wrong mark_ele_new%dist_marked(icou)', icou
-      end do
-!
-      call dealloc_mark_for_each_comm(mark_ele_new)
-      call dealloc_mark_for_each_comm(mark_nod_checked)
       call dealloc_mark_for_each_comm(mark_nod_done)
 !
       end subroutine s_mark_node_ele_to_extend
