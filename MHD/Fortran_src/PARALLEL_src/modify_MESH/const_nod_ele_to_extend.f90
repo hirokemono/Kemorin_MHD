@@ -126,7 +126,7 @@
 !
       type(marks_for_sleeve_extend), intent(inout) :: marks_4_extend
 !
-      type(flags_each_comm_extend), allocatable :: each_exp_flags(:)
+      type(flags_each_comm_extend) :: each_exp_flags
 !
       integer(kind = kint) :: ip, i, igrp, jp, num
 !
