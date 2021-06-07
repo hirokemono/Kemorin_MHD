@@ -222,14 +222,25 @@
       real(kind= kreal) :: dist, dist_start
 !
 !
+!$omp parallel workshare
+      each_exp_flags%iflag_ele(1:ele%numele) = 0
+!$omp end parallel workshare
+!
+!$omp parallel workshare
+      each_exp_flags%iflag_node(1:node%numnod) = 0
       each_exp_flags%distance(1:node%numnod) = 0.0d0
+!$omp end parallel workshare
+!
 !
       ist = nod_comm%istack_import(igrp-1) + 1
       ied = nod_comm%istack_import(igrp)
+!$omp parallel do
       do inum = ist, ied
         inod = nod_comm%item_import(inum)
         each_exp_flags%distance(inod) = -1.0d0
       end do
+!$omp end parallel do
+!
       do inum = ist, ied
         inod = nod_comm%item_import(inum)
         if(each_exp_flags%distance(inod) .eq. -1.0d0) then
@@ -271,7 +282,7 @@
       ist = nod_comm%istack_export(igrp-1)
       num = nod_comm%istack_export(igrp) - ist
       do inum = 1, num
-        inod = nod_comm%item_import(inum+ist)
+        inod = nod_comm%item_export(inum+ist)
         each_exp_flags%iflag_node(inod) = -1
       end do
 !
