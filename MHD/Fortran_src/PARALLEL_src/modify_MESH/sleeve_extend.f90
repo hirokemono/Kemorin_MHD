@@ -17,7 +17,7 @@
 !!      subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm, &
 !!     &          org_node, org_ele, neib_ele, sleeve_exp_WK,           &
 !!     &          new_nod_comm, new_node, new_ele, new_ele_comm,        &
-!!     &          dist_4_comm, iflag_process_extend)
+!!     &          dist_4_comm, marks_4_extend, iflag_process_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: ele_comm
@@ -29,6 +29,7 @@
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
+!!        type(marks_for_sleeve_extend), intent(inout) :: marks_4_extend
 !!        integer(kind = kint), intent(inout) :: iflag_process_extend
 !!@endverbatim
 !
@@ -60,6 +61,7 @@
 !
       use t_next_node_ele_4_node
       use t_flags_each_comm_extend
+      use t_marks_for_sleeve_extend
       use calypso_mpi_int8
       use transfer_to_long_integers
       use set_ele_id_4_node_type
@@ -80,6 +82,7 @@
       type(communication_table), save :: new_ele_comm
 !
       type(dist_from_wall_in_export) :: dist_4_comm
+      type(marks_for_sleeve_extend) :: marks_4_extend1
 !
       integer(kind = kint_gl) :: ntot_numnod, ntot_internal_nod
       integer(kind = kint_gl) :: ntot_numele, ntot_import_ele
@@ -100,6 +103,8 @@
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
      &    sleeve_exp_WK, dist_4_comm%distance_in_export)
 !
+      call alloc_marks_4_sleeve_extend(nprocs, marks_4_extend1)
+      call init_empty_sleeve_ext_marks(nprocs, marks_4_extend1)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
@@ -108,7 +113,7 @@
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,               &
      &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
-     &      new_ele_comm, dist_4_comm, iflag_process_extend)
+     &      new_ele_comm, dist_4_comm, marks_4_extend1, iflag_process_extend)
         call s_extended_groups                                          &
      &     (mesh, group, newmesh, new_ele_comm, newgroup)
 !
@@ -140,6 +145,7 @@
      &     (mesh%nod_comm, mesh%node, sleeve_exp_p, sleeve_exp_WK)
       end do
 !
+      call dealloc_marks_4_sleeve_extend(marks_4_extend1)
       call dealloc_dist_from_wall_export(dist_4_comm)
 !
       call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),     &
@@ -167,7 +173,7 @@
       subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm,   &
      &          org_node, org_ele, neib_ele, sleeve_exp_WK,             &
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
-     &          dist_4_comm, iflag_process_extend)
+     &          dist_4_comm, marks_4_extend, iflag_process_extend)
 !
       use t_next_node_ele_4_node
       use t_repart_double_numberings
@@ -175,6 +181,7 @@
       use t_trim_overlapped_import
       use t_flags_each_comm_extend
       use t_mark_node_ele_to_extend
+      use t_marks_for_sleeve_extend
       use t_comm_table_for_each_pe
       use t_sort_data_for_sleeve_trim
       use t_work_nod_import_extend
@@ -203,6 +210,7 @@
       type(element_data), intent(inout) :: new_ele
       type(communication_table), intent(inout) :: new_ele_comm
       type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
+      type(marks_for_sleeve_extend), intent(inout) :: marks_4_extend
       integer(kind = kint), intent(inout) :: iflag_process_extend
 !
       type(node_ele_double_number), save :: inod_dbl
@@ -221,7 +229,7 @@
       type(data_for_trim_import), save :: ext_nod_trim
       type(work_nod_import_extend), save :: trim_nod_to_ext
 !
-      type(marks_for_sleeve_extension), save :: marks_4_extend
+      type(marks_for_sleeve_extension), save :: marks_4_extend_org
 !
       type(calypso_comm_table), save :: add_nod_comm
       type(calypso_comm_table), save :: add_ele_comm
@@ -236,21 +244,21 @@
       call alloc_double_numbering(org_ele%numele, iele_dbl)
       call double_numbering_4_element(org_ele, ele_comm, iele_dbl)
 !
-      call alloc_sleeve_extension_marks(nod_comm, marks_4_extend)
+      call alloc_sleeve_extension_marks(nod_comm, marks_4_extend_org)
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
-     &    neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend)
+     &    neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend_org)
 !
 !
 !
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
-     &    marks_4_extend%mark_nod, add_nod_comm, iflag_process_extend)
+     &    marks_4_extend_org%mark_nod, add_nod_comm, iflag_process_extend)
 !
       call comm_extended_import_nod_ele                                 &
      &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
-     &    marks_4_extend, expand_nod_comm, expand_ele_comm,             &
+     &    marks_4_extend_org, expand_nod_comm, expand_ele_comm,             &
      &    exp_import_xx, exp_import_ie)
-      call dealloc_sleeve_extension_marks(marks_4_extend)
+      call dealloc_sleeve_extension_marks(marks_4_extend_org)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
 !const_extended_node_position_org
