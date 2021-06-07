@@ -128,7 +128,7 @@
 !
       type(flags_each_comm_extend) :: each_exp_flags
 !
-      integer(kind = kint) :: ip, i, igrp, jp, num
+      integer(kind = kint) :: ip, igrp, num
 !
 !
       call alloc_flags_each_comm_extend                                 &
@@ -173,6 +173,7 @@
 !
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
+      use t_marks_for_sleeve_extend
 !
       use calypso_mpi_int
 !
