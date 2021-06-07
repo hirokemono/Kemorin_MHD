@@ -131,47 +131,37 @@
       integer(kind = kint) :: ip, i, igrp, jp, num
 !
 !
-      allocate(each_exp_flags(np_smp))
+      call alloc_flags_each_comm_extend                                 &
+     &   (node%numnod, ele%numele, each_exp_flags)
 !
-!$omp parallel do private(ip,i,igrp,jp,num)
-      do ip = 1, np_smp
-        call alloc_flags_each_comm_extend                               &
-     &     (node%numnod, ele%numele, each_exp_flags(ip))
-        do i = 1, nod_comm%num_neib/np_smp + 1
-          igrp = ip + (i-1) * np_smp
-          if(igrp .gt. nod_comm%num_neib) cycle
+      do igrp = 1, nod_comm%num_neib
+        call init_min_dist_from_import(igrp, sleeve_exp_p,              &
+     &      nod_comm, node, ele, neib_ele,                              &
+     &      sleeve_exp_WK, each_exp_flags)
 !
-          call init_min_dist_from_import(igrp, sleeve_exp_p,            &
-     &          nod_comm, node, ele, neib_ele,                          &
-     &          sleeve_exp_WK, each_exp_flags(ip))
+        ip = nod_comm%id_neib(igrp)
+        num = count_num_marked_list(-2, node%numnod,                    &
+     &                              each_exp_flags%iflag_node)
+        call alloc_mark_for_each_comm                                   &
+     &     (num, marks_4_extend%mark_nod_done(ip))
+        call set_distance_to_mark_list(-2, node%numnod,                 &
+     &     each_exp_flags, marks_4_extend%mark_nod_done(ip))
 !
-          jp = nod_comm%id_neib(igrp)
-          num = count_num_marked_list(-2, node%numnod,                  &
-     &                             each_exp_flags(ip)%iflag_node)
-          call alloc_mark_for_each_comm                                 &
-     &       (num, marks_4_extend%mark_nod_done(jp))
-          call set_distance_to_mark_list(-2, node%numnod,               &
-     &       each_exp_flags(ip), marks_4_extend%mark_nod_done(jp))
+        num = count_num_marked_list(-1, node%numnod,                    &
+     &                              each_exp_flags%iflag_node)
+        call alloc_mark_for_each_comm                                   &
+     &     (num, marks_4_extend%mark_nod_check(ip))
+        call set_distance_to_mark_list(-1, node%numnod,                 &
+     &     each_exp_flags, marks_4_extend%mark_nod_check(ip))
 !
-          num = count_num_marked_list(-1, node%numnod,                  &
-     &                             each_exp_flags(ip)%iflag_node)
-          call alloc_mark_for_each_comm                                 &
-     &       (num, marks_4_extend%mark_nod_check(jp))
-          call set_distance_to_mark_list(-1, node%numnod,               &
-     &       each_exp_flags(ip), marks_4_extend%mark_nod_check(jp))
-!
-          num = count_num_marked_list( 1, ele%numele,                   &
-     &                             each_exp_flags(ip)%iflag_ele)
-          call alloc_mark_for_each_comm                                 &
-     &       (num, marks_4_extend%mark_ele(jp))
-          call ele_distance_to_mark_list( 1, ele,                       &
-     &       each_exp_flags(ip), marks_4_extend% mark_ele(jp))
-        end do
-!
-        call dealloc_flags_each_comm_extend(each_exp_flags(ip))
+        num = count_num_marked_list( 1, ele%numele,                     &
+     &                              each_exp_flags%iflag_ele)
+        call alloc_mark_for_each_comm                                   &
+     &     (num, marks_4_extend%mark_ele(ip))
+        call ele_distance_to_mark_list( 1, ele,                         &
+     &     each_exp_flags, marks_4_extend% mark_ele(ip))
       end do
-!$omp end parallel do
-      deallocate(each_exp_flags)
+      call dealloc_flags_each_comm_extend(each_exp_flags)
 !
       end subroutine init_sleeve_expand_list
 !
@@ -179,7 +169,7 @@
 !
       subroutine const_sleeve_expand_list                               &
      &         (sleeve_exp_p, nod_comm, ele_comm, node, ele,            &
-     &          neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend)
+     &          neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend, marks_4_extend_org)
 !
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
@@ -194,8 +184,9 @@
       type(dist_from_wall_in_export), intent(in) :: dist_4_comm
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
+      type(marks_for_sleeve_extend), intent(inout) :: marks_4_extend
       type(marks_for_sleeve_extension),                                 &
-     &                     intent(inout) :: marks_4_extend
+     &                     intent(inout) :: marks_4_extend_org
 
       type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend), save :: each_exp_flags
@@ -213,11 +204,11 @@
         call s_mark_node_ele_to_extend                                  &
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
-     &      marks_4_extend%mark_nod(i), marks_4_extend%mark_ele(i),     &
+     &      marks_4_extend_org%mark_nod(i), marks_4_extend_org%mark_ele(i),     &
      &      each_exp_flags)
 !
         call check_missing_connect_to_extend(node, ele,                 &
-    &       marks_4_extend%mark_ele(i), each_exp_flags%iflag_node,      &
+    &       marks_4_extend_org%mark_ele(i), each_exp_flags%iflag_node,      &
     &       icou, jcou)
       end do
       call dealloc_flags_each_comm_extend(each_exp_flags)
@@ -231,10 +222,10 @@
 !
       if(i_debug .eq. 0) return
       write(*,*) my_rank, 'mark_nod%num_marked',                        &
-     &         marks_4_extend%mark_nod(1:nod_comm%num_neib)%num_marked, &
+     &         marks_4_extend_org%mark_nod(1:nod_comm%num_neib)%num_marked, &
      &        ' of ', node%numnod
       write(*,*) my_rank, 'mark_ele%num_marked',                        &
-     &         marks_4_extend%mark_ele(1:nod_comm%num_neib)%num_marked, &
+     &         marks_4_extend_org%mark_ele(1:nod_comm%num_neib)%num_marked, &
      &        ' of ', ele%numele
 !
       end subroutine const_sleeve_expand_list

@@ -251,7 +251,7 @@
       call alloc_sleeve_extension_marks(nod_comm, marks_4_extend_org)
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
-     &    neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend_org)
+     &    neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend, marks_4_extend_org)
 !
 !
 !
