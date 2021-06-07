@@ -212,9 +212,12 @@
      &     (-1, marks_4_extend%mark_nod_check(ip), each_exp_flags)
         call set_ele_mark_from_mark_list                                &
      &     ( 1, marks_4_extend%mark_ele(ip), each_exp_flags)
-        call dealloc_mark_for_each_comm(marks_4_extend%mark_ele(ip))
-        call dealloc_mark_for_each_comm(marks_4_extend%mark_ele(ip))
-        call dealloc_mark_for_each_comm(marks_4_extend%mark_ele(ip))
+        call dealloc_mark_for_each_comm                                 &
+     &     (marks_4_extend%mark_nod_done(ip))
+        call dealloc_mark_for_each_comm                                 &
+     &     (marks_4_extend%mark_nod_check(ip))
+        call dealloc_mark_for_each_comm                                 &
+     &     (marks_4_extend%mark_ele(ip))
 !
         call s_mark_node_ele_to_extend                                  &
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
