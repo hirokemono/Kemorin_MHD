@@ -13,7 +13,7 @@
 !!        integer(kind = kint), intent(in) :: numnod, numele
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!
-!!      subroutine init_min_dist_from_import(sleeve_exp_p,              &
+!!      subroutine init_min_dist_from_import_org(sleeve_exp_p,          &
 !!     &          nod_comm, node, ele, neib_ele,                        &
 !!     &          sleeve_exp_WK, dist_export)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
@@ -23,6 +23,17 @@
 !!        type(element_around_node), intent(in) :: neib_ele
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: dist_export(nod_comm%ntot_export)
+!!      subroutine init_min_dist_from_import(igrp, sleeve_exp_p,        &
+!!     &          nod_comm, node, ele, neib_ele,                        &
+!!     &          sleeve_exp_WK, each_exp_flags)
+!!        integer(kind = kint), intent(in) :: igrp
+!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(element_around_node), intent(in) :: neib_ele
+!!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
+!!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!      subroutine cal_min_dist_from_last_export(sleeve_exp_p,          &
 !!     &         node, ele, neib_ele, num_each_export, item_each_export,&
 !!     &         sleeve_exp_WK, each_exp_flags)
@@ -105,7 +116,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_min_dist_from_import(sleeve_exp_p,                &
+      subroutine init_min_dist_from_import_org(sleeve_exp_p,            &
      &          nod_comm, node, ele, neib_ele,                          &
      &          sleeve_exp_WK, dist_export)
 !
@@ -183,6 +194,86 @@
       end do
 !$omp end parallel do
       deallocate(dist_tmp)
+!
+      end subroutine init_min_dist_from_import_org
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_min_dist_from_import(igrp, sleeve_exp_p,          &
+     &          nod_comm, node, ele, neib_ele,                          &
+     &          sleeve_exp_WK, each_exp_flags)
+!
+      use t_ctl_param_sleeve_extend
+      use t_next_node_ele_4_node
+!
+      integer(kind = kint), intent(in) :: igrp
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(element_around_node), intent(in) :: neib_ele
+      type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
+!
+      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+!
+      integer(kind = kint) :: k1, jele
+      integer(kind = kint) :: ist, ied, num, inum, inod
+      integer(kind = kint) :: jst, jed, jnum, jnod
+      real(kind= kreal) :: dist, dist_start
+!
+!
+      each_exp_flags%distance(1:node%numnod) = 0.0d0
+!
+      ist = nod_comm%istack_import(igrp-1) + 1
+      ied = nod_comm%istack_import(igrp)
+      do inum = ist, ied
+        inod = nod_comm%item_import(inum)
+        each_exp_flags%distance(inod) = -1.0d0
+      end do
+      do inum = ist, ied
+        inod = nod_comm%item_import(inum)
+        if(each_exp_flags%distance(inod) .eq. -1.0d0) then
+          dist_start = 0.0d0
+        else
+          dist_start = each_exp_flags%distance(inod)
+        end if
+!
+        jst = neib_ele%istack_4_node(inod-1) + 1
+        jed = neib_ele%istack_4_node(inod)
+        do jnum = jst, jed
+          jele = neib_ele%iele_4_node(jnum)
+          if(each_exp_flags%iflag_ele(jele) .gt. 0) cycle
+!
+          each_exp_flags%iflag_ele(jele) = 1
+          do k1 = 1, ele%nnod_4_ele
+            jnod = ele%ie(jele,k1)
+            if(each_exp_flags%distance(jnod) .eq. -1.0d0) cycle
+!
+            dist = distance_select(sleeve_exp_p, inod, jnod,            &
+     &                     node, sleeve_exp_WK)
+            if(each_exp_flags%distance(jnod) .eq. 0.0d0) then
+              each_exp_flags%distance(jnod) = dist + dist_start
+            else
+              each_exp_flags%distance(jnod)                             &
+     &            = min(dist+dist_start, each_exp_flags%distance(jnod))
+            end if
+          end do
+        end do
+      end do
+!
+      ist = nod_comm%istack_import(igrp-1)
+      num = nod_comm%istack_import(igrp) - ist
+      do inum = 1, num
+        inod = nod_comm%item_import(inum+ist)
+        each_exp_flags%iflag_node(inod) = -2
+      end do
+!
+      ist = nod_comm%istack_export(igrp-1)
+      num = nod_comm%istack_export(igrp) - ist
+      do inum = 1, num
+        inod = nod_comm%item_import(inum+ist)
+        each_exp_flags%iflag_node(inod) = -1
+      end do
 !
       end subroutine init_min_dist_from_import
 !

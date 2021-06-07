@@ -69,6 +69,7 @@
       use copy_mesh_structures
       use nod_and_ele_derived_info
       use const_element_comm_tables
+      use const_nod_ele_to_extend
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !
@@ -99,11 +100,14 @@
       call alloc_dist_from_wall_export                                  &
      &   (mesh%nod_comm%ntot_export, dist_4_comm)
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
-      call init_min_dist_from_import                                    &
+      call init_min_dist_from_import_org                                &
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
      &    sleeve_exp_WK, dist_4_comm%distance_in_export)
 !
       call alloc_marks_4_sleeve_extend(nprocs, marks_4_extend1)
+      call init_sleeve_expand_list(sleeve_exp_p,                        &
+     &    mesh%nod_comm, mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,  &
+     &    marks_4_extend1)
       call init_empty_sleeve_ext_marks(nprocs, marks_4_extend1)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)

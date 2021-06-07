@@ -13,6 +13,17 @@
 !!        type(marks_for_sleeve_extension),                             &
 !!     &                     intent(inout) :: marks_4_extend
 !!
+!!      subroutine init_sleeve_expand_list(sleeve_exp_p,                &
+!!     &          nod_comm, node, ele, neib_ele, sleeve_exp_WK,         &
+!!     &          marks_4_extend)
+!!        integer, intent(in) :: nprocs
+!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(element_around_node), intent(in) :: neib_ele
+!!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
+!!        type(marks_for_sleeve_extend), intent(inout) :: marks_4_extend
 !!      subroutine const_sleeve_expand_list                             &
 !!     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele,          &
 !!     &          neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend)
@@ -96,6 +107,74 @@
       end subroutine dealloc_sleeve_extension_marks
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine init_sleeve_expand_list(sleeve_exp_p,                  &
+     &          nod_comm, node, ele, neib_ele, sleeve_exp_WK,           &
+     &          marks_4_extend)
+!
+      use t_ctl_param_sleeve_extend
+      use t_next_node_ele_4_node
+      use t_marks_for_sleeve_extend
+!
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(element_around_node), intent(in) :: neib_ele
+      type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
+!
+      type(marks_for_sleeve_extend), intent(inout) :: marks_4_extend
+!
+      type(flags_each_comm_extend), allocatable :: each_exp_flags(:)
+!
+      integer(kind = kint) :: ip, i, igrp, jp, num
+!
+!
+      allocate(each_exp_flags(np_smp))
+!
+!$omp parallel do private(ip,i,igrp,jp,num)
+      do ip = 1, np_smp
+        call alloc_flags_each_comm_extend                               &
+     &     (node%numnod, ele%numele, each_exp_flags(ip))
+        do i = 1, nod_comm%num_neib/np_smp + 1
+          igrp = ip + (i-1) * np_smp
+          if(igrp .gt. nod_comm%num_neib) cycle
+!
+          call init_min_dist_from_import(igrp, sleeve_exp_p,            &
+     &          nod_comm, node, ele, neib_ele,                          &
+     &          sleeve_exp_WK, each_exp_flags(ip))
+!
+          jp = nod_comm%id_neib(igrp)
+          num = count_num_marked_list(-2, node%numnod,                  &
+     &                             each_exp_flags(ip)%iflag_node)
+          call alloc_mark_for_each_comm                                 &
+     &       (num, marks_4_extend%mark_nod_done(jp))
+          call set_distance_to_mark_list(-2, node%numnod,               &
+     &       each_exp_flags(ip), marks_4_extend%mark_nod_done(jp))
+!
+          num = count_num_marked_list(-1, node%numnod,                  &
+     &                             each_exp_flags(ip)%iflag_node)
+          call alloc_mark_for_each_comm                                 &
+     &       (num, marks_4_extend%mark_nod_check(jp))
+          call set_distance_to_mark_list(-1, node%numnod,               &
+     &       each_exp_flags(ip), marks_4_extend%mark_nod_check(jp))
+!
+          num = count_num_marked_list( 1, ele%numele,                   &
+     &                             each_exp_flags(ip)%iflag_ele)
+          call alloc_mark_for_each_comm                                 &
+     &       (num, marks_4_extend%mark_ele(jp))
+          call ele_distance_to_mark_list( 1, ele,                       &
+     &       each_exp_flags(ip), marks_4_extend% mark_ele(jp))
+        end do
+!
+        call dealloc_flags_each_comm_extend(each_exp_flags(ip))
+      end do
+!$omp end parallel do
+      deallocate(each_exp_flags)
+!
+      end subroutine init_sleeve_expand_list
+!
 !  ---------------------------------------------------------------------
 !
       subroutine const_sleeve_expand_list                               &
