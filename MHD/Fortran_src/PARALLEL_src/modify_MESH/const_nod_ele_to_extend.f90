@@ -203,6 +203,8 @@
       jcou = 0
       do i = 1, nod_comm%num_neib
         ip = nod_comm%id_neib(i) + 1
+        call reset_each_mark_list                                       &
+     &     (node%numnod, ele%numele, each_exp_flags)
         call set_distance_from_mark_list                                &
      &     (-2, marks_4_extend%mark_nod_done(ip), each_exp_flags)
         call set_distance_from_mark_list                                &
