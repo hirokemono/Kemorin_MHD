@@ -191,27 +191,63 @@
 
       type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend), save :: each_exp_flags
-      integer(kind = kint) :: i, icou, jcou
+      type(flags_each_comm_extend), save :: each_exp_flags_org
+      integer(kind = kint) :: i, icou, jcou, num, ip
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
 !
       call alloc_flags_each_comm_extend                                 &
      &   (node%numnod, ele%numele, each_exp_flags)
+      call alloc_flags_each_comm_extend                                 &
+     &   (node%numnod, ele%numele, each_exp_flags_org)
       call alloc_comm_table_for_each(node, each_comm)
 !
       icou = 0
       jcou = 0
       do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i) + 1
+        call set_distance_from_mark_list                                &
+     &     (-2, marks_4_extend%mark_nod_done(ip), each_exp_flags)
+        call set_distance_from_mark_list                                &
+     &     (-1, marks_4_extend%mark_nod_check(ip), each_exp_flags)
+        call set_ele_mark_from_mark_list                                &
+     &     ( 1, marks_4_extend%mark_ele(ip), each_exp_flags)
+        call dealloc_mark_for_each_comm(marks_4_extend%mark_ele(ip))
+        call dealloc_mark_for_each_comm(marks_4_extend%mark_ele(ip))
+        call dealloc_mark_for_each_comm(marks_4_extend%mark_ele(ip))
+!
         call s_mark_node_ele_to_extend                                  &
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
      &      marks_4_extend_org%mark_nod(i), marks_4_extend_org%mark_ele(i),     &
-     &      each_exp_flags)
+     &      each_exp_flags_org)
+!
+        num = count_num_marked_list(-2, node%numnod,                    &
+     &                              each_exp_flags%iflag_node)
+        call alloc_mark_for_each_comm                                   &
+     &     (num, marks_4_extend%mark_nod_done(ip))
+        call set_distance_to_mark_list(-2, node%numnod,                 &
+     &     each_exp_flags, marks_4_extend%mark_nod_done(ip))
+!
+        num = count_num_marked_list(-1, node%numnod,                    &
+     &                              each_exp_flags%iflag_node)
+        call alloc_mark_for_each_comm                                   &
+     &     (num, marks_4_extend%mark_nod_check(ip))
+        call set_distance_to_mark_list(-1, node%numnod,                 &
+     &     each_exp_flags, marks_4_extend%mark_nod_check(ip))
+!
+        num = count_num_marked_list( 1, ele%numele,                     &
+     &                              each_exp_flags%iflag_ele)
+        call alloc_mark_for_each_comm                                   &
+     &     (num, marks_4_extend%mark_ele(ip))
+        call ele_distance_to_mark_list( 1, ele,                         &
+     &     each_exp_flags, marks_4_extend% mark_ele(ip))
 !
         call check_missing_connect_to_extend(node, ele,                 &
-    &       marks_4_extend_org%mark_ele(i), each_exp_flags%iflag_node,      &
+    &       marks_4_extend_org%mark_ele(i), each_exp_flags_org%iflag_node,      &
     &       icou, jcou)
       end do
+      call dealloc_flags_each_comm_extend(each_exp_flags_org)
       call dealloc_flags_each_comm_extend(each_exp_flags)
       call dealloc_comm_table_for_each(each_comm)
 !
