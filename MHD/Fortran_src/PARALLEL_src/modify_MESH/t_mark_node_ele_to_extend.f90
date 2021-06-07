@@ -145,13 +145,13 @@
 !
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
 !          for imported nodes
-!      call mark_by_last_import                                         &
-!     &  (ineib, node, nod_comm, each_exp_flags%iflag_node)
-!      call mark_by_last_export                                         &
-!     &  (sleeve_exp_p%dist_max, ineib, node, nod_comm, dist_4_comm,    &
-!     &   each_comm, each_exp_flags%distance, each_exp_flags%iflag_node)
-!      call mark_surround_ele_of_import(ineib, ele_comm, node, ele,     &
-!     &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
+      call mark_by_last_import                                          &
+     &  (ineib, node, nod_comm, each_exp_flags%iflag_node)
+      call mark_by_last_export                                          &
+     &  (sleeve_exp_p%dist_max, ineib, node, nod_comm, dist_4_comm,     &
+     &   each_comm, each_exp_flags%distance, each_exp_flags%iflag_node)
+      call mark_surround_ele_of_import(ineib, ele_comm, node, ele,      &
+     &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
 !
       do idummy = 2, 100
         if(i_debug .gt. 0) write(*,*) my_rank, 'extend loop for ',      &
@@ -168,6 +168,77 @@
      &     each_exp_flags%iflag_node)
       end do
 !      write(*,*) my_rank, 'Maximum extend size is ', idummy
+!
+      icou = 0
+      do inod = 1, node%numnod
+        if(each_exp_flags%iflag_node(inod) .eq. -1) icou = icou + 1
+      end do
+      call alloc_mark_for_each_comm(icou, mark_nod)
+!
+      icou = 0
+      do inod = 1, node%numnod
+        if(each_exp_flags%iflag_node(inod) .eq. -1) then
+          icou = icou + 1
+          mark_nod%idx_marked(icou) = inod
+          mark_nod%dist_marked(icou) = each_exp_flags%distance(inod)
+!          write(*,*) my_rank, 'mark_nod', inod,                       &
+!     &           mark_nod%idx_marked(icou), mark_nod%dist_marked(icou)
+        end if
+      end do
+!
+      icou = count_mark_ele_to_extend(ele, each_exp_flags%iflag_ele)
+      call alloc_mark_for_each_comm(icou, mark_ele)
+      call set_mark_ele_to_extend(ele, each_exp_flags, mark_ele)
+!
+!
+      icou = count_num_marked_list(-2, node%numnod,                     &
+     &                             each_exp_flags%iflag_node)
+      call alloc_mark_for_each_comm(icou, mark_nod_done)
+      call set_distance_to_mark_list                                    &
+     &   (-2, node%numnod, each_exp_flags, mark_nod_done)
+!
+      icou = count_num_marked_list(-1, node%numnod,                     &
+     &                             each_exp_flags%iflag_node)
+      call alloc_mark_for_each_comm(icou, mark_nod_checked)
+      call set_distance_to_mark_list                                    &
+     &   (-1, node%numnod, each_exp_flags, mark_nod_checked)
+!
+      icou = count_num_marked_list( 1, ele%numele,                      &
+     &                             each_exp_flags%iflag_ele)
+      call alloc_mark_for_each_comm(icou, mark_ele_new)
+      call ele_distance_to_mark_list                                    &
+     &   ( 1, ele, each_exp_flags, mark_ele_new)
+!
+!      write(*,*) 'mark_nod_done', mark_nod_done%num_marked
+      if(mark_nod_checked%num_marked .ne. mark_nod%num_marked) then
+        write(*,*) 'mark_nod_checked', mark_nod_checked%num_marked,  &
+     &            mark_nod%num_marked
+      end if
+      do icou = 1, mark_nod_checked%num_marked
+        if(mark_nod_checked%idx_marked(icou)          &
+     &         .ne. mark_nod%idx_marked(icou)) write(*,*) &
+     &    'Wrong mark_nod_checked%idx_marked(icou)', icou
+        if(mark_nod_checked%dist_marked(icou)          &
+     &         .ne. mark_nod%dist_marked(icou)) write(*,*)   &
+     &    'Wrong mark_nod_checked%dist_marked(icou)', icou
+      end do
+!
+      if(mark_ele_new%num_marked .ne. mark_ele%num_marked) then
+        write(*,*) 'mark_ele_new', mark_ele_new%num_marked,  &
+     &          mark_ele%num_marked
+      end if
+      do icou = 1, mark_ele_new%num_marked
+        if(mark_ele_new%idx_marked(icou)          &
+     &         .ne. mark_ele%idx_marked(icou)) write(*,*) &
+     &    'Wrong mark_ele_new%idx_marked(icou)', icou
+        if(mark_ele_new%dist_marked(icou)          &
+     &         .ne. mark_ele%dist_marked(icou)) write(*,*)   &
+     &    'Wrong mark_ele_new%dist_marked(icou)', icou
+      end do
+!
+      call dealloc_mark_for_each_comm(mark_ele_new)
+      call dealloc_mark_for_each_comm(mark_nod_checked)
+      call dealloc_mark_for_each_comm(mark_nod_done)
 !
       end subroutine s_mark_node_ele_to_extend
 !

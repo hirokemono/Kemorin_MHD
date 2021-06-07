@@ -191,12 +191,15 @@
 
       type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend), save :: each_exp_flags
+      type(flags_each_comm_extend), save :: each_exp_flags_o
       integer(kind = kint) :: i, icou, jcou, num, ip
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
 !
       call alloc_flags_each_comm_extend                                 &
      &   (node%numnod, ele%numele, each_exp_flags)
+      call alloc_flags_each_comm_extend                                 &
+     &   (node%numnod, ele%numele, each_exp_flags_o)
       call alloc_comm_table_for_each(node, each_comm)
 !
       icou = 0
@@ -222,7 +225,7 @@
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
      &      marks_4_extend_org%mark_nod(i), marks_4_extend_org%mark_ele(i),     &
-     &      each_exp_flags)
+     &      each_exp_flags_o)
 !
         num = count_num_marked_list(-2, node%numnod,                    &
      &                              each_exp_flags%iflag_node)
@@ -249,6 +252,7 @@
     &       marks_4_extend_org%mark_ele(i), each_exp_flags%iflag_node,  &
     &       icou, jcou)
       end do
+      call dealloc_flags_each_comm_extend(each_exp_flags_o)
       call dealloc_flags_each_comm_extend(each_exp_flags)
       call dealloc_comm_table_for_each(each_comm)
 !
