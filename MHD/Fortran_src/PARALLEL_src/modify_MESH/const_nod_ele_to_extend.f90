@@ -249,7 +249,7 @@
      &     each_exp_flags, marks_4_extend% mark_ele(ip))
 !
         call check_missing_connect_to_extend(node, ele,                 &
-    &       marks_4_extend_org%mark_ele(i), each_exp_flags%iflag_node,  &
+    &       marks_4_extend_org%mark_ele(i), each_exp_flags_o%iflag_node,  &
     &       icou, jcou)
       end do
       call dealloc_flags_each_comm_extend(each_exp_flags_o)
