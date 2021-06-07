@@ -139,7 +139,7 @@
      &      nod_comm, node, ele, neib_ele,                              &
      &      sleeve_exp_WK, each_exp_flags)
 !
-        ip = nod_comm%id_neib(igrp)
+        ip = nod_comm%id_neib(igrp) + 1
         num = count_num_marked_list(-2, node%numnod,                    &
      &                              each_exp_flags%iflag_node)
         call alloc_mark_for_each_comm                                   &
