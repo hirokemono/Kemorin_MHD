@@ -58,9 +58,6 @@
         real(kind = kreal), allocatable :: dist_marked(:)
       end type mark_for_each_comm
 !
-      private :: mark_by_last_import, mark_by_last_export
-      private :: mark_surround_ele_of_import
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -147,14 +144,6 @@
 !
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
 !          for imported nodes
-      call mark_by_last_import                                          &
-     &  (ineib, node, nod_comm, each_exp_flags_o%iflag_node)
-      call mark_by_last_export                                          &
-     &  (sleeve_exp_p%dist_max, ineib, node, nod_comm, dist_4_comm,     &
-     &   each_comm, each_exp_flags_o%distance, each_exp_flags_o%iflag_node)
-      call mark_surround_ele_of_import(ineib, ele_comm, node, ele,      &
-     &    each_exp_flags_o%iflag_node, each_exp_flags_o%iflag_ele)
-!
       do idummy = 2, 100
         if(i_debug .gt. 0) write(*,*) my_rank, 'extend loop for ',      &
      &                    idummy, each_comm%num_each_export

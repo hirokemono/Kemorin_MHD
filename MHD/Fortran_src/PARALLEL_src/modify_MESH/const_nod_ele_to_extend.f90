@@ -221,6 +221,14 @@
         call dealloc_mark_for_each_comm                                 &
      &     (marks_4_extend%mark_ele(ip))
 !
+      call mark_by_last_import                                          &
+     &  (i, node, nod_comm, each_exp_flags_o%iflag_node)
+      call mark_by_last_export                                          &
+     &  (sleeve_exp_p%dist_max, i, node, nod_comm, dist_4_comm,     &
+     &   each_comm, each_exp_flags_o%distance, each_exp_flags_o%iflag_node)
+      call mark_surround_ele_of_import(i, ele_comm, node, ele,      &
+     &    each_exp_flags_o%iflag_node, each_exp_flags_o%iflag_ele)
+!
         call s_mark_node_ele_to_extend                                  &
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
