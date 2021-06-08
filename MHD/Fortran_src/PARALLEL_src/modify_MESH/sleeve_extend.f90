@@ -88,6 +88,7 @@
       integer(kind = kint) :: iloop, ip
       type(element_around_node), save :: neib_ele
       type(marks_for_sleeve_extension) :: marks_4_saved1
+      integer(kind = kint) :: i, ist, num, inum
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
@@ -103,8 +104,25 @@
      &    sleeve_exp_WK, dist_4_comm%distance_in_export)
 !
       call alloc_sleeve_extension_marks(nprocs, marks_4_saved1)
+      marks_4_saved1%mark_nod(1:nprocs)%num_marked = -1
+!
+      do i = 1, mesh%nod_comm%num_neib
+        ip = mesh%nod_comm%id_neib(i)
+        ist = mesh%nod_comm%istack_export(i-1)
+        num = mesh%nod_comm%istack_export(i) - ist
+        call alloc_mark_for_each_comm(num, marks_4_saved1%mark_nod(ip))
+        do inum = 1, num
+          marks_4_saved1%mark_nod(ip)%idx_marked(inum)     &
+     &        = mesh%nod_comm%item_export(inum+ist)
+          marks_4_saved1%mark_nod(ip)%dist_marked(inum)    &
+     &        = dist_4_comm%distance_in_export(inum+ist)
+        end do
+      end do
+!
       do ip = 1, nprocs
-        call alloc_mark_for_each_comm(izero, marks_4_saved1%mark_nod(ip))
+        if(marks_4_saved1%mark_nod(ip)%num_marked .eq. -1) then
+          call alloc_mark_for_each_comm(izero, marks_4_saved1%mark_nod(ip))
+        end if
       end do
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
