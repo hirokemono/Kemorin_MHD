@@ -7,15 +7,17 @@
 !> @brief Routines to constructu elment communication table
 !!
 !!@verbatim
-!!      subroutine alloc_sleeve_extension_marks(nod_comm, marks_4_extend)
+!!      subroutine alloc_sleeve_extension_marks(num_neib, marks_4_extend)
 !!      subroutine dealloc_sleeve_extension_marks(marks_4_extend)
+!!        integer, intent(in) :: num_neib
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(marks_for_sleeve_extension),                             &
 !!     &                     intent(inout) :: marks_4_extend
 !!
 !!      subroutine const_sleeve_expand_list                             &
 !!     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele,          &
-!!     &          neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend)
+!!     &          neib_ele, dist_4_comm, sleeve_exp_WK,                 &
+!!     &          marks_4_saved, marks_4_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
@@ -23,6 +25,8 @@
 !!        type(element_around_node), intent(in) :: neib_ele
 !!        type(dist_from_wall_in_export), intent(in) :: dist_4_comm
 !!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
+!!      type(marks_for_sleeve_extension),                               &
+!!     &                     intent(inout) :: marks_4_saved
 !!        type(marks_for_sleeve_extension),                             &
 !!     &                     intent(inout) :: marks_4_extend
 !!      subroutine comm_extended_import_nod_ele                         &
@@ -70,15 +74,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_sleeve_extension_marks(nod_comm, marks_4_extend)
+      subroutine alloc_sleeve_extension_marks(num_neib, marks_4_extend)
 !
-      type(communication_table), intent(in) :: nod_comm
+      integer, intent(in) :: num_neib
       type(marks_for_sleeve_extension),                                 &
      &                     intent(inout) :: marks_4_extend
 !
 !
-      allocate(marks_4_extend%mark_nod(nod_comm%num_neib))
-      allocate(marks_4_extend%mark_ele(nod_comm%num_neib))
+      allocate(marks_4_extend%mark_nod(num_neib))
+      allocate(marks_4_extend%mark_ele(num_neib))
 !
       end subroutine alloc_sleeve_extension_marks
 !
@@ -100,7 +104,8 @@
 !
       subroutine const_sleeve_expand_list                               &
      &         (sleeve_exp_p, nod_comm, ele_comm, node, ele,            &
-     &          neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend)
+     &          neib_ele, dist_4_comm, sleeve_exp_WK,                   &
+     &          marks_4_saved, marks_4_extend)
 !
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
@@ -116,11 +121,13 @@
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       type(marks_for_sleeve_extension),                                 &
+     &                     intent(inout) :: marks_4_saved
+      type(marks_for_sleeve_extension),                                 &
      &                     intent(inout) :: marks_4_extend
 
       type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend), save :: each_exp_flags
-      integer(kind = kint) :: i, icou, jcou
+      integer(kind = kint) :: i, ip, icou, jcou
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
 !
@@ -131,11 +138,12 @@
       icou = 0
       jcou = 0
       do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i)
         call s_mark_node_ele_to_extend                                  &
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
-     &      marks_4_extend%mark_nod(i), marks_4_extend%mark_ele(i),     &
-     &      each_exp_flags)
+     &      marks_4_save%mark_nod(ip), marks_4_extend%mark_nod(i),      &
+     &      marks_4_extend%mark_ele(i), each_exp_flags)
 !
         call check_missing_connect_to_extend(node, ele,                 &
     &       marks_4_extend%mark_ele(i), each_exp_flags%iflag_node,      &

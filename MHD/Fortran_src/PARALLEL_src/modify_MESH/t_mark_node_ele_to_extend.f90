@@ -18,7 +18,7 @@
 !!      subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,       &
 !!     &          nod_comm, ele_comm, node, ele, neib_ele,              &
 !!     &          dist_4_comm, sleeve_exp_WK, each_comm,                &
-!!     &          mark_nod_checked, mark_ele, each_exp_flags)
+!!     &          mark_saved, mark_nod_checked, mark_ele, each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
@@ -27,7 +27,8 @@
 !!        type(dist_from_wall_in_export), intent(in) :: dist_4_comm
 !!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !!        type(comm_table_for_each_pe), intent(inout) :: each_comm
-!!        type(mark_for_each_comm), intent(inout) :: mark_nod
+!!        type(mark_for_each_comm), intent(inout) :: mark_saved
+!!        type(mark_for_each_comm), intent(inout) :: mark_nod_checked
 !!        type(mark_for_each_comm), intent(inout) :: mark_ele
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!
@@ -120,7 +121,7 @@
       subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,         &
      &          nod_comm, ele_comm, node, ele, neib_ele,                &
      &          dist_4_comm, sleeve_exp_WK, each_comm,                  &
-     &          mark_nod_checked, mark_ele, each_exp_flags)
+     &          mark_saved, mark_nod_checked, mark_ele, each_exp_flags)
 !
       use calypso_mpi
       use t_ctl_param_sleeve_extend
@@ -136,6 +137,7 @@
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       type(comm_table_for_each_pe), intent(inout) :: each_comm
+      type(mark_for_each_comm), intent(inout) :: mark_saved
       type(mark_for_each_comm), intent(inout) :: mark_nod_checked
       type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
@@ -154,6 +156,8 @@
      &   each_comm, each_exp_flags%distance, each_exp_flags%iflag_node)
       call mark_surround_ele_of_import(ineib, ele_comm, node, ele,      &
      &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
+!
+      call dealloc_mark_for_each_comm(mark_saved)
 !
       do idummy = 2, 100
         if(i_debug .gt. 0) write(*,*) my_rank, 'extend loop for ',      &
@@ -189,6 +193,10 @@
       call alloc_mark_for_each_comm(icou, mark_ele)
       call ele_distance_to_mark_list                                    &
      &   ( 1, ele, each_exp_flags, mark_ele)
+!
+      call alloc_mark_for_each_comm(mark_nod_checked%num_marked,        &
+     &                              mark_saved)
+      call copy_mark_for_each_comm(mark_nod_checked, mark_saved)
 !
 !      call dealloc_mark_for_each_comm(mark_ele)
 !      call dealloc_mark_for_each_comm(mark_nod_checked)

@@ -84,8 +84,9 @@
       integer(kind = kint_gl) :: ntot_numnod, ntot_internal_nod
       integer(kind = kint_gl) :: ntot_numele, ntot_import_ele
       integer(kind = kint) :: iflag_process_extend = 0
-      integer(kind = kint) :: iloop
+      integer(kind = kint) :: iloop, ip
       type(element_around_node), save :: neib_ele
+      type(marks_for_sleeve_extension) :: marks_4_saved1
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
@@ -100,6 +101,10 @@
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
      &    sleeve_exp_WK, dist_4_comm%distance_in_export)
 !
+      call alloc_sleeve_extension_marks(nprocs, marks_4_saved1)
+      do ip = 1, nprocs
+        call alloc_mark_for_each_comm(izero, marks_4_saved1%mark_nod(ip))
+      end do
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
@@ -140,6 +145,10 @@
      &     (mesh%nod_comm, mesh%node, sleeve_exp_p, sleeve_exp_WK)
       end do
 !
+      do ip = 1, nprocs
+        call dealloc_mark_for_each_comm(marks_4_saved1%mark_nod(ip))
+      end do
+      call dealloc_sleeve_extension_marks(marks_4_saved1)
       call dealloc_dist_from_wall_export(dist_4_comm)
 !
       call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),     &
@@ -203,6 +212,8 @@
       type(element_data), intent(inout) :: new_ele
       type(communication_table), intent(inout) :: new_ele_comm
       type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
+      type(marks_for_sleeve_extension),                                 &
+     &                     intent(inout) :: marks_4_saved
       integer(kind = kint), intent(inout) :: iflag_process_extend
 !
       type(node_ele_double_number), save :: inod_dbl
@@ -236,10 +247,12 @@
       call alloc_double_numbering(org_ele%numele, iele_dbl)
       call double_numbering_4_element(org_ele, ele_comm, iele_dbl)
 !
-      call alloc_sleeve_extension_marks(nod_comm, marks_4_extend)
+      call alloc_sleeve_extension_marks(int(nod_comm%num_neib),         &
+     &                                  marks_4_extend)
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
-     &    neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend)
+     &    neib_ele, dist_4_comm, sleeve_exp_WK,                         &
+     &    marks_4_saved, marks_4_extend)
 !
 !
 !
