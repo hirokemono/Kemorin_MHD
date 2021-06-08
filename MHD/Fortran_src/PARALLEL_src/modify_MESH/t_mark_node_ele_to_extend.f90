@@ -116,8 +116,7 @@
 !
       subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,         &
      &          nod_comm, ele_comm, node, ele, neib_ele,                &
-     &          sleeve_exp_WK, each_comm,                  &
-     &          mark_nod_checked, mark_ele, each_exp_flags, each_exp_flags_o)
+     &          sleeve_exp_WK, each_comm, each_exp_flags, each_exp_flags_o)
 !
       use calypso_mpi
       use t_ctl_param_sleeve_extend
@@ -132,8 +131,6 @@
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       type(comm_table_for_each_pe), intent(inout) :: each_comm
-      type(mark_for_each_comm), intent(inout) :: mark_nod_checked
-      type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags_o
 !
@@ -164,19 +161,6 @@
       call alloc_mark_for_each_comm(icou, mark_nod_done)
       call set_distance_to_mark_list                                    &
      &   (-2, node%numnod, each_exp_flags_o, mark_nod_done)
-!
-      icou = count_num_marked_list(-1, node%numnod,                     &
-     &                             each_exp_flags_o%iflag_node)
-      call alloc_mark_for_each_comm(icou, mark_nod_checked)
-      call set_distance_to_mark_list                                    &
-     &   (-1, node%numnod, each_exp_flags_o, mark_nod_checked)
-!
-      icou = count_num_marked_list( 1, ele%numele,                      &
-     &                             each_exp_flags_o%iflag_ele)
-      call alloc_mark_for_each_comm(icou, mark_ele)
-      call ele_distance_to_mark_list                                    &
-     &   ( 1, ele, each_exp_flags_o, mark_ele)
-!
 !
       call dealloc_mark_for_each_comm(mark_nod_done)
 !

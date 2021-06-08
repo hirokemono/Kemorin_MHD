@@ -45,7 +45,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(node_ele_double_number), intent(in) :: iele_dbl
-!!        type(marks_for_sleeve_extension) intent(in) :: marks_4_extend
+!!        type(marks_for_sleeve_extend), intent(in) :: marks_4_extend
 !!        type(communication_table), intent(inout) :: expand_nod_comm
 !!        type(communication_table), intent(inout) :: expand_ele_comm
 !!        type(node_data_for_sleeve_ext), intent(inout) :: exp_import_xx
@@ -169,7 +169,7 @@
 !
       subroutine const_sleeve_expand_list                               &
      &         (sleeve_exp_p, nod_comm, ele_comm, node, ele,            &
-     &          neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend, marks_4_extend_org)
+     &          neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend)
 !
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
@@ -186,8 +186,6 @@
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       type(marks_for_sleeve_extend), intent(inout) :: marks_4_extend
-      type(marks_for_sleeve_extension),                                 &
-     &                     intent(inout) :: marks_4_extend_org
 
       type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend), save :: each_exp_flags
@@ -219,6 +217,9 @@
 !     &     (-1, marks_4_extend%mark_nod_check(ip), each_exp_flags)
         call dealloc_mark_for_each_comm                                 &
      &     (marks_4_extend%mark_nod_check(ip))
+        call dealloc_mark_for_each_comm                                 &
+     &     (marks_4_extend%mark_ele(ip))
+!
         call mark_surround_ele_of_import(i, ele_comm, node, ele,        &
      &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
 !
@@ -241,9 +242,7 @@
      &     (i, node, nod_comm, each_exp_flags_o%iflag_node, each_comm)
         call s_mark_node_ele_to_extend                                  &
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
-     &      sleeve_exp_WK, each_comm,                      &
-     &      marks_4_extend_org%mark_nod(i), marks_4_extend_org%mark_ele(i),     &
-     &      each_exp_flags, each_exp_flags_o)
+     &      sleeve_exp_WK, each_comm, each_exp_flags, each_exp_flags_o)
 !
         num = count_num_marked_list(-1, node%numnod,                    &
      &                              each_exp_flags%iflag_node)
@@ -252,8 +251,14 @@
         call set_distance_to_mark_list(-1, node%numnod,                 &
      &     each_exp_flags, marks_4_extend%mark_nod_check(ip))
 !
+        num = count_num_marked_list( 1, ele%numele,                     &
+     &                              each_exp_flags%iflag_ele)
+        call alloc_mark_for_each_comm(num, marks_4_extend%mark_ele(ip))
+        call ele_distance_to_mark_list                                  &
+     &    ( 1, ele, each_exp_flags_o, marks_4_extend%mark_ele(ip))
+!
         call check_missing_connect_to_extend(node, ele,                 &
-    &       marks_4_extend_org%mark_ele(i), each_exp_flags_o%iflag_node,  &
+    &       marks_4_extend%mark_ele(ip), each_exp_flags_o%iflag_node,   &
     &       icou, jcou)
       end do
       call dealloc_flags_each_comm_extend(each_exp_flags_o)
@@ -268,10 +273,10 @@
 !
       if(i_debug .eq. 0) return
       write(*,*) my_rank, 'mark_nod%num_marked',                        &
-     &         marks_4_extend_org%mark_nod(1:nod_comm%num_neib)%num_marked, &
+     &         marks_4_extend%mark_nod_check(1:nprocs)%num_marked,      &
      &        ' of ', node%numnod
       write(*,*) my_rank, 'mark_ele%num_marked',                        &
-     &         marks_4_extend_org%mark_ele(1:nod_comm%num_neib)%num_marked, &
+     &         marks_4_extend%mark_ele(1:nprocs)%num_marked,            &
      &        ' of ', ele%numele
 !
       end subroutine const_sleeve_expand_list
@@ -283,6 +288,8 @@
      &          marks_4_extend, expand_nod_comm, expand_ele_comm,       &
      &          exp_import_xx, exp_import_ie)
 !
+      use t_marks_for_sleeve_extend
+!
       use calypso_mpi_int
       use reverse_SR_int
       use cal_minmax_and_stacks
@@ -293,7 +300,7 @@
       type(element_data), intent(in) :: ele
       type(node_ele_double_number), intent(in) :: inod_dbl
       type(node_ele_double_number), intent(in) :: iele_dbl
-      type(marks_for_sleeve_extension), intent(in) :: marks_4_extend
+      type(marks_for_sleeve_extend), intent(in) :: marks_4_extend
 !
       type(communication_table), intent(inout) :: expand_nod_comm
       type(communication_table), intent(inout) :: expand_ele_comm
@@ -323,7 +330,7 @@
 !$omp end parallel workshare
 !
       call count_export_4_expanded_mesh(nod_comm, node,                 &
-     &    marks_4_extend%mark_nod, marks_4_extend%mark_ele,             &
+     &    marks_4_extend%mark_nod_check, marks_4_extend%mark_ele,       &
      &    expand_nod_comm%num_export, expand_ele_comm%num_export)
       call s_cal_total_and_stacks                                       &
      &   (nod_comm%num_neib, expand_nod_comm%num_export, izero,         &
@@ -355,7 +362,7 @@
 !
       call set_export_4_expanded_mesh                                   &
      &   (nod_comm, node, ele, inod_dbl, iele_dbl,                      &
-     &    marks_4_extend%mark_nod, marks_4_extend%mark_ele,             &
+     &    marks_4_extend%mark_nod_check, marks_4_extend%mark_ele,       &
      &    expand_nod_comm%ntot_export, expand_nod_comm%istack_export,   &
      &    expand_ele_comm%ntot_export, expand_ele_comm%istack_export,   &
      &    expand_nod_comm%item_export, exp_export_xx,                   &

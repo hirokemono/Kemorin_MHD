@@ -233,8 +233,6 @@
       type(data_for_trim_import), save :: ext_nod_trim
       type(work_nod_import_extend), save :: trim_nod_to_ext
 !
-      type(marks_for_sleeve_extension), save :: marks_4_extend_org
-!
       type(calypso_comm_table), save :: add_nod_comm
       type(calypso_comm_table), save :: add_ele_comm
 !
@@ -248,21 +246,19 @@
       call alloc_double_numbering(org_ele%numele, iele_dbl)
       call double_numbering_4_element(org_ele, ele_comm, iele_dbl)
 !
-      call alloc_sleeve_extension_marks(nod_comm, marks_4_extend_org)
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
-     &    neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend, marks_4_extend_org)
+     &    neib_ele, dist_4_comm, sleeve_exp_WK, marks_4_extend)
 !
 !
 !
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
-     &    marks_4_extend_org%mark_nod, add_nod_comm, iflag_process_extend)
+     &    marks_4_extend%mark_nod_check, add_nod_comm, iflag_process_extend)
 !
       call comm_extended_import_nod_ele                                 &
      &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
-     &    marks_4_extend_org, expand_nod_comm, expand_ele_comm,             &
+     &    marks_4_extend, expand_nod_comm, expand_ele_comm,             &
      &    exp_import_xx, exp_import_ie)
-      call dealloc_sleeve_extension_marks(marks_4_extend_org)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
 !const_extended_node_position_org

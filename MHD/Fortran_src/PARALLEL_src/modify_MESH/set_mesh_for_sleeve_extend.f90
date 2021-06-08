@@ -32,10 +32,8 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(node_ele_double_number), intent(in) :: iele_dbl
-!!        type(mark_for_each_comm), intent(in)                          &
-!!     &                         :: mark_nod(nod_comm%num_neib)
-!!        type(mark_for_each_comm), intent(in)                          &
-!!     &                         :: mark_ele(nod_comm%num_neib)
+!!        type(mark_for_each_comm), intent(in) :: mark_nod(nprocs)
+!!        type(mark_for_each_comm), intent(in) :: mark_ele(nprocs)
 !!        integer(kind = kint), intent(in) :: ntot_new_nod_export
 !!        integer(kind = kint), intent(in)                              &
 !!     &            :: istack_new_nod_export(0:nod_comm%num_neib)
@@ -66,6 +64,9 @@
 !
       use m_precision
       use m_constants
+!
+      use calypso_mpi
+!
       use t_comm_table
       use t_geometry_data
       use t_para_double_numbering
@@ -86,10 +87,8 @@
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_nod(nod_comm%num_neib)
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_ele(nod_comm%num_neib)
+      type(mark_for_each_comm), intent(in) :: mark_nod(nprocs)
+      type(mark_for_each_comm), intent(in) :: mark_ele(nprocs)
 !
       integer(kind = kint), intent(inout)                               &
      &            :: num_new_export(nod_comm%num_neib)
@@ -97,12 +96,13 @@
      &            :: num_new_ele_export(nod_comm%num_neib)
 !
       integer(kind = kint), allocatable :: inod_in_comm(:)
-      integer(kind = kint) :: i, ist, num, inod, inum, icou
+      integer(kind = kint) :: i, ip, ist, num, inod, inum, icou
 !
 !
       allocate(inod_in_comm(node%numnod))
 !
       do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i) + 1
 !$omp parallel workshare
         inod_in_comm(1:node%numnod) = 0
 !$omp end parallel workshare
@@ -113,15 +113,15 @@
           inod_in_comm(inod) = inod
         end do
         icou = 0
-        do inum = 1, mark_nod(i)%num_marked
-          inod = mark_nod(i)%idx_marked(inum)
+        do inum = 1, mark_nod(ip)%num_marked
+          inod = mark_nod(ip)%idx_marked(inum)
           if(inod_in_comm(inod) .gt. 0) icou = icou + 1
         end do
 !
 !        write(*,*) my_rank, nod_comm%id_neib(i),                       &
 !     &           'marked import node', icou, num
-        num_new_export(i) =     mark_nod(i)%num_marked - icou
-        num_new_ele_export(i) = mark_ele(i)%num_marked
+        num_new_export(i) =     mark_nod(ip)%num_marked - icou
+        num_new_ele_export(i) = mark_ele(ip)%num_marked
       end do
 !
       deallocate(inod_in_comm)
@@ -144,10 +144,8 @@
       type(element_data), intent(in) :: ele
       type(node_ele_double_number), intent(in) :: inod_dbl
       type(node_ele_double_number), intent(in) :: iele_dbl
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_nod(nod_comm%num_neib)
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_ele(nod_comm%num_neib)
+      type(mark_for_each_comm), intent(in) :: mark_nod(nprocs)
+      type(mark_for_each_comm), intent(in) :: mark_ele(nprocs)
 !
       integer(kind = kint), intent(in) :: ntot_new_nod_export
       integer(kind = kint), intent(in)                                  &
@@ -166,13 +164,15 @@
 !
       integer(kind = kint), allocatable :: iflag_import(:)
       integer(kind = kint), allocatable :: inod_in_comm(:)
-      integer(kind = kint) :: i, ist, num, inod, inum, icou, iele, k1
+      integer(kind = kint) :: i, ip, ist, num, inod, inum
+      integer(kind = kint) :: icou, iele, k1
 !
 !
       allocate(iflag_import(node%numnod))
       allocate(inod_in_comm(node%numnod))
 !
       do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i) + 1
 !$omp parallel workshare
         iflag_import(1:node%numnod) = 0
         inod_in_comm(1:node%numnod) = 0
@@ -197,8 +197,8 @@
 !$omp end parallel do
 !
         icou = istack_new_nod_export(i-1)
-        do inum = 1, mark_nod(i)%num_marked
-          inod = mark_nod(i)%idx_marked(inum)
+        do inum = 1, mark_nod(ip)%num_marked
+          inod = mark_nod(ip)%idx_marked(inum)
           if(inod_in_comm(inod) .lt. 0) cycle
 
           icou = icou + 1
@@ -209,14 +209,14 @@
           exp_export_xx%xx_comm(3*icou  ) =  node%xx(inod,3)
           inod_lc_new_export(icou) = inod_dbl%index(inod)
           exp_export_xx%irank_comm(icou) = inod_dbl%irank(inod)
-          exp_export_xx%distance(icou) =  mark_nod(i)%dist_marked(inum)
+          exp_export_xx%distance(icou) = mark_nod(ip)%dist_marked(inum)
         end do
 !
         ist = istack_new_ele_export(i-1)
 !$omp parallel do private(inum,icou,iele,k1,inod)
-        do inum = 1, mark_ele(i)%num_marked
+        do inum = 1, mark_ele(ip)%num_marked
           icou = ist + inum
-          iele = mark_ele(i)%idx_marked(inum)
+          iele = mark_ele(ip)%idx_marked(inum)
           exp_export_ie%iele_gl_comm(icou) = ele%iele_global(iele)
           exp_export_ie%irank_comm(icou) = iele_dbl%irank(iele)
           iele_lc_new_export(icou) =   iele_dbl%index(iele)

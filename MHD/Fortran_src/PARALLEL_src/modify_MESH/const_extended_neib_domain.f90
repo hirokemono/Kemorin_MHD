@@ -53,8 +53,7 @@
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_ele_double_number), intent(in) :: inod_dbl
-      type(mark_for_each_comm),  intent(in)                             &
-     &                           :: mark_nod(nod_comm%num_neib)
+      type(mark_for_each_comm), intent(in) :: mark_nod(nprocs)
 !
       type(calypso_comm_table), intent(inout) :: add_nod_comm
       integer(kind = kint), intent(inout) :: iflag_process_extend
@@ -262,24 +261,24 @@
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_ele_double_number), intent(in) :: inod_dbl
-      type(mark_for_each_comm),  intent(in)                             &
-     &                           :: mark_nod(nod_comm%num_neib)
+      type(mark_for_each_comm), intent(in) :: mark_nod(nprocs)
 !
       integer(kind = kint), intent(inout) :: iflag_send_pe(nprocs)
       integer(kind = kint), intent(inout)                               &
      &                     :: np_new_export(nod_comm%num_neib)
 !
-      integer(kind = kint) :: i, inod, inum, irank
+      integer(kind = kint) :: i, ip, inod, inum, irank
 !
 !
       do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i) + 1
 !$omp parallel workshare
         iflag_send_pe(1:nprocs) = 0
 !$omp end parallel workshare
 !
         np_new_export(i) = 0
-        do inum = 1, mark_nod(i)%num_marked
-          inod = mark_nod(i)%idx_marked(inum)
+        do inum = 1, mark_nod(ip)%num_marked
+          inod = mark_nod(ip)%idx_marked(inum)
           irank = inod_dbl%irank(inod)
           if(iflag_send_pe(irank+1) .eq. 0) then
             np_new_export(i) = np_new_export(i) + 1
@@ -298,8 +297,7 @@
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_ele_double_number), intent(in) :: inod_dbl
-      type(mark_for_each_comm),  intent(in)                             &
-     &                           :: mark_nod(nod_comm%num_neib)
+      type(mark_for_each_comm), intent(in) :: mark_nod(nprocs)
       integer(kind = kint), intent(in)                                  &
      &               :: istack_pe_new_export(0:nod_comm%num_neib)
       integer(kind = kint), intent(in) :: ntot_pe_new_export
@@ -308,17 +306,18 @@
       integer(kind = kint), intent(inout)                               &
      &                     :: ip_new_export(ntot_pe_new_export)
 !
-      integer(kind = kint) :: i, icou, inod, inum, irank
+      integer(kind = kint) :: i, ip, icou, inod, inum, irank
 !
 !
       do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i) + 1
 !$omp parallel workshare
         iflag_send_pe(1:nprocs) = 0
 !$omp end parallel workshare
 !
         icou = istack_pe_new_export(i-1)
-        do inum = 1, mark_nod(i)%num_marked
-          inod = mark_nod(i)%idx_marked(inum)
+        do inum = 1, mark_nod(ip)%num_marked
+          inod = mark_nod(ip)%idx_marked(inum)
           irank = inod_dbl%irank(inod)
           if(iflag_send_pe(irank+1) .eq. 0) then
             icou = icou + 1
