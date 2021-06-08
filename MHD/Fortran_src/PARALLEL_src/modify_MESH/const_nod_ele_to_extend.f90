@@ -225,7 +225,7 @@
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
      &      marks_4_extend_org%mark_nod(i), marks_4_extend_org%mark_ele(i),     &
-     &      each_exp_flags_o)
+     &      each_exp_flags, each_exp_flags_o)
 !
         num = count_num_marked_list(-2, node%numnod,                    &
      &                              each_exp_flags%iflag_node)

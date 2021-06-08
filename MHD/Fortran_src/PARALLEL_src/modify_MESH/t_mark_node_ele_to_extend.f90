@@ -120,7 +120,7 @@
       subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,         &
      &          nod_comm, ele_comm, node, ele, neib_ele,                &
      &          dist_4_comm, sleeve_exp_WK, each_comm,                  &
-     &          mark_nod_checked, mark_ele, each_exp_flags)
+     &          mark_nod_checked, mark_ele, each_exp_flags, each_exp_flags_o)
 !
       use calypso_mpi
       use t_ctl_param_sleeve_extend
@@ -139,6 +139,7 @@
       type(mark_for_each_comm), intent(inout) :: mark_nod_checked
       type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+      type(flags_each_comm_extend), intent(inout) :: each_exp_flags_o
 !
       integer(kind = kint) :: inod, icou, idummy
       type(mark_for_each_comm) :: mark_nod_done
@@ -147,12 +148,12 @@
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
 !          for imported nodes
       call mark_by_last_import                                          &
-     &  (ineib, node, nod_comm, each_exp_flags%iflag_node)
+     &  (ineib, node, nod_comm, each_exp_flags_o%iflag_node)
       call mark_by_last_export                                          &
      &  (sleeve_exp_p%dist_max, ineib, node, nod_comm, dist_4_comm,     &
-     &   each_comm, each_exp_flags%distance, each_exp_flags%iflag_node)
+     &   each_comm, each_exp_flags_o%distance, each_exp_flags_o%iflag_node)
       call mark_surround_ele_of_import(ineib, ele_comm, node, ele,      &
-     &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
+     &    each_exp_flags_o%iflag_node, each_exp_flags_o%iflag_ele)
 !
       do idummy = 2, 100
         if(i_debug .gt. 0) write(*,*) my_rank, 'extend loop for ',      &
@@ -161,32 +162,32 @@
         call cal_min_dist_from_last_export                              &
      &     (sleeve_exp_p, node, ele, neib_ele,                          &
      &      each_comm%num_each_export, each_comm%item_each_export,      &
-     &      sleeve_exp_WK, each_exp_flags)
+     &      sleeve_exp_WK, each_exp_flags_o)
 !
         call set_new_export_to_extend                                   &
-     &     (sleeve_exp_p%dist_max, node, each_exp_flags%distance,       &
+     &     (sleeve_exp_p%dist_max, node, each_exp_flags_o%distance,     &
      &     each_comm%num_each_export, each_comm%item_each_export,       &
-     &     each_exp_flags%iflag_node)
+     &     each_exp_flags_o%iflag_node)
       end do
 !      write(*,*) my_rank, 'Maximum extend size is ', idummy
 !
       icou = count_num_marked_list(-2, node%numnod,                     &
-     &                             each_exp_flags%iflag_node)
+     &                             each_exp_flags_o%iflag_node)
       call alloc_mark_for_each_comm(icou, mark_nod_done)
       call set_distance_to_mark_list                                    &
-     &   (-2, node%numnod, each_exp_flags, mark_nod_done)
+     &   (-2, node%numnod, each_exp_flags_o, mark_nod_done)
 !
       icou = count_num_marked_list(-1, node%numnod,                     &
-     &                             each_exp_flags%iflag_node)
+     &                             each_exp_flags_o%iflag_node)
       call alloc_mark_for_each_comm(icou, mark_nod_checked)
       call set_distance_to_mark_list                                    &
-     &   (-1, node%numnod, each_exp_flags, mark_nod_checked)
+     &   (-1, node%numnod, each_exp_flags_o, mark_nod_checked)
 !
       icou = count_num_marked_list( 1, ele%numele,                      &
-     &                             each_exp_flags%iflag_ele)
+     &                             each_exp_flags_o%iflag_ele)
       call alloc_mark_for_each_comm(icou, mark_ele)
       call ele_distance_to_mark_list                                    &
-     &   ( 1, ele, each_exp_flags, mark_ele)
+     &   ( 1, ele, each_exp_flags_o, mark_ele)
 !
 !
       call dealloc_mark_for_each_comm(mark_nod_done)
