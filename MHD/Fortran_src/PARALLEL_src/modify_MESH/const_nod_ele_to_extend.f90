@@ -138,7 +138,7 @@
       icou = 0
       jcou = 0
       do i = 1, nod_comm%num_neib
-        ip = nod_comm%id_neib(i)
+        ip = nod_comm%id_neib(i) + 1
         call s_mark_node_ele_to_extend                                  &
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
