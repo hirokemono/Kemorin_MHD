@@ -126,8 +126,6 @@ t_linear_to_quad_list.o: $(MODIFY_PARA_MESHDIR)/t_linear_to_quad_list.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 t_mark_node_ele_to_extend.o: $(MODIFY_PARA_MESHDIR)/t_mark_node_ele_to_extend.f90 m_precision.o m_constants.o t_geometry_data.o t_comm_table.o t_comm_table_for_each_pe.o t_flags_each_comm_extend.o calypso_mpi.o t_ctl_param_sleeve_extend.o t_next_node_ele_4_node.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_marks_for_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/t_marks_for_sleeve_extend.f90 m_precision.o m_constants.o t_comm_table.o t_mark_node_ele_to_extend.o
-	$(F90) -c $(F90OPTFLAGS) $<
 t_mesh_for_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/t_mesh_for_sleeve_extend.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_quad_to_linear_list.o: $(MODIFY_PARA_MESHDIR)/t_quad_to_linear_list.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_comm_table.o t_surface_data.o calypso_mpi_int.o

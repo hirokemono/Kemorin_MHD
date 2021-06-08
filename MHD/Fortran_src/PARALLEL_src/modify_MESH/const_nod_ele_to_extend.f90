@@ -142,7 +142,7 @@
         call s_mark_node_ele_to_extend                                  &
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
-     &      marks_4_save%mark_nod(ip), marks_4_extend%mark_nod(i),      &
+     &      marks_4_saved%mark_nod(ip), marks_4_extend%mark_nod(i),     &
      &      marks_4_extend%mark_ele(i), each_exp_flags)
 !
         call check_missing_connect_to_extend(node, ele,                 &

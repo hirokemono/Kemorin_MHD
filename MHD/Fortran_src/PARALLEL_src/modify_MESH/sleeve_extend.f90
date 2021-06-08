@@ -67,6 +67,7 @@
       use copy_mesh_structures
       use nod_and_ele_derived_info
       use const_element_comm_tables
+      use const_nod_ele_to_extend
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !
@@ -113,7 +114,7 @@
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,               &
      &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
-     &      new_ele_comm, dist_4_comm, iflag_process_extend)
+     &      new_ele_comm, dist_4_comm, marks_4_saved1, iflag_process_extend)
         call s_extended_groups                                          &
      &     (mesh, group, newmesh, new_ele_comm, newgroup)
 !
@@ -176,7 +177,7 @@
       subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm,   &
      &          org_node, org_ele, neib_ele, sleeve_exp_WK,             &
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
-     &          dist_4_comm, iflag_process_extend)
+     &          dist_4_comm, marks_4_saved, iflag_process_extend)
 !
       use t_next_node_ele_4_node
       use t_repart_double_numberings
