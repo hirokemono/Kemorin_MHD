@@ -210,9 +210,13 @@
      &     (node%numnod, ele%numele, each_exp_flags)
 !        call set_distance_from_mark_list                               &
 !     &     (-2, marks_4_extend%mark_nod_done(ip), each_exp_flags)
+        call mark_by_last_import                                        &
+     &      (i, node, nod_comm, each_exp_flags%iflag_node)
         call mark_by_last_export(sleeve_exp_p%dist_max, node,           &
      &       marks_4_extend%mark_nod_check(ip),                &
      &      each_exp_flags%distance, each_exp_flags%iflag_node)
+        call mark_surround_ele_of_import(i, ele_comm, node, ele,      &
+     &      each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
 !        call set_distance_from_mark_list                               &
 !     &     (-1, marks_4_extend%mark_nod_check(ip), each_exp_flags)
 !        call set_ele_mark_from_mark_list                               &
@@ -247,7 +251,7 @@
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      sleeve_exp_WK, each_comm,                      &
      &      marks_4_extend_org%mark_nod(i), marks_4_extend_org%mark_ele(i),     &
-     &      each_exp_flags, each_exp_flags_o)
+     &      each_exp_flags_o, each_exp_flags)
 !
         num = count_num_marked_list(-2, node%numnod,                    &
      &                              each_exp_flags%iflag_node)
