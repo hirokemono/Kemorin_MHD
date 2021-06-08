@@ -116,7 +116,7 @@
 !
       subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,         &
      &          nod_comm, ele_comm, node, ele, neib_ele,                &
-     &          dist_4_comm, sleeve_exp_WK, each_comm,                  &
+     &          sleeve_exp_WK, each_comm,                  &
      &          mark_nod_checked, mark_ele, each_exp_flags, each_exp_flags_o)
 !
       use calypso_mpi
@@ -129,7 +129,6 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
-      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       type(comm_table_for_each_pe), intent(inout) :: each_comm
@@ -247,7 +246,40 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine mark_by_last_export                                    &
+      subroutine mark_by_last_export(dist_max, node, mark_nod_check,    &
+     &                               distance, iflag_node)
+!
+      real(kind = kreal), intent(in) :: dist_max
+      type(node_data), intent(in) :: node
+      type(mark_for_each_comm), intent(in) :: mark_nod_check
+!
+      real(kind = kreal), intent(inout) :: distance(node%numnod)
+      integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
+!
+      integer(kind = kint) :: icou, inod
+!
+!
+!$omp parallel workshare
+      distance(1:node%numnod) = 0.0d0
+!$omp end parallel workshare
+!
+!$omp parallel do private(icou,inod)
+      do icou = 1, mark_nod_check%num_marked
+        inod = mark_nod_check%idx_marked(icou)
+        distance(inod) = mark_nod_check%dist_marked(icou)
+        if(distance(inod) .lt. dist_max) then
+          iflag_node(inod) = -1
+        else
+          iflag_node(inod) = -2
+        end if
+      end do
+!$omp end parallel do
+!
+      end subroutine mark_by_last_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine mark_by_last_export_org                                &
      &         (dist_max, ineib, node, nod_comm, dist_4_comm,           &
      &          distance, iflag_node)
 !
@@ -281,7 +313,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine mark_by_last_export
+      end subroutine mark_by_last_export_org
 !
 !  ---------------------------------------------------------------------
 !

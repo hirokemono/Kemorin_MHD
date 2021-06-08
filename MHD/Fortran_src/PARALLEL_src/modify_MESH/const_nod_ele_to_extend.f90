@@ -208,32 +208,44 @@
         ip = nod_comm%id_neib(i) + 1
         call reset_each_mark_list                                       &
      &     (node%numnod, ele%numele, each_exp_flags)
-        call set_distance_from_mark_list                                &
-     &     (-2, marks_4_extend%mark_nod_done(ip), each_exp_flags)
-        call set_distance_from_mark_list                                &
-     &     (-1, marks_4_extend%mark_nod_check(ip), each_exp_flags)
-        call set_ele_mark_from_mark_list                                &
-     &     ( 1, marks_4_extend%mark_ele(ip), each_exp_flags)
+!        call set_distance_from_mark_list                               &
+!     &     (-2, marks_4_extend%mark_nod_done(ip), each_exp_flags)
+        call mark_by_last_export(sleeve_exp_p%dist_max, node,           &
+     &       marks_4_extend%mark_nod_check(ip),                &
+     &      each_exp_flags%distance, each_exp_flags%iflag_node)
+!        call set_distance_from_mark_list                               &
+!     &     (-1, marks_4_extend%mark_nod_check(ip), each_exp_flags)
+!        call set_ele_mark_from_mark_list                               &
+!     &     ( 1, marks_4_extend%mark_ele(ip), each_exp_flags)
         call dealloc_mark_for_each_comm                                 &
      &     (marks_4_extend%mark_nod_done(ip))
         call dealloc_mark_for_each_comm                                 &
      &     (marks_4_extend%mark_nod_check(ip))
         call dealloc_mark_for_each_comm                                 &
      &     (marks_4_extend%mark_ele(ip))
+        call mark_surround_ele_of_import(i, ele_comm, node, ele,        &
+     &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
 !
       call mark_by_last_import                                          &
-     &  (i, node, nod_comm, each_exp_flags_o%iflag_node)
-      call mark_by_last_export                                          &
+     &    (i, node, nod_comm, each_exp_flags_o%iflag_node)
+!
+      call mark_by_last_export_org                                      &
      &  (sleeve_exp_p%dist_max, i, node, nod_comm, dist_4_comm,     &
      &   each_exp_flags_o%distance, each_exp_flags_o%iflag_node)
       call mark_surround_ele_of_import(i, ele_comm, node, ele,      &
      &    each_exp_flags_o%iflag_node, each_exp_flags_o%iflag_ele)
 !
-        call set_each_export_item                                       &
+!      do inod = 1, node%numnod
+!        if(each_exp_flags_o%iflag_node(inod)        &
+!     &   .ne. each_exp_flags%iflag_node(inod)) write(*,*) &
+!     &    'failed', inod, each_exp_flags_o%iflag_node(inod),  &
+!     &     each_exp_flags%iflag_node(inod)
+!      end do
+        call set_each_export_item                                    &
      &     (i, node, nod_comm, each_exp_flags_o%iflag_node, each_comm)
         call s_mark_node_ele_to_extend                                  &
      &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
-     &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
+     &      sleeve_exp_WK, each_comm,                      &
      &      marks_4_extend_org%mark_nod(i), marks_4_extend_org%mark_ele(i),     &
      &      each_exp_flags, each_exp_flags_o)
 !
