@@ -249,7 +249,7 @@
 !
       subroutine mark_by_last_export                                    &
      &         (dist_max, ineib, node, nod_comm, dist_4_comm,           &
-     &          each_comm, distance, iflag_node)
+     &          distance, iflag_node)
 !
       real(kind = kreal), intent(in) :: dist_max
       integer(kind = kint), intent(in) :: ineib
@@ -257,11 +257,10 @@
       type(node_data), intent(in) :: node
       type(dist_from_wall_in_export), intent(in) :: dist_4_comm
 !
-      type(comm_table_for_each_pe), intent(inout) :: each_comm
       real(kind = kreal), intent(inout) :: distance(node%numnod)
       integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
 !
-      integer(kind = kint) :: inum, inod, ist, ied, jcou
+      integer(kind = kint) :: inum, inod, ist, ied
 !
 !
 !$omp parallel workshare
@@ -282,6 +281,25 @@
       end do
 !$omp end parallel do
 !
+      end subroutine mark_by_last_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_each_export_item                                   &
+     &         (ineib, node, nod_comm, iflag_node, each_comm)
+!
+      integer(kind = kint), intent(in) :: ineib
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: iflag_node(node%numnod)
+!
+      type(comm_table_for_each_pe), intent(inout) :: each_comm
+!
+      integer(kind = kint) :: inum, inod, ist, ied, jcou
+!
+!
+      ist = nod_comm%istack_export(ineib-1) + 1
+      ied = nod_comm%istack_export(ineib)
       jcou = 0
       do inum = ist, ied
         inod = nod_comm%item_export(inum)
@@ -292,8 +310,9 @@
       end do
       each_comm%num_each_export = jcou
 !
-      end subroutine mark_by_last_export
+      end subroutine set_each_export_item
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine mark_surround_ele_of_import                            &
