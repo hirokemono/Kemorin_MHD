@@ -15,6 +15,15 @@
 !!        type(mark_for_each_comm), intent(in) :: org_mark_comm
 !!        type(mark_for_each_comm), intent(inout) :: new_mark_comm
 !!
+!!      subroutine init_min_dist_from_import(sleeve_exp_p, nod_comm,    &
+!!     &          node, ele, neib_ele, sleeve_exp_WK, mark_saved)
+!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(element_around_node), intent(in) :: neib_ele
+!!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
+!!        type(mark_for_each_comm), intent(inout) :: mark_saved(nprocs)
 !!      subroutine s_mark_node_ele_to_extend                            &
 !!     &         (ineib, sleeve_exp_p, nod_comm, ele_comm, node, ele,   &
 !!     &          neib_ele, sleeve_exp_WK, each_comm, mark_saved,       &
@@ -140,21 +149,35 @@
 !
       allocate(dist_tmp(node%numnod))
 !
+!$omp parallel workshare
+      mark_saved(1:nprocs)%num_marked = -1
+!$omp end parallel workshare
+!
       do ineib = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(ineib) + 1
+        ist = nod_comm%istack_export(ineib-1)
+        num = nod_comm%istack_export(ineib) - ist
+        call alloc_mark_for_each_comm(num, mark_saved(ip))
+!
         call init_min_dist_each_import                                  &
      &     (ineib, sleeve_exp_p, nod_comm, node, ele, neib_ele,         &
      &      sleeve_exp_WK, dist_tmp)
 !
-        ip = nod_comm%id_neib(ineib) + 1
-        ist = nod_comm%istack_export(ineib-1)
-        num = nod_comm%istack_export(ineib) - ist
+!$omp parallel do private(inum,inod)
         do inum = 1, num
           inod = nod_comm%item_export(ist+inum)
           mark_saved(ip)%idx_marked(inum) =  inod
           mark_saved(ip)%dist_marked(inum) = dist_tmp(inod)
         end do
+!$omp end parallel do
       end do
       deallocate(dist_tmp)
+!
+      do ip = 1, nprocs
+        if(mark_saved(ip)%num_marked .eq. -1) then
+          call alloc_mark_for_each_comm(izero, mark_saved(ip))
+        end if
+      end do
 !
       end subroutine init_min_dist_from_import
 !

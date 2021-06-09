@@ -28,7 +28,6 @@
 !!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
 !!        type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
 !!        type(work_nod_import_extend), intent(inout) :: trim_nod_to_ext
-!!        type(dist_from_wall_in_export), intent(inout) :: dist_add
 !!@endverbatim
 !
       module const_extend_nod_comm_table

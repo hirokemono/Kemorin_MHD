@@ -11,10 +11,6 @@
 !!      subroutine dealloc_comm_table_for_each(each_comm)
 !!        type(node_data), intent(in) ::                 node
 !!        type(comm_table_for_each_pe), intent(inout) :: each_comm
-!!      subroutine alloc_dist_from_wall_export(ntot_export, dist)
-!!      subroutine dealloc_dist_from_wall_export(dist)
-!!        integer(kind = kint), intent(in) :: ntot_export
-!!        type(dist_from_wall_in_export), intent(inout) :: dist
 !!
 !!      subroutine init_comm_table_for_each(ineib, nod_comm, each_comm)
 !!        integer(kind = kint), intent(in) :: ineib
@@ -35,11 +31,6 @@
         integer(kind = kint) :: num_each_export = 0
         integer(kind = kint), allocatable :: item_each_export(:)
       end type comm_table_for_each_pe
-!
-      type dist_from_wall_in_export
-        integer(kind = kint) :: ntot = 0
-        real(kind = kreal), allocatable :: distance_in_export(:)
-      end type dist_from_wall_in_export
 !
 !  ---------------------------------------------------------------------
 !
@@ -69,32 +60,6 @@
       deallocate(each_comm%item_each_export)
 !
       end subroutine dealloc_comm_table_for_each
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_dist_from_wall_export(ntot_export, dist)
-!
-      integer(kind = kint), intent(in) :: ntot_export
-      type(dist_from_wall_in_export), intent(inout) :: dist
-!
-      dist%ntot = ntot_export
-      allocate(dist%distance_in_export(dist%ntot))
-!
-!$omp parallel workshare
-      dist%distance_in_export(1:dist%ntot) =  0.0d0
-!$omp end parallel workshare
-!
-      end subroutine alloc_dist_from_wall_export
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_dist_from_wall_export(dist)
-!
-      type(dist_from_wall_in_export), intent(inout) :: dist
-!
-      deallocate(dist%distance_in_export)
-!
-      end subroutine dealloc_dist_from_wall_export
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

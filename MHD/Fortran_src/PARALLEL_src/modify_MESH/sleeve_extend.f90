@@ -17,7 +17,7 @@
 !!      subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm, &
 !!     &          org_node, org_ele, neib_ele, sleeve_exp_WK,           &
 !!     &          new_nod_comm, new_node, new_ele, new_ele_comm,        &
-!!     &          dist_4_comm, iflag_process_extend)
+!!     &          marks_4_saved, iflag_process_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: ele_comm
@@ -28,7 +28,8 @@
 !!        type(node_data), intent(inout) :: new_node
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(communication_table), intent(inout) :: new_ele_comm
-!!        type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
+!!      type(marks_for_sleeve_extension),                               &
+!!     &                     intent(inout) :: marks_4_saved
 !!        integer(kind = kint), intent(inout) :: iflag_process_extend
 !!@endverbatim
 !
@@ -80,14 +81,13 @@
       type(mesh_groups), save :: newgroup
       type(communication_table), save :: new_ele_comm
 !
-      type(dist_from_wall_in_export) :: dist_4_comm
+      type(element_around_node), save :: neib_ele
+      type(marks_for_sleeve_extension) :: marks_4_saved1
 !
       integer(kind = kint_gl) :: ntot_numnod, ntot_internal_nod
       integer(kind = kint_gl) :: ntot_numele, ntot_import_ele
       integer(kind = kint) :: iflag_process_extend = 0
       integer(kind = kint) :: iloop, ip
-      type(element_around_node), save :: neib_ele
-      type(marks_for_sleeve_extension) :: marks_4_saved1
       integer(kind = kint) :: i, ist, num, inum
 !
 !
@@ -99,24 +99,10 @@
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
 !
       call alloc_sleeve_extension_marks(nprocs, marks_4_saved1)
-      marks_4_saved1%mark_nod(1:nprocs)%num_marked = -1
-!
-      do i = 1, mesh%nod_comm%num_neib
-        ip = mesh%nod_comm%id_neib(i) + 1
-        ist = mesh%nod_comm%istack_export(i-1)
-        num = mesh%nod_comm%istack_export(i) - ist
-        call alloc_mark_for_each_comm(num, marks_4_saved1%mark_nod(ip))
-      end do
-!
       call init_min_dist_from_import                                    &
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
      &    sleeve_exp_WK, marks_4_saved1%mark_nod)
 !
-      do ip = 1, nprocs
-        if(marks_4_saved1%mark_nod(ip)%num_marked .eq. -1) then
-          call alloc_mark_for_each_comm(izero, marks_4_saved1%mark_nod(ip))
-        end if
-      end do
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
