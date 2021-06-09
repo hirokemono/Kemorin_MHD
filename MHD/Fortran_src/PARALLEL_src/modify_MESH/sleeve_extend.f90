@@ -102,7 +102,7 @@
       marks_4_saved1%mark_nod(1:nprocs)%num_marked = -1
 !
       do i = 1, mesh%nod_comm%num_neib
-        ip = mesh%nod_comm%id_neib(i)
+        ip = mesh%nod_comm%id_neib(i) + 1
         ist = mesh%nod_comm%istack_export(i-1)
         num = mesh%nod_comm%istack_export(i) - ist
         call alloc_mark_for_each_comm(num, marks_4_saved1%mark_nod(ip))
