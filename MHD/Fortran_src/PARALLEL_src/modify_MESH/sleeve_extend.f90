@@ -17,7 +17,7 @@
 !!      subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm, &
 !!     &          org_node, org_ele, neib_ele, sleeve_exp_WK,           &
 !!     &          new_nod_comm, new_node, new_ele, new_ele_comm,        &
-!!     &          marks_4_saved, iflag_process_extend)
+!!     &          mark_saved, iflag_process_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: ele_comm
@@ -28,8 +28,7 @@
 !!        type(node_data), intent(inout) :: new_node
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(communication_table), intent(inout) :: new_ele_comm
-!!      type(marks_for_sleeve_extension),                               &
-!!     &                     intent(inout) :: marks_4_saved
+!!        type(mark_for_each_comm), intent(inout) :: mark_saved(nprocs)
 !!        integer(kind = kint), intent(inout) :: iflag_process_extend
 !!@endverbatim
 !
@@ -82,7 +81,7 @@
       type(communication_table), save :: new_ele_comm
 !
       type(element_around_node), save :: neib_ele
-      type(marks_for_sleeve_extension) :: marks_4_saved1
+      type(mark_for_each_comm), allocatable, save :: mark_saved1(:)
 !
       integer(kind = kint_gl) :: ntot_numnod, ntot_internal_nod
       integer(kind = kint_gl) :: ntot_numele, ntot_import_ele
@@ -98,10 +97,10 @@
 !
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
 !
-      call alloc_sleeve_extension_marks(nprocs, marks_4_saved1)
+      allocate(mark_saved1(nprocs))
       call init_min_dist_from_import                                    &
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
-     &    sleeve_exp_WK, marks_4_saved1%mark_nod)
+     &    sleeve_exp_WK, mark_saved1)
 !
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
@@ -111,7 +110,7 @@
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,               &
      &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
-     &      new_ele_comm, marks_4_saved1, iflag_process_extend)
+     &      new_ele_comm, mark_saved1, iflag_process_extend)
         call s_extended_groups                                          &
      &     (mesh, group, newmesh, new_ele_comm, newgroup)
 !
@@ -164,9 +163,9 @@
       end do
 !
       do ip = 1, nprocs
-        call dealloc_mark_for_each_comm(marks_4_saved1%mark_nod(ip))
+        call dealloc_mark_for_each_comm(mark_saved1(ip))
       end do
-      call dealloc_sleeve_extension_marks(marks_4_saved1)
+      deallocate(mark_saved1)
 !
       end subroutine sleeve_extension_loop
 !
@@ -175,7 +174,7 @@
       subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm,   &
      &          org_node, org_ele, neib_ele, sleeve_exp_WK,             &
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
-     &          marks_4_saved, iflag_process_extend)
+     &          mark_saved, iflag_process_extend)
 !
       use t_next_node_ele_4_node
       use t_repart_double_numberings
@@ -210,8 +209,7 @@
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
       type(communication_table), intent(inout) :: new_ele_comm
-      type(marks_for_sleeve_extension),                                 &
-     &                     intent(inout) :: marks_4_saved
+      type(mark_for_each_comm), intent(inout) :: mark_saved(nprocs)
       integer(kind = kint), intent(inout) :: iflag_process_extend
 !
       type(node_ele_double_number), save :: inod_dbl
@@ -230,7 +228,8 @@
       type(data_for_trim_import), save :: ext_nod_trim
       type(work_nod_import_extend), save :: trim_nod_to_ext
 !
-      type(marks_for_sleeve_extension), save :: marks_4_extend
+      type(mark_for_each_comm), allocatable, save :: mark_nod(:)
+      type(mark_for_each_comm), allocatable, save :: mark_ele(:)
 !
       type(calypso_comm_table), save :: add_nod_comm
       type(calypso_comm_table), save :: add_ele_comm
@@ -245,22 +244,22 @@
       call alloc_double_numbering(org_ele%numele, iele_dbl)
       call double_numbering_4_element(org_ele, ele_comm, iele_dbl)
 !
-      call alloc_sleeve_extension_marks(int(nod_comm%num_neib),         &
-     &                                  marks_4_extend)
+      allocate(mark_nod(nod_comm%num_neib))
+      allocate(mark_ele(nod_comm%num_neib))
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
-     &    neib_ele, sleeve_exp_WK, marks_4_saved, marks_4_extend)
+     &    neib_ele, sleeve_exp_WK, mark_saved, mark_nod, mark_ele)
 !
 !
 !
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
-     &    marks_4_extend%mark_nod, add_nod_comm, iflag_process_extend)
+     &    mark_nod, add_nod_comm, iflag_process_extend)
 !
       call comm_extended_import_nod_ele                                 &
      &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
-     &    marks_4_extend, expand_nod_comm, expand_ele_comm,             &
+     &    mark_nod, mark_ele, expand_nod_comm, expand_ele_comm,         &
      &    exp_import_xx, exp_import_ie)
-      call dealloc_sleeve_extension_marks(marks_4_extend)
+      deallocate(mark_nod, mark_ele)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
 !const_extended_node_position_org
