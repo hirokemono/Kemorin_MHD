@@ -74,18 +74,17 @@
       if(trns_bwd%ncomp .le. 0) return
 !
       call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
-     &   comms_sph%comm_rj, comms_sph%comm_rlm)
+     &   comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
-     &   comms_sph%comm_rtm, comms_sph%comm_rtp)
+     &   comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
 !
       call mhd_spectr_to_sendbuf                                        &
      &   (trns_bwd, comms_sph%comm_rj, rj_fld, SR_r1%n_WS, SR_r1%WS(1))
 !
       call sph_backward_transforms                                      &
      &   (trns_bwd%ncomp, trns_bwd%num_vector, trns_bwd%num_scalar,     &
-     &    sph, comms_sph, trans_p,                                      &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    trns_bwd%fld_rtp, WK_leg, WK_FFTs)
+     &    sph, comms_sph, trans_p, trns_bwd%fld_rtp,                    &
+     &    WK_leg, WK_FFTs, SR_sig1, SR_r1)
 !
 !
       end subroutine sph_back_trans_SGS_MHD
@@ -113,16 +112,15 @@
       if(trns_fwd%ncomp .le. 0) return
 !
       call check_calypso_sph_comm_buf_N(trns_fwd%ncomp,                 &
-     &    comms_sph%comm_rtp, comms_sph%comm_rtm)
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N(trns_fwd%ncomp,                 &
-     &    comms_sph%comm_rlm, comms_sph%comm_rj)
+     &    comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig1, SR_r1)
 !
 !   transform for vectors and scalars
       call sph_forward_transforms                                       &
      &   (trns_fwd%ncomp, trns_fwd%num_vector, trns_fwd%num_scalar,     &
      &    sph, comms_sph, trans_p, trns_fwd%fld_rtp,                    &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    WK_leg, WK_FFTs)
+     &    WK_leg, WK_FFTs, SR_sig1, SR_r1)
 !
       call mhd_spectr_from_recvbuf(trans_p%iflag_SPH_recv,              &
      &    trns_fwd, comms_sph%comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)

@@ -185,10 +185,10 @@
      &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld, vect1)
 !
 !
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_xyz_2_rj, comms_sph%comm_rtp, comms_sph%comm_rtm)
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_xyz_2_rj, comms_sph%comm_rlm, comms_sph%comm_rj)
+      call check_calypso_sph_comm_buf_N(ncomp_xyz_2_rj,                 &
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm, SR_sig1, SR_r1)
+      call check_calypso_sph_comm_buf_N(ncomp_xyz_2_rj,                 &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig1, SR_r1)
 !
       call copy_nod_vec_to_sph_trans                                    &
      &   (node1, sph_fld, iphys_sph%forces%i_vp_induct,                 &
@@ -200,8 +200,7 @@
       call sph_forward_transforms                                       &
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
      &    sph, comms_sph, trans_p, frc_hbd_rtp(1,1),                    &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    WK_leg_HBD, WK_FFTs_HBD)
+     &    WK_leg_HBD, WK_FFTs_HBD, SR_sig1, SR_r1)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%forces%i_vp_induct, f_hbd_trns%forces%i_vp_induct,       &
@@ -257,16 +256,15 @@
      &   (node1, sph_fld, iphys_sph%forces%i_vp_induct,                 &
      &    frc_hbd_rtp(1,f_hbd_trns%forces%i_vp_induct))
 !
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_xyz_2_rj, comms_sph%comm_rtp, comms_sph%comm_rtm)
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_xyz_2_rj, comms_sph%comm_rlm, comms_sph%comm_rj)
+      call check_calypso_sph_comm_buf_N(ncomp_xyz_2_rj,                 &
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm, SR_sig1, SR_r1)
+      call check_calypso_sph_comm_buf_N(ncomp_xyz_2_rj,                 &
+     &    comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig1, SR_r1)
 !
       call sph_forward_transforms                                       &
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
      &    sph, comms_sph, trans_p, frc_hbd_rtp(1,1),                    &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    WK_leg_HBD, WK_FFTs_HBD)
+     &    WK_leg_HBD, WK_FFTs_HBD, SR_sig1, SR_r1)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &   (ipol%forces%i_vp_induct, f_hbd_trns%i_vp_induct,              &
@@ -322,10 +320,10 @@
      &    trans_p%leg, ipol, rj_fld)
 !
 !
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_xyz, comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (ncomp_rj_2_xyz, comms_sph%comm_rtm, comms_sph%comm_rtp)
+      call check_calypso_sph_comm_buf_N(ncomp_rj_2_xyz,                 &
+     &    comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
+      call check_calypso_sph_comm_buf_N(ncomp_rj_2_xyz,                 &
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
 !
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%i_magne, b_hbd_trns%i_magne, rj_fld,                     &
@@ -347,11 +345,9 @@
       end if
 !
       call sph_b_trans_w_poles                                          &
-     &   (ncomp_rj_2_xyz, nvector_rj_2_xyz, izero,                      &
-     &    sph, comms_sph, trans_p,                                      &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS, SR_r1%WR,                   &
-     &    fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole,                      &
-     &    WK_leg_HBD, WK_FFTs_HBD))
+     &   (ncomp_rj_2_xyz, nvector_rj_2_xyz, izero, sph, comms_sph,      &
+     &    trans_p, fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole,             &
+     &    WK_leg_HBD, WK_FFTs_HBD), SR_sig1, SR_r1)
 !
 !
       call copy_nod_vec_from_trans_wpole                                &

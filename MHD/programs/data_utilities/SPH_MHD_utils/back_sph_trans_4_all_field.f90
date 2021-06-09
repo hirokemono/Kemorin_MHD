@@ -129,9 +129,9 @@
       nscalar_trans = trns_MHD%backward%num_scalar                      &
      &               + 6*trns_MHD%backward%num_tensor
       call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
-     &   comms_sph%comm_rj, comms_sph%comm_rlm)
+     &   comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
-     &   comms_sph%comm_rtm, comms_sph%comm_rtp)
+     &   comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
 !
       call copy_all_spectr_to_send                                      &
      &   (sph%sph_rtp%nnod_pole, trns_MHD%backward%ncomp,               &
@@ -141,9 +141,8 @@
       call sph_b_trans_w_poles                                          &
      &   (trns_MHD%backward%ncomp, trns_MHD%backward%num_vector,        &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
      &    trns_MHD%backward%fld_rtp, trns_MHD%backward%flc_pole,        &
-     &    trns_MHD%backward%fld_pole, WK_leg, WK_FFTs)
+     &    trns_MHD%backward%fld_pole, WK_leg, WK_FFTs, SR_sig1, SR_r1)
 !
       end subroutine sph_all_back_transform
 !

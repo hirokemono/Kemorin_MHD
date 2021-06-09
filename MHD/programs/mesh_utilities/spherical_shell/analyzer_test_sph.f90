@@ -122,7 +122,7 @@
         end if
 !
         call sph_type_indices_transfer                                  &
-     &     (itype, SPH_TEST%sph, SPH_TEST%comms)
+     &     (itype, SPH_TEST%sph, SPH_TEST%comms, SR_sig1, SR_i1)
         iflag(1) = check_missing_sph_indices(id_check, SPH_TEST%sph)
         iflag(2) = compare_transfer_sph_indices(id_check, SPH_TEST%sph)
 !

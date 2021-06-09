@@ -175,13 +175,17 @@
 !
 !
       call send_recv_sph_trans_N(iflag_recv, NB, nnod_rj, nnod_rlm,     &
-     &    comms_sph%comm_rj,  comms_sph%comm_rlm, X_rj, X_rlm)
+     &    comms_sph%comm_rj,  comms_sph%comm_rlm,                       &
+     &    X_rj, X_rlm, SR_sig1, SR_r1)
       call send_recv_sph_trans_N(iflag_recv, NB, nnod_rlm, nnod_rj,     &
-     &    comms_sph%comm_rlm, comms_sph%comm_rj, X_rlm, X_rj)
+     &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
+     &    X_rlm, X_rj, SR_sig1, SR_r1)
       call send_recv_sph_trans_N(iflag_recv, NB, nnod_rtp, nnod_rtm,    &
-     &    comms_sph%comm_rtp, comms_sph%comm_rtm, X_rtp, X_rtm)
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
+     &    X_rtp, X_rtm, SR_sig1, SR_r1)
       call send_recv_sph_trans_N(iflag_recv, NB, nnod_rtm, nnod_rtp,    &
-     &    comms_sph%comm_rtm, comms_sph%comm_rtp, X_rtm, X_rtp)
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
+     &    X_rtm, X_rtp, SR_sig1, SR_r1)
 !
       end subroutine all_sph_send_recv_N
 !
@@ -198,17 +202,17 @@
       call check_calypso_sph_buffer_N(NB, comms_sph)
 !
       call calypso_sph_comm_N                                           &
-     &   (NB, comms_sph%comm_rj, comms_sph%comm_rlm)
-      call finish_send_recv_sph(comms_sph%comm_rj)
+     &   (NB, comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
+      call finish_send_recv_sph(comms_sph%comm_rj, SR_sig1)
       call calypso_sph_comm_N                                           &
-     &   (NB, comms_sph%comm_rlm, comms_sph%comm_rj)
-      call finish_send_recv_sph(comms_sph%comm_rlm)
+     &   (NB, comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig1, SR_r1)
+      call finish_send_recv_sph(comms_sph%comm_rlm, SR_sig1)
       call calypso_sph_comm_N                                           &
-     &   (NB, comms_sph%comm_rtp, comms_sph%comm_rtm)
-      call finish_send_recv_sph(comms_sph%comm_rtp)
+     &   (NB, comms_sph%comm_rtp, comms_sph%comm_rtm, SR_sig1, SR_r1)
+      call finish_send_recv_sph(comms_sph%comm_rtp, SR_sig1)
       call calypso_sph_comm_N                                           &
-     &   (NB, comms_sph%comm_rtm, comms_sph%comm_rtp)
-      call finish_send_recv_sph(comms_sph%comm_rtm)
+     &   (NB, comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
+      call finish_send_recv_sph(comms_sph%comm_rtm, SR_sig1)
 !
       end subroutine all_sph_SR_core_N
 !
@@ -264,13 +268,13 @@
 !
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (NB, comms_sph%comm_rtp, comms_sph%comm_rtm)
+     &   (NB, comms_sph%comm_rtp, comms_sph%comm_rtm, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (NB, comms_sph%comm_rtm, comms_sph%comm_rtp)
+     &   (NB, comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (NB, comms_sph%comm_rj, comms_sph%comm_rlm)
+     &   (NB, comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (NB, comms_sph%comm_rlm, comms_sph%comm_rj)
+     &   (NB, comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig1, SR_r1)
 !
       end subroutine check_calypso_sph_buffer_N
 !

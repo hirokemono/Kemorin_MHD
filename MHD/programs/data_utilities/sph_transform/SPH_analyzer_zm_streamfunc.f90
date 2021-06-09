@@ -163,10 +163,10 @@
 !
       if (fld_rtp%num_vector .gt. 0) then
 !
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (fld_rtp%ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (fld_rtp%ncomp_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
+      call check_calypso_sph_comm_buf_N(fld_rtp%ncomp_trans,            &
+     &    comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
+      call check_calypso_sph_comm_buf_N(fld_rtp%ncomp_trans,            &
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
 !
       if (iflag_debug.gt.0)                                             &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
@@ -176,8 +176,8 @@
 !
       call sph_b_trans_w_poles(fld_rtp%ncomp_trans,                     &
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans, sph, comms_sph,    &
-     &    trans_p, SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),    &
-     &    dall_rtp, dlcl_pole, dall_pole, WK_leg, WK_FFTs)
+     &    trans_p, dall_rtp, dlcl_pole, dall_pole,                      &
+     &    WK_leg, WK_FFTs, SR_sig1, SR_r1)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'

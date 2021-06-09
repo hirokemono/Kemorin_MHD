@@ -119,9 +119,9 @@
 !
 !
       call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
-     &   comms_sph%comm_rj, comms_sph%comm_rlm)
+     &   comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
-     &   comms_sph%comm_rtm, comms_sph%comm_rtp)
+     &   comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
 !
       if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+8)
@@ -132,8 +132,7 @@
       if(trns_bwd%ncomp .eq. 0) return
       call sph_b_trans_w_coriolis(sph, comms_sph, fl_prop, sph_bc_U,    &
      &    omega_sph, b_trns, trans_p, gt_cor,                           &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    trns_bwd, WK_leg, WK_FFTs_MHD, cor_rlm)
+     &    trns_bwd, WK_leg, WK_FFTs_MHD, cor_rlm, SR_sig1, SR_r1)
 !
       end subroutine sph_back_trans_4_MHD
 !
@@ -162,15 +161,14 @@
 !
 !
       call check_calypso_sph_comm_buf_N(trns_fwd%ncomp,                 &
-     &    comms_sph%comm_rtp, comms_sph%comm_rtm)
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N(trns_fwd%ncomp,                 &
-     &    comms_sph%comm_rlm, comms_sph%comm_rj)
+     &    comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig1, SR_r1)
 !
       if(trns_fwd%ncomp .eq. 0) return
       call sph_f_trans_w_coriolis                                       &
-     &   (sph, comms_sph, fl_prop, trans_p, cor_rlm, f_trns,            &
-     &    trns_fwd, SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),   &
-     &    WK_leg, WK_FFTs_MHD)
+     &   (sph, comms_sph, fl_prop, trans_p, cor_rlm, f_trns, trns_fwd,  &
+     &    WK_leg, WK_FFTs_MHD, SR_sig1, SR_r1)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+9)
       call mhd_spectr_from_recvbuf(trans_p%iflag_SPH_recv,              &
@@ -197,9 +195,9 @@
 !
 !
       call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
-     &    comms_sph%comm_rj, comms_sph%comm_rlm)
+     &    comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
-     &    comms_sph%comm_rtm, comms_sph%comm_rtp)
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
 !
       if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
       call mhd_spectr_to_sendbuf(trns_bwd, comms_sph%comm_rj, rj_fld,   &
@@ -209,8 +207,7 @@
       call pole_b_transform                                             &
      &   (trns_bwd%ncomp, trns_bwd%num_vector, trns_bwd%num_scalar,     &
      &    sph, comms_sph, trans_p,                                      &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    trns_bwd%flc_pole, trns_bwd%fld_pole)
+     &    trns_bwd%flc_pole, trns_bwd%fld_pole, SR_sig1, SR_r1)
 !
       end subroutine sph_pole_trans_4_MHD
 !
@@ -245,20 +242,18 @@
      &   .or. trns_MHD%forward%ncomp .eq. 0) return
 !
       call check_calypso_sph_comm_buf_N                                 &
-     &   (trns_MHD%backward%ncomp, comm_rj, comm_rlm)
+     &   (trns_MHD%backward%ncomp, comm_rj, comm_rlm, SR_sig1, SR_r1)
       call check_calypso_sph_comm_buf_N                                 &
-     &   (trns_MHD%forward%ncomp, comm_rlm, comm_rj)
+     &   (trns_MHD%forward%ncomp, comm_rlm, comm_rj, SR_sig1, SR_r1)
 !
       call mhd_spectr_to_sendbuf                                        &
      &   (trns_MHD%backward, comm_rj, rj_fld, SR_r1%n_WS, SR_r1%WS(1))
 !
-      call sph_b_trans_licv(sph_rlm, comm_rlm, comm_rj,                 &
-     &    fl_prop, sph_bc_U, omega_sph, trans_p%leg, gt_cor,            &
-     &    trns_MHD%b_trns, trns_MHD%backward,                           &
-     &    SR_r1%n_WR, SR_r1%WR(1), cor_rlm)
-      call sph_f_trans_licv(sph_rlm, comm_rlm, comm_rj,                 &
-     &    fl_prop, cor_rlm, trns_MHD%f_trns, trns_MHD%forward,          &
-     &    SR_r1%n_WS, SR_r1%WS(1))
+      call sph_b_trans_licv(sph_rlm, comm_rlm, comm_rj, fl_prop,        &
+     &    sph_bc_U, omega_sph, trans_p%leg, gt_cor,                     &
+     &    trns_MHD%b_trns, trns_MHD%backward, cor_rlm, SR_sig1, SR_r1)
+      call sph_f_trans_licv(sph_rlm, comm_rlm, comm_rj, fl_prop,        &
+     &    cor_rlm, trns_MHD%f_trns, trns_MHD%forward, SR_sig1, SR_r1)
 !
       call mhd_spectr_from_recvbuf(trans_p%iflag_SPH_recv,              &
      &    trns_MHD%forward, comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)

@@ -23,6 +23,7 @@
       use m_precision
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use m_solver_SR
 !
       implicit none
 !
@@ -104,22 +105,22 @@
       call send_recv_sph_trans                                          &
      &   (iflag_recv, sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,       &
      &   comms_sph%comm_rtp, comms_sph%comm_rtm,                        &
-     &    X_global_rtp(1), X_rtm_recieve(1) )
+     &    X_global_rtp(1), X_rtm_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'scalar comm. for rtm => rtp'
       call send_recv_sph_trans                                          &
      &   (iflag_recv, sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,       &
      &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
-     &    X_global_rtm(1), X_rtp_recieve(1) )
+     &    X_global_rtm(1), X_rtp_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'scalar comm. for rj => rlm'
       call send_recv_sph_trans                                          &
      &   (iflag_recv, sph%sph_rj%nnod_rj, sph%sph_rlm%nnod_rlm,         &
      &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
-     &    X_global_rj(1), X_rlm_recieve(1) )
+     &    X_global_rj(1), X_rlm_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'scalar comm. for rlm => rj'
       call send_recv_sph_trans                                          &
      &   (iflag_recv, sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,         &
      &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
-     &    X_global_rlm(1), X_rj_recieve(1) )
+     &    X_global_rlm(1), X_rj_recieve(1), SR_sig1, SR_r1)
 !
       end subroutine sph_transfer_test_1
 !
@@ -143,22 +144,22 @@
       call send_recv_sph_trans_2                                        &
      &   (iflag_recv, sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,       &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
-     &    X_global_rtp(1), X_rtm_recieve(1) )
+     &    X_global_rtp(1), X_rtm_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'solenoidal comm. for rtm => rtp'
       call send_recv_sph_trans_2                                        &
      &   (iflag_recv, sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,       &
      &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
-     &    X_global_rtm(1), X_rtp_recieve(1) )
+     &    X_global_rtm(1), X_rtp_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'solenoidal comm. for rj => rlm'
       call send_recv_sph_trans_2                                        &
      &   (iflag_recv, sph%sph_rj%nnod_rj, sph%sph_rlm%nnod_rlm,         &
      &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
-     &    X_global_rj(1), X_rlm_recieve(1) )
+     &    X_global_rj(1), X_rlm_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'solenoidal comm. for rlm => rj'
       call send_recv_sph_trans_2                                        &
      &   (iflag_recv, sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,         &
      &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
-     &    X_global_rlm(1), X_rj_recieve(1) )
+     &    X_global_rlm(1), X_rj_recieve(1), SR_sig1, SR_r1)
 !
       end subroutine sph_transfer_test_2
 !
@@ -182,22 +183,22 @@
       call send_recv_sph_trans_3                                        &
      &   (iflag_recv, sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,       &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
-     &    X_global_rtp(1), X_rtm_recieve(1) )
+     &    X_global_rtp(1), X_rtm_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'vector comm. for rtm => rtp'
       call send_recv_sph_trans_3                                        &
      &   (iflag_recv, sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,       &
      &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
-     &    X_global_rtm(1), X_rtp_recieve(1) )
+     &    X_global_rtm(1), X_rtp_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'vector comm. for rj => rlm'
       call send_recv_sph_trans_3                                        &
      &   (iflag_recv, sph%sph_rj%nnod_rj, sph%sph_rlm%nnod_rlm,         &
      &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
-     &    X_global_rj(1), X_rlm_recieve(1) )
+     &    X_global_rj(1), X_rlm_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'vector comm. for rlm => rj'
       call send_recv_sph_trans_3                                        &
      &   (iflag_recv, sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,         &
      &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
-     &    X_global_rlm(1), X_rj_recieve(1) )
+     &    X_global_rlm(1), X_rj_recieve(1), SR_sig1, SR_r1)
 !
       end subroutine sph_transfer_test_3
 !
@@ -221,22 +222,22 @@
       call send_recv_sph_trans_6                                        &
      &   (iflag_recv, sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,       &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
-     &    X_global_rtp(1), X_rtm_recieve(1) )
+     &    X_global_rtp(1), X_rtm_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'sym. tensor comm. for rtm => rtp'
       call send_recv_sph_trans_6                                        &
      &   (iflag_recv, sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,       &
      &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
-     &    X_global_rtm(1), X_rtp_recieve(1) )
+     &    X_global_rtm(1), X_rtp_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'sym. tensor comm. for rj => rlm'
       call send_recv_sph_trans_6                                        &
      &   (iflag_recv, sph%sph_rj%nnod_rj,  sph%sph_rlm%nnod_rlm,        &
      &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
-     &    X_global_rj(1), X_rlm_recieve(1) )
+     &    X_global_rj(1), X_rlm_recieve(1), SR_sig1, SR_r1)
       if (my_rank .eq. 0) write(*,*) 'sym. tensor comm. for rlm => rj'
       call send_recv_sph_trans_6                                        &
      &   (iflag_recv, sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,         &
      &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
-     &    X_global_rlm(1), X_rj_recieve(1) )
+     &    X_global_rlm(1), X_rj_recieve(1), SR_sig1, SR_r1)
 !
       end subroutine sph_transfer_test_6
 !
@@ -261,25 +262,25 @@
       call send_recv_sph_trans_N                                        &
      &   (iflag_recv, NB, sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,   &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
-     &    X_global_rtp(1), X_rtm_recieve(1))
+     &    X_global_rtp(1), X_rtm_recieve(1), SR_sig1, SR_r1)
 !
       if (my_rank .eq. 0) write(*,*) 'N-vector comm. for rtm => rtp'
       call send_recv_sph_trans_N                                        &
      &   (iflag_recv, NB, sph%sph_rtm%nnod_rtm, sph%sph_rtp%nnod_rtp,   &
      &    comms_sph%comm_rtm, comms_sph%comm_rtp,                       &
-     &    X_global_rtm(1), X_rtp_recieve(1))
+     &    X_global_rtm(1), X_rtp_recieve(1), SR_sig1, SR_r1)
 !
       if (my_rank .eq. 0) write(*,*) 'N-vector comm. for rj => rlm'
       call send_recv_sph_trans_N                                        &
      &   (iflag_recv, NB, sph%sph_rj%nnod_rj, sph%sph_rlm%nnod_rlm,     &
      &    comms_sph%comm_rj, comms_sph%comm_rlm,                        &
-     &    X_global_rj(1), X_rlm_recieve(1))
+     &    X_global_rj(1), X_rlm_recieve(1), SR_sig1, SR_r1)
 !
       if (my_rank .eq. 0) write(*,*) 'N-vector comm. for rlm => rj'
       call send_recv_sph_trans_N                                        &
      &   (iflag_recv, NB, sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,     &
      &    comms_sph%comm_rlm, comms_sph%comm_rj,                        &
-     &    X_global_rlm(1), X_rj_recieve(1))
+     &    X_global_rlm(1), X_rj_recieve(1), SR_sig1, SR_r1)
 !
       end subroutine sph_transfer_test_N
 !
