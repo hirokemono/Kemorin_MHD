@@ -56,6 +56,8 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter, private :: max_extend_loop = 10
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -99,11 +101,29 @@
       integer(kind = kint_gl) :: ntot_numele, ntot_import_ele
       integer(kind = kint) :: iflag_process_extend = 0
       integer(kind = kint) :: iloop, ip
-      integer(kind = kint) :: i, ist, num, inum
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+      call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),     &
+     &                                 ntot_numnod, MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int8                                  &
+     & (cast_long(mesh%node%internal_node), ntot_internal_nod,          &
+     &  MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int8(cast_long(mesh%ele%numele),      &
+     &                               ntot_numele, MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int8(cast_long(ele_comm%ntot_import), &
+     &                                 ntot_import_ele, MPI_SUM, 0)
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'Internal Node and Element: ',                       &
+     &            ntot_internal_nod, (ntot_numele-ntot_import_ele)
+        write(*,*) 'Node, Element at initial'
+        write(*,*) 'Total:    ', ntot_numnod, ntot_numele
+        write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),       &
+     &                          ntot_import_ele
+      end if
+!
       call init_work_vector_sleeve_ext                                  &
      &   (mesh%nod_comm, mesh%node, sleeve_exp_p, sleeve_exp_WK)
 !
@@ -117,7 +137,7 @@
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
-      do iloop = 1, 10
+      do iloop = 1, max_extend_loop
         if(iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve', iloop
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,               &
@@ -146,9 +166,6 @@
         call calypso_mpi_barrier
         call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),   &
      &                                 ntot_numnod, MPI_SUM, 0)
-        call calypso_mpi_reduce_one_int8                                &
-     &   (cast_long(mesh%node%internal_node), ntot_internal_nod,        &
-     &    MPI_SUM, 0)
         call calypso_mpi_reduce_one_int8(cast_long(mesh%ele%numele),    &
      &                                 ntot_numele, MPI_SUM, 0)
         call calypso_mpi_reduce_one_int8                                &
@@ -156,15 +173,14 @@
      &                                 ntot_import_ele, MPI_SUM, 0)
 !
         if(my_rank .eq. 0) then
-          write(*,*) 'total, internal, sleve node '
-          write(*,*) ntot_numnod, ntot_internal_nod,                    &
-     &           (ntot_numnod-ntot_internal_nod)
-          write(*,*) 'total, internal, sleve element '
-          write(*,*) ntot_numele, (ntot_numele-ntot_import_ele),        &
-     &            ntot_import_ele
+          write(*,*) 'Node, Element at level ', iloop
+          write(*,*) 'Total:    ', ntot_numnod, ntot_numele
+          write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),     &
+     &                            ntot_import_ele
         end if
 !
         if(iflag_process_extend .eq. 0) exit
+        if(iloop .eq. max_extend_loop) exit
         if(my_rank .eq. 0) write(*,*) 'sleeve extension again'
 !
         call set_nod_and_ele_infos(mesh%node, mesh%ele)
