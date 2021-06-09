@@ -153,6 +153,26 @@
 !        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
         call calypso_mpi_barrier
+        call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),   &
+     &                                 ntot_numnod, MPI_SUM, 0)
+        call calypso_mpi_reduce_one_int8                                &
+     &   (cast_long(mesh%node%internal_node), ntot_internal_nod,        &
+     &    MPI_SUM, 0)
+        call calypso_mpi_reduce_one_int8(cast_long(mesh%ele%numele),    &
+     &                                 ntot_numele, MPI_SUM, 0)
+        call calypso_mpi_reduce_one_int8                                &
+     &                                (cast_long(ele_comm%ntot_import), &
+     &                                 ntot_import_ele, MPI_SUM, 0)
+!
+        if(my_rank .eq. 0) then
+          write(*,*) 'total, internal, sleve node '
+          write(*,*) ntot_numnod, ntot_internal_nod,                    &
+     &           (ntot_numnod-ntot_internal_nod)
+          write(*,*) 'total, internal, sleve element '
+          write(*,*) ntot_numele, (ntot_numele-ntot_import_ele),        &
+     &            ntot_import_ele
+        end if
+!
         if(iflag_process_extend .eq. 0) exit
         if(my_rank .eq. 0) write(*,*) 'sleeve extension again'
 !
@@ -169,24 +189,6 @@
       end do
       call dealloc_sleeve_extension_marks(marks_4_saved1)
       call dealloc_dist_from_wall_export(dist_4_comm)
-!
-      call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),     &
-     &                                 ntot_numnod, MPI_SUM, 0)
-      call calypso_mpi_reduce_one_int8                                  &
-     &   (cast_long(mesh%node%internal_node), ntot_internal_nod,        &
-     &    MPI_SUM, 0)
-      call calypso_mpi_reduce_one_int8(cast_long(mesh%ele%numele),      &
-     &                                 ntot_numele, MPI_SUM, 0)
-      call calypso_mpi_reduce_one_int8(cast_long(ele_comm%ntot_import), &
-     &                                 ntot_import_ele, MPI_SUM, 0)
-!
-      if(my_rank .gt. 0) return
-      write(*,*) 'total, internal, sleve node '
-      write(*,*) ntot_numnod, ntot_internal_nod,                        &
-     &         (ntot_numnod-ntot_internal_nod)
-      write(*,*) 'total, internal, sleve element '
-      write(*,*) ntot_numele, (ntot_numele-ntot_import_ele),            &
-     &          ntot_import_ele
 !
       end subroutine sleeve_extension_loop
 !

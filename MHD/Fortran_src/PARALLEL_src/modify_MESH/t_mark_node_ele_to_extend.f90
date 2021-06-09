@@ -151,9 +151,9 @@
 !          for imported nodes
       call mark_by_last_import                                          &
      &  (ineib, node, nod_comm, each_exp_flags%iflag_node)
-      call mark_by_last_export                                          &
-     &  (sleeve_exp_p%dist_max, ineib, node, nod_comm, dist_4_comm,     &
-     &   each_comm, each_exp_flags%distance, each_exp_flags%iflag_node)
+      call mark_by_last_export (sleeve_exp_p%dist_max, ineib,           &
+     &   node, nod_comm, dist_4_comm, mark_saved, each_comm,            &
+     &   each_exp_flags%distance, each_exp_flags%iflag_node)
       call mark_surround_ele_of_import(ineib, ele_comm, node, ele,      &
      &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
 !
@@ -270,13 +270,14 @@
 !
       subroutine mark_by_last_export                                    &
      &         (dist_max, ineib, node, nod_comm, dist_4_comm,           &
-     &          each_comm, distance, iflag_node)
+     &          mark_saved, each_comm, distance, iflag_node)
 !
       real(kind = kreal), intent(in) :: dist_max
       integer(kind = kint), intent(in) :: ineib
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(dist_from_wall_in_export), intent(in) :: dist_4_comm
+      type(mark_for_each_comm), intent(inout) :: mark_saved
 !
       type(comm_table_for_each_pe), intent(inout) :: each_comm
       real(kind = kreal), intent(inout) :: distance(node%numnod)
@@ -289,19 +290,27 @@
       distance(1:node%numnod) = 0.0d0
 !$omp end parallel workshare
 !
-      ist = nod_comm%istack_export(ineib-1) + 1
-      ied = nod_comm%istack_export(ineib)
 !$omp parallel do private(inum,inod)
-      do inum = ist, ied
-        inod = nod_comm%item_export(inum)
-        distance(inod) = dist_4_comm%distance_in_export(inum)
-        if(distance(inod) .lt. dist_max) then
-          iflag_node(inod) = -1
-        else
-          iflag_node(inod) = -2
-        end if
+      do inum = 1, mark_saved%num_marked
+        inod = mark_saved%idx_marked(inum)
+        distance(inod) = mark_saved%dist_marked(inum)
+        iflag_node(inod) = -1
       end do
 !$omp end parallel do
+!
+      ist = nod_comm%istack_export(ineib-1) + 1
+      ied = nod_comm%istack_export(ineib)
+!!$omp parallel do private(inum,inod)
+!      do inum = ist, ied
+!        inod = nod_comm%item_export(inum)
+!        distance(inod) = dist_4_comm%distance_in_export(inum)
+!        if(distance(inod) .lt. dist_max) then
+!          iflag_node(inod) = -1
+!        else
+!          iflag_node(inod) = -2
+!        end if
+!      end do
+!!$omp end parallel do
 !
       jcou = 0
       do inum = ist, ied
