@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine sleeve_extension_loop                                &
-!!     &         (sleeve_exp_p, mesh, group, ele_comm, sleeve_exp_WK)
+!!     &         (sleeve_exp_p, mesh, group, ele_comm, sleeve_exp_WK,   &
+!!     &          SR_sig, SR_r, SR_i)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) :: group
@@ -17,19 +18,23 @@
 !!      subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm, &
 !!     &          org_node, org_ele, neib_ele, sleeve_exp_WK,           &
 !!     &          new_nod_comm, new_node, new_ele, new_ele_comm,        &
-!!     &          mark_saved, iflag_process_extend)
+!!     &      new_ele_comm, mark_saved1, SR_sig, SR_r, SR_i,            &
+!!     &      iflag_process_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(node_data), intent(in) :: org_node
 !!        type(element_data), intent(in) :: org_ele
+!!        integer(kind = kint), intent(inout) :: iflag_process_extend
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!        type(communication_table), intent(inout) :: new_nod_comm
 !!        type(node_data), intent(inout) :: new_node
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(mark_for_each_comm), intent(inout) :: mark_saved(nprocs)
-!!        integer(kind = kint), intent(inout) :: iflag_process_extend
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module sleeve_extend
@@ -46,6 +51,8 @@
       use t_ctl_param_sleeve_extend
       use t_para_double_numbering
       use t_comm_table_for_each_pe
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
@@ -56,7 +63,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sleeve_extension_loop                                  &
-     &         (sleeve_exp_p, mesh, group, ele_comm, sleeve_exp_WK)
+     &         (sleeve_exp_p, mesh, group, ele_comm, sleeve_exp_WK,     &
+     &          SR_sig, SR_r, SR_i)
 !
       use t_next_node_ele_4_node
       use t_flags_each_comm_extend
@@ -75,6 +83,10 @@
       type(mesh_groups), intent(inout) :: group
       type(communication_table), intent(inout) :: ele_comm
       type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+!
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       type(mesh_geometry), save :: newmesh
       type(mesh_groups), save :: newgroup
@@ -110,7 +122,8 @@
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,               &
      &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
-     &      new_ele_comm, mark_saved1, iflag_process_extend)
+     &      new_ele_comm, mark_saved1, SR_sig, SR_r, SR_i,              &
+     &      iflag_process_extend)
         call s_extended_groups                                          &
      &     (mesh, group, newmesh, new_ele_comm, newgroup)
 !
@@ -174,7 +187,7 @@
       subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm,   &
      &          org_node, org_ele, neib_ele, sleeve_exp_WK,             &
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
-     &          mark_saved, iflag_process_extend)
+     &          mark_saved, SR_sig, SR_r, SR_i, iflag_process_extend)
 !
       use t_next_node_ele_4_node
       use t_repart_double_numberings
@@ -205,12 +218,16 @@
       type(element_around_node), intent(in) :: neib_ele
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
+      integer(kind = kint), intent(inout) :: iflag_process_extend
       type(communication_table), intent(inout) :: new_nod_comm
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
       type(communication_table), intent(inout) :: new_ele_comm
       type(mark_for_each_comm), intent(inout) :: mark_saved(nprocs)
-      integer(kind = kint), intent(inout) :: iflag_process_extend
+!
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       type(node_ele_double_number), save :: inod_dbl
       type(node_ele_double_number), save :: iele_dbl
@@ -248,7 +265,8 @@
       allocate(mark_ele(nod_comm%num_neib))
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
-     &    neib_ele, sleeve_exp_WK, mark_saved, mark_nod, mark_ele)
+     &    neib_ele, sleeve_exp_WK, mark_saved, mark_nod, mark_ele,      &
+     &    SR_sig, SR_r, SR_i)
 !
 !
 !

@@ -68,7 +68,7 @@
         real(kind = kreal), allocatable :: dist_marked(:)
       end type mark_for_each_comm
 !
-      private :: mark_by_last_import, mark_by_last_export
+      private :: mark_by_last_import
       private :: mark_surround_ele_of_import
 !
 !  ---------------------------------------------------------------------
@@ -210,10 +210,11 @@
 !
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
 !          for imported nodes
+      call reset_flags_each_comm_extend                                 &
+     &   (node%numnod, ele%numele, each_exp_flags)
       call mark_by_last_import                                          &
      &  (ineib, node, nod_comm, each_exp_flags%iflag_node)
-      call mark_by_last_export(node, mark_saved,                        &
-     &    each_exp_flags%distance, each_exp_flags%iflag_node)
+      call set_distance_from_mark_list(-1, mark_saved, each_exp_flags)
       call set_each_export_item(ineib, nod_comm, node,                  &
      &                          each_exp_flags%iflag_node, each_comm)
       call mark_surround_ele_of_import(ineib, ele_comm, node, ele,      &
@@ -302,10 +303,6 @@
       integer(kind = kint) :: inum, inod, ist, ied
 !
 !
-!$omp parallel workshare
-      iflag_node(1:node%numnod) = 0
-!$omp end parallel workshare
-!
       ist = nod_comm%istack_import(ineib-1) + 1
       ied = nod_comm%istack_import(ineib)
 !$omp parallel do private(inum,inod)
@@ -316,34 +313,6 @@
 !$omp end parallel do
 !
       end subroutine mark_by_last_import
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine mark_by_last_export(node, mark_saved,                  &
-     &                               distance, iflag_node)
-!
-      type(node_data), intent(in) :: node
-      type(mark_for_each_comm), intent(inout) :: mark_saved
-!
-      real(kind = kreal), intent(inout) :: distance(node%numnod)
-      integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
-!
-      integer(kind = kint) :: inum, inod
-!
-!
-!$omp parallel workshare
-      distance(1:node%numnod) = 0.0d0
-!$omp end parallel workshare
-!
-!$omp parallel do private(inum,inod)
-      do inum = 1, mark_saved%num_marked
-        inod = mark_saved%idx_marked(inum)
-        distance(inod) = mark_saved%dist_marked(inum)
-        iflag_node(inod) = -1
-      end do
-!$omp end parallel do
-!
-      end subroutine mark_by_last_export
 !
 !  ---------------------------------------------------------------------
 !

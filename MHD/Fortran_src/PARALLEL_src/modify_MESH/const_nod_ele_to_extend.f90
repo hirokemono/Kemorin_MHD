@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine const_sleeve_expand_list                             &
 !!     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,&
-!!     &          sleeve_exp_WK, mark_saved, mark_nod, mark_ele)
+!!     &          sleeve_exp_WK, mark_saved, mark_nod, mark_ele,        &
+!!     &          SR_sig, SR_r, SR_i)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
@@ -17,10 +18,13 @@
 !!        type(element_around_node), intent(in) :: neib_ele
 !!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !!        type(mark_for_each_comm), intent(inout) :: mark_saved(nprocs)
-!!        type(mark_for_each_comm), intent(in)                          &
+!!        type(mark_for_each_comm), intent(inout)                       &
 !!     &                         :: mark_nod(nod_comm%num_neib)
-!!        type(mark_for_each_comm), intent(in)                          &
+!!        type(mark_for_each_comm), intent(inout)                       &
 !!     &                         :: mark_ele(nod_comm%num_neib)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!      subroutine comm_extended_import_nod_ele                         &
 !!     &         (nod_comm, node, inod_dbl, ele, iele_dbl,              &
 !!     &          mark_nod, mark_ele, expand_nod_comm, expand_ele_comm, &
@@ -61,12 +65,16 @@
 !
       subroutine const_sleeve_expand_list                               &
      &         (sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,  &
-     &          sleeve_exp_WK, mark_saved, mark_nod, mark_ele)
+     &          sleeve_exp_WK, mark_saved, mark_nod, mark_ele,          &
+     &          SR_sig, SR_r, SR_i)
 !
+      use t_solver_SR
+      use t_solver_SR_int
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
 !
       use calypso_mpi_int
+      use solver_SR_type
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(communication_table), intent(in) :: nod_comm, ele_comm
@@ -80,7 +88,11 @@
      &                         :: mark_nod(nod_comm%num_neib)
       type(mark_for_each_comm), intent(inout)                           &
      &                         :: mark_ele(nod_comm%num_neib)
-
+!
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+!
       type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend), save :: each_exp_flags
       integer(kind = kint) :: i, ip, icou, jcou
@@ -90,6 +102,25 @@
       call alloc_flags_each_comm_extend                                 &
      &   (node%numnod, ele%numele, each_exp_flags)
       call alloc_comm_table_for_each(node, each_comm)
+!
+      do ip = 1, nprocs
+        call reset_flags_each_comm_extend                               &
+     &     (node%numnod, ele%numele, each_exp_flags)
+        call set_distance_from_mark_list                                &
+     &     (-1, mark_saved(ip), each_exp_flags)
+        call dealloc_mark_for_each_comm(mark_saved(ip))
+!
+        call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
+     &      SR_sig, SR_r, each_exp_flags%distance)
+        call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm,           &
+     &      SR_sig, SR_i, each_exp_flags%iflag_node)
+!
+        icou = count_num_marked_list(-1, node%numnod,                   &
+     &                             each_exp_flags%iflag_node)
+        call alloc_mark_for_each_comm(icou, mark_saved(ip))
+        call set_distance_to_mark_list                                  &
+     &     (-1, node%numnod, each_exp_flags, mark_saved(ip))
+      end do
 !
       icou = 0
       jcou = 0

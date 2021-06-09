@@ -10,6 +10,8 @@
 !!      subroutine alloc_flags_each_comm_extend                         &
 !!     &                           (numnod, numele, each_exp_flags)
 !!      subroutine dealloc_flags_each_comm_extend(each_exp_flags)
+!!      subroutine reset_flags_each_comm_extend                         &
+!!     &                           (numnod, numele, each_exp_flags)
 !!        integer(kind = kint), intent(in) :: numnod, numele
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!
@@ -76,15 +78,10 @@
 !
       allocate(each_exp_flags%iflag_node(numnod))
       allocate(each_exp_flags%distance(numnod))
-!$omp parallel workshare
-      each_exp_flags%iflag_node(1:numnod) = 0
-      each_exp_flags%distance(1:numnod) =   0.0d0
-!$omp end parallel workshare
 !
       allocate(each_exp_flags%iflag_ele(numele))
-!$omp parallel workshare
-      each_exp_flags%iflag_ele(1:numele) = 0
-!$omp end parallel workshare
+!
+      call reset_flags_each_comm_extend(numnod, numele, each_exp_flags)
 !
       end subroutine alloc_flags_each_comm_extend
 !
@@ -100,6 +97,30 @@
       deallocate(each_exp_flags%iflag_ele)
 !
       end subroutine dealloc_flags_each_comm_extend
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine reset_flags_each_comm_extend                           &
+     &                           (numnod, numele, each_exp_flags)
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+!
+!
+      if(numnod .gt. 0) then
+!$omp parallel workshare
+        each_exp_flags%iflag_node(1:numnod) = 0
+        each_exp_flags%distance(1:numnod) =   0.0d0
+!$omp end parallel workshare
+      end if
+!
+      if(numele .gt. 0) then
+!$omp parallel workshare
+        each_exp_flags%iflag_ele(1:numele) = 0
+!$omp end parallel workshare
+      end if
+!
+      end subroutine reset_flags_each_comm_extend
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -30,6 +30,7 @@
       use t_ctl_param_sleeve_extend
 !
       use mpi_load_mesh_data
+      use m_solver_SR
       use m_work_time
       use m_work_time_4_sleeve_extend
 
@@ -96,6 +97,7 @@
 !
       subroutine analyze_sleeve_extend
 !
+      use m_solver_SR
       use sleeve_extend
       use nod_and_ele_derived_info
       use const_element_comm_tables
@@ -112,7 +114,8 @@
       call alloc_sleeve_extend_nul_vect                                 &
      &   (fem_EXT%mesh%node, sleeve_exp_p1, sleeve_exp_WK1)
       call sleeve_extension_loop(sleeve_exp_p1, fem_EXT%mesh,           &
-     &    fem_EXT%group, ele_comm, sleeve_exp_WK1)
+     &    fem_EXT%group, ele_comm, sleeve_exp_WK1,                      &
+     &    SR_sig1, SR_r1, SR_i1)
       call dealloc_sleeve_extend_nul_vect(sleeve_exp_WK1)
 !
       call mpi_output_mesh                                              &
