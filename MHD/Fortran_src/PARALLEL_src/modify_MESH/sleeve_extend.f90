@@ -132,7 +132,7 @@
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,               &
      &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
-     &      new_ele_comm, dist_4_comm, marks_4_saved1, iflag_process_extend)
+     &      new_ele_comm, marks_4_saved1, iflag_process_extend)
         call s_extended_groups                                          &
      &     (mesh, group, newmesh, new_ele_comm, newgroup)
 !
@@ -197,7 +197,7 @@
       subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm,   &
      &          org_node, org_ele, neib_ele, sleeve_exp_WK,             &
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
-     &          dist_4_comm, marks_4_saved, iflag_process_extend)
+     &          marks_4_saved, iflag_process_extend)
 !
       use t_next_node_ele_4_node
       use t_repart_double_numberings
@@ -232,7 +232,6 @@
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
       type(communication_table), intent(inout) :: new_ele_comm
-      type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
       type(marks_for_sleeve_extension),                                 &
      &                     intent(inout) :: marks_4_saved
       integer(kind = kint), intent(inout) :: iflag_process_extend
@@ -272,8 +271,7 @@
      &                                  marks_4_extend)
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
-     &    neib_ele, dist_4_comm, sleeve_exp_WK,                         &
-     &    marks_4_saved, marks_4_extend)
+     &    neib_ele, sleeve_exp_WK, marks_4_saved, marks_4_extend)
 !
 !
 !
@@ -310,9 +308,8 @@
       call dealloc_node_data_sleeve_ext(trim_import_xx)
 !
 !
-      call append_nod_communication_table                               &
-     &   (nod_comm, add_nod_comm, exp_import_xx,                        &
-     &    new_nod_comm, dist_4_comm)
+      call append_communication_tbl                                     &
+     &   (nod_comm, add_nod_comm, new_nod_comm)
 !
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
@@ -337,7 +334,7 @@
       call dealloc_comm_table(expand_ele_comm)
 !
 !
-      call append_ele_communication_table                               &
+      call append_communication_tbl                                     &
      &   (ele_comm, add_ele_comm, new_ele_comm)
       call s_append_extended_element(my_rank, org_ele, add_ele_comm,    &
      &    trim_import_ie, new_node, new_ele)

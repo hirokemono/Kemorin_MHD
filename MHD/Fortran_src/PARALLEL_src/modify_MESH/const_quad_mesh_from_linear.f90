@@ -233,7 +233,7 @@
      &   (edge_l%numedge, l_to_q%iedge_linear_to_quad,                  &
      &    cps_edge_comm%ntot_import, cps_edge_comm%item_import,         &
      &    cps_edge_comm%ntot_export, cps_edge_comm%item_export)
-      call append_ele_communication_table                               &
+      call append_communication_tbl                                     &
      &   (comm_tmp1, cps_edge_comm, nod_comm_q)
       call dealloc_calypso_comm_table(cps_edge_comm)
       call dealloc_comm_table(comm_tmp1)

@@ -15,15 +15,13 @@
 !!     &                     intent(inout) :: marks_4_extend
 !!
 !!      subroutine const_sleeve_expand_list                             &
-!!     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele,          &
-!!     &          neib_ele, dist_4_comm, sleeve_exp_WK,                 &
-!!     &          marks_4_saved, marks_4_extend)
+!!     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,&
+!!     &          sleeve_exp_WK, marks_4_saved, marks_4_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
-!!        type(dist_from_wall_in_export), intent(in) :: dist_4_comm
 !!        type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !!      type(marks_for_sleeve_extension),                               &
 !!     &                     intent(inout) :: marks_4_saved
@@ -103,9 +101,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_sleeve_expand_list                               &
-     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele,            &
-     &          neib_ele, dist_4_comm, sleeve_exp_WK,                   &
-     &          marks_4_saved, marks_4_extend)
+     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,  &
+     &          sleeve_exp_WK, marks_4_saved, marks_4_extend)
 !
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
@@ -117,7 +114,6 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
-      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
       type(marks_for_sleeve_extension),                                 &
@@ -139,9 +135,8 @@
       jcou = 0
       do i = 1, nod_comm%num_neib
         ip = nod_comm%id_neib(i) + 1
-        call s_mark_node_ele_to_extend                                  &
-     &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
-     &      dist_4_comm, sleeve_exp_WK, each_comm,                      &
+        call s_mark_node_ele_to_extend(i, sleeve_exp_p, nod_comm,       &
+     &      ele_comm, node, ele, neib_ele, sleeve_exp_WK, each_comm,    &
      &      marks_4_saved%mark_nod(ip), marks_4_extend%mark_nod(i),     &
      &      marks_4_extend%mark_ele(i), each_exp_flags)
 !

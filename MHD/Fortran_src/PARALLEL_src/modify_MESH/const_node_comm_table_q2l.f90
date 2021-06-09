@@ -81,7 +81,7 @@
      &   (mesh_q%surf%numsurf, q_to_l%isurf_quad_to_linear,             &
      &    cps_surf_comm%ntot_import, cps_surf_comm%item_import,         &
      &    cps_surf_comm%ntot_export, cps_surf_comm%item_export)
-      call append_ele_communication_table                               &
+      call append_communication_tbl                                     &
      &   (comm_tmp1, cps_surf_comm, comm_tmp2)
       call dealloc_calypso_comm_table(cps_surf_comm)
       call dealloc_comm_table(comm_tmp1)
@@ -92,7 +92,7 @@
      &   (mesh_q%ele%numele, q_to_l%iele_quad_to_linear,                &
      &    cps_ele_comm%ntot_import, cps_ele_comm%item_import,           &
      &    cps_ele_comm%ntot_export, cps_ele_comm%item_export)
-      call append_ele_communication_table                               &
+      call append_communication_tbl                                     &
      &   (comm_tmp2, cps_ele_comm, nod_comm_l)
       call dealloc_calypso_comm_table(cps_ele_comm)
       call dealloc_comm_table(comm_tmp2)
@@ -138,7 +138,7 @@
      &   (mesh_l%edge%numedge, l_to_lag%iedge_linear_to_lag,            &
      &    cps_edge_comm%ntot_import, cps_edge_comm%item_import,         &
      &    cps_edge_comm%ntot_export, cps_edge_comm%item_export)
-      call append_ele_communication_table                               &
+      call append_communication_tbl                                     &
      &   (comm_tmp1, cps_edge_comm, comm_tmp2)
       call dealloc_calypso_comm_table(cps_edge_comm)
       call dealloc_comm_table(comm_tmp1)
@@ -149,7 +149,7 @@
      &   (mesh_l%surf%numsurf, l_to_lag%isurf_linear_to_lag,            &
      &    cps_surf_comm%ntot_import, cps_surf_comm%item_import,         &
      &    cps_surf_comm%ntot_export, cps_surf_comm%item_export)
-      call append_ele_communication_table                               &
+      call append_communication_tbl                                     &
      &   (comm_tmp2, cps_surf_comm, comm_tmp3)
       call dealloc_calypso_comm_table(cps_surf_comm)
       call dealloc_comm_table(comm_tmp2)
@@ -160,7 +160,7 @@
      &   (mesh_l%ele%numele, l_to_lag%iele_linear_to_lag,               &
      &    cps_ele_comm%ntot_import, cps_ele_comm%item_import,           &
      &    cps_ele_comm%ntot_export, cps_ele_comm%item_export)
-      call append_ele_communication_table                               &
+      call append_communication_tbl                                     &
      &   (comm_tmp3, cps_ele_comm, nod_comm_lag)
       call dealloc_calypso_comm_table(cps_ele_comm)
       call dealloc_comm_table(comm_tmp3)
