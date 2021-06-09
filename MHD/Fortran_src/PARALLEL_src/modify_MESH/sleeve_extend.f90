@@ -96,12 +96,7 @@
       call init_work_vector_sleeve_ext                                  &
      &   (mesh%nod_comm, mesh%node, sleeve_exp_p, sleeve_exp_WK)
 !
-      call alloc_dist_from_wall_export                                  &
-     &   (mesh%nod_comm%ntot_export, dist_4_comm)
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
-      call init_min_dist_from_import                                    &
-     &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
-     &    sleeve_exp_WK, dist_4_comm%distance_in_export)
 !
       call alloc_sleeve_extension_marks(nprocs, marks_4_saved1)
       marks_4_saved1%mark_nod(1:nprocs)%num_marked = -1
@@ -111,13 +106,11 @@
         ist = mesh%nod_comm%istack_export(i-1)
         num = mesh%nod_comm%istack_export(i) - ist
         call alloc_mark_for_each_comm(num, marks_4_saved1%mark_nod(ip))
-        do inum = 1, num
-          marks_4_saved1%mark_nod(ip)%idx_marked(inum)     &
-     &        = mesh%nod_comm%item_export(inum+ist)
-          marks_4_saved1%mark_nod(ip)%dist_marked(inum)    &
-     &        = dist_4_comm%distance_in_export(inum+ist)
-        end do
       end do
+!
+      call init_min_dist_from_import                                    &
+     &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
+     &    sleeve_exp_WK, marks_4_saved1%mark_nod)
 !
       do ip = 1, nprocs
         if(marks_4_saved1%mark_nod(ip)%num_marked .eq. -1) then
@@ -188,7 +181,6 @@
         call dealloc_mark_for_each_comm(marks_4_saved1%mark_nod(ip))
       end do
       call dealloc_sleeve_extension_marks(marks_4_saved1)
-      call dealloc_dist_from_wall_export(dist_4_comm)
 !
       end subroutine sleeve_extension_loop
 !

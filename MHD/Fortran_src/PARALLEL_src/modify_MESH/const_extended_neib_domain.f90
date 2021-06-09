@@ -71,7 +71,8 @@
       integer(kind = kint), allocatable :: iflag_send_pe(:)
       integer(kind = kint), allocatable :: iflag_recv_pe(:)
 !
-      integer(kind = kint) :: i, ist, ied, iflag_local
+      integer(kind = kint) :: iflag_local
+!      integer(kind = kint) :: i, ist, ied
 !
 !
       allocate(iflag_send_pe(nprocs))
@@ -132,8 +133,8 @@
 !     &           nod_comm%num_neib, add_nod_comm%num_neib
 !
       call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
-      call count_extended_neib_export(nprocs, nod_comm,                 &
-     &    iflag_send_pe, add_nod_comm%nrank_export)
+      call count_extended_neib_export(nprocs, iflag_send_pe,            &
+     &                                add_nod_comm%nrank_export)
 !
       call alloc_calypso_import_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
@@ -232,14 +233,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_extended_neib_export(nprocs, nod_comm,           &
-     &                                      iflag_pe, num_add_neib)
+      subroutine count_extended_neib_export                             &
+     &         (nprocs, iflag_pe, num_add_neib)
 !
       use t_comm_table
 !
       implicit none
 !
-      type(communication_table), intent(in) :: nod_comm
       integer, intent(in) :: nprocs
       integer(kind = kint), intent(in) :: iflag_pe(nprocs)
 !

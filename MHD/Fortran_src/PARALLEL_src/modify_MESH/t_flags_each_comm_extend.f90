@@ -13,16 +13,15 @@
 !!        integer(kind = kint), intent(in) :: numnod, numele
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!
-!!      subroutine init_min_dist_from_import(sleeve_exp_p,              &
-!!     &          nod_comm, node, ele, neib_ele,                        &
-!!     &          sleeve_exp_WK, dist_export)
+!!      subroutine init_min_dist_each_import                            &
+!!     &         (igrp, sleeve_exp_p, nod_comm, node, ele, neib_ele,    &
+!!     &          sleeve_exp_WK, dist_tmp)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
-!!        real(kind = kreal), intent(inout)                             &
-!!     &                   :: dist_export(nod_comm%ntot_export)
+!!        real(kind= kreal), intent(inout) :: dist_tmp(node%numnod)
 !!      subroutine cal_min_dist_from_last_export(sleeve_exp_p,          &
 !!     &         node, ele, neib_ele, num_each_export, item_each_export,&
 !!     &         sleeve_exp_WK, each_exp_flags)
@@ -105,13 +104,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_min_dist_from_import(sleeve_exp_p,                &
-     &          nod_comm, node, ele, neib_ele,                          &
-     &          sleeve_exp_WK, dist_export)
+      subroutine init_min_dist_each_import                              &
+     &         (igrp, sleeve_exp_p, nod_comm, node, ele, neib_ele,      &
+     &          sleeve_exp_WK, dist_tmp)
 !
+      use calypso_mpi
       use t_ctl_param_sleeve_extend
       use t_next_node_ele_4_node
 !
+      integer(kind = kint), intent(in) :: igrp
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -119,72 +120,50 @@
       type(element_around_node), intent(in) :: neib_ele
       type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: dist_export(nod_comm%ntot_export)
+      real(kind= kreal), intent(inout) :: dist_tmp(node%numnod)
 !
-      integer(kind = kint) :: ip, i, igrp, k1, jele
+      integer(kind = kint) :: k1, jele
       integer(kind = kint) :: ist, ied, inum, inod
       integer(kind = kint) :: jst, jed, jnum, jnod
-      real(kind= kreal), allocatable :: dist_tmp(:,:)
       real(kind= kreal) :: dist, dist_start
 !
-      allocate(dist_tmp(node%numnod,np_smp))
 !
+      dist_tmp(1:node%numnod) = 0.0d0
 !
-!$omp parallel do private(ip,i,igrp,ist,ied,inum,inod,                  &
-!$omp&                    jst,jed,jnum,jele,k1,jnod,dist)
-      do ip = 1, np_smp
-        do i = 1, nod_comm%num_neib/np_smp + 1
-          igrp = ip + (i-1) * np_smp
-          if(igrp .gt. nod_comm%num_neib) cycle
-          dist_tmp(1:node%numnod,ip) = 0.0d0
+      ist = nod_comm%istack_import(igrp-1) + 1
+      ied = nod_comm%istack_import(igrp)
+      do inum = ist, ied
+        inod = nod_comm%item_import(inum)
+        dist_tmp(inod) = -1.0d0
+      end do
+      do inum = ist, ied
+        inod = nod_comm%item_import(inum)
+        if(dist_tmp(inod) .eq. -1.0d0) then
+          dist_start = 0.0d0
+        else
+          dist_start = dist_tmp(inod)
+        end if
 !
-          ist = nod_comm%istack_import(igrp-1) + 1
-          ied = nod_comm%istack_import(igrp)
-          do inum = ist, ied
-            inod = nod_comm%item_import(inum)
-            dist_tmp(inod,ip) = -1.0d0
-          end do
-          do inum = ist, ied
-            inod = nod_comm%item_import(inum)
-            if(dist_tmp(inod,ip) .eq. -1.0d0) then
-              dist_start = 0.0d0
+        jst = neib_ele%istack_4_node(inod-1) + 1
+        jed = neib_ele%istack_4_node(inod)
+        do jnum = jst, jed
+          jele = neib_ele%iele_4_node(jnum)
+          do k1 = 1, ele%nnod_4_ele
+            jnod = ele%ie(jele,k1)
+            if(dist_tmp(jnod) .eq. -1.0d0) cycle
+!
+            dist = distance_select(sleeve_exp_p, inod, jnod,            &
+     &                             node, sleeve_exp_WK)
+            if(dist_tmp(jnod) .eq. 0.0d0) then
+              dist_tmp(jnod) = dist + dist_start
             else
-              dist_start = dist_tmp(inod,ip)
+              dist_tmp(jnod) = min(dist+dist_start, dist_tmp(jnod))
             end if
-!
-            jst = neib_ele%istack_4_node(inod-1) + 1
-            jed = neib_ele%istack_4_node(inod)
-            do jnum = jst, jed
-              jele = neib_ele%iele_4_node(jnum)
-              do k1 = 1, ele%nnod_4_ele
-                jnod = ele%ie(jele,k1)
-                if(dist_tmp(jnod,ip) .eq. -1.0d0) cycle
-!
-                dist = distance_select(sleeve_exp_p, inod, jnod,        &
-     &                                 node, sleeve_exp_WK)
-                if(dist_tmp(jnod,ip) .eq. 0.0d0) then
-                  dist_tmp(jnod,ip) = dist + dist_start
-                else
-                  dist_tmp(jnod,ip)                                     &
-     &                = min(dist+dist_start, dist_tmp(jnod,ip))
-                end if
-              end do
-            end do
-          end do
-!
-          ist = nod_comm%istack_export(igrp-1) + 1
-          ied = nod_comm%istack_export(igrp)
-          do inum = ist, ied
-            inod = nod_comm%item_export(inum)
-            dist_export(inum) = dist_tmp(inod,ip)
           end do
         end do
       end do
-!$omp end parallel do
-      deallocate(dist_tmp)
 !
-      end subroutine init_min_dist_from_import
+      end subroutine init_min_dist_each_import
 !
 !  ---------------------------------------------------------------------
 !

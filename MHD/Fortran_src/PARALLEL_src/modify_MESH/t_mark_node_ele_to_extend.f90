@@ -44,6 +44,7 @@
 !
       use m_precision
       use m_constants
+      use calypso_mpi
 !
       use t_geometry_data
       use t_comm_table
@@ -117,12 +118,53 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine init_min_dist_from_import(sleeve_exp_p, nod_comm,      &
+     &          node, ele, neib_ele, sleeve_exp_WK, mark_saved)
+!
+      use t_ctl_param_sleeve_extend
+      use t_next_node_ele_4_node
+!
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(element_around_node), intent(in) :: neib_ele
+      type(sleeve_extension_work), intent(in) :: sleeve_exp_WK
+!
+      type(mark_for_each_comm), intent(inout) :: mark_saved(nprocs)
+!
+      integer(kind = kint) :: ineib, ip
+      integer(kind = kint) :: ist, num, inum, inod
+      real(kind= kreal), allocatable :: dist_tmp(:)
+!
+!
+      allocate(dist_tmp(node%numnod))
+!
+      do ineib = 1, nod_comm%num_neib
+        call init_min_dist_each_import                                  &
+     &     (ineib, sleeve_exp_p, nod_comm, node, ele, neib_ele,         &
+     &      sleeve_exp_WK, dist_tmp)
+!
+        ip = nod_comm%id_neib(ineib) + 1
+        ist = nod_comm%istack_export(ineib-1)
+        num = nod_comm%istack_export(ineib) - ist
+        do inum = 1, num
+          inod = nod_comm%item_export(ist+inum)
+          mark_saved(ip)%idx_marked(inum) =  inod
+          mark_saved(ip)%dist_marked(inum) = dist_tmp(inod)
+        end do
+      end do
+      deallocate(dist_tmp)
+!
+      end subroutine init_min_dist_from_import
+!
+!  ---------------------------------------------------------------------
+!
       subroutine s_mark_node_ele_to_extend                              &
      &         (ineib, sleeve_exp_p, nod_comm, ele_comm, node, ele,     &
      &          neib_ele, sleeve_exp_WK, each_comm, mark_saved,         &
      &          mark_nod_checked, mark_ele, each_exp_flags)
 !
-      use calypso_mpi
       use t_ctl_param_sleeve_extend
       use t_next_node_ele_4_node
 !
@@ -142,7 +184,7 @@
 !
       type(mark_for_each_comm) :: mark_nod_done
 !
-      integer(kind = kint) :: inod, icou, idummy
+      integer(kind = kint) :: icou, idummy
 !
 !
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
@@ -481,11 +523,11 @@
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
 !
-      integer(kind = kint) :: inod, icou, iele, k1
+      integer(kind = kint) :: icou, iele
       real(kind = kreal) :: anum
 !
 !
-!$omp parallel do private(icou,inod)
+!$omp parallel do private(icou,iele)
       do icou = 1, mark_ele%num_marked
         iele = mark_ele%idx_marked(icou)
         each_exp_flags%iflag_ele(iele) = iflag_ref
