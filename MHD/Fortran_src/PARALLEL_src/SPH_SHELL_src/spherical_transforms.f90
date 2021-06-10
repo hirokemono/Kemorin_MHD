@@ -10,11 +10,12 @@
 !!
 !!@verbatim
 !!      subroutine sph_backward_transforms                              &
-!!     &         (ncomp_trans, nvector, nscalar, sph, comms_sph,        &
-!!     &          trans_p, v_rtp, WK_leg, WK_FFTs, SR_sig, SR_r)
-!!      subroutine sph_b_trans_w_poles(ncomp_trans, nvector, nscalar,   &
-!!     &          sph, comms_sph, trans_p, v_rtp, v_pl_local, v_pole,   &
-!!     &          WK_leg, WK_FFTs, SR_sig, SR_r)
+!!     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,&
+!!     &         v_rtp, WK_leg, WK_FFTs, SR_sig, SR_r)
+!!      subroutine sph_b_trans_w_poles                                  &
+!!     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,&
+!!     &         v_rtp, v_pl_local, v_pole, WK_leg, WK_FFTs,            &
+!!     &         SR_sig, SR_r)
 !!      subroutine pole_b_transform                                     &
 !!     &         (ncomp_trans, nvector, nscalar, sph, comms_sph,        &
 !!     &          trans_p, v_pl_local, v_pole, SR_sig, SR_r)
@@ -69,8 +70,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_backward_transforms                                &
-     &         (ncomp_trans, nvector, nscalar, sph, comms_sph,          &
-     &          trans_p, v_rtp, WK_leg, WK_FFTs, SR_sig, SR_r)
+     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,  &
+     &         v_rtp, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
       use pole_sph_transform
 !
@@ -118,9 +119,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_w_poles(ncomp_trans, nvector, nscalar,     &
-     &          sph, comms_sph, trans_p, v_rtp, v_pl_local, v_pole,     &
-     &          WK_leg, WK_FFTs, SR_sig, SR_r)
+      subroutine sph_b_trans_w_poles                                    &
+     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,  &
+     &         v_rtp, v_pl_local, v_pole, WK_leg, WK_FFTs,              &
+     &         SR_sig, SR_r)
 !
       use calypso_mpi_real
       use pole_sph_transform
@@ -238,8 +240,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_forward_transforms                                 &
-     &         (ncomp_trans, nvector, nscalar, sph, comms_sph,          &
-     &          trans_p, v_rtp, WK_leg, WK_FFTs, SR_sig, SR_r)
+     &        (ncomp_trans, nvector, nscalar, sph, comms_sph, trans_p,  &
+     &         v_rtp, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph

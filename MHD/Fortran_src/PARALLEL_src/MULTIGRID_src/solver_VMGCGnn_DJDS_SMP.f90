@@ -172,8 +172,8 @@
       use t_interpolate_table
       use t_solver_djds
       use t_vector_for_solver
+      use t_solver_SR
 !
-      use m_solver_SR
       use m_CG_constants
       use m_solver_count_time
 !
@@ -251,7 +251,7 @@
      &   (NP, NB, MG_comm(0)%num_neib, MG_comm(0)%id_neib,              &
      &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
      &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW,         &
-     &    SR_sig1, SR_r1, X)
+     &    SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 

@@ -7,8 +7,9 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine set_volume_at_node(part_param, repart_WK,            &
-!!     &          mesh, volume_nod, volume_nod_tot, volume_min_gl)
+!!      subroutine set_volume_at_node(part_param, repart_WK, mesh,      &
+!!     &          volume_nod, volume_nod_tot, volume_min_gl,            &
+!!     &          SR_sig, SR_r)
 !!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(volume_partioning_work), intent(in) :: repart_WK
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -17,6 +18,8 @@
 !!        real(kind = kreal), intent(inout) :: volume_nod_tot
 !!        real(kind = kreal), intent(inout) :: volume_min_gl
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine set_xyz_block_id_by_nod_vol                          &
 !!     &         (node, part_param, id_block)
 !!        type(node_data), intent(in) :: node
@@ -56,10 +59,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_volume_at_node(part_param, repart_WK,              &
-     &          mesh, volume_nod, volume_nod_tot, volume_min_gl)
+      subroutine set_volume_at_node(part_param, repart_WK, mesh,        &
+     &          volume_nod, volume_nod_tot, volume_min_gl,              &
+     &          SR_sig, SR_r)
 !
-      use m_solver_SR
+      use t_solver_SR
       use calypso_mpi_real
       use int_volume_of_single_domain
       use solver_SR_type
@@ -71,6 +75,8 @@
       real(kind = kreal), intent(inout) :: volume_nod(mesh%node%numnod)
       real(kind = kreal), intent(inout) :: volume_nod_tot
       real(kind = kreal), intent(inout) :: volume_min_gl
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       real(kind = kreal) :: vol_lc
       integer(kind = kint) :: inod
@@ -91,7 +97,7 @@
       end if
 !
       call SOLVER_SEND_RECV_type(mesh%node%numnod, mesh%nod_comm,       &
-     &                           SR_sig1, SR_r1, volume_nod)
+     &                           SR_sig, SR_r, volume_nod)
 !
       vol_lc = 0.0d0
 !$omp parallel do reduction(+:vol_lc)

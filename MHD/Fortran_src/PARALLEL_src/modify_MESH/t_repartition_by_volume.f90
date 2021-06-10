@@ -59,6 +59,7 @@
       subroutine grouping_by_volume                                     &
      &         (mesh, part_param, repart_WK, part_grp)
 !
+      use m_solver_SR
       use xyz_block_id_by_nod_vol
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -81,7 +82,8 @@
 !
       call set_volume_at_node                                           &
      &   (part_param, repart_WK, mesh, vol_sort%volume_nod,             &
-     &    vol_sort%volume_nod_tot, vol_sort%volume_min_gl)
+     &    vol_sort%volume_nod_tot, vol_sort%volume_min_gl,              &
+     &    SR_sig1, SR_r1)
 !
       call set_xyz_block_id_by_nod_vol(mesh%node, part_param,           &
      &                                 vol_sort%id_block)
