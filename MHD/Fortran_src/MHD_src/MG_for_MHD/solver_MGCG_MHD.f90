@@ -161,7 +161,7 @@
       else
         call solve33_DJDS_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat(0), node%numnod, b_vec(1), x_vec(1),            &
-     &      METHOD, PRECOND, ierr, eps, itr, itr_res)
+     &      METHOD, PRECOND, SR_sig1, SR_r1, ierr, eps, itr, itr_res)
       end if
 !
       if(iflag_FMHD_time) call end_elapsed_time(ist_elapsed_FMHD+1)
@@ -230,7 +230,7 @@
       else
         call solve_DJDS11_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat11(0), node%numnod, b_vec(1), x_vec(1),          &
-     &      METHOD, PRECOND, ierr, eps, itr, itr_res)
+     &      METHOD, PRECOND, SR_sig1, SR_r1, ierr, eps, itr, itr_res)
       end if
 !
       if(iflag_FMHD_time) call end_elapsed_time(ist_elapsed_FMHD+1)

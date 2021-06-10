@@ -315,9 +315,9 @@
 !C-- Multigtrid preconditioning
 !
        call s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,             &
-     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, W(1,R), W(1,Z), &
-     &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER, ntotWK_CG, W(1,1))
+     &      djds_tbl, mat33, MG_vect, PEsmpTOT, NP, W(1,R), W(1,Z),     &
+     &      iter_mid, iter_lowest, EPS_MG, METHOD_MG, PRECOND_MG,       &
+     &      IER, ntotWK_CG, W(1,1), SR_sig, SR_r)
 !
 !C
 !C +---------------+

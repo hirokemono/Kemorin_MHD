@@ -62,6 +62,7 @@
       use m_int_commtative_filter
       use m_int_edge_data
       use m_matrix_4_LU
+      use m_solver_SR
       use const_delta_z_analytical
 
       use const_crs_connect_commute_z
@@ -238,13 +239,15 @@
           write(*,*) 'solve_by_djds_solver33'
           call solve_by_djds_solver33                                   &
      &       (z_filter_mesh1%node, z_filter_mesh1%nod_comm, CG_param_z, &
-     &        mat_crs_z, djds_tbl_z, djds_mat_z, itr_res, ierr)
+     &        mat_crs_z, djds_tbl_z, djds_mat_z, SR_sig1, SR_r1,        &
+     &        itr_res, ierr)
         else if (mat_crs_z%SOLVER_crs.eq.'blockNN'                      &
      &    .or. mat_crs_z%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
           call solve_by_djds_solverNN                                   &
      &       (z_filter_mesh1%node, z_filter_mesh1%nod_comm, CG_param_z, &
-     &        mat_crs_z, djds_tbl_z, djds_mat_z, itr_res, ierr)
+     &        mat_crs_z, djds_tbl_z, djds_mat_z, SR_sig1, SR_r1,        &
+     &        itr_res, ierr)
         end if
       end if
 !

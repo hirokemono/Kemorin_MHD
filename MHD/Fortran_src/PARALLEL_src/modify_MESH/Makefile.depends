@@ -132,7 +132,7 @@ t_quad_to_linear_list.o: $(MODIFY_PARA_MESHDIR)/t_quad_to_linear_list.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 t_repart_double_numberings.o: $(MODIFY_PARA_MESHDIR)/t_repart_double_numberings.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_calypso_comm_table.o t_para_double_numbering.o m_solver_SR.o nod_phys_send_recv.o reverse_SR_int.o solver_SR_type.o calypso_SR_type.o select_copy_from_recv.o calypso_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_repartition_by_volume.o: $(MODIFY_PARA_MESHDIR)/t_repartition_by_volume.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_group_data.o t_1d_repartitioning_work.o t_control_param_vol_grping.o xyz_block_id_by_nod_vol.o t_geometry_data.o repart_in_xyz_by_volume.o set_istack_4_domain_block.o set_repartition_group_name.o
+t_repartition_by_volume.o: $(MODIFY_PARA_MESHDIR)/t_repartition_by_volume.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_group_data.o t_1d_repartitioning_work.o t_control_param_vol_grping.o m_solver_SR.o xyz_block_id_by_nod_vol.o t_geometry_data.o repart_in_xyz_by_volume.o set_istack_4_domain_block.o set_repartition_group_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sort_data_for_sleeve_trim.o: $(MODIFY_PARA_MESHDIR)/t_sort_data_for_sleeve_trim.f90 m_precision.o calypso_mpi.o t_comm_table.o t_para_double_numbering.o t_repart_double_numberings.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -150,6 +150,6 @@ trim_redundant_import_item.o: $(MODIFY_PARA_MESHDIR)/trim_redundant_import_item.
 	$(F90) -c $(F90OPTFLAGS) $<
 unused_comms_4_sleeve_ext.o: $(MODIFY_PARA_MESHDIR)/unused_comms_4_sleeve_ext.f90 m_precision.o m_constants.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_para_double_numbering.o m_solver_SR.o reverse_SR_int.o reverse_SR_real.o t_mark_node_ele_to_extend.o
 	$(F90) -c $(F90OPTFLAGS) $<
-xyz_block_id_by_nod_vol.o: $(MODIFY_PARA_MESHDIR)/xyz_block_id_by_nod_vol.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_group_data.o t_1d_repartitioning_work.o t_control_param_vol_grping.o m_solver_SR.o calypso_mpi_real.o int_volume_of_single_domain.o solver_SR_type.o t_ctl_param_masking.o set_istack_4_domain_block.o
+xyz_block_id_by_nod_vol.o: $(MODIFY_PARA_MESHDIR)/xyz_block_id_by_nod_vol.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_group_data.o t_1d_repartitioning_work.o t_control_param_vol_grping.o t_solver_SR.o calypso_mpi_real.o int_volume_of_single_domain.o solver_SR_type.o t_ctl_param_masking.o set_istack_4_domain_block.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

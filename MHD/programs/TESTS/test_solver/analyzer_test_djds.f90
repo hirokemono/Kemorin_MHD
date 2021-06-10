@@ -70,6 +70,7 @@
       use solve_precond_DJDS
       use copy_matrix_2_djds_array
 !
+      use m_solver_SR
       use t_solver_djds
 !
       type(DJDS_ordering_table) :: djds_tbl
@@ -86,17 +87,17 @@
      &   .or. mat_crs%SOLVER_crs.eq.'SCALAR') then
         call solve_by_djds_solver11                                     &
      &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
-     &      itr_res, ierr)
+     &      SR_sig1, SR_r1, itr_res, ierr)
       else if (mat_crs%SOLVER_crs.eq.'block33'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCK33') then
         call solve_by_djds_solver33                                     &
      &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
-     &      itr_res, ierr)
+     &      SR_sig1, SR_r1, itr_res, ierr)
       else if (mat_crs%SOLVER_crs.eq.'blockNN'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCKNN') then
         call solve_by_djds_solverNN                                     &
      &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
-     &      itr_res, ierr)
+     &      SR_sig1, SR_r1, itr_res, ierr)
       end if
 
       call output_solution(node, mat_crs)

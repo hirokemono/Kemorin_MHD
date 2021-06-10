@@ -26,6 +26,8 @@
       use t_crs_connect
       use t_crs_matrix
 !
+      use m_solver_SR
+!
       implicit none
 !
       type(DJDS_ordering_table), save :: djds_tbl1
@@ -78,7 +80,7 @@
      &    tbl_crs, mat_crs, CG_param, DJDS_param, djds_tbl1, djds_mat1)
       call solve_by_djds_solver11                                       &
      &   (node, nod_comm, CG_param, mat_crs, djds_tbl1, djds_mat1,      &
-     &    itr_res, ierr)
+     &    SR_sig1, SR_r1, itr_res, ierr)
       if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
       do i = 1, node%numnod
@@ -126,7 +128,7 @@
 !
       call solve_by_djds_solverNN                                       &
      &   (node, nod_comm, CG_param, mat_crs, djds_tbl1, djds_mat1,      &
-     &    itr_res, ierr)
+     &    SR_sig1, SR_r1, itr_res, ierr)
       if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
       do i = 1, node%numnod
