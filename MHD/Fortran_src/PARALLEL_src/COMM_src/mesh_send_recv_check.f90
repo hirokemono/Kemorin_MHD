@@ -185,10 +185,10 @@
       call alloc_geom_4_comm_test(new_node%numnod, nod_check)
       call calypso_SR_type_int8(iflag_import_item, trans_tbl,           &
      &    node%numnod, new_node%numnod,                                 &
-     &    org_check%i_gl_test, nod_check%i_gl_test)
+     &    org_check%i_gl_test, nod_check%i_gl_test, SR_sig1, SR_il1)
       call calypso_SR_type_3(iflag_import_item, trans_tbl,              &
      &    node%numnod, new_node%numnod,                                 &
-     &    org_check%xx_test, nod_check%xx_test)
+     &    org_check%xx_test, nod_check%xx_test, SR_sig1, SR_r1)
       call dealloc_ele_4_comm_test(org_check)
 !
       call SOLVER_SEND_RECV_int8_type(new_node%numnod, new_comm,        &

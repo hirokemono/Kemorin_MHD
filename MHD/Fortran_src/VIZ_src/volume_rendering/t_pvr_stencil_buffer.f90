@@ -90,6 +90,7 @@
       subroutine collect_rendering_image(pvr_start,                     &
      &          num_pixel_actual, rgba_real_gl, pvr_stencil)
 !
+      use m_solver_SR
       use calypso_SR_type
       use select_copy_from_recv
 !
@@ -106,7 +107,8 @@
       call calypso_SR_type_N                                            &
      &   (iflag_import_mod, ifour, pvr_stencil%img_composit_tbl,        &
      &    pvr_start%num_pvr_ray, pvr_stencil%npixel_recved,             &
-     &    pvr_start%rgba_ray(1,1), pvr_stencil%rgba_subdomain(1,1))
+     &    pvr_start%rgba_ray(1,1), pvr_stencil%rgba_subdomain(1,1),     &
+     &    SR_sig1, SR_r1)
 !
       call reset_color_data                                             &
      &   (pvr_stencil%npixel_stacked, pvr_stencil%rgba_composit)
@@ -119,7 +121,8 @@
       call calypso_SR_type_N                                            &
      &   (iflag_import_mod, ifour, pvr_stencil%img_output_tbl,          &
      &    pvr_stencil%npixel_stacked, num_pixel_actual,                 &
-     &    pvr_stencil%rgba_composit(1,1), rgba_real_gl(1,1))
+     &    pvr_stencil%rgba_composit(1,1), rgba_real_gl(1,1),            &
+     &    SR_sig1, SR_r1)
 !
       end subroutine collect_rendering_image
 !

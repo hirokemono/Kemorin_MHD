@@ -67,16 +67,17 @@
 !
       call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
      &    node%numnod, new_node%internal_node,                          &
-     &    node%inod_global(1), new_node%inod_global(1))
+     &    node%inod_global(1), new_node%inod_global(1),                 &
+     &    SR_sig1, SR_il1)
       call calypso_SR_type_1(iflag_import_item, part_tbl,               &
      &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,1), new_node%xx(1,1))
+     &    node%xx(1,1), new_node%xx(1,1), SR_sig1, SR_r1)
       call calypso_SR_type_1(iflag_import_item, part_tbl,               &
      &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,2), new_node%xx(1,2))
+     &    node%xx(1,2), new_node%xx(1,2), SR_sig1, SR_r1)
       call calypso_SR_type_1(iflag_import_item, part_tbl,               &
      &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,3), new_node%xx(1,3))
+     &    node%xx(1,3), new_node%xx(1,3), SR_sig1, SR_r1)
 !
       call SOLVER_SEND_RECV_int8_type(new_node%numnod, new_comm,        &
      &    SR_sig1, SR_il1, new_node%inod_global)
@@ -95,6 +96,7 @@
      &         (new_numele, ele, ele_tbl, new_ids_on_org,               &
      &          ie_newdomain, ie_newnod, new_ele)
 !
+      use m_solver_SR
       use calypso_SR_type
       use select_copy_from_recv
 !
@@ -144,14 +146,16 @@
 !$omp end parallel workshare
 !
       call calypso_SR_type_int8(iflag_import_item, ele_tbl,             &
-     &    ele%numele, ele_tbl%ntot_import, ele%iele_global(1), i8_recv)
+     &    ele%numele, ele_tbl%ntot_import, ele%iele_global(1), i8_recv, &
+     &    SR_sig1, SR_il1)
 !$omp parallel workshare
       new_ele%iele_global(1:new_ele%numele) = i8_recv(1:new_ele%numele)
 !$omp end parallel workshare
 !
       do k1 = 1, ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
-     &      ele%numele, ele_tbl%ntot_import, ie_newnod(1,k1), i4_recv)
+     &      ele%numele, ele_tbl%ntot_import, ie_newnod(1,k1), i4_recv,  &
+     &      SR_sig1, SR_i1)
 !$omp parallel workshare
         new_ele%ie(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
 !$omp end parallel workshare

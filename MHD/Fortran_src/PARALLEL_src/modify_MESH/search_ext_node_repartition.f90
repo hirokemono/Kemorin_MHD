@@ -29,6 +29,7 @@
       use t_geometry_data
       use t_comm_table
       use t_calypso_comm_table
+      use m_solver_SR
 !
       implicit none
 !
@@ -80,7 +81,7 @@
       do k1 = 1, ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
-     &      i4_recv(1))
+     &      i4_recv(1), SR_sig1, SR_i1)
 !$omp parallel workshare
         ie_domain_recv(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
 !$omp end parallel workshare
@@ -91,14 +92,14 @@
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, element_ids%index(1),        &
-     &    i4_recv(1))
+     &    i4_recv(1), SR_sig1, SR_i1)
 !$omp parallel workshare
       iele_org_local(1:new_ele%numele) = i4_recv(1:new_ele%numele)
 !$omp end parallel workshare
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, element_ids%irank(1),        &
-     &    i4_recv(1))
+     &    i4_recv(1), SR_sig1, SR_i1)
 !$omp parallel workshare
       iele_org_domain(1:new_ele%numele) = i4_recv(1:new_ele%numele)
 !$omp end parallel workshare

@@ -91,7 +91,7 @@
       call verify_iccgN_vec_type(n_scalar, nnod_org, v_sol)
 !
       call calypso_SR_type_1(iflag_recv, transfer_tbl,                  &
-     &    nnod_org, nnod_new, vec_org(1), vec_new(1))
+     &    nnod_org, nnod_new, vec_org(1), vec_new(1), SR_sig1, SR_r1)
       call SOLVER_SEND_RECV_type(nnod_new, new_nod_comm,                &
      &                           SR_sig1, SR_r1, vec_new(1))
 !
@@ -131,7 +131,7 @@
 !$omp end parallel do
 !
       call calypso_SR_type_3(iflag_recv, transfer_tbl,                  &
-     &    nnod_org, nnod_new, v_sol%x_vec(1), x_new(1))
+     &    nnod_org, nnod_new, v_sol%x_vec(1), x_new(1), SR_sig1, SR_r1)
       call SOLVER_SEND_RECV_3_type(nnod_new, new_nod_comm,              &
      &                             SR_sig1, SR_r1, x_new(1))
 !
@@ -179,7 +179,7 @@
 !$omp end parallel do
 !
       call calypso_SR_type_N(iflag_recv, NB, transfer_tbl,              &
-     &    nnod_org, nnod_new, v_sol%x_vec(1), x_new(1))
+     &    nnod_org, nnod_new, v_sol%x_vec(1), x_new(1), SR_sig1, SR_r1)
       call SOLVER_SEND_RECV_N_type(nnod_new, NB, new_nod_comm,          &
      &                             SR_sig1, SR_r1, x_new(1))
 !

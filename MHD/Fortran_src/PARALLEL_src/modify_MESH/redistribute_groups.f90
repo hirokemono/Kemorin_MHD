@@ -147,7 +147,7 @@
 !
         call calypso_SR_type_int(iflag_import_item, part_tbl,           &
      &      node%numnod, new_node%internal_node,                        &
-     &      iflag_org(1), iflag_new(1))
+     &      iflag_org(1), iflag_new(1), SR_sig1, SR_i1)
         call SOLVER_SEND_RECV_int_type                                  &
      &     (new_node%numnod, new_comm, SR_sig1, SR_i1, iflag_new)
 !
@@ -169,7 +169,7 @@
 !
         call calypso_SR_type_int(iflag_import_item, part_tbl,           &
      &      node%numnod, new_node%internal_node,                        &
-     &      iflag_org(1), iflag_new(1))
+     &      iflag_org(1), iflag_new(1), SR_sig1, SR_i1)
         call SOLVER_SEND_RECV_int_type                                  &
      &     (new_node%numnod, new_comm, SR_sig1, SR_i1, iflag_new)
 !
@@ -226,7 +226,7 @@
      &     (new_ele%numele, ele_comm, SR_sig1, SR_i1, iflag_org(1))
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import,                            &
-     &      iflag_org(1), iflag_new(1))
+     &      iflag_org(1), iflag_new(1), SR_sig1, SR_i1)
 !
         icou = 0
 !$omp parallel do reduction(+:icou)
@@ -255,7 +255,7 @@
      &     (ele%numele, ele_comm, SR_sig1, SR_i1, iflag_org(1))
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import,                            &
-     &      iflag_org(1), iflag_new(1))
+     &      iflag_org(1), iflag_new(1), SR_sig1, SR_i1)
 !
         call set_group_item_repart                                      &
      &     (new_ele%numele, iflag_new(1), new_ele_grp, icou)
@@ -312,7 +312,7 @@
      &       (ele%numele, ele_comm, SR_sig1, SR_i1, iflag_org)
           call calypso_SR_type_int(iflag_import_item, ele_tbl,          &
      &        ele%numele, ele_tbl%ntot_import,                          &
-     &        iflag_org(1), iflag_new(1))
+     &        iflag_org(1), iflag_new(1), SR_sig1, SR_i1)
 !
         icou = 0
 !$omp parallel do reduction(+:icou)
@@ -344,7 +344,7 @@
      &       (ele%numele, ele_comm, SR_sig1, SR_i1, iflag_org)
           call calypso_SR_type_int(iflag_import_item, ele_tbl,          &
      &        ele%numele, ele_tbl%ntot_import,                          &
-     &        iflag_org(1), iflag_new(1))
+     &        iflag_org(1), iflag_new(1), SR_sig1, SR_i1)
 !
           call set_surf_group_item_repart                               &
      &       (k1, new_ele%numele, iflag_new(1), new_surf_grp, icou)

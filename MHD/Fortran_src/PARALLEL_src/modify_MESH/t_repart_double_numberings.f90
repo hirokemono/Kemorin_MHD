@@ -99,6 +99,7 @@
       subroutine ext_node_dbl_numbering_by_SR(node, ext_tbl,            &
      &          new_ids_on_org, internal_node, recieved_nod_ids)
 !
+      use m_solver_SR
       use calypso_SR_type
       use select_copy_from_recv
 !
@@ -122,10 +123,10 @@
 !    Set local recieved_nod_ids in external node
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    node%numnod, ext_tbl%ntot_import, new_ids_on_org%irank,       &
-     &    recieved_nod_ids%irank(internal_node+1))
+     &    recieved_nod_ids%irank(internal_node+1), SR_sig1, SR_i1)
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    node%numnod, ext_tbl%ntot_import, new_ids_on_org%index,       &
-     &    recieved_nod_ids%index(internal_node+1))
+     &    recieved_nod_ids%index(internal_node+1), SR_sig1, SR_i1)
 !
       end subroutine ext_node_dbl_numbering_by_SR
 !

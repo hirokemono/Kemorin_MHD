@@ -53,6 +53,7 @@
      &          pvr_start, stencil_wk,  num_pixel_recv,                 &
      &          img_output_tbl, img_composit_tbl, img_stack)
 !
+      use m_solver_SR
       use quicksort
       use calypso_SR_type
       use const_comm_tbl_img_composit
@@ -114,13 +115,15 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+10)
       call calypso_SR_type_int(0, img_composit_tbl,                     &
      &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
-     &    pvr_start%id_pixel_start, img_stack%ipix_4_composit)
+     &    pvr_start%id_pixel_start, img_stack%ipix_4_composit,          &
+     &    SR_sig1, SR_i1)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+10)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+11)
       call calypso_SR_type_1(0, img_composit_tbl,                       &
      &   pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,           &
-     &   img_stack%depth_pvr_ray_start, img_stack%depth_pixel_composit)
+     &   img_stack%depth_pvr_ray_start, img_stack%depth_pixel_composit, &
+     &   SR_sig1, SR_r1)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+11)
 !
       call alloc_pvr_image_stack_table(img_stack)
@@ -261,6 +264,7 @@
      &          img_stack, img_output_tbl, stencil_wk,                  &
      &          num_pixel_xy, num_pixel_recv)
 !
+      use m_solver_SR
       use calypso_SR_type
 !
       integer(kind = kint), intent(in) :: id_file
@@ -276,7 +280,7 @@
       allocate(ipixel_check(num_pixel_recv))
       call calypso_SR_type_int(0, img_output_tbl,                       &
      &    img_stack%npixel_4_composit, num_pixel_recv,                  &
-     &    img_stack%ipixel_4_composit, ipixel_check)
+     &    img_stack%ipixel_4_composit, ipixel_check, SR_sig1, SR_i1)
 !
       write(id_file,*) 'ipixel_check', num_pixel_recv, num_pixel_xy
       do ipix = 1, num_pixel_recv

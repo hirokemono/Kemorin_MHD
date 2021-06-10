@@ -156,6 +156,7 @@
       subroutine trim_overlapped_ele_by_repart                          &
      &         (mesh, element_ids, ele_tbl, new_numele)
 !
+      use m_solver_SR
       use calypso_SR_type
       use select_copy_from_recv
       use sort_for_repartition
@@ -179,10 +180,10 @@
 !    Set local in external node
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    element_ids%irank, recv_ele_ids%irank)
+     &    element_ids%irank, recv_ele_ids%irank, SR_sig1, SR_i1)
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    element_ids%index, recv_ele_ids%index)
+     &    element_ids%index, recv_ele_ids%index, SR_sig1, SR_i1)
 !
       call alloc_sorting_data(ele_tbl%ntot_import, sort_ele)
 !
@@ -225,6 +226,7 @@
       subroutine check_push_off_redundant_ele                           &
      &         (ele, ele_tbl, idx_sort2, element_ids, recv_ele_ids)
 !
+      use m_solver_SR
       use calypso_SR_type
       use select_copy_from_recv
 !
@@ -244,10 +246,10 @@
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import,                              &
-     &    element_ids%irank, recv_ele_id_2%irank)
+     &    element_ids%irank, recv_ele_id_2%irank, SR_sig1, SR_i1)
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import,                              &
-     &    element_ids%index, recv_ele_id_2%index)
+     &    element_ids%index, recv_ele_id_2%index, SR_sig1, SR_i1)
 !
       write(100+my_rank,*) 'recv_ele_ids', ele_tbl%ntot_import
       do icou = 1, ele_tbl%ntot_import

@@ -106,10 +106,12 @@
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
-     &    new_ids_on_org%index(1), new_recved_id1%index(1))
+     &    new_ids_on_org%index(1), new_recved_id1%index(1),             &
+     &    SR_sig1, SR_i1)
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
-     &    new_ids_on_org%irank(1), new_recved_id1%irank(1))
+     &    new_ids_on_org%irank(1), new_recved_id1%irank(1),             &
+     &    SR_sig1, SR_i1)
 !
       call SOLVER_SEND_RECV_int_type(new_node%numnod, new_comm,         &
      &    SR_sig1, SR_i1, new_recved_id1%index)
@@ -119,10 +121,12 @@
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
-     &    new_ids_on_org%index(1), new_recved_id2%index(1))
+     &    new_ids_on_org%index(1), new_recved_id2%index(1),             &
+     &    SR_sig1, SR_i1)
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
-     &    new_ids_on_org%irank(1), new_recved_id2%irank(1))
+     &    new_ids_on_org%irank(1), new_recved_id2%irank(1),             &
+     &    SR_sig1, SR_i1)
       call SOLVER_SEND_RECV_int_type(new_node%numnod, new_comm,         &
      &    SR_sig1, SR_i1, new_recved_id2%index)
       call SOLVER_SEND_RECV_int_type(new_node%numnod, new_comm,         &
