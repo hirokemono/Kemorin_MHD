@@ -36,6 +36,7 @@
       use t_edge_data
       use t_comm_table
       use t_failed_export_list
+      use m_solver_SR
 !
       use m_machine_parameter
 !
@@ -158,12 +159,12 @@
       call dealloc_failed_export(fail_tbl_e)
 !
       call check_global_ele_id(txt_ele, ele%numele,                     &
-     &    ele%interior_ele, ele_comm, ele%iele_global)
+     &    ele%interior_ele, ele_comm, ele%iele_global, SR_sig1, SR_il1)
 !
       call check_element_position                                       &
      &   (txt_ele, node%numnod, node%inod_global, ele%numele,           &
      &    ele%nnod_4_ele, ele%ie, ele%iele_global,                      &
-     &    ele%x_ele, inod_dbl, iele_dbl, ele_comm)
+     &    ele%x_ele, inod_dbl, iele_dbl, ele_comm, SR_sig1, SR_r1)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_ele_double_number(iele_dbl)
 !
@@ -226,16 +227,16 @@
       istack_ineredge(0:nprocs) = 0
 !
       call count_number_of_node_stack(internal_num, istack_ineredge)
-      call set_global_ele_id                                            &
-     &   (txt_edge, edge%numedge, istack_ineredge,                      &
-     &    edge%interior_edge, edge_comm, edge%iedge_global)
+      call set_global_ele_id(txt_edge, edge%numedge, istack_ineredge,   &
+     &    edge%interior_edge, edge_comm, edge%iedge_global,             &
+     &    SR_sig1, SR_il1)
       deallocate(istack_ineredge)
 !
       call calypso_mpi_barrier
       call check_element_position                                       &
      &   (txt_edge, node%numnod, node%inod_global, edge%numedge,        &
      &    edge%nnod_4_edge, edge%ie_edge, edge%iedge_global,            &
-     &    edge%x_edge, inod_dbl, iedge_dbl, edge_comm)
+     &    edge%x_edge, inod_dbl, iedge_dbl, edge_comm, SR_sig1, SR_r1)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_ele_double_number(iedge_dbl)
 !

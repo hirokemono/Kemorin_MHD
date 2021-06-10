@@ -196,7 +196,8 @@
 !
 !      write(*,*) 'check_element_position', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+8)
-      call check_element_position(txt, numele, x_ele, e_comm)
+      call check_element_position(txt, numele, x_ele, e_comm,           &
+     &                            SR_sig1, SR_r1)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+8)
 !
       end subroutine const_comm_table_by_connenct_old

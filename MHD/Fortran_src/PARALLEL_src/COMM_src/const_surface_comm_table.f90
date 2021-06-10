@@ -36,6 +36,7 @@
 !
       use m_machine_parameter
       use m_geometry_constants
+      use m_solver_SR
 !
       implicit none
 !
@@ -96,16 +97,16 @@
       istack_inersurf(0:nprocs) = 0
 !
       call count_number_of_node_stack(internal_num, istack_inersurf)
-      call set_global_ele_id                                            &
-     &   (txt_surf, surf%numsurf, istack_inersurf,                      &
-     &    surf%interior_surf, surf_comm, surf%isurf_global)
+      call set_global_ele_id(txt_surf, surf%numsurf, istack_inersurf,   &
+     &    surf%interior_surf, surf_comm, surf%isurf_global,             &
+     &    SR_sig1, SR_il1)
       deallocate(istack_inersurf)
 !
       call calypso_mpi_barrier
       call check_element_position                                       &
      &   (txt_surf, node%numnod, node%inod_global, surf%numsurf,        &
      &    surf%nnod_4_surf, surf%ie_surf, surf%isurf_global,            &
-     &    surf%x_surf, inod_dbl, isurf_dbl, surf_comm)
+     &    surf%x_surf, inod_dbl, isurf_dbl, surf_comm, SR_sig1, SR_r1)
       call dealloc_ele_double_number(isurf_dbl)
       call dealloc_double_numbering(inod_dbl)
 !
