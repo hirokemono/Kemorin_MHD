@@ -62,6 +62,7 @@
       use t_MHD_IO_data
       use t_ucd_file
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -114,7 +115,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(geofem%mesh, v_sol)
+      call FEM_comm_initialization(geofem%mesh, v_sol,                  &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       end subroutine FEM_initialize_sph_MHD
 !
@@ -145,7 +147,8 @@
 !*  ----------- Data communication  --------------
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(geofem%mesh, nod_fld, v_sol)
+      call nod_fields_send_recv(geofem%mesh, nod_fld,                   &
+     &                          v_sol, SR_sig1, SR_r1)
 !
 !*  -----------  Output volume data --------------
 !*

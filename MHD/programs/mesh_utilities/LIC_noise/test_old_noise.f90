@@ -13,6 +13,7 @@
       use t_ucd_data
       use t_file_IO_parameter
       use t_vector_for_solver
+      use m_solver_SR
       use m_file_format_switch
       use m_spheric_constants
 !
@@ -108,8 +109,9 @@
         write(*,*) 'copy data end'
 !
       call alloc_iccgN_vector(isix, mesh%node%numnod, v_sol_n)
-      call init_nod_send_recv(mesh)
-      call fields_send_recv(mesh%nod_comm, nod_fld, v_sol_n)
+      call init_nod_send_recv(mesh, SR_sig1, SR_r1, SR_i1, SR_il1)
+      call fields_send_recv(mesh%nod_comm, nod_fld,                     &
+     &                      v_sol_n, SR_sig1, SR_r1)
 !
       call link_local_mesh_2_ucd(mesh%node, mesh%ele, ucd)
       call link_field_data_to_ucd(nod_fld, ucd)

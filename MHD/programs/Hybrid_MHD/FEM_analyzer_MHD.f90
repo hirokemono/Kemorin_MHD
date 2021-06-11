@@ -35,6 +35,7 @@
       use t_FEM_MHD_mean_square
       use t_FEM_MHD_solvers
       use t_MHD_IO_data
+      use m_solver_SR
 !
       use calypso_mpi
 !
@@ -93,8 +94,8 @@
      &    MHD_CG, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,                    &
      &    label_sim, FEM_MHD%v_sol)
 !
-      call nod_fields_send_recv                                         &
-     &   (FEM_MHD%geofem%mesh, FEM_MHD%field, FEM_MHD%v_sol)
+      call nod_fields_send_recv(FEM_MHD%geofem%mesh, FEM_MHD%field,     &
+     &                          FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
 !   obtain elemental averages
 !

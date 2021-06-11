@@ -32,6 +32,7 @@
       use t_filter_coefficients
       use t_l_filtering_data
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -234,7 +235,8 @@
      &      fil_l_smp%inod_lf, fil_l_smp%istack_lf, fil_l_smp%item_lf,  &
      &      fil_l_smp%coef_l, nod_fld%ntot_phys, i_filter,              &
      &      nod_fld%d_fld, x_flt(1))
-        call scalar_send_recv(i_filter, nod_comm, nod_fld, v_sol)
+        call scalar_send_recv(i_filter, nod_comm, nod_fld,              &
+     &                        v_sol, SR_sig1, SR_r1)
 !
       end subroutine line_filtered_scalar
 !
@@ -266,7 +268,8 @@
      &      fil_l_smp%inod_lf, fil_l_smp%istack_lf, fil_l_smp%item_lf,  &
      &      fil_l_smp%coef_l, nod_fld%ntot_phys, i_filter,              &
      &      nod_fld%d_fld, x_flt(1))
-        call vector_send_recv(i_filter, nod_comm, nod_fld, v_sol)
+        call vector_send_recv(i_filter, nod_comm, nod_fld,              &
+     &                        v_sol, SR_sig1, SR_r1)
 !
       end subroutine line_filtered_vector
 !
@@ -298,7 +301,8 @@
      &      fil_l_smp%inod_lf, fil_l_smp%istack_lf, fil_l_smp%item_lf,  &
      &      fil_l_smp%coef_l, nod_fld%ntot_phys, i_filter,              &
      &      nod_fld%d_fld, x_flt(1))
-        call sym_tensor_send_recv(i_filter, nod_comm, nod_fld, v_sol)
+        call sym_tensor_send_recv(i_filter, nod_comm, nod_fld,          &
+     &                            v_sol, SR_sig1, SR_r1)
 !
       end subroutine line_filtered_sym_tensor
 !

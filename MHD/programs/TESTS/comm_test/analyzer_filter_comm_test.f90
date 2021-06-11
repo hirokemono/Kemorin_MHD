@@ -18,6 +18,7 @@
       use t_filtering_data
       use t_work_for_comm_check
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -50,7 +51,8 @@
       if (iflag_debug.gt.0) write(*,*) 's_input_ctl_filter_comm_test'
       call s_input_ctl_filter_comm_test                                 &
      &   (filtering_test, filter_nod1, wk_filter_test)
-      call init_send_recv(filtering_test%comm)
+      call init_send_recv(filtering_test%comm,                          &
+     &                    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
        end subroutine init_analyzer
 !

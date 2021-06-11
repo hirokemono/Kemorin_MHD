@@ -32,6 +32,7 @@
       use t_FEM_SGS_structure
       use t_MHD_IO_data
       use t_work_FEM_SGS_MHD
+      use m_solver_SR
 !
       use calypso_mpi
 !
@@ -118,8 +119,8 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(FEM_MHD%geofem%mesh,                    &
-     &                          FEM_MHD%field, FEM_MHD%v_sol)
+      call nod_fields_send_recv(FEM_MHD%geofem%mesh, FEM_MHD%field,     &
+     &                          FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d, FEM_model%FEM_prm,        &

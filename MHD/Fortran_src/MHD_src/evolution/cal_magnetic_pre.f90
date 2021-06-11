@@ -94,6 +94,7 @@
       use t_FEM_SGS_model_coefs
       use t_FEM_MHD_filter_data
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -258,7 +259,7 @@
      &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
 !
       call vector_send_recv(iphys%base%i_magne, mesh%nod_comm,          &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_magnetic_field_pre
 !
@@ -362,9 +363,9 @@
      &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
 !
       call vector_send_recv(iphys%base%i_magne, mesh%nod_comm,          &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
       call scalar_send_recv(iphys%base%i_mag_p, mesh%nod_comm,          &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_magnetic_co
 !
@@ -448,7 +449,7 @@
      &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
 !
       call vector_send_recv(iphys%base%i_magne, mesh%nod_comm,          &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_magnetic_co_outside
 !

@@ -23,6 +23,7 @@
       use t_ucd_data
       use t_file_IO_parameter
       use t_time_data
+      use m_solver_SR
 !
       implicit none
 !
@@ -89,8 +90,8 @@
       istep_ucd = IO_step_exc_zero_inc(i_step, ucd_step)
       call set_data_by_read_ucd(i_step, FEM_STR%org_ucd_file_IO,        &
      &    FEM_STR%time_IO, input_ucd, FEM_STR%field)
-      call nod_fields_send_recv                                         &
-     &   (FEM_STR%geofem%mesh, FEM_STR%field, FEM_STR%v_sol)
+      call nod_fields_send_recv(FEM_STR%geofem%mesh, FEM_STR%field,     &
+     &                          FEM_STR%v_sol, SR_sig1, SR_r1)
 !
       end subroutine FEM_analyze_sph_trans
 !

@@ -56,6 +56,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -189,7 +190,7 @@
      &   (Snod_bcs%nod_bc_s, iphys_SGS_wk%i_wd_nlg, nod_fld)
 !
       call scalar_send_recv(iphys_SGS_wk%i_wd_nlg, mesh%nod_comm,       &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, iphys_SGS_wk%i_wd_nlg)
@@ -205,7 +206,7 @@
      &    nod_fld)
 !
       call scalar_send_recv(iphys_SGS_wk%i_nlg, mesh%nod_comm,          &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

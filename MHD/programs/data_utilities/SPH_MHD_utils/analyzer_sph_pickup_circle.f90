@@ -29,6 +29,7 @@
       use t_file_IO_parameter
       use t_SPH_mesh_field_data
       use t_step_parameter
+      use m_solver_SR
 !
       use SPH_analyzer_sph_pick_circ
 !
@@ -57,6 +58,7 @@
       use init_sph_MHD_elapsed_label
       use parallel_load_data_4_sph
       use input_control_sph_MHD
+      use nod_phys_send_recv
 !
       type(phys_data), save :: nod_fld_c
 !
@@ -110,7 +112,8 @@
       call alloc_iccgN_vector                                           &
      &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, FEM_d1%v_sol)
 !      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-!      call init_nod_send_recv(FEM_d1%geofem%mesh)
+      call init_nod_send_recv(FEM_d1%geofem%mesh,                       &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'

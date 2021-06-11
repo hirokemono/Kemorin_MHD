@@ -70,6 +70,7 @@
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -170,7 +171,8 @@
 !
 !   communication
 !
-      call scalar_send_recv(i_SGS_div_flux, nod_comm, nod_fld, v_sol)
+      call scalar_send_recv(i_SGS_div_flux, nod_comm, nod_fld,          &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_terms_4_heat
 !

@@ -26,6 +26,7 @@
       use t_calypso_comm_table
       use t_control_param_repartition
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -82,7 +83,8 @@
 !
 !  -------------------------------
 !
-      call init_nod_send_recv(fem_T%mesh)
+      call init_nod_send_recv(fem_T%mesh,                               &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
       if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
 !  -------------------------------

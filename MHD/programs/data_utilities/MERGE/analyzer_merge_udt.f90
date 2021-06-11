@@ -27,6 +27,7 @@
       use t_control_data_4_merge
       use t_control_param_assemble
       use t_vector_for_solver
+      use m_solver_SR
 !
       use field_IO_select
       use assemble_nodal_fields
@@ -105,7 +106,7 @@
      &   (n_sym_tensor, mesh_m%node%numnod, v_sol_u)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(mesh_m)
+      call init_nod_send_recv(mesh_m, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !   read field name and number of components
 !
@@ -167,7 +168,8 @@
         call dealloc_phys_data_IO(fld_IO_m)
         call dealloc_phys_name_IO(fld_IO_m)
 !
-        call nod_fields_send_recv(mesh_m, new_fld, v_sol_u)
+        call nod_fields_send_recv(mesh_m, new_fld,                      &
+     &                            v_sol_u, SR_sig1, SR_r1)
 !
         call sel_write_parallel_ucd_file                                &
      &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m)

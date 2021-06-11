@@ -32,6 +32,7 @@
       use t_reference_moments
       use t_element_list_4_filter
       use t_matrix_4_filter
+      use m_solver_SR
 !
       implicit none
 !
@@ -212,7 +213,8 @@
       if(iflag_debug.eq.1)  write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector(ithree, fem_f%mesh%node%numnod, v_sol)
 !
-      call init_nod_send_recv(fem_f%mesh)
+      call init_nod_send_recv(fem_f%mesh,                               &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size(fem_f%mesh, fem_f%group,                  &

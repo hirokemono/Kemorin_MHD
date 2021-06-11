@@ -84,6 +84,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -380,7 +381,8 @@
       call set_boundary_scalar                                          &
      &   (nod_bcs%nod_bc_s, i_field, nod_fld)
 !
-      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld, v_sol)
+      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld,            &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine s_cal_light_element_pre
 !

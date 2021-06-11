@@ -42,6 +42,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -90,7 +91,8 @@
      &    m_lump%ml, nod_fld%ntot_phys, i_rot, nod_fld%d_fld)
 !
 ! ----------   communications
-      call vector_send_recv(i_rot, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(i_rot, nod_comm, nod_fld,                   &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine choose_cal_rotation
 !

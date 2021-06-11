@@ -33,6 +33,7 @@
       use t_comm_table
       use t_geometry_data
       use t_phys_data
+      use m_solver_SR
 !
       implicit none
 !
@@ -316,11 +317,14 @@
 !
 !
       if(ncomp_4_result .eq. ione) then
-        call nod_scalar_send_recv(node%numnod, nod_comm, d_nod, v_sol)
+        call nod_scalar_send_recv(node%numnod, nod_comm, d_nod, v_sol,  &
+     &                            SR_sig1, SR_r1)
       else if(ncomp_4_result .eq. ithree) then
-        call nod_vector_send_recv(node%numnod, nod_comm, d_nod, v_sol)
+        call nod_vector_send_recv(node%numnod, nod_comm, d_nod, v_sol,  &
+     &                            SR_sig1, SR_r1)
       else if(ncomp_4_result .eq. isix) then
-        call nod_tensor_send_recv(node%numnod, nod_comm, d_nod, v_sol)
+        call nod_tensor_send_recv(node%numnod, nod_comm, d_nod, v_sol,  &
+     &                            SR_sig1, SR_r1)
       end if
 !
       end subroutine cal_products_of_fields

@@ -69,6 +69,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -125,7 +126,7 @@
      &     nod_fld%d_fld)
 !
        call vector_send_recv(iphys_LES%SGS_term%i_SGS_induction,        &
-     &                       nod_comm, nod_fld, v_sol)
+     &                       nod_comm, nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine int_vol_sgs_induction
 !
@@ -189,7 +190,7 @@
      &    nod_fld%ntot_phys, iphys_LES%SGS_term%i_SGS_vp_induct,        &
      &    nod_fld%d_fld)
       call vector_send_recv(iphys_LES%SGS_term%i_SGS_vp_induct,         &
-     &                      nod_comm, nod_fld, v_sol)
+     &                      nod_comm, nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_sgs_uxb_2_monitor
 !

@@ -23,6 +23,7 @@
       use t_shape_functions
       use t_FEM_utils
       use t_vector_for_solver
+      use m_solver_SR
 !
       use transfer_correlate_field
 !
@@ -92,7 +93,8 @@
       if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
      &   (isix, femmesh_p_FUT%mesh%node%numnod, FUTIL1%v_sol)
-      call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
+      call init_send_recv(femmesh_p_FUT%mesh%nod_comm,                  &
+     &                    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos_p'
       call const_mesh_infos_p                                           &
@@ -171,9 +173,9 @@
      &      second_ucd_param, phys_ref, time_IO)
 !
         call fields_send_recv(femmesh_p_FUT%mesh%nod_comm,              &
-     &                        FUTIL1%nod_fld, FUTIL1%v_sol)
+     &      FUTIL1%nod_fld, FUTIL1%v_sol, SR_sig1, SR_r1)
         call fields_send_recv(femmesh_p_REF%mesh%nod_comm,              &
-     &                        phys_ref, FUTIL1%v_sol)
+     &      phys_ref, FUTIL1%v_sol, SR_sig1, SR_r1)
 !
 !    output udt data
 !

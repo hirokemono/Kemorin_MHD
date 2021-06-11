@@ -72,6 +72,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -239,8 +240,8 @@
      &    i_sgs_grad_fp, i_sgs_grad_fp, fem_wk, surf_wk,                &
      &    f_l, f_nl, nod_fld)
 !
-      call sym_tensor_send_recv                                         &
-     &    (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld, v_sol)
+      call sym_tensor_send_recv(iphys_SGS_wk%i_wd_nlg, nod_comm,        &
+     &                          nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_wd_nlg)
@@ -262,8 +263,8 @@
      &    i_sgs_grad_p, iphys_base%i_press, fem_wk, surf_wk,            &
      &    f_l, f_nl, nod_fld)
 !
-!      call sym_tensor_send_recv                                        &
-!     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld, v_sol)
+!      call sym_tensor_send_recv(iphys_SGS_wk%i_nlg, nod_comm,          &
+!     &                          nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

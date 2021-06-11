@@ -27,6 +27,7 @@
       use t_control_param_assemble
       use t_comm_table_4_assemble
       use t_vector_for_solver
+      use m_solver_SR
 !
       use field_IO_select
       use set_field_to_restart
@@ -110,7 +111,8 @@
      &   (n_sym_tensor, new_mesh%node%numnod, v_sol_f)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(new_mesh)
+      call init_nod_send_recv(new_mesh,                                 &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  set original mesh data
 !
@@ -173,7 +175,8 @@
 !   re-scaling for magnetic field
         call rescale_4_magne(asbl_param_f%b_ratio, new_fld)
 !
-        call nod_fields_send_recv(new_mesh, new_fld, v_sol_f)
+        call nod_fields_send_recv(new_mesh, new_fld,                    &
+     &                            v_sol_f, SR_sig1, SR_r1)
 !
         call simple_copy_fld_data_to_rst                                &
      &     (new_mesh%node, new_fld, new_fIO)

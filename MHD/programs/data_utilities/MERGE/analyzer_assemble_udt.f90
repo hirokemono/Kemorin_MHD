@@ -27,6 +27,7 @@
       use t_control_param_assemble
       use t_comm_table_4_assemble
       use t_vector_for_solver
+      use m_solver_SR
 !
       use field_IO_select
       use assemble_nodal_fields
@@ -109,7 +110,8 @@
      &   (n_sym_tensor, new_mesh%node%numnod, v_sol_u)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(new_mesh)
+      call init_nod_send_recv(new_mesh,                                 &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  set original mesh data
 !
@@ -188,7 +190,8 @@
         call assemble_field_data                                        &
      &     (ndomain_org, asbl_comm_u, new_fld, org_fIO)
 !
-        call nod_fields_send_recv(new_mesh, new_fld, v_sol_u)
+        call nod_fields_send_recv(new_mesh, new_fld,                    &
+     &                            v_sol_u, SR_sig1, SR_r1)
 !
         call sel_write_parallel_ucd_file                                &
      &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m)

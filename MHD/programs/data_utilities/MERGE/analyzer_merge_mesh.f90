@@ -80,7 +80,8 @@
 !  Initialize communicator
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(fem_m%mesh)
+      call init_nod_send_recv(fem_m%mesh,                               &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       end subroutine init_merge_mesh
 !

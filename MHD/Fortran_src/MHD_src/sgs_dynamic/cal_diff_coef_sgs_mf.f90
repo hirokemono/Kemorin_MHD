@@ -63,6 +63,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -201,8 +202,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &      'vector_send_recv', iphys_SGS_wk%i_wd_nlg
-      call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld, v_sol)
+      call vector_send_recv(iphys_SGS_wk%i_wd_nlg, mesh%nod_comm,       &
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_wd_nlg)
@@ -219,8 +220,8 @@
      &    iphys_base%i_velo, rhs_mat%fem_wk, rhs_mat%surf_wk,           &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
-      call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_nlg, mesh%nod_comm, nod_fld, v_sol)
+      call vector_send_recv(iphys_SGS_wk%i_nlg, mesh%nod_comm,          &
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

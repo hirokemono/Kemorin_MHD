@@ -34,6 +34,7 @@
       use t_const_spherical_grid
       use t_comm_table_4_assemble
       use t_vector_for_solver
+      use m_solver_SR
       use t_viz_4_rayleigh
 !
       implicit none
@@ -104,7 +105,8 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_comm_initialization(FEM_Rayleigh%geofem%mesh,            &
-     &                             FEM_Rayleigh%v_sol)
+     &                             FEM_Rayleigh%v_sol,                  &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
       call const_global_numele_list(FEM_Rayleigh%geofem%mesh%ele)
 !
 !   --------------------------------
@@ -188,7 +190,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(FEM_Rayleigh%geofem%mesh,               &
-     &    FEM_Rayleigh%field, FEM_Rayleigh%v_sol)
+     &    FEM_Rayleigh%field, FEM_Rayleigh%v_sol, SR_sig1, SR_r1)
 !
       end subroutine FEM_analyze_viz_rayleigh
 !

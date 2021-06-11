@@ -25,6 +25,7 @@
       use t_time_data
       use t_VIZ_only_step_parameter
       use t_vector_for_solver
+      use m_solver_SR
 !
       use m_elapsed_labels_SEND_RECV
       use m_elapsed_labels_4_REPART
@@ -109,7 +110,8 @@
 !
 !  -------------------------------
 !
-      call FEM_comm_initialization(fem_T%mesh, v_sol_T)
+      call FEM_comm_initialization(fem_T%mesh, v_sol_T,                 &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  -------------------------------
 !

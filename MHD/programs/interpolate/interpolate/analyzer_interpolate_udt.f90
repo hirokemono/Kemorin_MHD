@@ -16,6 +16,7 @@
       use t_structure_4_interolation
       use t_ucd_data
       use t_IO_step_parameter
+      use m_solver_SR
 !
       implicit none
 !
@@ -59,7 +60,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'init_nod_send_recv'
-      call init_nod_send_recv(itp_udt%org_fem%mesh)
+      call init_nod_send_recv(itp_udt%org_fem%mesh,                     &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !     --------------------- 
 !
@@ -109,7 +111,7 @@
      &        itp_udt%org_fld, itp_time_IO)
 !
           call nod_fields_send_recv(itp_udt%org_fem%mesh,               &
-     &                              itp_udt%org_fld, itp_udt%v_1st_sol)
+     &        itp_udt%org_fld, itp_udt%v_1st_sol, SR_sig1, SR_r1)
         end if
 !
 !    interpolation

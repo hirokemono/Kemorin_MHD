@@ -89,7 +89,8 @@
 !  ------  Initialize data communication for FEM data
 !
       if (iflag_debug.gt.0 ) write(*,*) 'init_nod_send_recv'
-      call init_nod_send_recv(fem_EXT%mesh)
+      call init_nod_send_recv(fem_EXT%mesh,                             &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       end subroutine initialize_sleeve_extend
 !

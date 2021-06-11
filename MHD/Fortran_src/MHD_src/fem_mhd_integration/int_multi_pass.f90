@@ -49,6 +49,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -92,7 +93,7 @@
         call cal_ff_smp_2_vector(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
         call nod_vector_send_recv(node%numnod, nod_comm,                &
-     &                            f_nl%ff, v_sol)
+     &                            f_nl%ff, v_sol, SR_sig1, SR_r1)
 !
         call int_vol_multi_pass_vector                                  &
      &     (FEM_prm%npoint_t_evo_int, iele_fsmp_stack,                  &
@@ -137,7 +138,7 @@
         call cal_ff_smp_2_scalar(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
         call nod_scalar_send_recv(node%numnod, nod_comm,                &
-     &                            f_nl%ff(1,1), v_sol)
+     &                            f_nl%ff(1,1), v_sol, SR_sig1, SR_r1)
 !
         call int_vol_multi_pass_scalar                                  &
      &     (FEM_prm%npoint_t_evo_int, iele_fsmp_stack,                  &
@@ -187,7 +188,7 @@
         call cal_ff_smp_2_vector(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
         call nod_vector_send_recv(node%numnod, nod_comm,                &
-     &                            f_nl%ff, v_sol)
+     &                            f_nl%ff, v_sol, SR_sig1, SR_r1)
 !
         call int_vol_multi_pass_vector_upw                              &
      &     (FEM_prm%npoint_t_evo_int, dt, iele_fsmp_stack,              &
@@ -238,7 +239,7 @@
         call cal_ff_smp_2_scalar(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
         call nod_scalar_send_recv(node%numnod, nod_comm,                &
-     &                            f_nl%ff(1,1), v_sol)
+     &                            f_nl%ff(1,1), v_sol, SR_sig1, SR_r1)
 !
         call int_vol_multi_pass_scalar_upw                              &
      &     (FEM_prm%npoint_t_evo_int, dt, iele_fsmp_stack,              &

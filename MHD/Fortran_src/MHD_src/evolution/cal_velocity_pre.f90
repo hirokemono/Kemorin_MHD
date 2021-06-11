@@ -107,6 +107,7 @@
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -338,7 +339,7 @@
      &    Vsf_bcs%normal, iphys%base%i_velo, nod_fld)
 !
       call vector_send_recv(iphys%base%i_velo, nod_comm,                &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine s_cal_velocity_pre
 !
@@ -453,11 +454,11 @@
       if(iflag_debug.eq.1) write(*,*)                                   &
      &                   'vector_send_recv(iphys%base%i_velo)'
       call vector_send_recv(iphys%base%i_velo, nod_comm,                &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
       if(iflag_debug.eq.1) write(*,*)                                   &
      &                   'scalar_send_recv(iphys%base%i_press)'
       call scalar_send_recv(iphys%base%i_press, nod_comm,               &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_velocity_co
 !

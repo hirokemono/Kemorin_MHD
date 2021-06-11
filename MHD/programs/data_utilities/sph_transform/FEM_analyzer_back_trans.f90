@@ -22,6 +22,7 @@
       use t_VIZ_step_parameter
       use t_file_IO_parameter
       use t_shape_functions
+      use m_solver_SR
 !
       implicit none
 !
@@ -54,8 +55,8 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization                                      &
-     &   (FEM_STR%geofem%mesh, FEM_STR%v_sol)
+      call FEM_comm_initialization(FEM_STR%geofem%mesh, FEM_STR%v_sol,  &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
       call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &
@@ -93,8 +94,8 @@
 !*  ----------   Count steps for visualization
 !*
       if(visval) then
-        call nod_fields_send_recv(FEM_STR%geofem%mesh,                  &
-     &                            FEM_STR%field, FEM_STR%v_sol)
+        call nod_fields_send_recv(FEM_STR%geofem%mesh, FEM_STR%field,   &
+     &                            FEM_STR%v_sol, SR_sig1, SR_r1)
 !
 !*  -----------  Output volume data --------------
 !*

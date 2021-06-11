@@ -65,6 +65,7 @@
       use t_work_4_MHD_layering
       use t_field_data_IO
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -157,7 +158,8 @@
 !     ---------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(geofem%mesh, v_sol)
+      call FEM_comm_initialization(geofem%mesh, v_sol,                  &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
 !     ---------------------

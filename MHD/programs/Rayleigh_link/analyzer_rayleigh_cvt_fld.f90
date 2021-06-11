@@ -29,6 +29,7 @@
       use t_comm_table_4_assemble
       use t_rayleigh_field_IO
       use t_vector_for_solver
+      use m_solver_SR
 !
       use field_IO_select
       use assemble_nodal_fields
@@ -133,7 +134,8 @@
      &   (n_sym_tensor, geofem%mesh%node%numnod, v_sol_A)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(geofem%mesh)
+      call init_nod_send_recv(geofem%mesh,                              &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  set new mesh data
 !
@@ -232,7 +234,8 @@
      &     (nprocs, asbl_comm_u, new_fld, org_fIO)
 !
 !        write(*,*) 'nod_fields_send_recv'
-        call nod_fields_send_recv(geofem%mesh, new_fld, v_sol_A)
+        call nod_fields_send_recv(geofem%mesh, new_fld,                 &
+     &                            v_sol_A, SR_sig1, SR_r1)
         call calypso_MPI_barrier
 !
 !        write(*,*) 'sel_write_parallel_ucd_file'

@@ -48,6 +48,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -115,7 +116,8 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld,                   &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_div_sgs_mf_simi
 !
@@ -173,7 +175,8 @@
 !
 ! ----------   communications
 !
-      call scalar_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
+      call scalar_send_recv(i_sgs, nod_comm, nod_fld,                   &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_div_sgs_sf_simi
 !
@@ -232,7 +235,8 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld,                   &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_div_sgs_idct_simi
 !

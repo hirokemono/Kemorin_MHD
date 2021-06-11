@@ -28,6 +28,7 @@
       use t_IO_step_parameter
       use t_VIZ_step_parameter
       use t_vector_for_solver
+      use m_solver_SR
       use calypso_mpi
 !
       implicit none
@@ -83,7 +84,8 @@
       if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
      &   (isix, geofem%mesh%node%numnod, v_sol)
-      call init_nod_send_recv(geofem%mesh)
+      call init_nod_send_recv(geofem%mesh,                              &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !     --------------------- 
 !

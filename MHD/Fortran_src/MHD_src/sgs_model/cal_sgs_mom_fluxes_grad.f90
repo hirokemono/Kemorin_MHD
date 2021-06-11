@@ -53,6 +53,7 @@
       use t_SGS_model_coefs
       use t_MHD_finite_element_mat
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -121,7 +122,8 @@
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
+      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld,               &
+     &                          v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_sgs_m_flux_grad_w_coef
 !
@@ -177,7 +179,8 @@
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
+      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld,               &
+     &                          v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_sgs_m_flux_grad_no_coef
 !

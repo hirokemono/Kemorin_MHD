@@ -21,9 +21,10 @@
       use t_mesh_data
       use t_file_IO_parameter
       use t_control_param_comm_test
-      use t_vector_for_solver
       use t_failed_export_list
       use t_const_comm_table
+      use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -91,7 +92,8 @@
 !
 !  -------------------------------------------
 !
-      call FEM_comm_initialization(test_fem%mesh, v_sol_T)
+      call FEM_comm_initialization(test_fem%mesh, v_sol_T,              &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
       call FEM_mesh_initialization(test_fem%mesh, test_fem%group)
 !
 !
@@ -102,14 +104,14 @@
      &    test_fem%mesh%ele, T_ele_comm, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
-      call const_surf_comm_table                                       &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_surf_comm,     &
+      call const_surf_comm_table                                        &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_surf_comm,      &
      &    test_fem%mesh%surf)
 !
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
-      call const_edge_comm_table                                       &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_edge_comm,     &
+      call const_edge_comm_table                                        &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_edge_comm,      &
      &    test_fem%mesh%edge)
 !
 !      call calypso_mpi_barrier

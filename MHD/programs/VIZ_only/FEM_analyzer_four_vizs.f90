@@ -43,6 +43,7 @@
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -119,7 +120,8 @@
       call mpi_input_mesh(FEM_viz%mesh_file_IO, nprocs, FEM_viz%geofem)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol)
+      call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol,  &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !     ---------------------
 !
@@ -170,8 +172,8 @@
       call copy_time_step_size_data(FEM_viz%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv                                         &
-     &   (FEM_viz%geofem%mesh, FEM_viz%field, FEM_viz%v_sol)
+      call nod_fields_send_recv(FEM_viz%geofem%mesh, FEM_viz%field,     &
+     &                          FEM_viz%v_sol, SR_sig1, SR_r1)
 !
       end subroutine FEM_analyze_four_vizs
 !

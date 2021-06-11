@@ -38,6 +38,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -92,8 +93,8 @@
      &    (node, rhs_tbl, f_nl%ff_smp, mlump_cd%ml, nod_fld%ntot_phys,  &
      &     iphys%diffusion%i_b_diffuse, nod_fld%d_fld) 
 !
-       call vector_send_recv                                            &
-     &    (iphys%diffusion%i_b_diffuse, nod_comm, nod_fld, v_sol)
+       call vector_send_recv(iphys%diffusion%i_b_diffuse, nod_comm,     &
+     &                       nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine s_int_magne_diffusion
 !

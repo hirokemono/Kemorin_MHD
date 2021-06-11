@@ -15,6 +15,7 @@
       use calypso_mpi
       use t_FEM_utils
       use t_comm_table
+      use m_solver_SR
 !
       implicit none
 !
@@ -56,9 +57,11 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(FUTIL1%geofem%mesh, FUTIL1%v_sol)
-      call FEM_mesh_initialization                                      &
-     &   (FUTIL1%geofem%mesh, FUTIL1%geofem%group)
+      call FEM_comm_initialization(FUTIL1%geofem%mesh, FUTIL1%v_sol,    &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
+      call FEM_mesh_initialization(FUTIL1%geofem%mesh,                  &
+     &                             FUTIL1%geofem%group)
+
 !
       call const_edge_comm_table                                        &
      &   (FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%nod_comm,         &

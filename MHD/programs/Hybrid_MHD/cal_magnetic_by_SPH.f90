@@ -29,6 +29,7 @@
       use t_sph_FFT_selector
       use t_jacobians
       use t_vector_for_solver
+      use m_solver_SR
 !
       use calypso_mpi
 !
@@ -101,7 +102,8 @@
       call mpi_input_mesh(mesh_file_H, nprocs, mesh_sph)
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(mesh_sph%mesh, vect1)
+      call FEM_comm_initialization(mesh_sph%mesh, vect1,                &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
       call FEM_mesh_initialization                                      &
      &   (mesh_sph%mesh, mesh_sph%group)
 !

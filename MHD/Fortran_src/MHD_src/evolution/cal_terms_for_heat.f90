@@ -68,6 +68,7 @@
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
       use t_vector_for_solver
+      use m_solver_SR
 !
       use cal_multi_pass
       use cal_ff_smp_to_ffs
@@ -148,7 +149,8 @@
 !
 !   communication
 !
-      call scalar_send_recv(i_field, nod_comm, nod_fld, v_sol)
+      call scalar_send_recv(i_field, nod_comm, nod_fld,                 &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_terms_4_advect
 !
@@ -219,7 +221,8 @@
 !
 !   communication
 !
-      call scalar_send_recv(i_field, nod_comm, nod_fld, v_sol)
+      call scalar_send_recv(i_field, nod_comm, nod_fld,                 &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_div_of_scalar_flux
 !
@@ -284,7 +287,8 @@
 !
 !   communication
 !
-      call scalar_send_recv(i_field, nod_comm, nod_fld, v_sol)
+      call scalar_send_recv(i_field, nod_comm, nod_fld,                 &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_thermal_diffusion
 !

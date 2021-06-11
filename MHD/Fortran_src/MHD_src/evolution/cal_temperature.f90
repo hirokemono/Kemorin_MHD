@@ -25,7 +25,7 @@
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
-!!!        type(base_field_address), intent(in) :: iphys_ele_base
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -85,6 +85,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -370,10 +371,9 @@
      &      nod_fld, v_sol)
       end if
 !
-      call set_boundary_scalar                                          &
-     &   (nod_bcs%nod_bc_s, i_field, nod_fld)
-!
-      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld, v_sol)
+      call set_boundary_scalar(nod_bcs%nod_bc_s, i_field, nod_fld)
+      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld,            &
+     &                      v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_temperature_pre
 !

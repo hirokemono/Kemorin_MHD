@@ -24,10 +24,11 @@
       use t_next_node_ele_4_node
       use t_jacobians
       use t_phys_name_4_sph_trans
-      use t_vector_for_solver
       use t_visualizer
       use t_field_data_IO
       use t_file_IO_parameter
+      use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -87,8 +88,8 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization                                      &
-     &   (FEM_STR%geofem%mesh, FEM_STR%v_sol)
+      call FEM_comm_initialization(FEM_STR%geofem%mesh, FEM_STR%v_sol,  &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
       call FEM_mesh_initialization                                      &
      &   (FEM_STR%geofem%mesh, FEM_STR%geofem%group)
 !

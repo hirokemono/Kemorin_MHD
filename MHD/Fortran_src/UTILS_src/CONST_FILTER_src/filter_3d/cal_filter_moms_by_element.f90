@@ -282,6 +282,7 @@
       use t_jacobians
       use t_comm_table
       use t_crs_matrix
+      use m_solver_SR
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data),    intent(in) :: node
@@ -371,8 +372,8 @@
      &        rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p,              &
      &        mass, seed_moments_ele(1,n), seed_moments_nod(1,n),       &
      &        fem_wk, f_l, v_sol)
-          call nod_scalar_send_recv                                     &
-     &       (node%numnod, nod_comm, seed_moments_nod(1,n), v_sol)
+          call nod_scalar_send_recv(node%numnod, nod_comm,              &
+     &        seed_moments_nod(1,n), v_sol, SR_sig1, SR_r1)
         end if
 !
       end do

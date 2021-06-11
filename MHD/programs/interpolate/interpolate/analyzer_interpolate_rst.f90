@@ -16,6 +16,7 @@
       use t_structure_4_interolation
       use t_field_data_IO
       use t_IO_step_parameter
+      use m_solver_SR
 !
       implicit none
 !
@@ -55,7 +56,8 @@
 !
 !     --------------------- 
 !
-      call init_nod_send_recv(itp_rst%org_fem%mesh)
+      call init_nod_send_recv(itp_rst%org_fem%mesh,                     &
+     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !     ---------------------
 !
@@ -133,7 +135,7 @@
 !
           call copy_time_step_data(itp_time_IO, itp_rst%t_ITP%init_d)
           call nod_fields_send_recv(itp_rst%org_fem%mesh,               &
-     &                              itp_rst%org_fld, itp_rst%v_1st_sol)
+     &        itp_rst%org_fld, itp_rst%v_1st_sol, SR_sig1, SR_r1)
         end if
 !
         call calypso_mpi_bcast_one_real(itp_rst%t_ITP%init_d%time, 0)

@@ -17,6 +17,7 @@
       use calypso_mpi
 !
       use t_FEM_utils
+      use m_solver_SR
 !
       implicit none
 !
@@ -93,8 +94,8 @@
       end do
 !
       call s_divide_phys_by_num_udt(icou, FUTIL1%nod_fld)
-      call nod_fields_send_recv(FUTIL1%geofem%mesh,                     &
-     &                          FUTIL1%nod_fld, FUTIL1%v_sol)
+      call nod_fields_send_recv(FUTIL1%geofem%mesh, FUTIL1%nod_fld,     &
+     &                          FUTIL1%v_sol, SR_sig1, SR_r1)
 !
 !    output udt data
 !

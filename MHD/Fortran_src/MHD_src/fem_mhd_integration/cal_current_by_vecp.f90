@@ -70,6 +70,7 @@
       use t_surface_bc_vector
       use t_surface_bc_velocity
       use t_vector_for_solver
+      use m_solver_SR
 !
       use m_machine_parameter
       use m_geometry_constants
@@ -140,7 +141,7 @@
 !    communication
 !
       call vector_send_recv(iphys_base%i_current, nod_comm,             &
-     &                      nod_fld, v_sol)
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine int_current_diffuse
 !

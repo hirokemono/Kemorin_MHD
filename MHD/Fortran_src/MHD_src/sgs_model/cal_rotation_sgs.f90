@@ -56,11 +56,12 @@
       use t_filter_elength
       use t_material_property
       use t_SGS_model_coefs
+      use t_vector_for_solver
+      use m_solver_SR
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
       use nod_phys_send_recv
-      use t_vector_for_solver
 !
       implicit none
 !
@@ -133,7 +134,8 @@
       call set_boundary_vect(nod_bc, i_rot, nod_fld)
 !
 ! ----------   communications
-      call vector_send_recv(i_rot, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(i_rot, nod_comm, nod_fld,                   &
+     &                      v_sol, SR_sig1, SR_r1)
       nod_fld%iflag_update(i_rot:i_rot+2) = 1
 !
       end subroutine choose_cal_rotation_sgs

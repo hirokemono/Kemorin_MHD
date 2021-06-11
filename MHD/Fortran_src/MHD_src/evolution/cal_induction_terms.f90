@@ -60,6 +60,7 @@
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
       use t_vector_for_solver
+      use m_solver_SR
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -133,8 +134,8 @@
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    rhs_mat%f_nl%ff, mlump_cd%ml, nod_fld%ntot_phys,              &
      &    iphys%forces%i_vp_induct, nod_fld%d_fld)
-      call vector_send_recv                                             &
-     &   (iphys%forces%i_vp_induct, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(iphys%forces%i_vp_induct, nod_comm,         &
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_vecp_induction
 !
@@ -201,8 +202,8 @@
      &    rhs_mat%f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,               &
      &    iphys%diffusion%i_vp_diffuse, nod_fld%d_fld)
 !
-      call vector_send_recv                                             &
-     &   (iphys%diffusion%i_vp_diffuse, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(iphys%diffusion%i_vp_diffuse, nod_comm,     &
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_vecp_diffusion
 !

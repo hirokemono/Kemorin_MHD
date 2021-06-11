@@ -64,6 +64,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -193,8 +194,8 @@
      &    iphys_fil%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk,           &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
-      call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld, v_sol)
+      call vector_send_recv(iphys_SGS_wk%i_wd_nlg, mesh%nod_comm,       &
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
       call delete_field_by_fixed_v_bc                                   &
      &   (Vnod_bcs, iphys_SGS_wk%i_wd_nlg, nod_fld)
 !
@@ -212,8 +213,8 @@
      &    iphys_base%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk,          &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
-      call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_nlg, mesh%nod_comm, nod_fld, v_sol)
+      call vector_send_recv(iphys_SGS_wk%i_nlg, mesh%nod_comm,          &
+     &                      nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

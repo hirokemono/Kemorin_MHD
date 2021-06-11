@@ -53,6 +53,7 @@
 !
       use t_shape_functions
       use t_FEM_mesh_field_data
+      use m_solver_SR
 !
       implicit none
 !
@@ -104,7 +105,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(FEM_MHD%geofem%mesh, FEM_MHD%v_sol)
+      call FEM_comm_initialization(FEM_MHD%geofem%mesh, FEM_MHD%v_sol,  &
+     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  -------------------------------
 !  connect grid data to volume output
