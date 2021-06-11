@@ -22,7 +22,7 @@ m_boundary_condition_IDs.o: $(MHD_IO_DIR)/m_boundary_condition_IDs.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 m_ctl_data_sph_MHD.o: $(MHD_IO_DIR)/m_ctl_data_sph_MHD.f90 m_precision.o t_ctl_data_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_fem_mhd_restart.o: $(MHD_IO_DIR)/m_fem_mhd_restart.f90 m_precision.o calypso_mpi.o t_time_data.o t_comm_table.o t_geometry_data.o t_phys_data.o t_file_IO_parameter.o t_field_data_IO.o t_flex_delta_t_parameter.o t_IO_step_parameter.o t_vector_for_solver.o set_field_to_restart.o const_global_element_ids.o field_IO_select.o nod_phys_send_recv.o m_file_format_switch.o cal_num_digits.o
+m_fem_mhd_restart.o: $(MHD_IO_DIR)/m_fem_mhd_restart.f90 m_precision.o calypso_mpi.o t_time_data.o t_comm_table.o t_geometry_data.o t_phys_data.o t_file_IO_parameter.o t_field_data_IO.o t_flex_delta_t_parameter.o t_IO_step_parameter.o t_vector_for_solver.o m_solver_SR.o set_field_to_restart.o const_global_element_ids.o field_IO_select.o nod_phys_send_recv.o m_file_format_switch.o cal_num_digits.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_force_control_labels.o: $(MHD_IO_DIR)/m_force_control_labels.f90 m_precision.o t_base_force_labels.o m_base_force_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
