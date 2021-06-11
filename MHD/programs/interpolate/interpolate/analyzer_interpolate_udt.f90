@@ -121,7 +121,7 @@
      &     (itp_udt%org_fem%mesh%node, itp_udt%org_fld,                 &
      &      itp_udt%new_fem%mesh%nod_comm, itp_udt%itp_tbl,             &
      &      itp_udt%new_fem%mesh%node, itp_udt%new_fld,                 &
-     &      itp_udt%v_1st_sol, itp_udt%v_2nd_sol)
+     &      itp_udt%v_1st_sol, itp_udt%v_2nd_sol, SR_sig1, SR_r1)
 !
 !    output udt data
 !

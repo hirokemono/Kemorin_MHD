@@ -32,6 +32,7 @@
       use t_comm_table
       use t_calypso_comm_table
       use t_next_node_ele_4_node
+      use m_solver_SR
 !
       implicit none
 !
@@ -93,7 +94,7 @@
 !
       call s_redistribute_groups                                        &
      &   (org_fem%mesh, org_fem%group, ele_comm, new_mesh,              &
-     &    repart_nod_tbl, repart_ele_tbl, new_groups)
+     &    repart_nod_tbl, repart_ele_tbl, new_groups, SR_sig1, SR_i1)
 !
       end subroutine s_mesh_repartition_by_volume
 !

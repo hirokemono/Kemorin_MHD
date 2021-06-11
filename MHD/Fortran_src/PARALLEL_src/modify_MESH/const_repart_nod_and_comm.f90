@@ -35,6 +35,7 @@
       use t_sorting_for_repartition
       use t_para_double_numbering
       use t_repart_double_numberings
+      use m_solver_SR
 !
       implicit none
 !
@@ -76,8 +77,8 @@
 !
       call const_int_comm_tbl_to_new_part(part_grp, part_tbl)
 !    Set new_ids_on_org in internal node
-      call node_dbl_numbering_to_repart                                 &
-     &   (mesh%nod_comm, mesh%node, part_tbl, new_ids_on_org)
+      call node_dbl_numbering_to_repart(mesh%nod_comm, mesh%node,       &
+     &    part_tbl, new_ids_on_org, SR_sig1, SR_i1)
 !
       call const_external_grp_4_new_part(new_ids_on_org%irank,          &
      &    mesh%node, part_param, part_grp, ext_grp)
@@ -94,7 +95,8 @@
 !
       call alloc_double_numbering(numnod, recieved_new_nod_ids)
       call ext_node_dbl_numbering_by_SR(mesh%node, ext_tbl,             &
-     &    new_ids_on_org, internal_node, recieved_new_nod_ids)
+     &    new_ids_on_org, internal_node, recieved_new_nod_ids,          &
+     &    SR_sig1, SR_i1)
 !
       call alloc_sorting_data(ext_tbl%ntot_import, sort_nod)
       call sort_node_by_domain_and_index                                &
@@ -115,7 +117,7 @@
      &   (part_tbl, mesh%node, new_comm, new_node)
       call check_repart_node_transfer                                   &
      &   (mesh%nod_comm, mesh%node, new_comm, new_node,                 &
-     &    part_tbl, new_ids_on_org)
+     &    part_tbl, new_ids_on_org, SR_sig1, SR_i1)
 !
       end subroutine s_const_repart_nod_and_comm
 !

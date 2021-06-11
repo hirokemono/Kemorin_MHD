@@ -144,8 +144,8 @@
      &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
      &      new_ele_comm, mark_saved1, SR_sig, SR_r, SR_i,              &
      &      iflag_process_extend)
-        call s_extended_groups                                          &
-     &     (mesh, group, newmesh, new_ele_comm, newgroup)
+        call s_extended_groups(mesh, group, newmesh,                    &
+     &                         new_ele_comm, newgroup, SR_sig, SR_i)
 !
         call dealloc_work_vector_sleeve_ext(sleeve_exp_WK)
         call dealloc_iele_belonged(neib_ele)
@@ -276,7 +276,8 @@
      &                               SR_sig, SR_i)
 !
       call alloc_double_numbering(org_ele%numele, iele_dbl)
-      call double_numbering_4_element(org_ele, ele_comm, iele_dbl)
+      call double_numbering_4_element(org_ele, ele_comm, iele_dbl,      &
+     &                                SR_sig, SR_i)
 !
       allocate(mark_nod(nod_comm%num_neib))
       allocate(mark_ele(nod_comm%num_neib))

@@ -8,12 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine s_extended_groups(org_mesh, org_groups,              &
-!!     &                             new_mesh, new_ele_comm, new_groups)
+!!     &          new_mesh, new_ele_comm, new_groups, SR_sig, SR_i)
 !!        type(mesh_geometry), intent(in) :: org_mesh
 !!        type(mesh_groups), intent(in) :: org_groups
 !!        type(mesh_geometry), intent(in) :: new_mesh
 !!        type(communication_table), intent(in) :: new_ele_comm
 !!        type(mesh_groups), intent(inout) :: new_groups
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module extended_groups
@@ -28,6 +30,8 @@
       use t_comm_table
       use t_geometry_data
       use t_group_data
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
@@ -44,7 +48,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_extended_groups(org_mesh, org_groups,                &
-     &                             new_mesh, new_ele_comm, new_groups)
+     &          new_mesh, new_ele_comm, new_groups, SR_sig, SR_i)
 !
       type(mesh_geometry), intent(in) :: org_mesh
       type(mesh_groups), intent(in) :: org_groups
@@ -52,15 +56,18 @@
       type(communication_table), intent(in) :: new_ele_comm
 !
       type(mesh_groups), intent(inout) :: new_groups
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
-      call extended_node_group                                          &
-     &   (org_mesh%node, org_groups%nod_grp,                            &
-     &    new_mesh%node, new_mesh%nod_comm, new_groups%nod_grp)
+      call extended_node_group(org_mesh%node, org_groups%nod_grp,       &
+     &    new_mesh%node, new_mesh%nod_comm, new_groups%nod_grp,         &
+     &    SR_sig, SR_i)
       call extended_element_group(org_groups%ele_grp,                   &
-     &    new_mesh%ele, new_ele_comm, new_groups%ele_grp)
+     &    new_mesh%ele, new_ele_comm, new_groups%ele_grp, SR_sig, SR_i)
       call extended_surface_group(org_groups%surf_grp,                  &
-     &    new_mesh%ele, new_ele_comm, new_groups%surf_grp)
+     &    new_mesh%ele, new_ele_comm, new_groups%surf_grp,              &
+     &    SR_sig, SR_i)
 !
       end subroutine s_extended_groups
 !
@@ -90,9 +97,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine extended_node_group(node, nod_grp,                     &
-     &          new_node, new_comm, new_nod_grp)
+     &          new_node, new_comm, new_nod_grp, SR_sig, SR_i)
 !
-      use m_solver_SR
       use solver_SR_type
       use redistribute_group_data
       use cal_minmax_and_stacks
@@ -104,6 +110,8 @@
       type(communication_table), intent(in) :: new_comm
 !
       type(group_data), intent(inout) :: new_nod_grp
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: igrp, icou
 !
@@ -123,7 +131,7 @@
         call mark_org_group_repart                                      &
      &     (igrp, node%numnod, nod_grp, iflag_new(1))
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, SR_sig1, SR_i1, iflag_new)
+     &     (new_node%numnod, new_comm, SR_sig, SR_i, iflag_new)
         new_nod_grp%nitem_grp(igrp) = sum(iflag_new)
       end do
 !
@@ -137,7 +145,7 @@
         call mark_org_group_repart                                      &
      &     (igrp, node%numnod, nod_grp, iflag_new(1))
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, SR_sig1, SR_i1, iflag_new)
+     &     (new_node%numnod, new_comm, SR_sig, SR_i, iflag_new)
         call set_group_item_repart                                      &
      &     (new_node%numnod, iflag_new(1), new_nod_grp, icou)
       end do
@@ -148,9 +156,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine extended_element_group                                 &
-     &         (ele_grp, new_ele, new_ele_comm, new_ele_grp)
+     &         (ele_grp, new_ele, new_ele_comm, new_ele_grp,            &
+     &          SR_sig, SR_i)
 !
-      use m_solver_SR
       use solver_SR_type
       use redistribute_group_data
       use cal_minmax_and_stacks
@@ -161,6 +169,8 @@
       type(communication_table), intent(in) :: new_ele_comm
 !
       type(group_data), intent(inout) :: new_ele_grp
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: igrp, icou
 !
@@ -180,7 +190,7 @@
         call mark_org_group_repart                                      &
      &     (igrp, new_ele%numele, ele_grp, iflag_new)
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, SR_sig1, SR_i1, iflag_new(1))
+     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new(1))
           new_ele_grp%nitem_grp(igrp) = sum(iflag_new)
       end do
 !
@@ -195,7 +205,7 @@
      &     (igrp, new_ele%numele, ele_grp, iflag_new)
 !
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, SR_sig1, SR_i1, iflag_new(1))
+     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new(1))
 !
         call set_group_item_repart                                      &
      &     (new_ele%numele, iflag_new(1), new_ele_grp, icou)
@@ -207,9 +217,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine extended_surface_group                                 &
-     &         (surf_grp, new_ele, new_ele_comm, new_surf_grp)
+     &         (surf_grp, new_ele, new_ele_comm, new_surf_grp,          &
+     &          SR_sig, SR_i)
 !
-      use m_solver_SR
       use solver_SR_type
       use redistribute_group_data
       use cal_minmax_and_stacks
@@ -220,6 +230,8 @@
       type(communication_table), intent(in) :: new_ele_comm
 !
       type(surface_group_data), intent(inout) :: new_surf_grp
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: igrp, k1, icou
 !
@@ -240,7 +252,7 @@
           call mark_org_surf_group_repart                               &
      &       (igrp, k1, new_ele%numele, surf_grp, iflag_new)
           call SOLVER_SEND_RECV_int_type                                &
-     &       (new_ele%numele, new_ele_comm, SR_sig1, SR_i1, iflag_new)
+     &       (new_ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new)
           new_surf_grp%nitem_grp(igrp) = new_surf_grp%nitem_grp(igrp)   &
      &                                  + sum(iflag_new)
         end do
@@ -257,7 +269,7 @@
           call mark_org_surf_group_repart                               &
      &       (igrp, k1, new_ele%numele, surf_grp, iflag_new)
           call SOLVER_SEND_RECV_int_type                                &
-     &       (new_ele%numele, new_ele_comm, SR_sig1, SR_i1, iflag_new)
+     &       (new_ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new)
           call set_surf_group_item_repart                               &
      &      (k1, new_ele%numele, iflag_new(1), new_surf_grp, icou)
         end do

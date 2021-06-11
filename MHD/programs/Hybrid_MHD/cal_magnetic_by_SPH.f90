@@ -181,10 +181,12 @@
 !
       call interpolate_vector_type                                      &
      &   (iphys%forces%i_vp_induct,  iphys_sph%i_vp_induct,             &
-     &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld, vect1)
+     &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld, vect1,   &
+     &    SR_sig1, SR_r1)
       call interpolate_vector_type(iphys_LES%SGS_term%i_SGS_vp_induct,  &
      &    iphys_sph_LES%SGS_term%i_SGS_vp_induct,                       &
-     &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld, vect1)
+     &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld, vect1,   &
+     &    SR_sig1, SR_r1)
 !
 !
       call check_calypso_sph_comm_buf_N(ncomp_xyz_2_rj,                 &
@@ -252,7 +254,7 @@
       call interpolate_vector_type                                      &
      &   (iphys%forces%i_vp_induct, iphys_sph%forces%i_vp_induct,       &
      &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld,          &
-     &    v_1st_sol, v_2nd_sol)
+     &    v_1st_sol, v_2nd_sol, SR_sig1, SR_r1)
 !
       call copy_nod_vec_to_sph_trans                                    &
      &   (node1, sph_fld, iphys_sph%forces%i_vp_induct,                 &
@@ -383,25 +385,25 @@
       call interpolate_vector_type                                      &
      &   (iphys_sph%i_magne, iphys%i_magne,                             &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld,          &
-     &    v_1st_sol, v_2nd_sol)
+     &    v_1st_sol, v_2nd_sol, SR_sig1, SR_r1)
       call interpolate_vector_type                                      &
      &   (iphys_sph%base%i_current, iphys%i_current,                    &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld,          &
-     &    v_1st_sol, v_2nd_sol)
+     &    v_1st_sol, v_2nd_sol, SR_sig1, SR_r1)
       call interpolate_vector_type                                      &
      &   (iphys_sph%diffusion%i_b_diffuse, iphys%diffusion%i_b_diffuse, &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld,          &
-     &    v_1st_sol, v_2nd_sol)
+     &    v_1st_sol, v_2nd_sol, SR_sig1, SR_r1)
       call interpolate_vector_type                                      &
      &   (iphys_sph%forces%i_induction, iphys%forces%i_induction,       &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld,          &
-     &    v_1st_sol, v_2nd_sol)
+     &    v_1st_sol, v_2nd_sol, SR_sig1, SR_r1)
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call interpolate_vector_type                                    &
      &   (iphys_sph_LES%SGS_term%i_SGS_induction,                       &
      &    iphys_LES%SGS_term%i_SGS_induction,                           &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld,          &
-     &    v_1st_sol, v_2nd_sol)
+     &    v_1st_sol, v_2nd_sol, SR_sig1, SR_r1)
       end if
 !
       end subroutine cal_magneitc_field_by_SPH

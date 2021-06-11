@@ -37,7 +37,6 @@
       use t_geometry_data
       use t_comm_table
       use t_para_double_numbering
-      use m_solver_SR
 !
       implicit none
 !
@@ -66,7 +65,8 @@
       integer(kind = kint), intent(in)                                  &
      &             :: irank_new_import_trim(add_nod_comm%ntot_import)
 !
-      integer(kind = kint_gl), allocatable :: inod_gl_new_export_back(:)
+      integer(kind = kint_gl), allocatable                              &
+     &                        :: inod_gl_new_export_back(:)
       real(kind = kreal), allocatable :: xx_new_export_back(:)
       integer(kind = kint), allocatable :: irank_new_export_back(:)
 !
@@ -100,7 +100,7 @@
 !        write(50+my_rank,*) 'check', i, inod, &
 !     &       inod_dbl%irank(inod), irank_new_export_back(i),  &
 !     &       inod_dbl%index(inod)
-        if(inod_dbl%irank(inod) .ne. irank_new_export_back(i))     &
+        if(inod_dbl%irank(inod) .ne. irank_new_export_back(i))          &
      &   icou = icou + 1
       end do
       write(*,*) my_rank, 'Failed communication data: ', icou

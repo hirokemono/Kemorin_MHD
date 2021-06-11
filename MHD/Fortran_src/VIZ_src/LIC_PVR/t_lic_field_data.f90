@@ -184,6 +184,7 @@
       use t_geometry_data
       use t_phys_data
       use t_vector_for_solver
+      use m_solver_SR
       use select_copy_from_recv
       use field_to_new_partition
       use transfer_to_new_partition
@@ -203,21 +204,22 @@
       call vector_to_new_partition                                      &
      &   (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,        &
      &    node%numnod, viz_mesh%node%numnod,                            &
-     &    nod_fld_lic%v_lic, field_lic%v_lic, v_sol)
+     &    nod_fld_lic%v_lic, field_lic%v_lic, v_sol, SR_sig1, SR_r1)
       call scalar_to_new_partition                                      &
      &   (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,        &
      &    node%numnod, viz_mesh%node%numnod,                            &
-     &    nod_fld_lic%d_lic, field_lic%d_lic, v_sol)
+     &    nod_fld_lic%d_lic, field_lic%d_lic, v_sol, SR_sig1, SR_r1)
 !      call scalar_to_new_partition                                     &
 !     &   (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,       &
 !     &    node%numnod, viz_mesh%node%numnod,                           &
-!     &    nod_fld_lic%o_lic, field_lic%o_lic, v_sol)
+!     &    nod_fld_lic%o_lic, field_lic%o_lic, v_sol, SR_sig1, SR_r1)
 !
       do i = 1, field_lic%num_mask
         call scalar_to_new_partition                                    &
      &     (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,      &
      &      node%numnod, viz_mesh%node%numnod,                          &
-     &      nod_fld_lic%s_lic(1,i), field_lic%s_lic(1,i), v_sol)
+     &      nod_fld_lic%s_lic(1,i), field_lic%s_lic(1,i),               &
+     &      v_sol, SR_sig1, SR_r1)
       end do
 !
       end subroutine repartition_lic_field

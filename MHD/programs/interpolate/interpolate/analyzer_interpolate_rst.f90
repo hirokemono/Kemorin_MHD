@@ -147,7 +147,7 @@
      &     (itp_rst%org_fem%mesh%node, itp_rst%org_fld,                 &
      &      itp_rst%new_fem%mesh%nod_comm, itp_rst%itp_tbl,             &
      &      itp_rst%new_fem%mesh%node, itp_rst%new_fld,                 &
-     &      itp_rst%v_1st_sol, itp_rst%v_2nd_sol)
+     &      itp_rst%v_1st_sol, itp_rst%v_2nd_sol, SR_sig1, SR_r1)
 !
         if (my_rank .lt. itp_rst%gen_itp_p%ndomain_dest) then
           call copy_time_step_size_data(itp_rst%t_ITP%init_d,           &

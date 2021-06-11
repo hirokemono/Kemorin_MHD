@@ -136,7 +136,6 @@
      &          METHOD, PRECOND, SR_sig, SR_r,                          &
      &          ierr, eps, itr, itr_res)
 !
-      use m_solver_SR
       use t_comm_table
       use solver_DJDS
 !

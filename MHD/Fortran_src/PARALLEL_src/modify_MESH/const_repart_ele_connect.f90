@@ -40,6 +40,7 @@
       use t_sorting_for_repartition
       use t_para_double_numbering
       use t_repart_double_numberings
+      use m_solver_SR
 !
       implicit none
 !
@@ -76,14 +77,15 @@
 !
 !
       call alloc_double_numbering(mesh%ele%numele, element_ids)
-      call double_numbering_4_element(mesh%ele, ele_comm, element_ids)
+      call double_numbering_4_element(mesh%ele, ele_comm, element_ids,  &
+     &                                SR_sig1, SR_i1)
 !
       call const_ele_trans_tbl_for_repart                               &
      &   (mesh%node, mesh%ele, part_tbl, new_ids_on_org%irank, ele_tbl)
 !      call check_element_transfer_tbl(mesh%ele, ele_tbl)
 !
       call trim_overlapped_ele_by_repart                                &
-     &   (mesh, element_ids, ele_tbl, new_numele)
+     &   (mesh, element_ids, ele_tbl, new_numele, SR_sig1, SR_i1)
 !
       call const_reparition_ele_connect                                 &
      &   (mesh%ele, ele_tbl, new_ids_on_org,                            &
