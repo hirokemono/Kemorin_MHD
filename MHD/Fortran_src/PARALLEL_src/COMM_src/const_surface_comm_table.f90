@@ -8,19 +8,26 @@
 !!
 !!@verbatim
 !!      subroutine const_surf_comm_table                                &
-!!     &         (node, nod_comm, surf_comm, surf)
+!!     &         (node, nod_comm, surf_comm, surf,                      &
+!!     &          SR_sig, SR_r, SR_i, SR_il)
 !!      subroutine dealloc_surf_comm_table(surf_comm, surf)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: surf_comm
 !!        type(surface_data), intent(inout) :: surf
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!
 !!      subroutine surf_send_recv_test                                  &
-!!     &         (node, surf, surf_comm, surf_check)
+!!     &         (surf, surf_comm, surf_check, SR_sig, SR_r)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
 !!        type(communication_table), intent(in) :: surf_comm
 !!        type(work_for_comm_check), intent(inout) :: surf_check
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module const_surface_comm_table
@@ -33,10 +40,10 @@
       use t_surface_data
       use t_comm_table
       use t_failed_export_list
+      use t_solver_SR
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_solver_SR
 !
       implicit none
 !
@@ -51,7 +58,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_surf_comm_table                                  &
-     &         (node, nod_comm, surf_comm, surf)
+     &         (node, nod_comm, surf_comm, surf,                        &
+     &          SR_sig, SR_r, SR_i, SR_il)
 !
       use t_para_double_numbering
       use t_element_double_number
@@ -61,8 +69,13 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
+!
       type(surface_data), intent(inout) :: surf
       type(communication_table), intent(inout) :: surf_comm
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(node_ele_double_number) :: inod_dbl
       type(element_double_number) :: isurf_dbl
@@ -77,7 +90,7 @@
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl,          &
-     &                               SR_sig1, SR_i1)
+     &                               SR_sig, SR_i)
 !
       call alloc_ele_double_number(surf%numsurf, isurf_dbl)
       call find_belonged_pe_4_surf(my_rank, inod_dbl,                   &
@@ -100,14 +113,14 @@
       call count_number_of_node_stack(internal_num, istack_inersurf)
       call set_global_ele_id(txt_surf, surf%numsurf, istack_inersurf,   &
      &    surf%interior_surf, surf_comm, surf%isurf_global,             &
-     &    SR_sig1, SR_il1)
+     &    SR_sig, SR_il)
       deallocate(istack_inersurf)
 !
       call calypso_mpi_barrier
       call check_element_position                                       &
      &   (txt_surf, node%numnod, node%inod_global, surf%numsurf,        &
      &    surf%nnod_4_surf, surf%ie_surf, surf%isurf_global,            &
-     &    surf%x_surf, inod_dbl, isurf_dbl, surf_comm, SR_sig1, SR_r1)
+     &    surf%x_surf, inod_dbl, isurf_dbl, surf_comm, SR_sig, SR_r)
       call dealloc_ele_double_number(isurf_dbl)
       call dealloc_double_numbering(inod_dbl)
 !
@@ -129,10 +142,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine surf_send_recv_test                                    &
-     &         (surf, surf_comm, surf_check)
+     &         (surf, surf_comm, surf_check, SR_sig, SR_r)
 !
       use t_work_for_comm_check
-      use m_solver_SR
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
@@ -140,14 +152,17 @@
 !
       type(surface_data), intent(in) :: surf
       type(communication_table), intent(in) :: surf_comm
+!
       type(work_for_comm_check), intent(inout) :: surf_check
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call alloc_geom_4_comm_test(surf%numsurf, surf_check)
       call set_element_4_comm_test(surf%numsurf, surf%interior_surf,    &
      &                             surf%x_surf, surf_check%xx_test)
       call SOLVER_SEND_RECV_3_type(surf%numsurf, surf_comm,             &
-     &                             SR_sig1, SR_r1, surf_check%xx_test)
+     &                             SR_sig, SR_r, surf_check%xx_test)
 !
       call ele_send_recv_check                                          &
      &   (surf%numsurf, surf%isurf_global, surf%x_surf, surf_check)

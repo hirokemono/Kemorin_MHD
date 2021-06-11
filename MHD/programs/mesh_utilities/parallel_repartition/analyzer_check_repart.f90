@@ -153,8 +153,8 @@
 !
       if(iflag_debug.gt.0) write(*,*) ' const_surf_comm_table'
       call const_surf_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_surf_comm, new_fem%mesh%surf)
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_surf_comm,        &
+     &    new_fem%mesh%surf, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_edge_comm_table'
       call const_edge_comm_table                                        &
@@ -165,14 +165,14 @@
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
       call node_transfer_test                                           &
      &   (fem_T%mesh%node, new_fem%mesh%node,  new_fem%mesh%nod_comm,   &
-     &    repart_nod_tbl1, nod_check)
+     &    repart_nod_tbl1, nod_check, SR_sig1, SR_r1, SR_il1)
 !
-      call ele_send_recv_test                                           &
-     &   (new_fem%mesh%ele,  T_ele_comm,  ele_check)
-      call surf_send_recv_test                                          &
-     &   (new_fem%mesh%surf, T_surf_comm, surf_check)
-      call edge_send_recv_test                                          &
-     &   (new_fem%mesh%edge, T_edge_comm, edge_check)
+      call ele_send_recv_test(new_fem%mesh%ele, T_ele_comm,             &
+     &                        ele_check, SR_sig1, SR_r1)
+      call surf_send_recv_test(new_fem%mesh%surf, T_surf_comm,          &
+     &                         surf_check, SR_sig1, SR_r1)
+      call edge_send_recv_test(new_fem%mesh%edge, T_edge_comm,          &
+     &                         edge_check, SR_sig1, SR_r1)
 !
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)

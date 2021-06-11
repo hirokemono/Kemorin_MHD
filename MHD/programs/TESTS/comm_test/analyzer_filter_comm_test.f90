@@ -67,7 +67,7 @@
       use write_diff_4_comm_test
 !
       call node_send_recv_test(filter_nod1, filtering_test%comm,        &
-     &    filter_check)
+     &                         filter_check, SR_sig1, SR_r1, SR_il1)
       call output_diff_node_comm_test(comm_test_name, filter_check)
 !
       call dealloc_ele_comm_test_IO(filter_check)
