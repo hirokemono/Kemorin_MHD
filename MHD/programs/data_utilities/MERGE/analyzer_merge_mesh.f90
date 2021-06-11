@@ -24,6 +24,7 @@
       use t_calypso_mpi_IO_param
       use t_control_data_4_merge
       use t_control_param_assemble
+      use m_solver_SR
       use mpi_load_mesh_data
       use set_control_assemble
 !
@@ -100,7 +101,8 @@
 !
       call alloc_double_numbering(fem_m%mesh%node%numnod, dbl_nod)
       call set_node_double_numbering                                    &
-     &   (fem_m%mesh%node, fem_m%mesh%nod_comm, dbl_nod)
+     &   (fem_m%mesh%node, fem_m%mesh%nod_comm, dbl_nod,                &
+     &    SR_sig1, SR_i1)
 !
       call s_const_internal_mesh_data                                   &
      &   (fem_m%mesh, fem_m%group, new_mesh, new_group)

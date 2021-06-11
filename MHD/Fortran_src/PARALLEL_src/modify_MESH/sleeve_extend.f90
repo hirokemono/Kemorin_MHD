@@ -272,7 +272,8 @@
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
       call alloc_double_numbering(org_node%numnod, inod_dbl)
-      call set_node_double_numbering(org_node, nod_comm, inod_dbl)
+      call set_node_double_numbering(org_node, nod_comm, inod_dbl,      &
+     &                               SR_sig, SR_i)
 !
       call alloc_double_numbering(org_ele%numele, iele_dbl)
       call double_numbering_4_element(org_ele, ele_comm, iele_dbl)

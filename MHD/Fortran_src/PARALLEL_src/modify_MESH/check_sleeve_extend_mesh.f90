@@ -59,7 +59,8 @@
 !
       call alloc_double_numbering(new_node%numnod, inod_dbl)
       if (iflag_debug.gt.0) write(*,*) 'set_node_double_numbering'
-      call set_node_double_numbering(new_node, new_nod_comm, inod_dbl)
+      call set_node_double_numbering(new_node, new_nod_comm, inod_dbl,  &
+     &                               SR_sig1, SR_i1)
 !
       allocate(iele_gl_test(new_ele%numele))
       allocate(inod_lc_test(new_ele%numele,new_ele%nnod_4_ele))

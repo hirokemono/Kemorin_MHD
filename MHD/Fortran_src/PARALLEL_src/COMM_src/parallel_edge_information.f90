@@ -26,6 +26,7 @@
       use t_surface_data
       use t_edge_data
       use t_para_double_numbering
+      use m_solver_SR
 !
       implicit none
 !
@@ -53,11 +54,11 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_node_double_numbering'
       call alloc_double_numbering(node%numnod, inod_dbl)
-      call set_node_double_numbering(node, nod_comm,               &
-     &                               inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl,          &
+     &                               SR_sig1, SR_i1)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_edge_connectivity'
-      call const_edge_connectivity(node, ele, surf,                &
+      call const_edge_connectivity(node, ele, surf,                     &
      &    inod_dbl%irank, inod_dbl%index, edge)
       call dealloc_double_numbering(inod_dbl)
 !

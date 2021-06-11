@@ -15,6 +15,7 @@
       use m_machine_parameter
       use m_work_time
 !
+      use m_solver_SR
       use t_solver_SR
       use t_ctl_data_comm_test
       use t_mesh_data
@@ -98,7 +99,7 @@
       call const_global_numele_list(test_fem%mesh%ele)
       call const_ele_comm_table                                         &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
-     &    test_fem%mesh%ele, T_ele_comm)
+     &    test_fem%mesh%ele, T_ele_comm, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                       &

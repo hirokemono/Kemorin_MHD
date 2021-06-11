@@ -9,11 +9,16 @@
 !!@verbatim
 !!      subroutine const_global_mesh_infos(mesh)
 !!
-!!      subroutine const_ele_comm_table(node, nod_comm, ele, ele_comm)
+!!      subroutine const_ele_comm_table(node, nod_comm, ele, ele_comm,  &
+!!     &                                SR_sig, SR_r, SR_i, SR_il)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(inout) :: ele_comm
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine const_edge_comm_table                                &
 !!     &         (node, nod_comm, edge_comm, edge)
 !!      subroutine dealloc_edge_comm_table(edge_comm, edge)
@@ -23,6 +28,17 @@
 !!        type(edge_data), intent(inout) :: edge
 !!
 !!      subroutine const_global_numnod_list(node)
+!!      subroutine set_node_ele_double_address                          &
+!!     &         (node, ele, nod_comm, ele_comm, inod_dbl, iele_dbl,    &
+!!     &          SR_sig, SR_i)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(in) :: ele_comm
+!!        type(node_ele_double_number), intent(inout) :: inod_dbl
+!!        type(node_ele_double_number), intent(inout) :: iele_dbl
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module const_element_comm_tables
@@ -36,7 +52,7 @@
       use t_edge_data
       use t_comm_table
       use t_failed_export_list
-      use m_solver_SR
+      use t_solver_SR
 !
       use m_machine_parameter
 !
@@ -120,10 +136,12 @@
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_ele_comm_table                                   &
-     &         (node, nod_comm, ele, ele_comm)
+      subroutine const_ele_comm_table(node, nod_comm, ele, ele_comm,    &
+     &                                SR_sig, SR_r, SR_i, SR_il)
 !
       use m_geometry_constants
+      use t_solver_SR_int
+      use t_solver_SR_int8
       use t_para_double_numbering
       use t_element_double_number
       use t_const_comm_table
@@ -134,6 +152,10 @@
       type(communication_table), intent(in) :: nod_comm
       type(element_data), intent(in) :: ele
       type(communication_table), intent(inout) :: ele_comm
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(node_ele_double_number) :: inod_dbl
       type(element_double_number) :: iele_dbl
@@ -142,7 +164,8 @@
 !
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
-      call set_node_double_numbering(node, nod_comm, inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl,          &
+     &                               SR_sig, SR_i)
 !
       call alloc_ele_double_number(ele%numele, iele_dbl)
       call find_belonged_pe_4_ele                                       &
@@ -159,12 +182,12 @@
       call dealloc_failed_export(fail_tbl_e)
 !
       call check_global_ele_id(txt_ele, ele%numele,                     &
-     &    ele%interior_ele, ele_comm, ele%iele_global, SR_sig1, SR_il1)
+     &    ele%interior_ele, ele_comm, ele%iele_global, SR_sig, SR_il)
 !
       call check_element_position                                       &
      &   (txt_ele, node%numnod, node%inod_global, ele%numele,           &
      &    ele%nnod_4_ele, ele%ie, ele%iele_global,                      &
-     &    ele%x_ele, inod_dbl, iele_dbl, ele_comm, SR_sig1, SR_r1)
+     &    ele%x_ele, inod_dbl, iele_dbl, ele_comm, SR_sig, SR_r)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_ele_double_number(iele_dbl)
 !
@@ -200,7 +223,8 @@
 !
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
-      call set_node_double_numbering(node, nod_comm, inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl,          &
+     &                               SR_sig1, SR_i1)
 !
       call alloc_ele_double_number(edge%numedge, iedge_dbl)
       call alloc_interior_edge(edge)
@@ -284,8 +308,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_node_ele_double_address                            &
-     &         (node, ele, nod_comm, ele_comm, inod_dbl, iele_dbl)
+     &         (node, ele, nod_comm, ele_comm, inod_dbl, iele_dbl,      &
+     &          SR_sig, SR_i)
 !
+      use t_solver_SR_int
       use t_para_double_numbering
       use solver_SR_type
 !
@@ -297,10 +323,14 @@
       type(node_ele_double_number), intent(inout) :: inod_dbl
       type(node_ele_double_number), intent(inout) :: iele_dbl
 !
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      call set_node_double_numbering(node, nod_comm, inod_dbl)
-      call set_ele_double_numbering                                     &
-     &   (ele, ele_comm, inod_dbl, iele_dbl)
+!
+      call set_node_double_numbering(node, nod_comm, inod_dbl,          &
+     &                               SR_sig, SR_i)
+      call set_ele_double_numbering(ele, ele_comm, inod_dbl, iele_dbl,  &
+     &                              SR_sig, SR_i)
 !
       end subroutine set_node_ele_double_address
 !

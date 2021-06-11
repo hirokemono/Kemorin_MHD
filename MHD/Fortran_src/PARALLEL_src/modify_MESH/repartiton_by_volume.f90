@@ -94,9 +94,9 @@
      &                         .ne. iflag_turn_off) then
         call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
 !
-        call const_ele_comm_table                                       &
-     &     (new_fem%mesh%node, new_fem%mesh%nod_comm,                   &
-     &      new_fem%mesh%ele, new_ele_comm)
+        call const_ele_comm_table(new_fem%mesh%node,                    &
+     &      new_fem%mesh%nod_comm, new_fem%mesh%ele, new_ele_comm,      &
+     &      SR_sig1, SR_r1, SR_i1, SR_il1)
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
         call sleeve_extension_loop(part_param%sleeve_exp_p,             &

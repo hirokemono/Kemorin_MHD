@@ -20,6 +20,7 @@
       use m_work_time
       use m_elapsed_labels_4_REPART
       use m_work_time_4_sleeve_extend
+      use m_solver_SR
       use calypso_mpi
 !
       use t_mesh_data
@@ -105,7 +106,7 @@
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
       call const_global_numele_list(fem_T%mesh%ele)
       call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
-     &                          fem_T%mesh%ele, ele_comm1)
+     &    fem_T%mesh%ele, ele_comm1, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  -----  Const volume of each element
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
@@ -213,7 +214,7 @@
       call const_global_numele_list(new_fem%mesh%ele)
       call const_ele_comm_table                                         &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    new_fem%mesh%ele, T_ele_comm)
+     &    new_fem%mesh%ele, T_ele_comm, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                        &

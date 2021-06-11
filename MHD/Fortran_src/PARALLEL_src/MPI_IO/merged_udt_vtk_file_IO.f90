@@ -38,6 +38,7 @@
       use t_ucd_data
       use t_para_double_numbering
       use t_calypso_mpi_IO_param
+      use m_solver_SR
 !
       use set_ucd_file_names
 !
@@ -86,7 +87,8 @@
 !
 !
       call alloc_double_numbering(node%numnod, dbl_id1)
-      call set_node_double_numbering(node, nod_comm, dbl_id1)
+      call set_node_double_numbering(node, nod_comm, dbl_id1,           &
+     &                               SR_sig1, SR_i1)
 !
       ucd%nnod_4_ele = ele%nnod_4_ele
       call allocate_ucd_ele(ucd)

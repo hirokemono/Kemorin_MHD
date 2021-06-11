@@ -76,7 +76,8 @@
       call alloc_interior_surf(surf)
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
-      call set_node_double_numbering(node, nod_comm, inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl,          &
+     &                               SR_sig1, SR_i1)
 !
       call alloc_ele_double_number(surf%numsurf, isurf_dbl)
       call find_belonged_pe_4_surf(my_rank, inod_dbl,                   &

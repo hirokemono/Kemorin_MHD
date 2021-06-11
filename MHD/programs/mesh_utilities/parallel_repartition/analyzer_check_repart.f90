@@ -97,6 +97,7 @@
 !
       subroutine analyze_check_reapart_mesh
 !
+      use m_solver_SR
       use t_solver_SR
       use t_interpolate_table
       use t_work_for_comm_check
@@ -146,7 +147,7 @@
       call const_global_numele_list(new_fem%mesh%ele)
       call const_ele_comm_table                                         &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    new_fem%mesh%ele, T_ele_comm)
+     &    new_fem%mesh%ele, T_ele_comm, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_surf_comm_table'
       call const_surf_comm_table                                        &

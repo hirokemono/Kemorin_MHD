@@ -40,6 +40,7 @@
       use t_next_node_ele_4_node
       use t_jacobians
       use t_shape_functions
+      use m_solver_SR
 !
       implicit  none
 !
@@ -101,7 +102,7 @@
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_ele_comm_table                                       &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
-     &      ele_comm_T)
+     &      ele_comm_T, SR_sig1, SR_r1, SR_i1, SR_il1)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
 !  -----  Re-partitioning

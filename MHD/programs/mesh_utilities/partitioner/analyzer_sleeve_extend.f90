@@ -109,7 +109,7 @@
       call set_nod_and_ele_infos(fem_EXT%mesh%node, fem_EXT%mesh%ele)
       call const_ele_comm_table                                         &
      &   (fem_EXT%mesh%node, fem_EXT%mesh%nod_comm, fem_EXT%mesh%ele,   &
-     &    ele_comm)
+     &    ele_comm, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       call alloc_sleeve_extend_nul_vect                                 &
      &   (fem_EXT%mesh%node, sleeve_exp_p1, sleeve_exp_WK1)
