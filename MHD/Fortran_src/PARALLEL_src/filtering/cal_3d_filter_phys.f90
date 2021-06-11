@@ -47,6 +47,7 @@
       use t_phys_data
       use t_filter_coefficients
       use t_vector_for_solver
+      use m_solver_SR
 !
       use prepare_field_2_filter
       use send_recv_3d_filtering
@@ -79,7 +80,8 @@
 !
       call prepare_scalar_2_filter                                      &
      &   (flt_comm, node%numnod, node%internal_node,                    &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt)
+     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
+     &    SR_sig1, SR_r1)
 !
       call sum_3d_filter_scalar_phys(num_filter_grp, id_filter_grp,     &
      &    filter%ngrp_node, filter%istack_node, filter%ntot_nod,        &
@@ -90,7 +92,8 @@
      &    nnod_flt, x_flt, node%numnod, v_sol%x_vec(1))
 !
       call scalar_send_recv_3d_filter(nod_comm, node%numnod,            &
-     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
+     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
+     &    SR_sig1, SR_r1)
 !
       end subroutine cal_3d_filter_scalar_phys
 !
@@ -116,7 +119,8 @@
 !
       call prepare_vector_2_filter                                      &
      &   (flt_comm, node%numnod, node%internal_node,                    &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt)
+     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
+     &    SR_sig1, SR_r1)
 !
       call sum_3d_filter_vector_phys(num_filter_grp, id_filter_grp,     &
      &    filter%ngrp_node, filter%istack_node, filter%ntot_nod,        &
@@ -127,7 +131,8 @@
      &    nnod_flt, x_flt, node%numnod, v_sol%x_vec(1))
 !
       call vector_send_recv_3d_filter(nod_comm, node%numnod,            &
-     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
+     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
+     &    SR_sig1, SR_r1)
 !
       end subroutine cal_3d_filter_vector_phys
 !
@@ -153,7 +158,8 @@
 !
       call prepare_sym_tensor_2_filter                                  &
      &   (flt_comm, node%numnod, node%internal_node,                    &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt)
+     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
+     &    SR_sig1, SR_r1)
 !
       call sum_3d_filter_tensor_phys(num_filter_grp, id_filter_grp,     &
      &    filter%ngrp_node, filter%istack_node, filter%ntot_nod,        &
@@ -164,7 +170,8 @@
      &    nnod_flt, x_flt, node%numnod, v_sol%x_vec(1))
 !
       call tensor_send_recv_3d_filter(nod_comm, node%numnod,            &
-     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
+     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
+     &    SR_sig1, SR_r1)
 !
       end subroutine cal_3d_filter_tensor_phys
 !
@@ -191,7 +198,8 @@
 !
       call prepare_scalar_2_filter                                      &
      &   (flt_comm, node%numnod, node%internal_node,                    &
-     &   nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt)
+     &   nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,    &
+     &   SR_sig1, SR_r1)
 !
       call sum_3d_ez_filter_scalar_phys(num_filter_grp, id_filter_grp,  &
      &    filter%ngrp_node, filter%istack_node, filter%ntot_nod,        &
@@ -200,7 +208,8 @@
      &    nnod_flt, x_flt, node%numnod, v_sol%x_vec(1))
 !
       call scalar_send_recv_3d_filter(nod_comm, node%numnod,            &
-     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
+     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
+     &    SR_sig1, SR_r1)
 !
       end subroutine cal_3d_ez_filter_scalar_phys
 !
@@ -226,7 +235,8 @@
 !
       call prepare_vector_2_filter                                      &
      &   (flt_comm, node%numnod, node%internal_node,                    &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt)
+     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
+     &    SR_sig1, SR_r1)
 !
       call sum_3d_ez_filter_vector_phys(num_filter_grp, id_filter_grp,  &
      &    filter%ngrp_node, filter%istack_node, filter%ntot_nod,        &
@@ -235,7 +245,8 @@
      &    nnod_flt, x_flt, node%numnod, v_sol%x_vec(1))
 !
       call vector_send_recv_3d_filter(nod_comm, node%numnod,            &
-     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
+     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
+     &    SR_sig1, SR_r1)
 !
       end subroutine cal_3d_ez_filter_vector_phys
 !
@@ -261,7 +272,8 @@
 !
       call prepare_sym_tensor_2_filter                                  &
      &   (flt_comm, node%numnod, node%internal_node,                    &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt)
+     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
+     &    SR_sig1, SR_r1)
 !
       call sum_3d_ez_filter_tensor_phys(num_filter_grp, id_filter_grp,  &
      &    filter%ngrp_node, filter%istack_node, filter%ntot_nod,        &
@@ -270,7 +282,8 @@
      &    nnod_flt, x_flt, node%numnod, v_sol%x_vec(1))
 !
       call tensor_send_recv_3d_filter(nod_comm, node%numnod,            &
-     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld)
+     &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
+     &    SR_sig1, SR_r1)
 !
       end subroutine cal_3d_ez_filter_tensor_phys
 !

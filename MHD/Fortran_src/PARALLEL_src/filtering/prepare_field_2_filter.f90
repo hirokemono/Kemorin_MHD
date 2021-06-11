@@ -1,19 +1,31 @@
+!>@file   prepare_field_2_filter.f90
+!!@brief  module prepare_field_2_filter
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2005
+!!      Modified in July, 2008
 !
-!      module prepare_field_2_filter
-!
-!      Written by H. Matsui on July, 2005
-!      Modified by H. Matsui on July, 2008
-!
+!>@brief  Preparation of apatial filetering for each field
+!!
+!!@verbatim
 !!      subroutine prepare_scalar_2_filter                              &
 !!     &         (flt_comm, numnod, internal_node, ntot_comp,           &
-!!     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
+!!     &          id_phys, d_nod, nnod_filtering, x_vec_filtering,      &
+!!     &          SR_sig, SR_r)
 !!      subroutine prepare_vector_2_filter                              &
 !!     &         (flt_comm, numnod, internal_node, ntot_comp,           &
-!!     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
+!!     &          id_phys, d_nod, nnod_filtering, x_vec_filtering,      &
+!!     &          SR_sig, SR_r)
 !!      subroutine prepare_sym_tensor_2_filter                          &
 !!     &         (flt_comm, numnod, internal_node, ntot_comp,           &
-!!     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
-!         id_phys:  field ID of nodal fields
+!!     &          id_phys, d_nod, nnod_filtering, x_vec_filtering,      &
+!!     &          SR_sig, SR_r)
+!!        type(communication_table), intent(in) :: flt_comm
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!
+!!         id_phys:  field ID of nodal fields
+!!@endverbatim
 !
       module prepare_field_2_filter
 !
@@ -21,7 +33,9 @@
 !
       use calypso_mpi
       use m_work_time
+!
       use t_comm_table
+      use t_solver_SR
 !
       implicit none
 !
@@ -33,9 +47,9 @@
 !
       subroutine prepare_scalar_2_filter                                &
      &         (flt_comm, numnod, internal_node, ntot_comp,             &
-     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
+     &          id_phys, d_nod, nnod_filtering, x_vec_filtering,        &
+     &          SR_sig, SR_r)
 !
-      use m_solver_SR
       use solver_SR_type
 !
       type(communication_table), intent(in) :: flt_comm
@@ -47,6 +61,8 @@
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: x_vec_filtering(nnod_filtering)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer (kind = kint) :: inod
 !
@@ -64,7 +80,7 @@
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_type(nnod_filtering, flt_comm,              &
-     &                           SR_sig1, SR_r1, x_vec_filtering(1))
+     &                           SR_sig, SR_r, x_vec_filtering(1))
 !
       end subroutine prepare_scalar_2_filter
 !
@@ -72,9 +88,9 @@
 !
       subroutine prepare_vector_2_filter                                &
      &         (flt_comm, numnod, internal_node, ntot_comp,             &
-     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
+     &          id_phys, d_nod, nnod_filtering, x_vec_filtering,        &
+     &          SR_sig, SR_r)
 !
-      use m_solver_SR
       use solver_SR_type
 !
       type(communication_table), intent(in) :: flt_comm
@@ -86,6 +102,8 @@
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: x_vec_filtering(3*nnod_filtering)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer (kind = kint) :: inod
 !
@@ -114,7 +132,7 @@
 !      write(*,*) 'flt_comm%item_export', size(flt_comm%item_export)
 !
       call SOLVER_SEND_RECV_3_type(nnod_filtering, flt_comm,            &
-     &                             SR_sig1, SR_r1, x_vec_filtering(1))
+     &                             SR_sig, SR_r, x_vec_filtering(1))
 !
       end subroutine prepare_vector_2_filter
 !
@@ -122,9 +140,9 @@
 !
       subroutine prepare_sym_tensor_2_filter                            &
      &         (flt_comm, numnod, internal_node, ntot_comp,             &
-     &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
+     &          id_phys, d_nod, nnod_filtering, x_vec_filtering,        &
+     &          SR_sig, SR_r)
 !
-      use m_solver_SR
       use solver_SR_type
 !
       type(communication_table), intent(in) :: flt_comm
@@ -136,6 +154,8 @@
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: x_vec_filtering(6*nnod_filtering)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer (kind = kint) :: inod
 !
@@ -163,7 +183,7 @@
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_6_type(nnod_filtering, flt_comm,            &
-     &                             SR_sig1, SR_r1, x_vec_filtering(1))
+     &                             SR_sig, SR_r, x_vec_filtering(1))
 !
       end subroutine prepare_sym_tensor_2_filter
 !
