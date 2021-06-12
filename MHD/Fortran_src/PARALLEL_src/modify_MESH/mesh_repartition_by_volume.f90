@@ -72,15 +72,15 @@
 !
 !
 !       Re-partitioning
-      call grouping_by_volume                                           &
-     &   (org_fem%mesh, part_param, repart_WK, part_grp)
+      call grouping_by_volume(org_fem%mesh, part_param, repart_WK,      &
+     &                        part_grp, SR_sig1, SR_r1)
 !
       call alloc_double_numbering                                       &
      &   (org_fem%mesh%node%numnod, new_ids_on_org)
       call s_const_repart_nod_and_comm                                  &
      &   (org_fem%mesh, neib_nod, part_param, part_grp,                 &
-     &    new_ids_on_org, new_mesh%nod_comm,                            &
-     &    new_mesh%node, repart_nod_tbl, ext_tbl)
+     &    new_ids_on_org, new_mesh%nod_comm, new_mesh%node,             &
+     &    repart_nod_tbl, ext_tbl, SR_sig1, SR_r1, SR_i1, SR_il1)
       call alloc_sph_node_geometry(new_mesh%node)
 !
       call dealloc_group(part_grp)
@@ -89,7 +89,8 @@
       call s_const_repart_ele_connect                                   &
      &   (org_fem%mesh, ele_comm, repart_nod_tbl,                       &
      &    new_ids_on_org, new_mesh%nod_comm, new_mesh%node,             &
-     &    new_mesh%ele, repart_ele_tbl, new_mesh%surf, new_mesh%edge)
+     &    new_mesh%ele, repart_ele_tbl, new_mesh%surf, new_mesh%edge,   &
+     &    SR_sig1, SR_i1)
       call dealloc_double_numbering(new_ids_on_org)
 !
       call s_redistribute_groups                                        &

@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine s_const_repart_nod_and_comm                          &
 !!     &         (mesh, neib_nod, part_param, part_grp, new_ids_on_org, &
-!!     &          new_comm, new_node, part_tbl, ext_tbl)
+!!     &          new_comm, new_node, part_tbl, ext_tbl,                &
+!!     &          SR_sig, SR_r, SR_i, SR_il)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!        type(volume_partioning_param), intent(in) :: part_param
@@ -19,6 +20,10 @@
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
 !!        type(calypso_comm_table), intent(inout) :: ext_tbl
 !!        type(node_ele_double_number), intent(inout) :: new_ids_on_org
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module const_repart_nod_and_comm
@@ -35,7 +40,9 @@
       use t_sorting_for_repartition
       use t_para_double_numbering
       use t_repart_double_numberings
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -47,7 +54,8 @@
 !
       subroutine s_const_repart_nod_and_comm                            &
      &         (mesh, neib_nod, part_param, part_grp, new_ids_on_org,   &
-     &          new_comm, new_node, part_tbl, ext_tbl)
+     &          new_comm, new_node, part_tbl, ext_tbl,                  &
+     &          SR_sig, SR_r, SR_i, SR_il)
 !
       use external_group_4_new_part
       use ext_of_int_grp_4_new_part
@@ -66,6 +74,10 @@
       type(calypso_comm_table), intent(inout) :: part_tbl
       type(calypso_comm_table), intent(inout) :: ext_tbl
       type(node_ele_double_number), intent(inout) :: new_ids_on_org
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(group_data) :: ext_int_grp
       type(group_data) :: ext_grp
@@ -78,7 +90,7 @@
       call const_int_comm_tbl_to_new_part(part_grp, part_tbl)
 !    Set new_ids_on_org in internal node
       call node_dbl_numbering_to_repart(mesh%nod_comm, mesh%node,       &
-     &    part_tbl, new_ids_on_org, SR_sig1, SR_i1)
+     &    part_tbl, new_ids_on_org, SR_sig, SR_i)
 !
       call const_external_grp_4_new_part(new_ids_on_org%irank,          &
      &    mesh%node, part_param, part_grp, ext_grp)
@@ -96,7 +108,7 @@
       call alloc_double_numbering(numnod, recieved_new_nod_ids)
       call ext_node_dbl_numbering_by_SR(mesh%node, ext_tbl,             &
      &    new_ids_on_org, internal_node, recieved_new_nod_ids,          &
-     &    SR_sig1, SR_i1)
+     &    SR_sig, SR_i)
 !
       call alloc_sorting_data(ext_tbl%ntot_import, sort_nod)
       call sort_node_by_domain_and_index                                &
@@ -114,10 +126,10 @@
       call dealloc_sorting_data(sort_nod)
 !
       call set_repart_node_position                                     &
-     &   (part_tbl, mesh%node, new_comm, new_node)
+     &   (part_tbl, mesh%node, new_comm, new_node, SR_sig, SR_r, SR_il)
       call check_repart_node_transfer                                   &
      &   (mesh%nod_comm, mesh%node, new_comm, new_node,                 &
-     &    part_tbl, new_ids_on_org, SR_sig1, SR_i1)
+     &    part_tbl, new_ids_on_org, SR_sig, SR_i)
 !
       end subroutine s_const_repart_nod_and_comm
 !

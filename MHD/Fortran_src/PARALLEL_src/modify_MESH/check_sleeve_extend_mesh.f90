@@ -8,13 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine check_extended_element                               &
-!!     &         (new_nod_comm, new_node, new_ele, new_ele_comm)
+!!     &         (new_nod_comm, new_node, new_ele, new_ele_comm,        &
+!!     &          SR_sig, SR_i, SR_il)
 !!        type(communication_table), intent(inout) :: new_nod_comm
 !!        type(node_data), intent(inout) :: new_node
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(node_ele_double_number), save :: inod_dbl
 !!        type(node_ele_double_number), save :: iele_dbl
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module check_sleeve_extend_mesh
@@ -32,9 +36,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_extended_element                                 &
-     &         (new_nod_comm, new_node, new_ele, new_ele_comm)
+     &         (new_nod_comm, new_node, new_ele, new_ele_comm,          &
+     &          SR_sig, SR_i, SR_il)
 !
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
       use t_comm_table
       use t_geometry_data
       use t_next_node_ele_4_node
@@ -46,6 +53,9 @@
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
       type(communication_table), intent(inout) :: new_ele_comm
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(node_ele_double_number), save :: inod_dbl
 !
@@ -60,7 +70,7 @@
       call alloc_double_numbering(new_node%numnod, inod_dbl)
       if (iflag_debug.gt.0) write(*,*) 'set_node_double_numbering'
       call set_node_double_numbering(new_node, new_nod_comm, inod_dbl,  &
-     &                               SR_sig1, SR_i1)
+     &                               SR_sig, SR_i)
 !
       allocate(iele_gl_test(new_ele%numele))
       allocate(inod_lc_test(new_ele%numele,new_ele%nnod_4_ele))
@@ -78,7 +88,7 @@
         end do
         if(kcou .gt. 0) then
           jcou = jcou + 1
-          write(50+my_rank,*) new_node%numnod, iele,    &
+          write(50+my_rank,*) new_node%numnod, iele,                    &
      &         'Failed conectivity:', new_ele%ie(iele,:)
         end if
         if(kcou .eq. new_ele%nnod_4_ele) lcou = lcou + 1
@@ -104,14 +114,14 @@
       end do
 !
       call SOLVER_SEND_RECV_int8_type(new_ele%numele, new_ele_comm,     &
-     &    SR_sig1, SR_il1, iele_gl_test(1))
+     &    SR_sig, SR_il, iele_gl_test(1))
       do k1 = 1, new_ele%nnod_4_ele
         call SOLVER_SEND_RECV_int_type(new_ele%numele, new_ele_comm,    &
-     &      SR_sig1, SR_i1, inod_lc_test(1,k1))
+     &      SR_sig, SR_i, inod_lc_test(1,k1))
       end do
       do k1 = 1, new_ele%nnod_4_ele
         call SOLVER_SEND_RECV_int_type(new_ele%numele, new_ele_comm,    &
-     &      SR_sig1, SR_i1, irank_lc_test(1,k1))
+     &      SR_sig, SR_i, irank_lc_test(1,k1))
       end do
 !
           if(my_rank.eq.0) then

@@ -8,24 +8,31 @@
 !!
 !!@verbatim
 !!      subroutine load_or_const_new_partition(part_param,              &
-!!     &          geofem, next_tbl, new_fem,                            &
-!!     &          repart_nod_tbl, repart_WK)
+!!     &          geofem, next_tbl, new_fem, repart_nod_tbl, repart_WK, &
+!!     &          SR_sig, SR_r, SR_i, SR_il)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !!        type(volume_partioning_work), intent(inout) :: repart_WK
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!
 !!      subroutine init_fld_to_new_partition(new_mesh, org_fld, new_fld)
 !!      subroutine nod_field_to_new_partition(iflag_recv,               &
-!!     &          new_mesh, repart_nod_tbl, org_fld, new_fld, v_sol)
+!!     &          new_mesh, repart_nod_tbl, org_fld, new_fld,           &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine finalize_fld_to_new_partition(new_fld)
 !!        type(mesh_geometry), intent(in) :: new_mesh
 !!        type(calypso_comm_table), intent(in) :: repart_nod_tbl
 !!        type(phys_data), intent(in) :: org_fld
 !!        type(phys_data), intent(inout) :: new_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module field_to_new_partition
@@ -40,7 +47,9 @@
       use t_next_node_ele_4_node
       use t_jacobians
       use t_shape_functions
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit  none
 !
@@ -51,8 +60,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine load_or_const_new_partition(part_param,                &
-     &          geofem, next_tbl, new_fem,                              &
-     &          repart_nod_tbl, repart_WK)
+     &          geofem, next_tbl, new_fem, repart_nod_tbl, repart_WK,   &
+     &          SR_sig, SR_r, SR_i, SR_il)
 !
       use m_work_time
       use m_elapsed_labels_4_REPART
@@ -69,6 +78,11 @@
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
       type(volume_partioning_work), intent(inout) :: repart_WK
+!
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(communication_table) :: ele_comm_T
 !
@@ -102,7 +116,7 @@
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_ele_comm_table                                       &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
-     &      ele_comm_T, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &      ele_comm_T, SR_sig, SR_r, SR_i, SR_il)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
 !  -----  Re-partitioning
@@ -156,7 +170,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine nod_field_to_new_partition(iflag_recv,                 &
-     &          new_mesh, repart_nod_tbl, org_fld, new_fld, v_sol)
+     &          new_mesh, repart_nod_tbl, org_fld, new_fld,             &
+     &          v_sol, SR_sig, SR_r)
 !
       use transfer_to_new_partition
 !
@@ -167,6 +182,8 @@
 !
       type(phys_data), intent(inout) :: new_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: i_fld, i_comp
 !
@@ -177,18 +194,18 @@
           call scalar_to_new_partition(iflag_recv, repart_nod_tbl,      &
      &        new_mesh%nod_comm, org_fld%n_point, new_fld%n_point,      &
      &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp),         &
-     &        v_sol, SR_sig1, SR_r1)
+     &        v_sol, SR_sig, SR_r)
         else if(new_fld%num_component(i_fld) .eq. n_vector) then
           call vector_to_new_partition(iflag_recv, repart_nod_tbl,      &
      &        new_mesh%nod_comm, org_fld%n_point, new_fld%n_point,      &
      &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp),         &
-     &        v_sol, SR_sig1, SR_r1)
+     &        v_sol, SR_sig, SR_r)
         else
           call tensor_to_new_partition(iflag_recv, repart_nod_tbl,      &
      &        new_mesh%nod_comm, new_fld%num_component(i_fld),          &
      &        org_fld%n_point, new_fld%n_point,                         &
      &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp),         &
-     &        v_sol, SR_sig1, SR_r1)
+     &        v_sol, SR_sig, SR_r)
         end if
       end do
 !

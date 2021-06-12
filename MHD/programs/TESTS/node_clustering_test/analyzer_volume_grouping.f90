@@ -141,8 +141,8 @@
       allocate(vect_ref1(fem_T%mesh%node%numnod,3))
       call link_repart_masking_data((.FALSE.), (.FALSE.),               &
      &    fem_T%mesh%node, izero, d_mask_org1, vect_ref1, repart_WK1)
-      call grouping_by_volume                                           &
-     &   (fem_T%mesh, part_prog_p1%repart_p, repart_WK1, part_grp)
+      call grouping_by_volume(fem_T%mesh, part_prog_p1%repart_p,        &
+     &                        repart_WK1, part_grp, SR_sig1, SR_r1)
       call unlink_repart_masking_data(repart_WK1)
       deallocate(d_mask_org1, vect_ref1, masking1)
 !

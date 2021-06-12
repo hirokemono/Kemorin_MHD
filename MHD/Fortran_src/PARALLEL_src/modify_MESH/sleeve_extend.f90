@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine sleeve_extension_loop                                &
 !!     &         (sleeve_exp_p, mesh, group, ele_comm, sleeve_exp_WK,   &
-!!     &          SR_sig, SR_r, SR_i)
+!!     &          SR_sig, SR_r, SR_i, SR_il)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) :: group
@@ -18,8 +18,8 @@
 !!      subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm, &
 !!     &          org_node, org_ele, neib_ele, sleeve_exp_WK,           &
 !!     &          new_nod_comm, new_node, new_ele, new_ele_comm,        &
-!!     &      new_ele_comm, mark_saved1, SR_sig, SR_r, SR_i,            &
-!!     &      iflag_process_extend)
+!!     &          new_ele_comm, mark_saved1, SR_sig, SR_r, SR_i, SR_il, &
+!!     &          iflag_process_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: ele_comm
@@ -35,6 +35,7 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module sleeve_extend
@@ -53,6 +54,7 @@
       use t_comm_table_for_each_pe
       use t_solver_SR
       use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -66,7 +68,7 @@
 !
       subroutine sleeve_extension_loop                                  &
      &         (sleeve_exp_p, mesh, group, ele_comm, sleeve_exp_WK,     &
-     &          SR_sig, SR_r, SR_i)
+     &          SR_sig, SR_r, SR_i, SR_il)
 !
       use t_next_node_ele_4_node
       use t_flags_each_comm_extend
@@ -89,6 +91,7 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(mesh_geometry), save :: newmesh
       type(mesh_groups), save :: newgroup
@@ -124,8 +127,8 @@
      &                          ntot_import_ele
       end if
 !
-      call init_work_vector_sleeve_ext                                  &
-     &   (mesh%nod_comm, mesh%node, sleeve_exp_p, sleeve_exp_WK)
+      call init_work_vector_sleeve_ext(mesh%nod_comm, mesh%node,        &
+     &    sleeve_exp_p, sleeve_exp_WK, SR_sig, SR_r)
 !
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
 !
@@ -142,7 +145,7 @@
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,               &
      &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
-     &      new_ele_comm, mark_saved1, SR_sig, SR_r, SR_i,              &
+     &      new_ele_comm, mark_saved1, SR_sig, SR_r, SR_i, SR_il,       &
      &      iflag_process_extend)
         call s_extended_groups(mesh, group, newmesh,                    &
      &                         new_ele_comm, newgroup, SR_sig, SR_i)
@@ -187,8 +190,8 @@
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
 !
-        call init_work_vector_sleeve_ext                                &
-     &     (mesh%nod_comm, mesh%node, sleeve_exp_p, sleeve_exp_WK)
+        call init_work_vector_sleeve_ext(mesh%nod_comm, mesh%node,      &
+     &      sleeve_exp_p, sleeve_exp_WK, SR_sig, SR_r)
       end do
 !
       do ip = 1, nprocs
@@ -203,7 +206,8 @@
       subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm,   &
      &          org_node, org_ele, neib_ele, sleeve_exp_WK,             &
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
-     &          mark_saved, SR_sig, SR_r, SR_i, iflag_process_extend)
+     &          mark_saved, SR_sig, SR_r, SR_i, SR_il,                  &
+     &          iflag_process_extend)
 !
       use t_next_node_ele_4_node
       use t_repart_double_numberings
@@ -244,6 +248,7 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(node_ele_double_number), save :: inod_dbl
       type(node_ele_double_number), save :: iele_dbl
@@ -360,7 +365,8 @@
 !
       if(i_debug .gt. 0) then
         call check_extended_element                                     &
-     &     (new_nod_comm, new_node, new_ele, new_ele_comm)
+     &     (new_nod_comm, new_node, new_ele, new_ele_comm,              &
+     &      SR_sig, SR_i, SR_il)
 !
         do i = 1, nprocs
           call calypso_mpi_barrier

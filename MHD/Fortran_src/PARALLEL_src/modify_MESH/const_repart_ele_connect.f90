@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_const_repart_ele_connect(mesh, ele_comm, part_tbl, &
 !!     &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl, &
-!!     &          new_surf, new_edge)
+!!     &          new_surf, new_edge, SR_sig, SR_i)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(calypso_comm_table), intent(in) :: part_tbl
@@ -21,6 +21,8 @@
 !!        type(surface_data), intent(inout) :: new_surf
 !!        type(edge_data), intent(inout) :: new_edge
 !!        type(node_ele_double_number) :: element_ids
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module const_repart_ele_connect
@@ -40,11 +42,12 @@
       use t_sorting_for_repartition
       use t_para_double_numbering
       use t_repart_double_numberings
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
-!      private :: const_reparition_ele_connect
+      private :: const_reparition_ele_connect
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +57,7 @@
 !
       subroutine s_const_repart_ele_connect(mesh, ele_comm, part_tbl,   &
      &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl,   &
-     &          new_surf, new_edge)
+     &          new_surf, new_edge, SR_sig, SR_i)
 !
       use ele_trans_tbl_4_repart
       use set_nnod_4_ele_by_type
@@ -70,6 +73,8 @@
       type(element_data), intent(inout) :: new_ele
       type(surface_data), intent(inout) :: new_surf
       type(edge_data), intent(inout) :: new_edge
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       type(node_ele_double_number) :: element_ids
 !
@@ -78,18 +83,18 @@
 !
       call alloc_double_numbering(mesh%ele%numele, element_ids)
       call double_numbering_4_element(mesh%ele, ele_comm, element_ids,  &
-     &                                SR_sig1, SR_i1)
+     &                                SR_sig, SR_i)
 !
       call const_ele_trans_tbl_for_repart                               &
      &   (mesh%node, mesh%ele, part_tbl, new_ids_on_org%irank, ele_tbl)
 !      call check_element_transfer_tbl(mesh%ele, ele_tbl)
 !
       call trim_overlapped_ele_by_repart                                &
-     &   (mesh, element_ids, ele_tbl, new_numele, SR_sig1, SR_i1)
+     &   (mesh, element_ids, ele_tbl, new_numele, SR_sig, SR_i)
 !
       call const_reparition_ele_connect                                 &
-     &   (mesh%ele, ele_tbl, new_ids_on_org,                            &
-     &    element_ids, new_numele, new_comm, new_node, new_ele)
+     &   (mesh%ele, ele_tbl, new_ids_on_org, element_ids,               &
+     &    new_numele, new_comm, new_node, new_ele, SR_sig, SR_i)
       call dealloc_double_numbering(element_ids)
 !
       call set_3D_nnod_4_sfed_by_ele(new_ele%nnod_4_ele,                &
@@ -101,7 +106,7 @@
 !
       subroutine const_reparition_ele_connect                           &
      &         (ele, ele_tbl, new_ids_on_org, element_ids,              &
-     &          new_numele, new_comm, new_node, new_ele)
+     &          new_numele, new_comm, new_node, new_ele, SR_sig, SR_i)
 !
       use search_ext_node_repartition
       use const_repart_mesh_data
@@ -116,6 +121,8 @@
       integer(kind = kint), intent(in) :: new_numele
 !
       type(element_data), intent(inout) :: new_ele
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint), allocatable :: ie_newnod(:,:)
       integer(kind = kint), allocatable :: ie_newdomain(:,:)
@@ -133,7 +140,7 @@
 !
       call s_search_ext_node_repartition                                &
      &   (ele, ele_tbl, element_ids, ie_newdomain,                      &
-     &    new_comm, new_node, new_ele)
+     &    new_comm, new_node, new_ele, SR_sig, SR_i)
       deallocate(ie_newnod, ie_newdomain)
 !
       end subroutine const_reparition_ele_connect

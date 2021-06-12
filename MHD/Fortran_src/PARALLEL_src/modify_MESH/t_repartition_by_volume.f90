@@ -7,12 +7,14 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine grouping_by_volume                                   &
-!!     &         (mesh, part_param, repart_WK, part_grp)
+!!      subroutine grouping_by_volume(mesh, part_param, repart_WK,      &
+!!     &                              part_grp, SR_sig, SR_r)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(volume_partioning_work), intent(in) :: repart_WK
 !!        type(group_data), intent(inout) :: part_grp
+!!       type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module t_repartition_by_volume
@@ -26,6 +28,7 @@
       use t_group_data
       use t_1d_repartitioning_work
       use t_control_param_vol_grping
+      use t_solver_SR
 !
       implicit none
 !
@@ -56,16 +59,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine grouping_by_volume                                     &
-     &         (mesh, part_param, repart_WK, part_grp)
+      subroutine grouping_by_volume(mesh, part_param, repart_WK,        &
+     &                              part_grp, SR_sig, SR_r)
 !
-      use m_solver_SR
       use xyz_block_id_by_nod_vol
 !
       type(mesh_geometry), intent(in) :: mesh
       type(volume_partioning_param), intent(in) :: part_param
       type(volume_partioning_work), intent(in) :: repart_WK
+!
       type(group_data), intent(inout) :: part_grp
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       type(group_data) :: z_part_grp
       type(group_data) :: yz_part_grp
@@ -83,7 +88,7 @@
       call set_volume_at_node                                           &
      &   (part_param, repart_WK, mesh, vol_sort%volume_nod,             &
      &    vol_sort%volume_nod_tot, vol_sort%volume_min_gl,              &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       call set_xyz_block_id_by_nod_vol(mesh%node, part_param,           &
      &                                 vol_sort%id_block)

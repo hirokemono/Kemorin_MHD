@@ -7,13 +7,15 @@
 !> @brief Control parameter for sleeve extension
 !!
 !!@verbatim
-!!      subroutine init_work_vector_sleeve_ext                          &
-!!     &         (nod_comm, node, sleeve_exp_p, sleeve_exp_WK)
+!!      subroutine init_work_vector_sleeve_ext(nod_comm, node,          &
+!!     &          sleeve_exp_p, sleeve_exp_WK, SR_sig, SR_r)
 !!      subroutine dealloc_work_vector_sleeve_ext(sleeve_exp_WK)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
 !!      subroutine alloc_sleeve_extend_nul_vect                         &
 !!     &         (node, sleeve_exp_p, sleeve_exp_WK)
@@ -103,19 +105,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_work_vector_sleeve_ext                            &
-     &         (nod_comm, node, sleeve_exp_p, sleeve_exp_WK)
+      subroutine init_work_vector_sleeve_ext(nod_comm, node,            &
+     &          sleeve_exp_p, sleeve_exp_WK, SR_sig, SR_r)
 !
       use calypso_mpi
       use t_comm_table
       use t_geometry_data
-      use m_solver_SR
+      use t_solver_SR
       use solver_SR_type
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!
       type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
@@ -133,7 +138,7 @@
 !$omp end parallel do
 !
        call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm,              &
-      &    SR_sig1, SR_r1, sleeve_exp_WK%d_sleeve)
+      &    SR_sig, SR_r, sleeve_exp_WK%d_sleeve)
 !
        end subroutine init_work_vector_sleeve_ext
 !

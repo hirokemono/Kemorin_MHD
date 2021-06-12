@@ -101,7 +101,7 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
         call sleeve_extension_loop(part_param%sleeve_exp_p,             &
      &      new_fem%mesh, new_fem%group, new_ele_comm,                  &
-     &      repart_WK%sleeve_exp_WK, SR_sig1, SR_r1, SR_i1)
+     &      repart_WK%sleeve_exp_WK, SR_sig1, SR_r1, SR_i1, SR_il1)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
 !
         call dealloc_comm_table(new_ele_comm)

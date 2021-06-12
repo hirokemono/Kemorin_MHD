@@ -69,6 +69,7 @@
       use t_control_param_LIC
       use t_control_param_vol_grping
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit  none
 !
@@ -306,7 +307,7 @@
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(repart_p, geofem, next_tbl,      &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
-     &    repart_data%repart_WK)
+     &    repart_data%repart_WK, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
       call FEM_mesh_initialization                                      &

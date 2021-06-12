@@ -217,8 +217,6 @@
      &         (ele, add_ele_comm, ie_new_import_trim)
 !
       use calypso_mpi
-!
-      use m_solver_SR
       use calypso_mpi_int
 !
       type(element_data), intent(in) :: ele
