@@ -95,7 +95,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos_p'
       call const_mesh_infos_p                                           &
-     &   (my_rank, femmesh_p_FUT%mesh, femmesh_p_FUT%group)
+     &   (my_rank, femmesh_p_FUT%mesh, femmesh_p_FUT%group,             &
+     &    SR_sig1, SR_i1)
       call const_global_numnod_list(femmesh_p_FUT%mesh%node)
 !
 !     --------------------- 

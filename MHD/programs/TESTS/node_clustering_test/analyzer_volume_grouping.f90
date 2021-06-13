@@ -120,7 +120,8 @@
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
       call init_nod_send_recv(fem_T%mesh,                               &
      &                        SR_sig1, SR_r1, SR_i1, SR_il1)
-      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
+     &                             SR_sig1, SR_i1)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
 !  -------------------------------

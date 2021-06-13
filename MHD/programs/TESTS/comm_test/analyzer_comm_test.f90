@@ -94,7 +94,8 @@
 !
       call FEM_comm_initialization(test_fem%mesh, v_sol_T,              &
      &                             SR_sig1, SR_r1, SR_i1, SR_il1)
-      call FEM_mesh_initialization(test_fem%mesh, test_fem%group)
+      call FEM_mesh_initialization(test_fem%mesh, test_fem%group,       &
+     &                             SR_sig1, SR_i1)
 !
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
@@ -112,7 +113,7 @@
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table                                        &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_edge_comm,      &
-     &    test_fem%mesh%edge)
+     &    test_fem%mesh%edge, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !      call calypso_mpi_barrier
 !      call calypso_mpi_abort(0, 'manuke')

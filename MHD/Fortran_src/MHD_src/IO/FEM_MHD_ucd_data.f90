@@ -33,6 +33,7 @@
       use t_file_IO_parameter
       use t_IO_step_parameter
       use t_ucd_data
+      use m_solver_SR
 !
       implicit none
 !
@@ -71,7 +72,7 @@
 !
       if (ucd_param%iflag_format/icent .eq. iflag_single/icent) then
         call init_merged_ucd_element(ucd_param%iflag_format,            &
-     &      mesh%node, mesh%ele, mesh%nod_comm, ucd)
+     &      mesh%node, mesh%ele, mesh%nod_comm, ucd, SR_sig1, SR_i1)
       end if
 !
       call sel_write_parallel_ucd_mesh(ucd_param, ucd)

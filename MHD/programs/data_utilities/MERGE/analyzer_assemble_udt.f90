@@ -174,7 +174,8 @@
      &       .eq. iflag_single/icent) then
         call init_merged_ucd_element                                    &
      &     (asbl_param_u%new_fld_file%iflag_format,                     &
-     &      new_mesh%node, new_mesh%ele, new_mesh%nod_comm, ucd_m)
+     &      new_mesh%node, new_mesh%ele, new_mesh%nod_comm,             &
+     &      ucd_m, SR_sig1, SR_i1)
       end if
 !
       if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'

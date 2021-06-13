@@ -22,6 +22,7 @@
       use t_phys_data
       use t_comm_table
       use t_VIZ_step_parameter
+      use m_solver_SR
 !
       implicit none
 !
@@ -44,7 +45,8 @@
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
+      call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
+     &                             SR_sig1, SR_i1)
 !
 !     --------------------- init for sectioning
 !
@@ -53,7 +55,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
         call const_edge_comm_table                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      edge_comm, geofem%mesh%edge)
+     &      edge_comm, geofem%mesh%edge, SR_sig1, SR_r1, SR_i1, SR_il1)
       end if
 !
       end subroutine init_FEM_to_PSF_bridge

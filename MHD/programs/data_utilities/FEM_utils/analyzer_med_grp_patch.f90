@@ -60,12 +60,13 @@
       call FEM_comm_initialization(FUTIL1%geofem%mesh, FUTIL1%v_sol,    &
      &                             SR_sig1, SR_r1, SR_i1, SR_il1)
       call FEM_mesh_initialization(FUTIL1%geofem%mesh,                  &
-     &                             FUTIL1%geofem%group)
+     &                             FUTIL1%geofem%group, SR_sig1, SR_i1)
 
 !
       call const_edge_comm_table                                        &
      &   (FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%nod_comm,         &
-     &    edge_comm_MG, FUTIL1%geofem%mesh%edge)
+     &    edge_comm_MG, FUTIL1%geofem%mesh%edge,                        &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       FUTIL1%nod_fld%num_phys = 1
       call alloc_phys_name(FUTIL1%nod_fld)

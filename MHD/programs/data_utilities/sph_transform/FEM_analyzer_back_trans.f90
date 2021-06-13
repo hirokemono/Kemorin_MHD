@@ -68,7 +68,7 @@
       call link_output_grd_file                                         &
      &   (FEM_STR%geofem%mesh%node, FEM_STR%geofem%mesh%ele,            &
      &    FEM_STR%geofem%mesh%nod_comm, FEM_STR%field,                  &
-     &    FEM_STR%ucd_file_IO, FEM_STR%ucd)
+     &    FEM_STR%ucd_file_IO, FEM_STR%ucd, SR_sig1, SR_i1)
 !
       end subroutine FEM_initialize_back_trans
 !

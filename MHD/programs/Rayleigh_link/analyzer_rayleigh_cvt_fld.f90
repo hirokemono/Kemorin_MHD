@@ -207,7 +207,7 @@
 !        write(*,*) 'init_merged_ucd_element'
         call init_merged_ucd_element(new_fld_file%iflag_format,         &
      &      geofem%mesh%node, geofem%mesh%ele, geofem%mesh%nod_comm,    &
-     &      ucd_m)
+     &      ucd_m, SR_sig1, SR_i1)
       end if
 !
       call sel_write_parallel_ucd_mesh(new_fld_file, ucd_m)

@@ -47,6 +47,7 @@
       use t_phys_data
       use t_file_IO_parameter
       use t_IO_step_parameter
+      use m_solver_SR
 !
       implicit none
 !
@@ -98,7 +99,7 @@
       if(ucd_param%iflag_format .lt. 0) return
       if(ucd_step%increment .eq. 0) return
       call link_output_grd_file(mesh%node, mesh%ele, mesh%nod_comm,     &
-     &    nod_fld, ucd_param, ucd)
+     &    nod_fld, ucd_param, ucd, SR_sig1, SR_i1)
 !
       end subroutine output_grd_file_4_snapshot
 !

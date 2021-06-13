@@ -25,6 +25,7 @@
 !
       use t_SPH_data_4_SPH_trans
       use t_time_data
+      use m_solver_SR
 !
       implicit none
 !
@@ -68,7 +69,7 @@
       call initialize_sph_trans(SPH_STR%fld_rtp%ncomp_trans,            &
      &    SPH_STR%fld_rtp%num_vector, SPH_STR%fld_rtp%nscalar_trans,    &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_STR%trans_p,                  &
-     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs)
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig1, SR_r1)
 !
       call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'allocate_d_rtp_4_all_trans'

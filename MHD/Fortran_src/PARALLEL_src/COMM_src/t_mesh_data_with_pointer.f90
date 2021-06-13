@@ -20,10 +20,13 @@
 !!      subroutine mpi_input_mesh_p(mesh_file, mesh_p, group_p)
 !!      subroutine input_mesh_p                                         &
 !!     &         (id_rank, mesh_file, mesh_p, group_p, ierr)
-!!      subroutine const_mesh_infos_p(id_rank, mesh_p, group_p)
+!!      subroutine const_mesh_infos_p                                   &
+!!     &         (id_rank, mesh_p, group_p, SR_sig, SR_i)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_geometry_p), intent(inout) :: mesh_p
 !!        type(mesh_groups_p), intent(inout) ::   group_p
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module t_mesh_data_with_pointer
@@ -272,7 +275,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_mesh_infos_p(id_rank, mesh_p, group_p)
+      subroutine const_mesh_infos_p                                     &
+     &         (id_rank, mesh_p, group_p, SR_sig, SR_i)
 !
       use t_mesh_data
       use t_geometry_data
@@ -283,6 +287,8 @@
       use t_surface_data
       use t_edge_data
       use t_element_group_table
+      use t_solver_SR
+      use t_solver_SR_int
 !
       use cal_mesh_position
       use const_surface_data
@@ -296,8 +302,11 @@
 !      use check_surface_groups
 !
       integer, intent(in) :: id_rank
+!
       type(mesh_geometry_p), intent(inout) :: mesh_p
       type(mesh_groups_p), intent(inout) ::   group_p
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_nod_and_ele_infos'
@@ -314,7 +323,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos(mesh_p%nod_comm, mesh_p%node,          &
-     &    mesh_p%ele, mesh_p%surf, mesh_p%edge)
+     &    mesh_p%ele, mesh_p%surf, mesh_p%edge, SR_sig, SR_i)
       if (iflag_debug.gt.0) write(*,*) 'set_center_of_edge'
       call alloc_edge_geometory(mesh_p%edge)
       call set_center_of_edge(mesh_p%node, mesh_p%edge)

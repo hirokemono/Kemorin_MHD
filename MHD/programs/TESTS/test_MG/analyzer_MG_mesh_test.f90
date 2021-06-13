@@ -17,6 +17,7 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use m_solver_SR
 !
       implicit none
 !
@@ -89,7 +90,7 @@
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos                                        &
      &   (fem_MG%mesh%nod_comm, fem_MG%mesh%node, fem_MG%mesh%ele,      &
-     &    fem_MG%mesh%surf, fem_MG%mesh%edge)
+     &    fem_MG%mesh%surf, fem_MG%mesh%edge, SR_sig1, SR_i1)
 !
 !  -------------------------------
 !  -------------------------------

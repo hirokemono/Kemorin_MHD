@@ -91,7 +91,7 @@
       call FEM_comm_initialization(FEM_STR%geofem%mesh, FEM_STR%v_sol,  &
      &                             SR_sig1, SR_r1, SR_i1, SR_il1)
       call FEM_mesh_initialization                                      &
-     &   (FEM_STR%geofem%mesh, FEM_STR%geofem%group)
+     &   (FEM_STR%geofem%mesh, FEM_STR%geofem%group, SR_sig1, SR_i1)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
       call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &

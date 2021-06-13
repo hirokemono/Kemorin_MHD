@@ -19,6 +19,7 @@
       use t_boundary_field_IO
       use t_file_IO_parameter
       use t_ctl_data_test_bc_temp
+      use m_solver_SR
 !
       implicit none
 !
@@ -64,7 +65,7 @@
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos                                        &
      &   (femmesh%mesh%nod_comm, femmesh%mesh%node, femmesh%mesh%ele,   &
-     &    femmesh%mesh%surf, femmesh%mesh%edge)
+     &    femmesh%mesh%surf, femmesh%mesh%edge, SR_sig1, SR_i1)
 !
        end subroutine initilize_bc_temp
 !

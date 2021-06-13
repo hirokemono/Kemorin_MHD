@@ -35,7 +35,6 @@
       use t_element_double_number
       use t_next_node_ele_4_node
       use t_failed_export_list
-      use m_solver_SR
 !
       implicit none
 !

@@ -102,7 +102,7 @@
       call output_udt_one_snapshot                                      &
      &   (time_U%finish_d%i_end_step, ave_ucd_param, time_U%time_d,     &
      &    FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%ele,              &
-     &    FUTIL1%geofem%mesh%nod_comm, FUTIL1%nod_fld)
+     &    FUTIL1%geofem%mesh%nod_comm, FUTIL1%nod_fld, SR_sig1, SR_i1)
 !
       end subroutine analyze_ave_udt
 !

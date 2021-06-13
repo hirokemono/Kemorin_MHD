@@ -20,6 +20,7 @@
       use t_SPH_SGS_structure
       use t_phys_name_4_sph_trans
       use t_work_4_sph_trans
+      use m_solver_SR
 !
       implicit none
 !
@@ -80,7 +81,7 @@
       call initialize_sph_trans(SPH_STR%fld_rtp%ncomp_trans,            &
      &    SPH_STR%fld_rtp%num_vector, SPH_STR%fld_rtp%nscalar_trans,    &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_STR%trans_p,                  &
-     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs)
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig1, SR_r1)
 !
       call allocate_d_pole_4_all_trans                                  &
      &   (SPH_STR%fld_rtp, SPH_MHD%sph%sph_rtp)

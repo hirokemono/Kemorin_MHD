@@ -43,6 +43,7 @@
       use t_mesh_data
       use t_phys_data
       use t_ucd_data
+      use m_solver_SR
 !
       implicit  none
 !
@@ -93,7 +94,7 @@
       if(ucd_step%increment .eq. 0) return
       call link_output_grd_file                                         &
      &   (geofem%mesh%node, geofem%mesh%ele, geofem%mesh%nod_comm,      &
-     &    nod_fld, vtk_file_IO, vtk_out)
+     &    nod_fld, vtk_file_IO, vtk_out, SR_sig1, SR_i1)
 !
       end subroutine init_visualize_convert_vtk
 !

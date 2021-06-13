@@ -41,6 +41,8 @@
       use t_comm_table
       use t_failed_export_list
       use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       use m_machine_parameter
       use m_geometry_constants

@@ -134,7 +134,7 @@
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos                                        &
      &   (fem_f%mesh%nod_comm, fem_f%mesh%node, fem_f%mesh%ele,         &
-     &    fem_f%mesh%surf, fem_f%mesh%edge)
+     &    fem_f%mesh%surf, fem_f%mesh%edge, SR_sig1, SR_i1)
 !
 !  -------------------------------
 !

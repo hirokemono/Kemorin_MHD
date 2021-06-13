@@ -160,7 +160,8 @@
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_comm_initialization(geofem%mesh, v_sol,                  &
      &                             SR_sig1, SR_r1, SR_i1, SR_il1)
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
+      call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
+     &                             SR_sig1, SR_i1)
 !
 !     ---------------------
 !

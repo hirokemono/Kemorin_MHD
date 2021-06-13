@@ -22,6 +22,7 @@
       use t_work_const_itp_table
       use t_search_block_4_itp
       use t_ctl_params_4_gen_table
+      use m_solver_SR
 !
       implicit none
 !
@@ -89,7 +90,7 @@
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos(org_femmesh%mesh%nod_comm,             &
      &    org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
-     &    org_femmesh%mesh%surf, org_femmesh%mesh%edge)
+     &    org_femmesh%mesh%surf, org_femmesh%mesh%edge, SR_sig1, SR_i1)
 !
 !     ----- construct mesh informations for original mesh
 !

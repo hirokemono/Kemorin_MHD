@@ -39,6 +39,7 @@
       use t_next_node_ele_4_node
       use t_MGCG_data
       use t_MGCG_data_4_MHD
+      use m_solver_SR
 !
       use calypso_mpi
 !
@@ -136,7 +137,7 @@
      &        MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
      &        MGCG_FEM%MG_mesh(i_level)%mesh%ele,                       &
      &        MGCG_FEM%MG_mesh(i_level)%mesh%surf,                      &
-     &        MGCG_FEM%MG_mesh(i_level)%mesh%edge)
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%edge, SR_sig1, SR_i1)
 !
           call const_global_mesh_infos(MGCG_FEM%MG_mesh(i_level)%mesh)
         else

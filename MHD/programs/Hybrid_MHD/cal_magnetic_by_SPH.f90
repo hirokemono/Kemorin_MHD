@@ -105,7 +105,7 @@
       call FEM_comm_initialization(mesh_sph%mesh, vect1,                &
      &                             SR_sig1, SR_r1, SR_i1, SR_il1)
       call FEM_mesh_initialization                                      &
-     &   (mesh_sph%mesh, mesh_sph%group)
+     &   (mesh_sph%mesh, mesh_sph%group, SR_sig1, SR_i1)
 !
       call alloc_phys_name(sph_fld)
       call alloc_phys_data(mesh_sph%node%numnod, sph_fld)
@@ -129,7 +129,8 @@
       nvector_sph_trans = max(nvector_rj_2_xyz, nvector_xyz_2_rj)
       call initialize_sph_trans                                         &
      &   (ncomp_sph_trans, nscalar_sph_trans, nvector_sph_trans,        &
-     &    sph, comms_sph, trans_p, WK_leg_HBD, WK_FFTs_HBD)
+     &    sph, comms_sph, trans_p, WK_leg_HBD, WK_FFTs_HBD,             &
+     &    SR_sig1, SR_r1)
 !
 !     ---------------------
 !
@@ -141,7 +142,6 @@
      &          mesh, sph, comms_sph, trans_p, conduct, MHD_prop,       &
      &          fem_int, Csims_FEM_MHD, iphys, iphys_LES, ipol, rj_fld)
 !
-      use m_solver_SR
       use m_schmidt_poly_on_rtm
 !
       use t_geometry_data_MHD

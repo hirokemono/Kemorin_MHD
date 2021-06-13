@@ -152,7 +152,8 @@
 !
       call init_merged_ucd_element                                      &
      &   (asbl_param_u%new_fld_file%iflag_format,                       &
-     &    mesh_m%node, mesh_m%ele, mesh_m%nod_comm, ucd_m)
+     &    mesh_m%node, mesh_m%ele, mesh_m%nod_comm,                     &
+     &    ucd_m, SR_sig1, SR_i1)
 !
       if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
       call sel_write_parallel_ucd_mesh                                  &

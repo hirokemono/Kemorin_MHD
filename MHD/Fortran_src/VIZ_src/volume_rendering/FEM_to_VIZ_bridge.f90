@@ -32,6 +32,7 @@
       use t_jacobians
       use t_VIZ_step_parameter
       use t_VIZ_mesh_field
+      use m_solver_SR
 !
       implicit none
 !
@@ -53,7 +54,8 @@
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
 !
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
+      call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
+     &                             SR_sig1, SR_i1)
 !
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_VIZ_pre'
       call link_jacobians_4_viz                                         &
@@ -95,8 +97,8 @@
       if(iflag .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
         call const_edge_comm_table                                      &
-     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      VIZ_DAT%edge_comm, geofem%mesh%edge)
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, VIZ_DAT%edge_comm,  &
+     &      geofem%mesh%edge, SR_sig1, SR_r1, SR_i1, SR_il1)
       end if
       call calypso_mpi_barrier
 !
@@ -138,7 +140,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
         call const_edge_comm_table                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      edge_comm, geofem%mesh%edge)
+     &      edge_comm, geofem%mesh%edge, SR_sig1, SR_r1, SR_i1, SR_il1)
       end if
 !
       iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment

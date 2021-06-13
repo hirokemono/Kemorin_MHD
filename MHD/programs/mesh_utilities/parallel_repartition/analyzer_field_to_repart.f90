@@ -117,7 +117,8 @@
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
+     &                             SR_sig1, SR_i1)
 !
 !
 !  -----  Const volume of each element

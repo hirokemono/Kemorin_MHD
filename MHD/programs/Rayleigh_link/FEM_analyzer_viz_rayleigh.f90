@@ -103,7 +103,7 @@
 !
       call dealloc_gen_sph_radial_groups(gen_sph_R)
 !
-      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      if(iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
       call FEM_comm_initialization(FEM_Rayleigh%geofem%mesh,            &
      &                             FEM_Rayleigh%v_sol,                  &
      &                             SR_sig1, SR_r1, SR_i1, SR_il1)

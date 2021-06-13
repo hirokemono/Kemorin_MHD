@@ -311,7 +311,8 @@
 !
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
       call FEM_mesh_initialization                                      &
-     &   (repart_data%viz_fem%mesh, repart_data%viz_fem%group)
+     &   (repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
+     &    SR_sig1, SR_i1)
       call set_max_integration_points(ione, jac_viz%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jac_viz%g_FEM, spfs_T%spf_3d, spfs_T%spf_2d, spfs_T%spf_1d)

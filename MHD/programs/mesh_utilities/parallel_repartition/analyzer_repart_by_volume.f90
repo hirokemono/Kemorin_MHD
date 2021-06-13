@@ -101,7 +101,8 @@
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
+     &                             SR_sig1, SR_i1)
 !
 !
 !  -----  Const Element communication table
@@ -211,7 +212,8 @@
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
-      call FEM_mesh_initialization(new_fem%mesh, new_fem%group)
+      call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
+     &                             SR_sig1, SR_i1)
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
       call const_global_numele_list(new_fem%mesh%ele)
@@ -226,8 +228,8 @@
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_edge_comm, new_fem%mesh%edge)
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_edge_comm,        &
+     &    new_fem%mesh%edge, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !
       if(my_rank .eq. 0) write(*,*) 'check communication table...'

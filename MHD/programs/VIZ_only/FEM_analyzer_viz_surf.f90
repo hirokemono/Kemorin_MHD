@@ -120,13 +120,14 @@
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol,  &
      &                             SR_sig1, SR_r1, SR_i1, SR_il1)
-      call FEM_mesh_initialization(FEM_viz%geofem%mesh,                 &
-     &                             FEM_viz%geofem%group)
+      call FEM_mesh_initialization                                      &
+     &   (FEM_viz%geofem%mesh, FEM_viz%geofem%group, SR_sig1, SR_i1)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
       call const_edge_comm_table                                        &
      &   (FEM_viz%geofem%mesh%node, FEM_viz%geofem%mesh%nod_comm,       &
-     &    edge_comm, FEM_viz%geofem%mesh%edge)
+     &    edge_comm, FEM_viz%geofem%mesh%edge,                          &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !     ---------------------
 !
@@ -200,8 +201,8 @@
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol,  &
      &                             SR_sig1, SR_r1, SR_i1, SR_il1)
-      call FEM_mesh_initialization(FEM_viz%geofem%mesh,                 &
-     &                             FEM_viz%geofem%group)
+      call FEM_mesh_initialization                                      &
+     &   (FEM_viz%geofem%mesh, FEM_viz%geofem%group, SR_sig1, SR_i1)
 !
 !     ---------------------
 !

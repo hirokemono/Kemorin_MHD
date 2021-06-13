@@ -43,6 +43,7 @@
       use t_boundary_data_sph_MHD
       use t_phys_address
       use t_SGS_model_addresses
+      use m_solver_SR
 !
       implicit  none
 !
@@ -234,7 +235,8 @@
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans                                    &
      &   (trans_p%nvector_legendre, ncomp_max_trans, sph, comms_sph,    &
-     &    trans_p%leg, trans_p%idx_trns, trans_p%iflag_SPH_recv)
+     &    trans_p%leg, trans_p%idx_trns, SR_sig1, SR_r1,                &
+     &    trans_p%iflag_SPH_recv)
 !
       WK%iflag_MHD_FFT = trans_p%iflag_FFT
       call init_fourier_transform_4_MHD                                 &
