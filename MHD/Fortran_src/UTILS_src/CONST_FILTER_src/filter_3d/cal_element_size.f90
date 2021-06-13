@@ -54,6 +54,7 @@
       use t_crs_matrix
       use t_jacobian_3d
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -159,10 +160,10 @@
      &    tbl_crs, fem_int%m_lump, fil_elist, gfil_p,                   &
      &    mass1, dxidxs, rhs_mat%fem_wk, rhs_mat%f_l, v_sol)
 !
-      call elength_nod_send_recv                                        &
-     &   (mesh%node%numnod, mesh%nod_comm, FEM_elen%elen_nod, v_sol)
-      call dxidx_nod_send_recv                                          &
-     &   (mesh%node%numnod, mesh%nod_comm, dxidxs%dx_nod, v_sol)
+      call elength_nod_send_recv(mesh%node%numnod, mesh%nod_comm,       &
+     &    FEM_elen%elen_nod, v_sol, SR_sig1, SR_r1)
+      call dxidx_nod_send_recv(mesh%node%numnod, mesh%nod_comm,         &
+     &    dxidxs%dx_nod, v_sol, SR_sig1, SR_r1)
 !
 !  ---------------------------------------------------
 !        cal products of element size for each node
@@ -183,8 +184,8 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'diff_elen_nod_send_recv'
-      call diff_elen_nod_send_recv                                      &
-     &   (mesh%node%numnod, mesh%nod_comm, FEM_elen%elen_nod, v_sol)
+      call diff_elen_nod_send_recv(mesh%node%numnod, mesh%nod_comm,     &
+     &    FEM_elen%elen_nod, v_sol, SR_sig1, SR_r1)
 !
 !  ---------------------------------------------------
 !        filter moments on each node
@@ -261,7 +262,7 @@
 !
 !
       call filter_mom_nod_send_recv                                     &
-     &   (node%numnod, nod_comm, mom_nod, v_sol)
+     &   (node%numnod, nod_comm, mom_nod, v_sol, SR_sig1, SR_r1)
 !
       if(gfil_p%itype_mass_matrix .eq. 1) then
         call cal_diffs_filter_nod_consist                               &
@@ -275,7 +276,7 @@
       end if
 !
       call diff_filter_mom_nod_send_recv                                &
-     &   (node%numnod, nod_comm, mom_nod, v_sol)
+     &   (node%numnod, nod_comm, mom_nod, v_sol, SR_sig1, SR_r1)
 !
       call cal_filter_moms_ele_by_nod(gfil_p%num_int_points,            &
      &    node, ele, g_FEM, jac_3d_q, mom_nod, mom_ele)

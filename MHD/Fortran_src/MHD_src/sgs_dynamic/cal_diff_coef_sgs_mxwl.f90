@@ -169,9 +169,9 @@
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
-     &   mesh%nod_comm, mesh%node, FEM_filters%filtering,               &
+     &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !    take difference (to iphys_SGS_wk%i_simi)
 !
@@ -221,7 +221,7 @@
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &     mesh%nod_comm, mesh%node, FEM_filters%filtering,             &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
       call delete_field_by_fixed_v_bc                                   &
      &   (Vnod_bcs, iphys_SGS_wk%i_nlg, nod_fld)
 !

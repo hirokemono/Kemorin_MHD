@@ -80,6 +80,7 @@
       use t_MHD_mass_matrices
       use t_work_FEM_integration
       use t_vector_for_solver
+      use m_solver_SR
 !
       use cal_fluxes
       use copy_nodal_fields
@@ -568,7 +569,8 @@
      &    i_div_flux_true, i_sgs_simi)
       call cal_filtered_scalar_whole                                    &
      &   (filter_param, nod_comm, node, filtering,                      &
-     &    i_div_flux_true, i_div_flux, wk_filter, nod_fld, v_sol)
+     &    i_div_flux_true, i_div_flux, wk_filter, nod_fld,              &
+     &    v_sol, SR_sig1, SR_r1)
       call subtract_2_nod_scalars(nod_fld,                              &
      &    i_div_flux_true, i_sgs_simi, i_div_flux_true)
 !
@@ -597,7 +599,8 @@
       call copy_vector_component(nod_fld, i_sgs_true, i_sgs_simi)
       call cal_filtered_vector_whole                                    &
      &   (filter_param, nod_comm, node, filtering,                      &
-     &    i_sgs_true, i_sgs_div, wk_filter, nod_fld, v_sol)
+     &    i_sgs_true, i_sgs_div, wk_filter, nod_fld,                    &
+     &    v_sol, SR_sig1, SR_r1)
       call subtract_2_nod_vectors(nod_fld,                              &
      &    i_sgs_true, i_sgs_simi, i_sgs_true)
 !

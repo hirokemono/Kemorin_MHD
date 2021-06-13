@@ -1,44 +1,56 @@
+!> @file  cal_3d_filter_phys_smp.f90
+!!      module cal_3d_filter_phys_smp
+!!
+!! @author  H. Matsui
+!! @date Programmed in Sep., 2007
 !
-!      module cal_3d_filter_phys_smp
-!
-!      Written by H. Matsui on Sep., 2007
-!
+!> @brief 3D filtering for each field
+!!
+!!@verbatim
 !!      subroutine cal_3d_filter_scalar_phys_smp                        &
 !!     &         (flt_comm, nod_comm, node, filter_smp,                 &
 !!     &          nnod_flt, num_filter_grp, id_filter_grp,              &
-!!     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+!!     &          i_field, i_filter, x_flt, nod_fld,                    &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_3d_filter_vector_phys_smp                        &
 !!     &         (flt_comm, nod_comm, node, filter_smp,                 &
 !!     &          nnod_flt, num_filter_grp, id_filter_grp,              &
-!!     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+!!     &          i_field, i_filter, x_flt, nod_fld,                    &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_3d_filter_tensor_phys_smp                        &
 !!     &         (flt_comm, nod_comm, node, filter_smp,                 &
 !!     &          nnod_flt, num_filter_grp, id_filter_grp,              &
-!!     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+!!     &          i_field, i_filter, x_flt, nod_fld,                    &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(communication_table), intent(in) :: nod_comm, flt_comm
 !!        type(node_data), intent(in) :: node
 !!        type(filter_coefficients_type), intent(in) :: filter_smp
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!         i_filter: field ID for filtered field
 !!         i_field:  field ID to be filtered
 !!         num_filter_grp:  num. of filtereing area
 !!         id_filter_grp:   table id for filtering
 !!
 !!      subroutine cal_3d_ez_filter_scalar_smp(flt_comm, nod_comm, node,&
-!!     &          filter_smp, nnod_flt, num_filter_grp, id_filter_grp,  &
-!!     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+!!     &         filter_smp, nnod_flt, num_filter_grp, id_filter_grp,   &
+!!     &         i_field, i_filter, x_flt, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_3d_ez_filter_vector_smp(flt_comm, nod_comm, node,&
-!!     &          filter_smp, nnod_flt, num_filter_grp, id_filter_grp,  &
-!!     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+!!     &         filter_smp, nnod_flt, num_filter_grp, id_filter_grp,   &
+!!     &         i_field, i_filter, x_flt, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_3d_ez_filter_tensor_smp(flt_comm, nod_comm, node,&
-!!     &          filter_smp, nnod_flt, num_filter_grp, id_filter_grp,  &
-!!     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+!!     &         filter_smp, nnod_flt, num_filter_grp, id_filter_grp,   &
+!!     &         i_field, i_filter, x_flt, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(communication_table), intent(in) :: nod_comm, flt_comm
 !!        type(node_data), intent(in) :: node
 !!        type(filter_coefficients_type), intent(in) :: filter_smp
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_3d_filter_phys_smp
 !
@@ -47,9 +59,9 @@
       use t_comm_table
       use t_geometry_data
       use t_phys_data
-      use t_vector_for_solver
       use t_filter_coefficients
-      use m_solver_SR
+      use t_vector_for_solver
+      use t_solver_SR
 !
       use prepare_field_2_filter
       use send_recv_3d_filtering
@@ -65,7 +77,8 @@
       subroutine cal_3d_filter_scalar_phys_smp                          &
      &         (flt_comm, nod_comm, node, filter_smp,                   &
      &          nnod_flt, num_filter_grp, id_filter_grp,                &
-     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+     &          i_field, i_filter, x_flt, nod_fld,                      &
+     &          v_sol, SR_sig, SR_r)
 !
       use sum_3d_filter_phys_smp
 !
@@ -79,12 +92,14 @@
       real(kind = kreal), intent(inout) :: x_flt(nnod_flt)
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call prepare_scalar_2_filter                                      &
      &   (flt_comm, node%numnod, node%internal_node,                    &
      &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       call sum_3d_filter_scalar_phys_smp(num_filter_grp, id_filter_grp, &
      &    filter_smp%ngrp_node, filter_smp%istack_node,                 &
@@ -98,7 +113,7 @@
 !
       call scalar_send_recv_3d_filter(nod_comm, node%numnod,            &
      &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       end subroutine cal_3d_filter_scalar_phys_smp
 !
@@ -107,7 +122,8 @@
       subroutine cal_3d_filter_vector_phys_smp                          &
      &         (flt_comm, nod_comm, node, filter_smp,                   &
      &          nnod_flt, num_filter_grp, id_filter_grp,                &
-     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+     &          i_field, i_filter, x_flt, nod_fld,                      &
+     &          v_sol, SR_sig, SR_r)
 !
       use sum_3d_filter_phys_smp
 !
@@ -121,12 +137,14 @@
       real(kind = kreal), intent(inout) :: x_flt(3*nnod_flt)
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call prepare_vector_2_filter                                      &
      &   (flt_comm, node%numnod, node%internal_node,                    &
      &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       call sum_3d_filter_vector_phys_smp(num_filter_grp, id_filter_grp, &
      &    filter_smp%ngrp_node, filter_smp%istack_node,                 &
@@ -140,7 +158,7 @@
 !
       call vector_send_recv_3d_filter(nod_comm, node%numnod,            &
      &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       end subroutine cal_3d_filter_vector_phys_smp
 !
@@ -149,7 +167,8 @@
       subroutine cal_3d_filter_tensor_phys_smp                          &
      &         (flt_comm, nod_comm, node, filter_smp,                   &
      &          nnod_flt, num_filter_grp, id_filter_grp,                &
-     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+     &          i_field, i_filter, x_flt, nod_fld,                      &
+     &          v_sol, SR_sig, SR_r)
 !
       use sum_3d_filter_phys_smp
 !
@@ -163,12 +182,14 @@
       real(kind = kreal), intent(inout) :: x_flt(6*nnod_flt)
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call prepare_sym_tensor_2_filter                                  &
      &   (flt_comm, node%numnod, node%internal_node,                    &
      &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       call sum_3d_filter_tensor_phys_smp(num_filter_grp, id_filter_grp, &
      &    filter_smp%ngrp_node, filter_smp%istack_node,                 &
@@ -182,7 +203,7 @@
 !
       call tensor_send_recv_3d_filter(nod_comm, node%numnod,            &
      &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       end subroutine cal_3d_filter_tensor_phys_smp
 !
@@ -190,8 +211,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_3d_ez_filter_scalar_smp(flt_comm, nod_comm, node,  &
-     &          filter_smp, nnod_flt, num_filter_grp, id_filter_grp,    &
-     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+     &         filter_smp, nnod_flt, num_filter_grp, id_filter_grp,     &
+     &         i_field, i_filter, x_flt, nod_fld, v_sol, SR_sig, SR_r)
 !
       use sum_3d_ez_filter_phys_smp
 !
@@ -205,12 +226,14 @@
       real(kind = kreal), intent(inout) :: x_flt(nnod_flt)
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call prepare_scalar_2_filter                                      &
      &   (flt_comm, node%numnod, node%internal_node,                    &
      &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       call sum_3d_ez_filter_scalar_smp(num_filter_grp, id_filter_grp,   &
      &    filter_smp%ngrp_node, filter_smp%istack_node,                 &
@@ -222,15 +245,15 @@
 !
       call scalar_send_recv_3d_filter(nod_comm, node%numnod,            &
      &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       end subroutine cal_3d_ez_filter_scalar_smp
 !
 ! ----------------------------------------------------------------------
 !
       subroutine cal_3d_ez_filter_vector_smp(flt_comm, nod_comm, node,  &
-     &          filter_smp, nnod_flt, num_filter_grp, id_filter_grp,    &
-     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+     &         filter_smp, nnod_flt, num_filter_grp, id_filter_grp,     &
+     &         i_field, i_filter, x_flt, nod_fld, v_sol, SR_sig, SR_r)
 !
       use sum_3d_ez_filter_phys_smp
 !
@@ -244,12 +267,14 @@
       real(kind = kreal), intent(inout) :: x_flt(3*nnod_flt)
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call prepare_vector_2_filter                                      &
      &   (flt_comm, node%numnod, node%internal_node,                    &
      &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       call sum_3d_ez_filter_vector_smp(num_filter_grp, id_filter_grp,   &
      &    filter_smp%ngrp_node, filter_smp%istack_node,                 &
@@ -260,15 +285,15 @@
 !
       call vector_send_recv_3d_filter(nod_comm, node%numnod,            &
      &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       end subroutine cal_3d_ez_filter_vector_smp
 !
 ! ----------------------------------------------------------------------
 !
       subroutine cal_3d_ez_filter_tensor_smp(flt_comm, nod_comm, node,  &
-     &          filter_smp, nnod_flt, num_filter_grp, id_filter_grp,    &
-     &          i_field, i_filter, x_flt, nod_fld, v_sol)
+     &         filter_smp, nnod_flt, num_filter_grp, id_filter_grp,     &
+     &         i_field, i_filter, x_flt, nod_fld, v_sol, SR_sig, SR_r)
 !
       use sum_3d_ez_filter_phys_smp
 !
@@ -282,12 +307,14 @@
       real(kind = kreal), intent(inout) :: x_flt(6*nnod_flt)
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call prepare_sym_tensor_2_filter                                  &
      &   (flt_comm, node%numnod, node%internal_node,                    &
      &    nod_fld%ntot_phys, i_field, nod_fld%d_fld, nnod_flt, x_flt,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       call sum_3d_ez_filter_tensor_smp(num_filter_grp, id_filter_grp,   &
      &    filter_smp%ngrp_node, filter_smp%istack_node,                 &
@@ -298,7 +325,7 @@
 !
       call tensor_send_recv_3d_filter(nod_comm, node%numnod,            &
      &    v_sol%x_vec(1), nod_fld%ntot_phys, i_filter, nod_fld%d_fld,   &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       end subroutine cal_3d_ez_filter_tensor_smp
 !

@@ -153,7 +153,7 @@
      &    FEM_MHD%geofem%mesh%nod_comm, FEM_MHD%geofem%mesh%node,       &
      &    FEM_SGS%FEM_filters%filtering,                                &
      &    SGS_MHD_wk%FEM_SGS_wk%wk_filter,                              &
-     &    FEM_MHD%field, FEM_MHD%v_sol)
+     &    FEM_MHD%field, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
 !     -----Output monitor date
 !

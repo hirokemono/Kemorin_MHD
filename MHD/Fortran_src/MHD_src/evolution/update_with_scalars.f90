@@ -72,6 +72,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -169,7 +170,7 @@
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
      &          iphys_fil%i_temp, iphys_SGS_wk%i_sgs_temp,              &
-     &          FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &          FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
             nod_fld%iflag_update(iphys_fil%i_temp) = 1
           end if
 !
@@ -179,7 +180,7 @@
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
      &          iphys_wfl%i_temp, iphys_fil%i_temp,                     &
-     &          FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &          FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
           end if
         end if
 !
@@ -188,7 +189,7 @@
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_temp, iphys_base%i_temp,                      &
-     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
           nod_fld%iflag_update(iphys_fil%i_temp) = 1
         end if
 !
@@ -198,7 +199,7 @@
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_light, iphys_base%i_light,                    &
-     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
           nod_fld%iflag_update(iphys_fil%i_light) = 1
         end if
       end if
@@ -305,7 +306,7 @@
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_light, iphys_SGS_wk%i_sgs_composit,           &
-     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
           nod_fld%iflag_update(iphys_fil%i_light) = 1
         end if
 !
@@ -315,7 +316,7 @@
           call cal_filtered_scalar_whole (SGS_par%filter_p,             &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
      &        iphys_wfl%i_light, iphys_fil%i_light,                     &
-     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
         end if
       end if
 !

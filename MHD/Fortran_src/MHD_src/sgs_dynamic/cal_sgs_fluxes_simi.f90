@@ -65,6 +65,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -100,7 +101,7 @@
       call cal_flux_tensor(i_vect, i_vect, i_sgs, nod_fld)
       call cal_filtered_sym_tensor_whole                                &
      &   (filter_param, nod_comm, node, filtering,                      &
-     &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol)
+     &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !  ----------   substruct flux obtained by filterd values
 !
@@ -144,7 +145,7 @@
 !$omp end parallel
       call cal_filtered_vector_whole                                    &
      &   (filter_param, nod_comm, node, filtering,                      &
-     &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol)
+     &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
 !
       call cal_sgs_flux_vector(node%numnod, node%istack_nod_smp,        &
      &    nod_fld%ntot_phys, i_sgs, ivelo_f, ifield_f,                  &
@@ -182,7 +183,7 @@
       call cal_induction_tensor(i_b, i_v, i_sgs, nod_fld)
       call cal_filtered_vector_whole                                    &
      &   (filter_param, nod_comm, node, filtering,                      &
-     &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol)
+     &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !  ----------   substruct flux obtained by filterd values
 !
@@ -222,7 +223,7 @@
 !
       call cal_filtered_vector_whole                                    &
      &   (filter_param, nod_comm, node, filtering,                      &
-     &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol)
+     &    i_sgs, i_sgs, wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
 !
       call subctract_uxb_vector(node%numnod, node%istack_nod_smp,       &
      &    nod_fld%ntot_phys, i_sgs, i_fil_v, i_fil_b, nod_fld%d_fld)

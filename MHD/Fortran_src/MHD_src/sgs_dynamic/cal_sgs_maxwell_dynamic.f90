@@ -164,7 +164,7 @@
       call cal_filtered_sym_tensor_whole(SGS_par%filter_p,              &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys_SGS_wk%i_nlg, iphys_SGS%i_SGS_maxwell,                  &
-     &    FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &    FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !   Change coordinate
 !

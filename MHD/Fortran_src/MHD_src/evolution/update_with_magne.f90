@@ -70,6 +70,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -169,7 +170,7 @@
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_magne, iphys_base%i_magne,                    &
-     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
           nod_fld%iflag_update(iphys_fil%i_magne  ) = 1
           nod_fld%iflag_update(iphys_fil%i_magne+1) = 1
           nod_fld%iflag_update(iphys_fil%i_magne+2) = 1
@@ -195,7 +196,7 @@
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &         mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,    &
      &         iphys_wfl%i_magne, iphys_fil%i_magne,                    &
-     &         FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &         FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
           nod_fld%iflag_update(iphys_wfl%i_magne  ) = 1
           nod_fld%iflag_update(iphys_wfl%i_magne+1) = 1
           nod_fld%iflag_update(iphys_wfl%i_magne+2) = 1

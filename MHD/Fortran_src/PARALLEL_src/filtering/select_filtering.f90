@@ -5,13 +5,16 @@
 !
 !!      subroutine cal_filtered_scalar                                  &
 !!     &         (iflag_filter_mode, f_area, nod_comm, node, filtering, &
-!!     &          i_filter, i_scalar, wk_filter, nod_fld, v_sol)
+!!     &          i_filter, i_scalar, wk_filter, nod_fld,               &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_filtered_vector                                  &
 !!     &         (iflag_filter_mode, f_area, nod_comm, node, filtering, &
-!!     &          i_filter, i_vect, wk_filter, nod_fld, v_sol)
+!!     &          i_filter, i_vect, wk_filter, nod_fld,                 &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_filtered_sym_tensor                              &
 !!     &         (iflag_filter_mode, f_area, nod_comm, node, filtering, &
-!!     &          i_filter, i_vect, wk_filter, nod_fld, v_sol)
+!!     &          i_filter, i_vect, wk_filter, nod_fld,                 &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(SGS_filter_area_params), intent(in) :: f_area
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -19,6 +22,8 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module select_filtering
 !
@@ -32,7 +37,7 @@
       use t_filter_coefficients
       use t_l_filtering_data
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -47,7 +52,8 @@
 !
       subroutine cal_filtered_scalar                                    &
      &         (iflag_filter_mode, f_area, nod_comm, node, filtering,   &
-     &          i_filter, i_scalar, wk_filter, nod_fld, v_sol)
+     &          i_filter, i_scalar, wk_filter, nod_fld,                 &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_3d_filter_phys
       use cal_3d_filter_phys_smp
@@ -63,36 +69,38 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (iflag_filter_mode .eq. id_SGS_3D_EZ_FILTERING) then
         call cal_3d_ez_filter_scalar_phys(filtering%comm,               &
      &      nod_comm, node, filtering%filter, wk_filter%nnod_fil,       &
      &      f_area%num_f_group, f_area%id_f_group, i_scalar, i_filter,  &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_3D_SMP_FILTERING ) then
         call cal_3d_filter_scalar_phys_smp(filtering%comm,              &
      &      nod_comm, node, filtering%filter_smp, wk_filter%nnod_fil,   &
      &      f_area%num_f_group, f_area%id_f_group, i_scalar, i_filter,  &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_3D_EZ_SMP_FILTERING) then
         call cal_3d_ez_filter_scalar_smp(filtering%comm,                &
      &      nod_comm, node, filtering%filter_smp, wk_filter%nnod_fil,   &
      &      f_area%num_f_group, f_area%id_f_group, i_scalar, i_filter,  &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_3D_FILTERING) then
         call cal_3d_filter_scalar_phys(filtering%comm,                  &
      &      nod_comm, node, filtering%filter, wk_filter%nnod_fil,       &
      &      f_area%num_f_group, f_area%id_f_group, i_scalar, i_filter,  &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_LINE_FILTERING) then
         call line_filtered_scalar(nod_comm, node, filtering%fil_l_smp,  &
      &      wk_filter%nnod_fil, i_filter, i_scalar,                     &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine cal_filtered_scalar
@@ -101,7 +109,8 @@
 !
       subroutine cal_filtered_vector                                    &
      &         (iflag_filter_mode, f_area, nod_comm, node, filtering,   &
-     &          i_filter, i_vect, wk_filter, nod_fld, v_sol)
+     &          i_filter, i_vect, wk_filter, nod_fld,                   &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_3d_filter_phys
       use cal_3d_filter_phys_smp
@@ -117,36 +126,38 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if ( iflag_filter_mode .eq. id_SGS_3D_EZ_FILTERING ) then
         call cal_3d_ez_filter_vector_phys(filtering%comm,               &
      &      nod_comm, node, filtering%filter, wk_filter%nnod_fil,       &
      &      f_area%num_f_group, f_area%id_f_group, i_vect, i_filter,    &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_3D_SMP_FILTERING ) then
         call cal_3d_filter_vector_phys_smp(filtering%comm,              &
      &      nod_comm, node, filtering%filter_smp, wk_filter%nnod_fil,   &
      &      f_area%num_f_group, f_area%id_f_group, i_vect, i_filter,    &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_3D_EZ_SMP_FILTERING) then
         call cal_3d_ez_filter_vector_smp(filtering%comm,                &
      &      nod_comm, node, filtering%filter_smp, wk_filter%nnod_fil,   &
      &      f_area%num_f_group, f_area%id_f_group, i_vect, i_filter,    &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_3D_FILTERING) then
         call cal_3d_filter_vector_phys(filtering%comm,                  &
      &      nod_comm, node, filtering%filter, wk_filter%nnod_fil,       &
      &      f_area%num_f_group, f_area%id_f_group, i_vect, i_filter,    &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_LINE_FILTERING) then
         call line_filtered_vector(nod_comm, node, filtering%fil_l_smp,  &
      &      wk_filter%nnod_fil, i_filter, i_vect, wk_filter%x_fil(1),   &
-     &      nod_fld, v_sol)
+     &      nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine cal_filtered_vector
@@ -155,7 +166,8 @@
 !
       subroutine cal_filtered_sym_tensor                                &
      &         (iflag_filter_mode, f_area, nod_comm, node, filtering,   &
-     &          i_filter, i_vect, wk_filter, nod_fld, v_sol)
+     &          i_filter, i_vect, wk_filter, nod_fld,                   &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_3d_filter_phys
       use cal_3d_filter_phys_smp
@@ -171,37 +183,39 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if ( iflag_filter_mode .eq. id_SGS_3D_EZ_FILTERING ) then
         call cal_3d_ez_filter_tensor_phys(filtering%comm,               &
      &      nod_comm, node, filtering%filter, wk_filter%nnod_fil,       &
      &      f_area%num_f_group, f_area%id_f_group, i_vect, i_filter,    &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_3D_SMP_FILTERING ) then
         call cal_3d_filter_tensor_phys_smp(filtering%comm,              &
      &      nod_comm, node, filtering%filter_smp, wk_filter%nnod_fil,   &
      &     f_area%num_f_group, f_area%id_f_group, i_vect, i_filter,     &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_3D_EZ_SMP_FILTERING) then
         call cal_3d_ez_filter_tensor_smp(filtering%comm,                &
      &     nod_comm, node, filtering%filter_smp, wk_filter%nnod_fil,    &
      &     f_area%num_f_group, f_area%id_f_group, i_vect, i_filter,     &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_3D_FILTERING) then
         call cal_3d_filter_tensor_phys(filtering%comm,                  &
      &      nod_comm, node, filtering%filter, wk_filter%nnod_fil,       &
      &      f_area%num_f_group, f_area%id_f_group, i_vect, i_filter,    &
-     &      wk_filter%x_fil(1), nod_fld, v_sol)
+     &      wk_filter%x_fil(1), nod_fld, v_sol, SR_sig, SR_r)
 !
       else if ( iflag_filter_mode .eq. id_SGS_LINE_FILTERING) then
         call line_filtered_sym_tensor                                   &
      &     (nod_comm, node, filtering%fil_l_smp,                        &
      &      wk_filter%nnod_fil, i_filter, i_vect, wk_filter%x_fil(1),   &
-     &      nod_fld, v_sol)
+     &      nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine cal_filtered_sym_tensor
@@ -210,7 +224,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine line_filtered_scalar(nod_comm, node, fil_l_smp,        &
-     &          nnod_flt, i_filter, i_scalar, x_flt, nod_fld, v_sol)
+     &          nnod_flt, i_filter, i_scalar, x_flt, nod_fld,           &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_line_filtering_vector
       use copy_nodal_fields
@@ -225,6 +240,8 @@
       real(kind = kreal), intent(inout) :: x_flt(nnod_flt)
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
         if (i_filter .ne. i_scalar) then
@@ -236,14 +253,15 @@
      &      fil_l_smp%coef_l, nod_fld%ntot_phys, i_filter,              &
      &      nod_fld%d_fld, x_flt(1))
         call scalar_send_recv(i_filter, nod_comm, nod_fld,              &
-     &                        v_sol, SR_sig1, SR_r1)
+     &                        v_sol, SR_sig, SR_r)
 !
       end subroutine line_filtered_scalar
 !
 ! ----------------------------------------------------------------------
 !
       subroutine line_filtered_vector(nod_comm, node, fil_l_smp,        &
-     &          nnod_flt, i_filter, i_vect, x_flt, nod_fld, v_sol)
+     &          nnod_flt, i_filter, i_vect, x_flt, nod_fld,             &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_line_filtering_vector
       use copy_nodal_fields
@@ -258,6 +276,8 @@
       real(kind = kreal), intent(inout) :: x_flt(3*nnod_flt)
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
         if (i_filter .ne. i_vect) then
@@ -269,14 +289,15 @@
      &      fil_l_smp%coef_l, nod_fld%ntot_phys, i_filter,              &
      &      nod_fld%d_fld, x_flt(1))
         call vector_send_recv(i_filter, nod_comm, nod_fld,              &
-     &                        v_sol, SR_sig1, SR_r1)
+     &                        v_sol, SR_sig, SR_r)
 !
       end subroutine line_filtered_vector
 !
 ! ----------------------------------------------------------------------
 !
       subroutine line_filtered_sym_tensor(nod_comm, node, fil_l_smp,    &
-     &          nnod_flt, i_filter, i_vect, x_flt, nod_fld, v_sol)
+     &          nnod_flt, i_filter, i_vect, x_flt, nod_fld,             &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_line_filtering_vector
       use copy_nodal_fields
@@ -291,6 +312,8 @@
       real(kind = kreal), intent(inout) :: x_flt(6*nnod_flt)
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
         if (i_filter .ne. i_vect) then
@@ -302,7 +325,7 @@
      &      fil_l_smp%coef_l, nod_fld%ntot_phys, i_filter,              &
      &      nod_fld%d_fld, x_flt(1))
         call sym_tensor_send_recv(i_filter, nod_comm, nod_fld,          &
-     &                            v_sol, SR_sig1, SR_r1)
+     &                            v_sol, SR_sig, SR_r)
 !
       end subroutine line_filtered_sym_tensor
 !

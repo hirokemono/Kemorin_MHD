@@ -159,7 +159,7 @@
      &    iphys_fil%i_magne, iphys_SGS_wk%i_wd_nlg)
       call cal_filtered_scalar_whole(SGS_par%filter_p, nod_comm, node,  &
      &    filtering, i_sgs_grad_fp, iphys_base%i_mag_p,                 &
-     &    wk_filter, nod_fld, v_sol)
+     &    wk_filter, nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !   take rotation and gradient of filtered B (to iphys_SGS_wk%i_simi)
 !
@@ -202,7 +202,7 @@
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !    take difference (to iphys_SGS_wk%i_simi)
 !
@@ -260,7 +260,7 @@
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_nlg)
