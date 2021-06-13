@@ -134,7 +134,8 @@
      &    fem_T%mesh%node, izero, d_mask_org1, vect_ref1, repart_WK1)
       call s_repartiton_by_volume                                       &
      &   (part_p1%repart_p, fem_T, ele_comm1, next_tbl1,                &
-     &    new_fem, repart_nod_tbl1, repart_WK1)
+     &    new_fem, repart_nod_tbl1, repart_WK1,                         &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
       call unlink_repart_masking_data(repart_WK1)
       call unlink_repart_masking_param(part_p1%repart_p)
       deallocate(d_mask_org1, vect_ref1, masking1)

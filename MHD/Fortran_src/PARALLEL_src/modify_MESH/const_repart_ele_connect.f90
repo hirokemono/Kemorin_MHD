@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_const_repart_ele_connect(mesh, ele_comm, part_tbl, &
 !!     &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl, &
-!!     &          new_surf, new_edge, SR_sig, SR_i)
+!!     &          new_surf, new_edge, SR_sig, SR_i, SR_il)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(calypso_comm_table), intent(in) :: part_tbl
@@ -23,6 +23,7 @@
 !!        type(node_ele_double_number) :: element_ids
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module const_repart_ele_connect
@@ -44,6 +45,7 @@
       use t_repart_double_numberings
       use t_solver_SR
       use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -57,7 +59,7 @@
 !
       subroutine s_const_repart_ele_connect(mesh, ele_comm, part_tbl,   &
      &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl,   &
-     &          new_surf, new_edge, SR_sig, SR_i)
+     &          new_surf, new_edge, SR_sig, SR_i, SR_il)
 !
       use ele_trans_tbl_4_repart
       use set_nnod_4_ele_by_type
@@ -75,6 +77,7 @@
       type(edge_data), intent(inout) :: new_edge
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(node_ele_double_number) :: element_ids
 !
@@ -94,7 +97,7 @@
 !
       call const_reparition_ele_connect                                 &
      &   (mesh%ele, ele_tbl, new_ids_on_org, element_ids,               &
-     &    new_numele, new_comm, new_node, new_ele, SR_sig, SR_i)
+     &    new_numele, new_comm, new_node, new_ele, SR_sig, SR_i, SR_il)
       call dealloc_double_numbering(element_ids)
 !
       call set_3D_nnod_4_sfed_by_ele(new_ele%nnod_4_ele,                &
@@ -106,7 +109,8 @@
 !
       subroutine const_reparition_ele_connect                           &
      &         (ele, ele_tbl, new_ids_on_org, element_ids,              &
-     &          new_numele, new_comm, new_node, new_ele, SR_sig, SR_i)
+     &          new_numele, new_comm, new_node, new_ele,                &
+     &          SR_sig, SR_i, SR_il)
 !
       use search_ext_node_repartition
       use const_repart_mesh_data
@@ -123,6 +127,7 @@
       type(element_data), intent(inout) :: new_ele
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       integer(kind = kint), allocatable :: ie_newnod(:,:)
       integer(kind = kint), allocatable :: ie_newdomain(:,:)
@@ -136,7 +141,8 @@
 !$omp end parallel workshare
 !
       call set_repart_element_connect(new_numele, ele, ele_tbl,         &
-     &    new_ids_on_org, ie_newdomain, ie_newnod, new_ele)
+     &    new_ids_on_org, ie_newdomain, ie_newnod, new_ele,             &
+     &    SR_sig, SR_i, SR_il)
 !
       call s_search_ext_node_repartition                                &
      &   (ele, ele_tbl, element_ids, ie_newdomain,                      &

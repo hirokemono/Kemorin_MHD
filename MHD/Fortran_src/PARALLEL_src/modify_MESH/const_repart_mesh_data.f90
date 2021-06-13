@@ -18,11 +18,14 @@
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine set_repart_element_connect                           &
 !!     &         (new_numele, ele, ele_tbl, new_ids_on_org,             &
-!!     &          ie_newdomain, ie_newnod, new_ele)
+!!     &          ie_newdomain, ie_newnod, new_ele, SR_sig, SR_i, SR_il)
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
 !!        type(node_ele_double_number), intent(in) :: new_ids_on_org
 !!        type(element_data), intent(inout) :: new_ele
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module const_repart_mesh_data
@@ -37,6 +40,7 @@
       use t_para_double_numbering
       use t_repart_double_numberings
       use t_solver_SR
+      use t_solver_SR_int
       use t_solver_SR_int8
 !
       implicit none
@@ -100,9 +104,8 @@
 !
       subroutine set_repart_element_connect                             &
      &         (new_numele, ele, ele_tbl, new_ids_on_org,               &
-     &          ie_newdomain, ie_newnod, new_ele)
+     &          ie_newdomain, ie_newnod, new_ele, SR_sig, SR_i, SR_il)
 !
-      use m_solver_SR
       use calypso_SR_type
       use select_copy_from_recv
 !
@@ -116,6 +119,9 @@
      &            :: ie_newnod(ele%numele,ele%nnod_4_ele)
       integer(kind = kint), intent(inout)                               &
      &            :: ie_newdomain(ele%numele,ele%nnod_4_ele)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       integer(kind = kint), allocatable :: i4_recv(:)
       integer(kind = kint_gl), allocatable :: i8_recv(:)
@@ -153,7 +159,7 @@
 !
       call calypso_SR_type_int8(iflag_import_item, ele_tbl,             &
      &    ele%numele, ele_tbl%ntot_import, ele%iele_global(1), i8_recv, &
-     &    SR_sig1, SR_il1)
+     &    SR_sig, SR_il)
 !$omp parallel workshare
       new_ele%iele_global(1:new_ele%numele) = i8_recv(1:new_ele%numele)
 !$omp end parallel workshare
@@ -161,7 +167,7 @@
       do k1 = 1, ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import, ie_newnod(1,k1), i4_recv,  &
-     &      SR_sig1, SR_i1)
+     &      SR_sig, SR_i)
 !$omp parallel workshare
         new_ele%ie(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
 !$omp end parallel workshare

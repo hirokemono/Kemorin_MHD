@@ -60,6 +60,8 @@
 !
       integer(kind = kint), parameter, private :: max_extend_loop = 10
 !
+      private :: check_new_node_and_comm
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -329,7 +331,8 @@
       call append_communication_tbl                                     &
      &   (nod_comm, add_nod_comm, new_nod_comm)
 !
-      call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
+      call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2,     &
+     &                             SR_sig, SR_i)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
 !
 !
@@ -398,15 +401,18 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine check_new_node_and_comm(new_comm, new_node, dbl_id2)
+      subroutine check_new_node_and_comm(new_comm, new_node, dbl_id2,   &
+     &                                   SR_sig, SR_i)
 !
-      use m_solver_SR
       use calypso_mpi_int
       use solver_SR_type
 !
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
       type(node_ele_double_number), intent(in) :: dbl_id2
+!
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint), allocatable :: inod_lc_check(:)
       integer(kind = kint), allocatable :: irank_lc_check(:)
@@ -428,9 +434,9 @@
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, SR_sig1, SR_i1, inod_lc_check)
+     &   (new_node%numnod, new_comm, SR_sig, SR_i, inod_lc_check)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, SR_sig1, SR_i1, irank_lc_check)
+     &   (new_node%numnod, new_comm, SR_sig, SR_i, irank_lc_check)
 !
       icou = 0
       do inod = new_node%internal_node+1, new_node%numnod

@@ -124,7 +124,8 @@
         if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
         call s_repartiton_by_volume                                     &
      &     (part_param, geofem, ele_comm_T, next_tbl,                   &
-     &      new_fem, repart_nod_tbl, repart_WK)
+     &      new_fem, repart_nod_tbl, repart_WK,                         &
+     &      SR_sig, SR_r, SR_i, SR_il)
         call dealloc_comm_table(ele_comm_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if

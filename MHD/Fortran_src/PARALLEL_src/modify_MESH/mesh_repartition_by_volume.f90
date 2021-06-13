@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine s_mesh_repartition_by_volume                         &
 !!     &         (org_fem, ele_comm, neib_nod, part_param,              &
-!!     &          new_mesh, new_groups, repart_nod_tbl, repart_WK)
+!!     &          new_mesh, new_groups, repart_nod_tbl, repart_WK,      &
+!!     &          SR_sig, SR_r, SR_i, SR_il)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: org_fem
 !!        type(communication_table), intent(in) :: ele_comm
@@ -18,6 +19,10 @@
 !!        type(mesh_groups), intent(inout) :: new_groups
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !!        type(volume_partioning_work), intent(inout) :: repart_WK
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module mesh_repartition_by_volume
@@ -32,7 +37,9 @@
       use t_comm_table
       use t_calypso_comm_table
       use t_next_node_ele_4_node
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -44,7 +51,8 @@
 !
       subroutine s_mesh_repartition_by_volume                           &
      &         (org_fem, ele_comm, neib_nod, part_param,                &
-     &          new_mesh, new_groups, repart_nod_tbl, repart_WK)
+     &          new_mesh, new_groups, repart_nod_tbl, repart_WK,        &
+     &          SR_sig, SR_r, SR_i, SR_il)
 !
       use t_para_double_numbering
       use t_control_param_vol_grping
@@ -65,6 +73,11 @@
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
+!
       type(group_data) :: part_grp
       type(calypso_comm_table) :: ext_tbl
       type(calypso_comm_table) :: repart_ele_tbl
@@ -73,14 +86,14 @@
 !
 !       Re-partitioning
       call grouping_by_volume(org_fem%mesh, part_param, repart_WK,      &
-     &                        part_grp, SR_sig1, SR_r1)
+     &                        part_grp, SR_sig, SR_r)
 !
       call alloc_double_numbering                                       &
      &   (org_fem%mesh%node%numnod, new_ids_on_org)
       call s_const_repart_nod_and_comm                                  &
      &   (org_fem%mesh, neib_nod, part_param, part_grp,                 &
      &    new_ids_on_org, new_mesh%nod_comm, new_mesh%node,             &
-     &    repart_nod_tbl, ext_tbl, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    repart_nod_tbl, ext_tbl, SR_sig, SR_r, SR_i, SR_il)
       call alloc_sph_node_geometry(new_mesh%node)
 !
       call dealloc_group(part_grp)
@@ -90,12 +103,12 @@
      &   (org_fem%mesh, ele_comm, repart_nod_tbl,                       &
      &    new_ids_on_org, new_mesh%nod_comm, new_mesh%node,             &
      &    new_mesh%ele, repart_ele_tbl, new_mesh%surf, new_mesh%edge,   &
-     &    SR_sig1, SR_i1)
+     &    SR_sig, SR_i, SR_il)
       call dealloc_double_numbering(new_ids_on_org)
 !
       call s_redistribute_groups                                        &
      &   (org_fem%mesh, org_fem%group, ele_comm, new_mesh,              &
-     &    repart_nod_tbl, repart_ele_tbl, new_groups, SR_sig1, SR_i1)
+     &    repart_nod_tbl, repart_ele_tbl, new_groups, SR_sig, SR_i)
 !
       end subroutine s_mesh_repartition_by_volume
 !

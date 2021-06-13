@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine s_repartiton_by_volume                               &
 !!     &         (part_param, geofem, ele_comm, next_tbl,               &
-!!     &          new_fem, repart_nod_tbl, repart_WK)
+!!     &          new_fem, repart_nod_tbl, repart_WK,                   &
+!!     &          SR_sig, SR_r, SR_i, SR_il)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
@@ -17,6 +18,10 @@
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !!        type(volume_partioning_work), intent(inout) :: repart_WK
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine load_repartitoned_file                               &
 !!     &         (part_param, geofem, new_fem, repart_nod_tbl)
 !!        type(volume_partioning_param), intent(in) ::  part_param
@@ -39,6 +44,9 @@
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_ctl_param_sleeve_extend
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
 ! ----------------------------------------------------------------------
 !
@@ -48,12 +56,12 @@
 !
       subroutine s_repartiton_by_volume                                 &
      &         (part_param, geofem, ele_comm, next_tbl,                 &
-     &          new_fem, repart_nod_tbl, repart_WK)
+     &          new_fem, repart_nod_tbl, repart_WK,                     &
+     &          SR_sig, SR_r, SR_i, SR_il)
 !
       use t_next_node_ele_4_node
       use t_interpolate_table
 !
-      use m_solver_SR
       use m_file_format_switch
       use m_elapsed_labels_4_REPART
       use m_work_time
@@ -78,6 +86,11 @@
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
+!
       type(interpolate_table) :: itp_nod_tbl_IO
       type(communication_table) :: new_ele_comm
 !
@@ -86,7 +99,8 @@
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
       call s_mesh_repartition_by_volume                                 &
      &   (geofem, ele_comm, next_tbl%neib_nod, part_param,              &
-     &    new_fem%mesh, new_fem%group, repart_nod_tbl, repart_WK)
+     &    new_fem%mesh, new_fem%group, repart_nod_tbl, repart_WK,       &
+     &      SR_sig, SR_r, SR_i, SR_il)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
 ! Increase sleeve size
@@ -96,12 +110,12 @@
 !
         call const_ele_comm_table(new_fem%mesh%node,                    &
      &      new_fem%mesh%nod_comm, new_fem%mesh%ele, new_ele_comm,      &
-     &      SR_sig1, SR_r1, SR_i1, SR_il1)
+     &      SR_sig, SR_r, SR_i, SR_il)
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
         call sleeve_extension_loop(part_param%sleeve_exp_p,             &
      &      new_fem%mesh, new_fem%group, new_ele_comm,                  &
-     &      repart_WK%sleeve_exp_WK, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &      repart_WK%sleeve_exp_WK, SR_sig, SR_r, SR_i, SR_il)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
 !
         call dealloc_comm_table(new_ele_comm)
