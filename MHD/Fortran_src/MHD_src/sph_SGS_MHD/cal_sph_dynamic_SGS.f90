@@ -10,7 +10,7 @@
 !!      subroutine SGS_by_pseudo_sph                                    &
 !!     &         (i_step, SGS_par, sph, comms_sph, r_2nd, MHD_prop,     &
 !!     &          sph_MHD_bc, trans_p, WK, WK_LES, dynamic_SPH,         &
-!!     &          ipol, ipol_LES, rj_fld)
+!!     &          ipol, ipol_LES, rj_fld, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -24,6 +24,8 @@
 !!        type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
 !
@@ -54,6 +56,7 @@
       use t_sph_filtering
       use t_phys_address
       use t_SGS_model_addresses
+      use t_solver_SR
 !
       implicit none
 !
@@ -69,7 +72,7 @@
       subroutine SGS_by_pseudo_sph                                      &
      &         (i_step, SGS_par, sph, comms_sph, r_2nd, MHD_prop,       &
      &          sph_MHD_bc, trans_p, WK, WK_LES, dynamic_SPH,           &
-     &          ipol, ipol_LES, rj_fld)
+     &          ipol, ipol_LES, rj_fld, SR_sig, SR_r)
 !
       use sph_transforms_4_SGS
       use cal_sph_rotation_of_SGS
@@ -95,6 +98,8 @@
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: istep_dynamic
 !
@@ -105,8 +110,8 @@
       if(SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity) then
         if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+2)
         call cal_scale_similarity_sph_SGS                               &
-     &     (sph, comms_sph, MHD_prop, trans_p, WK%WK_leg,               &
-     &      dynamic_SPH, ipol, ipol_LES, rj_fld, WK_LES%trns_SGS)
+     &     (sph, comms_sph, MHD_prop, trans_p, WK%WK_leg, dynamic_SPH,  &
+     &      ipol, ipol_LES, rj_fld, WK_LES%trns_SGS, SR_sig, SR_r)
         if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+2)
 !
         if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON         &
@@ -118,7 +123,7 @@
           call sph_dynamic_similarity                                   &
      &       (SGS_par%model_p, sph, comms_sph, MHD_prop, trans_p,       &
      &        WK_LES%trns_SGS, WK_LES%trns_DYNS, WK%WK_leg,             &
-     &        dynamic_SPH, ipol, ipol_LES, rj_fld)
+     &        dynamic_SPH, ipol, ipol_LES, rj_fld, SR_sig, SR_r)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
       else if(SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad) then
@@ -126,8 +131,8 @@
      &                'cal_nonlinear_gradient_sph_SGS'
         call cal_nonlinear_gradient_sph_SGS                             &
      &     (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,       &
-     &      dynamic_SPH, ipol, WK%trns_MHD, WK%WK_leg,                  &
-     &      rj_fld, WK_LES%trns_ngTMP, WK_LES%trns_SGS)
+     &      dynamic_SPH, ipol, WK%trns_MHD, WK%WK_leg, rj_fld,          &
+     &      WK_LES%trns_ngTMP, WK_LES%trns_SGS, SR_sig, SR_r)
 !
         if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON         &
      &     .and. istep_dynamic .eq. 0) then
@@ -139,7 +144,7 @@
      &        sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,     &
      &        WK_LES%trns_SGS, WK_LES%trns_SIMI, WK_LES%trns_DYNG,      &
      &        WK_LES%trns_Csim, WK%WK_leg, dynamic_SPH, ipol, ipol_LES, &
-     &       rj_fld)
+     &        rj_fld, SR_sig, SR_r)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
       end if
@@ -180,7 +185,8 @@
      &                     'sph_forward_trans_SGS_MHD Csim'
         call sph_forward_trans_SGS_MHD                                  &
      &     (sph, comms_sph, trans_p, WK_LES%trns_Csim%forward,          &
-     &      WK%WK_leg, WK_LES%trns_Csim%WK_FFTs_SGS, rj_fld)
+     &      WK%WK_leg, WK_LES%trns_Csim%WK_FFTs_SGS,                    &
+     &      rj_fld, SR_sig, SR_r)
         if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
       end if
 !
@@ -201,7 +207,7 @@
      &            'sph_forward_trans_SGS_MHD SGS'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
      &    WK_LES%trns_SGS%forward, WK%WK_leg,                           &
-     &    WK_LES%trns_SGS%WK_FFTs_SGS, rj_fld)
+     &    WK_LES%trns_SGS%WK_FFTs_SGS, rj_fld, SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'
@@ -215,7 +221,8 @@
 !
       subroutine sph_dynamic_similarity(SGS_param, sph, comms_sph,      &
      &          MHD_prop, trans_p, trns_SGS, trns_DYNS,                 &
-     &          WK_leg, dynamic_SPH, ipol, ipol_LES, rj_fld)
+     &          WK_leg, dynamic_SPH, ipol, ipol_LES,                    &
+     &          rj_fld, SR_sig, SR_r)
 !
       use sph_transforms_4_SGS
       use cal_filtered_sph_fields
@@ -235,13 +242,16 @@
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD SGS'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_SGS%forward, WK_leg, trns_DYNS%WK_FFTs_SGS, rj_fld)
+     &    trns_SGS%forward, WK_leg, trns_DYNS%WK_FFTs_SGS,              &
+     &    rj_fld, SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       call cal_sph_wide_filtering_fields                                &
@@ -257,7 +267,8 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD dyns'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_DYNS%backward, WK_leg, trns_DYNS%WK_FFTs_SGS)
+     &    rj_fld, trns_DYNS%backward, WK_leg, trns_DYNS%WK_FFTs_SGS,    &
+     &    SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
@@ -279,7 +290,8 @@
       subroutine sph_dynamic_nl_gradient                                &
      &         (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, &
      &          trans_p, trns_SGS, trns_SIMI, trns_DYNG, trns_Csim,     &
-     &          WK_leg, dynamic_SPH, ipol, ipol_LES, rj_fld)
+     &          WK_leg, dynamic_SPH, ipol, ipol_LES,                    &
+     &          rj_fld, SR_sig, SR_r)
 !
       use scale_similarity_sph_SGS
       use sph_transforms_4_SGS
@@ -304,6 +316,8 @@
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !       Make scale similarity model to grid data
@@ -311,8 +325,8 @@
      &        'cal_scale_similarity_sph_SGS for dynamic model'
       if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+2)
       call cal_scale_similarity_sph_SGS                                 &
-     &   (sph, comms_sph, MHD_prop, trans_p, WK_leg,                    &
-     &    dynamic_SPH, ipol, ipol_LES, rj_fld, trns_SIMI)
+     &   (sph, comms_sph, MHD_prop, trans_p, WK_leg, dynamic_SPH,       &
+     &    ipol, ipol_LES, rj_fld, trns_SIMI, SR_sig, SR_r)
       if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+2)
 !
 !       Bring SGS terms by nonlinear model to spectr data
@@ -320,7 +334,8 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &            'sph_forward_trans_SGS_MHD SGS for dynamic nl. grad'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_SGS%forward, WK_leg, trns_SGS%WK_FFTs_SGS, rj_fld)
+     &    trns_SGS%forward, WK_leg, trns_SGS%WK_FFTs_SGS,               &
+     &    rj_fld, SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
@@ -332,7 +347,7 @@
       call cal_wide_nonlinear_grad_sph_SGS                              &
      &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,         &
      &    dynamic_SPH, ipol_LES, trns_SIMI, WK_leg,                     &
-     &    rj_fld, trns_DYNG, trns_Csim)
+     &    rj_fld, trns_DYNG, trns_Csim, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &

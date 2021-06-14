@@ -28,11 +28,20 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!
 !!      subroutine set_initial_Csim_control                             &
-!!     &         (MHD_files, MHD_step, SGS_par, dynamic_SPH)
+!!     &         (MHD_files, MHD_step, sph, comms_sph, trans_p, SGS_par,&
+!!     &          WK, WK_LES, dynamic_SPH, rj_fld, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(MHD_step_param), intent(in) :: MHD_step
+!!        type(sph_grids), intent(in) :: sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(works_4_sph_trans_MHD), intent(inout) :: WK
+!!        type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !!
 !!@n @param i_step  time step
@@ -125,8 +134,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_initial_Csim_control                               &
-     &         (MHD_files, MHD_step, sph, comms_sph, trans_p,           &
-     &          SGS_par, WK, WK_LES, dynamic_SPH, rj_fld)
+     &         (MHD_files, MHD_step, sph, comms_sph, trans_p, SGS_par,  &
+     &          WK, WK_LES, dynamic_SPH, rj_fld, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -138,6 +147,7 @@
       use t_sph_trans_arrays_MHD
       use t_sph_trans_arrays_SGS_MHD
       use t_work_4_sph_trans
+      use t_solver_SR
 !
       use sph_mhd_rst_IO_control
       use SPH_SGS_ini_model_coefs_IO
@@ -155,6 +165,8 @@
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !
@@ -172,7 +184,8 @@
      &                   'sph_forward_trans_SGS_MHD Csim for initial'
         call sph_forward_trans_SGS_MHD                                  &
      &     (sph, comms_sph, trans_p, WK_LES%trns_Csim%forward,          &
-     &      WK%WK_leg, WK_LES%trns_Csim%WK_FFTs_SGS, rj_fld)
+     &      WK%WK_leg, WK_LES%trns_Csim%WK_FFTs_SGS,                    &
+     &      rj_fld, SR_sig, SR_r)
       else
         SGS_par%model_p%iflag_rst_sgs_coef_code = 0
         call write_SPH_Csim_file(MHD_step%init_d%i_time_step,           &

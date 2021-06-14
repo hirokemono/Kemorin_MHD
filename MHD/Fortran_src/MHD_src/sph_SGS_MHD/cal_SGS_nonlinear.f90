@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine nonlinear_SGS_first(i_step, r_2nd, SPH_model,        &
-!!     &          trans_p, WK, SPH_SGS, SPH_MHD)
+!!     &          trans_p, WK, SPH_SGS, SPH_MHD, SR_sig, SR_r)
 !!      subroutine nonlinear_with_SGS(i_step, r_2nd, SPH_model,         &
-!!     &          trans_p, WK, SPH_SGS, SPH_MHD)
+!!     &          trans_p, WK, SPH_SGS, SPH_MHD, SR_sig, SR_r)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
@@ -18,6 +18,8 @@
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
 !
@@ -46,7 +48,7 @@
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
       use t_sph_filtering
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -59,7 +61,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear_SGS_first(i_step, r_2nd, SPH_model,          &
-     &          trans_p, WK, SPH_SGS, SPH_MHD)
+     &          trans_p, WK, SPH_SGS, SPH_MHD, SR_sig, SR_r)
 !
       integer(kind = kint), intent(in) :: i_step
       type(fdm_matrices), intent(in) :: r_2nd
@@ -69,13 +71,15 @@
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       real(kind = kreal), save :: tmp_stab_wt
 !
 !
       call init_stab_weight(tmp_stab_wt, SPH_SGS%SGS_par%model_p)
-      call nonlinear_with_SGS                                           &
-     &   (i_step, r_2nd, SPH_model, trans_p, WK, SPH_SGS, SPH_MHD)
+      call nonlinear_with_SGS(i_step, r_2nd, SPH_model, trans_p,        &
+     &                        WK, SPH_SGS, SPH_MHD, SR_sig, SR_r)
       call back_stab_weight(tmp_stab_wt, SPH_SGS%SGS_par%model_p)
 !
       end subroutine nonlinear_SGS_first
@@ -83,7 +87,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear_with_SGS(i_step, r_2nd, SPH_model,           &
-     &          trans_p, WK, SPH_SGS, SPH_MHD)
+     &          trans_p, WK, SPH_SGS, SPH_MHD, SR_sig, SR_r)
 !
       use cal_inner_core_rotation
 !
@@ -105,6 +109,8 @@
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !   ----   lead rotation of buoyancies
       if(SPH_model%MHD_prop%fl_prop%iflag_scheme                        &
@@ -128,7 +134,7 @@
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph, r_2nd,       &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,            &
      &    WK%gt_cor, WK%trns_MHD, WK%WK_leg, WK%WK_FFTs_MHD,            &
-     &    WK%cor_rlm, SPH_MHD%ipol, SPH_MHD%fld, SR_sig1, SR_r1)
+     &    WK%cor_rlm, SPH_MHD%ipol, SPH_MHD%fld, SR_sig, SR_r)
 !
 !   ----  lead nonlinear terms by filtered field
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
@@ -136,7 +142,7 @@
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, SPH_model%MHD_prop,        &
      &    SPH_model%sph_MHD_bc, trans_p, WK%WK_leg,                     &
      &    SPH_SGS%dynamic, SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld, &
-     &    SPH_SGS%trns_WK_LES%trns_fil_MHD)
+     &    SPH_SGS%trns_WK_LES%trns_fil_MHD, SR_sig, SR_r)
 !
 !   ----  Lead SGS terms
       if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
@@ -144,7 +150,7 @@
      &   (i_step, SPH_SGS%SGS_par, SPH_MHD%sph, SPH_MHD%comms,          &
      &    r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,     &
      &    WK, SPH_SGS%trns_WK_LES, SPH_SGS%dynamic, SPH_MHD%ipol,       &
-     &    SPH_SGS%ipol_LES, SPH_MHD%fld)
+     &    SPH_SGS%ipol_LES, SPH_MHD%fld, SR_sig, SR_r)
 !
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD                                       &

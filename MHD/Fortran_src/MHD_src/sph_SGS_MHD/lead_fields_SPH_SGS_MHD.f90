@@ -7,9 +7,9 @@
 !>@brief  Evaluate pressure and energy fluxes for snapshots
 !!
 !!@verbatim
-!!      subroutine lead_fields_4_SPH_SGS_MHD(SGS_par, monitor,          &
-!!     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol_LES,       &
-!!     &          sph_MHD_mat, WK, WK_LES, dynamic_SPH, SPH_MHD)
+!!      subroutine lead_fields_4_SPH_SGS_MHD(SGS_par, monitor, r_2nd,   &
+!!     &          MHD_prop, sph_MHD_bc, trans_p, ipol_LES, sph_MHD_mat, &
+!!     &          WK, WK_LES, dynamic_SPH, SPH_MHD, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_mhd_monitor_data), intent(in) :: monitor
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -22,6 +22,8 @@
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module lead_fields_SPH_SGS_MHD
@@ -45,7 +47,7 @@
       use t_sph_filtering
       use t_phys_address
       use t_SGS_model_addresses
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -59,9 +61,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_fields_4_SPH_SGS_MHD(SGS_par, monitor,            &
-     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol_LES,         &
-     &          sph_MHD_mat, WK, WK_LES, dynamic_SPH, SPH_MHD)
+      subroutine lead_fields_4_SPH_SGS_MHD(SGS_par, monitor, r_2nd,     &
+     &          MHD_prop, sph_MHD_bc, trans_p, ipol_LES, sph_MHD_mat,   &
+     &          WK, WK_LES, dynamic_SPH, SPH_MHD, SR_sig, SR_r)
 !
       use t_sph_mhd_monitor_data_IO
       use sph_transforms_4_MHD
@@ -82,6 +84,8 @@
       type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call cal_self_buoyancy_sph_SGS_MHD                                &
@@ -98,24 +102,24 @@
 !
       call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
      &    MHD_prop, trans_p, WK%trns_MHD, WK%trns_snap,                 &
-     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld, SR_sig1, SR_r1)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld, SR_sig, SR_r)
       call lead_filter_flds_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,    &
      &    MHD_prop, trans_p, WK_LES%trns_fil_MHD, WK_LES%trns_fil_snap, &
-     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld, SR_sig, SR_r)
 !
       call gradients_of_vectors_sph                                     &
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
      &    SPH_MHD%ipol, WK%trns_snap, WK%trns_difv,                     &
-     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld, SR_sig1, SR_r1)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld, SR_sig, SR_r)
       call grad_of_filter_vectors_sph                                   &
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
      &    ipol_LES, WK_LES%trns_fil_snap, WK_LES%trns_fil_difv,         &
-     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld, SR_sig, SR_r)
 !
       call lead_SGS_terms_4_SPH                                         &
      &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, trans_p,         &
      &    WK_LES%trns_Csim, WK_LES%trns_SGS, WK_LES%trns_SGS_snap,      &
-     &    dynamic_SPH, SPH_MHD%fld)
+     &    dynamic_SPH, SPH_MHD%fld, SR_sig, SR_r)
 !
       call enegy_fluxes_SPH_SGS_MHD(monitor%ltr_crust,                  &
      &    SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
@@ -123,7 +127,8 @@
      &    SPH_MHD%ipol, ipol_LES, WK%trns_MHD, WK_LES%trns_SGS,         &
      &    WK_LES%trns_fil_MHD, WK_LES%trns_fil_snap,                    &
      &    WK%trns_snap, WK%trns_difv, WK%trns_eflux,                    &
-     &    WK_LES%trns_SGS_snap, WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
+     &    WK_LES%trns_SGS_snap, WK%WK_leg, WK%WK_FFTs,                  &
+     &    SPH_MHD%fld, SR_sig, SR_r)
 !
       end subroutine lead_fields_4_SPH_SGS_MHD
 !
@@ -210,7 +215,8 @@
 !
       subroutine lead_filter_flds_by_sph_trans                          &
      &         (sph, comms_sph, MHD_prop, trans_p,                      &
-     &          trns_fil_MHD, trns_fil_snap, WK_leg, WK_FFTs, rj_fld)
+     &          trns_fil_MHD, trns_fil_snap, WK_leg, WK_FFTs,           &
+     &          rj_fld, SR_sig, SR_r)
 !
       use sph_transforms_snapshot
       use cal_nonlinear_sph_MHD
@@ -225,11 +231,13 @@
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p, rj_fld, &
-     &    trns_fil_snap%backward, WK_leg, WK_FFTs, SR_sig1, SR_r1)
+     &    trns_fil_snap%backward, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
@@ -250,7 +258,7 @@
       subroutine grad_of_filter_vectors_sph                             &
      &         (sph, comms_sph, r_2nd, sph_MHD_bc, trans_p,             &
      &          ipol_LES, trns_fil_snap, trns_fil_difv,                 &
-     &          WK_leg, WK_FFTs, rj_fld)
+     &          WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
 !
       use sph_transforms_snapshot
       use copy_rtp_vectors_4_grad
@@ -268,6 +276,8 @@
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_vectors_rtp_4_grad'
@@ -280,7 +290,7 @@
      &      'sph_forward_trans_snapshot_MHD for diff of vector'
       call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
      &    trns_fil_difv%forward, WK_leg, WK_FFTs, rj_fld,               &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
       if (iflag_debug.gt.0) write(*,*) 'overwrt_grad_of_vectors_sph'
       call overwrt_grad_of_vectors_sph(sph, r_2nd, sph_MHD_bc,          &
@@ -289,7 +299,7 @@
       if (iflag_debug.gt.0) write(*,*)                                  &
      &      'sph_back_trans_snapshot_MHD for diff of vector'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p, rj_fld, &
-     &    trns_fil_difv%backward, WK_leg, WK_FFTs, SR_sig1, SR_r1)
+     &    trns_fil_difv%backward, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
       end subroutine grad_of_filter_vectors_sph
 !
@@ -299,7 +309,8 @@
      &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
      &          trans_p, ipol, ipol_LES, trns_MHD, trns_SGS,            &
      &          trns_fil_MHD, trns_fil_snap, trns_snap, trns_difv,      &
-     &          trns_eflux, trns_SGS_snap, WK_leg, WK_FFTs, rj_fld)
+     &          trns_eflux, trns_SGS_snap, WK_leg, WK_FFTs,             &
+     &          rj_fld, SR_sig, SR_r)
 !
       use sph_transforms_snapshot
       use lead_fields_4_sph_mhd
@@ -330,12 +341,14 @@
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call cal_sph_enegy_fluxes                                         &
      &   (ltr_crust, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,       &
      &    trans_p, ipol, trns_MHD, trns_snap, trns_difv, trns_eflux,    &
-     &    WK_leg, WK_FFTs, rj_fld, SR_sig1, SR_r1)
+     &    WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1) write(*,*) 's_cal_force_with_SGS_rj'
       call s_cal_force_with_SGS_rj                                      &
@@ -344,7 +357,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'backward transform for SGS snapshot'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p, rj_fld, &
-     &    trns_SGS_snap%backward, WK_leg, WK_FFTs, SR_sig1, SR_r1)
+     &    trns_SGS_snap%backward, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filtered_energy_flux_rtp'
       call cal_filtered_energy_flux_rtp(sph%sph_rtp, MHD_prop%fl_prop,  &
@@ -370,12 +383,12 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'forward transform for snapshot'
       call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
-     &    trns_eflux%forward, WK_leg, WK_FFTs, rj_fld, SR_sig1, SR_r1)
+     &    trns_eflux%forward, WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'forward transform for SGS snapshot'
       call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
      &    trns_SGS_snap%forward, WK_leg, WK_FFTs,                       &
-     &    rj_fld, SR_sig1, SR_r1)
+     &    rj_fld, SR_sig, SR_r)
 !
       end subroutine enegy_fluxes_SPH_SGS_MHD
 !
@@ -384,7 +397,7 @@
       subroutine lead_SGS_terms_4_SPH                                   &
      &         (SGS_param, sph, comms_sph, trans_p,                     &
      &          trns_Csim, trns_SGS, trns_SGS_snap,                     &
-     &          dynamic_SPH, rj_fld)
+     &          dynamic_SPH, rj_fld, SR_sig, SR_r)
 !
       use sph_transforms_4_SGS
       use copy_Csim_4_sph_MHD
@@ -399,12 +412,14 @@
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS_snap
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_none) return
       if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
-      call sph_pole_trans_SGS_MHD                                       &
-     &   (sph, comms_sph, trans_p, rj_fld, trns_SGS%backward)
+      call sph_pole_trans_SGS_MHD(sph, comms_sph, trans_p, rj_fld,      &
+     &                            trns_SGS%backward, SR_sig, SR_r)
 !
       if(SGS_param%iflag_dynamic .gt. id_SGS_none) then
         if(iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'

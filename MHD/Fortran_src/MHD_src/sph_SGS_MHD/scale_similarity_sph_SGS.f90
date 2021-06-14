@@ -7,9 +7,9 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine cal_scale_similarity_sph_SGS                         &
-!!     &         (sph, comms_sph, MHD_prop, trans_p, WK_leg,            &
-!!     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_SIMI)
+!!      subroutine cal_scale_similarity_sph_SGS(sph, comms_sph,         &
+!!     &          MHD_prop, trans_p, WK_leg, dynamic_SPH,               &
+!!     &          ipol, ipol_LES, rj_fld, trns_SIMI, SR_sig, SR_r)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -20,6 +20,8 @@
 !!        type(legendre_trns_works), intent(inout) :: WK_leg
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
 !
@@ -48,6 +50,7 @@
       use t_phys_data
       use t_phys_address
       use t_SGS_model_addresses
+      use t_solver_SR
 !
       implicit none
 !
@@ -57,9 +60,9 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine cal_scale_similarity_sph_SGS                           &
-     &         (sph, comms_sph, MHD_prop, trans_p, WK_leg,              &
-     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_SIMI)
+      subroutine cal_scale_similarity_sph_SGS(sph, comms_sph,           &
+     &          MHD_prop, trans_p, WK_leg, dynamic_SPH,                 &
+     &          ipol, ipol_LES, rj_fld, trns_SIMI, SR_sig, SR_r)
 !
       use m_elapsed_labels_4_MHD
       use sph_transforms_4_SGS
@@ -77,6 +80,8 @@
       type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !   ----  Lead filtered forces for SGS terms
@@ -96,7 +101,8 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_SIMI%backward, WK_leg, trns_SIMI%WK_FFTs_SGS)
+     &    rj_fld, trns_SIMI%backward, WK_leg, trns_SIMI%WK_FFTs_SGS,    &
+     &    SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)

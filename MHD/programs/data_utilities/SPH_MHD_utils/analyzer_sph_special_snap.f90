@@ -89,7 +89,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
         call FEM_analyze_sph_SGS_MHD                                    &
-     &     (MHD_files1, MHD_step1, MHD_IO1, FEM_d1)
+     &     (MHD_files1, MHD_step1, MHD_IO1, FEM_d1, SR_sig1, SR_r1)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -111,7 +111,7 @@
             call SGS_MHD_zmean_sections(MHD_step1%viz_step,             &
      &          MHD_step1%time_d, SPH_MHD1%sph, FEM_d1%geofem,          &
      &          SPH_WK1%trns_WK, SPH_SGS1, FEM_d1%field,                &
-     &          zmeans1, FEM_d1%v_sol)
+     &          zmeans1, FEM_d1%v_sol, SR_sig1, SR_r1)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
@@ -200,7 +200,8 @@
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+4)
       call nonlinear_with_SGS(i_step, SPH_WK%r_2nd,SPH_model,           &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS, SPH_MHD)
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS, SPH_MHD,             &
+     &    SR_sig1, SR_r1)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -215,7 +216,8 @@
      &     (SPH_SGS%SGS_par, SPH_WK%monitor, SPH_WK%r_2nd,              &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
      &      SPH_SGS%ipol_LES, SPH_WK%MHD_mats, SPH_WK%trns_WK,          &
-     &      SPH_SGS%trns_WK_LES, SPH_SGS%dynamic, SPH_MHD)
+     &      SPH_SGS%trns_WK_LES, SPH_SGS%dynamic, SPH_MHD,              &
+     &      SR_sig1, SR_r1)
       end if
 !
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
