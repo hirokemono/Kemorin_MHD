@@ -219,7 +219,8 @@
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size(fem_f%mesh, fem_f%group,                  &
      &    fil_elist1, gfil_p1, tbl_crs_f, mat_tbl_f, rhs_mat_f,         &
-     &    fem_int_f, FEM_elen_f, ref_m1, filter_dxi1, dxidxs1, v_sol)
+     &    fem_int_f, FEM_elen_f, ref_m1, filter_dxi1, dxidxs1,          &
+     &    v_sol, SR_sig1, SR_r1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
@@ -246,9 +247,10 @@
         call sel_write_filter_geometry_file(my_rank, filter_IO)
 !
         call select_const_filter                                        &
-     &      (file_name, newfil_p1, fem_f%mesh, fem_int_f, tbl_crs_f,    &
-     &       rhs_mat_f, FEM_elen_f, fil_elist1, gfil_p1, ref_m1,        &
-     &       dxidxs1, FEM_momenet1, fil_gen1, f_matrices1, v_sol)
+     &     (file_name, newfil_p1, fem_f%mesh, fem_int_f, tbl_crs_f,     &
+     &      rhs_mat_f, FEM_elen_f, fil_elist1, gfil_p1, ref_m1,         &
+     &      dxidxs1, FEM_momenet1, fil_gen1, f_matrices1,               &
+     &      v_sol, SR_sig1, SR_r1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !

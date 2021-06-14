@@ -1,11 +1,16 @@
-!cal_filter_moms_by_element.f90
-!     module cal_filter_moms_by_element
+!>@file   cal_filter_moms_by_element.f90
+!!@brief  module cal_filter_moms_by_element
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2013
 !
-!     Written by H. Matsui on Apr., 2008
-!
+!>@brief  second filter momoments for each element
+!!
+!!@verbatim
 !!      subroutine cal_filter_moments_on_node_1st(nod_comm, node, ele,  &
 !!     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, fil_elist,   &
-!!     &          FEM_elen, gfil_p, mass, fem_wk, f_l, ref_m, v_sol)
+!!     &          FEM_elen, gfil_p, mass, fem_wk, f_l, ref_m,           &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data),    intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -22,12 +27,15 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(reference_moments), intent(inout) :: ref_m
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine cal_filter_moments_on_ele                            &
 !!     &         (gfil_p, dxi_ele, FEM_elen, ref_m)
 !!        type(ctl_params_4_gen_filter), intent(in) :: gfil_p
 !!        type(dxdxi_direction_type), intent(in) :: dxi_ele
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !!        type(reference_moments), intent(inout) :: ref_m
+!!@endverbatim
 !
 !
       module cal_filter_moms_by_element
@@ -44,6 +52,7 @@
       use t_element_list_4_filter
       use t_ctl_params_4_gen_filter
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -156,7 +165,8 @@
 !
       subroutine cal_filter_moments_on_node_1st(nod_comm, node, ele,    &
      &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, fil_elist,     &
-     &          FEM_elen, gfil_p, mass, fem_wk, f_l, ref_m, v_sol)
+     &          FEM_elen, gfil_p, mass, fem_wk, f_l, ref_m,             &
+     &          v_sol, SR_sig, SR_r)
 !
       use t_geometry_data
       use t_jacobians
@@ -182,6 +192,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(reference_moments), intent(inout) :: ref_m
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call cal_filter_moments_on_node                                   &
@@ -193,7 +205,8 @@
      &    FEM_elen%elen_nod%moms%f_x2, FEM_elen%elen_nod%moms%f_y2,     &
      &    FEM_elen%elen_nod%moms%f_z2, FEM_elen%elen_nod%moms%f_xy,     &
      &    FEM_elen%elen_nod%moms%f_yz, FEM_elen%elen_nod%moms%f_zx,     &
-     &    gfil_p, mass, fem_wk, f_l, ref_m%seed_moments_nod, v_sol)
+     &    gfil_p, mass, fem_wk, f_l, ref_m%seed_moments_nod,            &
+     &    v_sol, SR_sig, SR_r)
 !
       end subroutine cal_filter_moments_on_node_1st
 !
@@ -272,7 +285,8 @@
      &          ref_moments_1d, seed_moments_ele,                       &
      &          elen_dx2_nod,  elen_dy2_nod,  elen_dz2_nod,             &
      &          elen_dxdy_nod, elen_dydz_nod, elen_dzdx_nod,            &
-     &          gfil_p, mass, fem_wk, f_l, seed_moments_nod, v_sol)
+     &          gfil_p, mass, fem_wk, f_l, seed_moments_nod,            &
+     &          v_sol, SR_sig, SR_r)
 !
       use filter_moments_send_recv
       use int_vol_elesize_on_node
@@ -282,7 +296,6 @@
       use t_jacobians
       use t_comm_table
       use t_crs_matrix
-      use m_solver_SR
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data),    intent(in) :: node
@@ -317,6 +330,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
       real(kind = kreal), intent(inout)                                 &
      &               :: seed_moments_nod(nnod_filter_mom,num_order_3d)
 !
@@ -371,9 +386,9 @@
           call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,     &
      &        rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p,              &
      &        mass, seed_moments_ele(1,n), seed_moments_nod(1,n),       &
-     &        fem_wk, f_l, v_sol)
+     &        fem_wk, f_l, v_sol, SR_sig, SR_r)
           call nod_scalar_send_recv(node%numnod, nod_comm,              &
-     &        seed_moments_nod(1,n), v_sol, SR_sig1, SR_r1)
+     &        seed_moments_nod(1,n), v_sol, SR_sig, SR_r)
         end if
 !
       end do
