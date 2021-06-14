@@ -50,6 +50,7 @@
       use t_vector_for_solver
       use t_LIC_re_partition
       use t_control_param_LIC
+      use m_solver_SR
 !
       use each_volume_rendering
 !
@@ -224,7 +225,8 @@
 !
       if(lic%flag_each_repart) return
       call LIC_initialize_w_shared_mesh(geofem, next_tbl,               &
-     &    lic%repart_p, lic%repart_data, lic%pvr)
+     &    lic%repart_p, lic%repart_data, lic%pvr,                       &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       end subroutine LIC_initialize
 !
@@ -252,11 +254,13 @@
       if(lic%flag_each_repart) then
         call LIC_visualize_w_each_repart                                &
      &     (istep_lic, time, geofem, next_tbl, nod_fld, lic%repart_p,   &
-     &      lic%repart_data, lic%pvr, lic%lic_param, v_sol)
+     &      lic%repart_data, lic%pvr, lic%lic_param,                    &
+     &      v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
       else
         call LIC_visualize_w_shared_mesh                                &
      &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
-     &      lic%repart_data, lic%pvr, lic%lic_param, v_sol)
+     &      lic%repart_data, lic%pvr, lic%lic_param,                    &
+     &      v_sol, SR_sig1, SR_r1, SR_i1)
       end if
 !
       end subroutine LIC_visualize

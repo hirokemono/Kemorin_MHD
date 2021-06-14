@@ -9,14 +9,16 @@
 !!@verbatim
 !!      subroutine set_fixed_view_and_image(i_stereo, num_stereo,       &
 !!     &          mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj)
+!!     &          mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj,        &
+!!     &          SR_sig, SR_r, SR_i)
 !!      subroutine rendering_with_fixed_view                            &
 !!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf,            &
-!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !!      subroutine flush_rendering_4_fixed_view(pvr_proj)
 !!
 !!      subroutine rendering_at_once(istep_pvr, time, i_stereo, i_rot,  &
 !!     &          mesh, group, sf_grp_4_sf, field_pvr, pvr_param,       &
-!!     &          pvr_bound, pvr_proj, pvr_rgb)
+!!     &          pvr_bound, pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !!        integer(kind = kint), intent(in) :: i_stereo, i_rot
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
@@ -28,6 +30,9 @@
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module t_rendering_vr_image
@@ -51,6 +56,8 @@
       use t_pvr_stencil_buffer
       use t_pvr_field_data
       use t_control_params_stereo_pvr
+      use t_solver_SR
+      use t_solver_SR_int
       use generate_vr_image
 !
       implicit  none
@@ -102,7 +109,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fixed_view_and_image(i_stereo, num_stereo,         &
-     &          mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj)
+     &          mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj,          &
+     &          SR_sig, SR_r, SR_i)
 !
       use cal_pvr_projection_mat
       use cal_pvr_modelview_mat
@@ -115,6 +123,9 @@
 !
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(PVR_projection_data), intent(inout) :: pvr_proj
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
       if(num_stereo .gt. 1) then
@@ -136,7 +147,8 @@
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
      &    pvr_bound, pvr_proj%screen, pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil)
+     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,                &
+     &    SR_sig, SR_r, SR_i)
 !
       call allocate_item_pvr_ray_start                                  &
      &   (pvr_proj%start_fix%num_pvr_ray, pvr_proj%start_save)
@@ -149,7 +161,7 @@
 !
       subroutine rendering_with_fixed_view                              &
      &         (istep_pvr, time, mesh, group, sf_grp_4_sf,              &
-     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !
       use write_PVR_image
 !
@@ -163,6 +175,8 @@
 !
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call copy_item_pvr_ray_start                                      &
@@ -172,7 +186,7 @@
       call rendering_image(istep_pvr, time, mesh, group, sf_grp_4_sf,   &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
-     &    pvr_proj%stencil, pvr_rgb)
+     &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r)
 !
       end subroutine rendering_with_fixed_view
 !
@@ -192,7 +206,7 @@
 !
       subroutine rendering_at_once(istep_pvr, time, i_stereo, i_rot,    &
      &          mesh, group, sf_grp_4_sf, field_pvr, pvr_param,         &
-     &          pvr_bound, pvr_proj, pvr_rgb)
+     &          pvr_bound, pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
 !
       use cal_pvr_projection_mat
       use cal_pvr_modelview_mat
@@ -211,6 +225,9 @@
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
       if(pvr_param%movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
@@ -245,13 +262,14 @@
      &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
      &    pvr_bound, pvr_proj%screen, pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil)
+     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,                &
+     &    SR_sig, SR_r, SR_i)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, time, mesh, group, sf_grp_4_sf,   &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
-     &    pvr_proj%stencil, pvr_rgb)
+     &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r)
       call deallocate_pvr_ray_start(pvr_proj%start_fix)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !

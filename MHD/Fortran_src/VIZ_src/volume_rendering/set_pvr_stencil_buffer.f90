@@ -10,12 +10,16 @@
 !!      subroutine s_set_pvr_stencil_buffer                             &
 !!     &         (irank_image_file, irank_end_composit, num_pixel_xy,   &
 !!     &          pvr_start, stencil_wk,  num_pixel_recv,               &
-!!     &          img_output_tbl, img_composit_tbl, img_stack)
+!!     &          img_output_tbl, img_composit_tbl, img_stack,          &
+!!     &          SR_sig, SR_r, SR_i)
 !!        type(pvr_ray_start_type), intent(in) :: pvr_start
 !!        type(stencil_buffer_work), intent(in)  :: stencil_wk
 !!        type(calypso_comm_table), intent(inout) :: img_output_tbl
 !!        type(calypso_comm_table), intent(inout) :: img_composit_tbl
 !!        type(pvr_image_stack_table), intent(inout) :: img_stack
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !!
       module set_pvr_stencil_buffer
@@ -30,6 +34,8 @@
       use t_pvr_ray_startpoints
       use t_pvr_image_stack_table
       use t_stencil_buffer_work
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit  none
 !
@@ -50,10 +56,10 @@
 !
       subroutine s_set_pvr_stencil_buffer                               &
      &         (irank_image_file, irank_end_composit, num_pixel_xy,     &
-     &          pvr_start, stencil_wk,  num_pixel_recv,                 &
-     &          img_output_tbl, img_composit_tbl, img_stack)
+     &          pvr_start, stencil_wk, num_pixel_recv,                  &
+     &          img_output_tbl, img_composit_tbl, img_stack,            &
+     &          SR_sig, SR_r, SR_i)
 !
-      use m_solver_SR
       use quicksort
       use calypso_SR_type
       use const_comm_tbl_img_composit
@@ -69,6 +75,9 @@
       type(calypso_comm_table), intent(inout) :: img_output_tbl
       type(calypso_comm_table), intent(inout) :: img_composit_tbl
       type(pvr_image_stack_table), intent(inout) :: img_stack
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       character(len=kchara) :: fname_tmp, file_name
 !
@@ -116,14 +125,14 @@
       call calypso_SR_type_int(0, img_composit_tbl,                     &
      &    pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,          &
      &    pvr_start%id_pixel_start, img_stack%ipix_4_composit,          &
-     &    SR_sig1, SR_i1)
+     &    SR_sig, SR_i)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+10)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+11)
       call calypso_SR_type_1(0, img_composit_tbl,                       &
      &   pvr_start%num_pvr_ray, img_composit_tbl%ntot_import,           &
      &   img_stack%depth_pvr_ray_start, img_stack%depth_pixel_composit, &
-     &   SR_sig1, SR_r1)
+     &   SR_sig, SR_r)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+11)
 !
       call alloc_pvr_image_stack_table(img_stack)
@@ -139,7 +148,7 @@
         open(id_file, file = file_name)
         call check_img_output_communication(id_file,                    &
      &      img_stack, img_output_tbl, stencil_wk,                      &
-     &      num_pixel_xy, num_pixel_recv)
+     &      num_pixel_xy, num_pixel_recv, SR_sig, SR_i)
 !
         call check_composit_communication(id_file,                      &
      &      pvr_start, img_composit_tbl, img_stack)
@@ -262,9 +271,8 @@
 !
       subroutine check_img_output_communication(id_file,                &
      &          img_stack, img_output_tbl, stencil_wk,                  &
-     &          num_pixel_xy, num_pixel_recv)
+     &          num_pixel_xy, num_pixel_recv, SR_sig, SR_i)
 !
-      use m_solver_SR
       use calypso_SR_type
 !
       integer(kind = kint), intent(in) :: id_file
@@ -273,6 +281,9 @@
       type(stencil_buffer_work), intent(in)  :: stencil_wk
       integer(kind = kint), intent(in) :: num_pixel_xy, num_pixel_recv
 !
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+!
       integer(kind = kint), allocatable :: ipixel_check(:)
       integer(kind = kint) :: ipix
 !
@@ -280,7 +291,7 @@
       allocate(ipixel_check(num_pixel_recv))
       call calypso_SR_type_int(0, img_output_tbl,                       &
      &    img_stack%npixel_4_composit, num_pixel_recv,                  &
-     &    img_stack%ipixel_4_composit, ipixel_check, SR_sig1, SR_i1)
+     &    img_stack%ipixel_4_composit, ipixel_check, SR_sig, SR_i)
 !
       write(id_file,*) 'ipixel_check', num_pixel_recv, num_pixel_xy
       do ipix = 1, num_pixel_recv

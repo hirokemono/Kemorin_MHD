@@ -17,22 +17,30 @@
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!
 !!      subroutine LIC_init_shared_mesh(geofem, next_tbl, repart_p,     &
-!!     &                                repart_data)
+!!     &          repart_data, SR_sig, SR_r, SR_i, SR_il)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine LIC_init_each_mesh(geofem, next_tbl, repart_p,       &
-!!     &                              lic_param, repart_data)
+!!     &          lic_param, repart_data, SR_sig, SR_r, SR_i, SR_il)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(lic_parameters), intent(inout) :: lic_param
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!
-!!      subroutine set_LIC_each_field(geofem, nod_fld,                  &
-!!     &          repart_p, lic_param, repart_data, v_sol)
+!!      subroutine set_LIC_each_field(geofem, nod_fld, repart_p,        &
+!!     &          lic_param, repart_data, v_sol, SR_sig, SR_r)
 !!      subroutine dealloc_LIC_each_mesh                                &
 !!     &         (repart_p, each_part_p, repart_data)
 !!        type(mesh_data), intent(in), target :: geofem
@@ -42,13 +50,19 @@
 !!        type(lic_parameters), intent(in) :: lic_param
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
 !!      subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,       &
-!!     &                              repart_data)
+!!     &          repart_data, SR_sig, SR_r, SR_i, SR_il)
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module t_LIC_re_partition
@@ -69,7 +83,9 @@
       use t_control_param_LIC
       use t_control_param_vol_grping
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit  none
 !
@@ -90,6 +106,7 @@
       end type lic_repartioned_mesh
 !
       private :: dealloc_LIC_re_partition
+      private :: s_LIC_re_partition
 !
 !  ---------------------------------------------------------------------
 !
@@ -165,21 +182,25 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_init_shared_mesh(geofem, next_tbl, repart_p,       &
-     &                                repart_data)
+     &          repart_data, SR_sig, SR_r, SR_i, SR_il)
 !
       type(mesh_data), intent(in), target :: geofem
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       integer(kind = kint) :: i_lic
 !
 !
       if(repart_p%flag_repartition) then
 !  -----  Repartition
-        call s_LIC_re_partition                                         &
-     &     (repart_p, geofem, next_tbl, repart_data)
+        call s_LIC_re_partition(repart_p, geofem, next_tbl,             &
+     &      repart_data, SR_sig, SR_r, SR_i, SR_il)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
@@ -194,7 +215,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_init_each_mesh(geofem, next_tbl, repart_p,         &
-     &                              lic_param, repart_data)
+     &          lic_param, repart_data, SR_sig, SR_r, SR_i, SR_il)
 !
       type(mesh_data), intent(in), target :: geofem
       type(next_nod_ele_table), intent(in) :: next_tbl
@@ -202,19 +223,23 @@
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(lic_parameters), intent(inout) :: lic_param
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
 !
 !  -----  Repartition
       if(lic_param%each_part_p%flag_repartition) then
-        call s_LIC_re_partition                                         &
-     &     (lic_param%each_part_p, geofem, next_tbl, repart_data)
+        call s_LIC_re_partition(lic_param%each_part_p, geofem,          &
+     &      next_tbl, repart_data, SR_sig, SR_r, SR_i, SR_il)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_param%num_masking, repart_data%field_lic)
       else if(repart_p%flag_repartition) then
         call s_LIC_re_partition(repart_p, geofem, next_tbl,             &
-     &                          repart_data)
+     &      repart_data, SR_sig, SR_r, SR_i, SR_il)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
@@ -228,8 +253,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_LIC_each_field(geofem, nod_fld,                    &
-     &          repart_p, lic_param, repart_data, v_sol)
+      subroutine set_LIC_each_field(geofem, nod_fld, repart_p,          &
+     &          lic_param, repart_data, v_sol, SR_sig, SR_r)
 !
       type(mesh_data), intent(in), target :: geofem
       type(phys_data), intent(in) :: nod_fld
@@ -238,6 +263,8 @@
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
@@ -246,7 +273,7 @@
           call repartition_lic_field                                    &
      &       (geofem%mesh%node, repart_data%viz_fem%mesh,               &
      &        repart_data%mesh_to_viz_tbl, repart_data%nod_fld_lic,     &
-     &        repart_data%field_lic, v_sol)
+     &        repart_data%field_lic, v_sol, SR_sig, SR_r)
         end if
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
 !
@@ -280,7 +307,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,         &
-     &                              repart_data)
+     &          repart_data, SR_sig, SR_r, SR_i, SR_il)
 !
       use t_next_node_ele_4_node
       use t_jacobians
@@ -298,6 +325,10 @@
       type(mesh_data), intent(in), target :: geofem
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(shape_finctions_at_points) :: spfs_T
       type(jacobians_type) :: jac_viz
@@ -307,12 +338,12 @@
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(repart_p, geofem, next_tbl,      &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
-     &    repart_data%repart_WK, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    repart_data%repart_WK, SR_sig, SR_r, SR_i, SR_il)
 !
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
       call FEM_mesh_initialization                                      &
      &   (repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
-     &    SR_sig1, SR_i1)
+     &    SR_sig, SR_i)
       call set_max_integration_points(ione, jac_viz%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jac_viz%g_FEM, spfs_T%spf_3d, spfs_T%spf_2d, spfs_T%spf_1d)

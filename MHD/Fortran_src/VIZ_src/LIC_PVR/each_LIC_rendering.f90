@@ -7,9 +7,9 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine s_each_LIC_rendering                                 &
-!!     &         (istep_pvr, time, num_img, viz_fem, field_lic,         &
-!!     &          sf_grp_4_sf, lic_param, pvr_param, pvr_proj, pvr_rgb)
+!!      subroutine s_each_LIC_rendering(istep_pvr, time, num_img,       &
+!!     &          viz_fem, field_lic, sf_grp_4_sf, lic_param,           &
+!!     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
@@ -20,9 +20,11 @@
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine s_each_LIC_anaglyph(istep_pvr, time,                 &
 !!     &          viz_fem, field_lic, sf_grp_4_sf, lic_param,           &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: viz_fem
@@ -32,9 +34,11 @@
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine s_each_LIC_rendering_w_rot(istep_pvr, time,          &
 !!     &          num_img, viz_fem, field_lic, sf_grp_4_sf,             &
-!!     &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb)
+!!     &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
+!!     &          SR_sig, SR_r, SR_i)
 !!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
@@ -46,6 +50,9 @@
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
 !
@@ -70,6 +77,8 @@
       use t_geometries_in_pvr_screen
       use t_lic_field_data
       use t_control_param_LIC
+      use t_solver_SR
+      use t_solver_SR_int
 !
       use set_default_pvr_params
       use set_position_pvr_screen
@@ -84,9 +93,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_each_LIC_rendering                                   &
-     &         (istep_pvr, time, num_img, viz_fem, field_lic,           &
-     &          sf_grp_4_sf, lic_param, pvr_param, pvr_proj, pvr_rgb)
+      subroutine s_each_LIC_rendering(istep_pvr, time, num_img,         &
+     &          viz_fem, field_lic, sf_grp_4_sf, lic_param,             &
+     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -104,6 +113,8 @@
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: i_img
 !
@@ -115,7 +126,8 @@
       do i_img = 1, num_img
         call lic_rendering_with_fixed_view(istep_pvr, time,             &
      &      viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,        &
-     &      field_lic, pvr_param,  pvr_proj(i_img), pvr_rgb(i_img))
+     &      field_lic, pvr_param,  pvr_proj(i_img), pvr_rgb(i_img),     &
+     &      SR_sig, SR_r)
       end do
 !
       end subroutine s_each_LIC_rendering
@@ -124,7 +136,7 @@
 !
       subroutine s_each_LIC_anaglyph(istep_pvr, time,                   &
      &          viz_fem, field_lic, sf_grp_4_sf, lic_param,             &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -141,6 +153,8 @@
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
@@ -150,13 +164,13 @@
 !   Left eye
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb)
+     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb, SR_sig, SR_r)
       call store_left_eye_image(pvr_rgb)
 !
 !   Right eye
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb)
+     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb, SR_sig, SR_r)
       call add_left_eye_image(pvr_rgb)
 !
       end subroutine s_each_LIC_anaglyph
@@ -165,7 +179,8 @@
 !
       subroutine s_each_LIC_rendering_w_rot(istep_pvr, time,            &
      &          num_img, viz_fem, field_lic, sf_grp_4_sf,               &
-     &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb)
+     &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
+     &          SR_sig, SR_r, SR_i)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -184,6 +199,9 @@
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: i_img
 !
@@ -196,7 +214,7 @@
         call lic_rendering_with_rotation(istep_pvr, time,               &
      &      viz_fem%mesh, viz_fem%group, sf_grp_4_sf,                   &
      &      lic_param, field_lic, pvr_rgb(i_img),                       &
-     &      pvr_param, pvr_bound, pvr_proj(i_img))
+     &      pvr_param, pvr_bound, pvr_proj(i_img), SR_sig, SR_r, SR_i)
       end do
 !
       end subroutine s_each_LIC_rendering_w_rot

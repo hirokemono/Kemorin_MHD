@@ -46,6 +46,7 @@
       use t_pvr_field_data
       use t_geometries_in_pvr_screen
       use t_control_data_pvrs
+      use m_solver_SR
 !
       implicit  none
 !
@@ -108,7 +109,8 @@
      &                           pvr%pvr_rgb(i_pvr))
         call each_anaglyph_PVR_init(i_pvr, geofem%mesh, geofem%group,   &
      &      pvr%pvr_rgb(i_pvr), pvr%pvr_param(i_pvr),                   &
-     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(2*i_pvr-1))
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(2*i_pvr-1),              &
+     &      SR_sig1, SR_r1, SR_i1)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !
@@ -148,7 +150,7 @@
         call each_PVR_anaglyph                                          &
      &     (istep_pvr, time, geofem, jacs, nod_fld, pvr%sf_grp_4_sf,    &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr))
+     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr), SR_sig1, SR_r1)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -173,7 +175,7 @@
      &      geofem%mesh, geofem%group, nod_fld, jacs, pvr%sf_grp_4_sf,  &
      &      pvr%pvr_rgb(i_pvr), pvr%field_pvr(i_pvr),                   &
      &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
-     &      pvr%pvr_proj(2*i_pvr-1))
+     &      pvr%pvr_proj(2*i_pvr-1), SR_sig1, SR_r1, SR_i1)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !

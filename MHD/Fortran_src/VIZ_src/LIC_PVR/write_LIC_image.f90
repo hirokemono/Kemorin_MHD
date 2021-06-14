@@ -9,8 +9,9 @@
 !!@verbatim
 !!      subroutine rendering_image_4_lic                                &
 !!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf,            &
-!!     &          lic_p, color_param, cbar_param, field_lic, draw_param,&
-!!     &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
+!!     &          lic_p, color_param, cbar_param, field_lic,            &
+!!     &          draw_param, pvr_screen, pvr_start, pvr_stencil,       &
+!!     &          pvr_rgb, SR_sig, SR_r)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -24,6 +25,8 @@
 !!        type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
 !!        type(pvr_segmented_img), intent(inout) :: pvr_img
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module write_LIC_image
@@ -45,8 +48,9 @@
 !
       subroutine rendering_image_4_lic                                  &
      &         (istep_pvr, time, mesh, group, sf_grp_4_sf,              &
-     &          lic_p, color_param, cbar_param, field_lic, draw_param,  &
-     &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
+     &          lic_p, color_param, cbar_param, field_lic,              &
+     &          draw_param, pvr_screen, pvr_start, pvr_stencil,         &
+     &          pvr_rgb, SR_sig, SR_r)
 !
       use m_geometry_constants
       use m_elapsed_labels_4_VIZ
@@ -62,6 +66,7 @@
       use t_pvr_image_array
       use t_pvr_ray_startpoints
       use t_pvr_stencil_buffer
+      use t_solver_SR
       use ray_trace_LIC_image
       use draw_pvr_colorbar
       use pvr_axis_label
@@ -85,6 +90,8 @@
       type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
 !      type(pvr_segmented_img), intent(inout) :: pvr_img
       type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: i, j, k, ipix
 !
@@ -104,8 +111,8 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+5)
       if(iflag_debug .gt. 0) write(*,*) 'collect_rendering_image'
-      call collect_rendering_image(pvr_start,                           &
-     &    pvr_rgb%num_pixel_actual, pvr_rgb%rgba_real_gl, pvr_stencil)
+      call collect_rendering_image(pvr_start, pvr_rgb%num_pixel_actual, &
+     &    pvr_rgb%rgba_real_gl, pvr_stencil, SR_sig, SR_r)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+5)
 !
 !      call s_composit_by_segmentad_image                               &

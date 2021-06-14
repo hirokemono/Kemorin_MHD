@@ -46,6 +46,7 @@
       use t_pvr_field_data
       use t_geometries_in_pvr_screen
       use t_control_data_pvrs
+      use m_solver_SR
 !
       implicit  none
 !
@@ -112,7 +113,8 @@
         call each_PVR_initialize                                        &
      &     (i_pvr, num_img, geofem%mesh, geofem%group,                  &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_pvr),               &
-     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1))
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),              &
+     &      SR_sig1, SR_r1, SR_i1)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !
@@ -155,7 +157,8 @@
         call each_PVR_rendering(istep_pvr, time, num_img,               &
      &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1))
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
+     &      SR_sig1, SR_r1)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -202,7 +205,7 @@
      &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
      &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),              &
-     &      pvr%pvr_rgb(ist_img+1))
+     &      pvr%pvr_rgb(ist_img+1), SR_sig1, SR_r1, SR_i1)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !

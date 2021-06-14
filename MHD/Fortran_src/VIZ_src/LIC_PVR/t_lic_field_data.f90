@@ -17,13 +17,15 @@
 !!        type(lic_field_data), intent(inout) :: field_lic
 !!      subroutine repartition_lic_field                                &
 !!     &         (node, viz_mesh, mesh_to_viz_tbl, nod_fld_lic,         &
-!!     &          field_lic, v_sol)
+!!     &          field_lic, v_sol, SR_sig, SR_r)
 !!        type(node_data), intent(in) :: node
 !!        type(mesh_geometry), intent(in) :: viz_mesh
 !!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
 !!        type(lic_field_data), intent(in) :: nod_fld_lic
 !!        type(lic_field_data), intent(inout) :: field_lic
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module t_lic_field_data
@@ -178,13 +180,13 @@
 !
       subroutine repartition_lic_field                                  &
      &         (node, viz_mesh, mesh_to_viz_tbl, nod_fld_lic,           &
-     &          field_lic, v_sol)
+     &          field_lic, v_sol, SR_sig, SR_r)
 !
       use m_error_IDs
       use t_geometry_data
       use t_phys_data
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
       use select_copy_from_recv
       use field_to_new_partition
       use transfer_to_new_partition
@@ -197,6 +199,8 @@
 !
       type(lic_field_data), intent(inout) :: field_lic
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: i
 !
@@ -204,22 +208,22 @@
       call vector_to_new_partition                                      &
      &   (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,        &
      &    node%numnod, viz_mesh%node%numnod,                            &
-     &    nod_fld_lic%v_lic, field_lic%v_lic, v_sol, SR_sig1, SR_r1)
+     &    nod_fld_lic%v_lic, field_lic%v_lic, v_sol, SR_sig, SR_r)
       call scalar_to_new_partition                                      &
      &   (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,        &
      &    node%numnod, viz_mesh%node%numnod,                            &
-     &    nod_fld_lic%d_lic, field_lic%d_lic, v_sol, SR_sig1, SR_r1)
+     &    nod_fld_lic%d_lic, field_lic%d_lic, v_sol, SR_sig, SR_r)
 !      call scalar_to_new_partition                                     &
 !     &   (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,       &
 !     &    node%numnod, viz_mesh%node%numnod,                           &
-!     &    nod_fld_lic%o_lic, field_lic%o_lic, v_sol, SR_sig1, SR_r1)
+!     &    nod_fld_lic%o_lic, field_lic%o_lic, v_sol, SR_sig, SR_r)
 !
       do i = 1, field_lic%num_mask
         call scalar_to_new_partition                                    &
      &     (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,      &
      &      node%numnod, viz_mesh%node%numnod,                          &
      &      nod_fld_lic%s_lic(1,i), field_lic%s_lic(1,i),               &
-     &      v_sol, SR_sig1, SR_r1)
+     &      v_sol, SR_sig, SR_r)
       end do
 !
       end subroutine repartition_lic_field
