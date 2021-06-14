@@ -40,6 +40,7 @@
       use t_sph_trans_arrays_MHD
       use t_legendre_trans_select
       use t_sph_FFT_selector
+      use m_solver_SR
 !
       implicit none
 !
@@ -82,8 +83,8 @@
 !
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
 !
-      call init_leg_fourier_trans_MHD                                   &
-     &   (SPH_MHD%sph, SPH_MHD%comms, ncomp_max_trans, trans_p, WK)
+      call init_leg_fourier_trans_MHD(SPH_MHD%sph, SPH_MHD%comms,       &
+     &    ncomp_max_trans, trans_p, WK, SR_sig1, SR_r1)
 !
       call init_work_4_coriolis                                         &
      &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, trans_p, WK)
@@ -93,7 +94,7 @@
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    WK%trns_MHD, WK%WK_leg, WK%WK_FFTs_MHD, trans_p,              &
-     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
+     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld, SR_sig1, SR_r1)
 !
       end subroutine init_sph_back_transform
 !

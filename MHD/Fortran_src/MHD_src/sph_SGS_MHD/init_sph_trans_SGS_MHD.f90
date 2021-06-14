@@ -127,7 +127,7 @@
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    WK%trns_MHD, WK%WK_leg, WK%WK_FFTs_MHD, trans_p,              &
-     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
+     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld, SR_sig1, SR_r1)
 !
       end subroutine init_sph_transform_SGS_MHD
 !
@@ -241,7 +241,7 @@
       WK%iflag_MHD_FFT = trans_p%iflag_FFT
       call init_fourier_transform_4_MHD                                 &
      &   (sph%sph_rtp, comms_sph%comm_rtp,                              &
-     &    WK%trns_MHD, WK%WK_FFTs_MHD, WK%iflag_MHD_FFT)
+     &    WK%trns_MHD, WK%WK_FFTs_MHD, SR_r1, WK%iflag_MHD_FFT)
 !
       call init_sph_FFTs_for_SGS_model                                  &
      &   (WK%iflag_MHD_FFT, SGS_param, sph, comms_sph, WK_LES)

@@ -148,7 +148,7 @@
 !
       nscalar_trans = trns_bwd%num_scalar + 6*trns_bwd%num_tensor
       call sph_pole_trans_4_MHD                                         &
-     &   (sph, comms_sph, trans_p, rj_fld, trns_bwd)
+     &   (sph, comms_sph, trans_p, rj_fld, trns_bwd, SR_sig1, SR_r1)
 !
       end subroutine sph_pole_trans_SGS_MHD
 !

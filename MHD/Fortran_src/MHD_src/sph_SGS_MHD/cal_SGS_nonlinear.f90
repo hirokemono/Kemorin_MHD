@@ -46,6 +46,7 @@
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
       use t_sph_filtering
+      use m_solver_SR
 !
       implicit none
 !
@@ -127,7 +128,7 @@
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph, r_2nd,       &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,            &
      &    WK%gt_cor, WK%trns_MHD, WK%WK_leg, WK%WK_FFTs_MHD,            &
-     &    WK%cor_rlm, SPH_MHD%ipol, SPH_MHD%fld)
+     &    WK%cor_rlm, SPH_MHD%ipol, SPH_MHD%fld, SR_sig1, SR_r1)
 !
 !   ----  lead nonlinear terms by filtered field
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'

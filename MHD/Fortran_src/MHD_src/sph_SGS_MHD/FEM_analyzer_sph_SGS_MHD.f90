@@ -140,7 +140,7 @@
 !
       call FEM_analyze_sph_MHD                                          &
      &   (MHD_files, FEM_MHD%geofem, FEM_MHD%field,                     &
-     &    MHD_step, MHD_IO, FEM_MHD%v_sol)
+     &    MHD_step, MHD_IO, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
       end subroutine FEM_analyze_sph_SGS_MHD
 !

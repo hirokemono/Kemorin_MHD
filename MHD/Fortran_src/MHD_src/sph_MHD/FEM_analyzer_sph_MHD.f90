@@ -9,7 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,          &
-!!     &          geofem, nod_fld, iphys, MHD_IO, v_sol)
+!!     &          geofem, nod_fld, iphys, MHD_IO,                       &
+!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_data), intent(inout) :: geofem
@@ -17,8 +18,12 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(vectors_4_solver), intent(inout) :: v_sol
-!!      subroutine FEM_analyze_sph_MHD                                  &
-!!     &         (MHD_files, geofem, nod_fld, MHD_step, MHD_IO, v_sol)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!      subroutine FEM_analyze_sph_MHD(MHD_files, geofem, nod_fld,      &
+!!     &          MHD_step, MHD_IO, v_sol, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -27,6 +32,8 @@
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine FEM_finalize(MHD_files, MHD_step, MHD_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
@@ -62,7 +69,9 @@
       use t_MHD_IO_data
       use t_ucd_file
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -73,7 +82,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,            &
-     &          geofem, nod_fld, iphys, MHD_IO, v_sol)
+     &          geofem, nod_fld, iphys, MHD_IO,                         &
+     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
@@ -92,6 +102,10 @@
       type(phys_data), intent(inout) :: nod_fld
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
@@ -116,15 +130,15 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
       call FEM_comm_initialization(geofem%mesh, v_sol,                  &
-     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
+     &                             SR_sig, SR_r, SR_i, SR_il)
 !
       end subroutine FEM_initialize_sph_MHD
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_MHD                                    &
-     &         (MHD_files, geofem, nod_fld, MHD_step, MHD_IO, v_sol)
+      subroutine FEM_analyze_sph_MHD(MHD_files, geofem, nod_fld,        &
+     &          MHD_step, MHD_IO, v_sol, SR_sig, SR_r)
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
@@ -138,6 +152,8 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !*  ----------   Count steps for visualization
 !*
@@ -148,7 +164,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(geofem%mesh, nod_fld,                   &
-     &                          v_sol, SR_sig1, SR_r1)
+     &                          v_sol, SR_sig, SR_r)
 !
 !*  -----------  Output volume data --------------
 !*

@@ -73,7 +73,7 @@
 !
 !
       call SPH_MHD_zonal_mean_section(viz_step, time_d,                 &
-     &    sph, fem, nod_fld, zmeans%zm_psf, v_sol)
+     &    sph, fem, nod_fld, zmeans%zm_psf, v_sol, SR_sig1, SR_r1)
 !
       call SGS_MHD_zonal_RMS_section(viz_step, time_d,                  &
      &    SPH_SGS%SGS_par, sph, fem, WK, SPH_SGS%trns_WK_LES,           &

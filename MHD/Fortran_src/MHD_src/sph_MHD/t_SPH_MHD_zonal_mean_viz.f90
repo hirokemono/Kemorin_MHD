@@ -8,14 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine init_zonal_mean_sections                             &
-!!     &         (viz_step, geofem, edge_comm, nod_fld, zm_ctls, zmeans)
+!!     &         (viz_step, geofem, edge_comm, nod_fld, zm_ctls, zmeans,&
+!!     &          SR_sig, SR_il)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!        type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine SPH_MHD_zmean_sections(viz_step, time_d,             &
-!!     &          sph, geofem, WK, nod_fld, zmeans, v_sol)
+!!     &          sph, geofem, WK, nod_fld, zmeans, v_sol, SR_sig, SR_r)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_grids), intent(in) :: sph
@@ -25,7 +28,7 @@
 !!        type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
 !!
 !!      subroutine SPH_MHD_zonal_mean_section(viz_step, time_d,         &
-!!     &          sph, geofem, nod_fld, zm_psf, v_sol)
+!!     &          sph, geofem, nod_fld, zm_psf, v_sol, SR_sig, SR_r)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_grids), intent(in) :: sph
@@ -33,6 +36,8 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(sectioning_module), intent(inout) :: zm_psf
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module t_SPH_MHD_zonal_mean_viz
@@ -52,7 +57,8 @@
       use t_sph_trans_arrays_MHD
       use t_cross_section
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int8
       use t_VIZ_step_parameter
 !
       implicit  none
@@ -74,7 +80,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_zonal_mean_sections                               &
-     &         (viz_step, geofem, edge_comm, nod_fld, zm_ctls, zmeans)
+     &         (viz_step, geofem, edge_comm, nod_fld, zm_ctls, zmeans,  &
+     &          SR_sig, SR_il)
 !
       use t_control_data_dynamo_vizs
 !
@@ -85,15 +92,17 @@
 !
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
       type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize                                        &
      &   (viz_step%PSF_t%increment, geofem, edge_comm, nod_fld,         &
-     &    zm_ctls%zm_psf_ctls, zmeans%zm_psf, SR_sig1, SR_il1)
+     &    zm_ctls%zm_psf_ctls, zmeans%zm_psf, SR_sig, SR_il)
       call SECTIONING_initialize                                        &
      &   (viz_step%PSF_t%increment, geofem, edge_comm, nod_fld,         &
-     &    zm_ctls%zRMS_psf_ctls, zmeans%zrms_psf, SR_sig1, SR_il1)
+     &    zm_ctls%zRMS_psf_ctls, zmeans%zrms_psf, SR_sig, SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       end subroutine init_zonal_mean_sections
@@ -101,7 +110,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine SPH_MHD_zmean_sections(viz_step, time_d,               &
-     &          sph, geofem, WK, nod_fld, zmeans, v_sol)
+     &          sph, geofem, WK, nod_fld, zmeans, v_sol, SR_sig, SR_r)
 !
       use FEM_analyzer_sph_MHD
       use nod_phys_send_recv
@@ -116,12 +125,14 @@
       type(phys_data), intent(inout) :: nod_fld
       type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call SPH_MHD_zonal_mean_section(viz_step, time_d, sph, geofem,    &
-     &    nod_fld, zmeans%zm_psf, v_sol)
+     &    nod_fld, zmeans%zm_psf, v_sol, SR_sig, SR_r)
       call SPH_MHD_zonal_RMS_section(viz_step, time_d, sph, geofem,     &
-     &    WK, nod_fld, zmeans%zrms_psf, v_sol)
+     &    WK, nod_fld, zmeans%zrms_psf, v_sol, SR_sig, SR_r)
 !
       end subroutine SPH_MHD_zmean_sections
 !
@@ -129,7 +140,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine SPH_MHD_zonal_mean_section(viz_step, time_d,           &
-     &          sph, geofem, nod_fld, zm_psf, v_sol)
+     &          sph, geofem, nod_fld, zm_psf, v_sol, SR_sig, SR_r)
 !
       use m_elapsed_labels_4_VIZ
       use sph_rtp_zonal_rms_data
@@ -144,6 +155,8 @@
       type(phys_data), intent(inout) :: nod_fld
       type(sectioning_module), intent(inout) :: zm_psf
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(zm_psf%num_psf .le. 0) return
@@ -154,7 +167,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(geofem%mesh, nod_fld,                   &
-     &                          v_sol, SR_sig1, SR_r1)
+     &                          v_sol, SR_sig, SR_r)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize zmean'
@@ -166,8 +179,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SPH_MHD_zonal_RMS_section(viz_step, time_d,            &
-     &          sph, geofem, WK, nod_fld, zrms_psf, v_sol)
+      subroutine SPH_MHD_zonal_RMS_section(viz_step, time_d, sph,       &
+     &          geofem, WK, nod_fld, zrms_psf, v_sol, SR_sig, SR_r)
 !
       use m_elapsed_labels_4_VIZ
       use FEM_analyzer_sph_MHD
@@ -184,6 +197,8 @@
       type(phys_data), intent(inout) :: nod_fld
       type(sectioning_module), intent(inout) :: zrms_psf
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(zrms_psf%num_psf .le. 0) return
@@ -195,7 +210,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(geofem%mesh, nod_fld,                   &
-     &                          v_sol, SR_sig1, SR_r1)
+     &                          v_sol, SR_sig, SR_r)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'

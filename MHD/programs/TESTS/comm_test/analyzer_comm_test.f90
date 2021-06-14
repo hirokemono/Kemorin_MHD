@@ -15,7 +15,6 @@
       use m_machine_parameter
       use m_work_time
 !
-      use m_solver_SR
       use t_solver_SR
       use t_ctl_data_comm_test
       use t_mesh_data

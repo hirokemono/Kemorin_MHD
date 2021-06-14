@@ -41,6 +41,7 @@
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
       use t_field_data_IO
+      use m_solver_SR
 !
       implicit none
 !
@@ -99,8 +100,8 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD                                       &
-     &   (SPH_model, iphys, SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
+      call init_sph_transform_MHD(SPH_model, iphys, SPH_WK%trans_p,     &
+     &    SPH_WK%trns_WK, SPH_MHD, SR_sig1, SR_r1)
 !
 !  -------------------------------
 !
@@ -137,8 +138,8 @@
 !* obtain nonlinear terms for starting
 !
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
-      call nonlinear(SPH_WK%r_2nd, SPH_model,                           &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
+      call nonlinear(SPH_WK%r_2nd, SPH_model, SPH_WK%trans_p,           &
+     &               SPH_WK%trns_WK, SPH_MHD, SR_sig1, SR_r1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -202,8 +203,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+4)
-      call nonlinear(SPH_WK%r_2nd, SPH_model,                           &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
+      call nonlinear(SPH_WK%r_2nd, SPH_model, SPH_WK%trans_p,           &
+     &               SPH_WK%trns_WK, SPH_MHD, SR_sig1, SR_r1)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+1)
 !
@@ -218,7 +219,7 @@
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SPH_WK%monitor, SPH_WK%r_2nd,      &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
-     &      SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD)
+     &      SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD, SR_sig1, SR_r1)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !

@@ -29,6 +29,7 @@
       use t_work_SPH_MHD
       use t_viz_sections
       use t_VIZ_mesh_field
+      use m_solver_SR
 !
       implicit none
 !
@@ -303,16 +304,16 @@
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, omega_sph, trans_p,    &
      &    trns_WK%gt_cor, SPH_MHD%fld, trns_WK%trns_MHD%b_trns,         &
      &    trns_WK%trns_MHD%backward, trns_WK%WK_leg,                    &
-     &    trns_WK%WK_FFTs_MHD, trns_WK%cor_rlm)
+     &    trns_WK%WK_FFTs_MHD, trns_WK%cor_rlm, SR_sig1, SR_r1)
 !
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
      &    trns_WK%trns_eflux%forward, trns_WK%WK_leg, trns_WK%WK_FFTs,  &
-     &    SPH_MHD%fld)
+     &    SPH_MHD%fld, SR_sig1, SR_r1)
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
      &    SPH_SGS%trns_WK_LES%trns_SGS_snap%forward,                    &
-     &    trns_WK%WK_leg, trns_WK%WK_FFTs, SPH_MHD%fld)
+     &    trns_WK%WK_leg, trns_WK%WK_FFTs, SPH_MHD%fld, SR_sig1, SR_r1)
 !
 ! ----  Take zonal mean
 !
