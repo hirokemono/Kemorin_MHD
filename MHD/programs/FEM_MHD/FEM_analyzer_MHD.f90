@@ -175,7 +175,8 @@
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_model%MHD_mesh,   &
-     &    FEM_MHD%field, MHD_files%ucd_file_IO, MHD_IO%ucd)
+     &    FEM_MHD%field, MHD_files%ucd_file_IO, MHD_IO%ucd,             &
+     &    SR_sig1, SR_i1)
 !
       call alloc_phys_range(FEM_MHD%field%ntot_phys_viz, MHD_IO%range)
 !       call s_open_boundary_monitor                                    &
@@ -325,7 +326,7 @@
      &   (retval, FEM_SGS%SGS_par, MHD_files, MHD_step%time_d,          &
      &    MHD_step%flex_p, FEM_MHD%geofem, FEM_MHD%iphys,               &
      &    SGS_MHD_wk%FEM_SGS_wk, MHD_step%rst_step, FEM_MHD%field,      &
-     &    MHD_IO%rst_IO, FEM_MHD%v_sol)
+     &    MHD_IO%rst_IO, FEM_MHD%v_sol, SR_sig1, SR_r1)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !   Finish by specific step

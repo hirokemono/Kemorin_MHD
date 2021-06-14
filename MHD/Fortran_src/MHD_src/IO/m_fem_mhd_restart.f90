@@ -20,7 +20,8 @@
 !!        type(field_IO), intent(inout) :: fem_fst_IO
 !!
 !!      subroutine output_restart_files(index_rst, fst_file_IO, time_d, &
-!!     &          node, nod_comm, iphys, nod_fld, fem_fst_IO, v_sol)
+!!     &          node, nod_comm, iphys, nod_fld, fem_fst_IO,           &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(time_data), intent(in) :: time_d
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
@@ -28,6 +29,8 @@
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine input_restart_files(istep_rst, fst_file_IO,          &
 !!     &          node, nod_fld, init_d, time_d, flex_p)
 !!        type(node_data), intent(in) :: node
@@ -61,7 +64,7 @@
       use t_flex_delta_t_parameter
       use t_IO_step_parameter
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit  none
 !
@@ -132,7 +135,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_restart_files(index_rst, fst_file_IO, time_d,   &
-     &          node, nod_comm, iphys, nod_fld, fem_fst_IO, v_sol)
+     &          node, nod_comm, iphys, nod_fld, fem_fst_IO,             &
+     &          v_sol, SR_sig, SR_r)
 !
       use field_IO_select
       use set_field_to_restart
@@ -148,23 +152,25 @@
       type(phys_data), intent(inout) :: nod_fld
       type(field_IO), intent(inout) :: fem_fst_IO
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(iphys%exp_work%i_pre_mom .gt. 0) then
         call vector_send_recv(iphys%exp_work%i_pre_mom, nod_comm,       &
-     &                        nod_fld, v_sol, SR_sig1, SR_r1)
+     &                        nod_fld, v_sol, SR_sig, SR_r)
       end if
       if(iphys%exp_work%i_pre_uxb .gt. 0) then
         call vector_send_recv(iphys%exp_work%i_pre_uxb, nod_comm,       &
-     &                        nod_fld, v_sol, SR_sig1, SR_r1)
+     &                        nod_fld, v_sol, SR_sig, SR_r)
       end if
       if(iphys%exp_work%i_pre_heat .gt. 0) then
         call scalar_send_recv(iphys%exp_work%i_pre_heat, nod_comm,      &
-     &                        nod_fld, v_sol, SR_sig1, SR_r1)
+     &                        nod_fld, v_sol, SR_sig, SR_r)
       end if
       if(iphys%exp_work%i_pre_composit .gt. 0) then
         call scalar_send_recv(iphys%exp_work%i_pre_composit, nod_comm,  &
-     &                        nod_fld, v_sol, SR_sig1, SR_r1)
+     &                        nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       call copy_time_step_size_data(time_d, fem_time_IO)

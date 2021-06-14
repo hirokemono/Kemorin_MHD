@@ -100,7 +100,8 @@
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_model%MHD_mesh,   &
-     &    FEM_MHD%field, MHD_files%ucd_file_IO, MHD_IO%ucd)
+     &    FEM_MHD%field, MHD_files%ucd_file_IO, MHD_IO%ucd,             &
+     &    SR_sig1, SR_i1)
 !
       call alloc_phys_range(FEM_MHD%field%ntot_phys_viz, MHD_IO%range)
 !

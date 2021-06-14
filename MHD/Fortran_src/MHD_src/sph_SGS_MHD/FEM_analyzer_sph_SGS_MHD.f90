@@ -132,7 +132,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       call output_grd_file_4_snapshot(MHD_files%ucd_file_IO,            &
      &    MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_MHD%field,        &
-     &    MHD_IO%ucd)
+     &    MHD_IO%ucd, SR_sig, SR_i)
 !
       end subroutine FEM_initialize_sph_SGS_MHD
 !

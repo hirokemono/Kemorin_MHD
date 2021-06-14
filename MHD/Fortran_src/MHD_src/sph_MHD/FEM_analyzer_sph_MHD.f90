@@ -114,23 +114,28 @@
       if (iflag_debug.gt.0) write(*,*) 'init_field_data'
       call init_field_data(geofem%mesh%node%numnod, nod_fld, iphys)
 !
-!  connect grid data to volume output
+!  -------------------------------
+!      INIT communication buffer
+!  -------------------------------
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
+      call FEM_comm_initialization(geofem%mesh, v_sol,                  &
+     &                             SR_sig, SR_r, SR_i, SR_il)
 !
+!  -------------------------------
+!  connect grid data to volume output
+!  -------------------------------
       if(MHD_step%ucd_step%increment .gt. 0) then
         call alloc_phys_range(nod_fld%ntot_phys_viz, MHD_IO%range)
       end if
 !
+!  -------------------------------
+!
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+5)
       call output_grd_file_4_snapshot(MHD_files%ucd_file_IO,            &
-     &    MHD_step%ucd_step, geofem%mesh, nod_fld, MHD_IO%ucd)
+     &    MHD_step%ucd_step, geofem%mesh, nod_fld, MHD_IO%ucd,          &
+     &    SR_sig, SR_i)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
-!
-!  -------------------------------
-!
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(geofem%mesh, v_sol,                  &
-     &                             SR_sig, SR_r, SR_i, SR_il)
 !
       end subroutine FEM_initialize_sph_MHD
 !

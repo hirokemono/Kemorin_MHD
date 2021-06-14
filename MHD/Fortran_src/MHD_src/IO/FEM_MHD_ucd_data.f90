@@ -10,12 +10,14 @@
 !!
 !!@verbatim
 !!      subroutine output_grd_file_w_org_connect(ucd_step, mesh,        &
-!!     &          MHD_mesh, nod_fld, ucd_param, ucd)
+!!     &          MHD_mesh, nod_fld, ucd_param, ucd, SR_sig, SR_i)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(ucd_data), intent(inout) :: ucd
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!      subroutine link_global_org_mesh_4_ucd(mesh, MHD_mesh, ucd)
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
@@ -33,7 +35,8 @@
       use t_file_IO_parameter
       use t_IO_step_parameter
       use t_ucd_data
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
@@ -46,7 +49,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_grd_file_w_org_connect(ucd_step, mesh,          &
-     &          MHD_mesh, nod_fld, ucd_param, ucd)
+     &          MHD_mesh, nod_fld, ucd_param, ucd, SR_sig, SR_i)
 !
       use m_field_file_format
       use set_ucd_data_to_type
@@ -61,6 +64,8 @@
       type(field_IO_params), intent(in) :: ucd_param
 !
       type(ucd_data), intent(inout) :: ucd
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
       if(ucd_param%iflag_format .lt. 0) return
@@ -72,7 +77,7 @@
 !
       if (ucd_param%iflag_format/icent .eq. iflag_single/icent) then
         call init_merged_ucd_element(ucd_param%iflag_format,            &
-     &      mesh%node, mesh%ele, mesh%nod_comm, ucd, SR_sig1, SR_i1)
+     &      mesh%node, mesh%ele, mesh%nod_comm, ucd, SR_sig, SR_i)
       end if
 !
       call sel_write_parallel_ucd_mesh(ucd_param, ucd)
