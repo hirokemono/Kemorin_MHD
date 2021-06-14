@@ -28,6 +28,7 @@
       use t_SPH_MHD_zonal_mean_viz
       use t_sph_trans_arrays_MHD
       use t_comm_table
+      use m_solver_SR
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
@@ -89,7 +90,8 @@
      &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys,                    &
      &    MHD_IO1, FEM_d1%v_sol)
       call init_FEM_to_PSF_bridge                                       &
-     &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M)
+     &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M,               &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !        Initialize spherical transform dynamo
 !

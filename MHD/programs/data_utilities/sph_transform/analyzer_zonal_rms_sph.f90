@@ -22,6 +22,7 @@
       use FEM_analyzer_back_trans
       use t_visualizer
       use t_VIZ_mesh_field
+      use m_solver_SR
 !
       implicit none
 !
@@ -78,7 +79,7 @@
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge(FEM_STR1%viz_step,                    &
-     &                            FEM_STR1%geofem, VIZ_D_STR1)
+     &    FEM_STR1%geofem, VIZ_D_STR1, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  ------  initialize visualization
       call init_visualize(FEM_STR1%viz_step, FEM_STR1%geofem,           &

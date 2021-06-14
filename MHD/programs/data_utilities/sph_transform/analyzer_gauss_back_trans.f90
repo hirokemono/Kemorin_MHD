@@ -14,6 +14,7 @@
       use m_work_time
       use m_elapsed_labels_SEND_RECV
       use t_ctl_params_sph_trans
+      use m_solver_SR
 !
       use FEM_analyzer_back_trans
       use SPH_analyzer_gauss_b_trans
@@ -66,7 +67,7 @@
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge(FEM_STR1%viz_step,                    &
-     &                            FEM_STR1%geofem, VIZ_D_STR1)
+     &    FEM_STR1%geofem, VIZ_D_STR1, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  ------  initialize visualization
       call init_visualize(FEM_STR1%viz_step, FEM_STR1%geofem,           &

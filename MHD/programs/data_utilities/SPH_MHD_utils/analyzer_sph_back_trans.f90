@@ -29,6 +29,7 @@
       use t_visualizer
       use t_SPH_MHD_zonal_mean_viz
       use t_VIZ_mesh_field
+      use m_solver_SR
 !
       use SPH_analyzer_back_trans
 !
@@ -88,7 +89,7 @@
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge(MHD_step1%viz_step,                   &
-     &                            FEM_d1%geofem, VIZ_DAT1)
+     &    FEM_d1%geofem, VIZ_DAT1, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'

@@ -18,6 +18,7 @@
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
+      use m_solver_SR
       use FEM_analyzer_viz
 !
       implicit none
@@ -76,7 +77,8 @@
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge                                       &
-     &   (t_VIZ1%viz_step, FEM_viz1%geofem, VIZ_DAT1)
+     &   (t_VIZ1%viz_step, FEM_viz1%geofem, VIZ_DAT1,                   &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
       if(iflag_debug .gt. 0)  write(*,*) 'init_LIC_visualize'
       call init_LIC_visualize(t_VIZ1%viz_step, FEM_viz1%geofem,         &
      &    FEM_viz1%field, VIZ_DAT1, vizs_ctl1%viz_ctl_v, lic_v1)

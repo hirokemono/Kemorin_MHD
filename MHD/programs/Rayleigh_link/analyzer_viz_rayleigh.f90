@@ -25,6 +25,7 @@
       use t_VIZ_mesh_field
       use t_VIZ_only_step_parameter
       use t_viz_4_rayleigh
+      use m_solver_SR
 !
       implicit none
 !
@@ -77,8 +78,9 @@
 !  ----   Mesh setting for visualization -----
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge(t_VIZ_r%viz_step,                     &
-     &                            FEM_Rayleigh1%geofem, VIZ_DAT_r)
+      call init_FEM_to_VIZ_bridge                                       &
+     &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, VIZ_DAT_r,            &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
