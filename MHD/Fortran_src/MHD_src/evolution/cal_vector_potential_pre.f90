@@ -241,7 +241,8 @@
      &      cd_prop, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,   &
      &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk,                   &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
+     &      v_sol, SR_sig1, SR_r1)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_vect_p_pre_consist_crank                               &
@@ -251,8 +252,8 @@
      &      Bnod_bcs%nod_bc_a, dt, FEM_prm, mesh%node, mesh%ele,        &
      &      conduct, cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
      &      FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,            &
-     &      Bmatrix, MG_vector, mhd_fem_wk,                             &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
       end if
 !
       call set_boundary_vect                                            &
@@ -354,7 +355,7 @@
      &      conduct, cd_prop, Bnod_bcs, iphys_ele_base, ele_fld,        &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      m_lump, Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,     &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
         call clear_field_data                                           &
      &     (nod_fld, n_scalar, iphys_exp%i_m_phi)
       else

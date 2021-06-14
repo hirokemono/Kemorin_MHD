@@ -365,7 +365,7 @@
      &      nod_bcs, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_elens,  diff_coefs, mlump_fl, Smatrix,         &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
-     &      nod_fld, v_sol)
+     &      nod_fld, v_sol, SR_sig1, SR_r1)
 !
       else if(property%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_temp_pre_consist_crank                                 &
@@ -375,7 +375,7 @@
      &      mesh%node, mesh%ele, fluid, property, nod_bcs, jacs%g_FEM,  &
      &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,       &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
-     &      nod_fld, v_sol)
+     &      nod_fld, v_sol, SR_sig1, SR_r1)
       end if
 !
       call set_boundary_scalar                                          &
