@@ -37,6 +37,7 @@
       use t_time_data
       use t_cross_section
       use t_isosurface
+      use m_solver_SR
 !
       implicit  none
 !
@@ -71,7 +72,7 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize                                        &
      &   (viz_step%PSF_t%increment, geofem, edge_comm, nod_fld,         &
-     &    surfacing_ctls%psf_s_ctls, viz_psfs%psf)
+     &    surfacing_ctls%psf_s_ctls, viz_psfs%psf, SR_sig1, SR_il1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
@@ -105,7 +106,7 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
       call ISOSURF_visualize(viz_step%istep_iso, time_d,                &
-     &    geofem, edge_comm, nod_fld, viz_psfs%iso)
+     &    geofem, edge_comm, nod_fld, viz_psfs%iso, SR_sig1, SR_il1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       end subroutine visualize_surface

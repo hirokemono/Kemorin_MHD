@@ -46,6 +46,7 @@
       use t_fieldline
       use t_lic_rendering
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit  none
 !
@@ -88,7 +89,7 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize                                        &
      &   (viz_step%PSF_t%increment, geofem, VIZ_DAT%edge_comm, nod_fld, &
-     &    viz_ctls%psf_ctls, vizs%psf)
+     &    viz_ctls%psf_ctls, vizs%psf, SR_sig1, SR_il1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
@@ -99,20 +100,21 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
       call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
-     &    viz_ctls%pvr_ctls, vizs%pvr)
-      call anaglyph_PVR_initialize                                      &
-     &   (viz_step%PVR_t%increment, geofem, nod_fld,                    &
-     &    viz_ctls%pvr_anaglyph_ctls, vizs%anaglyph_pvr)
+     &    viz_ctls%pvr_ctls, vizs%pvr, SR_sig1, SR_r1, SR_i1)
+      call anaglyph_PVR_initialize(viz_step%PVR_t%increment,            &
+     &    geofem, nod_fld, viz_ctls%pvr_anaglyph_ctls,                  &
+     &    vizs%anaglyph_pvr, SR_sig1, SR_r1, SR_i1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
       call LIC_initialize                                               &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
-     &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, vizs%lic)
+     &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, vizs%lic,             &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
       call anaglyph_LIC_initialize                                      &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
      &    viz_ctls%repart_ctl, viz_ctls%lic_anaglyph_ctls,              &
-     &    vizs%anaglyph_lic)
+     &    vizs%anaglyph_lic, SR_sig1, SR_r1, SR_i1, SR_il1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
@@ -154,22 +156,26 @@
       end if
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-      call ISOSURF_visualize(viz_step%istep_iso, time_d,                &
-     &    geofem, VIZ_DAT%edge_comm, nod_fld, vizs%iso)
+      call ISOSURF_visualize(viz_step%istep_iso, time_d, geofem,        &
+     &    VIZ_DAT%edge_comm, nod_fld, vizs%iso, SR_sig1, SR_il1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
       call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
-     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr)
+     &                   geofem, VIZ_DAT%jacobians, nod_fld,            &
+     &                   vizs%pvr, SR_sig1, SR_r1, SR_i1)
       call anaglyph_PVR_visualize(viz_step%istep_pvr, time_d%time,      &
-     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%anaglyph_pvr)
+     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%anaglyph_pvr,        &
+     &    SR_sig1, SR_r1, SR_i1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &    geofem, VIZ_DAT%next_tbl, nod_fld, vizs%lic, v_sol)
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, vizs%lic,                  &
+     &    v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
       call anaglyph_LIC_visualize(viz_step%istep_lic, time_d%time,      &
-     &    geofem, VIZ_DAT%next_tbl, nod_fld, vizs%anaglyph_lic, v_sol)
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, vizs%anaglyph_lic,         &
+     &    v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)

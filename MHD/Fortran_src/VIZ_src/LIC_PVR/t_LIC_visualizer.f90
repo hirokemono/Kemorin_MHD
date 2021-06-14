@@ -42,6 +42,7 @@
       use t_control_data_vizs
       use t_lic_rendering
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit  none
 !
@@ -76,11 +77,12 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
       call LIC_initialize                                               &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
-     &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, lic_v%lic)
+     &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, lic_v%lic,            &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
       call anaglyph_LIC_initialize                                      &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
      &    viz_ctls%repart_ctl, viz_ctls%lic_anaglyph_ctls,              &
-     &    lic_v%anaglyph_lic)
+     &    lic_v%anaglyph_lic, SR_sig1, SR_r1, SR_i1, SR_il1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       call calypso_mpi_barrier
@@ -107,9 +109,11 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%lic, v_sol)
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%lic,                 &
+     &    v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
       call anaglyph_LIC_visualize(viz_step%istep_lic, time_d%time,      &
-     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%anaglyph_lic, v_sol)
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%anaglyph_lic,        &
+     &    v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       call calypso_mpi_barrier

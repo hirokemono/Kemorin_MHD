@@ -19,6 +19,7 @@
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
       use FEM_analyzer_four_vizs
+      use m_solver_SR
 !
       implicit none
 !
@@ -69,7 +70,8 @@
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
       call PVR_initialize                                               &
      &   (t_VIZ3%viz_step%PVR_t%increment, FEM_viz3%geofem,             &
-     &    FEM_viz3%field, pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3)
+     &    FEM_viz3%field, pvr_ctl3%viz_ctl_v%pvr_ctls,                  &
+     &    vizs_pvr3, SR_sig1, SR_r1, SR_i1)
 !
       end subroutine initialize_pvr
 !
@@ -97,7 +99,8 @@
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
         call PVR_visualize                                              &
      &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time,              &
-     &     FEM_viz3%geofem, pvr3%jacobians, FEM_viz3%field, vizs_pvr3)
+     &     FEM_viz3%geofem, pvr3%jacobians, FEM_viz3%field,             &
+     &     vizs_pvr3, SR_sig1, SR_r1, SR_i1)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

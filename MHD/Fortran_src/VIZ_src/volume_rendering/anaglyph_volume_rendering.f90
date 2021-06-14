@@ -7,10 +7,10 @@
 !>@brief Main routines for anaglyph volume renderings
 !!
 !!@verbatim
-!!      subroutine anaglyph_PVR_initialize                              &
-!!     &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
-!!      subroutine anaglyph_PVR_visualize                               &
-!!     &         (istep_pvr, time, geofem, jacs, nod_fld, pvr)
+!!      subroutine anaglyph_PVR_initialize(increment_pvr,               &
+!!     &          geofem, nod_fld, pvr_ctls, pvr, SR_sig, SR_r, SR_i)
+!!      subroutine anaglyph_PVR_visualize(istep_pvr, time, geofem, jacs,&
+!!     &          nod_fld, pvr, SR_sig, SR_r, SR_i)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -19,6 +19,9 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(volume_rendering_controls), intent(inout) :: pvr_ctls
 !!        type(volume_rendering_module), intent(inout) :: pvr
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module anaglyph_volume_rendering
@@ -46,10 +49,10 @@
       use t_pvr_field_data
       use t_geometries_in_pvr_screen
       use t_control_data_pvrs
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit  none
-!
 !
 !  ---------------------------------------------------------------------
 !
@@ -57,8 +60,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine anaglyph_PVR_initialize                                &
-     &         (increment_pvr, geofem, nod_fld, pvr_ctls, pvr)
+      subroutine anaglyph_PVR_initialize(increment_pvr,                 &
+     &          geofem, nod_fld, pvr_ctls, pvr, SR_sig, SR_r, SR_i)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
@@ -68,8 +71,12 @@
       integer(kind = kint), intent(in) :: increment_pvr
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
+!
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: i_pvr
 !
@@ -110,7 +117,7 @@
         call each_anaglyph_PVR_init(i_pvr, geofem%mesh, geofem%group,   &
      &      pvr%pvr_rgb(i_pvr), pvr%pvr_param(i_pvr),                   &
      &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(2*i_pvr-1),              &
-     &      SR_sig1, SR_r1, SR_i1)
+     &      SR_sig, SR_r, SR_i)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !
@@ -121,8 +128,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine anaglyph_PVR_visualize                                 &
-     &         (istep_pvr, time, geofem, jacs, nod_fld, pvr)
+      subroutine anaglyph_PVR_visualize(istep_pvr, time, geofem, jacs,  &
+     &          nod_fld, pvr, SR_sig, SR_r, SR_i)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -136,6 +143,9 @@
       type(jacobians_type), intent(in) :: jacs
 !
       type(volume_rendering_module), intent(inout) :: pvr
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: i_pvr
 !
@@ -150,7 +160,7 @@
         call each_PVR_anaglyph                                          &
      &     (istep_pvr, time, geofem, jacs, nod_fld, pvr%sf_grp_4_sf,    &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr), SR_sig1, SR_r1)
+     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr), SR_sig, SR_r)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -175,7 +185,7 @@
      &      geofem%mesh, geofem%group, nod_fld, jacs, pvr%sf_grp_4_sf,  &
      &      pvr%pvr_rgb(i_pvr), pvr%field_pvr(i_pvr),                   &
      &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
-     &      pvr%pvr_proj(2*i_pvr-1), SR_sig1, SR_r1, SR_i1)
+     &      pvr%pvr_proj(2*i_pvr-1), SR_sig, SR_r, SR_i)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !

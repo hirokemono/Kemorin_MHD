@@ -8,14 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine anaglyph_LIC_initialize(increment_lic,               &
-!!     &          geofem, next_tbl, nod_fld, repart_ctl, lic_ctls, lic)
+!!     &          geofem, next_tbl, nod_fld, repart_ctl, lic_ctls, lic, &
+!!     &          SR_sig, SR_r, SR_i, SR_il)
 !!      subroutine anaglyph_LIC_visualize(istep_lic, time,              &
-!!     &          geofem, next_tbl, nod_fld, lic, v_sol)
+!!     &          geofem, next_tbl, nod_fld, lic,                       &
+!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(viz_repartition_ctl), intent(in) :: repart_ctl
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module anaglyph_lic_rendering
@@ -47,7 +53,9 @@
       use t_LIC_re_partition
       use t_control_param_LIC
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       use each_volume_rendering
 !
@@ -60,7 +68,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_LIC_initialize(increment_lic,                 &
-     &          geofem, next_tbl, nod_fld, repart_ctl, lic_ctls, lic)
+     &          geofem, next_tbl, nod_fld, repart_ctl, lic_ctls, lic,   &
+     &          SR_sig, SR_r, SR_i, SR_il)
 !
       use t_control_data_pvr_sections
       use t_surf_grp_list_each_surf
@@ -74,8 +83,13 @@
       type(phys_data), intent(in) :: nod_fld
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(viz_repartition_ctl), intent(in) :: repart_ctl
+!
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       integer(kind = kint) :: i_lic
 !
@@ -132,14 +146,15 @@
       if(lic%flag_each_repart) return
       call LIC_anaglyph_init_shared_mesh                                &
      &   (geofem, next_tbl, lic%repart_p, lic%repart_data, lic%pvr,     &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    SR_sig, SR_r, SR_i, SR_il)
 !
       end subroutine anaglyph_LIC_initialize
 !
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_LIC_visualize(istep_lic, time,                &
-     &          geofem, next_tbl, nod_fld, lic, v_sol)
+     &          geofem, next_tbl, nod_fld, lic,                         &
+     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !
       use m_elapsed_labels_4_VIZ
       use select_anaglyph_LIC_by_mesh
@@ -153,6 +168,10 @@
 !
       type(lic_volume_rendering_module), intent(inout) :: lic
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
 !
       if(lic%pvr%num_pvr .le. 0 .or. istep_lic.lt.0) return
@@ -161,12 +180,12 @@
         call LIC_anaglyph_w_each_repart(istep_lic, time,                &
      &      geofem, next_tbl, nod_fld, lic%repart_p,                    &
      &      lic%repart_data, lic%pvr, lic%lic_param,                    &
-     &      v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &      v_sol, SR_sig, SR_r, SR_i, SR_il)
       else
         call LIC_anaglyph_w_shared_mesh                                 &
      &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
      &      lic%repart_data, lic%pvr, lic%lic_param,                    &
-     &      v_sol, SR_sig1, SR_r1, SR_i1)
+     &      v_sol, SR_sig, SR_r, SR_i)
       end if
 !
       end subroutine anaglyph_LIC_visualize

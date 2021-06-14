@@ -113,7 +113,7 @@
      &     psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
 !
       call SECTIONING_initialize(ione, FUTIL1%geofem, edge_comm_MG,     &
-     &    FUTIL1%nod_fld, psf_ctls_md, psf_md)
+     &    FUTIL1%nod_fld, psf_ctls_md, psf_md, SR_sig1, SR_il1)
 !
       end subroutine analyze_med_grp_patch
 !

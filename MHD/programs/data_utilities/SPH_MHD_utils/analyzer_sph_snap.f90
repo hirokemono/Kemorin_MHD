@@ -314,11 +314,11 @@
      &       (ctl_file_code, MHD_ctl1%viz_ctls%pvr_ctls)
           call PVR_initialize(MHD_step1%viz_step%PVR_t%increment,       &
      &        FEM_d1%geofem, FEM_d1%field, MHD_ctl1%viz_ctls%pvr_ctls,  &
-     &        vizs1%pvr)
+     &        vizs1%pvr, SR_sig1, SR_r1, SR_i1)
           call PVR_visualize                                            &
      &       (MHD_step1%viz_step%istep_pvr, MHD_step1%time_d%time,      &
      &        FEM_d1%geofem, VIZ_DAT1%jacobians, FEM_d1%field,          &
-     &        vizs1%pvr)
+     &        vizs1%pvr, SR_sig1, SR_r1, SR_i1)
           call dealloc_pvr_data(vizs1%pvr)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if

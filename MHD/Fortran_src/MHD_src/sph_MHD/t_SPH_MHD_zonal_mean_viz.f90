@@ -90,10 +90,10 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize                                        &
      &   (viz_step%PSF_t%increment, geofem, edge_comm, nod_fld,         &
-     &    zm_ctls%zm_psf_ctls, zmeans%zm_psf)
+     &    zm_ctls%zm_psf_ctls, zmeans%zm_psf, SR_sig1, SR_il1)
       call SECTIONING_initialize                                        &
      &   (viz_step%PSF_t%increment, geofem, edge_comm, nod_fld,         &
-     &    zm_ctls%zRMS_psf_ctls, zmeans%zrms_psf)
+     &    zm_ctls%zRMS_psf_ctls, zmeans%zrms_psf, SR_sig1, SR_il1)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       end subroutine init_zonal_mean_sections
