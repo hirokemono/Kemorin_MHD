@@ -41,6 +41,7 @@
       use t_psf_geometry_list
       use t_psf_patch_data
       use t_ucd_data
+      use m_solver_SR
 !
       use t_psf_case_table
       use t_surface_group_connect
@@ -153,7 +154,7 @@
       call set_node_and_patch_psf                                       &
      &   (psf%num_psf, geofem%mesh, geofem%group, edge_comm,            &
      &    psf%psf_case_tbls, psf%psf_def, psf%psf_search, psf%psf_list, &
-     &    psf%psf_grp_list, psf%psf_mesh)
+     &    psf%psf_grp_list, psf%psf_mesh, SR_sig1, SR_il1)
 !
       call alloc_psf_field_data(psf%num_psf, psf%psf_mesh)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+1)

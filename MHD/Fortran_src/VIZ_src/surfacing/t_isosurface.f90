@@ -40,6 +40,7 @@
       use t_file_IO_parameter
       use t_control_params_4_iso
       use t_control_data_isosurfaces
+      use m_solver_SR
 !
       use m_constants
       use m_machine_parameter
@@ -167,7 +168,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso                                       &
      &   (iso%num_iso, geofem%mesh, edge_comm, iso%iso_case_tbls,       &
-     &    iso%iso_search, iso%iso_list, iso%iso_mesh)
+     &    iso%iso_search, iso%iso_list, iso%iso_mesh, SR_sig1, SR_il1)
       if(iflag_ISO_time) call end_elapsed_time(ist_elapsed_ISO+1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
