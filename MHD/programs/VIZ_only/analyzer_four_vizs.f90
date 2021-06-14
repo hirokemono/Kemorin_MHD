@@ -18,6 +18,7 @@
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
+      use m_solver_SR
       use FEM_analyzer_four_vizs
 !
       implicit none
@@ -69,9 +70,9 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
-      call init_four_visualize                                          &
-     &   (t_VIZ4%viz_step, FEM_viz4%geofem, FEM_viz4%field,             &
-     &    VIZ_DAT4, vizs_ctl4%viz_ctl_v, vizs_m4)
+      call init_four_visualize(t_VIZ4%viz_step,                         &
+     &    FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4,                    &
+     &    vizs_ctl4%viz_ctl_v, vizs_m4, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       end subroutine initialize_four_vizs
 !
@@ -97,7 +98,8 @@
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_four', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ4%viz_step)
         call visualize_four(t_VIZ4%viz_step, t_VIZ4%time_d,             &
-     &      FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4, vizs_m4)
+     &      FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4, vizs_m4,         &
+     &      SR_sig1, SR_r1, SR_i1, SR_il1)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

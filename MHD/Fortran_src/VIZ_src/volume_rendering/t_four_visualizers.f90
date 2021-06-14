@@ -9,9 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine init_four_visualize(viz_step, geofem, nod_fld,       &
-!!     &                               VIZ_DAT, viz_ctls, vizs)
+!!     &          VIZ_DAT, viz_ctls, vizs, SR_sig, SR_r, SR_i, SR_il)
 !!      subroutine visualize_four(viz_step, time_d, geofem,             &
-!!     &                          nod_fld, VIZ_DAT, vizs)
+!!     &          nod_fld, VIZ_DAT, vizs, SR_sig, SR_r, SR_i, SR_il)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
@@ -19,6 +19,10 @@
 !!        type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(four_visualize_modules), intent(inout) :: vizs
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module t_four_visualizers
@@ -37,7 +41,9 @@
       use t_phys_data
       use t_next_node_ele_4_node
       use t_VIZ_mesh_field
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       use t_control_data_vizs
       use t_cross_section
@@ -63,7 +69,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_four_visualize(viz_step, geofem, nod_fld,         &
-     &                               VIZ_DAT, viz_ctls, vizs)
+     &          VIZ_DAT, viz_ctls, vizs, SR_sig, SR_r, SR_i, SR_il)
 !
       use volume_rendering
       use anaglyph_volume_rendering
@@ -75,12 +81,16 @@
 !
       type(visualization_controls), intent(inout) :: viz_ctls
       type(four_visualize_modules), intent(inout) :: vizs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
       call SECTIONING_initialize                                        &
      &   (viz_step%PSF_t%increment, geofem, VIZ_DAT%edge_comm, nod_fld, &
-     &    viz_ctls%psf_ctls, vizs%psf, SR_sig1, SR_il1)
+     &    viz_ctls%psf_ctls, vizs%psf, SR_sig, SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
@@ -91,10 +101,10 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
       call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
-     &    viz_ctls%pvr_ctls, vizs%pvr, SR_sig1, SR_r1, SR_i1)
+     &    viz_ctls%pvr_ctls, vizs%pvr, SR_sig, SR_r, SR_i)
       call anaglyph_PVR_initialize(viz_step%PVR_t%increment,            &
      &    geofem, nod_fld, viz_ctls%pvr_anaglyph_ctls,                  &
-     &    vizs%anaglyph_pvr, SR_sig1, SR_r1, SR_i1)
+     &    vizs%anaglyph_pvr, SR_sig, SR_r, SR_i)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
@@ -110,7 +120,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_four(viz_step, time_d, geofem,               &
-     &                          nod_fld, VIZ_DAT, vizs)
+     &          nod_fld, VIZ_DAT, vizs, SR_sig, SR_r, SR_i, SR_il)
 !
       use volume_rendering
       use anaglyph_volume_rendering
@@ -119,10 +129,13 @@
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
       type(VIZ_mesh_field), intent(in) :: VIZ_DAT
-!
       type(phys_data), intent(in) :: nod_fld
 !
       type(four_visualize_modules), intent(inout) :: vizs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
@@ -132,15 +145,15 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
       call ISOSURF_visualize(viz_step%istep_iso, time_d, geofem,        &
-     &    VIZ_DAT%edge_comm, nod_fld, vizs%iso, SR_sig1, SR_il1)
+     &    VIZ_DAT%edge_comm, nod_fld, vizs%iso, SR_sig, SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
       call PVR_visualize(viz_step%istep_pvr, time_d%time, geofem,       &
-     &    VIZ_DAT%jacobians, nod_fld, vizs%pvr, SR_sig1, SR_r1, SR_i1)
+     &    VIZ_DAT%jacobians, nod_fld, vizs%pvr, SR_sig, SR_r, SR_i)
       call anaglyph_PVR_visualize(viz_step%istep_pvr, time_d%time,      &
      &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%anaglyph_pvr,        &
-     &    SR_sig1, SR_r1, SR_i1)
+     &    SR_sig, SR_r, SR_i)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)

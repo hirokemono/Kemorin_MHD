@@ -15,6 +15,7 @@
       use t_VIZ_only_step_parameter
       use t_control_data_section_only
       use t_FEM_mesh_field_4_viz
+      use m_solver_SR
       use FEM_analyzer_viz_surf
 !
       implicit none
@@ -65,7 +66,8 @@
 !  VIZ Initialization
       call init_visualize_surface                                       &
      &   (t_VIZ2%viz_step, FEM_viz2%geofem, edge_comm_PSF,              &
-     &    FEM_viz2%field, sec_viz_ctl2%surfacing_ctls, viz_psfs2)
+     &    FEM_viz2%field, sec_viz_ctl2%surfacing_ctls, viz_psfs2,       &
+     &    SR_sig1, SR_il1)
 !
       end subroutine init_analyzer_psf
 !
@@ -93,7 +95,7 @@
 !
         call visualize_surface(t_VIZ2%viz_step, t_VIZ2%time_d,          &
      &      FEM_viz2%geofem, edge_comm_PSF, FEM_viz2%field,             &
-     &      viz_psfs2)
+     &      viz_psfs2, SR_sig1, SR_il1)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

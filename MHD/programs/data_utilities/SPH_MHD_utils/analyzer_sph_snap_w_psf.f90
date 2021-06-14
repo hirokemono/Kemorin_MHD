@@ -104,7 +104,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
       call init_visualize_surface                                       &
      &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M, FEM_d1%field, &
-     &    DNS_MHD_ctl1%surfacing_ctls, viz_psfs1)
+     &    DNS_MHD_ctl1%surfacing_ctls, viz_psfs1, SR_sig1, SR_il1)
       call init_zonal_mean_sections(MHD_step1%viz_step, FEM_d1%geofem,  &
      &    edge_comm_M, FEM_d1%field, DNS_MHD_ctl1%zm_ctls, zmeans1)
 !
@@ -168,7 +168,8 @@
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        FEM_d1%geofem, edge_comm_M, FEM_d1%field, viz_psfs1)
+     &        FEM_d1%geofem, edge_comm_M, FEM_d1%field, viz_psfs1,      &
+     &        SR_sig1, SR_il1)
 !*
 !*  ----------- Zonal means --------------
 !*

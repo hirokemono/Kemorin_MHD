@@ -14,6 +14,6 @@ t_control_param_repartition.o: $(REPARTITION_DIR)/t_control_param_repartition.f9
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_file_volume_grouping.o: $(REPARTITION_DIR)/t_ctl_file_volume_grouping.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_volume_repart.o t_ctl_data_4_time_steps.o calypso_mpi.o skip_comment_f.o bcast_4_platform_ctl.o calypso_mpi_int.o bcast_4_time_step_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-udt_to_new_partition.o: $(REPARTITION_DIR)/udt_to_new_partition.f90 m_precision.o calypso_mpi.o t_mesh_data.o t_calypso_comm_table.o t_time_data.o t_ucd_data.o t_file_IO_parameter.o t_vector_for_solver.o transfer_to_new_partition.o set_ucd_data_to_type.o parallel_ucd_IO_select.o
+udt_to_new_partition.o: $(REPARTITION_DIR)/udt_to_new_partition.f90 m_precision.o calypso_mpi.o t_mesh_data.o t_calypso_comm_table.o t_time_data.o t_ucd_data.o t_file_IO_parameter.o t_vector_for_solver.o m_solver_SR.o transfer_to_new_partition.o set_ucd_data_to_type.o parallel_ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
