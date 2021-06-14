@@ -101,8 +101,8 @@
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &                       FEM_d1%geofem, FEM_d1%field,               &
-     &                       VIZ_DAT1, vizs1, FEM_d1%v_sol)
+     &        FEM_d1%geofem, FEM_d1%field, VIZ_DAT1, vizs1,             &
+     &        FEM_d1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
 !*
 !*  ----------- Zonal means --------------
 !*

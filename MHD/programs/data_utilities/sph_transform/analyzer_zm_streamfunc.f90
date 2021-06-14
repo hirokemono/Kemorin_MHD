@@ -80,7 +80,8 @@
 !  ------  initialize visualization
       if (iflag_debug.gt.0) write(*,*) 'init_visualize'
       call init_visualize(FEM_STR1%viz_step, FEM_STR1%geofem,           &
-     &    FEM_STR1%field, VIZ_D_STR1, spt_ctl1%viz_ctls, FEM_STR1%vizs)
+     &    FEM_STR1%field, VIZ_D_STR1, spt_ctl1%viz_ctls, FEM_STR1%vizs, &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       end subroutine init_zm_streamfunc
 !
@@ -111,8 +112,8 @@
         if(visval) then
           call istep_viz_w_fix_dt(i_step, FEM_STR1%viz_step)
           call visualize_all(FEM_STR1%viz_step, t_STR%time_d,           &
-     &        FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1,              &
-     &        FEM_STR1%vizs, FEM_STR1%v_sol)
+     &      FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1, FEM_STR1%vizs, &
+     &      FEM_STR1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
         end if
       end do
 !

@@ -80,7 +80,8 @@
      &    SR_sig1, SR_r1, SR_i1, SR_il1)
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize(t_VIZ1%viz_step, FEM_viz1%geofem,             &
-     &    FEM_viz1%field, VIZ_DAT1, vizs_ctl1%viz_ctl_v, vizs_v)
+     &    FEM_viz1%field, VIZ_DAT1, vizs_ctl1%viz_ctl_v, vizs_v,        &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       end subroutine initialize_vizs
 !
@@ -107,8 +108,8 @@
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
-     &                     FEM_viz1%geofem, FEM_viz1%field,             &
-     &                     VIZ_DAT1, vizs_v, FEM_viz1%v_sol)
+     &      FEM_viz1%geofem, FEM_viz1%field, VIZ_DAT1, vizs_v,          &
+     &      FEM_viz1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

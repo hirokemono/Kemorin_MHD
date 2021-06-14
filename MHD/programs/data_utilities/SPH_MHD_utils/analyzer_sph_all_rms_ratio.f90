@@ -99,7 +99,8 @@
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(MHD_step1%viz_step, FEM_d1%geofem,            &
-     &    FEM_d1%field, VIZ_DAT1, MHD_ctl1%viz_ctls, vizs1)
+     &    FEM_d1%field, VIZ_DAT1, MHD_ctl1%viz_ctls, vizs1,             &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -161,8 +162,8 @@
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &                       FEM_d1%geofem, FEM_d1%field,               &
-     &                       VIZ_DAT1, vizs1, FEM_d1%v_sol)
+     &        FEM_d1%geofem, FEM_d1%field, VIZ_DAT1, vizs1,             &
+     &        FEM_d1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !
