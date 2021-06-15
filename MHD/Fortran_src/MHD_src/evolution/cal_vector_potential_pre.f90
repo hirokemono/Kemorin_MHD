@@ -219,7 +219,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !  -----for Adams_Bashforth
       else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
@@ -228,7 +228,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !  -----for Ceank-nicolson
       else if (cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson) then
@@ -362,7 +362,8 @@
         call cal_vector_p_co_exp(iphys_base%i_vecp, FEM_prm,            &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump, mhd_fem_wk,       &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
+     &      v_sol, SR_sig1, SR_r1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect vect_p'

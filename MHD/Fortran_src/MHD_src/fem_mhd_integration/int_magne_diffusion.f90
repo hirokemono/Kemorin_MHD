@@ -89,7 +89,7 @@
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,    &
 !     &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
-!     &    fem_wk, f_l, f_nl, v_sol)
+!     &    fem_wk, f_l, f_nl, v_sol, SR_sig1, SR_r1)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp, ff,       &
 !     &    mlump_cd%ml, nod_fld%ntot_phys, iphys%base%i_magne,          &
 !     &    nod_fld%d_fld)

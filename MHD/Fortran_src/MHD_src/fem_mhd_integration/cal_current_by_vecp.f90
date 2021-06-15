@@ -137,7 +137,7 @@
       call cal_multi_pass_4_vector_ff                                   &
      &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,     &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,        &
-     &    fem_wk, f_l, f_nl, v_sol)
+     &    fem_wk, f_l, f_nl, v_sol, SR_sig, SR_r)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_l%ff, m_lump%ml, nod_fld%ntot_phys,                         &
      &    iphys_base%i_current, nod_fld%d_fld)

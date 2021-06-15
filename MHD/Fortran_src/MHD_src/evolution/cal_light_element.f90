@@ -347,14 +347,16 @@
         call cal_scalar_pre_euler(FEM_prm%iflag_comp_supg, i_field, dt, &
      &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
-     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,           &
+     &      v_sol, SR_sig1, SR_r1)
 !
       else if(property%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &     (FEM_prm%iflag_comp_supg, i_field, iphys_exp%i_pre_composit, &
      &      dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,     &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
-     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,           &
+     &      v_sol, SR_sig1, SR_r1)
 !
       else if(property%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_comp_supg,         &

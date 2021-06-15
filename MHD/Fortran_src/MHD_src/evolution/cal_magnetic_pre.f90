@@ -223,14 +223,14 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams                                        &
      &     (iphys%base%i_magne, iphys%exp_work%i_pre_uxb, dt, FEM_prm,  &
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
@@ -355,7 +355,8 @@
         call cal_magnetic_co_exp(iphys%base%i_magne, FEM_prm,           &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump, mhd_fem_wk,       &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
+     &      v_sol, SR_sig1, SR_r1)
       end if
 !
 !
@@ -439,7 +440,8 @@
      &   (insulate%istack_ele_fld_smp, FEM_prm, mlump_ins,              &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,        &
-     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, v_sol)
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                    &
+     &    v_sol, SR_sig1, SR_r1)
 !
       call cal_sol_magne_insulate                                       &
      &   (nod_fld%n_point, insulate%istack_inter_fld_smp,               &

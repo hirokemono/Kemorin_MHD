@@ -302,14 +302,14 @@
      &      fluid, fl_prop, iphys, iphys_LES, iphys_ele_base, ele_fld,  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mlump_fl, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
 !
       else if(fl_prop%iflag_scheme .eq. id_explicit_adams2) then
         call cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele,       &
      &      fluid, fl_prop, iphys, iphys_LES, iphys_ele_base, ele_fld,  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mlump_fl, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank(SGS_par%commute_p%iflag_c_velo,  &
@@ -442,7 +442,8 @@
      &     (iphys%base%i_velo, iphys%exp_work%i_p_phi,                  &
      &      FEM_prm, nod_comm, node, ele, fluid, fem_int%jcs%g_FEM,     &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mlump_fl, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
+     &      v_sol, SR_sig1, SR_r1)
       end if
 !
 !

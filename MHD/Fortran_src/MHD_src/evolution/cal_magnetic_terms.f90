@@ -181,7 +181,7 @@
      &    iphys_ele_base, ele_fld,                                      &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl, v_sol)
+     &    rhs_mat%f_l, rhs_mat%f_nl, v_sol, SR_sig1, SR_r1)
       call delete_vector_ffs_on_bc                                      &
      &   (node, Bnod_bcs%nod_bc_b, rhs_mat%f_l, rhs_mat%f_nl)
 !
