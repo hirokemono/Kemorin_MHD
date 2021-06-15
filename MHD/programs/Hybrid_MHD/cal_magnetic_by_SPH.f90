@@ -249,7 +249,8 @@
       call cal_vecp_induction
      &   (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,           &
      &    nod_bcs%Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,    &
-     &    mhd_fem_wk%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &    mhd_fem_wk%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld,            &
+     &    vect1, SR_sig1, SR_r1)
 !
       call interpolate_vector_type                                      &
      &   (iphys%forces%i_vp_induct, iphys_sph%forces%i_vp_induct,       &
