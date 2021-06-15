@@ -92,7 +92,7 @@
      &    FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,                         &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
      &    MHD_CG, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,                    &
-     &    label_sim, FEM_MHD%v_sol)
+     &    label_sim, FEM_MHD%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       call nod_fields_send_recv(FEM_MHD%geofem%mesh, FEM_MHD%field,     &
      &                          FEM_MHD%v_sol, SR_sig1, SR_r1)

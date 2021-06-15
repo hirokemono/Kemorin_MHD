@@ -8,7 +8,7 @@
 !!      subroutine s_int_magne_diffusion
 !!     &         (num_int, nod_comm, node, ele, iphys, g_FEM, jac_3d,   &
 !!     &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,                &
-!!     &          f_nl, nod_fld, v_sol)
+!!     &          f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -22,6 +22,8 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module int_magne_diffusion
 !
@@ -38,7 +40,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -51,7 +53,7 @@
       subroutine s_int_magne_diffusion                                  &
      &         (num_int, nod_comm, node, ele, iphys, g_FEM, jac_3d,     &
      &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,                  &
-     &          f_nl, nod_fld, v_sol)
+     &          f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_vect_differences
       use cal_ff_smp_to_ffs
@@ -72,6 +74,8 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !  ---------  set number of integral points
 !
@@ -91,10 +95,10 @@
 !     &    nod_fld%d_fld)
        call cal_ff_smp_2_vector                                         &
      &    (node, rhs_tbl, f_nl%ff_smp, mlump_cd%ml, nod_fld%ntot_phys,  &
-     &     iphys%diffusion%i_b_diffuse, nod_fld%d_fld) 
+     &     iphys%diffusion%i_b_diffuse, nod_fld%d_fld)
 !
        call vector_send_recv(iphys%diffusion%i_b_diffuse, nod_comm,     &
-     &                       nod_fld, v_sol, SR_sig1, SR_r1)
+     &                       nod_fld, v_sol, SR_sig, SR_r)
 !
       end subroutine s_int_magne_diffusion
 !

@@ -32,6 +32,7 @@
       use t_FEM_SGS_structure
       use t_FEM_MHD_mean_square
       use t_MHD_IO_data
+      use m_solver_SR
 !
       implicit none
 !
@@ -76,7 +77,8 @@
      &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
      &    FEM_SGS%Csims, FEM_MHD%iphys, FEM_SGS%iphys_LES,              &
      &    FEM_MHD%field, MHD_CG, SGS_MHD_wk, fem_sq,                    &
-     &    MHD_IO%rst_IO, FEM_MHD%label_sim, FEM_MHD%v_sol)
+     &    MHD_IO%rst_IO, FEM_MHD%label_sim, FEM_MHD%v_sol,              &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !   construct matrix for Poisson and diffusion terms
 !

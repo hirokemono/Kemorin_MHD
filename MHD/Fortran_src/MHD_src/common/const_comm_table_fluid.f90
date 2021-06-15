@@ -12,16 +12,21 @@
 !!
 !!@verbatim
 !!      subroutine s_const_comm_table_fluid                             &
-!!     &         (num_pe, mesh, fluid_mesh, fluid_comm)
+!!     &         (num_pe, mesh, fluid_mesh, fluid_comm, SR_sig, SR_i)
 !!        type(mesh_geometry),    intent(in) :: mesh
 !!        type(field_geometry_data), intent(in) :: fluid_mesh
 !!        type(communication_table), intent(inout) :: fluid_comm
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module const_comm_table_fluid
 !
       use m_precision
       use m_machine_parameter
+!
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit  none
 !
@@ -34,7 +39,7 @@
 !------------------------------------------------------------------
 !
       subroutine s_const_comm_table_fluid                               &
-     &         (num_pe, mesh, fluid_mesh, fluid_comm)
+     &         (num_pe, mesh, fluid_mesh, fluid_comm, SR_sig, SR_i)
 !
       use t_mesh_data
       use t_geometry_data_MHD
@@ -44,6 +49,8 @@
       type(field_geometry_data), intent(in) :: fluid_mesh
 !
       type(communication_table), intent(inout) :: fluid_comm
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
       if (mesh%node%numnod .eq. 0) then
@@ -51,7 +58,8 @@
       else
         call set_const_comm_table_fluid                                 &
      &     (num_pe, fluid_mesh%istack_ele_fld_smp,                      &
-     &      mesh%node, mesh%ele, mesh%nod_comm, fluid_comm)
+     &      mesh%node, mesh%ele, mesh%nod_comm, fluid_comm,             &
+     &      SR_sig, SR_i)
       end if
 !
       end subroutine s_const_comm_table_fluid
@@ -60,10 +68,9 @@
 !------------------------------------------------------------------
 !
       subroutine set_const_comm_table_fluid(num_pe, iele_fl_smp_stack,  &
-     &          node, ele, nod_comm, fluid_comm)
+     &          node, ele, nod_comm, fluid_comm, SR_sig, SR_i)
 !
       use calypso_mpi
-      use m_solver_SR
       use t_comm_table
       use t_geometry_data
 !
@@ -78,6 +85,8 @@
       type(communication_table), intent(in) :: nod_comm
 !
       type(communication_table), intent(inout) :: fluid_comm
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
       call allocate_flags_reduced_comm(num_pe, node%numnod)
@@ -86,7 +95,7 @@
      &    iele_fl_smp_stack(0), iele_fl_smp_stack(np_smp) )
 !
       call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm,             &
-     &                               SR_sig1, SR_i1, iflag_nod)
+     &                               SR_sig, SR_i, iflag_nod)
 !
 !
       call mark_reduced_neib_domain(nod_comm%num_neib,                  &

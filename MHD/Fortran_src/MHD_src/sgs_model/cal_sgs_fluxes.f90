@@ -177,7 +177,7 @@
      &      fluid%istack_ele_fld_smp, mlump_fl,                         &
      &      nod_comm, node, ele, iphys_ele_base, ele_fld,               &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk,                   &
-     &      f_l, f_nl, nod_fld, v_sol)
+     &      f_l, f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
       end if
 !
       end subroutine cal_sgs_heat_flux
@@ -518,18 +518,21 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_vect, i_sgs, dminus, fluid%istack_ele_fld_smp,              &
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
-     &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld,           &
+     &    v_sol, SR_sig1, SR_r1)
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    (i_vect+1),  i_sgs_diffuse, dminus, fluid%istack_ele_fld_smp, &
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
-     &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld,           &
+     &    v_sol, SR_sig1, SR_r1)
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    (i_vect+2), (i_sgs_diffuse+3),                                &
      &    dminus, fluid%istack_ele_fld_smp,                             &
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
-     &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld,           &
+     &    v_sol, SR_sig1, SR_r1)
 !
 !
       call const_viscosity_tensor(nod_fld%n_point, nod_fld%ntot_phys,   &

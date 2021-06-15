@@ -7,7 +7,8 @@
 !!     &          flex_MHD, MHD_step, geofem, MHD_mesh,                 &
 !!     &          FEM_filters, MHD_prop, MHD_BC, FEM_MHD_BCs,           &
 !!     &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld, MHD_CG,     &
-!!     &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim, v_sol)
+!!     &          SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim,            &
+!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -29,6 +30,10 @@
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(field_IO), intent(inout) :: fem_fst_IO
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       module initialization_4_MHD
 !
@@ -62,7 +67,9 @@
       use t_bc_data_list
       use t_field_data_IO
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -76,7 +83,8 @@
      &          flex_MHD, MHD_step, geofem, MHD_mesh,                   &
      &          FEM_filters, MHD_prop, MHD_BC, FEM_MHD_BCs,             &
      &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld, MHD_CG,       &
-     &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim, v_sol)
+     &          SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim,              &
+     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !
       use m_boundary_condition_IDs
       use m_flags_4_solvers
@@ -136,6 +144,10 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(field_IO), intent(inout) :: fem_fst_IO
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
       character(len=kchara), intent(inout)   :: label_sim
 !
       type(shape_finctions_at_points), save :: spfs_1
@@ -164,9 +176,9 @@
 !     ---------------------
 !
       call FEM_comm_initialization(geofem%mesh, v_sol,                  &
-     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
+     &                             SR_sig, SR_r, SR_i, SR_il)
       call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
-     &                             SR_sig1, SR_i1)
+     &                             SR_sig, SR_i)
 !
 !     ---------------------
 !
@@ -212,7 +224,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
       call s_const_comm_table_fluid(nprocs, geofem%mesh,                &
-     &    MHD_mesh%fluid, MHD_CG%DJDS_comm_fl)
+     &    MHD_mesh%fluid, MHD_CG%DJDS_comm_fl, SR_sig, SR_i)
 !
 !  -------------------------------
 !
@@ -304,7 +316,7 @@
      &      SGS_MHD_wk%fem_int%jcs, Csims_FEM_MHD%diff_coefs,           &
      &      MHD_prop, MHD_BC, FEM_prm%DJDS_param, spfs_1,               &
      &      MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM,                            &
-     &      MHD_CG%MGCG_MHD_FEM, MHD_CG%MHD_mat)
+     &      MHD_CG%MGCG_MHD_FEM, MHD_CG%MHD_mat, SR_sig, SR_i)
       end if
 !
 !     --------------------- 

@@ -146,7 +146,8 @@
      &   (iflag_supg, num_int, dt, ifield_f, iphys_SGS_wk%i_simi,       &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
-     &    jacs%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    jacs%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld,            &
+     &    v_sol, SR_sig1, SR_r1)
 !
 !   take gradient of temperature (to iphys_SGS_wk%i_nlg)
 !
@@ -156,7 +157,8 @@
      &   (iflag_supg, num_int, dt, ifield, iphys_SGS_wk%i_nlg,          &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
-     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld,             &
+     &    v_sol, SR_sig1, SR_r1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

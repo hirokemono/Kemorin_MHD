@@ -202,7 +202,7 @@
       call vect_gradients_4_monitor                                     &
      &   (dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,              &
      &    MHD_mesh%fluid, iphys, iphys_ele_base, fem_int, mk_MHD,       &
-     &    rhs_mat, nod_fld, ele_fld, v_sol)
+     &    rhs_mat, nod_fld, ele_fld, v_sol, SR_sig1, SR_r1)
       call cal_forces_4_monitor(dt, FEM_prm, SGS_par,                   &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
@@ -230,7 +230,8 @@
       call cal_work_4_forces                                            &
      &  (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,                   &
      &   MHD_prop%fl_prop, MHD_prop%cd_prop, iphys, iphys_LES,          &
-     &   fem_int, mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
+     &   fem_int, mk_MHD, mhd_fem_wk, rhs_mat, nod_fld,                 &
+     &   v_sol, SR_sig1, SR_r1)
 !
       call cal_work_4_sgs_terms(FEM_prm,                                &
      &   mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,          &

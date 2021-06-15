@@ -1,12 +1,16 @@
+!>@file   initialize_4_MHD_AMG.f90
+!!@brief  module initialize_4_MHD_AMG
+!!
+!!@author  H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!     module initialize_4_MHD_AMG
-!
-!        programmed H.Matsui on Dec., 2008
-!
+!>@brief Initilaization of solvers for FEM MHD
+!!
+!!@verbatim
 !!      subroutine s_initialize_4_MHD_AMG                               &
-!!     &         (dt, FEM_prm, mesh_1st, jacs_1st,                      &
-!!     &          diff_coefs, MHD_prop, MHD_BC, DJDS_param, spfs,       &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
+!!     &         (dt, FEM_prm, mesh_1st, jacs_1st, diff_coefs, MHD_prop,&
+!!     &          MHD_BC, DJDS_param, spfs, MGCG_WK, MGCG_FEM,          &
+!!     &          MGCG_MHD_FEM, MHD_mat, SR_sig, SR_i)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh_1st
 !!        type(jacobians_type), intent(in) :: jacs_1st
@@ -22,6 +26,9 @@
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_mat
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!@endverbatim
 !
       module initialize_4_MHD_AMG
 !
@@ -39,7 +46,8 @@
       use t_next_node_ele_4_node
       use t_MGCG_data
       use t_MGCG_data_4_MHD
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
 !
       use calypso_mpi
 !
@@ -52,9 +60,9 @@
 ! ---------------------------------------------------------------------
 !
       subroutine s_initialize_4_MHD_AMG                                 &
-     &         (dt, FEM_prm, mesh_1st, jacs_1st,                        &
-     &          diff_coefs, MHD_prop, MHD_BC, DJDS_param, spfs,         &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
+     &         (dt, FEM_prm, mesh_1st, jacs_1st, diff_coefs, MHD_prop,  &
+     &          MHD_BC, DJDS_param, spfs, MGCG_WK, MGCG_FEM,            &
+     &          MGCG_MHD_FEM, MHD_mat, SR_sig, SR_i)
 !
       use t_mesh_data
       use t_edge_data
@@ -97,6 +105,8 @@
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(MHD_MG_matrices), intent(inout) :: MHD_mat
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: i_level
 !
@@ -137,7 +147,7 @@
      &        MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
      &        MGCG_FEM%MG_mesh(i_level)%mesh%ele,                       &
      &        MGCG_FEM%MG_mesh(i_level)%mesh%surf,                      &
-     &        MGCG_FEM%MG_mesh(i_level)%mesh%edge, SR_sig1, SR_i1)
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%edge, SR_sig, SR_i)
 !
           call const_global_mesh_infos(MGCG_FEM%MG_mesh(i_level)%mesh)
         else
@@ -188,7 +198,8 @@
         call s_const_comm_table_fluid(MGCG_WK%MG_mpi(i_level)%nprocs,   &
      &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
      &      MGCG_MHD_FEM%MG_MHD_mesh(i_level)%fluid,                    &
-     &      MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm)
+     &      MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm,              &
+     &      SR_sig, SR_i)
       end do
 !
 !     -----  set DJDS matrix connectivity

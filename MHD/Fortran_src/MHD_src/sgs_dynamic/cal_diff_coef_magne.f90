@@ -170,14 +170,15 @@
      &    iphys_SGS_wk%i_wd_nlg, iphys_SGS_wk%i_simi,                   &
      &    ele%istack_ele_smp, m_lump, nod_comm, node, ele,              &
      &    iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,    &
-     &    fem_wk, f_nl, nod_fld, v_sol)
+     &    fem_wk, f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
-     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld,             &
+     &    v_sol, SR_sig1, SR_r1)
 !
 !   take rotation and gradient of B (to iphys_SGS_wk%i_nlg)
 !
@@ -188,14 +189,15 @@
      &    iphys_base%i_magne, iphys_SGS_wk%i_nlg, ele%istack_ele_smp,   &
      &    m_lump, nod_comm, node, ele, iphys_ele_base, ele_fld,         &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk,                     &
-     &    f_nl, nod_fld, v_sol)
+     &    f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &                     i_sgs_grad_p, iphys_base%i_mag_p
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys_base%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump, &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
-     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld,             &
+     &    v_sol, SR_sig1, SR_r1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

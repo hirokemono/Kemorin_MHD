@@ -174,7 +174,7 @@
      &    iphys_fil%i_velo, iphys_SGS_wk%i_simi,                        &
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
      &    iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,             &
-     &    rhs_tbl, fem_wk, f_nl, nod_fld, v_sol)
+     &    rhs_tbl, fem_wk, f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
@@ -182,7 +182,7 @@
      &    i_sgs_grad_fp, i_sgs_simi_p, fluid%istack_ele_fld_smp,        &
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl,          &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !   take rotation and gradient of velocity (to iphys_SGS_wk%i_nlg)
 !
@@ -193,7 +193,7 @@
      &    iphys_base%i_velo, iphys_SGS_wk%i_nlg,                        &
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
      &    iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,             &
-     &    rhs_tbl, fem_wk, f_nl, nod_fld, v_sol)
+     &    rhs_tbl, fem_wk, f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &                     i_sgs_grad_p, iphys_base%i_press
       call choose_cal_gradient                                          &
@@ -201,7 +201,7 @@
      &    iphys_base%i_press, i_sgs_grad_p,                             &
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
      &    iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,    &
-     &    fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    fem_wk, f_l, f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
