@@ -6,9 +6,18 @@
 !
 !     solve using CRS matrix
 !
-!      subroutine solve_by_crs_solver11(nod_comm, node)
-!      subroutine solve_by_crs_solver33(nod_comm, node)
-!      subroutine solve_by_crs_solverNN(nod_comm, node)
+!!      subroutine solve_by_crs_solver11(nod_comm, node, tbl_crs,       &
+!!     &                                 mat_crs, SR_sig, SR_r)
+!!      subroutine solve_by_crs_solver33(nod_comm, node, tbl_crs,       &
+!!     &                                 mat_crs, SR_sig, SR_r)
+!!      subroutine solve_by_crs_solverNN(nod_comm, node, tbl_crs,       &
+!!     &                                 mat_crs, SR_sig, SR_r)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(CRS_matrix_connect), intent(in) :: tbl_crs
+!!        type(CRS_matrix), intent(inout) :: mat_crs
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module solve_by_crs_solver
 !
@@ -16,7 +25,7 @@
 !
       use calypso_mpi
 !
-      use m_solver_SR
+      use t_solver_SR
       use t_comm_table
       use t_geometry_data
       use t_crs_matrix
@@ -31,7 +40,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_crs_solver11(nod_comm, node, tbl_crs, mat_crs)
+      subroutine solve_by_crs_solver11(nod_comm, node, tbl_crs,         &
+     &                                 mat_crs, SR_sig, SR_r)
 !
       use solver
 !
@@ -39,6 +49,8 @@
       type(node_data), intent(in) :: node
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
       integer(kind = kint) :: ierr
 !
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
@@ -58,13 +70,14 @@
      &             mat_crs%ITERactual, ierr,                            &
      &             mat_crs%METHOD_crs, mat_crs%PRECOND_crs,             &
      &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs,         &
-     &             SR_sig1, SR_r1)
+     &             SR_sig, SR_r)
 !
       end subroutine solve_by_crs_solver11
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_crs_solver33(nod_comm, node, tbl_crs, mat_crs)
+      subroutine solve_by_crs_solver33(nod_comm, node, tbl_crs,         &
+     &                                 mat_crs, SR_sig, SR_r)
 !
       use solver33
 !
@@ -72,6 +85,8 @@
       type(node_data), intent(in) :: node
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
       integer(kind = kint) :: ierr
 !
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
@@ -91,13 +106,14 @@
      &             mat_crs%ITERactual, ierr,                            &
      &             mat_crs%METHOD_crs, mat_crs%PRECOND_crs,             &
      &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs,         &
-     &             SR_sig1, SR_r1)
+     &             SR_sig, SR_r)
 !
       end subroutine solve_by_crs_solver33
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_crs_solverNN(nod_comm, node, tbl_crs, mat_crs)
+      subroutine solve_by_crs_solverNN(nod_comm, node, tbl_crs,         &
+     &                                 mat_crs, SR_sig, SR_r)
 !
       use solverNN
 !
@@ -105,6 +121,8 @@
       type(node_data), intent(in) :: node
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
       integer(kind = kint) :: ierr
 !
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
@@ -124,7 +142,7 @@
      &             mat_crs%ITERactual, ierr,                            &
      &             mat_crs%METHOD_crs, mat_crs%PRECOND_crs,             &
      &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs,         &
-     &             SR_sig1, SR_r1)
+     &             SR_sig, SR_r)
 !
       end  subroutine solve_by_crs_solverNN
 !

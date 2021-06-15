@@ -17,6 +17,7 @@
       use t_FEM_mesh_field_4_viz
       use t_file_IO_parameter
       use FEM_analyzer_viz_surf
+      use m_solver_SR
 !
       implicit none
 !
@@ -68,7 +69,7 @@
       call init_visualize_convert_vtk                                   &
      &   (FEM_viz5%geofem, FEM_viz5%field, t_VIZ5%ucd_step,             &
      &    sec_viz_ctl5%surfacing_ctls%output_ucd_fmt_s_ctl,             &
-     &    FEM_viz5%ucd_file_IO, vtk_file_IO5, vtk_out5)
+     &    FEM_viz5%ucd_file_IO, vtk_file_IO5, vtk_out5, SR_sig1, SR_i1)
 !
       end subroutine init_analyzer_VTK_convert
 !

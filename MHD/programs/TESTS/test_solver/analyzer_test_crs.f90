@@ -17,6 +17,7 @@
       use t_crs_matrix
       use t_iccg_parameter
       use t_ctl_data_solver_test
+      use m_solver_SR
 !
       implicit none
 !
@@ -75,13 +76,16 @@
 
       if (mat_crs%SOLVER_crs .eq. 'scalar'                              &
      &    .or. mat_crs%SOLVER_crs.eq.'SCALAR') then
-        call solve_by_crs_solver11(nod_comm, node, tbl_crs, mat_crs)
+        call solve_by_crs_solver11(nod_comm, node, tbl_crs,             &
+     &                             mat_crs, SR_sig1, SR_r1)
       else if (mat_crs%SOLVER_crs.eq.'block33'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCK33') then
-        call solve_by_crs_solver33(nod_comm, node, tbl_crs, mat_crs)
+        call solve_by_crs_solver33(nod_comm, node, tbl_crs,             &
+     &                             mat_crs, SR_sig1, SR_r1)
       else if (mat_crs%SOLVER_crs.eq.'blockNN'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCKNN') then
-        call solve_by_crs_solverNN(nod_comm, node, tbl_crs, mat_crs)
+        call solve_by_crs_solverNN(nod_comm, node, tbl_crs,             &
+     &                             mat_crs, SR_sig1, SR_r1)
       end if
 
       call output_solution(node, mat_crs)
