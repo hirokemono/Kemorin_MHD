@@ -108,7 +108,7 @@
      &    iphys_wfl%i_velo, iphys_wfl%i_magne,                          &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%wide_filtering, FEM_SGS_wk%wk_filter,             &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_simi)
 !
@@ -121,7 +121,7 @@
      &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, FEM_SGS_wk%wk_filter,                  &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !      filtering
 !
@@ -206,7 +206,8 @@
      &    iphys_wfl%i_velo, iphys_wfl%i_magne,                          &
      &    icomp_sgs_term%i_SGS_induction, SGS_par%filter_p,             &
      &    mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,         &
-     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld,                 &
+     &    v_sol, SR_sig1, SR_r1)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_wd_nlg)
 !
@@ -219,7 +220,8 @@
      &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
      &    icomp_sgs_term%i_SGS_induction, SGS_par%filter_p,             &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld,                 &
+     &    v_sol, SR_sig1, SR_r1)
 !
 !    copy to work array
 !

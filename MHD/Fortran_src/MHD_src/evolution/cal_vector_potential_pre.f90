@@ -181,7 +181,7 @@
      &      Csims_FEM_MHD%icomp_sgs_term,                               &
      &      Csims_FEM_MHD%iphys_elediff_vec,                            &
      &      Csims_FEM_MHD%sgs_coefs_nod, wk_filter, mhd_fem_wk,         &
-     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then

@@ -12,7 +12,8 @@
 !!     &         (i_filter,  i_sgs, i_field, id_dx, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
 !!     &          iphys_ele_base, ele_fld, jacs rhs_tbl, FEM_elens,     &
-!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol)
+!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld,           &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -31,6 +32,8 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_sgs_uxb_grad
 !
@@ -52,7 +55,7 @@
       use t_SGS_model_coefs
       use t_MHD_finite_element_mat
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -119,7 +122,8 @@
      &         (i_filter,  i_sgs, i_field, id_dx, dt,                   &
      &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol)
+     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld,             &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -150,6 +154,8 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !  ----------  clear the vector and lumped mass matrix
 !
@@ -168,7 +174,7 @@
 ! ----------   communications
 !
       call vector_send_recv(i_sgs, nod_comm, nod_fld,                   &
-     &                      v_sol, SR_sig1, SR_r1)
+     &                      v_sol, SR_sig, SR_r)
 !
       end subroutine cal_sgs_vp_induct_grad_no_coef
 !

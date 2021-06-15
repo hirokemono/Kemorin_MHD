@@ -60,6 +60,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -130,7 +131,7 @@
      &    iphys_fil%i_magne, icomp_sgs_term%i_SGS_Lorentz,              &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, sgs_coefs_nod, FEM_SGS_wk%wk_filter,   &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !    copy to work array
 !
@@ -146,7 +147,7 @@
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele_base, fld_ele, fem_int%jcs, FEM_filters%FEM_elens,  &
      &    fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !   gradient model by original field
 !
@@ -157,7 +158,7 @@
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele_base, fld_ele, fem_int%jcs, FEM_filters%FEM_elens,  &
      &    fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !      filtering
 !

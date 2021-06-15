@@ -199,7 +199,7 @@
      &      iak_sgs_term, icomp_sgs_term, iak_diff_sgs,                 &
      &      iphys_elediff_vec, sgs_coefs_nod, diff_coefs,               &
      &      mlump_fl, wk_filter,  wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,  &
-     &      nod_fld, ele_fld, sgs_coefs, v_sol)
+     &      nod_fld, ele_fld, sgs_coefs, v_sol, SR_sig1, SR_r1)
       end if
 !
       if(SGS_par%model_p%iflag_SGS_m_flux .ne. id_SGS_none) then
@@ -210,7 +210,8 @@
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
+     &      v_sol, SR_sig1, SR_r1)
       end if
 !
       if(SGS_par%model_p%iflag_SGS_lorentz .ne. id_SGS_none) then
@@ -221,7 +222,8 @@
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
+     &      v_sol, SR_sig1, SR_r1)
       end if
 !
 !   --- reset work array for time evolution

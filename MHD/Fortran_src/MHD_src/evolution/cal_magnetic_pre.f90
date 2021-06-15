@@ -170,7 +170,7 @@
      &      Csims_FEM_MHD%iphys_elediff_vec,                            &
      &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod,   &
      &      mlump_cd, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,            &
-     &      rhs_mat%f_l, nod_fld, v_sol)
+     &      rhs_mat%f_l, nod_fld, v_sol, SR_sig1, SR_r1)
       end if
 !
       call reset_ff_smps(mesh%node, rhs_mat%f_l, rhs_mat%f_nl)

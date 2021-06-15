@@ -248,7 +248,8 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid,                  &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,   &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                     &
+     &      v_sol, SR_sig1, SR_r1)
       end if
 !
 !      call check_nodal_data                                            &

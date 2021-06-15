@@ -57,6 +57,7 @@
       use t_FEM_SGS_model_coefs
       use t_work_FEM_SGS_MHD
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -194,7 +195,8 @@
      &    Csims_FEM_MHD%iphys_elediff_vec,                              &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    filtering, mk_MHD, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
-     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,           &
+     &    v_sol, SR_sig1, SR_r1)
 !
       call cal_fluxes_4_monitor                                         &
      &  (mesh%node, MHD_prop%fl_prop, MHD_prop%cd_prop, iphys, nod_fld)
@@ -220,7 +222,8 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
      &    iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int, FEM_elens, &
      &    Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,         &
-     &    mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld, v_sol)
+     &    mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                &
+     &    v_sol, SR_sig1, SR_r1)
 !
       call cal_true_sgs_terms_post                                      &
      &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, iphys%div_forces, &
@@ -237,7 +240,7 @@
      &   mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,          &
      &   MHD_prop%fl_prop, MHD_prop%cd_prop, iphys, iphys_LES,          &
      &   fem_int%jcs, fem_int%rhs_tbl, mk_MHD, mhd_fem_wk,              &
-     &   rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol)
+     &   rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
 ! 
       end subroutine cal_energy_fluxes
 !

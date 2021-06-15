@@ -184,7 +184,7 @@
      &        MHD_mesh%fluid, fem_int, FEM_filters, iphys_elediff_fil,  &
      &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
-     &        diff_coefs, v_sol)
+     &        diff_coefs, v_sol, SR_sig1, SR_r1)
         end if
       end if
 !
@@ -243,7 +243,7 @@
      &        MHD_mesh%fluid, fem_int, FEM_filters, iphys_elediff_fil,  &
      &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
-     &        diff_coefs, v_sol)
+     &        diff_coefs, v_sol, SR_sig1, SR_r1)
         end if
       end if
 !
@@ -259,7 +259,8 @@
      &        iphys_elediff_vec, iphys_elediff_fil,                     &
      &        sgs_coefs_nod, SGS_MHD_wk%mk_MHD,                         &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs, v_sol)
+     &        SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs,                   &
+     &        v_sol, SR_sig1, SR_r1)
         else if(SGS_par%model_p%iflag_SGS_m_flux                        &
      &                        .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
@@ -271,7 +272,7 @@
      &        iphys_LES%SGS_wk, fem_int, FEM_filters,                   &
      &        iak_sgs_term, icomp_sgs_term, SGS_MHD_wk%FEM_SGS_wk,      &
      &        SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs,                   &
-     &        sgs_coefs_nod, v_sol)
+     &        sgs_coefs_nod, v_sol, SR_sig1, SR_r1)
         end if
 !
         if(SGS_par%commute_p%iflag_c_mf .eq. id_SGS_commute_ON) then
@@ -315,7 +316,7 @@
      &       iphys_LES%SGS_term, iphys_LES%SGS_wk,                      &
      &       fem_int, FEM_filters, iak_sgs_term, icomp_sgs_term,        &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       sgs_coefs, sgs_coefs_nod, v_sol)
+     &       sgs_coefs, sgs_coefs_nod, v_sol, SR_sig1, SR_r1)
         end if
 !
         if(SGS_par%commute_p%iflag_c_lorentz .eq. id_SGS_commute_ON)    &
@@ -350,7 +351,8 @@
      &       iphys_elediff_vec, iphys_elediff_fil,                      &
      &       sgs_coefs_nod, SGS_MHD_wk%mk_MHD,                          &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
-     &       SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs, v_sol)
+     &       SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs,                    &
+     &       v_sol, SR_sig1, SR_r1)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                            .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
@@ -376,7 +378,8 @@
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       fem_int, sgs_coefs, FEM_filters, SGS_MHD_wk%mk_MHD,        &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
-     &       SGS_MHD_wk%rhs_mat, nod_fld, diff_coefs, v_sol)
+     &       SGS_MHD_wk%rhs_mat, nod_fld, diff_coefs,                   &
+     &       v_sol, SR_sig1, SR_r1)
         end if
 !
       else if(MHD_prop%cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)  &
@@ -393,7 +396,8 @@
      &        iak_sgs_term, icomp_sgs_term, iphys_elediff_vec,          &
      &        iphys_elediff_fil, SGS_MHD_wk%mk_MHD,                     &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs, v_sol)
+     &        SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs,                   &
+     &        v_sol, SR_sig1, SR_r1)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                         .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)  write(*,*)                             &

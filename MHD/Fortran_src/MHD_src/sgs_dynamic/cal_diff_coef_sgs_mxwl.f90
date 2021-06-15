@@ -144,7 +144,8 @@
      &    FEM_prm, SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele, &
      &    fluid, iphys_ele_base, ele_fld, fem_int%jcs,                  &
      &    FEM_filters%FEM_elens, sgs_coefs, fem_int%rhs_tbl,            &
-     &    mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld, v_sol)
+     &    mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld,         &
+     &    v_sol, SR_sig1, SR_r1)
 !
 !   take divergence of filtered heat flux (to iphys_SGS_wk%i_simi)
 !

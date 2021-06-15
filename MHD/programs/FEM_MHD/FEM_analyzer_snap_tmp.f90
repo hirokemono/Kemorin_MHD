@@ -343,7 +343,7 @@
      &      ak_MHD, fem_int, FEM_elens,                                 &
      &      Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,       &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                       &
-     &      nod_fld, ele_fld, v_sol)
+     &      nod_fld, ele_fld, v_sol, SR_sig1, SR_r1)
       end if
 !
 !$omp parallel
@@ -377,8 +377,8 @@
      &     FEM_elens, filtering, Csims_FEM_MHD%icomp_sgs_term,          &
      &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,    &
      &     mk_MHD%mlump_cd, FEM_SGS_wk%wk_filter, mhd_fem_wk,           &
-     &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
-
+     &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,          &
+     &     v_sol, SR_sig1, SR_r1)
       end if
 !
       if (iphys_LES%SGS_term%i_SGS_induction .gt. 0) then
@@ -388,7 +388,7 @@
      &      mesh%node, mesh%ele, MHD_mesh%conduct, iphys, iphys_LES,    &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl,  &
-     &      nod_fld, v_sol)
+     &      nod_fld, v_sol, SR_sig1, SR_r1)
       end if
 !
 !$omp parallel

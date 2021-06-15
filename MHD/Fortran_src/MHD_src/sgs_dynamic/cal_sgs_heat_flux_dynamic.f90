@@ -125,7 +125,7 @@
      &   (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icomp_sgs_flux,      &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, sgs_coefs_nod, FEM_SGS_wk%wk_filter,   &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig1, SR_r1)
 !
 !    copy to work array
 !
