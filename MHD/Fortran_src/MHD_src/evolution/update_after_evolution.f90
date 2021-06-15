@@ -86,6 +86,7 @@
       use t_FEM_MHD_solvers
       use t_FEM_SGS_structure
       use t_vector_for_solver
+      use m_solver_SR
 !
       implicit none
 !
@@ -196,7 +197,8 @@
      &    Csims_FEM_MHD%iphys_elediff_fil,                              &
      &    SGS_MHD_wk%fem_int, FEM_filters,                              &
      &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD%sgs_coefs,                 &
-     &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs, v_sol)
+     &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,        &
+     &    v_sol, SR_sig1, SR_r1)
 !
       end subroutine cal_FEM_model_coefficients
 !
