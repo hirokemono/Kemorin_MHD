@@ -216,7 +216,8 @@
      &        FEM_SGS_wk%wk_filter, FEM_SGS_wk%wk_cor,                  &
      &        FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, mk_MHD%mlump_fl,   &
      &        rhs_mat%fem_wk, rhs_mat%surf_wk,                          &
-     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs, v_sol)
+     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs,           &
+     &        v_sol, SR_sig1, SR_r1)
         end if
 !
       end if

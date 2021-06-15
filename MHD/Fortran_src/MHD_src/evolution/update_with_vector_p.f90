@@ -187,7 +187,7 @@
      &            FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                 &
      &            FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
      &            rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                   &
-     &            diff_coefs, v_sol)
+     &            diff_coefs, v_sol, SR_sig1, SR_r1)
             end if
 !
           end if
@@ -207,7 +207,8 @@
      &      group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,       &
      &      FEM_filters%FEM_elens, diff_coefs, Bnod_bcs%nod_bc_b,       &
      &      Asf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk,               &
-     &      rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld, v_sol)
+     &      rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld,                     &
+     &      v_sol, SR_sig1, SR_r1)
       end if
       if (iphys_ele_base%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'

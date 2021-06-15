@@ -9,7 +9,8 @@
 !!     &          iphys_base, iphys_fil, iphys_SGS_wk,                  &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
 !!     &          filtering, m_lump, wk_filter, wk_cor, wk_lsq, wk_diff,&
-!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs, v_sol)
+!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs,      &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -40,6 +41,8 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_diff_coef_vector_p
 !
@@ -70,7 +73,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -86,7 +89,8 @@
      &          iphys_base, iphys_fil, iphys_SGS_wk,                    &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
      &          filtering, m_lump, wk_filter, wk_cor, wk_lsq, wk_diff,  &
-     &          fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs, v_sol)
+     &          fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs,        &
+     &          v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -136,6 +140,8 @@
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer (kind=kint) :: i_sgs_grad_p, i_sgs_grad_fp, i_sgs_simi_p
 !
@@ -157,7 +163,7 @@
       call cal_filtered_scalar_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    i_sgs_grad_fp, iphys_base%i_mag_p, wk_filter, nod_fld,        &
-     &    v_sol, SR_sig1, SR_r1)
+     &    v_sol, SR_sig, SR_r)
 !
 !   take rotation and gradient of filtered A (to iphys_SGS_wk%i_simi)
 !
@@ -168,7 +174,7 @@
      &    iphys_SGS_wk%i_wd_nlg, iphys_SGS_wk%i_simi,                   &
      &    ele%istack_ele_smp, m_lump, nod_comm, node, ele,              &
      &    iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,    &
-     &    fem_wk, f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
+     &    fem_wk, f_nl, nod_fld, v_sol, SR_sig, SR_r)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
@@ -176,7 +182,7 @@
      &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld,             &
-     &    v_sol, SR_sig1, SR_r1)
+     &    v_sol, SR_sig, SR_r)
 !
 !   take rotation and gradient of vector potential
 !                               (to iphys_SGS_wk%i_nlg)
@@ -188,7 +194,7 @@
      &    iphys_base%i_vecp, iphys_SGS_wk%i_nlg, ele%istack_ele_smp,    &
      &    m_lump, nod_comm, node, ele, iphys_ele_base, ele_fld,         &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk,                     &
-     &    f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
+     &    f_nl, nod_fld, v_sol, SR_sig, SR_r)
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &                     i_sgs_grad_p, iphys_base%i_mag_p
       call choose_cal_gradient                                          &
@@ -196,18 +202,18 @@
      &    iphys_base%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump, &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld,             &
-     &    v_sol, SR_sig1, SR_r1)
+     &    v_sol, SR_sig, SR_r)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
-     &    nod_fld, v_sol, SR_sig1, SR_r1)
+     &    nod_fld, v_sol, SR_sig, SR_r)
 !      call cal_filtered_scalar_whole                                   &
 !     &   (SGS_par%filter_p, nod_comm, node, filtering,                 &
 !     &    iphys_SGS_wk%i_nlg+6, iphys_SGS_wk%i_nlg+6, wk_filter,       &
-!     &    nod_fld, v_sol, SR_sig1, SR_r1)
+!     &    nod_fld, v_sol, SR_sig, SR_r)
 !
 !    take difference (to iphys_SGS_wk%i_simi)
 !
@@ -237,7 +243,7 @@
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv(iphys_SGS_wk%i_wd_nlg, nod_comm,        &
-     &                          nod_fld, v_sol, SR_sig1, SR_r1)
+     &                          nod_fld, v_sol, SR_sig, SR_r)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_wd_nlg)
@@ -260,14 +266,14 @@
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv(iphys_SGS_wk%i_nlg, nod_comm,           &
-     &                          nod_fld, v_sol, SR_sig1, SR_r1)
+     &                          nod_fld, v_sol, SR_sig, SR_r)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
-     &    nod_fld, v_sol, SR_sig1, SR_r1)
+     &    nod_fld, v_sol, SR_sig, SR_r)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_nlg)

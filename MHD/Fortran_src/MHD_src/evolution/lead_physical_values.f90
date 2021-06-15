@@ -118,7 +118,7 @@
      &   SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                     &
      &   Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,         &
      &   SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,  &
-     &   nod_fld, v_sol)
+     &   nod_fld, v_sol, SR_sig1, SR_r1)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
       call cal_helicity(iphys, nod_fld)

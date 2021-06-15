@@ -287,7 +287,7 @@
      &      MHD_mesh%fluid, fem_int, FEM_filters, sgs_coefs,            &
      &      SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                   &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                  &
-     &      nod_fld, diff_coefs, v_sol)
+     &      nod_fld, diff_coefs, v_sol, SR_sig1, SR_r1)
         end if
       end if
 !
@@ -332,7 +332,7 @@
      &      icomp_sgs_term, iphys_elediff_fil, sgs_coefs,               &
      &      SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                   &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,         &
-     &      diff_coefs, v_sol)
+     &      diff_coefs, v_sol, SR_sig1, SR_r1)
         end if
       end if
 !

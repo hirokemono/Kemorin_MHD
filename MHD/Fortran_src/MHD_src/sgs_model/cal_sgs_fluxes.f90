@@ -170,7 +170,7 @@
      &    icomp_sgs_flux, i_sgs, ifleld, ie_dvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele_base, ele_fld, jacs,    &
      &    rhs_tbl, FEM_elens, sgs_coefs, mlump_fl, mhd_fem_wk, fem_wk,  &
-     &    f_l, nod_fld, v_sol)
+     &    f_l, nod_fld, v_sol, SR_sig, SR_r)
 !
       else if(iflag_SGS_flux .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_sf_simi'
