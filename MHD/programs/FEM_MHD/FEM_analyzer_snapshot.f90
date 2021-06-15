@@ -96,7 +96,8 @@
      &   FEM_SGS%Csims, FEM_MHD%iphys, FEM_SGS%iphys_LES,               &
      &   FEM_MHD%field, SNAP_time_IO, MHD_step%rst_step,                &
      &   SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,                             &
-     &   FEM_MHD%label_sim, FEM_MHD%v_sol)
+     &    FEM_MHD%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1,                 &
+     &    FEM_MHD%label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_model%MHD_mesh,   &
@@ -187,7 +188,8 @@
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_MHD%geofem,           &
      &    FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,                    &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_SGS%FEM_filters,        &
-     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol)
+     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,                     &
+     &    FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -196,7 +198,7 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, FEM_MHD%v_sol)
+     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
 !     ========  Data output
 !
@@ -205,7 +207,7 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk,                      &
-     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol)
+     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
 !     -----Output monitor date
 !

@@ -106,7 +106,7 @@
      &    FEM_SGS%SGS_par, FEM_MHD%geofem, FEM_model%MHD_mesh,          &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, FEM_MHD%v_sol)
+     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
       call copy_model_coef_2_previous                                   &
      &   (FEM_SGS%SGS_par%model_p, FEM_SGS%SGS_par%commute_p,           &
@@ -134,14 +134,14 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, FEM_MHD%v_sol)
+     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_MHD%geofem,           &
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    MHD_CG%ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk,               &
-     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol)
+     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
 !     ---------------------
 !
@@ -228,7 +228,7 @@
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    MHD_CG%ak_MHD, FEM_SGS%FEM_filters, MHD_CG%solver_pack,       &
      &    MHD_CG%MGCG_WK, SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,     &
-     &    fem_sq, FEM_MHD%v_sol)
+     &    fem_sq, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -237,7 +237,7 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, FEM_MHD%v_sol)
+     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
 !     ---------------------
 !
@@ -255,7 +255,7 @@
      &    FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs,                    &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, MHD_CG%ak_MHD,              &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk,                              &
-     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol)
+     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
 !
 !     -----Output monitor date
 !

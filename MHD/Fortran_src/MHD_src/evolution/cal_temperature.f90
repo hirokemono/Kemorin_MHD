@@ -13,7 +13,7 @@
 !!     &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,           &
 !!     &         diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,        &
 !!     &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
-!!     &         nod_fld, v_sol)
+!!     &         nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -46,6 +46,8 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_temperature
 !
@@ -85,7 +87,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -105,7 +107,7 @@
      &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
      &         diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,          &
      &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
-     &         nod_fld, v_sol)
+     &         nod_fld, v_sol, SR_sig, SR_r)
 !
       integer(kind = kint), intent(in) :: i_field
       real(kind = kreal), intent(in) :: dt
@@ -143,6 +145,8 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call cal_temperature_pre                                          &
@@ -156,7 +160,8 @@
      &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
      &    mk_MHD%mlump_fl, Smatrix, ak_MHD%ak_d_temp, MGCG_WK,          &
      &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
-     &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,          &
+     &    v_sol, SR_sig, SR_r)
 !
       end subroutine cal_temperature_field
 !
@@ -171,7 +176,7 @@
      &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
      &         diff_coefs, filtering, mlump_fl, Smatrix, ak_diffuse,    &
      &         MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,         &
-     &         f_l, f_nl, nod_fld, v_sol)
+     &         f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -233,6 +238,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !      call check_jacobians_triquad(mesh%ele, jacs%jac_3d)
@@ -249,7 +256,7 @@
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,   &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                     &
-     &      v_sol, SR_sig1, SR_r1)
+     &      v_sol, SR_sig, SR_r)
       end if
 !
 !      call check_nodal_data                                            &
@@ -345,14 +352,14 @@
      &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,           &
-     &      v_sol, SR_sig1, SR_r1)
+     &      v_sol, SR_sig, SR_r)
       else if (property%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &     (FEM_prm%iflag_temp_supg, i_field, iphys_exp%i_pre_heat,     &
      &      dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,     &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,           &
-     &      v_sol, SR_sig1, SR_r1)
+     &      v_sol, SR_sig, SR_r)
       else if (property%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_temp_supg,         &
      &      cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
@@ -362,7 +369,7 @@
      &      nod_bcs, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_elens, diff_coefs, mlump_fl, Smatrix,          &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
-     &      nod_fld, v_sol, SR_sig1, SR_r1)
+     &      nod_fld, v_sol, SR_sig, SR_r)
       else if (property%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
@@ -371,12 +378,12 @@
      &      mesh%node, mesh%ele, fluid, property, nod_bcs, jacs%g_FEM,  &
      &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,       &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
-     &      nod_fld, v_sol, SR_sig1, SR_r1)
+     &      nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       call set_boundary_scalar(nod_bcs%nod_bc_s, i_field, nod_fld)
       call scalar_send_recv(i_field, mesh%nod_comm, nod_fld,            &
-     &                      v_sol, SR_sig1, SR_r1)
+     &                      v_sol, SR_sig, SR_r)
 !
       end subroutine cal_temperature_pre
 !

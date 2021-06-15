@@ -11,14 +11,14 @@
 !!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
 !!     &          jacs, rhs_tbl, Csims_FEM_MHD, FEM_filters, mlump_cd,  &
 !!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,            &
-!!     &          rhs_mat, nod_fld, v_sol)
+!!     &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_vector_p_co(iak_diff_base, ak_d_magne, dt,       &
 !!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          mesh, conduct, group, cd_prop,                        &
 !!     &          Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,             &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
 !!     &          diff_coefs, m_lump, Bmatrix, MG_vector, mhd_fem_wk,   &
-!!     &          rhs_mat, nod_fld, v_sol)
+!!     &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -52,6 +52,8 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_vector_potential_pre
 !
@@ -90,7 +92,7 @@
       use t_FEM_SGS_model_coefs
       use t_FEM_MHD_filter_data
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -106,7 +108,7 @@
      &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
      &          jacs, rhs_tbl, Csims_FEM_MHD, FEM_filters, mlump_cd,    &
      &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,              &
-     &          rhs_mat, nod_fld, v_sol)
+     &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -153,6 +155,8 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call reset_ff_smps(mesh%node, rhs_mat%f_l, rhs_mat%f_nl)
@@ -181,7 +185,7 @@
      &      Csims_FEM_MHD%icomp_sgs_term,                               &
      &      Csims_FEM_MHD%iphys_elediff_vec,                            &
      &      Csims_FEM_MHD%sgs_coefs_nod, wk_filter, mhd_fem_wk,         &
-     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
+     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
@@ -219,7 +223,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
 !  -----for Adams_Bashforth
       else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
@@ -228,7 +232,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
 !  -----for Ceank-nicolson
       else if (cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson) then
@@ -242,7 +246,7 @@
      &      rhs_tbl, FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,   &
      &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk,                   &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
-     &      v_sol, SR_sig1, SR_r1)
+     &      v_sol, SR_sig, SR_r)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_vect_p_pre_consist_crank                               &
@@ -253,14 +257,14 @@
      &      conduct, cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
      &      FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,            &
      &      Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       call set_boundary_vect                                            &
      &   (Bnod_bcs%nod_bc_a, iphys%base%i_vecp, nod_fld)
 !
       call vector_send_recv(iphys%base%i_vecp, mesh%nod_comm,           &
-     &                      nod_fld, v_sol, SR_sig1, SR_r1)
+     &                      nod_fld, v_sol, SR_sig, SR_r)
       call clear_field_data(nod_fld, n_scalar, iphys%exp_work%i_m_phi)
 !
 !      call check_nodal_data                                            &
@@ -276,7 +280,7 @@
      &          Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,               &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
      &          diff_coefs, m_lump, Bmatrix, MG_vector, mhd_fem_wk,     &
-     &          rhs_mat, nod_fld, v_sol)
+     &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -319,6 +323,8 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call reset_ff_smps(mesh%node, rhs_mat%f_l, rhs_mat%f_nl)
@@ -355,7 +361,7 @@
      &      conduct, cd_prop, Bnod_bcs, iphys_ele_base, ele_fld,        &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      m_lump, Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,     &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig1, SR_r1)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
         call clear_field_data                                           &
      &     (nod_fld, n_scalar, iphys_exp%i_m_phi)
       else
@@ -363,7 +369,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump, mhd_fem_wk,       &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
-     &      v_sol, SR_sig1, SR_r1)
+     &      v_sol, SR_sig, SR_r)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect vect_p'
@@ -372,10 +378,10 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv for vector_p'
       call vector_send_recv(iphys_base%i_vecp, mesh%nod_comm,           &
-     &                      nod_fld, v_sol, SR_sig1, SR_r1)
+     &                      nod_fld, v_sol, SR_sig, SR_r)
       if (iflag_debug.eq.1) write(*,*) 'scalar_send_recv for potential'
       call scalar_send_recv(iphys_base%i_mag_p, mesh%nod_comm,          &
-     &                      nod_fld, v_sol, SR_sig1, SR_r1)
+     &                      nod_fld, v_sol, SR_sig, SR_r)
 !
       end subroutine cal_vector_p_co
 !

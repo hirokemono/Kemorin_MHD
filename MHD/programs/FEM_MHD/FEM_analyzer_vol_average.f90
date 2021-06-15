@@ -85,7 +85,8 @@
      &   FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,        &
      &   FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field, SNAP_time_IO, &
      &   MHD_step%rst_step, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,          &
-     &   FEM_MHD%label_sim, FEM_MHD%v_sol)
+     &    FEM_MHD%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1,                 &
+     &    FEM_MHD%label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !

@@ -8,7 +8,7 @@
 !!     &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,   &
 !!     &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld,             &
 !!     &          t_IO, rst_step, SGS_MHD_wk, fem_sq, fem_fst_IO,       &
-!!     &          label_sim, v_sol)
+!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -65,7 +65,9 @@
       use t_work_4_MHD_layering
       use t_field_data_IO
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -80,7 +82,7 @@
      &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,     &
      &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld,               &
      &          t_IO, rst_step, SGS_MHD_wk, fem_sq, fem_fst_IO,         &
-     &          label_sim, v_sol)
+     &          v_sol, SR_sig, SR_r, SR_i, SR_il, label_sim)
 !
       use m_boundary_condition_IDs
       use m_fem_mhd_restart
@@ -132,6 +134,10 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(field_IO), intent(inout) :: fem_fst_IO
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
       character(len=kchara), intent(inout)   :: label_sim
 !
       type(shape_finctions_at_points), save :: spfs_1
@@ -159,9 +165,9 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_comm_initialization(geofem%mesh, v_sol,                  &
-     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
+     &                             SR_sig, SR_r, SR_i, SR_il)
       call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
-     &                             SR_sig1, SR_i1)
+     &                             SR_sig, SR_i)
 !
 !     ---------------------
 !
