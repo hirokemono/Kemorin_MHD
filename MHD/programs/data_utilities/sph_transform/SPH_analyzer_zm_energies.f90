@@ -3,13 +3,15 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_analyze_zm_energies                              &
-!!     &         (i_step, geofem, SPH_MHD, SPH_STR, t_IO, nod_fld)
+!!      subroutine SPH_analyze_zm_energies(i_step, geofem,              &
+!!     &          SPH_MHD, SPH_STR, t_IO, nod_fld, SR_sig, SR_r)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine set_ctl_data_4_zm_energies(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !
@@ -21,7 +23,6 @@
       use calypso_mpi
 !
       use t_SPH_data_4_SPH_trans
-      use m_solver_SR
 !
       implicit none
 !
@@ -34,13 +35,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_energies                                &
-     &         (i_step, geofem, SPH_MHD, SPH_STR, t_IO, nod_fld)
+      subroutine SPH_analyze_zm_energies(i_step, geofem,                &
+     &          SPH_MHD, SPH_STR, t_IO, nod_fld, SR_sig, SR_r)
 !
       use t_phys_address
       use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
+      use t_solver_SR
 !
       use field_IO_select
       use r_interpolate_sph_data
@@ -57,6 +59,8 @@
       type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
       type(time_data), intent(inout) :: t_IO
       type(phys_data), intent(inout) :: nod_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !   Input spectr data
@@ -85,7 +89,7 @@
       call sph_b_trans_all_field                                        &
      &   (SPH_MHD%sph, SPH_MHD%comms, geofem%mesh,                      &
      &    SPH_STR%trans_p, SPH_STR%fld_rtp, SPH_MHD%fld,                &
-     &    nod_fld, SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig1, SR_r1)
+     &    nod_fld, SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig, SR_r)
       call cal_zm_energy_to_pressure                                    &
      &   (SPH_MHD%sph%sph_rtp%nidx_rtp, nod_fld%n_point,                &
      &    nod_fld%num_phys, nod_fld%ntot_phys,                          &

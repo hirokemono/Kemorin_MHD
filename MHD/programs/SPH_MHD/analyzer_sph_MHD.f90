@@ -93,7 +93,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
       call SPH_initialize_SGS_MHD                                       &
      &   (MHD_files1, FEM_d1%iphys, MHD_step1, MHD_IO1%rst_IO,          &
-     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1)
+     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1, SR_sig1, SR_r1)
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----
@@ -154,8 +154,9 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
         call SPH_analyze_SGS_MHD(MHD_step1%time_d%i_time_step,          &
-     &      MHD_files1, iflag_finish, SPH_model1,                       &
-     &      MHD_step1, MHD_IO1%rst_IO, SPH_SGS1, SPH_MHD1, SPH_WK1)
+     &      MHD_files1, iflag_finish, SPH_model1, MHD_step1,            &
+     &      MHD_IO1%rst_IO, SPH_SGS1, SPH_MHD1, SPH_WK1,                &
+     &      SR_sig1, SR_r1)
 !*
 !*  -----------  output field data --------------
 !*

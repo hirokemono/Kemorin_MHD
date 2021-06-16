@@ -3,9 +3,16 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_init_gauss_back_trans(SPH_MHD, SPH_STR)
-!!      subroutine SPH_analyze_gauss_back_trans                         &
-!!     &         (i_step, geofem, SPH_MHD, SPH_STR, nod_fld)
+!!      subroutine SPH_init_gauss_back_trans                            &
+!!     &         (SPH_MHD, SPH_STR, SR_sig, SR_r)
+!!      subroutine SPH_analyze_gauss_back_trans(i_step, geofem, SPH_MHD,&
+!!     &          SPH_STR, nod_fld, SR_sig, SR_r)
+!!        integer(kind = kint), intent(in) :: i_step
+!!        type(mesh_data), intent(in) :: geofem
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module SPH_analyzer_gauss_b_trans
 !
@@ -17,7 +24,7 @@
       use t_work_4_sph_trans
       use t_SPH_mesh_field_data
       use t_phys_name_4_sph_trans
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -29,7 +36,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_gauss_back_trans(SPH_MHD, SPH_STR)
+      subroutine SPH_init_gauss_back_trans                              &
+     &         (SPH_MHD, SPH_STR, SR_sig, SR_r)
 !
       use m_legendre_transform_list
 !
@@ -42,6 +50,8 @@
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !  ------  initialize spectr data
 !
@@ -66,7 +76,7 @@
       call initialize_sph_trans(SPH_STR%fld_rtp%ncomp_trans,            &
      &    SPH_STR%fld_rtp%num_vector, SPH_STR%fld_rtp%nscalar_trans,    &
      &    SPH_MHD%sph, SPH_MHD%comms, trns_gauss,                       &
-     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig1, SR_r1)
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig, SR_r)
       call allocate_d_pole_4_all_trans                                  &
      &   (SPH_STR%fld_rtp, SPH_MHD%sph%sph_rtp)
 !
@@ -74,8 +84,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_gauss_back_trans                           &
-     &         (i_step, geofem, SPH_MHD, SPH_STR, nod_fld)
+      subroutine SPH_analyze_gauss_back_trans(i_step, geofem, SPH_MHD,  &
+     &          SPH_STR, nod_fld, SR_sig, SR_r)
 !
       use t_ctl_params_sph_trans
       use t_VIZ_step_parameter
@@ -92,6 +102,8 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
       type(phys_data), intent(inout) :: nod_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !   Input spectr data
@@ -112,7 +124,7 @@
       call sph_b_trans_all_field                                        &
      &   (SPH_MHD%sph, SPH_MHD%comms, geofem%mesh,                      &
      &    trns_gauss, SPH_STR%fld_rtp, SPH_MHD%fld, nod_fld,            &
-     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig1, SR_r1)
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig, SR_r)
 !
       end subroutine SPH_analyze_gauss_back_trans
 !

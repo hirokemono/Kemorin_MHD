@@ -60,7 +60,8 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_init_gauss_back_trans'
-      call SPH_init_gauss_back_trans(SPH_TRNS, SPH_STR1)
+      call SPH_init_gauss_back_trans                                    &
+     &   (SPH_TRNS, SPH_STR1, SR_sig1, SR_r1)
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----
@@ -93,7 +94,7 @@
      &    .or. output_IO_flag(i_step, t_STR%ucd_step)) then
           call SPH_analyze_gauss_back_trans                             &
      &       (i_step, FEM_STR1%geofem, SPH_TRNS,                        &
-     &        SPH_STR1, FEM_STR1%field)
+     &        SPH_STR1, FEM_STR1%field, SR_sig1, SR_r1)
         end if
 !
         visval = iflag_vizs_w_fix_step(i_step, FEM_STR1%viz_step)
