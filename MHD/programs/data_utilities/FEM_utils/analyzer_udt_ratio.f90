@@ -19,6 +19,7 @@
       use t_FEM_utils
       use t_step_parameter
       use t_VIZ_step_parameter
+      use m_solver_SR
 !
       implicit none
 !
@@ -64,8 +65,8 @@
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file,                      &
-     &                           FUTIL1%geofem, FUTIL1%v_sol)
+      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file, FUTIL1%geofem,       &
+     &    FUTIL1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !     --------------------- 
 !
@@ -101,7 +102,7 @@
         call cal_products_of_fields                                     &
      &     (FUTIL1%geofem%mesh%nod_comm, FUTIL1%geofem%mesh%node,       &
      &      FUTIL1%nod_fld%ntot_phys, FUTIL1%nod_fld%d_fld,             &
-     &      FUTIL1%v_sol)
+     &      FUTIL1%v_sol, SR_sig1, SR_r1)
 !
 !    output udt data
         call link_output_ucd_file_once                                  &

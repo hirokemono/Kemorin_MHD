@@ -112,7 +112,7 @@
       call sph_b_trans_all_field                                        &
      &   (SPH_MHD%sph, SPH_MHD%comms, geofem%mesh,                      &
      &    trns_gauss, SPH_STR%fld_rtp, SPH_MHD%fld, nod_fld,            &
-     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs)
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig1, SR_r1)
 !
       end subroutine SPH_analyze_gauss_back_trans
 !

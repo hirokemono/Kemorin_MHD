@@ -19,6 +19,7 @@
       use t_crs_connect
       use t_crs_matrix
       use t_shape_functions
+      use m_solver_SR
 !
       implicit none
 !
@@ -90,7 +91,8 @@
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &
      &   z_filter_mesh2%nod_comm, z_filter_mesh2%node,                  &
      &   z_filter_mesh2%ele, edge_z_filter2, spf_1d_z,                  &
-     &   jacs_z2%g_FEM, jacs_z2%jac_1d_l, tbl_crs_z, mat_crs_z)
+     &   jacs_z2%g_FEM, jacs_z2%jac_1d_l, tbl_crs_z,                    &
+     &   mat_crs_z, SR_sig1, SR_r1)
       call dealloc_edge_shape_func(spf_1d_z)
 !
 !C===

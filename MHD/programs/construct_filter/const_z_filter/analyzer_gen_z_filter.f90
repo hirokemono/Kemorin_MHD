@@ -21,6 +21,7 @@
       use t_crs_matrix
       use t_gauss_points
       use t_shape_functions
+      use m_solver_SR
 !
       implicit none
 !
@@ -142,7 +143,8 @@
 !      call cal_delta_z(CG_param_z, DJDS_param_z,                       &
 !     &  z_filter_mesh1%nod_comm, z_filter_mesh1%node,                  &
 !     &  z_filter_mesh1%ele, edge_z_filter1, spf_1d_z,                  &
-!     &  jacs_z1%g_FEM, jacs_z1%jac_1d_l,tbl_crs_z, mat_crs_z)
+!     &  jacs_z1%g_FEM, jacs_z1%jac_1d_l,tbl_crs_z, mat_crs_z,          &
+!     &  SR_sig1, SR_r1)
 !
 !      call check_crs_connect                                           &
 !     &   (my_rank, z_filter_mesh1%node%numnod, tbl_crs_z)

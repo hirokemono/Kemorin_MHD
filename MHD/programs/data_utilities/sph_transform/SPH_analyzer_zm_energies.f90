@@ -21,6 +21,7 @@
       use calypso_mpi
 !
       use t_SPH_data_4_SPH_trans
+      use m_solver_SR
 !
       implicit none
 !
@@ -84,7 +85,7 @@
       call sph_b_trans_all_field                                        &
      &   (SPH_MHD%sph, SPH_MHD%comms, geofem%mesh,                      &
      &    SPH_STR%trans_p, SPH_STR%fld_rtp, SPH_MHD%fld,                &
-     &    nod_fld, SPH_STR%WK_leg, SPH_STR%WK_FFTs)
+     &    nod_fld, SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig1, SR_r1)
       call cal_zm_energy_to_pressure                                    &
      &   (SPH_MHD%sph%sph_rtp%nidx_rtp, nod_fld%n_point,                &
      &    nod_fld%num_phys, nod_fld%ntot_phys,                          &

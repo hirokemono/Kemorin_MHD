@@ -3,12 +3,16 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!!      subroutine interpolation_4_mesh_test(nprocs_2nd, org_mesh,      &
-!!     &           dest_mesh, itp_table, v_1st_sol, v_2nd_sol)
+!!      subroutine interpolation_4_mesh_test                            &
+!!     &         (nprocs_2nd, org_mesh, dest_mesh, itp_table,           &
+!!     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r, SR_il)
 !!        type(mesh_geometry), intent(inout) :: org_mesh
 !!        type(mesh_geometry), intent(in) :: dest_mesh
 !!        type(interpolate_table), intent(in) :: itp_table
 !!        type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       module mesh_interpolation
 !
@@ -29,8 +33,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine interpolation_4_mesh_test(nprocs_2nd, org_mesh,        &
-     &           dest_mesh, itp_table, v_1st_sol, v_2nd_sol)
+      subroutine interpolation_4_mesh_test                              &
+     &         (nprocs_2nd, org_mesh, dest_mesh, itp_table,             &
+     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r, SR_il)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -38,6 +43,8 @@
       use t_interpolate_table
       use t_mesh_data
       use t_vector_for_solver
+      use t_solver_SR
+      use t_solver_SR_int8
 !
       use check_ineterppolated_mesh
 !
@@ -46,6 +53,9 @@
       type(mesh_geometry), intent(in) :: dest_mesh
       type(interpolate_table), intent(in) :: itp_table
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
 !
       call allocate_interpolate_geometry(dest_mesh%node%numnod)
@@ -55,22 +65,23 @@
       if (iflag_debug.eq.1)   write(*,*) 's_interpolate_global_node'
       call s_interpolate_global_node(itp_table%iflag_itp_recv,          &
      &    dest_mesh%node%numnod, dest_mesh%nod_comm,                    &
-     &    itp_table%tbl_org, itp_table%tbl_dest, inod_global_itp)
+     &    itp_table%tbl_org, itp_table%tbl_dest, inod_global_itp,       &
+     &    SR_sig, SR_il)
 !
 !     interpolate 2nd mesh from 1st mesh
 !
       if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position'
       call s_interpolate_position(org_mesh%node,                        &
      &   dest_mesh%node%numnod, dest_mesh%nod_comm, itp_table,          &
-     &   xx_interpolate, v_1st_sol, v_2nd_sol)
+     &   xx_interpolate, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_N'
 !      call s_interpolate_position_by_N(org_mesh%node,                  &
 !     &   dest_mesh%node%numnod, dest_mesh%nod_comm, itp_table,         &
-!     &   inod_global_itp, v_1st_sol, v_2nd_sol)
+!     &   inod_global_itp, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_s'
 !      call s_interpolate_position_by_S(org_mesh%node,                  &
 !     &   dest_mesh%node%%numnod, dest_mesh%nod_comm, itp_table,        &
-!     &   inod_global_itp, v_1st_sol, v_2nd_sol)
+!     &   inod_global_itp, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
 !
       if (iflag_debug.gt.0)  write(*,*) 's_check_ineterppolated_mesh'

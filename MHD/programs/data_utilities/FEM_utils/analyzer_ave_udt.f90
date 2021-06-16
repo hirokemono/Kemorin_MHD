@@ -52,8 +52,8 @@
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file,                      &
-     &                           FUTIL1%geofem, FUTIL1%v_sol)
+      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file, FUTIL1%geofem,       &
+     &    FUTIL1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !     --------------------- 
 !

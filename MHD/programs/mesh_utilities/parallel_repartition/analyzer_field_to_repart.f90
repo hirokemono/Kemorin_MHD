@@ -196,7 +196,8 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call udt_field_to_new_partition(iflag_import_item,              &
      &      istep_ucd, part_p1%repart_p%viz_ucd_file, t_IO,             &
-     &      new_fem%mesh, repart_nod_tbl1, org_ucd, new_ucd, v_sol_T)
+     &      new_fem%mesh, repart_nod_tbl1, org_ucd, new_ucd,            &
+     &      v_sol_T, SR_sig1, SR_r1)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
 !
         call deallocate_ucd_phys_data(org_ucd)

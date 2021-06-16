@@ -5,7 +5,20 @@
 !
 !!      subroutine cal_delta_z                                          &
 !!     &         (CG_param, DJDS_param, nod_comm, node, ele, edge,      &
-!!     &          spf_1d, g_FEM, jac_1d, tbl_crs, mat_crs)
+!!     &          spf_1d, g_FEM, jac_1d, tbl_crs, mat_crs, SR_sig, SR_r)
+!!        type(CG_poarameter), intent(inout) :: CG_param
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(inout) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(edge_data), intent(in) :: edge
+!!        type(edge_shape_function), intent(in) :: spf_1d
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_1d), intent(in) :: jac_1d
+!!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
+!!        type(CRS_matrix), intent(inout) :: mat_crs
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_delta_z_4_z_filter
 !
@@ -21,6 +34,7 @@
       use t_shape_functions
       use t_fem_gauss_int_coefs
       use t_jacobian_1d
+      use t_solver_SR
 !
       implicit none
 !
@@ -32,7 +46,7 @@
 !
       subroutine cal_delta_z                                            &
      &         (CG_param, DJDS_param, nod_comm, node, ele, edge,        &
-     &          spf_1d, g_FEM, jac_1d, tbl_crs, mat_crs)
+     &          spf_1d, g_FEM, jac_1d, tbl_crs, mat_crs, SR_sig, SR_r)
 !
       use m_int_edge_vart_width
       use m_int_edge_data
@@ -55,6 +69,8 @@
 !
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: num_int
 !
@@ -84,8 +100,8 @@
        else
 !
          write(*,*) 'solve_crs_by_mass_z'
-         call solve_crs_by_mass_z                                       &
-     &      (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+         call solve_crs_by_mass_z(CG_param, DJDS_param, nod_comm,       &
+     &       node, tbl_crs, mat_crs, SR_sig, SR_r)
 !$omp workshare
          delta_z(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end workshare
@@ -101,8 +117,8 @@
          call solve_delta_dz_LU(node%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'
-         call  solve_crs_by_mass_z2                                     &
-     &      (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+         call solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm,      &
+     &       node, tbl_crs, mat_crs, SR_sig, SR_r)
 !$omp workshare
          delta_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end workshare
@@ -118,8 +134,8 @@
           call solve_delta_d2z_LU(node%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'
-         call  solve_crs_by_mass_z2                                     &
-     &      (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+         call solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm,      &
+     &       node, tbl_crs, mat_crs, SR_sig, SR_r)
 !$omp workshare
          d2_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end workshare

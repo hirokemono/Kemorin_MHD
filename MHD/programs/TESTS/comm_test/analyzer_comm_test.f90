@@ -170,7 +170,8 @@
       call verify_iccgN_vec_type                                        &
      &   (N12, test_fem%mesh%node%numnod, v_sol_T)
       call node_send_recv4_test                                         &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, N12, v_sol_T)
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
+     &    N12, v_sol_T, SR_sig1, SR_r1, SR_il1)
 !
       call dealloc_iccgN_vector(v_sol_T)
       call dealloc_iccg_int8_vector(v_sol_T)

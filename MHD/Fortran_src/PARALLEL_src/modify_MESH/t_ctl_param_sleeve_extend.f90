@@ -271,10 +271,10 @@
           return
         else if(sleeve_ctl%sleeve_level_ctl%iflag .gt. 0) then
           sleeve_exp_p%dist_max                                         &
-     &          = real(sleeve_ctl%sleeve_level_ctl%intvalue) * 0.9d0
+     &          = real(sleeve_ctl%sleeve_level_ctl%intvalue) - 0.1d0
         else if(sleeve_ctl%sleeve_size_ctl%iflag .gt. 0) then
           sleeve_exp_p%dist_max                                         &
-     &          = sleeve_ctl%sleeve_size_ctl%realvalue * 0.9d0
+     &          = sleeve_ctl%sleeve_size_ctl%realvalue - 0.1d0
         end if
       end if
 !

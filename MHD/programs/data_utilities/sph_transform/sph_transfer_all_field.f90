@@ -10,11 +10,13 @@
 !!
 !!      subroutine deallocate_d_rtp_4_all_trans
 !!      subroutine deallocate_d_pole_4_all_trans
-!!      subroutine sph_f_trans_all_field(sph, comms_sph, mesh, trans_p, &
-!!     &          fld_rtp, nod_fld, rj_fld, WK_leg, WK_FFTs)
+!!
+!!      subroutine sph_f_trans_all_field                                &
+!!     &         (sph, comms_sph, mesh, trans_p, fld_rtp,               &
+!!     &          nod_fld, rj_fld, WK_leg, WK_FFTs, SR_sig, SR_r)
 !!      subroutine sph_b_trans_all_field                                &
 !!     &         (sph, comms_sph, mesh, trans_p, fld_rtp, rj_fld,       &
-!!     &          nod_fld, WK_leg, WK_FFTs)
+!!     &          nod_fld, WK_leg, WK_FFTs, SR_sig, SR_r)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -23,6 +25,8 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(legendre_trns_works), intent(inout) :: WK_leg
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module sph_transfer_all_field
 !
@@ -35,6 +39,7 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_phys_name_4_sph_trans
+      use t_solver_SR
 !
       implicit none
 !
@@ -95,10 +100,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_all_field(sph, comms_sph, mesh, trans_p,   &
-     &          fld_rtp, nod_fld, rj_fld, WK_leg, WK_FFTs)
+      subroutine sph_f_trans_all_field                                  &
+     &         (sph, comms_sph, mesh, trans_p, fld_rtp,                 &
+     &          nod_fld, rj_fld, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
-      use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
       use spherical_transforms
@@ -114,6 +119,8 @@
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (fld_rtp%ncomp_trans .le. 0) return
@@ -132,33 +139,33 @@
      &    sph%sph_rtp, fld_rtp, fld_rtp%ncomp_trans, dall_rtp(1,1))
 !
       call check_calypso_sph_comm_buf_N(fld_rtp%ncomp_trans,            &
-     &    comms_sph%comm_rtp, comms_sph%comm_rtm, SR_sig1, SR_r1)
+     &    comms_sph%comm_rtp, comms_sph%comm_rtm, SR_sig, SR_r)
       call check_calypso_sph_comm_buf_N(fld_rtp%ncomp_trans,            &
-     &    comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig1, SR_r1)
+     &    comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig, SR_r)
 !
       call sph_forward_transforms(fld_rtp%ncomp_trans,                  &
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans,                    &
      &    sph, comms_sph, trans_p, dall_rtp(1,1),                       &
-     &    WK_leg, WK_FFTs, SR_sig1, SR_r1)
+     &    WK_leg, WK_FFTs, SR_sig, SR_r)
 !
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_scalar_spec_from_sph_t'
       call set_all_scalar_spec_from_sph_t(trans_p%iflag_SPH_recv,       &
      &    fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,              &
-     &    SR_r1%n_WR, SR_r1%WR, rj_fld)
+     &    SR_r%n_WR, SR_r%WR, rj_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_vec_spec_from_sph_t'
       call set_all_vec_spec_from_sph_t(trans_p%iflag_SPH_recv,          &
      &    fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,              &
-     &    SR_r1%n_WR, SR_r1%WR, rj_fld)
+     &    SR_r%n_WR, SR_r%WR, rj_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_tensor_spec_from_sph_t'
       call set_all_tensor_spec_from_sph_t(trans_p%iflag_SPH_recv,       &
      &    fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,              &
-     &    SR_r1%n_WR, SR_r1%WR, rj_fld)
+     &    SR_r%n_WR, SR_r%WR, rj_fld)
 !
       end subroutine sph_f_trans_all_field
 !
@@ -166,9 +173,8 @@
 !
       subroutine sph_b_trans_all_field                                  &
      &         (sph, comms_sph, mesh, trans_p, fld_rtp, rj_fld,         &
-     &          nod_fld, WK_leg, WK_FFTs)
+     &          nod_fld, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
-      use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
       use spherical_transforms
@@ -184,35 +190,37 @@
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: nod_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(fld_rtp%ncomp_trans .le. 0) return
 !
       call check_calypso_sph_comm_buf_N(fld_rtp%ncomp_trans,            &
-     &    comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
+     &    comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig, SR_r)
       call check_calypso_sph_comm_buf_N(fld_rtp%ncomp_trans,            &
-     &    comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig, SR_r)
 !
       if (iflag_debug.gt.0)                                             &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
       call set_all_vec_spec_to_sph_t                                    &
      &    (fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,             &
-     &     rj_fld, SR_r1%n_WS, SR_r1%WS)
+     &     rj_fld, SR_r%n_WS, SR_r%WS)
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_scalar_spec_to_sph_t'
       call set_all_scalar_spec_to_sph_t(sph%sph_rtp%nnod_pole,          &
      &    fld_rtp%ncomp_trans, sph%sph_rj, comms_sph%comm_rj,           &
-     &    fld_rtp, rj_fld, SR_r1%n_WS, SR_r1%WS, dlcl_pole(1,1))
+     &    fld_rtp, rj_fld, SR_r%n_WS, SR_r%WS, dlcl_pole(1,1))
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_tensor_spec_to_sph_t'
       call set_all_tensor_spec_to_sph_t                                 &
      &   (fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,              &
-     &    rj_fld, SR_r1%n_WS, SR_r1%WS)
+     &    rj_fld, SR_r%n_WS, SR_r%WS)
 !
       call sph_b_trans_w_poles(fld_rtp%ncomp_trans,                     &
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans,                    &
      &    sph, comms_sph, trans_p, dall_rtp, dlcl_pole, dall_pole,      &
-     &    WK_leg, WK_FFTs, SR_sig1, SR_r1)
+     &    WK_leg, WK_FFTs, SR_sig, SR_r)
 !
 !
       if (iflag_debug.gt.0)                                             &

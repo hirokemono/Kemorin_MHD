@@ -3,22 +3,30 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!!      subroutine s_interpolate_position(node, NP_dest, comm_dest,     &
-!!     &          itp_table, xx_interpolate, v_1st_sol, v_2nd_sol)
-!!      subroutine s_interpolate_position_by_N(node, NP_dest, comm_dest,&
-!!     &          itp_table, xx_interpolate, v_1st_sol, v_2nd_sol)
-!!      subroutine s_interpolate_position_by_S(node, NP_dest, comm_dest,&
-!!     &          itp_table, xx_interpolate, v_1st_sol, v_2nd_sol)
+!!      subroutine s_interpolate_position                               &
+!!     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate,  &
+!!     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r)
+!!      subroutine s_interpolate_position_by_N                          &
+!!     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate,  &
+!!     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r)
+!!      subroutine s_interpolate_position_by_S                          &
+!!     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate,  &
+!!     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !!      subroutine s_interpolate_global_node(iflag_recv,                &
-!!     &        (NP_dest, comm_dest, itp_org, itp_dest, inod_global_itp)
+!!     &          NP_dest, comm_dest, itp_org, itp_dest,                &
+!!     &          inod_global_itp, SR_sig, SR_il)
 !!        type(node_data), intent(inout) :: node
 !!        type(communication_table), intent(in) :: comm_dest
 !!        type(interpolate_table), intent(in) :: itp_table
 !!        type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       module interpolate_position
 !
       use m_precision
+      use m_constants
 !
       use calypso_mpi
       use m_machine_parameter
@@ -27,6 +35,8 @@
       use t_geometry_data
       use t_interpolate_table
       use t_vector_for_solver
+      use t_solver_SR
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -36,11 +46,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_position(node, NP_dest, comm_dest,       &
-     &          itp_table, xx_interpolate, v_1st_sol, v_2nd_sol)
-!
-      use m_solver_SR
-      use m_constants
+      subroutine s_interpolate_position                                 &
+     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate,    &
+     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
       use interpolate_by_module
 !
@@ -50,6 +58,8 @@
       type(interpolate_table), intent(in) :: itp_table
 !
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
       real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
       integer(kind = kint) :: inod
@@ -69,7 +79,7 @@
       call interpolate_mod_3(itp_table%iflag_itp_recv, comm_dest,       &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, node%numnod, NP_dest, v_1st_sol%x_vec(1),             &
-     &    SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &    SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel do
       do inod = 1, NP_dest
@@ -83,11 +93,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_position_by_N(node, NP_dest, comm_dest,  &
-     &          itp_table, xx_interpolate, v_1st_sol, v_2nd_sol)
-!
-      use m_constants
-      use m_solver_SR
+      subroutine s_interpolate_position_by_N                            &
+     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate,    &
+     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
       use interpolate_by_module
 !
@@ -97,6 +105,8 @@
       type(interpolate_table), intent(in) :: itp_table
 !
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
       real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
       integer(kind = kint) :: inod
@@ -116,7 +126,7 @@
       call interpolate_mod_N(iflag_import_mod, comm_dest,               &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, node%numnod, NP_dest, ithree, v_1st_sol%x_vec(1),     &
-     &    SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &    SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel do
       do inod = 1, NP_dest
@@ -130,11 +140,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_position_by_S(node, NP_dest, comm_dest,  &
-     &          itp_table, xx_interpolate, v_1st_sol, v_2nd_sol)
+      subroutine s_interpolate_position_by_S                            &
+     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate,    &
+     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
-      use m_constants
-      use m_solver_SR
 !
       use interpolate_by_module
       use matvec_by_djo
@@ -145,6 +154,8 @@
       type(interpolate_table), intent(in) :: itp_table
 !
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
       real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
       integer(kind = kint) :: inod, nd
@@ -165,7 +176,7 @@
         call interpolate_mod_1(itp_table%iflag_itp_recv, comm_dest,     &
      &      itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,       &
      &      np_smp, node%numnod, NP_dest, v_1st_sol%x_vec(1),           &
-     &      SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &      SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel do
         do inod = 1, NP_dest
@@ -179,9 +190,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_global_node(iflag_recv,                  &
-     &         NP_dest, comm_dest, itp_org, itp_dest, inod_global_itp)
+     &          NP_dest, comm_dest, itp_org, itp_dest,                  &
+     &          inod_global_itp, SR_sig, SR_il)
 !
-      use m_solver_SR
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
 !
@@ -197,6 +208,8 @@
 !
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: inod_global_itp(NP_dest)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(vectors_4_solver) ::  v_2nd_sol
 !
@@ -206,20 +219,19 @@
       if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int8'
       call calypso_send_recv_int8                                       &
      &   (iflag_recv, itp_org%ntot_table_org, NP_dest,                  &
-     &    itp_org%num_dest_domain, itp_org%iflag_self_itp_send,         &
-     &    itp_org%id_dest_domain, itp_org%istack_nod_tbl_org,           &
-     &    itp_org%inod_itp_send,                                        &
+     &    itp_org%num_dest_domain, itp_org%id_dest_domain,              &
+     &    itp_org%istack_nod_tbl_org, itp_org%inod_itp_send,            &
      &    itp_dest%num_org_domain, itp_dest%iflag_self_itp_recv,        &
      &    itp_dest%id_org_domain, itp_dest%istack_nod_tbl_dest,         &
      &    itp_dest%inod_dest_4_dest, itp_dest%irev_dest_4_dest,         &
-     &    SR_sig1, SR_il1, itp_org%inod_gl_dest_4_org,                  &
+     &    SR_sig, SR_il, itp_org%inod_gl_dest_4_org,                    &
      &    v_2nd_sol%i8x_vec(1))
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'SOLVER_SEND_RECV_int8_type '
       if (comm_dest%num_neib.gt.0) then
         call SOLVER_SEND_RECV_int8_type                                 &
-     &     (NP_dest, comm_dest, SR_sig1, SR_il1, v_2nd_sol%i8x_vec(1))
+     &     (NP_dest, comm_dest, SR_sig, SR_il, v_2nd_sol%i8x_vec(1))
       end if
 !
 !$omp parallel workshare

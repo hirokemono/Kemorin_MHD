@@ -39,6 +39,7 @@
       use t_control_parameter
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
+      use m_solver_SR
 !
       implicit none
 !
@@ -100,8 +101,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_back_transform'
-      call init_sph_back_transform                                      &
-     &   (SPH_model, SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
+      call init_sph_back_transform(SPH_model, SPH_WK%trans_p,           &
+     &    SPH_WK%trns_WK, SPH_MHD, SR_sig1, SR_r1)
 !
 ! ---------------------------------
 !
@@ -151,8 +152,8 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform                                       &
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%trans_p,                   &
-     &    SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD,                         &
-     &    SPH_WK%trns_WK%WK_leg, SPH_WK%trns_WK%WK_FFTs)
+     &    SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD, SPH_WK%trns_WK%WK_leg,  &
+     &    SPH_WK%trns_WK%WK_FFTs, SR_sig1, SR_r1)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  lead energy data --------------

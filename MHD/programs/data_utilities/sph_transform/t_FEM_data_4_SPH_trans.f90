@@ -7,7 +7,13 @@
 !>@brief Arrays for Field data IO for spherical transform utilities
 !!
 !!@verbatim
-!!      subroutine mesh_setup_4_SPH_TRANS
+!!      subroutine mesh_setup_4_SPH_TRANS                               &
+!!     &         (FEM_STR, SR_sig, SR_r, SR_i, SR_il)
+!!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module t_FEM_data_4_SPH_trans
@@ -28,7 +34,9 @@
       use t_field_data_IO
       use t_file_IO_parameter
       use t_vector_for_solver
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -76,22 +84,27 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine mesh_setup_4_SPH_TRANS(FEM_STR)
+      subroutine mesh_setup_4_SPH_TRANS                                 &
+     &         (FEM_STR, SR_sig, SR_r, SR_i, SR_il)
 !
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
       use set_ucd_data_to_type
 !
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
 !
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_comm_initialization(FEM_STR%geofem%mesh, FEM_STR%v_sol,  &
-     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
+     &                             SR_sig, SR_r, SR_i, SR_il)
       call FEM_mesh_initialization                                      &
-     &   (FEM_STR%geofem%mesh, FEM_STR%geofem%group, SR_sig1, SR_i1)
+     &   (FEM_STR%geofem%mesh, FEM_STR%geofem%group, SR_sig, SR_i)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
       call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &

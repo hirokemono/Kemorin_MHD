@@ -97,7 +97,7 @@
       if    (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution             &
      &  .or. cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)    &
      & then
-        call set_index_list_4_mat_fl(mesh%node, mesh%ele, &
+        call set_index_list_4_mat_fl(mesh%node, mesh%ele,               &
      &      MHD_mesh%conduct, rhs_tbl, djds_tbl, MG_mat_full_cd_q)
       end if
 !

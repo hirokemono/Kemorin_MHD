@@ -29,6 +29,7 @@
       use t_SPH_mesh_field_data
       use t_SPH_SGS_structure
       use t_work_SPH_MHD
+      use m_solver_SR
 !
       use SPH_analyzer_back_trans
 !
@@ -88,7 +89,8 @@
       call back_trans_4_rms_ratio                                       &
      &   (SPH_MHD%sph, SPH_MHD%comms, ref_rj_fld, SPH_MHD%fld,          &
      &    SPH_WK%trans_p, SPH_WK%trns_WK%trns_MHD,                      &
-     &    SPH_WK%trns_WK%WK_leg, SPH_WK%trns_WK%WK_FFTs)
+     &    SPH_WK%trns_WK%WK_leg, SPH_WK%trns_WK%WK_FFTs,                &
+     &    SR_sig1, SR_r1)
       call cal_sph_rms_ratios                                           &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_SGS%ipol_LES,                  &
      &    ref_rj_fld, SPH_MHD%fld, SPH_WK%trans_p, SPH_WK%monitor%pwr,  &

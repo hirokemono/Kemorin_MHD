@@ -105,7 +105,7 @@
       call sph_f_trans_all_field                                        &
      &   (SPH_MHD%sph, SPH_MHD%comms, geofem%mesh, SPH_STR%trans_p,     &
      &    SPH_STR%fld_rtp, nod_fld, SPH_MHD%fld,                        &
-     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs)
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig1, SR_r1)
 !
 !      call check_all_field_data(my_rank, SPH_MHD%fld)
 !
@@ -150,7 +150,7 @@
       call sph_f_trans_all_field                                        &
      &   (SPH_MHD%sph, SPH_MHD%comms, geofem%mesh, SPH_STR%trans_p,     &
      &    SPH_STR%fld_rtp, nod_fld, SPH_MHD%fld,                        &
-     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs)
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig1, SR_r1)
 !
 !      call check_all_field_data(my_rank, SPH_MHD%fld)
 !

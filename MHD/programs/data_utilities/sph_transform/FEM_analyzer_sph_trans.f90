@@ -55,7 +55,8 @@
 !
 !  -----    construct geometry informations
 !
-      call mesh_setup_4_SPH_TRANS(FEM_STR)
+      call mesh_setup_4_SPH_TRANS                                       &
+     &   (FEM_STR, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  -------------------------------
 !

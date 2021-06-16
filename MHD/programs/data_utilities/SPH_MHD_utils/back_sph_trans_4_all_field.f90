@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_back_transform                              &
-!!     &         (SPH_model, trans_p, WK, SPH_MHD)
+!!     &         (SPH_model, trans_p, WK, SPH_MHD, SR_sig, SR_r)
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!      subroutine sph_all_back_transform(sph, comms_sph, trans_p,      &
-!!     &           rj_fld, trns_MHD, WK_leg, WK_FFTs)
+!!     &           rj_fld, trns_MHD, WK_leg, WK_FFTs, SR_sig, SR_r)
 !!      subroutine sph_back_transform_dual(sph, comms_sph, trans_p,     &
 !!     &          ref_rj_fld, rj_fld, trns_MHD, WK_leg, WK_FFTs,        &
-!!     &          nnod_rtp, ncomp_rtp, fld1_rtp)
+!!     &          nnod_rtp, ncomp_rtp, fld1_rtp, SR_sig, SR_r)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
@@ -25,6 +25,8 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(legendre_trns_works), intent(inout) :: WK_leg
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module back_sph_trans_4_all_field
@@ -40,7 +42,7 @@
       use t_sph_trans_arrays_MHD
       use t_legendre_trans_select
       use t_sph_FFT_selector
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -51,7 +53,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_sph_back_transform                                &
-     &         (SPH_model, trans_p, WK, SPH_MHD)
+     &         (SPH_model, trans_p, WK, SPH_MHD, SR_sig, SR_r)
 !
       use t_physical_property
       use t_poloidal_rotation
@@ -67,6 +69,8 @@
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !>      total number of components for spherical harmonics transform
       integer(kind = kint), save :: ncomp_max_trans
@@ -84,7 +88,7 @@
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
 !
       call init_leg_fourier_trans_MHD(SPH_MHD%sph, SPH_MHD%comms,       &
-     &    ncomp_max_trans, trans_p, WK, SR_sig1, SR_r1)
+     &    ncomp_max_trans, trans_p, WK, SR_sig, SR_r)
 !
       call init_work_4_coriolis                                         &
      &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, trans_p, WK)
@@ -94,19 +98,18 @@
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    WK%trns_MHD, WK%WK_leg, WK%WK_FFTs_MHD, trans_p,              &
-     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld, SR_sig1, SR_r1)
+     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld, SR_sig, SR_r)
 !
       end subroutine init_sph_back_transform
 !
 !-----------------------------------------------------------------------
 !
       subroutine sph_all_back_transform(sph, comms_sph, trans_p,        &
-     &           rj_fld, trns_MHD, WK_leg, WK_FFTs)
+     &           rj_fld, trns_MHD, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
 !
-      use m_solver_SR
       use spherical_transforms
       use spherical_SRs_N
 !
@@ -121,6 +124,8 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(work_for_FFTs), intent(inout) :: WK_FFTs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -130,20 +135,20 @@
       nscalar_trans = trns_MHD%backward%num_scalar                      &
      &               + 6*trns_MHD%backward%num_tensor
       call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
-     &   comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig1, SR_r1)
+     &   comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig, SR_r)
       call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
-     &   comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig1, SR_r1)
+     &   comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig, SR_r)
 !
       call copy_all_spectr_to_send                                      &
      &   (sph%sph_rtp%nnod_pole, trns_MHD%backward%ncomp,               &
      &    sph%sph_rj, comms_sph%comm_rj, rj_fld, trns_MHD%backward,     &
-     &    SR_r1%n_WS, SR_r1%WS, trns_MHD%backward%flc_pole)
+     &    SR_r%n_WS, SR_r%WS, trns_MHD%backward%flc_pole)
 !
       call sph_b_trans_w_poles                                          &
      &   (trns_MHD%backward%ncomp, trns_MHD%backward%num_vector,        &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    trns_MHD%backward%fld_rtp, trns_MHD%backward%flc_pole,        &
-     &    trns_MHD%backward%fld_pole, WK_leg, WK_FFTs, SR_sig1, SR_r1)
+     &    trns_MHD%backward%fld_pole, WK_leg, WK_FFTs, SR_sig, SR_r)
 !
       end subroutine sph_all_back_transform
 !
@@ -151,7 +156,7 @@
 !
       subroutine sph_back_transform_dual(sph, comms_sph, trans_p,       &
      &          ref_rj_fld, rj_fld, trns_MHD, WK_leg, WK_FFTs,          &
-     &          nnod_rtp, ncomp_rtp, fld1_rtp)
+     &          nnod_rtp, ncomp_rtp, fld1_rtp, SR_sig, SR_r)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -163,6 +168,8 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(work_for_FFTs), intent(inout) :: WK_FFTs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       real(kind = kreal), intent(inout) :: fld1_rtp(nnod_rtp,ncomp_rtp)
 !
@@ -171,7 +178,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph, comms_sph, trans_p,              &
-     &    ref_rj_fld, trns_MHD, WK_leg, WK_FFTs)
+     &    ref_rj_fld, trns_MHD, WK_leg, WK_FFTs, SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !$omp parallel workshare
@@ -184,7 +191,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_MHD, WK_leg, WK_FFTs)
+     &    rj_fld, trns_MHD, WK_leg, WK_FFTs, SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
       end subroutine sph_back_transform_dual

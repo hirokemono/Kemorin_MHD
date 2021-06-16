@@ -16,11 +16,13 @@
 !!
 !!      subroutine set_data_for_product(numnod, istep_ucd, t_IO)
 !!      subroutine cal_rev_of_2nd_field(numnod)
-!!      subroutine cal_products_of_fields                               &
-!!     &         (nod_comm, node, ncomp_nod, d_nod, v_sol)
+!!      subroutine cal_products_of_fields(nod_comm, node, ncomp_nod,    &
+!!     &                                  d_nod, v_sol, SR_sig, SR_r)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module product_udt_fields
 !
@@ -33,7 +35,6 @@
       use t_comm_table
       use t_geometry_data
       use t_phys_data
-      use m_solver_SR
 !
       implicit none
 !
@@ -209,10 +210,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_products_of_fields                                 &
-     &         (nod_comm, node, ncomp_nod, d_nod, v_sol)
+      subroutine cal_products_of_fields(nod_comm, node, ncomp_nod,      &
+     &                                  d_nod, v_sol, SR_sig, SR_r)
 !
       use t_vector_for_solver
+      use t_solver_SR
       use m_ctl_params_4_prod_udt
       use cal_products_smp
       use nod_phys_send_recv
@@ -223,6 +225,8 @@
 !
       real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(ncomp_4_product1.eq.1) then
@@ -318,13 +322,13 @@
 !
       if(ncomp_4_result .eq. ione) then
         call nod_scalar_send_recv(node%numnod, nod_comm, d_nod, v_sol,  &
-     &                            SR_sig1, SR_r1)
+     &                            SR_sig, SR_r)
       else if(ncomp_4_result .eq. ithree) then
         call nod_vector_send_recv(node%numnod, nod_comm, d_nod, v_sol,  &
-     &                            SR_sig1, SR_r1)
+     &                            SR_sig, SR_r)
       else if(ncomp_4_result .eq. isix) then
         call nod_tensor_send_recv(node%numnod, nod_comm, d_nod, v_sol,  &
-     &                            SR_sig1, SR_r1)
+     &                            SR_sig, SR_r)
       end if
 !
       end subroutine cal_products_of_fields

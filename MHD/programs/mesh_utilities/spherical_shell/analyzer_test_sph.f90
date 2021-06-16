@@ -22,6 +22,7 @@
 !
       use t_ctl_data_const_sph_mesh
       use t_ctl_params_gen_sph_shell
+      use m_solver_SR
 !
       use calypso_mpi
 !
@@ -127,27 +128,27 @@
         iflag(2) = compare_transfer_sph_indices(id_check, SPH_TEST%sph)
 !
         call sph_transfer_test_N                                        &
-     &     (itype, NB, SPH_TEST%sph, SPH_TEST%comms)
+     &     (itype, NB, SPH_TEST%sph, SPH_TEST%comms, SR_sig1, SR_r1)
         iflag(3) = compare_transfer_sph_reals                           &
      &           (NB, id_check, SPH_TEST%sph)
 !
         call sph_transfer_test_6                                        &
-     &     (itype, SPH_TEST%sph, SPH_TEST%comms)
+     &     (itype, SPH_TEST%sph, SPH_TEST%comms, SR_sig1, SR_r1)
         iflag(4) = compare_transfer_sph_reals                           &
      &           (isix, id_check, SPH_TEST%sph)
 !
         call sph_transfer_test_3                                        &
-     &     (itype, SPH_TEST%sph, SPH_TEST%comms)
+     &     (itype, SPH_TEST%sph, SPH_TEST%comms, SR_sig1, SR_r1)
         iflag(5) = compare_transfer_sph_reals                           &
      &        (ithree, id_check, SPH_TEST%sph)
 !
         call sph_transfer_test_2                                        &
-     &     (itype, SPH_TEST%sph, SPH_TEST%comms)
+     &     (itype, SPH_TEST%sph, SPH_TEST%comms, SR_sig1, SR_r1)
         iflag(6) = compare_transfer_sph_reals                           &
      &        (itwo, id_check, SPH_TEST%sph)
 !
         call sph_transfer_test_1                                        &
-     &     (itype, SPH_TEST%sph, SPH_TEST%comms)
+     &     (itype, SPH_TEST%sph, SPH_TEST%comms, SR_sig1, SR_r1)
         iflag(7) = compare_transfer_sph_reals                           &
      &        (ione, id_check, SPH_TEST%sph)
 !
