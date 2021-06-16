@@ -63,7 +63,6 @@
       use m_int_commtative_filter
       use m_int_edge_data
       use m_matrix_4_LU
-      use m_solver_SR
       use const_delta_z_analytical
 
       use const_crs_connect_commute_z

@@ -118,7 +118,8 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle(MHD_files1, FEM_d1%iphys,           &
-     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1, cdat1)
+     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1,                      &
+     &    SR_sig1, SR_r1, cdat1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -148,7 +149,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
         call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1, SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1, cdat1)
+     &      MHD_files1, SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1,        &
+     &      SR_sig1, SR_r1, cdat1)
 !*
 !*  -----------  exit loop --------------
 !*

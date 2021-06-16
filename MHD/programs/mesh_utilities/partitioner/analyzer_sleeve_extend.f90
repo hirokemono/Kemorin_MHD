@@ -98,7 +98,6 @@
 !
       subroutine analyze_sleeve_extend
 !
-      use m_solver_SR
       use sleeve_extend
       use nod_and_ele_derived_info
       use const_element_comm_tables

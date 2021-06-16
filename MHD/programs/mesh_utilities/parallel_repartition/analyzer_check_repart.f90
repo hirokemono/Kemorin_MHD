@@ -99,7 +99,6 @@
 !
       subroutine analyze_check_reapart_mesh
 !
-      use m_solver_SR
       use t_solver_SR
       use t_interpolate_table
       use t_work_for_comm_check

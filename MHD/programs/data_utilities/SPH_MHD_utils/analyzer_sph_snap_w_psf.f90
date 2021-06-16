@@ -97,8 +97,8 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap_psf'
-      call SPH_init_sph_snap_psf                                        &
-     &   (MHD_files1, FEM_d1%iphys, SPH_model1, SPH_MHD1, SPH_WK1)
+      call SPH_init_sph_snap_psf(MHD_files1, FEM_d1%iphys, SPH_model1,  &
+     &                           SPH_MHD1, SPH_WK1, SR_sig1, SR_r1)
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
@@ -143,8 +143,8 @@
 !
           if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap_psf'
           call SPH_analyze_snap_psf                                     &
-     &       (MHD_step1%time_d%i_time_step, MHD_files1,                 &
-     &        SPH_model1, MHD_step1, SPH_MHD1, SPH_WK1)
+     &       (MHD_step1%time_d%i_time_step, MHD_files1, SPH_model1,     &
+     &       MHD_step1, SPH_MHD1, SPH_WK1, SR_sig1, SR_r1)
 !*
 !*  -----------  output field data --------------
 !*

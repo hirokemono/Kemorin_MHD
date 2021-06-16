@@ -90,9 +90,9 @@
      &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !        Initialize spherical transform dynamo
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
+      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap_psf'
       call SPH_init_sph_snap_psf(MHD_files1, FEM_d1%iphys, SPH_model1,  &
-     &    SPH_MHD1, SPH_WK1)
+     &                           SPH_MHD1, SPH_WK1, SR_sig1, SR_r1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -127,10 +127,10 @@
           call alloc_sph_trans_area_snap                                &
      &       (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
 !
-          if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
+          if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap_psf'
           call SPH_analyze_snap_psf                                     &
-     &       (MHD_step1%time_d%i_time_step, MHD_files1,                 &
-     &        SPH_model1, MHD_step1, SPH_MHD1, SPH_WK1)
+     &       (MHD_step1%time_d%i_time_step, MHD_files1, SPH_model1,     &
+     &        MHD_step1, SPH_MHD1, SPH_WK1, SR_sig1, SR_r1)
         end if
 !*
 !*  -----------  output field data --------------

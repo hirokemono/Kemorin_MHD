@@ -20,7 +20,6 @@
       use m_work_time
       use m_elapsed_labels_4_REPART
       use m_work_time_4_sleeve_extend
-      use m_solver_SR
       use calypso_mpi
 !
       use t_mesh_data

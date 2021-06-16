@@ -134,7 +134,7 @@
 !         end if
 !
           rgba_tmp(1:4) = zero
-          call s_lic_pixel_ray_trace_by_ele (mesh%node, mesh%ele,       &
+          call s_lic_pixel_ray_trace_by_ele(mesh%node, mesh%ele,        &
      &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
      &       viewpoint_vec, modelview_mat, projection_mat,              &
      &       lic_p, field_lic, draw_param, color_param,                 &

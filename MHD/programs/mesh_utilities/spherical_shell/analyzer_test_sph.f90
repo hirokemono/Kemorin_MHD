@@ -88,7 +88,6 @@
 !
       subroutine analyze_test_sph
 !
-      use m_solver_SR
       use calypso_mpi_int
       use cmp_trans_sph_indices
       use cmp_trans_sph_tests
