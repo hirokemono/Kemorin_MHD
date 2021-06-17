@@ -20,6 +20,7 @@
       use m_work_time
       use m_SPH_transforms
       use t_ctl_params_sph_trans
+      use m_solver_SR
 !
       use calypso_mpi
       use FEM_analyzer_sph_trans
@@ -58,8 +59,8 @@
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_sph_trans'
-      call FEM_initialize_sph_trans                                     &
-     &   (t_STR%init_d, t_STR%ucd_step, FEM_STR1)
+      call FEM_initialize_sph_trans(t_STR%init_d, t_STR%ucd_step,       &
+     &    FEM_STR1, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_sph_trans'
@@ -84,7 +85,8 @@
       do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
 !
 !   Input field data
-        call FEM_analyze_sph_trans(i_step, t_STR%ucd_step, FEM_STR1)
+        call FEM_analyze_sph_trans(i_step, t_STR%ucd_step,              &
+     &                             FEM_STR1, SR_sig1, SR_r1)
 !
 !   Spherical transform
         call SPH_analyze_sph_trans(i_step, FEM_STR1%geofem,             &

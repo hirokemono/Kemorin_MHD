@@ -3,9 +3,9 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_analyze_filtered                                 &
-!!     &         (i_step, MHD_files, FEM_model, ak_MHD, MHD_step,       &
-!!     &          FEM_SGS, SGS_MHD_wk, FEM_MHD, ucd, MHD_IO, fem_sq)
+!!      subroutine FEM_analyze_filtered(i_step, MHD_files, FEM_model,   &
+!!     &          ak_MHD, MHD_step, FEM_SGS, SGS_MHD_wk, FEM_MHD, ucd,  &
+!!     &          MHD_IO, fem_sq, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -15,6 +15,8 @@
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module FEM_analyzer_filtered
 !
@@ -32,7 +34,7 @@
       use t_FEM_SGS_structure
       use t_MHD_IO_data
       use t_work_FEM_SGS_MHD
-      use m_solver_SR
+      use t_solver_SR
 !
       use calypso_mpi
 !
@@ -46,9 +48,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_filtered                                   &
-     &         (i_step, MHD_files, FEM_model, ak_MHD, MHD_step,         &
-     &          FEM_SGS, SGS_MHD_wk, FEM_MHD, ucd, MHD_IO, fem_sq)
+      subroutine FEM_analyze_filtered(i_step, MHD_files, FEM_model,     &
+     &          ak_MHD, MHD_step, FEM_SGS, SGS_MHD_wk, FEM_MHD, ucd,    &
+     &          MHD_IO, fem_sq, SR_sig, SR_r)
 !
       use m_fem_mhd_restart
       use t_FEM_MHD_mean_square
@@ -84,6 +86,8 @@
       type(ucd_data), intent(inout) :: ucd
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_IO_data), intent(inout) :: MHD_IO
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !     ---- Load field data --- 
 !
@@ -120,14 +124,14 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(FEM_MHD%geofem%mesh, FEM_MHD%field,     &
-     &                          FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &                          FEM_MHD%v_sol, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d, FEM_model%FEM_prm,        &
      &    FEM_SGS%SGS_par, FEM_MHD%geofem, FEM_model%MHD_mesh,          &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig, SR_r)
 !
 !     ----- Evaluate model coefficients
 !
@@ -136,7 +140,7 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig, SR_r)
 !
 !     ========  Data output
 !
@@ -146,7 +150,7 @@
      &    FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs, FEM_MHD%iphys,     &
      &    FEM_SGS%iphys_LES, ak_MHD, FEM_SGS%FEM_filters,               &
      &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,                     &
-     &    FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_MHD%v_sol, SR_sig, SR_r)
 !
 !     ----Filtering
       if (iflag_debug.eq.1) write(*,*) 'filtering_all_fields'
@@ -154,7 +158,7 @@
      &    FEM_MHD%geofem%mesh%nod_comm, FEM_MHD%geofem%mesh%node,       &
      &    FEM_SGS%FEM_filters%filtering,                                &
      &    SGS_MHD_wk%FEM_SGS_wk%wk_filter,                              &
-     &    FEM_MHD%field, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_MHD%field, FEM_MHD%v_sol, SR_sig, SR_r)
 !
 !     -----Output monitor date
 !

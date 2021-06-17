@@ -5,10 +5,10 @@
 !
 !!      subroutine FEM_initialize_MHD(MHD_files, flex_MHD, MHD_step,    &
 !!     &          FEM_model, FEM_MHD, MHD_CG, FEM_SGS, SGS_MHD_wk,      &
-!!     &          MHD_IO, fem_sq)
-!!      subroutine FEM_analyze_MHD                                      &
-!!     &         (MHD_files, FEM_model, flex_MHD, MHD_step, retval,     &
-!!     &          FEM_MHD, MHD_CG, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq)
+!!     &          MHD_IO, fem_sq, SR_sig, SR_r, SR_i, SR_il)
+!!      subroutine FEM_analyze_MHD(MHD_files, FEM_model, flex_MHD,      &
+!!     &          MHD_step, retval, FEM_MHD, MHD_CG,                    &
+!!     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, SR_sig, SR_r)
 !!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, MHD_IO)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
@@ -17,6 +17,10 @@
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       module FEM_analyzer_MHD
 !
@@ -35,7 +39,9 @@
       use t_FEM_MHD_mean_square
       use t_FEM_MHD_solvers
       use t_MHD_IO_data
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       use calypso_mpi
 !
@@ -49,7 +55,7 @@
 !
       subroutine FEM_initialize_MHD(MHD_files, flex_MHD, MHD_step,      &
      &          FEM_model, FEM_MHD, MHD_CG, FEM_SGS, SGS_MHD_wk,        &
-     &          MHD_IO, fem_sq)
+     &          MHD_IO, fem_sq, SR_sig, SR_r, SR_i, SR_il)
 !
       use t_boundary_field_IO
 !
@@ -80,6 +86,10 @@
 !
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       integer(kind = kint) :: iflag
 !
@@ -92,10 +102,10 @@
      &    FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,                         &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
      &    MHD_CG, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,                    &
-     &    label_sim, FEM_MHD%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    label_sim, FEM_MHD%v_sol, SR_sig, SR_r, SR_i, SR_il)
 !
       call nod_fields_send_recv(FEM_MHD%geofem%mesh, FEM_MHD%field,     &
-     &                          FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &                          FEM_MHD%v_sol, SR_sig, SR_r)
 !
 !   obtain elemental averages
 !
@@ -106,7 +116,7 @@
      &    FEM_SGS%SGS_par, FEM_MHD%geofem, FEM_model%MHD_mesh,          &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig, SR_r)
 !
       call copy_model_coef_2_previous                                   &
      &   (FEM_SGS%SGS_par%model_p, FEM_SGS%SGS_par%commute_p,           &
@@ -134,14 +144,14 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig, SR_r)
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_MHD%geofem,           &
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    MHD_CG%ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk,               &
-     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig, SR_r)
 !
 !     ---------------------
 !
@@ -157,7 +167,7 @@
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_model%MHD_mesh,   &
-     &    FEM_MHD%field, ucd_param, MHD_IO%ucd, SR_sig1, SR_i1)
+     &    FEM_MHD%field, ucd_param, MHD_IO%ucd, SR_sig1, SR_i)
 !
       call alloc_phys_range(FEM_MHD%field%ntot_phys_viz, MHD_IO%range)
 !       call s_open_boundary_monitor                                    &
@@ -169,9 +179,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_MHD                                        &
-     &         (MHD_files, FEM_model, flex_MHD, MHD_step, retval,       &
-     &          FEM_MHD, MHD_CG, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq)
+      subroutine FEM_analyze_MHD(MHD_files, FEM_model, flex_MHD,        &
+     &          MHD_step, retval, FEM_MHD, MHD_CG,                      &
+     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, SR_sig, SR_r)
 !
       use t_ucd_file
       use t_FEM_MHD_mean_square
@@ -208,6 +218,8 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind=kint ), intent(inout) :: retval
 !
@@ -228,7 +240,7 @@
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    MHD_CG%ak_MHD, FEM_SGS%FEM_filters, MHD_CG%solver_pack,       &
      &    MHD_CG%MGCG_WK, SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,     &
-     &    fem_sq, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    fem_sq, FEM_MHD%v_sol, SR_sig, SR_r)
 !
 !     ----- Evaluate model coefficients
 !
@@ -237,7 +249,7 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig, SR_r)
 !
 !     ---------------------
 !
@@ -255,7 +267,7 @@
      &    FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs,                    &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, MHD_CG%ak_MHD,              &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk,                              &
-     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_MHD%field, FEM_SGS%Csims, FEM_MHD%v_sol, SR_sig, SR_r)
 !
 !     -----Output monitor date
 !
@@ -314,7 +326,7 @@
      &   (retval, FEM_SGS%SGS_par, MHD_files, MHD_step%time_d,          &
      &    MHD_step%flex_p, FEM_MHD%geofem, FEM_MHD%iphys,               &
      &    SGS_MHD_wk%FEM_SGS_wk, MHD_step%rst_step,                     &
-     &    FEM_MHD%field, MHD_IO%rst_IO, FEM_MHD%v_sol, SR_sig1, SR_r1)
+     &    FEM_MHD%field, MHD_IO%rst_IO, FEM_MHD%v_sol, SR_sig, SR_r)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !   Finish by specific step
