@@ -8,6 +8,7 @@
       use calypso_mpi_char
       use transfer_to_long_integers
 !
+      use t_mesh_SR
       use m_solver_SR
       use solverNN
 

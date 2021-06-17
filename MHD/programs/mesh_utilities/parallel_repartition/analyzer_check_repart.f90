@@ -26,6 +26,7 @@
       use t_calypso_comm_table
       use t_control_param_repartition
       use t_vector_for_solver
+      use t_mesh_SR
       use m_solver_SR
 !
       implicit none

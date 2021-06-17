@@ -70,6 +70,7 @@
       use solve_precond_DJDS
       use copy_matrix_2_djds_array
 !
+      use t_mesh_SR
       use m_solver_SR
       use t_solver_djds
 !

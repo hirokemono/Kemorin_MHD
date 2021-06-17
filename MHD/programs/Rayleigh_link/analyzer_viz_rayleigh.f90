@@ -26,6 +26,7 @@
       use t_VIZ_only_step_parameter
       use t_viz_4_rayleigh
       use t_vector_for_solver
+      use t_mesh_SR
       use m_solver_SR
 !
       implicit none

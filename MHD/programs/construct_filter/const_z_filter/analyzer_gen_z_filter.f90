@@ -21,6 +21,7 @@
       use t_crs_matrix
       use t_gauss_points
       use t_shape_functions
+      use t_mesh_SR
       use m_solver_SR
 !
       implicit none

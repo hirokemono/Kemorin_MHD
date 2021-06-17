@@ -28,6 +28,7 @@
       use t_SPH_mesh_field_data
       use t_step_parameter
       use t_VIZ_mesh_field
+      use t_mesh_SR
       use m_solver_SR
 !
       use FEM_analyzer_sph_SGS_MHD

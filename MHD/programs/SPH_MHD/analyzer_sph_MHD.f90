@@ -29,6 +29,7 @@
       use t_SPH_MHD_zonal_mean_viz
       use t_VIZ_mesh_field
       use t_sph_trans_arrays_MHD
+      use t_mesh_SR
       use m_solver_SR
 !
       use SPH_analyzer_SGS_MHD

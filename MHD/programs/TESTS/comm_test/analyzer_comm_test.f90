@@ -23,6 +23,7 @@
       use t_failed_export_list
       use t_const_comm_table
       use t_vector_for_solver
+      use t_mesh_SR
       use m_solver_SR
 !
       implicit none

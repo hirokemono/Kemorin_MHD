@@ -28,6 +28,7 @@
       use t_ctl_data_MHD
       use t_sph_trans_arrays_MHD
       use t_comm_table
+      use t_mesh_SR
       use m_solver_SR
 !
       use FEM_analyzer_sph_MHD

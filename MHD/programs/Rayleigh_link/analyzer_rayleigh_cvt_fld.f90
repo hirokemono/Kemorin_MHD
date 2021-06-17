@@ -29,6 +29,7 @@
       use t_comm_table_4_assemble
       use t_rayleigh_field_IO
       use t_vector_for_solver
+      use t_mesh_SR
       use m_solver_SR
 !
       use field_IO_select

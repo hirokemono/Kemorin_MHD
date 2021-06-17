@@ -25,6 +25,7 @@
       use m_MHD_step_parameter
       use t_SPH_mesh_field_data
       use t_ctl_data_MHD
+      use t_mesh_SR
       use m_solver_SR
 !
       use SPH_analyzer_licv

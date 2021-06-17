@@ -22,6 +22,7 @@
 !
       implicit none
 !
+!>      Structure of work area for mesh communications
       type mesh_SR
 !>        Structure of communication flags
         type(send_recv_status) :: SR_sig
@@ -36,5 +37,9 @@
 !>        Structure for vectors for solver
         type(vectors_4_solver) :: v_sol
       end type mesh_SR
+!
+!
+      type(mesh_SR), save :: m_SR1
+!
 !
       end module t_mesh_SR

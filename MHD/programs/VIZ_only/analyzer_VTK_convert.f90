@@ -18,6 +18,7 @@
       use t_file_IO_parameter
       use t_vector_for_solver
       use FEM_analyzer_viz_surf
+      use t_mesh_SR
       use m_solver_SR
 !
       implicit none

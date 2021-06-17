@@ -22,6 +22,7 @@
 !
       use t_ctl_data_const_sph_mesh
       use t_ctl_params_gen_sph_shell
+      use t_mesh_SR
       use m_solver_SR
 !
       use calypso_mpi

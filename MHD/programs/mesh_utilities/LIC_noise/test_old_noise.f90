@@ -13,6 +13,7 @@
       use t_ucd_data
       use t_file_IO_parameter
       use t_vector_for_solver
+      use t_mesh_SR
       use m_solver_SR
       use m_file_format_switch
       use m_spheric_constants

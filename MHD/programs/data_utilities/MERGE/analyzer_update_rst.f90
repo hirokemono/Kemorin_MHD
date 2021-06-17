@@ -27,6 +27,7 @@
       use t_control_param_assemble
       use t_comm_table_4_assemble
       use t_vector_for_solver
+      use t_mesh_SR
       use m_solver_SR
 !
       use field_IO_select

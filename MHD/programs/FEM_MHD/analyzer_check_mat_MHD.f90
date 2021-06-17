@@ -12,7 +12,9 @@
       use m_FEM_MHD_model_data
       use calypso_mpi
 !
+      use t_mesh_SR
       use FEM_check_MHD_matrices
+      use m_solver_SR
 !
       implicit none
 !
@@ -24,7 +26,6 @@
 !
       subroutine init_analyzer
 !
-      use m_solver_SR
       use m_MHD_step_parameter
       use input_control
 !
