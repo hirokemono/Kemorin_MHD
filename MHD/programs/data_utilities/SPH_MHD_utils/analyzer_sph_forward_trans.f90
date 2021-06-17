@@ -76,7 +76,7 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
-     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1, FEM_d1%v_sol,            &
+     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1, v_sol1,                  &
      &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !        Initialize spherical transform dynamo

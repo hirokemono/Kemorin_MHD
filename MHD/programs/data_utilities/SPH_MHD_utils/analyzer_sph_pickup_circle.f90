@@ -110,7 +110,7 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
-     &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, FEM_d1%v_sol)
+     &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, v_sol1)
 !      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(FEM_d1%geofem%mesh,                       &
      &                        SR_sig1, SR_r1, SR_i1, SR_il1)

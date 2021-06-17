@@ -76,7 +76,7 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
-     &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, FEM_d1%v_sol)
+     &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, v_sol1)
 !
 !   matrix assembling
 !
