@@ -58,7 +58,7 @@
       call FEM_initialize_snapshot                                      &
      &   (MHD_files1, MHD_step1, FEM_model1, MHD_CG1%ak_MHD,            &
      &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1,            &
-     &    FEM_MHD1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    v_sol2, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       call init_FEM_MHD_to_VIZ_bridge(MHD_step1%viz_step,               &
      &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
@@ -88,7 +88,7 @@
         call FEM_analyze_filtered(i_step, MHD_files1, FEM_model1,       &
      &      MHD_CG1%ak_MHD, MHD_step1, FEM_SGS1, SGS_MHD_wk1,           &
      &      FEM_MHD1, MHD_IO1%ucd, MHD_IO1, fem_sq1,                    &
-     &      FEM_MHD1%v_sol, SR_sig1, SR_r1)
+     &      v_sol2, SR_sig1, SR_r1)
 !
 !  Visualization
         visval = MHD_viz_routine_flag                                   &
@@ -98,7 +98,7 @@
      &     (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_MHD1%geofem, FEM_MHD1%field, VIZ_DAT2, vizs_F,        &
-     &        FEM_MHD1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &        v_sol2, SR_sig1, SR_r1, SR_i1, SR_il1)
         end if
       end do
 !
