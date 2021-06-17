@@ -18,7 +18,7 @@
       use t_FEM_mesh_field_data
       use t_work_SPH_MHD
       use t_SPH_MHD_zonal_mean_viz
-      use t_vector_for_solver
+      use t_mesh_SR
 !
       implicit  none
 !
@@ -32,8 +32,8 @@
 !
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_data), save :: FEM_d1
-!>        Structure for vectors for solver
-      type(vectors_4_solver) :: v_sol1
+!>      Structure of work area for mesh communications
+      type(mesh_SR), save :: m_SR1
 !
 !>      Structures of zonal mean controls
       type(sph_zonal_mean_sectioning), save :: zmeans1

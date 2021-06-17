@@ -29,6 +29,7 @@
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!
 !!      subroutine init_send_recv(nod_comm, SR_sig, SR_r, SR_i, SR_il)
+!!      subroutine init_real_send_recv(nod_comm, SR_sig, SR_r)
 !!      subroutine fields_send_recv(nod_comm, nod_fld,                  &
 !!     &                            v_sol, SR_sig, SR_r)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -162,6 +163,22 @@
      &    nod_comm%ntot_export, nod_comm%ntot_import, SR_sig, SR_il)
 !
       end subroutine init_send_recv
+!
+! ----------------------------------------------------------------------
+!
+      subroutine init_real_send_recv(nod_comm, SR_sig, SR_r)
+!
+      type(communication_table), intent(in) :: nod_comm
+!
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!
+      call resize_work_SR                                               &
+     &   (n_sym_tensor, nod_comm%num_neib, nod_comm%num_neib,           &
+     &    nod_comm%ntot_export, nod_comm%ntot_import, SR_sig, SR_r)
+!
+      end subroutine init_real_send_recv
 !
 ! ----------------------------------------------------------------------
 !

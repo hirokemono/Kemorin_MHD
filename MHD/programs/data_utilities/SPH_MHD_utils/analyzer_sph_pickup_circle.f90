@@ -30,7 +30,6 @@
       use t_SPH_mesh_field_data
       use t_step_parameter
       use t_mesh_SR
-      use m_solver_SR
 !
       use SPH_analyzer_sph_pick_circ
 !
@@ -111,16 +110,16 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
-     &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, v_sol1)
+     &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, m_SR1%v_sol)
 !      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(FEM_d1%geofem%mesh,                       &
-     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
+      call init_real_send_recv(FEM_d1%geofem%mesh%nod_comm,             &
+     &                         m_SR1%SR_sig, m_SR1%SR_r)
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle(MHD_files1, FEM_d1%iphys,           &
      &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1,                      &
-     &    SR_sig1, SR_r1, cdat1)
+     &    m_SR1%SR_sig, m_SR1%SR_r, cdat1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -151,7 +150,7 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
         call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step,      &
      &      MHD_files1, SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1,        &
-     &      SR_sig1, SR_r1, cdat1)
+     &      m_SR1%SR_sig, m_SR1%SR_r, cdat1)
 !*
 !*  -----------  exit loop --------------
 !*

@@ -30,7 +30,6 @@
       use t_VIZ_mesh_field
       use t_sph_trans_arrays_MHD
       use t_mesh_SR
-      use m_solver_SR
 !
       use SPH_analyzer_SGS_MHD
       use FEM_analyzer_sph_SGS_MHD
@@ -86,31 +85,31 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
-     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1, v_sol1,                  &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1, m_SR1%v_sol,                  &
+     &    m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
 !
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
       call SPH_initialize_SGS_MHD                                       &
      &   (MHD_files1, FEM_d1%iphys, MHD_step1, MHD_IO1%rst_IO,          &
-     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1, SR_sig1, SR_r1)
+     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge(MHD_step1%viz_step,                   &
-     &    FEM_d1%geofem, VIZ_DAT1, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    FEM_d1%geofem, VIZ_DAT1, m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(MHD_step1%viz_step, FEM_d1%geofem,            &
      &    FEM_d1%field, VIZ_DAT1, MHD_ctl1%viz_ctls, vizs1,             &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
       call init_zonal_mean_sections(MHD_step1%viz_step, FEM_d1%geofem,  &
      &    VIZ_DAT1%edge_comm, FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1,  &
-     &    SR_sig1, SR_il1)
+     &    m_SR1%SR_sig, m_SR1%SR_il)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call reset_elapse_4_init_sph_mhd
@@ -157,7 +156,7 @@
         call SPH_analyze_SGS_MHD(MHD_step1%time_d%i_time_step,          &
      &      MHD_files1, iflag_finish, SPH_model1, MHD_step1,            &
      &      MHD_IO1%rst_IO, SPH_SGS1, SPH_MHD1, SPH_WK1,                &
-     &      SR_sig1, SR_r1)
+     &      m_SR1%SR_sig, m_SR1%SR_r)
 !*
 !*  -----------  output field data --------------
 !*
@@ -172,7 +171,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
         call FEM_analyze_sph_SGS_MHD(MHD_files1, MHD_step1, MHD_IO1,    &
-     &      FEM_d1, v_sol1, SR_sig1, SR_r1)
+     &      FEM_d1, m_SR1%v_sol, m_SR1%SR_sig, m_SR1%SR_r)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -186,7 +185,7 @@
      &                          MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_d1%geofem, FEM_d1%field, VIZ_DAT1, vizs1,             &
-     &        v_sol1, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &        m_SR1%v_sol, m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
 !*
 !*  ----------- Zonal means --------------
 !*
@@ -194,7 +193,7 @@
             call SGS_MHD_zmean_sections(MHD_step1%viz_step,             &
      &          MHD_step1%time_d, SPH_MHD1%sph, FEM_d1%geofem,          &
      &          SPH_WK1%trns_WK, SPH_SGS1, FEM_d1%field,                &
-     &          zmeans1, v_sol1, SR_sig1, SR_r1)
+     &          zmeans1, m_SR1%v_sol, m_SR1%SR_sig, m_SR1%SR_r)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
