@@ -19,7 +19,6 @@
       use t_vector_for_solver
       use FEM_analyzer_viz_surf
       use t_mesh_SR
-      use m_solver_SR
 !
       implicit none
 !
@@ -30,8 +29,8 @@
       type(control_data_section_only), save :: sec_viz_ctl5
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz5
-!>        Structure for vectors for solver
-      type(vectors_4_solver) :: v_sol15
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR15
 !
 !>        Structure for VTK file output paramters
         type(field_IO_params) :: vtk_file_IO5
@@ -67,13 +66,14 @@
 !
 !  FEM Initialization
       call FEM_initialize_VTK_convert(t_VIZ5%ucd_step, t_VIZ5%init_d,   &
-     &    FEM_viz5, v_sol15, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &                                FEM_viz5, m_SR15)
 !
 !  VIZ Initialization
       call init_visualize_convert_vtk                                   &
      &   (FEM_viz5%geofem, FEM_viz5%field, t_VIZ5%ucd_step,             &
      &    sec_viz_ctl5%surfacing_ctls%output_ucd_fmt_s_ctl,             &
-     &    FEM_viz5%ucd_file_IO, vtk_file_IO5, vtk_out5, SR_sig1, SR_i1)
+     &    FEM_viz5%ucd_file_IO, vtk_file_IO5, vtk_out5,                 &
+     &    m_SR15%SR_sig, m_SR15%SR_i)
 !
       end subroutine init_analyzer_VTK_convert
 !
@@ -89,8 +89,7 @@
 !
 !  Load field data
         call FEM_analyze_surface                                        &
-     &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d,                     &
-     &      FEM_viz5, v_sol15, SR_sig1, SR_r1)
+     &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d, FEM_viz5, m_SR15)
 !
 !  Generate field lines
         istep_ucd = istep_file_w_fix_dt(i_step, t_VIZ5%ucd_step)

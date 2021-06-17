@@ -15,9 +15,7 @@
       use t_VIZ_only_step_parameter
       use t_control_data_section_only
       use t_FEM_mesh_field_4_viz
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
       use FEM_analyzer_viz_surf
 !
       implicit none
@@ -29,8 +27,8 @@
       type(control_data_section_only), save :: sec_viz_ctl2
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz2
-!>        Structure for vectors for solver
-      type(vectors_4_solver) :: v_sol12
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR12
 !>      Structure of sectioning and isosurfaceing modules
       type(surfacing_modules), save :: viz_psfs2
 !>      Edge communication table
@@ -64,15 +62,14 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_surface                                       &
-     &   (t_VIZ2%ucd_step, t_VIZ2%init_d, FEM_viz2, edge_comm_PSF,      &
-     &    v_sol12, SR_sig1, SR_r1, SR_i1, SR_il1)
+      call FEM_initialize_surface(t_VIZ2%ucd_step, t_VIZ2%init_d,       &
+     &                            FEM_viz2, edge_comm_PSF, m_SR12)
 !
 !  VIZ Initialization
       call init_visualize_surface                                       &
      &   (t_VIZ2%viz_step, FEM_viz2%geofem, edge_comm_PSF,              &
      &    FEM_viz2%field, sec_viz_ctl2%surfacing_ctls, viz_psfs2,       &
-     &    SR_sig1, SR_il1)
+     &    m_SR12%SR_sig, m_SR12%SR_il)
 !
       end subroutine init_analyzer_psf
 !
@@ -90,8 +87,7 @@
 !
 !  Load field data
         call FEM_analyze_surface                                        &
-     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d,                     &
-     &      FEM_viz2, v_sol12, SR_sig1, SR_r1)
+     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, FEM_viz2, m_SR12)
 !
 !  Generate field lines
         t_VIZ2%viz_step%istep_psf                                       &
@@ -101,7 +97,7 @@
 !
         call visualize_surface(t_VIZ2%viz_step, t_VIZ2%time_d,          &
      &      FEM_viz2%geofem, edge_comm_PSF, FEM_viz2%field,             &
-     &      viz_psfs2, SR_sig1, SR_il1)
+     &      viz_psfs2, m_SR12%SR_sig, m_SR12%SR_il)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
