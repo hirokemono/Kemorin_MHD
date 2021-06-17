@@ -26,6 +26,7 @@
 !
       use m_precision
 !
+      use m_machine_parameter
       use m_constants
       use m_geometry_constants
       use calypso_mpi
@@ -39,7 +40,6 @@
       use t_control_param_LIC
       use t_geometries_in_pvr_screen
       use t_lic_field_data
-      use m_machine_parameter
       use cal_lic_on_surf_viz
 !
       implicit  none
@@ -100,20 +100,18 @@
       real(kind = kreal) :: xx4_tgt(4), grad_len, rflag, rflag2
 
       real(kind = kreal) :: rlic_grad(0:3), grad_tgt(3)
-      real(kind = kreal) :: xx4_lic(4)
+      real(kind = kreal) :: xx4_lic(4), xx4_lic_last(4)
       real(kind = kreal) :: scl_org(1), scl_tgt(1), scl_mid(1)
       real(kind = kreal) :: vec4_org(4), vec4_tgt(4), vec4_mid(4)
       integer(kind = kint) :: isurf_orgs(2,3), i, iflag_lic
 
-      real(kind = kreal) :: ray_total_len = zero, ave_ray_len, step_size
-      integer(kind = kint) :: icount_line_cur_ray = 0
-      real(kind = kreal) :: ray_left, ray_len
+      integer(kind = kint) :: icount_line_cur_ray = 0, step_cnt
+      real(kind = kreal) :: ray_len_left, ray_left, ray_len, ratio
       real(kind = kreal) :: start_trace
       real(kind = kreal) :: opacity_bc
 !
       if(isurf_org(1) .eq. 0) return
 !
-      step_size = lic_p%step_size
       ray_left = 0.0
 !
       iflag_notrace = 1
@@ -147,7 +145,6 @@
       end do
 !
 !
-!        Set color if starting surface is colourd
       if(ele%interior_ele(iele) .gt. 0) then
 !   rendering boundery
         opacity_bc = opacity_by_surf_grp(isurf_end, surf, surf_grp,     &
@@ -156,7 +153,7 @@
         if(opacity_bc .gt. SMALL_RAY_TRACE) then
           rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
           call plane_rendering_with_light(viewpoint_vec,                &
-     &        xx4_st, rlic_grad(1), opacity_bc,  color_param, rgba_ray)
+     &        xx4_st, rlic_grad(1), opacity_bc, color_param, rgba_ray)
         end if
       end if
 !
@@ -169,7 +166,7 @@
           iflag_comm = 2
           exit
         end if
-        icount_line = icount_line + 1
+!
         icount_line_cur_ray = icount_line_cur_ray + 1
 !
 !   extend to surface of element
@@ -237,7 +234,7 @@
           if(opacity_bc .gt. SMALL_RAY_TRACE) then
             rlic_grad(1:3) = surf%vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light(viewpoint_vec, xx4_tgt,     &
-     &          rlic_grad(1), opacity_bc, color_param, rgba_ray)
+     &          rlic_grad(1), opacity_bc,  color_param, rgba_ray)
           end if
 !
 !   3d lic calculation at current xx position
@@ -245,74 +242,94 @@
           ray_len = sqrt( (xx4_tgt(1) - xx4_st(1))**2                   &
      &                  + (xx4_tgt(2) - xx4_st(2))**2                   &
      &                  + (xx4_tgt(3) - xx4_st(3))**2)
-!
-! sampling by cell
-          ray_total_len = ray_total_len + ray_len
-!   find mid point between xx_st and xx_tgt, this mid point will be actual sample point
-          xx4_lic(1:4) = half*(xx4_st(1:4) + xx4_tgt(1:4))
-!
-!   reference data at origin of lic iteration
-          do i = 1, lic_p%num_masking
-            r_mid(i) = half*(r_org(i)+r_tgt(i))
-          end do
-!   the vector interpolate from entry and exit point
-          vec4_mid(1:4) = half*(vec4_org(1:4) + vec4_tgt(1:4))
-!   calculate lic value at current location, lic value will be used as intensity
-!   as volume rendering
-          start_trace =  MPI_WTIME()
-          call cal_lic_on_surf_vector                                   &
-     &       (node, ele, surf, isurf_orgs, xi, lic_p,                   &
-     &        r_mid, vec4_mid, field_lic%s_lic, field_lic%v_lic,        &
-     &        xx4_lic, isurf_end, iflag_lic, rlic_grad)
-!
-          ave_ray_len = ray_total_len / icount_line_cur_ray
-!
-!   normalize gradient
-          grad_len = sqrt(rlic_grad(1)*rlic_grad(1)                     &
-     &                  + rlic_grad(2)*rlic_grad(2)                     &
-     &                  + rlic_grad(3)*rlic_grad(3))
-          if(grad_len .ne. 0.0) then
-            rlic_grad(1:3) = rlic_grad(1:3) / grad_len
-          end if
-          elapse_trace =  elapse_trace + MPI_WTIME() - start_trace
+            ray_len_left = ray_left + ray_len
 
-          do i_psf = 1, draw_param%num_sections
-            rflag =  side_of_plane(draw_param%coefs(1:10,i_psf),        &
-     &                             xx4_st(1))
-            rflag2 = side_of_plane(draw_param%coefs(1:10,i_psf),        &
-     &                             xx4_tgt(1))
-            if     (rflag .ge. -TINY9 .and. rflag2 .le. TINY9) then
-              iflag = 1
-              iflag_hit = 1
-            else if(rflag .le. TINY9 .and. rflag2 .ge. -TINY9) then
-              iflag = 1
-              iflag_hit = 1
-            else
-              iflag = 0
-            end if
-
-            if(iflag .ne. 0) then
-              call cal_normal_of_plane                                  &
-     &           (draw_param%coefs(1:10,i_psf), xx4_tgt(1), grad_tgt)
-              call color_plane_with_light                               &
-     &           (viewpoint_vec, xx4_tgt, rlic_grad(0), grad_tgt,       &
-     &            draw_param%sect_opacity(i_psf), color_param,          &
-     &            rgba_ray)
-            end if
-          end do
+            xx4_lic_last(1:4) = xx4_st(1:4)
+            step_cnt = 0
+            do while(ray_len_left .gt. zero)
+              ray_len_left = ray_len_left - lic_p%step_size
+              ratio = (lic_p%step_size*step_cnt - ray_left) / ray_len
+              xx4_lic(1:4) = xx4_st(1:4)                                &
+     &                    + ratio * (xx4_tgt(1:4) - xx4_st(1:4))
 !
-          if(lic_p%iflag_color_mode .eq. iflag_from_control) then
-            scl_mid(1) = half*(scl_org(1) + scl_tgt(1))
-            call s_lic_rgba_4_each_pixel                                &
-     &         (viewpoint_vec, xx4_st, xx4_tgt,                         &
-     &          scl_mid(1), rlic_grad(1), rlic_grad(0),                 &
-     &          color_param, ave_ray_len, rgba_ray)
-          else
-            call s_lic_rgba_4_each_pixel                                &
-     &         (viewpoint_vec, xx4_st, xx4_tgt,                         &
-     &          rlic_grad(0), rlic_grad(1), rlic_grad(0),               &
-     &          color_param, ave_ray_len, rgba_ray)
-          end if
+              do i = 1, lic_p%num_masking
+                r_mid(i) = r_org(i) * (1.0d0 - ratio) + r_tgt(i)*ratio
+!write(*,*) "org", r_org, "tgt", r_tgt, "ratio", ratio
+              end do
+! masking on sampling point
+!              if(lic_mask_flag(lic_p, r_mid)) then
+
+              start_trace =  MPI_WTIME()
+              vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
+     &                       + vec4_tgt(1:4) * ratio
+              call cal_lic_on_surf_vector                               &
+     &           (node, ele, surf, isurf_orgs, xi, lic_p,               &
+     &            r_mid, vec4_mid, field_lic%s_lic(1,1),                &
+     &            field_lic%v_lic, xx4_lic, isurf_end,                  &
+     &            iflag_lic, rlic_grad)
+!
+  !   normalize gradient
+              if(iflag_lic .gt. 0) then
+                grad_len = sqrt(rlic_grad(1)*rlic_grad(1)               &
+     &                        + rlic_grad(2)*rlic_grad(2)               &
+     &                        + rlic_grad(3)*rlic_grad(3))
+                if(grad_len .ne. 0.0) then
+                  rlic_grad(1:3) = rlic_grad(1:3) / grad_len
+                end if
+              else
+                rlic_grad(1:3) = 0.0d0
+              end if
+              elapse_trace =  elapse_trace + MPI_WTIME() - start_trace
+!
+!  Render sections
+              do i_psf = 1, draw_param%num_sections
+                rflag =  side_of_plane(draw_param%coefs(1:10,i_psf),    &
+     &                               xx4_st(1))
+                rflag2 = side_of_plane(draw_param%coefs(1:10,i_psf),    &
+     &                               xx4_tgt(1))
+                if     (rflag .ge. -TINY9 .and. rflag2 .le. TINY9) then
+                  iflag = 1
+                  iflag_hit = 1
+                else if(rflag .le. TINY9 .and. rflag2 .ge. -TINY9) then
+                  iflag = 1
+                  iflag_hit = 1
+                else
+                  iflag = 0
+                end if
+
+                if(iflag .ne. 0) then
+                  call cal_normal_of_plane                              &
+     &               (draw_param%coefs(1:10,i_psf),                     &
+     &                xx4_tgt(1), grad_tgt)
+                  call color_plane_with_light                           &
+     &               (viewpoint_vec, xx4_tgt, rlic_grad(0), grad_tgt,   &
+     &                draw_param%sect_opacity(i_psf), color_param,      &
+     &                rgba_ray)
+                end if
+              end do
+!
+! render volumes
+              if(iflag_lic .gt. 0) then
+                if(lic_p%iflag_color_mode .eq. iflag_from_control) then
+                  scl_mid(1)                                            &
+     &              = scl_org(1) * (1.0d0 - ratio) + scl_tgt(1) * ratio
+                  call s_lic_rgba_4_each_pixel                          &
+     &               (viewpoint_vec, xx4_lic_last, xx4_lic,             &
+     &                scl_mid(1), rlic_grad(1), rlic_grad(0),           &
+     &                color_param, lic_p%step_size, rgba_ray)
+                else
+                  call s_lic_rgba_4_each_pixel                          &
+     &               (viewpoint_vec, xx4_lic_last, xx4_lic,             &
+     &                rlic_grad(0), rlic_grad(1), rlic_grad(0),         &
+     &                color_param, lic_p%step_size, rgba_ray)
+                end if
+!
+                icount_line = icount_line + 1
+              end if
+              step_cnt = step_cnt + 1
+              xx4_lic_last(1:4) = xx4_lic(1:4)
+            end do
+            ray_left = ray_len_left
         end if
 !       write(*,*) 'rgba_ray end', rgba_ray
 !

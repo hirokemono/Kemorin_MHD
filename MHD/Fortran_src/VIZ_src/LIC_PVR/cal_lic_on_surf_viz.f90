@@ -85,18 +85,18 @@
       integer(kind = kint) :: iflag_found_sf, iele, isf_org
 
 
-        iflag_comm = 1
-        k_area = 0.0
+      iflag_comm = 0
+      k_area = 0.0
 
 !     initial convolution integration at origin point
-        rlic_grad_v(0) = 0.0
-        rlic_grad(0:3) = 0.0
-        icur_sf = isurf
-        n_v = 0.0
-        do i = 1, 2
-          iele = isurf_orgs(i,1)
-          isf_org = isurf_orgs(i,2)
-          if(i_debug .eq. 1) write(50+my_rank,*)                        &
+      rlic_grad_v(0) = 0.0
+      rlic_grad(0:3) = 0.0
+      icur_sf = isurf
+      n_v = 0.0
+      do i = 1, 2
+        iele = isurf_orgs(i,1)
+        isf_org = isurf_orgs(i,2)
+        if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &              "ele: ", iele, "local surf: ", isf_org
           if(i_debug .eq. 1) write(50+my_rank,*)                        &
      &              "global surf: ", isurf, "surf of ele",              &
@@ -278,11 +278,8 @@
       avg_stepsize = 0.01
       len_sum = 0.0
 
-      iflag_comm = 1
-      if(isurf_org(1) .eq. 0) then
-        iflag_comm = 0
-        return
-      end if
+      iflag_comm = 0
+      if(isurf_org(1) .eq. 0) return
 
       iele =    isurf_org(1)
       isf_org = isurf_org(2)
@@ -387,7 +384,6 @@
         x4_start(1:4) =  x4_tgt(1:4)
         v4_start(1:4) =  v4_tgt(1:4)
 !
-        rnoise_grad(0:3) = 0.0
         ref_value(1:lic_p%num_masking) = 0.0
         do i = 1, lic_p%num_masking
           call cal_field_on_surf_scalar                                 &
@@ -396,6 +392,9 @@
         end do
 !
         if(lic_mask_flag(lic_p, ref_value)) then
+          if(iflag_comm .eq. 0) iflag_comm = 1
+!
+          rnoise_grad(0:3) = 0.0
           do i = 1, nstep_int(1)
             x4(1:4) = x4_org(1:4)                                       &
      &               + lic_p%noise_t%delta_noise * step_unit(1:4,1)
@@ -455,18 +454,20 @@
      &                    + rnoise_grad(0:3) * k_value                  &
      &                     * residual(2) * astep_len
           k_area = k_area + k_value * residual(2) * astep_len
+          
         else
           s_int = len_sum + step_len
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value) 
           nv_sum = nv_sum + rnoise_grad(0)
-          rlic_grad_v(0:3) = rlic_grad_v(0:3)                           &
-     &                      + rnoise_grad(0:3) * k_value
           k_area = k_area + k_value
+!          rnoise_grad(0:3) = 0.0
+!          rlic_grad_v(0:3) = rlic_grad_v(0:3)                          &
+!     &                      + rnoise_grad(0:3) * k_value
         end if
         len_sum = s_int
 !
-        if(i_debug .eq. 1) write(50 + my_rank, *)                       &
+        if(i_debug .eq. 1) write(50+my_rank, *)                         &
      &     "nv: ", rnoise_grad(0),  "nv sum:", nv_sum,                  &
      &    "kernel area: ", k_area, "lic_v: ", rlic_grad_v(0)
 
