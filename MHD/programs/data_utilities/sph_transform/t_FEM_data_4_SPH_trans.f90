@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine mesh_setup_4_SPH_TRANS                               &
-!!     &         (FEM_STR, SR_sig, SR_r, SR_i, SR_il)
+!!     &         (FEM_STR, v_sol, SR_sig, SR_r, SR_i, SR_il)
 !!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -85,13 +86,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine mesh_setup_4_SPH_TRANS                                 &
-     &         (FEM_STR, SR_sig, SR_r, SR_i, SR_il)
+     &         (FEM_STR, v_sol, SR_sig, SR_r, SR_i, SR_il)
 !
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
       use set_ucd_data_to_type
 !
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -101,7 +103,7 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(FEM_STR%geofem%mesh, FEM_STR%v_sol,  &
+      call FEM_comm_initialization(FEM_STR%geofem%mesh, v_sol,          &
      &                             SR_sig, SR_r, SR_i, SR_il)
       call FEM_mesh_initialization                                      &
      &   (FEM_STR%geofem%mesh, FEM_STR%geofem%group, SR_sig, SR_i)

@@ -85,7 +85,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
-     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1,                          &
+     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1, FEM_d1%v_sol,            &
      &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !        Initialize spherical transform dynamo
@@ -170,8 +170,8 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
-        call FEM_analyze_sph_SGS_MHD                                    &
-     &     (MHD_files1, MHD_step1, MHD_IO1, FEM_d1, SR_sig1, SR_r1)
+        call FEM_analyze_sph_SGS_MHD(MHD_files1, MHD_step1, MHD_IO1,    &
+     &      FEM_d1, FEM_d1%v_sol, SR_sig1, SR_r1)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !

@@ -63,7 +63,7 @@
 !
 !  FEM Initialization
       call FEM_initialize_VTK_convert(t_VIZ5%ucd_step, t_VIZ5%init_d,   &
-     &    FEM_viz5, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    FEM_viz5, FEM_viz5%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       call init_visualize_convert_vtk                                   &
@@ -86,7 +86,7 @@
 !  Load field data
         call FEM_analyze_surface                                        &
      &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d,                     &
-     &      FEM_viz5, SR_sig1, SR_r1)
+     &      FEM_viz5, FEM_viz5%v_sol, SR_sig1, SR_r1)
 !
 !  Generate field lines
         istep_ucd = istep_file_w_fix_dt(i_step, t_VIZ5%ucd_step)

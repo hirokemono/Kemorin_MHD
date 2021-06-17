@@ -67,7 +67,7 @@
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_four_vizs'
       call FEM_initialize_four_vizs(t_VIZ4%init_d, t_VIZ4%ucd_step,     &
      &    t_VIZ4%viz_step, FEM_viz4, VIZ_DAT4,                          &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    FEM_viz4%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
@@ -94,7 +94,7 @@
      &                       'FEM_analyze_four_vizs', i_step
         call FEM_analyze_four_vizs                                      &
      &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4,           &
-     &      SR_sig1, SR_r1)
+     &      FEM_viz4%v_sol, SR_sig1, SR_r1)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_four', i_step

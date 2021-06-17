@@ -71,7 +71,8 @@
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
       call FEM_initialize_viz(t_VIZ1%init_d, t_VIZ1%ucd_step,           &
-     &    t_VIZ1%viz_step, FEM_viz1, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    t_VIZ1%viz_step, FEM_viz1, FEM_viz1%v_sol,                    &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
@@ -102,7 +103,7 @@
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_viz', i_step
         call FEM_analyze_viz(i_step, t_VIZ1%ucd_step, t_VIZ1%time_d,    &
-     &                       FEM_viz1, SR_sig1, SR_r1)
+     &                       FEM_viz1, FEM_viz1%v_sol, SR_sig1, SR_r1)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step

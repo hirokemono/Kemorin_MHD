@@ -9,22 +9,25 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_sph_SGS_MHD(MHD_files, MHD_step,      &
-!!     &          iphys_LES, MHD_IO, FEM_MHD, SR_sig, SR_r, SR_i, SR_il)
+!!     &          iphys_LES, MHD_IO, FEM_MHD,                           &
+!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
-!!      subroutine FEM_analyze_sph_SGS_MHD                              &
-!!     &         (MHD_files, MHD_step, MHD_IO, FEM_MHD, SR_sig, SR_r)
+!!      subroutine FEM_analyze_sph_SGS_MHD(MHD_files, MHD_step, MHD_IO, &
+!!     &                                   FEM_MHD, v_sol, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine SPH_to_FEM_bridge_SGS_MHD                            &
@@ -59,6 +62,7 @@
 !
       use t_shape_functions
       use t_FEM_mesh_field_data
+      use t_vector_for_solver
       use t_solver_SR
       use t_solver_SR_int
       use t_solver_SR_int8
@@ -72,7 +76,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_sph_SGS_MHD(MHD_files, MHD_step,        &
-     &          iphys_LES, MHD_IO, FEM_MHD, SR_sig, SR_r, SR_i, SR_il)
+     &          iphys_LES, MHD_IO, FEM_MHD,                             &
+     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !
       use t_phys_address
       use t_SGS_model_addresses
@@ -96,6 +101,7 @@
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -117,7 +123,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(FEM_MHD%geofem%mesh, FEM_MHD%v_sol,  &
+      call FEM_comm_initialization(FEM_MHD%geofem%mesh, v_sol,          &
      &                             SR_sig, SR_r, SR_i, SR_il)
 !
 !  -------------------------------
@@ -138,8 +144,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_SGS_MHD                                &
-     &         (MHD_files, MHD_step, MHD_IO, FEM_MHD, SR_sig, SR_r)
+      subroutine FEM_analyze_sph_SGS_MHD(MHD_files, MHD_step, MHD_IO,   &
+     &                                   FEM_MHD, v_sol, SR_sig, SR_r)
 !
       use FEM_analyzer_sph_MHD
 !
@@ -148,13 +154,14 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call FEM_analyze_sph_MHD                                          &
      &   (MHD_files, FEM_MHD%geofem, FEM_MHD%field,                     &
-     &    MHD_step, MHD_IO, FEM_MHD%v_sol, SR_sig, SR_r)
+     &    MHD_step, MHD_IO, v_sol, SR_sig, SR_r)
 !
       end subroutine FEM_analyze_sph_SGS_MHD
 !

@@ -5,17 +5,19 @@
 !      Written by H. Matsui
 !
 !!      subroutine FEM_initialize_back_trans(ucd_step, FEM_STR,         &
-!!     &          SR_sig, SR_r, SR_i, SR_il)
+!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
-!!      subroutine FEM_analyze_back_trans                               &
-!!     &         (i_step, ucd_step, visval, FEM_STR, SR_sig, SR_r)
+!!      subroutine FEM_analyze_back_trans(i_step, ucd_step, visval,     &
+!!     &                                  FEM_STR, v_sol, SR_sig, SR_r)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
@@ -29,6 +31,7 @@
       use t_VIZ_step_parameter
       use t_file_IO_parameter
       use t_shape_functions
+      use t_vector_for_solver
       use t_solver_SR
       use t_solver_SR_int
       use t_solver_SR_int8
@@ -44,7 +47,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_back_trans(ucd_step, FEM_STR,           &
-     &          SR_sig, SR_r, SR_i, SR_il)
+     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
 !
       use t_ucd_data
       use t_next_node_ele_4_node
@@ -60,6 +63,7 @@
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -69,7 +73,7 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(FEM_STR%geofem%mesh, FEM_STR%v_sol,  &
+      call FEM_comm_initialization(FEM_STR%geofem%mesh, v_sol,          &
      &                             SR_sig, SR_r, SR_i, SR_il)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
@@ -89,8 +93,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_back_trans                                 &
-     &         (i_step, ucd_step, visval, FEM_STR, SR_sig, SR_r)
+      subroutine FEM_analyze_back_trans(i_step, ucd_step, visval,       &
+     &                                  FEM_STR, v_sol, SR_sig, SR_r)
 !
       use t_ctl_params_sph_trans
       use t_time_data
@@ -104,6 +108,7 @@
       integer(kind = kint), intent(in) :: i_step
       type(IO_step_param), intent(in) :: ucd_step
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
@@ -111,7 +116,7 @@
 !*
       if(visval) then
         call nod_fields_send_recv(FEM_STR%geofem%mesh, FEM_STR%field,   &
-     &                            FEM_STR%v_sol, SR_sig, SR_r)
+     &                            v_sol, SR_sig, SR_r)
 !
 !*  -----------  Output volume data --------------
 !*

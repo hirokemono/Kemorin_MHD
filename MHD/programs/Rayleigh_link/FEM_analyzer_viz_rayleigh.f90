@@ -8,18 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_viz_rayleigh                          &
-!!     &         (FEM_Rayleigh, SR_sig, SR_r, SR_i, SR_il)
+!!     &         (FEM_Rayleigh, v_sol, SR_sig, SR_r, SR_i, SR_il)
 !!        type(FEM_mesh_field_rayleigh_viz), intent(inout)              &
 !!     &                                      :: FEM_Rayleigh
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine FEM_analyze_viz_rayleigh(visval, i_step, time_d,     &
-!!     &                                    FEM_Rayleigh, SR_sig, SR_r)
+!!     &          FEM_Rayleigh, v_sol, SR_sig, SR_r)
 !!        type(time_data), intent(inout) :: time_d
 !!        type(FEM_mesh_field_rayleigh_viz), intent(inout)              &
 !!     &                                      :: FEM_Rayleigh
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
@@ -72,7 +74,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_viz_rayleigh                            &
-     &         (FEM_Rayleigh, SR_sig, SR_r, SR_i, SR_il)
+     &         (FEM_Rayleigh, v_sol, SR_sig, SR_r, SR_i, SR_il)
 !
       use const_fem_nodes_4_rayleigh
       use const_FEM_mesh_sph_mhd
@@ -84,6 +86,7 @@
 !
       type(FEM_mesh_field_rayleigh_viz), intent(inout)                  &
      &                                      :: FEM_Rayleigh
+      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -119,7 +122,7 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
       call FEM_comm_initialization(FEM_Rayleigh%geofem%mesh,            &
-     &    FEM_Rayleigh%v_sol, SR_sig, SR_r, SR_i, SR_il)
+     &    v_sol, SR_sig, SR_r, SR_i, SR_il)
       call const_global_numele_list(FEM_Rayleigh%geofem%mesh%ele)
 !
 !   --------------------------------
@@ -152,7 +155,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_viz_rayleigh(visval, i_step, time_d,       &
-     &                                    FEM_Rayleigh, SR_sig, SR_r)
+     &          FEM_Rayleigh, v_sol, SR_sig, SR_r)
 !
       use t_ucd_data
       use assemble_nodal_fields
@@ -166,6 +169,7 @@
       type(time_data), intent(inout) :: time_d
       type(FEM_mesh_field_rayleigh_viz), intent(inout)                  &
      &                                      :: FEM_Rayleigh
+      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
@@ -204,7 +208,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(FEM_Rayleigh%geofem%mesh,               &
-     &    FEM_Rayleigh%field, FEM_Rayleigh%v_sol, SR_sig, SR_r)
+     &    FEM_Rayleigh%field, v_sol, SR_sig, SR_r)
 !
       end subroutine FEM_analyze_viz_rayleigh
 !

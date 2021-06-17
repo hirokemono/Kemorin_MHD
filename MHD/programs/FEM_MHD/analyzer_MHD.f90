@@ -65,7 +65,7 @@
       call FEM_initialize_MHD                                           &
      &   (MHD_files1, flex_MHD1, MHD_step1, FEM_model1, FEM_MHD1,       &
      &    MHD_CG1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1,                      &
-     &    fem_sq1, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    fem_sq1, FEM_MHD1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
       call init_FEM_MHD_to_VIZ_bridge(MHD_step1%viz_step,               &
      &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
@@ -95,7 +95,7 @@
 !  Time evolution
         call FEM_analyze_MHD(MHD_files1, FEM_model1, flex_MHD1,         &
      &      MHD_step1, retval, MHD_CG1, FEM_SGS1, SGS_MHD_wk1,          &
-     &      FEM_MHD1, MHD_IO1, fem_sq1, SR_sig1, SR_r1)
+     &      FEM_MHD1, MHD_IO1, fem_sq1, FEM_MHD1%v_sol, SR_sig1, SR_r1)
 !
 !  Visualization
         visval = MHD_viz_routine_flag                                   &
