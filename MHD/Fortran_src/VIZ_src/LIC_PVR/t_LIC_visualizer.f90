@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine init_LIC_visualize(viz_step, geofem, nod_fld,        &
-!!     &          VIZ_DAT, viz_ctls, lic_v, SR_sig, SR_r, SR_i, SR_il)
+!!     &          VIZ_DAT, viz_ctls, lic_v, m_SR)
 !!      subroutine visualize_LIC(viz_step, time_d, geofem, nod_fld,     &
-!!     &          VIZ_DAT, lic_v, v_sol, SR_sig, SR_r, SR_i, SR_il)
+!!     &          VIZ_DAT, lic_v, m_SR)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
@@ -18,11 +18,7 @@
 !!        type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(lic_visualize_modules), intent(inout) :: lic_v
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module t_LIC_visualizer
@@ -45,10 +41,7 @@
 !
       use t_control_data_vizs
       use t_lic_rendering
-      use t_vector_for_solver
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
 !
       implicit  none
 !
@@ -64,7 +57,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_LIC_visualize(viz_step, geofem, nod_fld,          &
-     &          VIZ_DAT, viz_ctls, lic_v, SR_sig, SR_r, SR_i, SR_il)
+     &                              VIZ_DAT, viz_ctls, lic_v, m_SR)
 !
       use t_fem_gauss_int_coefs
       use t_shape_functions
@@ -78,21 +71,18 @@
 !
       type(visualization_controls), intent(inout) :: viz_ctls
       type(lic_visualize_modules), intent(inout) :: lic_v
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
       call LIC_initialize                                               &
      &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
      &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, lic_v%lic,            &
-     &    SR_sig, SR_r, SR_i, SR_il)
-      call anaglyph_LIC_initialize                                      &
-     &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
-     &    viz_ctls%repart_ctl, viz_ctls%lic_anaglyph_ctls,              &
-     &    lic_v%anaglyph_lic, SR_sig, SR_r, SR_i, SR_il)
+     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+      call anaglyph_LIC_initialize(viz_step%LIC_t%increment,            &
+     &    geofem, VIZ_DAT%next_tbl, nod_fld, viz_ctls%repart_ctl,       &
+     &    viz_ctls%lic_anaglyph_ctls, lic_v%anaglyph_lic,               &
+     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       call calypso_mpi_barrier
@@ -103,7 +93,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_LIC(viz_step, time_d, geofem, nod_fld,       &
-     &          VIZ_DAT, lic_v, v_sol, SR_sig, SR_r, SR_i, SR_il)
+     &                         VIZ_DAT, lic_v, m_SR)
 !
       use anaglyph_lic_rendering
 !
@@ -114,20 +104,16 @@
       type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
       type(lic_visualize_modules), intent(inout) :: lic_v
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
       call LIC_visualize(viz_step%istep_lic, time_d%time,               &
      &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%lic,                 &
-     &    v_sol, SR_sig, SR_r, SR_i, SR_il)
+     &    m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
       call anaglyph_LIC_visualize(viz_step%istep_lic, time_d%time,      &
      &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%anaglyph_lic,        &
-     &    v_sol, SR_sig, SR_r, SR_i, SR_il)
+     &    m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       call calypso_mpi_barrier

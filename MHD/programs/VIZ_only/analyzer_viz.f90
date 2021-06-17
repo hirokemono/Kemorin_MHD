@@ -18,9 +18,7 @@
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
       use FEM_analyzer_viz
 !
       implicit none
@@ -33,8 +31,8 @@
       type(control_data_vizs), save :: vizs_ctl1
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz1
-!>        Structure for vectors for solver
-      type(vectors_4_solver) :: v_sol11
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR11
 !>      Structure of data for visualization
       type(VIZ_mesh_field), save :: VIZ_DAT1
 !>      Structure of viualization modules
@@ -75,18 +73,17 @@
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
       call FEM_initialize_viz(t_VIZ1%init_d, t_VIZ1%ucd_step,           &
-     &    t_VIZ1%viz_step, FEM_viz1, v_sol11,                           &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    t_VIZ1%viz_step, FEM_viz1, m_SR11)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge                                       &
      &   (t_VIZ1%viz_step, FEM_viz1%geofem, VIZ_DAT1,                   &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR11%SR_sig, m_SR11%SR_r, m_SR11%SR_i, m_SR11%SR_il)
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize(t_VIZ1%viz_step, FEM_viz1%geofem,             &
      &    FEM_viz1%field, VIZ_DAT1, vizs_ctl1%viz_ctl_v, vizs_v,        &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR11%SR_sig, m_SR11%SR_r, m_SR11%SR_i, m_SR11%SR_il)
 !
       end subroutine initialize_vizs
 !
@@ -107,14 +104,14 @@
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_viz', i_step
         call FEM_analyze_viz(i_step, t_VIZ1%ucd_step, t_VIZ1%time_d,    &
-     &                       FEM_viz1, v_sol11, SR_sig1, SR_r1)
+     &                       FEM_viz1, m_SR11)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
      &      FEM_viz1%geofem, FEM_viz1%field, VIZ_DAT1, vizs_v,          &
-     &      v_sol11, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &      m_SR11%v_sol, m_SR11%SR_sig, m_SR11%SR_r, m_SR11%SR_i, m_SR11%SR_il)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
