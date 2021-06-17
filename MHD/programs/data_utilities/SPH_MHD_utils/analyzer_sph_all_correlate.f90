@@ -83,8 +83,7 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
-     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1, m_SR1%v_sol,                  &
-     &    m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
+     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1, m_SR1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
@@ -156,7 +155,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
         call FEM_analyze_sph_SGS_MHD(MHD_files1, MHD_step1, MHD_IO1,    &
-     &      FEM_d1, m_SR1%v_sol, m_SR1%SR_sig, m_SR1%SR_r)
+     &                               FEM_d1, m_SR1)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -178,7 +177,7 @@
             call SGS_MHD_zmean_sections(MHD_step1%viz_step,             &
      &          MHD_step1%time_d, SPH_MHD1%sph, FEM_d1%geofem,          &
      &          SPH_WK1%trns_WK, SPH_SGS1, FEM_d1%field,                &
-     &          zmeans1, m_SR1%v_sol, m_SR1%SR_sig, m_SR1%SR_r)
+     &          zmeans1, m_SR1)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if

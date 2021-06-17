@@ -108,9 +108,6 @@
 !
 !        Initialize spherical transform dynamo
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vector'
-      call alloc_iccgN_vector                                           &
-     &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, m_SR1%v_sol)
 !      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_real_send_recv(FEM_d1%geofem%mesh%nod_comm,             &
      &                         m_SR1%SR_sig, m_SR1%SR_r)
