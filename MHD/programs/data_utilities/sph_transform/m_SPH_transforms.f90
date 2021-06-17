@@ -21,12 +21,16 @@
       use t_step_parameter
       use t_file_IO_parameter
       use t_ctl_data_4_sph_trans
+      use t_vector_for_solver
 !
       implicit none
 !
       type(FEM_for_SPH_transforms) :: FEM_STR1
       type(SPH_for_SPH_transforms) :: SPH_STR1
       type(VIZ_mesh_field) :: VIZ_D_STR1
+!
+!>        Structure for vectors for solver
+        type(vectors_4_solver) :: v_sol21
 !
 !
 !       Structure for time stepping parameters

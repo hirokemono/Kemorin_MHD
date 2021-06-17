@@ -31,6 +31,8 @@
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
+!>        Structure for vectors for solver
+      type(vectors_4_solver) :: v_sol41
 !       Structure for time stepping parameters
       type(time_step_param), save :: time_U
 !
@@ -92,7 +94,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
-     &   (isix, femmesh_p_FUT%mesh%node%numnod, FUTIL1%v_sol)
+     &   (isix, femmesh_p_FUT%mesh%node%numnod, v_sol41)
       call init_send_recv(femmesh_p_FUT%mesh%nod_comm,                  &
      &                    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
@@ -174,9 +176,9 @@
      &      second_ucd_param, phys_ref, time_IO)
 !
         call fields_send_recv(femmesh_p_FUT%mesh%nod_comm,              &
-     &      FUTIL1%nod_fld, FUTIL1%v_sol, SR_sig1, SR_r1)
+     &      FUTIL1%nod_fld, v_sol41, SR_sig1, SR_r1)
         call fields_send_recv(femmesh_p_REF%mesh%nod_comm,              &
-     &      phys_ref, FUTIL1%v_sol, SR_sig1, SR_r1)
+     &      phys_ref, v_sol41, SR_sig1, SR_r1)
 !
 !    output udt data
 !

@@ -15,12 +15,16 @@
       use calypso_mpi
       use t_FEM_utils
       use t_comm_table
+      use t_vector_for_solver
       use m_solver_SR
 !
       implicit none
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
+!>        Structure for vectors for solver
+      type(vectors_4_solver) :: v_sol41
+
       type(communication_table), save :: edge_comm_MG
 !
       private :: set_med_grp_patch_ctl
@@ -57,7 +61,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(FUTIL1%geofem%mesh, FUTIL1%v_sol,    &
+      call FEM_comm_initialization(FUTIL1%geofem%mesh, v_sol41,         &
      &                             SR_sig1, SR_r1, SR_i1, SR_il1)
       call FEM_mesh_initialization(FUTIL1%geofem%mesh,                  &
      &                             FUTIL1%geofem%group, SR_sig1, SR_i1)

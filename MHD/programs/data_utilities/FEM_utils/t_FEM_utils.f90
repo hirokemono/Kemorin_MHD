@@ -60,9 +60,6 @@
 !>       address of nodal fields for SGS model
         type(SGS_model_addresses) :: iphys_LES
 !
-!>       Work area for solver communication
-        type(vectors_4_solver) :: v_sol
-!
         type(shape_finctions_at_points) :: spfs
 !>        Stracture for Jacobians
         type(jacobians_type) :: jacobians

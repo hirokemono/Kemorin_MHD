@@ -34,7 +34,6 @@
       use t_visualizer
       use t_field_data_IO
       use t_file_IO_parameter
-      use t_vector_for_solver
       use t_solver_SR
       use t_solver_SR_int
       use t_solver_SR_int8
@@ -64,9 +63,6 @@
         type(time_data) :: time_IO
 !>        Instance for numbers of FEM field for merged IO
         type(ucd_data) :: ucd
-!
-!>        Structure for vectors for solver
-        type(vectors_4_solver) :: v_sol
 !
 !>        Structure of included element list for each node
         type(element_around_node) :: ele_4_nod

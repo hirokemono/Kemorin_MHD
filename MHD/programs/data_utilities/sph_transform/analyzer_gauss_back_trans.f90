@@ -56,7 +56,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
       call FEM_initialize_back_trans(t_STR%ucd_step, FEM_STR1,          &
-     &    FEM_STR1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    v_sol21, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  ------  initialize spectr data
 !
@@ -100,13 +100,13 @@
 !
         visval = iflag_vizs_w_fix_step(i_step, FEM_STR1%viz_step)
         call FEM_analyze_back_trans(i_step, t_STR%ucd_step, visval,     &
-     &      FEM_STR1, FEM_STR1%v_sol, SR_sig1, SR_r1)
+     &      FEM_STR1, v_sol21, SR_sig1, SR_r1)
 !
         if(visval) then
           call istep_viz_w_fix_dt(i_step, FEM_STR1%viz_step)
           call visualize_all(FEM_STR1%viz_step, t_STR%time_d,           &
      &      FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1, FEM_STR1%vizs, &
-     &      FEM_STR1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &      v_sol21, SR_sig1, SR_r1, SR_i1, SR_il1)
         end if
       end do
 !

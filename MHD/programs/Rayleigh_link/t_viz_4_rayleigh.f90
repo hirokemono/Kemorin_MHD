@@ -25,7 +25,6 @@
       use t_time_data
       use t_mesh_data
       use t_phys_data
-      use t_vector_for_solver
       use t_VIZ_only_step_parameter
 !
       use t_rayleigh_field_IO
@@ -40,9 +39,6 @@
         type(mesh_data) :: geofem
 !>       Structure for nodal field data
         type(phys_data) :: field
-!
-!>        Structure for vectors for solver
-        type(vectors_4_solver) :: v_sol
 !
         type(rayleigh_field) :: rayleigh_rtp
         type(rayleigh_field_address) :: iphys_ftb

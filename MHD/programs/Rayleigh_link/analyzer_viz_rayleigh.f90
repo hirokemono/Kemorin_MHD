@@ -25,6 +25,7 @@
       use t_VIZ_mesh_field
       use t_VIZ_only_step_parameter
       use t_viz_4_rayleigh
+      use t_vector_for_solver
       use m_solver_SR
 !
       implicit none
@@ -34,6 +35,8 @@
       type(time_step_param_w_viz), save :: t_VIZ_r
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_rayleigh_viz), save :: FEM_Rayleigh1
+!>        Structure for vectors for solver
+      type(vectors_4_solver) :: v_sol31
 !
       type(control_data_rayleigh_vizs), save :: rayleigh_vizs_ctl1
       type(visualize_modules), save :: vizs_v
@@ -73,8 +76,7 @@
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz_rayleigh'
       call FEM_initialize_viz_rayleigh                                  &
-     &   (FEM_Rayleigh1, FEM_Rayleigh1%v_sol,                           &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &   (FEM_Rayleigh1, v_sol31, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----
@@ -112,7 +114,7 @@
      &      write(*,*) 'FEM_analyze_viz_rayleigh', i_step
         visval = iflag_vizs_w_fix_step(i_step, t_VIZ_r%viz_step)
         call FEM_analyze_viz_rayleigh(visval, i_step, t_VIZ_r%time_d,   &
-     &      FEM_Rayleigh1, FEM_Rayleigh1%v_sol, SR_sig1, SR_r1)
+     &      FEM_Rayleigh1, v_sol31, SR_sig1, SR_r1)
 !
 !  Rendering
         if(visval) then
@@ -120,7 +122,7 @@
           call istep_viz_w_fix_dt(i_step, t_VIZ_r%viz_step)
           call visualize_all(t_VIZ_r%viz_step, t_VIZ_r%time_d,          &
      &      FEM_Rayleigh1%geofem, FEM_Rayleigh1%field, VIZ_DAT_r,       &
-     &      vizs_v, FEM_Rayleigh1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &      vizs_v, v_sol31, SR_sig1, SR_r1, SR_i1, SR_il1)
         end if
       end do
 !
