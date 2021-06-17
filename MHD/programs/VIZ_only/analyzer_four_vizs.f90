@@ -18,6 +18,7 @@
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
+      use t_vector_for_solver
       use m_solver_SR
       use FEM_analyzer_four_vizs
 !
@@ -31,6 +32,8 @@
       type(control_data_four_vizs), save :: vizs_ctl4
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz4
+!>        Structure for vectors for solver
+      type(vectors_4_solver) :: v_sol14
 !>      Structure of data for visualization
       type(VIZ_mesh_field), save :: VIZ_DAT4
 !>      Structure of viualization modules
@@ -67,7 +70,7 @@
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_four_vizs'
       call FEM_initialize_four_vizs(t_VIZ4%init_d, t_VIZ4%ucd_step,     &
      &    t_VIZ4%viz_step, FEM_viz4, VIZ_DAT4,                          &
-     &    FEM_viz4%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    v_sol14, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
@@ -94,7 +97,7 @@
      &                       'FEM_analyze_four_vizs', i_step
         call FEM_analyze_four_vizs                                      &
      &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4,           &
-     &      FEM_viz4%v_sol, SR_sig1, SR_r1)
+     &      v_sol14, SR_sig1, SR_r1)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_four', i_step

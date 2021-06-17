@@ -15,6 +15,7 @@
       use t_VIZ_only_step_parameter
       use t_control_data_section_only
       use t_FEM_mesh_field_4_viz
+      use t_vector_for_solver
       use m_solver_SR
       use FEM_analyzer_viz_surf
 !
@@ -27,6 +28,8 @@
       type(control_data_section_only), save :: sec_viz_ctl2
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz2
+!>        Structure for vectors for solver
+      type(vectors_4_solver) :: v_sol12
 !>      Structure of sectioning and isosurfaceing modules
       type(surfacing_modules), save :: viz_psfs2
 !>      Edge communication table
@@ -62,7 +65,7 @@
 !  FEM Initialization
       call FEM_initialize_surface                                       &
      &   (t_VIZ2%ucd_step, t_VIZ2%init_d, FEM_viz2, edge_comm_PSF,      &
-     &    FEM_viz2%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    v_sol12, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       call init_visualize_surface                                       &
@@ -87,7 +90,7 @@
 !  Load field data
         call FEM_analyze_surface                                        &
      &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d,                     &
-     &      FEM_viz2, FEM_viz2%v_sol, SR_sig1, SR_r1)
+     &      FEM_viz2, v_sol12, SR_sig1, SR_r1)
 !
 !  Generate field lines
         t_VIZ2%viz_step%istep_psf                                       &

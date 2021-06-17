@@ -18,6 +18,7 @@
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
+      use t_vector_for_solver
       use m_solver_SR
       use FEM_analyzer_viz
 !
@@ -31,6 +32,8 @@
       type(control_data_vizs), save :: vizs_ctl1
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz1
+!>        Structure for vectors for solver
+      type(vectors_4_solver) :: v_sol11
 !>      Structure of data for visualization
       type(VIZ_mesh_field), save :: VIZ_DAT1
 !>      Structure of viualization modules
@@ -72,7 +75,7 @@
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
       call FEM_initialize_viz(t_VIZ1%init_d, t_VIZ1%ucd_step,           &
-     &    t_VIZ1%viz_step, FEM_viz1, FEM_viz1%v_sol,                    &
+     &    t_VIZ1%viz_step, FEM_viz1, v_sol11,                           &
      &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
@@ -105,14 +108,14 @@
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_viz', i_step
         call FEM_analyze_viz(i_step, t_VIZ1%ucd_step, t_VIZ1%time_d,    &
-     &                       FEM_viz1, FEM_viz1%v_sol, SR_sig1, SR_r1)
+     &                       FEM_viz1, v_sol11, SR_sig1, SR_r1)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_LIC', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_LIC(t_VIZ1%viz_step, t_VIZ1%time_d,              &
      &      FEM_viz1%geofem, FEM_viz1%field, VIZ_DAT1, lic_v1,          &
-     &      FEM_viz1%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &      v_sol11, SR_sig1, SR_r1, SR_i1, SR_il1)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

@@ -18,6 +18,7 @@
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
+      use t_vector_for_solver
       use FEM_analyzer_four_vizs
       use m_solver_SR
 !
@@ -30,6 +31,8 @@
       type(control_data_four_vizs), save :: pvr_ctl3
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz3
+!>        Structure for vectors for solver
+      type(vectors_4_solver) :: v_sol13
 !>      Structure of mesh and field for visualization only
       type(VIZ_mesh_field), save :: pvr3
 !>      Structure of viualization modules
@@ -65,7 +68,7 @@
 !  FEM Initialization
       call FEM_initialize_four_vizs(t_VIZ3%init_d, t_VIZ3%ucd_step,     &
      &    t_VIZ3%viz_step, FEM_viz3, pvr3,                              &
-     &    FEM_viz3%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    v_sol13, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
@@ -94,7 +97,7 @@
 !  Load field data
         call FEM_analyze_four_vizs                                      &
      &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3,           &
-     &      FEM_viz3%v_sol, SR_sig1, SR_r1)
+     &      v_sol13, SR_sig1, SR_r1)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'PVR_visualize', i_step

@@ -17,6 +17,7 @@
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
+      use t_vector_for_solver
       use m_solver_SR
       use FEM_analyzer_four_vizs
 !
@@ -29,6 +30,8 @@
       type(control_data_four_vizs), save :: vizs_ctl6
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz6
+!>        Structure for vectors for solver
+      type(vectors_4_solver) :: v_sol16
 !>      Structure of mesh and field for visualization only
       type(VIZ_mesh_field), save :: VIZ_DAT6
 !>      Structure of field line module
@@ -58,7 +61,7 @@
 !  FEM Initialization
       call FEM_initialize_four_vizs(t_VIZ6%init_d, t_VIZ6%ucd_step,     &
      &    t_VIZ6%viz_step, FEM_viz6, VIZ_DAT6,                          &
-     &    FEM_viz6%v_sol, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    v_sol16, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       call FLINE_initialize(t_VIZ6%viz_step%FLINE_t%increment,          &
@@ -82,7 +85,7 @@
 !  Load field data
         call FEM_analyze_four_vizs                                      &
      &     (i_step, t_VIZ6%ucd_step, t_VIZ6%time_d, FEM_viz6,           &
-     &      FEM_viz6%v_sol, SR_sig1, SR_r1)
+     &      v_sol16, SR_sig1, SR_r1)
 !
 !  Generate field lines
         istep_fline                                                     &
