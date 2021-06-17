@@ -61,7 +61,8 @@
 !
 !  FEM Initialization
       call FEM_initialize_surface                                       &
-     &   (t_VIZ2%ucd_step, t_VIZ2%init_d, FEM_viz2, edge_comm_PSF)
+     &   (t_VIZ2%ucd_step, t_VIZ2%init_d, FEM_viz2, edge_comm_PSF,      &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       call init_visualize_surface                                       &
@@ -85,7 +86,8 @@
 !
 !  Load field data
         call FEM_analyze_surface                                        &
-     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, FEM_viz2)
+     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d,                     &
+     &      FEM_viz2, SR_sig1, SR_r1)
 !
 !  Generate field lines
         t_VIZ2%viz_step%istep_psf                                       &

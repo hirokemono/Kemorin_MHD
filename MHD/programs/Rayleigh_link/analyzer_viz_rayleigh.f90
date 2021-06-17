@@ -72,7 +72,8 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz_rayleigh'
-      call FEM_initialize_viz_rayleigh(FEM_Rayleigh1)
+      call FEM_initialize_viz_rayleigh                                  &
+     &   (FEM_Rayleigh1, SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----
@@ -109,8 +110,8 @@
         if(iflag_debug .gt. 0)                                          &
      &      write(*,*) 'FEM_analyze_viz_rayleigh', i_step
         visval = iflag_vizs_w_fix_step(i_step, t_VIZ_r%viz_step)
-        call FEM_analyze_viz_rayleigh                                   &
-     &     (visval, i_step, t_VIZ_r%time_d, FEM_Rayleigh1)
+        call FEM_analyze_viz_rayleigh(visval, i_step, t_VIZ_r%time_d,   &
+     &                                FEM_Rayleigh1, SR_sig1, SR_r1)
 !
 !  Rendering
         if(visval) then

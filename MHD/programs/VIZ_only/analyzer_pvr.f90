@@ -64,7 +64,8 @@
 !
 !  FEM Initialization
       call FEM_initialize_four_vizs(t_VIZ3%init_d, t_VIZ3%ucd_step,     &
-     &                              t_VIZ3%viz_step, FEM_viz3, pvr3)
+     &    t_VIZ3%viz_step, FEM_viz3, pvr3,                              &
+     &    SR_sig1, SR_r1, SR_i1, SR_il1)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
@@ -92,7 +93,8 @@
 !
 !  Load field data
         call FEM_analyze_four_vizs                                      &
-     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3)
+     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3,           &
+     &      SR_sig1, SR_r1)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'PVR_visualize', i_step
