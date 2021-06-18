@@ -8,20 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine LIC_anaglyph_init_shared_mesh                        &
-!!     &         (geofem, next_tbl, repart_p, repart_data, pvr,         &
-!!     &          SR_sig, SR_r, SR_i, SR_il)
+!!     &         (geofem, next_tbl, repart_p, repart_data, pvr, m_SR)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(volume_rendering_module), intent(inout) :: pvr
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine LIC_anaglyph_w_shared_mesh(istep_lic, time,          &
 !!     &          geofem, nod_fld, repart_p, repart_data, pvr,          &
-!!     &          lic_param, v_sol, SR_sig, SR_r, SR_i)
+!!     &          lic_param, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: geofem
@@ -30,15 +26,11 @@
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!
 !!      subroutine LIC_anaglyph_w_each_repart                           &
 !!     &         (istep_lic, time, geofem, next_tbl, nod_fld,           &
-!!     &          repart_p, repart_data, pvr, lic_param,                &
-!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
+!!     &          repart_p, repart_data, pvr, lic_param, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: geofem
@@ -48,11 +40,7 @@
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module select_anaglyph_LIC_by_mesh
@@ -80,12 +68,9 @@
       use t_volume_rendering
       use t_calypso_comm_table
       use t_control_param_vol_grping
-      use t_vector_for_solver
       use t_LIC_re_partition
       use t_control_param_LIC
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
 !
       implicit  none
 !
@@ -96,8 +81,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_anaglyph_init_shared_mesh                          &
-     &         (geofem, next_tbl, repart_p, repart_data, pvr,           &
-     &          SR_sig, SR_r, SR_i, SR_il)
+     &         (geofem, next_tbl, repart_p, repart_data, pvr, m_SR)
 !
       use each_LIC_rendering
       use each_anaglyph_PVR
@@ -108,16 +92,13 @@
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_lic
 !
 !
       call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
-     &    repart_data, SR_sig, SR_r, SR_i, SR_il)
+     &                          repart_data, m_SR)
       call init_sf_grp_list_each_surf                                   &
      &   (repart_data%viz_fem%mesh%surf,                                &
      &    repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
@@ -127,7 +108,7 @@
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
-     &      SR_sig, SR_r, SR_i)
+     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -139,7 +120,7 @@
 !
       subroutine LIC_anaglyph_w_shared_mesh(istep_lic, time,            &
      &          geofem, nod_fld, repart_p, repart_data, pvr,            &
-     &          lic_param, v_sol, SR_sig, SR_r, SR_i)
+     &          lic_param, m_SR)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -157,10 +138,7 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_lic
 !
@@ -172,7 +150,7 @@
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
         call set_LIC_each_field(geofem, nod_fld, repart_p,              &
-     &      lic_param(i_lic), repart_data, v_sol, SR_sig, SR_r)
+     &                          lic_param(i_lic), repart_data, m_SR)
 !
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
@@ -181,7 +159,7 @@
         call s_each_LIC_anaglyph(istep_lic, time, repart_data%viz_fem,  &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),              &
-     &      pvr%pvr_rgb(i_lic), SR_sig, SR_r)
+     &      pvr%pvr_rgb(i_lic), m_SR%SR_sig, m_SR%SR_r)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -204,7 +182,7 @@
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
         call set_LIC_each_field(geofem, nod_fld, repart_p,              &
-     &      lic_param(i_lic), repart_data, v_sol, SR_sig, SR_r)
+     &                          lic_param(i_lic), repart_data, m_SR)
 !
         write(*,*) 'anaglyph_lic_rendering_w_rot once', i_lic
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
@@ -212,7 +190,7 @@
      &      repart_data%field_lic, lic_param(i_lic),                    &
      &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
-     &      SR_sig, SR_r, SR_i)
+     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -223,8 +201,7 @@
 !
       subroutine LIC_anaglyph_w_each_repart                             &
      &         (istep_lic, time, geofem, next_tbl, nod_fld,             &
-     &          repart_p, repart_data, pvr, lic_param,                  &
-     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
+     &          repart_p, repart_data, pvr, lic_param, m_SR)
 !
       use t_surf_grp_list_each_surf
       use m_elapsed_labels_4_VIZ
@@ -245,11 +222,7 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_lic
 !
@@ -260,21 +233,21 @@
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
         call LIC_init_each_mesh(geofem, next_tbl, repart_p,             &
-     &      lic_param(i_lic), repart_data, SR_sig, SR_r, SR_i, SR_il)
+     &                          lic_param(i_lic), repart_data, m_SR)
         if(iflag_debug .gt. 0) write(*,*) 'init_sf_grp_list_each_surf'
         call init_sf_grp_list_each_surf                                 &
      &     (repart_data%viz_fem%mesh%surf,                              &
      &      repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
         call set_LIC_each_field(geofem, nod_fld, repart_p,              &
-     &      lic_param(i_lic), repart_data, v_sol, SR_sig, SR_r)
+     &                          lic_param(i_lic), repart_data, m_SR)
 !
         if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
         call each_anaglyph_PVR_init(i_lic,                              &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
-     &      SR_sig, SR_r, SR_i)
+     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
 !
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .eq. IFLAG_NO_MOVIE) then
@@ -285,7 +258,7 @@
      &       (istep_lic, time, repart_data%viz_fem,                     &
      &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),            &
-     &        pvr%pvr_rgb(i_lic), SR_sig, SR_r)
+     &        pvr%pvr_rgb(i_lic), m_SR%SR_sig, m_SR%SR_r)
           call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),       &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -295,7 +268,7 @@
      &        repart_data%field_lic, lic_param(i_lic),                  &
      &        pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                 &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),            &
-     &        SR_sig, SR_r, SR_i)
+     &        m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
          call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
          call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
          call dealloc_iflag_pvr_used_ele                                &

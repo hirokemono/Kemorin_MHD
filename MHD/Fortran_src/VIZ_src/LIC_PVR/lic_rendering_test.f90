@@ -7,20 +7,16 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine LIC_initialize_test                                  &
-!!     &         (increment_lic, geofem, next_tbl, nod_fld, lic_ctls,   &
-!!     &          repart_ctl, lic, SR_sig, SR_r, SR_i, SR_il)
-!!      subroutine LIC_visualize_test                                   &
-!!     &          nod_fld, lic, v_sol, SR_sig, SR_r, SR_i, SR_il)
+!!      subroutine LIC_initialize_test(increment_lic, geofem, next_tbl, &
+!!     &          nod_fld, lic_ctls, repart_ctl, lic, m_SR)
+!!      subroutine LIC_visualize_test(istep_lic, time, geofem,          &
+!!     &                              next_tb, lnod_fld, lic, m_SR)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(viz_repartition_ctl), intent(inout) :: repart_ctl
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module lic_rendering_test
@@ -49,12 +45,9 @@
       use t_volume_rendering
       use t_calypso_comm_table
       use t_control_param_vol_grping
-      use t_vector_for_solver
       use t_LIC_re_partition
       use t_control_param_LIC
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
 !
       use each_volume_rendering
 !
@@ -66,9 +59,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_initialize_test                                    &
-     &         (increment_lic, geofem, next_tbl, nod_fld, lic_ctls,     &
-     &          repart_ctl, lic, SR_sig, SR_r, SR_i, SR_il)
+      subroutine LIC_initialize_test(increment_lic, geofem, next_tbl,   &
+     &          nod_fld, lic_ctls, repart_ctl, lic, m_SR)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
@@ -84,10 +76,7 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(viz_repartition_ctl), intent(inout) :: repart_ctl
       type(lic_volume_rendering_module), intent(inout) :: lic
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_lic, ist_img, num_img
 !
@@ -150,15 +139,14 @@
 !
       if(lic%flag_each_repart) return
       call LIC_initialize_w_shared_mesh(geofem, next_tbl,               &
-     &    lic%repart_p, lic%repart_data, lic%pvr,                       &
-     &    SR_sig, SR_r, SR_i, SR_il)
+     &    lic%repart_p, lic%repart_data, lic%pvr, m_SR)
 !
       end subroutine LIC_initialize_test
 !
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_visualize_test(istep_lic, time, geofem, next_tbl,  &
-     &          nod_fld, lic, v_sol, SR_sig, SR_r, SR_i, SR_il)
+     &                              nod_fld, lic, m_SR)
 !
       use m_elapsed_labels_4_VIZ
       use select_LIC_rendering
@@ -171,11 +159,7 @@
       type(phys_data), intent(in) :: nod_fld
 !
       type(lic_volume_rendering_module), intent(inout) :: lic
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if(lic%pvr%num_pvr.le.0 .or. istep_lic.le.0) return
@@ -183,12 +167,11 @@
       if(lic%flag_each_repart) then
         call LIC_visualize_w_each_repart                                &
      &     (istep_lic, time, geofem, next_tbl, nod_fld, lic%repart_p,   &
-     &      lic%repart_data, lic%pvr, lic%lic_param,                    &
-     &      v_sol, SR_sig, SR_r, SR_i, SR_il)
+     &      lic%repart_data, lic%pvr, lic%lic_param, m_SR)
       else
-        call LIC_visualize_w_shared_mesh(istep_lic, time,               &
-     &      geofem, nod_fld, lic%repart_p, lic%repart_data, lic%pvr,    &
-     &      lic%lic_param, v_sol, SR_sig, SR_r, SR_i)
+        call LIC_visualize_w_shared_mesh                                &
+     &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
+     &      lic%repart_data, lic%pvr, lic%lic_param, m_SR)
       end if
 !
       end subroutine LIC_visualize_test

@@ -22,9 +22,7 @@
       use t_control_param_comm_test
       use t_failed_export_list
       use t_const_comm_table
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
 !
       implicit none
 !
@@ -39,11 +37,12 @@
       type(communication_table), save :: T_surf_comm
       type(communication_table), save :: T_edge_comm
 !
-!>      Structure for communicatiors for solver
-      type(vectors_4_solver), save :: v_sol_T
+!>      Structure of work area for mesh communications
+      type(mesh_SR), save :: m_SR_T
 !
       character(len=kchara), parameter :: txt_edge = 'edge'
       character(len=kchara), parameter :: txt_surf = 'surface'
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -81,9 +80,9 @@
       call mpi_input_mesh(T_files%mesh_file_IO, nprocs, test_fem)
 !
       do i = 1, test_fem%mesh%nod_comm%num_neib
-        num_in = test_fem%mesh%nod_comm%istack_import(i) &
+        num_in = test_fem%mesh%nod_comm%istack_import(i)                &
      &          - test_fem%mesh%nod_comm%istack_import(i-1)
-        num_ex = test_fem%mesh%nod_comm%istack_export(i) &
+        num_ex = test_fem%mesh%nod_comm%istack_export(i)                &
      &          - test_fem%mesh%nod_comm%istack_export(i-1)
 !        write(50+my_rank,*) 'id_neib:',                                &
 !     &      test_fem%mesh%nod_comm%id_neib(i), num_in, num_ex
@@ -92,28 +91,28 @@
 !
 !  -------------------------------------------
 !
-      call FEM_comm_initialization(test_fem%mesh, v_sol_T,              &
-     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
+      call FEM_comm_initialization(test_fem%mesh, m_SR_T%v_sol,         &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
       call FEM_mesh_initialization(test_fem%mesh, test_fem%group,       &
-     &                             SR_sig1, SR_i1)
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
       call const_global_numele_list(test_fem%mesh%ele)
       call const_ele_comm_table                                         &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
-     &    test_fem%mesh%ele, T_ele_comm, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    test_fem%mesh%ele, T_ele_comm, m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                        &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_surf_comm,      &
-     &    test_fem%mesh%surf, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    test_fem%mesh%surf, m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
 !
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table                                        &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_edge_comm,      &
-     &    test_fem%mesh%edge, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    test_fem%mesh%edge, m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
 !
 !      call calypso_mpi_barrier
 !      call calypso_mpi_abort(0, 'manuke')
@@ -149,13 +148,13 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv_test'
       call node_send_recv_test(test_fem%mesh%node,                      &
-     &    test_fem%mesh%nod_comm, nod_check, SR_sig1, SR_r1, SR_il1)
+     &    test_fem%mesh%nod_comm, nod_check, m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
       call ele_send_recv_test(test_fem%mesh%ele, T_ele_comm,            &
-     &                        ele_check, SR_sig1, SR_r1)
+     &                        ele_check, m_SR_T%SR_sig, m_SR_T%SR_r)
       call surf_send_recv_test(test_fem%mesh%surf, T_surf_comm,         &
-     &                         surf_check, SR_sig1, SR_r1)
+     &                         surf_check, m_SR_T%SR_sig, m_SR_T%SR_r)
       call edge_send_recv_test(test_fem%mesh%edge, T_edge_comm,         &
-     &                         edge_check, SR_sig1, SR_r1)
+     &                         edge_check, m_SR_T%SR_sig, m_SR_T%SR_r)
 !
       call output_diff_mesh_comm_test(comm_test_name,                   &
      &    nod_check, ele_check, surf_check, edge_check)
@@ -167,15 +166,16 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv4_test'
-      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, v_sol_T)
+      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod,            &
+     &                            m_SR_T%v_sol)
       call verify_iccgN_vec_type                                        &
-     &   (N12, test_fem%mesh%node%numnod, v_sol_T)
+     &   (N12, test_fem%mesh%node%numnod, m_SR_T%v_sol)
       call node_send_recv4_test                                         &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
-     &    N12, v_sol_T, SR_sig1, SR_r1, SR_il1)
+     &    N12, m_SR_T%v_sol, m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
 !
-      call dealloc_iccgN_vector(v_sol_T)
-      call dealloc_iccg_int8_vector(v_sol_T)
+      call dealloc_iccgN_vector(m_SR_T%v_sol)
+      call dealloc_iccg_int8_vector(m_SR_T%v_sol)
 !
       call output_elapsed_times
 !
