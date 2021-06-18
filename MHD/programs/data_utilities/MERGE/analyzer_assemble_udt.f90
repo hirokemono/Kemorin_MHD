@@ -26,9 +26,7 @@
       use t_control_data_4_merge
       use t_control_param_assemble
       use t_comm_table_4_assemble
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
 !
       use field_IO_select
       use assemble_nodal_fields
@@ -44,7 +42,7 @@
       type(control_param_assemble), save :: asbl_param_u
       type(comm_table_4_assemble), save :: asbl_comm_u
       type(assemble_field_list), save :: asbl_tbl_u
-      type(vectors_4_solver), save :: v_sol_u
+      type(mesh_SR), save :: m_SR_a
 !
       type(time_data), save :: t_IO_m
 !
@@ -108,11 +106,11 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
-     &   (n_sym_tensor, new_mesh%node%numnod, v_sol_u)
+     &   (n_sym_tensor, new_mesh%node%numnod, m_SR_a%v_sol)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(new_mesh,                                 &
-     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR_a%SR_sig, m_SR_a%SR_r, m_SR_a%SR_i, m_SR_a%SR_il)
 !
 !  set original mesh data
 !
@@ -176,7 +174,7 @@
         call init_merged_ucd_element                                    &
      &     (asbl_param_u%new_fld_file%iflag_format,                     &
      &      new_mesh%node, new_mesh%ele, new_mesh%nod_comm,             &
-     &      ucd_m, SR_sig1, SR_i1)
+     &      ucd_m, m_SR_a%SR_sig, m_SR_a%SR_i)
       end if
 !
       if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
@@ -193,7 +191,7 @@
      &     (ndomain_org, asbl_comm_u, new_fld, org_fIO)
 !
         call nod_fields_send_recv(new_mesh, new_fld,                    &
-     &                            v_sol_u, SR_sig1, SR_r1)
+     &      m_SR_a%v_sol, m_SR_a%SR_sig, m_SR_a%SR_r)
 !
         call sel_write_parallel_ucd_file                                &
      &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m)

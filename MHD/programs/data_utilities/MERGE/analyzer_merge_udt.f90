@@ -26,9 +26,7 @@
       use t_field_data_IO
       use t_control_data_4_merge
       use t_control_param_assemble
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
 !
       use field_IO_select
       use assemble_nodal_fields
@@ -43,7 +41,7 @@
       type(control_data_4_merge), save :: mgd_ctl_u
       type(control_param_assemble), save :: asbl_param_u
       type(assemble_field_list), save :: asbl_tbl_u
-      type(vectors_4_solver), save :: v_sol_u
+      type(mesh_SR), save :: m_SR_a
 !
       type(time_data), save :: t_IO_m
       type(field_IO), save :: fld_IO_m
@@ -104,10 +102,11 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
-     &   (n_sym_tensor, mesh_m%node%numnod, v_sol_u)
+     &   (n_sym_tensor, mesh_m%node%numnod, m_SR_a%v_sol)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(mesh_m, SR_sig1, SR_r1, SR_i1, SR_il1)
+      call init_nod_send_recv(mesh_m,                                   &
+     &    m_SR_a%SR_sig, m_SR_a%SR_r, m_SR_a%SR_i, m_SR_a%SR_il)
 !
 !   read field name and number of components
 !
@@ -154,7 +153,7 @@
       call init_merged_ucd_element                                      &
      &   (asbl_param_u%new_fld_file%iflag_format,                       &
      &    mesh_m%node, mesh_m%ele, mesh_m%nod_comm,                     &
-     &    ucd_m, SR_sig1, SR_i1)
+     &    ucd_m, m_SR_a%SR_sig, m_SR_a%SR_i)
 !
       if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
       call sel_write_parallel_ucd_mesh                                  &
@@ -171,7 +170,7 @@
         call dealloc_phys_name_IO(fld_IO_m)
 !
         call nod_fields_send_recv(mesh_m, new_fld,                      &
-     &                            v_sol_u, SR_sig1, SR_r1)
+     &      m_SR_a%v_sol, m_SR_a%SR_sig, m_SR_a%SR_r)
 !
         call sel_write_parallel_ucd_file                                &
      &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m)

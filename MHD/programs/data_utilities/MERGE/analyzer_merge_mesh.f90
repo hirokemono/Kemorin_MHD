@@ -25,7 +25,6 @@
       use t_control_data_4_merge
       use t_control_param_assemble
       use t_mesh_SR
-      use m_solver_SR
       use mpi_load_mesh_data
       use set_control_assemble
 !
@@ -33,6 +32,7 @@
 !
       type(control_data_4_merge), save :: mgd_ctl_m
       type(control_param_assemble), save :: asbl_param_m
+      type(mesh_SR), save :: m_SR_a
       integer, save :: ndomain_org
       type(mesh_data), save :: fem_m
 !
@@ -82,7 +82,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(fem_m%mesh,                               &
-     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR_a%SR_sig, m_SR_a%SR_r, m_SR_a%SR_i, m_SR_a%SR_il)
 !
       end subroutine init_merge_mesh
 !
@@ -104,7 +104,7 @@
       call alloc_double_numbering(fem_m%mesh%node%numnod, dbl_nod)
       call set_node_double_numbering                                    &
      &   (fem_m%mesh%node, fem_m%mesh%nod_comm, dbl_nod,                &
-     &    SR_sig1, SR_i1)
+     &    m_SR_a%SR_sig, m_SR_a%SR_i)
 !
       call s_const_internal_mesh_data                                   &
      &   (fem_m%mesh, fem_m%group, new_mesh, new_group)
