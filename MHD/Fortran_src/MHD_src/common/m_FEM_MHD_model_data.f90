@@ -22,7 +22,7 @@
       use t_VIZ_mesh_field
       use t_visualizer
       use t_control_data_vizs
-      use t_vector_for_solver
+      use t_mesh_SR
 !
       implicit  none
 !
@@ -31,8 +31,8 @@
 !
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_data), save :: FEM_MHD1
-!>        Structure for vectors for solver
-      type(vectors_4_solver) :: v_sol2
+!>      Structure of work area for mesh communications
+      type(mesh_SR), save :: m_SR2
 !
 !>      Structure for mean square values
       type(FEM_MHD_mean_square), save :: fem_sq1

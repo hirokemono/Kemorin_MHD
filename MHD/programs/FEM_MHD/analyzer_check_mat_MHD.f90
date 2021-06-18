@@ -14,7 +14,6 @@
 !
       use t_mesh_SR
       use FEM_check_MHD_matrices
-      use m_solver_SR
 !
       implicit none
 !
@@ -42,8 +41,7 @@
 !
       call FEM_check_MHD_mat                                            &
      &   (MHD_files1, flex_MHD1, MHD_step1, FEM_model1, MHD_CG1,        &
-     &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1,            &
-     &    v_sol2, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1, m_SR2)
 !
       end subroutine init_analyzer
 !

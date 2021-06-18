@@ -17,17 +17,13 @@
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine init_FEM_MHD_to_VIZ_bridge                           &
-!!     &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT,       &
-!!     &          SR_sig, SR_r, SR_i, SR_il)
+!!     &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT, m_SR)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(next_nod_ele_table), intent(in), target :: next_tbl
 !!        type(jacobians_type), intent(in), target :: jacobians
 !!        type(mesh_data), intent(inout) :: geofem
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module FEM_to_VIZ_bridge
@@ -42,9 +38,7 @@
       use t_jacobians
       use t_VIZ_step_parameter
       use t_VIZ_mesh_field
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
 !
       implicit none
 !
@@ -88,8 +82,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_FEM_MHD_to_VIZ_bridge                             &
-     &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT,         &
-     &          SR_sig, SR_r, SR_i, SR_il)
+     &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT, m_SR)
 !
       use m_work_time
       use const_element_comm_tables
@@ -107,10 +100,7 @@
 !
       type(mesh_data), intent(inout) :: geofem
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: iflag
 !
@@ -120,9 +110,9 @@
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-        call const_edge_comm_table                                      &
-     &     (geofem%mesh%node, geofem%mesh%nod_comm, VIZ_DAT%edge_comm,  &
-     &      geofem%mesh%edge, SR_sig, SR_r, SR_i, SR_il)
+        call const_edge_comm_table(geofem%mesh%node,                    &
+     &      geofem%mesh%nod_comm, VIZ_DAT%edge_comm, geofem%mesh%edge,  &
+     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
       end if
       call calypso_mpi_barrier
 !

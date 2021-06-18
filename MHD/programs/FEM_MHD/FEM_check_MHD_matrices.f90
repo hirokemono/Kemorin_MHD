@@ -5,8 +5,7 @@
 !
 !!      subroutine FEM_check_MHD_mat                                    &
 !!     &         (MHD_files, flex_MHD, MHD_step, FEM_model, MHD_CG,     &
-!!     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq,         &
-!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
+!!     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
@@ -15,11 +14,7 @@
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !
       module FEM_check_MHD_matrices
 !
@@ -38,10 +33,7 @@
       use t_FEM_SGS_structure
       use t_FEM_MHD_mean_square
       use t_MHD_IO_data
-      use t_vector_for_solver
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
 !
       implicit none
 !
@@ -53,8 +45,7 @@
 !
       subroutine FEM_check_MHD_mat                                      &
      &         (MHD_files, flex_MHD, MHD_step, FEM_model, MHD_CG,       &
-     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq,           &
-     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
+     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
 !
       use t_boundary_field_IO
 !
@@ -75,11 +66,7 @@
       type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_IO_data), intent(inout) :: MHD_IO
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
 !   matrix assembling
@@ -92,8 +79,8 @@
      &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
      &    FEM_SGS%Csims, FEM_MHD%iphys, FEM_SGS%iphys_LES,              &
      &    FEM_MHD%field, MHD_CG, SGS_MHD_wk, fem_sq,                    &
-     &    MHD_IO%rst_IO, FEM_MHD%label_sim, v_sol,                      &
-     &    SR_sig, SR_r, SR_i, SR_il)
+     &    MHD_IO%rst_IO, FEM_MHD%label_sim, m_SR%v_sol,                 &
+     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
 !
 !   construct matrix for Poisson and diffusion terms
 !

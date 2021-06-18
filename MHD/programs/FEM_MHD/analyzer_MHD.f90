@@ -22,7 +22,6 @@
       use t_visualizer
       use t_VIZ_mesh_field
       use t_mesh_SR
-      use m_solver_SR
 !
       implicit none
 !
@@ -65,15 +64,14 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       call FEM_initialize_MHD                                           &
      &   (MHD_files1, flex_MHD1, MHD_step1, FEM_model1, FEM_MHD1,       &
-     &    MHD_CG1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1,                      &
-     &    fem_sq1, v_sol2, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    MHD_CG1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1, m_SR2)
 !
       call init_FEM_MHD_to_VIZ_bridge(MHD_step1%viz_step,               &
      &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
-     &    FEM_MHD1%geofem, VIZ_DAT2, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    FEM_MHD1%geofem, VIZ_DAT2, m_SR2)
       call init_visualize(MHD_step1%viz_step, FEM_MHD1%geofem,          &
      &    FEM_MHD1%field, VIZ_DAT2, vizs_ctl_F, vizs_F,                 &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR2%SR_sig, m_SR2%SR_r, m_SR2%SR_i, m_SR2%SR_il)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
       end subroutine initialization_MHD
@@ -96,7 +94,7 @@
 !  Time evolution
         call FEM_analyze_MHD(MHD_files1, FEM_model1, flex_MHD1,         &
      &      MHD_step1, retval, MHD_CG1, FEM_SGS1, SGS_MHD_wk1,          &
-     &      FEM_MHD1, MHD_IO1, fem_sq1, v_sol2, SR_sig1, SR_r1)
+     &      FEM_MHD1, MHD_IO1, fem_sq1, m_SR2)
 !
 !  Visualization
         visval = MHD_viz_routine_flag                                   &
@@ -107,7 +105,7 @@
      &       (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_MHD1%geofem, FEM_MHD1%field, VIZ_DAT2, vizs_F,        &
-     &        v_sol2, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &        m_SR2%v_sol, m_SR2%SR_sig, m_SR2%SR_r, m_SR2%SR_i, m_SR2%SR_il)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
         end if
 !

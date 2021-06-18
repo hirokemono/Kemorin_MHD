@@ -20,7 +20,7 @@ initialize_element_field.o: $(MHD_COMMON_DIR)/initialize_element_field.f90 m_pre
 	$(F90) -c $(F90OPTFLAGS) $<
 itp_potential_on_edge.o: $(MHD_COMMON_DIR)/itp_potential_on_edge.f90 m_precision.o t_geometry_data.o t_edge_data.o t_phys_data.o m_geometry_constants.o m_base_field_labels.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_FEM_MHD_model_data.o: $(MHD_COMMON_DIR)/m_FEM_MHD_model_data.f90 m_precision.o t_FEM_MHD_model_data.o t_FEM_mesh_field_data.o t_FEM_MHD_mean_square.o t_FEM_MHD_solvers.o t_FEM_SGS_structure.o t_work_FEM_SGS_MHD.o t_FEM_MHD_time_stepping.o t_VIZ_mesh_field.o t_visualizer.o t_control_data_vizs.o t_vector_for_solver.o
+m_FEM_MHD_model_data.o: $(MHD_COMMON_DIR)/m_FEM_MHD_model_data.f90 m_precision.o t_FEM_MHD_model_data.o t_FEM_mesh_field_data.o t_FEM_MHD_mean_square.o t_FEM_MHD_solvers.o t_FEM_SGS_structure.o t_work_FEM_SGS_MHD.o t_FEM_MHD_time_stepping.o t_VIZ_mesh_field.o t_visualizer.o t_control_data_vizs.o t_mesh_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_MHD_step_parameter.o: $(MHD_COMMON_DIR)/m_MHD_step_parameter.f90 m_precision.o t_MHD_IO_data.o t_MHD_step_parameter.o t_MHD_file_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
