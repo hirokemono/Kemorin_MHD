@@ -223,7 +223,7 @@
       call lead_special_fields_4_sph_mhd                                &
      &   (SPH_model%omega_sph, SPH_model%MHD_prop,                      &
      &    SPH_model%sph_MHD_bc, SPH_WK%trans_p, SPH_WK%trns_WK,         &
-     &    SPH_SGS, SPH_MHD)
+     &    SPH_SGS, SPH_MHD, m_SR1)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  lead energy data --------------
@@ -277,7 +277,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_special_fields_4_sph_mhd(omega_sph, MHD_prop,     &
-     &          sph_MHD_bc, trans_p, trns_WK, SPH_SGS, SPH_MHD)
+     &          sph_MHD_bc, trans_p, trns_WK, SPH_SGS, SPH_MHD, m_SR)
 !
       use t_MHD_step_parameter
       use t_spheric_parameter
@@ -299,22 +299,24 @@
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       call sph_back_trans_4_MHD(SPH_MHD%sph, SPH_MHD%comms,             &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, omega_sph, trans_p,    &
      &    trns_WK%gt_cor, SPH_MHD%fld, trns_WK%trns_MHD%b_trns,         &
      &    trns_WK%trns_MHD%backward, trns_WK%WK_leg,                    &
-     &    trns_WK%WK_FFTs_MHD, trns_WK%cor_rlm, m_SR1%SR_sig, m_SR1%SR_r)
+     &    trns_WK%WK_FFTs_MHD, trns_WK%cor_rlm, m_SR%SR_sig, m_SR%SR_r)
 !
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
      &    trns_WK%trns_eflux%forward, trns_WK%WK_leg, trns_WK%WK_FFTs,  &
-     &    SPH_MHD%fld, m_SR1%SR_sig, m_SR1%SR_r)
+     &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
      &    SPH_SGS%trns_WK_LES%trns_SGS_snap%forward,                    &
-     &    trns_WK%WK_leg, trns_WK%WK_FFTs, SPH_MHD%fld, m_SR1%SR_sig, m_SR1%SR_r)
+     &    trns_WK%WK_leg, trns_WK%WK_FFTs, SPH_MHD%fld,                 &
+     &    m_SR%SR_sig, m_SR%SR_r)
 !
 ! ----  Take zonal mean
 !

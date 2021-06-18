@@ -85,8 +85,7 @@
 !  Read and generate fields
         call FEM_analyze_filtered(i_step, MHD_files1, FEM_model1,       &
      &      MHD_CG1%ak_MHD, MHD_step1, FEM_SGS1, SGS_MHD_wk1,           &
-     &      FEM_MHD1, MHD_IO1%ucd, MHD_IO1, fem_sq1,                    &
-     &      m_SR2%v_sol, m_SR2%SR_sig, m_SR2%SR_r)
+     &      FEM_MHD1, MHD_IO1%ucd, MHD_IO1, fem_sq1, m_SR2)
 !
 !  Visualization
         visval = MHD_viz_routine_flag                                   &

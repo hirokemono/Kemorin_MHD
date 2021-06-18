@@ -86,8 +86,7 @@
       call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
      &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, MHD_IO1, m_SR1)
       call init_FEM_to_PSF_bridge                                       &
-     &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M,               &
-     &    m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
+     &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M, m_SR1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'

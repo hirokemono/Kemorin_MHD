@@ -99,12 +99,11 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
-      call PVR_initialize                                               &
-     &   (viz_step%PVR_t%increment, geofem, nod_fld, viz_ctls%pvr_ctls, &
-     &    vizs%pvr, m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+      call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
+     &                    viz_ctls%pvr_ctls, vizs%pvr, m_SR)
       call anaglyph_PVR_initialize(viz_step%PVR_t%increment,            &
      &    geofem, nod_fld, viz_ctls%pvr_anaglyph_ctls,                  &
-     &    vizs%anaglyph_pvr, m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &    vizs%anaglyph_pvr, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
@@ -164,11 +163,9 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
       call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
-     &                   geofem, VIZ_DAT%jacobians, nod_fld,            &
-     &                   vizs%pvr, m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr, m_SR)
       call anaglyph_PVR_visualize(viz_step%istep_pvr, time_d%time,      &
-     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%anaglyph_pvr,        &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%anaglyph_pvr, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)

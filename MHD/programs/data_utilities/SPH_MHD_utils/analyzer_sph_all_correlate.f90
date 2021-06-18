@@ -88,7 +88,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
       call SPH_init_sph_back_trans(MHD_files1, SPH_model1, SPH_SGS1,    &
-     &                             SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
+     &    SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----
@@ -140,7 +140,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_correlate_all'
         call SPH_analyze_correlate_all(MHD_step1%time_d, mhd_files1,    &
-     &      SPH_SGS1, MHD_step1, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
+     &      SPH_SGS1, MHD_step1, SPH_MHD1, SPH_WK1,                     &
+     &      m_SR1%SR_sig, m_SR1%SR_r)
 !*
 !*  -----------  output field data --------------
 !*

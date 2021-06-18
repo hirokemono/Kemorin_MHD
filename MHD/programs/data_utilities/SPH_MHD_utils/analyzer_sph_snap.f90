@@ -149,7 +149,8 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
         call SPH_analyze_SGS_snap                                       &
      &     (MHD_step1%time_d%i_time_step, MHD_files1, SPH_model1,       &
-     &      MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
+     &      MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1,                     &
+     &      m_SR1%SR_sig, m_SR1%SR_r)
 !*
 !*  -----------  output field data --------------
 !*
@@ -264,7 +265,8 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
         call SPH_analyze_SGS_snap                                       &
      &     (MHD_step1%time_d%i_time_step, MHD_files1, SPH_model1,       &
-     &      MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
+     &      MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1,                     &
+     &      m_SR1%SR_sig, m_SR1%SR_r)
 !*
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
@@ -314,11 +316,11 @@
      &       (ctl_file_code, MHD_ctl1%viz_ctls%pvr_ctls)
           call PVR_initialize(MHD_step1%viz_step%PVR_t%increment,       &
      &        FEM_d1%geofem, FEM_d1%field, MHD_ctl1%viz_ctls%pvr_ctls,  &
-     &        vizs1%pvr, m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i)
+     &        vizs1%pvr, m_SR1)
           call PVR_visualize                                            &
      &       (MHD_step1%viz_step%istep_pvr, MHD_step1%time_d%time,      &
      &        FEM_d1%geofem, VIZ_DAT1%jacobians, FEM_d1%field,          &
-     &        vizs1%pvr, m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i)
+     &        vizs1%pvr, m_SR1)
           call dealloc_pvr_data(vizs1%pvr)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if

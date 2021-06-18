@@ -89,8 +89,7 @@
       call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
      &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, MHD_IO1, m_SR1)
       call init_FEM_to_PSF_bridge                                       &
-     &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M,               &
-     &    m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
+     &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M, m_SR1)
 !
 !        Initialize spherical transform dynamo
 !
@@ -104,7 +103,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
       call init_visualize_surface                                       &
      &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M, FEM_d1%field, &
-     &    DNS_MHD_ctl1%surfacing_ctls, viz_psfs1, m_SR1%SR_sig, m_SR1%SR_il)
+     &    DNS_MHD_ctl1%surfacing_ctls, viz_psfs1, m_SR1)
 !
       call init_zonal_mean_sections(MHD_step1%viz_step, FEM_d1%geofem,  &
      &    edge_comm_M, FEM_d1%field, DNS_MHD_ctl1%zm_ctls, zmeans1,     &
@@ -175,10 +174,10 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface', my_rank
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
-     &                          MHD_step1%viz_step)
+     &                            MHD_step1%viz_step)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        FEM_d1%geofem, edge_comm_M, FEM_d1%field, viz_psfs1,      &
-     &        m_SR1%SR_sig, m_SR1%SR_il)
+     &                           FEM_d1%geofem, edge_comm_M,            &
+     &                           FEM_d1%field, viz_psfs1, m_SR1)
 !*
 !*  ----------- Zonal means --------------
 !*
