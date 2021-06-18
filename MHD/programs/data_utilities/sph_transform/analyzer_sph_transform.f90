@@ -21,7 +21,6 @@
       use m_SPH_transforms
       use t_ctl_params_sph_trans
       use t_mesh_SR
-      use m_solver_SR
 !
       use calypso_mpi
       use FEM_analyzer_sph_trans
@@ -61,11 +60,12 @@
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_sph_trans'
       call FEM_initialize_sph_trans(t_STR%init_d, t_STR%ucd_step,       &
-     &    FEM_STR1, v_sol21, SR_sig1, SR_r1, SR_i1, SR_il1)
+     &                              FEM_STR1, m_SR5)
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_sph_trans'
-      call SPH_initialize_sph_trans(SPH_TRNS, SPH_STR1, SR_sig1, SR_r1)
+      call SPH_initialize_sph_trans(SPH_TRNS, SPH_STR1,                 &
+     &                              m_SR5%SR_sig, m_SR5%SR_r)
 !
 !    Set field IOP array by spectr fields
       call calypso_mpi_barrier
@@ -87,11 +87,12 @@
 !
 !   Input field data
         call FEM_analyze_sph_trans(i_step, t_STR%ucd_step,              &
-     &      FEM_STR1, v_sol21, SR_sig1, SR_r1)
+     &                             FEM_STR1, m_SR5)
 !
 !   Spherical transform
-        call SPH_analyze_sph_trans(i_step, FEM_STR1%geofem,             &
-     &      FEM_STR1%field, SPH_TRNS, SPH_STR1, SR_sig1, SR_r1)
+        call SPH_analyze_sph_trans                                      &
+     &     (i_step, FEM_STR1%geofem, FEM_STR1%field, SPH_TRNS,          &
+     &      SPH_STR1, m_SR5%SR_sig, m_SR5%SR_r)
       end do
 !
       call FEM_finalize_sph_trans(t_STR%ucd_step, FEM_STR1)

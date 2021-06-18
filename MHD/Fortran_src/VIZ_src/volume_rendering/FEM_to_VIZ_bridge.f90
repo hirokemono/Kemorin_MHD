@@ -7,15 +7,12 @@
 !>@brief Data structuresa for visualizers
 !!
 !!@verbatim
-!!      subroutine init_FEM_to_VIZ_bridge(viz_step, geofem, VIZ_DAT,    &
-!!     &                                  SR_sig, SR_r, SR_i, SR_il)
+!!      subroutine init_FEM_to_VIZ_bridge                               &
+!!     &         (viz_step, geofem, VIZ_DAT, m_SR)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_data), intent(inout) :: geofem
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine init_FEM_MHD_to_VIZ_bridge                           &
 !!     &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT, m_SR)
 !!        type(VIZ_step_params), intent(in) :: viz_step
@@ -50,8 +47,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_FEM_to_VIZ_bridge(viz_step, geofem, VIZ_DAT,      &
-     &                                  SR_sig, SR_r, SR_i, SR_il)
+      subroutine init_FEM_to_VIZ_bridge                                 &
+     &         (viz_step, geofem, VIZ_DAT, m_SR)
 !
       use m_work_time
       use parallel_FEM_mesh_init
@@ -60,14 +57,11 @@
 !
       type(mesh_data), intent(inout) :: geofem
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
-     &                             SR_sig, SR_i)
+     &                             m_SR%SR_sig, m_SR%SR_i)
 !
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_VIZ_pre'
       call link_jacobians_4_viz                                         &
@@ -75,7 +69,7 @@
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
      &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians,       &
-     &    SR_sig, SR_r, SR_i, SR_il)
+     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
 !
       end subroutine init_FEM_to_VIZ_bridge
 !

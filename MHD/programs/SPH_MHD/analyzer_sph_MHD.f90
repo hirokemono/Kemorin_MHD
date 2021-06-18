@@ -98,14 +98,13 @@
 !  ----   Mesh setting for visualization -----
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge(MHD_step1%viz_step,                   &
-     &    FEM_d1%geofem, VIZ_DAT1, m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
+      call init_FEM_to_VIZ_bridge(MHD_step1%viz_step,FEM_d1%geofem,     &
+     &                            VIZ_DAT1, m_SR1)
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(MHD_step1%viz_step, FEM_d1%geofem,            &
-     &    FEM_d1%field, VIZ_DAT1, MHD_ctl1%viz_ctls, vizs1,             &
-     &    m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
+     &    FEM_d1%field, VIZ_DAT1, MHD_ctl1%viz_ctls, vizs1, m_SR1)
       call init_zonal_mean_sections(MHD_step1%viz_step, FEM_d1%geofem,  &
      &    VIZ_DAT1%edge_comm, FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1,  &
      &    m_SR1%SR_sig, m_SR1%SR_il)
@@ -183,8 +182,7 @@
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        FEM_d1%geofem, FEM_d1%field, VIZ_DAT1, vizs1,             &
-     &        m_SR1%v_sol, m_SR1%SR_sig, m_SR1%SR_r, m_SR1%SR_i, m_SR1%SR_il)
+     &        FEM_d1%geofem, FEM_d1%field, VIZ_DAT1, vizs1, m_SR1)
 !*
 !*  ----------- Zonal means --------------
 !*

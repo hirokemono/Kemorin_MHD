@@ -21,7 +21,7 @@
       use t_step_parameter
       use t_file_IO_parameter
       use t_ctl_data_4_sph_trans
-      use t_vector_for_solver
+      use t_mesh_SR
 !
       implicit none
 !
@@ -29,9 +29,8 @@
       type(SPH_for_SPH_transforms) :: SPH_STR1
       type(VIZ_mesh_field) :: VIZ_D_STR1
 !
-!>        Structure for vectors for solver
-        type(vectors_4_solver) :: v_sol21
-!
+!>      Structure of work area for mesh communications
+      type(mesh_SR), save :: m_SR5
 !
 !       Structure for time stepping parameters
       type(time_step_param), save :: t_STR

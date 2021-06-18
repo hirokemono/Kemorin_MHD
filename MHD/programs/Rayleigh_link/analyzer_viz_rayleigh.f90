@@ -81,15 +81,13 @@
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge                                       &
-     &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, VIZ_DAT_r,            &
-     &    m_SR3%SR_sig, m_SR3%SR_r, m_SR3%SR_i, m_SR3%SR_il)
+     &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, VIZ_DAT_r, m_SR3)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize                                               &
      &   (t_VIZ_r%viz_step, FEM_Rayleigh1%geofem, FEM_Rayleigh1%field,  &
-     &    VIZ_DAT_r, rayleigh_vizs_ctl1%viz_ctl_v, vizs_v,              &
-     &    m_SR3%SR_sig, m_SR3%SR_r, m_SR3%SR_i, m_SR3%SR_il)
+     &    VIZ_DAT_r, rayleigh_vizs_ctl1%viz_ctl_v, vizs_v, m_SR3)
 !
       end subroutine init_viz_rayleigh
 !
@@ -118,9 +116,9 @@
         if(visval) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call istep_viz_w_fix_dt(i_step, t_VIZ_r%viz_step)
-          call visualize_all(t_VIZ_r%viz_step, t_VIZ_r%time_d,          &
-     &      FEM_Rayleigh1%geofem, FEM_Rayleigh1%field, VIZ_DAT_r,       &
-     &      vizs_v, m_SR3%v_sol, m_SR3%SR_sig, m_SR3%SR_r, m_SR3%SR_i, m_SR3%SR_il)
+          call visualize_all                                            &
+     &       (t_VIZ_r%viz_step, t_VIZ_r%time_d, FEM_Rayleigh1%geofem,   &
+     &        FEM_Rayleigh1%field, VIZ_DAT_r, vizs_v, m_SR3)
         end if
       end do
 !

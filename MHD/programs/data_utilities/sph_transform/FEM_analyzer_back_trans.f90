@@ -4,22 +4,15 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine FEM_initialize_back_trans(ucd_step, FEM_STR,         &
-!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
+!!      subroutine FEM_initialize_back_trans(ucd_step, FEM_STR, m_SR)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_analyze_back_trans(i_step, ucd_step, visval,     &
-!!     &                                  FEM_STR, v_sol, SR_sig, SR_r)
+!!     &                                  FEM_STR, m_SR)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(mesh_SR), intent(inout) :: m_SR
 !
       module FEM_analyzer_back_trans
 !
@@ -31,10 +24,7 @@
       use t_VIZ_step_parameter
       use t_file_IO_parameter
       use t_shape_functions
-      use t_vector_for_solver
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
 !
       implicit none
 !
@@ -46,8 +36,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_back_trans(ucd_step, FEM_STR,           &
-     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
+      subroutine FEM_initialize_back_trans(ucd_step, FEM_STR, m_SR)
 !
       use t_ucd_data
       use t_next_node_ele_4_node
@@ -63,18 +52,14 @@
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(FEM_STR%geofem%mesh, v_sol,          &
-     &                             SR_sig, SR_r, SR_i, SR_il)
+      call FEM_comm_initialization(FEM_STR%geofem%mesh, m_SR%v_sol,     &
+     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
       call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &
@@ -86,7 +71,7 @@
       call link_output_grd_file                                         &
      &   (FEM_STR%geofem%mesh%node, FEM_STR%geofem%mesh%ele,            &
      &    FEM_STR%geofem%mesh%nod_comm, FEM_STR%field,                  &
-     &    FEM_STR%ucd_file_IO, FEM_STR%ucd, SR_sig, SR_i)
+     &    FEM_STR%ucd_file_IO, FEM_STR%ucd, m_SR%SR_sig, m_SR%SR_i)
 !
       end subroutine FEM_initialize_back_trans
 !
@@ -94,7 +79,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_back_trans(i_step, ucd_step, visval,       &
-     &                                  FEM_STR, v_sol, SR_sig, SR_r)
+     &                                  FEM_STR, m_SR)
 !
       use t_ctl_params_sph_trans
       use t_time_data
@@ -108,15 +93,13 @@
       integer(kind = kint), intent(in) :: i_step
       type(IO_step_param), intent(in) :: ucd_step
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !*  ----------   Count steps for visualization
 !*
       if(visval) then
         call nod_fields_send_recv(FEM_STR%geofem%mesh, FEM_STR%field,   &
-     &                            v_sol, SR_sig, SR_r)
+     &                            m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
 !*  -----------  Output volume data --------------
 !*

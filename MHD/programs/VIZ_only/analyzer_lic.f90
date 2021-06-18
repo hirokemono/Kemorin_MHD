@@ -79,8 +79,7 @@
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge                                       &
-     &   (t_VIZ1%viz_step, FEM_viz1%geofem, VIZ_DAT1,                   &
-     &    m_SR11%SR_sig, m_SR11%SR_r, m_SR11%SR_i, m_SR11%SR_il)
+     &   (t_VIZ1%viz_step, FEM_viz1%geofem, VIZ_DAT1, m_SR11)
       if(iflag_debug .gt. 0)  write(*,*) 'init_LIC_visualize'
       call init_LIC_visualize(t_VIZ1%viz_step, FEM_viz1%geofem,         &
      &   FEM_viz1%field, VIZ_DAT1, vizs_ctl1%viz_ctl_v, lic_v1, m_SR11)

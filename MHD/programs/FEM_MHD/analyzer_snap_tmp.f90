@@ -65,8 +65,7 @@
      &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
      &    FEM_MHD1%geofem, VIZ_DAT2, m_SR2)
       call init_visualize(MHD_step1%viz_step, FEM_MHD1%geofem,          &
-     &    FEM_MHD1%field, VIZ_DAT2, vizs_ctl_F, vizs_F,                 &
-     &    m_SR2%SR_sig, m_SR2%SR_r, m_SR2%SR_i, m_SR2%SR_il)
+     &    FEM_MHD1%field, VIZ_DAT2, vizs_ctl_F, vizs_F, m_SR2)
 !
       end subroutine init_analyzer
 !
@@ -97,8 +96,7 @@
           call MHD_viz_routine_step                                     &
      &       (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        FEM_MHD1%geofem, FEM_MHD1%field, VIZ_DAT2, vizs_F,        &
-     &        m_SR2%v_sol, m_SR2%SR_sig, m_SR2%SR_r, m_SR2%SR_i, m_SR2%SR_il)
+     &        FEM_MHD1%geofem, FEM_MHD1%field, VIZ_DAT2, vizs_F, m_SR2)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
       end do

@@ -145,8 +145,7 @@
 !     --------------------- init for fieldline and PVR
 !
       if(iflag_debug.gt.0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge(viz_step, FEM_viz%geofem, pvr,        &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+      call init_FEM_to_VIZ_bridge(viz_step, FEM_viz%geofem, pvr, m_SR)
       call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_four_vizs
