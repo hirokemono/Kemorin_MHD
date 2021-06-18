@@ -19,11 +19,11 @@
       use t_IO_step_parameter
       use t_structure_4_interolation
       use t_mesh_SR
-      use m_solver_SR
 !
       implicit none
 !
       type(structure_4_interolation), save:: itp_etst
+      type(mesh_SR), save :: m_SR7
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,7 +80,7 @@
       call interpolation_4_mesh_test(itp_etst%nprocs_2nd,               &
      &    itp_etst%org_fem%mesh, itp_etst%new_fem%mesh,                 &
      &    itp_etst%itp_tbl, itp_etst%v_1st_sol, itp_etst%v_2nd_sol,     &
-     &    SR_sig1, SR_r1, SR_il1)
+     &    m_SR7%SR_sig, m_SR7%SR_r, m_SR7%SR_il)
 !
       if (my_rank .lt. itp_etst%gen_itp_p%ndomain_dest) then
         call finalize_size_4_smp_mesh                                   &

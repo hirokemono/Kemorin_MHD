@@ -23,7 +23,6 @@
       use t_search_block_4_itp
       use t_ctl_params_4_gen_table
       use t_mesh_SR
-      use m_solver_SR
 !
       implicit none
 !
@@ -39,6 +38,8 @@
 !
       type(para_block_4_interpolate) :: itp_blks1
       type(work_const_itp_table), save :: cst_itp_wk1
+!
+      type(mesh_SR), save :: m_SR7
 !
       character(len=kchara), parameter, private :: work_header = 'work'
 !
@@ -91,7 +92,8 @@
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos(org_femmesh%mesh%nod_comm,             &
      &    org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
-     &    org_femmesh%mesh%surf, org_femmesh%mesh%edge, SR_sig1, SR_i1)
+     &    org_femmesh%mesh%surf, org_femmesh%mesh%edge,                 &
+     &    m_SR7%SR_sig, m_SR7%SR_i)
 !
 !     ----- construct mesh informations for original mesh
 !
