@@ -132,8 +132,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
       call const_edge_comm_table                                        &
      &   (FEM_viz%geofem%mesh%node, FEM_viz%geofem%mesh%nod_comm,       &
-     &    edge_comm, FEM_viz%geofem%mesh%edge,                          &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+     &    edge_comm, FEM_viz%geofem%mesh%edge, m_SR)
 !
 !     ---------------------
 !

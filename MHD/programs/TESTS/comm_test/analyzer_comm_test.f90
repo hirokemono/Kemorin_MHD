@@ -101,18 +101,18 @@
       call const_global_numele_list(test_fem%mesh%ele)
       call const_ele_comm_table                                         &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
-     &    test_fem%mesh%ele, T_ele_comm, m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
+     &    test_fem%mesh%ele, T_ele_comm, m_SR_T)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                        &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_surf_comm,      &
-     &    test_fem%mesh%surf, m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
+     &    test_fem%mesh%surf, m_SR_T)
 !
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table                                        &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm, T_edge_comm,      &
-     &    test_fem%mesh%edge, m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
+     &    test_fem%mesh%edge, m_SR_T)
 !
 !      call calypso_mpi_barrier
 !      call calypso_mpi_abort(0, 'manuke')

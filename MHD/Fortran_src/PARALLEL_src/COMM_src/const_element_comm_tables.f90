@@ -9,28 +9,21 @@
 !!@verbatim
 !!      subroutine const_global_mesh_infos(mesh)
 !!
-!!      subroutine const_ele_comm_table(node, nod_comm, ele, ele_comm,  &
-!!     &                                SR_sig, SR_r, SR_i, SR_il)
+!!      subroutine const_ele_comm_table(node, nod_comm, ele,            &
+!!     &                                ele_comm, m_SR)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(inout) :: ele_comm
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
-!!      subroutine const_edge_comm_table                                &
-!!     &         (node, nod_comm, edge_comm, edge,                      &
-!!     &          SR_sig, SR_r, SR_i, SR_il)
+!!        type(mesh_SR), intent(inout) :: m_SR
+!!      subroutine const_edge_comm_table(node, nod_comm,                &
+!!     &                                 edge_comm, edge, m_SR)
 !!      subroutine dealloc_edge_comm_table(edge_comm, edge)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: edge_comm
 !!        type(edge_data), intent(inout) :: edge
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!
 !!      subroutine const_global_numnod_list(node)
 !!      subroutine set_node_ele_double_address                          &
@@ -57,9 +50,7 @@
       use t_edge_data
       use t_comm_table
       use t_failed_export_list
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
 !
       use m_machine_parameter
 !
@@ -143,8 +134,8 @@
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_ele_comm_table(node, nod_comm, ele, ele_comm,    &
-     &                                SR_sig, SR_r, SR_i, SR_il)
+      subroutine const_ele_comm_table(node, nod_comm, ele,              &
+     &                                ele_comm, m_SR)
 !
       use m_geometry_constants
       use t_solver_SR_int
@@ -159,10 +150,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(element_data), intent(in) :: ele
       type(communication_table), intent(inout) :: ele_comm
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
       type(node_ele_double_number) :: inod_dbl
       type(element_double_number) :: iele_dbl
@@ -172,7 +160,7 @@
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl,          &
-     &                               SR_sig, SR_i)
+     &                               m_SR%SR_sig, m_SR%SR_i)
 !
       call alloc_ele_double_number(ele%numele, iele_dbl)
       call find_belonged_pe_4_ele                                       &
@@ -189,12 +177,13 @@
       call dealloc_failed_export(fail_tbl_e)
 !
       call check_global_ele_id(txt_ele, ele%numele,                     &
-     &    ele%interior_ele, ele_comm, ele%iele_global, SR_sig, SR_il)
+     &    ele%interior_ele, ele_comm, ele%iele_global,                  &
+     &    m_SR%SR_sig, m_SR%SR_il)
 !
       call check_element_position                                       &
      &   (txt_ele, node%numnod, node%inod_global, ele%numele,           &
-     &    ele%nnod_4_ele, ele%ie, ele%iele_global,                      &
-     &    ele%x_ele, inod_dbl, iele_dbl, ele_comm, SR_sig, SR_r)
+     &    ele%nnod_4_ele, ele%ie, ele%iele_global, ele%x_ele,           &
+     &    inod_dbl, iele_dbl, ele_comm, m_SR%SR_sig, m_SR%SR_r)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_ele_double_number(iele_dbl)
 !
@@ -203,9 +192,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_edge_comm_table                                  &
-     &         (node, nod_comm, edge_comm, edge,                        &
-     &          SR_sig, SR_r, SR_i, SR_il)
+      subroutine const_edge_comm_table(node, nod_comm,                  &
+     &                                 edge_comm, edge, m_SR)
 !
       use m_geometry_constants
       use t_para_double_numbering
@@ -219,10 +207,7 @@
 !
       type(communication_table), intent(inout) :: edge_comm
       type(edge_data), intent(inout) :: edge
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
       type(node_ele_double_number) :: inod_dbl
       type(element_double_number) :: iedge_dbl
@@ -236,7 +221,7 @@
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl,          &
-     &                               SR_sig, SR_i)
+     &                               m_SR%SR_sig, m_SR%SR_i)
 !
       call alloc_ele_double_number(edge%numedge, iedge_dbl)
       call alloc_interior_edge(edge)
@@ -265,14 +250,15 @@
       call count_number_of_node_stack(internal_num, istack_ineredge)
       call set_global_ele_id(txt_edge, edge%numedge, istack_ineredge,   &
      &    edge%interior_edge, edge_comm, edge%iedge_global,             &
-     &    SR_sig, SR_il)
+     &    m_SR%SR_sig, m_SR%SR_il)
       deallocate(istack_ineredge)
 !
       call calypso_mpi_barrier
       call check_element_position                                       &
      &   (txt_edge, node%numnod, node%inod_global, edge%numedge,        &
      &    edge%nnod_4_edge, edge%ie_edge, edge%iedge_global,            &
-     &    edge%x_edge, inod_dbl, iedge_dbl, edge_comm, SR_sig, SR_r)
+     &    edge%x_edge, inod_dbl, iedge_dbl, edge_comm,                  &
+     &    m_SR%SR_sig, m_SR%SR_r)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_ele_double_number(iedge_dbl)
 !

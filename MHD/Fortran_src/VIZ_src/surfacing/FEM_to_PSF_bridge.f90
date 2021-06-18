@@ -59,8 +59,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
         call const_edge_comm_table                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      edge_comm, geofem%mesh%edge,                                &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+     &      edge_comm, geofem%mesh%edge, m_SR)
       end if
 !
       end subroutine init_FEM_to_PSF_bridge

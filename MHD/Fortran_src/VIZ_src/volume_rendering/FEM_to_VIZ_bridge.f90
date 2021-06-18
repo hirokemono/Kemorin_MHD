@@ -68,8 +68,7 @@
      &   (VIZ_DAT%next_tbl_v, VIZ_DAT%jacobians_v, VIZ_DAT)
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
       call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
-     &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians,       &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+     &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians, m_SR)
 !
       end subroutine init_FEM_to_VIZ_bridge
 !
@@ -104,9 +103,9 @@
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-        call const_edge_comm_table(geofem%mesh%node,                    &
-     &      geofem%mesh%nod_comm, VIZ_DAT%edge_comm, geofem%mesh%edge,  &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+        call const_edge_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, VIZ_DAT%edge_comm,  &
+     &      geofem%mesh%edge, m_SR)
       end if
       call calypso_mpi_barrier
 !
@@ -116,8 +115,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine normals_and_jacobians_4_VIZ                            &
-     &         (viz_step, geofem, edge_comm, next_tbl, jacobians,       &
-     &          SR_sig, SR_r, SR_i, SR_il)
+     &         (viz_step, geofem, edge_comm, next_tbl, jacobians, m_SR)
 !
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
@@ -130,10 +128,7 @@
       type(communication_table), intent(inout) :: edge_comm
       type(next_nod_ele_table), intent(inout) :: next_tbl
       type(jacobians_type), intent(inout) :: jacobians
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: iflag
       type(shape_finctions_at_points) :: spfs
@@ -153,7 +148,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
         call const_edge_comm_table                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, edge_comm,          &
-     &      geofem%mesh%edge, SR_sig, SR_r, SR_i, SR_il)
+     &      geofem%mesh%edge, m_SR)
       end if
 !
       iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment

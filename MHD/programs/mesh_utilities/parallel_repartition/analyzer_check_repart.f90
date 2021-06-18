@@ -149,18 +149,17 @@
       if(iflag_debug.gt.0) write(*,*) ' const_ele_comm_table'
       call const_global_numele_list(new_fem%mesh%ele)
       call const_ele_comm_table(new_fem%mesh%node,                      &
-     &    new_fem%mesh%nod_comm, new_fem%mesh%ele, T_ele_comm,          &
-     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
+     &    new_fem%mesh%nod_comm, new_fem%mesh%ele, T_ele_comm, m_SR_T)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_surf_comm_table'
-      call const_surf_comm_table(new_fem%mesh%node,                     &
-     &    new_fem%mesh%nod_comm, T_surf_comm, new_fem%mesh%surf,        &
-     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
+      call const_surf_comm_table                                        &
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_surf_comm,        &
+     &    new_fem%mesh%surf, m_SR_T)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_edge_comm_table'
-      call const_edge_comm_table(new_fem%mesh%node,                     &
-     &    new_fem%mesh%nod_comm, T_edge_comm, new_fem%mesh%edge,        &
-     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
+      call const_edge_comm_table                                        &
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_edge_comm,        &
+     &    new_fem%mesh%edge, m_SR_T)
 !
 !
       if(my_rank .eq. 0) write(*,*) 'check communication table...'

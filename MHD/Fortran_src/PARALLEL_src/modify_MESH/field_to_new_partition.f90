@@ -103,7 +103,7 @@
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_ele_comm_table                                       &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
-     &      ele_comm_T, m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+     &      ele_comm_T, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
 !  -----  Re-partitioning
@@ -111,8 +111,7 @@
         if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
         call s_repartiton_by_volume                                     &
      &     (part_param, geofem, ele_comm_T, next_tbl,                   &
-     &      new_fem, repart_nod_tbl, repart_WK,                         &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+     &      new_fem, repart_nod_tbl, repart_WK, m_SR)
         call dealloc_comm_table(ele_comm_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if

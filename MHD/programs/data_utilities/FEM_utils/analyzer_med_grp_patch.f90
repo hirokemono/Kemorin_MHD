@@ -68,8 +68,7 @@
 !
       call const_edge_comm_table                                        &
      &   (FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%nod_comm,         &
-     &    edge_comm_MG, FUTIL1%geofem%mesh%edge,                        &
-     &    m_SR4%SR_sig, m_SR4%SR_r, m_SR4%SR_i, m_SR4%SR_il)
+     &    edge_comm_MG, FUTIL1%geofem%mesh%edge, m_SR4)
 !
       FUTIL1%nod_fld%num_phys = 1
       call alloc_phys_name(FUTIL1%nod_fld)

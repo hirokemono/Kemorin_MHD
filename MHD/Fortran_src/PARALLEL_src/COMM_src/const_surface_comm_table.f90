@@ -8,17 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine const_surf_comm_table                                &
-!!     &         (node, nod_comm, surf_comm, surf,                      &
-!!     &          SR_sig, SR_r, SR_i, SR_il)
+!!     &         (node, nod_comm, surf_comm, surf, m_SR)
 !!      subroutine dealloc_surf_comm_table(surf_comm, surf)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: surf_comm
 !!        type(surface_data), intent(inout) :: surf
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!
 !!      subroutine surf_send_recv_test                                  &
 !!     &         (surf, surf_comm, surf_check, SR_sig, SR_r)
@@ -40,9 +36,7 @@
       use t_surface_data
       use t_comm_table
       use t_failed_export_list
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
 !
       use m_machine_parameter
       use m_geometry_constants
@@ -60,8 +54,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_surf_comm_table                                  &
-     &         (node, nod_comm, surf_comm, surf,                        &
-     &          SR_sig, SR_r, SR_i, SR_il)
+     &         (node, nod_comm, surf_comm, surf, m_SR)
 !
       use t_para_double_numbering
       use t_element_double_number
@@ -74,10 +67,7 @@
 !
       type(surface_data), intent(inout) :: surf
       type(communication_table), intent(inout) :: surf_comm
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
       type(node_ele_double_number) :: inod_dbl
       type(element_double_number) :: isurf_dbl
@@ -92,7 +82,7 @@
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl,          &
-     &                               SR_sig, SR_i)
+     &                               m_SR%SR_sig, m_SR%SR_i)
 !
       call alloc_ele_double_number(surf%numsurf, isurf_dbl)
       call find_belonged_pe_4_surf(my_rank, inod_dbl,                   &
@@ -115,14 +105,15 @@
       call count_number_of_node_stack(internal_num, istack_inersurf)
       call set_global_ele_id(txt_surf, surf%numsurf, istack_inersurf,   &
      &    surf%interior_surf, surf_comm, surf%isurf_global,             &
-     &    SR_sig, SR_il)
+     &    m_SR%SR_sig, m_SR%SR_il)
       deallocate(istack_inersurf)
 !
       call calypso_mpi_barrier
       call check_element_position                                       &
      &   (txt_surf, node%numnod, node%inod_global, surf%numsurf,        &
      &    surf%nnod_4_surf, surf%ie_surf, surf%isurf_global,            &
-     &    surf%x_surf, inod_dbl, isurf_dbl, surf_comm, SR_sig, SR_r)
+     &    surf%x_surf, inod_dbl, isurf_dbl, surf_comm,                  &
+     &    m_SR%SR_sig, m_SR%SR_r)
       call dealloc_ele_double_number(isurf_dbl)
       call dealloc_double_numbering(inod_dbl)
 !
