@@ -19,16 +19,14 @@
       use t_FEM_utils
       use t_step_parameter
       use t_VIZ_step_parameter
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
 !
       implicit none
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
-!>        Structure for vectors for solver
-      type(vectors_4_solver) :: v_sol41
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR4
 !       Structure for time stepping parameters
       type(time_step_param), save :: time_U
       type(time_data), save :: time_IO_FUTIL
@@ -71,8 +69,8 @@
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file, FUTIL1%geofem,       &
-     &    v_sol41, SR_sig1, SR_r1, SR_i1, SR_il1)
+      call mesh_setup_4_FEM_UTIL                                        &
+     &   (FUTIL1%mesh_file, FUTIL1%geofem, m_SR4)
 !
 !     --------------------- 
 !
@@ -108,7 +106,7 @@
         call cal_products_of_fields                                     &
      &     (FUTIL1%geofem%mesh%nod_comm, FUTIL1%geofem%mesh%node,       &
      &      FUTIL1%nod_fld%ntot_phys, FUTIL1%nod_fld%d_fld,             &
-     &      v_sol41, SR_sig1, SR_r1)
+     &      m_SR4%v_sol, m_SR4%SR_sig, m_SR4%SR_r)
 !
 !    output udt data
         call link_output_ucd_file_once                                  &

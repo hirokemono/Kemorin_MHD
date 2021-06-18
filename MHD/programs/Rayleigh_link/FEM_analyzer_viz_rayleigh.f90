@@ -7,23 +7,16 @@
 !>@brief  Main loop of visualization of Rayleigh data
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_viz_rayleigh                          &
-!!     &         (FEM_Rayleigh, v_sol, SR_sig, SR_r, SR_i, SR_il)
+!!      subroutine FEM_initialize_viz_rayleigh(FEM_Rayleigh, m_SR)
 !!        type(FEM_mesh_field_rayleigh_viz), intent(inout)              &
 !!     &                                      :: FEM_Rayleigh
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_analyze_viz_rayleigh(visval, i_step, time_d,     &
-!!     &          FEM_Rayleigh, v_sol, SR_sig, SR_r)
+!!     &                                    FEM_Rayleigh, m_SRr)
 !!        type(time_data), intent(inout) :: time_d
 !!        type(FEM_mesh_field_rayleigh_viz), intent(inout)              &
 !!     &                                      :: FEM_Rayleigh
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module FEM_analyzer_viz_rayleigh
@@ -42,10 +35,7 @@
       use t_spheric_parameter
       use t_const_spherical_grid
       use t_comm_table_4_assemble
-      use t_vector_for_solver
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
       use t_viz_4_rayleigh
 !
       implicit none
@@ -73,8 +63,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_viz_rayleigh                            &
-     &         (FEM_Rayleigh, v_sol, SR_sig, SR_r, SR_i, SR_il)
+      subroutine FEM_initialize_viz_rayleigh(FEM_Rayleigh, m_SR)
 !
       use const_fem_nodes_4_rayleigh
       use const_FEM_mesh_sph_mhd
@@ -86,11 +75,7 @@
 !
       type(FEM_mesh_field_rayleigh_viz), intent(inout)                  &
      &                                      :: FEM_Rayleigh
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
       character(len=kchara), parameter :: file_name = 'grid_info'
 !
@@ -122,7 +107,7 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
       call FEM_comm_initialization(FEM_Rayleigh%geofem%mesh,            &
-     &    v_sol, SR_sig, SR_r, SR_i, SR_il)
+     &    m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
       call const_global_numele_list(FEM_Rayleigh%geofem%mesh%ele)
 !
 !   --------------------------------
@@ -155,7 +140,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_viz_rayleigh(visval, i_step, time_d,       &
-     &          FEM_Rayleigh, v_sol, SR_sig, SR_r)
+     &                                    FEM_Rayleigh, m_SR)
 !
       use t_ucd_data
       use assemble_nodal_fields
@@ -169,9 +154,7 @@
       type(time_data), intent(inout) :: time_d
       type(FEM_mesh_field_rayleigh_viz), intent(inout)                  &
      &                                      :: FEM_Rayleigh
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(mesh_SR), intent(inout) :: m_SR
 !
       character(len=kchara) :: file_name
       integer(kind = kint) :: nd
@@ -208,7 +191,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(FEM_Rayleigh%geofem%mesh,               &
-     &    FEM_Rayleigh%field, v_sol, SR_sig, SR_r)
+     &    FEM_Rayleigh%field, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       end subroutine FEM_analyze_viz_rayleigh
 !

@@ -7,15 +7,10 @@
 !>@brief Arrays for Field data IO for FEM utilities
 !!
 !!@verbatim
-!!      subroutine mesh_setup_4_FEM_UTIL(mesh_file, geofem,             &
-!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
+!!      subroutine mesh_setup_4_FEM_UTIL(mesh_file, geofem, m_SR)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_data), intent(inout) :: geofem
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module t_FEM_utils
@@ -34,10 +29,7 @@
       use t_jacobians
       use t_IO_step_parameter
       use t_VIZ_step_parameter
-      use t_vector_for_solver
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
       use calypso_mpi
 !
       implicit none
@@ -71,8 +63,7 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine mesh_setup_4_FEM_UTIL(mesh_file, geofem,               &
-     &          v_sol, SR_sig, SR_r, SR_i, SR_il)
+      subroutine mesh_setup_4_FEM_UTIL(mesh_file, geofem, m_SR)
 !
       use mpi_load_mesh_data
       use nod_phys_send_recv
@@ -80,11 +71,7 @@
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_data), intent(inout) :: geofem
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
@@ -94,8 +81,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
-     &   (isix, geofem%mesh%node%numnod, v_sol)
-      call init_nod_send_recv(geofem%mesh, SR_sig, SR_r, SR_i, SR_il)
+     &   (isix, geofem%mesh%node%numnod, m_SR%v_sol)
+      call init_nod_send_recv(geofem%mesh, m_SR%SR_sig,                 &
+     &                        m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
 !
 !     --------------------- 
 !

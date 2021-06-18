@@ -19,9 +19,7 @@
 !
       use t_FEM_utils
       use t_VIZ_step_parameter
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
       use ucd_IO_select
       use FEM_MHD_length_scale
 !
@@ -30,8 +28,8 @@
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
-!>        Structure for vectors for solver
-      type(vectors_4_solver) :: v_sol41
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR4
 !       Structure for time stepping parameters
       type(time_step_param), save :: time_U
 !
@@ -71,8 +69,8 @@
 !
 !     ---------------------
 !
-      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file, FUTIL1%geofem,       &
-     &    v_sol41, SR_sig1, SR_r1, SR_i1, SR_il1)
+      call mesh_setup_4_FEM_UTIL                                        &
+     &   (FUTIL1%mesh_file, FUTIL1%geofem,  m_SR4)
 !
 !     --------------------- 
 !

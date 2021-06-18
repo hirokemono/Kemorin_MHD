@@ -15,16 +15,14 @@
       use calypso_mpi
       use t_FEM_utils
       use t_comm_table
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
 !
       implicit none
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
-!>        Structure for vectors for solver
-      type(vectors_4_solver) :: v_sol41
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR4
 
       type(communication_table), save :: edge_comm_MG
 !
@@ -62,16 +60,16 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(FUTIL1%geofem%mesh, v_sol41,         &
-     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
+      call FEM_comm_initialization(FUTIL1%geofem%mesh, m_SR4%v_sol,     &
+     &    m_SR4%SR_sig, m_SR4%SR_r, m_SR4%SR_i, m_SR4%SR_il)
       call FEM_mesh_initialization(FUTIL1%geofem%mesh,                  &
-     &                             FUTIL1%geofem%group, SR_sig1, SR_i1)
+     &    FUTIL1%geofem%group, m_SR4%SR_sig, m_SR4%SR_i)
 
 !
       call const_edge_comm_table                                        &
      &   (FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%nod_comm,         &
      &    edge_comm_MG, FUTIL1%geofem%mesh%edge,                        &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR4%SR_sig, m_SR4%SR_r, m_SR4%SR_i, m_SR4%SR_il)
 !
       FUTIL1%nod_fld%num_phys = 1
       call alloc_phys_name(FUTIL1%nod_fld)
@@ -118,7 +116,8 @@
      &     psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
 !
       call SECTIONING_initialize(ione, FUTIL1%geofem, edge_comm_MG,     &
-     &    FUTIL1%nod_fld, psf_ctls_md, psf_md, SR_sig1, SR_il1)
+     &    FUTIL1%nod_fld, psf_ctls_md, psf_md,                          &
+     &    m_SR4%SR_sig, m_SR4%SR_il)
 !
       end subroutine analyze_med_grp_patch
 !
