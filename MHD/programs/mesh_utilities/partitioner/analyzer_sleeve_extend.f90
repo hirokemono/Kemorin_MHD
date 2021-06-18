@@ -27,9 +27,8 @@
       use t_partitioner_comm_table
       use t_ctl_param_partitioner
       use t_ctl_param_sleeve_extend
-!
       use t_mesh_SR
-      use m_solver_SR
+!
       use m_work_time
       use m_work_time_4_sleeve_extend
       use mpi_load_mesh_data
@@ -44,6 +43,7 @@
       type(sleeve_extension_param), save, private :: sleeve_exp_p1
 !
       type(mesh_data), save, private :: fem_EXT
+      type(mesh_SR), save :: m_SR_E
       type(parallel_make_vierwer_mesh), save, private :: par_viexw_ex
 !
 ! ----------------------------------------------------------------------
@@ -91,7 +91,7 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'init_nod_send_recv'
       call init_nod_send_recv(fem_EXT%mesh,                             &
-     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR_E%SR_sig, m_SR_E%SR_r, m_SR_E%SR_i, m_SR_E%SR_il)
 !
       end subroutine initialize_sleeve_extend
 !
@@ -108,15 +108,15 @@
 !
 !
       call set_nod_and_ele_infos(fem_EXT%mesh%node, fem_EXT%mesh%ele)
-      call const_ele_comm_table                                         &
-     &   (fem_EXT%mesh%node, fem_EXT%mesh%nod_comm, fem_EXT%mesh%ele,   &
-     &    ele_comm, SR_sig1, SR_r1, SR_i1, SR_il1)
+      call const_ele_comm_table(fem_EXT%mesh%node,                      &
+     &    fem_EXT%mesh%nod_comm, fem_EXT%mesh%ele, ele_comm,            &
+     &     m_SR_E%SR_sig, m_SR_E%SR_r, m_SR_E%SR_i, m_SR_E%SR_il)
 !
       call alloc_sleeve_extend_nul_vect                                 &
      &   (fem_EXT%mesh%node, sleeve_exp_p1, sleeve_exp_WK1)
       call sleeve_extension_loop(sleeve_exp_p1, fem_EXT%mesh,           &
      &    fem_EXT%group, ele_comm, sleeve_exp_WK1,                      &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR_E%SR_sig, m_SR_E%SR_r, m_SR_E%SR_i, m_SR_E%SR_il)
       call dealloc_sleeve_extend_nul_vect(sleeve_exp_WK1)
 !
       call mpi_output_mesh                                              &

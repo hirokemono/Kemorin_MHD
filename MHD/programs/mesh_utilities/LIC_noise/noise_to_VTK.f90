@@ -15,9 +15,7 @@
       use t_phys_data
       use t_ucd_data
       use t_file_IO_parameter
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
       use m_file_format_switch
       use m_spheric_constants
 !
@@ -46,7 +44,7 @@
       type(mesh_groups) :: group
       type(phys_data) :: nod_fld
       type(ucd_data) :: ucd
-      type(vectors_4_solver) :: v_sol_n
+      type(mesh_SR), save :: m_SR_n
 !
       integer(kind = kint) :: inod, ierr
 !
@@ -125,10 +123,10 @@
         call dealloc_3d_cube_noise(noise_t1)
         write(*,*) 'copy data end'
 !
-      call FEM_comm_initialization(mesh, v_sol_n,                       &
-     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
+      call FEM_comm_initialization(mesh, m_SR_n%v_sol,                  &
+     &    m_SR_n%SR_sig, m_SR_n%SR_r, m_SR_n%SR_i, m_SR_n%SR_il)
       call fields_send_recv(mesh%nod_comm, nod_fld,                     &
-     &                      v_sol_n, SR_sig1, SR_r1)
+     &                      m_SR_n%v_sol, m_SR_n%SR_sig, m_SR_n%SR_r)
 !
       call link_local_mesh_2_ucd(mesh%node, mesh%ele, ucd)
       call link_field_data_to_ucd(nod_fld, ucd)

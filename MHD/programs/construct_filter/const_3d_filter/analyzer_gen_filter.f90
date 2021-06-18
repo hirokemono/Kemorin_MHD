@@ -33,7 +33,6 @@
       use t_element_list_4_filter
       use t_matrix_4_filter
       use t_mesh_SR
-      use m_solver_SR
 !
       implicit none
 !
@@ -62,6 +61,8 @@
       type(matrices_4_filter), save :: f_matrices1
       type(filtering_data_type), save :: filtering_gen
       type(node_data), save :: filter_nod1
+!
+      type(mesh_SR), save :: m_SR_f
 !
 ! ----------------------------------------------------------------------
 !
@@ -135,7 +136,7 @@
       if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
       call const_para_edge_infos                                        &
      &   (fem_f%mesh%nod_comm, fem_f%mesh%node, fem_f%mesh%ele,         &
-     &    fem_f%mesh%surf, fem_f%mesh%edge, SR_sig1, SR_i1)
+     &    fem_f%mesh%surf, fem_f%mesh%edge, m_SR_f%SR_sig, m_SR_f%SR_i)
 !
 !  -------------------------------
 !
@@ -205,23 +206,23 @@
       character(len=kchara) :: file_name
       type(filter_file_data) :: filter_IO
       type(const_filter_coefs) :: fil_gen1
-      type(vectors_4_solver) :: v_sol
 !
 !  ---------------------------------------------------
 !       set element size for each node
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1)  write(*,*) 'alloc_iccgN_vector'
-      call alloc_iccgN_vector(ithree, fem_f%mesh%node%numnod, v_sol)
+      call alloc_iccgN_vector(ithree, fem_f%mesh%node%numnod,           &
+     &                        m_SR_f%v_sol)
 !
       call init_nod_send_recv(fem_f%mesh,                               &
-     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR_f%SR_sig, m_SR_f%SR_r, m_SR_f%SR_i, m_SR_f%SR_il)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size(fem_f%mesh, fem_f%group,                  &
      &    fil_elist1, gfil_p1, tbl_crs_f, mat_tbl_f, rhs_mat_f,         &
      &    fem_int_f, FEM_elen_f, ref_m1, filter_dxi1, dxidxs1,          &
-     &    v_sol, SR_sig1, SR_r1)
+     &    m_SR_f%v_sol, m_SR_f%SR_sig, m_SR_f%SR_r)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
@@ -251,7 +252,7 @@
      &     (file_name, newfil_p1, fem_f%mesh, fem_int_f, tbl_crs_f,     &
      &      rhs_mat_f, FEM_elen_f, fil_elist1, gfil_p1, ref_m1,         &
      &      dxidxs1, FEM_momenet1, fil_gen1, f_matrices1,               &
-     &      v_sol, SR_sig1, SR_r1)
+     &      m_SR_f%v_sol, m_SR_f%SR_sig, m_SR_f%SR_r)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !
@@ -267,7 +268,7 @@
         call sel_write_filter_moms_file                                 &
      &     (my_rank, FEM_elen_f, FEM_momenet1)
       end if
-      call dealloc_iccgN_vector(v_sol)
+      call dealloc_iccgN_vector(m_SR_f%v_sol)
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !

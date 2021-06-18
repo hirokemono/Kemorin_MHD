@@ -115,7 +115,8 @@
 !
 !      write(*,*) 'count_element_import_num_old', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+1)
-      call count_element_import_num_old(node%numnod, host%istack_4_node, &
+      call count_element_import_num_old                                 &
+     &   (node%numnod, host%istack_4_node,                              &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &

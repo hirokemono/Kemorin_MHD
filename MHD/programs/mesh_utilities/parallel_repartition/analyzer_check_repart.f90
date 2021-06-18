@@ -27,7 +27,6 @@
       use t_control_param_repartition
       use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
 !
       implicit none
 !
@@ -37,6 +36,7 @@
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
+      type(mesh_SR), save :: m_SR_T
 !
       type(calypso_comm_table), save :: repart_nod_tbl1
 !
@@ -85,7 +85,7 @@
 !  -------------------------------
 !
       call init_nod_send_recv(fem_T%mesh,                               &
-     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
       if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
 !  -------------------------------
@@ -144,36 +144,36 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
-     &                             SR_sig1, SR_i1)
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_ele_comm_table'
       call const_global_numele_list(new_fem%mesh%ele)
-      call const_ele_comm_table                                         &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    new_fem%mesh%ele, T_ele_comm, SR_sig1, SR_r1, SR_i1, SR_il1)
+      call const_ele_comm_table(new_fem%mesh%node,                      &
+     &    new_fem%mesh%nod_comm, new_fem%mesh%ele, T_ele_comm,          &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_surf_comm_table'
-      call const_surf_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_surf_comm,        &
-     &    new_fem%mesh%surf, SR_sig1, SR_r1, SR_i1, SR_il1)
+      call const_surf_comm_table(new_fem%mesh%node,                     &
+     &    new_fem%mesh%nod_comm, T_surf_comm, new_fem%mesh%surf,        &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_edge_comm_table'
-      call const_edge_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_edge_comm,        &
-     &    new_fem%mesh%edge, SR_sig1, SR_r1, SR_i1, SR_il1)
+      call const_edge_comm_table(new_fem%mesh%node,                     &
+     &    new_fem%mesh%nod_comm, T_edge_comm, new_fem%mesh%edge,        &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
 !
 !
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
-      call node_transfer_test                                           &
-     &   (fem_T%mesh%node, new_fem%mesh%node,  new_fem%mesh%nod_comm,   &
-     &    repart_nod_tbl1, nod_check, SR_sig1, SR_r1, SR_il1)
+      call node_transfer_test(fem_T%mesh%node, new_fem%mesh%node,       &
+     &    new_fem%mesh%nod_comm, repart_nod_tbl1, nod_check,            &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
 !
       call ele_send_recv_test(new_fem%mesh%ele, T_ele_comm,             &
-     &                        ele_check, SR_sig1, SR_r1)
+     &                        ele_check, m_SR_T%SR_sig, m_SR_T%SR_r)
       call surf_send_recv_test(new_fem%mesh%surf, T_surf_comm,          &
-     &                         surf_check, SR_sig1, SR_r1)
+     &                         surf_check, m_SR_T%SR_sig, m_SR_T%SR_r)
       call edge_send_recv_test(new_fem%mesh%edge, T_edge_comm,          &
-     &                         edge_check, SR_sig1, SR_r1)
+     &                         edge_check, m_SR_T%SR_sig, m_SR_T%SR_r)
 !
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)

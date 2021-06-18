@@ -23,12 +23,12 @@
       use t_surface_data
       use t_edge_data
       use t_mesh_SR
-      use m_solver_SR
       use m_work_time
 !
       implicit none
 !
       type(mesh_data), save :: fem_T
+      type(mesh_SR), save :: m_SR_T
 !
 ! ----------------------------------------------------------------------
 !
@@ -92,9 +92,9 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
       call init_nod_send_recv(fem_T%mesh,                               &
-     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
-     &                             SR_sig1, SR_i1)
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
       call end_elapsed_time(ied_total_elapsed)
 !
       end subroutine initialize_make_surface_mesh

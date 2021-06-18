@@ -24,9 +24,7 @@
       use t_control_param_repartition
       use t_time_data
       use t_VIZ_only_step_parameter
-      use t_vector_for_solver
       use t_mesh_SR
-      use m_solver_SR
 !
       use m_elapsed_labels_SEND_RECV
       use m_elapsed_labels_4_REPART
@@ -40,7 +38,7 @@
       type(calypso_comm_table), save :: repart_nod_tbl1
 !
 !>      Structure for communicatiors for solver
-      type(vectors_4_solver), save :: v_sol_T
+      type(mesh_SR), save :: m_SR_T
 !
       type(vol_partion_prog_param), save ::  part_p1
 !>        Structure for new time stepping
@@ -111,15 +109,15 @@
 !
 !  -------------------------------
 !
-      call FEM_comm_initialization(fem_T%mesh, v_sol_T,                 &
-     &                             SR_sig1, SR_r1, SR_i1, SR_il1)
+      call FEM_comm_initialization(fem_T%mesh, m_SR_T%v_sol,            &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
 !
 !  -------------------------------
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
-     &                             SR_sig1, SR_i1)
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
 !
 !  -----  Const volume of each element
@@ -144,7 +142,7 @@
      &    fem_T%mesh%node, izero, d_mask_org1, vect_ref1, repart_WK1)
       call load_or_const_new_partition(part_p1%repart_p, fem_T,         &
      &    next_tbl1, new_fem, repart_nod_tbl1, repart_WK1,              &
-     &    SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
       call unlink_repart_masking_data(repart_WK1)
       call unlink_repart_masking_param(part_p1%repart_p)
       deallocate(d_mask_org1, vect_ref1, masking1)
@@ -198,7 +196,7 @@
         call udt_field_to_new_partition(iflag_import_item,              &
      &      istep_ucd, part_p1%repart_p%viz_ucd_file, t_IO,             &
      &      new_fem%mesh, repart_nod_tbl1, org_ucd, new_ucd,            &
-     &      v_sol_T, SR_sig1, SR_r1)
+     &      m_SR_T%v_sol, m_SR_T%SR_sig, m_SR_T%SR_r)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
 !
         call deallocate_ucd_phys_data(org_ucd)
