@@ -24,7 +24,6 @@
       use t_edge_data
       use t_file_IO_parameter
       use t_mesh_SR
-      use m_solver_SR
       use m_work_time
 !
       implicit none
@@ -37,6 +36,7 @@
       end type mesh_test_files_param
 !
       type(mesh_data), save :: fem_T
+      type(mesh_SR), save :: m_SR_T
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,9 +115,9 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
       call init_nod_send_recv(fem_T%mesh,                               &
-     &                        SR_sig1, SR_r1, SR_i1, SR_il1)
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
-     &                             SR_sig1, SR_i1)
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call calypso_MPI_barrier
 !

@@ -17,6 +17,7 @@
       use t_crs_matrix
       use t_iccg_parameter
       use t_ctl_data_solver_test
+      use t_solver_SR
 !
       implicit none
 !
@@ -28,6 +29,11 @@
 !
       type(CG_poarameter), save :: CG_param_t
       type(DJDS_poarameter), save :: DJDS_param_t
+!
+!>      Structure of communication flags
+      type(send_recv_status) :: SR_sig1
+!>      Structure of communication buffer for 8-byte real
+      type(send_recv_real_buffer) :: SR_r1
 !
       real(kind = kreal) :: RTIME, STARTTIME, ENDTIME
       private :: RTIME, STARTTIME, ENDTIME
@@ -70,8 +76,6 @@
       use solve_precond_DJDS
       use copy_matrix_2_djds_array
 !
-      use t_mesh_SR
-      use m_solver_SR
       use t_solver_djds
 !
       type(DJDS_ordering_table) :: djds_tbl

@@ -19,8 +19,8 @@
       use t_boundary_field_IO
       use t_file_IO_parameter
       use t_ctl_data_test_bc_temp
-      use t_mesh_SR
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
@@ -28,6 +28,11 @@
       type(field_IO_params), save ::  mesh_file_TEC
       type(mesh_data), save :: femmesh
       type(IO_boundary), save :: IO_bc_t
+!
+!>        Structure of communication flags
+        type(send_recv_status) :: SR_sig1
+!>        Structure of communication buffer for 4-byte integer
+        type(send_recv_int_buffer) :: SR_i1
 !
 ! ----------------------------------------------------------------------
 !

@@ -116,7 +116,7 @@
       call FEM_comm_initialization(mesh_sph%mesh, vect1,                &
      &                             SR_sig, SR_r, SR_i, SR_il)
       call FEM_mesh_initialization                                      &
-     &   (mesh_sph%mesh, mesh_sph%group, SR_sig1, SR_i)
+     &   (mesh_sph%mesh, mesh_sph%group, SR_sig, SR_i)
 !
       call alloc_phys_name(sph_fld)
       call alloc_phys_data(mesh_sph%node%numnod, sph_fld)

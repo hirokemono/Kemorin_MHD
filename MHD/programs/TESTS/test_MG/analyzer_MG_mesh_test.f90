@@ -17,12 +17,17 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
-      use t_mesh_SR
-      use m_solver_SR
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
       type(mesh_data), save :: fem_MG
+!
+!>      Structure of communication flags
+      type(send_recv_status) :: SR_sig1
+!>        Structure of communication buffer for 4-byte integer
+        type(send_recv_int_buffer) :: SR_i1
 !
 ! ----------------------------------------------------------------------
 !

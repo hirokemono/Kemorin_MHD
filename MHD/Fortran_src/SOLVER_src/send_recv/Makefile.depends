@@ -36,8 +36,6 @@ field_to_send_buffer.o: $(SR_DIR)/field_to_send_buffer.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_elapsed_labels_SEND_RECV.o: $(SR_DIR)/m_elapsed_labels_SEND_RECV.f90 m_precision.o m_work_time.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_solver_SR.o: $(SR_DIR)/m_solver_SR.f90 m_precision.o t_solver_SR.o t_solver_SR_int.o t_solver_SR_int8.o
-	$(F90) -c $(F90OPTFLAGS) $<
 m_work_time.o: $(SR_DIR)/m_work_time.f90 m_precision.o m_constants.o t_work_time.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
 reverse_SR_int.o: $(SR_DIR)/reverse_SR_int.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o solver_SR_int.o cal_minmax_and_stacks.o solver_SR_int8.o
