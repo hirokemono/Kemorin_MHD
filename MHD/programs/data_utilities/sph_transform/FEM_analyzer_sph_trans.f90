@@ -43,9 +43,8 @@
      &                                    FEM_STR, m_SR)
 !
       use nod_phys_send_recv
-      use int_volume_of_domain
-      use set_normal_vectors
-      use sum_normal_4_surf_group
+      use parallel_FEM_mesh_init
+      use set_ucd_data_to_type
       use output_parallel_ucd_file
       use parallel_ucd_IO_select
       use const_mesh_information
@@ -60,8 +59,14 @@
 !
 !  -----    construct geometry informations
 !
-      call mesh_setup_4_SPH_TRANS(FEM_STR, m_SR%v_sol,                  &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(FEM_STR%geofem%mesh, m_SR)
+      call FEM_mesh_initialization(FEM_STR%geofem%mesh,                 &
+     &    FEM_STR%geofem%group, m_SR%SR_sig, m_SR%SR_i)
+!
+      if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
+      call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &
+     &                     FEM_STR%field)
 !
 !  -------------------------------
 !

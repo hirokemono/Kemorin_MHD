@@ -58,8 +58,7 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(FEM_STR%geofem%mesh, m_SR%v_sol,     &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+      call FEM_comm_initialization(FEM_STR%geofem%mesh, m_SR)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
       call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &

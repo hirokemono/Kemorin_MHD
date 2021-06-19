@@ -89,8 +89,7 @@
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
       call s_mesh_repartition_by_volume                                 &
      &   (geofem, ele_comm, next_tbl%neib_nod, part_param,              &
-     &    new_fem%mesh, new_fem%group, repart_nod_tbl, repart_WK,       &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+     &    new_fem%mesh, new_fem%group, repart_nod_tbl, repart_WK, m_SR)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
 ! Increase sleeve size
@@ -105,8 +104,7 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
         call sleeve_extension_loop                                      &
      &     (part_param%sleeve_exp_p, new_fem%mesh, new_fem%group,       &
-     &      new_ele_comm, repart_WK%sleeve_exp_WK,                      &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+     &      new_ele_comm, repart_WK%sleeve_exp_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
 !
         call dealloc_comm_table(new_ele_comm)

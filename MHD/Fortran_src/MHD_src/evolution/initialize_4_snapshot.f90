@@ -4,11 +4,10 @@
 !      Written by H. Matsui
 !
 !!      subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,      &
-!!     &          IO_bc, MHD_step, geofem, MHD_mesh,                    &
-!!     &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,   &
-!!     &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld,             &
-!!     &          t_IO, rst_step, SGS_MHD_wk, fem_sq, fem_fst_IO,       &
-!!     &          v_sol, SR_sig, SR_r, SR_i, SR_il, label_sim)
+!!     &          IO_bc, MHD_step, geofem, MHD_mesh, FEM_filters,       &
+!!     &          MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD, &
+!!     &          iphys, iphys_LES, nod_fld, t_IO, rst_step, SGS_MHD_wk,&
+!!     &          fem_sq, fem_fst_IO, m_SR, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -29,11 +28,7 @@
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(field_IO), intent(inout) :: fem_fst_IO
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!        type(mesh_SR), intent(inout) :: m_SR
 !
       module initialize_4_snapshot
 !
@@ -68,10 +63,7 @@
       use t_FEM_MHD_filter_data
       use t_work_4_MHD_layering
       use t_field_data_IO
-      use t_vector_for_solver
-      use t_solver_SR
-      use t_solver_SR_int
-      use t_solver_SR_int8
+      use t_mesh_SR
 !
       implicit none
 !
@@ -82,11 +74,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,        &
-     &          IO_bc, MHD_step, geofem, MHD_mesh,                      &
-     &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,     &
-     &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld,               &
-     &          t_IO, rst_step, SGS_MHD_wk, fem_sq, fem_fst_IO,         &
-     &          v_sol, SR_sig, SR_r, SR_i, SR_il, label_sim)
+     &          IO_bc, MHD_step, geofem, MHD_mesh, FEM_filters,         &
+     &          MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD,   &
+     &          iphys, iphys_LES, nod_fld, t_IO, rst_step, SGS_MHD_wk,  &
+     &          fem_sq, fem_fst_IO, m_SR, label_sim)
 !
       use m_boundary_condition_IDs
       use m_fem_mhd_restart
@@ -137,11 +128,7 @@
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(field_IO), intent(inout) :: fem_fst_IO
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
+      type(mesh_SR), intent(inout) :: m_SR
       character(len=kchara), intent(inout)   :: label_sim
 !
       type(shape_finctions_at_points), save :: spfs_1
@@ -168,10 +155,9 @@
 !     ---------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(geofem%mesh, v_sol,                  &
-     &                             SR_sig, SR_r, SR_i, SR_il)
+      call FEM_comm_initialization(geofem%mesh, m_SR)
       call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
-     &                             SR_sig, SR_i)
+     &                             m_SR%SR_sig, m_SR%SR_i)
 !
 !     ---------------------
 !

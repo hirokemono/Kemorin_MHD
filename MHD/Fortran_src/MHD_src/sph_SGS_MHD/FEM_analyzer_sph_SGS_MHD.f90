@@ -108,8 +108,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(FEM_MHD%geofem%mesh, m_SR%v_sol,     &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+      call FEM_comm_initialization(FEM_MHD%geofem%mesh, m_SR)
 !
 !  -------------------------------
 !  connect grid data to volume output

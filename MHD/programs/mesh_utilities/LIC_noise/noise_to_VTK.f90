@@ -123,8 +123,7 @@
         call dealloc_3d_cube_noise(noise_t1)
         write(*,*) 'copy data end'
 !
-      call FEM_comm_initialization(mesh, m_SR_n%v_sol,                  &
-     &    m_SR_n%SR_sig, m_SR_n%SR_r, m_SR_n%SR_i, m_SR_n%SR_il)
+      call FEM_comm_initialization(mesh, m_SR_n)
       call fields_send_recv(mesh%nod_comm, nod_fld,                     &
      &                      m_SR_n%v_sol, m_SR_n%SR_sig, m_SR_n%SR_r)
 !

@@ -79,8 +79,7 @@
      &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
      &    FEM_SGS%Csims, FEM_MHD%iphys, FEM_SGS%iphys_LES,              &
      &    FEM_MHD%field, MHD_CG, SGS_MHD_wk, fem_sq,                    &
-     &    MHD_IO%rst_IO, FEM_MHD%label_sim, m_SR%v_sol,                 &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+     &    MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !

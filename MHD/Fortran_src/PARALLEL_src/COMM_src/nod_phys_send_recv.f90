@@ -8,16 +8,6 @@
 !>@brief  Data communication for nodal field
 !!
 !!@verbatim
-!!      subroutine FEM_comm_initialization                              &
-!!     &         (mesh, v_sol, SR_sig, SR_r, SR_i, SR_il)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
-!!
-!!      subroutine init_nod_send_recv(mesh, SR_sig, SR_r, SR_i, SR_il)
 !!      subroutine nod_fields_send_recv(mesh, nod_fld,                  &
 !!     &                                v_sol, SR_sig, SR_r)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -28,7 +18,6 @@
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!
-!!      subroutine init_send_recv(nod_comm, SR_sig, SR_r, SR_i, SR_il)
 !!      subroutine init_real_send_recv(nod_comm, SR_sig, SR_r)
 !!      subroutine fields_send_recv(nod_comm, nod_fld,                  &
 !!     &                            v_sol, SR_sig, SR_r)
@@ -88,44 +77,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_comm_initialization                                &
-     &         (mesh, v_sol, SR_sig, SR_r, SR_i, SR_il)
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
-!
-!
-      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vector'
-      call alloc_iccgN_vector(n_sym_tensor, mesh%node%numnod, v_sol)
-!
-      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(mesh, SR_sig, SR_r, SR_i, SR_il)
-!
-      end subroutine FEM_comm_initialization
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine init_nod_send_recv(mesh, SR_sig, SR_r, SR_i, SR_il)
-!
-      type(mesh_geometry), intent(in) :: mesh
-!
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
-!
-!
-      call init_send_recv(mesh%nod_comm, SR_sig, SR_r, SR_i, SR_il)
-!
-      end subroutine init_nod_send_recv
-!
-! ----------------------------------------------------------------------
-!
       subroutine nod_fields_send_recv(mesh, nod_fld,                    &
      &                                v_sol, SR_sig, SR_r)
 !
@@ -142,28 +93,6 @@
       end subroutine nod_fields_send_recv
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine init_send_recv(nod_comm, SR_sig, SR_r, SR_i, SR_il)
-!
-      type(communication_table), intent(in) :: nod_comm
-!
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
-!
-!
-      call resize_work_SR                                               &
-     &   (n_sym_tensor, nod_comm%num_neib, nod_comm%num_neib,           &
-     &    nod_comm%ntot_export, nod_comm%ntot_import, SR_sig, SR_r)
-      call resize_iwork_SR_t(nod_comm%num_neib, nod_comm%num_neib,      &
-     &    nod_comm%ntot_export, nod_comm%ntot_import, SR_sig, SR_i)
-      call resize_i8work_SR(nod_comm%num_neib, nod_comm%num_neib,       &
-     &    nod_comm%ntot_export, nod_comm%ntot_import, SR_sig, SR_il)
-!
-      end subroutine init_send_recv
-!
 ! ----------------------------------------------------------------------
 !
       subroutine init_real_send_recv(nod_comm, SR_sig, SR_r)

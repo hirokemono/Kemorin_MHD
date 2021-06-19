@@ -97,9 +97,7 @@
      &    ak_MHD, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,              &
      &    FEM_SGS%Csims, FEM_MHD%iphys, FEM_SGS%iphys_LES,              &
      &    FEM_MHD%field, SNAP_time_IO, MHD_step%rst_step,               &
-     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,                            &
-     &    m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il,    &
-     &    FEM_MHD%label_sim)
+     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_model%MHD_mesh,   &

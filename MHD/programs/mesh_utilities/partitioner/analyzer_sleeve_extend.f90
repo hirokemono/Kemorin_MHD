@@ -114,8 +114,7 @@
       call alloc_sleeve_extend_nul_vect                                 &
      &   (fem_EXT%mesh%node, sleeve_exp_p1, sleeve_exp_WK1)
       call sleeve_extension_loop(sleeve_exp_p1, fem_EXT%mesh,           &
-     &    fem_EXT%group, ele_comm, sleeve_exp_WK1,                      &
-     &    m_SR_E%SR_sig, m_SR_E%SR_r, m_SR_E%SR_i, m_SR_E%SR_il)
+     &    fem_EXT%group, ele_comm, sleeve_exp_WK1, m_SR_E)
       call dealloc_sleeve_extend_nul_vect(sleeve_exp_WK1)
 !
       call mpi_output_mesh                                              &

@@ -109,8 +109,7 @@
 !
 !  -------------------------------
 !
-      call FEM_comm_initialization(fem_T%mesh, m_SR_T%v_sol,            &
-     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
+      call FEM_comm_initialization(fem_T%mesh, m_SR_T)
 !
 !  -------------------------------
 !

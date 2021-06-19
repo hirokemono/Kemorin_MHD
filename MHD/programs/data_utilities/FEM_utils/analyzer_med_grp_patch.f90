@@ -60,8 +60,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(FUTIL1%geofem%mesh, m_SR4%v_sol,     &
-     &    m_SR4%SR_sig, m_SR4%SR_r, m_SR4%SR_i, m_SR4%SR_il)
+      call FEM_comm_initialization(FUTIL1%geofem%mesh, m_SR4)
       call FEM_mesh_initialization(FUTIL1%geofem%mesh,                  &
      &    FUTIL1%geofem%group, m_SR4%SR_sig, m_SR4%SR_i)
 

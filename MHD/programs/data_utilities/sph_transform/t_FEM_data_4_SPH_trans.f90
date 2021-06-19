@@ -7,14 +7,6 @@
 !>@brief Arrays for Field data IO for spherical transform utilities
 !!
 !!@verbatim
-!!      subroutine mesh_setup_4_SPH_TRANS                               &
-!!     &         (FEM_STR, v_sol, SR_sig, SR_r, SR_i, SR_il)
-!!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module t_FEM_data_4_SPH_trans
@@ -74,42 +66,5 @@
 !>        Structure for visualization
         type(visualize_modules) :: vizs
       end type FEM_for_SPH_transforms
-!
-! ----------------------------------------------------------------------
-!
-      contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine mesh_setup_4_SPH_TRANS                                 &
-     &         (FEM_STR, v_sol, SR_sig, SR_r, SR_i, SR_il)
-!
-      use nod_phys_send_recv
-      use parallel_FEM_mesh_init
-      use set_ucd_data_to_type
-!
-      type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
-!
-!
-!  -----    construct geometry informations
-!
-      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(FEM_STR%geofem%mesh, v_sol,          &
-     &                             SR_sig, SR_r, SR_i, SR_il)
-      call FEM_mesh_initialization                                      &
-     &   (FEM_STR%geofem%mesh, FEM_STR%geofem%group, SR_sig, SR_i)
-!
-      if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
-      call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &
-     &                     FEM_STR%field)
-!
-      end subroutine mesh_setup_4_SPH_TRANS
-!
-! ----------------------------------------------------------------------
 !
       end module t_FEM_data_4_SPH_trans

@@ -114,8 +114,7 @@
 !
       call mpi_input_mesh(FEM_viz%mesh_file_IO, nprocs, FEM_viz%geofem)
 !
-      call FEM_comm_initialization(FEM_viz%geofem%mesh, m_SR%v_sol,     &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i, m_SR%SR_il)
+      call FEM_comm_initialization(FEM_viz%geofem%mesh, m_SR)
 !
 !   --------------------------------
 !       setup field information
