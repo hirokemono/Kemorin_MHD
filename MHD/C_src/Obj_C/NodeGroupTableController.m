@@ -86,7 +86,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
    forTableColumn:(NSTableColumn *)tableColumn 
 			  row:(int)rowIndex;
 {
-    id	identifier;
+    id	idenhttps://guide-images.cdn.ifixit.com/igi/lxeZOcw2BVkMPqJT.mediumtifier;
 	
     identifier = [tableColumn identifier];
     if([identifier isEqualToString:@"NodGrpNode"]) {
