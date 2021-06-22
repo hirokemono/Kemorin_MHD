@@ -212,6 +212,9 @@
 !
       do inum = 1, num_each_export
         inod = item_each_export(inum)
+        if(each_exp_flags%distance(jnod)                                &
+     &        .gt. sleeve_exp_p%dist_max) cycle
+!
         jst = neib_ele%istack_4_node(inod-1) + 1
         jed = neib_ele%istack_4_node(inod)
         do jnum = jst, jed
