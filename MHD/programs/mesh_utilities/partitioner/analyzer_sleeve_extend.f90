@@ -113,7 +113,12 @@
 !
       call alloc_sleeve_extend_nul_vect                                 &
      &   (fem_EXT%mesh%node, sleeve_exp_p1, sleeve_exp_WK1)
-      call sleeve_extension_loop(sleeve_exp_p1, fem_EXT%mesh,           &
+
+      if(sleeve_exp_p1%iflag_expand_mode .eq. iflag_vector_trace) then
+        sleeve_exp_p1%iflag_expand_mode = iflag_distance
+      end if
+!
+      call sleeve_extension_current_mesh(sleeve_exp_p1, fem_EXT%mesh,   &
      &    fem_EXT%group, ele_comm, sleeve_exp_WK1, m_SR_E)
       call dealloc_sleeve_extend_nul_vect(sleeve_exp_WK1)
 !

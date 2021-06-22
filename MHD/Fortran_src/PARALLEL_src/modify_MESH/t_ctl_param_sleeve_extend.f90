@@ -7,11 +7,13 @@
 !> @brief Control parameter for sleeve extension
 !!
 !!@verbatim
-!!      subroutine init_work_vector_sleeve_ext(nod_comm, node,          &
+!!      subroutine init_work_vector_sleeve_ext                          &
+!!     &         (org_node, repart_nod_tbl, new_nod_comm, new_node,     &
 !!     &          sleeve_exp_p, sleeve_exp_WK, SR_sig, SR_r)
-!!      subroutine dealloc_work_vector_sleeve_ext(sleeve_exp_WK)
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(node_data), intent(in) :: node
+!!        type(node_data), intent(in) :: org_node
+!!        type(calypso_comm_table), intent(in) :: repart_nod_tbl
+!!        type(communication_table), intent(in) :: new_nod_comm
+!!        type(node_data), intent(in) :: new_node
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!        type(send_recv_status), intent(inout) :: SR_sig
@@ -105,40 +107,41 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_work_vector_sleeve_ext(nod_comm, node,            &
+      subroutine init_work_vector_sleeve_ext                            &
+     &         (org_node, repart_nod_tbl, new_nod_comm, new_node,       &
      &          sleeve_exp_p, sleeve_exp_WK, SR_sig, SR_r)
 !
       use calypso_mpi
       use t_comm_table
       use t_geometry_data
       use t_solver_SR
+      use t_calypso_comm_table
       use solver_SR_type
+      use calypso_SR_type
+      use select_copy_from_recv
 !
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
+      type(node_data), intent(in) :: org_node
+      type(calypso_comm_table), intent(in) :: repart_nod_tbl
+!
+      type(communication_table), intent(in) :: new_nod_comm
+      type(node_data), intent(in) :: new_node
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !
       type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
-      integer(kind = kint) :: inod
 !
       if(sleeve_exp_p%iflag_expand_mode .ne. iflag_vector_trace) return
 !
-      sleeve_exp_WK%nnod_sleeve = node%numnod
-      allocate(sleeve_exp_WK%d_sleeve(node%numnod,3))
+      sleeve_exp_WK%nnod_sleeve = new_node%numnod
+      allocate(sleeve_exp_WK%d_sleeve(new_node%numnod,3))
 !
-!$omp parallel do
-      do inod = 1, node%internal_node
-        sleeve_exp_WK%d_sleeve(inod,1) = sleeve_exp_WK%vect_ref(inod,1)
-        sleeve_exp_WK%d_sleeve(inod,2) = sleeve_exp_WK%vect_ref(inod,2)
-        sleeve_exp_WK%d_sleeve(inod,3) = sleeve_exp_WK%vect_ref(inod,3)
-      end do
-!$omp end parallel do
-!
-       call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm,              &
-      &    SR_sig, SR_r, sleeve_exp_WK%d_sleeve)
+      call calypso_SR_type_3(iflag_import_item, repart_nod_tbl,         &
+     &    org_node%numnod, new_node%numnod,                             &
+     &    sleeve_exp_WK%vect_ref, sleeve_exp_WK%d_sleeve, SR_sig, SR_r)
+      call SOLVER_SEND_RECV_3_type(new_node%numnod, new_nod_comm,       &
+      &   SR_sig, SR_r, sleeve_exp_WK%d_sleeve)
 !
        end subroutine init_work_vector_sleeve_ext
 !

@@ -7,8 +7,19 @@
 !> @brief Routines to constructu elment communication table
 !!
 !!@verbatim
-!!      subroutine sleeve_extension_loop(sleeve_exp_p, mesh, group,     &
-!!     &                                 ele_comm, sleeve_exp_WK, m_SR)
+!!      subroutine sleeve_extension_for_new_mesh(sleeve_exp_p,          &
+!!     &          org_mesh, repart_nod_tbl, new_mesh, new_group,        &
+!!     &          new_ele_comm, sleeve_exp_WK, m_SR)
+!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!!        type(mesh_geometry), intent(in) :: org_mesh
+!!        type(calypso_comm_table), intent(in) :: repart_nod_tbl
+!!        type(mesh_geometry), intent(inout) :: new_mesh
+!!        type(mesh_groups), intent(inout) :: new_group
+!!        type(communication_table), intent(inout) :: new_ele_comm
+!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+!!        type(mesh_SR), intent(inout) :: m_SR
+!!      subroutine sleeve_extension_current_mesh(sleeve_exp_p,          &
+!!     &          mesh, group, ele_comm, sleeve_exp_WK, m_SR)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) :: group
@@ -49,6 +60,8 @@
       use t_para_double_numbering
       use t_comm_table_for_each_pe
       use t_mesh_SR
+      use t_next_node_ele_4_node
+      use t_flags_each_comm_extend
 !
       implicit none
 !
@@ -62,11 +75,145 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sleeve_extension_loop(sleeve_exp_p, mesh, group,       &
-     &                                 ele_comm, sleeve_exp_WK, m_SR)
+      subroutine sleeve_extension_for_new_mesh(sleeve_exp_p,            &
+     &          org_mesh, repart_nod_tbl, new_mesh, new_group,          &
+     &          new_ele_comm, sleeve_exp_WK, m_SR)
 !
-      use t_next_node_ele_4_node
-      use t_flags_each_comm_extend
+      use calypso_mpi_int8
+      use transfer_to_long_integers
+      use set_ele_id_4_node_type
+      use extended_groups
+      use copy_mesh_structures
+      use nod_and_ele_derived_info
+      use const_element_comm_tables
+      use const_nod_ele_to_extend
+!
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+      type(mesh_geometry), intent(in) :: org_mesh
+      type(calypso_comm_table), intent(in) :: repart_nod_tbl
+!
+      type(mesh_geometry), intent(inout) :: new_mesh
+      type(mesh_groups), intent(inout) :: new_group
+      type(communication_table), intent(inout) :: new_ele_comm
+      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+      type(mesh_SR), intent(inout) :: m_SR
+!
+      type(mesh_geometry), save :: tmpmesh
+      type(mesh_groups), save :: tmpgroup
+      type(communication_table), save :: tmp_ele_comm
+!
+      type(element_around_node), save :: neib_ele
+      type(mark_for_each_comm), allocatable, save :: mark_saved1(:)
+!
+      integer(kind = kint_gl) :: ntot_numnod, ntot_internal_nod
+      integer(kind = kint_gl) :: ntot_numele, ntot_import_ele
+      integer(kind = kint) :: iflag_process_extend = 0
+      integer(kind = kint) :: iloop, ip
+!
+!
+!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
+!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+      call calypso_mpi_reduce_one_int8(cast_long(new_mesh%node%numnod), &
+     &                                 ntot_numnod, MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int8                                  &
+     &   (cast_long(new_mesh%node%internal_node), ntot_internal_nod,    &
+     &    MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int8                                  &
+     &   (cast_long(new_mesh%ele%numele), ntot_numele, MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int8                                  &
+     &   (cast_long(new_ele_comm%ntot_import), ntot_import_ele,         &
+     &    MPI_SUM, 0)
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'Internal Node and Element: ',                       &
+     &            ntot_internal_nod, (ntot_numele-ntot_import_ele)
+        write(*,*) 'Node, Element at initial'
+        write(*,*) 'Total:    ', ntot_numnod, ntot_numele
+        write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),       &
+     &                          ntot_import_ele
+      end if
+!
+      call init_work_vector_sleeve_ext(org_mesh%node, repart_nod_tbl,   &
+     &    new_mesh%nod_comm, new_mesh%node, sleeve_exp_p,               &
+     &    sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
+!
+      call set_ele_id_4_node(new_mesh%node, new_mesh%ele, neib_ele)
+!
+      allocate(mark_saved1(nprocs))
+      call init_min_dist_from_import                                    &
+     &   (sleeve_exp_p, new_mesh%nod_comm, new_mesh%node, new_mesh%ele, &
+     &    neib_ele, sleeve_exp_WK, mark_saved1)
+!
+!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
+!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
+!
+      do iloop = 1, max_extend_loop
+        if(iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve', iloop
+        call extend_mesh_sleeve                                         &
+     &     (sleeve_exp_p, new_mesh%nod_comm, new_ele_comm,              &
+     &      new_mesh%node, new_mesh%ele, neib_ele, sleeve_exp_WK,       &
+     &      tmpmesh%nod_comm, tmpmesh%node, tmpmesh%ele,                &
+     &      tmp_ele_comm, mark_saved1, m_SR, iflag_process_extend)
+        call s_extended_groups(new_mesh, new_group, tmpmesh,            &
+     &      tmp_ele_comm, tmpgroup, m_SR%SR_sig, m_SR%SR_i)
+!
+        call dealloc_work_vector_sleeve_ext(sleeve_exp_WK)
+        call dealloc_iele_belonged(neib_ele)
+        call dealloc_comm_table(new_ele_comm)
+        call dealloc_nod_and_ele_infos(new_mesh)
+        call dealloc_mesh_data(new_mesh, new_group)
+!
+!        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+        call alloc_sph_node_geometry(tmpmesh%node)
+        call copy_mesh_and_group(tmpmesh, tmpgroup, new_mesh, new_group)
+        call copy_comm_tbl_types(tmp_ele_comm, new_ele_comm)
+!
+        call dealloc_comm_table(tmp_ele_comm)
+        call dealloc_nod_and_ele_infos(tmpmesh)
+        call dealloc_mesh_data(tmpmesh, tmpgroup)
+!        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
+!
+        call calypso_mpi_barrier
+        call calypso_mpi_reduce_one_int8                                &
+     &     (cast_long(new_mesh%node%numnod), ntot_numnod, MPI_SUM, 0)
+        call calypso_mpi_reduce_one_int8                                &
+     &     (cast_long(new_mesh%ele%numele), ntot_numele, MPI_SUM, 0)
+        call calypso_mpi_reduce_one_int8                                &
+     &     (cast_long(new_ele_comm%ntot_import), ntot_import_ele,       &
+     &      MPI_SUM, 0)
+!
+        if(my_rank .eq. 0) then
+          write(*,*) 'Node, Element at level ', iloop
+          write(*,*) 'Total:    ', ntot_numnod, ntot_numele
+          write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),     &
+     &                            ntot_import_ele
+        end if
+!
+        if(iflag_process_extend .eq. 0) exit
+        if(iloop .eq. max_extend_loop) exit
+        if(my_rank .eq. 0) write(*,*) 'sleeve extension again'
+!
+        call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
+        if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
+        call set_ele_id_4_node(new_mesh%node, new_mesh%ele, neib_ele)
+!
+        call init_work_vector_sleeve_ext(org_mesh%node, repart_nod_tbl, &
+     &      new_mesh%nod_comm, new_mesh%node, sleeve_exp_p,             &
+     &      sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
+      end do
+!
+      do ip = 1, nprocs
+        call dealloc_mark_for_each_comm(mark_saved1(ip))
+      end do
+      deallocate(mark_saved1)
+!
+      end subroutine sleeve_extension_for_new_mesh
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sleeve_extension_current_mesh(sleeve_exp_p,            &
+     &          mesh, group, ele_comm, sleeve_exp_WK, m_SR)
+!
       use calypso_mpi_int8
       use transfer_to_long_integers
       use set_ele_id_4_node_type
@@ -117,9 +264,6 @@
         write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),       &
      &                          ntot_import_ele
       end if
-!
-      call init_work_vector_sleeve_ext(mesh%nod_comm, mesh%node,        &
-     &    sleeve_exp_p, sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
 !
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
 !
@@ -179,9 +323,6 @@
         call set_nod_and_ele_infos(mesh%node, mesh%ele)
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
-!
-        call init_work_vector_sleeve_ext(mesh%nod_comm, mesh%node,      &
-     &      sleeve_exp_p, sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
       end do
 !
       do ip = 1, nprocs
@@ -189,7 +330,7 @@
       end do
       deallocate(mark_saved1)
 !
-      end subroutine sleeve_extension_loop
+      end subroutine sleeve_extension_current_mesh
 !
 !  ---------------------------------------------------------------------
 !
@@ -198,11 +339,9 @@
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
      &          mark_saved, m_SR, iflag_process_extend)
 !
-      use t_next_node_ele_4_node
       use t_repart_double_numberings
       use t_mesh_for_sleeve_extend
       use t_trim_overlapped_import
-      use t_flags_each_comm_extend
       use t_mark_node_ele_to_extend
       use t_comm_table_for_each_pe
       use t_sort_data_for_sleeve_trim

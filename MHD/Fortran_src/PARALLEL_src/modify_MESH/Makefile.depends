@@ -116,7 +116,7 @@ t_ctl_data_volume_repart.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_volume_repart.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_param_masking.o: $(MODIFY_PARA_MESHDIR)/t_ctl_param_masking.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_param_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/t_ctl_param_sleeve_extend.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o calypso_mpi.o t_comm_table.o t_solver_SR.o solver_SR_type.o t_ctl_data_FEM_sleeve_size.o m_error_IDs.o skip_comment_f.o
+t_ctl_param_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/t_ctl_param_sleeve_extend.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o calypso_mpi.o t_comm_table.o t_solver_SR.o t_calypso_comm_table.o solver_SR_type.o calypso_SR_type.o select_copy_from_recv.o t_ctl_data_FEM_sleeve_size.o m_error_IDs.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_flags_each_comm_extend.o: $(MODIFY_PARA_MESHDIR)/t_flags_each_comm_extend.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_comm_table.o t_comm_table_for_each_pe.o calypso_mpi.o t_ctl_param_sleeve_extend.o t_next_node_ele_4_node.o
 	$(F90) -c $(F90OPTFLAGS) $<
