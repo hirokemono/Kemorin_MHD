@@ -113,6 +113,8 @@
         integer(kind = kint) :: nmax_mask_repart
 !>        Pointer of field to mask
         real(kind = kreal), pointer :: d_mask(:,:)
+!>        pointer of original reference vector
+        real(kind = kreal), pointer :: ref_vect(:,:)
 !
 !>        Work area for sleeve extension
         type(sleeve_extension_work) :: sleeve_exp_WK
@@ -148,10 +150,8 @@
         repart_WK%d_mask =>          d_mask_org
       end if
 !
-      if(flag_sleeve_wk) then
-        call link_sleeve_extend_ref_vect(node, vect_ref_ext,            &
-     &      flag_sleeve_wk, repart_WK%sleeve_exp_WK)
-      end if
+      if(associated(repart_WK%ref_vect))  nullify(repart_WK%ref_vect)
+      if(flag_sleeve_wk) repart_WK%ref_vect => vect_ref_ext
 !
       end subroutine link_repart_masking_data
 !
@@ -162,7 +162,7 @@
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
 !
-      call unlink_sleeve_extend_ref_vect(repart_WK%sleeve_exp_WK)
+      if(associated(repart_WK%ref_vect))  nullify(repart_WK%ref_vect)
 !
       if(associated(repart_WK%d_mask)) then
         repart_WK%nmax_mask_repart = 0

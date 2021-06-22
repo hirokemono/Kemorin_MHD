@@ -102,8 +102,8 @@
      &      new_ele_comm, m_SR)
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
-        call sleeve_extension_for_new_mesh                              &
-     &     (part_param%sleeve_exp_p, geofem%mesh, repart_nod_tbl,       &
+        call sleeve_extension_for_new_mesh(part_param%sleeve_exp_p,     &
+     &      geofem%mesh, repart_WK%ref_vect, repart_nod_tbl,            &
      &      new_fem%mesh, new_fem%group, new_ele_comm,                  &
      &      repart_WK%sleeve_exp_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)

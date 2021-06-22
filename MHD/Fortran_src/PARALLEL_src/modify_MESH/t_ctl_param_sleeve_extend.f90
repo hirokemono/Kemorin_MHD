@@ -7,10 +7,11 @@
 !> @brief Control parameter for sleeve extension
 !!
 !!@verbatim
-!!      subroutine init_work_vector_sleeve_ext                          &
-!!     &         (org_node, repart_nod_tbl, new_nod_comm, new_node,     &
+!!      subroutine init_work_vector_sleeve_ext(org_node, ref_vect,      &
+!!     &          repart_nod_tbl, new_nod_comm, new_node,               &
 !!     &          sleeve_exp_p, sleeve_exp_WK, SR_sig, SR_r)
 !!        type(node_data), intent(in) :: org_node
+!!        real(kind = kreal), intent(in) :: ref_vect(org_node%numnod,3)
 !!        type(calypso_comm_table), intent(in) :: repart_nod_tbl
 !!        type(communication_table), intent(in) :: new_nod_comm
 !!        type(node_data), intent(in) :: new_node
@@ -18,24 +19,6 @@
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!
-!!      subroutine alloc_sleeve_extend_nul_vect                         &
-!!     &         (node, sleeve_exp_p, sleeve_exp_WK)
-!!      subroutine dealloc_sleeve_extend_nul_vect(sleeve_exp_WK)
-!!        type(node_data), intent(in) :: node
-!!        real(kind = kreal), intent(in), target                        &
-!!     &                              :: ref_vect(node%numnod,3)
-!!        type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
-!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
-!!
-!!      subroutine link_sleeve_extend_ref_vect(node, ref_vect,          &
-!!     &          flag_sleeve_wk, sleeve_exp_WK)
-!!      subroutine unlink_sleeve_extend_ref_vect(sleeve_exp_WK)
-!!        logical, intent(in) :: flag_sleeve_wk
-!!        type(node_data), intent(in) :: node
-!!        real(kind = kreal), intent(in), target                        &
-!!     &                              :: ref_vect(node%numnod,3)
-!!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!
 !!      subroutine set_ctl_param_sleeve_extension                       &
 !!     &         (ext_mode_ctl, ext_size_ctl, sleeve_exp_p, ierr)
@@ -89,9 +72,6 @@
 !
 !>      Work area of sleeve extension parameter
       type sleeve_extension_work
-!>        pointer of original reference vector
-        real(kind = kreal), pointer :: vect_ref(:,:)
-!
 !>        number of node  temporal reference vecto
         integer(kind = kint) :: nnod_sleeve
 !>        temporal reference vector for sleeve extension
@@ -107,8 +87,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_work_vector_sleeve_ext                            &
-     &         (org_node, repart_nod_tbl, new_nod_comm, new_node,       &
+      subroutine init_work_vector_sleeve_ext(org_node, ref_vect,        &
+     &          repart_nod_tbl, new_nod_comm, new_node,                 &
      &          sleeve_exp_p, sleeve_exp_WK, SR_sig, SR_r)
 !
       use calypso_mpi
@@ -122,6 +102,7 @@
 !
       type(node_data), intent(in) :: org_node
       type(calypso_comm_table), intent(in) :: repart_nod_tbl
+      real(kind = kreal), intent(in) :: ref_vect(org_node%numnod,3)
 !
       type(communication_table), intent(in) :: new_nod_comm
       type(node_data), intent(in) :: new_node
@@ -138,8 +119,8 @@
       allocate(sleeve_exp_WK%d_sleeve(new_node%numnod,3))
 !
       call calypso_SR_type_3(iflag_import_item, repart_nod_tbl,         &
-     &    org_node%numnod, new_node%numnod,                             &
-     &    sleeve_exp_WK%vect_ref, sleeve_exp_WK%d_sleeve, SR_sig, SR_r)
+     &    org_node%numnod, new_node%numnod, ref_vect,                   &
+     &    sleeve_exp_WK%d_sleeve, SR_sig, SR_r)
       call SOLVER_SEND_RECV_3_type(new_node%numnod, new_nod_comm,       &
       &   SR_sig, SR_r, sleeve_exp_WK%d_sleeve)
 !
@@ -159,71 +140,6 @@
       end subroutine dealloc_work_vector_sleeve_ext
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_sleeve_extend_nul_vect                           &
-     &         (node, sleeve_exp_p, sleeve_exp_WK)
-!
-      use t_geometry_data
-!
-      type(node_data), intent(in) :: node
-      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
-!
-      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
-!
-!
-      if(sleeve_exp_p%iflag_expand_mode .ne. iflag_vector_trace) return
-      sleeve_exp_p%iflag_expand_mode = iflag_turn_off
-      allocate(sleeve_exp_WK%vect_ref(node%numnod,3))
-!
-!$omp parallel workshare
-      sleeve_exp_WK%vect_ref(1:node%numnod,1:3) = 0.0d0
-!$omp end parallel workshare
-!
-      end subroutine alloc_sleeve_extend_nul_vect
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_sleeve_extend_nul_vect(sleeve_exp_WK)
-!
-      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
-!
-      if(associated(sleeve_exp_WK%vect_ref) .EQV. .FALSE.) return
-      deallocate(sleeve_exp_WK%vect_ref)
-!
-      end subroutine dealloc_sleeve_extend_nul_vect
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine link_sleeve_extend_ref_vect(node, ref_vect,            &
-     &          flag_sleeve_wk, sleeve_exp_WK)
-!
-      use t_geometry_data
-!
-      logical, intent(in) :: flag_sleeve_wk
-      type(node_data), intent(in) :: node
-      real(kind = kreal), intent(in), target :: ref_vect(node%numnod,3)
-!
-      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
-!
-!
-      if(flag_sleeve_wk .eqv. .FALSE.) return
-      sleeve_exp_WK%vect_ref => ref_vect
-!
-      end subroutine link_sleeve_extend_ref_vect
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_sleeve_extend_ref_vect(sleeve_exp_WK)
-!
-      type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
-!
-      if(associated(sleeve_exp_WK%vect_ref) .EQV. .FALSE.) return
-      nullify(sleeve_exp_WK%vect_ref)
-!
-      end subroutine unlink_sleeve_extend_ref_vect
-!
 !  ---------------------------------------------------------------------
 !
       subroutine set_ctl_param_sleeve_extension                         &

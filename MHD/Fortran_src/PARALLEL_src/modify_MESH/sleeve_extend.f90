@@ -8,11 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine sleeve_extension_for_new_mesh(sleeve_exp_p,          &
-!!     &          org_mesh, repart_nod_tbl, new_mesh, new_group,        &
-!!     &          new_ele_comm, sleeve_exp_WK, m_SR)
+!!     &          org_mesh, ref_vect, repart_nod_tbl,                   &
+!!     &          new_mesh, new_group, new_ele_comm,                    &
+!!     &          sleeve_exp_WK, m_SR)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
-!!        type(mesh_geometry), intent(in) :: org_mesh
 !!        type(calypso_comm_table), intent(in) :: repart_nod_tbl
+!!        type(mesh_geometry), intent(in) :: org_mesh
+!!        real(kind = kreal), intent(in)                                &
+!!     &                     :: ref_vect(org_mesh%node%numnod,3)
 !!        type(mesh_geometry), intent(inout) :: new_mesh
 !!        type(mesh_groups), intent(inout) :: new_group
 !!        type(communication_table), intent(inout) :: new_ele_comm
@@ -76,8 +79,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sleeve_extension_for_new_mesh(sleeve_exp_p,            &
-     &          org_mesh, repart_nod_tbl, new_mesh, new_group,          &
-     &          new_ele_comm, sleeve_exp_WK, m_SR)
+     &          org_mesh, ref_vect, repart_nod_tbl,                     &
+     &          new_mesh, new_group, new_ele_comm,                      &
+     &          sleeve_exp_WK, m_SR)
 !
       use calypso_mpi_int8
       use transfer_to_long_integers
@@ -89,8 +93,10 @@
       use const_nod_ele_to_extend
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
-      type(mesh_geometry), intent(in) :: org_mesh
       type(calypso_comm_table), intent(in) :: repart_nod_tbl
+      type(mesh_geometry), intent(in) :: org_mesh
+      real(kind = kreal), intent(in)                                    &
+     &                     :: ref_vect(org_mesh%node%numnod,3)
 !
       type(mesh_geometry), intent(inout) :: new_mesh
       type(mesh_groups), intent(inout) :: new_group
@@ -133,9 +139,9 @@
      &                          ntot_import_ele
       end if
 !
-      call init_work_vector_sleeve_ext(org_mesh%node, repart_nod_tbl,   &
-     &    new_mesh%nod_comm, new_mesh%node, sleeve_exp_p,               &
-     &    sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
+      call init_work_vector_sleeve_ext(org_mesh%node, ref_vect,         &
+     &    repart_nod_tbl, new_mesh%nod_comm, new_mesh%node,             &
+     &    sleeve_exp_p, sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
 !
       call set_ele_id_4_node(new_mesh%node, new_mesh%ele, neib_ele)
 !
@@ -197,9 +203,9 @@
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node(new_mesh%node, new_mesh%ele, neib_ele)
 !
-        call init_work_vector_sleeve_ext(org_mesh%node, repart_nod_tbl, &
-     &      new_mesh%nod_comm, new_mesh%node, sleeve_exp_p,             &
-     &      sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
+        call init_work_vector_sleeve_ext(org_mesh%node, ref_vect,       &
+     &      repart_nod_tbl, new_mesh%nod_comm, new_mesh%node,           &
+     &      sleeve_exp_p, sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
       end do
 !
       do ip = 1, nprocs
