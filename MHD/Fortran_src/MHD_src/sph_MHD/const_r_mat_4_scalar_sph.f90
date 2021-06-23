@@ -67,9 +67,16 @@
       type(band_matrices_type), intent(inout) :: band_p_poisson
 !
       real(kind = kreal) :: coef_p
+      real(kind = kreal), allocatable :: r_coef(:)
 !
 !
       coef_p = - fl_prop%coef_press
+!
+      allocate(r_coef(sph_rj%nidx_rj(1)))
+!$omp parallel workshare
+      r_coef(1:sph_rj%nidx_rj(1)) = coef_p
+!$omp end parallel workshare
+!
       call alloc_band_mat_sph(ithree, sph_rj, band_p_poisson)
 
       call set_unit_mat_4_poisson                                       &
@@ -77,7 +84,7 @@
      &    sph_bc_U%kr_in, sph_bc_U%kr_out, band_p_poisson%mat)
       call add_scalar_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out, coef_p,            &
+     &    g_sph_rj, sph_bc_U%kr_in, sph_bc_U%kr_out, r_coef(1),         &
      &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, band_p_poisson%mat)
 !
 !   Boundary condition for ICB
@@ -85,8 +92,8 @@
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_ctr1                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld, coef_p,           &
-     &      band_p_poisson%mat)
+     &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld,                   &
+     &      r_coef(1), band_p_poisson%mat)
 !      else if(sph_bc_U%iflag_icb .eq. iflag_free_sph) then
 !      else if(sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
 !      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_field) then
@@ -95,7 +102,7 @@
         call add_icb_scalar_poisson_mat                                 &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB, sph_bc_U%fdm2_fix_dr_ICB,   &
-     &      coef_p, band_p_poisson%mat)
+     &      r_coef(sph_bc_U%kr_in), band_p_poisson%mat)
       end if
 !
 !   Boundary condition for CMB
@@ -103,7 +110,8 @@
       call add_cmb_scalar_poisson_mat                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,               &
      &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
-     &    coef_p, band_p_poisson%mat)
+     &    r_coef(sph_bc_U%kr_out), band_p_poisson%mat)
+      deallocate(r_coef)
 !
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_p_poisson)
@@ -169,12 +177,15 @@
       if(property%ICB_diffusie_reduction .lt. one) then
         r_coef(sph_params%nlayer_ICB) = property%ICB_diffusie_reduction &
      &                                 * r_coef(sph_params%nlayer_ICB)
+        if(my_rank .eq. 0) write(*,*) 'reduction of diffusivity at',    &
+     &    sph_params%nlayer_ICB, ' to ', r_coef(sph_params%nlayer_ICB), &
+     &                        ' from ' , coef
       end if
 !
 !
       call add_scalar_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    g_sph_rj, sph_bc%kr_in, sph_bc%kr_out, r_coef(sph_bc%kr_in),  &
+     &    g_sph_rj, sph_bc%kr_in, sph_bc%kr_out, r_coef(1),             &
      &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, band_s_evo%mat)
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
