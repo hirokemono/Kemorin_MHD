@@ -66,6 +66,10 @@
       use t_next_node_ele_4_node
       use t_flags_each_comm_extend
 !
+      use m_work_time
+      use m_work_time_4_sleeve_extend
+
+!
       implicit none
 !
       integer(kind = kint), parameter, private :: max_extend_loop = 10
@@ -117,8 +121,7 @@
       integer(kind = kint) :: iloop, ip
 !
 !
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
       call calypso_mpi_reduce_one_int8(cast_long(new_mesh%node%numnod), &
      &                                 ntot_numnod, MPI_SUM, 0)
       call calypso_mpi_reduce_one_int8                                  &
@@ -149,27 +152,29 @@
       call init_min_dist_from_import                                    &
      &   (sleeve_exp_p, new_mesh%nod_comm, new_mesh%node, new_mesh%ele, &
      &    neib_ele, sleeve_exp_WK, mark_saved1)
-!
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
       do iloop = 1, max_extend_loop
         if(iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve', iloop
+        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
         call extend_mesh_sleeve                                         &
      &     (sleeve_exp_p, new_mesh%nod_comm, new_ele_comm,              &
      &      new_mesh%node, new_mesh%ele, neib_ele, sleeve_exp_WK,       &
      &      tmpmesh%nod_comm, tmpmesh%node, tmpmesh%ele,                &
      &      tmp_ele_comm, mark_saved1, m_SR, iflag_process_extend)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
+        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+8)
         call s_extended_groups(new_mesh, new_group, tmpmesh,            &
      &      tmp_ele_comm, tmpgroup, m_SR%SR_sig, m_SR%SR_i)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+8)
 !
+        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
         call dealloc_work_vector_sleeve_ext(sleeve_exp_WK)
         call dealloc_iele_belonged(neib_ele)
         call dealloc_comm_table(new_ele_comm)
         call dealloc_nod_and_ele_infos(new_mesh)
         call dealloc_mesh_data(new_mesh, new_group)
 !
-!        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
         call alloc_sph_node_geometry(tmpmesh%node)
         call copy_mesh_and_group(tmpmesh, tmpgroup, new_mesh, new_group)
         call copy_comm_tbl_types(tmp_ele_comm, new_ele_comm)
@@ -177,7 +182,6 @@
         call dealloc_comm_table(tmp_ele_comm)
         call dealloc_nod_and_ele_infos(tmpmesh)
         call dealloc_mesh_data(tmpmesh, tmpgroup)
-!        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
         call calypso_mpi_barrier
         call calypso_mpi_reduce_one_int8                                &
@@ -206,12 +210,14 @@
         call init_work_vector_sleeve_ext(org_mesh%node, ref_vect,       &
      &      repart_nod_tbl, new_mesh%nod_comm, new_mesh%node,           &
      &      sleeve_exp_p, sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
       end do
 !
       do ip = 1, nprocs
         call dealloc_mark_for_each_comm(mark_saved1(ip))
       end do
       deallocate(mark_saved1)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
 !
       end subroutine sleeve_extension_for_new_mesh
 !
@@ -250,8 +256,7 @@
       integer(kind = kint) :: iloop, ip
 !
 !
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
       call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),     &
      &                                 ntot_numnod, MPI_SUM, 0)
       call calypso_mpi_reduce_one_int8                                  &
@@ -278,25 +283,28 @@
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
      &    sleeve_exp_WK, mark_saved1)
 !
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
       do iloop = 1, max_extend_loop
+        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
         if(iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve', iloop
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, sleeve_exp_WK,               &
      &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
      &      new_ele_comm, mark_saved1, m_SR, iflag_process_extend)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
+        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+8)
         call s_extended_groups(mesh, group, newmesh, new_ele_comm,      &
      &                         newgroup, m_SR%SR_sig, m_SR%SR_i)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+8)
 !
+        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
         call dealloc_work_vector_sleeve_ext(sleeve_exp_WK)
         call dealloc_iele_belonged(neib_ele)
         call dealloc_comm_table(ele_comm)
         call dealloc_nod_and_ele_infos(mesh)
         call dealloc_mesh_data(mesh, group)
 !
-!        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
         call alloc_sph_node_geometry(newmesh%node)
         call copy_mesh_and_group(newmesh, newgroup, mesh, group)
         call copy_comm_tbl_types(new_ele_comm, ele_comm)
@@ -304,7 +312,6 @@
         call dealloc_comm_table(new_ele_comm)
         call dealloc_nod_and_ele_infos(newmesh)
         call dealloc_mesh_data(newmesh, newgroup)
-!        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
         call calypso_mpi_barrier
         call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),   &
@@ -329,12 +336,14 @@
         call set_nod_and_ele_infos(mesh%node, mesh%ele)
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
       end do
 !
       do ip = 1, nprocs
         call dealloc_mark_for_each_comm(mark_saved1(ip))
       end do
       deallocate(mark_saved1)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
 !
       end subroutine sleeve_extension_current_mesh
 !
@@ -405,7 +414,7 @@
       integer(kind = kint) :: i
 !
 !
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
       call alloc_double_numbering(org_node%numnod, inod_dbl)
       call set_node_double_numbering(org_node, nod_comm, inod_dbl,      &
      &                               m_SR%SR_sig, m_SR%SR_i)
@@ -413,16 +422,19 @@
       call alloc_double_numbering(org_ele%numele, iele_dbl)
       call double_numbering_4_element(org_ele, ele_comm, iele_dbl,      &
      &                                m_SR%SR_sig, m_SR%SR_i)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+4)
       allocate(mark_nod(nod_comm%num_neib))
       allocate(mark_ele(nod_comm%num_neib))
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
      &    neib_ele, sleeve_exp_WK, mark_saved, mark_nod, mark_ele,      &
      &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+4)
 !
 !
-!
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
      &    mark_nod, add_nod_comm, iflag_process_extend)
 !
@@ -431,10 +443,8 @@
      &    mark_nod, mark_ele, expand_nod_comm, expand_ele_comm,         &
      &    exp_import_xx, exp_import_ie)
       deallocate(mark_nod, mark_ele)
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
 !const_extended_node_position_org
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
       call alloc_idx_extend_to_trim(expand_nod_comm%ntot_import,        &
      &                              trim_nod_to_ext)
       call const_trimmed_expand_import                                  &
@@ -443,7 +453,9 @@
       call const_extended_nod_comm_table(org_node, nod_comm,            &
      &    expand_nod_comm, ext_nod_trim, exp_import_xx,                 &
      &    trim_import_xx, trim_nod_to_ext, add_nod_comm)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+6)
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
      &    new_node, dbl_id2)
@@ -461,10 +473,10 @@
 !
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2,     &
      &                             m_SR%SR_sig, m_SR%SR_i)
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+6)
 !
 !
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+7)
       call const_extended_element_connect(nod_comm, org_ele, dbl_id2,   &
      &    expand_nod_comm, exp_import_xx,                               &
      &    trim_nod_to_ext%inod_added_import,                            &
@@ -492,7 +504,7 @@
      &   (iele_dbl, add_ele_comm, trim_import_ie)
       call dealloc_ele_data_sleeve_ext(trim_import_ie)
       call dealloc_double_numbering(iele_dbl)
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+7)
 !
       if(i_debug .gt. 0) then
         call check_extended_element                                     &

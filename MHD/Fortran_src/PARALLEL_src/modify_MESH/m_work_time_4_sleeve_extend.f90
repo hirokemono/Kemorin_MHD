@@ -36,7 +36,7 @@
 !
       subroutine elpsed_label_4_sleeve_ext
 !
-      integer(kind = kint), parameter :: num_append = 6
+      integer(kind = kint), parameter :: num_append = 8
 !
 !
       call append_elapsed_times                                         &
@@ -45,16 +45,19 @@
       elps1%labels(ist_elapsed_SLEX+1)                                  &
      &                    = 'Sleeve extension preparation'
       elps1%labels(ist_elapsed_SLEX+2)                                  &
-     &                    = 'extend_node_comm_table'
+     &                    = 'Sleeve extension loop'
       elps1%labels(ist_elapsed_SLEX+3)                                  &
-     &                    = 'extend_ele_connectivity'
+     &                    = 'Replace to expanded mesh'
       elps1%labels(ist_elapsed_SLEX+4)                                  &
-     &                    = 'Construct groups for extended  '
+     &                    = 'Construct sleeve expand list  '
       elps1%labels(ist_elapsed_SLEX+5)                                  &
-     &                    = 'element comm. table in sleeve extension  '
-!
+     &                    = 'Construct extended communication table '
       elps1%labels(ist_elapsed_SLEX+6)                                  &
-     &                    = 'mark_used_ele_of_export  '
+     &                    = 'Construct extended node data '
+      elps1%labels(ist_elapsed_SLEX+7)                                  &
+      &                   = 'Construct extended element data '
+      elps1%labels(ist_elapsed_SLEX+8)                                  &
+     &                    = 'Construct extended goup data  '
 !
       iflag_SLEX_time = .TRUE.
 !
