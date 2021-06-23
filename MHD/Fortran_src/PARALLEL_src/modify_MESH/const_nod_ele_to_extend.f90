@@ -55,6 +55,9 @@
       use t_mark_node_ele_to_extend
       use t_mesh_for_sleeve_extend
 !
+      use m_work_time
+      use m_work_time_4_sleeve_extend
+!
       implicit none
 !
 !  ---------------------------------------------------------------------
@@ -103,6 +106,7 @@
      &   (node%numnod, ele%numele, each_exp_flags)
       call alloc_comm_table_for_each(node, each_comm)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+9)
       do ip = 1, nprocs
         call reset_flags_each_comm_extend                               &
      &     (node%numnod, ele%numele, each_exp_flags)
@@ -121,7 +125,9 @@
         call set_distance_to_mark_list                                  &
      &     (-1, node%numnod, each_exp_flags, mark_saved(ip))
       end do
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+9)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+10)
       icou = 0
       jcou = 0
       do i = 1, nod_comm%num_neib
@@ -142,6 +148,7 @@
       call calypso_mpi_reduce_one_int(jcou, nele_failed_gl, MPI_SUM, 0)
       if(iflag_debug .gt. 0) write(*,*) 'Failed element list:',         &
      &                             ntot_failed_gl, nele_failed_gl
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+10)
 !
       if(i_debug .eq. 0) return
       write(*,*) my_rank, 'mark_nod%num_marked',                        &

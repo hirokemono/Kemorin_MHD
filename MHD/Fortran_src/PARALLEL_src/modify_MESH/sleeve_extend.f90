@@ -435,24 +435,32 @@
 !
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+11)
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
      &    mark_nod, add_nod_comm, iflag_process_extend)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+11)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+12)
       call comm_extended_import_nod_ele                                 &
      &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
      &    mark_nod, mark_ele, expand_nod_comm, expand_ele_comm,         &
      &    exp_import_xx, exp_import_ie)
       deallocate(mark_nod, mark_ele)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+12)
 !
 !const_extended_node_position_org
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+13)
       call alloc_idx_extend_to_trim(expand_nod_comm%ntot_import,        &
      &                              trim_nod_to_ext)
       call const_trimmed_expand_import                                  &
      &   (inod_dbl, nod_comm, expand_nod_comm, exp_import_xx,           &
      &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+13)
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+14)
       call const_extended_nod_comm_table(org_node, nod_comm,            &
      &    expand_nod_comm, ext_nod_trim, exp_import_xx,                 &
      &    trim_import_xx, trim_nod_to_ext, add_nod_comm)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+14)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+6)

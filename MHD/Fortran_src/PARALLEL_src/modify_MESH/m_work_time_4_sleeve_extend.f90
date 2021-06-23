@@ -36,7 +36,7 @@
 !
       subroutine elpsed_label_4_sleeve_ext
 !
-      integer(kind = kint), parameter :: num_append = 8
+      integer(kind = kint), parameter :: num_append = 14
 !
 !
       call append_elapsed_times                                         &
@@ -58,6 +58,20 @@
       &                   = 'Construct extended element data '
       elps1%labels(ist_elapsed_SLEX+8)                                  &
      &                    = 'Construct extended goup data  '
+!
+      elps1%labels(ist_elapsed_SLEX+ 9)                                  &
+     &                    = 'Initialization of extend marking '
+      elps1%labels(ist_elapsed_SLEX+10)                                  &
+     &                    = 'Extend node marking  '
+!
+      elps1%labels(ist_elapsed_SLEX+11)                                  &
+     &                    = 's_const_extended_neib_domain  '
+      elps1%labels(ist_elapsed_SLEX+12)                                  &
+     &                    = 'comm_extended_import_nod_ele  '
+      elps1%labels(ist_elapsed_SLEX+13)                                  &
+     &                    = 'const_trimmed_expand_import  '
+      elps1%labels(ist_elapsed_SLEX+14)                                  &
+     &                    = 'const_extended_nod_comm_table  '
 !
       iflag_SLEX_time = .TRUE.
 !
