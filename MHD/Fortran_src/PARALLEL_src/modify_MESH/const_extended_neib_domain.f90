@@ -27,6 +27,9 @@
       use t_para_double_numbering
       use t_mark_node_ele_to_extend
 !
+      use m_work_time
+      use m_work_time_4_sleeve_extend
+!
       implicit none
 !
       private :: set_neighbour_domain_by_flag
@@ -81,27 +84,36 @@
       allocate(np_new_import(nod_comm%num_neib))
       allocate(istack_pe_new_import(0:nod_comm%num_neib))
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+18)
       call count_domain_extended_export(nod_comm,                       &
      &    inod_dbl, mark_nod, np_new_export, iflag_send_pe)
       call s_cal_total_and_stacks(nod_comm%num_neib, np_new_export,     &
      &    izero, istack_pe_new_export, ntot_pe_new_export)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+18)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+19)
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib, np_new_export,           &
      &    nod_comm%num_neib, nod_comm%id_neib, izero, np_new_import,    &
      &    istack_pe_new_import, ntot_pe_new_import)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+19)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+20)
       allocate(ip_new_export(ntot_pe_new_export))
       allocate(ip_new_import(ntot_pe_new_import))
 !
       call set_domain_to_export_extend(nod_comm,                        &
      &    inod_dbl, mark_nod, istack_pe_new_export,                     &
      &    ntot_pe_new_export, ip_new_export, iflag_send_pe)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+20)
+!
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+21)
       call comm_items_send_recv                                         &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
      &    istack_pe_new_export, ip_new_export,                          &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    istack_pe_new_import, izero, ip_new_import)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+21)
 !
 !      do i = 1, nod_comm%num_neib
 !        ist = istack_pe_new_export(i-1)+1
@@ -117,6 +129,7 @@
 !     &            ip_new_import(ist:ied)
 !      end do
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+22)
       allocate(iflag_recv_pe(nprocs))
 !$omp parallel workshare
       iflag_recv_pe(1:nprocs) = -1
@@ -129,17 +142,23 @@
      &    iflag_local)
       call calypso_mpi_allreduce_one_int                                &
      &   (iflag_local, iflag_process_extend, MPI_MAX)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+22)
 !      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',        &
 !     &           nod_comm%num_neib, add_nod_comm%num_neib
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+23)
       call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
       call count_extended_neib_export(nprocs, iflag_send_pe,            &
      &                                add_nod_comm%nrank_export)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+23)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+24)
       call alloc_calypso_import_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
      &    add_nod_comm%nrank_import, add_nod_comm%irank_import)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+24)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+25)
       call alloc_calypso_export_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_send_pe, &
      &    add_nod_comm%nrank_export, add_nod_comm%irank_export)
@@ -149,6 +168,7 @@
 !
       deallocate(ip_new_export, ip_new_import, istack_pe_new_import)
       deallocate(iflag_recv_pe, iflag_send_pe)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+25)
 !
       end subroutine s_const_extended_neib_domain
 !

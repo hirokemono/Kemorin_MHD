@@ -36,7 +36,7 @@
 !
       subroutine elpsed_label_4_sleeve_ext
 !
-      integer(kind = kint), parameter :: num_append = 14
+      integer(kind = kint), parameter :: num_append = 25
 !
 !
       call append_elapsed_times                                         &
@@ -59,19 +59,43 @@
       elps1%labels(ist_elapsed_SLEX+8)                                  &
      &                    = 'Construct extended goup data  '
 !
-      elps1%labels(ist_elapsed_SLEX+ 9)                                  &
+      elps1%labels(ist_elapsed_SLEX+ 9)                                 &
      &                    = 'Initialization of extend marking '
-      elps1%labels(ist_elapsed_SLEX+10)                                  &
+      elps1%labels(ist_elapsed_SLEX+10)                                 &
      &                    = 'Extend node marking  '
 !
-      elps1%labels(ist_elapsed_SLEX+11)                                  &
+      elps1%labels(ist_elapsed_SLEX+11)                                 &
      &                    = 's_const_extended_neib_domain  '
-      elps1%labels(ist_elapsed_SLEX+12)                                  &
+      elps1%labels(ist_elapsed_SLEX+12)                                 &
      &                    = 'comm_extended_import_nod_ele  '
-      elps1%labels(ist_elapsed_SLEX+13)                                  &
+      elps1%labels(ist_elapsed_SLEX+13)                                 &
      &                    = 'const_trimmed_expand_import  '
-      elps1%labels(ist_elapsed_SLEX+14)                                  &
+      elps1%labels(ist_elapsed_SLEX+14)                                 &
      &                    = 'const_extended_nod_comm_table  '
+!
+      elps1%labels(ist_elapsed_SLEX+15)                                 &
+     &                    = 'set_distance_from_mark_list (init)  '
+      elps1%labels(ist_elapsed_SLEX+16)                                 &
+     &                    = 'SEND_RECV in init marking  '
+      elps1%labels(ist_elapsed_SLEX+17)                                 &
+     &                    = 'set_distance_to_mark_list (init)  '
+!
+      elps1%labels(ist_elapsed_SLEX+18)                                 &
+     &                    = 'count_domain_extended_export  '
+      elps1%labels(ist_elapsed_SLEX+19)                                 &
+     &                    = 'num_items_send_recv in extended_neib '
+      elps1%labels(ist_elapsed_SLEX+20)                                 &
+     &                    = 'set_domain_to_export_extend  '
+      elps1%labels(ist_elapsed_SLEX+21)                                 &
+     &                    = 'comm_items_send_recv in extended_neib  '
+      elps1%labels(ist_elapsed_SLEX+22)                                 &
+     &                    = 'count_extended_neib_import  '
+      elps1%labels(ist_elapsed_SLEX+23)                                 &
+     &                    = 'count_extended_neib_export  '
+      elps1%labels(ist_elapsed_SLEX+24)                                 &
+     &                    = 'set_neighbour_domain_by_flag import  '
+      elps1%labels(ist_elapsed_SLEX+25)                                 &
+     &                    = 'set_neighbour_domain_by_flag export  '
 !
       iflag_SLEX_time = .TRUE.
 !
