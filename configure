@@ -7608,7 +7608,7 @@ printf "%s\n" "AVX512 INSTRUCTIONS" >&6; }
 
 
     ;;
-  arm64-*-*)
+  arm-*-*)
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Build for arm64" >&5
 printf "%s\n" "Build for arm64" >&6; }
     ;;
@@ -7616,7 +7616,7 @@ printf "%s\n" "Build for arm64" >&6; }
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Build for Powerpc64" >&5
 printf "%s\n" "Build for Powerpc64" >&6; }
     ;;
-  powerpc64-*-*)
+  *-*-*)
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Build for something else" >&5
 printf "%s\n" "Build for something else" >&6; }
     ;;
