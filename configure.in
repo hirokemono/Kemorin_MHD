@@ -94,11 +94,71 @@ else
 	F77=${FC}
 fi
 
-if test ${host_alias} = "powerpc64-bgq-linux"
+AC_MSG_RESULT(CPU Check...."${host}")
+case $host in
+  x86_64-*-*)
+    AC_MSG_RESULT(Build for x86_64)
+# Check x86 features
+# AC_MSG_RESULT(CFLAGS in:    "${CFLAGS}")
+# AX_CHECK_X86_FEATURES
+# AC_MSG_RESULT(CFLAGS out:    "${CFLAGS}")
+    AX_GCC_X86_CPU_SUPPORTS(avx512f, have_avx512="yes")
+
+    AX_GCC_X86_CPU_SUPPORTS(fma4, have_fma="yes")
+    AX_GCC_X86_CPU_SUPPORTS(fma, have_fma="yes")
+
+    AX_GCC_X86_CPU_SUPPORTS(avx2, have_avx="yes")
+    AX_GCC_X86_CPU_SUPPORTS(avx, have_avx="yes")
+
+    AX_GCC_X86_CPU_SUPPORTS(sse3, have_sse3="yes")
+
+    SSE_FLAG=
+    SSE_CPU="cpufort"
+    SSE4="fort"
+    SSE8="fort512"
+    if test -n "${have_avx}"; then
+#      AC_MSG_RESULT(AVX INSTRUCTIONS)
+      SSE_FLAG="avx"
+      SSE_CPU="cpuavx"
+      SSE4="avx"
+      SSE8="fort512"
+    fi
+    if test -n "${have_fma}"; then
+#      AC_MSG_RESULT(FMA INSTRUCTIONS)
+      SSE_FLAG="fma"
+      SSE_CPU="cpufma"
+      SSE4="fma"
+      SSE8="fort512"
+    fi
+    if test -n "${have_avx512}"; then
+      AC_MSG_RESULT(AVX512 INSTRUCTIONS)
+      SSE_FLAG="avx512f"
+      SSE_CPU="cpuavx512"
+      SSE4="fma"
+      SSE8="avx512"
+    fi
+    AC_SUBST(SSE_FLAG)
+    AC_SUBST(SSE_CPU)
+    AC_SUBST(SSE4)
+    AC_SUBST(SSE8)
+    ;;
+  arm64-*-*)
+    AC_MSG_RESULT(Build for arm64)
+    ;;
+  powerpc64-*-*)
+    AC_MSG_RESULT(Build for Powerpc64)
+    ;;
+  powerpc64-*-*)
+    AC_MSG_RESULT(Build for something else)
+    ;;
+esac
+
+if test ${host} = "powerpc64-bgq-linux"
 then
   XL_FORTRAN="__bgq__"
 fi
 AC_SUBST(XL_FORTRAN)
+
 
 
 if test -z ${AR}
@@ -131,51 +191,6 @@ AC_SUBST([OPENMP_CFLAGS])
 # Check MPI
 AX_MPI
 AC_LANG_RESTORE
-# Check x86 features
-# AC_MSG_RESULT(CFLAGS in:    "${CFLAGS}")
-# AX_CHECK_X86_FEATURES
-# AC_MSG_RESULT(CFLAGS out:    "${CFLAGS}")
-
-AX_GCC_X86_CPU_SUPPORTS(avx512f, have_avx512="yes")
-
-AX_GCC_X86_CPU_SUPPORTS(fma4, have_fma="yes")
-AX_GCC_X86_CPU_SUPPORTS(fma, have_fma="yes")
-
-AX_GCC_X86_CPU_SUPPORTS(avx2, have_avx="yes")
-AX_GCC_X86_CPU_SUPPORTS(avx, have_avx="yes")
-
-AX_GCC_X86_CPU_SUPPORTS(sse3, have_sse3="yes")
-
-SSE_FLAG=
-SSE_CPU="cpufort"
-SSE4="fort"
-SSE8="fort512"
-if test -n "${have_avx}"; then
-#  AC_MSG_RESULT(AVX INSTRUCTIONS)
-  SSE_FLAG="avx"
-  SSE_CPU="cpuavx"
-  SSE4="avx"
-  SSE8="fort512"
-fi
-if test -n "${have_fma}"; then
-#  AC_MSG_RESULT(FMA INSTRUCTIONS)
-  SSE_FLAG="fma"
-  SSE_CPU="cpufma"
-  SSE4="fma"
-  SSE8="fort512"
-fi
-if test -n "${have_avx512}"; then
-  AC_MSG_RESULT(AVX512 INSTRUCTIONS)
-  SSE_FLAG="avx512f"
-  SSE_CPU="cpuavx512"
-  SSE4="fma"
-  SSE8="avx512"
-fi
-AC_SUBST(SSE_FLAG)
-AC_SUBST(SSE_CPU)
-AC_SUBST(SSE4)
-AC_SUBST(SSE8)
-
 # Checks using Fortran Compiler
 AC_LANG_SAVE
 AC_LANG(Fortran)
@@ -428,6 +443,8 @@ if test -n "${LIBS}"
 	PGPLOT_LIBS="${LDFLAGS} ${LIBS}"
 fi
 AC_SUBST(PGPLOT_LIBS)
+
+AC_CANONICAL_HOST
 
 AC_MSG_RESULT()
 AC_MSG_RESULT(-----   Configuration summary   -------------------------------)
