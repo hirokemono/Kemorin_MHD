@@ -35,12 +35,7 @@ $(addsuffix .o,$(basename $(SRC_MXPACK3_SSE8)))
 F90EXT = '.f90'
 ASMEXT = '.s'
 
-ifdef ZLIB_LIBS
-  F90BUILD = '$$(F90) -c $$(F90OPTFLAGS) -m$(SSE_FLAG) -fno-range-check $$<'
-else
-  F90BUILD = '$$(F90) -c $$(F90OPTFLAGS) -fno-range-check $$<'
-endif
-
+F90BUILD = '$$(F90) -c $$(F90OPTFLAGS) -fno-range-check $$<'
 ASMBUILD = '$$(AS) -c -x assembler $$< -o $$@'
 
 ifeq ($(SSE4),fort)
