@@ -14,8 +14,6 @@ legendre.o: $(SPH_DIR)/legendre.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 mag_pbar.o: $(SPH_DIR)/mag_pbar.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-mag_pbar16.o: $(SPH_DIR)/mag_pbar16.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
 normei.o: $(SPH_DIR)/normei.f90 m_precision.o m_constants.o normgi.o
 	$(F90) -c $(F90OPTFLAGS) $<
 normgi.o: $(SPH_DIR)/normgi.f90 m_precision.o normgi_by_primes.o
