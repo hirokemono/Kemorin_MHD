@@ -94,6 +94,10 @@ else
 	F77=${FC}
 fi
 
+SSE_FLAG=
+SSE_CPU="cpufort"
+SSE4="fort"
+SSE8="fort512"
 AC_MSG_RESULT(CPU Check...."${host}")
 case $host in
   x86_64-*-*)
@@ -112,10 +116,6 @@ case $host in
 
     AX_GCC_X86_CPU_SUPPORTS(sse3, have_sse3="yes")
 
-    SSE_FLAG=
-    SSE_CPU="cpufort"
-    SSE4="fort"
-    SSE8="fort512"
     if test -n "${have_avx}"; then
 #      AC_MSG_RESULT(AVX INSTRUCTIONS)
       SSE_FLAG="avx"
@@ -137,10 +137,6 @@ case $host in
       SSE4="fma"
       SSE8="avx512"
     fi
-    AC_SUBST(SSE_FLAG)
-    AC_SUBST(SSE_CPU)
-    AC_SUBST(SSE4)
-    AC_SUBST(SSE8)
     ;;
   arm-*-*)
     AC_MSG_RESULT(Build for arm64)
@@ -152,6 +148,10 @@ case $host in
     AC_MSG_RESULT(Build for something else)
     ;;
 esac
+AC_SUBST(SSE_FLAG)
+AC_SUBST(SSE_CPU)
+AC_SUBST(SSE4)
+AC_SUBST(SSE8)
 
 if test ${host} = "powerpc64-bgq-linux"
 then

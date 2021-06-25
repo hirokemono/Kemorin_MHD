@@ -7111,6 +7111,10 @@ else
 	F77=${FC}
 fi
 
+SSE_FLAG=
+SSE_CPU="cpufort"
+SSE4="fort"
+SSE8="fort512"
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: CPU Check....\"${host}\"" >&5
 printf "%s\n" "CPU Check....\"${host}\"" >&6; }
 case $host in
@@ -7577,10 +7581,6 @@ fi
 
 
 
-    SSE_FLAG=
-    SSE_CPU="cpufort"
-    SSE4="fort"
-    SSE8="fort512"
     if test -n "${have_avx}"; then
 #      AC_MSG_RESULT(AVX INSTRUCTIONS)
       SSE_FLAG="avx"
@@ -7603,10 +7603,6 @@ printf "%s\n" "AVX512 INSTRUCTIONS" >&6; }
       SSE4="fma"
       SSE8="avx512"
     fi
-
-
-
-
     ;;
   arm-*-*)
     { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Build for arm64" >&5
@@ -7621,6 +7617,10 @@ printf "%s\n" "Build for Powerpc64" >&6; }
 printf "%s\n" "Build for something else" >&6; }
     ;;
 esac
+
+
+
+
 
 if test ${host} = "powerpc64-bgq-linux"
 then
