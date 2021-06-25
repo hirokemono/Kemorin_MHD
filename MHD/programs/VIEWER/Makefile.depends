@@ -116,7 +116,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
-	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
+	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.c \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.h \
@@ -233,7 +233,7 @@ kemo_mesh_viewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
-	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
+	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemoviewer_glfw_gtk.c \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_glfw_gtk.h \
@@ -351,7 +351,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
-	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
+	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoviewer_gtk.o: \
   $(MHDDIR)/programs/VIEWER/kemoviewer_gtk.c \
   $(MHDDIR)/programs/VIEWER/kemo_mesh_viewer_gtk.h \
@@ -468,4 +468,4 @@ kemoviewer_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.h \
   $(MHDDIR)/C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h
-	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
+	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
