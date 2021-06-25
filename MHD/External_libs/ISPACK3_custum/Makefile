@@ -85,9 +85,12 @@ mod_list:
 
 
 module:
+	echo 'm_ISPACK3_constants.o: $$(FXPACK3_DIR)/m_ISPACK3_constants.f90' >> $(MAKENAME); \
+	echo '	'$(F90BUILD) >> $(MAKENAME)
+	
 	@for src in $(basename $(SRC_FXPACK3_BASE)) ; do \
 		( \
-		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'.f90' >> $(MAKENAME); \
+		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'.f90 m_ISPACK3_constants.o' >> $(MAKENAME); \
 		echo '	'$(F90BUILD) >> $(MAKENAME); \
 		 ) \
 	done

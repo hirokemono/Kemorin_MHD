@@ -19,15 +19,18 @@
 !***********************************************************************
 SUBROUTINE LXINIG(JM,P,IG)
 
+  use m_ISPACK3_constants
   IMPLICIT NONE
+
   INTEGER(8) :: JM,JH,J,I,N,IFLAG,IG
   REAL(8) :: P(JM/2,5)
-  REAL(16) :: QEPS,QPI,QP0,QP1,QDP,QDZ,QZ
+  REAL(8) :: QEPS,QPI,QP0,QP1,QDP,QDZ,QZ
+!  REAL(16) :: QEPS,QPI,QP0,QP1,QDP,QDZ,QZ
   INTEGER(8) :: NPMAX    
 
   JH=JM/2
 
-  QPI=4*ATAN(1Q0)
+  QPI=4*ATAN(QONE)
 
   CALL MXGOMP(NPMAX)    
 

@@ -21,7 +21,8 @@ SUBROUTINE LXINIR(NM,M,R)
 
   IMPLICIT NONE
   INTEGER(8) :: NM,N,M,IE,IA,IC,L
-  REAL(16) :: QR,QR2
+!  REAL(16) :: QR,QR2
+  REAL(8) :: QR,QR2
   REAL(8) :: R((NM-M)/2*3+NM-M+1)
 
   IF(NM.GE.M+1) THEN
@@ -53,9 +54,14 @@ SUBROUTINE LXINIR(NM,M,R)
 CONTAINS
   
   FUNCTION QE(N,M)
+    use m_ISPACK3_constants
+    IMPLICIT NONE
+
     INTEGER(8) :: N,M
-    REAL(16) :: QE
-    QE=SQRT(1Q0*(N-M)*(N+M)/((2Q0*N-1)*(2*N+1)))      
+    REAL(8) :: QE
+!    REAL(16) :: QE
+
+    QE=SQRT(QONE*(N-M)*(N+M)/((2Q0*N-1)*(2*N+1)))      
   END FUNCTION QE
   
 END SUBROUTINE LXINIR

@@ -71,11 +71,15 @@ END SUBROUTINE FXRTFP
 !------------------------------------------------------------------------
 SUBROUTINE FXRINI(N,IT,T)
 
+  use m_ISPACK3_constants
+  implicit none
+
   INTEGER(8) :: N,IT(N/2),I
   REAL(8) :: T(N+N/2)
-  REAL(16) :: PI
+!  REAL(16) :: PI
+  REAL(8) :: PI
 
-  PI=4*ATAN(1Q0)
+  PI=4*ATAN(QONE)
   T=0
 
   IF(MOD(N,2).NE.0) THEN
