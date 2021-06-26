@@ -172,7 +172,7 @@
       call const_comm_table_by_connenct                                 &
      &   (txt_ele, ele%numele, ele%nnod_4_ele, ele%ie,                  &
      &    ele%x_ele, node, nod_comm, inod_dbl, iele_dbl,                &
-     &    neib_ele, ele_comm, fail_tbl_e)
+     &    neib_ele, ele_comm, fail_tbl_e, m_SR%SR_sig)
       call dealloc_iele_belonged(neib_ele)
       call dealloc_failed_export(fail_tbl_e)
 !
@@ -239,7 +239,7 @@
       call const_comm_table_by_connenct                                 &
      &   (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,       &
      &    edge%x_edge, node, nod_comm, inod_dbl, iedge_dbl,             &
-     &    neib_edge, edge_comm, fail_tbl_d)
+     &    neib_edge, edge_comm, fail_tbl_d, m_SR%SR_sig)
       call dealloc_iele_belonged(neib_edge)
       call dealloc_failed_export(fail_tbl_d)
 !

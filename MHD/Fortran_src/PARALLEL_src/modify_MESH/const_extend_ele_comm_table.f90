@@ -23,7 +23,7 @@
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
 !!      subroutine const_extended_ele_comm_table(ele, iele_dbl,         &
 !!     &          nod_comm, ele_comm, add_nod_comm, expand_ele_comm,    &
-!!     &          exp_import_ie, trim_import_ie, add_ele_comm)
+!!     &          exp_import_ie, trim_import_ie, add_ele_comm, SR_sig)
 !!        type(element_data), intent(in) :: ele
 !!        type(node_ele_double_number), intent(in) :: iele_dbl
 !!        type(communication_table), intent(in) :: nod_comm
@@ -33,6 +33,7 @@
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
 !!        type(calypso_comm_table), intent(inout) :: add_ele_comm
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module const_extend_ele_comm_table
@@ -49,6 +50,7 @@
       use t_mesh_for_sleeve_extend
       use t_sort_data_for_sleeve_trim
       use t_trim_overlapped_import
+      use t_solver_SR
 !
       implicit none
 !
@@ -108,7 +110,7 @@
 !
       subroutine const_extended_ele_comm_table(ele, iele_dbl,           &
      &          nod_comm, ele_comm, add_nod_comm, expand_ele_comm,      &
-     &          exp_import_ie, trim_import_ie, add_ele_comm)
+     &          exp_import_ie, trim_import_ie, add_ele_comm, SR_sig)
 !
       use calypso_mpi_int
       use reverse_SR_int
@@ -128,6 +130,7 @@
 !
       type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
       type(calypso_comm_table), intent(inout) :: add_ele_comm
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       type(sort_data_for_sleeve_trim), save :: sort_ele_import
       type(data_for_trim_import), save :: ext_ele_trim
@@ -196,7 +199,7 @@
      &    add_ele_comm%num_import,                                      &
      &    add_ele_comm%nrank_export, add_ele_comm%irank_export, izero,  &
      &    add_ele_comm%num_export, add_ele_comm%istack_export,          &
-     &    add_ele_comm%ntot_export)
+     &    add_ele_comm%ntot_export, SR_sig)
       call alloc_calypso_export_item(add_ele_comm)
 !
       call comm_items_send_recv                                         &
@@ -204,7 +207,7 @@
      &    add_ele_comm%istack_import, iele_lc_import_trim,              &
      &    add_ele_comm%nrank_export, add_ele_comm%irank_export,         &
      &    add_ele_comm%istack_export, add_ele_comm%iflag_self_copy,     &
-     &    add_ele_comm%item_export)
+     &    add_ele_comm%item_export, SR_sig)
       deallocate(iele_lc_import_trim)
 !
       end subroutine const_extended_ele_comm_table

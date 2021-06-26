@@ -95,7 +95,7 @@
       call const_comm_table_by_connenct                                 &
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
      &    surf%x_surf, node, nod_comm, inod_dbl, isurf_dbl,             &
-     &    neib_surf, surf_comm, fail_tbl_s)
+     &    neib_surf, surf_comm, fail_tbl_s, m_SR%SR_sig)
       call dealloc_iele_belonged(neib_surf)
       call dealloc_failed_export(fail_tbl_s)
 !

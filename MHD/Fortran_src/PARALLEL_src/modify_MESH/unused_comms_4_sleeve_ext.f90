@@ -9,25 +9,28 @@
 !!@verbatim
 !!      subroutine check_node_extend_by_return_comm                     &
 !!     &         (inod_dbl, add_nod_comm, irank_new_import_trim,        &
-!!     &          inod_gl_new_import_trim, xx_new_import_trim)
+!!     &          inod_gl_new_import_trim, xx_new_import_trim, SR_sig)
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(communication_table), intent(in) :: add_nod_comm
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!      subroutine check_ele_extend_by_return_comm(ele, add_ele_comm,   &
 !!     &          iele_gl_new_import_trim, ie_new_import_trim)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: add_ele_comm
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!      subroutine unused_4_element_sleeve_extend(nod_comm, ele,        &
 !!     &          add_ele_comm, inod_dbl, mark_ele, istack_new_export,  &
 !!     &          ntot_new_ele_export, istack_new_ele_export,           &
 !!     &          ntot_new_ele_import, istack_new_ele_import,           &
 !!     &          istack_trimmed_ele_import_pe, ntot_trimmed_ele_import,&
-!!     &           idx_home_sorted_ele_import)
+!!     &           idx_home_sorted_ele_import, SR_sig)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: add_ele_comm
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(mark_for_each_comm), intent(in)                          &
 !!     &           :: mark_ele(nod_comm%num_neib)
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
       module unused_comms_4_sleeve_ext
 !
@@ -37,6 +40,7 @@
       use t_geometry_data
       use t_comm_table
       use t_para_double_numbering
+      use t_solver_SR
 !
       implicit none
 !
@@ -48,7 +52,7 @@
 !
       subroutine check_node_extend_by_return_comm                       &
      &         (inod_dbl, add_nod_comm, irank_new_import_trim,          &
-     &          inod_gl_new_import_trim, xx_new_import_trim)
+     &          inod_gl_new_import_trim, xx_new_import_trim, SR_sig)
 !
       use reverse_SR_int
       use reverse_SR_real
@@ -64,6 +68,8 @@
      &             :: xx_new_import_trim(3*add_nod_comm%ntot_import)
       integer(kind = kint), intent(in)                                  &
      &             :: irank_new_import_trim(add_nod_comm%ntot_import)
+!
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint_gl), allocatable                              &
      &                        :: inod_gl_new_export_back(:)
@@ -81,18 +87,21 @@
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, inod_gl_new_import_trim,          &
      &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
-     &    add_nod_comm%istack_export, izero, inod_gl_new_export_back)
+     &    add_nod_comm%istack_export, izero,                            &
+     &    inod_gl_new_export_back, SR_sig)
       call real_items_send_recv_3                                       &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, xx_new_import_trim,               &
      &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
-     &    add_nod_comm%istack_export, izero, xx_new_export_back)
+     &    add_nod_comm%istack_export, izero,                            &
+     &    xx_new_export_back, SR_sig)
 !
       call comm_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, irank_new_import_trim,            &
      &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
-     &    add_nod_comm%istack_export, izero, irank_new_export_back)
+     &    add_nod_comm%istack_export, izero,                            &
+     &    irank_new_export_back, SR_sig)
 !
       icou = 0
       do i = 1, add_nod_comm%ntot_export
@@ -113,7 +122,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_ele_extend_by_return_comm(ele, add_ele_comm,     &
-     &          iele_gl_new_import_trim, ie_new_import_trim)
+     &          iele_gl_new_import_trim, ie_new_import_trim, SR_sig)
 !
       use reverse_SR_int
 !
@@ -126,6 +135,8 @@
      &   :: iele_gl_new_import_trim(add_ele_comm%ntot_import)
       integer(kind = kint), intent(in)                                  &
      &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+!
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint_gl), allocatable                              &
      &                        :: iele_gl_new_export_trim(:)
@@ -143,14 +154,15 @@
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
      &    add_ele_comm%istack_import, iele_gl_new_import_trim,          &
      &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
-     &    add_ele_comm%istack_export, izero, iele_gl_new_export_trim)
+     &    add_ele_comm%istack_export, izero, iele_gl_new_export_trim,   &
+     &    SR_sig)
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &     (add_ele_comm%num_neib, add_ele_comm%id_neib,                &
      &      add_ele_comm%istack_import, ie_new_import_trim(1,k1),       &
      &      add_ele_comm%num_neib, add_ele_comm%id_neib,                &
      &      add_ele_comm%istack_export, izero,                          &
-     &      ie_new_export_trim(1,k1))
+     &      ie_new_export_trim(1,k1), SR_sig)
       end do
 !
 !      icou = 0
@@ -174,7 +186,7 @@
      &          ntot_new_ele_export, istack_new_ele_export,             &
      &          ntot_new_ele_import, istack_new_ele_import,             &
      &          istack_trimmed_ele_import_pe, ntot_trimmed_ele_import,  &
-     &           idx_home_sorted_ele_import)
+     &          idx_home_sorted_ele_import, SR_sig)
 !
       use t_mark_node_ele_to_extend
       use reverse_SR_int
@@ -203,6 +215,8 @@
      &                     :: istack_trimmed_ele_import_pe(0:nprocs)
       integer(kind = kint), intent(in)                                  &
      &          :: idx_home_sorted_ele_import(ntot_trimmed_ele_import)
+!
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint), allocatable :: item_new_ele_export(:)
       integer(kind = kint), allocatable :: ie_lc_new_export(:,:)
@@ -253,20 +267,22 @@
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
      &    istack_new_ele_export, item_new_ele_export,                   &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    istack_new_ele_import, izero, item_new_ele_import)
+     &    istack_new_ele_import, izero, item_new_ele_import, SR_sig)
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &     (nod_comm%num_neib, nod_comm%id_neib,                        &
      &      istack_new_ele_export, ie_lc_new_export(1,k1),              &
      &      nod_comm%num_neib, nod_comm%id_neib,                        &
-     &      istack_new_ele_import, izero, ie_lc_new_import(1,k1))
+     &      istack_new_ele_import, izero, ie_lc_new_import(1,k1),       &
+     &      SR_sig)
       end do
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &     (nod_comm%num_neib, nod_comm%id_neib,                        &
      &      istack_new_ele_export, ie_rank_new_export(1,k1),            &
      &      nod_comm%num_neib, nod_comm%id_neib,                        &
-     &      istack_new_ele_import, izero, ie_rank_new_import(1,k1))
+     &      istack_new_ele_import, izero, ie_rank_new_import(1,k1),     &
+     &      SR_sig)
       end do
 !
       deallocate(item_new_ele_export)
@@ -303,14 +319,15 @@
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
      &    add_ele_comm%istack_import, item_new_ele_import_trim,         &
      &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
-     &    add_ele_comm%istack_export, izero, item_new_ele_export_trim)
+     &    add_ele_comm%istack_export, izero, item_new_ele_export_trim,  &
+     &    SR_sig)
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &     (add_ele_comm%num_neib, add_ele_comm%id_neib,                &
      &      add_ele_comm%istack_import, ie_lc_new_import_trim(1,k1),    &
      &      add_ele_comm%num_neib, add_ele_comm%id_neib,                &
      &      add_ele_comm%istack_export, izero,                          &
-     &      ie_lc_new_export_trim(1,k1))
+     &      ie_lc_new_export_trim(1,k1), SR_sig)
       end do
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
@@ -318,7 +335,7 @@
      &      add_ele_comm%istack_import, ie_rank_new_import_trim(1,k1),  &
      &      add_ele_comm%num_neib, add_ele_comm%id_neib,                &
      &      add_ele_comm%istack_export, izero,                          &
-     &      ie_rank_new_export_trim(1,k1))
+     &      ie_rank_new_export_trim(1,k1), SR_sig)
       end do
 !
       deallocate(item_new_ele_import_trim)

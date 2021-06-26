@@ -9,12 +9,13 @@
 !!@verbatim
 !!      subroutine s_const_extended_neib_domain                         &
 !!     &         (nod_comm, inod_dbl, mark_nod,                         &
-!!     &          add_nod_comm, iflag_process_extend)
+!!     &          add_nod_comm, SR_sig, iflag_process_extend)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(mark_for_each_comm),  intent(in)                         &
 !!     &                           :: mark_nod(nod_comm%num_neib)
 !!        type(communication_table), intent(inout) :: add_nod_comm
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!        integer(kind = kint), intent(inout) :: iflag_process_extend
 !!@endverbatim
       module const_extended_neib_domain
@@ -26,6 +27,7 @@
       use t_calypso_comm_table
       use t_para_double_numbering
       use t_mark_node_ele_to_extend
+      use t_solver_SR
 !
       use m_work_time
       use m_work_time_4_sleeve_extend
@@ -45,7 +47,7 @@
 !
       subroutine s_const_extended_neib_domain                           &
      &         (nod_comm, inod_dbl, mark_nod,                           &
-     &          add_nod_comm, iflag_process_extend)
+     &          add_nod_comm, SR_sig, iflag_process_extend)
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -60,6 +62,7 @@
      &                           :: mark_nod(nod_comm%num_neib)
 !
       type(calypso_comm_table), intent(inout) :: add_nod_comm
+      type(send_recv_status), intent(inout) :: SR_sig
       integer(kind = kint), intent(inout) :: iflag_process_extend
 !
       integer(kind = kint), allocatable :: np_new_export(:)
@@ -95,7 +98,7 @@
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib, np_new_export,           &
      &    nod_comm%num_neib, nod_comm%id_neib, izero, np_new_import,    &
-     &    istack_pe_new_import, ntot_pe_new_import)
+     &    istack_pe_new_import, ntot_pe_new_import, SR_sig)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+19)
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+20)
@@ -112,7 +115,7 @@
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
      &    istack_pe_new_export, ip_new_export,                          &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    istack_pe_new_import, izero, ip_new_import)
+     &    istack_pe_new_import, izero, ip_new_import, SR_sig)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+21)
 !
 !      do i = 1, nod_comm%num_neib

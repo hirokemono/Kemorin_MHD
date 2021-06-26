@@ -108,7 +108,8 @@
       call const_repartitioned_comm_tbl                                 &
      &   (internal_node, sort_nod%num_recv, sort_nod%nrecv_trim,        &
      &    ext_tbl%ntot_import, sort_nod%irank_sorted,                   &
-     &    sort_nod%id_sorted, sort_nod%iflag_dup, new_comm)
+     &    sort_nod%id_sorted, sort_nod%iflag_dup, new_comm,             &
+     &    m_SR%SR_sig)
 !
 !      call check_num_of_neighbourings                                  &
 !     &   (new_comm, ext_tbl, sort_nod%nrecv_trim)

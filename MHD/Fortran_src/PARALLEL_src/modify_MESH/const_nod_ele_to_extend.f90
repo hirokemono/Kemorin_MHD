@@ -28,7 +28,7 @@
 !!      subroutine comm_extended_import_nod_ele                         &
 !!     &         (nod_comm, node, inod_dbl, ele, iele_dbl,              &
 !!     &          mark_nod, mark_ele, expand_nod_comm, expand_ele_comm, &
-!!     &          exp_import_xx, exp_import_ie)
+!!     &          exp_import_xx, exp_import_ie, SR_sig)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -38,6 +38,7 @@
 !!        type(communication_table), intent(inout) :: expand_ele_comm
 !!        type(node_data_for_sleeve_ext), intent(inout) :: exp_import_xx
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module const_nod_ele_to_extend
@@ -54,6 +55,7 @@
       use t_ctl_param_sleeve_extend
       use t_mark_node_ele_to_extend
       use t_mesh_for_sleeve_extend
+      use t_solver_SR
 !
       use m_work_time
       use m_work_time_4_sleeve_extend
@@ -169,7 +171,7 @@
       subroutine comm_extended_import_nod_ele                           &
      &         (nod_comm, node, inod_dbl, ele, iele_dbl,                &
      &          mark_nod, mark_ele, expand_nod_comm, expand_ele_comm,   &
-     &          exp_import_xx, exp_import_ie)
+     &          exp_import_xx, exp_import_ie, SR_sig)
 !
       use calypso_mpi_int
       use reverse_SR_int
@@ -190,6 +192,7 @@
       type(communication_table), intent(inout) :: expand_ele_comm
       type(node_data_for_sleeve_ext), intent(inout) :: exp_import_xx
       type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       type(node_data_for_sleeve_ext), save :: exp_export_xx
       type(ele_data_for_sleeve_ext), save :: exp_export_ie
@@ -228,13 +231,13 @@
      &    expand_nod_comm%num_export,                                   &
      &    nod_comm%num_neib, nod_comm%id_neib, izero,                   &
      &    expand_nod_comm%num_import, expand_nod_comm%istack_import,    &
-     &    expand_nod_comm%ntot_import)
+     &    expand_nod_comm%ntot_import, SR_sig)
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
      &    expand_ele_comm%num_export,                                   &
      &    nod_comm%num_neib, nod_comm%id_neib, izero,                   &
      &    expand_ele_comm%num_import, expand_ele_comm%istack_import,    &
-     &    expand_ele_comm%ntot_import)
+     &    expand_ele_comm%ntot_import, SR_sig)
 !
 !
       call alloc_export_item(expand_nod_comm)
@@ -258,12 +261,12 @@
      &    expand_nod_comm%istack_export, expand_nod_comm%item_export,   &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    expand_nod_comm%istack_import, izero,                         &
-     &    expand_nod_comm%item_import)
+     &    expand_nod_comm%item_import, SR_sig)
 !
       call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_import,      &
      &                                exp_import_xx)
       call send_extended_node_position(expand_nod_comm,                 &
-     &                                 exp_export_xx, exp_import_xx)
+     &    exp_export_xx, exp_import_xx, SR_sig)
       call dealloc_node_data_sleeve_ext(exp_export_xx)
 !
 !
@@ -276,9 +279,9 @@
      &    expand_ele_comm%istack_export, expand_ele_comm%item_export,   &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    expand_ele_comm%istack_import, izero,                         &
-     &    expand_ele_comm%item_import)
+     &    expand_ele_comm%item_import, SR_sig)
       call send_extended_element_connect(ele, expand_ele_comm,          &
-     &    exp_export_ie, exp_import_ie)
+     &    exp_export_ie, exp_import_ie, SR_sig)
       call dealloc_ele_data_sleeve_ext(exp_export_ie)
 !
       end subroutine comm_extended_import_nod_ele

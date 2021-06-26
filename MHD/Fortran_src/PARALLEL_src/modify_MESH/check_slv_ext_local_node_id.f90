@@ -11,7 +11,8 @@
 !!     &         (org_node, nod_comm, mark_nod, expand_nod_comm,        &
 !!     &          add_nod_comm, sort_nod_import, ext_nod_trim,          &
 !!     &          expand_import_position, trimmed_import_position,      &
-!!     &          idx_trimmed_to_sorted, inod_lc_new_import_trim)
+!!     &          idx_trimmed_to_sorted, inod_lc_new_import_trim,       &
+!!     &          SR_sig)
 !!        type(node_data), intent(in) :: org_node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: expand_nod_comm
@@ -28,6 +29,7 @@
 !!     &      :: idx_trimmed_to_sorted(expand_nod_comm%ntot_import)
 !!        integer(kind = kint), intent(in)                              &
 !!     &      :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module check_slv_ext_local_node_id
@@ -43,6 +45,7 @@
       use t_sort_data_for_sleeve_trim
       use t_trim_overlapped_import
       use t_mark_node_ele_to_extend
+      use t_solver_SR
 !
       implicit none
 !
@@ -56,7 +59,8 @@
      &         (org_node, nod_comm, mark_nod, expand_nod_comm,          &
      &          add_nod_comm, sort_nod_import, ext_nod_trim,            &
      &          expand_import_position, trimmed_import_position,        &
-     &          idx_trimmed_to_sorted, inod_lc_new_import_trim)
+     &          idx_trimmed_to_sorted, inod_lc_new_import_trim,         &
+     &          SR_sig)
 !
       use reverse_SR_int
 !
@@ -77,6 +81,8 @@
       integer(kind = kint), intent(in)                                  &
      &      :: idx_trimmed_to_sorted(expand_nod_comm%ntot_import)
 !
+      type(send_recv_status), intent(inout) :: SR_sig
+!
       integer(kind = kint), allocatable :: item_new_export(:)
       integer(kind = kint), allocatable :: item_new_import(:)
 !
@@ -90,7 +96,8 @@
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
      &    expand_nod_comm%istack_export, item_new_export,               &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    expand_nod_comm%istack_import, izero, item_new_import)
+     &    expand_nod_comm%istack_import, izero, item_new_import,        &
+     &    SR_sig)
       deallocate(item_new_export)
 !
       call check_sort_nod_import(nod_comm, expand_nod_comm,             &

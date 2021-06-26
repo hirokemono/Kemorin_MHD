@@ -10,7 +10,8 @@
 !!      subroutine element_data_reverse_SR_old(num_neib_e, id_neib_e,   &
 !!     &          istack_import_e, istack_export_e,                     &
 !!     &          inod_import_e, inod_import_l, xe_import,              &
-!!     &          inod_export_e, inod_export_l, xe_export)
+!!     &          inod_export_e, inod_export_l, xe_export, SR_sig)
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !!
       module make_element_comm_table_SR
@@ -18,7 +19,7 @@
       use m_precision
       use m_constants
       use calypso_mpi
-      use m_solver_SR
+      use t_solver_SR
       use t_mesh_SR
 !
       implicit none
@@ -32,7 +33,7 @@
       subroutine element_data_reverse_SR_old(num_neib_e, id_neib_e,     &
      &          istack_import_e, istack_export_e,                       &
      &          inod_import_e, inod_import_l, xe_import,                &
-     &          inod_export_e, inod_export_l, xe_export)
+     &          inod_export_e, inod_export_l, xe_export, SR_sig)
 !
       use reverse_SR_real
       use reverse_SR_int
@@ -56,6 +57,7 @@
      &         :: inod_export_l(istack_export_e(num_neib_e))
       real(kind = kreal), intent(inout)                                 &
      &         :: xe_export(3*istack_export_e(num_neib_e))
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint) :: ip
 !
@@ -66,15 +68,18 @@
 !
       call int8_items_send_recv                                         &
      &   (num_neib_e, id_neib_e, istack_import_e, inod_import_e,        &
-     &    num_neib_e, id_neib_e, istack_export_e, izero, inod_export_e)
+     &    num_neib_e, id_neib_e, istack_export_e, izero,                &
+     &    inod_export_e, SR_sig)
 !
       call comm_items_send_recv                                         &
      &   (num_neib_e, id_neib_e, istack_import_e, inod_import_l,        &
-     &    num_neib_e, id_neib_e, istack_export_e, izero, inod_export_l)
+     &    num_neib_e, id_neib_e, istack_export_e, izero,                &
+     &    inod_export_l, SR_sig)
 !
       call real_items_send_recv_3                                       &
      &   (num_neib_e, id_neib_e, istack_import_e, xe_import,            &
-     &    num_neib_e, id_neib_e, istack_export_e, izero, xe_export)
+     &    num_neib_e, id_neib_e, istack_export_e, izero,                &
+     &    xe_export, SR_sig)
 !
       end subroutine element_data_reverse_SR_old
 !

@@ -20,7 +20,7 @@
 !!        type(sort_data_for_sleeve_trim), save :: sort_nod_import
 !!      subroutine const_extended_nod_comm_table(org_node, nod_comm,    &
 !!     &          expand_nod_comm, ext_nod_trim, exp_import_xx,         &
-!!     &          trim_import_xx, trim_nod_to_ext, add_nod_comm)
+!!     &          trim_import_xx, trim_nod_to_ext, add_nod_comm, SR_sig)
 !!        type(node_data), intent(in) :: org_node
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(communication_table), intent(in) :: expand_nod_comm
@@ -28,6 +28,7 @@
 !!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
 !!        type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
 !!        type(work_nod_import_extend), intent(inout) :: trim_nod_to_ext
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module const_extend_nod_comm_table
@@ -46,6 +47,7 @@
       use t_sort_data_for_sleeve_trim
       use t_trim_overlapped_import
       use t_work_nod_import_extend
+      use t_solver_SR
 !
       implicit none
 !
@@ -106,7 +108,7 @@
 !
       subroutine const_extended_nod_comm_table(org_node, nod_comm,      &
      &          expand_nod_comm, ext_nod_trim, exp_import_xx,           &
-     &          trim_import_xx, trim_nod_to_ext, add_nod_comm)
+     &          trim_import_xx, trim_nod_to_ext, add_nod_comm, SR_sig)
 !
       use calypso_mpi_int
       use reverse_SR_int
@@ -124,6 +126,7 @@
       type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
       type(work_nod_import_extend), intent(inout) :: trim_nod_to_ext
       type(calypso_comm_table), intent(inout) :: add_nod_comm
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint) :: num
 !
@@ -157,7 +160,7 @@
      &    add_nod_comm%num_import,                                      &
      &    add_nod_comm%nrank_export, add_nod_comm%irank_export, izero,  &
      &    add_nod_comm%num_export, add_nod_comm%istack_export,          &
-     &    add_nod_comm%ntot_export)
+     &    add_nod_comm%ntot_export, SR_sig)
       call alloc_calypso_export_item(add_nod_comm)
 !
 !
@@ -166,7 +169,7 @@
      &   add_nod_comm%istack_import, trim_nod_to_ext%import_lc_trimmed, &
      &   add_nod_comm%nrank_export, add_nod_comm%irank_export,          &
      &   add_nod_comm%istack_export, add_nod_comm%iflag_self_copy,      &
-     &   add_nod_comm%item_export)
+     &   add_nod_comm%item_export, SR_sig)
 !
       end subroutine const_extended_nod_comm_table
 !

@@ -50,16 +50,18 @@
 !!     &            :: iele_lc_new_export(ntot_new_ele_export)
 !!
 !!      subroutine send_extended_node_position(expand_nod_comm,         &
-!!     &          exp_export_xx, exp_import_xx)
+!!     &          exp_export_xx, exp_import_xx, SR_sig)
 !!        type(communication_table), intent(in) :: expand_nod_comm
 !!        type(node_data_for_sleeve_ext), intent(in) :: exp_export_xx
 !!        type(node_data_for_sleeve_ext), intent(inout) :: exp_import_xx
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!      subroutine send_extended_element_connect(ele, expand_ele_comm,  &
-!!     &          exp_export_ie, exp_import_ie)
+!!     &          exp_export_ie, exp_import_ie, SR_sig)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: expand_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(in) :: exp_export_ie
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module set_mesh_for_sleeve_extend
@@ -71,6 +73,7 @@
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
       use t_mark_node_ele_to_extend
+      use t_solver_SR
 !
       implicit none
 !
@@ -249,14 +252,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine send_extended_node_position(expand_nod_comm,           &
-     &          exp_export_xx, exp_import_xx)
+     &          exp_export_xx, exp_import_xx, SR_sig)
 !
       use reverse_SR_int
       use reverse_SR_real
 !
       type(communication_table), intent(in) :: expand_nod_comm
       type(node_data_for_sleeve_ext), intent(in) :: exp_export_xx
+!
       type(node_data_for_sleeve_ext), intent(inout) :: exp_import_xx
+      type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       call comm_items_send_recv                                         &
@@ -264,38 +269,42 @@
      &    expand_nod_comm%istack_export, exp_export_xx%irank_comm,      &
      &    expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_import, izero,                         &
-     &    exp_import_xx%irank_comm)
+     &    exp_import_xx%irank_comm, SR_sig)
       call real_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, exp_export_xx%distance,        &
      &    expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
-     &    expand_nod_comm%istack_import, izero, exp_import_xx%distance)
+     &    expand_nod_comm%istack_import, izero,                         &
+     &    exp_import_xx%distance, SR_sig)
 !
       call real_items_send_recv_3                                       &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, exp_export_xx%xx_comm,         &
      &    expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
-     &    expand_nod_comm%istack_import, izero, exp_import_xx%xx_comm)
+     &    expand_nod_comm%istack_import, izero,                         &
+     &    exp_import_xx%xx_comm, SR_sig)
       call int8_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, exp_export_xx%inod_gl_comm,    &
      &    expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_import, izero,                         &
-     &    exp_import_xx%inod_gl_comm)
+     &    exp_import_xx%inod_gl_comm, SR_sig)
 !
       end subroutine send_extended_node_position
 !
 !  ---------------------------------------------------------------------
 !
       subroutine send_extended_element_connect(ele, expand_ele_comm,    &
-     &          exp_export_ie, exp_import_ie)
+     &          exp_export_ie, exp_import_ie, SR_sig)
 !
       use reverse_SR_int
 !
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: expand_ele_comm
       type(ele_data_for_sleeve_ext), intent(in) :: exp_export_ie
+!
       type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind= kint) :: k1
 !
@@ -305,14 +314,14 @@
      &    expand_ele_comm%istack_export, exp_export_ie%irank_comm,      &
      &    expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
      &    expand_ele_comm%istack_import, izero,                         &
-     &    exp_import_ie%irank_comm)
+     &    exp_import_ie%irank_comm, SR_sig)
 !
       call int8_items_send_recv                                         &
      &   (expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
      &    expand_ele_comm%istack_export, exp_export_ie%iele_gl_comm,    &
      &    expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
      &    expand_ele_comm%istack_import, izero,                         &
-     &    exp_import_ie%iele_gl_comm)
+     &    exp_import_ie%iele_gl_comm, SR_sig)
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &     (expand_ele_comm%num_neib, expand_ele_comm%id_neib,          &
@@ -320,13 +329,13 @@
      &      exp_export_ie%itype_comm(1,k1),                             &
      &      expand_ele_comm%num_neib, expand_ele_comm%id_neib,          &
      &      expand_ele_comm%istack_import, izero,                       &
-     &      exp_import_ie%itype_comm(1,k1))
+     &      exp_import_ie%itype_comm(1,k1), SR_sig)
         call comm_items_send_recv                                       &
      &     (expand_ele_comm%num_neib, expand_ele_comm%id_neib,          &
      &      expand_ele_comm%istack_export, exp_export_ie%ie_comm(1,k1), &
      &      expand_ele_comm%num_neib, expand_ele_comm%id_neib,          &
      &      expand_ele_comm%istack_import, izero,                       &
-     &      exp_import_ie%ie_comm(1,k1))
+     &      exp_import_ie%ie_comm(1,k1), SR_sig)
       end do
 !
       end subroutine send_extended_element_connect

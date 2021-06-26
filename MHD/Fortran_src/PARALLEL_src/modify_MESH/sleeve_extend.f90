@@ -437,14 +437,14 @@
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+11)
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
-     &    mark_nod, add_nod_comm, iflag_process_extend)
+     &    mark_nod, add_nod_comm, m_SR%SR_sig, iflag_process_extend)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+11)
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+12)
       call comm_extended_import_nod_ele                                 &
      &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
      &    mark_nod, mark_ele, expand_nod_comm, expand_ele_comm,         &
-     &    exp_import_xx, exp_import_ie)
+     &    exp_import_xx, exp_import_ie, m_SR%SR_sig)
       deallocate(mark_nod, mark_ele)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+12)
 !
@@ -459,7 +459,7 @@
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+14)
       call const_extended_nod_comm_table(org_node, nod_comm,            &
      &    expand_nod_comm, ext_nod_trim, exp_import_xx,                 &
-     &    trim_import_xx, trim_nod_to_ext, add_nod_comm)
+     &    trim_import_xx, trim_nod_to_ext, add_nod_comm, m_SR%SR_sig)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+14)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
@@ -498,7 +498,7 @@
 !
       call const_extended_ele_comm_table(org_ele, iele_dbl,             &
      &    nod_comm, ele_comm, add_nod_comm, expand_ele_comm,            &
-     &    exp_import_ie, trim_import_ie, add_ele_comm)
+     &    exp_import_ie, trim_import_ie, add_ele_comm, m_SR%SR_sig)
       call dealloc_ele_data_sleeve_ext(exp_import_ie)
       call dealloc_comm_table(expand_ele_comm)
 !
@@ -509,7 +509,7 @@
      &    trim_import_ie, new_node, new_ele)
 !
       call check_returned_extend_element                                &
-     &   (iele_dbl, add_ele_comm, trim_import_ie)
+     &   (iele_dbl, add_ele_comm, trim_import_ie, m_SR%SR_sig)
       call dealloc_ele_data_sleeve_ext(trim_import_ie)
       call dealloc_double_numbering(iele_dbl)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+7)

@@ -32,10 +32,11 @@
 !!        type(communication_table), intent(in) :: expand_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
 !!      subroutine check_returned_extend_element                        &
-!!     &         (iele_dbl, add_ele_comm, trim_import_ie)
+!!     &         (iele_dbl, add_ele_comm, trim_import_ie, SR_sig)
 !!        type(node_ele_double_number), intent(in) :: iele_dbl
 !!        type(communication_table), intent(in) :: add_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(in) :: trim_import_ie
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!
 !!      subroutine check_trim_import_ele_connect                        &
 !!     &         (ele, add_ele_comm, ie_new_import_trim)
@@ -57,6 +58,7 @@
       use t_calypso_comm_table
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
+      use t_solver_SR
 !
       implicit none
 !
@@ -178,7 +180,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_returned_extend_element                          &
-     &         (iele_dbl, add_ele_comm, trim_import_ie)
+     &         (iele_dbl, add_ele_comm, trim_import_ie, SR_sig)
 !
       use calypso_mpi
 !
@@ -188,6 +190,8 @@
       type(node_ele_double_number), intent(in) :: iele_dbl
       type(calypso_comm_table), intent(in) :: add_ele_comm
       type(ele_data_for_sleeve_ext), intent(in) :: trim_import_ie
+!
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint), allocatable :: irank_new_ele_export_trim(:)
 !
@@ -200,7 +204,7 @@
      &    add_ele_comm%istack_import, trim_import_ie%irank_comm,        &
      &    add_ele_comm%nrank_export, add_ele_comm%irank_export,         &
      &    add_ele_comm%istack_export, add_ele_comm%iflag_self_copy,     &
-     &    irank_new_ele_export_trim)
+     &    irank_new_ele_export_trim, SR_sig)
 !
       icou = check_recieved_ext_ele_export(iele_dbl, add_ele_comm,      &
      &                                      irank_new_ele_export_trim)
