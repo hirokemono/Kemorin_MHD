@@ -16,17 +16,19 @@
 !!        type(lic_parameters), intent(inout) :: lic_param(num_lic)
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!
-!!      subroutine LIC_init_shared_mesh(geofem, next_tbl, repart_p,     &
-!!     &                                repart_data, m_SR)
+!!      subroutine LIC_init_shared_mesh(geofem, ele_comm, next_tbl,     &
+!!     &                                repart_p, repart_data, m_SR)
 !!        type(mesh_data), intent(in), target :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine LIC_init_each_mesh(geofem, next_tbl, repart_p,       &
-!!     &                              lic_param, repart_data, m_SR)
+!!      subroutine LIC_init_each_mesh(geofem, ele_comm, next_tbl,      &
+!!     &          repart_p, lic_param, repart_data, m_SR)
 !!        type(mesh_data), intent(in), target :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
@@ -45,11 +47,12 @@
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
-!!      subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,       &
-!!     &                              repart_data, m_SR)
+!!      subroutine s_LIC_re_partition(repart_p, geofem, ele_comm,       &
+!!     &                              next_tbl, repart_data, m_SR)
 !!        type(volume_partioning_param), intent(in) :: repart_p
-!!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(in), target :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
+!!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
@@ -167,10 +170,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_init_shared_mesh(geofem, next_tbl, repart_p,       &
-     &                                repart_data, m_SR)
+      subroutine LIC_init_shared_mesh(geofem, ele_comm, next_tbl,       &
+     &                                repart_p, repart_data, m_SR)
 !
       type(mesh_data), intent(in), target :: geofem
+      type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
 !
@@ -182,7 +186,7 @@
 !
       if(repart_p%flag_repartition) then
 !  -----  Repartition
-        call s_LIC_re_partition(repart_p, geofem, next_tbl,             &
+        call s_LIC_re_partition(repart_p, geofem, ele_comm, next_tbl,   &
      &                          repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
@@ -197,10 +201,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_init_each_mesh(geofem, next_tbl, repart_p,         &
-     &                              lic_param, repart_data, m_SR)
+      subroutine LIC_init_each_mesh(geofem, ele_comm, next_tbl,        &
+     &          repart_p, lic_param, repart_data, m_SR)
 !
       type(mesh_data), intent(in), target :: geofem
+      type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
 !
@@ -212,13 +217,13 @@
 !  -----  Repartition
       if(lic_param%each_part_p%flag_repartition) then
         call s_LIC_re_partition(lic_param%each_part_p, geofem,          &
-     &                          next_tbl, repart_data, m_SR)
+     &                          ele_comm, next_tbl, repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_param%num_masking, repart_data%field_lic)
       else if(repart_p%flag_repartition) then
-        call s_LIC_re_partition(repart_p, geofem, next_tbl,             &
+        call s_LIC_re_partition(repart_p, geofem, ele_comm, next_tbl,   &
      &                          repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
@@ -284,8 +289,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_LIC_re_partition(repart_p, geofem, next_tbl,         &
-     &                              repart_data, m_SR)
+      subroutine s_LIC_re_partition(repart_p, geofem, ele_comm,         &
+     &                              next_tbl, repart_data, m_SR)
 !
       use t_next_node_ele_4_node
       use t_jacobians
@@ -299,8 +304,9 @@
       use const_jacobians_3d
 !
       type(volume_partioning_param), intent(in) :: repart_p
-      type(next_nod_ele_table), intent(in) :: next_tbl
       type(mesh_data), intent(in), target :: geofem
+      type(communication_table), intent(in) :: ele_comm
+      type(next_nod_ele_table), intent(in) :: next_tbl
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(mesh_SR), intent(inout) :: m_SR
@@ -312,7 +318,7 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition                                  &
-     &   (repart_p, geofem, next_tbl, repart_data%viz_fem,              &
+     &   (repart_p, geofem, ele_comm, next_tbl, repart_data%viz_fem,    &
      &    repart_data%mesh_to_viz_tbl, repart_data%repart_WK, m_SR)
 !
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'

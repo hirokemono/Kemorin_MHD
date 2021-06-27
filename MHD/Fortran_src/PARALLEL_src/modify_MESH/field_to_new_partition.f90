@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine load_or_const_new_partition                          &
-!!     &         (part_param, geofem, next_tbl, new_fem,                &
+!!     &         (part_param, geofem, ele_comm, next_tbl, new_fem,      &
 !!     &          repart_nod_tbl, repart_WK, m_SR)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
@@ -51,7 +52,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine load_or_const_new_partition                            &
-     &         (part_param, geofem, next_tbl, new_fem,                  &
+     &         (part_param, geofem, ele_comm, next_tbl, new_fem,        &
      &          repart_nod_tbl, repart_WK, m_SR)
 !
       use m_work_time
@@ -60,18 +61,16 @@
       use repartiton_by_volume
       use mesh_file_name_by_param
       use set_interpolate_file_name
-      use const_element_comm_tables
 !
       type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: geofem
+      type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
 !
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
       type(volume_partioning_work), intent(inout) :: repart_WK
       type(mesh_SR), intent(inout) :: m_SR
-!
-      type(communication_table) :: ele_comm_T
 !
       logical :: flag
 !
@@ -96,23 +95,13 @@
      &                              repart_nod_tbl)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
       else
-!  -----  Const Element communication table
-        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-        write(e_message,*)                                              &
-     &      'Construct repartitioned mesh and transfer table'
-        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-        call const_ele_comm_table                                       &
-     &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
-     &      ele_comm_T, m_SR)
-        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
 !  -----  Re-partitioning
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
         if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
         call s_repartiton_by_volume                                     &
-     &     (part_param, geofem, ele_comm_T, next_tbl,                   &
+     &     (part_param, geofem, ele_comm, next_tbl,                     &
      &      new_fem, repart_nod_tbl, repart_WK, m_SR)
-        call dealloc_comm_table(ele_comm_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !

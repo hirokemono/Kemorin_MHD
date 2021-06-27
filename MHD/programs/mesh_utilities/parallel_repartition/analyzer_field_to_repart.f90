@@ -34,6 +34,7 @@
       implicit none
 !
       type(mesh_data), save :: fem_T
+      type(communication_table) :: ele_comm_T
       type(mesh_data), save :: new_fem
       type(calypso_comm_table), save :: repart_nod_tbl1
 !
@@ -118,6 +119,10 @@
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      call const_ele_comm_table                                         &
+     &   (fem_T%mesh%node, fem_T%mesh%nod_comm, fem_T%mesh%ele,         &
+     &    ele_comm_T, m_SR_T)
 !
 !  -----  Const volume of each element
       if(iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
@@ -139,10 +144,12 @@
       call link_repart_masking_param(0, masking1, part_p1%repart_p)
       call link_repart_masking_data((.FALSE.), (.FALSE.),               &
      &    fem_T%mesh%node, izero, d_mask_org1, vect_ref1, repart_WK1)
-      call load_or_const_new_partition(part_p1%repart_p, fem_T,         &
-     &    next_tbl1, new_fem, repart_nod_tbl1, repart_WK1, m_SR_T)
+      call load_or_const_new_partition                                  &
+     &   (part_p1%repart_p, fem_T, ele_comm_T, next_tbl1,               &
+     &    new_fem, repart_nod_tbl1, repart_WK1, m_SR_T)
       call unlink_repart_masking_data(repart_WK1)
       call unlink_repart_masking_param(part_p1%repart_p)
+      call dealloc_comm_table(ele_comm_T)
       deallocate(d_mask_org1, vect_ref1, masking1)
 !
       call dealloc_next_nod_ele_table(next_tbl1)

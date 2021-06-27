@@ -7,11 +7,12 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine LIC_initialize_test(increment_lic, geofem, next_tbl, &
-!!     &          nod_fld, lic_ctls, repart_ctl, lic, m_SR)
-!!      subroutine LIC_visualize_test(istep_lic, time, geofem,          &
+!!      subroutine LIC_initialize_test(increment_lic, geofem, ele_comm, &
+!!     &          next_tbl, nod_fld, lic_ctls, repart_ctl, lic, m_SR)
+!!      subroutine LIC_visualize_test(istep_lic, time, geofem, ele_comm,&
 !!     &                              next_tb, lnod_fld, lic, m_SR)
 !!        type(mesh_data), intent(in) :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(viz_repartition_ctl), intent(inout) :: repart_ctl
@@ -30,6 +31,7 @@
       use m_work_time
 !
       use t_mesh_data
+      use t_comm_table
       use t_phys_data
       use t_next_node_ele_4_node
 !
@@ -59,8 +61,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_initialize_test(increment_lic, geofem, next_tbl,   &
-     &          nod_fld, lic_ctls, repart_ctl, lic, m_SR)
+      subroutine LIC_initialize_test(increment_lic, geofem, ele_comm,   &
+     &          next_tbl, nod_fld, lic_ctls, repart_ctl, lic, m_SR)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
@@ -70,6 +72,7 @@
 !
       integer(kind = kint), intent(in) :: increment_lic
       type(mesh_data), intent(in), target :: geofem
+      type(communication_table), intent(in) :: ele_comm
       type(phys_data), intent(in) :: nod_fld
       type(next_nod_ele_table), intent(in) :: next_tbl
 !
@@ -138,15 +141,15 @@
       end do
 !
       if(lic%flag_each_repart) return
-      call LIC_initialize_w_shared_mesh(geofem, next_tbl,               &
+      call LIC_initialize_w_shared_mesh(geofem, ele_comm,  next_tbl,    &
      &    lic%repart_p, lic%repart_data, lic%pvr, m_SR)
 !
       end subroutine LIC_initialize_test
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_visualize_test(istep_lic, time, geofem, next_tbl,  &
-     &                              nod_fld, lic, m_SR)
+      subroutine LIC_visualize_test(istep_lic, time, geofem, ele_comm,  &
+     &                              next_tbl, nod_fld, lic, m_SR)
 !
       use m_elapsed_labels_4_VIZ
       use select_LIC_rendering
@@ -155,6 +158,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_data), intent(in) :: geofem
+      type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(phys_data), intent(in) :: nod_fld
 !
@@ -165,8 +169,8 @@
       if(lic%pvr%num_pvr.le.0 .or. istep_lic.le.0) return
 !
       if(lic%flag_each_repart) then
-        call LIC_visualize_w_each_repart                                &
-     &     (istep_lic, time, geofem, next_tbl, nod_fld, lic%repart_p,   &
+        call LIC_visualize_w_each_repart(istep_lic, time,               &
+     &      geofem, ele_comm, next_tbl, nod_fld, lic%repart_p,          &
      &      lic%repart_data, lic%pvr, lic%lic_param, m_SR)
       else
         call LIC_visualize_w_shared_mesh                                &

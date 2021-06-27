@@ -7,11 +7,13 @@
 !>@brief structure of control data for anaglyph LIC rendering
 !!
 !!@verbatim
-!!      subroutine anaglyph_LIC_initialize(increment_lic, geofem,       &
-!!     &          next_tbl, nod_fld, repart_ctl, lic_ctls, lic, m_SR)
-!!      subroutine anaglyph_LIC_visualize(istep_lic, time,              &
-!!     &          geofem, next_tbl, nod_fld, lic, m_SR)
+!!      subroutine anaglyph_LIC_initialize                              &
+!!     &         (increment_lic, geofem, ele_comm, next_tbl, nod_fld,   &
+!!     &          repart_ctl, lic_ctls, lic, m_SR)
+!!!      subroutine anaglyph_LIC_visualize(istep_lic, time,             &
+!!     &          geofem, ele_comm, next_tbl, nod_fld, lic, m_SR)
 !!        type(mesh_data), intent(in) :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(viz_repartition_ctl), intent(in) :: repart_ctl
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
@@ -30,6 +32,7 @@
       use m_work_time
 !
       use t_mesh_data
+      use t_comm_table
       use t_phys_data
       use t_next_node_ele_4_node
 !
@@ -59,8 +62,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine anaglyph_LIC_initialize(increment_lic, geofem,         &
-     &          next_tbl, nod_fld, repart_ctl, lic_ctls, lic, m_SR)
+      subroutine anaglyph_LIC_initialize                                &
+     &         (increment_lic, geofem, ele_comm, next_tbl, nod_fld,     &
+     &          repart_ctl, lic_ctls, lic, m_SR)
 !
       use t_control_data_pvr_sections
       use t_surf_grp_list_each_surf
@@ -71,6 +75,7 @@
 !
       integer(kind = kint), intent(in) :: increment_lic
       type(mesh_data), intent(in), target :: geofem
+      type(communication_table), intent(in) :: ele_comm
       type(phys_data), intent(in) :: nod_fld
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(viz_repartition_ctl), intent(in) :: repart_ctl
@@ -132,7 +137,7 @@
      &                          lic%repart_data)
 !
       if(lic%flag_each_repart) return
-      call LIC_anaglyph_init_shared_mesh(geofem, next_tbl,              &
+      call LIC_anaglyph_init_shared_mesh(geofem, ele_comm, next_tbl,    &
      &    lic%repart_p, lic%repart_data, lic%pvr, m_SR)
 !
       end subroutine anaglyph_LIC_initialize
@@ -140,7 +145,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_LIC_visualize(istep_lic, time,                &
-     &          geofem, next_tbl, nod_fld, lic, m_SR)
+     &          geofem, ele_comm, next_tbl, nod_fld, lic, m_SR)
 !
       use m_elapsed_labels_4_VIZ
       use select_anaglyph_LIC_by_mesh
@@ -149,6 +154,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_data), intent(in) :: geofem
+      type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(phys_data), intent(in) :: nod_fld
 !
@@ -160,7 +166,7 @@
 !
       if(lic%flag_each_repart) then
         call LIC_anaglyph_w_each_repart(istep_lic, time,                &
-     &      geofem, next_tbl, nod_fld, lic%repart_p,                    &
+     &      geofem, ele_comm, next_tbl, nod_fld, lic%repart_p,          &
      &      lic%repart_data, lic%pvr, lic%lic_param, m_SR)
       else
         call LIC_anaglyph_w_shared_mesh                                 &

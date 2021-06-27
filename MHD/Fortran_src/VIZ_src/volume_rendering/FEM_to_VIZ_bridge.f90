@@ -67,8 +67,9 @@
       call link_jacobians_4_viz                                         &
      &   (VIZ_DAT%next_tbl_v, VIZ_DAT%jacobians_v, VIZ_DAT)
       if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
-      call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
-     &    VIZ_DAT%edge_comm, VIZ_DAT%next_tbl, VIZ_DAT%jacobians, m_SR)
+      call normals_and_jacobians_4_VIZ                                  &
+     &   (viz_step, geofem, VIZ_DAT%ele_comm, VIZ_DAT%edge_comm,        &
+     &    VIZ_DAT%next_tbl, VIZ_DAT%jacobians, m_SR)
 !
       end subroutine init_FEM_to_VIZ_bridge
 !
@@ -100,6 +101,15 @@
 !
       call link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
 !
+!  -----  Construct Element communication table
+      if(viz_step%LIC_t%increment .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+        call const_ele_comm_table                                       &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
+     &      VIZ_DAT%ele_comm, m_SR)
+      end if
+!
+!  -----  Construct Edge communication table
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
@@ -114,8 +124,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine normals_and_jacobians_4_VIZ                            &
-     &         (viz_step, geofem, edge_comm, next_tbl, jacobians, m_SR)
+      subroutine normals_and_jacobians_4_VIZ(viz_step, geofem,          &
+     &          ele_comm, edge_comm, next_tbl, jacobians, m_SR)
 !
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
@@ -125,6 +135,7 @@
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
+      type(communication_table), intent(inout) :: ele_comm
       type(communication_table), intent(inout) :: edge_comm
       type(next_nod_ele_table), intent(inout) :: next_tbl
       type(jacobians_type), intent(inout) :: jacobians
@@ -142,7 +153,15 @@
      &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
       end if
 !
-! ------  init for fieldline and PVR ---------------------
+!  -----  Construct Element communication table
+      if(viz_step%LIC_t%increment .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+        call const_ele_comm_table                                       &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
+     &      ele_comm, m_SR)
+      end if
+!
+!  -----  Construct Edge communication table
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'

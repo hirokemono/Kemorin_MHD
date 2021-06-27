@@ -75,12 +75,13 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      call LIC_initialize                                               &
-     &   (viz_step%LIC_t%increment, geofem, VIZ_DAT%next_tbl, nod_fld,  &
+      call LIC_initialize(viz_step%LIC_t%increment,                     &
+     &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
      &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, lic_v%lic, m_SR)
       call anaglyph_LIC_initialize(viz_step%LIC_t%increment,            &
-     &    geofem, VIZ_DAT%next_tbl, nod_fld, viz_ctls%repart_ctl,       &
-     &    viz_ctls%lic_anaglyph_ctls, lic_v%anaglyph_lic, m_SR)
+     &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
+     &    viz_ctls%repart_ctl, viz_ctls%lic_anaglyph_ctls,              &
+     &    lic_v%anaglyph_lic, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       call calypso_mpi_barrier
@@ -98,6 +99,7 @@
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
       type(phys_data), intent(in) :: nod_fld
       type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
@@ -106,10 +108,11 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%lic, m_SR)
+      call LIC_visualize(viz_step%istep_lic, time_d%time, geofem,       &
+     &    VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld, lic_v%lic, m_SR)
       call anaglyph_LIC_visualize(viz_step%istep_lic, time_d%time,      &
-     &    geofem, VIZ_DAT%next_tbl, nod_fld, lic_v%anaglyph_lic, m_SR)
+     &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
+     &    lic_v%anaglyph_lic, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       call calypso_mpi_barrier

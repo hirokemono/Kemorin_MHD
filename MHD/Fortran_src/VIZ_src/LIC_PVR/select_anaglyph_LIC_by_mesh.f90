@@ -7,9 +7,10 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine LIC_anaglyph_init_shared_mesh                        &
-!!     &         (geofem, next_tbl, repart_p, repart_data, pvr, m_SR)
+!!      subroutine LIC_anaglyph_init_shared_mesh(geofem, ele_comm,      &
+!!     &          next_tbl, repart_p, repart_data, pvr, m_SR)
 !!        type(mesh_data), intent(in) :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
@@ -29,11 +30,12 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
 !!      subroutine LIC_anaglyph_w_each_repart                           &
-!!     &         (istep_lic, time, geofem, next_tbl, nod_fld,           &
+!!     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld, &
 !!     &          repart_p, repart_data, pvr, lic_param, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(volume_partioning_param), intent(in) :: repart_p
@@ -54,6 +56,7 @@
       use m_work_time
 !
       use t_mesh_data
+      use t_comm_table
       use t_phys_data
       use t_next_node_ele_4_node
 !
@@ -80,13 +83,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_anaglyph_init_shared_mesh                          &
-     &         (geofem, next_tbl, repart_p, repart_data, pvr, m_SR)
+      subroutine LIC_anaglyph_init_shared_mesh(geofem, ele_comm,        &
+     &          next_tbl, repart_p, repart_data, pvr, m_SR)
 !
       use each_LIC_rendering
       use each_anaglyph_PVR
 !
       type(mesh_data), intent(in) :: geofem
+      type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
 !
@@ -97,8 +101,8 @@
       integer(kind = kint) :: i_lic
 !
 !
-      call LIC_init_shared_mesh(geofem, next_tbl, repart_p,             &
-     &                          repart_data, m_SR)
+      call LIC_init_shared_mesh(geofem, ele_comm, next_tbl,             &
+     &                          repart_p, repart_data, m_SR)
       call init_sf_grp_list_each_surf                                   &
      &   (repart_data%viz_fem%mesh%surf,                                &
      &    repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
@@ -200,7 +204,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_anaglyph_w_each_repart                             &
-     &         (istep_lic, time, geofem, next_tbl, nod_fld,             &
+     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,   &
      &          repart_p, repart_data, pvr, lic_param, m_SR)
 !
       use t_surf_grp_list_each_surf
@@ -215,6 +219,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_data), intent(in) :: geofem
+      type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(phys_data), intent(in) :: nod_fld
       type(volume_partioning_param), intent(in) :: repart_p
@@ -232,7 +237,7 @@
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
-        call LIC_init_each_mesh(geofem, next_tbl, repart_p,             &
+        call LIC_init_each_mesh(geofem, ele_comm, next_tbl, repart_p,   &
      &                          lic_param(i_lic), repart_data, m_SR)
         if(iflag_debug .gt. 0) write(*,*) 'init_sf_grp_list_each_surf'
         call init_sf_grp_list_each_surf                                 &

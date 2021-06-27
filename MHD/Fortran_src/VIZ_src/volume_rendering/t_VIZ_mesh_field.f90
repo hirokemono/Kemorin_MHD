@@ -46,6 +46,8 @@
 !>        Structure of neighboring list for each node
         type(next_nod_ele_table), pointer :: next_tbl
 !
+!>        Structure of element communication table
+        type(communication_table) :: ele_comm
 !>        Structure of edge communication table
         type(communication_table) :: edge_comm
       end type VIZ_mesh_field
