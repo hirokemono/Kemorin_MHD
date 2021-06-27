@@ -28,10 +28,10 @@
 !!      subroutine set_ctl_label_LIC_kernel_f(labels)                   &
 !!     &          bind(c, name="set_ctl_label_LIC_kernel_f")
 !!
-!!      integer(c_int) function num_ctl_label_LIC_masking_f()           &
-!!     &              bind(c, name="num_ctl_label_LIC_masking_f")
-!!      subroutine set_ctl_label_LIC_masking_f(labels)                  &
-!!     &          bind(c, name="set_ctl_label_LIC_masking_f")
+!!      integer(c_int) function num_ctl_label_masking_f()               &
+!!     &              bind(c, name="num_ctl_label_masking_f")
+!!      subroutine set_ctl_label_masking_f(labels)                      &
+!!     &          bind(c, name="set_ctl_label_masking_f")
 !!
 !!      integer(c_int) function num_label_LIC_colormap_f()              &
 !!     &          bind(c, name="num_label_LIC_colormap_f")
@@ -163,27 +163,27 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_ctl_label_LIC_masking_f()             &
-     &              bind(c, name="num_ctl_label_LIC_masking_f")
+      integer(c_int) function num_ctl_label_masking_f()                 &
+     &              bind(c, name="num_ctl_label_masking_f")
 !
-      use t_control_data_LIC_masking
+      use t_control_data_masking
 !
-      num_ctl_label_LIC_masking_f = num_ctl_label_LIC_masking()
+      num_ctl_label_masking_f = num_ctl_label_masking()
 !
-      end function num_ctl_label_LIC_masking_f
+      end function num_ctl_label_masking_f
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_label_LIC_masking_f(labels)                    &
-     &          bind(c, name="set_ctl_label_LIC_masking_f")
+      subroutine set_ctl_label_masking_f(labels)                        &
+     &          bind(c, name="set_ctl_label_masking_f")
 !
-      use t_control_data_LIC_masking
+      use t_control_data_masking
 !
       character(C_CHAR), intent(inout) :: labels(*)
 !
-      call set_ctl_label_LIC_masking(labels(1))
+      call set_ctl_label_masking(labels(1))
 !
-      end subroutine set_ctl_label_LIC_masking_f
+      end subroutine set_ctl_label_masking_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

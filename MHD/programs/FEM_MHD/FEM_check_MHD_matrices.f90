@@ -5,7 +5,7 @@
 !
 !!      subroutine FEM_check_MHD_mat                                    &
 !!     &         (MHD_files, flex_MHD, MHD_step, FEM_model, MHD_CG,     &
-!!     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq)
+!!     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
@@ -14,6 +14,7 @@
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
+!!        type(mesh_SR), intent(inout) :: m_SR
 !
       module FEM_check_MHD_matrices
 !
@@ -32,6 +33,7 @@
       use t_FEM_SGS_structure
       use t_FEM_MHD_mean_square
       use t_MHD_IO_data
+      use t_mesh_SR
 !
       implicit none
 !
@@ -43,7 +45,7 @@
 !
       subroutine FEM_check_MHD_mat                                      &
      &         (MHD_files, flex_MHD, MHD_step, FEM_model, MHD_CG,       &
-     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq)
+     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
 !
       use t_boundary_field_IO
 !
@@ -64,6 +66,7 @@
       type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_IO_data), intent(inout) :: MHD_IO
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
 !   matrix assembling
@@ -76,7 +79,7 @@
      &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
      &    FEM_SGS%Csims, FEM_MHD%iphys, FEM_SGS%iphys_LES,              &
      &    FEM_MHD%field, MHD_CG, SGS_MHD_wk, fem_sq,                    &
-     &    MHD_IO%rst_IO, FEM_MHD%label_sim, FEM_MHD%v_sol)
+     &    MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !

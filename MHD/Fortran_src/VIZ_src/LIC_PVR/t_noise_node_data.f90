@@ -1,5 +1,5 @@
-!>@file   t_geometry_data.f90
-!!@brief  module t_geometry_data
+!>@file   t_noise_node_data.f90
+!!@brief  module t_noise_node_data
 !!
 !!@author  Yangguang Liao
 !!@date Programmed in 2018
@@ -52,7 +52,6 @@
         integer(kind=kint), intent(in) :: level, dim
 !
         integer(kind=kint) :: i, size
-        real(kind=kreal) :: rand_v
 
         n_node%n_value = 0.0
 
@@ -93,10 +92,9 @@
         use t_geometries_in_pvr_screen
       !
         type(noise_mask), intent(inout) :: n_mask
-        integer(kind=kint) :: num_ref
+        integer(kind=kint), intent(in) :: num_ref
         real(kind=kreal), intent(in) :: min, max
         real(kind=kreal), intent(in) :: ref_data(num_ref)
-        !type(pvr_projected_field), intent(in) :: field_pvr
 
         n_mask%range_min = min
         n_mask%range_max = max

@@ -1,5 +1,9 @@
 m_component_flags.o: $(CTL_DIR)/m_component_flags.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
+m_ctl_array_routine_name.o: $(CTL_DIR)/m_ctl_array_routine_name.f90 m_precision.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_ctl_item_routine_name.o: $(CTL_DIR)/m_ctl_item_routine_name.f90 m_precision.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
 m_more_component_flags.o: $(CTL_DIR)/m_more_component_flags.f90 m_precision.o m_phys_constants.o t_field_labels.o t_multi_flag_labels.o m_component_flags.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_4_pickup_sph.o: $(CTL_DIR)/set_control_4_pickup_sph.f90 m_precision.o t_ctl_data_4_sph_monitor.o t_pickup_sph_spectr_data.o t_rms_4_sph_spectr.o skip_comment_f.o t_ctl_data_sph_vol_spectr.o output_sph_m_square_file.o t_ctl_data_pick_sph_spectr.o m_base_field_labels.o m_grad_field_labels.o t_no_heat_Nusselt.o t_phys_data.o t_control_array_character.o
@@ -48,6 +52,8 @@ t_control_array_real2.o: $(CTL_DIR)/t_control_array_real2.f90 m_precision.o m_ma
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_real3.o: $(CTL_DIR)/t_control_array_real3.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_masking.o: $(CTL_DIR)/t_control_data_masking.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real2.o skip_comment_f.o t_control_array_character3.o add_nodal_fields_ctl.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_4_FEM_mesh.o: $(CTL_DIR)/t_ctl_data_4_FEM_mesh.f90 m_precision.o t_control_array_character.o t_control_array_integer.o m_machine_parameter.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_4_Multigrid.o: $(CTL_DIR)/t_ctl_data_4_Multigrid.f90 m_precision.o m_machine_parameter.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_read_control_elements.o write_control_elements.o
@@ -68,6 +74,8 @@ t_ctl_data_4_sphere_model.o: $(CTL_DIR)/t_ctl_data_4_sphere_model.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_4_time_steps.o: $(CTL_DIR)/t_ctl_data_4_time_steps.f90 m_precision.o m_machine_parameter.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_FEM_sleeve_size.o: $(CTL_DIR)/t_ctl_data_FEM_sleeve_size.f90 m_precision.o t_control_array_character.o t_control_array_integer.o t_control_array_real.o m_machine_parameter.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_ele_layering.o: $(CTL_DIR)/t_ctl_data_ele_layering.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_integer.o m_machine_parameter.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_filter_files.o: $(CTL_DIR)/t_ctl_data_filter_files.f90 m_precision.o t_control_array_character.o t_read_control_elements.o m_machine_parameter.o skip_comment_f.o
@@ -79,5 +87,11 @@ t_ctl_data_sph_vol_spectr.o: $(CTL_DIR)/t_ctl_data_sph_vol_spectr.f90 m_precisio
 t_mid_equator_control.o: $(CTL_DIR)/t_mid_equator_control.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_read_control_elements.o: $(CTL_DIR)/t_read_control_elements.f90 m_precision.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_control_IO_source.o: $(CTL_DIR)/write_control_IO_source.f90 m_precision.o m_ctl_item_routine_name.o m_ctl_array_routine_name.o set_parallel_file_name.o write_ctl_item_routines.o write_ctl_array_routines.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_ctl_array_routines.o: $(CTL_DIR)/write_ctl_array_routines.f90 m_precision.o m_ctl_item_routine_name.o m_ctl_array_routine_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_ctl_item_routines.o: $(CTL_DIR)/write_ctl_item_routines.f90 m_precision.o m_ctl_item_routine_name.o m_ctl_array_routine_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

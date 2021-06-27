@@ -5,13 +5,16 @@
 !
 !!      subroutine cal_filtered_scalar_whole                            &
 !!     &         (filter_param, nod_comm, node, filtering,              &
-!!     &          i_filter, i_scalar, wk_filter, nod_fld, v_sol)
+!!     &          i_filter, i_scalar, wk_filter, nod_fld,               &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_filtered_vector_whole                            &
 !!     &         (filter_param, nod_comm, node, filtering,              &
-!!     &          i_filter, i_vect, wk_filter, nod_fld, v_sol)
+!!     &          i_filter, i_vect, wk_filter, nod_fld,                 &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_filtered_sym_tensor_whole                        &
 !!     &         (filter_param, nod_comm, node, filtering,              &
-!!     &          i_filter, i_vect, wk_filter, nod_fld, v_sol)
+!!     &          i_filter, i_vect, wk_filter, nod_fld,                 &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -19,6 +22,8 @@
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!          i_filter: field UD foe filtered field
 !!          i_vect: original field ID
 !
@@ -32,6 +37,7 @@
       use t_phys_data
       use t_filtering_data
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -43,7 +49,8 @@
 !
       subroutine cal_filtered_scalar_whole                              &
      &         (filter_param, nod_comm, node, filtering,                &
-     &          i_filter, i_scalar, wk_filter, nod_fld, v_sol)
+     &          i_filter, i_scalar, wk_filter, nod_fld,                 &
+     &          v_sol, SR_sig, SR_r)
 !
       use select_filtering
 !
@@ -56,12 +63,14 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call cal_filtered_scalar                                          &
      &   (filter_param%iflag_SGS_filter, filter_param%whole,            &
      &    nod_comm, node, filtering, i_filter, i_scalar,                &
-     &    wk_filter, nod_fld, v_sol)
+     &    wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       end subroutine cal_filtered_scalar_whole
 !
@@ -69,7 +78,8 @@
 !
       subroutine cal_filtered_vector_whole                              &
      &         (filter_param, nod_comm, node, filtering,                &
-     &          i_filter, i_vect, wk_filter, nod_fld, v_sol)
+     &          i_filter, i_vect, wk_filter, nod_fld,                   &
+     &          v_sol, SR_sig, SR_r)
 !
       use select_filtering
 !
@@ -82,12 +92,14 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call cal_filtered_vector                                          &
      &   (filter_param%iflag_SGS_filter, filter_param%whole,            &
      &    nod_comm, node, filtering, i_filter, i_vect,                  &
-     &    wk_filter, nod_fld, v_sol)
+     &    wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       end subroutine cal_filtered_vector_whole
 !
@@ -95,7 +107,8 @@
 !
       subroutine cal_filtered_sym_tensor_whole                          &
      &         (filter_param, nod_comm, node, filtering,                &
-     &          i_filter, i_vect, wk_filter, nod_fld, v_sol)
+     &          i_filter, i_vect, wk_filter, nod_fld,                   &
+     &          v_sol, SR_sig, SR_r)
 !
       use select_filtering
 !
@@ -108,12 +121,14 @@
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call cal_filtered_sym_tensor                                      &
      &   (filter_param%iflag_SGS_filter, filter_param%whole,            &
      &    nod_comm, node, filtering, i_filter, i_vect,                  &
-     &    wk_filter, nod_fld, v_sol)
+     &    wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
       end subroutine cal_filtered_sym_tensor_whole
 !

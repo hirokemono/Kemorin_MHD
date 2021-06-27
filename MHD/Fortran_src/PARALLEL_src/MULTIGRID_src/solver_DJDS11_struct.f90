@@ -1,20 +1,26 @@
+!>@file   solver_DJDS11_struct.f90
+!!@brief  module solver_DJDS11_struct
+!!
+!!@author H. Matsui
+!!@date Programmed in Jan., 2005
 !
-!      module solver_DJDS11_struct
-!
-!     Written by H. Matsui on Jan., 2005
-!
-!      subroutine init_DJDS11_struct(NP, PEsmpTOT, METHOD, PRECOND,     &
-!     &          ierr)
-!
-!      subroutine solve_DJDS11_struct(PEsmpTOT, comm_tbl, djds_tbl,     &
-!     &           mat11, NP, B, X, METHOD, PRECOND,ierr, eps, itr,      &
-!     &           itr_res)
-!      subroutine init_solve_DJDS11_struct(PEsmpTOT, comm_tbl, djds_tbl,&
-!     &           mat11, NP, B, X, METHOD, PRECOND,ierr, eps, itr,      &
-!     &           itr_res)
-!
-!      subroutine precond_DJDS11_struct(PEsmpTOT, djds_tbl, mat11,      &
-!     &          PRECOND, sigma_diag)
+!>@brief  Top routine for DJDS solver using structure
+!!
+!!@verbatim
+!!      subroutine init_DJDS11_struct(NP, PEsmpTOT, METHOD, PRECOND,    &
+!!     &          ierr)
+!!
+!!      subroutine solve_DJDS11_struct(PEsmpTOT, comm_tbl, djds_tbl,    &
+!!     &           mat11, NP, B, X, METHOD, PRECOND, SR_sig, SR_r,      &
+!!     &           ierr, eps, itr, itr_res)
+!!      subroutine init_solve_DJDS11_struct                             &
+!!     &         (PEsmpTOT, comm_tbl, djds_tbl, mat11, NP, B, X,        &
+!!     &          METHOD, PRECOND, SR_sig, SR_r,                        &
+!!     &          ierr, eps, itr, itr_res)
+!!
+!!      subroutine precond_DJDS11_struct(PEsmpTOT, djds_tbl, mat11,     &
+!!     &          PRECOND, sigma_diag)
+!!@endverbatim
 !
       module solver_DJDS11_struct
 !
@@ -47,10 +53,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine solve_DJDS11_struct(PEsmpTOT, comm_tbl, djds_tbl,      &
-     &           mat11, NP, B, X, METHOD, PRECOND, ierr, eps, itr,      &
-     &           itr_res)
+     &           mat11, NP, B, X, METHOD, PRECOND, SR_sig, SR_r,        &
+     &           ierr, eps, itr, itr_res)
 !
-      use m_solver_SR
+      use t_solver_SR
       use t_comm_table
       use solver_DJDS
 !      use check_DJDS_ordering
@@ -60,13 +66,16 @@
       real(kind = kreal), intent(in) :: eps
       type(communication_table), intent(in) :: comm_tbl
       type(DJDS_ordering_table), intent(in) :: djds_tbl
+      type(DJDS_MATRIX), intent(in) :: mat11
 !
       character(len=kchara ), intent(in):: METHOD, PRECOND
       integer(kind = kint), intent(in)  :: NP
       real(kind = kreal), intent(inout) :: B(NP)
       real(kind = kreal), intent(inout) :: X(NP)
       integer(kind = kint), intent(inout)  :: ierr, itr_res
-      type(DJDS_MATRIX), intent(in) :: mat11
+!
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !       call s_check_DJDS_ordering                                      &
@@ -116,17 +125,17 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res, SR_sig1, SR_r1)
+     &     METHOD, PRECOND, itr_res, SR_sig, SR_r)
 !
       end subroutine solve_DJDS11_struct
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_solve_DJDS11_struct(PEsmpTOT, comm_tbl, djds_tbl, &
-     &           mat11, NP, B, X, METHOD, PRECOND,ierr, eps, itr,       &
-     &           itr_res)
+      subroutine init_solve_DJDS11_struct                               &
+     &         (PEsmpTOT, comm_tbl, djds_tbl, mat11, NP, B, X,          &
+     &          METHOD, PRECOND, SR_sig, SR_r,                          &
+     &          ierr, eps, itr, itr_res)
 !
-      use m_solver_SR
       use t_comm_table
       use solver_DJDS
 !
@@ -135,13 +144,16 @@
       real(kind = kreal), intent(in) :: eps
       type(communication_table), intent(in) :: comm_tbl
       type(DJDS_ordering_table), intent(in) :: djds_tbl
+      type(DJDS_MATRIX), intent(in) :: mat11
 !
       character(len=kchara ), intent(in):: METHOD, PRECOND
       integer(kind = kint), intent(in)  :: NP
       real(kind = kreal), intent(inout) :: B(NP)
       real(kind = kreal), intent(inout) :: X(NP)
       integer(kind = kint), intent(inout)  :: ierr, itr_res
-      type(DJDS_MATRIX), intent(in) :: mat11
+!
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call init_solve_DJDS_kemo                                         &
@@ -160,7 +172,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res, SR_sig1, SR_r1)
+     &     METHOD, PRECOND, itr_res, SR_sig, SR_r)
 !
       end subroutine init_solve_DJDS11_struct
 !

@@ -42,7 +42,7 @@
       use m_field_file_format
       use t_ctl_params_4_gen_table
       use t_ctl_data_gen_table
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
       use set_control_platform_item
       use set_control_platform_data
       use parallel_ucd_IO_select

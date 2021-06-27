@@ -7,13 +7,17 @@
 !> @brief Structures for PVR Image data
 !!
 !!@verbatim
-!!      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_rgb)
+!!      subroutine alloc_pvr_image_array(n_pvr_pixel, pvr_rgb)
+!!      subroutine dealloc_pvr_image_array(pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
-!!
-!!      subroutine dealloc_pvr_image_array_type(pvr_rgb)
 !!
 !!      subroutine store_left_eye_image(pvr_rgb)
 !!      subroutine add_left_eye_image(pvr_rgb)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!
+!!      subroutine copy_pvr_image_file_param(org_pvr_rgb, rot_pvr_rgb)
+!!        type(pvr_image_type), intent(in) :: org_pvr_rgb
+!!        type(pvr_image_type), intent(inout) :: rot_pvr_rgb
 !!@endverbatim
 !
       module t_pvr_image_array
@@ -59,15 +63,8 @@
 !>    RGBA byte image data
         character(len = 1), allocatable :: rgba_chara_gl(:,:)
 !
-!>    Local real image data
-        real(kind = kreal), allocatable :: rgba_real_lc(:,:)
-!>    RGB byte image data
-        character(len = 1), allocatable :: rgb_chara_lc(:,:)
-!
 !>    Global real image data for left eye
         real(kind = kreal), allocatable :: rgba_left_gl(:,:)
-!>    Global real image data for right eye
-        real(kind = kreal), allocatable :: rgba_right_gl(:,:)
       end type pvr_image_type
 !
 !  ---------------------------------------------------------------------
@@ -76,7 +73,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_rgb)
+      subroutine alloc_pvr_image_array(n_pvr_pixel, pvr_rgb)
 !
       use t_control_params_4_pvr
 !
@@ -98,35 +95,29 @@
       allocate(pvr_rgb%rgba_chara_gl(4,pvr_rgb%num_pixel_actual))
 !
       allocate(pvr_rgb%rgba_left_gl(4,pvr_rgb%num_pixel_actual))
-      allocate(pvr_rgb%rgba_right_gl(4,pvr_rgb%num_pixel_actual))
 !
       allocate(pvr_rgb%rgba_real_gl(4,pvr_rgb%num_pixel_actual))
 !
-      pvr_rgb%rgba_real_gl =  0.0d0
-      pvr_rgb%rgba_left_gl =  0.0d0
-      pvr_rgb%rgba_right_gl = 0.0d0
+!$omp parallel workshare
+      pvr_rgb%rgba_real_gl(1:4,1:pvr_rgb%num_pixel_actual) =  0.0d0
+      pvr_rgb%rgba_left_gl(1:4,1:pvr_rgb%num_pixel_actual) =  0.0d0
+!$omp end parallel workshare
 !
-      allocate(pvr_rgb%rgba_real_lc(4,pvr_rgb%num_pixel_xy))
-      allocate(pvr_rgb%rgb_chara_lc(3,pvr_rgb%num_pixel_xy))
-      pvr_rgb%rgba_real_lc = 0.0d0
-!
-      end subroutine alloc_pvr_image_array_type
+      end subroutine alloc_pvr_image_array
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_pvr_image_array_type(pvr_rgb)
+      subroutine dealloc_pvr_image_array(pvr_rgb)
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       deallocate(pvr_rgb%rgb_chara_gl, pvr_rgb%rgba_chara_gl)
-      deallocate(pvr_rgb%rgba_left_gl, pvr_rgb%rgba_right_gl)
+      deallocate(pvr_rgb%rgba_left_gl)
       deallocate(pvr_rgb%rgba_real_gl)
 !
-      deallocate(pvr_rgb%rgba_real_lc, pvr_rgb%rgb_chara_lc)
-!
-      end subroutine dealloc_pvr_image_array_type
+      end subroutine dealloc_pvr_image_array
 !
 !  ---------------------------------------------------------------------
 !
@@ -162,6 +153,22 @@
 !$omp end parallel workshare
 !
       end subroutine add_left_eye_image
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_pvr_image_file_param(org_pvr_rgb, rot_pvr_rgb)
+!
+      type(pvr_image_type), intent(in) :: org_pvr_rgb
+      type(pvr_image_type), intent(inout) :: rot_pvr_rgb
+!
+!
+      rot_pvr_rgb%iflag_monitoring =   org_pvr_rgb%iflag_monitoring
+      rot_pvr_rgb%id_pvr_file_type =   org_pvr_rgb%id_pvr_file_type
+      rot_pvr_rgb%id_pvr_transparent = org_pvr_rgb%id_pvr_transparent
+      rot_pvr_rgb%pvr_prefix =         org_pvr_rgb%pvr_prefix
+!
+      end subroutine copy_pvr_image_file_param
 !
 !  ---------------------------------------------------------------------
 !

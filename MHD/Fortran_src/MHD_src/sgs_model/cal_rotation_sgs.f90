@@ -9,7 +9,7 @@
 !!     &          SGS_param, nod_comm, node, ele, surf, sf_grp,         &
 !!     &          iphys_ele_base, ele_fld, jacs, FEM_elens, diff_coefs, &
 !!     &          nod_bc, sgs_sf, rhs_tbl, fem_wk, surf_wk,             &
-!!     &          f_nl, nod_fld, v_sol)
+!!     &          f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -30,6 +30,8 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_rotation_sgs
 !
@@ -56,11 +58,12 @@
       use t_filter_elength
       use t_material_property
       use t_SGS_model_coefs
+      use t_vector_for_solver
+      use t_solver_SR
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
       use nod_phys_send_recv
-      use t_vector_for_solver
 !
       implicit none
 !
@@ -78,7 +81,7 @@
      &          SGS_param, nod_comm, node, ele, surf, sf_grp,           &
      &          iphys_ele_base, ele_fld, jacs, FEM_elens, diff_coefs,   &
      &          nod_bc, sgs_sf, rhs_tbl, fem_wk, surf_wk,               &
-     &          f_nl, nod_fld, v_sol)
+     &          f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_rotation
       use set_boundary_scalars
@@ -110,6 +113,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(SGS_param%iflag_SGS .ne. id_SGS_none                           &
@@ -133,7 +138,8 @@
       call set_boundary_vect(nod_bc, i_rot, nod_fld)
 !
 ! ----------   communications
-      call vector_send_recv(i_rot, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(i_rot, nod_comm, nod_fld,                   &
+     &                      v_sol, SR_sig, SR_r)
       nod_fld%iflag_update(i_rot:i_rot+2) = 1
 !
       end subroutine choose_cal_rotation_sgs

@@ -11,16 +11,21 @@
 !!      subroutine dealloc_double_numbering(dbl_id)
 !!        type(node_ele_double_number), intent(inout) :: dbl_id
 !!
-!!      subroutine set_node_double_numbering(node, nod_comm, inod_dbl)
+!!      subroutine set_node_double_numbering(node, nod_comm, inod_dbl,  &
+!!     &                                     SR_sig, SR_i)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_ele_double_number), intent(inout) :: inod_dbl
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!      subroutine set_ele_double_numbering                             &
-!!     &         (ele, ele_comm, inod_dbl, iele_dbl)
+!!     &         (ele, ele_comm, inod_dbl, iele_dbl, SR_sig, SR_i)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(node_ele_double_number), intent(inout) :: iele_dbl
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!
 !!      subroutine find_belonged_pe_4_node                              &
 !!     &         (my_rank, node, nod_comm, ip_node)
@@ -86,8 +91,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_node_double_numbering(node, nod_comm, inod_dbl)
+      subroutine set_node_double_numbering(node, nod_comm, inod_dbl,    &
+     &                                     SR_sig, SR_i)
 !
+      use t_solver_SR
+      use t_solver_SR_int
       use t_geometry_data
       use t_comm_table
       use solver_SR_type
@@ -96,6 +104,8 @@
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(node_ele_double_number), intent(inout) :: inod_dbl
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: inod
 !
@@ -108,17 +118,20 @@
         inod_dbl%index(inod) = inod
       end do
 !$omp end parallel do
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_dbl%index(1))
+!
+      call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm,             &
+     &                               SR_sig, SR_i, inod_dbl%index(1))
 !
       end subroutine set_node_double_numbering
 !
 ! -----------------------------------------------------------------------
 !
       subroutine set_ele_double_numbering                               &
-     &         (ele, ele_comm, inod_dbl, iele_dbl)
+     &         (ele, ele_comm, inod_dbl, iele_dbl, SR_sig, SR_i)
 
 !
+      use t_solver_SR
+      use t_solver_SR_int
       use t_geometry_data
       use t_comm_table
       use solver_SR_type
@@ -128,6 +141,9 @@
       type(node_ele_double_number), intent(in) :: inod_dbl
 !
       type(node_ele_double_number), intent(inout) :: iele_dbl
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+!
 !
       integer(kind = kint) :: iele
 !
@@ -138,8 +154,8 @@
       end do
 !$omp end parallel do
 !
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (ele%numele, ele_comm, iele_dbl%index(1))
+      call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm,              &
+     &                               SR_sig, SR_i, iele_dbl%index(1))
 !
       end subroutine set_ele_double_numbering
 !

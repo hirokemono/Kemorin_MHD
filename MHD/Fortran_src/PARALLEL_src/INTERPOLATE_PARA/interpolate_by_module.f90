@@ -54,6 +54,7 @@
       use t_comm_table
       use t_vector_for_solver
       use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
@@ -126,13 +127,13 @@
       end if
 !
 !   communication
-      call calypso_send_recv(iflag_recv,                                &
-     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
-     &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
+      call calypso_send_recv                                            &
+     &   (iflag_recv, tbl_org%ntot_table_org, NP_dest,                  &
+     &    tbl_org%num_dest_domain, tbl_org%id_dest_domain,              &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
-     &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
-     &    tbl_dest%id_org_domain, tbl_dest%istack_nod_tbl_dest,         &
-     &    tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest,         &
+     &    tbl_dest%num_org_domain, tbl_dest%id_org_domain,              &
+     &    tbl_dest%istack_nod_tbl_dest, tbl_dest%inod_dest_4_dest,      &
+     &    tbl_dest%irev_dest_4_dest, tbl_dest%iflag_self_itp_recv,      &
      &    SR_sig, SR_r, itp_WORK%x_inter_org, X_dest(1))
 !
       if (comm_dest%num_neib .gt. 0) then
@@ -187,13 +188,13 @@
 !
 !     communication
 !
-      call calypso_send_recv_3(iflag_recv,                              &
-     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
-     &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
+      call calypso_send_recv_3                                          &
+     &   (iflag_recv, tbl_org%ntot_table_org, NP_dest,                  &
+     &    tbl_org%num_dest_domain, tbl_org%id_dest_domain,              &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
-     &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
-     &    tbl_dest%id_org_domain, tbl_dest%istack_nod_tbl_dest,         &
-     &    tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest,         &
+     &    tbl_dest%num_org_domain, tbl_dest%id_org_domain,              &
+     &    tbl_dest%istack_nod_tbl_dest, tbl_dest%inod_dest_4_dest,      &
+     &    tbl_dest%irev_dest_4_dest, tbl_dest%iflag_self_itp_recv,      &
      &    SR_sig, SR_r, itp_WORK%x_inter_org, X_dest(1) )
 !
 !
@@ -247,12 +248,12 @@
       end if
 !
       call calypso_send_recv_6(iflag_recv,                              &
-     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
-     &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
+     &    tbl_org%ntot_table_org, NP_dest,                              &
+     &    tbl_org%num_dest_domain, tbl_org%id_dest_domain,              &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
-     &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
-     &    tbl_dest%id_org_domain, tbl_dest%istack_nod_tbl_dest,         &
-     &    tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest,         &
+     &    tbl_dest%num_org_domain, tbl_dest%id_org_domain,              &
+     &    tbl_dest%istack_nod_tbl_dest, tbl_dest%inod_dest_4_dest,      &
+     &    tbl_dest%irev_dest_4_dest, tbl_dest%iflag_self_itp_recv,      &
      &    SR_sig, SR_r, itp_WORK%x_inter_org, X_dest(1) )
 !
       if (comm_dest%num_neib.gt.0) then
@@ -303,13 +304,13 @@
      &      itp_WORK%x_inter_org)
       end if
 !
-      call calypso_send_recv_N(iflag_recv, NB,                          &
-     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
-     &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
+      call calypso_send_recv_N                                          &
+     &   (iflag_recv, NB, tbl_org%ntot_table_org, NP_dest,              &
+     &    tbl_org%num_dest_domain, tbl_org%id_dest_domain,              &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
-     &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
-     &    tbl_dest%id_org_domain, tbl_dest%istack_nod_tbl_dest,         &
-     &    tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest,         &
+     &    tbl_dest%num_org_domain, tbl_dest%id_org_domain,              &
+     &    tbl_dest%istack_nod_tbl_dest, tbl_dest%inod_dest_4_dest,      &
+     &    tbl_dest%irev_dest_4_dest, tbl_dest%iflag_self_itp_recv,      &
      &    SR_sig, SR_r, itp_WORK%x_inter_org, X_dest(1))
 !
       if (comm_dest%num_neib.gt.0) then
@@ -329,7 +330,6 @@
      &         PEsmpTOT, NP_org, NP_dest, i_vector_org,                 &
      &         SR_sig, SR_i, i_vector_dest)
 !
-      use t_solver_SR_int
       use t_geometry_data
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
@@ -383,10 +383,10 @@
 !     communication
 !
       call calypso_send_recv_int(iflag_recv,                            &
-     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
-     &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
+     &    tbl_org%ntot_table_org, NP_dest,                              &
+     &    tbl_org%num_dest_domain, tbl_org%id_dest_domain,              &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
-     &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
+     &    tbl_dest%iflag_self_itp_recv, tbl_dest%num_org_domain,        &
      &    tbl_dest%id_org_domain, tbl_dest%istack_nod_tbl_dest,         &
      &    tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest,         &
      &    SR_sig, SR_i, itp_WORK%i_inter_org, v_2nd_sol%ix_vec(1))
@@ -394,7 +394,7 @@
 !
       if (comm_dest%num_neib.gt.0) then
         call SOLVER_SEND_RECV_int_type(NP_dest, comm_dest,              &
-     &                                 v_2nd_sol%ix_vec(1))
+     &      SR_sig, SR_i, v_2nd_sol%ix_vec(1))
       end if
 !
 !$omp parallel workshare

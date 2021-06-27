@@ -3,14 +3,16 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_analyze_zm_streamfunc                            &
-!!     &         (i_step, geofem, SPH_MHD, SPH_STR, t_IO, nod_fld)
+!!      subroutine SPH_analyze_zm_streamfunc(i_step, geofem,            &
+!!     &          SPH_MHD, SPH_STR, t_IO, nod_fld, SR_sig, SR_r)
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(in) :: sph_mesh
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine set_ctl_data_4_zm_streamline(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !
@@ -20,6 +22,7 @@
       use m_constants
       use m_machine_parameter
       use t_SPH_data_4_SPH_trans
+      use t_solver_SR
       use calypso_mpi
 !
       implicit none
@@ -34,8 +37,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_streamfunc                              &
-     &         (i_step, geofem, SPH_MHD, SPH_STR, t_IO, nod_fld)
+      subroutine SPH_analyze_zm_streamfunc(i_step, geofem,              &
+     &          SPH_MHD, SPH_STR, t_IO, nod_fld, SR_sig, SR_r)
 !
       use t_SPH_mesh_field_data
       use t_time_data
@@ -57,6 +60,8 @@
 !
       type(time_data), intent(inout) :: t_IO
       type(phys_data), intent(inout) :: nod_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !   Input spectr data
@@ -84,7 +89,8 @@
 !  spherical transform for vector
       call sph_b_trans_streamline(SPH_MHD%sph, SPH_MHD%comms,           &
      &    SPH_STR%trans_p, geofem%mesh, SPH_STR%fld_rtp,                &
-     &    SPH_MHD%fld, SPH_STR%WK_leg, SPH_STR%WK_FFTs, nod_fld)
+     &    SPH_MHD%fld, SPH_STR%WK_leg, SPH_STR%WK_FFTs,                 &
+     &    nod_fld, SR_sig, SR_r)
 !
       end subroutine SPH_analyze_zm_streamfunc
 !
@@ -134,14 +140,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sph_b_trans_streamline(sph, comms_sph, trans_p,        &
-     &          mesh, fld_rtp, rj_fld, WK_leg, WK_FFTs, nod_fld)
+     &          mesh, fld_rtp, rj_fld, WK_leg, WK_FFTs,                 &
+     &          nod_fld, SR_sig, SR_r)
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_mesh_data
       use t_phys_data
 !
-      use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
       use spherical_transforms
@@ -159,25 +165,27 @@
       type(phys_data), intent(inout) :: nod_fld
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(work_for_FFTs), intent(inout) :: WK_FFTs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (fld_rtp%num_vector .gt. 0) then
 !
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (fld_rtp%ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N                                 &
-     &   (fld_rtp%ncomp_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
+      call check_calypso_sph_comm_buf_N(fld_rtp%ncomp_trans,            &
+     &    comms_sph%comm_rj, comms_sph%comm_rlm, SR_sig, SR_r)
+      call check_calypso_sph_comm_buf_N(fld_rtp%ncomp_trans,            &
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp, SR_sig, SR_r)
 !
       if (iflag_debug.gt.0)                                             &
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
       call set_all_vec_spec_to_sph_t                                    &
      &     (fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,            &
-     &      rj_fld, SR_r1%n_WS, SR_r1%WS)
+     &      rj_fld, SR_r%n_WS, SR_r%WS)
 !
       call sph_b_trans_w_poles(fld_rtp%ncomp_trans,                     &
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans, sph, comms_sph,    &
-     &    trans_p, SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),    &
-     &    dall_rtp, dlcl_pole, dall_pole, WK_leg, WK_FFTs)
+     &    trans_p, dall_rtp, dlcl_pole, dall_pole,                      &
+     &    WK_leg, WK_FFTs, SR_sig, SR_r)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'

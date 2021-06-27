@@ -45,10 +45,9 @@
 !
       use load_mesh_data
       use const_mesh_information
+      use single_edge_information
 !
       use int_volume_of_single_domain
-      use set_surf_grp_vectors
-!
       use mesh_IO_select
       use set_nnod_4_ele_by_type
 !
@@ -116,8 +115,15 @@
      &    org_fem%mesh, org_fem%group, ierr)
       if(ierr .gt. 0) stop 'Global mesh is wrong!'
 !
-!      write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, org_fem%mesh, org_fem%group)
+!      write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos(my_rank, org_fem%mesh, org_fem%group)
+!      write(*,*) 'const_surface_infos'
+      call const_surface_infos(my_rank, org_fem%mesh%node,              &
+     &    org_fem%mesh%ele, org_fem%group%surf_grp,                     &
+     &    org_fem%mesh%surf, org_fem%group%surf_nod_grp)
+!      write(*,*) 'const_single_edge_infos'
+      call const_single_edge_infos(my_rank, org_fem%mesh%node,          &
+     &    org_fem%mesh%ele, org_fem%mesh%surf, org_fem%mesh%edge)
 !
 !  ========= Read global field data for load balance partition =======
       write(*,*) 'read control_merge'
@@ -176,13 +182,6 @@
       end if
 !
 !  -------------------------------
-!
-!      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-!      call pick_surface_group_geometry(org_fem%mesh%surf,              &
-!     &   org_fem%group%surf_grp, org_fem%group%tbls_surf_grp,          &
-!     &   org_fem%group%surf_grp_geom)
-!
-!  -------------------------------
 !  ========= compute element volume ===============
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
@@ -202,9 +201,9 @@
      &    org_fem%mesh, org_fem%group, domain_grp1)
 !      write(*,*) 'grouping_for_partitioner'
       call grouping_for_partitioner                                     &
-     &   (org_fem%mesh%node, org_fem%mesh%ele, org_fem%mesh%edge,       &
-     &    org_fem%group%nod_grp, org_fem%group%ele_grp,                 &
-     &    org_fem%group%tbls_ele_grp, node_volume,                      &
+     &   (org_fem%mesh%node, org_fem%mesh%ele,                          &
+     &    org_fem%mesh%surf, org_fem%mesh%edge,                         &
+     &    org_fem%group%nod_grp, org_fem%group%ele_grp, node_volume,    &
      &    part_p1, domain_grp1)
 !
 !  ========= Regrouping after estimate computation load =======
@@ -232,10 +231,7 @@
         allocate(time_cost(part_p1%num_domain))
 
         call seed_particles(domain_grp1%nod_d_grp,                      &
-     &      org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
-     &      org_fem%mesh%surf%numsurf, org_fem%mesh%surf%nnod_4_surf,   &
-     &      org_fem%mesh%surf%isf_4_ele, org_fem%mesh%surf%ie_surf,     &
-     &      org_fem%mesh%surf%iele_4_surf, org_fem%mesh%node%xx,        &
+     &      org_fem%mesh%node, org_fem%mesh%ele, org_fem%mesh%surf,     &
      &      data_field_vec%d_ucd,                                       &
      &      particles, num_particle, part_p1%num_domain, time_cost)
 

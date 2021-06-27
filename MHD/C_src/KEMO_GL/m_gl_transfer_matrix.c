@@ -276,72 +276,72 @@ static void Kemo_Rotate_view_c(double rotate[4], double model[16]){
 	return;
 }
 
-static void update_projection(double x_lookfrom[2], int nx_frame, int ny_frame,
-							  double aperture, double aspect, double near, double far,
+static void update_projection(double x_lookfrom[2], int nx_frame, int ny_frame, double aperture,
+							  double *aspect, double *near, double *far,
 							  double projection[16]){
 	double wd2;
 	double left, right;
 	
-	near = x_lookfrom[2] - object_size * HALF;
-	if (near < 1.0e-6) near = 1.0e-6;
+	*near = x_lookfrom[2] - object_size * HALF;
+	if (*near < 1.0e-6) *near = 1.0e-6;
 	
-	far = x_lookfrom[2] + object_size * HALF;
-	if (far < ONE) far = ONE;
+	*far = x_lookfrom[2] + object_size * HALF;
+	if (*far < ONE) *far = ONE;
 	
-	aspect = ((double) nx_frame) / ((double) ny_frame);
-	wd2 =  near * tan(aperture*DTOR*HALF);
+	*aspect = ((double) nx_frame) / ((double) ny_frame);
+	wd2 =  *near * tan(aperture*DTOR*HALF);
 	
-	left  = - aspect * wd2;
-	right =   aspect * wd2;
+	left  = - *aspect * wd2;
+	right =   *aspect * wd2;
 	
-	frustsum_glmat_c(left, right, (-wd2), wd2, near, far, projection);
+	frustsum_glmat_c(left, right, (-wd2), wd2, *near, *far, projection);
 	return;
 }
 
-static void update_projection_left(double x_lookfrom[2], int nx_frame, int ny_frame,
-								   double aperture, double aspect, double near, double far,
+static void update_projection_left(double x_lookfrom[2], int nx_frame, int ny_frame, double aperture,
+								   double *aspect, double *near, double *far,
 								   double focalLength, double eyeSep, double projection[16]){
 	double wd2, ndfl;
 	double left, right;
 	
-	near = x_lookfrom[2] - object_size * HALF;
-	if (near < 1.0e-6) near = 1.0e-6;
+	*near = x_lookfrom[2] - object_size * HALF;
+	if (*near < 1.0e-6) *near = 1.0e-6;
 	
-	far = x_lookfrom[2] + object_size * HALF;
-	if (far < ONE) far = ONE;
+	*far = x_lookfrom[2] + object_size * HALF;
+	if (*far < ONE) *far = ONE;
 	
-	aspect = ((double) nx_frame) / ((double) ny_frame);
-	wd2 =  near * tan(aperture*DTOR*HALF);
-	ndfl = near / focalLength;
+	*aspect = ((double) nx_frame) / ((double) ny_frame);
+	wd2 =  *near * tan(aperture*DTOR*HALF);
+	ndfl = *near / focalLength;
 	
-	left  = - aspect * wd2 + 0.5 * eyeSep * ndfl;
-	right =   aspect * wd2 + 0.5 * eyeSep * ndfl;
+	left  = - *aspect * wd2 + 0.5 * eyeSep * ndfl;
+	right =   *aspect * wd2 + 0.5 * eyeSep * ndfl;
 	
-	frustsum_glmat_c(left, right, (-wd2), wd2, near, far, projection);
+	frustsum_glmat_c(left, right, (-wd2), wd2, *near, *far, projection);
 	return;
 }
 
 static void update_projection_right(double x_lookfrom[2], int nx_frame, int ny_frame,
-									double aperture, double aspect, double near, double far,
+									double aperture, double *aspect, double *near, double *far,
 									double focalLength, double eyeSep, double projection[16]){
 	double wd2, ndfl;
 	double left, right;
 	
-	near = x_lookfrom[2] - object_size * HALF;
-	if (near < 1.0e-6) near = 1.0e-6;
+	*near = x_lookfrom[2] - object_size * HALF;
+	if (*near < 1.0e-6) *near = 1.0e-6;
 	
-	far = x_lookfrom[2] + object_size * HALF;
-	if (far < ONE) far = ONE;
+	*far = x_lookfrom[2] + object_size * HALF;
+	if (*far < ONE) *far = ONE;
 	
-	aspect = ((double) nx_frame) / ((double) ny_frame);
-	wd2 =  near * tan(aperture*DTOR*HALF);
-	ndfl = near / focalLength;
+	*aspect = ((double) nx_frame) / ((double) ny_frame);
+	wd2 =  *near * tan(aperture*DTOR*HALF);
+	ndfl = *near / focalLength;
 	
-	left  = - aspect * wd2 - 0.5 * eyeSep * ndfl;
-	right =   aspect * wd2 - 0.5 * eyeSep * ndfl;
+	left  = - *aspect * wd2 - 0.5 * eyeSep * ndfl;
+	right =   *aspect * wd2 - 0.5 * eyeSep * ndfl;
 	
 	identity_glmat_c(projection);
-	frustsum_glmat_c(left, right, (-wd2), wd2, near, far, projection);
+	frustsum_glmat_c(left, right, (-wd2), wd2, *near, *far, projection);
 	return;
 }
 
@@ -369,7 +369,7 @@ void modify_left_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
 				view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->eye_separation/3.0, ZERO, ZERO, view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->eye_separation/2.0, ZERO, ZERO, view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
 	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
 				view->mat_object_2_eye);
@@ -382,7 +382,7 @@ void modify_right_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
 				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->eye_separation/3.0, ZERO, ZERO,
+	Kemo_Translate_view_c(-view->eye_separation/2.0, ZERO, ZERO,
 				view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
 	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
@@ -416,7 +416,7 @@ void rotate_left_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
 				view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->eye_separation/3.0, ZERO, ZERO, 
+	Kemo_Translate_view_c(view->eye_separation/2.0, ZERO, ZERO, 
 				view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
@@ -431,7 +431,7 @@ void rotate_right_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
 				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->eye_separation/3.0, ZERO, ZERO, 
+	Kemo_Translate_view_c(-view->eye_separation/2.0, ZERO, ZERO, 
 				view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
@@ -471,20 +471,20 @@ void init_projection_struct(struct view_element *view){
 
 void update_projection_struct(struct view_element *view){
 	update_projection(view->x_lookfrom, view->nx_frame, view->ny_frame,
-                      view->aperture, view->aspect, view->near, view->far, 
+                      view->aperture, &view->aspect, &view->near, &view->far, 
 					  view->mat_eye_2_clip);
 	return;
 };
 void update_left_projection_struct(struct view_element *view){
 	update_projection_left(view->x_lookfrom, view->nx_frame, view->ny_frame,
-						   view->aperture, view->aspect, view->near, view->far,
+						   view->aperture, &view->aspect, &view->near, &view->far,
 						   view->focal_length, view->eye_separation, 
 						   view->mat_eye_2_clip);
 	return;
 };
 void update_right_projection_struct(struct view_element *view){
 	update_projection_right(view->x_lookfrom, view->nx_frame, view->ny_frame,
-							view->aperture, view->aspect, view->near, view->far,
+							view->aperture, &view->aspect, &view->near, &view->far,
 							view->focal_length, view->eye_separation, 
 							view->mat_eye_2_clip);
 	return;

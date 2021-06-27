@@ -63,7 +63,6 @@
 !
       call empty_infty_surf_type(group%infty_grp)
 !
-      allocate(jacs%g_FEM)
       call sel_max_int_point_by_etype(mesh%ele%nnod_4_ele, jacs%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
@@ -98,7 +97,6 @@
       call dealloc_vol_shape_func(spfs%spf_3d)
       call finalize_FEM_integration                                     &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
-      deallocate(jacs%g_FEM)
 !
       end subroutine finalize_jac_and_single_vol
 !

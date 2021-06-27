@@ -7,12 +7,13 @@
 !!      subroutine s_cal_sgs_uxb_dynamic_simi(FEM_prm, SGS_par, mesh,   &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
 !!     &          fem_int, FEM_filters, iak_sgs_term, icomp_sgs_term,   &
-!!     &          FEM_SGS_wk, nod_fld, sgs_coefs, v_sol)
+!!     &          FEM_SGS_wk, nod_fld, sgs_coefs, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_induct_t_dynamic_simi(FEM_prm, SGS_par, mesh,&
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS,          &
 !!     &          iphys_SGS_wk, fem_int, FEM_filters,                   &
 !!     &          iak_sgs_term, icomp_sgs_term, FEM_SGS_wk,             &
-!!     &          rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod, v_sol)
+!!     &          rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod,           &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(base_field_address), intent(in) :: iphys_base
@@ -28,6 +29,8 @@
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !
@@ -54,6 +57,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -66,7 +70,7 @@
       subroutine s_cal_sgs_uxb_dynamic_simi(FEM_prm, SGS_par, mesh,     &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          fem_int, FEM_filters, iak_sgs_term, icomp_sgs_term,     &
-     &          FEM_SGS_wk, nod_fld, sgs_coefs, v_sol)
+     &          FEM_SGS_wk, nod_fld, sgs_coefs, v_sol, SR_sig, SR_r)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_scalars
@@ -90,6 +94,8 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !    reset model coefficients
 !
@@ -107,7 +113,7 @@
      &    iphys_wfl%i_velo, iphys_wfl%i_magne,                          &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%wide_filtering, FEM_SGS_wk%wk_filter,             &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig, SR_r)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_simi)
 !
@@ -120,14 +126,14 @@
      &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, FEM_SGS_wk%wk_filter,                  &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig, SR_r)
 !
 !      filtering
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_simi,                      &
-     &    FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &    FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
 !   Change coordinate
 !
@@ -154,7 +160,8 @@
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS,            &
      &          iphys_SGS_wk, fem_int, FEM_filters,                     &
      &          iak_sgs_term, icomp_sgs_term, FEM_SGS_wk,               &
-     &          rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod, v_sol)
+     &          rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod,             &
+     &          v_sol, SR_sig, SR_r)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_scalars
@@ -184,6 +191,8 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !    reset model coefficients
 !
@@ -205,7 +214,8 @@
      &    iphys_wfl%i_velo, iphys_wfl%i_magne,                          &
      &    icomp_sgs_term%i_SGS_induction, SGS_par%filter_p,             &
      &    mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,         &
-     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld,                 &
+     &    v_sol, SR_sig, SR_r)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_wd_nlg)
 !
@@ -218,7 +228,8 @@
      &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
      &    icomp_sgs_term%i_SGS_induction, SGS_par%filter_p,             &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld,                 &
+     &    v_sol, SR_sig, SR_r)
 !
 !    copy to work array
 !
@@ -230,7 +241,7 @@
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys_SGS_wk%i_nlg, iphys_SGS%i_SGS_induct_t,                 &
-     &    FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &    FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig, SR_r)
 !
 !   Change coordinate
 !

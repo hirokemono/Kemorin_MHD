@@ -22,11 +22,13 @@
       use t_ctl_data_4_view_transfer
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
+      use t_control_params_stereo_pvr
 !
       implicit none
 !
       private :: copy_pvr_modelview_matrix, set_viewpoint_vector_ctl
       private :: copy_pvr_perspective_matrix, copy_pvr_image_size
+      private :: copy_stereo_perspective_matrix
       private :: set_view_rotation_vect_ctl, set_view_scale_factor_ctl
       private :: set_viewpnt_in_viewer_ctl
 !
@@ -38,14 +40,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_pvr_modelview_matrix(mat, view_param)
+      subroutine s_set_pvr_modelview_matrix                             &
+     &         (mat, view_param, stereo_def)
 !
       type(modeview_ctl), intent(in) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_stereo_parameter), intent(inout) :: stereo_def
 !
 !
       call copy_pvr_image_size(mat%pixel, view_param)
-      call copy_pvr_perspective_matrix(mat%proj, mat%streo, view_param)
+      call copy_pvr_perspective_matrix(mat%proj, view_param)
+      call copy_stereo_perspective_matrix(mat%streo, stereo_def)
 !
       if (mat%modelview_mat_ctl%num .gt. 0) then
         call copy_pvr_modelview_matrix(mat, view_param)
@@ -98,13 +103,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_pvr_perspective_matrix(proj, streo, view_param)
+      subroutine copy_pvr_perspective_matrix(proj, view_param)
 !
       use t_ctl_data_4_projection
       use t_ctl_data_4_streo_view
 !
       type(projection_ctl), intent(in) :: proj
-      type(streo_view_ctl), intent(in) :: streo
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
@@ -142,30 +146,58 @@
      &       * proj%perspective_near_ctl%iflag                          &
      &       * proj%perspective_far_ctl%iflag
 !
+      end subroutine copy_pvr_perspective_matrix
 !
-      if(streo%focalpoint_ctl%iflag .gt. 0) then
-        view_param%focalLength = streo%focalpoint_ctl%realvalue
-      else
-        view_param%focalLength = 1.0d1
-      end if
+! -----------------------------------------------------------------------
 !
-      if(streo%eye_separation_ctl%iflag .gt. 0) then
-        view_param%eye_separation = streo%eye_separation_ctl%realvalue
-      else
-        view_param%eye_separation = 1.0d-1
-      end if
+      subroutine copy_stereo_perspective_matrix(streo, stereo_def)
 !
-      if(view_param%iflag_stereo_pvr .gt. 0) then
-        view_param%iflag_stereo_pvr                                     &
-     &      =  streo%focalpoint_ctl%iflag                               &
-     &       * streo%eye_separation_ctl%iflag
-        if(view_param%iflag_stereo_pvr.eq.0 .and. my_rank.eq.0) then
-          write(*,*) 'Streo view paramters are missing.'
-          write(*,*) 'Turn off streo view.'
+      use t_ctl_data_4_projection
+      use t_ctl_data_4_streo_view
+!
+      type(streo_view_ctl), intent(in) :: streo
+      type(pvr_stereo_parameter), intent(inout) :: stereo_def
+!
+!
+      if(streo%i_stereo_view .eq. 0) then
+        if(stereo_def%flag_stereo_pvr) then
+          stereo_def%flag_stereo_pvr = .FALSE.
+          if(my_rank.eq.0) then
+            write(*,*) 'Stereo view paramters are missing.'
+            write(*,*) 'Turn off streo view.'
+          end if
+        else if(stereo_def%flag_quilt) then
+          stereo_def%flag_quilt = .FALSE.
+          if(my_rank.eq.0) then
+            write(*,*) 'Stereo view paramters are missing.'
+            write(*,*) 'Turn off Quilt view.'
+          end if
         end if
       end if
 !
-      end subroutine copy_pvr_perspective_matrix
+      if(streo%focalpoint_ctl%iflag .gt. 0) then
+        stereo_def%focalLength = streo%focalpoint_ctl%realvalue
+      else
+        stereo_def%focalLength = 1.0d+1
+      end if
+!
+      stereo_def%flag_eye_separation_angle = .FALSE.
+      if(streo%eye_sep_angle_ctl%iflag .gt. 0) then
+        stereo_def%flag_eye_separation_angle = .TRUE.
+        stereo_def%eye_sep_angle = streo%eye_sep_angle_ctl%realvalue
+      else if(streo%eye_separation_ctl%iflag .gt. 0) then
+        stereo_def%eye_separation = streo%eye_separation_ctl%realvalue
+      else
+        stereo_def%eye_separation = 1.0d-1
+      end if
+!
+      stereo_def%flag_setp_eye_separation_angle = .FALSE.
+      if(streo%step_eye_sep_angle_ctl%iflag .gt. 0                      &
+     &   .and. yes_flag(streo%step_eye_sep_angle_ctl%charavalue)) then
+        stereo_def%flag_setp_eye_separation_angle = .TRUE.
+      end if
+!
+      end subroutine copy_stereo_perspective_matrix
 !
 ! -----------------------------------------------------------------------
 !
@@ -189,8 +221,7 @@
         nd2 = set_4direction_flag(mat%modelview_mat_ctl%c2_tbl(i))
 !
         if(nd1*nd2 .gt. 0) then
-          view_param%modelview_mat(nd2,nd1)                             &
-     &              = mat%modelview_mat_ctl%vect(i)
+          view_param%modelview(nd2,nd1) = mat%modelview_mat_ctl%vect(i)
         end if
       end do
 !
@@ -236,7 +267,7 @@
       do i = 1, mat%viewpoint_ctl%num
         nd = set_3direction_flag(mat%viewpoint_ctl%c_tbl(i))
         if(nd .eq. 0) cycle
-        view_param%viewpoint_vec(nd) = mat%viewpoint_ctl%vect(i)
+        view_param%viewpoint(nd) = mat%viewpoint_ctl%vect(i)
       end do
       if(mat%viewpoint_ctl%num .ge. 3) then
         view_param%iflag_viewpoint = 1
@@ -255,7 +286,7 @@
         write(*,*) 'iflag_lookpoint_vec', view_param%iflag_lookpoint
         write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
         write(*,*) 'iflag_viewpoint_vec', view_param%iflag_viewpoint
-        write(*,*) 'viewpoint_vec', view_param%viewpoint_vec(1:3)
+        write(*,*) 'viewpoint_vec', view_param%viewpoint(1:3)
         write(*,*) 'iflag_updir_vec', view_param%iflag_updir
         write(*,*) 'up_direction_vec',                                  &
      &            view_param%up_direction_vec(1:3)

@@ -8,8 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine grouping_for_partitioner                             &
-!!     &         (node, ele, edge, nod_grp, ele_grp,                    &
-!!     &          ele_grp_data, node_volume, part_p, domain_grp)
+!!     &         (node, ele, surf, edge, nod_grp, ele_grp,              &
+!!     &          node_volume, part_p, domain_grp)
+!!        type(node_data), intent(in) ::    node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data), intent(in) ::    edge
+!!        type(group_data), intent(in) ::   nod_grp
+!!        type(group_data), intent(in) ::   ele_grp
+!!        real(kind = kreal), intent(in) :: node_volume(node%numnod)
+!!        type(ctl_param_partitioner), intent(inout) :: part_p
 !!        type(domain_groups_4_partitioner), intent(inout)  :: domain_grp
 !!      subroutine regrouping_for_partition(part_p, node, ele,          &
 !!      &         part_tbl, part_volume, n_volume, domain_grp)
@@ -32,8 +40,8 @@
 !------------------------------------------------------------------
 !
       subroutine grouping_for_partitioner                               &
-     &         (node, ele, edge, nod_grp, ele_grp,                      &
-     &          ele_grp_data, node_volume, part_p, domain_grp)
+     &         (node, ele, surf, edge, nod_grp, ele_grp,                &
+     &          node_volume, part_p, domain_grp)
 !
       use m_constants
       use m_error_IDs
@@ -41,6 +49,7 @@
       use t_ctl_param_partitioner
       use t_domain_group_4_partition
       use t_geometry_data
+      use t_surface_data
       use t_edge_data
       use t_group_data
       use t_group_connects
@@ -54,12 +63,12 @@
       use set_partition_by_fine_mesh
       use error_exit_4_part
 !
-      type(node_data), intent(in) :: node
+      type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
-      type(edge_data), intent(in) :: edge
-      type(group_data), intent(in) :: nod_grp
-      type(group_data), intent(in) :: ele_grp
-      type(element_group_table), intent(in) :: ele_grp_data
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) ::    edge
+      type(group_data), intent(in) ::   nod_grp
+      type(group_data), intent(in) ::   ele_grp
       real(kind = kreal), intent(in) :: node_volume(node%numnod)
 !
       type(ctl_param_partitioner), intent(inout) :: part_p
@@ -110,11 +119,8 @@
 !
       else if(part_p%NTYP_div .eq. iPART_LAYER_SPH) then
         call eb_spherical_w_egrp                                        &
-     &   (part_p, node%numnod, node%internal_node,                      &
-     &    ele_grp%num_grp, ele_grp%grp_name,                            &
-     &    ele_grp_data%node%ntot_e_grp, ele_grp_data%node%istack_e_grp, &
-     &    ele_grp_data%node%item_e_grp,                                 &
-     &    node%rr, node%theta, node%phi, domain_grp%nod_d_grp)
+     &     (part_p, node, ele, surf, edge, ele_grp,                     &
+     &      domain_grp%nod_d_grp)
 !
 !
 !C

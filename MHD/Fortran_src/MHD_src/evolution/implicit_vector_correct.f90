@@ -1,41 +1,47 @@
-!implicit_vector_correct.f90
-!      module implicit_vector_correct
+!>@file   implicit_vector_correct.f90
+!!@brief  module implicit_vector_correct
+!!
+!!@author  H.Matsui and H.Okuda
+!!@date   Programmed in July, 2000 (ver 1.1)
+!!@n      Modified in Sep., 2005
 !
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modieied by H. Matsui on March, 2006
-!
+!>@brief Correction by poisson equation
+!!
+!!@verbatim
 !!      subroutine cal_velocity_co_exp(i_velo, i_p_phi, FEM_prm,        &
 !!     &          nod_comm, node, ele, fluid, g_FEM, jac_3d, rhs_tbl,   &
 !!     &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl,              &
-!!     &          nod_fld, v_sol)
+!!     &          nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_vector_p_co_exp                                  &
 !!     &         (i_vecp, FEM_prm, nod_comm, node, ele,                 &
 !!     &          g_FEM, jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,   &
-!!     &          f_l, f_nl, nod_fld, v_sol)
+!!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_magnetic_co_exp                                  &
 !!     &         (i_magne, FEM_prm, nod_comm, node, ele,                &
 !!     &          g_FEM, jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,   &
-!!     &          f_l, f_nl, nod_fld, v_sol)
+!!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!
 !!      subroutine cal_velocity_co_imp(i_velo, iak_diff_v, ak_d_velo,   &
 !!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
 !!     &          FEM_elens, diff_coefs, mlump_fl, Vmatrix, MG_vector,  &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,  &
 !!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
 !!     &          FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,    &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_magnetic_co_imp(i_magne, iak_diff_b, ak_d_magne, &
 !!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
 !!     &          FEM_elens, diff_coefs,m_lump,  Bmatrix, MG_vector,    &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -63,7 +69,9 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
-!!
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module implicit_vector_correct
 !
@@ -94,6 +102,8 @@
       use t_solver_djds_MHD
       use t_bc_data_velo
       use t_bc_data_magne
+      use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -106,7 +116,7 @@
       subroutine cal_velocity_co_exp(i_velo, i_p_phi, FEM_prm,          &
      &          nod_comm, node, ele, fluid, g_FEM, jac_3d, rhs_tbl,     &
      &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl,                &
-     &          nod_fld, v_sol)
+     &          nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_multi_pass
       use cal_sol_vector_correct
@@ -128,12 +138,15 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_multi_pass_4_vector_fl'
       call cal_multi_pass_4_vector_ff(fluid%istack_ele_fld_smp,         &
      &    FEM_prm, mlump_fl, nod_comm, node, ele, g_FEM, jac_3d,        &
-     &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol)
+     &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl,              &
+     &    v_sol, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co'
       call cal_sol_velocity_co                                          &
@@ -147,7 +160,7 @@
       subroutine cal_vector_p_co_exp                                    &
      &         (i_vecp, FEM_prm, nod_comm, node, ele,                   &
      &          g_FEM, jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,     &
-     &          f_l, f_nl, nod_fld, v_sol)
+     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_multi_pass
       use cal_sol_vector_correct
@@ -168,13 +181,16 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_multi_pass_4_vector_ff'
       call cal_multi_pass_4_vector_ff                                   &
      &   (ele%istack_ele_smp, FEM_prm, m_lump,                          &
      &    nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl,                  &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl,                       &
+     &    v_sol, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_co'
       call cal_sol_vector_co                                            &
@@ -188,7 +204,7 @@
       subroutine cal_magnetic_co_exp                                    &
      &         (i_magne, FEM_prm, nod_comm, node, ele,                  &
      &          g_FEM, jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,     &
-     &          f_l, f_nl, nod_fld, v_sol)
+     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_multi_pass
       use cal_sol_vector_correct
@@ -209,13 +225,16 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_multi_pass_4_vector_ff'
       call cal_multi_pass_4_vector_ff                                   &
      &   (ele%istack_ele_smp, FEM_prm, m_lump,                          &
      &    nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl,                  &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl,                       &
+     &    v_sol, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_co'
       call cal_sol_vector_co                                            &
@@ -232,7 +251,8 @@
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
      &          FEM_elens, diff_coefs, mlump_fl, Vmatrix, MG_vector,    &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
+     &          v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
@@ -273,6 +293,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_viscosity_co'
@@ -308,7 +330,8 @@
         call cal_velo_co_lumped_crank                                   &
      &     (i_velo, dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,   &
      &      Vnod_bcs, nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,  &
-     &      rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
+     &      rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl,           &
+     &      v_sol, SR_sig, SR_r)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_velo_co_consist_crank(i_velo, fl_prop%coef_velo, dt,   &
@@ -324,7 +347,8 @@
      &    Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_velo_crank, FEM_prm%CG11_param%MAXIT,           &
-     &    i_velo, MG_vector, f_l, v_sol%b_vec, v_sol%x_vec, nod_fld)
+     &    i_velo, MG_vector, f_l, v_sol%b_vec, nod_fld,                 &
+     &    v_sol%x_vec, SR_sig, SR_r)
 !
       end subroutine cal_velocity_co_imp
 !
@@ -335,7 +359,8 @@
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
      &          FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,      &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
+     &          v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
@@ -364,6 +389,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: Bmatrix
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind=kint), intent(in) :: i_vecp, iak_diff_b
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
@@ -401,7 +428,8 @@
         call cal_magne_co_lumped_crank                                  &
      &     (i_vecp, dt, FEM_prm, nod_comm, node, ele, nod_fld,          &
      &      iphys_ele_base, ele_fld, Bnod_bcs%nod_bc_a, g_FEM, jac_3d,  &
-     &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
+     &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl,             &
+     &      v_sol, SR_sig, SR_r)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_co_consist_crank(i_vecp, cd_prop%coef_magne, dt, &
@@ -416,7 +444,8 @@
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
-     &    i_vecp, MG_vector, f_l, v_sol%b_vec, v_sol%x_vec, nod_fld)
+     &    i_vecp, MG_vector, f_l, v_sol%b_vec, nod_fld,                 &
+     &    v_sol%x_vec, SR_sig, SR_r)
 !
       end subroutine cal_vector_p_co_imp
 !
@@ -427,7 +456,8 @@
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
      &          FEM_elens, diff_coefs,m_lump,  Bmatrix, MG_vector,      &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
+     &          v_sol, SR_sig, SR_r)
 !
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
@@ -467,6 +497,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_diffuse_co'
@@ -492,7 +524,8 @@
         call cal_magne_co_lumped_crank                                  &
      &     (i_magne, dt, FEM_prm, nod_comm, node, ele, nod_fld,         &
      &      iphys_ele_base, ele_fld, Bnod_bcs%nod_bc_b, g_FEM, jac_3d,  &
-     &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
+     &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl,             &
+     &      v_sol, SR_sig, SR_r)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_co_consist_crank                                 &
@@ -508,7 +541,8 @@
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
-     &    i_magne, MG_vector, f_l, v_sol%b_vec, v_sol%x_vec, nod_fld)
+     &    i_magne, MG_vector, f_l, v_sol%b_vec, nod_fld,                &
+     &    v_sol%x_vec, SR_sig, SR_r)
 !
       end subroutine cal_magnetic_co_imp
 !

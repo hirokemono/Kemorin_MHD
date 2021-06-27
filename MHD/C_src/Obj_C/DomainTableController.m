@@ -213,12 +213,12 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
     if([identifier isEqualToString:@"DomainPatch"]) {
 		[DomainDisplayPatchFlags replaceObjectAtIndex:rowIndex withObject:object];
 		iflag = [[DomainDisplayPatchFlags objectAtIndex:rowIndex] intValue];
-		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, iflag, rowIndex);
+		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, rowIndex, iflag);
     }
     if([identifier isEqualToString:@"DomainGrid"]) {
 		[DomainDisplayWireFlags replaceObjectAtIndex:rowIndex withObject:object];
 		iflag = [[DomainDisplayWireFlags objectAtIndex:rowIndex] intValue];
-		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, iflag, rowIndex);
+		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, rowIndex, iflag);
     }
     if([identifier isEqualToString:@"DomainNode"]) {
 		[DomainDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];

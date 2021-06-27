@@ -255,7 +255,6 @@
 !      end do
       deallocate(vol_block_gl)
 !
-      call calypso_mpi_barrier
       do jk = 1, ndomain_yz
         call calypso_mpi_bcast_int(istack_vol(0,jk),                    &
      &                             cast_long(ndomain_x+1), int(jk-1))

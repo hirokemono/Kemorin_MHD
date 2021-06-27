@@ -14,8 +14,9 @@
 !!      subroutine dealloc_resolution_4_rayleigh(rayleigh_rtp)
 !!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !!
+!!      subroutine read_rayleigh_grid_info(file_name, rayleigh_rtp)
 !!      subroutine read_rayleigh_field_param(file_name, rayleigh_rtp)
-!!      subroutine bcast_rayleigh_field_param(rayleigh_rtp)
+!!      subroutine bcast_rayleigh_grid_info(rayleigh_rtp)
 !!      subroutine read_each_rayleigh_component                         &
 !!     &         (file_name, numnod, d_scalar, rayleigh_rtp)
 !!        type(sphere_domain_control), intent(in) :: sdctl
@@ -75,7 +76,13 @@
         real(kind = kreal), allocatable :: radius_gl(:)
 !>        meridional grid
         real(kind = kreal), allocatable :: theta_gl(:)
-        real(kind = kreal), allocatable :: cos_theta(:)
+        real(kind = kreal), allocatable :: costheta_gl(:)
+        real(kind = kreal), allocatable :: sintheta_gl(:)
+        real(kind = kreal), allocatable :: tweights_gl(:)
+!
+!>        zonal grid
+        real(kind = kreal), allocatable :: phi_gl(:)
+        real(kind = kreal), allocatable :: aphi_gl(:)
 !
 !>        number of data points of rayleigh field data
         integer(kind = kint_gl) :: nnod_rayleigh_in
@@ -98,7 +105,13 @@
 !
       allocate(rayleigh_rtp%radius_gl(rayleigh_rtp%nri_gl))
       allocate(rayleigh_rtp%theta_gl(rayleigh_rtp%nth_gl))
-      allocate(rayleigh_rtp%cos_theta(rayleigh_rtp%nth_gl))
+      allocate(rayleigh_rtp%costheta_gl(rayleigh_rtp%nth_gl))
+!
+      allocate(rayleigh_rtp%sintheta_gl(rayleigh_rtp%nth_gl))
+      allocate(rayleigh_rtp%tweights_gl(rayleigh_rtp%nth_gl))
+!
+      allocate(rayleigh_rtp%phi_gl(rayleigh_rtp%nphi_gl))
+      allocate(rayleigh_rtp%aphi_gl(rayleigh_rtp%nphi_gl))
 !
       end subroutine alloc_resolution_4_rayleigh
 !
@@ -138,7 +151,10 @@
 !
 !
       deallocate(rayleigh_rtp%radius_gl)
-      deallocate(rayleigh_rtp%cos_theta, rayleigh_rtp%theta_gl)
+      deallocate(rayleigh_rtp%costheta_gl, rayleigh_rtp%theta_gl)
+!
+      deallocate(rayleigh_rtp%sintheta_gl, rayleigh_rtp%tweights_gl)
+      deallocate(rayleigh_rtp%phi_gl, rayleigh_rtp%aphi_gl)
 !
       end subroutine dealloc_resolution_4_rayleigh
 !
@@ -202,7 +218,7 @@
 
 !$omp parallel do private(i)
         do i = 1, rayleigh_rtp%nth_gl
-          rayleigh_rtp%cos_theta(i) = cos(rayleigh_rtp%theta_gl(i))
+          rayleigh_rtp%costheta_gl(i) = cos(rayleigh_rtp%theta_gl(i))
         end do
 !$omp end parallel do
       end if
@@ -211,7 +227,82 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine bcast_rayleigh_field_param(rayleigh_rtp)
+      subroutine read_rayleigh_grid_info(file_name, rayleigh_rtp)
+!
+      use MPI_ascii_data_IO
+      use MPI_binary_head_IO
+      use byte_swap_f
+!
+      character(len = kchara), intent(in) :: file_name
+      type(rayleigh_field), intent(inout) :: rayleigh_rtp
+!
+      integer, parameter :: id_file = 15
+      integer, parameter :: iflag_pi = 314
+      integer :: i4_tmp(1)
+!
+      integer(kind = kint_gl) :: l8_byte
+      integer(kind = kint) :: i
+!
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'Read parameter file: ', trim(file_name)
+        open(id_file, FILE=file_name, STATUS='OLD',                     &
+     &       FORM='UNFORMATTED', ACCESS='STREAM')
+!
+        rayleigh_rtp%iflag_swap  = iendian_KEEP
+        read(id_file) i4_tmp(1)
+        if(i4_tmp(1) .ne. iflag_pi) then
+          rayleigh_rtp%iflag_swap = iendian_FLIP
+        end if
+!
+        read(id_file) rayleigh_rtp%nri_gl
+        read(id_file) rayleigh_rtp%nth_gl
+        read(id_file) rayleigh_rtp%nphi_gl
+!
+        if(rayleigh_rtp%iflag_swap .eq. iendian_FLIP) then
+          l8_byte = 1
+          call byte_swap_int4_f(l8_byte, i4_tmp)
+          rayleigh_rtp%nri_gl = i4_tmp(1)
+          call byte_swap_int4_f(l8_byte, i4_tmp)
+          rayleigh_rtp%nth_gl = i4_tmp(1)
+          call byte_swap_int4_f(l8_byte, i4_tmp)
+          rayleigh_rtp%nphi_gl = i4_tmp(1)
+        end if
+!
+        call alloc_resolution_4_rayleigh(rayleigh_rtp)
+!
+        read(id_file) rayleigh_rtp%radius_gl(1:rayleigh_rtp%nri_gl)
+        read(id_file) rayleigh_rtp%theta_gl(1:rayleigh_rtp%nth_gl)
+!
+        read(id_file) rayleigh_rtp%costheta_gl(1:rayleigh_rtp%nth_gl)
+        read(id_file) rayleigh_rtp%sintheta_gl(1:rayleigh_rtp%nth_gl)
+        read(id_file) rayleigh_rtp%tweights_gl(1:rayleigh_rtp%nth_gl)
+!
+        read(id_file) rayleigh_rtp%phi_gl(1:rayleigh_rtp%nphi_gl)
+        read(id_file) rayleigh_rtp%aphi_gl(1:rayleigh_rtp%nphi_gl)
+        close(id_file)
+!
+        if(rayleigh_rtp%iflag_swap .eq. iendian_FLIP) then
+          l8_byte = rayleigh_rtp%nri_gl
+          call byte_swap_real_f(l8_byte, rayleigh_rtp%radius_gl)
+          l8_byte = rayleigh_rtp%nth_gl
+          call byte_swap_real_f(l8_byte, rayleigh_rtp%theta_gl)
+
+          call byte_swap_real_f(l8_byte, rayleigh_rtp%costheta_gl)
+          call byte_swap_real_f(l8_byte, rayleigh_rtp%sintheta_gl)
+          call byte_swap_real_f(l8_byte, rayleigh_rtp%tweights_gl)
+!
+          l8_byte = rayleigh_rtp%nphi_gl
+          call byte_swap_real_f(l8_byte, rayleigh_rtp%phi_gl)
+          call byte_swap_real_f(l8_byte, rayleigh_rtp%aphi_gl)
+        end if
+      end if
+!
+      end subroutine read_rayleigh_grid_info
+!
+! ----------------------------------------------------------------------
+!
+      subroutine bcast_rayleigh_grid_info(rayleigh_rtp)
 !
       use calypso_mpi_real
       use calypso_mpi_int4
@@ -231,9 +322,19 @@
       call calypso_mpi_bcast_real                                       &
      &   (rayleigh_rtp%theta_gl,  cast_long(rayleigh_rtp%nth_gl), 0)
       call calypso_mpi_bcast_real                                       &
-     &   (rayleigh_rtp%cos_theta, cast_long(rayleigh_rtp%nth_gl), 0)
+     &   (rayleigh_rtp%costheta_gl, cast_long(rayleigh_rtp%nth_gl), 0)
 !
-      end subroutine bcast_rayleigh_field_param
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%sintheta_gl, cast_long(rayleigh_rtp%nth_gl), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%tweights_gl, cast_long(rayleigh_rtp%nth_gl), 0)
+!
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%phi_gl, cast_long(rayleigh_rtp%nphi_gl), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%aphi_gl, cast_long(rayleigh_rtp%nphi_gl), 0)
+!
+      end subroutine bcast_rayleigh_grid_info
 !
 ! ----------------------------------------------------------------------
 !

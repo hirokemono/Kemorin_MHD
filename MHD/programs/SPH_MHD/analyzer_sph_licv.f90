@@ -25,6 +25,7 @@
       use m_MHD_step_parameter
       use t_SPH_mesh_field_data
       use t_ctl_data_MHD
+      use t_mesh_SR
 !
       use SPH_analyzer_licv
 !
@@ -70,19 +71,13 @@
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
-!    precondition elaps start
-!
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
-      if(iflag_debug .gt. 0) write(*,*) 'alloc_iccgN_vector'
-      call alloc_iccgN_vector                                           &
-     &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, FEM_d1%v_sol)
-!
 !   matrix assembling
 !
+      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_linear_conv'
       call SPH_initialize_linear_conv                                   &
-     &   (MHD_files1, FEM_d1%iphys, SPH_model1,                         &
-     &    MHD_step1, MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1)
+     &   (MHD_files1, FEM_d1%iphys, SPH_model1, MHD_step1,              &
+     &    MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
       call calypso_MPI_barrier
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
@@ -120,8 +115,9 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_linear_conv'
         call SPH_analyze_linear_conv(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1, iflag_finish, SPH_model1,                       &
-     &      MHD_step1, MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1)
+     &      MHD_files1, iflag_finish, SPH_model1, MHD_step1,            &
+     &      MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1,                          &
+     &      m_SR1%SR_sig, m_SR1%SR_r)
 !*
 !*  -----------  exit loop --------------
 !*

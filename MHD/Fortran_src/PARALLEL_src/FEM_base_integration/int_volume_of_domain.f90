@@ -12,8 +12,8 @@
 !> @brief Construct jacobians and volume integrations
 !!
 !!@verbatim
-!!      subroutine const_jacobian_volume_normals(id_rank, nprocs,       &
-!!     &          mesh, group, spfs, jacs)
+!!      subroutine jacobian_and_element_volume                          &
+!!     &         (id_rank, nprocs, mesh, group, spfs, jacs)
 !!      subroutine const_jacobian_and_volume                            &
 !!     &         (id_rank, nprocs, mesh, group, spf_3d, jacs)
 !!      subroutine const_jacobian_and_vol_layer(id_rank, nprocs,        &
@@ -52,13 +52,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_jacobian_volume_normals(id_rank, nprocs,         &
-     &          mesh, group, spfs, jacs)
+      subroutine jacobian_and_element_volume                            &
+     &         (id_rank, nprocs, mesh, group, spfs, jacs)
 !
+      use t_surface_group_normals
       use set_normal_vectors
-      use set_surf_grp_vectors
-      use sum_normal_4_surf_group
-      use set_connects_4_surf_group
       use const_jacobians_3d
 !
       integer, intent(in) :: id_rank, nprocs
@@ -76,29 +74,10 @@
      &   (id_rank, nprocs, mesh, group, spfs%spf_3d, jacs)
       call dealloc_vol_shape_func(spfs%spf_3d)
 !
-!     --------------------- Surface jacobian for fieldline
-!
-      if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(id_rank, nprocs,                         &
-     &    mesh%node, mesh%surf, spfs%spf_2d, jacs)
-      call dealloc_surf_shape_func(spfs%spf_2d)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-      call pick_normal_of_surf_group(mesh%surf, group%surf_grp,         &
-     &    group%tbls_surf_grp, group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-      call s_sum_normal_4_surf_group(mesh%ele,                          &
-     &    group%surf_grp, group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
-      call cal_surf_normal_at_nod(mesh%node, mesh%ele, mesh%surf,       &
-     &    group%surf_grp, group%surf_grp_geom, group%surf_nod_grp)
-!
 !      call check_jacobians_trilinear                                   &
 !     &   (id_rank, mesh%ele, jacs%jac_3d_l)
 !
-      end subroutine const_jacobian_volume_normals
+      end subroutine jacobian_and_element_volume
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -151,7 +130,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(inout) :: ele
-      type(surface_group_data), intent(in) :: surf_grp
+      type(surface_group_data), intent(inout) :: surf_grp
       type(scalar_surf_BC_list), intent(inout) :: infty_grp
       type(shape_finctions_at_points), intent(inout) :: spfs
       type(jacobians_type), intent(inout) :: jacs
@@ -160,7 +139,6 @@
 !
       call empty_infty_surf_type(infty_grp)
 !
-      allocate(jacs%g_FEM)
       call sel_max_int_point_by_etype(ele%nnod_4_ele, jacs%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)

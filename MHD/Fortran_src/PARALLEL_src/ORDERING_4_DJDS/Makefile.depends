@@ -28,7 +28,7 @@ set_djds_connectivity_type.o: $(DJDS_ORDER_DIR)/set_djds_connectivity_type.f90 m
 	$(F90) -c $(F90OPTFLAGS) $<
 set_idx_4_mat_type.o: $(DJDS_ORDER_DIR)/set_idx_4_mat_type.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_solver_djds.o t_table_FEM_const.o set_DJDS_off_diagonal.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solve_precond_DJDS.o: $(DJDS_ORDER_DIR)/solve_precond_DJDS.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_crs_matrix.o t_solver_djds.o m_solver_SR.o t_solver_SR.o t_iccg_parameter.o solver_DJDS11_struct.o copy_matrix_2_djds_array.o solver_DJDS33_struct.o solver_DJDSnn_struct.o
+solve_precond_DJDS.o: $(DJDS_ORDER_DIR)/solve_precond_DJDS.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_crs_matrix.o t_solver_djds.o t_solver_SR.o t_iccg_parameter.o solver_DJDS11_struct.o copy_matrix_2_djds_array.o solver_DJDS33_struct.o solver_DJDSnn_struct.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_colored_connect.o: $(DJDS_ORDER_DIR)/t_colored_connect.f90 m_precision.o t_crs_connect.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -53,7 +53,7 @@
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_group_connect
-      use t_surface_group_geometry
+      use t_surface_group_normals
       use t_phys_data
       use t_phys_address
       use t_boundary_field_IO
@@ -93,7 +93,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_bc_surface_data'
       call set_bc_surface_data                                          &
      &   (IO_bc, mesh%node, mesh%ele, mesh%surf,                        &
-     &    group%surf_grp, group%surf_nod_grp, group%surf_grp_geom,      &
+     &    group%surf_grp, group%surf_nod_grp, group%surf_grp_norm,      &
      &    MHD_prop, MHD_BC, FEM_MHD_BCs%surf_bcs)
 !
 !     set normal velocity

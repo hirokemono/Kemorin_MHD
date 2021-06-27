@@ -11,12 +11,12 @@
 !!@verbatim
 !!      subroutine input_control_4_FEM_MHD                              &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, femmesh, nod_fld, ele_fld, VIZ_DAT, IO_bc,    &
-!!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls, repart_ctl)
+!!     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,             &
+!!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !!      subroutine input_control_4_FEM_snap                             &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, femmesh, nod_fld, ele_fld, VIZ_DAT, IO_bc,    &
-!!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls, repart_ctl)
+!!     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,             &
+!!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
@@ -36,7 +36,6 @@
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
-!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(viz_repartition_ctl), intent(inout) :: repart_ctl
 !!@endverbatim
@@ -50,7 +49,6 @@
       use calypso_mpi
 !
       use t_control_data_vizs
-      use t_ctl_data_volume_repart
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_MHD_step_parameter
@@ -88,8 +86,8 @@
 !
       subroutine input_control_4_FEM_MHD                                &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, femmesh, nod_fld, ele_fld, VIZ_DAT, IO_bc,      &
-     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls, repart_ctl)
+     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,               &
+     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -111,24 +109,20 @@
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
       type(visualization_controls), intent(inout) :: viz_ctls
-      type(viz_repartition_ctl), intent(inout) :: repart_ctl
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
-      call read_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl,            &
-     &                            viz_ctls, repart_ctl)
+      call read_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD(FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt,  &
-     &    repart_ctl, FEM_MHD_ctl%model_ctl,                            &
+      call set_control_4_FEM_MHD                                        &
+     &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl,                  &
      &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
-     &    nod_fld, ele_fld, VIZ_DAT)
-      call dealloc_control_vol_repart(repart_ctl)
+     &    nod_fld, ele_fld)
       call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
 !
 !  --  load FEM mesh data
@@ -150,8 +144,8 @@
 !
       subroutine input_control_4_FEM_snap                               &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, femmesh, nod_fld, ele_fld, VIZ_DAT, IO_bc,      &
-     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls, repart_ctl)
+     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,               &
+     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -173,24 +167,20 @@
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
       type(visualization_controls), intent(inout) :: viz_ctls
-      type(viz_repartition_ctl), intent(inout) :: repart_ctl
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
-      call read_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl,           &
-     &                            viz_ctls, repart_ctl)
+      call read_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD(FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt,  &
-     &    repart_ctl, FEM_MHD_ctl%model_ctl,                            &
+      call set_control_4_FEM_MHD                                        &
+     &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl,                  &
      &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
-     &    nod_fld, ele_fld, VIZ_DAT)
-      call dealloc_control_vol_repart(repart_ctl)
+     &    nod_fld, ele_fld)
       call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
 !
 !  --  load FEM mesh data

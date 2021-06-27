@@ -10,7 +10,9 @@ TARGET_PSF =         sectioning
 TARGET_FOUR_VIZS =   four_vizs_kemo
 TARGET_PVR =         pvr_kemo
 TARGET_FLINE =       fieldline_kemo
+TARGET_LIC = lic_kemo
 TARGET_VTK_CONVERT = field_to_VTK
+
 
 LIBS_VIZ = \
 '$$(LIB_VIZ)'    \
@@ -82,6 +84,15 @@ t_viz_VTK_convert.o \
 t_control_data_section_only.o \
 t_field_list_for_vizs.o
 
+
+MOD_LIC_PLUG =  \
+main_lic.o  \
+analyzer_lic.o \
+FEM_analyzer_viz.o \
+t_FEM_mesh_field_4_viz.o \
+t_control_data_all_vizs.o \
+t_field_list_for_vizs.o
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -95,6 +106,7 @@ target_list:
 	@echo 'TARGET_FOUR_VIZS =   $$(BUILDDIR)/$(TARGET_FOUR_VIZS)' >> $(MAKENAME)
 	@echo 'TARGET_PVR =         $$(BUILDDIR)/$(TARGET_PVR)' >> $(MAKENAME)
 	@echo 'TARGET_FLINE =       $$(BUILDDIR)/$(TARGET_FLINE)' >> $(MAKENAME)
+	@echo 'TARGET_LIC =         $$(BUILDDIR)/$(TARGET_LIC)' >> $(MAKENAME)
 	@echo 'TARGET_VTK_CONVERT = $$(BUILDDIR)/$(TARGET_VTK_CONVERT)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
@@ -105,6 +117,7 @@ target_task:
 	'$$(TARGET_FOUR_VIZS)' \
 	'$$(TARGET_PVR)' \
 	'$$(TARGET_FLINE)' \
+	'$$(TARGET_LIC)' \
 	'$$(TARGET_VTK_CONVERT)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -144,6 +157,12 @@ target_task:
 	-o '$$(TARGET_VTK_CONVERT)' '$$(MOD_VTK_CONVERT_PLUG)' \
 	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_LIC):  $$(MOD_LIC_PLUG)' \
+	'$$(LIB_FILES_VIZ)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_LIC)' '$$(MOD_LIC_PLUG)' \
+	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 lib_name:
 	@echo  LIBS_VIZ=  \\          >> $(MAKENAME)
@@ -166,6 +185,8 @@ mod_list:
 	@echo  $(MOD_FLINE_PLUG)         >> $(MAKENAME)
 	@echo  MOD_VTK_CONVERT_PLUG=  \\ >> $(MAKENAME)
 	@echo  $(MOD_VTK_CONVERT_PLUG)   >> $(MAKENAME)
+	@echo  MOD_LIC_PLUG=  \\         >> $(MAKENAME)
+	@echo  $(MOD_LIC_PLUG)           >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 

@@ -29,6 +29,7 @@
       use t_work_SPH_MHD
       use t_viz_sections
       use t_VIZ_mesh_field
+      use t_mesh_SR
 !
       implicit none
 !
@@ -87,8 +88,8 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
-        call FEM_analyze_sph_SGS_MHD                                    &
-     &     (MHD_files1, MHD_step1, MHD_IO1, FEM_d1)
+        call FEM_analyze_sph_SGS_MHD(MHD_files1, MHD_step1, MHD_IO1,    &
+     &                               FEM_d1, m_SR1)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -100,19 +101,16 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
-          call s_FEM_to_VIZ_bridge                                      &
-     &       (FEM_d1%field, FEM_d1%v_sol, VIZ_DAT1)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        VIZ_DAT1%viz_fem, VIZ_DAT1%edge_comm, VIZ_DAT1%viz_fld,   &
-     &        VIZ_DAT1%ele_4_nod, VIZ_DAT1%jacobians, vizs1)
+     &        FEM_d1%geofem, FEM_d1%field, VIZ_DAT1, vizs1, m_SR1)
 !*
 !*  ----------- Zonal means --------------
 !*
           if(MHD_step1%viz_step%istep_psf .ge. 0) then
-            call SGS_MHD_zmean_sections(MHD_step1%viz_step%istep_psf,   &
+            call SGS_MHD_zmean_sections(MHD_step1%viz_step,             &
      &          MHD_step1%time_d, SPH_MHD1%sph, FEM_d1%geofem,          &
      &          SPH_WK1%trns_WK, SPH_SGS1, FEM_d1%field,                &
-     &          zmeans1, FEM_d1%v_sol)
+     &          zmeans1, m_SR1)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
@@ -201,7 +199,8 @@
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+4)
       call nonlinear_with_SGS(i_step, SPH_WK%r_2nd,SPH_model,           &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS, SPH_MHD)
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS, SPH_MHD,             &
+     &    m_SR1%SR_sig, m_SR1%SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -216,14 +215,15 @@
      &     (SPH_SGS%SGS_par, SPH_WK%monitor, SPH_WK%r_2nd,              &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
      &      SPH_SGS%ipol_LES, SPH_WK%MHD_mats, SPH_WK%trns_WK,          &
-     &      SPH_SGS%trns_WK_LES, SPH_SGS%dynamic, SPH_MHD)
+     &      SPH_SGS%trns_WK_LES, SPH_SGS%dynamic, SPH_MHD,              &
+     &      m_SR1%SR_sig, m_SR1%SR_r)
       end if
 !
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd                                &
      &   (SPH_model%omega_sph, SPH_model%MHD_prop,                      &
      &    SPH_model%sph_MHD_bc, SPH_WK%trans_p, SPH_WK%trns_WK,         &
-     &    SPH_SGS, SPH_MHD)
+     &    SPH_SGS, SPH_MHD, m_SR1)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  lead energy data --------------
@@ -277,7 +277,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_special_fields_4_sph_mhd(omega_sph, MHD_prop,     &
-     &          sph_MHD_bc, trans_p, trns_WK, SPH_SGS, SPH_MHD)
+     &          sph_MHD_bc, trans_p, trns_WK, SPH_SGS, SPH_MHD, m_SR)
 !
       use t_MHD_step_parameter
       use t_spheric_parameter
@@ -299,22 +299,24 @@
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       call sph_back_trans_4_MHD(SPH_MHD%sph, SPH_MHD%comms,             &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, omega_sph, trans_p,    &
      &    trns_WK%gt_cor, SPH_MHD%fld, trns_WK%trns_MHD%b_trns,         &
      &    trns_WK%trns_MHD%backward, trns_WK%WK_leg,                    &
-     &    trns_WK%WK_FFTs_MHD, trns_WK%cor_rlm)
+     &    trns_WK%WK_FFTs_MHD, trns_WK%cor_rlm, m_SR%SR_sig, m_SR%SR_r)
 !
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
      &    trns_WK%trns_eflux%forward, trns_WK%WK_leg, trns_WK%WK_FFTs,  &
-     &    SPH_MHD%fld)
+     &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
      &    SPH_SGS%trns_WK_LES%trns_SGS_snap%forward,                    &
-     &    trns_WK%WK_leg, trns_WK%WK_FFTs, SPH_MHD%fld)
+     &    trns_WK%WK_leg, trns_WK%WK_FFTs, SPH_MHD%fld,                 &
+     &    m_SR%SR_sig, m_SR%SR_r)
 !
 ! ----  Take zonal mean
 !

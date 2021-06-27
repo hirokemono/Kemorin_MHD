@@ -7,35 +7,44 @@
 !> @brief Construct 3D noise data for LIC
 !!
 !!@verbatim
-!!      subroutine const_3d_noise(i_stepsize, nidx, nnod_gl, rnoise)
+!!      subroutine const_3d_noise                                       &
+!!     &         (i_stepsize, nidx, nnod_gl, rnoise_grad)
 !!        integer(kind = kint), intent(in) :: i_stepsize
 !!        integer(kind = kint), intent(in) :: nidx(3)
 !!        integer(kind = kint_gl), intent(in) :: nnod_gl
-!!        real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
+!!        real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
+!!      subroutine noise_normalization(nnod_gl, nidx, rnoise_grad)
+!!        integer(kind = kint_gl), intent(in) :: nnod_gl
+!!        integer(kind = kint), intent(in) :: nidx(3)
+!!        real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
 !!      subroutine grad_3d_noise                                        &
-!!     &         (nnod_gl, nidx, asize_cube, rnoise, rnoise_grad)
+!!     &         (nnod_gl, nidx, asize_cube, rnoise_grad)
 !!        integer(kind = kint_gl), intent(in) :: nnod_gl
 !!        integer(kind = kint), intent(in) :: nidx(3)
 !!        real(kind = kreal), intent(in) :: asize_cube(3)
-!!        real(kind = kreal), intent(in) :: rnoise(nnod_gl)
-!!        real(kind = kreal), intent(inout) :: rnoise_grad(nnod_gl,3)
+!!        real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
 !!
-!!      subroutine cvt_rnoise_to_chara(nnod_gl, rnoise, cnoise)
+!!      subroutine cvt_rnoise_to_chara(nnod_gl, rnoise_grad, cnoise)
 !!        integer(kind = kint_gl), intent(in) :: nnod_gl
-!!        real(kind = kreal), intent(in) :: rnoise(nnod_gl)
+!!        real(kind = kreal), intent(in) :: rnoise_grad(0:3,nnod_gl)
 !!        character(len = 1), intent(inout) :: cnoise(nnod_gl)
-!!      subroutine cvt_cnoise_to_real(nnod_gl, cnoise, rnoise)
+!!      subroutine cvt_cnoise_to_real(nnod_gl, cnoise, rnoise_grad)
 !!        integer(kind = kint_gl), intent(in) :: nnod_gl
 !!        character(len = 1), intent(in) :: cnoise(nnod_gl)
-!!        real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
+!!        real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
 !!@endverbatim
 !
       module cal_3d_noise
 !
       use m_precision
       use m_constants
+      use mt_stream
 !
       implicit none
+!
+      logical, save :: flag_mt_stream = .FALSE.
+      type(mt_state), save, private :: mts(1)
+      real(kind = kreal), save, private :: frand
 !
       integer(kind = kint), parameter :: ifix_seed =  1337
 !
@@ -47,35 +56,55 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_3d_noise(i_stepsize, nidx, nnod_gl, rnoise)
+      subroutine init_kemo_mt_stream
 !
-      use mt_stream
+      integer, parameter :: iseeda(4) = (/ 123, 234, 345, 456 /)
 !
-      integer(kind = kint), intent(in) :: i_stepsize
-      integer(kind = kint), intent(in) :: nidx(3)
-      integer(kind = kint_gl), intent(in) :: nnod_gl
-      real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
+      if(flag_mt_stream) return
 !
-      type(mt_state) :: mts(1)
-      integer :: iseeda(4) = (/ 123, 234, 345, 456 /)
-!
-      integer(kind = kint_gl), parameter :: ibase = 17
-      integer(kind = kint_gl), parameter :: jbase = 31
-      integer(kind = kint_gl), parameter :: kbase = 57
-      integer(kind = kint_gl) :: index = 23
-!
-      integer(kind = kint) :: i, j, k
-      integer(kind = kint_gl) :: inod_gl, itmp_gl, icou_gl
-      real(kind = kreal) :: frand
-!      real(kind = kreal) :: x, y, z, length
-!
-!
+      write(*,*) 'initialize kemo_mt_stream'
       call set_mt19937
       call new(mts(1))
 !      call init(mts,iseed)  ! init by scalar
       call init(mts(1),iseeda)  ! init by array
+      flag_mt_stream = .TRUE.
+!
+      end subroutine init_kemo_mt_stream
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine finalize_kemo_mt_stream
+!
+      if(flag_mt_stream .EQV. .FALSE.) return
+      write(*,*) 'Finalize kemo_mt_stream'
+      call delete(mts(1))
+      flag_mt_stream = .FALSE.
+!
+      end subroutine finalize_kemo_mt_stream
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine const_3d_noise                                         &
+     &         (i_stepsize, nidx, nnod_gl, rnoise_grad)
+!
+      integer(kind = kint), intent(in) :: i_stepsize
+      integer(kind = kint), intent(in) :: nidx(3)
+      integer(kind = kint_gl), intent(in) :: nnod_gl
+      real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
+!
+      integer(kind = kint_gl), parameter :: init_index = 1
+      integer(kind = kint_gl), parameter :: ibase = 17
+      integer(kind = kint_gl), parameter :: jbase = 31
+      integer(kind = kint_gl), parameter :: kbase = 57
+!
+      integer(kind = kint_gl) :: index
+      integer(kind = kint) :: i, j, k
+      integer(kind = kint_gl) :: inod_gl, itmp_gl, icou_gl
+!      real(kind = kreal) :: x, y, z, length
+!
 !
       icou_gl = 0
+      index = init_index
       do
         i = int(dble(nidx(1)) * halton_sequence(index, ibase)) + 1
         j = int(dble(nidx(2)) * halton_sequence(index, jbase)) + 1
@@ -95,23 +124,50 @@
         inod_gl = int(i,KIND(inod_gl))                                  &
      &           + (itmp_gl-1) * int(nidx(1),KIND(inod_gl))
 !
-        rnoise(inod_gl) = genrand_double1(mts(1))
+        rnoise_grad(0,inod_gl) = genrand_double1(mts(1))
       end do
-      call delete(mts(1))
 !
       end subroutine const_3d_noise
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine noise_normalization(nnod_gl, nidx, rnoise_grad)
+!
+      integer(kind = kint_gl), intent(in) :: nnod_gl
+      integer(kind = kint), intent(in) :: nidx(3)
+      real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
+!
+      integer(kind = kint_gl) :: i0
+      real(kind = kreal) :: anoise
+!
+!
+      anoise = 0.0d0
+!$omp parallel do reduction(+:anoise)
+      do i0 = 1, nnod_gl
+        anoise = anoise + rnoise_grad(0,i0)
+      end do
+!$omp end parallel do
+      anoise = dble(nidx(1)) * dble(nidx(2)) * dble(nidx(3)) / anoise
+      write(*,*) 'anoise', anoise
+!
+!$omp parallel do
+      do i0 = 1, nnod_gl
+        rnoise_grad(0,i0) = rnoise_grad(0,i0) * anoise
+      end do
+!$omp end parallel do
+!
+      end subroutine noise_normalization
+!
+!  ---------------------------------------------------------------------
+!
       subroutine grad_3d_noise                                          &
-     &         (nnod_gl, nidx, asize_cube, rnoise, rnoise_grad)
+     &         (nnod_gl, nidx, asize_cube, rnoise_grad)
 !
       integer(kind = kint_gl), intent(in) :: nnod_gl
       integer(kind = kint), intent(in) :: nidx(3)
       real(kind = kreal), intent(in) :: asize_cube(3)
-      real(kind = kreal), intent(in) :: rnoise(nnod_gl)
 !
-      real(kind = kreal), intent(inout) :: rnoise_grad(nnod_gl,3)
+      real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
 !
       integer(kind = kint_gl) :: nidx64(3)
       integer(kind = kint_gl) :: i0, j0, k0, inod
@@ -146,21 +202,24 @@
             ip = mod(in+1,nidx64(1)) + 1
             inod = i0 + jm_gl
 !
-            rnoise_grad(inod,1) = rnoise(in+jm_gl) - rnoise(ip+jm_gl)
-            rnoise_grad(inod,2) = rnoise(i0+jm_yp) - rnoise(i0+jm_yn)
-            rnoise_grad(inod,3) = rnoise(i0+jm_zp) - rnoise(i0+jm_zn)
+            rnoise_grad(1,inod)                                         &
+     &           = rnoise_grad(0,in+jm_gl) - rnoise_grad(0,ip+jm_gl)
+            rnoise_grad(2,inod)                                         &
+     &           = rnoise_grad(0,i0+jm_yp) - rnoise_grad(0,i0+jm_yn)
+            rnoise_grad(3,inod)                                         &
+     &           = rnoise_grad(0,i0+jm_zp) - rnoise_grad(0,i0+jm_zn)
           end do
         end do
       end do
 !$omp end parallel do
 !
 !$omp parallel workshare
-      rnoise_grad(1:nnod_gl,1) = half * dble(nidx(1)) * asize_cube(1)   &
-     &                          * rnoise_grad(1:nnod_gl,1)
-      rnoise_grad(1:nnod_gl,2) = half * dble(nidx(2)) * asize_cube(2)   &
-     &                          * rnoise_grad(1:nnod_gl,2)
-      rnoise_grad(1:nnod_gl,3) = half * dble(nidx(3)) * asize_cube(3)   &
-     &                          * rnoise_grad(1:nnod_gl,3)
+      rnoise_grad(1,1:nnod_gl) = half * dble(nidx(1)) * asize_cube(1)   &
+     &                          * rnoise_grad(1,1:nnod_gl)
+      rnoise_grad(2,1:nnod_gl) = half * dble(nidx(2)) * asize_cube(2)   &
+     &                          * rnoise_grad(2,1:nnod_gl)
+      rnoise_grad(3,1:nnod_gl) = half * dble(nidx(3)) * asize_cube(3)   &
+     &                          * rnoise_grad(3,1:nnod_gl)
 !$omp end parallel workshare
 !
       end subroutine grad_3d_noise
@@ -216,17 +275,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cvt_rnoise_to_chara(nnod_gl, rnoise, cnoise)
+      subroutine cvt_rnoise_to_chara(nnod_gl, rnoise_grad, cnoise)
 !
       integer(kind = kint_gl), intent(in) :: nnod_gl
-      real(kind = kreal), intent(in) :: rnoise(nnod_gl)
+      real(kind = kreal), intent(in) :: rnoise_grad(0:3,nnod_gl)
       character(len = 1), intent(inout) :: cnoise(nnod_gl)
 !
       integer(kind = kint_gl) :: inod_gl, inoise
 !
 !$omp parallel do private(inod_gl, inoise)
       do inod_gl = 1, nnod_gl
-        inoise = int((rnoise(inod_gl) * 256),KIND(inoise))
+        inoise = int((rnoise_grad(0,inod_gl) * 256),KIND(inoise))
         cnoise(inod_gl) = char(inoise)
       end do
 !$omp end parallel do
@@ -235,11 +294,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cvt_cnoise_to_real(nnod_gl, cnoise, rnoise)
+      subroutine cvt_cnoise_to_real(nnod_gl, cnoise, rnoise_grad)
 !
       integer(kind = kint_gl), intent(in) :: nnod_gl
       character(len = 1), intent(in) :: cnoise(nnod_gl)
-      real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
+      real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
 !
       real(kind = kreal) :: pol
       integer(kind = kint_gl) :: inod_gl
@@ -247,7 +306,7 @@
       pol = 1.0d0 / 256.0
 !$omp parallel do private(inod_gl)
       do inod_gl = 1, nnod_gl
-        rnoise(inod_gl) = dble( ichar(cnoise(inod_gl)) ) * pol
+        rnoise_grad(0,inod_gl) = dble( ichar(cnoise(inod_gl)) ) * pol
       end do
 !$omp end parallel do
 !

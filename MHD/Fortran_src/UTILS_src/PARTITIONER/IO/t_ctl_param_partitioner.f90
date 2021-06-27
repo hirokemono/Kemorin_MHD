@@ -50,7 +50,6 @@
 !
         integer(kind = kint) :: num_domain
 !
-        integer(kind = kint) :: iflag_sleeve_ele = 0
         integer(kind = kint) :: n_overlap =    1
 !
         type(field_IO_params) :: global_mesh_file

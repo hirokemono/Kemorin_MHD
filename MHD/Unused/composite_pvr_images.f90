@@ -15,7 +15,7 @@
 !!     &          ipixel_small, iflag_img_pe)
 !!
 !!      subroutine cal_image_pixel_depth(num_pvr_ray,                   &
-!!     &         id_pixel_start, xx_pvr_ray_start, num_overlap,         &
+!!     &         id_pixel_start, xx4_pvr_ray_start, num_overlap,        &
 !!     &         num_pixel_xy, iflag_mapped, iflag_img_pe, iflag_img_lc,&
 !!     &         depth_lc)
 !!      subroutine copy_segmented_image                                 &
@@ -84,7 +84,7 @@
       call alloc_pvr_subimage_array(pvr_img)
 !
       call cal_image_pixel_depth(pvr_start%num_pvr_ray,                 &
-     &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &
+     &    pvr_start%id_pixel_start, pvr_start%xx4_pvr_ray_start,        &
      &    pvr_img%num_overlap, pvr_img%num_pixel_xy,                    &
      &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
      &    pvr_img%iflag_mapped, pvr_img%iflag_img_lc, pvr_img%depth_lc)
@@ -223,14 +223,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_image_pixel_depth(num_pvr_ray,                     &
-     &         id_pixel_start, xx_pvr_ray_start, num_overlap,           &
+     &         id_pixel_start, xx4_pvr_ray_start, num_overlap,          &
      &         num_pixel_xy, npixel_img, iflag_img_pe, iflag_mapped,    &
      &         iflag_img_lc, depth_lc)
 !
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
       real(kind = kreal), intent(in)                                    &
-     &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
+     &                    ::  xx4_pvr_ray_start(4,num_pvr_ray)
 !
       integer(kind = kint), intent(in) :: num_overlap, num_pixel_xy
       integer(kind = kint), intent(in) :: npixel_img
@@ -258,7 +258,7 @@
         iflag_mapped(ipix) = iflag_mapped(ipix) + 1
         icou = iflag_mapped(ipix)
         iflag_img_lc(icou,inod) = 1
-        depth_lc(icou,inod) =  xx_pvr_ray_start(3,inum)
+        depth_lc(icou,inod) =  xx4_pvr_ray_start(3,inum)
       end do
 !
       end subroutine cal_image_pixel_depth

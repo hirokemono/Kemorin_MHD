@@ -2,7 +2,8 @@
 !     module SPH_analyzer_licv
 !
 !!      subroutine SPH_initialize_linear_conv(MHD_files, iphys,         &
-!!     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD, SPH_WK)
+!!     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD,             &
+!!     &          SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -10,15 +11,19 @@
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(field_IO), intent(inout) :: sph_fst_IO
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine SPH_analyze_linear_conv(i_step, MHD_files,           &
 !!     &          iflag_finish, SPH_model, MHD_step, sph_fst_IO,        &
-!!     &          SPH_MHD, SPH_WK)
+!!     &          SPH_MHD, SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(field_IO), intent(inout) :: sph_fst_IO
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !      Written by H. Matsui
 !
@@ -37,6 +42,7 @@
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
       use t_field_data_IO
+      use t_solver_SR
 !
       implicit none
 !
@@ -47,7 +53,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_initialize_linear_conv(MHD_files, iphys,           &
-     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD, SPH_WK)
+     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD,               &
+     &          SPH_WK, SR_sig, SR_r)
 !
       use calypso_mpi
       use m_constants
@@ -81,6 +88,8 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(field_IO), intent(inout) :: sph_fst_IO
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !   Allocate spectr field data
 !
@@ -97,8 +106,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD                                       &
-     &   (SPH_model, iphys, SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
+      call init_sph_transform_MHD(SPH_model, iphys, SPH_WK%trans_p,     &
+     &    SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
 !
 ! ---------------------------------
 !
@@ -137,7 +146,8 @@
       call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,             &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK, SPH_MHD%fld)
+     &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                 &
+     &    SPH_MHD%fld, SR_sig, SR_r)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -152,7 +162,7 @@
 !
       subroutine SPH_analyze_linear_conv(i_step, MHD_files,             &
      &          iflag_finish, SPH_model, MHD_step, sph_fst_IO,          &
-     &          SPH_MHD, SPH_WK)
+     &          SPH_MHD, SPH_WK, SR_sig, SR_r)
 !
       use calypso_mpi_real
       use cal_momentum_eq_explicit
@@ -172,6 +182,8 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(field_IO), intent(inout) :: sph_fst_IO
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !*  ----------  add time evolution -----------------
 !*
@@ -195,7 +207,8 @@
         call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,           &
      &     SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                    &
      &     SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,             &
-     &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK, SPH_MHD%fld)
+     &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                &
+     &     SPH_MHD%fld, SR_sig, SR_r)
 !
 !* ----  Update fields after time evolution ------------------------
 !*
@@ -208,7 +221,7 @@
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SPH_WK%monitor, SPH_WK%r_2nd,      &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
-     &      SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD)
+     &      SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !

@@ -113,7 +113,7 @@
       use m_default_file_prefix
       use t_ctl_data_gen_table
       use t_search_block_4_itp
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
       use set_control_platform_item
       use set_control_platform_data
       use skip_comment_f

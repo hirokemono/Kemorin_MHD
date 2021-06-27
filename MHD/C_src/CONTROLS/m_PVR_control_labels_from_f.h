@@ -19,7 +19,7 @@ label[3]   monitoring_mode
 label[4]   image_tranceparency 
 label[5]   max_pe_4_composit 
 label[6]   streo_imaging 
-label[7]   anaglyph_image 
+label[7]   quilt_3d_imaging
 label[8]   output_field 
 label[9]   output_component 
 label[10]   plot_area_ctl 
@@ -46,7 +46,7 @@ label[7]   scale_factor_vec_ctl
 label[8]   viewpoint_in_viewer_ctl 
 label[9]   projection_matrix_ctl 
 label[10]   modelview_matrix_ctl 
-label[11]   streo_view_parameter_ctl 
+label[11]   stereo_view_parameter_ctl 
 
 Check pvr_ctl_labls->label_pvr_pixels
 ctl_list->num_labels 2 
@@ -124,8 +124,9 @@ label[1]   num_frames_ctl
 label[2]   rotation_axis_ctl 
 label[3]   start_view_control 
 label[4]   end_view_control 
-label[5]   apature_range 
-label[6]   LIC_kernel_peak_range 
+label[5]   angle_range
+label[6]   apature_range
+label[7]   LIC_kernel_peak_range
 
 Check pvr_ctl_labls->label_pvr_dirs
 ctl_list->num_labels 3 
@@ -179,9 +180,12 @@ struct pvr_control_labels{
 	struct control_labels_f *label_pvr_isosurf;
 	
 	int num_label_pvr_movie_c;
-	struct control_labels_f *label_lic_movie;
+	struct control_labels_f *label_pvr_movie;
 	
-	struct control_labels_f *label_pvr_dirs;
+    int num_label_quilt_image_c;
+    struct control_labels_f *label_quilt_image;
+
+    struct control_labels_f *label_pvr_dirs;
 	struct control_labels_f *flag_pvr_isosurf_dir;
 	
 	int num_flag_pvr_movie_mode_c;

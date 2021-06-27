@@ -1,15 +1,26 @@
-!
-!      module m_27quad_2_8x8linear
-!
-!      Written by H. Matsui on May, 2006
-!
-!      subroutine set_27quad_2_8x8linear(numele, numele8, ie_l, ie_q27)
-!      subroutine gen_connect_quad27_from_quad20(nnod332, nele332,      &
-!     &          nsurf332, ie_332, isf_ele_332, ie_333)
+!>@file   m_27quad_2_8x8linear.f90
+!!@brief  module m_27quad_2_8x8linear
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2006
+!!
+!>@brief Make linear elements from quad mesh
+!!
+!!@verbatim
+!!      subroutine set_27quad_2_8x8linear_1ele(ie1_q27, ie1_l)
+!!        integer(kind = kint), intent(in) :: ie1_q27(27)
+!!        integer(kind = kint), intent(inout) :: ie1_l(num_t_linear,8)
+!!           Caution!: i is connectivity and j is divided element
+!!                    in ie1_l(i,j)
+!!      subroutine set_27quad_2_8x8linear(numele, numele8, ie_l, ie_q27)
+!!      subroutine gen_connect_quad27_from_quad20(nnod332, nele332,     &
+!!     &          nsurf332, ie_332, isf_ele_332, ie_333)
+!!@endverbatim
 !
       module m_27quad_2_8x8linear
 !
       use m_precision
+      use m_geometry_constants
 !
       implicit  none
 !
@@ -26,6 +37,25 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_27quad_2_8x8linear_1ele(ie1_q27, ie1_l)
+!
+      integer(kind = kint), intent(in) :: ie1_q27(27)
+      integer(kind = kint), intent(inout) :: ie1_l(num_t_linear,8)
+!
+!
+      ie1_l(1:8,1) = ie1_q27(id_quad27_8linear8(1:8,1))
+      ie1_l(1:8,2) = ie1_q27(id_quad27_8linear8(1:8,2))
+      ie1_l(1:8,3) = ie1_q27(id_quad27_8linear8(1:8,3))
+      ie1_l(1:8,4) = ie1_q27(id_quad27_8linear8(1:8,4))
+      ie1_l(1:8,5) = ie1_q27(id_quad27_8linear8(1:8,5))
+      ie1_l(1:8,6) = ie1_q27(id_quad27_8linear8(1:8,6))
+      ie1_l(1:8,7) = ie1_q27(id_quad27_8linear8(1:8,7))
+      ie1_l(1:8,8) = ie1_q27(id_quad27_8linear8(1:8,8))
+!
+      end subroutine set_27quad_2_8x8linear_1ele
 !
 !  ---------------------------------------------------------------------
 !

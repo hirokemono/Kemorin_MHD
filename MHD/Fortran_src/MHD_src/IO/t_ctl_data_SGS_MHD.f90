@@ -32,7 +32,6 @@
       use t_ctl_data_gen_sph_shell
       use t_control_data_vizs
       use t_control_data_dynamo_vizs
-      use t_ctl_data_volume_repart
 !
       implicit none
 !
@@ -64,8 +63,6 @@
         type(visualization_controls) :: viz_ctls
 !>        Structures of zonal mean controls
         type(sph_dynamo_viz_controls) :: zm_ctls
-!>        Structure for new partitioning controls
-        type(viz_repartition_ctl) :: repart_ctl
 !
         integer (kind=kint) :: i_mhd_ctl = 0
       end type sph_sgs_mhd_control
@@ -91,8 +88,6 @@
       character(len=kchara), parameter                                  &
      &      :: hd_monitor_data = 'monitor_data_ctl'
 !
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_viz_partition = 'viz_repartition_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_viz_control = 'visual_control'
       character(len=kchara), parameter                                  &
@@ -165,8 +160,6 @@
       call dealloc_sph_sgs_mhd_model(MHD_ctl%model_ctl)
       call dealloc_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
-      call dealloc_control_vol_repart(MHD_ctl%repart_ctl)
-!
       MHD_ctl%i_mhd_ctl = 0
 !
       end subroutine dealloc_sph_sgs_mhd_ctl_data
@@ -216,8 +209,6 @@
 !
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           MHD_ctl%viz_ctls, c_buf)
-        call read_control_vol_repart(id_control, hd_viz_partition,      &
-     &                               MHD_ctl%repart_ctl, c_buf)
 !
         call read_dynamo_viz_control                                    &
      &     (id_control, hd_dynamo_viz_ctl, MHD_ctl%zm_ctls, c_buf)
@@ -243,7 +234,6 @@
 !
       call bcast_viz_controls(MHD_ctl%viz_ctls)
       call bcast_dynamo_viz_control(MHD_ctl%zm_ctls)
-      call bcast_control_vol_repart(MHD_ctl%repart_ctl)
 !
       end subroutine bcast_sph_mhd_control_data
 !

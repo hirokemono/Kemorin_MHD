@@ -3,9 +3,12 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_initialize_back_trans(SPH_MHD, SPH_STR, t_IO)
+!!      subroutine SPH_initialize_back_trans                            &
+!!     &         (i_step, SPH_MHD, SPH_STR, t_IO, SR_sig, SR_r)
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(time_data), intent(inout) :: t_IO
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module SPH_analyzer_back_trans_old
 !
@@ -20,6 +23,7 @@
       use t_SPH_SGS_structure
       use t_phys_name_4_sph_trans
       use t_work_4_sph_trans
+      use t_solver_SR
 !
       implicit none
 !
@@ -30,7 +34,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_initialize_back_trans                              &
-     &         (i_step, SPH_MHD, SPH_STR, t_IO)
+     &         (i_step, SPH_MHD, SPH_STR, t_IO, SR_sig, SR_r)
 !
       use m_legendre_transform_list
       use r_interpolate_sph_data
@@ -44,6 +48,8 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
       type(time_data), intent(inout) :: t_IO
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !  ------  initialize spectr data
@@ -80,7 +86,7 @@
       call initialize_sph_trans(SPH_STR%fld_rtp%ncomp_trans,            &
      &    SPH_STR%fld_rtp%num_vector, SPH_STR%fld_rtp%nscalar_trans,    &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_STR%trans_p,                  &
-     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs)
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs, SR_sig, SR_r)
 !
       call allocate_d_pole_4_all_trans                                  &
      &   (SPH_STR%fld_rtp, SPH_MHD%sph%sph_rtp)

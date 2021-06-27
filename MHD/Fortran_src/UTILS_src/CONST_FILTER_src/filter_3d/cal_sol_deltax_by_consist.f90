@@ -4,8 +4,8 @@
 !     Written by H. Matsui on Nov., 2006
 !     Modified by H. Matsui on Apr., 2008
 !
-!!      subroutine cal_sol_dx_by_consist(nd_dx, node, nod_comm,         &
-!!     &          tbl_crs, f_l, gfil_p, mass, dx_nod, v_sol)
+!!      subroutine cal_sol_dx_by_consist(nd_dx, node, nod_comm, tbl_crs,&
+!!     &          f_l, gfil_p, mass, dx_nod, v_sol, SR_sig, SR_r)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(CRS_matrix_connect), intent(in) :: tbl_crs
@@ -13,6 +13,8 @@
 !!        type(ctl_params_4_gen_filter), intent(inout) :: gfil_p
 !!        type(CRS_matrix), intent(inout) :: mass
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       module cal_sol_deltax_by_consist
@@ -38,13 +40,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sol_dx_by_consist(nd_dx, node, nod_comm,           &
-     &          tbl_crs, f_l, gfil_p, mass, dx_nod, v_sol)
+      subroutine cal_sol_dx_by_consist(nd_dx, node, nod_comm, tbl_crs,  &
+     &          f_l, gfil_p, mass, dx_nod, v_sol, SR_sig, SR_r)
 !
       use calypso_mpi
       use t_ctl_params_4_gen_filter
+      use t_solver_SR
 !
-      use m_solver_SR
       use solver
 !
       integer (kind = kint), intent(in) :: nd_dx
@@ -58,6 +60,8 @@
       type(CRS_matrix), intent(inout) :: mass
       real(kind= kreal), intent(inout) :: dx_nod(node%numnod)
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !      integer (kind = kint) :: inod
       integer(kind = kint) :: ierr
@@ -98,8 +102,7 @@
      &             nod_comm%istack_export, nod_comm%item_export,        &
      &             itr_res, imonitor_solve,                             &
      &             gfil_p%method_elesize, gfil_p%precond_elesize,       &
-     &             mass%INTARRAY_crs, mass%REALARRAY_crs,               &
-     &             SR_sig1, SR_r1)
+     &             mass%INTARRAY_crs, mass%REALARRAY_crs, SR_sig, SR_r)
 !
       if (my_rank .eq. 0 ) then
         write(*,*) ' iteration finish:', itr_res

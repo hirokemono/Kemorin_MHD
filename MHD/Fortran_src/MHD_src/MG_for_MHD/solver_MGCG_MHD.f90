@@ -13,10 +13,12 @@
 !!
 !!      subroutine solver_MGCG_vector(node, MG_param, num_MG_level,     &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
-!!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
+!!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec,          &
+!!     &          x_vec, SR_sig, SR_r)
 !!      subroutine solver_MGCG_scalar(node, MG_param, num_MG_level,     &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,          &
-!!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
+!!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec,          &
+!!     &          x_vec, SR_sig, SR_r)
 !!        type(node_data), intent(in) :: node
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -30,6 +32,8 @@
 !!        type(DJDS_MATRIX), intent(in) :: MG_DJDS_mat(0:num_MG_level)
 !!        type(vectors_4_solver), intent(inout)                         &
 !!     &                       :: MG_vector(0:num_MG_level)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module   solver_MGCG_MHD
@@ -43,10 +47,11 @@
 !
       use t_physical_property
       use t_geometry_data
-      use t_vector_for_solver
       use t_interpolate_table
       use t_solver_djds
       use t_MGCG_parameter
+      use t_vector_for_solver
+      use t_solver_SR
 !
       implicit  none
 !
@@ -115,9 +120,9 @@
 !
       subroutine solver_MGCG_vector(node, MG_param, num_MG_level,       &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
-     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
+     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec,            &
+     &          x_vec, SR_sig, SR_r)
 !
-      use m_solver_SR
       use solver_DJDS33_struct
       use solver_VMGCG33_DJDS_SMP
       use skip_comment_f
@@ -141,6 +146,8 @@
      &                       :: MG_vector(0:num_MG_level)
       real(kind = kreal), intent(inout) :: b_vec(3*node%numnod)
       real(kind = kreal), intent(inout) :: x_vec(3*node%numnod)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: ierr, itr_res
 !
@@ -157,11 +164,11 @@
      &      np_smp, node%numnod, b_vec(1), x_vec(1), itr, itr_res,      &
      &      MG_param%MID_ITR, MG_param%MIN_ITR, eps, MG_param%EPS_MG,   &
      &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG,           &
-     &      ierr, iterPREmax, SR_sig1, SR_r1)
+     &      ierr, iterPREmax, SR_sig, SR_r)
       else
         call solve33_DJDS_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat(0), node%numnod, b_vec(1), x_vec(1),            &
-     &      METHOD, PRECOND, ierr, eps, itr, itr_res)
+     &      METHOD, PRECOND, SR_sig, SR_r, ierr, eps, itr, itr_res)
       end if
 !
       if(iflag_FMHD_time) call end_elapsed_time(ist_elapsed_FMHD+1)
@@ -173,9 +180,9 @@
 !
       subroutine solver_MGCG_scalar(node, MG_param, num_MG_level,       &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,            &
-     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
+     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec,            &
+     &          x_vec, SR_sig, SR_r)
 !
-      use m_solver_SR
       use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
 !      use solver_CG
@@ -200,6 +207,8 @@
      &                        :: MG_vector(0:num_MG_level)
       real(kind = kreal), intent(inout) :: b_vec(node%numnod)
       real(kind = kreal), intent(inout) :: x_vec(node%numnod)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: ierr, itr_res
 !
@@ -226,11 +235,11 @@
      &      node%numnod, b_vec(1), x_vec(1), itr, itr_res,              &
      &      MG_param%MID_ITR, MG_param%MIN_ITR, eps, MG_param%EPS_MG,   &
      &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG,           &
-     &      ierr, iterPREmax, SR_sig1, SR_r1)
+     &      ierr, iterPREmax, SR_sig, SR_r)
       else
         call solve_DJDS11_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat11(0), node%numnod, b_vec(1), x_vec(1),          &
-     &      METHOD, PRECOND, ierr, eps, itr, itr_res)
+     &      METHOD, PRECOND, SR_sig, SR_r, ierr, eps, itr, itr_res)
       end if
 !
       if(iflag_FMHD_time) call end_elapsed_time(ist_elapsed_FMHD+1)

@@ -5,10 +5,12 @@
 !
 !!      subroutine cal_1st_diffs_dx_by_consist                          &
 !!     &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs, &
-!!     &          gfil_p, mass, FEM_elen, fem_wk, f_nl, v_sol)
+!!     &          gfil_p, mass, FEM_elen, fem_wk, f_nl,                 &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_diffs_filter_nod_consist                         &
 !!     &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs, &
-!!     &          gfil_p, mass, fem_wk, f_nl, mom_nod, v_sol)
+!!     &          gfil_p, mass, fem_wk, f_nl, mom_nod,                  &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_1st_diffs_dx_by_lump                             &
 !!     &         (num_int_points, node, ele, g_FEM, jac_3d,             &
 !!     &          rhs_tbl, m_lump, FEM_elen, fem_wk, f_nl)
@@ -29,6 +31,8 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_1st_diff_deltax_4_nod
 !
@@ -41,6 +45,7 @@
       use t_finite_element_mat
       use t_ctl_params_4_gen_filter
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -55,7 +60,8 @@
 !
       subroutine cal_1st_diffs_dx_by_consist                            &
      &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs,   &
-     &          gfil_p, mass, FEM_elen, fem_wk, f_nl, v_sol)
+     &          gfil_p, mass, FEM_elen, fem_wk, f_nl,                   &
+     &          v_sol, SR_sig, SR_r)
 !
       use t_comm_table
       use t_crs_matrix
@@ -75,34 +81,36 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !      1st derivatives
 !
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
      &    FEM_elen%elen_nod%moms%f_x2, FEM_elen%elen_nod%diff%df_x2,    &
-     &    v_sol)
+     &    v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
      &    FEM_elen%elen_nod%moms%f_y2, FEM_elen%elen_nod%diff%df_y2,    &
-     &    v_sol)
+     &    v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
      &    FEM_elen%elen_nod%moms%f_z2, FEM_elen%elen_nod%diff%df_z2,    &
-     &    v_sol)
+     &    v_sol, SR_sig, SR_r)
 !
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
      &    FEM_elen%elen_nod%moms%f_xy, FEM_elen%elen_nod%diff%df_xy,    &
-     &    v_sol)
+     &    v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
      &    FEM_elen%elen_nod%moms%f_yz, FEM_elen%elen_nod%diff%df_yz,    &
-     &    v_sol)
+     &    v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
      &    FEM_elen%elen_nod%moms%f_zx, FEM_elen%elen_nod%diff%df_zx,    &
-     &    v_sol)
+     &    v_sol, SR_sig, SR_r)
 !
       end subroutine cal_1st_diffs_dx_by_consist
 !
@@ -110,7 +118,8 @@
 !
       subroutine cal_diffs_filter_nod_consist                           &
      &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs,   &
-     &          gfil_p, mass, fem_wk, f_nl, mom_nod, v_sol)
+     &          gfil_p, mass, fem_wk, f_nl, mom_nod,                    &
+     &          v_sol, SR_sig, SR_r)
 !
       use t_comm_table
       use t_crs_matrix
@@ -130,38 +139,40 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !      1st derivatives
 !
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
-     &    mom_nod%moms%f_x,  mom_nod%diff%df_x, v_sol)
+     &    mom_nod%moms%f_x,  mom_nod%diff%df_x, v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
-     &    mom_nod%moms%f_y,  mom_nod%diff%df_y, v_sol)
+     &    mom_nod%moms%f_y,  mom_nod%diff%df_y, v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
-     &    mom_nod%moms%f_z,  mom_nod%diff%df_z, v_sol)
+     &    mom_nod%moms%f_z,  mom_nod%diff%df_z, v_sol, SR_sig, SR_r)
 !
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
-     &    mom_nod%moms%f_x2, mom_nod%diff%df_x2, v_sol)
+     &    mom_nod%moms%f_x2, mom_nod%diff%df_x2, v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
-     &    mom_nod%moms%f_y2, mom_nod%diff%df_y2, v_sol)
+     &    mom_nod%moms%f_y2, mom_nod%diff%df_y2, v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
-     &    mom_nod%moms%f_z2, mom_nod%diff%df_z2, v_sol)
+     &    mom_nod%moms%f_z2, mom_nod%diff%df_z2, v_sol, SR_sig, SR_r)
 !
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
-     &    mom_nod%moms%f_xy, mom_nod%diff%df_xy, v_sol)
+     &    mom_nod%moms%f_xy, mom_nod%diff%df_xy, v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
-     &    mom_nod%moms%f_yz, mom_nod%diff%df_yz, v_sol)
+     &    mom_nod%moms%f_yz, mom_nod%diff%df_yz, v_sol, SR_sig, SR_r)
       call take_1st_diffs_nod_by_consist(nod_comm, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk, f_nl,  &
-     &    mom_nod%moms%f_zx, mom_nod%diff%df_zx, v_sol)
+     &    mom_nod%moms%f_zx, mom_nod%diff%df_zx, v_sol, SR_sig, SR_r)
 !
       end subroutine cal_diffs_filter_nod_consist
 !
@@ -269,7 +280,7 @@
 !
       subroutine take_1st_diffs_nod_by_consist(nod_comm, node, ele,     &
      &          g_FEM, jac_3d, rhs_tbl, tbl_crs, gfil_p, mass, fem_wk,  &
-     &          f_nl, org_field, diff_field, v_sol)
+     &          f_nl, org_field, diff_field, v_sol, SR_sig, SR_r)
 !
       use t_comm_table
       use t_crs_matrix
@@ -294,6 +305,8 @@
       real(kind = kreal), intent(inout) :: org_field(node%numnod)
       real(kind = kreal), intent(inout) :: diff_field(node%numnod,3)
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: nd
 !
@@ -307,7 +320,8 @@
      &    f_nl%ff_smp, f_nl%ff)
       do nd = 1, n_vector
         call cal_sol_dx_by_consist(nd, node, nod_comm,                  &
-     &      tbl_crs, f_nl, gfil_p, mass, diff_field(1,nd), v_sol)
+     &      tbl_crs, f_nl, gfil_p, mass, diff_field(1,nd),              &
+     &      v_sol, SR_sig, SR_r)
       end do
 !
       end subroutine take_1st_diffs_nod_by_consist

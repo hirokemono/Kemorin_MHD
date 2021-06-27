@@ -20,7 +20,7 @@
       use t_surface_data
       use t_group_data
       use t_surface_group_connect
-      use t_surface_group_geometry
+      use t_surface_group_normals
       use t_group_connects
       use t_int_surface_data
 !
@@ -36,29 +36,15 @@
 !
 !
       use position_of_each_surface
-      use set_surf_grp_vectors
       use set_connects_4_surf_group
       use sum_normal_4_surf_group
 !
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) :: group
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
       type(work_surface_element_mat), intent(inout) :: surf_wk
 !
 !
-      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-      call pick_normal_of_surf_group(mesh%surf, group%surf_grp,         &
-     &   group%tbls_surf_grp, group%surf_grp_geom)
-!
       if (group%surf_grp%num_grp .le. 0) return
-!
-      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-      call s_sum_normal_4_surf_group                                    &
-     &   (mesh%ele, group%surf_grp, group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
-      call cal_surf_normal_at_nod(mesh%node, mesh%ele, mesh%surf,       &
-     &   group%surf_grp, group%surf_grp_geom, group%surf_nod_grp)
-!
 !
       call alloc_int_surf_data                                          &
      &   (group%surf_grp%num_item, mesh%surf%nnod_4_surf, surf_wk)

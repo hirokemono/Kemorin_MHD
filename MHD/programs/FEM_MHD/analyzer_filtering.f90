@@ -18,6 +18,7 @@
       use FEM_analyzer_filtered
       use t_visualizer
       use t_VIZ_mesh_field
+      use t_mesh_SR
 !
       implicit none
 !
@@ -47,22 +48,22 @@
      &   (MHD_files1, FEM_model1%FEM_prm, FEM_SGS1%SGS_par,             &
      &    MHD_step1, FEM_model1%MHD_prop, FEM_model1%MHD_BC,            &
      &    FEM_MHD1%geofem, FEM_MHD1%field,                              &
-     &    SGS_MHD_wk1%ele_fld, VIZ_DAT2, FEM_model1%bc_FEM_IO,          &
+     &    SGS_MHD_wk1%ele_fld, FEM_model1%bc_FEM_IO,                    &
      &    FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1,        &
-     &    vizs_rprt_c_F%vizs_ctl, vizs_rprt_c_F%repart_ctl)
+     &    vizs_ctl_F)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
 !     --------------------- 
 !
       call FEM_initialize_snapshot                                      &
      &   (MHD_files1, MHD_step1, FEM_model1, MHD_CG1%ak_MHD,            &
-     &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1)
+     &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1, m_SR2)
 !
       call init_FEM_MHD_to_VIZ_bridge(MHD_step1%viz_step,               &
      &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
-     &    FEM_MHD1%geofem, FEM_MHD1%field, VIZ_DAT2)
-      call init_visualize(VIZ_DAT2%viz_fem, VIZ_DAT2%edge_comm,         &
-     &   VIZ_DAT2%viz_fld, vizs_rprt_c_F%vizs_ctl, vizs_F)
+     &    FEM_MHD1%geofem, VIZ_DAT2, m_SR2)
+      call init_visualize(MHD_step1%viz_step, FEM_MHD1%geofem,          &
+     &    FEM_MHD1%field, VIZ_DAT2, vizs_ctl_F, vizs_F, m_SR2)
 !
       end subroutine init_analyzer
 !
@@ -84,7 +85,7 @@
 !  Read and generate fields
         call FEM_analyze_filtered(i_step, MHD_files1, FEM_model1,       &
      &      MHD_CG1%ak_MHD, MHD_step1, FEM_SGS1, SGS_MHD_wk1,           &
-     &      FEM_MHD1, MHD_IO1%ucd, MHD_IO1, fem_sq1)
+     &      FEM_MHD1, MHD_IO1%ucd, MHD_IO1, fem_sq1, m_SR2)
 !
 !  Visualization
         visval = MHD_viz_routine_flag                                   &
@@ -92,11 +93,9 @@
         if (visval) then
           call MHD_viz_routine_step                                     &
      &     (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
-          call s_FEM_to_VIZ_bridge                                      &
-     &       (FEM_MHD1%field, FEM_MHD1%v_sol, VIZ_DAT2)
-          call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        VIZ_DAT2%viz_fem, VIZ_DAT2%edge_comm, VIZ_DAT2%viz_fld,   &
-     &        VIZ_DAT2%ele_4_nod, VIZ_DAT2%jacobians, vizs_F)
+          call visualize_all                                            &
+     &       (MHD_step1%viz_step, MHD_step1%time_d, FEM_MHD1%geofem,    &
+     &        FEM_MHD1%field, VIZ_DAT2, vizs_F, m_SR2)
         end if
       end do
 !

@@ -15,7 +15,7 @@
 !!        type(lic_rendering_controls), intent(in) :: lic_ctls
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!    array  LIC_rendering  1
+!!    array  LIC_rendering
 !!      file  LIC_rendering  'ctl_pvr_temp'
 !!    end array LIC_rendering
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

@@ -16,6 +16,7 @@
       use t_structure_4_interolation
       use t_ucd_data
       use t_IO_step_parameter
+      use t_solver_SR
 !
       implicit none
 !
@@ -25,6 +26,9 @@
 !
       type(time_data), save :: itp_time_IO
       type(ucd_data), save :: fem_ucd
+!
+      type(send_recv_status), save :: SR_sig7
+      type(send_recv_real_buffer), save :: SR_r7
 !
       private :: link_field_data_type_2_IO
 !
@@ -58,8 +62,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'init_nod_send_recv'
-      call init_nod_send_recv(itp_udt%org_fem%mesh)
+      if (iflag_debug.eq.1) write(*,*) 'init_real_send_recv'
+      call init_real_send_recv(itp_udt%org_fem%mesh%nod_comm,           &
+     &                         SR_sig7, SR_r7)
 !
 !     --------------------- 
 !
@@ -109,7 +114,7 @@
      &        itp_udt%org_fld, itp_time_IO)
 !
           call nod_fields_send_recv(itp_udt%org_fem%mesh,               &
-     &                              itp_udt%org_fld, itp_udt%v_1st_sol)
+     &        itp_udt%org_fld, itp_udt%v_1st_sol, SR_sig7, SR_r7)
         end if
 !
 !    interpolation
@@ -119,7 +124,7 @@
      &     (itp_udt%org_fem%mesh%node, itp_udt%org_fld,                 &
      &      itp_udt%new_fem%mesh%nod_comm, itp_udt%itp_tbl,             &
      &      itp_udt%new_fem%mesh%node, itp_udt%new_fld,                 &
-     &      itp_udt%v_1st_sol, itp_udt%v_2nd_sol)
+     &      itp_udt%v_1st_sol, itp_udt%v_2nd_sol, SR_sig7, SR_r7)
 !
 !    output udt data
 !

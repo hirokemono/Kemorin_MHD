@@ -8,21 +8,23 @@
 !!
 !!@verbatim
 !!      subroutine set_control_params_4_viz                             &
-!!     &         (vizs_ctl, FEM_viz, VIZ_DAT, t_viz_param, ierr)
+!!     &         (vizs_ctl, FEM_viz, t_viz_param, ierr)
 !!        type(control_data_vizs), intent(in) :: vizs_ctl
-!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!!      subroutine FEM_initialize_viz                                   &
-!!     &         (init_d, ucd_step, viz_step, FEM_viz)
+!!      subroutine FEM_initialize_viz(init_d, ucd_step,                 &
+!!     &                              viz_step, FEM_viz, m_SR)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-!!      subroutine FEM_analyze_viz(istep, ucd_step, time_d, FEM_viz)
+!!        type(mesh_SR), intent(inout) :: m_SR
+!!      subroutine FEM_analyze_viz(istep, ucd_step,                     &
+!!     &                           time_d, FEM_viz, m_SR)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(inout) :: time_d
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module FEM_analyzer_viz
@@ -35,9 +37,9 @@
 !
       use t_step_parameter
       use t_FEM_mesh_field_4_viz
-      use t_VIZ_mesh_field
       use t_ucd_data
       use t_VIZ_step_parameter
+      use t_mesh_SR
 !
       implicit none
 !
@@ -50,7 +52,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_params_4_viz                               &
-     &         (vizs_ctl, FEM_viz, VIZ_DAT, t_viz_param, ierr)
+     &         (vizs_ctl, FEM_viz, t_viz_param, ierr)
 !
       use t_control_data_all_vizs
       use t_VIZ_only_step_parameter
@@ -63,7 +65,6 @@
 !
       type(control_data_vizs), intent(in) :: vizs_ctl
 !
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
       integer(kind = kint), intent(inout) :: ierr
@@ -82,15 +83,12 @@
      &   (vizs_ctl%t_viz_ctl, t_viz_param, ierr, e_message)
       call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
 !
-      call set_ctl_param_vol_repart(vizs_ctl%repart_ctl,                &
-     &                              VIZ_DAT%repart_p)
-!
       end subroutine set_control_params_4_viz
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_viz                                     &
-     &         (init_d, ucd_step, viz_step, FEM_viz)
+      subroutine FEM_initialize_viz(init_d, ucd_step,                   &
+     &                              viz_step, FEM_viz, m_SR)
 !
       use calypso_mpi_logical
       use mpi_load_mesh_data
@@ -106,9 +104,9 @@
 !
       type(VIZ_step_params), intent(inout) :: viz_step
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+      type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: istep_ucd, iflag
-      logical :: flag
+      integer(kind = kint) :: istep_ucd
 !
 !   --------------------------------
 !       setup mesh information
@@ -116,7 +114,7 @@
 !
       call mpi_input_mesh(FEM_viz%mesh_file_IO, nprocs, FEM_viz%geofem)
 !
-      call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol)
+      call FEM_comm_initialization(FEM_viz%geofem%mesh, m_SR)
 !
 !   --------------------------------
 !       setup field information
@@ -142,7 +140,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_viz(istep, ucd_step, time_d, FEM_viz)
+      subroutine FEM_analyze_viz(istep, ucd_step,                       &
+     &                           time_d, FEM_viz, m_SR)
 !
       use output_parallel_ucd_file
       use nod_phys_send_recv
@@ -154,6 +153,7 @@
 !
       type(time_data), intent(inout) :: time_d
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: istep_ucd
 !
@@ -164,8 +164,8 @@
       call copy_time_step_size_data(FEM_viz%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv                                         &
-     &   (FEM_viz%geofem%mesh, FEM_viz%field, FEM_viz%v_sol)
+      call nod_fields_send_recv(FEM_viz%geofem%mesh, FEM_viz%field,     &
+     &                          m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       end subroutine FEM_analyze_viz
 !

@@ -1,8 +1,12 @@
+!>@file  increase_overlapping.f90
+!!       module increase_overlapping
+!!
+!!@author Yangguang Liao and H. Matsui
+!!@date   Programmed in 2018
 !
-!     module increase_overlap
-!
-!     written by H. Matsui on Sep., 2007
-!
+!> @brief Increasing ooverlap with cnosidering field direction
+!!
+!!@verbatim
 !!      subroutine increase_overlapping                                 &
 !!     &       (part_p, node, ele, surf, field, nod_d_grp, included_ele)
 !!        type(ctl_param_partitioner), intent(in) :: part_p
@@ -12,11 +16,13 @@
 !!        type(vector_field), intent(in) :: field
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
 !!        type(near_mesh), intent(inout) :: included_ele
+!!@endverbatim
 !
       module increase_overlap
 !
       use m_precision
       use m_constants
+      use m_geometry_constants
       use m_work_time
 !
       use t_near_mesh_id_4_node
@@ -81,8 +87,7 @@
 ! extend overlap one by layer, new extend overlap layer is stored in near_ele_tmp
       if(part_p%iflag_new_ghost_cell .eq. 0) then
         call start_elapsed_time(ist_elapsed_PART+2)
-        call mark_extented_overlap                                      &
-     &     (ip, part_p%n_overlap, part_p%iflag_sleeve_ele, node%numnod, &
+        call mark_extented_overlap(ip, part_p%n_overlap, node%numnod,   &
      &      ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,             &
      &      included_ele%ntot, included_ele%istack_nod,                 &
      &      included_ele%id_near_nod, nod_d_grp%num_s_domin,            &
@@ -158,13 +163,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine mark_extented_overlap(ip, n_overlap, i_sleeve_ele,     &
-     &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
+      subroutine mark_extented_overlap                                  &
+     &         (ip, n_overlap, numnod, numele, nnod_4_ele, ie, nodelm,  &
      &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,  &
      &          nnod_s_domin, IGROUP_nod)
 !
       integer(kind = kint), intent(in) :: ip
-      integer(kind = kint), intent(in) :: n_overlap, i_sleeve_ele
+      integer(kind = kint), intent(in) :: n_overlap
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: nodelm(numele)
@@ -200,7 +205,7 @@
           do inum = 1, nele_subdomain
             icel = item_tmp_e(inum)
 !
-            if (iwidth.eq.2 .and. i_sleeve_ele.eq.1) then
+            if (iwidth.eq.2) then
 !
               inod = ie(icel,1)
               if (IGROUP_nod(inod) .eq. ip) then
@@ -257,9 +262,9 @@
       integer(kind = kint), intent(in) :: ip
       integer(kind = kint), intent(in) :: n_overlap
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
-      type(node_data), intent(in) :: node
       type(vector_field), intent(in) :: field
 !
       integer(kind = kint), intent(in) :: ntot_ele_near_nod
@@ -271,7 +276,8 @@
       integer(kind = kint) :: iwidth, inum, icel, inod, k, icou, i, iele
       integer(kind = kint) :: ist, ied, isf_tgt, isurf_end
       integer(kind = kint), allocatable :: iflag_ele_tmp(:)
-      real(kind = kreal) :: x_start(3), v_start(3), x_tgt(3), xi(2)
+      real(kind = kreal) :: x4_start(4), v4_start(4), x4_tgt(4), xi(2)
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
 !      write(*,*) 'selective extend overlap:', 'n_overlap:', n_overlap
       icou = 0
@@ -294,21 +300,23 @@
             iflag_ele_tmp(icel) = iflag_ele(icel)
       ! start a vector from center of current element, get the hitting surface
       ! the element on the other side of the surface will be the extended element
-            x_start(1:3) = ele%x_ele(icel,1:3)
+            x4_start(1:3) = ele%x_ele(icel,1:3)
+            x4_start(4) =   0.0d0
       ! interpolate center field data
-            v_start(1:3) = 0.0
+            v4_start(1:4) = 0.0
             do k = 1, ele%nodelm(icel)
               inod = ele%ie(icel,k)
-              v_start(1:3) = v_start(1:3) + field%d_ucd(inod,1:3)
+              v4_start(1:3) = v4_start(1:3) + field%d_ucd(inod,1:3)
+              v4_start(4) = 0.0d0
             end do
-            v_start(1:3) = v_start(1:3)/k
+            v4_start(1:4) = v4_start(1:4) / k
             if(iwidth .eq. 2 .and. iflag_ele(icel) .eq. 1) then
               ! forward
+              call position_on_each_ele_surfs                           &
+     &           (surf, node%numnod, node%xx, icel, xx4_ele_surf)
               call find_line_end_in_1ele(iflag_forward_line,            &
-     &            node%numnod, ele%numele, surf%numsurf,                &
-     &            surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,       &
-     &            node%xx, icel, izero, v_start, x_start,               &
-     &            isf_tgt, x_tgt, xi)
+     &            izero, v4_start, x4_start, xx4_ele_surf,              &
+     &            isf_tgt, x4_tgt, xi)
               !
               if(isf_tgt .ne. 0) then
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -319,11 +327,11 @@
                 end do
               end if
               ! backward
+              call position_on_each_ele_surfs                           &
+     &           (surf, node%numnod, node%xx, icel, xx4_ele_surf)
               call find_line_end_in_1ele(iflag_backward_line,           &
-     &            node%numnod, ele%numele, surf%numsurf,                &
-     &            surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,       &
-     &            node%xx, icel, izero, v_start, x_start,               &
-     &            isf_tgt, x_tgt, xi)
+     &            izero, v4_start, x4_start, xx4_ele_surf,              &
+     &            isf_tgt, x4_tgt, xi)
               !
               if(isf_tgt .ne. 0) then
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -337,11 +345,11 @@
             if(iwidth .gt. 2) then
               if(iflag_ele(icel) .eq. 2) then
                 ! forward
+                call position_on_each_ele_surfs                         &
+     &             (surf, node%numnod, node%xx, icel, xx4_ele_surf)
                 call find_line_end_in_1ele(iflag_forward_line,          &
-     &              node%numnod, ele%numele, surf%numsurf,              &
-     &              surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,     &
-     &              node%xx, icel, izero, v_start, x_start,             &
-     &              isf_tgt, x_tgt, xi)
+     &              izero, v4_start, x4_start, xx4_ele_surf,            &
+     &              isf_tgt, x4_tgt, xi)
                 !
                 if(isf_tgt .ne. 0) then
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -353,11 +361,11 @@
                 end if
               else if(iflag_ele(icel) .eq. -1) then
                 ! backward
+                call position_on_each_ele_surfs                         &
+     &             (surf, node%numnod, node%xx, icel, xx4_ele_surf)
                 call find_line_end_in_1ele(iflag_backward_line,         &
-     &              node%numnod, ele%numele, surf%numsurf,              &
-     &              surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,     &
-     &              node%xx, icel, izero, v_start, x_start,             &
-     &              isf_tgt, x_tgt, xi)
+     &              izero, v4_start, x4_start, xx4_ele_surf,            &
+     &              isf_tgt, x4_tgt, xi)
                 !
                 if(isf_tgt .ne. 0) then
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))

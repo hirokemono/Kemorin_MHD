@@ -123,7 +123,7 @@
       use const_rev_ele_itp_table
       use order_dest_table_by_domain
       use order_dest_table_by_type
-      use itp_table_IO_select_4_zlib
+      use itp_work_file_IO_select
       use copy_interpolate_types
       use delete_data_files
 !
@@ -160,6 +160,7 @@
       tmp_tbl_IO%file_prefix = work_header
       call sel_write_itp_coefs_dest                                     &
      &   (my_rank, tmp_tbl_IO, IO_itp_dest, IO_itp_c_dest)
+      call dealloc_itp_dest_after_write(IO_itp_dest, IO_itp_c_dest)
 !
 !   construct table for originate domain
 !

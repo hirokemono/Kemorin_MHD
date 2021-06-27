@@ -1,0 +1,174 @@
+!>@file   const_linear_mesh.f90
+!!@brief  module const_linear_mesh
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2006
+!
+!> @brief Construct tri-linear mesh informations
+!!
+!!@verbatim
+!!      subroutine const_linear_mesh_by_t                               &
+!!     &         (femmesh_q, ele_comm_q, surf_comm_q, nod_fld_q,        &
+!!     &          femmesh_l)
+!!      subroutine set_linear_phys_from_t                               &
+!!     &         (femmesh_q, nod_fld_q, femmesh_l, nod_fld_l)
+!!        type(mesh_data_p), intent(in) :: femmesh_q
+!!        type(communication_table), intent(in) :: ele_comm_q
+!!        type(communication_table), intent(in) :: surf_comm_q
+!!        type(phys_data), intent(in) :: nod_fld_q
+!!        type(mesh_data_p), intent(inout) :: femmesh_l
+!!        type(phys_data), intent(inout) :: nod_fld_l
+!!
+!!      subroutine set_linear_phys_data(node_q, ele_q, surf_q,          &
+!!     &          nod_fld_q, femmesh_l, nod_fld_l)
+!!        type(node_data), intent(in) ::    node_q
+!!        type(element_data), intent(in) :: ele_q
+!!        type(surface_data), intent(in) :: surf_q
+!!        type(edge_data), intent(in) ::    edge_q
+!!
+!!        type(group_data), intent(in) :: nod_grp_q
+!!        type(group_data), intent(in) :: ele_grp_q
+!!        type(surface_group_data), intent(in) :: sf_grp_q
+!!@endverbatim
+!
+      module const_linear_mesh
+!
+      use m_precision
+      use m_geometry_constants
+!
+      use t_mesh_data
+      use t_phys_data
+      use t_mesh_data_with_pointer
+      use const_linear_mesh_by_quad
+!
+      implicit none
+!
+      type(phys_data), pointer :: nod_fld_l
+!
+     private :: const_linear_mesh_by_q
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine const_linear_mesh_by_t                                 &
+     &         (femmesh_q, ele_comm_q, surf_comm_q, nod_fld_q,          &
+     &          femmesh_l)
+!
+      type(mesh_data), intent(in), target :: femmesh_q
+      type(communication_table), intent(in) :: ele_comm_q
+      type(communication_table), intent(in) :: surf_comm_q
+      type(phys_data), intent(in), target :: nod_fld_q
+!
+      type(mesh_data_p), intent(inout) :: femmesh_l
+!
+!
+!      call init_element_mesh_type(mesh_q)
+!
+      call const_linear_mesh_by_q(femmesh_q%mesh, femmesh_q%group,      &
+     &    ele_comm_q, surf_comm_q, nod_fld_q,                           &
+     &    femmesh_l%mesh, femmesh_l%group)
+!
+      end subroutine const_linear_mesh_by_t
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_linear_phys_from_t                                 &
+     &         (femmesh_q, nod_fld_q, femmesh_l, nod_fld_l)
+!
+      use cvt_quad_2_linear_mesh
+!
+      type(mesh_data), intent(in) :: femmesh_q
+      type(phys_data), intent(in) :: nod_fld_q
+      type(mesh_data), intent(in) :: femmesh_l
+!
+      type(phys_data), intent(inout) :: nod_fld_l
+!
+!
+      call set_linear_phys_data                                         &
+     &   (femmesh_q%mesh%node, femmesh_q%mesh%ele, femmesh_q%mesh%surf, &
+     &     nod_fld_q, femmesh_l, nod_fld_l)
+!
+      end subroutine set_linear_phys_from_t
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine const_linear_mesh_by_q                                 &
+     &         (mesh_q, group_q, ele_comm_q, surf_comm_q, nod_fld_q,    &
+     &          mesh_l, group_l)
+!
+      use t_mesh_data
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+      use t_group_data
+!
+      type(mesh_geometry), intent(in), target :: mesh_q
+      type(mesh_groups), intent(in), target :: group_q
+      type(communication_table), intent(in) :: ele_comm_q
+      type(communication_table), intent(in) :: surf_comm_q
+      type(phys_data), intent(in), target :: nod_fld_q
+!
+      type(mesh_geometry_p), intent(inout) :: mesh_l
+      type(mesh_groups_p), intent(inout) :: group_l
+!
+!
+      mesh_l%ele%nnod_4_ele =    num_t_linear
+      mesh_l%surf%nnod_4_surf =  num_linear_sf
+      mesh_l%edge%nnod_4_edge =  num_linear_edge
+!
+      if      (mesh_q%ele%nnod_4_ele .eq. num_t_linear) then
+        call link_pointer_mesh(mesh_q, group_q, mesh_l, group_l)
+
+        nod_fld_l => nod_fld_q
+      else if (mesh_q%ele%nnod_4_ele .eq. num_t_quad) then
+        call set_linear_data_by_quad_data                               &
+     &     (mesh_q, group_q, ele_comm_q, surf_comm_q, nod_fld_q,        &
+     &      mesh_l, group_l, nod_fld_l)
+!
+        call init_element_mesh_type(mesh_l)
+      else if (mesh_q%ele%nnod_4_ele .eq. num_t_lag) then
+        call const_linear_data_by_lag_data                              &
+     &     (mesh_q, group_q, mesh_l, group_l)
+        nod_fld_l => nod_fld_q
+!
+        call init_element_mesh_type(mesh_l)
+      end if 
+!
+      end subroutine const_linear_mesh_by_q
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_linear_phys_data(node_q, ele_q, surf_q,            &
+     &          nod_fld_q, femmesh_l, nod_fld_l)
+!
+      use t_geometry_data
+      use t_surface_data
+!
+      use cvt_quad_2_linear_mesh
+!
+      type(node_data), intent(in) ::    node_q
+      type(element_data), intent(in) :: ele_q
+      type(surface_data), intent(in) :: surf_q
+!
+      type(phys_data), intent(in) ::     nod_fld_q
+!
+      type(mesh_data), intent(in) :: femmesh_l
+      type(phys_data), intent(inout) :: nod_fld_l
+!
+!
+      if (ele_q%nnod_4_ele .eq. num_t_quad) then
+        call copy_nod_phys_2_linear                                     &
+     &     (node_q, nod_fld_q, femmesh_l%mesh%node, nod_fld_l)
+        call generate_phys_on_surf(node_q, ele_q, surf_q,               &
+     &      femmesh_l%mesh%node, nod_fld_l)
+      end if
+!
+      end subroutine set_linear_phys_data
+!
+!  ---------------------------------------------------------------------
+!
+      end module const_linear_mesh

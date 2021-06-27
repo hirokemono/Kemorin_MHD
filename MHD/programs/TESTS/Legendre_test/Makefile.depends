@@ -2,6 +2,8 @@ full_legendre_on_meridian.o: $(SMDT_POLY_TEST_DIR)/full_legendre_on_meridian.f90
 	$(F90) -c $(F90OPTFLAGS) $<
 giroop.o: $(SMDT_POLY_TEST_DIR)/giroop.f90 m_precision.o t_integrals_sph_nonlinear.o cal_int_sph_nonlinear.o
 	$(F90) -c $(F90OPTFLAGS) $<
+mag_pbar16.o: $(SMDT_POLY_TEST_DIR)/mag_pbar16.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 odd_unrooling_test.o: $(SMDT_POLY_TEST_DIR)/odd_unrooling_test.f90
 	$(F90) -c $(F90OPTFLAGS) $<
 schmidt_poly_on_meridian.o: $(SMDT_POLY_TEST_DIR)/schmidt_poly_on_meridian.f90 m_precision.o t_schmidt_poly_on_gauss.o t_schmidt_polynomial.o t_spherical_harmonics.o t_gauss_points.o spherical_harmonics.o

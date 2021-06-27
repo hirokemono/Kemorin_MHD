@@ -29,9 +29,6 @@
 !!      subroutine set_global_pixel_4_composit                          &
 !!     &         (stencil_wk, npixel_4_composit, num_pixel_xy,          &
 !!     &          ipixel_4_composit, item_4_composit)
-!!      subroutine count_parallel_stencil_buffer                        &
-!!     &         (stencil_wk, npixel_4_composit)
-!!        type(stencil_buffer_work), intent(in) :: stencil_wk
 !!@endverbatim
 !!
       module t_pvr_image_stack_table

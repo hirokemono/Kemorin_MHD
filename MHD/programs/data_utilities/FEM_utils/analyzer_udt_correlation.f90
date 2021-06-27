@@ -22,7 +22,7 @@
       use t_work_layer_correlate
       use t_shape_functions
       use t_FEM_utils
-      use t_vector_for_solver
+      use t_mesh_SR
 !
       use transfer_correlate_field
 !
@@ -30,6 +30,8 @@
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR4
 !       Structure for time stepping parameters
       type(time_step_param), save :: time_U
 !
@@ -91,12 +93,14 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
-     &   (isix, femmesh_p_FUT%mesh%node%numnod, FUTIL1%v_sol)
-      call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
+     &   (isix, femmesh_p_FUT%mesh%node%numnod, m_SR4%v_sol)
+      call init_send_recv(femmesh_p_FUT%mesh%nod_comm,                  &
+     &    m_SR4%SR_sig, m_SR4%SR_r, m_SR4%SR_i, m_SR4%SR_il)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos_p'
       call const_mesh_infos_p                                           &
-     &   (my_rank, femmesh_p_FUT%mesh, femmesh_p_FUT%group)
+     &   (my_rank, femmesh_p_FUT%mesh, femmesh_p_FUT%group,             &
+     &    m_SR4%SR_sig, m_SR4%SR_i)
       call const_global_numnod_list(femmesh_p_FUT%mesh%node)
 !
 !     --------------------- 
@@ -171,9 +175,9 @@
      &      second_ucd_param, phys_ref, time_IO)
 !
         call fields_send_recv(femmesh_p_FUT%mesh%nod_comm,              &
-     &                        FUTIL1%nod_fld, FUTIL1%v_sol)
+     &      FUTIL1%nod_fld, m_SR4%v_sol, m_SR4%SR_sig, m_SR4%SR_r)
         call fields_send_recv(femmesh_p_REF%mesh%nod_comm,              &
-     &                        phys_ref, FUTIL1%v_sol)
+     &      phys_ref, m_SR4%v_sol, m_SR4%SR_sig, m_SR4%SR_r)
 !
 !    output udt data
 !

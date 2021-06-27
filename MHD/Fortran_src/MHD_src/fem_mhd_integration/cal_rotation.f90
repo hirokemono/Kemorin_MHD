@@ -6,7 +6,8 @@
 !!      subroutine choose_cal_rotation(iflag_4_supg, num_int, dt,       &
 !!     &         i_vector, i_rot, iele_fsmp_stack, m_lump,              &
 !!     &         nod_comm, node, ele, iphys_ele_base, ele_fld, g_FEM,   &
-!!     &         jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld, v_sol)
+!!     &         jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld,                &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine choose_int_vol_rotations                             &
 !!     &         (iflag_4_supg, num_int, dt, iele_fsmp_stack, i_vector, &
 !!     &          node, ele, nod_fld, iphys_ele_base, ele_fld,          &
@@ -24,6 +25,8 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_rotation
 !
@@ -42,6 +45,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -52,9 +56,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine choose_cal_rotation(iflag_4_supg, num_int, dt,         &
-     &         i_vector, i_rot, iele_fsmp_stack, m_lump,                &
-     &         nod_comm, node, ele, iphys_ele_base, ele_fld, g_FEM,     &
-     &         jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld, v_sol)
+     &          i_vector, i_rot, iele_fsmp_stack, m_lump,               &
+     &          nod_comm, node, ele, iphys_ele_base, ele_fld, g_FEM,    &
+     &          jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld,                 &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -79,6 +84,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call choose_int_vol_rotations                                     &
@@ -90,7 +97,8 @@
      &    m_lump%ml, nod_fld%ntot_phys, i_rot, nod_fld%d_fld)
 !
 ! ----------   communications
-      call vector_send_recv(i_rot, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(i_rot, nod_comm, nod_fld,                   &
+     &                      v_sol, SR_sig, SR_r)
 !
       end subroutine choose_cal_rotation
 !

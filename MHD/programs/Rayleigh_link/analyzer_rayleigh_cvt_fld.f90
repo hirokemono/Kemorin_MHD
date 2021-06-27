@@ -29,6 +29,7 @@
       use t_comm_table_4_assemble
       use t_rayleigh_field_IO
       use t_vector_for_solver
+      use t_mesh_SR
 !
       use field_IO_select
       use assemble_nodal_fields
@@ -44,8 +45,7 @@
       type(comm_table_4_assemble), save :: asbl_comm_u
 !
       type(rayleigh_field), save :: rayleigh_rtp_A
-!>      Structure for communicatiors for solver
-      type(vectors_4_solver), save :: v_sol_A
+      type(mesh_SR), save :: m_SR_A
 !
       type(time_data), save :: t_IO_m
 !
@@ -96,7 +96,7 @@
       rayleigh_mesh_file%iflag_format = id_ascii_file_fmt
       file_name = 'Spherical_3D/00007000_grid'
       call read_rayleigh_field_param(file_name, rayleigh_rtp_A)
-      call bcast_rayleigh_field_param(rayleigh_rtp_A)
+      call bcast_rayleigh_grid_info(rayleigh_rtp_A)
       call set_rayleigh_parallel_param(rayleigh_rtp_A)
 !
 !
@@ -130,10 +130,11 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vector'
       call alloc_iccgN_vector                                           &
-     &   (n_sym_tensor, geofem%mesh%node%numnod, v_sol_A)
+     &   (n_sym_tensor, geofem%mesh%node%numnod, m_SR_A%v_sol)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(geofem%mesh)
+      call init_nod_send_recv(geofem%mesh,                              &
+     &    m_SR_A%SR_sig, m_SR_A%SR_r, m_SR_A%SR_i, m_SR_A%SR_il)
 !
 !  set new mesh data
 !
@@ -205,7 +206,7 @@
 !        write(*,*) 'init_merged_ucd_element'
         call init_merged_ucd_element(new_fld_file%iflag_format,         &
      &      geofem%mesh%node, geofem%mesh%ele, geofem%mesh%nod_comm,    &
-     &      ucd_m)
+     &      ucd_m, m_SR_A%SR_sig, m_SR_A%SR_i)
       end if
 !
       call sel_write_parallel_ucd_mesh(new_fld_file, ucd_m)
@@ -232,7 +233,8 @@
      &     (nprocs, asbl_comm_u, new_fld, org_fIO)
 !
 !        write(*,*) 'nod_fields_send_recv'
-        call nod_fields_send_recv(geofem%mesh, new_fld, v_sol_A)
+        call nod_fields_send_recv(geofem%mesh, new_fld,                 &
+     &      m_SR_A%v_sol, m_SR_A%SR_sig, m_SR_A%SR_r)
         call calypso_MPI_barrier
 !
 !        write(*,*) 'sel_write_parallel_ucd_file'

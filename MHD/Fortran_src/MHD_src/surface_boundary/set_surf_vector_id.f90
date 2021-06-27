@@ -16,7 +16,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
-!!        type(surface_group_geometry), intent(in) :: sf_grp_v
+!!        type(surface_group_normals), intent(in) :: sf_grp_v
 !!        type(scaler_surf_bc_data_type),  intent(inout) :: sgs_sf(3)
 !!        type(scaler_surf_flux_bc_type),  intent(inout) :: norm_sf
 !
@@ -116,7 +116,7 @@
      &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
      &           field_name, sgs_sf, norm_sf)
 !
-      use t_surface_group_geometry
+      use t_surface_group_normals
 !
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
@@ -124,7 +124,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
 !
       integer (kind=kint) :: num_bc_sf
       real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)

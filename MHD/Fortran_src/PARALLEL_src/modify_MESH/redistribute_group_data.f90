@@ -11,14 +11,20 @@
 !!     &         (igrp, n_point, org_grp, iflag_org)
 !!        type(group_data), intent(inout) :: org_grp
 !!      subroutine mark_org_surf_group_repart                           &
-!!     &         (igrp, n_point, org_sf_grp, iflag_org)
+!!     &         (igrp, k1, n_point, org_sf_grp, iflag_org)
 !!        type(surface_group_data), intent(in) :: org_sf_grp
 !!
 !!      subroutine count_group_item_repart                              &
 !!     &         (igrp, new_num, iflag_new, new_grp)
 !!        type(group_data), intent(inout) :: new_grp
 !!      subroutine count_surf_group_item_repart                         &
-!!     &         (igrp, new_nele, iflag_new, new_sf_grp)
+!!     &         (igrp, k1, new_nele, iflag_new, new_sf_grp)
+!!        type(surface_group_data), intent(inout) :: new_sf_grp
+!!
+!!      subroutine set_group_item_repart                                &
+!!     &         (new_num, iflag_new, new_grp, icou)
+!!      subroutine set_surf_group_item_repart                           &
+!!     &         (k1, new_nele, iflag_new, new_sf_grp, icou)
 !!        type(surface_group_data), intent(inout) :: new_sf_grp
 !!
 !!      subroutine append_group_item_repart                             &
@@ -75,14 +81,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine mark_org_surf_group_repart                             &
-     &         (igrp, n_point, org_sf_grp, iflag_org)
+     &         (igrp, k1, n_point, org_sf_grp, iflag_org)
 !
-      integer(kind = kint), intent(in) :: igrp, n_point
+      integer(kind = kint), intent(in) :: igrp, k1, n_point
       type(surface_group_data), intent(in) :: org_sf_grp
 !
       integer(kind = kint), intent(inout) :: iflag_org(n_point)
 !
-      integer(kind = kint) :: inum, i, ist, ied
+      integer(kind = kint) :: inum, iele, ist, ied
 !
 !
 !$omp parallel workshare
@@ -91,10 +97,12 @@
 !
       ist = org_sf_grp%istack_grp(igrp-1) + 1
       ied = org_sf_grp%istack_grp(igrp)
-!$omp parallel do private(inum,i)
+!$omp parallel do private(inum,iele)
       do inum = ist, ied
-        i = org_sf_grp%item_sf_grp(1,inum)
-        iflag_org(i) = org_sf_grp%item_sf_grp(2,inum)
+        iele = org_sf_grp%item_sf_grp(1,inum)
+        if(org_sf_grp%item_sf_grp(2,inum) .eq. k1) then
+          iflag_org(iele) = 1
+        end if
       end do
 !$omp end parallel do
 !
@@ -131,9 +139,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_surf_group_item_repart                           &
-     &         (igrp, new_nele, iflag_new, new_sf_grp)
+     &         (igrp, k1, new_nele, iflag_new, new_sf_grp)
 !
-      integer(kind = kint), intent(in) :: igrp, new_nele
+      integer(kind = kint), intent(in) :: igrp, k1, new_nele
       integer(kind = kint), intent(in) :: iflag_new(new_nele)
 !
       type(surface_group_data), intent(inout) :: new_sf_grp
@@ -145,9 +153,8 @@
 !
       new_sf_grp%nitem_grp(igrp) = 0
       do iele = 1, new_nele
-        if(iflag_new(iele) .gt. 0) then
-          new_sf_grp%nitem_grp(igrp) = new_sf_grp%nitem_grp(igrp) + 1
-        end if
+        new_sf_grp%nitem_grp(igrp) = new_sf_grp%nitem_grp(igrp)         &
+     &                              + sum(iflag_new)
       end do
       new_sf_grp%istack_grp(igrp) = new_sf_grp%istack_grp(igrp-1)       &
      &                             + new_sf_grp%nitem_grp(igrp)
@@ -157,6 +164,54 @@
       end do
 !
       end subroutine count_surf_group_item_repart
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_group_item_repart                                  &
+     &         (new_num, iflag_new, new_grp, icou)
+!
+      integer(kind = kint), intent(in) :: new_num
+      integer(kind = kint), intent(in) :: iflag_new(new_num)
+!
+      integer(kind = kint), intent(inout) :: icou
+      type(group_data), intent(inout) :: new_grp
+!
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, new_num
+        if(iflag_new(i) .gt. 0) then
+          icou = icou + 1
+          new_grp%item_grp(icou) = i
+        end if
+      end do
+!
+      end subroutine set_group_item_repart
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_surf_group_item_repart                             &
+     &         (k1, new_nele, iflag_new, new_sf_grp, icou)
+!
+      integer(kind = kint), intent(in) :: k1, new_nele
+      integer(kind = kint), intent(in) :: iflag_new(new_nele)
+!
+      integer(kind = kint), intent(inout) :: icou
+      type(surface_group_data), intent(inout) :: new_sf_grp
+!
+      integer(kind = kint) :: iele
+!
+!
+      do iele = 1, new_nele
+        if(iflag_new(iele) .gt. 0) then
+          icou = icou + 1
+          new_sf_grp%item_sf_grp(1,icou) = iele
+          new_sf_grp%item_sf_grp(2,icou) = k1
+        end if
+      end do
+!
+      end subroutine set_surf_group_item_repart
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

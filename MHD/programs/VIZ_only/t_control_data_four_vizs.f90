@@ -73,8 +73,6 @@
      &                    :: hd_time_step = 'time_step_ctl'
 !
       character(len=kchara), parameter, private                         &
-     &                    :: hd_viz_partition = 'viz_repartition_ctl'
-      character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
 !
       private :: viz_ctl_file_code, fname_viz_ctl

@@ -24,6 +24,7 @@ int num_label_pvr_colorbar_f();
 int num_label_pvr_cmap_bar_f();
 int num_label_pvr_section_f();
 int num_label_pvr_isosurface_f();
+int num_label_quilt_image_f();
 int num_label_pvr_movie_f();
 int num_flag_pvr_movie_mode_f();
 int num_flag_pvr_isosurf_dir_f();
@@ -135,10 +136,10 @@ struct control_labels_f * init_flag_pvr_isosurf_dir(){
 
 
 struct control_labels_f * init_label_lic_movie(){
-	struct control_labels_f *label_lic_movie
+	struct control_labels_f *label_pvr_movie
 			= init_control_labels_f(num_label_LIC_movie_f, 
 									set_label_LIC_movie_f);
-	return label_lic_movie;
+	return label_pvr_movie;
 };
 
 struct control_labels_f * init_flag_lic_movie_mode(){
@@ -172,8 +173,9 @@ struct pvr_control_labels * init_pvr_control_labels(){
 	pvr_ctl_labls->label_pvr_section = init_label_pvr_section();
 	pvr_ctl_labls->label_pvr_isosurf = init_label_pvr_isosurf();
 	
-	pvr_ctl_labls->num_label_pvr_movie_c = num_label_pvr_movie_f();
-	pvr_ctl_labls->label_lic_movie = init_label_lic_movie();
+    pvr_ctl_labls->num_label_quilt_image_c = num_label_quilt_image_f();
+	pvr_ctl_labls->num_label_pvr_movie_c =   num_label_pvr_movie_f();
+	pvr_ctl_labls->label_pvr_movie = init_label_lic_movie();
 	
 	pvr_ctl_labls->label_pvr_dirs
 			= init_control_labels_f(num_label_psf_dirs_f, 
@@ -200,7 +202,7 @@ void dealloc_pvr_control_labels(struct pvr_control_labels *pvr_ctl_labls){
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_cmap_bar);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_section);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_isosurf);
-	dealloc_control_labels_f(pvr_ctl_labls->label_lic_movie);
+	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_movie);
 	
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_dirs);
 	dealloc_control_labels_f(pvr_ctl_labls->flag_pvr_isosurf_dir);
@@ -240,8 +242,8 @@ void check_pvr_control_labels(struct pvr_control_labels *pvr_ctl_labls){
 	
 	printf("Check pvr_ctl_labls->num_label_pvr_movie_c %d\n", 
 		   pvr_ctl_labls->num_label_pvr_movie_c);
-	printf("Check pvr_ctl_labls->label_lic_movie\n");
-	check_control_labels_f(pvr_ctl_labls->label_lic_movie);
+	printf("Check pvr_ctl_labls->label_pvr_movie\n");
+	check_control_labels_f(pvr_ctl_labls->label_pvr_movie);
 	
 	printf("Check pvr_ctl_labls->label_pvr_dirs\n");
 	check_control_labels_f(pvr_ctl_labls->label_pvr_dirs);

@@ -8,10 +8,12 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_mesh_initialization(mesh, group)
+!!      subroutine FEM_mesh_initialization(mesh, group, SR_sig, SR_i)
 !!        type(field_io_params), intent(in) :: mesh_file
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !!
       module parallel_FEM_mesh_init
@@ -24,6 +26,8 @@
       use calypso_mpi
 !
       use t_mesh_data
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
@@ -35,7 +39,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_mesh_initialization(mesh, group)
+      subroutine FEM_mesh_initialization(mesh, group, SR_sig, SR_i)
 !
       use t_file_IO_parameter
       use t_read_mesh_data
@@ -43,14 +47,25 @@
       use const_mesh_information
       use const_element_comm_tables
       use mesh_file_name_by_param
+      use parallel_edge_information
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos tako'
-      call const_mesh_infos(my_rank, mesh, group)
+      if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos(my_rank, mesh, group)
+      if (iflag_debug .gt. 0) write(*,*) 'const_surface_infos tako'
+      call const_surface_infos(my_rank, mesh%node, mesh%ele,            &
+     &    group%surf_grp, mesh%surf, group%surf_nod_grp)
+!
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos(mesh%nod_comm, mesh%node, mesh%ele,    &
+     &                           mesh%surf, mesh%edge, SR_sig, SR_i)
 !
       if(iflag_debug.gt.0) write(*,*) 'const_global_mesh_infos'
       call const_global_mesh_infos(mesh)

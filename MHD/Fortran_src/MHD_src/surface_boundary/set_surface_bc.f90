@@ -30,7 +30,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
-!!        type(surface_group_geometry), intent(in) :: sf_grp_v
+!!        type(surface_group_normals), intent(in) :: sf_grp_v
 !
       module set_surface_bc
 !
@@ -221,7 +221,7 @@
       use t_surface_data
       use t_group_data
       use t_surface_group_connect
-      use t_surface_group_geometry
+      use t_surface_group_normals
       use set_surface_values
 !
       type(IO_boundary), intent(in) :: IO_bc
@@ -230,7 +230,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
 !
       character(len=kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: ngrp_sf, nnod_sf, igrp

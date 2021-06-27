@@ -1,31 +1,36 @@
+!>@file   evolve_by_lumped_crank.f90
+!!@brief  module evolve_by_lumped_crank
+!!
+!!@author  H.Matsui and H.Okuda
+!!@date   Programmed in July, 2000 (ver 1.1)
+!!@n      Modified in Sep., 2005
 !
-!      module evolve_by_lumped_crank
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modieied by H. Matsui on Sep., 2005
-!
+!>@brief Time stepinng by lumped mass matrix
+!!
+!!@verbatim
 !!      subroutine cal_velo_pre_lumped_crank(iflag_commute_velo,        &
 !!     &          ifilter_final, iak_diff_v, ak_d_velo, dt, FEM_prm,    &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
 !!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
 !!     &          mlump_fl, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
-!!     &          f_l, f_nl, nod_fld, v_sol)
+!!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_vect_p_pre_lumped_crank                          &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,  &
 !!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
 !!     &          FEM_elens, diff_coefs, mlump_cd, Bmatrix, MG_vector,  &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_magne_pre_lumped_crank                           &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b, &
 !!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
 !!     &          FEM_elens, diff_coefs, mlump_cd, Bmatrix, MG_vector,  &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
+!!     &          v_sol, SR_sig, SR_r)
 !!
 !!      subroutine cal_temp_pre_lumped_crank(iflag_supg,                &
 !!     &          iflag_commute_field, ifilter_final, i_field,          &
@@ -34,7 +39,7 @@
 !!     &          Snod_bcs, iphys_ele_base, ele_fld, g_FEM, jac_3d,     &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, mlump_fl,             &
 !!     &          matrix, MG_vector, mhd_fem_wk, fem_wk,                &
-!!     &          f_l, f_nl, nod_fld, v_sol)
+!!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -72,6 +77,9 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module evolve_by_lumped_crank
 !
@@ -101,6 +109,7 @@
       use t_solver_djds
       use t_solver_djds_MHD
       use t_interpolate_table
+      use t_solver_SR
 !
       implicit none
 !
@@ -116,7 +125,7 @@
      &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
      &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
      &          mlump_fl, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,       &
-     &          f_l, f_nl, nod_fld, v_sol)
+     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use t_bc_data_velo
 !
@@ -160,6 +169,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (fl_prop%coef_imp .gt. zero) then
@@ -175,7 +186,7 @@
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele,                       &
      &    iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp(node, fl_prop, mlump_fl,                &
@@ -199,8 +210,8 @@
      &    Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_velo_crank, FEM_prm%CG11_param%MAXIT,           &
-     &    iphys%base%i_velo, MG_vector, f_l, v_sol%b_vec,               &
-     &    v_sol%x_vec, nod_fld)
+     &    iphys%base%i_velo, MG_vector, f_l, v_sol%b_vec, nod_fld,      &
+     &    v_sol%x_vec, SR_sig, SR_r)
 !
       end subroutine cal_velo_pre_lumped_crank
 !
@@ -212,7 +223,8 @@
      &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
      &          FEM_elens, diff_coefs, mlump_cd, Bmatrix, MG_vector,    &
-     &          mhd_fem_wk, fem_wk,  f_l, f_nl, nod_fld, v_sol)
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_multi_pass
       use int_sk_4_fixed_boundary
@@ -253,6 +265,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (cd_prop%coef_imp .gt. 0.0d0) then
@@ -267,7 +281,7 @@
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mlump_cd, nod_comm, node, ele,                       &
      &    iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol, SR_sig, SR_r)
 !
       call delete_vector_ffs_on_bc(node, nod_bc_a, f_l, f_nl)
 !
@@ -283,7 +297,8 @@
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
-     &    i_vecp, MG_vector, f_l, v_sol%b_vec, v_sol%x_vec, nod_fld)
+     &    i_vecp, MG_vector, f_l, v_sol%b_vec, nod_fld,                 &
+     &    v_sol%x_vec, SR_sig, SR_r)
 !
       end subroutine cal_vect_p_pre_lumped_crank
 !
@@ -295,7 +310,8 @@
      &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
      &          FEM_elens, diff_coefs, mlump_cd, Bmatrix, MG_vector,    &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_multi_pass
       use int_sk_4_fixed_boundary
@@ -335,6 +351,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (cd_prop%coef_imp .gt. 0.0d0) then
@@ -349,7 +367,7 @@
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mlump_cd, nod_comm, node, ele,                       &
      &    iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol, SR_sig, SR_r)
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node, nod_bc_b, f_l, f_nl)
@@ -367,7 +385,8 @@
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
-     &    i_magne, MG_vector, f_l, v_sol%b_vec, v_sol%x_vec, nod_fld)
+     &    i_magne, MG_vector, f_l, v_sol%b_vec, nod_fld,                &
+     &    v_sol%x_vec, SR_sig, SR_r)
 !
        end subroutine cal_magne_pre_lumped_crank
 !
@@ -381,7 +400,7 @@
      &          Snod_bcs, iphys_ele_base, ele_fld, g_FEM, jac_3d,       &
      &          rhs_tbl, FEM_elens, diff_coefs, mlump_fl,               &
      &          matrix, MG_vector, mhd_fem_wk, fem_wk,                  &
-     &          f_l, f_nl, nod_fld, v_sol)
+     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use t_bc_data_temp
 !
@@ -425,6 +444,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (property%coef_imp .gt. zero) then
@@ -443,7 +464,7 @@
      &   (iflag_supg, fluid%istack_ele_fld_smp, dt, FEM_prm,            &
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
-     &    fem_wk, f_l, f_nl, v_sol)
+     &    fem_wk, f_l, f_nl, v_sol, SR_sig, SR_r)
 !
       call set_boundary_rhs_scalar(node, Snod_bcs%nod_bc_s, f_l, f_nl)
 !
@@ -458,7 +479,8 @@
      &    matrix%MG_DJDS_table, matrix%mat_MG_DJDS,                     &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    eps_4_crank, FEM_prm%CG11_param%MAXIT,                        &
-     &    i_field, MG_vector, f_l, v_sol%b_vec, v_sol%x_vec, nod_fld)
+     &    i_field, MG_vector, f_l, v_sol%b_vec, nod_fld,                &
+     &    v_sol%x_vec, SR_sig, SR_r)
 !
       end subroutine cal_temp_pre_lumped_crank
 !

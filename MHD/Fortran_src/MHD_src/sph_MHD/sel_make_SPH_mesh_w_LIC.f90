@@ -90,8 +90,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, mesh_file,   &
-     &          sph_grps, sph, geofem, sph_maker)
+      subroutine load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags,              &
+     &           mesh_file, sph_grps, sph, geofem, sph_maker)
 !
       use calypso_mpi
       use t_mesh_data
@@ -152,15 +152,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_FEM_mesh_4_sph_MHD_w_LIC                         &
-     &         (FEM_mesh_flags, mesh_file, sph_params, sph_rtp, sph_rj, &
-     &          mesh, group, gen_sph)
+     &         (FEM_mesh_flags, mesh_file, sph_params,                  &
+     &          sph_rtp, sph_rj, mesh, group, gen_sph)
 !
+      use t_ctl_param_sleeve_extend
       use m_elapsed_labels_gen_SPH
       use m_work_time
       use sph_file_IO_select
       use mpi_load_mesh_data
       use para_const_kemoview_mesh
-      use parallel_sleeve_extension
       use const_FEM_mesh_sph_mhd
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
@@ -175,18 +175,12 @@
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
       type(parallel_make_vierwer_mesh) :: par_view
-      integer(kind = kint) :: i_level
 !
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+9)
       call base_FEM_mesh_sph_mhd(sph_params, sph_rtp, sph_rj,           &
      &    mesh, group, gen_sph)
-      if(iflag_GSP_time) call end_elapsed_time(ied_elapsed_GSP+9)
-!
-! Increase sleeve size
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+10)
-      call sleeve_extension_loop(gen_sph%num_FEM_sleeve, mesh, group)
-      if(iflag_GSP_time) call end_elapsed_time(ied_elapsed_GSP+10)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+9)
 !
 ! Output mesh data
       if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then

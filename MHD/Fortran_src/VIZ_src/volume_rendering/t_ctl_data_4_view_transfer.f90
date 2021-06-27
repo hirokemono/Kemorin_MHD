@@ -94,10 +94,10 @@
 !!      perspective_far_ctl     1000.0
 !!    end projection_matrix_ctl
 !!
-!!    begin streo_view_parameter_ctl
+!!    begin stereo_view_parameter_ctl
 !!      focal_point_ctl           40.0
 !!      eye_separation_ctl        0.5
-!!    end streo_view_parameter_ctl
+!!    end stereo_view_parameter_ctl
 !!
 !!  end view_transform_ctl
 !!
@@ -212,7 +212,7 @@
      &             :: hd_viewpt_in_view = 'viewpoint_in_viewer_ctl'
 !
       character(len=kchara), parameter, private                         &
-     &             :: hd_stereo_view = 'streo_view_parameter_ctl'
+     &             :: hd_stereo_view = 'stereo_view_parameter_ctl'
 !
       integer(kind = kint), parameter :: n_label_pvr_modelview =  12
       private :: n_label_pvr_modelview

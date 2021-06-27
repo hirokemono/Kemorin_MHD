@@ -17,11 +17,14 @@
       use calypso_mpi
 !
       use t_FEM_utils
+      use t_mesh_SR
 !
       implicit none
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR4
 !       Structure for time stepping parameters
       type(time_step_param), save :: time_U
       type(time_data), save :: time_IO_FUTIL
@@ -51,8 +54,8 @@
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file,                      &
-     &                           FUTIL1%geofem, FUTIL1%v_sol)
+      call mesh_setup_4_FEM_UTIL                                        &
+     &   (FUTIL1%mesh_file, FUTIL1%geofem, m_SR4)
 !
 !     --------------------- 
 !
@@ -93,15 +96,16 @@
       end do
 !
       call s_divide_phys_by_num_udt(icou, FUTIL1%nod_fld)
-      call nod_fields_send_recv(FUTIL1%geofem%mesh,                     &
-     &                          FUTIL1%nod_fld, FUTIL1%v_sol)
+      call nod_fields_send_recv(FUTIL1%geofem%mesh, FUTIL1%nod_fld,     &
+     &                          m_SR4%v_sol, m_SR4%SR_sig, m_SR4%SR_r)
 !
 !    output udt data
 !
       call output_udt_one_snapshot                                      &
      &   (time_U%finish_d%i_end_step, ave_ucd_param, time_U%time_d,     &
      &    FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%ele,              &
-     &    FUTIL1%geofem%mesh%nod_comm, FUTIL1%nod_fld)
+     &    FUTIL1%geofem%mesh%nod_comm, FUTIL1%nod_fld,                  &
+     &    m_SR4%SR_sig, m_SR4%SR_i)
 !
       end subroutine analyze_ave_udt
 !

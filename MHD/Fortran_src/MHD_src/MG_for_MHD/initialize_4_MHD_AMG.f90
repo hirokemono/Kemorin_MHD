@@ -1,12 +1,16 @@
+!>@file   initialize_4_MHD_AMG.f90
+!!@brief  module initialize_4_MHD_AMG
+!!
+!!@author  H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!     module initialize_4_MHD_AMG
-!
-!        programmed H.Matsui on Dec., 2008
-!
+!>@brief Initilaization of solvers for FEM MHD
+!!
+!!@verbatim
 !!      subroutine s_initialize_4_MHD_AMG                               &
-!!     &         (dt, FEM_prm, mesh_1st, jacs_1st,                      &
-!!     &          diff_coefs, MHD_prop, MHD_BC, DJDS_param, spfs,       &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
+!!     &         (dt, FEM_prm, mesh_1st, jacs_1st, diff_coefs, MHD_prop,&
+!!     &          MHD_BC, DJDS_param, spfs, MGCG_WK, MGCG_FEM,          &
+!!     &          MGCG_MHD_FEM, MHD_mat, SR_sig, SR_i)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh_1st
 !!        type(jacobians_type), intent(in) :: jacs_1st
@@ -22,6 +26,9 @@
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_mat
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!@endverbatim
 !
       module initialize_4_MHD_AMG
 !
@@ -39,6 +46,8 @@
       use t_next_node_ele_4_node
       use t_MGCG_data
       use t_MGCG_data_4_MHD
+      use t_solver_SR
+      use t_solver_SR_int
 !
       use calypso_mpi
 !
@@ -51,9 +60,9 @@
 ! ---------------------------------------------------------------------
 !
       subroutine s_initialize_4_MHD_AMG                                 &
-     &         (dt, FEM_prm, mesh_1st, jacs_1st,                        &
-     &          diff_coefs, MHD_prop, MHD_BC, DJDS_param, spfs,         &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
+     &         (dt, FEM_prm, mesh_1st, jacs_1st, diff_coefs, MHD_prop,  &
+     &          MHD_BC, DJDS_param, spfs, MGCG_WK, MGCG_FEM,            &
+     &          MGCG_MHD_FEM, MHD_mat, SR_sig, SR_i)
 !
       use t_mesh_data
       use t_edge_data
@@ -80,6 +89,7 @@
       use set_MHD_idx_4_mat_type
       use link_MG_MHD_mesh_data
       use const_element_comm_tables
+      use parallel_edge_information
 !
       real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -95,6 +105,8 @@
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(MHD_MG_matrices), intent(inout) :: MHD_mat
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: i_level
 !
@@ -117,17 +129,32 @@
      &       (FEM_prm, MGCG_FEM%MG_mesh(i_level)%mesh,                  &
      &        MGCG_FEM%MG_mesh(i_level)%group,                          &
      &        MGCG_MHD_FEM%MG_MHD_mesh(i_level) )
+          if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+          call const_nod_ele_infos(my_rank,                             &
+     &                             MGCG_FEM%MG_mesh(i_level)%mesh,      &
+     &                             MGCG_FEM%MG_mesh(i_level)%group)
           if(iflag_debug .gt. 0) write(*,*)                             &
-     &            'const_mesh_infos', i_level
-          call const_mesh_infos                                         &
-     &       (my_rank, MGCG_FEM%MG_mesh(i_level)%mesh,                  &
-     &        MGCG_FEM%MG_mesh(i_level)%group)
+     &            'const_surface_infos', i_level
+          call const_surface_infos(my_rank,                             &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%ele,                       &
+     &        MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                 &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%surf,                      &
+     &        MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp)
+          if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+          call const_para_edge_infos                                    &
+     &       (MGCG_FEM%MG_mesh(i_level)%mesh%nod_comm,                  &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%ele,                       &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%surf,                      &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh%edge, SR_sig, SR_i)
 !
           call const_global_mesh_infos(MGCG_FEM%MG_mesh(i_level)%mesh)
         else
           call set_empty_layers_type_4_MHD                              &
      &       (MGCG_MHD_FEM%MG_MHD_mesh(i_level) )
-          call empty_mesh_info(MGCG_FEM%MG_mesh(i_level)%mesh,          &
+          call empty_mesh_info(my_rank,                                 &
+     &        MGCG_FEM%MG_mesh(i_level)%mesh,                           &
      &        MGCG_FEM%MG_mesh(i_level)%group)
         end if
       end do
@@ -171,8 +198,22 @@
         call s_const_comm_table_fluid(MGCG_WK%MG_mpi(i_level)%nprocs,   &
      &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
      &      MGCG_MHD_FEM%MG_MHD_mesh(i_level)%fluid,                    &
-     &      MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm)
+     &      MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm,              &
+     &      SR_sig, SR_i)
       end do
+!
+!     -----  set DJDS matrix connectivity
+!
+      if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
+      call set_MG_djds_connect_type(DJDS_param,                         &
+     &    MGCG_WK, MGCG_MHD_FEM, MGCG_FEM, MHD_mat)
+!
+!     --------------------- 
+!
+      if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
+      call s_link_MG_MHD_mesh_data                                      &
+     &   (MGCG_WK, MGCG_FEM%MG_mesh, MGCG_MHD_FEM%MG_MHD_mesh,          &
+     &    mesh_1st%ele, MHD_mat)
 !
 !     ---------------------
 !
@@ -187,12 +228,9 @@
           call empty_infty_surf_type                                    &
      &       (MGCG_FEM%MG_mesh(i_level)%group%infty_grp)
         end if
-      end do
 !
-!     --------------------- 
-!
-      do i_level = 1, MGCG_WK%num_MG_level
-        MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM => jacs_1st%g_FEM
+        call copy_fem_gauss_int_coefs                                   &
+     &     (jacs_1st%g_FEM, MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM)
         call alloc_vol_shape_func                                       &
      &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele%nnod_4_ele,              &
      &      MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM, spfs%spf_3d)
@@ -216,31 +254,15 @@
      &      spfs%spf_2d, MGCG_FEM%MG_FEM_int(i_level)%jcs)
         call dealloc_surf_shape_func(spfs%spf_2d)
         call dealloc_vol_shape_func(spfs%spf_3d)
-      end do
 !
-!
-!     -----  set DJDS matrix connectivity
-!
-      if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
-      call set_MG_djds_connect_type(DJDS_param,                         &
-     &    MGCG_WK, MGCG_MHD_FEM, MGCG_FEM, MHD_mat)
-!
-!     --------------------- 
-!
-      if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
-      call s_link_MG_MHD_mesh_data                                      &
-     &   (MGCG_WK, MGCG_FEM%MG_mesh, MGCG_MHD_FEM%MG_MHD_mesh,          &
-     &    mesh_1st%ele, MHD_mat)
-!
-!     --------------------- 
-!
-      do i_level = 1, MGCG_WK%num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &         'int_normal_4_all_surface', i_level
-        call int_normal_4_all_surface                                   &
-     &     (MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM,                     &
-     &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,                        &
-     &      MGCG_FEM%MG_FEM_int(i_level)%jcs%jac_2d)
+     &         'surf_jacobian_sf_grp_normal', i_level
+        call surf_jacobian_sf_grp_normal                                &
+     &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
+     &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
+     &      MGCG_FEM%MG_mesh(i_level)%group,                            &
+     &      spfs, MGCG_FEM%MG_FEM_int(i_level)%jcs)
+!
         call int_surface_parameters(MGCG_FEM%MG_mesh(i_level)%mesh,     &
      &      MGCG_FEM%MG_mesh(i_level)%group,                            &
      &      MGCG_FEM%MG_FEM_mat(i_level)%surf_wk)
@@ -258,7 +280,7 @@
      &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,                        &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp,               &
-     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_geom,              &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_norm,              &
      &      MHD_prop, MHD_BC, MGCG_MHD_FEM%MG_surf_bc(i_level) )
 !
         if(iflag_debug .gt. 0) write(*,*) 's_int_type_mass_matrices'

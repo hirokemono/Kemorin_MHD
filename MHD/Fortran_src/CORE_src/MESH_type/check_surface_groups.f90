@@ -3,10 +3,6 @@
 !
 !      Written by H> Matsui on Aug., 2006
 !
-!!      subroutine check_center_of_surface_grp                          &
-!!     &         (id_check, sf_grp, sf_grp_v)
-!!      subroutine check_center_of_surface_grp_sph                      &
-!!     &          (id_check, sf_grp, sf_grp_v)
 !!       subroutine check_surface_param_smp                             &
 !!     &         (txt, id_check, sf_grp, sf_grp_nod)
 !!
@@ -22,60 +18,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine check_center_of_surface_grp                            &
-     &         (id_check, sf_grp, sf_grp_v)
-!
-      use t_group_data
-      use t_surface_group_geometry
-!
-      integer(kind = kint), intent(in) :: id_check
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
-!
-      integer(kind = kint) :: i_grp, ist, ied, inum
-!
-      write(id_check,*) ' inum, center of surface'
-      do i_grp = 1, sf_grp%num_grp
-        ist = sf_grp%istack_grp(i_grp-1) + 1
-        ied = sf_grp%istack_grp(i_grp)
-        do inum = ist, ied
-          write(id_check,'(i16,1p3e23.12)') inum,                       &
-     &              sf_grp_v%x_sf_grp(inum,1:3)
-        end do
-      end do
-!
-      end subroutine check_center_of_surface_grp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine check_center_of_surface_grp_sph                        &
-     &          (id_check, sf_grp, sf_grp_v)
-!
-      use t_group_data
-      use t_surface_group_geometry
-!
-      integer(kind = kint), intent(in) :: id_check
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
-!
-      integer(kind = kint) :: i_grp, ist, ied, inum
-!
-      write(id_check,*) ' inum, center of surface'
-      write(id_check,*) '          (r, theta, phi, cyl_r)'
-      do i_grp = 1, sf_grp%num_grp
-        ist = sf_grp%istack_grp(i_grp-1) + 1
-        ied = sf_grp%istack_grp(i_grp)
-        do inum = ist, ied
-          write(id_check,'(i16,1p4e23.12)') inum,                       &
-     &        sf_grp_v%r_sf_grp(inum), sf_grp_v%theta_sf_grp(inum),     &
-     &        sf_grp_v%phi_sf_grp(inum), sf_grp_v%s_sf_grp(inum)
-        end do
-      end do
-!
-      end subroutine check_center_of_surface_grp_sph
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -121,12 +63,12 @@
 !
       use t_geometry_data
       use t_group_data
-      use t_surface_group_geometry
+      use t_surface_group_normals
 !
       integer(kind = kint), intent(in) :: id_check
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
 !
       integer(kind = kint) :: isurf, iele
 !

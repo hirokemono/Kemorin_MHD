@@ -39,7 +39,7 @@
       use m_interpolate_table_IO
 !
       use copy_interpolate_types
-      use itp_table_IO_select_4_zlib
+      use itp_work_file_IO_select
       use const_interpolate_4_org
 !
       integer, intent(in) :: nprocs_2nd

@@ -8,12 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine s_extended_groups(org_mesh, org_groups,              &
-!!     &                             new_mesh, new_ele_comm, new_groups)
+!!     &          new_mesh, new_ele_comm, new_groups, SR_sig, SR_i)
 !!        type(mesh_geometry), intent(in) :: org_mesh
 !!        type(mesh_groups), intent(in) :: org_groups
 !!        type(mesh_geometry), intent(in) :: new_mesh
 !!        type(communication_table), intent(in) :: new_ele_comm
 !!        type(mesh_groups), intent(inout) :: new_groups
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module extended_groups
@@ -28,6 +30,8 @@
       use t_comm_table
       use t_geometry_data
       use t_group_data
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
@@ -44,7 +48,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_extended_groups(org_mesh, org_groups,                &
-     &                             new_mesh, new_ele_comm, new_groups)
+     &          new_mesh, new_ele_comm, new_groups, SR_sig, SR_i)
 !
       type(mesh_geometry), intent(in) :: org_mesh
       type(mesh_groups), intent(in) :: org_groups
@@ -52,15 +56,18 @@
       type(communication_table), intent(in) :: new_ele_comm
 !
       type(mesh_groups), intent(inout) :: new_groups
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
-      call extended_node_group                                          &
-     &   (org_mesh%node, org_groups%nod_grp,                            &
-     &    new_mesh%node, new_mesh%nod_comm, new_groups%nod_grp)
+      call extended_node_group(org_mesh%node, org_groups%nod_grp,       &
+     &    new_mesh%node, new_mesh%nod_comm, new_groups%nod_grp,         &
+     &    SR_sig, SR_i)
       call extended_element_group(org_groups%ele_grp,                   &
-     &    new_mesh%ele, new_ele_comm, new_groups%ele_grp)
+     &    new_mesh%ele, new_ele_comm, new_groups%ele_grp, SR_sig, SR_i)
       call extended_surface_group(org_groups%surf_grp,                  &
-     &    new_mesh%ele, new_ele_comm, new_groups%surf_grp)
+     &    new_mesh%ele, new_ele_comm, new_groups%surf_grp,              &
+     &    SR_sig, SR_i)
 !
       end subroutine s_extended_groups
 !
@@ -90,10 +97,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine extended_node_group(node, nod_grp,                     &
-     &          new_node, new_comm, new_nod_grp)
+     &          new_node, new_comm, new_nod_grp, SR_sig, SR_i)
 !
       use solver_SR_type
       use redistribute_group_data
+      use cal_minmax_and_stacks
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
@@ -102,8 +110,10 @@
       type(communication_table), intent(in) :: new_comm
 !
       type(group_data), intent(inout) :: new_nod_grp
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: igrp
+      integer(kind = kint) :: igrp, icou
 !
 !
       call allocate_group_flag(new_node%numnod)
@@ -117,19 +127,27 @@
       end do
 !$omp end parallel do
 !
-      new_nod_grp%istack_grp(0:new_nod_grp%num_grp) = 0
-      call alloc_group_item(new_nod_grp)
       do igrp = 1, nod_grp%num_grp
         call mark_org_group_repart                                      &
      &     (igrp, node%numnod, nod_grp, iflag_new(1))
-!
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, iflag_new)
+     &     (new_node%numnod, new_comm, SR_sig, SR_i, iflag_new)
+        new_nod_grp%nitem_grp(igrp) = sum(iflag_new)
+      end do
 !
-        call count_group_item_repart                                    &
-     &     (igrp, new_node%numnod, iflag_new(1), new_nod_grp)
-        call append_group_item_repart                                   &
-     &     (igrp, new_node%numnod, iflag_new(1), new_nod_grp)
+      call s_cal_total_and_stacks                                       &
+     &   (new_nod_grp%num_grp, new_nod_grp%nitem_grp, izero,            &
+     &    new_nod_grp%istack_grp, new_nod_grp%num_item)
+      call alloc_group_item(new_nod_grp)
+!
+      do igrp = 1, nod_grp%num_grp
+        icou = new_nod_grp%istack_grp(igrp-1)
+        call mark_org_group_repart                                      &
+     &     (igrp, node%numnod, nod_grp, iflag_new(1))
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (new_node%numnod, new_comm, SR_sig, SR_i, iflag_new)
+        call set_group_item_repart                                      &
+     &     (new_node%numnod, iflag_new(1), new_nod_grp, icou)
       end do
       call deallocate_group_flag
 !
@@ -138,10 +156,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine extended_element_group                                 &
-     &         (ele_grp, new_ele, new_ele_comm, new_ele_grp)
+     &         (ele_grp, new_ele, new_ele_comm, new_ele_grp,            &
+     &          SR_sig, SR_i)
 !
       use solver_SR_type
       use redistribute_group_data
+      use cal_minmax_and_stacks
 !
       type(group_data), intent(in) :: ele_grp
 !
@@ -149,8 +169,10 @@
       type(communication_table), intent(in) :: new_ele_comm
 !
       type(group_data), intent(inout) :: new_ele_grp
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: igrp
+      integer(kind = kint) :: igrp, icou
 !
 !
       call allocate_group_flag(new_ele%numele)
@@ -164,19 +186,29 @@
       end do
 !$omp end parallel do
 !
-      new_ele_grp%istack_grp(0:new_ele_grp%num_grp) = 0
-      call alloc_group_item(new_ele_grp)
       do igrp = 1, ele_grp%num_grp
+        call mark_org_group_repart                                      &
+     &     (igrp, new_ele%numele, ele_grp, iflag_new)
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new(1))
+          new_ele_grp%nitem_grp(igrp) = sum(iflag_new)
+      end do
+!
+      call s_cal_total_and_stacks                                       &
+     &   (new_ele_grp%num_grp, new_ele_grp%nitem_grp, izero,            &
+     &    new_ele_grp%istack_grp, new_ele_grp%num_item)
+      call alloc_group_item(new_ele_grp)
+!
+      do igrp = 1, ele_grp%num_grp
+        icou = new_ele_grp%istack_grp(igrp-1)
         call mark_org_group_repart                                      &
      &     (igrp, new_ele%numele, ele_grp, iflag_new)
 !
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, iflag_new(1))
+     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new(1))
 !
-        call count_group_item_repart                                    &
-     &     (igrp, new_ele%numele, iflag_new(1), new_ele_grp)
-        call append_group_item_repart                                   &
-     &     (igrp, new_ele%numele, iflag_new(1), new_ele_grp)
+        call set_group_item_repart                                      &
+     &     (new_ele%numele, iflag_new(1), new_ele_grp, icou)
       end do
       call deallocate_group_flag
 !
@@ -185,10 +217,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine extended_surface_group                                 &
-     &         (surf_grp, new_ele, new_ele_comm, new_surf_grp)
+     &         (surf_grp, new_ele, new_ele_comm, new_surf_grp,          &
+     &          SR_sig, SR_i)
 !
       use solver_SR_type
       use redistribute_group_data
+      use cal_minmax_and_stacks
 !
       type(surface_group_data), intent(in) :: surf_grp
 !
@@ -196,8 +230,10 @@
       type(communication_table), intent(in) :: new_ele_comm
 !
       type(surface_group_data), intent(inout) :: new_surf_grp
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: igrp
+      integer(kind = kint) :: igrp, k1, icou
 !
 !
       call allocate_group_flag(new_ele%numele)
@@ -205,29 +241,38 @@
       new_surf_grp%num_grp = surf_grp%num_grp
       call alloc_sf_group_num(new_surf_grp)
 !
-!$omp parallel do
+!$omp parallel workshare
+      new_surf_grp%grp_name(1:surf_grp%num_grp)                         &
+     &   = surf_grp%grp_name(1:surf_grp%num_grp)
+!$omp end parallel workshare
+!
       do igrp = 1, surf_grp%num_grp
-        new_surf_grp%grp_name(igrp) = surf_grp%grp_name(igrp)
+        new_surf_grp%nitem_grp(igrp) = 0
+        do k1 = 1, new_ele%nnod_4_ele
+          call mark_org_surf_group_repart                               &
+     &       (igrp, k1, new_ele%numele, surf_grp, iflag_new)
+          call SOLVER_SEND_RECV_int_type                                &
+     &       (new_ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new)
+          new_surf_grp%nitem_grp(igrp) = new_surf_grp%nitem_grp(igrp)   &
+     &                                  + sum(iflag_new)
+        end do
       end do
-!$omp end parallel do
 !
-      new_surf_grp%istack_grp(0:new_surf_grp%num_grp) = 0
+      call s_cal_total_and_stacks                                       &
+     &   (new_surf_grp%num_grp, new_surf_grp%nitem_grp, izero,          &
+     &    new_surf_grp%istack_grp, new_surf_grp%num_item)
       call alloc_sf_group_item(new_surf_grp)
-!
-      do igrp = 1, surf_grp%num_grp
-        call mark_org_surf_group_repart                                 &
-     &     (igrp, new_ele%numele, surf_grp, iflag_new)
-!
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, iflag_new)
-!
-!        write(100+my_rank,*) igrp, new_ele%numele, 'iflag',            &
-!     &        sum(iflag_new), sum(iflag_new)
 
-        call count_surf_group_item_repart                               &
-     &    (igrp, new_ele%numele, iflag_new(1), new_surf_grp)
-        call append_surf_group_item_repart                              &
-     &    (igrp, new_ele%numele, iflag_new(1), new_surf_grp)
+      do igrp = 1, surf_grp%num_grp
+        icou = new_surf_grp%istack_grp(igrp-1)
+        do k1 = 1, new_ele%nnod_4_ele
+          call mark_org_surf_group_repart                               &
+     &       (igrp, k1, new_ele%numele, surf_grp, iflag_new)
+          call SOLVER_SEND_RECV_int_type                                &
+     &       (new_ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new)
+          call set_surf_group_item_repart                               &
+     &      (k1, new_ele%numele, iflag_new(1), new_surf_grp, icou)
+        end do
       end do
       call deallocate_group_flag
 !

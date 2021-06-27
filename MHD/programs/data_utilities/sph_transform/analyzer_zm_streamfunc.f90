@@ -20,6 +20,7 @@
       use SPH_analyzer_zm_streamfunc
       use t_visualizer
       use t_VIZ_mesh_field
+      use t_mesh_SR
 !
       implicit none
 !
@@ -49,7 +50,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans(spt_ctl1, t_STR, SPH_TRNS,        &
-     &                                FEM_STR1, SPH_STR1, VIZ_D_STR1)
+     &                                FEM_STR1, SPH_STR1)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -60,26 +61,28 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
-      call FEM_initialize_back_trans(t_STR%ucd_step, FEM_STR1)
+      call FEM_initialize_back_trans(t_STR%ucd_step, FEM_STR1, m_SR5)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans(t_STR%init_d%i_time_step,          &
-     &    SPH_TRNS, SPH_STR1, FEM_STR1%time_IO)
+      call SPH_initialize_back_trans                                    &
+     &   (t_STR%init_d%i_time_step, SPH_TRNS, SPH_STR1,                 &
+     &    FEM_STR1%time_IO, m_SR5%SR_sig, m_SR5%SR_r)
 !
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge(FEM_STR1%viz_step,                    &
-     &    FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1)
+      call init_FEM_to_VIZ_bridge(FEM_STR1%viz_step, FEM_STR1%geofem,   &
+     &                            VIZ_D_STR1, m_SR5)
 !
 !  ------  initialize visualization
       if (iflag_debug.gt.0) write(*,*) 'init_visualize'
-      call init_visualize(VIZ_D_STR1%viz_fem, VIZ_D_STR1%edge_comm,     &
-     &    VIZ_D_STR1%viz_fld, spt_ctl1%viz_ctls, FEM_STR1%vizs)
+      call init_visualize                                               &
+     &   (FEM_STR1%viz_step, FEM_STR1%geofem, FEM_STR1%field,           &
+     &    VIZ_D_STR1, spt_ctl1%viz_ctls, FEM_STR1%vizs, m_SR5)
 !
       end subroutine init_zm_streamfunc
 !
@@ -98,24 +101,20 @@
 !
         if(      iflag_vizs_w_fix_step(i_step, FEM_STR1%viz_step)       &
      &    .or. output_IO_flag(i_step, t_STR%ucd_step)) then
-          call SPH_analyze_zm_streamfunc                                &
-     &       (i_step, FEM_STR1%geofem, SPH_TRNS, SPH_STR1,              &
-     &        FEM_STR1%time_IO, FEM_STR1%field)
+          call SPH_analyze_zm_streamfunc(i_step, FEM_STR1%geofem,       &
+     &        SPH_TRNS, SPH_STR1, FEM_STR1%time_IO, FEM_STR1%field,     &
+     &        m_SR5%SR_sig, m_SR5%SR_r)
         end if
 !
         visval = iflag_vizs_w_fix_step(i_step, FEM_STR1%viz_step)
-        call FEM_analyze_back_trans                                     &
-     &     (i_step, t_STR%ucd_step, visval, FEM_STR1)
+        call FEM_analyze_back_trans(i_step, t_STR%ucd_step, visval,     &
+     &                              FEM_STR1, m_SR5)
 !
         if(visval) then
           call istep_viz_w_fix_dt(i_step, FEM_STR1%viz_step)
-          call s_FEM_to_VIZ_bridge(FEM_STR1%field, FEM_STR1%v_sol,      &
-     &                             VIZ_D_STR1)
           call visualize_all                                            &
-     &       (FEM_STR1%viz_step, t_STR%time_d, VIZ_D_STR1%viz_fem,      &
-     &        VIZ_D_STR1%edge_comm, VIZ_D_STR1%viz_fld,                 &
-     &        VIZ_D_STR1%ele_4_nod, VIZ_D_STR1%jacobians,               &
-     &        FEM_STR1%vizs)
+     &       (FEM_STR1%viz_step, t_STR%time_d, FEM_STR1%geofem,         &
+     &        FEM_STR1%field, VIZ_D_STR1, FEM_STR1%vizs, m_SR5)
         end if
       end do
 !

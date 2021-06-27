@@ -26,7 +26,6 @@
 !!
 !!    vr_sample_mode:         'fixed_size' or 'element_count'
 !!    normalization_type:     'set_by_control' or 'set_by_range'
-!!    reflection_reference:   'noise_file''color_field'
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin LIC_ctl
@@ -37,6 +36,10 @@
 !!
 !!!    opacity_field       magnetic_field
 !!!    opacity_component   amplitude
+!!
+!!    begin LIC_repartition_ctl
+!!     ...
+!!    end LIC_repartition_ctl
 !!
 !!    array masking_control    1
 !!      begin masking_control
@@ -78,9 +81,10 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
-      use t_control_data_LIC_masking
+      use t_control_data_masking
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
+      use t_ctl_data_volume_repart
       use skip_comment_f
 !
       implicit  none
@@ -95,7 +99,7 @@
         type(read_character_item) :: opacity_component_ctl
 !
         integer(kind = kint) :: num_masking_ctl = 0
-        type(lic_masking_ctl), allocatable :: mask_ctl(:)
+        type(masking_by_field_ctl), allocatable :: mask_ctl(:)
 !
 !>        structure of noise control
         type(cube_noise_ctl) :: noise_ctl
@@ -107,6 +111,8 @@
 !
         type(read_character_item) :: normalization_type_ctl
         type(read_real_item) ::      normalization_value_ctl
+!
+        type(viz_repartition_ctl) :: repart_ctl
 !
 !     2nd level for volume rendering
         integer (kind=kint) :: i_lic_control = 0
@@ -141,9 +147,10 @@
 !
       call reset_cube_noise_control_data(lic_ctl%noise_ctl)
       call reset_kernel_control_data(lic_ctl%kernel_ctl)
+      call dealloc_control_vol_repart(lic_ctl%repart_ctl)
 !
       if(lic_ctl%num_masking_ctl .gt. 0) then
-        call dealloc_lic_masking_ctls                                   &
+        call dealloc_masking_ctls                                       &
      &     (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
       end if
       call dealloc_lic_masking_ctl(lic_ctl)
@@ -174,7 +181,7 @@
 !
         if(check_begin_flag(c_buf, hd_block)) then
           call append_new_lic_masking_ctl(lic_ctl)
-          call read_lic_masking_ctl_data(id_control, hd_block,          &
+          call read_masking_ctl_data(id_control, hd_block,              &
      &        lic_ctl%mask_ctl(lic_ctl%num_masking_ctl), c_buf)
         end if
       end do
@@ -211,7 +218,7 @@
       end if
 !
       do i_fld = 1, lic_ctl%num_masking_ctl
-        call add_lic_mask_field_to_fld_ctl                            &
+        call add_mask_field_to_fld_ctl                                  &
      &     (lic_ctl%mask_ctl(i_fld), field_ctl)
       end do
 !
@@ -225,24 +232,23 @@
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !
       integer(kind=kint) :: ntmp_masking
-      type(lic_masking_ctl), allocatable :: tmp_mask_c(:)
+      type(masking_by_field_ctl), allocatable :: tmp_mask_c(:)
 !
 !
       ntmp_masking = lic_ctl%num_masking_ctl
       allocate(tmp_mask_c(ntmp_masking))
-      call dup_lic_masking_ctls                                         &
-     &   (ntmp_masking, lic_ctl%mask_ctl, tmp_mask_c)
+      call dup_masking_ctls(ntmp_masking, lic_ctl%mask_ctl, tmp_mask_c)
 !
-      call dealloc_lic_masking_ctls                                     &
+      call dealloc_masking_ctls                                         &
      &   (lic_ctl%num_masking_ctl, lic_ctl%mask_ctl)
       call dealloc_lic_masking_ctl(lic_ctl)
 !
       lic_ctl%num_masking_ctl = ntmp_masking + 1
       call alloc_lic_masking_ctl(lic_ctl)
-      call dup_lic_masking_ctls                                         &
+      call dup_masking_ctls                                             &
      &   (ntmp_masking, tmp_mask_c, lic_ctl%mask_ctl(1))
 !
-      call dealloc_lic_masking_ctls(ntmp_masking, tmp_mask_c)
+      call dealloc_masking_ctls(ntmp_masking, tmp_mask_c)
       deallocate(tmp_mask_c)
 !
       end subroutine append_new_lic_masking_ctl

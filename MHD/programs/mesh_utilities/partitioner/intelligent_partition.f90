@@ -1,5 +1,5 @@
 !>@file  intelligent_partition.f90
-!!       intelligent_partition
+!!       module intelligent_partition
 !!
 !!@author Yangguang Liao
 !!@date   Programmed 2018
@@ -75,6 +75,8 @@
         integer(kind = kint_gl) :: cnt
       end type time_esti
 !
+      private :: simulate_field_line_integral
+!
 ! -------------------------------------------------------------------
 !
       contains
@@ -96,54 +98,56 @@
 ! -------------------------------------------------------------------
 !
       subroutine simulate_field_line_integral                           &
-     &          (nod_d_grp, nnod, nele, nsurf, nnod_4_surf, isf_4_ele,  &
-     &           iele_4_surf, ie_surf, iflag_dir, xx, field_vec,        &
-     &           isurf_org, group_id, x_start, v_start, line_len,       &
+     &          (nod_d_grp, node, ele, surf, iflag_dir, field_vec,      &
+     &           isurf_org, group_id, x4_start, v4_start, line_len,     &
      &           itr_num, iflag_comm)
 !
 !
-        type(domain_group_4_partition), intent(in)  :: nod_d_grp
-        integer(kind = kint), intent(in) :: nnod, nele, nsurf
-        integer(kind = kint), intent(in) :: nnod_4_surf, group_id
-        integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
-        integer(kind = kint), intent(in) :: isf_4_ele(nele,nsurf_4_ele)
-        integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
-        real(kind = kreal), intent(in) :: xx(nnod,3), field_vec(nnod,3)
-        real(kind = kreal), intent(in) :: line_len
-        real(kind = kreal), intent(inout) :: x_start(3), v_start(3)
-        integer(kind = kint), intent(in) :: isurf_org(3)
-        integer(kind=kint), intent(inout) :: itr_num
-        integer(kind=kint), intent(inout) :: iflag_comm, iflag_dir
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(domain_group_4_partition), intent(in)  :: nod_d_grp
+      integer(kind = kint), intent(in) :: group_id
+      real(kind = kreal), intent(in) :: field_vec(node%numnod,3)
+      real(kind = kreal), intent(in) :: line_len
+      real(kind = kreal), intent(inout) :: x4_start(4)
+      real(kind = kreal), intent(inout) :: v4_start(4)
+      integer(kind = kint), intent(in) :: isurf_org(3)
+      integer(kind=kint), intent(inout) :: itr_num
+      integer(kind=kint), intent(inout) :: iflag_comm, iflag_dir
 !
-        integer(kind = kint) :: i, node_id
-        integer(kind = kint) :: isurf_start, isurf_end
-        integer(kind = kint) ::  isf_org, isf_tgt, iele
-        real(kind = kreal) :: xi(2)
-        real(kind = kreal) :: step_len, integral_len
-        real(kind = kreal) :: x_org(3), x_tgt(3), v_tgt(3)
+      integer(kind = kint) :: i, node_id
+      integer(kind = kint) :: isurf_start, isurf_end
+      integer(kind = kint) ::  isf_org, isf_tgt, iele
+      real(kind = kreal) :: xi(2)
+      real(kind = kreal) :: step_len, integral_len
+      real(kind = kreal) :: x4_org(4), x4_tgt(4), v4_tgt(4)
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
 !itr_num = 0
         integral_len = 0.0
 
         iele = isurf_org(1)
         isf_org = isurf_org(2)
-        isurf_start = abs(isf_4_ele(iele, isf_org))
+        isurf_start = abs(surf%isf_4_ele(iele, isf_org))
         do
           itr_num = itr_num + 1
           step_len = 0.0
-          x_org(1:3) = x_start(1:3)
-          if(isurf_start .lt. 1 .or. isurf_start .gt. nsurf) then
+          x4_org(1:4) = x4_start(1:4)
+          if(isurf_start.lt.1 .or. isurf_start.gt.surf%numsurf) then
             iflag_comm = -10
             return
           end if
           isf_tgt = 0
           do i = 1, 2
-            iele = iele_4_surf(isurf_start,i,1)
-            isf_org = iele_4_surf(isurf_start,i,2)
+            iele = surf%iele_4_surf(isurf_start,i,1)
+            isf_org = surf%iele_4_surf(isurf_start,i,2)
             if(iele .gt. 0) then
-              call find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,  &
-     &            nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,   &
-     &             v_start, x_start, isf_tgt, x_tgt, xi)
+              call position_on_each_ele_surfs                           &
+     &           (surf, node%numnod, node%xx, iele, xx4_ele_surf)
+              call find_line_end_in_1ele(iflag_dir,                     &
+     &            isf_org, v4_start, x4_start, xx4_ele_surf,            &
+     &            isf_tgt, x4_tgt, xi)
               if(isf_tgt .gt. 0) then
 ! find hit surface
                 exit
@@ -155,31 +159,35 @@
             iflag_comm = -11
             return
           end if
-          isurf_end = abs(isf_4_ele(iele,isf_tgt))
-          call cal_field_on_surf_vector(nnod, nsurf, nnod_4_surf,       &
-    &         ie_surf, isurf_end, xi, field_vec, v_tgt)
+          isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
+          call cal_field_on_surf_vect4                                  &
+    &        (node%numnod, surf%numsurf, surf%nnod_4_surf,              &
+    &         surf%ie_surf, isurf_end, xi, field_vec, v4_tgt)
           isf_org =  0
-          x_start(1:3) = half * (x_start(1:3) + x_tgt(1:3))
-          v_start(1:3) = half * (v_start(1:3) + v_tgt(1:3))
-          call find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,      &
-    &         nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,       &
-    &         v_start, x_start, isf_tgt, x_tgt, xi)
+          x4_start(1:4) = half * (x4_start(1:4) + x4_tgt(1:4))
+          v4_start(1:4) = half * (v4_start(1:4) + v4_tgt(1:4))
+          call position_on_each_ele_surfs                               &
+    &        (surf, node%numnod, node%xx, iele, xx4_ele_surf)
+          call find_line_end_in_1ele(iflag_dir,                         &
+    &         isf_org, v4_start, x4_start, xx4_ele_surf,                &
+    &         isf_tgt, x4_tgt, xi)
           if(isf_tgt .eq. 0) then
             iflag_comm = -12
             return
           end if
 ! exit point after 2nd field line trace
-          isurf_end = abs(isf_4_ele(iele,isf_tgt))
-          call cal_field_on_surf_vector(nnod, nsurf, nnod_4_surf,       &
-    &         ie_surf, isurf_end, xi, field_vec, v_start)
-          step_len = sqrt( (x_tgt(1) - x_org(1))**2                     &
-    &               + (x_tgt(2) - x_org(2))**2                          &
-    &               + (x_tgt(3) - x_org(3))**2)
+          isurf_end = abs(surf%isf_4_ele(iele,isf_tgt))
+          call cal_field_on_surf_vect4                                  &
+    &        (node%numnod, surf%numsurf, surf%nnod_4_surf,              &
+    &         surf%ie_surf, isurf_end, xi, field_vec, v4_start)
+          step_len = sqrt( (x4_tgt(1) - x4_org(1))**2                   &
+    &                    + (x4_tgt(2) - x4_org(2))**2                   &
+    &                    + (x4_tgt(3) - x4_org(3))**2)
           integral_len = integral_len + step_len
-          x_start(1:3) =  x_tgt(1:3)
+          x4_start(1:4) =  x4_tgt(1:4)
 
-          do i = 1, nnod_4_surf
-            node_id = ie_surf(isurf_end,i)
+          do i = 1, surf%nnod_4_surf
+            node_id = surf%ie_surf(isurf_end,i)
             if(nod_d_grp%IGROUP(node_id) .ne. group_id) then
               iflag_comm = 10
               return
@@ -202,49 +210,50 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine seed_particles                                         &
-     &         (nod_d_grp, nnod, nele, nsurf, nnod_4_surf,              &
-     &          isf_4_ele, ie_surf, iele_4_surf, xx, field,             &
+      subroutine seed_particles(nod_d_grp, node, ele, surf, field,      &
      &          particles, num_particle, num_domain, time_cost)
 !
-        type(domain_group_4_partition), intent(in)  :: nod_d_grp
-        integer(kind = kint), intent(in) :: nnod, nele, nsurf
-        integer(kind = kint), intent(in) :: nnod_4_surf
-        integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
-        integer(kind = kint), intent(in) :: isf_4_ele(nele,nsurf_4_ele)
-        integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
-        real(kind = kreal), intent(in) :: field(nnod,3), xx(nnod,3)
-        integer(kind = kint), intent(in) :: num_particle
-        type(simulate_particle), intent(in) :: particles(num_particle)
-        integer(kind = kint), intent(in) :: num_domain
-!        real(kind = kreal), intent(inout) :: time_cost(num_domain)
-        type(time_esti), intent(inout) :: time_cost(num_domain)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(domain_group_4_partition), intent(in)  :: nod_d_grp
+      real(kind = kreal), intent(in) :: field(node%numnod,3)
+      integer(kind = kint), intent(in) :: num_particle
+      type(simulate_particle), intent(in) :: particles(num_particle)
+      integer(kind = kint), intent(in) :: num_domain
+!      real(kind = kreal), intent(inout) :: time_cost(num_domain)
+      type(time_esti), intent(inout) :: time_cost(num_domain)
 !
-        integer(kind = kint) :: isurf_org(3), isurf_hit
-        integer(kind = kint) :: i, iele
-        integer(kind = kint) :: iflag_dir, iflag_found_sf, iflag_comm
-        integer(kind = kint) :: isf_tgt, itr_num, cnt
-        real(kind = kreal) :: xx_org(3), vec_org(3)
-        real(kind = kreal) :: new_pos(3), new_vec(3), xi(2)
-        real(kind = kreal) :: time_cost_cnt(num_domain), aver_time_cost
+      integer(kind = kint) :: isurf_org(3), isurf_hit
+      integer(kind = kint) :: i, iele
+      integer(kind = kint) :: iflag_dir, iflag_found_sf, iflag_comm
+      integer(kind = kint) :: isf_tgt, itr_num, cnt
+      real(kind = kreal) :: xx4_org(4), vec4_org(4)
+      real(kind = kreal) :: new_pos4(4), new_vec4(4), xi(2)
+      real(kind = kreal) :: time_cost_cnt(num_domain), aver_time_cost
+      real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
 !
         time_cost(:)%total_time = 0.0
         time_cost(:)%cnt = 0
         do i = 1, num_particle
           iele = particles(i)%ele_id
-          if(iele .le. izero .or. iele .gt. nele) then
+          if(iele .le. izero .or. iele .gt. ele%numele) then
             write(*,*) 'invalide element'
             continue
           end if
           itr_num = 0
 ! forward integral
           iflag_dir = 1
-          xx_org(1:3) = particles(i)%pos(1:3)
-          vec_org(1:3) = particles(i)%vec(1:3)
+          xx4_org(1:3) = particles(i)%pos(1:3)
+          xx4_org(4) =   0.0d0
+          vec4_org(1:3) = particles(i)%vec(1:3)
+          vec4_org(4) =   0.0d0
       
-          call find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,      &
-      &       nnod_4_surf, isf_4_ele, ie_surf, xx, iele, izero,         &
-      &       vec_org, xx_org, isf_tgt, new_pos, xi)
+          call position_on_each_ele_surfs                               &
+      &      (surf, node%numnod, node%xx, iele, xx4_ele_surf)
+          call find_line_end_in_1ele(iflag_dir,                         &
+      &       izero, vec4_org, xx4_org, xx4_ele_surf,                   &
+      &       isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             iflag_found_sf = 1
           else
@@ -253,23 +262,27 @@
           end if
           isurf_org(1) = iele
           isurf_org(2) = isf_tgt
-          isurf_hit = abs(isf_4_ele(iele,isf_tgt))
-          call cal_field_on_surf_vector(nnod, nsurf, nnod_4_surf,       &
-      &       ie_surf, isurf_hit, xi, field, new_vec)
+          isurf_hit = abs(surf%isf_4_ele(iele,isf_tgt))
+          call cal_field_on_surf_vect4                                  &
+      &      (node%numnod, surf%numsurf, surf%nnod_4_surf,              &
+      &       surf%ie_surf, isurf_hit, xi, field, new_vec4)
           call simulate_field_line_integral                             &
-      &      (nod_d_grp, nnod, nele, nsurf, nnod_4_surf, isf_4_ele,     &
-      &       iele_4_surf, ie_surf, iflag_dir, xx,                      &
+      &      (nod_d_grp, node, ele, surf, iflag_dir,                    &
       &       field, isurf_org, particles(i)%group_id,                  &
-      &       new_pos, new_vec, particles(i)%line_len,                  &
+      &       new_pos4, new_vec4, particles(i)%line_len,                &
       &       itr_num, iflag_comm)
 !            write(*,*) 'foward iter_num ', itr_num, 'forward res ', iflag_comm
 !              backward integral
           iflag_dir = -1
-          xx_org(1:3) = particles(i)%pos(1:3)
-          vec_org(1:3) = particles(i)%vec(1:3)
-          call find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,      &
-      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, izero,          &
-      &      vec_org, xx_org, isf_tgt, new_pos, xi)
+          xx4_org(1:3) = particles(i)%pos(1:3)
+          xx4_org(4) =   0.0d0
+          vec4_org(1:3) = particles(i)%vec(1:3)
+          vec4_org(4) =    0.0d0
+          call position_on_each_ele_surfs                               &
+      &      (surf, node%numnod, node%xx, iele, xx4_ele_surf)
+          call find_line_end_in_1ele(iflag_dir,                         &
+      &       izero, vec4_org, xx4_org, xx4_ele_surf,                   &
+      &       isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             iflag_found_sf = 1
           else
@@ -278,15 +291,15 @@
           end if
           isurf_org(1) = iele
           isurf_org(2) = isf_tgt
-          isurf_hit = abs(isf_4_ele(iele,isf_tgt))
-          call cal_field_on_surf_vector(nnod, nsurf, nnod_4_surf,       &
-      &       ie_surf, isurf_hit, xi, field, new_vec)
+          isurf_hit = abs(surf%isf_4_ele(iele,isf_tgt))
+          call cal_field_on_surf_vect4                                  &
+      &      (node%numnod, surf%numsurf, surf%nnod_4_surf,              &
+      &       surf%ie_surf, isurf_hit, xi, field, new_vec4)
           call simulate_field_line_integral                             &
-      &      (nod_d_grp, nnod, nele, nsurf, nnod_4_surf, isf_4_ele,     &
-      &       iele_4_surf, ie_surf, iflag_dir, xx,                      &
+      &      (nod_d_grp, node, ele, surf, iflag_dir,                    &
       &       field, isurf_org, particles(i)%group_id,                  &
-      &       new_pos, new_vec, particles(i)%line_len, itr_num,         &
-      &       iflag_comm)
+      &       new_pos4, new_vec4, particles(i)%line_len,                &
+      &       itr_num, iflag_comm)
 !          write(*,*) 'total iter_num ', itr_num, 'backward res ', iflag_comm
           time_cost(particles(i)%group_id)%cnt                          &
       &         = time_cost(particles(i)%group_id)%cnt + 1

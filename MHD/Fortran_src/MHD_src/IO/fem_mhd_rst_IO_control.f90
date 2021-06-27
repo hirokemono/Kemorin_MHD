@@ -12,7 +12,7 @@
 !!@verbatim
 !!      subroutine output_MHD_restart_file_ctl(retval, SGS_par,         &
 !!     &          MHD_files, time_d, flex_p, geofem, iphys, FEM_SGS_wk, &
-!!     &          rst_step, nod_fld, fem_fst_IO, v_sol)
+!!     &          rst_step, nod_fld, fem_fst_IO, v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(time_data), intent(in) :: time_d
@@ -23,6 +23,8 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(field_IO), intent(inout) :: fem_fst_IO
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
 !!      subroutine input_MHD_restart_file_ctl(rst_step, MHD_files,      &
 !!     &         layer_tbl, node, ele, fluid, SGS_par, wk_sgs, wk_diff, &
@@ -61,6 +63,7 @@
       use t_field_data_IO
       use t_IO_step_parameter
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit  none
 !
@@ -74,7 +77,7 @@
 !
       subroutine output_MHD_restart_file_ctl(retval, SGS_par,           &
      &          MHD_files, time_d, flex_p, geofem, iphys, FEM_SGS_wk,   &
-     &          rst_step, nod_fld, fem_fst_IO, v_sol)
+     &          rst_step, nod_fld, fem_fst_IO, v_sol, SR_sig, SR_r)
 !
       use m_fem_mhd_restart
       use FEM_sgs_ini_model_coefs_IO
@@ -92,6 +95,8 @@
       type(phys_data), intent(inout) :: nod_fld
       type(field_IO), intent(inout) :: fem_fst_IO
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: istep_rst
 !
@@ -101,7 +106,7 @@
         istep_rst = IO_step_exc_zero_inc(flex_p%istep_max_dt, rst_step)
         call output_MHD_restart_file                                    &
      &     (istep_rst, time_d, SGS_par, MHD_files, geofem%mesh, iphys,  &
-     &      FEM_SGS_wk, nod_fld, fem_fst_IO, v_sol)
+     &      FEM_SGS_wk, nod_fld, fem_fst_IO, v_sol, SR_sig, SR_r)
       end if
 !
 !   Finish by elapsed time
@@ -109,7 +114,7 @@
         istep_rst = -1
         call output_MHD_restart_file                                    &
      &     (istep_rst, time_d, SGS_par, MHD_files, geofem%mesh, iphys,  &
-     &      FEM_SGS_wk, nod_fld, fem_fst_IO, v_sol)
+     &      FEM_SGS_wk, nod_fld, fem_fst_IO, v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine output_MHD_restart_file_ctl
@@ -119,7 +124,8 @@
 !
       subroutine output_MHD_restart_file                                &
      &         (istep_rst, time_d, SGS_par, MHD_files,                  &
-     &          mesh, iphys, FEM_SGS_wk, nod_fld, fem_fst_IO, v_sol)
+     &          mesh, iphys, FEM_SGS_wk, nod_fld, fem_fst_IO,           &
+     &          v_sol, SR_sig, SR_r)
 !
       use m_fem_mhd_restart
       use FEM_sgs_ini_model_coefs_IO
@@ -135,11 +141,14 @@
       type(phys_data), intent(inout) :: nod_fld
       type(field_IO), intent(inout) :: fem_fst_IO
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call output_restart_files                                         &
      &   (istep_rst, MHD_files%fst_file_IO, time_d,                     &
-     &    mesh%node, mesh%nod_comm, iphys, nod_fld, fem_fst_IO, v_sol)
+     &    mesh%node, mesh%nod_comm, iphys, nod_fld, fem_fst_IO,         &
+     &    v_sol, SR_sig, SR_r)
       call write_FEM_Csim_file                                          &
      &   (SGS_par%i_step_sgs_coefs, istep_rst, time_d,                  &
      &    MHD_files%Csim_file_IO, MHD_files%Cdiff_file_IO,              &

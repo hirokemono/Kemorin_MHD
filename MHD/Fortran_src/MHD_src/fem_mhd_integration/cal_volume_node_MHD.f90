@@ -86,7 +86,6 @@
 !
 !    Construct Jacobians
 !
-      allocate(jacs%g_FEM)
       call sel_max_int_point_by_etype(mesh%ele%nnod_4_ele, jacs%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
@@ -97,14 +96,6 @@
      &    mesh%node, mesh%ele, group%surf_grp, group%infty_grp,         &
      &    spfs%spf_3d, jacs)
       call dealloc_vol_shape_func(spfs%spf_3d)
-!
-      if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
-      call alloc_surf_shape_func                                        &
-     &   (mesh%surf%nnod_4_surf, jacs%g_FEM, spfs%spf_2d)
-      call const_jacobians_surf_group(my_rank, nprocs,                  &
-     &    mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
-     &    spfs%spf_2d, jacs)
-      call dealloc_surf_shape_func(spfs%spf_2d)
 !
 !    Construct volumes
 !
@@ -168,7 +159,6 @@
       call dealloc_jacobians_element(mesh%ele, jacs)
       call finalize_FEM_integration                                     &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
-      deallocate(jacs%g_FEM)
 !
       end subroutine finalize_MHD_jac_and_volumes
 !

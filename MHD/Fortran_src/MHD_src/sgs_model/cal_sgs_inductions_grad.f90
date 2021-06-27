@@ -8,12 +8,13 @@
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, conduct,     &
 !!     &          cd_prop, iphys_ele_base, ele_fld, jacs, rhs_tbl,      &
 !!     &          FEM_elen, sgs_coefs, mlump_cd, fem_wk, mhd_fem_wk,    &
-!!     &          f_l, nod_fld, v_sol)
+!!     &          f_l, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_sgs_induct_t_grad_no_coef                        &
 !!     &         (i_filter, i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,  &
 !!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elen,     &
-!!     &          mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld, v_sol)
+!!     &          mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld,           &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -33,6 +34,8 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_sgs_inductions_grad
 !
@@ -52,6 +55,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -66,7 +70,7 @@
      &          FEM_prm, SGS_param, nod_comm, node, ele, conduct,       &
      &          cd_prop, iphys_ele_base, ele_fld, jacs, rhs_tbl,        &
      &          FEM_elen, sgs_coefs, mlump_cd, fem_wk, mhd_fem_wk,      &
-     &          f_l, nod_fld, v_sol)
+     &          f_l, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_sgs_induct_t
       use cal_ff_smp_to_ffs
@@ -99,6 +103,8 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !  ----------  clear the vector and lumped mass matrix
 !
@@ -123,7 +129,8 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld,                   &
+     &                      v_sol, SR_sig, SR_r)
 !
       end subroutine cal_sgs_induct_t_grad_w_coef
 !
@@ -133,7 +140,8 @@
      &         (i_filter, i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,    &
      &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elen,       &
-     &          mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld, v_sol)
+     &          mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld,             &
+     &          v_sol, SR_sig, SR_r)
 !
       use int_vol_sgs_induct_t
       use cal_ff_smp_to_ffs
@@ -163,6 +171,8 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !  ----------  clear the vector and lumped mass matrix
 !
@@ -181,7 +191,8 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld,                   &
+     &                      v_sol, SR_sig, SR_r)
 !
       end subroutine cal_sgs_induct_t_grad_no_coef
 !

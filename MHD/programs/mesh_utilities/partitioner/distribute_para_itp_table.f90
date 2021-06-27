@@ -10,7 +10,7 @@
       use m_interpolate_table_IO
       use distribute_itp_tbl_4_para
       use set_parallel_mesh_in_1pe
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
 !
       implicit  none
 !

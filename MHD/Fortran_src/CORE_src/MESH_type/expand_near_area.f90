@@ -127,8 +127,7 @@
       call allocate_iflag_expand(node%numnod)
 !
       call set_expand_flag(node%numnod, node%internal_node,             &
-     &    nref_neib, near_node_tbl%num_nod, iflag_expand, &
-     &    iflag_finish)
+     &    nref_neib, near_node_tbl%num_nod, iflag_expand, iflag_finish)
 !
       i = 0
       do

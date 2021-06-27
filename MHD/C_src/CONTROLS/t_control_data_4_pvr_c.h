@@ -50,7 +50,7 @@ struct pvr_ctl_c{
 	struct chara_ctl_item *monitoring_ctl;
 	struct chara_ctl_item *transparent_ctl;
 	struct chara_ctl_item *streo_ctl;
-	struct chara_ctl_item *anaglyph_ctl;
+	struct chara_ctl_item *quilt_ctl;
 	
 	struct chara_ctl_item *pvr_field_ctl;
 	struct chara_ctl_item *pvr_comp_ctl;

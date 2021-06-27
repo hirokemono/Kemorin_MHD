@@ -1,9 +1,9 @@
 begin rayleigh_visualizer
   begin data_files_def
-    num_subdomain_ctl           2
-    num_smp_ctl                 4
+    num_subdomain_ctl           4
+    num_smp_ctl                 2
 !
-    rayleigh_field_dir             'Spherical3D/'
+    rayleigh_field_dir             'Spherical_3D/'
   end data_files_def
 !
   begin phys_values_ctl

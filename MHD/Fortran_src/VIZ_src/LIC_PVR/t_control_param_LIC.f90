@@ -8,9 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine set_control_lic_parameter                            &
-!!     &         (num_nod_phys, phys_nod_name, lic_ctl, lic_p)
+!!     &         (num_nod_phys, phys_nod_name, lic_ctl,                 &
+!!     &          lic_p, flag_each_repart)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
+!!      logical function lic_mask_flag(lic_p, value)
+!!        type(lic_parameters), intent(in) :: lic_p
+!!        real(kind=kreal), intent(in) :: value(:)
 !!      subroutine dealloc_lic_noise_data(lic_p)
 !!      subroutine dealloc_lic_masking_ranges(lic_p)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
@@ -25,10 +29,11 @@
       use m_error_IDs
       use skip_comment_f
       use t_control_params_4_pvr
-      use t_control_param_LIC_masking
+      use t_ctl_param_masking
       use t_noise_node_data
       use t_3d_noise
       use t_LIC_kernel
+      use t_control_param_vol_grping
 !
       implicit  none
 !
@@ -47,8 +52,10 @@
 !>        Number of masking field
         integer(kind = kint) :: num_masking =   0
 !>        Structure of masking parameter
-        type(lic_masking_parameter), allocatable :: masking(:)
+        type(masking_parameter), allocatable :: masking(:)
 !
+!>        Structure for repartitioning parameters
+        type(volume_partioning_param) :: each_part_p
 !
 !>        Structure of noise on cube
         type(noise_cube) :: noise_t
@@ -98,20 +105,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_lic_parameter                              &
-     &         (num_nod_phys, phys_nod_name, lic_ctl, lic_p)
+     &         (num_nod_phys, phys_nod_name, lic_ctl,                   &
+     &          lic_p, flag_each_repart)
 !
       use t_control_data_LIC
       use set_field_comp_for_viz
       use set_components_flags
       use set_parallel_file_name
       use set_ucd_extensions
-      use bcast_3d_noise
+      use set_control_LIC_masking
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
       type(lic_parameter_ctl), intent(in) :: lic_ctl
       type(lic_parameters), intent(inout) :: lic_p
+      logical, intent(inout) :: flag_each_repart
 !
       integer(kind = kint) :: icheck_ncomp(1)
       integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
@@ -164,13 +173,16 @@
         lic_p%color_field%id_component =  1
       end if
 !
+      call set_ctl_param_vol_repart(lic_ctl%repart_ctl,                 &
+     &                              lic_p%each_part_p)
+      if(lic_p%each_part_p%flag_repartition) flag_each_repart = .TRUE.
 !
       lic_p%num_masking = lic_ctl%num_masking_ctl
       if(lic_p%num_masking .gt. 0) then
         allocate(lic_p%masking(lic_p%num_masking))
 !
         do i = 1, lic_p%num_masking
-          call set_control_lic_masking(num_nod_phys, phys_nod_name,     &
+          call s_set_control_LIC_masking(num_nod_phys, phys_nod_name,   &
      &        lic_ctl%mask_ctl(i), lic_p%masking(i))
         end do
       end if
@@ -185,9 +197,9 @@
         write(*,*) 'num_masking: ', lic_p%num_masking
         do i = 1, lic_p%num_masking
           write(*,*) 'LIC masking field: ',  i,                         &
-     &              lic_p%masking(i)%field_info%id_field,               &
-     &              lic_p%masking(i)%field_info%id_component,           &
-     &              trim(lic_p%masking(i)%field_info%field_name)
+     &              lic_p%masking(i)%id_mask_field,                     &
+     &              lic_p%masking(i)%id_mask_comp,                      &
+     &              trim(lic_ctl%mask_ctl(i)%field_name_ctl%charavalue)
           write(*,*) 'LIC masking range min: ',                         &
      &              lic_p%masking(i)%range_min(:)
           write(*,*) 'LIC masking range max: ',                         &
@@ -195,13 +207,10 @@
         end do
       end if
 !
-!
       if(my_rank .eq. 0) then
-        call set_control_3d_cube_noise                                  &
-     &     (lic_ctl%noise_ctl, lic_p%noise_t)
-        call sel_const_3d_cube_noise(my_rank, lic_p%noise_t)
+        call set_control_3d_cube_noise(lic_ctl%noise_ctl,               &
+     &                                 lic_p%noise_t)
       end if
-      call bcast_3d_cube_noise(lic_p%noise_t)
 !
       if(my_rank .eq. 0) then
         call set_control_LIC_kernel(lic_ctl%kernel_ctl, lic_p%kernel_t)
@@ -254,56 +263,17 @@
 !  ---------------------------------------------------------------------
 !
 !     if true, the reference value is in the mask range, so it can be visualized
-      logical function mask_flag(lic_p, value)
+      logical function lic_mask_flag(lic_p, value)
 !
       type(lic_parameters), intent(in) :: lic_p
       real(kind=kreal), intent(in) :: value(:)
 !
       integer(kind=kint) :: i,j, iFlag_inmask
 !
-      mask_flag = .true.
-      do i = 1, lic_p%num_masking
-        iFlag_inmask = izero
-        do j = 1, lic_p%masking(i)%num_range
-          if((value(i) .ge. lic_p%masking(i)%range_min(j)) .and.        &
-          &   (value(i) .le. lic_p%masking(i)%range_max(j))) then
-            iFlag_inmask = 1
-            exit
-          end if
-        end do
-        if(iFlag_inmask .eq. izero) then
-          mask_flag = .false.
-          return
-        end if
-      end do
+      lic_mask_flag                                                     &
+     &    = multi_mask_flag(lic_p%num_masking, lic_p%masking, value)
 
-      end function mask_flag
-!
-!-----------------------------------------------------------------------
-!
-      subroutine get_geometry_reference                                 &
-     &         (lic_p, mask_idx, geo_coord, ref_value)
-!
-      type(lic_parameters), intent(in) :: lic_p
-      integer(kind=kint), intent(in):: mask_idx
-      real(kind=kreal), intent(in) :: geo_coord(:)
-      real(kind=kreal), intent(inout) :: ref_value
-!
-      integer(kind=kint) :: idx
-      real(kind=kreal) :: temp
-!
-      idx = lic_p%masking(mask_idx)%comp_idx
-      if(idx .le. 3) then
-        ref_value = geo_coord(lic_p%masking(mask_idx)%comp_idx)
-      else
-        temp = geo_coord(1)**2 + geo_coord(2)**2 + geo_coord(3)**2
-        if(temp .gt. 0.001) then
-          ref_value = sqrt(temp)
-        else
-          ref_value = 0.0
-        end if
-      end if
-      end subroutine get_geometry_reference
+      end function lic_mask_flag
 !
 !-----------------------------------------------------------------------
 !
@@ -314,10 +284,10 @@
       integer(kind = kint) :: i
 !
 !
-        do i = 1, lic_p%num_masking
-          call dealloc_lic_masking_range(lic_p%masking(i))
-        end do
-        deallocate(lic_p%masking)
+      do i = 1, lic_p%num_masking
+        call dealloc_masking_range(lic_p%masking(i))
+      end do
+      deallocate(lic_p%masking)
 !
       end subroutine dealloc_lic_masking_ranges
 !

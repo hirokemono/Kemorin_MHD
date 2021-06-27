@@ -30,7 +30,7 @@ find_node_4_group.o: $(MESHDIR)/find_node_4_group.f90 m_precision.o m_constants.
 	$(F90) -c $(F90OPTFLAGS) $<
 find_selected_domain_bd.o: $(MESHDIR)/find_selected_domain_bd.f90 m_precision.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_27quad_2_8x8linear.o: $(MESHDIR)/m_27quad_2_8x8linear.f90 m_precision.o
+m_27quad_2_8x8linear.o: $(MESHDIR)/m_27quad_2_8x8linear.f90 m_precision.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_connect_hexa_2_tetra.o: $(MESHDIR)/m_connect_hexa_2_tetra.f90 m_precision.o m_27quad_2_8x8linear.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -71,8 +71,6 @@ set_element_list_4_surface.o: $(MESHDIR)/set_element_list_4_surface.f90 m_precis
 set_element_position.o: $(MESHDIR)/set_element_position.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_field_on_edge.o: $(MESHDIR)/set_field_on_edge.f90 m_precision.o m_constants.o m_machine_parameter.o
-	$(F90) -c $(F90OPTFLAGS) $<
-set_geometry_4_quad27.o: $(MESHDIR)/set_geometry_4_quad27.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_geometry_graph.o: $(MESHDIR)/set_geometry_graph.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

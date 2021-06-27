@@ -22,6 +22,7 @@
       use t_work_const_itp_table
       use t_search_block_4_itp
       use t_ctl_params_4_gen_table
+      use t_mesh_SR
 !
       implicit none
 !
@@ -38,6 +39,8 @@
       type(para_block_4_interpolate) :: itp_blks1
       type(work_const_itp_table), save :: cst_itp_wk1
 !
+      type(mesh_SR), save :: m_SR7
+!
       character(len=kchara), parameter, private :: work_header = 'work'
 !
 ! ----------------------------------------------------------------------
@@ -51,6 +54,7 @@
       use t_shape_functions
 !
       use const_mesh_information
+      use parallel_edge_information
       use set_table_4_RHS_assemble
       use set_2nd_geometry_4_table
       use const_jacobians_3d
@@ -77,9 +81,19 @@
       call mpi_input_mesh(gen_itp_p1%itp_dest_mesh_file,                &
      &    nprocs, org_femmesh)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos                                             &
+      if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos                                          &
      &   (my_rank, org_femmesh%mesh, org_femmesh%group)
+      if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
+      call const_surface_infos                                          &
+     &   (my_rank, org_femmesh%mesh%node, org_femmesh%mesh%ele,         &
+     &    org_femmesh%group%surf_grp, org_femmesh%mesh%surf,            &
+     &    org_femmesh%group%surf_nod_grp)
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos(org_femmesh%mesh%nod_comm,             &
+     &    org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
+     &    org_femmesh%mesh%surf, org_femmesh%mesh%edge,                 &
+     &    m_SR7%SR_sig, m_SR7%SR_i)
 !
 !     ----- construct mesh informations for original mesh
 !
@@ -114,7 +128,7 @@
       use const_interpolate_4_org
       use order_dest_table_by_domain
       use order_dest_table_by_type
-      use itp_table_IO_select_4_zlib
+      use itp_work_file_IO_select
       use copy_interpolate_types
       use delete_data_files
 !
@@ -153,6 +167,7 @@
       tmp_tbl_IO%file_prefix = work_header
       call sel_write_itp_coefs_dest                                     &
      &   (my_rank, tmp_tbl_IO, IO_itp_dest1, IO_itp_c_dest)
+      call dealloc_itp_dest_after_write(IO_itp_dest1, IO_itp_c_dest)
 !
 !   construct table for originate domain
 !

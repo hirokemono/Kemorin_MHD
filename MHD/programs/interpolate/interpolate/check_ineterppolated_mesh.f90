@@ -48,7 +48,8 @@
           end if
 !
           do inod = 1, dest_node%numnod
-            iflag = inod_global_itp(inod) - dest_node%inod_global(inod)
+            iflag = int(inod_global_itp(inod)                           &
+     &                  - dest_node%inod_global(inod))
             rflag                                                       &
      &         = sqrt((xx_interpolate(inod,1)-dest_node%xx(inod,1))**2  &
      &              + (xx_interpolate(inod,2)-dest_node%xx(inod,2))**2  &

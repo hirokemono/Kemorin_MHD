@@ -7,20 +7,24 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_back_trans                              &
-!!     &         (MHD_files, SPH_model, SPH_SGS, SPH_MHD, SPH_WK)
+!!      subroutine SPH_init_sph_back_trans(MHD_files, SPH_model,        &
+!!     &          SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_SGS_structure)< intent(inout) ::  SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
-!!      subroutine SPH_analyze_back_trans                               &
-!!     &         (i_step, MHD_files, SPH_SGS, MHD_step, SPH_MHD, SPH_WK)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!      subroutine SPH_analyze_back_trans(i_step, MHD_files,            &
+!!     &          SPH_SGS, MHD_step, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_SGS_structure), intent(in) ::  SPH_SGS
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module SPH_analyzer_back_trans
@@ -39,6 +43,7 @@
       use t_control_parameter
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
+      use t_solver_SR
 !
       implicit none
 !
@@ -50,8 +55,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_back_trans                                &
-     &         (MHD_files, SPH_model, SPH_SGS, SPH_MHD, SPH_WK)
+      subroutine SPH_init_sph_back_trans(MHD_files, SPH_model,          &
+     &          SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !
       use m_constants
       use calypso_mpi
@@ -83,6 +88,8 @@
       type(SPH_SGS_structure), intent(inout) ::  SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !   Allocate spectr field data
 !
@@ -100,8 +107,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_back_transform'
-      call init_sph_back_transform                                      &
-     &   (SPH_model, SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
+      call init_sph_back_transform(SPH_model, SPH_WK%trans_p,           &
+     &    SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
 !
 ! ---------------------------------
 !
@@ -117,8 +124,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_back_trans                                 &
-     &         (i_step, MHD_files, SPH_SGS, MHD_step, SPH_MHD, SPH_WK)
+      subroutine SPH_analyze_back_trans(i_step, MHD_files,              &
+     &          SPH_SGS, MHD_step, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !
       use t_sph_mhd_monitor_data_IO
 !
@@ -137,6 +144,8 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call read_alloc_sph_spectr(i_step, MHD_step%ucd_step,             &
@@ -151,8 +160,8 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform                                       &
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%trans_p,                   &
-     &    SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD,                         &
-     &    SPH_WK%trns_WK%WK_leg, SPH_WK%trns_WK%WK_FFTs)
+     &    SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD, SPH_WK%trns_WK%WK_leg,  &
+     &    SPH_WK%trns_WK%WK_FFTs, SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  lead energy data --------------

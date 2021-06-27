@@ -19,23 +19,26 @@
       use m_machine_parameter
       use m_work_time
       use m_elapsed_labels_4_REPART
+      use m_work_time_4_sleeve_extend
       use calypso_mpi
 !
       use t_mesh_data
       use t_calypso_comm_table
       use t_control_param_repartition
       use t_vector_for_solver
+      use t_mesh_SR
 !
       implicit none
 !
-      character(len=kchara), parameter                                          &
+      character(len=kchara), parameter                                  &
      &     :: repart_test_name = 'repart_check.dat'
 !
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
+      type(mesh_SR), save :: m_SR_T
 !
-      type(calypso_comm_table), save :: org_to_new_tbl
+      type(calypso_comm_table), save :: repart_nod_tbl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,7 +60,6 @@
       use set_table_4_RHS_assemble
       use int_volume_of_single_domain
       use field_to_new_partition
-      use parallel_sleeve_extension
 !
 !>     Stracture for Jacobians
 !
@@ -82,7 +84,8 @@
 !
 !  -------------------------------
 !
-      call init_nod_send_recv(fem_T%mesh)
+      call init_nod_send_recv(fem_T%mesh,                               &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
       if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
 !  -------------------------------
@@ -104,14 +107,16 @@
       use m_file_format_switch
       use parallel_itp_tbl_IO_select
       use copy_repart_and_itp_table
+      use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables
+      use const_surface_comm_table
       use check_data_for_repartition
       use mesh_send_recv_check
       use write_diff_4_comm_test
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
 !
-      type(interpolate_table) :: itp_tbl_IO2
+      type(interpolate_table) :: itp_nod_tbl_IO
 !
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
@@ -126,44 +131,48 @@
       integer(kind = kint) :: i, ierr
 !
 !
-      call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_p1%repart_p%trans_tbl_file, itp_tbl_IO2, ierr)
+      call sel_mpi_read_interpolate_table                               &
+     &   (my_rank, nprocs, part_p1%repart_p%trans_tbl_file,             &
+     &    itp_nod_tbl_IO, ierr)
 !
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &
-     &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, org_to_new_tbl)
+     &    fem_T%mesh, new_fem%mesh, itp_nod_tbl_IO, repart_nod_tbl1)
+      call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
       call calypso_MPI_barrier
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(new_fem%mesh, new_fem%group)
+      call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
+!
       if(iflag_debug.gt.0) write(*,*) ' const_ele_comm_table'
-      call const_ele_comm_table                                         &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_ele_comm, new_fem%mesh%ele)
+      call const_global_numele_list(new_fem%mesh%ele)
+      call const_ele_comm_table(new_fem%mesh%node,                      &
+     &    new_fem%mesh%nod_comm, new_fem%mesh%ele, T_ele_comm, m_SR_T)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_surf_comm_table'
       call const_surf_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_surf_comm, new_fem%mesh%surf)
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_surf_comm,        &
+     &    new_fem%mesh%surf, m_SR_T)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_edge_comm_table'
       call const_edge_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_edge_comm, new_fem%mesh%edge)
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_edge_comm,        &
+     &    new_fem%mesh%edge, m_SR_T)
 !
 !
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
-      call node_transfer_test                                           &
-     &   (fem_T%mesh%node, new_fem%mesh%node,  new_fem%mesh%nod_comm,   &
-     &    org_to_new_tbl, nod_check)
+      call node_transfer_test(fem_T%mesh%node, new_fem%mesh%node,       &
+     &    new_fem%mesh%nod_comm, repart_nod_tbl1, nod_check,            &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
 !
-      call ele_send_recv_test(new_fem%mesh%node, new_fem%mesh%ele,      &
-     &    T_ele_comm, ele_check)
-      call surf_send_recv_test(new_fem%mesh%node, new_fem%mesh%surf,    &
-     &    T_surf_comm, surf_check)
-      call edge_send_recv_test(new_fem%mesh%node, new_fem%mesh%edge,    &
-     &    T_edge_comm, edge_check)
+      call ele_send_recv_test(new_fem%mesh%ele, T_ele_comm,             &
+     &                        ele_check, m_SR_T%SR_sig, m_SR_T%SR_r)
+      call surf_send_recv_test(new_fem%mesh%surf, T_surf_comm,          &
+     &                         surf_check, m_SR_T%SR_sig, m_SR_T%SR_r)
+      call edge_send_recv_test(new_fem%mesh%edge, T_edge_comm,          &
+     &                         edge_check, m_SR_T%SR_sig, m_SR_T%SR_r)
 !
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)

@@ -1,16 +1,23 @@
+!>@file   send_recv_3d_filtering.f90
+!!@brief  module send_recv_3d_filtering
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2005
+!!      Modified in July, 2008
 !
-!      module send_recv_3d_filtering
-!
-!      Written by H. Matsui on July, 2005
-!      Written by H. Matsui on Apr., 2008
-!
-!!      subroutine scalar_send_recv_3d_filter                           &
-!!     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
-!!      subroutine vector_send_recv_3d_filter                           &
-!!     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
-!!      subroutine tensor_send_recv_3d_filter                           &
-!!     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
+!>@brief  Communication of apatial filetering for each field
+!!
+!!@verbatim
+!!      subroutine scalar_send_recv_3d_filter(nod_comm, nnod, x_vec,    &
+!!     &          ncomp_nod, i_fld, d_nod, SR_sig, SR_r)
+!!      subroutine vector_send_recv_3d_filter(nod_comm, nnod, x_vec,    &
+!!     &          ncomp_nod, i_fld, d_nod, SR_sig, SR_r)
+!!      subroutine tensor_send_recv_3d_filter(nod_comm, nnod, x_vec,    &
+!!     &          ncomp_nod, i_fld, d_nod, SR_sig, SR_r)
 !!        type(communication_table), intent(in) :: nod_comm
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module send_recv_3d_filtering
 !
@@ -19,6 +26,7 @@
       use calypso_mpi
 !
       use t_comm_table
+      use t_solver_SR
 !
       implicit none
 !
@@ -28,20 +36,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine scalar_send_recv_3d_filter                             &
-     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
+      subroutine scalar_send_recv_3d_filter(nod_comm, nnod, x_vec,      &
+     &          ncomp_nod, i_fld, d_nod, SR_sig, SR_r)
 !
       use solver_SR_type
 !
       type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: nnod, ncomp_nod, i_fld
+!
       real(kind = kreal), intent(inout) :: x_vec(nnod)
       real(kind = kreal), intent(inout) :: d_nod(nnod, ncomp_nod)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
 !
-      call SOLVER_SEND_RECV_type(nnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_type(nnod, nod_comm,                        &
+     &                           SR_sig, SR_r, x_vec(1))
 !
 !$omp parallel do
       do inod=1, nnod
@@ -53,20 +65,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine vector_send_recv_3d_filter                             &
-     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
+      subroutine vector_send_recv_3d_filter(nod_comm, nnod, x_vec,      &
+     &          ncomp_nod, i_fld, d_nod, SR_sig, SR_r)
 !
       use solver_SR_type
 !
       type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: nnod, ncomp_nod, i_fld
+!
       real(kind = kreal), intent(inout) :: x_vec(3*nnod)
       real(kind = kreal), intent(inout) :: d_nod(nnod,ncomp_nod)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
 !
-      call SOLVER_SEND_RECV_3_type(nnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_3_type(nnod, nod_comm,                      &
+     &                             SR_sig, SR_r, x_vec(1))
 !
 !$omp parallel do
       do inod=1, nnod
@@ -80,20 +96,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine tensor_send_recv_3d_filter                             &
-     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
+      subroutine tensor_send_recv_3d_filter(nod_comm, nnod, x_vec,      &
+     &          ncomp_nod, i_fld, d_nod, SR_sig, SR_r)
 !
       use solver_SR_type
 !
       type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: nnod, ncomp_nod, i_fld
+!
       real(kind = kreal), intent(inout) :: x_vec(6*nnod)
       real(kind = kreal), intent(inout) :: d_nod(nnod,ncomp_nod)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
 !
-      call SOLVER_SEND_RECV_6_type(nnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_6_type(nnod, nod_comm,                      &
+     &                             SR_sig, SR_r, x_vec(1))
 !
 !$omp parallel do
       do inod =1, nnod

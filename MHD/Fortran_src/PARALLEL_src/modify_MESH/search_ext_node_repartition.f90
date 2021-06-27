@@ -9,13 +9,15 @@
 !!@verbatim
 !!      subroutine s_search_ext_node_repartition                        &
 !!     &         (ele, ele_tbl, element_ids, ie_newdomain,              &
-!!     &          new_comm, new_node, new_ele)
+!!     &          new_comm, new_node, new_ele, SR_sig, SR_i)
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(in) :: new_node
 !!        type(node_ele_double_number), intent(in) :: element_ids
 !!        type(element_data), intent(inout) :: new_ele
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module search_ext_node_repartition
@@ -29,6 +31,8 @@
       use t_geometry_data
       use t_comm_table
       use t_calypso_comm_table
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
@@ -40,7 +44,7 @@
 !
       subroutine s_search_ext_node_repartition                          &
      &         (ele, ele_tbl, element_ids, ie_newdomain,                &
-     &          new_comm, new_node, new_ele)
+     &          new_comm, new_node, new_ele, SR_sig, SR_i)
 !
       use t_para_double_numbering
       use t_repart_double_numberings
@@ -59,6 +63,8 @@
      &              :: ie_newdomain(ele%numele,ele%nnod_4_ele)
 !
       type(element_data), intent(inout) :: new_ele
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint), allocatable :: inod_recv(:)
       integer(kind = kint), allocatable :: icount_node(:)
@@ -80,7 +86,7 @@
       do k1 = 1, ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
-     &      i4_recv(1))
+     &      i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
         ie_domain_recv(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
 !$omp end parallel workshare
@@ -91,14 +97,14 @@
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, element_ids%index(1),        &
-     &    i4_recv(1))
+     &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
       iele_org_local(1:new_ele%numele) = i4_recv(1:new_ele%numele)
 !$omp end parallel workshare
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, element_ids%irank(1),        &
-     &    i4_recv(1))
+     &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
       iele_org_domain(1:new_ele%numele) = i4_recv(1:new_ele%numele)
 !$omp end parallel workshare
@@ -112,7 +118,7 @@
       end do
 !$omp end parallel do
       call SOLVER_SEND_RECV_int_type                                    &
-     &  (new_node%numnod, new_comm, inod_recv)
+     &  (new_node%numnod, new_comm, SR_sig, SR_i, inod_recv)
 !
       allocate(item_import_recv(new_comm%ntot_import))
 !$omp parallel do private(jnum,jnod)

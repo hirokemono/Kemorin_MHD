@@ -104,10 +104,7 @@
      &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
      &            fln_tce%num_current_fline(my_rank+1)
         do inum = ist, ied
-          call s_extend_field_line                                      &
-     &       (node%numnod, ele%numele, surf%numsurf,                    &
-     &        surf%nnod_4_surf, node%xx, surf%ie_surf, surf%isf_4_ele,  &
-     &        surf%iele_4_surf, surf%interior_surf, surf%vnorm_surf,    &
+          call s_extend_field_line(node, ele, surf,                     &
      &        fln_prm%max_line_stepping,                                &
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%iflag_fline(inum),                                &
@@ -130,7 +127,7 @@
         do ip = 1, nprocs
           src_rank = int(ip - 1)
           ist = fln_tce%istack_current_fline(ip-1)
-          num64 = 7 * fln_tce%num_current_fline(ip)
+          num64 = 9 * fln_tce%num_current_fline(ip)
           if(num64 .gt. 0) then
             call calypso_mpi_bcast_int                                  &
      &         (fln_tce%id_fline_export(1,ist+1), num64, src_rank)
@@ -218,13 +215,13 @@
         fln_tce%id_fline_export(5,i) = isf
         fln_tce%id_fline_export(6,i) = int(inod_global(inod))
 !
-        fln_tce%fline_export(1:3,i) = fln_tce%xx_fline_start(1:3,i)
-        fln_tce%fline_export(4:6,i) = fln_tce%v_fline_start(1:3,i)
-        fln_tce%fline_export(7,i) = fln_tce%c_fline_start(i)
+        fln_tce%fline_export(1:4,i) = fln_tce%xx_fline_start(1:4,i)
+        fln_tce%fline_export(5:8,i) = fln_tce%v_fline_start(1:4,i)
+        fln_tce%fline_export(9,i) = fln_tce%c_fline_start(i)
       else
         fln_tce%id_fline_export(1,i) =   -ione
         fln_tce%id_fline_export(2:7,i) = izero
-        fln_tce%fline_export(1:7,i) =     zero
+        fln_tce%fline_export(1:9,i) =     zero
       end if
 !
       end subroutine set_fline_start_2_bcast
@@ -343,10 +340,10 @@
           fln_tce%isf_fline_start(1:3,icou)                             &
      &         = fln_tce%id_fline_export(4:6,i)
 !
-          fln_tce%xx_fline_start(1:3,icou)                              &
-     &         = fln_tce%fline_export(1:3,i)
-          fln_tce%v_fline_start(1:3,icou) = fln_tce%fline_export(4:6,i)
-          fln_tce%c_fline_start(icou) = fln_tce%fline_export(7,i)
+          fln_tce%xx_fline_start(1:4,icou)                              &
+     &         = fln_tce%fline_export(1:4,i)
+          fln_tce%v_fline_start(1:4,icou) = fln_tce%fline_export(5:8,i)
+          fln_tce%c_fline_start(icou) = fln_tce%fline_export(9,i)
         end if
       end do
 !

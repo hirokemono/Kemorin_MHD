@@ -7,8 +7,41 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
+!!      subroutine link_repart_masking_data(flag_mask, flag_sleeve_wk,  &
+!!     &          node, nmax_mask_org, d_mask_org, vect_ref_ext,        &
+!!     &          repart_WK)
+!!      subroutine unlink_repart_masking_data(repart_WK)
+!!        logical, intent(in) :: flag_mask, flag_sleeve_wk
+!!        integer(kind = kint), intent(in) :: nmax_mask_org
+!!        type(node_data), intent(in) :: node
+!!        real(kind = kreal), intent(in), target                        &
+!!       &                    :: vect_ref_ext(node%numnod,3)
+!!        real(kind = kreal), intent(in), target                        &
+!!       &                    :: d_mask_org(node%numnod,nmax_mask_org)
+!!        type(volume_partioning_work), intent(inout) :: repart_WK
+!!
+!!      subroutine link_repart_masking_param(num_mask_org, masking_org, &
+!!     &                                     part_param)
+!!      subroutine unlink_repart_masking_param(part_param)
+!!        integer(kind = kint), intent(in) :: num_mask_org
+!!        type(masking_parameter), intent(in), target                   &
+!!       &                        :: masking_org(num_mask_org)
+!!        type(volume_partioning_param), intent(inout) :: part_param
+!!
+!!      subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
+!!        integer(kind = kint), intent(in) :: num_mask_org, nmax_mask_org
+!!        type(masking_parameter), intent(in), target                   &
+!!       &                    :: masking_org(num_mask_org)
+!!        type(node_data), intent(in) :: node
+!!        real(kind = kreal), intent(in), target                        &
+!!      &                        :: vect_ref_ext(node%numnod,3)
+!!        real(kind = kreal), intent(in), target                        &
+!!       &                    :: d_mask_org(node%numnod,nmax_mask_org)
+!!        type(volume_partioning_param), intent(inout) :: part_param
+!!
 !!      subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
 !!        type(viz_repartition_ctl), intent(in) :: viz_repart_c
+!!        type(FEM_sleeve_control), intent(in) :: sleeve_c
 !!        type(volume_partioning_param), intent(inout) :: part_param
 !!@endverbatim
 !
@@ -19,11 +52,21 @@
 !
       use t_file_IO_parameter
       use t_ctl_data_volume_grouping
+      use t_ctl_param_sleeve_extend
+      use t_ctl_param_masking
 !
       implicit none
 !
       character(len = kchara), parameter, private                       &
      &             :: default_newmesh_head = 'repartition_mesh'
+!
+      character(len=kchara), parameter, private                         &
+     &             :: c_VOLUME_BASED = 'VOLUME_BASED'
+      character(len=kchara), parameter, private                         &
+     &             :: c_NODE_BASED = 'NODE_BASED'
+!
+      integer(kind = kint), parameter :: i_VOLUME_BASED = 0
+      integer(kind = kint), parameter :: i_NODE_BASED =   1
 !
 !>        Structure for repartitioning parameters
       type volume_partioning_param
@@ -40,6 +83,9 @@
 !>        Data transfer table file parameters
         type(field_IO_params) :: trans_tbl_file
 !
+!>        Integer flag for re-partitioning reference
+        integer(kind = kint) :: iflag_repart_ref = 0
+!
 !>        number of subdomains for original partition
         integer(kind = kint) :: org_nprocs
 !>        number of subdomains for new partition
@@ -49,9 +95,30 @@
 !>        number of blocks in each direction for new partition
         integer(kind = kint) :: ndivide_eb(3)
 !
-!>        Sleeve size level
-        integer(kind = kint) :: num_FEM_sleeve = 1
+!>        number of maskings
+        logical :: flag_mask_repart = .FALSE.
+!>        number of maskings
+        integer(kind = kint) :: num_mask_repart
+!>        Masking data
+        type(masking_parameter), pointer :: masking_repart(:)
+!>        Weight to shrink excluded area
+        real(kind = kreal) :: shrink = 0.1d0
+!
+!>      Structure of sleeve extension parameter
+        type(sleeve_extension_param) :: sleeve_exp_p
       end type volume_partioning_param
+!
+      type volume_partioning_work
+!>        number of maskings
+        integer(kind = kint) :: nmax_mask_repart
+!>        Pointer of field to mask
+        real(kind = kreal), pointer :: d_mask(:,:)
+!>        pointer of original reference vector
+        real(kind = kreal), pointer :: ref_vect(:,:)
+!
+!>        Work area for sleeve extension
+        type(sleeve_extension_work) :: sleeve_exp_WK
+      end type volume_partioning_work
 !
       private :: set_ctl_param_vol_grping
 !
@@ -61,15 +128,98 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine link_repart_masking_data(flag_mask, flag_sleeve_wk,    &
+     &          node, nmax_mask_org, d_mask_org, vect_ref_ext,          &
+     &          repart_WK)
+!
+      use t_geometry_data
+!
+      logical, intent(in) :: flag_mask, flag_sleeve_wk
+      integer(kind = kint), intent(in) :: nmax_mask_org
+      type(node_data), intent(in) :: node
+      real(kind = kreal), intent(in), target                            &
+     &                        :: vect_ref_ext(node%numnod,3)
+      real(kind = kreal), intent(in), target                            &
+     &                        :: d_mask_org(node%numnod,nmax_mask_org)
+!
+      type(volume_partioning_work), intent(inout) :: repart_WK
+!
+!
+      if(flag_mask) then
+        repart_WK%nmax_mask_repart = nmax_mask_org
+        repart_WK%d_mask =>          d_mask_org
+      end if
+!
+      if(associated(repart_WK%ref_vect))  nullify(repart_WK%ref_vect)
+      if(flag_sleeve_wk) repart_WK%ref_vect => vect_ref_ext
+!
+      end subroutine link_repart_masking_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine unlink_repart_masking_data(repart_WK)
+!
+      type(volume_partioning_work), intent(inout) :: repart_WK
+!
+!
+      if(associated(repart_WK%ref_vect))  nullify(repart_WK%ref_vect)
+!
+      if(associated(repart_WK%d_mask)) then
+        repart_WK%nmax_mask_repart = 0
+        nullify(repart_WK%d_mask)
+      end if
+!
+      end subroutine unlink_repart_masking_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine link_repart_masking_param(num_mask_org, masking_org,   &
+     &                                     part_param)
+!
+      use t_geometry_data
+!
+      integer(kind = kint), intent(in) :: num_mask_org
+      type(masking_parameter), intent(in), target                       &
+     &                        :: masking_org(num_mask_org)
+!
+      type(volume_partioning_param), intent(inout) :: part_param
+!
+      part_param%num_mask_repart = 0
+      if(part_param%flag_mask_repart) then
+        part_param%num_mask_repart = num_mask_org
+      end if
+!
+      if(part_param%num_mask_repart .le. 0) return
+      part_param%masking_repart => masking_org
+!
+      end subroutine link_repart_masking_param
+!
+!   --------------------------------------------------------------------
+!
+      subroutine unlink_repart_masking_param(part_param)
+!
+      type(volume_partioning_param), intent(inout) :: part_param
+!
+      if(associated(part_param%masking_repart) .EQV. .FALSE.) return
+!
+      nullify(part_param%masking_repart)
+      part_param%num_mask_repart = 0
+!
+      end subroutine unlink_repart_masking_param
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
       subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
 !
-      use t_ctl_data_volume_repart
       use m_machine_parameter
       use m_file_format_switch
+      use t_ctl_data_volume_repart
+      use t_ctl_data_FEM_sleeve_size
       use set_control_platform_item
       use set_control_platform_data
       use set_ctl_parallel_platform
@@ -77,6 +227,8 @@
 !
       type(viz_repartition_ctl), intent(in) :: viz_repart_c
       type(volume_partioning_param), intent(inout) :: part_param
+!
+      integer(kind = kint) :: ierr
 !
 !
       call check_control_num_domains(viz_repart_c%viz_plt)
@@ -110,6 +262,9 @@
         call calypso_MPI_abort(ierr_P_MPI, e_message)
       end if
 !
+      call set_ctl_param_sleeve_extension                               &
+     &   (viz_repart_c%Fsleeve_ctl, part_param%sleeve_exp_p, ierr)
+!
       end subroutine set_ctl_param_vol_repart
 !
 !  ---------------------------------------------------------------------
@@ -124,6 +279,7 @@
       type(new_patition_control), intent(in) :: new_part_ctl
       type(volume_partioning_param), intent(inout) :: part_param
 !
+      character(len = kchara) :: tmpchara
 !
       if(new_part_ctl%repart_table_head_ctl%iflag .le. 0) then
         part_param%trans_tbl_file%iflag_format = id_no_file
@@ -134,10 +290,26 @@
      &      part_param%trans_tbl_file)
       end if
 !
-      part_param%num_FEM_sleeve = 1
-      if(new_part_ctl%sleeve_level_ctl%iflag .gt. 0) then
-        part_param%num_FEM_sleeve                                       &
-     &      = max(new_part_ctl%sleeve_level_ctl%intvalue, 1)
+      part_param%iflag_repart_ref = i_VOLUME_BASED
+      if(new_part_ctl%partition_reference_ctl%iflag .gt. 0) then
+        tmpchara = new_part_ctl%partition_reference_ctl%charavalue
+        if(cmp_no_case(tmpchara,c_NODE_BASED)) then
+          part_param%iflag_repart_ref = i_NODE_BASED
+        end if
+      end if
+!
+      part_param%num_mask_repart = 0
+      part_param%flag_mask_repart = .FALSE.
+      if(new_part_ctl%masking_switch_ctl%iflag .gt. 0) then
+        tmpchara = new_part_ctl%masking_switch_ctl%charavalue
+        if(yes_flag(tmpchara)) then
+          part_param%flag_mask_repart = .TRUE.
+        end if
+      end if
+!
+      part_param%shrink = 0.1d0
+      if(new_part_ctl%masking_weight_ctl%iflag .gt. 0) then
+        part_param%shrink = new_part_ctl%masking_weight_ctl%realvalue
       end if
 !
       part_param%new_nprocs = nprocs

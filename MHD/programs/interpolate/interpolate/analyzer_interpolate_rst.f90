@@ -16,6 +16,7 @@
       use t_structure_4_interolation
       use t_field_data_IO
       use t_IO_step_parameter
+      use t_solver_SR
 !
       implicit none
 !
@@ -23,6 +24,9 @@
 !
       type(time_data), save :: itp_time_IO
       type(field_IO), save :: itp_fld_IO
+!
+      type(send_recv_status), save :: SR_sig7
+      type(send_recv_real_buffer), save :: SR_r7
 !
       private :: itp_fld_IO, itp_time_IO, itp_rst
 !
@@ -55,7 +59,8 @@
 !
 !     --------------------- 
 !
-      call init_nod_send_recv(itp_rst%org_fem%mesh)
+      call init_real_send_recv(itp_rst%org_fem%mesh%nod_comm,           &
+     &                         SR_sig7, SR_r7)
 !
 !     ---------------------
 !
@@ -133,7 +138,7 @@
 !
           call copy_time_step_data(itp_time_IO, itp_rst%t_ITP%init_d)
           call nod_fields_send_recv(itp_rst%org_fem%mesh,               &
-     &                              itp_rst%org_fld, itp_rst%v_1st_sol)
+     &        itp_rst%org_fld, itp_rst%v_1st_sol, SR_sig7, SR_r7)
         end if
 !
         call calypso_mpi_bcast_one_real(itp_rst%t_ITP%init_d%time, 0)
@@ -145,7 +150,7 @@
      &     (itp_rst%org_fem%mesh%node, itp_rst%org_fld,                 &
      &      itp_rst%new_fem%mesh%nod_comm, itp_rst%itp_tbl,             &
      &      itp_rst%new_fem%mesh%node, itp_rst%new_fld,                 &
-     &      itp_rst%v_1st_sol, itp_rst%v_2nd_sol)
+     &      itp_rst%v_1st_sol, itp_rst%v_2nd_sol, SR_sig7, SR_r7)
 !
         if (my_rank .lt. itp_rst%gen_itp_p%ndomain_dest) then
           call copy_time_step_size_data(itp_rst%t_ITP%init_d,           &

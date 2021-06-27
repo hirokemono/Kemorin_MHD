@@ -12,13 +12,14 @@
 !!      subroutine const_comm_table_by_connenct_old                     &
 !!     &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,    &
 !!     &          node, nod_comm, neib_e, x_ref_ele, host,              &
-!!     &          e_comm, fail_tbl)
+!!     &          e_comm, fail_tbl, SR_sig)
 !!        type(node_data), intent(in) :: node
 !!        type(element_around_node), intent(in) :: host
 !!        type(element_around_node), intent(in) :: neib_e
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: e_comm
 !!        type(failed_table), intent(inout) :: fail_tbl
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !!
       module const_element_comm_table
@@ -26,13 +27,14 @@
       use m_precision
       use m_constants
       use calypso_mpi
-      use m_solver_SR
-      use m_work_time
 !
       use t_geometry_data
       use t_comm_table
       use t_belonged_element_4_node
       use t_failed_export_list
+      use t_mesh_SR
+      use t_solver_SR
+      use m_work_time
 !
       implicit none
 !
@@ -81,9 +83,8 @@
       subroutine const_comm_table_by_connenct_old                       &
      &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
      &          node, nod_comm, neib_e, x_ref_ele, host,                &
-     &          e_comm, fail_tbl)
+     &          e_comm, fail_tbl, SR_sig)
 !
-      use m_solver_SR
       use reverse_SR_int
       use find_element_comm_table
       use const_global_element_ids
@@ -105,6 +106,7 @@
 !
       type(communication_table), intent(inout) :: e_comm
       type(failed_table), intent(inout) :: fail_tbl
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       type(work_4_ele_comm_table) :: wk_comm
 !
@@ -115,7 +117,8 @@
 !
 !      write(*,*) 'count_element_import_num_old', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+1)
-      call count_element_import_num_old(node%numnod, host%istack_4_node, &
+      call count_element_import_num_old                                 &
+     &   (node%numnod, host%istack_4_node,                              &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
@@ -128,11 +131,12 @@
 !
 !      write(*,*) 'local_node_id_reverse_SR', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+2)
-      call local_node_id_reverse_SR                                     &
-     &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
+      call local_node_id_reverse_SR(node%numnod,                        &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    SR_sig1, wk_comm%item_local, wk_comm%inod_local)
+     &    izero, wk_comm%item_local, wk_comm%inod_local)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+2)
 !
 !      write(*,*) 'set_element_import_item_old', my_rank
@@ -152,8 +156,9 @@
 !      write(*,*) 'num_items_send_recv', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+4)
       call num_items_send_recv                                          &
-     &   (e_comm%num_neib, e_comm%id_neib, e_comm%num_import, SR_sig1,  &
-     &    e_comm%num_export, e_comm%istack_export, e_comm%ntot_export)
+     &   (e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
+     &    e_comm%num_neib, e_comm%id_neib, izero, e_comm%num_export,    &
+     &    e_comm%istack_export, e_comm%ntot_export, SR_sig)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+4)
 !
       call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
@@ -195,7 +200,8 @@
 !
 !      write(*,*) 'check_element_position', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+8)
-      call check_element_position(txt, numele, x_ele, e_comm)
+      call check_element_position(txt, numele, x_ele, e_comm,           &
+     &                            SR_sig1, SR_r1)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+8)
 !
       end subroutine const_comm_table_by_connenct_old

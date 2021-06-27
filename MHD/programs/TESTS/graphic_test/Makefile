@@ -10,6 +10,7 @@ TARGET_CPSF_READ_TEST = test_read_psf_c
 TARGET_CBMP_READ_TEST = test_read_bmp
 TARGET_CPNG_READ_TEST = test_read_png
 TARGET_PNG_2_BMP_F =    test_png_2_bmp_f
+TARGET_PNG_2_QUILT =    test_png_2_quilt
 
 SOURCES = $(shell ls *.f90 *.F90)
 SRC_C = $(shell ls *.c)
@@ -36,6 +37,11 @@ OBJ_PNG_2_BMP_F = \
 write_bmp_image.o \
 png_to_bmp_f.o
 
+MOD_PNG_2_QUILT = \
+write_bmp_image.o \
+t_MPI_quilt_bitmap_IO.o \
+parallel_png_to_quilt.o
+
 #
 #  ------------------------------------------------------------------
 #
@@ -56,11 +62,15 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_PNG_2_BMP_F = $$(BUILDDIR)/$(TARGET_PNG_2_BMP_F)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_PNG_2_QUILT = $$(BUILDDIR)/$(TARGET_PNG_2_QUILT)' \
+	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo f_graphic_tests: \
-	'$$(TARGET_BMP_TEST) $$(TARGET_PNG_2_BMP_F)'  \
+	'$$(TARGET_BMP_TEST) ' \
+	'$$(TARGET_PNG_2_BMP_F)'  \
+	'$$(TARGET_PNG_2_QUILT)'  \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo c_graphic_tests: \
@@ -105,6 +115,13 @@ target_task:
 	'$$(OBJ_PNG_2_BMP_F)' \
 	'-L. $$(LIB_MESH) $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_PNG_2_QUILT)': '$$(MOD_PNG_2_QUILT)  $$(LIB_PARA_FILE) $$(LIB_SOLVER_FILE) $$(LIB_MESH_FILE) $$(LIB_KEMO_C_FILE)' \
+	 >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PNG_2_QUILT)' \
+	'$$(MOD_PNG_2_QUILT)' \
+	'-L. $$(LIB_PARA) $$(LIB_SOLVER) $$(LIB_MESH) $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -122,6 +139,8 @@ mod_list:
 	@echo  $(OBJ_CPNG_READ_TEST)    >> $(MAKENAME)
 	@echo  OBJ_PNG_2_BMP_F=  \\     >> $(MAKENAME)
 	@echo  $(OBJ_PNG_2_BMP_F)       >> $(MAKENAME)
+	@echo  MOD_PNG_2_QUILT=  \\     >> $(MAKENAME)
+	@echo  $(MOD_PNG_2_QUILT)       >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 

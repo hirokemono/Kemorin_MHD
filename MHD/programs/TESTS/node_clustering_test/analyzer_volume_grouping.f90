@@ -25,6 +25,7 @@
       use t_group_data
       use t_surface_data
       use t_edge_data
+      use t_mesh_SR
       use m_work_time
 !
       implicit none
@@ -84,8 +85,15 @@
       type(jacobians_type) :: jacobians_T
       type(shape_finctions_at_points) :: spfs_T
 !
+!>      Structure of work area for mesh communications
+      type(mesh_SR), save :: m_SR_T
+!
       type(group_data) :: part_grp
-      type(group_data) :: ext_grp
+      type(volume_partioning_work), save :: repart_WK1
+!
+      type(masking_parameter), allocatable, target :: masking1(:)
+      real(kind = kreal), allocatable :: d_mask_org1(:,:)
+      real(kind = kreal), allocatable :: vect_ref1(:,:)
 !
 !     --------------------- 
 !
@@ -113,8 +121,10 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call init_nod_send_recv(fem_T%mesh)
-      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
+      call init_nod_send_recv(fem_T%mesh,                               &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
 !  -------------------------------
@@ -123,9 +133,6 @@
       call const_jacobian_and_single_vol                                &
      &   (fem_T%mesh, fem_T%group, spfs_T, jacobians_T)
 !
-      call init_nod_send_recv(fem_T%mesh)
-      if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
-!
 !  -------------------------------
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
@@ -133,12 +140,18 @@
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
 !       Re-partitioning
-      call grouping_by_volume                                           &
-     &   (fem_T%mesh, part_prog_p1%repart_p, part_grp)
+      allocate(masking1(0))
+      allocate(d_mask_org1(fem_T%mesh%node%numnod,0))
+      allocate(vect_ref1(fem_T%mesh%node%numnod,3))
+      call link_repart_masking_data((.FALSE.), (.FALSE.),               &
+     &    fem_T%mesh%node, izero, d_mask_org1, vect_ref1, repart_WK1)
+      call grouping_by_volume(fem_T%mesh, part_prog_p1%repart_p,        &
+     &    repart_WK1, part_grp, m_SR_T%SR_sig, m_SR_T%SR_r)
+      call unlink_repart_masking_data(repart_WK1)
+      deallocate(d_mask_org1, vect_ref1, masking1)
 !
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
-!      call s_append_group_data(ext_grp, fem_T%group%nod_grp)
 !
 !       Output appended mesh
       call mpi_output_mesh(part_prog_p1%repart_p%viz_mesh_file,         &

@@ -1,33 +1,36 @@
-!MGCGnn_V_cycle.f90
-!      module MGCGnn_V_cycle
+!>@file   init_MGCGnn_V_cycle.f90
+!!@brief  module init_MGCGnn_V_cycle
+!!
+!!@author H. Matsui
+!!@date Programmed in 200?
 !
-!     Written by Kemorin
-!
-!      subroutine init_MGCGnn_V_cycle(NP, NB, PEsmpTOT,                 &
-!     &          METHOD_MG, PRECOND_MG)
-!
-!      subroutine s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,       &
-!     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
-!     &          iter_mid, iter_lowest, EPS_MG,                         &
-!     &          METHOD_MG, PRECOND_MG, IER, ntotWK_CG, W)
-!       integer(kind = kint), intent(in) :: num_MG_level
-!       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
-!       type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
-!       type(DJDS_MATRIX), intent(in) ::         mat11(0:num_MG_level)
-!       type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
-!
-!       integer(kind = kint), intent(in) :: PEsmpTOT
-!       integer(kind = kint), intent(in) :: NP, NB
-!       real(kind = kreal), intent(in), target :: B(NP)
-!
-!       real(kind = kreal), intent(inout), target :: X(NP)
-!       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
-!
-!       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-!       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
-!       real(kind = kreal), intent(in) :: EPS_MG
-!
-!       integer(kind = kint), intent(inout) :: IER
+!>@brief  top routine for MGCG for block nn matrix
+!!
+!!@verbatim
+!!      subroutine init_MGCGnn_V_cycle(NP, NB, PEsmpTOT,                &
+!!     &          METHOD_MG, PRECOND_MG)
+!!
+!!      subroutine s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,      &
+!!     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,     &
+!!     &          iter_mid, iter_lowest, EPS_MG, METHOD_MG, PRECOND_MG, &
+!!     &          IER, ntotWK_CG, W, SR_sig, SR_r)
+!!        integer(kind = kint), intent(in) :: num_MG_level
+!!        type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
+!!        type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
+!!        type(DJDS_MATRIX), intent(in) ::         mat11(0:num_MG_level)
+!!        type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
+!!        integer(kind = kint), intent(in) :: PEsmpTOT
+!!        integer(kind = kint), intent(in) :: NP, NB
+!!        real(kind = kreal), intent(in), target :: B(NP)
+!!        real(kind = kreal), intent(inout), target :: X(NP)
+!!        type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
+!!        character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
+!!        integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
+!!        real(kind = kreal), intent(in) :: EPS_MG
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        integer(kind = kint), intent(inout) :: IER
+!!@verbatim
 !
       module MGCGnn_V_cycle
 !
@@ -71,13 +74,13 @@
 !
       subroutine s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
-     &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER, ntotWK_CG, W)
+     &          iter_mid, iter_lowest, EPS_MG, METHOD_MG, PRECOND_MG,   &
+     &          IER, ntotWK_CG, W, SR_sig, SR_r)
 !
       use calypso_mpi
 !
       use m_constants
-      use m_solver_SR
+      use t_solver_SR
       use t_comm_table
       use solver_DJDSnn_struct
       use interpolate_by_module
@@ -102,6 +105,9 @@
       integer(kind = kint), intent(inout) :: IER
       real(kind = kreal), intent(inout) :: W(NB*NP*ntotWK_CG)
 !
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
       integer(kind = kint) :: NP_f, NP_c
       integer(kind = kint) :: i, iter_res, ierr
       real(kind = kreal) :: resd
@@ -125,7 +131,7 @@
      &     (iflag_import_mod, MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,    &
      &      MG_itp(i+1)%f2c%tbl_dest,  MG_itp(i+1)%f2c%mat, PEsmpTOT,   &
      &      NP_f, NP_c, NB, MG_vect(i)%b_vec,                           &
-     &      SR_sig1, SR_r1, MG_vect(i+1)%b_vec)
+     &      SR_sig, SR_r, MG_vect(i+1)%b_vec)
         MG_vect(i+1)%x_vec(1:NP_c) = zero
       end do
 !
@@ -143,14 +149,14 @@
         ierr = IER
         call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),              &
      &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%b_vec,               &
-     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_mid, iter_res)
+     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, SR_sig, SR_r,      &
+     &      ierr, EPS_MG, iter_mid, iter_res)
 !
         call interpolate_mod_N                                          &
      &     (iflag_import_mod, MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,    &
      &      MG_itp(i+1)%f2c%tbl_dest,  MG_itp(i+1)%f2c%mat, PEsmpTOT,   &
      &      NP_f, NP_c, NB, MG_vect(i)%x_vec,                           &
-     &      SR_sig1, SR_r1, MG_vect(i+1)%x_vec)
+     &      SR_sig, SR_r, MG_vect(i+1)%x_vec)
       end do
 !
 !    at the coarsest level
@@ -160,8 +166,8 @@
       ierr = IER
       call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),                &
      &      djds_tbl(i), matNN(i), NP_f, MG_vect(i)%b_vec,              &
-     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res)
+     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, SR_sig, SR_r,      &
+     &      ierr, EPS_MG, iter_lowest, iter_res)
 !
 !
       do i = num_MG_level-1, 0, -1
@@ -171,7 +177,7 @@
      &     (iflag_import_mod, MG_comm(i), MG_itp(i+1)%c2f%tbl_org,      &
      &      MG_itp(i+1)%c2f%tbl_dest,  MG_itp(i+1)%c2f%mat, PEsmpTOT,   &
      &      NP_c, NP_f, NB, MG_vect(i+1)%x_vec,                         &
-     &      SR_sig1, SR_r1, MG_vect(i)%x_vec)
+     &      SR_sig, SR_r, MG_vect(i)%x_vec)
 !
 !C calculate residual
         if(print_residual_on_each_level) Then
@@ -183,8 +189,8 @@
         ierr = IER
         call solveNN_DJDS_struct(NB, PEsmpTOT, MG_comm(i),              &
      &      djds_tbl(i), matNN(i),NP_f, MG_vect(i)%b_vec,               &
-     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res)
+     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, SR_sig, SR_r,      &
+     &      ierr, EPS_MG, iter_lowest, iter_res)
       end do
 !
       call change_order_2_solve_bxn(NP, NB, PEsmpTOT,                   &

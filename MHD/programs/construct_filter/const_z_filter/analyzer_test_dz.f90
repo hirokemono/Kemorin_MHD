@@ -19,6 +19,7 @@
       use t_crs_connect
       use t_crs_matrix
       use t_shape_functions
+      use t_solver_SR
 !
       implicit none
 !
@@ -37,6 +38,11 @@
       type(CG_poarameter), save :: CG_param_z
       type(DJDS_poarameter), save :: DJDS_param_z
       type(edge_shape_function), save :: spf_1d_z
+!
+!>      Structure of communication flags
+      type(send_recv_status), save :: SR_sig_f
+!>      Structure of communication buffer for 8-byte real
+      type(send_recv_real_buffer), save :: SR_r_f
 !
 ! ----------------------------------------------------------------------
 !
@@ -90,7 +96,8 @@
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &
      &   z_filter_mesh2%nod_comm, z_filter_mesh2%node,                  &
      &   z_filter_mesh2%ele, edge_z_filter2, spf_1d_z,                  &
-     &   jacs_z2%g_FEM, jacs_z2%jac_1d_l, tbl_crs_z, mat_crs_z)
+     &   jacs_z2%g_FEM, jacs_z2%jac_1d_l, tbl_crs_z,                    &
+     &   mat_crs_z, SR_sig_f, SR_r_f)
       call dealloc_edge_shape_func(spf_1d_z)
 !
 !C===

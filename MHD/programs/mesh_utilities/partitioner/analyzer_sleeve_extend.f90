@@ -26,11 +26,13 @@
       use t_control_data_4_part
       use t_partitioner_comm_table
       use t_ctl_param_partitioner
-      use para_const_kemoview_mesh
-      use parallel_sleeve_extension
+      use t_ctl_param_sleeve_extend
+      use t_mesh_SR
 !
-      use mpi_load_mesh_data
       use m_work_time
+      use m_work_time_4_sleeve_extend
+      use mpi_load_mesh_data
+      use para_const_kemoview_mesh
 
 !
       implicit none
@@ -38,8 +40,10 @@
       type(ctl_param_partitioner), save, private :: part_p1
       type(control_data_4_partitioner), save, private :: part_ctl1
       type(partitioner_comm_tables), save, private :: comm_part1
+      type(sleeve_extension_param), save, private :: sleeve_exp_p1
 !
       type(mesh_data), save, private :: fem_EXT
+      type(mesh_SR), save :: m_SR_E
       type(parallel_make_vierwer_mesh), save, private :: par_viexw_ex
 !
 ! ----------------------------------------------------------------------
@@ -75,7 +79,7 @@
       call bcast_part_control_data(part_ctl1)
 !
       call set_control_4_extend_sleeve                                  &
-     &   (my_rank, part_ctl1, comm_part1, part_p1)
+     &   (my_rank, part_ctl1, comm_part1, part_p1, sleeve_exp_p1)
       call dealloc_ctl_data_4_part(part_ctl1)
 !
 !  --  read geometry
@@ -86,7 +90,8 @@
 !  ------  Initialize data communication for FEM data
 !
       if (iflag_debug.gt.0 ) write(*,*) 'init_nod_send_recv'
-      call init_nod_send_recv(fem_EXT%mesh)
+      call init_nod_send_recv(fem_EXT%mesh,                             &
+     &    m_SR_E%SR_sig, m_SR_E%SR_r, m_SR_E%SR_i, m_SR_E%SR_il)
 !
       end subroutine initialize_sleeve_extend
 !
@@ -94,11 +99,24 @@
 !
       subroutine analyze_sleeve_extend
 !
-      integer(kind = kint) :: ilevel
+      use sleeve_extend
+      use nod_and_ele_derived_info
+      use const_element_comm_tables
+!
+      type(communication_table), save :: ele_comm
+      type(sleeve_extension_work), save :: sleeve_exp_WK1
 !
 !
-      call sleeve_extension_loop(part_p1%n_overlap,                     &
-     &                           fem_EXT%mesh, fem_EXT%group)
+      call set_nod_and_ele_infos(fem_EXT%mesh%node, fem_EXT%mesh%ele)
+      call const_ele_comm_table(fem_EXT%mesh%node,                      &
+     &    fem_EXT%mesh%nod_comm, fem_EXT%mesh%ele, ele_comm, m_SR_E)
+!
+      if(sleeve_exp_p1%iflag_expand_mode .eq. iflag_vector_trace) then
+        sleeve_exp_p1%iflag_expand_mode = iflag_distance
+      end if
+!
+      call sleeve_extension_current_mesh(sleeve_exp_p1, fem_EXT%mesh,   &
+     &    fem_EXT%group, ele_comm, sleeve_exp_WK1, m_SR_E)
 !
       call mpi_output_mesh                                              &
      &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)

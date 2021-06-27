@@ -15,7 +15,7 @@
 !!     &          iak_diff_base, icomp_diff_base,                       &
 !!     &          iphys_elediff_vec, iphys_elediff_fil, FEM_SGS_wk,     &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                &
-!!     &          diff_coefs, v_sol)
+!!     &          diff_coefs, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -42,6 +42,8 @@
 !!        type(phys_data), intent(inout) :: ele_fld
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module update_with_magne
@@ -70,6 +72,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -87,7 +90,7 @@
      &          iak_diff_base, icomp_diff_base,                         &
      &          iphys_elediff_vec, iphys_elediff_fil, FEM_SGS_wk,       &
      &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                  &
-     &          diff_coefs, v_sol)
+     &          diff_coefs, v_sol, SR_sig, SR_r)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -127,6 +130,8 @@
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer (kind = kint) :: iflag2
 !
@@ -169,7 +174,7 @@
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_magne, iphys_base%i_magne,                    &
-     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig, SR_r)
           nod_fld%iflag_update(iphys_fil%i_magne  ) = 1
           nod_fld%iflag_update(iphys_fil%i_magne+1) = 1
           nod_fld%iflag_update(iphys_fil%i_magne+2) = 1
@@ -195,7 +200,7 @@
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &         mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,    &
      &         iphys_wfl%i_magne, iphys_fil%i_magne,                    &
-     &         FEM_SGS_wk%wk_filter, nod_fld, v_sol)
+     &         FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig, SR_r)
           nod_fld%iflag_update(iphys_wfl%i_magne  ) = 1
           nod_fld%iflag_update(iphys_wfl%i_magne+1) = 1
           nod_fld%iflag_update(iphys_wfl%i_magne+2) = 1
@@ -218,7 +223,8 @@
      &        fem_int%m_lump, FEM_SGS_wk%wk_filter, FEM_SGS_wk%wk_cor,  &
      &        FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,                    &
      &        rhs_mat%fem_wk, rhs_mat%surf_wk,                          &
-     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs, v_sol)
+     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs,           &
+     &        v_sol, SR_sig, SR_r)
         end if
       end if
  !

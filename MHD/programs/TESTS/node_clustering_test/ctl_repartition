@@ -28,6 +28,5 @@ begin repartition_test
     group_ratio_to_domain_ctl    200
 !
     sleeve_level_ctl         2
-    element_overlap_ctl      Off
   end new_partitioning_ctl
 end  repartition_test

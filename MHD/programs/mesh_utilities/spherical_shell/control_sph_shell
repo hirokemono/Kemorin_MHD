@@ -12,9 +12,6 @@ begin MHD_control
       FEM_mesh_output_switch         'NO'
       FEM_surface_output_switch      'NO'
       FEM_viewer_mesh_output_switch  'NO'
-!
-      sleeve_level_ctl            1
-      element_overlap_ctl        Off
     end FEM_mesh_ctl
 !
     begin num_domain_ctl

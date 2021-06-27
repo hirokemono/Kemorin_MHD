@@ -15,10 +15,15 @@ begin partitioner_control
 !
   begin FEM_mesh_ctl
     memory_conservation_ctl     'NO'
-!
-    sleeve_level_ctl           2
-    element_overlap_ctl        ON
   end FEM_mesh_ctl
+!
+  begin FEM_sleeve_ctl
+!!!!         sleeve_extension_mode:
+!!!!             element_count, sleeve_length, vector_trace
+    sleeve_extension_mode        element_count
+    sleeve_level_ctl              3
+    sleeve_size_ctl               0.5
+  end FEM_sleeve_ctl
 !
 !    Example of order
 !      Conductive solid => conductive fluid

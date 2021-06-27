@@ -37,6 +37,14 @@
 !!      ....
 !!    end array LIC_rendering
 !!
+!!    array  anaglyph_volume_rendering
+!!      ....
+!!    end array anaglyph_volume_rendering
+!!
+!!    array  anaglyph_LIC_rendering
+!!      ....
+!!    end array anaglyph_LIC_rendering
+!!
 !!    delta_t_sectioning_ctl   1.0e-3
 !!    i_step_sectioning_ctl    400
 !!    delta_t_isosurface_ctl   1.0e-3
@@ -69,6 +77,7 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
+      use t_ctl_data_volume_repart
 !
       implicit  none
 !
@@ -84,6 +93,14 @@
         type(fieldline_controls) :: fline_ctls
 !>        Structures of LIC rendering controls
         type(lic_rendering_controls) :: lic_ctls
+!
+!>        Structures of volume rendering controls
+        type(volume_rendering_controls) :: pvr_anaglyph_ctls
+!>        Structures of LIC rendering controls
+        type(lic_rendering_controls) :: lic_anaglyph_ctls
+!
+!>        Structure for new partitioning controls
+        type(viz_repartition_ctl) :: repart_ctl
 !
 !>   Increment for sectioning
         type(read_integer_item) :: i_step_psf_v_ctl
@@ -132,11 +149,16 @@
       type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
+      call bcast_control_vol_repart(viz_ctls%repart_ctl)
+!
       call bcast_files_4_psf_ctl(viz_ctls%psf_ctls)
       call bcast_files_4_iso_ctl(viz_ctls%iso_ctls)
       call bcast_files_4_pvr_ctl(viz_ctls%pvr_ctls)
       call bcast_files_4_fline_ctl(viz_ctls%fline_ctls)
       call bcast_files_4_lic_ctl(viz_ctls%lic_ctls)
+!
+      call bcast_files_4_pvr_ctl(viz_ctls%pvr_anaglyph_ctls)
+      call bcast_files_4_lic_ctl(viz_ctls%lic_anaglyph_ctls)
 !
       call bcast_ctl_type_r1(viz_ctls%delta_t_psf_v_ctl)
       call bcast_ctl_type_r1(viz_ctls%delta_t_iso_v_ctl)
@@ -165,11 +187,16 @@
       type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
+      call dealloc_control_vol_repart(viz_ctls%repart_ctl)
+!
       call dealloc_psf_ctl_stract(viz_ctls%psf_ctls)
       call dealloc_iso_ctl_stract(viz_ctls%iso_ctls)
       call dealloc_pvr_ctl_struct(viz_ctls%pvr_ctls)
       call dealloc_fline_fhead_ctl(viz_ctls%fline_ctls)
       call dealloc_lic_ctl_struct(viz_ctls%lic_ctls)
+!
+      call dealloc_pvr_ctl_struct(viz_ctls%pvr_anaglyph_ctls)
+      call dealloc_lic_ctl_struct(viz_ctls%lic_anaglyph_ctls)
 !
       viz_ctls%delta_t_psf_v_ctl%iflag =   0
       viz_ctls%delta_t_iso_v_ctl%iflag =   0
@@ -220,6 +247,16 @@
       if(viz_ctls%fline_ctls%num_fline_ctl .gt. 0) then
         call add_fields_4_flines_to_fld_ctl(viz_ctls%fline_ctls,        &
      &                                      field_ctl)
+      end if
+!
+      if(viz_ctls%pvr_anaglyph_ctls%num_pvr_ctl .gt. 0) then
+        call add_fields_4_pvrs_to_fld_ctl(viz_ctls%pvr_anaglyph_ctls,   &
+     &                                    field_ctl)
+      end if
+!
+      if(viz_ctls%lic_anaglyph_ctls%num_lic_ctl .gt. 0) then
+        call add_fields_4_lics_to_fld_ctl(viz_ctls%lic_anaglyph_ctls,   &
+     &                                    field_ctl)
       end if
 !
       end subroutine add_fields_4_vizs_to_fld_ctl

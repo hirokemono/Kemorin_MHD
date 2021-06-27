@@ -1,26 +1,29 @@
+!>@file   cal_mod_vel_potential.f90
+!!@brief  module cal_mod_vel_potential
+!!
+!!@author  H.Matsui and H.Okuda
+!!@date   Programmed in July, 2000 (ver 1.1)
+!!@n      Modified in July, 2006
 !
-!      module cal_mod_vel_potential
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modified by H.Matsui on July, 2006
-!
+!>@brief obtain potentials by Poisson equation
+!!
+!!@verbatim
 !!      subroutine cal_mod_potential(FEM_prm, SGS_param, cmt_param,     &
 !!     &          node, ele, surf, fluid, sf_grp,                       &
 !!     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                    &
 !!     &          jacs, rhs_tbl, FEM_elens, iak_diff_base, diff_coefs,  &
 !!     &          Pmatrix, MG_vector, fem_wk, surf_wk,                  &
-!!     &          f_l, f_nl, nod_fld, v_sol)
+!!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_electric_potential(FEM_prm, SGS_param, cmt_param,&
 !!     &          node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,  &
 !!     &          iphys, jacs, rhs_tbl, FEM_elens, iak_diff_base,       &
 !!     &          diff_coefs, Fmatrix, MG_vector, fem_wk, surf_wk,      &
-!!     &          f_l, f_nl, nod_fld, v_sol)
+!!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_mag_potential(FEM_prm, SGS_param, cmt_param,     &
 !!     &          node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,  &
 !!     &          iphys, jacs, rhs_tbl, FEM_elens, iak_diff_base,       &
 !!     &          diff_coefs, Fmatrix, MG_vector, fem_wk, surf_wk,      &
-!!     &          f_l, f_nl, nod_fld, v_sol)
+!!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -49,6 +52,9 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_mod_vel_potential
 !
@@ -78,6 +84,7 @@
       use t_surface_bc_scalar
       use t_surface_bc_vector
       use t_surface_bc_velocity
+      use t_solver_SR
 !
       implicit none
 !
@@ -92,7 +99,7 @@
      &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                      &
      &          jacs, rhs_tbl, FEM_elens, iak_diff_base, diff_coefs,    &
      &          Pmatrix, MG_vector, fem_wk, surf_wk,                    &
-     &          f_l, f_nl, nod_fld, v_sol)
+     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -130,6 +137,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call reset_ff(n_vector, node, f_l)
@@ -187,7 +196,7 @@
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
      &    iphys%exp_work%i_p_phi, MG_vector, f_l, v_sol%b_vec,          &
-     &    v_sol%x_vec, nod_fld)
+     &    nod_fld, v_sol%x_vec, SR_sig, SR_r)
 !
       call set_boundary_scalar                                          &
      &   (Vnod_bcs%nod_bc_p, iphys%exp_work%i_p_phi, nod_fld)
@@ -200,7 +209,7 @@
      &          mesh, group, Bnod_bcs, Asf_bcs, Fsf_bcs,                &
      &          iphys, jacs, rhs_tbl, FEM_elens, iak_diff_base,         &
      &          diff_coefs, Fmatrix, MG_vector, fem_wk, surf_wk,        &
-     &          f_l, f_nl, nod_fld, v_sol)
+     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -232,6 +241,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call reset_ff(n_vector, mesh%node, f_l)
@@ -280,7 +291,7 @@
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
      &    iphys%exp_work%i_m_phi, MG_vector, f_l, v_sol%b_vec,          &
-     &    v_sol%x_vec, nod_fld)
+     &    nod_fld, v_sol%x_vec, SR_sig, SR_r)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'set_boundary_m_phi'
       call set_boundary_scalar                                          &
@@ -295,7 +306,7 @@
      &          node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,    &
      &          iphys, jacs, rhs_tbl, FEM_elens, iak_diff_base,         &
      &          diff_coefs, Fmatrix, MG_vector, fem_wk, surf_wk,        &
-     &          f_l, f_nl, nod_fld, v_sol)
+     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -330,6 +341,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call reset_ff(n_vector, node, f_l)
@@ -375,7 +388,7 @@
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
      &    iphys%exp_work%i_m_phi, MG_vector, f_l, v_sol%b_vec,          &
-     &    v_sol%x_vec, nod_fld)
+     &    nod_fld, v_sol%x_vec, SR_sig, SR_r)
 !
       call set_boundary_scalar                                          &
      &   (Bnod_bcs%nod_bc_f, iphys%exp_work%i_m_phi, nod_fld)

@@ -13,17 +13,19 @@
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!      subroutine FEM_initialize_four_vizs(init_d, ucd_step, viz_step, &
-!!     &                                    FEM_viz, pvr)
+!!     &                                    FEM_viz, pvr, m_SR)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(VIZ_mesh_field), intent(inout) :: pvr
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_analyze_four_vizs                                &
-!!     &         (istep, ucd_step, time_d, FEM_viz)
+!!     &         (istep, ucd_step, time_d, FEM_viz, m_SR)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(inout) :: time_d
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module FEM_analyzer_four_vizs
@@ -42,7 +44,7 @@
       use t_file_IO_parameter
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
-      use t_vector_for_solver
+      use t_mesh_SR
 !
       implicit none
 !
@@ -92,7 +94,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_four_vizs(init_d, ucd_step, viz_step,   &
-     &                                    FEM_viz, pvr)
+     &                                    FEM_viz, pvr, m_SR)
 !
       use t_VIZ_mesh_field
       use mpi_load_mesh_data
@@ -109,6 +111,7 @@
       type(VIZ_step_params), intent(inout) :: viz_step
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
       type(VIZ_mesh_field), intent(inout) :: pvr
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: istep_ucd, iflag
 !
@@ -119,7 +122,7 @@
       call mpi_input_mesh(FEM_viz%mesh_file_IO, nprocs, FEM_viz%geofem)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol)
+      call FEM_comm_initialization(FEM_viz%geofem%mesh, m_SR)
 !
 !     ---------------------
 !
@@ -140,10 +143,8 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      call link_FEM_field_4_viz(FEM_viz%geofem, FEM_viz%field, pvr)
-      call link_jacobians_4_viz(pvr%ele_4_nod_v, pvr%jacobians_v, pvr)
-      call normals_and_jacobians_4_VIZ(viz_step, FEM_viz%geofem,        &
-     &    pvr%surf_comm, pvr%edge_comm, pvr%ele_4_nod, pvr%jacobians)
+      if(iflag_debug.gt.0) write(*,*) 'init_FEM_to_VIZ_bridge'
+      call init_FEM_to_VIZ_bridge(viz_step, FEM_viz%geofem, pvr, m_SR)
       call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_four_vizs
@@ -152,7 +153,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_four_vizs                                  &
-     &         (istep, ucd_step, time_d, FEM_viz)
+     &         (istep, ucd_step, time_d, FEM_viz, m_SR)
 !
       use output_parallel_ucd_file
       use nod_phys_send_recv
@@ -162,6 +163,7 @@
 !
       type(time_data), intent(inout) :: time_d
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: istep_ucd
 !
@@ -172,8 +174,8 @@
       call copy_time_step_size_data(FEM_viz%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv                                         &
-     &   (FEM_viz%geofem%mesh, FEM_viz%field, FEM_viz%v_sol)
+      call nod_fields_send_recv(FEM_viz%geofem%mesh, FEM_viz%field,     &
+     &                          m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       end subroutine FEM_analyze_four_vizs
 !

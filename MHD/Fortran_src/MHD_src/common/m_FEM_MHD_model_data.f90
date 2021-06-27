@@ -22,24 +22,17 @@
       use t_VIZ_mesh_field
       use t_visualizer
       use t_control_data_vizs
-      use t_ctl_data_volume_repart
+      use t_mesh_SR
 !
       implicit  none
-!
-!>        Structures of visualization and repartitioning constrol
-      type viz_and_repartition_ctls
-!>        Structures of visualization controls
-        type(visualization_controls) :: vizs_ctl
-!>        Structure for new partitioning controls
-        type(viz_repartition_ctl) :: repart_ctl
-      end type viz_and_repartition_ctls
-!
 !
 !>      Parameters for FEM dynamo
       type(FEM_MHD_model_data), save :: FEM_model1
 !
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_data), save :: FEM_MHD1
+!>      Structure of work area for mesh communications
+      type(mesh_SR), save :: m_SR2
 !
 !>      Structure for mean square values
       type(FEM_MHD_mean_square), save :: fem_sq1
@@ -55,7 +48,7 @@
       type(work_FEM_SGS_MHD), save :: SGS_MHD_wk1
 !
 !>      Structures of visualization and repartitioning constrol
-      type(viz_and_repartition_ctls) :: vizs_rprt_c_F
+      type(visualization_controls) :: vizs_ctl_F
 !
 !>        Structures of visualization
       type(visualize_modules), save :: vizs_F

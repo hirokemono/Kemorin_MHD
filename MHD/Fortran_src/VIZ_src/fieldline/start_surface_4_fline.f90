@@ -61,7 +61,8 @@
         iele = fln_prm%id_surf_start_fline(1,i)
         isf =  fln_prm%id_surf_start_fline(2,i)
         isurf = abs(surf%isf_4_ele(iele,isf))
-        fln_src%xx_start_fline(1:3,i) =   surf%x_surf(isurf,1:3)
+        fln_src%xx4_initial_fline(1:3,i) = surf%x_surf(isurf,1:3)
+        fln_src%xx4_initial_fline(4,i) =   0.0d0
         xi(1:2) = zero
         call cal_field_on_surf_vector                                   &
      &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
@@ -109,7 +110,7 @@
           write(50+my_rank,*) 'id_surf_start_fline', i,                 &
      &                  fln_prm%id_surf_start_fline(1:2,i)
           write(50+my_rank,'(a,1p4e16.5)') 'start_point, flux',         &
-     &                  fln_src%xx_start_fline(1:3,i),                  &
+     &                  fln_src%xx4_initial_fline(1:3,i),               &
      &                  fln_src%flux_start_fline(i)
         end do
 !
@@ -118,8 +119,8 @@
         do inum = ist, ied
           write(50+my_rank,*) 'isf_fline_start', inum,                  &
      &                         fln_tce%isf_fline_start(1:3,inum)
-          write(50+my_rank,'(a,1p3e16.5)') 'start_point',               &
-     &      fln_tce%xx_fline_start(1:3,inum)
+          write(50+my_rank,'(a,1p4e16.5)') 'start_point',               &
+     &      fln_tce%xx_fline_start(1:4,inum)
         end do
       end if
 !

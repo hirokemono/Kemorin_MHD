@@ -89,10 +89,12 @@
 !!      perspective_far_ctl     1000.0
 !!    end projection_matrix_ctl
 !!
-!!    begin streo_view_parameter_ctl
+!!    begin stereo_view_parameter_ctl
 !!      focal_point_ctl           40.0
 !!      eye_separation_ctl        0.5
-!!    end streo_view_parameter_ctl
+!!      eye_separation_angle      35.0
+!!      eye_separation_step_by_angle     ON
+!!    end stereo_view_parameter_ctl
 !!
 !!  end view_transform_ctl
 !!

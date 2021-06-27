@@ -45,7 +45,7 @@ const char label_modeview_ctl[NLBL_MODELVIEW_CTL][KCHARA_C] = {
 	
 	/*[ 9]*/	{"projection_matrix_ctl"},
 	/*[10]*/	{"modelview_matrix_ctl"},
-	/*[11]*/	{"streo_view_parameter_ctl"}
+	/*[11]*/	{"stereo_view_parameter_ctl"}
 };
 
 const char label_modeview_head[KCHARA_C] = "view_transform_ctl";

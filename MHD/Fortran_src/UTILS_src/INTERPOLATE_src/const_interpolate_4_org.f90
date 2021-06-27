@@ -55,7 +55,8 @@
       use t_ctl_params_4_gen_table
       use m_interpolate_table_IO
 !
-      use itp_table_IO_select_4_zlib
+      use itp_work_file_IO_select
+      use itp_table_file_IO_select
       use copy_interpolate_types
 !
       integer, intent(in) :: nprocs_2nd
@@ -118,7 +119,7 @@
      &              tmp_tbl_IO%file_prefix
           call sel_write_interpolate_table                              &
      &       (my_rank_2nd, gen_itp_p%itp_file_IO, itp_tbl_IO_c)
-!
+          call dealloc_itp_tbl_after_write(itp_tbl_IO_c)
         end if
       end do
 !
@@ -135,7 +136,7 @@
 !
         call sel_write_interpolate_table                                &
      &     (my_rank, gen_itp_p%itp_file_IO, itp_tbl_IO_c)
-!
+        call dealloc_itp_tbl_after_write(itp_tbl_IO_c)
       end if
 !
       end subroutine const_interpolate_table_4_orgin
@@ -146,7 +147,7 @@
       subroutine count_interpolate_4_orgin                              &
      &         (id_org_rank, nprocs_dest, itp_org)
 !
-      use itp_table_IO_select_4_zlib
+      use itp_work_file_IO_select
       use set_itp_destIO_2_org
 !
       integer, intent(in) :: id_org_rank
@@ -183,7 +184,7 @@
       subroutine search_interpolate_4_orgin                             &
      &          (id_org_rank, nprocs_dest, itp_org, cst_itp_wk)
 !
-      use itp_table_IO_select_4_zlib
+      use itp_work_file_IO_select
       use set_itp_destIO_2_org
       use ordering_itp_org_tbl
 !

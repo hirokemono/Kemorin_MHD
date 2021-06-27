@@ -7,26 +7,36 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine node_dbl_numbering_to_repart                         &
-!!     &         (nod_comm, node, part_tbl, new_ids_on_org)
+!!      subroutine node_dbl_numbering_to_repart(nod_comm, node,         &
+!!     &          part_tbl, new_ids_on_org, SR_sig, SR_i)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(calypso_comm_table), intent(in) :: part_tbl
 !!        type(node_ele_double_number), intent(inout) :: new_ids_on_org
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!      subroutine ext_node_dbl_numbering_by_SR(node, ext_tbl,          &
-!!     &          new_ids_on_org, internal_node, recieved_nod_ids)
+!!     &          new_ids_on_org, internal_node, recieved_nod_ids,      &
+!!     &          SR_sig, SR_i)
 !!        type(node_data), intent(in) :: node
 !!        type(calypso_comm_table), intent(in) :: ext_tbl
 !!        type(node_ele_double_number), intent(in) :: new_ids_on_org
 !!        type(node_ele_double_number), intent(inout) :: recieved_nod_ids
-!!      subroutine double_numbering_4_element(ele, ele_comm, ele_ids)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!      subroutine double_numbering_4_element(ele, ele_comm, ele_ids,   &
+!!     &                                      SR_sig, SR_i)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(node_ele_double_number), intent(inout) :: ele_ids
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!
-!!      subroutine calypso_rev_SR_type_int                              &
-!!     &         (cps_tbl, nnod_new, nnod_org, iX_new, iX_org)
+!!      subroutine calypso_rev_SR_type_int(cps_tbl, nnod_new, nnod_org, &
+!!     &                                   iX_new, iX_org, SR_sig, SR_i)
 !!        type(calypso_comm_table), intent(in) :: cps_tbl
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module t_repart_double_numberings
@@ -41,8 +51,12 @@
       use t_geometry_data
       use t_calypso_comm_table
       use t_para_double_numbering
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
+!
+      private :: calypso_rev_SR_type_int
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,8 +64,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine node_dbl_numbering_to_repart                           &
-     &         (nod_comm, node, part_tbl, new_ids_on_org)
+      subroutine node_dbl_numbering_to_repart(nod_comm, node,           &
+     &          part_tbl, new_ids_on_org, SR_sig, SR_i)
 !
       use nod_phys_send_recv
       use reverse_SR_int
@@ -63,6 +77,8 @@
       type(calypso_comm_table), intent(in) :: part_tbl
 !
       type(node_ele_double_number), intent(inout) :: new_ids_on_org
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       type(node_ele_double_number) :: recieved_ids
       integer(kind = kint) :: inod
@@ -80,15 +96,15 @@
 !    Send localrecieved_ids into original domain new_ids_on_org
       call calypso_rev_SR_type_int                                      &
      &   (part_tbl, part_tbl%ntot_import, node%numnod,                  &
-     &    recieved_ids%index, new_ids_on_org%index)
+     &    recieved_ids%index, new_ids_on_org%index, SR_sig, SR_i)
       call calypso_rev_SR_type_int                                      &
      &   (part_tbl, part_tbl%ntot_import, node%numnod,                  &
-     &    recieved_ids%irank, new_ids_on_org%irank)
+     &    recieved_ids%irank, new_ids_on_org%irank, SR_sig, SR_i)
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, new_ids_on_org%irank)
+     &   (node%numnod, nod_comm, SR_sig, SR_i, new_ids_on_org%irank)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, new_ids_on_org%index)
+     &   (node%numnod, nod_comm, SR_sig, SR_i, new_ids_on_org%index)
       call dealloc_double_numbering(recieved_ids)
 !
       end subroutine node_dbl_numbering_to_repart
@@ -96,7 +112,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine ext_node_dbl_numbering_by_SR(node, ext_tbl,            &
-     &          new_ids_on_org, internal_node, recieved_nod_ids)
+     &          new_ids_on_org, internal_node, recieved_nod_ids,        &
+     &          SR_sig, SR_i)
 !
       use calypso_SR_type
       use select_copy_from_recv
@@ -107,6 +124,8 @@
 !
       integer(kind = kint), intent(in) :: internal_node
       type(node_ele_double_number), intent(inout) :: recieved_nod_ids
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: inod
 !
@@ -121,22 +140,25 @@
 !    Set local recieved_nod_ids in external node
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    node%numnod, ext_tbl%ntot_import, new_ids_on_org%irank,       &
-     &    recieved_nod_ids%irank(internal_node+1))
+     &    recieved_nod_ids%irank(internal_node+1), SR_sig, SR_i)
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    node%numnod, ext_tbl%ntot_import, new_ids_on_org%index,       &
-     &    recieved_nod_ids%index(internal_node+1))
+     &    recieved_nod_ids%index(internal_node+1), SR_sig, SR_i)
 !
       end subroutine ext_node_dbl_numbering_by_SR
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine double_numbering_4_element(ele, ele_comm, ele_ids)
+      subroutine double_numbering_4_element(ele, ele_comm, ele_ids,     &
+     &                                      SR_sig, SR_i)
 !
       use solver_SR_type
 !
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: ele_comm
       type(node_ele_double_number), intent(inout) :: ele_ids
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint) :: iele
 !
@@ -149,19 +171,18 @@
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (ele%numele, ele_comm, ele_ids%index)
+     &   (ele%numele, ele_comm, SR_sig, SR_i, ele_ids%index)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (ele%numele, ele_comm, ele_ids%irank)
+     &   (ele%numele, ele_comm, SR_sig, SR_i, ele_ids%irank)
 !
       end subroutine double_numbering_4_element
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine calypso_rev_SR_type_int                                &
-     &         (cps_tbl, nnod_new, nnod_org, iX_new, iX_org)
+      subroutine calypso_rev_SR_type_int(cps_tbl, nnod_new, nnod_org,   &
+     &                                   iX_new, iX_org, SR_sig, SR_i)
 !
-      use m_solver_SR
       use calypso_SR_int
       use select_copy_from_recv
 !
@@ -170,6 +191,8 @@
       integer(kind = kint), intent(in) :: iX_new(nnod_new)
 !
       integer(kind = kint), intent(inout) :: iX_org(nnod_org)
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer(kind = kint), allocatable :: irev_tmp(:)
 !
@@ -179,13 +202,11 @@
 !$omp end parallel workshare
 !
       call calypso_send_recv_int(iflag_import_item, nnod_new, nnod_org, &
-     &    cps_tbl%nrank_import, cps_tbl%iflag_self_copy,                &
-     &    cps_tbl%irank_import, cps_tbl%istack_import,                  &
-     &    cps_tbl%item_import,                                          &
-     &    cps_tbl%nrank_export, cps_tbl%iflag_self_copy,                &
+     &    cps_tbl%nrank_import, cps_tbl%irank_import,                   &
+     &    cps_tbl%istack_import, cps_tbl%item_import,                   &
+     &    cps_tbl%iflag_self_copy, cps_tbl%nrank_export,                &
      &    cps_tbl%irank_export, cps_tbl%istack_export,                  &
-     &    cps_tbl%item_export, irev_tmp,                                &
-     &    SR_sig1, SR_i1, iX_new, iX_org)
+     &    cps_tbl%item_export, irev_tmp, SR_sig, SR_i, iX_new, iX_org)
 !
       deallocate(irev_tmp)
 !

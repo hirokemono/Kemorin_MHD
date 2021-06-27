@@ -7,36 +7,20 @@
 !>@brief Data structuresa for visualizers
 !!
 !!@verbatim
-!!      subroutine normals_and_jacobians_4_VIZ                          &
-!!     &         (viz_step, geofem, surf_comm, edge_comm,               &
-!!     &          ele_4_nod, jacobians)
-!!        type(VIZ_step_params), intent(in) :: viz_step
-!!        type(mesh_data), intent(inout) :: geofem
-!!        type(communication_table), intent(inout) :: surf_comm
-!!        type(communication_table), intent(inout) :: edge_comm
-!!        type(element_around_node), intent(inout) :: ele_4_nod
-!!        type(jacobians_type), intent(inout) :: jacobians
-!!
 !!      subroutine init_FEM_to_VIZ_bridge                               &
-!!     &         (viz_step, geofem, nod_fld, VIZ_DAT)
+!!     &         (viz_step, geofem, VIZ_DAT, m_SR)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_data), intent(inout) :: geofem
-!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine init_FEM_MHD_to_VIZ_bridge                           &
-!!     &         (viz_step, next_tbl, jacobians,                        &
-!!     &          geofem, nod_fld, VIZ_DAT)
+!!     &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT, m_SR)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(next_nod_ele_table), intent(in), target :: next_tbl
 !!        type(jacobians_type), intent(in), target :: jacobians
 !!        type(mesh_data), intent(inout) :: geofem
-!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!!
-!!      subroutine s_FEM_to_VIZ_bridge(nod_fld, v_sol, VIZ_DAT)
-!!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: v_sol
-!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module FEM_to_VIZ_bridge
@@ -45,15 +29,17 @@
       use m_machine_parameter
 !
       use t_mesh_data
-      use t_phys_data
       use t_comm_table
       use t_next_node_ele_4_node
       use t_shape_functions
       use t_jacobians
       use t_VIZ_step_parameter
       use t_VIZ_mesh_field
+      use t_mesh_SR
 !
       implicit none
+!
+      private :: normals_and_jacobians_4_VIZ
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,175 +47,143 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine normals_and_jacobians_4_VIZ                            &
-     &         (viz_step, geofem, surf_comm, edge_comm,                 &
-     &          ele_4_nod, jacobians)
-!
-      use t_fem_gauss_int_coefs
-      use int_volume_of_domain
-      use set_table_4_RHS_assemble
-      use parallel_FEM_mesh_init
-      use const_element_comm_tables
-!
-      type(VIZ_step_params), intent(in) :: viz_step
-      type(mesh_data), intent(inout) :: geofem
-      type(communication_table), intent(inout) :: surf_comm
-      type(communication_table), intent(inout) :: edge_comm
-      type(element_around_node), intent(inout) :: ele_4_nod
-      type(jacobians_type), intent(inout) :: jacobians
-!
-      integer(kind = kint) :: iflag
-      type(shape_finctions_at_points) :: spfs
-!
-!
-      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
-!
-!     --------------------- init for fieldline and PVR
-!
-      iflag = viz_step%LIC_t%increment + viz_step%FLINE_t%increment
-      if(iflag .gt. 0) then
-        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-        call const_surf_comm_table                                      &
-     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      surf_comm, geofem%mesh%surf)
-      end if
-
-      iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
-      if(iflag .gt. 0) then
-        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-        call const_edge_comm_table                                      &
-     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      edge_comm, geofem%mesh%edge)
-      end if
-!
-      if(viz_step%FLINE_t%increment .gt. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
-        call set_element_on_node_in_mesh(geofem%mesh, ele_4_nod)
-      end if
-!
-      iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
-      if(iflag .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-        allocate(jacobians%g_FEM)
-!        call sel_max_int_point_by_etype                                &
-!     &     (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
-        call set_max_integration_points(ione, jacobians%g_FEM)
-        call const_jacobian_volume_normals(my_rank, nprocs,             &
-     &      geofem%mesh, geofem%group, spfs, jacobians)
-      end if
-!
-      end subroutine normals_and_jacobians_4_VIZ
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine init_FEM_to_VIZ_bridge                                 &
-     &         (viz_step, geofem, nod_fld, VIZ_DAT)
+     &         (viz_step, geofem, VIZ_DAT, m_SR)
 !
-      use field_to_new_partition
+      use m_work_time
+      use parallel_FEM_mesh_init
 !
       type(VIZ_step_params), intent(in) :: viz_step
+!
       type(mesh_data), intent(inout) :: geofem
-      type(phys_data), intent(inout) :: nod_fld
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(VIZ_DAT%repart_p%flag_repartition) then
-        call link_FEM_field_4_viz                                       &
-     &     (VIZ_DAT%geofem_v, VIZ_DAT%nod_fld_v, VIZ_DAT)
-        call load_or_const_new_partition(VIZ_DAT%repart_p,              &
-     &      geofem, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
+      call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
+     &                             m_SR%SR_sig, m_SR%SR_i)
 !
-        call init_fld_to_new_partition(VIZ_DAT%viz_fem%mesh,            &
-     &                                 nod_fld, VIZ_DAT%viz_fld)
-      else
-        call link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
-      end if
-!
+      if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_VIZ_pre'
       call link_jacobians_4_viz                                         &
-     &   (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
-      call normals_and_jacobians_4_VIZ(viz_step, VIZ_DAT%viz_fem,       &
-     &    VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,                         &
-     &    VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
+     &   (VIZ_DAT%next_tbl_v, VIZ_DAT%jacobians_v, VIZ_DAT)
+      if(iflag_debug.gt.0) write(*,*) 'normals_and_jacobians_4_VIZ'
+      call normals_and_jacobians_4_VIZ                                  &
+     &   (viz_step, geofem, VIZ_DAT%ele_comm, VIZ_DAT%edge_comm,        &
+     &    VIZ_DAT%next_tbl, VIZ_DAT%jacobians, m_SR)
 !
       end subroutine init_FEM_to_VIZ_bridge
 !
 ! ----------------------------------------------------------------------
 !
       subroutine init_FEM_MHD_to_VIZ_bridge                             &
-     &         (viz_step, next_tbl, jacobians,                          &
-     &          geofem, nod_fld, VIZ_DAT)
+     &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT, m_SR)
 !
-      use field_to_new_partition
+      use m_work_time
       use const_element_comm_tables
+      use parallel_FEM_mesh_init
+!
+      use int_volume_of_domain
+      use set_table_4_RHS_assemble
+      use parallel_FEM_mesh_init
+      use const_element_comm_tables
+      use set_normal_vectors
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(next_nod_ele_table), intent(in), target :: next_tbl
       type(jacobians_type), intent(in), target :: jacobians
 !
       type(mesh_data), intent(inout) :: geofem
-      type(phys_data), intent(inout) :: nod_fld
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: iflag
 !
 !
-      if(VIZ_DAT%repart_p%flag_repartition) then
-        call link_FEM_field_4_viz                                       &
-     &     (VIZ_DAT%geofem_v, VIZ_DAT%nod_fld_v, VIZ_DAT)
-        call load_const_new_part_FEM_MHD(VIZ_DAT%repart_p, next_tbl,    &
-     &      geofem, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
+      call link_jacobians_4_viz(next_tbl, jacobians, VIZ_DAT)
 !
-        allocate(VIZ_DAT%viz_fld)
-        call init_fld_to_new_partition(VIZ_DAT%viz_fem%mesh,            &
-     &                                 nod_fld, VIZ_DAT%viz_fld)
+!  -----  Construct Element communication table
+      if(viz_step%LIC_t%increment .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+        call const_ele_comm_table                                       &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
+     &      VIZ_DAT%ele_comm, m_SR)
+      end if
 !
-        call link_jacobians_4_viz                                       &
-     &     (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
-        call normals_and_jacobians_4_VIZ(viz_step, VIZ_DAT%viz_fem,     &
-     &      VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,                       &
-     &      VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
-      else
-        call link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
-        call link_jacobians_4_viz                                       &
-     &     (next_tbl%neib_ele, jacobians, VIZ_DAT)
-!
-        iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
-        if(iflag .gt. 0) then
-          if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-          call const_edge_comm_table                                    &
-     &       (VIZ_DAT%viz_fem%mesh%node, VIZ_DAT%viz_fem%mesh%nod_comm, &
-     &        VIZ_DAT%edge_comm, VIZ_DAT%viz_fem%mesh%edge)
-        end if
+!  -----  Construct Edge communication table
+      iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+        call const_edge_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, VIZ_DAT%edge_comm,  &
+     &      geofem%mesh%edge, m_SR)
       end if
       call calypso_mpi_barrier
 !
       end subroutine init_FEM_MHD_to_VIZ_bridge
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      subroutine s_FEM_to_VIZ_bridge(nod_fld, v_sol, VIZ_DAT)
+      subroutine normals_and_jacobians_4_VIZ(viz_step, geofem,          &
+     &          ele_comm, edge_comm, next_tbl, jacobians, m_SR)
 !
-      use m_work_time
-      use m_elapsed_labels_4_REPART
-      use field_to_new_partition
-      use select_copy_from_recv
+      use t_fem_gauss_int_coefs
+      use int_volume_of_domain
+      use set_table_4_RHS_assemble
+      use set_normal_vectors
+      use const_element_comm_tables
 !
-      type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
+      type(VIZ_step_params), intent(in) :: viz_step
+      type(mesh_data), intent(inout) :: geofem
+      type(communication_table), intent(inout) :: ele_comm
+      type(communication_table), intent(inout) :: edge_comm
+      type(next_nod_ele_table), intent(inout) :: next_tbl
+      type(jacobians_type), intent(inout) :: jacobians
+      type(mesh_SR), intent(inout) :: m_SR
+!
+      integer(kind = kint) :: iflag
+      type(shape_finctions_at_points) :: spfs
 !
 !
-      if(VIZ_DAT%repart_p%flag_repartition) then
-        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
-        call nod_field_to_new_partition(iflag_import_item,              &
-     &      VIZ_DAT%viz_fem%mesh, VIZ_DAT%mesh_to_viz_tbl,              &
-     &      nod_fld, VIZ_DAT%viz_fld, v_sol)
-        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
+!  -----  Const Neighboring information
+      iflag = viz_step%FLINE_t%increment + viz_step%LIC_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
+        call set_belonged_ele_and_next_nod                              &
+     &     (geofem%mesh, next_tbl%neib_ele, next_tbl%neib_nod)
       end if
 !
-      end subroutine s_FEM_to_VIZ_bridge
+!  -----  Construct Element communication table
+      if(viz_step%LIC_t%increment .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+        call const_ele_comm_table                                       &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
+     &      ele_comm, m_SR)
+      end if
+!
+!  -----  Construct Edge communication table
+      iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+        call const_edge_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm, edge_comm,          &
+     &      geofem%mesh%edge, m_SR)
+      end if
+!
+      iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*) 'jacobian_and_element_volume'
+!        call sel_max_int_point_by_etype                                &
+!     &     (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
+        call set_max_integration_points(ione, jacobians%g_FEM)
+        call jacobian_and_element_volume(my_rank, nprocs,               &
+     &      geofem%mesh, geofem%group, spfs, jacobians)
+        if (iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
+        call surf_jacobian_sf_grp_normal(my_rank, nprocs,               &
+     &      geofem%mesh, geofem%group, spfs, jacobians)
+      end if
+!
+      end subroutine normals_and_jacobians_4_VIZ
 !
 ! ----------------------------------------------------------------------
 !

@@ -7,26 +7,28 @@
 !>@brief  Append extended sleeve element
 !!
 !!@verbatim
-!!      subroutine s_append_extended_element(ele, add_ele_comm,         &
-!!     &          iele_gl_new_import_trim, ie_new_import_trim, new_ele)
+!!      subroutine s_append_extended_element(my_rank, ele, add_ele_comm,&
+!!     &          trimmed_import_connect, new_ele)
 !!        type(element_data), intent(in) :: ele
-!!        type(communication_table), intent(in) :: add_ele_comm
-!!        integer(kind = kint_gl), intent(in)                           &
-!!     &   :: iele_gl_new_import_trim(add_ele_comm%ntot_import)
-!!        integer(kind = kint), intent(in)                              &
-!!     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+!!        type(calypso_comm_table), intent(in) :: add_ele_comm
+!!        type(ele_data_for_sleeve_ext), intent(in)                     &
+!!     &                              :: trimmed_import_connect
 !!        type(element_data), intent(inout) :: new_ele
 !!@endverbatim
       module append_extended_element
 !
       use m_precision
-      use t_comm_table
+      use m_machine_parameter
       use t_geometry_data
+      use t_calypso_comm_table
+      use t_mesh_for_sleeve_extend
 !
       implicit none
 !
-!      private :: add_num_extended_element, copy_eletype_to_extended
-!      private :: append_extended_ele_connenct
+      private :: add_num_extended_element, copy_eletype_to_extended
+      private :: append_extended_ele_connenct
+      private :: check_redundant_ele_in_import
+      private :: check_redundant_ele_in_newmesh
 !
 !  ---------------------------------------------------------------------
 !
@@ -34,18 +36,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_append_extended_element(ele, add_ele_comm,           &
-     &          iele_gl_new_import_trim, ie_new_import_trim, new_ele)
+      subroutine s_append_extended_element(my_rank, ele, add_ele_comm,  &
+     &          trimmed_import_connect, new_node, new_ele)
 !
+      integer, intent(in) :: my_rank
       type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: add_ele_comm
-      integer(kind = kint_gl), intent(in)                               &
-     &   :: iele_gl_new_import_trim(add_ele_comm%ntot_import)
-      integer(kind = kint), intent(in)                                  &
-     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+      type(calypso_comm_table), intent(in) :: add_ele_comm
+      type(ele_data_for_sleeve_ext), intent(in)                         &
+     &                              :: trimmed_import_connect
+      type(node_data), intent(in) :: new_node
 !
       type(element_data), intent(inout) :: new_ele
 !
+!
+      if(i_debug .gt. 0) then
+        call check_redundant_ele_in_import                              &
+     &     (my_rank, add_ele_comm, trimmed_import_connect)
+      end if
 !
       call add_num_extended_element(ele, add_ele_comm,                  &
      &                              new_ele%numele, new_ele%nnod_4_ele)
@@ -56,8 +63,12 @@
 !
       call alloc_ele_connectivity(new_ele)
       call append_extended_ele_connenct(ele, add_ele_comm,              &
-     &    iele_gl_new_import_trim, ie_new_import_trim, new_ele%numele,  &
+     &    trimmed_import_connect, new_ele%numele,                       &
      &    new_ele%nnod_4_ele, new_ele%iele_global, new_ele%ie)
+!
+      if(i_debug .gt. 0) then
+        call check_redundant_ele_in_newmesh(my_rank, new_node, new_ele)
+      end if
 !
       end subroutine s_append_extended_element
 !
@@ -68,7 +79,7 @@
      &                                   num_newele, nnod_4_ele_new)
 !
       type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: add_ele_comm
+      type(calypso_comm_table), intent(in) :: add_ele_comm
 !
       integer(kind = kint), intent(inout) :: num_newele
       integer(kind = kint), intent(inout) :: nnod_4_ele_new
@@ -104,16 +115,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine append_extended_ele_connenct(ele, add_ele_comm,        &
-     &          iele_gl_new_import_trim, ie_new_import_trim,            &
+      subroutine append_extended_ele_connenct                           &
+     &         (ele, add_ele_comm, trimmed_import_connect,              &
      &          num_newele, nnod_4_ele_new, iele_new_global, ie_new)
 !
       type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: add_ele_comm
-      integer(kind = kint_gl), intent(in)                               &
-     &   :: iele_gl_new_import_trim(add_ele_comm%ntot_import)
-      integer(kind = kint), intent(in)                                  &
-     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+      type(calypso_comm_table), intent(in) :: add_ele_comm
+      type(ele_data_for_sleeve_ext), intent(in)                         &
+     &                              :: trimmed_import_connect
 !
       integer(kind = kint), intent(in) :: num_newele, nnod_4_ele_new
 !
@@ -122,7 +131,7 @@
       integer(kind = kint), intent(inout)                               &
      &                        :: ie_new(num_newele,nnod_4_ele_new)
 !
-      integer(kind = kint) :: i, iele, k1, ist, inum, jele
+      integer(kind = kint) :: iele, k1, inum, jele
 !
 !
 !$omp parallel do
@@ -140,24 +149,107 @@
 !
 !$omp parallel do private(iele,jele)
       do iele = 1, add_ele_comm%ntot_import
-          jele = iele +  ele%numele
-        iele_new_global(jele) = iele_gl_new_import_trim(jele)
+        jele = iele + ele%numele
+        iele_new_global(jele)                                           &
+     &       = trimmed_import_connect%iele_gl_comm(iele)
       end do
 !$omp end parallel do
 !
       do k1 = 1, ele%nnod_4_ele
-        do i = 1, add_ele_comm%num_neib
-          ist = add_ele_comm%istack_import(i-1)
 !$omp parallel do private(inum,jele)
-          do inum = 1, add_ele_comm%num_import(i)
-            jele = inum + ist + ele%numele
-            ie_new(jele,k1) = ie_new_import_trim(inum+ist,k1)
-          end do
-!$omp end parallel do
+        do inum = 1, add_ele_comm%ntot_import
+          jele = inum + ele%numele
+          ie_new(jele,k1) = trimmed_import_connect%ie_comm(inum,k1)
         end do
+!$omp end parallel do
       end do
 !
       end subroutine append_extended_ele_connenct
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine check_redundant_ele_in_import                          &
+     &         (my_rank, add_ele_comm, trimmed_import_connect)
+!
+      use quicksort
+!
+      integer, intent(in) :: my_rank
+      type(calypso_comm_table), intent(in) :: add_ele_comm
+      type(ele_data_for_sleeve_ext), intent(in)                         &
+     &                              :: trimmed_import_connect
+!
+      integer(kind = kint), allocatable :: iele_lc_tmp(:)
+      integer(kind = kint), allocatable :: iele_gl_tmp(:)
+      integer :: iele, icou
+!
+!
+      if(add_ele_comm%ntot_import .le. 0) return
+      allocate(iele_lc_tmp(add_ele_comm%ntot_import))
+      allocate(iele_gl_tmp(add_ele_comm%ntot_import))
+      do iele = 1, add_ele_comm%ntot_import
+        iele_lc_tmp(iele) = iele
+        iele_gl_tmp(iele)                                               &
+     &        = int(trimmed_import_connect%iele_gl_comm(iele))
+      end do
+      call quicksort_w_index(add_ele_comm%ntot_import, iele_gl_tmp,     &
+     &    ione, add_ele_comm%ntot_import, iele_lc_tmp)
+!
+      icou = 0
+      do iele = 2, add_ele_comm%ntot_import
+        if(iele_gl_tmp(iele).eq.iele_gl_tmp(iele-1)) icou = icou+1
+!        if(iele_gl_tmp(iele).eq.iele_gl_tmp(iele-1)) then
+!          write(*,*) my_rank, 'address', iele_gl_tmp(iele-1:iele),     &
+!     &              iele_lc_tmp(iele-1:iele),                          &
+!        end if
+      end do
+      write(*,*) my_rank, 'overlapped in add_ele_comm: ', icou
+      deallocate(iele_lc_tmp, iele_gl_tmp)
+!
+      end subroutine check_redundant_ele_in_import
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_redundant_ele_in_newmesh                         &
+     &         (my_rank, new_node, new_ele)
+!
+      use quicksort
+!
+      integer, intent(in) :: my_rank
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(in) :: new_ele
+!
+      integer(kind = kint), allocatable :: iele_lc_tmp(:)
+      integer(kind = kint), allocatable :: iele_gl_tmp(:)
+      integer :: iele, icou
+!
+!
+      if(new_ele%numele .le. 0) return
+      allocate(iele_lc_tmp(new_ele%numele))
+      allocate(iele_gl_tmp(new_ele%numele))
+      do iele = 1, new_ele%numele
+        iele_lc_tmp(iele) = iele
+        iele_gl_tmp(iele) = int(new_ele%iele_global(iele))
+      end do
+      call quicksort_w_index(new_ele%numele, iele_gl_tmp,               &
+     &                       ione, new_ele%numele, iele_lc_tmp)
+!
+      icou = 0
+      do iele = 2, new_ele%numele
+        if(iele_gl_tmp(iele).eq.iele_gl_tmp(iele-1)) icou = icou+1
+!        if(iele_gl_tmp(iele).eq.iele_gl_tmp(iele-1)) then
+!          write(*,*) my_rank, 'address', iele_gl_tmp(iele-1:iele),     &
+!     &              iele_lc_tmp(iele-1:iele),                          &
+!     &             (new_ele%ie(iele_lc_tmp(iele-1:iele),1)             &
+!     &                            .le. new_node%internal_node)
+!        end if
+      end do
+      write(*,*) my_rank, 'new_node%internal_node: ',                   &
+     &          new_node%internal_node
+      write(*,*) my_rank, 'overlapped in new_ele: ', icou
+      deallocate(iele_lc_tmp, iele_gl_tmp)
+!
+      end subroutine check_redundant_ele_in_newmesh
 !
 !  ---------------------------------------------------------------------
 !

@@ -21,7 +21,7 @@
 !!      subroutine set_ctl_label_LIC_noise(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags  (Not used currently)
-!!    noise_type:             'external_file' or 'randum'
+!!    noise_type:             'external_file' or 'random'
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin cube_noise_ctl
@@ -33,6 +33,7 @@
 !!    noise_step_size            20
 !!
 !!    noise_cube_size          0.4
+!!    noise_delta_x            0.01
 !!  end cube_noise_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -67,6 +68,8 @@
 !
 !>         size of noise cube (each direction)
         type(read_real_item) :: noise_cube_size_ctl
+!>         size of delta x for noise (each direction)
+        type(read_real_item) :: noise_deltax_ctl
 !
 !          loaded flag for cube_noise_ctl
         integer (kind=kint) :: i_cube_noise_control = 0
@@ -84,8 +87,9 @@
       character(len=kchara) :: hd_noise_stepping =  'noise_step_size'
 !
       character(len=kchara) :: hd_noise_cube_size = 'noise_cube_size'
+      character(len=kchara) :: hd_noise_delta_x =   'noise_delta_x'
 !
-      integer(kind = kint), parameter :: n_label_LIC_noise = 6
+      integer(kind = kint), parameter :: n_label_LIC_noise = 7
 !
       private :: hd_noise_type, hd_noise_file_head, hd_noise_file_fmt
       private :: hd_noise_grid_size, n_label_LIC_noise
@@ -156,6 +160,8 @@
 !
         call read_real_ctl_type                                         &
      &     (c_buf, hd_noise_cube_size, noise_ctl%noise_cube_size_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf, hd_noise_delta_x, noise_ctl%noise_deltax_ctl)
       end do
       noise_ctl%i_cube_noise_control = 1
 !
@@ -174,6 +180,7 @@
       noise_ctl%noise_resolution_ctl%iflag =  0
       noise_ctl%noise_stepping_ctl%iflag =    0
       noise_ctl%noise_cube_size_ctl%iflag =   0
+      noise_ctl%noise_deltax_ctl%iflag =      0
 !
       noise_ctl%i_cube_noise_control = 0
 !
@@ -201,6 +208,7 @@
       call set_control_labels(hd_noise_grid_size, names( 4))
       call set_control_labels(hd_noise_stepping,  names( 5))
       call set_control_labels(hd_noise_cube_size, names( 6))
+      call set_control_labels(hd_noise_delta_x, names( 7))
 !
       end subroutine set_ctl_label_LIC_noise
 !

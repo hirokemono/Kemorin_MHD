@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine filter_nonlinear_by_pseudo_sph(sph, comms_sph,       &
 !!     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_leg,         &
-!!     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_fil_MHD)
+!!     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_fil_MHD,    &
+!!     &          SR_sig, SR_r)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -22,6 +23,8 @@
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
 !!        type(legendre_trns_works), intent(inout) :: WK_leg
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
 !
@@ -44,6 +47,7 @@
       use t_sph_trans_arrays_SGS_MHD
       use t_sph_filtering
       use t_work_4_sph_trans
+      use t_solver_SR
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
@@ -56,7 +60,8 @@
 !
       subroutine filter_nonlinear_by_pseudo_sph(sph, comms_sph,         &
      &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_leg,           &
-     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_fil_MHD)
+     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_fil_MHD,      &
+     &          SR_sig, SR_r)
 !
       use sph_transforms_4_SGS
       use cal_nonlinear_sph_MHD
@@ -77,6 +82,8 @@
       type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       logical :: flag
 !
@@ -100,7 +107,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_fil_MHD%backward, WK_leg,                        &
-     &    trns_fil_MHD%WK_FFTs_SGS)
+     &    trns_fil_MHD%WK_FFTs_SGS, SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
@@ -115,7 +122,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
      &    trns_fil_MHD%forward, WK_leg, trns_fil_MHD%WK_FFTs_SGS,       &
-     &    rj_fld)
+     &    rj_fld, SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+12)

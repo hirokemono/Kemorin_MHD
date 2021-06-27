@@ -11,14 +11,14 @@
 !!     &          iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,   &
 !!     &          Csims_FEM_MHD, FEM_filters, mk_MHD, Bmatrix, Fmatrix, &
 !!     &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, &
-!!     &          fem_sq, nod_fld, v_sol)
+!!     &          fem_sq, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine s_cal_magnetic_field                                 &
 !!     &         (dt, FEM_prm, SGS_par, mesh, group, conduct,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,         &
 !!     &          iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,   &
 !!     &          Csims_FEM_MHD, FEM_filters, mk_MHD, Bmatrix, Fmatrix, &
 !!     &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, &
-!!     &          fem_sq, nod_fld, v_sol)
+!!     &          fem_sq, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -46,6 +46,8 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_magnetic_field
 !
@@ -80,6 +82,7 @@
       use t_work_FEM_dynamic_SGS
       use t_FEM_SGS_model_coefs
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -98,7 +101,7 @@
      &          iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,     &
      &          Csims_FEM_MHD, FEM_filters, mk_MHD, Bmatrix, Fmatrix,   &
      &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,   &
-     &          fem_sq, nod_fld, v_sol)
+     &          fem_sq, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_vector_potential_pre
       use cal_mod_vel_potential
@@ -138,6 +141,8 @@
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind=kint ) :: iloop
       real(kind = kreal) :: rel_correct
@@ -157,7 +162,8 @@
      &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
      &    fem_int%jcs, fem_int%rhs_tbl, Csims_FEM_MHD, FEM_filters,     &
      &    mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                  &
-     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
+     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, nod_fld,           &
+     &    v_sol, SR_sig, SR_r)
 !
 !     --------------------- 
 !
@@ -183,7 +189,7 @@
      &     fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,         &
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,       &
      &     Fmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk, &
-     &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
@@ -198,7 +204,8 @@
      &      iphys%base, iphys%exp_work, iphys_ele_base, ele_fld,        &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,        &
      &      Csims_FEM_MHD%diff_coefs, fem_int%m_lump, Bmatrix,          &
-     &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
+     &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld,            &
+     &      v_sol, SR_sig, SR_r)
 !
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
@@ -233,7 +240,7 @@
      &          iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,     &
      &          Csims_FEM_MHD, FEM_filters, mk_MHD, Bmatrix, Fmatrix,   &
      &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,   &
-     &          fem_sq, nod_fld, v_sol)
+     &          fem_sq, nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_magnetic_pre
       use cal_sol_pressure_MHD
@@ -265,6 +272,8 @@
       type(MHD_MG_matrix), intent(in) :: Bmatrix
       type(MHD_MG_matrix), intent(in) :: Fmatrix
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_magne(mesh%ele%numele)
@@ -299,7 +308,8 @@
      &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
      &    fem_int%jcs, fem_int%rhs_tbl, Csims_FEM_MHD, FEM_filters,     &
      &    mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                  &
-     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
+     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, nod_fld,           &
+     &    v_sol, SR_sig, SR_r)
 !
 !----  set magnetic field in insulate layer
 !
@@ -317,7 +327,7 @@
      &     fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,         &
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,       &
      &     Fmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk, &
-     &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
+     &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
         call cal_sol_m_potential                                        &
      &     (mesh%node%numnod, mesh%node%istack_internal_smp,            &
@@ -332,7 +342,7 @@
      &      iphys, iphys_ele_base, ele_fld,                             &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,        &
      &      Csims_FEM_MHD, fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector,  &
-     &      mhd_fem_wk, rhs_mat,nod_fld, v_sol)
+     &      mhd_fem_wk, rhs_mat,nod_fld, v_sol, SR_sig, SR_r)
 !
         call cal_rms_scalar_potential                                   &
      &     (iloop, mesh%ele%istack_ele_smp, iphys%base%i_mag_p,         &

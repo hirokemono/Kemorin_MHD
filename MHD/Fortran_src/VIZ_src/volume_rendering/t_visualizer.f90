@@ -7,19 +7,18 @@
 !>@brief Main module to access all visualization programs
 !!
 !!@verbatim
-!!      subroutine init_visualize(geofem, edge_comm, nod_fld,           &
-!!     &                          viz_ctls, vizs)
-!!      subroutine visualize_all(viz_step, time_d, geofem, edge_comm,   &
-!!     &                         nod_fld, ele_4_nod, jacs, vizs)
+!!      subroutine init_visualize(viz_step, geofem, nod_fld,            &
+!!     &                          VIZ_DAT, viz_ctls, vizs, m_SR)
+!!      subroutine visualize_all(viz_step, time_d, geofem, nod_fld,     &
+!!     &                         VIZ_DAT, vizs, m_SR)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
-!!        type(communication_table), intent(in) :: edge_comm
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(element_around_node), intent(in) :: ele_4_nod
-!!        type(jacobians_type), intent(in) :: jacs
+!!        type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(visualize_modules), intent(inout) :: vizs
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module t_visualizer
@@ -32,6 +31,7 @@
       use calypso_mpi
 !
       use t_VIZ_step_parameter
+      use t_VIZ_mesh_field
       use t_time_data
       use t_mesh_data
       use t_comm_table
@@ -45,6 +45,7 @@
       use t_volume_rendering
       use t_fieldline
       use t_lic_rendering
+      use t_mesh_SR
 !
       implicit  none
 !
@@ -52,8 +53,11 @@
         type(sectioning_module) :: psf
         type(isosurface_module) :: iso
         type(volume_rendering_module) :: pvr
-        type(fieldline_module) :: fline
         type(lic_volume_rendering_module) :: lic
+        type(fieldline_module) :: fline
+
+        type(volume_rendering_module) :: anaglyph_pvr
+        type(lic_volume_rendering_module) :: anaglyph_lic
       end type visualize_modules
 !
 !  ---------------------------------------------------------------------
@@ -62,92 +66,121 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(geofem, edge_comm, nod_fld,             &
-     &                          viz_ctls, vizs)
+      subroutine init_visualize(viz_step, geofem, nod_fld,              &
+     &                          VIZ_DAT, viz_ctls, vizs, m_SR)
 !
+      use t_fem_gauss_int_coefs
+      use t_shape_functions
+      use t_jacobians
+      use volume_rendering
+      use anaglyph_volume_rendering
+      use anaglyph_lic_rendering
+!
+      type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
-      type(communication_table), intent(in) :: edge_comm
       type(phys_data), intent(in) :: nod_fld
 !
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
       type(visualization_controls), intent(inout) :: viz_ctls
       type(visualize_modules), intent(inout) :: vizs
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
-      call SECTIONING_initialize(geofem, edge_comm, nod_fld,            &
-     &                           viz_ctls%psf_ctls, vizs%psf)
+      call SECTIONING_initialize                                        &
+     &   (viz_step%PSF_t%increment, geofem, VIZ_DAT%edge_comm, nod_fld, &
+     &    viz_ctls%psf_ctls, vizs%psf, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
-      call calypso_mpi_barrier
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
       call ISOSURF_initialize                                           &
-     &   (geofem, nod_fld, viz_ctls%iso_ctls, vizs%iso)
+     &   (viz_step%ISO_t%increment , geofem, nod_fld,                   &
+     &    viz_ctls%iso_ctls, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+2)
-      call calypso_mpi_barrier
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+3)
-      call PVR_initialize                                               &
-     &   (geofem, nod_fld, viz_ctls%pvr_ctls, vizs%pvr)
+      call PVR_initialize(viz_step%PVR_t%increment, geofem, nod_fld,    &
+     &                    viz_ctls%pvr_ctls, vizs%pvr, m_SR)
+      call anaglyph_PVR_initialize(viz_step%PVR_t%increment,            &
+     &    geofem, nod_fld, viz_ctls%pvr_anaglyph_ctls,                  &
+     &    vizs%anaglyph_pvr, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
-      call calypso_mpi_barrier
+!
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
+      call LIC_initialize(viz_step%LIC_t%increment,                     &
+     &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
+     &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, vizs%lic, m_SR)
+      call anaglyph_LIC_initialize(viz_step%LIC_t%increment,            &
+     &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
+     &    viz_ctls%repart_ctl, viz_ctls%lic_anaglyph_ctls,              &
+     &    vizs%anaglyph_lic, m_SR)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+4)
       call FLINE_initialize                                             &
-     &   (geofem, nod_fld, viz_ctls%fline_ctls, vizs%fline)
+     &   (viz_step%FLINE_t%increment, geofem, nod_fld,                  &
+     &    viz_ctls%fline_ctls, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)
-      call calypso_mpi_barrier
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      call LIC_initialize                                               &
-     &   (geofem, nod_fld, viz_ctls%lic_ctls, vizs%lic)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
       call calypso_mpi_barrier
-!
       call dealloc_viz_controls(viz_ctls)
 !
       end subroutine init_visualize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_all(viz_step, time_d, geofem, edge_comm,     &
-     &                         nod_fld, ele_4_nod, jacs, vizs)
+      subroutine visualize_all(viz_step, time_d, geofem, nod_fld,       &
+     &                         VIZ_DAT, vizs, m_SR)
+!
+      use volume_rendering
+      use anaglyph_volume_rendering
+      use anaglyph_lic_rendering
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
-      type(communication_table), intent(in) :: edge_comm
 !
       type(phys_data), intent(in) :: nod_fld
-      type(element_around_node), intent(in) :: ele_4_nod
-      type(jacobians_type), intent(in) :: jacs
+      type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
       type(visualize_modules), intent(inout) :: vizs
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
-      call SECTIONING_visualize                                         &
-     &   (viz_step%istep_psf, time_d, geofem, nod_fld, vizs%psf)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
+      if(viz_step%PSF_t%increment .gt. 0) then
+        if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
+        call SECTIONING_visualize                                       &
+     &     (viz_step%istep_psf, time_d, geofem, nod_fld, vizs%psf)
+        if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
+      end if
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-      call ISOSURF_visualize(viz_step%istep_iso, time_d,                &
-     &                       geofem, edge_comm, nod_fld, vizs%iso)
+      call ISOSURF_visualize                                            &
+     &   (viz_step%istep_iso, time_d, geofem, VIZ_DAT%edge_comm,        &
+     &    nod_fld, vizs%iso, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
       call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
-     &                   geofem, jacs, nod_fld, vizs%pvr)
+     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr, m_SR)
+      call anaglyph_PVR_visualize(viz_step%istep_pvr, time_d%time,      &
+     &    geofem, VIZ_DAT%jacobians, nod_fld, vizs%anaglyph_pvr, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &                   geofem, jacs, nod_fld, vizs%lic)
+      call LIC_visualize(viz_step%istep_lic, time_d%time, geofem,       &
+     &    VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld, vizs%lic, m_SR)
+      call anaglyph_LIC_visualize(viz_step%istep_lic, time_d%time,      &
+     &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
+     &    vizs%anaglyph_lic, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
-      call FLINE_visualize                                              &
-     &   (viz_step%istep_fline, geofem, ele_4_nod, nod_fld, vizs%fline)
+      call FLINE_visualize(viz_step%istep_fline, geofem,                &
+     &    VIZ_DAT%next_tbl, nod_fld, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
+!
+      call calypso_mpi_barrier
 !
       end subroutine visualize_all
 !

@@ -19,7 +19,6 @@
       use t_ctl_data_4_time_steps
       use t_ctl_data_gen_sph_shell
       use t_control_data_vizs
-      use t_ctl_data_volume_repart
       use t_control_array_integer
       use t_control_array_character
       use skip_comment_f
@@ -47,8 +46,6 @@
 !
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctls
-!>        Structure for new partitioning controls
-        type(viz_repartition_ctl) :: repart_ctl
 !
         type(read_character_item) :: zm_spec_file_head_ctl
         type(read_character_item) :: zonal_udt_head_ctl
@@ -117,8 +114,6 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_gauss_file_name = 'sph_gauss_coefs_head_ctl'
 !
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_viz_partition = 'viz_repartition_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_viz_control = 'visual_control'
 !
@@ -204,8 +199,6 @@
 !
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           spt_ctl%viz_ctls, c_buf)
-        call read_control_vol_repart(id_control, hd_viz_partition,      &
-     &                               spt_ctl%repart_ctl, c_buf)
       end do
       spt_ctl%i_sph_trans_ctl = 1
 !
@@ -230,7 +223,6 @@
       call bcast_ctl_data_4_platform(spt_ctl%org_plt)
       call bcast_FEM_mesh_control(spt_ctl%Fmesh_ctl)
       call bcast_viz_controls(spt_ctl%viz_ctls)
-      call bcast_control_vol_repart(spt_ctl%repart_ctl)
 !
       call calypso_mpi_bcast_one_int(spt_ctl%i_sph_trans_ctl, 0)
 !
@@ -248,8 +240,6 @@
 !
       call reset_control_platforms(spt_ctl%plt)
       call reset_control_platforms(spt_ctl%org_plt)
-      call bcast_control_vol_repart(spt_ctl%repart_ctl)
-      call dealloc_control_vol_repart(spt_ctl%repart_ctl)
       call reset_FEM_mesh_control(spt_ctl%Fmesh_ctl)
 !
       spt_ctl%i_sph_trans_ctl = 0

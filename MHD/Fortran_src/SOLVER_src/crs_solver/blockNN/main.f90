@@ -8,7 +8,8 @@
       use calypso_mpi_char
       use transfer_to_long_integers
 !
-      use m_solver_SR
+      use t_mesh_SR
+      use t_solver_SR
       use solverNN
 
       implicit REAL*8 (A-H,O-Z)
@@ -46,6 +47,11 @@
       integer(kind=kint ) ::  PRESET
       integer(kind=kint ) :: ITERactual
       real*8 RTIME, STARTTIME, ENDTIME
+!
+!>      Structure of communication flags
+      type(send_recv_status) :: SR_sig1
+!>      Structure of communication buffer for 8-byte real
+      type(send_recv_real_buffer) :: SR_r1
 !
       integer(kind=kint ) ::  i, j1, im1, k, NPSI, NPSE
 !

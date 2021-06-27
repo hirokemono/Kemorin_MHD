@@ -5,7 +5,8 @@
 !
 !!      subroutine select_const_filter(file_name, newfil_p, mesh,       &
 !!     &         fem_int, tbl_crs, rhs_mat, FEM_elen, fil_elist, gfil_p,&
-!!     &         ref_m, dxidxs, FEM_moments, fil_gen, f_matrices, v_sol)
+!!     &         ref_m, dxidxs, FEM_moments, fil_gen, f_matrices,       &
+!!     &         v_sol, SR_sig, SR_r)
 !!        type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -43,6 +44,7 @@
       use t_ctl_param_newdom_filter
       use t_binary_IO_buffer
       use t_vector_for_solver
+      use t_solver_SR
 !
       use cal_element_size
       use cal_filter_moms_ele_by_elen
@@ -75,7 +77,8 @@
 !
       subroutine select_const_filter(file_name, newfil_p, mesh,         &
      &         fem_int, tbl_crs, rhs_mat, FEM_elen, fil_elist, gfil_p,  &
-     &         ref_m, dxidxs, FEM_moments, fil_gen, f_matrices, v_sol)
+     &         ref_m, dxidxs, FEM_moments, fil_gen, f_matrices,         &
+     &         v_sol, SR_sig, SR_r)
 !
       character(len=kchara), intent(in) :: file_name
       type(ctl_param_newdom_filter), intent(in) :: newfil_p
@@ -93,6 +96,8 @@
       type(const_filter_coefs), intent(inout) :: fil_gen
       type(matrices_4_filter), intent(inout) :: f_matrices
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call reset_failed_filter_flag(fil_gen%whole_area)
@@ -126,7 +131,7 @@
      &     (mesh, newfil_p, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,      &
      &      fem_int%rhs_tbl, fem_int%m_lump, tbl_crs, rhs_mat,          &
      &      FEM_elen, ref_m, fil_elist, gfil_p, dxidxs, FEM_moments,    &
-     &      fil_gen, f_matrices, v_sol)
+     &      fil_gen, f_matrices, v_sol, SR_sig, SR_r)
         call finalize_4_cal_fileters(gfil_p%iflag_ordering_list,        &
      &     fil_gen%fil_coef, f_matrices%fil_tbl_crs,                    &
      &      f_matrices%fil_mat_crs, f_matrices%fil_mat, ref_m)
@@ -138,7 +143,8 @@
      &     (file_name, mesh, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,     &
      &      fem_int%rhs_tbl, fem_int%m_lump, tbl_crs, rhs_mat,          &
      &      FEM_elen, ref_m, fil_elist, gfil_p, dxidxs, FEM_moments,    &
-     &      fil_gen%fil_coef, fil_gen%tmp_coef, f_matrices, v_sol)
+     &      fil_gen%fil_coef, fil_gen%tmp_coef, f_matrices,             &
+     &      v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine select_const_filter
@@ -206,7 +212,7 @@
      &         (file_name, mesh, g_FEM, jac_3d_q, rhs_tbl, m_lump,      &
      &          tbl_crs, rhs_mat, FEM_elen, ref_m, fil_elist, gfil_p,   &
      &          dxidxs, FEM_moments, fil_coef, tmp_coef,                &
-     &          f_matrices, v_sol)
+     &          f_matrices, v_sol, SR_sig, SR_r)
 !
       use cal_1st_diff_deltax_4_nod
       use cal_filter_func_node
@@ -232,6 +238,8 @@
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
       type(matrices_4_filter), intent(inout) :: f_matrices
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
@@ -253,7 +261,8 @@
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele(mesh%nod_comm, mesh%node, mesh%ele,   &
      &    g_FEM, jac_3d_q, rhs_tbl, tbl_crs, m_lump, rhs_mat, gfil_p,   &
-     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1), v_sol)
+     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1),               &
+     &    v_sol, SR_sig, SR_r)
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'cal_fmoms_ele_by_elen 2'
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
@@ -425,7 +434,7 @@
       subroutine correct_by_simple_filter(mesh, newfil_p,               &
      &          g_FEM, jac_3d_q, rhs_tbl, m_lump, tbl_crs,              &
      &          rhs_mat, FEM_elen, ref_m, fil_elist, gfil_p, dxidxs,    &
-     &          FEM_moments, fil_gen, f_matrices, v_sol)
+     &          FEM_moments, fil_gen, f_matrices, v_sol, SR_sig, SR_r)
 !
       use m_filter_file_names
       use m_field_file_format
@@ -456,6 +465,8 @@
       type(const_filter_coefs), intent(inout) :: fil_gen
       type(matrices_4_filter), intent(inout) :: f_matrices
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       type(communication_table) :: comm_IO
       type(node_data) ::           nod_IO
@@ -549,7 +560,8 @@
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele(mesh%nod_comm, mesh%node, mesh%ele,   &
      &    g_FEM, jac_3d_q, rhs_tbl, tbl_crs, m_lump, rhs_mat, gfil_p,   &
-     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1), v_sol)
+     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1),               &
+     &    v_sol, SR_sig, SR_r)
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'correct_fmoms_ele_by_elen 1'
       call correct_fmoms_ele_by_elen                                    &

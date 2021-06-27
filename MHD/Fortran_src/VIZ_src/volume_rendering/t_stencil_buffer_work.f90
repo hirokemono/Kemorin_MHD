@@ -93,7 +93,7 @@
      &   (irank_image_file, npe_img_composit,                           &
      &    num_pixel_xy, num_pvr_ray_gl, num_ray_start_gl, stencil_wk)
 !
-      if(my_rank .eq. irank_image_file) then
+      if(i_debug.gt.0 .and. my_rank .eq. irank_image_file) then
         write(*,*) 'Stencil buffer size, num. of segmented image: ',    &
      &            stencil_wk%ntot_recv_image, max_ray_start_gl
         write(*,*) 'Number of total ray trace: ', num_pvr_ray_gl
@@ -173,7 +173,8 @@
       use calypso_mpi_int
       use transfer_to_long_integers
 !
-      integer, intent(in) :: irank_image_file, npe_img_composit
+      integer(kind = kint), intent(in) :: irank_image_file
+      integer(kind = kint), intent(in) :: npe_img_composit
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint_gl), intent(in) :: num_pvr_ray_gl
       integer(kind = kint_gl), intent(in)                               &
@@ -194,8 +195,10 @@
         stencil_wk%irank_4_composit(1:num_pixel_xy) = -1
 !$omp end parallel workshare
 
+!$omp parallel workshare
+        stencil_wk%istack_recv_image(0:nprocs) = 0
+!$omp end parallel workshare
         istack_ray_start_gl(0) = 0
-        stencil_wk%istack_recv_image(0) = 0
         icou = 0
         do ipix = 1, num_pixel_xy
           istack_ray_start_gl(ipix) = istack_ray_start_gl(ipix-1)       &

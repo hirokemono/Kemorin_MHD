@@ -1,7 +1,9 @@
 !FEM_analyzer_sph_trans.f90
 !
-!!      subroutine FEM_initialize_sph_trans(init_d, ucd_step, FEM_STR)
-!!      subroutine FEM_analyze_sph_trans(i_step, ucd_step, FEM_STR)
+!!      subroutine FEM_initialize_sph_trans(init_d, ucd_step,           &
+!!     &                                    FEM_STR, m_SR)
+!!      subroutine FEM_analyze_sph_trans(i_step, ucd_step,              &
+!!     &                                 FEM_STR, m_SR)
 !!      subroutine SPH_to_FEM_bridge_sph_trans                          &
 !!     &         (udt_file_param, rj_fld, fld_IO)
 !!      subroutine FEM_finalize_sph_trans(ucd_step, FEM_STR)
@@ -11,6 +13,7 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(field_IO), intent(inout) :: fld_IO
 !!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+!!        type(mesh_SR), intent(inout) :: m_SR
 !
       module FEM_analyzer_sph_trans
 !
@@ -23,6 +26,7 @@
       use t_ucd_data
       use t_file_IO_parameter
       use t_time_data
+      use t_mesh_SR
 !
       implicit none
 !
@@ -35,13 +39,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_sph_trans(init_d, ucd_step, FEM_STR)
+      subroutine FEM_initialize_sph_trans(init_d, ucd_step,             &
+     &                                    FEM_STR, m_SR)
 !
       use nod_phys_send_recv
-      use int_volume_of_domain
-      use set_normal_vectors
-      use set_surf_grp_vectors
-      use sum_normal_4_surf_group
+      use parallel_FEM_mesh_init
+      use set_ucd_data_to_type
       use output_parallel_ucd_file
       use parallel_ucd_IO_select
       use const_mesh_information
@@ -50,12 +53,20 @@
       type(time_data), intent(in) :: init_d
       type(IO_step_param), intent(in) :: ucd_step
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: istep_ucd
 !
 !  -----    construct geometry informations
 !
-      call mesh_setup_4_SPH_TRANS(FEM_STR)
+      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(FEM_STR%geofem%mesh, m_SR)
+      call FEM_mesh_initialization(FEM_STR%geofem%mesh,                 &
+     &    FEM_STR%geofem%group, m_SR%SR_sig, m_SR%SR_i)
+!
+      if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
+      call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &
+     &                     FEM_STR%field)
 !
 !  -------------------------------
 !
@@ -69,7 +80,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_trans(i_step, ucd_step, FEM_STR)
+      subroutine FEM_analyze_sph_trans(i_step, ucd_step,                &
+     &                                 FEM_STR, m_SR)
 !
       use t_ctl_params_sph_trans
       use output_parallel_ucd_file
@@ -78,6 +90,7 @@
       integer(kind =kint), intent(in) :: i_step
       type(IO_step_param), intent(in) :: ucd_step
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: istep_ucd
@@ -90,8 +103,8 @@
       istep_ucd = IO_step_exc_zero_inc(i_step, ucd_step)
       call set_data_by_read_ucd(i_step, FEM_STR%org_ucd_file_IO,        &
      &    FEM_STR%time_IO, input_ucd, FEM_STR%field)
-      call nod_fields_send_recv                                         &
-     &   (FEM_STR%geofem%mesh, FEM_STR%field, FEM_STR%v_sol)
+      call nod_fields_send_recv(FEM_STR%geofem%mesh, FEM_STR%field,     &
+     &                          m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       end subroutine FEM_analyze_sph_trans
 !

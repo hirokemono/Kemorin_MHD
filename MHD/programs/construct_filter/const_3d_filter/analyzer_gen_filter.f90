@@ -32,6 +32,7 @@
       use t_reference_moments
       use t_element_list_4_filter
       use t_matrix_4_filter
+      use t_mesh_SR
 !
       implicit none
 !
@@ -61,6 +62,8 @@
       type(filtering_data_type), save :: filtering_gen
       type(node_data), save :: filter_nod1
 !
+      type(mesh_SR), save :: m_SR_f
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -72,6 +75,7 @@
       use m_filter_file_names
 !
       use const_mesh_information
+      use parallel_edge_information
       use cal_1d_moments_4_fliter
 !
       use set_element_data_4_IO
@@ -80,7 +84,6 @@
       use check_jacobians
       use int_volume_of_domain
       use int_element_length
-      use set_surf_grp_vectors
       use check_surface_groups
       use set_normal_vectors
       use set_edge_vectors
@@ -123,8 +126,17 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, fem_f%mesh, fem_f%group)
+      if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos(my_rank, fem_f%mesh, fem_f%group)
+      if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
+      call const_surface_infos                                          &
+     &   (my_rank, fem_f%mesh%node, fem_f%mesh%ele,                     &
+     &    fem_f%group%surf_grp, fem_f%mesh%surf,                        &
+     &    fem_f%group%surf_nod_grp)
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos                                        &
+     &   (fem_f%mesh%nod_comm, fem_f%mesh%node, fem_f%mesh%ele,         &
+     &    fem_f%mesh%surf, fem_f%mesh%edge, m_SR_f%SR_sig, m_SR_f%SR_i)
 !
 !  -------------------------------
 !
@@ -132,19 +144,12 @@
      &   write(*,*) 'alloc_vectors_surf_group'
       call alloc_vectors_surf_group                                     &
      &  (fem_f%group%surf_grp%num_grp, fem_f%group%surf_grp%num_item,   &
-     &   fem_f%group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
-     &   write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry                                  &
-     &   (fem_f%mesh%surf, fem_f%group%surf_grp,                        &
-     &    fem_f%group%tbls_surf_grp, fem_f%group%surf_grp_geom)
+     &   fem_f%group%surf_grp_norm)
 !
 !  -------------------------------
 !  -------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*)  'const_jacobian_and_volume'
-      allocate(fem_int_f%jcs%g_FEM)
       call set_max_integration_points                                   &
      &   (gfil_p1%num_int_points, fem_int_f%jcs%g_FEM)
       call initialize_FEM_integration(fem_int_f%jcs%g_FEM,              &
@@ -201,21 +206,23 @@
       character(len=kchara) :: file_name
       type(filter_file_data) :: filter_IO
       type(const_filter_coefs) :: fil_gen1
-      type(vectors_4_solver) :: v_sol
 !
 !  ---------------------------------------------------
 !       set element size for each node
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1)  write(*,*) 'alloc_iccgN_vector'
-      call alloc_iccgN_vector(ithree, fem_f%mesh%node%numnod, v_sol)
+      call alloc_iccgN_vector(ithree, fem_f%mesh%node%numnod,           &
+     &                        m_SR_f%v_sol)
 !
-      call init_nod_send_recv(fem_f%mesh)
+      call init_nod_send_recv(fem_f%mesh,                               &
+     &    m_SR_f%SR_sig, m_SR_f%SR_r, m_SR_f%SR_i, m_SR_f%SR_il)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size(fem_f%mesh, fem_f%group,                  &
      &    fil_elist1, gfil_p1, tbl_crs_f, mat_tbl_f, rhs_mat_f,         &
-     &    fem_int_f, FEM_elen_f, ref_m1, filter_dxi1, dxidxs1, v_sol)
+     &    fem_int_f, FEM_elen_f, ref_m1, filter_dxi1, dxidxs1,          &
+     &    m_SR_f%v_sol, m_SR_f%SR_sig, m_SR_f%SR_r)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
@@ -242,9 +249,10 @@
         call sel_write_filter_geometry_file(my_rank, filter_IO)
 !
         call select_const_filter                                        &
-     &      (file_name, newfil_p1, fem_f%mesh, fem_int_f, tbl_crs_f,    &
-     &       rhs_mat_f, FEM_elen_f, fil_elist1, gfil_p1, ref_m1,        &
-     &       dxidxs1, FEM_momenet1, fil_gen1, f_matrices1, v_sol)
+     &     (file_name, newfil_p1, fem_f%mesh, fem_int_f, tbl_crs_f,     &
+     &      rhs_mat_f, FEM_elen_f, fil_elist1, gfil_p1, ref_m1,         &
+     &      dxidxs1, FEM_momenet1, fil_gen1, f_matrices1,               &
+     &      m_SR_f%v_sol, m_SR_f%SR_sig, m_SR_f%SR_r)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !
@@ -260,7 +268,7 @@
         call sel_write_filter_moms_file                                 &
      &     (my_rank, FEM_elen_f, FEM_momenet1)
       end if
-      call dealloc_iccgN_vector(v_sol)
+      call dealloc_iccgN_vector(m_SR_f%v_sol)
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !

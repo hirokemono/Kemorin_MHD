@@ -9,7 +9,7 @@
 !!     &        iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl,&
 !!     &        jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,          &
 !!     &        wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,    &
-!!     &        f_l, f_nl, nod_fld, diff_coefs, v_sol)
+!!     &        f_l, f_nl, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -39,6 +39,8 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_diff_coef_temp
 !
@@ -68,6 +70,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -83,7 +86,7 @@
      &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl, &
      &         jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,           &
      &         wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,     &
-     &         f_l, f_nl, nod_fld, diff_coefs, v_sol)
+     &         f_l, f_nl, nod_fld, diff_coefs, v_sol, SR_sig, SR_r)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -130,6 +133,8 @@
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !    reset model coefficients
 !
@@ -145,7 +150,8 @@
      &   (iflag_supg, num_int, dt, ifield_f, iphys_SGS_wk%i_simi,       &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
-     &    jacs%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    jacs%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld,            &
+     &    v_sol, SR_sig, SR_r)
 !
 !   take gradient of temperature (to iphys_SGS_wk%i_nlg)
 !
@@ -155,14 +161,15 @@
      &   (iflag_supg, num_int, dt, ifield, iphys_SGS_wk%i_nlg,          &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
-     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
+     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld,             &
+     &    v_sol, SR_sig, SR_r)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig, SR_r)
 !
 !    take difference (to iphys_SGS_wk%i_simi)
 !
@@ -184,8 +191,8 @@
      &    iphys_SGS_wk%i_wd_nlg, ifield_f, fem_wk, surf_wk,             &
      &    f_l, f_nl, nod_fld)
 !
-      call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(iphys_SGS_wk%i_wd_nlg, nod_comm,            &
+     &                      nod_fld, v_sol, SR_sig, SR_r)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_wd_nlg)
@@ -200,15 +207,15 @@
      &    FEM_elens, Tsf_bcs%sgs, ifilter_2delta, iphys_SGS_wk%i_nlg,   &
      &    ifield, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
-      call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld, v_sol)
+      call vector_send_recv(iphys_SGS_wk%i_nlg, nod_comm,               &
+     &                      nod_fld, v_sol, SR_sig, SR_r)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
-     &    nod_fld, v_sol)
+     &    nod_fld, v_sol, SR_sig, SR_r)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_nlg)

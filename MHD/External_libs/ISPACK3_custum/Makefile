@@ -35,12 +35,7 @@ $(addsuffix .o,$(basename $(SRC_MXPACK3_SSE8)))
 F90EXT = '.f90'
 ASMEXT = '.s'
 
-ifdef ZLIB_LIBS
-  F90BUILD = '$$(F90) -c $$(F90OPTFLAGS) -m$(SSE_FLAG) -fno-range-check $$<'
-else
-  F90BUILD = '$$(F90) -c $$(F90OPTFLAGS) -fno-range-check $$<'
-endif
-
+F90BUILD = '$$(F90) -c $$(F90OPTFLAGS) -fno-range-check $$<'
 ASMBUILD = '$$(AS) -c -x assembler $$< -o $$@'
 
 ifeq ($(SSE4),fort)
@@ -90,9 +85,12 @@ mod_list:
 
 
 module:
+	echo 'm_ISPACK3_constants.o: $$(FXPACK3_DIR)/m_ISPACK3_constants.f90' >> $(MAKENAME); \
+	echo '	'$(F90BUILD) >> $(MAKENAME)
+	
 	@for src in $(basename $(SRC_FXPACK3_BASE)) ; do \
 		( \
-		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'.f90' >> $(MAKENAME); \
+		echo $$src'.o: $$(FXPACK3_DIR)/'$$src'.f90 m_ISPACK3_constants.o' >> $(MAKENAME); \
 		echo '	'$(F90BUILD) >> $(MAKENAME); \
 		 ) \
 	done

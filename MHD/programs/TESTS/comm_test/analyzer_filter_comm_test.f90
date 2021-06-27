@@ -18,6 +18,7 @@
       use t_filtering_data
       use t_work_for_comm_check
       use t_vector_for_solver
+      use t_mesh_SR
 !
       implicit none
 !
@@ -27,6 +28,7 @@
       type(filtering_work_type), save :: wk_filter_test
       type(work_for_comm_check), save :: filter_check
       type(node_data), save :: filter_nod1
+      type(mesh_SR), save :: m_SR_T
 !
       private :: filtering_test
 !
@@ -50,7 +52,8 @@
       if (iflag_debug.gt.0) write(*,*) 's_input_ctl_filter_comm_test'
       call s_input_ctl_filter_comm_test                                 &
      &   (filtering_test, filter_nod1, wk_filter_test)
-      call init_send_recv(filtering_test%comm)
+      call init_send_recv(filtering_test%comm,                          &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
 !
        end subroutine init_analyzer
 !
@@ -65,7 +68,7 @@
       use write_diff_4_comm_test
 !
       call node_send_recv_test(filter_nod1, filtering_test%comm,        &
-     &    filter_check)
+     &    filter_check, m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
       call output_diff_node_comm_test(comm_test_name, filter_check)
 !
       call dealloc_ele_comm_test_IO(filter_check)

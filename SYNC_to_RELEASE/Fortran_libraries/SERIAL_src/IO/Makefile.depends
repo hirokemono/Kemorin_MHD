@@ -104,7 +104,7 @@ read_udt_from_bindary_data.o: $(IO_DIR)/read_udt_from_bindary_data.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 rst_data_IO_by_fld.o: $(IO_DIR)/rst_data_IO_by_fld.f90 m_precision.o m_machine_parameter.o t_time_data.o t_field_data_IO.o time_data_IO.o set_parallel_file_name.o field_data_IO.o skip_comment_f.o transfer_to_long_integers.o set_restart_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_and_cal_udt_data.o: $(IO_DIR)/set_and_cal_udt_data.f90 m_precision.o t_ucd_data.o count_overlap.o
+set_and_cal_udt_data.o: $(IO_DIR)/set_and_cal_udt_data.f90 m_precision.o t_ucd_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_components_flags.o: $(IO_DIR)/set_components_flags.f90 m_precision.o t_field_labels.o t_multi_flag_labels.o m_component_flags.o m_more_component_flags.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -213,6 +213,8 @@ t_ctl_data_4_sph_monitor.o: $(IO_DIR)/t_ctl_data_4_sph_monitor.f90 m_precision.o
 t_ctl_data_4_sphere_model.o: $(IO_DIR)/t_ctl_data_4_sphere_model.f90 m_precision.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_array_charaint.o t_control_array_integer2.o t_control_array_intreal.o m_machine_parameter.o t_read_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_4_time_steps.o: $(IO_DIR)/t_ctl_data_4_time_steps.f90 m_precision.o m_machine_parameter.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_FEM_sleeve_size.o: $(IO_DIR)/t_ctl_data_FEM_sleeve_size.f90 m_precision.o t_control_array_character.o t_control_array_integer.o t_control_array_real.o m_machine_parameter.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_pick_sph_spectr.o: $(IO_DIR)/t_ctl_data_pick_sph_spectr.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_array_integer2.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<

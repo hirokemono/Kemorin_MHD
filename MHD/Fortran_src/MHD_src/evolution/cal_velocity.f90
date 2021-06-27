@@ -13,7 +13,8 @@
 !!     &          iak_diff_sgs, iphys_elediff_vec,                      &
 !!     &          sgs_coefs_nod, diff_coefs, mk_MHD,                    &
 !!     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,    &
-!!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq, v_sol)
+!!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq,         &
+!!     &          v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -49,6 +50,8 @@
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module cal_velocity
 !
@@ -86,6 +89,7 @@
       use t_FEM_MHD_mean_square
       use t_mean_square_values
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -108,7 +112,8 @@
      &          iak_diff_sgs, iphys_elediff_vec,                        &
      &          sgs_coefs_nod, diff_coefs, mk_MHD,                      &
      &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,      &
-     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq, v_sol)
+     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq,           &
+     &          v_sol, SR_sig, SR_r)
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -156,6 +161,8 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind=kint) :: iloop
       real(kind = kreal) :: rel_correct
@@ -177,7 +184,8 @@
      &    FEM_filters%filtering, FEM_filters%layer_tbl,                 &
      &    mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter,   &
-     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs, v_sol)
+     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs,             &
+     &    v_sol, SR_sig, SR_r)
 !
 !     --------------------- 
 !
@@ -197,7 +205,7 @@
      &      iphys, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &      iak_diff_base, diff_coefs, Pmatrix, MGCG_WK%MG_vector,      &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
-     &      nod_fld, v_sol)
+     &      nod_fld, v_sol, SR_sig, SR_r)
 !
         call cal_sol_pressure                                           &
      &     (dt, mesh%node%numnod, mesh%node%istack_internal_smp,        &
@@ -211,7 +219,7 @@
      &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
      &      iak_diff_base, diff_coefs, mk_MHD%mlump_fl,                 &
      &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk,                     &
-     &      rhs_mat, nod_fld, v_sol)
+     &      rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
 !
         call cal_rms_scalar_potential                                   &

@@ -7,7 +7,6 @@
 !> @brief Structures for parameteres for volume rendering
 !!
 !!@verbatim
-!!      subroutine reset_pvr_view_parameteres(view_param)
 !!      subroutine alloc_pvr_element_group(pvr_area)
 !!      subroutine dealloc_pvr_element_group(pvr_area)
 !!        type(viz_area_parameter), intent(inout) :: pvr_area
@@ -27,6 +26,7 @@
 !
       use m_precision
       use m_constants
+      use output_image_sel_4_png
 !
       implicit  none
 !
@@ -34,16 +34,24 @@
       real(kind = kreal), parameter :: SMALL_RAY_TRACE = 0.1d0
       real(kind = kreal), parameter :: SMALL_NORM = -0.1d0
 !
-      integer(kind = kint), parameter :: n_flag_pvr_movie_mode =   3
-      integer(kind = kint), parameter :: n_flag_LIC_movie_mode =   4
+      integer(kind = kint), parameter :: n_flag_pvr_movie_mode =   4
+      integer(kind = kint), parameter :: n_flag_LIC_movie_mode =   5
       character(len=kchara), parameter                                  &
-     &             :: c_movie_rotaion =    'rotation'
+     &                      :: FLAG_ROTATE_MOVIE =    'rotation'
+      character(len=kchara), parameter :: FLAG_ZOOM = 'zoom'
       character(len=kchara), parameter                                  &
-     &             :: c_movie_apature =    'apature'
+     &                      :: FLAG_START_END_VIEW =  'view_matrices'
       character(len=kchara), parameter                                  &
-     &             :: c_movie_modelview =  'view_matrices'
+     &                      :: FLAG_LIC_KERNEL = 'LIC_kernel'
       character(len=kchara), parameter                                  &
-     &             :: c_movie_lic_kernel = 'LIC_kernel'
+     &                      :: FLAG_LOOKINGLASS =     'looking_glass'
+!
+      integer(kind = kint), parameter :: IFLAG_NO_MOVIE =   0
+      integer(kind = kint), parameter :: I_ROTATE_MOVIE =   1
+      integer(kind = kint), parameter :: I_ZOOM =           2
+      integer(kind = kint), parameter :: I_START_END_VIEW = 3
+      integer(kind = kint), parameter :: I_LOOKINGLASS =    4
+      integer(kind = kint), parameter :: I_LIC_KERNEL =     5
 !
 !>  Structure for field parameter for PVR
       type pvr_field_parameter
@@ -92,9 +100,7 @@
 !>    Defined flag for modelview matrix
         integer(kind = kint) :: iflag_modelview_mat = 0
 !>    Modelview matrix
-        real(kind = kreal) :: modelview_mat(4,4)
-!>    Inverse of modelview matrix
-        real(kind = kreal) :: modelview_inv(4,4)
+        real(kind = kreal) :: modelview(4,4)
 !
 !
 !>    Defined flag for view rotation
@@ -126,30 +132,31 @@
 !>    Defined flag for viewpoint
         integer(kind = kint) :: iflag_viewpoint = 0
 !>    Position of viewpoint
-        real(kind = kreal) :: viewpoint_vec(3) = (/zero,zero,zero/)
-!
-!>    Defined flag for stereo view
-        integer(kind = kint) :: iflag_stereo_pvr = 0
-!>    Flag to make an anaglyph
-        integer(kind = kint) :: iflag_anaglyph = 0
-!
-!>    Focal length for streo view
-        real(kind = kreal) :: focalLength = one
-!>    Eye separation for streo view
-        real(kind = kreal) :: eye_separation = zero
-!
-!>    Rotation flag
-        integer(kind = kint) :: iflag_rotate_snap = 0
-!>    Prametere for rotation
-!!@n        rotatin axis:    iprm_pvr_rot(1)
-!!@n        number of frame: iprm_pvr_rot(2)
-        integer(kind = kint) :: iprm_pvr_rot(2) = (/0,0/)
-!>     Rotation start step
-        integer(kind = kint) :: istart_rot = 0
-!>     Rotation end step
-        integer(kind = kint) :: iend_rot =   0
+        real(kind = kreal) :: viewpoint(3) = (/zero,zero,zero/)
       end type pvr_view_parameter
 !
+!>  movie parameters
+      type pvr_movie_parameter
+!>    Integer flag for movie file format
+        integer(kind = kint) :: iflag_movie_fmt = iflag_BMP
+!>    Integer flag for movie output
+        integer(kind = kint) :: iflag_movie_mode = IFLAG_NO_MOVIE
+!
+!>     Number of frames
+        integer(kind = kint) :: num_frame =   0
+!>    Number of row and column of image array (horizontal, vertical)
+        integer(kind = kint) :: n_column_row_movie(2) = 0
+!
+!>     Rotatin axis:    id_rot_axis
+        integer(kind = kint) :: id_rot_axis = 3
+!>     Rotation range
+        real(kind = kreal) :: angle_range(2) = 0.0d0
+!
+!>     Apature range
+        real(kind = kreal) :: apature_range(2) = 0.0d0
+!>     Apature range
+        real(kind = kreal) :: peak_range(2) =    0.0d0
+      end type pvr_movie_parameter
 !
 !>  Structure for PVR colormap parameters
       type pvr_colormap_parameter
@@ -187,8 +194,6 @@
         real(kind = kreal) :: pvr_lighting_real(3) = (/zero,zero,zero/)
 !>    Position of lights
         real(kind = kreal), allocatable :: xyz_pvr_lights(:,:)
-!>    Position of lights in viewer coordinates
-        real(kind = kreal), allocatable :: view_pvr_lights(:,:)
       end type pvr_colormap_parameter
 !
 !>  Structure for PVR colorbar parameters
@@ -217,18 +222,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine reset_pvr_view_parameteres(view_param)
-!
-      type(pvr_view_parameter), intent(inout) :: view_param
-!
-!
-        view_param%modelview_mat(1:4,1:4) =   0.0d0
-        view_param%modelview_inv(1:4,1:4) =   0.0d0
-!
-      end subroutine reset_pvr_view_parameteres
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -291,10 +284,8 @@
 !
 !
       allocate(color%xyz_pvr_lights(3,color%num_pvr_lights) )
-      allocate(color%view_pvr_lights(3,color%num_pvr_lights) )
       if (color%num_pvr_lights .le. 0) return
       color%xyz_pvr_lights =    0.0d0
-      color%view_pvr_lights =   0.0d0
 !
       end subroutine alloc_light_posi_in_view
 !
@@ -308,7 +299,6 @@
       deallocate(color%pvr_datamap_param)
       deallocate(color%pvr_opacity_param)
       deallocate(color%xyz_pvr_lights)
-      deallocate(color%view_pvr_lights)
 !
       end subroutine dealloc_pvr_color_parameteres
 !
@@ -337,9 +327,10 @@
      &                         :: names(n_flag_pvr_movie_mode)
 !
 !
-      call set_control_labels(c_movie_rotaion,    names( 1))
-      call set_control_labels(c_movie_apature,    names( 2))
-      call set_control_labels(c_movie_modelview,  names( 3))
+      call set_control_labels(FLAG_ROTATE_MOVIE,   names( 1))
+      call set_control_labels(FLAG_ZOOM,           names( 2))
+      call set_control_labels(FLAG_START_END_VIEW, names( 3))
+      call set_control_labels(FLAG_LOOKINGLASS,    names( 4))
 !
       end subroutine set_flag_pvr_movie_mode
 !
@@ -353,10 +344,11 @@
      &                         :: names(n_flag_LIC_movie_mode)
 !
 !
-      call set_control_labels(c_movie_rotaion,    names( 1))
-      call set_control_labels(c_movie_apature,    names( 2))
-      call set_control_labels(c_movie_modelview,  names( 3))
-      call set_control_labels(c_movie_lic_kernel, names( 4))
+      call set_control_labels(FLAG_ROTATE_MOVIE,   names( 1))
+      call set_control_labels(FLAG_ZOOM,           names( 2))
+      call set_control_labels(FLAG_START_END_VIEW, names( 3))
+      call set_control_labels(FLAG_LOOKINGLASS,    names( 4))
+      call set_control_labels(FLAG_LIC_KERNEL,     names( 5))
 !
       end subroutine set_flag_LIC_movie_mode
 !

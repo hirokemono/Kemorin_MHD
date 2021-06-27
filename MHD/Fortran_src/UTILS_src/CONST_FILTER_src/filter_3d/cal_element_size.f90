@@ -1,12 +1,17 @@
 !
-!      module cal_element_size
+!>@file   calypso_SR_type.f90
+!!@brief  module calypso_SR_type
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2006
+!!      Modified in  Mar., 2008
 !
-!      Written by H.Matsui on Nov., 2006
-!      Modified by H. Matsui on Mar., 2008
-!
+!>@brief  Select communication routines for spherical harmonics transform
+!!
+!!@verbatim
 !!      subroutine s_cal_element_size(mesh, group, fil_elist,           &
 !!     &          gfil_p, tbl_crs, mat_tbl, rhs_mat, fem_int, FEM_elen, &
-!!     &          ref_m, filter_dxi, dxidxs, v_sol)
+!!     &          ref_m, filter_dxi, dxidxs, v_sol, SR_sig, SR_r)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_list_4_filter), intent(in) :: fil_elist
@@ -16,10 +21,12 @@
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
 !!        type(reference_moments), intent(inout) :: ref_m
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
 !!      subroutine s_const_filter_mom_ele(nod_comm, node, ele,          &
 !!     &          g_FEM, jac_3d_q, rhs_tbl, tbl_crs, m_lump, rhs_mat,   &
-!!     &          gfil_p, mom_nod, mom_ele, v_sol)
+!!     &          gfil_p, mom_nod, mom_ele, v_sol, SR_sig, SR_r)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -31,8 +38,13 @@
 !!        type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !!        type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
 !!      subroutine release_mass_mat_for_consist(rhs_mat)
+!!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+!!@endverbatim
 !
       module cal_element_size
 !
@@ -54,6 +66,7 @@
       use t_crs_matrix
       use t_jacobian_3d
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -68,7 +81,7 @@
 !
       subroutine s_cal_element_size(mesh, group, fil_elist,             &
      &          gfil_p, tbl_crs, mat_tbl, rhs_mat, fem_int, FEM_elen,   &
-     &          ref_m, filter_dxi, dxidxs, v_sol)
+     &          ref_m, filter_dxi, dxidxs, v_sol, SR_sig, SR_r)
 !
 !
       use t_filter_elength
@@ -103,6 +116,8 @@
       type(dxdxi_data_type), intent(inout) :: filter_dxi
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !  ---------------------------------------------------
 !      set RHS assemble table
@@ -152,17 +167,17 @@
 !
       call cal_dx2_on_node(mesh%nod_comm, mesh%node, mesh%ele,          &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    tbl_crs, fem_int%m_lump, fil_elist, gfil_p,                   &
-     &    mass1, FEM_elen, rhs_mat%fem_wk, rhs_mat%f_l, v_sol)
+     &    tbl_crs, fem_int%m_lump, fil_elist, gfil_p, mass1, FEM_elen,  &
+     &    rhs_mat%fem_wk, rhs_mat%f_l, v_sol, SR_sig, SR_r)
       call cal_dxi_dxes_node(mesh%nod_comm, mesh%node, mesh%ele,        &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    tbl_crs, fem_int%m_lump, fil_elist, gfil_p,                   &
-     &    mass1, dxidxs, rhs_mat%fem_wk, rhs_mat%f_l, v_sol)
+     &    tbl_crs, fem_int%m_lump, fil_elist, gfil_p, mass1, dxidxs,    &
+     &    rhs_mat%fem_wk, rhs_mat%f_l, v_sol, SR_sig, SR_r)
 !
-      call elength_nod_send_recv                                        &
-     &   (mesh%node%numnod, mesh%nod_comm, FEM_elen%elen_nod, v_sol)
-      call dxidx_nod_send_recv                                          &
-     &   (mesh%node%numnod, mesh%nod_comm, dxidxs%dx_nod, v_sol)
+      call elength_nod_send_recv(mesh%node%numnod, mesh%nod_comm,       &
+     &    FEM_elen%elen_nod, v_sol, SR_sig, SR_r)
+      call dxidx_nod_send_recv(mesh%node%numnod, mesh%nod_comm,         &
+     &    dxidxs%dx_nod, v_sol, SR_sig, SR_r)
 !
 !  ---------------------------------------------------
 !        cal products of element size for each node
@@ -173,7 +188,8 @@
         call cal_1st_diffs_dx_by_consist                                &
      &     (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jcs%g_FEM,      &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, tbl_crs, gfil_p,       &
-     &      mass1, FEM_elen, rhs_mat%fem_wk, rhs_mat%f_nl, v_sol)
+     &      mass1, FEM_elen, rhs_mat%fem_wk, rhs_mat%f_nl,              &
+     &      v_sol, SR_sig, SR_r)
       else
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_lump'
         call cal_1st_diffs_dx_by_lump(gfil_p%num_int_points,            &
@@ -183,8 +199,8 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'diff_elen_nod_send_recv'
-      call diff_elen_nod_send_recv                                      &
-     &   (mesh%node%numnod, mesh%nod_comm, FEM_elen%elen_nod, v_sol)
+      call diff_elen_nod_send_recv(mesh%node%numnod, mesh%nod_comm,     &
+     &    FEM_elen%elen_nod, v_sol, SR_sig, SR_r)
 !
 !  ---------------------------------------------------
 !        filter moments on each node
@@ -204,7 +220,7 @@
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,                        &
      &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, fil_elist,          &
      &    FEM_elen, gfil_p, mass1, rhs_mat%fem_wk,                      &
-     &    rhs_mat%f_l, ref_m, v_sol)
+     &    rhs_mat%f_l, ref_m, v_sol, SR_sig, SR_r)
 !
 !  ---------------------------------------------------
 !        differences of element size for each element
@@ -234,7 +250,7 @@
 !
       subroutine s_const_filter_mom_ele(nod_comm, node, ele,            &
      &          g_FEM, jac_3d_q, rhs_tbl, tbl_crs, m_lump, rhs_mat,     &
-     &          gfil_p, mom_nod, mom_ele, v_sol)
+     &          gfil_p, mom_nod, mom_ele, v_sol, SR_sig, SR_r)
 !
       use t_filter_moments
       use t_fem_gauss_int_coefs
@@ -258,16 +274,18 @@
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call filter_mom_nod_send_recv                                     &
-     &   (node%numnod, nod_comm, mom_nod, v_sol)
+     &   (node%numnod, nod_comm, mom_nod, v_sol, SR_sig, SR_r)
 !
       if(gfil_p%itype_mass_matrix .eq. 1) then
         call cal_diffs_filter_nod_consist                               &
      &     (nod_comm, node, ele, g_FEM, jac_3d_q, rhs_tbl, tbl_crs,     &
      &      gfil_p, mass1, rhs_mat%fem_wk, rhs_mat%f_nl,                &
-     &      mom_nod, v_sol)
+     &      mom_nod, v_sol, SR_sig, SR_r)
       else
         call cal_diffs_filter_nod_lump                                  &
      &     (gfil_p%num_int_points, node, ele, g_FEM, jac_3d_q,          &
@@ -275,7 +293,7 @@
       end if
 !
       call diff_filter_mom_nod_send_recv                                &
-     &   (node%numnod, nod_comm, mom_nod, v_sol)
+     &   (node%numnod, nod_comm, mom_nod, v_sol, SR_sig, SR_r)
 !
       call cal_filter_moms_ele_by_nod(gfil_p%num_int_points,            &
      &    node, ele, g_FEM, jac_3d_q, mom_nod, mom_ele)

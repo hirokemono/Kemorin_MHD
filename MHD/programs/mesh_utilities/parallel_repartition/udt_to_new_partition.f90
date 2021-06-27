@@ -11,13 +11,16 @@
 !!     &         (new_ucd_file, new_mesh, new_ucd)
 !!      subroutine udt_field_to_new_partition                           &
 !!     &         (iflag_recv, istep_ucd, new_ucd_file, t_IO,            &
-!!     &          new_mesh, org_to_new_tbl, org_ucd, new_ucd, v_sol)
+!!     &          new_mesh, org_to_new_tbl, org_ucd, new_ucd,           &
+!!     &          v_sol, SR_sig, SR_r)
 !!      subroutine finalize_udt_to_new_partition(new_ucd)
 !!        type(mesh_geometry), intent(in) :: new_mesh
 !!        type(calypso_comm_table), intent(in) :: org_to_new_tbl
 !!        type(ucd_data), intent(in) :: org_ucd
 !!        type(ucd_data), intent(inout) :: new_ucd
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module udt_to_new_partition
@@ -30,6 +33,7 @@
       use t_ucd_data
       use t_file_IO_parameter
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit  none
 !
@@ -63,7 +67,8 @@
 !
       subroutine udt_field_to_new_partition                             &
      &         (iflag_recv, istep_ucd, new_ucd_file, t_IO,              &
-     &          new_mesh, org_to_new_tbl, org_ucd, new_ucd, v_sol)
+     &          new_mesh, org_to_new_tbl, org_ucd, new_ucd,             &
+     &          v_sol, SR_sig, SR_r)
 !
       use transfer_to_new_partition
       use parallel_ucd_IO_select
@@ -78,6 +83,8 @@
 !
       type(ucd_data), intent(inout) :: new_ucd
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       new_ucd%num_field =  org_ucd%num_field
@@ -89,7 +96,7 @@
       call tensor_to_new_partition(iflag_recv,                          &
      &    org_to_new_tbl, new_mesh%nod_comm, new_ucd%ntot_comp,         &
      &    int(org_ucd%nnod), int(new_ucd%nnod),                         &
-     &    org_ucd%d_ucd, new_ucd%d_ucd, v_sol)
+     &    org_ucd%d_ucd, new_ucd%d_ucd, v_sol, SR_sig, SR_r)
 !
       call sel_write_parallel_ucd_file                                  &
          (istep_ucd, new_ucd_file, t_IO, new_ucd)

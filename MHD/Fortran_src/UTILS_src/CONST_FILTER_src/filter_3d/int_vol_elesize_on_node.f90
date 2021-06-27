@@ -13,7 +13,7 @@
 !!
 !!      subroutine int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d, &
 !!     &          rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,    &
-!!     &          elen_ele, elen_nod, fem_wk, f_l, v_sol)
+!!     &          elen_ele, elen_nod, fem_wk, f_l, v_sol, SR_sig, SR_r)
 !!      subroutine int_vol_diff_dxs(num_int_points, node, ele,          &
 !!     &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_nl, elen_org_nod)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -74,7 +74,7 @@
 !
       subroutine int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,   &
      &          rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,      &
-     &          elen_ele, elen_nod, fem_wk, f_l, v_sol)
+     &          elen_ele, elen_nod, fem_wk, f_l, v_sol, SR_sig, SR_r)
 !
       use t_comm_table
       use t_geometry_data
@@ -85,6 +85,7 @@
       use t_element_list_4_filter
       use t_ctl_params_4_gen_filter
       use t_vector_for_solver
+      use t_solver_SR
 !
       use int_element_field_2_node
       use cal_ff_smp_to_ffs
@@ -108,6 +109,8 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if(gfil_p%id_filter_area_grp(1) .eq. -1) then
@@ -130,7 +133,7 @@
         call cal_ff_smp_2_ff                                            &
      &     (node, rhs_tbl, n_scalar, f_l%ff_smp, f_l%ff)
         call cal_sol_dx_by_consist(ione, node, nod_comm, tbl_crs,       &
-     &                             f_l, gfil_p, mass, elen_nod, v_sol)
+     &      f_l, gfil_p, mass, elen_nod, v_sol, SR_sig, SR_r)
       end if
 !
       end subroutine int_dx_ele2_node

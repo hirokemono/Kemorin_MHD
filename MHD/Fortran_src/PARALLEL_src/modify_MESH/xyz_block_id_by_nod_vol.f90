@@ -7,8 +7,19 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine set_volume_at_node(mesh, volume_nod, volume_nod_tot)
+!!      subroutine set_volume_at_node(part_param, repart_WK, mesh,      &
+!!     &          volume_nod, volume_nod_tot, volume_min_gl,            &
+!!     &          SR_sig, SR_r)
+!!        type(volume_partioning_param), intent(in) :: part_param
+!!        type(volume_partioning_work), intent(in) :: repart_WK
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                     :: volume_nod(mesh%node%numnod)
+!!        real(kind = kreal), intent(inout) :: volume_nod_tot
+!!        real(kind = kreal), intent(inout) :: volume_min_gl
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine set_xyz_block_id_by_nod_vol                          &
 !!     &         (node, part_param, id_block)
 !!        type(node_data), intent(in) :: node
@@ -48,33 +59,106 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_volume_at_node(mesh, volume_nod, volume_nod_tot)
+      subroutine set_volume_at_node(part_param, repart_WK, mesh,        &
+     &          volume_nod, volume_nod_tot, volume_min_gl,              &
+     &          SR_sig, SR_r)
 !
+      use t_solver_SR
       use calypso_mpi_real
       use int_volume_of_single_domain
       use solver_SR_type
 !
+      type(volume_partioning_param), intent(in) :: part_param
+      type(volume_partioning_work), intent(in) :: repart_WK
       type(mesh_geometry), intent(in) :: mesh
+!
       real(kind = kreal), intent(inout) :: volume_nod(mesh%node%numnod)
       real(kind = kreal), intent(inout) :: volume_nod_tot
+      real(kind = kreal), intent(inout) :: volume_min_gl
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       real(kind = kreal) :: vol_lc
       integer(kind = kint) :: inod
 !
 !
-      call cal_node_volue(mesh%node, mesh%ele, volume_nod)
-      call SOLVER_SEND_RECV_type                                        &
-     &   (mesh%node%numnod, mesh%nod_comm, volume_nod)
+      if(part_param%iflag_repart_ref .eq. i_NODE_BASED) then
+!$omp parallel workshare
+        volume_nod(1:mesh%node%internal_node) = 1.0d0
+!$omp end parallel workshare
+      else
+        call cal_node_volue(mesh%node, mesh%ele, volume_nod)
+      end if
+!
+      if(part_param%num_mask_repart .gt. 0) then
+        call weighting_by_masking(mesh%node, part_param%shrink,         &
+     &      part_param%num_mask_repart, part_param%masking_repart,      &
+     &      repart_WK%d_mask, volume_nod)
+      end if
+!
+      call SOLVER_SEND_RECV_type(mesh%node%numnod, mesh%nod_comm,       &
+     &                           SR_sig, SR_r, volume_nod)
 !
       vol_lc = 0.0d0
+!$omp parallel do reduction(+:vol_lc)
       do inod = 1, mesh%node%internal_node
         vol_lc = vol_lc + volume_nod(inod)
       end do
+!$omp end parallel do
+!
       call calypso_mpi_allreduce_one_real                               &
      &   (vol_lc, volume_nod_tot, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (vol_lc, volume_min_gl, MPI_MIN)
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'volume_nod_tot', volume_nod_tot
+        write(*,*) 'volume_min_gl', volume_min_gl
+      end if
 !
       end subroutine set_volume_at_node
 !
+! ----------------------------------------------------------------------
+!
+      subroutine weighting_by_masking(node, shrink, num_mask, masking,  &
+     &                                d_mask, volume_nod)
+!
+      use t_ctl_param_masking
+!
+      type(node_data), intent(in) :: node
+      real(kind = kreal), intent(in) :: shrink
+      integer(kind = kint), intent(in) :: num_mask
+      type(masking_parameter), intent(in) :: masking(num_mask)
+      real(kind = kreal), intent(in) :: d_mask(node%numnod,num_mask)
+!
+      real(kind = kreal), intent(inout) :: volume_nod(node%numnod)
+!
+      real(kind = kreal), allocatable :: value(:,:)
+      integer(kind = kint) :: ip, ist, ied, inod
+!
+!
+      allocate(value(num_mask,np_smp))
+!
+!$omp parallel do private(ip,ist,ied,inod)
+      do ip = 1, np_smp
+        ist = node%istack_internal_smp(ip-1) + 1
+        ied = node%istack_internal_smp(ip)
+        do inod = ist, ied
+          value(1:num_mask,ip) = d_mask(inod,1:num_mask)
+!
+          if(multi_mask_flag(num_mask, masking, value)                  &
+     &                                      .eqv. .FALSE.) then
+            volume_nod(inod) = shrink * volume_nod(inod)
+          end if
+        end do
+      end do
+!$omp end parallel do
+!
+      deallocate(value)
+!
+      end subroutine weighting_by_masking
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_xyz_block_id_by_nod_vol                            &

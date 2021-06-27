@@ -1,23 +1,30 @@
+!>@file   interpolate_field_type.f90
+!!@brief  module interpolate_field_type
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2006
 !
-!     module interpolate_field_type
-!
-!     Written by H. Matsui on Sep., 2006
-!
+!>@brief  Interpolation fields between two meshes
+!!
+!!@verbatim
 !!      subroutine interpolate_scalar_type                              &
 !!     &         (i_origin, i_dest, itp_table, mesh_org, mesh_dst,      &
-!!     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol)
+!!     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !!      subroutine interpolate_vector_type                              &
 !!     &         (i_origin, i_dest, itp_table, mesh_org, mesh_dst,      &
-!!     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol)
+!!     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !!      subroutine interpolate_tensor_type                              &
 !!     &         (i_origin, i_dest, itp_table, mesh_org, mesh_dst,      &
-!!     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol)
+!!     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !!        type(mesh_geometry), intent(in) :: mesh_org
 !!        type(mesh_geometry), intent(in) :: mesh_dst
 !!        type(interpolate_table), intent(in) :: itp_table
 !!        type(phys_data), intent(in) :: fld_org
 !!        type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
 !!        type(phys_data), intent(inout) :: fld_dst
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module interpolate_field_type
 !
@@ -32,6 +39,7 @@
       use t_interpolate_table
       use t_phys_data
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -43,9 +51,8 @@
 !
       subroutine interpolate_scalar_type                                &
      &         (i_origin, i_dest, itp_table, mesh_org, mesh_dst,        &
-     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol)
+     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
-      use m_solver_SR
       use interpolate_by_module
 !
 !
@@ -58,6 +65,8 @@
 !
       type(phys_data), intent(inout) :: fld_dst
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
@@ -79,7 +88,7 @@
      &   (itp_table%iflag_itp_recv, mesh_dst%nod_comm,                  &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, mesh_org%node%numnod, mesh_dst%node%numnod,           &
-     &    v_1st_sol%x_vec(1), SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &    v_1st_sol%x_vec(1), SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod
@@ -93,9 +102,8 @@
 !
       subroutine interpolate_vector_type                                &
      &         (i_origin, i_dest, itp_table, mesh_org, mesh_dst,        &
-     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol)
+     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
-      use m_solver_SR
       use interpolate_by_module
 !
 !
@@ -108,6 +116,8 @@
 !
       type(phys_data), intent(inout) :: fld_dst
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
@@ -132,7 +142,7 @@
      &   (itp_table%iflag_itp_recv, mesh_dst%nod_comm,                  &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, mesh_org%node%numnod, mesh_dst%node%numnod,           &
-     &    v_1st_sol%x_vec(1), SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &    v_1st_sol%x_vec(1), SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod
@@ -148,11 +158,9 @@
 !
       subroutine interpolate_tensor_type                                &
      &         (i_origin, i_dest, itp_table, mesh_org, mesh_dst,        &
-     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol)
+     &          fld_org, fld_dst, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
-      use m_solver_SR
       use interpolate_by_module
-!
 !
       integer(kind = kint), intent(in) :: i_origin, i_dest
 !
@@ -163,6 +171,8 @@
 !
       type(phys_data), intent(inout) :: fld_dst
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
@@ -189,7 +199,7 @@
      &   (itp_table%iflag_itp_recv, mesh_dst%nod_comm,                  &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, mesh_org%node%numnod, mesh_dst%node%numnod,           &
-     &    v_1st_sol%x_vec(1), SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &    v_1st_sol%x_vec(1), SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod

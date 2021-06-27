@@ -9,18 +9,20 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_sph_SGS_MHD(MHD_files, MHD_step,      &
-!!     &          iphys_LES, MHD_IO, FEM_MHD)
+!!     &          iphys_LES, MHD_IO, FEM_MHD, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
-!!      subroutine FEM_analyze_sph_SGS_MHD                              &
-!!     &         (MHD_files, MHD_step, MHD_IO, FEM_MHD)
+!!        type(mesh_SR), intent(inout) :: m_SR
+!!      subroutine FEM_analyze_sph_SGS_MHD(MHD_files, MHD_step, MHD_IO, &
+!!     &                                   FEM_MHD, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine SPH_to_FEM_bridge_SGS_MHD                            &
 !!     &        (SGS_par, sph, WK, WK_LES, geofem, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -53,6 +55,7 @@
 !
       use t_shape_functions
       use t_FEM_mesh_field_data
+      use t_mesh_SR
 !
       implicit none
 !
@@ -63,7 +66,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_sph_SGS_MHD(MHD_files, MHD_step,        &
-     &          iphys_LES, MHD_IO, FEM_MHD)
+     &          iphys_LES, MHD_IO, FEM_MHD, m_SR)
 !
       use t_phys_address
       use t_SGS_model_addresses
@@ -87,6 +90,7 @@
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: iflag
 !
@@ -104,7 +108,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
-      call FEM_comm_initialization(FEM_MHD%geofem%mesh, FEM_MHD%v_sol)
+      call FEM_comm_initialization(FEM_MHD%geofem%mesh, m_SR)
 !
 !  -------------------------------
 !  connect grid data to volume output
@@ -118,14 +122,14 @@
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       call output_grd_file_4_snapshot(MHD_files%ucd_file_IO,            &
      &    MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_MHD%field,        &
-     &    MHD_IO%ucd)
+     &    MHD_IO%ucd, m_SR%SR_sig, m_SR%SR_i)
 !
       end subroutine FEM_initialize_sph_SGS_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_SGS_MHD                                &
-     &         (MHD_files, MHD_step, MHD_IO, FEM_MHD)
+      subroutine FEM_analyze_sph_SGS_MHD(MHD_files, MHD_step, MHD_IO,   &
+     &                                   FEM_MHD, m_SR)
 !
       use FEM_analyzer_sph_MHD
 !
@@ -134,11 +138,11 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      call FEM_analyze_sph_MHD                                          &
-     &   (MHD_files, FEM_MHD%geofem, FEM_MHD%field,                     &
-     &    MHD_step, MHD_IO, FEM_MHD%v_sol)
+      call FEM_analyze_sph_MHD(MHD_files, FEM_MHD%geofem,               &
+     &                         FEM_MHD%field, MHD_step, MHD_IO, m_SR)
 !
       end subroutine FEM_analyze_sph_SGS_MHD
 !

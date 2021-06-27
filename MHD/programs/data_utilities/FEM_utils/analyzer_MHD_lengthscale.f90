@@ -19,6 +19,7 @@
 !
       use t_FEM_utils
       use t_VIZ_step_parameter
+      use t_mesh_SR
       use ucd_IO_select
       use FEM_MHD_length_scale
 !
@@ -27,6 +28,8 @@
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR4
 !       Structure for time stepping parameters
       type(time_step_param), save :: time_U
 !
@@ -66,8 +69,8 @@
 !
 !     ---------------------
 !
-      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file,                      &
-     &                           FUTIL1%geofem, FUTIL1%v_sol)
+      call mesh_setup_4_FEM_UTIL                                        &
+     &   (FUTIL1%mesh_file, FUTIL1%geofem,  m_SR4)
 !
 !     --------------------- 
 !

@@ -13,6 +13,7 @@
       use m_work_time
       use m_SPH_transforms
       use t_ctl_params_sph_trans
+      use t_mesh_SR
 !
       use FEM_analyzer_sph_trans
       use SPH_analyzer_sph_trans
@@ -39,7 +40,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans(spt_ctl1, t_STR, SPH_TRNS,        &
-     &                                FEM_STR1, SPH_STR1, VIZ_D_STR1)
+     &                                FEM_STR1, SPH_STR1)
       call set_ctl_data_4_zm_trans(spt_ctl1, SPH_STR1)
 !
 !  ------    set spectr grids
@@ -50,12 +51,13 @@
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_sph_trans'
-      call FEM_initialize_sph_trans                                     &
-     &   (t_STR%init_d, t_STR%ucd_step, FEM_STR1)
+      call FEM_initialize_sph_trans(t_STR%init_d, t_STR%ucd_step,       &
+     &                              FEM_STR1, m_SR5)
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_init_sph_zm_trans'
-      call SPH_initialize_sph_trans(SPH_TRNS, SPH_STR1)
+      call SPH_initialize_sph_trans(SPH_TRNS, SPH_STR1,                 &
+     &                              m_SR5%SR_sig, m_SR5%SR_r)
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
@@ -72,11 +74,13 @@
 !
       do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
 !   Input field data
-        call FEM_analyze_sph_trans(i_step, t_STR%ucd_step, FEM_STR1)
+        call FEM_analyze_sph_trans(i_step, t_STR%ucd_step,              &
+     &                             FEM_STR1, m_SR5)
 !
 !   Spherical transform
-        call SPH_analyze_sph_zm_trans(i_step, FEM_STR1%geofem,          &
-     &      FEM_STR1%field, SPH_TRNS, SPH_STR1)
+        call SPH_analyze_sph_zm_trans                                   &
+     &     (i_step, FEM_STR1%geofem, FEM_STR1%field, SPH_TRNS,          &
+     &      SPH_STR1, m_SR5%SR_sig, m_SR5%SR_r)
       end do
 !
       call FEM_finalize_sph_trans(t_STR%ucd_step, FEM_STR1)

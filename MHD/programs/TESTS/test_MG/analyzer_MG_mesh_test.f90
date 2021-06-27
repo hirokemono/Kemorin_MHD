@@ -17,10 +17,17 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
       type(mesh_data), save :: fem_MG
+!
+!>      Structure of communication flags
+      type(send_recv_status) :: SR_sig1
+!>        Structure of communication buffer for 4-byte integer
+        type(send_recv_int_buffer) :: SR_i1
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,7 +48,6 @@
       use set_edge_data_4_IO
       use check_jacobians
       use int_volume_of_domain
-      use set_surf_grp_vectors
       use check_surface_groups
       use set_normal_vectors
       use set_edge_vectors
@@ -80,25 +86,31 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, fem_MG%mesh, fem_MG%group)
+      if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos(my_rank, fem_MG%mesh, fem_MG%group)
+      if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
+      call const_surface_infos                                          &
+     &   (my_rank, fem_MG%mesh%node, fem_MG%mesh%ele,                   &
+     &    fem_MG%group%surf_grp, fem_MG%mesh%surf,                      &
+     &    fem_MG%group%surf_nod_grp)
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos                                        &
+     &   (fem_MG%mesh%nod_comm, fem_MG%mesh%node, fem_MG%mesh%ele,      &
+     &    fem_MG%mesh%surf, fem_MG%mesh%edge, SR_sig1, SR_i1)
 !
 !  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry(fem_MG%mesh%surf,                &
-     &    fem_MG%group%surf_grp, fem_MG%group%tbls_surf_grp,            &
-     &    fem_MG%group%surf_grp_geom)
-!
-!  -------------------------------
 !  -------------------------------
 !
-      if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      allocate(jacobians_T%g_FEM)
+      if(iflag_debug.gt.0) write(*,*) 'jacobian_and_element_volume'
       call sel_max_int_point_by_etype                                   &
      &   (fem_MG%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
-      call const_jacobian_volume_normals(my_rank, nprocs,               &
+      call jacobian_and_element_volume(my_rank, nprocs,                 &
      &    fem_MG%mesh, fem_MG%group, spfs_T, jacobians_T)
+!
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &   'surf_jacobian_sf_grp_normal'
+      call surf_jacobian_sf_grp_normal(my_rank, nprocs,                 &
+     &    fem_MG%mesh, fem_MG%grou, spfs_T, jacobians_T)
 !
 !  -------------------------------
 !

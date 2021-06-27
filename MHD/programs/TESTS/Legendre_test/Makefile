@@ -38,15 +38,13 @@ dir_list:
 target_list:
 	@echo 'TARGET_SMDT_POLY =   $$(BUILDDIR)/$(TARGET_SMDT_POLY)'  >> $(MAKENAME)
 	@echo 'TARGET_MAG_SMDT =    $$(BUILDDIR)/$(TARGET_MAG_SMDT)'  >> $(MAKENAME)
-	@echo 'TARGET_MAG16_SMDT =  $$(BUILDDIR)/$(TARGET_MAG16_SMDT)'  >> $(MAKENAME)
 	@echo 'TARGET_ACDC_SMDT =   $$(BUILDDIR)/$(TARGET_ACDC_SMDT)'  >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo leg_tests: \
 	'$$(TARGET_SMDT_POLY) $$(TARGET_SPH_TRIINT)' \
-    '$$(TARGET_MAG_SMDT)  $$(TARGET_MAG16_SMDT)' \
-    '$$(TARGET_ACDC_SMDT)' \
+    '$$(TARGET_MAG_SMDT)  $$(TARGET_ACDC_SMDT)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SMDT_POLY)': '$$(MOD_SMDT_POLY_TEST)' \
@@ -71,15 +69,6 @@ target_task:
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_MAG_SMDT)' \
 	'$$(MOD_MAG_SMDT)' \
-	'-L. $$(LIBS_MESH_TEST)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_MAG16_SMDT):' \
-	'$$(MOD_MAG16_SMDT) $$(LIB_FILES_MESH_TEST)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_MAG16_SMDT)' \
-	'$$(MOD_MAG16_SMDT)' \
 	'-L. $$(LIBS_MESH_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

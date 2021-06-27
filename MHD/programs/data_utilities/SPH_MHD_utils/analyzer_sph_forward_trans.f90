@@ -28,6 +28,7 @@
       use t_SPH_mesh_field_data
       use t_step_parameter
       use t_VIZ_mesh_field
+      use t_mesh_SR
 !
       use FEM_analyzer_sph_SGS_MHD
       use SPH_analyzer_SGS_snap
@@ -66,7 +67,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo                                 &
      &   (MHD_files1, MHD_ctl1, MHD_step1, SPH_model1,                  &
-     &    SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1, VIZ_DAT1)
+     &    SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -75,12 +76,12 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
-     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1)
+     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1, m_SR1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
       call SPH_init_SGS_snap(MHD_files1, FEM_d1%iphys, SPH_model1,      &
-     &    SPH_SGS1, SPH_MHD1, SPH_WK1)
+     &    SPH_SGS1, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -111,9 +112,9 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
-        call SPH_analyze_SGS_snap                                       &
-     &     (MHD_step1%time_d%i_time_step, MHD_files1,                   &
-     &      SPH_model1, MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1)
+        call SPH_analyze_SGS_snap(MHD_step1%time_d%i_time_step,         &
+     &      MHD_files1, SPH_model1, MHD_step1, SPH_SGS1, SPH_MHD1,      &
+     &      SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
 !*
 !*  -----------  exit loop --------------
 !*

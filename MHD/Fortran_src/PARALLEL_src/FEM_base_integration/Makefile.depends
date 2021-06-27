@@ -82,7 +82,7 @@ fem_skv_tensor_on_ele.o: $(FEM_INT_DIR)/fem_skv_tensor_on_ele.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_vector_on_ele.o: $(FEM_INT_DIR)/fem_skv_vector_on_ele.f90 m_precision.o m_machine_parameter.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_area_normal_4_surface.o: $(FEM_INT_DIR)/int_area_normal_4_surface.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o
+int_area_normal_4_surface.o: $(FEM_INT_DIR)/int_area_normal_4_surface.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_differenciate_on_ele.o: $(FEM_INT_DIR)/int_differenciate_on_ele.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -116,7 +116,7 @@ int_vol_vect_cst_difference.o: $(FEM_INT_DIR)/int_vol_vect_cst_difference.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 int_vol_vect_differences.o: $(FEM_INT_DIR)/int_vol_vect_differences.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o nodal_fld_2_each_element.o cal_skv_to_ff_smp.o fem_skv_grad.o fem_skv_div.o fem_skv_rot.o fem_skv_div_flux.o fem_skv_div_asym_t.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_volume_of_domain.o: $(FEM_INT_DIR)/int_volume_of_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o set_normal_vectors.o set_surf_grp_vectors.o sum_normal_4_surf_group.o set_connects_4_surf_group.o const_jacobians_3d.o sum_volume_of_domain.o const_bc_infty_surf_type.o t_layering_ele_list.o cal_layered_volumes.o calypso_mpi_real.o fem_element_volume.o
+int_volume_of_domain.o: $(FEM_INT_DIR)/int_volume_of_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o t_surface_group_normals.o set_normal_vectors.o const_jacobians_3d.o sum_volume_of_domain.o const_bc_infty_surf_type.o t_layering_ele_list.o cal_layered_volumes.o calypso_mpi_real.o fem_element_volume.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_volume_of_single_domain.o: $(FEM_INT_DIR)/int_volume_of_single_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o sum_volume_of_domain.o const_jacobians_3d.o const_bc_infty_surf_type.o m_machine_parameter.o fem_element_volume.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -158,15 +158,13 @@ set_nodal_each_ele_w_coef.o: $(FEM_INT_DIR)/set_nodal_each_ele_w_coef.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 set_nodal_each_ele_w_const.o: $(FEM_INT_DIR)/set_nodal_each_ele_w_const.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_normal_vectors.o: $(FEM_INT_DIR)/set_normal_vectors.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_surface_data.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o t_jacobian_2d.o int_area_normal_4_surface.o
+set_normal_vectors.o: $(FEM_INT_DIR)/set_normal_vectors.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_normals.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o t_jacobian_2d.o int_area_normal_4_surface.o sum_normal_4_surf_group.o set_connects_4_surf_group.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_off_diagonal.o: $(FEM_INT_DIR)/set_off_diagonal.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_surf_grp_vectors.o: $(FEM_INT_DIR)/set_surf_grp_vectors.f90 m_precision.o m_machine_parameter.o t_surface_data.o t_group_data.o t_group_connects.o t_surface_group_geometry.o sum_normal_4_surf_group.o m_geometry_constants.o coordinate_converter.o
-	$(F90) -c $(F90OPTFLAGS) $<
 set_table_4_RHS_assemble.o: $(FEM_INT_DIR)/set_table_4_RHS_assemble.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_next_node_ele_4_node.o t_table_FEM_const.o set_ele_id_4_node_type.o ordering_rhs_assemble_type.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sum_normal_4_surf_group.o: $(FEM_INT_DIR)/sum_normal_4_surf_group.f90 m_precision.o calypso_mpi.o calypso_mpi_real.o m_machine_parameter.o t_geometry_data.o t_group_data.o t_surface_group_geometry.o
+sum_normal_4_surf_group.o: $(FEM_INT_DIR)/sum_normal_4_surf_group.f90 m_precision.o calypso_mpi.o calypso_mpi_real.o m_machine_parameter.o t_geometry_data.o t_group_data.o t_surface_group_normals.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_volume_of_domain.o: $(FEM_INT_DIR)/sum_volume_of_domain.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

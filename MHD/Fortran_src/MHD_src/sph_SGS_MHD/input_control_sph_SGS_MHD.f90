@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine input_control_SPH_SGS_dynamo                         &
 !!     &         (MHD_files, MHD_ctl, MHD_step, SPH_model,              &
-!!     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat, VIZ_DAT)
+!!     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -18,7 +18,6 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
-!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!@endverbatim
 !
 !
@@ -36,7 +35,6 @@
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
       use t_FEM_mesh_field_data
-      use t_VIZ_mesh_field
       use t_control_param_vol_grping
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
@@ -56,7 +54,7 @@
 !
       subroutine input_control_SPH_SGS_dynamo                           &
      &         (MHD_files, MHD_ctl, MHD_step, SPH_model,                &
-     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat, VIZ_DAT)
+     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !
       use m_error_IDs
 !
@@ -76,17 +74,15 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(FEM_mesh_field_data), intent(inout) :: FEM_dat
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
-      call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
-     &    MHD_ctl%repart_ctl, MHD_ctl%model_ctl,                        &
+      call set_control_4_SPH_SGS_MHD                                    &
+     &   (MHD_ctl%plt, MHD_ctl%org_plt, MHD_ctl%model_ctl,              &
      &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
      &    MHD_files, SPH_model%bc_IO, SPH_SGS%SGS_par, SPH_SGS%dynamic, &
      &    MHD_step, SPH_model%MHD_prop, SPH_model%MHD_BC,               &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD%sph_maker,            &
-     &    VIZ_DAT%repart_p)
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD%sph_maker)
 !
       call set_control_SGS_SPH_MHD_field(MHD_ctl%model_ctl,             &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, MHD_ctl%zm_ctls,      &

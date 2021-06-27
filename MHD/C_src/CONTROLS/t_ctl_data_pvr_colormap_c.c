@@ -44,7 +44,7 @@ const char label_colorbar_ctl[NLBL_PVR_COLORBAR_CTL][KCHARA_C] = {
 	/*[ 4]*/	{"iflag_zeromarker"},
 	/*[ 5]*/	{"colorbar_range"},
 	
-	/*[ 6]*/	{"axis_label_switch"},
+	/*[ 6]*/	{"axis_label_switch"}
 };
 
 const char label_cmap_cbar_ctl[NLBL_CMAP_CBAR_CTL][KCHARA_C] = {

@@ -20,7 +20,6 @@
 !!
 !!    vr_sample_mode:         'fixed_size' or 'element_count'
 !!    normalization_type:     'set_by_control' or 'set_by_range'
-!!    reflection_reference:   'noise_file''color_field'
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin LIC_ctl
@@ -31,6 +30,10 @@
 !!
 !!!    opacity_field       magnetic_field
 !!!    opacity_component   amplitude
+!!
+!!    begin LIC_repartition_ctl
+!!     ...
+!!    end LIC_repartition_ctl
 !!
 !!    array masking_control    1
 !!      begin masking_control
@@ -73,42 +76,48 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
-      use t_control_data_LIC_masking
+      use t_control_data_masking
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
+      use t_ctl_data_volume_repart
 !
       implicit  none
 !
 !     3rd level for LIC_ctl
 !
-      character(len=kchara) :: hd_LIC_field =   'LIC_field'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_LIC_field =   'LIC_field'
 !
-      character(len=kchara) :: hd_color_field =     'color_field'
-      character(len=kchara) :: hd_color_component = 'color_component'
-      character(len=kchara) :: hd_opacity_field =   'opacity_field'
-      character(len=kchara) :: hd_opacity_component                     &
-     &                        = 'opacity_component'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_color_field =     'color_field'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_color_component = 'color_component'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_opacity_field =   'opacity_field'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_opacity_component = 'opacity_component'
 !
-      character(len=kchara) :: hd_masking_ctl = 'masking_control'
-      character(len=kchara) :: hd_cube_noise =  'cube_noise_ctl'
-      character(len=kchara) :: hd_kernel =      'kernel_ctl'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_masking_ctl = 'masking_control'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_cube_noise =  'cube_noise_ctl'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_kernel =      'kernel_ctl'
 !
-      character(len=kchara) :: hd_vr_sample_mode                        &
-     &                        = 'vr_sample_mode'
-      character(len=kchara) :: hd_step_size = 'step_size'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_vr_sample_mode = 'vr_sample_mode'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_step_size = 'step_size'
 !
-      character(len=kchara) :: hd_normalization_type                    &
-     &                        = 'normalization_type'
-      character(len=kchara) :: hd_normalization_value                   &
-     &                        = 'normalization_value'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_normalization_type = 'normalization_type'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_normalization_value = 'normalization_value'
 !
-      integer(kind = kint), parameter, private :: n_label_LIC = 12
+      character(len=kchara), parameter, private                         &
+     &             :: hd_lic_partition = 'LIC_repartition_ctl'
 !
-      private :: hd_LIC_field, hd_color_field, hd_color_component
-      private :: hd_opacity_field, hd_opacity_component
-      private :: hd_masking_ctl, hd_cube_noise, hd_kernel
-      private :: hd_vr_sample_mode, hd_step_size
-      private :: hd_normalization_type, hd_normalization_value
+      integer(kind = kint), parameter, private :: n_label_LIC = 13
 !
 !  ---------------------------------------------------------------------
 !
@@ -157,6 +166,8 @@
         call read_real_ctl_type(c_buf, hd_normalization_value,          &
      &      lic_ctl%normalization_value_ctl)
 !
+        call read_control_vol_repart(id_control, hd_lic_partition,      &
+     &                               lic_ctl%repart_ctl, c_buf)
         call read_cube_noise_control_data                               &
      &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
         call read_kernel_control_data                                   &
@@ -202,6 +213,8 @@
       call set_control_labels(hd_step_size,           names(10))
       call set_control_labels(hd_normalization_type,  names(11))
       call set_control_labels(hd_normalization_value, names(12))
+!
+      call set_control_labels(hd_lic_partition,  names(13))
 !
       end subroutine set_ctl_label_LIC
 !

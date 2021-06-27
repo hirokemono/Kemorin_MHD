@@ -23,6 +23,7 @@
       use t_surface_data
       use t_edge_data
       use t_file_IO_parameter
+      use t_mesh_SR
       use m_work_time
 !
       implicit none
@@ -35,6 +36,7 @@
       end type mesh_test_files_param
 !
       type(mesh_data), save :: fem_T
+      type(mesh_SR), save :: m_SR_T
 !
 ! ----------------------------------------------------------------------
 !
@@ -56,7 +58,6 @@
       use element_file_IO
       use check_jacobians
       use int_volume_of_domain
-      use set_surf_grp_vectors
       use check_surface_groups
       use set_normal_vectors
       use set_edge_vectors
@@ -113,26 +114,25 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call init_nod_send_recv(fem_T%mesh)
-      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
+      call init_nod_send_recv(fem_T%mesh,                               &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call calypso_MPI_barrier
 !
 !  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry(fem_T%mesh%surf,                 &
-     &   fem_T%group%surf_grp, fem_T%group%tbls_surf_grp,               &
-     &   fem_T%group%surf_grp_geom)
-!
-!  -------------------------------
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      allocate(jacobians_T%g_FEM)
+      if (iflag_debug.gt.0) write(*,*) 'jacobian_and_element_volume'
       call sel_max_int_point_by_etype                                   &
      &   (fem_T%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
-      call const_jacobian_volume_normals(my_rank, nprocs,               &
+      call jacobian_and_element_volume(my_rank, nprocs,                 &
+     &    fem_T%mesh, fem_T%group, spfs_T, jacobians_T)
+!
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &   'surf_jacobian_sf_grp_normal'
+      call surf_jacobian_sf_grp_normal(my_rank, nprocs,                 &
      &    fem_T%mesh, fem_T%group, spfs_T, jacobians_T)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'

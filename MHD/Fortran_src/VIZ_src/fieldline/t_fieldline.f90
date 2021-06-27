@@ -7,12 +7,13 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine FLINE_initialize(fem, nod_fld, fline_ctls, fline)
+!!      subroutine FLINE_initialize                                     &
+!!     &         (increment_fline, fem, nod_fld, fline_ctls, fline)
 !!      subroutine FLINE_visualize                                      &
-!!     &         (istep_fline, fem, ele_4_nod, nod_fld, fline)
+!!     &         (istep_fline, fem, next_tbl, nod_fld, fline)
 !!      subroutine FLINE_finalize(fline)
 !!        type(mesh_data), intent(in) :: fem
-!!        type(element_around_node), intent(in) :: ele_4_nod
+!!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!        type(fieldline_module), intent(inout) :: fline
@@ -52,12 +53,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine FLINE_initialize(fem, nod_fld, fline_ctls, fline)
+      subroutine FLINE_initialize                                       &
+     &         (increment_fline, fem, nod_fld, fline_ctls, fline)
 !
       use calypso_mpi
       use t_control_data_flines
       use set_fline_control
 !
+      integer(kind = kint), intent(in) :: increment_fline
       type(mesh_data), intent(in) :: fem
       type(phys_data), intent(in) :: nod_fld
       type(fieldline_controls), intent(inout) :: fline_ctls
@@ -67,6 +70,7 @@
 !
 !
       fline%num_fline = fline_ctls%num_fline_ctl
+      if(increment_fline .le. 0) fline%num_fline = 0
       if(fline%num_fline .le. 0) return
 !
       allocate(fline%fln_prm(fline%num_fline))
@@ -101,7 +105,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine FLINE_visualize                                        &
-     &         (istep_fline, fem, ele_4_nod, nod_fld, fline)
+     &         (istep_fline, fem, next_tbl, nod_fld, fline)
 !
       use set_fields_for_fieldline
       use const_field_lines
@@ -109,7 +113,7 @@
 !
       integer(kind = kint), intent(in) :: istep_fline
       type(mesh_data), intent(in) :: fem
-      type(element_around_node), intent(in) :: ele_4_nod
+      type(next_nod_ele_table), intent(in) :: next_tbl
       type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_module), intent(inout) :: fline
@@ -133,7 +137,7 @@
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines(fem%mesh%node, fem%mesh%ele,           &
-     &      fem%mesh%surf, ele_4_nod, fem%mesh%nod_comm,                &
+     &      fem%mesh%surf, next_tbl%neib_ele, fem%mesh%nod_comm,        &
      &      fline%fln_prm(i_fln), fline%fln_src(i_fln),                 &
      &      fline%fln_tce(i_fln), fline%fline_lc)
 !
@@ -152,6 +156,8 @@
 !
       integer(kind = kint) :: i
 !
+!
+      if (fline%num_fline .le. 0) return
 !
       call dealloc_local_fline(fline%fline_lc)
       call dealloc_global_fline_num(fline%fline_gl)

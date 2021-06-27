@@ -1,12 +1,12 @@
+!>@file   node_equaly_sectioning.f90
+!!@brief  module node_equaly_sectioning
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!     module node_equaly_sectioning
-!
-!
-!     Written by K. Nakajima
-!     Modified by H. Matsui
-!
-!       output: nod_d_grp%IGROUP
-!
+!>@brief Grouping by number of nodes for partitioner
+!!
+!!@verbatim
 !!      subroutine equaly_bisection                                     &
 !!     &         (part_p, nnod, inter_nod, xx, nod_d_grp)
 !!      subroutine equaly_volume_bisection(part_p, nnod, inter_nod, xx, &
@@ -23,12 +23,16 @@
 !!
 !!      subroutine eb_spherical(part_p, nnod, inter_nod,                &
 !!     &          radius, colatitude, longitude, nod_d_grp)
-!!      subroutine eb_spherical_w_egrp(part_p, nnod, inter_nod, num_mat,&
-!!     &          mat_name, ntot_node_ele_grp, inod_stack_ele_grp,      &
-!!     &          inod_ele_grp, radius, colatitude, longitude,          &
-!!     &          nod_d_grp)
+!!      subroutine eb_spherical_w_egrp                                  &
+!!     &         (part_p, node, ele, surf, edge, ele_grp, nod_d_grp)
 !!        type(ctl_param_partitioner), intent(in) :: part_p
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data),    intent(in) :: edge
+!!        type(group_data), intent(in) :: ele_grp
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
+!!@endverbatim
 !
       module node_equaly_sectioning
 !
@@ -237,44 +241,55 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine eb_spherical_w_egrp(part_p, nnod, inter_nod, num_mat,  &
-     &          mat_name, ntot_node_ele_grp, inod_stack_ele_grp,        &
-     &          inod_ele_grp, radius, colatitude, longitude,            &
-     &          nod_d_grp)
+      subroutine eb_spherical_w_egrp                                    &
+     &         (part_p, node, ele, surf, edge, ele_grp, nod_d_grp)
+!
+      use t_geometry_data
+      use t_group_data
+      use t_surface_data
+      use t_edge_data
+      use t_element_group_table
 !
       type(ctl_param_partitioner), intent(in) :: part_p
-      integer(kind = kint), intent(in) :: nnod, inter_nod
-!
-      integer(kind = kint), intent(in) :: num_mat, ntot_node_ele_grp
-      integer(kind = kint), intent(in) :: inod_stack_ele_grp(0:num_mat)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: inod_ele_grp(ntot_node_ele_grp)
-      character(len=kchara), intent(in) :: mat_name(num_mat)
-!
-      real(kind= kreal), intent(in) :: radius(nnod)
-      real(kind= kreal), intent(in) :: colatitude(nnod)
-      real(kind= kreal), intent(in) :: longitude(nnod)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data),    intent(in) :: edge
+      type(group_data), intent(in) :: ele_grp
 !
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
+      type(element_group_table) :: ele_grp_tbl
+!
+!
+      call const_element_group_table                                    &
+     &   (node, ele, surf, edge, ele_grp, ele_grp_tbl)
 !C
 !C +-----+
 !C | EB  |
 !C +-----+
 !C===
-      call alloc_work_4_rcb(nnod, part_comm)
-
-      nod_d_grp%IGROUP(1:nnod)= 0
-      nod_d_grp%IGROUP(1:inter_nod)= 1
+      call alloc_work_4_rcb(node%numnod, part_comm)
+!
+!$omp parallel workshare
+      nod_d_grp%IGROUP(1:node%numnod)= 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      nod_d_grp%IGROUP(1:node%internal_node)= 1
+!$omp end parallel workshare
 
       call s_sort_by_position_w_grp                                     &
-     &   (inter_nod, part_p%ndivide_eb, num_mat,                        &
-     &    mat_name, ntot_node_ele_grp, inod_stack_ele_grp,              &
-     &    inod_ele_grp, part_p%num_egrp_layer, part_p%grp_layer_name,   &
-     &    nod_d_grp%IGROUP, radius(1), colatitude(1), longitude(1),     &
+     &   (node%internal_node, part_p%ndivide_eb,                        &
+     &    ele_grp%num_grp, ele_grp%grp_name,                            &
+     &    ele_grp_tbl%nod_tbl%ntot_e_grp,                               &
+     &    ele_grp_tbl%nod_tbl%istack_e_grp,                             &
+     &    ele_grp_tbl%nod_tbl%item_e_grp,                               &
+     &    part_p%num_egrp_layer, part_p%grp_layer_name,                 &
+     &    nod_d_grp%IGROUP, node%rr(1), node%theta(1), node%phi(1),     &
      &    part_comm%VAL, part_comm%IS1)
 !
       call dealloc_work_4_rcb(part_comm)
+      call dealloc_element_group_table(ele_grp_tbl)
 !
       end subroutine eb_spherical_w_egrp
 !

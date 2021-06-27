@@ -8,12 +8,15 @@
 !>@brief Structure for cross sectioning
 !!
 !!@verbatim
-!!      subroutine SECTIONING_initialize(geofem, nod_fld, psf_ctls, psf)
+!!      subroutine SECTIONING_initialize(increment_psf, geofem,         &
+!!     &          edge_comm, nod_fld, psf_ctls, psf, SR_sig, SR_il)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: edge_comm
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(section_controls), intent(inout) :: psf_ctls
 !!        type(sectioning_module), intent(inout) :: psf
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine SECTIONING_visualize                                 &
 !!     &         (istep_psf, time_d, geofem, nod_fld, psf)
 !!        type(time_data), intent(in) :: time_d
@@ -40,6 +43,8 @@
       use t_psf_geometry_list
       use t_psf_patch_data
       use t_ucd_data
+      use t_solver_SR
+      use t_solver_SR_int8
 !
       use t_psf_case_table
       use t_surface_group_connect
@@ -89,8 +94,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SECTIONING_initialize                                  &
-     &         (geofem, edge_comm, nod_fld, psf_ctls, psf)
+      subroutine SECTIONING_initialize(increment_psf, geofem,           &
+     &          edge_comm, nod_fld, psf_ctls, psf, SR_sig, SR_il)
 !
       use m_work_time
       use m_elapsed_labels_4_VIZ
@@ -104,17 +109,21 @@
       use set_fields_for_psf
       use output_4_psf
 !
+      integer(kind = kint), intent(in) :: increment_psf
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: edge_comm
       type(phys_data), intent(in) :: nod_fld
 !
       type(section_controls), intent(inout) :: psf_ctls
       type(sectioning_module), intent(inout) :: psf
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       integer(kind = kint) :: i_psf
 !
 !
       psf%num_psf = psf_ctls%num_psf_ctl
+      if(increment_psf .le. 0) psf%num_psf = 0
       if(psf%num_psf .le. 0) return
 !
       call init_psf_case_tables(psf%psf_case_tbls)
@@ -150,7 +159,7 @@
       call set_node_and_patch_psf                                       &
      &   (psf%num_psf, geofem%mesh, geofem%group, edge_comm,            &
      &    psf%psf_case_tbls, psf%psf_def, psf%psf_search, psf%psf_list, &
-     &    psf%psf_grp_list, psf%psf_mesh)
+     &    psf%psf_grp_list, psf%psf_mesh, SR_sig, SR_il)
 !
       call alloc_psf_field_data(psf%num_psf, psf%psf_mesh)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+1)
@@ -208,6 +217,9 @@
 !
       type(sectioning_module), intent(inout) :: psf
       integer(kind = kint) :: i_psf
+!
+!
+      if(psf%num_psf .le. 0) return
 !
       do i_psf = 1, psf%num_psf
         call dealloc_node_param_smp(psf%psf_mesh(i_psf)%node)

@@ -12,7 +12,7 @@
 !!     &          v_1st_sol, v_2nd_sol)
 !!      subroutine interpolate_nodal_data(node_org, fld_org,            &
 !!     &          comm_dest, itp_table, nod_dest, phys_dest,            &
-!!     &          v_1st_sol, v_2nd_sol)
+!!     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !!        integer(kind = kint), intent(in) :: numdir, i_dest, i_origin
 !!        type(node_data), intent(in) :: node_org
 !!        type(element_data), intent(in) :: ele_org
@@ -21,6 +21,8 @@
 !!        type(communication_table), intent(in) :: comm_dest
 !!        type(phys_data), intent(inout) :: phys_dest
 !!        type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module interpolate_nod_field_2_type
@@ -34,6 +36,7 @@
       use t_phys_data
       use t_interpolate_table
       use t_vector_for_solver
+      use t_solver_SR
 !
       implicit none
 !
@@ -74,7 +77,7 @@
 !
       subroutine interpolate_nodal_data(node_org, fld_org,              &
      &          comm_dest, itp_table, nod_dest, phys_dest,              &
-     &          v_1st_sol, v_2nd_sol)
+     &          v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -88,6 +91,8 @@
 !
       type(phys_data), intent(inout) :: phys_dest
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       do i = 1, fld_org%num_phys
@@ -98,28 +103,28 @@
      &            trim(fld_org%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_scalar(i_dest, i_origin,                   &
      &        node_org, fld_org, comm_dest, itp_table, nod_dest,        &
-     &        phys_dest, v_1st_sol, v_2nd_sol)
+     &        phys_dest, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
         else if (fld_org%num_component(i) .eq. n_vector) then
           if (my_rank.eq.0) write(*,*) ' interpolate vector: ',         &
      &            trim(fld_org%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_vector(i_dest, i_origin,                   &
      &        node_org, fld_org, comm_dest, itp_table,                  &
-     &        nod_dest, phys_dest, v_1st_sol, v_2nd_sol)
+     &        nod_dest, phys_dest, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
 !
         else if (fld_org%num_component(i) .eq. n_sym_tensor) then
           if (my_rank.eq.0) write(*,*) ' interpolate tensor: ',         &
      &            trim(fld_org%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_tensor(i_dest, i_origin,                   &
      &        node_org, fld_org, comm_dest, itp_table,                  &
-     &        nod_dest, phys_dest, v_1st_sol, v_2nd_sol)
+     &        nod_dest, phys_dest, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
         else
           if (my_rank.eq.0) write(*,*) ' interpolate tensor: ',         &
      &            trim(fld_org%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_fields                                     &
      &       (fld_org%num_component(i), i_dest, i_origin,               &
      &        node_org, fld_org, comm_dest, itp_table,                  &
-     &        nod_dest, phys_dest, v_1st_sol, v_2nd_sol)
+     &        nod_dest, phys_dest, v_1st_sol, v_2nd_sol, SR_sig, SR_r)
         end if
       end do
 !
@@ -130,9 +135,9 @@
 !
       subroutine s_interpolate_scalar                                   &
      &         (i_dest, i_origin, node_org, fld_org, comm_dest,         &
-     &         itp_table, nod_dest, phys_dest, v_1st_sol, v_2nd_sol)
+     &          itp_table, nod_dest, phys_dest, v_1st_sol, v_2nd_sol,   &
+     &          SR_sig, SR_r)
 !
-      use m_solver_SR
       use interpolate_by_module
 !
       integer(kind = kint), intent(in) :: i_dest, i_origin
@@ -144,6 +149,8 @@
 !
       type(phys_data), intent(inout) :: phys_dest
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
@@ -160,7 +167,7 @@
       call interpolate_mod_1(itp_table%iflag_itp_recv, comm_dest,       &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, node_org%numnod, nod_dest%numnod,                     &
-     &    v_1st_sol%x_vec(1), SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &    v_1st_sol%x_vec(1), SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel do
       do inod = 1, nod_dest%numnod
@@ -174,9 +181,9 @@
 !
       subroutine s_interpolate_vector(i_dest, i_origin,                 &
      &          node_org, fld_org, comm_dest, itp_table,                &
-     &          nod_dest, phys_dest, v_1st_sol, v_2nd_sol)
+     &          nod_dest, phys_dest, v_1st_sol, v_2nd_sol,              &
+     &          SR_sig, SR_r)
 !
-      use m_solver_SR
       use interpolate_by_module
 !
 !
@@ -189,6 +196,8 @@
 !
       type(phys_data), intent(inout) :: phys_dest
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
@@ -209,7 +218,7 @@
       call interpolate_mod_3(itp_table%iflag_itp_recv, comm_dest,       &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, node_org%numnod, nod_dest%numnod,                     &
-     &    v_1st_sol%x_vec(1), SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &    v_1st_sol%x_vec(1), SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel do
       do inod = 1, nod_dest%numnod
@@ -225,11 +234,10 @@
 !
       subroutine s_interpolate_tensor(i_dest, i_origin,                 &
      &          node_org, fld_org, comm_dest, itp_table,                &
-     &          nod_dest, phys_dest, v_1st_sol, v_2nd_sol)
+     &          nod_dest, phys_dest, v_1st_sol, v_2nd_sol,              &
+     &          SR_sig, SR_r)
 !
-      use m_solver_SR
       use interpolate_by_module
-!
 !
       integer(kind = kint), intent(in) :: i_dest, i_origin
 !
@@ -240,6 +248,8 @@
 !
       type(phys_data), intent(inout) :: phys_dest
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod
 !
@@ -264,7 +274,7 @@
       call interpolate_mod_6(itp_table%iflag_itp_recv, comm_dest,       &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, node_org%numnod, nod_dest%numnod,                     &
-     &    v_1st_sol%x_vec(1), SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &    v_1st_sol%x_vec(1), SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel do
       do inod = 1, nod_dest%numnod
@@ -284,9 +294,9 @@
 !
       subroutine s_interpolate_fields(numdir, i_dest, i_origin,         &
      &          node_org, fld_org, comm_dest, itp_table,                &
-     &          nod_dest, phys_dest, v_1st_sol, v_2nd_sol)
+     &          nod_dest, phys_dest, v_1st_sol, v_2nd_sol,              &
+     &          SR_sig, SR_r)
 !
-      use m_solver_SR
       use interpolate_by_module
 !
       integer(kind = kint), intent(in) :: numdir, i_dest, i_origin
@@ -298,6 +308,8 @@
 !
       type(phys_data), intent(inout) :: phys_dest
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: inod, nd
 !
@@ -321,7 +333,7 @@
       call interpolate_mod_N(iflag_import_mod, comm_dest,               &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, node_org%numnod, nod_dest%numnod, numdir,             &
-     &    v_1st_sol%x_vec(1), SR_sig1, SR_r1, v_2nd_sol%x_vec(1))
+     &    v_1st_sol%x_vec(1), SR_sig, SR_r, v_2nd_sol%x_vec(1))
 !
 !$omp parallel private(inod)
       do nd = 1, numdir

@@ -14,10 +14,6 @@
 !!        type(fline_ctl), intent(inout) :: fln
 !!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
-!!      subroutine set_iflag_fline_used_ele(ele, ele_grp, fln_prm)
-!!        type(element_data), intent(in) :: ele
-!!        type(group_data), intent(in) :: ele_grp
-!!        type(fieldline_paramter), intent(inout) :: fln_prm
 !
       module set_control_each_fline
 !
@@ -238,26 +234,6 @@
       end if
 !
       end subroutine set_control_4_fline
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_iflag_fline_used_ele(ele, ele_grp, fln_prm)
-!
-      use set_iflag_for_used_ele
-!
-      type(element_data), intent(in) :: ele
-      type(group_data), intent(in) :: ele_grp
-!
-      type(fieldline_paramter), intent(inout) :: fln_prm
-!
-!
-      call s_set_iflag_for_used_ele                                     &
-     &   (ele%numele, ele%interior_ele, ele_grp%num_grp,                &
-     &    ele_grp%num_item, ele_grp%istack_grp, ele_grp%item_grp,       &
-     &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline,   &
-     &    fln_prm%iflag_fline_used_ele)
-!
-      end subroutine set_iflag_fline_used_ele
 !
 !  ---------------------------------------------------------------------
 !

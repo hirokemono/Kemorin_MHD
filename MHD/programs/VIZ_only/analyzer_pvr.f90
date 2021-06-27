@@ -18,6 +18,7 @@
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
+      use t_mesh_SR
       use FEM_analyzer_four_vizs
 !
       implicit none
@@ -29,6 +30,8 @@
       type(control_data_four_vizs), save :: pvr_ctl3
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz3
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR13
 !>      Structure of mesh and field for visualization only
       type(VIZ_mesh_field), save :: pvr3
 !>      Structure of viualization modules
@@ -44,6 +47,7 @@
 !
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use volume_rendering
 !
       integer(kind = kint) :: ierr
 !
@@ -62,12 +66,13 @@
 !
 !  FEM Initialization
       call FEM_initialize_four_vizs(t_VIZ3%init_d, t_VIZ3%ucd_step,     &
-     &                              t_VIZ3%viz_step, FEM_viz3, pvr3)
+     &    t_VIZ3%viz_step, FEM_viz3, pvr3, m_SR13)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
-      call PVR_initialize(pvr3%viz_fem, pvr3%viz_fld,                   &
-     &                    pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3)
+      call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment,              &
+     &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz_ctl_v%pvr_ctls, &
+     &    vizs_pvr3, m_SR13)
 !
       end subroutine initialize_pvr
 !
@@ -76,6 +81,7 @@
       subroutine analyze_pvr
 !
       use t_IO_step_parameter
+      use volume_rendering
 !
       integer(kind = kint) :: i_step, istep_pvr
 !
@@ -87,14 +93,15 @@
 !
 !  Load field data
         call FEM_analyze_four_vizs                                      &
-     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3)
+     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3, m_SR13)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'PVR_visualize', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
         call PVR_visualize                                              &
      &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time,              &
-     &      pvr3%viz_fem, pvr3%jacobians, pvr3%viz_fld, vizs_pvr3)
+     &     FEM_viz3%geofem, pvr3%jacobians, FEM_viz3%field,             &
+     &     vizs_pvr3, m_SR13)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

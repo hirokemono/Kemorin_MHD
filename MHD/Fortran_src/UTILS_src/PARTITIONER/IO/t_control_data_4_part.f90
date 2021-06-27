@@ -18,6 +18,7 @@
       use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_4_FEM_mesh
+      use t_ctl_data_FEM_sleeve_size
       use t_control_array_integer
       use t_control_array_character
       use t_control_array_charaint
@@ -38,12 +39,10 @@
 !
 !>        Structure for FEM mesh controls
         type(FEM_mesh_control) :: part_Fmesh
+!>        Number of sleeve level
+        type(FEM_sleeve_control) :: Fsleeve_c
 !>        Patitioning method
         type(read_character_item) :: part_method_ctl
-!>        Flag for element overlapping
-        type(read_character_item) :: element_overlap_ctl
-!>        Number of sleeve level
-        type(read_integer_item) :: sleeve_level_old
 !
 !>        Flag for new patitioning method
         type(read_character_item) :: new_part_method_ctl
@@ -110,6 +109,9 @@
       character(len=kchara), parameter                                  &
      &                    :: hd_FEM_mesh = 'FEM_mesh_ctl'
 !
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_FEM_sleeve =    'FEM_sleeve_ctl'
+!
       character(len=kchara), parameter :: hd_org_f_ctl                  &
      &                      = 'original_file_ctl'
       character(len=kchara), parameter :: hd_ele_ordering_ctl           &
@@ -137,8 +139,6 @@
      &                      = 'partitioning_method_ctl'
       character(len=kchara), parameter :: hd_sleeve_level               &
      &                      = 'sleeve_level_ctl'
-      character(len=kchara), parameter :: hd_ele_overlap                &
-     &                      = 'element_overlap_ctl'
 !
 !     RCB
       character(len=kchara), parameter :: hd_num_rcb = 'RCB_dir_ctl'
@@ -180,7 +180,7 @@
       private :: hd_org_f_ctl, hd_platform, hd_org_data, hd_FEM_mesh
       private :: hd_ele_ordering_ctl, hd_decomp_ctl
       private :: hd_nele_grp_ordering
-      private :: hd_part_method, hd_sleeve_level, hd_ele_overlap
+      private :: hd_part_method, hd_sleeve_level
       private :: hd_num_rcb, hd_num_es, hd_num_r_layerd, hd_sph_sf_file
       private :: hd_metis_in_file, hd_metis_dom_file
       private :: hd_domain_tbl_file, hd_fine_mesh_file
@@ -258,6 +258,8 @@
 !
         call read_FEM_mesh_control                                      &
      &     (id_control, hd_FEM_mesh, part_ctl%part_Fmesh, c_buf)
+        call read_FEM_sleeve_control                                    &
+     &     (id_control, hd_FEM_sleeve, part_ctl%Fsleeve_c, c_buf)
 !
         call read_ctl_data_4_decomp                                     &
      &     (id_control, hd_decomp_ctl, part_ctl, c_buf)
@@ -297,13 +299,8 @@
      &      hd_num_r_layerd, part_ctl%ele_grp_layering_ctl, c_buf)
 !
 !
-        call read_integer_ctl_type                                      &
-     &     (c_buf, hd_sleeve_level, part_ctl%sleeve_level_old)
-!
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_part_method, part_ctl%part_method_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_ele_overlap, part_ctl%element_overlap_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_sph_sf_file, part_ctl%sphere_file_name_ctl)
         call read_chara_ctl_type                                        &
@@ -335,10 +332,9 @@
       call dealloc_control_array_c_i(part_ctl%RCB_dir_ctl)
       call dealloc_control_array_c_i(part_ctl%ndomain_section_ctl)
       call dealloc_control_array_chara(part_ctl%ele_grp_layering_ctl)
+      call dealloc_ctl_data_FEM_sleeve(part_ctl%Fsleeve_c)
 !
       part_ctl%part_method_ctl%iflag = 0
-      part_ctl%element_overlap_ctl%iflag = 0
-      part_ctl%sleeve_level_old%iflag = 0
 !
       part_ctl%sphere_file_name_ctl%iflag = 0
       part_ctl%metis_input_file_ctl%iflag = 0

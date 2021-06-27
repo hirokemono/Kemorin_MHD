@@ -110,6 +110,7 @@
       use copy_mesh_structures
       use load_mesh_data
       use const_mesh_information
+      use single_edge_information
 !
       character(len=kchara), parameter :: tmp_mesh_head = 'work'
       type(refined_node_id) :: ref_ids
@@ -118,8 +119,15 @@
 !    construct element and surface data
 !
       do
-        if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-        call const_mesh_infos(my_rank, org_fem%mesh, org_fem%group)
+        if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+        call const_nod_ele_infos(my_rank, org_fem%mesh, org_fem%group)
+        if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
+        call const_surface_infos(my_rank, org_fem%mesh%node,            &
+     &      org_fem%mesh%ele, org_fem%group%surf_grp,                   &
+     &      org_fem%mesh%surf, org_fem%group%surf_nod_grp)
+        if (iflag_debug.gt.0) write(*,*) 'const_single_edge_infos'
+        call const_single_edge_infos(my_rank, org_fem%mesh%node,        &
+     &      org_fem%mesh%ele, org_fem%mesh%surf, org_fem%mesh%edge)
 !
         write(*,*) 'allocate_refine_flags'
         call alloc_refine_flags(org_fem%mesh%ele, org_fem%mesh%surf,    &

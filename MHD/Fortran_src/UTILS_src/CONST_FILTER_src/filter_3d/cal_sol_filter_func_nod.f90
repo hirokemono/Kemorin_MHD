@@ -93,7 +93,6 @@
       subroutine cal_sol_filter_func_CG(inod, gfil_p, fil_tbl_crs,      &
      &          max_size, mat_size, vec_mat, x_sol, fil_mat_crs)
 !
-      use m_solver_SR
       use t_ctl_params_4_gen_filter
       use copy_2_crs_matrix_4_filter
       use solver_single

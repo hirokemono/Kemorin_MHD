@@ -20,10 +20,13 @@
 !!      subroutine mpi_input_mesh_p(mesh_file, mesh_p, group_p)
 !!      subroutine input_mesh_p                                         &
 !!     &         (id_rank, mesh_file, mesh_p, group_p, ierr)
-!!      subroutine const_mesh_infos_p(id_rank, mesh_p, group_p)
+!!      subroutine const_mesh_infos_p                                   &
+!!     &         (id_rank, mesh_p, group_p, SR_sig, SR_i)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_geometry_p), intent(inout) :: mesh_p
 !!        type(mesh_groups_p), intent(inout) ::   group_p
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module t_mesh_data_with_pointer
@@ -62,12 +65,7 @@
 !>     Structure for node data on surface group
         type (surface_node_grp_data) ::   surf_nod_grp
 !>     Structure for grometry data for surface group
-        type (surface_group_geometry) ::  surf_grp_geom
-!
-!>     Structure for element group connectivity
-        type (element_group_table), pointer :: tbls_ele_grp
-!>     Structure for surface group connectivity
-        type (surface_group_table), pointer :: tbls_surf_grp
+        type (surface_group_normals) ::  surf_grp_norm
 !
 !>     Structure for infinity surface
         type (scalar_surf_BC_list) ::    infty_grp
@@ -119,9 +117,6 @@
       allocate(group_p%ele_grp)
       allocate(group_p%surf_grp)
 !
-      allocate(group_p%tbls_ele_grp)
-      allocate(group_p%tbls_surf_grp)
-!
       end subroutine init_mesh_group_type
 !
 !------------------------------------------------------------------
@@ -131,7 +126,6 @@
       type(mesh_groups_p), intent(inout) :: group_p
 !
       deallocate(group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
-      deallocate(group_p%tbls_surf_grp, group_p%tbls_ele_grp)
 !
       end subroutine finalize_mesh_group_type
 !
@@ -180,9 +174,6 @@
       group_p%ele_grp =>  group_org%ele_grp
       group_p%surf_grp => group_org%surf_grp
 !
-      group_p%tbls_ele_grp =>  group_org%tbls_ele_grp
-      group_p%tbls_surf_grp => group_org%tbls_surf_grp
-!
       end subroutine link_pointer_mesh
 !
 !  ---------------------------------------------------------------------
@@ -194,7 +185,6 @@
       type(mesh_groups_p), intent(inout) :: group_p
 !
 !
-      nullify(group_p%tbls_ele_grp, group_p%tbls_surf_grp)
       nullify(group_p%surf_grp, group_p%ele_grp, group_p%nod_grp)
 
       nullify(mesh_p%surf, mesh_p%edge)
@@ -285,42 +275,58 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_mesh_infos_p(id_rank, mesh_p, group_p)
+      subroutine const_mesh_infos_p                                     &
+     &         (id_rank, mesh_p, group_p, SR_sig, SR_i)
 !
       use t_mesh_data
       use t_geometry_data
       use t_group_data
       use t_group_connects
       use t_surface_group_connect
-      use t_surface_group_geometry
+      use t_surface_group_normals
       use t_surface_data
       use t_edge_data
+      use t_element_group_table
+      use t_solver_SR
+      use t_solver_SR_int
 !
+      use cal_mesh_position
       use const_surface_data
+      use nod_and_ele_derived_info
       use set_surf_edge_mesh
       use set_connects_4_surf_group
       use const_mesh_information
       use set_size_4_smp_types
+      use set_smp_4_group_types
+      use parallel_edge_information
 !      use check_surface_groups
 !
       integer, intent(in) :: id_rank
+!
       type(mesh_geometry_p), intent(inout) :: mesh_p
       type(mesh_groups_p), intent(inout) ::   group_p
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
-       if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos(id_rank, mesh_p%node, mesh_p%ele,        &
-     &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
-      call set_local_element_info(mesh_p%surf, mesh_p%edge)
+      if (iflag_debug.gt.0) write(*,*) 'set_nod_and_ele_infos'
+      call set_nod_and_ele_infos(mesh_p%node, mesh_p%ele)
+      call count_num_groups_smp                                         &
+     &   (id_rank, group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_surf_connectivity'
       call const_surf_connectivity(mesh_p%node, mesh_p%ele,             &
      &                             mesh_p%surf)
-      if(iflag_debug .gt. 0) write(*,*) 'const_edge_connectivity'
-      call const_edge_connectivity(mesh_p%node, mesh_p%ele,             &
-     &                             mesh_p%surf, mesh_p%edge)
+      if (iflag_debug.gt.0) write(*,*) 'set_center_of_surface'
+      call alloc_surface_geometory(mesh_p%surf)
+      call set_center_of_surface(mesh_p%node, mesh_p%surf)
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos(mesh_p%nod_comm, mesh_p%node,          &
+     &    mesh_p%ele, mesh_p%surf, mesh_p%edge, SR_sig, SR_i)
+      if (iflag_debug.gt.0) write(*,*) 'set_center_of_edge'
+      call alloc_edge_geometory(mesh_p%edge)
+      call set_center_of_edge(mesh_p%node, mesh_p%edge)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
       call const_ele_list_4_surface(mesh_p%ele, mesh_p%surf)
@@ -335,16 +341,6 @@
 !        call check_surf_nod_4_sheard_para                              &
 !     &     (id_rank, group_p%surf_grp%num_grp, group_p%surf_nod_grp)
 !      end if
-!
-!
-       if (iflag_debug.eq.1) write(*,*) 'const_group_connectiviy_1st'
-      call const_group_type_info                                        &
-     &   (mesh_p%node, mesh_p%ele, mesh_p%surf, mesh_p%edge,            &
-     &    group_p%ele_grp, group_p%surf_grp,                            &
-     &    group_p%tbls_ele_grp, group_p%tbls_surf_grp)
-!
-      call init_surface_and_edge_geometry                               &
-     &   (mesh_p%node, mesh_p%surf, mesh_p%edge)
 !
       end subroutine const_mesh_infos_p
 !

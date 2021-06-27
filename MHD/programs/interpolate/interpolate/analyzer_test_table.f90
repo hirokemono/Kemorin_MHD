@@ -19,10 +19,12 @@
       use t_step_parameter
       use t_IO_step_parameter
       use t_structure_4_interolation
+      use t_mesh_SR
 !
       implicit none
 !
       type(structure_4_interolation), save:: itp_ttst
+      type(mesh_SR), save :: m_SR7
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,7 +75,8 @@
       if (iflag_debug.eq.1) write(*,*) 'interpolation_4_mesh_test'
       call interpolation_4_mesh_test(itp_ttst%nprocs_2nd,               &
      &    itp_ttst%org_fem%mesh, itp_ttst%new_fem%mesh,                 &
-     &    itp_ttst%itp_tbl, itp_ttst%v_1st_sol, itp_ttst%v_2nd_sol)
+     &    itp_ttst%itp_tbl, itp_ttst%v_1st_sol, itp_ttst%v_2nd_sol,     &
+     &    m_SR7%SR_sig, m_SR7%SR_r, m_SR7%SR_il)
 !
       if (my_rank .lt. itp_ttst%gen_itp_p%ndomain_dest) then
         call finalize_size_4_smp_mesh                                   &

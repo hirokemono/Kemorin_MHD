@@ -11,9 +11,10 @@
 !!      subroutine allocate_item_pvr_ray_start(num_ray, pvr_start)
 !!      subroutine allocate_item_pvr_ray_pixels(pvr_start)
 !!      subroutine deallocate_pvr_ray_start(pvr_start)
+!!      subroutine deallocate_num_pvr_ray_start(pvr_start)
 !!      subroutine deallocate_item_pvr_ray_start(pvr_start)
 !!
-!!      subroutine copy_item_pvr_ray_start(pvr_st_org, pvr_start)
+!!      subroutine copy_item_pvr_ray_start(org_pvr_st, new_pvr_st)
 !!
 !!      subroutine check_pvr_ray_startpoints(id_rank, pvr_start)
 !!@endverbatim
@@ -27,8 +28,6 @@
 !
 !>  Structure for start points of ray tracing
       type pvr_ray_start_type
-!>    Reference process to composit
-        integer :: irank_composit_ref = 0
 
 !>    Total number of ray tracing
         integer(kind = kint) :: ntot_pvr_ray = 0
@@ -59,11 +58,11 @@
 !>    start point of ray traing in surface coordinate
         real(kind = kreal), allocatable ::  xi_pvr_start(:,:)
 !>    start point of ray traing
-        real(kind = kreal), allocatable ::  xx_pvr_ray_start(:,:)
+        real(kind = kreal), allocatable ::  xx4_pvr_ray_start(:,:)
 !>    start point for each trace
-        real(kind = kreal), allocatable ::  xx_pvr_start(:,:)
+        real(kind = kreal), allocatable ::  xx4_pvr_start(:,:)
 !>    Direction og ray tracing
-        real(kind = kreal), allocatable ::  pvr_ray_dir(:,:)
+!        real(kind = kreal), allocatable ::  pvr_ray_dir(:,:)
 !>    Color data for tracing
         real(kind = kreal), allocatable ::  rgba_ray(:,:)
 !
@@ -73,9 +72,9 @@
 !
 !>  Direction of Ray in screen coordinate
       real(kind = kreal), parameter                                     &
-     &                   :: ray_vec(3) = (/zero, zero, -one/)
+     &                   :: ray_vec4(4) = (/zero, zero, -one, zero/)
 !
-      private :: deallocate_num_pvr_ray_start
+!      private :: deallocate_num_pvr_ray_start
 !
 !  ---------------------------------------------------------------------
 !
@@ -110,9 +109,9 @@
       allocate(pvr_start%icount_pvr_trace(pvr_start%num_pvr_ray)   )
       allocate(pvr_start%isf_pvr_ray_start(3,pvr_start%num_pvr_ray))
       allocate(pvr_start%xi_pvr_start(2,pvr_start%num_pvr_ray)     )
-      allocate(pvr_start%xx_pvr_ray_start(3,pvr_start%num_pvr_ray) )
-      allocate(pvr_start%xx_pvr_start(3,pvr_start%num_pvr_ray)     )
-      allocate(pvr_start%pvr_ray_dir(3,pvr_start%num_pvr_ray)      )
+      allocate(pvr_start%xx4_pvr_ray_start(4,pvr_start%num_pvr_ray))
+      allocate(pvr_start%xx4_pvr_start(4,pvr_start%num_pvr_ray)    )
+!      allocate(pvr_start%pvr_ray_dir(3,pvr_start%num_pvr_ray)      )
       allocate(pvr_start%id_pixel_check(pvr_start%num_pvr_ray)     )
 !
       if(pvr_start%num_pvr_ray .gt. 0) then
@@ -120,9 +119,8 @@
         pvr_start%icount_pvr_trace = 0
         pvr_start%isf_pvr_ray_start = 0
         pvr_start%xi_pvr_start = 0.0d0
-        pvr_start%xx_pvr_ray_start = 0.0d0
-        pvr_start%xx_pvr_start = 0.0d0
-        pvr_start%pvr_ray_dir =  0.0d0
+        pvr_start%xx4_pvr_ray_start = 0.0d0
+        pvr_start%xx4_pvr_start = 0.0d0
         pvr_start%id_pixel_check = 0
       end if
 !
@@ -206,9 +204,9 @@
 !
       deallocate(pvr_start%id_pixel_start, pvr_start%icount_pvr_trace)
       deallocate(pvr_start%isf_pvr_ray_start)
-      deallocate(pvr_start%xx_pvr_ray_start)
-      deallocate(pvr_start%xx_pvr_start, pvr_start%xi_pvr_start)
-      deallocate(pvr_start%pvr_ray_dir, pvr_start%id_pixel_check)
+      deallocate(pvr_start%xx4_pvr_ray_start)
+      deallocate(pvr_start%xx4_pvr_start, pvr_start%xi_pvr_start)
+      deallocate(pvr_start%id_pixel_check)
 !
       end subroutine deallocate_item_pvr_ray_start
 !
@@ -226,23 +224,22 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_item_pvr_ray_start(pvr_st_org, pvr_start)
+      subroutine copy_item_pvr_ray_start(org_pvr_st, new_pvr_st)
 !
-      type(pvr_ray_start_type), intent(in) :: pvr_st_org
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
+      type(pvr_ray_start_type), intent(in) :: org_pvr_st
+      type(pvr_ray_start_type), intent(inout) :: new_pvr_st
 !
 !
 !$omp parallel workshare
-       pvr_start%id_pixel_start(:) = pvr_st_org%id_pixel_start(:)
-       pvr_start%icount_pvr_trace(:) = pvr_st_org%icount_pvr_trace(:)
+      new_pvr_st%id_pixel_start(:) = org_pvr_st%id_pixel_start(:)
+      new_pvr_st%icount_pvr_trace(:) = org_pvr_st%icount_pvr_trace(:)
 !
-       pvr_start%isf_pvr_ray_start(:,:)                                 &
-     &     = pvr_st_org%isf_pvr_ray_start(:,:)
-       pvr_start%xi_pvr_start(:,:) = pvr_st_org%xi_pvr_start(:,:)
-       pvr_start%xx_pvr_ray_start(:,:)                                  &
-     &     = pvr_st_org%xx_pvr_ray_start(:,:) 
-       pvr_start%xx_pvr_start(:,:) = pvr_st_org%xx_pvr_start(:,:)
-       pvr_start%pvr_ray_dir(:,:)  = pvr_st_org%pvr_ray_dir(:,:)
+      new_pvr_st%isf_pvr_ray_start(:,:)                                 &
+     &     = org_pvr_st%isf_pvr_ray_start(:,:)
+      new_pvr_st%xi_pvr_start(:,:) = org_pvr_st%xi_pvr_start(:,:)
+      new_pvr_st%xx4_pvr_ray_start(:,:)                                 &
+     &     = org_pvr_st%xx4_pvr_ray_start(:,:)
+      new_pvr_st%xx4_pvr_start(:,:) = org_pvr_st%xx4_pvr_start(:,:)
 !$omp end parallel workshare
 !
       end subroutine copy_item_pvr_ray_start
@@ -263,7 +260,7 @@
         do inum = 1, pvr_start%num_pvr_ray
           write(50+id_rank,*) inum, pvr_start%id_pixel_start(inum),    &
      &      pvr_start%isf_pvr_ray_start(1:3,inum),                     &
-     &      pvr_start%xx_pvr_ray_start(1:3,inum),                      &
+     &      pvr_start%xx4_pvr_ray_start(1:3,inum),                     &
      &      pvr_start%icount_pvr_trace(inum)
         end do
 !

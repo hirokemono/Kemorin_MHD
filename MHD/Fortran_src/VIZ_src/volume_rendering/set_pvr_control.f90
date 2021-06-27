@@ -80,6 +80,7 @@
       use set_control_each_pvr
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
+      use set_control_pvr_movie
 !
       integer(kind = kint), intent(in) :: num_pvr
       type(mesh_groups), intent(in) :: group
@@ -93,10 +94,10 @@
 !
 !
       do i_pvr = 1, num_pvr
-        call set_control_pvr_movie                                      &
-     &     (pvr_ctl_type(i_pvr)%movie, pvr_param(i_pvr)%view)
-        call set_pvr_stereo_control                                     &
-     &     (pvr_ctl_type(i_pvr), pvr_param(i_pvr)%view)
+        call set_pvr_stereo_control(pvr_ctl_type(i_pvr),                &
+     &                              pvr_param(i_pvr)%stereo_def)
+        call s_set_control_pvr_movie(pvr_ctl_type(i_pvr)%movie,         &
+     &                               pvr_param(i_pvr)%movie_def)
 !
         call check_pvr_field_control(pvr_ctl_type(i_pvr),               &
      &      nod_fld%num_phys, nod_fld%phys_name)
@@ -112,13 +113,13 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
      &     (pvr_ctl_type(i_pvr), group%ele_grp, group%surf_grp,         &
-     &      pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%field,          &
+     &      pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%draw_param,     &
      &      pvr_param(i_pvr)%color, pvr_param(i_pvr)%colorbar)
 !
 !   set transfer matrix
 !
-        call s_set_pvr_modelview_matrix                                 &
-     &     (pvr_ctl_type(i_pvr)%mat, pvr_param(i_pvr)%view)
+        call s_set_pvr_modelview_matrix(pvr_ctl_type(i_pvr)%mat,        &
+     &      pvr_param(i_pvr)%view, pvr_param(i_pvr)%stereo_def)
       end do
 !
       end subroutine s_set_pvr_controls
@@ -134,12 +135,12 @@
       type(PVR_control_params), intent(inout) :: pvr_param
 !
 !
-      if(pvr_param%field%num_sections .gt. 0) then
-        call dealloc_pvr_sections(pvr_param%field)
+      if(pvr_param%draw_param%num_sections .gt. 0) then
+        call dealloc_pvr_sections(pvr_param%draw_param)
       end if
 !
-      if(pvr_param%field%num_isosurf .gt. 0) then
-        call dealloc_pvr_isosurfaces(pvr_param%field)
+      if(pvr_param%draw_param%num_isosurf .gt. 0) then
+        call dealloc_pvr_isosurfaces(pvr_param%draw_param)
       end if
 !
       call dealloc_pvr_element_group(pvr_param%area_def)

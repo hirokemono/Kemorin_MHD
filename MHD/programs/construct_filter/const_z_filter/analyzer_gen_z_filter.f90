@@ -21,6 +21,7 @@
       use t_crs_matrix
       use t_gauss_points
       use t_shape_functions
+      use t_solver_SR
 !
       implicit none
 !
@@ -43,6 +44,11 @@
       type(CG_poarameter), save :: CG_param_z
       type(DJDS_poarameter), save :: DJDS_param_z
       type(edge_shape_function), save :: spf_1d_z
+!
+!>      Structure of communication flags
+      type(send_recv_status), save :: SR_sig_f
+!>      Structure of communication buffer for 8-byte real
+      type(send_recv_real_buffer), save :: SR_r_f
 !
 ! ----------------------------------------------------------------------
 !
@@ -141,7 +147,8 @@
 !      call cal_delta_z(CG_param_z, DJDS_param_z,                       &
 !     &  z_filter_mesh1%nod_comm, z_filter_mesh1%node,                  &
 !     &  z_filter_mesh1%ele, edge_z_filter1, spf_1d_z,                  &
-!     &  jacs_z1%g_FEM, jacs_z1%jac_1d_l,tbl_crs_z, mat_crs_z)
+!     &  jacs_z1%g_FEM, jacs_z1%jac_1d_l,tbl_crs_z, mat_crs_z,          &
+!     &  SR_sig_f, SR_r_f)
 !
 !      call check_crs_connect                                           &
 !     &   (my_rank, z_filter_mesh1%node%numnod, tbl_crs_z)
@@ -238,13 +245,15 @@
           write(*,*) 'solve_by_djds_solver33'
           call solve_by_djds_solver33                                   &
      &       (z_filter_mesh1%node, z_filter_mesh1%nod_comm, CG_param_z, &
-     &        mat_crs_z, djds_tbl_z, djds_mat_z, itr_res, ierr)
+     &        mat_crs_z, djds_tbl_z, djds_mat_z, SR_sig_f, SR_r_f,      &
+     &        itr_res, ierr)
         else if (mat_crs_z%SOLVER_crs.eq.'blockNN'                      &
      &    .or. mat_crs_z%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
           call solve_by_djds_solverNN                                   &
      &       (z_filter_mesh1%node, z_filter_mesh1%nod_comm, CG_param_z, &
-     &        mat_crs_z, djds_tbl_z, djds_mat_z, itr_res, ierr)
+     &        mat_crs_z, djds_tbl_z, djds_mat_z, SR_sig_f, SR_r_f,      &
+     &        itr_res, ierr)
         end if
       end if
 !

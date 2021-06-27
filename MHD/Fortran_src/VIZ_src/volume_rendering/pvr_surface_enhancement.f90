@@ -10,10 +10,15 @@
 !!      subroutine set_pvr_bc_enhanse_flag                              &
 !!     &         (surf_grp, num_enhanse_grp, enhanse_grp, draw_type,    &
 !!     &          fixed_opacity, iflag_enhanse, enhansed_opacity)
+!!      real(kind = kreal) function opacity_by_surf_grp                 &
+!!     &                (isurf, surf, surf_grp, sf_grp_4_sf,            &
+!!     &                 modelview_mat, iflag_enhanse, enhansed_opacity)
 !!      subroutine set_opacity_for_boundaries(surf_grp, sf_grp_v,       &
-!!     &          view_param, iflag_enhanse, enhansed_opacity,          &
+!!     &          modelview_mat, iflag_enhanse, enhansed_opacity,       &
 !!     &          numele, numsurf, isf_4_ele, arccos_sf)
+!!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: surf_grp
+!!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!
 !!      integer(kind = kint) function num_flag_pvr_isosurf_dir()
 !!      subroutine set_flag_pvr_isosurf_dir(names)
@@ -25,8 +30,10 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
+      use t_surface_data
+      use t_surf_grp_list_each_surf
       use t_group_data
-      use t_surface_group_geometry
+      use t_surface_group_normals
       use t_surface_group_connect
       use t_control_params_4_pvr
 !
@@ -52,7 +59,7 @@
       integer(kind = kint), parameter :: IFLAG_SHOW_FORWARD =  1
       integer(kind = kint), parameter :: IFLAG_SHOW_REVERSE = -1
 !
-      real(kind = kreal), parameter :: coef_op = 4.0e-2
+      real(kind = kreal), parameter, private :: coef_op = 4.0e-2
 !
 !  ---------------------------------------------------------------------
 !
@@ -102,15 +109,83 @@
 !
 !  ---------------------------------------------------------------------
 !
+      real(kind = kreal) function opacity_by_surf_grp                   &
+     &                (isurf, surf, surf_grp, sf_grp_4_sf,              &
+     &                 modelview_mat, iflag_enhanse, enhansed_opacity)
+!
+      use set_position_pvr_screen
+!
+      integer(kind = kint), intent(in) :: isurf
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: surf_grp
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      integer(kind = kint), intent(in)                                  &
+     &                     :: iflag_enhanse(surf_grp%num_grp)
+      real(kind = kreal), intent(in)                                    &
+     &                     :: enhansed_opacity(surf_grp%num_grp)
+!
+      integer(kind = kint) :: igrp, ist, ied, inum
+      real(kind = kreal) :: size_v, ratio, arccos_sf
+      real(kind = kreal) :: norm_sf_model(4), tmp_normal(3)
+!
+!
+      opacity_by_surf_grp = zero
+      ist = sf_grp_4_sf%istack_grp_surf(isurf-1) + 1
+      ied = sf_grp_4_sf%istack_grp_surf(isurf  )
+      if(ied .lt. ist)  return
+!
+      do inum = ist, ied
+        igrp = sf_grp_4_sf%igrp_4_surf(inum)
+!
+        tmp_normal(1:3) = surf%vnorm_surf(isurf,1:3)
+        norm_sf_model(1:4) = zero
+        call chenge_direction_pvr_modelview(modelview_mat,              &
+     &      ione, tmp_normal(1), norm_sf_model(1))
+        if(norm_sf_model(3) .eq. zero) norm_sf_model(3) =  1e-6
+!
+        size_v = sqrt(norm_sf_model(1)*norm_sf_model(1)                 &
+     &              + norm_sf_model(2)*norm_sf_model(2)                 &
+     &              + norm_sf_model(3)*norm_sf_model(3))
+        ratio = coef_op * size_v / norm_sf_model(3)
+!
+        if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_EDGE) then
+          if(abs(ratio) .gt. ONE) then
+            arccos_sf = enhansed_opacity(igrp)
+          else
+            arccos_sf = zero
+          end if
+        else if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_FORWARD) then
+          if(ratio .lt. zero) then
+            arccos_sf = zero
+          else
+            arccos_sf = enhansed_opacity(igrp)
+          end if
+        else if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_REVERSE) then
+          if(ratio .lt. zero) then
+            arccos_sf = enhansed_opacity(igrp)
+          else
+            arccos_sf = zero
+          end if
+        else
+          arccos_sf = zero
+        end if
+      end do
+      opacity_by_surf_grp = arccos_sf
+!
+      end function opacity_by_surf_grp
+!
+!  ---------------------------------------------------------------------
+!
       subroutine set_opacity_for_boundaries(surf_grp, sf_grp_v,         &
-     &          view_param, iflag_enhanse, enhansed_opacity,            &
+     &          modelview_mat, iflag_enhanse, enhansed_opacity,         &
      &          numele, numsurf, isf_4_ele, arccos_sf)
 !
       use set_position_pvr_screen
 !
       type(surface_group_data), intent(in) :: surf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
-      type(pvr_view_parameter), intent(in) :: view_param
+      type(surface_group_normals), intent(in) :: sf_grp_v
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
       integer(kind = kint), intent(in) :: numele, numsurf
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in)                                  &
@@ -132,7 +207,7 @@
       norm_sf_model = zero
 !$omp end parallel workshare
 !
-      call chenge_direction_pvr_modelview(view_param%modelview_mat,     &
+      call chenge_direction_pvr_modelview(modelview_mat,                &
      &    surf_grp%num_item, sf_grp_v%vnorm_sf_grp, norm_sf_model)
 !
 !$omp parallel do

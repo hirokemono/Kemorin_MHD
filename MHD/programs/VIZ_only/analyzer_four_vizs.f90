@@ -18,6 +18,7 @@
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
+      use t_mesh_SR
       use FEM_analyzer_four_vizs
 !
       implicit none
@@ -30,6 +31,8 @@
       type(control_data_four_vizs), save :: vizs_ctl4
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz4
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR14
 !>      Structure of data for visualization
       type(VIZ_mesh_field), save :: VIZ_DAT4
 !>      Structure of viualization modules
@@ -63,14 +66,15 @@
 !
 !
 !  FEM Initialization
-      if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
+      if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_four_vizs'
       call FEM_initialize_four_vizs(t_VIZ4%init_d, t_VIZ4%ucd_step,     &
-     &    t_VIZ4%viz_step, FEM_viz4, VIZ_DAT4)
+     &    t_VIZ4%viz_step, FEM_viz4, VIZ_DAT4, m_SR14)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
-      call init_four_visualize(VIZ_DAT4%viz_fem, VIZ_DAT4%edge_comm,    &
-     &    VIZ_DAT4%viz_fld, vizs_ctl4%viz_ctl_v, vizs_m4)
+      call init_four_visualize(t_VIZ4%viz_step,                         &
+     &    FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4,                    &
+     &    vizs_ctl4%viz_ctl_v, vizs_m4, m_SR14)
 !
       end subroutine initialize_four_vizs
 !
@@ -90,14 +94,13 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'FEM_analyze_four_vizs', i_step
         call FEM_analyze_four_vizs                                      &
-     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4)
+     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4, m_SR14)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_four', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ4%viz_step)
         call visualize_four(t_VIZ4%viz_step, t_VIZ4%time_d,             &
-     &      VIZ_DAT4%viz_fem, VIZ_DAT4%edge_comm, VIZ_DAT4%viz_fld,     &
-     &      VIZ_DAT4%ele_4_nod, VIZ_DAT4%jacobians, vizs_m4)
+     &      FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4, vizs_m4, m_SR14)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

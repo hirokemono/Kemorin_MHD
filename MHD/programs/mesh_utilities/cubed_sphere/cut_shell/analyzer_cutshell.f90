@@ -48,7 +48,7 @@
       if(ierr .ne. 0) stop 'Mesh data is wrong!'
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
+      if (iflag_debug.eq.1) write(*,*) 'set_spherical_position'
       call set_spherical_position(original_fem%mesh%node)
 !
       end subroutine  initialize_cutshell

@@ -11,7 +11,7 @@
 !!
 !!      subroutine const_comm_table_by_connenct                         &
 !!     &         (txt, numele, nnod_4_ele, ie, x_ele, node, nod_comm,   &
-!!     &          inod_dbl, iele_dbl, neib_e, e_comm, fail_tbl)
+!!     &          inod_dbl, iele_dbl, neib_e, e_comm, fail_tbl, SR_sig)
 !!        type(node_data), intent(in) :: node
 !!        type(element_around_node), intent(in) :: neib_e
 !!        type(communication_table), intent(in) :: nod_comm
@@ -19,6 +19,7 @@
 !!        type(element_double_number), intent(in) :: iele_dbl
 !!        type(communication_table), intent(inout) :: e_comm
 !!        type(failed_table), intent(inout) :: fail_tbl
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !!
       module t_const_comm_table
@@ -35,7 +36,7 @@
       use t_element_double_number
       use t_next_node_ele_4_node
       use t_failed_export_list
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -73,7 +74,7 @@
 !
       subroutine elapsed_label_4_ele_comm_tbl
 !
-      integer(kind = kint), parameter :: num_append = 6
+      integer(kind = kint), parameter :: num_append = 5
 !
 !
       call append_elapsed_times(num_append, ist_elapsed, ied_elapsed)
@@ -83,7 +84,6 @@
       elps1%labels(ist_elapsed+3) = 'num_items_send_recv'
       elps1%labels(ist_elapsed+4) = 'element_data_reverse_SR'
       elps1%labels(ist_elapsed+5) = 'set_element_export_item'
-      elps1%labels(ist_elapsed+6) = 'check_element_position'
 !
       iflag_ecomm_time = .TRUE.
 !
@@ -94,7 +94,7 @@
 !
       subroutine const_comm_table_by_connenct                           &
      &         (txt, numele, nnod_4_ele, ie, x_ele, node, nod_comm,     &
-     &          inod_dbl, iele_dbl, neib_e, e_comm, fail_tbl)
+     &          inod_dbl, iele_dbl, neib_e, e_comm, fail_tbl, SR_sig)
 !
       use reverse_SR_int
       use const_global_element_ids
@@ -113,6 +113,7 @@
 !
       type(communication_table), intent(inout) :: e_comm
       type(failed_table), intent(inout) :: fail_tbl
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       type(const_comm_table_work) :: wk_comm
 !
@@ -145,8 +146,9 @@
 !      write(*,*) 'num_items_send_recv', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
       call num_items_send_recv                                          &
-     &   (e_comm%num_neib, e_comm%id_neib, e_comm%num_import, SR_sig1,  &
-     &    e_comm%num_export, e_comm%istack_export, e_comm%ntot_export)
+     &   (e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
+     &    e_comm%num_neib, e_comm%id_neib, izero, e_comm%num_export,    &
+     &    e_comm%istack_export, e_comm%ntot_export, SR_sig)
 !      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+3)
 !
 !      write(*,*) 'element_data_reverse_SR2', my_rank
@@ -158,7 +160,7 @@
      &    e_comm%istack_import, e_comm%istack_export,                   &
      &    wk_comm%inod_lc_import, wk_comm%ipe_lc_import,                &
      &    wk_comm%xe_import, wk_comm%inod_lc_export,                    &
-     &    wk_comm%ipe_lc_export, wk_comm%xe_export)
+     &    wk_comm%ipe_lc_export, wk_comm%xe_export, SR_sig)
       call dealloc_element_rev_imports(wk_comm)
 !      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+4)
 !
@@ -173,11 +175,6 @@
       call dealloc_element_rev_exports(wk_comm)
 !      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+5)
 !
-!      write(*,*) 'check_element_position', my_rank
-!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
-      call check_element_position(txt, numele, x_ele, e_comm)
-!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+6)
-!
       end subroutine const_comm_table_by_connenct
 !
 !-----------------------------------------------------------------------
@@ -186,9 +183,8 @@
      &         (nnod_4_ele, num_neib_e, id_neib_e,                      &
      &          istack_import_e, istack_export_e,                       &
      &          inod_lc_import, ipe_lc_import, xe_import,               &
-     &          inod_lc_export, ipe_lc_export,xe_export)
+     &          inod_lc_export, ipe_lc_export,xe_export, SR_sig)
 !
-      use m_solver_SR
       use reverse_SR_real
       use reverse_SR_int
 !
@@ -212,21 +208,25 @@
      &        :: inod_lc_export(istack_export_e(num_neib_e),nnod_4_ele)
       integer(kind = kint), intent(inout)                               &
      &        :: ipe_lc_export(istack_export_e(num_neib_e),nnod_4_ele)
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint) :: k1
 !
 !
-      call real_items_send_recv_3(num_neib_e, id_neib_e,                &
-     &    istack_import_e, istack_export_e, xe_import,                  &
-     &    SR_sig1, xe_export)
+      call real_items_send_recv_3                                       &
+     &   (num_neib_e, id_neib_e, istack_import_e, xe_import,            &
+     &    num_neib_e, id_neib_e, istack_export_e, izero,                &
+     &    xe_export, SR_sig)
 !
       do k1 = 1, nnod_4_ele
         call comm_items_send_recv(num_neib_e, id_neib_e,                &
-     &      istack_import_e, istack_export_e, inod_lc_import(1,k1),     &
-     &      SR_sig1, inod_lc_export(1,k1))
+     &      istack_import_e, inod_lc_import(1,k1),                      &
+     &      num_neib_e, id_neib_e, istack_export_e,                     &
+     &      izero, inod_lc_export(1,k1), SR_sig)
         call comm_items_send_recv(num_neib_e, id_neib_e,                &
-     &      istack_import_e, istack_export_e, ipe_lc_import(1,k1),      &
-     &      SR_sig1, ipe_lc_export(1,k1))
+     &      istack_import_e, ipe_lc_import(1,k1),                       &
+     &      num_neib_e, id_neib_e, istack_export_e,                     &
+     &      izero, ipe_lc_export(1,k1), SR_sig)
       end do
 !
       end subroutine element_data_reverse_SR

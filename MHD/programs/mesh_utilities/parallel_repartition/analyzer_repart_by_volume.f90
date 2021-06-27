@@ -19,23 +19,26 @@
       use m_machine_parameter
       use m_work_time
       use m_elapsed_labels_4_REPART
+      use m_work_time_4_sleeve_extend
       use calypso_mpi
 !
       use t_mesh_data
       use t_calypso_comm_table
       use t_control_param_repartition
       use t_vector_for_solver
+      use t_mesh_SR
 !
       implicit none
 !
-      character(len=kchara), parameter                                          &
+      character(len=kchara), parameter                                  &
      &     :: repart_test_name = 'repart_check.dat'
 !
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
+      type(mesh_SR), save :: m_SR_T
 !
-      type(calypso_comm_table), save :: org_to_new_tbl
+      type(calypso_comm_table), save :: repart_nod_tbl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,11 +60,19 @@
       use set_table_4_RHS_assemble
       use int_volume_of_single_domain
       use field_to_new_partition
-      use parallel_sleeve_extension
 !
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
+      type(communication_table), save :: ele_comm1
+      type(jacobians_type), save :: jacobians1
+      type(shape_finctions_at_points), save :: spfs1
+      type(next_nod_ele_table), save :: next_tbl1
+      type(volume_partioning_work), save :: repart_WK1
+!
+      type(masking_parameter), allocatable, target :: masking1(:)
+      real(kind = kreal), allocatable :: d_mask_org1(:,:)
+      real(kind = kreal), allocatable :: vect_ref1(:,:)
 !
 !     --------------------- 
 !
@@ -82,14 +93,60 @@
 !
 !  -------------------------------
 !
-      call init_nod_send_recv(fem_T%mesh)
+      call init_nod_send_recv(fem_T%mesh,                               &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
       if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
 !  -------------------------------
 !
-      if(iflag_debug .gt. 0) write(*,*) 'const_new_partition_mesh'
-      call const_new_partition_mesh(part_p1%repart_p, fem_T,            &
-     &                              new_fem, org_to_new_tbl)
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
+!
+!
+!  -----  Const Element communication table
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      call const_global_numele_list(fem_T%mesh%ele)
+      call const_ele_comm_table(fem_T%mesh%node,                        &
+     &    fem_T%mesh%nod_comm, fem_T%mesh%ele, ele_comm1, m_SR_T)
+!
+!  -----  Const volume of each element
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
+      call const_jacobian_and_single_vol                                &
+     &   (fem_T%mesh, fem_T%group, spfs1, jacobians1)
+      call finalize_jac_and_single_vol                                  &
+     &   (fem_T%mesh, spfs1, jacobians1)
+!
+!  -----  Const Neighboring information
+      if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
+      call set_belonged_ele_and_next_nod                                &
+     &   (fem_T%mesh, next_tbl1%neib_ele, next_tbl1%neib_nod)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
+!
+!  -----  Re-partitioning
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
+      if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
+      allocate(masking1(0))
+      allocate(d_mask_org1(fem_T%mesh%node%numnod,0))
+      allocate(vect_ref1(fem_T%mesh%node%numnod,3))
+      call link_repart_masking_param(0, masking1, part_p1%repart_p)
+      call link_repart_masking_data((.FALSE.), (.FALSE.),               &
+     &    fem_T%mesh%node, izero, d_mask_org1, vect_ref1, repart_WK1)
+      call s_repartiton_by_volume                                       &
+     &   (part_p1%repart_p, fem_T, ele_comm1, next_tbl1,                &
+     &    new_fem, repart_nod_tbl1, repart_WK1, m_SR_T)
+      call unlink_repart_masking_data(repart_WK1)
+      call unlink_repart_masking_param(part_p1%repart_p)
+      deallocate(d_mask_org1, vect_ref1, masking1)
+!
+      call dealloc_comm_table(ele_comm1)
+      call dealloc_next_nod_ele_table(next_tbl1)
+      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
+!
+      call dealloc_node_param_smp(new_fem%mesh%node)
+      call dealloc_ele_param_smp(new_fem%mesh%ele)
 !
       end subroutine initialize_reapart_by_vol
 !
@@ -104,15 +161,17 @@
       use m_file_format_switch
       use parallel_itp_tbl_IO_select
       use copy_repart_and_itp_table
+      use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables
+      use const_surface_comm_table
       use check_data_for_repartition
       use mesh_send_recv_check
       use write_diff_4_comm_test
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
 !
-      type(calypso_comm_table) :: part_tbl_2
-      type(interpolate_table) :: itp_tbl_IO2
+      type(calypso_comm_table) :: part_nod_tbl2
+      type(interpolate_table) :: itp_nod_tbl_IO
 !
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
@@ -134,50 +193,55 @@
       end if
 !
 !
-      call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_p1%repart_p%trans_tbl_file, itp_tbl_IO2, ierr)
+      call sel_mpi_read_interpolate_table                               &
+     &   (my_rank, nprocs, part_p1%repart_p%trans_tbl_file,             &
+     &    itp_nod_tbl_IO, ierr)
 !
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &
-     &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
+     &    fem_T%mesh, new_fem%mesh, itp_nod_tbl_IO, part_nod_tbl2)
+      call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
       call calypso_MPI_barrier
 !
       if(my_rank .eq. 0) write(*,*) 'check table reading...'
-      call compare_calypso_comm_tbls(org_to_new_tbl, part_tbl_2)
+      call compare_calypso_comm_tbls(repart_nod_tbl1, part_nod_tbl2)
       call calypso_MPI_barrier
       if(my_rank .eq. 0) write(*,*) 'check table reading end!'
 !
 !
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
-      call FEM_mesh_initialization(new_fem%mesh, new_fem%group)
+      call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
+!
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-      call const_ele_comm_table                                         &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_ele_comm, new_fem%mesh%ele)
+      call const_global_numele_list(new_fem%mesh%ele)
+      call const_ele_comm_table(new_fem%mesh%node,                      &
+     &    new_fem%mesh%nod_comm, new_fem%mesh%ele, T_ele_comm, m_SR_T)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_surf_comm, new_fem%mesh%surf)
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_surf_comm,        &
+     &    new_fem%mesh%surf, m_SR_T)
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_edge_comm, new_fem%mesh%edge)
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_edge_comm,        &
+     &    new_fem%mesh%edge, m_SR_T)
 !
 !
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
-      call node_transfer_test                                           &
-     &   (fem_T%mesh%node, new_fem%mesh%node,  new_fem%mesh%nod_comm,   &
-     &    org_to_new_tbl, nod_check)
+      call node_transfer_test(fem_T%mesh%node, new_fem%mesh%node,       &
+     &    new_fem%mesh%nod_comm, repart_nod_tbl1, nod_check,            &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
 !
 !
-      call ele_send_recv_test(new_fem%mesh%node, new_fem%mesh%ele,      &
-     &    T_ele_comm, ele_check)
-      call surf_send_recv_test(new_fem%mesh%node, new_fem%mesh%surf,    &
-     &    T_surf_comm, surf_check)
-      call edge_send_recv_test(new_fem%mesh%node, new_fem%mesh%edge,    &
-     &    T_edge_comm, edge_check)
+      call ele_send_recv_test(new_fem%mesh%ele, T_ele_comm,             &
+     &                        ele_check, m_SR_T%SR_sig, m_SR_T%SR_r)
+      call surf_send_recv_test(new_fem%mesh%surf, T_surf_comm,          &
+     &                         surf_check, m_SR_T%SR_sig, m_SR_T%SR_r)
+      call edge_send_recv_test(new_fem%mesh%edge, T_edge_comm,          &
+     &                         edge_check, m_SR_T%SR_sig, m_SR_T%SR_r)
 !
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)

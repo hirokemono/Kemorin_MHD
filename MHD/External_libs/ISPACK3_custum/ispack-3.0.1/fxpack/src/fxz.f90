@@ -22,9 +22,12 @@
 !-----------------------------------------------------------------------
 SUBROUTINE FXZINI(N,IT,T)
 
-  IMPLICIT NONE  
-  REAL(16) :: PI
-  INTEGER(8),PARAMETER :: IMM=-9223372036854775808_8  
+  use m_ISPACK3_constants
+  IMPLICIT NONE
+
+!  REAL(16) :: PI
+  REAL(8) :: PI
+  INTEGER(8),PARAMETER :: IMM=-9223372036854775808_8
   INTEGER(8) :: N,IT(N),J,K,L,I,IS,IC,I4,ITSUM,IT1,ISJ
   INTEGER(8) :: IPN(4)=(/5,4,3,2/),IPC,IP,IPD
   INTEGER(8) :: ITC(2:5)
@@ -37,7 +40,7 @@ SUBROUTINE FXZINI(N,IT,T)
      RETURN
   END IF
 
-  PI=4*ATAN(1Q0)  
+  PI=4*ATAN(QONE)  
 
   ALLOCATE(ITW(0:N-1))
 

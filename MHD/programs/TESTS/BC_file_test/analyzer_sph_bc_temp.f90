@@ -19,6 +19,8 @@
       use t_boundary_field_IO
       use t_file_IO_parameter
       use t_ctl_data_test_bc_temp
+      use t_solver_SR
+      use t_solver_SR_int
 !
       implicit none
 !
@@ -26,6 +28,11 @@
       type(field_IO_params), save ::  mesh_file_TEC
       type(mesh_data), save :: femmesh
       type(IO_boundary), save :: IO_bc_t
+!
+!>        Structure of communication flags
+        type(send_recv_status) :: SR_sig1
+!>        Structure of communication buffer for 4-byte integer
+        type(send_recv_int_buffer) :: SR_i1
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,6 +45,7 @@
       use m_ctl_params_test_bc_temp
       use mpi_load_mesh_data
       use const_mesh_information
+      use parallel_edge_information
 !
 !
 !     ----- read control data
@@ -53,8 +61,17 @@
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(mesh_file_TEC, nprocs, femmesh)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, femmesh%mesh, femmesh%group)
+      if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
+      call const_nod_ele_infos(my_rank, femmesh%mesh, femmesh%group)
+      if (iflag_debug.eq.1) write(*,*) 'const_surface_infos'
+      call const_surface_infos                                          &
+     &   (my_rank, femmesh%mesh%node, femmesh%mesh%ele,                 &
+     &    femmesh%group%surf_grp, femmesh%mesh%surf,                    &
+     &    femmesh%group%surf_nod_grp)
+      if (iflag_debug.gt.0) write(*,*) 'const_para_edge_infos'
+      call const_para_edge_infos                                        &
+     &   (femmesh%mesh%nod_comm, femmesh%mesh%node, femmesh%mesh%ele,   &
+     &    femmesh%mesh%surf, femmesh%mesh%edge, SR_sig1, SR_i1)
 !
        end subroutine initilize_bc_temp
 !

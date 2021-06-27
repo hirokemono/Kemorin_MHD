@@ -188,9 +188,16 @@
       call calypso_mpi_bcast_one_real(knl%x_peak, 0)
       call calypso_mpi_bcast_one_real(knl%sigma, 0)
 !
+      call calypso_mpi_bcast_one_real(knl%half_lengh, 0)
+      call calypso_mpi_bcast_one_real(knl%alength, 0)
+!
+      call calypso_mpi_bcast_one_int(knl%iflag_trace_type, 0)
+      call calypso_mpi_bcast_one_int(knl%max_trace_count, 0)
+!
       call calypso_mpi_bcast_one_int(knl%n_knl, 0)
 !
       if(my_rank .gt. 0) call alloc_LIC_kernel(knl)
+      call calypso_mpi_bcast_real(knl%x_ary, cast_long(knl%n_knl), 0)
       call calypso_mpi_bcast_real(knl%k_ary, cast_long(knl%n_knl), 0)
 !
       end subroutine bcast_LIC_kernel

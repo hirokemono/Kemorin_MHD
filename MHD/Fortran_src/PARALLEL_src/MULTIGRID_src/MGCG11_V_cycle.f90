@@ -1,32 +1,35 @@
-!MGCG11_V_cycle.f90
-!      module MGCG11_V_cycle
+!>@file   init_MGCG11_V_cycle.f90
+!!@brief  module init_MGCG11_V_cycle
+!!
+!!@author H. Matsui
+!!@date Programmed in 200?
 !
-!     Written by Kemorin
-!
-!      subroutine init_MGCG11_V_cycle(NP, PEsmpTOT,                     &
-!     &          METHOD_MG, PRECOND_MG)
-!      subroutine s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,       &
-!     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,          &
-!     &          iter_mid, iter_lowest, EPS_MG,                         &
-!     &          METHOD_MG, PRECOND_MG, IER, ntotWK_CG, W)
-!       integer(kind = kint), intent(in) :: num_MG_level
-!       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
-!       type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
-!       type(DJDS_MATRIX), intent(in) ::         mat11(0:num_MG_level)
-!       type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
-!
-!       integer(kind = kint), intent(in) :: PEsmpTOT
-!       integer(kind = kint), intent(in) :: NP
-!       real(kind = kreal), intent(in), target :: B(NP)
-!
-!       real(kind = kreal), intent(inout), target :: X(NP)
-!       type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
-!
-!       character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-!       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
-!       real(kind = kreal), intent(in) :: EPS_MG
-!
-!       integer(kind = kint), intent(inout) :: IER
+!>@brief  top routine for MGCG
+!!
+!!@verbatim
+!!      subroutine init_MGCG11_V_cycle(NP, PEsmpTOT,                    &
+!!     &          METHOD_MG, PRECOND_MG)
+!!      subroutine s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,      &
+!!     &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,         &
+!!     &          iter_mid, iter_lowest, EPS_MG, METHOD_MG, PRECOND_MG, &
+!!     &          IER, ntotWK_CG, W, SR_sig, SR_r)
+!!        integer(kind = kint), intent(in) :: num_MG_level
+!!        type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
+!!        type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
+!!        type(DJDS_MATRIX), intent(in) ::         mat11(0:num_MG_level)
+!!        type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
+!!        integer(kind = kint), intent(in) :: PEsmpTOT
+!!        integer(kind = kint), intent(in) :: NP
+!!        real(kind = kreal), intent(in), target :: B(NP)
+!!        real(kind = kreal), intent(inout), target :: X(NP)
+!!        type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
+!!        character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
+!!        integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
+!!        real(kind = kreal), intent(in) :: EPS_MG
+!!        integer(kind = kint), intent(inout) :: IER
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module MGCG11_V_cycle
 !
@@ -70,13 +73,13 @@
 !
       subroutine s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, B, X,           &
-     &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER, ntotWK_CG, W)
+     &          iter_mid, iter_lowest, EPS_MG, METHOD_MG, PRECOND_MG,   &
+     &          IER, ntotWK_CG, W, SR_sig, SR_r)
 !
       use calypso_mpi
 !
       use m_constants
-      use m_solver_SR
+      use t_solver_SR
       use t_comm_table
       use solver_DJDS11_struct
       use interpolate_by_module
@@ -102,6 +105,8 @@
       integer(kind = kint), intent(inout) :: IER
       real(kind = kreal), intent(inout) :: W(NP*ntotWK_CG)
 !
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: NP_f, NP_c
       integer(kind = kint) :: i, j, iter_res, ierr
@@ -127,7 +132,7 @@
      &      MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,                      &
      &      MG_itp(i+1)%f2c%tbl_dest, MG_itp(i+1)%f2c%mat,              &
      &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%b_vec,                     &
-     &      SR_sig1, SR_r1, MG_vect(i+1)%b_vec)
+     &      SR_sig, SR_r, MG_vect(i+1)%b_vec)
         MG_vect(i+1)%x_vec(1:NP_c) = zero
       end do
 !
@@ -148,8 +153,8 @@
         write(*,*) 'solve_DJDS11_struct', i, my_rank
         call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
-     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_mid, iter_res)
+     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, SR_sig, SR_r,      &
+     &      ierr, EPS_MG, iter_mid, iter_res)
 !
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f
@@ -161,7 +166,7 @@
      &      MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,                      &
      &      MG_itp(i+1)%f2c%tbl_dest, MG_itp(i+1)%f2c%mat,              &
      &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%x_vec,                     &
-     &      SR_sig1, SR_r1, MG_vect(i+1)%x_vec)
+     &      SR_sig, SR_r, MG_vect(i+1)%x_vec)
       end do
 !
 !    at the coarsest level
@@ -178,8 +183,8 @@
       write(*,*) 'solve_DJDS11_struct', i
       call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                    &
      &      djds_tbl(i), mat11(i), NP_c, MG_vect(i)%b_vec,              &
-     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res)
+     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, SR_sig, SR_r,      &
+     &      ierr, EPS_MG, iter_lowest, iter_res)
 !
 !
       do i = num_MG_level-1, 0, -1
@@ -191,7 +196,7 @@
      &      MG_comm(i), MG_itp(i+1)%c2f%tbl_org,                        &
      &      MG_itp(i+1)%c2f%tbl_dest, MG_itp(i+1)%c2f%mat,              &
      &      PEsmpTOT, NP_c, NP_f, MG_vect(i+1)%x_vec,                   &
-     &      SR_sig1, SR_r1, MG_vect(i)%x_vec)
+     &      SR_sig, SR_r, MG_vect(i)%x_vec)
 !
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f
@@ -209,8 +214,8 @@
         write(*,*) 'solve_DJDS11_struct', i
         call solve_DJDS11_struct(PEsmpTOT, MG_comm(i),                  &
      &      djds_tbl(i), mat11(i), NP_f, MG_vect(i)%b_vec,              &
-     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
-     &      EPS_MG, iter_lowest, iter_res)
+     &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, SR_sig, SR_r,      &
+     &      ierr, EPS_MG, iter_lowest, iter_res)
 !
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f

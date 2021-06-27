@@ -15,7 +15,7 @@
       use t_phys_data
       use t_ucd_data
       use t_file_IO_parameter
-      use t_vector_for_solver
+      use t_mesh_SR
       use m_file_format_switch
       use m_spheric_constants
 !
@@ -26,6 +26,7 @@
       use set_ucd_data_to_type
       use vtk_file_IO
       use nod_phys_send_recv
+      use cal_3d_noise
 !
       integer(kind = kint), parameter :: id_control = 11
       character(len = kchara) :: ctl_file_name = 'ctl_noise'
@@ -43,9 +44,9 @@
       type(mesh_groups) :: group
       type(phys_data) :: nod_fld
       type(ucd_data) :: ucd
-      type(vectors_4_solver) :: v_sol_n
+      type(mesh_SR), save :: m_SR_n
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, ierr
 !
 !
       iflag_debug = 0
@@ -53,7 +54,14 @@
       call  read_cube_noise_control_file(id_control, ctl_file_name,     &
      &    hd_cube_noise, noise_c1)
       call set_control_3d_cube_noise(noise_c1, noise_t1)
-      call sel_const_3d_cube_noise(my_rank, noise_t1)
+      call sel_const_3d_cube_noise(noise_t1)
+      call finalize_kemo_mt_stream
+      call sel_input_3d_cube_noise(my_rank, noise_t1, ierr)
+      call sel_output_3d_cube_noise(noise_t1)
+      if(ierr .gt. 0) then
+        write(*,'(a)') e_message
+        stop
+      end if
 !
 !
       vtk_file_name = add_vtk_extension(noise_t1%noise_file_name)
@@ -105,18 +113,19 @@
 !
 !$omp parallel do
         do inod = 1, mesh%node%internal_node
-          nod_fld%d_fld(inod,1) = noise_t1%rnoise(inod)
-          nod_fld%d_fld(inod,2) = noise_t1%rnoise_grad(inod,1)
-          nod_fld%d_fld(inod,3) = noise_t1%rnoise_grad(inod,2)
-          nod_fld%d_fld(inod,4) = noise_t1%rnoise_grad(inod,3)
+          nod_fld%d_fld(inod,1) = noise_t1%rnoise_grad(0,inod)
+          nod_fld%d_fld(inod,2) = noise_t1%rnoise_grad(1,inod)
+          nod_fld%d_fld(inod,3) = noise_t1%rnoise_grad(2,inod)
+          nod_fld%d_fld(inod,4) = noise_t1%rnoise_grad(3,inod)
         end do
 !$omp end parallel do
 !
         call dealloc_3d_cube_noise(noise_t1)
         write(*,*) 'copy data end'
 !
-      call FEM_comm_initialization(mesh, v_sol_n)
-      call fields_send_recv(mesh%nod_comm, nod_fld, v_sol_n)
+      call FEM_comm_initialization(mesh, m_SR_n)
+      call fields_send_recv(mesh%nod_comm, nod_fld,                     &
+     &                      m_SR_n%v_sol, m_SR_n%SR_sig, m_SR_n%SR_r)
 !
       call link_local_mesh_2_ucd(mesh%node, mesh%ele, ucd)
       call link_field_data_to_ucd(nod_fld, ucd)

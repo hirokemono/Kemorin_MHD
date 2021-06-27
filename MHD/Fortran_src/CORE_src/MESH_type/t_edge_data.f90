@@ -191,9 +191,11 @@
       allocate( edge%edge_vect(edge%numedge,3) )
 !
       if (edge%numedge .gt. 0) then
+!$omp parallel workshare
         edge%edge_length =   0.0d0
         edge%a_edge_length = 0.0d0
         edge%edge_vect =     0.0d0
+!$omp end parallel workshare
       end if
 !
       end subroutine alloc_edge_vect

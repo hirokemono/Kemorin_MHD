@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine init_sph_transform_SGS_MHD                           &
 !!     &         (SPH_model, SGS_par, ipol_LES, iphys_LES, iphys,       &
-!!     &          trans_p, WK, WK_LES, SPH_MHD)
+!!     &          trans_p, WK, WK_LES, SPH_MHD, SR_sig, SR_r)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(phys_address), intent(in) :: iphys
@@ -18,6 +18,8 @@
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !!
       module init_sph_trans_SGS_MHD
@@ -43,6 +45,7 @@
       use t_boundary_data_sph_MHD
       use t_phys_address
       use t_SGS_model_addresses
+      use t_solver_SR
 !
       implicit  none
 !
@@ -58,7 +61,7 @@
 !
       subroutine init_sph_transform_SGS_MHD                             &
      &         (SPH_model, SGS_par, ipol_LES, iphys_LES, iphys,         &
-     &          trans_p, WK, WK_LES, SPH_MHD)
+     &          trans_p, WK, WK_LES, SPH_MHD, SR_sig, SR_r)
 !
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
@@ -76,6 +79,8 @@
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
 !>      total number of vectors for spherical harmonics transform
@@ -115,7 +120,7 @@
 !
       call init_leg_fourier_trans_SGS_MHD                               &
      &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, ncomp_max_trans, &
-     &    trans_p, WK, WK_LES)
+     &    trans_p, WK, WK_LES, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_work_4_coriolis'
       call init_work_4_coriolis                                         &
@@ -126,7 +131,7 @@
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    WK%trns_MHD, WK%WK_leg, WK%WK_FFTs_MHD, trans_p,              &
-     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
+     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld, SR_sig, SR_r)
 !
       end subroutine init_sph_transform_SGS_MHD
 !
@@ -213,7 +218,7 @@
 !
       subroutine init_leg_fourier_trans_SGS_MHD                         &
      &         (SGS_param, sph, comms_sph, ncomp_max_trans,             &
-     &          trans_p, WK, WK_LES)
+     &          trans_p, WK, WK_LES, SR_sig, SR_r)
 !
       use init_sph_trans
       use init_FFT_4_MHD
@@ -229,17 +234,20 @@
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans                                    &
      &   (trans_p%nvector_legendre, ncomp_max_trans, sph, comms_sph,    &
-     &    trans_p%leg, trans_p%idx_trns, trans_p%iflag_SPH_recv)
+     &    trans_p%leg, trans_p%idx_trns, SR_sig, SR_r,                  &
+     &    trans_p%iflag_SPH_recv)
 !
       WK%iflag_MHD_FFT = trans_p%iflag_FFT
       call init_fourier_transform_4_MHD                                 &
      &   (sph%sph_rtp, comms_sph%comm_rtp,                              &
-     &    WK%trns_MHD, WK%WK_FFTs_MHD, WK%iflag_MHD_FFT)
+     &    WK%trns_MHD, WK%WK_FFTs_MHD, SR_r, WK%iflag_MHD_FFT)
 !
       call init_sph_FFTs_for_SGS_model                                  &
      &   (WK%iflag_MHD_FFT, SGS_param, sph, comms_sph, WK_LES)

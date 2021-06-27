@@ -172,8 +172,8 @@
       use t_interpolate_table
       use t_solver_djds
       use t_vector_for_solver
+      use t_solver_SR
 !
-      use m_solver_SR
       use m_CG_constants
       use m_solver_count_time
 !
@@ -251,7 +251,7 @@
      &   (NP, NB, MG_comm(0)%num_neib, MG_comm(0)%id_neib,              &
      &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
      &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW,         &
-     &    SR_sig1, SR_r1, X)
+     &    SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -308,7 +308,7 @@
        call s_MGCGnn_V_cycle(num_MG_level, MG_comm, MG_itp,             &
      &     djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, W(1,R), W(1,Z),  &
      &     iter_mid, iter_lowest, EPS_MG, METHOD_MG, PRECOND_MG, IER,   &
-     &     ntotWK_CG, W(1,1))
+     &     ntotWK_CG, W(1,1), SR_sig, SR_r)
 !
 !C
 !C +---------------+

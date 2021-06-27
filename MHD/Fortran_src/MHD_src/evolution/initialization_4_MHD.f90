@@ -7,7 +7,7 @@
 !!     &          flex_MHD, MHD_step, geofem, MHD_mesh,                 &
 !!     &          FEM_filters, MHD_prop, MHD_BC, FEM_MHD_BCs,           &
 !!     &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld, MHD_CG,     &
-!!     &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim, v_sol)
+!!     &          SGS_MHD_wk, fem_sq, fem_fst_IO, m_SR, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -28,7 +28,7 @@
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(field_IO), intent(inout) :: fem_fst_IO
-!!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(mesh_SR), intent(inout) :: m_SR
 !
       module initialization_4_MHD
 !
@@ -61,7 +61,7 @@
       use t_work_4_MHD_layering
       use t_bc_data_list
       use t_field_data_IO
-      use t_vector_for_solver
+      use t_mesh_SR
 !
       implicit none
 !
@@ -75,7 +75,7 @@
      &          flex_MHD, MHD_step, geofem, MHD_mesh,                   &
      &          FEM_filters, MHD_prop, MHD_BC, FEM_MHD_BCs,             &
      &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld, MHD_CG,       &
-     &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim, v_sol)
+     &          SGS_MHD_wk, fem_sq, fem_fst_IO, m_SR, label_sim)
 !
       use m_boundary_condition_IDs
       use m_flags_4_solvers
@@ -134,7 +134,7 @@
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(field_IO), intent(inout) :: fem_fst_IO
-      type(vectors_4_solver), intent(inout) :: v_sol
+      type(mesh_SR), intent(inout) :: m_SR
       character(len=kchara), intent(inout)   :: label_sim
 !
       type(shape_finctions_at_points), save :: spfs_1
@@ -162,8 +162,9 @@
 !
 !     ---------------------
 !
-      call FEM_comm_initialization(geofem%mesh, v_sol)
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
+      call FEM_comm_initialization(geofem%mesh, m_SR)
+      call FEM_mesh_initialization(geofem%mesh, geofem%group,           &
+     &                             m_SR%SR_sig, m_SR%SR_i)
 !
 !     ---------------------
 !
@@ -209,7 +210,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
       call s_const_comm_table_fluid(nprocs, geofem%mesh,                &
-     &    MHD_mesh%fluid, MHD_CG%DJDS_comm_fl)
+     &    MHD_mesh%fluid, MHD_CG%DJDS_comm_fl, m_SR%SR_sig, m_SR%SR_i)
 !
 !  -------------------------------
 !
@@ -235,15 +236,7 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
-      call const_MHD_jacobian_and_volumes                               &
-     &   (SGS_par%model_p, fem_sq%i_msq, MHD_BC,                        &
-     &    geofem%mesh, geofem%group, FEM_filters%layer_tbl, spfs_1,     &
-     &    SGS_MHD_wk%fem_int%jcs, MHD_mesh, fem_sq%msq)
-!
-!     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
+      if (iflag_debug.eq.1) write(*,*) 'set_MHD_connectivities'
       call set_MHD_connectivities                                       &
      &   (FEM_prm%DJDS_param, geofem%mesh, MHD_mesh%fluid,              &
      &    MHD_CG%solver_C, SGS_MHD_wk%fem_int,                          &
@@ -251,11 +244,27 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector                                          &
-     &   (my_rank, nprocs, geofem%mesh%node, geofem%mesh%surf,          &
-     &    spfs_1%spf_2d, SGS_MHD_wk%fem_int%jcs)
+      if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
+      call const_MHD_jacobian_and_volumes                               &
+     &   (SGS_par%model_p, fem_sq%i_msq, MHD_BC,                        &
+     &    geofem%mesh, geofem%group, FEM_filters%layer_tbl, spfs_1,     &
+     &    SGS_MHD_wk%fem_int%jcs, MHD_mesh, fem_sq%msq)
+!
+      if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
+      call alloc_surf_shape_func                                        &
+     &   (geofem%mesh%surf%nnod_4_surf, SGS_MHD_wk%fem_int%jcs%g_FEM,   &
+     &    spfs_1%spf_2d)
+      call const_jacobians_surf_group(my_rank, nprocs,                  &
+     &    geofem%mesh%node, geofem%mesh%ele, geofem%mesh%surf,          &
+     &    geofem%group%surf_grp, spfs_1%spf_2d, SGS_MHD_wk%fem_int%jcs)
       call dealloc_surf_shape_func(spfs_1%spf_2d)
+!
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &          'surf_jacobian_sf_grp_normal'
+      call surf_jacobian_sf_grp_normal(my_rank, nprocs,                 &
+     &    geofem%mesh, geofem%group, spfs_1, SGS_MHD_wk%fem_int%jcs)
+!
+!     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
       call int_surface_parameters                                       &
@@ -292,8 +301,8 @@
      &     (MHD_step%time_d%dt, FEM_prm, geofem%mesh,                   &
      &      SGS_MHD_wk%fem_int%jcs, Csims_FEM_MHD%diff_coefs,           &
      &      MHD_prop, MHD_BC, FEM_prm%DJDS_param, spfs_1,               &
-     &      MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM,                            &
-     &      MHD_CG%MGCG_MHD_FEM, MHD_CG%MHD_mat)
+     &      MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,       &
+     &      MHD_CG%MHD_mat, m_SR%SR_sig, m_SR%SR_i)
       end if
 !
 !     --------------------- 

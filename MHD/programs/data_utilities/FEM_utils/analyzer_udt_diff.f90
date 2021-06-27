@@ -17,11 +17,14 @@
       use calypso_mpi
 !
       use t_FEM_utils
+      use t_mesh_SR
 !
       implicit none
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
+!>      Structure of work area for mesh communications
+      type(mesh_SR) :: m_SR4
 !       Structure for time stepping parameters
       type(time_step_param), save :: time_U
 !
@@ -51,8 +54,8 @@
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file,                      &
-     &                           FUTIL1%geofem, FUTIL1%v_sol)
+      call mesh_setup_4_FEM_UTIL                                        &
+     &   (FUTIL1%mesh_file, FUTIL1%geofem, m_SR4)
 !
 !     --------------------- 
 !
@@ -91,8 +94,8 @@
         call s_divide_phys_by_delta_t                                   &
      &     (time_U%time_d%dt, FUTIL1%nod_fld)
 !
-        call nod_fields_send_recv(FUTIL1%geofem%mesh,                   &
-     &                            FUTIL1%nod_fld, FUTIL1%v_sol)
+        call nod_fields_send_recv(FUTIL1%geofem%mesh, FUTIL1%nod_fld,   &
+     &      m_SR4%v_sol, m_SR4%SR_sig, m_SR4%SR_r)
 !
 !    output udt data
         call link_output_ucd_file_once                                  &

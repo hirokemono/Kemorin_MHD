@@ -5,7 +5,7 @@
 !
 !!      subroutine FEM_initialize_vol_average                           &
 !!     &         (MHD_files, MHD_step, FEM_model, ak_MHD,               &
-!!     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq)
+!!     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
 !!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
 !!        type(coefs_4_MHD_type), intent(inout) :: ak_MHD
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
@@ -14,13 +14,15 @@
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_analyze_vol_average(i_step, MHD_files, iphys_LES,&
-!!     &          FEM_model, MHD_step, SGS_MHD_wk, FEM_MHD, fem_sq)
+!!     &         FEM_model, MHD_step, SGS_MHD_wk, FEM_MHD, fem_sq, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
+!!        type(mesh_SR), intent(inout) :: m_SR
 !
       module FEM_analyzer_vol_average
 !
@@ -39,6 +41,7 @@
       use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
       use t_MHD_IO_data
+      use t_mesh_SR
 !
       use calypso_mpi
 !
@@ -54,7 +57,7 @@
 !
       subroutine FEM_initialize_vol_average                             &
      &         (MHD_files, MHD_step, FEM_model, ak_MHD,                 &
-     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq)
+     &          FEM_MHD, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
 !
       use t_boundary_field_IO
 !
@@ -73,6 +76,7 @@
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_IO_data), intent(inout) :: MHD_IO
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !   matrix assembling
 !
@@ -84,14 +88,14 @@
      &   FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,        &
      &   FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field, SNAP_time_IO, &
      &   MHD_step%rst_step, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,          &
-     &   FEM_MHD%label_sim, FEM_MHD%v_sol)
+     &   m_SR, FEM_MHD%label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_vol_average(i_step, MHD_files, iphys_LES,  &
-     &          FEM_model, MHD_step, SGS_MHD_wk, FEM_MHD, fem_sq)
+     &         FEM_model, MHD_step, SGS_MHD_wk, FEM_MHD, fem_sq, m_SR)
 !
       use t_FEM_MHD_mean_square
       use nod_phys_send_recv
@@ -111,6 +115,7 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: iflag
 !
@@ -132,8 +137,8 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv                                         &
-     &   (FEM_MHD%geofem%mesh, FEM_MHD%field, FEM_MHD%v_sol)
+      call nod_fields_send_recv(FEM_MHD%geofem%mesh, FEM_MHD%field,     &
+     &                          m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
 !     -----Output monitor date
 !

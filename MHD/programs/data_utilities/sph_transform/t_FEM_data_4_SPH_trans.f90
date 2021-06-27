@@ -7,7 +7,6 @@
 !>@brief Arrays for Field data IO for spherical transform utilities
 !!
 !!@verbatim
-!!      subroutine mesh_setup_4_SPH_TRANS
 !!@endverbatim
 !
       module t_FEM_data_4_SPH_trans
@@ -24,10 +23,12 @@
       use t_next_node_ele_4_node
       use t_jacobians
       use t_phys_name_4_sph_trans
-      use t_vector_for_solver
       use t_visualizer
       use t_field_data_IO
       use t_file_IO_parameter
+      use t_solver_SR
+      use t_solver_SR_int
+      use t_solver_SR_int8
 !
       implicit none
 !
@@ -55,9 +56,6 @@
 !>        Instance for numbers of FEM field for merged IO
         type(ucd_data) :: ucd
 !
-!>        Structure for vectors for solver
-        type(vectors_4_solver) :: v_sol
-!
 !>        Structure of included element list for each node
         type(element_around_node) :: ele_4_nod
 !>        Stracture for Jacobians
@@ -68,36 +66,5 @@
 !>        Structure for visualization
         type(visualize_modules) :: vizs
       end type FEM_for_SPH_transforms
-!
-! ----------------------------------------------------------------------
-!
-      contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine mesh_setup_4_SPH_TRANS(FEM_STR)
-!
-      use nod_phys_send_recv
-      use parallel_FEM_mesh_init
-      use set_ucd_data_to_type
-!
-      type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
-!
-!
-!  -----    construct geometry informations
-!
-      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization                                      &
-     &   (FEM_STR%geofem%mesh, FEM_STR%v_sol)
-      call FEM_mesh_initialization                                      &
-     &   (FEM_STR%geofem%mesh, FEM_STR%geofem%group)
-!
-      if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
-      call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &
-     &                     FEM_STR%field)
-!
-      end subroutine mesh_setup_4_SPH_TRANS
-!
-! ----------------------------------------------------------------------
 !
       end module t_FEM_data_4_SPH_trans

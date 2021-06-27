@@ -10,8 +10,9 @@
 !!      subroutine const_repartitioned_comm_tbl                         &
 !!     &         (internal_node, num_recv_nod, num_recv_trim,           &
 !!     &          ntot_import, irank_sort, inod_sort, iflag_dup,        &
-!!     &          new_comm)
+!!     &          new_comm, SR_sig)
 !!        type(communication_table), intent(inout) :: new_comm
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module const_repart_comm_tbl
@@ -21,6 +22,7 @@
       use m_machine_parameter
 !
       use t_comm_table
+      use t_solver_SR
 !
       implicit none
 !
@@ -37,11 +39,9 @@
       subroutine const_repartitioned_comm_tbl                           &
      &         (internal_node, num_recv_nod, num_recv_trim,             &
      &          ntot_import, irank_sort, inod_sort, iflag_dup,          &
-     &          new_comm)
+     &          new_comm, SR_sig)
 !
       use calypso_mpi
-      use m_solver_SR
-!
       use reverse_SR_int
 !
       integer(kind = kint), intent(in) :: internal_node
@@ -54,6 +54,7 @@
       integer(kind = kint), intent(in) :: iflag_dup(ntot_import)
 !
       type(communication_table), intent(inout) :: new_comm
+      type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint), allocatable :: inod_external(:)
       integer(kind = kint), allocatable :: irank_external(:)
@@ -86,13 +87,16 @@
 !
       call num_items_send_recv                                          &
      &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
-     &    SR_sig1, new_comm%num_export, new_comm%istack_export,         &
-     &    new_comm%ntot_export)
+     &    new_comm%num_neib, new_comm%id_neib, izero,                   &
+     &    new_comm%num_export, new_comm%istack_export,                  &
+     &    new_comm%ntot_export, SR_sig)
 !
       call alloc_export_item(new_comm)
-      call comm_items_send_recv(new_comm%num_neib, new_comm%id_neib,    &
-     &    new_comm%istack_import, new_comm%istack_export,               &
-     &    inod_external, SR_sig1, new_comm%item_export)
+      call comm_items_send_recv                                         &
+     &   (new_comm%num_neib, new_comm%id_neib,                          &
+     &    new_comm%istack_import, inod_external,                        &
+     &    new_comm%num_neib, new_comm%id_neib,                          &
+     &    new_comm%istack_export, izero, new_comm%item_export, SR_sig)
       deallocate(inod_external, irank_external)
 !
       end subroutine const_repartitioned_comm_tbl

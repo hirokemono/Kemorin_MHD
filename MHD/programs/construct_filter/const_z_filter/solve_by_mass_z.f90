@@ -6,12 +6,14 @@
 !
 !     solve using CRS matrix
 !
-!!      subroutine solve_crs_by_mass_z                                  &
-!!     &         (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
-!!      subroutine solve_crs_by_mass_z2                                 &
-!!     &         (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+!!      subroutine solve_crs_by_mass_z(CG_param, DJDS_param, nod_comm,  &
+!!     &          node, tbl_crs, mat_crs, SR_sig, SR_r)
+!!      subroutine solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm, &
+!!     &          node, tbl_crs, mat_crs, SR_sig, SR_r)
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module solve_by_mass_z
 !
@@ -25,6 +27,7 @@
       use t_solver_djds
       use t_crs_connect
       use t_crs_matrix
+      use t_solver_SR
 !
       implicit none
 !
@@ -41,8 +44,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_crs_by_mass_z                                    &
-     &         (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+      subroutine solve_crs_by_mass_z(CG_param, DJDS_param, nod_comm,    &
+     &          node, tbl_crs, mat_crs, SR_sig, SR_r)
 !
       use calypso_mpi
       use solve_precond_DJDS
@@ -54,6 +57,8 @@
       type(node_data), intent(inout) :: node
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: i, itr_res, ierr
 !
@@ -78,7 +83,7 @@
      &    tbl_crs, mat_crs, CG_param, DJDS_param, djds_tbl1, djds_mat1)
       call solve_by_djds_solver11                                       &
      &   (node, nod_comm, CG_param, mat_crs, djds_tbl1, djds_mat1,      &
-     &    itr_res, ierr)
+     &    SR_sig, SR_r, itr_res, ierr)
       if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
       do i = 1, node%numnod
@@ -92,8 +97,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_crs_by_mass_z2                                   &
-     &         (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+      subroutine solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm,   &
+     &          node, tbl_crs, mat_crs, SR_sig, SR_r)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -108,6 +113,8 @@
       type(node_data), intent(inout) :: node
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: i, itr_res, ierr
 !
@@ -126,7 +133,7 @@
 !
       call solve_by_djds_solverNN                                       &
      &   (node, nod_comm, CG_param, mat_crs, djds_tbl1, djds_mat1,      &
-     &    itr_res, ierr)
+     &    SR_sig, SR_r, itr_res, ierr)
       if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
       do i = 1, node%numnod

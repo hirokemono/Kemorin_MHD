@@ -17,6 +17,7 @@
       use t_crs_matrix
       use t_iccg_parameter
       use t_ctl_data_solver_test
+      use t_solver_SR
 !
       implicit none
 !
@@ -28,6 +29,11 @@
 !
       type(CG_poarameter), save :: CG_param_t
       type(DJDS_poarameter), save :: DJDS_param_t
+!
+!>      Structure of communication flags
+      type(send_recv_status) :: SR_sig1
+!>      Structure of communication buffer for 8-byte real
+      type(send_recv_real_buffer) :: SR_r1
 !
       real(kind = kreal) :: RTIME, STARTTIME, ENDTIME
       private :: RTIME, STARTTIME, ENDTIME
@@ -86,17 +92,17 @@
      &   .or. mat_crs%SOLVER_crs.eq.'SCALAR') then
         call solve_by_djds_solver11                                     &
      &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
-     &      itr_res, ierr)
+     &      SR_sig1, SR_r1, itr_res, ierr)
       else if (mat_crs%SOLVER_crs.eq.'block33'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCK33') then
         call solve_by_djds_solver33                                     &
      &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
-     &      itr_res, ierr)
+     &      SR_sig1, SR_r1, itr_res, ierr)
       else if (mat_crs%SOLVER_crs.eq.'blockNN'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCKNN') then
         call solve_by_djds_solverNN                                     &
      &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
-     &      itr_res, ierr)
+     &      SR_sig1, SR_r1, itr_res, ierr)
       end if
 
       call output_solution(node, mat_crs)
