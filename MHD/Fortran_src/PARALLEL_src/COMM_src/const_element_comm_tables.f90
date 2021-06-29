@@ -60,6 +60,7 @@
       character(len=kchara), parameter :: txt_edge = 'edge'
 !
       private :: txt_ele, txt_edge
+      private :: find_position_range
 !
 !-----------------------------------------------------------------------
 !
