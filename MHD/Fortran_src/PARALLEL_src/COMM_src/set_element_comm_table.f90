@@ -243,8 +243,8 @@
             do jnum = jst, jed
               jele = neib_e%iele_4_node(jnum)
 !
-              dist = sqrt((x_ele(jele,1)- xe_export(3*inum-2))**2 &
-     &                + (x_ele(jele,2) - xe_export(3*inum-1))**2  &
+              dist = sqrt((x_ele(jele,1)- xe_export(3*inum-2))**2       &
+     &                + (x_ele(jele,2) - xe_export(3*inum-1))**2        &
      &                + (x_ele(jele,3) - xe_export(3*inum  ))**2)
 !
               if(dist .le. TINY) then
