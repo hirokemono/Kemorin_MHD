@@ -59,7 +59,7 @@
       use t_para_double_numbering
       use t_element_double_number
       use t_const_comm_table
-      use set_ele_id_4_node_type
+      use set_element_id_node_z_order
       use const_global_element_ids
 !
       type(node_data), intent(in) :: node
@@ -89,7 +89,7 @@
      &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
      &    internal_num, surf%interior_surf, isurf_dbl)
 !
-      call set_surf_id_4_node(node, surf, neib_surf)
+      call set_surf_id_4_node_z_order(node, surf, neib_surf)
 !
       call alloc_failed_export(0, fail_tbl_s)
       call const_comm_table_by_connenct                                 &

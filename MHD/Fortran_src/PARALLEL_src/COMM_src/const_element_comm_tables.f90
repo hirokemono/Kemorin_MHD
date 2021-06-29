@@ -70,7 +70,7 @@
 !
       subroutine const_global_mesh_infos(mesh)
 !
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
       use const_global_element_ids
 !
       type(mesh_geometry), intent(inout) :: mesh
@@ -144,7 +144,7 @@
       use t_para_double_numbering
       use t_element_double_number
       use t_const_comm_table
-      use set_ele_id_4_node_type
+      use set_element_id_node_z_order
       use const_global_element_ids
 !
       type(node_data), intent(in) :: node
@@ -167,7 +167,7 @@
       call find_belonged_pe_4_ele                                       &
      &   (inod_dbl, ele%numele, ele%ie(1,1), iele_dbl)
 !
-      call set_ele_id_4_node(node, ele, neib_ele)
+      call set_ele_id_4_node_z_order(node, ele, neib_ele)
 !
       call alloc_failed_export(0, fail_tbl_e)
       call const_comm_table_by_connenct                                 &
@@ -200,7 +200,7 @@
       use t_para_double_numbering
       use t_element_double_number
       use t_const_comm_table
-      use set_ele_id_4_node_type
+      use set_element_id_node_z_order
       use const_global_element_ids
 !
       type(node_data), intent(in) :: node
@@ -231,8 +231,8 @@
      &    internal_num, edge%interior_edge, iedge_dbl)
 !
 !
-      if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'
-      call set_edge_id_4_node(node, edge, neib_edge)
+      if(iflag_debug.gt.0) write(*,*) 'set_edge_id_4_node_z_order'
+      call set_edge_id_4_node_z_order(node, edge, neib_edge)
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
      &          ' const_comm_table_by_connenct in edge'

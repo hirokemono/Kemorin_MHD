@@ -131,7 +131,7 @@
       use write_diff_4_comm_test
       use mesh_send_recv_check
 !
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
       use const_element_comm_tables
       use const_surface_comm_table
 !

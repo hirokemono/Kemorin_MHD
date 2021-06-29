@@ -104,7 +104,7 @@
 !
       use m_filter_file_names
       use m_field_file_format
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(element_list_4_filter), intent(in) :: fil_elist
