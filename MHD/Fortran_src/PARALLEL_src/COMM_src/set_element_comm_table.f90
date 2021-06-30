@@ -274,5 +274,189 @@
       end subroutine set_element_export_item
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_element_export_item_new                            &
+     &         (txt, neib_e, numele, nnod_4_ele, ie_sum, x_ele,         &
+     &          num_neib_e, istack_export_e, inod_lc_export,            &
+     &          ipe_lc_export, iref_sum, xe_export, item_export_e,      &
+     &          fail_tbl)
+!
+      use t_next_node_ele_4_node
+      use t_failed_export_list
+      use calypso_mpi_int
+      use quicksort
+!
+      character(len=kchara), intent(in) :: txt
+      type(element_around_node), intent(in) :: neib_e
+!
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie_sum(numele)
+      real(kind = kreal), intent(in)  :: x_ele(numele,3)
+!
+      integer(kind = kint), intent(in) :: num_neib_e
+      integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
+!
+      integer(kind = kint), intent(in)                                  &
+     &        :: iref_sum(istack_export_e(num_neib_e))
+      real(kind = kreal), intent(in)                                    &
+     &        :: xe_export(3*istack_export_e(num_neib_e))
+      integer(kind = kint), intent(in)                                  &
+     &        :: inod_lc_export(istack_export_e(num_neib_e),nnod_4_ele)
+      integer(kind = kint), intent(in)                                  &
+     &        :: ipe_lc_export(istack_export_e(num_neib_e),nnod_4_ele)
+!
+      integer(kind = kint), intent(inout)                               &
+     &        :: item_export_e(istack_export_e(num_neib_e))
+      type(failed_table), intent(inout) :: fail_tbl
+!
+      integer(kind = kint) :: ip, icou, num_gl
+      integer(kind = kint) :: ist, ied, inum, inod
+      integer(kind = kint) :: k1
+      real(kind = kreal) :: dist_min
+!
+      type(failed_item) :: fail_comm_t
+!
+!
+      icou = 0
+      do ip = 1, num_neib_e
+        ist = istack_export_e(ip-1) + 1
+        ied = istack_export_e(ip)
+        do inum = ist, ied
+          dist_min = 1.0d30
+          do k1 = 1, nnod_4_ele
+            if(ipe_lc_export(inum,k1) .ne. my_rank) cycle
+!
+            inod = inod_lc_export(inum,k1)
+            call find_element_export_item(numele, ie_sum, x_ele,        &
+     &          neib_e%istack_4_node(inod-1),                           &
+     &          neib_e%istack_4_node(inod),                             &
+     &          iref_sum(inum), xe_export(3*inum-2),                    &
+     &          item_export_e(inum), dist_min)
+            if(dist_min .eq. 0) exit
+          end do
+          if(dist_min .ne. 0) then
+            icou = icou + 1
+            call set_failed_export(inum, item_export_e(inum), dist_min, &
+     &                             fail_comm_t)
+            call append_failed_export(fail_comm_t, fail_tbl)
+          end if
+        end do
+      end do
+!
+      call calypso_mpi_barrier
+      call calypso_mpi_allreduce_one_int(icou, num_gl, MPI_SUM)
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &   'Failed export by set_element_export_item', num_gl
+!
+      end subroutine set_element_export_item_new
+!
+!-----------------------------------------------------------------------
+!
+      subroutine find_element_export_item(numele, ie_sum, x_ele,        &
+     &          ist_init, ied_init, iref_sum, xe_export,                &
+     &          item_export_e, dist_min)
+!
+      use m_machine_parameter
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie_sum(numele)
+      real(kind = kreal), intent(in)  :: x_ele(numele,3)
+!
+      integer(kind = kint), intent(in) :: ist_init, ied_init
+      integer(kind = kint), intent(in) :: iref_sum
+      real(kind = kreal), intent(in) :: xe_export(3)
+!
+      integer(kind = kint), intent(inout) :: item_export_e
+      real(kind = kreal), intent(inout) :: dist_min
+!
+      integer(kind = kint) :: ist, ied, imid, ilast, inum
+      real(kind= kreal) :: x_each(3)
+      logical :: flag_find
+!
+!
+      flag_find = .FALSE.
+      ist = ist_init + 1
+      ied = ied_init
+      imid = ied
+      do
+        ilast = imid
+!
+        if(ie_sum(imid) .lt. iref_sum) then
+          ied = imid
+        else if(ie_sum(imid) .gt. iref_sum) then
+          ist = imid
+        else
+          flag_find = .TRUE.
+          exit
+        end if
+!
+        imid = (ist + ied) / 2
+        if(imid .eq. ilast) exit
+      end do
+!
+      if(flag_find .EQV. .FALSE.) then
+        dist_min = -1.0d0
+        write(e_message,'(a)')                                          &
+     &             'mathced sum of eleement ID is missimg'
+        return
+      end if
+!
+      dist_min = 1.0d17
+      x_each(1:3) = x_ele(imid,1:3)
+      call dist_ele_position_to_export(x_each, xe_export, dist_min)
+      if(dist_min .eq. zero) then
+        item_export_e = imid
+        return
+      end if
+!
+      do inum = imid-1, ist_init
+        if(ie_sum(inum) .ne. iref_sum) exit
+!
+        x_each(1:3) = x_ele(imid,1:3)
+        call dist_ele_position_to_export(x_each, xe_export, dist_min)
+        if(dist_min .eq. zero) then
+          item_export_e = imid
+          return
+        end if
+      end do
+      do inum = imid+1, ied_init
+        if(ie_sum(inum) .ne. iref_sum) exit
+!
+        x_each(1:3) = x_ele(imid,1:3)
+        call dist_ele_position_to_export(x_each, xe_export, dist_min)
+        if(dist_min .eq. zero) then
+          item_export_e = imid
+          return
+        end if
+      end do
+!
+      end subroutine find_element_export_item
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dist_ele_position_to_export(x_each, xe_export,         &
+     &                                       dist_min)
+!
+      real(kind = kreal), intent(in) :: x_each(3), xe_export(3)
+      real(kind = kreal), intent(inout) :: dist_min
+!
+      real(kind = kreal) :: dist
+!
+!
+      dist = sqrt((x_each(1) - xe_export(1))**2                         &
+     &          + (x_each(2) - xe_export(2))**2                         &
+     &          + (x_each(3) - xe_export(3))**2)
+!
+      if(dist .le. TINY) then
+        dist_min = zero
+      else
+        dist_min = min(dist, dist_min)
+      end if
+!
+      end subroutine dist_ele_position_to_export
+!
+! -----------------------------------------------------------------------
 !
       end module set_element_comm_table

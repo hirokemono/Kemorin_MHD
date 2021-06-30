@@ -12,6 +12,10 @@
 !!      subroutine set_iele_4_node(numnod, numele, nnod_4_ele, ie,      &
 !!     &          iele_st, iele_ed, ntot_ele_4_node, iele_stack_4_node, &
 !!     &          nele_4_node, iele_4_node, iconn_4_node)
+!!      subroutine set_iele_4_node_sum_order                            &
+!!     &         (numnod, inod_dbl, numele, nnod_4_ele, ie,             &
+!!     &          iele_st, iele_ed, ntot_ele_4_node, iele_stack_4_node, &
+!!     &          nele_4_node, iele_4_node, iconn_4_node, isum_ele)
 !!@endverbatim
 !
       module find_element_id_4_node
@@ -105,16 +109,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_iele_4_node_z_order                                &
-     &         (numnod, numele, nnod_4_ele, ie, x_ele,                  &
+      subroutine set_iele_4_node_sum_order                              &
+     &         (numnod, inod_dbl, numele, nnod_4_ele, ie,               &
      &          iele_st, iele_ed, ntot_ele_4_node, iele_stack_4_node,   &
-     &          nele_4_node, iele_4_node, iconn_4_node)
+     &          nele_4_node, iele_4_node, iconn_4_node,                 &
+     &          isum_neib, isum_ele)
 !
       use quicksort
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: inod_dbl(numnod)
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
-      real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
       integer(kind = kint), intent(in) :: iele_st, iele_ed
       integer(kind = kint), intent(in) :: ntot_ele_4_node
@@ -125,16 +130,32 @@
      &                     :: iele_4_node(ntot_ele_4_node)
       integer(kind = kint), intent(inout)                               &
      &                     :: iconn_4_node(ntot_ele_4_node)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: isum_neib(ntot_ele_4_node)
+      integer(kind = kint), intent(inout) :: isum_ele(numele)
 !
-      real(kind = kreal), allocatable :: z_ele(:)
       integer(kind = kint), allocatable :: idx(:)
       integer(kind = kint), allocatable :: iele_4_sort(:,:)
 !
-      integer(kind = kint) :: inod, iele, icou, k
+      integer(kind = kint) :: inod, iele, icou, k, k1
       integer(kind = kint) :: ist, num, inum
 !
 !
-      allocate(z_ele(ntot_ele_4_node))
+!$omp parallel workshare
+      isum_ele(1:numele) = 0
+!$omp end parallel workshare
+!
+!$omp parallel private(k1)
+      do k1 = 1, nnod_4_ele
+!$omp do private(iele,inod)
+        do iele = 1, numele
+          inod = ie(iele,k1)
+          isum_ele(iele) = isum_ele(iele) + inod_dbl(inod)
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
       allocate(idx(ntot_ele_4_node))
       allocate(iele_4_sort(ntot_ele_4_node,2))
 !
@@ -155,7 +176,7 @@
           icou = iele_stack_4_node(inod-1) + nele_4_node(inod)
           iele_4_sort(icou,1) = iele
           iele_4_sort(icou,2) =  k
-          z_ele(icou) = x_ele(iele,3)
+          isum_neib(icou) = isum_ele(iele)
         end do
       end do
 !
@@ -164,8 +185,8 @@
         ist = iele_stack_4_node(inod-1)
         num = iele_stack_4_node(inod  ) - ist
         if(num .gt. 1) then
-          call quicksort_real_w_index(num, z_ele(ist+1),                &
-     &                                ione, num, idx(ist+1))
+          call quicksort_w_index(num, isum_neib(ist+1),                 &
+     &                           ione, num, idx(ist+1))
 !
           do inum = 1, num
             icou = idx(inum)
@@ -176,9 +197,9 @@
       end do
 !$omp end parallel do
 !
-      deallocate(z_ele, idx, iele_4_sort)
+      deallocate(idx, iele_4_sort)
 !
-      end  subroutine set_iele_4_node_z_order
+      end  subroutine set_iele_4_node_sum_order
 !
 ! -----------------------------------------------------------------------
 !
