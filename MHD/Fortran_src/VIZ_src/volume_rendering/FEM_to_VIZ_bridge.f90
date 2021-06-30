@@ -36,6 +36,9 @@
       use t_VIZ_step_parameter
       use t_VIZ_mesh_field
       use t_mesh_SR
+      use t_work_time
+!
+      use m_elapsed_labels_4_REPART
 !
       implicit none
 !
@@ -104,9 +107,11 @@
 !  -----  Construct Element communication table
       if(viz_step%LIC_t%increment .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
         call const_ele_comm_table                                       &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
      &      VIZ_DAT%ele_comm, m_SR)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
       end if
 !
 !  -----  Construct Edge communication table
@@ -155,10 +160,12 @@
 !
 !  -----  Construct Element communication table
       if(viz_step%LIC_t%increment .gt. 0) then
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_ele_comm_table                                       &
      &     (geofem%mesh%node, geofem%mesh%nod_comm, geofem%mesh%ele,    &
      &      ele_comm, m_SR)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
       end if
 !
 !  -----  Construct Edge communication table

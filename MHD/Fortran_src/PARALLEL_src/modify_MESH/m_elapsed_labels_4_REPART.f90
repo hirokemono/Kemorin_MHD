@@ -29,7 +29,7 @@
 !
       subroutine elpsed_label_4_repartition
 !
-      integer(kind = kint), parameter :: num_append = 6
+      integer(kind = kint), parameter :: num_append = 8
 !
 !
       call append_elapsed_times                                         &
@@ -48,6 +48,10 @@
       elps1%labels(ist_elapsed_RPRT+6)                                  &
      &                    = 'Repartition file IO    '
 !
+      elps1%labels(ist_elapsed_RPRT+7)                                  &
+     &                    = 'Element comm. table for repart.  '
+      elps1%labels(ist_elapsed_RPRT+8)                                  &
+     &                    = 'Element comm. table for sleeve ext.  '
       iflag_RPRT_time = .TRUE.
 !
       end subroutine elpsed_label_4_repartition
