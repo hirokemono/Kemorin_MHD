@@ -338,9 +338,9 @@
      &          neib_e%istack_4_node(inod),                             &
      &          isum_export(inum), xe_export(3*inum-2),                 &
      &          item_export_e(inum), dist_min)
-            if(dist_min .eq. 0) exit
+            if(dist_min .eq. zero) exit
           end do
-          if(dist_min .ne. 0) then
+          if(dist_min .ne. zero) then
             icou = icou + 1
             call set_failed_export(inum, item_export_e(inum), dist_min, &
      &                             fail_comm_t)
