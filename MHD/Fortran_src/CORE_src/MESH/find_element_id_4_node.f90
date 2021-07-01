@@ -189,7 +189,7 @@
      &                           ione, num, idx(ist+1))
 !
           do inum = 1, num
-            icou = idx(inum)
+            icou = idx(ist+inum)
             iele_4_node(ist+inum) =  iele_4_sort(icou,1)
             iconn_4_node(ist+inum) = iele_4_sort(icou,2)
           end do
