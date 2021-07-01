@@ -12,10 +12,10 @@
 !!     &          ntot_import_e)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(element_double_number), intent(in) :: iele_dbl
-!!      subroutine set_element_import_item                              &
-!!     &         (inod_dbl, iele_dbl, numele, nnod_4_ele, ie, x_ele,    &
+!!      subroutine set_element_import_item(inod_dbl, iele_dbl,          &
+!!     &          numele, nnod_4_ele, ie, x_ele, isum_ele,              &
 !!     &          num_neib_e, id_neib_e, istack_import_e, item_import_e,&
-!!     &          inod_lc_import, ipe_lc_import, xe_import)
+!!     &          inod_lc_import, ipe_lc_import, isum_import, xe_import)
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(element_double_number), intent(in) :: iele_dbl
 !!
@@ -91,10 +91,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_element_import_item                                &
-     &         (inod_dbl, iele_dbl, numele, nnod_4_ele, ie, x_ele,      &
+      subroutine set_element_import_item(inod_dbl, iele_dbl,            &
+     &          numele, nnod_4_ele, ie, x_ele, isum_ele,                &
      &          num_neib_e, id_neib_e, istack_import_e, item_import_e,  &
-     &          inod_lc_import, ipe_lc_import, xe_import)
+     &          inod_lc_import, ipe_lc_import, isum_import, xe_import)
 !
       use t_para_double_numbering
       use t_element_double_number
@@ -103,6 +103,7 @@
       type(element_double_number), intent(in) :: iele_dbl
 !
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: isum_ele(numele)
       integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
 !
@@ -114,6 +115,8 @@
      &        :: item_import_e(istack_import_e(num_neib_e))
       real(kind = kreal), intent(inout)                                 &
      &        :: xe_import(3*istack_import_e(num_neib_e))
+      integer(kind = kint), intent(inout)                               &
+     &        :: isum_import(istack_import_e(num_neib_e))
       integer(kind = kint), intent(inout)                               &
      &        :: inod_lc_import(istack_import_e(num_neib_e),nnod_4_ele)
       integer(kind = kint), intent(inout)                               &
@@ -154,9 +157,11 @@
 !
       deallocate(ip_rev_tmp, num_import_tmp)
 !
+!$omp parallel do private(icou,iele,k1,inod)
       do icou = 1, istack_import_e(num_neib_e)
         iele = item_import_e(icou)
 !
+        isum_import(icou) =   isum_ele(iele)
         xe_import(3*icou-2) = x_ele(iele,1)
         xe_import(3*icou-1) = x_ele(iele,2)
         xe_import(3*icou  ) = x_ele(iele,3)
@@ -166,25 +171,27 @@
           ipe_lc_import(icou,k1) =  inod_dbl%irank(inod)
         end do
       end do
+!$omp end parallel do
 !
       end subroutine  set_element_import_item
 !
 !-----------------------------------------------------------------------
 !
       subroutine set_element_export_item                                &
-     &         (txt, neib_e, numele, nnod_4_ele, x_ele,                 &
+     &         (neib_e, numele, nnod_4_ele, x_ele, isum_ele,            &
      &          num_neib_e, istack_export_e, inod_lc_export,            &
-     &          ipe_lc_export, xe_export, item_export_e, fail_tbl)
+     &          ipe_lc_export, isum_export, xe_export,                  &
+     &          item_export_e, fail_tbl)
 !
       use t_next_node_ele_4_node
       use t_failed_export_list
       use calypso_mpi_int
       use quicksort
 !
-      character(len=kchara), intent(in) :: txt
       type(element_around_node), intent(in) :: neib_e
 !
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: isum_ele(numele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
 !
       integer(kind = kint), intent(in) :: num_neib_e
@@ -192,6 +199,8 @@
 !
       real(kind = kreal), intent(in)                                    &
      &        :: xe_export(3*istack_export_e(num_neib_e))
+      integer(kind = kint), intent(inout)                               &
+     &        :: isum_export(istack_export_e(num_neib_e))
       integer(kind = kint), intent(in)                                  &
      &        :: inod_lc_export(istack_export_e(num_neib_e),nnod_4_ele)
       integer(kind = kint), intent(in)                                  &
