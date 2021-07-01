@@ -336,12 +336,13 @@
       integer(kind = kint), intent(inout) :: item_export_e
       real(kind = kreal), intent(inout) :: dist_min
 !
-      integer(kind = kint) :: ist, ied, imid, ilast, inum, jele
+      integer(kind = kint) :: ist, ied, imid, ilast, inum, jele, icou
       real(kind= kreal) :: x_each(3)
       logical :: flag_find
 !
 !
       flag_find = .FALSE.
+      icou = 1
       ist = 1
       ied = nele_4_node
       imid = ied
@@ -350,9 +351,9 @@
         jele = iele_4_node(imid)
 !
         if(isum_ele(jele) .lt. iref_sum) then
-          ied = imid
-        else if(isum_ele(jele) .gt. iref_sum) then
           ist = imid
+        else if(isum_ele(jele) .gt. iref_sum) then
+          ied = imid
         else
           flag_find = .TRUE.
           exit
@@ -360,6 +361,7 @@
 !
         imid = (ist + ied) / 2
         if(imid .eq. ilast) exit
+        icou = icou + 1
       end do
 !
       if(flag_find .EQV. .FALSE.) then
@@ -374,29 +376,29 @@
       x_each(1:3) = x_ele(jele,1:3)
       call dist_ele_position_to_export(x_each, xe_export, dist_min)
       if(dist_min .eq. zero) then
-        item_export_e = imid
+        item_export_e = jele
         return
       end if
 !
       do inum = imid-1, 1, -1
-        if(isum_ele(inum) .ne. iref_sum) exit
+        jele = iele_4_node(inum)
+        if(isum_ele(jele) .ne. iref_sum) exit
 !
-        jele = iele_4_node(imid)
         x_each(1:3) = x_ele(jele,1:3)
         call dist_ele_position_to_export(x_each, xe_export, dist_min)
         if(dist_min .eq. zero) then
-          item_export_e = imid
+          item_export_e = jele
           return
         end if
       end do
       do inum = imid+1, nele_4_node
-        if(isum_ele(inum) .ne. iref_sum) exit
+        jele = iele_4_node(inum)
+        if(isum_ele(jele) .ne. iref_sum) exit
 !
-        jele = iele_4_node(imid)
         x_each(1:3) = x_ele(jele,1:3)
         call dist_ele_position_to_export(x_each, xe_export, dist_min)
         if(dist_min .eq. zero) then
-          item_export_e = imid
+          item_export_e = jele
           return
         end if
       end do
