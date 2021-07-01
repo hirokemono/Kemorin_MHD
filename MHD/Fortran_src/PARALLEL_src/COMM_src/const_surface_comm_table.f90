@@ -59,7 +59,7 @@
       use t_para_double_numbering
       use t_element_double_number
       use t_const_comm_table
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
       use const_global_element_ids
 !
       type(node_data), intent(in) :: node

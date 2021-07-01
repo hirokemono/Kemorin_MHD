@@ -38,7 +38,7 @@
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_table_FEM_const
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
       use ordering_rhs_assemble_type
 !
       type(mesh_geometry),       intent(in) :: mesh
@@ -64,7 +64,7 @@
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_table_FEM_const
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(element_around_node), intent(inout) :: neib_ele

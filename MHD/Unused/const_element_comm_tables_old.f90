@@ -64,7 +64,7 @@
 !
       subroutine const_ele_comm_tbl_old(node, nod_comm, ele_comm, ele)
 !
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
       use const_element_comm_table
 !
       type(node_data), intent(in) :: node
@@ -102,7 +102,7 @@
       subroutine const_surf_comm_table_old                                  &
      &         (node, nod_comm, surf_comm, surf, fail_tbl)
 !
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
       use const_element_comm_table
 !
       type(node_data), intent(in) :: node
@@ -138,7 +138,7 @@
       subroutine const_edge_comm_table_old                                  &
      &         (node, nod_comm, edge_comm, edge, fail_tbl)
 !
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
       use const_element_comm_table
 !
       type(node_data), intent(in) :: node

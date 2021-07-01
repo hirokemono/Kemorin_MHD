@@ -89,7 +89,7 @@
 !
       use calypso_mpi_int8
       use transfer_to_long_integers
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
       use extended_groups
       use copy_mesh_structures
       use nod_and_ele_derived_info
@@ -228,7 +228,7 @@
 !
       use calypso_mpi_int8
       use transfer_to_long_integers
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
       use extended_groups
       use copy_mesh_structures
       use nod_and_ele_derived_info

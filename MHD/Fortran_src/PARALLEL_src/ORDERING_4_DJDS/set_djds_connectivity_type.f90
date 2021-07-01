@@ -123,7 +123,7 @@
      &           layer_comm, solver_C, DJDS_param, DJDS_tbl)
 !
       use t_comm_table
-      use set_ele_id_4_node_type
+      use set_element_id_4_node
 !
       integer(kind = kint), intent(in) :: nnod_1ele
       integer(kind = kint), intent(in) :: iele_start, iele_end
