@@ -84,7 +84,7 @@
 !
       subroutine elpsed_label_4_VIZ_outline
 !
-      integer(kind = kint), parameter :: num_append = 11
+      integer(kind = kint), parameter :: num_append = 13
 !
 !
       call append_elapsed_times                                         &
@@ -108,6 +108,10 @@
       elps1%labels(ist_elapsed_VIZ+10) = 'LIC rendering.    '
 !
       elps1%labels(ist_elapsed_VIZ+11) = 'VTK output in viz module'
+      elps1%labels(ist_elapsed_VIZ+12)                                  &
+     &                    = 'ele. comm. table for LIC    '
+      elps1%labels(ist_elapsed_VIZ+13)                                  &
+     &                    = 'edge comm. table for surfacing    '
 !
       iflag_VIZ_time = .TRUE.
 !
