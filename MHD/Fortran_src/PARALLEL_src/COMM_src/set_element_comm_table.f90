@@ -35,6 +35,9 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter, private :: ISMALL = 17
+!
+      private :: find_ele_export_from_small, find_ele_export_from_large
       private :: dist_ele_position_to_export
 !
 !-----------------------------------------------------------------------
@@ -214,10 +217,9 @@
 !
       integer(kind = kint) :: ip, icou, num_gl
       integer(kind = kint) :: ist, ied, inum, inod
-      integer(kind = kint) :: jst, jed, jnum, jele
+      integer(kind = kint) :: jst
       integer(kind = kint) :: k1, kk
-      real(kind = kreal) :: dist, dist_min
-      real(kind= kreal) :: x_each(3)
+      real(kind = kreal) :: dist_min
 !
       integer(kind = kint) :: inod_sf_lc
       integer(kind = kint) :: n_search(nnod_4_ele)
@@ -250,21 +252,19 @@
 !
             inod = inod_lc_export(inum,kk)
             jst = neib_e%istack_4_node(inod-1) + 1
-            jed = neib_e%istack_4_node(inod)
-            do jnum = jst, jed
-              jele = neib_e%iele_4_node(jnum)
-!
-              x_each(1:3) = x_ele(jele,1:3)
-              call dist_ele_position_to_export                          &
-     &           (x_each, xe_export(3*inum-2), dist_min)
-!
-              if(dist_min .eq. zero) then
-                item_export_e(inum) = jele
-                exit
-              end if
-            end do
+            if(neib_e%nele_4_node(inod) .le. ISMALL) then
+              call find_ele_export_from_small(numele, x_ele,            &
+     &            neib_e%nele_4_node(inod), neib_e%iele_4_node(jst+1),  &
+     &            xe_export(3*inum-2), item_export_e(inum), dist_min)
+            else
+              call find_ele_export_from_large(numele, isum_ele, x_ele,  &
+     &            neib_e%nele_4_node(inod), neib_e%iele_4_node(jst+1),  &
+     &            isum_export(inum), xe_export(3*inum-2),               &
+     &            item_export_e(inum), dist_min)
+            end if
             if(dist_min .eq. zero) exit
           end do
+!
           if(dist_min .ne. zero) then
             icou = icou + 1
             call set_failed_export(inum, item_export_e(inum), dist_min, &
@@ -284,8 +284,41 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine find_ele_export_from_small                             &
+     &         (numele, x_ele, nele_4_node, iele_4_node,                &
+     &          xe_export, item_export_e, dist_min)
+!
+      integer (kind=kint) :: nele_4_node
+      integer(kind = kint), intent(in) :: iele_4_node(nele_4_node)
+!
+      integer(kind = kint), intent(in) :: numele
+      real(kind = kreal), intent(in)  :: x_ele(numele,3)
+      real(kind = kreal), intent(in) :: xe_export(3)
+!
+      integer(kind = kint), intent(inout) :: item_export_e
+      real(kind = kreal), intent(inout) :: dist_min
+!
+      integer(kind = kint) :: jnum, jele
+      real(kind= kreal) :: x_each(3)
+!
+!
+      do jnum = 1, nele_4_node
+        jele = iele_4_node(jnum)
+        x_each(1:3) = x_ele(jele,1:3)
+        call dist_ele_position_to_export(x_each, xe_export, dist_min)
+!
+        if(dist_min .eq. zero) then
+          item_export_e = jele
+          return
+        end if
+      end do
+!
+      end subroutine find_ele_export_from_small
+!
+!-----------------------------------------------------------------------
+!
       subroutine find_ele_export_from_large(numele, isum_ele, x_ele,    &
-     &          ist_init, ied_init, iref_sum, xe_export,                &
+     &          nele_4_node, iele_4_node, iref_sum, xe_export,          &
      &          item_export_e, dist_min)
 !
       use m_machine_parameter
@@ -294,28 +327,31 @@
       integer(kind = kint), intent(in) :: isum_ele(numele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
 !
-      integer(kind = kint), intent(in) :: ist_init, ied_init
+      integer (kind=kint) :: nele_4_node
+      integer(kind = kint), intent(in) :: iele_4_node(nele_4_node)
+!
       integer(kind = kint), intent(in) :: iref_sum
       real(kind = kreal), intent(in) :: xe_export(3)
 !
       integer(kind = kint), intent(inout) :: item_export_e
       real(kind = kreal), intent(inout) :: dist_min
 !
-      integer(kind = kint) :: ist, ied, imid, ilast, inum
+      integer(kind = kint) :: ist, ied, imid, ilast, inum, jele
       real(kind= kreal) :: x_each(3)
       logical :: flag_find
 !
 !
       flag_find = .FALSE.
-      ist = ist_init + 1
-      ied = ied_init
+      ist = 1
+      ied = nele_4_node
       imid = ied
       do
         ilast = imid
+        jele = iele_4_node(imid)
 !
-        if(isum_ele(imid) .lt. iref_sum) then
+        if(isum_ele(jele) .lt. iref_sum) then
           ied = imid
-        else if(isum_ele(imid) .gt. iref_sum) then
+        else if(isum_ele(jele) .gt. iref_sum) then
           ist = imid
         else
           flag_find = .TRUE.
@@ -334,27 +370,30 @@
       end if
 !
       dist_min = 1.0d17
-      x_each(1:3) = x_ele(imid,1:3)
+      jele = iele_4_node(imid)
+      x_each(1:3) = x_ele(jele,1:3)
       call dist_ele_position_to_export(x_each, xe_export, dist_min)
       if(dist_min .eq. zero) then
         item_export_e = imid
         return
       end if
 !
-      do inum = imid-1, ist_init
+      do inum = imid-1, 1, -1
         if(isum_ele(inum) .ne. iref_sum) exit
 !
-        x_each(1:3) = x_ele(imid,1:3)
+        jele = iele_4_node(imid)
+        x_each(1:3) = x_ele(jele,1:3)
         call dist_ele_position_to_export(x_each, xe_export, dist_min)
         if(dist_min .eq. zero) then
           item_export_e = imid
           return
         end if
       end do
-      do inum = imid+1, ied_init
+      do inum = imid+1, nele_4_node
         if(isum_ele(inum) .ne. iref_sum) exit
 !
-        x_each(1:3) = x_ele(imid,1:3)
+        jele = iele_4_node(imid)
+        x_each(1:3) = x_ele(jele,1:3)
         call dist_ele_position_to_export(x_each, xe_export, dist_min)
         if(dist_min .eq. zero) then
           item_export_e = imid
