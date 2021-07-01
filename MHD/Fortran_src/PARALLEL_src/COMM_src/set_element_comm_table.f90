@@ -251,7 +251,7 @@
             if(ipe_lc_export(inum,kk) .ne. my_rank) cycle
 !
             inod = inod_lc_export(inum,kk)
-            jst = neib_e%istack_4_node(inod-1) + 1
+            jst = neib_e%istack_4_node(inod-1)
             if(neib_e%nele_4_node(inod) .le. ISMALL) then
               call find_ele_export_from_small(numele, x_ele,            &
      &            neib_e%nele_4_node(inod), neib_e%iele_4_node(jst+1),  &
