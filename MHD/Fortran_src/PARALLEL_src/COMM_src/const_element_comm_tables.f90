@@ -144,7 +144,7 @@
       use t_para_double_numbering
       use t_element_double_number
       use t_const_comm_table
-      use set_element_id_4_node
+      use t_sum_local_node_id_list
       use const_global_element_ids
 !
       type(node_data), intent(in) :: node
@@ -157,6 +157,7 @@
       type(element_double_number) :: iele_dbl
       type(element_around_node) :: neib_ele
       type(failed_table) :: fail_tbl_e
+      type(sum_of_local_id_list) :: sum_list_e
 !
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
@@ -167,7 +168,8 @@
       call find_belonged_pe_4_ele                                       &
      &   (inod_dbl, ele%numele, ele%ie(1,1), iele_dbl)
 !
-      call set_ele_id_4_node(node, ele, neib_ele)
+      call set_ele_id_4_node_sum_order(node, ele, inod_dbl,             &
+     &                                 neib_ele, sum_list_e)
 !
       call alloc_failed_export(0, fail_tbl_e)
       call const_comm_table_by_connenct                                 &
@@ -185,6 +187,7 @@
      &   (txt_ele, node%numnod, node%inod_global, ele%numele,           &
      &    ele%nnod_4_ele, ele%ie, ele%iele_global, ele%x_ele,           &
      &    inod_dbl, iele_dbl, ele_comm, m_SR%SR_sig, m_SR%SR_r)
+      call dealloc_sum_of_local_id_list(sum_list_e)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_ele_double_number(iele_dbl)
 !
@@ -200,7 +203,7 @@
       use t_para_double_numbering
       use t_element_double_number
       use t_const_comm_table
-      use set_element_id_4_node
+      use t_sum_local_node_id_list
       use const_global_element_ids
 !
       type(node_data), intent(in) :: node
@@ -214,6 +217,7 @@
       type(element_double_number) :: iedge_dbl
       type(element_around_node) :: neib_edge
       type(failed_table) :: fail_tbl_d
+      type(sum_of_local_id_list) :: sum_list_d
 !
       integer(kind = kint) :: internal_num = 0
       integer(kind = kint_gl), allocatable :: istack_ineredge(:)
@@ -231,8 +235,9 @@
      &    internal_num, edge%interior_edge, iedge_dbl)
 !
 !
-      if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'
-      call set_edge_id_4_node(node, edge, neib_edge)
+      if(iflag_debug.gt.0) write(*,*) 'set_edge_id_4_node_sum_order'
+      call set_edge_id_4_node_sum_order(node, edge, inod_dbl,           &
+     &                                  neib_edge, sum_list_d)
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
      &          ' const_comm_table_by_connenct in edge'
@@ -260,6 +265,7 @@
      &    edge%nnod_4_edge, edge%ie_edge, edge%iedge_global,            &
      &    edge%x_edge, inod_dbl, iedge_dbl, edge_comm,                  &
      &    m_SR%SR_sig, m_SR%SR_r)
+      call dealloc_sum_of_local_id_list(sum_list_d)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_ele_double_number(iedge_dbl)
 !

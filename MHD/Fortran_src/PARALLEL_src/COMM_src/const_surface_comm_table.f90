@@ -59,7 +59,7 @@
       use t_para_double_numbering
       use t_element_double_number
       use t_const_comm_table
-      use set_element_id_4_node
+      use t_sum_local_node_id_list
       use const_global_element_ids
 !
       type(node_data), intent(in) :: node
@@ -73,6 +73,7 @@
       type(element_double_number) :: isurf_dbl
       type(element_around_node) :: neib_surf
       type(failed_table) :: fail_tbl_s
+      type(sum_of_local_id_list) :: sum_list_s
 !
       integer(kind = kint) :: internal_num = 0
       integer(kind = kint_gl), allocatable :: istack_inersurf(:)
@@ -89,7 +90,8 @@
      &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
      &    internal_num, surf%interior_surf, isurf_dbl)
 !
-      call set_surf_id_4_node(node, surf, neib_surf)
+      call set_surf_id_4_node_sum_order(node, surf, inod_dbl,           &
+     &                                  neib_surf, sum_list_s)
 !
       call alloc_failed_export(0, fail_tbl_s)
       call const_comm_table_by_connenct                                 &
@@ -114,6 +116,7 @@
      &    surf%nnod_4_surf, surf%ie_surf, surf%isurf_global,            &
      &    surf%x_surf, inod_dbl, isurf_dbl, surf_comm,                  &
      &    m_SR%SR_sig, m_SR%SR_r)
+      call dealloc_sum_of_local_id_list(sum_list_s)
       call dealloc_ele_double_number(isurf_dbl)
       call dealloc_double_numbering(inod_dbl)
 !
