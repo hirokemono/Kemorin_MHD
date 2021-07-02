@@ -170,7 +170,7 @@
 !
 !
       ist_px = start_px(1)
-      ist_py = start_px(2)
+      ist_py = start_px(2) - 6*iscale
       do m = 1, length
         write(char1,'(a1)') numeric(m)
         call set_one_label(char1, iscale, ist_px, ist_py,               &
@@ -202,39 +202,43 @@
 !
 !
       call gen_font8_12(char1, i_font)
-      do i = 1, 8*iscale
-        do j = 1, 12*iscale
+!
+      r_font(1:10,1:14) = 0.0d0
+!
+      do i = 1, 8
+        do j = 1, 12
           r_font(i,  j  ) = 0.2 * real(i_font(i,j))
           r_font(i+2,j  ) = 0.2 * real(i_font(i,j))
           r_font(i,  j+2) = 0.2 * real(i_font(i,j))
 !          r_font(i+2,j+2) = 0.2 * real(i_font(i,j))
         end do
       end do
-      do i = 1, 8*iscale
-        do j = 1, 12*iscale
+      do i = 1, 8
+        do j = 1, 12
           r_font(i,  j+1) = 0.4 * real(i_font(i,j))
           r_font(i+2,j+1) = 0.4 * real(i_font(i,j))
           r_font(i+1,j  ) = 0.4 * real(i_font(i,j))
           r_font(i+1,j+2) = 0.4 * real(i_font(i,j))
         end do
       end do
-      do i = 1, 8*iscale
-        do j = 1, 12*iscale
+      do i = 1, 8
+        do j = 1, 12
           r_font(i+2,j+2) = 0.6 * real(i_font(i,j))
         end do
       end do
-      do i = 1, 8*iscale
-        do j = 1, 12*iscale
+      do i = 1, 8
+        do j = 1, 12
           r_font(i+1,j+1) = 1.0 * real(i_font(i,j))
         end do
       end do
 !
       do i = 1, 10*iscale
         do j = 1, 14*iscale
-          k = ( (ist_py+j-1)*npix_img(1)+ist_px + i)
+!          k = ( (ist_py+j-1)*npix_img(1)+ist_px + i)
+          k = ( (ist_py+j+1)*npix_img(1)+ist_px + i)
           if(k .gt. ntot_pix) cycle
           ic =  (i-1) / iscale + 1
-          jc = 12 - (j-1) / iscale
+          jc = 14 - (j-1) / iscale
           dimage(1:3,k) = dimage(1:3,k) + r_font(ic,jc)                 &
      &                     * (one - two*dimage(1:3,k))
           dimage(4,k) = r_font(ic,jc)
