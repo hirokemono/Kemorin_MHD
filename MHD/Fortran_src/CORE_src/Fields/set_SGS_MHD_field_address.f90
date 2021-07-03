@@ -182,6 +182,7 @@
       use set_filtered_field_labels
       use set_filtered_force_labels
       use set_grad_filter_fld_labels
+      use set_wide_filter_fld_labels
       use set_SGS_term_labels
 !
       integer(kind = kint), intent(in) :: i_fld

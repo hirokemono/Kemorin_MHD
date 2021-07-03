@@ -86,8 +86,7 @@
 !
       if(iflag_FFT_MHD .eq. iflag_UNDEFINED_FFT) then
         call compare_FFT_4_MHD(sph_rtp, comm_rtp,                       &
-     &      SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS, SR_r1%WR,                 &
-     &      trns_MHD, WK_FFTs)
+     &      SR_r%n_WS, SR_r%n_WR, SR_r%WS, SR_r%WR, trns_MHD, WK_FFTs)
         iflag_FFT_MHD = iflag_selected
       end if
 !
