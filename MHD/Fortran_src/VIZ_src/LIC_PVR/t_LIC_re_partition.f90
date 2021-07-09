@@ -250,7 +250,7 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+7)
         if(repart_p%flag_repartition                                    &
      &        .or. lic_param%each_part_p%flag_repartition) then
           call repartition_lic_field(geofem%mesh%node,                  &
@@ -258,7 +258,7 @@
      &        repart_data%nod_fld_lic, repart_data%field_lic,           &
      &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         end if
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+7)
 !
       end subroutine set_LIC_each_field
 !
@@ -320,11 +320,16 @@
       call load_or_const_new_partition                                  &
      &   (repart_p, geofem, ele_comm, next_tbl, repart_data%viz_fem,    &
      &    repart_data%mesh_to_viz_tbl, repart_data%repart_WK, m_SR)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
 !
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+8)
       if(iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization LIC'
       call FEM_mesh_initialization                                      &
      &   (repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
      &    m_SR%SR_sig, m_SR%SR_i)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+8)
+!
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+9)
       call set_max_integration_points(ione, jac_viz%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jac_viz%g_FEM, spfs_T%spf_3d, spfs_T%spf_2d, spfs_T%spf_1d)
@@ -332,7 +337,7 @@
       call surf_jacobian_sf_grp_normal(my_rank, nprocs,                 &
      &    repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
      &    spfs_T, jac_viz)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+9)
 !
       end subroutine s_LIC_re_partition
 !
