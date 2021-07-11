@@ -81,7 +81,6 @@
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
      &    num_ray_start_lc, max_ray_start_lc)
 !
-      num32 = num_pixel_xy
       call calypso_mpi_reduce_int8(num_ray_start_lc, num_ray_start_gl,  &
      &    cast_long(num_pixel_xy), MPI_SUM, int(irank_image_file))
       call calypso_mpi_reduce_one_int8                                  &
@@ -128,9 +127,19 @@
 !
 !
       allocate(stencil_wk%istack_recv_image(0:nprocs))
+!
+      stencil_wk%istack_recv_image(0:nprocs) = 0
+!
       allocate(stencil_wk%irank_4_composit(num_pixel_xy))
       allocate(stencil_wk%irev_recv_image(num_pixel_xy))
       allocate(stencil_wk%item_recv_image(num_pixel_xy))
+!
+      if(num_pixel_xy .gt. 0) then
+!$omp parallel workshare
+      stencil_wk%irank_4_composit(1:num_pixel_xy) = -1
+      stencil_wk%irev_recv_image(1:num_pixel_xy) = 0
+      stencil_wk%item_recv_image(1:num_pixel_xy) = 0
+!$omp end parallel workshare
 !
       end subroutine alloc_stencil_buffer_work
 !
@@ -185,7 +194,6 @@
       integer(kind = kint_gl), allocatable :: istack_ray_start_gl(:)
 !
       integer(kind = kint) :: icou, ipix, ip, i_rank
-      integer :: num32
 !
 !
       if(my_rank .eq. irank_image_file) then
@@ -244,7 +252,6 @@
 !
       call calypso_mpi_bcast_one_int(stencil_wk%ntot_recv_image,        &
      &                               irank_image_file)
-      num32 = stencil_wk%ntot_recv_image
       call calypso_mpi_bcast_int(stencil_wk%item_recv_image(1),         &
      &    cast_long(stencil_wk%ntot_recv_image), irank_image_file)
 !

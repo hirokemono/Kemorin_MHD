@@ -43,7 +43,7 @@
      &                      :: check_fhead = 'pvr_composition_check'
       integer(kind = kint), parameter, private :: id_file = 49
 !
-      private :: count_parallel_stencil_buffer
+      private :: num_parallel_stencil_buffer
       private :: set_global_pixel_4_composit
       private :: check_composit_communication
       private :: check_img_output_communication
@@ -82,9 +82,9 @@
       character(len=kchara) :: fname_tmp, file_name
 !
 !
-!      write(*,*) 'count_parallel_stencil_buffer'
-      call count_parallel_stencil_buffer                                &
-     &   (stencil_wk, img_stack%npixel_4_composit)
+!      write(*,*) 'num_parallel_stencil_buffer'
+      img_stack%npixel_4_composit                                       &
+     &           = num_parallel_stencil_buffer(stencil_wk)
 !
 !
 !      write(*,*) 's_const_comm_tbl_img_output'
@@ -163,27 +163,28 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_parallel_stencil_buffer                          &
-     &         (stencil_wk, npixel_4_composit)
+      integer(kind = kint) function                                     &
+     &                    num_parallel_stencil_buffer(stencil_wk)
 !
       type(stencil_buffer_work), intent(in) :: stencil_wk
-      integer(kind = kint), intent(inout) :: npixel_4_composit
 !
-      integer(kind = kint) :: ip, ist, ipix
+      integer(kind = kint) :: ip, ist, ipix, num
 !
 !
-      npixel_4_composit = 0
+      num_parallel_stencil_buffer = 0
       do ip = 1, nprocs
         ist = stencil_wk%istack_recv_image(ip-1)
+        num = stencil_wk%istack_recv_image(ip) - ist
+        if(num .le. 0) cycle
+!
         ipix = stencil_wk%item_recv_image(ist+1)
         if(stencil_wk%irank_4_composit(ipix) .eq. my_rank) then
-          npixel_4_composit = stencil_wk%istack_recv_image(ip)          &
-     &                       - stencil_wk%istack_recv_image(ip-1)
+          num_parallel_stencil_buffer = num
           exit
         end if
       end do
 !
-      end subroutine count_parallel_stencil_buffer
+      end function num_parallel_stencil_buffer
 !
 !  ---------------------------------------------------------------------
 !
