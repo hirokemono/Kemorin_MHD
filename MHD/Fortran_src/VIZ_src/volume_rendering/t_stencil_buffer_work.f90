@@ -63,16 +63,12 @@
       integer(kind = kint_gl), allocatable :: num_ray_start_lc(:)
       integer(kind = kint_gl), allocatable :: num_ray_start_gl(:)
 !
-      integer :: num32
-      integer(kind = kint_gl) :: num64
-!
 !
       allocate(num_ray_start_lc(num_pixel_xy))
       if(my_rank .eq. int(irank_image_file)) then
         allocate(num_ray_start_gl(num_pixel_xy))
       end if
 !
-      num64 = pvr_start%num_pvr_ray
       call calypso_mpi_reduce_one_int8                                  &
      &   (cast_long(pvr_start%num_pvr_ray), num_pvr_ray_gl,             &
      &    MPI_SUM, int(irank_image_file))
