@@ -136,10 +136,11 @@
 !
       if(num_pixel_xy .gt. 0) then
 !$omp parallel workshare
-      stencil_wk%irank_4_composit(1:num_pixel_xy) = -1
-      stencil_wk%irev_recv_image(1:num_pixel_xy) = 0
-      stencil_wk%item_recv_image(1:num_pixel_xy) = 0
+        stencil_wk%irank_4_composit(1:num_pixel_xy) = -1
+        stencil_wk%irev_recv_image(1:num_pixel_xy) = 0
+        stencil_wk%item_recv_image(1:num_pixel_xy) = 0
 !$omp end parallel workshare
+      end if
 !
       end subroutine alloc_stencil_buffer_work
 !
