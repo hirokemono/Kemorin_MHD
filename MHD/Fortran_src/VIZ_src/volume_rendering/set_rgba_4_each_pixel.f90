@@ -105,8 +105,8 @@
 !
 !      rgb(4) = 1.0d0                                                   &
 !     &        - (1.0d0 - opa_current)**(ray_length)
-!      rgb(4) = 1.0d0 - ray_length * LOG(1.0d0 - opa_current)
-      rgb(4) = ray_length * opa_current
+      rgb(4) = 1.0d0 - ray_length * LOG(1.0d0 - opa_current)
+!      rgb(4) = ray_length * opa_current
       rgb(1:3) = rgb(1:3) * rgb(4)
       if(rgb(4) .gt. one) rgb(4) = one
       if(rgb(4) .lt. zero) rgb(4) = zero
