@@ -224,8 +224,6 @@
       do kk = 1, npixel_y*n_row_column(1)*n_row_column(2)
         istack_zbuf(kk) = istack_zbuf(kk-1) + nlen_zbuf_gl(kk)
       end do
-        write(*,*) 'istack_zbuf', istack_zbuf
-        write(*,*) 'IO_param%ioff_gl', IO_param%ioff_gl
 !
       do icou = 1, num_image_lc
         i_img = icou_each_pe(icou)
