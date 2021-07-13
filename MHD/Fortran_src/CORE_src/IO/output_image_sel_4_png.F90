@@ -25,11 +25,20 @@
       character(len = kchara), parameter :: hd_BMP =       'BMP'
       character(len = kchara), parameter :: hd_PNG =       'PNG'
       character(len = kchara), parameter :: hd_QUILT_BMP = 'QUILT'
-
+      character(len = kchara), parameter :: hd_QUILT_BMP_GZ = 'QUILT_GZ'
+!
+      character(len = kchara), parameter                                &
+     &              :: hd_QUILT_BMP_GZ2 = 'QUILT_GZIP'
+      character(len = kchara), parameter                                &
+     &              :: hd_QUILT_BMP_GZ3 = 'GZ_QUILT'
+      character(len = kchara), parameter                                &
+     &              :: hd_QUILT_BMP_GZ4 = 'GZIP_QUILT'
+!
       integer(kind = kint), parameter :: iflag_UNDEFINED =  -1
       integer(kind = kint), parameter :: iflag_BMP = 11
       integer(kind = kint), parameter :: iflag_PNG = 12
-      integer(kind = kint), parameter :: iflag_QUILT_BMP = 111
+      integer(kind = kint), parameter :: iflag_QUILT_BMP =    111
+      integer(kind = kint), parameter :: iflag_QUILT_BMP_GZ = 113
 
       type(buffer_4_png), private :: pbuf
 !

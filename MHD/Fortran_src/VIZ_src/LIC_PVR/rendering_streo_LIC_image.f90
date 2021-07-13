@@ -193,8 +193,9 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       if(pvr_param%movie_def%iflag_movie_fmt .eq. iflag_UNDEFINED       &
+     &  .or. pvr_param%movie_def%iflag_movie_fmt .eq. iflag_QUILT_BMP   &
      &  .or. pvr_param%movie_def%iflag_movie_fmt                        &
-     &                              .eq. iflag_QUILT_BMP) then
+     &                              .eq. iflag_QUILT_BMP_GZ) then
         iflag_img_fmt = pvr_rgb%id_pvr_file_type
       else
         iflag_img_fmt = pvr_param%movie_def%iflag_movie_fmt

@@ -50,6 +50,11 @@
           movie_def%iflag_movie_fmt = iflag_BMP
         else if(cmp_no_case(tmpchara, hd_QUILT_BMP)) then
           movie_def%iflag_movie_fmt = iflag_QUILT_BMP
+        else if(cmp_no_case(tmpchara, hd_QUILT_BMP_GZ)                   &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ2)                  &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ3)                  &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ4)) then
+          movie_def%iflag_movie_fmt = iflag_QUILT_BMP_GZ
         else
           movie_def%iflag_movie_fmt = iflag_UNDEFINED
         end if
@@ -73,7 +78,8 @@
         end if
       end if
 !
-      if((movie_def%iflag_movie_fmt .eq. iflag_QUILT_BMP)) then
+      if((movie_def%iflag_movie_fmt .eq. iflag_QUILT_BMP)               &
+     &   .or. (movie_def%iflag_movie_fmt .eq. iflag_QUILT_BMP_GZ)) then
         if(movie_ctl%quilt_column_row_ctl%iflag .eq. 0) then
           movie_def%n_column_row_movie(1) =     1
           movie_def%n_column_row_movie(2)                               &

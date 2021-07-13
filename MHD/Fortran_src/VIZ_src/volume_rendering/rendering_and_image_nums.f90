@@ -242,6 +242,11 @@
         id_pvr_file_type = iflag_PNG
       else if(cmp_no_case(tmpchara, hd_QUILT_BMP)) then
         id_pvr_file_type = iflag_QUILT_BMP
+      else if(cmp_no_case(tmpchara, hd_QUILT_BMP_GZ)                     &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ2)                  &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ3)                  &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ4)) then
+        id_pvr_file_type = iflag_QUILT_BMP_GZ
       else if(cmp_no_case(tmpchara, hd_BMP)) then
         id_pvr_file_type = iflag_BMP
       else

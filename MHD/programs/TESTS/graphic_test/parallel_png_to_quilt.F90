@@ -23,10 +23,12 @@
 !
       use transfer_to_long_integers
       use set_parallel_file_name
+      use mpi_write_quilt_BMP_file
 !
       implicit none
 !
       character(len=kchara) :: file_prefix
+      integer(kind = kint) :: iflag_gz = 0
 !
       integer(kind = kint), parameter :: num_image =  6
       integer(kind = kint), parameter :: nimage_xy(2) = (/2,3/)
@@ -47,6 +49,8 @@
       if(my_rank .eq. 0) then
         write(*,*) 'Input image file prefix'
         read(*,*) file_prefix
+        write(*,*) 'Select compress (1:On, 0: Off)'
+        read(*,*) iflag_gz
 !
 !#ifdef PNG_OUTPUT
         file_name = add_int_suffix(0, file_prefix)
@@ -71,7 +75,7 @@
 !
       write(file_tmp,'(2a)') trim(file_prefix), '_quilt'
       call init_quilt_rgb_images                                        &
-     &   (file_tmp, nimage_xy, npixel_xy, quilt_d1)
+     &   (file_tmp, iflag_gz, nimage_xy, npixel_xy, quilt_d1)
 !
       icou = 0
       do ip = 0, num_image-1

@@ -247,6 +247,7 @@
       use convert_real_rgb_2_bite
       use set_parallel_file_name
       use output_image_sel_4_png
+      use mpi_write_quilt_BMP_file
 !
       integer(kind = kint), intent(in) :: istep_pvr
       integer(kind = kint), intent(in) :: num_img
@@ -268,7 +269,8 @@
       end do
       quilt_d%num_image_lc = icou
 !
-      if(iflag_img_fmt .eq. iflag_QUILT_BMP) then
+      if(iflag_img_fmt .eq. iflag_QUILT_BMP                             &
+     &   .or. iflag_img_fmt .eq. iflag_QUILT_BMP_GZ) then
         write(file_tmp,'(2a)') trim(file_prefix), '_quilt'
       else
         file_tmp = file_prefix
