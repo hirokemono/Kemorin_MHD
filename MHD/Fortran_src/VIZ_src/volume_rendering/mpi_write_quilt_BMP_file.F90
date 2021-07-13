@@ -204,7 +204,6 @@
         i_img = icou_each_pe(icou)
         ix = mod(i_img-1,n_row_column(1))
         iy = (i_img-1) / n_row_column(1)
-!$omp parallel do private(j,kk,bgr_line)
         do j = 1, npixel_y
           kk = ix+1 + (j-1) * n_row_column(1)                           &
      &              + iy *    n_row_column(1) * npixel_y
@@ -216,7 +215,6 @@
      &       (cast_long(ilength), bgr_line(1,1), zbuf(j,icou))
           istack_zbuf(kk) = zbuf(j,icou)%ilen_gzipped
         end do
-!$omp end parallel do
       end do
 !
       call calypso_mpi_allreduce_int8(istack_zbuf(1), nlen_zbuf_gl(1),  &
