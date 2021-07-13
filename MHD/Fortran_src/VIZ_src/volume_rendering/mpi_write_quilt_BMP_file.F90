@@ -180,7 +180,6 @@
       nlen_zbuf_gl(1:npixel_y*n_row_column(1)*n_row_column(2)) = 0
 !$omp end parallel workshare
 !
-!
       file_name = add_bmp_suffix(file_prefix)
       gz_name = add_gzip_extension(file_name)
       if(my_rank .eq. 0) write(*,*) 'Write gzipped Quilt Bitmap: ',     &
@@ -198,6 +197,7 @@
       IO_param%ioff_gl = IO_param%ioff_gl + zbuf(1,1)%ilen_gzipped
 !
       if(my_rank .eq. 0) call dealloc_zip_buffer(zbuf(1,1))
+!
 !
       ilength = 3*int(npixel_x)
       do icou = 1, num_image_lc
@@ -224,6 +224,8 @@
       do kk = 1, npixel_y*n_row_column(1)*n_row_column(2)
         istack_zbuf(kk) = istack_zbuf(kk-1) + nlen_zbuf_gl(kk)
       end do
+        write(*,*) 'istack_zbuf', istack_zbuf
+        write(*,*) 'IO_param%ioff_gl', IO_param%ioff_gl
 !
       do icou = 1, num_image_lc
         i_img = icou_each_pe(icou)
@@ -232,7 +234,7 @@
         do j = 1, npixel_y
           kk = ix+1 + (j-1) * n_row_column(1)                           &
      &              + iy *    n_row_column(1) * npixel_y
-          ioffset = IO_param%ioff_gl + istack_zbuf(kk)
+          ioffset = IO_param%ioff_gl + istack_zbuf(kk-1)
           call calypso_mpi_seek_write_gz                                &
      &       (IO_param%id_file, ioffset, zbuf(j,icou))
         end do

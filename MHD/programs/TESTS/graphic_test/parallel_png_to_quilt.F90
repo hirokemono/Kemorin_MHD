@@ -70,6 +70,7 @@
 !
       call calypso_mpi_bcast_character                                  &
      &   (file_prefix, cast_long(kchara), 0)
+      call calypso_mpi_bcast_one_int(iflag_gz, 0)
       call calypso_mpi_bcast_one_int(npixel_xy(1), 0)
       call calypso_mpi_bcast_one_int(npixel_xy(2), 0)
 !
