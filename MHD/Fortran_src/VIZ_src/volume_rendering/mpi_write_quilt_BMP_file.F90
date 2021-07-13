@@ -1,4 +1,4 @@
-!>@file   mpi_write_quilt_BMP_file.f90
+!>@file   mpi_write_quilt_BMP_file.F90
 !!@brief  module mpi_write_quilt_BMP_file
 !!
 !!@author H. Matsui

@@ -3,7 +3,7 @@
 #
 
 PVR_DIR = $$(VIZ_SRCDIR)/volume_rendering
-SOURCES = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90 *.F90)
 MOD_PVR = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
