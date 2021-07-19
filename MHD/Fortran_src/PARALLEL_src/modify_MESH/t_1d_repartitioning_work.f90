@@ -13,9 +13,12 @@
 !!      subroutine dealloc_grouping_1d_work(part_1d)
 !!        type(grouping_1d_work), intent(inout) :: part_1d
 !!
-!!      subroutine check_z_divided_volumes(part_param, sub_z)
-!!      subroutine check_yz_divided_volumes(part_param, sub_y)
-!!      subroutine check_xyz_divided_volumes(part_param, sub_x)
+!!      subroutine check_z_divided_volumes                              &
+!!     &         (part_param, sub_z, sub_volume)
+!!      subroutine check_yz_divided_volumes                             &
+!!     &         (part_param, sub_y, ndomain_z, sub_volume)
+!!      subroutine check_xyz_divided_volumes                            &
+!!     &         (part_param, sub_x, ndomain_yz, sub_volume)
 !!      subroutine check_blocks_4_z_domain                              &
 !!     &         (my_rank, node, part_param, inod_sort, id_block, sub_z)
 !!      subroutine check_blocks_4_yz_domain                             &
@@ -125,13 +128,16 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_z_divided_volumes(part_param, sub_z)
+      subroutine check_z_divided_volumes                                &
+     &         (part_param, sub_z, sub_volume)
 !
       type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_z
+      real(kind = kreal), intent(in) :: sub_volume
 !
       integer(kind = kint) :: iz
 !
+      write(*,*) 'each_sub_volume_z', sub_volume
       do iz = 1, part_param%ndomain_eb(3)
         write(*,*) iz, sub_z%istack_vol(iz,1), sub_z%vol_grp(iz,1)
       end do
@@ -140,14 +146,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_yz_divided_volumes(part_param, sub_y)
+      subroutine check_yz_divided_volumes                               &
+     &         (part_param, sub_y, ndomain_z, sub_volume)
 !
       type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_y
+      integer(kind = kint), intent(in) :: ndomain_z
+      real(kind = kreal), intent(in) :: sub_volume(ndomain_z)
 !
       integer(kind = kint) :: iy, iz
 !
       do iz = 1, part_param%ndomain_eb(3)
+        write(*,*) 'each_sub_volume_y', iz, sub_volume(iz)
         do iy = 1, part_param%ndomain_eb(2)
           write(*,*) iy, iz,                                            &
      &              sub_y%istack_vol(iy,iz), sub_y%vol_grp(iy,iz)
@@ -158,17 +168,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_xyz_divided_volumes(part_param, sub_x)
+      subroutine check_xyz_divided_volumes                              &
+     &         (part_param, sub_x, ndomain_yz, sub_volume)
 !
 !
       type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_x
+      integer(kind = kint), intent(in) :: ndomain_yz
+      real(kind = kreal), intent(in) :: sub_volume(ndomain_yz)
 !
       integer(kind = kint) :: ix, iy, iz, jk
 !
       do iz = 1, part_param%ndomain_eb(3)
         do iy = 1, part_param%ndomain_eb(2)
           jk = iy + (iz-1) * part_param%ndomain_eb(2)
+          write(*,*) 'each_sub_volume_x', iy, iz, sub_volume(jk)
           do ix = 1, part_param%ndomain_eb(1)
             write(*,*) ix, iy, iz,                                      &
      &                sub_x%istack_vol(ix,jk), sub_x%vol_grp(ix,jk)

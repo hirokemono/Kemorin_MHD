@@ -200,7 +200,7 @@
       integer(kind = kint), intent(in) :: nblock_x
       integer(kind = kint), intent(in) :: ndomain_x, ndomain_yz
       integer(kind = kint), intent(in) :: istack_yz_grp(0:ndomain_yz)
-      real(kind = kreal), intent(in) :: sub_volume
+      real(kind = kreal), intent(in) :: sub_volume(ndomain_yz)
 !
       integer(kind = kint), intent(inout)                               &
      &                      :: istack_vol(0:ndomain_x,ndomain_yz)
@@ -242,7 +242,7 @@
         istack_vol(0,jk) = 0
         do i = 1, nblock_x
           vol_ref = vol_ref + vol_block_gl(i)
-          j = min(1+int(vol_ref / sub_volume),ndomain_x)
+          j = min(1+int(vol_ref / sub_volume(jk)),ndomain_x)
           istack_vol(j,jk) = i
           vol_grp(j,jk) = vol_ref
         end do
