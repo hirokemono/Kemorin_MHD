@@ -112,7 +112,6 @@
      &   (mesh, part_param, sub_z, vol_sort, z_part_grp)
 !
       call const_z_subdomain_list(part_param, z_part_grp, sub_y)
-      call dealloc_grouping_1d_work(sub_z)
 !
 !
       call alloc_vol_sort_sub_volume                                    &
@@ -123,6 +122,7 @@
      &                           / dble(part_param%ndomain_eb(2))
       end do
 !$omp end parallel do
+      call dealloc_grouping_1d_work(sub_z)
 !
 !   For y direction
 !
