@@ -420,6 +420,7 @@
       integer(kind = kint) :: icou, inod
 !
 !
+      if(mark_nod%num_marked .le. 0) return
       icou = 0
       do inod = 1, numnod
         if(distance(inod) .gt. 0.0d0) then
@@ -465,6 +466,7 @@
       integer(kind = kint) :: icou, inod
 !
 !
+      if(mark_nod%num_marked .le. 0) return
       icou = 0
       do inod = 1, numnod
         if(each_exp_flags%iflag_node(inod) .eq. iflag_ref) then
