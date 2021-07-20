@@ -213,8 +213,10 @@
         write(*,*) 'sleeve_exp_p%iflag_expand_mode',                    &
      &            sleeve_exp_p%iflag_expand_mode
         write(*,*) 'sleeve_exp_p%dist_max', sleeve_exp_p%dist_max
-        write(*,*) 'sleeve_exp_p%ref_vector_name',                      &
-     &            trim(sleeve_exp_p%ref_vector_name)
+        if(sleeve_exp_p%iflag_expand_mode .eq. iflag_vector_trace) then
+          write(*,*) 'sleeve_exp_p%ref_vector_name',                    &
+     &              trim(sleeve_exp_p%ref_vector_name)
+        end if
       end if
 !
       end subroutine set_ctl_param_sleeve_extension

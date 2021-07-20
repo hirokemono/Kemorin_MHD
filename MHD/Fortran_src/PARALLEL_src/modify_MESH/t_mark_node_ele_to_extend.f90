@@ -390,6 +390,49 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      integer(kind = kint) function count_num_marked_by_dist            &
+     &                            (numnod, distance)
+!
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: distance(numnod)
+!
+      integer(kind = kint) :: icou, inod
+!
+!
+      icou = 0
+      do inod = 1, numnod
+        if(distance(inod) .gt. 0.0d0) icou = icou + 1
+      end do
+      count_num_marked_by_dist = icou
+!
+      end function count_num_marked_by_dist
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_distance_to_mark_by_dist                           &
+     &         (numnod, distance, mark_nod)
+!
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: distance(numnod)
+!
+      type(mark_for_each_comm), intent(inout) :: mark_nod
+!
+      integer(kind = kint) :: icou, inod
+!
+!
+      icou = 0
+      do inod = 1, numnod
+        if(distance(inod) .gt. 0.0d0) then
+          icou = icou + 1
+          mark_nod%idx_marked(icou) = inod
+          mark_nod%dist_marked(icou) = distance(inod)
+        end if
+      end do
+!
+      end subroutine set_distance_to_mark_by_dist
+!
+!  ---------------------------------------------------------------------
+!
       integer(kind = kint) function count_num_marked_list               &
      &         (iflag_ref, numnod, iflag_node)
 !
