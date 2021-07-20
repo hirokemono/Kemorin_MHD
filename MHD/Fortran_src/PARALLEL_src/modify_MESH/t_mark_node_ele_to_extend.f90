@@ -400,9 +400,11 @@
 !
 !
       icou = 0
+!$omp parallel do reduction(+:icou)
       do inod = 1, numnod
         if(distance(inod) .gt. 0.0d0) icou = icou + 1
       end do
+!$omp end parallel do
       count_num_marked_by_dist = icou
 !
       end function count_num_marked_by_dist
@@ -445,9 +447,11 @@
 !
 !
       icou = 0
+!$omp parallel do reduction(+:icou)
       do inod = 1, numnod
         if(iflag_node(inod) .eq. iflag_ref) icou = icou + 1
       end do
+!$omp end parallel do
       count_num_marked_list = icou
 !
       end function count_num_marked_list
