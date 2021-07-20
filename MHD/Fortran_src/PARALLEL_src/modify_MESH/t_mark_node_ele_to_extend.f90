@@ -518,6 +518,7 @@
       real(kind = kreal) :: anum
 !
 !
+      if(mark_ele%num_marked .le. 0) return
       anum = one / real(ele%nnod_4_ele)
       icou = 0
       do iele = 1, ele%numele
