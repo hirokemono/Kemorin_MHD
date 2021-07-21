@@ -149,6 +149,10 @@
       call set_ele_id_4_node(new_mesh%node, new_mesh%ele, neib_ele)
 !
       allocate(mark_saved1(nprocs))
+      do ip = 1, nprocs
+        call alloc_istack_mark_ecomm_smp(mark_saved1(ip))
+      end do
+!
       call init_min_dist_from_import                                    &
      &   (sleeve_exp_p, new_mesh%nod_comm, new_mesh%node, new_mesh%ele, &
      &    neib_ele, sleeve_exp_WK, mark_saved1)
@@ -215,6 +219,7 @@
 !
       do ip = 1, nprocs
         call dealloc_mark_for_each_comm(mark_saved1(ip))
+        call dealloc_istack_mark_ecomm_smp(mark_saved1(ip))
       end do
       deallocate(mark_saved1)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
@@ -279,6 +284,10 @@
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
 !
       allocate(mark_saved1(nprocs))
+      do ip = 1, nprocs
+        call alloc_istack_mark_ecomm_smp(mark_saved1(ip))
+      end do
+!
       call init_min_dist_from_import                                    &
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
      &    sleeve_exp_WK, mark_saved1)
@@ -341,6 +350,7 @@
 !
       do ip = 1, nprocs
         call dealloc_mark_for_each_comm(mark_saved1(ip))
+        call dealloc_istack_mark_ecomm_smp(mark_saved1(ip))
       end do
       deallocate(mark_saved1)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
@@ -427,6 +437,11 @@
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+4)
       allocate(mark_nod(nod_comm%num_neib))
       allocate(mark_ele(nod_comm%num_neib))
+      do i = 1, nod_comm%num_neib
+        call alloc_istack_mark_ecomm_smp(mark_nod(i))
+        call alloc_istack_mark_ecomm_smp(mark_ele(i))
+      end do
+!
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
      &    neib_ele, sleeve_exp_WK, mark_saved, mark_nod, mark_ele,      &
@@ -445,6 +460,11 @@
      &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
      &    mark_nod, mark_ele, expand_nod_comm, expand_ele_comm,         &
      &    exp_import_xx, exp_import_ie, m_SR%SR_sig)
+!
+      do i = 1, nod_comm%num_neib
+        call dealloc_istack_mark_ecomm_smp(mark_nod(i))
+        call dealloc_istack_mark_ecomm_smp(mark_ele(i))
+      end do
       deallocate(mark_nod, mark_ele)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+12)
 !

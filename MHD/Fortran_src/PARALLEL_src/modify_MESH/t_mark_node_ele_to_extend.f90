@@ -7,7 +7,9 @@
 !> @brief Structure of marking and distance for sleeveextension
 !!
 !!@verbatim
-!!      subroutine alloc_mark_for_each_comm(num, mark_comm)
+!!      subroutine alloc_istack_mark_ecomm_smp(mark_comm)
+!!      subroutine alloc_mark_for_each_comm(mark_comm)
+!!      subroutine dealloc_istack_mark_ecomm_smp(mark_comm)
 !!      subroutine dealloc_mark_for_each_comm(mark_comm)
 !!        integer(kind = kint), intent(in) :: num
 !!        type(mark_for_each_comm), intent(inout) :: mark_comm
@@ -72,6 +74,7 @@
 !
       type mark_for_each_comm
         integer(kind = kint) :: num_marked = 0
+        integer(kind = kint), allocatable :: istack_marked_smp(:)
         integer(kind = kint), allocatable :: idx_marked(:)
         real(kind = kreal), allocatable :: dist_marked(:)
       end type mark_for_each_comm
@@ -85,13 +88,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_mark_for_each_comm(num, mark_comm)
+      subroutine alloc_istack_mark_ecomm_smp(mark_comm)
 !
-      integer(kind = kint), intent(in) :: num
       type(mark_for_each_comm), intent(inout) :: mark_comm
 !
 !
-      mark_comm%num_marked = num
+      allocate(mark_comm%istack_marked_smp(0:np_smp))
+!
+!$omp parallel workshare
+      mark_comm%istack_marked_smp(0:np_smp) = 0
+!$omp end parallel workshare
+!
+      end subroutine alloc_istack_mark_ecomm_smp
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_mark_for_each_comm(mark_comm)
+!
+      type(mark_for_each_comm), intent(inout) :: mark_comm
+!
 !
       allocate(mark_comm%idx_marked(mark_comm%num_marked))
       allocate(mark_comm%dist_marked(mark_comm%num_marked))
@@ -103,6 +118,17 @@
 !$omp end parallel workshare
 !
       end subroutine alloc_mark_for_each_comm
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_istack_mark_ecomm_smp(mark_comm)
+!
+      type(mark_for_each_comm), intent(inout) :: mark_comm
+!
+!
+      deallocate(mark_comm%istack_marked_smp)
+!
+      end subroutine dealloc_istack_mark_ecomm_smp
 !
 !  ---------------------------------------------------------------------
 !
@@ -123,6 +149,12 @@
 !
 !
       if(new_mark_comm%num_marked .le. 0) return
+!
+!$omp parallel workshare
+      new_mark_comm%istack_marked_smp(0:np_smp)                         &
+     &   = org_mark_comm%istack_marked_smp(0:np_smp)
+!$omp end parallel workshare
+!
 !$omp parallel workshare
       new_mark_comm%idx_marked(1:new_mark_comm%num_marked)              &
      &   = org_mark_comm%idx_marked(1:new_mark_comm%num_marked)
@@ -150,8 +182,8 @@
 !
       type(mark_for_each_comm), intent(inout) :: mark_saved(nprocs)
 !
-      integer(kind = kint) :: ineib, ip
-      integer(kind = kint) :: ist, num, inum, inod
+      integer(kind = kint) :: ineib, ip, max_4_smp
+      integer(kind = kint) :: ist, inum, inod
       real(kind= kreal), allocatable :: dist_tmp(:)
 !
 !
@@ -164,15 +196,18 @@
       do ineib = 1, nod_comm%num_neib
         ip = nod_comm%id_neib(ineib) + 1
         ist = nod_comm%istack_export(ineib-1)
-        num = nod_comm%istack_export(ineib) - ist
-        call alloc_mark_for_each_comm(num, mark_saved(ip))
+        mark_saved(ip)%num_marked = nod_comm%istack_export(ineib) - ist
+        call count_number_4_smp                                         &
+           (np_smp, ione, mark_saved(ip)%num_marked,                    &
+     &      mark_saved(ip)%istack_marked_smp, max_4_smp)
+        call alloc_mark_for_each_comm(mark_saved(ip))
 !
         call init_min_dist_each_import                                  &
      &     (ineib, sleeve_exp_p, nod_comm, node, ele, neib_ele,         &
      &      sleeve_exp_WK, dist_tmp)
 !
 !$omp parallel do private(inum,inod)
-        do inum = 1, num
+        do inum = 1, mark_saved(ip)%num_marked
           inod = nod_comm%item_export(ist+inum)
           mark_saved(ip)%idx_marked(inum) =  inod
           mark_saved(ip)%dist_marked(inum) = dist_tmp(inod)
@@ -183,7 +218,9 @@
 !
       do ip = 1, nprocs
         if(mark_saved(ip)%num_marked .eq. -1) then
-          call alloc_mark_for_each_comm(izero, mark_saved(ip))
+          mark_saved(ip)%num_marked = 0
+          mark_saved(ip)%istack_marked_smp(0:np_smp) = 0
+          call alloc_mark_for_each_comm(mark_saved(ip))
         end if
       end do
 !
@@ -213,7 +250,7 @@
       type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
-      integer(kind = kint) :: icou, idummy
+      integer(kind = kint) :: idummy
 !
 !
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
@@ -247,19 +284,24 @@
 !      write(*,*) my_rank, 'Maximum extend size is ', idummy
 !
 !
-      icou = count_num_marked_list(-1, node%numnod,                     &
-     &                             each_exp_flags%iflag_node)
-      call alloc_mark_for_each_comm(icou, mark_nod)
-      call set_distance_to_mark_list                                    &
-     &   (-1, node%numnod, each_exp_flags, mark_nod)
+      call count_num_marked_list(-1, node%numnod, node%istack_nod_smp,  &
+     &    each_exp_flags%iflag_node, mark_nod%num_marked,               &
+     &    mark_nod%istack_marked_smp)
+      call alloc_mark_for_each_comm(mark_nod)
+      call set_distance_to_mark_list(-1, node, each_exp_flags,          &
+     &    mark_nod%num_marked, mark_nod%istack_marked_smp,              &
+     &    mark_nod%idx_marked, mark_nod%dist_marked)
 !
-      icou = count_num_marked_list( 1, ele%numele,                      &
-     &                             each_exp_flags%iflag_ele)
-      call alloc_mark_for_each_comm(icou, mark_ele)
-      call ele_distance_to_mark_list                                    &
-     &   ( 1, ele, each_exp_flags, mark_ele)
+      call count_num_marked_list( 1, ele%numele, ele%istack_ele_smp,    &
+     &    each_exp_flags%iflag_ele, mark_ele%num_marked,                &
+     &    mark_ele%istack_marked_smp)
+      call alloc_mark_for_each_comm(mark_ele)
+      call ele_distance_to_mark_list(1, ele, each_exp_flags,            &
+     &    mark_ele%num_marked, mark_ele%istack_marked_smp,              &
+     &    mark_ele%idx_marked, mark_ele%dist_marked)
 !
-      call alloc_mark_for_each_comm(mark_nod%num_marked, mark_saved)
+      mark_saved%num_marked = mark_nod%num_marked
+      call alloc_mark_for_each_comm(mark_saved)
       call copy_mark_for_each_comm(mark_nod, mark_saved)
 !
       end subroutine s_mark_node_ele_to_extend
@@ -398,15 +440,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_num_marked_by_dist(numnod, istack_nod_smp,       &
-     &          distance, istack_marked_smp, num_marked)
+      subroutine count_num_marked_by_dist(node, distance,               &
+     &          num_marked, istack_marked_smp)
 !
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: istack_marked_smp(0:np_smp)
-      real(kind = kreal), intent(in) :: distance(numnod)
+      type(node_data), intent(in) :: node
+      real(kind = kreal), intent(in) :: distance(node%numnod)
 !
-      integer(kind = kint), intent(in) :: istack_nod_smp(0:np_smp)
-      integer(kind = kint), intent(in) :: num_marked
+      integer(kind = kint), intent(inout) :: num_marked
+      integer(kind = kint), intent(inout) :: istack_marked_smp(0:np_smp)
 !
       integer(kind = kint) :: icou, inod, ist, ied, ip
 !
@@ -414,8 +455,8 @@
 !$omp parallel do private(ip,icou,ist,ied,inod)
       do ip = 1, np_smp
         icou = 0
-        ist = istack_nod_smp(ip-1) + 1
-        ied = istack_nod_smp(ip  )
+        ist = node%istack_nod_smp(ip-1) + 1
+        ied = node%istack_nod_smp(ip  )
         do inod = ist, ied
           if(distance(inod) .gt. 0.0d0) icou = icou + 1
         end do
@@ -430,34 +471,37 @@
       end do
       num_marked = istack_marked_smp(np_smp)
 !
-      end function count_num_marked_by_dist
+      end subroutine count_num_marked_by_dist
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_distance_to_mark_by_dist(numnod, istack_nod_smp,   &
-     &                                        distance, mark_nod)
+      subroutine set_distance_to_mark_by_dist(node, distance,           &
+     &         num_marked, istack_marked_smp, idx_marked, dist_marked)
 !
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: istack_nod_smp(0:np_smp)
-      real(kind = kreal), intent(in) :: distance(numnod)
+      type(node_data), intent(in) :: node
+      real(kind = kreal), intent(in) :: distance(node%numnod)
 !
-      type(mark_for_each_comm), intent(inout) :: mark_nod
+      integer(kind = kint), intent(in) :: num_marked
+      integer(kind = kint), intent(in) :: istack_marked_smp(0:np_smp)
+!
+      integer(kind = kint), intent(inout) :: idx_marked(num_marked)
+      real(kind = kreal), intent(inout) :: dist_marked(num_marked)
 !
       integer(kind = kint) :: icou, inod, ist, ied, ip
 !
 !
-      if(mark_nod%num_marked .le. 0) return
+      if(num_marked .le. 0) return
 !
 !$omp parallel do private(ip,icou,ist,ied,inod)
       do ip = 1, np_smp
-        icou = mark_nod%istack_marked_smp(ip-1)
-        ist = istack_nod_smp(ip-1) + 1
-        ied = istack_nod_smp(ip  )
+        icou = istack_marked_smp(ip-1)
+        ist = node%istack_nod_smp(ip-1) + 1
+        ied = node%istack_nod_smp(ip  )
         do inod = ist, ied
           if(distance(inod) .gt. 0.0d0) then
             icou = icou + 1
-            mark_nod%idx_marked(icou) = inod
-            mark_nod%dist_marked(icou) = distance(inod)
+            idx_marked(icou) = inod
+            dist_marked(icou) = distance(inod)
           end if
         end do
       end do
@@ -467,51 +511,79 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(kind = kint) function count_num_marked_list               &
-     &         (iflag_ref, numnod, iflag_node)
+      subroutine count_num_marked_list                                  &
+     &         (iflag_ref, numnod, istack_nod_smp, iflag_node,          &
+     &          num_marked, istack_marked_smp)
 !
       integer, intent(in) :: iflag_ref
       integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: istack_nod_smp(0:np_smp)
       integer(kind = kint), intent(in) :: iflag_node(numnod)
 !
-      integer(kind = kint) :: icou, inod
+      integer(kind = kint), intent(inout) :: num_marked
+      integer(kind = kint), intent(inout)                               &
+     &                     :: istack_marked_smp(0:np_smp)
+!
+      integer(kind = kint) :: icou, inod, ip, ist, ied
 !
 !
-      icou = 0
-!$omp parallel do reduction(+:icou)
-      do inod = 1, numnod
-        if(iflag_node(inod) .eq. iflag_ref) icou = icou + 1
+!$omp parallel do private(ip,icou,ist,ied,inod)
+      do ip = 1, np_smp
+        icou = 0
+        ist = istack_nod_smp(ip-1) + 1
+        ied = istack_nod_smp(ip  )
+        do inod = ist, ied
+          if(iflag_node(inod) .eq. iflag_ref) icou = icou + 1
+        end do
+        istack_marked_smp(ip) = icou
       end do
 !$omp end parallel do
-      count_num_marked_list = icou
 !
-      end function count_num_marked_list
+      istack_marked_smp(0) = 0
+      do ip = 1, np_smp
+        istack_marked_smp(ip) = istack_marked_smp(ip-1)                 &
+     &                         + istack_marked_smp(ip)
+      end do
+      num_marked = istack_marked_smp(np_smp)
+!
+      end subroutine count_num_marked_list
 !
 !  ---------------------------------------------------------------------
 !
       subroutine set_distance_to_mark_list                              &
-     &         (iflag_ref, numnod, each_exp_flags, mark_nod)
+     &         (iflag_ref, node, each_exp_flags, num_marked,            &
+     &          istack_marked_smp, idx_marked, dist_marked)
 !
       integer, intent(in) :: iflag_ref
-      integer(kind = kint), intent(in) :: numnod
+      type(node_data), intent(in) :: node
       type(flags_each_comm_extend), intent(in) :: each_exp_flags
+      integer(kind = kint), intent(in) :: num_marked
+      integer(kind = kint), intent(in) :: istack_marked_smp(0:np_smp)
 !
-      type(mark_for_each_comm), intent(inout) :: mark_nod
+      integer(kind = kint), intent(inout) :: idx_marked(num_marked)
+      real(kind = kreal), intent(inout) :: dist_marked(num_marked)
 !
-      integer(kind = kint) :: icou, inod
+      integer(kind = kint) :: icou, inod, ip, ist, ied
 !
 !
-      if(mark_nod%num_marked .le. 0) return
-      icou = 0
-      do inod = 1, numnod
-        if(each_exp_flags%iflag_node(inod) .eq. iflag_ref) then
-          icou = icou + 1
-          mark_nod%idx_marked(icou) = inod
-          mark_nod%dist_marked(icou) = each_exp_flags%distance(inod)
-!          write(*,*) my_rank, 'mark_nod', inod,                       &
-!     &           mark_nod%idx_marked(icou), mark_nod%dist_marked(icou)
-        end if
+      if(num_marked .le. 0) return
+!
+!$omp parallel do private(ip,icou,ist,ied,inod)
+      do ip = 1, np_smp
+        icou = istack_marked_smp(ip-1)
+        ist = node%istack_nod_smp(ip-1) + 1
+        ied = node%istack_nod_smp(ip  )
+        do inod = ist, ied
+          if(each_exp_flags%iflag_node(inod) .eq. iflag_ref) then
+            icou = icou + 1
+            idx_marked(icou) = inod
+            dist_marked(icou) = each_exp_flags%distance(inod)
+!            write(*,*) my_rank, 'mark_nod', inod,                     &
+!     &           idx_marked(icou), dist_marked(icou)
+          end if
+        end do
       end do
+!$omp end parallel do
 !
       end subroutine set_distance_to_mark_list
 !
@@ -541,35 +613,48 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ele_distance_to_mark_list                              &
-     &         (iflag_ref, ele, each_exp_flags, mark_ele)
+     &         (iflag_ref, ele, each_exp_flags, num_marked,             &
+     &          istack_marked_smp, idx_marked, dist_marked)
 !
       integer, intent(in) :: iflag_ref
       type(element_data), intent(in) :: ele
       type(flags_each_comm_extend), intent(in) :: each_exp_flags
 !
-      type(mark_for_each_comm), intent(inout) :: mark_ele
+      integer(kind = kint), intent(in) :: num_marked
+      integer(kind = kint), intent(in) :: istack_marked_smp(0:np_smp)
 !
-      integer(kind = kint) :: inod, icou, iele, k1
+      integer(kind = kint), intent(inout) :: idx_marked(num_marked)
+      real(kind = kreal), intent(inout) :: dist_marked(num_marked)
+!
+      integer(kind = kint) :: ip, ist, ied, iele
+      integer(kind = kint) :: inod, icou, k1
       real(kind = kreal) :: anum
 !
 !
-      if(mark_ele%num_marked .le. 0) return
+      if(num_marked .le. 0) return
       anum = one / real(ele%nnod_4_ele)
-      icou = 0
-      do iele = 1, ele%numele
-        if(each_exp_flags%iflag_ele(iele) .eq. iflag_ref) then
-          icou = icou + 1
-          mark_ele%idx_marked(icou) = iele
-          mark_ele%dist_marked(icou) = 0.0d0
-          do k1 = 1, ele%nnod_4_ele
-            inod = ele%ie(iele,k1)
-            mark_ele%dist_marked(icou) = mark_ele%dist_marked(icou)     &
-                                      + each_exp_flags%distance(inod)
-          end do
-          mark_ele%dist_marked(icou)                                    &
-                 = mark_ele%dist_marked(icou) * anum
-        end if
+!
+!$omp parallel do private(ip,icou,ist,ied,iele,k1,inod)
+      do ip = 1, np_smp
+        icou = istack_marked_smp(ip-1)
+        ist = ele%istack_ele_smp(ip-1) + 1
+        ied = ele%istack_ele_smp(ip  )
+        do iele = ist, ied
+          if(each_exp_flags%iflag_ele(iele) .eq. iflag_ref) then
+            icou = icou + 1
+            idx_marked(icou) = iele
+            dist_marked(icou) = 0.0d0
+            do k1 = 1, ele%nnod_4_ele
+              inod = ele%ie(iele,k1)
+              dist_marked(icou)                                         &
+     &             = dist_marked(icou) + each_exp_flags%distance(inod)
+            end do
+            dist_marked(icou)                                  &
+                 = dist_marked(icou) * anum
+          end if
+        end do
       end do
+!$omp end parallel do
 !
       end subroutine ele_distance_to_mark_list
 !
@@ -584,7 +669,6 @@
 !
 !
       integer(kind = kint) :: icou, iele
-      real(kind = kreal) :: anum
 !
 !
 !$omp parallel do private(icou,iele)
