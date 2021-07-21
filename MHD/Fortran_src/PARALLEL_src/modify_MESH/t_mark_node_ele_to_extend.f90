@@ -172,6 +172,7 @@
 !
       use t_ctl_param_sleeve_extend
       use t_next_node_ele_4_node
+      use cal_minmax_and_stacks
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(communication_table), intent(in) :: nod_comm
