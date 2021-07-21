@@ -53,6 +53,8 @@
 !
       implicit none
 !
+      private :: weighting_by_masking
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -146,7 +148,7 @@
         do inod = ist, ied
           value(1:num_mask,ip) = d_mask(inod,1:num_mask)
 !
-          if(multi_mask_flag(num_mask, masking, value)                  &
+          if(multi_mask_flag(num_mask, masking, value(1,ip))            &
      &                                      .eqv. .FALSE.) then
             volume_nod(inod) = shrink * volume_nod(inod)
           end if
@@ -157,6 +159,47 @@
       deallocate(value)
 !
       end subroutine weighting_by_masking
+!
+! ----------------------------------------------------------------------
+!
+      subroutine vector_by_masking(node, num_mask, masking,             &
+     &                             d_mask, volume_nod)
+!
+      use t_ctl_param_masking
+!
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: num_mask
+      type(masking_parameter), intent(in) :: masking(num_mask)
+      real(kind = kreal), intent(in) :: d_mask(node%numnod,num_mask)
+!
+      real(kind = kreal), intent(inout) :: volume_nod(node%numnod)
+!
+      real(kind = kreal), allocatable :: value(:,:)
+      integer(kind = kint) :: ip, ist, ied, inod
+!
+!
+      allocate(value(num_mask,np_smp))
+!
+!$omp parallel do private(ip,ist,ied,inod)
+      do ip = 1, np_smp
+        ist = node%istack_internal_smp(ip-1) + 1
+        ied = node%istack_internal_smp(ip)
+        do inod = ist, ied
+          value(1:num_mask,ip) = d_mask(inod,1:num_mask)
+!
+          if(multi_mask_flag(num_mask, masking, value(1,ip))            &
+     &                                      .eqv. .FALSE.) then
+            volume_nod(inod,1) = 0.0d0
+            volume_nod(inod,2) = 0.0d0
+            volume_nod(inod,3) = 0.0d0
+          end if
+        end do
+      end do
+!$omp end parallel do
+!
+      deallocate(value)
+!
+      end subroutine vector_by_masking
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
