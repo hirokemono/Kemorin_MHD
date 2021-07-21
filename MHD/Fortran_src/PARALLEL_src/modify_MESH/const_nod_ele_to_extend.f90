@@ -110,16 +110,26 @@
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+9)
       do ip = 1, nprocs
-        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+15)
+        if(iflag_SLEX_time)                                             &
+     &                  call start_elapsed_time(ist_elapsed_SLEX+15)
+        if(iflag_SLEX_time)                                             &
+     &                  call start_elapsed_time(ist_elapsed_SLEX+26)
         call reset_flags_each_comm_extend                               &
      &     (node%numnod, ele%numele, each_exp_flags)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+26)
+        if(iflag_SLEX_time)                                             &
+     &                  call start_elapsed_time(ist_elapsed_SLEX+27)
         call set_distance_from_mark_list                                &
      &     (-1, mark_saved(ip), each_exp_flags)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+27)
+        if(iflag_SLEX_time)                                             &
+     &                  call start_elapsed_time(ist_elapsed_SLEX+28)
         call dealloc_mark_for_each_comm(mark_saved(ip))
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+28)
         if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+15)
 !
         if(iflag_SLEX_time)                                             &
-       &                  call start_elapsed_time(ist_elapsed_SLEX+16)
+     &                  call start_elapsed_time(ist_elapsed_SLEX+16)
         call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
      &      SR_sig, SR_r, each_exp_flags%distance)
         if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+16)
