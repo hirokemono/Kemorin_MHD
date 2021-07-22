@@ -100,6 +100,7 @@
 !
       type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend), save :: each_exp_flags
+      integer(kind = kint), allocatable :: iflag_exp_ele(:)
       integer(kind = kint) :: i, ip, icou, jcou
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
@@ -114,8 +115,7 @@
      &                  call start_elapsed_time(ist_elapsed_SLEX+15)
         if(iflag_SLEX_time)                                             &
      &                  call start_elapsed_time(ist_elapsed_SLEX+26)
-        call reset_flags_each_comm_extend                               &
-     &     (node%numnod, ele%numele, each_exp_flags)
+        call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
         if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+26)
         if(iflag_SLEX_time)                                             &
      &                  call start_elapsed_time(ist_elapsed_SLEX+27)
@@ -151,16 +151,19 @@
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+10)
       icou = 0
       jcou = 0
+      allocate(iflag_exp_ele(ele%numele))
       do i = 1, nod_comm%num_neib
         ip = nod_comm%id_neib(i) + 1
         call s_mark_node_ele_to_extend(i, sleeve_exp_p, nod_comm,       &
      &      ele_comm, node, ele, neib_ele, sleeve_exp_WK, each_comm,    &
-     &      mark_saved(ip), mark_nod(i), mark_ele(i), each_exp_flags)
+     &      mark_saved(ip), mark_nod(i), mark_ele(i),                   &
+     &      each_exp_flags, iflag_exp_ele)
 !
         call check_missing_connect_to_extend(node, ele,                 &
     &       mark_ele(i), each_exp_flags%iflag_node, icou, jcou)
       end do
 !
+      deallocate(iflag_exp_ele)
       call dealloc_flags_each_comm_extend(each_exp_flags)
       call dealloc_comm_table_for_each(each_comm)
 !

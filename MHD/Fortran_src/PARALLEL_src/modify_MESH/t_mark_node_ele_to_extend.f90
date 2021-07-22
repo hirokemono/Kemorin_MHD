@@ -29,7 +29,7 @@
 !!      subroutine s_mark_node_ele_to_extend                            &
 !!     &         (ineib, sleeve_exp_p, nod_comm, ele_comm, node, ele,   &
 !!     &          neib_ele, sleeve_exp_WK, each_comm, mark_saved,       &
-!!     &          mark_nod, mark_ele, each_exp_flags)
+!!     &          mark_nod, mark_ele, each_exp_flags, iflag_exp_ele)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
@@ -41,6 +41,8 @@
 !!        type(mark_for_each_comm), intent(inout) :: mark_nod
 !!        type(mark_for_each_comm), intent(inout) :: mark_ele
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+!!        integer(kind = kint), intent(inout)                           &
+!!     &                                   :: iflag_exp_ele(ele%numele)
 !!
 !!      subroutine set_distance_to_mark_by_dist(numnod, istack_nod_smp, &
 !!     &                                        distance, mark_nod)
@@ -232,7 +234,7 @@
       subroutine s_mark_node_ele_to_extend                              &
      &         (ineib, sleeve_exp_p, nod_comm, ele_comm, node, ele,     &
      &          neib_ele, sleeve_exp_WK, each_comm, mark_saved,         &
-     &          mark_nod, mark_ele, each_exp_flags)
+     &          mark_nod, mark_ele, each_exp_flags, iflag_exp_ele)
 !
       use t_ctl_param_sleeve_extend
       use t_next_node_ele_4_node
@@ -250,21 +252,21 @@
       type(mark_for_each_comm), intent(inout) :: mark_nod
       type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+      integer(kind = kint), intent(inout) :: iflag_exp_ele(ele%numele)
 !
       integer(kind = kint) :: idummy
 !
 !
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
 !          for imported nodes
-      call reset_flags_each_comm_extend                                 &
-     &   (node%numnod, ele%numele, each_exp_flags)
+      call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
       call mark_by_last_import                                          &
      &  (ineib, node, nod_comm, each_exp_flags%iflag_node)
       call set_distance_from_mark_list(-1, mark_saved, each_exp_flags)
       call set_each_export_item(ineib, nod_comm, node,                  &
      &                          each_exp_flags%iflag_node, each_comm)
       call mark_surround_ele_of_import(ineib, ele_comm, node, ele,      &
-     &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
+     &    each_exp_flags%iflag_node, iflag_exp_ele)
 !
       call dealloc_mark_for_each_comm(mark_saved)
 !
@@ -275,7 +277,7 @@
         call cal_min_dist_from_last_export                              &
      &     (sleeve_exp_p, node, ele, neib_ele,                          &
      &      each_comm%num_each_export, each_comm%item_each_export,      &
-     &      sleeve_exp_WK, each_exp_flags)
+     &      sleeve_exp_WK, each_exp_flags, iflag_exp_ele)
 !
         call set_new_export_to_extend                                   &
      &     (sleeve_exp_p%dist_max, node, each_exp_flags%distance,       &
@@ -293,11 +295,12 @@
      &    mark_nod%num_marked, mark_nod%istack_marked_smp,              &
      &    mark_nod%idx_marked, mark_nod%dist_marked)
 !
-      call count_num_marked_list( 1, ele%numele, ele%istack_ele_smp,    &
-     &    each_exp_flags%iflag_ele, mark_ele%num_marked,                &
-     &    mark_ele%istack_marked_smp)
+      call count_num_marked_list                                        &
+     &   ( 1, ele%numele, ele%istack_ele_smp, iflag_exp_ele,            &
+     &    mark_ele%num_marked, mark_ele%istack_marked_smp)
       call alloc_mark_for_each_comm(mark_ele)
-      call ele_distance_to_mark_list(1, ele, each_exp_flags,            &
+      call ele_distance_to_mark_list                                    &
+     &   (1, ele, each_exp_flags, iflag_exp_ele,                        &
      &    mark_ele%num_marked, mark_ele%istack_marked_smp,              &
      &    mark_ele%idx_marked, mark_ele%dist_marked)
 !
@@ -397,7 +400,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mark_surround_ele_of_import                            &
-     &         (ineib, ele_comm, node, ele, iflag_node, iflag_ele)
+     &         (ineib, ele_comm, node, ele, iflag_node, iflag_exp_ele)
 !
       integer(kind = kint), intent(in) :: ineib
       type(communication_table), intent(in) :: ele_comm
@@ -406,21 +409,18 @@
 !
       integer(kind = kint), intent(in) :: iflag_node(node%numnod)
 !
-      integer(kind = kint), intent(inout) :: iflag_ele(ele%numele)
+      integer(kind = kint), intent(inout) :: iflag_exp_ele(ele%numele)
 !
       integer(kind = kint) :: iele, k1, inod, ist, ied, inum
 !
 !
-!$omp parallel workshare
-      iflag_ele(1:ele%numele) = 2
-!$omp end parallel workshare
-!
 !$omp parallel do private(iele,k1,inod)
       do iele = 1, ele%numele
+        iflag_exp_ele(iele) = 2
         do k1 = 1, ele%nnod_4_ele
           inod = ele%ie(iele,k1)
           if(iflag_node(inod) .gt. -2) then
-            iflag_ele(iele) = 0
+            iflag_exp_ele(iele) = 0
             exit
           end if
         end do
@@ -432,7 +432,7 @@
 !$omp parallel do private(iele,inum)
       do inum = ist, ied
         iele = ele_comm%item_import(inum)
-        iflag_ele(iele) = 2
+        iflag_exp_ele(iele) = 2
       end do
 !$omp end parallel do
 !
@@ -614,12 +614,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ele_distance_to_mark_list                              &
-     &         (iflag_ref, ele, each_exp_flags, num_marked,             &
-     &          istack_marked_smp, idx_marked, dist_marked)
+     &        (iflag_ref, ele, each_exp_flags, iflag_exp_ele,           &
+     &         num_marked, istack_marked_smp, idx_marked, dist_marked)
 !
       integer, intent(in) :: iflag_ref
       type(element_data), intent(in) :: ele
       type(flags_each_comm_extend), intent(in) :: each_exp_flags
+      integer(kind = kint), intent(inout) :: iflag_exp_ele(ele%numele)
 !
       integer(kind = kint), intent(in) :: num_marked
       integer(kind = kint), intent(in) :: istack_marked_smp(0:np_smp)
@@ -641,7 +642,7 @@
         ist = ele%istack_ele_smp(ip-1) + 1
         ied = ele%istack_ele_smp(ip  )
         do iele = ist, ied
-          if(each_exp_flags%iflag_ele(iele) .eq. iflag_ref) then
+          if(iflag_exp_ele(iele) .eq. iflag_ref) then
             icou = icou + 1
             idx_marked(icou) = iele
             dist_marked(icou) = 0.0d0
@@ -650,8 +651,7 @@
               dist_marked(icou)                                         &
      &             = dist_marked(icou) + each_exp_flags%distance(inod)
             end do
-            dist_marked(icou)                                  &
-                 = dist_marked(icou) * anum
+            dist_marked(icou) = dist_marked(icou) * anum
           end if
         end do
       end do
@@ -662,12 +662,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_ele_mark_from_mark_list                            &
-     &         (iflag_ref, mark_ele, each_exp_flags)
+     &         (iflag_ref, mark_ele, numele, iflag_exp_ele)
 !
       integer, intent(in) :: iflag_ref
       type(mark_for_each_comm), intent(in) :: mark_ele
-      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
-!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(inout) :: iflag_exp_ele(numele)
 !
       integer(kind = kint) :: icou, iele
 !
@@ -675,7 +675,7 @@
 !$omp parallel do private(icou,iele)
       do icou = 1, mark_ele%num_marked
         iele = mark_ele%idx_marked(icou)
-        each_exp_flags%iflag_ele(iele) = iflag_ref
+        iflag_exp_ele(iele) = iflag_ref
       end do
 !$omp end parallel do
 !
