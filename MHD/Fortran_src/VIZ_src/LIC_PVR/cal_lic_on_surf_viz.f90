@@ -82,6 +82,9 @@
       integer(kind = kint) :: ilic_suf_org(3), icur_sf
       integer(kind = kint) :: i, isf_tgt, k_mid
       real(kind = kreal) :: n_v, k_area
+      real(kind = kreal) :: rlic_grad_f(0:3), k_area_f
+      real(kind = kreal) :: rlic_grad_b(0:3), k_area_b
+      integer(kind = kint) :: iflag_comm_f, iflag_comm_b
       integer(kind = kint) :: iflag_found_sf, iele, isf_org
 
 
@@ -98,127 +101,138 @@
         isf_org = isurf_orgs(i,2)
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &              "ele: ", iele, "local surf: ", isf_org
-          if(i_debug .eq. 1) write(50+my_rank,*)                        &
+        if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &              "global surf: ", isurf, "surf of ele",              &
      &               surf%isf_4_ele(iele, isf_org)
-          if(iele .le. izero .or. iele .gt. ele%numele) then
-            if(i_debug .eq. 1) write(50+my_rank,*)                      &
-     &              "invalid element, end----------------------"
-            iflag_comm = -5
-            return
-          end if
-        end do
-
-        if(lic_mask_flag(lic_p, r_org)) then
-          call interpolate_noise_at_node                                &
-     &       (xx4_org(1), lic_p%noise_t, rlic_grad_v)
-        end if
-        k_mid = (lic_p%kernel_t%n_knl + 1) / 2
-        rlic_grad(0:3) = rlic_grad_v(0:3) * lic_p%kernel_t%k_ary(k_mid)
-
-        if(i_debug .eq. 1) write(50+my_rank,*)                          &
-     &     "--------------------Forward iter begin----------------"
-!   forward integration
-        step_vec4(1:4) = vec4_org(1:4)
-        new_pos4(1:4) =  xx4_org(1:4)
-! if current surface is exterior surface, then return.
-!        if((surf%interior_surf(icur_sf) .eq. izero)                    &
-!     &     .or. (icur_sf .eq. izero)) then
-        if(icur_sf .eq. izero) then
+        if(iele .le. izero .or. iele .gt. ele%numele) then
           if(i_debug .eq. 1) write(50+my_rank,*)                        &
-     &       "extorior surface, end-------------------------", icur_sf
-          iflag_comm = -1
+     &              "invalid element, end----------------------"
+          iflag_comm = -5
           return
         end if
+      end do
 
-        iflag_found_sf = 0
+      if(lic_mask_flag(lic_p, r_org)) then
+        call interpolate_noise_at_node                                  &
+     &     (xx4_org(1), lic_p%noise_t, rlic_grad_v)
+      end if
+      k_mid = (lic_p%kernel_t%n_knl + 1) / 2
+      rlic_grad(0:3) = rlic_grad_v(0:3) * lic_p%kernel_t%k_ary(k_mid)
 
-        do i = 1, 2
-          iele = isurf_orgs(i,1)
-          isf_org = isurf_orgs(i,2)
-          call position_on_each_ele_surfs                               &
-     &       (surf, node%numnod, node%xx, iele, xx4_ele_surf)
-          call find_line_end_in_1ele(iflag_forward_line,                &
-     &        isf_org, vec4_org, xx4_org, xx4_ele_surf,                 &
-     &        isf_tgt, new_pos4, xi)
-          if(isf_tgt .gt. 0) then
-            !write(50+my_rank, *) "find exit point in neighbor element."
-            iflag_found_sf = 1
-            ilic_suf_org(1:2) = isurf_orgs(i,1:2)
-            exit
-          end if
-        end do
+! if current surface is exterior surface, then return.
+!      if((surf%interior_surf(icur_sf) .eq. izero)                      &
+!     &     .or. (icur_sf .eq. izero)) then
+      if(icur_sf .eq. izero) then
+        if(i_debug .eq. 1) write(50+my_rank,*)                          &
+     &     "extorior surface, end-------------------------", icur_sf
+        iflag_comm = -1
+        return
+      end if
 
-        if(iflag_found_sf .eq. 0) then
-          if(i_debug .eq. 1) write(50+my_rank, *)                       &
-     &      "not find exit point in neighbor element. end------------"
-          iflag_comm = -2
-        else
-          new_pos4(1:4) = xx4_org(1:4)
-          if(i_debug .eq. 1) write(50+my_rank, *)                       &
-     &                          "start cal lic, ele and surf: ",        &
-     &                          ilic_suf_org(1), ilic_suf_org(2)
-          call s_cal_lic_from_point(node, surf, lic_p,                  &
-     &        iflag_forward_line, v_nod, ilic_suf_org, new_pos4,        &
-     &        step_vec4, ref_nod, rlic_grad_v, k_area, iflag_comm)
-          rlic_grad(0:3) = rlic_grad(0:3) + rlic_grad_v(0:3)
+      if(i_debug .eq. 1) write(50+my_rank,*)                            &
+     &     "--------------------Forward iter begin----------------"
+!   forward integration
+      rlic_grad_f(0:3) = 0.0d0
+      k_area_f = 0.0d0
+!
+      iflag_comm_f = 0
+      iflag_found_sf = 0
+      step_vec4(1:4) = vec4_org(1:4)
+      new_pos4(1:4) =  xx4_org(1:4)
+      do i = 1, 2
+        iele = isurf_orgs(i,1)
+        isf_org = isurf_orgs(i,2)
+        call position_on_each_ele_surfs                                 &
+     &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
+        call find_line_end_in_1ele(iflag_forward_line,                  &
+     &      isf_org, vec4_org, xx4_org, xx4_ele_surf,                   &
+     &      isf_tgt, new_pos4, xi)
+        if(isf_tgt .gt. 0) then
+          !write(50+my_rank, *) "find exit point in neighbor element."
+          iflag_found_sf = 1
+          ilic_suf_org(1:2) = isurf_orgs(i,1:2)
+          exit
         end if
-        if(i_debug .eq. 1) write(50+my_rank,*)                          &
-     &     "-----------------------Forward iter end-------------with:", &
-     &     iflag_comm
+      end do
 
-        if(i_debug .eq. 1) write(50+my_rank,*)                          &
+      if(iflag_found_sf .eq. 0) then
+        if(i_debug .eq. 1) write(50+my_rank, *)                         &
+     &    "not find exit point in neighbor element. end------------"
+        iflag_comm_f = -2
+      else
+        new_pos4(1:4) = xx4_org(1:4)
+        if(i_debug .eq. 1) write(50+my_rank, *)                         &
+     &                        "start cal lic, ele and surf: ",          &
+     &                        ilic_suf_org(1), ilic_suf_org(2)
+        call s_cal_lic_from_point(node, surf, lic_p,                    &
+     &      iflag_forward_line, v_nod, ilic_suf_org, new_pos4,          &
+     &      step_vec4, ref_nod, rlic_grad_v, k_area_f, iflag_comm_f)
+        rlic_grad_f(0:3) = rlic_grad_f(0:3) + rlic_grad_v(0:3)
+      end if
+      if(i_debug .eq. 1) write(50+my_rank,*)                            &
+     &     "-----------------------Forward iter end-------------with:", &
+     &     iflag_comm_f
+
+      if(i_debug .eq. 1) write(50+my_rank,*)                            &
      &     "-----------------------Backward iter begin---------------"
 !   Backward iteration
-        iflag_found_sf = 0
-        step_vec4(1:4) = vec4_org(1:4)
-        new_pos4(1:4) =  xx4_org(1:4)
-        do i = 1, 2
-          iele = isurf_orgs(i,1)
-          isf_org = isurf_orgs(i,2)
-          call position_on_each_ele_surfs                               &
-     &       (surf, node%numnod, node%xx, iele, xx4_ele_surf)
-          call find_line_end_in_1ele(iflag_backward_line,               &
-     &        isf_org, vec4_org, xx4_org, xx4_ele_surf,                 &
-     &        isf_tgt, new_pos4, xi)
-          if(isf_tgt .gt. 0) then
-            !write(50+my_rank, *) "find exit point in neighbor element."
-            iflag_found_sf = 1
-            ilic_suf_org(1:2) = isurf_orgs(i,1:2)
-            exit
-          end if
-        end do
+      rlic_grad_b(0:3) = 0.0
+      k_area_b = 0.0d0
 
-        if(iflag_found_sf .eq. 0) then
-          if(i_debug .eq. 1) write(50+my_rank, *)                       &
+      iflag_comm_b = 0
+      iflag_found_sf = 0
+      step_vec4(1:4) = vec4_org(1:4)
+      new_pos4(1:4) =  xx4_org(1:4)
+      do i = 1, 2
+        iele = isurf_orgs(i,1)
+        isf_org = isurf_orgs(i,2)
+        call position_on_each_ele_surfs                                 &
+     &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
+        call find_line_end_in_1ele(iflag_backward_line,                 &
+     &      isf_org, vec4_org, xx4_org, xx4_ele_surf,                   &
+     &      isf_tgt, new_pos4, xi)
+        if(isf_tgt .gt. 0) then
+          !write(50+my_rank, *) "find exit point in neighbor element."
+          iflag_found_sf = 1
+          ilic_suf_org(1:2) = isurf_orgs(i,1:2)
+          exit
+        end if
+      end do
+
+      if(iflag_found_sf .eq. 0) then
+        if(i_debug .eq. 1) write(50+my_rank, *)                         &
      &       "not find exit point in neighbor element ",                &
      &       " end-----------------"
-          iflag_comm = -2
-        else
-          new_pos4(1:4) = xx4_org(1:4)
-          if(i_debug .eq. 1) write(50+my_rank, *)                       &
+        iflag_comm_b = -2
+      else
+        new_pos4(1:4) = xx4_org(1:4)
+        if(i_debug .eq. 1) write(50+my_rank, *)                         &
      &       "start cal lic, ele and surf: ",                           &
      &       ilic_suf_org(1), ilic_suf_org(2)
-          call s_cal_lic_from_point(node, surf, lic_p,                  &
-     &        iflag_backward_line, v_nod, ilic_suf_org,                 &
-     &        new_pos4, step_vec4, ref_nod, rlic_grad_v, k_area,        &
-     &        iflag_comm)
-          rlic_grad(0:3) = rlic_grad(0:3) + rlic_grad_v(0:3)
-        end if
-        if(i_debug .eq. 1) write(50+my_rank,*)                          &
+        call s_cal_lic_from_point(node, surf, lic_p,                    &
+     &      iflag_backward_line, v_nod, ilic_suf_org,                   &
+     &      new_pos4, step_vec4, ref_nod, rlic_grad_v, k_area_b,        &
+     &      iflag_comm_b)
+        rlic_grad_b(0:3) = rlic_grad_b(0:3) + rlic_grad_v(0:3)
+      end if
+      if(i_debug .eq. 1) write(50+my_rank,*)                            &
      &     "-----------------------Backward iter end------------with:", &
-     &     iflag_comm
+     &     iflag_comm_b
 
-        if(k_area .gt. 0.0) then
-          rlic_grad(0) = rlic_grad(0) / k_area
-        end if
-        rlic_grad(0) = rlic_grad(0) * lic_p%factor_normal
-
-        if(i_debug .eq. 1) write(50+my_rank,*)                          &
+      iflag_comm = max(iflag_comm_f,iflag_comm_b)
+      rlic_grad(0:3) = rlic_grad(0:3)                                   &
+     &                + rlic_grad_f(0:3) + rlic_grad_b(0:3)
+      k_area = k_area_f + k_area_b
+      if(k_area .gt. 0.0) then
+        rlic_grad(0) = rlic_grad(0) / k_area
+      end if
+      rlic_grad(0) = rlic_grad(0) * lic_p%factor_normal
+!
+      if(i_debug .eq. 1) write(50+my_rank,*)                            &
      &                   "Get lic value: ", rlic_grad(0)
-        if(i_debug .eq. 1) write(50+my_rank, *)"   "
+      if(i_debug .eq. 1) write(50+my_rank, *)"   "
 
-    end subroutine cal_lic_on_surf_vector
+      end subroutine cal_lic_on_surf_vector
 !
 !  ---------------------------------------------------------------------
 !
