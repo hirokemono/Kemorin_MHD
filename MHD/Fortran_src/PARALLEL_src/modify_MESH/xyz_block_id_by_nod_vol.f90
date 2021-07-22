@@ -24,6 +24,8 @@
 !!     &         (node, part_param, id_block)
 !!        type(node_data), intent(in) :: node
 !!        type(volume_partioning_param), intent(in) :: part_param
+!!        subroutine vector_by_masking(node, num_mask, masking,         &
+!!     &                             d_mask, vector_nod)
 !!
 !!      subroutine const_single_domain_list(sub_z)
 !!        type(grouping_1d_work), intent(inout) :: sub_z
@@ -163,7 +165,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine vector_by_masking(node, num_mask, masking,             &
-     &                             d_mask, volume_nod)
+     &                             d_mask, vector_nod)
 !
       use t_ctl_param_masking
 !
@@ -172,7 +174,7 @@
       type(masking_parameter), intent(in) :: masking(num_mask)
       real(kind = kreal), intent(in) :: d_mask(node%numnod,num_mask)
 !
-      real(kind = kreal), intent(inout) :: volume_nod(node%numnod)
+      real(kind = kreal), intent(inout) :: vector_nod(node%numnod,3)
 !
       real(kind = kreal), allocatable :: value(:,:)
       integer(kind = kint) :: ip, ist, ied, inod
@@ -189,9 +191,9 @@
 !
           if(multi_mask_flag(num_mask, masking, value(1,ip))            &
      &                                      .eqv. .FALSE.) then
-            volume_nod(inod,1) = 0.0d0
-            volume_nod(inod,2) = 0.0d0
-            volume_nod(inod,3) = 0.0d0
+            vector_nod(inod,1) = 0.0d0
+            vector_nod(inod,2) = 0.0d0
+            vector_nod(inod,3) = 0.0d0
           end if
         end do
       end do
