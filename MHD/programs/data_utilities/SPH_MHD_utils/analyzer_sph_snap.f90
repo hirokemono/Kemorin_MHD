@@ -55,6 +55,7 @@
 !
       subroutine initialize_sph_snap
 !
+      use m_elapsed_labels_4_REPART
       use init_sph_MHD_elapsed_label
       use input_control_sph_SGS_MHD
       use FEM_to_VIZ_bridge
@@ -64,6 +65,8 @@
       total_start = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
+!
+      call elpsed_label_4_repartition
       call elpsed_label_field_send_recv
 !
 !   Load parameter file
