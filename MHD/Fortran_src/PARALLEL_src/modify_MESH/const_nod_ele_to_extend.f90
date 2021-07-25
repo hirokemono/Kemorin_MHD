@@ -138,6 +138,8 @@
       call alloc_flags_each_comm_extend(node%numnod, each_exp_flags)
       call alloc_comm_table_for_each(node, each_comm)
 !
+      go to 100
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+9)
       icou = 0
       do ip = 1, nprocs
         if(mark_saved(ip)%num_marked .gt. 0) icou = icou + 1
@@ -234,24 +236,6 @@
         end do
       end do
 !
-!      write(100+my_rank,*) 'npe_dist_send', npe_dist_send
-!      write(100+my_rank,*) 'irank_dist_send', irank_dist_send(:,1)
-!      do ip = 1, nod_comm%num_neib
-!        write(100+my_rank,*)                                           &
-!     &      ip, 'npe_dist_recv', nod_comm%id_neib(ip),                 &
-!     &      npe_dist_recv(ip), irank_dist_recv(:,ip)
-!      end do
-!
-!      do ip = 1, nprocs
-!        ist = istack_set_import_recv(ip-1) + 1
-!        ied = istack_set_import_recv(ip  )
-!        write(100+my_rank,*) 'istack_set_import_recv', ip, ist, ied
-!        do inum = ist, ied
-!          write(100+my_rank,*)                                         &
-!     &            'iset_import_recv', inum, iset_import_recv(inum,1:2)
-!        end do
-!      end do
-!
       allocate(marked_export(maxpe_dist_send))
       do icou = 1, maxpe_dist_send
         call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
@@ -280,11 +264,46 @@
      &      marked_export(icou)%dist_marked_each_export)
       end do
 !
+      do ip = 1, nprocs
+        call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
+        call set_distance_from_mark_list2                               &
+     &     (node%internal_node, mark_saved(ip), each_exp_flags)
+!
+        ist = istack_set_import_recv(ip-1) + 1
+        ied = istack_set_import_recv(ip  )
+        do inum = ist, ied
+          igrp = iset_import_recv(inum,1)
+          icou = iset_import_recv(inum,2)
+          jst = marked_export(icou)%istack_marked_each_exp(igrp-1) + 1
+          jed = marked_export(icou)%istack_marked_each_exp(igrp  )
+          do jnum = jst, jed
+            inod = marked_export(icou)%item_marked_each_export(jnum)
+            each_exp_flags%iflag_node(inod) = -1
+            each_exp_flags%distance(inod)                               &
+     &           = marked_export(icou)%dist_marked_each_export(jnum)
+          end do
+        end do
+!
+        if(iflag_SLEX_time)                                             &
+       &                  call start_elapsed_time(ist_elapsed_SLEX+17)
+        call count_num_marked_list                                      &
+       &   (-1, node%numnod, node%istack_nod_smp,                       &
+       &    each_exp_flags%iflag_node, mark_saved(ip)%num_marked,       &
+     &      mark_saved(ip)%istack_marked_smp)
+        call alloc_mark_for_each_comm(mark_saved(ip))
+        call set_distance_to_mark_list(-1, node, each_exp_flags,        &
+     &     mark_saved(ip)%num_marked, mark_saved(ip)%istack_marked_smp, &
+     &     mark_saved(ip)%idx_marked, mark_saved(ip)%dist_marked)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+17)
+      end do
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+9)
+!
+ 100  continue
+!      go to 200
 !
 !
 !
 !
-      call alloc_flags_each_comm_extend(node%numnod, each_exp_flags2)
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+9)
       do ip = 1, nprocs
         if(iflag_SLEX_time)                                             &
@@ -314,28 +333,9 @@
      &     mark_saved(ip)%num_marked, mark_saved(ip)%istack_marked_smp, &
      &     mark_saved(ip)%idx_marked, mark_saved(ip)%dist_marked)
         if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+17)
-!
-!
-        call reset_flags_each_comm_extend(node%numnod, each_exp_flags2)
-        call set_distance_from_mark_list2                               &
-     &     (node%internal_node, mark_saved(ip), each_exp_flags2)
-!
-        ist = istack_set_import_recv(ip-1) + 1
-        ied = istack_set_import_recv(ip  )
-        do inum = ist, ied
-          igrp = iset_import_recv(inum,1)
-          icou = iset_import_recv(inum,2)
-          jst = marked_export(icou)%istack_marked_each_exp(igrp-1) + 1
-          jed = marked_export(icou)%istack_marked_each_exp(igrp  )
-          do jnum = jst, jed
-            inod = marked_export(icou)%item_marked_each_export(jnum)
-            each_exp_flags2%iflag_node(inod) = -1
-            each_exp_flags2%distance(inod)                              &
-     &           = marked_export(icou)%dist_marked_each_export(jnum)
-          end do
-        end do
       end do
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+9)
+! 200  continue
 !
 !
 !
