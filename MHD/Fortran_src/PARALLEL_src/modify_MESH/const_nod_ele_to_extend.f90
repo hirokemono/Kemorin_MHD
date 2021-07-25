@@ -80,6 +80,7 @@
 !
       use calypso_mpi_int
       use solver_SR_type
+      use reverse_SR_int
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(communication_table), intent(in) :: nod_comm, ele_comm
@@ -99,16 +100,193 @@
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       type(comm_table_for_each_pe), save :: each_comm
-      type(flags_each_comm_extend), save :: each_exp_flags
+      type(flags_each_comm_extend) :: each_exp_flags
+      type(flags_each_comm_extend) :: each_exp_flags2
       integer(kind = kint), allocatable :: iflag_exp_ele(:)
       integer(kind = kint) :: i, ip, icou, jcou
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
+!
+      integer(kind = kint) :: maxpe_dist_send
+      integer(kind = kint), allocatable :: npe_dist_send(:)
+      integer(kind = kint), allocatable :: npe_dist_recv(:)
+      integer(kind = kint), allocatable :: istack_pe_dist_recv(:)
+      integer(kind = kint) :: ntot_pe_dist_recv
+!
+      integer(kind = kint), allocatable :: irank_dist_send(:,:)
+      integer(kind = kint), allocatable :: num_marked_send(:,:)
+      integer(kind = kint), allocatable :: irank_dist_recv(:,:)
+      integer(kind = kint), allocatable :: num_marked_recv(:,:)
+      integer(kind = kint), allocatable :: istack_num(:)
+!
+      type mark_in_export
+        integer(kind= kint) :: ntot_marked_each_exp
+        integer(kind= kint), allocatable :: istack_marked_each_exp(:)
+        integer(kind= kint), allocatable :: item_marked_each_export(:)
+        real(kind = kreal), allocatable :: dist_marked_each_export(:)
+      end type mark_in_export
+      type(mark_in_export), allocatable :: marked_export(:)
+!
+      integer(kind = kint) :: ntot_import_recv
+      integer(kind = kint), allocatable :: nset_import_recv(:)
+      integer(kind = kint), allocatable :: istack_set_import_recv(:)
+      integer(kind = kint), allocatable :: iset_import_recv(:,:)
+!
+      integer(kind = kint) :: ntot, jp, ist, ied, inum
+      integer(kind = kint) :: igrp, inod, jst, jed, jnum
 !
 !
       call alloc_flags_each_comm_extend                                 &
      &   (node%numnod, ele%numele, each_exp_flags)
       call alloc_comm_table_for_each(node, each_comm)
 !
+      icou = 0
+      do ip = 1, nprocs
+        if(mark_saved(ip)%num_marked .gt. 0) icou = icou + 1
+      end do
+      call calypso_mpi_allreduce_one_int                                &
+        (icou, maxpe_dist_send, MPI_MAX)
+      call calypso_mpi_allreduce_one_int(icou, jcou, MPI_SUM)
+      if(my_rank .eq. 0) write(*,*) 'max pe for distance',              &
+     &                     jcou, maxpe_dist_send, ' of ', nprocs
+!
+      allocate(irank_dist_send(maxpe_dist_send,nod_comm%num_neib))
+      allocate(npe_dist_send(nod_comm%num_neib))
+      allocate(istack_num(0:nod_comm%num_neib))
+!
+      istack_num(0) = 0
+!$omp parallel do
+      do ip = 1, nod_comm%num_neib
+        istack_num(ip) = ip * maxpe_dist_send
+      end do
+!$omp end parallel do
+!
+      if(nod_comm%num_neib .gt. 0) then
+!$omp parallel workshare
+        npe_dist_send(1:nod_comm%num_neib) = icou
+!$omp end parallel workshare
+!$omp parallel workshare
+        irank_dist_send(1:maxpe_dist_send,1:nod_comm%num_neib) = -1
+!$omp end parallel workshare
+!
+        icou = 0
+        do ip = 1, nprocs
+          if(mark_saved(ip)%num_marked .gt. 0) then
+            icou = icou + 1
+            irank_dist_send(icou,1) = ip-1
+          end if
+        end do
+!$omp parallel do
+        do ip = 2, nod_comm%num_neib
+          irank_dist_send(1:maxpe_dist_send,ip)                         &
+     &        = irank_dist_send(1:maxpe_dist_send,1)
+        end do
+!$omp end parallel do
+      end if
+!
+      allocate(npe_dist_recv(nod_comm%num_neib))
+      allocate(istack_pe_dist_recv(0:nod_comm%num_neib))
+      allocate(irank_dist_recv(maxpe_dist_send,nod_comm%num_neib))
+!
+      call num_items_send_recv                                          &
+     &   (nod_comm%num_neib, nod_comm%id_neib, npe_dist_send,           &
+     &    nod_comm%num_neib, nod_comm%id_neib, izero,                   &
+     &    npe_dist_recv, istack_pe_dist_recv, ntot_pe_dist_recv,        &
+     &    SR_sig)
+      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &                          istack_num, irank_dist_send,            &
+     &                          nod_comm%num_neib, nod_comm%id_neib,    &
+     &                          istack_num, izero, irank_dist_recv,     &
+     &                          SR_sig)
+!
+      allocate(nset_import_recv(nprocs))
+      allocate(istack_set_import_recv(0:nprocs))
+!
+      istack_set_import_recv(0) = 0
+!$omp parallel workshare
+      nset_import_recv(1:nprocs) =       0
+      istack_set_import_recv(0:nprocs) = 0
+!$omp end parallel workshare
+      do ip = 1, nod_comm%num_neib
+        do icou = 1, npe_dist_recv(ip)
+          jp = irank_dist_recv(icou,ip) + 1
+          nset_import_recv(jp) = nset_import_recv(jp) + 1
+        end do
+      end do
+!
+      do jp = 1, nprocs
+        istack_set_import_recv(jp) = istack_set_import_recv(jp-1)       &
+     &                              + nset_import_recv(jp)
+      end do
+      ntot_import_recv = istack_set_import_recv(nprocs)
+!
+      allocate(iset_import_recv(ntot_import_recv,2))
+!
+!$omp parallel workshare
+      nset_import_recv(1:nprocs) = 0
+!$omp end parallel workshare
+      do ip = 1, nod_comm%num_neib
+        do icou = 1, npe_dist_recv(ip)
+          jp = irank_dist_recv(icou,ip) + 1
+!
+          nset_import_recv(jp) = nset_import_recv(jp) + 1
+          jcou = nset_import_recv(jp) + istack_set_import_recv(jp-1)
+          iset_import_recv(jcou,1) = ip
+          iset_import_recv(jcou,2) = icou
+        end do
+      end do
+!
+!      write(100+my_rank,*) 'npe_dist_send', npe_dist_send
+!      write(100+my_rank,*) 'irank_dist_send', irank_dist_send(:,1)
+!      do ip = 1, nod_comm%num_neib
+!        write(100+my_rank,*)                                           &
+!     &      ip, 'npe_dist_recv', nod_comm%id_neib(ip),                 &
+!     &      npe_dist_recv(ip), irank_dist_recv(:,ip)
+!      end do
+!
+!      do ip = 1, nprocs
+!        ist = istack_set_import_recv(ip-1) + 1
+!        ied = istack_set_import_recv(ip  )
+!        write(100+my_rank,*) 'istack_set_import_recv', ip, ist, ied
+!        do inum = ist, ied
+!          write(100+my_rank,*)                                         &
+!     &            'iset_import_recv', inum, iset_import_recv(inum,1:2)
+!        end do
+!      end do
+!
+      allocate(marked_export(maxpe_dist_send))
+      do icou = 1, maxpe_dist_send
+        call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
+        if(icou .le. npe_dist_send(1)) then
+          ip = irank_dist_send(icou,1) + 1
+          call set_distance_from_mark_list                              &
+     &       (-1, mark_saved(ip), each_exp_flags)
+        end if
+!
+        call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm,           &
+     &      SR_sig, SR_i, each_exp_flags%iflag_node)
+        call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
+     &      SR_sig, SR_r, each_exp_flags%distance)
+!
+        allocate(marked_export(icou)%istack_marked_each_exp(0:nod_comm%num_neib))
+        call count_num_marked_in_export(nod_comm, each_exp_flags,       &
+     &      marked_export(icou)%istack_marked_each_exp(0),              &
+     &      marked_export(icou)%ntot_marked_each_exp)
+        ntot = marked_export(icou)%ntot_marked_each_exp
+        allocate(marked_export(icou)%item_marked_each_export(ntot))
+        allocate(marked_export(icou)%dist_marked_each_export(ntot))
+        call set_marked_distance_in_export(nod_comm, each_exp_flags,    &
+     &      marked_export(icou)%ntot_marked_each_exp,                   &
+     &      marked_export(icou)%istack_marked_each_exp(0),              &
+     &      marked_export(icou)%item_marked_each_export,                &
+     &      marked_export(icou)%dist_marked_each_export)
+      end do
+!
+!
+!
+!
+!
+      call alloc_flags_each_comm_extend                                 &
+     &   (node%numnod, ele%numele, each_exp_flags2)
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+9)
       do ip = 1, nprocs
         if(iflag_SLEX_time)                                             &
@@ -130,6 +308,8 @@
 !
         if(iflag_SLEX_time)                                             &
      &                  call start_elapsed_time(ist_elapsed_SLEX+16)
+        call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm,           &
+     &      SR_sig, SR_i, each_exp_flags%iflag_node)
         call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
      &      SR_sig, SR_r, each_exp_flags%distance)
         if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+16)
@@ -145,8 +325,40 @@
      &     mark_saved(ip)%num_marked, mark_saved(ip)%istack_marked_smp, &
      &     mark_saved(ip)%idx_marked, mark_saved(ip)%dist_marked)
         if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+17)
+!
+!
+        call reset_flags_each_comm_extend(node%numnod, each_exp_flags2)
+        call set_distance_from_mark_list2                               &
+     &     (node%internal_node, mark_saved(ip), each_exp_flags2)
+!
+        ist = istack_set_import_recv(ip-1) + 1
+        ied = istack_set_import_recv(ip  )
+        do inum = ist, ied
+          igrp = iset_import_recv(inum,1)
+          icou = iset_import_recv(inum,2)
+          jst = marked_export(icou)%istack_marked_each_exp(igrp-1) + 1
+          jed = marked_export(icou)%istack_marked_each_exp(igrp  )
+          do jnum = jst, jed
+            inod = marked_export(icou)%item_marked_each_export(jnum)
+            each_exp_flags2%iflag_node(inod) = -1
+            each_exp_flags2%distance(inod)                              &
+     &           = marked_export(icou)%dist_marked_each_export(jnum)
+          end do
+        end do
+!
+        icou = 0
+        do inod = 1, node%numnod
+          if(   (each_exp_flags2%iflag_node(inod)      &
+     &         .ne. each_exp_flags%iflag_node(inod))   &
+     &      .or. (each_exp_flags2%distance(inod)      &
+     &         .ne. each_exp_flags%distance(inod))) icou = icou + 1
+        end do
+        write(my_rank+100,*) 'Fail counter for', ip, ':  ', icou
       end do
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+9)
+!
+!
+!
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+10)
       icou = 0
@@ -301,6 +513,105 @@
       call dealloc_ele_data_sleeve_ext(exp_export_ie)
 !
       end subroutine comm_extended_import_nod_ele
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine count_num_marked_in_export(nod_comm, each_exp_flags,   &
+     &          istack_marked, ntot_marked)
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(flags_each_comm_extend), intent(in) :: each_exp_flags
+!
+      integer(kind = kint), intent(inout)                               &
+     &                  :: istack_marked(0:nod_comm%num_neib)
+      integer(kind = kint), intent(inout) :: ntot_marked
+!
+      integer(kind = kint) :: icou, inum, inod, ip, ist, ied
+!
+!
+!$omp parallel do private(ip,icou,ist,ied,inum,inod)
+      do ip = 1, nod_comm%num_neib
+        icou = 0
+        ist = nod_comm%istack_import(ip-1) + 1
+        ied = nod_comm%istack_import(ip  )
+        do inum = ist, ied
+          inod = nod_comm%item_import(inum)
+          if(each_exp_flags%iflag_node(inod) .eq. -1) icou = icou + 1
+        end do
+        istack_marked(ip) = icou
+      end do
+!$omp end parallel do
+!
+      istack_marked(0) = 0
+      do ip = 1, nod_comm%num_neib
+        istack_marked(ip) = istack_marked(ip-1) + istack_marked(ip)
+      end do
+      ntot_marked = istack_marked(nod_comm%num_neib)
+!
+      end subroutine count_num_marked_in_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_marked_distance_in_export                          &
+     &         (nod_comm, each_exp_flags, ntot_marked,                  &
+     &          istack_marked, item_marked, dist_marked)
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(flags_each_comm_extend), intent(in) :: each_exp_flags
+      integer(kind = kint), intent(in) :: ntot_marked
+      integer(kind = kint), intent(in)                                  &
+     &                  :: istack_marked(0:nod_comm%num_neib)
+!
+      integer(kind = kint), intent(inout) :: item_marked(ntot_marked)
+      real(kind = kreal), intent(inout) :: dist_marked(ntot_marked)
+!
+      integer(kind = kint) :: icou, inod, ip, ist, ied, inum
+!
+!
+      if(ntot_marked .le. 0) return
+!
+!$omp parallel do private(ip,icou,ist,ied,inum,inod)
+      do ip = 1, nod_comm%num_neib
+        icou = istack_marked(ip-1)
+        ist = nod_comm%istack_import(ip-1) + 1
+        ied = nod_comm%istack_import(ip  )
+        do inum = ist, ied
+          inod = nod_comm%item_import(inum)
+          if(each_exp_flags%iflag_node(inod) .eq. -1)  then
+            icou = icou + 1
+            item_marked(icou) =  inod
+            dist_marked(icou) = each_exp_flags%distance(inod)
+          end if
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine set_marked_distance_in_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_distance_from_mark_list2                           &
+     &         (internal_node, mark_nod, each_exp_flags)
+!
+      integer(kind = kint) :: internal_node
+      type(mark_for_each_comm), intent(in) :: mark_nod
+!
+      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+!
+      integer(kind = kint) :: icou, inod
+!
+!
+!$omp parallel do private(icou,inod)
+      do icou = 1, mark_nod%num_marked
+        inod = mark_nod%idx_marked(icou)
+        if(inod .gt. internal_node) cycle
+        each_exp_flags%iflag_node(inod) = -1
+        each_exp_flags%distance(inod) = mark_nod%dist_marked(icou)
+      end do
+!$omp end parallel do
+!
+      end subroutine set_distance_from_mark_list2
 !
 !  ---------------------------------------------------------------------
 !
