@@ -7,8 +7,7 @@
 !> @brief Structure of marking and distance for sleeveextension
 !!
 !!@verbatim
-!!      subroutine alloc_flags_each_comm_extend                         &
-!!     &                           (numnod, numele, each_exp_flags)
+!!      subroutine alloc_flags_each_comm_extend(numnod, each_exp_flags)
 !!      subroutine dealloc_flags_each_comm_extend(each_exp_flags)
 !!      subroutine reset_flags_each_comm_extend(numnod, each_exp_flags)
 !!        integer(kind = kint), intent(in) :: numnod, numele
@@ -69,10 +68,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_flags_each_comm_extend                           &
-     &                           (numnod, numele, each_exp_flags)
+      subroutine alloc_flags_each_comm_extend(numnod, each_exp_flags)
 !
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numnod
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
 !
