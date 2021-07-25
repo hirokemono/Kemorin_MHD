@@ -36,7 +36,7 @@
 !
       subroutine elpsed_label_4_sleeve_ext
 !
-      integer(kind = kint), parameter :: num_append = 26
+      integer(kind = kint), parameter :: num_append = 25
 !
 !
       call append_elapsed_times                                         &
@@ -96,9 +96,6 @@
      &                    = 'set_neighbour_domain_by_flag import  '
       elps1%labels(ist_elapsed_SLEX+25)                                 &
      &                    = 'set_neighbour_domain_by_flag export  '
-!
-      elps1%labels(ist_elapsed_SLEX+26)                                 &
-     &                    = 'New initialization of extend marking  '
 !
       iflag_SLEX_time = .TRUE.
 !
