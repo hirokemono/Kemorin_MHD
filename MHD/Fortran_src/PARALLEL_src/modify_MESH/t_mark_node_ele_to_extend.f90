@@ -441,11 +441,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_num_marked_by_dist(node, distance,               &
+      subroutine count_num_marked_by_dist(node, each_exp_flags,         &
      &          num_marked, istack_marked_smp)
 !
       type(node_data), intent(in) :: node
-      real(kind = kreal), intent(in) :: distance(node%numnod)
+      type(flags_each_comm_extend), intent(in) :: each_exp_flags
 !
       integer(kind = kint), intent(inout) :: num_marked
       integer(kind = kint), intent(inout) :: istack_marked_smp(0:np_smp)
@@ -459,7 +459,7 @@
         ist = node%istack_nod_smp(ip-1) + 1
         ied = node%istack_nod_smp(ip  )
         do inod = ist, ied
-          if(distance(inod) .gt. 0.0d0) icou = icou + 1
+          if(each_exp_flags%distance(inod) .gt. 0.0d0) icou = icou + 1
         end do
         istack_marked_smp(ip) = icou
       end do
