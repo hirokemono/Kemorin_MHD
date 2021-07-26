@@ -244,8 +244,8 @@
      &       (-1, mark_saved(ip), each_exp_flags)
         end if
 !
-        call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm,           &
-     &      SR_sig, SR_i, each_exp_flags%iflag_node)
+!        call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm,          &
+!     &      SR_sig, SR_i, each_exp_flags%iflag_node)
         call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
      &      SR_sig, SR_r, each_exp_flags%distance)
 !
@@ -278,7 +278,6 @@
           jed = marked_export(icou)%istack_marked_each_exp(igrp  )
           do jnum = jst, jed
             inod = marked_export(icou)%item_marked_each_export(jnum)
-            each_exp_flags%iflag_node(inod) = -1
             each_exp_flags%distance(inod)                               &
      &           = marked_export(icou)%dist_marked_each_export(jnum)
           end do
@@ -286,12 +285,12 @@
 !
         if(iflag_SLEX_time)                                             &
        &                  call start_elapsed_time(ist_elapsed_SLEX+17)
-        call count_num_marked_list                                      &
-       &   (-1, node%numnod, node%istack_nod_smp,                       &
-       &    each_exp_flags%iflag_node, mark_saved(ip)%num_marked,       &
+        call count_num_marked_by_dist                                   &
+       &   (node%numnod, node%istack_nod_smp,                           &
+       &    each_exp_flags%distance, mark_saved(ip)%num_marked,         &
      &      mark_saved(ip)%istack_marked_smp)
         call alloc_mark_for_each_comm(mark_saved(ip))
-        call set_distance_to_mark_list(-1, node, each_exp_flags,        &
+        call set_distance_to_mark_by_dist(node, each_exp_flags,         &
      &     mark_saved(ip)%num_marked, mark_saved(ip)%istack_marked_smp, &
      &     mark_saved(ip)%idx_marked, mark_saved(ip)%dist_marked)
         if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+17)
@@ -476,7 +475,7 @@
         ied = nod_comm%istack_import(ip  )
         do inum = ist, ied
           inod = nod_comm%item_import(inum)
-          if(each_exp_flags%iflag_node(inod) .eq. -1) icou = icou + 1
+          if(each_exp_flags%distance(inod) .gt. 0.0d0) icou = icou + 1
         end do
         istack_marked(ip) = icou
       end do
@@ -517,7 +516,7 @@
         ied = nod_comm%istack_import(ip  )
         do inum = ist, ied
           inod = nod_comm%item_import(inum)
-          if(each_exp_flags%iflag_node(inod) .eq. -1)  then
+          if(each_exp_flags%distance(inod) .gt. 0.0d0) then
             icou = icou + 1
             item_marked(icou) =  inod
             dist_marked(icou) = each_exp_flags%distance(inod)
