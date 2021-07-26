@@ -286,8 +286,7 @@
         if(iflag_SLEX_time)                                             &
        &                  call start_elapsed_time(ist_elapsed_SLEX+17)
         call count_num_marked_by_dist                                   &
-       &   (node%numnod, node%istack_nod_smp,                           &
-       &    each_exp_flags%distance, mark_saved(ip)%num_marked,         &
+       &   (node, each_exp_flags, mark_saved(ip)%num_marked,            &
      &      mark_saved(ip)%istack_marked_smp)
         call alloc_mark_for_each_comm(mark_saved(ip))
         call set_distance_to_mark_by_dist(node, each_exp_flags,         &
