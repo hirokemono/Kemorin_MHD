@@ -476,42 +476,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_distance_to_mark_by_dist(node, distance,           &
-     &         num_marked, istack_marked_smp, idx_marked, dist_marked)
-!
-      type(node_data), intent(in) :: node
-      real(kind = kreal), intent(in) :: distance(node%numnod)
-!
-      integer(kind = kint), intent(in) :: num_marked
-      integer(kind = kint), intent(in) :: istack_marked_smp(0:np_smp)
-!
-      integer(kind = kint), intent(inout) :: idx_marked(num_marked)
-      real(kind = kreal), intent(inout) :: dist_marked(num_marked)
-!
-      integer(kind = kint) :: icou, inod, ist, ied, ip
-!
-!
-      if(num_marked .le. 0) return
-!
-!$omp parallel do private(ip,icou,ist,ied,inod)
-      do ip = 1, np_smp
-        icou = istack_marked_smp(ip-1)
-        ist = node%istack_nod_smp(ip-1) + 1
-        ied = node%istack_nod_smp(ip  )
-        do inod = ist, ied
-          if(distance(inod) .gt. 0.0d0) then
-            icou = icou + 1
-            idx_marked(icou) = inod
-            dist_marked(icou) = distance(inod)
-          end if
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine set_distance_to_mark_by_dist
-!
-!  ---------------------------------------------------------------------
-!
       subroutine count_num_marked_list                                  &
      &         (iflag_ref, numnod, istack_nod_smp, iflag_node,          &
      &          num_marked, istack_marked_smp)
@@ -548,43 +512,6 @@
       num_marked = istack_marked_smp(np_smp)
 !
       end subroutine count_num_marked_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_num_marked_by_dist(numnod, istack_nod_smp,       &
-     &          distance, num_marked, istack_marked_smp)
-!
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: istack_nod_smp(0:np_smp)
-      integer(kind = kint), intent(in) :: distance(numnod)
-!
-      integer(kind = kint), intent(inout) :: num_marked
-      integer(kind = kint), intent(inout)                               &
-     &                     :: istack_marked_smp(0:np_smp)
-!
-      integer(kind = kint) :: icou, inod, ip, ist, ied
-!
-!
-!$omp parallel do private(ip,icou,ist,ied,inod)
-      do ip = 1, np_smp
-        icou = 0
-        ist = istack_nod_smp(ip-1) + 1
-        ied = istack_nod_smp(ip  )
-        do inod = ist, ied
-          if(distance(inod) .gt. 0.0d0) icou = icou + 1
-        end do
-        istack_marked_smp(ip) = icou
-      end do
-!$omp end parallel do
-!
-      istack_marked_smp(0) = 0
-      do ip = 1, np_smp
-        istack_marked_smp(ip) = istack_marked_smp(ip-1)                 &
-     &                         + istack_marked_smp(ip)
-      end do
-      num_marked = istack_marked_smp(np_smp)
-!
-      end subroutine count_num_marked_by_dist
 !
 !  ---------------------------------------------------------------------
 !
