@@ -247,7 +247,7 @@
       type(flags_each_comm_extend) :: each_exp_flags
       integer(kind = kint), allocatable :: iflag_exp_ele(:)
 !
-      integer(kind = kint) :: maxpe_dist_send
+      integer(kind = kint) :: npe_dist, maxpe_dist_send
       integer(kind = kint) :: ntot_pe_dist_recv
 !
 !
@@ -264,38 +264,20 @@
       call alloc_comm_table_for_each(node, each_comm)
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+9)
-      icou = 0
-      do ip = 1, nprocs
-        if(mark_saved(ip)%num_marked .gt. 0) icou = icou + 1
-      end do
+      npe_dist = num_rank_with_distance_send(mark_saved)
       call calypso_mpi_allreduce_one_int                                &
-        (icou, maxpe_dist_send, MPI_MAX)
-      call calypso_mpi_allreduce_one_int(icou, jcou, MPI_SUM)
+        (npe_dist, maxpe_dist_send, MPI_MAX)
+      call calypso_mpi_allreduce_one_int(npe_dist, jcou, MPI_SUM)
       if(my_rank .eq. 0) write(*,*) 'max pe for distance',              &
      &                     jcou, maxpe_dist_send, ' of ', nprocs
 !
-      call init_extend_pe_list_send(nod_comm%num_neib, icou, maxpe_dist_send, &
-     &                              pe_list_extend)
-!
-      if(nod_comm%num_neib .gt. 0) then
-        icou = 0
-        do ip = 1, nprocs
-          if(mark_saved(ip)%num_marked .gt. 0) then
-            icou = icou + 1
-            pe_list_extend%irank_dist_send(icou,1) = ip-1
-          end if
-        end do
-!$omp parallel do
-        do ip = 2, nod_comm%num_neib
-          pe_list_extend%irank_dist_send(1:maxpe_dist_send,ip)          &
-     &        = pe_list_extend%irank_dist_send(1:maxpe_dist_send,1)
-        end do
-!$omp end parallel do
-      end if
+      call init_extend_pe_list_send                                     &
+     &   (nod_comm%num_neib, npe_dist, maxpe_dist_send, pe_list_extend)
+      call set_irank_with_distance_send(mark_saved, nod_comm%num_neib,  &
+     &    maxpe_dist_send, pe_list_extend%irank_dist_send)
 !
       call init_extend_pe_list_recv(nod_comm%num_neib, maxpe_dist_send, &
      &                              pe_list_extend)
-!
       call num_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,     &
      &                         pe_list_extend%npe_dist_send,            &
      &                         nod_comm%num_neib, nod_comm%id_neib,     &
@@ -722,6 +704,52 @@
       end do
 !
       end subroutine set_iset_import_recv
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_rank_with_distance_send         &
+     &                            (mark_saved)
+!
+      type(mark_for_each_comm), intent(in) :: mark_saved(nprocs)
+      integer(kind = kint) :: ip, npe_dist
+!
+      npe_dist = 0
+      do ip = 1, nprocs
+        if(mark_saved(ip)%num_marked .gt. 0) npe_dist = npe_dist + 1
+      end do
+      num_rank_with_distance_send = npe_dist
+!
+      end function num_rank_with_distance_send
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_irank_with_distance_send(mark_saved, num_neib,     &
+     &          maxpe_send, irank_dist_send)
+!
+      type(mark_for_each_comm), intent(in) :: mark_saved(nprocs)
+      integer(kind = kint), intent(in) :: num_neib, maxpe_send
+      integer(kind = kint), intent(inout)                               &
+     &                     :: irank_dist_send(maxpe_send,num_neib)
+!
+      integer(kind = kint) :: ip, icou
+!
+      if(num_neib .le. 0) return
+!
+      icou = 0
+      do ip = 1, nprocs
+        if(mark_saved(ip)%num_marked .gt. 0) then
+          icou = icou + 1
+          irank_dist_send(icou,1) = ip-1
+        end if
+      end do
+!$omp parallel do
+      do ip = 2, num_neib
+        irank_dist_send(1:maxpe_send,ip)                                &
+     &      = irank_dist_send(1:maxpe_send,1)
+      end do
+!$omp end parallel do
+!
+      end subroutine set_irank_with_distance_send
 !
 !  ---------------------------------------------------------------------
 !
