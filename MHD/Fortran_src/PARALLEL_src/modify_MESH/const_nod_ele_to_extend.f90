@@ -124,7 +124,7 @@
       integer(kind = kint), allocatable :: istack_set_import_recv(:)
       integer(kind = kint), allocatable :: iset_import_recv(:,:)
 !
-      integer(kind = kint) :: ntot, jp, ist, ied, inum
+      integer(kind = kint) :: jp, ist, ied, inum
       integer(kind = kint) :: igrp, inod, jst, jed, jnum
 !
 !
@@ -242,15 +242,14 @@
         call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
      &      SR_sig, SR_r, each_exp_flags%distance)
 !
-        allocate(marked_export(icou)%istack_marked_export(0:nod_comm%num_neib))
+        call alloc_istack_marked_export(nod_comm, marked_export(icou))
         call count_num_marked_in_export(nod_comm, each_exp_flags,       &
      &      marked_export(icou)%istack_marked_export(0),                &
-     &      marked_export(icou)%ntot_marked_each_exp)
-        ntot = marked_export(icou)%ntot_marked_each_exp
-        allocate(marked_export(icou)%item_marked_export(ntot))
-        allocate(marked_export(icou)%dist_marked_export(ntot))
+     &      marked_export(icou)%ntot_marked_export)
+!
+        call alloc_items_marked_export(marked_export(icou))
         call set_marked_distance_in_export(nod_comm, each_exp_flags,    &
-     &      marked_export(icou)%ntot_marked_each_exp,                   &
+     &      marked_export(icou)%ntot_marked_export,                     &
      &      marked_export(icou)%istack_marked_export(0),                &
      &      marked_export(icou)%item_marked_export,                     &
      &      marked_export(icou)%dist_marked_export)
@@ -277,9 +276,9 @@
         end do
 !
         if(iflag_SLEX_time)                                             &
-       &                  call start_elapsed_time(ist_elapsed_SLEX+17)
+     &                  call start_elapsed_time(ist_elapsed_SLEX+17)
         call count_num_marked_by_dist                                   &
-       &   (node, each_exp_flags, mark_saved(ip)%num_marked,            &
+     &     (node, each_exp_flags, mark_saved(ip)%num_marked,            &
      &      mark_saved(ip)%istack_marked_smp)
         call alloc_mark_for_each_comm(mark_saved(ip))
         call set_distance_to_mark_by_dist(node, each_exp_flags,         &
@@ -288,6 +287,10 @@
         if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+17)
       end do
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+9)
+!
+      do icou = 1, maxpe_dist_send
+        call dealloc_mark_in_export(marked_export(icou))
+      end do
 !
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+10)

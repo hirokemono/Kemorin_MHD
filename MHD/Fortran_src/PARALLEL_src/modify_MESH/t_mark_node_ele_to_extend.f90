@@ -17,6 +17,12 @@
 !!        type(mark_for_each_comm), intent(in) :: org_mark_comm
 !!        type(mark_for_each_comm), intent(inout) :: new_mark_comm
 !!
+!!      subroutine alloc_istack_marked_export(nod_comm, marked_export)
+!!      subroutine alloc_items_marked_export(marked_export)
+!!      subroutine dealloc_mark_in_export(marked_export)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(mark_in_export), intent(inout) :: marked_export
+!!
 !!      subroutine check_missing_connect_to_extend                      &
 !!    &          (node, ele, mark_ele, iflag_node, icou_nod, icou_ele)
 !!        type(node_data), intent(in) :: node
@@ -48,7 +54,7 @@
       end type mark_for_each_comm
 !
       type mark_in_export
-        integer(kind= kint) :: ntot_marked_each_exp
+        integer(kind= kint) :: ntot_marked_export
         integer(kind= kint), allocatable :: istack_marked_export(:)
         integer(kind= kint), allocatable :: item_marked_export(:)
         real(kind = kreal), allocatable :: dist_marked_export(:)
@@ -135,6 +141,55 @@
 !$omp end parallel workshare
 !
       end subroutine copy_mark_for_each_comm
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_istack_marked_export(nod_comm, marked_export)
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(mark_in_export), intent(inout) :: marked_export
+!
+!
+      allocate(marked_export%istack_marked_export(0:nod_comm%num_neib))
+!
+!$omp parallel workshare
+      marked_export%istack_marked_export(0:nod_comm%num_neib) = 0
+!$omp end parallel workshare
+!
+      end subroutine alloc_istack_marked_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_items_marked_export(marked_export)
+!
+      type(mark_in_export), intent(inout) :: marked_export
+!
+      integer(kind = kint) :: ntot
+!
+      ntot = marked_export%ntot_marked_export
+      allocate(marked_export%item_marked_export(ntot))
+      allocate(marked_export%dist_marked_export(ntot))
+!
+      if(marked_export%ntot_marked_export .le. 0) return
+!$omp parallel workshare
+      marked_export%istack_marked_export(1:ntot) = 0
+!$omp end parallel workshare
+!
+      end subroutine alloc_items_marked_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_mark_in_export(marked_export)
+!
+      type(mark_in_export), intent(inout) :: marked_export
+!
+!
+      deallocate(marked_export%item_marked_export)
+      deallocate(marked_export%dist_marked_export)
+      deallocate(marked_export%istack_marked_export)
+!
+      end subroutine dealloc_mark_in_export
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
