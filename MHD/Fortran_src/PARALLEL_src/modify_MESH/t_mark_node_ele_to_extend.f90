@@ -37,12 +37,9 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use calypso_mpi
 !
       use t_geometry_data
       use t_comm_table
-      use t_comm_table_for_each_pe
-      use t_flags_each_comm_extend
 !
       implicit none
 !
