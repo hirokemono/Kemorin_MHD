@@ -57,6 +57,7 @@
       use t_mesh_for_sleeve_extend
       use t_pe_list_for_marks_extend
       use t_flags_each_comm_extend
+      use t_export_grp_list_extend
       use t_solver_SR
 !
       use m_work_time
@@ -64,67 +65,110 @@
 !
       implicit none
 !
-      type export_grp_list_extend
-        integer(kind = kint), allocatable :: nset_import_recv(:)
-        integer(kind = kint), allocatable :: istack_set_import_recv(:)
-        integer(kind = kint), allocatable :: iset_import_recv(:,:)
-      end type export_grp_list_extend
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_istack_set_import_recv(grp_list_export)
+      subroutine comm_marked_export_for_extend(nod_comm, node,          &
+     &          mark_saved, pe_list_extend, maxpe_dist_send,            &
+     &          marked_export, each_exp_flags, SR_sig, SR_r)
 !
-      type(export_grp_list_extend), intent(inout) :: grp_list_export
+      use calypso_mpi
+      use solver_SR_type
+      use load_distance_and_mark_list
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
+      type(mark_for_each_comm), intent(in) :: mark_saved(nprocs)
+      type(pe_list_for_marks_extend), intent(in) :: pe_list_extend
+!
+      integer(kind = kint), intent(in) :: maxpe_dist_send
+      type(mark_in_export), intent(inout)                               &
+     &                     :: marked_export(maxpe_dist_send)
+      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+      integer(kind = kint) :: icou, ip
 !
 !
-      allocate(grp_list_export%nset_import_recv(nprocs))
-      allocate(grp_list_export%istack_set_import_recv(0:nprocs))
+      do icou = 1, maxpe_dist_send
+        call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
+        if(icou .le. pe_list_extend%npe_dist_send(1)) then
+          ip = pe_list_extend%irank_dist_send(icou,1) + 1
+          call set_distance_from_mark_list                              &
+     &       (-1, mark_saved(ip), each_exp_flags)
+        end if
 !
-      grp_list_export%istack_set_import_recv(0) = 0
-!$omp parallel workshare
-      grp_list_export%nset_import_recv(1:nprocs) =       0
-      grp_list_export%istack_set_import_recv(1:nprocs) = 0
-!$omp end parallel workshare
+        call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
+     &      SR_sig, SR_r, each_exp_flags%distance)
 !
-      end subroutine alloc_istack_set_import_recv
+        call alloc_istack_marked_export(nod_comm, marked_export(icou))
+        call count_num_marked_in_export(nod_comm, each_exp_flags,       &
+     &      marked_export(icou)%istack_marked_export(0),                &
+     &      marked_export(icou)%ntot_marked_export)
+!
+        call alloc_items_marked_export(marked_export(icou))
+        call set_marked_distance_in_export(nod_comm, each_exp_flags,    &
+     &      marked_export(icou)%ntot_marked_export,                     &
+     &      marked_export(icou)%istack_marked_export(0),                &
+     &      marked_export(icou)%item_marked_export,                     &
+     &      marked_export(icou)%dist_marked_export)
+      end do
+!
+      end subroutine comm_marked_export_for_extend
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_iset_import_recv(grp_list_export)
+      subroutine append_mark_export_for_extend                          &
+     &         (node, maxpe_dist_send, marked_export, grp_list_export,  &
+     &          mark_saved, each_exp_flags)
 !
-      type(export_grp_list_extend), intent(inout) :: grp_list_export
+      use load_distance_and_mark_list
 !
-      integer(kind = kint) :: ntot_import_recv
+      type(node_data), intent(in) :: node
+!
+      integer(kind = kint), intent(in) :: maxpe_dist_send
+      type(mark_in_export), intent(in)                                  &
+     &                     :: marked_export(maxpe_dist_send)
+      type(export_grp_list_extend), intent(in) :: grp_list_export
+!
+      type(mark_for_each_comm), intent(inout) :: mark_saved(nprocs)
+      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+!
+      integer(kind = kint) :: ist, ip
 !
 !
-      ntot_import_recv = grp_list_export%istack_set_import_recv(nprocs)
-      allocate(grp_list_export%iset_import_recv(ntot_import_recv,2))
+      do ip = 1, nprocs
+        call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
+        call set_distance_from_intenal_mark                             &
+     &     (node%internal_node, mark_saved(ip), each_exp_flags)
+        call dealloc_mark_for_each_comm(mark_saved(ip))
 !
-      if(ntot_import_recv .le. 0) return
-!$omp parallel workshare
-      grp_list_export%iset_import_recv(1:ntot_import_recv,1) = -1
-      grp_list_export%iset_import_recv(1:ntot_import_recv,2) =  0
-!$omp end parallel workshare
+        ist = grp_list_export%istack_set_import_recv(ip  )
+        call set_dist_from_marke_in_export(node%numnod,                 &
+     &      maxpe_dist_send, marked_export,                             &
+     &      grp_list_export%nset_import_recv(ip),                       &
+     &      grp_list_export%iset_import_recv(ist+1,1),                  &
+     &      grp_list_export%iset_import_recv(ist+1,2),                  &
+     &      each_exp_flags%distance)
 !
-      end subroutine alloc_iset_import_recv
+        if(iflag_SLEX_time)                                             &
+     &                  call start_elapsed_time(ist_elapsed_SLEX+17)
+        call count_num_marked_by_dist                                   &
+     &     (node, each_exp_flags, mark_saved(ip)%num_marked,            &
+     &      mark_saved(ip)%istack_marked_smp)
+        call alloc_mark_for_each_comm(mark_saved(ip))
+        call set_distance_to_mark_by_dist(node, each_exp_flags,         &
+     &     mark_saved(ip)%num_marked, mark_saved(ip)%istack_marked_smp, &
+     &     mark_saved(ip)%idx_marked, mark_saved(ip)%dist_marked)
+        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+17)
+      end do
 !
-!  ---------------------------------------------------------------------
+      end subroutine append_mark_export_for_extend
 !
-      subroutine dealloc_iset_import_recv(grp_list_export)
-!
-      type(export_grp_list_extend), intent(inout) :: grp_list_export
-!
-      deallocate(grp_list_export%nset_import_recv)
-      deallocate(grp_list_export%istack_set_import_recv)
-      deallocate(grp_list_export%iset_import_recv)
-!
-      end subroutine dealloc_iset_import_recv
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine const_sleeve_expand_list                               &
@@ -183,65 +227,22 @@
      &                                  grp_list_export)
 !
       allocate(marked_export(maxpe_dist_send))
-      do icou = 1, maxpe_dist_send
-        call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
-        if(icou .le. pe_list_extend%npe_dist_send(1)) then
-          ip = pe_list_extend%irank_dist_send(icou,1) + 1
-          call set_distance_from_mark_list                              &
-     &       (-1, mark_saved(ip), each_exp_flags)
-        end if
-!
-!        call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm,          &
-!     &      SR_sig, SR_i, each_exp_flags%iflag_node)
-        call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
-     &      SR_sig, SR_r, each_exp_flags%distance)
-!
-        call alloc_istack_marked_export(nod_comm, marked_export(icou))
-        call count_num_marked_in_export(nod_comm, each_exp_flags,       &
-     &      marked_export(icou)%istack_marked_export(0),                &
-     &      marked_export(icou)%ntot_marked_export)
-!
-        call alloc_items_marked_export(marked_export(icou))
-        call set_marked_distance_in_export(nod_comm, each_exp_flags,    &
-     &      marked_export(icou)%ntot_marked_export,                     &
-     &      marked_export(icou)%istack_marked_export(0),                &
-     &      marked_export(icou)%item_marked_export,                     &
-     &      marked_export(icou)%dist_marked_export)
-      end do
+      call comm_marked_export_for_extend(nod_comm, node,                &
+     &    mark_saved, pe_list_extend, maxpe_dist_send,                  &
+     &    marked_export, each_exp_flags, SR_sig, SR_r)
       call dealloc_extend_pe_list_send(pe_list_extend)
       call dealloc_extend_pe_list_recv(pe_list_extend)
 !
-      do ip = 1, nprocs
-        call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
-        call set_distance_from_intenal_mark                             &
-     &     (node%internal_node, mark_saved(ip), each_exp_flags)
-        call dealloc_mark_for_each_comm(mark_saved(ip))
-!
-        ist = grp_list_export%istack_set_import_recv(ip  )
-        call set_dist_from_marke_in_export(node%numnod,                 &
-     &      maxpe_dist_send, marked_export,                             &
-     &      grp_list_export%nset_import_recv(ip),                       &
-     &      grp_list_export%iset_import_recv(ist+1,1),                  &
-     &      grp_list_export%iset_import_recv(ist+1,2),                  &
-     &      each_exp_flags%distance)
-!
-        if(iflag_SLEX_time)                                             &
-     &                  call start_elapsed_time(ist_elapsed_SLEX+17)
-        call count_num_marked_by_dist                                   &
-     &     (node, each_exp_flags, mark_saved(ip)%num_marked,            &
-     &      mark_saved(ip)%istack_marked_smp)
-        call alloc_mark_for_each_comm(mark_saved(ip))
-        call set_distance_to_mark_by_dist(node, each_exp_flags,         &
-     &     mark_saved(ip)%num_marked, mark_saved(ip)%istack_marked_smp, &
-     &     mark_saved(ip)%idx_marked, mark_saved(ip)%dist_marked)
-        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+17)
-      end do
+      call append_mark_export_for_extend                                &
+     &   (node, maxpe_dist_send, marked_export,                         &
+     &    grp_list_export, mark_saved, each_exp_flags)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+9)
 !
       call dealloc_iset_import_recv(grp_list_export)
       do icou = 1, maxpe_dist_send
         call dealloc_mark_in_export(marked_export(icou))
       end do
+      deallocate(marked_export)
 !
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+10)

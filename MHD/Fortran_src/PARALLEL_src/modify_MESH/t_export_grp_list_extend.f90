@@ -43,18 +43,21 @@
       subroutine const_export_grp_list_extend                           &
      &         (nod_comm, pe_list_extend, grp_list_export)
 !
+      use calypso_mpi
+!
       type(communication_table), intent(in) :: nod_comm
       type(pe_list_for_marks_extend), intent(in) :: pe_list_extend
       type(export_grp_list_extend), intent(inout) :: grp_list_export
 !
 !
-      call alloc_istack_set_import_recv(grp_list_export)
-      call count_istack_set_import_recv(nod_comm, pe_list_extend,       &
+      call alloc_istack_set_import_recv(nprocs, grp_list_export)
+      call count_istack_set_import_recv                                 &
+     &                         (nprocs, nod_comm, pe_list_extend,       &
      &                          grp_list_export%nset_import_recv,       &
      &                          grp_list_export%istack_set_import_recv)
 !
-      call alloc_iset_import_recv(grp_list_export)
-      call set_iset_import_recv(nod_comm, pe_list_extend,               &
+      call alloc_iset_import_recv(nprocs, grp_list_export)
+      call set_iset_import_recv(nprocs, nod_comm, pe_list_extend,       &
      &                          grp_list_export%istack_set_import_recv, &
      &                          grp_list_export%nset_import_recv,       &
      &                          grp_list_export%iset_import_recv)
@@ -76,8 +79,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_istack_set_import_recv(grp_list_export)
+      subroutine alloc_istack_set_import_recv(nprocs, grp_list_export)
 !
+      integer, intent(in) :: nprocs
       type(export_grp_list_extend), intent(inout) :: grp_list_export
 !
 !
@@ -94,8 +98,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_iset_import_recv(grp_list_export)
+      subroutine alloc_iset_import_recv(nprocs, grp_list_export)
 !
+      integer, intent(in) :: nprocs
       type(export_grp_list_extend), intent(inout) :: grp_list_export
 !
       integer(kind = kint) :: ntot_import_recv
@@ -116,9 +121,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_istack_set_import_recv                           &
-     &         (nod_comm, pe_list_extend,                               &
+     &         (nprocs, nod_comm, pe_list_extend,                       &
      &          nset_import_recv, istack_set_import_recv)
 !
+      integer, intent(in) :: nprocs
       type(communication_table), intent(in) :: nod_comm
       type(pe_list_for_marks_extend), intent(in) :: pe_list_extend
 !
@@ -144,10 +150,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_iset_import_recv                                   &
-     &         (nod_comm, pe_list_extend, istack_set_import_recv,       &
-     &          nset_import_recv, iset_import_recv)
+      subroutine set_iset_import_recv(nprocs, nod_comm, pe_list_extend, &
+     &          istack_set_import_recv, nset_import_recv,               &
+     &          iset_import_recv)
 !
+      integer, intent(in) :: nprocs
       type(communication_table), intent(in) :: nod_comm
       type(pe_list_for_marks_extend), intent(in) :: pe_list_extend
       integer(kind = kint), intent(in)                                  &
