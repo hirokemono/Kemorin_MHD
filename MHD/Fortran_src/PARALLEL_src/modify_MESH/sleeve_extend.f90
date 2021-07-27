@@ -373,6 +373,7 @@
       use t_comm_table_for_each_pe
       use t_sort_data_for_sleeve_trim
       use t_work_nod_import_extend
+      use t_const_sleeve_expand_list
 !
       use const_extended_neib_domain
       use const_nod_ele_to_extend

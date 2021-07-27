@@ -49,6 +49,8 @@
       use m_work_time
       use m_work_time_4_sleeve_extend
 !
+      implicit none
+!
       type work_sleeve_extend_marking
         type(comm_table_for_each_pe) :: each_comm
         type(flags_each_comm_extend) :: each_exp_flags
@@ -61,7 +63,9 @@
         type(export_grp_list_extend) :: grp_list_export
       end type work_sleeve_extend_marking
 !
-      implicit none
+      private :: alloc_marked_export_extend
+      private :: dealloc_marked_export_extend
+      private :: alloc_iflag_expand_ele, dealloc_iflag_expand_ele
 !
 !  ---------------------------------------------------------------------
 !
@@ -102,7 +106,7 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      type(work_sleeve_extend_marking) :: marking_WK
+      type(work_sleeve_extend_marking), save :: marking_WK
 !
       integer(kind = kint) :: i, ip, icou, jcou
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
