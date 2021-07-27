@@ -125,7 +125,6 @@
       integer(kind = kint), allocatable :: iset_import_recv(:,:)
 !
       integer(kind = kint) :: jp, ist, ied, inum
-      integer(kind = kint) :: igrp, inod, jst, jed, jnum
 !
 !
       call alloc_flags_each_comm_extend(node%numnod, each_exp_flags)
@@ -261,19 +260,11 @@
      &     (node%internal_node, mark_saved(ip), each_exp_flags)
         call dealloc_mark_for_each_comm(mark_saved(ip))
 !
-        ist = istack_set_import_recv(ip-1) + 1
-        ied = istack_set_import_recv(ip  )
-        do inum = ist, ied
-          igrp = iset_import_recv(inum,1)
-          icou = iset_import_recv(inum,2)
-          jst = marked_export(icou)%istack_marked_export(igrp-1) + 1
-          jed = marked_export(icou)%istack_marked_export(igrp  )
-          do jnum = jst, jed
-            inod = marked_export(icou)%item_marked_export(jnum)
-            each_exp_flags%distance(inod)                               &
-     &           = marked_export(icou)%dist_marked_export(jnum)
-          end do
-        end do
+        ist = istack_set_import_recv(ip  )
+        call set_dist_from_marke_in_export(node%numnod,                 &
+     &      maxpe_dist_send, marked_export, nset_import_recv(ip),       &
+     &      iset_import_recv(ist+1,1), iset_import_recv(ist+1,2),       &
+     &      each_exp_flags%distance)
 !
         if(iflag_SLEX_time)                                             &
      &                  call start_elapsed_time(ist_elapsed_SLEX+17)
@@ -521,6 +512,48 @@
 !$omp end parallel do
 !
       end subroutine set_marked_distance_in_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_dist_from_marke_in_export                          &
+     &         (numnod, maxpe_dist_send, marked_export,                 &
+     &          nset_import_recv, ineib_import_recv,                    &
+     &          itarget_import_recv, dist_marked)
+!
+      use t_flags_each_comm_extend
+!
+!
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: maxpe_dist_send
+      type(mark_in_export), intent(in)                                  &
+     &                      :: marked_export(maxpe_dist_send)
+!
+      integer(kind = kint), intent(in) :: nset_import_recv
+      integer(kind = kint), intent(in)                                  &
+     &                     :: ineib_import_recv(nset_import_recv)
+      integer(kind = kint), intent(in)                                  &
+     &                     :: itarget_import_recv(nset_import_recv)
+!
+      real(kind = kreal), intent(inout) :: dist_marked(numnod)
+      type(flags_each_comm_extend) :: each_exp_flags
+!
+      integer(kind = kint) :: ist, ied, inum, icou
+      integer(kind = kint) :: igrp, inod, jst, jed, jnum
+!
+!
+      do inum = 1, nset_import_recv
+        igrp = ineib_import_recv(inum)
+        icou = itarget_import_recv(inum)
+        jst = marked_export(icou)%istack_marked_export(igrp-1) + 1
+        jed = marked_export(icou)%istack_marked_export(igrp  )
+        do jnum = jst, jed
+          inod = marked_export(icou)%item_marked_export(jnum)
+          dist_marked(inod)                                             &
+     &         = marked_export(icou)%dist_marked_export(jnum)
+        end do
+      end do
+!
+      end subroutine set_dist_from_marke_in_export
 !
 !  ---------------------------------------------------------------------
 !
