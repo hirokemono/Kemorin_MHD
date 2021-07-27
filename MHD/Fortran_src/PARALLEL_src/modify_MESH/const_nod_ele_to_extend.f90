@@ -84,6 +84,78 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine init_extend_pe_list_send(num_neib, maxpe_send,         &
+     &                                    pe_list_extend)
+!
+      integer(kind = kint), intent(in) :: num_neib, maxpe_send
+      type(pe_list_for_marks_extend), intent(inout) :: pe_list_extend
+!
+      integer(kind = kint) :: ip
+!
+!
+      allocate(pe_list_extend%npe_dist_send(num_neib))
+      allocate(pe_list_extend%istack_num_dist(0:num_neib))
+      allocate(pe_list_extend%irank_dist_send(maxpe_send,num_neib))
+!
+      pe_list_extend%istack_num_dist(0) = 0
+!$omp parallel do
+      do ip = 1, num_neib
+        pe_list_extend%istack_num_dist(ip) = ip * maxpe_send
+      end do
+!$omp end parallel do
+!
+      end subroutine init_extend_pe_list_send
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_extend_pe_list_recv(num_neib, maxpe_send,         &
+     &                                    pe_list_extend)
+!
+      integer(kind = kint), intent(in) :: num_neib, maxpe_send
+      type(pe_list_for_marks_extend), intent(inout) :: pe_list_extend
+!
+!
+      allocate(pe_list_extend%npe_dist_recv(num_neib))
+      allocate(pe_list_extend%istack_pe_dist_recv(0:num_neib))
+      allocate(pe_list_extend%irank_dist_recv(maxpe_send,num_neib))
+!
+      pe_list_extend%istack_pe_dist_recv(0) = 0
+      if(num_neib .le. 0) return
+!$omp parallel workshare
+      pe_list_extend%npe_dist_recv(1:num_neib) = 0
+      pe_list_extend%istack_pe_dist_recv(1:num_neib) = 0
+      pe_list_extend%irank_dist_recv(1:maxpe_send,1:num_neib) = -1
+!$omp end parallel workshare
+!
+      end subroutine init_extend_pe_list_recv
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_extend_pe_list_send(pe_list_extend)
+!
+      type(pe_list_for_marks_extend), intent(inout) :: pe_list_extend
+!
+      deallocate(pe_list_extend%npe_dist_send)
+      deallocate(pe_list_extend%istack_num_dist)
+      deallocate(pe_list_extend%irank_dist_send)
+!
+      end subroutine dealloc_extend_pe_list_send
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_extend_pe_list_recv(pe_list_extend)
+!
+      type(pe_list_for_marks_extend), intent(inout) :: pe_list_extend
+!
+      deallocate(pe_list_extend%npe_dist_recv)
+      deallocate(pe_list_extend%istack_pe_dist_recv)
+      deallocate(pe_list_extend%irank_dist_recv)
+!
+      end subroutine dealloc_extend_pe_list_recv
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine alloc_istack_set_import_recv(grp_list_export)
 !
       type(export_grp_list_extend), intent(inout) :: grp_list_export
@@ -171,8 +243,6 @@
       type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend) :: each_exp_flags
       integer(kind = kint), allocatable :: iflag_exp_ele(:)
-      integer(kind = kint) :: i, ip, icou, jcou
-      integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
       integer(kind = kint) :: maxpe_dist_send
       integer(kind = kint) :: ntot_pe_dist_recv
@@ -183,7 +253,8 @@
       type(pe_list_for_marks_extend) :: pe_list_extend
       type(export_grp_list_extend) :: grp_list_export
 !
-      integer(kind = kint) :: jp, ist
+      integer(kind = kint) :: i, ip, icou, jcou, ist
+      integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
 !
       call alloc_flags_each_comm_extend(node%numnod, each_exp_flags)
@@ -200,16 +271,8 @@
       if(my_rank .eq. 0) write(*,*) 'max pe for distance',              &
      &                     jcou, maxpe_dist_send, ' of ', nprocs
 !
-      allocate(pe_list_extend%irank_dist_send(maxpe_dist_send,nod_comm%num_neib))
-      allocate(pe_list_extend%npe_dist_send(nod_comm%num_neib))
-      allocate(pe_list_extend%istack_num_dist(0:nod_comm%num_neib))
-!
-      pe_list_extend%istack_num_dist(0) = 0
-!$omp parallel do
-      do ip = 1, nod_comm%num_neib
-        pe_list_extend%istack_num_dist(ip) = ip * maxpe_dist_send
-      end do
-!$omp end parallel do
+      call init_extend_pe_list_send(nod_comm%num_neib, maxpe_dist_send, &
+     &                              pe_list_extend)
 !
       if(nod_comm%num_neib .gt. 0) then
 !$omp parallel workshare
@@ -234,31 +297,31 @@
 !$omp end parallel do
       end if
 !
-      allocate(pe_list_extend%npe_dist_recv(nod_comm%num_neib))
-      allocate(pe_list_extend%istack_pe_dist_recv(0:nod_comm%num_neib))
-      allocate(pe_list_extend%irank_dist_recv(maxpe_dist_send,nod_comm%num_neib))
+      call init_extend_pe_list_recv(nod_comm%num_neib, maxpe_dist_send, &
+     &                              pe_list_extend)
 !
-      call num_items_send_recv                                          &
-     &   (nod_comm%num_neib, nod_comm%id_neib, pe_list_extend%npe_dist_send,           &
+      call num_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,     &
+     &    pe_list_extend%npe_dist_send,                                 &
      &    nod_comm%num_neib, nod_comm%id_neib, izero,                   &
      &    pe_list_extend%npe_dist_recv,                                 &
      &    pe_list_extend%istack_pe_dist_recv, ntot_pe_dist_recv,        &
      &    SR_sig)
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    pe_list_extend%istack_num_dist, pe_list_extend%irank_dist_send,                   &
+     &                          pe_list_extend%istack_num_dist,         &
+     &                          pe_list_extend%irank_dist_send,         &
      &                          nod_comm%num_neib, nod_comm%id_neib,    &
-     &    pe_list_extend%istack_num_dist, izero, pe_list_extend%irank_dist_recv,            &
-     &                          SR_sig)
+     &                          pe_list_extend%istack_num_dist, izero,  &
+     &                          pe_list_extend%irank_dist_recv, SR_sig)
 !
       call alloc_istack_set_import_recv(grp_list_export)
-      call count_istack_set_import_recv(nod_comm,                       &
-     &    maxpe_dist_send, pe_list_extend%npe_dist_recv, pe_list_extend%irank_dist_recv,              &
+      call count_istack_set_import_recv(nod_comm, maxpe_dist_send,      &
+     &    pe_list_extend%npe_dist_recv, pe_list_extend%irank_dist_recv, &
      &    grp_list_export%nset_import_recv,                             &
      &    grp_list_export%istack_set_import_recv)
 !
       call alloc_iset_import_recv(grp_list_export)
-      call set_iset_import_recv(nod_comm,                       &
-     &    maxpe_dist_send, pe_list_extend%npe_dist_recv, pe_list_extend%irank_dist_recv,              &
+      call set_iset_import_recv(nod_comm, maxpe_dist_send,              &
+     &    pe_list_extend%npe_dist_recv, pe_list_extend%irank_dist_recv, &
      &    grp_list_export%istack_set_import_recv,                       &
      &    grp_list_export%nset_import_recv,                             &
      &    grp_list_export%iset_import_recv)
@@ -289,12 +352,8 @@
      &      marked_export(icou)%item_marked_export,                     &
      &      marked_export(icou)%dist_marked_export)
       end do
-      deallocate(pe_list_extend%npe_dist_send)
-      deallocate(pe_list_extend%istack_num_dist)
-      deallocate(pe_list_extend%irank_dist_send)
-      deallocate(pe_list_extend%npe_dist_recv)
-      deallocate(pe_list_extend%istack_pe_dist_recv)
-      deallocate(pe_list_extend%irank_dist_recv)
+      call dealloc_extend_pe_list_send(pe_list_extend)
+      call dealloc_extend_pe_list_recv(pe_list_extend)
 !
       do ip = 1, nprocs
         call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
@@ -579,10 +638,8 @@
      &                     :: itarget_import_recv(nset_import_recv)
 !
       real(kind = kreal), intent(inout) :: dist_marked(numnod)
-      type(flags_each_comm_extend) :: each_exp_flags
 !
-      integer(kind = kint) :: ist, ied, inum, icou
-      integer(kind = kint) :: igrp, inod, jst, jed, jnum
+      integer(kind = kint) :: igrp, inod, jst, jed, jnum, inum, icou
 !
 !
       do inum = 1, nset_import_recv
