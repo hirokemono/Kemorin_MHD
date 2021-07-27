@@ -95,6 +95,7 @@
       use nod_and_ele_derived_info
       use const_element_comm_tables
       use const_nod_ele_to_extend
+      use mark_node_ele_to_extend
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(calypso_comm_table), intent(in) :: repart_nod_tbl
@@ -239,6 +240,7 @@
       use nod_and_ele_derived_info
       use const_element_comm_tables
       use const_nod_ele_to_extend
+      use mark_node_ele_to_extend
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !

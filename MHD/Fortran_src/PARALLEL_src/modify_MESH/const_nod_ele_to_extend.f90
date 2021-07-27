@@ -81,6 +81,8 @@
       use calypso_mpi_int
       use solver_SR_type
       use reverse_SR_int
+      use load_distance_and_mark_list
+      use mark_node_ele_to_extend
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(communication_table), intent(in) :: nod_comm, ele_comm
@@ -101,7 +103,6 @@
 !
       type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend) :: each_exp_flags
-      type(flags_each_comm_extend) :: each_exp_flags2
       integer(kind = kint), allocatable :: iflag_exp_ele(:)
       integer(kind = kint) :: i, ip, icou, jcou
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
@@ -113,17 +114,9 @@
       integer(kind = kint) :: ntot_pe_dist_recv
 !
       integer(kind = kint), allocatable :: irank_dist_send(:,:)
-      integer(kind = kint), allocatable :: num_marked_send(:,:)
       integer(kind = kint), allocatable :: irank_dist_recv(:,:)
-      integer(kind = kint), allocatable :: num_marked_recv(:,:)
       integer(kind = kint), allocatable :: istack_num(:)
 !
-      type mark_in_export
-        integer(kind= kint) :: ntot_marked_each_exp
-        integer(kind= kint), allocatable :: istack_marked_each_exp(:)
-        integer(kind= kint), allocatable :: item_marked_each_export(:)
-        real(kind = kreal), allocatable :: dist_marked_each_export(:)
-      end type mark_in_export
       type(mark_in_export), allocatable :: marked_export(:)
 !
       integer(kind = kint) :: ntot_import_recv
@@ -265,7 +258,7 @@
 !
       do ip = 1, nprocs
         call reset_flags_each_comm_extend(node%numnod, each_exp_flags)
-        call set_distance_from_mark_list2                               &
+        call set_distance_from_intenal_mark                             &
      &     (node%internal_node, mark_saved(ip), each_exp_flags)
         call dealloc_mark_for_each_comm(mark_saved(ip))
 !
@@ -525,30 +518,6 @@
 !$omp end parallel do
 !
       end subroutine set_marked_distance_in_export
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_distance_from_mark_list2                           &
-     &         (internal_node, mark_nod, each_exp_flags)
-!
-      integer(kind = kint) :: internal_node
-      type(mark_for_each_comm), intent(in) :: mark_nod
-!
-      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
-!
-      integer(kind = kint) :: icou, inod
-!
-!
-!$omp parallel do private(icou,inod)
-      do icou = 1, mark_nod%num_marked
-        inod = mark_nod%idx_marked(icou)
-        if(inod .gt. internal_node) cycle
-        each_exp_flags%iflag_node(inod) = -1
-        each_exp_flags%distance(inod) = mark_nod%dist_marked(icou)
-      end do
-!$omp end parallel do
-!
-      end subroutine set_distance_from_mark_list2
 !
 !  ---------------------------------------------------------------------
 !
