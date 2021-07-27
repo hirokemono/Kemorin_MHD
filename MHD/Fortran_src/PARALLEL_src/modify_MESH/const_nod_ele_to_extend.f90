@@ -84,10 +84,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_extend_pe_list_send(num_neib, maxpe_send,         &
-     &                                    pe_list_extend)
+      subroutine init_extend_pe_list_send                               &
+     &         (num_neib, npe_dist, maxpe_send, pe_list_extend)
 !
-      integer(kind = kint), intent(in) :: num_neib, maxpe_send
+      integer(kind = kint), intent(in) :: num_neib
+      integer(kind = kint), intent(in) :: npe_dist, maxpe_send
       type(pe_list_for_marks_extend), intent(inout) :: pe_list_extend
 !
       integer(kind = kint) :: ip
@@ -101,6 +102,8 @@
 !$omp parallel do
       do ip = 1, num_neib
         pe_list_extend%istack_num_dist(ip) = ip * maxpe_send
+        pe_list_extend%npe_dist_send(ip) = npe_dist
+        pe_list_extend%irank_dist_send(1:maxpe_send,ip) = -1
       end do
 !$omp end parallel do
 !
@@ -271,17 +274,10 @@
       if(my_rank .eq. 0) write(*,*) 'max pe for distance',              &
      &                     jcou, maxpe_dist_send, ' of ', nprocs
 !
-      call init_extend_pe_list_send(nod_comm%num_neib, maxpe_dist_send, &
+      call init_extend_pe_list_send(nod_comm%num_neib, icou, maxpe_dist_send, &
      &                              pe_list_extend)
 !
       if(nod_comm%num_neib .gt. 0) then
-!$omp parallel workshare
-        pe_list_extend%npe_dist_send(1:nod_comm%num_neib) = icou
-!$omp end parallel workshare
-!$omp parallel workshare
-        pe_list_extend%irank_dist_send(1:maxpe_dist_send,1:nod_comm%num_neib) = -1
-!$omp end parallel workshare
-!
         icou = 0
         do ip = 1, nprocs
           if(mark_saved(ip)%num_marked .gt. 0) then
@@ -301,11 +297,11 @@
      &                              pe_list_extend)
 !
       call num_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,     &
-     &    pe_list_extend%npe_dist_send,                                 &
-     &    nod_comm%num_neib, nod_comm%id_neib, izero,                   &
-     &    pe_list_extend%npe_dist_recv,                                 &
-     &    pe_list_extend%istack_pe_dist_recv, ntot_pe_dist_recv,        &
-     &    SR_sig)
+     &                         pe_list_extend%npe_dist_send,            &
+     &                         nod_comm%num_neib, nod_comm%id_neib,     &
+     &                         izero,  pe_list_extend%npe_dist_recv,    &
+     &                         pe_list_extend%istack_pe_dist_recv,      &
+     &                         ntot_pe_dist_recv, SR_sig)
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &                          pe_list_extend%istack_num_dist,         &
      &                          pe_list_extend%irank_dist_send,         &
