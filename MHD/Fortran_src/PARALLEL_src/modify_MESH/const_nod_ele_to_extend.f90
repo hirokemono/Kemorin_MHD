@@ -124,7 +124,7 @@
       integer(kind = kint), allocatable :: istack_set_import_recv(:)
       integer(kind = kint), allocatable :: iset_import_recv(:,:)
 !
-      integer(kind = kint) :: jp, ist, ied, inum
+      integer(kind = kint) :: jp, ist
 !
 !
       call alloc_flags_each_comm_extend(node%numnod, each_exp_flags)
@@ -521,7 +521,6 @@
      &          itarget_import_recv, dist_marked)
 !
       use t_flags_each_comm_extend
-!
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: maxpe_dist_send
