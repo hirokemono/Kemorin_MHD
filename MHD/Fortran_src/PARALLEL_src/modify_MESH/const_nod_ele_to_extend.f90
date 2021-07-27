@@ -179,17 +179,8 @@
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+9)
       call const_pe_list_for_marks_extend(nod_comm, mark_saved,         &
      &    maxpe_dist_send, pe_list_extend, SR_sig)
-!
-      call alloc_istack_set_import_recv(grp_list_export)
-      call count_istack_set_import_recv(nod_comm, pe_list_extend,       &
-     &                          grp_list_export%nset_import_recv,       &
-     &                          grp_list_export%istack_set_import_recv)
-!
-      call alloc_iset_import_recv(grp_list_export)
-      call set_iset_import_recv(nod_comm, pe_list_extend,               &
-     &                          grp_list_export%istack_set_import_recv, &
-     &                          grp_list_export%nset_import_recv,       &
-     &                          grp_list_export%iset_import_recv)
+      call const_export_grp_list_extend(nod_comm, pe_list_extend,       &
+     &                                  grp_list_export)
 !
       allocate(marked_export(maxpe_dist_send))
       do icou = 1, maxpe_dist_send
@@ -520,68 +511,6 @@
       end do
 !
       end subroutine set_dist_from_marke_in_export
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_istack_set_import_recv                           &
-     &         (nod_comm, pe_list_extend,                               &
-     &          nset_import_recv, istack_set_import_recv)
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(pe_list_for_marks_extend), intent(in) :: pe_list_extend
-!
-      integer(kind = kint), intent(inout) :: nset_import_recv(nprocs)
-      integer(kind = kint), intent(inout)                               &
-     &      :: istack_set_import_recv(0:nprocs)
-!
-      integer(kind = kint) :: ip, icou, jp
-!
-      do ip = 1, nod_comm%num_neib
-        do icou = 1, pe_list_extend%npe_dist_recv(ip)
-          jp = pe_list_extend%irank_dist_recv(icou,ip) + 1
-          nset_import_recv(jp) = nset_import_recv(jp) + 1
-        end do
-      end do
-!
-      do jp = 1, nprocs
-        istack_set_import_recv(jp) = istack_set_import_recv(jp-1)       &
-     &                              + nset_import_recv(jp)
-      end do
-!
-      end subroutine count_istack_set_import_recv
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_iset_import_recv                                   &
-     &         (nod_comm, pe_list_extend, istack_set_import_recv,       &
-     &          nset_import_recv, iset_import_recv)
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(pe_list_for_marks_extend), intent(in) :: pe_list_extend
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_set_import_recv(0:nprocs)
-!
-      integer(kind = kint), intent(inout) :: nset_import_recv(nprocs)
-      integer(kind = kint), intent(inout)                               &
-     &      :: iset_import_recv(istack_set_import_recv(nprocs),2)
-!
-      integer(kind = kint) :: ip, icou, jp, jcou
-!
-!$omp parallel workshare
-      nset_import_recv(1:nprocs) = 0
-!$omp end parallel workshare
-      do ip = 1, nod_comm%num_neib
-        do icou = 1, pe_list_extend%npe_dist_recv(ip)
-          jp = pe_list_extend%irank_dist_recv(icou,ip) + 1
-!
-          nset_import_recv(jp) = nset_import_recv(jp) + 1
-          jcou = nset_import_recv(jp) + istack_set_import_recv(jp-1)
-          iset_import_recv(jcou,1) = ip
-          iset_import_recv(jcou,2) = icou
-        end do
-      end do
-!
-      end subroutine set_iset_import_recv
 !
 !  ---------------------------------------------------------------------
 !

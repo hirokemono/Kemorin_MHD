@@ -28,7 +28,7 @@ const_linear_mesh.o: $(MODIFY_PARA_MESHDIR)/const_linear_mesh.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 const_linear_mesh_by_quad.o: $(MODIFY_PARA_MESHDIR)/const_linear_mesh_by_quad.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_mesh_data.o t_group_data.o t_phys_data.o t_mesh_data_with_pointer.o t_surface_data.o t_element_group_table.o t_quad_to_linear_list.o const_node_and_element_q2l.o const_node_comm_table_q2l.o const_node_group_item_q2l.o cvt_quad_2_linear_mesh.o const_mesh_information.o set_size_4_smp_types.o single_edge_information.o t_linear_to_quad_list.o const_quad_mesh_from_linear.o t_linear_to_lag_list.o const_lag_mesh_from_linear.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_nod_ele_to_extend.o: $(MODIFY_PARA_MESHDIR)/const_nod_ele_to_extend.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_next_node_ele_4_node.o t_ctl_param_sleeve_extend.o t_mark_node_ele_to_extend.o t_mesh_for_sleeve_extend.o t_solver_SR.o m_work_time.o m_work_time_4_sleeve_extend.o t_solver_SR_int.o t_comm_table_for_each_pe.o t_flags_each_comm_extend.o t_pe_list_for_marks_extend.o calypso_mpi_int.o solver_SR_type.o reverse_SR_int.o load_distance_and_mark_list.o mark_node_ele_to_extend.o cal_minmax_and_stacks.o set_mesh_for_sleeve_extend.o
+const_nod_ele_to_extend.o: $(MODIFY_PARA_MESHDIR)/const_nod_ele_to_extend.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_next_node_ele_4_node.o t_ctl_param_sleeve_extend.o t_mark_node_ele_to_extend.o t_mesh_for_sleeve_extend.o t_pe_list_for_marks_extend.o t_flags_each_comm_extend.o t_solver_SR.o m_work_time.o m_work_time_4_sleeve_extend.o t_solver_SR_int.o t_comm_table_for_each_pe.o calypso_mpi_int.o solver_SR_type.o reverse_SR_int.o load_distance_and_mark_list.o mark_node_ele_to_extend.o cal_minmax_and_stacks.o set_mesh_for_sleeve_extend.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_node_and_element_q2l.o: $(MODIFY_PARA_MESHDIR)/const_node_and_element_q2l.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_quad_to_linear_list.o set_linear_node_ele_by_quad.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -124,6 +124,8 @@ t_ctl_param_masking.o: $(MODIFY_PARA_MESHDIR)/t_ctl_param_masking.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_param_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/t_ctl_param_sleeve_extend.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o calypso_mpi.o t_comm_table.o t_solver_SR.o t_calypso_comm_table.o solver_SR_type.o calypso_SR_type.o select_copy_from_recv.o t_ctl_data_FEM_sleeve_size.o m_error_IDs.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_export_grp_list_extend.o: $(MODIFY_PARA_MESHDIR)/t_export_grp_list_extend.f90 m_precision.o m_constants.o m_machine_parameter.o t_comm_table.o t_pe_list_for_marks_extend.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_flags_each_comm_extend.o: $(MODIFY_PARA_MESHDIR)/t_flags_each_comm_extend.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_comm_table.o t_comm_table_for_each_pe.o calypso_mpi.o t_ctl_param_sleeve_extend.o t_next_node_ele_4_node.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_linear_to_lag_list.o: $(MODIFY_PARA_MESHDIR)/t_linear_to_lag_list.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_comm_table.o t_surface_data.o t_edge_data.o calypso_mpi_int.o
@@ -134,7 +136,7 @@ t_mark_node_ele_to_extend.o: $(MODIFY_PARA_MESHDIR)/t_mark_node_ele_to_extend.f9
 	$(F90) -c $(F90OPTFLAGS) $<
 t_mesh_for_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/t_mesh_for_sleeve_extend.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_pe_list_for_marks_extend.o: $(MODIFY_PARA_MESHDIR)/t_pe_list_for_marks_extend.f90 m_precision.o m_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_next_node_ele_4_node.o t_ctl_param_sleeve_extend.o t_mark_node_ele_to_extend.o t_mesh_for_sleeve_extend.o t_solver_SR.o
+t_pe_list_for_marks_extend.o: $(MODIFY_PARA_MESHDIR)/t_pe_list_for_marks_extend.f90 m_precision.o m_constants.o m_machine_parameter.o t_mark_node_ele_to_extend.o t_comm_table.o t_solver_SR.o calypso_mpi.o calypso_mpi_int.o reverse_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_quad_to_linear_list.o: $(MODIFY_PARA_MESHDIR)/t_quad_to_linear_list.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_comm_table.o t_surface_data.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $<

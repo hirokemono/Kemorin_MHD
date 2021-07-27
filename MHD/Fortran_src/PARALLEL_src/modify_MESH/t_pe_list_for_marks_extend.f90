@@ -51,6 +51,7 @@
 !
       use t_comm_table
       use t_solver_SR
+      use calypso_mpi
       use calypso_mpi_int
       use reverse_SR_int
 !
