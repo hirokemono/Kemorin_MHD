@@ -49,9 +49,9 @@
 !
       type mark_in_export
         integer(kind= kint) :: ntot_marked_each_exp
-        integer(kind= kint), allocatable :: istack_marked_each_exp(:)
-        integer(kind= kint), allocatable :: item_marked_each_export(:)
-        real(kind = kreal), allocatable :: dist_marked_each_export(:)
+        integer(kind= kint), allocatable :: istack_marked_export(:)
+        integer(kind= kint), allocatable :: item_marked_export(:)
+        real(kind = kreal), allocatable :: dist_marked_export(:)
       end type mark_in_export
 !
 !  ---------------------------------------------------------------------

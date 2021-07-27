@@ -242,18 +242,18 @@
         call SOLVER_SEND_RECV_type(node%numnod, nod_comm,               &
      &      SR_sig, SR_r, each_exp_flags%distance)
 !
-        allocate(marked_export(icou)%istack_marked_each_exp(0:nod_comm%num_neib))
+        allocate(marked_export(icou)%istack_marked_export(0:nod_comm%num_neib))
         call count_num_marked_in_export(nod_comm, each_exp_flags,       &
-     &      marked_export(icou)%istack_marked_each_exp(0),              &
+     &      marked_export(icou)%istack_marked_export(0),                &
      &      marked_export(icou)%ntot_marked_each_exp)
         ntot = marked_export(icou)%ntot_marked_each_exp
-        allocate(marked_export(icou)%item_marked_each_export(ntot))
-        allocate(marked_export(icou)%dist_marked_each_export(ntot))
+        allocate(marked_export(icou)%item_marked_export(ntot))
+        allocate(marked_export(icou)%dist_marked_export(ntot))
         call set_marked_distance_in_export(nod_comm, each_exp_flags,    &
      &      marked_export(icou)%ntot_marked_each_exp,                   &
-     &      marked_export(icou)%istack_marked_each_exp(0),              &
-     &      marked_export(icou)%item_marked_each_export,                &
-     &      marked_export(icou)%dist_marked_each_export)
+     &      marked_export(icou)%istack_marked_export(0),                &
+     &      marked_export(icou)%item_marked_export,                     &
+     &      marked_export(icou)%dist_marked_export)
       end do
 !
       do ip = 1, nprocs
@@ -267,12 +267,12 @@
         do inum = ist, ied
           igrp = iset_import_recv(inum,1)
           icou = iset_import_recv(inum,2)
-          jst = marked_export(icou)%istack_marked_each_exp(igrp-1) + 1
-          jed = marked_export(icou)%istack_marked_each_exp(igrp  )
+          jst = marked_export(icou)%istack_marked_export(igrp-1) + 1
+          jed = marked_export(icou)%istack_marked_export(igrp  )
           do jnum = jst, jed
-            inod = marked_export(icou)%item_marked_each_export(jnum)
+            inod = marked_export(icou)%item_marked_export(jnum)
             each_exp_flags%distance(inod)                               &
-     &           = marked_export(icou)%dist_marked_each_export(jnum)
+     &           = marked_export(icou)%dist_marked_export(jnum)
           end do
         end do
 !
