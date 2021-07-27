@@ -170,7 +170,8 @@
 !
       if(marked_export%ntot_marked_export .le. 0) return
 !$omp parallel workshare
-      marked_export%istack_marked_export(1:ntot) = 0
+      marked_export%item_marked_export(1:ntot) = 0
+      marked_export%dist_marked_export(1:ntot) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_items_marked_export
