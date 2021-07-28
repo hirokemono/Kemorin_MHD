@@ -72,7 +72,7 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: max_extend_loop = 10
+      integer(kind = kint), parameter, private :: max_extend_loop = 30
 !
       private :: check_new_node_and_comm
 !
