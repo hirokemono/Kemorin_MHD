@@ -106,7 +106,7 @@
      &       :: hd_repart_table_fmt =  'repartition_table_format'
 !
       character(len=kchara), parameter, private                         &
-     &                 :: hd_part_ref =  'partition_reference_ctl'
+     &                 :: hd_part_ref =  'partitioning_method_ctl'
       character(len=kchara), parameter, private                         &
      &                 :: hd_sleeve_level = 'sleeve_level_ctl'
       character(len=kchara), parameter, private                         &
