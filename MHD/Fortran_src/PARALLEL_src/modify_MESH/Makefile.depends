@@ -48,7 +48,7 @@ const_repart_mesh_data.o: $(MODIFY_PARA_MESHDIR)/const_repart_mesh_data.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 const_repart_nod_and_comm.o: $(MODIFY_PARA_MESHDIR)/const_repart_nod_and_comm.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_calypso_comm_table.o t_control_param_vol_grping.o t_sorting_for_repartition.o t_para_double_numbering.o t_repart_double_numberings.o t_mesh_SR.o external_group_4_new_part.o ext_of_int_grp_4_new_part.o const_comm_tbl_to_new_mesh.o const_repart_mesh_data.o const_repart_comm_tbl.o check_data_for_repartition.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_same_domain_grouping.o: $(MODIFY_PARA_MESHDIR)/const_same_domain_grouping.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o
+const_same_domain_grouping.o: $(MODIFY_PARA_MESHDIR)/const_same_domain_grouping.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_repart_and_itp_table.o: $(MODIFY_PARA_MESHDIR)/copy_repart_and_itp_table.f90 m_precision.o m_constants.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_calypso_comm_table.o t_next_node_ele_4_node.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o copy_local_position_2_ele.o
 	$(F90) -c $(F90OPTFLAGS) $<
