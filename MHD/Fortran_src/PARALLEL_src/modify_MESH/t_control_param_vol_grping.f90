@@ -61,12 +61,15 @@
      &             :: default_newmesh_head = 'repartition_mesh'
 !
       character(len=kchara), parameter, private                         &
+     &             :: c_NO_REPARTITION = 'NO_REPARTITION'
+      character(len=kchara), parameter, private                         &
      &             :: c_VOLUME_BASED = 'VOLUME_BASED'
       character(len=kchara), parameter, private                         &
      &             :: c_NODE_BASED = 'NODE_BASED'
 !
-      integer(kind = kint), parameter :: i_VOLUME_BASED = 0
-      integer(kind = kint), parameter :: i_NODE_BASED =   1
+      integer(kind = kint), parameter :: i_NO_REPARTITION = -1
+      integer(kind = kint), parameter :: i_VOLUME_BASED =    0
+      integer(kind = kint), parameter :: i_NODE_BASED =      1
 !
 !>        Structure for repartitioning parameters
       type volume_partioning_param
@@ -295,6 +298,8 @@
         tmpchara = new_part_ctl%partition_reference_ctl%charavalue
         if(cmp_no_case(tmpchara,c_NODE_BASED)) then
           part_param%iflag_repart_ref = i_NODE_BASED
+        else if(cmp_no_case(tmpchara,c_NO_REPARTITION)) then
+          part_param%iflag_repart_ref = i_NO_REPARTITION
         end if
       end if
 !

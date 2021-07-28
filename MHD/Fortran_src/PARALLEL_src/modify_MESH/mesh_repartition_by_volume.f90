@@ -55,6 +55,7 @@
       use const_repart_nod_and_comm
       use const_repart_ele_connect
       use redistribute_groups
+      use const_same_domain_grouping
 !
       type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: org_fem
@@ -74,8 +75,13 @@
 !
 !
 !       Re-partitioning
-      call grouping_by_volume(org_fem%mesh, part_param, repart_WK,      &
-     &                        part_grp, m_SR%SR_sig, m_SR%SR_r)
+      if(part_param%iflag_repart_ref .eq. i_NO_REPARTITION) then
+        call const_samedomain_grp_data(nprocs, org_fem%mesh%node,       &
+     &                                 part_grp)
+      else
+        call grouping_by_volume(org_fem%mesh, part_param, repart_WK,    &
+     &                          part_grp, m_SR%SR_sig, m_SR%SR_r)
+      end if
 !
       call alloc_double_numbering                                       &
      &   (org_fem%mesh%node%numnod, new_ids_on_org)
