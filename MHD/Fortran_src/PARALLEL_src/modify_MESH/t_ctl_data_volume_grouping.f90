@@ -34,8 +34,8 @@
 !!
 !!      sleeve_level_ctl             2
 !!
-!!         partition_reference_ctl:  VOLUME_BASED, NUMBER_BASED or NO_REPARTITION
-!!      partition_reference_ctl         VOLUME_BASED
+!!         partitioning_method_ctl:  VOLUME_BASED, NUMBER_BASED or NO_REPARTITION
+!!      partitioning_method_ctl         VOLUME_BASED
 !!      masking_switch_ctl          On
 !!      masking_weight_ctl          0.1
 !!      array masking_control
