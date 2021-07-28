@@ -139,7 +139,7 @@
      &     (node%internal_node, mark_saved(ip), each_exp_flags)
         call dealloc_mark_for_each_comm(mark_saved(ip))
 !
-        ist = grp_list_export%istack_set_import_recv(ip  )
+        ist = grp_list_export%istack_set_import_recv(ip-1)
         call set_dist_from_marke_in_export(node%numnod,                 &
      &      maxpe_dist_send, marked_export,                             &
      &      grp_list_export%nset_import_recv(ip),                       &
