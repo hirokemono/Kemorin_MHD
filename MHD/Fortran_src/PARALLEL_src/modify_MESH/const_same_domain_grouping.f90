@@ -36,6 +36,8 @@
       subroutine const_samedomain_grp_data(my_rank, nprocs,             &
      &                                     node, part_grp)
 !
+      use set_parallel_file_name
+!
       integer, intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(group_data), intent(inout) :: part_grp
