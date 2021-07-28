@@ -48,6 +48,8 @@ const_repart_mesh_data.o: $(MODIFY_PARA_MESHDIR)/const_repart_mesh_data.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 const_repart_nod_and_comm.o: $(MODIFY_PARA_MESHDIR)/const_repart_nod_and_comm.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_calypso_comm_table.o t_control_param_vol_grping.o t_sorting_for_repartition.o t_para_double_numbering.o t_repart_double_numberings.o t_mesh_SR.o external_group_4_new_part.o ext_of_int_grp_4_new_part.o const_comm_tbl_to_new_mesh.o const_repart_mesh_data.o const_repart_comm_tbl.o check_data_for_repartition.o
 	$(F90) -c $(F90OPTFLAGS) $<
+const_same_domain_grouping.o: $(MODIFY_PARA_MESHDIR)/const_same_domain_grouping.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
 copy_repart_and_itp_table.o: $(MODIFY_PARA_MESHDIR)/copy_repart_and_itp_table.f90 m_precision.o m_constants.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_calypso_comm_table.o t_next_node_ele_4_node.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o copy_local_position_2_ele.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_repart_ele_and_itp_tbl.o: $(MODIFY_PARA_MESHDIR)/copy_repart_ele_and_itp_tbl.f90 m_precision.o m_constants.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_calypso_comm_table.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o copy_repart_and_itp_table.o copy_local_position_2_ele.o
@@ -72,7 +74,7 @@ m_work_time_4_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/m_work_time_4_sleeve_exten
 	$(F90) -c $(F90OPTFLAGS) $<
 mark_node_ele_to_extend.o: $(MODIFY_PARA_MESHDIR)/mark_node_ele_to_extend.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_comm_table_for_each_pe.o t_flags_each_comm_extend.o t_mark_node_ele_to_extend.o t_ctl_param_sleeve_extend.o t_next_node_ele_4_node.o cal_minmax_and_stacks.o element_mark_sleeve_extend.o load_distance_and_mark_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
-mesh_repartition_by_volume.o: $(MODIFY_PARA_MESHDIR)/mesh_repartition_by_volume.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_comm_table.o t_calypso_comm_table.o t_next_node_ele_4_node.o t_mesh_SR.o t_para_double_numbering.o t_control_param_vol_grping.o t_repart_double_numberings.o t_repartition_by_volume.o const_repart_nod_and_comm.o const_repart_ele_connect.o redistribute_groups.o
+mesh_repartition_by_volume.o: $(MODIFY_PARA_MESHDIR)/mesh_repartition_by_volume.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_comm_table.o t_calypso_comm_table.o t_next_node_ele_4_node.o t_mesh_SR.o t_para_double_numbering.o t_control_param_vol_grping.o t_repart_double_numberings.o t_repartition_by_volume.o const_repart_nod_and_comm.o const_repart_ele_connect.o redistribute_groups.o const_same_domain_grouping.o
 	$(F90) -c $(F90OPTFLAGS) $<
 para_const_kemoview_mesh.o: $(MODIFY_PARA_MESHDIR)/para_const_kemoview_mesh.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o t_mesh_data.o t_file_IO_parameter.o t_merged_viewer_mesh.o m_node_quad_2_linear_sf.o mpi_load_mesh_data.o parallel_FEM_mesh_init.o const_kemoview_mesh.o set_parallel_file_name.o viewer_file_IO.o add_comm_table_in_node_grp.o renumber_para_viewer_mesh.o viewer_mesh_MPI_IO_select.o const_global_element_ids.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -7,8 +7,9 @@
 !>@brief  Make grouping without changing
 !!
 !!@verbatim
-!!      subroutine const_samedomain_grp_data(nprocs, node, part_grp)
-!!        integer, intent(in) :: nprocs
+!!      subroutine const_samedomain_grp_data(my_rank, nprocs,           &
+!!     &                                     node, part_grp)
+!!        integer, intent(in) :: my_rank, nprocs
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(inout) :: part_grp
 !!@endverbatim
@@ -23,20 +24,22 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &                        :: base_name = 'same_domain_'
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_samedomain_grp_data(nprocs, node, part_grp)
+      subroutine const_samedomain_grp_data(my_rank, nprocs,             &
+     &                                     node, part_grp)
 !
-      integer, intent(in) :: nprocs
+      integer, intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(group_data), intent(inout) :: part_grp
 !
-      character(len = kchara), parameter, private                       &
-     &                        :: base_name = 'same_domain_'
       integer(kind = kint) :: i
 !
       part_grp%num_grp = nprocs

@@ -76,8 +76,8 @@
 !
 !       Re-partitioning
       if(part_param%iflag_repart_ref .eq. i_NO_REPARTITION) then
-        call const_samedomain_grp_data(nprocs, org_fem%mesh%node,       &
-     &                                 part_grp)
+        call const_samedomain_grp_data(my_rank, nprocs,                 &
+     &                                 org_fem%mesh%node, part_grp)
       else
         call grouping_by_volume(org_fem%mesh, part_param, repart_WK,    &
      &                          part_grp, m_SR%SR_sig, m_SR%SR_r)
