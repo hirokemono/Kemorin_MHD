@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine const_trans_tbl_to_same_mesh(my_rank, node, part_tbl)
 !!        integer, intent(in) :: my_rank
-!!        type(node_data), intent(inout) :: node
+!!        type(node_data), intent(in) :: node
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
 !!      subroutine const_samedomain_grp_data(my_rank, nprocs,           &
 !!     &                                     node, part_grp)
@@ -41,7 +41,7 @@
       subroutine const_trans_tbl_to_same_mesh(my_rank, node, part_tbl)
 !
       integer, intent(in) :: my_rank
-      type(node_data), intent(inout) :: node
+      type(node_data), intent(in) :: node
       type(calypso_comm_table), intent(inout) :: part_tbl
 !
       integer(kind = kint) :: i

@@ -98,9 +98,11 @@
         call const_trans_tbl_to_same_mesh(my_rank, geofem%mesh%node,    &
      &                                    repart_nod_tbl)
       else
-      call s_mesh_repartition_by_volume                                 &
-     &   (geofem, ele_comm, next_tbl%neib_nod, part_param,              &
-     &    new_fem%mesh, new_fem%group, repart_nod_tbl, repart_WK, m_SR)
+        call s_mesh_repartition_by_volume                               &
+     &     (geofem, ele_comm, next_tbl%neib_nod, part_param,            &
+     &      new_fem%mesh, new_fem%group, repart_nod_tbl,                &
+     &      repart_WK, m_SR)
+      end if
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
 ! Increase sleeve size
