@@ -70,13 +70,13 @@
       call alloc_calypso_import_item(node%numnod, part_tbl)
       call alloc_calypso_export_item(part_tbl)
 !
-!$omp parallel do private
+!$omp parallel do
       do i = 1, node%internal_node
         part_tbl%irev_import(i) = i
         part_tbl%item_import(i) = i
         part_tbl%item_export(i) = i
       end do
-!$omp end parallel do private
+!$omp end parallel do
 !
       end subroutine const_trans_tbl_to_same_mesh
 !
