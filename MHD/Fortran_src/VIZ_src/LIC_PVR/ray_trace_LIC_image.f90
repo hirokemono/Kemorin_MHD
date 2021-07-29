@@ -103,6 +103,7 @@
       sample_cnt = 0
       elapse_trace = 0.0d0
 !
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+3)
       if(lic_p%iflag_vr_sample_mode .eq. iflag_fixed_size) then
 !$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
 !$omp& reduction(+:elapse_trace)
@@ -147,13 +148,75 @@
         end do
 !$omp end parallel do
       end if
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
 !      if(i_debug .gt. 0) write(*,*)                                    &
-      write(*,*)                                                        &
-     &                 "pvr sampling cnt:", my_rank, sample_cnt
+!      write(*,*)                                                       &
+!     &                 "pvr sampling cnt:", my_rank, sample_cnt
 !
       elps1%elapsed(ist_elapsed_LIC+4)                                  &
      &       = elps1%elapsed(ist_elapsed_LIC+4)                         &
      &        +  elapse_trace / dble(np_smp)
+      trace_time_lc =    elps%elapsed(ist_elapsed_LIC+3)
+      line_int_time_lc = elps%elapsed(ist_elapsed_LIC+4)
+!
+      call calypso_mpi_allreduce_one_real                               &
+     &   (trace_time_lc, dmin_trace_time, MPI_MIN)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (line_int_time_lc, dmin_line_int_time, MPI_MIN)
+      call calypso_mpi_allreduce_one_int                                &
+     &   (sample_cnt, min_sample_cnt, MPI_MIN)
+!
+      call calypso_mpi_allreduce_one_real                               &
+     &   (trace_time_lc, dmax_trace_time, MPI_MAX)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (line_int_time_lc, dmax_line_int_time, MPI_MAX)
+      call calypso_mpi_allreduce_one_int                                &
+     &   (sample_cnt, max_sample_cnt, MPI_MAX)
+!
+      call calypso_mpi_allreduce_one_real                               &
+     &   (trace_time_lc, ave_trace_time, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (line_int_time_lc, ave_line_int_time, MPI_SUM)
+      call calypso_mpi_allreduce_one_int                                &
+     &   (sample_cnt, ave_sample_cnt, MPI_SUM)
+!
+      ave_trace_time =    ave_trace_time / dble(nprocs)
+      ave_line_int_time = ave_line_int_time / dble(nprocs)
+      ave_sample_cnt =    ave_sample_cnt / dble(nprocs)
+!
+      sq_trace_time =    (trace_time_lc - ave_trace_time)**2
+      sq_line_int_time = (line_int_time_lc - ave_line_int_time)**2
+      sq_sample_cnt =    (sample_cnt - ave_sample_cnt)**2
+!
+      call calypso_mpi_allreduce_one_real                               &
+     &   (sq_trace_time,    std_trace_time, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (sq_line_int_time, std_line_int_time, MPI_SUM)
+      call calypso_mpi_allreduce_one_int                                &
+     &   (sq_sample_cnt,    std_sample_cnt, MPI_SUM)
+!
+      std_trace_time =    sqrt(std_trace_time / dble(nprocs))
+      std_line_int_time = sqrt(std_line_int_time / dble(nprocs))
+      std_sample_cnt =    sqrt(std_sample_cnt / dble(nprocs))
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'Trace counts, rendering, line_integration'
+        write(*,*) 'Average:   ',  
+        write(*,'(a,i8,1p2e15.7)') 'Deviation: ',                       &
+     &          ave_sample_cnt, ave_trace_time, ave_line_int_time
+        write(*,'(a,i8,1p2e15.7)') 'Minimum:   ',                       &
+     &          min_sample_cnt, dmin_trace_time, dmin_line_int_time
+        write(*,'(a,i8,1p2e15.7)') 'Maximum:   ',                       &
+     &          max_sample_cnt, dmax_trace_time, dmax_line_int_time
+      end if
+!
+!
+      trace_time_lc = trace_time_lc / dble(mesh%node%internal_node)
+      do inod = 1, mesh%node%internal_node
+        ref_trace_time(inod) = trace_time_lc
+      end do
+!
+      
 !
       end subroutine ray_trace_each_lic_image
 !

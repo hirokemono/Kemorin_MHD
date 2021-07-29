@@ -96,7 +96,6 @@
       integer(kind = kint) :: i, j, k, ipix
 !
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+3)
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
       call ray_trace_each_lic_image                                     &
      &   (mesh, group, sf_grp_4_sf, lic_p, field_lic,                   &
@@ -106,7 +105,6 @@
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &
      &    pvr_start%xx4_pvr_ray_start, pvr_start%rgba_ray)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
 !
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+5)
