@@ -69,7 +69,7 @@
       call alloc_calypso_export_item(part_tbl)
 !
 !$omp parallel do private
-      do i = 1, internal_node
+      do i = 1, node%internal_node
         part_tbl%irev_import(i) = i
         part_tbl%item_import(i) = i
         part_tbl%item_export(i) = i
