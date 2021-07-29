@@ -7,7 +7,8 @@
 !>@brief  Make grouping without changing
 !!
 !!@verbatim
-!!      subroutine const_trans_tbl_to_same_mesh(node, part_tbl)
+!!      subroutine const_trans_tbl_to_same_mesh(my_rank, node, part_tbl)
+!!        integer, intent(in) :: my_rank
 !!        type(node_data), intent(inout) :: node
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
 !!      subroutine const_samedomain_grp_data(my_rank, nprocs,           &
@@ -37,8 +38,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_trans_tbl_to_same_mesh(node, part_tbl)
+      subroutine const_trans_tbl_to_same_mesh(my_rank, node, part_tbl)
 !
+      integer, intent(in) :: my_rank
       type(node_data), intent(inout) :: node
       type(calypso_comm_table), intent(inout) :: part_tbl
 !
@@ -74,7 +76,7 @@
         part_tbl%item_import(i) = i
         part_tbl%item_export(i) = i
       end do
-!$omp parallel do private
+!$omp end parallel do private
 !
       end subroutine const_trans_tbl_to_same_mesh
 !
