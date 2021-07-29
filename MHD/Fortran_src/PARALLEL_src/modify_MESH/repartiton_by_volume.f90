@@ -95,7 +95,7 @@
      &     = set_cube_eletype_from_num(geofem%mesh%ele%nnod_4_ele)
         call copy_mesh_and_group(geofem%mesh, geofem%group,             &
      &      new_fem%mesh, new_fem%group)
-        call const_trans_tbl_to_same_mesh(geofem%mesh%node,             &
+        call const_trans_tbl_to_same_mesh(my_rank, geofem%mesh%node,    &
      &                                    repart_nod_tbl)
       else
       call s_mesh_repartition_by_volume                                 &
