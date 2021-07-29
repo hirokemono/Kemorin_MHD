@@ -65,10 +65,13 @@
       use mesh_MPI_IO_select
       use parallel_itp_tbl_IO_select
       use itp_table_file_IO_select
+      use set_nnod_4_ele_by_type
+      use copy_mesh_structures
       use copy_repart_and_itp_table
       use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables
       use nod_and_ele_derived_info
+      use const_same_domain_grouping
 !
       type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: geofem
@@ -87,6 +90,14 @@
 !  -------------------------------
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
+      if(part_param%iflag_repart_ref .eq. i_NO_REPARTITION) then
+        new_fem%mesh%ele%first_ele_type                                 &
+     &     = set_cube_eletype_from_num(geofem%mesh%ele%nnod_4_ele)
+        call copy_mesh_and_group(geofem%mesh, geofem%group,             &
+     &      new_fem%mesh, new_fem%group)
+        call const_trans_tbl_to_same_mesh(geofem%mesh%node,             &
+     &                                    repart_nod_tbl)
+      else
       call s_mesh_repartition_by_volume                                 &
      &   (geofem, ele_comm, next_tbl%neib_nod, part_param,              &
      &    new_fem%mesh, new_fem%group, repart_nod_tbl, repart_WK, m_SR)

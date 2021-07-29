@@ -74,7 +74,7 @@
         type(read_character_item) :: repart_table_fmt_ctl
 !
 !>        Flag for new patitioning method
-        type(read_character_item) :: partition_reference_ctl
+        type(read_character_item) :: partitioning_method_ctl
 !
 !>        Structure for number of subdomains
 !!@n        ndomain_section_ctl%c_tbl:  Direction of sectioning
@@ -161,7 +161,7 @@
      &                           new_part_ctl%repart_table_fmt_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (c_buf, hd_part_ref, new_part_ctl%partition_reference_ctl)
+     &     (c_buf, hd_part_ref, new_part_ctl%partitioning_method_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_masking_switch, new_part_ctl%masking_switch_ctl)
 !
@@ -189,7 +189,7 @@
       new_part_ctl%repart_table_head_ctl%iflag = 0
       new_part_ctl%repart_table_fmt_ctl%iflag =  0
 !
-      new_part_ctl%partition_reference_ctl%iflag = 0
+      new_part_ctl%partitioning_method_ctl%iflag = 0
       new_part_ctl%masking_switch_ctl%iflag = 0
       new_part_ctl%masking_weight_ctl%iflag = 0
       new_part_ctl%sleeve_level_ctl%iflag = 0
@@ -222,7 +222,7 @@
       call bcast_ctl_type_c1(new_part_ctl%repart_table_fmt_ctl)
 !
       call bcast_ctl_array_ci(new_part_ctl%ndomain_section_ctl)
-      call bcast_ctl_type_c1(new_part_ctl%partition_reference_ctl)
+      call bcast_ctl_type_c1(new_part_ctl%partitioning_method_ctl)
       call bcast_ctl_type_c1(new_part_ctl%masking_switch_ctl)
       call bcast_ctl_type_r1(new_part_ctl%masking_weight_ctl)
       call bcast_ctl_type_i1(new_part_ctl%sleeve_level_ctl)
@@ -254,8 +254,8 @@
       call copy_chara_ctl(org_new_part_c%repart_table_fmt_ctl,          &
      &                    new_new_part_c%repart_table_fmt_ctl)
 !
-      call copy_chara_ctl(org_new_part_c%partition_reference_ctl,       &
-     &                    new_new_part_c%partition_reference_ctl)
+      call copy_chara_ctl(org_new_part_c%partitioning_method_ctl,       &
+     &                    new_new_part_c%partitioning_method_ctl)
       call copy_chara_ctl(org_new_part_c%masking_switch_ctl,            &
      &                    new_new_part_c%masking_switch_ctl)
       call copy_real_ctl(org_new_part_c%masking_weight_ctl,             &

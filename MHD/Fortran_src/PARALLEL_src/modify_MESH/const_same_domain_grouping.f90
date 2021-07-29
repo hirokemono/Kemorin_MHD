@@ -7,6 +7,9 @@
 !>@brief  Make grouping without changing
 !!
 !!@verbatim
+!!      subroutine const_trans_tbl_to_same_mesh(node, part_tbl)
+!!        type(node_data), intent(inout) :: node
+!!        type(calypso_comm_table), intent(inout) :: part_tbl
 !!      subroutine const_samedomain_grp_data(my_rank, nprocs,           &
 !!     &                                     node, part_grp)
 !!        integer, intent(in) :: my_rank, nprocs
@@ -21,6 +24,7 @@
 !
       use t_geometry_data
       use t_group_data
+      use t_calypso_comm_table
 !
       implicit none
 !
@@ -30,6 +34,49 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_trans_tbl_to_same_mesh(node, part_tbl)
+!
+      type(node_data), intent(inout) :: node
+      type(calypso_comm_table), intent(inout) :: part_tbl
+!
+      integer(kind = kint) :: i
+!
+!
+      part_tbl%iflag_self_copy = 1
+      part_tbl%nrank_import = 1
+!
+      call alloc_calypso_import_num(part_tbl)
+      part_tbl%irank_import(1) = my_rank
+      part_tbl%istack_import(0) = 0
+      part_tbl%istack_import(1) = node%internal_node
+      part_tbl%num_import(1) =    node%internal_node
+      part_tbl%ntot_import =      node%internal_node
+!
+      part_tbl%nrank_export = 1
+      part_tbl%nrank_import = 1
+!
+      call alloc_calypso_export_num(part_tbl)
+      part_tbl%irank_export(1) = my_rank
+      part_tbl%istack_export(0) = 0
+      part_tbl%istack_export(1) = node%internal_node
+      part_tbl%num_export(1) =    node%internal_node
+      part_tbl%ntot_export =      node%internal_node
+!
+      call alloc_calypso_import_item(node%numnod, part_tbl)
+      call alloc_calypso_export_item(part_tbl)
+!
+!$omp parallel do private
+      do i = 1, internal_node
+        part_tbl%irev_import(i) = i
+        part_tbl%item_import(i) = i
+        part_tbl%item_export(i) = i
+      end do
+!$omp parallel do private
+!
+      end subroutine const_trans_tbl_to_same_mesh
 !
 ! ----------------------------------------------------------------------
 !
