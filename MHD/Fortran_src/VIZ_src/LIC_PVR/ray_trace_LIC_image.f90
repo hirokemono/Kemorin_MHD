@@ -163,9 +163,6 @@
 !$omp end parallel do
       end if
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
-!      if(i_debug .gt. 0) write(*,*)                                    &
-!      write(*,*)                                                       &
-!     &                 "pvr sampling cnt:", my_rank, sample_cnt
 !
       elapse_line_int = elapse_line_int / dble(np_smp)
       elapse_rtrace = MPI_WTIME() - elapse_rtrace - elapse_line_int
@@ -175,6 +172,51 @@
         elps1%elapsed(ist_elapsed_LIC+4)                                &
      &       = elps1%elapsed(ist_elapsed_LIC+4) +  elapse_line_int
       end if
+!
+      call cal_trace_time_statistic(mesh%node, lic_p, field_lic,        &
+     &    sample_cnt, elapse_rtrace, elapse_line_int,                   &
+     &    elapse_ray_trace_out)
+!
+      end subroutine ray_trace_each_lic_image
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_trace_time_statistic(node, lic_p, field_lic,       &
+     &          sample_cnt, elapse_rtrace, elapse_line_int,             &
+     &          elapse_ray_trace_out)
+!
+      use calypso_mpi_int
+      use calypso_mpi_real
+!
+      type(node_data), intent(in) :: node
+!
+      type(lic_parameters), intent(in) :: lic_p
+      type(lic_field_data), intent(in) :: field_lic
+!
+      integer(kind = kint) :: sample_cnt
+      real(kind = kreal) :: elapse_rtrace, elapse_line_int
+!
+      real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
+!
+      integer(kind = kint) :: inum, iflag_comm
+      real(kind = kreal) :: rgba_tmp(4)
+!
+!      type(noise_mask), allocatable :: n_mask
+      integer(kind = kint) :: min_sample_cnt, max_sample_cnt
+      real(kind = kreal) :: ave_sample_cnt, std_sample_cnt
+      real(kind = kreal) :: ave_trace_time,   std_trace_time
+      real(kind = kreal) :: dmin_trace_time,  dmax_trace_time
+      real(kind = kreal) :: ave_line_int_time,  std_line_int_time
+      real(kind = kreal) :: dmin_line_int_time, dmax_line_int_time
+!
+      real(kind = kreal) :: sq_sample_cnt
+      real(kind = kreal) :: sq_trace_time, sq_line_int_time
+!
+!
+!      if(i_debug .gt. 0) write(*,*)                                    &
+!      write(*,*)                                                       &
+!     &                 "pvr sampling cnt:", my_rank, sample_cnt
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (elapse_rtrace, ave_trace_time, MPI_SUM)
@@ -222,7 +264,7 @@
         write(*,'(a,1p3e15.7)') 'Average: ',                            &
      &          ave_sample_cnt, ave_trace_time, ave_line_int_time
         write(*,'(a,1p3e15.7)') 'Deviation: ',                          &
-     &          int(std_sample_cnt), std_trace_time, std_line_int_time
+     &          std_sample_cnt, std_trace_time, std_line_int_time
         write(*,'(a,i15,1p2e15.7)') 'Minimum:   ',                      &
      &          min_sample_cnt, dmin_trace_time, dmin_line_int_time
         write(*,'(a,i15,1p2e15.7)') 'Maximum:   ',                      &
@@ -230,11 +272,11 @@
       end if
 !
       elapse_ray_trace_out(1)                                           &
-     &     = elapse_rtrace / dble(mesh%node%internal_node)
+     &     = elapse_rtrace / dble(node%internal_node)
       elapse_ray_trace_out(2) = elapse_line_int                         &
-     &     / dble(nnod_masked_4_LIC(mesh%node, lic_p, field_lic))
+     &     / dble(nnod_masked_4_LIC(node, lic_p, field_lic))
 !
-      end subroutine ray_trace_each_lic_image
+      end subroutine cal_trace_time_statistic
 !
 !  ---------------------------------------------------------------------
 !
