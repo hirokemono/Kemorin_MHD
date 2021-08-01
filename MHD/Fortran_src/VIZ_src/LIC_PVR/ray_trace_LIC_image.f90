@@ -177,6 +177,14 @@
       end if
 !
       call calypso_mpi_allreduce_one_real                               &
+     &   (elapse_rtrace, ave_trace_time, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (elapse_line_int, ave_line_int_time, MPI_SUM)
+      call calypso_mpi_allreduce_one_int                                &
+     &   (sample_cnt, min_sample_cnt, MPI_SUM)
+      ave_sample_cnt = dble(min_sample_cnt)
+!
+      call calypso_mpi_allreduce_one_real                               &
      &   (elapse_rtrace, dmin_trace_time, MPI_MIN)
       call calypso_mpi_allreduce_one_real                               &
      &   (elapse_line_int, dmin_line_int_time, MPI_MIN)
@@ -189,13 +197,6 @@
      &   (elapse_line_int, dmax_line_int_time, MPI_MAX)
       call calypso_mpi_allreduce_one_int                                &
      &   (sample_cnt, max_sample_cnt, MPI_MAX)
-!
-      call calypso_mpi_allreduce_one_real                               &
-     &   (elapse_rtrace, ave_trace_time, MPI_SUM)
-      call calypso_mpi_allreduce_one_real                               &
-     &   (elapse_line_int, ave_line_int_time, MPI_SUM)
-      call calypso_mpi_allreduce_one_real                               &
-     &   (dble(sample_cnt), ave_sample_cnt, MPI_SUM)
 !
       ave_trace_time =    ave_trace_time / dble(nprocs)
       ave_line_int_time = ave_line_int_time / dble(nprocs)
@@ -218,13 +219,13 @@
 !
       if(my_rank .eq. 0) then
         write(*,*) 'Trace counts, rendering, line_integration'
-        write(*,'(a,i8,1p2e15.7)') 'Average: ',                         &
+        write(*,'(a,1p3e15.7)') 'Average: ',                            &
      &          ave_sample_cnt, ave_trace_time, ave_line_int_time
-        write(*,'(a,i8,1p2e15.7)') 'Deviation: ',                       &
+        write(*,'(a,1p3e15.7)') 'Deviation: ',                          &
      &          int(std_sample_cnt), std_trace_time, std_line_int_time
-        write(*,'(a,i8,1p2e15.7)') 'Minimum:   ',                       &
+        write(*,'(a,i15,1p2e15.7)') 'Minimum:   ',                      &
      &          min_sample_cnt, dmin_trace_time, dmin_line_int_time
-        write(*,'(a,i8,1p2e15.7)') 'Maximum:   ',                       &
+        write(*,'(a,i15,1p2e15.7)') 'Maximum:   ',                      &
      &          max_sample_cnt, dmax_trace_time, dmax_line_int_time
       end if
 !
