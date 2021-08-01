@@ -102,8 +102,9 @@
       real(kind = kreal) :: rgba_tmp(4)
 !
 !      type(noise_mask), allocatable :: n_mask
-      integer(kind = kint) :: sample_cnt, sq_sample_cnt
-      integer(kind = kint) :: ave_sample_cnt, std_sample_cnt
+      integer(kind = kint) :: sample_cnt
+      real(kind = kreal) :: ave_sample_cnt
+      real(kind = kreal) :: std_sample_cnt, sq_sample_cnt
       integer(kind = kint) :: min_sample_cnt, max_sample_cnt
       real(kind = kreal) :: elapse_rtrace, sq_trace_time
       real(kind = kreal) :: ave_trace_time,   std_trace_time
@@ -193,34 +194,34 @@
      &   (elapse_rtrace, ave_trace_time, MPI_SUM)
       call calypso_mpi_allreduce_one_real                               &
      &   (elapse_line_int, ave_line_int_time, MPI_SUM)
-      call calypso_mpi_allreduce_one_int                                &
-     &   (sample_cnt, ave_sample_cnt, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (dble(sample_cnt), ave_sample_cnt, MPI_SUM)
 !
       ave_trace_time =    ave_trace_time / dble(nprocs)
       ave_line_int_time = ave_line_int_time / dble(nprocs)
-      ave_sample_cnt =    ave_sample_cnt / nprocs
+      ave_sample_cnt =    ave_sample_cnt / dble(nprocs)
 !
       sq_trace_time =    (elapse_rtrace -    ave_trace_time)**2
       sq_line_int_time = (elapse_line_int -  ave_line_int_time)**2
-      sq_sample_cnt =    (sample_cnt -       ave_sample_cnt)**2
+      sq_sample_cnt =    (dble(sample_cnt) - ave_sample_cnt)**2
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (sq_trace_time,    std_trace_time, MPI_SUM)
       call calypso_mpi_allreduce_one_real                               &
      &   (sq_line_int_time, std_line_int_time, MPI_SUM)
-      call calypso_mpi_allreduce_one_int                                &
+      call calypso_mpi_allreduce_one_real                               &
      &   (sq_sample_cnt,    std_sample_cnt, MPI_SUM)
 !
       std_trace_time =    sqrt(std_trace_time / dble(nprocs))
       std_line_int_time = sqrt(std_line_int_time / dble(nprocs))
-      std_sample_cnt = int(sqrt(dble(std_sample_cnt) / dble(nprocs)))
+      std_sample_cnt =    sqrt(std_sample_cnt / dble(nprocs))
 !
       if(my_rank .eq. 0) then
         write(*,*) 'Trace counts, rendering, line_integration'
         write(*,'(a,i8,1p2e15.7)') 'Average: ',                         &
      &          ave_sample_cnt, ave_trace_time, ave_line_int_time
         write(*,'(a,i8,1p2e15.7)') 'Deviation: ',                       &
-     &          std_sample_cnt, std_trace_time, std_line_int_time
+     &          int(std_sample_cnt), std_trace_time, std_line_int_time
         write(*,'(a,i8,1p2e15.7)') 'Minimum:   ',                       &
      &          min_sample_cnt, dmin_trace_time, dmin_line_int_time
         write(*,'(a,i8,1p2e15.7)') 'Maximum:   ',                       &
