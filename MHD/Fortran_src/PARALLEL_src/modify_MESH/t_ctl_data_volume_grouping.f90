@@ -34,8 +34,9 @@
 !!
 !!      sleeve_level_ctl             2
 !!
-!!         partitioning_method_ctl:  VOLUME_BASED, NUMBER_BASED or NO_REPARTITION
+!!         partitioning_method_ctl:  VOLUME_BASED, NUMBER_BASED, TIME_BASED, or NO_REPARTITION
 !!      partitioning_method_ctl         VOLUME_BASED
+!!      weight_to_previous          0.6
 !!      masking_switch_ctl          On
 !!      masking_weight_ctl          0.1
 !!      array masking_control
@@ -85,10 +86,12 @@
 !
 !>        Number of sleeve level
         type(read_integer_item) :: sleeve_level_ctl
+!>        Weight for previous elapsed time
+        type(read_real_item) :: weight_to_previous_ctl
 !
 !>        Flag for masking
         type(read_character_item) :: masking_switch_ctl
-!>        Number of sleeve level
+!>        Weight for masked data
         type(read_real_item) :: masking_weight_ctl
 !>        Number of field masking
         integer(kind = kint) :: num_masking_ctl = 0
@@ -109,6 +112,8 @@
      &                 :: hd_part_ref =  'partitioning_method_ctl'
       character(len=kchara), parameter, private                         &
      &                 :: hd_sleeve_level = 'sleeve_level_ctl'
+      character(len=kchara), parameter, private                         &
+     &                 :: hd_weight_to_prev = 'weight_to_previous'
       character(len=kchara), parameter, private                         &
      &                 :: hd_num_es =       'dir_domain_ctl'
       character(len=kchara), parameter, private                         &
@@ -165,8 +170,10 @@
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_masking_switch, new_part_ctl%masking_switch_ctl)
 !
-        call read_real_ctl_type                                        &
+        call read_real_ctl_type                                         &
      &     (c_buf, hd_masking_weight, new_part_ctl%masking_weight_ctl)
+        call read_real_ctl_type(c_buf, hd_weight_to_prev,               &
+     &      new_part_ctl%weight_to_previous_ctl)
 !
         if(check_array_flag(c_buf, hd_masking_ctl)) then
           call read_repart_masking_ctl_array                            &
@@ -190,6 +197,7 @@
       new_part_ctl%repart_table_fmt_ctl%iflag =  0
 !
       new_part_ctl%partitioning_method_ctl%iflag = 0
+      new_part_ctl%weight_to_previous_ctl%iflag = 0
       new_part_ctl%masking_switch_ctl%iflag = 0
       new_part_ctl%masking_weight_ctl%iflag = 0
       new_part_ctl%sleeve_level_ctl%iflag = 0
@@ -225,6 +233,7 @@
       call bcast_ctl_type_c1(new_part_ctl%partitioning_method_ctl)
       call bcast_ctl_type_c1(new_part_ctl%masking_switch_ctl)
       call bcast_ctl_type_r1(new_part_ctl%masking_weight_ctl)
+      call bcast_ctl_type_r1(new_part_ctl%weight_to_previous_ctl)
       call bcast_ctl_type_i1(new_part_ctl%sleeve_level_ctl)
       call bcast_ctl_type_i1(new_part_ctl%ratio_of_grouping_ctl)
 !
@@ -260,6 +269,8 @@
      &                    new_new_part_c%masking_switch_ctl)
       call copy_real_ctl(org_new_part_c%masking_weight_ctl,             &
      &                   new_new_part_c%masking_weight_ctl)
+      call copy_real_ctl(org_new_part_c%weight_to_previous_ctl,         &
+     &                   new_new_part_c%weight_to_previous_ctl)
 !
       call dup_control_array_c_i(org_new_part_c%ndomain_section_ctl,    &
      &                           new_new_part_c%ndomain_section_ctl)

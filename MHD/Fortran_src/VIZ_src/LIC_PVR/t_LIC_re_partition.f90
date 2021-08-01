@@ -113,8 +113,14 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
       integer(kind = kint) :: i_lic, nmax_masking
-      logical :: flag_mask, flag_sleeve_wk
+      logical :: flag_mask, flag_sleeve_wk, flag_elapsed
 !
+!
+      flag_elapsed = .FALSE.
+      do i_lic = 1, num_lic
+        if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
+     &                 .eq. i_TIME_BASED) flag_elapsed = .TRUE.
+      end do
 !
       nmax_masking = 0
       flag_mask =      .TRUE.
@@ -127,8 +133,8 @@
       if(nmax_masking .le. 0) flag_mask = .FALSE.
 !
       allocate(repart_data%nod_fld_lic)
-      call alloc_nod_vector_4_lic(geofem%mesh%node, nmax_masking,       &
-     &    repart_data%nod_fld_lic)
+      call alloc_nod_vector_4_lic(flag_elapsed, geofem%mesh%node,       &
+     &    nmax_masking, repart_data%nod_fld_lic)
 !
       do i_lic = 1, num_lic
         call link_repart_masking_param                                  &
@@ -138,9 +144,11 @@
 !
 !      write(*,*) 'flag_mask, flag_sleeve_wk',                          &
 !     &         flag_mask, flag_sleeve_wk, nmax_masking
-      call link_repart_masking_data(flag_mask, flag_sleeve_wk,          &
+      call link_repart_masking_data                                     &
+     &  (flag_mask, flag_sleeve_wk, flag_elapsed,                       &
      &   geofem%mesh%node, nmax_masking, repart_data%nod_fld_lic%s_lic, &
-     &   repart_data%nod_fld_lic%v_lic, repart_data%repart_WK)
+     &   repart_data%nod_fld_lic%v_lic,                                 &
+     &   repart_data%nod_fld_lic%ref_repart, repart_data%repart_WK)
 !
       end subroutine LIC_init_nodal_field
 !
@@ -190,7 +198,8 @@
      &                          repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
-        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
+        call alloc_nod_vector_4_lic                                     &
+     &     ((.FALSE.), repart_data%viz_fem%mesh%node,                   &
      &        repart_data%nod_fld_lic%num_mask, repart_data%field_lic)
       else
         repart_data%viz_fem => geofem
@@ -213,21 +222,27 @@
       type(lic_parameters), intent(inout) :: lic_param
       type(mesh_SR), intent(inout) :: m_SR
 !
+      logical :: flag_elapsed
 !
 !  -----  Repartition
       if(lic_param%each_part_p%flag_repartition) then
         call s_LIC_re_partition(lic_param%each_part_p, geofem,          &
      &                          ele_comm, next_tbl, repart_data, m_SR)
 !
+         flag_elapsed = .FALSE.
+         if(lic_param%each_part_p%iflag_repart_ref                      &
+&                 .eq. i_TIME_BASED) flag_elapsed = .TRUE.
         allocate(repart_data%field_lic)
-        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
+        call alloc_nod_vector_4_lic                                     &
+     &     (flag_elapsed, repart_data%viz_fem%mesh%node,                &
      &      lic_param%num_masking, repart_data%field_lic)
       else if(repart_p%flag_repartition) then
         call s_LIC_re_partition(repart_p, geofem, ele_comm, next_tbl,   &
      &                          repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
-        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
+        call alloc_nod_vector_4_lic                                     &
+     &     ((.FALSE.), repart_data%viz_fem%mesh%node,                   &
      &      lic_param%num_masking, repart_data%field_lic)
       else
         repart_data%viz_fem =>  geofem
@@ -253,7 +268,7 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+7)
         if(repart_p%flag_repartition                                    &
      &        .or. lic_param%each_part_p%flag_repartition) then
-          call repartition_lic_field(geofem%mesh%node,                  &
+          call repartition_lic_field(geofem%mesh,                       &
      &        repart_data%viz_fem%mesh, repart_data%mesh_to_viz_tbl,    &
      &        repart_data%nod_fld_lic, repart_data%field_lic,           &
      &        m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)

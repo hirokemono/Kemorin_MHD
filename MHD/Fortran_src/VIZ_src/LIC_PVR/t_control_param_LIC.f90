@@ -74,6 +74,9 @@
         integer(kind = kint) :: iflag_normalization = 0
 !>        normalization factor for LIC value
         real(kind = kreal) :: factor_normal = one
+!
+!>        Average elapsed time for ray trace
+        real(kind = kreal) :: elapse_ray_trace(2)
       end type lic_parameters
 !
       character(len = kchara), parameter :: cflag_LIC = 'LIC'
@@ -266,7 +269,7 @@
       logical function lic_mask_flag(lic_p, value)
 !
       type(lic_parameters), intent(in) :: lic_p
-      real(kind=kreal), intent(in) :: value(:)
+      real(kind=kreal), intent(in) :: value(lic_p%num_masking)
 !
       integer(kind=kint) :: i,j, iFlag_inmask
 !

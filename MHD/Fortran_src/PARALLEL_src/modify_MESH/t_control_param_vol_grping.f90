@@ -7,15 +7,18 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine link_repart_masking_data(flag_mask, flag_sleeve_wk,  &
+!!      subroutine link_repart_masking_data                             &
+!!     &         (flag_mask, flag_sleeve_wk, flag_elapsed,              &
 !!     &          node, nmax_mask_org, d_mask_org, vect_ref_ext,        &
-!!     &          repart_WK)
+!!     &          elapse_rtrace_org, repart_WK)
 !!      subroutine unlink_repart_masking_data(repart_WK)
-!!        logical, intent(in) :: flag_mask, flag_sleeve_wk
+!!        logical, intent(in) :: flag_mask, flag_sleeve_wk, flag_elapsed
 !!        integer(kind = kint), intent(in) :: nmax_mask_org
 !!        type(node_data), intent(in) :: node
 !!        real(kind = kreal), intent(in), target                        &
 !!       &                    :: vect_ref_ext(node%numnod,3)
+!!        real(kind = kreal), intent(in), target                        &
+!!       &                    :: elapse_rtrace_org(node%numnod,2)
 !!        real(kind = kreal), intent(in), target                        &
 !!       &                    :: d_mask_org(node%numnod,nmax_mask_org)
 !!        type(volume_partioning_work), intent(inout) :: repart_WK
@@ -66,10 +69,13 @@
      &             :: c_VOLUME_BASED = 'VOLUME_BASED'
       character(len=kchara), parameter, private                         &
      &             :: c_NODE_BASED = 'NODE_BASED'
+      character(len=kchara), parameter, private                         &
+     &             :: c_TIME_BASED = 'TIME_BASED'
 !
       integer(kind = kint), parameter :: i_NO_REPARTITION = -1
       integer(kind = kint), parameter :: i_VOLUME_BASED =    0
       integer(kind = kint), parameter :: i_NODE_BASED =      1
+      integer(kind = kint), parameter :: i_TIME_BASED =      2
 !
 !>        Structure for repartitioning parameters
       type volume_partioning_param
@@ -106,6 +112,8 @@
         type(masking_parameter), pointer :: masking_repart(:)
 !>        Weight to shrink excluded area
         real(kind = kreal) :: shrink = 0.1d0
+!>        Weight to to mix elapsed from previous
+        real(kind = kreal) :: weight_prev = 1.0d0
 !
 !>      Structure of sleeve extension parameter
         type(sleeve_extension_param) :: sleeve_exp_p
@@ -118,6 +126,8 @@
         real(kind = kreal), pointer :: d_mask(:,:)
 !>        pointer of original reference vector
         real(kind = kreal), pointer :: ref_vect(:,:)
+!>        pointer of original reference vector
+        real(kind = kreal), pointer :: elapse_rtrace_nod(:,:)
 !
 !>        Work area for sleeve extension
         type(sleeve_extension_work) :: sleeve_exp_WK
@@ -131,23 +141,29 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine link_repart_masking_data(flag_mask, flag_sleeve_wk,    &
+      subroutine link_repart_masking_data                               &
+     &         (flag_mask, flag_sleeve_wk, flag_elapsed,                &
      &          node, nmax_mask_org, d_mask_org, vect_ref_ext,          &
-     &          repart_WK)
+     &          elapse_rtrace_org, repart_WK)
 !
       use t_geometry_data
 !
-      logical, intent(in) :: flag_mask, flag_sleeve_wk
+      logical, intent(in) :: flag_mask, flag_sleeve_wk, flag_elapsed
       integer(kind = kint), intent(in) :: nmax_mask_org
       type(node_data), intent(in) :: node
       real(kind = kreal), intent(in), target                            &
      &                        :: vect_ref_ext(node%numnod,3)
       real(kind = kreal), intent(in), target                            &
      &                        :: d_mask_org(node%numnod,nmax_mask_org)
+      real(kind = kreal), intent(in), target                            &
+     &                        :: elapse_rtrace_org(node%numnod,2)
 !
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
 !
+      if(flag_elapsed) then
+        repart_WK%elapse_rtrace_nod => elapse_rtrace_org
+      end if
       if(flag_mask) then
         repart_WK%nmax_mask_repart = nmax_mask_org
         repart_WK%d_mask =>          d_mask_org
@@ -170,6 +186,10 @@
       if(associated(repart_WK%d_mask)) then
         repart_WK%nmax_mask_repart = 0
         nullify(repart_WK%d_mask)
+      end if
+!
+      if(associated(repart_WK%elapse_rtrace_nod)) then
+        nullify(repart_WK%elapse_rtrace_nod)
       end if
 !
       end subroutine unlink_repart_masking_data
@@ -300,6 +320,8 @@
           part_param%iflag_repart_ref = i_NODE_BASED
         else if(cmp_no_case(tmpchara,c_NO_REPARTITION)) then
           part_param%iflag_repart_ref = i_NO_REPARTITION
+        else if(cmp_no_case(tmpchara,c_TIME_BASED)) then
+          part_param%iflag_repart_ref = i_TIME_BASED
         end if
       end if
 !
@@ -311,6 +333,14 @@
           part_param%flag_mask_repart = .TRUE.
         end if
       end if
+!
+      if(part_param%iflag_repart_ref .eq. i_TIME_BASED) then
+        if(new_part_ctl%weight_to_previous_ctl%iflag .gt. 0) then
+          part_param%weight_prev                                        &
+     &         = new_part_ctl%weight_to_previous_ctl%realvalue
+        end if
+      end if
+
 !
       part_param%shrink = 0.1d0
       if(new_part_ctl%masking_weight_ctl%iflag .gt. 0) then
@@ -331,6 +361,7 @@
       if(my_rank .eq. 0) then
         write(*,*) 'ndomain_eb', part_param%ndomain_eb(1:3)
         write(*,*) 'ndivide_eb', part_param%ndivide_eb(1:3)
+        write(*,*) 'weight_prev', part_param%iflag_repart_ref
       end if
 !
       end subroutine set_ctl_param_vol_grping

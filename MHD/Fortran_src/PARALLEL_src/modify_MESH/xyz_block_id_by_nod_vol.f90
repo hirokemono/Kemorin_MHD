@@ -90,14 +90,20 @@
 !$omp parallel workshare
         volume_nod(1:mesh%node%internal_node) = 1.0d0
 !$omp end parallel workshare
+      else if(part_param%iflag_repart_ref .eq. i_NODE_BASED) then
+        call line_int_elapse_by_masking                                 &
+     &     (mesh%node, repart_WK%elapse_rtrace_nod,                     &
+     &      part_param%num_mask_repart, part_param%masking_repart,      &
+     &      repart_WK%d_mask, volume_nod)
       else
         call cal_node_volue(mesh%node, mesh%ele, volume_nod)
       end if
 !
-      if(part_param%num_mask_repart .gt. 0) then
-        call weighting_by_masking(mesh%node, part_param%shrink,         &
-     &      part_param%num_mask_repart, part_param%masking_repart,      &
-     &      repart_WK%d_mask, volume_nod)
+      if(part_param%iflag_repart_ref .ne. i_TIME_BASED                  &
+     &   .and. part_param%num_mask_repart .gt. 0) then
+          call weighting_by_masking(mesh%node, part_param%shrink,       &
+     &        part_param%num_mask_repart, part_param%masking_repart,    &
+     &        repart_WK%d_mask, volume_nod)
       end if
 !
       call SOLVER_SEND_RECV_type(mesh%node%numnod, mesh%nod_comm,       &
@@ -161,6 +167,48 @@
       deallocate(value)
 !
       end subroutine weighting_by_masking
+!
+! ----------------------------------------------------------------------
+!
+      subroutine line_int_elapse_by_masking(node, elapse_rtrace_nod,    &
+     &          num_mask, masking, d_mask, volume_nod)
+!
+      use t_ctl_param_masking
+!
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: num_mask
+      type(masking_parameter), intent(in) :: masking(num_mask)
+      real(kind = kreal), intent(in) :: d_mask(node%numnod,num_mask)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: elapse_rtrace_nod(node%numnod,2)
+!
+      real(kind = kreal), intent(inout) :: volume_nod(node%numnod)
+!
+      real(kind = kreal), allocatable :: value(:,:)
+      integer(kind = kint) :: ip, ist, ied, inod
+!
+!
+      allocate(value(num_mask,np_smp))
+!
+!$omp parallel do private(ip,ist,ied,inod)
+      do ip = 1, np_smp
+        ist = node%istack_internal_smp(ip-1) + 1
+        ied = node%istack_internal_smp(ip)
+        do inod = ist, ied
+          value(1:num_mask,ip) = d_mask(inod,1:num_mask)
+          if(multi_mask_flag(num_mask, masking, value(1,ip))) then
+            volume_nod(inod) = elapse_rtrace_nod(inod,1)                &
+     &                        + elapse_rtrace_nod(inod,2)
+          else
+            volume_nod(inod) = elapse_rtrace_nod(inod,1)
+          end if
+        end do
+      end do
+!$omp end parallel do
+!
+      deallocate(value)
+!
+      end subroutine line_int_elapse_by_masking
 !
 ! ----------------------------------------------------------------------
 !

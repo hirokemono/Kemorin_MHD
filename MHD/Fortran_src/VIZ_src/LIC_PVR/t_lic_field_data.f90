@@ -7,7 +7,8 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine alloc_nod_vector_4_lic(node, num_masking, field_lic)
+!!      subroutine alloc_nod_vector_4_lic(flag_elapsed, node,           &
+!!     &                                  num_masking, field_lic)
 !!      subroutine dealloc_nod_data_4_lic(field_lic)
 !!      subroutine cal_field_4_each_lic                                 &
 !!     &         (node, nod_fld, lic_p, field_lic)
@@ -16,9 +17,9 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(lic_field_data), intent(inout) :: field_lic
 !!      subroutine repartition_lic_field                                &
-!!     &         (node, viz_mesh, mesh_to_viz_tbl, nod_fld_lic,         &
+!!     &         (mesh, viz_mesh, mesh_to_viz_tbl, nod_fld_lic,         &
 !!     &          field_lic, v_sol, SR_sig, SR_r)
-!!        type(node_data), intent(in) :: node
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_geometry), intent(in) :: viz_mesh
 !!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
 !!        type(lic_field_data), intent(in) :: nod_fld_lic
@@ -26,6 +27,18 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!
+!!      subroutine bring_back_rendering_time                            &
+!!     &         (weight_prev, elapse_ray_trace, mesh_to_viz_tbl,       &
+!!     &          viz_mesh, mesh, field_lic, nod_fld_lic, m_SR)
+!!        real(kind = kreal), intent(in) :: weight_prev
+!!        real(kind = kreal), intent(in) :: elapse_ray_trace(2)
+!!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
+!!        type(mesh_geometry), intent(in) :: viz_mesh
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(lic_field_data), intent(inout) :: field_lic
+!!        type(lic_field_data), intent(inout) :: nod_fld_lic
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module t_lic_field_data
@@ -48,6 +61,11 @@
         integer(kind = kint) :: num_mask = 0
 !>    Vector Data for LIC masking data
         real(kind = kreal), allocatable :: s_lic(:,:)
+!
+!>    Reference time for re-partition
+        real(kind = kreal), allocatable :: ref_repart(:,:)
+!>    Work area for elapsed transfer time
+        real(kind = kreal), allocatable :: elapse_rtrace_nod(:)
       end type lic_field_data
 !
 ! -----------------------------------------------------------------------
@@ -56,10 +74,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_nod_vector_4_lic(node, num_masking, field_lic)
+      subroutine alloc_nod_vector_4_lic(flag_elapsed, node,             &
+     &                                  num_masking, field_lic)
 !
       use t_geometry_data
 !
+      logical, intent(in) :: flag_elapsed
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: num_masking
       type(lic_field_data), intent(inout) :: field_lic
@@ -86,6 +106,17 @@
 !$omp end parallel workshare
       end if
 !
+      if(flag_elapsed) then
+        allocate(field_lic%ref_repart(node%numnod,2))
+        allocate(field_lic%elapse_rtrace_nod(node%numnod))
+        if(node%numnod*num_masking .gt. 0) then
+!$omp parallel workshare
+          field_lic%ref_repart(1:node%numnod,1:2) = 1.0d0
+          field_lic%elapse_rtrace_nod(1:node%numnod) = 1.0d0
+!$omp end parallel workshare
+        end if
+      end if
+!
       end subroutine alloc_nod_vector_4_lic
 !
 ! -----------------------------------------------------------------------
@@ -101,6 +132,11 @@
 !
       deallocate(field_lic%s_lic)
       deallocate(field_lic%d_lic)
+!
+      if(allocated(field_lic%ref_repart)) then
+        deallocate(field_lic%ref_repart)
+        deallocate(field_lic%elapse_rtrace_nod)
+      end if
 !
       end subroutine dealloc_nod_data_4_lic
 !
@@ -179,11 +215,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine repartition_lic_field                                  &
-     &         (node, viz_mesh, mesh_to_viz_tbl, nod_fld_lic,           &
+     &         (mesh, viz_mesh, mesh_to_viz_tbl, nod_fld_lic,           &
      &          field_lic, v_sol, SR_sig, SR_r)
 !
       use m_error_IDs
-      use t_geometry_data
       use t_phys_data
       use t_vector_for_solver
       use t_solver_SR
@@ -191,7 +226,7 @@
       use field_to_new_partition
       use transfer_to_new_partition
 !
-      type(node_data), intent(in) :: node
+      type(mesh_geometry), intent(in) :: mesh
 !
       type(mesh_geometry), intent(in) :: viz_mesh
       type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
@@ -207,26 +242,71 @@
 !
       call vector_to_new_partition                                      &
      &   (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,        &
-     &    node%numnod, viz_mesh%node%numnod,                            &
+     &    mesh%node%numnod, viz_mesh%node%numnod,                       &
      &    nod_fld_lic%v_lic, field_lic%v_lic, v_sol, SR_sig, SR_r)
       call scalar_to_new_partition                                      &
      &   (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,        &
-     &    node%numnod, viz_mesh%node%numnod,                            &
+     &    mesh%node%numnod, viz_mesh%node%numnod,                       &
      &    nod_fld_lic%d_lic, field_lic%d_lic, v_sol, SR_sig, SR_r)
 !      call scalar_to_new_partition                                     &
 !     &   (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,       &
-!     &    node%numnod, viz_mesh%node%numnod,                           &
+!     &    mesh%node%numnod, viz_mesh%node%numnod,                      &
 !     &    nod_fld_lic%o_lic, field_lic%o_lic, v_sol, SR_sig, SR_r)
 !
       do i = 1, field_lic%num_mask
         call scalar_to_new_partition                                    &
      &     (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,      &
-     &      node%numnod, viz_mesh%node%numnod,                          &
+     &      mesh%node%numnod, viz_mesh%node%numnod,                     &
      &      nod_fld_lic%s_lic(1,i), field_lic%s_lic(1,i),               &
      &      v_sol, SR_sig, SR_r)
       end do
 !
       end subroutine repartition_lic_field
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine bring_back_rendering_time                              &
+     &         (weight_prev, elapse_ray_trace, mesh_to_viz_tbl,         &
+     &          viz_mesh, mesh, field_lic, nod_fld_lic, m_SR)
+!
+      use field_to_new_partition
+!
+      real(kind = kreal), intent(in) :: weight_prev
+      real(kind = kreal), intent(in) :: elapse_ray_trace(2)
+      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
+      type(mesh_geometry), intent(in) :: viz_mesh
+      type(mesh_geometry), intent(in) :: mesh
+!
+      type(lic_field_data), intent(inout) :: field_lic
+      type(lic_field_data), intent(inout) :: nod_fld_lic
+      type(mesh_SR), intent(inout) :: m_SR
+!
+      integer(kind = kint) :: inod, nd
+!
+!
+      do nd = 1, 2
+!$omp parallel do
+        do inod = 1, viz_mesh%node%internal_node
+          field_lic%elapse_rtrace_nod(inod) = elapse_ray_trace(nd)
+        end do
+!$omp end parallel do
+!
+        call scalar_to_original_partition(mesh_to_viz_tbl,              &
+     &      mesh%nod_comm, viz_mesh%node%numnod, mesh%node%numnod,      &
+     &      field_lic%elapse_rtrace_nod, nod_fld_lic%elapse_rtrace_nod, &
+     &      m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+!
+!$omp parallel do
+        do inod = 1, viz_mesh%node%internal_node
+          nod_fld_lic%ref_repart(inod,nd)                               &
+     &      = weight_prev * nod_fld_lic%elapse_rtrace_nod(inod)         &
+     &       + (1.0d0 - weight_prev) * nod_fld_lic%ref_repart(inod,nd)
+        end do
+!$omp end parallel do
+      end do
+!
+      end subroutine bring_back_rendering_time
 !
 !  ---------------------------------------------------------------------
 !

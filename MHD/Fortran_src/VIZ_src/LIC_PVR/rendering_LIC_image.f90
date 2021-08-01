@@ -10,11 +10,11 @@
 !!      subroutine lic_rendering_with_fixed_view                        &
 !!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,     &
 !!     &          field_lic, pvr_param, pvr_proj, pvr_rgb,              &
-!!     &          SR_sig, SR_r)
+!!     &          SR_sig, SR_r, elapse_ray_trace_out)
 !!      subroutine rendering_lic_at_once(istep_pvr, time,               &
 !!     &          i_stereo, i_rot, mesh, group, sf_grp_4_sf, lic_p,     &
 !!     &          field_lic, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
-!!     &          SR_sig, SR_r, SR_i)
+!!     &          SR_sig, SR_r, SR_i, elapse_ray_trace_out)
 !!        integer(kind = kint), intent(in) :: i_stereo, i_rot
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
@@ -69,7 +69,7 @@
       subroutine lic_rendering_with_fixed_view                          &
      &         (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,       &
      &          field_lic, pvr_param, pvr_proj, pvr_rgb,                &
-     &          SR_sig, SR_r)
+     &          SR_sig, SR_r, elapse_ray_trace_out)
 !
       use write_LIC_image
 !
@@ -86,6 +86,7 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
+      real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
 !
 !
       call copy_item_pvr_ray_start                                      &
@@ -96,7 +97,8 @@
      &   (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,             &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
-     &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r)
+     &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r,                      &
+     &    elapse_ray_trace_out)
 !
       end subroutine lic_rendering_with_fixed_view
 !
@@ -106,7 +108,7 @@
       subroutine rendering_lic_at_once(istep_pvr, time,                 &
      &          i_stereo, i_rot, mesh, group, sf_grp_4_sf, lic_p,       &
      &          field_lic, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
-     &          SR_sig, SR_r, SR_i)
+     &          SR_sig, SR_r, SR_i, elapse_ray_trace_out)
 !
       use cal_pvr_projection_mat
       use cal_pvr_modelview_mat
@@ -129,6 +131,7 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
+      real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
 !
 !
       if(pvr_param%movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
@@ -171,7 +174,8 @@
      &   (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,             &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_proj%screen, pvr_proj%start_fix,    &
-     &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r)
+     &    pvr_proj%stencil, pvr_rgb, SR_sig, SR_r,                      &
+     &    elapse_ray_trace_out)
 !
       call deallocate_pvr_ray_start(pvr_proj%start_fix)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)

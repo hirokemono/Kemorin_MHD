@@ -166,7 +166,8 @@
      &     (istep_lic, time, num_img, repart_data%viz_fem,              &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
-     &      pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r)
+     &      pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r,             &
+     &      lic_param(i_lic)%elapse_ray_trace)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -217,7 +218,8 @@
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                          &
+     &      lic_param(i_lic)%elapse_ray_trace)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -232,6 +234,7 @@
 !
       use m_elapsed_labels_4_VIZ
       use t_surf_grp_list_each_surf
+      use t_lic_field_data
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use write_PVR_image
@@ -288,7 +291,8 @@
      &       (istep_lic, time, num_img, repart_data%viz_fem,            &
      &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),            &
-     &        pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r)
+     &        pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r,           &
+     &        lic_param(i_lic)%elapse_ray_trace)
           call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),    &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -298,12 +302,24 @@
      &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
      &        pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),               &
      &        pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),          &
-     &        m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &        m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                        &
+     &        lic_param(i_lic)%elapse_ray_trace)
          call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
          call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
          call dealloc_iflag_pvr_used_ele                                &
      &      (pvr%pvr_param(i_lic)%draw_param)
         end if
+!
+        if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
+     &                                   .eq. i_TIME_BASED) then
+          call bring_back_rendering_time                                &
+     &       (lic_param(i_lic)%each_part_p%weight_prev,                 &
+     &        lic_param(i_lic)%elapse_ray_trace,                        &
+     &        repart_data%mesh_to_viz_tbl, repart_data%viz_fem%mesh,    &
+     &        geofem%mesh, repart_data%field_lic,                       &
+     &        repart_data%nod_fld_lic, m_SR)
+        end if
+
 !
         call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
         call dealloc_LIC_each_mesh                                      &
