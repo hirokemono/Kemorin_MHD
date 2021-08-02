@@ -133,8 +133,8 @@
       if(nmax_masking .le. 0) flag_mask = .FALSE.
 !
       allocate(repart_data%nod_fld_lic)
-      call alloc_nod_vector_4_lic(flag_elapsed, geofem%mesh%node,       &
-     &    nmax_masking, repart_data%nod_fld_lic)
+      call alloc_nod_vector_4_lic(geofem%mesh%node, nmax_masking,       &
+     &                            repart_data%nod_fld_lic)
 !
       do i_lic = 1, num_lic
         call link_repart_masking_param                                  &
@@ -197,8 +197,7 @@
      &                          repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
-        call alloc_nod_vector_4_lic                                     &
-     &     ((.FALSE.), repart_data%viz_fem%mesh%node,                   &
+        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &        repart_data%nod_fld_lic%num_mask, repart_data%field_lic)
       else
         repart_data%viz_fem => geofem
@@ -232,16 +231,14 @@
          if(lic_param%each_part_p%iflag_repart_ref                      &
 &                 .eq. i_TIME_BASED) flag_elapsed = .TRUE.
         allocate(repart_data%field_lic)
-        call alloc_nod_vector_4_lic                                     &
-     &     (flag_elapsed, repart_data%viz_fem%mesh%node,                &
+        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_param%num_masking, repart_data%field_lic)
       else if(repart_p%flag_repartition) then
         call s_LIC_re_partition(repart_p, geofem, ele_comm, next_tbl,   &
      &                          repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
-        call alloc_nod_vector_4_lic                                     &
-     &     ((.FALSE.), repart_data%viz_fem%mesh%node,                   &
+        call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_param%num_masking, repart_data%field_lic)
       else
         repart_data%viz_fem =>  geofem

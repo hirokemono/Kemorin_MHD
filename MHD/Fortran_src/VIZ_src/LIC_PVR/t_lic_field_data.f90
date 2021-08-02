@@ -7,8 +7,7 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine alloc_nod_vector_4_lic(flag_elapsed, node,           &
-!!     &                                  num_masking, field_lic)
+!!      subroutine alloc_nod_vector_4_lic(node, num_masking, field_lic)
 !!      subroutine dealloc_nod_data_4_lic(field_lic)
 !!      subroutine cal_field_4_each_lic                                 &
 !!     &         (node, nod_fld, lic_p, field_lic)
@@ -64,10 +63,9 @@
         integer(kind = kint) :: num_mask = 0
 !>    Vector Data for LIC masking data
         real(kind = kreal), allocatable :: s_lic(:,:)
-!
-!>    Work area for elapsed transfer time
-        real(kind = kreal), allocatable :: elapse_rtrace_nod(:)
       end type lic_field_data
+!
+      private :: copy_average_elapsed_to_nod
 !
 ! -----------------------------------------------------------------------
 !
@@ -75,12 +73,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_nod_vector_4_lic(flag_elapsed, node,             &
-     &                                  num_masking, field_lic)
+      subroutine alloc_nod_vector_4_lic(node, num_masking, field_lic)
 !
       use t_geometry_data
 !
-      logical, intent(in) :: flag_elapsed
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: num_masking
       type(lic_field_data), intent(inout) :: field_lic
@@ -107,15 +103,6 @@
 !$omp end parallel workshare
       end if
 !
-      if(flag_elapsed) then
-        allocate(field_lic%elapse_rtrace_nod(node%numnod))
-        if(node%numnod .gt. 0) then
-!$omp parallel workshare
-          field_lic%elapse_rtrace_nod(1:node%numnod) = 1.0d0
-!$omp end parallel workshare
-        end if
-      end if
-!
       end subroutine alloc_nod_vector_4_lic
 !
 ! -----------------------------------------------------------------------
@@ -131,10 +118,6 @@
 !
       deallocate(field_lic%s_lic)
       deallocate(field_lic%d_lic)
-!
-      if(allocated(field_lic%elapse_rtrace_nod)) then
-        deallocate(field_lic%elapse_rtrace_nod)
-      end if
 !
       end subroutine dealloc_nod_data_4_lic
 !
@@ -220,6 +203,7 @@
       use t_phys_data
       use t_vector_for_solver
       use t_solver_SR
+      use t_calypso_comm_table
       use select_copy_from_recv
       use field_to_new_partition
       use transfer_to_new_partition
@@ -266,49 +250,70 @@
 !
       subroutine bring_back_rendering_time                              &
      &         (mesh, weight_prev, elapse_ray_trace, mesh_to_viz_tbl,   &
-     &          viz_mesh,field_lic, nod_fld_lic, ref_repart_mesh,       &
-     &          m_SR)
+     &          ref_repart_mesh, SR_sig)
 !
+      use t_solver_SR
+      use t_mesh_data
+      use t_calypso_comm_table
       use field_to_new_partition
 !
       real(kind = kreal), intent(in) :: weight_prev
       real(kind = kreal), intent(in) :: elapse_ray_trace(2)
       type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-      type(mesh_geometry), intent(in) :: viz_mesh
       type(mesh_geometry), intent(in) :: mesh
 !
-      type(lic_field_data), intent(inout) :: field_lic
-      type(lic_field_data), intent(inout) :: nod_fld_lic
       real(kind = kreal), intent(inout)                                 &
      &                   :: ref_repart_mesh(mesh%node%numnod,2)
-      type(mesh_SR), intent(inout) :: m_SR
+      type(send_recv_status), intent(inout) :: SR_sig
 !
-      integer(kind = kint) :: inod, nd
+      real(kind = kreal), allocatable :: elapse_rtraces_pe(:,:)
 !
 !
-      do nd = 1, 2
-!$omp parallel do
-        do inod = 1, viz_mesh%node%internal_node
-          field_lic%elapse_rtrace_nod(inod) = elapse_ray_trace(nd)
-        end do
-!$omp end parallel do
-!
-        call scalar_to_original_partition(mesh_to_viz_tbl,              &
-     &      mesh%nod_comm, viz_mesh%node%numnod, mesh%node%numnod,      &
-     &      field_lic%elapse_rtrace_nod, nod_fld_lic%elapse_rtrace_nod, &
-     &      m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
-!
-!$omp parallel do
-        do inod = 1, viz_mesh%node%internal_node
-          ref_repart_mesh(inod,nd)                                      &
-     &      = weight_prev * nod_fld_lic%elapse_rtrace_nod(inod)         &
-     &       + (1.0d0 - weight_prev) * ref_repart_mesh(inod,nd)
-        end do
-!$omp end parallel do
-      end do
+      allocate(elapse_rtraces_pe(2,mesh_to_viz_tbl%nrank_export))
+      call calypso_gather_reverse_SR(itwo, mesh_to_viz_tbl,             &
+     &    elapse_ray_trace, elapse_rtraces_pe(1,1), SR_sig)
+      call copy_average_elapsed_to_nod(mesh%node, mesh_to_viz_tbl,      &
+     &    weight_prev, elapse_rtraces_pe, ref_repart_mesh)
+      deallocate(elapse_rtraces_pe)
 !
       end subroutine bring_back_rendering_time
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine copy_average_elapsed_to_nod(node, mesh_to_viz_tbl,     &
+     &          weight_prev, elapse_rtraces_pe, ref_repart_mesh)
+!
+      use t_geometry_data
+      use t_calypso_comm_table
+!
+      type(node_data), intent(in) :: node
+      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
+      real(kind = kreal), intent(in) :: weight_prev
+      real(kind = kreal), intent(in)                                    &
+     &             :: elapse_rtraces_pe(2,mesh_to_viz_tbl%nrank_export)
+      real(kind = kreal), intent(inout)                                 &
+     &             :: ref_repart_mesh(node%numnod,2)
+!
+      integer(kind = kint) :: ip, ist, ied, inum, inod
+!
+!
+      do ip = 1, mesh_to_viz_tbl%nrank_export
+        ist = mesh_to_viz_tbl%istack_export(ip-1) + 1
+        ied = mesh_to_viz_tbl%istack_export(ip)
+!$omp parallel do private(inum,inod)
+        do inum = ist, ied
+          inod = mesh_to_viz_tbl%item_export(inum)
+          ref_repart_mesh(inod,1)                                       &
+     &      = weight_prev * elapse_rtraces_pe(1,ip)                     &
+     &       + (1.0d0 - weight_prev) * ref_repart_mesh(inod,1)
+          ref_repart_mesh(inod,2)                                       &
+     &      = weight_prev * elapse_rtraces_pe(2,ip)                     &
+     &       + (1.0d0 - weight_prev) * ref_repart_mesh(inod,2)
+        end do
+      end do
+!
+      end subroutine copy_average_elapsed_to_nod
+!
+!-----------------------------------------------------------------------
 !
       end module t_lic_field_data

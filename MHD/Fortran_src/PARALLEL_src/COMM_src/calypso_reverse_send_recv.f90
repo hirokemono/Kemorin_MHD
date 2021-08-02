@@ -7,6 +7,15 @@
 !> @brief Data communication to new partitioned mesh
 !!
 !!@verbatim
+!!      subroutine calypso_gather_reverse_SR                            &
+!!     &         (NB, cps_tbl, Wrecv, Wsend, SR_sig)
+!!        type(calypso_comm_table), intent(in) :: cps_tbl
+!!        integer(kind = kint), intent(in) :: NB
+!!        real(kind = kreal), intent(in) :: Wrecv(NB)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                    :: Wsend(NB*cps_tbl%nrank_export))
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!
 !!      subroutine calypso_reverse_SR_1(cps_tbl, nnod_new, nnod_org,    &
 !!     &                                X_new, X_org, SR_sig, SR_r)
 !!        type(calypso_comm_table), intent(in) :: cps_tbl
@@ -45,6 +54,59 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine calypso_gather_reverse_SR                              &
+     &         (NB, cps_tbl, Wrecv, Wsend, SR_sig)
+!
+      type(calypso_comm_table), intent(in) :: cps_tbl
+      integer(kind = kint), intent(in) :: NB
+      real(kind = kreal), intent(in) :: Wrecv(NB)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: Wsend(NB*cps_tbl%nrank_export)
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!
+      integer :: ncomm_send, ncomm_recv, neib
+!
+!
+      ncomm_send = int(cps_tbl%nrank_import - cps_tbl%iflag_self_copy)
+      ncomm_recv = int(cps_tbl%nrank_export - cps_tbl%iflag_self_copy)
+!
+      do neib = 1, ncomm_send
+        call MPI_ISEND(Wrecv(1), NB, CALYPSO_REAL,                      &
+     &      int(cps_tbl%irank_import(neib)), 0, CALYPSO_COMM,           &
+     &      SR_sig%req1(neib), ierr_MPI)
+      end do
+!C
+!C-- RECEIVE
+      if(ncomm_recv .gt. 0) then
+        do neib = ncomm_recv, 1, -1
+          call MPI_IRECV(Wsend(NB*neib-NB+1), NB, CALYPSO_REAL,         &
+     &        int(cps_tbl%irank_export(neib)), 0, CALYPSO_COMM,         &
+     &        SR_sig%req2(neib), ierr_MPI)
+        end do
+      end if
+!
+      if(ncomm_recv .gt. 0) then
+        call MPI_WAITALL                                                &
+     &     (ncomm_recv, SR_sig%req2, SR_sig%sta2, ierr_MPI)
+      end if
+!
+      if (cps_tbl%iflag_self_copy .gt. 0) then
+        Wsend(NB*cps_tbl%nrank_export-NB+1:NB*cps_tbl%nrank_export)     &
+     &    = Wrecv(1:NB)
+      end if
+!
+      if(ncomm_send .gt. 0) then
+        call MPI_WAITALL                                                &
+     &     (ncomm_send, SR_sig%req1, SR_sig%sta1, ierr_MPI)
+      end if
+!
+      end subroutine calypso_gather_reverse_SR
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine calypso_reverse_SR_1(cps_tbl, nnod_new, nnod_org,      &
      &                                X_new, X_org, SR_sig, SR_r)
 !
@@ -73,7 +135,7 @@
 !C-- SEND
       call set_to_send_buf_1(nnod_new,                                  &
      &    cps_tbl%istack_import(cps_tbl%nrank_import),                  &
-     &    cps_tbl%item_import, X_new, SR_r%WS)
+     &    cps_tbl%item_import, X_new, SR_r%WS(1))
 !C
 !C-- COMM
       call calypso_send_recv_core                                       &
