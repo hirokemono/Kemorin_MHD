@@ -29,8 +29,9 @@
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
 !!      subroutine bring_back_rendering_time                            &
-!!     &         (weight_prev, elapse_ray_trace, mesh_to_viz_tbl,       &
-!!     &          viz_mesh, mesh, field_lic, nod_fld_lic, m_SR)
+!!     &         (mesh, weight_prev, elapse_ray_trace, mesh_to_viz_tbl, &
+!!     &          viz_mesh, field_lic, nod_fld_lic, ref_repart_mesh,    &
+!!     &          m_SR)
 !!        real(kind = kreal), intent(in) :: weight_prev
 !!        real(kind = kreal), intent(in) :: elapse_ray_trace(2)
 !!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
@@ -38,6 +39,8 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(lic_field_data), intent(inout) :: field_lic
 !!        type(lic_field_data), intent(inout) :: nod_fld_lic
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: ref_repart_mesh(mesh%node%numnod,2)
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
@@ -62,8 +65,6 @@
 !>    Vector Data for LIC masking data
         real(kind = kreal), allocatable :: s_lic(:,:)
 !
-!>    Reference time for re-partition
-        real(kind = kreal), allocatable :: ref_repart(:,:)
 !>    Work area for elapsed transfer time
         real(kind = kreal), allocatable :: elapse_rtrace_nod(:)
       end type lic_field_data
@@ -107,11 +108,9 @@
       end if
 !
       if(flag_elapsed) then
-        allocate(field_lic%ref_repart(node%numnod,2))
         allocate(field_lic%elapse_rtrace_nod(node%numnod))
-        if(node%numnod*num_masking .gt. 0) then
+        if(node%numnod .gt. 0) then
 !$omp parallel workshare
-          field_lic%ref_repart(1:node%numnod,1:2) = 1.0d0
           field_lic%elapse_rtrace_nod(1:node%numnod) = 1.0d0
 !$omp end parallel workshare
         end if
@@ -133,8 +132,7 @@
       deallocate(field_lic%s_lic)
       deallocate(field_lic%d_lic)
 !
-      if(allocated(field_lic%ref_repart)) then
-        deallocate(field_lic%ref_repart)
+      if(allocated(field_lic%elapse_rtrace_nod)) then
         deallocate(field_lic%elapse_rtrace_nod)
       end if
 !
@@ -267,8 +265,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine bring_back_rendering_time                              &
-     &         (weight_prev, elapse_ray_trace, mesh_to_viz_tbl,         &
-     &          viz_mesh, mesh, field_lic, nod_fld_lic, m_SR)
+     &         (mesh, weight_prev, elapse_ray_trace, mesh_to_viz_tbl,   &
+     &          viz_mesh,field_lic, nod_fld_lic, ref_repart_mesh,       &
+     &          m_SR)
 !
       use field_to_new_partition
 !
@@ -280,6 +279,8 @@
 !
       type(lic_field_data), intent(inout) :: field_lic
       type(lic_field_data), intent(inout) :: nod_fld_lic
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: ref_repart_mesh(mesh%node%numnod,2)
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: inod, nd
@@ -299,9 +300,9 @@
 !
 !$omp parallel do
         do inod = 1, viz_mesh%node%internal_node
-          nod_fld_lic%ref_repart(inod,nd)                               &
+          ref_repart_mesh(inod,nd)                                      &
      &      = weight_prev * nod_fld_lic%elapse_rtrace_nod(inod)         &
-     &       + (1.0d0 - weight_prev) * nod_fld_lic%ref_repart(inod,nd)
+     &       + (1.0d0 - weight_prev) * ref_repart_mesh(inod,nd)
         end do
 !$omp end parallel do
       end do

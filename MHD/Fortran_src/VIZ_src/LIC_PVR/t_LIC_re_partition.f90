@@ -147,8 +147,7 @@
       call link_repart_masking_data                                     &
      &  (flag_mask, flag_sleeve_wk, flag_elapsed,                       &
      &   geofem%mesh%node, nmax_masking, repart_data%nod_fld_lic%s_lic, &
-     &   repart_data%nod_fld_lic%v_lic,                                 &
-     &   repart_data%nod_fld_lic%ref_repart, repart_data%repart_WK)
+     &   repart_data%nod_fld_lic%v_lic, repart_data%repart_WK)
 !
       end subroutine LIC_init_nodal_field
 !

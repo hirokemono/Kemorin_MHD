@@ -92,7 +92,7 @@
 !$omp end parallel workshare
       else if(part_param%iflag_repart_ref .eq. i_NODE_BASED) then
         call line_int_elapse_by_masking                                 &
-     &     (mesh%node, repart_WK%elapse_rtrace_nod,                     &
+     &     (mesh%node, repart_WK%ref_repart,                            &
      &      part_param%num_mask_repart, part_param%masking_repart,      &
      &      repart_WK%d_mask, volume_nod)
       else
@@ -170,7 +170,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine line_int_elapse_by_masking(node, elapse_rtrace_nod,    &
+      subroutine line_int_elapse_by_masking(node, ref_repart,           &
      &          num_mask, masking, d_mask, volume_nod)
 !
       use t_ctl_param_masking
@@ -179,8 +179,7 @@
       integer(kind = kint), intent(in) :: num_mask
       type(masking_parameter), intent(in) :: masking(num_mask)
       real(kind = kreal), intent(in) :: d_mask(node%numnod,num_mask)
-      real(kind = kreal), intent(in)                                    &
-     &                   :: elapse_rtrace_nod(node%numnod,2)
+      real(kind = kreal), intent(in) :: ref_repart(node%numnod,2)
 !
       real(kind = kreal), intent(inout) :: volume_nod(node%numnod)
 !
@@ -197,10 +196,9 @@
         do inod = ist, ied
           value(1:num_mask,ip) = d_mask(inod,1:num_mask)
           if(multi_mask_flag(num_mask, masking, value(1,ip))) then
-            volume_nod(inod) = elapse_rtrace_nod(inod,1)                &
-     &                        + elapse_rtrace_nod(inod,2)
+            volume_nod(inod) = ref_repart(inod,1) + ref_repart(inod,2)
           else
-            volume_nod(inod) = elapse_rtrace_nod(inod,1)
+            volume_nod(inod) = ref_repart(inod,1)
           end if
         end do
       end do

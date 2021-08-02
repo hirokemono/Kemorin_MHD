@@ -313,11 +313,11 @@
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_TIME_BASED) then
           call bring_back_rendering_time                                &
-     &       (lic_param(i_lic)%each_part_p%weight_prev,                 &
+     &       (geofem%mesh, lic_param(i_lic)%each_part_p%weight_prev,    &
      &        lic_param(i_lic)%elapse_ray_trace,                        &
      &        repart_data%mesh_to_viz_tbl, repart_data%viz_fem%mesh,    &
-     &        geofem%mesh, repart_data%field_lic,                       &
-     &        repart_data%nod_fld_lic, m_SR)
+     &        repart_data%field_lic, repart_data%nod_fld_lic,           &
+     &        repart_data%repart_WK%ref_repart, m_SR)
         end if
 
 !
