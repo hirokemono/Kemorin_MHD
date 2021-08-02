@@ -261,7 +261,7 @@
 !
       if(my_rank .eq. 0) then
         write(*,*) 'Trace counts, rendering, line_integration'
-        write(*,'(a,1p3e15.7)') 'Average: ',                            &
+        write(*,'(a,1p3e15.7)') 'Average:   ',                          &
      &          ave_sample_cnt, ave_trace_time, ave_line_int_time
         write(*,'(a,1p3e15.7)') 'Deviation: ',                          &
      &          std_sample_cnt, std_trace_time, std_line_int_time
