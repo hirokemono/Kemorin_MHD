@@ -235,9 +235,9 @@
       type(calypso_comm_table), intent(in) :: transfer_tbl
       type(communication_table), intent(in) :: org_nod_comm
       integer(kind = kint), intent(in) :: nnod_org, nnod_new
-      real(kind = kreal), intent(in) :: vec_new(3*nnod_new)
+      real(kind = kreal), intent(in) :: vec_new(nnod_new)
 !
-      real(kind = kreal), intent(inout) :: vec_org(3*nnod_org)
+      real(kind = kreal), intent(inout) :: vec_org(nnod_org)
       type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
