@@ -315,8 +315,8 @@
       end if
 !
       part_param%iflag_repart_ref = i_VOLUME_BASED
-      if(new_part_ctl%partitioning_method_ctl%iflag .gt. 0) then
-        tmpchara = new_part_ctl%partitioning_method_ctl%charavalue
+      if(new_part_ctl%partition_reference_ctl%iflag .gt. 0) then
+        tmpchara = new_part_ctl%partition_reference_ctl%charavalue
         if(cmp_no_case(tmpchara,c_NODE_BASED)) then
           part_param%iflag_repart_ref = i_NODE_BASED
         else if(cmp_no_case(tmpchara,c_NO_REPARTITION)) then
