@@ -255,7 +255,7 @@
       use t_solver_SR
       use t_mesh_data
       use t_calypso_comm_table
-      use field_to_new_partition
+      use calypso_reverse_send_recv
 !
       real(kind = kreal), intent(in) :: weight_prev
       real(kind = kreal), intent(in) :: elapse_ray_trace(2)
