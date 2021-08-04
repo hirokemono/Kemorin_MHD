@@ -7,9 +7,10 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine alloc_lic_repart_ref(node, rep_ref)
+!!      subroutine init_lic_repart_ref(mesh, rep_ref)
 !!      subroutine dealloc_lic_repart_ref(rep_ref)
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
+!!        type(mesh_geometry), intent(in) :: mesh
 !!
 !!      subroutine bring_back_rendering_time                            &
 !!     &         (mesh, weight_prev, elapse_ray_trace, mesh_to_viz_tbl, &
@@ -40,11 +41,35 @@
         real(kind = kreal), allocatable :: elapse_rtrace_nod(:,:)
       end type lic_repart_reference
 !
-      private :: copy_average_elapsed_to_nod
+      private :: alloc_lic_repart_ref, copy_average_elapsed_to_nod
 !
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_lic_repart_ref(mesh, rep_ref)
+!
+      use t_mesh_data
+      use int_volume_of_single_domain
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(lic_repart_reference), intent(inout) :: rep_ref
+!
+!
+      call alloc_lic_repart_ref(mesh%node, rep_ref)
+      call cal_node_volue(mesh%node, mesh%ele,                          &
+     &                    rep_ref%elapse_rtrace_nod(1,1))
+!
+      if(mesh%node%numnod .gt. 0) then
+!$omp parallel workshare
+        rep_ref%elapse_rtrace_nod(1:mesh%node%numnod,2)                 &
+     &    = rep_ref%elapse_rtrace_nod(1:mesh%node%numnod,1)
+!$omp end parallel workshare
+      end if
+!
+      end subroutine init_lic_repart_ref
 !
 ! -----------------------------------------------------------------------
 !
@@ -56,12 +81,12 @@
       type(lic_repart_reference), intent(inout) :: rep_ref
 !
 !
-        allocate(rep_ref%elapse_rtrace_nod(node%numnod,2))
-        if(node%numnod .gt. 0) then
+      allocate(rep_ref%elapse_rtrace_nod(node%numnod,2))
+      if(node%numnod .gt. 0) then
 !$omp parallel workshare
-          rep_ref%elapse_rtrace_nod(1:node%numnod,1:2) = 1.0d0
+        rep_ref%elapse_rtrace_nod(1:node%numnod,1:2) = 1.0d0
 !$omp end parallel workshare
-        end if
+      end if
 !
       end subroutine alloc_lic_repart_ref
 !
