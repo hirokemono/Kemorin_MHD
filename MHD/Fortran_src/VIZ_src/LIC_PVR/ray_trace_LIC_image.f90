@@ -310,7 +310,7 @@
       end do
 !$omp end parallel do
 !
-      nnod_masked_4_LIC = sum(icou_smp)
+      nnod_masked_4_LIC = 1 + sum(icou_smp)
       deallocate(value, icou_smp)
 !
       end function nnod_masked_4_LIC
