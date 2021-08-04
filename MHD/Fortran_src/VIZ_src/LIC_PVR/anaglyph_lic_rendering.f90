@@ -49,6 +49,7 @@
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_LIC_re_partition
+      use t_lic_repart_reference
       use t_control_param_LIC
       use t_mesh_SR
 !
@@ -135,6 +136,13 @@
 !
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
      &                          lic%repart_data)
+      do i_lic = 1, lic%pvr%num_pvr
+        if(lic%pvr%lic_param(i_lic)%each_part_p%iflag_repart_ref        &
+     &                                   .eq. i_TIME_BASED) then
+          call alloc_lic_repart_ref(geofem%mesh%node,                   &
+     &                              lic%rep_ref(i_lic))
+        end if
+      end do
 !
       if(lic%flag_each_repart) return
       call LIC_anaglyph_init_shared_mesh(geofem, ele_comm, next_tbl,    &
@@ -167,7 +175,7 @@
       if(lic%flag_each_repart) then
         call LIC_anaglyph_w_each_repart(istep_lic, time,                &
      &      geofem, ele_comm, next_tbl, nod_fld, lic%repart_p,          &
-     &      lic%repart_data, lic%pvr, lic%lic_param, m_SR)
+     &      lic%repart_data, lic%pvr, lic%lic_param, lic%rep_ref, m_SR)
       else
         call LIC_anaglyph_w_shared_mesh                                 &
      &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &

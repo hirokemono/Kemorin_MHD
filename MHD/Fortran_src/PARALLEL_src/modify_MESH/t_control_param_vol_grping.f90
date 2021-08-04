@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine link_repart_masking_data                             &
-!!     &         (flag_mask, flag_sleeve_wk, flag_elapsed,              &
+!!     &         (flag_mask, flag_sleeve_wk,                            &
 !!     &          node, nmax_mask_org, d_mask_org, vect_ref_ext,        &
 !!     &          repart_WK)
 !!      subroutine unlink_repart_masking_data(repart_WK)
@@ -125,7 +125,7 @@
 !>        pointer of original reference vector
         real(kind = kreal), pointer :: ref_vect(:,:)
 !>        pointer of original reference vector
-        real(kind = kreal), allocatable :: ref_repart(:,:)
+        real(kind = kreal), pointer :: ref_repart(:,:)
 !
 !>        Work area for sleeve extension
         type(sleeve_extension_work) :: sleeve_exp_WK
@@ -141,8 +141,8 @@
 !
       subroutine link_repart_masking_data                               &
      &         (flag_mask, flag_sleeve_wk, flag_elapsed,                &
-     &          node, nmax_mask_org, d_mask_org, vect_ref_ext,          &
-     &          repart_WK)
+     &          node, nmax_mask_org, d_mask_org, elapse_rtrace_nod,     &
+     &          vect_ref_ext, repart_WK)
 !
       use t_geometry_data
 !
@@ -153,17 +153,14 @@
      &                        :: vect_ref_ext(node%numnod,3)
       real(kind = kreal), intent(in), target                            &
      &                        :: d_mask_org(node%numnod,nmax_mask_org)
+      real(kind = kreal), intent(in), target                            &
+     &                        :: elapse_rtrace_nod(node%numnod,2)
 !
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
 !
       if(flag_elapsed) then
-        allocate(repart_WK%ref_repart(node%numnod,2))
-        if(node%numnod .gt. 0) then
-!$omp parallel workshare
-          repart_WK%ref_repart(1:node%numnod,2) = 1.0d0
-!$omp end parallel workshare
-        end if
+        repart_WK%ref_repart => elapse_rtrace_nod
       end if
       if(flag_mask) then
         repart_WK%nmax_mask_repart = nmax_mask_org
@@ -189,11 +186,42 @@
         nullify(repart_WK%d_mask)
       end if
 !
-      if(allocated(repart_WK%ref_repart)) then
-        deallocate(repart_WK%ref_repart)
+      if(associated(repart_WK%ref_repart)) then
+        nullify(repart_WK%ref_repart)
       end if
 !
       end subroutine unlink_repart_masking_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine link_repart_trace_time_data                            &
+     &         (node, elapse_rtrace_nod, repart_WK)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+      real(kind = kreal), intent(in), target                            &
+     &                        :: elapse_rtrace_nod(node%numnod,2)
+!
+      type(volume_partioning_work), intent(inout) :: repart_WK
+!
+!
+      repart_WK%ref_repart => elapse_rtrace_nod
+!
+      end subroutine link_repart_trace_time_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine unlink_repart_trace_time_data(repart_WK)
+!
+      type(volume_partioning_work), intent(inout) :: repart_WK
+!
+!
+      if(associated(repart_WK%ref_repart)) then
+        nullify(repart_WK%ref_repart)
+      end if
+!
+      end subroutine unlink_repart_trace_time_data
 !
 !   --------------------------------------------------------------------
 !

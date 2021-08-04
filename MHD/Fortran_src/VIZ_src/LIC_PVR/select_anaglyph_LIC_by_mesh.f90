@@ -31,7 +31,7 @@
 !!
 !!      subroutine LIC_anaglyph_w_each_repart                           &
 !!     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld, &
-!!     &          repart_p, repart_data, pvr, lic_param, m_SR)
+!!     &          repart_p, repart_data, pvr, lic_param, rep_ref, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: geofem
@@ -42,6 +42,8 @@
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
+!!        type(lic_repart_reference), intent(inout)                     &
+!!     &                             :: rep_ref(pvr%num_pvr)
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
@@ -72,6 +74,7 @@
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_LIC_re_partition
+      use t_lic_repart_reference
       use t_control_param_LIC
       use t_mesh_SR
 !
@@ -207,7 +210,7 @@
 !
       subroutine LIC_anaglyph_w_each_repart                             &
      &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,   &
-     &          repart_p, repart_data, pvr, lic_param, m_SR)
+     &          repart_p, repart_data, pvr, lic_param, rep_ref, m_SR)
 !
       use t_lic_field_data
       use t_surf_grp_list_each_surf
@@ -230,6 +233,7 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
+      type(lic_repart_reference), intent(inout) :: rep_ref(pvr%num_pvr)
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_lic
@@ -241,7 +245,7 @@
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
         call LIC_init_each_mesh(geofem, ele_comm, next_tbl, repart_p,   &
-     &                          lic_param(i_lic), repart_data, m_SR)
+     &      rep_ref(i_lic), lic_param(i_lic), repart_data, m_SR)
         if(iflag_debug .gt. 0) write(*,*) 'init_sf_grp_list_each_surf'
         call init_sf_grp_list_each_surf                                 &
      &     (repart_data%viz_fem%mesh%surf,                              &
@@ -290,8 +294,7 @@
           call bring_back_rendering_time                                &
      &       (geofem%mesh, lic_param(i_lic)%each_part_p%weight_prev,    &
      &        lic_param(i_lic)%elapse_ray_trace,                        &
-     &        repart_data%mesh_to_viz_tbl,                              &
-     &        repart_data%repart_WK%ref_repart, m_SR%SR_sig)
+     &        repart_data%mesh_to_viz_tbl, rep_ref(i_lic), m_SR%SR_sig)
         end if
 !
         call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)

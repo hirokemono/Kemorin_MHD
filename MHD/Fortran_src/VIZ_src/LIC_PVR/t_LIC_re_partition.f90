@@ -26,11 +26,12 @@
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine LIC_init_each_mesh(geofem, ele_comm, next_tbl,      &
-!!     &          repart_p, lic_param, repart_data, m_SR)
+!!     &          repart_p, rep_ref, lic_param, repart_data, m_SR)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
+!!        type(lic_repart_reference), intent(in) :: rep_ref
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(lic_parameters), intent(inout) :: lic_param
 !!        type(mesh_SR), intent(inout) :: m_SR
@@ -74,6 +75,7 @@
       use t_lic_field_data
       use t_control_param_LIC
       use t_control_param_vol_grping
+      use t_lic_repart_reference
       use t_mesh_SR
 !
       implicit  none
@@ -144,8 +146,7 @@
 !
 !      write(*,*) 'flag_mask, flag_sleeve_wk',                          &
 !     &         flag_mask, flag_sleeve_wk, nmax_masking
-      call link_repart_masking_data                                     &
-     &  (flag_mask, flag_sleeve_wk, flag_elapsed,                       &
+      call link_repart_masking_data(flag_mask, flag_sleeve_wk,          &
      &   geofem%mesh%node, nmax_masking, repart_data%nod_fld_lic%s_lic, &
      &   repart_data%nod_fld_lic%v_lic, repart_data%repart_WK)
 !
@@ -168,6 +169,7 @@
         call unlink_repart_masking_param(lic_param(i_lic)%each_part_p)
       end do
 !
+      call unlink_repart_trace_time_data(repart_data%repart_WK)
       call unlink_repart_masking_data(repart_data%repart_WK)
       call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
       deallocate(repart_data%nod_fld_lic)
@@ -209,12 +211,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_init_each_mesh(geofem, ele_comm, next_tbl,        &
-     &          repart_p, lic_param, repart_data, m_SR)
+     &          repart_p, rep_ref, lic_param, repart_data, m_SR)
 !
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_repart_reference), intent(in) :: rep_ref
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(lic_parameters), intent(inout) :: lic_param
@@ -224,6 +227,8 @@
 !
 !  -----  Repartition
       if(lic_param%each_part_p%flag_repartition) then
+        call link_repart_trace_time_data(geofem%mesh%node,              &
+     &      rep_ref%elapse_rtrace_nod, repart_data%repart_WK)
         call s_LIC_re_partition(lic_param%each_part_p, geofem,          &
      &                          ele_comm, next_tbl, repart_data, m_SR)
 !
