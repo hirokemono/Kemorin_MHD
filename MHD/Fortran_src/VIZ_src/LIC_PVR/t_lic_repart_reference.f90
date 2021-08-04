@@ -27,7 +27,7 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
-      module t_lic_repartition_reference
+      module t_lic_repart_reference
 !
       use m_precision
       use m_constants
@@ -37,7 +37,7 @@
 !>  Structure for reference for LIC repartition
       type lic_repart_reference
 !>    Work area for elapsed transfer time
-        real(kind = kreal), allocatable :: elapse_rtrace_nod(:)
+        real(kind = kreal), allocatable :: elapse_rtrace_nod(:,:)
       end type lic_repart_reference
 !
       private :: copy_average_elapsed_to_nod

@@ -133,6 +133,14 @@
      &                          lic%repart_data)
 !
       do i_lic = 1, lic%pvr%num_pvr
+        if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
+     &                                   .eq. i_TIME_BASED) then
+          call alloc_lic_repart_ref(geofem%mesh%node,                   &
+     &                              lic%rep_ref(i_lic))
+        end if
+      end do
+!
+      do i_lic = 1, lic%pvr%num_pvr
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
      &      .or. my_rank .ne. 0) then
           call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
@@ -171,7 +179,7 @@
       if(lic%flag_each_repart) then
         call LIC_visualize_w_each_repart(istep_lic, time,               &
      &      geofem, ele_comm, next_tbl, nod_fld, lic%repart_p,          &
-     &      lic%repart_data, lic%pvr, lic%lic_param, m_SR)
+     &      lic%repart_data, lic%pvr, lic%lic_param, lic%rep_ref, m_SR)
       else
         call LIC_visualize_w_shared_mesh                                &
      &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &

@@ -50,8 +50,6 @@
         real(kind = kreal), allocatable :: s_lic(:,:)
       end type lic_field_data
 !
-      private :: copy_average_elapsed_to_nod
-!
 ! -----------------------------------------------------------------------
 !
       contains

@@ -74,6 +74,8 @@
 !
 !>        Structure of LIC field parameters
         type(lic_parameters), allocatable :: lic_param(:)
+!>        Elapsed time strage for re-partition
+        type(lic_repart_reference), allocatable :: rep_ref(:)
 !
 !>        Structure for LIC images
         type(volume_rendering_module) :: pvr
@@ -230,7 +232,7 @@
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
      &                          lic%repart_data)
       do i_lic = 1, lic%pvr%num_pvr
-        if(lic%pvr%lic_param(i_lic)%each_part_p%iflag_repart_ref        &
+        if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
      &                                   .eq. i_TIME_BASED) then
           call alloc_lic_repart_ref(geofem%mesh%node,                   &
      &                              lic%rep_ref(i_lic))
