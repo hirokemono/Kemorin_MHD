@@ -132,6 +132,7 @@
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
      &                          lic%repart_data)
 !
+      allocate(lic%rep_ref(lic%pvr%num_pvr))
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
      &                                   .eq. i_TIME_BASED) then

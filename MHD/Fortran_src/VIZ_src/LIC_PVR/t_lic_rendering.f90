@@ -231,6 +231,8 @@
 !
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
      &                          lic%repart_data)
+!
+      allocate(lic%rep_ref(lic%pvr%num_pvr))
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
      &                                   .eq. i_TIME_BASED) then
@@ -301,7 +303,7 @@
         call dealloc_lic_repart_ref(lic%rep_ref(i_lic))
         call flush_each_lic_control(lic%lic_param(i_lic))
       end do
-      deallocate(lic%lic_param)
+      deallocate(lic%rep_ref, lic%lic_param)
 !
       call dealloc_pvr_and_lic_data(lic%pvr)
 !
