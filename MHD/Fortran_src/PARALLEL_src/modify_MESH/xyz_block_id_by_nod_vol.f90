@@ -90,7 +90,7 @@
 !$omp parallel workshare
         volume_nod(1:mesh%node%internal_node) = 1.0d0
 !$omp end parallel workshare
-      else if(part_param%iflag_repart_ref .eq. i_NODE_BASED) then
+      else if(part_param%iflag_repart_ref .eq. i_TIME_BASED) then
         call line_int_elapse_by_masking                                 &
      &     (mesh%node, repart_WK%ref_repart,                            &
      &      part_param%num_mask_repart, part_param%masking_repart,      &
