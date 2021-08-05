@@ -102,20 +102,33 @@
       real(kind = kreal) :: rgba_tmp(4)
 !
 !      type(noise_mask), allocatable :: n_mask
-      integer(kind = kint), allocatable :: icount_int_ele(:,:)
       integer(kind = kint) :: sample_cnt
-      real(kind = kreal) :: ave_sample_cnt
-      real(kind = kreal) :: std_sample_cnt, sq_sample_cnt
-      integer(kind = kint) :: min_sample_cnt, max_sample_cnt
-      real(kind = kreal) :: elapse_rtrace, sq_trace_time
-      real(kind = kreal) :: ave_trace_time,   std_trace_time
-      real(kind = kreal) :: dmin_trace_time,  dmax_trace_time
-      real(kind = kreal) :: elapse_line_int,    sq_line_int_time
-      real(kind = kreal) :: ave_line_int_time,  std_line_int_time
-      real(kind = kreal) :: dmin_line_int_time, dmax_line_int_time
+      real(kind = kreal) :: elapse_rtrace, elapse_line_int
 !
+      integer(kind = kint) :: icount_line_int
+      integer(kind = kint), allocatable :: icount_int_ele(:)
+      integer(kind = kint), allocatable :: ico_int_ele_smp(:,:)
 !
-      deallocate(icount_int_ele(mesh%ele%numele,1))
+      integer(kind = kint) :: iele, ip, ip_smp, np_smp_sys
+!
+#ifdef _OPENMP
+      integer, external :: omp_get_max_threads
+      integer, external :: omp_get_thread_num
+#endif
+!
+      ip_smp =     1
+      np_smp_sys = 1
+!
+#ifdef _OPENMP
+      np_smp_sys = omp_get_max_threads()
+#endif
+      allocate(icount_int_ele(mesh%ele%numele))
+      allocate(ico_int_ele_smp(mesh%ele%numele,np_smp_sys))
+!
+!$omp parallel workshare
+      icount_int_ele(1:mesh%ele%numele) = 0
+      ico_int_ele_smp(1:mesh%ele%numele,1:np_smp_sys) = 0
+!$omp end parallel workshare
 !
       sample_cnt = 0
       elapse_line_int = 0.0d0
@@ -129,6 +142,9 @@
 !           write(*,*) 'check section trace for ', my_rank, inum
 !         end if
 !
+#ifdef _OPENMP
+          ip_smp = omp_get_thread_num() + 1
+#endif
           rgba_tmp(1:4) = zero
           call s_lic_pixel_ray_trace_fix_len(mesh%node, mesh%ele,       &
      &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
@@ -137,7 +153,7 @@
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
-     &       icount_int_ele(1,1), icount_pvr_trace(inum),               &
+     &       ico_int_ele_smp(1,ip_smp), icount_pvr_trace(inum),         &
      &       elapse_line_int, iflag_comm)
           rgba_ray(1:4,inum) = rgba_tmp(1:4)
           sample_cnt = sample_cnt + icount_pvr_trace(inum)
@@ -152,6 +168,9 @@
 !           write(*,*) 'check section trace for ', my_rank, inum
 !         end if
 !
+#ifdef _OPENMP
+          ip_smp = omp_get_thread_num() + 1
+#endif
           rgba_tmp(1:4) = zero
           call s_lic_pixel_ray_trace_by_ele(mesh%node, mesh%ele,        &
      &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
@@ -160,7 +179,7 @@
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
-     &       icount_int_ele(1,1), icount_pvr_trace(inum),               &
+     &       ico_int_ele_smp(1,ip_smp), icount_pvr_trace(inum),         &
      &       elapse_line_int, iflag_comm)
           rgba_ray(1:4,inum) = rgba_tmp(1:4)
           sample_cnt = sample_cnt + icount_pvr_trace(inum)
@@ -169,7 +188,24 @@
       end if
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
 !
-      elapse_line_int = elapse_line_int / dble(np_smp)
+!$omp parallel
+      do ip = 1, np_smp_sys
+!$omp workshare
+        icount_int_ele(1:mesh%ele%numele)                               &
+     &      = icount_int_ele(1:mesh%ele%numele)                         &
+     &       + ico_int_ele_smp(1:mesh%ele%numele,ip)
+!$omp end workshare
+      end do
+!$omp end parallel
+!
+      icount_line_int = 0
+!$omp parallel do reduction(+:icount_line_int)
+      do iele = 1, mesh%ele%numele
+        icount_line_int = icount_line_int + icount_int_ele(iele)
+      end do
+!$omp end parallel do
+!
+      elapse_line_int = elapse_line_int / dble(np_smp_sys)
       elapse_rtrace = MPI_WTIME() - elapse_rtrace - elapse_line_int
       if(iflag_LIC_time) then
         elps1%elapsed(ist_elapsed_LIC+3)                                &
@@ -178,47 +214,61 @@
      &       = elps1%elapsed(ist_elapsed_LIC+4) +  elapse_line_int
       end if
 !
-      call cal_trace_time_statistic(mesh%node, lic_p, field_lic,        &
-     &    sample_cnt, elapse_rtrace, elapse_line_int,                   &
+      call cal_trace_time_statistic                                     &
+     &   (mesh%node, mesh%ele, lic_p, field_lic,                        &
+     &    sample_cnt, icount_line_int, elapse_rtrace, elapse_line_int,  &
      &    elapse_ray_trace_out)
 !
-      deallocate(icount_int_ele)
+      deallocate(ico_int_ele_smp, icount_int_ele)
 !
       end subroutine ray_trace_each_lic_image
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_trace_time_statistic(node, lic_p, field_lic,       &
-     &          sample_cnt, elapse_rtrace, elapse_line_int,             &
+      subroutine cal_trace_time_statistic(node, ele, lic_p, field_lic,  &
+     &          sample_cnt, icount_line_int,                            &
+     &          elapse_rtrace, elapse_line_int,                         &
      &          elapse_ray_trace_out)
 !
       use calypso_mpi_int
       use calypso_mpi_real
 !
       type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
 !
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
 !
-      integer(kind = kint) :: sample_cnt
+      integer(kind = kint) :: sample_cnt, icount_line_int
       real(kind = kreal) :: elapse_rtrace, elapse_line_int
 !
       real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
 !
-      integer(kind = kint) :: inum, iflag_comm
-      real(kind = kreal) :: rgba_tmp(4)
+      integer(kind = kint) :: inum
 !
 !      type(noise_mask), allocatable :: n_mask
       integer(kind = kint) :: min_sample_cnt, max_sample_cnt
       real(kind = kreal) :: ave_sample_cnt, std_sample_cnt
+!
+      integer(kind = kint) :: min_line_int_cnt, max_line_int_cnt
+      real(kind = kreal) :: ave_line_int_cnt, std_line_int_cnt
+!
       real(kind = kreal) :: ave_trace_time,   std_trace_time
       real(kind = kreal) :: dmin_trace_time,  dmax_trace_time
       real(kind = kreal) :: ave_line_int_time,  std_line_int_time
       real(kind = kreal) :: dmin_line_int_time, dmax_line_int_time
 !
-      real(kind = kreal) :: sq_sample_cnt
+      real(kind = kreal) :: sq_sample_cnt, sq_line_int_cnt
       real(kind = kreal) :: sq_trace_time, sq_line_int_time
+!
+      integer(kind = kint), allocatable :: internal_node_out(:)
+      integer(kind = kint), allocatable :: nnod_masked_out(:)
+      integer(kind = kint), allocatable :: sample_cnt_out(:)
+      integer(kind = kint), allocatable :: icou_line_int_out(:)
+      real(kind = kreal), allocatable :: volume_out(:)
+      real(kind = kreal), allocatable :: elapse_rtrace_out(:)
+      real(kind = kreal), allocatable :: elapse_line_out(:)
 !
 !
 !      if(i_debug .gt. 0) write(*,*)                                    &
@@ -231,7 +281,10 @@
      &   (elapse_line_int, ave_line_int_time, MPI_SUM)
       call calypso_mpi_allreduce_one_int                                &
      &   (sample_cnt, min_sample_cnt, MPI_SUM)
-      ave_sample_cnt = dble(min_sample_cnt)
+      call calypso_mpi_allreduce_one_int                                &
+     &   (icount_line_int, min_line_int_cnt, MPI_SUM)
+      ave_sample_cnt =   dble(min_sample_cnt)
+      ave_line_int_cnt = dble(min_line_int_cnt)
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (elapse_rtrace, dmin_trace_time, MPI_MIN)
@@ -239,6 +292,8 @@
      &   (elapse_line_int, dmin_line_int_time, MPI_MIN)
       call calypso_mpi_allreduce_one_int                                &
      &   (sample_cnt, min_sample_cnt, MPI_MIN)
+      call calypso_mpi_allreduce_one_int                                &
+     &   (icount_line_int, min_line_int_cnt, MPI_MIN)
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (elapse_rtrace, dmax_trace_time, MPI_MAX)
@@ -246,14 +301,18 @@
      &   (elapse_line_int, dmax_line_int_time, MPI_MAX)
       call calypso_mpi_allreduce_one_int                                &
      &   (sample_cnt, max_sample_cnt, MPI_MAX)
+      call calypso_mpi_allreduce_one_int                                &
+     &   (icount_line_int, max_line_int_cnt, MPI_MAX)
 !
       ave_trace_time =    ave_trace_time / dble(nprocs)
       ave_line_int_time = ave_line_int_time / dble(nprocs)
       ave_sample_cnt =    ave_sample_cnt / dble(nprocs)
+      ave_line_int_cnt =  ave_line_int_cnt / dble(nprocs)
 !
       sq_trace_time =    (elapse_rtrace -    ave_trace_time)**2
       sq_line_int_time = (elapse_line_int -  ave_line_int_time)**2
       sq_sample_cnt =    (dble(sample_cnt) - ave_sample_cnt)**2
+      sq_line_int_cnt =  (dble(icount_line_int) - ave_line_int_cnt)**2
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (sq_trace_time,    std_trace_time, MPI_SUM)
@@ -261,21 +320,28 @@
      &   (sq_line_int_time, std_line_int_time, MPI_SUM)
       call calypso_mpi_allreduce_one_real                               &
      &   (sq_sample_cnt,    std_sample_cnt, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (sq_line_int_cnt,  std_line_int_cnt, MPI_SUM)
 !
       std_trace_time =    sqrt(std_trace_time / dble(nprocs))
       std_line_int_time = sqrt(std_line_int_time / dble(nprocs))
       std_sample_cnt =    sqrt(std_sample_cnt / dble(nprocs))
+      std_line_int_cnt =  sqrt(std_line_int_cnt / dble(nprocs))
 !
       if(my_rank .eq. 0) then
         write(*,*) 'Trace counts, rendering, line_integration'
         write(*,'(a,1p3e15.7)') 'Average:   ',                          &
-     &          ave_sample_cnt, ave_trace_time, ave_line_int_time
+     &          ave_sample_cnt, ave_line_int_cnt,                       &
+     &          ave_trace_time, ave_line_int_time
         write(*,'(a,1p3e15.7)') 'Deviation: ',                          &
-     &          std_sample_cnt, std_trace_time, std_line_int_time
+     &          std_sample_cnt, std_line_int_cnt,                       &
+     &          std_trace_time, std_line_int_time
         write(*,'(a,i15,1p2e15.7)') 'Minimum:   ',                      &
-     &          min_sample_cnt, dmin_trace_time, dmin_line_int_time
+     &          min_sample_cnt, min_line_int_cnt,                       &
+     &          dmin_trace_time, dmin_line_int_time
         write(*,'(a,i15,1p2e15.7)') 'Maximum:   ',                      &
-     &          max_sample_cnt, dmax_trace_time, dmax_line_int_time
+     &          max_sample_cnt, max_line_int_cnt,                       &
+     &          dmax_trace_time, dmax_line_int_time
       end if
 !
       elapse_ray_trace_out(1)                                           &
@@ -283,12 +349,24 @@
       elapse_ray_trace_out(2) = elapse_line_int                         &
      &     / dble(nnod_masked_4_LIC(node, lic_p, field_lic))
 !
+      if(my_rank .eq. 0) then
+        allocate(internal_node_out(nprocs))
+        allocate(nnod_masked_out(nprocs))
+        allocate(sample_cnt_out(nprocs))
+        allocate(icou_line_int_out(nprocs))
+        allocate(volume_out(nprocs))
+        allocate(elapse_rtrace_out(nprocs))
+        allocate(elapse_line_out(nprocs))
+      end if
+!
       call calypso_mpi_gather_one_int                                   &
      &   (nnod_masked_4_LIC(node, lic_p, field_lic), nnod_masked_out,0)
       call calypso_mpi_gather_one_int                                   &
      &   (node%internal_node, internal_node_out, 0)
       call calypso_mpi_gather_one_int                                   &
      &   (sample_cnt, sample_cnt_out, 0)
+      call calypso_mpi_gather_one_int                                   &
+     &   (icount_line_int, icou_line_int_out, 0)
       call calypso_mpi_gather_one_real                                  &
      &   (elapse_rtrace, elapse_rtrace_out, 0)
       call calypso_mpi_gather_one_real                                  &
@@ -296,6 +374,24 @@
       call calypso_mpi_gather_one_real                                  &
      &   (ele%volume, volume_out, 0)
 !
+      if(my_rank .eq. 0) then
+        open(999,file='LIC_elapsed.dat', position='APPEND')
+        do inum = 1, nprocs
+          write(*,*) (inum-1), internal_node_out(inum),      &
+     &       nnod_masked_out(inum), volume_out(inum),     &
+     &       sample_cnt_out(inum), icou_line_int_out(inum), &
+     &       elapse_rtrace_out(inum), elapse_line_out(inum)
+        end do
+        close(999)
+!
+        deallocate(internal_node_out)
+        deallocate(nnod_masked_out)
+        deallocate(icou_line_int_out)
+        deallocate(sample_cnt_out)
+        deallocate(volume_out)
+        deallocate(elapse_rtrace_out)
+        deallocate(elapse_line_out)
+      end if
 !
       end subroutine cal_trace_time_statistic
 !
