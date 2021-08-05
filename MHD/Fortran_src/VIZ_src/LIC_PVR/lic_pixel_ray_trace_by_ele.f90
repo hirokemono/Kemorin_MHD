@@ -12,7 +12,8 @@
 !!     &          viewpoint_vec, modelview_mat, projection_mat, lic_p,  &
 !!     &          field_lic, draw_param, color_param, ray_vec4,         &
 !!     &          iflag_check, isurf_org, screen4_st, xx4_st, xi,       &
-!!     &          rgba_ray, icount_line, elapse_trace, iflag_comm)
+!!     &          rgba_ray, icount_int_nod, icount_line, elapse_trace,  &
+!!     &          iflag_comm)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -55,7 +56,7 @@
      &          viewpoint_vec, modelview_mat, projection_mat, lic_p,    &
      &          field_lic, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
-     &          rgba_ray, icount_int_ele, icount_line, elapse_trace,    &
+     &          rgba_ray, icount_int_nod, icount_line, elapse_trace,    &
      &          iflag_comm)
 !
       use set_position_pvr_screen
@@ -84,7 +85,8 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
-      integer(kind = kint), intent(inout) :: icount_int_ele(ele%numele)
+      integer(kind = kint), intent(inout)                               &
+     &                      :: icount_int_nod(node%internal_node)
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
       real(kind = kreal), intent(inout) :: screen4_st(4)
       real(kind = kreal), intent(inout) :: xx4_st(4), xi(2)
@@ -95,7 +97,7 @@
 !
       integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org, i_psf
-      integer(kind = kint) :: iflag_hit, iflag
+      integer(kind = kint) :: k1, inod, iflag_hit, iflag
       real(kind = kreal) :: screen4_tgt(4)
       real(kind = kreal) :: xx4_model_sf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
@@ -267,7 +269,13 @@
      &        r_mid, vec4_mid, field_lic%s_lic,                         &
      &        field_lic%v_lic, xx4_lic, isurf_end,                      &
      &        iter_tmp, iflag_lic, rlic_grad)
-          icount_int_ele(iele) = icount_int_ele(iele) + iter_tmp
+!
+          do k1 = 1, ele%nnod_4_ele
+            inod = ele%ie(iele,k1)
+            if(inod .le. node%internal_node) then
+              icount_int_nod(inod) = icount_int_nod(inod) + iter_tmp
+            end if
+          end do
 !
           ave_ray_len = ray_total_len / icount_line_cur_ray
 !
