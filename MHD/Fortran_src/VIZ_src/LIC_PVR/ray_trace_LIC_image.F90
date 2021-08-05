@@ -372,7 +372,7 @@
       call calypso_mpi_gather_one_real                                  &
      &   (elapse_line_int, elapse_line_out, 0)
       call calypso_mpi_gather_one_real                                  &
-     &   (ele%volume, volume_out, 0)
+     &   (ele%volume_local, volume_out, 0)
 !
       if(my_rank .eq. 0) then
         open(999,file='LIC_elapsed.dat', position='APPEND')

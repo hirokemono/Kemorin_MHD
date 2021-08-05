@@ -1,10 +1,14 @@
-!
-!     module sum_volume_of_domain
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        Modified by H. Matsui on Aug., 2006
-!
+!>@file  sum_volume_of_domain.f90
+!!       module sum_volume_of_domain
+!!
+!!@author H. Matsui and H.Okuda
+!!@date    programmed by H.Matsui and H.Okuda
+!!@n                                    in July 2000 (ver 1.1)
+!!@n        Modified by H. Matsui in Aug., 2006
+!!
+!> @brief get local volume size for internal subdomain
+!!
+!!@verbatim
 !!       subroutine allocate_volume_4_smp
 !!       subroutine deallocate_volume_4_smp
 !!
@@ -13,6 +17,7 @@
 !!       subroutine sum_of_volume_by_ele_table(numele, interior_ele,    &
 !!     &           volume_ele, numele_field, iele_fsmp_stack,           &
 !!     &           iele_field, vol_local)
+!!@endverbatim
 !
       module sum_volume_of_domain
 !
@@ -22,7 +27,6 @@
 !
       implicit none
 !
-      real(kind=kreal) :: vol_local
       real(kind=kreal), allocatable :: xvol_smp(:)
       private :: xvol_smp
 !

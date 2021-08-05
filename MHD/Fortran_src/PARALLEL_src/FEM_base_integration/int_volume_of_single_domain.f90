@@ -122,8 +122,9 @@
 !
 !      write(*,*) 'sum_4_volume'
       call sum_4_volume(ele%numele, ele%interior_ele,                   &
-     &    ele%istack_ele_smp, ele%volume_ele, ele%volume)
+     &    ele%istack_ele_smp, ele%volume_ele, ele%volume_local)
 !
+      ele%volume = ele%volume_local
       if (ele%volume .eq. 0.0d0) then
         ele%a_vol = 1.0d30
       else

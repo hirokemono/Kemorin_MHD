@@ -179,11 +179,11 @@
 !
 !      write(*,*) 'sum_4_volume'
       call sum_4_volume(ele%numele, ele%interior_ele,                   &
-     &    ele%istack_ele_smp, ele%volume_ele, vol_local)
+     &    ele%istack_ele_smp, ele%volume_ele, ele%volume_local)
 !
 !      write(*,*) 'MPI_allREDUCE'
       call calypso_mpi_allreduce_one_real                              &
-     &   (vol_local, ele%volume, MPI_SUM)
+     &   (ele%volume_local, ele%volume, MPI_SUM)
 !
       if (ele%volume .eq. 0.0d0) then
         ele%a_vol = 1.0d30
