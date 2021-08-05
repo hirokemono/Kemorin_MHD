@@ -330,16 +330,16 @@
 !
       if(my_rank .eq. 0) then
         write(*,*) 'Trace counts, rendering, line_integration'
-        write(*,'(a,1p3e15.7)') 'Average:   ',                          &
+        write(*,'(a,1p4e15.7)') 'Average:   ',                          &
      &          ave_sample_cnt, ave_line_int_cnt,                       &
      &          ave_trace_time, ave_line_int_time
-        write(*,'(a,1p3e15.7)') 'Deviation: ',                          &
+        write(*,'(a,1p4e15.7)') 'Deviation: ',                          &
      &          std_sample_cnt, std_line_int_cnt,                       &
      &          std_trace_time, std_line_int_time
-        write(*,'(a,i15,1p2e15.7)') 'Minimum:   ',                      &
+        write(*,'(a,2i15,1p2e15.7)') 'Minimum:   ',                     &
      &          min_sample_cnt, min_line_int_cnt,                       &
      &          dmin_trace_time, dmin_line_int_time
-        write(*,'(a,i15,1p2e15.7)') 'Maximum:   ',                      &
+        write(*,'(a,2i15,1p2e15.7)') 'Maximum:   ',                     &
      &          max_sample_cnt, max_line_int_cnt,                       &
      &          dmax_trace_time, dmax_line_int_time
       end if
@@ -376,10 +376,14 @@
 !
       if(my_rank .eq. 0) then
         open(999,file='LIC_elapsed.dat', position='APPEND')
+        write(999,'(3a)')  'rank, internal_nod, nod_masked, volume, ',  &
+     &                  ' ray_trace_count, line_integration_count, ',   &
+     &                  ' ray_trace_count, line_integration_count'
         do inum = 1, nprocs
-          write(*,*) (inum-1), internal_node_out(inum),      &
-     &       nnod_masked_out(inum), volume_out(inum),     &
-     &       sample_cnt_out(inum), icou_line_int_out(inum), &
+          write(999,'(3i15,1pe15.7,2i15,1p2e15.7)')                     &
+     &       (inum-1), internal_node_out(inum),                         &
+     &       nnod_masked_out(inum), volume_out(inum),                   &
+     &       sample_cnt_out(inum), icou_line_int_out(inum),             &
      &       elapse_rtrace_out(inum), elapse_line_out(inum)
         end do
         close(999)
