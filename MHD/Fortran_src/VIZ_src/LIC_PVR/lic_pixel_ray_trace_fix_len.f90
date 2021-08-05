@@ -12,7 +12,8 @@
 !!     &          viewpoint_vec, modelview_mat, projection_mat, lic_p,  &
 !!     &          field_lic, draw_param, color_param, ray_vec4,         &
 !!     &          iflag_check, isurf_org, screen4_st, xx4_st, xi,       &
-!!     &          rgba_ray, icount_line, elapse_trace, iflag_comm)
+!!     &          rgba_ray, icount_int_ele, icount_line, elapse_trace,  &
+!!     &          iflag_comm)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -55,7 +56,8 @@
      &          viewpoint_vec, modelview_mat, projection_mat, lic_p,    &
      &          field_lic, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
-     &          rgba_ray, icount_line, elapse_trace, iflag_comm)
+     &          rgba_ray, icount_int_ele, icount_line, elapse_trace,    &
+     &          iflag_comm)
 !
       use set_position_pvr_screen
       use cal_field_on_surf_viz
@@ -83,6 +85,7 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
+      integer(kind = kint), intent(inout) :: icount_int_ele(ele%numele)
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
       real(kind = kreal), intent(inout) :: screen4_st(4)
       real(kind = kreal), intent(inout) :: xx4_st(4), xi(2)
@@ -103,7 +106,8 @@
       real(kind = kreal) :: xx4_lic(4), xx4_lic_last(4)
       real(kind = kreal) :: scl_org(1), scl_tgt(1), scl_mid(1)
       real(kind = kreal) :: vec4_org(4), vec4_tgt(4), vec4_mid(4)
-      integer(kind = kint) :: isurf_orgs(2,3), i, iflag_lic
+      integer(kind = kint) :: iele_4_surf_org(2,3)
+      integer(kind = kint) :: i, iter_tmp, iflag_lic
 
       integer(kind = kint) :: icount_line_cur_ray = 0, step_cnt
       real(kind = kreal) :: ray_len_left, ray_left, ray_len, ratio
@@ -201,11 +205,11 @@
           isurf_org(1) = surf%iele_4_surf(isurf_end,2,1)
           isurf_org(2) = surf%iele_4_surf(isurf_end,2,2)
         end if
-        ! new element surface info
+! new element surface info
         do i = 1, 2
-          isurf_orgs(i,1) = surf%iele_4_surf(isurf_end,i,1)
-          isurf_orgs(i,2) = surf%iele_4_surf(isurf_end,i,2)
-          isurf_orgs(i,3) = isurf_org(3)
+          iele_4_surf_org(i,1) = surf%iele_4_surf(isurf_end,i,1)
+          iele_4_surf_org(i,2) = surf%iele_4_surf(isurf_end,i,2)
+          iele_4_surf_org(i,3) = isurf_org(3)
         end do
 !   find 3D coordinate of exit point on exit surface
         call cal_field_on_surf_vect4                                    &
@@ -263,10 +267,11 @@
               vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
      &                       + vec4_tgt(1:4) * ratio
               call cal_lic_on_surf_vector                               &
-     &           (node, ele, surf, isurf_orgs, xi, lic_p,               &
+     &           (node, ele, surf, iele_4_surf_org, xi, lic_p,          &
      &            r_mid, vec4_mid, field_lic%s_lic(1,1),                &
      &            field_lic%v_lic, xx4_lic, isurf_end,                  &
-     &            iflag_lic, rlic_grad)
+     &            iter_tmp, iflag_lic, rlic_grad)
+              icount_int_ele(iele) = icount_int_ele(iele) + iter_tmp
 !
   !   normalize gradient
               if(iflag_lic .gt. 0) then

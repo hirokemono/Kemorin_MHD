@@ -3,7 +3,7 @@
 #
 
 LIC_DIR = $$(VIZ_SRCDIR)/LIC_PVR
-SOURCES = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90 *.F90)
 MOD_LIC = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #

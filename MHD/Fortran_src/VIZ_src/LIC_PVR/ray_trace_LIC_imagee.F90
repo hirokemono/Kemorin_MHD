@@ -1,4 +1,4 @@
-!>@file   ray_trace_LIC_image.f90
+!>@file   ray_trace_LIC_image.F90
 !!@brief  module ray_trace_LIC_image
 !!
 !!@author  Y. Liao and H. Matsui
@@ -102,6 +102,7 @@
       real(kind = kreal) :: rgba_tmp(4)
 !
 !      type(noise_mask), allocatable :: n_mask
+      integer(kind = kint), allocatable :: icount_int_ele(:,:)
       integer(kind = kint) :: sample_cnt
       real(kind = kreal) :: ave_sample_cnt
       real(kind = kreal) :: std_sample_cnt, sq_sample_cnt
@@ -113,6 +114,8 @@
       real(kind = kreal) :: ave_line_int_time,  std_line_int_time
       real(kind = kreal) :: dmin_line_int_time, dmax_line_int_time
 !
+!
+      deallocate(icount_int_ele(mesh%ele%numele,1))
 !
       sample_cnt = 0
       elapse_line_int = 0.0d0
@@ -133,7 +136,8 @@
      &       lic_p, field_lic, draw_param, color_param,                 &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
-     &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
+     &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
+     &       icount_int_ele(1,1), icount_pvr_trace(inum),               &
      &       elapse_line_int, iflag_comm)
           rgba_ray(1:4,inum) = rgba_tmp(1:4)
           sample_cnt = sample_cnt + icount_pvr_trace(inum)
@@ -155,7 +159,8 @@
      &       lic_p, field_lic, draw_param, color_param,                 &
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
-     &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
+     &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
+     &       icount_int_ele(1,1), icount_pvr_trace(inum),               &
      &       elapse_line_int, iflag_comm)
           rgba_ray(1:4,inum) = rgba_tmp(1:4)
           sample_cnt = sample_cnt + icount_pvr_trace(inum)
@@ -176,6 +181,8 @@
       call cal_trace_time_statistic(mesh%node, lic_p, field_lic,        &
      &    sample_cnt, elapse_rtrace, elapse_line_int,                   &
      &    elapse_ray_trace_out)
+!
+      deallocate(icount_int_ele)
 !
       end subroutine ray_trace_each_lic_image
 !
@@ -275,6 +282,20 @@
      &     = elapse_rtrace / dble(node%internal_node)
       elapse_ray_trace_out(2) = elapse_line_int                         &
      &     / dble(nnod_masked_4_LIC(node, lic_p, field_lic))
+!
+      call calypso_mpi_gather_one_int                                   &
+     &   (nnod_masked_4_LIC(node, lic_p, field_lic), nnod_masked_out,0)
+      call calypso_mpi_gather_one_int                                   &
+     &   (node%internal_node, internal_node_out, 0)
+      call calypso_mpi_gather_one_int                                   &
+     &   (sample_cnt, sample_cnt_out, 0)
+      call calypso_mpi_gather_one_real                                  &
+     &   (elapse_rtrace, elapse_rtrace_out, 0)
+      call calypso_mpi_gather_one_real                                  &
+     &   (elapse_line_int, elapse_line_out, 0)
+      call calypso_mpi_gather_one_real                                  &
+     &   (ele%volume, volume_out, 0)
+!
 !
       end subroutine cal_trace_time_statistic
 !

@@ -8,20 +8,21 @@
 !!
 !!@verbatim
 !!      subroutine cal_lic_on_surf_vector(node, ele, surf,              &
-!!     &          isurf_orgs, xi, lic_p, r_org, vec4_org, ref_nod,      &
-!!     &          v_nod, xx4_org, isurf, iflag_comm, rlic_grad)
+!!     &          iele_4_surf_org, xi, lic_p, r_org, vec4_org, ref_nod, &
+!!     &          v_nod, xx4_org, isurf_end, int_iter, iflag_comm,      &
+!!     &          rlic_grad)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(lic_parameters), intent(in) :: lic_p
-!!        integer(kind = kint), intent(in) :: isurf
+!!        integer(kind = kint), intent(in) :: isurf_end
 !!        real(kind = kreal), intent(inout) :: xi(2)
 !!        real(kind = kreal), intent(in) :: v_nod(node%numnod,3)
 !!        real(kind = kreal), intent(in)                                &
 !!     &                   :: ref_nod(node%numnod,lic_p%num_masking)
 !!        real(kind = kreal), intent(in) :: xx4_org(4), vec4_org(4)
 !!        real(kind = kreal), intent(inout) :: rlic_grad(0:3), r_org(:)
-!!        integer(kind = kint), intent(inout) :: iflag_comm
+!!        integer(kind = kint), intent(inout) :: iflag_comm, int_iter
 !!
 !!      subroutine cal_surf_field_value_2d(nd, xi, fd, ft)
 !!@endverbatim
@@ -46,11 +47,12 @@
 !  ---------------------------------------------------------------------
 !
 !>   xx_org is the point 3D coord, xi is local 2D coord on the surface
-!!   isurf is current surface subdomain id
+!!   isurf_end is current surface subdomain id
 !!   isurf_org is an array with element id and surface element id(1-6)
       subroutine cal_lic_on_surf_vector(node, ele, surf,                &
-     &          isurf_orgs, xi, lic_p, r_org, vec4_org, ref_nod,        &
-     &          v_nod, xx4_org, isurf, iflag_comm, rlic_grad)
+     &          iele_4_surf_org, xi, lic_p, r_org, vec4_org, ref_nod,   &
+     &          v_nod, xx4_org, isurf_end, int_iter, iflag_comm,        &
+     &          rlic_grad)
 
       use m_geometry_constants
       use calypso_mpi
@@ -64,8 +66,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(lic_parameters), intent(in) :: lic_p
-      integer(kind = kint), intent(in) :: isurf_orgs(2,3)
-      integer(kind = kint), intent(in) :: isurf
+      integer(kind = kint), intent(in) :: iele_4_surf_org(2,3)
+      integer(kind = kint), intent(in) :: isurf_end
 !
       real(kind = kreal), intent(inout) :: xi(2)
       real(kind = kreal), intent(in) :: v_nod(node%numnod,3)
@@ -73,14 +75,14 @@
      &                   :: ref_nod(node%numnod,lic_p%num_masking)
       real(kind = kreal), intent(in) :: xx4_org(4), vec4_org(4)
       real(kind = kreal), intent(inout) :: rlic_grad(0:3), r_org(:)
-      integer(kind = kint), intent(inout) :: iflag_comm
+      integer(kind = kint), intent(inout) :: iflag_comm, int_iter
 !        type(noise_mask), intent(inout) :: n_mask
 
       real(kind = kreal) :: xx4_ele_surf(4,num_linear_sf,nsurf_4_ele)
       real(kind = kreal) :: step_vec4(4), new_pos4(4)
       real(kind = kreal) :: rlic_grad_v(0:3)
-      integer(kind = kint) :: ilic_suf_org(3), icur_sf
-      integer(kind = kint) :: i, isf_tgt, k_mid
+      integer(kind = kint) :: ilic_suf_org(3)
+      integer(kind = kint) :: i, isf_tgt, k_mid, iter_tmp
       real(kind = kreal) :: n_v, k_area
       real(kind = kreal) :: rlic_grad_f(0:3), k_area_f
       real(kind = kreal) :: rlic_grad_b(0:3), k_area_b
@@ -89,20 +91,20 @@
 
 
       iflag_comm = 0
+      int_iter = 0
       k_area = 0.0
 
 !     initial convolution integration at origin point
       rlic_grad_v(0) = 0.0
       rlic_grad(0:3) = 0.0
-      icur_sf = isurf
       n_v = 0.0
       do i = 1, 2
-        iele = isurf_orgs(i,1)
-        isf_org = isurf_orgs(i,2)
+        iele = iele_4_surf_org(i,1)
+        isf_org = iele_4_surf_org(i,2)
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &              "ele: ", iele, "local surf: ", isf_org
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
-     &              "global surf: ", isurf, "surf of ele",              &
+     &              "End surface: ", isurf_end, "surf of ele",          &
      &               surf%isf_4_ele(iele, isf_org)
         if(iele .le. izero .or. iele .gt. ele%numele) then
           if(i_debug .eq. 1) write(50+my_rank,*)                        &
@@ -120,11 +122,11 @@
       rlic_grad(0:3) = rlic_grad_v(0:3) * lic_p%kernel_t%k_ary(k_mid)
 
 ! if current surface is exterior surface, then return.
-!      if((surf%interior_surf(icur_sf) .eq. izero)                      &
-!     &     .or. (icur_sf .eq. izero)) then
-      if(icur_sf .eq. izero) then
+!      if((surf%interior_surf(isurf_end) .eq. izero)                    &
+!     &     .or. (isurf_end .eq. izero)) then
+      if(isurf_end .eq. izero) then
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
-     &     "extorior surface, end-------------------------", icur_sf
+     &     "extorior surface, end-------------------------", isurf_end
         iflag_comm = -1
         return
       end if
@@ -140,8 +142,8 @@
       step_vec4(1:4) = vec4_org(1:4)
       new_pos4(1:4) =  xx4_org(1:4)
       do i = 1, 2
-        iele = isurf_orgs(i,1)
-        isf_org = isurf_orgs(i,2)
+        iele = iele_4_surf_org(i,1)
+        isf_org = iele_4_surf_org(i,2)
         call position_on_each_ele_surfs                                 &
      &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
         call find_line_end_in_1ele(iflag_forward_line,                  &
@@ -150,7 +152,7 @@
         if(isf_tgt .gt. 0) then
           !write(50+my_rank, *) "find exit point in neighbor element."
           iflag_found_sf = 1
-          ilic_suf_org(1:2) = isurf_orgs(i,1:2)
+          ilic_suf_org(1:2) = iele_4_surf_org(i,1:2)
           exit
         end if
       end do
@@ -166,7 +168,9 @@
      &                        ilic_suf_org(1), ilic_suf_org(2)
         call s_cal_lic_from_point(node, surf, lic_p,                    &
      &      iflag_forward_line, v_nod, ilic_suf_org, new_pos4,          &
-     &      step_vec4, ref_nod, rlic_grad_v, k_area_f, iflag_comm_f)
+     &      step_vec4, ref_nod, rlic_grad_v, k_area_f, iter_tmp,        &
+     &      iflag_comm_f)
+        int_iter = int_iter + iter_tmp
         rlic_grad_f(0:3) = rlic_grad_f(0:3) + rlic_grad_v(0:3)
       end if
       if(i_debug .eq. 1) write(50+my_rank,*)                            &
@@ -184,8 +188,8 @@
       step_vec4(1:4) = vec4_org(1:4)
       new_pos4(1:4) =  xx4_org(1:4)
       do i = 1, 2
-        iele = isurf_orgs(i,1)
-        isf_org = isurf_orgs(i,2)
+        iele = iele_4_surf_org(i,1)
+        isf_org = iele_4_surf_org(i,2)
         call position_on_each_ele_surfs                                 &
      &     (surf, node%numnod, node%xx, iele, xx4_ele_surf)
         call find_line_end_in_1ele(iflag_backward_line,                 &
@@ -194,7 +198,7 @@
         if(isf_tgt .gt. 0) then
           !write(50+my_rank, *) "find exit point in neighbor element."
           iflag_found_sf = 1
-          ilic_suf_org(1:2) = isurf_orgs(i,1:2)
+          ilic_suf_org(1:2) = iele_4_surf_org(i,1:2)
           exit
         end if
       end do
@@ -210,9 +214,10 @@
      &       "start cal lic, ele and surf: ",                           &
      &       ilic_suf_org(1), ilic_suf_org(2)
         call s_cal_lic_from_point(node, surf, lic_p,                    &
-     &      iflag_backward_line, v_nod, ilic_suf_org,                   &
-     &      new_pos4, step_vec4, ref_nod, rlic_grad_v, k_area_b,        &
+     &      iflag_backward_line, v_nod, ilic_suf_org, new_pos4,         &
+     &      step_vec4, ref_nod, rlic_grad_v, k_area_b, iter_tmp,        &
      &      iflag_comm_b)
+        int_iter= int_iter + iter_tmp
         rlic_grad_b(0:3) = rlic_grad_b(0:3) + rlic_grad_v(0:3)
       end if
       if(i_debug .eq. 1) write(50+my_rank,*)                            &
@@ -238,8 +243,8 @@
 !
       subroutine s_cal_lic_from_point(node, surf, lic_p,                &
      &          iflag_dir, vect_nod, isurf_org, x4_start, v4_start,     &
-     &          ref_nod, rlic_grad_v, k_area, iflag_comm)
-
+     &          ref_nod, rlic_grad_v, k_area, int_iter, iflag_comm)
+!
       use t_noise_node_data
       use cal_noise_value
       use cal_field_on_surf_viz
@@ -263,6 +268,7 @@
 !
       real(kind = kreal), intent(inout) :: rlic_grad_v(0:3)
       real(kind = kreal), intent(inout) :: k_area
+      integer(kind = kint), intent(inout) :: int_iter
 !
       integer(kind = kint) :: isf_tgt, isurf_end, isurf_start
       integer(kind = kint) :: iele, isf_org
@@ -282,7 +288,8 @@
 !
 !
 !init local variables
-      i_iter = 0
+      i_iter =   0
+      int_iter = 0
 ! index of noise value
       i_n = 0
 ! noise value
@@ -468,9 +475,10 @@
      &                    + rnoise_grad(0:3) * k_value                  &
      &                     * residual(2) * astep_len
           k_area = k_area + k_value * residual(2) * astep_len
-          
+          int_iter = int_iter + nstep_int(1) + nstep_int(2) + 1
         else
           s_int = len_sum + step_len
+          int_iter = int_iter + 1
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value) 
           nv_sum = nv_sum + rnoise_grad(0)
