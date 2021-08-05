@@ -234,7 +234,7 @@
 !
          flag_elapsed = .FALSE.
          if(lic_param%each_part_p%iflag_repart_ref                      &
-&                 .eq. i_TIME_BASED) flag_elapsed = .TRUE.
+     &                 .eq. i_TIME_BASED) flag_elapsed = .TRUE.
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_param%num_masking, repart_data%field_lic)
@@ -318,6 +318,7 @@
       use set_normal_vectors
       use const_element_comm_tables
       use const_jacobians_3d
+      use int_volume_of_domain
 !
       type(volume_partioning_param), intent(in) :: repart_p
       type(mesh_data), intent(in), target :: geofem
@@ -349,6 +350,14 @@
       call set_max_integration_points(ione, jac_viz%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jac_viz%g_FEM, spfs_T%spf_3d, spfs_T%spf_2d, spfs_T%spf_1d)
+!
+      if(iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
+      call const_jacobian_and_volume(my_rank, nprocs,                   &
+     &    repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
+     &    spfs_T%spf_3d, jac_viz)
+      call dealloc_vol_shape_func(spfs_T%spf_3d)
+!
+!
       if(iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
       call surf_jacobian_sf_grp_normal(my_rank, nprocs,                 &
      &    repart_data%viz_fem%mesh, repart_data%viz_fem%group,          &
