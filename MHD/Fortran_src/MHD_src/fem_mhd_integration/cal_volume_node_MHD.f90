@@ -112,7 +112,7 @@
 !
       if (MHD_mesh%fluid%istack_ele_fld_smp(np_smp)                     &
      &   .eq. MHD_mesh%fluid%istack_ele_fld_smp(0)) then
-        fem_msq%rms_local(ifld_msq%ivol) = ele%volume_local
+        fem_msq%rms_local(ifld_msq%ivol) = mesh%ele%volume_local
       else
         fem_msq%rms_local(ifld_msq%ivol) = vol_fl_local
       end if
