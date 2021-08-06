@@ -228,7 +228,7 @@
 !  -----  Repartition
       if(lic_param%each_part_p%flag_repartition) then
         call link_repart_trace_time_data(geofem%mesh%node,              &
-     &      rep_ref%elapse_rtrace_nod, repart_data%repart_WK)
+     &      rep_ref%elapse_rtrace_nod(1,1), repart_data%repart_WK)
         call s_LIC_re_partition(lic_param%each_part_p, geofem,          &
      &                          ele_comm, next_tbl, repart_data, m_SR)
 !

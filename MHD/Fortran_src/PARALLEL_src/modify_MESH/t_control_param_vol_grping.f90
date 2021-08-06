@@ -33,7 +33,7 @@
 !!      subroutine unlink_repart_trace_time_data(repart_WK)
 !!        type(node_data), intent(in) :: node
 !!        real(kind = kreal), intent(in), target                        &
-!!     &                        :: elapse_rtrace_nod(node%numnod,2)
+!!     &                        :: elapse_rtrace_nod(node%numnod)
 !!        type(volume_partioning_work), intent(inout) :: repart_WK
 !!
 !!      subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
@@ -132,7 +132,7 @@
 !>        pointer of original reference vector
         real(kind = kreal), pointer :: ref_vect(:,:)
 !>        pointer of original reference vector
-        real(kind = kreal), pointer :: ref_repart(:,:)
+        real(kind = kreal), pointer :: ref_repart(:)
 !
 !>        Work area for sleeve extension
         type(sleeve_extension_work) :: sleeve_exp_WK
@@ -234,7 +234,7 @@
 !
       type(node_data), intent(in) :: node
       real(kind = kreal), intent(in), target                            &
-     &                        :: elapse_rtrace_nod(node%numnod,2)
+     &                        :: elapse_rtrace_nod(node%numnod)
 !
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
