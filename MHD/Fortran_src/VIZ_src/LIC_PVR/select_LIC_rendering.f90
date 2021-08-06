@@ -324,12 +324,9 @@
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_TIME_BASED) then
-          call bring_back_rendering_time                                &
-     &       (geofem%mesh, lic_param(i_lic)%each_part_p,                &
-     &        repart_data%viz_fem%mesh, repart_data%mesh_to_viz_tbl,    &
-     &        repart_data%field_lic%count_line_int,                     &
-     &        repart_data%nod_fld_lic%count_line_int,                   &
-     &        rep_ref(i_lic), m_SR)
+          call bring_back_rendering_time(lic_param(i_lic)%each_part_p,  &
+     &        repart_data%mesh_to_viz_tbl, repart_data%field_lic,       &
+     &        repart_data%nod_fld_lic, rep_ref(i_lic), m_SR)
         end if
 !
         call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)

@@ -13,15 +13,12 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!
 !!      subroutine bring_back_rendering_time                            &
-!!     &         (mesh, each_part_p, viz_mesh, mesh_to_viz_tbl,         &
-!!     &          count_int_nod, count_line_int_now, rep_ref, m_SR)
+!!     &         (each_part_p, mesh_to_viz_tbl, field_lic,              &
+!!     &          nod_fld_lic, rep_ref, m_SR)
 !!        type(volume_partioning_param), intent(in) :: each_part_p
 !!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-!!        type(mesh_geometry), intent(in) :: viz_mesh, mesh
-!!        real(kind = kreal), intent(inout)                             &
-!!     &                     :: count_int_nod(viz_mesh%node%numnod)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &                     :: count_line_int_now(mesh%node%numnod)
+!!        type(lic_field_data), intent(in) :: field_lic
+!!        type(lic_field_data), intent(inout) :: nod_fld_lic
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine set_average_line_int_time(mesh, each_part_p,         &
@@ -48,6 +45,7 @@
       end type lic_repart_reference
 !
       private :: alloc_lic_repart_ref, copy_average_elapsed_to_nod
+      private :: copy_line_integration_count
 !
 ! -----------------------------------------------------------------------
 !
@@ -107,34 +105,32 @@
 !  ---------------------------------------------------------------------
 !
       subroutine bring_back_rendering_time                              &
-     &         (mesh, each_part_p, viz_mesh, mesh_to_viz_tbl,           &
-     &          count_int_nod, count_line_int_now, rep_ref, m_SR)
+     &         (each_part_p, mesh_to_viz_tbl, field_lic,                &
+     &          nod_fld_lic, rep_ref, m_SR)
 !
       use t_mesh_SR
-      use t_mesh_data
       use t_calypso_comm_table
       use t_control_param_vol_grping
+      use t_lic_field_data
       use calypso_reverse_send_recv
 !
       type(volume_partioning_param), intent(in) :: each_part_p
       type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-      type(mesh_geometry), intent(in) :: viz_mesh, mesh
-      real(kind = kreal), intent(inout)                                 &
-     &                     :: count_int_nod(viz_mesh%node%numnod)
+      type(lic_field_data), intent(in) :: field_lic
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                     :: count_line_int_now(mesh%node%numnod)
+      type(lic_field_data), intent(inout) :: nod_fld_lic
       type(lic_repart_reference), intent(inout) :: rep_ref
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
       call calypso_reverse_SR_1(mesh_to_viz_tbl,                        &
-     &    viz_mesh%node%numnod, mesh%node%numnod,                       &
-     &    count_int_nod, count_line_int_now, m_SR%SR_sig, m_SR%SR_r)
+     &    field_lic%nnod_lic, nod_fld_lic%nnod_lic,                     &
+     &    field_lic%count_line_int, nod_fld_lic%count_line_int,         &
+     &    m_SR%SR_sig, m_SR%SR_r)
 !
       call copy_line_integration_count                                  &
-     &   (mesh%node, each_part_p%weight_prev,                           &
-     &    count_line_int_now, rep_ref%elapse_rtrace_nod)
+     &   (nod_fld_lic%nnod_lic, each_part_p%weight_prev,                &
+     &    nod_fld_lic%count_line_int, rep_ref%elapse_rtrace_nod)
 !
       end subroutine bring_back_rendering_time
 !
@@ -173,21 +169,19 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_line_integration_count(node, weight_prev,         &
+      subroutine copy_line_integration_count(numnod, weight_prev,       &
      &          count_line_int, ref_repart_mesh)
 !
-      use t_geometry_data
-!
-      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: weight_prev
-      real(kind = kreal), intent(in) :: count_line_int(node%numnod)
-      real(kind = kreal), intent(inout) :: ref_repart_mesh(node%numnod)
+      real(kind = kreal), intent(in) :: count_line_int(numnod)
+      real(kind = kreal), intent(inout) :: ref_repart_mesh(numnod)
 !
       integer(kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod = 1, node%numnod
+      do inod = 1, numnod
         ref_repart_mesh(inod) = weight_prev * count_line_int(inod)      &
      &               + (1.0d0 - weight_prev) * ref_repart_mesh(inod)
       end do
