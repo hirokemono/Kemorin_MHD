@@ -115,14 +115,8 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
       integer(kind = kint) :: i_lic, nmax_masking
-      logical :: flag_mask, flag_sleeve_wk, flag_elapsed
+      logical :: flag_mask, flag_sleeve_wk
 !
-!
-      flag_elapsed = .FALSE.
-      do i_lic = 1, num_lic
-        if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
-     &                 .eq. i_TIME_BASED) flag_elapsed = .TRUE.
-      end do
 !
       nmax_masking = 0
       flag_mask =      .TRUE.
@@ -223,8 +217,6 @@
       type(lic_parameters), intent(inout) :: lic_param
       type(mesh_SR), intent(inout) :: m_SR
 !
-      logical :: flag_elapsed
-!
 !  -----  Repartition
       if(lic_param%each_part_p%flag_repartition) then
         call link_repart_trace_time_data(geofem%mesh%node,              &
@@ -232,9 +224,6 @@
         call s_LIC_re_partition(lic_param%each_part_p, geofem,          &
      &                          ele_comm, next_tbl, repart_data, m_SR)
 !
-         flag_elapsed = .FALSE.
-         if(lic_param%each_part_p%iflag_repart_ref                      &
-     &                 .eq. i_TIME_BASED) flag_elapsed = .TRUE.
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_param%num_masking, repart_data%field_lic)

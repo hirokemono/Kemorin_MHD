@@ -148,10 +148,7 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_lic
-      real(kind = kreal), allocatable :: count_int_nod(:)
 !
-!
-        allocate(count_int_nod(repart_data%viz_fem%mesh%node%numnod))
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, pvr%num_pvr
@@ -166,14 +163,12 @@
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_anaglyph at once'
-!$omp parallel workshare
-        count_int_nod(1:repart_data%viz_fem%mesh%node%numnod) = 0.0d0
-!$omp end parallel workshare
+        call reset_lic_count_line_int(repart_data%field_lic)
         call s_each_LIC_anaglyph(istep_lic, time, repart_data%viz_fem,  &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      pvr%pvr_rgb(i_lic), m_SR%SR_sig, m_SR%SR_r,                 &
-     &      lic_param(i_lic)%elapse_ray_trace, count_int_nod)
+     &      lic_param(i_lic)%elapse_ray_trace, repart_data%field_lic%count_line_int)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -198,20 +193,17 @@
         call set_LIC_each_field(geofem, nod_fld, repart_p,              &
      &                          lic_param(i_lic), repart_data, m_SR)
 !
-!$omp parallel workshare
-        count_int_nod(1:repart_data%viz_fem%mesh%node%numnod) = 0.0d0
-!$omp end parallel workshare
         write(*,*) 'anaglyph_lic_rendering_w_rot once', i_lic
+        call reset_lic_count_line_int(repart_data%field_lic)
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
      &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
      &      repart_data%field_lic, lic_param(i_lic),                    &
      &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                          &
-     &      lic_param(i_lic)%elapse_ray_trace, count_int_nod)
+     &      lic_param(i_lic)%elapse_ray_trace, repart_data%field_lic%count_line_int)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
-      deallocate(count_int_nod)
 !
       end subroutine LIC_anaglyph_w_shared_mesh
 !
@@ -247,8 +239,6 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_lic
-      real(kind = kreal), allocatable :: count_int_nod(:)
-      real(kind = kreal), allocatable :: count_integrate_tmp(:)
 !
 !
       do i_lic = 1, pvr%num_pvr
@@ -265,14 +255,9 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
         call set_LIC_each_field(geofem, nod_fld, repart_p,              &
      &                          lic_param(i_lic), repart_data, m_SR)
-        allocate(count_int_nod(repart_data%viz_fem%mesh%node%numnod))
-!$omp parallel workshare
-        count_int_nod(1:repart_data%viz_fem%mesh%node%numnod) = 0.0d0
-!$omp end parallel workshare
-        allocate(count_integrate_tmp(geofem%mesh%node%numnod))
-!$omp parallel workshare
-        count_integrate_tmp(1:geofem%mesh%node%numnod) = 0.0d0
-!$omp end parallel workshare
+!
+        call reset_lic_count_line_int(repart_data%field_lic)
+        call reset_lic_count_line_int(repart_data%nod_fld_lic)
 !
         if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
         call each_anaglyph_PVR_init(i_lic,                              &
@@ -291,7 +276,7 @@
      &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),            &
      &        pvr%pvr_rgb(i_lic), m_SR%SR_sig, m_SR%SR_r,               &
-     &        lic_param(i_lic)%elapse_ray_trace, count_int_nod)
+     &        lic_param(i_lic)%elapse_ray_trace, repart_data%field_lic%count_line_int)
           call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),       &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -302,7 +287,7 @@
      &        pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                 &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),            &
      &        m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                        &
-     &        lic_param(i_lic)%elapse_ray_trace, count_int_nod)
+     &        lic_param(i_lic)%elapse_ray_trace, repart_data%field_lic%count_line_int)
          call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
          call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
          call dealloc_iflag_pvr_used_ele                                &
@@ -314,14 +299,14 @@
           call bring_back_rendering_time                                &
      &       (geofem%mesh, lic_param(i_lic)%each_part_p,                &
      &        repart_data%viz_fem%mesh, repart_data%mesh_to_viz_tbl,    &
-     &        count_int_nod, count_integrate_tmp, rep_ref(i_lic), m_SR)
+     &        repart_data%field_lic%count_line_int,                     &
+     &        repart_data%nod_fld_lic%count_line_int,                   &
+     &        rep_ref(i_lic), m_SR)
         end if
 !
         call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
-        deallocate(count_int_nod)
-        deallocate(count_integrate_tmp)
       end do
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
