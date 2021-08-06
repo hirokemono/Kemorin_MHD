@@ -78,8 +78,6 @@
       use t_geometries_in_pvr_screen
       use t_lic_field_data
       use t_control_param_LIC
-      use t_solver_SR
-      use t_solver_SR_int
       use t_lic_repart_reference
       use t_mesh_SR
 !
@@ -130,7 +128,7 @@
         call lic_rendering_with_fixed_view(istep_pvr, time,             &
      &      viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,        &
      &      field_lic, pvr_param,  pvr_proj(i_img), pvr_rgb(i_img),     &
-     &      m_SR%SR_sig, m_SR%SR_r, rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
+     &      rep_ref_viz, m_SR)
       end do
 !
       end subroutine s_each_LIC_rendering
@@ -167,15 +165,15 @@
 !   Left eye
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb, m_SR%SR_sig, m_SR%SR_r,     &
-     &    rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
+     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb,                   &
+     &    rep_ref_viz, m_SR)
       call store_left_eye_image(pvr_rgb)
 !
 !   Right eye
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb, m_SR%SR_sig, m_SR%SR_r,     &
-     &    rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
+     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb,                   &
+     &    rep_ref_viz, m_SR)
       call add_left_eye_image(pvr_rgb)
 !
       end subroutine s_each_LIC_anaglyph
@@ -208,7 +206,6 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_img
-      real(kind = kreal) :: elapse_ray_trace_rot(2)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
@@ -219,12 +216,8 @@
         call lic_rendering_with_rotation(istep_pvr, time,               &
      &      viz_fem%mesh, viz_fem%group, sf_grp_4_sf,                   &
      &      lic_param, field_lic, pvr_rgb(i_img),                       &
-     &      pvr_param, pvr_bound, pvr_proj(i_img),                      &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                          &
-     &      elapse_ray_trace_rot, rep_ref_viz%count_line_int)
+     &      pvr_param, pvr_bound, pvr_proj(i_img), rep_ref_viz, m_SR)
       end do
-      rep_ref_viz%elapse_ray_trace(1:2) = rep_ref_viz%elapse_ray_trace(1:2)             &
-     &                      + elapse_ray_trace_rot(1:2)
 !
       end subroutine s_each_LIC_rendering_w_rot
 !

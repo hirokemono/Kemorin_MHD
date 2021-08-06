@@ -11,8 +11,7 @@
 !!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf,            &
 !!     &          lic_p, color_param, cbar_param, field_lic,            &
 !!     &          draw_param, pvr_screen, pvr_start, pvr_stencil,       &
-!!     &          pvr_rgb, SR_sig, SR_r,                                &
-!!     &          elapse_ray_trace_out, count_int_nod)
+!!     &          pvr_rgb, rep_ref_viz, SR_sig, SR_r)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -51,8 +50,7 @@
      &         (istep_pvr, time, mesh, group, sf_grp_4_sf,              &
      &          lic_p, color_param, cbar_param, field_lic,              &
      &          draw_param, pvr_screen, pvr_start, pvr_stencil,         &
-     &          pvr_rgb, SR_sig, SR_r,                                  &
-     &          elapse_ray_trace_out, count_int_nod)
+     &          pvr_rgb, rep_ref_viz, m_SR)
 !
       use m_geometry_constants
       use m_elapsed_labels_4_VIZ
@@ -68,7 +66,8 @@
       use t_pvr_image_array
       use t_pvr_ray_startpoints
       use t_pvr_stencil_buffer
-      use t_solver_SR
+      use t_lic_repart_reference
+      use t_mesh_SR
       use ray_trace_LIC_image
       use draw_pvr_colorbar
       use pvr_axis_label
@@ -92,12 +91,10 @@
       type(pvr_stencil_buffer), intent(inout) :: pvr_stencil
 !      type(pvr_segmented_img), intent(inout) :: pvr_img
       type(pvr_image_type), intent(inout) :: pvr_rgb
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: count_int_nod(mesh%node%numnod)
+      type(lic_repart_reference), intent(inout) :: rep_ref_viz
+      type(mesh_SR), intent(inout) :: m_SR
 !
+      real(kind = kreal) :: elapse_ray_trace_out(2)
       integer(kind = kint) :: i, j, k, ipix
 !
 !
@@ -110,13 +107,16 @@
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &
      &    pvr_start%xx4_pvr_ray_start, pvr_start%rgba_ray,              &
-     &    elapse_ray_trace_out, count_int_nod)
+     &    elapse_ray_trace_out, rep_ref_viz%count_line_int)
+      rep_ref_viz%elapse_ray_trace(1:2)                                 &
+     &     = rep_ref_viz%elapse_ray_trace(1:2)                          &
+     &      + elapse_ray_trace_out(1:2)
 !
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+5)
       if(iflag_debug .gt. 0) write(*,*) 'collect_rendering_image'
       call collect_rendering_image(pvr_start, pvr_rgb%num_pixel_actual, &
-     &    pvr_rgb%rgba_real_gl, pvr_stencil, SR_sig, SR_r)
+     &    pvr_rgb%rgba_real_gl, pvr_stencil, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+5)
 !
 !      call s_composit_by_segmentad_image                               &
