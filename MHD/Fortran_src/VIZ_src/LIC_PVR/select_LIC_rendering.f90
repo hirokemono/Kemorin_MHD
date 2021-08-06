@@ -252,6 +252,7 @@
       use each_LIC_rendering
       use write_PVR_image
       use each_volume_rendering
+      use calypso_reverse_send_recv
 !
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
@@ -271,6 +272,7 @@
       integer(kind = kint) :: i_lic
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
       real(kind = kreal), allocatable :: count_int_nod(:)
+      real(kind = kreal), allocatable :: count_integrate_tmp(:)
 !
 !
       do i_lic = 1, pvr%num_pvr
@@ -289,9 +291,14 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
         call set_LIC_each_field(geofem, nod_fld, repart_p,              &
      &                          lic_param(i_lic), repart_data, m_SR)
+!
         allocate(count_int_nod(repart_data%viz_fem%mesh%node%numnod))
 !$omp parallel workshare
         count_int_nod(1:repart_data%viz_fem%mesh%node%numnod) = 0.0d0
+!$omp end parallel workshare
+        allocate(count_integrate_tmp(geofem%mesh%node%numnod))
+!$omp parallel workshare
+        count_integrate_tmp(1:geofem%mesh%node%numnod) = 0.0d0
 !$omp end parallel workshare
 !
         if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
@@ -335,10 +342,17 @@
      &       (geofem%mesh, lic_param(i_lic)%each_part_p%weight_prev,    &
      &        lic_param(i_lic)%elapse_ray_trace,                        &
      &        repart_data%mesh_to_viz_tbl, rep_ref(i_lic), m_SR%SR_sig)
+!
+          call calypso_reverse_SR_1(repart_data%mesh_to_viz_tbl,        &
+     &        repart_data%viz_fem%mesh%node%numnod,                     &
+     &        geofem%mesh%node%numnod,                                  &
+     &        count_int_nod, count_integrate_tmp,                       &
+     &        m_SR%SR_sig, m_SR%SR_r)
         end if
 !
         call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
         deallocate(count_int_nod)
+        deallocate(count_integrate_tmp)
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
