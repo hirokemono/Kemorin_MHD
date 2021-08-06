@@ -9,8 +9,7 @@
 !!@verbatim
 !!      subroutine s_each_LIC_rendering(istep_pvr, time, num_img,       &
 !!     &          viz_fem, field_lic, sf_grp_4_sf, lic_param,           &
-!!     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r,           &
-!!     &          elapse_ray_trace_out, count_int_nod)
+!!     &          pvr_param, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
@@ -22,11 +21,11 @@
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(lic_repart_reference), intent(inout) :: rep_ref_viz
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine s_each_LIC_anaglyph(istep_pvr, time,                 &
 !!     &          viz_fem, field_lic, sf_grp_4_sf, lic_param,           &
-!!     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r,           &
-!!     &          elapse_ray_trace_out, count_int_nod)
+!!     &          pvr_param, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: viz_fem
@@ -36,11 +35,12 @@
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        type(lic_repart_reference), intent(inout) :: rep_ref_viz
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine s_each_LIC_rendering_w_rot(istep_pvr, time,          &
 !!     &          num_img, viz_fem, field_lic, sf_grp_4_sf,             &
 !!     &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
-!!     &          SR_sig, SR_r, SR_i, elapse_ray_trace_img, count_int_nod)
+!!     &          rep_ref_viz, m_SR)
 !!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
@@ -52,9 +52,8 @@
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(lic_repart_reference), intent(inout) :: rep_ref_viz
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
 !
@@ -81,6 +80,8 @@
       use t_control_param_LIC
       use t_solver_SR
       use t_solver_SR_int
+      use t_lic_repart_reference
+      use t_mesh_SR
 !
       use set_default_pvr_params
       use set_position_pvr_screen
@@ -97,8 +98,7 @@
 !
       subroutine s_each_LIC_rendering(istep_pvr, time, num_img,         &
      &          viz_fem, field_lic, sf_grp_4_sf, lic_param,             &
-     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r,             &
-     &          elapse_ray_trace_out, count_int_nod)
+     &          pvr_param, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -116,11 +116,8 @@
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: count_int_nod(viz_fem%mesh%node%numnod)
+      type(lic_repart_reference), intent(inout) :: rep_ref_viz
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_img
 !
@@ -133,7 +130,7 @@
         call lic_rendering_with_fixed_view(istep_pvr, time,             &
      &      viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,        &
      &      field_lic, pvr_param,  pvr_proj(i_img), pvr_rgb(i_img),     &
-     &      SR_sig, SR_r, elapse_ray_trace_out, count_int_nod)
+     &      m_SR%SR_sig, m_SR%SR_r, rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
       end do
 !
       end subroutine s_each_LIC_rendering
@@ -142,8 +139,7 @@
 !
       subroutine s_each_LIC_anaglyph(istep_pvr, time,                   &
      &          viz_fem, field_lic, sf_grp_4_sf, lic_param,             &
-     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r,             &
-     &          elapse_ray_trace_out, count_int_nod)
+     &          pvr_param, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -160,11 +156,8 @@
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: count_int_nod(viz_fem%mesh%node%numnod)
+      type(lic_repart_reference), intent(inout) :: rep_ref_viz
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
@@ -174,15 +167,15 @@
 !   Left eye
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb, SR_sig, SR_r,     &
-     &    elapse_ray_trace_out, count_int_nod)
+     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb, m_SR%SR_sig, m_SR%SR_r,     &
+     &    rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
       call store_left_eye_image(pvr_rgb)
 !
 !   Right eye
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb, SR_sig, SR_r,     &
-     &    elapse_ray_trace_out, count_int_nod)
+     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb, m_SR%SR_sig, m_SR%SR_r,     &
+     &    rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
       call add_left_eye_image(pvr_rgb)
 !
       end subroutine s_each_LIC_anaglyph
@@ -192,7 +185,7 @@
       subroutine s_each_LIC_rendering_w_rot(istep_pvr, time,            &
      &          num_img, viz_fem, field_lic, sf_grp_4_sf,               &
      &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
-     &          SR_sig, SR_r, SR_i, elapse_ray_trace_img, count_int_nod)
+     &          rep_ref_viz, m_SR)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -211,12 +204,8 @@
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      real(kind = kreal), intent(inout) :: elapse_ray_trace_img(2)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: count_int_nod(viz_fem%mesh%node%numnod)
+      type(lic_repart_reference), intent(inout) :: rep_ref_viz
+      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_img
       real(kind = kreal) :: elapse_ray_trace_rot(2)
@@ -230,10 +219,11 @@
         call lic_rendering_with_rotation(istep_pvr, time,               &
      &      viz_fem%mesh, viz_fem%group, sf_grp_4_sf,                   &
      &      lic_param, field_lic, pvr_rgb(i_img),                       &
-     &      pvr_param, pvr_bound, pvr_proj(i_img), SR_sig, SR_r, SR_i,  &
-     &      elapse_ray_trace_rot, count_int_nod)
+     &      pvr_param, pvr_bound, pvr_proj(i_img),                      &
+     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                          &
+     &      elapse_ray_trace_rot, rep_ref_viz%count_line_int)
       end do
-      elapse_ray_trace_img(1:2) = elapse_ray_trace_img(1:2)             &
+      rep_ref_viz%elapse_ray_trace(1:2) = rep_ref_viz%elapse_ray_trace(1:2)             &
      &                      + elapse_ray_trace_rot(1:2)
 !
       end subroutine s_each_LIC_rendering_w_rot
