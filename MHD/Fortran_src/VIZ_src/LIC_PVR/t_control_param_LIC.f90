@@ -75,8 +75,8 @@
 !>        normalization factor for LIC value
         real(kind = kreal) :: factor_normal = one
 !
-!>        Average elapsed time for ray trace
-        real(kind = kreal) :: elapse_ray_trace(2)
+!>        Logical flag to output detailed elapsed time for LIC
+        logical :: flug_LIC_elapsed_dump = .FALSE.
       end type lic_parameters
 !
       character(len = kchara), parameter :: cflag_LIC = 'LIC'

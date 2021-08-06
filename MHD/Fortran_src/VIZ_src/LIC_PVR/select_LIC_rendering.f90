@@ -173,7 +173,7 @@
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
      &      pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r,             &
-     &      lic_param(i_lic)%elapse_ray_trace, rep_ref_viz%count_line_int)
+     &      rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -226,7 +226,7 @@
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
      &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                          &
-     &      lic_param(i_lic)%elapse_ray_trace, rep_ref_viz%count_line_int)
+     &      rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
       end do
       call dealloc_lic_repart_ref(rep_ref_viz)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -308,8 +308,7 @@
      &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),            &
      &        pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r,           &
-     &        lic_param(i_lic)%elapse_ray_trace,                        &
-     &        rep_ref_viz%count_line_int)
+     &        rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
           call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),    &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -320,8 +319,7 @@
      &        pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),               &
      &        pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),          &
      &        m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                        &
-     &        lic_param(i_lic)%elapse_ray_trace,                        &
-     &        rep_ref_viz%count_line_int)
+     &        rep_ref_viz%elapse_ray_trace, rep_ref_viz%count_line_int)
          call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
          call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
          call dealloc_iflag_pvr_used_ele                                &
