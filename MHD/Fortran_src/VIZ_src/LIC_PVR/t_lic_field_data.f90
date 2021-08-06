@@ -9,7 +9,6 @@
 !!@verbatim
 !!      subroutine alloc_nod_vector_4_lic(node, num_masking, field_lic)
 !!      subroutine dealloc_nod_data_4_lic(field_lic)
-!!      subroutine reset_lic_count_line_int(field_lic)
 !!      subroutine cal_field_4_each_lic                                 &
 !!     &         (node, nod_fld, lic_p, field_lic)
 !!        type(node_data), intent(in) :: node
@@ -51,9 +50,6 @@
         integer(kind = kint) :: num_mask = 0
 !>    Vector Data for LIC masking data
         real(kind = kreal), allocatable :: s_lic(:,:)
-!
-!>    Line integration counting for re-partition
-        real(kind = kreal), allocatable :: count_line_int(:)
       end type lic_field_data
 !
 ! -----------------------------------------------------------------------
@@ -92,27 +88,7 @@
 !$omp end parallel workshare
       end if
 !
-      allocate(field_lic%count_line_int(field_lic%nnod_lic))
-      if(field_lic%nnod_lic .gt. 0) then
-!$omp parallel workshare
-        field_lic%count_line_int(1:field_lic%nnod_lic) = 0.0d0
-!$omp end parallel workshare
-      end if
-!
       end subroutine alloc_nod_vector_4_lic
-!
-! -----------------------------------------------------------------------
-!
-      subroutine reset_lic_count_line_int(field_lic)
-!
-      type(lic_field_data), intent(inout) :: field_lic
-!
-!
-!$omp parallel workshare
-      field_lic%count_line_int(1:field_lic%nnod_lic) = 0.0d0
-!$omp end parallel workshare
-!
-      end subroutine reset_lic_count_line_int
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -127,10 +103,6 @@
 !
       deallocate(field_lic%s_lic)
       deallocate(field_lic%d_lic)
-!
-      if(allocated(field_lic%count_line_int)) then
-        deallocate(field_lic%count_line_int)
-      end if
 !
       end subroutine dealloc_nod_data_4_lic
 !

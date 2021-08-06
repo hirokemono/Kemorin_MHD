@@ -147,10 +147,12 @@
       type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
       type(mesh_SR), intent(inout) :: m_SR
 !
+      type(lic_repart_reference), save :: rep_ref_viz
       integer(kind = kint) :: i_lic
 !
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+      call alloc_lic_repart_ref(repart_data%viz_fem%mesh, rep_ref_viz)
       do i_lic = 1, pvr%num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
@@ -163,12 +165,12 @@
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
         if(my_rank .eq. 0) write(*,*) 's_each_LIC_anaglyph at once'
-        call reset_lic_count_line_int(repart_data%field_lic)
+        call reset_lic_count_line_int(rep_ref_viz)
         call s_each_LIC_anaglyph(istep_lic, time, repart_data%viz_fem,  &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      pvr%pvr_rgb(i_lic), m_SR%SR_sig, m_SR%SR_r,                 &
-     &      lic_param(i_lic)%elapse_ray_trace, repart_data%field_lic%count_line_int)
+     &      lic_param(i_lic)%elapse_ray_trace, rep_ref_viz%count_line_int)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -194,15 +196,16 @@
      &                          lic_param(i_lic), repart_data, m_SR)
 !
         write(*,*) 'anaglyph_lic_rendering_w_rot once', i_lic
-        call reset_lic_count_line_int(repart_data%field_lic)
+        call reset_lic_count_line_int(rep_ref_viz)
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
      &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
      &      repart_data%field_lic, lic_param(i_lic),                    &
      &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                          &
-     &      lic_param(i_lic)%elapse_ray_trace, repart_data%field_lic%count_line_int)
+     &      lic_param(i_lic)%elapse_ray_trace, rep_ref_viz%count_line_int)
       end do
+      call dealloc_lic_repart_ref(rep_ref_viz)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       end subroutine LIC_anaglyph_w_shared_mesh
@@ -238,9 +241,11 @@
       type(lic_repart_reference), intent(inout) :: rep_ref(pvr%num_pvr)
       type(mesh_SR), intent(inout) :: m_SR
 !
+      type(lic_repart_reference), save :: rep_ref_viz, rep_ref_snap
       integer(kind = kint) :: i_lic
 !
 !
+      call alloc_lic_repart_ref(geofem%mesh, rep_ref_snap)
       do i_lic = 1, pvr%num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
@@ -256,8 +261,9 @@
         call set_LIC_each_field(geofem, nod_fld, repart_p,              &
      &                          lic_param(i_lic), repart_data, m_SR)
 !
-        call reset_lic_count_line_int(repart_data%field_lic)
-        call reset_lic_count_line_int(repart_data%nod_fld_lic)
+        call reset_lic_count_line_int(rep_ref_snap)
+        call alloc_lic_repart_ref                                       &
+     &     (repart_data%viz_fem%mesh, rep_ref_viz)
 !
         if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
         call each_anaglyph_PVR_init(i_lic,                              &
@@ -276,7 +282,7 @@
      &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),            &
      &        pvr%pvr_rgb(i_lic), m_SR%SR_sig, m_SR%SR_r,               &
-     &        lic_param(i_lic)%elapse_ray_trace, repart_data%field_lic%count_line_int)
+     &        lic_param(i_lic)%elapse_ray_trace, rep_ref_viz%count_line_int)
           call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),       &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -287,7 +293,7 @@
      &        pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                 &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),            &
      &        m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i,                        &
-     &        lic_param(i_lic)%elapse_ray_trace, repart_data%field_lic%count_line_int)
+     &        lic_param(i_lic)%elapse_ray_trace, rep_ref_viz%count_line_int)
          call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
          call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
          call dealloc_iflag_pvr_used_ele                                &
@@ -297,10 +303,11 @@
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_TIME_BASED) then
           call bring_back_rendering_time(lic_param(i_lic)%each_part_p,  &
-     &        repart_data%mesh_to_viz_tbl, repart_data%field_lic,       &
-     &        repart_data%nod_fld_lic, rep_ref(i_lic), m_SR)
+     &        repart_data%mesh_to_viz_tbl, rep_ref_viz, rep_ref_snap,   &
+     &        rep_ref(i_lic), m_SR)
         end if
 !
+        call dealloc_lic_repart_ref(rep_ref_viz)
         call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
@@ -313,6 +320,7 @@
 !
         call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_lic))
       end do
+      call dealloc_lic_repart_ref(rep_ref_snap)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
       end subroutine LIC_anaglyph_w_each_repart

@@ -13,18 +13,18 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!
 !!      subroutine bring_back_rendering_time                            &
-!!     &         (each_part_p, mesh_to_viz_tbl, field_lic,              &
-!!     &          nod_fld_lic, rep_ref, m_SR)
+!!     &         (each_part_p, mesh_to_viz_tbl, rep_ref_viz,            &
+!!     &          rep_ref_snap, rep_ref, m_SR)
 !!        type(volume_partioning_param), intent(in) :: each_part_p
 !!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-!!        type(lic_field_data), intent(in) :: field_lic
-!!        type(lic_field_data), intent(inout) :: nod_fld_lic
+!!        type(lic_repart_reference), intent(in) :: rep_ref_viz
+!!        type(lic_repart_reference), intent(inout) :: rep_ref_snap
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine set_average_line_int_time(mesh, each_part_p,         &
-!!     &          elapse_ray_trace, mesh_to_viz_tbl, rep_ref, m_SR)
+!!     &          rep_ref_viz, mesh_to_viz_tbl, rep_ref, m_SR)
 !!        type(volume_partioning_param), intent(in) :: each_part_p
-!!        real(kind = kreal), intent(in) :: elapse_ray_trace(2)
+!!        type(lic_repart_reference), intent(in) :: rep_ref_viz
 !!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
@@ -40,8 +40,13 @@
 !
 !>  Structure for reference for LIC repartition
       type lic_repart_reference
+!>    Noumber of node
+        integer(kind = kint) :: nnod_lic
 !>    Work area for elapsed transfer time
-        real(kind = kreal), allocatable :: elapse_rtrace_nod(:)
+        real(kind = kreal), allocatable :: count_line_int(:)
+!
+!>    Average elapsed time for line integration
+        real(kind = kreal) :: elapse_ray_trace(2)
       end type lic_repart_reference
 !
       private :: alloc_lic_repart_ref, copy_average_elapsed_to_nod
@@ -63,8 +68,7 @@
 !
 !
       call alloc_lic_repart_ref(mesh%node, rep_ref)
-      call cal_node_volue(mesh%node, mesh%ele,                          &
-     &                    rep_ref%elapse_rtrace_nod)
+      call cal_node_volue(mesh%node, mesh%ele, rep_ref%count_line_int)
 !
       end subroutine init_lic_repart_ref
 !
@@ -78,14 +82,28 @@
       type(lic_repart_reference), intent(inout) :: rep_ref
 !
 !
-      allocate(rep_ref%elapse_rtrace_nod(node%numnod))
-      if(node%numnod .gt. 0) then
+      rep_ref%nnod_lic = node%numnod
+      allocate(rep_ref%count_line_int(rep_ref%nnod_lic))
+      if(rep_ref%nnod_lic .gt. 0) then
 !$omp parallel workshare
-        rep_ref%elapse_rtrace_nod(1:node%numnod) = 1.0d0
+        rep_ref%count_line_int(1:rep_ref%nnod_lic) = 0.0d0
 !$omp end parallel workshare
       end if
 !
       end subroutine alloc_lic_repart_ref
+!
+! -----------------------------------------------------------------------
+!
+      subroutine reset_lic_count_line_int(rep_ref)
+!
+      type(lic_repart_reference), intent(inout) :: rep_ref
+!
+!
+!$omp parallel workshare
+      rep_ref%count_line_int(1:rep_ref%nnod_lic) = 0.0d0
+!$omp end parallel workshare
+!
+      end subroutine reset_lic_count_line_int
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -95,8 +113,8 @@
       type(lic_repart_reference), intent(inout) :: rep_ref
 !
 !
-      if(allocated(rep_ref%elapse_rtrace_nod)) then
-        deallocate(rep_ref%elapse_rtrace_nod)
+      if(allocated(rep_ref%count_line_int)) then
+        deallocate(rep_ref%count_line_int)
       end if
 !
       end subroutine dealloc_lic_repart_ref
@@ -105,39 +123,38 @@
 !  ---------------------------------------------------------------------
 !
       subroutine bring_back_rendering_time                              &
-     &         (each_part_p, mesh_to_viz_tbl, field_lic,                &
-     &          nod_fld_lic, rep_ref, m_SR)
+     &         (each_part_p, mesh_to_viz_tbl, rep_ref_viz,              &
+     &          rep_ref_snap, rep_ref, m_SR)
 !
       use t_mesh_SR
       use t_calypso_comm_table
       use t_control_param_vol_grping
-      use t_lic_field_data
       use calypso_reverse_send_recv
 !
       type(volume_partioning_param), intent(in) :: each_part_p
       type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-      type(lic_field_data), intent(in) :: field_lic
+      type(lic_repart_reference), intent(in) :: rep_ref_viz
 !
-      type(lic_field_data), intent(inout) :: nod_fld_lic
+      type(lic_repart_reference), intent(inout) :: rep_ref_snap
       type(lic_repart_reference), intent(inout) :: rep_ref
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
       call calypso_reverse_SR_1(mesh_to_viz_tbl,                        &
-     &    field_lic%nnod_lic, nod_fld_lic%nnod_lic,                     &
-     &    field_lic%count_line_int, nod_fld_lic%count_line_int,         &
+     &    rep_ref_viz%nnod_lic, rep_ref_snap%nnod_lic,                  &
+     &    rep_ref_viz%count_line_int, rep_ref_snap%count_line_int,      &
      &    m_SR%SR_sig, m_SR%SR_r)
 !
       call copy_line_integration_count                                  &
-     &   (nod_fld_lic%nnod_lic, each_part_p%weight_prev,                &
-     &    nod_fld_lic%count_line_int, rep_ref%elapse_rtrace_nod)
+     &   (rep_ref_snap%nnod_lic, each_part_p%weight_prev,               &
+     &    rep_ref_snap%count_line_int, rep_ref%count_line_int)
 !
       end subroutine bring_back_rendering_time
 !
 !  ---------------------------------------------------------------------
 !
       subroutine set_average_line_int_time(mesh, each_part_p,           &
-     &          elapse_ray_trace, mesh_to_viz_tbl, rep_ref, m_SR)
+     &          rep_ref_viz, mesh_to_viz_tbl, rep_ref, m_SR)
 !
       use t_mesh_SR
       use t_mesh_data
@@ -146,7 +163,7 @@
       use calypso_reverse_send_recv
 !
       type(volume_partioning_param), intent(in) :: each_part_p
-      real(kind = kreal), intent(in) :: elapse_ray_trace(2)
+      type(lic_repart_reference), intent(in) :: rep_ref_viz
       type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
       type(mesh_geometry), intent(in) :: mesh
 !
@@ -158,10 +175,11 @@
 !
       allocate(elapse_rtraces_pe(2,mesh_to_viz_tbl%nrank_export))
       call calypso_gather_reverse_SR(itwo, mesh_to_viz_tbl,             &
-     &    elapse_ray_trace, elapse_rtraces_pe(1,1), m_SR%SR_sig)
+     &    rep_ref_viz%elapse_ray_trace, elapse_rtraces_pe(1,1),         &
+     &    m_SR%SR_sig)
       call copy_average_elapsed_to_nod(mesh%node, mesh_to_viz_tbl,      &
      &    each_part_p%weight_prev, elapse_rtraces_pe,                   &
-     &    rep_ref%elapse_rtrace_nod)
+     &    rep_ref%count_line_int)
       deallocate(elapse_rtraces_pe)
 !
       end subroutine set_average_line_int_time
