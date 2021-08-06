@@ -10,11 +10,13 @@
 !!      subroutine lic_rendering_with_rotation                          &
 !!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,     &
 !!     &          field_lic, pvr_rgb, pvr_param, pvr_bound, pvr_proj,   &
-!!     &          SR_sig, SR_r, SR_i, elapse_ray_trace_rot)
+!!     &          SR_sig, SR_r, SR_i, elapse_ray_trace_rot,             &
+!!     &          count_int_nod)
 !!      subroutine anaglyph_lic_rendering_w_rot                         &
 !!     &         (istep_pvr, time, viz_fem, field_lic, lic_p,           &
 !!     &          lic_p, pvr_rgb, pvr_param, pvr_bound, pvr_proj,       &
-!!     &          SR_sig, SR_r, SR_i, elapse_ray_trace_rot)
+!!     &          SR_sig, SR_r, SR_i, elapse_ray_trace_rot,             &
+!!     &          count_int_nod)
 !!        type(mesh_data), intent(in) :: viz_fem
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
@@ -68,7 +70,8 @@
       subroutine lic_rendering_with_rotation                            &
      &         (istep_pvr, time, mesh, group, sf_grp_4_sf, lic_p,       &
      &          field_lic, pvr_rgb, pvr_param, pvr_bound, pvr_proj,     &
-     &          SR_sig, SR_r, SR_i, elapse_ray_trace_rot)
+     &          SR_sig, SR_r, SR_i, elapse_ray_trace_rot,               &
+     &          count_int_nod)
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
@@ -93,6 +96,8 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
       real(kind = kreal), intent(inout) :: elapse_ray_trace_rot(2)
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: count_int_nod(mesh%node%numnod)
 !
       integer(kind = kint) :: i_rot, iflag_img_fmt
       real(kind = kreal) :: elapse_ray_trace_out(2)
@@ -103,12 +108,12 @@
       call init_rot_pvr_image_arrays                                    &
      &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
 !
-      elapse_ray_trace_rot(1:2) = 0.0d0
       do i_rot = 1, pvr_param%movie_def%num_frame
         call rendering_lic_at_once(istep_pvr, time, izero, i_rot,       &
      &      mesh, group, sf_grp_4_sf, lic_p, field_lic, pvr_param,      &
      &      pvr_bound, pvr_proj, rot_imgs1%rot_pvr_rgb(i_rot),          &
-     &      SR_sig, SR_r, SR_i, elapse_ray_trace_out)
+     &      SR_sig, SR_r, SR_i, elapse_ray_trace_out,                   &
+     &      count_int_nod)
         elapse_ray_trace_rot(1:2) = elapse_ray_trace_rot(1:2)           &
      &                             + elapse_ray_trace_out(1:2)
       end do
@@ -139,7 +144,8 @@
       subroutine anaglyph_lic_rendering_w_rot                           &
      &         (istep_pvr, time, viz_fem, sf_grp_4_sf, field_lic,       &
      &          lic_p, pvr_rgb, pvr_param, pvr_bound, pvr_proj,         &
-     &          SR_sig, SR_r, SR_i, elapse_ray_trace_rot)
+     &          SR_sig, SR_r, SR_i, elapse_ray_trace_rot,               &
+     &          count_int_nod)
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
@@ -164,6 +170,8 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
       real(kind = kreal), intent(inout) :: elapse_ray_trace_rot(2)
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: count_int_nod(viz_fem%mesh%node%numnod)
 !
       integer(kind = kint) :: i_rot, iflag_img_fmt
       real(kind = kreal) :: elapse_ray_trace_out(2)
@@ -179,14 +187,13 @@
      &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
 !
 !
-      elapse_ray_trace_rot(1:2) = 0.0d0
       do i_rot = 1, pvr_param%movie_def%num_frame
 !   Left eye
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, ione, i_rot, viz_fem%mesh, viz_fem%group,  &
      &      sf_grp_4_sf, lic_p, field_lic, pvr_param, pvr_bound,        &
      &      pvr_proj(1), rot_imgs1%rot_pvr_rgb(i_rot),                  &
-     &      SR_sig, SR_r, SR_i, elapse_ray_trace_out)
+     &      SR_sig, SR_r, SR_i, elapse_ray_trace_out, count_int_nod)
         call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
         elapse_ray_trace_rot(1:2) = elapse_ray_trace_rot(1:2)           &
      &                             + elapse_ray_trace_out(1:2)
@@ -196,7 +203,7 @@
      &     (istep_pvr, time, itwo, i_rot, viz_fem%mesh, viz_fem%group,  &
      &      sf_grp_4_sf, lic_p, field_lic, pvr_param, pvr_bound,        &
      &      pvr_proj(2), rot_imgs1%rot_pvr_rgb(i_rot),                  &
-     &      SR_sig, SR_r, SR_i, elapse_ray_trace_out)
+     &      SR_sig, SR_r, SR_i, elapse_ray_trace_out, count_int_nod)
         elapse_ray_trace_rot(1:2) = elapse_ray_trace_rot(1:2)           &
      &                        + elapse_ray_trace_out(1:2)
         call add_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))

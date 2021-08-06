@@ -13,7 +13,7 @@
 !!     &          ray_vec4, num_pvr_ray, id_pixel_check,                &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray,           &
-!!     &          elapse_ray_trace_out)
+!!     &          elapse_ray_trace_out, count_int_nod)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -62,7 +62,7 @@
      &          ray_vec4, num_pvr_ray, id_pixel_check,                  &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray,             &
-     &          elapse_ray_trace_out)
+     &          elapse_ray_trace_out, count_int_nod)
 !
       use calypso_mpi_int
       use calypso_mpi_real
@@ -97,6 +97,8 @@
       real(kind = kreal), intent(inout)                                 &
      &                    ::  rgba_ray(4,num_pvr_ray)
       real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: count_int_nod(mesh%node%numnod)
 !
       integer(kind = kint) :: inum, iflag_comm
       real(kind = kreal) :: rgba_tmp(4)
@@ -106,7 +108,6 @@
       real(kind = kreal) :: elapse_rtrace, elapse_line_int
 !
       real(kind = kreal) :: count_line_int
-      real(kind = kreal), allocatable :: count_int_nod(:)
       integer(kind = kint), allocatable :: icou_int_nod_smp(:,:)
 !
       integer(kind = kint) :: inod, ip, ip_smp, np_smp_sys
@@ -122,12 +123,8 @@
 #ifdef _OPENMP
       np_smp_sys = omp_get_max_threads()
 #endif
-      allocate(count_int_nod(mesh%node%numnod))
-      allocate(icou_int_nod_smp(mesh%node%internal_node,np_smp_sys))
 !
-!$omp parallel workshare
-      count_int_nod(1:mesh%node%numnod) = 0.0d0
-!$omp end parallel workshare
+      allocate(icou_int_nod_smp(mesh%node%internal_node,np_smp_sys))
 !$omp parallel workshare
       icou_int_nod_smp(1:mesh%node%internal_node,1:np_smp_sys) = 0
 !$omp end parallel workshare
@@ -227,7 +224,7 @@
      &    sample_cnt, count_line_int, elapse_rtrace, elapse_line_int,   &
      &    elapse_ray_trace_out)
 !
-      deallocate(icou_int_nod_smp, count_int_nod)
+      deallocate(icou_int_nod_smp)
 !
       end subroutine ray_trace_each_lic_image
 !

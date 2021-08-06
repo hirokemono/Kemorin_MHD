@@ -11,7 +11,8 @@
 !!     &         (istep_pvr, time, mesh, group, sf_grp_4_sf,            &
 !!     &          lic_p, color_param, cbar_param, field_lic,            &
 !!     &          draw_param, pvr_screen, pvr_start, pvr_stencil,       &
-!!     &          pvr_rgb, SR_sig, SR_r, elapse_ray_trace_out)
+!!     &          pvr_rgb, SR_sig, SR_r,                                &
+!!     &          elapse_ray_trace_out, count_int_nod)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
@@ -50,7 +51,8 @@
      &         (istep_pvr, time, mesh, group, sf_grp_4_sf,              &
      &          lic_p, color_param, cbar_param, field_lic,              &
      &          draw_param, pvr_screen, pvr_start, pvr_stencil,         &
-     &          pvr_rgb, SR_sig, SR_r, elapse_ray_trace_out)
+     &          pvr_rgb, SR_sig, SR_r,                                  &
+     &          elapse_ray_trace_out, count_int_nod)
 !
       use m_geometry_constants
       use m_elapsed_labels_4_VIZ
@@ -93,6 +95,8 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
       real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: count_int_nod(mesh%node%numnod)
 !
       integer(kind = kint) :: i, j, k, ipix
 !
@@ -106,7 +110,7 @@
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &
      &    pvr_start%xx4_pvr_ray_start, pvr_start%rgba_ray,              &
-     &    elapse_ray_trace_out)
+     &    elapse_ray_trace_out, count_int_nod)
 !
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+5)
