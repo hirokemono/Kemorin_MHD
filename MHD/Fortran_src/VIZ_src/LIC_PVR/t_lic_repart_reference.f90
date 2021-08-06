@@ -130,6 +130,31 @@
       end subroutine bring_back_rendering_time
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_line_integration_count(node, weight_prev,         &
+     &          count_line_int, ref_repart_mesh)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+      real(kind = kreal), intent(in) :: weight_prev
+      real(kind = kreal), intent(in) :: count_line_int(node%numnod)
+      real(kind = kreal), intent(inout) :: ref_repart_mesh(node%numnod)
+!
+      integer(kind = kint) :: inod
+!
+!
+!$omp parallel do
+      do inod = 1, node%numnod
+        ref_repart_mesh(inod) = weight_prev * count_line_int(inod)      &
+     &               + (1.0d0 - weight_prev) * ref_repart_mesh(inod)
+          end do
+!$omp end parallel do
+!
+      end subroutine copy_line_integration_count
+!
+!-----------------------------------------------------------------------
 !
       subroutine copy_average_elapsed_to_nod(node, mesh_to_viz_tbl,     &
      &          weight_prev, elapse_rtraces_pe, ref_repart_mesh)

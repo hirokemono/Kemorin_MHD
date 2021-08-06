@@ -269,7 +269,6 @@
       type(lic_repart_reference), intent(inout) :: rep_ref(pvr%num_pvr)
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: inod
       integer(kind = kint) :: i_lic
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
       real(kind = kreal), allocatable :: count_int_nod(:)
@@ -350,13 +349,9 @@
      &        count_int_nod, count_integrate_tmp,                       &
      &        m_SR%SR_sig, m_SR%SR_r)
 !
-!$omp parallel do
-          do inod = 1, geofem%mesh%node%numnod
-            rep_ref(i_lic)%elapse_rtrace_nod(inod)                      &
-     &      = lic_param(i_lic)%each_part_p%weight_prev * count_integrate_tmp(inod)                   &
-     &       + (1.0d0 - lic_param(i_lic)%each_part_p%weight_prev) * rep_ref(i_lic)%elapse_rtrace_nod(inod)
-          end do
-!$omp end parallel do
+           call copy_line_integration_count(geofem%mesh%node,           &
+     &         lic_param(i_lic)%each_part_p%weight_prev,                &
+     &          count_integrate_tmp, rep_ref(i_lic)%elapse_rtrace_nod)
         end if
 !
         call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
