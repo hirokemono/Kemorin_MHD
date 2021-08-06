@@ -269,6 +269,7 @@
       type(lic_repart_reference), intent(inout) :: rep_ref(pvr%num_pvr)
       type(mesh_SR), intent(inout) :: m_SR
 !
+      integer(kind = kint) :: inod
       integer(kind = kint) :: i_lic
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
       real(kind = kreal), allocatable :: count_int_nod(:)
@@ -338,16 +339,25 @@
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_TIME_BASED) then
-          call bring_back_rendering_time                                &
-     &       (geofem%mesh, lic_param(i_lic)%each_part_p%weight_prev,    &
-     &        lic_param(i_lic)%elapse_ray_trace,                        &
-     &        repart_data%mesh_to_viz_tbl, rep_ref(i_lic), m_SR%SR_sig)
+!          call bring_back_rendering_time                               &
+!     &       (geofem%mesh, lic_param(i_lic)%each_part_p%weight_prev,   &
+!     &        lic_param(i_lic)%elapse_ray_trace,                       &
+!     &        repart_data%mesh_to_viz_tbl, rep_ref(i_lic), m_SR%SR_sig)
 !
           call calypso_reverse_SR_1(repart_data%mesh_to_viz_tbl,        &
      &        repart_data%viz_fem%mesh%node%numnod,                     &
      &        geofem%mesh%node%numnod,                                  &
      &        count_int_nod, count_integrate_tmp,                       &
      &        m_SR%SR_sig, m_SR%SR_r)
+!
+!$omp parallel do
+          do inod = 1, geofem%mesh%node%numnod
+            rep_ref(i_lic)%elapse_rtrace_nod(inod,1)                    &
+     &      = lic_param(i_lic)%each_part_p%weight_prev * count_integrate_tmp(inod)                   &
+     &       + (1.0d0 - lic_param(i_lic)%each_part_p%weight_prev) * rep_ref(i_lic)%elapse_rtrace_nod(inod,1)
+            rep_ref(i_lic)%elapse_rtrace_nod(inod,2) = 0.0d0
+          end do
+!$omp end parallel do
         end if
 !
         call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
