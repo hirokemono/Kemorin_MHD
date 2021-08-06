@@ -38,7 +38,7 @@
 !>  Structure for reference for LIC repartition
       type lic_repart_reference
 !>    Work area for elapsed transfer time
-        real(kind = kreal), allocatable :: elapse_rtrace_nod(:,:)
+        real(kind = kreal), allocatable :: elapse_rtrace_nod(:)
       end type lic_repart_reference
 !
       private :: alloc_lic_repart_ref, copy_average_elapsed_to_nod
@@ -60,14 +60,7 @@
 !
       call alloc_lic_repart_ref(mesh%node, rep_ref)
       call cal_node_volue(mesh%node, mesh%ele,                          &
-     &                    rep_ref%elapse_rtrace_nod(1,1))
-!
-      if(mesh%node%numnod .gt. 0) then
-!$omp parallel workshare
-        rep_ref%elapse_rtrace_nod(1:mesh%node%numnod,2)                 &
-     &    = rep_ref%elapse_rtrace_nod(1:mesh%node%numnod,1)
-!$omp end parallel workshare
-      end if
+     &                    rep_ref%elapse_rtrace_nod)
 !
       end subroutine init_lic_repart_ref
 !
@@ -81,10 +74,10 @@
       type(lic_repart_reference), intent(inout) :: rep_ref
 !
 !
-      allocate(rep_ref%elapse_rtrace_nod(node%numnod,2))
+      allocate(rep_ref%elapse_rtrace_nod(node%numnod))
       if(node%numnod .gt. 0) then
 !$omp parallel workshare
-        rep_ref%elapse_rtrace_nod(1:node%numnod,1:2) = 1.0d0
+        rep_ref%elapse_rtrace_nod(1:node%numnod) = 1.0d0
 !$omp end parallel workshare
       end if
 !
@@ -149,8 +142,7 @@
       real(kind = kreal), intent(in) :: weight_prev
       real(kind = kreal), intent(in)                                    &
      &             :: elapse_rtraces_pe(2,mesh_to_viz_tbl%nrank_export)
-      real(kind = kreal), intent(inout)                                 &
-     &             :: ref_repart_mesh(node%numnod,2)
+      real(kind = kreal), intent(inout) :: ref_repart_mesh(node%numnod)
 !
       integer(kind = kint) :: ip, ist, ied, inum, inod
 !
@@ -161,12 +153,9 @@
 !$omp parallel do private(inum,inod)
         do inum = ist, ied
           inod = mesh_to_viz_tbl%item_export(inum)
-          ref_repart_mesh(inod,1)                                       &
-     &      = weight_prev * elapse_rtraces_pe(1,ip)                     &
-     &       + (1.0d0 - weight_prev) * ref_repart_mesh(inod,1)
-          ref_repart_mesh(inod,2)                                       &
+          ref_repart_mesh(inod)                                         &
      &      = weight_prev * elapse_rtraces_pe(2,ip)                     &
-     &       + (1.0d0 - weight_prev) * ref_repart_mesh(inod,2)
+     &       + (1.0d0 - weight_prev) * ref_repart_mesh(inod)
         end do
       end do
 !

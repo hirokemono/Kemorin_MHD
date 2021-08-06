@@ -352,10 +352,9 @@
 !
 !$omp parallel do
           do inod = 1, geofem%mesh%node%numnod
-            rep_ref(i_lic)%elapse_rtrace_nod(inod,1)                    &
+            rep_ref(i_lic)%elapse_rtrace_nod(inod)                      &
      &      = lic_param(i_lic)%each_part_p%weight_prev * count_integrate_tmp(inod)                   &
-     &       + (1.0d0 - lic_param(i_lic)%each_part_p%weight_prev) * rep_ref(i_lic)%elapse_rtrace_nod(inod,1)
-            rep_ref(i_lic)%elapse_rtrace_nod(inod,2) = 0.0d0
+     &       + (1.0d0 - lic_param(i_lic)%each_part_p%weight_prev) * rep_ref(i_lic)%elapse_rtrace_nod(inod)
           end do
 !$omp end parallel do
         end if
