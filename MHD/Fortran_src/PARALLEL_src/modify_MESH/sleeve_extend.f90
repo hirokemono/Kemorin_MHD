@@ -120,6 +120,7 @@
 !
       integer(kind = kint_gl) :: ntot_numnod, ntot_internal_nod
       integer(kind = kint_gl) :: ntot_numele, ntot_import_ele
+      integer(kind = kint) :: max_neib, ntot_neib
       integer(kind = kint) :: iflag_process_extend = 0
       integer(kind = kint) :: iloop, ip
 !
@@ -190,7 +191,11 @@
         call dealloc_nod_and_ele_infos(tmpmesh)
         call dealloc_mesh_data(tmpmesh, tmpgroup)
 !
-        call calypso_mpi_barrier
+        call calypso_mpi_reduce_one_int(mesh%nod_comm%num_neib,         &
+     $                                  max_neib, MPI_MAX, 0)
+        call calypso_mpi_reduce_one_int(mesh%nod_comm%num_neib,         &
+     &                                  ntot_neib, MPI_SUM, 0)
+!
         call calypso_mpi_reduce_one_int8                                &
      &     (cast_long(new_mesh%node%numnod), ntot_numnod, MPI_SUM, 0)
         call calypso_mpi_reduce_one_int8                                &
@@ -204,6 +209,8 @@
           write(*,*) 'Total:    ', ntot_numnod, ntot_numele
           write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),     &
      &                            ntot_import_ele
+          write(*,*) 'total and max process to communication: ',        &
+     &                  ntot_neib, max_neib, ' of ', nprocs
         end if
 !
         if(iflag_process_extend .eq. 0) exit
@@ -225,6 +232,8 @@
         write(*,*) 'Total:    ', ntot_numnod, ntot_numele
         write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),       &
      &                            ntot_import_ele
+        write(*,*) 'total and max process to communication: ',          &
+     &                ntot_neib, max_neib, ' of ', nprocs
       end if
 !
       do ip = 1, nprocs
@@ -268,6 +277,7 @@
 !
       integer(kind = kint_gl) :: ntot_numnod, ntot_internal_nod
       integer(kind = kint_gl) :: ntot_numele, ntot_import_ele
+      integer(kind = kint) :: max_neib, ntot_neib
       integer(kind = kint) :: iflag_process_extend = 0
       integer(kind = kint) :: iloop, ip
 !
@@ -333,7 +343,11 @@
         call dealloc_nod_and_ele_infos(newmesh)
         call dealloc_mesh_data(newmesh, newgroup)
 !
-        call calypso_mpi_barrier
+        call calypso_mpi_reduce_one_int(mesh%nod_comm%num_neib,         &
+     $                                  max_neib, MPI_MAX, 0)
+        call calypso_mpi_reduce_one_int(mesh%nod_comm%num_neib,         &
+     &                                  ntot_neib, MPI_SUM, 0)
+!
         call calypso_mpi_reduce_one_int8(cast_long(mesh%node%numnod),   &
      &                                 ntot_numnod, MPI_SUM, 0)
         call calypso_mpi_reduce_one_int8(cast_long(mesh%ele%numele),    &
@@ -347,6 +361,8 @@
           write(*,*) 'Total:    ', ntot_numnod, ntot_numele
           write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),     &
      &                            ntot_import_ele
+          write(*,*) 'total and max process to communication: ',        &
+     &                  ntot_neib, max_neib, ' of ', nprocs
         end if
 !
         if(iflag_process_extend .eq. 0) exit

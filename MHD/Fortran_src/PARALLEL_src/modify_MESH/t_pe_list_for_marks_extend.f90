@@ -63,15 +63,15 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint) :: npe_dist, ntot_pe_dist_recv
-      integer(kind = kint) :: jcou
+!      integer(kind = kint) :: jcou
 !
 !
       npe_dist = num_rank_with_distance_send(nprocs, mark_saved)
       call calypso_mpi_allreduce_one_int                                &
         (npe_dist, maxpe_dist_send, MPI_MAX)
-      call calypso_mpi_allreduce_one_int(npe_dist, jcou, MPI_SUM)
-      if(my_rank .eq. 0) write(*,*) 'max pe for distance',              &
-     &                     jcou, maxpe_dist_send, ' of ', nprocs
+!      call calypso_mpi_allreduce_one_int(npe_dist, jcou, MPI_SUM)
+!      if(my_rank .eq. 0) write(*,*) 'max pe for distance',             &
+!     &                     jcou, maxpe_dist_send, ' of ', nprocs
 !
       call init_extend_pe_list_send                                     &
      &   (nod_comm%num_neib, npe_dist, maxpe_dist_send, pe_list_extend)
