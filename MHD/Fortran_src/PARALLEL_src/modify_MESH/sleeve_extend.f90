@@ -346,7 +346,7 @@
         call dealloc_mesh_data(newmesh, newgroup)
 !
         call calypso_mpi_reduce_one_int(mesh%nod_comm%num_neib,         &
-     $                                  max_neib, MPI_MAX, 0)
+     &                                  max_neib, MPI_MAX, 0)
         call calypso_mpi_reduce_one_int(mesh%nod_comm%num_neib,         &
      &                                  ntot_neib, MPI_SUM, 0)
 !
