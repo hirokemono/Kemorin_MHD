@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_lic_repart_ref(mesh, rep_ref)
+!!      subroutine alloc_lic_repart_ref(node, rep_ref)
 !!      subroutine dealloc_lic_repart_ref(rep_ref)
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -49,7 +50,7 @@
         real(kind = kreal) :: elapse_ray_trace(2)
       end type lic_repart_reference
 !
-      private :: alloc_lic_repart_ref, copy_average_elapsed_to_nod
+      private :: copy_average_elapsed_to_nod
       private :: copy_line_integration_count
 !
 ! -----------------------------------------------------------------------
