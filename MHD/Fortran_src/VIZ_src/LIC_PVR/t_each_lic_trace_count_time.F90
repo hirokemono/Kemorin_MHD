@@ -32,30 +32,35 @@
       use m_constants
       use m_geometry_constants
       use m_machine_parameter
-      use m_elapsed_labels_4_VIZ
-      use m_work_time
       use calypso_mpi
-      use lic_rgba_4_each_pixel
 !
       use t_mesh_data
       use t_geometry_data
-      use t_surface_data
-      use t_group_data
-      use t_surf_grp_list_each_surf
-      use t_control_params_4_pvr
-      use t_control_param_LIC
-      use t_geometries_in_pvr_screen
       use t_lic_field_data
-      use cal_lic_on_surf_viz
+      use t_control_param_LIC
 !
       implicit  none
 !
-      type each_lic_trace_count_time
+      type each_lic_trace_counts
+!>        Number of OpenMP threads
         integer :: np_smp_sys
-        integer(kind = kint), allocatable :: icou_int_nod_smp(:,:)
-      end type each_lic_trace_count_time
+!>        Number of internal node
+        integer(kind = kint) :: nnod
+!>        line integration counts for each node and OopenMP threads
+        integer(kind = kint), allocatable :: icou_line_smp(:,:)
 !
-      type(each_lic_trace_count_time) :: elps_trc
+!>        Total integration counts in each subdomain
+        real(kind = kreal) :: count_line_int
+!
+!>        Counter for ray tracing
+        integer(kind = kint) :: icount_trace
+!>        Elapsed time for ray tracing
+        real(kind = kreal) :: elapse_rtrace
+!>        Elapsed time for line integration
+        real(kind = kreal) :: elapse_line_int
+      end type each_lic_trace_counts
+!
+      type(each_lic_trace_counts) :: l_elsp
 !
 !  ---------------------------------------------------------------------
 !
@@ -63,185 +68,89 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ray_trace_each_lic_image(mesh, group, sf_grp_4_sf,     &
-     &          lic_p, field_lic, draw_param, color_param,              &
-     &          viewpoint_vec, modelview_mat, projection_mat,           &
-     &          ray_vec4, num_pvr_ray, id_pixel_check,                  &
-     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
-     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray,             &
-     &          elapse_ray_trace_out, count_int_nod)
+      subroutine init_icou_int_nod_smp(node, l_elsp)
 !
-      use calypso_mpi_int
-      use calypso_mpi_real
-      use t_noise_node_data
-      use lic_pixel_ray_trace_fix_len
-      use lic_pixel_ray_trace_by_ele
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
-      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
-!
-      type(lic_parameters), intent(in) :: lic_p
-      type(lic_field_data), intent(in) :: field_lic
-      type(rendering_parameter), intent(in) :: draw_param
-      type(pvr_colormap_parameter), intent(in) :: color_param
-!
-      real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: modelview_mat(4,4)
-      real(kind = kreal), intent(in) :: projection_mat(4,4)
-      real(kind = kreal), intent(in) :: ray_vec4(4)
-      integer(kind = kint), intent(in) :: num_pvr_ray
-      integer(kind = kint), intent(in)                                  &
-     &                    :: id_pixel_check(num_pvr_ray)
-      integer(kind = kint), intent(inout)                               &
-     &                    :: icount_pvr_trace(num_pvr_ray)
-      integer(kind = kint), intent(inout)                               &
-     &                    :: isf_pvr_ray_start(3,num_pvr_ray)
-      real(kind = kreal), intent(inout) :: xi_pvr_start(2,num_pvr_ray)
-      real(kind = kreal), intent(inout) :: xx4_pvr_start(4,num_pvr_ray)
-      real(kind = kreal), intent(inout)                                 &
-     &                    ::  xx4_pvr_ray_start(4,num_pvr_ray)
-      real(kind = kreal), intent(inout)                                 &
-     &                    ::  rgba_ray(4,num_pvr_ray)
-      real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: count_int_nod(mesh%node%numnod)
-!
-      integer(kind = kint) :: inum, iflag_comm
-      real(kind = kreal) :: rgba_tmp(4)
-!
-!      type(noise_mask), allocatable :: n_mask
-      integer(kind = kint) :: sample_cnt
-      real(kind = kreal) :: elapse_rtrace, elapse_line_int
-!
-      real(kind = kreal) :: count_line_int
-!
-      integer(kind = kint) :: inod, ip, ip_smp
+      type(node_data), intent(in) :: node
+      type(each_lic_trace_counts), intent(inout) :: l_elsp
 !
 #ifdef _OPENMP
       integer, external :: omp_get_max_threads
-      integer, external :: omp_get_thread_num
 #endif
 !
-      ip_smp =     1
-      elps_trc%np_smp_sys = 1
-!
+      l_elsp%np_smp_sys = 1
 #ifdef _OPENMP
-      elps_trc%np_smp_sys = omp_get_max_threads()
+      l_elsp%np_smp_sys = omp_get_max_threads()
 #endif
 !
-      allocate(elps_trc%icou_int_nod_smp(mesh%node%internal_node,elps_trc%np_smp_sys))
+      l_elsp%nnod = node%internal_node
+      allocate(l_elsp%icou_line_smp(l_elsp%nnod,l_elsp%np_smp_sys))
 !$omp parallel workshare
-      elps_trc%icou_int_nod_smp(1:mesh%node%internal_node,1:elps_trc%np_smp_sys) = 0
+      l_elsp%icou_line_smp(1:l_elsp%nnod,1:l_elsp%np_smp_sys) = 0
 !$omp end parallel workshare
 !
-      sample_cnt = 0
-      elapse_line_int = 0.0d0
-      elapse_rtrace = MPI_WTIME()
+      end subroutine init_icou_int_nod_smp
 !
-      if(lic_p%iflag_vr_sample_mode .eq. iflag_fixed_size) then
-!$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
-!$omp& reduction(+:elapse_line_int)
-        do inum = 1, num_pvr_ray
-!         if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
-!           write(*,*) 'check section trace for ', my_rank, inum
-!         end if
+!  ---------------------------------------------------------------------
 !
-#ifdef _OPENMP
-          ip_smp = omp_get_thread_num() + 1
-#endif
-          rgba_tmp(1:4) = zero
-          call s_lic_pixel_ray_trace_fix_len(mesh%node, mesh%ele,       &
-     &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
-     &       viewpoint_vec, modelview_mat, projection_mat,              &
-     &       lic_p, field_lic, draw_param, color_param,                 &
-     &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
-     &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
-     &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
-     &       elps_trc%icou_int_nod_smp(1,ip_smp),                       &
-     &       icount_pvr_trace(inum),        &
-     &       elapse_line_int, iflag_comm)
-          rgba_ray(1:4,inum) = rgba_tmp(1:4)
-          sample_cnt = sample_cnt + icount_pvr_trace(inum)
-        end do
-!$omp end parallel do
+      subroutine dealloc_icou_int_nod_smp(l_elsp)
 !
-      else
-!$omp parallel do private(inum, iflag_comm,rgba_tmp)                    &
-!$omp& reduction(+:elapse_line_int)
-        do inum = 1, num_pvr_ray
-!         if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
-!           write(*,*) 'check section trace for ', my_rank, inum
-!         end if
+      type(each_lic_trace_counts), intent(inout) :: l_elsp
 !
-#ifdef _OPENMP
-          ip_smp = omp_get_thread_num() + 1
-#endif
-          rgba_tmp(1:4) = zero
-          call s_lic_pixel_ray_trace_by_ele(mesh%node, mesh%ele,        &
-     &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
-     &       viewpoint_vec, modelview_mat, projection_mat,              &
-     &       lic_p, field_lic, draw_param, color_param,                 &
-     &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
-     &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
-     &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
-     &       elps_trc%icou_int_nod_smp(1,ip_smp),                       &
-     &       icount_pvr_trace(inum),        &
-     &       elapse_line_int, iflag_comm)
-          rgba_ray(1:4,inum) = rgba_tmp(1:4)
-          sample_cnt = sample_cnt + icount_pvr_trace(inum)
-        end do
-!$omp end parallel do
-      end if
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+3)
+      deallocate(l_elsp%icou_line_smp)
+!
+      end subroutine dealloc_icou_int_nod_smp
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sum_icou_int_nod_smp                                   &
+     &         (node, ele, end_time, l_elsp, count_int_nod)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      real(kind = kreal), intent(in) :: end_time
+!
+      type(each_lic_trace_counts), intent(inout) :: l_elsp
+      real(kind = kreal), intent(inout) :: count_int_nod(node%numnod)
+!
+      integer(kind = kint) :: ip, inod
+      real(kind = kreal) :: count_line_tmp
+!
+!
+      l_elsp%elapse_line_int = l_elsp%elapse_line_int                   &
+     &                        / dble(l_elsp%np_smp_sys)
+      l_elsp%elapse_rtrace = end_time - l_elsp%elapse_rtrace            &
+     &                                - l_elsp%elapse_line_int
 !
 !$omp parallel
-      do ip = 1, elps_trc%np_smp_sys
+      do ip = 1, l_elsp%np_smp_sys
 !$omp workshare
-        count_int_nod(1:mesh%node%internal_node)                        &
-     &      = count_int_nod(1:mesh%node%internal_node)                  &
-     &       + dble(elps_trc%icou_int_nod_smp(1:mesh%node%internal_node,ip))
+        count_int_nod(1:node%internal_node)                             &
+     &      = count_int_nod(1:node%internal_node)                       &
+     &       + dble(l_elsp%icou_line_smp(1:node%internal_node,ip))
 !$omp end workshare
       end do
 !$omp end parallel
-      deallocate(elps_trc&icou_int_nod_smp)
 !
 !$omp workshare
-      count_int_nod(1:mesh%node%numnod)                                 &
-     &      = count_int_nod(1:mesh%node%numnod)                         &
-     &       / dble(mesh%ele%nnod_4_ele)
+      count_int_nod(1:node%numnod) = count_int_nod(1:node%numnod)       &
+     &                              / dble(ele%nnod_4_ele)
 !$omp end workshare
 !
-      count_line_int = 0
-!$omp parallel do reduction(+:count_line_int)
-      do inod = 1, mesh%node%internal_node
-        count_line_int = count_line_int + count_int_nod(inod)
+      count_line_tmp = 0
+!$omp parallel do reduction(+:count_line_tmp)
+      do inod = 1, node%internal_node
+        count_line_tmp = count_line_tmp + count_int_nod(inod)
       end do
 !$omp end parallel do
+      l_elsp%count_line_int = count_line_tmp
 !
-      elapse_line_int = elapse_line_int / dble(elps_trc%np_smp_sys)
-      elapse_rtrace = MPI_WTIME() - elapse_rtrace - elapse_line_int
-      if(iflag_LIC_time) then
-        elps1%elapsed(ist_elapsed_LIC+3)                                &
-     &       = elps1%elapsed(ist_elapsed_LIC+3) +  elapse_rtrace
-        elps1%elapsed(ist_elapsed_LIC+4)                                &
-     &       = elps1%elapsed(ist_elapsed_LIC+4) +  elapse_line_int
-      end if
-!
-      call cal_trace_time_statistic                                     &
-     &   (mesh%node, mesh%ele, lic_p, field_lic,                        &
-     &    sample_cnt, count_line_int, elapse_rtrace, elapse_line_int,   &
-     &    elapse_ray_trace_out)
-!
-      end subroutine ray_trace_each_lic_image
+      end subroutine sum_icou_int_nod_smp
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine cal_trace_time_statistic(node, ele, lic_p, field_lic,  &
-     &          sample_cnt, count_line_int,                             &
-     &          elapse_rtrace, elapse_line_int,                         &
-     &          elapse_ray_trace_out)
+     &          l_elsp, elapse_ray_trace_out)
 !
       use calypso_mpi_int
       use calypso_mpi_real
@@ -252,10 +161,7 @@
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
 !
-      integer(kind = kint), intent(in) :: sample_cnt
-      real(kind = kreal), intent(in) :: count_line_int
-      real(kind = kreal), intent(in) :: elapse_rtrace, elapse_line_int
-!
+      type(each_lic_trace_counts), intent(inout) :: l_elsp
       real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
 !
       integer(kind = kint) :: inum
@@ -285,46 +191,46 @@
 !
 !
 !      if(i_debug .gt. 0) write(*,*)                                    &
-!      write(*,*)                                                       &
-!     &                 "pvr sampling cnt:", my_rank, sample_cnt
+!      write(*,*) "pvr sampling cnt:", my_rank, l_elsp%icount_trace
 !
       call calypso_mpi_allreduce_one_real                               &
-     &   (elapse_rtrace, ave_trace_time, MPI_SUM)
+     &   (l_elsp%elapse_rtrace, ave_trace_time, MPI_SUM)
       call calypso_mpi_allreduce_one_real                               &
-     &   (elapse_line_int, ave_line_int_time, MPI_SUM)
+     &   (l_elsp%elapse_line_int, ave_line_int_time, MPI_SUM)
       call calypso_mpi_allreduce_one_int                                &
-     &   (sample_cnt, min_sample_cnt, MPI_SUM)
+     &   (l_elsp%icount_trace, min_sample_cnt, MPI_SUM)
       call calypso_mpi_allreduce_one_real                               &
-     &   (count_line_int, ave_line_int_cnt, MPI_SUM)
+     &   (l_elsp%count_line_int, ave_line_int_cnt, MPI_SUM)
       ave_sample_cnt =   dble(min_sample_cnt)
 !
       call calypso_mpi_allreduce_one_real                               &
-     &   (elapse_rtrace, dmin_trace_time, MPI_MIN)
+     &   (l_elsp%elapse_rtrace, dmin_trace_time, MPI_MIN)
       call calypso_mpi_allreduce_one_real                               &
-     &   (elapse_line_int, dmin_line_int_time, MPI_MIN)
+     &   (l_elsp%elapse_line_int, dmin_line_int_time, MPI_MIN)
       call calypso_mpi_allreduce_one_int                                &
-     &   (sample_cnt, min_sample_cnt, MPI_MIN)
+     &   (l_elsp%icount_trace, min_sample_cnt, MPI_MIN)
       call calypso_mpi_allreduce_one_int                                &
-     &   (int(count_line_int), min_line_int_cnt, MPI_MIN)
+     &   (int(l_elsp%count_line_int), min_line_int_cnt, MPI_MIN)
 !
       call calypso_mpi_allreduce_one_real                               &
-     &   (elapse_rtrace, dmax_trace_time, MPI_MAX)
+     &   (l_elsp%elapse_rtrace, dmax_trace_time, MPI_MAX)
       call calypso_mpi_allreduce_one_real                               &
-     &   (elapse_line_int, dmax_line_int_time, MPI_MAX)
+     &   (l_elsp%elapse_line_int, dmax_line_int_time, MPI_MAX)
       call calypso_mpi_allreduce_one_int                                &
-     &   (sample_cnt, max_sample_cnt, MPI_MAX)
+     &   (l_elsp%icount_trace, max_sample_cnt, MPI_MAX)
       call calypso_mpi_allreduce_one_int                                &
-     &   (int(count_line_int), max_line_int_cnt, MPI_MAX)
+     &   (int(l_elsp%count_line_int), max_line_int_cnt, MPI_MAX)
 !
       ave_trace_time =    ave_trace_time / dble(nprocs)
       ave_line_int_time = ave_line_int_time / dble(nprocs)
       ave_sample_cnt =    ave_sample_cnt / dble(nprocs)
       ave_line_int_cnt =  ave_line_int_cnt / dble(nprocs)
 !
-      sq_trace_time =    (elapse_rtrace -    ave_trace_time)**2
-      sq_line_int_time = (elapse_line_int -  ave_line_int_time)**2
-      sq_sample_cnt =    (dble(sample_cnt) - ave_sample_cnt)**2
-      sq_line_int_cnt =  (count_line_int -   ave_line_int_cnt)**2
+      sq_trace_time =    (l_elsp%elapse_rtrace - ave_trace_time)**2
+      sq_line_int_time = (l_elsp%elapse_line_int                        &
+     &                  - ave_line_int_time)**2
+      sq_sample_cnt =  (dble(l_elsp%icount_trace) - ave_sample_cnt)**2
+      sq_line_int_cnt =  (l_elsp%count_line_int - ave_line_int_cnt)**2
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (sq_trace_time,    std_trace_time, MPI_SUM)
@@ -357,8 +263,8 @@
       end if
 !
       elapse_ray_trace_out(1)                                           &
-     &     = elapse_rtrace / dble(node%internal_node)
-      elapse_ray_trace_out(2) = elapse_line_int                         &
+     &     = l_elsp%elapse_rtrace / dble(node%internal_node)
+      elapse_ray_trace_out(2) = l_elsp%elapse_line_int                  &
      &     / dble(nnod_masked_4_LIC(node, lic_p, field_lic))
 !
       if(my_rank .eq. 0) then
@@ -376,13 +282,13 @@
       call calypso_mpi_gather_one_int                                   &
      &   (node%internal_node, internal_node_out, 0)
       call calypso_mpi_gather_one_int                                   &
-     &   (sample_cnt, sample_cnt_out, 0)
+     &   (l_elsp%icount_trace, sample_cnt_out, 0)
       call calypso_mpi_gather_one_int                                   &
-     &   (int(count_line_int), icou_line_int_out, 0)
+     &   (int(l_elsp%count_line_int), icou_line_int_out, 0)
       call calypso_mpi_gather_one_real                                  &
-     &   (elapse_rtrace, elapse_rtrace_out, 0)
+     &   (l_elsp%elapse_rtrace, elapse_rtrace_out, 0)
       call calypso_mpi_gather_one_real                                  &
-     &   (elapse_line_int, elapse_line_out, 0)
+     &   (l_elsp%elapse_line_int, elapse_line_out, 0)
       call calypso_mpi_gather_one_real                                  &
      &   (ele%volume_local, volume_out, 0)
 !
@@ -390,7 +296,7 @@
         open(999,file='LIC_elapsed.dat', position='APPEND')
         write(999,'(3a)')  'rank, internal_nod, nod_masked, volume, ',  &
      &                  ' ray_trace_count, line_integration_count, ',   &
-     &                  ' ray_trace_count, line_integration_count'
+     &                  ' ray_trace_time, line_integration_time'
         do inum = 1, nprocs
           write(999,'(3i15,1pe15.7,2i15,1p2e15.7)')                     &
      &       (inum-1), internal_node_out(inum),                         &
