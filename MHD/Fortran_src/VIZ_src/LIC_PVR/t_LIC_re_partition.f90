@@ -48,8 +48,8 @@
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
-!!      subroutine s_LIC_re_partition(repart_p, geofem, ele_comm,       &
-!!     &                              next_tbl, repart_data, m_SR)
+!!      subroutine s_LIC_re_partition(flag_lic_dump, repart_p,          &
+!!     &          geofem, ele_comm, next_tbl, repart_data, m_SR)
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
@@ -180,7 +180,6 @@
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
-      type(lic_parameters), intent(in) :: lic_param
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(mesh_SR), intent(inout) :: m_SR
@@ -297,8 +296,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_LIC_re_partition(repart_p, geofem, ele_comm,         &
-     &                              next_tbl, repart_data, m_SR)
+      subroutine s_LIC_re_partition(flag_lic_dump, repart_p,            &
+     &          geofem, ele_comm, next_tbl, repart_data, m_SR)
 !
       use t_next_node_ele_4_node
       use t_jacobians
