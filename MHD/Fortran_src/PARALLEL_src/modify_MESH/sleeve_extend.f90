@@ -88,6 +88,7 @@
      &          new_mesh, new_group, new_ele_comm,                      &
      &          sleeve_exp_WK, m_SR)
 !
+      use calypso_mpi_int
       use calypso_mpi_int8
       use transfer_to_long_integers
       use set_element_id_4_node
@@ -250,6 +251,7 @@
       subroutine sleeve_extension_current_mesh(sleeve_exp_p,            &
      &          mesh, group, ele_comm, sleeve_exp_WK, m_SR)
 !
+      use calypso_mpi_int
       use calypso_mpi_int8
       use transfer_to_long_integers
       use set_element_id_4_node
