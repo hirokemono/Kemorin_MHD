@@ -23,7 +23,9 @@
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin LIC_ctl
-!!    LIC_field    magnetic_field
+!!    elapsed_time_monitor    On
+!!
+!!    LIC_field           magnetic_field
 !!
 !!    color_field         magnetic_field
 !!    color_component     amplitude
@@ -86,7 +88,9 @@
 !     3rd level for LIC_ctl
 !
       character(len=kchara), parameter, private                         &
-     &              :: hd_LIC_field =   'LIC_field'
+     &              :: hd_LIC_field =       'LIC_field'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_sub_elapse_dump = 'elapsed_time_monitor'
 !
       character(len=kchara), parameter, private                         &
      &              :: hd_color_field =     'color_field'
@@ -117,7 +121,7 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_lic_partition = 'LIC_repartition_ctl'
 !
-      integer(kind = kint), parameter, private :: n_label_LIC = 13
+      integer(kind = kint), parameter, private :: n_label_LIC = 14
 !
 !  ---------------------------------------------------------------------
 !
@@ -144,8 +148,10 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_lic_ctl)) exit
 !
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_LIC_field, lic_ctl%LIC_field_ctl)
+        call read_chara_ctl_type(c_buf, hd_LIC_field,                   &
+     &                           lic_ctl%LIC_field_ctl)
+        call read_chara_ctl_type(c_buf, hd_sub_elapse_dump,             &
+     &                           lic_ctl%subdomain_elapsed_dump_ctl)
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_color_field, lic_ctl%color_field_ctl)
@@ -214,7 +220,8 @@
       call set_control_labels(hd_normalization_type,  names(11))
       call set_control_labels(hd_normalization_value, names(12))
 !
-      call set_control_labels(hd_lic_partition,  names(13))
+      call set_control_labels(hd_lic_partition,   names(13))
+      call set_control_labels(hd_sub_elapse_dump, names(14))
 !
       end subroutine set_ctl_label_LIC
 !

@@ -43,7 +43,8 @@ label[8]   vr_sample_mode
 label[9]   step_size 
 label[10]   normalization_type 
 label[11]   normalization_value 
-label[12]   normalization_value
+label[12]   LIC_repartition_ctl
+label[13]   elapsed_time_monitor
 
 Check lic_ctl_labls->label_LIC_noise_f
 ctl_list->num_labels 7 

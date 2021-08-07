@@ -7,10 +7,11 @@
 !> @brief Routines to constructu elment communication table
 !!
 !!@verbatim
-!!      subroutine sleeve_extension_for_new_mesh(sleeve_exp_p,          &
-!!     &          org_mesh, ref_vect, repart_nod_tbl,                   &
+!!      subroutine sleeve_extension_for_new_mesh(flag_lic_dump,         &
+!!     &          sleeve_exp_p, org_mesh, ref_vect, repart_nod_tbl,     &
 !!     &          new_mesh, new_group, new_ele_comm,                    &
 !!     &          sleeve_exp_WK, m_SR)
+!!        logical, intent(in) :: flag_lic_dump
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(calypso_comm_table), intent(in) :: repart_nod_tbl
 !!        type(mesh_geometry), intent(in) :: org_mesh
@@ -82,8 +83,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sleeve_extension_for_new_mesh(sleeve_exp_p,            &
-     &          org_mesh, ref_vect, repart_nod_tbl,                     &
+      subroutine sleeve_extension_for_new_mesh(flag_lic_dump,           &
+     &          sleeve_exp_p, org_mesh, ref_vect, repart_nod_tbl,       &
      &          new_mesh, new_group, new_ele_comm,                      &
      &          sleeve_exp_WK, m_SR)
 !
@@ -97,6 +98,7 @@
       use const_nod_ele_to_extend
       use mark_node_ele_to_extend
 !
+      logical, intent(in) :: flag_lic_dump
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(calypso_comm_table), intent(in) :: repart_nod_tbl
       type(mesh_geometry), intent(in) :: org_mesh
@@ -197,8 +199,8 @@
      &     (cast_long(new_ele_comm%ntot_import), ntot_import_ele,       &
      &      MPI_SUM, 0)
 !
-        if(my_rank .eq. 0) then
-          write(*,*) 'Node, Element at level ', iloop
+        if((my_rank .eq. 0) .and. flag_lic_dump) then
+          write(*,*) 'Node, Element at extension level ', iloop
           write(*,*) 'Total:    ', ntot_numnod, ntot_numele
           write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),     &
      &                            ntot_import_ele
@@ -206,7 +208,7 @@
 !
         if(iflag_process_extend .eq. 0) exit
         if(iloop .eq. max_extend_loop) exit
-        if(my_rank .eq. 0) write(*,*) 'sleeve extension again'
+!        if(my_rank .eq. 0) write(*,*) 'sleeve extension again'
 !
         call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
@@ -217,6 +219,13 @@
      &      sleeve_exp_p, sleeve_exp_WK, m_SR%SR_sig, m_SR%SR_r)
         if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
       end do
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'Node, Element at final extension level ', iloop
+        write(*,*) 'Total:    ', ntot_numnod, ntot_numele
+        write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),       &
+     &                            ntot_import_ele
+      end if
 !
       do ip = 1, nprocs
         call dealloc_mark_for_each_comm(mark_saved1(ip))

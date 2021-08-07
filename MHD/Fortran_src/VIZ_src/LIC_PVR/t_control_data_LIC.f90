@@ -92,6 +92,7 @@
 !
       type lic_parameter_ctl
         type(read_character_item) :: LIC_field_ctl
+        type(read_character_item) :: subdomain_elapsed_dump_ctl
 !
         type(read_character_item) :: color_field_ctl
         type(read_character_item) :: color_component_ctl
@@ -132,7 +133,8 @@
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !
 !
-      lic_ctl%LIC_field_ctl%iflag = 0
+      lic_ctl%LIC_field_ctl%iflag =              0
+      lic_ctl%subdomain_elapsed_dump_ctl%iflag = 0
 !
       lic_ctl%color_field_ctl%iflag =       0
       lic_ctl%color_component_ctl%iflag =   0

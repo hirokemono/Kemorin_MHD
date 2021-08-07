@@ -180,6 +180,7 @@
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_parameters), intent(in) :: lic_param
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(mesh_SR), intent(inout) :: m_SR
@@ -189,8 +190,8 @@
 !
       if(repart_p%flag_repartition) then
 !  -----  Repartition
-        call s_LIC_re_partition(repart_p, geofem, ele_comm, next_tbl,   &
-     &                          repart_data, m_SR)
+        call s_LIC_re_partition((.TRUE.), repart_p,                     &
+     &      geofem, ele_comm, next_tbl, repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
@@ -221,15 +222,17 @@
       if(lic_param%each_part_p%flag_repartition) then
         call link_repart_trace_time_data(geofem%mesh%node,              &
      &      rep_ref%count_line_int, repart_data%repart_WK)
-        call s_LIC_re_partition(lic_param%each_part_p, geofem,          &
-     &                          ele_comm, next_tbl, repart_data, m_SR)
+        call s_LIC_re_partition                                         &
+     &     (lic_param%flag_LIC_elapsed_dump, lic_param%each_part_p,     &
+     &      geofem, ele_comm, next_tbl, repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_param%num_masking, repart_data%field_lic)
       else if(repart_p%flag_repartition) then
-        call s_LIC_re_partition(repart_p, geofem, ele_comm, next_tbl,   &
-     &                          repart_data, m_SR)
+        call s_LIC_re_partition                                         &
+     &     (lic_param%flag_LIC_elapsed_dump, repart_p,                  &
+     &      geofem, ele_comm, next_tbl, repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
@@ -309,6 +312,7 @@
       use const_jacobians_3d
       use int_volume_of_domain
 !
+      logical, intent(in) :: flag_lic_dump
       type(volume_partioning_param), intent(in) :: repart_p
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
@@ -323,8 +327,8 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
       allocate(repart_data%viz_fem)
-      call load_or_const_new_partition                                  &
-     &   (repart_p, geofem, ele_comm, next_tbl, repart_data%viz_fem,    &
+      call load_or_const_new_partition(flag_lic_dump, repart_p,         &
+     &    geofem, ele_comm, next_tbl, repart_data%viz_fem,              &
      &    repart_data%mesh_to_viz_tbl, repart_data%repart_WK, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
 !

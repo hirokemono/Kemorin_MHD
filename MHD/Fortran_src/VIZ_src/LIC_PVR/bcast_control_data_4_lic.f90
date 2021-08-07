@@ -98,6 +98,8 @@
       call calypso_mpi_bcast_one_int(lic_ctl%i_lic_control, 0)
 !
       call bcast_ctl_type_c1(lic_ctl%LIC_field_ctl)
+      call bcast_ctl_type_c1(lic_ctl%subdomain_elapsed_dump_ctl)
+!
       call bcast_ctl_type_c1(lic_ctl%color_field_ctl)
       call bcast_ctl_type_c1(lic_ctl%color_component_ctl)
       call bcast_ctl_type_c1(lic_ctl%opacity_field_ctl)
@@ -144,6 +146,9 @@
 !
       call copy_chara_ctl(org_lic_c%LIC_field_ctl,                      &
      &                    new_lic_c%LIC_field_ctl)
+      call copy_chara_ctl(org_lic_c%subdomain_elapsed_dump_ctl,         &
+     &                    new_lic_c%subdomain_elapsed_dump_ctl)
+!
       call copy_chara_ctl(org_lic_c%color_field_ctl,                    &
      &                    new_lic_c%color_field_ctl)
       call copy_chara_ctl(org_lic_c%color_component_ctl,                &

@@ -190,6 +190,12 @@
       real(kind = kreal), allocatable :: elapse_line_out(:)
 !
 !
+      elapse_ray_trace_out(1)                                           &
+     &     = l_elsp%elapse_rtrace / dble(node%internal_node)
+      elapse_ray_trace_out(2) = l_elsp%elapse_line_int                  &
+     &     / dble(nnod_masked_4_LIC(node, lic_p, field_lic))
+      if(lic_p%flag_LIC_elapsed_dump) return
+!
 !      if(i_debug .gt. 0) write(*,*)                                    &
 !      write(*,*) "pvr sampling cnt:", my_rank, l_elsp%icount_trace
 !
@@ -261,11 +267,6 @@
      &          max_sample_cnt, max_line_int_cnt,                       &
      &          dmax_trace_time, dmax_line_int_time
       end if
-!
-      elapse_ray_trace_out(1)                                           &
-     &     = l_elsp%elapse_rtrace / dble(node%internal_node)
-      elapse_ray_trace_out(2) = l_elsp%elapse_line_int                  &
-     &     / dble(nnod_masked_4_LIC(node, lic_p, field_lic))
 !
       if(my_rank .eq. 0) then
         allocate(internal_node_out(nprocs))

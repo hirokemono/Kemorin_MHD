@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine s_repartiton_by_volume                               &
-!!     &         (part_param, geofem, ele_comm, next_tbl,               &
+!!     &         (flag_lic_dump, part_param, geofem, ele_comm, next_tbl,&
 !!     &          new_fem, repart_nod_tbl, repart_WK, m_SR)
+!!        logical, intent(in) :: flag_lic_dump
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
@@ -49,7 +50,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_repartiton_by_volume                                 &
-     &         (part_param, geofem, ele_comm, next_tbl,                 &
+     &         (flag_lic_dump, part_param, geofem, ele_comm, next_tbl,  &
      &          new_fem, repart_nod_tbl, repart_WK, m_SR)
 !
       use t_next_node_ele_4_node
@@ -73,6 +74,7 @@
       use nod_and_ele_derived_info
       use const_same_domain_grouping
 !
+      logical, intent(in) :: flag_lic_dump
       type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: ele_comm
@@ -117,7 +119,8 @@
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
-        call sleeve_extension_for_new_mesh(part_param%sleeve_exp_p,     &
+        call sleeve_extension_for_new_mesh                              &
+     &     (flag_lic_dump, part_param%sleeve_exp_p,                     &
      &      geofem%mesh, repart_WK%ref_vect, repart_nod_tbl,            &
      &      new_fem%mesh, new_fem%group, new_ele_comm,                  &
      &      repart_WK%sleeve_exp_WK, m_SR)
