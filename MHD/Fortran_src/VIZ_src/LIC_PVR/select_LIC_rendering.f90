@@ -153,7 +153,8 @@
 !
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-      call alloc_lic_repart_ref(repart_data%viz_fem%mesh, rep_ref_viz)
+      call alloc_lic_repart_ref(repart_data%viz_fem%mesh%node,          &
+     &                          rep_ref_viz)
       do i_lic = 1, pvr%num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
@@ -267,7 +268,7 @@
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
-      call alloc_lic_repart_ref(geofem%mesh, rep_ref_snap)
+      call alloc_lic_repart_ref(geofem%mesh%node, rep_ref_snap)
       do i_lic = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic) - ist_img
@@ -287,7 +288,7 @@
 !
         call reset_lic_count_line_int(rep_ref_snap)
         call alloc_lic_repart_ref                                       &
-     &     (repart_data%viz_fem%mesh, rep_ref_viz)
+     &     (repart_data%viz_fem%mesh%node, rep_ref_viz)
 !
         if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
         call each_PVR_initialize(i_lic, num_img,                        &
