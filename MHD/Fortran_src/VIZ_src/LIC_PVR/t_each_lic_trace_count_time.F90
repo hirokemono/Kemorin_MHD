@@ -50,7 +50,7 @@
         integer(kind = kint), allocatable :: icou_line_smp(:,:)
 !
 !>        Total integration counts in each subdomain
-        real(kind = kreal) :: count_line_int
+        real(kind = kreal) :: count_line_intgrate
 !
 !>        Counter for ray tracing
         integer(kind = kint) :: icount_trace
@@ -142,7 +142,7 @@
         count_line_tmp = count_line_tmp + count_int_nod(inod)
       end do
 !$omp end parallel do
-      l_elsp%count_line_int = count_line_tmp
+      l_elsp%count_line_intgrate = count_line_tmp
 !
       end subroutine sum_icou_int_nod_smp
 !
@@ -206,7 +206,7 @@
       call calypso_mpi_allreduce_one_int                                &
      &   (l_elsp%icount_trace, min_sample_cnt, MPI_SUM)
       call calypso_mpi_allreduce_one_real                               &
-     &   (l_elsp%count_line_int, ave_line_int_cnt, MPI_SUM)
+     &   (l_elsp%count_line_intgrate, ave_line_int_cnt, MPI_SUM)
       ave_sample_cnt =   dble(min_sample_cnt)
 !
       call calypso_mpi_allreduce_one_real                               &
@@ -216,7 +216,7 @@
       call calypso_mpi_allreduce_one_int                                &
      &   (l_elsp%icount_trace, min_sample_cnt, MPI_MIN)
       call calypso_mpi_allreduce_one_int                                &
-     &   (int(l_elsp%count_line_int), min_line_int_cnt, MPI_MIN)
+     &   (int(l_elsp%count_line_intgrate), min_line_int_cnt, MPI_MIN)
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (l_elsp%elapse_rtrace, dmax_trace_time, MPI_MAX)
@@ -225,7 +225,7 @@
       call calypso_mpi_allreduce_one_int                                &
      &   (l_elsp%icount_trace, max_sample_cnt, MPI_MAX)
       call calypso_mpi_allreduce_one_int                                &
-     &   (int(l_elsp%count_line_int), max_line_int_cnt, MPI_MAX)
+     &   (int(l_elsp%count_line_intgrate), max_line_int_cnt, MPI_MAX)
 !
       ave_trace_time =    ave_trace_time / dble(nprocs)
       ave_line_int_time = ave_line_int_time / dble(nprocs)
@@ -236,7 +236,8 @@
       sq_line_int_time = (l_elsp%elapse_line_int                        &
      &                  - ave_line_int_time)**2
       sq_sample_cnt =  (dble(l_elsp%icount_trace) - ave_sample_cnt)**2
-      sq_line_int_cnt =  (l_elsp%count_line_int - ave_line_int_cnt)**2
+      sq_line_int_cnt                                                   &
+     &     = (l_elsp%count_line_intgrate - ave_line_int_cnt)**2
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (sq_trace_time,    std_trace_time, MPI_SUM)
@@ -285,7 +286,7 @@
       call calypso_mpi_gather_one_int                                   &
      &   (l_elsp%icount_trace, sample_cnt_out, 0)
       call calypso_mpi_gather_one_int                                   &
-     &   (int(l_elsp%count_line_int), icou_line_int_out, 0)
+     &   (int(l_elsp%count_line_intgrate), icou_line_int_out, 0)
       call calypso_mpi_gather_one_real                                  &
      &   (l_elsp%elapse_rtrace, elapse_rtrace_out, 0)
       call calypso_mpi_gather_one_real                                  &
