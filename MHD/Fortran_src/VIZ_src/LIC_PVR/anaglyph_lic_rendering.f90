@@ -110,9 +110,11 @@
       end do
 !
       allocate(lic%lic_param(lic%pvr%num_pvr))
+      allocate(lic%rep_ref(lic%pvr%num_pvr))
       call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%lic_param, lic%pvr%pvr_param, lic%flag_each_repart)
+     &    lic%lic_param, lic%pvr%pvr_param, lic%rep_ref,                &
+     &    lic%flag_each_repart)
 !
       call count_num_anaglyph_and_images(lic%pvr%num_pvr,               &
      &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images)
@@ -137,11 +139,11 @@
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
      &                          lic%repart_data)
 !
-      allocate(lic%rep_ref(lic%pvr%num_pvr))
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
      &                                   .eq. i_TIME_BASED) then
-          call init_lic_repart_ref(geofem%mesh, lic%rep_ref(i_lic))
+          call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(i_lic), &
+     &                             lic%rep_ref(i_lic))
         end if
       end do
 !

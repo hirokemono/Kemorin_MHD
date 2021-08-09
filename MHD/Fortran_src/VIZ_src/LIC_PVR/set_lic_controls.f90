@@ -16,7 +16,7 @@
 !!     &                        :: lic_ctl_type(num_lic_ctl)
 !!      subroutine s_set_lic_controls(group, nod_fld, num_lic,          &
 !!     &           pvr_ctl_type, lic_ctl_type, lic_param, pvr_param,    &
-!!     &           flag_each_repart)
+!!     &           rep_ref, flag_each_repart)
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
@@ -24,6 +24,7 @@
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
 !!        type(lic_parameters), intent(inout) :: lic_param(num_lic)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
+!!        type(lic_repart_reference), intent(inout) :: rep_ref(num_lic)
 !!      subroutine flush_each_lic_control(lic_param)
 !!        type(lic_parameters), intent(inout) :: lic_param
 !!@endverbatim
@@ -83,7 +84,7 @@
 !
       subroutine s_set_lic_controls(group, nod_fld, num_lic,            &
      &           pvr_ctl_type, lic_ctl_type, lic_param, pvr_param,      &
-     &           flag_each_repart)
+     &           rep_ref, flag_each_repart)
 !
       use m_error_IDs
       use t_phys_data
@@ -91,6 +92,7 @@
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_sections
+      use t_lic_repart_reference
       use set_control_each_pvr
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
@@ -105,6 +107,7 @@
 !
       type(lic_parameters), intent(inout) :: lic_param(num_lic)
       type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
+      type(lic_repart_reference), intent(inout) :: rep_ref(num_lic)
       logical, intent(inout) :: flag_each_repart
 !
       integer(kind = kint) :: i_lic
@@ -120,7 +123,8 @@
 !
         call set_control_lic_parameter                                  &
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      lic_ctl_type(i_lic), lic_param(i_lic), flag_each_repart)
+     &      lic_ctl_type(i_lic), lic_param(i_lic), rep_ref(i_lic),      &
+     &      flag_each_repart)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &

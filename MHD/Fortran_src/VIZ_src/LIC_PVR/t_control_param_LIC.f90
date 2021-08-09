@@ -12,6 +12,7 @@
 !!     &          lic_p, flag_each_repart)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
+!!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!      logical function lic_mask_flag(lic_p, value)
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        real(kind=kreal), intent(in) :: value(:)
@@ -109,9 +110,10 @@
 !
       subroutine set_control_lic_parameter                              &
      &         (num_nod_phys, phys_nod_name, lic_ctl,                   &
-     &          lic_p, flag_each_repart)
+     &          lic_p, rep_ref, flag_each_repart)
 !
       use t_control_data_LIC
+      use t_lic_repart_reference
       use set_field_comp_for_viz
       use set_components_flags
       use set_parallel_file_name
@@ -123,6 +125,7 @@
 !
       type(lic_parameter_ctl), intent(in) :: lic_ctl
       type(lic_parameters), intent(inout) :: lic_p
+      type(lic_repart_reference), intent(inout) :: rep_ref
       logical, intent(inout) :: flag_each_repart
 !
       integer(kind = kint) :: icheck_ncomp(1)
@@ -183,6 +186,8 @@
 !
       call set_ctl_param_vol_repart(lic_ctl%repart_ctl,                 &
      &                              lic_p%each_part_p)
+      call set_lic_repart_reference_param                               &
+     &   (lic_ctl%repart_ctl%new_part_ctl, lic_p%each_part_p, rep_ref)
       if(lic_p%each_part_p%flag_repartition) flag_each_repart = .TRUE.
 !
       lic_p%num_masking = lic_ctl%num_masking_ctl

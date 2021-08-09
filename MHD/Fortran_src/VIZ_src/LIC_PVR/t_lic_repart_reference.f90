@@ -12,46 +12,53 @@
 !!      subroutine dealloc_lic_repart_ref(rep_ref)
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!        type(mesh_geometry), intent(in) :: mesh
-!!
-!!      subroutine bring_back_rendering_time                            &
-!!     &         (each_part_p, mesh_to_viz_tbl, rep_ref_viz,            &
-!!     &          rep_ref_snap, rep_ref, m_SR)
-!!        type(volume_partioning_param), intent(in) :: each_part_p
-!!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-!!        type(lic_repart_reference), intent(in) :: rep_ref_viz
-!!        type(lic_repart_reference), intent(inout) :: rep_ref_snap
-!!        type(lic_repart_reference), intent(inout) :: rep_ref
-!!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine set_average_line_int_time(mesh, each_part_p,         &
-!!     &          rep_ref_viz, mesh_to_viz_tbl, rep_ref, m_SR)
-!!        type(volume_partioning_param), intent(in) :: each_part_p
-!!        type(lic_repart_reference), intent(in) :: rep_ref_viz
-!!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(lic_repart_reference), intent(inout) :: rep_ref
-!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module t_lic_repart_reference
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
+      use t_file_IO_parameter
 !
       implicit  none
 !
+      character(len = kchara), parameter                                &
+     &                        :: c_PREDICTED_COUNT = 'PREDICTED_COUNT'
+      character(len = kchara), parameter                                &
+     &                        :: c_STACKED_COUNT =   'STACKED_COUNT'
+      character(len = kchara), parameter                                &
+     &                        :: c_AVERAGE_COUNT =   'AVERAGE_COUNT'
+!
+      integer(kind = kint), parameter :: i_PREDICTED_COUNT = 1
+      integer(kind = kint), parameter :: i_STACKED_COUNT =   2
+      integer(kind = kint), parameter :: i_AVERAGE_COUNT =   3
+!
 !>  Structure for reference for LIC repartition
       type lic_repart_reference
-!>    Noumber of node
+!>    Number of node
+        integer(kind = kint) :: iflag_repart_ref_type = 0
+!
+!>    Number of node
+        integer(kind = kint) :: num_counts = 0
+!>    Number of node
         integer(kind = kint) :: nnod_lic
 !>    Work area for elapsed transfer time
         real(kind = kreal), allocatable :: count_line_int(:)
+!>    Weight to to mix elapsed from previous
+        real(kind = kreal) :: weight_prev = 1.0d0
 !
 !>    Average elapsed time for line integration
         real(kind = kreal) :: elapse_ray_trace(2)
+!
+        type(field_IO_params) :: file_IO
       end type lic_repart_reference
 !
-      private :: copy_average_elapsed_to_nod
-      private :: copy_line_integration_count
+      character(len = kchara), parameter, private                       &
+     &                :: line_int_cnt_name = 'line_intergration_count'
+!
+      private :: alloc_lic_repart_ref
+      private :: set_lic_repart_reference_file
 !
 ! -----------------------------------------------------------------------
 !
@@ -59,19 +66,133 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_lic_repart_ref(mesh, rep_ref)
+      subroutine set_lic_repart_reference_param                         &
+     &         (new_part_ctl, each_part_p, rep_ref)
 !
+      use t_ctl_data_volume_grouping
+      use t_control_param_vol_grping
+      use m_file_format_switch
+      use skip_comment_f
+!
+      type(new_patition_control), intent(in) :: new_part_ctl
+      type(volume_partioning_param), intent(inout) :: each_part_p
+      type(lic_repart_reference), intent(inout) :: rep_ref
+!
+      character(len = kchara) :: tmpchara
+!
+!
+      if(each_part_p%iflag_repart_ref .ne. i_NO_REPARTITION) return
+      if(new_part_ctl%partition_reference_ctl%iflag .eq. 0) return
+!
+      tmpchara = new_part_ctl%partition_reference_ctl%charavalue
+      if(cmp_no_case(tmpchara,c_PREDICTED_COUNT)) then
+        each_part_p%iflag_repart_ref = i_TIME_BASED
+        rep_ref%iflag_repart_ref_type = i_PREDICTED_COUNT
+      else if(cmp_no_case(tmpchara,c_STACKED_COUNT)) then
+        each_part_p%iflag_repart_ref = i_TIME_BASED
+        rep_ref%iflag_repart_ref_type = i_STACKED_COUNT
+      else if(cmp_no_case(tmpchara,c_AVERAGE_COUNT)) then
+        each_part_p%iflag_repart_ref = i_TIME_BASED
+        rep_ref%iflag_repart_ref_type = i_AVERAGE_COUNT
+      end if
+!
+      if(each_part_p%iflag_repart_ref .eq. i_TIME_BASED) then
+        if(new_part_ctl%weight_to_previous_ctl%iflag .gt. 0) then
+          rep_ref%weight_prev                                           &
+     &         = new_part_ctl%weight_to_previous_ctl%realvalue
+        end if
+!
+        rep_ref%file_IO%iflag_format                                    &
+     &      = choose_para_file_format(new_part_ctl%trace_count_fmt_ctl)
+      end if
+!
+      end subroutine set_lic_repart_reference_param
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_lic_repart_ref(mesh, pvr_rgb, rep_ref)
+!
+      use calypso_mpi
       use t_mesh_data
+      use t_time_data
+      use t_field_data_IO
+      use t_pvr_image_array
+      use t_control_param_vol_grping
+      use field_IO_select
       use int_volume_of_single_domain
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(pvr_image_type), intent(in) :: pvr_rgb
       type(lic_repart_reference), intent(inout) :: rep_ref
+!
+      type(time_data) :: t_IO
+      type(field_IO) :: fld_IO
+      integer(kind = kint) :: ierr
 !
 !
       call alloc_lic_repart_ref(mesh%node, rep_ref)
-      call cal_node_volue(mesh%node, mesh%ele, rep_ref%count_line_int)
+!
+      call set_lic_repart_reference_file(pvr_rgb, rep_ref)
+      if(check_step_FEM_field_file(my_rank, iminus, rep_ref%file_IO))   &
+     &                                                            then
+        call sel_read_alloc_step_FEM_file                               &
+     &     (nprocs, my_rank, iminus, rep_ref%file_IO, t_IO, fld_IO)
+        call copy_lic_repart_ref_from_IO(t_IO, fld_IO,                  &
+     &      rep_ref%nnod_lic, rep_ref%count_line_int,                   &
+     &      rep_ref%num_counts, ierr)
+        call dealloc_phys_IO(fld_IO)
+!
+        if(ierr .gt. 0) then
+          write(e_message,'(2a)') 'Line integration counter for LIC',   &
+     &                            'is wrong.'
+          call calypso_mpi_abort(ierr, e_message)
+        end if
+      else
+        if(my_rank .eq. 0) write(*,*)                                   &
+     &         'Initialize line integration count by volume'
+        call cal_node_volue(mesh%node, mesh%ele,                        &
+     &                      rep_ref%count_line_int)
+      end if
 !
       end subroutine init_lic_repart_ref
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_lic_repart_ref(rep_ref)
+!
+      type(lic_repart_reference), intent(inout) :: rep_ref
+!
+!
+      if(allocated(rep_ref%count_line_int)) then
+        deallocate(rep_ref%count_line_int)
+      end if
+!
+      end subroutine dealloc_lic_repart_ref
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_lic_repart_reference_file(pvr_rgb, rep_ref)
+!
+      use t_pvr_image_array
+!
+      type(pvr_image_type), intent(in) :: pvr_rgb
+      type(lic_repart_reference), intent(inout) :: rep_ref
+!
+
+!
+      if(rep_ref%iflag_repart_ref_type .eq. i_PREDICTED_COUNT) then
+        write(rep_ref%file_IO%file_prefix,'(2a)')                       &
+     &          trim(pvr_rgb%pvr_prefix), '_predict_count'
+      else if(rep_ref%iflag_repart_ref_type .eq. i_AVERAGE_COUNT) then
+        write(rep_ref%file_IO%file_prefix,'(2a)')                       &
+     &          trim(pvr_rgb%pvr_prefix), '_average_count'
+      else if(rep_ref%iflag_repart_ref_type .eq. i_STACKED_COUNT) then
+        write(rep_ref%file_IO%file_prefix,'(2a)')                       &
+     &          trim(pvr_rgb%pvr_prefix), '_stacked_count'
+      end if
+!
+      end subroutine set_lic_repart_reference_file
 !
 ! -----------------------------------------------------------------------
 !
@@ -83,12 +204,11 @@
       type(lic_repart_reference), intent(inout) :: rep_ref
 !
 !
+      rep_ref%num_counts = 0
       rep_ref%nnod_lic = node%numnod
       allocate(rep_ref%count_line_int(rep_ref%nnod_lic))
       if(rep_ref%nnod_lic .gt. 0) then
-!$omp parallel workshare
-        rep_ref%count_line_int(1:rep_ref%nnod_lic) = 0.0d0
-!$omp end parallel workshare
+        call reset_lic_count_line_int(rep_ref)
       end if
 !
       end subroutine alloc_lic_repart_ref
@@ -109,137 +229,103 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_lic_repart_ref(rep_ref)
+      subroutine output_LIC_line_integrate_count(time, rep_ref)
 !
-      type(lic_repart_reference), intent(inout) :: rep_ref
+      use calypso_mpi
+      use t_time_data
+      use t_field_data_IO
+      use field_IO_select
+!
+      real(kind = kreal), intent(in) :: time
+      type(lic_repart_reference), intent(in) :: rep_ref
+!
+      type(time_data) :: t_IO
+      type(field_IO) :: fld_IO
 !
 !
-      if(allocated(rep_ref%count_line_int)) then
-        deallocate(rep_ref%count_line_int)
-      end if
+      call copy_lic_repart_ref_to_IO(nprocs, time, rep_ref,             &
+     &                               t_IO, fld_IO)
+      call sel_write_step_FEM_field_file                                &
+     &   (iminus, rep_ref%file_IO, t_IO, fld_IO)
+      call dealloc_phys_IO(fld_IO)
 !
-      end subroutine dealloc_lic_repart_ref
+      end subroutine output_LIC_line_integrate_count
 !
 ! -----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine bring_back_rendering_time                              &
-     &         (each_part_p, mesh_to_viz_tbl, rep_ref_viz,              &
-     &          rep_ref_snap, rep_ref, m_SR)
+      subroutine copy_lic_repart_ref_to_IO(nprocs, time, rep_ref,       &
+     &                                     t_IO, fld_IO)
 !
-      use t_mesh_SR
-      use t_calypso_comm_table
-      use t_control_param_vol_grping
-      use calypso_reverse_send_recv
+      use t_time_data
+      use t_field_data_IO
 !
-      type(volume_partioning_param), intent(in) :: each_part_p
-      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-      type(lic_repart_reference), intent(in) :: rep_ref_viz
+      integer, intent(in) :: nprocs
+      real(kind = kreal), intent(in) :: time
+      type(lic_repart_reference), intent(in) :: rep_ref
 !
-      type(lic_repart_reference), intent(inout) :: rep_ref_snap
-      type(lic_repart_reference), intent(inout) :: rep_ref
-      type(mesh_SR), intent(inout) :: m_SR
+      type(time_data), intent(inout) :: t_IO
+      type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call calypso_reverse_SR_1(mesh_to_viz_tbl,                        &
-     &    rep_ref_viz%nnod_lic, rep_ref_snap%nnod_lic,                  &
-     &    rep_ref_viz%count_line_int, rep_ref_snap%count_line_int,      &
-     &    m_SR%SR_sig, m_SR%SR_r)
+      t_IO%i_time_step = rep_ref%num_counts
+      t_IO%time =        time
+      t_IO%dt =          0.0d0
 !
-      call copy_line_integration_count                                  &
-     &   (rep_ref_snap%nnod_lic, each_part_p%weight_prev,               &
-     &    rep_ref_snap%count_line_int, rep_ref%count_line_int)
+      fld_IO%num_field_IO =      1
+      call alloc_phys_name_IO(fld_IO)
 !
-      end subroutine bring_back_rendering_time
+      fld_IO%ntot_comp_IO =      1
+      fld_IO%istack_comp_IO(0) = 0
+      fld_IO%istack_comp_IO(1) = 1
+      fld_IO%num_comp_IO(1) =    1
+      fld_IO%fld_name(1) = line_int_cnt_name
 !
-!  ---------------------------------------------------------------------
+      fld_IO%nnod_IO = rep_ref%nnod_lic
+      call alloc_merged_field_stack(nprocs, fld_IO)
+      call count_number_of_node_stack(fld_IO%nnod_IO,                   &
+     &                                fld_IO%istack_numnod_IO)
 !
-      subroutine set_average_line_int_time(mesh, each_part_p,           &
-     &          rep_ref_viz, mesh_to_viz_tbl, rep_ref, m_SR)
+      call alloc_phys_data_IO(fld_IO)
 !
-      use t_mesh_SR
-      use t_mesh_data
-      use t_calypso_comm_table
-      use t_control_param_vol_grping
-      use calypso_reverse_send_recv
+!$omp parallel workshare
+      fld_IO%d_IO(1:fld_IO%nnod_IO,1)                                   &
+     &          = rep_ref%count_line_int(1:fld_IO%nnod_IO)
+!$omp end parallel workshare
 !
-      type(volume_partioning_param), intent(in) :: each_part_p
-      type(lic_repart_reference), intent(in) :: rep_ref_viz
-      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-      type(mesh_geometry), intent(in) :: mesh
+      end subroutine copy_lic_repart_ref_to_IO
 !
-      type(lic_repart_reference), intent(inout) :: rep_ref
-      type(mesh_SR), intent(inout) :: m_SR
+! -----------------------------------------------------------------------
 !
-      real(kind = kreal), allocatable :: elapse_rtraces_pe(:,:)
+      subroutine copy_lic_repart_ref_from_IO(t_IO, fld_IO,              &
+     &          numnod, count_line_int, num_counts, ierr)
 !
+      use t_time_data
+      use t_field_data_IO
 !
-      allocate(elapse_rtraces_pe(2,mesh_to_viz_tbl%nrank_export))
-      call calypso_gather_reverse_SR(itwo, mesh_to_viz_tbl,             &
-     &    rep_ref_viz%elapse_ray_trace, elapse_rtraces_pe(1,1),         &
-     &    m_SR%SR_sig)
-      call copy_average_elapsed_to_nod(mesh%node, mesh_to_viz_tbl,      &
-     &    each_part_p%weight_prev, elapse_rtraces_pe,                   &
-     &    rep_ref%count_line_int)
-      deallocate(elapse_rtraces_pe)
-!
-      end subroutine set_average_line_int_time
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_line_integration_count(numnod, weight_prev,       &
-     &          count_line_int, ref_repart_mesh)
-!
+      type(time_data), intent(inout) :: t_IO
+      type(field_IO), intent(in) :: fld_IO
       integer(kind = kint), intent(in) :: numnod
-      real(kind = kreal), intent(in) :: weight_prev
-      real(kind = kreal), intent(in) :: count_line_int(numnod)
-      real(kind = kreal), intent(inout) :: ref_repart_mesh(numnod)
 !
-      integer(kind = kint) :: inod
-!
-!
-!$omp parallel do
-      do inod = 1, numnod
-        ref_repart_mesh(inod) = weight_prev * count_line_int(inod)      &
-     &               + (1.0d0 - weight_prev) * ref_repart_mesh(inod)
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_line_integration_count
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_average_elapsed_to_nod(node, mesh_to_viz_tbl,     &
-     &          weight_prev, elapse_rtraces_pe, ref_repart_mesh)
-!
-      use t_geometry_data
-      use t_calypso_comm_table
-!
-      type(node_data), intent(in) :: node
-      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
-      real(kind = kreal), intent(in) :: weight_prev
-      real(kind = kreal), intent(in)                                    &
-     &             :: elapse_rtraces_pe(2,mesh_to_viz_tbl%nrank_export)
-      real(kind = kreal), intent(inout) :: ref_repart_mesh(node%numnod)
-!
-      integer(kind = kint) :: ip, ist, ied, inum, inod
+      real(kind = kreal), intent(inout) :: count_line_int(numnod)
+      integer(kind = kint), intent(inout) :: num_counts
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      do ip = 1, mesh_to_viz_tbl%nrank_export
-        ist = mesh_to_viz_tbl%istack_export(ip-1) + 1
-        ied = mesh_to_viz_tbl%istack_export(ip)
-!$omp parallel do private(inum,inod)
-        do inum = ist, ied
-          inod = mesh_to_viz_tbl%item_export(inum)
-          ref_repart_mesh(inod)                                         &
-     &      = weight_prev * elapse_rtraces_pe(2,ip)                     &
-     &       + (1.0d0 - weight_prev) * ref_repart_mesh(inod)
-        end do
-      end do
+      ierr = 0
+      if(fld_IO%num_field_IO .ne. 1) ierr = 1
+      if(fld_IO%ntot_comp_IO .ne. 1) ierr = 1
+      if(fld_IO%fld_name(1) .ne. line_int_cnt_name) ierr = 1
+      if(fld_IO%nnod_IO .ne. numnod) ierr = 1
 !
-      end subroutine copy_average_elapsed_to_nod
+!$omp parallel workshare
+      count_line_int(1:numnod) = fld_IO%d_IO(1:numnod,1)
+!$omp end parallel workshare
 !
-!-----------------------------------------------------------------------
+      num_counts = t_IO%i_time_step
+!
+      end subroutine copy_lic_repart_ref_from_IO
+!
+! -----------------------------------------------------------------------
 !
       end module t_lic_repart_reference

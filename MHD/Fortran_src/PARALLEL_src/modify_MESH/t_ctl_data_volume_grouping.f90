@@ -34,8 +34,12 @@
 !!
 !!      sleeve_level_ctl             2
 !!
-!!         partition_reference_ctl:  VOLUME_BASED, NUMBER_BASED, TIME_BASED, or NO_REPARTITION
+!!!!      partition_reference_ctl:
+!!!!         PREDICTED_COUNT, STACKED_COUNT, AVERAGE_COUNT
+!!!!         VOLUME_BASED, NUMBER_BASED, or NO_REPARTITION
 !!      partition_reference_ctl         VOLUME_BASED
+!!      trace_count_file_format         'merged_bin_gz'
+!!
 !!      weight_to_previous          0.6
 !!      masking_switch_ctl          On
 !!      masking_weight_ctl          0.1
@@ -76,6 +80,8 @@
 !
 !>        Flag for new patitioning method
         type(read_character_item) :: partition_reference_ctl
+!>        DAta foemat for trace counding data
+        type(read_character_item) :: trace_count_fmt_ctl
 !
 !>        Structure for number of subdomains
 !!@n        ndomain_section_ctl%c_tbl:  Direction of sectioning
@@ -109,15 +115,18 @@
      &       :: hd_repart_table_fmt =  'repartition_table_format'
 !
       character(len=kchara), parameter, private                         &
-     &                 :: hd_part_ref =  'partition_reference_ctl'
+     &               :: hd_part_ref =  'partition_reference_ctl'
       character(len=kchara), parameter, private                         &
-     &                 :: hd_sleeve_level = 'sleeve_level_ctl'
+     &               :: hd_trace_count_fmt = 'trace_count_file_format'
+!
       character(len=kchara), parameter, private                         &
-     &                 :: hd_weight_to_prev = 'weight_to_previous'
+     &               :: hd_sleeve_level = 'sleeve_level_ctl'
       character(len=kchara), parameter, private                         &
-     &                 :: hd_num_es =       'dir_domain_ctl'
+     &               :: hd_weight_to_prev = 'weight_to_previous'
       character(len=kchara), parameter, private                         &
-     &                 :: hd_ratio_divide = 'group_ratio_to_domain_ctl'
+     &               :: hd_num_es =       'dir_domain_ctl'
+      character(len=kchara), parameter, private                         &
+     &               :: hd_ratio_divide = 'group_ratio_to_domain_ctl'
 !
       character(len=kchara), parameter, private                         &
      &              :: hd_masking_switch = 'masking_switch_ctl'
@@ -126,6 +135,7 @@
       character(len=kchara), parameter, private                         &
      &              :: hd_masking_ctl = 'masking_control'
 !
+
       private :: read_repart_masking_ctl_array
       private :: append_repart_masking_ctl
       private :: alloc_repart_masking_ctl, dealloc_repart_masking_ctl
@@ -165,10 +175,12 @@
         call read_chara_ctl_type(c_buf, hd_repart_table_fmt,            &
      &                           new_part_ctl%repart_table_fmt_ctl)
 !
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_part_ref, new_part_ctl%partition_reference_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_masking_switch, new_part_ctl%masking_switch_ctl)
+        call read_chara_ctl_type(c_buf, hd_part_ref,                    &
+     &                           new_part_ctl%partition_reference_ctl)
+        call read_chara_ctl_type(c_buf, hd_trace_count_fmt,             &
+     &                           new_part_ctl%trace_count_fmt_ctl)
+        call read_chara_ctl_type(c_buf, hd_masking_switch,              &
+     &                           new_part_ctl%masking_switch_ctl)
 !
         call read_real_ctl_type                                         &
      &     (c_buf, hd_masking_weight, new_part_ctl%masking_weight_ctl)
@@ -197,7 +209,8 @@
       new_part_ctl%repart_table_fmt_ctl%iflag =  0
 !
       new_part_ctl%partition_reference_ctl%iflag = 0
-      new_part_ctl%weight_to_previous_ctl%iflag = 0
+      new_part_ctl%trace_count_fmt_ctl%iflag =     0
+      new_part_ctl%weight_to_previous_ctl%iflag =  0
       new_part_ctl%masking_switch_ctl%iflag = 0
       new_part_ctl%masking_weight_ctl%iflag = 0
       new_part_ctl%sleeve_level_ctl%iflag = 0
@@ -231,6 +244,7 @@
 !
       call bcast_ctl_array_ci(new_part_ctl%ndomain_section_ctl)
       call bcast_ctl_type_c1(new_part_ctl%partition_reference_ctl)
+      call bcast_ctl_type_c1(new_part_ctl%trace_count_fmt_ctl)
       call bcast_ctl_type_c1(new_part_ctl%masking_switch_ctl)
       call bcast_ctl_type_r1(new_part_ctl%masking_weight_ctl)
       call bcast_ctl_type_r1(new_part_ctl%weight_to_previous_ctl)
@@ -265,6 +279,8 @@
 !
       call copy_chara_ctl(org_new_part_c%partition_reference_ctl,       &
      &                    new_new_part_c%partition_reference_ctl)
+      call copy_chara_ctl(org_new_part_c%trace_count_fmt_ctl,           &
+     &                    new_new_part_c%trace_count_fmt_ctl)
       call copy_chara_ctl(org_new_part_c%masking_switch_ctl,            &
      &                    new_new_part_c%masking_switch_ctl)
       call copy_real_ctl(org_new_part_c%masking_weight_ctl,             &

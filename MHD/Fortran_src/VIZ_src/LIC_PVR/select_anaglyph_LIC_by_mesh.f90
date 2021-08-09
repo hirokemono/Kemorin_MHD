@@ -224,6 +224,7 @@
       use each_anaglyph_PVR
       use rendering_streo_LIC_image
       use write_PVR_image
+      use bring_back_rendering_counts
 !
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
@@ -299,9 +300,8 @@
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_TIME_BASED) then
-          call bring_back_rendering_time(lic_param(i_lic)%each_part_p,  &
-     &        repart_data%mesh_to_viz_tbl, rep_ref_viz, rep_ref_snap,   &
-     &        rep_ref(i_lic), m_SR)
+          call bring_back_rendering_time(repart_data%mesh_to_viz_tbl,   &
+     &        rep_ref_viz, rep_ref_snap, rep_ref(i_lic), m_SR)
         end if
 !
         call dealloc_lic_repart_ref(rep_ref_viz)

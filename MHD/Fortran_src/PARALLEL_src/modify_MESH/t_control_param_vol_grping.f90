@@ -117,8 +117,6 @@
         type(masking_parameter), pointer :: masking_repart(:)
 !>        Weight to shrink excluded area
         real(kind = kreal) :: shrink = 0.1d0
-!>        Weight to to mix elapsed from previous
-        real(kind = kreal) :: weight_prev = 1.0d0
 !
 !>      Structure of sleeve extension parameter
         type(sleeve_extension_param) :: sleeve_exp_p
@@ -339,15 +337,15 @@
      &      part_param%trans_tbl_file)
       end if
 !
-      part_param%iflag_repart_ref = i_VOLUME_BASED
+      part_param%iflag_repart_ref = i_NO_REPARTITION
       if(new_part_ctl%partition_reference_ctl%iflag .gt. 0) then
         tmpchara = new_part_ctl%partition_reference_ctl%charavalue
         if(cmp_no_case(tmpchara,c_NODE_BASED)) then
           part_param%iflag_repart_ref = i_NODE_BASED
+        else if(cmp_no_case(tmpchara,c_VOLUME_BASED)) then
+          part_param%iflag_repart_ref = i_VOLUME_BASED
         else if(cmp_no_case(tmpchara,c_NO_REPARTITION)) then
           part_param%iflag_repart_ref = i_NO_REPARTITION
-        else if(cmp_no_case(tmpchara,c_TIME_BASED)) then
-          part_param%iflag_repart_ref = i_TIME_BASED
         end if
       end if
 !
@@ -359,14 +357,6 @@
           part_param%flag_mask_repart = .TRUE.
         end if
       end if
-!
-      if(part_param%iflag_repart_ref .eq. i_TIME_BASED) then
-        if(new_part_ctl%weight_to_previous_ctl%iflag .gt. 0) then
-          part_param%weight_prev                                        &
-     &         = new_part_ctl%weight_to_previous_ctl%realvalue
-        end if
-      end if
-
 !
       part_param%shrink = 0.1d0
       if(new_part_ctl%masking_weight_ctl%iflag .gt. 0) then
@@ -387,7 +377,6 @@
       if(my_rank .eq. 0) then
         write(*,*) 'ndomain_eb', part_param%ndomain_eb(1:3)
         write(*,*) 'ndivide_eb', part_param%ndivide_eb(1:3)
-        write(*,*) 'weight_prev', part_param%iflag_repart_ref
       end if
 !
       end subroutine set_ctl_param_vol_grping
