@@ -11,6 +11,7 @@
 !!     &                          VIZ_DAT, viz_ctls, vizs, m_SR)
 !!      subroutine visualize_all(viz_step, time_d, geofem, nod_fld,     &
 !!     &                         VIZ_DAT, vizs, m_SR)
+!!      subroutine visualize_fin(viz_step, time_d, vizs)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
@@ -183,6 +184,24 @@
       call calypso_mpi_barrier
 !
       end subroutine visualize_all
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine visualize_fin(viz_step, time_d, vizs)
+!
+      use anaglyph_lic_rendering
+!
+      type(time_data), intent(in) :: time_d
+      type(VIZ_step_params), intent(in) :: viz_step
+!
+      type(visualize_modules), intent(inout) :: vizs
+!
+!
+      call LIC_finalize(viz_step%istep_lic, time_d%time, vizs%lic)
+      call LIC_finalize(viz_step%istep_lic, time_d%time,                &
+     &                  vizs%anaglyph_lic)
+!
+      end subroutine visualize_fin
 !
 !  ---------------------------------------------------------------------
 !

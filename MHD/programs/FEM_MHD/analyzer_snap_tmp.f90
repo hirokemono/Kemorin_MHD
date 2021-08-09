@@ -101,6 +101,7 @@
         end if
       end do
 !
+      call visualize_fin(MHD_step1%viz_step, MHD_step1%time_d, vizs_F)
       call FEM_finalize_snap_tmp(MHD_files1, MHD_step1, MHD_IO1)
 !
       call output_elapsed_times

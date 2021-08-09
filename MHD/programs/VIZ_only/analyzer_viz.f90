@@ -112,6 +112,8 @@
      &      FEM_viz1%geofem, FEM_viz1%field, VIZ_DAT1, vizs_v, m_SR11)
       end do
 !
+      call visualize_fin(t_VIZ1%viz_step, t_VIZ1%time_d, vizs_v)
+!
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
 !

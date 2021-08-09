@@ -115,6 +115,7 @@
 !
 !  time evolution end
 !
+      call visualize_fin(MHD_step1%viz_step, MHD_step1%time_d, vizs_F)
       call FEM_finalize_MHD(MHD_files1, MHD_step1, MHD_IO1)
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

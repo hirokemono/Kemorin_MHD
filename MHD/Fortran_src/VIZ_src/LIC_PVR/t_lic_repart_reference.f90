@@ -57,8 +57,8 @@
       character(len = kchara), parameter, private                       &
      &                :: line_int_cnt_name = 'line_intergration_count'
 !
-      private :: alloc_lic_repart_ref
       private :: set_lic_repart_reference_file
+      private :: copy_lic_repart_ref_to_IO
 !
 ! -----------------------------------------------------------------------
 !
@@ -243,8 +243,7 @@
       type(field_IO) :: fld_IO
 !
 !
-      call copy_lic_repart_ref_to_IO(nprocs, time, rep_ref,             &
-     &                               t_IO, fld_IO)
+      call copy_lic_repart_ref_to_IO(time, rep_ref, t_IO, fld_IO)
       call sel_write_step_FEM_field_file                                &
      &   (iminus, rep_ref%file_IO, t_IO, fld_IO)
       call dealloc_phys_IO(fld_IO)
@@ -254,13 +253,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_lic_repart_ref_to_IO(nprocs, time, rep_ref,       &
-     &                                     t_IO, fld_IO)
+      subroutine copy_lic_repart_ref_to_IO(time, rep_ref, t_IO, fld_IO)
 !
+      use calypso_mpi
       use t_time_data
       use t_field_data_IO
+      use const_global_element_ids
 !
-      integer, intent(in) :: nprocs
       real(kind = kreal), intent(in) :: time
       type(lic_repart_reference), intent(in) :: rep_ref
 !

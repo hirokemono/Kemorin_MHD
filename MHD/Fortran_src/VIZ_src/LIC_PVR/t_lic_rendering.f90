@@ -14,6 +14,11 @@
 !!     &          next_tbl, nod_fld, repart_ctl, lic_ctls, lic, m_SR)
 !!      subroutine LIC_visualize(istep_lic, time, geofem, ele_comm,     &
 !!     &                         next_tbl,  nod_fld, lic, m_SR)
+!!      subroutine LIC_finalize(istep_lic, time, lic)
+!!        integer(kind = kint), intent(in) :: istep_lic
+!!        real(kind = kreal), intent(in) :: time
+!!        type(lic_volume_rendering_module), intent(inout) :: lic
+!!
 !!      subroutine dealloc_LIC_data(lic)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
@@ -281,6 +286,31 @@
       end if
 !
       end subroutine LIC_visualize
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine LIC_finalize(istep_lic, time, lic)
+!
+      use t_lic_repart_reference
+!
+      integer(kind = kint), intent(in) :: istep_lic
+      real(kind = kreal), intent(in) :: time
+!
+      type(lic_volume_rendering_module), intent(inout) :: lic
+!
+      integer(kind = kint) :: i_lic
+!
+!
+      if(lic%pvr%num_pvr.le.0 .or. istep_lic.lt.0) return
+      if(lic%flag_each_repart .eqv. .FALSE.) return
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
+     &                                       .ne. i_TIME_BASED) cycle
+        call output_LIC_line_integrate_count(time, lic%rep_ref(i_lic))
+      end do
+!
+      end subroutine LIC_finalize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

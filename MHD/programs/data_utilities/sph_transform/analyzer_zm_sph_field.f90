@@ -125,6 +125,9 @@
         end if
       end do
 !
+      call visualize_fin(FEM_STR1%viz_step, t_STR%time_d,               &
+     &                   FEM_STR1%vizs)
+!
       call FEM_finalize_sph_trans(t_STR%ucd_step, FEM_STR1)
       call output_elapsed_times
 !

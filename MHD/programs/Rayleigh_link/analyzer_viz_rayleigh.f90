@@ -122,6 +122,8 @@
         end if
       end do
 !
+      if (iflag_debug.eq.1) write(*,*) 'visualize_fin'
+      call visualize_fin(t_VIZ_r%viz_step, t_VIZ_r%time_d, vizs_v)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
 !

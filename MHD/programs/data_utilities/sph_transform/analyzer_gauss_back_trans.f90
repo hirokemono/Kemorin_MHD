@@ -109,6 +109,9 @@
         end if
       end do
 !
+      call visualize_fin(FEM_STR1%viz_step, t_STR%time_d,               &
+     &                   FEM_STR1%vizs)
+!
       call output_elapsed_times
 !
       end subroutine analyze
