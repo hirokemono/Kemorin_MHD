@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine LIC_initialize_w_shared_mesh(geofem, ele_comm,       &
-!!     &          next_tbl, repart_p, repart_data, pvr, m_SR)
+!!     &          next_tbl, repart_p, rep_ref_m, repart_data, pvr, m_SR)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(volume_partioning_param), intent(in) :: repart_p
+!!        type(lic_repart_reference), intent(in) :: rep_ref_m
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(mesh_SR), intent(inout) :: m_SR
@@ -29,7 +30,8 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine LIC_visualize_w_each_repart                          &
 !!     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld, &
-!!     &          repart_p, repart_data, pvr, lic_param, rep_ref, m_SR)
+!!     &          repart_p, rep_ref_m, repart_data, pvr, lic_param,     &
+!!     &          rep_ref, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_data), intent(in) :: geofem
@@ -37,6 +39,7 @@
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(volume_partioning_param), intent(in) :: repart_p
+!!        type(lic_repart_reference), intent(in) :: rep_ref_m
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(lic_parameters), intent(inout) :: lic_param(pvr%num_pvr)
@@ -85,7 +88,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_initialize_w_shared_mesh(geofem, ele_comm,         &
-     &          next_tbl, repart_p, repart_data, pvr, m_SR)
+     &          next_tbl, repart_p, rep_ref_m, repart_data, pvr, m_SR)
 !
       use each_LIC_rendering
       use each_volume_rendering
@@ -94,6 +97,7 @@
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_repart_reference), intent(in) :: rep_ref_m
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
@@ -103,7 +107,7 @@
 !
 !
       call LIC_init_shared_mesh(geofem, ele_comm, next_tbl,             &
-     &                          repart_p, repart_data, m_SR)
+     &                          repart_p, rep_ref_m, repart_data, m_SR)
       call init_sf_grp_list_each_surf                                   &
      &   (repart_data%viz_fem%mesh%surf,                                &
      &    repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
@@ -237,7 +241,8 @@
 !
       subroutine LIC_visualize_w_each_repart                            &
      &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,   &
-     &          repart_p, repart_data, pvr, lic_param, rep_ref, m_SR)
+     &          repart_p, rep_ref_m, repart_data, pvr, lic_param,       &
+     &          rep_ref, m_SR)
 !
       use m_elapsed_labels_4_VIZ
       use t_surf_grp_list_each_surf
@@ -257,6 +262,7 @@
       type(next_nod_ele_table), intent(in) :: next_tbl
       type(phys_data), intent(in) :: nod_fld
       type(volume_partioning_param), intent(in) :: repart_p
+      type(lic_repart_reference), intent(in) :: rep_ref_m
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(volume_rendering_module), intent(inout) :: pvr
@@ -278,7 +284,8 @@
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
         call LIC_init_each_mesh(geofem, ele_comm, next_tbl, repart_p,   &
-     &      rep_ref(i_lic), lic_param(i_lic), repart_data, m_SR)
+     &      rep_ref(i_lic), rep_ref_m, lic_param(i_lic),                &
+     &      repart_data, m_SR)
         if(iflag_debug .gt. 0) write(*,*) 'init_sf_grp_list_each_surf'
         call init_sf_grp_list_each_surf                                 &
      &     (repart_data%viz_fem%mesh%surf,                              &

@@ -7,11 +7,21 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
+!!      subroutine set_lic_repart_reference_param                       &
+!!     &         (new_part_ctl, each_part_p, rep_ref)
+!!        type(new_patition_control), intent(in) :: new_part_ctl
+!!        type(volume_partioning_param), intent(inout) :: each_part_p
+!!        type(lic_repart_reference), intent(inout) :: rep_ref
+!!
 !!      subroutine init_lic_repart_ref(mesh, rep_ref)
 !!      subroutine alloc_lic_repart_ref(node, rep_ref)
 !!      subroutine dealloc_lic_repart_ref(rep_ref)
+!!      subroutine reset_lic_count_line_int(rep_ref)
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!        type(mesh_geometry), intent(in) :: mesh
+!!      subroutine output_LIC_line_integrate_count(time, rep_ref)
+!!        real(kind = kreal), intent(in) :: time
+!!        type(lic_repart_reference), intent(in) :: rep_ref
 !!@endverbatim
 !
       module t_lic_repart_reference
@@ -24,15 +34,21 @@
       implicit  none
 !
       character(len = kchara), parameter                                &
+     &                        :: c_SAVED_COUNT =     'SAVED_COUNT'
+      character(len = kchara), parameter                                &
      &                        :: c_PREDICTED_COUNT = 'PREDICTED_COUNT'
       character(len = kchara), parameter                                &
      &                        :: c_STACKED_COUNT =   'STACKED_COUNT'
       character(len = kchara), parameter                                &
      &                        :: c_AVERAGE_COUNT =   'AVERAGE_COUNT'
 !
-      integer(kind = kint), parameter :: i_PREDICTED_COUNT = 1
-      integer(kind = kint), parameter :: i_STACKED_COUNT =   2
-      integer(kind = kint), parameter :: i_AVERAGE_COUNT =   3
+      integer(kind = kint), parameter :: i_SAVED_COUNT =     1
+      integer(kind = kint), parameter :: i_PREDICTED_COUNT = 2
+      integer(kind = kint), parameter :: i_STACKED_COUNT =   3
+      integer(kind = kint), parameter :: i_AVERAGE_COUNT =   4
+!
+      character(len = kchara), parameter                                &
+&              ::  def_lic_repart_ref_prefix = 'line_integrate_count'
 !
 !>  Structure for reference for LIC repartition
       type lic_repart_reference
@@ -58,7 +74,7 @@
      &                :: line_int_cnt_name = 'line_intergration_count'
 !
       private :: set_lic_repart_reference_file
-      private :: copy_lic_repart_ref_to_IO
+      private :: copy_lic_repart_ref_from_IO, copy_lic_repart_ref_to_IO
 !
 ! -----------------------------------------------------------------------
 !
@@ -102,6 +118,11 @@
      &         = new_part_ctl%weight_to_previous_ctl%realvalue
         end if
 !
+        rep_ref%file_IO%file_prefix = def_lic_repart_ref_prefix
+        if(new_part_ctl%trace_count_head_ctl%iflag .gt. 0) then
+          rep_ref%file_IO%file_prefix                                   &
+     &      = new_part_ctl%trace_count_head_ctl%charavalue
+        end if
         rep_ref%file_IO%iflag_format                                    &
      &      = choose_para_file_format(new_part_ctl%trace_count_fmt_ctl)
       end if

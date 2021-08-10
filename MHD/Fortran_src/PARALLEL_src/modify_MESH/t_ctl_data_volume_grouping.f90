@@ -35,9 +35,11 @@
 !!      sleeve_level_ctl             2
 !!
 !!!!      partition_reference_ctl:
-!!!!         PREDICTED_COUNT, STACKED_COUNT, AVERAGE_COUNT
+!!!!         SAVED_COUNT, PREDICTED_COUNT, STACKED_COUNT, AVERAGE_COUNT
 !!!!         VOLUME_BASED, NUMBER_BASED, or NO_REPARTITION
 !!      partition_reference_ctl         VOLUME_BASED
+!!
+!!      trace_count_file_prefix         'line_integration_count'
 !!      trace_count_file_format         'merged_bin_gz'
 !!
 !!      weight_to_previous          0.6
@@ -80,7 +82,9 @@
 !
 !>        Flag for new patitioning method
         type(read_character_item) :: partition_reference_ctl
-!>        DAta foemat for trace counding data
+!>        Data file prefix for trace counding data
+        type(read_character_item) :: trace_count_head_ctl
+!>        DAta format for trace counding data
         type(read_character_item) :: trace_count_fmt_ctl
 !
 !>        Structure for number of subdomains
@@ -115,9 +119,11 @@
      &       :: hd_repart_table_fmt =  'repartition_table_format'
 !
       character(len=kchara), parameter, private                         &
-     &               :: hd_part_ref =  'partition_reference_ctl'
+     &               :: hd_part_ref =         'partition_reference_ctl'
       character(len=kchara), parameter, private                         &
-     &               :: hd_trace_count_fmt = 'trace_count_file_format'
+     &               :: hd_trace_cnt_prefix = 'trace_count_file_prefix'
+      character(len=kchara), parameter, private                         &
+     &               :: hd_trace_count_fmt =  'trace_count_file_format'
 !
       character(len=kchara), parameter, private                         &
      &               :: hd_sleeve_level = 'sleeve_level_ctl'
@@ -177,8 +183,11 @@
 !
         call read_chara_ctl_type(c_buf, hd_part_ref,                    &
      &                           new_part_ctl%partition_reference_ctl)
+        call read_chara_ctl_type(c_buf, hd_trace_cnt_prefix,            &
+     &                           new_part_ctl%trace_count_head_ctl)
         call read_chara_ctl_type(c_buf, hd_trace_count_fmt,             &
      &                           new_part_ctl%trace_count_fmt_ctl)
+!
         call read_chara_ctl_type(c_buf, hd_masking_switch,              &
      &                           new_part_ctl%masking_switch_ctl)
 !
@@ -209,6 +218,7 @@
       new_part_ctl%repart_table_fmt_ctl%iflag =  0
 !
       new_part_ctl%partition_reference_ctl%iflag = 0
+      new_part_ctl%trace_count_head_ctl%iflag =    0
       new_part_ctl%trace_count_fmt_ctl%iflag =     0
       new_part_ctl%weight_to_previous_ctl%iflag =  0
       new_part_ctl%masking_switch_ctl%iflag = 0
@@ -244,6 +254,7 @@
 !
       call bcast_ctl_array_ci(new_part_ctl%ndomain_section_ctl)
       call bcast_ctl_type_c1(new_part_ctl%partition_reference_ctl)
+      call bcast_ctl_type_c1(new_part_ctl%trace_count_head_ctl)
       call bcast_ctl_type_c1(new_part_ctl%trace_count_fmt_ctl)
       call bcast_ctl_type_c1(new_part_ctl%masking_switch_ctl)
       call bcast_ctl_type_r1(new_part_ctl%masking_weight_ctl)
@@ -279,6 +290,8 @@
 !
       call copy_chara_ctl(org_new_part_c%partition_reference_ctl,       &
      &                    new_new_part_c%partition_reference_ctl)
+      call copy_chara_ctl(org_new_part_c%trace_count_head_ctl,          &
+     &                    new_new_part_c%trace_count_head_ctl)
       call copy_chara_ctl(org_new_part_c%trace_count_fmt_ctl,           &
      &                    new_new_part_c%trace_count_fmt_ctl)
       call copy_chara_ctl(org_new_part_c%masking_switch_ctl,            &

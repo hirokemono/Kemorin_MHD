@@ -79,8 +79,10 @@
 !
 !>        Structure of LIC field parameters
         type(lic_parameters), allocatable :: lic_param(:)
-!>        Elapsed time strage for re-partition
+!>        Line integration counting for each LIC re-partition
         type(lic_repart_reference), allocatable :: rep_ref(:)
+!>        Line integration counting for shared LIC re-partition
+        type(lic_repart_reference) :: rep_ref_m
 !
 !>        Structure for LIC images
         type(volume_rendering_module) :: pvr
@@ -195,6 +197,8 @@
      &    lic%pvr%cflag_update)
 !
       call set_ctl_param_vol_repart(repart_ctl, lic%repart_p)
+      call set_lic_repart_reference_param                               &
+     &   (repart_ctl%new_part_ctl, lic%repart_p, lic%rep_ref_m)
 !
       call alloc_pvr_data(lic%pvr)
 !
@@ -248,8 +252,13 @@
       end do
 !
       if(lic%flag_each_repart) return
+      if(lic%repart_p%iflag_repart_ref .eq. i_TIME_BASED) then
+        call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(1),       &
+     &                           lic%rep_ref_m)
+      end if
+!
       call LIC_initialize_w_shared_mesh(geofem, ele_comm, next_tbl,     &
-     &    lic%repart_p, lic%repart_data, lic%pvr, m_SR)
+     &    lic%repart_p, lic%rep_ref_m, lic%repart_data, lic%pvr, m_SR)
 !
       end subroutine LIC_initialize
 !
@@ -278,7 +287,8 @@
       if(lic%flag_each_repart) then
         call LIC_visualize_w_each_repart(istep_lic, time,               &
      &      geofem, ele_comm, next_tbl, nod_fld, lic%repart_p,          &
-     &      lic%repart_data, lic%pvr, lic%lic_param, lic%rep_ref, m_SR)
+     &      lic%rep_ref_m, lic%repart_data, lic%pvr, lic%lic_param,     &
+     &      lic%rep_ref, m_SR)
       else
         call LIC_visualize_w_shared_mesh                                &
      &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
