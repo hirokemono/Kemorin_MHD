@@ -184,7 +184,7 @@
       elps1%labels(ist_elapsed_LIC+8)                                   &
      &                    = 'FEM_mesh_initialization for LIC mesh  '
       elps1%labels(ist_elapsed_LIC+9)                                   &
-     &                    = 'Jacobians for LIC mesh  '
+     &                    = 'Data IO for line integration counts   '
 !
       iflag_LIC_time = .TRUE.
 !

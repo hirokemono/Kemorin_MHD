@@ -134,6 +134,8 @@
       subroutine init_lic_repart_ref(mesh, pvr_rgb, rep_ref)
 !
       use calypso_mpi
+      use m_work_time
+      use m_elapsed_labels_4_VIZ
       use t_mesh_data
       use t_time_data
       use t_field_data_IO
@@ -151,6 +153,7 @@
       integer(kind = kint) :: ierr
 !
 !
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+9)
       call alloc_lic_repart_ref(mesh%node, rep_ref)
 !
       call set_lic_repart_reference_file(pvr_rgb, rep_ref)
@@ -174,6 +177,7 @@
         call cal_node_volue(mesh%node, mesh%ele,                        &
      &                      rep_ref%count_line_int)
       end if
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+9)
 !
       end subroutine init_lic_repart_ref
 !
@@ -253,6 +257,8 @@
       subroutine output_LIC_line_integrate_count(time, rep_ref)
 !
       use calypso_mpi
+      use m_work_time
+      use m_elapsed_labels_4_VIZ
       use t_time_data
       use t_field_data_IO
       use field_IO_select
@@ -264,10 +270,12 @@
       type(field_IO) :: fld_IO
 !
 !
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+9)
       call copy_lic_repart_ref_to_IO(time, rep_ref, t_IO, fld_IO)
       call sel_write_step_FEM_field_file                                &
      &   (iminus, rep_ref%file_IO, t_IO, fld_IO)
       call dealloc_phys_IO(fld_IO)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+9)
 !
       end subroutine output_LIC_line_integrate_count
 !
