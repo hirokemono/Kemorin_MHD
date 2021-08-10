@@ -198,6 +198,7 @@
       integer(kdin = kint) :: iflag
 !
 !
+      iflag = iflag_leg_undefined
       if(     cmp_no_case(tranx_loop_ctl, leg_test_loop)) then
         iflag = iflag_leg_test_loop
       else if(cmp_no_case(tranx_loop_ctl, leg_search_fastest)) then
@@ -234,9 +235,6 @@
         iflag = iflag_on_the_fly_dgemm
       else if(cmp_no_case(tranx_loop_ctl, on_the_fly_matprod)) then
         iflag = iflag_on_the_fly_matprod
-!
-      else
-        iflag = iflag_leg_symmetry
       end if
       set_legendre_trans_mode_ctl = iflag
 !
