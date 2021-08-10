@@ -195,7 +195,7 @@
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: tranx_loop_ctl
-      integer(kdin = kint) :: iflag
+      integer(kind = kint) :: iflag
 !
 !
       iflag = iflag_leg_undefined
