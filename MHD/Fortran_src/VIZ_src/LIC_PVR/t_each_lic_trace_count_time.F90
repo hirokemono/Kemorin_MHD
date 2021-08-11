@@ -118,6 +118,7 @@
       subroutine sum_icou_int_nod_smp                                   &
      &         (node, ele, end_time, l_elsp, count_int_nod)
 !
+      use calypso_mpi_real
       use int_volume_of_single_domain
 !
       type(node_data), intent(in) :: node
