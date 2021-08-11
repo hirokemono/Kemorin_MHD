@@ -140,20 +140,25 @@
       l_elsp%elapse_rtrace = end_time - l_elsp%elapse_rtrace            &
      &                                - l_elsp%elapse_line_int
 !
+      allocate(volume_nod_cnt(node%numnod))
+!$omp workshare
+      count_int_nod(1:node%numnod) =  0.0d0
+      volume_nod_cnt(1:node%numnod) = 0.0d0
+!$omp end workshare
+!
 !$omp parallel
       do ip = 1, l_elsp%np_smp_sys
 !$omp workshare
-      count_int_nod(1:node%numnod) =  count_int_nod(1:node%numnod)      &
+        count_int_nod(1:node%internal_node)                             &
+     &      =  count_int_nod(1:node%internal_node)                      &
      &       + dble(l_elsp%icou_line_smp(1:node%internal_node,ip))
 !$omp end workshare
       end do
 !$omp end parallel
 !
-      allocate(volume_nod_cnt(node%numnod))
 !$omp workshare
       count_int_nod(1:node%numnod) = count_int_nod(1:node%numnod)       &
      &                              / dble(ele%nnod_4_ele)
-      volume_nod_cnt(1:node%numnod) = 0.0d0
 !$omp end workshare
 !
       count_line_tmp = 0
