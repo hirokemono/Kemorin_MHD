@@ -62,6 +62,13 @@
         real(kind = kreal) :: elapse_rtrace
 !>        Elapsed time for line integration
         real(kind = kreal) :: elapse_line_int
+!
+!>        Total integration counts in each subdomain
+        real(kind = kreal) :: count_line_int_gl
+!>        Elapsed time for ray tracing
+        real(kind = kreal) :: elapse_rtrace_gl
+!>        Elapsed time for line integration
+        real(kind = kreal) :: elapse_line_int_gl
       end type each_lic_trace_counts
 !
       type(each_lic_trace_counts) :: l_elsp
@@ -111,6 +118,8 @@
       subroutine sum_icou_int_nod_smp                                   &
      &         (node, ele, end_time, l_elsp, count_int_nod)
 !
+      use int_volume_of_single_domain
+!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       real(kind = kreal), intent(in) :: end_time
@@ -120,6 +129,9 @@
 !
       integer(kind = kint) :: ip, inod
       real(kind = kreal) :: count_line_tmp
+      real(kind = kreal) :: anorm_rtrace_gl, elapse_lic_gl
+      real(kind = kreal) :: anorm_line_int_gl
+      real(kind = kreal), allocatable :: volume_nod_cnt(:)
 !
 !
       l_elsp%elapse_line_int = l_elsp%elapse_line_int                   &
@@ -128,18 +140,21 @@
      &                                - l_elsp%elapse_line_int
 !
 !$omp parallel
-      do ip = 1, l_elsp%np_smp_sys
+      do ip = 2, l_elsp%np_smp_sys
 !$omp workshare
-        count_int_nod(1:node%internal_node)                             &
-     &      = count_int_nod(1:node%internal_node)                       &
-     &       + dble(l_elsp%icou_line_smp(1:node%internal_node,ip))
+        l_elsp%icou_line_smp(1:node%internal_node,1)                    &
+     &      = l_elsp%icou_line_smp(1:node%internal_node,1)              &
+     &       + l_elsp%icou_line_smp(1:node%internal_node,ip)
 !$omp end workshare
       end do
 !$omp end parallel
 !
+      allocate(volume_nod_cnt(node%numnod))
 !$omp workshare
-      count_int_nod(1:node%numnod) = count_int_nod(1:node%numnod)       &
-     &                              / dble(ele%nnod_4_ele)
+      count_int_nod(1:node%numnod)                                      &
+     &              = dble(l_elsp%icou_line_smp(1:node%numnod,1))       &
+     &               / dble(ele%nnod_4_ele)
+      count_int_nod(1:node%numnod) = 0.0d0
 !$omp end workshare
 !
       count_line_tmp = 0
@@ -149,6 +164,29 @@
       end do
 !$omp end parallel do
       l_elsp%count_line_intgrate = count_line_tmp
+!
+      call cal_node_volue(node, ele, volume_nod_cnt)
+!
+      call calypso_mpi_allreduce_one_real                               &
+     &   (l_elsp%count_line_intgrate, l_elsp%count_line_int_gl,         &
+     &    MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (l_elsp%elapse_rtrace, l_elsp%elapse_rtrace_gl, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (l_elsp%elapse_line_int, l_elsp%elapse_line_int_gl, MPI_SUM)
+!
+      elapse_lic_gl = l_elsp%elapse_rtrace_gl                           &
+     &               + l_elsp%elapse_line_int_gl
+      anorm_line_int_gl = l_elsp%elapse_line_int_gl                     &
+     &                   / (l_elsp%count_line_int_gl * elapse_lic_gl)
+      anorm_rtrace_gl =  l_elsp%elapse_rtrace_gl                        &
+     &                  / (ele%volume * elapse_lic_gl)
+!$omp workshare
+      count_int_nod(1:node%numnod)                                      &
+     &    = count_int_nod(1:node%numnod) * anorm_line_int_gl            &
+     &     + volume_nod_cnt(1:node%numnod) * anorm_rtrace_gl
+!$omp end workshare
+      deallocate(volume_nod_cnt)
 !
       end subroutine sum_icou_int_nod_smp
 !
@@ -181,7 +219,7 @@
 !
       real(kind = kreal) :: ave_trace_time,   std_trace_time
       real(kind = kreal) :: dmin_trace_time,  dmax_trace_time
-      real(kind = kreal) :: ave_line_int_time,  std_line_int_time
+      real(kind = kreal) :: ave_line_int_time, std_line_int_time
       real(kind = kreal) :: dmin_line_int_time, dmax_line_int_time
 !
       real(kind = kreal) :: sq_sample_cnt, sq_line_int_cnt
@@ -205,14 +243,8 @@
 !      if(i_debug .gt. 0) write(*,*)                                    &
 !      write(*,*) "pvr sampling cnt:", my_rank, l_elsp%icount_trace
 !
-      call calypso_mpi_allreduce_one_real                               &
-     &   (l_elsp%elapse_rtrace, ave_trace_time, MPI_SUM)
-      call calypso_mpi_allreduce_one_real                               &
-     &   (l_elsp%elapse_line_int, ave_line_int_time, MPI_SUM)
       call calypso_mpi_allreduce_one_int                                &
      &   (l_elsp%icount_trace, min_sample_cnt, MPI_SUM)
-      call calypso_mpi_allreduce_one_real                               &
-     &   (l_elsp%count_line_intgrate, ave_line_int_cnt, MPI_SUM)
       ave_sample_cnt =   dble(min_sample_cnt)
 !
       call calypso_mpi_allreduce_one_real                               &
@@ -233,10 +265,10 @@
       call calypso_mpi_allreduce_one_int                                &
      &   (int(l_elsp%count_line_intgrate), max_line_int_cnt, MPI_MAX)
 !
-      ave_trace_time =    ave_trace_time / dble(nprocs)
-      ave_line_int_time = ave_line_int_time / dble(nprocs)
+      ave_trace_time =    l_elsp%elapse_rtrace_gl / dble(nprocs)
+      ave_line_int_time = l_elsp%elapse_line_int_gl / dble(nprocs)
+      ave_line_int_cnt =  l_elsp%count_line_int_gl / dble(nprocs)
       ave_sample_cnt =    ave_sample_cnt / dble(nprocs)
-      ave_line_int_cnt =  ave_line_int_cnt / dble(nprocs)
 !
       sq_trace_time =    (l_elsp%elapse_rtrace - ave_trace_time)**2
       sq_line_int_time = (l_elsp%elapse_line_int                        &

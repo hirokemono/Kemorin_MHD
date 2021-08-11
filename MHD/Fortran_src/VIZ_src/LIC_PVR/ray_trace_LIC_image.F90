@@ -187,8 +187,7 @@
 !
       call cal_trace_time_statistic(mesh%node, mesh%ele, lic_p,         &
      &    field_lic, l_elsp1, elapse_ray_trace_out)
-!
-      deallocate(l_elsp1%icou_line_smp)
+      call dealloc_icou_int_nod_smp(l_elsp1)
 !
       end subroutine ray_trace_each_lic_image
 !
