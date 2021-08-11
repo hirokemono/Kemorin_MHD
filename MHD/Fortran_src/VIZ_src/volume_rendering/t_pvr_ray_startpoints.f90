@@ -49,8 +49,6 @@
 !>    stack of number of pixels to start ray tracing
         integer(kind = kint), allocatable :: istack_pvr_ray_sf(:)
 !
-!>    ray trace counter
-        integer(kind= kint), allocatable :: icount_pvr_trace(:)
 !>    pixel ID for ray tracing
         integer(kind= kint), allocatable :: id_pixel_start(:)
 !>    Start surface ID for ray tracing
@@ -106,7 +104,6 @@
 !
       pvr_start%num_pvr_ray  = num_ray
       allocate(pvr_start%id_pixel_start(pvr_start%num_pvr_ray)     )
-      allocate(pvr_start%icount_pvr_trace(pvr_start%num_pvr_ray)   )
       allocate(pvr_start%isf_pvr_ray_start(3,pvr_start%num_pvr_ray))
       allocate(pvr_start%xi_pvr_start(2,pvr_start%num_pvr_ray)     )
       allocate(pvr_start%xx4_pvr_ray_start(4,pvr_start%num_pvr_ray))
@@ -116,7 +113,6 @@
 !
       if(pvr_start%num_pvr_ray .gt. 0) then
         pvr_start%id_pixel_start = 0
-        pvr_start%icount_pvr_trace = 0
         pvr_start%isf_pvr_ray_start = 0
         pvr_start%xi_pvr_start = 0.0d0
         pvr_start%xx4_pvr_ray_start = 0.0d0
@@ -202,7 +198,7 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
-      deallocate(pvr_start%id_pixel_start, pvr_start%icount_pvr_trace)
+      deallocate(pvr_start%id_pixel_start)
       deallocate(pvr_start%isf_pvr_ray_start)
       deallocate(pvr_start%xx4_pvr_ray_start)
       deallocate(pvr_start%xx4_pvr_start, pvr_start%xi_pvr_start)
@@ -232,7 +228,6 @@
 !
 !$omp parallel workshare
       new_pvr_st%id_pixel_start(:) = org_pvr_st%id_pixel_start(:)
-      new_pvr_st%icount_pvr_trace(:) = org_pvr_st%icount_pvr_trace(:)
 !
       new_pvr_st%isf_pvr_ray_start(:,:)                                 &
      &     = org_pvr_st%isf_pvr_ray_start(:,:)
@@ -260,8 +255,7 @@
         do inum = 1, pvr_start%num_pvr_ray
           write(50+id_rank,*) inum, pvr_start%id_pixel_start(inum),    &
      &      pvr_start%isf_pvr_ray_start(1:3,inum),                     &
-     &      pvr_start%xx4_pvr_ray_start(1:3,inum),                     &
-     &      pvr_start%icount_pvr_trace(inum)
+     &      pvr_start%xx4_pvr_ray_start(1:3,inum)
         end do
 !
       end subroutine check_pvr_ray_startpoints

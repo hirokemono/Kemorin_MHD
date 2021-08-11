@@ -13,7 +13,7 @@
 !!     &          screen_norm_pvr_domain, isurf_xrng_pvr_domain,        &
 !!     &          jsurf_yrng_pvr_domain, viewpoint_vec, ray_vec4,       &
 !!     &          istack_pvr_ray_sf, num_pvr_ray, id_pixel_start,       &
-!!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
+!!     &          isf_pvr_ray_start, xi_pvr_start,                      &
 !!     &          xx4_pvr_start, xx4_pvr_ray_start)
 !!      subroutine set_each_ray_projected_start(node, surf,             &
 !!     &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,     &
@@ -56,7 +56,7 @@
      &          ntot_tmp_pvr_ray, istack_tmp_pvr_ray_st,                &
      &          ipix_start_tmp, iflag_start_tmp, xi_pvr_start_tmp,      &
      &          istack_pvr_ray_sf, num_pvr_ray, id_pixel_start,         &
-     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
+     &          isf_pvr_ray_start, xi_pvr_start,                        &
      &          xx4_pvr_start, xx4_pvr_ray_start)
 !
       use cal_field_on_surf_viz
@@ -93,8 +93,6 @@
       integer(kind = kint), intent(inout)                               &
      &                    :: id_pixel_start(num_pvr_ray)
       integer(kind = kint), intent(inout)                               &
-     &                    :: icount_pvr_trace(num_pvr_ray)
-      integer(kind = kint), intent(inout)                               &
      &                    :: isf_pvr_ray_start(3,num_pvr_ray)
       real(kind = kreal), intent(inout) :: xi_pvr_start(2,num_pvr_ray)
       real(kind = kreal), intent(inout) :: xx4_pvr_start(4,num_pvr_ray)
@@ -130,7 +128,6 @@
               if(jcou .gt. num_pvr_ray) write(*,*) 'aho', my_rank,      &
      &                         jcou, num_pvr_ray, inum, num_pvr_surf
 !
-              icount_pvr_trace(jcou) = 0
               id_pixel_start(jcou) = ipix + (jpix-1)*npixel_x
               isf_pvr_ray_start(1,jcou) = iele
               isf_pvr_ray_start(2,jcou) = k1

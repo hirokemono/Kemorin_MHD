@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,   &
-!!     &          field_pvr, draw_param, color_param,                   &
-!!     &          viewpoint_vec, modelview_mat, projection_mat,         &
-!!     &          ray_vec4, num_pvr_ray, id_pixel_check,                &
-!!     &          icount_pvr_trace, isf_pvr_ray_start,                  &
+!!     &          field_pvr, draw_param, color_param, viewpoint_vec,    &
+!!     &          modelview_mat, projection_mat, ray_vec4,              &
+!!     &          num_pvr_ray, id_pixel_check, isf_pvr_ray_start,       &
 !!     &          xi_pvr_start, xx4_pvr_start, xx4_pvr_ray_start,       &
 !!     &          rgba_ray)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -50,10 +49,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,     &
-     &          field_pvr, draw_param, color_param,                     &
-     &          viewpoint_vec, modelview_mat, projection_mat,           &
-     &          ray_vec4, num_pvr_ray, id_pixel_check,                  &
-     &          icount_pvr_trace, isf_pvr_ray_start,                    &
+     &          field_pvr, draw_param, color_param, viewpoint_vec,      &
+     &          modelview_mat, projection_mat, ray_vec4,                &
+     &          num_pvr_ray, id_pixel_check, isf_pvr_ray_start,         &
      &          xi_pvr_start, xx4_pvr_start, xx4_pvr_ray_start,         &
      &          rgba_ray)
 !
@@ -75,8 +73,6 @@
       integer(kind = kint), intent(in)                                  &
      &                    :: id_pixel_check(num_pvr_ray)
       integer(kind = kint), intent(inout)                               &
-     &                    :: icount_pvr_trace(num_pvr_ray)
-      integer(kind = kint), intent(inout)                               &
      &                    :: isf_pvr_ray_start(3,num_pvr_ray)
       real(kind = kreal), intent(inout) :: xi_pvr_start(2,num_pvr_ray)
       real(kind = kreal), intent(inout) :: xx4_pvr_start(4,num_pvr_ray)
@@ -85,11 +81,13 @@
       real(kind = kreal), intent(inout)                                 &
      &                    :: rgba_ray(4,num_pvr_ray)
 !
-      integer(kind = kint) :: inum, iflag_comm
+      integer(kind = kint) :: inum, iflag_comm, icount_line
       real(kind = kreal) :: rgba_tmp(4)
 !
 !
-!$omp parallel do private(inum, iflag_comm,rgba_tmp)
+      icount_line = 0
+!$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
+!$omp& reduction(+:icount_line)
       do inum = 1, num_pvr_ray
 !        if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
 !          write(*,*) 'check section trace for ', my_rank, inum
@@ -102,7 +100,7 @@
      &      field_pvr, draw_param, color_param,                         &
      &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
      &      xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),           &
-     &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
+     &      xi_pvr_start(1,inum), rgba_tmp(1), icount_line,             &
      &      iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
       end do

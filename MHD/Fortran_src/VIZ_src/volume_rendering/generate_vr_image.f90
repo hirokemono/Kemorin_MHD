@@ -140,9 +140,8 @@
      &   pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,           &
      &   pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,           &
      &   pvr_start%num_pvr_ray, pvr_start%id_pixel_start,               &
-     &   pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,       &
-     &   pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,               &
-     &   pvr_start%xx4_pvr_ray_start)
+     &   pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,           &
+     &   pvr_start%xx4_pvr_start, pvr_start%xx4_pvr_ray_start)
 !
       call project_once_each_ele_w_smp                                  &
      &   (pvr_screen%modelview_mat, pvr_screen%projection_mat,          &

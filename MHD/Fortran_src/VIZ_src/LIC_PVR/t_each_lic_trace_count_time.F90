@@ -7,22 +7,26 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine ray_trace_each_lic_image(mesh, group, sf_grp_4_sf,   &
-!!     &          lic_p, field_lic, draw_param, color_param,            &
-!!     &          viewpoint_vec, modelview_mat, projection_mat,         &
-!!     &          ray_vec4, num_pvr_ray, id_pixel_check,                &
-!!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
-!!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray,           &
-!!     &          elapse_ray_trace_out, count_int_nod)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) ::   group
-!!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
+!!      subroutine init_icou_int_nod_smp(node, l_elsp)
+!!      subroutine dealloc_icou_int_nod_smp(l_elsp)
+!!        type(node_data), intent(in) :: node
+!!        type(each_lic_trace_counts), intent(inout) :: l_elsp
+!!
+!!      subroutine sum_icou_int_nod_smp                                 &
+!!     &         (node, ele, end_time, l_elsp, count_int_nod)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        real(kind = kreal), intent(in) :: end_time
+!!        type(each_lic_trace_counts), intent(inout) :: l_elsp
+!!        real(kind = kreal), intent(inout) :: count_int_nod(node%numnod)
+!!      subroutine cal_trace_time_statistic(node, ele, lic_p, field_lic,&
+!!     &          l_elsp, elapse_ray_trace_out)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(lic_field_data), intent(in) :: field_lic
-!!        type(rendering_parameter), intent(in) :: draw_param
-!!        type(pvr_colormap_parameter), intent(in) :: color_param
-!!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
-!!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
+!!        type(each_lic_trace_counts), intent(inout) :: l_elsp
+!!        real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
 !!@endverbatim
 !
       module t_each_lic_trace_count_time
@@ -61,6 +65,8 @@
       end type each_lic_trace_counts
 !
       type(each_lic_trace_counts) :: l_elsp
+!
+      private :: nnod_masked_4_LIC
 !
 !  ---------------------------------------------------------------------
 !

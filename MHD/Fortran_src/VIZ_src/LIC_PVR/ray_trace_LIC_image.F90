@@ -11,7 +11,7 @@
 !!     &          lic_p, field_lic, draw_param, color_param,            &
 !!     &          viewpoint_vec, modelview_mat, projection_mat,         &
 !!     &          ray_vec4, num_pvr_ray, id_pixel_check,                &
-!!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
+!!     &          isf_pvr_ray_start, xi_pvr_start,                      &
 !!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray,           &
 !!     &          elapse_ray_trace_out, count_int_nod)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -60,7 +60,7 @@
      &          lic_p, field_lic, draw_param, color_param,              &
      &          viewpoint_vec, modelview_mat, projection_mat,           &
      &          ray_vec4, num_pvr_ray, id_pixel_check,                  &
-     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
+     &          isf_pvr_ray_start, xi_pvr_start,                        &
      &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray,             &
      &          elapse_ray_trace_out, count_int_nod)
 !
@@ -87,8 +87,6 @@
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(in)                                  &
      &                    :: id_pixel_check(num_pvr_ray)
-      integer(kind = kint), intent(inout)                               &
-     &                    :: icount_pvr_trace(num_pvr_ray)
       integer(kind = kint), intent(inout)                               &
      &                    :: isf_pvr_ray_start(3,num_pvr_ray)
       real(kind = kreal), intent(inout) :: xi_pvr_start(2,num_pvr_ray)
@@ -142,10 +140,9 @@
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
-     &       l_elsp1%icou_line_smp(1,ip_smp), icount_pvr_trace(inum),   &
+     &       l_elsp1%icou_line_smp(1,ip_smp), icount_rtrace,            &
      &       elapse_line_tmp, iflag_comm)
           rgba_ray(1:4,inum) = rgba_tmp(1:4)
-          icount_rtrace = icount_rtrace + icount_pvr_trace(inum)
         end do
 !$omp end parallel do
 !
@@ -168,10 +165,9 @@
      &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
      &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
      &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
-     &       l_elsp1%icou_line_smp(1,ip_smp), icount_pvr_trace(inum),   &
+     &       l_elsp1%icou_line_smp(1,ip_smp), icount_rtrace,            &
      &       elapse_line_tmp, iflag_comm)
           rgba_ray(1:4,inum) = rgba_tmp(1:4)
-          icount_rtrace = icount_rtrace + icount_pvr_trace(inum)
         end do
 !$omp end parallel do
       end if

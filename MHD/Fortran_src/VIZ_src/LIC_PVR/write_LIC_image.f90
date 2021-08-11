@@ -104,10 +104,10 @@
      &    draw_param, color_param, pvr_screen%viewpoint_vec,            &
      &    pvr_screen%modelview_mat, pvr_screen%projection_mat,          &
      &    ray_vec4, pvr_start%num_pvr_ray, pvr_start%id_pixel_check,    &
-     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
-     &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &
-     &    pvr_start%xx4_pvr_ray_start, pvr_start%rgba_ray,              &
-     &    elapse_ray_trace_out, rep_ref_viz%count_line_int)
+     &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
+     &    pvr_start%xx4_pvr_start, pvr_start%xx4_pvr_ray_start,         &
+     &    pvr_start%rgba_ray, elapse_ray_trace_out,                     &
+     &    rep_ref_viz%count_line_int)
       rep_ref_viz%elapse_ray_trace(1:2)                                 &
      &     = rep_ref_viz%elapse_ray_trace(1:2)                          &
      &      + elapse_ray_trace_out(1:2)

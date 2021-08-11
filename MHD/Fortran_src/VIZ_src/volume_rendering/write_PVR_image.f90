@@ -114,9 +114,9 @@
      &    field_pvr, draw_param, color_param, pvr_screen%viewpoint_vec, &
      &    pvr_screen%modelview_mat, pvr_screen%projection_mat,          &
      &    ray_vec4, pvr_start%num_pvr_ray, pvr_start%id_pixel_check,    &
-     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
-     &    pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,              &
-     &    pvr_start%xx4_pvr_ray_start, pvr_start%rgba_ray)
+     &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
+     &    pvr_start%xx4_pvr_start, pvr_start%xx4_pvr_ray_start,         &
+     &    pvr_start%rgba_ray)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+4)
