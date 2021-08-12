@@ -17,8 +17,7 @@
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!
 !!      subroutine LIC_init_shared_mesh(geofem, ele_comm, next_tbl,     &
-!!     &                                repart_p, rep_ref_m,            &
-!!     &                                repart_data, m_SR)
+!!     &          repart_p, rep_ref_m, repart_data, m_SR)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(phys_data), intent(in) :: nod_fld
@@ -109,16 +108,13 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
       integer(kind = kint) :: i_lic, nmax_masking
-      logical :: flag_mask, flag_sleeve_wk
+      logical :: flag_mask
 !
 !
       nmax_masking = 0
       flag_mask =      .TRUE.
-      flag_sleeve_wk = .TRUE.
       do i_lic = 1, num_lic
         nmax_masking = max(nmax_masking, lic_param(i_lic)%num_masking)
-        if(lic_param(i_lic)%each_part_p%sleeve_exp_p%iflag_expand_mode  &
-     &       .ne. iflag_vector_trace) flag_sleeve_wk = .FALSE.
       end do
       if(nmax_masking .le. 0) flag_mask = .FALSE.
 !
@@ -132,11 +128,9 @@
      &      lic_param(i_lic)%each_part_p)
       end do
 !
-!      write(*,*) 'flag_mask, flag_sleeve_wk',                          &
-!     &         flag_mask, flag_sleeve_wk, nmax_masking
-      call link_repart_masking_data(flag_mask, flag_sleeve_wk,          &
+      call link_repart_masking_data(flag_mask,                          &
      &   geofem%mesh%node, nmax_masking, repart_data%nod_fld_lic%s_lic, &
-     &   repart_data%nod_fld_lic%v_lic, repart_data%repart_WK)
+     &   repart_data%repart_WK)
 !
       end subroutine LIC_init_nodal_field
 !
@@ -168,8 +162,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_init_shared_mesh(geofem, ele_comm, next_tbl,       &
-     &                                repart_p, rep_ref_m,              &
-     &                                repart_data, m_SR)
+     &          repart_p, rep_ref_m, repart_data, m_SR)
 !
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
@@ -327,8 +320,9 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(flag_lic_dump, repart_p,         &
-     &    geofem, ele_comm, next_tbl, repart_data%viz_fem,              &
-     &    repart_data%mesh_to_viz_tbl, repart_data%repart_WK, m_SR)
+     &    geofem, ele_comm, next_tbl, repart_data%nod_fld_lic%v_lic,    &
+     &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
+     &    repart_data%repart_WK, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+8)

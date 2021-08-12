@@ -8,14 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine s_repartiton_by_volume(flag_lic_dump, part_param,    &
-!!     &          mesh, group, ele_comm, next_tbl, new_mesh, new_group, &
-!!     &          repart_nod_tbl, repart_WK, m_SR)
+!!     &          mesh, group, ele_comm, next_tbl, ref_vect_sleeve_ext, &
+!!     &          new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
 !!        logical, intent(in) :: flag_lic_dump
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
+!!        real(kind = kreal), intent(in)                                &
+!!     &                  :: ref_vect_sleeve_ext(mesh%node%numnod,3)
 !!        type(mesh_geometry), intent(inout) :: new_mesh
 !!        type(mesh_groups), intent(inout) :: new_group
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
@@ -52,8 +54,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_repartiton_by_volume(flag_lic_dump, part_param,      &
-     &          mesh, group, ele_comm, next_tbl, new_mesh, new_group,   &
-     &          repart_nod_tbl, repart_WK, m_SR)
+     &          mesh, group, ele_comm, next_tbl, ref_vect_sleeve_ext,   &
+     &          new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
 !
       use t_next_node_ele_4_node
       use t_interpolate_table
@@ -82,6 +84,8 @@
       type(mesh_groups), intent(in) :: group
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
+      real(kind = kreal), intent(in)                                    &
+     &                  :: ref_vect_sleeve_ext(mesh%node%numnod,3)
 !
       type(mesh_geometry), intent(inout) :: new_mesh
       type(mesh_groups), intent(inout) :: new_group
@@ -122,7 +126,7 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
         call sleeve_extension_for_new_mesh                              &
      &     (flag_lic_dump, part_param%sleeve_exp_p,                     &
-     &      mesh, repart_WK%ref_vect, repart_nod_tbl,                   &
+     &      mesh, ref_vect_sleeve_ext, repart_nod_tbl,                  &
      &      new_mesh, new_group, new_ele_comm,                          &
      &      repart_WK%sleeve_exp_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)

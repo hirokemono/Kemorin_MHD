@@ -131,10 +131,10 @@
       allocate(d_mask_org1(fem_T%mesh%node%numnod,0))
       allocate(vect_ref1(fem_T%mesh%node%numnod,3))
       call link_repart_masking_param(0, masking1, part_p1%repart_p)
-      call link_repart_masking_data((.FALSE.), (.FALSE.),               &
-     &    fem_T%mesh%node, izero, d_mask_org1, vect_ref1, repart_WK1)
+      call link_repart_masking_data((.FALSE.),                          &
+     &    fem_T%mesh%node, izero, d_mask_org1, repart_WK1)
       call s_repartiton_by_volume((.TRUE.), part_p1%repart_p,           &
-     &    fem_T%mesh, fem_T%group, ele_comm1, next_tbl1,                &
+     &    fem_T%mesh, fem_T%group, ele_comm1, next_tbl1, vect_ref1,     &
      &    new_fem%mesh, new_fem%group, repart_nod_tbl1,                 &
      &    repart_WK1, m_SR_T)
       call unlink_repart_masking_data(repart_WK1)

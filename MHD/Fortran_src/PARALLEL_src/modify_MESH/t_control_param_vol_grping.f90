@@ -128,8 +128,6 @@
 !>        Pointer of field to mask
         real(kind = kreal), pointer :: d_mask(:,:)
 !>        pointer of original reference vector
-        real(kind = kreal), pointer :: ref_vect(:,:)
-!>        pointer of original reference vector
         real(kind = kreal), pointer :: ref_repart(:)
 !
 !>        Work area for sleeve extension
@@ -144,17 +142,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine link_repart_masking_data(flag_mask, flag_sleeve_wk,    &
-     &          node, nmax_mask_org, d_mask_org, vect_ref_ext,          &
-     &          repart_WK)
+      subroutine link_repart_masking_data(flag_mask,    &
+     &          node, nmax_mask_org, d_mask_org, repart_WK)
 !
       use t_geometry_data
 !
-      logical, intent(in) :: flag_mask, flag_sleeve_wk
+      logical, intent(in) :: flag_mask
       integer(kind = kint), intent(in) :: nmax_mask_org
       type(node_data), intent(in) :: node
-      real(kind = kreal), intent(in), target                            &
-     &                        :: vect_ref_ext(node%numnod,3)
       real(kind = kreal), intent(in), target                            &
      &                        :: d_mask_org(node%numnod,nmax_mask_org)
 !
@@ -166,9 +161,6 @@
         repart_WK%d_mask =>          d_mask_org
       end if
 !
-      if(associated(repart_WK%ref_vect))  nullify(repart_WK%ref_vect)
-      if(flag_sleeve_wk) repart_WK%ref_vect => vect_ref_ext
-!
       end subroutine link_repart_masking_data
 !
 !   --------------------------------------------------------------------
@@ -177,8 +169,6 @@
 !
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
-!
-      if(associated(repart_WK%ref_vect))  nullify(repart_WK%ref_vect)
 !
       if(associated(repart_WK%d_mask)) then
         repart_WK%nmax_mask_repart = 0

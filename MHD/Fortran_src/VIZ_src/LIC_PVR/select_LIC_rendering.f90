@@ -107,7 +107,7 @@
 !
 !
       call LIC_init_shared_mesh(geofem, ele_comm, next_tbl,             &
-     &                          repart_p, rep_ref_m, repart_data, m_SR)
+     &    repart_p, rep_ref_m, repart_data, m_SR)
       call init_sf_grp_list_each_surf                                   &
      &   (repart_data%viz_fem%mesh%surf,                                &
      &    repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
@@ -284,8 +284,8 @@
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
         call LIC_init_each_mesh(geofem, ele_comm, next_tbl, repart_p,   &
-     &      rep_ref(i_lic), rep_ref_m, lic_param(i_lic),                &
-     &      repart_data, m_SR)
+     &      rep_ref(i_lic), rep_ref_m, repart_data%nod_fld_lic%v_lic,   &
+     &      lic_param(i_lic), repart_data, m_SR)
         if(iflag_debug .gt. 0) write(*,*) 'init_sf_grp_list_each_surf'
         call init_sf_grp_list_each_surf                                 &
      &     (repart_data%viz_fem%mesh%surf,                              &
