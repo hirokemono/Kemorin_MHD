@@ -189,7 +189,7 @@
 !
         call cal_node_length_by_volue(mesh%node, mesh%ele,              &
      &                      rep_ref%volume_nod_int)
-        call SOLVER_SEND_RECV_type(mesh%node%numnod, mesh%comm_tbl,     &
+        call SOLVER_SEND_RECV_type(mesh%node%numnod, mesh%nod_comm,     &
      &      m_SR%SR_sig, m_SR%SR_r, rep_ref%volume_nod_int)
 !
 !$omp parallel do
