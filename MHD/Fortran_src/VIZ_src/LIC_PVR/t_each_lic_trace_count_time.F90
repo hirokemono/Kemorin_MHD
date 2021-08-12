@@ -119,7 +119,7 @@
      &         (node, ele, end_time, l_elsp, count_int_nod)
 !
       use calypso_mpi_real
-      use int_volume_of_single_domain
+!      use int_volume_of_single_domain
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -130,9 +130,9 @@
 !
       integer(kind = kint) :: ip, inod
       real(kind = kreal) :: count_line_tmp
-      real(kind = kreal) :: anorm_rtrace_gl, elapse_lic_gl
-      real(kind = kreal) :: anorm_line_int_gl
-      real(kind = kreal), allocatable :: volume_nod_cnt(:)
+!      real(kind = kreal) :: anorm_rtrace_gl, elapse_lic_gl
+!      real(kind = kreal) :: anorm_line_int_gl
+!      real(kind = kreal), allocatable :: volume_nod_cnt(:)
 !
 !
       l_elsp%elapse_line_int = l_elsp%elapse_line_int                   &
@@ -140,10 +140,8 @@
       l_elsp%elapse_rtrace = end_time - l_elsp%elapse_rtrace            &
      &                                - l_elsp%elapse_line_int
 !
-      allocate(volume_nod_cnt(node%numnod))
 !$omp workshare
       count_int_nod(1:node%numnod) =  0.0d0
-      volume_nod_cnt(1:node%numnod) = 0.0d0
 !$omp end workshare
 !
 !$omp parallel
@@ -169,7 +167,6 @@
 !$omp end parallel do
       l_elsp%count_line_intgrate = count_line_tmp
 !
-      call cal_node_volue(node, ele, volume_nod_cnt)
 !
       call calypso_mpi_allreduce_one_real                               &
      &   (l_elsp%count_line_intgrate, l_elsp%count_line_int_gl,         &
@@ -179,18 +176,24 @@
       call calypso_mpi_allreduce_one_real                               &
      &   (l_elsp%elapse_line_int, l_elsp%elapse_line_int_gl, MPI_SUM)
 !
-      elapse_lic_gl = l_elsp%elapse_rtrace_gl                           &
-     &               + l_elsp%elapse_line_int_gl
-      anorm_line_int_gl = l_elsp%elapse_line_int_gl                     &
-     &                   / (l_elsp%count_line_int_gl * elapse_lic_gl)
-      anorm_rtrace_gl =  l_elsp%elapse_rtrace_gl                        &
-     &                  / (ele%volume * elapse_lic_gl)
-!$omp workshare
-      count_int_nod(1:node%numnod)                                      &
-     &    = count_int_nod(1:node%numnod) * anorm_line_int_gl            &
-     &     + volume_nod_cnt(1:node%numnod) * anorm_rtrace_gl
-!$omp end workshare
-      deallocate(volume_nod_cnt)
+!      elapse_lic_gl = l_elsp%elapse_rtrace_gl                          &
+!     &               + l_elsp%elapse_line_int_gl
+!      anorm_line_int_gl = l_elsp%elapse_line_int_gl                    &
+!     &                   / (l_elsp%count_line_int_gl * elapse_lic_gl)
+!      anorm_rtrace_gl =  l_elsp%elapse_rtrace_gl                       &
+!     &                  / (ele%volume * elapse_lic_gl)
+!
+!      allocate(volume_nod_cnt(node%numnod))
+!!$omp workshare
+!      volume_nod_cnt(1:node%numnod) = 0.0d0
+!!$omp end workshare
+!      call cal_node_volue(node, ele, volume_nod_cnt)
+!!$omp workshare
+!      count_int_nod(1:node%numnod)                                     &
+!     &    = count_int_nod(1:node%numnod) * anorm_line_int_gl           &
+!     &     + volume_nod_cnt(1:node%numnod) * anorm_rtrace_gl
+!!$omp end workshare
+!      deallocate(volume_nod_cnt)
 !
       end subroutine sum_icou_int_nod_smp
 !
