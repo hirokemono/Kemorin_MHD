@@ -7,15 +7,17 @@
 !>@brief Repartitioning based on volume
 !!
 !!@verbatim
-!!      subroutine s_repartiton_by_volume                               &
-!!     &         (flag_lic_dump, part_param, geofem, ele_comm, next_tbl,&
-!!     &          new_fem, repart_nod_tbl, repart_WK, m_SR)
+!!      subroutine s_repartiton_by_volume(flag_lic_dump, part_param,    &
+!!     &          mesh, group, ele_comm, next_tbl, new_mesh, new_group, &
+!!     &          repart_nod_tbl, repart_WK, m_SR)
 !!        logical, intent(in) :: flag_lic_dump
 !!        type(volume_partioning_param), intent(in) ::  part_param
-!!        type(mesh_data), intent(in) :: geofem
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) :: group
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
-!!        type(mesh_data), intent(inout) :: new_fem
+!!        type(mesh_geometry), intent(inout) :: new_mesh
+!!        type(mesh_groups), intent(inout) :: new_group
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !!        type(volume_partioning_work), intent(inout) :: repart_WK
 !!        type(mesh_SR), intent(inout) :: m_SR
@@ -49,9 +51,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_repartiton_by_volume                                 &
-     &         (flag_lic_dump, part_param, geofem, ele_comm, next_tbl,  &
-     &          new_fem, repart_nod_tbl, repart_WK, m_SR)
+      subroutine s_repartiton_by_volume(flag_lic_dump, part_param,      &
+     &          mesh, group, ele_comm, next_tbl, new_mesh, new_group,   &
+     &          repart_nod_tbl, repart_WK, m_SR)
 !
       use t_next_node_ele_4_node
       use t_interpolate_table
@@ -76,11 +78,13 @@
 !
       logical, intent(in) :: flag_lic_dump
       type(volume_partioning_param), intent(in) ::  part_param
-      type(mesh_data), intent(in) :: geofem
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
 !
-      type(mesh_data), intent(inout) :: new_fem
+      type(mesh_geometry), intent(inout) :: new_mesh
+      type(mesh_groups), intent(inout) :: new_group
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
       type(volume_partioning_work), intent(inout) :: repart_WK
 !
@@ -93,36 +97,33 @@
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
       if(part_param%iflag_repart_ref .eq. i_NO_REPARTITION) then
-        new_fem%mesh%ele%first_ele_type                                 &
-     &     = set_cube_eletype_from_num(geofem%mesh%ele%nnod_4_ele)
-        call copy_mesh_and_group(geofem%mesh, geofem%group,             &
-     &      new_fem%mesh, new_fem%group)
-        call const_trans_tbl_to_same_mesh(my_rank, geofem%mesh%node,    &
+        new_mesh%ele%first_ele_type                                     &
+     &     = set_cube_eletype_from_num(mesh%ele%nnod_4_ele)
+        call copy_mesh_and_group(mesh, group, new_mesh, new_group)
+        call const_trans_tbl_to_same_mesh(my_rank, mesh%node,           &
      &                                    repart_nod_tbl)
       else
         call s_mesh_repartition_by_volume                               &
-     &     (geofem, ele_comm, next_tbl%neib_nod, part_param,            &
-     &      new_fem%mesh, new_fem%group, repart_nod_tbl,                &
-     &      repart_WK, m_SR)
+     &     (mesh, group, ele_comm, next_tbl%neib_nod, part_param,       &
+     &      new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
       end if
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
 ! Increase sleeve size
       if(part_param%sleeve_exp_p%iflag_expand_mode                      &
      &                         .ne. iflag_turn_off) then
-        call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
+        call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
-        call const_ele_comm_table                                       &
-     &     (new_fem%mesh%node, new_fem%mesh%nod_comm, new_fem%mesh%ele, &
-     &      new_ele_comm, m_SR)
+        call const_ele_comm_table(new_mesh%node, new_mesh%nod_comm,     &
+     &                            new_mesh%ele, new_ele_comm, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
         call sleeve_extension_for_new_mesh                              &
      &     (flag_lic_dump, part_param%sleeve_exp_p,                     &
-     &      geofem%mesh, repart_WK%ref_vect, repart_nod_tbl,            &
-     &      new_fem%mesh, new_fem%group, new_ele_comm,                  &
+     &      mesh, repart_WK%ref_vect, repart_nod_tbl,                   &
+     &      new_mesh, new_group, new_ele_comm,                          &
      &      repart_WK%sleeve_exp_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
 !
@@ -136,7 +137,7 @@
      &          'No repartitioned mesh data output'
       else
         call sel_mpi_write_mesh_file(part_param%viz_mesh_file,          &
-     &                               new_fem%mesh, new_fem%group)
+     &                               new_mesh, new_group)
       end if
       call calypso_MPI_barrier
 !
@@ -145,7 +146,7 @@
         if(my_rank .eq. 0) write(*,*)                                   &
      &          'No transfer table output for repartition'
       else
-        call copy_repart_tbl_to_itp_table(geofem%mesh,                  &
+        call copy_repart_tbl_to_itp_table(mesh,                  &
      &      next_tbl%neib_ele, repart_nod_tbl, itp_nod_tbl_IO)
         call sel_mpi_write_interpolate_table(my_rank,                   &
      &      part_param%trans_tbl_file, itp_nod_tbl_IO)

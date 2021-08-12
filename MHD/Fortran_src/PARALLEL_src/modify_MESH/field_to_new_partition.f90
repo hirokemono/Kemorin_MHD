@@ -124,9 +124,10 @@
 !  -----  Re-partitioning
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
         if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
-        call s_repartiton_by_volume                                     &
-     &     (flag_lic_dump, part_param, geofem, ele_comm, next_tbl,      &
-     &      new_fem, repart_nod_tbl, repart_WK, m_SR)
+        call s_repartiton_by_volume(flag_lic_dump, part_param,          &
+     &      geofem%mesh, geofem%group, ele_comm, next_tbl,              &
+     &      new_fem%mesh, new_fem%group, repart_nod_tbl,                &
+     &      repart_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !
