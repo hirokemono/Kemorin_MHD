@@ -89,7 +89,6 @@
       type(mesh_SR), save :: m_SR_T
 !
       type(group_data) :: part_grp
-      type(volume_partioning_work), save :: repart_WK1
 !
       type(masking_parameter), allocatable, target :: masking1(:)
       real(kind = kreal), allocatable :: d_mask_org1(:,:)

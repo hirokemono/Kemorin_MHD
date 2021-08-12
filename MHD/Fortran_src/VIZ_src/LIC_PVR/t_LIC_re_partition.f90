@@ -85,8 +85,8 @@
 !>        Structure for field data for LIC
         type(lic_field_data), pointer :: field_lic
 !
-!>        Structure of work area
-        type(volume_partioning_work) :: repart_WK
+!>        Structure of work area for sleeve expansion
+        type(sleeve_extension_work) :: sleeve_exp_WK
       end type lic_repartioned_mesh
 !
       private :: dealloc_LIC_re_partition
@@ -312,7 +312,7 @@
      &    repart_data%nod_fld_lic%s_lic(1,1),                           &
      &    repart_data%nod_fld_lic%v_lic,                                &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
-     &    repart_data%repart_WK, m_SR)
+     &    repart_data%sleeve_exp_WK, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+8)

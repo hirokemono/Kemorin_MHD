@@ -78,7 +78,7 @@
       type(next_nod_ele_table) :: next_tbl1
       type(jacobians_type) :: jacobians1
       type(shape_finctions_at_points) :: spfs1
-      type(volume_partioning_work), save :: repart_WK1
+      type(sleeve_extension_work), save :: sleeve_exp_WK1
 !
       type(masking_parameter), allocatable, target :: masking1(:)
       real(kind = kreal), allocatable :: d_mask_org1(:,:)
@@ -145,7 +145,7 @@
       call load_or_const_new_partition                                  &
      &   ((.TRUE.), part_p1%repart_p, fem_T, ele_comm_T, next_tbl1,     &
      &    vect_ref1(1,1), d_mask_org1, vect_ref1, new_fem,              &
-     &    repart_nod_tbl1, repart_WK1, m_SR_T)
+     &    repart_nod_tbl1, sleeve_exp_WK1, m_SR_T)
       call unlink_repart_masking_param(part_p1%repart_p)
       call dealloc_comm_table(ele_comm_T)
       deallocate(d_mask_org1, vect_ref1, masking1)

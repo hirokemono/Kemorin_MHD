@@ -101,11 +101,6 @@
         type(sleeve_extension_param) :: sleeve_exp_p
       end type volume_partioning_param
 !
-      type volume_partioning_work
-!>        Work area for sleeve extension
-        type(sleeve_extension_work) :: sleeve_exp_WK
-      end type volume_partioning_work
-!
       private :: set_ctl_param_vol_grping
 !
 !   --------------------------------------------------------------------
