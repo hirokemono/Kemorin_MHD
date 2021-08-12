@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine set_volume_at_node(part_param, repart_WK, mesh,      &
-!!     &          volume_nod, volume_nod_tot, volume_min_gl,            &
+!!     &          ref_repart, volume_nod, volume_nod_tot, volume_min_gl,&
 !!     &          SR_sig, SR_r)
 !!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(volume_partioning_work), intent(in) :: repart_WK
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                     :: volume_nod(mesh%node%numnod)
 !!        real(kind = kreal), intent(inout) :: volume_nod_tot
@@ -64,7 +65,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_volume_at_node(part_param, repart_WK, mesh,        &
-     &          volume_nod, volume_nod_tot, volume_min_gl,              &
+     &          ref_repart, volume_nod, volume_nod_tot, volume_min_gl,  &
      &          SR_sig, SR_r)
 !
       use t_solver_SR
@@ -75,6 +76,7 @@
       type(volume_partioning_param), intent(in) :: part_param
       type(volume_partioning_work), intent(in) :: repart_WK
       type(mesh_geometry), intent(in) :: mesh
+      real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
 !
       real(kind = kreal), intent(inout) :: volume_nod(mesh%node%numnod)
       real(kind = kreal), intent(inout) :: volume_nod_tot
@@ -94,7 +96,7 @@
       else if(part_param%iflag_repart_ref .eq. i_TIME_BASED) then
 !$omp parallel workshare
         volume_nod(1:mesh%node%internal_node)                           &
-     &      = repart_WK%ref_repart(1:mesh%node%internal_node)
+     &      = ref_repart(1:mesh%node%internal_node)
 !$omp end parallel workshare
 !
       else

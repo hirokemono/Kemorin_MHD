@@ -9,13 +9,15 @@
 !!@verbatim
 !!      subroutine load_or_const_new_partition                          &
 !!     &         (flag_lic_dump, part_param, geofem, ele_comm, next_tbl,&
-!!     &          ref_vect_sleeve_ext, new_fem, repart_nod_tbl,         &
-!!     &          repart_WK, m_SR)
+!!     &          ref_repart, ref_vect_sleeve_ext, new_fem,             &
+!!     &          repart_nod_tbl, repart_WK, m_SR)
 !!        logical, intent(in) :: flag_lic_dump
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
+!!        real(kind = kreal), intent(in)                                &
+!!     &               :: ref_repart(geofem%mesh%node%numnod)
 !!        real(kind = kreal), intent(in)                                &
 !!     &               :: ref_vect_sleeve_ext(geofem%mesh%node%numnod,3)
 !!        type(mesh_data), intent(inout) :: new_fem
@@ -80,8 +82,8 @@
 !
       subroutine load_or_const_new_partition                            &
      &         (flag_lic_dump, part_param, geofem, ele_comm, next_tbl,  &
-     &          ref_vect_sleeve_ext, new_fem, repart_nod_tbl,           &
-     &          repart_WK, m_SR)
+     &          ref_repart, ref_vect_sleeve_ext, new_fem,               &
+     &          repart_nod_tbl, repart_WK, m_SR)
 !
       use m_work_time
       use m_elapsed_labels_4_REPART
@@ -95,6 +97,8 @@
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
+      real(kind = kreal), intent(in)                                    &
+     &               :: ref_repart(geofem%mesh%node%numnod)
       real(kind = kreal), intent(in)                                    &
      &               :: ref_vect_sleeve_ext(geofem%mesh%node%numnod,3)
 !
@@ -132,8 +136,9 @@
         if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
         call s_repartiton_by_volume(flag_lic_dump, part_param,          &
      &      geofem%mesh, geofem%group, ele_comm, next_tbl,              &
-     &      ref_vect_sleeve_ext, new_fem%mesh, new_fem%group,           &
-     &      repart_nod_tbl, repart_WK, m_SR)
+     &      ref_repart, ref_vect_sleeve_ext,                            &
+     &      new_fem%mesh, new_fem%group, repart_nod_tbl,                &
+     &      repart_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !

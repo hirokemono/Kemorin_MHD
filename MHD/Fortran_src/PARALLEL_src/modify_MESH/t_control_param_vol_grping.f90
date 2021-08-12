@@ -28,14 +28,6 @@
 !!       &                        :: masking_org(num_mask_org)
 !!        type(volume_partioning_param), intent(inout) :: part_param
 !!
-!!      subroutine link_repart_trace_time_data                          &
-!!     &         (node, elapse_rtrace_nod, repart_WK)
-!!      subroutine unlink_repart_trace_time_data(repart_WK)
-!!        type(node_data), intent(in) :: node
-!!        real(kind = kreal), intent(in), target                        &
-!!     &                        :: elapse_rtrace_nod(node%numnod)
-!!        type(volume_partioning_work), intent(inout) :: repart_WK
-!!
 !!      subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
 !!        integer(kind = kint), intent(in) :: num_mask_org, nmax_mask_org
 !!        type(masking_parameter), intent(in), target                   &
@@ -127,8 +119,6 @@
         integer(kind = kint) :: nmax_mask_repart
 !>        Pointer of field to mask
         real(kind = kreal), pointer :: d_mask(:,:)
-!>        pointer of original reference vector
-        real(kind = kreal), pointer :: ref_repart(:)
 !
 !>        Work area for sleeve extension
         type(sleeve_extension_work) :: sleeve_exp_WK
@@ -212,37 +202,6 @@
       part_param%num_mask_repart = 0
 !
       end subroutine unlink_repart_masking_param
-!
-!   --------------------------------------------------------------------
-!
-      subroutine link_repart_trace_time_data                            &
-     &         (node, elapse_rtrace_nod, repart_WK)
-!
-      use t_geometry_data
-!
-      type(node_data), intent(in) :: node
-      real(kind = kreal), intent(in), target                            &
-     &                        :: elapse_rtrace_nod(node%numnod)
-!
-      type(volume_partioning_work), intent(inout) :: repart_WK
-!
-!
-      repart_WK%ref_repart => elapse_rtrace_nod
-!
-      end subroutine link_repart_trace_time_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine unlink_repart_trace_time_data(repart_WK)
-!
-      type(volume_partioning_work), intent(inout) :: repart_WK
-!
-!
-      if(associated(repart_WK%ref_repart)) then
-        nullify(repart_WK%ref_repart)
-      end if
-!
-      end subroutine unlink_repart_trace_time_data
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

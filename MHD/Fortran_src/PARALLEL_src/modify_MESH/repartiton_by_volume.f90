@@ -7,8 +7,9 @@
 !>@brief Repartitioning based on volume
 !!
 !!@verbatim
-!!      subroutine s_repartiton_by_volume(flag_lic_dump, part_param,    &
-!!     &          mesh, group, ele_comm, next_tbl, ref_vect_sleeve_ext, &
+!!      subroutine s_repartiton_by_volume                               &
+!!     &         (flag_lic_dump, part_param, mesh, group, ele_comm,     &
+!!     &          next_tbl, ref_repart, ref_vect_sleeve_ext,            &
 !!     &          new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
 !!        logical, intent(in) :: flag_lic_dump
 !!        type(volume_partioning_param), intent(in) ::  part_param
@@ -16,6 +17,7 @@
 !!        type(mesh_groups), intent(in) :: group
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
+!!        real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
 !!        real(kind = kreal), intent(in)                                &
 !!     &                  :: ref_vect_sleeve_ext(mesh%node%numnod,3)
 !!        type(mesh_geometry), intent(inout) :: new_mesh
@@ -53,8 +55,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_repartiton_by_volume(flag_lic_dump, part_param,      &
-     &          mesh, group, ele_comm, next_tbl, ref_vect_sleeve_ext,   &
+      subroutine s_repartiton_by_volume                                 &
+     &         (flag_lic_dump, part_param, mesh, group, ele_comm,       &
+     &          next_tbl, ref_repart, ref_vect_sleeve_ext,              &
      &          new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
 !
       use t_next_node_ele_4_node
@@ -84,6 +87,7 @@
       type(mesh_groups), intent(in) :: group
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
+      real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
       real(kind = kreal), intent(in)                                    &
      &                  :: ref_vect_sleeve_ext(mesh%node%numnod,3)
 !
@@ -109,7 +113,8 @@
       else
         call s_mesh_repartition_by_volume                               &
      &     (mesh, group, ele_comm, next_tbl%neib_nod, part_param,       &
-     &      new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
+     &      ref_repart, new_mesh, new_group, repart_nod_tbl,            &
+     &      repart_WK, m_SR)
       end if
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !

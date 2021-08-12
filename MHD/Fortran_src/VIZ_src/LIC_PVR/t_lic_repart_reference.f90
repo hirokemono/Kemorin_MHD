@@ -396,7 +396,6 @@
       type(element_data), intent(in) :: ele
       real(kind = kreal), intent(inout) :: node_volume(node%numnod)
 !
-      real(kind = kreal) :: cnt_ene
       integer(kind = kint) :: inode, i, j
 !
 !

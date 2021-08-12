@@ -134,9 +134,9 @@
       call link_repart_masking_data((.FALSE.),                          &
      &    fem_T%mesh%node, izero, d_mask_org1, repart_WK1)
       call s_repartiton_by_volume((.TRUE.), part_p1%repart_p,           &
-     &    fem_T%mesh, fem_T%group, ele_comm1, next_tbl1, vect_ref1,     &
-     &    new_fem%mesh, new_fem%group, repart_nod_tbl1,                 &
-     &    repart_WK1, m_SR_T)
+     &    fem_T%mesh, fem_T%group, ele_comm1, next_tbl1,                &
+     &    vect_ref1(1,1), vect_ref1, new_fem%mesh, new_fem%group,       &
+     &    repart_nod_tbl1, repart_WK1, m_SR_T)
       call unlink_repart_masking_data(repart_WK1)
       call unlink_repart_masking_param(part_p1%repart_p)
       deallocate(d_mask_org1, vect_ref1, masking1)

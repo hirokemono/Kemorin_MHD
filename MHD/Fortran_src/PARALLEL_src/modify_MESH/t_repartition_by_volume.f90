@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine grouping_by_volume(mesh, part_param, repart_WK,      &
-!!     &                              part_grp, SR_sig, SR_r)
+!!     &          ref_repart, part_grp, SR_sig, SR_r)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(volume_partioning_work), intent(in) :: repart_WK
+!!        real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
 !!        type(group_data), intent(inout) :: part_grp
 !!       type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -62,13 +63,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine grouping_by_volume(mesh, part_param, repart_WK,        &
-     &                              part_grp, SR_sig, SR_r)
+     &          ref_repart, part_grp, SR_sig, SR_r)
 !
       use xyz_block_id_by_nod_vol
 !
       type(mesh_geometry), intent(in) :: mesh
       type(volume_partioning_param), intent(in) :: part_param
       type(volume_partioning_work), intent(in) :: repart_WK
+      real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
 !
       type(group_data), intent(inout) :: part_grp
       type(send_recv_status), intent(inout) :: SR_sig
@@ -89,7 +91,7 @@
       call alloc_node_volume_and_sort(mesh%node, vol_sort)
 !
       call set_volume_at_node                                           &
-     &   (part_param, repart_WK, mesh, vol_sort%volume_nod,             &
+     &   (part_param, repart_WK, mesh, ref_repart, vol_sort%volume_nod, &
      &    vol_sort%volume_nod_tot, vol_sort%volume_min_gl,              &
      &    SR_sig, SR_r)
 !

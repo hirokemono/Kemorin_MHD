@@ -151,7 +151,6 @@
         call unlink_repart_masking_param(lic_param(i_lic)%each_part_p)
       end do
 !
-      call unlink_repart_trace_time_data(repart_data%repart_WK)
       call unlink_repart_masking_data(repart_data%repart_WK)
       call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
       deallocate(repart_data%nod_fld_lic)
@@ -314,13 +313,11 @@
       type(jacobians_type) :: jac_viz
 !
 !
-      call link_repart_trace_time_data(geofem%mesh%node,                &
-     &    rep_ref%count_line_int, repart_data%repart_WK)
-!
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
       allocate(repart_data%viz_fem)
-      call load_or_const_new_partition(flag_lic_dump, repart_p,         &
-     &    geofem, ele_comm, next_tbl, repart_data%nod_fld_lic%v_lic,    &
+      call load_or_const_new_partition                                  &
+     &   (flag_lic_dump, repart_p, geofem, ele_comm, next_tbl,          &
+     &    rep_ref%count_line_int, repart_data%nod_fld_lic%v_lic,        &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
      &    repart_data%repart_WK, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
