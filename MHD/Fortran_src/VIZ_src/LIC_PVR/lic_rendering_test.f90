@@ -140,7 +140,7 @@
         if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
      &                                   .eq. i_TIME_BASED) then
           call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(i_lic), &
-     &                             lic%rep_ref(i_lic))
+     &                             lic%rep_ref(i_lic), m_SR)
         end if
       end do
 !
@@ -155,7 +155,7 @@
       if(lic%flag_each_repart) return
       if(lic%repart_p%iflag_repart_ref .eq. i_TIME_BASED) then
         call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(1),       &
-     &                           lic%rep_ref_m)
+     &                           lic%rep_ref_m, m_SR)
       end if
 !
       call LIC_initialize_w_shared_mesh(geofem, ele_comm,  next_tbl,    &
