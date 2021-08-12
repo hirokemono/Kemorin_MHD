@@ -7,19 +7,20 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine s_mesh_repartition_by_volume (mesh, group, ele_comm, &
-!!     &          neib_nod, part_param, ref_repart,                     &
-!!     &          new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
+!!      subroutine s_mesh_repartition_by_volume(mesh, group, ele_comm,  &
+!!     &          neib_nod, part_param, ref_repart, d_mask,             &
+!!     &          new_mesh, new_group, repart_nod_tbl, m_SR)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: groups
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!        real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
+!!        real(kind = kreal), intent(in)                                &
+!!     &        :: d_mask(mesh%node%numnod,part_param%num_mask_repart)
 !!        type(mesh_geometry), intent(inout) :: new_mesh
 !!        type(mesh_groups), intent(inout) :: new_group
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-!!        type(volume_partioning_work), intent(inout) :: repart_WK
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
@@ -45,9 +46,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_mesh_repartition_by_volume (mesh, group, ele_comm,   &
-     &          neib_nod, part_param, ref_repart,                       &
-     &          new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
+      subroutine s_mesh_repartition_by_volume(mesh, group, ele_comm,    &
+     &          neib_nod, part_param, ref_repart, d_mask,               &
+     &          new_mesh, new_group, repart_nod_tbl, m_SR)
 !
       use t_para_double_numbering
       use t_control_param_vol_grping
@@ -64,11 +65,12 @@
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
+      real(kind = kreal), intent(in)                                    &
+     &        :: d_mask(mesh%node%numnod,part_param%num_mask_repart)
 !
       type(mesh_geometry), intent(inout) :: new_mesh
       type(mesh_groups), intent(inout) :: new_group
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-      type(volume_partioning_work), intent(inout) :: repart_WK
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(group_data) :: part_grp
@@ -78,8 +80,8 @@
 !
 !
 !       Re-partitioning
-      call grouping_by_volume(mesh, part_param, repart_WK,              &
-     &    ref_repart, part_grp, m_SR%SR_sig, m_SR%SR_r)
+      call grouping_by_volume(mesh, part_param,                         &
+     &    ref_repart, d_mask, part_grp, m_SR%SR_sig, m_SR%SR_r)
 !
       call alloc_double_numbering(mesh%node%numnod, new_ids_on_org)
       call s_const_repart_nod_and_comm                                  &

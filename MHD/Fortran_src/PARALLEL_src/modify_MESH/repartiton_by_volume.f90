@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_repartiton_by_volume                               &
 !!     &         (flag_lic_dump, part_param, mesh, group, ele_comm,     &
-!!     &          next_tbl, ref_repart, ref_vect_sleeve_ext,            &
+!!     &          next_tbl, ref_repart, d_mask, ref_vect_sleeve_ext,    &
 !!     &          new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
 !!        logical, intent(in) :: flag_lic_dump
 !!        type(volume_partioning_param), intent(in) ::  part_param
@@ -19,7 +19,9 @@
 !!        type(next_nod_ele_table), intent(in) :: next_tbl
 !!        real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
 !!        real(kind = kreal), intent(in)                                &
-!!     &                  :: ref_vect_sleeve_ext(mesh%node%numnod,3)
+!!     &        :: d_mask(mesh%node%numnod,part_param%num_mask_repart)
+!!        real(kind = kreal), intent(in)                                &
+!!     &        :: ref_vect_sleeve_ext(mesh%node%numnod,3)
 !!        type(mesh_geometry), intent(inout) :: new_mesh
 !!        type(mesh_groups), intent(inout) :: new_group
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
@@ -57,7 +59,7 @@
 !
       subroutine s_repartiton_by_volume                                 &
      &         (flag_lic_dump, part_param, mesh, group, ele_comm,       &
-     &          next_tbl, ref_repart, ref_vect_sleeve_ext,              &
+     &          next_tbl, ref_repart, d_mask, ref_vect_sleeve_ext,      &
      &          new_mesh, new_group, repart_nod_tbl, repart_WK, m_SR)
 !
       use t_next_node_ele_4_node
@@ -89,7 +91,9 @@
       type(next_nod_ele_table), intent(in) :: next_tbl
       real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
       real(kind = kreal), intent(in)                                    &
-     &                  :: ref_vect_sleeve_ext(mesh%node%numnod,3)
+     &        :: d_mask(mesh%node%numnod,part_param%num_mask_repart)
+      real(kind = kreal), intent(in)                                    &
+     &        :: ref_vect_sleeve_ext(mesh%node%numnod,3)
 !
       type(mesh_geometry), intent(inout) :: new_mesh
       type(mesh_groups), intent(inout) :: new_group
@@ -113,8 +117,8 @@
       else
         call s_mesh_repartition_by_volume                               &
      &     (mesh, group, ele_comm, next_tbl%neib_nod, part_param,       &
-     &      ref_repart, new_mesh, new_group, repart_nod_tbl,            &
-     &      repart_WK, m_SR)
+     &      ref_repart, d_mask, new_mesh, new_group, repart_nod_tbl,    &
+     &      m_SR)
       end if
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !

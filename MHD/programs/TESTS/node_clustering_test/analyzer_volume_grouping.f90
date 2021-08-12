@@ -141,14 +141,11 @@
 !
 !       Re-partitioning
       allocate(masking1(0))
-      allocate(d_mask_org1(fem_T%mesh%node%numnod,0))
+      allocate(d_mask_org1(fem_T%mesh%node%numnod,1))
       allocate(vect_ref1(fem_T%mesh%node%numnod,3))
-      call link_repart_masking_data((.FALSE.),                          &
-     &    fem_T%mesh%node, izero, d_mask_org1, repart_WK1)
       call grouping_by_volume(fem_T%mesh, part_prog_p1%repart_p,        &
-     &    repart_WK1, vect_ref1(1,1), part_grp,                         &
+     &    vect_ref1(1,1), d_mask_org1(1,1), part_grp,                   &
      &    m_SR_T%SR_sig, m_SR_T%SR_r)
-      call unlink_repart_masking_data(repart_WK1)
       deallocate(d_mask_org1, vect_ref1, masking1)
 !
 !       Append group data

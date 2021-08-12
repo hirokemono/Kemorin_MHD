@@ -108,15 +108,12 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
       integer(kind = kint) :: i_lic, nmax_masking
-      logical :: flag_mask
 !
 !
       nmax_masking = 0
-      flag_mask =      .TRUE.
       do i_lic = 1, num_lic
         nmax_masking = max(nmax_masking, lic_param(i_lic)%num_masking)
       end do
-      if(nmax_masking .le. 0) flag_mask = .FALSE.
 !
       allocate(repart_data%nod_fld_lic)
       call alloc_nod_vector_4_lic(geofem%mesh%node, nmax_masking,       &
@@ -127,10 +124,6 @@
      &     (lic_param(i_lic)%num_masking, lic_param(i_lic)%masking,     &
      &      lic_param(i_lic)%each_part_p)
       end do
-!
-      call link_repart_masking_data(flag_mask,                          &
-     &   geofem%mesh%node, nmax_masking, repart_data%nod_fld_lic%s_lic, &
-     &   repart_data%repart_WK)
 !
       end subroutine LIC_init_nodal_field
 !
@@ -151,7 +144,6 @@
         call unlink_repart_masking_param(lic_param(i_lic)%each_part_p)
       end do
 !
-      call unlink_repart_masking_data(repart_data%repart_WK)
       call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
       deallocate(repart_data%nod_fld_lic)
 !
@@ -315,9 +307,10 @@
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
       allocate(repart_data%viz_fem)
-      call load_or_const_new_partition                                  &
-     &   (flag_lic_dump, repart_p, geofem, ele_comm, next_tbl,          &
-     &    rep_ref%count_line_int, repart_data%nod_fld_lic%v_lic,        &
+      call load_or_const_new_partition(flag_lic_dump, repart_p,         &
+     &    geofem, ele_comm, next_tbl, rep_ref%count_line_int,           &
+     &    repart_data%nod_fld_lic%s_lic(1,1),                           &
+     &    repart_data%nod_fld_lic%v_lic,                                &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
      &    repart_data%repart_WK, m_SR)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
