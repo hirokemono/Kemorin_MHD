@@ -150,7 +150,7 @@
 !
       type(time_data) :: t_IO
       type(field_IO) :: fld_IO
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, inod
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+9)
@@ -176,6 +176,15 @@
      &         'Initialize line integration count by volume'
         call cal_node_volue(mesh%node, mesh%ele,                        &
      &                      rep_ref%count_line_int)
+!
+!$omp parallel do
+        do inod = 1, mesh%node%numnod
+          if(rep_ref%count_line_int(inod) .gt. 0.0d0) cycle
+!
+          rep_ref%count_line_int(inod)                                  &
+     &        = rep_ref%count_line_int(inod)**(-one/three)
+        end do
+!$omp end parallel do
       end if
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+9)
 !
