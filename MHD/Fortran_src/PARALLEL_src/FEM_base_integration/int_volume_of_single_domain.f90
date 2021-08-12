@@ -145,25 +145,24 @@
       type(element_data), intent(in) :: ele
       real(kind = kreal), intent(inout) :: node_volume(node%numnod)
 !
-      integer(kind = kint), allocatable :: ele_cnt(:)
+      real(kind = kreal) :: acnt_ene
       integer(kind = kint) :: inode, i, j
 !
-      allocate(ele_cnt(node%numnod))
-      ele_cnt(:) = 0
+!
       node_volume(1:node%numnod) = 0.0
       do i = 1, ele%numele
         do j = 1, ele%nnod_4_ele
           inode = ele%ie(i,j)
           node_volume(inode) = node_volume(inode) + ele%volume_ele(i)
-          ele_cnt(inode) = ele_cnt(inode) + 1
         end do
       end do
 !
+      acnt_ene = 1.0d0 / ele%nnod_4_ele
+!$omp parallel do
       do i = 1, node%numnod
-        if(ele_cnt(i) .gt. 0) then
-          node_volume(i) = node_volume(i) / ele_cnt(i)
-        end if
+        node_volume(i) = node_volume(i) * acnt_ene
       end do
+!$omp end parallel do
 !
       end subroutine cal_node_volue
 !
