@@ -179,7 +179,7 @@
 !
 !$omp parallel do
         do inod = 1, mesh%node%numnod
-          if(rep_ref%count_line_int(inod) .gt. 0.0d0) cycle
+          if(rep_ref%count_line_int(inod) .le. 0.0d0) cycle
 !
           rep_ref%count_line_int(inod)                                  &
      &        = rep_ref%count_line_int(inod)**(-one/three)
