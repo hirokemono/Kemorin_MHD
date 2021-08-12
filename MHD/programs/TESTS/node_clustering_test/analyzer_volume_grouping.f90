@@ -143,7 +143,7 @@
       allocate(d_mask_org1(fem_T%mesh%node%numnod,1))
       allocate(vect_ref1(fem_T%mesh%node%numnod,3))
       call grouping_by_volume(fem_T%mesh, part_prog_p1%repart_p,        &
-     &    vect_ref1(1,1), d_mask_org1(1,1), part_grp,                   &
+     &    izero, masking1, vect_ref1(1,1), d_mask_org1(1,1), part_grp,  &
      &    m_SR_T%SR_sig, m_SR_T%SR_r)
       deallocate(d_mask_org1, vect_ref1, masking1)
 !

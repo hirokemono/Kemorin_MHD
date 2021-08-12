@@ -7,13 +7,16 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine grouping_by_volume(mesh, part_param,                 &
+!!      subroutine grouping_by_volume                                   &
+!!     &         (mesh, part_param, num_mask, masking,                  &
 !!     &          ref_repart, d_mask, part_grp, SR_sig, SR_r)
+!!        integer(kind = kint), intent(in) :: num_mask
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(volume_partioning_param), intent(in) :: part_param
+!!        type(masking_parameter), intent(in) :: masking(num_mask)
 !!        real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
 !!        real(kind = kreal), intent(in)                                &
-!!     &        :: d_mask(mesh%node%numnod,part_param%num_mask_repart)
+!!     &        :: d_mask(mesh%node%numnod,num_mask)
 !!        type(group_data), intent(inout) :: part_grp
 !!       type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -63,16 +66,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine grouping_by_volume(mesh, part_param,                   &
+      subroutine grouping_by_volume                                     &
+     &         (mesh, part_param, num_mask, masking,                    &
      &          ref_repart, d_mask, part_grp, SR_sig, SR_r)
 !
       use xyz_block_id_by_nod_vol
 !
+      integer(kind = kint), intent(in) :: num_mask
       type(mesh_geometry), intent(in) :: mesh
       type(volume_partioning_param), intent(in) :: part_param
+      type(masking_parameter), intent(in) :: masking(num_mask)
       real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
       real(kind = kreal), intent(in)                                    &
-     &        :: d_mask(mesh%node%numnod,part_param%num_mask_repart)
+     &                    :: d_mask(mesh%node%numnod,num_mask)
 !
       type(group_data), intent(inout) :: part_grp
       type(send_recv_status), intent(inout) :: SR_sig
@@ -92,8 +98,8 @@
 !
       call alloc_node_volume_and_sort(mesh%node, vol_sort)
 !
-      call set_volume_at_node                                           &
-     &   (part_param, mesh, ref_repart, d_mask, vol_sort%volume_nod,    &
+      call set_volume_at_node(part_param, mesh, num_mask, masking,      &
+     &    ref_repart, d_mask, vol_sort%volume_nod,                      &
      &    vol_sort%volume_nod_tot, vol_sort%volume_min_gl,              &
      &    SR_sig, SR_r)
 !

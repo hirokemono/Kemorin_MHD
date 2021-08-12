@@ -164,8 +164,8 @@
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
-        call set_LIC_each_field(geofem, nod_fld, repart_p,              &
-     &                          lic_param(i_lic), repart_data, m_SR)
+        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
+     &                          repart_data, m_SR)
 !
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
@@ -217,8 +217,8 @@
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
-        call set_LIC_each_field(geofem, nod_fld, repart_p,              &
-     &                          lic_param(i_lic), repart_data, m_SR)
+        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
+     &                          repart_data, m_SR)
 !
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic) - ist_img
@@ -291,8 +291,8 @@
      &     (repart_data%viz_fem%mesh%surf,                              &
      &      repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
-        call set_LIC_each_field(geofem, nod_fld, repart_p,              &
-     &                          lic_param(i_lic), repart_data, m_SR)
+        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
+     &                          repart_data, m_SR)
 !
         call reset_lic_count_line_int(rep_ref_snap)
         call alloc_lic_repart_ref                                       &

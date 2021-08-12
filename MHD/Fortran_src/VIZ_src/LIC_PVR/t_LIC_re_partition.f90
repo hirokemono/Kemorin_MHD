@@ -9,8 +9,7 @@
 !!@verbatim
 !!      subroutine LIC_init_nodal_field(geofem, num_lic, lic_param,     &
 !!     &                                repart_data)
-!!      subroutine dealloc_LIC_nodal_field(num_lic, lic_param,          &
-!!     &                                   repart_data)
+!!      subroutine dealloc_LIC_nodal_field(repart_data)
 !!        type(mesh_data), intent(in), target :: geofem
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(lic_parameters), intent(inout) :: lic_param(num_lic)
@@ -38,12 +37,11 @@
 !!        type(lic_parameters), intent(inout) :: lic_param
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
-!!      subroutine set_LIC_each_field(geofem, nod_fld, repart_p,        &
-!!     &                              lic_param, repart_data, m_SR)
+!!      subroutine set_LIC_each_field(geofem, repart_p, lic_param,      &
+!!     &                              repart_data, m_SR)
 !!      subroutine dealloc_LIC_each_mesh                                &
 !!     &         (repart_p, each_part_p, repart_data)
 !!        type(mesh_data), intent(in), target :: geofem
-!!        type(phys_data), intent(in) :: nod_fld
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(volume_partioning_param), intent(in) :: each_part_p
 !!        type(lic_parameters), intent(in) :: lic_param
@@ -119,30 +117,14 @@
       call alloc_nod_vector_4_lic(geofem%mesh%node, nmax_masking,       &
      &                            repart_data%nod_fld_lic)
 !
-      do i_lic = 1, num_lic
-        call link_repart_masking_param                                  &
-     &     (lic_param(i_lic)%num_masking, lic_param(i_lic)%masking,     &
-     &      lic_param(i_lic)%each_part_p)
-      end do
-!
       end subroutine LIC_init_nodal_field
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_LIC_nodal_field(num_lic, lic_param,            &
-     &                                   repart_data)
+      subroutine dealloc_LIC_nodal_field(repart_data)
 !
-      integer(kind = kint), intent(in) :: num_lic
-!
-      type(lic_parameters), intent(inout) :: lic_param(num_lic)
       type(lic_repartioned_mesh), intent(inout) :: repart_data
 !
-      integer(kind = kint) :: i_lic
-!
-!
-      do i_lic = 1, num_lic
-        call unlink_repart_masking_param(lic_param(i_lic)%each_part_p)
-      end do
 !
       call dealloc_nod_data_4_lic(repart_data%nod_fld_lic)
       deallocate(repart_data%nod_fld_lic)
@@ -164,13 +146,16 @@
       type(lic_repartioned_mesh), intent(inout) :: repart_data
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_lic
+      type(masking_parameter), allocatable :: masking_tmp(:)
 !
 !
       if(repart_p%flag_repartition) then
 !  -----  Repartition
-        call s_LIC_re_partition((.TRUE.), repart_p,                     &
-     &      geofem, ele_comm, next_tbl, rep_ref_m, repart_data, m_SR)
+        allocate(masking_tmp(0))
+        call s_LIC_re_partition                                        &
+     &     ((.TRUE.), repart_p, geofem, ele_comm, next_tbl,            &
+     &      izero, masking_tmp, rep_ref_m, repart_data, m_SR)
+        deallocate(masking_tmp)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
@@ -200,17 +185,18 @@
 !
 !  -----  Repartition
       if(lic_param%each_part_p%flag_repartition) then
-        call s_LIC_re_partition                                         &
-     &     (lic_param%flag_LIC_elapsed_dump, lic_param%each_part_p,     &
-     &      geofem, ele_comm, next_tbl, rep_ref, repart_data, m_SR)
+        call s_LIC_re_partition(lic_param%flag_LIC_elapsed_dump,        &
+     &      lic_param%each_part_p, geofem, ele_comm, next_tbl,          &
+     &      lic_param%num_masking, lic_param%masking, rep_ref,          &
+     &      repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
      &      lic_param%num_masking, repart_data%field_lic)
       else if(repart_p%flag_repartition) then
-        call s_LIC_re_partition                                         &
-     &     (lic_param%flag_LIC_elapsed_dump, repart_p,                  &
-     &      geofem, ele_comm, next_tbl, rep_ref_m, repart_data, m_SR)
+        call s_LIC_re_partition(lic_param%flag_LIC_elapsed_dump,        &
+     &      repart_p, geofem, ele_comm, next_tbl,                       &
+     &      izero, lic_param%masking, rep_ref_m, repart_data, m_SR)
 !
         allocate(repart_data%field_lic)
         call alloc_nod_vector_4_lic(repart_data%viz_fem%mesh%node,      &
@@ -224,11 +210,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_LIC_each_field(geofem, nod_fld, repart_p,          &
-     &                              lic_param, repart_data, m_SR)
+      subroutine set_LIC_each_field(geofem, repart_p, lic_param,        &
+     &                              repart_data, m_SR)
 !
       type(mesh_data), intent(in), target :: geofem
-      type(phys_data), intent(in) :: nod_fld
       type(volume_partioning_param), intent(in) :: repart_p
       type(lic_parameters), intent(in) :: lic_param
 !
@@ -277,7 +262,7 @@
 !
       subroutine s_LIC_re_partition                                     &
      &         (flag_lic_dump, repart_p, geofem, ele_comm, next_tbl,    &
-     &          rep_ref, repart_data, m_SR)
+     &          num_mask, masking, rep_ref, repart_data, m_SR)
 !
       use t_next_node_ele_4_node
       use t_jacobians
@@ -292,10 +277,12 @@
       use int_volume_of_domain
 !
       logical, intent(in) :: flag_lic_dump
+      integer(kind = kint), intent(in) :: num_mask
       type(volume_partioning_param), intent(in) :: repart_p
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_ele_table), intent(in) :: next_tbl
+      type(masking_parameter), intent(in) :: masking(num_mask)
       type(lic_repart_reference), intent(in) :: rep_ref
 !
       type(lic_repartioned_mesh), intent(inout) :: repart_data
@@ -308,8 +295,8 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+6)
       allocate(repart_data%viz_fem)
       call load_or_const_new_partition(flag_lic_dump, repart_p,         &
-     &    geofem, ele_comm, next_tbl, rep_ref%count_line_int,           &
-     &    repart_data%nod_fld_lic%s_lic(1,1),                           &
+     &    geofem, ele_comm, next_tbl, num_mask, masking,                &
+     &    rep_ref%count_line_int, repart_data%nod_fld_lic%s_lic(1,1),   &
      &    repart_data%nod_fld_lic%v_lic,                                &
      &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
      &    repart_data%sleeve_exp_WK, m_SR)

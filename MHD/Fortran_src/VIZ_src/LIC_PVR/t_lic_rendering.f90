@@ -337,8 +337,7 @@
       if(lic%pvr%num_pvr .le. 0) return
       call dealloc_LIC_each_mesh(lic%repart_p, lic%repart_p,            &
      &                           lic%repart_data)
-      call dealloc_LIC_nodal_field(lic%pvr%num_pvr, lic%lic_param,      &
-     &                             lic%repart_data)
+      call dealloc_LIC_nodal_field(lic%repart_data)
 !
       do i_lic = 1, lic%pvr%num_pvr
         call dealloc_lic_repart_ref(lic%rep_ref(i_lic))

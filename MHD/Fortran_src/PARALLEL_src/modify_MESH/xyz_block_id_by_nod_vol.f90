@@ -7,15 +7,17 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine set_volume_at_node                                   &
-!!     &         (part_param, mesh, ref_repart, d_mask,                 &
+!!      subroutine set_volume_at_node(part_param, mesh,                 &
+!!     &          num_mask, masking, ref_repart, d_mask,                &
 !!     &          volume_nod, volume_nod_tot, volume_min_gl,            &
 !!     &          SR_sig, SR_r)
+!!        integer(kind = kint), intent(in) :: num_mask
 !!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(masking_parameter), intent(in) :: masking(num_mask)
 !!        real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
 !!        real(kind = kreal), intent(in)                                &
-!!     &        :: d_mask(mesh%node%numnod,part_param%num_mask_repart)
+!!     &                     :: d_mask(mesh%node%numnod,num_mask)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                     :: volume_nod(mesh%node%numnod)
 !!        real(kind = kreal), intent(inout) :: volume_nod_tot
@@ -66,8 +68,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_volume_at_node                                     &
-     &         (part_param, mesh, ref_repart, d_mask,                   &
+      subroutine set_volume_at_node(part_param, mesh,                   &
+     &          num_mask, masking, ref_repart, d_mask,                  &
      &          volume_nod, volume_nod_tot, volume_min_gl,              &
      &          SR_sig, SR_r)
 !
@@ -76,11 +78,13 @@
       use int_volume_of_single_domain
       use solver_SR_type
 !
+      integer(kind = kint), intent(in) :: num_mask
       type(volume_partioning_param), intent(in) :: part_param
       type(mesh_geometry), intent(in) :: mesh
+      type(masking_parameter), intent(in) :: masking(num_mask)
       real(kind = kreal), intent(in) :: ref_repart(mesh%node%numnod)
       real(kind = kreal), intent(in)                                    &
-     &        :: d_mask(mesh%node%numnod,part_param%num_mask_repart)
+     &                     :: d_mask(mesh%node%numnod,num_mask)
 !
       real(kind = kreal), intent(inout) :: volume_nod(mesh%node%numnod)
       real(kind = kreal), intent(inout) :: volume_nod_tot
@@ -108,10 +112,9 @@
       end if
 !
       if(part_param%iflag_repart_ref .ne. i_TIME_BASED                  &
-     &   .and. part_param%num_mask_repart .gt. 0) then
+     &   .and. num_mask .gt. 0) then
           call weighting_by_masking(mesh%node, part_param%shrink,       &
-     &        part_param%num_mask_repart, part_param%masking_repart,    &
-     &        d_mask, volume_nod)
+     &        num_mask, masking, d_mask, volume_nod)
       end if
 !
       call SOLVER_SEND_RECV_type(mesh%node%numnod, mesh%nod_comm,       &

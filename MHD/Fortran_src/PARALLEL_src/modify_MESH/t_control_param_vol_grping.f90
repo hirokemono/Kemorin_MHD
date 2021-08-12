@@ -7,14 +7,6 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine link_repart_masking_param(num_mask_org, masking_org, &
-!!     &                                     part_param)
-!!      subroutine unlink_repart_masking_param(part_param)
-!!        integer(kind = kint), intent(in) :: num_mask_org
-!!        type(masking_parameter), intent(in), target                   &
-!!       &                        :: masking_org(num_mask_org)
-!!        type(volume_partioning_param), intent(inout) :: part_param
-!!
 !!      subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
 !!        integer(kind = kint), intent(in) :: num_mask_org, nmax_mask_org
 !!        type(masking_parameter), intent(in), target                   &
@@ -90,10 +82,6 @@
 !
 !>        number of maskings
         logical :: flag_mask_repart = .FALSE.
-!>        number of maskings
-        integer(kind = kint) :: num_mask_repart
-!>        Masking data
-        type(masking_parameter), pointer :: masking_repart(:)
 !>        Weight to shrink excluded area
         real(kind = kreal) :: shrink = 0.1d0
 !
@@ -107,43 +95,6 @@
 !
       contains
 !
-!   --------------------------------------------------------------------
-!
-      subroutine link_repart_masking_param(num_mask_org, masking_org,   &
-     &                                     part_param)
-!
-      use t_geometry_data
-!
-      integer(kind = kint), intent(in) :: num_mask_org
-      type(masking_parameter), intent(in), target                       &
-     &                        :: masking_org(num_mask_org)
-!
-      type(volume_partioning_param), intent(inout) :: part_param
-!
-      part_param%num_mask_repart = 0
-      if(part_param%flag_mask_repart) then
-        part_param%num_mask_repart = num_mask_org
-      end if
-!
-      if(part_param%num_mask_repart .le. 0) return
-      part_param%masking_repart => masking_org
-!
-      end subroutine link_repart_masking_param
-!
-!   --------------------------------------------------------------------
-!
-      subroutine unlink_repart_masking_param(part_param)
-!
-      type(volume_partioning_param), intent(inout) :: part_param
-!
-      if(associated(part_param%masking_repart) .EQV. .FALSE.) return
-!
-      nullify(part_param%masking_repart)
-      part_param%num_mask_repart = 0
-!
-      end subroutine unlink_repart_masking_param
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
@@ -238,7 +189,6 @@
         end if
       end if
 !
-      part_param%num_mask_repart = 0
       part_param%flag_mask_repart = .FALSE.
       if(new_part_ctl%masking_switch_ctl%iflag .gt. 0) then
         tmpchara = new_part_ctl%masking_switch_ctl%charavalue
