@@ -64,7 +64,7 @@ t_control_data_lic_pvr.o: $(LIC_DIR)/t_control_data_lic_pvr.f90 m_precision.o ca
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_param_LIC.o: $(LIC_DIR)/t_control_param_LIC.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o skip_comment_f.o t_control_params_4_pvr.o t_ctl_param_masking.o t_noise_node_data.o t_3d_noise.o t_LIC_kernel.o t_control_param_vol_grping.o t_control_data_LIC.o t_lic_repart_reference.o set_field_comp_for_viz.o set_components_flags.o set_parallel_file_name.o set_ucd_extensions.o set_control_LIC_masking.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_each_lic_trace_count_time.o: $(LIC_DIR)/t_each_lic_trace_count_time.F90 m_precision.o m_constants.o m_geometry_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_lic_field_data.o t_control_param_LIC.o calypso_mpi_int.o calypso_mpi_real.o
+t_each_lic_trace_count_time.o: $(LIC_DIR)/t_each_lic_trace_count_time.F90 m_precision.o m_constants.o m_geometry_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_lic_field_data.o t_control_param_LIC.o calypso_mpi_real.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 t_lic_field_data.o: $(LIC_DIR)/t_lic_field_data.f90 m_precision.o m_constants.o t_geometry_data.o m_error_IDs.o m_phys_constants.o t_control_param_LIC.o t_phys_data.o convert_components_4_viz.o set_components_flags.o t_vector_for_solver.o t_solver_SR.o t_calypso_comm_table.o select_copy_from_recv.o field_to_new_partition.o transfer_to_new_partition.o
 	$(F90) -c $(F90OPTFLAGS) $<
