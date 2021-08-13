@@ -28,9 +28,6 @@
 !!     &                       :: org_pvr_sect_c(num_pvr_sect)
 !!        type(pvr_section_ctl), intent(inout)                          &
 !!     &                       :: new_pvr_sect_c(num_pvr_sect)
-!!      subroutine dup_pvr_section_ctl(org_pvr_sect_c, new_pvr_sect_c)
-!!        type(pvr_section_ctl), intent(in) :: org_pvr_sect_c
-!!        type(pvr_section_ctl), intent(inout) :: new_pvr_sect_c
 !!
 !!      subroutine dealloc_pvr_section_ctl(pvr_sect_ctl)
 !!        type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
@@ -91,7 +88,7 @@
       private :: hd_pvr_opacity, hd_surface_define, n_label_pvr_section
 !
       private :: read_control_pvr_section_def
-      private :: read_pvr_section_ctl
+      private :: read_pvr_section_ctl, dup_pvr_section_ctl
 !
 !  ---------------------------------------------------------------------
 !

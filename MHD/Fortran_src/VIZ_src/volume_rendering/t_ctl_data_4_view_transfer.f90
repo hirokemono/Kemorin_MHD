@@ -177,9 +177,6 @@
 !
 !   entry label for this block
         integer (kind=kint) :: i_view_transform = 0
-!
-!     3rd level for view_transform_define
-        integer (kind=kint) :: i_image_size =  0
       end type modeview_ctl
 !
 !
