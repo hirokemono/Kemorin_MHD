@@ -43,6 +43,8 @@
 !!      trace_count_file_format         'merged_bin_gz'
 !!
 !!      weight_to_previous          0.6
+!!      power_of_volume_ctl         0.5
+!!
 !!      masking_switch_ctl          On
 !!      masking_weight_ctl          0.1
 !!      array masking_control
@@ -103,6 +105,8 @@
         type(read_character_item) :: masking_switch_ctl
 !>        Weight for masked data
         type(read_real_item) :: masking_weight_ctl
+!>        Power of volume for re-paritiong reference
+        type(read_real_item) :: power_of_volume_ctl
 !>        Number of field masking
         integer(kind = kint) :: num_masking_ctl = 0
 !>        field masking list
@@ -136,6 +140,8 @@
 !
       character(len=kchara), parameter, private                         &
      &              :: hd_masking_switch = 'masking_switch_ctl'
+      character(len=kchara), parameter, private                         &
+     &              :: hd_power_of_volume = 'power_of_volume_ctl'
       character(len=kchara), parameter, private                         &
      &              :: hd_masking_weight = 'masking_weight_ctl'
       character(len=kchara), parameter, private                         &
@@ -191,8 +197,10 @@
         call read_chara_ctl_type(c_buf, hd_masking_switch,              &
      &                           new_part_ctl%masking_switch_ctl)
 !
-        call read_real_ctl_type                                         &
-     &     (c_buf, hd_masking_weight, new_part_ctl%masking_weight_ctl)
+        call read_real_ctl_type(c_buf, hd_power_of_volume,              &
+     &                          new_part_ctl%power_of_volume_ctl)
+        call read_real_ctl_type(c_buf, hd_masking_weight,               &
+     &                          new_part_ctl%masking_weight_ctl)
         call read_real_ctl_type(c_buf, hd_weight_to_prev,               &
      &      new_part_ctl%weight_to_previous_ctl)
 !
@@ -221,9 +229,10 @@
       new_part_ctl%trace_count_head_ctl%iflag =    0
       new_part_ctl%trace_count_fmt_ctl%iflag =     0
       new_part_ctl%weight_to_previous_ctl%iflag =  0
-      new_part_ctl%masking_switch_ctl%iflag = 0
-      new_part_ctl%masking_weight_ctl%iflag = 0
-      new_part_ctl%sleeve_level_ctl%iflag = 0
+      new_part_ctl%masking_switch_ctl%iflag =  0
+      new_part_ctl%power_of_volume_ctl%iflag = 0
+      new_part_ctl%masking_weight_ctl%iflag =  0
+      new_part_ctl%sleeve_level_ctl%iflag =    0
 !
       new_part_ctl%ratio_of_grouping_ctl%iflag = 0
 !
@@ -257,6 +266,7 @@
       call bcast_ctl_type_c1(new_part_ctl%trace_count_head_ctl)
       call bcast_ctl_type_c1(new_part_ctl%trace_count_fmt_ctl)
       call bcast_ctl_type_c1(new_part_ctl%masking_switch_ctl)
+      call bcast_ctl_type_r1(new_part_ctl%power_of_volume_ctl)
       call bcast_ctl_type_r1(new_part_ctl%masking_weight_ctl)
       call bcast_ctl_type_r1(new_part_ctl%weight_to_previous_ctl)
       call bcast_ctl_type_i1(new_part_ctl%sleeve_level_ctl)
@@ -296,6 +306,8 @@
      &                    new_new_part_c%trace_count_fmt_ctl)
       call copy_chara_ctl(org_new_part_c%masking_switch_ctl,            &
      &                    new_new_part_c%masking_switch_ctl)
+      call copy_real_ctl(org_new_part_c%power_of_volume_ctl,            &
+     &                   new_new_part_c%power_of_volume_ctl)
       call copy_real_ctl(org_new_part_c%masking_weight_ctl,             &
      &                   new_new_part_c%masking_weight_ctl)
       call copy_real_ctl(org_new_part_c%weight_to_previous_ctl,         &

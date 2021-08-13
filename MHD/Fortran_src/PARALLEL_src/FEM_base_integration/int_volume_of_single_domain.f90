@@ -23,7 +23,12 @@
 !!        type(node_data), intent(in) :: node
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
 !!        type(element_data), intent(inout) :: ele
-!!      subroutine cal_node_volue(ele, g_FEM, jac_3d)
+!!      subroutine cal_node_volue(node, ele, node_volume)
+!!      subroutine cal_node_volue_w_power(power, node, ele, node_volume)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        real(kind = kreal), intent(in) :: power
+!!        real(kind = kreal), intent(inout) :: node_volume(node%numnod)
 !!@endverbatim
 !
       module int_volume_of_single_domain
@@ -165,6 +170,38 @@
 !$omp end parallel do
 !
       end subroutine cal_node_volue
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_node_volue_w_power(power, node, ele, node_volume)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      real(kind = kreal), intent(in) :: power
+      real(kind = kreal), intent(inout) :: node_volume(node%numnod)
+!
+      integer(kind = kint) :: inode, i, j
+      real(kind = kreal) :: tmp_len
+!
+!
+      node_volume(1:node%numnod) = 1.0d-17
+      do i = 1, ele%numele
+        do j = 1, ele%nnod_4_ele
+          inode = ele%ie(i,j)
+          node_volume(inode) = node_volume(inode) + ele%volume_ele(i)
+        end do
+      end do
+!
+!$omp parallel do private(i,tmp_len)
+      do i = 1, node%numnod
+        tmp_len = node_volume(i) / dble(ele%nnod_4_ele)
+        node_volume(i) = tmp_len**(power)
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_node_volue_w_power
 !
 !-----------------------------------------------------------------------
 !

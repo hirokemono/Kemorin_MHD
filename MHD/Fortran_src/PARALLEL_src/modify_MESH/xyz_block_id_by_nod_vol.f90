@@ -108,7 +108,8 @@
 !$omp end parallel workshare
 !
       else
-        call cal_node_volue(mesh%node, mesh%ele, volume_nod)
+        call cal_node_volue_w_power(part_param%vol_power,               &
+     &      mesh%node, mesh%ele, volume_nod)
       end if
 !
       if(part_param%iflag_repart_ref .ne. i_TIME_BASED                  &

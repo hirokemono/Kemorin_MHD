@@ -13,13 +13,16 @@
 !!        type(volume_partioning_param), intent(inout) :: each_part_p
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!
-!!      subroutine init_lic_repart_ref(mesh, pvr_rgb, rep_ref, m_SR)
+!!      subroutine init_lic_repart_ref                                  &
+!!     &         (mesh, pvr_rgb, each_part_p, rep_ref)
 !!      subroutine alloc_lic_repart_ref(node, rep_ref)
 !!      subroutine dealloc_lic_repart_ref(rep_ref)
 !!      subroutine reset_lic_count_line_int(rep_ref)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(pvr_image_type), intent(in) :: pvr_rgb
+!!        type(volume_partioning_param), intent(in) :: each_part_p
 !!        type(lic_repart_reference), intent(inout) :: rep_ref
 !!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine output_LIC_line_integrate_count(time, rep_ref)
 !!        real(kind = kreal), intent(in) :: time
 !!        type(lic_repart_reference), intent(in) :: rep_ref
@@ -134,7 +137,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_lic_repart_ref(mesh, pvr_rgb, rep_ref, m_SR)
+      subroutine init_lic_repart_ref                                    &
+     &         (mesh, pvr_rgb, each_part_p, rep_ref)
 !
       use calypso_mpi
       use m_work_time
@@ -144,17 +148,15 @@
       use t_field_data_IO
       use t_pvr_image_array
       use t_control_param_vol_grping
-      use t_mesh_SR
 !
-      use solver_SR_type
       use field_IO_select
       use int_volume_of_single_domain
 !
       type(mesh_geometry), intent(in) :: mesh
       type(pvr_image_type), intent(in) :: pvr_rgb
+      type(volume_partioning_param), intent(in) :: each_part_p
 !
       type(lic_repart_reference), intent(inout) :: rep_ref
-      type(mesh_SR), intent(inout) :: m_SR
 !
       type(time_data) :: t_IO
       type(field_IO) :: fld_IO
@@ -182,20 +184,8 @@
       else
         if(my_rank .eq. 0) write(*,*)                                   &
      &         'Initialize line integration count by volume'
-!
-        call cal_node_length_by_volue(mesh%node, mesh%ele,              &
-     &                      rep_ref%count_line_int)
-        call SOLVER_SEND_RECV_type(mesh%node%numnod, mesh%nod_comm,     &
-     &      m_SR%SR_sig, m_SR%SR_r, rep_ref%count_line_int)
-!
-!!$omp parallel do
-!        do inod = 1, mesh%node%numnod
-!          if(rep_ref%count_line_int(inod) .le. 0.0d0) cycle
-!
-!          rep_ref%count_line_int(inod)                                  &
-!     &        = rep_ref%count_line_int(inod)**(-one/three)
-!        end do
-!!$omp end parallel do
+        call cal_node_volue_w_power(each_part_p%vol_power,              &
+     &      mesh%node, mesh%ele, rep_ref%count_line_int)
       end if
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+9)
 !
@@ -375,66 +365,5 @@
       end subroutine copy_lic_repart_ref_from_IO
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine cal_node_length_by_volue(node, ele, node_volume)
-!
-      use t_geometry_data
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      real(kind = kreal), intent(inout) :: node_volume(node%numnod)
-!
-      integer(kind = kint) :: inode, i, j
-      real(kind = kreal) :: tmp_len
-!
-!
-      node_volume(1:node%numnod) = 1.0d-17
-      do i = 1, ele%numele
-        do j = 1, ele%nnod_4_ele
-          inode = ele%ie(i,j)
-          node_volume(inode) = node_volume(inode) + ele%volume_ele(i)
-        end do
-      end do
-!
-!$omp parallel do private(i,tmp_len)
-      do i = 1, node%numnod
-        tmp_len = node_volume(i) / dble(ele%nnod_4_ele)
-        node_volume(i) = tmp_len**(half)
-      end do
-!$omp end parallel do
-!
-      end subroutine cal_node_length_by_volue
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_node_length_by_volue2(node, ele, node_volume)
-!
-      use t_geometry_data
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      real(kind = kreal), intent(inout) :: node_volume(node%numnod)
-!
-      integer(kind = kint) :: inode, i, j
-!
-!
-      node_volume(1:node%numnod) = 1.0d-17
-      do i = 1, ele%numele
-        do j = 1, ele%nnod_4_ele
-          inode = ele%ie(i,j)
-          node_volume(inode) = node_volume(inode)                       &
-     &                        + ele%volume_ele(i)**(half)
-        end do
-      end do
-!
-!$omp parallel do private(i)
-      do i = 1, node%numnod
-        node_volume(i) = node_volume(i) / dble(ele%nnod_4_ele)
-      end do
-!$omp end parallel do
-!
-      end subroutine cal_node_length_by_volue2
-!
-!-----------------------------------------------------------------------
 !
       end module t_lic_repart_reference

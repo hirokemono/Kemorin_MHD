@@ -27,6 +27,7 @@
       module t_control_param_vol_grping
 !
       use m_precision
+      use m_constants
       use calypso_mpi
 !
       use t_file_IO_parameter
@@ -84,6 +85,8 @@
         logical :: flag_mask_repart = .FALSE.
 !>        Weight to shrink excluded area
         real(kind = kreal) :: shrink = 0.1d0
+!>        Power of volume for re-partitioning
+        real(kind = kreal) :: vol_power = one
 !
 !>      Structure of sleeve extension parameter
         type(sleeve_extension_param) :: sleeve_exp_p
@@ -200,6 +203,12 @@
       part_param%shrink = 0.1d0
       if(new_part_ctl%masking_weight_ctl%iflag .gt. 0) then
         part_param%shrink = new_part_ctl%masking_weight_ctl%realvalue
+      end if
+!
+      part_param%vol_power = one
+      if(new_part_ctl%power_of_volume_ctl%iflag .gt. 0) then
+        part_param%vol_power                                            &
+     &       = new_part_ctl%power_of_volume_ctl%realvalue
       end if
 !
       part_param%new_nprocs = nprocs
