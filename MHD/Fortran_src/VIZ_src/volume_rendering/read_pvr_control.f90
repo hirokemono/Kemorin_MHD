@@ -228,15 +228,10 @@
      &        pvr_ctl%cmap_cbar_c%cbar_ctl, c_buf)
         end if
 !
-        if(check_array_flag(c_buf, hd_pvr_sections)) then
-          call read_pvr_sections_ctl(id_control, hd_pvr_sections,       &
-     &        pvr_ctl%pvr_scts_c, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_pvr_isosurf)) then
-          call read_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,        &
-     &        pvr_ctl%pvr_isos_c, c_buf)
-        end if
+        call read_pvr_sections_ctl(id_control, hd_pvr_sections,         &
+     &      pvr_ctl%pvr_scts_c, c_buf)
+        call read_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,          &
+     &      pvr_ctl%pvr_isos_c, c_buf)
 !
         call read_pvr_render_area_ctl(id_control, hd_plot_area,         &
      &      pvr_ctl%render_area_c, c_buf)

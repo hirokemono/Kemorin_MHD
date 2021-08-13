@@ -204,10 +204,8 @@
         call read_real_ctl_type(c_buf, hd_weight_to_prev,               &
      &      new_part_ctl%weight_to_previous_ctl)
 !
-        if(check_array_flag(c_buf, hd_masking_ctl)) then
-          call read_repart_masking_ctl_array                            &
-     &       (id_control, hd_masking_ctl, new_part_ctl, c_buf)
-        end if
+        call read_repart_masking_ctl_array                              &
+     &     (id_control, hd_masking_ctl, new_part_ctl, c_buf)
       end do
       new_part_ctl%i_new_patition_ctl = 1
 !
@@ -338,6 +336,7 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
+      if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(new_part_ctl%mask_ctl)) return
       new_part_ctl%num_masking_ctl = 0
       call alloc_repart_masking_ctl(new_part_ctl)

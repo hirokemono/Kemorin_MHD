@@ -95,6 +95,7 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
+      if(check_array_flag(c_buf, hd_pvr_ctl) .eqv. .FALSE.) return
       if(allocated(pvr_ctls%fname_pvr_ctl)) return
       pvr_ctls%num_pvr_ctl = 0
       call alloc_pvr_ctl_struct(pvr_ctls)

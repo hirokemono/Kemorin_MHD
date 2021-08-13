@@ -173,6 +173,7 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
+      if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(lic_ctl%mask_ctl)) return
       lic_ctl%num_masking_ctl = 0
       call alloc_lic_masking_ctl(lic_ctl)

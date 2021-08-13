@@ -93,6 +93,7 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
+      if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(fline_ctls%fname_fline_ctl)) return
       fline_ctls%num_fline_ctl = 0
       call alloc_fline_ctl_struct(fline_ctls)
