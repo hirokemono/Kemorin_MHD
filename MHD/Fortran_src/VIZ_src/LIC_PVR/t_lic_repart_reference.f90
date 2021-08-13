@@ -182,23 +182,11 @@
       else
         if(my_rank .eq. 0) write(*,*)                                   &
      &         'Initialize line integration count by volume'
-        allocate(rep_ref%volume_nod_int(mesh%node%numnod))
-!$omp parallel workshare
-        rep_ref%volume_nod_int(1:mesh%node%numnod) = 0.0d0
-!$omp end parallel workshare
 !
         call cal_node_length_by_volue(mesh%node, mesh%ele,              &
-     &                      rep_ref%volume_nod_int)
+     &                      rep_ref%count_line_int)
         call SOLVER_SEND_RECV_type(mesh%node%numnod, mesh%nod_comm,     &
-     &      m_SR%SR_sig, m_SR%SR_r, rep_ref%volume_nod_int)
-!
-!$omp parallel do
-        do inod = 1, mesh%node%numnod
-            rep_ref%count_line_int(inod)                                &
-     &           = rep_ref%volume_nod_int(inod)
-        end do
-!$omp end parallel do
-        deallocate(rep_ref%volume_nod_int)
+     &      m_SR%SR_sig, m_SR%SR_r, rep_ref%count_line_int)
 !
 !!$omp parallel do
 !        do inod = 1, mesh%node%numnod
@@ -397,6 +385,7 @@
       real(kind = kreal), intent(inout) :: node_volume(node%numnod)
 !
       integer(kind = kint) :: inode, i, j
+      real(kind = kreal) :: tmp_len
 !
 !
       node_volume(1:node%numnod) = 1.0d-17
@@ -407,13 +396,44 @@
         end do
       end do
 !
-!$omp parallel do
+!$omp parallel do private(i,tmp_len)
       do i = 1, node%numnod
-        node_volume(i) = dble(ele%nnod_4_ele) / node_volume(i)
+        tmp_len = node_volume(i) / dble(ele%nnod_4_ele)
+        node_volume(i) = tmp_len**(half)
       end do
 !$omp end parallel do
 !
       end subroutine cal_node_length_by_volue
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_node_length_by_volue2(node, ele, node_volume)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      real(kind = kreal), intent(inout) :: node_volume(node%numnod)
+!
+      integer(kind = kint) :: inode, i, j
+!
+!
+      node_volume(1:node%numnod) = 1.0d-17
+      do i = 1, ele%numele
+        do j = 1, ele%nnod_4_ele
+          inode = ele%ie(i,j)
+          node_volume(inode) = node_volume(inode)                       &
+     &                        + ele%volume_ele(i)**(half)
+        end do
+      end do
+!
+!$omp parallel do private(i)
+      do i = 1, node%numnod
+        node_volume(i) = node_volume(i) / dble(ele%nnod_4_ele)
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_node_length_by_volue2
 !
 !-----------------------------------------------------------------------
 !
