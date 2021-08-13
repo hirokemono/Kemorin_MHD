@@ -144,6 +144,8 @@
       subroutine read_mul_view_trans_block_ctl                          &
      &         (id_control, hd_block, qmat_file_ctl, c_buf)
 !
+      use read_control_pvr_modelview
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(modeview_and_fname_ctl), intent(inout) :: qmat_file_ctl
@@ -255,6 +257,8 @@
 !
       subroutine copy_mul_view_trans_ctl                                &
      &         (num_qmat, org_qmat_ctl, new_qmat_ctl)
+!
+      use bcast_dup_view_transfer_ctl
 !
       integer(kind = kint), intent(in) :: num_qmat
       type(modeview_and_fname_ctl), intent(in)                          &
