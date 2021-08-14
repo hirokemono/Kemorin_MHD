@@ -118,8 +118,10 @@
 !
 !   set transfer matrix
 !
+        call copy_stereo_perspective_matrix                             &
+     &     (pvr_ctl_type(i_pvr)%mat%streo, pvr_param(i_pvr)%stereo_def)
         call s_set_pvr_modelview_matrix(pvr_ctl_type(i_pvr)%mat,        &
-     &      pvr_param(i_pvr)%view, pvr_param(i_pvr)%stereo_def)
+     &                                  pvr_param(i_pvr)%view)
       end do
 !
       end subroutine s_set_pvr_controls

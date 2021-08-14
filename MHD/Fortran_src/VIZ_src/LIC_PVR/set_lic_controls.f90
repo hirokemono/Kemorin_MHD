@@ -135,8 +135,10 @@
 !
 !   set transfer matrix
 !
+        call copy_stereo_perspective_matrix                             &
+     &     (pvr_ctl_type(i_lic)%mat%streo, pvr_param(i_lic)%stereo_def)
         call s_set_pvr_modelview_matrix(pvr_ctl_type(i_lic)%mat,        &
-     &      pvr_param(i_lic)%view, pvr_param(i_lic)%stereo_def)
+     &                                  pvr_param(i_lic)%view)
       end do
 !
       call set_control_lic_noise(num_lic, lic_param)
