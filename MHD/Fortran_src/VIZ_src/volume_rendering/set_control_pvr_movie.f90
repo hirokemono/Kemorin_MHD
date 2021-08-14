@@ -122,10 +122,9 @@
       else if(movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
         movie_def%id_rot_axis = 2
 !
-        if(movie_ctl%angle_range_ctl%iflag .eq. 0) then
-          movie_def%angle_range(1) =  -17.5d0
-          movie_def%angle_range(2) =   17.5d0
-        else
+        movie_def%angle_range(1) =  -17.5d0
+        movie_def%angle_range(2) =   17.5d0
+        if(movie_ctl%angle_range_ctl%iflag .gt. 0) then
           movie_def%angle_range(1:2)                                    &
      &          = movie_ctl%angle_range_ctl%realvalue(1:2)
         end if

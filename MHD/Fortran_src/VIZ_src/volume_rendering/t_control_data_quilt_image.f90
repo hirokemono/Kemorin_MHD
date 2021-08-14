@@ -28,9 +28,7 @@
 !!
 !!  begin quilt_image_ctl
 !!    quilt_mode_ctl           BITMAP
-!!    num_frames_ctl           45
 !!    num_column_row_ctl       5     9
-!!    angle_range            -17.5  17.5
 !!
 !!    array view_transform_ctl
 !!      file  view_transform_ctl  control_view
@@ -67,11 +65,7 @@
       type quilt_image_ctl
 !>        Structure of quilt mode control
         type(read_character_item) :: quilt_mode_ctl
-!>        Structure of number of flame control
-        type(read_integer_item) ::   num_frames_ctl
 !
-!>        Structure of start and end of angle
-        type(read_real2_item) :: angle_range_ctl
 !>        Structure of number of row and columns of image
         type(read_int2_item) :: num_column_row_ctl
 !
@@ -86,17 +80,13 @@
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_quilt_mode =  'quilt_mode_ctl'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_quilt_num_frame = 'num_frames_ctl'
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_column_row =    'num_column_row_ctl'
       character(len=kchara), parameter, private                         &
-     &             :: hd_angle_range =   'angle_range'
-      character(len=kchara), parameter, private                         &
      &             :: hd_qview_transform =   'view_transform_ctl'
 !
-      integer(kind = kint), parameter :: n_label_quilt_ctl =   5
+      integer(kind = kint), parameter :: n_label_quilt_ctl =   3
       private :: n_label_quilt_ctl
 !
 !  ---------------------------------------------------------------------
@@ -125,12 +115,6 @@
 !
         call read_chara_ctl_type(c_buf, hd_quilt_mode,                  &
      &      quilt_c%quilt_mode_ctl)
-!
-        call read_integer_ctl_type(c_buf, hd_quilt_num_frame,           &
-     &      quilt_c%num_frames_ctl)
-!
-        call read_real2_ctl_type(c_buf, hd_angle_range,                 &
-     &      quilt_c%angle_range_ctl)
         call read_integer2_ctl_type(c_buf, hd_column_row,               &
      &      quilt_c%num_column_row_ctl)
 !
@@ -157,11 +141,6 @@
 !
       call copy_chara_ctl(org_quilt%quilt_mode_ctl,                     &
      &                    new_quilt%quilt_mode_ctl)
-      call copy_integer_ctl(org_quilt%num_frames_ctl,                   &
-     &                      new_quilt%num_frames_ctl)
-!
-      call copy_real2_ctl(org_quilt%angle_range_ctl,                    &
-     &                    new_quilt%angle_range_ctl)
       call copy_integer2_ctl(org_quilt%num_column_row_ctl,              &
      &                       new_quilt%num_column_row_ctl)
 !
@@ -179,8 +158,6 @@
       call dealloc_multi_modeview_ctl(quilt_c%mul_qmats_c)
 !
       quilt_c%quilt_mode_ctl%iflag =     0
-      quilt_c%num_frames_ctl%iflag =     0
-      quilt_c%angle_range_ctl%iflag =    0
       quilt_c%num_column_row_ctl%iflag = 0
 !
       quilt_c%i_quilt_image = 0
@@ -204,9 +181,6 @@
       call calypso_mpi_bcast_one_int(quilt_c%i_quilt_image, 0)
 !
       call bcast_ctl_type_c1(quilt_c%quilt_mode_ctl)
-      call bcast_ctl_type_i1(quilt_c%num_frames_ctl)
-!
-      call bcast_ctl_type_r2(quilt_c%angle_range_ctl)
       call bcast_ctl_type_i2(quilt_c%num_column_row_ctl)
 !
       call bcast_mul_view_trans_ctl(quilt_c%mul_qmats_c)
@@ -230,10 +204,8 @@
 !
 !
       call set_control_labels(hd_quilt_mode, names( 1))
-      call set_control_labels(hd_quilt_num_frame, names( 2))
-      call set_control_labels(hd_angle_range, names( 3))
-      call set_control_labels(hd_column_row, names( 4))
-      call set_control_labels(hd_column_row, names( 5))
+      call set_control_labels(hd_column_row, names( 2))
+      call set_control_labels(hd_column_row, names( 3))
 !
       end subroutine set_label_quilt_image
 !
