@@ -162,7 +162,7 @@
 !
       call reset_pvr_light_flags(pvr_ctl%light)
       call reset_quilt_image_ctl(pvr_ctl%quilt_c)
-      call reset_pvr_movie_control_flags(pvr_ctl%movie)
+      call dealloc_pvr_movie_control_flags(pvr_ctl%movie)
 !
       call dealloc_view_transfer_ctl(pvr_ctl%mat)
       call dealloc_pvr_light_crl(pvr_ctl%light)

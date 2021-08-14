@@ -75,11 +75,7 @@
 !>        Structure of number of row and columns of image
         type(read_int2_item) :: num_column_row_ctl
 !
-!         2nd level for volume rendering
-        integer (kind=kint) :: num_q_mat = 0
-!>        file name for modelview matrices
-        character(len=kchara), allocatable :: q_view_file_ctl(:)
-!         Lists of viewpoints
+!         Lists of multiple view parameters
         type(multi_modeview_ctl) :: mul_qmats_c
 !
 !         integer flag of used block
