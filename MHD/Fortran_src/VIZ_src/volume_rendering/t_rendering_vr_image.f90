@@ -82,8 +82,6 @@
 !>        Structure for PVR colormap
         type(pvr_colorbar_parameter):: colorbar
 !
-!>        Viewer coordinate information
-        type(pvr_view_parameter) :: view
 !>        Color paramter for volume rendering
         type(pvr_colormap_parameter) :: color
 !>        Movie parameters
@@ -166,23 +164,11 @@
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
-      if(num_stereo .gt. 1) then
-        call set_pvr_step_projection_mat(i_img, num_stereo,             &
-     &      pvr_param%view, pvr_param%stereo_def,                       &
-     &      pvr_proj%screen%projection_mat)
-      else
-        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
-        call set_pvr_projection_matrix                                  &
-     &     (pvr_param%view, pvr_proj%screen%projection_mat)
-!        call set_pvr_orthogonal_params(pvr_param%view)
-      end if
-!
-      call cal_pvr_modelview_matrix(i_img, izero, pvr_param%outline,    &
-     &    pvr_param%movie_def, pvr_param%stereo_def, pvr_param%view,    &
-     &    pvr_proj%screen%viewpoint_vec, pvr_proj%screen%modelview_mat)
+      call sel_rot_view_projection_mats(i_img, num_stereo,              &
+     &                                  pvr_param, pvr_proj%screen)
 !
       call transfer_to_screen(mesh%node, mesh%surf,                     &
-     &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
+     &    pvr_param%pixel, pvr_param%multi_view(1)%n_pvr_pixel,         &
      &    pvr_bound, pvr_proj%screen, pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,                &
@@ -268,36 +254,11 @@
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
-      if(pvr_param%movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
-        call set_pvr_step_projection_mat                                &
-     &     (i_rot, pvr_param%movie_def%num_frame,                       &
-     &      pvr_param%view, pvr_param%stereo_def,                       &
-     &      pvr_proj%screen%projection_mat)
-!      else if(num_stereo .gt. 1) then
-!        call set_pvr_step_projection_mat(i_img, num_stereo,            &
-!     &      pvr_param%view, pvr_param%stereo_def,                      &
-!     &      pvr_proj%screen%projection_mat)
-      else
-        call set_pvr_projection_matrix                                  &
-     &     (pvr_param%view, pvr_proj%screen%projection_mat)
-      end if
-!
-      if(pvr_param%movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
-        call cal_pvr_modelview_matrix(i_rot, izero,                     &
-     &      pvr_param%outline, pvr_param%movie_def,                     &
-     &      pvr_param%stereo_def, pvr_param%view,                       &
-     &      pvr_proj%screen%viewpoint_vec,                              &
-     &      pvr_proj%screen%modelview_mat)
-      else
-        call cal_pvr_modelview_matrix(i_img, i_rot,                     &
-     &      pvr_param%outline, pvr_param%movie_def,                     &
-     &      pvr_param%stereo_def, pvr_param%view,                       &
-     &      pvr_proj%screen%viewpoint_vec,                              &
-     &      pvr_proj%screen%modelview_mat)
-      end if
+      call sel_rot_view_projection_mats(i_img, i_rot,                   &
+     &                                  pvr_param, pvr_proj%screen)
 !
       call transfer_to_screen(mesh%node, mesh%surf,                     &
-     &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
+     &    pvr_param%pixel, pvr_param%multi_view(1)%n_pvr_pixel,         &
      &    pvr_bound, pvr_proj%screen, pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,                &
@@ -312,6 +273,96 @@
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
       end subroutine rendering_at_once
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine sel_rot_view_projection_mats(i_img, i_rot,             &
+     &                                        pvr_param, screen)
+!
+      use cal_pvr_modelview_mat
+      use cal_pvr_projection_mat
+!
+      integer(kind = kint), intent(in) :: i_img, i_rot
+      type(PVR_control_params), intent(in) :: pvr_param
+!
+      type(pvr_projected_position), intent(inout) :: screen
+!
+!
+      if(pvr_param%flag_mulview_movie) then
+        call set_pvr_projection_matrix(pvr_param%multi_view(i_rot),     &
+     &                                 screen%projection_mat)
+        call cal_pvr_modelview_matrix(ione, izero, pvr_param%outline,   &
+     &      pvr_param%movie_def, pvr_param%stereo_def,                  &
+     &      pvr_param%multi_view(i_rot), screen%viewpoint_vec,          &
+     &      screen%modelview_mat)
+      else if(pvr_param%flag_mulview_quilt) then
+        call set_pvr_projection_matrix(pvr_param%multi_view(i_img),     &
+     &                                 screen%projection_mat)
+        call cal_pvr_modelview_matrix(ione, i_rot, pvr_param%outline,   &
+     &      pvr_param%movie_def, pvr_param%stereo_def,                  &
+     &      pvr_param%multi_view(i_img), screen%viewpoint_vec,          &
+     &      screen%modelview_mat)
+      else if(pvr_param%movie_def%iflag_movie_mode                      &
+     &                                 .eq. I_LOOKINGLASS) then
+        call set_pvr_step_projection_mat                                &
+     &     (i_rot, pvr_param%movie_def%num_frame,                       &
+     &      pvr_param%multi_view(1), pvr_param%stereo_def,              &
+     &      screen%projection_mat)
+        call cal_pvr_modelview_matrix(i_rot, izero,                     &
+     &      pvr_param%outline, pvr_param%movie_def,                     &
+     &      pvr_param%stereo_def, pvr_param%multi_view(1),              &
+     &      screen%viewpoint_vec, screen%modelview_mat)
+      else
+        call set_pvr_projection_matrix                                  &
+     &     (pvr_param%multi_view(1), screen%projection_mat)
+        call cal_pvr_modelview_matrix(i_img, i_rot,                     &
+     &      pvr_param%outline, pvr_param%movie_def,                     &
+     &      pvr_param%stereo_def, pvr_param%multi_view(1),              &
+     &      screen%viewpoint_vec, screen%modelview_mat)
+      end if
+!
+      end subroutine sel_rot_view_projection_mats
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sel_fix_view_projection_mats(i_img, num_stereo,       &
+     &                                        pvr_param, screen)
+!
+      use cal_pvr_modelview_mat
+      use cal_pvr_projection_mat
+!
+      integer(kind = kint), intent(in) :: i_img, num_stereo
+      type(PVR_control_params), intent(inout) :: pvr_param
+!
+      type(pvr_projected_position), intent(inout) :: screen
+!
+!
+      if(pvr_param%flag_mulview_quilt) then
+        call set_pvr_projection_matrix(pvr_param%multi_view(i_img),     &
+     &                                 screen%projection_mat)
+        call cal_pvr_modelview_matrix(i_img, izero, pvr_param%outline,  &
+     &      pvr_param%movie_def, pvr_param%stereo_def,                  &
+     &      pvr_param%multi_view(i_img), screen%viewpoint_vec,          &
+     &      screen%modelview_mat)
+      else if(num_stereo .gt. 1) then
+        call set_pvr_step_projection_mat(i_img, num_stereo,             &
+     &      pvr_param%multi_view(1), pvr_param%stereo_def,              &
+     &      screen%projection_mat)
+        call cal_pvr_modelview_matrix(i_img, izero,                     &
+     &      pvr_param%outline, pvr_param%movie_def,                     &
+     &      pvr_param%stereo_def, pvr_param%multi_view(1),              &
+     &      screen%viewpoint_vec, screen%modelview_mat)
+      else
+        call set_pvr_projection_matrix                                  &
+     &     (pvr_param%multi_view(1), screen%projection_mat)
+        call cal_pvr_modelview_matrix(i_img, izero,                     &
+     &      pvr_param%outline, pvr_param%movie_def,                     &
+     &      pvr_param%stereo_def, pvr_param%multi_view(1),              &
+     &      screen%viewpoint_vec, screen%modelview_mat)
+      end if
+!
+      end subroutine sel_fix_view_projection_mats
 !
 !  ---------------------------------------------------------------------
 !

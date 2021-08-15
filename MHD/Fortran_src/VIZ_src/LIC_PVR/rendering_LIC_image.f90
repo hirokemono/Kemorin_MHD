@@ -12,10 +12,10 @@
 !!     &          field_lic, pvr_param, pvr_proj, pvr_rgb,              &
 !!     &          rep_ref_viz, m_SR)
 !!      subroutine rendering_lic_at_once(istep_pvr, time,               &
-!!     &          i_stereo, i_rot, mesh, group, sf_grp_4_sf, lic_p,     &
+!!     &          i_img, i_rot, mesh, group, sf_grp_4_sf, lic_p,        &
 !!     &          field_lic, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
 !!     &          rep_ref_viz, m_SR)
-!!        integer(kind = kint), intent(in) :: i_stereo, i_rot
+!!        integer(kind = kint), intent(in) :: i_img, i_rot
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -103,7 +103,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_lic_at_once(istep_pvr, time,                 &
-     &          i_stereo, i_rot, mesh, group, sf_grp_4_sf, lic_p,       &
+     &          i_img, i_rot, mesh, group, sf_grp_4_sf, lic_p,          &
      &          field_lic, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
      &          rep_ref_viz, m_SR)
 !
@@ -112,7 +112,7 @@
       use write_LIC_image
       use t_pvr_stencil_buffer
 !
-      integer(kind = kint), intent(in) :: i_stereo, i_rot
+      integer(kind = kint), intent(in) :: i_img, i_rot
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
@@ -129,36 +129,11 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(pvr_param%movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
-        call set_pvr_step_projection_mat                                &
-     &     (i_rot, pvr_param%movie_def%num_frame,                       &
-     &      pvr_param%view, pvr_param%stereo_def,                       &
-     &      pvr_proj%screen%projection_mat)
-!      else if(num_stereo .gt. 1) then
-!        call set_pvr_step_projection_mat(i_stereo, num_stereo,        &
-!     &      pvr_param%view, pvr_param%stereo_def,                     &
-!     &      pvr_proj%screen%projection_mat)
-      else
-        call set_pvr_projection_matrix                                  &
-     &     (pvr_param%view, pvr_proj%screen%projection_mat)
-      end if
-!
-      if(pvr_param%movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
-        call cal_pvr_modelview_matrix(i_rot, izero,                     &
-     &      pvr_param%outline, pvr_param%movie_def,                     &
-     &      pvr_param%stereo_def, pvr_param%view,                       &
-     &      pvr_proj%screen%viewpoint_vec,                              &
-     &      pvr_proj%screen%modelview_mat)
-      else
-        call cal_pvr_modelview_matrix(i_stereo, i_rot,                  &
-     &      pvr_param%outline, pvr_param%movie_def,                     &
-     &      pvr_param%stereo_def, pvr_param%view,                       &
-     &      pvr_proj%screen%viewpoint_vec,                              &
-     &      pvr_proj%screen%modelview_mat)
-      end if
+      call sel_rot_view_projection_mats(i_img, i_rot,                   &
+     &                                  pvr_param, pvr_proj%screen)
 !
       call transfer_to_screen(mesh%node, mesh%surf,                     &
-     &    pvr_param%pixel, pvr_param%view%n_pvr_pixel,                  &
+     &    pvr_param%pixel, pvr_param%multi_view(1)%n_pvr_pixel,         &
      &    pvr_bound, pvr_proj%screen, pvr_proj%start_fix)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,                &

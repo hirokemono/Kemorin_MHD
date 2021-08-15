@@ -112,18 +112,20 @@
      &                               pvr_param%draw_param, pvr_bound)
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
-      call check_pvr_parameters                                         &
-     &   (pvr_param%outline, pvr_param%view, pvr_param%color)
+      call check_pvr_parameters(pvr_param%outline,                      &
+     &    pvr_param%num_multi_views, pvr_param%multi_view,              &
+     &    pvr_param%color)
 !
-      call set_pixel_on_pvr_screen(pvr_param%view, pvr_param%pixel)
+      call set_pixel_on_pvr_screen(pvr_param%multi_view(1),             &
+     &                             pvr_param%pixel)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
       call set_pvr_projection_left_mat                                  &
-     &   (pvr_param%view, pvr_param%stereo_def,                         &
+     &   (pvr_param%multi_view(1), pvr_param%stereo_def,                &
      &    pvr_proj(1)%screen%projection_mat)
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
       call set_pvr_projection_right_mat                                 &
-     &   (pvr_param%view, pvr_param%stereo_def,                         &
+     &   (pvr_param%multi_view(1), pvr_param%stereo_def,                &
      &    pvr_proj(2)%screen%projection_mat)
 !
 !

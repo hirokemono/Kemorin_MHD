@@ -28,8 +28,8 @@
 !!      subroutine deallocate_projected_data_pvr                        &
 !!      &        (num_pvr, proj, draw_param)
 !!      subroutine dealloc_pixel_position_pvr(pixel_xy)
-!!      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
-!!        type(pvr_view_parameter), intent(in) :: view
+!!      subroutine set_pixel_on_pvr_screen(view_param, pixel_xy)
+!!        type(pvr_view_parameter), intent(in) :: view_param
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!@endverbatim
 !
@@ -245,19 +245,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
+      subroutine set_pixel_on_pvr_screen(view_param, pixel_xy)
 !
       use t_control_params_4_pvr
       use set_projection_matrix
 !
-      type(pvr_view_parameter), intent(in) :: view
+      type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
 !
-      call alloc_pixel_position_pvr(view%n_pvr_pixel, pixel_xy)
+      call alloc_pixel_position_pvr(view_param%n_pvr_pixel, pixel_xy)
 !
       call set_pixel_points_on_project                                  &
-     &   (view%n_pvr_pixel(1), view%n_pvr_pixel(2),                     &
+     &   (view_param%n_pvr_pixel(1), view_param%n_pvr_pixel(2),         &
           pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
 !
       end subroutine set_pixel_on_pvr_screen

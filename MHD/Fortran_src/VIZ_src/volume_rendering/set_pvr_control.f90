@@ -118,10 +118,11 @@
 !
 !   set transfer matrix
 !
+        call alloc_multi_view_parameters(ione, pvr_param(i_pvr))
         call copy_stereo_perspective_matrix                             &
      &     (pvr_ctl_type(i_pvr)%mat%streo, pvr_param(i_pvr)%stereo_def)
         call s_set_pvr_modelview_matrix(pvr_ctl_type(i_pvr)%mat,        &
-     &                                  pvr_param(i_pvr)%view)
+     &                                  pvr_param(i_pvr)%multi_view(1))
       end do
 !
       end subroutine s_set_pvr_controls

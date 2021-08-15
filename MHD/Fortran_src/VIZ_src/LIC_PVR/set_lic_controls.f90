@@ -135,10 +135,11 @@
 !
 !   set transfer matrix
 !
+        call alloc_multi_view_parameters(ione, pvr_param(i_lic))
         call copy_stereo_perspective_matrix                             &
      &     (pvr_ctl_type(i_lic)%mat%streo, pvr_param(i_lic)%stereo_def)
         call s_set_pvr_modelview_matrix(pvr_ctl_type(i_lic)%mat,        &
-     &                                  pvr_param(i_lic)%view)
+     &                                  pvr_param(i_lic)%multi_view(1))
       end do
 !
       call set_control_lic_noise(num_lic, lic_param)

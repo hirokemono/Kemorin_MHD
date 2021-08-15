@@ -101,7 +101,7 @@
 !
       do i_img = 1, num_img
         call alloc_pvr_image_array                                      &
-     &     (pvr_param%view%n_pvr_pixel, pvr_rgb(i_img))
+     &     (pvr_param%multi_view(1)%n_pvr_pixel, pvr_rgb(i_img))
       end do
 !
       end subroutine init_each_PVR_image
@@ -142,10 +142,12 @@
      &                               pvr_param%draw_param, pvr_bound)
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
-      call check_pvr_parameters                                         &
-     &   (pvr_param%outline, pvr_param%view, pvr_param%color)
+      call check_pvr_parameters(pvr_param%outline,                      &
+     &    pvr_param%num_multi_views, pvr_param%multi_view,              &
+     &    pvr_param%color)
 !
-      call set_pixel_on_pvr_screen(pvr_param%view, pvr_param%pixel)
+      call set_pixel_on_pvr_screen(pvr_param%multi_view(1),             &
+     &                             pvr_param%pixel)
 !
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       do i_img = 1, num_img
