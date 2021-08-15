@@ -257,10 +257,7 @@
 !
 !
       do i_pvr = 1, pvr%num_pvr
-        call dealloc_iflag_pvr_boundaries                               &
-     &     (pvr%pvr_param(i_pvr)%draw_param)
-      end do
-      do i_pvr = 1, pvr%num_pvr
+        call dealloc_multi_view_parameters(pvr%pvr_param(i_pvr))
         call dealloc_iflag_pvr_used_ele                                 &
      &     (pvr%pvr_param(i_pvr)%draw_param)
         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_pvr))
