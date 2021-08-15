@@ -89,7 +89,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_pvr, num_views
       integer(kind = kint) :: icheck_ncomp(1)
 !
 !
@@ -118,17 +118,65 @@
 !
 !   set transfer matrix
 !
-        call alloc_multi_view_parameters(ione, pvr_param(i_pvr))
-        call copy_stereo_perspective_matrix                             &
-     &     (pvr_ctl_type(i_pvr)%mat%streo, pvr_param(i_pvr)%stereo_def)
-        call s_set_pvr_modelview_matrix(pvr_ctl_type(i_pvr)%mat,        &
-     &                                  pvr_param(i_pvr)%multi_view(1))
+        if(pvr_ctl_type(i_pvr)%quilt_c%mul_qmats_c%num_modelviews_c .gt. 0) then
+          num_views = pvr_ctl_type(i_pvr)%quilt_c%mul_qmats_c%num_modelviews_c
+          if(num_views .lt.  pvr_param(i_pvr)%stereo_def%num_views) then
+            write(e_message,*) 'The number of view paramter shold be',    &
+     &                   ' more than number of quilt image. (Stop)'
+            call calypso_mpi_abort(1,e_message)
+          else
+            pvr_param(i_pvr)%flag_mulview_quilt = .TRUE.
+            call init_multi_view_parameters(num_views,       &
+     &         pvr_ctl_type(i_pvr)%quilt_c%mul_qmats_c, pvr_param(i_pvr))
+          end if
+        else if(pvr_ctl_type(i_pvr)%movie%mul_mmats_c%num_modelviews_c .gt. 0) then
+          num_views = pvr_ctl_type(i_pvr)%movie%mul_mmats_c%num_modelviews_c
+          if(num_views .lt. pvr_ctl_type(i_pvr)%movie%num_frames_ctl%intvalue) then
+            write(e_message,*) 'The number of view paramter shold be',    &
+     &                     ' more than number of movie image. (Stop)'
+            call calypso_mpi_abort(1,e_message)
+          else
+            pvr_param(i_pvr)%flag_mulview_movie = .TRUE.
+            call init_multi_view_parameters(num_views,       &
+     &         pvr_ctl_type(i_pvr)%movie%mul_mmats_c, pvr_param(i_pvr))
+          end if
+        else
+          call alloc_multi_view_parameters(ione, pvr_param(i_pvr))
+          call copy_stereo_perspective_matrix                           &
+     &       (pvr_ctl_type(i_pvr)%mat%streo,                            &
+     &        pvr_param(i_pvr)%stereo_def)
+          call s_set_pvr_modelview_matrix(pvr_ctl_type(i_pvr)%mat,      &
+     &        pvr_param(i_pvr)%multi_view(1))
+        end if
       end do
 !
       end subroutine s_set_pvr_controls
 !
 !  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
+!
+      subroutine init_multi_view_parameters(num_views, mul_mmats_c,     &
+     &                                      pvr_param)
+!
+      use t_rendering_vr_image
+
+      integer(kind = kint), intent(in) :: num_views
+      type(multi_modeview_ctl), intent(in) :: mul_mmats_c
+!
+      type(PVR_control_params), intent(inout) :: pvr_param
+!
+      integer(kind = kint) :: i
+!
+!
+      call alloc_multi_view_parameters(num_views, pvr_param)
+      do i = 1, pvr_param%num_multi_views
+        call s_set_pvr_modelview_matrix                                 &
+     &     (mul_mmats_c%mat_file_ctl(i)%matrices,                       &
+     &      pvr_param%multi_view(i))
+      end do
+!
+      end subroutine init_multi_view_parameters
+!
+!  ---------------------------------------------------------------------
 !
       subroutine flush_each_pvr_control(pvr_param)
 !
