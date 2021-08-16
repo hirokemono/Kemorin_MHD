@@ -262,7 +262,7 @@ void zlib_defleat_begin(const int *len_buf, const void *buf, const int *len_gzip
     return;
 }
 
-void zlib_defleat_once(const int *len_buf, const void *buf, const int *len_gzipbuf, 
+void gzip_defleat_once(const int *len_buf, const void *buf, const int *len_gzipbuf, 
                        int *len_gzipped, char *gzipbuf)
 {
     z_stream strm;
