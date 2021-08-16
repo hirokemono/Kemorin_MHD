@@ -96,6 +96,36 @@
 !
         end subroutine gzip_defleat_last
 !  -----------------
+        subroutine zlib_defleat_once                                    &
+     &           (len_buf, buf, len_gzipbuf, len_gzipped, gzipbuf)      &
+     &            BIND(C, name = 'zlib_defleat_once')
+!
+        use ISO_C_BINDING
+!
+        integer(C_int), intent(in) :: len_buf
+        type(C_ptr), value, intent(in) :: buf
+!
+        integer(C_int), intent(in) :: len_gzipbuf
+        character(C_char), intent(inout) :: gzipbuf(*)
+        integer(C_int), intent(inout) :: len_gzipped
+!
+        end subroutine zlib_defleat_once
+!  -----------------
+        subroutine zlib_defleat_begin                                   &
+     &           (len_buf, buf, len_gzipbuf, len_gzipped, gzipbuf)      &
+     &            BIND(C, name = 'zlib_defleat_begin')
+!
+        use ISO_C_BINDING
+!
+        integer(C_int), intent(in) :: len_buf
+        type(C_ptr), value, intent(in) :: buf
+!
+        integer(C_int), intent(in) :: len_gzipbuf
+        character(C_char), intent(inout) :: gzipbuf(*)
+        integer(C_int), intent(inout) :: len_gzipped
+!
+        end subroutine zlib_defleat_begin
+!  -----------------
 !
       end interface
 !
