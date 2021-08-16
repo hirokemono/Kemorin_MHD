@@ -262,9 +262,16 @@
 !
        integer :: itmp1, itmp2
 !
-       itmp1 = inum
-       itmp2 = itmp1 / 256**3
-       byt4(4:4) = char(itmp2)
+       if(inum .lt. 0) then
+         itmp1 = inum + 2147483647 + 1
+         itmp2 = itmp1 / 256**3
+         byt4(4:4) = char(itmp2+128)
+       else
+         itmp1 = inum
+         itmp2 = itmp1 / 256**3
+         byt4(4:4) = char(itmp2)
+       end if
+!
        itmp1 =-itmp2 * 256**3 +itmp1
        itmp2 = itmp1 / 256**2
        byt4(3:3) = char(itmp2)
@@ -285,9 +292,16 @@
 !
        integer itmp1, itmp2
 !
-       itmp1 = inum
-       itmp2 = itmp1 / 256
-       byt2(2:2) = char(itmp2)
+       if(inum .lt. 0) then
+         itmp1 = inum + 32767 + 1
+         itmp2 = itmp1 / 256
+         byt2(2:2) = char(itmp2+128)
+       else
+         itmp1 = inum
+         itmp2 = itmp1 / 256
+         byt2(2:2) = char(itmp2)
+       end if
+!
        itmp1 =-itmp2 * 256 + itmp1
        byt2(1:1) = char(itmp1)
 !

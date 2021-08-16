@@ -50,9 +50,9 @@
           movie_def%iflag_movie_fmt = iflag_BMP
         else if(cmp_no_case(tmpchara, hd_QUILT_BMP)) then
           movie_def%iflag_movie_fmt = iflag_QUILT_BMP
-        else if(cmp_no_case(tmpchara, hd_QUILT_BMP_GZ)                   &
-     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ2)                  &
-     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ3)                  &
+        else if(cmp_no_case(tmpchara, hd_QUILT_BMP_GZ)                  &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ2)                 &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ3)                 &
      &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ4)) then
           movie_def%iflag_movie_fmt = iflag_QUILT_BMP_GZ
         else

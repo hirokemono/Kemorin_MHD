@@ -275,6 +275,17 @@ void gzip_defleat_last(const int *len_buf, const void *buf, const int *len_gzipb
     return;
 }
 
+void gzip_infleat_tako(const char *gzipbuf){
+    z_stream strm;
+    
+    strm_inflate_init (& strm);
+    strm.next_in = (unsigned char *) gzipbuf;
+    strm.avail_in = 0;
+    int ret = inflate(&strm, Z_NO_FLUSH);
+    inflateEnd (&strm);
+    return;
+}
+
 void gzip_infleat_once(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
                        void *buf, int *len_gzipped)
 {
