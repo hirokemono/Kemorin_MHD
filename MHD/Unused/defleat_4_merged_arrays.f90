@@ -151,7 +151,7 @@
 !
 !
       do iloop = 1, nloop
-        call defleate_int8_vector_b                                     &
+        call gzip_defleate_int8_vector_b                                &
      &     (i8_array(iloop)%num, i8_array(iloop)%i8_IO, zbuf(iloop))
       end do
 !
@@ -175,7 +175,8 @@
       do iloop = 1, nloop
         call dup_from_short_array                                       &
      &     (i_array(iloop)%num, i_array(iloop)%i_IO, tmp64)
-        call defleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
+        call gzip_defleate_int8_vector_b(tmp64%n1, tmp64%id_a,          &
+     &                                   zbuf(iloop))
         call dealloc_1d_i8array(tmp64)
       end do
 !
@@ -201,7 +202,8 @@
         num =  iv_array(iloop)%n1 * iv_array(iloop)%n2
         call dup_from_short_array                                       &
      &     (num, iv_array(iloop)%iv_IO(1,1), tmp64)
-        call defleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
+        call gzip_defleate_int8_vector_b(tmp64%n1, tmp64%id_a,          &
+     &                                   zbuf(iloop))
         call dealloc_1d_i8array(tmp64)
       end do
 !
@@ -221,7 +223,7 @@
 !
 !
       do iloop = 1, nloop
-        call defleate_1d_vector_b                                       &
+        call gzip_defleate_1d_vector_b                                  &
      &     (r_array(iloop)%num, r_array(iloop)%r_IO(1), zbuf(iloop))
       end do
 !
@@ -243,7 +245,7 @@
 !
       do iloop = 1, nloop
         num =  v_array(iloop)%n1 * v_array(iloop)%n2
-        call defleate_1d_vector_b                                       &
+        call gzip_defleate_1d_vector_b                                  &
      &     (num, v_array(iloop)%v_IO(1,1), zbuf(iloop))
       end do
 !
@@ -267,7 +269,7 @@
 !
 !
       do iloop = 1, nloop
-        call infleate_int8_vector_b                                     &
+        call gzip_infleate_int8_vector_b                                &
      &     (i8_array(iloop)%num, i8_array(iloop)%i8_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
@@ -302,7 +304,8 @@
 !
       do iloop = 1, nloop
         call alloc_1d_i8array(i_array(iloop)%num, tmp64)
-        call infleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
+        call gzip_infleate_int8_vector_b(tmp64%n1, tmp64%id_a,          &
+     &                                   zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
           call byte_swap_int8_f(tmp64%n1, tmp64%id_a)
@@ -339,7 +342,8 @@
       do iloop = 1, nloop
         num =  iv_array(iloop)%n1 * iv_array(iloop)%n2
         call alloc_1d_i8array(num, tmp64)
-        call infleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
+        call gzip_infleate_int8_vector_b(tmp64%n1, tmp64%id_a,          &
+     &                                   zbuf(iloop))
         call dealloc_zip_buffer(zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
@@ -372,7 +376,7 @@
 !
 !
       do iloop = 1, nloop
-        call infleate_1d_vector_b                                       &
+        call gzip_infleate_1d_vector_b                                  &
      &     (r_array(iloop)%num, r_array(iloop)%r_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
@@ -406,7 +410,7 @@
 !
       do iloop = 1, nloop
         num =  v_array(iloop)%n1 * v_array(iloop)%n2
-        call infleate_1d_vector_b                                       &
+        call gzip_infleate_1d_vector_b                                  &
      &     (num, v_array(iloop)%v_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then

@@ -211,7 +211,7 @@
           bgr_line(2,1:npixel_x) = images(icou)%rgb(2,1:npixel_x,j)
           bgr_line(3,1:npixel_x) = images(icou)%rgb(1,1:npixel_x,j)
 !
-          call defleate_characters_b                                    &
+          call gzip_defleate_characters_b                               &
      &       (cast_long(ilength), bgr_line(1,1), zbuf(j,icou))
           istack_zbuf(kk) = zbuf(j,icou)%ilen_gzipped
         end do
