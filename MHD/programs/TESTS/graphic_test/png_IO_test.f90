@@ -39,7 +39,7 @@
 !
       integer(kind = 4), parameter :: len_gama = 4
       character(len=4), parameter :: GAMMA_HEADER = 'gAMA'
-      real(kind = 8), parameter :: gamma = 1.0d0
+      real(kind = 8), parameter :: gamma = 1.0 / 2.2d0
       integer(kind = 4) :: int_gamma = int(gamma * 100000)
 !
       integer(kind = 4), parameter :: len_time = 7

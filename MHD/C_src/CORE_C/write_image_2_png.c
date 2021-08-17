@@ -109,7 +109,7 @@ void write_png_rgb(const char *file_name, png_uint_32 num_x, png_uint_32 num_y,
 	/* set IHDR chunk */
 	png_set_IHDR(png_ptr, info_ptr, num_x, num_y, 8, PNG_COLOR_TYPE_RGB,
 		PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-	png_set_gAMA(png_ptr, info_ptr, 1.0);
+    png_set_gamma(png_ptr, 2.2, 0.45455);
 
 	{
 		time_t		gmt;
