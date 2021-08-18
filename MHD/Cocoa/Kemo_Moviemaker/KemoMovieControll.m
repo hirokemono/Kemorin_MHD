@@ -75,6 +75,19 @@
     [defalts setObject:iFileName forKey:@"ImageFileName"];
     [defalts synchronize];
     
+    NSString *OpenFileext =   [iFileName pathExtension];
+    NSString *OpenFilehead =  [iFileName stringByDeletingPathExtension];
+    NSLog(@"image file name =      %@",iFileName);
+    // NSLog(@"self.PsfWindowlabel =    %@",self.PsfWindowlabel);
+    if([OpenFileext isEqualToString:@"gz"] || [OpenFileext isEqualToString:@"GZ"]){
+        NSString *SecondFileext = [OpenFilehead pathExtension];
+        NSString *SecondFilehead =  [OpenFilehead stringByDeletingPathExtension];
+        NSLog(@"Second file extension =    %@",SecondFileext);
+        NSLog(@"Second file header =       %@",SecondFilehead);
+    }
+    NSLog(@"image file extension =    %@",OpenFileext);
+    NSLog(@"image file header =    %@",OpenFilehead);
+    
     SnapshotImage = [[NSImage alloc] initWithContentsOfFile:iFileName];
     CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
     NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithCGImage:CGImage];
@@ -154,8 +167,12 @@
 
 -(IBAction) OpenReferenceImage:(id)pSender;
 {
+    NSArray *imageFileTypes = [NSArray arrayWithObjects:
+                             @"bmp",@"png",@"gz",
+                             @"BMP",@"PNG",@"GZ",nil];
     NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
     [PsfOpenPanelObj setTitle:@"Choose one of image files"];
+    [PsfOpenPanelObj setAllowedFileTypes:imageFileTypes];
     NSInteger PsfOpenInteger	= [PsfOpenPanelObj runModal];
     if(PsfOpenInteger == NSFileHandlingPanelOKButton){
         imageFileName =  [[PsfOpenPanelObj URL] path];
@@ -218,7 +235,7 @@
             buffer = [self pixelBufferFromCGImage:CGImage];
 
             while (adaptor.assetWriterInput.readyForMoreMediaData == FALSE) {
-                printf("WAit at %d\n", i);
+                printf("Wait at %d\n", i);
                 NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.1];
                 [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
             }
