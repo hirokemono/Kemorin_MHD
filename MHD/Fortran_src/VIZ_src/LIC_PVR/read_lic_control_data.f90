@@ -179,10 +179,8 @@
         call read_kernel_control_data                                   &
      &     (id_control, hd_kernel, lic_ctl%kernel_ctl, c_buf)
 !
-        if(check_array_flag(c_buf, hd_masking_ctl)) then
-          call read_lic_masking_ctl_array                               &
-     &       (id_control, hd_masking_ctl, lic_ctl, c_buf)
-        end if
+        call read_lic_masking_ctl_array                                 &
+     &     (id_control, hd_masking_ctl, lic_ctl, c_buf)
       end do
       lic_ctl%i_lic_control = 1
 !

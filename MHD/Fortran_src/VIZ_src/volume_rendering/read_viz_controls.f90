@@ -177,51 +177,30 @@
         call read_control_vol_repart(id_control, hd_lic_partition,      &
      &                           viz_ctls%repart_ctl, c_buf)
 !
-        if(check_array_flag(c_buf, hd_psf_ctl)) then
-          call read_files_4_psf_ctl(id_control, hd_psf_ctl,             &
-     &        viz_ctls%psf_ctls, c_buf)
-        end if
+        call read_files_4_psf_ctl(id_control, hd_psf_ctl,               &
+     &      viz_ctls%psf_ctls, c_buf)
+        call read_files_4_psf_ctl(id_control, hd_section_ctl,           &
+     &      viz_ctls%psf_ctls, c_buf)
 !
-        if(check_array_flag(c_buf, hd_section_ctl)) then
-          call read_files_4_psf_ctl(id_control, hd_section_ctl,         &
-     &        viz_ctls%psf_ctls, c_buf)
-        end if
+        call read_files_4_iso_ctl(id_control, hd_iso_ctl,               &
+     &      viz_ctls%iso_ctls, c_buf)
+        call read_files_4_iso_ctl(id_control, hd_isosurf_ctl,           &
+     &      viz_ctls%iso_ctls, c_buf)
 !
-        if(check_array_flag(c_buf, hd_iso_ctl)) then
-          call read_files_4_iso_ctl(id_control, hd_iso_ctl,             &
-     &        viz_ctls%iso_ctls, c_buf)
-        end if
+        call read_files_4_pvr_ctl(id_control, hd_pvr_ctl,               &
+     &      viz_ctls%pvr_ctls, c_buf)
+        call read_files_4_pvr_ctl(id_control, hd_anaglyph_pvr_ctl,      &
+     &      viz_ctls%pvr_anaglyph_ctls, c_buf)
 !
-        if(check_array_flag(c_buf, hd_isosurf_ctl)) then
-          call read_files_4_iso_ctl(id_control, hd_isosurf_ctl,         &
-     &        viz_ctls%iso_ctls, c_buf)
-        end if
+        call read_files_4_fline_ctl(id_control, hd_fline_ctl,           &
+     &      viz_ctls%fline_ctls, c_buf)
 !
-        if(check_array_flag(c_buf, hd_pvr_ctl)) then
-          call read_files_4_pvr_ctl(id_control, hd_pvr_ctl,             &
-     &        viz_ctls%pvr_ctls, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_fline_ctl)) then
-          call read_files_4_fline_ctl(id_control, hd_fline_ctl,         &
-     &        viz_ctls%fline_ctls, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_lic_ctl)) then
-          call read_files_4_lic_ctl(id_control, hd_lic_ctl,             &
-     &        viz_ctls%lic_ctls, c_buf)
-        end if
+        call read_files_4_lic_ctl(id_control, hd_lic_ctl,               &
+     &      viz_ctls%lic_ctls, c_buf)
+        call read_files_4_lic_ctl(id_control, hd_anaglyph_lic_ctl,      &
+     &      viz_ctls%lic_anaglyph_ctls, c_buf)
 !
 !
-        if(check_array_flag(c_buf, hd_anaglyph_pvr_ctl)) then
-          call read_files_4_pvr_ctl(id_control, hd_anaglyph_pvr_ctl,    &
-     &        viz_ctls%pvr_anaglyph_ctls, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_anaglyph_lic_ctl)) then
-          call read_files_4_lic_ctl(id_control, hd_anaglyph_lic_ctl,    &
-     &        viz_ctls%lic_anaglyph_ctls, c_buf)
-        end if
 !
         call read_integer_ctl_type(c_buf, hd_i_step_section,            &
      &      viz_ctls%i_step_psf_v_ctl)

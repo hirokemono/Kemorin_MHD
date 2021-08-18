@@ -259,8 +259,8 @@
       do i_pvr = 1, pvr%num_pvr
         call dealloc_iflag_pvr_boundaries                               &
      &     (pvr%pvr_param(i_pvr)%draw_param)
-      end do
-      do i_pvr = 1, pvr%num_pvr
+        call dealloc_iflag_pvr_boundaries                               &
+     &     (pvr%pvr_param(i_pvr)%draw_param)
         call dealloc_iflag_pvr_used_ele                                 &
      &     (pvr%pvr_param(i_pvr)%draw_param)
         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_pvr))
@@ -276,8 +276,6 @@
       deallocate(pvr%pvr_rgb)
 !
 !
-      do i_pvr = 1, pvr%num_pvr
-      end do
       do i_pvr = 1, pvr%num_pvr_rendering
         call flush_rendering_4_fixed_view(pvr%pvr_proj(i_pvr))
       end do

@@ -98,6 +98,7 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
+      if(check_array_flag(c_buf, hd_lic_ctl) .eqv. .FALSE.) return
       if(allocated(lic_ctls%fname_lic_ctl)) return
       lic_ctls%num_lic_ctl = 0
       call alloc_lic_ctl_struct(lic_ctls)

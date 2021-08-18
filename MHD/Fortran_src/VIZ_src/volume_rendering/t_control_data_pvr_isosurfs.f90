@@ -95,6 +95,8 @@
       integer(kind = kint) :: inum
       integer :: i
 !
+!
+      if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(allocated(pvr_isos_c%pvr_iso_ctl)) return
       pvr_isos_c%num_pvr_iso_ctl = 0
       call alloc_pvr_isosurfs_ctl(pvr_isos_c)

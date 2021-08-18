@@ -15,7 +15,7 @@
 !!      subroutine dup_pvr_movie_control_flags(org_movie, new_movie)
 !!        type(pvr_movie_ctl), intent(in) :: org_movie
 !!        type(pvr_movie_ctl), intent(inout) :: new_movie
-!!      subroutine reset_pvr_movie_control_flags(movie)
+!!      subroutine dealloc_pvr_movie_control_flags(movie)
 !!        type(pvr_movie_ctl), intent(inout) :: movie
 !!
 !!      subroutine bcast_pvr_rotation_ctl(movie)
@@ -42,6 +42,14 @@
 !!    file start_view_control    'ctl_view_start'
 !!    file end_view_control      'ctl_view_end'
 !!
+!!    array view_transform_ctl
+!!      file  view_transform_ctl  control_view
+!!
+!!      begin view_transform_ctl
+!!        ..
+!!      end
+!!    end array view_transform_ctl
+!!
 !!    angle_range             0.0   360.0
 !!    apature_range           10.0  1.0
 !!
@@ -66,6 +74,7 @@
       use t_control_array_real2
       use t_control_array_integer2
       use t_ctl_data_4_view_transfer
+      use t_ctl_data_view_transfers
       use skip_comment_f
 !
       implicit  none
@@ -101,6 +110,9 @@
 !>    Structure for end modelview marices
         type(modeview_ctl) :: view_end_ctl
 !
+!         Lists of multiple view parameters
+        type(multi_modeview_ctl) :: mul_mmats_c
+!
 !     2nd level for volume rendering
         integer (kind=kint) :: i_pvr_rotation = 0
       end type pvr_movie_ctl
@@ -124,14 +136,17 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_end_view_control = 'end_view_control'
       character(len=kchara), parameter, private                         &
+     &             :: hd_mview_transform =   'view_transform_ctl'
+!
+      character(len=kchara), parameter, private                         &
      &             :: hd_angle_range =   'angle_range'
       character(len=kchara), parameter, private                         &
      &             :: hd_apature_range = 'apature_range'
       character(len=kchara), parameter, private                         &
      &             :: hd_LIC_kernel_peak = 'LIC_kernel_peak_range'
 !
-      integer(kind = kint), parameter :: n_label_pvr_movie =   9
-      integer(kind = kint), parameter :: n_label_LIC_movie =  10
+      integer(kind = kint), parameter :: n_label_pvr_movie =  10
+      integer(kind = kint), parameter :: n_label_LIC_movie =  11
 !
       private :: n_label_pvr_movie, n_label_LIC_movie
 !
@@ -202,6 +217,9 @@
      &      movie%apature_range_ctl)
         call read_real2_ctl_type(c_buf, hd_LIC_kernel_peak,             &
      &      movie%LIC_kernel_peak_range_ctl)
+!
+        call read_mul_view_transfer_ctl                                 &
+     &     (id_control, hd_mview_transform, movie%mul_mmats_c, c_buf)
       end do
       movie%i_pvr_rotation = 1
 !
@@ -217,6 +235,9 @@
       type(pvr_movie_ctl), intent(in) :: org_movie
       type(pvr_movie_ctl), intent(inout) :: new_movie
 !
+!
+      call dup_mul_view_trans_ctl(org_movie%mul_mmats_c,                &
+     &                            new_movie%mul_mmats_c)
 !
       call copy_chara_ctl(org_movie%movie_format_ctl,                   &
      &                    new_movie%movie_format_ctl)
@@ -250,10 +271,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine reset_pvr_movie_control_flags(movie)
+      subroutine dealloc_pvr_movie_control_flags(movie)
 !
       type(pvr_movie_ctl), intent(inout) :: movie
 !
+!
+      call dealloc_multi_modeview_ctl(movie%mul_mmats_c)
 !
       movie%movie_format_ctl%iflag =     0
       movie%movie_mode_ctl%iflag =       0
@@ -270,7 +293,7 @@
 !
       movie%i_pvr_rotation = 0
 !
-      end subroutine reset_pvr_movie_control_flags
+      end subroutine dealloc_pvr_movie_control_flags
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -306,6 +329,8 @@
       call bcast_view_transfer_ctl(movie%view_start_ctl)
       call bcast_view_transfer_ctl(movie%view_end_ctl)
 !
+      call bcast_mul_view_trans_ctl(movie%mul_mmats_c)
+!
       end subroutine bcast_pvr_rotation_ctl
 !
 !  ---------------------------------------------------------------------
@@ -340,8 +365,10 @@
 !
       call set_control_labels(hd_start_view_control, names( 6))
       call set_control_labels(hd_end_view_control,   names( 7))
-      call set_control_labels(hd_angle_range,        names( 8))
-      call set_control_labels(hd_apature_range,      names( 9))
+      call set_control_labels(hd_mview_transform,    names( 8))
+!
+      call set_control_labels(hd_angle_range,        names( 9))
+      call set_control_labels(hd_apature_range,      names(10))
 !
       end subroutine set_label_pvr_movie
 !
@@ -362,10 +389,12 @@
 !
       call set_control_labels(hd_start_view_control, names( 6))
       call set_control_labels(hd_end_view_control,   names( 7))
-      call set_control_labels(hd_angle_range,        names( 8))
-      call set_control_labels(hd_apature_range,      names( 9))
+      call set_control_labels(hd_mview_transform,    names( 8))
 !
-      call set_control_labels(hd_LIC_kernel_peak,   names(10))
+      call set_control_labels(hd_angle_range,        names( 9))
+      call set_control_labels(hd_apature_range,      names(10))
+!
+      call set_control_labels(hd_LIC_kernel_peak,   names(11))
 !
       end subroutine set_label_LIC_movie
 !

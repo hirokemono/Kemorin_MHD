@@ -109,18 +109,33 @@
         stereo_def%flag_quilt =      .TRUE.
       end if
 !
+      call set_pvr_quilt_num_control(pvr_ctl%quilt_c, stereo_def)
+!
+      end subroutine set_pvr_stereo_control
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_pvr_quilt_num_control(quilt_c, stereo_def)
+!
+      use t_control_data_quilt_image
+!
+      type(quilt_image_ctl), intent(in) :: quilt_c
+      type(pvr_stereo_parameter), intent(inout) :: stereo_def
+!
+!
       if(stereo_def%flag_quilt) then
-        if(pvr_ctl%quilt_c%i_quilt_image .eq. 0) then
+        if(quilt_c%i_quilt_image .eq. 0) then
           stereo_def%flag_quilt =      .FALSE.
         else
           stereo_def%n_column_row_view(1:2)                             &
-     &        =    pvr_ctl%quilt_c%num_column_row_ctl%intvalue(1:2)
+     &        =    quilt_c%num_column_row_ctl%intvalue(1:2)
           stereo_def%num_views = stereo_def%n_column_row_view(1)        &
      &                          * stereo_def%n_column_row_view(2)
         end if
       end if
 !
-      end subroutine set_pvr_stereo_control
+!
+      end subroutine set_pvr_quilt_num_control
 !
 !  ---------------------------------------------------------------------
 !

@@ -4,10 +4,12 @@
 !        programmed by H.Matsui on May. 2009
 !
 !!      subroutine check_pvr_parameters                                 &
-!!     &         (outline, view_param, color_param)
+!!     &         (outline, num_views, multi_view, color_param)
 !!      subroutine set_default_pvr_data_params(outline, color_param)
+!!        integer(kind = kint), intent(in) :: num_views
 !!        type(pvr_domain_outline), intent(in) :: outline
-!!        type(pvr_view_parameter), intent(inout) :: view_param
+!!        type(pvr_view_parameter), intent(inout)                       &
+!!     &                           :: multi_view(num_views)
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !
       module set_default_pvr_params
@@ -30,29 +32,34 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_pvr_parameters                                   &
-     &         (outline, view_param, color_param)
+     &         (outline, num_views, multi_view, color_param)
 !
       use t_surf_grp_4_pvr_domain
       use t_geometries_in_pvr_screen
 !
+      integer(kind = kint), intent(in) :: num_views
       type(pvr_domain_outline), intent(in) :: outline
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_view_parameter), intent(inout) :: multi_view(num_views)
       type(pvr_colormap_parameter), intent(inout) :: color_param
 !
+      integer(kind = kint) :: i
 !
-      if(view_param%iflag_viewpoint .eq. 0) then
-        call set_default_viewpoint_pvr(outline%center_g,                &
-     &      outline%xx_minmax_g, view_param%viewpoint)
-      end if
 !
-      if(view_param%iflag_lookpoint .eq. 0) then
-        call set_default_lookatpoint_pvr                                &
-     &     (outline%center_g, view_param%lookat_vec)
-      end if
+      do i = 1, num_views
+        if(multi_view(i)%iflag_viewpoint .eq. 0) then
+          call set_default_viewpoint_pvr(outline%center_g,              &
+     &        outline%xx_minmax_g, multi_view(i)%viewpoint)
+        end if
 !
-      if(view_param%iflag_updir .eq. 0) then
-        call set_default_up_dir_pvr(view_param%up_direction_vec)
-      end if
+        if(multi_view(i)%iflag_lookpoint .eq. 0) then
+          call set_default_lookatpoint_pvr                              &
+     &       (outline%center_g, multi_view(i)%lookat_vec)
+        end if
+!
+        if(multi_view(i)%iflag_updir .eq. 0) then
+          call set_default_up_dir_pvr(multi_view(i)%up_direction_vec)
+        end if
+      end do
 !
       if(color_param%iflag_pvr_lights .eq. 0) then
         call set_default_light_pvr                                      &

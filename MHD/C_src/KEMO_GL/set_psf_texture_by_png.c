@@ -15,11 +15,13 @@ static void set_texture_from_png(const char *img_head, struct psf_menu_val *psf_
 }
 
 static void set_texture_from_bmp(const char *img_head, struct psf_menu_val *psf_m) {
-	
-	read_BMP_c(img_head, &psf_m->texture_width, &psf_m->texture_height);
+    struct BMP_data *d_BMP = read_BMP_c(img_head);
+    
+    psf_m->texture_width =  d_BMP->ihpixf;
+    psf_m->texture_height = d_BMP->jvpixf;
 	alloc_draw_psf_texture(psf_m);
-	copy_rgba_from_BMP_c(psf_m->texture_width, psf_m->texture_height, 
-				psf_m->texture_rgba);
+	copy_rgba_from_BMP_c(d_BMP, psf_m->texture_rgba);
+    dealloc_BMP_data(d_BMP);
 	glGenTextures(1 , &psf_m->texture_name[0]);
     return;
 }

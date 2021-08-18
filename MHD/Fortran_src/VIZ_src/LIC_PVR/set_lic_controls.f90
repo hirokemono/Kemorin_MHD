@@ -98,6 +98,7 @@
       use set_pvr_modelview_matrix
       use set_control_pvr_movie
       use cal_3d_noise
+      use set_pvr_control
 !
       integer(kind = kint), intent(in) :: num_lic
       type(mesh_groups), intent(in) :: group
@@ -135,8 +136,9 @@
 !
 !   set transfer matrix
 !
-        call s_set_pvr_modelview_matrix(pvr_ctl_type(i_lic)%mat,        &
-     &      pvr_param(i_lic)%view, pvr_param(i_lic)%stereo_def)
+        call set_pvr_mul_view_params(pvr_ctl_type(i_lic)%mat,           &
+     &      pvr_ctl_type(i_lic)%quilt_c, pvr_ctl_type(i_lic)%movie,     &
+     &      pvr_param(i_lic))
       end do
 !
       call set_control_lic_noise(num_lic, lic_param)
