@@ -145,3 +145,11 @@ void rotate_stereo_kemoview(struct kemoviewer_type *kemoview){
 	return;
 };
 
+void modify_quilt_kemoview(struct kemoviewer_type *kemoview, int i_step)
+{
+    glDrawBuffer(GL_BACK);
+    update_step_projection_struct(kemoview->view_s, i_step);
+    modify_step_view_by_struct(kemoview->view_s, i_step);
+    modify_mono_kemoview(kemoview);
+    return;
+};

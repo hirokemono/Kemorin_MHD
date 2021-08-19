@@ -426,6 +426,7 @@ void kemoview_modify_view(void){
 	modify_stereo_kemoview(kemo_sgl);
 };
 void kemoview_rotate(void){rotate_stereo_kemoview(kemo_sgl);};
+void kemoview_quilt(int i_step){modify_quilt_kemoview(kemo_sgl, i_step);};
 
 void kemoviewer_reset_to_init_angle(void){
     reset_all_view_parameter(kemo_sgl->view_s);
@@ -481,24 +482,49 @@ void kemoview_set_view_parameter(int selected, int i, double value){
 	};
 	return;
 };
-void kemoview_set_stereo_parameter(double focus, double eye_sep){
-	set_gl_stereo_parameter(kemo_sgl->view_s, focus, eye_sep);
+void kemoview_set_stereo_parameter(int selected, double value){
+    if(selected == ISET_FOCUS){
+        set_gl_focal_length(kemo_sgl->view_s, value);
+    }else if(selected == ISET_EYESEP){
+        set_gl_eye_separation_distance(kemo_sgl->view_s, value);
+    }else if(selected == ISET_EYEAGL){
+        set_gl_eye_separation_angle(kemo_sgl->view_s, value);
+    };
+    return;
+};
+void kemoview_set_quilt_nums(int selected, int ivalue){
+    if(selected == ISET_QUILT_MODE){
+        set_quilt_mode_flag(kemo_sgl->view_s, ivalue);
+    }else if(selected == ISET_QUILT_RAW){
+        set_quilt_image_num_raws(kemo_sgl->view_s, ivalue);
+    }else if(selected == ISET_QUILT_COLUMN){
+        set_quilt_image_num_columns(kemo_sgl->view_s, ivalue);
+    }else if(selected == ISET_QUILT_NUM){
+        set_quilt_image_num_views(kemo_sgl->view_s, ivalue);
+    };
+    return;
 };
 
+void kemoview_toggle_quilt_flag(int selected){
+    if(selected == ISET_QUILT_MODE){
+        toggle_quilt_mode_flag(kemo_sgl->view_s);
+    };
+    return;
+};
 
 int kemoview_get_view_integer(int selected){
-	int ivalue = 0;
-	if(selected == ISET_PIXEL_X){
-		ivalue = send_gl_windowsize_x(kemo_sgl->view_s);
-	}else if(selected == ISET_PIXEL_Y){
-		ivalue = send_gl_windowsize_y(kemo_sgl->view_s);
+    int ivalue = 0;
+    if(selected == ISET_PIXEL_X){
+        ivalue = send_gl_windowsize_x(kemo_sgl->view_s);
+    }else if(selected == ISET_PIXEL_Y){
+        ivalue = send_gl_windowsize_y(kemo_sgl->view_s);
 
-	}else if(selected == ISET_SHUTTER){
-		ivalue = kemo_sgl->view_s->iflag_streo_stutter;
-	}else if(selected == ISET_ANAGYLYPH){
-		ivalue = kemo_sgl->view_s->iflag_streo_anaglyph;
-	};
-	return ivalue;
+    }else if(selected == ISET_SHUTTER){
+        ivalue = kemo_sgl->view_s->iflag_streo_stutter;
+    }else if(selected == ISET_ANAGYLYPH){
+        ivalue = kemo_sgl->view_s->iflag_streo_anaglyph;
+    };
+    return ivalue;
 };
 double kemoview_get_view_parameter(int selected, int i){
 	double value = 0.0;
@@ -524,9 +550,24 @@ double kemoview_get_view_parameter(int selected, int i){
 		value =  send_gl_stereo_focus(kemo_sgl->view_s);
 	}else if(selected == ISET_EYESEP){
 		value =  send_gl_stereo_eyeseparation(kemo_sgl->view_s);
+    }else if(selected == ISET_EYEAGL){
+        value =  send_gl_stereo_eparation_angle(kemo_sgl->view_s);
 	};
 	return value;
 };
+int kemoview_get_quilt_nums(int selected){
+    int num = 1;
+    if(selected == ISET_QUILT_MODE){
+        num =  send_quilt_mode_flag(kemo_sgl->view_s);
+    }else if(selected == ISET_QUILT_RAW){
+        num =  send_quilt_image_num_raws(kemo_sgl->view_s);
+    }else if(selected == ISET_QUILT_COLUMN){
+        num =  send_quilt_image_num_columns(kemo_sgl->view_s);
+    }else if(selected == ISET_QUILT_NUM){
+        num =  send_quilt_image_num_views(kemo_sgl->view_s);
+    };
+    return num;
+}
 
 void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly){
 	gl_mousedolly_struct(kemo_sgl->view_s, start, x_dolly, y_dolly);

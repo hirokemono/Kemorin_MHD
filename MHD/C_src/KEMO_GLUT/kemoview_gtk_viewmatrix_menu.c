@@ -157,18 +157,16 @@ static void aperture_CB(GtkWidget *entry, gpointer user_data){
 
 static void focus_CB(GtkWidget *entry, gpointer user_data){
 	int *iflag_fast_draw = (int *) user_data;
-	double tmpEyeRatio = kemoview_get_view_parameter(ISET_EYESEP, 0);
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_stereo_parameter(gtk_floatvalue, tmpEyeRatio);
+	kemoview_set_stereo_parameter(ISET_FOCUS, gtk_floatvalue);
 	
 	*iflag_fast_draw = draw_fast();
 	return;
 };
 static void eye_sep_CB(GtkWidget *entry, gpointer user_data){
 	int *iflag_fast_draw = (int *) user_data;
-	double tmpFocus = kemoview_get_view_parameter(ISET_FOCUS, 0);
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_stereo_parameter(tmpFocus, gtk_floatvalue);
+	kemoview_set_stereo_parameter(ISET_EYESEP, gtk_floatvalue);
 	
 	*iflag_fast_draw = draw_fast();
 	return;

@@ -345,6 +345,51 @@ static void update_projection_right(double x_lookfrom[2], int nx_frame, int ny_f
 	return;
 }
 
+static double eye_separation_by_angle(double focalLength, double eye_sep_angle){
+	double eye_separation = 2.0 * focalLength * tan(atan(1) * eye_sep_angle / 90.0);
+	return eye_separation;
+}
+static double eye_angle_by_separation(double focalLength, double eye_separation){
+	double eye_sep_angle = (90.0/atan(1.0)) * atan(0.5*eye_separation / focalLength);
+	return eye_sep_angle;
+}
+
+static double each_eye_from_middle_c(int istep, int num_step, double focalLength,
+									 double eye_sep_angle){
+	double pi_180 = FOUR * atan(ONE) / 180.0;
+	double rstep = 0.5 - ((double) (istep-1)) / ((double) (num_step-1));
+	double eye_from_middle = focalLength * tan(pi_180 * rstep * eye_sep_angle);
+	return eye_from_middle;
+}
+
+static void update_step_projection(int istep, int num_step, 
+								   double x_lookfrom[2], int nx_frame, int ny_frame,
+								   double aperture, double *aspect, double *near, double *far,
+								   double focalLength, double eye_separation_angle, double projection[16]){
+	double wd2, ndfl;
+	double left, right;
+	double eyeSep;
+	
+	*near = x_lookfrom[2] - object_size * HALF;
+	if (*near < 1.0e-6) *near = 1.0e-6;
+	
+	*far = x_lookfrom[2] + object_size * HALF;
+	if (*far < ONE) *far = ONE;
+	
+	*aspect = ((double) nx_frame) / ((double) ny_frame);
+	wd2 =  *near * tan(aperture*DTOR*HALF);
+	ndfl = *near / focalLength;
+	
+	eyeSep = each_eye_from_middle_c(istep, num_step, 
+									focalLength, eye_separation_angle);
+	left  = - *aspect * wd2 - 0.5 * eyeSep * ndfl;
+	right =   *aspect * wd2 - 0.5 * eyeSep * ndfl;
+	
+	identity_glmat_c(projection);
+	frustsum_glmat_c(left, right, (-wd2), wd2, *near, *far, projection);
+	return;
+}
+
 
 void set_view_by_identity(void){
 	double modelview[16];
@@ -390,6 +435,23 @@ void modify_right_view_by_struct(struct view_element *view){
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
 				view->mat_object_2_eye);
 	return;
+};
+
+void modify_step_view_by_struct(struct view_element *view, int i_step){
+    
+    identity_glmat_c(view->mat_object_2_eye);
+    Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
+                view->mat_object_2_eye);
+	
+	double eyeSep = each_eye_from_middle_c(i_step, view->num_views, 
+									view->focal_length, view->eye_separation_angle);
+	Kemo_Translate_view_c(eyeSep, ZERO, ZERO, view->mat_object_2_eye);
+    Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
+    Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
+                view->mat_object_2_eye);
+    Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+                view->mat_object_2_eye);
+    return;
 };
 
 
@@ -442,6 +504,25 @@ void rotate_right_view_by_struct(struct view_element *view){
 	return;
 };
 
+void rotate_step_view_by_struct(struct view_element *view, int i_step){
+	identity_glmat_c(view->mat_object_2_eye);
+	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
+						  view->mat_object_2_eye);
+	
+	double eyeSep = each_eye_from_middle_c(i_step, view->num_views, 
+									view->focal_length, view->eye_separation_angle);
+	Kemo_Translate_view_c(eyeSep, ZERO, ZERO, view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
+	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
+	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale, 
+				view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+				view->mat_object_2_eye);
+	return;
+};
+
+
+
 void set_view_for_message(struct view_element *view){
 	double modelview[16];
 	double scale[3];
@@ -487,6 +568,14 @@ void update_right_projection_struct(struct view_element *view){
 							view->aperture, &view->aspect, &view->near, &view->far,
 							view->focal_length, view->eye_separation, 
 							view->mat_eye_2_clip);
+	return;
+};
+void update_step_projection_struct(struct view_element *view, int istep){
+	update_step_projection(istep, view->num_views, 
+						   view->x_lookfrom, view->nx_frame, view->ny_frame,
+						   view->aperture, &view->aspect, &view->near, &view->far,
+						   view->focal_length, view->eye_separation_angle, 
+						   view->mat_eye_2_clip);
 	return;
 };
 
@@ -596,9 +685,13 @@ void init_kemoview_perspective(struct view_element *view){
 	
 	view->aspect = ((double) view->nx_frame) / ((double) view->ny_frame);
 	
-	view->focal_length =  INITIAL_FOCAL;
+    view->num_raws =     1;
+    view->num_columns =  1;
+    view->num_views =    1;
+
+    view->focal_length =  INITIAL_FOCAL;
 	view->eye_separation = INITIAL_EYE_SEP;
-	view->eye_to_focal =  view->eye_separation / view->focal_length;
+	view->eye_separation_angle = INITIAL_SEP_AGL;
 	return;
 }
 
@@ -686,12 +779,46 @@ void set_gl_projection_aperture(struct view_element *view, double aperture_s)
 	return;
 };
 
-void set_gl_stereo_parameter(struct view_element *view, double focus, double eye_sep)
+void set_gl_focal_length(struct view_element *view, double focal)
 {
-	view->focal_length =   focus;
-	view->eye_separation = eye_sep;
-	view->eye_to_focal =  view->eye_separation / view->focal_length;
+    view->focal_length =   focal;
+    return;
+};
+
+void set_gl_eye_separation_distance(struct view_element *view, double eye_sep)
+{
+        view->eye_separation = eye_sep;
+		view->eye_separation_angle = eye_angle_by_separation(view->focal_length, view->eye_separation);
 	return;
+};
+void set_gl_eye_separation_angle(struct view_element *view, double sep_angle)
+{
+	view->eye_separation_angle = sep_angle;
+	view->eye_separation = eye_separation_by_angle(view->focal_length, view->eye_separation_angle);
+    return;
+};
+
+void toggle_quilt_mode_flag(struct view_element *view){
+    view->iflag_quilt_mode = 1 - view->iflag_quilt_mode;
+    return;
+};
+void set_quilt_mode_flag(struct view_element *view, int num){
+    view->iflag_quilt_mode = num;
+    return;
+};
+void set_quilt_image_num_raws(struct view_element *view, int num){
+    view->num_raws =   num;
+    view->num_views = view->num_raws * view->num_columns;
+    return;
+};
+void set_quilt_image_num_columns(struct view_element *view, int num){
+    view->num_columns =   num;
+    view->num_views = view->num_raws * view->num_columns;
+    return;
+};
+void set_quilt_image_num_views(struct view_element *view, int num){
+    view->num_views =   num;
+    return;
 };
 
 
@@ -728,7 +855,22 @@ double send_gl_stereo_focus(struct view_element *view){
 double send_gl_stereo_eyeseparation(struct view_element *view){
 	return (double) view->eye_separation;
 };
+double send_gl_stereo_eparation_angle(struct view_element *view){
+    return (double) view->eye_separation_angle;
+};
 
+int send_quilt_mode_flag(struct view_element *view){
+    return (int) view->iflag_quilt_mode;
+};
+int send_quilt_image_num_raws(struct view_element *view){
+    return (int) view->num_raws;
+};
+int send_quilt_image_num_columns(struct view_element *view){
+    return (int) view->num_columns;
+};
+int send_quilt_image_num_views(struct view_element *view){
+    return (int) view->num_views;
+};
 
 /* called with the start position and the window origin + size */
 void gl_startTrackball(double x, double y, struct view_element *view){

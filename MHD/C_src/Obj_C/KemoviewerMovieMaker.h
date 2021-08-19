@@ -67,6 +67,7 @@
 - (NSInteger) SetImageFileFormatID:(NSString *)FileExtension;
 
 - (IBAction)ShowRotationMovie:(id)sender;
+- (IBAction)ShowQuiltMovie:(id)sender;
 - (IBAction)ShowEvolutionMovie:(id)sender;
 - (IBAction)SaveRotationMovie:(id)sender;
 - (IBAction)SaveEvolutionMovie:(id)sender;

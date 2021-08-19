@@ -101,7 +101,6 @@
 - (IBAction) SetStereoViewType:(id)sender;
 
 - (void) Set3DView;
-- (IBAction) ChangeViewByInpit:(id)sender;
 - (IBAction) ResetviewAction:(id)sender;
 
 -(IBAction) ToggleAnimate: (id) sender;

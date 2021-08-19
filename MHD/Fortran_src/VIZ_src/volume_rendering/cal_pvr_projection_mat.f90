@@ -31,8 +31,6 @@
 !
       implicit none
 !
-      private :: each_eye_from_middle
-!
 ! -----------------------------------------------------------------------
 !
       contains

@@ -336,6 +336,29 @@ NSData *SnapshotData;
     }
 }
 
+-(void) PreviewQuiltImages
+{
+    NSInteger num_step = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_NUM);
+
+    [rotateProgreessBar setHidden:NO];
+    [rotateProgreessBar setUsesThreadedAnimation:YES];
+    [rotateProgreessBar startAnimation:self];
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
+    [rotateProgreessBar displayIfNeeded];
+    
+    for(self.CurrentStep = 0;self.CurrentStep<num_step;self.CurrentStep++){
+        [_kemoviewer DrawQuilt:self.CurrentStep];
+
+        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
+        [rotateProgreessBar incrementBy:(double) self.RotationIncrement];
+        [rotateProgreessBar displayIfNeeded];
+    }
+    [rotateProgreessBar setDoubleValue:(double) 0];
+    [rotateProgreessBar stopAnimation:self];
+    [rotateProgreessBar setHidden:YES];
+    [rotateProgreessBar displayIfNeeded];
+}
+
 -(void) SaveQTmovieEvolution{
 	int iframe;
 	
@@ -410,6 +433,13 @@ NSData *SnapshotData;
 	CurrentMovieFormat = 0;
 	[self SaveQTmovieRotation];
 }
+
+- (IBAction)ShowQuiltMovie:(id)sender;
+{
+    CurrentMovieFormat = 0;
+    [self PreviewQuiltImages];
+}
+
 - (IBAction)ShowEvolutionMovie:(id)sender;
 {
 	CurrentMovieFormat = 0;

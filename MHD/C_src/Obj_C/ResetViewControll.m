@@ -36,23 +36,82 @@
 
 @synthesize FocusPoint;
 @synthesize eyeRatio;
+@synthesize eyeAngle;
 
-- (void) SetViewByInpit;
+@synthesize Quilt_flag;
+@synthesize NumberOfRows;
+@synthesize NumberOfColumns;
+@synthesize NumberOfQuilts;
+
+- (IBAction) ToggleQuiltMode:(id)sender
 {
-	kemoview_set_view_parameter(ISET_ROTATE, 1, (double) self.RotationAxisX);
-	kemoview_set_view_parameter(ISET_ROTATE, 2, (double) self.RotationAxisY);
-	kemoview_set_view_parameter(ISET_ROTATE, 3, (double) self.RotationAxisZ);
-	kemoview_set_view_parameter(ISET_ROTATE, 0, (double) self.RotationAngle);
+    kemoview_set_quilt_nums(ISET_QUILT_MODE, (int) self.Quilt_flag);
+}
+- (IBAction) SetQuiltRawByInput:(id)sender
+{
+    kemoview_set_quilt_nums(ISET_QUILT_RAW, (int) self.NumberOfRows);
+}
+- (IBAction) SetQuiltColumnByInput:(id)sender
+{
+    kemoview_set_quilt_nums(ISET_QUILT_COLUMN, (int) self.NumberOfColumns);
+}
+- (IBAction) SetEyeSeparationAngleByInput:(id)sender
+{
+    kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle);
+    self.eyeRatio= (CGFloat) kemoview_get_view_parameter(ISET_EYESEP, 0);
+}
+- (IBAction) SetEyeSeparationDistanceByInput:(id)sender
+{
+    kemoview_set_stereo_parameter(ISET_EYESEP, (double) self.eyeRatio);
+    self.eyeAngle= (CGFloat) kemoview_get_view_parameter(ISET_EYEAGL, 0);
+}
+- (IBAction) SetFoculPointDistanceByInput:(id)sender
+{
+    kemoview_set_stereo_parameter(ISET_FOCUS, (double) self.FocusPoint);
+}
 
-	kemoview_set_view_parameter(ISET_SHIFT, 0, (double) (-self.ViewPointX));
-	kemoview_set_view_parameter(ISET_SHIFT, 1, (double) (-self.ViewPointY));
-	kemoview_set_view_parameter(ISET_SHIFT, 2, (double) (-self.ViewPointZ));
+- (IBAction) SetProjectionAperture:(id)sender
+{
+    kemoview_set_view_parameter(ISET_APERTURE, 0, (double) self.ProjentionAperture);
+}
 
-	kemoview_set_view_parameter(ISET_SCALE, 0, (double) self.ScaleFactor);
+- (IBAction) SetViewScaleFactor:(id)sender
+{
+    kemoview_set_view_parameter(ISET_SCALE, 0, (double) self.ScaleFactor);
+}
+- (IBAction) SetViewPointX:(id)sender
+{
+    kemoview_set_view_parameter(ISET_SHIFT, 0, (double) (-self.ViewPointX));
+}
+- (IBAction) SetViewPointY:(id)sender
+{
+    kemoview_set_view_parameter(ISET_SHIFT, 1, (double) (-self.ViewPointY));
+}
+- (IBAction) SetViewPointZ:(id)sender
+{
+    kemoview_set_view_parameter(ISET_SHIFT, 2, (double) (-self.ViewPointZ));
+}
+- (IBAction) SetViewRotationAxisX:(id)sender
+{
+    kemoview_set_view_parameter(ISET_ROTATE, 1, (double) self.RotationAxisX);
+}
+- (IBAction) SetViewRotationAxisY:(id)sender
+{
+    kemoview_set_view_parameter(ISET_ROTATE, 2, (double) self.RotationAxisY);
+}
+- (IBAction) SetViewRotationAxisZ:(id)sender
+{
+    kemoview_set_view_parameter(ISET_ROTATE, 3, (double) self.RotationAxisZ);
+}
+- (IBAction) SetViewRotationAngle:(id)sender
+{
+    kemoview_set_view_parameter(ISET_ROTATE, 0, (double) self.RotationAngle);
+}
 
-	kemoview_set_view_parameter(ISET_APERTURE, 0, (double) self.ProjentionAperture);
-    
-	kemoview_set_stereo_parameter((double) self.FocusPoint, (double) self.eyeRatio);	
+
+- (void) SetViewByInpit
+{
+
 }
 
 - (void) UpdateParameters
@@ -82,7 +141,12 @@
 	
 	self.FocusPoint =     (CGFloat) kemoview_get_view_parameter(ISET_FOCUS, 0);
 	self.eyeRatio=        (CGFloat) kemoview_get_view_parameter(ISET_EYESEP, 0);
-	
+    self.eyeAngle=        (CGFloat) kemoview_get_view_parameter(ISET_EYEAGL, 0);
+
+    self.Quilt_flag=      (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_MODE);
+    self.NumberOfRows=    (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_RAW);
+    self.NumberOfColumns= (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
+    self.NumberOfQuilts=  (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_NUM);
 }
 
 // given a delta time in seconds and current rotation accel, velocity and position, update overall object rotation

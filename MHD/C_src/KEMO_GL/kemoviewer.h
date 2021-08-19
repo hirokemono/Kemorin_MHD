@@ -199,6 +199,12 @@
 
 #define ISET_FOCUS     21
 #define ISET_EYESEP    22
+#define ISET_EYEAGL    23
+
+#define ISET_QUILT_MODE      30
+#define ISET_QUILT_RAW       31
+#define ISET_QUILT_COLUMN    32
+#define ISET_QUILT_NUM       33
 
 #define ISET_PIXEL_X            0
 #define ISET_PIXEL_Y            1
@@ -384,7 +390,8 @@ extern "C" {
 	int kemoview_quick_view(void);
     void kemoview_modify_view(void);
     void kemoview_rotate(void);
-    
+    void kemoview_quilt(int i_step);
+
     void kemoviewer_reset_to_init_angle(void);
     
     void kemoview_set_retinamode(int i_retina);
@@ -398,10 +405,13 @@ extern "C" {
     
 	void kemoview_set_view_integer(int selected, int ivalue);
 	void kemoview_set_view_parameter(int selected, int i, double value);
-    void kemoview_set_stereo_parameter(double focus, double eye_sep);
-    
+    void kemoview_set_stereo_parameter(int selected, double value);
+    void kemoview_set_quilt_nums(int selected, int ivalue);
+    void kemoview_toggle_quilt_flag(int selected);
+
 	int kemoview_get_view_integer(int selected);
 	double kemoview_get_view_parameter(int selected, int i);
+    int kemoview_get_quilt_nums(int selected);
 
     void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly);
     void kemoview_mousepan(double start[2], double x_pan, double y_pan);

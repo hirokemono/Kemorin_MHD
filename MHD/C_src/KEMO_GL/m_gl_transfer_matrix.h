@@ -17,6 +17,7 @@
 
 #define INITIAL_FOCAL      20
 #define INITIAL_EYE_SEP  0.1
+#define INITIAL_SEP_AGL  35
 
 struct view_element{
 	int iflag_retina;
@@ -51,9 +52,14 @@ struct view_element{
     
 	double rotpoint[3];   /*rotation point*/
     
+    int iflag_quilt_mode;        /*Integer flag to set if eye separation is updated */
+    int num_raws;
+    int num_columns;
+    int num_views;
+    
+	double eye_separation_angle; /*eye separation angle for quilt format*/
 	double eye_separation; /*eye separation for streo view*/
 	double focal_length;   /*focal length for streo view*/
-	double eye_to_focal;   /*ratio of eye sparation to focal length*/
     
 	/* spin for Animation */
 	double rRot_animate[3];
@@ -77,10 +83,12 @@ void set_view_by_identity(void);
 void modify_view_by_struct(struct view_element *view);
 void modify_left_view_by_struct(struct view_element *view);
 void modify_right_view_by_struct(struct view_element *view);
+void modify_step_view_by_struct(struct view_element *view, int i_step);
 
 void rotate_view_by_struct(struct view_element *view);
 void rotate_left_view_by_struct(struct view_element *view);
 void rotate_right_view_by_struct(struct view_element *view);
+void rotate_step_view_by_struct(struct view_element *view, int i_step);
 
 void set_view_for_message(struct view_element *view);
 
@@ -89,6 +97,7 @@ void init_projection_struct(struct view_element *view);
 void update_projection_struct(struct view_element *view);
 void update_left_projection_struct(struct view_element *view);
 void update_right_projection_struct(struct view_element *view);
+void update_step_projection_struct(struct view_element *view, int istep);
 
 void copy_lookatpoint_struct(struct view_element *origin, struct view_element *dest);
 void copy_viewmatrix_struct(struct view_element *origin, struct view_element *dest);
@@ -123,7 +132,16 @@ void set_gl_animation_rot_angle(struct view_element *view, int int_degree);
 void set_gl_shift_vector(struct view_element *view, int i, double position);
 void set_gl_scalar_scale_factor(struct view_element *view, double scale_s);
 void set_gl_projection_aperture(struct view_element *view, double aperture_s);
-void set_gl_stereo_parameter(struct view_element *view, double focus, double eye_sep);
+
+void set_gl_focal_length(struct view_element *view, double focal);
+void set_gl_eye_separation_distance(struct view_element *view, double eye_sep);
+void set_gl_eye_separation_angle(struct view_element *view, double sep_angle);
+
+void toggle_quilt_mode_flag(struct view_element *view);
+void set_quilt_mode_flag(struct view_element *view, int num);
+void set_quilt_image_num_raws(struct view_element *view, int num);
+void set_quilt_image_num_columns(struct view_element *view, int num);
+void set_quilt_image_num_views(struct view_element *view, int num);
 
 double send_gl_rotation_parameter(struct view_element *view, int i);
 void send_gl_dragging_rotation(struct view_element *view, double rot_vect[4]);
@@ -139,6 +157,12 @@ double send_gl_projection_aspect(struct view_element *view);
 
 double send_gl_stereo_focus(struct view_element *view);
 double send_gl_stereo_eyeseparation(struct view_element *view);
+double send_gl_stereo_eparation_angle(struct view_element *view);
+
+int send_quilt_mode_flag(struct view_element *view);
+int send_quilt_image_num_raws(struct view_element *view);
+int send_quilt_image_num_columns(struct view_element *view);
+int send_quilt_image_num_views(struct view_element *view);
 
 
 /* called with the start position and the window origin + size */

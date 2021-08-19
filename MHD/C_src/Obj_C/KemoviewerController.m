@@ -78,11 +78,12 @@
 	[_viewZXItem setState:NSOffState];
 	
     self.axisDrawAccess = 1;
-	self.StereoFlag = 0;
+    self.StereoFlag = (NSInteger) kemoview_get_quilt_nums(ISET_QUILT_MODE);
 	psfTexTureEnable = 1;
 	if (selected == VIEW_3D) {[_view3dItem setState:NSOnState];}
 	else if (selected == VIEW_MAP) {
         self.axisDrawAccess = 0;
+        self.StereoFlag = 0;
 		psfTexTureEnable = 0;
 		[_viewMapItem setState:NSOnState];
 	}
@@ -95,7 +96,7 @@
 	else if (selected == VIEW_XZ) {[_viewZXItem setState:NSOnState];};
 }
 
-- (void)UpdateViewtype:(NSInteger) selected;
+- (void)UpdateViewtype:(NSInteger) selected
 {
 	[self SetViewTypeMenu:selected];
 
@@ -104,7 +105,7 @@
 	[_kemoviewer UpdateImage];
 }
 
-- (IBAction)ChoosePolygontypeAction:(id)sender;
+- (IBAction)ChoosePolygontypeAction:(id)sender
 {
 	PolygonMode = [[_polygontype_matrix selectedCell] tag];
 	kemoview_set_object_property_flags(POLYGON_SWITCH, (int) PolygonMode);
@@ -112,7 +113,7 @@
 	[_kemoviewer UpdateImage];
 }
 
-- (IBAction)ChooseSurfcetypeAction:(id)sender;
+- (IBAction)ChooseSurfcetypeAction:(id)sender
 {
 	ShadingMode = [[_surfacetype_matrix selectedCell] tag];
 	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode);
@@ -187,13 +188,6 @@
 {
     [_kemoviewer UpdateImage];
 };
-
-- (IBAction) ChangeViewByInpit:(id)sender;
-{
-	[_resetview  SetViewByInpit];
-	[_kemoviewer updateProjection];
-//	[_kemoviewer UpdateImage];
-}
 
 - (IBAction) ResetviewAction:(id)sender;
 {

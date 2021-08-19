@@ -124,8 +124,8 @@
 !    void kemoview_update_distance();
 !    
 !    void kemoview_set_view_parameter(int selected, int i, double rot_vect);
-!    void kemoview_set_stereo_parameter(double focus, double eye_sep);
-!    
+!    void kemoview_set_stereo_parameter(int selected, double value);
+!
 !    int kemoview_get_view_integer(int selected);
 !    void kemoview_set_view_integer(int selected, int ivalue);
 !    double kemoview_get_view_parameter(int selected, int i);
