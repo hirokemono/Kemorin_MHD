@@ -147,7 +147,7 @@
         write(*,*) 'Node, Element at initial'
         write(*,*) 'Total:    ', ntot_numnod, ntot_numele
         write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),       &
-     &                          ntot_import_ele\
+     &                          ntot_import_ele
         open(id_log,file=sleeve_log_fname, position='append')
         write(id_log,*)
         write(id_log,*) 'Initial Internal Node and Element: ',          &
