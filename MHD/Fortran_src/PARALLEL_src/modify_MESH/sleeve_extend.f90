@@ -74,6 +74,9 @@
       implicit none
 !
       integer(kind = kint), parameter, private :: max_extend_loop = 30
+      integer(kind = kint), parameter, private :: id_log = 16
+      character(len = kchara), parameter, private                       &
+     &                        :: sleeve_log_fname = 'sleeve_log.dat'
 !
       private :: check_new_node_and_comm
 !
@@ -139,12 +142,21 @@
      &    MPI_SUM, 0)
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'Internal Node and Element: ',                       &
+        write(*,*) 'Initial Internal Node and Element: ',               &
      &            ntot_internal_nod, (ntot_numele-ntot_import_ele)
         write(*,*) 'Node, Element at initial'
         write(*,*) 'Total:    ', ntot_numnod, ntot_numele
         write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),       &
+     &                          ntot_import_ele\
+        open(id_log,file=sleeve_log_fname, position='append')
+        write(id_log,*)
+        write(id_log,*) 'Initial Internal Node and Element: ',          &
+     &            ntot_internal_nod, (ntot_numele-ntot_import_ele)
+        write(id_log,*) 'Node, Element at initial'
+        write(id_log,*) 'Total:    ', ntot_numnod, ntot_numele
+        write(id_log,*) 'External: ', (ntot_numnod-ntot_internal_nod),  &
      &                          ntot_import_ele
+        close(id_log)
       end if
 !
       call init_work_vector_sleeve_ext(org_mesh%node, ref_vect,         &
@@ -206,12 +218,14 @@
      &      MPI_SUM, 0)
 !
         if((my_rank .eq. 0) .and. flag_lic_dump) then
-          write(*,*) 'Node, Element at extension level ', iloop
-          write(*,*) 'Total:    ', ntot_numnod, ntot_numele
-          write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),     &
-     &                            ntot_import_ele
-          write(*,*) 'total and max process to communication: ',        &
+          open(id_log,file=sleeve_log_fname, position='append')
+          write(id_log,*) 'Node, Element at extension level ', iloop
+          write(id_log,*) 'Total:    ', ntot_numnod, ntot_numele
+          write(id_log,*) 'External: ',                                 &
+     &            (ntot_numnod-ntot_internal_nod), ntot_import_ele
+          write(id_log,*) 'total and max process to communication: ',   &
      &                  ntot_neib, max_neib, ' of ', nprocs
+          close(id_log)
         end if
 !
         if(iflag_process_extend .eq. 0) exit
@@ -229,12 +243,22 @@
       end do
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'Node, Element at final extension level ', iloop
+        write(*,*) 'Node, Element at final extension level ',           &
+     &                 iloop
         write(*,*) 'Total:    ', ntot_numnod, ntot_numele
         write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),       &
      &                            ntot_import_ele
         write(*,*) 'total and max process to communication: ',          &
      &                ntot_neib, max_neib, ' of ', nprocs
+        open(id_log,file=sleeve_log_fname, position='append')
+        write(id_log,*) 'Node, Element at final extension level ',      &
+     &                 iloop
+        write(id_log,*) 'Total:    ', ntot_numnod, ntot_numele
+        write(id_log,*) 'External: ', (ntot_numnod-ntot_internal_nod),  &
+     &                            ntot_import_ele
+        write(id_log,*) 'total and max process to communication: ',     &
+     &                ntot_neib, max_neib, ' of ', nprocs
+        close(id_log)
       end if
 !
       do ip = 1, nprocs
@@ -302,6 +326,15 @@
         write(*,*) 'Total:    ', ntot_numnod, ntot_numele
         write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),       &
      &                          ntot_import_ele
+        open(id_log,file=sleeve_log_fname, position='append')
+        write(id_log,*)
+        write(id_log,*) 'Initial Internal Node and Element: ',          &
+     &            ntot_internal_nod, (ntot_numele-ntot_import_ele)
+        write(id_log,*) 'Node, Element at initial'
+        write(id_log,*) 'Total:    ', ntot_numnod, ntot_numele
+        write(id_log,*) 'External: ', (ntot_numnod-ntot_internal_nod),  &
+     &                          ntot_import_ele
+        close(id_log)
       end if
 !
       call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
@@ -359,12 +392,14 @@
      &                                 ntot_import_ele, MPI_SUM, 0)
 !
         if(my_rank .eq. 0) then
-          write(*,*) 'Node, Element at level ', iloop
-          write(*,*) 'Total:    ', ntot_numnod, ntot_numele
-          write(*,*) 'External: ', (ntot_numnod-ntot_internal_nod),     &
-     &                            ntot_import_ele
-          write(*,*) 'total and max process to communication: ',        &
+          open(id_log,file=sleeve_log_fname, position='append')
+          write(id_log,*) 'Node, Element at extension level ', iloop
+          write(id_log,*) 'Total:    ', ntot_numnod, ntot_numele
+          write(id_log,*) 'External: ',                                 &
+     &            (ntot_numnod-ntot_internal_nod), ntot_import_ele
+          write(id_log,*) 'total and max process to communication: ',   &
      &                  ntot_neib, max_neib, ' of ', nprocs
+          close(id_log)
         end if
 !
         if(iflag_process_extend .eq. 0) exit
