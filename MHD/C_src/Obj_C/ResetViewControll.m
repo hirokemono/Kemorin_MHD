@@ -43,9 +43,10 @@
 @synthesize NumberOfColumns;
 @synthesize NumberOfQuilts;
 
-- (IBAction) ToggleQuiltMode:(id)sender
+- (int) ToggleQuiltMode
 {
     kemoview_set_quilt_nums(ISET_QUILT_MODE, (int) self.Quilt_flag);
+    return self.Quilt_flag;
 }
 - (IBAction) SetQuiltRawByInput:(id)sender
 {

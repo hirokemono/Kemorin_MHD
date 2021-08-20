@@ -205,6 +205,7 @@
 #define ISET_QUILT_RAW       31
 #define ISET_QUILT_COLUMN    32
 #define ISET_QUILT_NUM       33
+#define ISET_QUILT_COUNT     34
 
 #define ISET_PIXEL_X            0
 #define ISET_PIXEL_Y            1
@@ -390,7 +391,7 @@ extern "C" {
 	int kemoview_quick_view(void);
     void kemoview_modify_view(void);
     void kemoview_rotate(void);
-    void kemoview_quilt(int i_step);
+    void kemoview_quilt(void);
 
     void kemoviewer_reset_to_init_angle(void);
     

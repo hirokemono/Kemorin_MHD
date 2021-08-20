@@ -150,10 +150,10 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	return self;
 }
 
--(id) DrawQuilt: (NSInteger) int_step
+-(id) DrawQuilt
 {
     kemoview_set_single_viewer_id(id_window);
-    kemoview_quilt((int) int_step);
+    kemoview_quilt();
     
     [self swapbuffer_cocoa];
     return self;

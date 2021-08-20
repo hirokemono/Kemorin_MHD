@@ -78,7 +78,8 @@
 @property NSInteger NumberOfColumns;
 @property NSInteger NumberOfQuilts;
 
-- (IBAction) ToggleQuiltMode:(id)sender;
+- (int) ToggleQuiltMode;
+
 - (IBAction) SetQuiltRawByInput:(id)sender;
 - (IBAction) SetQuiltColumnByInput:(id)sender;
 - (IBAction) SetEyeSeparationAngleByInput:(id)sender;

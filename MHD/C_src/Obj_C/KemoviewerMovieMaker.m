@@ -347,7 +347,8 @@ NSData *SnapshotData;
     [rotateProgreessBar displayIfNeeded];
     
     for(self.CurrentStep = 0;self.CurrentStep<num_step;self.CurrentStep++){
-        [_kemoviewer DrawQuilt:self.CurrentStep];
+        kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep);
+        [_kemoviewer DrawQuilt];
 
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
         [rotateProgreessBar incrementBy:(double) self.RotationIncrement];

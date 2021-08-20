@@ -412,7 +412,7 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="79" y="-174"/>
+            <point key="canvasLocation" x="-247" y="-587"/>
         </menu>
         <customObject id="1215" customClass="Kemoview_IO_Controller">
             <connections>
@@ -452,7 +452,7 @@
             <connections>
                 <outlet property="_kemoviewIOControl" destination="1215" id="3616"/>
             </connections>
-            <point key="canvasLocation" x="78" y="308"/>
+            <point key="canvasLocation" x="560" y="-152"/>
         </window>
         <customObject id="494" customClass="Kemoview_CocoaAppDelegate">
             <connections>
@@ -540,9 +540,9 @@
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="1001" y="214" width="388" height="604"/>
+            <rect key="contentRect" x="1001" y="451" width="388" height="604"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
-            <view key="contentView" id="722">
+            <view key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="722">
                 <rect key="frame" x="0.0" y="0.0" width="388" height="604"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -561,7 +561,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="1" width="322" height="176"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="159"/>
@@ -1554,7 +1554,7 @@
                 <binding destination="703" name="visible" keyPath="self.DrawMeshFlag" id="3762"/>
                 <outlet property="delegate" destination="703" id="2985"/>
             </connections>
-            <point key="canvasLocation" x="822" y="203"/>
+            <point key="canvasLocation" x="1288" y="-210"/>
         </window>
         <customObject id="1932" customClass="FlineController">
             <connections>
@@ -3175,7 +3175,7 @@
                                                             </connections>
                                                         </buttonCell>
                                                         <connections>
-                                                            <action selector="ToggleQuiltMode:" target="2679" id="oba-jH-Z0o"/>
+                                                            <action selector="ToggleQuiltSwitch:" target="964" id="TDT-Ms-bmi"/>
                                                         </connections>
                                                     </button>
                                                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bMI-oL-FmF">
@@ -3201,8 +3201,8 @@
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="30" doubleValue="1" id="Ygb-Ck-lxH">
                                                             <connections>
-                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="3Z0-2h-LCl"/>
                                                                 <binding destination="2679" name="value" keyPath="self.NumberOfRows" id="UPl-BF-BMr"/>
+                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="3Z0-2h-LCl"/>
                                                             </connections>
                                                         </stepperCell>
                                                         <connections>
@@ -3221,8 +3221,8 @@
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <connections>
-                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="7WK-yK-WDR"/>
                                                                 <binding destination="2679" name="value" keyPath="self.NumberOfRows" id="xDx-lC-Ddu"/>
+                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="7WK-yK-WDR"/>
                                                             </connections>
                                                         </textFieldCell>
                                                         <connections>
@@ -3234,8 +3234,8 @@
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="30" doubleValue="1" id="EsE-9T-4nD">
                                                             <connections>
-                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="jdc-8r-ovl"/>
                                                                 <binding destination="2679" name="value" keyPath="self.NumberOfColumns" id="EmA-Jb-kjb"/>
+                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="jdc-8r-ovl"/>
                                                             </connections>
                                                         </stepperCell>
                                                         <connections>
@@ -3254,8 +3254,8 @@
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <connections>
-                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="Gyb-VX-w2E"/>
                                                                 <binding destination="2679" name="value" keyPath="self.NumberOfColumns" id="KFL-l1-xgz"/>
+                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="Gyb-VX-w2E"/>
                                                             </connections>
                                                         </textFieldCell>
                                                         <connections>
@@ -3373,7 +3373,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     </progressIndicator>
                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1909">
-                        <rect key="frame" x="10" y="6" width="46" height="11"/>
+                        <rect key="frame" x="10" y="7" width="46" height="11"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Progress:" id="1910">
                             <font key="font" metaFont="miniSystem"/>
@@ -3419,7 +3419,7 @@
             <connections>
                 <outlet property="delegate" destination="1157" id="1443"/>
             </connections>
-            <point key="canvasLocation" x="552.5" y="299"/>
+            <point key="canvasLocation" x="-211" y="-104"/>
         </window>
         <window title="Fieldline View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1944">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
@@ -3884,13 +3884,13 @@
                 <binding destination="1932" name="title" keyPath="self.FlineWindowlabel" id="1948"/>
                 <outlet property="delegate" destination="1932" id="2192"/>
             </connections>
-            <point key="canvasLocation" x="402" y="161.5"/>
+            <point key="canvasLocation" x="23" y="605"/>
         </window>
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="2202" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES" texturedBackground="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="230" y="139" width="299" height="573"/>
+            <rect key="contentRect" x="123" y="299" width="299" height="573"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <view key="contentView" id="2203">
                 <rect key="frame" x="0.0" y="0.0" width="299" height="573"/>
@@ -4312,14 +4312,14 @@
                                     </textFieldCell>
                                 </textField>
                                 <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0SB-z1-Sc1">
-                                    <rect key="frame" x="10" y="132.5" width="229" height="118.5"/>
+                                    <rect key="frame" x="10" y="133" width="229" height="118"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="Vae-Vq-U6W">
-                                        <rect key="frame" x="1" y="1" width="227" height="116.5"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <rect key="frame" x="1" y="1" width="227" height="116"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
-                                                <rect key="frame" x="0.0" y="0.0" width="227" height="93.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="227" height="93"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -4387,7 +4387,7 @@
                                         <rect key="frame" x="224" y="17" width="15" height="102"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
-                                    <tableHeaderView key="headerView" id="8Zb-aV-5rs">
+                                    <tableHeaderView key="headerView" wantsLayer="YES" id="8Zb-aV-5rs">
                                         <rect key="frame" x="0.0" y="0.0" width="227" height="23"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
@@ -4431,7 +4431,7 @@
                     </box>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="403.5" y="101.5"/>
+            <point key="canvasLocation" x="-305" y="677"/>
         </window>
         <customView autoresizesSubviews="NO" id="2222" userLabel="Viewmatrix Content View">
             <rect key="frame" x="0.0" y="0.0" width="224" height="661"/>
@@ -4442,7 +4442,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                         <rect key="frame" x="0.0" y="0.0" width="224" height="545"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3791">
                                 <rect key="frame" x="0.0" y="0.0" width="224" height="585"/>
@@ -4966,7 +4966,7 @@
                     </connections>
                 </button>
             </subviews>
-            <point key="canvasLocation" x="229" y="1302.5"/>
+            <point key="canvasLocation" x="328" y="582"/>
         </customView>
         <customView id="2491" userLabel="Colormap Content View">
             <rect key="frame" x="0.0" y="0.0" width="194" height="707"/>
@@ -4977,7 +4977,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                     <clipView key="contentView" id="zjy-Ve-9jn">
                         <rect key="frame" x="0.0" y="0.0" width="194" height="707"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3767">
                                 <rect key="frame" x="0.0" y="0.0" width="192" height="705"/>
@@ -4992,7 +4992,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="sgn-Z0-9rw">
                                             <rect key="frame" x="1" y="1" width="153" height="143"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
                                                     <rect key="frame" x="0.0" y="0.0" width="153" height="126"/>
@@ -5076,7 +5076,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="xhk-53-bjR">
                                             <rect key="frame" x="1" y="1" width="153" height="143"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="14" headerView="2584" id="2585">
                                                     <rect key="frame" x="0.0" y="0.0" width="153" height="126"/>
@@ -5210,7 +5210,7 @@
                     </scroller>
                 </scrollView>
             </subviews>
-            <point key="canvasLocation" x="139" y="168.5"/>
+            <point key="canvasLocation" x="594" y="610"/>
         </customView>
         <drawer trailingOffset="15" id="2223" userLabel="ViewMatrix Drawer">
             <size key="contentSize" width="212" height="400"/>

@@ -162,6 +162,11 @@
 	[_kemoviewer UpdateImage];
 }
 
+- (IBAction) ToggleQuiltSwitch:(id)sender
+{
+    self.StereoFlag = [_resetview ToggleQuiltMode];
+}
+
 - (IBAction) SetViewtypeAction:(id)pSender{
 	[self UpdateViewtype:[_viewtypeItem selectedTag]];
 }

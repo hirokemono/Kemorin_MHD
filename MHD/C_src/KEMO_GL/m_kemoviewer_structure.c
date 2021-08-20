@@ -426,7 +426,7 @@ void kemoview_modify_view(void){
 	modify_stereo_kemoview(kemo_sgl);
 };
 void kemoview_rotate(void){rotate_stereo_kemoview(kemo_sgl);};
-void kemoview_quilt(int i_step){modify_quilt_kemoview(kemo_sgl, i_step);};
+void kemoview_quilt(void){modify_quilt_kemoview(kemo_sgl);};
 
 void kemoviewer_reset_to_init_angle(void){
     reset_all_view_parameter(kemo_sgl->view_s);
@@ -501,6 +501,8 @@ void kemoview_set_quilt_nums(int selected, int ivalue){
         set_quilt_image_num_columns(kemo_sgl->view_s, ivalue);
     }else if(selected == ISET_QUILT_NUM){
         set_quilt_image_num_views(kemo_sgl->view_s, ivalue);
+    }else if(selected == ISET_QUILT_COUNT){
+        set_quilt_image_count(kemo_sgl->view_s, ivalue);
     };
     return;
 };
@@ -565,6 +567,8 @@ int kemoview_get_quilt_nums(int selected){
         num =  send_quilt_image_num_columns(kemo_sgl->view_s);
     }else if(selected == ISET_QUILT_NUM){
         num =  send_quilt_image_num_views(kemo_sgl->view_s);
+    }else if(selected == ISET_QUILT_COUNT){
+        num =  send_quilt_image_count(kemo_sgl->view_s);
     };
     return num;
 }

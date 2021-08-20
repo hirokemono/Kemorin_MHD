@@ -96,6 +96,7 @@
 - (IBAction)SetColorLoopCount:(id)pSender;
 - (IBAction)ShowNodeSizeValue:(id)pSender;
 
+- (IBAction) ToggleQuiltSwitch:(id)sender;
 - (IBAction) SetViewtypeAction:(id)pSender;
 
 - (IBAction) SetStereoViewType:(id)sender;
