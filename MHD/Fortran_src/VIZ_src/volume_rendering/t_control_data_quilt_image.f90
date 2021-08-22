@@ -28,7 +28,8 @@
 !!
 !!  begin quilt_image_ctl
 !!    quilt_mode_ctl           BITMAP
-!!    num_column_row_ctl       5     9
+!!    num_column_row_ctl       9    5
+!!    num_row_column_ctl       9    5
 !!
 !!    array view_transform_ctl
 !!      file  view_transform_ctl  control_view
@@ -66,8 +67,10 @@
 !>        Structure of quilt mode control
         type(read_character_item) :: quilt_mode_ctl
 !
-!>        Structure of number of row and columns of image
+!>        Structure of number of columns and row of image
         type(read_int2_item) :: num_column_row_ctl
+!>        Structure of number of row and columns of image
+        type(read_int2_item) :: num_row_column_ctl
 !
 !         Lists of multiple view parameters
         type(multi_modeview_ctl) :: mul_qmats_c
@@ -84,9 +87,11 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_column_row =    'num_column_row_ctl'
       character(len=kchara), parameter, private                         &
+     &             :: hd_row_column =    'num_row_column_ctl'
+      character(len=kchara), parameter, private                         &
      &             :: hd_qview_transform =   'view_transform_ctl'
 !
-      integer(kind = kint), parameter :: n_label_quilt_ctl =   3
+      integer(kind = kint), parameter :: n_label_quilt_ctl =   4
       private :: n_label_quilt_ctl
 !
 !  ---------------------------------------------------------------------
@@ -117,6 +122,8 @@
      &      quilt_c%quilt_mode_ctl)
         call read_integer2_ctl_type(c_buf, hd_column_row,               &
      &      quilt_c%num_column_row_ctl)
+        call read_integer2_ctl_type(c_buf, hd_row_column,               &
+     &      quilt_c%num_row_column_ctl)
 !
         call read_mul_view_transfer_ctl                                 &
      &     (id_control, hd_qview_transform, quilt_c%mul_qmats_c, c_buf)
@@ -143,6 +150,8 @@
      &                    new_quilt%quilt_mode_ctl)
       call copy_integer2_ctl(org_quilt%num_column_row_ctl,              &
      &                       new_quilt%num_column_row_ctl)
+      call copy_integer2_ctl(org_quilt%num_row_column_ctl,              &
+     &                       new_quilt%num_row_column_ctl)
 !
       new_quilt%i_quilt_image = org_quilt%i_quilt_image
 !
@@ -159,6 +168,7 @@
 !
       quilt_c%quilt_mode_ctl%iflag =     0
       quilt_c%num_column_row_ctl%iflag = 0
+      quilt_c%num_row_column_ctl%iflag = 0
 !
       quilt_c%i_quilt_image = 0
 !
@@ -182,6 +192,7 @@
 !
       call bcast_ctl_type_c1(quilt_c%quilt_mode_ctl)
       call bcast_ctl_type_i2(quilt_c%num_column_row_ctl)
+      call bcast_ctl_type_i2(quilt_c%num_row_column_ctl)
 !
       call bcast_mul_view_trans_ctl(quilt_c%mul_qmats_c)
 !
@@ -205,7 +216,8 @@
 !
       call set_control_labels(hd_quilt_mode, names( 1))
       call set_control_labels(hd_column_row, names( 2))
-      call set_control_labels(hd_column_row, names( 3))
+      call set_control_labels(hd_row_column, names( 3))
+      call set_control_labels(hd_qview_transform, names( 4))
 !
       end subroutine set_label_quilt_image
 !

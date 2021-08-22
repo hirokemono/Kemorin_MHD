@@ -10,13 +10,13 @@
 !!      subroutine sel_write_pvr_image_files(quilt_d)
 !!        type(MPI_quilt_bitmap_IO), intent(in) :: quilt_d
 !!      subroutine mpi_write_quilt_BMP_file(file_prefix,                &
-!!     &          n_row_column, num_image_lc, icou_each_pe,             &
+!!     &          n_column_row, num_image_lc, icou_each_pe,             &
 !!     &          npixel_x, npixel_y, images)
 !!      subroutine mpi_write_quilt_gz_BMP_file(file_prefix,             &
-!!     &          n_row_column, num_image_lc, icou_each_pe,             &
+!!     &          n_column_row, num_image_lc, icou_each_pe,             &
 !!     &          npixel_x, npixel_y, images)
 !!        character(len=kchara), intent(in) :: file_prefix
-!!        integer(kind = kint), intent(in) :: n_row_column(2)
+!!        integer(kind = kint), intent(in) :: n_column_row(2)
 !!        integer(kind = kint), intent(in) :: num_image_lc
 !!        integer(kind = kint), intent(in) :: icou_each_pe(num_image_lc)
 !!        integer(kind = kint), intent(in) :: npixel_x, npixel_y
@@ -52,12 +52,12 @@
 !
       if(quilt_d%image_seq_format .eq. iflag_QUILT_BMP) then
         call s_mpi_write_quilt_BMP_file                                 &
-     &     (quilt_d%image_seq_prefix, quilt_d%n_row_column,             &
+     &     (quilt_d%image_seq_prefix, quilt_d%n_column_row,             &
      &      quilt_d%num_image_lc, quilt_d%icou_each_pe,                 &
      &      quilt_d%npixel_xy(1), quilt_d%npixel_xy(2), quilt_d%images)
       else if(quilt_d%image_seq_format .eq. iflag_QUILT_BMP_GZ) then
         call mpi_write_quilt_gz_BMP_file                                &
-     &     (quilt_d%image_seq_prefix, quilt_d%n_row_column,             &
+     &     (quilt_d%image_seq_prefix, quilt_d%n_column_row,             &
      &      quilt_d%num_image_lc, quilt_d%icou_each_pe,                 &
      &      quilt_d%npixel_xy(1), quilt_d%npixel_xy(2), quilt_d%images)
       else
@@ -71,7 +71,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_mpi_write_quilt_BMP_file(file_prefix,                &
-     &          n_row_column, num_image_lc, icou_each_pe,               &
+     &          n_column_row, num_image_lc, icou_each_pe,               &
      &          npixel_x, npixel_y, images)
 !
       use m_calypso_mpi_IO
@@ -80,7 +80,7 @@
       use write_bmp_image
 !
       character(len=kchara), intent(in) :: file_prefix
-      integer(kind = kint), intent(in) :: n_row_column(2)
+      integer(kind = kint), intent(in) :: n_column_row(2)
       integer(kind = kint), intent(in) :: num_image_lc
       integer(kind = kint), intent(in)  :: icou_each_pe(num_image_lc)
 !
@@ -95,8 +95,8 @@
       character(len=kchara) :: file_name
       integer :: ntot_pixel_x, ntot_pixel_y
 !
-      ntot_pixel_x = int(n_row_column(1)*npixel_x)
-      ntot_pixel_y = int(n_row_column(2)*npixel_y)
+      ntot_pixel_x = int(n_column_row(1)*npixel_x)
+      ntot_pixel_y = int(n_column_row(2)*npixel_y)
       allocate(bgr_line(3,npixel_x))
 !
       file_name = add_bmp_suffix(file_prefix)
@@ -108,8 +108,8 @@
 !
       do icou = 1, num_image_lc
         ip = icou_each_pe(icou) - 1
-        ix = mod(ip,n_row_column(1))
-        iy = ip / n_row_column(1)
+        ix = mod(ip,n_column_row(1))
+        iy = ip / n_column_row(1)
         ilength = 3*int(npixel_x)
         do j = 1, npixel_y
           bgr_line(1,1:npixel_x) = images(icou)%rgb(3,1:npixel_x,j)
@@ -117,7 +117,7 @@
           bgr_line(3,1:npixel_x) = images(icou)%rgb(1,1:npixel_x,j)
 !
           ioffset = IO_param%ioff_gl                                    &
-     &       + ilength * (ix + n_row_column(1) * ((j-1) + iy*npixel_y))
+     &       + ilength * (ix + n_column_row(1) * ((j-1) + iy*npixel_y))
           call mpi_write_one_chara_b                                    &
      &       (IO_param%id_file, ioffset, ilength, bgr_line(1,1))
         end do
@@ -132,7 +132,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine mpi_write_quilt_gz_BMP_file(file_prefix,               &
-     &          n_row_column, num_image_lc, icou_each_pe,               &
+     &          n_column_row, num_image_lc, icou_each_pe,               &
      &          npixel_x, npixel_y, images)
 !
       use m_calypso_mpi_IO
@@ -147,7 +147,7 @@
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: file_prefix
-      integer(kind = kint), intent(in) :: n_row_column(2)
+      integer(kind = kint), intent(in) :: n_column_row(2)
       integer(kind = kint), intent(in) :: num_image_lc
       integer(kind = kint), intent(in) :: icou_each_pe(num_image_lc)
 !
@@ -167,17 +167,17 @@
       integer :: ntot_pixel_x, ntot_pixel_y
 !
 !
-      ntot_pixel_x = int(n_row_column(1)*npixel_x)
-      ntot_pixel_y = int(n_row_column(2)*npixel_y)
+      ntot_pixel_x = int(n_column_row(1)*npixel_x)
+      ntot_pixel_y = int(n_column_row(2)*npixel_y)
       allocate(bgr_line(3,npixel_x))
       allocate(zbuf(npixel_y,num_image_lc))
-      allocate(istack_zbuf(0:npixel_y*n_row_column(1)*n_row_column(2)))
-      allocate(nlen_zbuf_gl(npixel_y*n_row_column(1)*n_row_column(2)))
+      allocate(istack_zbuf(0:npixel_y*n_column_row(1)*n_column_row(2)))
+      allocate(nlen_zbuf_gl(npixel_y*n_column_row(1)*n_column_row(2)))
 !
       istack_zbuf(0) = 0
 !$omp parallel workshare
-      istack_zbuf(1:npixel_y*n_row_column(1)*n_row_column(2)) =  0
-      nlen_zbuf_gl(1:npixel_y*n_row_column(1)*n_row_column(2)) = 0
+      istack_zbuf(1:npixel_y*n_column_row(1)*n_column_row(2)) =  0
+      nlen_zbuf_gl(1:npixel_y*n_column_row(1)*n_column_row(2)) = 0
 !$omp end parallel workshare
 !
       file_name = add_bmp_suffix(file_prefix)
@@ -202,11 +202,11 @@
       ilength = 3*int(npixel_x)
       do icou = 1, num_image_lc
         i_img = icou_each_pe(icou)
-        ix = mod(i_img-1,n_row_column(1))
-        iy = (i_img-1) / n_row_column(1)
+        ix = mod(i_img-1,n_column_row(1))
+        iy = (i_img-1) / n_column_row(1)
         do j = 1, npixel_y
-          kk = ix+1 + (j-1) * n_row_column(1)                           &
-     &              + iy *    n_row_column(1) * npixel_y
+          kk = ix+1 + (j-1) * n_column_row(1)                           &
+     &              + iy *    n_column_row(1) * npixel_y
           bgr_line(1,1:npixel_x) = images(icou)%rgb(3,1:npixel_x,j)
           bgr_line(2,1:npixel_x) = images(icou)%rgb(2,1:npixel_x,j)
           bgr_line(3,1:npixel_x) = images(icou)%rgb(1,1:npixel_x,j)
@@ -218,18 +218,18 @@
       end do
 !
       call calypso_mpi_allreduce_int8(istack_zbuf(1), nlen_zbuf_gl(1),  &
-     &    cast_long(npixel_y*n_row_column(1)*n_row_column(2)), MPI_SUM)
-      do kk = 1, npixel_y*n_row_column(1)*n_row_column(2)
+     &    cast_long(npixel_y*n_column_row(1)*n_column_row(2)), MPI_SUM)
+      do kk = 1, npixel_y*n_column_row(1)*n_column_row(2)
         istack_zbuf(kk) = istack_zbuf(kk-1) + nlen_zbuf_gl(kk)
       end do
 !
       do icou = 1, num_image_lc
         i_img = icou_each_pe(icou)
-        ix = mod(i_img-1,n_row_column(1))
-        iy = (i_img-1) / n_row_column(1)
+        ix = mod(i_img-1,n_column_row(1))
+        iy = (i_img-1) / n_column_row(1)
         do j = 1, npixel_y
-          kk = ix+1 + (j-1) * n_row_column(1)                           &
-     &              + iy *    n_row_column(1) * npixel_y
+          kk = ix+1 + (j-1) * n_column_row(1)                           &
+     &              + iy *    n_column_row(1) * npixel_y
           ioffset = IO_param%ioff_gl + istack_zbuf(kk-1)
           call calypso_mpi_seek_write_gz                                &
      &       (IO_param%id_file, ioffset, zbuf(j,icou))

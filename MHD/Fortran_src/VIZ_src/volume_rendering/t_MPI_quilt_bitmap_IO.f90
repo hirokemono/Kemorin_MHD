@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine init_quilt_rgb_images(file_prefix, iflag_gz,         &
-!!     &          nimage_xy, npixel_xy, quilt_d)
+!!     &          n_column_row, npixel_xy, quilt_d)
 !!        character(len = kchara), intent(in) :: file_prefix
 !!        integer(kind = kint), intent(in) :: iflag_gz
-!!        integer(kind = kint), intent(in) :: nimage_xy(2)
+!!        integer(kind = kint), intent(in) :: n_column_row(2)
 !!        integer(kind = kint), intent(in) :: npixel_xy(2)
 !!        type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
 !!
@@ -53,7 +53,7 @@
 !>        Number of images
         integer(kind = kint) :: n_image
 !>        Number of row and columns of images
-        integer(kind = kint) :: n_row_column(2)
+        integer(kind = kint) :: n_column_row(2)
 !
 !>        Number of images in each process
         integer(kind = kint) :: num_image_lc
@@ -74,14 +74,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_quilt_rgb_images(file_prefix, iflag_gz,           &
-     &          nimage_xy, npixel_xy, quilt_d)
+     &          n_column_row, npixel_xy, quilt_d)
 !
       use set_parallel_file_name
       use output_image_sel_4_png
 !
       character(len = kchara), intent(in) :: file_prefix
       integer(kind = kint), intent(in) :: iflag_gz
-      integer(kind = kint), intent(in) :: nimage_xy(2)
+      integer(kind = kint), intent(in) :: n_column_row(2)
       integer(kind = kint), intent(in) :: npixel_xy(2)
 !
       type(MPI_quilt_bitmap_IO), intent(inout) :: quilt_d
@@ -89,8 +89,8 @@
       integer(kind = kint) :: i
 !
 !
-      quilt_d%n_row_column(1:2) = nimage_xy(1:2)
-      quilt_d%n_image = nimage_xy(1) * nimage_xy(2)
+      quilt_d%n_column_row(1:2) = n_column_row(1:2)
+      quilt_d%n_image = n_column_row(1) * n_column_row(2)
       call count_local_image_pe_quilt                                   &
      &   (quilt_d%n_image, quilt_d%num_image_lc)
 !

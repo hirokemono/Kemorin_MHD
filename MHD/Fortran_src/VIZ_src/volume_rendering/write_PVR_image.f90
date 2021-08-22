@@ -32,11 +32,11 @@
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
 !!      subroutine set_output_rot_sequence_image(istep_pvr,             &
-!!     &          iflag_img_fmt, file_prefix, num_img, n_row_column,    &
+!!     &          iflag_img_fmt, file_prefix, num_img, n_column_row,    &
 !!     &          rot_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        integer(kind = kint), intent(in) :: num_img
-!!        integer(kind = kint), intent(in) :: n_row_column(2)
+!!        integer(kind = kint), intent(in) :: n_column_row(2)
 !!        integer(kind = kint), intent(in) :: iflag_img_fmt
 !!        character(len=kchara), intent(in) :: file_prefix
 !!        type(pvr_image_type), intent(in) :: rot_rgb(num_img)
@@ -238,7 +238,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_output_rot_sequence_image(istep_pvr,               &
-     &          iflag_img_fmt, file_prefix, num_img, n_row_column,      &
+     &          iflag_img_fmt, file_prefix, num_img, n_column_row,      &
      &          rot_rgb)
 !
       use t_control_params_4_pvr
@@ -251,7 +251,7 @@
 !
       integer(kind = kint), intent(in) :: istep_pvr
       integer(kind = kint), intent(in) :: num_img
-      integer(kind = kint), intent(in) :: n_row_column(2)
+      integer(kind = kint), intent(in) :: n_column_row(2)
       integer(kind = kint), intent(in) :: iflag_img_fmt
       character(len=kchara), intent(in) :: file_prefix
       type(pvr_image_type), intent(in) :: rot_rgb(num_img)
@@ -261,7 +261,7 @@
 !
 !
       quilt_d%n_image = num_img
-      quilt_d%n_row_column(1:2) = n_row_column(1:2)
+      quilt_d%n_column_row(1:2) = n_column_row(1:2)
 !
       icou = 0
       do i_rot = 1, num_img
