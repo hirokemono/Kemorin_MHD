@@ -406,69 +406,14 @@ void set_view_by_identity(void){
 void modify_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
-				view->mat_object_2_eye);
+						  view->mat_object_2_eye);
+	if(view->rotate_animation[0] != ZERO) Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
 	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
-				view->mat_object_2_eye);
+					  view->mat_object_2_eye);
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
-				view->mat_object_2_eye);
-	return;
-};
-void modify_left_view_by_struct(struct view_element *view){
-	identity_glmat_c(view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
-				view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->eye_separation/2.0, ZERO, ZERO, view->mat_object_2_eye);
-	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
-	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
-				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
-				view->mat_object_2_eye);
-	return;
-};
-void modify_right_view_by_struct(struct view_element *view){
+						  view->mat_object_2_eye);
 	
-	identity_glmat_c(view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
-				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->eye_separation/2.0, ZERO, ZERO,
-				view->mat_object_2_eye);
-	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
-	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
-				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
-				view->mat_object_2_eye);
-	return;
-};
-
-void modify_step_view_by_struct(struct view_element *view){
-    
-    identity_glmat_c(view->mat_object_2_eye);
-    Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
-                view->mat_object_2_eye);
-	
-	double eyeSep = each_eye_from_middle_c(view->istep_quilt, view->num_views,
-									view->focal_length, view->eye_separation_angle);
-	Kemo_Translate_view_c(-eyeSep, ZERO, ZERO, view->mat_object_2_eye);
-    Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
-    Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
-                view->mat_object_2_eye);
-    Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
-                view->mat_object_2_eye);
-    return;
-};
-
-
-void rotate_view_by_struct(struct view_element *view){
-	identity_glmat_c(view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
-				view->mat_object_2_eye);
-	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
-	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
-	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
-				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
-				view->mat_object_2_eye);
 	/*
 	printf("          /%f %f %f %f\\ \n", view->mat_object_2_eye[0], view->mat_object_2_eye[4], view->mat_object_2_eye[ 8], view->mat_object_2_eye[12]);
 	printf(" matrix = |%f %f %f %f| \n", view->mat_object_2_eye[1], view->mat_object_2_eye[5], view->mat_object_2_eye[ 9], view->mat_object_2_eye[13]);
@@ -477,55 +422,65 @@ void rotate_view_by_struct(struct view_element *view){
 	*/
 	return;
 };
-
-void rotate_left_view_by_struct(struct view_element *view){
-	identity_glmat_c(view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
-				view->mat_object_2_eye);
+void modify_left_view_by_struct(struct view_element *view){
+    identity_glmat_c(view->mat_object_2_eye);
+    Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
+                          view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->eye_separation/2.0, ZERO, ZERO, 
-				view->mat_object_2_eye);
-	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
-	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
-	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale, 
-				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
-				view->mat_object_2_eye);
+						  view->mat_object_2_eye);
+	
+	if(view->rotate_animation[0] != ZERO){
+		Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
+	}
+	
+    Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
+    Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
+                      view->mat_object_2_eye);
+    Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+                          view->mat_object_2_eye);
 	return;
 };
-
-void rotate_right_view_by_struct(struct view_element *view){
-	identity_glmat_c(view->mat_object_2_eye);
-	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
-				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->eye_separation/2.0, ZERO, ZERO, 
-				view->mat_object_2_eye);
-	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
-	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
-	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale, 
-				view->mat_object_2_eye);
-	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
-				view->mat_object_2_eye);
-	return;
-};
-
-void rotate_step_view_by_struct(struct view_element *view, int i_step){
+void modify_right_view_by_struct(struct view_element *view){
 	identity_glmat_c(view->mat_object_2_eye);
 	Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2], 
 						  view->mat_object_2_eye);
+	Kemo_Translate_view_c(-view->eye_separation/2.0, ZERO, ZERO,
+						  view->mat_object_2_eye);
 	
-	double eyeSep = each_eye_from_middle_c(i_step, view->num_views, 
-									view->focal_length, view->eye_separation_angle);
-	Kemo_Translate_view_c(eyeSep, ZERO, ZERO, view->mat_object_2_eye);
-	Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
+	if(view->rotate_animation[0] != ZERO){
+		Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
+	}
+	
 	Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
-	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale, 
-				view->mat_object_2_eye);
+	Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
+					  view->mat_object_2_eye);
 	Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
-				view->mat_object_2_eye);
+						  view->mat_object_2_eye);
 	return;
 };
 
-
+void modify_step_view_by_struct(struct view_element *view){
+    
+    identity_glmat_c(view->mat_object_2_eye);
+    Kemo_Translate_view_c(view->shift[0], view->shift[1], view->shift[2],
+						  view->mat_object_2_eye);
+	
+	double eyeSep = each_eye_from_middle_c(view->istep_quilt, view->num_views,
+										   view->focal_length,
+										   view->eye_separation_angle);
+	Kemo_Translate_view_c(-eyeSep, ZERO, ZERO, view->mat_object_2_eye);
+	
+	if(view->rotate_animation[0] != ZERO){
+		Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
+	}
+	
+    Kemo_Rotate_view_c(view->rotation, view->mat_object_2_eye);
+    Kemo_Scale_view_c(view->iso_scale, view->iso_scale, view->iso_scale,
+					  view->mat_object_2_eye);
+    Kemo_Translate_view_c(-view->x_lookat[0], -view->x_lookat[1], -view->x_lookat[2],
+						  view->mat_object_2_eye);
+    return;
+};
 
 void set_view_for_message(struct view_element *view){
 	double modelview[16];

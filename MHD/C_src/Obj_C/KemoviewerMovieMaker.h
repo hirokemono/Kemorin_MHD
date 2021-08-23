@@ -58,9 +58,14 @@
 
 -(void) InitEvolutionStepByPSF;
 -(void) InitEvolutionStepByFline;
+
 -(void) SaveKemoviewPNGFile:(NSString*)ImageFilehead;
 -(void) SaveKemoviewBMPFile:(NSString*)ImageFilehead;
 -(void) SaveKemoviewPDFFile:(NSString*)ImageFilehead;
+
+-(void) SaveKemoviewQuiltPNGFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
+-(void) SaveKemoviewQuiltBMPFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
+-(void) SaveKemoviewQuiltPDFFile:(NSString*)ImageFilehead : (NSInteger)int_degree : (NSInteger)rotationaxis;
 
 - (IBAction)SendToClipAsPDF:(id)sender;
 

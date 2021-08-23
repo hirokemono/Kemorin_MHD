@@ -2957,6 +2957,13 @@
                                                         <buttonCell key="cell" type="push" title="Evolve" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1139">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
+                                                            <connections>
+                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="AZf-gS-4zV">
+                                                                    <dictionary key="options">
+                                                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                                    </dictionary>
+                                                                </binding>
+                                                            </connections>
                                                         </buttonCell>
                                                         <connections>
                                                             <action selector="ShowEvolutionMovie:" target="2637" id="2748"/>
@@ -2990,6 +2997,13 @@
                                                         <buttonCell key="cell" type="push" title="Rotate" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="671">
                                                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
                                                             <font key="font" metaFont="system"/>
+                                                            <connections>
+                                                                <binding destination="2679" name="enabled" keyPath="self.Quilt_flag" id="EtO-YA-40y">
+                                                                    <dictionary key="options">
+                                                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                                                    </dictionary>
+                                                                </binding>
+                                                            </connections>
                                                         </buttonCell>
                                                         <connections>
                                                             <action selector="ShowRotationMovie:" target="2637" id="2677"/>
@@ -4380,7 +4394,7 @@
                                         </subviews>
                                     </clipView>
                                     <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="lyY-Tt-8IE">
-                                        <rect key="frame" x="1" y="99.5" width="217" height="16"/>
+                                        <rect key="frame" x="1" y="99" width="217" height="16"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </scroller>
                                     <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="2TM-tH-eDf">

@@ -295,6 +295,7 @@ int draw_fast(){
 };
 
 void draw_full(){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
 	kemoview_modify_view();
 	glfwSwapBuffers(glfw_window);
 	return;
@@ -313,7 +314,7 @@ void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
-		kemoview_rotate();
+        kemoview_modify_view();
 		glfwSwapBuffers(glfw_window);
 		
         kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);

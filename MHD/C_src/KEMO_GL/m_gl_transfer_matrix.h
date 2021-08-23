@@ -86,11 +86,6 @@ void modify_left_view_by_struct(struct view_element *view);
 void modify_right_view_by_struct(struct view_element *view);
 void modify_step_view_by_struct(struct view_element *view);
 
-void rotate_view_by_struct(struct view_element *view);
-void rotate_left_view_by_struct(struct view_element *view);
-void rotate_right_view_by_struct(struct view_element *view);
-void rotate_step_view_by_struct(struct view_element *view, int i_step);
-
 void set_view_for_message(struct view_element *view);
 
 void set_projection_by_identity(void);

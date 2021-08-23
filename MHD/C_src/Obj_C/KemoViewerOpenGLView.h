@@ -95,7 +95,7 @@ typedef struct {
 
 -(id) DrawEvolution:(NSInteger)timeStep;
 -(id) DrawRotation: (NSInteger) int_degree : (NSInteger) rotationaxis;
--(id) DrawQuilt;
+-(id) DrawQuilt: (NSInteger) int_degree : (NSInteger)rotationaxis;
 
 - (void)keyDown:(NSEvent *)theEvent;
 

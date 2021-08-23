@@ -76,6 +76,7 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 	cube_edge_VBO(0.5f, cube_VAO, gl_buf);
 	glBindVertexArray(0);
 	
+    set_gl_animation_rot_angle(view_s, 0);
 	update_projection_struct(view_s);
 	modify_view_by_struct(view_s);
 	
@@ -102,6 +103,7 @@ void draw_quad_gl3(struct view_element *view_s,
 	set_quadVBO(quad_VAO, quad_buf);
 	glBindVertexArray(0);
 	
+    set_gl_animation_rot_angle(view_s, 0);
 	update_projection_struct(view_s);
 	modify_view_by_struct(view_s);
 	

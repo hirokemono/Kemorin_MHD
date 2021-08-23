@@ -46,6 +46,17 @@
 - (int) ToggleQuiltMode
 {
     kemoview_set_quilt_nums(ISET_QUILT_MODE, (int) self.Quilt_flag);
+    if(self.Quilt_flag > 0){
+        self.NumberOfColumns = 9;
+        self.NumberOfRows = 5;
+        self.FocusPoint = 9.5;
+        self.eyeAngle =   35.0;
+        kemoview_set_quilt_nums(ISET_QUILT_RAW, (int) self.NumberOfRows);
+        kemoview_set_quilt_nums(ISET_QUILT_COLUMN, (int) self.NumberOfColumns);
+        kemoview_set_stereo_parameter(ISET_FOCUS, (double) self.FocusPoint);
+        kemoview_set_stereo_parameter(ISET_EYEAGL, (double) self.eyeAngle);
+        self.eyeRatio= (CGFloat) kemoview_get_view_parameter(ISET_EYESEP, 0);
+    }
     return self.Quilt_flag;
 }
 - (IBAction) SetQuiltRawByInput:(id)sender

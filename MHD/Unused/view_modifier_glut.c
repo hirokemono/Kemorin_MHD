@@ -337,6 +337,7 @@ void display_menu(){
 };
 
 void display(){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
 	kemoview_modify_view();
 	glutSwapBuffers();
 	
@@ -375,6 +376,7 @@ void set_main_window_id_glut(int winid){
 void draw_mesh_keep_menu(){
 	glutSetWindow(id_window);
 	kemoview_update_distance();
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
 	kemoview_modify_view();
 	glutPostRedisplay();
 	return;
@@ -394,7 +396,7 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_animation_rot_angle(int_degree);
-		kemoview_rotate();
+        kemoview_modify_view();
 		glutSwapBuffers();
 		
         kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);

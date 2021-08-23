@@ -124,13 +124,23 @@
         id_format = (int) CurrentImageFormat;
     }
     
-    if(id_format == SAVE_PNG){
-        [_movieMakerController SaveKemoviewPNGFile:ImageFilehead];
-    } else if(id_format == SAVE_BMP){
-        [_movieMakerController SaveKemoviewBMPFile:ImageFilehead];
-	} else {
-		[_movieMakerController SaveKemoviewPDFFile:ImageFilehead];
-    }
+    if(kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1){
+        if(id_format == SAVE_PNG){
+            [_movieMakerController SaveKemoviewQuiltPNGFile:ImageFilehead:IZERO:IONE];
+        } else if(id_format == SAVE_BMP){
+            [_movieMakerController SaveKemoviewQuiltBMPFile:ImageFilehead:IZERO:IONE];
+        } else {
+            [_movieMakerController SaveKemoviewQuiltPDFFile:ImageFilehead:IZERO:IONE];
+        }
+    } else {
+        if(id_format == SAVE_PNG){
+            [_movieMakerController SaveKemoviewPNGFile:ImageFilehead];
+        } else if(id_format == SAVE_BMP){
+            [_movieMakerController SaveKemoviewBMPFile:ImageFilehead];
+        } else {
+            [_movieMakerController SaveKemoviewPDFFile:ImageFilehead];
+        }
+    };
     
     [_kemoviewer UpdateImage];
 }

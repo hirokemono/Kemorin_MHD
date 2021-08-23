@@ -413,6 +413,14 @@ void kemoview_get_fliped_img(int npixel_x, int npixel_y,
     flip_gl_bitmap(npixel_x, npixel_y, glimage, fliped_img);
     return;
 }
+void kemoview_add_fliped_quilt_img(int npix_each_x, int npix_each_y,
+                                   unsigned char *glimage, unsigned char *fliped_quilt){
+    get_gl_buffer_to_bmp(npix_each_x, npix_each_y, glimage);
+    flip_gl_quilt_bitmap(kemo_sgl->view_s->num_columns, kemo_sgl->view_s->num_raws, kemo_sgl->view_s->istep_quilt,
+                         npix_each_x, npix_each_y, glimage, fliped_quilt);
+    return;
+};
+
 
 void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char *bgra_in){
     set_texture_psf_from_bgra(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
@@ -422,10 +430,7 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char
 int kemoview_quick_view(void){
 	return quick_mono_kemoview(kemo_sgl);
 };
-void kemoview_modify_view(void){
-	modify_stereo_kemoview(kemo_sgl);
-};
-void kemoview_rotate(void){rotate_stereo_kemoview(kemo_sgl);};
+void kemoview_modify_view(void){modify_stereo_kemoview(kemo_sgl);};
 void kemoview_quilt(void){modify_quilt_kemoview(kemo_sgl);};
 
 void kemoviewer_reset_to_init_angle(void){

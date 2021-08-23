@@ -387,10 +387,11 @@ extern "C" {
     
     void kemoview_get_fliped_img(int npixel_x, int npixel_y,
                                  unsigned char *glimage, unsigned char *fliped_img);
+    void kemoview_add_fliped_quilt_img(int npix_each_x, int npix_each_y,
+                                       unsigned char *glimage, unsigned char *fliped_quilt);
 
 	int kemoview_quick_view(void);
     void kemoview_modify_view(void);
-    void kemoview_rotate(void);
     void kemoview_quilt(void);
 
     void kemoviewer_reset_to_init_angle(void);

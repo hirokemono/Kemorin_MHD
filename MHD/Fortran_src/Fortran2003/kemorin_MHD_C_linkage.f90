@@ -113,8 +113,6 @@
 !    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, const char *fhead);
 !    
 !    void kemoview_modify_view();
-!    void kemoview_rotate();
-!    
 !    void kemoviewer_reset_to_init_angle();
 !    
 !    void kemoview_set_retinamode(int i_retina);
