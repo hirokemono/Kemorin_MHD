@@ -100,6 +100,7 @@
 {
 	[self SetViewTypeMenu:selected];
 
+    kemoview_set_viewtype(selected);
 	[_kemoviewer setViewerType:selected];
 	[_kemoviewer updateProjection];
 	[_kemoviewer UpdateImage];
@@ -187,6 +188,7 @@
 {
     [self SetViewTypeMenu:VIEW_3D];
     [_kemoviewer setViewerType:VIEW_3D];
+    kemoview_set_viewtype(selected);
 }
 
 - (IBAction) UpdateViewByInpit:(id)sender;

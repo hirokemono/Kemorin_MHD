@@ -281,7 +281,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	else{
 		leftBottunFlag = PAN;
 	};
-	kemoview_set_viewtype(selected);
 }
 
 -(void) setAnimate:(NSInteger)flag

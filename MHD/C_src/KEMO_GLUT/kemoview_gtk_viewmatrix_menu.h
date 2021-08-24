@@ -29,7 +29,6 @@
 
 
 struct view_widgets{
-	GtkAdjustment *adj_win_x, *adj_win_y;
 	GtkWidget *spin_win_x, *spin_win_y;
 	GtkWidget *hbox_win_x, *hbox_win_y;
 	
@@ -59,9 +58,13 @@ struct view_widgets{
 	GtkWidget *spin_focus;
 	GtkWidget *hbox_focus;
 	
+	int iflag_updated_eye_separation;
 	GtkAdjustment *adj_eye_sep;
+    GtkAdjustment *adj_sep_angle;
 	GtkWidget *spin_eye_sep;
 	GtkWidget *hbox_eye_sep;
+    GtkWidget *spin_sep_angle;
+    GtkWidget *hbox_sep_angle;
 	
 	GtkWidget *vbox_win, *Frame_win;
 	GtkWidget *vbox_eye, *Frame_eye;

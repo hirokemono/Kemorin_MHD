@@ -124,7 +124,8 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 	int index_mode = gtk_selected_combobox_index(combobox_viewtype);
 	
 	set_viewtype_mode(index_mode);
-	
+    kemoview_set_viewtype(index_mode);
+
 	delete_kemoview_menu(mbot);
 	update_kemoview_menu(mbot, window_main);
 	
@@ -197,6 +198,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     int num_loaded = kemoview_close_PSF_view();
 
     set_viewtype_mode(VIEW_3D);
+    kemoview_set_viewtype(VIEW_3D);
 	dealloc_colormap_views_4_viewer(mbot->psf_gmenu->color_vws);
 	
 	delete_kemoview_menu(mbot);
@@ -560,7 +562,7 @@ void make_gtk_main_menu_box(int *iflag_fast_draw, struct main_buttons *mbot,
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_viewtype), renderer_viewtype,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_viewtype), "changed", 
-				G_CALLBACK(set_viewtype_CB), entry_file);
+                     G_CALLBACK(set_viewtype_CB), entry_file);
 	
 	
 	GtkWidget *label_tree_image_fileformat = create_fixed_label_w_index_tree();

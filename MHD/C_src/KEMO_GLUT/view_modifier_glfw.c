@@ -359,8 +359,6 @@ void set_viewtype_mode(int selected){
 				|| selected == VIEW_YZ) {
 		left_button_func = PAN;
 	};
-	
-	kemoview_set_viewtype(selected);
-	return;
+    return;
 }
 

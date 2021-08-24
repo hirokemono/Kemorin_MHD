@@ -640,6 +640,7 @@ void set_gl_eye_separation_distance(struct view_element *view, double eye_sep)
 {
         view->eye_separation = eye_sep;
 		view->eye_separation_angle = eye_angle_by_separation(view->focal_length, view->eye_separation);
+    printf("view->eye_separation = %le %le \n", view->eye_separation, view->eye_separation_angle);
 	return;
 };
 void set_gl_eye_separation_angle(struct view_element *view, double sep_angle)
