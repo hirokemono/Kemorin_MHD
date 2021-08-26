@@ -7,22 +7,22 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine ray_trace_each_lic_image(mesh, group, sf_grp_4_sf,   &
-!!     &          lic_p, field_lic, draw_param, color_param,            &
-!!     &          viewpoint_vec, modelview_mat, projection_mat,         &
-!!     &          ray_vec4, num_pvr_ray, id_pixel_check,                &
-!!     &          isf_pvr_ray_start, xi_pvr_start,                      &
-!!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray,           &
+!!      subroutine ray_trace_each_lic_image                             &
+!!     &         (mesh, group, sf_grp_4_sf, lic_p, field_lic,           &
+!!     &          pvr_screen, draw_param, color_param, pvr_start,       &
 !!     &          elapse_ray_trace_out, count_int_nod)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(lic_field_data), intent(in) :: field_lic
+!!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
-!!        real(kind = kreal), intent(in) :: viewpoint_vec(3)
-!!        real(kind = kreal), intent(in) :: modelview_mat(4,4)
+!!        type(pvr_ray_start_type), intent(inout) :: pvr_start
+!!        real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                    :: count_int_nod(mesh%node%numnod)
 !!@endverbatim
 !
       module ray_trace_LIC_image
@@ -56,16 +56,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ray_trace_each_lic_image(mesh, group, sf_grp_4_sf,     &
-     &          lic_p, field_lic, draw_param, color_param,              &
-     &          viewpoint_vec, modelview_mat, projection_mat,           &
-     &          ray_vec4, num_pvr_ray, id_pixel_check,                  &
-     &          isf_pvr_ray_start, xi_pvr_start,                        &
-     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray,             &
+      subroutine ray_trace_each_lic_image                               &
+     &         (mesh, group, sf_grp_4_sf, lic_p, field_lic,             &
+     &          pvr_screen, draw_param, color_param, pvr_start,         &
      &          elapse_ray_trace_out, count_int_nod)
 !
       use calypso_mpi_int
       use calypso_mpi_real
+      use t_pvr_ray_startpoints
       use t_noise_node_data
       use t_each_lic_trace_count_time
       use lic_pixel_ray_trace_fix_len
@@ -77,24 +75,11 @@
 !
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
+      type(pvr_projected_position), intent(in) :: pvr_screen
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
-      real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: modelview_mat(4,4)
-      real(kind = kreal), intent(in) :: projection_mat(4,4)
-      real(kind = kreal), intent(in) :: ray_vec4(4)
-      integer(kind = kint), intent(in) :: num_pvr_ray
-      integer(kind = kint), intent(in)                                  &
-     &                    :: id_pixel_check(num_pvr_ray)
-      integer(kind = kint), intent(inout)                               &
-     &                    :: isf_pvr_ray_start(3,num_pvr_ray)
-      real(kind = kreal), intent(inout) :: xi_pvr_start(2,num_pvr_ray)
-      real(kind = kreal), intent(inout) :: xx4_pvr_start(4,num_pvr_ray)
-      real(kind = kreal), intent(inout)                                 &
-     &                    ::  xx4_pvr_ray_start(4,num_pvr_ray)
-      real(kind = kreal), intent(inout)                                 &
-     &                    ::  rgba_ray(4,num_pvr_ray)
+      type(pvr_ray_start_type), intent(inout) :: pvr_start
       real(kind = kreal), intent(inout) :: elapse_ray_trace_out(2)
       real(kind = kreal), intent(inout)                                 &
      &                    :: count_int_nod(mesh%node%numnod)
@@ -114,6 +99,7 @@
       integer, external :: omp_get_thread_num
 #endif
 !
+!      write(*,*) my_rank, 'pvr_start%num_pvr_ray TAKO', pvr_start%num_pvr_ray
       call init_icou_int_nod_smp(mesh%node, l_elsp1)
 !
       ip_smp =     1
@@ -121,53 +107,52 @@
       elapse_line_tmp = 0.0d0
       l_elsp1%elapse_rtrace = MPI_WTIME()
 !
+!
       if(lic_p%iflag_vr_sample_mode .eq. iflag_fixed_size) then
 !$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
 !$omp& reduction(+:elapse_line_tmp,icount_rtrace)
-        do inum = 1, num_pvr_ray
-!         if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
-!           write(*,*) 'check section trace for ', my_rank, inum
-!         end if
-!
+        do inum = 1, pvr_start%num_pvr_ray
 #ifdef _OPENMP
           ip_smp = omp_get_thread_num() + 1
 #endif
           rgba_tmp(1:4) = zero
           call s_lic_pixel_ray_trace_fix_len(mesh%node, mesh%ele,       &
      &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
-     &       viewpoint_vec, modelview_mat, projection_mat,              &
-     &       lic_p, field_lic, draw_param, color_param,                 &
-     &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
-     &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
-     &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
+     &       pvr_screen%viewpoint_vec, pvr_screen%modelview_mat,        &
+     &       pvr_screen%projection_mat,  lic_p, field_lic,              &
+     &       draw_param, color_param, ray_vec4,                         &
+     &       pvr_start%id_pixel_check(inum),                            &
+     &       pvr_start%isf_pvr_ray_start(1,inum),                       &
+     &       pvr_start%xx4_pvr_ray_start(1,inum),                       &
+     &       pvr_start%xx4_pvr_start(1,inum),                           &
+     &       pvr_start%xi_pvr_start(1,inum), rgba_tmp(1),               &
      &       l_elsp1%icou_line_smp(1,ip_smp), icount_rtrace,            &
      &       elapse_line_tmp, iflag_comm)
-          rgba_ray(1:4,inum) = rgba_tmp(1:4)
+          pvr_start%rgba_ray(1:4,inum) = rgba_tmp(1:4)
         end do
 !$omp end parallel do
 !
       else
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)                    &
 !$omp& reduction(+:elapse_line_tmp,icount_rtrace)
-        do inum = 1, num_pvr_ray
-!         if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
-!           write(*,*) 'check section trace for ', my_rank, inum
-!         end if
-!
+        do inum = 1, pvr_start%num_pvr_ray
 #ifdef _OPENMP
           ip_smp = omp_get_thread_num() + 1
 #endif
           rgba_tmp(1:4) = zero
           call s_lic_pixel_ray_trace_by_ele(mesh%node, mesh%ele,        &
      &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
-     &       viewpoint_vec, modelview_mat, projection_mat,              &
-     &       lic_p, field_lic, draw_param, color_param,                 &
-     &       ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum), &
-     &       xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),          &
-     &       xi_pvr_start(1,inum), rgba_tmp(1),                         &
+     &       pvr_screen%viewpoint_vec, pvr_screen%modelview_mat,        &
+     &       pvr_screen%projection_mat, lic_p, field_lic,               &
+     &       draw_param, color_param, ray_vec4,                         &
+     &       pvr_start%id_pixel_check(inum),                            &
+     &       pvr_start%isf_pvr_ray_start(1,inum),                       &
+     &       pvr_start%xx4_pvr_ray_start(1,inum),                       &
+     &       pvr_start%xx4_pvr_start(1,inum),                           &
+     &       pvr_start%xi_pvr_start(1,inum), rgba_tmp(1),               &
      &       l_elsp1%icou_line_smp(1,ip_smp), icount_rtrace,            &
      &       elapse_line_tmp, iflag_comm)
-          rgba_ray(1:4,inum) = rgba_tmp(1:4)
+          pvr_start%rgba_ray(1:4,inum) = rgba_tmp(1:4)
         end do
 !$omp end parallel do
       end if
