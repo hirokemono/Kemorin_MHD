@@ -8,17 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,   &
-!!     &          field_pvr, draw_param, color_param, viewpoint_vec,    &
-!!     &          modelview_mat, projection_mat, ray_vec4,              &
-!!     &          num_pvr_ray, id_pixel_check, isf_pvr_ray_start,       &
-!!     &          xi_pvr_start, xx4_pvr_start, xx4_pvr_ray_start,       &
-!!     &          rgba_ray)
+!!     &          field_pvr, pvr_screen, draw_param, color_param,       &
+!!     &          pvr_start)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !!        type(pvr_field_data), intent(in) :: field_pvr
+!!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
+!!        type(pvr_ray_start_type), intent(inout) :: pvr_start
 !!@endverbatim
       module ray_trace_4_each_image
 !
@@ -49,37 +48,21 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,     &
-     &          field_pvr, draw_param, color_param, viewpoint_vec,      &
-     &          modelview_mat, projection_mat, ray_vec4,                &
-     &          num_pvr_ray, id_pixel_check, isf_pvr_ray_start,         &
-     &          xi_pvr_start, xx4_pvr_start, xx4_pvr_ray_start,         &
-     &          rgba_ray)
+     &          field_pvr, pvr_screen, draw_param, color_param,         &
+     &          pvr_start)
 !
-      use t_geometries_in_pvr_screen
+      use t_pvr_ray_startpoints
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
 !
       type(pvr_field_data), intent(in) :: field_pvr
+      type(pvr_projected_position), intent(in) :: pvr_screen
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
-      real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: modelview_mat(4,4)
-      real(kind = kreal), intent(in) :: projection_mat(4,4)
-      real(kind = kreal), intent(in) :: ray_vec4(4)
-      integer(kind = kint), intent(in) :: num_pvr_ray
-      integer(kind = kint), intent(in)                                  &
-     &                    :: id_pixel_check(num_pvr_ray)
-      integer(kind = kint), intent(inout)                               &
-     &                    :: isf_pvr_ray_start(3,num_pvr_ray)
-      real(kind = kreal), intent(inout) :: xi_pvr_start(2,num_pvr_ray)
-      real(kind = kreal), intent(inout) :: xx4_pvr_start(4,num_pvr_ray)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: xx4_pvr_ray_start(4,num_pvr_ray)
-      real(kind = kreal), intent(inout)                                 &
-     &                    :: rgba_ray(4,num_pvr_ray)
+      type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
       integer(kind = kint) :: inum, iflag_comm, icount_line
       real(kind = kreal) :: rgba_tmp(4)
@@ -88,21 +71,20 @@
       icount_line = 0
 !$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
 !$omp& reduction(+:icount_line)
-      do inum = 1, num_pvr_ray
-!        if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
-!          write(*,*) 'check section trace for ', my_rank, inum
-!        end if
-!
+      do inum = 1, pvr_start%num_pvr_ray
         rgba_tmp(1:4) = zero
         call ray_trace_each_pixel                                       &
      &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp,             &
-     &      sf_grp_4_sf, viewpoint_vec, modelview_mat, projection_mat,  &
-     &      field_pvr, draw_param, color_param,                         &
-     &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
-     &      xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),           &
-     &      xi_pvr_start(1,inum), rgba_tmp(1), icount_line,             &
-     &      iflag_comm)
-        rgba_ray(1:4,inum) = rgba_tmp(1:4)
+     &      sf_grp_4_sf, pvr_screen%viewpoint_vec,                      &
+     &      pvr_screen%modelview_mat, pvr_screen%projection_mat,        &
+     &      field_pvr, draw_param, color_param, ray_vec4,               &
+     &      pvr_start%id_pixel_check(inum),                             &
+     &      pvr_start%isf_pvr_ray_start(1,inum),                        &
+     &      pvr_start%xx4_pvr_ray_start(1,inum),                        &
+     &      pvr_start%xx4_pvr_start(1,inum),                            &
+     &      pvr_start%xi_pvr_start(1,inum),                             &
+     &      rgba_tmp(1), icount_line, iflag_comm)
+        pvr_start%rgba_ray(1:4,inum) = rgba_tmp(1:4)
       end do
 !$omp end parallel do
 !
