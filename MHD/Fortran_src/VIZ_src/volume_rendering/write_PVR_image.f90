@@ -111,12 +111,7 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+3)
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image(mesh, group, sf_grp_4_sf,           &
-     &    field_pvr, draw_param, color_param, pvr_screen%viewpoint_vec, &
-     &    pvr_screen%modelview_mat, pvr_screen%projection_mat,          &
-     &    ray_vec4, pvr_start%num_pvr_ray, pvr_start%id_pixel_check,    &
-     &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
-     &    pvr_start%xx4_pvr_start, pvr_start%xx4_pvr_ray_start,         &
-     &    pvr_start%rgba_ray)
+     &    field_pvr, pvr_screen, draw_param, color_param, pvr_start)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+4)
