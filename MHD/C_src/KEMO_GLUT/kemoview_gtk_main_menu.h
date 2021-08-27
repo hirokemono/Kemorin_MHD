@@ -20,6 +20,7 @@
 #include "kemoview_fileselector_gtk.h"
 #include "kemoview_gtk_evolution_menu.h"
 #include "kemoview_gtk_rotation_menu.h"
+#include "kemoview_gtk_quilt_menu.h"
 #include "kemoview_gtk_axis_menu.h"
 #include "kemoview_gtk_preference_menu.h"
 #include "kemoview_gtk_PSF_menu.h"
@@ -53,6 +54,7 @@ struct main_buttons{
 	struct kemoview_mesh_view *mesh_vws;
 	
 	struct rotation_gtk_menu *rot_gmenu;
+	struct quilt_gtk_menu *quilt_gmenu;
 	
 	GtkWidget *evolutionBox;
 	struct evolution_gtk_menu *evo_gmenu;

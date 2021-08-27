@@ -188,7 +188,7 @@
 {
     [self SetViewTypeMenu:VIEW_3D];
     [_kemoviewer setViewerType:VIEW_3D];
-    kemoview_set_viewtype(selected);
+    kemoview_set_viewtype(VIEW_3D);
 }
 
 - (IBAction) UpdateViewByInpit:(id)sender;

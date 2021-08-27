@@ -49,6 +49,7 @@
 		18EC9F2226D42A2700F6E428 /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F2126D42A2700F6E428 /* libgdk_pixbuf-2.0.dylib */; };
 		18EC9F2426D42A3400F6E428 /* libgio-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F2326D42A3400F6E428 /* libgio-2.0.dylib */; };
 		18EC9F2626D42A4100F6E428 /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18EC9F2526D42A4100F6E428 /* libgobject-2.0.dylib */; };
+		18EC9F2826D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EC9F2726D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -131,6 +132,8 @@
 		18EC9F2126D42A2700F6E428 /* libgdk_pixbuf-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.dylib"; path = "../../../../../../../usr/local/lib/libgdk_pixbuf-2.0.dylib"; sourceTree = "<group>"; };
 		18EC9F2326D42A3400F6E428 /* libgio-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgio-2.0.dylib"; path = "../../../../../../../usr/local/lib/libgio-2.0.dylib"; sourceTree = "<group>"; };
 		18EC9F2526D42A4100F6E428 /* libgobject-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.dylib"; path = "../../../../../../../usr/local/lib/libgobject-2.0.dylib"; sourceTree = "<group>"; };
+		18EC9F2726D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_quilt_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.c; sourceTree = "<group>"; };
+		18EC9F2926D6AE2B00F6E428 /* kemoview_gtk_quilt_menu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_quilt_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_quilt_menu.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +257,8 @@
 				18A91E5524B9318500D30C46 /* kemoview_gtk_rotation_menu.h */,
 				18A91E6824B9318500D30C46 /* kemoview_gtk_viewmatrix_menu.c */,
 				18A91E5224B9318500D30C46 /* kemoview_gtk_viewmatrix_menu.h */,
+				18EC9F2726D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c */,
+				18EC9F2926D6AE2B00F6E428 /* kemoview_gtk_quilt_menu.h */,
 				18A91E6024B9318500D30C46 /* t_ctl_data_4_kemoview_mesh_c.h */,
 				18A91E7524B9318500D30C46 /* tree_view_4_domain_viewer.c */,
 				18A91E6924B9318500D30C46 /* tree_view_4_domain_viewer.h */,
@@ -340,6 +345,7 @@
 				18A91E8324B9318500D30C46 /* kemoview_gtk_axis_menu.c in Sources */,
 				18A91E8924B9318500D30C46 /* tree_view_4_viewer_mesh.c in Sources */,
 				18A91E8824B9318500D30C46 /* tree_view_kemoview_colormap.c in Sources */,
+				18EC9F2826D6AE0C00F6E428 /* kemoview_gtk_quilt_menu.c in Sources */,
 				18A91E7824B9318500D30C46 /* tree_view_4_light_position.c in Sources */,
 				18A91E8A24B9318500D30C46 /* kemoview_gtk_PSF_surface_menu.c in Sources */,
 				18A91E8724B9318500D30C46 /* tree_view_4_surf_group_viewer.c in Sources */,

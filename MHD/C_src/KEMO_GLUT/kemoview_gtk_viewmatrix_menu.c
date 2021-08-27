@@ -232,9 +232,9 @@ GtkWidget * init_viewmatrix_menu_expander(int *iflag_fast_draw, struct view_widg
 	
 	view_menu->adj_aperture = gtk_adjustment_new(0.0, 0.0, 180.0, 0.01, 0.01, 0.0);
 	
-	view_menu->adj_focus = gtk_adjustment_new(0.0, 0.0, 1000.0, 0.01, 0.01, 0.0);
+	view_menu->adj_focus = gtk_adjustment_new(9.5, 0.0, 1000.0, 0.01, 0.01, 0.0);
 	view_menu->adj_eye_sep = gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 0.01, 0.0);
-    view_menu->adj_sep_angle = gtk_adjustment_new(0.1, 0.1, 180.0, 0.1, 0.1, 0.0);
+    view_menu->adj_sep_angle = gtk_adjustment_new(35.0, 0.1, 180.0, 0.1, 0.1, 0.0);
 
 	update_windowsize_menu(view_menu, window);
 	set_viewmatrix_value(view_menu, window);

@@ -25,6 +25,7 @@ kemoview_gtk_fieldline_menu.o \
 kemoview_gtk_axis_menu.o \
 kemoview_gtk_rotation_menu.o \
 kemoview_gtk_evolution_menu.o \
+kemoview_gtk_quilt_menu.o \
 kemoview_gtk_viewmatrix_menu.o \
 kemoview_gtk_main_menu.o \
 kemoview_gtk_preference_menu.o \

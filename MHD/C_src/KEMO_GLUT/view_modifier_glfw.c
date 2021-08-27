@@ -301,7 +301,14 @@ void draw_full(){
 	return;
 };
 
-void write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
+void draw_quilt(void){
+    kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO);
+    kemoview_quilt();
+    glfwSwapBuffers(glfw_window);
+    return;
+};
+
+void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
                              int i_axis, int inc_deg) {
     int i, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;

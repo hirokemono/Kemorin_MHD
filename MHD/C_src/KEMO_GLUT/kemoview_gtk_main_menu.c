@@ -19,6 +19,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 	mbot->psf_gmenu = alloc_psf_gtk_menu();
 	mbot->evo_gmenu = init_evoluaiton_menu_box();
 	mbot->rot_gmenu = init_rotation_menu_box();
+    mbot->quilt_gmenu = init_quilt_menu_box();
 	mbot->pref_gmenu = init_preference_gtk_menu(kemoviewer_data);
 	return mbot;
 };
@@ -606,6 +607,7 @@ void make_gtk_main_menu_box(int *iflag_fast_draw, struct main_buttons *mbot,
 	
     GtkWidget *hbox_axis = make_axis_menu_box();
     GtkWidget *expander_rot = init_rotation_menu_expander(mbot->rot_gmenu, window_main);
+    GtkWidget *expander_quilt = init_quilt_menu_expander(mbot->quilt_gmenu, window_main);
     GtkWidget *expander_view = init_viewmatrix_menu_expander(iflag_fast_draw, mbot->view_menu,
                                                              window_main);
     GtkWidget *expander_pref = init_preference_expander(mbot->pref_gmenu, window_main);
@@ -616,6 +618,7 @@ void make_gtk_main_menu_box(int *iflag_fast_draw, struct main_buttons *mbot,
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_viewtype, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_axis, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_rot, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_quilt, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_view, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), expander_pref, FALSE, FALSE, 0);
 	

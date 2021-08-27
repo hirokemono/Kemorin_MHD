@@ -37,7 +37,9 @@ void set_GLFWindowSize(int width, int height);
 
 int draw_fast(void);
 void draw_full(void);
-void write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
+void draw_quilt(void);
+
+void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
                              int i_axis, int inc_deg);
 void write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt);
