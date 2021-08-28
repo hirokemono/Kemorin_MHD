@@ -153,12 +153,25 @@ NSData *SnapshotData;
     NSInteger YViewsize = [_kemoviewer KemoviewVerticalViewSize];
     [self OpenQTMovieFileWithSize:movieFileName: XViewsize : YViewsize];
 }
--(void) OpenQuiltQTMovieFile:(NSString *)movieFileName{
+-(int) OpenQuiltQTMovieFile:(NSString *)movieFileName{
     int XNumImage = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
     int YNumImage = kemoview_get_quilt_nums(ISET_QUILT_RAW);
     NSInteger XViewsize = XNumImage * [_kemoviewer KemoviewHorizontalViewSize];
-    NSInteger YViewsize = YNumImage * [_kemoviewer KemoviewVerticalViewSize];
-    [self OpenQTMovieFileWithSize:movieFileName: XViewsize : YViewsize];
+	NSInteger YViewsize = YNumImage * [_kemoviewer KemoviewVerticalViewSize];
+	
+	if((XViewsize*YViewsize) > 35536896){
+		int ratio = (float) (XViewsize*YViewsize) / (float) 35536896;
+		char *cp = "Image size is too big!";
+		NSString *str = [NSString stringWithCString: cp encoding:NSUTF8StringEncoding];
+		NSAlert *alert = [[NSAlert alloc] init];
+		[alert setMessageText:str];
+		[alert setInformativeText:@"Set small image size"];
+		[alert runModal];
+		[alert release];
+		return 1;
+	};
+	[self OpenQTMovieFileWithSize:movieFileName: XViewsize : YViewsize];
+	return 0;
 }
 
 -(void) CloseKemoviewMovieFile{
@@ -454,8 +467,7 @@ NSData *SnapshotData;
 
 	if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if(kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1){
- //           [self OpenQuiltQTMovieFile:RotateImageFilenameNoStep];
-            [self OpenQTMovieFile:RotateImageFilenameNoStep];
+            if([self OpenQuiltQTMovieFile:RotateImageFilenameNoStep] != 0) return;
         }else{
             [self OpenQTMovieFile:RotateImageFilenameNoStep];
         }
@@ -542,7 +554,7 @@ NSData *SnapshotData;
 	
 	if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if(kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1){
-            [self OpenQuiltQTMovieFile:EvolutionImageFilename];
+            if([self OpenQuiltQTMovieFile:EvolutionImageFilename] != 0) return;
         }else{
             [self OpenQTMovieFile:EvolutionImageFilename];
         }
