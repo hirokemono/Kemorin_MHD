@@ -99,7 +99,6 @@
       integer, external :: omp_get_thread_num
 #endif
 !
-!      write(*,*) my_rank, 'pvr_start%num_pvr_ray TAKO', pvr_start%num_pvr_ray
       call init_icou_int_nod_smp(mesh%node, l_elsp1)
 !
       ip_smp =     1
