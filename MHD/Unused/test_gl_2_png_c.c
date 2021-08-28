@@ -93,7 +93,11 @@ void  mouse( int button, int state, int mx, int my )
 		turn = 1.0;
 	if ( ( button == GLUT_MIDDLE_BUTTON ) && ( state == GLUT_DOWN ) ){
 		turn = 0.0;
-		gl_buffer_2_png( "tako",  num_xy, num_xy);}
+        unsigned char **iamge_2d = alloc_img_buffer_2_png_rgb(num_xy, num_xy);
+        get_gl_buffer_for_png(num_xy, num_xy, iamge_2d);
+		gl_buffer_2_png( "tako",  num_xy, num_xy, iamge_2d);
+        dealloc_img_buffer_2_png(num_xy, iamge_2d);
+    };
 	// 左ボタンがクリックされたら回転方向を負にする
 	if ( ( button == GLUT_RIGHT_BUTTON ) && ( state == GLUT_DOWN ) )
 		turn = -1.0;

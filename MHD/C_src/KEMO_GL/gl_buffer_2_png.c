@@ -5,36 +5,47 @@
 
 #define _SPACE 0x20
 
-static unsigned char **image;
-
-void alloc_img_buffer_2_png_rgba(int num_x, int num_y){
+unsigned char ** alloc_img_buffer_2_png_rgba(int num_x, int num_y){
+	static unsigned char **image;
 	int j;
 	/* allocate memory image[y_pixel#][4*x_pixel#]*/
-	image = (png_bytepp)malloc(num_y * sizeof(png_bytep));
-	for (j = 0; j < num_y; j++)
-	        image[j] = (png_bytep)malloc(4*num_x * sizeof(png_byte));
+	if((image = (png_bytepp)malloc(num_y * sizeof(png_bytep))) == NULL){
+		printf("malloc error for Vertical PNG image buffer \n");
+		exit(0);
+	};
+	for (j = 0; j < num_y; j++){
+		if((image[j] = (png_bytep)malloc(4*num_x * sizeof(png_byte))) == NULL){
+			printf("malloc error for Horizontal PNG image buffer %d \n", j);
+			exit(0);
+		};
+	};
+	return image;
 };
 
-void alloc_img_buffer_2_png_rgb(int num_x, int num_y){
+unsigned char ** alloc_img_buffer_2_png_rgb(int num_x, int num_y){
+	static unsigned char **image;
 	int j;
 	/* allocate memory image[y_pixel#][3*x_pixel#]*/
-	image = (png_bytepp)malloc(num_y * sizeof(png_bytep));
-	for (j = 0; j < num_y; j++)
-	        image[j] = (png_bytep)malloc(3*num_x * sizeof(png_byte));
+	if((image = (png_bytepp)malloc(num_y * sizeof(png_bytep))) == NULL){
+		printf("malloc error for Vertical PNG image buffer \n");
+		exit(0);
+	};
+	for (j = 0; j < num_y; j++){
+		if((image[j] = (png_bytep)malloc(3*num_x * sizeof(png_byte))) == NULL){
+			printf("malloc error for Horizontal PNG image buffer %d \n", j);
+			exit(0);
+		};
+	};
+	return image;
 };
 
-void link_img_buffer_4_png(unsigned char **image_p){
-	image_p = image;
-	return;
-};
-
-void dealloc_img_buffer_2_png(int num_y){
+void dealloc_img_buffer_2_png(int num_y, unsigned char **image){
 	int j;
 	for (j = 0; j < num_y; j++) free(image[j]);
 	free(image);
 };
 
-static void get_gl_buffer_for_png(int num_x, int num_y){
+void get_gl_buffer_for_png(int num_x, int num_y, unsigned char **image){
     unsigned char *glimage;
 	
 	glimage = malloc(num_x*num_y*3 * sizeof(unsigned char));
@@ -44,19 +55,11 @@ static void get_gl_buffer_for_png(int num_x, int num_y){
 	return;
 }
 
-void gl_buffer_2_png(const char *fhead, int num_x, int num_y){
+void gl_buffer_2_png(const char *fhead, const int num_x, const int num_y,
+                     unsigned char **image){
 	char fname[LENGTHBUF];
-	
-	/* allocate memory */
-	alloc_img_buffer_2_png_rgb(num_x, num_y);
-	
-	get_gl_buffer_for_png(num_x, num_y);
-	
 	sprintf(fname, "%s.png",fhead);
 	printf("PNG file name: %s \n",fname);
 	write_png_rgb(fname,(png_uint_32) num_x,(png_uint_32) num_y, image);
-	
-	/* deallocate memory*/
-	dealloc_img_buffer_2_png(num_y);
-	return;
+    return;
 }

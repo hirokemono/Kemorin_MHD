@@ -35,7 +35,12 @@ int set_image_format_id_by_ext(char *image_fmt){
 void write_gl_window_to_file(int iflag_img, const char *fhead, int nwin_x, int nwin_y){
 	
 /*	if (iflag_img == SAVE_EPS) { outputEPS(gl_drawID, I_BUFFERSIZE, IONE, colorbar_text, fhead); }*/
-	if (iflag_img == SAVE_PNG)  { gl_buffer_2_png(fhead, nwin_x, nwin_y); }
+	if (iflag_img == SAVE_PNG){
+        unsigned char **iamge_2d = alloc_img_buffer_2_png_rgb(nwin_x, nwin_y);
+        get_gl_buffer_for_png(nwin_x, nwin_y, iamge_2d);
+        gl_buffer_2_png(fhead, nwin_x, nwin_y, iamge_2d);
+        dealloc_img_buffer_2_png(nwin_y, iamge_2d);
+    }
     if (iflag_img == SAVE_BMP)  { gl_buffer_to_bmp(fhead, nwin_x, nwin_y); }
 	else if(iflag_img == SAVE_PPM_B) { gl_buffer_to_ppm_p6(fhead, nwin_x, nwin_y); }
 	else if(iflag_img == SAVE_PPM_A) { gl_buffer_to_ppm_p3(fhead, nwin_x, nwin_y); }
