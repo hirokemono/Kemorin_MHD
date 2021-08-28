@@ -238,9 +238,7 @@ NSData *SnapshotData;
         kemoview_set_quilt_nums(ISET_QUILT_COUNT, (int) self.CurrentStep);
         [_kemoviewer DrawQuilt:int_degree:rotationaxis];
 
-        kemoview_add_fliped_quilt_img((int) [_kemoviewer KemoviewHorizontalViewSize],
-                                      (int) [_kemoviewer KemoviewVerticalViewSize],
-                                      glimage, [SnapshotBitmapRep bitmapData]);
+        kemoview_add_fliped_quilt_img(glimage, [SnapshotBitmapRep bitmapData]);
 
         
         [evolutionProgreessBar incrementBy:(double) 1.0];
@@ -456,7 +454,8 @@ NSData *SnapshotData;
 
 	if (CurrentMovieFormat == SAVE_QT_MOVIE){
         if(kemoview_get_quilt_nums(ISET_QUILT_MODE) == 1){
-            [self OpenQuiltQTMovieFile:RotateImageFilenameNoStep];
+ //           [self OpenQuiltQTMovieFile:RotateImageFilenameNoStep];
+            [self OpenQTMovieFile:RotateImageFilenameNoStep];
         }else{
             [self OpenQTMovieFile:RotateImageFilenameNoStep];
         }
