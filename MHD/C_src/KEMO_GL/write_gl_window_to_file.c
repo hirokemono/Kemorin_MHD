@@ -32,7 +32,19 @@ int set_image_format_id_by_ext(char *image_fmt){
 	return id_img;
 }
 
+static unsigned char * alloc_img_buffer_to_bmp(int nwin_x, int nwin_y){
+    unsigned char *image;
+    if((image = (unsigned char*)calloc(3*nwin_x*nwin_y, sizeof(unsigned char))) == NULL){
+        printf("malloc error for Bitmap image buffer \n");
+        exit(0);
+    };
+    return image;
+};
+
+static void dealloc_img_buffer_to_bmp(unsigned char *image){free(image);};
+
 void write_gl_window_to_file(int iflag_img, const char *fhead, int nwin_x, int nwin_y){
+	unsigned char *image;
 	
 /*	if (iflag_img == SAVE_EPS) { outputEPS(gl_drawID, I_BUFFERSIZE, IONE, colorbar_text, fhead); }*/
 	if (iflag_img == SAVE_PNG){
@@ -41,9 +53,22 @@ void write_gl_window_to_file(int iflag_img, const char *fhead, int nwin_x, int n
         gl_buffer_2_png(fhead, nwin_x, nwin_y, iamge_2d);
         dealloc_img_buffer_2_png(nwin_y, iamge_2d);
     }
-    if (iflag_img == SAVE_BMP)  { gl_buffer_to_bmp(fhead, nwin_x, nwin_y); }
-	else if(iflag_img == SAVE_PPM_B) { gl_buffer_to_ppm_p6(fhead, nwin_x, nwin_y); }
-	else if(iflag_img == SAVE_PPM_A) { gl_buffer_to_ppm_p3(fhead, nwin_x, nwin_y); }
+	if (iflag_img == SAVE_BMP)  {
+		image = alloc_img_buffer_to_bmp(nwin_x, nwin_y);
+		get_gl_buffer_to_bmp(nwin_x, nwin_y, image);
+		pixout_BMP_c(fhead, nwin_x, nwin_y, image); 
+		dealloc_img_buffer_to_bmp(image);
+	}else if(iflag_img == SAVE_PPM_B) {
+		image = alloc_img_buffer_to_bmp(nwin_x, nwin_y);
+		get_gl_buffer_to_bmp(nwin_x, nwin_y, image);
+		pixout_ppm_p6_c(fhead, nwin_x, nwin_y, image);
+		dealloc_img_buffer_to_bmp(image);
+	}else if(iflag_img == SAVE_PPM_A) {
+		image = alloc_img_buffer_to_bmp(nwin_x, nwin_y);
+		get_gl_buffer_to_bmp(nwin_x, nwin_y, image);
+		pixout_ppm_p3_c(fhead, nwin_x, nwin_y, image);
+		dealloc_img_buffer_to_bmp(image);
+	}
 	
 	return;
 }
