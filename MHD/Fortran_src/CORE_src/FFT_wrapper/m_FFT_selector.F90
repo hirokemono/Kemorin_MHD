@@ -183,11 +183,14 @@
 !
 !
 #ifdef FFTW3
-      set_fft_library_ctl = iflag_FFTW_SINGLE
+      iflag = iflag_FFTW_SINGLE
 #else
-      set_fft_library_ctl = iflag_FFTPACK_ONCE
+      iflag = iflag_FFTPACK_ONCE
 #endif
-      if(iflag_ctl .eq. 0) return
+      if(iflag_ctl .eq. 0) then
+        set_fft_library_ctl = iflag
+        return
+      end if
 !
       if(cmp_no_case(FFT_library_ctl, hd_search_fastest_fft)) then
         iflag = iflag_SEARCH_FASTEST_FFT
