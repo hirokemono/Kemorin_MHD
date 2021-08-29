@@ -1,4 +1,4 @@
-!>@file   m_FFT_selector.f90
+!>@file   m_FFT_selector.F90
 !!@brief  module m_FFT_selector
 !!
 !!@author H. Matsui
