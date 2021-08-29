@@ -35,30 +35,32 @@
 !
 !
       if(sph%sph_rtp%nidx_rtp(1) .lt. np_smp) then
-        write(e_message,'(a,i5)')                                       &
-     &     'OpenMP threads needs to be less than ',                     &
-     &     sph%sph_rtp%nidx_rtp(1)
+        write(e_message,'(2a,i5)')                                      &
+     &     ' OpenMP threads needs to be less than',                     &
+     &     ' radial grid in physical space', sph%sph_rtp%nidx_rtp(1)
         call calypso_mpi_abort(ierr_P_SMP, e_message)
       end if
 !
       if(sph%sph_rtp%nidx_rtp(2) .lt. np_smp) then
         write(e_message,'(a,i5)')                                       &
-     &     'OpenMP threads needs to be less than ',                     &
-     &     sph%sph_rtp%nidx_rtp(2)
+     &     ' OpenMP threads needs to be less than ',                    &
+     &     ' meridional grid in physical space',                        &
+     &      sph%sph_rtp%nidx_rtp(2)
         call calypso_mpi_abort(ierr_P_SMP, e_message)
       end if
 !
       if(sph%sph_rtm%nidx_rtm(3) .lt. np_smp) then
-        write(e_message,'(a,i5)')                                      &
-     &     'OpenMP threads needs to be less than ',                    &
-     &      sph%sph_rtm%nidx_rtm(2)
+        write(e_message,'(a,i5)')                                       &
+     &     'OpenMP threads needs to be less than ',                     &
+     &     ' Fourier modes in longitudinal direction',                  &
+     &      sph%sph_rtm%nidx_rtm(3)
         call calypso_mpi_abort(ierr_P_SMP, e_message)
       end if
 !
-      if(sph%sph_rj%nidx_rj(2)*sph%sph_rj%nidx_rj(2) .lt. np_smp) then
+      if(sph%sph_rj%nidx_rj(2) .lt. np_smp) then
         write(e_message,'(a,i5)')                                      &
      &     'OpenMP threads needs to be less than ',                    &
-     &     (sph%sph_rj%nidx_rj(2) * sph%sph_rj%nidx_rj(2))
+     &      sph%sph_rj%nidx_rj(2)
         call calypso_mpi_abort(ierr_P_SMP, e_message)
       end if
 !
