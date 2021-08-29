@@ -114,8 +114,8 @@
 !>      Character flag to use test FFT
       character(len = kchara), parameter :: hd_FFT_TEST =  'TEST'
 !
-!>      integer flag for undefined FFT routine
-      integer(kind = kint), parameter :: iflag_UNDEFINED_FFT =   -999
+!!>      integer flag for undefined FFT routine
+!      integer(kind = kint), parameter :: iflag_UNDEFINED_FFT =   -999
 !>      integer flag for fastest FFT search
       integer(kind = kint), parameter :: iflag_SEARCH_FASTEST_FFT = -1
 !
