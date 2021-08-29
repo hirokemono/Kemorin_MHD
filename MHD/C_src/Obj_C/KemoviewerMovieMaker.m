@@ -160,12 +160,13 @@ NSData *SnapshotData;
 	NSInteger YViewsize = YNumImage * [_kemoviewer KemoviewVerticalViewSize];
 	
 	if((XViewsize*YViewsize) > 35536896){
-		int ratio = (float) (XViewsize*YViewsize) / (float) 35536896;
-		char *cp = "Image size is too big!";
+		float ratio = (float) (XViewsize*YViewsize) / (float) 35536896;
+		char cp[80];
+		sprintf(cp, "Image size is %e times larger than the limit.", ratio);
 		NSString *str = [NSString stringWithCString: cp encoding:NSUTF8StringEncoding];
 		NSAlert *alert = [[NSAlert alloc] init];
 		[alert setMessageText:str];
-		[alert setInformativeText:@"Set small image size"];
+		[alert setInformativeText:@"Set smaller image size"];
 		[alert runModal];
 		[alert release];
 		return 1;
