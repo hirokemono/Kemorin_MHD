@@ -63,6 +63,7 @@
       use set_address_sph_trans_MHD
       use init_sphrical_transform_MHD
       use set_address_all_sph_trans
+      use check_sph_mhd_openmp_size
 !
       type(SPH_MHD_model_data), intent(in) :: SPH_model
 !
@@ -79,6 +80,8 @@
 !>      total number of svalars for spherical harmonics transform
       integer(kind = kint), save :: nscalar_max_trans
 !
+!
+      call s_check_sph_mhd_openmp_size(WK%WK_leg, SPH_MHD%sph)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_all_spherical_transform'
