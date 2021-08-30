@@ -97,12 +97,10 @@
         SPH_STR%trans_p%nvector_legendre = 0
       end if
 !
-      if(spt_ctl%Legendre_trans_loop_ctl%iflag .gt. 0) then
-        SPH_STR%WK_leg%id_legendre                                      &
+      SPH_STR%WK_leg%id_legendre                                        &
      &    = set_legendre_trans_mode_ctl                                 &
-     &    (spt_ctl%Legendre_trans_loop_ctl%charavalue)
-      end if
-!
+     &    (spt_ctl%Legendre_trans_loop_ctl%iflag,                       &
+     &     spt_ctl%Legendre_trans_loop_ctl%charavalue)
       SPH_STR%trans_p%iflag_FFT                                         &
      &     = set_fft_library_ctl(spt_ctl%FFT_lib_ctl%iflag,             &
      &                           spt_ctl%FFT_lib_ctl%charavalue)
@@ -220,12 +218,10 @@
         SPH_STR%trans_p%nvector_legendre = 0
       end if
 !
-      if(spt_ctl%Legendre_trans_loop_ctl%iflag .gt. 0) then
-        SPH_STR%WK_leg%id_legendre                                      &
-     &        = set_legendre_trans_mode_ctl                             &
-     &        (spt_ctl%Legendre_trans_loop_ctl%charavalue)
-      end if
-!
+      SPH_STR%WK_leg%id_legendre                                        &
+     &      = set_legendre_trans_mode_ctl                               &
+     &        (spt_ctl%Legendre_trans_loop_ctl%iflag,                   &
+     &         spt_ctl%Legendre_trans_loop_ctl%charavalue)
       SPH_STR%trans_p%iflag_FFT                                         &
      &     = set_fft_library_ctl(spt_ctl%FFT_lib_ctl%iflag,             &
      &                           spt_ctl%FFT_lib_ctl%charavalue)

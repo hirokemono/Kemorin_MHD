@@ -827,6 +827,7 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_rotation_menu.h \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_quilt_menu.h \
+  $(C_SRCDIR)/KEMO_GLUT/view_modifier_glfw.h \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_axis_menu.h \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_gtk_preference_menu.h \
   $(C_SRCDIR)/GTK/tree_view_4_pvr_colormap.h \
@@ -1132,6 +1133,7 @@ kemoview_gtk_quilt_menu.o: \
   $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h \
   $(C_SRCDIR)/KEMO_GLUT/kemoview_fileselector_gtk.h \
   $(C_SRCDIR)/GTK/kemoview_gtk_routines.h \
+  $(C_SRCDIR)/KEMO_GLUT/view_modifier_glfw.h \
   $(C_SRCDIR)/KEMO_GLUT/view_modifier_gtk.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $<
 kemoview_gtk_rotation_menu.o: \
