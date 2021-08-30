@@ -3,6 +3,47 @@
 
 #include "write_image_2_png.h"
 
+
+unsigned char ** alloc_img_buffer_2_png_rgba(int num_x, int num_y){
+	static unsigned char **image;
+	int j;
+	/* allocate memory image[y_pixel#][4*x_pixel#]*/
+	if((image = (png_bytepp)malloc(num_y * sizeof(png_bytep))) == NULL){
+		printf("malloc error for Vertical PNG image buffer \n");
+		exit(0);
+	};
+	for (j = 0; j < num_y; j++){
+		if((image[j] = (png_bytep)malloc(4*num_x * sizeof(png_byte))) == NULL){
+			printf("malloc error for Horizontal PNG image buffer %d \n", j);
+			exit(0);
+		};
+	};
+	return image;
+};
+
+unsigned char ** alloc_img_buffer_2_png_rgb(int num_x, int num_y){
+	static unsigned char **image;
+	int j;
+	/* allocate memory image[y_pixel#][3*x_pixel#]*/
+	if((image = (png_bytepp)malloc(num_y * sizeof(png_bytep))) == NULL){
+		printf("malloc error for Vertical PNG image buffer \n");
+		exit(0);
+	};
+	for (j = 0; j < num_y; j++){
+		if((image[j] = (png_bytep)malloc(3*num_x * sizeof(png_byte))) == NULL){
+			printf("malloc error for Horizontal PNG image buffer %d \n", j);
+			exit(0);
+		};
+	};
+	return image;
+};
+
+void dealloc_img_buffer_2_png(int num_y, unsigned char **image){
+	int j;
+	for (j=0; j<num_y; j++) free(image[j]);
+	free(image);
+};
+
 static void write_row_callback(png_structp png_ptr, png_uint_32 row, int pass)
 {
 	/*
@@ -10,14 +51,16 @@ static void write_row_callback(png_structp png_ptr, png_uint_32 row, int pass)
 	 */
 }
 
-void write_png_rgba(const char *file_name, png_uint_32 num_x, png_uint_32 num_y,
-			png_bytepp image)
-{
+void write_png_rgba(const char *file_prefix, png_uint_32 num_x, png_uint_32 num_y,
+                    png_bytepp image){
 	FILE		*fp;
+    char file_name[LENGTHBUF];
 	png_structp	png_ptr;
 	png_infop	info_ptr;
 	
-	
+    sprintf(file_name, "%s.png", file_prefix);
+    printf("PNG file ouput: %s",file_name);
+    
 	void write_row_callback(png_structp png_ptr, png_uint_32 row, int pass);
 	
 	if ((fp = fopen(file_name, "wb")) == NULL) return;
@@ -70,17 +113,21 @@ void write_png_rgba(const char *file_name, png_uint_32 num_x, png_uint_32 num_y,
 	/* Clear memory */
 	png_destroy_write_struct(&png_ptr, &info_ptr);
 	fclose(fp);
+    
+    printf(" ...end \n");
 	return;
 }
 
-void write_png_rgb(const char *file_name, png_uint_32 num_x, png_uint_32 num_y,
+void write_png_rgb(const char *file_prefix, png_uint_32 num_x, png_uint_32 num_y,
 			png_bytepp image)
 {
 	FILE		*fp;
+    char file_name[LENGTHBUF];
 	png_structp	png_ptr;
 	png_infop	info_ptr;
 	
-	printf("PNG data file: %s...end \n", file_name);
+    sprintf(file_name, "%s.png", file_prefix);
+    printf("PNG file ouput: %s",file_name);
 	
 	void write_row_callback(png_structp png_ptr, png_uint_32 row, int pass);
 	
@@ -134,10 +181,13 @@ void write_png_rgb(const char *file_name, png_uint_32 num_x, png_uint_32 num_y,
 	/* Clear memory */
 	png_destroy_write_struct(&png_ptr, &info_ptr);
 	fclose(fp);
+    
+    printf(" ...end \n");
 	return;
 }
 
-void write_png_rgba_c(const char *file_head, const int *num_x, const int *num_y, const char *cimage){
+void write_png_rgba_c(const char *file_prefix, const int *num_x, const int *num_y,
+					  const char *cimage){
 	char fname[LENGTHBUF];
 	unsigned char **image;
 	png_uint_32 nx = (png_uint_32) *num_x;
@@ -157,16 +207,14 @@ void write_png_rgba_c(const char *file_head, const int *num_x, const int *num_y,
 		}
 	}
 	
-	sprintf(fname,"%s.png",file_head);
-	write_png_rgba(fname, nx, ny, image);
-	
-	for (j = 0; j < ny; j++) free(image[j]);
-	free(image);
-	
+	write_png_rgba(file_prefix, nx, ny, image);
+	dealloc_img_buffer_2_png(ny, image);
 	return;
 }
 
-void write_png_rgb_c(const char *file_head, const int *num_x, const int *num_y, const char *cimage){
+
+void write_png_rgb_c(const char *file_prefix, const int *num_x, const int *num_y,
+					 const char *cimage){
 	char fname[LENGTHBUF];
 	unsigned char **image;
 	png_uint_32 nx = (png_uint_32) *num_x;
@@ -185,11 +233,7 @@ void write_png_rgb_c(const char *file_head, const int *num_x, const int *num_y, 
 		}
 	}
 	
-	sprintf(fname, "%s.png",file_head);
-	write_png_rgb(fname, nx, ny, image);
-	
-	for (j = 0; j < ny; j++) free(image[j]);
-	free(image);
-	
+	write_png_rgb(file_prefix, nx, ny, image);
+	dealloc_img_buffer_2_png(ny, image);
 	return;
 }

@@ -147,6 +147,7 @@ static void set_image_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user
 static void image_save_CB(GtkButton *button, gpointer user_data){
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 	int iflag_set = kemoview_gtk_save_file_select(button, user_data);
+    int iflag_quilt = kemoview_get_quilt_nums(ISET_QUILT_MODE);
 	int id_imagefmt_by_input;
 	if(iflag_set == IZERO) return;
 	
@@ -167,7 +168,13 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
 	kemoview_free_kvstring(stripped_ext);
 	
 	printf("header: %s\n", file_prefix->string);
-    kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix);
+    if(iflag_quilt == 0){
+        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix);
+    } else {
+        int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
+        int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
+       printf("quilt! %d x %d\n", nimg_column, nimg_raw);
+    }
     kemoview_free_kvstring(file_prefix);
 	
 	return;

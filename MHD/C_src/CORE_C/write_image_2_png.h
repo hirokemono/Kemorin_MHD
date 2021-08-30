@@ -15,15 +15,20 @@
 #include "calypso_param_c.h"
 
 /* prototypes */
+unsigned char ** alloc_img_buffer_2_png_rgba(int num_x, int num_y);
+unsigned char ** alloc_img_buffer_2_png_rgb(int num_x, int num_y);
+void dealloc_img_buffer_2_png(int num_y, unsigned char **image);
 
 
-void write_png_rgba(const char *file_name, png_uint_32 num_x, png_uint_32 num_y,
-			png_bytepp image);
-void write_png_rgb(const char *file_name, png_uint_32 num_x, png_uint_32 num_y,
-			png_bytepp image);
+void write_png_rgba(const char *file_prefix, png_uint_32 num_x, png_uint_32 num_y,
+                    png_bytepp image);
+void write_png_rgb(const char *file_prefix, png_uint_32 num_x, png_uint_32 num_y,
+                   png_bytepp image);
 
-void write_png_rgba_c(const char *file_head, const int *num_x, const int *num_y, const char *cimage);
-void write_png_rgb_c(const char *file_head, const int *num_x, const int *num_y, const char *cimage);
+void write_png_rgba_c(const char *file_prefix, const int *num_x, const int *num_y,
+                      const char *cimage);
+void write_png_rgb_c(const char *file_prefix, const int *num_x, const int *num_y,
+                     const char *cimage);
 
 /*    file_name:     output file_name
  num_x, num_y:  size of image (pixels)

@@ -95,7 +95,7 @@ void  mouse( int button, int state, int mx, int my )
 		turn = 0.0;
         unsigned char **iamge_2d = alloc_img_buffer_2_png_rgb(num_xy, num_xy);
         get_gl_buffer_for_png(num_xy, num_xy, iamge_2d);
-		gl_buffer_2_png( "tako",  num_xy, num_xy, iamge_2d);
+        write_png_rgb("tako",(png_uint_32) num_xy,(png_uint_32) num_xy, iamge_2d);
         dealloc_img_buffer_2_png(num_xy, iamge_2d);
     };
 	// 左ボタンがクリックされたら回転方向を負にする

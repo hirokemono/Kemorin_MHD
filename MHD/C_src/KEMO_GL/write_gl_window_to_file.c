@@ -45,31 +45,32 @@ static void dealloc_img_buffer_to_bmp(unsigned char *image){free(image);};
 
 void write_gl_window_to_file(int iflag_img, const char *fhead, int nwin_x, int nwin_y){
 	unsigned char *image;
+    unsigned char **image_2d;
 	
-/*	if (iflag_img == SAVE_EPS) { outputEPS(gl_drawID, I_BUFFERSIZE, IONE, colorbar_text, fhead); }*/
 	if (iflag_img == SAVE_PNG){
-        unsigned char **iamge_2d = alloc_img_buffer_2_png_rgb(nwin_x, nwin_y);
-        get_gl_buffer_for_png(nwin_x, nwin_y, iamge_2d);
-        gl_buffer_2_png(fhead, nwin_x, nwin_y, iamge_2d);
-        dealloc_img_buffer_2_png(nwin_y, iamge_2d);
+        image_2d = alloc_img_buffer_2_png_rgb(nwin_x, nwin_y);
+        get_gl_buffer_to_png(nwin_x, nwin_y, image_2d);
+	} else {
+		image = alloc_img_buffer_to_bmp(nwin_x, nwin_y);
+		get_gl_buffer_to_bmp(nwin_x, nwin_y, image);
+	};
+	
+	if (iflag_img == SAVE_PNG){
+        write_png_rgb(fhead, (png_uint_32) nwin_x,(png_uint_32) nwin_y, image_2d);
     }
 	if (iflag_img == SAVE_BMP)  {
-		image = alloc_img_buffer_to_bmp(nwin_x, nwin_y);
-		get_gl_buffer_to_bmp(nwin_x, nwin_y, image);
 		pixout_BMP_c(fhead, nwin_x, nwin_y, image); 
-		dealloc_img_buffer_to_bmp(image);
 	}else if(iflag_img == SAVE_PPM_B) {
-		image = alloc_img_buffer_to_bmp(nwin_x, nwin_y);
-		get_gl_buffer_to_bmp(nwin_x, nwin_y, image);
 		pixout_ppm_p6_c(fhead, nwin_x, nwin_y, image);
-		dealloc_img_buffer_to_bmp(image);
 	}else if(iflag_img == SAVE_PPM_A) {
-		image = alloc_img_buffer_to_bmp(nwin_x, nwin_y);
-		get_gl_buffer_to_bmp(nwin_x, nwin_y, image);
 		pixout_ppm_p3_c(fhead, nwin_x, nwin_y, image);
-		dealloc_img_buffer_to_bmp(image);
 	}
 	
+	if (iflag_img == SAVE_PNG){
+        dealloc_img_buffer_2_png(nwin_y, image_2d);
+	} else {
+		dealloc_img_buffer_to_bmp(image);
+	};
 	return;
 }
 

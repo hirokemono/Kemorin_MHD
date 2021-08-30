@@ -10,7 +10,7 @@
 #include "calypso_param_c.h"
 #include "move_draw_objects_gl.h"
 #include "write_image_2_bmp.h"
-#include "gl_buffer_2_png.h"
+#include "write_image_2_png.h"
 
 
 /* prototypes */

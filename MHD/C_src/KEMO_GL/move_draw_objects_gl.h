@@ -16,6 +16,7 @@
 #include "draw_patches_4_PSF.h"
 #include "draw_map_4_PSF.h"
 #include "draw_patch_4_mesh_c.h"
+#include "set_texture_4_psf.h"
 
 struct kemoview_VAOs{
 	struct VAO_ids *cube_VAO;
@@ -42,6 +43,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage);
+void get_gl_buffer_to_png(int num_x, int num_y, unsigned char **image_2d);
 
 void quick_draw_objects_gl3(struct kemoviewer_type *kemoview);
 void update_draw_objects_gl3(struct kemoviewer_type *kemoview);
