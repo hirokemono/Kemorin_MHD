@@ -129,17 +129,6 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
                  GL_RGB, GL_UNSIGNED_BYTE,(GLubyte *) glimage);
 }
 
-void get_gl_buffer_to_png(int num_x, int num_y, unsigned char **image_2d){
-    unsigned char *glimage;
-    
-    glimage = malloc(num_x*num_y*3 * sizeof(unsigned char));
-    get_gl_buffer_to_bmp(num_x, num_y, glimage);
-    flip_gl_bitmap_to_img2d(num_x, num_y, glimage, image_2d);
-    free(glimage);
-    return;
-}
-
-
 static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
 			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
