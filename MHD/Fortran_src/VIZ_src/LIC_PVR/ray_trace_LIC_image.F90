@@ -85,7 +85,6 @@
      &                    :: count_int_nod(mesh%node%numnod)
 !
       integer(kind = kint) :: inum, iflag_comm
-      real(kind = kreal) :: rgba_tmp(4)
 !
 !      type(noise_mask), allocatable :: n_mask
       integer(kind = kint) :: icount_rtrace
@@ -108,13 +107,13 @@
 !
 !
       if(lic_p%iflag_vr_sample_mode .eq. iflag_fixed_size) then
-!$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
+!$omp parallel do private(inum,iflag_comm)                              &
 !$omp& reduction(+:elapse_line_tmp,icount_rtrace)
         do inum = 1, pvr_start%num_pvr_ray
 #ifdef _OPENMP
           ip_smp = omp_get_thread_num() + 1
 #endif
-          rgba_tmp(1:4) = zero
+          pvr_start%rgba_ray(1:4,inum) = zero
           call s_lic_pixel_ray_trace_fix_len(mesh%node, mesh%ele,       &
      &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
      &       pvr_screen%viewpoint_vec, pvr_screen%modelview_mat,        &
@@ -124,21 +123,21 @@
      &       pvr_start%isf_pvr_ray_start(1,inum),                       &
      &       pvr_start%xx4_pvr_ray_start(1,inum),                       &
      &       pvr_start%xx4_pvr_start(1,inum),                           &
-     &       pvr_start%xi_pvr_start(1,inum), rgba_tmp(1),               &
+     &       pvr_start%xi_pvr_start(1,inum),                            &
+     &       pvr_start%rgba_ray(1,inum),                                &
      &       l_elsp1%icou_line_smp(1,ip_smp), icount_rtrace,            &
      &       elapse_line_tmp, iflag_comm)
-          pvr_start%rgba_ray(1:4,inum) = rgba_tmp(1:4)
         end do
 !$omp end parallel do
 !
       else
-!$omp parallel do private(inum, iflag_comm,rgba_tmp)                    &
+!$omp parallel do private(inum, iflag_comm)                             &
 !$omp& reduction(+:elapse_line_tmp,icount_rtrace)
         do inum = 1, pvr_start%num_pvr_ray
 #ifdef _OPENMP
           ip_smp = omp_get_thread_num() + 1
 #endif
-          rgba_tmp(1:4) = zero
+          pvr_start%rgba_ray(1:4,inum) = zero
           call s_lic_pixel_ray_trace_by_ele(mesh%node, mesh%ele,        &
      &       mesh%surf, group%surf_grp, sf_grp_4_sf,                    &
      &       pvr_screen%viewpoint_vec, pvr_screen%modelview_mat,        &
@@ -148,10 +147,10 @@
      &       pvr_start%isf_pvr_ray_start(1,inum),                       &
      &       pvr_start%xx4_pvr_ray_start(1,inum),                       &
      &       pvr_start%xx4_pvr_start(1,inum),                           &
-     &       pvr_start%xi_pvr_start(1,inum), rgba_tmp(1),               &
+     &       pvr_start%xi_pvr_start(1,inum),                            &
+     &       pvr_start%rgba_ray(1,inum),                                &
      &       l_elsp1%icou_line_smp(1,ip_smp), icount_rtrace,            &
      &       elapse_line_tmp, iflag_comm)
-          pvr_start%rgba_ray(1:4,inum) = rgba_tmp(1:4)
         end do
 !$omp end parallel do
       end if
