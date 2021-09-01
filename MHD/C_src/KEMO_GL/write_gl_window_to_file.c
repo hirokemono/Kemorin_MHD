@@ -32,7 +32,7 @@ int set_image_format_id_by_ext(char *image_fmt){
 	return id_img;
 }
 
-static unsigned char * alloc_img_buffer_to_bmp(int nwin_x, int nwin_y){
+unsigned char * alloc_img_buffer_to_bmp(int nwin_x, int nwin_y){
     unsigned char *image;
     if((image = (unsigned char*)calloc(3*nwin_x*nwin_y, sizeof(unsigned char))) == NULL){
         printf("malloc error for Bitmap image buffer \n");
@@ -41,10 +41,9 @@ static unsigned char * alloc_img_buffer_to_bmp(int nwin_x, int nwin_y){
     return image;
 };
 
-void write_gl_window_to_file(int iflag_img, const char *fhead, int nwin_x, int nwin_y){
+void write_gl_window_to_file(int iflag_img, const char *fhead, int nwin_x, int nwin_y,
+                             unsigned char *image){
     unsigned char **image_2d;
-    unsigned char *image = alloc_img_buffer_to_bmp(nwin_x, nwin_y);
-    get_gl_buffer_to_bmp(nwin_x, nwin_y, image);
 
     if (iflag_img == SAVE_PNG){
         image_2d = alloc_img_buffer_2_png_rgb(nwin_x, nwin_y);
@@ -58,17 +57,15 @@ void write_gl_window_to_file(int iflag_img, const char *fhead, int nwin_x, int n
 	}else if(iflag_img == SAVE_PPM_A) {
 		pixout_ppm_p3_c(fhead, nwin_x, nwin_y, image);
 	}
-	
-    free(image);
-	return;
+    return;
 }
 
 void write_gl_window_step_file(int iflag_img, int istep, const char *fhead,
-			int nwin_x, int nwin_y){
+			int nwin_x, int nwin_y, unsigned char *image){
 	char fhead_step[LENGTHBUF];
 	
 	sprintf(fhead_step, "%s.%d%c",fhead, istep,'\0');
 	/* printf("file header: %s \n",fhead_step); */
-	write_gl_window_to_file(iflag_img, fhead_step, nwin_x, nwin_y);
+	write_gl_window_to_file(iflag_img, fhead_step, nwin_x, nwin_y, image);
 	return;
 }

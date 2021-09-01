@@ -60,7 +60,7 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-	write_rotate_views(NO_SAVE_FILE, image_prefix, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
+    sel_write_rotate_views(NO_SAVE_FILE, image_prefix, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
 	kemoview_free_kvstring(image_prefix);
 	return;
 };
@@ -87,7 +87,7 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	kemoview_free_kvstring(filename);
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-	write_rotate_views(rot_gmenu->id_fmt_rot, file_prefix, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
+    sel_write_rotate_views(rot_gmenu->id_fmt_rot, file_prefix, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
 	
 	return;
 };

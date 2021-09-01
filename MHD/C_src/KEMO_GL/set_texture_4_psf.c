@@ -42,7 +42,8 @@ void flip_gl_quilt_bitmap(int n_quilt_column, int n_quilt_raw, int istep_quilt,
     for (j = 0; j < npix_each_y; j++) {
         for (i = 0; i < npix_each_x; i++) {
             k = i + (npix_each_y-j-1)*npix_each_x;
-            l = i + i_column * npix_each_x + (j + (n_quilt_raw-j_raw-1)*npix_each_y) * (n_quilt_column*npix_each_x);
+			l = i + i_column * npix_each_x
+					+ (j + (n_quilt_raw-j_raw-1)*npix_each_y) * (n_quilt_column*npix_each_x);
             fliped_quilt[3*l  ] = glimage[3*k];
             fliped_quilt[3*l+1] = glimage[3*k+1];
             fliped_quilt[3*l+2] = glimage[3*k+2];
@@ -51,6 +52,23 @@ void flip_gl_quilt_bitmap(int n_quilt_column, int n_quilt_raw, int istep_quilt,
     return;
 };
 
+void set_gl_quilt_bitmap(int n_quilt_column, int n_quilt_raw, int istep_quilt,
+						 int npix_each_x, int npix_each_y, unsigned char *glimage, unsigned char *image_quilt){
+    int i, j, k, l;
+    int i_column = istep_quilt % n_quilt_column;
+    int j_raw =   (istep_quilt - i_column) / n_quilt_column;
+    for (j = 0; j < npix_each_y; j++) {
+        for (i = 0; i < npix_each_x; i++) {
+            k = i + j*npix_each_x;
+			l = i + i_column * npix_each_x
+					+ (j + j_raw*npix_each_y) * (n_quilt_column*npix_each_x);
+            image_quilt[3*l  ] = glimage[3*k];
+            image_quilt[3*l+1] = glimage[3*k+1];
+            image_quilt[3*l+2] = glimage[3*k+2];
+        }
+    }
+    return;
+};
 
 
 

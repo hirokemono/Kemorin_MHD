@@ -385,6 +385,9 @@ extern "C" {
     void kemoview_set_text_color_code(float c_code[4]);
     void kemoview_get_text_color_code(float c_code[4]);
     
+    unsigned char * kemoview_alloc_img_buffer_to_bmp(int npix_x, int npix_y);
+    void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
+    void kemoview_add_quilt_img(unsigned char *glimage, unsigned char *image_quilt);
     void kemoview_get_fliped_img(int npixel_x, int npixel_y,
                                  unsigned char *glimage, unsigned char *fliped_img);
     void kemoview_add_fliped_quilt_img(unsigned char *glimage, unsigned char *fliped_quilt);
@@ -538,9 +541,11 @@ extern "C" {
 /** Set Image file format by ID */
     int kemoview_set_image_file_format_id(struct kv_string *image_ext);
 /** Write Kemoviwer window image to file without step number */
-    void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix);
+    void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix,
+                                       int npix_x, int npix_y, unsigned char *image);
 /** Write Kemoviwer window image to file with step number */
-	void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix);
+	void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix,
+                                              int npix_x, int npix_y, unsigned char *image);
 	
 	void kemoview_draw_menu_setup(void);
 	void kemo_Cleanup(void);

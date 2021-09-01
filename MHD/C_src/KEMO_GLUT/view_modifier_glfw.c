@@ -308,8 +308,48 @@ void draw_quilt(void){
     return;
 };
 
-void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
-                             int i_axis, int inc_deg) {
+static void write_rotate_quilt_views(int iflag_img, struct kv_string *image_prefix,
+							  int i_axis, int inc_deg) {
+    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+	int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
+	int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
+	unsigned char *quilt_image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+	
+    int i, i_quilt, int_degree, ied_deg;
+    if(inc_deg <= 0) inc_deg = 1;
+    ied_deg = 360/inc_deg;
+	
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis);
+	glfwFocusWindow(glfw_window);
+	for (i = 0; i< ied_deg; i++) {
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+		int_degree =  i*inc_deg;
+		
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
+		
+		for(i_quilt=0;i_quilt<(nimg_column * nimg_raw);i_quilt++){
+			kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt);
+			draw_quilt();
+			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+			kemoview_add_quilt_img(image, quilt_image);
+		};
+		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
+											 (nimg_column * npix_x),
+											 (nimg_raw * npix_y), quilt_image);
+	};
+    free(quilt_image);
+    free(image);
+	return;
+}
+
+static void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
+						int i_axis, int inc_deg) {
+    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+	
     int i, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;
     ied_deg = 360/inc_deg;
@@ -321,17 +361,54 @@ void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
-        kemoview_modify_view();
+		kemoview_modify_view();
 		glfwSwapBuffers(glfw_window);
-		
-        kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
+		kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+		kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
+											 npix_x, npix_y, image);
 	};
-	draw_full();
+    free(image);
 	return;
 }
 
-void write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
+static void write_evolution_quilt_views(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt){
+    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+	int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
+	int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
+	unsigned char *quilt_image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+	int i, i_quilt;
+	
+	glfwFocusWindow(glfw_window);
+	glfwSwapBuffers(glfw_window);
+	for (i=ist_udt; i<(ied_udt+1); i++) {
+		if( ((i-ist_udt)%inc_udt) == 0) {
+			
+			kemoview_viewer_evolution(i);
+			
+			for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
+				kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt);
+				draw_quilt();
+				kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+				kemoview_add_quilt_img(image, quilt_image);
+			};
+			kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
+												 (nimg_column * npix_x),
+												 (nimg_raw * npix_y), quilt_image);
+		}
+	}
+    free(quilt_image);
+    free(image);
+	return;
+};
+
+static void write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
+								int ist_udt, int ied_udt, int inc_udt){
+    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
 	int i;
 
 	glfwFocusWindow(glfw_window);
@@ -340,14 +417,41 @@ void write_evolution_views(int iflag_img, struct kv_string *image_prefix,
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
 			kemoview_viewer_evolution(i);
-			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			draw_full();
 			glfwSwapBuffers(glfw_window);
-            
-            kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
+			
+			kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+			kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix,
+												 npix_x, npix_y, image);
 		}
 	}
+    free(image);
+	return;
+};
+
+
+void sel_write_rotate_views(int iflag_img, struct kv_string *image_prefix,
+                             int i_axis, int inc_deg) {
+	if(kemoview_get_quilt_nums(ISET_QUILT_MODE) != 0){
+		write_rotate_quilt_views(iflag_img, image_prefix, i_axis, inc_deg);
+	}else{
+		write_rotate_views(iflag_img, image_prefix, i_axis, inc_deg);
+	}
+    draw_full();
+	return;
+}
+
+void sel_write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
+								int ist_udt, int ied_udt, int inc_udt){
+	if(kemoview_get_quilt_nums(ISET_QUILT_MODE) != 0){
+		write_evolution_quilt_views(iflag_img, image_prefix, 
+									ist_udt, ied_udt, inc_udt);
+	}else{
+		write_evolution_views(iflag_img, image_prefix, 
+							  ist_udt, ied_udt, inc_udt);
+	};
+    draw_full();
 	return;
 };
 

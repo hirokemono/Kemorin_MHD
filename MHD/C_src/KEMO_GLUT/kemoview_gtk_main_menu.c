@@ -147,11 +147,17 @@ static void set_image_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user
 static void image_save_CB(GtkButton *button, gpointer user_data){
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 	int iflag_set = kemoview_gtk_save_file_select(button, user_data);
-    int iflag_quilt = kemoview_get_quilt_nums(ISET_QUILT_MODE);
 	int id_imagefmt_by_input;
+    int i_quilt;
+    
 	if(iflag_set == IZERO) return;
 	
-	GtkEntry *entry = GTK_ENTRY(user_data);
+    int iflag_quilt = kemoview_get_quilt_nums(ISET_QUILT_MODE);
+    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+
+    GtkEntry *entry = GTK_ENTRY(user_data);
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	struct kv_string *file_prefix = kemoview_alloc_kvstring();
@@ -169,12 +175,28 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
 	
 	printf("header: %s\n", file_prefix->string);
     if(iflag_quilt == 0){
-        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix);
+        kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
+                                      npix_x, npix_y, image);
     } else {
         int nimg_column = kemoview_get_quilt_nums(ISET_QUILT_COLUMN);
         int nimg_raw = kemoview_get_quilt_nums(ISET_QUILT_RAW);
-       printf("quilt! %d x %d\n", nimg_column, nimg_raw);
+        unsigned char *quilt_image = kemoview_alloc_img_buffer_to_bmp((nimg_column * npix_x),
+                                                                      (nimg_raw * npix_y));
+        for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
+            kemoview_set_quilt_nums(ISET_QUILT_COUNT, i_quilt);
+            draw_quilt();
+            kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+            kemoview_add_quilt_img(image, quilt_image);
+        };
+        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
+                                      (nimg_column * npix_x),
+                                      (nimg_raw * npix_y), quilt_image);
+        free(quilt_image);
+        printf("quilt! %d x %d\n", nimg_column, nimg_raw);
+        draw_full();
     }
+    free(image);
     kemoview_free_kvstring(file_prefix);
 	
 	return;

@@ -107,11 +107,14 @@
 !    void kemoview_get_text_color_code(float c_code[4]);
 !    
 !    int kemoview_set_image_file_format_id(char *image_fmt);
+!    void kemoview_get_gl_buffer_to_bmp(int npix_x, int npix_y, unsigned char *image);
 !    void kemoview_get_fliped_img(int npixel_x, int npixel_y,
 !                                 unsigned char *glimage, unsigned char *fliped_img);
-!    void kemoview_write_window_to_file(int iflag_img, const char *fhead);
-!    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, const char *fhead);
-!    
+!    void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix,
+!                                       int npix_x, int npix_y, unsigned char *image);
+!    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix,
+!                                              int npix_x, int npix_y, unsigned char *image);
+!
 !    void kemoview_modify_view();
 !    void kemoviewer_reset_to_init_angle();
 !    

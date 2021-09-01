@@ -56,7 +56,13 @@ static void save_image_handler(){
 	
 	glutSetWindow(winid);
 	draw_mesh_keep_menu();
-    kemoview_write_window_to_file(id_image, image_prefix);
+    int npix_x = kemoview_get_view_integer(ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_img_buffer_to_bmp(npix_x, npix_y);
+    kemoview_get_gl_buffer_to_bmp(npix_x, npix_y, image);
+    kemoview_write_window_to_file(id_image, image_prefix,
+                                  npix_x, npix_y, image);
+    free(image);
     kemoview_free_kvstring(image_prefix);
     return;
 };

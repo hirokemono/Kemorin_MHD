@@ -33,8 +33,8 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
 	
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
-	write_evolution_views(NO_SAVE_FILE, image_prefix, evo_gmenu->istart_evo, evo_gmenu->iend_evo,
-						  evo_gmenu->inc_evo);
+    sel_write_evolution_views(NO_SAVE_FILE, image_prefix, evo_gmenu->istart_evo, evo_gmenu->iend_evo,
+                              evo_gmenu->inc_evo);
 	kemoview_free_kvstring(image_prefix);
 	return;
 };
@@ -96,8 +96,8 @@ static void evolution_save_CB(GtkButton *button, gpointer user_data){
 	
 	printf("header: %s\n", file_prefix->string);
 	printf("steps: %d %d %d\n", evo_gmenu->istart_evo, evo_gmenu->iend_evo, evo_gmenu->inc_evo);
-	write_evolution_views(id_image, file_prefix, evo_gmenu->istart_evo, evo_gmenu->iend_evo,
-						  evo_gmenu->inc_evo);
+    sel_write_evolution_views(id_image, file_prefix, evo_gmenu->istart_evo, evo_gmenu->iend_evo,
+                              evo_gmenu->inc_evo);
     kemoview_free_kvstring(file_prefix);
 	
 	return;

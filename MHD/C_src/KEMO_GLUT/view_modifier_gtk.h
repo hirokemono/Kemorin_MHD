@@ -25,9 +25,9 @@ void set_GTKindowSize(int width, int height);
 
 int draw_fast(void);
 void draw_full(void);
-void write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
-                             int i_axis, int inc_deg);
-void write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
+void sel_write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
+							int i_axis, int inc_deg);
+void sel_write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt);
 
 void set_viewtype_mode(int selected);
