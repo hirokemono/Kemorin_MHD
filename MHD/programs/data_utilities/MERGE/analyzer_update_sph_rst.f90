@@ -59,7 +59,7 @@
       use count_nnod_4_asseble_sph
       use parallel_gen_sph_grids
 !
-!      integer(kind = kint) :: ip
+      integer(kind = kint) :: istep_in
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -97,7 +97,8 @@
 !
 !      Construct field list from spectr file
 !
-      call load_field_name_assemble_sph(asbl_param_s%istep_start,       &
+      istep_in = asbl_param_s%istep_start / asbl_param_s%increment_step
+      call load_field_name_assemble_sph(istep_in,                       &
      &    asbl_param_s%org_fld_file, sph_asbl_s%org_sph_array,          &
      &    sph_asbl_s%new_sph_data, sph_asbl_s%fst_time_IO)
 !
@@ -124,19 +125,20 @@
       use set_field_file_names
       use share_field_data
 !
-      integer(kind = kint) :: istep, icou
+      integer(kind = kint) :: istep, istep_in, icou
       integer(kind = kint) :: istep_out
 !
 !     ---------------------
 !
-      do istep = asbl_param_s%istep_start, asbl_param_s%istep_end,      &
-     &          asbl_param_s%increment_step
+      do istep = asbl_param_s%istep_start, asbl_param_s%istep_end
+        if(mod(istep, asbl_param_s%increment_step) .ne. 0) cycle
+        istep_in = istep / asbl_param_s%increment_step
 !
 !     Load original spectr data
-        call load_old_fmt_sph_data(istep, asbl_param_s%org_fld_file,    &
+        call load_old_fmt_sph_data(istep_in, asbl_param_s%org_fld_file, &
      &                             sph_asbl_s%org_sph_array)
 !
-        istep_out = istep
+        istep_out = istep_in
         if(asbl_param_s%iflag_newtime .gt. 0) then
           istep_out =          asbl_param_s%istep_new_rst               &
      &                        / asbl_param_s%increment_new_step
@@ -173,12 +175,13 @@
 !
       if(asbl_param_s%iflag_delete_org .gt. 0) then
         icou = 0
-        do istep = asbl_param_s%istep_start, asbl_param_s%istep_end,    &
-     &            asbl_param_s%increment_step
+        do istep = asbl_param_s%istep_start, asbl_param_s%istep_end
+          if(mod(istep, asbl_param_s%increment_step) .ne. 0) cycle
+          istep_in = istep / asbl_param_s%increment_step
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
           call delete_SPH_fld_file(asbl_param_s%org_fld_file,           &
-     &        sph_asbl_s%org_sph_array%num_pe, istep)
+     &        sph_asbl_s%org_sph_array%num_pe, istep_in)
         end do
       end if
 !
