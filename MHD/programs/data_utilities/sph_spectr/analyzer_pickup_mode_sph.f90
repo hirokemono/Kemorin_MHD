@@ -78,7 +78,7 @@
       use copy_rj_phys_data_4_IO
       use cal_write_sph_monitor_data
       use pickup_sph_spectr_data
-      use MPI_picked_sph_spectr_IO
+      use write_picked_sph_spectr
 !
       integer(kind = kint) :: i_step
 !
@@ -100,7 +100,7 @@
 !  pickup components
 !
         t_SHR%time_d%i_time_step = i_step
-        call append_picked_spectrum_file(t_SHR%time_d,                  &
+        call write_each_picked_specr_file(t_SHR%time_d,                 &
      &      SPH_dat_ss%sph%sph_rj, SPH_dat_ss%fld, pick_sph_u)
       end do
 !

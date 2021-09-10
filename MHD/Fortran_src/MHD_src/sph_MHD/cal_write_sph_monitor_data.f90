@@ -97,8 +97,8 @@
 !
       use t_solver_SR
       use output_sph_m_square_file
-      use MPI_picked_sph_spectr_IO
-      use MPI_sph_gauss_coefs_IO
+      use write_picked_sph_spectr
+      use write_sph_gauss_coefs
 !
       type(energy_label_param), intent(in) :: ene_labels
       type(time_data), intent(in) :: time_d
@@ -123,10 +123,10 @@
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
      &    time_d%i_time_step, time_d%time, Nusselt)
 !
-      call append_picked_spectrum_file                                  &
+      call write_each_picked_specr_file                                 &
      &   (time_d, sph_rj, rj_fld, pick_coef)
       call append_sph_gauss_coefs_file                                  &
-     &   (time_d, sph_params, sph_rj, ipol, rj_fld, gauss_coef)
+     &   (time_d, sph_params, sph_rj, ipol, rj_fld, gauss_coef, SR_sig)
 !
       end subroutine output_sph_monitor_data
 !
@@ -136,8 +136,6 @@
      &         (ene_labels, time_d, sph_params, sph_rj, pwr)
 !
       use output_sph_m_square_file
-      use MPI_picked_sph_spectr_IO
-      use MPI_sph_gauss_coefs_IO
 !
       type(energy_label_param), intent(in) :: ene_labels
       type(time_data), intent(in) :: time_d
