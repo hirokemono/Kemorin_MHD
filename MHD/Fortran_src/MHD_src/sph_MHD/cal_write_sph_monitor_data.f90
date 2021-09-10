@@ -11,8 +11,8 @@
 !!     &         (sph_params, sph_rj, sph_bc_U, leg, ipol, rj_fld,      &
 !!     &          pwr, WK_pwr, Nusselt)
 !!      subroutine output_sph_monitor_data                              &
-!!     &         (ene_labels, time_d, sph_params, sph_rj,               &
-!!     &          ipol, rj_fld, pwr, pick_coef, gauss_coef, Nusselt)
+!!     &         (ene_labels, time_d, sph_params, sph_rj, ipol, rj_fld, &
+!!     &          pwr, pick_coef, gauss_coef, Nusselt, SR_sig)
 !!      subroutine output_sph_mean_square_files                         &
 !!     &         (ene_labels, time_d, sph_params, sph_rj, pwr)
 !!
@@ -30,6 +30,7 @@
 !!        type(picked_spectrum_data), intent(inout) :: pick_coef
 !!        type(picked_spectrum_data), intent(inout) :: gauss_coef
 !!        type(nusselt_number_data), intent(inout) :: Nusselt
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module cal_write_sph_monitor_data
@@ -91,9 +92,10 @@
 !  --------------------------------------------------------------------
 !
       subroutine output_sph_monitor_data                                &
-     &         (ene_labels, time_d, sph_params, sph_rj,                 &
-     &          ipol, rj_fld, pwr, pick_coef, gauss_coef, Nusselt)
+     &         (ene_labels, time_d, sph_params, sph_rj, ipol, rj_fld,   &
+     &          pwr, pick_coef, gauss_coef, Nusselt, SR_sig)
 !
+      use t_solver_SR
       use output_sph_m_square_file
       use MPI_picked_sph_spectr_IO
       use MPI_sph_gauss_coefs_IO
@@ -109,6 +111,7 @@
       type(picked_spectrum_data), intent(inout) :: pick_coef
       type(picked_spectrum_data), intent(inout) :: gauss_coef
       type(nusselt_number_data), intent(inout) :: Nusselt
+      type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'

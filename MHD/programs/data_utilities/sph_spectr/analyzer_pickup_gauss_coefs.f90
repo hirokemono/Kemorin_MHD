@@ -14,10 +14,13 @@
       use m_spheric_data_sph_spetr
       use calypso_mpi
 !
+      use t_solver_SR
       use t_time_data
       use field_IO_select
 !
       implicit none
+!
+      type(send_recv_status) :: SR_sig_g
 !
 ! ----------------------------------------------------------------------
 !
@@ -90,7 +93,7 @@
 !
       call init_gauss_coefs_4_monitor                                   &
      &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
-     &    SPH_dat_ss%ipol, gauss_list_u, gauss_u)
+     &    SPH_dat_ss%ipol, gauss_list_u, gauss_u, SR_sig_g)
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
 !

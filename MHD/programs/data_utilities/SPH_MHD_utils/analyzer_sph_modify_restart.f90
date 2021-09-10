@@ -20,6 +20,7 @@
       use m_elapsed_labels_4_MHD
       use m_SPH_MHD_model_data
       use m_MHD_step_parameter
+      use m_phys_constants
       use t_SPH_mesh_field_data
       use t_step_parameter
       use t_MHD_file_parameter
@@ -63,7 +64,8 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
         call SPH_analyze_mod_restart(MHD_step1%time_d%i_time_step,      &
      &      MHD_files1%fst_file_IO, SPH_model1, MHD_files1,             &
-     &      MHD_step1, SPH_MHD1, SPH_WK1, sph_fst_IO)
+     &      MHD_step1, SPH_MHD1, SPH_WK1, sph_fst_IO,                   &
+     &      m_SR1%SR_sig, m_SR1%SR_r)
 !*
 !*  -----------  output field data --------------
 !*
@@ -95,10 +97,12 @@
 !
       subroutine SPH_analyze_mod_restart                                &
      &         (i_step, fst_file_IO, SPH_model, MHD_files, MHD_step,    &
-     &          SPH_MHD, SPH_WK, sph_fst_IO)
+     &          SPH_MHD, SPH_WK, sph_fst_IO, SR_sig, SR_r)
 !
       use m_work_time
 !
+      use init_spherical_SRs
+      use select_copy_from_recv
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
       use set_sph_restart_IO
@@ -116,6 +120,8 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(field_IO), intent(inout) :: sph_fst_IO
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       MHD_files%org_rst_file_IO%iflag_format                            &
@@ -124,6 +130,10 @@
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
      &    MHD_step%rst_step, SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld,    &
      &    MHD_step%init_d)
+!
+      call init_sph_send_recv_N                                         &
+     &   (n_vector, SPH_MHD%sph, SPH_MHD%comms,                         &
+     &    SPH_WK%trans_p%iflag_SPH_recv, SR_sig, SR_r)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -148,8 +158,9 @@
      &                  MHD_step%rms_step)) then
         if(iflag_debug .gt. 0)                                          &
      &                write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
-     &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
+        call output_rms_sph_mhd_control                                 &
+     &     (MHD_step%time_d, SPH_MHD, SPH_model%sph_MHD_bc,             &
+     &      SPH_WK%trans_p%leg, SPH_WK%monitor, m_SR1%SR_sig)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
