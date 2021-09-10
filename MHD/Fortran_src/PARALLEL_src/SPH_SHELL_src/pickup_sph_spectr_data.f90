@@ -89,7 +89,6 @@
       call set_sph_fld_id_4_monitor(rj_fld%num_phys,                    &
      &    rj_fld%num_component, rj_fld%flag_monitor, picked)
 !
-      if(my_rank .ne. 0) return
       call set_sph_labels_4_monitor                                     &
      &   (rj_fld%num_phys, rj_fld%num_component,                        &
      &    rj_fld%phys_name, picked)
