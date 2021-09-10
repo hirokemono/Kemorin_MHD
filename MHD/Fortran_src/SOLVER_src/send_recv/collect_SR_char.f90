@@ -66,6 +66,8 @@
           num = istack_send(ip) - istack_send(ip-1)
           if(num .gt. 0) npe_recv = npe_recv + 1
         end do
+      else
+        npe_recv = 1
       end if
 !
       call resize_SR_flag(1, npe_recv, SR_sig)
@@ -127,6 +129,8 @@
           num = istack_send(ip) - istack_send(ip-1)
           if(num .gt. 0) npe_recv = npe_recv + 1
         end do
+      else
+        npe_recv = 1
       end if
 !
       call resize_SR_flag(1, npe_recv, SR_sig)
