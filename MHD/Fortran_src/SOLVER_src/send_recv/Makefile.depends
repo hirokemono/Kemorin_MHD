@@ -28,6 +28,8 @@ calypso_mpi_real.o: $(SR_DIR)/calypso_mpi_real.f90 m_precision.o m_constants.o c
 	$(F90) -c $(F90OPTFLAGS) $<
 collect_SR_N.o: $(SR_DIR)/collect_SR_N.f90 m_precision.o calypso_mpi.o t_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
+collect_SR_char.o: $(SR_DIR)/collect_SR_char.f90 m_precision.o calypso_mpi.o t_solver_SR.o
+	$(F90) -c $(F90OPTFLAGS) $<
 collect_SR_int.o: $(SR_DIR)/collect_SR_int.f90 m_precision.o calypso_mpi.o t_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_to_send_buffer.o: $(SR_DIR)/copy_to_send_buffer.f90 m_precision.o

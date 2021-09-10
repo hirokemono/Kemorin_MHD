@@ -63,7 +63,7 @@
       if(my_rank .eq. 0) then
         npe_recv = 0
         do ip = 2, nprocs
-          num = istack_send(ip-1) - istack_send(ip)
+          num = istack_send(ip) - istack_send(ip-1)
           if(num .gt. 0) npe_recv = npe_recv + 1
         end do
       end if
@@ -124,7 +124,7 @@
       if(my_rank .eq. 0) then
         npe_recv = 0
         do ip = 2, nprocs
-          num = istack_send(ip-1) - istack_send(ip)
+          num = istack_send(ip) - istack_send(ip-1)
           if(num .gt. 0) npe_recv = npe_recv + 1
         end do
       end if
