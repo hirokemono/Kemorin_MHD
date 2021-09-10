@@ -236,36 +236,6 @@
       end function  picked_gauss_head
 !
 ! ----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-     integer(kind = kint) function check_gauss_coefs_num(gauss)
-!
-      use set_parallel_file_name
-!
-      type(picked_spectrum_data), intent(in) :: gauss
-!!
-      character(len = kchara) :: file_name
-!
-!
-      check_gauss_coefs_num = 0
-      if(gauss%num_sph_mode .eq. izero) return
-      if(my_rank .gt. izero) return
-!
-      file_name = add_dat_extension(gauss%file_prefix)
-      open(id_gauss_coef, file = file_name,                             &
-     &    form='formatted', status='old', err = 99)
-!
-      check_gauss_coefs_num = check_gauss_coefs_4_monitor(gauss)
-      close(id_gauss_coef)
-      return
-!
-  99  continue
-      write(*,*) 'No Gauss coefficient file'
-      return
-!
-      end function check_gauss_coefs_num
-!
-! -----------------------------------------------------------------------
 !
       integer(kind = kint)                                              &
      &      function check_gauss_coefs_4_monitor(gauss)

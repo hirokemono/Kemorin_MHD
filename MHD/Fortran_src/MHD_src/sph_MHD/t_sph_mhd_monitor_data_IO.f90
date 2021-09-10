@@ -86,7 +86,7 @@
       use pickup_gauss_coefficients
       use cal_rms_fields_by_sph
       use output_sph_m_square_file
-      use MPI_sph_gauss_coefs_IO
+      use write_sph_gauss_coefs
       use calypso_mpi_int
       use t_solver_SR
 !

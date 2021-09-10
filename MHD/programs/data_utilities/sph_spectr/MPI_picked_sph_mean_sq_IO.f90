@@ -40,8 +40,8 @@
 !
       integer, parameter, private :: len_fixed = 4*16 + 2*25 + 1
 !
-      private :: write_picked_sph_mean_sq_mpi
       private :: wrt_picked_sph_mean_vol_sq_mpi
+      private :: write_picked_specr_head_mpi
 !
 ! -----------------------------------------------------------------------
 !
@@ -52,9 +52,8 @@
       subroutine append_picked_sph_mean_sq_file                         &
      &         (time_d, sph_rj, leg, ipol, ipol_LES, rj_fld, picked)
 !
-      use set_parallel_file_name
-      use MPI_ascii_data_IO
-      use MPI_picked_sph_spectr_IO
+      use pickup_sph_mean_square_data
+      use write_picked_sph_spectr
 !
       type(time_data), intent(in) :: time_d
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -64,35 +63,64 @@
       type(phys_data), intent(in) :: rj_fld
       type(picked_spectrum_data), intent(in) :: picked
 !
-      type(calypso_MPI_IO_params) :: IO_param
-      character(len = kchara) :: file_name
+      integer(kind = kint), parameter :: id_pick = 17
+      integer(kind = kint) :: inum, knum
+      integer(kind = kint_gl) :: num
+!
+      character(len=kchara) :: fmt_txt
+      real(kind=kreal), allocatable :: d_rj_out(:)
 !
 !
-      if(picked%num_sph_mode .le. 0) return
+      num = picked%istack_picked_spec_lc(my_rank+1)                     &
+     &     - picked%istack_picked_spec_lc(my_rank)
+      if(num .le. 0) return
 !
-      file_name = add_dat_extension(picked%file_prefix)
-      call open_append_mpi_file(file_name, IO_param)
+      allocate(d_rj_out(picked%ntot_comp_rj))
 !
-      if(IO_param%ioff_gl .eq. 0) then
-        call write_picked_specr_head_mpi(IO_param, picked)
+      if(picked%idx_out(0,4) .gt. 0) then
+        call open_eack_picked_spectr(id_pick, picked, izero, izero)
+        call cal_rj_mean_sq_degree0_monitor(knum, sph_rj, rj_fld,       &
+     &      picked, picked%ntot_comp_rj, d_rj_out)
+        call convert_to_energy_sph__monitor                             &
+     &     (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
+!
+        write(id_pick,'(a)', ADVANCE='NO')                              &
+     &     picked_each_mode_to_text                                     &
+     &         (time_d%i_time_step, time_d%time, zero, izero,           &
+     &          izero, izero, picked%ntot_comp_rj, d_rj_out)
+        close(id_pick)
       end if
 !
-      call write_picked_sph_mean_sq_mpi                                 &
-     &   (IO_param, time_d, sph_rj, leg, ipol, ipol_LES, rj_fld,        &
-     &    picked, picked%ntot_comp_rj)
+      write(fmt_txt,'(a37,i4,a13)')                                     &
+     &         '(i16,1pe25.14e3, i16,1pe25.14e3,2i16,',                 &
+     &           picked%ntot_comp_rj, '(1pE25.14e3))'
+      do inum = 1, picked%num_sph_mode_lc
+        call open_eack_picked_spectr(id_pick, picked,                   &
+     &      picked%idx_out(inum,1), picked%idx_out(inum,2))
+        do knum = 1, picked%num_layer
+          call cal_rj_mean_sq_spectr_monitor                            &
+     &       (inum, knum, sph_rj, leg, rj_fld, picked,                  &
+     &        picked%ntot_comp_rj, d_rj_out)
+          call convert_to_energy_sph__monitor                           &
+     &       (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
-      call close_mpi_file(IO_param)
+          write(id_pick,fmt_txt) time_d%i_time_step, time_d%time,       &
+     &        picked%id_radius(knum), picked%radius_gl(knum),           &
+     &        picked%idx_out(inum,1:2), d_rj_out(1:picked%ntot_comp_rj)
+        end do
+        close(id_pick)
+      end do
+      deallocate(d_rj_out)
 !
       end subroutine append_picked_sph_mean_sq_file
 !
-!  ---------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine append_picked_sph_vol_msq_file(time_d, sph_params,     &
      &          sph_rj, leg, ipol, ipol_LES, rj_fld, picked)
 !
       use set_parallel_file_name
       use MPI_ascii_data_IO
-      use MPI_picked_sph_spectr_IO
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -122,110 +150,6 @@
 !
       end subroutine append_picked_sph_vol_msq_file
 !
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine write_picked_sph_mean_sq_mpi(IO_param, time_d, sph_rj, &
-     &          leg, ipol, ipol_LES, rj_fld, picked, ntot_comp_rj)
-!
-      use pickup_sph_mean_square_data
-      use MPI_picked_sph_spectr_IO
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(time_data), intent(in) :: time_d
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: ipol
-      type(SGS_model_addresses), intent(in) :: ipol_LES
-      type(phys_data), intent(in) :: rj_fld
-      type(picked_spectrum_data), intent(in) :: picked
-      integer(kind = kint), intent(in) :: ntot_comp_rj
-!
-!
-      integer(kind = kint) :: icou, ist
-      integer(kind = kint) :: inum, knum
-!
-      integer(kind = kint_gl) :: num
-      integer :: ilen_n
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
-      character(len = len_fixed+ntot_comp_rj*25),                       &
-     &                                 allocatable :: pickedbuf(:)
-      real(kind=kreal), allocatable :: d_rj_out(:)
-!
-!
-      ilen_n = len_fixed + ntot_comp_rj*25
-      num = picked%istack_picked_spec_lc(my_rank+1)                     &
-     &     - picked%istack_picked_spec_lc(my_rank)
-      if(num .gt. 0) then
-        ioffset = IO_param%ioff_gl                                      &
-     &         + ilen_n * picked%istack_picked_spec_lc(my_rank)
-!
-        allocate(d_rj_out(ntot_comp_rj))
-        allocate(pickedbuf(num))
-!
-        icou = 0
-        if(picked%idx_out(0,4) .gt. 0) then
-          icou = icou + 1
-          call cal_rj_mean_sq_center_monitor(sph_rj, rj_fld, picked,    &
-     &        ntot_comp_rj, d_rj_out)
-          call convert_to_energy_sph__monitor                           &
-     &       (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
-!
-          pickedbuf(icou)                                               &
-     &         = picked_each_mode_to_text                               &
-     &         (time_d%i_time_step, time_d%time,                        &
-     &          zero, izero, izero, izero, ntot_comp_rj, d_rj_out)
-        end if
-!
-!
-        ist = 1
-        if(picked%idx_out(1,1) .eq. 0) then
-          do knum = 1, picked%num_layer
-            call cal_rj_mean_sq_degree0_monitor                         &
-     &         (knum, sph_rj, rj_fld, picked, ntot_comp_rj, d_rj_out)
-            call convert_to_energy_sph__monitor                         &
-     &         (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
-!
-            icou = icou + 1
-            pickedbuf(icou)                                             &
-     &         = picked_each_mode_to_text                               &
-     &         (time_d%i_time_step, time_d%time,                        &
-     &            picked%radius_gl(knum), picked%id_radius(knum),       &
-     &            picked%idx_out(1,1), picked%idx_out(1,2),             &
-     &            ntot_comp_rj, d_rj_out)
-          end do
-          ist = ist + 1
-        end if
-!
-        do inum = ist, picked%num_sph_mode_lc
-          do knum = 1, picked%num_layer
-            icou = icou + 1
-            call cal_rj_mean_sq_spectr_monitor                          &
-     &         (inum, knum, sph_rj, leg, rj_fld, picked,                &
-     &          ntot_comp_rj, d_rj_out)
-            call convert_to_energy_sph__monitor                         &
-     &         (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
-!
-             pickedbuf(icou)                                            &
-     &         = picked_each_mode_to_text                               &
-     &         (time_d%i_time_step, time_d%time,                        &
-     &            picked%radius_gl(knum), picked%id_radius(knum),       &
-     &            picked%idx_out(inum,1), picked%idx_out(inum,2),       &
-     &            ntot_comp_rj, d_rj_out)
-          end do
-        end do
-!
-        call mpi_write_mul_chara_b                                      &
-     &     (IO_param%id_file, ioffset, ilen_n, num, pickedbuf)
-        deallocate(d_rj_out, pickedbuf)
-      end if
-!
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &       + ilen_n * picked%istack_picked_spec_lc(nprocs)
-!
-      end subroutine write_picked_sph_mean_sq_mpi
-!
 ! -----------------------------------------------------------------------
 !
       subroutine wrt_picked_sph_mean_vol_sq_mpi(IO_param, time_d,       &
@@ -234,7 +158,7 @@
 !
       use radial_int_for_sph_spec
       use pickup_sph_mean_square_data
-      use MPI_picked_sph_spectr_IO
+      use write_picked_sph_spectr
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(time_data), intent(in) :: time_d
@@ -333,6 +257,50 @@
      &       + ilen_n * picked%istack_picked_spec_lc(nprocs)
 !
       end subroutine wrt_picked_sph_mean_vol_sq_mpi
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_picked_specr_head_mpi(IO_param, picked)
+!
+      use calypso_mpi_int4
+      use MPI_ascii_data_IO
+      use write_field_labels
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      integer(kind = kint) :: i
+      integer :: len_head, len_fld, len_each
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+      character(len = 1), parameter :: timebuf = char(10)
+      character(len = kchara) :: textbuf
+!
+!
+      len_head = len(pick_sph_header_no_field(picked))
+      if(my_rank .eq. 0) then
+        ioffset = IO_param%ioff_gl
+        call mpi_write_one_chara_b(IO_param%id_file, ioffset,           &
+     &      len_head, pick_sph_header_no_field(picked))
+!
+        len_fld = 0
+        do i = 1, picked%ntot_comp_rj
+          len_each = len_trim(picked%spectr_name(i)) + 4
+          len_fld = len_fld + len_each
+          write(textbuf,'(a,a4)') trim(picked%spectr_name(i)), '    '
+          call mpi_write_one_chara_b                                    &
+     &       (IO_param%id_file, ioffset, len_each, textbuf)
+        end do
+!
+        call mpi_write_one_chara_b                                      &
+     &     (IO_param%id_file, ioffset, 1, timebuf)
+      end if
+!
+      call calypso_mpi_bcast_one_int4(len_fld, 0)
+      IO_param%ioff_gl = IO_param%ioff_gl + len_head + len_fld + ione
+!
+      end subroutine write_picked_specr_head_mpi
 !
 ! -----------------------------------------------------------------------
 !
