@@ -64,6 +64,8 @@
       use const_mesh_information
       use bcast_4_assemble_sph_ctl
 !
+      integer(kind = kint) :: istep_in
+!
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       if(my_rank .eq. 0) then
@@ -110,8 +112,8 @@
 !
 !   read field name and number of components
 !
-      call sel_read_alloc_step_FEM_file                                 &
-     &   (nprocs, my_rank, asbl_param_u%istep_start,                    &
+      istep_in = asbl_param_u%istep_start / asbl_param_u%increment_step
+      call sel_read_alloc_step_FEM_file(nprocs, my_rank, istep_in,      &
      &    asbl_param_u%org_fld_file, t_IO_m, fld_IO_m)
 !
       call init_field_name_4_assemble_ucd                               &
@@ -136,7 +138,7 @@
       use parallel_ucd_IO_select
       use merged_udt_vtk_file_IO
 !
-      integer(kind = kint) :: istep
+      integer(kind = kint) :: istep, istep_in
 !
       type(ucd_data), save :: ucd_m
 !
@@ -159,10 +161,12 @@
       call sel_write_parallel_ucd_mesh                                  &
      &   (asbl_param_u%new_fld_file, ucd_m)
 !
-      do istep = asbl_param_u%istep_start, asbl_param_u%istep_end,      &
-     &          asbl_param_u%increment_step
+      do istep = asbl_param_u%istep_start, asbl_param_u%istep_end
+        if(mod(istep, asbl_param_u%increment_step) .ne. 0) cycle
+        istep_in = istep / asbl_param_u%increment_step
+!
         call sel_read_alloc_step_FEM_file(nprocs, my_rank,              &
-     &      istep, asbl_param_u%org_fld_file, t_IO_m, fld_IO_m)
+     &      istep_in, asbl_param_u%org_fld_file, t_IO_m, fld_IO_m)
 !
         call copy_field_data_from_restart                               &
      &     (mesh_m%node, fld_IO_m, new_fld)
@@ -173,7 +177,7 @@
      &      m_SR_a%v_sol, m_SR_a%SR_sig, m_SR_a%SR_r)
 !
         call sel_write_parallel_ucd_file                                &
-     &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m)
+     &     (istep_in, asbl_param_u%new_fld_file, t_IO_m, ucd_m)
       end do
 !
       call calypso_MPI_barrier

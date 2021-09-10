@@ -68,7 +68,7 @@
       use input_old_file_sel_4_zlib
       use bcast_4_assemble_sph_ctl
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, istep_in
       type(field_IO), save :: fld_IO_m
 !
 !
@@ -126,8 +126,9 @@
 !   read field name and number of components
 !
       if(my_rank .eq. 0) then
-        call sel_read_rst_comps                                         &
-     &     (0, asbl_param_f%istep_start, asbl_param_f%org_fld_file,     &
+        istep_in = asbl_param_f%istep_start                             &
+     &            / asbl_param_f%increment_step
+        call sel_read_rst_comps(0, istep_in, asbl_param_f%org_fld_file, &
      &      t_IO_m, fld_IO_m)
         call init_field_name_by_restart(fld_IO_m, new_fld)
 !
@@ -155,16 +156,17 @@
       use set_merged_restart_data
       use share_field_data
 !
-      integer(kind = kint) :: istep, icou
+      integer(kind = kint) :: istep, istep_in, icou
 !
       type(field_IO), allocatable :: org_fIO(:)
 !
 !
       allocate(org_fIO(ndomain_org))
 !
-      do istep = asbl_param_f%istep_start, asbl_param_f%istep_end,      &
-     &          asbl_param_f%increment_step
-        call load_old_FEM_restart_4_merge(istep,                        &
+      do istep = asbl_param_f%istep_start, asbl_param_f%istep_end
+        if(mod(istep, asbl_param_f%increment_step) .ne. 0) cycle
+        istep_in = istep / asbl_param_f%increment_step
+        call load_old_FEM_restart_4_merge(istep_in,                     &
      &      asbl_param_f%org_fld_file, ndomain_org, t_IO_m, org_fIO)
 !
         call share_time_step_data(t_IO_m)
@@ -180,18 +182,19 @@
         call simple_copy_fld_data_to_rst                                &
      &     (new_mesh%node, new_fld, new_fIO)
         call sel_write_step_FEM_field_file                              &
-     &     (istep, asbl_param_f%new_fld_file, t_IO_m, new_fIO)
+     &     (istep_in, asbl_param_f%new_fld_file, t_IO_m, new_fIO)
       end do
       call dealloc_comm_table_4_assemble(asbl_comm_f)
 !
       if(asbl_param_f%iflag_delete_org .gt. 0) then
         icou = 0
-        do istep = asbl_param_f%istep_start, asbl_param_f%istep_end,    &
-     &            asbl_param_f%increment_step
+        do istep = asbl_param_f%istep_start, asbl_param_f%istep_end
+          if(mod(istep, asbl_param_f%increment_step) .ne. 0) cycle
+          istep_in = istep / asbl_param_f%increment_step
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
           call delete_FEM_fld_file                                      &
-     &        (asbl_param_f%org_fld_file, ndomain_org, istep)
+     &        (asbl_param_f%org_fld_file, ndomain_org, istep_in)
         end do
       end if
 !
