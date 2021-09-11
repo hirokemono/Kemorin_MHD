@@ -13,7 +13,7 @@
 !!        type(each_lic_trace_counts), intent(inout) :: l_elsp
 !!
 !!      subroutine sum_icou_int_nod_smp                                 &
-!!     &         (node, ele, lic_p, l_elsp, count_int_nod)
+!!     &         (node, ele, l_elsp, count_int_nod)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(lic_parameters), intent(in) :: lic_p
@@ -164,14 +164,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sum_icou_int_nod_smp                                   &
-     &         (node, ele, end_time, l_elsp, count_int_nod)
+     &         (node, ele, l_elsp, count_int_nod)
 !
       use calypso_mpi_real
 !      use int_volume_of_single_domain
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      real(kind = kreal), intent(in) :: end_time
 !
       type(each_lic_trace_counts), intent(inout) :: l_elsp
       real(kind = kreal), intent(inout) :: count_int_nod(node%numnod)
@@ -183,10 +182,16 @@
 !      real(kind = kreal), allocatable :: volume_nod_cnt(:)
 !
 !
+      l_elsp%icount_trace = l_elsp%line_count_smp(1)%icount_lint_smp
+      do ip = 2, l_elsp%np_smp_sys
+        l_elsp%icount_trace = l_elsp%icount_trace                       &
+     &     + l_elsp%line_count_smp(ip)%icount_lint_smp
+        l_elsp%elapse_line_int = l_elsp%elapse_line_int                 &
+     &     + l_elsp%line_count_smp(ip)%elapse_lint_smp
+      end do
+!
       l_elsp%elapse_line_int = l_elsp%elapse_line_int                   &
      &                        / dble(l_elsp%np_smp_sys)
-      l_elsp%elapse_rtrace = end_time - l_elsp%elapse_rtrace            &
-     &                                - l_elsp%elapse_line_int
 !
 !$omp workshare
       count_int_nod(1:node%numnod) =  0.0d0

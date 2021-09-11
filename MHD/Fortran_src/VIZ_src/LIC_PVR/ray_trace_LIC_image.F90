@@ -84,13 +84,8 @@
       real(kind = kreal), intent(inout)                                 &
      &                    :: count_int_nod(mesh%node%numnod)
 !
-      integer(kind = kint) :: inum, iflag_comm
-!
-!      type(noise_mask), allocatable :: n_mask
-      real(kind = kreal) :: end_time
-!
       type(each_lic_trace_counts) :: l_elsp1
-!
+      integer(kind = kint) :: inum, iflag_comm
       integer(kind = kint) :: inod, ip, ip_smp
 !
 #ifdef _OPENMP
@@ -153,16 +148,9 @@
         end do
 !$omp end parallel do
       end if
-      end_time = MPI_WTIME()
-      l_elsp1%icount_trace = l_elsp1%line_count_smp(1)%icount_lint_smp
-      do ip = 2, l_elsp%np_smp_sys
-        l_elsp1%icount_trace = l_elsp1%icount_trace                     &
-     &     + l_elsp1%line_count_smp(ip)%icount_lint_smp
-        l_elsp1%elapse_line_int = l_elsp1%elapse_line_int               &
-     &     + l_elsp1%line_count_smp(ip)%elapse_lint_smp
-      end do
-!
-      call sum_icou_int_nod_smp(mesh%node, mesh%ele, end_time,          &
+      l_elsp1%elapse_rtrace = MPI_WTIME() - l_elsp1%elapse_rtrace       &
+     &                                    - l_elsp1%elapse_line_int
+      call sum_icou_int_nod_smp(mesh%node, mesh%ele,                    &
      &                          l_elsp1, count_int_nod)
 !
       if(iflag_LIC_time) then
