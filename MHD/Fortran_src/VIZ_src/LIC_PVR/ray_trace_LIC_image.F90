@@ -87,8 +87,7 @@
       integer(kind = kint) :: inum, iflag_comm
 !
 !      type(noise_mask), allocatable :: n_mask
-      integer(kind = kint) :: icount_rtrace
-      real(kind = kreal) :: elapse_line_tmp, end_time
+      real(kind = kreal) :: end_time
 !
       type(each_lic_trace_counts) :: l_elsp1
 !
@@ -101,14 +100,17 @@
       call init_icou_int_nod_smp(mesh%node, l_elsp1)
 !
       ip_smp =     1
-      icount_rtrace = 0
-      elapse_line_tmp = 0.0d0
+!$omp parallel do
+      do ip = 1, l_elsp%np_smp_sys
+        l_elsp1%line_count_smp(ip)%icount_lint_smp = 0
+        l_elsp1%line_count_smp(ip)%elapse_lint_smp = 0.0d0
+      end do
+!$omp end parallel do
       l_elsp1%elapse_rtrace = MPI_WTIME()
 !
 !
       if(lic_p%iflag_vr_sample_mode .eq. iflag_fixed_size) then
-!$omp parallel do private(inum,iflag_comm)                              &
-!$omp& reduction(+:elapse_line_tmp,icount_rtrace)
+!$omp parallel do private(inum,iflag_comm)
         do inum = 1, pvr_start%num_pvr_ray
 #ifdef _OPENMP
           ip_smp = omp_get_thread_num() + 1
@@ -125,14 +127,12 @@
      &       pvr_start%xx4_pvr_start(1,inum),                           &
      &       pvr_start%xi_pvr_start(1,inum),                            &
      &       pvr_start%rgba_ray(1,inum),                                &
-     &       l_elsp1%line_count_smp(ip_smp), icount_rtrace,             &
-     &       elapse_line_tmp, iflag_comm)
+     &       l_elsp1%line_count_smp(ip_smp), iflag_comm)
         end do
 !$omp end parallel do
 !
       else
-!$omp parallel do private(inum, iflag_comm)                             &
-!$omp& reduction(+:elapse_line_tmp,icount_rtrace)
+!$omp parallel do private(inum, iflag_comm)
         do inum = 1, pvr_start%num_pvr_ray
 #ifdef _OPENMP
           ip_smp = omp_get_thread_num() + 1
@@ -149,14 +149,18 @@
      &       pvr_start%xx4_pvr_start(1,inum),                           &
      &       pvr_start%xi_pvr_start(1,inum),                            &
      &       pvr_start%rgba_ray(1,inum),                                &
-     &       l_elsp1%line_count_smp(ip_smp), icount_rtrace,             &
-     &       elapse_line_tmp, iflag_comm)
+     &       l_elsp1%line_count_smp(ip_smp), iflag_comm)
         end do
 !$omp end parallel do
       end if
       end_time = MPI_WTIME()
-      l_elsp1%icount_trace =    icount_rtrace
-      l_elsp1%elapse_line_int = elapse_line_tmp
+      l_elsp1%icount_trace = l_elsp1%line_count_smp(1)%icount_lint_smp
+      do ip = 2, l_elsp%np_smp_sys
+        l_elsp1%icount_trace = l_elsp1%icount_trace                     &
+     &     + l_elsp1%line_count_smp(ip)%icount_lint_smp
+        l_elsp1%elapse_line_int = l_elsp1%elapse_line_int               &
+     &     + l_elsp1%line_count_smp(ip)%elapse_lint_smp
+      end do
 !
       call sum_icou_int_nod_smp(mesh%node, mesh%ele, end_time,          &
      &                          l_elsp1, count_int_nod)

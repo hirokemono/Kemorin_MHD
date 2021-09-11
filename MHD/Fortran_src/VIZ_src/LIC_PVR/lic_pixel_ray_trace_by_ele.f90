@@ -57,8 +57,7 @@
      &          viewpoint_vec, modelview_mat, projection_mat, lic_p,    &
      &          field_lic, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
-     &          rgba_ray, line_count_smp, icount_line, elapse_trace,    &
-     &          iflag_comm)
+     &          rgba_ray, line_count_smp, iflag_comm)
 !
       use set_position_pvr_screen
       use cal_field_on_surf_viz
@@ -86,11 +85,10 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
-      integer(kind = kint), intent(inout) :: icount_line, iflag_comm
+      integer(kind = kint), intent(inout) :: iflag_comm
       real(kind = kreal), intent(inout) :: screen4_st(4)
       real(kind = kreal), intent(inout) :: xx4_st(4), xi(2)
       real(kind = kreal), intent(inout) :: rgba_ray(4)
-      real(kind = kreal), intent(inout) :: elapse_trace
       type(lic_line_counter_smp), intent(inout) :: line_count_smp
 !
 !      type(noise_mask), intent(inout) :: n_mask
@@ -113,7 +111,7 @@
       real(kind = kreal) :: ray_total_len = zero, ave_ray_len, step_size
       integer(kind = kint) :: icount_line_cur_ray = 0
       real(kind = kreal) :: ray_left, ray_len
-      real(kind = kreal) :: start_trace
+      real(kind = kreal) :: start_trace, start_RGB
       real(kind = kreal) :: opacity_bc
 !
       if(isurf_org(1) .eq. 0) return
@@ -194,6 +192,9 @@
           exit
         end if
 !
+        if(lic_p%each_part_p%iflag_repart_ref                           &
+     &             .eq. i_TIME_BASED) start_RGB = MPI_WTIME()
+!
 !   set backside element and surface
 !
         iflag_notrace = 0
@@ -270,8 +271,8 @@
      &        field_lic%v_lic, xx4_lic, isurf_end,                      &
      &        iter_tmp, iflag_lic, rlic_grad)
 !
-!          if(lic_p%each_part_p%iflag_repart_ref                         &
-!     &                     .eq. i_INT_COUNT_BASED) then
+          if(lic_p%each_part_p%iflag_repart_ref                         &
+     &                     .eq. i_INT_COUNT_BASED) then
             do k1 = 1, ele%nnod_4_ele
               inod = ele%ie(iele,k1)
               if(inod .le. node%internal_node) then
@@ -280,7 +281,7 @@
      &               + dble(iter_tmp)
               end if
             end do
-!          end if
+          end if
 !
           ave_ray_len = ray_total_len / icount_line_cur_ray
 !
@@ -295,7 +296,11 @@
           else
             rlic_grad(1:3) = 0.0d0
           end if
-          elapse_trace =  elapse_trace + MPI_WTIME() - start_trace
+          if(lic_p%flag_LIC_elapsed_dump) then
+            line_count_smp%elapse_lint_smp                              &
+     &          = line_count_smp%elapse_lint_smp                        &
+     &           + MPI_WTIME() - start_trace
+          end if
 !
 !  Render sections
           do i_psf = 1, draw_param%num_sections
@@ -339,9 +344,24 @@
             end if
           end if
 !
-          icount_line = icount_line + 1
+          if(lic_p%flag_LIC_elapsed_dump) then
+            line_count_smp%icount_lint_smp                              &
+     &          = line_count_smp%icount_lint_smp + 1
+          end if
         end if
 !       write(*,*) 'rgba_ray end', rgba_ray
+!
+        if(lic_p%each_part_p%iflag_repart_ref                           &
+     &             .eq. i_TIME_BASED) then
+          do k1 = 1, ele%nnod_4_ele
+            inod = ele%ie(iele,k1)
+            if(inod .le. node%internal_node) then
+              line_count_smp%rcount_int_nod(inod)                       &
+     &            = line_count_smp%rcount_int_nod(inod)                 &
+     &             + MPI_WTIME() - start_RGB
+            end if
+          end do
+        end if
 !
         if(isurf_org(1) .eq. 0) then
           iflag_comm = 0

@@ -47,9 +47,9 @@
 !
       type lic_line_counter_smp
 !         Conter for calling line integration routine
-        integer(kind = kint) :: icount_line
+        integer(kind = kint) :: icount_lint_smp
 !>        Elapsed time for line integration
-        real(kind = kreal) :: elapse_line
+        real(kind = kreal) :: elapse_lint_smp
 !>        Number of internal node
         integer(kind = kint) :: nnod
 !         Line integration count or rendering time for each internal node

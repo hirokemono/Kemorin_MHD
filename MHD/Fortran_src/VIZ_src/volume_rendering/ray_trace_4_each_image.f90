@@ -64,13 +64,13 @@
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
-      integer(kind = kint) :: inum, iflag_comm, icount_line
+      integer(kind = kint) :: inum, iflag_comm, icount_line_int
       real(kind = kreal) :: rgba_tmp(4)
 !
 !
-      icount_line = 0
+      icount_line_int = 0
 !$omp parallel do private(inum,iflag_comm,rgba_tmp)                     &
-!$omp& reduction(+:icount_line)
+!$omp& reduction(+:icount_line_int)
       do inum = 1, pvr_start%num_pvr_ray
         rgba_tmp(1:4) = zero
         call ray_trace_each_pixel                                       &
@@ -83,7 +83,7 @@
      &      pvr_start%xx4_pvr_ray_start(1,inum),                        &
      &      pvr_start%xx4_pvr_start(1,inum),                            &
      &      pvr_start%xi_pvr_start(1,inum),                             &
-     &      rgba_tmp(1), icount_line, iflag_comm)
+     &      rgba_tmp(1), icount_line_int, iflag_comm)
         pvr_start%rgba_ray(1:4,inum) = rgba_tmp(1:4)
       end do
 !$omp end parallel do
@@ -98,7 +98,7 @@
      &          viewpoint_vec, modelview_mat, projection_mat,           &
      &          field_pvr, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
-     &          rgba_ray, icount_line, iflag_comm)
+     &          rgba_ray, icount_line_int, iflag_comm)
 !
       use set_position_pvr_screen
       use cal_field_on_surf_viz
@@ -123,7 +123,8 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
-      integer(kind = kint), intent(inout) :: icount_line, iflag_comm
+      integer(kind = kint), intent(inout) :: icount_line_int
+      integer(kind = kint), intent(inout) :: iflag_comm
       real(kind = kreal), intent(inout) :: screen4_st(4)
       real(kind = kreal), intent(inout) :: xx4_st(4), xi(2)
       real(kind = kreal), intent(inout) :: rgba_ray(4)
@@ -167,7 +168,7 @@
       end if
 !
       do
-        icount_line = icount_line + 1
+        icount_line_int = icount_line_int + 1
         iele =    isurf_org(1)
         isf_org = isurf_org(2)
 !
