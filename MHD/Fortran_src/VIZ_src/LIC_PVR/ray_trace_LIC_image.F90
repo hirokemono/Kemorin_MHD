@@ -125,7 +125,7 @@
      &       pvr_start%xx4_pvr_start(1,inum),                           &
      &       pvr_start%xi_pvr_start(1,inum),                            &
      &       pvr_start%rgba_ray(1,inum),                                &
-     &       l_elsp1%icou_line_smp(1,ip_smp), icount_rtrace,            &
+     &       l_elsp1%line_count_smp(ip_smp), icount_rtrace,             &
      &       elapse_line_tmp, iflag_comm)
         end do
 !$omp end parallel do
@@ -149,7 +149,7 @@
      &       pvr_start%xx4_pvr_start(1,inum),                           &
      &       pvr_start%xi_pvr_start(1,inum),                            &
      &       pvr_start%rgba_ray(1,inum),                                &
-     &       l_elsp1%icou_line_smp(1,ip_smp), icount_rtrace,            &
+     &       l_elsp1%line_count_smp(ip_smp), icount_rtrace,             &
      &       elapse_line_tmp, iflag_comm)
         end do
 !$omp end parallel do

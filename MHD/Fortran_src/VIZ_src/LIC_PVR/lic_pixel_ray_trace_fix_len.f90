@@ -12,8 +12,7 @@
 !!     &          viewpoint_vec, modelview_mat, projection_mat, lic_p,  &
 !!     &          field_lic, draw_param, color_param, ray_vec4,         &
 !!     &          iflag_check, isurf_org, screen4_st, xx4_st, xi,       &
-!!     &          rgba_ray, icount_int_nod, icount_line, elapse_trace,  &
-!!     &          iflag_comm)
+!!     &          rgba_ray, line_count_smp, iflag_comm)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -21,6 +20,7 @@
 !!        type(lic_field_data), intent(in) :: field_lic
 !!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
+!!        type(lic_line_counter_smp), intent(inout) :: line_count_smp
 !!@endverbatim
 !
       module lic_pixel_ray_trace_fix_len
@@ -41,6 +41,7 @@
       use t_control_param_LIC
       use t_geometries_in_pvr_screen
       use t_lic_field_data
+      use t_each_lic_trace_count_time
       use cal_lic_on_surf_viz
 !
       implicit  none
@@ -56,7 +57,7 @@
      &          viewpoint_vec, modelview_mat, projection_mat, lic_p,    &
      &          field_lic, draw_param, color_param, ray_vec4,           &
      &          iflag_check, isurf_org, screen4_st, xx4_st, xi,         &
-     &          rgba_ray, icount_int_nod, icount_line, elapse_trace,    &
+     &          rgba_ray, line_count_smp, icount_line, elapse_trace,    &
      &          iflag_comm)
 !
       use set_position_pvr_screen
@@ -85,13 +86,12 @@
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
-      integer(kind = kint), intent(inout)                               &
-     &                      :: icount_int_nod(node%internal_node)
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
       real(kind = kreal), intent(inout) :: screen4_st(4)
       real(kind = kreal), intent(inout) :: xx4_st(4), xi(2)
       real(kind = kreal), intent(inout) :: rgba_ray(4)
       real(kind = kreal), intent(inout) :: elapse_trace
+      type(lic_line_counter_smp), intent(inout) :: line_count_smp
 !
 !      type(noise_mask), intent(inout) :: n_mask
 !
@@ -273,13 +273,17 @@
      &            field_lic%v_lic, xx4_lic, isurf_end,                  &
      &            iter_tmp, iflag_lic, rlic_grad)
 !
-              do k1 = 1, ele%nnod_4_ele
-                inod = ele%ie(iele,k1)
-                if(inod .le. node%internal_node) then
-                  icount_int_nod(inod)                                  &
-     &                = icount_int_nod(inod) + iter_tmp
-                end if
-              end do
+!              if(lic_p%each_part_p%iflag_repart_ref                     &
+!     &                     .eq. i_INT_COUNT_BASED) then
+                do k1 = 1, ele%nnod_4_ele
+                  inod = ele%ie(iele,k1)
+                  if(inod .le. node%internal_node) then
+                    line_count_smp%rcount_int_nod(inod)                 &
+     &                    = line_count_smp%rcount_int_nod(inod)         &
+     &                     + dble(iter_tmp)
+                  end if
+                end do
+!              end if
 !
 !   normalize gradient
               if(iflag_lic .gt. 0) then

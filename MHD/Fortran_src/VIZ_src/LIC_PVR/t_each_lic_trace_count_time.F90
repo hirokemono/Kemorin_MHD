@@ -13,10 +13,10 @@
 !!        type(each_lic_trace_counts), intent(inout) :: l_elsp
 !!
 !!      subroutine sum_icou_int_nod_smp                                 &
-!!     &         (node, ele, end_time, l_elsp, count_int_nod)
+!!     &         (node, ele, lic_p, l_elsp, count_int_nod)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        real(kind = kreal), intent(in) :: end_time
+!!        type(lic_parameters), intent(in) :: lic_p
 !!        type(each_lic_trace_counts), intent(inout) :: l_elsp
 !!        real(kind = kreal), intent(inout) :: count_int_nod(node%numnod)
 !!      subroutine cal_trace_time_statistic(node, ele, lic_p, field_lic,&
@@ -45,13 +45,23 @@
 !
       implicit  none
 !
+      type lic_line_counter_smp
+!         Conter for calling line integration routine
+        integer(kind = kint) :: icount_line
+!>        Elapsed time for line integration
+        real(kind = kreal) :: elapse_line
+!>        Number of internal node
+        integer(kind = kint) :: nnod
+!         Line integration count or rendering time for each internal node
+        real(kind = kreal), allocatable :: rcount_int_nod(:)
+      end type lic_line_counter_smp
+!
+!
       type each_lic_trace_counts
 !>        Number of OpenMP threads
         integer :: np_smp_sys
-!>        Number of internal node
-        integer(kind = kint) :: nnod
 !>        line integration counts for each node and OopenMP threads
-        integer(kind = kint), allocatable :: icou_line_smp(:,:)
+        type(lic_line_counter_smp), allocatable :: line_count_smp(:)
 !
 !>        Total integration counts in each subdomain
         real(kind = kreal) :: count_line_intgrate
@@ -81,10 +91,37 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine alloc_rcount_int_nod(internal_node, line_count_smp)
+!
+      integer(kind = kint), intent(in) :: internal_node
+      type(lic_line_counter_smp), intent(inout) :: line_count_smp
+!
+      line_count_smp%nnod = internal_node
+      allocate(line_count_smp%rcount_int_nod(line_count_smp%nnod))
+!$omp parallel workshare
+      line_count_smp%rcount_int_nod(1:line_count_smp%nnod) = zero
+!$omp end parallel workshare
+!
+      end subroutine alloc_rcount_int_nod
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_rcount_int_nod(line_count_smp)
+!
+      type(lic_line_counter_smp), intent(inout) :: line_count_smp
+!
+      deallocate(line_count_smp%rcount_int_nod)
+!
+      end subroutine dealloc_rcount_int_nod
+!
+!  ---------------------------------------------------------------------
+!
       subroutine init_icou_int_nod_smp(node, l_elsp)
 !
       type(node_data), intent(in) :: node
       type(each_lic_trace_counts), intent(inout) :: l_elsp
+!
+      integer(kind = kint) :: ip
 !
 #ifdef _OPENMP
       integer, external :: omp_get_max_threads
@@ -95,11 +132,14 @@
       l_elsp%np_smp_sys = omp_get_max_threads()
 #endif
 !
-      l_elsp%nnod = node%internal_node
-      allocate(l_elsp%icou_line_smp(l_elsp%nnod,l_elsp%np_smp_sys))
-!$omp parallel workshare
-      l_elsp%icou_line_smp(1:l_elsp%nnod,1:l_elsp%np_smp_sys) = 0
-!$omp end parallel workshare
+      allocate(l_elsp%line_count_smp(l_elsp%np_smp_sys))
+!      if(lic_p%each_part_p%iflag_repart_ref                            &
+!     &                     .eq. i_INT_COUNT_BASED) then
+      do ip = 1, l_elsp%np_smp_sys
+        call alloc_rcount_int_nod(node%internal_node,                   &
+     &                            l_elsp%line_count_smp(ip))
+      end do
+!      end if
 !
       end subroutine init_icou_int_nod_smp
 !
@@ -108,8 +148,16 @@
       subroutine dealloc_icou_int_nod_smp(l_elsp)
 !
       type(each_lic_trace_counts), intent(inout) :: l_elsp
+      integer(kind = kint) :: ip
 !
-      deallocate(l_elsp%icou_line_smp)
+!
+!      if(lic_p%each_part_p%iflag_repart_ref                            &
+!     &                     .eq. i_INT_COUNT_BASED) then
+      do ip = 1, l_elsp%np_smp_sys
+        call dealloc_rcount_int_nod(l_elsp%line_count_smp(ip))
+      end do
+!      end if
+      deallocate(l_elsp%line_count_smp)
 !
       end subroutine dealloc_icou_int_nod_smp
 !
@@ -144,15 +192,19 @@
       count_int_nod(1:node%numnod) =  0.0d0
 !$omp end workshare
 !
+!      if(lic_p%each_part_p%iflag_repart_ref                            &
+!     &                     .eq. i_INT_COUNT_BASED) then
 !$omp parallel
-      do ip = 1, l_elsp%np_smp_sys
-!$omp workshare
-        count_int_nod(1:node%internal_node)                             &
-     &      =  count_int_nod(1:node%internal_node)                      &
-     &       + dble(l_elsp%icou_line_smp(1:node%internal_node,ip))
-!$omp end workshare
-      end do
+          do ip = 1, l_elsp%np_smp_sys
+!$omp do
+            do inod = 1, node%internal_node
+              count_int_nod(inod) =  count_int_nod(inod)                &
+     &             + l_elsp%line_count_smp(ip)%rcount_int_nod(inod)
+            end do
+!$omp end do nowait
+          end do
 !$omp end parallel
+!      end if
 !
 !$omp workshare
       count_int_nod(1:node%numnod) = count_int_nod(1:node%numnod)       &
