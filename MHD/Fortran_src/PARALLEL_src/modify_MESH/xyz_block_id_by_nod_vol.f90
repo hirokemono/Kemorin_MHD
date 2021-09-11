@@ -101,7 +101,7 @@
         volume_nod(1:mesh%node%internal_node) = 1.0d0
 !$omp end parallel workshare
 !
-      else if(part_param%iflag_repart_ref .eq. i_TIME_BASED) then
+      else if(part_param%iflag_repart_ref .eq. i_INT_COUNT_BASED) then
 !$omp parallel workshare
         volume_nod(1:mesh%node%internal_node)                           &
      &      = ref_repart(1:mesh%node%internal_node)
@@ -112,7 +112,7 @@
      &      mesh%node, mesh%ele, volume_nod)
       end if
 !
-      if(part_param%iflag_repart_ref .ne. i_TIME_BASED                  &
+      if(part_param%iflag_repart_ref .ne. i_INT_COUNT_BASED             &
      &   .and. num_mask .gt. 0) then
           call weighting_by_masking(mesh%node, part_param%shrink,       &
      &        num_mask, masking, d_mask, volume_nod)

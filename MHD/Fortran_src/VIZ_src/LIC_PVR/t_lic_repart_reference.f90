@@ -108,17 +108,17 @@
 !
       tmpchara = new_part_ctl%partition_reference_ctl%charavalue
       if(cmp_no_case(tmpchara,c_PREDICTED_COUNT)) then
-        each_part_p%iflag_repart_ref = i_TIME_BASED
+        each_part_p%iflag_repart_ref = i_INT_COUNT_BASED
         rep_ref%iflag_repart_ref_type = i_PREDICTED_COUNT
       else if(cmp_no_case(tmpchara,c_STACKED_COUNT)) then
-        each_part_p%iflag_repart_ref = i_TIME_BASED
+        each_part_p%iflag_repart_ref = i_INT_COUNT_BASED
         rep_ref%iflag_repart_ref_type = i_STACKED_COUNT
       else if(cmp_no_case(tmpchara,c_AVERAGE_COUNT)) then
-        each_part_p%iflag_repart_ref = i_TIME_BASED
+        each_part_p%iflag_repart_ref = i_INT_COUNT_BASED
         rep_ref%iflag_repart_ref_type = i_AVERAGE_COUNT
       end if
 !
-      if(each_part_p%iflag_repart_ref .eq. i_TIME_BASED) then
+      if(each_part_p%iflag_repart_ref .eq. i_INT_COUNT_BASED) then
         if(new_part_ctl%weight_to_previous_ctl%iflag .gt. 0) then
           rep_ref%weight_prev                                           &
      &         = new_part_ctl%weight_to_previous_ctl%realvalue

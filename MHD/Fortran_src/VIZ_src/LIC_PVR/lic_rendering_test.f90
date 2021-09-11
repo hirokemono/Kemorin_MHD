@@ -138,7 +138,7 @@
 !
       do i_lic = 1, lic%pvr%num_pvr
         if(lic%lic_param(i_lic)%each_part_p%iflag_repart_ref            &
-     &                                   .eq. i_TIME_BASED) then
+     &                                   .eq. i_INT_COUNT_BASED) then
           call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(i_lic), &
      &        lic%lic_param(i_lic)%each_part_p, lic%rep_ref(i_lic))
         end if
@@ -153,7 +153,7 @@
       end do
 !
       if(lic%flag_each_repart) return
-      if(lic%repart_p%iflag_repart_ref .eq. i_TIME_BASED) then
+      if(lic%repart_p%iflag_repart_ref .eq. i_INT_COUNT_BASED) then
         call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(1),       &
      &                           lic%repart_p, lic%rep_ref_m)
       end if

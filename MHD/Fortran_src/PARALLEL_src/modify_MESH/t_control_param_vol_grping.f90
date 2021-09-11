@@ -53,6 +53,7 @@
       integer(kind = kint), parameter :: i_VOLUME_BASED =    0
       integer(kind = kint), parameter :: i_NODE_BASED =      1
       integer(kind = kint), parameter :: i_TIME_BASED =      2
+      integer(kind = kint), parameter :: i_INT_COUNT_BASED = 3
 !
 !>        Structure for repartitioning parameters
       type volume_partioning_param

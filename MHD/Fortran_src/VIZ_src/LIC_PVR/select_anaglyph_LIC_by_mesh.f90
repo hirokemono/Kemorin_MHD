@@ -306,7 +306,7 @@
         end if
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
-     &                                   .eq. i_TIME_BASED) then
+     &                                   .eq. i_INT_COUNT_BASED) then
           call bring_back_rendering_time(repart_data%mesh_to_viz_tbl,   &
      &        rep_ref_viz, rep_ref_snap, rep_ref(i_lic), m_SR)
         end if
