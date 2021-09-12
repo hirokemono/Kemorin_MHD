@@ -47,7 +47,7 @@
 !
       type lic_line_counter_smp
 !         Conter for calling line integration routine
-        integer(kind = kint) :: icount_lint_smp
+        integer(kind = kint) :: icount_trace_smp
 !>        Elapsed time for line integration
         real(kind = kreal) :: elapse_lint_smp
 !>        Number of internal node
@@ -182,10 +182,10 @@
 !      real(kind = kreal), allocatable :: volume_nod_cnt(:)
 !
 !
-      l_elsp%icount_trace = l_elsp%line_count_smp(1)%icount_lint_smp
+      l_elsp%icount_trace = l_elsp%line_count_smp(1)%icount_trace_smp
       do ip = 2, l_elsp%np_smp_sys
         l_elsp%icount_trace = l_elsp%icount_trace                       &
-     &     + l_elsp%line_count_smp(ip)%icount_lint_smp
+     &     + l_elsp%line_count_smp(ip)%icount_trace_smp
         l_elsp%elapse_line_int = l_elsp%elapse_line_int                 &
      &     + l_elsp%line_count_smp(ip)%elapse_lint_smp
       end do

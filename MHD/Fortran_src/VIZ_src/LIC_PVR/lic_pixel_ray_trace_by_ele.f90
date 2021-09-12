@@ -345,14 +345,13 @@
           end if
 !
           if(lic_p%flag_LIC_elapsed_dump) then
-            line_count_smp%icount_lint_smp                              &
-     &          = line_count_smp%icount_lint_smp + 1
+            line_count_smp%icount_trace_smp                             &
+     &          = line_count_smp%icount_trace_smp + 1
           end if
         end if
 !       write(*,*) 'rgba_ray end', rgba_ray
 !
-        if(lic_p%each_part_p%iflag_repart_ref                           &
-     &             .eq. i_TIME_BASED) then
+        if(lic_p%each_part_p%iflag_repart_ref .eq. i_TIME_BASED) then
           do k1 = 1, ele%nnod_4_ele
             inod = ele%ie(iele,k1)
             if(inod .le. node%internal_node) then

@@ -97,7 +97,7 @@
       ip_smp =     1
 !$omp parallel do
       do ip = 1, l_elsp%np_smp_sys
-        l_elsp1%line_count_smp(ip)%icount_lint_smp = 0
+        l_elsp1%line_count_smp(ip)%icount_trace_smp = 0
         l_elsp1%line_count_smp(ip)%elapse_lint_smp = 0.0d0
       end do
 !$omp end parallel do
