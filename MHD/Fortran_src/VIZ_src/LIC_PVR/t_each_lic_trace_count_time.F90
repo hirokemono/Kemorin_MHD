@@ -302,7 +302,7 @@
      &     = l_elsp%elapse_rtrace / dble(node%internal_node)
       elapse_ray_trace_out(2) = l_elsp%elapse_line_int                  &
      &     / dble(nnod_masked_4_LIC(node, lic_p, field_lic))
-      if(lic_p%flag_LIC_elapsed_dump) return
+      if(lic_p%flag_LIC_elapsed_dump .eqv. .FALSE.) return
 !
 !      if(i_debug .gt. 0) write(*,*)                                    &
 !      write(*,*) "pvr sampling cnt:", my_rank, l_elsp%icount_trace

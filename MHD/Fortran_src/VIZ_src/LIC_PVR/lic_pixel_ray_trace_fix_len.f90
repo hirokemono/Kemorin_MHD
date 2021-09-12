@@ -265,7 +265,7 @@
 ! masking on sampling point
 !              if(lic_mask_flag(lic_p, r_mid)) then
 
-              if(lic_p%flag_LIC_elapsed_dump) start_trace =  MPI_WTIME()
+              if(lic_p%flag_LIC_elapsed_dump) start_trace = MPI_WTIME()
               vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
      &                       + vec4_tgt(1:4) * ratio
               call cal_lic_on_surf_vector                               &
