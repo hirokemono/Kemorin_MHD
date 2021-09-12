@@ -77,7 +77,7 @@
         real(kind = kreal) :: factor_normal = one
 !
 !>        Logical flag to output detailed elapsed time for LIC
-        logical :: flag_LIC_elapsed_dump = .FALSE.
+logical :: flag_LIC_elapsed_dump = .TRUE.
       end type lic_parameters
 !
       character(len = kchara), parameter :: cflag_LIC = 'LIC'
@@ -157,7 +157,7 @@
         call calypso_mpi_abort(ierr_fld, e_message)
       end if
 !
-      lic_p%flag_LIC_elapsed_dump = .FALSE.
+!      lic_p%flag_LIC_elapsed_dump = .FALSE.
       if(lic_ctl%subdomain_elapsed_dump_ctl%iflag .gt. 0) then
         tmpchara = lic_ctl%subdomain_elapsed_dump_ctl%charavalue
         if(yes_flag(tmpchara)) lic_p%flag_LIC_elapsed_dump = .TRUE.
