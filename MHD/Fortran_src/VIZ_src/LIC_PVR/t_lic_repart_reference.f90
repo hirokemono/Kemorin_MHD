@@ -46,6 +46,15 @@
       character(len = kchara), parameter                                &
      &                        :: c_AVERAGE_COUNT =   'AVERAGE_COUNT'
 !
+      character(len = kchara), parameter                                &
+     &                        :: c_SAVED_TIME =     'SAVED_TIME'
+      character(len = kchara), parameter                                &
+     &                        :: c_PREDICTED_TIME = 'PREDICTED_TIME'
+      character(len = kchara), parameter                                &
+     &                        :: c_STACKED_TIME =   'STACKED_TIME'
+      character(len = kchara), parameter                                &
+     &                        :: c_AVERAGE_TIME =   'AVERAGE_TIME'
+!
       integer(kind = kint), parameter :: i_SAVED_COUNT =     1
       integer(kind = kint), parameter :: i_PREDICTED_COUNT = 2
       integer(kind = kint), parameter :: i_STACKED_COUNT =   3
@@ -65,8 +74,6 @@
         integer(kind = kint) :: nnod_lic
 !>    Work area for elapsed transfer time
         real(kind = kreal), allocatable :: count_line_int(:)
-!>    Work area for elapsed transfer time
-        real(kind = kreal), allocatable :: volume_nod_int(:)
 !>    Weight to to mix elapsed from previous
         real(kind = kreal) :: weight_prev = 1.0d0
 !
@@ -116,9 +123,20 @@
       else if(cmp_no_case(tmpchara,c_AVERAGE_COUNT)) then
         each_part_p%iflag_repart_ref = i_INT_COUNT_BASED
         rep_ref%iflag_repart_ref_type = i_AVERAGE_COUNT
+!
+      else if(cmp_no_case(tmpchara,c_PREDICTED_TIME)) then
+        each_part_p%iflag_repart_ref = i_TIME_BASED
+        rep_ref%iflag_repart_ref_type = i_PREDICTED_COUNT
+      else if(cmp_no_case(tmpchara,c_STACKED_TIME)) then
+        each_part_p%iflag_repart_ref = i_TIME_BASED
+        rep_ref%iflag_repart_ref_type = i_STACKED_COUNT
+      else if(cmp_no_case(tmpchara,c_AVERAGE_TIME)) then
+        each_part_p%iflag_repart_ref = i_TIME_BASED
+        rep_ref%iflag_repart_ref_type = i_AVERAGE_COUNT
       end if
 !
-      if(each_part_p%iflag_repart_ref .eq. i_INT_COUNT_BASED) then
+      if      (each_part_p%iflag_repart_ref .eq. i_INT_COUNT_BASED      &
+     &    .or. each_part_p%iflag_repart_ref .eq. i_TIME_BASED) then
         if(new_part_ctl%weight_to_previous_ctl%iflag .gt. 0) then
           rep_ref%weight_prev                                           &
      &         = new_part_ctl%weight_to_previous_ctl%realvalue
