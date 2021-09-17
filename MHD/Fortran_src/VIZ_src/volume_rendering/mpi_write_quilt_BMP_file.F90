@@ -154,6 +154,7 @@
       integer(kind = kint), intent(in) :: npixel_x, npixel_y
       type(each_rgb_image), intent(in) :: images(num_image_lc)
 !
+      type(buffer_4_gzip) :: zbuf_head
       type(buffer_4_gzip), allocatable :: zbuf(:,:)
       integer(kind = kint_gl), allocatable :: istack_zbuf(:)
       integer(kind = kint_gl), allocatable :: nlen_zbuf_gl(:)
@@ -188,15 +189,14 @@
 !
       if(my_rank .eq. 0) then
         call defleate_characters                                        &
-     &     (54, BMP_header(ntot_pixel_x, ntot_pixel_y), zbuf(1,1))
+     &     (54, BMP_header(ntot_pixel_x, ntot_pixel_y), zbuf_head)
         ioffset = IO_param%ioff_gl
         call calypso_mpi_seek_write_gz                                  &
-     &     (IO_param%id_file, ioffset, zbuf(1,1))
+     &     (IO_param%id_file, ioffset, zbuf_head)
+        call dealloc_zip_buffer(zbuf_head)
       end if
-      call calypso_mpi_bcast_one_int8(zbuf(1,1)%ilen_gzipped, 0)
-      IO_param%ioff_gl = IO_param%ioff_gl + zbuf(1,1)%ilen_gzipped
-!
-      if(my_rank .eq. 0) call dealloc_zip_buffer(zbuf(1,1))
+      call calypso_mpi_bcast_one_int8(zbuf_head%ilen_gzipped, 0)
+      IO_param%ioff_gl = IO_param%ioff_gl + zbuf_head%ilen_gzipped
 !
 !
       ilength = 3*int(npixel_x)
