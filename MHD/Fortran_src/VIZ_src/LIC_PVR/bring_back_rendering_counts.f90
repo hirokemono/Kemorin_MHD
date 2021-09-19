@@ -28,6 +28,8 @@
 !
       use m_precision
       use m_constants
+      use calypso_mpi
+
 !
       use t_lic_repart_reference
 !

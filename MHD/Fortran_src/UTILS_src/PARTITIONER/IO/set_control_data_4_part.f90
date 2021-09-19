@@ -9,12 +9,15 @@
 !!@verbatim
 !!      subroutine s_set_control_data_4_part                            &
 !!     &         (part_ctl, comm_part, part_p)
-!!      subroutine set_control_4_extend_sleeve                          &
-!!     &         (id_rank, part_ctl, comm_part, part_p, sleeve_exp_p)
 !!        type(control_data_4_partitioner), intent(in) :: part_ctl
 !!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !!        type(ctl_param_partitioner), intent(inout) :: part_p
 !!        type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
+!!      subroutine set_FEM_mesh_ctl_4_part                              &
+!!     &         (part_Fmesh, comm_part, part_p)
+!!        type(FEM_mesh_control), intent(in) :: part_Fmesh
+!!        type(partitioner_comm_tables), intent(inout) :: comm_part
+!!        type(ctl_param_partitioner), intent(inout) :: part_p
 !!@endverbatim
 !
       module set_control_data_4_part
@@ -26,7 +29,7 @@
 !
       implicit none
 !
-      private :: set_FEM_mesh_ctl_4_part, set_partition_method
+      private :: set_partition_method
       private :: set_control_XYZ_RCB, set_control_SPH_RCB
       private :: set_radial_layer_ctl_4_EQ_SPH
 !
@@ -39,6 +42,7 @@
       subroutine s_set_control_data_4_part                              &
      &         (part_ctl, comm_part, part_p)
 !
+      use calypso_mpi
       use t_control_data_4_part
       use t_partitioner_comm_table
       use m_default_file_prefix
@@ -48,6 +52,7 @@
       use set_control_platform_item
       use set_control_platform_data
       use set_num_domain_each_dir
+      use mpi_abort_by_missing_zlib
 !
       type(control_data_4_partitioner), intent(in) :: part_ctl
 !
@@ -58,8 +63,8 @@
 !
 !
       call turn_off_debug_flag_by_ctl(0, part_ctl%part_plt)
-      call set_control_mesh_def                                         &
-     &   (part_ctl%part_plt, part_p%distribute_mesh_file)
+      call set_control_parallel_mesh_def(part_ctl%part_plt,             &
+     &                                   part_p%distribute_mesh_file)
 !
 !   set local data format
 !
@@ -175,63 +180,10 @@
       end subroutine s_set_control_data_4_part
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine set_control_4_extend_sleeve                            &
-     &         (id_rank, part_ctl, comm_part, part_p, sleeve_exp_p)
-!
-      use t_control_data_4_part
-      use t_partitioner_comm_table
-      use t_ctl_param_sleeve_extend
-      use m_default_file_prefix
-!
-      use m_file_format_switch
-      use itp_table_file_IO_select
-      use set_control_platform_item
-      use set_control_platform_data
-!
-      integer, intent(in) :: id_rank
-      type(control_data_4_partitioner), intent(in) :: part_ctl
-!
-      type(partitioner_comm_tables), intent(inout) :: comm_part
-      type(ctl_param_partitioner), intent(inout) :: part_p
-      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
-!
-      integer(kind = kint) :: ierr
-!
-!
-      call turn_off_debug_flag_by_ctl(id_rank, part_ctl%part_plt)
-      call set_control_mesh_def                                         &
-     &   (part_ctl%part_plt, part_p%distribute_mesh_file)
-!
-!   set local data format
-!
-      if (part_ctl%single_plt%mesh_file_prefix%iflag .gt. 0) then
-        part_p%global_mesh_file%file_prefix                             &
-     &      = part_ctl%single_plt%mesh_file_prefix%charavalue
-      else
-        write(*,*) 'Set original mesh data'
-        stop
-      end if
-      part_p%global_mesh_file%iflag_format                              &
-     & = choose_para_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
-!
-      call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
-     &                             comm_part, part_p)
-!
-      call set_ctl_param_sleeve_extension                               &
-     &   (part_ctl%Fsleeve_c, sleeve_exp_p, ierr)
-!
-      if(id_rank .ne. 0) return
-      write(*,*) 'iflag_memory_conserve',                               &
-     &          comm_part%iflag_memory_conserve
-      write(*,*) 'iflag_viewer_output', part_p%iflag_viewer_output
-!
-      end subroutine set_control_4_extend_sleeve
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_FEM_mesh_ctl_4_part(part_Fmesh, comm_part, part_p)
+      subroutine set_FEM_mesh_ctl_4_part                                &
+     &         (part_Fmesh, comm_part, part_p)
 !
       use t_ctl_data_4_FEM_mesh
       use t_ctl_data_FEM_sleeve_size

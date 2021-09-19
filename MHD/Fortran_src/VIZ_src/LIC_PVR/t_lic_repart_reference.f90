@@ -34,6 +34,7 @@
       use m_constants
       use m_machine_parameter
       use t_file_IO_parameter
+      use calypso_mpi
 !
       implicit  none
 !
@@ -102,6 +103,7 @@
       use t_control_param_vol_grping
       use m_file_format_switch
       use skip_comment_f
+      use mpi_abort_by_missing_zlib
 !
       type(new_patition_control), intent(in) :: new_part_ctl
       type(volume_partioning_param), intent(inout) :: each_part_p
@@ -149,6 +151,8 @@
         end if
         rep_ref%file_IO%iflag_format                                    &
      &      = choose_para_file_format(new_part_ctl%trace_count_fmt_ctl)
+        call s_mpi_abort_by_missing_zlib(rep_ref%file_IO%file_prefix,   &
+     &                                   rep_ref%file_IO%iflag_format)
       end if
 !
       end subroutine set_lic_repart_reference_param
@@ -158,7 +162,6 @@
       subroutine init_lic_repart_ref                                    &
      &         (mesh, pvr_rgb, each_part_p, rep_ref)
 !
-      use calypso_mpi
       use m_work_time
       use m_elapsed_labels_4_VIZ
       use t_mesh_data
@@ -284,7 +287,6 @@
 !
       subroutine output_LIC_line_integrate_count(time, rep_ref)
 !
-      use calypso_mpi
       use m_work_time
       use m_elapsed_labels_4_VIZ
       use t_time_data
@@ -312,7 +314,6 @@
 !
       subroutine copy_lic_repart_ref_to_IO(time, rep_ref, t_IO, fld_IO)
 !
-      use calypso_mpi
       use t_time_data
       use t_field_data_IO
       use const_global_element_ids

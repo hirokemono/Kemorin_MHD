@@ -54,6 +54,7 @@
       use const_mesh_information
       use set_control_platform_data
       use bcast_4_assemble_sph_ctl
+      use mpi_abort_by_missing_zlib
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       if(my_rank .eq. 0) then
@@ -70,7 +71,10 @@
       call set_control_4_merge(mgd_ctl_m, asbl_param_m, ndomain_org)
       call set_control_mesh_file_def(def_new_mesh_head,                 &
      &    mgd_ctl_m%assemble_plt, asbl_param_m%new_mesh_file)
-!
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param_m%new_mesh_file%file_prefix,                       &
+     &    asbl_param_m%new_mesh_file%iflag_format)
+!!
 !  set mesh data
 !
       call mpi_input_mesh(asbl_param_m%org_mesh_file, nprocs, fem_m)

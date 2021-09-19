@@ -25,6 +25,7 @@
       use const_cutshell_mesh
       use set_control_platform_item
       use skip_comment_f
+      use stop_by_missing_zlib
 !
       type(ctl_data_cutshell), intent(in)  :: cutshell_ctl
 !
@@ -37,6 +38,10 @@
       call set_file_control_params(def_mesh_file_head,                  &
      &    cutshell_ctl%cutshell_mesh_head_ctl,                          &
      &    cutshell_ctl%cutshell_mesh_fmt_ctl, modified_mesh_file)
+      call s_stop_by_missing_zlib(original_mesh_file%file_prefix,       &
+     &                            original_mesh_file%iflag_format)
+      call s_stop_by_missing_zlib(modified_mesh_file%file_prefix,       &
+     &                            modified_mesh_file%iflag_format)
 !
       if(cutshell_ctl%cutshell_type_ctl%iflag .gt. 0) then
         tmpchara = cutshell_ctl%cutshell_type_ctl%charavalue

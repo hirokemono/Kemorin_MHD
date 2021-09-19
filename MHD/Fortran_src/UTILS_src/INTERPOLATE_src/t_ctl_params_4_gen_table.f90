@@ -116,6 +116,7 @@
       use itp_table_file_IO_select
       use set_control_platform_item
       use set_control_platform_data
+      use mpi_abort_by_missing_zlib
       use skip_comment_f
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
@@ -128,8 +129,8 @@
       call turn_off_debug_flag_by_ctl(my_rank, gtbl_ctl%src_plt)
       call set_control_smp_def(my_rank, gtbl_ctl%src_plt)
 !
-      call set_control_mesh_def                                         &
-     &   (gtbl_ctl%src_plt, gen_itp_p%itp_org_mesh_file)
+      call set_control_parallel_mesh_def(gtbl_ctl%src_plt,              &
+     &                                   gen_itp_p%itp_org_mesh_file)
 !
       if (gtbl_ctl%table_head_ctl%iflag .ne. 0) then
         gen_itp_p%itp_file_IO%file_prefix                               &
@@ -142,6 +143,9 @@
      &    gtbl_ctl%dst_plt, gen_itp_p%itp_dest_mesh_file)
       gen_itp_p%itp_file_IO%iflag_format                                &
      &    = choose_file_format(gtbl_ctl%fmt_itp_table_file_ctl)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (gen_itp_p%itp_dest_mesh_file%file_prefix,                     &
+     &    gen_itp_p%itp_dest_mesh_file%iflag_format)
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'np_smp', np_smp, np_smp

@@ -6,7 +6,7 @@ bcast_control_data_4_lic.o: $(LIC_DIR)/bcast_control_data_4_lic.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_ctl_data_LIC_noise.o: $(LIC_DIR)/bcast_ctl_data_LIC_noise.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_control_data_LIC_noise.o skip_comment_f.o calypso_mpi_int.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
-bring_back_rendering_counts.o: $(LIC_DIR)/bring_back_rendering_counts.f90 m_precision.o m_constants.o t_lic_repart_reference.o t_mesh_SR.o t_calypso_comm_table.o calypso_reverse_send_recv.o t_mesh_data.o t_geometry_data.o
+bring_back_rendering_counts.o: $(LIC_DIR)/bring_back_rendering_counts.f90 m_precision.o m_constants.o calypso_mpi.o t_lic_repart_reference.o t_mesh_SR.o t_calypso_comm_table.o calypso_reverse_send_recv.o t_mesh_data.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_3d_noise.o: $(LIC_DIR)/cal_3d_noise.f90 m_precision.o m_constants.o mt_stream.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -70,7 +70,7 @@ t_lic_field_data.o: $(LIC_DIR)/t_lic_field_data.f90 m_precision.o m_constants.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 t_lic_rendering.o: $(LIC_DIR)/t_lic_rendering.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_work_time.o t_mesh_data.o t_comm_table.o t_phys_data.o t_next_node_ele_4_node.o t_rendering_vr_image.o t_control_params_4_pvr.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_geometries_in_pvr_screen.o t_control_data_LIC_pvrs.o t_ctl_data_volume_repart.o t_volume_rendering.o t_calypso_comm_table.o t_control_param_vol_grping.o t_LIC_re_partition.o t_lic_repart_reference.o t_control_param_LIC.o t_mesh_SR.o each_volume_rendering.o calypso_mpi_int.o set_pvr_control.o skip_comment_f.o t_read_control_elements.o t_control_data_pvr_sections.o rendering_and_image_nums.o set_lic_controls.o select_LIC_rendering.o m_elapsed_labels_4_VIZ.o each_LIC_rendering.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_lic_repart_reference.o: $(LIC_DIR)/t_lic_repart_reference.f90 m_precision.o m_constants.o m_machine_parameter.o t_file_IO_parameter.o t_ctl_data_volume_grouping.o t_control_param_vol_grping.o m_file_format_switch.o skip_comment_f.o calypso_mpi.o m_work_time.o m_elapsed_labels_4_VIZ.o t_mesh_data.o t_time_data.o t_field_data_IO.o t_pvr_image_array.o field_IO_select.o int_volume_of_single_domain.o t_geometry_data.o const_global_element_ids.o
+t_lic_repart_reference.o: $(LIC_DIR)/t_lic_repart_reference.f90 m_precision.o m_constants.o m_machine_parameter.o t_file_IO_parameter.o calypso_mpi.o t_ctl_data_volume_grouping.o t_control_param_vol_grping.o m_file_format_switch.o skip_comment_f.o mpi_abort_by_missing_zlib.o m_work_time.o m_elapsed_labels_4_VIZ.o t_mesh_data.o t_time_data.o t_field_data_IO.o t_pvr_image_array.o field_IO_select.o int_volume_of_single_domain.o t_geometry_data.o const_global_element_ids.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_noise_node_data.o: $(LIC_DIR)/t_noise_node_data.f90 m_precision.o t_geometries_in_pvr_screen.o
 	$(F90) -c $(F90OPTFLAGS) $<

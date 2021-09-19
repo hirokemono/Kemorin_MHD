@@ -200,6 +200,7 @@
       use t_file_IO_parameter
       use t_ctl_data_4_platforms
       use m_file_format_switch
+      use mpi_abort_by_missing_zlib
 !
       type(platform_data_control), intent(in) :: new_plt
       type(field_IO_params), intent(inout) :: sph_file_param2
@@ -213,6 +214,8 @@
         sph_file_param2%file_prefix                                     &
      &           = new_plt%spectr_field_file_prefix%charavalue
       end if
+      call s_mpi_abort_by_missing_zlib(sph_file_param2%file_prefix,     &
+     &                                 sph_file_param2%iflag_format)
 !
       end subroutine set_ctl_4_second_spectr_data
 !

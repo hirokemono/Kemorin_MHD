@@ -20,7 +20,7 @@ solver_VMGCGnn_DJDS_SMP.o: $(MG_SRCDIR)/solver_VMGCGnn_DJDS_SMP.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 t_MGCG_data.o: $(MG_SRCDIR)/t_MGCG_data.f90 m_precision.o t_comm_table.o t_vector_for_solver.o t_solver_djds.o t_mesh_data.o t_interpolate_table.o t_jacobians.o t_table_FEM_const.o t_work_FEM_integration.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o m_file_format_switch.o t_MGCG_parameter.o t_ctl_data_4_Multigrid.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_MGCG_parameter.o: $(MG_SRCDIR)/t_MGCG_parameter.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_Multigrid.o calypso_mpi.o m_error_IDs.o m_file_format_switch.o set_parallel_file_name.o
+t_MGCG_parameter.o: $(MG_SRCDIR)/t_MGCG_parameter.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_Multigrid.o calypso_mpi.o m_error_IDs.o m_file_format_switch.o set_parallel_file_name.o mpi_abort_by_missing_zlib.o
 	$(F90) -c $(F90OPTFLAGS) $<
 write_djds_matrix_struct.o: $(MG_SRCDIR)/write_djds_matrix_struct.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_solver_djds.o write_djds_matrix_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

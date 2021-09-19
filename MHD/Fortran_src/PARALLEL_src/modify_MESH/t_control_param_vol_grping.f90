@@ -103,7 +103,6 @@
 !
       subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
 !
-      use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
 !
@@ -115,6 +114,7 @@
       use set_control_platform_data
       use set_ctl_parallel_platform
       use parallel_ucd_IO_select
+      use mpi_abort_by_missing_zlib
 !
       type(viz_repartition_ctl), intent(in) :: viz_repart_c
       type(volume_partioning_param), intent(inout) :: part_param
@@ -131,6 +131,9 @@
      &      viz_repart_c%viz_plt%mesh_file_prefix,                      &
      &      viz_repart_c%viz_plt%mesh_file_fmt_ctl,                     &
      &      part_param%viz_mesh_file)
+        call s_mpi_abort_by_missing_zlib                                &
+     &     (part_param%viz_mesh_file%file_prefix,                       &
+     &      part_param%viz_mesh_file%iflag_format)
       end if
 !
       call set_FEM_surface_output_flag                                  &
@@ -166,6 +169,7 @@
       use set_control_platform_item
       use set_control_platform_data
       use set_num_domain_each_dir
+      use mpi_abort_by_missing_zlib
 !
       type(new_patition_control), intent(in) :: new_part_ctl
       type(volume_partioning_param), intent(inout) :: part_param
@@ -179,6 +183,9 @@
      &      new_part_ctl%repart_table_head_ctl,                         &
      &      new_part_ctl%repart_table_fmt_ctl,                          &
      &      part_param%trans_tbl_file)
+        call s_mpi_abort_by_missing_zlib                                &
+     &     (part_param%trans_tbl_file%file_prefix,                      &
+     &      part_param%trans_tbl_file%iflag_format)
       end if
 !
       part_param%iflag_repart_ref = i_NO_REPARTITION

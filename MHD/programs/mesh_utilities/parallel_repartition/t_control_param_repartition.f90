@@ -49,6 +49,7 @@
       use set_control_platform_data
       use set_ctl_parallel_platform
       use parallel_ucd_IO_select
+      use mpi_abort_by_missing_zlib
 !
       type(new_patition_test_control), intent(inout) :: part_tctl
       type(vol_partion_prog_param), intent(inout) :: part_prog_p
@@ -56,7 +57,8 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank, part_tctl%plt)
       call check_control_num_domains(part_tctl%plt)
-      call set_control_mesh_def(part_tctl%plt, part_prog_p%mesh_file)
+      call set_control_parallel_mesh_def(part_tctl%plt,                 &
+     &                                   part_prog_p%mesh_file)
       call set_control_smp_def(my_rank, part_tctl%plt)
 !
       call set_merged_ucd_file_define(part_tctl%plt,                    &

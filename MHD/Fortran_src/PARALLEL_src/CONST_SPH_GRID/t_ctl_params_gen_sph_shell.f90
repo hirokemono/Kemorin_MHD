@@ -90,9 +90,11 @@
       subroutine set_control_4_shell_files                              &
      &         (id_rank, plt, Fmesh_ctl, nprocs_check, sph_files)
 !
+      use calypso_mpi
       use set_control_platform_item
       use set_control_platform_data
       use gen_sph_grids_modes
+      use mpi_abort_by_missing_zlib
 !
       integer, intent(in) :: id_rank
       type(platform_data_control), intent(in) :: plt

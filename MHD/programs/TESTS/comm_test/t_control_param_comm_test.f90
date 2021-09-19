@@ -61,6 +61,7 @@
       use t_ctl_data_4_FEM_mesh
       use set_control_platform_item
       use set_control_platform_data
+      use mpi_abort_by_missing_zlib
 !
       type(platform_data_control), intent(in) :: plt
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl
@@ -68,7 +69,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_mesh_def(plt, T_files%mesh_file_IO)
+      call set_control_parallel_mesh_def(plt, T_files%mesh_file_IO)
       call set_FEM_surface_output_flag                                  &
      &   (Fmesh_ctl, T_files%iflag_output_SURF)
 !

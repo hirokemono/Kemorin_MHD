@@ -19,6 +19,8 @@
 !
       use m_precision
       use m_machine_parameter
+      use calypso_mpi
+!
       use t_file_IO_parameter
       use t_ctl_data_gen_filter
       use t_ctl_data_gen_3d_filter
@@ -45,6 +47,7 @@
       use t_filter_elength
       use t_ctl_param_newdom_filter
       use set_control_platform_data
+      use mpi_abort_by_missing_zlib
 !
       type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
       type(gradient_model_data_type), intent(inout) :: FEM_elens
@@ -57,8 +60,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
-      call set_control_mesh_def                                         &
-     &   (filter3d_ctl%gen_filter_plt, mesh_file)
+      call set_control_parallel_mesh_def(filter3d_ctl%gen_filter_plt,   &
+     &                                   mesh_file)
       call set_file_heads_3d_comm_filter                                &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl,   &
      &    gfil_p)
@@ -76,6 +79,7 @@
      &         (filter3d_ctl, mesh_file, gfil_p, num_pe)
 !
       use set_control_platform_data
+      use mpi_abort_by_missing_zlib
 !
       type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
       type(field_IO_params), intent(inout) ::  mesh_file
@@ -84,8 +88,8 @@
       integer, intent(inout) :: num_pe
 !
 !
-      call set_control_mesh_def                                         &
-     &   (filter3d_ctl%gen_filter_plt, mesh_file)
+      call set_control_parallel_mesh_def(filter3d_ctl%gen_filter_plt,   &
+     &                                   mesh_file)
       call set_file_heads_3d_comm_filter                                &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl,   &
      &    gfil_p)
@@ -101,7 +105,6 @@
      &          fil3_ctl, org_fil_files_ctl, org_filter_coef_head,      &
      &          gfil_p, FEM_elens, fil_mat_crs, ref_m)
 !
-      use calypso_mpi
       use m_error_IDs
 !
       use t_reference_moments

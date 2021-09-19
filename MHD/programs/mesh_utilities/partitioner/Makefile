@@ -22,7 +22,9 @@ distribute_para_itp_table.o
 
 MOD_SLEEVE_EXTEND = \
 main_sleeve_extend.o \
-analyzer_sleeve_extend.o
+analyzer_sleeve_extend.o \
+\
+set_control_4_extend_sleeve.o
 
 MOD_MAKE_SURF_MESH = \
 main_make_surface_mesh.o \

@@ -99,6 +99,7 @@
       use set_control_platform_item
       use set_control_platform_data
       use set_control_4_pickup_sph
+      use mpi_abort_by_missing_zlib
 !
       use t_ctl_data_4_sph_utils
       use m_default_file_prefix
@@ -121,6 +122,12 @@
      &    spu_ctl%org_plt, files_SHR%org_rj_file_IO)
       call set_control_mesh_file_def(def_org_rst_header,                &
      &    spu_ctl%org_plt, files_SHR%org_rst_file_IO)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (files_SHR%org_rj_file_IO%file_prefix,                         &
+     &    files_SHR%org_rj_file_IO%iflag_format)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (files_SHR%org_rst_file_IO%file_prefix,                        &
+     &    files_SHR%org_rst_file_IO%iflag_format)
 !
 !      stepping parameter
 !
@@ -134,12 +141,16 @@
         call set_parallel_file_ctl_params(org_sph_file_head,            &
      &      spu_ctl%plt%spectr_field_file_prefix,                       &
      &      spu_ctl%plt%restart_file_fmt_ctl, spec_fst_param)
+        call s_mpi_abort_by_missing_zlib(spec_fst_param%file_prefix,    &
+     &                                   spec_fst_param%iflag_format)
       end if
 !
       if(spu_ctl%zm_spec_file_head_ctl%iflag .gt. 0) then
         call set_parallel_file_ctl_params(zm_sph_file_head,             &
      &      spu_ctl%zm_spec_file_head_ctl,                              &
      &      spu_ctl%plt%restart_file_fmt_ctl, zm_sph_fst_param)
+        call s_mpi_abort_by_missing_zlib(zm_sph_fst_param%file_prefix,  &
+     &                                   zm_sph_fst_param%iflag_format)
       end if
 !
 !   using restart data for spherical dynamo
@@ -148,6 +159,8 @@
         call set_parallel_file_ctl_params(org_sph_file_head,            &
      &      spu_ctl%plt%restart_file_prefix,                            &
      &      spu_ctl%plt%restart_file_fmt_ctl, spec_fst_param)
+        call s_mpi_abort_by_missing_zlib(spec_fst_param%file_prefix,    &
+     &                                   spec_fst_param%iflag_format)
         time_SHR%ucd_step%increment = time_SHR%rst_step%increment
       end if
 !
@@ -155,6 +168,8 @@
         call set_parallel_file_ctl_params(org_sph_file_head,            &
      &      spu_ctl%org_plt%restart_file_prefix,                        &
      &      spu_ctl%org_plt%sph_file_fmt_ctl, spec_fst_param)
+        call s_mpi_abort_by_missing_zlib(spec_fst_param%file_prefix,    &
+     &                                   spec_fst_param%iflag_format)
         time_SHR%ucd_step%increment = time_SHR%rst_step%increment
       end if
 !

@@ -46,6 +46,7 @@
       use set_control_platform_item
       use set_control_platform_data
       use parallel_ucd_IO_select
+      use mpi_abort_by_missing_zlib
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
       type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
@@ -56,8 +57,8 @@
       call turn_off_debug_flag_by_ctl(my_rank, gtbl_ctl%src_plt)
       call set_control_smp_def(my_rank, gtbl_ctl%src_plt)
 !
-      call set_control_mesh_def                                         &
-     &   (gtbl_ctl%src_plt, gen_itp_p%itp_org_mesh_file)
+      call set_control_parallel_mesh_def(gtbl_ctl%src_plt,              &
+     &                                   gen_itp_p%itp_org_mesh_file)
 !
       if (gtbl_ctl%dst_plt%mesh_file_prefix%iflag .ne. 0) then
         gen_itp_p%itp_dest_mesh_file%file_prefix                        &
@@ -96,9 +97,16 @@
       call set_parallel_file_ctl_params(def_org_rst_prefix,             &
      &    gtbl_ctl%src_plt%restart_file_prefix,                         &
      &    gtbl_ctl%src_plt%restart_file_fmt_ctl, gen_itp_p%org_fst_IO)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (gen_itp_p%org_fst_IO%file_prefix,                             &
+     &    gen_itp_p%org_fst_IO%iflag_format)
+!
       call set_parallel_file_ctl_params(def_itp_rst_prefix,             &
      &    gtbl_ctl%dst_plt%restart_file_prefix,                         &
      &    gtbl_ctl%dst_plt%restart_file_fmt_ctl, gen_itp_p%itp_fst_IO)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (gen_itp_p%itp_fst_IO%file_prefix,                             &
+     &    gen_itp_p%itp_fst_IO%iflag_format)
 !
       call set_merged_ucd_file_define                                   &
      &   (gtbl_ctl%src_plt, gen_itp_p%org_ucd_IO)

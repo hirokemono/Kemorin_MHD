@@ -68,6 +68,7 @@
       use t_field_data_IO
 !
       use skip_comment_f
+      use mpi_abort_by_missing_zlib
 !
       type(SGS_model_control), intent(in) :: sgs_ctl
       type(SGS_model_control_params), intent(inout) :: SGS_param
@@ -228,6 +229,8 @@
 !
         Csim_file_IO%iflag_format = choose_para_file_format             &
      &     (sgs_ctl%ffile_ctl%model_coef_rst_format)
+        call s_mpi_abort_by_missing_zlib(Csim_file_IO%file_prefix,      &
+     &                                   Csim_file_IO%iflag_format)
 !
         if (iflag_debug .gt. 0)  then
           write(*,*) 'Csim_file_IO%file_prefix: ',                      &

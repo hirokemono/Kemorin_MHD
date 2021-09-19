@@ -67,6 +67,7 @@
       use t_file_IO_parameter
       use t_mesh_data
       use t_read_mesh_data
+      use set_control_4_extend_sleeve
 !
 !
       call init_elapse_time_by_TOTAL
@@ -78,7 +79,7 @@
       if(my_rank .eq. 0) call read_control_data_4_part(part_ctl1)
       call bcast_part_control_data(part_ctl1)
 !
-      call set_control_4_extend_sleeve                                  &
+      call s_set_control_4_extend_sleeve                                &
      &   (my_rank, part_ctl1, comm_part1, part_p1, sleeve_exp_p1)
       call dealloc_ctl_data_4_part(part_ctl1)
 !

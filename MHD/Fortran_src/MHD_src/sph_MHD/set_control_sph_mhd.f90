@@ -180,6 +180,7 @@
       use set_control_4_force
       use set_control_4_normalize
       use set_ctl_4_shell_grids
+      use mpi_abort_by_missing_zlib
 !
       use set_control_4_pickup_sph
       use parallel_ucd_IO_select

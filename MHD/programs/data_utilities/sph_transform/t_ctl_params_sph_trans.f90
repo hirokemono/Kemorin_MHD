@@ -18,6 +18,7 @@
       module t_ctl_params_sph_trans
 !
       use m_precision
+      use calypso_mpi
 !
       use t_step_parameter
       use t_global_gauss_coefs
@@ -57,7 +58,6 @@
 !
       use t_work_4_sph_trans
 !
-      use calypso_mpi
       use m_FFT_selector
       use m_legendre_transform_list
 !
@@ -66,6 +66,7 @@
       use set_control_platform_data
       use set_ctl_4_shell_grids
       use parallel_ucd_IO_select
+      use mpi_abort_by_missing_zlib
 !
       use sel_spherical_SRs
 !
@@ -155,7 +156,6 @@
       subroutine s_set_ctl_data_4_sph_trans(spt_ctl, time_STR,          &
      &          SPH_TRNS, FEM_STR, SPH_STR)
 !
-      use calypso_mpi
       use t_file_IO_parameter
 !
       use m_machine_parameter
@@ -169,6 +169,7 @@
       use m_default_file_prefix
       use skip_comment_f
       use parallel_ucd_IO_select
+      use mpi_abort_by_missing_zlib
 !
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(time_step_param), intent(inout) :: time_STR
@@ -181,6 +182,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank, spt_ctl%plt)
       call set_control_smp_def(my_rank, spt_ctl%plt)
+!
       call set_control_sph_mesh(spt_ctl%plt, spt_ctl%Fmesh_ctl,         &
      &    SPH_STR%sph_file_param, FEM_STR%mesh_file_IO,                 &
      &    SPH_STR%sph_file_IO, SPH_STR%FEM_mesh_flags)
@@ -193,6 +195,15 @@
      &    spt_ctl%org_plt, SPH_STR%org_rst_file_IO)
       call set_control_mesh_file_def(def_org_ucd_header,                &
      &    spt_ctl%org_plt, FEM_STR%org_ucd_file_IO)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (SPH_STR%org_rj_file_IO%file_prefix,                           &
+     &    SPH_STR%org_rj_file_IO%iflag_format)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (SPH_STR%org_rst_file_IO%file_prefix,                          &
+     &    SPH_STR%org_rst_file_IO%iflag_format)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (FEM_STR%org_ucd_file_IO%file_prefix,                          &
+     &    FEM_STR%org_ucd_file_IO%iflag_format)
 !
 !    file header for field data
 !

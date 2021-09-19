@@ -87,6 +87,7 @@
       use set_ctl_4_shell_grids
       use new_SPH_restart
       use skip_comment_f
+      use mpi_abort_by_missing_zlib
 !
       type(control_data_4_merge), intent(in) :: mgd_ctl
       type(control_param_assemble), intent(inout) :: asbl_param
@@ -123,15 +124,27 @@
      &    mgd_ctl%source_plt%sph_file_prefix,                           &
      &    mgd_ctl%source_plt%sph_file_fmt_ctl,                          &
      &    asbl_param%org_mesh_file)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%org_mesh_file%file_prefix,                         &
+     &    asbl_param%org_mesh_file%iflag_format)
 !
       call set_parallel_file_ctl_params(def_new_sph_head,               &
      &    mgd_ctl%assemble_plt%sph_file_prefix,                         &
      &    mgd_ctl%assemble_plt%sph_file_fmt_ctl,                        &
      &    asbl_param%new_mesh_file)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%new_mesh_file%file_prefix,                         &
+     &    asbl_param%new_mesh_file%iflag_format)
 !
 !
       call set_assemble_rst_file_param                                  &
      &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%org_fld_file%file_prefix,                          &
+     &    asbl_param%org_fld_file%iflag_format)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%new_fld_file%file_prefix,                          &
+     &    asbl_param%new_fld_file%iflag_format)
 !
 !
 !      if((asbl_param%new_fld_file%iflag_format/iflag_single) .gt. 0    &

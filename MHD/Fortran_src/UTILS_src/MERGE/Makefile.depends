@@ -24,9 +24,9 @@ r_interpolate_marged_sph.o: $(MERGE_DIR)/r_interpolate_marged_sph.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 search_original_domain_node.o: $(MERGE_DIR)/search_original_domain_node.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_assemble.o: $(MERGE_DIR)/set_control_assemble.f90 m_precision.o m_machine_parameter.o t_file_IO_parameter.o t_control_param_assemble.o m_file_format_switch.o m_field_file_format.o t_control_data_4_merge.o set_parallel_file_name.o set_control_platform_data.o ucd_IO_select.o parallel_ucd_IO_select.o m_default_file_prefix.o skip_comment_f.o assemble_nodal_fields.o
+set_control_assemble.o: $(MERGE_DIR)/set_control_assemble.f90 m_precision.o m_machine_parameter.o t_file_IO_parameter.o t_control_param_assemble.o calypso_mpi.o m_file_format_switch.o m_field_file_format.o t_control_data_4_merge.o set_parallel_file_name.o set_control_platform_data.o ucd_IO_select.o parallel_ucd_IO_select.o mpi_abort_by_missing_zlib.o m_default_file_prefix.o skip_comment_f.o assemble_nodal_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_newsph.o: $(MERGE_DIR)/set_control_newsph.f90 m_precision.o m_constants.o calypso_mpi.o t_file_IO_parameter.o t_control_param_assemble.o t_spectr_data_4_assemble.o calypso_mpi_real.o calypso_mpi_int.o bcast_file_IO_parameter.o m_error_IDs.o t_control_data_4_merge.o t_SPH_mesh_field_data.o t_ctl_params_gen_sph_shell.o m_file_format_switch.o set_control_platform_item.o set_ctl_4_shell_grids.o new_SPH_restart.o skip_comment_f.o
+set_control_newsph.o: $(MERGE_DIR)/set_control_newsph.f90 m_precision.o m_constants.o calypso_mpi.o t_file_IO_parameter.o t_control_param_assemble.o t_spectr_data_4_assemble.o calypso_mpi_real.o calypso_mpi_int.o bcast_file_IO_parameter.o m_error_IDs.o t_control_data_4_merge.o t_SPH_mesh_field_data.o t_ctl_params_gen_sph_shell.o m_file_format_switch.o set_control_platform_item.o set_ctl_4_shell_grids.o new_SPH_restart.o skip_comment_f.o mpi_abort_by_missing_zlib.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_internal_mesh_data.o: $(MERGE_DIR)/set_internal_mesh_data.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_para_double_numbering.o
 	$(F90) -c $(F90OPTFLAGS) $<

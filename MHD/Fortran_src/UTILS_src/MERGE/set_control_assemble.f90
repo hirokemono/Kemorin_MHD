@@ -19,6 +19,7 @@
       use m_machine_parameter
       use t_file_IO_parameter
       use t_control_param_assemble
+      use calypso_mpi
 !
       implicit none
 !
@@ -40,6 +41,7 @@
       use set_control_platform_data
       use ucd_IO_select
       use parallel_ucd_IO_select
+      use mpi_abort_by_missing_zlib
 !
       type(control_data_4_merge), intent(in) :: mgd_ctl
       type(control_param_assemble), intent(inout) :: asbl_param
@@ -53,8 +55,8 @@
         stop
       end if
 !
-      call set_control_mesh_def                                         &
-     &   (mgd_ctl%source_plt, asbl_param%org_mesh_file)
+      call set_control_parallel_mesh_def(mgd_ctl%source_plt,            &
+     &                                   asbl_param%org_mesh_file)
 !
       end subroutine set_control_4_merge
 !
@@ -67,6 +69,7 @@
       use m_file_format_switch
       use m_default_file_prefix
       use set_control_platform_data
+      use mpi_abort_by_missing_zlib
 !
       integer, intent(in) :: num_pe
       type(control_data_4_merge), intent(in) :: mgd_ctl
@@ -87,12 +90,21 @@
 !
       call set_control_mesh_file_def(def_new_mesh_head,                 &
      &    mgd_ctl%assemble_plt, asbl_param%new_mesh_file)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%new_mesh_file%file_prefix,                         &
+     &    asbl_param%new_mesh_file%iflag_format)
 !
       call set_delete_flag_4_assemble(mgd_ctl%assemble_plt, asbl_param)
 !
 !
       call set_assemble_rst_file_param                                  &
      &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%org_fld_file%file_prefix,                          &
+     &    asbl_param%org_fld_file%iflag_format)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%new_fld_file%file_prefix,                          &
+     &    asbl_param%new_fld_file%iflag_format)
 !
       call set_magnetic_ratio_4_assemble                                &
      &   (mgd_ctl%magnetic_ratio_ctl, asbl_param)
@@ -131,6 +143,10 @@
 !
       call set_control_mesh_file_def(def_new_mesh_head,                 &
      &    mgd_ctl%assemble_plt, asbl_param%new_mesh_file)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%new_mesh_file%file_prefix,                         &
+     &    asbl_param%new_mesh_file%iflag_format)
+!
       call set_assemble_ucd_file_param                                  &
      &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
 !

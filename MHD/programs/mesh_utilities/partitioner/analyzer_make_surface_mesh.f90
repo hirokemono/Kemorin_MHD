@@ -48,6 +48,7 @@
       use nod_phys_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
+      use mpi_abort_by_missing_zlib
 !
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
@@ -79,8 +80,8 @@
       call start_elapsed_time(ied_total_elapsed)
       call read_control_4_mesh_test(mesh_tctl1)
 !
-      call set_minimum_fem_platform_def                                 &
-     &   (my_rank, mesh_tctl1%plt, mesh_tctl1%Fmesh_ctl,                &
+      call set_minimum_fem_platform                                     &
+     &   (mesh_tctl1%plt, mesh_tctl1%Fmesh_ctl,                         &
      &    mesh_file_name, iflag_output_SURF)
 !
 !  --  read geometry

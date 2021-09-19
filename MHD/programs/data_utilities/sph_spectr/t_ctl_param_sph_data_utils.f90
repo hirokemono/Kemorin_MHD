@@ -79,6 +79,7 @@
       use m_file_format_switch
       use set_ctl_parallel_platform
       use set_control_platform_item
+      use mpi_abort_by_missing_zlib
 !
       type(platform_data_control), intent(in) :: plt
       type(time_data_control), intent(in) :: tctl
@@ -96,6 +97,9 @@
         files%org_file_param%file_prefix                                &
      &          = f_ctl%org_field_head_ctl%charavalue
       end if
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (files%org_file_param%file_prefix,                             &
+     &    files%org_file_param%iflag_format)
 !
       files%sub_file_param%iflag_format                                 &
      &    = choose_para_file_format(f_ctl%sub_spec_file_fmt_ctl)
@@ -103,6 +107,9 @@
         files%sub_file_param%file_prefix                                &
      &          = f_ctl%sub_field_head_ctl%charavalue
       end if
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (files%sub_file_param%file_prefix,                             &
+     &    files%sub_file_param%iflag_format)
 !
       files%out_file_param%iflag_format                                 &
      &    = choose_para_file_format(f_ctl%out_spec_file_fmt_ctl)
@@ -111,6 +118,9 @@
           files%out_file_param%file_prefix                              &
      &          = f_ctl%out_field_head_ctl%charavalue
       end if
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (files%out_file_param%file_prefix,                             &
+     &    files%out_file_param%iflag_format)
 !
       write(*,*) 'f_ctl%org_field_head_ctl%iflag',                      &
      &          f_ctl%org_field_head_ctl%iflag

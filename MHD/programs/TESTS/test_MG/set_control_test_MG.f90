@@ -12,6 +12,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use calypso_mpi
 !
       implicit none
 !
@@ -27,12 +28,13 @@
       use t_ctl_data_4_platforms
       use set_solver_MG_control
       use set_control_platform_data
+      use mpi_abort_by_missing_zlib
 !
       type(platform_data_control), intent(in) :: plt
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_control_mesh_def(plt, mesh_file)
+      call set_control_parallel_mesh_def(plt, mesh_file)
 !
       np_smp = ione
       if(plt%num_smp_ctl%iflag .eq. 1) np_smp = num_smp_ctl%intvalue

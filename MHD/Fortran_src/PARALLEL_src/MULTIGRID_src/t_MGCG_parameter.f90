@@ -136,6 +136,7 @@
       use m_file_format_switch
       use t_ctl_data_4_Multigrid
       use set_parallel_file_name
+      use mpi_abort_by_missing_zlib
 !
       integer(kind = kint), intent(in) :: n_level
       type(MGCG_control), intent(in) :: MG_ctl
@@ -179,6 +180,11 @@
         if (MG_ctl%MG_mesh_fmt_ctl%icou .eq. MG_file%nlevel_f) then
           call choose_file_format_array(MG_file%nlevel_f,               &
      &        MG_ctl%MG_mesh_fmt_ctl, MG_file%ifmt_MG_mesh_file)
+          do i = 1, MG_file%nlevel_f
+            call s_mpi_abort_by_missing_zlib                            &
+     &         (MG_file%MG_mesh_file_head(i),                           &
+     &          MG_file%ifmt_MG_mesh_file(i))
+          end do
         else
           e_message = 'Set mesh file formats for MG'
           call calypso_MPI_abort(ierr_file, e_message)
@@ -187,6 +193,11 @@
         if(MG_ctl%MG_table_fmt_ctl%icou .eq. MG_file%nlevel_f) then
           call choose_file_format_array(MG_file%nlevel_f,               &
      &        MG_ctl%MG_table_fmt_ctl, MG_file%ifmt_MG_table_file)
+          do i = 1, MG_file%nlevel_f
+            call s_mpi_abort_by_missing_zlib                            &
+     &         (MG_file%MG_f2c_tbl_head(i),                             &
+     &          MG_file%ifmt_MG_table_file(i))
+          end do
         else
           e_message = 'Set interpolation table file formats for MG'
           call calypso_MPI_abort(ierr_file, e_message)

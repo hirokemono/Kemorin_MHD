@@ -63,6 +63,7 @@
       use t_const_comm_table
 !
       use int_volume_of_single_domain
+      use mpi_abort_by_missing_zlib
 !
 !>     Stracture for Jacobians
 !
@@ -94,8 +95,8 @@
 !
       call read_control_4_mesh_test(mesh_tctl1)
 !
-      call set_minimum_fem_platform_def                                 &
-     &   (my_rank, mesh_tctl1%plt, mesh_tctl1%Fmesh_ctl,                &
+      call set_minimum_fem_platform                                     &
+     &   (mesh_tctl1%plt, mesh_tctl1%Fmesh_ctl,                         &
      &    mesh_file_name, iflag_output_SURF)
 !
 !  --  read geometry

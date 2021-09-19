@@ -33,13 +33,14 @@
       use m_file_format_switch
       use t_ctl_data_test_bc_temp
       use set_control_platform_data
+      use mpi_abort_by_missing_zlib
 !
       type(ctl_data_bc_temp_test), intent(in) :: bc_temp_test_ctl
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_control_mesh_def                                         &
-     &   (bc_temp_test_ctl%bc_test_plt, mesh_file)
+      call set_control_parallel_mesh_def(bc_temp_test_ctl%bc_test_plt,  &
+     &                                   mesh_file)
       if(iflag_debug.gt.0) write(*,*)                                   &
      &      'mesh_file_head ', mesh_file%file_prefix
 !
