@@ -179,9 +179,9 @@
               ipix_start_tmp(1,icou) = ipix
               ipix_start_tmp(2,icou) = jpix
 !
-              xt1(1:2) = x_pix(1:2) - xx4_model_sf(1:2,1,k1)
-              a(1:2,1) = xx4_model_sf(1:2,2,k1) - xx4_model_sf(1:2,1,k1)
-              a(1:2,2) = xx4_model_sf(1:2,4,k1) - xx4_model_sf(1:2,1,k1)
+              xt1(1:2)= x_pix(1:2) - xx4_model_sf(1:2,1,k1)
+              a(1:2,1)= xx4_model_sf(1:2,2,k1) - xx4_model_sf(1:2,1,k1)
+              a(1:2,2)= xx4_model_sf(1:2,4,k1) - xx4_model_sf(1:2,1,k1)
               aj = one / (a(1,1)*a(2,2) - a(2,1)*a(1,2))
 !
               c1(1) = ( a(2,2)*xt1(1) - a(1,2)*xt1(2) ) * aj

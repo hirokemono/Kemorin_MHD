@@ -12,7 +12,6 @@
 !!        integer(kind = kint), intent(in) :: num_views
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!      subroutine set_fixed_view_and_image(i_img, num_stereo,          &
-!!     &          mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj)
 !!     &          mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj,        &
 !!     &          SR_sig, SR_r, SR_i)
 !!      subroutine rendering_with_fixed_view                            &

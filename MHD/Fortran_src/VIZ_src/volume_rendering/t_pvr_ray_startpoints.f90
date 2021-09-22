@@ -102,7 +102,7 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
-      pvr_start%num_pvr_ray  = num_ray
+      pvr_start%num_pvr_ray = num_ray
       allocate(pvr_start%id_pixel_start(pvr_start%num_pvr_ray)     )
       allocate(pvr_start%isf_pvr_ray_start(3,pvr_start%num_pvr_ray))
       allocate(pvr_start%xi_pvr_start(2,pvr_start%num_pvr_ray)     )
