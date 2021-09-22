@@ -36,19 +36,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_mesh_def(plt, mesh_file)
+      subroutine set_control_mesh_def(default_prefix, file_prefix_ctl, file_format_ctl, &
+     &                                mesh_file)
 !
       use m_default_file_prefix
       use m_file_format_switch
       use set_control_platform_item
       use stop_by_missing_zlib
 !
-      type(platform_data_control), intent(in) :: plt
+      character(len=kchara), intent(in) :: default_prefix
+      type(read_character_item), intent(in) :: file_prefix_ctl
+      type(read_character_item), intent(in) :: file_format_ctl
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_parallel_file_ctl_params(def_mesh_file_head,             &
-     &    plt%mesh_file_prefix, plt%mesh_file_fmt_ctl, mesh_file)
+      call set_file_control_params(default_prefix,                      &
+     &    file_prefix_ctl, file_format_ctl, mesh_file)
       call s_stop_by_missing_zlib(mesh_file%file_prefix,                &
      &                            mesh_file%iflag_format)
 !

@@ -95,18 +95,12 @@
       type(control_param_assemble), intent(inout) :: asbl_param
 !
 !
-      call set_parallel_file_ctl_params(def_org_sph_fst,                &
+      call set_ctl_parallel_file_w_def(def_org_sph_fst,                 &
      &    source_plt%restart_file_prefix,                               &
      &    source_plt%restart_file_fmt_ctl, asbl_param%org_fld_file)
-      call set_parallel_file_ctl_params(def_new_sph_fst,                &
+      call set_ctl_parallel_file_w_def(def_new_sph_fst,                 &
      &    assemble_plt%restart_file_prefix,                             &
      &    assemble_plt%restart_file_fmt_ctl, asbl_param%new_fld_file)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%org_fld_file%file_prefix,                          &
-     &    asbl_param%org_fld_file%iflag_format)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%new_fld_file%file_prefix,                          &
-     &    asbl_param%new_fld_file%iflag_format)
 !
       end subroutine set_assemble_rst_file_param
 !

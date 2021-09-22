@@ -128,8 +128,10 @@
       integer(kind = kint) :: i
 !
 !
-      call set_control_mesh_def                                         &
-     &   (refine_ctl%source_plt, refine_p%original_mesh_file)
+      call set_control_mesh_def(def_mesh_file_head,                     &
+     &    refine_ctl%source_plt%mesh_file_prefix,                       &
+     &    refine_ctl%source_plt%mesh_file_fmt_ctl,                      &
+     &    refine_p%original_mesh_file)
       call set_control_mesh_file_def(def_new_mesh_head,                 &
      &    refine_ctl%refined_plt, refine_p%refined_mesh_file)
       call s_stop_by_missing_zlib                                       &

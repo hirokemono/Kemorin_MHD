@@ -33,7 +33,9 @@
       character(len = kchara) :: tmpchara
 !
 !
-      call set_control_mesh_def(pfft_c%new_p_plt, mesh_file)
+      call set_control_mesh_def(def_mesh_file_head,                     &
+     &    pfft_c%new_p_plt%mesh_file_prefix,                            &
+     &    pfft_c%new_p_plt%mesh_file_fmt_ctl, mesh_file)
 !
       if (pfft_c%new_p_plt%field_file_prefix%iflag .gt. 0) then
         plane_udt_header                                                &
