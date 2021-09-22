@@ -120,31 +120,19 @@
         call calypso_mpi_abort(ierr_P_MPI, e_message)
       end if
 !
-      call set_parallel_file_ctl_params(def_org_sph_head,               &
+      call set_ctl_parallel_file_w_def(def_org_sph_head,                &
      &    mgd_ctl%source_plt%sph_file_prefix,                           &
      &    mgd_ctl%source_plt%sph_file_fmt_ctl,                          &
      &    asbl_param%org_mesh_file)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%org_mesh_file%file_prefix,                         &
-     &    asbl_param%org_mesh_file%iflag_format)
 !
-      call set_parallel_file_ctl_params(def_new_sph_head,               &
+      call set_ctl_parallel_file_w_def(def_new_sph_head,                &
      &    mgd_ctl%assemble_plt%sph_file_prefix,                         &
      &    mgd_ctl%assemble_plt%sph_file_fmt_ctl,                        &
      &    asbl_param%new_mesh_file)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%new_mesh_file%file_prefix,                         &
-     &    asbl_param%new_mesh_file%iflag_format)
 !
 !
       call set_assemble_rst_file_param                                  &
      &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%org_fld_file%file_prefix,                          &
-     &    asbl_param%org_fld_file%iflag_format)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%new_fld_file%file_prefix,                          &
-     &    asbl_param%new_fld_file%iflag_format)
 !
 !
 !      if((asbl_param%new_fld_file%iflag_format/iflag_single) .gt. 0    &

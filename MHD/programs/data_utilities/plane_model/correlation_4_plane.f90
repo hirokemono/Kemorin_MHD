@@ -74,10 +74,6 @@
      &   (pcor_c1, cor_udt_header, ref_udt_header,                      &
      &    cor_mesh_file, ref_mesh_file,                                 &
      &    cor_ucd_param, ref_ucd_param, ist, ied, iint)
-      call s_stop_by_missing_zlib(cor_ucd_param%file_prefix,            &
-     &                                cor_ucd_param%iflag_format)
-      call s_stop_by_missing_zlib(ref_ucd_param%file_prefix,            &
-     &                                ref_ucd_param%iflag_format)
 !
 !     read outline of mesh
 !

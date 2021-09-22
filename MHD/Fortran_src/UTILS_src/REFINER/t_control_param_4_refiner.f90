@@ -119,6 +119,7 @@
       use m_default_file_prefix
       use skip_comment_f
       use set_control_platform_data
+      use stop_by_missing_zlib
 !
       type(control_data_4_refine), intent(in) :: refine_ctl
       type(ctl_param_4_refiner), intent(inout) :: refine_p
@@ -131,6 +132,9 @@
      &   (refine_ctl%source_plt, refine_p%original_mesh_file)
       call set_control_mesh_file_def(def_new_mesh_head,                 &
      &    refine_ctl%refined_plt, refine_p%refined_mesh_file)
+      call s_stop_by_missing_zlib                                       &
+     &   (refine_p%refined_mesh_file%file_prefix,                       &
+     &    refine_p%refined_mesh_file%iflag_format)
 !
 !
       if (refine_ctl%coarse_2_fine_head_ctl%iflag .gt. 0) then

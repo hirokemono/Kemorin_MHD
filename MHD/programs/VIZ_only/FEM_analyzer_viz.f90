@@ -73,8 +73,8 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank, vizs_ctl%viz_plt)
       call set_control_smp_def(my_rank, vizs_ctl%viz_plt)
-      call set_control_parallel_mesh_def(vizs_ctl%viz_plt,              &
-     &                                   FEM_viz%mesh_file_IO)
+      call set_control_parallel_mesh(vizs_ctl%viz_plt,                  &
+     &                               FEM_viz%mesh_file_IO)
       call set_merged_ucd_file_define(vizs_ctl%viz_plt,                 &
      &                                FEM_viz%ucd_file_IO)
 !

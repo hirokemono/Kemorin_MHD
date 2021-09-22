@@ -91,8 +91,8 @@
       end if
 !
 !
-      call set_control_parallel_mesh_def(org_plt,                       &
-     &                                   newfil_p%org_mesh_file)
+      call set_control_parallel_mesh(org_plt,                           &
+     &                               newfil_p%org_mesh_file)
       call set_control_mesh_file_def(def_new_mesh_head, new_plt,        &
      &                               newfil_p%tgt_mesh_file)
       call s_mpi_abort_by_missing_zlib                                  &

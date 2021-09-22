@@ -101,6 +101,12 @@
       call set_parallel_file_ctl_params(def_new_sph_fst,                &
      &    assemble_plt%restart_file_prefix,                             &
      &    assemble_plt%restart_file_fmt_ctl, asbl_param%new_fld_file)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%org_fld_file%file_prefix,                          &
+     &    asbl_param%org_fld_file%iflag_format)
+      call s_mpi_abort_by_missing_zlib                                  &
+     &   (asbl_param%new_fld_file%file_prefix,                          &
+     &    asbl_param%new_fld_file%iflag_format)
 !
       end subroutine set_assemble_rst_file_param
 !

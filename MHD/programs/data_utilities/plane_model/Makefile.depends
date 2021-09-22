@@ -18,7 +18,7 @@ pickup_ene_mode_plane.o: $(PLANE_SPECTR_DIR)/pickup_ene_mode_plane.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 pickup_mode_plane.o: $(PLANE_SPECTR_DIR)/pickup_mode_plane.f90 m_precision.o t_size_of_cube.o t_mesh_data_4_merge.o t_ctl_data_plane_fft.o set_numnod_4_plane.o set_spectr_file_name.o set_list_4_FFT.o set_plane_spectr_file_head.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_list_4_FFT.o: $(PLANE_SPECTR_DIR)/set_list_4_FFT.f90 m_precision.o t_file_IO_parameter.o t_size_of_cube.o t_ctl_data_4_plane_model.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_spectr_4_ispack.o m_default_file_prefix.o set_control_platform_data.o m_field_file_format.o t_ucd_data.o set_parallel_file_name.o
+set_list_4_FFT.o: $(PLANE_SPECTR_DIR)/set_list_4_FFT.f90 m_precision.o t_file_IO_parameter.o t_size_of_cube.o t_ctl_data_4_plane_model.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_spectr_4_ispack.o m_default_file_prefix.o set_control_platform_data.o stop_by_missing_zlib.o m_field_file_format.o t_ucd_data.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_average_4_plane_spectr.o: $(PLANE_SPECTR_DIR)/t_average_4_plane_spectr.f90 m_precision.o set_numnod_4_plane.o set_parallel_file_name.o t_mesh_data_4_merge.o t_size_of_cube.o t_ctl_data_plane_fft.o set_list_4_FFT.o set_spectr_file_name.o set_plane_spectr_file_head.o
 	$(F90) -c $(F90OPTFLAGS) $<

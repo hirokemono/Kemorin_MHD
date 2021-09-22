@@ -69,7 +69,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_parallel_mesh_def(plt, T_files%mesh_file_IO)
+      call set_control_parallel_mesh(plt, T_files%mesh_file_IO)
       call set_FEM_surface_output_flag                                  &
      &   (Fmesh_ctl, T_files%iflag_output_SURF)
 !

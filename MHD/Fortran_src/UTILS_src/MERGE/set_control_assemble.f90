@@ -55,8 +55,8 @@
         stop
       end if
 !
-      call set_control_parallel_mesh_def(mgd_ctl%source_plt,            &
-     &                                   asbl_param%org_mesh_file)
+      call set_control_parallel_mesh(mgd_ctl%source_plt,                &
+     &                               asbl_param%org_mesh_file)
 !
       end subroutine set_control_4_merge
 !
@@ -99,12 +99,6 @@
 !
       call set_assemble_rst_file_param                                  &
      &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%org_fld_file%file_prefix,                          &
-     &    asbl_param%org_fld_file%iflag_format)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%new_fld_file%file_prefix,                          &
-     &    asbl_param%new_fld_file%iflag_format)
 !
       call set_magnetic_ratio_4_assemble                                &
      &   (mgd_ctl%magnetic_ratio_ctl, asbl_param)

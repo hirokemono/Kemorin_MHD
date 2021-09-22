@@ -34,7 +34,7 @@
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_control_parallel_mesh_def(plt, mesh_file)
+      call set_control_parallel_mesh(plt, mesh_file)
 !
       np_smp = ione
       if(plt%num_smp_ctl%iflag .eq. 1) np_smp = num_smp_ctl%intvalue

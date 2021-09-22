@@ -111,7 +111,7 @@
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call check_control_num_domains(plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_parallel_mesh_def(plt, MHD_files%mesh_file_IO)
+      call set_control_parallel_mesh(plt, MHD_files%mesh_file_IO)
       call set_control_restart_file_def(plt, MHD_files%fst_file_IO)
       call set_merged_ucd_file_define(plt, MHD_files%ucd_file_IO)
       call set_control_mesh_file_def                                    &

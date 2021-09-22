@@ -96,7 +96,7 @@ set_surface_group_types.o: $(MHD_IO_DIR)/set_surface_group_types.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 t_MHD_IO_data.o: $(MHD_IO_DIR)/t_MHD_IO_data.f90 m_precision.o t_MHD_file_parameter.o t_field_data_IO.o t_ucd_data.o t_cal_max_indices.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_MHD_file_parameter.o: $(MHD_IO_DIR)/t_MHD_file_parameter.f90 m_precision.o t_file_IO_parameter.o m_default_file_prefix.o set_control_platform_data.o
+t_MHD_file_parameter.o: $(MHD_IO_DIR)/t_MHD_file_parameter.f90 m_precision.o t_file_IO_parameter.o m_default_file_prefix.o set_control_platform_data.o mpi_abort_by_missing_zlib.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_bc_data_list.o: $(MHD_IO_DIR)/t_bc_data_list.f90 m_precision.o t_control_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -75,6 +75,10 @@
      &    pcor_c%cor_udt_head_ctl, ucd_format_ctl, cor_ucd_param)
       call set_parallel_file_ctl_params(ref_udt_header,                 &
      &    pcor_c%ref_udt_head_ctl, ucd_format_ctl, ref_ucd_param)
+call s_stop_by_missing_zlib(cor_ucd_param%file_prefix,            &
+&                            cor_ucd_param%iflag_format)
+call s_stop_by_missing_zlib(ref_ucd_param%file_prefix,            &
+&                            ref_ucd_param%iflag_format)
 !
       end subroutine set_ctl_params_correlate
 !

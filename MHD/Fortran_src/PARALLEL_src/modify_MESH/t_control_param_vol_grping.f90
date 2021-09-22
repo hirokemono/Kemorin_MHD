@@ -127,13 +127,10 @@
       if(viz_repart_c%viz_plt%mesh_file_prefix%iflag .le. 0) then
         part_param%viz_mesh_file%iflag_format = id_no_file
       else
-        call set_parallel_file_ctl_params(default_newmesh_head,         &
+        call set_ctl_parallel_file_w_def(default_newmesh_head,          &
      &      viz_repart_c%viz_plt%mesh_file_prefix,                      &
      &      viz_repart_c%viz_plt%mesh_file_fmt_ctl,                     &
      &      part_param%viz_mesh_file)
-        call s_mpi_abort_by_missing_zlib                                &
-     &     (part_param%viz_mesh_file%file_prefix,                       &
-     &      part_param%viz_mesh_file%iflag_format)
       end if
 !
       call set_FEM_surface_output_flag                                  &
@@ -179,13 +176,10 @@
       if(new_part_ctl%repart_table_head_ctl%iflag .le. 0) then
         part_param%trans_tbl_file%iflag_format = id_no_file
       else
-        call set_parallel_file_ctl_params(default_newmesh_head,         &
+        call set_ctl_parallel_file_w_def(default_newmesh_head,          &
      &      new_part_ctl%repart_table_head_ctl,                         &
      &      new_part_ctl%repart_table_fmt_ctl,                          &
      &      part_param%trans_tbl_file)
-        call s_mpi_abort_by_missing_zlib                                &
-     &     (part_param%trans_tbl_file%file_prefix,                      &
-     &      part_param%trans_tbl_file%iflag_format)
       end if
 !
       part_param%iflag_repart_ref = i_NO_REPARTITION

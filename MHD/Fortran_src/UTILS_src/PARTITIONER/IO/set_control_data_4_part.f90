@@ -63,8 +63,8 @@
 !
 !
       call turn_off_debug_flag_by_ctl(0, part_ctl%part_plt)
-      call set_control_parallel_mesh_def(part_ctl%part_plt,             &
-     &                                   part_p%distribute_mesh_file)
+      call set_control_parallel_mesh(part_ctl%part_plt,                 &
+     &                               part_p%distribute_mesh_file)
 !
 !   set local data format
 !

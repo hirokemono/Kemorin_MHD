@@ -60,8 +60,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
-      call set_control_parallel_mesh_def(filter3d_ctl%gen_filter_plt,   &
-     &                                   mesh_file)
+      call set_control_parallel_mesh(filter3d_ctl%gen_filter_plt,       &
+     &                               mesh_file)
       call set_file_heads_3d_comm_filter                                &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl,   &
      &    gfil_p)
@@ -88,8 +88,8 @@
       integer, intent(inout) :: num_pe
 !
 !
-      call set_control_parallel_mesh_def(filter3d_ctl%gen_filter_plt,   &
-     &                                   mesh_file)
+      call set_control_parallel_mesh(filter3d_ctl%gen_filter_plt,       &
+     &                               mesh_file)
       call set_file_heads_3d_comm_filter                                &
      &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl,   &
      &    gfil_p)

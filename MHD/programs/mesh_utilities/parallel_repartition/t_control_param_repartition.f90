@@ -57,8 +57,8 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank, part_tctl%plt)
       call check_control_num_domains(part_tctl%plt)
-      call set_control_parallel_mesh_def(part_tctl%plt,                 &
-     &                                   part_prog_p%mesh_file)
+      call set_control_parallel_mesh(part_tctl%plt,                     &
+     &                               part_prog_p%mesh_file)
       call set_control_smp_def(my_rank, part_tctl%plt)
 !
       call set_merged_ucd_file_define(part_tctl%plt,                    &

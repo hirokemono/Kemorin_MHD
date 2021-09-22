@@ -93,6 +93,7 @@
       use m_default_file_prefix
       use set_control_platform_item
       use set_control_platform_data
+      use stop_by_missing_zlib
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !
@@ -101,6 +102,8 @@
       call set_control_mesh_def(gtbl_ctl%src_plt, org_mesh_file)
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, gtbl_ctl%dst_plt, dest_mesh_file)
+      call s_stop_by_missing_zlib(dest_mesh_file%file_prefix,           &
+     &                            dest_mesh_file%iflag_format
 !
       nprocs_org = 1
       if(gtbl_ctl%src_plt%ndomain_ctl%iflag .gt. 0) then

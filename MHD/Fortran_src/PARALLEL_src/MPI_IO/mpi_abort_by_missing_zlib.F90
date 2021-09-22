@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_minimum_fem_platform(plt, Fmesh_ctl, mesh_file,  &
 !!     &                                    iflag_output_SURF)
-!!      subroutine set_control_parallel_mesh_def(plt, mesh_file)
+!!      subroutine set_control_parallel_mesh(plt, mesh_file)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(FEM_mesh_control), intent(in) :: Fmesh_ctl
 !!        type(field_IO_params), intent(inout) :: mesh_file
@@ -69,7 +69,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_parallel_mesh_def(plt, mesh_file)
+      call set_control_parallel_mesh(plt, mesh_file)
 !
       call set_FEM_surface_output_flag(Fmesh_ctl, iflag_output_SURF)
       if(iflag_debug.gt.0) write(*,*)                                   &
@@ -79,22 +79,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_parallel_mesh_def(plt, mesh_file)
+      subroutine set_control_parallel_mesh(plt, mesh_file)
 !
       use m_default_file_prefix
-      use m_file_format_switch
-      use set_control_platform_item
 !
       type(platform_data_control), intent(in) :: plt
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_parallel_file_ctl_params(def_mesh_file_head,             &
-     &    plt%mesh_file_prefix, plt%mesh_file_fmt_ctl, mesh_file)
-      call s_mpi_abort_by_missing_zlib(mesh_file%file_prefix,           &
-     &                                 mesh_file%iflag_format)
+      call set_ctl_parallel_file_w_def(def_mesh_file_head, plt,         &
+     &                                 mesh_file)
 !
-      end subroutine set_control_parallel_mesh_def
+      end subroutine set_control_parallel_mesh
 !
 ! -----------------------------------------------------------------------
 !
@@ -119,6 +115,28 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine set_ctl_parallel_file_w_def(default_prefix, plt,       &
+     &                                       mesh_file)
+!
+      use m_default_file_prefix
+      use m_file_format_switch
+      use set_control_platform_item
+!
+      character(len=kchara), intent(in) :: default_prefix
+      type(platform_data_control), intent(in) :: plt
+      type(field_IO_params), intent(inout) :: mesh_file
+!
+!
+      call set_parallel_file_ctl_params(def_mesh_file_head,             &
+     &    plt%mesh_file_prefix, plt%mesh_file_fmt_ctl, mesh_file)
+      call s_mpi_abort_by_missing_zlib(mesh_file%file_prefix,           &
+     &                                 mesh_file%iflag_format)
+!
+      end subroutine set_ctl_parallel_file_w_def
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine set_control_sph_mesh(plt, Fmesh_ctl,                   &
      &         sph_file_param, mesh_file, sph_file_IO, FEM_mesh_flags)
 !
@@ -134,7 +152,7 @@
       type(FEM_file_IO_flags), intent(inout) :: FEM_mesh_flags
 !
 !
-      call set_control_parallel_mesh_def(plt, mesh_file)
+      call set_control_parallel_mesh(plt, mesh_file)
 !
 !   set data format
 !

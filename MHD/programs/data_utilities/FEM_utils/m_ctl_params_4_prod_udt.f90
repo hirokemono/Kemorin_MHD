@@ -74,7 +74,7 @@
       end if
 !
       call set_control_smp_def(my_rank, pu_plt)
-      call set_control_parallel_mesh_def(pu_plt, mesh_file)
+      call set_control_parallel_mesh(pu_plt, mesh_file)
       call set_control_mesh_file_def                                    &
      &   (def_org_ucd_header, org_pu_plt, udt_org_param)
       call s_mpi_abort_by_missing_zlib(udt_org_param%file_prefix,       &

@@ -39,8 +39,8 @@
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_control_parallel_mesh_def(bc_temp_test_ctl%bc_test_plt,  &
-     &                                   mesh_file)
+      call set_control_parallel_mesh(bc_temp_test_ctl%bc_test_plt,      &
+     &                               mesh_file)
       if(iflag_debug.gt.0) write(*,*)                                   &
      &      'mesh_file_head ', mesh_file%file_prefix
 !

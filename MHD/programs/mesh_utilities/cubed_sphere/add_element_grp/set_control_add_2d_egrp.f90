@@ -40,8 +40,8 @@
 !
       call check_control_num_domains(addgrp_c%source_plt)
       call turn_off_debug_flag_by_ctl(my_rank, addgrp_c%source_plt)
-      call set_control_parallel_mesh_def(addgrp_c%source_plt,           &
-     &                                   original_mesh_file)
+      call set_control_parallel_mesh(addgrp_c%source_plt,               &
+     &                               original_mesh_file)
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, addgrp_c%added_plt, modified_mesh_file)
       call s_mpi_abort_by_missing_zlib(modified_mesh_file%file_prefix,  &

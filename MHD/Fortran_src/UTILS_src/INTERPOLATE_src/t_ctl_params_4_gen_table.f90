@@ -129,8 +129,8 @@
       call turn_off_debug_flag_by_ctl(my_rank, gtbl_ctl%src_plt)
       call set_control_smp_def(my_rank, gtbl_ctl%src_plt)
 !
-      call set_control_parallel_mesh_def(gtbl_ctl%src_plt,              &
-     &                                   gen_itp_p%itp_org_mesh_file)
+      call set_control_parallel_mesh(gtbl_ctl%src_plt,                  &
+     &                               gen_itp_p%itp_org_mesh_file)
 !
       if (gtbl_ctl%table_head_ctl%iflag .ne. 0) then
         gen_itp_p%itp_file_IO%file_prefix                               &

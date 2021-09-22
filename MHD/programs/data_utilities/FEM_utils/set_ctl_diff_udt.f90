@@ -111,7 +111,7 @@
       call turn_off_debug_flag_by_ctl(my_rank, d_plt)
       call check_control_num_domains(d_plt)
       call set_control_smp_def(my_rank, d_plt)
-      call set_control_parallel_mesh_def(d_plt, mesh_file)
+      call set_control_parallel_mesh(d_plt, mesh_file)
       call set_control_mesh_file_def                                    &
      &   (def_org_ucd_header, org_d_plt, udt_org_param)
       call s_mpi_abort_by_missing_zlib(udt_org_param%file_prefix,       &
