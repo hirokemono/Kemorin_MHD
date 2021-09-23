@@ -92,20 +92,17 @@
       use m_file_format_switch
       use m_default_file_prefix
       use set_control_platform_item
-      use set_control_platform_data
-      use stop_by_missing_zlib
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !
       call turn_off_debug_flag_by_ctl(id_rank, gtbl_ctl%src_plt)
       call set_control_smp_def(id_rank, gtbl_ctl%src_plt)
-      call set_control_mesh_def(def_mesh_file_head,                     &
+      call set_control_file_def(def_mesh_file_head,                     &
      &    gtbl_ctl%src_plt%mesh_file_prefix,                            &
      &    gtbl_ctl%src_plt%mesh_file_fmt_ctl, org_mesh_file)
-      call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, gtbl_ctl%dst_plt, dest_mesh_file)
-      call s_stop_by_missing_zlib(dest_mesh_file%file_prefix,           &
-     &                            dest_mesh_file%iflag_format
+      call set_control_file_def(def_new_mesh_head,                      &
+     &    gtbl_ctl%dst_plt%mesh_file_prefix,                            &
+     &    gtbl_ctl%dst_plt%mesh_file_fmt_ctl, dest_mesh_file)
 !
       nprocs_org = 1
       if(gtbl_ctl%src_plt%ndomain_ctl%iflag .gt. 0) then

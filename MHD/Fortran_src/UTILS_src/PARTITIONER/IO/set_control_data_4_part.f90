@@ -52,7 +52,6 @@
       use set_control_platform_item
       use set_control_platform_data
       use set_num_domain_each_dir
-      use mpi_abort_by_missing_zlib
 !
       type(control_data_4_partitioner), intent(in) :: part_ctl
 !
@@ -146,7 +145,7 @@
           stop
         end if
 !
-        call set_file_control_params(def_finer_mesh,                    &
+        call set_control_file_def(def_finer_mesh,                       &
      &      part_ctl%finer_mesh_head_ctl, part_ctl%finer_mesh_fmt_ctl,  &
      &      part_p%finer_mesh_file)
 !

@@ -56,22 +56,17 @@
 !
       use m_default_file_prefix
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
 !
       type(platform_data_control), intent(in) :: org_plt
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
 !
-      call set_control_mesh_file_def                                    &
-     &   (def_org_sph_rj_head, org_plt, MHD_files%org_rj_file_IO)
-      call set_control_mesh_file_def                                    &
-     &   (def_org_rst_header, org_plt, MHD_files%org_rst_file_IO)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (MHD_files%org_rj_file_IO%file_prefix,                         &
-     &    MHD_files%org_rj_file_IO%iflag_format)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (MHD_files%org_rst_file_IO%file_prefix,                        &
-     &    MHD_files%org_rst_file_IO%iflag_format)
+      call set_ctl_parallel_file_w_def(def_org_sph_rj_head,             &
+     &    org_plt%sph_file_prefix, org_plt%sph_file_fmt_ctl,            &
+     &    MHD_files%org_rj_file_IO)
+      call set_ctl_parallel_file_w_def(def_org_rst_header,              &
+     &    org_plt%restart_file_prefix, org_plt%restart_file_fmt_ctl,    &
+     &    MHD_files%org_rst_file_IO)
 !
       end subroutine set_control_org_sph_files
 !

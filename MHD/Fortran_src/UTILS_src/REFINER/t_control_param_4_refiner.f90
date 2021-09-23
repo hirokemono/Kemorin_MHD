@@ -118,8 +118,7 @@
       use t_control_data_4_refine
       use m_default_file_prefix
       use skip_comment_f
-      use set_control_platform_data
-      use stop_by_missing_zlib
+      use set_control_platform_item
 !
       type(control_data_4_refine), intent(in) :: refine_ctl
       type(ctl_param_4_refiner), intent(inout) :: refine_p
@@ -128,15 +127,14 @@
       integer(kind = kint) :: i
 !
 !
-      call set_control_mesh_def(def_mesh_file_head,                     &
+      call set_control_file_def(def_mesh_file_head,                     &
      &    refine_ctl%source_plt%mesh_file_prefix,                       &
      &    refine_ctl%source_plt%mesh_file_fmt_ctl,                      &
      &    refine_p%original_mesh_file)
-      call set_control_mesh_file_def(def_new_mesh_head,                 &
-     &    refine_ctl%refined_plt, refine_p%refined_mesh_file)
-      call s_stop_by_missing_zlib                                       &
-     &   (refine_p%refined_mesh_file%file_prefix,                       &
-     &    refine_p%refined_mesh_file%iflag_format)
+      call set_control_file_def(def_new_mesh_head,                      &
+     &    refine_ctl%refined_plt%mesh_file_prefix,                      &
+     &    refine_ctl%refined_plt%mesh_file_fmt_ctl,                     &
+     &    refine_p%refined_mesh_file)
 !
 !
       if (refine_ctl%coarse_2_fine_head_ctl%iflag .gt. 0) then

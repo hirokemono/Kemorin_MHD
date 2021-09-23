@@ -61,7 +61,6 @@
       use t_ctl_data_4_FEM_mesh
       use set_control_platform_item
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
 !
       type(platform_data_control), intent(in) :: plt
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl

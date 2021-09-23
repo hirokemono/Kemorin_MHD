@@ -94,7 +94,6 @@
       use set_ctl_parallel_platform
       use set_control_platform_item
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
       use ucd_IO_select
       use skip_comment_f
 !
@@ -112,10 +111,9 @@
       call check_control_num_domains(d_plt)
       call set_control_smp_def(my_rank, d_plt)
       call set_control_parallel_mesh(d_plt, mesh_file)
-      call set_control_mesh_file_def                                    &
-     &   (def_org_ucd_header, org_d_plt, udt_org_param)
-      call s_mpi_abort_by_missing_zlib(udt_org_param%file_prefix,       &
-     &                                 udt_org_param%iflag_format)
+      call set_ctl_parallel_file_w_def(def_org_ucd_header,              &
+     &    org_d_plt%mesh_file_prefix, org_d_plt%mesh_file_fmt_ctl,      &
+     &    udt_org_param)
 !
 !   set field data name
 !

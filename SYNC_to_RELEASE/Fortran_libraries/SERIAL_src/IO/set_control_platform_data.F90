@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/CORE_src/CONTROLS/set_control_platform_data.F90

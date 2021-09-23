@@ -65,7 +65,6 @@
       use nod_phys_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
-      use mpi_abort_by_missing_zlib
 !
       use mpi_load_mesh_data
       use const_jacobians_3d

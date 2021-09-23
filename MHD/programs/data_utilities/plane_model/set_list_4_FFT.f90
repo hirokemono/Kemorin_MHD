@@ -127,8 +127,7 @@
 !
       use m_default_file_prefix
       use t_spectr_4_ispack
-      use set_control_platform_data
-      use stop_by_missing_zlib
+      use set_control_platform_item
 !
       type(platform_data_control), intent(in) :: new_p_plt
       type(time_data_control), intent(in) :: t_zfft_ctl
@@ -157,10 +156,9 @@
       write(*,*) 'ndomain_plane2_ctl ',                                 &
      &          cube2nd_c%ndomain_plane_ctl%intvalue
 !
-      call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_p_plt, mesh_file)
-      call s_stop_by_missing_zlib(mesh_file%file_prefix,                &
-     &                            mesh_file%iflag_format
+      call set_control_file_def(def_new_mesh_head,                      &
+     &    new_p_plt%mesh_file_prefix, new_p_plt%mesh_file_fmt_ctl,      &
+     &    mesh_file)
 !
       if (new_p_plt%restart_file_prefix%iflag .gt. 0) then
         rst_head_plane = new_p_plt%restart_file_prefix%charavalue
@@ -232,8 +230,7 @@
       use m_field_file_format
       use t_ucd_data
       use set_parallel_file_name
-      use set_control_platform_data
-      use stop_by_missing_zlib
+      use set_control_platform_item
 !
       type(platform_data_control), intent(in) :: new_p_plt
       type(ctl_data_4_plane_model), intent(in) :: cube_c, cube2nd_c
@@ -256,10 +253,9 @@
       write(*,*) 'ndomain_plane2_ctl: ',                                &
      &          cube2nd_c%ndomain_plane_ctl%intvalue
 !
-      call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_p_plt, mesh_file)
-      call s_stop_by_missing_zlib(mesh_file%file_prefix,                &
-     &                            mesh_file%iflag_format
+      call set_control_file_def(def_new_mesh_head,                      &
+     &    new_p_plt%mesh_file_prefix, new_p_plt%mesh_file_fmt_ctl,      &
+     &    mesh_file)
 !
       if (new_p_plt%field_file_prefix%iflag .gt. 0) then
         ucd_param%iflag_format                                          &

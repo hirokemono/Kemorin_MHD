@@ -1,29 +1,31 @@
-!> @file  stop_by_missing_zlib.F90
-!!      module stop_by_missing_zlib
+!>@file   stop_by_missing_zlib.F90
+!!        module stop_by_missing_zlib
 !!
-!!@author  H. Matsui
-!!@date Programmed in Sep., 2021
-!
-!> @brief Stop program if zlib is not loaded
+!!@author H. Matsui
+!!@date Programmed in 2009
+!!
+!>@brief    Load file definitions from control structures
 !!
 !!@verbatim
 !!      subroutine s_stop_by_missing_zlib(file_prefix, id_file_fmt)
 !!        character(len=kchara), intent(in) :: file_prefix
 !!        integer(kind= kint), intent(inout) :: id_file_fmt
 !!@endverbatim
+!!
+!!@param id_rank  preocess ID
 !
       module stop_by_missing_zlib
 !
       use m_precision
-      use m_machine_parameter
+      use m_constants
 !
-      implicit none
+      implicit  none
 !
-!  ---------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       contains
 !
-!  ---------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine s_stop_by_missing_zlib(file_prefix, id_file_fmt)
 !
@@ -47,7 +49,7 @@
       if(id_file_fmt .ne. id_missing_zlib) return
         write(e_message,'(2a)') 'Failed file prefix: ',                 &
      &                         trim(file_prefix)
-        stop
+      stop
 !
       end subroutine s_stop_by_missing_zlib
 !

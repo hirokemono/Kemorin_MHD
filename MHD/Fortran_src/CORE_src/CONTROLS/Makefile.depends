@@ -10,12 +10,12 @@ set_control_4_pickup_sph.o: $(CTL_DIR)/set_control_4_pickup_sph.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_ele_layering.o: $(CTL_DIR)/set_control_ele_layering.f90 m_precision.o m_machine_parameter.o t_ctl_data_ele_layering.o set_layer_list_by_table.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_platform_data.o: $(CTL_DIR)/set_control_platform_data.F90 m_precision.o m_constants.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_file_IO_parameter.o m_default_file_prefix.o m_file_format_switch.o set_control_platform_item.o stop_by_missing_zlib.o
-	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
-set_control_platform_item.o: $(CTL_DIR)/set_control_platform_item.F90 m_precision.o m_constants.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_file_IO_parameter.o m_machine_parameter.o skip_comment_f.o t_control_array_character.o m_file_format_switch.o
+set_control_platform_item.o: $(CTL_DIR)/set_control_platform_item.F90 m_precision.o m_constants.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_file_IO_parameter.o m_machine_parameter.o skip_comment_f.o m_default_file_prefix.o m_file_format_switch.o stop_by_missing_zlib.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 set_orders_of_field.o: $(CTL_DIR)/set_orders_of_field.f90 m_precision.o m_geometry_constants.o t_ctl_data_4_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
+stop_by_missing_zlib.o: $(CTL_DIR)/stop_by_missing_zlib.F90 m_precision.o m_constants.o m_machine_parameter.o m_error_ids.o m_file_format_switch.o
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 t_control_array_chara2real.o: $(CTL_DIR)/t_control_array_chara2real.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_character.o: $(CTL_DIR)/t_control_array_character.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o skip_comment_f.o

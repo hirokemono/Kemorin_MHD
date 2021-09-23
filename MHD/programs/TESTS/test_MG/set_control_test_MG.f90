@@ -28,7 +28,6 @@
       use t_ctl_data_4_platforms
       use set_solver_MG_control
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
 !
       type(platform_data_control), intent(in) :: plt
       type(field_IO_params), intent(inout) :: mesh_file

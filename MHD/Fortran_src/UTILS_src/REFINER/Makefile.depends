@@ -102,7 +102,7 @@ t_control_data_4_refine.o: $(REFINER_DIR)/t_control_data_4_refine.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_refine_para.o: $(REFINER_DIR)/t_control_data_refine_para.f90 m_precision.o t_control_array_character.o t_control_array_integer.o t_ctl_data_4_platforms.o t_control_data_4_refine.o t_read_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_param_4_refiner.o: $(REFINER_DIR)/t_control_param_4_refiner.f90 m_precision.o t_file_IO_parameter.o m_file_format_switch.o t_control_data_4_refine.o m_default_file_prefix.o skip_comment_f.o set_control_platform_data.o stop_by_missing_zlib.o
+t_control_param_4_refiner.o: $(REFINER_DIR)/t_control_param_4_refiner.f90 m_precision.o t_file_IO_parameter.o m_file_format_switch.o t_control_data_4_refine.o m_default_file_prefix.o skip_comment_f.o set_control_platform_item.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_param_refine_para.o: $(REFINER_DIR)/t_control_param_refine_para.f90 m_precision.o t_file_IO_parameter.o m_file_format_switch.o m_constants.o m_machine_parameter.o t_para_refine_itp_tables.o t_control_data_refine_para.o t_control_data_4_refine.o set_control_platform_item.o
 	$(F90) -c $(F90OPTFLAGS) $<

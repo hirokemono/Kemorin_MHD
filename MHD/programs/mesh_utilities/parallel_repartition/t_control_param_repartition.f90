@@ -49,7 +49,6 @@
       use set_control_platform_data
       use set_ctl_parallel_platform
       use parallel_ucd_IO_select
-      use mpi_abort_by_missing_zlib
 !
       type(new_patition_test_control), intent(inout) :: part_tctl
       type(vol_partion_prog_param), intent(inout) :: part_prog_p

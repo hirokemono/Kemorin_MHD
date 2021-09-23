@@ -22,10 +22,11 @@
 !
       subroutine s_set_plane_spectr_file_head(pfft_c, mesh_file)
 !
+      use m_default_file_prefix
       use t_ctl_data_plane_fft
       use set_spectr_file_name
       use set_parallel_file_name
-      use set_control_platform_data
+      use set_control_platform_item
 !
       type(ctl_data_plane_fft), intent(in) :: pfft_c
       type(field_IO_params), intent(inout) :: mesh_file
@@ -33,7 +34,7 @@
       character(len = kchara) :: tmpchara
 !
 !
-      call set_control_mesh_def(def_mesh_file_head,                     &
+      call set_control_file_def(def_mesh_file_head,                     &
      &    pfft_c%new_p_plt%mesh_file_prefix,                            &
      &    pfft_c%new_p_plt%mesh_file_fmt_ctl, mesh_file)
 !

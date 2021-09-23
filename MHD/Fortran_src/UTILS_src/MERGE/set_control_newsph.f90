@@ -84,10 +84,10 @@
       use t_ctl_params_gen_sph_shell
       use m_file_format_switch
       use set_control_platform_item
+      use set_control_platform_data
       use set_ctl_4_shell_grids
       use new_SPH_restart
       use skip_comment_f
-      use mpi_abort_by_missing_zlib
 !
       type(control_data_4_merge), intent(in) :: mgd_ctl
       type(control_param_assemble), intent(inout) :: asbl_param

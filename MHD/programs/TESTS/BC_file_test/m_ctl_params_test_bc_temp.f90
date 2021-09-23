@@ -33,7 +33,6 @@
       use m_file_format_switch
       use t_ctl_data_test_bc_temp
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
 !
       type(ctl_data_bc_temp_test), intent(in) :: bc_temp_test_ctl
       type(field_IO_params), intent(inout) :: mesh_file

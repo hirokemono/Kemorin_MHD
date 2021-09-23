@@ -47,7 +47,6 @@
       use t_filter_elength
       use t_ctl_param_newdom_filter
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
 !
       type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
       type(gradient_model_data_type), intent(inout) :: FEM_elens
@@ -79,7 +78,6 @@
      &         (filter3d_ctl, mesh_file, gfil_p, num_pe)
 !
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
 !
       type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
       type(field_IO_params), intent(inout) ::  mesh_file

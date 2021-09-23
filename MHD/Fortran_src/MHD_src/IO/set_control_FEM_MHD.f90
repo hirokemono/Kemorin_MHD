@@ -84,7 +84,6 @@
       use set_control_4_solver
       use set_control_evo_layers
       use parallel_ucd_IO_select
-      use mpi_abort_by_missing_zlib
 !
       use m_fem_mhd_restart
 !
@@ -114,11 +113,9 @@
       call set_control_parallel_mesh(plt, MHD_files%mesh_file_IO)
       call set_control_restart_file_def(plt, MHD_files%fst_file_IO)
       call set_merged_ucd_file_define(plt, MHD_files%ucd_file_IO)
-      call set_control_mesh_file_def                                    &
-     &   (def_org_ucd_header, org_plt, MHD_files%org_ucd_file_IO)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (MHD_files%org_ucd_file_IO%file_prefix,                        &
-     &    MHD_files%org_ucd_file_IO%iflag_format)
+      call set_ctl_parallel_file_w_def(def_org_ucd_header,              &
+     &    org_plt%mesh_file_prefix, org_plt%mesh_file_fmt_ctl,          &
+     &    MHD_files%org_ucd_file_IO)
 !
 !   set parameters for general information
 !

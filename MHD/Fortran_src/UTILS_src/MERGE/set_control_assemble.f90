@@ -41,7 +41,6 @@
       use set_control_platform_data
       use ucd_IO_select
       use parallel_ucd_IO_select
-      use mpi_abort_by_missing_zlib
 !
       type(control_data_4_merge), intent(in) :: mgd_ctl
       type(control_param_assemble), intent(inout) :: asbl_param
@@ -69,7 +68,6 @@
       use m_file_format_switch
       use m_default_file_prefix
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
 !
       integer, intent(in) :: num_pe
       type(control_data_4_merge), intent(in) :: mgd_ctl
@@ -88,11 +86,10 @@
         return
       end if
 !
-      call set_control_mesh_file_def(def_new_mesh_head,                 &
-     &    mgd_ctl%assemble_plt, asbl_param%new_mesh_file)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%new_mesh_file%file_prefix,                         &
-     &    asbl_param%new_mesh_file%iflag_format)
+      call set_ctl_parallel_file_w_def(def_new_mesh_head,               &
+     &    mgd_ctl%assemble_plt%mesh_file_prefix,                        &
+     &    mgd_ctl%assemble_plt%mesh_file_fmt_ctl,                       &
+     &    asbl_param%new_mesh_file)
 !
       call set_delete_flag_4_assemble(mgd_ctl%assemble_plt, asbl_param)
 !
@@ -135,11 +132,10 @@
         return
       end if
 !
-      call set_control_mesh_file_def(def_new_mesh_head,                 &
-     &    mgd_ctl%assemble_plt, asbl_param%new_mesh_file)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (asbl_param%new_mesh_file%file_prefix,                         &
-     &    asbl_param%new_mesh_file%iflag_format)
+      call set_ctl_parallel_file_w_def(def_new_mesh_head,               &
+     &    mgd_ctl%assemble_plt%mesh_file_prefix,                        &
+     &    mgd_ctl%assemble_plt%mesh_file_fmt_ctl,                       &
+     &    asbl_param%new_mesh_file)
 !
       call set_assemble_ucd_file_param                                  &
      &   (mgd_ctl%source_plt, mgd_ctl%assemble_plt, asbl_param)

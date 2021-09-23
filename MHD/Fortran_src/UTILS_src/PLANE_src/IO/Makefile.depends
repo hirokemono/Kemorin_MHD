@@ -16,7 +16,7 @@ set_merged_udt_2_IO.o: $(PLANE_IO_DIR)/set_merged_udt_2_IO.f90 m_precision.o t_m
 	$(F90) -c $(F90OPTFLAGS) $<
 set_overlap_groups.o: $(PLANE_IO_DIR)/set_overlap_groups.f90 m_precision.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_plane_spectr_file_head.o: $(PLANE_IO_DIR)/set_plane_spectr_file_head.f90 m_precision.o t_file_IO_parameter.o t_ctl_data_plane_fft.o set_spectr_file_name.o set_parallel_file_name.o set_control_platform_data.o
+set_plane_spectr_file_head.o: $(PLANE_IO_DIR)/set_plane_spectr_file_head.f90 m_precision.o t_file_IO_parameter.o m_default_file_prefix.o t_ctl_data_plane_fft.o set_spectr_file_name.o set_parallel_file_name.o set_control_platform_item.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_read_boundary_2_merge.o: $(PLANE_IO_DIR)/set_read_boundary_2_merge.f90 m_precision.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

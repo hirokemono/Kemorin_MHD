@@ -64,16 +64,16 @@
         iint = pcor_c%t_pc_ctl%i_step_ucd_ctl%intvalue
       end if
 !
-      call set_file_control_params(def_mesh_file_head,                  &
+      call set_control_file_def(def_mesh_file_head,                     &
      &    pcor_c%cor_mesh_head_ctl, pcor_c%cor_mesh_fmt_ctl,            &
      &    cor_mesh_file)
-      call set_file_control_params(def_mesh_file_head,                  &
+      call set_control_file_def(def_mesh_file_head,                     &
      &    pcor_c%ref_mesh_head_ctl, pcor_c%ref_mesh_fmt_ctl,            &
      &    ref_mesh_file)
 !
-      call set_control_mesh_def(cor_udt_header,                         &
+      call set_control_file_def(cor_udt_header,                         &
      &    pcor_c%cor_udt_head_ctl, ucd_format_ctl, cor_ucd_param)
-      call set_control_mesh_def(ref_udt_header,                         &
+      call set_control_file_def(ref_udt_header,                         &
      &    pcor_c%ref_udt_head_ctl, ucd_format_ctl, ref_ucd_param)
 !
       end subroutine set_ctl_params_correlate

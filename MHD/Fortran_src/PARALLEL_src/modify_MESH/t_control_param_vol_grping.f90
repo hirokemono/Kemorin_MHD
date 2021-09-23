@@ -114,7 +114,6 @@
       use set_control_platform_data
       use set_ctl_parallel_platform
       use parallel_ucd_IO_select
-      use mpi_abort_by_missing_zlib
 !
       type(viz_repartition_ctl), intent(in) :: viz_repart_c
       type(volume_partioning_param), intent(inout) :: part_param
@@ -166,7 +165,6 @@
       use set_control_platform_item
       use set_control_platform_data
       use set_num_domain_each_dir
-      use mpi_abort_by_missing_zlib
 !
       type(new_patition_control), intent(in) :: new_part_ctl
       type(volume_partioning_param), intent(inout) :: part_param

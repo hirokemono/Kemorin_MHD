@@ -66,7 +66,6 @@
       use set_control_platform_data
       use set_ctl_4_shell_grids
       use parallel_ucd_IO_select
-      use mpi_abort_by_missing_zlib
 !
       use sel_spherical_SRs
 !
@@ -169,7 +168,6 @@
       use m_default_file_prefix
       use skip_comment_f
       use parallel_ucd_IO_select
-      use mpi_abort_by_missing_zlib
 !
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(time_step_param), intent(inout) :: time_STR
@@ -189,21 +187,15 @@
       call set_control_restart_file_def                                 &
      &   (spt_ctl%plt, SPH_STR%fst_file_IO)
       call set_merged_ucd_file_define(spt_ctl%plt, FEM_STR%ucd_file_IO)
-      call set_control_mesh_file_def(def_org_sph_rj_head,               &
-     &    spt_ctl%org_plt, SPH_STR%org_rj_file_IO)
-      call set_control_mesh_file_def(def_org_rst_header,                &
-     &    spt_ctl%org_plt, SPH_STR%org_rst_file_IO)
-      call set_control_mesh_file_def(def_org_ucd_header,                &
-     &    spt_ctl%org_plt, FEM_STR%org_ucd_file_IO)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (SPH_STR%org_rj_file_IO%file_prefix,                           &
-     &    SPH_STR%org_rj_file_IO%iflag_format)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (SPH_STR%org_rst_file_IO%file_prefix,                          &
-     &    SPH_STR%org_rst_file_IO%iflag_format)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (FEM_STR%org_ucd_file_IO%file_prefix,                          &
-     &    FEM_STR%org_ucd_file_IO%iflag_format)
+      call set_ctl_parallel_file_w_def(def_org_sph_rj_head,             &
+     &    spt_ctl%org_plt%mesh_file_prefix,                             &
+     &    spt_ctl%org_plt%mesh_file_fmt_ctl, SPH_STR%org_rj_file_IO)
+      call set_ctl_parallel_file_w_def(def_org_rst_header,              &
+     &    spt_ctl%org_plt%mesh_file_prefix,                             &
+     &    spt_ctl%org_plt%mesh_file_fmt_ctl, SPH_STR%org_rst_file_IO)
+      call set_ctl_parallel_file_w_def(def_org_ucd_header,              &
+     &    spt_ctl%org_plt%mesh_file_prefix,                             &
+     &    spt_ctl%org_plt%mesh_file_fmt_ctl, FEM_STR%org_ucd_file_IO)
 !
 !    file header for field data
 !

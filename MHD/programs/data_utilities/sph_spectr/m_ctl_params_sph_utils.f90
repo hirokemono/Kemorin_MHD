@@ -99,7 +99,6 @@
       use set_control_platform_item
       use set_control_platform_data
       use set_control_4_pickup_sph
-      use mpi_abort_by_missing_zlib
 !
       use t_ctl_data_4_sph_utils
       use m_default_file_prefix
@@ -118,16 +117,12 @@
       call set_control_sph_mesh(spu_ctl%plt, spu_ctl%Fmesh_ctl,         &
      &    files_SHR%sph_file_param, files_SHR%mesh_file_IO,             &
      &    files_SHR%sph_file_IO, files_SHR%FEM_mesh_flags)
-      call set_control_mesh_file_def(def_org_sph_rj_head,               &
-     &    spu_ctl%org_plt, files_SHR%org_rj_file_IO)
-      call set_control_mesh_file_def(def_org_rst_header,                &
-     &    spu_ctl%org_plt, files_SHR%org_rst_file_IO)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (files_SHR%org_rj_file_IO%file_prefix,                         &
-     &    files_SHR%org_rj_file_IO%iflag_format)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (files_SHR%org_rst_file_IO%file_prefix,                        &
-     &    files_SHR%org_rst_file_IO%iflag_format)
+      call set_ctl_parallel_file_w_def(def_org_sph_rj_head,             &
+     &    spu_ctl%org_plt%mesh_file_prefix,                             &
+     &    spu_ctl%org_plt%mesh_file_fmt_ctl, files_SHR%org_rj_file_IO)
+      call set_ctl_parallel_file_w_def(def_org_rst_header,              &
+     &    spu_ctl%org_plt%mesh_file_prefix,                             &
+     &    spu_ctl%org_plt%mesh_file_fmt_ctl, files_SHR%org_rst_file_IO)
 !
 !      stepping parameter
 !

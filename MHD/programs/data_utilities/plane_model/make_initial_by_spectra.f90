@@ -22,7 +22,6 @@
       use m_file_format_switch
       use m_FFT_selector
       use count_number_with_overlap
-      use set_plane_spectr_file_head
       use set_list_4_FFT
       use set_merged_geometry
       use set_numnod_4_plane
@@ -82,7 +81,7 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane(pfft_c1)
 !
-      call s_set_plane_spectr_file_head(pfft_c1, plane_mesh_file)
+      call set_para_plane_spectr_file_def(pfft_c1, plane_mesh_file)
       call set_parameters_rst_by_spec                                   &
      &   (pfft_c1%new_p_plt, pfft_c1%t_zfft_ctl, pfft_c1%cube_c_fft,    &
      &    pfft_c1%cube2nd_cf, c_size1, mgd_mesh_pm%num_pe,              &
@@ -366,5 +365,60 @@
       end subroutine check_plane_horiz_position
 !
 !------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine set_para_plane_spectr_file_def(pfft_c, mesh_file)
+!
+      use m_default_file_prefix
+      use t_ctl_data_plane_fft
+      use set_spectr_file_name
+      use set_parallel_file_name
+      use set_control_platform_item
+      use set_control_platform_data
+!
+      type(ctl_data_plane_fft), intent(in) :: pfft_c
+      type(field_IO_params), intent(inout) :: mesh_file
+!
+      character(len = kchara) :: tmpchara
+!
+!
+      call set_ctl_parallel_file_w_def(def_mesh_file_head,              &
+     &    pfft_c%new_p_plt%mesh_file_prefix,                            &
+     &    pfft_c%new_p_plt%mesh_file_fmt_ctl, mesh_file)
+!
+      if (pfft_c%new_p_plt%field_file_prefix%iflag .gt. 0) then
+        plane_udt_header                                                &
+     &       = pfft_c%new_p_plt%field_file_prefix%charavalue
+      end if
+!
+!
+      if (pfft_c%plane_spectr_mode_head_ctl%iflag .gt. 0) then
+        tmpchara = pfft_c%plane_spectr_mode_head_ctl%charavalue
+        spec_mode_file_name = add_dat_extension(tmpchara)
+      else
+        spec_mode_file_name = spec_mode_def_name
+      end if
+!
+      if (pfft_c%plane_spectr_data_head_ctl%iflag .gt. 0) then
+        spec_header = pfft_c%plane_spectr_data_head_ctl%charavalue
+      else
+        spec_header = spec_def_header
+      end if
+!
+      if (pfft_c%plane_spectr_ene_head_ctl%iflag .gt. 0) then
+        ene_header = pfft_c%plane_spectr_ene_head_ctl%charavalue
+      else
+        ene_header = ene_spec_def_header
+      end if
+!
+      if(pfft_c%plane_spectr_h_ene_head_ctl%iflag .gt. 0) then
+        ene_h_header = pfft_c%plane_spectr_h_ene_head_ctl%charavalue
+      else
+        ene_h_header = ene_h_spec_def_header
+      end if
+!
+      end subroutine set_para_plane_spectr_file_def
+!
+! -----------------------------------------------------------------------
 !
       end program make_initial_by_spectra

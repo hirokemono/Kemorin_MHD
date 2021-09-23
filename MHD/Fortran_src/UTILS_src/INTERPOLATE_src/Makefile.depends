@@ -38,7 +38,7 @@ set_2nd_geometry_4_table.o: $(ITP_SRCDIR)/set_2nd_geometry_4_table.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 set_bin_id_4_destination.o: $(ITP_SRCDIR)/set_bin_id_4_destination.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_sphere_bin_4_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_ctl_interpolation.o: $(ITP_SRCDIR)/set_ctl_interpolation.f90 m_precision.o calypso_mpi.o m_error_IDs.o t_file_IO_parameter.o t_IO_step_parameter.o m_machine_parameter.o m_file_format_switch.o m_field_file_format.o t_ctl_params_4_gen_table.o t_ctl_data_gen_table.o itp_table_file_IO_select.o set_control_platform_item.o set_control_platform_data.o parallel_ucd_IO_select.o mpi_abort_by_missing_zlib.o
+set_ctl_interpolation.o: $(ITP_SRCDIR)/set_ctl_interpolation.f90 m_precision.o calypso_mpi.o m_error_IDs.o t_file_IO_parameter.o t_IO_step_parameter.o m_machine_parameter.o m_file_format_switch.o m_field_file_format.o t_ctl_params_4_gen_table.o t_ctl_data_gen_table.o itp_table_file_IO_select.o set_control_platform_item.o set_control_platform_data.o parallel_ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_ele_list_4_itp_table.o: $(ITP_SRCDIR)/set_ele_list_4_itp_table.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -58,7 +58,7 @@ subroutines_4_search_table.o: $(ITP_SRCDIR)/subroutines_4_search_table.f90 m_pre
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_gen_table.o: $(ITP_SRCDIR)/t_ctl_data_gen_table.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_fields.o t_ctl_data_4_time_steps.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_array_intreal.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_params_4_gen_table.o: $(ITP_SRCDIR)/t_ctl_params_4_gen_table.f90 m_precision.o m_field_file_format.o t_file_IO_parameter.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o m_file_format_switch.o m_default_file_prefix.o t_ctl_data_gen_table.o t_search_block_4_itp.o itp_table_file_IO_select.o set_control_platform_item.o set_control_platform_data.o mpi_abort_by_missing_zlib.o skip_comment_f.o
+t_ctl_params_4_gen_table.o: $(ITP_SRCDIR)/t_ctl_params_4_gen_table.f90 m_precision.o m_field_file_format.o t_file_IO_parameter.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o m_file_format_switch.o m_default_file_prefix.o t_ctl_data_gen_table.o t_search_block_4_itp.o itp_table_file_IO_select.o set_control_platform_item.o set_control_platform_data.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_data_4_interpolate_org.o: $(ITP_SRCDIR)/t_data_4_interpolate_org.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_sphere_bin_4_table.o set_minmax_4_each_2nd_ele.o set_org_ele_4_each_bin.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -53,8 +53,8 @@
       use t_ctl_data_3d_filter
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
+      use set_control_platform_item
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
 !
       integer, intent(inout) :: nprocs_2nd
       type(platform_data_control), intent(in) :: org_plt, new_plt
@@ -93,11 +93,9 @@
 !
       call set_control_parallel_mesh(org_plt,                           &
      &                               newfil_p%org_mesh_file)
-      call set_control_mesh_file_def(def_new_mesh_head, new_plt,        &
-     &                               newfil_p%tgt_mesh_file)
-      call s_mpi_abort_by_missing_zlib                                  &
-     &   (newfil_p%tgt_mesh_file%file_prefix,                           &
-     &    newfil_p%tgt_mesh_file%iflag_format)
+      call set_ctl_parallel_file_w_def(def_new_mesh_head,               &
+     &    new_plt%mesh_file_prefix, new_plt%mesh_file_fmt_ctl,          &
+     &    newfil_p%tgt_mesh_file)
 !
 !
       newfil_p%org_filter_elen_head = "org/filter_elength"

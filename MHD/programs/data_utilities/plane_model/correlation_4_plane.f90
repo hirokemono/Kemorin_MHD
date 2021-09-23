@@ -26,7 +26,7 @@
       use read_udt_files_4_correlate
       use cal_x_correlate_4_plane
       use set_list_4_correlate
-      use stop_by_missing_zlib
+      use set_control_platform_item
 
       implicit    none
 !

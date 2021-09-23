@@ -292,7 +292,6 @@
 !
       use set_control_4_pickup_sph
       use parallel_ucd_IO_select
-      use mpi_abort_by_missing_zlib
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt

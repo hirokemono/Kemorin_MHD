@@ -94,7 +94,6 @@
       use set_control_platform_item
       use set_control_platform_data
       use gen_sph_grids_modes
-      use mpi_abort_by_missing_zlib
 !
       integer, intent(in) :: id_rank
       type(platform_data_control), intent(in) :: plt

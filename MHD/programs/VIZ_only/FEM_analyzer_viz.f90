@@ -62,7 +62,6 @@
       use set_control_platform_item
       use set_control_platform_data
       use parallel_ucd_IO_select
-      use mpi_abort_by_missing_zlib
 !
       type(control_data_vizs), intent(in) :: vizs_ctl
 !

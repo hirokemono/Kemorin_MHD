@@ -10,7 +10,7 @@ main_field_to_repartition.o: $(REPARTITION_DIR)/main_field_to_repartition.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 main_repart_by_volume.o: $(REPARTITION_DIR)/main_repart_by_volume.f90 m_precision.o calypso_mpi.o analyzer_repart_by_volume.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_param_repartition.o: $(REPARTITION_DIR)/t_control_param_repartition.f90 m_precision.o t_file_IO_parameter.o t_control_param_vol_grping.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o t_ctl_file_volume_grouping.o m_file_format_switch.o set_control_platform_item.o set_control_platform_data.o set_ctl_parallel_platform.o parallel_ucd_IO_select.o mpi_abort_by_missing_zlib.o
+t_control_param_repartition.o: $(REPARTITION_DIR)/t_control_param_repartition.f90 m_precision.o t_file_IO_parameter.o t_control_param_vol_grping.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o t_ctl_file_volume_grouping.o m_file_format_switch.o set_control_platform_item.o set_control_platform_data.o set_ctl_parallel_platform.o parallel_ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_file_volume_grouping.o: $(REPARTITION_DIR)/t_ctl_file_volume_grouping.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_volume_repart.o t_ctl_data_4_time_steps.o calypso_mpi.o skip_comment_f.o bcast_4_platform_ctl.o calypso_mpi_int.o bcast_4_time_step_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<

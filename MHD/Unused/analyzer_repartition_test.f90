@@ -64,7 +64,6 @@
       use t_repartition_test
 !
       use int_volume_of_single_domain
-      use mpi_abort_by_missing_zlib
 !
 !>     Stracture for Jacobians
 !

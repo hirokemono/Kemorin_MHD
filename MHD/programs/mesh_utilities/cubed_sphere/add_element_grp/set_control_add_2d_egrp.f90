@@ -29,7 +29,6 @@
       use set_ctl_parallel_platform
       use set_control_platform_item
       use set_control_platform_data
-      use mpi_abort_by_missing_zlib
       use skip_comment_f
 !
       type(control_data_add_ele_grp), intent(in) :: addgrp_c
@@ -42,10 +41,9 @@
       call turn_off_debug_flag_by_ctl(my_rank, addgrp_c%source_plt)
       call set_control_parallel_mesh(addgrp_c%source_plt,               &
      &                               original_mesh_file)
-      call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, addgrp_c%added_plt, modified_mesh_file)
-      call s_mpi_abort_by_missing_zlib(modified_mesh_file%file_prefix,  &
-     &                                 modified_mesh_file%iflag_format)
+      call set_ctl_parallel_file_w_def(def_new_mesh_head,               &
+     &    addgrp_c%added_plt%mesh_file_prefix,                          &
+     &    addgrp_c%added_plt%mesh_file_fmt_ctl, modified_mesh_file)
 !
       if (addgrp_c%sph_grp_direction_ctl%iflag .gt. 0) then
         tmpchara = addgrp_c%sph_grp_direction_ctl%charavalue

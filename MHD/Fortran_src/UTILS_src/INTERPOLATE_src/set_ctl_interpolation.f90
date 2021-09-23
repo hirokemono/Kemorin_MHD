@@ -46,7 +46,6 @@
       use set_control_platform_item
       use set_control_platform_data
       use parallel_ucd_IO_select
-      use mpi_abort_by_missing_zlib
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
       type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
