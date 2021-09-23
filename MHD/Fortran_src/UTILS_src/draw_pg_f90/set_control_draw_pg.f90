@@ -78,6 +78,7 @@
       use m_field_file_format
       use set_components_flags
       use skip_comment_f
+      use stop_by_missing_zlib
 !
       type(pgplot_panel_ctl), intent(in) :: pg_panel_ctl
       type(pgplot_field_ctl), intent(in) :: pg_fld_ctl
@@ -131,6 +132,7 @@
       iflag_pg_psf_fmt                                                  &
      & = choose_ucd_file_format(pg_fld_ctl%psf_data_fmt_ctl%charavalue, &
      &                          pg_fld_ctl%psf_data_fmt_ctl%iflag)
+      call stop_by_no_zlib_in_ucd(pg_psf_file_prefix, iflag_pg_psf_fmt)
       call dealloc_field_type_flags
 !
       if(pg_fld_ctl%map_grid_file_ctl%iflag .gt. 0) then

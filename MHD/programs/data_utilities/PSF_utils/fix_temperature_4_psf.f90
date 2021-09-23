@@ -21,6 +21,7 @@
 !
       use set_parallel_file_name
       use ucd_IO_select
+      use stop_by_missing_zlib
 !
       implicit    none
 !
@@ -65,6 +66,8 @@
       call init_field_type_flags
       psf_file_param%iflag_format                                       &
      &      = choose_ucd_file_format(psf_format, ione)
+      call stop_by_no_zlib_in_ucd(psf_file_param%file_prefix,           &
+     &                            psf_file_param%iflag_format)
       call dealloc_field_type_flags
 !
       call load_psf_data_to_link_IO                                     &

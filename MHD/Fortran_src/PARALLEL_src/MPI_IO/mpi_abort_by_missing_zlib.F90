@@ -54,4 +54,43 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine mpi_abort_by_no_zlib_in_fld(file_prefix, id_file_fmt)
+!
+      use m_error_ids
+      use m_file_format_switch
+!
+      character(len=kchara), intent(in) :: file_prefix
+      integer(kind= kint), intent(inout) :: id_file_fmt
+!
+!
+#ifndef ZLIB_IO
+      if     (id_file_fmt .eq. (iflag_fld + iflag_gzip)                 &
+     &   .or. id_file_fmt .eq. iflag_bin_gz                             &
+     &   .or. id_file_fmt .eq. (iflag_udt + iflag_gzip)                 &
+     &   .or. id_file_fmt .eq. (iflag_ucd + iflag_gzip)                 &
+     &   .or. id_file_fmt .eq. (iflag_vtd + iflag_gzip)                 &
+     &   .or. id_file_fmt .eq. (iflag_vtk + iflag_gzip)                 &
+     &   .or. id_file_fmt .eq. (iflag_ucd_bin + iflag_gzip)             &
+     &   .or. id_file_fmt .eq. (iflag_udt_bin + iflag_gzip)             &
+     &   .or. id_file_fmt .eq. iflag_sgl_bin_gz                         &
+     &   .or. id_file_fmt .eq. iflag_sgl_udt_gz                         &
+     &   .or. id_file_fmt .eq. iflag_sgl_ucd_gz                         &
+     &   .or. id_file_fmt .eq. iflag_sgl_vtd_gz                         &
+     &   .or. id_file_fmt .eq. iflag_sgl_vtk_gz                         &
+     &   .or. id_file_fmt .eq. iflag_sgl_udt_bin_gz                     &
+     &   .or. id_file_fmt .eq. iflag_sgl_ucd_bin_gz) then
+        id_file_fmt = id_missing_zlib
+        if(my_rank .eq 0) write(*,*) 'Zlib is not linked!'
+      end if
+#endif
+!
+      if(id_file_fmt .ne. id_missing_zlib) return
+        write(e_message,'(2a)') 'Failed file prefix: ',                 &
+     &                         trim(file_prefix)
+        call calypso_mpi_abort(ierr_file, e_message)
+!
+      end subroutine mpi_abort_by_no_zlib_in_fld
+!
+! -----------------------------------------------------------------------
+!
       end module mpi_abort_by_missing_zlib

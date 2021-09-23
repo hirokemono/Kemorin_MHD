@@ -28,7 +28,7 @@ m_all_layerd_correlate.o: $(UCD_UTILS_DIR)/m_all_layerd_correlate.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 m_ctl_params_4_diff_udt.o: $(UCD_UTILS_DIR)/m_ctl_params_4_diff_udt.f90 m_precision.o m_geometry_constants.o t_file_IO_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_ctl_params_4_prod_udt.o: $(UCD_UTILS_DIR)/m_ctl_params_4_prod_udt.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_error_IDs.o m_file_format_switch.o m_default_file_prefix.o t_ctl_data_product_udt.o set_control_platform_item.o set_control_platform_data.o ucd_IO_select.o
+m_ctl_params_4_prod_udt.o: $(UCD_UTILS_DIR)/m_ctl_params_4_prod_udt.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_error_IDs.o m_file_format_switch.o m_default_file_prefix.o t_ctl_data_product_udt.o set_control_platform_item.o set_control_platform_data.o ucd_IO_select.o mpi_abort_by_missing_zlib.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_ctl_params_ele_grp_udt.o: $(UCD_UTILS_DIR)/m_ctl_params_ele_grp_udt.f90 m_precision.o t_file_IO_parameter.o t_ctl_data_ele_grp_udt.o set_parallel_file_name.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -59,6 +59,7 @@
       use set_control_platform_item
       use set_control_platform_data
       use ucd_IO_select
+      use mpi_abort_by_missing_zlib
 !
       type(platform_data_control) :: pu_plt
       type(platform_data_control) :: org_pu_plt
@@ -81,9 +82,9 @@
 !   set fiale name
 !
       call init_field_type_flags
-      ifmt_result_udt_file                                              &
-     &   = choose_ucd_file_format(pu_plt%field_file_fmt_ctl%charavalue, &
-     &                            pu_plt%field_file_fmt_ctl%iflag)
+      ifmt_result_udt_file = choose_para_fld_file_format                &
+     &                     (pu_plt%field_file_fmt_ctl%charavalue,       &
+     &                      pu_plt%field_file_fmt_ctl%iflag)
       call dealloc_field_type_flags
 !
       if(prod_ctl%product_udt_1_head_ctl%iflag .ne. 0) then
@@ -109,6 +110,8 @@
         output_ucd_param%file_prefix = result_udt_file_head
       end if
 !
+      call mpi_abort_by_no_zlib_in_fld(prod1_ucd_param%file_prefix,     &
+     &                                 ifmt_result_udt_file)
 !
       product_field_1_name = "velocity"
       if(prod_ctl%product_field_1_ctl%iflag .ne. 0) then
