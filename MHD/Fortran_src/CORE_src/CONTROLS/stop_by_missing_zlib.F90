@@ -29,6 +29,7 @@
 !
       subroutine s_stop_by_missing_zlib(file_prefix, id_file_fmt)
 !
+      use m_machine_parameter
       use m_error_ids
       use m_file_format_switch
 !
