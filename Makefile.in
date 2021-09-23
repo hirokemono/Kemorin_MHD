@@ -171,6 +171,8 @@ depends: $(MAKE_MOD_DEP)
 		CXX="$(CXX)" \
 		AS="$(AS)" \
 		MPIF90="$(MPIF90)" \
+		MPICC="$(MPICC)"   \
+		MPIRUN="$(MPIRUN)" \
 		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
 		SSE_FLAG="$(SSE_FLAG)" \
 		SSE_CPU="$(SSE_CPU)" \
@@ -227,6 +229,7 @@ makemake: $(MAKE_MOD_DEP)
 		AS="$(AS)" \
 		MPIF90="$(MPIF90)" \
 		MPICC="$(MPICC)"   \
+		MPIRUN="$(MPIRUN)" \
 		AR="$(AR)" \
 		RANLIB="$(RANLIB)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
@@ -283,6 +286,7 @@ makemake64: $(MAKE_MOD_DEP)
 		AS="$(AS)" \
 		MPIF90="$(MPIF90)" \
 		MPICC="$(MPICC)"   \
+		MPIRUN="$(MPIRUN)" \
 		AR="$(AR)" \
 		RANLIB="$(RANLIB)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \

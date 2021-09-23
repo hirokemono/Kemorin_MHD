@@ -10,6 +10,7 @@ MPILIBDIR = $(MPICHDIR)/lib
 MPILIBS = -mpich -fmpich
 MPIBINDIR = $(MPICHDIR)/bin
 MPIINCDIR = $(MPICHDIR)/include
+MPIRUN = $(MPIBINDIR)/mpirun
 #
 #
 
@@ -189,6 +190,7 @@ makemake:
 	@echo AR=$(AR)               >> $(MAKENAME)
 	@echo RANLIB=$(RANLIB) >> $(MAKENAME)
 	@echo F90_LOCAL=$(F90_LOCAL) >> $(MAKENAME)
+	@echo MPIRUN=$(MPIRUN) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# Compiler options' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
