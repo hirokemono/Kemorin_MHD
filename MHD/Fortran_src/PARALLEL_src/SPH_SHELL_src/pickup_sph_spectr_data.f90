@@ -68,7 +68,10 @@
 !
       num = pick_list%num_modes                                         &
      &     + pick_list%num_degree + pick_list%num_order
-      if(num .eq. 0) return
+      if(num .eq. 0) then
+        picked%num_sph_mode_lc = 0
+        return
+      end if
 !
       call init_sph_radial_monitor_list(sph_rj, picked, iflag_center)
 !

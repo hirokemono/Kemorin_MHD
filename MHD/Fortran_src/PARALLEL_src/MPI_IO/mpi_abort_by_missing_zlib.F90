@@ -28,7 +28,7 @@
 !
       subroutine s_mpi_abort_by_missing_zlib(file_prefix, id_file_fmt)
 !
-      use m_error_ids
+      use m_error_IDs
       use m_file_format_switch
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -38,10 +38,11 @@
 #ifndef ZLIB_IO
       if     (id_file_fmt .eq. id_gzip_txt_file_fmt                     &
      &   .or. id_file_fmt .eq. id_gzip_bin_file_fmt                     &
-     &   .or. id_file_fmt .eq. mgd_gzip_flags                           &
-     &   .or. id_file_fmt .eq. mgd_gzip_bin_flags) then
+     &   .or. id_file_fmt .eq. (id_gzip_txt_file_fmt+iflag_single)      &
+     &   .or. id_file_fmt .eq. (id_gzip_bin_file_fmt+iflag_single))     &
+     &   then
         id_file_fmt = id_missing_zlib
-        if(my_rank .eq 0) write(*,*) 'Zlib is not linked!'
+        if(my_rank .eq. 0) write(*,*) 'Zlib is not linked!'
       end if
 #endif
 !
@@ -56,8 +57,9 @@
 !
       subroutine mpi_abort_by_no_zlib_in_fld(file_prefix, id_file_fmt)
 !
-      use m_error_ids
+      use m_error_IDs
       use m_file_format_switch
+      use m_field_file_format
 !
       character(len=kchara), intent(in) :: file_prefix
       integer(kind= kint), intent(inout) :: id_file_fmt
@@ -80,7 +82,7 @@
      &   .or. id_file_fmt .eq. iflag_sgl_udt_bin_gz                     &
      &   .or. id_file_fmt .eq. iflag_sgl_ucd_bin_gz) then
         id_file_fmt = id_missing_zlib
-        if(my_rank .eq 0) write(*,*) 'Zlib is not linked!'
+        if(my_rank .eq. 0) write(*,*) 'Zlib is not linked!'
       end if
 #endif
 !

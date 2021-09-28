@@ -60,6 +60,8 @@
       real(kind=kreal), allocatable :: d_rj_out(:)
 !
 !
+      if(picked%num_sph_mode_lc .le. 0) return
+!
       num = picked%istack_picked_spec_lc(my_rank+1)                     &
      &     - picked%istack_picked_spec_lc(my_rank)
       if(num .le. 0) return
