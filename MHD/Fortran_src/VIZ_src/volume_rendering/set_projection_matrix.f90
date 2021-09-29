@@ -1,33 +1,37 @@
-!set_projection_matrix.f90
-!      module set_projection_matrix
+!>@file  set_projection_matrix.f90
+!!       module set_projection_matrix
+!!
+!!@author H. Matsui
+!!@date   Programmed in Aug., 2011
 !
+!> @brief Evaluate projection matirx
+!!
+!!@verbatim
+!
+!!      subroutine set_perspective_mat_by_angle(view_angle, aspect,     &
+!!     &          view_near, view_far, project_mat)
+!!      subroutine set_perspective_mat_by_area(view_left, view_right,   &
+!!     &        view_bottom, view_top, view_near, view_far, project_mat)
+!!      subroutine set_perspective_mat_half_area(view_right, view_top,  &
+!!     &          view_near, view_far, project_mat)
+!!        range: of view after transdorm: -w<x,y,z<w
+!!
+!!      subroutine set_orthogonal_mat_half_area(view_right, view_top,   &
+!!     &          view_near, view_far, project_mat)
+!!      subroutine set__orthogonal_mat_by_area(view_left, view_right,   &
+!!     &        view_bottom, view_top, view_near, view_far, project_mat)
+!!        range: of view after transdorm: -w<x,y,z<w
+!!
+!!      subroutine set_pixel_points_on_project(num_pixel_x, num_pixel_y,&
+!!     &          pixel_point_x, pixel_point_y)
+!!         range: of view in window: -1 < x,y < 1
+!!@endverbatim
       module set_projection_matrix
-!
-!        programmed by H.Matsui on Aug., 2011
 !
       use m_precision
       use m_constants
 !
       implicit  none
-!
-!
-!      subroutine set_perspective_mat_by_angle(view_angle, aspect,      &
-!     &          view_near, view_far, project_mat)
-!      subroutine set_perspective_mat_by_area(view_left, view_right,    &
-!     &        view_bottom, view_top, view_near, view_far, project_mat)
-!      subroutine set_perspective_mat_half_area(view_right, view_top,   &
-!     &          view_near, view_far, project_mat)
-!  range: of view after transdorm: -w<x,y,z<w
-!
-!      subroutine set_orthogonal_mat_half_area(view_right, view_top,    &
-!     &          view_near, view_far, project_mat)
-!      subroutine set__orthogonal_mat_by_area(view_left, view_right,    &
-!     &        view_bottom, view_top, view_near, view_far, project_mat)
-!  range: of view after transdorm: -w<x,y,z<w
-!
-!      subroutine set_pixel_points_on_project(num_pixel_x, num_pixel_y, &
-!     &          pixel_point_x, pixel_point_y)
-!  range: of view in window: -1 < x,y < 1
 !
 !  ---------------------------------------------------------------------
 !
