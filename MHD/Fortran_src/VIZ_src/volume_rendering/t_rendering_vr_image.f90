@@ -112,6 +112,9 @@
         type(pvr_ray_start_type) :: start_save
       end type PVR_projection_data
 !
+!
+      private :: sel_fix_view_projection_mats
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -163,7 +166,7 @@
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
-      call sel_rot_view_projection_mats(i_img, num_stereo,              &
+      call sel_fix_view_projection_mats(i_img, num_stereo,              &
      &                                  pvr_param, pvr_proj%screen)
 !
       call transfer_to_screen(mesh%node, mesh%surf,                     &
@@ -332,7 +335,7 @@
       use cal_pvr_projection_mat
 !
       integer(kind = kint), intent(in) :: i_img, num_stereo
-      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_control_params), intent(in) :: pvr_param
 !
       type(pvr_projected_position), intent(inout) :: screen
 !
