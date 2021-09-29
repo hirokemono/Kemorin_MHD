@@ -32,15 +32,8 @@ int set_image_format_id_by_ext(char *image_fmt){
 	return id_img;
 }
 
-unsigned char * alloc_img_buffer_to_bmp(int nwin_x, int nwin_y){
-    unsigned char *image;
-    if((image = (unsigned char*)calloc(3*nwin_x*nwin_y, sizeof(unsigned char))) == NULL){
-        printf("malloc error for Bitmap image buffer \n");
-        exit(0);
-    };
-    return image;
-};
-
+/*  Routines using libpng */
+#ifdef PNG_OUTPUT
 void write_gl_window_to_file(int iflag_img, const char *fhead, int nwin_x, int nwin_y,
                              unsigned char *image){
     unsigned char **image_2d;
@@ -69,3 +62,4 @@ void write_gl_window_step_file(int iflag_img, int istep, const char *fhead,
 	write_gl_window_to_file(iflag_img, fhead_step, nwin_x, nwin_y, image);
 	return;
 }
+#endif

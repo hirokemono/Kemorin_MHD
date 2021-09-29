@@ -7,6 +7,16 @@
 static FILE *fp;
 
 
+unsigned char * alloc_img_buffer_to_bmp(int ihpixf, int jvpixf){
+    unsigned char *image;
+    if((image = (unsigned char*)calloc(3*ihpixf*jvpixf, sizeof(unsigned char))) == NULL){
+        printf("malloc error for Bitmap image buffer \n");
+        exit(0);
+    };
+    return image;
+}
+
+
 void cvt_8bit_cl_int_2_chara(int ihpixf, int jvpixf, int *icl_tbl, unsigned char *rgb){ 
 	int i, j, k;
 	

@@ -35,9 +35,9 @@
 
 
 #include "kemoviewer.h"
+#include "write_gl_window_to_file.h"
 
 #ifdef PNG_OUTPUT
-    #include "write_gl_window_to_file.h"
     #include "set_psf_texture_by_png.h"
 #endif
 

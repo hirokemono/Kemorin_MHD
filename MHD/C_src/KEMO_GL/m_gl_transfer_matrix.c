@@ -386,8 +386,8 @@ static void update_step_projection(int istep, int num_step,
 		eyeSep = each_eye_from_middle_c(istep, num_step, 
 										focalLength, eye_separation_angle);
 	};
-	left  = - *aspect * wd2 - eyeSep * ndfl;
-	right =   *aspect * wd2 - eyeSep * ndfl;
+	left  = - *aspect * wd2 + eyeSep * ndfl;
+	right =   *aspect * wd2 + eyeSep * ndfl;
 	
 	identity_glmat_c(projection);
 	frustsum_glmat_c(left, right, (-wd2), wd2, *near, *far, projection);
@@ -468,7 +468,7 @@ void modify_step_view_by_struct(struct view_element *view){
 	double eyeSep = each_eye_from_middle_c(view->istep_quilt, view->num_views,
 										   view->focal_length,
 										   view->eye_separation_angle);
-	Kemo_Translate_view_c(-eyeSep, ZERO, ZERO, view->mat_object_2_eye);
+	Kemo_Translate_view_c(eyeSep, ZERO, ZERO, view->mat_object_2_eye);
 	
 	if(view->rotate_animation[0] != ZERO){
 		Kemo_Rotate_view_c(view->rotate_animation, view->mat_object_2_eye);
