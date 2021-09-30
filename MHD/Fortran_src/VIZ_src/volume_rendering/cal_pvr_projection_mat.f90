@@ -119,9 +119,9 @@
       view_bottom = - wd2
       view_top =      wd2
       view_left  = - view_param%perspective_xy_ratio * wd2              &
-     &              + half * each_eye * ndfl
+     &              + each_eye * ndfl
       view_right =   view_param%perspective_xy_ratio * wd2              &
-     &              + half * each_eye * ndfl
+     &              + each_eye * ndfl
 !
       call set_perspective_mat_by_area(view_left, view_right,           &
      &    view_bottom, view_top, view_near, view_far,                   &
@@ -167,9 +167,9 @@
         view_bottom = - wd2
         view_top =      wd2
         view_left  = - view_param%perspective_xy_ratio * wd2            &
-     &                + half * each_eye * ndfl
+     &                + each_eye * ndfl
         view_right =   view_param%perspective_xy_ratio * wd2            &
-     &                + half * each_eye * ndfl
+     &                + each_eye * ndfl
 !
         call set_perspective_mat_by_area(view_left, view_right,         &
      &      view_bottom, view_top, view_near, view_far,                 &
@@ -215,9 +215,9 @@
         view_bottom = - wd2
         view_top =      wd2
         view_left  = - view_param%perspective_xy_ratio * wd2            &
-     &                - half * each_eye * ndfl
+     &                - each_eye * ndfl
         view_right =   view_param%perspective_xy_ratio * wd2            &
-     &                - half * each_eye * ndfl
+     &                - each_eye * ndfl
 !
         call set_perspective_mat_by_area(view_left, view_right,         &
      &      view_bottom, view_top, view_near, view_far,                 &

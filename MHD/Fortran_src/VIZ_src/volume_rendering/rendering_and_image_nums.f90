@@ -75,9 +75,10 @@
       num_pvr_images =    istack_pvr_images(num_pvr)
 !
       if(iflag_debug .eq. 0) return
-      write(*,*) 'num_pvr',           num_pvr
-      write(*,*) 'num_pvr_rendering', num_pvr_rendering
-      write(*,*) 'num_pvr_images',    num_pvr_images
+      write(*,*) my_rank, 'num_pvr',           num_pvr
+      write(*,*) my_rank, 'num_pvr_rendering', num_pvr_rendering
+      write(*,*) my_rank, 'num_pvr_images',    num_pvr_images
+      write(*,*) my_rank, 'num_pvr_images',    istack_pvr_images
 !
       end subroutine count_num_rendering_and_images
 !
@@ -96,9 +97,9 @@
       num_pvr_images =    num_pvr
 !
       if(iflag_debug .eq. 0) return
-      write(*,*) 'num_pvr',           num_pvr
-      write(*,*) 'num_pvr_rendering', num_pvr_rendering
-      write(*,*) 'num_pvr_images',    num_pvr_images
+      write(*,*) my_rank, 'num_pvr',           num_pvr
+      write(*,*) my_rank, 'num_pvr_rendering', num_pvr_rendering
+      write(*,*) my_rank, 'num_pvr_images',    num_pvr_images
 !
       end subroutine count_num_anaglyph_and_images
 !
