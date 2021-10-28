@@ -30,6 +30,8 @@ cal_diff_adv_src_explicit.o: $(MHD_SPH_DIR)/cal_diff_adv_src_explicit.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_div_of_forces.o: $(MHD_SPH_DIR)/cal_div_of_forces.f90 m_precision.o t_base_field_labels.o t_base_force_labels.o t_physical_property.o t_phys_data.o copy_nodal_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
+cal_ene_flux_by_sym_rtp.o: $(MHD_SPH_DIR)/cal_ene_flux_by_sym_rtp.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_phys_address.o t_spheric_rtp_data.o t_physical_property.o t_reference_scalar_param.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o cal_buoyancy_flux_sph.o cal_products_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
 cal_energy_flux_rj.o: $(MHD_SPH_DIR)/cal_energy_flux_rj.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o const_sph_radial_grad.o copy_nodal_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_energy_flux_rtp.o: $(MHD_SPH_DIR)/cal_energy_flux_rtp.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_phys_address.o t_spheric_rtp_data.o t_physical_property.o t_reference_scalar_param.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o const_wz_coriolis_rtp.o cal_buoyancy_flux_sph.o cal_products_smp.o poynting_flux_smp.o mag_of_field_smp.o

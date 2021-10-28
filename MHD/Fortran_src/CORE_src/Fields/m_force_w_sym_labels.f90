@@ -32,7 +32,7 @@
 !!   maxwell_tensor_sym_asym
 !!                 :  maxwell tensor       B_{i} B_{j}
 !!
-!!   sym_termal_buoyancy, asym_termal_buoyancy
+!!   sym_thermal_buoyancy, asym_thermal_buoyancy
 !!                 :   Thermal buoyancy       - \alpha_{T} g T
 !!   sym_composite_buoyancy, asym_composite_buoyancy
 !!                 :   compositional buoyancy  - \alpha_{C} g C
@@ -56,8 +56,8 @@
 !!   heat_flux_sym_sym, heat_flux_asym_asym,
 !!   heat_flux_sym_asym, heat_flux_asym_sym
 !!                 :    heat flux                   uT
-!!   part_h_flux_sym_sym, part_h_flux_asym_asym
-!!   part_h_flux_sym_asym, part_h_flux_asym_sym
+!!   pert_h_flux_sym_sym, pert_h_flux_asym_asym
+!!   pert_h_flux_sym_asym, pert_h_flux_asym_sym
 !!                 :  perturbation of heat flux   u\Theta
 !!
 !!   usym_nabla_Csym, uasym_nabla_Casym
@@ -70,8 +70,8 @@
 !!   composite_flux_sym_sym, composite_flux_asym_asym, 
 !!   composite_flux_sym_asym, composite_flux_asym_sym
 !!                 :    composition flux                   uC
-!!   part_c_flux_sym_sym, part_c_flux_asym_asym,
-!!   part_c_flux_sym_asym, part_c_flux_asym_sym
+!!   pert_c_flux_sym_sym, pert_c_flux_asym_asym,
+!!   pert_c_flux_sym_asym, pert_c_flux_asym_sym
 !!                 :  perturbation of composition flux   u(C-C_0)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -210,15 +210,15 @@
 !
 !>        Field label of buoyancy
 !!         @f$ -\alpha_{T} g_{i} T_{sym} @f$
-      type(field_def), parameter :: sym_termal_buoyancy                 &
+      type(field_def), parameter :: sym_thermal_buoyancy                 &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'sym_termal_buoyancy',                   &
+     &                  name = 'sym_thermal_buoyancy',                   &
      &                  math = '$ -\alpha_{T} g_{i} T_{sym} $')
 !>        Field label of buoyancy
 !!         @f$ -\alpha_{T} g_{i} T_{asym} @f$
-      type(field_def), parameter :: asym_termal_buoyancy                &
+      type(field_def), parameter :: asym_thermal_buoyancy                &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'asym_termal_buoyancy',                  &
+     &                  name = 'asym_thermal_buoyancy',                  &
      &                  math = '$ -\alpha_{T} g_{i} T_{asym} $')
 !
 !>        Field label of compositional buoyancy
@@ -411,28 +411,28 @@
 !
 !>        Field label of perturbation of heat flux
 !!         @f$ u_{sym} \Theta_{sym} @f$
-      type(field_def), parameter :: part_h_flux_sym_sym                 &
+      type(field_def), parameter :: pert_h_flux_sym_sym                 &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'part_h_flux_sym_sym',                   &
+     &                  name = 'pert_h_flux_sym_sym',                   &
      &                  math = '$ u_{sym} \Theta_{sym} $')
 !>        Field label of perturbation of heat flux
 !!         @f$ u_{asym} \Theta_{asym} @f$
-      type(field_def), parameter :: part_h_flux_asym_asym               &
+      type(field_def), parameter :: pert_h_flux_asym_asym               &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'part_h_flux_asym_asym',                 &
+     &                  name = 'pert_h_flux_asym_asym',                 &
      &                  math = '$ u_{asym} \Theta_{asym} $')
 !>        Field label of heat flux
 !>        Field label of perturbation of heat flux
 !!         @f$ u_{sym} \Theta_{asym} @f$
-      type(field_def), parameter :: part_h_flux_sym_asym                &
+      type(field_def), parameter :: pert_h_flux_sym_asym                &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'part_h_flux_sym_asym',                  &
+     &                  name = 'pert_h_flux_sym_asym',                  &
      &                  math = '$ u_{sym} \Theta_{asym} $')
 !>        Field label of perturbation of heat flux
 !!         @f$ u_{asym} \Theta_{sym} @f$
-      type(field_def), parameter :: part_h_flux_asym_sym                &
+      type(field_def), parameter :: pert_h_flux_asym_sym                &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'part_h_flux_asym_sym',                  &
+     &                  name = 'pert_h_flux_asym_sym',                  &
      &                  math = '$ u_{asym} \Theta_{sym} $')
 !
 !>        Field label of advection of composition
@@ -512,27 +512,27 @@
 !
 !>        Field label of perturbation of composition flux
 !!         @f$ u_{sym} (C_{sym} - C0) @f$
-      type(field_def), parameter :: part_c_flux_sym_sym                 &
+      type(field_def), parameter :: pert_c_flux_sym_sym                 &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'part_c_flux_sym_sym',                   &
+     &                  name = 'pert_c_flux_sym_sym',                   &
      &                  math = '$ u_{sym} (C_{sym} - C0) $')
 !>        Field label of perturbation of composition flux
 !!         @f$ u_{asym} (C_{asym} - C0) @f$
-      type(field_def), parameter :: part_c_flux_asym_asym               &
+      type(field_def), parameter :: pert_c_flux_asym_asym               &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'part_c_flux_asym_asym',                 &
+     &                  name = 'pert_c_flux_asym_asym',                 &
      &                  math = '$ u_{asym} (C_{asym} - C0) $')
 !>        Field label of perturbation of composition flux
 !!         @f$ u_{sym} (C_{asym} - C0) @f$
-      type(field_def), parameter :: part_c_flux_sym_asym                &
+      type(field_def), parameter :: pert_c_flux_sym_asym                &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'part_c_flux_sym_asym',                  &
+     &                  name = 'pert_c_flux_sym_asym',                  &
      &                  math = '$ u_{sym} (C_{asym} - C0) $')
 !>        Field label of perturbation of composition flux
 !!         @f$ u_{asym} (C_{sym} - C0) @f$
-      type(field_def), parameter :: part_c_flux_asym_sym                &
+      type(field_def), parameter :: pert_c_flux_asym_sym                &
      &    = field_def(n_comp = n_vector,                                &
-     &                  name = 'part_c_flux_asym_sym',                  &
+     &                  name = 'pert_c_flux_asym_sym',                  &
      &                  math = '$ u_{asym} (C_{sym} - C0) $')
 !
 ! ----------------------------------------------------------------------
@@ -593,8 +593,8 @@
      &   .or. (field_name .eq. Bsym_nabla_Basym%name)                   &
      &   .or. (field_name .eq. Basym_nabla_Bsym%name)                   &
 !
-     &   .or. (field_name .eq. sym_termal_buoyancy%name)                &
-     &   .or. (field_name .eq. asym_termal_buoyancy%name)               &
+     &   .or. (field_name .eq. sym_thermal_buoyancy%name)                &
+     &   .or. (field_name .eq. asym_thermal_buoyancy%name)               &
 !
      &   .or. (field_name .eq. sym_composite_buoyancy%name)             &
      &   .or. (field_name .eq. asym_composite_buoyancy%name)            &
@@ -619,20 +619,20 @@
      &   .or. (field_name .eq. heat_flux_sym_asym%name)                 &
      &   .or. (field_name .eq. heat_flux_asym_sym%name)                 &
 !
-     &   .or. (field_name .eq. part_h_flux_sym_sym%name)                &
-     &   .or. (field_name .eq. part_h_flux_asym_asym%name)              &
-     &   .or. (field_name .eq. part_h_flux_sym_asym%name)               &
-     &   .or. (field_name .eq. part_h_flux_asym_sym%name)               &
+     &   .or. (field_name .eq. pert_h_flux_sym_sym%name)                &
+     &   .or. (field_name .eq. pert_h_flux_asym_asym%name)              &
+     &   .or. (field_name .eq. pert_h_flux_sym_asym%name)               &
+     &   .or. (field_name .eq. pert_h_flux_asym_sym%name)               &
 !
      &   .or. (field_name .eq. composite_flux_sym_sym%name)             &
      &   .or. (field_name .eq. composite_flux_asym_asym%name)           &
      &   .or. (field_name .eq. composite_flux_sym_asym%name)            &
      &   .or. (field_name .eq. composite_flux_asym_sym%name)            &
 !
-     &   .or. (field_name .eq. part_c_flux_sym_sym%name)                &
-     &   .or. (field_name .eq. part_c_flux_asym_asym%name)              &
-     &   .or. (field_name .eq. part_c_flux_sym_asym%name)               &
-     &   .or. (field_name .eq. part_c_flux_asym_sym%name)               &
+     &   .or. (field_name .eq. pert_c_flux_sym_sym%name)                &
+     &   .or. (field_name .eq. pert_c_flux_asym_asym%name)              &
+     &   .or. (field_name .eq. pert_c_flux_sym_asym%name)               &
+     &   .or. (field_name .eq. pert_c_flux_asym_sym%name)               &
      &      )   check_forces_w_sym = .TRUE.
 !
       end function check_forces_w_sym
@@ -717,9 +717,9 @@
       call set_field_labels(Basym_nabla_Bsym,                           &
      &    n_comps(12), names(12), maths(12))
 !
-      call set_field_labels(sym_termal_buoyancy,                        &
+      call set_field_labels(sym_thermal_buoyancy,                        &
      &    n_comps(13), names(13), maths(13))
-      call set_field_labels(asym_termal_buoyancy,                       &
+      call set_field_labels(asym_thermal_buoyancy,                       &
      &    n_comps(14), names(14), maths(14))
 !
       call set_field_labels(sym_composite_buoyancy,                     &
@@ -799,13 +799,13 @@
       call set_field_labels(heat_flux_asym_sym,                         &
      &    n_comps(48), names(48), maths(48))
 !
-      call set_field_labels(part_h_flux_sym_sym,                        &
+      call set_field_labels(pert_h_flux_sym_sym,                        &
      &    n_comps(49), names(49), maths(49))
-      call set_field_labels(part_h_flux_asym_asym,                      &
+      call set_field_labels(pert_h_flux_asym_asym,                      &
      &    n_comps(50), names(50), maths(50))
-      call set_field_labels(part_h_flux_sym_asym,                       &
+      call set_field_labels(pert_h_flux_sym_asym,                       &
      &    n_comps(51), names(51), maths(51))
-      call set_field_labels(part_h_flux_asym_sym,                       &
+      call set_field_labels(pert_h_flux_asym_sym,                       &
      &    n_comps(52), names(52), maths(52))
 !
       call set_field_labels(composite_flux_sym_sym,                     &
@@ -817,13 +817,13 @@
       call set_field_labels(composite_flux_asym_sym,                    &
      &    n_comps(56), names(56), maths(56))
 !
-      call set_field_labels(part_c_flux_sym_sym,                        &
+      call set_field_labels(pert_c_flux_sym_sym,                        &
      &    n_comps(57), names(57), maths(57))
-      call set_field_labels(part_c_flux_asym_asym,                      &
+      call set_field_labels(pert_c_flux_asym_asym,                      &
      &    n_comps(58), names(58), maths(58))
-      call set_field_labels(part_c_flux_sym_asym,                       &
+      call set_field_labels(pert_c_flux_sym_asym,                       &
      &    n_comps(59), names(59), maths(59))
-      call set_field_labels(part_c_flux_asym_sym,                       &
+      call set_field_labels(pert_c_flux_asym_sym,                       &
      &    n_comps(60), names(60), maths(60))
 !
       call set_field_labels(m_flux_sym_sym,                             &
