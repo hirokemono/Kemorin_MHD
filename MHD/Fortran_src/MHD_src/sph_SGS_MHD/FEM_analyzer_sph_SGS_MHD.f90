@@ -1,8 +1,9 @@
 !>@file   FEM_analyzer_sph_SGS_MHD.f90
 !!@brief  module FEM_analyzer_sph_SGS_MHD
 !!
-!!@author H. Matsui
+!!@author H. Matsui (UC Berkeley) and T. Kera (Tohoku University)
 !!@date Programmed in Aug., 2017
+!>        Modified by T. Kera in Aug., 2021
 !
 !>@brief Top routines to transfer spherical harmonics grids data
 !!       to FEM data for data visualization
@@ -184,6 +185,11 @@
      &                'copy_field_from_transform base fields'
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_snap%backward, geofem%mesh, nod_fld)
+      if (iflag_debug.gt.0) write(*,*) 'copy_force_from_transform snap'
+      call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
+     &    WK%trns_snap%forward, geofem%mesh, nod_fld)
+!
+
       if (iflag_debug.gt.0) write(*,*)                                  &
      &                'copy_field_from_transform diff_vector'
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &

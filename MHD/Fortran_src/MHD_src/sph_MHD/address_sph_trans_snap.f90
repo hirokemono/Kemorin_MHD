@@ -3,7 +3,7 @@
 !!
 !!@author H. Matsui (UC Berkeley) and T. Kera (Tohoku University)
 !!@date Programmed in Jan., 2010
-!>        Modified by  Programmed in Aug., 2021
+!>        Modified by T. Kera in Aug., 2021
 !
 !>@brief Field addresses for spherical harmonics transform
 !!       in MHD dynamo simulation
