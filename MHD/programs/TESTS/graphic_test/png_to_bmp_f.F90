@@ -25,7 +25,7 @@
 !
       write(*,*) 'Input image file prefix'
       read(*,*) file_prefix
-!#ifdef PNG_OUTPUT
+!
       call read_png_file_f(file_prefix, npixel_x, npixel_y, pbuf_t)
 !
       if(pbuf_t%iflag_cmode .eq. iflag_rgba)                            &
@@ -63,6 +63,5 @@
       end if
 !
       call pixout_BMP(file_prefix, npixel_x, npixel_y, rgb)
-!#endif
 !
       end program png_to_bmp_f

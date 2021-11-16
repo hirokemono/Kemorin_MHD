@@ -52,7 +52,6 @@
         write(*,*) 'Select compress (1:On, 0: Off)'
         read(*,*) iflag_gz
 !
-!#ifdef PNG_OUTPUT
         file_name = add_int_suffix(0, file_prefix)
         call read_png_file_f                                            &
      &     (file_name, npixel_xy(1), npixel_xy(2), pbuf_t)
