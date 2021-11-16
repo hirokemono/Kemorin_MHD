@@ -131,7 +131,7 @@
       call allocate_item_pvr_ray_pixels(pvr_start)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_each_pvr_ray_start'
-      if(num_pvr_ray .gt. 0) then
+      if(pvr_start%num_pvr_ray .gt. 0) then
         call set_each_pvr_ray_start(node, surf,                         &
      &     pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                  &
      &     pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,              &
