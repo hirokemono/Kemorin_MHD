@@ -105,7 +105,6 @@
       integer(kind = kint) :: ipix, jpix
 !
 !
-!      write(*,*) 'set_each_pvr_ray_start loop '
 !$omp parallel do private(inum,icou,jcou,iele,k1,isurf,                 &
 !$omp&                    ipix,jpix,ist_pix,ied_pix)
       do inum = 1, num_pvr_surf

@@ -112,12 +112,13 @@
       allocate(pvr_start%id_pixel_check(pvr_start%num_pvr_ray)     )
 !
       if(pvr_start%num_pvr_ray .gt. 0) then
-        pvr_start%id_pixel_start = 0
-        pvr_start%isf_pvr_ray_start = 0
-        pvr_start%xi_pvr_start = 0.0d0
-        pvr_start%xx4_pvr_ray_start = 0.0d0
-        pvr_start%xx4_pvr_start = 0.0d0
-        pvr_start%id_pixel_check = 0
+        pvr_start%id_pixel_start(1:pvr_start%num_pvr_ray) =        0
+        pvr_start%isf_pvr_ray_start(1:3,1:pvr_start%num_pvr_ray) = 0
+        pvr_start%xi_pvr_start(1:2,1:pvr_start%num_pvr_ray) = 0.0d0
+        pvr_start%xx4_pvr_ray_start(1:4,1:pvr_start%num_pvr_ray)        &
+     &                                                      = 0.0d0
+        pvr_start%xx4_pvr_start(1:4,1:pvr_start%num_pvr_ray) = 0.0d0
+        pvr_start%id_pixel_check(1:pvr_start%num_pvr_ray) = 0
       end if
 !
       end subroutine allocate_item_pvr_ray_start
@@ -129,7 +130,13 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
-      allocate(pvr_start%rgba_ray(4,pvr_start%num_pvr_ray)         )
+      allocate(pvr_start%rgba_ray(4,pvr_start%num_pvr_ray))
+!
+      if(pvr_start%num_pvr_ray .gt. 0) then
+!$omp parallel workshare
+        pvr_start%rgba_ray(1:4,1:pvr_start%num_pvr_ray) = 0.0d0
+!$omp end parallel workshare
+      end if
 !
       end subroutine allocate_item_pvr_ray_pixels
 !
