@@ -55,7 +55,7 @@
       else if(check_field_list_ctl(sym_termal_buo_flux,                 &
      &                             field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
-        call add_phys_name_ctl(sym_termal_buoyancy, field_ctl)
+        call add_phys_name_ctl(sym_thermal_buoyancy, field_ctl)
       else if(check_field_list_ctl(sym_composite_buo_flux,              &
      &                             field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
@@ -116,7 +116,7 @@
       else if(check_field_list_ctl(asym_termal_buo_flux,                &
      &                             field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
-        call add_phys_name_ctl(asym_termal_buoyancy, field_ctl)
+        call add_phys_name_ctl(asym_thermal_buoyancy, field_ctl)
       else if(check_field_list_ctl(asym_composite_buo_flux,             &
      &                             field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)

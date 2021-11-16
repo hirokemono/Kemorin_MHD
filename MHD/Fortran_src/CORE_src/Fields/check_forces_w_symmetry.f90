@@ -51,7 +51,7 @@
      &                              field_ctl) ) then
         call add_phys_name_ctl(sym_magnetic_field, field_ctl)
 !
-      else if( check_field_list_ctl(sym_termal_buoyancy,                &
+      else if( check_field_list_ctl(sym_thermal_buoyancy,               &
      &                              field_ctl)) then
         call add_phys_name_ctl(sym_temperature, field_ctl)
       else if( check_field_list_ctl(sym_composite_buoyancy,             &
@@ -70,7 +70,7 @@
         call add_phys_name_ctl(sym_velocity, field_ctl)
         call add_phys_name_ctl(sym_temperature, field_ctl)
       else if( check_field_list_ctl(usym_nabla_pTsym, field_ctl)        &
-     &    .or. check_field_list_ctl(part_h_flux_sym_sym,                &
+     &    .or. check_field_list_ctl(pert_h_flux_sym_sym,                &
      &                              field_ctl) ) then
         call add_phys_name_ctl(sym_velocity, field_ctl)
         call add_phys_name_ctl(sym_perturbation_temp, field_ctl)
@@ -80,7 +80,7 @@
         call add_phys_name_ctl(sym_velocity, field_ctl)
         call add_phys_name_ctl(sym_composition, field_ctl)
       else if( check_field_list_ctl(usym_nabla_pCsym, field_ctl)        &
-     &    .or. check_field_list_ctl(part_c_flux_sym_sym,                &
+     &    .or. check_field_list_ctl(pert_c_flux_sym_sym,                &
      &                              field_ctl) ) then
         call add_phys_name_ctl(sym_velocity, field_ctl)
         call add_phys_name_ctl(sym_perturbation_composition, field_ctl)
@@ -110,7 +110,7 @@
      &    .or. check_field_list_ctl(Basym_nabla_Basym, field_ctl)) then
         call add_phys_name_ctl(asym_magnetic_field, field_ctl)
 !
-      else if( check_field_list_ctl(asym_termal_buoyancy,               &
+      else if( check_field_list_ctl(asym_thermal_buoyancy,              &
      &                              field_ctl)) then
         call add_phys_name_ctl(asym_temperature, field_ctl)
       else if( check_field_list_ctl(asym_composite_buoyancy,            &
@@ -129,7 +129,7 @@
         call add_phys_name_ctl(asym_velocity, field_ctl)
         call add_phys_name_ctl(asym_temperature, field_ctl)
       else if( check_field_list_ctl(uasym_nabla_pTasym, field_ctl)      &
-     &    .or. check_field_list_ctl(part_h_flux_asym_asym,              &
+     &    .or. check_field_list_ctl(pert_h_flux_asym_asym,              &
      &                              field_ctl) ) then
         call add_phys_name_ctl(asym_velocity, field_ctl)
         call add_phys_name_ctl(asym_perturbation_temp, field_ctl)
@@ -140,7 +140,7 @@
         call add_phys_name_ctl(asym_velocity, field_ctl)
         call add_phys_name_ctl(asym_composition, field_ctl)
       else if( check_field_list_ctl(uasym_nabla_pCasym, field_ctl)      &
-     &    .or. check_field_list_ctl(part_c_flux_asym_asym,              &
+     &    .or. check_field_list_ctl(pert_c_flux_asym_asym,              &
      &                              field_ctl) ) then
         call add_phys_name_ctl(asym_velocity, field_ctl)
         call add_phys_name_ctl                                          &
@@ -183,9 +183,9 @@
      &    .or. check_field_list_ctl(heat_flux_sym_asym,                 &
      &                              field_ctl) ) then
         call add_phys_name_ctl(sym_velocity, field_ctl)
-        call add_phys_name_ctl(asym_temperature, field_ctl)
+        call add_phys_nampert_h_flux_sym_asyme_ctl(asym_temperature, field_ctl)
       else if( check_field_list_ctl(usym_nabla_pTasym, field_ctl)       &
-     &    .or. check_field_list_ctl(part_h_flux_sym_asym,               &
+     &    .or. check_field_list_ctl(pert_h_flux_sym_asym,               &
      &                              field_ctl)  ) then
         call add_phys_name_ctl(sym_velocity, field_ctl)
         call add_phys_name_ctl(asym_perturbation_temp, field_ctl)
@@ -195,7 +195,7 @@
         call add_phys_name_ctl(sym_velocity, field_ctl)
         call add_phys_name_ctl(asym_composition, field_ctl)
       else if( check_field_list_ctl(usym_nabla_pCasym, field_ctl)       &
-     &    .or. check_field_list_ctl(part_c_flux_sym_asym,               &
+     &    .or. check_field_list_ctl(pert_c_flux_sym_asym,               &
      &                              field_ctl)) then
         call add_phys_name_ctl(sym_velocity, field_ctl)
         call add_phys_name_ctl                                          &
@@ -228,7 +228,7 @@
         call add_phys_name_ctl(asym_temperature, field_ctl)
 !
       else if( check_field_list_ctl(uasym_nabla_pTsym, field_ctl)       &
-     &    .or. check_field_list_ctl(part_h_flux_asym_sym,               &
+     &    .or. check_field_list_ctl(pert_h_flux_asym_sym,               &
      &                              field_ctl)) then
         call add_phys_name_ctl(asym_velocity, field_ctl)
         call add_phys_name_ctl(sym_perturbation_temp, field_ctl)
@@ -239,7 +239,7 @@
         call add_phys_name_ctl(sym_composition, field_ctl)
 !
       else if( check_field_list_ctl(uasym_nabla_pCsym, field_ctl)       &
-     &    .or. check_field_list_ctl(part_c_flux_asym_sym,               &
+     &    .or. check_field_list_ctl(pert_c_flux_asym_sym,               &
      &                              field_ctl)) then
         call add_phys_name_ctl(asym_velocity, field_ctl)
         call add_phys_name_ctl(sym_perturbation_composition, field_ctl)

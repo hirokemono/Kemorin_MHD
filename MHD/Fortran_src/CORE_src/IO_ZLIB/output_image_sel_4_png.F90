@@ -51,19 +51,24 @@
       subroutine sel_output_image_file(id_file_type, img_head,          &
      &          npix_x, npix_y, cimage)
 !
+      use calypso_png_file_IO
+!
       integer(kind = kint), intent(in) :: id_file_type
       integer(kind = kint), intent(in) :: npix_x, npix_y
       character(len=kchara), intent(in) :: img_head
       character(len = 1), intent(in) :: cimage(3,npix_x*npix_y)
 !
 !
-#ifdef PNG_OUTPUT
       if(id_file_type .eq. iflag_PNG) then
+#ifdef PNG_OUTPUT
         call write_png_rgb_f                                            &
      &     (img_head, npix_x, npix_y, cimage(1,1), pbuf)
+#else
+        call calypso_write_png                                          &
+     &     (img_head, ithree, npix_x, npix_y, cimage(1,1))
+#endif
         return
       end if
-#endif
 !
       call pixout_BMP(img_head, npix_x, npix_y, cimage(1,1))
 !
@@ -74,19 +79,24 @@
       subroutine sel_rgba_image_file(id_file_type, img_head,            &
      &          npix_x, npix_y, cimage)
 !
+      use calypso_png_file_IO
+!
       integer(kind = kint), intent(in) :: id_file_type
       integer(kind = kint), intent(in) :: npix_x, npix_y
       character(len=kchara), intent(in) :: img_head
       character(len = 1), intent(in) :: cimage(4,npix_x*npix_y)
 !
 !
-#ifdef PNG_OUTPUT
       if(id_file_type .eq. iflag_PNG) then
+#ifdef PNG_OUTPUT
         call write_png_rgba_f                                           &
      &     (img_head, npix_x, npix_y, cimage(1,1), pbuf)
+#else
+        call calypso_write_png                                          &
+     &     (img_head, ifour, npix_x, npix_y, cimage(1,1))
+#endif
         return
       end if
-#endif
 !
       write(*,*) 'BitMap does not support transparent image'
 !

@@ -102,8 +102,8 @@ mesh_file_name_by_param.o: $(IO_DIR)/mesh_file_name_by_param.f90 m_precision.o t
 	$(F90) -c $(F90OPTFLAGS) $<
 node_geometry_IO.o: $(IO_DIR)/node_geometry_IO.f90 m_precision.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-output_image_sel_4_png.o: $(IO_DIR)/output_image_sel_4_png.F90 m_precision.o t_png_file_access.o write_bmp_image.o
-	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
+number_to_bit.o: $(IO_DIR)/number_to_bit.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
 read_bmp_image.o: $(IO_DIR)/read_bmp_image.f90 m_precision.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
 rst_data_IO_by_fld.o: $(IO_DIR)/rst_data_IO_by_fld.f90 m_precision.o m_machine_parameter.o t_time_data.o t_field_data_IO.o time_data_IO.o set_parallel_file_name.o field_data_IO.o skip_comment_f.o transfer_to_long_integers.o set_restart_data.o
@@ -210,7 +210,7 @@ vtk_data_to_buffer.o: $(IO_DIR)/vtk_data_to_buffer.f90 m_precision.o m_constants
 	$(F90) -c $(F90OPTFLAGS) $<
 vtk_file_IO.o: $(IO_DIR)/vtk_file_IO.f90 m_precision.o m_constants.o m_machine_parameter.o udt_to_VTK_data_IO.o t_ucd_data.o set_parallel_file_name.o set_ucd_file_names.o set_ucd_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
-write_bmp_image.o: $(IO_DIR)/write_bmp_image.f90 m_precision.o
+write_bmp_image.o: $(IO_DIR)/write_bmp_image.f90 m_precision.o number_to_bit.o
 	$(F90) -c $(F90OPTFLAGS) $<
 write_control_elements.o: $(IO_DIR)/write_control_elements.f90 m_precision.o m_machine_parameter.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<

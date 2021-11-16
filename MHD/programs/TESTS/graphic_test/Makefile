@@ -19,7 +19,8 @@ SRC_C = $(shell ls *.c)
 
 MOD_BMP_TEST = \
 write_bmp_image.o \
-test_bmp_images.o
+test_bmp_images.o \
+number_to_bit.o
 
 MOD_C_PNG_TEST = \
 test_wt_png_c.o \
@@ -39,10 +40,12 @@ test_read_gzipped_bmp_c.o
 
 OBJ_PNG_2_BMP_F = \
 write_bmp_image.o \
-png_to_bmp_f.o
+png_to_bmp_f.o \
+number_to_bit.o
 
 MOD_PNG_2_QUILT = \
 write_bmp_image.o \
+number_to_bit.o \
 mpi_write_quilt_BMP_file.o \
 t_MPI_quilt_bitmap_IO.o \
 parallel_png_to_quilt.o

@@ -69,6 +69,7 @@
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
       use lead_fields_4_sph_mhd
+      use cal_self_buoyancies_sph
       use self_buoyancy_w_filter_sph
       use decomp_w_sym_rj_base_field
 !
@@ -101,7 +102,8 @@
       end if
 !
       call s_decomp_w_sym_rj_base_field(SPH_MHD%sph%sph_rj,             &
-     &    SPH_MHD%ipol%base, SPH_MHD%ipol%sym_fld, SPH_MHD%ipol%asym_fld, SPH_MHD%fld)
+     &    SPH_MHD%ipol%base, SPH_MHD%ipol%sym_fld,                      &
+     &    SPH_MHD%ipol%asym_fld, SPH_MHD%fld)
       call sel_buoyancies_sph_MHD(SPH_MHD%sph%sph_rj, trans_p%leg,      &
      &    SPH_MHD%ipol%sym_fld, SPH_MHD%ipol%forces_by_sym_asym,        &
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &

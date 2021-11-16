@@ -35,7 +35,7 @@
 !!   maxwell_tensor_sym_asym
 !!                 :  maxwell tensor       B_{i} B_{j}
 !!
-!!   sym_termal_buoyancy, asym_termal_buoyancy
+!!   sym_thermal_buoyancy, asym_thermal_buoyancy
 !!                 :   Thermal buoyancy       - \alpha_{T} g T
 !!   sym_composite_buoyancy, asym_composite_buoyancy
 !!                 :   compositional buoyancy  - \alpha_{C} g C
@@ -59,8 +59,8 @@
 !!   heat_flux_sym_sym, heat_flux_asym_asym,
 !!   heat_flux_sym_asym, heat_flux_asym_sym
 !!                 :    heat flux                   uT
-!!   part_h_flux_sym_sym, part_h_flux_asym_asym
-!!   part_h_flux_sym_asym, part_h_flux_asym_sym
+!!   pert_h_flux_sym_sym, pert_h_flux_asym_asym
+!!   pert_h_flux_sym_asym, pert_h_flux_asym_sym
 !!                 :  perturbation of heat flux   u\Theta
 !!
 !!   usym_nabla_Csym, uasym_nabla_Casym
@@ -73,8 +73,8 @@
 !!   composite_flux_sym_sym, composite_flux_asym_asym, 
 !!   composite_flux_sym_asym, composite_flux_asym_sym
 !!                 :    composition flux                   uC
-!!   part_c_flux_sym_sym, part_c_flux_asym_asym,
-!!   part_c_flux_sym_asym, part_c_flux_asym_sym
+!!   pert_c_flux_sym_sym, pert_c_flux_asym_asym,
+!!   pert_c_flux_sym_asym, pert_c_flux_asym_sym
 !!                 :  perturbation of composition flux   u(C-C_0)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -139,9 +139,9 @@
         else if (field_name .eq. Basym_nabla_Bsym%name) then
           force_asym1_sym2%i_m_tension =  i_phys
 !
-        else if (field_name .eq. sym_termal_buoyancy%name) then
+        else if (field_name .eq. sym_thermal_buoyancy%name) then
           force_sym1_sym2%i_buoyancy =   i_phys
-        else if (field_name .eq. asym_termal_buoyancy%name) then
+        else if (field_name .eq. asym_thermal_buoyancy%name) then
           force_asym1_asym2%i_buoyancy =   i_phys
 !
         else if (field_name .eq. sym_composite_buoyancy%name) then
@@ -203,13 +203,13 @@
         else if (field_name .eq. heat_flux_asym_sym%name) then
           force_asym1_sym2%i_h_flux =   i_phys
 !
-        else if (field_name .eq. part_h_flux_sym_sym%name) then
+        else if (field_name .eq. pert_h_flux_sym_sym%name) then
           force_sym1_sym2%i_ph_flux =   i_phys
-        else if (field_name .eq. part_h_flux_asym_asym%name) then
+        else if (field_name .eq. pert_h_flux_asym_asym%name) then
           force_asym1_asym2%i_ph_flux =   i_phys
-        else if (field_name .eq. part_h_flux_sym_asym%name) then
+        else if (field_name .eq. pert_h_flux_sym_asym%name) then
           force_sym1_asym2%i_ph_flux =   i_phys
-        else if (field_name .eq. part_h_flux_asym_sym%name) then
+        else if (field_name .eq. pert_h_flux_asym_sym%name) then
           force_asym1_sym2%i_ph_flux =   i_phys
 !
         else if (field_name .eq. usym_nabla_Csym%name) then
@@ -239,13 +239,13 @@
         else if (field_name .eq. composite_flux_asym_sym%name) then
           force_asym1_sym2%i_c_flux =   i_phys
 !
-        else if (field_name .eq. part_c_flux_sym_sym%name) then
+        else if (field_name .eq. pert_c_flux_sym_sym%name) then
           force_sym1_sym2%i_pc_flux =   i_phys
-        else if (field_name .eq. part_c_flux_asym_asym%name) then
+        else if (field_name .eq. pert_c_flux_asym_asym%name) then
           force_asym1_asym2%i_pc_flux = i_phys
-        else if (field_name .eq. part_c_flux_sym_asym%name) then
+        else if (field_name .eq. pert_c_flux_sym_asym%name) then
           force_sym1_asym2%i_pc_flux =  i_phys
-        else if (field_name .eq. part_c_flux_asym_sym%name) then
+        else if (field_name .eq. pert_c_flux_asym_sym%name) then
           force_asym1_sym2%i_pc_flux =  i_phys
 !
         else if (field_name .eq. usym_Bsym%name) then
