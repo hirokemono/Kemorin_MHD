@@ -68,7 +68,7 @@
 !
       use t_mesh_data
       use t_next_node_ele_4_node
-      use set_table_4_RHS_assemble
+      use set_element_id_4_node
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(ctl_params_4_gen_filter), intent(inout) :: gfil_p

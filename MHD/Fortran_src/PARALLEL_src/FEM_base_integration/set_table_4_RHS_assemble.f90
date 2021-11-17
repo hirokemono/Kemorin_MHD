@@ -8,8 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine s_set_RHS_assemble_table(mesh, neib_tbl, rhs_tbl)
-!!      subroutine set_belonged_ele_and_next_nod                        &
-!!     &         (mesh, neib_ele, neib_nod)
 !!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(next_nod_ele_table), intent(inout) ::    neib_tbl
 !!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
@@ -46,7 +44,7 @@
       type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
 !
 !
-!  found surrounding node and element
+!       found surrounding node and element
       call set_belonged_ele_and_next_nod                                &
      &   (mesh, neib_tbl%neib_ele, neib_tbl%neib_nod)
 !
@@ -55,29 +53,6 @@
      &   (mesh%node, neib_tbl%neib_ele, rhs_tbl)
 !
       end subroutine s_set_RHS_assemble_table
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_belonged_ele_and_next_nod                          &
-     &         (mesh, neib_ele, neib_nod)
-!
-      use t_mesh_data
-      use t_next_node_ele_4_node
-      use t_table_FEM_const
-      use set_element_id_4_node
-!
-      type(mesh_geometry),       intent(in) :: mesh
-      type(element_around_node), intent(inout) :: neib_ele
-      type(next_nod_id_4_nod), intent(inout) ::   neib_nod
-!
-!
-!  found surrounding node and element
-!
-      call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
-      call const_next_nod_id_4_node                                     &
-     &   (mesh%node, mesh%ele, neib_ele, neib_nod)
-!
-      end subroutine set_belonged_ele_and_next_nod
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

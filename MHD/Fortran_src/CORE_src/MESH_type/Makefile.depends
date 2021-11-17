@@ -56,7 +56,7 @@ set_edge_data_4_IO.o: $(MESH_TYPE_DIR)/set_edge_data_4_IO.f90 m_precision.o t_ed
 	$(F90) -c $(F90OPTFLAGS) $<
 set_element_data_4_IO.o: $(MESH_TYPE_DIR)/set_element_data_4_IO.f90 m_precision.o t_geometry_data.o t_surf_edge_IO.o t_read_mesh_data.o m_geometry_constants.o set_nnod_4_ele_by_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_element_id_4_node.o: $(MESH_TYPE_DIR)/set_element_id_4_node.f90 m_precision.o m_constants.o t_geometry_data.o t_next_node_ele_4_node.o find_element_id_4_node.o cal_minmax_and_stacks.o t_surface_data.o t_edge_data.o find_grp_ele_id_4_node.o calypso_mpi.o m_machine_parameter.o find_node_4_group.o
+set_element_id_4_node.o: $(MESH_TYPE_DIR)/set_element_id_4_node.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o t_next_node_ele_4_node.o find_element_id_4_node.o cal_minmax_and_stacks.o find_grp_ele_id_4_node.o calypso_mpi.o m_machine_parameter.o find_node_4_group.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_field_on_edge_type.o: $(MESH_TYPE_DIR)/set_field_on_edge_type.f90 m_precision.o t_geometry_data.o t_edge_data.o t_phys_data.o set_field_on_edge.o
 	$(F90) -c $(F90OPTFLAGS) $<

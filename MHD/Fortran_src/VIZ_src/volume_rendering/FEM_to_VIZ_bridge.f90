@@ -85,7 +85,7 @@
       use parallel_FEM_mesh_init
 !
       use int_volume_of_domain
-      use set_table_4_RHS_assemble
+      use set_element_id_4_node
       use parallel_FEM_mesh_init
       use const_element_comm_tables
       use set_normal_vectors
@@ -135,7 +135,7 @@
 !
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
-      use set_table_4_RHS_assemble
+      use set_element_id_4_node
       use set_normal_vectors
       use const_element_comm_tables
 !

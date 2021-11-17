@@ -67,7 +67,7 @@
       use const_jacobians_3d
       use parallel_FEM_mesh_init
       use output_test_mesh
-      use set_table_4_RHS_assemble
+      use set_element_id_4_node
       use nod_phys_send_recv
       use solver_SR_type
       use transfer_to_long_integers

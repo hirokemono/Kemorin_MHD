@@ -50,7 +50,7 @@
       use const_jacobians_3d
       use parallel_FEM_mesh_init
       use output_test_mesh
-      use set_table_4_RHS_assemble
+      use set_element_id_4_node
       use set_control_platform_data
 !
       use t_file_IO_parameter
