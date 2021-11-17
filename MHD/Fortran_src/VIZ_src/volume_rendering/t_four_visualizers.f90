@@ -17,7 +17,7 @@
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(VIZ_mesh_field), intent(in) :: VIZ_DAT
-!!        type(visualization_controls), intent(inout) :: viz_ctls
+!!        type(vis4_controls), intent(inout) :: viz_ctls
 !!        type(four_visualize_modules), intent(inout) :: vizs
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
@@ -40,7 +40,7 @@
       use t_VIZ_mesh_field
       use t_mesh_SR
 !
-      use t_control_data_vizs
+      use t_control_data_viz4
       use t_cross_section
       use t_isosurface
       use t_volume_rendering
@@ -74,7 +74,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
-      type(visualization_controls), intent(inout) :: viz_ctls
+      type(vis4_controls), intent(inout) :: viz_ctls
       type(four_visualize_modules), intent(inout) :: vizs
       type(mesh_SR), intent(inout) :: m_SR
 !
@@ -105,7 +105,7 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)
 !
       call calypso_mpi_barrier
-      call dealloc_viz_controls(viz_ctls)
+      call dealloc_viz4_controls(viz_ctls)
 !
       end subroutine init_four_visualize
 !

@@ -16,8 +16,12 @@
       module output_image_sel_4_png
 !
       use m_precision
+      use m_constants
 !
+#ifdef PNG_OUTPUT
       use t_png_file_access
+#endif
+!
       use write_bmp_image
 !
       implicit none
@@ -40,7 +44,9 @@
       integer(kind = kint), parameter :: iflag_QUILT_BMP =    111
       integer(kind = kint), parameter :: iflag_QUILT_BMP_GZ = 113
 
+#ifdef PNG_OUTPUT
       type(buffer_4_png), private :: pbuf
+#endif
 !
 !------------------------------------------------------------------
 !

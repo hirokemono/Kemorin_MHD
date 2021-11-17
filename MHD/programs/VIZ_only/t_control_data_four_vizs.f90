@@ -37,7 +37,7 @@
       use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
-      use t_control_data_vizs
+      use t_control_data_viz4
       use t_control_array_character3
 !
       implicit  none
@@ -54,7 +54,7 @@
         type(time_data_control) :: t_viz_ctl
 !
 !>        Structures of visualization controls
-        type(visualization_controls) :: viz_ctl_v
+        type(vis4_controls) :: viz4_ctl
 !
 !>        Structures of field used in visualization
         type(ctl_array_c3) :: viz_field_ctl
@@ -88,7 +88,7 @@
       subroutine read_control_file_four_vizs(viz4_c)
 !
       use skip_comment_f
-      use viz_step_ctls_to_time_ctl
+      use viz4_step_ctls_to_time_ctl
 !
       type(control_data_four_vizs), intent(inout) :: viz4_c
       type(buffer_for_control) :: c_buf1
@@ -104,13 +104,13 @@
         end do
         close(viz_ctl_file_code)
 !
-        call s_viz_step_ctls_to_time_ctl                                &
-     &     (viz4_c%viz_ctl_v, viz4_c%t_viz_ctl)
+        call s_viz4_step_ctls_to_time_ctl                               &
+     &     (viz4_c%viz4_ctl, viz4_c%t_viz_ctl)
 !
         viz4_c%viz_field_ctl%num =  0
         call alloc_control_array_c3(viz4_c%viz_field_ctl)
-        call add_fields_4_vizs_to_fld_ctl(viz4_c%viz_ctl_v,             &
-     &                                    viz4_c%viz_field_ctl)
+        call add_fields_viz4_to_fld_ctl(viz4_c%viz4_ctl,                &
+     &                                  viz4_c%viz_field_ctl)
       end if
 !
       call bcast_four_vizs_control_data(viz4_c)
@@ -124,7 +124,7 @@
      &         (id_control, hd_block, viz4_c, c_buf)
 !
       use skip_comment_f
-      use read_viz_controls
+      use read_four_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -144,8 +144,8 @@
         call read_control_time_step_data                                &
      &     (id_control, hd_time_step, viz4_c%t_viz_ctl, c_buf)
 !
-        call s_read_viz_controls(id_control, hd_viz_control,            &
-     &                           viz4_c%viz_ctl_v, c_buf)
+        call s_read_viz4_controls(id_control, hd_viz_control,           &
+     &                            viz4_c%viz4_ctl, c_buf)
       end do
       viz4_c%i_viz_only_file = 1
 !
@@ -167,7 +167,7 @@
       call bcast_ctl_data_4_platform(viz4_c%viz_plt)
       call bcast_ctl_data_4_time_step(viz4_c%t_viz_ctl)
 !
-      call bcast_viz_controls(viz4_c%viz_ctl_v)
+      call bcast_viz4_controls(viz4_c%viz4_ctl)
 !
       call calypso_mpi_bcast_one_int(viz4_c%i_viz_only_file, 0)
 !

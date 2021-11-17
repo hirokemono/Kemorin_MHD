@@ -74,7 +74,7 @@
       if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
       call init_four_visualize(t_VIZ4%viz_step,                         &
      &    FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4,                    &
-     &    vizs_ctl4%viz_ctl_v, vizs_m4, m_SR14)
+     &    vizs_ctl4%viz4_ctl, vizs_m4, m_SR14)
 !
       end subroutine initialize_four_vizs
 !

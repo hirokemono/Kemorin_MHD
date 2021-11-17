@@ -71,7 +71,7 @@
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
       call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment,              &
-     &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz_ctl_v%pvr_ctls, &
+     &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz4_ctl%pvr_ctls,  &
      &    vizs_pvr3, m_SR13)
 !
       end subroutine initialize_pvr

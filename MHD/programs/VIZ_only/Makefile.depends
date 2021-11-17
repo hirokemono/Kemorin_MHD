@@ -36,7 +36,7 @@ t_FEM_mesh_field_4_viz.o: $(VIZ_PLUG_DIR)/t_FEM_mesh_field_4_viz.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_all_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_all_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_vizs.o t_control_array_character3.o skip_comment_f.o viz_step_ctls_to_time_ctl.o read_viz_controls.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_four_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_four_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_vizs.o t_control_array_character3.o skip_comment_f.o viz_step_ctls_to_time_ctl.o read_viz_controls.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o bcast_control_arrays.o
+t_control_data_four_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_four_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_viz4.o t_control_array_character3.o skip_comment_f.o viz4_step_ctls_to_time_ctl.o read_four_viz_controls.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_section_only.o: $(VIZ_PLUG_DIR)/t_control_data_section_only.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_surfacings.o t_control_array_character3.o skip_comment_f.o read_surfacing_controls.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<

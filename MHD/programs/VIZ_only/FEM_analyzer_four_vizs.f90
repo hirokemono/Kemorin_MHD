@@ -48,8 +48,6 @@
 !
       implicit none
 !
-      private :: add_field_in_viz_ctls_w_SGS
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -133,7 +131,7 @@
       call alloc_phys_name_type_by_output(FEM_viz%ucd_in,               &
      &                                    FEM_viz%field)
 !
-      call add_field_in_viz_ctls_w_SGS(FEM_viz%viz_fld_list,            &
+      call add_field_in_viz_controls(FEM_viz%viz_fld_list,              &
      &                                 FEM_viz%field)
       call dealloc_field_lists_for_vizs(FEM_viz%viz_fld_list)
 !
@@ -178,47 +176,6 @@
      &                          m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       end subroutine FEM_analyze_four_vizs
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine add_field_in_viz_ctls_w_SGS(viz_fld_list, phys_nod)
-!
-      use t_phys_data
-      use set_each_field_name_w_SGS
-!
-      type(visulize_field_list), intent(in) :: viz_fld_list
-      type(phys_data), intent(inout) :: phys_nod
-!
-      integer(kind = kint) :: i_fld, j_fld
-      logical :: flag
-!
-!
-      do i_fld = 1, viz_fld_list%num_field
-        flag = .FALSE.
-        do j_fld = 1, phys_nod%num_phys
-          if(viz_fld_list%field_name(i_fld)                             &
-     &       .eq. phys_nod%phys_name(j_fld)) then
-            flag = .TRUE.
-            exit
-          end if
-        end do
-!
-        if(flag) cycle
-        call set_vector_field_name_w_SGS                                &
-     &     (viz_fld_list%field_name(i_fld), (.TRUE.), (.TRUE.),         &
-     &      phys_nod, flag)
-        if(flag) cycle
-        call set_scalar_field_name_w_SGS                                &
-     &     (viz_fld_list%field_name(i_fld), (.TRUE.), (.TRUE.),         &
-     &      phys_nod, flag)
-        if(flag) cycle
-        call set_tensor_field_name_w_SGS                                &
-     &     (viz_fld_list%field_name(i_fld), (.TRUE.), (.TRUE.),         &
-     &      phys_nod, flag)
-      end do
-!
-      end subroutine add_field_in_viz_ctls_w_SGS
 !
 ! ----------------------------------------------------------------------
 !

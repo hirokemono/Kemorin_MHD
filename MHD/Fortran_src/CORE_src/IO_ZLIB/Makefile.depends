@@ -128,7 +128,7 @@ line_rgba_filtering_4_png.o: $(ZLIB_IO_DIR)/line_rgba_filtering_4_png.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 m_png_file_IO.o: $(ZLIB_IO_DIR)/m_png_file_IO.f90 m_precision.o number_to_bit.o transfer_to_long_integers.o byte_swap_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-output_image_sel_4_png.o: $(ZLIB_IO_DIR)/output_image_sel_4_png.F90 m_precision.o t_png_file_access.o write_bmp_image.o calypso_png_file_IO.o
+output_image_sel_4_png.o: $(ZLIB_IO_DIR)/output_image_sel_4_png.F90 m_precision.o m_constants.o t_png_file_access.o write_bmp_image.o calypso_png_file_IO.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 skip_gz_comment.o: $(ZLIB_IO_DIR)/skip_gz_comment.f90 m_precision.o m_constants.o m_file_format_switch.o t_buffer_4_gzip.o gzip_file_access.o
 	$(F90) -c $(F90OPTFLAGS) $<
