@@ -5,6 +5,7 @@
 SPH_MHD_MAINDIR =   $$(PROG_DIR)/SPH_MHD
 
 TARGET_SPH_MHD =        sph_mhd
+TARGET_SPH_MHD_4VIZS =  sph_mhd_4vizs
 TARGET_SPH_MHD_PSF =    sph_mhd_psf
 TARGET_SPH_MHD_NOVIZ =  sph_mhd_noviz
 TARGET_SPH_MHD_MINI =   sph_mhd_nosnap
@@ -49,6 +50,11 @@ main_sph_MHD.o \
 analyzer_sph_MHD.o \
 SPH_analyzer_SGS_MHD.o
 
+MOD_SPH_MHD_4VIZS =  \
+main_sph_MHD_w_4vizs.o \
+analyzer_sph_MHD_w_4vizs.o \
+SPH_analyzer_MHD.o
+
 MOD_SPH_MHD_PSF_MAIN =  \
 main_sph_MHD_w_psf.o \
 analyzer_sph_MHD_w_psf.o \
@@ -80,6 +86,7 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_SPH_MHD =        $$(BUILDDIR)/$(TARGET_SPH_MHD)'  >> $(MAKENAME)
+	@echo 'TARGET_SPH_MHD_4VIZS =  $$(BUILDDIR)/$(TARGET_SPH_MHD_4VIZS)'  >> $(MAKENAME)
 	@echo 'TARGET_SPH_MHD_PSF =    $$(BUILDDIR)/$(TARGET_SPH_MHD_PSF)'  >> $(MAKENAME)
 	@echo 'TARGET_SPH_LICV =       $$(BUILDDIR)/$(TARGET_SPH_LICV)'      >> $(MAKENAME)
 	@echo 'TARGET_SPH_MHD_MINI =   $$(BUILDDIR)/$(TARGET_SPH_MHD_MINI)'  >> $(MAKENAME)
@@ -90,6 +97,7 @@ target_task:
 	@echo sph_mhd: \
 	 '$$(TARGET_SPH_LICV)'       \
 	 '$$(TARGET_SPH_MHD)'        \
+	 '$$(TARGET_SPH_MHD_4VIZS)'  \
 	 '$$(TARGET_SPH_MHD_PSF)'    \
 	 '$$(TARGET_SPH_MHD_NOVIZ)'  \
 	 '$$(TARGET_SPH_MHD_MINI)' >> $(MAKENAME)
@@ -98,6 +106,13 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_SPH_MHD)' '$$(MOD_SPH_MHD_MAIN)' \
+	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_SPH_MHD_4VIZS): $$(MOD_SPH_MHD_4VIZS) $$(LIB_FILES_SPH_MHD)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPH_MHD_4VIZS)' '$$(MOD_SPH_MHD_4VIZS)' \
 	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
@@ -142,6 +157,8 @@ lib_name:
 mod_list:
 	@echo  MOD_SPH_MHD_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_MHD_MAIN) >> $(MAKENAME)
+	@echo  MOD_SPH_MHD_4VIZS=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SPH_MHD_4VIZS) >> $(MAKENAME)
 	@echo  MOD_SPH_MHD_PSF_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_MHD_PSF_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_MHD_NOVIZ_MAIN=  \\ >> $(MAKENAME)
