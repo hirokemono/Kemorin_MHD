@@ -10,6 +10,7 @@ TARGET_SPH_SNAP_BADBOY =  sph_snapshot_badboy
 TARGET_SPH_SP_SNAP =    sph_special_snap
 TARGET_MODIFY_SPH_INI = sph_modify_restart
 
+TARGET_SPH_4VIZS_SNAP =   sph_snapshot_4vizs
 TARGET_SPH_PSF_SNAP =     sph_snapshot_psf
 
 TARGET_SPH_SNAP_NOVIZ =    sph_snapshot_noviz
@@ -61,6 +62,11 @@ MOD_SPH_SNAP_MAIN =  \
 main_sph_snapshot.o \
 analyzer_sph_snap.o \
 SPH_analyzer_SGS_snap.o
+
+MOD_SPH_SNAP_4VIZS_MAIN =  \
+main_sph_snapshot_w_4vizs.o \
+analyzer_sph_snap_w_4vizs.o \
+SPH_analyzer_snap_w_psf.o
 
 MOD_SPH_SNAP_PSF_MAIN =  \
 main_sph_snapshot_w_psf.o \
@@ -141,6 +147,7 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_SPH_SNAP =       $$(BUILDDIR)/$(TARGET_SPH_SNAP)'       >> $(MAKENAME)
+	@echo 'TARGET_SPH_4VIZS_SNAP = $$(BUILDDIR)/$(TARGET_SPH_4VIZS_SNAP)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_PSF_SNAP =   $$(BUILDDIR)/$(TARGET_SPH_PSF_SNAP)'   >> $(MAKENAME)
 	@echo 'TARGET_SPH_SP_SNAP =    $$(BUILDDIR)/$(TARGET_SPH_SP_SNAP)'    >> $(MAKENAME)
 	@echo 'TARGET_MODIFY_SPH_INI = $$(BUILDDIR)/$(TARGET_MODIFY_SPH_INI)' >> $(MAKENAME)
@@ -158,6 +165,7 @@ target_list:
 target_task:
 	@echo sph_utils: \
 	 '$$(TARGET_SPH_SNAP)'       \
+	 '$$(TARGET_SPH_4VIZS_SNAP)' \
 	 '$$(TARGET_SPH_PSF_SNAP)'   \
 	 '$$(TARGET_SPH_SP_SNAP)'    \
 	 '$$(TARGET_MODIFY_SPH_INI)' \
@@ -175,6 +183,13 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_SPH_SNAP)' '$$(MOD_SPH_SNAP_MAIN)' \
+	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_SPH_4VIZS_SNAP):  $$(MOD_SPH_SNAP_4VIZS_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPH_4VIZS_SNAP)' '$$(MOD_SPH_SNAP_4VIZS_MAIN)' \
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
@@ -271,6 +286,8 @@ lib_name:
 mod_list:
 	@echo  MOD_SPH_SNAP_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_MAIN) >> $(MAKENAME)
+	@echo  MOD_SPH_SNAP_4VIZS_MAIN=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SPH_SNAP_4VIZS_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_SNAP_PSF_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_PSF_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_SP_SNAP_MAIN=  \\ >> $(MAKENAME)
