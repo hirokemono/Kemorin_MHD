@@ -199,12 +199,12 @@
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'magnetic_intensity',                      &
      &                math = '$ B $')
-!>      Total magnetic field declination  @f$ B @f$
+!>      Magnetic field declination  @f$ B @f$
       type(field_def), parameter :: declination                         &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'declination',                             &
      &                math = '$ B_{Dec} $')
-!>      Total magnetic field inclination  @f$ B @f$
+!>      Magnetic field inclination  @f$ B @f$
       type(field_def), parameter :: inclination                         &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'inclination',                             &
