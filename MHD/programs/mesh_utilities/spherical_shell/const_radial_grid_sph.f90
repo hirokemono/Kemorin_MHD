@@ -11,11 +11,15 @@
       use t_spheric_global_ranks
       use t_spheric_parameter
       use t_spheric_rtp_data
+      use t_control_array_real
+      use t_control_array_integer
 !
       use const_sph_radial_grid
 !
       implicit none
 !
+      type(read_integer_item) :: num_fluid_grid_ctl
+      type(ctl_array_real) :: add_ext_layer_ctl
       integer(kind = kint) :: nele, increment_cheby
       real(kind = kreal) :: shell, ratio, rmin, rmax
 !
@@ -36,7 +40,8 @@
       read(*,*) rmin, rmax
 !
       write(*,*) 'input number of layer for outer core'
-      read(*,*) nele
+      read(*,*) num_fluid_grid_ctl%intvalue
+      add_ext_layer_ctl%num = 0
 !
       write(*,*) 'input grid type (0:equi-distance, 2:Chebyshev)'
       read(*,*) sph_params_rgrid%iflag_radial_grid
@@ -59,7 +64,8 @@
         rmax = sph_params_rgrid%radius_CMB
       end if
 !
-      call count_set_radial_grid(nele, rmin, rmax, increment_cheby,     &
+      call count_set_radial_grid(num_fluid_grid_ctl, add_ext_layer_ctl, &
+     &    rmin, rmax, increment_cheby,     &
      &    sph_params_rgrid, sph_rtp_rgrid, s3d_radius)
 !
       stop
