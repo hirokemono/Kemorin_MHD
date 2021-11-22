@@ -48,7 +48,7 @@
 !!   declination              [i_declination]:
 !!   inclination              [i_inclination]:
 !!   vgp_latitude             [i_vgp_latitude]:
-!!   vgp_longigude            [i_vgp_llongigude]:
+!!   vgp_longigude            [i_vgp_longigude]:
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
