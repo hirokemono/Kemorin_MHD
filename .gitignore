@@ -11,9 +11,6 @@ MHD/programs/TESTS/Doxygen_test/html/
 
 config.status
 
-MHD_project.xcworkspace/contents.xcworkspacedata
-
-MHD_project.xcworkspace/xcuserdata/matsui.xcuserdatad/UserInterfaceState.xcuserstate
 *.mod
 *.plist
 *.xcbkptlist
