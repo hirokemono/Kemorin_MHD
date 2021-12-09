@@ -11,9 +11,12 @@ MHD/programs/TESTS/Doxygen_test/html/
 
 config.status
 
+<<<<<<< HEAD
 MHD_project.xcworkspace/contents.xcworkspacedata
 
 MHD_project.xcworkspace/xcuserdata/liaoyangguang.xcuserdatad/UserInterfaceState.xcuserstate
+=======
+>>>>>>> 2c5a7c18b (Delete Xcode files from gitignore)
 *.mod
 *.plist
 *.xcbkptlist
