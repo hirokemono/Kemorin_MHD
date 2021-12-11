@@ -225,7 +225,8 @@
       use cal_products_smp
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(base_field_address), intent(in) :: b_trns_base_1, b_trns_base_2
+      type(base_field_address), intent(in) :: b_trns_base_1
+      type(base_field_address), intent(in) :: b_trns_base_2
       type(base_force_address), intent(in) :: f_trns_frc
       integer(kind = kint), intent(in) :: nnod
       integer(kind = kint), intent(in) :: ntot_comp_fld, ntot_comp_frc

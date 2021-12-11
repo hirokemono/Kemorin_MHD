@@ -205,7 +205,9 @@
       call add_rot_force_4_sph_trns_snap                                &
      &   (d_rj, ipol%rot_forces, iphys%rot_forces, b_trns%rot_forces,   &
      &    trns_back)
-      call add_base_force_bwd_trns_snap                                 &
+      call add_linear_force_bwd_trns_snap                               &
+     &   (d_rj, ipol%forces, iphys%forces, b_trns%forces, trns_back)
+      call add_mag_induct_bwd_trns_snap                                 &
      &   (d_rj, ipol%forces, iphys%forces, b_trns%forces, trns_back)
 !
       call add_grad_4_sph_trns_snap                                     &
@@ -215,10 +217,23 @@
      &   (d_rj, ipol%prod_fld, iphys%prod_fld, b_trns%prod_fld,         &
      &    trns_back)
 !
-      call add_base_force_bwd_trns_snap                                 &
+      call add_linear_force_bwd_trns_snap                               &
      &   (d_rj, ipol%forces_by_sym_asym, iphys%forces_by_sym_asym,      &
      &    b_trns%forces_by_sym_asym, trns_back)
-      call add_base_force_bwd_trns_snap                                 &
+      call add_linear_force_bwd_trns_snap                               &
+     &   (d_rj, ipol%forces_by_sym_sym, iphys%forces_by_sym_sym,        &
+     &    b_trns%forces_by_sym_sym, trns_back)
+!
+      call add_mag_induct_bwd_trns_snap                                 &
+     &   (d_rj, ipol%forces_by_sym_asym, iphys%forces_by_sym_asym,      &
+     &    b_trns%forces_by_sym_asym, trns_back)
+      call add_mag_induct_bwd_trns_snap                                 &
+     &   (d_rj, ipol%forces_by_sym_sym, iphys%forces_by_sym_sym,        &
+     &    b_trns%forces_by_sym_sym, trns_back)
+      call add_mag_induct_bwd_trns_snap                                 &
+     &   (d_rj, ipol%forces_by_sym_asym, iphys%forces_by_sym_asym,      &
+     &    b_trns%forces_by_sym_asym, trns_back)
+      call add_mag_induct_bwd_trns_snap                                 &
      &   (d_rj, ipol%forces_by_sym_sym, iphys%forces_by_sym_sym,        &
      &    b_trns%forces_by_sym_sym, trns_back)
       trns_back%num_vector = trns_back%nfield

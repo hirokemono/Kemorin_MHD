@@ -186,7 +186,7 @@
 !$omp parallel
       if(fs_trns_eflux%i_m_advect_work .gt. 0) then
         call cal_dot_prod_no_coef_smp(nnod,                             &
-     &      frc_rtp(1,f_trns_frc%i_m_advect),                            &
+     &      frc_rtp(1,f_trns_frc%i_m_advect),                           &
      &      fld_rtp(1,bs_trns_base%i_velo),                             &
      &      flx_rtp(1,fs_trns_eflux%i_m_advect_work) )
       end if

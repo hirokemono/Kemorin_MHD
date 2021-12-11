@@ -379,6 +379,7 @@
      &          WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
 !
       use sph_transforms_snapshot
+      use cal_sph_field_by_rotation
       use cal_energy_flux_rj
       use cal_energy_flux_rtp
       use cal_ene_flux_by_sym_rtp
@@ -402,6 +403,10 @@
       type(phys_data), intent(inout) :: rj_fld
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!
+      call s_cal_mag_induct_by_sym_rj                                   &
+     &   (sph%sph_rj, r_2nd, sph_MHD_bc, trans_p%leg, ipol, rj_fld)
 !
 !      Evaluate fields for output in spectrum space
       if (iflag_debug.gt.0) write(*,*) 's_cal_energy_flux_rj'
