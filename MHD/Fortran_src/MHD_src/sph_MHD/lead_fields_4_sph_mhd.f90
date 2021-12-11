@@ -405,6 +405,7 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
+!      Evaluate magnetic induction with respect to equatorial symmetry
       call s_cal_mag_induct_by_sym_rj                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc, trans_p%leg, ipol, rj_fld)
 !
@@ -429,8 +430,10 @@
 !
       call s_cal_ene_flux_by_sym_rtp(sph%sph_rtp, MHD_prop%fl_prop,     &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
-     &    trns_snap%b_trns, trns_snap%f_trns, trns_eflux%f_trns,        &
-     &    trns_snap%backward, trns_snap%forward, trns_eflux%forward)
+     &    trns_snap%b_trns, trns_snap%f_trns,                           &
+     &    trns_eflux%b_trns, trns_eflux%f_trns,                         &
+     &    trns_snap%backward, trns_snap%forward,                        &
+     &    trns_eflux%backward, trns_eflux%forward)
 !
       end subroutine cal_sph_enegy_fluxes
 !
