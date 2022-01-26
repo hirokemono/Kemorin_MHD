@@ -46,20 +46,20 @@
 !
       real(kind = kreal), intent(inout) :: dnod_dr(sph_rj%nnod_rj)
 !
-      integer(kind = kint) :: inod, i_p1, j, k
+      integer(kind = kint) :: inod, i_n1, j, k
       integer(kind = kint) :: ist, ied
 !
 !
-      ist = (kr_in-1) * sph_rj%nidx_rj(2) + 1
-      ied = (kr_out-1) * sph_rj%nidx_rj(2)
-!$omp parallel do private(inod,i_p1,j,k)
+      ist = kr_in * sph_rj%nidx_rj(2) + 1
+      ied = kr_out * sph_rj%nidx_rj(2)
+!$omp parallel do private(inod,i_n1,j,k)
       do inod = ist, ied
-        i_p1 = inod + sph_rj%nidx_rj(2)
+        i_n1 = inod - sph_rj%nidx_rj(2)
         j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
         k = 1 + (inod- j) / sph_rj%nidx_rj(2)
 !
-        dnod_dr(inod) =  d1nod_mat_fdm_2e(k, 0) * dele_rj(inod)         &
-     &                 + d1nod_mat_fdm_2e(k, 1) * dele_rj(i_p1)
+        dnod_dr(inod) =  d1nod_mat_fdm_2e(k, 0) * dele_rj(i_n1)         &
+     &                 + d1nod_mat_fdm_2e(k, 1) * dele_rj(inod)
       end do
 !$omp end parallel do
 !
