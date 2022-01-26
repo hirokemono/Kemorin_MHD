@@ -83,16 +83,12 @@
       real(kind = kreal) :: mat_taylor_2(2,2)
 !
 !
-      do kr = 1, nri-1
+      do kr = 1, nri
         dr_p1 = (r(kr+1) - r(kr)) * half
         if (kr.eq.1) then
-          if(nlayer_ICB.gt.1) then
-            dr_n1 = r(1) * half
-          else
-            dr_n1 = (r(2) - r(1)) * half
-          end if
+          dr_n1 = r(1) * half
         else
-          dr_n1 = (r(2) - r(1)) * half
+          dr_n1 = (r(kr) - r(kr-1)) * half
         end if
 !
         mat_taylor_2(1,1) = one
