@@ -12,6 +12,9 @@
 !!     &          dele_rj, dnod_dr, d1nod_mat_fdm_2e)
 !!      subroutine cal_2nd_ele_r_fdm_coefs                              &
 !!     &         (nlayer_ICB, nri, r, mat_fdm_2e)
+!!
+!!        Element order: node(n-1), elemenr(n), node(n)
+!!
 !!@endverbatim
 !!
 !!@n @param kr_in      Address of inner boundary
@@ -79,23 +82,22 @@
       integer(kind = kint) :: ierr
       integer(kind = kint) :: kr
 !
-      real(kind = kreal) :: dr_p1, dr_n1
+      real(kind = kreal) :: dr_m
       real(kind = kreal) :: mat_taylor_2(2,2)
 !
 !
       do kr = 1, nri
-        dr_p1 = (r(kr+1) - r(kr)) * half
         if (kr.eq.1) then
-          dr_n1 = r(1) * half
+          dr_m = r(1) * half
         else
-          dr_n1 = (r(kr) - r(kr-1)) * half
+          dr_m = (r(kr) - r(kr-1)) * half
         end if
 !
         mat_taylor_2(1,1) = one
-        mat_taylor_2(1,2) = dr_p1
+        mat_taylor_2(1,2) = dr_m
 !
         mat_taylor_2(2,1) = one
-        mat_taylor_2(2,2) =-dr_n1
+        mat_taylor_2(2,2) =-dr_m
 !
         call cal_inverse_22_matrix(mat_taylor_2, mat_fdm_2e(1,1,kr),    &
      &      ierr)
