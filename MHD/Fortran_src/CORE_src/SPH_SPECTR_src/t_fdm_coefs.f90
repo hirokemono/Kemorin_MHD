@@ -49,8 +49,6 @@
 !
 !>        Structure of FDM matrix
       type fdm_matrix
-!>        Width of matrix (one side)
-        integer(kind = kint) :: n_wid
 !>        Width of matrix (positive side)
         integer(kind = kint) :: n_plus
 !>        Width of matrix (negative side)
@@ -259,9 +257,8 @@
       type(fdm_matrix), intent(inout) :: fdm
 !
 !
-      fdm%n_wid = (n_order + mod(n_order,2)) / 2
-      fdm%n_minus = fdm%n_wid - mod(n_order,2)
-      fdm%n_plus =  fdm%n_wid
+      fdm%n_plus =  (n_order + mod(n_order,2)) / 2
+      fdm%n_minus = fdm%n_plus - mod(n_order,2)
       allocate( fdm%dmat(nri,-fdm%n_minus:fdm%n_plus) )
 !
       if(nri .gt. 0) fdm%dmat = 0.0d0
