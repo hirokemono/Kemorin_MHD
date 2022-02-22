@@ -51,8 +51,10 @@
       type fdm_matrix
 !>        Width of matrix (one side)
         integer(kind = kint) :: n_wid
-!>        flag for odd orders
-        integer(kind = kint) :: iflag_odd
+!>        Width of matrix (positive side)
+        integer(kind = kint) :: n_plus
+!>        Width of matrix (negative side)
+        integer(kind = kint) :: n_minus
 !>        Coefficients to evaluate radial derivative
 !!        from nodal field by FDM
         real(kind = kreal), allocatable :: dmat(:,:)
@@ -257,9 +259,10 @@
       type(fdm_matrix), intent(inout) :: fdm
 !
 !
-      fdm%iflag_odd = mod(n_order,2)
-      fdm%n_wid = (n_order + fdm%iflag_odd) / 2
-      allocate( fdm%dmat(nri,-fdm%n_wid+fdm%iflag_odd:fdm%n_wid) )
+      fdm%n_wid = (n_order + mod(n_order,2)) / 2
+      fdm%n_minus = fdm%n_wid - mod(n_order,2)
+      fdm%n_plus =  fdm%n_wid
+      allocate( fdm%dmat(nri,-fdm%n_minus:fdm%n_plus) )
 !
       if(nri .gt. 0) fdm%dmat = 0.0d0
 !
@@ -289,7 +292,7 @@
       write(50,*) 'kr, r, coefficients'
       do kr = 1, nri
         write(50,'(i5,1p40e20.12)')                                     &
-     &       kr, r(kr), fdm%dmat(kr,-fdm%n_wid+fdm%iflag_odd:fdm%n_wid)
+     &       kr, r(kr), fdm%dmat(kr,-fdm%n_minus:fdm%n_plus)
       end do
 !
       end subroutine check_fdm_coef

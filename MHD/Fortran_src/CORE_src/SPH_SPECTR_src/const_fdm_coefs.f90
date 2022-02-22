@@ -230,26 +230,26 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_4e_fdm_coefs(nlayer_ICB, sph_rj, r_4th_ele)
+!      subroutine const_4e_fdm_coefs(nlayer_ICB, sph_rj, r_4th_ele)
 !
-      use cal_sph_exp_1st_diff_ele
+!      use cal_sph_exp_1st_diff_ele
 !
-      integer(kind = kint), intent(in) :: nlayer_ICB
-      type(sph_rj_grid), intent(in) ::  sph_rj
+!      integer(kind = kint), intent(in) :: nlayer_ICB
+!      type(sph_rj_grid), intent(in) ::  sph_rj
 !
-      type(fdm_matrices), intent(inout) :: r_4th_ele
+!      type(fdm_matrices), intent(inout) :: r_4th_ele
 !
 !
-      call alloc_nod_fdm_matrices(sph_rj%nidx_rj(1), ithree, r_4th_ele)
-      call alloc_fdm_work(sph_rj%nidx_rj(1), r_4th_ele)
-      call cal_4th_ele_r_fdm_coefs(nlayer_ICB,                          &
-     &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_4th_ele%wk_mat)
+!      call alloc_nod_fdm_matrices(sph_rj%nidx_rj(1), ithree, r_4th_ele)
+!      call alloc_fdm_work(sph_rj%nidx_rj(1), r_4th_ele)
+!      call cal_4th_ele_r_fdm_coefs(nlayer_ICB,                          &
+!     &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_4th_ele%wk_mat)
 !
-      call copy_fdm4_ele_coefs_from_mat(sph_rj%nidx_rj(1), r_4th_ele)
+!      call copy_fdm4_ele_coefs_from_mat(sph_rj%nidx_rj(1), r_4th_ele)
 !
-      call dealloc_fdm_work(r_4th_ele)
+!      call dealloc_fdm_work(r_4th_ele)
 !
-      end subroutine const_4e_fdm_coefs
+!      end subroutine const_4e_fdm_coefs
 !
 ! -----------------------------------------------------------------------
 !
