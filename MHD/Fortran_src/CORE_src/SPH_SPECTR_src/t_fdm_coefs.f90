@@ -84,14 +84,17 @@
       integer(kind = kint), intent(in) :: nri, num_order
       type(fdm_matrices), intent(inout) :: fdmn_nod
 !
+      integer(kind = kint) :: n_minus, n_plus
       integer(kind = kint) :: i
 !
 !
       fdmn_nod%n_order = num_order
       allocate( fdmn_nod%fdm(fdmn_nod%n_order) )
 !
+      n_plus =  (fdmn_nod%n_order + mod(fdmn_nod%n_order,2)) / 2
+      n_minus = n_plus - mod(fdmn_nod%n_order,2)
       do i = 1, fdmn_nod%n_order
-        call alloc_fdm_matrix(nri, fdmn_nod%n_order, fdmn_nod%fdm(i))
+        call alloc_fdm_matrix(nri, n_minus, n_plus, fdmn_nod%fdm(i))
       end do
 !
       end subroutine alloc_nod_fdm_matrices
@@ -251,14 +254,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_fdm_matrix(nri, n_order, fdm)
+      subroutine alloc_fdm_matrix(nri, n_minus, n_plus, fdm)
 !
-      integer(kind = kint), intent(in) :: nri, n_order
+      integer(kind = kint), intent(in) :: nri, n_minus, n_plus
       type(fdm_matrix), intent(inout) :: fdm
 !
 !
-      fdm%n_plus =  (n_order + mod(n_order,2)) / 2
-      fdm%n_minus = fdm%n_plus - mod(n_order,2)
+      fdm%n_plus =  n_plus
+      fdm%n_minus = n_minus
       allocate( fdm%dmat(nri,-fdm%n_minus:fdm%n_plus) )
 !
       if(nri .gt. 0) fdm%dmat = 0.0d0
