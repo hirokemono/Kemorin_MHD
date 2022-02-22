@@ -159,7 +159,8 @@
       type(fdm_matrices), intent(inout) :: r_2nd
 !
 !
-      call alloc_nod_fdm_matrices(sph_rj%nidx_rj(1), itwo, r_2nd)
+      call alloc_nod_fdm_matrices                                       &
+     &   (sph_rj%nidx_rj(1), itwo, ione, ione, r_2nd)
       call alloc_fdm_work(sph_rj%nidx_rj(1), r_2nd)
 !   Choose radial differences
       call nod_r_2nd_fdm_coefs_nonequi(sph_params%nlayer_ICB,           &
@@ -188,7 +189,8 @@
       type(fdm_matrices), intent(inout) :: r_4th
 !
 !
-      call alloc_nod_fdm_matrices(sph_rj%nidx_rj(1), ifour, r_4th)
+      call alloc_nod_fdm_matrices                                       &
+     &   (sph_rj%nidx_rj(1), ifour, itwo, itwo, r_4th)
       call alloc_fdm_work(sph_rj%nidx_rj(1), r_4th)
 !
 !   Choose radial differences
@@ -217,7 +219,8 @@
       type(fdm_matrices), intent(inout) :: r_2nd_ele
 !
 !
-      call alloc_nod_fdm_matrices(sph_rj%nidx_rj(1), ione, r_2nd_ele)
+      call alloc_nod_fdm_matrices                                       &
+     &   (sph_rj%nidx_rj(1), ione, ione, izero, r_2nd_ele)
       call alloc_fdm_work(sph_rj%nidx_rj(1), r_2nd_ele)
       call cal_2nd_ele_r_fdm_coefs(nlayer_ICB,                          &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_2nd_ele%wk_mat)
