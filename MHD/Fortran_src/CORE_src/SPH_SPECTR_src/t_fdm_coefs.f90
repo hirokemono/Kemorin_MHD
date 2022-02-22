@@ -53,6 +53,8 @@
 !
 !>        Structure of FDM matrix
       type fdm_matrix
+!>        Number of radial points
+        integer(kind = kint) :: nri_mat
 !>        Width of matrix (positive side)
         integer(kind = kint) :: n_plus
 !>        Width of matrix (negative side)
@@ -263,9 +265,10 @@
       type(fdm_matrix), intent(inout) :: fdm
 !
 !
+      fdm%nri_mat = nri
       fdm%n_plus =  n_plus
       fdm%n_minus = n_minus
-      allocate( fdm%dmat(nri,-fdm%n_minus:fdm%n_plus) )
+      allocate( fdm%dmat(fdm%nri_mat,-fdm%n_minus:fdm%n_plus) )
 !
       if(nri .gt. 0) fdm%dmat = 0.0d0
 !
