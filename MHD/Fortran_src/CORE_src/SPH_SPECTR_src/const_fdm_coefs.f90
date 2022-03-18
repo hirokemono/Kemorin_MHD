@@ -103,32 +103,6 @@
 !!
 !!      r_4th%wk_mat = mat_fdm_4
 !! ----------------------------------------------------------------------
-!!
-!!      subroutine const_2e_fdm_coefs(nlayer_ICB, sph_rj, r_2nd_ele)
-!!        type(sph_rj_grid), intent(in) :: sph_rj
-!!        type(fdm_matrices), intent(inout) :: r_2nd_ele
-!! ----------------------------------------------------------------------
-!!      Coeeficients for derivatives by 1d finite difference method
-!!
-!!     define of elemental field
-!!       r_ele(k) = half *(r_nod(k+1) + r_nod(k))
-!!       d_ele(k) = half *(d_nod(k+1) + d_nod(k))
-!!
-!!    derivatives on node by element field
-!!      dfdr =    r_2nd_ele%fdm(1)%dmat(k,0) * d_ele(k-1)
-!!              + r_2nd_ele%fdm(1)%dmat(k,1) * d_ele(k  )
-!!
-!!    r_2nd_ele%fdm(1)%dmat = d1nod_mat_fdm_2e
-!!
-!! ----------------------------------------------------------------------
-!!      Work array to obtain 1d FDM
-!!
-!!    derivatives on node by element field
-!!      dfdr =       r_2nd_ele%wk_mat(2,1) * d_ele(k-1)
-!!                 + r_2nd_ele%wk_mat(2,2) * d_ele(k  )
-!!
-!!      r_2nd_ele%wk_mat = mat_fdm_2e
-!! ----------------------------------------------------------------------
 !!@endverbatim
 !!
 !!@n @param nri    number of radial grid points
@@ -209,50 +183,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_2e_fdm_coefs(nlayer_ICB, sph_rj, r_2nd_ele)
+      subroutine const_4e_fdm_coefs(nlayer_ICB, sph_rj, r_4th_ele)
 !
       use cal_sph_exp_1st_diff_ele
 !
       integer(kind = kint), intent(in) :: nlayer_ICB
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
-      type(fdm_matrices), intent(inout) :: r_2nd_ele
+      type(fdm_matrices), intent(inout) :: r_4th_ele
 !
 !
       call alloc_nod_fdm_matrices                                       &
-     &   (sph_rj%nidx_rj(1), ione, ione, izero, r_2nd_ele)
-      call alloc_fdm_work(sph_rj%nidx_rj(1), r_2nd_ele)
-      call cal_2nd_ele_r_fdm_coefs(nlayer_ICB,                          &
-     &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_2nd_ele%wk_mat)
-!
-      call copy_fdm2_ele_coefs_from_mat(sph_rj%nidx_rj(1), r_2nd_ele)
-!
-      call  dealloc_fdm_work(r_2nd_ele)
-!
-      end subroutine const_2e_fdm_coefs
-!
-! -----------------------------------------------------------------------
-!
-!      subroutine const_4e_fdm_coefs(nlayer_ICB, sph_rj, r_4th_ele)
-!
-!      use cal_sph_exp_1st_diff_ele
-!
-!      integer(kind = kint), intent(in) :: nlayer_ICB
-!      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-!      type(fdm_matrices), intent(inout) :: r_4th_ele
-!
-!
-!      call alloc_nod_fdm_matrices(sph_rj%nidx_rj(1), ithree, r_4th_ele)
-!      call alloc_fdm_work(sph_rj%nidx_rj(1), r_4th_ele)
+     &   (sph_rj%nidx_rj(1), ithree, itwo, ione, r_4th_ele)
+      call alloc_fdm_work(sph_rj%nidx_rj(1), r_4th_ele)
 !      call cal_4th_ele_r_fdm_coefs(nlayer_ICB,                          &
 !     &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_4th_ele%wk_mat)
 !
 !      call copy_fdm4_ele_coefs_from_mat(sph_rj%nidx_rj(1), r_4th_ele)
 !
-!      call dealloc_fdm_work(r_4th_ele)
+      call dealloc_fdm_work(r_4th_ele)
 !
-!      end subroutine const_4e_fdm_coefs
+      end subroutine const_4e_fdm_coefs
 !
 ! -----------------------------------------------------------------------
 !

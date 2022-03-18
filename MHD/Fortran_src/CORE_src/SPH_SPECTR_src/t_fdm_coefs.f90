@@ -199,25 +199,6 @@
       end subroutine copy_fdm4_nod_coefs_from_mat
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine copy_fdm2_ele_coefs_from_mat(nri, fdm2_ele)
-!
-      integer(kind = kint), intent(in) :: nri
-      type(fdm_matrices), intent(inout) :: fdm2_ele
-!
-      integer(kind= kint) :: k
-!
-!
-!$omp parallel do private (k)
-      do k = 1, nri-1
-        fdm2_ele%fdm(1)%dmat(k, 0) = fdm2_ele%wk_mat(2,1,k)
-        fdm2_ele%fdm(1)%dmat(k, 1) = fdm2_ele%wk_mat(2,2,k)
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_fdm2_ele_coefs_from_mat
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine check_fdm_coefs(nri, r, fdmn_nod)

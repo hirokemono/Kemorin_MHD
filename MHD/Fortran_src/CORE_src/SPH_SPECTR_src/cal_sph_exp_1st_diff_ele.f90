@@ -68,43 +68,5 @@
 !
       end subroutine cal_sph_vect_dr_ele_2
 !
-! -----------------------------------------------------------------------
-!
-      subroutine cal_2nd_ele_r_fdm_coefs                                &
-     &         (nlayer_ICB, nri, r, mat_fdm_2e)
-!
-      use cal_inverse_small_matrix
-!
-      integer(kind = kint), intent(in) :: nri, nlayer_ICB
-      real(kind = kreal), intent(in) :: r(nri)
-      real(kind = kreal), intent(inout) :: mat_fdm_2e(2,2,nri)
-!
-      integer(kind = kint) :: ierr
-      integer(kind = kint) :: kr
-!
-      real(kind = kreal) :: dr_m
-      real(kind = kreal) :: mat_taylor_2(2,2)
-!
-!
-      do kr = 1, nri
-        if (kr.eq.1) then
-          dr_m = r(1) * half
-        else
-          dr_m = (r(kr) - r(kr-1)) * half
-        end if
-!
-        mat_taylor_2(1,1) = one
-        mat_taylor_2(1,2) = dr_m
-!
-        mat_taylor_2(2,1) = one
-        mat_taylor_2(2,2) =-dr_m
-!
-        call cal_inverse_22_matrix(mat_taylor_2, mat_fdm_2e(1,1,kr),    &
-     &      ierr)
-      end do
-!
-      end subroutine cal_2nd_ele_r_fdm_coefs
-!
-! -----------------------------------------------------------------------
 !
       end module cal_sph_exp_1st_diff_ele
