@@ -22,11 +22,10 @@
 !!
 !!     define of elemental field
 !!       r_ele(k) = half *(r_nod(k-1) + r_nod(k))
-!!       d_ele(k) = half *(d_nod(k-1) + d_nod(k))
 !!
 !!    derivatives on node by element field
-!!      dfdr_nod(k) =    fdm_1st_ele%fdm(1)%dmat(k,-1) * d_ele(k-1)
-!!                     + fdm_1st_ele%fdm(1)%dmat(k, 0) * d_ele(k)
+!!      dfdr_ele(k) =    fdm_1st_ele%fdm(1)%dmat(k,-1) * d_nod(k-1)
+!!                     + fdm_1st_ele%fdm(1)%dmat(k, 0) * d_nod(k)
 !!
 !!    fdm_1st_ele%fdm(1)%dmat = d1nod_mat_fdm_2e
 !!
@@ -34,12 +33,12 @@
 !!      Work array to obtain 1d FDM
 !!
 !!    derivatives on node by element field
-!!      dfdr_nod(k) = fdm_1st_ele%wk_mat(2,1) * d_ele(k-1)
-!!                  + fdm_1st_ele%wk_mat(2,2) * d_ele(k  )
+!!      dfdr_ele(k) = fdm_1st_ele%wk_mat(2,1) * d_nod(k-1)
+!!                  + fdm_1st_ele%wk_mat(2,2) * d_nod(k  )
 !! ----------------------------------------------------------------------
 !!     Numbering of node and element
 !!      n_k-1 e_k  n_k e_k+1 n_k+1
-!!        +----x----+----x----+---.....
+!!     ...+----x----+----x----+---.....
 !!     r(k-1)      r(k)     r(k+1)
 !!@endverbatim
 !!
@@ -75,7 +74,6 @@
 !
       call alloc_nod_fdm_matrices                                       &
      &   (sph_rj%nidx_rj(1), ione, ione, izero, fdm_1st_ele)
-      call alloc_fdm_work(sph_rj%nidx_rj(1), fdm_1st_ele)
 !
       allocate(mat_fdm(2,2,sph_rj%nidx_rj(1)))
       mat_fdm(1:2,1:2,1:sph_rj%nidx_rj(1)) = 0.0d0
@@ -182,7 +180,7 @@
       ied = kr_out * sph_rj%nidx_rj(2)
 !$omp parallel do private(inod,i_n1,j,k)
       do inod = ist, ied
-        i_n1 = inod + sph_rj%nidx_rj(2)
+        i_n1 = inod - sph_rj%nidx_rj(2)
         j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
         k = 1 + (inod- j) / sph_rj%nidx_rj(2)
 !
