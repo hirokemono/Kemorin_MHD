@@ -125,6 +125,7 @@
 !
       subroutine const_2nd_fdm_matrices(sph_params, sph_rj, r_2nd)
 !
+      use calypso_mpi
       use set_radius_func_noequi
 !
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -140,71 +141,17 @@
       call nod_r_2nd_fdm_coefs_nonequi(sph_params%nlayer_ICB,           &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_2nd%wk_mat)
       call deallocate_dr_rj_noequi
+      call calypso_mpi_barrier
 !
       call copy_fdm2_nod_coefs_from_mat(sph_rj%nidx_rj(1), r_2nd)
       call dealloc_fdm_work(r_2nd)
 !
-      if(iflag_debug .eq. iflag_full_msg) then
+      if(my_rank .eq. 0) then
         call check_fdm_coefs                                            &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_2nd)
       end if
 !
       end subroutine const_2nd_fdm_matrices
 !
-! -----------------------------------------------------------------------
-!
-      subroutine const_4th_fdm_coefs(nlayer_ICB, sph_rj, r_4th)
-!
-      use const_radial_4th_fdm_noequi
-!
-      integer(kind = kint), intent(in) :: nlayer_ICB
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      type(fdm_matrices), intent(inout) :: r_4th
-!
-!
-      call alloc_nod_fdm_matrices                                       &
-     &   (sph_rj%nidx_rj(1), ifour, itwo, itwo, r_4th)
-      call alloc_fdm_work(sph_rj%nidx_rj(1), r_4th)
-!
-!   Choose radial differences
-      call nod_r_4th_fdm_coefs_nonequi(nlayer_ICB, sph_rj%nidx_rj(1),   &
-     &    sph_rj%radius_1d_rj_r, r_4th%wk_mat)
-!
-      call copy_fdm4_nod_coefs_from_mat(sph_rj%nidx_rj(1), r_4th)
-      call dealloc_fdm_work(r_4th)
-!
-      if(iflag_debug .eq. iflag_full_msg) then
-        call check_fdm_coefs(sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,  &
-     &      r_4th)
-      end if
-!
-      end subroutine const_4th_fdm_coefs
-!
-! -----------------------------------------------------------------------
-!
-      subroutine const_4e_fdm_coefs(nlayer_ICB, sph_rj, r_4th_ele)
-!
-      use cal_sph_exp_1st_diff_ele
-!
-      integer(kind = kint), intent(in) :: nlayer_ICB
-      type(sph_rj_grid), intent(in) ::  sph_rj
-!
-      type(fdm_matrices), intent(inout) :: r_4th_ele
-!
-!
-      call alloc_nod_fdm_matrices                                       &
-     &   (sph_rj%nidx_rj(1), ithree, itwo, ione, r_4th_ele)
-      call alloc_fdm_work(sph_rj%nidx_rj(1), r_4th_ele)
-!      call cal_4th_ele_r_fdm_coefs(nlayer_ICB,                          &
-!     &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, r_4th_ele%wk_mat)
-!
-!      call copy_fdm4_ele_coefs_from_mat(sph_rj%nidx_rj(1), r_4th_ele)
-!
-      call dealloc_fdm_work(r_4th_ele)
-!
-      end subroutine const_4e_fdm_coefs
-!
-! -----------------------------------------------------------------------
 !
       end module const_fdm_coefs

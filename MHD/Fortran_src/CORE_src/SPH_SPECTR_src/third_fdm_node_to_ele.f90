@@ -2,9 +2,9 @@
 !!@brief  module third_fdm_node_to_ele
 !!
 !!@author H. Matsui
-!!@date Programmed in Jan, 2010
+!!@date Programmed in Jan, 2020
 !
-!>@brief  First order FDM from node to element
+!>@brief  Third order FDM from node to element
 !!
 !!@verbatim
 !!      subroutine const_third_fdm_node_to_ele(sph_rj, fdm_3rd_ele)
@@ -108,8 +108,8 @@
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
       type(fdm_matrices), intent(in) :: fdm_3rd_ele
 !
-!
       real(kind = kreal), intent(inout) :: dele_dr(sph_rj%nnod_rj)
+!
 !
       call cal_sph_vect_dxr_ele(kr_in, kr_out, sph_rj,                  &
      &    fdm_3rd_ele%fdm(i_th), d_rj, dele_dr)
@@ -131,7 +131,7 @@
 !
       real(kind = kreal) :: mat_taylor_4(4,4)
       real(kind = kreal) :: dr_n2, dr_1, dr_p2
-      real(kind = kreal), parameter :: asix = 1.0d0 / 6.060
+      real(kind = kreal), parameter :: asix = 1.0d0 / 6.0d0
 !
 !
       do kr = 1, nri
@@ -191,7 +191,7 @@
 !
 !
 !$omp parallel do private (i,k)
-      do i = 1, nri-1
+      do i = 1, 3
         do k = 1, nri-1
           fdm(i)%dmat(k,-2) = mat_fdm(i+1,1,k)
           fdm(i)%dmat(k,-1) = mat_fdm(i+1,2,k)
@@ -230,10 +230,10 @@
         j = mod((inod-1),sph_rj%nidx_rj(2)) + 1
         k = 1 + (inod- j) / sph_rj%nidx_rj(2)
 !
-        dele_dr(inod) =  fdm%dmat(k,-1) * d_rj(i_n2)                    &
-     &                 + fdm%dmat(k, 0) * d_rj(i_n1)                    &
+        dele_dr(inod) =  fdm%dmat(k,-2) * d_rj(i_n2)                    &
+     &                 + fdm%dmat(k,-1) * d_rj(i_n1)                    &
      &                 + fdm%dmat(k, 0) * d_rj(inod)                    &
-     &                 + fdm%dmat(k, 0) * d_rj(i_p1)
+     &                 + fdm%dmat(k, 1) * d_rj(i_p1)
       end do
 !$omp end parallel do
 !

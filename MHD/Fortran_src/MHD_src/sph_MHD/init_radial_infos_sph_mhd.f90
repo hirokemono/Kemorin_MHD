@@ -70,8 +70,9 @@
      &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !
       use calypso_mpi
-      use const_fdm_coefs
+      use second_fdm_node_coefs
       use material_property
+      use const_fdm_coefs
 !
       type(fdm_matrices), intent(inout) :: r_2nd
       type(boundary_spectra), intent(in) :: bc_IO
@@ -92,6 +93,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
+!
+!      if (iflag_debug.gt.0) write(*,*) 'const_second_fdm_coefs'
+!      call const_second_fdm_coefs(sph%sph_params, sph%sph_rj, r_2nd)
 !
       if(iflag_debug.gt.0) write(*,*)' set_material_property'
       call set_material_property                                        &

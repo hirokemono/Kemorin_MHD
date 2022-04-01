@@ -145,7 +145,7 @@
 !
       use t_spheric_parameter
       use t_fdm_coefs
-      use const_fdm_coefs
+      use second_fdm_node_coefs
 !
       type(picked_spectrum_data_IO), intent(in) :: pick_IO
 !
@@ -178,7 +178,7 @@
       call allocate_dr_rj_noequi(sph_rj%nidx_rj(1))
       call set_dr_for_nonequi(sph_params%nlayer_CMB,                    &
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
-      call const_2nd_fdm_matrices(sph_params, sph_rj, r_2nd)
+      call const_second_fdm_coefs(sph_params, sph_rj, r_2nd)
 !
       write(*,*) 'icomp_temp, icomp_light',                             &
      &           ntl%icomp_temp, ntl%icomp_light

@@ -210,7 +210,7 @@
       integer(kind = kint) :: i
 !
 !
-      do i = 1, nri
+      do i = 1, fdmn_nod%n_order
         write(50,*) 'Matrix for differences: ', i
         call check_fdm_coef(nri, r, fdmn_nod%fdm(i))
       end do

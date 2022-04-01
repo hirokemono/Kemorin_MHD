@@ -90,7 +90,7 @@ t_ctl_param_sph_series_util.o: $(SPH_UTILS_DIR)/t_ctl_param_sph_series_util.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 t_gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/t_gauss_coefs_monitor_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o m_monitor_file_labels.o set_parallel_file_name.o write_field_labels.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_neutral_pt_by_pick_sph.o: $(SPH_UTILS_DIR)/t_neutral_pt_by_pick_sph.f90 m_precision.o m_constants.o t_picked_sph_spectr_data_IO.o set_radius_func_noequi.o m_base_field_labels.o t_spheric_parameter.o t_fdm_coefs.o const_fdm_coefs.o
+t_neutral_pt_by_pick_sph.o: $(SPH_UTILS_DIR)/t_neutral_pt_by_pick_sph.f90 m_precision.o m_constants.o t_picked_sph_spectr_data_IO.o set_radius_func_noequi.o m_base_field_labels.o t_spheric_parameter.o t_fdm_coefs.o second_fdm_node_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/t_picked_sph_spectr_data_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o m_monitor_file_labels.o write_field_labels.o set_parallel_file_name.o skip_comment_f.o spherical_harmonics.o
 	$(F90) -c $(F90OPTFLAGS) $<
