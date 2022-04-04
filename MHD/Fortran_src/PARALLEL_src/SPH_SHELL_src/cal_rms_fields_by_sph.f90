@@ -203,8 +203,8 @@
 !
       if(pwr%ntot_comp_sq .eq. 0) return
 !
-      if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_rms'
-      call sum_sph_layerd_rms                                           &
+      if(iflag_debug .gt. 0) write(*,*) 'sum_sph_layerd_pwr'
+      call sum_sph_layerd_pwr                                           &
      &   (sph_params%l_truncation, sph_rj, ipol, g_sph_rj, rj_fld,      &
      &    pwr%nri_rms, pwr%num_fld_sq, pwr%istack_comp_sq,              &
      &    pwr%id_field, pwr%kr_4_rms, pwr%num_vol_spectr,               &
