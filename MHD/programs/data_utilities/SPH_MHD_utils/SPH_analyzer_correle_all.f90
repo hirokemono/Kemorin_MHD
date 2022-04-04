@@ -59,6 +59,8 @@
       use sph_mhd_rst_IO_control
       use input_control_sph_MHD
       use append_phys_data
+      use output_sph_pwr_volume_file
+      use output_sph_pwr_layer_file
 !
       use cal_correlations_by_spectr
 !

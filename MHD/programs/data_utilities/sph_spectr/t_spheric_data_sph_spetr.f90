@@ -105,7 +105,9 @@
       subroutine write_rms_4_sph_spectr_util                            &
      &         (my_rank, time_d, sph, monitor_s)
 !
-      use output_sph_m_square_file
+      use output_sph_volume_ave_file
+      use output_sph_pwr_volume_file
+      use output_sph_pwr_layer_file
 !
       integer, intent(in) :: my_rank
       type(time_data), intent(in) :: time_d

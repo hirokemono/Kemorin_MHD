@@ -85,8 +85,7 @@
 !
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
-      use output_sph_m_square_file
-!
+      use output_sph_pwr_layer_file
 !
       integer(kind = kint) :: i_step
 !

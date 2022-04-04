@@ -96,7 +96,7 @@
      &          pwr, pick_coef, gauss_coef, Nusselt, SR_sig)
 !
       use t_solver_SR
-      use output_sph_m_square_file
+      use output_sph_pwr_volume_file
       use write_picked_sph_spectr
       use write_sph_gauss_coefs
 !
@@ -135,7 +135,9 @@
       subroutine output_sph_mean_square_files                           &
      &         (ene_labels, time_d, sph_params, sph_rj, pwr)
 !
-      use output_sph_m_square_file
+      use output_sph_volume_ave_file
+      use output_sph_pwr_volume_file
+      use output_sph_pwr_layer_file
 !
       type(energy_label_param), intent(in) :: ene_labels
       type(time_data), intent(in) :: time_d

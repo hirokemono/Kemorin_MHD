@@ -40,7 +40,6 @@
       use t_energy_label_parameters
 !
       use pickup_sph_spectr_data
-      use output_sph_m_square_file
 !
       implicit none
 !
@@ -85,7 +84,7 @@
       use m_error_IDs
       use pickup_gauss_coefficients
       use cal_rms_fields_by_sph
-      use output_sph_m_square_file
+      use output_sph_pwr_volume_file
       use write_sph_gauss_coefs
       use calypso_mpi_int
       use t_solver_SR

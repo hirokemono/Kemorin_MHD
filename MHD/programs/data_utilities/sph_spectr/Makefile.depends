@@ -2,7 +2,7 @@ MPI_picked_sph_mean_sq_IO.o: $(SPH_UTILS_DIR)/MPI_picked_sph_mean_sq_IO.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_diff_sph_spectr.o: $(SPH_UTILS_DIR)/analyzer_diff_sph_spectr.f90 m_precision.o calypso_mpi.o t_field_data_IO.o t_ctl_data_sph_data_utils.o t_ctl_param_sph_data_utils.o t_time_data.o field_IO_select.o const_global_element_ids.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_ene_sph_layer.o: $(SPH_UTILS_DIR)/analyzer_ene_sph_layer.f90 m_precision.o m_constants.o m_machine_parameter.o m_spheric_data_sph_spetr.o calypso_mpi.o t_time_data.o cal_rms_fields_by_sph.o field_IO_select.o m_ctl_params_sph_utils.o parallel_load_data_4_sph.o set_field_data_w_SGS.o copy_rj_phys_data_4_IO.o count_num_sph_smp.o schmidt_poly_on_rtm_grid.o output_sph_m_square_file.o
+analyzer_ene_sph_layer.o: $(SPH_UTILS_DIR)/analyzer_ene_sph_layer.f90 m_precision.o m_constants.o m_machine_parameter.o m_spheric_data_sph_spetr.o calypso_mpi.o t_time_data.o cal_rms_fields_by_sph.o field_IO_select.o m_ctl_params_sph_utils.o parallel_load_data_4_sph.o set_field_data_w_SGS.o copy_rj_phys_data_4_IO.o count_num_sph_smp.o schmidt_poly_on_rtm_grid.o output_sph_pwr_layer_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_ene_sph_shell.o: $(SPH_UTILS_DIR)/analyzer_ene_sph_shell.f90 m_precision.o m_constants.o m_machine_parameter.o m_spheric_data_sph_spetr.o calypso_mpi.o t_time_data.o cal_rms_fields_by_sph.o field_IO_select.o m_ctl_params_sph_utils.o parallel_load_data_4_sph.o set_field_data_w_SGS.o copy_rj_phys_data_4_IO.o count_num_sph_smp.o schmidt_poly_on_rtm_grid.o volume_average_4_sph.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -96,7 +96,7 @@ t_picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/t_picked_sph_spectr_data_IO.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 t_read_sph_spectra.o: $(SPH_UTILS_DIR)/t_read_sph_spectra.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_spheric_data_sph_spetr.o: $(SPH_UTILS_DIR)/t_spheric_data_sph_spetr.f90 m_precision.o t_rms_4_sph_spectr.o t_sum_sph_rms_data.o t_pickup_sph_spectr_data.o t_energy_label_parameters.o cal_rms_fields_by_sph.o init_energy_labels_sph_SGS.o pickup_sph_coefs.o sph_mean_spectr_header_IO.o output_sph_m_square_file.o
+t_spheric_data_sph_spetr.o: $(SPH_UTILS_DIR)/t_spheric_data_sph_spetr.f90 m_precision.o t_rms_4_sph_spectr.o t_sum_sph_rms_data.o t_pickup_sph_spectr_data.o t_energy_label_parameters.o cal_rms_fields_by_sph.o init_energy_labels_sph_SGS.o pickup_sph_coefs.o sph_mean_spectr_header_IO.o output_sph_volume_ave_file.o output_sph_pwr_volume_file.o output_sph_pwr_layer_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
 tave_picked_gauss_coefs.o: $(SPH_UTILS_DIR)/tave_picked_gauss_coefs.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o t_ctl_data_tave_sph_monitor.o
 	$(F90) -c $(F90OPTFLAGS) $<

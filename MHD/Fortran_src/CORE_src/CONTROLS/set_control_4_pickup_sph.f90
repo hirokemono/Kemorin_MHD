@@ -121,7 +121,6 @@
       use t_ctl_data_sph_vol_spectr
       use t_pickup_sph_spectr_data
       use t_rms_4_sph_spectr
-      use output_sph_m_square_file
       use skip_comment_f
 !
       type(layerd_spectr_control), intent(in) :: lp_ctl
@@ -171,8 +170,6 @@
       use t_rms_4_sph_spectr
 !
       use m_base_field_labels
-!
-      use output_sph_m_square_file
       use skip_comment_f
 !
       type(pick_spectr_control), intent(in) :: pspec_ctl
