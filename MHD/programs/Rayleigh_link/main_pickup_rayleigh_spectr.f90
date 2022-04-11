@@ -16,6 +16,7 @@
       use t_picked_rayleigh_parameter
       use t_rayleigh_restart_IO
       use t_picked_rayleigh_spectr
+      use t_ctl_data_gauss_coefs
 !
       use rayleigh_restart_IO
       use MPI_read_rayleigh_restart
@@ -44,7 +45,7 @@
 !
       call init_picked_rayleigh_param(pick_ctl_s, pick_ra_param_s)
       ra_rst_s%i_version = pick_ctl_s%Rayleigh_version_ctl%intvalue(1)
-      call dealloc_gauss_spectr_control(pick_ctl_s)
+      call dealloc_pick_rayleigh_spectr(pick_ctl_s)
 !
       if(my_rank .eq. 0) then
         call sel_read_rayleigh_rst_params                               &

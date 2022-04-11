@@ -7,6 +7,12 @@
 !>@brief  Data arrays for Nusselt number
 !!
 !!@verbatim
+!!      subroutine set_ctl_params_no_heat_Nu                            &
+!!     &         (Nusselt_file_prefix, rj_fld, Nu_type)
+!!        type(read_character_item), intent(in) :: Nusselt_file_prefix
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(nusselt_number_data), intent(inout) :: Nu_type
+!!
 !!      subroutine write_no_heat_source_Nu(idx_rj_degree_zero,          &
 !!     &          i_step, time, Nu_type)
 !!
@@ -49,6 +55,48 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_ctl_params_no_heat_Nu                              &
+     &         (Nusselt_file_prefix, rj_fld, Nu_type)
+!
+      use m_base_field_labels
+      use m_grad_field_labels
+      use t_phys_data
+      use t_control_array_character
+!
+      type(read_character_item), intent(in) :: Nusselt_file_prefix
+      type(phys_data), intent(in) :: rj_fld
+      type(nusselt_number_data), intent(inout) :: Nu_type
+!
+      integer(kind = kint) :: i
+!
+!    Turn On Nusselt number if temperature gradient is there
+      Nu_type%iflag_no_source_Nu = 0
+      do i = 1, rj_fld%num_phys
+        if(rj_fld%phys_name(i) .eq. grad_temp%name) then
+          Nu_type%iflag_no_source_Nu = 1
+          exit
+        end if
+      end do
+!
+      if(Nusselt_file_prefix%iflag .gt. 0) then
+        Nu_type%iflag_no_source_Nu = 1
+        Nu_type%Nusselt_file_head = Nusselt_file_prefix%charavalue
+      else
+        Nu_type%iflag_no_source_Nu = 0
+      end if
+!
+!    Turn Off Nusselt number if heat source is there
+      do i = 1, rj_fld%num_phys
+        if(rj_fld%phys_name(i) .eq. heat_source%name) then
+          Nu_type%iflag_no_source_Nu = 0
+          exit
+        end if
+      end do
+!
+      end subroutine set_ctl_params_no_heat_Nu
 !
 ! -----------------------------------------------------------------------
 !

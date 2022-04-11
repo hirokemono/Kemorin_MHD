@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine cal_SGS_sph_monitor_data                             &
 !!     &         (sph_params, sph_rj, sph_bc_U, leg, ipol, ipol_LES,    &
-!!     &          rj_fld, pwr, WK_pwr, Nusselt)
+!!     &          rj_fld, pwr, WK_pwr, Nusselt, dip)
 !!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -20,6 +20,7 @@
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
 !!        type(nusselt_number_data), intent(inout) :: Nusselt
+!!        type(dipolarity_data), intent(inout) :: dip
 !!      subroutine cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,    &
 !!     &          ipol, ipol_LES, rj_fld, g_sph_rj, pwr, WK_pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -52,6 +53,7 @@
       use t_sph_volume_mean_square
       use t_sum_sph_rms_data
       use t_no_heat_Nusselt
+      use t_CMB_dipolarity
 !
       implicit none
 !
@@ -65,7 +67,7 @@
 !
       subroutine cal_SGS_sph_monitor_data                               &
      &         (sph_params, sph_rj, sph_bc_U, leg, ipol, ipol_LES,      &
-     &          rj_fld, pwr, WK_pwr, Nusselt)
+     &          rj_fld, pwr, WK_pwr, Nusselt, dip)
 !
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
@@ -82,6 +84,7 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
       type(nusselt_number_data), intent(inout) :: Nusselt
+      type(dipolarity_data), intent(inout) :: dip
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
@@ -93,6 +96,11 @@
      &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol,              &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, Nusselt)
+!
+      if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
+      call cal_CMB_dipolarity                                           &
+     &   (sph_params%nlayer_CMB, sph_params, sph_rj,                    &
+     &    ipol, leg%g_sph_rj, rj_fld, pwr, WK_pwr, dip)
 !
       end subroutine cal_SGS_sph_monitor_data
 !

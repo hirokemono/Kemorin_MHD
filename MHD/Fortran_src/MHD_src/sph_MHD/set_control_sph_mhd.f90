@@ -329,6 +329,8 @@
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
+      use t_no_heat_Nusselt
+      use t_CMB_dipolarity
 !
       use set_control_4_pickup_sph
 !
@@ -351,6 +353,10 @@
 !
       call set_ctl_params_no_heat_Nu(smonitor_ctl%Nusselt_file_prefix,  &
      &    rj_fld, monitor%Nusselt)
+      call set_ctl_dipolarity_params                                    &
+     &   (smonitor_ctl%fdip_ctl%fdip_file_prefix_ctl,                   &
+     &    smonitor_ctl%fdip_ctl%fdip_truncation_ctl,                    &
+     &    rj_fld, monitor%dip)
 !
       end subroutine set_control_SPH_MHD_monitors
 !

@@ -8,12 +8,9 @@
 !> @brief Control data for spectr data monitoring
 !!
 !!@verbatim
-!!      subroutine dealloc_pick_spectr_control(pspec_ctl)
-!!      subroutine dealloc_gauss_spectr_control(g_pwr)
-!!
-!!      subroutine read_gauss_spectr_ctl                                &
-!!     &         (id_control, hd_block, iflag, g_pwr, c_buf)
-!!        type(pick_rayleigh_spectr_control), intent(inout) :: g_pwr
+!!      subroutine dealloc_pick_rayleigh_spectr(g_pwr)
+!!      subroutine read_rayleigh_pick_mode_ctl                          &
+!!     &         (id_control, control_name, pick_ctl)
 !!
 !! -----------------------------------------------------------------
 !!
@@ -64,6 +61,8 @@
 !!@n        idx_rayleigh_ctl%int1: list of degree of Gauss coefficients
 !!@n        idx_rayleigh_ctl%int2: list of order of Gauss coefficients
         type(ctl_array_i2) :: idx_rayleigh_ctl
+!
+        integer (kind = kint) :: i_pick_rayleigh_spectr = 0
       end type pick_rayleigh_spectr_control
 !
 !
@@ -71,7 +70,6 @@
 !
       character(len=kchara), parameter                                  &
      &            :: hd_pick_sph_ctl =     'pickup_spectr_ctl'
-      integer(kind = kint) :: i_pick_sph_ctl = 0
 !
       character(len=kchara), parameter                                  &
      &           :: hd_Rayleigh_rst_dir = 'Rayleigh_checkpoint_dir'
@@ -95,7 +93,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_gauss_spectr_control(pick_ctl)
+      subroutine dealloc_pick_rayleigh_spectr(pick_ctl)
 !
       type(pick_rayleigh_spectr_control), intent(inout) :: pick_ctl
 !
@@ -106,8 +104,9 @@
       pick_ctl%Rayleigh_rst_dir_ctl%iflag =  0
       pick_ctl%Rayleigh_step_ctl%iflag =     0
       pick_ctl%picked_data_file_name%iflag = 0
+      pick_ctl%i_pick_rayleigh_spectr = 0
 !
-      end subroutine dealloc_gauss_spectr_control
+      end subroutine dealloc_pick_rayleigh_spectr
 !
 ! -----------------------------------------------------------------------
 !
@@ -125,7 +124,7 @@
       open(id_control, file = control_name)
       call load_one_line_from_control(id_control, c_buf1)
       call read_pick_rayleigh_ctl(id_control, hd_pick_sph_ctl,          &
-     &    i_pick_sph_ctl, pick_ctl, c_buf1)
+     &                            pick_ctl, c_buf1)
       close(id_control)
 !
       end subroutine read_rayleigh_pick_mode_ctl
@@ -134,18 +133,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_pick_rayleigh_ctl                                 &
-     &         (id_control, hd_block, iflag, pick_ctl, c_buf)
+     &         (id_control, hd_block, pick_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      integer(kind = kint), intent(inout) :: iflag
       type(pick_rayleigh_spectr_control), intent(inout) :: pick_ctl
       type(buffer_for_control), intent(inout) :: c_buf
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(iflag .gt. 0) return
+      if(pick_ctl%i_pick_rayleigh_spectr .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
@@ -163,7 +161,7 @@
         call read_integer2_ctl_type(c_buf, hd_Rayleigh_version,         &
      &      pick_ctl%Rayleigh_version_ctl)
       end do
-      iflag = 1
+      pick_ctl%i_pick_rayleigh_spectr = 1
 !
       end subroutine read_pick_rayleigh_ctl
 !
@@ -172,6 +170,7 @@
 !
       subroutine bcast_pick_rayleigh_ctl(pick_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(pick_rayleigh_spectr_control), intent(inout) :: pick_ctl
@@ -182,6 +181,8 @@
       call bcast_ctl_type_i2(pick_ctl%Rayleigh_version_ctl)
       call bcast_ctl_type_i1(pick_ctl%Rayleigh_step_ctl)
       call bcast_ctl_array_i2(pick_ctl%idx_rayleigh_ctl)
+      call calypso_mpi_bcast_one_int                                    &
+     &    (pick_ctl%i_pick_rayleigh_spectr, 0)
 !
       end subroutine bcast_pick_rayleigh_ctl
 !

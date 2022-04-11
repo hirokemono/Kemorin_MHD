@@ -9,15 +9,17 @@
 !!@verbatim
 !!      subroutine cal_sph_monitor_data                                 &
 !!     &         (sph_params, sph_rj, sph_bc_U, leg, ipol, rj_fld,      &
-!!     &          pwr, WK_pwr, Nusselt)
+!!     &          pwr, WK_pwr, Nusselt, dip)
 !!      subroutine output_sph_monitor_data                              &
 !!     &         (ene_labels, time_d, sph_params, sph_rj, ipol, rj_fld, &
-!!     &          pwr, pick_coef, gauss_coef, Nusselt, SR_sig)
+!!     &          pwr, pick_coef, gauss_coef, Nusselt, dip, SR_sig)
 !!      subroutine output_sph_mean_square_files                         &
 !!     &         (ene_labels, time_d, sph_params, sph_rj, pwr)
 !!
 !!      subroutine cal_write_no_heat_sourse_Nu(time_d, sph_rj,          &
 !!     &          sph_bc_U, ipol, rj_fld, Nusselt)
+!!      subroutine cal_write_dipolarity(time_d, sph_params, sph_rj, leg,&
+!!     &          ipol, rj_fld, pwr, WK_pwr, dip)
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -30,6 +32,7 @@
 !!        type(picked_spectrum_data), intent(inout) :: pick_coef
 !!        type(picked_spectrum_data), intent(inout) :: gauss_coef
 !!        type(nusselt_number_data), intent(inout) :: Nusselt
+!!        type(dipolarity_data), intent(inout) :: dip
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
@@ -49,6 +52,7 @@
       use t_sum_sph_rms_data
       use t_pickup_sph_spectr_data
       use t_no_heat_Nusselt
+      use t_CMB_dipolarity
       use t_energy_label_parameters
 !
 !  --------------------------------------------------------------------
@@ -59,7 +63,7 @@
 !
       subroutine cal_sph_monitor_data                                   &
      &         (sph_params, sph_rj, sph_bc_U, leg, ipol, rj_fld,        &
-     &          pwr, WK_pwr, Nusselt)
+     &          pwr, WK_pwr, Nusselt, dip)
 !
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
@@ -75,6 +79,7 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
       type(nusselt_number_data), intent(inout) :: Nusselt
+      type(dipolarity_data), intent(inout) :: dip
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
@@ -87,13 +92,18 @@
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol,              &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, Nusselt)
 !
+      if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
+      call cal_CMB_dipolarity                                           &
+     &   (sph_params%nlayer_CMB, sph_params, sph_rj, ipol,              &
+     &    leg%g_sph_rj, rj_fld, pwr, WK_pwr, dip)
+!
       end subroutine cal_sph_monitor_data
 !
 !  --------------------------------------------------------------------
 !
       subroutine output_sph_monitor_data                                &
      &         (ene_labels, time_d, sph_params, sph_rj, ipol, rj_fld,   &
-     &          pwr, pick_coef, gauss_coef, Nusselt, SR_sig)
+     &          pwr, pick_coef, gauss_coef, Nusselt, dip, SR_sig)
 !
       use t_solver_SR
       use output_sph_pwr_volume_file
@@ -106,6 +116,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
+      type(dipolarity_data), intent(in) :: dip
 !
       type(sph_mean_squares), intent(inout) :: pwr
       type(picked_spectrum_data), intent(inout) :: pick_coef
@@ -122,6 +133,8 @@
 !
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
      &    time_d%i_time_step, time_d%time, Nusselt)
+      call write_dipolarity(time_d%i_time_step, time_d%time,            &
+     &    sph_params%radius_CMB, ipol, pwr, dip)
 !
       call write_each_picked_specr_file                                 &
      &   (time_d, sph_rj, rj_fld, pick_coef)
@@ -186,6 +199,31 @@
      &    time_d%i_time_step, time_d%time, Nusselt)
 !
       end subroutine cal_write_no_heat_sourse_Nu
+!
+!  --------------------------------------------------------------------
+!
+      subroutine cal_write_dipolarity(time_d, sph_params, sph_rj, leg,  &
+     &          ipol, rj_fld, pwr, WK_pwr, dip)
+!
+      type(time_data), intent(in) :: time_d
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(legendre_4_sph_trans), intent(in) :: leg
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(in) :: rj_fld
+!
+      type(sph_mean_squares), intent(inout) :: pwr
+      type(sph_mean_square_work), intent(inout) :: WK_pwr
+      type(dipolarity_data), intent(inout) :: dip
+!
+!
+      call cal_CMB_dipolarity                                           &
+     &   (sph_params%nlayer_CMB, sph_params, sph_rj, ipol,              &
+     &    leg%g_sph_rj, rj_fld, pwr, WK_pwr, dip)
+      call write_dipolarity(time_d%i_time_step, time_d%time,            &
+     &    sph_params%radius_CMB, ipol, pwr, dip)
+!
+      end subroutine cal_write_dipolarity
 !
 !  --------------------------------------------------------------------
 !
