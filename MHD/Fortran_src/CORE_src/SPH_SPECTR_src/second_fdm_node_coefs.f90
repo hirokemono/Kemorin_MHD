@@ -82,12 +82,10 @@
 !
       allocate(mat_fdm(3,3,sph_rj%nidx_rj(1)))
       mat_fdm(1:3,1:3,1:sph_rj%nidx_rj(1)) = 0.0d0
-      call calypso_mpi_barrier
 !
       write(*,*) 'nod_r_2nd_fdm_coefs_nonequi'
       call nod_r_2nd_fdm_coefs_nonequi(sph_params%nlayer_ICB,           &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, mat_fdm)
-      call calypso_mpi_barrier
 !
       write(*,*) 'copy_second_fdm_node'
       call copy_second_fdm_node                                         &
