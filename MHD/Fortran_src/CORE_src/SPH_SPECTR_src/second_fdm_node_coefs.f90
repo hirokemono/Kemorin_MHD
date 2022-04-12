@@ -67,7 +67,6 @@
 !
       subroutine const_second_fdm_coefs(sph_params, sph_rj, fdm_2nd)
 !
-      use calypso_mpi
       use set_radius_func_noequi
 !
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -95,9 +94,8 @@
      &   (sph_rj%nidx_rj(1), mat_fdm, fdm_2nd%fdm)
       deallocate(mat_fdm)
 !
-!      if(iflag_debug .gt. 0) then
-      if(my_rank .eq. 0) then
-      write(*,*) 'check_fdm_coefs'
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'check SEcond order FDM'
         call check_fdm_coefs                                            &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, fdm_2nd)
       end if
