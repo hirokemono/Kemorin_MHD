@@ -137,13 +137,13 @@
      &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
      &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_SGS%ipol_LES,     &
      &    SPH_MHD%fld, monitor%pwr, monitor%WK_pwr,                     &
-     &    monitor%Nusselt, monitor%dip)
+     &    monitor%Nusselt, monitor%dip, monitor%tsl)
 !
       call output_sph_monitor_data                                      &
      &   (monitor%ene_labels, time_d, SPH_MHD%sph%sph_params,           &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
      &    monitor%pwr, monitor%pick_coef, monitor%gauss_coef,           &
-     &    monitor%Nusselt, monitor%dip, SR_sig)
+     &    monitor%Nusselt, monitor%dip, monitor%tsl, SR_sig)
 !
       end subroutine output_rms_sph_SGS_mhd_control
 !

@@ -11,9 +11,16 @@
 !!      subroutine alloc_dimless_list(dimless_list)
 !!      subroutine dealloc_dimless_list(dimless_list)
 !!        type(list_of_dimless), intent(inout) :: dimless_list
-!!      subroutine alloc_coef_power_list(coefs_list)
-!!      subroutine dealloc_coef_power_list(coefs_list)
-!!        type(powers_4_coefficients), intent(inout) :: coefs_list
+!!      subroutine alloc_coef_power_list(coef_list)
+!!      subroutine dealloc_coef_power_list(coef_list)
+!!        type(powers_4_coefficients), intent(inout) :: coef_list
+!!
+!!      subroutine copy_dimless_from_ctl(coef_ctl, dimless_list)
+!!        type(ctl_array_cr), intent(in) :: coef_ctl
+!!        type(list_of_dimless), intent(inout) :: dimless_list
+!!      subroutine copy_power_and_names_from_ctl(coef_ctl, coef_list)
+!!        type(ctl_array_cr), intent(in) :: coef_ctl
+!!        type(powers_4_coefficients), intent(inout) :: coef_list
 !!@endverbatim
 !!
       module t_normalize_parameter
@@ -47,7 +54,7 @@
 !
 !>       List of parameters to construct coefficients
       type coef_parameters_list
-!>        Dimensionless numbers for heat flux
+!>        Dimensionless numbers list
         type(list_of_dimless) :: dimless_list
 !
 !>        Dimensionless numbers for heat flux
@@ -86,6 +93,9 @@
         type(powers_4_coefficients) :: coefs_h_source
 !>        Dimensionless numbers for heat compositional source
         type(powers_4_coefficients) :: coefs_c_source
+!
+!>        Dimensionless numbers for magnetic energy scaling
+        type(powers_4_coefficients) :: coefs_me_to_ke
       end type coef_parameters_list
 !
 !  ---------------------------------------------------------------------
@@ -107,14 +117,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_coef_power_list(coefs_list)
+      subroutine alloc_coef_power_list(coef_list)
 !
-      type(powers_4_coefficients), intent(inout) :: coefs_list
+      type(powers_4_coefficients), intent(inout) :: coef_list
 !
 !
-      allocate(coefs_list%name(coefs_list%num))
-      allocate(coefs_list%power(coefs_list%num))
-      if(coefs_list%num .gt. 0) coefs_list%power = 0.0d0
+      allocate(coef_list%name(coef_list%num))
+      allocate(coef_list%power(coef_list%num))
+      if(coef_list%num .gt. 0) coef_list%power = 0.0d0
 !
       end subroutine alloc_coef_power_list
 !
@@ -132,14 +142,53 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_coef_power_list(coefs_list)
+      subroutine dealloc_coef_power_list(coef_list)
 !
-      type(powers_4_coefficients), intent(inout) :: coefs_list
+      type(powers_4_coefficients), intent(inout) :: coef_list
 !
 !
-      deallocate(coefs_list%name, coefs_list%power)
+      deallocate(coef_list%name, coef_list%power)
 !
       end subroutine dealloc_coef_power_list
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine copy_dimless_from_ctl(coef_ctl, dimless_list)
+!
+      use t_control_array_charareal
+!
+      type(ctl_array_cr), intent(in) :: coef_ctl
+      type(list_of_dimless), intent(inout) :: dimless_list
+!
+!
+      call alloc_dimless_list(dimless_list)
+      if (dimless_list%num .le. 0) return
+!
+      dimless_list%name(1:dimless_list%num)                            &
+     &             = coef_ctl%c_tbl(1:dimless_list%num)
+      dimless_list%value(1:dimless_list%num)                           &
+     &             = coef_ctl%vect(1:dimless_list%num)
+!
+      end subroutine copy_dimless_from_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_power_and_names_from_ctl(coef_ctl, coef_list)
+!
+      use t_control_array_charareal
+!
+      type(ctl_array_cr), intent(in) :: coef_ctl
+      type(powers_4_coefficients), intent(inout) :: coef_list
+!
+!
+      call alloc_coef_power_list(coef_list)
+      if (coef_list%num .le. 0) return
+!
+      coef_list%name(1:coef_list%num) = coef_ctl%c_tbl(1:coef_list%num)
+      coef_list%power(1:coef_list%num) = coef_ctl%vect(1:coef_list%num)
+!
+      end subroutine copy_power_and_names_from_ctl
 !
 ! -----------------------------------------------------------------------
 !

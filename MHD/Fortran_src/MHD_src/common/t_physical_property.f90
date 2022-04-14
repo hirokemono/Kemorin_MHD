@@ -146,6 +146,9 @@
 !>       coefficient for magnetic induction
         real  (kind=kreal) :: coef_induct
 !
+!>       Ratio of magnetic energy to kinetic energy scale
+        real  (kind=kreal) :: me_to_ke_ratio
+!
 !>        Magneto convectio flag
         integer (kind=kint) :: iflag_magneto_cv = id_turn_OFF
 !>       external magnetic field (Constant)

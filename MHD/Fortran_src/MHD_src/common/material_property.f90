@@ -62,7 +62,6 @@
 !   For light element
       call set_composition_property(iphys, depth_top, depth_bottom,     &
      &    MHD_prop%MHD_coef_list, MHD_prop%cp_prop)
-      if (my_rank .eq. 0) write(*,*) ''
 !
       end subroutine set_material_property
 !
@@ -159,6 +158,7 @@
      &         'coefficient for Lorentz force:       ',                 &
      &              fl_prop%coef_lor
         end if
+        write(*,*) ''
       end if
 !
       end subroutine set_fluid_property
@@ -183,6 +183,7 @@
         cd_prop%coef_mag_p =   one
         cd_prop%coef_diffuse = one
         cd_prop%coef_induct =  one
+        cd_prop%me_to_ke_ratio = one
 !
         call construct_coefficient(cd_prop%coef_magne,                  &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magnetic,   &
@@ -198,6 +199,11 @@
 !
         call construct_coefficient(cd_prop%coef_induct,                 &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_induction,  &
+     &      depth_top, depth_bottom)
+!
+!
+        call construct_coefficient(cd_prop%me_to_ke_ratio,              &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_me_to_ke,   &
      &      depth_top, depth_bottom)
       end if
 !
@@ -215,6 +221,10 @@
       if (my_rank .eq. 0) then
         if(     cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
+          write(*,*) 'Ratio of magnetic energy to kinetic energy:',     &
+     &              cd_prop%me_to_ke_ratio
+          write(*,*) ''
+!
           write(*,*) 'coefficient for magnetic field:      ',           &
      &              cd_prop%coef_magne
           write(*,*) 'coefficient for magnetic potential:  ',           &
@@ -223,8 +233,8 @@
      &              cd_prop%coef_diffuse
           write(*,*) 'coefficient for induction:           ',           &
      &              cd_prop%coef_induct
+          write(*,*) ''
         end if
-!
       end if
 !
       end subroutine set_conductive_property
@@ -277,6 +287,7 @@
           if(iphys%base%i_heat_source .gt. 0) write(*,*)                &
      &         'coefficient for heat source:         ',                 &
      &              ht_prop%coef_source
+          write(*,*) ''
         end if
       end if
 !
@@ -330,6 +341,7 @@
           if(iphys%base%i_light_source .gt. 0) write(*,*)               &
      &         'coefficient for light element source:',                 &
      &              cp_prop%coef_source
+          write(*,*) ''
         end if
       end if
 !

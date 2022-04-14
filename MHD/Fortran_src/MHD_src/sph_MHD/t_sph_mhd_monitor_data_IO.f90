@@ -35,6 +35,7 @@
       use t_pickup_sph_spectr_data
       use t_no_heat_Nusselt
       use t_CMB_dipolarity
+      use t_sph_typical_scales
       use t_IO_step_parameter
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
@@ -62,6 +63,8 @@
         type(nusselt_number_data) :: Nusselt
 !>        Structure for dipolarity data
         type(dipolarity_data) :: dip
+!>        Structure for typical scale data
+        type(typical_scale_data) :: tsl
 !
 !
 !>        Structure of mean square data
@@ -158,13 +161,14 @@
       call cal_sph_monitor_data                                         &
      &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
      &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_MHD%fld,          &
-     &    monitor%pwr, monitor%WK_pwr, monitor%Nusselt, monitor%dip)
+     &    monitor%pwr, monitor%WK_pwr, monitor%Nusselt,                 &
+     &    monitor%dip, monitor%tsl)
 !
       call output_sph_monitor_data                                      &
      &   (monitor%ene_labels, time_d, SPH_MHD%sph%sph_params,           &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
      &    monitor%pwr, monitor%pick_coef, monitor%gauss_coef,           &
-     &    monitor%Nusselt, monitor%dip, SR_sig)
+     &    monitor%Nusselt, monitor%dip, monitor%tsl, SR_sig)
 !
       end subroutine output_rms_sph_mhd_control
 !

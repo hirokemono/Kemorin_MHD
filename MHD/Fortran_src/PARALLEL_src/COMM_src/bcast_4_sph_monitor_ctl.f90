@@ -46,6 +46,7 @@
       call bcast_ctl_type_c1(smonitor_ctl%volume_average_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%Nusselt_file_prefix)
+      call bcast_ctl_type_c1(smonitor_ctl%typ_scale_file_prefix_ctl)
 !
       call bcast_pickup_spectr_ctl(smonitor_ctl%pspec_ctl)
       call bcast_gauss_spectr_ctl(smonitor_ctl%g_pwr)

@@ -46,6 +46,14 @@
 !
       implicit none
 !
+!>        Field label for dipolarity
+!!         @f$ f_{dip} @f$
+      type(field_def), parameter :: dipolarity                          &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'dipolarity',                              &
+     &                math = '$ f_{dip} $')
+!
+!
       type dipolarity_data
 !>        Integer flag for dipolarity
         integer(kind = kint) :: iflag_dipolarity = 0
@@ -149,7 +157,8 @@
 !
       call open_dipolarity_file(dip, radius_CMB)
 !
-      write(id_dipolarity,'(i16,1p2e23.14e3)') i_step, time, dip%f_dip
+      write(id_dipolarity,'(i16,1pe23.14e3)',advance='NO') i_step, time
+      write(id_dipolarity,'(1pe23.14e3)') dip%f_dip
       close(id_dipolarity)
 !
       end subroutine write_dipolarity

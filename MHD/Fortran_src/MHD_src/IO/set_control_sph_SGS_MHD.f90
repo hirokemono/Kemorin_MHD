@@ -355,6 +355,9 @@
      &    MHD_prop%cp_prop, model_ctl%dless_ctl, model_ctl%eqs_ctl,     &
      &    MHD_prop%MHD_coef_list)
 !
+      call set_coefs_4_magnetic_scale                                   &
+     &   (model_ctl%bscale_ctl, MHD_prop%MHD_coef_list)
+!
 !   set boundary conditions
 !
       call set_control_SPH_MHD_bcs                                      &

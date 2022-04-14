@@ -246,6 +246,8 @@
      &    MHD_prop%cp_prop, Dmodel_ctl%dless_ctl, Dmodel_ctl%eqs_ctl,   &
      &    MHD_prop%MHD_coef_list)
 !
+      call set_coefs_4_magnetic_scale                                   &
+     &   (Dmodel_ctl%bscale_ctl, MHD_prop%MHD_coef_list)
 !
 !   set boundary conditions
 !
@@ -331,6 +333,7 @@
       use t_sph_mhd_monitor_data_IO
       use t_no_heat_Nusselt
       use t_CMB_dipolarity
+      use t_sph_typical_scales
 !
       use set_control_4_pickup_sph
 !
@@ -357,6 +360,8 @@
      &   (smonitor_ctl%fdip_ctl%fdip_file_prefix_ctl,                   &
      &    smonitor_ctl%fdip_ctl%fdip_truncation_ctl,                    &
      &    rj_fld, monitor%dip)
+      call set_ctl_typical_scale_params                                 &
+     &   (smonitor_ctl%typ_scale_file_prefix_ctl, rj_fld, monitor%tsl)
 !
       end subroutine set_control_SPH_MHD_monitors
 !

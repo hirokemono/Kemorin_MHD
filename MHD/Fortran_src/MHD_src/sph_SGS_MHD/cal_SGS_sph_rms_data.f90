@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine cal_SGS_sph_monitor_data                             &
 !!     &         (sph_params, sph_rj, sph_bc_U, leg, ipol, ipol_LES,    &
-!!     &          rj_fld, pwr, WK_pwr, Nusselt, dip)
+!!     &          rj_fld, pwr, WK_pwr, Nusselt, dip, tsl)
 !!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -21,6 +21,7 @@
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
 !!        type(nusselt_number_data), intent(inout) :: Nusselt
 !!        type(dipolarity_data), intent(inout) :: dip
+!!        type(typical_scale_data), intent(inout) :: tsl
 !!      subroutine cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,    &
 !!     &          ipol, ipol_LES, rj_fld, g_sph_rj, pwr, WK_pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -54,6 +55,7 @@
       use t_sum_sph_rms_data
       use t_no_heat_Nusselt
       use t_CMB_dipolarity
+      use t_sph_typical_scales
 !
       implicit none
 !
@@ -67,7 +69,7 @@
 !
       subroutine cal_SGS_sph_monitor_data                               &
      &         (sph_params, sph_rj, sph_bc_U, leg, ipol, ipol_LES,      &
-     &          rj_fld, pwr, WK_pwr, Nusselt, dip)
+     &          rj_fld, pwr, WK_pwr, Nusselt, dip, tsl)
 !
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
@@ -85,6 +87,7 @@
       type(sph_mean_square_work), intent(inout) :: WK_pwr
       type(nusselt_number_data), intent(inout) :: Nusselt
       type(dipolarity_data), intent(inout) :: dip
+      type(typical_scale_data), intent(inout) :: tsl
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
@@ -101,6 +104,9 @@
       call cal_CMB_dipolarity                                           &
      &   (sph_params%nlayer_CMB, sph_params, sph_rj,                    &
      &    ipol, leg%g_sph_rj, rj_fld, pwr, WK_pwr, dip)
+!
+      if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
+      call cal_typical_scales(rj_fld, pwr, tsl)
 !
       end subroutine cal_SGS_sph_monitor_data
 !

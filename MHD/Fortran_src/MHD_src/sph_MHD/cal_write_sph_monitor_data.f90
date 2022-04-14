@@ -12,7 +12,7 @@
 !!     &          pwr, WK_pwr, Nusselt, dip)
 !!      subroutine output_sph_monitor_data                              &
 !!     &         (ene_labels, time_d, sph_params, sph_rj, ipol, rj_fld, &
-!!     &          pwr, pick_coef, gauss_coef, Nusselt, dip, SR_sig)
+!!     &          pwr, pick_coef, gauss_coef, Nusselt, dip, tsl, SR_sig)
 !!      subroutine output_sph_mean_square_files                         &
 !!     &         (ene_labels, time_d, sph_params, sph_rj, pwr)
 !!
@@ -20,6 +20,7 @@
 !!     &          sph_bc_U, ipol, rj_fld, Nusselt)
 !!      subroutine cal_write_dipolarity(time_d, sph_params, sph_rj, leg,&
 !!     &          ipol, rj_fld, pwr, WK_pwr, dip)
+!!      subroutine cal_write_typical_scale(time_d, rj_fld, pwr, tsl)
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -34,6 +35,7 @@
 !!        type(nusselt_number_data), intent(inout) :: Nusselt
 !!        type(dipolarity_data), intent(inout) :: dip
 !!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(typical_scale_data), intent(inout) :: tsl
 !!@endverbatim
 !
       module cal_write_sph_monitor_data
@@ -53,6 +55,7 @@
       use t_pickup_sph_spectr_data
       use t_no_heat_Nusselt
       use t_CMB_dipolarity
+      use t_sph_typical_scales
       use t_energy_label_parameters
 !
 !  --------------------------------------------------------------------
@@ -63,7 +66,7 @@
 !
       subroutine cal_sph_monitor_data                                   &
      &         (sph_params, sph_rj, sph_bc_U, leg, ipol, rj_fld,        &
-     &          pwr, WK_pwr, Nusselt, dip)
+     &          pwr, WK_pwr, Nusselt, dip, tsl)
 !
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
@@ -80,6 +83,7 @@
       type(sph_mean_square_work), intent(inout) :: WK_pwr
       type(nusselt_number_data), intent(inout) :: Nusselt
       type(dipolarity_data), intent(inout) :: dip
+      type(typical_scale_data), intent(inout) :: tsl
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
@@ -97,13 +101,16 @@
      &   (sph_params%nlayer_CMB, sph_params, sph_rj, ipol,              &
      &    leg%g_sph_rj, rj_fld, pwr, WK_pwr, dip)
 !
+      if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
+      call cal_typical_scales(rj_fld, pwr, tsl)
+!
       end subroutine cal_sph_monitor_data
 !
 !  --------------------------------------------------------------------
 !
       subroutine output_sph_monitor_data                                &
      &         (ene_labels, time_d, sph_params, sph_rj, ipol, rj_fld,   &
-     &          pwr, pick_coef, gauss_coef, Nusselt, dip, SR_sig)
+     &          pwr, pick_coef, gauss_coef, Nusselt, dip, tsl, SR_sig)
 !
       use t_solver_SR
       use output_sph_pwr_volume_file
@@ -117,6 +124,7 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
       type(dipolarity_data), intent(in) :: dip
+      type(typical_scale_data), intent(in) :: tsl
 !
       type(sph_mean_squares), intent(inout) :: pwr
       type(picked_spectrum_data), intent(inout) :: pick_coef
@@ -135,6 +143,8 @@
      &    time_d%i_time_step, time_d%time, Nusselt)
       call write_dipolarity(time_d%i_time_step, time_d%time,            &
      &    sph_params%radius_CMB, ipol, pwr, dip)
+      call write_typical_scales(time_d%i_time_step, time_d%time,        &
+     &                          pwr, tsl)
 !
       call write_each_picked_specr_file                                 &
      &   (time_d, sph_rj, rj_fld, pick_coef)
@@ -224,6 +234,23 @@
      &    sph_params%radius_CMB, ipol, pwr, dip)
 !
       end subroutine cal_write_dipolarity
+!
+!  --------------------------------------------------------------------
+!
+      subroutine cal_write_typical_scale(time_d, rj_fld, pwr, tsl)
+!
+      type(time_data), intent(in) :: time_d
+      type(phys_data), intent(in) :: rj_fld
+      type(sph_mean_squares), intent(in) :: pwr
+!
+      type(typical_scale_data), intent(inout) :: tsl
+!
+!
+      call cal_typical_scales(rj_fld, pwr, tsl)
+      call write_typical_scales(time_d%i_time_step, time_d%time,        &
+     &                          pwr, tsl)
+!
+      end subroutine cal_write_typical_scale
 !
 !  --------------------------------------------------------------------
 !
