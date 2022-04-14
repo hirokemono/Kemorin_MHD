@@ -172,7 +172,7 @@
 !
       if(tsl%iflag_ub_scales .le. izero) return
       if((tsl%icomp_kene + tsl%icomp_mene) .le. 0) return
-      if(my_rank .ne. pwr%irank_m) return
+      if(my_rank .ne. pwr%v_spectr(1)%irank_m) return
 !
       call open_dipolarity_file(tsl)
 !
@@ -205,7 +205,7 @@
       if(tsl%icomp_kene .le. 0)                                         &
      &          tsl%icomp_kene = find_rms_address_4_kene(pwr, rj_fld)
       if(tsl%icomp_mene .le. 0)                                         &
-     &          tsl%icomp_kene = find_rms_address_4_mene(pwr, rj_fld)
+     &          tsl%icomp_mene = find_rms_address_4_mene(pwr, rj_fld)
 !
       if((tsl%icomp_kene + tsl%icomp_mene) .le. 0) return
       if(tsl%iflag_ub_scales .le. izero) return
@@ -332,6 +332,7 @@
           dm_mag = dm_mag + dble(m) * v_pwr%v_m(m,icomp_mene+2)
         end do
         dm_mag = dm_mag / v_pwr%v_sq(icomp_mene+2)
+        dl_mag = dl_mag / v_pwr%v_sq(icomp_mene+2)
       end if
 !
       end subroutine cal_typical_scale
