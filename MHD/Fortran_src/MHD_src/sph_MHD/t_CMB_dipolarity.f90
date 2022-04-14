@@ -194,10 +194,11 @@
       integer(kind = kint_gl) :: num64
 !
 !
-!
       if(ipol%base%i_magne .le. 0) return
       if(dip%iflag_dipolarity .le. izero) return
-      if(allocated(dip%shl_l)) call alloc_dipolarity_work(dip)
+      if(allocated(dip%shl_l) .eqv. .FALSE.) then
+        call alloc_dipolarity_work(dip)
+      end if
 !
       if(dip%ltr_max .le. 0) dip%ltr_max = sph_params%l_truncation
       dip%kr_for_rms(1) = nlayer_CMB
@@ -211,6 +212,7 @@
 !
       j = find_local_sph_address(sph_rj, 1, 0)
       if(j .gt. 0)  dip%pwr_g10_l(1) = WK_pwr%shl_rj(nlayer_CMB,j,1)
+!
       call calypso_mpi_reduce_real(dip%pwr_g10_l, dip%pwr_g10,          &
      &    cast_long(ione), MPI_SUM, pwr%irank_l)
 !
