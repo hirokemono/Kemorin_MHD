@@ -99,8 +99,8 @@
 !
       if(dip%iflag_dipolarity .gt. 0) then
         false_flag = .TRUE.
-        do k = 1, pwr%nri_rms
-          if(pwr%kr_4_rms(k) .eq. sph_params%nlayer_CMB) then
+        do knum = 1, pwr%nri_rms
+          if(pwr%kr_4_rms(knum) .eq. sph_params%nlayer_CMB) then
             false_flag = .FALSE.
             exit
           end if
@@ -121,6 +121,8 @@
           pwr%kr_4_rms(pwr%nri_rms) = sph_params%nlayer_CMB
           deallocate(kr_tmp)
         end if
+!
+        if(dip%ltr_max .le. 0) dip%ltr_max = sph_params%l_truncation
       end if
 !
       do i = 1, pwr%num_vol_spectr
@@ -187,7 +189,7 @@
         end if
 !
         if(dip%iflag_dipolarity .gt. 0) then
-          if(pwr%kr_4_rms(k) .eq. sph_params%nlayer_CMB) then
+          if(pwr%kr_4_rms(knum) .eq. sph_params%nlayer_CMB) then
             dip%krms_CMB = knum
           end if
         end if
