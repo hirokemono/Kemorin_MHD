@@ -97,9 +97,7 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, Nusselt)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
-      call cal_CMB_dipolarity                                           &
-     &   (sph_params%nlayer_CMB, sph_params, sph_rj, ipol,              &
-     &    leg%g_sph_rj, rj_fld, pwr, WK_pwr, dip)
+      call cal_CMB_dipolarity(my_rank, rj_fld, pwr, dip)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
       call cal_typical_scales(rj_fld, pwr, tsl)
@@ -141,7 +139,7 @@
 !
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
      &    time_d%i_time_step, time_d%time, Nusselt)
-      call write_dipolarity(time_d%i_time_step, time_d%time,            &
+      call write_dipolarity(my_rank, time_d%i_time_step, time_d%time,   &
      &    sph_params%radius_CMB, ipol, pwr, dip)
       call write_typical_scales(time_d%i_time_step, time_d%time,        &
      &                          pwr, tsl)
@@ -227,10 +225,8 @@
       type(dipolarity_data), intent(inout) :: dip
 !
 !
-      call cal_CMB_dipolarity                                           &
-     &   (sph_params%nlayer_CMB, sph_params, sph_rj, ipol,              &
-     &    leg%g_sph_rj, rj_fld, pwr, WK_pwr, dip)
-      call write_dipolarity(time_d%i_time_step, time_d%time,            &
+      call cal_CMB_dipolarity(my_rank, rj_fld, pwr, dip)
+      call write_dipolarity(my_rank, time_d%i_time_step, time_d%time,   &
      &    sph_params%radius_CMB, ipol, pwr, dip)
 !
       end subroutine cal_write_dipolarity

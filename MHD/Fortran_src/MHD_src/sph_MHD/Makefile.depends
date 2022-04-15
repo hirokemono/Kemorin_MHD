@@ -284,7 +284,7 @@ sum_rot_coriolis_terms_rlm.o: $(MHD_SPH_DIR)/sum_rot_coriolis_terms_rlm.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_rotation_of_forces.o: $(MHD_SPH_DIR)/sum_rotation_of_forces.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_physical_property.o t_phys_address.o t_base_force_labels.o t_explicit_term_labels.o t_phys_data.o copy_nodal_fields.o cal_vorticity_terms_adams.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_CMB_dipolarity.o: $(MHD_SPH_DIR)/t_CMB_dipolarity.f90 m_precision.o m_constants.o calypso_mpi.o t_phys_data.o t_rms_4_sph_spectr.o m_base_field_labels.o t_control_array_character.o t_control_array_integer.o calypso_mpi_real.o t_spheric_parameter.o t_spheric_rj_data.o t_sum_sph_rms_data.o transfer_to_long_integers.o sum_sph_rms_data.o cal_rms_by_sph_spectr.o cal_ave_4_rms_vector_sph.o set_parallel_file_name.o write_field_labels.o
+t_CMB_dipolarity.o: $(MHD_SPH_DIR)/t_CMB_dipolarity.f90 m_precision.o m_constants.o t_phys_data.o t_rms_4_sph_spectr.o m_base_field_labels.o t_control_array_character.o t_control_array_integer.o t_spheric_parameter.o t_spheric_rj_data.o set_parallel_file_name.o write_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_SPH_MHD_model_data.o: $(MHD_SPH_DIR)/t_SPH_MHD_model_data.f90 m_precision.o t_control_parameter.o t_poloidal_rotation.o t_radial_reference_temp.o t_boundary_data_sph_MHD.o t_bc_data_list.o t_sph_boundary_input_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

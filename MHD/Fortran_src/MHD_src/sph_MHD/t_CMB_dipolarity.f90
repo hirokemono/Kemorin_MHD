@@ -7,31 +7,25 @@
 !> @brief  Evaluate dipolarity at CMB
 !!
 !!@verbatim
-!!      subroutine dealloc_dipolarity_work(dip)
-!!        type(dipolarity_data), intent(inout) :: dip
 !!      subroutine set_ctl_dipolarity_params                            &
 !!     &         (fdip_file_prefix, fdip_truncation, rj_fld, dip)
 !!        type(read_character_item), intent(in) :: fdip_file_prefix
 !!        type(read_integer_item), intent(in) :: fdip_truncation
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(dipolarity_data), intent(inout) :: dip
-!!      subroutine write_dipolarity(i_step, time, radius_CMB,           &
+!!      subroutine write_dipolarity(id_rank, i_step, time, radius_CMB,  &
 !!     &                            ipol, pwr, dip)
+!!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: i_step
 !!        real(kind = kreal), intent(in) :: time
 !!        real(kind = kreal), intent(in) :: radius_CMB
 !!        type(phys_address), intent(in) :: ipol
 !!        type(sph_mean_squares), intent(in) :: pwr
 !!        type(dipolarity_data), intent(in) :: dip
-!!      subroutine cal_CMB_dipolarity(nlayer_CMB, sph_params, sph_rj,   &
-!!     &          ipol, g_sph_rj, rj_fld, pwr, WK_pwr, dip)
-!!        type(sph_rj_grid), intent(in) :: sph_rj
-!!        type(phys_address), intent(in) :: ipol
+!!      subroutine cal_CMB_dipolarity(id_rank, rj_fld, pwr, dip)
+!!        integer, intent(in) :: id_rank
 !!        type(phys_data), intent(in) :: rj_fld
-!!        integer(kind = kint), intent(in) :: ltr_max, nlayer_CMB
-!!        real(kind = kreal), intent(in)                                &
-!!     &      :: g_sph_rj(sph_rj%nidx_rj(2),13)
-!!        type(sph_mean_square_work), intent(inout) :: WK_pwr
+!!        type(sph_mean_squares), intent(in) :: pwr
 !!        real(kind = kreal), intent(inout) :: f_dip
 !!@endverbatim
 !
@@ -39,7 +33,6 @@
 !
       use m_precision
       use m_constants
-      use calypso_mpi
 !
       use t_phys_data
       use t_rms_4_sph_spectr
@@ -60,21 +53,12 @@
 !>        File prefix for dipolarity data
         character(len = kchara) :: dipolarity_prefix= 'dipolarity'
 !
-!>        Radial grid point for dipolarity
-        integer(kind = kint) :: kr_for_rms(1)
+!>        Radial address for dipolarity
+        integer(kind = kint) :: krms_CMB
+!>        magnetic energy address
+        integer(kind = kint) :: icomp_mene = 0
 !>        Truncation degree to evaluate dipolarity
         integer(kind = kint) :: ltr_max
-!>        magnetic energy spectrum as a function of degree
-        real(kind = kreal), allocatable :: shl_l(:,:)
-!>        local magnetic energy spectrum as a function of degree
-        real(kind = kreal), allocatable :: shl_l_local(:,:)
-!
-!>        magnetic energy at CMB
-        real(kind = kreal) :: me_cmb_d(3)
-!>        dipole component of magnetic energy at CMB
-        real(kind = kreal) :: pwr_g10(1)
-!>        local dipole component of magnetic energy at CMB
-        real(kind = kreal) :: pwr_g10_l(1)
 !
 !>        Dipolarity
         real(kind = kreal) :: f_dip
@@ -82,21 +66,9 @@
 !
       integer(kind = kint), parameter, private :: id_dipolarity = 36
 !
-      private :: alloc_dipolarity_work
-!
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_dipolarity_work(dip)
-!
-      type(dipolarity_data), intent(inout) :: dip
-!
-      deallocate(dip%shl_l, dip%shl_l_local)
-!
-      end subroutine dealloc_dipolarity_work
 !
 ! -----------------------------------------------------------------------
 !
@@ -140,9 +112,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_dipolarity(i_step, time, radius_CMB,             &
+      subroutine write_dipolarity(id_rank, i_step, time, radius_CMB,    &
      &                            ipol, pwr, dip)
 !
+      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
       real(kind = kreal), intent(in) :: radius_CMB
@@ -153,7 +126,7 @@
 !
       if(dip%iflag_dipolarity .le. izero) return
       if(ipol%base%i_magne .le. 0) return
-      if(my_rank .ne. pwr%irank_l) return
+      if(id_rank .ne. pwr%irank_l) return
 !
       call open_dipolarity_file(dip, radius_CMB)
 !
@@ -165,93 +138,49 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_CMB_dipolarity(nlayer_CMB, sph_params, sph_rj,     &
-     &          ipol, g_sph_rj, rj_fld, pwr, WK_pwr, dip)
-!
-      use calypso_mpi_real
+      subroutine cal_CMB_dipolarity(id_rank, rj_fld, pwr, dip)
 !
       use t_spheric_parameter
       use t_spheric_rj_data
-      use t_sum_sph_rms_data
 !
-      use transfer_to_long_integers
-      use sum_sph_rms_data
-      use cal_rms_by_sph_spectr
-      use cal_ave_4_rms_vector_sph
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(phys_address), intent(in) :: ipol
+      integer, intent(in) :: id_rank
       type(phys_data), intent(in) :: rj_fld
-      integer(kind = kint), intent(in) :: nlayer_CMB
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       type(sph_mean_squares), intent(in) :: pwr
 !
-      type(sph_mean_square_work), intent(inout) :: WK_pwr
       type(dipolarity_data), intent(inout) :: dip
 !
-      integer(kind = kint) :: j
-      integer(kind = kint_gl) :: num64
+!>        magnetic energy at CMB
+        real(kind = kreal) :: me_cmb_d(3)
+!>        dipole component of magnetic energy at CMB
+        real(kind = kreal) :: pwr_g10
+!
+      integer(kind = kint) :: l
 !
 !
-      if(ipol%base%i_magne .le. 0) return
       if(dip%iflag_dipolarity .le. izero) return
-      if(allocated(dip%shl_l) .eqv. .FALSE.) then
-        call alloc_dipolarity_work(dip)
-      end if
 !
-      if(dip%ltr_max .le. 0) dip%ltr_max = sph_params%l_truncation
-      dip%kr_for_rms(1) = nlayer_CMB
-      dip%pwr_g10(1) =    0.0d0
-      dip%pwr_g10_l(1) =  0.0d0
+      if(dip%icomp_mene .le. 0)                                         &
+     &          dip%icomp_mene = find_rms_address_4_mene(pwr, rj_fld)
+      if(dip%icomp_mene .le. 0) return
 !
-      call cal_rms_sph_spec_one_field                                   &
-     &   (sph_rj, ipol, n_vector, g_sph_rj, ipol%base%i_magne,          &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,               &
-     &    WK_pwr%shl_rj(0,1,1))
+      if(id_rank .eq. pwr%irank_l) then
+        pwr_g10 = pwr%shl_l(dip%krms_CMB,1,dip%icomp_mene)
 !
-      j = find_local_sph_address(sph_rj, 1, 0)
-      if(j .gt. 0)  dip%pwr_g10_l(1) = WK_pwr%shl_rj(nlayer_CMB,j,1)
-!
-      call calypso_mpi_reduce_real(dip%pwr_g10_l, dip%pwr_g10,          &
-     &    cast_long(ione), MPI_SUM, pwr%irank_l)
-!
-!$omp parallel workshare
-      dip%shl_l_local(0:dip%ltr_max,1:3) = 0.0d0
-      dip%shl_l(0:dip%ltr_max,1:3) =       0.0d0
-!$omp end parallel workshare
-!
-      call sum_sph_rms_by_degree                                        &
-     &   (dip%ltr_max, sph_rj%nidx_rj, ione, dip%kr_for_rms,            &
-     &    WK_pwr%istack_mode_sum_l,  WK_pwr%item_mode_sum_l,            &
-     &    n_vector, WK_pwr%shl_rj, dip%shl_l_local(0,1))
-!
-      num64 = cast_long(3 * (dip%ltr_max + 1))
-      call calypso_mpi_reduce_real(dip%shl_l_local, dip%shl_l, num64,   &
-     &                             MPI_SUM, pwr%irank_l)
-!
-      dip%me_cmb_d(1:3) = 0.0d0
-      if(my_rank .eq. pwr%irank_l) then
-        call sum_sph_rms_all_modes                                      &
-     &     (dip%ltr_max, ione, ithree, dip%shl_l, dip%me_cmb_d(1))
-!
-        dip%f_dip = dip%pwr_g10(1) / dip%me_cmb_d(1)
+        me_cmb_d(1:3) = 0.0d0
+        do l = 1, dip%ltr_max
+          me_cmb_d(1) = me_cmb_d(1)                                     &
+     &                 + pwr%shl_l(dip%krms_CMB,l,dip%icomp_mene)
+          me_cmb_d(2) = me_cmb_d(2)                                     &
+     &                 + pwr%shl_l(dip%krms_CMB,l,dip%icomp_mene)
+          me_cmb_d(3) = me_cmb_d(3)                                     &
+     &                 + pwr%shl_l(dip%krms_CMB,l,dip%icomp_mene)
+        end do
+        dip%f_dip = pwr_g10 / me_cmb_d(1)
       end if
 !
       end subroutine cal_CMB_dipolarity
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_dipolarity_work(dip)
-!
-      type(dipolarity_data), intent(inout) :: dip
-!
-      allocate(dip%shl_l_local(0:dip%ltr_max,3))
-      allocate(dip%shl_l(0:dip%ltr_max,3))
-!
-      end subroutine alloc_dipolarity_work
-!
 ! -----------------------------------------------------------------------
 !
       subroutine open_dipolarity_file(dip, radius_CMB)
@@ -283,6 +212,31 @@
       write(id_dipolarity,'(a)') ''
 !
       end subroutine open_dipolarity_file
+!
+! -----------------------------------------------------------------------
+!
+      integer(kind = kint)                                              &
+     &          function find_rms_address_4_mene(pwr, rj_fld)
+!
+      use m_base_field_labels
+      use t_rms_4_sph_spectr
+!
+      type(phys_data), intent(in) :: rj_fld
+      type(sph_mean_squares), intent(in) :: pwr
+!
+      integer(kind = kint) :: j_fld, i_fld
+!
+      do j_fld = 1, pwr%num_fld_sq
+        i_fld = pwr%id_field(j_fld)
+!
+        find_rms_address_4_mene = 0
+        if(rj_fld%phys_name(i_fld) .eq. magnetic_field%name) then
+          find_rms_address_4_mene = pwr%istack_comp_sq(j_fld-1) + 1
+          exit
+        end if
+      end do
+!
+      end function find_rms_address_4_mene
 !
 ! -----------------------------------------------------------------------
 !

@@ -31,6 +31,7 @@
       use t_sum_sph_rms_data
       use t_pickup_sph_spectr_data
       use t_energy_label_parameters
+      use t_CMB_dipolarity
 !
       implicit none
 !
@@ -46,6 +47,9 @@
         type(sph_mean_squares) :: pwr
 !>        Work structure of mean square data
         type(sph_mean_square_work) :: WK_pwr
+!
+!>        Structure for dipolarity data
+        type(dipolarity_data) :: dip
       end type sph_spectr_monitor_data
 !
 ! -----------------------------------------------------------------------
@@ -69,7 +73,7 @@
       call init_energy_labels_w_filter(monitor_s%ene_labels)
       call init_rms_4_sph_spectr                                        &
      &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
-     &    monitor_s%pwr, monitor_s%WK_pwr)
+     &    monitor_s%pwr, monitor_s%WK_pwr, monitor_s%dip)
 !
       end subroutine init_rms_4_sph_spectr_util
 !

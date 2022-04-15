@@ -139,7 +139,7 @@
 !
 !   set pickup layer
       if(pwr%iflag_layer_rms_spec .eq. 0) then
-        pwr%nri_rms = 0
+        call alloc_num_spec_layer(izero, pwr)
       else if(lp_ctl%idx_spec_layer_ctl%num .eq. 1                      &
         .and. lp_ctl%idx_spec_layer_ctl%ivec(1) .lt. 0) then
         pwr%nri_rms = -1

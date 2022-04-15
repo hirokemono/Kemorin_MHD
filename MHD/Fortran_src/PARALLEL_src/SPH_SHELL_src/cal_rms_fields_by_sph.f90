@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_rms_4_sph_spectr                                &
-!!     &         (sph_params, sph_rj, rj_fld, pwr, WK_pwr)
+!!     &         (sph_params, sph_rj, rj_fld, pwr, WK_pwr, dip)
 !!      subroutine cal_mean_squre_in_shell(sph_params,                  &
 !!     &          sph_rj, ipol, rj_fld, g_sph_rj, pwr, WK_pwr)
 !!      subroutine cal_correlate_in_shell(sph_params,                   &
@@ -17,6 +17,7 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
+!!        type(dipolarity_data), intent(inout) :: dip
 !!
 !!      subroutine global_sum_sph_layerd_square                         &
 !!     &         (l_truncation, WK_pwr, pwr)
@@ -52,6 +53,7 @@
       use t_sum_sph_rms_data
       use t_rms_4_sph_spectr
       use t_sph_volume_mean_square
+      use t_CMB_dipolarity
 !
       implicit none
 !
@@ -64,7 +66,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_rms_4_sph_spectr                                  &
-     &         (sph_params, sph_rj, rj_fld, pwr, WK_pwr)
+     &         (sph_params, sph_rj, rj_fld, pwr, WK_pwr, dip)
 !
       use calypso_mpi
 !
@@ -79,9 +81,12 @@
 !
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
+      type(dipolarity_data), intent(inout) :: dip
 !
+      logical :: false_flag
       integer(kind = kint) :: i_fld, j_fld
       integer(kind = kint) :: i, k, knum, num_field
+      integer(kind = kint), allocatable :: kr_tmp(:)
 !
 !
       if(pwr%nri_rms .eq. -1) then
@@ -92,7 +97,32 @@
         end do
       end if
 !
-
+      if(dip%iflag_dipolarity .gt. 0) then
+        false_flag = .TRUE.
+        do k = 1, pwr%nri_rms
+          if(pwr%kr_4_rms(k) .eq. sph_params%nlayer_CMB) then
+            false_flag = .FALSE.
+            exit
+          end if
+        end do
+!
+        if(false_flag) then
+          allocate(kr_tmp(1:pwr%nri_rms))
+          if(pwr%nri_rms .gt. 0) then
+            kr_tmp(1:pwr%nri_rms) = pwr%kr_4_rms(1:pwr%nri_rms)
+          end if
+          call dealloc_num_spec_layer(pwr)
+!
+          knum = pwr%nri_rms + 1
+          call alloc_num_spec_layer(knum, pwr)
+          if(pwr%nri_rms .gt. 1) then
+            pwr%kr_4_rms(1:pwr%nri_rms-1) = kr_tmp(1:pwr%nri_rms-1)
+          end if
+          pwr%kr_4_rms(pwr%nri_rms) = sph_params%nlayer_CMB
+          deallocate(kr_tmp)
+        end if
+      end if
+!
       do i = 1, pwr%num_vol_spectr
         call find_radial_grid_index(sph_rj, sph_params%nlayer_ICB,      &
      &      pwr%v_spectr(i)%r_inside, pwr%v_spectr(i)%kr_inside)
@@ -154,6 +184,12 @@
           pwr%r_4_rms(knum) = 0.0d0
         else
           pwr%r_4_rms(knum) = sph_rj%radius_1d_rj_r(k)
+        end if
+!
+        if(dip%iflag_dipolarity .gt. 0) then
+          if(pwr%kr_4_rms(k) .eq. sph_params%nlayer_CMB) then
+            dip%krms_CMB = knum
+          end if
         end if
       end do
 !
@@ -536,7 +572,7 @@
       end do
 !
       icou = 0
-      if(pwr%iflag_layer_rms_spec .gt. izero)  then
+      if(pwr%nri_rms .gt. izero)  then
         pwr%irank_m =  mod(int((icou+1)*rinc)+ip_ave, nprocs)
         pwr%irank_l =  mod(int((icou+2)*rinc)+ip_ave, nprocs)
         pwr%irank_lm = mod(int((icou+3)*rinc)+ip_ave, nprocs)

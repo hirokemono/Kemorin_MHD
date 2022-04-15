@@ -190,7 +190,7 @@
       call init_energy_labels_base(monitor%ene_labels)
       call init_rms_4_sph_spectr                                        &
      &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
-     &    monitor%pwr, monitor%WK_pwr)
+     &    monitor%pwr, monitor%WK_pwr, monitor%dip)
 !
       end subroutine init_rms_4_sph_spectr_4_mhd
 !

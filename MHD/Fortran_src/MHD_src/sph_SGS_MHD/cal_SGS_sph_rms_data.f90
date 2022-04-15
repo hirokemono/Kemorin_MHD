@@ -71,6 +71,7 @@
      &         (sph_params, sph_rj, sph_bc_U, leg, ipol, ipol_LES,      &
      &          rj_fld, pwr, WK_pwr, Nusselt, dip, tsl)
 !
+      use calypso_mpi
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
       use pickup_gauss_coefficients
@@ -101,9 +102,7 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, Nusselt)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
-      call cal_CMB_dipolarity                                           &
-     &   (sph_params%nlayer_CMB, sph_params, sph_rj,                    &
-     &    ipol, leg%g_sph_rj, rj_fld, pwr, WK_pwr, dip)
+      call cal_CMB_dipolarity(my_rank, rj_fld, pwr, dip)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
       call cal_typical_scales(rj_fld, pwr, tsl)
