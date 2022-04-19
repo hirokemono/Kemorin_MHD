@@ -27,7 +27,7 @@
 !
       integer :: i
 !
-      call read_control_file_psf_compare(0, tave_sph_ctl1)
+      call read_control_file_sph_monitor(0, tave_sph_ctl1)
       if(tave_sph_ctl1%degree_range_ctl%iflag .eq. 0) then
         write(*,*) 'Set spharical harmonics range'
         stop

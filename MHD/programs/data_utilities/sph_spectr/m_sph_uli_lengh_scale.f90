@@ -24,6 +24,7 @@
 !
 !
       integer(kind = kint), parameter :: id_file_rms_l =    35
+      integer(kind = kint), parameter :: id_file_rms_m =    37
       integer(kind = kint), parameter :: id_file_lscale =   44
 !
       type(read_sph_spectr_data), save :: sph_OUT1
@@ -33,7 +34,7 @@
 !
 !
       private :: sph_OUT1, total_msq, spec_times_l
-      private :: id_file_rms_l, id_file_lscale
+      private :: id_file_rms_l, id_file_rms_m, id_file_lscale
       private :: cal_uli_length_scale_sph
 !
 !   --------------------------------------------------------------------
@@ -97,7 +98,7 @@
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
      &       'step= ', sph_IN%i_step,                                   &
-     &       ' averaging finished. Count=   ', icou
+     &       ' evaluation finished. Count=  ', icou
         if (sph_IN%time .ge. spec_evo_p%end_time) exit
       end do
 !

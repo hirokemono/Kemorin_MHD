@@ -151,6 +151,9 @@
       call set_initial_temperature                                      &
      &   (sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                        &
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
+!      call set_initial_temp2                                           &
+!     &   (sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                       &
+!     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !  Set initial composition if composition is exist
       call set_initial_composition                                      &
@@ -334,6 +337,96 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine set_initial_temp2                                      &
+     &         (sph_bc_T, bcs_T, sph, ipol, rj_fld)
+!
+      type(sph_boundary_type), intent(in) :: sph_bc_T
+      type(sph_scalar_boundary_data), intent(in) :: bcs_T
+      type(sph_grids), intent(in) :: sph
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(inout) :: rj_fld
+!
+      integer :: jj, k, l
+      integer ( kind = kint) :: inod, i_center
+      real (kind = kreal) :: pi, rr, xr, shell
+!      real(kind = kreal), parameter :: A_temp = 0.1d0
+      real(kind = kreal), parameter :: A_temp = 0.01d0
+!
+!
+      if(ipol%base%i_temp .eq. izero) return
+!
+!$omp parallel do
+      do inod = 1, nnod_rj(sph)
+        rj_fld%d_fld(inod,ipol%base%i_temp) = zero
+      end do
+!$omp end parallel do
+!
+      pi = four * atan(one)
+      shell = sph_bc_T%r_CMB(0) - sph_bc_T%r_ICB(0)
+!
+!   search address for (l = m = 0)
+      jj = find_local_sph_mode_address(sph, 0, 0)
+!
+!   set reference temperature if (l = m = 0) mode is there
+      if (jj .gt. 0) then
+        do k = 1, sph_bc_T%kr_in-1
+          inod = local_sph_data_address(sph, k, jj)
+          rj_fld%d_fld(inod,ipol%base%i_temp) = 1.0d0
+        end do
+        do k = sph_bc_T%kr_in, sph_bc_T%kr_out
+          inod = local_sph_data_address(sph, k, jj)
+          rr = radius_1d_rj_r(sph, k)
+          rj_fld%d_fld(inod,ipol%base%i_temp)                           &
+     &         = ((20.d0/13.0d0) / rr  - 1.0d0 ) * 7.0d0 / 13.0d0
+        end do
+!
+        do k = 1, sph_bc_T%kr_out
+          inod = local_sph_data_address(sph, k, jj)
+          rj_fld%d_fld(inod,ipol%base%i_temp)                           &
+     &         = 0.2d0 * rj_fld%d_fld(inod,ipol%base%i_temp)
+        end do
+      end if
+!
+!
+!    Find local addrtess for (l,m) = (4,4)
+      do l = 1, sph%sph_params%l_truncation
+        jj =  find_local_sph_mode_address(sph, l, l)
+!      jj =  find_local_sph_mode_address(sph, 5, 5)
+!
+!    If data for (l,m) = (4,4) is there, set initial temperature
+        if (jj .gt. 0) then
+!    Set initial field from ICB to CMB
+          do k = sph_bc_T%kr_in, sph_bc_T%kr_out
+!
+!    Set radius data
+            rr = radius_1d_rj_r(sph, k)
+!    Set 1d address to substitute at (Nr, j)
+            inod = local_sph_data_address(sph, k, jj)
+!
+!    set initial temperature
+            xr = two * rr                                               &
+     &        - one * (sph_bc_T%r_CMB(0) + sph_bc_T%r_ICB(0)) / shell
+            rj_fld%d_fld(inod,ipol%base%i_temp)                         &
+     &       = (one-three*xr**2+three*xr**4-xr**6)                      &
+     &        * A_temp * three / (sqrt(two*pi))
+          end do
+        end if
+      end do
+!
+!    Center
+      i_center = inod_rj_center(sph)
+      if(i_center .gt. 0) then
+        jj = find_local_sph_mode_address(sph, 0, 0)
+        inod = local_sph_data_address(sph, 1, jj)
+        rj_fld%d_fld(i_center,ipol%base%i_temp)                         &
+     &                 = rj_fld%d_fld(inod,ipol%base%i_temp)
+      end if
+      write(*,*) 'tahotahotaho', my_rank
+!
+      end subroutine set_initial_temp2
+!
+!-----------------------------------------------------------------------
+!
       subroutine set_initial_composition                                &
      &         (sph_bc_C, bcs_C, sph, ipol, rj_fld)
 !
@@ -414,7 +507,8 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
-      real(kind = kreal), parameter :: b_adjust = 1.0e-3
+      real(kind = kreal), parameter :: b_adjust = 1.0e0
+!      real(kind = kreal), parameter :: b_adjust = 1.0e-3
 !
       real (kind = kreal) :: pi, rr
       integer(kind = kint) :: is, it, is_ICB, is_CMB

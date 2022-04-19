@@ -48,7 +48,7 @@
       write(*,*) ''
       write(*,*) 'Input picked harmonics coefficients file prefix'
 !
-      call read_control_file_psf_compare(0, tave_sph_ctl1)
+      call read_control_file_sph_monitor(0, tave_sph_ctl1)
 !
       if(tave_sph_ctl1%Nusselt_file_prefix%iflag .eq. 0) then
         write(*,*) 'Set File prefix for Nusselt number'

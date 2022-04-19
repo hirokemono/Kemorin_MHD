@@ -66,6 +66,7 @@
       use t_SGS_control_parameter
       use t_MGCG_data
       use t_MGCG_data_4_MHD
+      use t_coef_parameters_list
 !
       use set_control_platform_item
       use set_control_platform_data
@@ -74,7 +75,6 @@
       use SPH_SGS_ini_model_coefs_IO
 !
       use set_control_4_force
-      use set_control_4_normalize
       use set_control_4_SGS
       use set_control_SGS_commute
       use set_control_4_filtering
@@ -167,7 +167,7 @@
 !
 !   set control parameters
 !
-      call s_set_control_4_normalize                                    &
+      call set_control_4_normalize                                      &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
      &    MHD_prop%cp_prop, model_ctl%dless_ctl, model_ctl%eqs_ctl,     &
      &    MHD_prop%MHD_coef_list)

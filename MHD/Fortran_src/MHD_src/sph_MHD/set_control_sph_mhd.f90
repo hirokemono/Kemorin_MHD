@@ -170,6 +170,7 @@
       use t_sph_boundary_input_data
       use t_ctl_params_gen_sph_shell
       use t_sph_trans_arrays_MHD
+      use t_coef_parameters_list
 !
       use gen_sph_grids_modes
       use set_control_platform_item
@@ -178,7 +179,6 @@
       use set_control_4_model
       use set_control_sph_data_MHD
       use set_control_4_force
-      use set_control_4_normalize
       use set_ctl_4_shell_grids
 !
       use set_control_4_pickup_sph
@@ -240,8 +240,8 @@
 !
 !   set control parameters
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_normalize'
-      call s_set_control_4_normalize                                    &
+      if (iflag_debug.gt.0) write(*,*) 'set_control_4_normalize'
+      call set_control_4_normalize                                      &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
      &    MHD_prop%cp_prop, Dmodel_ctl%dless_ctl, Dmodel_ctl%eqs_ctl,   &
      &    MHD_prop%MHD_coef_list)

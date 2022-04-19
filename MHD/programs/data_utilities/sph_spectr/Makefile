@@ -26,6 +26,7 @@ TARGET_T_AVE_NUSSELT =       t_ave_nusselt
 
 TARGET_MAX_SPH_ENE =         sph_pwr_max_mode
 TARGET_SPH_ULI_LSCALE =      sph_uli_lengscale
+TARGET_SPH_DYN_ELSASSER =    sph_dyn_elsasser
 
 TARGET_SPH_ENE_CHECK =       tests/sph_ene_check
 
@@ -190,6 +191,17 @@ sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o
 
+MOD_SPH_DYN_ELSASSER = \
+sph_dynamic_elsasser.o \
+t_read_sph_spectra.o \
+t_ctl_data_tave_sph_monitor.o \
+t_ctl_param_sph_series_util.o \
+m_sph_dynamic_elsasser.o \
+sph_mean_square_IO_select.o \
+simple_sph_spectr_head_IO.o \
+simple_sph_spectr_data_IO.o
+
+
 MOD_PSUM_SPH_ENE_SPEC = \
 t_read_sph_spectra.o \
 t_ctl_data_tave_sph_monitor.o \
@@ -259,6 +271,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_SPH_ULI_LSCALE = $$(BUILDDIR)/$(TARGET_SPH_ULI_LSCALE)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_SPH_DYN_ELSASSER = $$(BUILDDIR)/$(TARGET_SPH_DYN_ELSASSER)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_SPH_ENE_CHECK = $$(BUILDDIR)/$(TARGET_SPH_ENE_CHECK)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_PSUM_SPH_ENE_SPEC = $$(BUILDDIR)/$(TARGET_PSUM_SPH_ENE_SPEC)' \
@@ -277,7 +291,7 @@ target_task:
 	'$$(TARGET_T_AVE_GAUSS_COEFS)'                            \
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
 	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'      \
-	'$$(TARGET_PSUM_SPH_ENE_SPEC) ' >> $(MAKENAME)
+	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -420,6 +434,14 @@ target_task:
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_SPH_DYN_ELSASSER)': '$$(MOD_SPH_DYN_ELSASSER)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_SPH_DYN_ELSASSER)' \
+	'$$(MOD_SPH_DYN_ELSASSER)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_CHECK)': '$$(MOD_SPH_ENE_CHECK)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
@@ -470,6 +492,8 @@ mod_list:
 	@echo  $(MOD_MAX_SPH_ENE)          >> $(MAKENAME)
 	@echo  MOD_SPH_ULI_LSCALE=  \\     >> $(MAKENAME)
 	@echo  $(MOD_SPH_ULI_LSCALE)       >> $(MAKENAME)
+	@echo  MOD_SPH_DYN_ELSASSER=  \\   >> $(MAKENAME)
+	@echo  $(MOD_SPH_DYN_ELSASSER)     >> $(MAKENAME)
 	@echo  MOD_PSUM_SPH_ENE_SPEC=  \\  >> $(MAKENAME)
 	@echo  $(MOD_PSUM_SPH_ENE_SPEC)    >> $(MAKENAME)
 	@echo  MOD_T_AVE_NUSSELT=  \\      >> $(MAKENAME)

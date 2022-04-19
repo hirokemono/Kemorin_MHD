@@ -8,7 +8,7 @@ const_comm_table_fluid.o: $(MHD_COMMON_DIR)/const_comm_table_fluid.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 const_layering_table.o: $(MHD_COMMON_DIR)/const_layering_table.f90 m_precision.o t_FEM_control_parameter.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-construct_MHD_coefficient.o: $(MHD_COMMON_DIR)/construct_MHD_coefficient.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o m_error_IDs.o t_normalize_parameter.o skip_comment_f.o
+construct_MHD_coefficient.o: $(MHD_COMMON_DIR)/construct_MHD_coefficient.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o m_error_IDs.o t_list_of_dimless_numbers.o t_powers_4_coefficients.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 dependency_FEM_SGS_MHD.o: $(MHD_COMMON_DIR)/dependency_FEM_SGS_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o t_control_parameter.o t_SGS_control_parameter.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_base_field_labels.o t_SGS_term_labels.o t_physical_property.o check_dependency_for_MHD.o t_geometry_data.o initialize_element_field.o set_field_data_w_SGS.o check_dependency_SGS_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -26,7 +26,7 @@ m_MHD_step_parameter.o: $(MHD_COMMON_DIR)/m_MHD_step_parameter.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_elapsed_labels_4_MHD.o: $(MHD_COMMON_DIR)/m_elapsed_labels_4_MHD.f90 m_precision.o m_work_time.o
 	$(F90) -c $(F90OPTFLAGS) $<
-material_property.o: $(MHD_COMMON_DIR)/material_property.f90 m_precision.o m_constants.o t_phys_address.o t_control_parameter.o t_physical_property.o calypso_mpi.o construct_MHD_coefficient.o
+material_property.o: $(MHD_COMMON_DIR)/material_property.f90 m_precision.o m_constants.o t_phys_address.o t_control_parameter.o t_physical_property.o t_coef_parameters_list.o calypso_mpi.o construct_MHD_coefficient.o
 	$(F90) -c $(F90OPTFLAGS) $<
 nodal_poynting_flux_smp.o: $(MHD_COMMON_DIR)/nodal_poynting_flux_smp.f90 m_precision.o m_machine_parameter.o t_geometry_data.o poynting_flux_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -72,7 +72,9 @@ t_bc_data_MHD.o: $(MHD_COMMON_DIR)/t_bc_data_MHD.f90 m_precision.o m_machine_par
 	$(F90) -c $(F90OPTFLAGS) $<
 t_cal_max_indices.o: $(MHD_COMMON_DIR)/t_cal_max_indices.f90 m_precision.o t_geometry_data.o t_phys_data.o calypso_mpi.o calypso_mpi_real.o calypso_mpi_int8.o write_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_parameter.o: $(MHD_COMMON_DIR)/t_control_parameter.f90 m_precision.o t_physical_property.o t_reference_scalar_param.o t_normalize_parameter.o
+t_coef_parameters_list.o: $(MHD_COMMON_DIR)/t_coef_parameters_list.f90 m_precision.o m_machine_parameter.o calypso_mpi.o m_error_IDs.o t_physical_property.o t_ctl_data_mhd_normalize.o t_ctl_data_dimless_numbers.o t_powers_4_coefficients.o t_list_of_dimless_numbers.o set_control_4_MHD_coefs.o t_ctl_data_mhd_magne.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_parameter.o: $(MHD_COMMON_DIR)/t_control_parameter.f90 m_precision.o t_physical_property.o t_reference_scalar_param.o t_coef_parameters_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_flex_delta_t_parameter.o: $(MHD_COMMON_DIR)/t_flex_delta_t_parameter.f90 m_precision.o m_constants.o m_error_IDs.o calypso_mpi.o t_time_data.o t_IO_step_parameter.o t_ctl_data_4_time_steps.o cal_num_digits.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -83,8 +85,6 @@ t_material_property.o: $(MHD_COMMON_DIR)/t_material_property.f90 m_precision.o m
 t_mean_square_filed_list.o: $(MHD_COMMON_DIR)/t_mean_square_filed_list.f90 m_precision.o m_machine_parameter.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_mean_square_values.o: $(MHD_COMMON_DIR)/t_mean_square_values.f90 m_precision.o t_phys_address.o t_SGS_model_addresses.o t_mean_square_filed_list.o t_phys_data.o time_step_file_IO.o t_IO_step_parameter.o
-	$(F90) -c $(F90OPTFLAGS) $<
-t_normalize_parameter.o: $(MHD_COMMON_DIR)/t_normalize_parameter.f90 m_precision.o t_control_array_charareal.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_physical_property.o: $(MHD_COMMON_DIR)/t_physical_property.f90 m_precision.o m_constants.o t_control_array_character.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
