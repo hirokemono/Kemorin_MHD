@@ -96,9 +96,12 @@
      &   (tave_sph_ctl1%mag_Re_coefs, clist_mag_Reynolds)
       call check_power_and_name_list(clist_mag_Reynolds)
 !
-      els_dat1%ME_scale = coefficient_from_dimless(dimless_list1, clist_ME_to_KE)
-      els_dat1%coef_elsasser = coefficient_from_dimless(dimless_list1, clist_elsasser)
-      els_dat1%mag_Re_ratio = coefficient_from_dimless(dimless_list1, clist_mag_Reynolds)
+      els_dat1%ME_scale                                                 &
+     &    = coefficient_from_dimless(dimless_list1, clist_ME_to_KE)
+      els_dat1%coef_elsasser                                            &
+     &    = coefficient_from_dimless(dimless_list1, clist_elsasser)
+      els_dat1%mag_Re_ratio                                             &
+     &    = coefficient_from_dimless(dimless_list1, clist_mag_Reynolds)
       write(*,*) 'ME_scale', els_dat1%ME_scale
       write(*,*) 'coef_elsasser', els_dat1%coef_elsasser
       write(*,*) 'mag_Re_ratio',  els_dat1%mag_Re_ratio

@@ -32,7 +32,7 @@ m_maxmode_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_maxmode_sph_ene_spectr.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 m_part_sum_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_part_sum_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o sph_mean_square_IO_select.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_sph_dynamic_elsasser.o: $(SPH_UTILS_DIR)/m_sph_dynamic_elsasser.f90 m_precision.o m_constants.o t_read_sph_spectra.o sph_mean_square_IO_select.o set_parallel_file_name.o m_machine_parameter.o m_error_IDs.o t_list_of_dimless_numbers.o t_powers_4_coefficients.o skip_comment_f.o
+m_sph_dynamic_elsasser.o: $(SPH_UTILS_DIR)/m_sph_dynamic_elsasser.f90 m_precision.o m_constants.o m_phys_constants.o t_read_sph_spectra.o sph_mean_square_IO_select.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_sph_uli_lengh_scale.o: $(SPH_UTILS_DIR)/m_sph_uli_lengh_scale.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o sph_mean_square_IO_select.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<

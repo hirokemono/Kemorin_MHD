@@ -17,6 +17,7 @@
 !
       use m_precision
       use m_constants
+      use m_phys_constants
       use t_read_sph_spectra
 !
       implicit none
@@ -36,6 +37,11 @@
         real(kind = kreal) :: ME_scale =      1.0d0
         real(kind = kreal) :: coef_elsasser = 1.0d0
         real(kind = kreal) :: mag_Re_ratio =  1.0d0
+!
+        integer(kind = kint) :: irms_KE =  0
+        integer(kind = kint) :: irms_ME =  0
+        integer(kind = kint) :: irms_T =   0
+        integer(kind = kint) :: irms_C =   0
       end type sph_dyn_elsasser_data
 !
       integer(kind = kint), parameter :: id_file_rms_l =    35
@@ -47,34 +53,28 @@
       type(read_sph_spectr_data), save :: sph_IN_l, sph_IN_m
       type(read_sph_spectr_data), save :: sph_OUT1
 !
-      integer(kind = kint) :: irms_KE =  0
-      integer(kind = kint) :: irms_ME =  0
-      integer(kind = kint) :: irms_T =   0
-      integer(kind = kint) :: irms_C =   0
+      integer(kind = kint), private :: ist_KEne =  0
+      integer(kind = kint), private :: ist_MEne =  0
+      integer(kind = kint), private :: ist_Temp =  0
+      integer(kind = kint), private :: ist_Comp =  0
 !
-      integer(kind = kint) :: ist_KEne =  0
-      integer(kind = kint) :: ist_MEne =  0
-      integer(kind = kint) :: ist_Temp =  0
-      integer(kind = kint) :: ist_Comp =  0
+      integer(kind = kint), private :: ist_Re =  0
+      integer(kind = kint), private :: ist_Rm =  0
+      integer(kind = kint), private :: ist_Elsasser = 0
+      integer(kind = kint), private :: ist_dyn_Els =  0
 !
-      integer(kind = kint) :: ist_Re =  0
-      integer(kind = kint) :: ist_Rm =  0
-      integer(kind = kint) :: ist_Elsasser = 0
-      integer(kind = kint) :: ist_dyn_Els =  0
+      integer(kind = kint), private :: ist_ulength_l =  0
+      integer(kind = kint), private :: ist_Blength_l =  0
+      integer(kind = kint), private :: ist_Tlength_l =  0
+      integer(kind = kint), private :: ist_Clength_l =  0
 !
-      integer(kind = kint) :: ist_ulength_l =  0
-      integer(kind = kint) :: ist_Blength_l =  0
-      integer(kind = kint) :: ist_Tlength_l =  0
-      integer(kind = kint) :: ist_Clength_l =  0
-!
-      integer(kind = kint) :: ist_ulength_m =  0
-      integer(kind = kint) :: ist_Blength_m =  0
-      integer(kind = kint) :: ist_Tlength_m =  0
-      integer(kind = kint) :: ist_Clength_m =  0
+      integer(kind = kint), private :: ist_ulength_m =  0
+      integer(kind = kint), private :: ist_Blength_m =  0
+      integer(kind = kint), private :: ist_Tlength_m =  0
+      integer(kind = kint), private :: ist_Clength_m =  0
 !
       real(kind = kreal), parameter :: pi = four * atan(one)
       real(kind = kreal), parameter :: Lscale = 1.0
-      real(kind = kreal), parameter :: Pm = 2.0
 !
       private :: sph_OUT1, sph_IN_l, sph_IN_m
       private :: id_file_rms_l, id_file_rms_m, id_file_lscale
@@ -109,55 +109,50 @@
      &    els_dat%iflag_old_spectr_data, iflag_on, sph_IN_m)
 !
       do i = 1, sph_IN_l%num_labels
-        if(sph_IN_l%ene_sph_spec_name(i) .eq. 'K_ene') irms_KE = i
-        if(sph_IN_l%ene_sph_spec_name(i) .eq. 'M_ene') irms_ME = i
-        if(sph_IN_l%ene_sph_spec_name(i) .eq. 'temperature') irms_T = i
-        if(sph_IN_l%ene_sph_spec_name(i) .eq. 'composition') irms_C = i
+        if(sph_IN_l%ene_sph_spec_name(i) .eq. 'K_ene')                  &
+     &                                     els_dat%irms_KE = i
+        if(sph_IN_l%ene_sph_spec_name(i) .eq. 'M_ene')                  &
+     &                                     els_dat%irms_ME = i
+        if(sph_IN_l%ene_sph_spec_name(i) .eq. 'temperature')            &
+     &                                     els_dat%irms_T = i
+        if(sph_IN_l%ene_sph_spec_name(i) .eq. 'composition')            &
+     &                                     els_dat%irms_C = i
       end do
 !
       call copy_read_ene_head_params(sph_IN_l, sph_OUT1)
       jcou = 0
       ifld = 0
-      if(irms_KE .ge. 3) then
-        irms_KE = irms_KE - sph_IN_l%num_time_labels
-        ist_KEne =       jcou + 1
-        ist_Re =         jcou + 4
-        ist_ulength_l =  jcou + 5
-        ist_ulength_m =  jcou + 8
-        jcou = jcou + 10
-        ifld = ifld + 4
+      if(els_dat%irms_KE .ge. 3) then
+        els_dat%irms_KE = els_dat%irms_KE - sph_IN_l%num_time_labels
+        call add_new_field_address(ifld, jcou, n_vector, ist_KEne)
+        call add_new_field_address(ifld, jcou, n_scalar, ist_Re)
+        call add_new_field_address(ifld, jcou, n_vector, ist_ulength_l)
+        call add_new_field_address(ifld, jcou, n_vector, ist_ulength_m)
       end if
-      if(irms_ME .ge. 3) then
-        irms_ME = irms_ME - sph_IN_l%num_time_labels
-        ist_MEne =       jcou + 1
-        ist_Elsasser =   jcou + 4
-        ist_Blength_l =  jcou + 5
-        ist_Blength_m =  jcou + 8
-        jcou = jcou + 10
-        ifld = ifld + 4
+      if(els_dat%irms_ME .ge. 3) then
+        els_dat%irms_ME = els_dat%irms_ME - sph_IN_l%num_time_labels
+        call add_new_field_address(ifld, jcou, n_vector, ist_MEne)
+        call add_new_field_address(ifld, jcou, n_scalar, ist_Elsasser)
+        call add_new_field_address(ifld, jcou, n_vector, ist_Blength_l)
+        call add_new_field_address(ifld, jcou, n_vector, ist_Blength_m)
       end if
-      if(irms_KE .ge. 3 .and. irms_ME .ge. 3) then
-        ist_Rm =         jcou + 1
-        ist_dyn_Els =    jcou + 2
-        jcou = jcou + 2
-        ifld = ifld + 2
+      if(els_dat%irms_KE .ge. 3 .and. els_dat%irms_ME .ge. 3) then
+        call add_new_field_address(ifld, jcou, n_scalar, ist_Rm)
+        call add_new_field_address(ifld, jcou, n_scalar, ist_dyn_Els)
       end if
-      if(irms_T .ge. 1) then
-        irms_T =  irms_T - sph_IN_l%num_time_labels
-        ist_Temp =       jcou + 1
-        ist_Tlength_l =  jcou + 2
-        ist_Tlength_m =  jcou + 3
-        jcou = jcou + 3
-        ifld = ifld + 3
+      if(els_dat%irms_T .ge. 1) then
+        els_dat%irms_T =  els_dat%irms_T - sph_IN_l%num_time_labels
+        call add_new_field_address(ifld, jcou, n_scalar, ist_Temp)
+        call add_new_field_address(ifld, jcou, n_scalar, ist_Tlength_l)
+        call add_new_field_address(ifld, jcou, n_scalar, ist_Tlength_m)
       end if
-      if(irms_C .ge. 1) then
-        irms_C =  irms_C - sph_IN_l%num_time_labels
-        ist_Comp =       jcou + 1
-        ist_Clength_l =  jcou + 2
-        ist_Clength_m =  jcou + 3
-        jcou = jcou + 3
-        ifld = ifld + 3
+      if(els_dat%irms_C .ge. 1) then
+        els_dat%irms_C =  els_dat%irms_C - sph_IN_l%num_time_labels
+        call add_new_field_address(ifld, jcou, n_scalar, ist_Comp)
+        call add_new_field_address(ifld, jcou, n_scalar, ist_Clength_l)
+        call add_new_field_address(ifld, jcou, n_scalar, ist_Clength_m)
       end if
+!
       sph_OUT1%nfield_sph_spec = ifld
       sph_OUT1%ntot_sph_spec = jcou
       sph_OUT1%num_labels                                               &
@@ -172,13 +167,13 @@
       ifld = 0
       jcou = sph_OUT1%num_time_labels
       kcou = sph_IN_l%num_time_labels
-      if(irms_KE .ge. 3) then
+      if(els_dat%irms_KE .ge. 3) then
         write(sph_OUT1%ene_sph_spec_name(ist_Kene+jcou  ),'(a)')        &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_KE+kcou-2))
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_KE+kcou-2))
         write(sph_OUT1%ene_sph_spec_name(ist_Kene+jcou+1),'(a)')        &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_KE+kcou-1))
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_KE+kcou-1))
         write(sph_OUT1%ene_sph_spec_name(ist_Kene+jcou+2),'(a)')        &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_KE+kcou  ))
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_KE+kcou  ))
         sph_OUT1%ncomp_sph_spec(ifld+1) = 3
 !
         write(sph_OUT1%ene_sph_spec_name(ist_Re+jcou),'(a)')            &
@@ -186,35 +181,35 @@
         sph_OUT1%ncomp_sph_spec(ifld+2) = 1
 !
         write(sph_OUT1%ene_sph_spec_name(ist_ulength_l+jcou  ),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_KE+kcou-2)),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_KE+kcou-2)),     &
      &    '_scale_l'
         write(sph_OUT1%ene_sph_spec_name(ist_ulength_l+jcou+1),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_KE+kcou-1)),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_KE+kcou-1)),     &
      &   '_scale_l'
         write(sph_OUT1%ene_sph_spec_name(ist_ulength_l+jcou+2),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_KE+kcou  )),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_KE+kcou  )),     &
      &   '_scale_l'
         sph_OUT1%ncomp_sph_spec(ifld+3) = 3
 !
         write(sph_OUT1%ene_sph_spec_name(ist_ulength_m+jcou  ),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_KE+kcou-2)),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_KE+kcou-2)),     &
      &    '_scale_m'
         write(sph_OUT1%ene_sph_spec_name(ist_ulength_m+jcou+1),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_KE+kcou-1)),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_KE+kcou-1)),     &
      &   '_scale_m'
         write(sph_OUT1%ene_sph_spec_name(ist_ulength_m+jcou+2),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_KE+kcou  )),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_KE+kcou  )),     &
      &   '_scale_m'
         sph_OUT1%ncomp_sph_spec(ifld+4) = 3
         ifld = ifld + 4
       end if
-      if(irms_ME .ge. 3) then
+      if(els_dat%irms_ME .ge. 3) then
         write(sph_OUT1%ene_sph_spec_name(ist_MEne+jcou  ),'(a)')        &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_ME+kcou-2))
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_ME+kcou-2))
         write(sph_OUT1%ene_sph_spec_name(ist_MEne+jcou+1),'(a)')        &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_ME+kcou-1))
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_ME+kcou-1))
         write(sph_OUT1%ene_sph_spec_name(ist_MEne+jcou+2),'(a)')        &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_ME+kcou  ))
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_ME+kcou  ))
         sph_OUT1%ncomp_sph_spec(ifld+1) = 3
 !
         write(sph_OUT1%ene_sph_spec_name(ist_Elsasser+jcou),'(a)')      &
@@ -222,29 +217,29 @@
         sph_OUT1%ncomp_sph_spec(ifld+2) = 1
 !
         write(sph_OUT1%ene_sph_spec_name(ist_Blength_l+jcou  ),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_ME+kcou-2)),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_ME+kcou-2)),     &
      &    '_scale_l'
         write(sph_OUT1%ene_sph_spec_name(ist_Blength_l+jcou+1),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_ME+kcou-1)),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_ME+kcou-1)),     &
      &    '_scale_l'
         write(sph_OUT1%ene_sph_spec_name(ist_Blength_l+jcou+2),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_ME+kcou  )),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_ME+kcou  )),     &
      &    '_scale_l'
         sph_OUT1%ncomp_sph_spec(ifld+3) = 3
 !
         write(sph_OUT1%ene_sph_spec_name(ist_Blength_m+jcou  ),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_ME+kcou-2)),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_ME+kcou-2)),     &
      &    '_scale_m'
         write(sph_OUT1%ene_sph_spec_name(ist_Blength_m+jcou+1),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_ME+kcou-1)),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_ME+kcou-1)),     &
      &    '_scale_m'
         write(sph_OUT1%ene_sph_spec_name(ist_Blength_m+jcou+2),'(a,a)') &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_ME+kcou  )),             &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_ME+kcou  )),     &
      &    '_scale_m'
         sph_OUT1%ncomp_sph_spec(ifld+4) = 3
         ifld = ifld + 4
       end if
-      if(irms_KE .ge. 3 .and. irms_ME .ge. 3) then
+      if(els_dat%irms_KE .ge. 3 .and. els_dat%irms_ME .ge. 3) then
         write(sph_OUT1%ene_sph_spec_name(ist_Rm+jcou),'(a)')            &
      &    'Rm'
         sph_OUT1%ncomp_sph_spec(ifld+1) = 1
@@ -253,32 +248,32 @@
         sph_OUT1%ncomp_sph_spec(ifld+2) = 1
         ifld = ifld + 2
       end if
-      if(irms_T .ge. 1) then
+      if(els_dat%irms_T .ge. 1) then
         write(sph_OUT1%ene_sph_spec_name(ist_Temp+jcou),'(a,a)')        &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_T+kcou)),                &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_T+kcou)),        &
      &    '_part'
         sph_OUT1%ncomp_sph_spec(ifld+1) = 1
         write(sph_OUT1%ene_sph_spec_name(ist_Tlength_l+jcou),'(a,a)')   &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_T+kcou)),                &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_T+kcou)),        &
      &    '_scale_l'
         sph_OUT1%ncomp_sph_spec(ifld+2) = 1
         write(sph_OUT1%ene_sph_spec_name(ist_Tlength_m+jcou),'(a,a)')   &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_T+kcou)),                &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_T+kcou)),        &
      &    '_scale_m'
         sph_OUT1%ncomp_sph_spec(ifld+3) = 1
         ifld = ifld + 3
       end if
-      if(irms_C .ge. 1) then
+      if(els_dat%irms_C .ge. 1) then
         write(sph_OUT1%ene_sph_spec_name(ist_Comp+jcou),'(a,a)')        &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_C+kcou)),                &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_C+kcou)),        &
      &    '_part'
         sph_OUT1%ncomp_sph_spec(ifld+1) = 1
         write(sph_OUT1%ene_sph_spec_name(ist_Clength_l+jcou),'(a,a)')   &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_C+kcou)),                &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_C+kcou)),        &
      &    '_scale_l'
         sph_OUT1%ncomp_sph_spec(ifld+2) = 1
         write(sph_OUT1%ene_sph_spec_name(ist_Clength_m+jcou),'(a,a)')   &
-     &    trim(sph_IN_l%ene_sph_spec_name(irms_C+kcou)),                &
+     &    trim(sph_IN_l%ene_sph_spec_name(els_dat%irms_C+kcou)),        &
      &    '_scale_m'
         sph_OUT1%ncomp_sph_spec(ifld+3) = 1
         ifld = ifld + 3
@@ -307,100 +302,37 @@
           call copy_read_ene_step_data(sph_IN_l, sph_OUT1)
           icou = icou + 1
 !
-          if(irms_KE .ge. 3) then
-            sph_OUT1%spectr_IO(ist_KEne,  0,1)                          &
-     &                = sum_ene_spectr(irms_KE-2,sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_KEne+1,0,1)                          &
-     &                = sum_ene_spectr(irms_KE-1,sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_KEne+2,0,1)                          &
-     &                = sum_ene_spectr(irms_KE,  sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-!
-            sph_OUT1%spectr_IO(ist_ulength_l,  0,1)                     &
-     &          = uli_sph_length_scale(irms_KE-2,sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_ulength_l+1,0,1)                     &
-     &          = uli_sph_length_scale(irms_KE-1,sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_ulength_l+2,0,1)                     &
-     &          = uli_sph_length_scale(irms_KE,  sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-!
-            sph_OUT1%spectr_IO(ist_ulength_m,  0,1)                     &
-     &          = uli_sph_length_scale(irms_KE-2,sph_IN_m%ltr_sph,      &
-     &                                 sph_IN_m%ntot_sph_spec,          &
-     &                                 sph_IN_m%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_ulength_m+1,0,1)                     &
-     &          = uli_sph_length_scale(irms_KE-1,sph_IN_m%ltr_sph,      &
-     &                                 sph_IN_m%ntot_sph_spec,          &
-     &                                 sph_IN_m%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_ulength_m+2,0,1)                     &
-     &          = uli_sph_length_scale(irms_KE,  sph_IN_m%ltr_sph,      &
-     &                                 sph_IN_m%ntot_sph_spec,          &
-     &                                 sph_IN_m%spectr_IO(1,0,1))
+          if(els_dat%irms_KE .ge. 3) then
+            call sum_ene_spectr_3(sph_IN_l, els_dat%irms_KE,            &
+     &                            sph_OUT1%spectr_IO(ist_KEne,0,1))
+            call uli_sph_length_scale_3(sph_IN_l, els_dat%irms_KE,      &
+     &          sph_OUT1%spectr_IO(ist_ulength_l,0,1))
+            call uli_sph_length_scale_3(sph_IN_m, els_dat%irms_KE,      &
+     &          sph_OUT1%spectr_IO(ist_ulength_m,0,1))
 !
             sph_OUT1%spectr_IO(ist_Re,0,1)                              &
      &          = sqrt(two * sph_OUT1%spectr_IO(ist_KEne+2,0,1) )
           end if
-          if(irms_ME .ge. 3) then
-            sph_OUT1%spectr_IO(ist_MEne,  0,1)                          &
-     &                = sum_ene_spectr(irms_ME-2,sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_MEne+1,0,1)                          &
-     &                = sum_ene_spectr(irms_ME-1,sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_MEne+2,0,1)                          &
-     &                = sum_ene_spectr(irms_ME,  sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
+          if(els_dat%irms_ME .ge. 3) then
+            call sum_ene_spectr_3(sph_IN_l, els_dat%irms_ME,            &
+     &                            sph_OUT1%spectr_IO(ist_MEne,0,1))
             sph_OUT1%spectr_IO(ist_MEne:ist_MEne+2,0,1)                 &
      &          = sph_OUT1%spectr_IO(ist_MEne:ist_MEne+2,0,1)           &
      &           * els_dat%ME_scale
 !
-            sph_OUT1%spectr_IO(ist_Blength_l,  0,1)                     &
-     &          = uli_sph_length_scale(irms_ME-2,sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_Blength_l+1,0,1)                     &
-     &          = uli_sph_length_scale(irms_ME-1,sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)                     &
-     &          = uli_sph_length_scale(irms_ME,  sph_IN_l%ltr_sph,      &
-     &                                 sph_IN_l%ntot_sph_spec,          &
-     &                                 sph_IN_l%spectr_IO(1,0,1))
-!
-            sph_OUT1%spectr_IO(ist_Blength_m,  0,1)                     &
-     &          = uli_sph_length_scale(irms_ME-2,sph_IN_m%ltr_sph,      &
-     &                                 sph_IN_m%ntot_sph_spec,          &
-     &                                 sph_IN_m%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_Blength_m+1,0,1)                     &
-     &          = uli_sph_length_scale(irms_ME-1,sph_IN_m%ltr_sph,      &
-     &                                 sph_IN_m%ntot_sph_spec,          &
-     &                                 sph_IN_m%spectr_IO(1,0,1))
-            sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)                     &
-     &          = uli_sph_length_scale(irms_ME,  sph_IN_m%ltr_sph,      &
-     &                                 sph_IN_m%ntot_sph_spec,          &
-     &                                 sph_IN_m%spectr_IO(1,0,1))
+            call uli_sph_length_scale_3(sph_IN_l, els_dat%irms_ME,      &
+     &          sph_OUT1%spectr_IO(ist_Blength_l,0,1))
+            call uli_sph_length_scale_3(sph_IN_m, els_dat%irms_ME,      &
+     &          sph_OUT1%spectr_IO(ist_Blength_m,0,1))
 !
             sph_OUT1%spectr_IO(ist_Elsasser,0,1)                        &
      &          =  sph_OUT1%spectr_IO(ist_MEne+2,0,1)                   &
      &           * els_dat%coef_elsasser
           end if
-          if(irms_KE .ge. 3 .and. irms_ME .ge. 3) then
+          if(els_dat%irms_KE .ge. 3 .and. els_dat%irms_ME .ge. 3) then
             sph_OUT1%spectr_IO(ist_Rm,0,1)                              &
      &          = sqrt(two * sph_OUT1%spectr_IO(ist_KEne+2,0,1) )       &
-     &           * Pm
+     &           * els_dat%mag_Re_ratio
 !
             lscale_b = (half*pi*Lscale)                                 &
      &               / sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2  &
@@ -409,31 +341,37 @@
      &          = sph_OUT1%spectr_IO(ist_Elsasser,0,1) * Lscale         &
      &           / (sph_OUT1%spectr_IO(ist_Rm,0,1)  * lscale_b)
           end if
-          if(irms_T .ge. 1) then
+          if(els_dat%irms_T .ge. 1) then
             sph_OUT1%spectr_IO(ist_Temp,  0,1)                          &
-     &                = sum_ene_spectr(irms_T,  sph_IN_l%ltr_sph,       &
+     &                = sum_ene_spectr(els_dat%irms_T,                  &
+     &                                 sph_IN_l%ltr_sph,                &
      &                                 sph_IN_l%ntot_sph_spec,          &
      &                                 sph_IN_l%spectr_IO(1,0,1))
             sph_OUT1%spectr_IO(ist_Tlength_l,  0,1)                     &
-     &          = uli_sph_length_scale(irms_T,  sph_IN_l%ltr_sph,       &
+     &          = uli_sph_length_scale(els_dat%irms_T,                  &
+     &                                 sph_IN_l%ltr_sph,                &
      &                                 sph_IN_l%ntot_sph_spec,          &
      &                                 sph_IN_l%spectr_IO(1,0,1))
             sph_OUT1%spectr_IO(ist_Tlength_m,  0,1)                     &
-     &          = uli_sph_length_scale(irms_T,  sph_IN_m%ltr_sph,       &
+     &          = uli_sph_length_scale(els_dat%irms_T,                  &
+     &                                 sph_IN_m%ltr_sph,                &
      &                                 sph_IN_m%ntot_sph_spec,          &
      &                                 sph_IN_m%spectr_IO(1,0,1))
           end if
-          if(irms_C .ge. 1) then
+          if(els_dat%irms_C .ge. 1) then
             sph_OUT1%spectr_IO(ist_Comp,  0,1)                          &
-     &                = sum_ene_spectr(irms_C,  sph_IN_l%ltr_sph,       &
+     &                = sum_ene_spectr(els_dat%irms_C,                  &
+     &                                 sph_IN_l%ltr_sph,                &
      &                                 sph_IN_l%ntot_sph_spec,          &
      &                                 sph_IN_l%spectr_IO(1,0,1))
             sph_OUT1%spectr_IO(ist_Clength_l,  0,1)                     &
-     &          = uli_sph_length_scale(irms_C,  sph_IN_l%ltr_sph,       &
+     &          = uli_sph_length_scale(els_dat%irms_C,                  &
+     &                                 sph_IN_l%ltr_sph,                &
      &                                 sph_IN_l%ntot_sph_spec,          &
      &                                 sph_IN_l%spectr_IO(1,0,1))
             sph_OUT1%spectr_IO(ist_Clength_m,  0,1)                     &
-     &          = uli_sph_length_scale(irms_C,  sph_IN_m%ltr_sph,       &
+     &          = uli_sph_length_scale(els_dat%irms_C,                  &
+     &                                 sph_IN_m%ltr_sph,                &
      &                                 sph_IN_m%ntot_sph_spec,          &
      &                                 sph_IN_m%spectr_IO(1,0,1))
           end if
@@ -462,6 +400,42 @@
 !
       end subroutine sph_uli_lengh_scale_by_spectr
 !
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine sum_ene_spectr_3(sph_IN, irms_end, ene_3)
+!
+      type(read_sph_spectr_data), intent(in) :: sph_IN
+      integer(kind = kint), intent(in) :: irms_end
+      real(kind = kreal), intent(inout) :: ene_3(3)
+!
+      ene_3(1) = sum_ene_spectr(irms_end-2, sph_IN%ltr_sph,             &
+     &           sph_IN%ntot_sph_spec, sph_IN%spectr_IO(1,0,1))
+      ene_3(2) = sum_ene_spectr(irms_end-1, sph_IN%ltr_sph,             &
+     &           sph_IN%ntot_sph_spec, sph_IN%spectr_IO(1,0,1))
+      ene_3(3) = sum_ene_spectr(irms_end, sph_IN%ltr_sph,               &
+     &           sph_IN%ntot_sph_spec, sph_IN%spectr_IO(1,0,1))
+!
+      end subroutine sum_ene_spectr_3
+!
+!   --------------------------------------------------------------------
+!
+      subroutine uli_sph_length_scale_3(sph_IN, irms_end, lscale_3)
+!
+      type(read_sph_spectr_data), intent(in) :: sph_IN
+      integer(kind = kint), intent(in) :: irms_end
+      real(kind = kreal), intent(inout) :: lscale_3(3)
+!
+      lscale_3(1) = uli_sph_length_scale(irms_end-2, sph_IN%ltr_sph,    &
+     &           sph_IN%ntot_sph_spec, sph_IN%spectr_IO(1,0,1))
+      lscale_3(2) = uli_sph_length_scale(irms_end-1, sph_IN%ltr_sph,    &
+     &           sph_IN%ntot_sph_spec, sph_IN%spectr_IO(1,0,1))
+      lscale_3(3) = uli_sph_length_scale(irms_end, sph_IN%ltr_sph,      &
+     &           sph_IN%ntot_sph_spec, sph_IN%spectr_IO(1,0,1))
+!
+      end subroutine uli_sph_length_scale_3
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       real(kind = kreal) function sum_ene_spectr                        &
@@ -508,6 +482,17 @@
       end if
 !
       end function uli_sph_length_scale
+!
+!   --------------------------------------------------------------------
+!
+      subroutine add_new_field_address(ifld, icomp, ncomp, i_start)
+      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(inout) :: ifld, icomp, i_start
+!
+      i_start = icomp + 1
+      icomp = icomp + ncomp
+      ifld = ifld +   1
+      end subroutine add_new_field_address
 !
 !   --------------------------------------------------------------------
 !
