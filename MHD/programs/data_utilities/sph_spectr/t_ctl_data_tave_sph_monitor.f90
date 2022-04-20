@@ -52,6 +52,7 @@
 !!    gauss_coefs_prefix           'sph_spectr/gauss_coefs'
 !!    picked_sph_prefix            'sph_spectr/picked_mode'
 !!    nusselt_number_prefix        'Nusselt'
+!!    dipolarity_file_prefix       'dipolarity'
 !!  end time_averaging_sph_monitor
 !!
 !! -----------------------------------------------------------------
@@ -137,6 +138,8 @@
 !
 !>        Structure for Nusselt number
         type(read_character_item) :: Nusselt_file_prefix
+!>        Structure for dipolarity
+        type(read_character_item) :: dipolarity_file_prefix
 !>        Structure for Elsasser number
         type(read_character_item) :: Elsasser_file_prefix
 !>        Structure for gauss coefficient file prefix
@@ -196,6 +199,8 @@
      &           :: hd_picked_mode_head = 'picked_sph_prefix'
       character(len=kchara), parameter, private                         &
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
+      character(len=kchara), parameter, private                         &
+     &           :: hd_dipolarity_file_head = 'dipolarity_file_prefix'
 !
       character(len=kchara), parameter, private                         &
      &           :: hd_vol_spec_l_head = 'vol_degree_spectr_prefix'
@@ -299,6 +304,8 @@
 !
         call read_chara_ctl_type(c_buf, hd_Nusselt_file_head,           &
      &      tave_sph_ctl%Nusselt_file_prefix)
+        call read_chara_ctl_type(c_buf, hd_dipolarity_file_head,        &
+     &      tave_sph_ctl%dipolarity_file_prefix)
         call read_chara_ctl_type(c_buf, hd_Elsasser_file_head,          &
      &      tave_sph_ctl%Elsasser_file_prefix)
 !
@@ -361,6 +368,7 @@
      &   (tave_sph_ctl%layered_series_file_ctl)
 !
       tave_sph_ctl%Nusselt_file_prefix%iflag =  0
+      tave_sph_ctl%dipolarity_file_prefix%iflag = 0
       tave_sph_ctl%Elsasser_file_prefix%iflag = 0
       tave_sph_ctl%gauss_coefs_prefix%iflag =   0
       tave_sph_ctl%picked_mode_head_ctl%iflag = 0

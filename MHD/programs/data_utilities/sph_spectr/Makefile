@@ -23,6 +23,7 @@ TARGET_PSUM_SPH_ENE_SPEC = part_sum_sph_mean_square
 TARGET_T_AVE_GAUSS_COEFS =   t_ave_gauss_coefs
 TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
 TARGET_T_AVE_NUSSELT =       t_ave_nusselt
+TARGET_T_AVE_DIPOLARITY =    t_ave_dipolarity
 
 TARGET_MAX_SPH_ENE =         sph_pwr_max_mode
 TARGET_SPH_ULI_LSCALE =      sph_uli_lengscale
@@ -226,6 +227,10 @@ MOD_T_AVE_NUSSELT = \
 t_average_nusselt.o \
 t_ctl_data_tave_sph_monitor.o
 
+MOD_T_AVE_DIPOLARITY = \
+time_average_dipolarity.o \
+t_ctl_data_tave_sph_monitor.o
+
 MOD_SPH_ENE_CHECK = \
 compare_sph_mean_square.o
 
@@ -267,6 +272,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_NUSSELT = $$(BUILDDIR)/$(TARGET_T_AVE_NUSSELT)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_T_AVE_DIPOLARITY = $$(BUILDDIR)/$(TARGET_T_AVE_DIPOLARITY)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_MAX_SPH_ENE = $$(BUILDDIR)/$(TARGET_MAX_SPH_ENE)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_SPH_ULI_LSCALE = $$(BUILDDIR)/$(TARGET_SPH_ULI_LSCALE)' \
@@ -291,7 +298,8 @@ target_task:
 	'$$(TARGET_T_AVE_GAUSS_COEFS)'                            \
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
 	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'      \
-	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)' >> $(MAKENAME)
+	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)'   \
+	'$$(TARGET_T_AVE_DIPOLARITY)'    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -418,6 +426,14 @@ target_task:
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_T_AVE_DIPOLARITY)': '$$(MOD_T_AVE_DIPOLARITY)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_T_AVE_DIPOLARITY)' \
+	'$$(MOD_T_AVE_DIPOLARITY)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MAX_SPH_ENE)': '$$(MOD_MAX_SPH_ENE)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
@@ -498,6 +514,8 @@ mod_list:
 	@echo  $(MOD_PSUM_SPH_ENE_SPEC)    >> $(MAKENAME)
 	@echo  MOD_T_AVE_NUSSELT=  \\      >> $(MAKENAME)
 	@echo  $(MOD_T_AVE_NUSSELT)        >> $(MAKENAME)
+	@echo  MOD_T_AVE_DIPOLARITY=  \\   >> $(MAKENAME)
+	@echo  $(MOD_T_AVE_DIPOLARITY)     >> $(MAKENAME)
 	@echo  MOD_SPH_ENE_CHECK=  \\      >> $(MAKENAME)
 	@echo  $(MOD_SPH_ENE_CHECK)        >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

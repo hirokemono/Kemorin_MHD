@@ -204,7 +204,7 @@
 !
 !
       write(id_dipolarity,'(a)')    '# Truncation   CMB_radius'
-      write(id_dipolarity,'(1p2e25.15e3)')                              &
+      write(id_dipolarity,'(i16,1pe25.15e3)')                           &
      &                         dip%ltr_max, radius_CMB
 !
       write(id_dipolarity,'(a)',advance='NO')                           &
