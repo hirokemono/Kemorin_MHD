@@ -8,7 +8,7 @@
 !> @brief Obtain lengh scale from spherical harmonics spectrum data
 !!
 !!@verbatim
-!!      subroutine sph_uli_lengh_scale_by_spectr                        &
+!!      subroutine sph_dynamic_elsasser_by_spectr                       &
 !!     &         (input_header, sph_IN)
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
@@ -86,7 +86,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sph_uli_lengh_scale_by_spectr(els_dat)
+      subroutine sph_dynamic_elsasser_by_spectr(els_dat)
 !
       use sph_mean_square_IO_select
       use set_parallel_file_name
@@ -103,7 +103,7 @@
       call select_input_sph_pwr_head(id_file_rms_l,                     &
      &    els_dat%iflag_old_spectr_data, iflag_on, sph_IN_l)
 !
-      file_name = add_dat_extension(els_dat%vol_l_spectr_file_prefix)
+      file_name = add_dat_extension(els_dat%vol_m_spectr_file_prefix)
       open(id_file_rms_m, file=file_name)
       call select_input_sph_pwr_head(id_file_rms_m,                     &
      &    els_dat%iflag_old_spectr_data, iflag_on, sph_IN_m)
@@ -334,12 +334,19 @@
      &          = sqrt(two * sph_OUT1%spectr_IO(ist_KEne+2,0,1) )       &
      &           * els_dat%mag_Re_ratio
 !
-            lscale_b = (half*pi*Lscale)                                 &
-     &               / sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2  &
-     &                    + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2)
-            sph_OUT1%spectr_IO(ist_dyn_Els,0,1)                         &
-     &          = sph_OUT1%spectr_IO(ist_Elsasser,0,1) * Lscale         &
-     &           / (sph_OUT1%spectr_IO(ist_Rm,0,1)  * lscale_b)
+!            lscale_b = (half*pi*Lscale)                                &
+!     &               / sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2 &
+!     &                    + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2)
+!            sph_OUT1%spectr_IO(ist_dyn_Els,0,1)                        &
+!     &          = sph_OUT1%spectr_IO(ist_Elsasser,0,1) * Lscale        &
+!     &               / sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2 &
+!     &                    + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2)
+!     &           / (sph_OUT1%spectr_IO(ist_Rm,0,1)  * lscale_b)
+            sph_OUT1%spectr_IO(ist_dyn_Els,0,1)                        &
+     &          = sph_OUT1%spectr_IO(ist_Elsasser,0,1)                 &
+     &            * sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2    &
+     &                 + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2)   &
+     &           / (sph_OUT1%spectr_IO(ist_Rm,0,1) * half*pi)
           end if
           if(els_dat%irms_T .ge. 1) then
             sph_OUT1%spectr_IO(ist_Temp,  0,1)                          &
@@ -398,7 +405,7 @@
       call dealloc_sph_espec_data(sph_IN_m)
       call dealloc_sph_espec_data(sph_OUT1)
 !
-      end subroutine sph_uli_lengh_scale_by_spectr
+      end subroutine sph_dynamic_elsasser_by_spectr
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

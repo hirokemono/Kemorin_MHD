@@ -109,7 +109,7 @@
 !
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
-      call sph_uli_lengh_scale_by_spectr(els_dat1)
+      call sph_dynamic_elsasser_by_spectr(els_dat1)
 !
       call dealloc_spec_series_file_param(spec_evo_p1)
       stop
