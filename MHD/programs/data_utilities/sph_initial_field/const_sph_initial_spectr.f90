@@ -566,7 +566,7 @@
 !
 !
 !    Find local addrtess for (l,m) = (2,0)
-      jt =  find_local_sph_mode_address(sph, 1, -1)
+      jt =  find_local_sph_mode_address(sph, 2, 0)
 !
       if (jt .gt. 0) then
         do k = 1, sph_bc_B%kr_out
@@ -607,7 +607,7 @@
 !
       real (kind = kreal) :: pi, rr
       integer(kind = kint) :: is, it, is_ICB, is_CMB
-      integer :: js, jt, k, mm, m
+      integer :: js, jt, k
 !
 !
       if(ipol%base%i_magne .eq. izero) return
@@ -622,56 +622,90 @@
 !$omp end parallel do
 !
 !
-      do mm = 0, 1
 !    Find local addrtess for (l,m) = (1,0)
-        js =  find_local_sph_mode_address(sph, 1, mm)
+      js =  find_local_sph_mode_address(sph, 1, 0)
 !
-        if (js .gt. 0) then
-          do k = sph_bc_B%kr_in, sph_bc_B%kr_out
-            is = local_sph_data_address(sph, k, js)
-            rr = radius_1d_rj_r(sph, k)
+      if (js .gt. 0) then
+        do k = sph_bc_B%kr_in, sph_bc_B%kr_out
+          is = local_sph_data_address(sph, k, js)
+          rr = radius_1d_rj_r(sph, k)
 !   Substitute poloidal mangetic field
-            rj_fld%d_fld(is,ipol%base%i_magne  )                        &
+          rj_fld%d_fld(is,ipol%base%i_magne  )                          &
      &                           =  (5.0d0/8.0d0) * (-3.0d0 * rr**3     &
      &                             + 4.0d0 * sph_bc_B%r_CMB(0) * rr**2  &
      &                             - sph_bc_B%r_ICB(0)**4 / rr)
         end do
 !
 !   Fill potential field if inner core exist
-          is_ICB = local_sph_data_address(sph, int(sph_bc_B%kr_in), js)
-          do k = 1, sph_bc_B%kr_in-1
-            is = local_sph_data_address(sph, k, js)
-            rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_ICB(0)
+        is_ICB = local_sph_data_address(sph, int(sph_bc_B%kr_in), js)
+        do k = 1, sph_bc_B%kr_in-1
+          is = local_sph_data_address(sph, k, js)
+          rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_ICB(0)
 !   Substitute poloidal mangetic field
-            rj_fld%d_fld(is,ipol%base%i_magne  )                        &
+          rj_fld%d_fld(is,ipol%base%i_magne  )                          &
      &       =  rj_fld%d_fld(is_ICB,ipol%base%i_magne  ) * rr**(ione+1)
         end do
 !
 !   Fill potential field if external of the core exist
-          is_CMB = local_sph_data_address(sph, int(sph_bc_B%kr_out),js)
-          do k = sph_bc_B%kr_out+1, nidx_rj(sph,1)
-            is = local_sph_data_address(sph, k, js)
-            rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_CMB(0)
+        is_CMB = local_sph_data_address(sph, int(sph_bc_B%kr_out),js)
+        do k = sph_bc_B%kr_out+1, nidx_rj(sph,1)
+          is = local_sph_data_address(sph, k, js)
+          rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_CMB(0)
 !   Substitute poloidal mangetic field
-            rj_fld%d_fld(is,ipol%base%i_magne  )                        &
+          rj_fld%d_fld(is,ipol%base%i_magne  )                          &
      &       =  rj_fld%d_fld(is_CMB,ipol%base%i_magne  ) * rr**(-ione)
-          end do
-        end if
+        end do
+      end if
+!
+!
+!    Find local addrtess for (l,m) = (1,0)
+      js =  find_local_sph_mode_address(sph, 1, 1)
+!
+      if (js .gt. 0) then
+        do k = sph_bc_B%kr_in, sph_bc_B%kr_out
+          is = local_sph_data_address(sph, k, js)
+          rr = radius_1d_rj_r(sph, k)
+!   Substitute poloidal mangetic field
+          rj_fld%d_fld(is,ipol%base%i_magne  )                          &
+     &                           =  (5.0d0/8.0d0) * (-3.0d0 * rr**3     &
+     &                             + 4.0d0 * sph_bc_B%r_CMB(0) * rr**2  &
+     &                             - sph_bc_B%r_ICB(0)**4 / rr) * 0.1d0
+        end do
+!
+!   Fill potential field if inner core exist
+        is_ICB = local_sph_data_address(sph, int(sph_bc_B%kr_in), js)
+        do k = 1, sph_bc_B%kr_in-1
+          is = local_sph_data_address(sph, k, js)
+          rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_ICB(0)
+!   Substitute poloidal mangetic field
+          rj_fld%d_fld(is,ipol%base%i_magne  )                          &
+     &       =  rj_fld%d_fld(is_ICB,ipol%base%i_magne  ) * rr**(ione+1)
+        end do
+!
+!   Fill potential field if external of the core exist
+        is_CMB = local_sph_data_address(sph, int(sph_bc_B%kr_out),js)
+        do k = sph_bc_B%kr_out+1, nidx_rj(sph,1)
+          is = local_sph_data_address(sph, k, js)
+          rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_CMB(0)
+!   Substitute poloidal mangetic field
+          rj_fld%d_fld(is,ipol%base%i_magne  )                          &
+     &       =  rj_fld%d_fld(is_CMB,ipol%base%i_magne  ) * rr**(-ione)
+        end do
+      end if
 !
 !
 !    Find local addrtess for (l,m) = (2,0)
-        jt =  find_local_sph_mode_address(sph, 1, mm-1)
+      jt =  find_local_sph_mode_address(sph, 2, 0)
 !
-        if (jt .gt. 0) then
-          do k = 1, sph_bc_B%kr_out
-            it = local_sph_data_address(sph, k, jt)
-            rr = radius_1d_rj_r(sph, k)
+      if (jt .gt. 0) then
+        do k = 1, sph_bc_B%kr_out
+          it = local_sph_data_address(sph, k, jt)
+          rr = radius_1d_rj_r(sph, k)
 !   Substitute totoidal mangetic field
-            rj_fld%d_fld(it,ipol%base%i_magne+2)                        &
+          rj_fld%d_fld(it,ipol%base%i_magne+2)                        &
      &       = (10.0d0/3.0d0) * rr * sin(pi*(rr - sph_bc_B%r_ICB(0)))
-          end do
-        end if
-      end do
+        end do
+      end if
 !
 !
 !$omp parallel do
