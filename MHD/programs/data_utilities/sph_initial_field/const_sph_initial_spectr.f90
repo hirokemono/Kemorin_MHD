@@ -105,7 +105,7 @@
       private :: set_initial_velocity
       private :: set_initial_temperature
       private :: set_initial_composition
-      private :: set_initial_magne_sph
+      private :: set_initial_magne_sph, set_initial_magne2_sph
       private :: set_initial_heat_source_sph
       private :: set_initial_light_source_sph
 !
@@ -163,6 +163,8 @@
 !  Set initial magnetic field if magnetic field is exist
       call set_initial_magne_sph(sph_MHD_bc%sph_bc_B,                   &
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
+!      call set_initial_magne2_sph(sph_MHD_bc%sph_bc_B,                 &
+!     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !  Set heat source if  heat source is exist
       call set_initial_heat_source_sph                                  &
@@ -589,6 +591,101 @@
 !$omp end parallel do
 !
       end subroutine set_initial_magne_sph
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_initial_magne2_sph                                 &
+     &         (sph_bc_B, sph, ipol, rj_fld)
+!
+      type(sph_boundary_type), intent(in) :: sph_bc_B
+      type(sph_grids), intent(in) :: sph
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(inout) :: rj_fld
+!
+      real(kind = kreal), parameter :: b_adjust = 1.0e0
+!      real(kind = kreal), parameter :: b_adjust = 1.0e-3
+!
+      real (kind = kreal) :: pi, rr
+      integer(kind = kint) :: is, it, is_ICB, is_CMB
+      integer :: js, jt, k, mm, m
+!
+!
+      if(ipol%base%i_magne .eq. izero) return
+      pi = four * atan(one)
+!
+!$omp parallel do
+      do is = 1, nnod_rj(sph)
+        rj_fld%d_fld(is,ipol%base%i_magne  ) = zero
+        rj_fld%d_fld(is,ipol%base%i_magne+1) = zero
+        rj_fld%d_fld(is,ipol%base%i_magne+2) = zero
+      end do
+!$omp end parallel do
+!
+!
+      do mm = 0, 1
+!    Find local addrtess for (l,m) = (1,0)
+        js =  find_local_sph_mode_address(sph, 1, mm)
+!
+        if (js .gt. 0) then
+          do k = sph_bc_B%kr_in, sph_bc_B%kr_out
+            is = local_sph_data_address(sph, k, js)
+            rr = radius_1d_rj_r(sph, k)
+!   Substitute poloidal mangetic field
+            rj_fld%d_fld(is,ipol%base%i_magne  )                        &
+     &                           =  (5.0d0/8.0d0) * (-3.0d0 * rr**3     &
+     &                             + 4.0d0 * sph_bc_B%r_CMB(0) * rr**2  &
+     &                             - sph_bc_B%r_ICB(0)**4 / rr)
+        end do
+!
+!   Fill potential field if inner core exist
+          is_ICB = local_sph_data_address(sph, int(sph_bc_B%kr_in), js)
+          do k = 1, sph_bc_B%kr_in-1
+            is = local_sph_data_address(sph, k, js)
+            rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_ICB(0)
+!   Substitute poloidal mangetic field
+            rj_fld%d_fld(is,ipol%base%i_magne  )                        &
+     &       =  rj_fld%d_fld(is_ICB,ipol%base%i_magne  ) * rr**(ione+1)
+        end do
+!
+!   Fill potential field if external of the core exist
+          is_CMB = local_sph_data_address(sph, int(sph_bc_B%kr_out),js)
+          do k = sph_bc_B%kr_out+1, nidx_rj(sph,1)
+            is = local_sph_data_address(sph, k, js)
+            rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_CMB(0)
+!   Substitute poloidal mangetic field
+            rj_fld%d_fld(is,ipol%base%i_magne  )                        &
+     &       =  rj_fld%d_fld(is_CMB,ipol%base%i_magne  ) * rr**(-ione)
+          end do
+        end if
+!
+!
+!    Find local addrtess for (l,m) = (2,0)
+        jt =  find_local_sph_mode_address(sph, 1, mm-1)
+!
+        if (jt .gt. 0) then
+          do k = 1, sph_bc_B%kr_out
+            it = local_sph_data_address(sph, k, jt)
+            rr = radius_1d_rj_r(sph, k)
+!   Substitute totoidal mangetic field
+            rj_fld%d_fld(it,ipol%base%i_magne+2)                        &
+     &       = (10.0d0/3.0d0) * rr * sin(pi*(rr - sph_bc_B%r_ICB(0)))
+          end do
+        end if
+      end do
+!
+!
+!$omp parallel do
+      do is = 1, nnod_rj(sph)
+        rj_fld%d_fld(is,ipol%base%i_magne  )                            &
+     &        = b_adjust * rj_fld%d_fld(is,ipol%base%i_magne  )
+        rj_fld%d_fld(is,ipol%base%i_magne+1)                            &
+     &        = b_adjust * rj_fld%d_fld(is,ipol%base%i_magne+1)
+        rj_fld%d_fld(is,ipol%base%i_magne+2)                            &
+     &        = b_adjust * rj_fld%d_fld(is,ipol%base%i_magne+2)
+      end do
+!$omp end parallel do
+!
+      end subroutine set_initial_magne2_sph
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
