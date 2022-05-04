@@ -351,8 +351,8 @@
       integer :: jj, k, l
       integer ( kind = kint) :: inod, i_center
       real (kind = kreal) :: pi, rr, xr, shell
-!      real(kind = kreal), parameter :: A_temp = 0.1d0
-      real(kind = kreal), parameter :: A_temp = 0.01d0
+      real(kind = kreal), parameter :: A_temp = 0.1d0
+!      real(kind = kreal), parameter :: A_temp = 0.01d0
 !
 !
       if(ipol%base%i_temp .eq. izero) return
@@ -379,13 +379,8 @@
           inod = local_sph_data_address(sph, k, jj)
           rr = radius_1d_rj_r(sph, k)
           rj_fld%d_fld(inod,ipol%base%i_temp)                           &
-     &         = ((20.d0/13.0d0) / rr  - 1.0d0 ) * 7.0d0 / 13.0d0
-        end do
-!
-        do k = 1, sph_bc_T%kr_out
-          inod = local_sph_data_address(sph, k, jj)
-          rj_fld%d_fld(inod,ipol%base%i_temp)                           &
-     &         = 0.2d0 * rj_fld%d_fld(inod,ipol%base%i_temp)
+     &         = (sph_bc_T%r_CMB(0) / rr  - 1.0d0 )                     &
+     &          * sph_bc_T%r_ICB(0) / shell
         end do
       end if
 !
@@ -423,7 +418,6 @@
         rj_fld%d_fld(i_center,ipol%base%i_temp)                         &
      &                 = rj_fld%d_fld(inod,ipol%base%i_temp)
       end if
-      write(*,*) 'tahotahotaho', my_rank
 !
       end subroutine set_initial_temp2
 !
