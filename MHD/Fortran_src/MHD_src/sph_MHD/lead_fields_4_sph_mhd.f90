@@ -176,6 +176,7 @@
 !
       use sph_transforms_snapshot
       use cal_nonlinear_sph_MHD
+      use get_components_from_field
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -203,6 +204,12 @@
      &      trns_snap%b_trns%base, trns_MHD%f_trns%forces,              &
      &      trns_snap%backward, trns_MHD%forward)
       end if
+!
+!
+      call get_components_from_fld(sph%sph_rtp, trans_p%leg,            &
+     &    trns_snap%b_trns%base, trns_snap%f_trns%fld_cmp,              &
+     &    trns_snap%backward%ncomp, trns_snap%backward%fld_rtp,         &
+     &    trns_snap%forward%ncomp, trns_snap%forward%fld_rtp)
 !
 !
       call nonlinear_terms_on_node_w_sym                                &
