@@ -9,7 +9,7 @@
 !     &          NPL, NPU, INL_B, INU_B, IAL_B, IAU_B,                  &
 !     &          BD_crs, BL_crs, BU_crs, AB)
 !      subroutine prod_djo_mat_crs_mat_11(NP, NA, NB,                   &
-!     &          NAN, INOD_djo, INM_djo, IAM_djo, AM_djo,               &
+!     &          NAM, INOD_djo, INM_djo, IAM_djo, AM_djo,               &
 !     &          NPL, NPU, INL_B, INU_B, IAL_B, IAU_B,                  &
 !     &          BD_crs, BL_crs, BU_crs, AB)
 !
