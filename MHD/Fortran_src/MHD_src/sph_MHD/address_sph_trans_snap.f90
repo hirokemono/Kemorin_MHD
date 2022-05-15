@@ -118,6 +118,7 @@
      &         (d_rj, ipol, iphys, f_trns, trns_fwd)
 !
       use add_base_force_4_sph_trns
+      use add_prod_field_4_sph_trns
 !
       type(phys_data), intent(in) :: d_rj
       type(phys_address), intent(in) :: ipol, iphys
@@ -165,6 +166,9 @@
 !
       call add_div_coriolis_MHD_sph_trns                                &
      &   (d_rj, ipol%div_forces, iphys%div_forces, f_trns%div_forces,   &
+     &    trns_fwd)
+      call add_field_comps_sph_trns_snap                                &
+     &   (d_rj, ipol%fld_cmp, iphys%fld_cmp, f_trns%fld_cmp,            &
      &    trns_fwd)
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
       trns_fwd%num_tensor = 0

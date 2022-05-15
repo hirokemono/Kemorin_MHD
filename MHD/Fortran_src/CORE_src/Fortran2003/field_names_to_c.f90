@@ -71,6 +71,11 @@
 !!      subroutine set_ene_flux_w_sym_labels_f                          &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!
+!!      integer(c_int) function num_field_comp_list_f()                 &
+!!     &          bind(c, name="num_field_comp_list_f")
+!!      subroutine set_field_component_labels_f                         &
+!!     &         (n_comps_c, field_name_c, field_math_c)                &
+!!     &          bind(c, name="set_field_component_labels_f")
 !!
 !!      integer(c_int) function num_SGS_terms_f()                       &
 !!     &              bind(c, name="num_SGS_terms_f")
@@ -589,6 +594,35 @@
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_ene_flux_w_sym_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_field_comp_list_f()                   &
+     &          bind(c, name="num_field_comp_list_f")
+!
+      use m_field_component_labels
+!
+      num_field_comp_list_f = num_field_comp_list()
+      return
+      end function num_field_comp_list_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_field_component_labels_f                           &
+     &         (n_comps_c, field_name_c, field_math_c)                  &
+     &          bind(c, name="set_field_component_labels_f")
+!
+      use m_field_component_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_field_component_labels                                   &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_field_component_labels_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

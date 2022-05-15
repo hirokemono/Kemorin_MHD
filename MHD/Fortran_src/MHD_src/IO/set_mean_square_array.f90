@@ -51,6 +51,7 @@
       use m_diff_vector_labels
       use m_energy_flux_labels
       use m_field_product_labels
+      use m_field_component_labels
 !
       use m_wide_filter_field_labels
       use m_grad_filter_field_labels
@@ -222,6 +223,7 @@
      &      .or. check_vector_diffusion(field_name)                     &
      &      .or. check_difference_vectors(field_name)                   &
      &      .or. check_field_product_vectors(field_name)                &
+     &      .or. check_field_comp_list(field_name)                      &
 !
      &      .or. check_enegy_fluxes(field_name)                         &
      &      .or. check_scalar_advection(field_name)                     &
