@@ -342,6 +342,7 @@
       use sph_transforms_snapshot
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
+      use cal_geomagnetic_data
 !
       integer(kind = kint), intent(in) :: ltr_crust
       type(sph_grids), intent(in) :: sph
@@ -364,6 +365,10 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
+      call cal_geomagnetic_rtp(sph%sph_params, sph%sph_rtp,             &
+     &    trns_MHD%b_trns%base, trns_eflux%f_trns%prod_fld,             &
+     &    trns_MHD%backward%ncomp, trns_MHD%backward%fld_rtp,           &
+     &    trns_eflux%forward%ncomp, trns_eflux%forward%fld_rtp)
       call cal_sph_enegy_fluxes                                         &
      &   (ltr_crust, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,       &
      &    trans_p, ipol, trns_MHD, trns_snap, trns_difv, trns_eflux,    &
