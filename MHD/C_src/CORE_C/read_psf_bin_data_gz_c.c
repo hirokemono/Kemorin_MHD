@@ -141,6 +141,7 @@ static void read_alloc_psf_data_bin_gz(struct psf_data *psf_z, struct psf_bin_wo
         psf_z_WK->ilength = (KCHARA_C-1)*sizeof(char);
         gzread_64bit_psfchara(psf_z_WK, (char *) psf_z->data_name[i]);
         psf_z->data_name[i] = trim(psf_z->data_name[i]);
+        psf_z->id_coord[i] = set_field_coordinate_flag(psf_z->data_name[i]);
     }
     
     psf_z->istack_comp[0] = 0;

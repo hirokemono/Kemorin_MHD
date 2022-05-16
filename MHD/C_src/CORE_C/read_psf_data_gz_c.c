@@ -178,8 +178,7 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 	for (i = 0; i < viz_s->nfield; i++) {
 		get_one_line_from_gz(lbuf, num_word, nchara, buf);
         
-		iflag = read_field_name_from_buffer(lbuf[0]+1, buf, viz_s->data_name[i]);
-		viz_s->id_coord[i] = iflag;
+        viz_s->id_coord[i] = read_field_name_from_buffer(lbuf[0]+1, buf, viz_s->data_name[i]);
 /*		printf("%d, %s coordinate: %d \n", i, viz_s->data_name[i], viz_s->id_coord[i]);*/
 	};
 	/*  read field */
