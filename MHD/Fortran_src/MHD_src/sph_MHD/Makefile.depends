@@ -40,7 +40,7 @@ cal_explicit_terms.o: $(MHD_SPH_DIR)/cal_explicit_terms.f90 m_precision.o m_t_st
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_fdm_coefs_4_boundaries.o: $(MHD_SPH_DIR)/cal_fdm_coefs_4_boundaries.f90 m_precision.o m_constants.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_geomagnetic_data.o: $(MHD_SPH_DIR)/cal_geomagnetic_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_parameter.o t_spheric_rtp_data.o t_base_field_labels.o t_field_product_labels.o
+cal_geomagnetic_data.o: $(MHD_SPH_DIR)/cal_geomagnetic_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_rtp_data.o t_spheric_rj_data.o t_boundary_params_sph_MHD.o t_base_field_labels.o t_field_product_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_grad_of_sph_vectors.o: $(MHD_SPH_DIR)/cal_grad_of_sph_vectors.f90 m_precision.o m_machine_parameter.o t_spheric_parameter.o t_spheric_rj_data.o t_phys_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_schmidt_poly_on_rtm.o t_base_field_labels.o t_grad_field_labels.o t_diff_vector_labels.o const_sph_radial_grad.o
 	$(F90) -c $(F90OPTFLAGS) $<

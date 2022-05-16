@@ -7,11 +7,12 @@
 !> @brief Evaluate geomagnetic field data outside of spherical shell
 !!
 !!@verbatim
-!!      subroutine cal_geomagnetic_rtp                                  &
-!!     &         (sph_params, sph_rtp, bs_trns_base, fe_trns_prod,      &
+!!      subroutine cal_geomagnetic_rtp(sph_rtp, sph_rj,                 &
+!!     &          sph_bc_B, bs_trns_base, fe_trns_prod,                 &
 !!     &          ntot_comp_fld, fld_rtp, ntot_comp_fmg, fmag_rtp)
-!!        type(sph_shell_parameters) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(base_field_address), intent(in) :: bs_trns_base
 !!        type(phys_products_address), intent(in) :: fe_trns_prod
 !!        integer(kind = kint), intent(in) :: ntot_comp_fld
@@ -21,11 +22,9 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!       &                   :: fmag_rtp(sph_rtp%nnod_rtp,ntot_comp_fmg)
 !!
-!!      subroutine cal_geomagnetic_data_rtp                             &
-!!     &         (sph_rtp, nlayer_CMB, d_rtp_magne,                     &
+!!      subroutine cal_geomagnetic_data_rtp(sph_rtp, d_rtp_magne,       &
 !!     &          d_total_magne, d_decrenatin, d_increnation)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        integer(kind = kint), intent(in) :: nlayer_CMB
 !!        real(kind=kreal), intent(in)                                  &
 !!       &                 :: d_rtp_magne(sph_rtp%nnod_rtp,3)
 !!        real(kind=kreal), intent(inout)                               &
@@ -54,8 +53,9 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use t_spheric_parameter
       use t_spheric_rtp_data
+      use t_spheric_rj_data
+      use t_boundary_params_sph_MHD
       use t_base_field_labels
       use t_field_product_labels
 !
@@ -67,12 +67,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_geomagnetic_rtp                                    &
-     &         (sph_params, sph_rtp, bs_trns_base, fe_trns_prod,        &
+      subroutine cal_geomagnetic_rtp(sph_rtp, sph_rj,                   &
+     &          sph_bc_B, bs_trns_base, fe_trns_prod,                   &
      &          ntot_comp_fld, fld_rtp, ntot_comp_fmg, fmag_rtp)
 !
-      type(sph_shell_parameters) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_B
       type(base_field_address), intent(in) :: bs_trns_base
       type(phys_products_address), intent(in) :: fe_trns_prod
       integer(kind = kint), intent(in) :: ntot_comp_fld
@@ -84,10 +85,12 @@
      &                   :: fmag_rtp(sph_rtp%nnod_rtp,ntot_comp_fmg)
 !
 !
+      if(sph_bc_B%kr_out .ge. sph_rj%nidx_rj(1)) return
+!
       if(      fe_trns_prod%i_magnetic_intensity .eq. 0                 &
      &    .or. fe_trns_prod%i_declination .eq. 0                        &
      &    .or. fe_trns_prod%i_inclination .eq. 0) return
-      call cal_geomagnetic_data_rtp(sph_rtp, sph_params%nlayer_CMB,     &
+      call cal_geomagnetic_data_rtp(sph_rtp,                            &
      &                   fld_rtp(1,bs_trns_base%i_magne),               &
      &                   fmag_rtp(1,fe_trns_prod%i_magnetic_intensity), &
      &                   fmag_rtp(1,fe_trns_prod%i_inclination),        &
@@ -96,7 +99,7 @@
 !
       if(      fe_trns_prod%i_vgp_latitude .eq. 0                       &
      &    .or. fe_trns_prod%i_vgp_longigude .eq. 0) return
-      call cal_vgp_location_rtp(sph_rtp, sph_params%nlayer_CMB,         &
+      call cal_vgp_location_rtp(sph_rtp,                                &
      &                        fmag_rtp(1,fe_trns_prod%i_inclination),   &
      &                        fmag_rtp(1,fe_trns_prod%i_declination),   &
      &                        fmag_rtp(1,fe_trns_prod%i_vgp_latitude),  &
@@ -106,12 +109,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_geomagnetic_data_rtp                               &
-     &         (sph_rtp, nlayer_CMB, d_rtp_magne,                       &
+      subroutine cal_geomagnetic_data_rtp(sph_rtp, d_rtp_magne,         &
      &          d_total_magne, d_increnation, d_decrenatin)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      integer(kind = kint), intent(in) :: nlayer_CMB
       real(kind=kreal), intent(in)                                      &
      &                 :: d_rtp_magne(sph_rtp%nnod_rtp,3)
 !
@@ -123,25 +124,18 @@
      &                 :: d_decrenatin(sph_rtp%nnod_rtp)
 !
       integer(kind = kint) :: kr, l_rtp, mphi, inod
-      real(kind=kreal) :: sin_theta, cos_theta, cot_theta
-      real(kind=kreal) :: sin_phi, cos_phi, pi, b_horiz
+      real(kind=kreal) :: pi, b_horiz
 !
 !
       pi = four * atan(one)
 !$omp parallel
-      do kr = nlayer_CMB+1, sph_rtp%nidx_rtp(1)
+      do kr = 1, sph_rtp%nidx_rtp(1)
         do l_rtp = 1, sph_rtp%nidx_rtp(2)
-!$omp do private(mphi,inod,sin_theta,cos_theta,cot_theta,               &
-!$omp&           sin_phi,cos_phi,b_horiz)
+!$omp do private(mphi,inod,b_horiz)
           do mphi = 1, sph_rtp%nidx_rtp(3)
             inod = 1 + (mphi-1) *  sph_rtp%istep_rtp(3)                 &
      &               + (l_rtp-1) * sph_rtp%istep_rtp(2)                 &
      &               + (kr-1) *    sph_rtp%istep_rtp(1)
-            sin_theta = sph_rtp%sin_theta_1d_rtp(l_rtp)
-            cos_theta = sph_rtp%cos_theta_1d_rtp(l_rtp)
-            cot_theta = sph_rtp%cot_theta_1d_rtp(l_rtp)
-            sin_phi = sin(pi*dble(2*mphi-2) / sph_rtp%nidx_rtp(3))
-            cos_phi = cos(pi*dble(2*mphi-2) / sph_rtp%nidx_rtp(3))
 !
             b_horiz =             sqrt(d_rtp_magne(inod,2)**2           &
      &                               + d_rtp_magne(inod,3)**2)
@@ -172,12 +166,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vgp_location_rtp(sph_rtp, nlayer_CMB,              &
+      subroutine cal_vgp_location_rtp(sph_rtp,                          &
      &                                d_increnation, d_decrenatin,      &
      &                                d_vgp_latitude, d_vgp_longitude)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      integer(kind = kint), intent(in) :: nlayer_CMB
       real(kind=kreal), intent(in)                                      &
      &                 :: d_increnation(sph_rtp%nnod_rtp)
       real(kind=kreal), intent(in)                                      &
@@ -194,7 +187,7 @@
 !
       pi = four * atan(one)
 !$omp parallel
-      do kr = nlayer_CMB+1, sph_rtp%nidx_rtp(1)
+      do kr = 1, sph_rtp%nidx_rtp(1)
         do l_rtp = 1, sph_rtp%nidx_rtp(2)
 !$omp do private(mphi,inod,sin_lat,cos_lat,d_long,p,p_lat,beta)
           do mphi = 1, sph_rtp%nidx_rtp(3)

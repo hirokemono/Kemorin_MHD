@@ -361,7 +361,8 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-      call cal_geomagnetic_rtp(sph%sph_params, sph%sph_rtp,             &
+      call cal_geomagnetic_rtp                                          &
+     &   (sph%sph_rtp, sph%sph_rj, sph_MHD_bc%sph_bc_B,                 &
      &    trns_MHD%b_trns%base, trns_eflux%f_trns%prod_fld,             &
      &    trns_MHD%backward%ncomp, trns_MHD%backward%fld_rtp,           &
      &    trns_eflux%forward%ncomp, trns_eflux%forward%fld_rtp)
