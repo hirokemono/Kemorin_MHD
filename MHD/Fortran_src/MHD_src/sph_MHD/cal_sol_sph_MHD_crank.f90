@@ -278,6 +278,7 @@
      &          cd_prop, sph_bc_B, leg, ipol, rj_fld)
 !
       use t_physical_property
+      use extend_potential_field_t
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -287,6 +288,20 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
+!
+!
+      if(sph_bc_B%kr_in .gt. 1                                          &
+     &   .and. sph_bc_B%iflag_icb .ne. iflag_sph_fill_center) then
+        call ext_inside_potential_t_with_j(sph_rj, sph_bc_B%kr_in,      &
+     &      rj_fld%d_fld(1,ipol%base%i_magne),                          &
+     &      rj_fld%d_fld(1,ipol%base%i_current))
+      end if
+      if(sph_bc_B%kr_out .lt. sph_rj%nidx_rj(1)) then
+        call ext_outside_potential_t_with_j(sph_rj, sph_bc_B%kr_out,    &
+     &      rj_fld%d_fld(1,ipol%base%i_magne),                          &
+     &      rj_fld%d_fld(1,ipol%base%i_current))
+      end if
+
 !
 !       Input:    ipol%base%i_current to ipol%base%i_current+2
 !       Solution: ipol%diffusion%i_b_diffuse
