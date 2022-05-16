@@ -153,11 +153,11 @@
               d_increnation(inod) = 0.0d0
               d_decrenatin(inod) = 0.0d0
             else if(b_horiz .eq. zero) then
-              d_increnation(inod) = -acos(d_rtp_magne(inod,1)           &
+              d_increnation(inod) = -asin(d_rtp_magne(inod,1)           &
      &                                 / d_total_magne(inod))
               d_decrenatin(inod) = 0.0d0
             else
-              d_increnation(inod) = -acos(d_rtp_magne(inod,1)           &
+              d_increnation(inod) = -asin(d_rtp_magne(inod,1)           &
      &                                 / d_total_magne(inod))
               d_decrenatin(inod) =  atan2(d_rtp_magne(inod,3),          &
      &                                  (-d_rtp_magne(inod,2)))
@@ -206,16 +206,22 @@
             cos_lat = sph_rtp%sin_theta_1d_rtp(l_rtp)
             d_long = pi*dble(2*mphi-2) / sph_rtp%nidx_rtp(3)
 !
-            p = one / atan(tan(half * d_increnation(inod)))
+            if(d_increnation(inod) .eq. zero) then
+              p = two * atan(one)
+            else
+              p = atan(two / tan(d_increnation(inod)))
+            end if
             p_lat = asin(sin_lat * cos(p)                               &
      &              + cos_lat * sin(p) * cos(d_decrenatin(inod)))
-            beta = asin(sin(p) * sin(d_decrenatin(inod))  &
-     &             / cos(p_lat))
+            beta = asin(sin(p) * sin(d_decrenatin(inod))                &
+     &                / cos(p_lat))
 !
-            if(cos(p_lat) .ge. (sin_lat * sin(d_long)) ) then
-              d_vgp_longitude(inod) = d_long + beta
+            if(cos(p_lat) .ge. (sin_lat * sin(p_lat)) ) then
+              d_vgp_longitude(inod)                                     &
+     &                = mod(d_long+beta+three*pi,(two*pi)) - pi
             else
-              d_vgp_longitude(inod) = d_long - beta + pi
+              d_vgp_longitude(inod)                                     &
+     &                = mod(d_long-beta+two*pi,(two*pi)) - pi
             end if
             d_vgp_latitude(inod) = p_lat
           end do
