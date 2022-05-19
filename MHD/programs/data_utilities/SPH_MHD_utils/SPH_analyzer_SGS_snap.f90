@@ -151,6 +151,7 @@
       use input_control_sph_MHD
       use output_viz_file_control
       use sph_SGS_mhd_monitor_data_IO
+      use sph_radial_grad_4_magne
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -166,6 +167,10 @@
       call read_alloc_sph_rst_SGS_snap                                  &
      &   (i_step, MHD_files%org_rj_file_IO, MHD_files,                  &
      &    MHD_step%rst_step, MHD_step%init_d, SPH_MHD, SPH_SGS)
+      call extend_by_potential_with_j                                   &
+     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_B,            &
+     &    SPH_MHD%ipol%base%i_magne, SPH_MHD%ipol%base%i_current,       &
+     &    SPH_MHD%fld)
 
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !

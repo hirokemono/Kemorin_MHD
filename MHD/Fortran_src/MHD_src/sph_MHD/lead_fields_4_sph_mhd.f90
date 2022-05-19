@@ -290,7 +290,7 @@
       use cal_sph_divergence_of_force
       use const_radial_forces_on_bc
       use cal_div_of_forces
-      use const_sph_radial_grad
+      use sph_radial_grad_4_velocity
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc

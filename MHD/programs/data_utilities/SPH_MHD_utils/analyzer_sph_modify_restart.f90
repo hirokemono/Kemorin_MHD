@@ -111,6 +111,7 @@
       use input_control_sph_MHD
       use set_sph_restart_IO
       use sph_SGS_mhd_monitor_data_IO
+      use sph_radial_grad_4_magne
 !
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: fst_file_IO
@@ -130,6 +131,10 @@
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
      &    MHD_step%rst_step, SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld,    &
      &    MHD_step%init_d)
+      call extend_by_potential_with_j                                   &
+     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_B,            &
+     &    SPH_MHD%ipol%base%i_magne, SPH_MHD%ipol%base%i_current,       &
+     &    SPH_MHD%fld)
 !
       call init_sph_send_recv_N                                         &
      &   (n_vector, SPH_MHD%sph, SPH_MHD%comms,                         &

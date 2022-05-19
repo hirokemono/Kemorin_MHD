@@ -109,6 +109,7 @@
       use set_initial_sph_dynamo
       use sph_mhd_rst_IO_control
       use input_control_sph_MHD
+      use sph_radial_grad_4_magne
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -135,6 +136,11 @@
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
       call sph_initial_spectrum(MHD_files1%fst_file_IO,                 &
      &    SPH_model%sph_MHD_bc, SPH_MHD, MHD_step1%rst_step, rst_IO1)
+!
+      call extend_by_potential_with_j                                   &
+     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_B,            &
+     &    SPH_MHD%ipol%base%i_magne, SPH_MHD%ipol%base%i_current,       &
+     &    SPH_MHD%fld)
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !

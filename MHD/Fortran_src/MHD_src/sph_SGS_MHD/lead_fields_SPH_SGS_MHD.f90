@@ -159,7 +159,7 @@
       use const_radial_forces_on_bc
       use cal_div_of_forces
       use cal_div_of_SGS_forces
-      use const_sph_radial_grad
+      use sph_radial_grad_4_velocity
       use cal_sph_rotation_of_SGS
       use cal_sph_rot_filtered_force
       use sum_rot_of_filter_forces

@@ -72,7 +72,8 @@
      &          ipol, sph_MHD_mat, rj_fld)
 !
       use cal_sol_sph_fluid_crank
-      use const_sph_radial_grad
+      use sph_radial_grad_4_velocity
+      use sph_radial_grad_4_magne
 !
       real(kind = kreal), intent(in) :: dt
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -172,7 +173,8 @@
       subroutine set_sph_field_to_start(sph_rj, r_2nd,                  &
      &          MHD_prop, sph_MHD_bc, leg, ipol, rj_fld)
 !
-      use const_sph_radial_grad
+      use sph_radial_grad_4_velocity
+      use sph_radial_grad_4_magne
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd

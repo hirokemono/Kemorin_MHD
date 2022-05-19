@@ -63,6 +63,7 @@
       use initial_magne_dbench_qvc
       use set_initial_sph_scalars
       use set_sph_restart_IO
+      use sph_radial_grad_4_magne
       use calypso_mpi
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -102,6 +103,11 @@
      &      sph%sph_params, sph%sph_rj,                                 &
      &      SPH_model%MHD_prop, ipol, rj_fld)
       end if
+!
+      call extend_by_potential_with_j                                   &
+     &   (sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_B,                    &
+     &    ipol%base%i_magne, ipol%base%i_current, rj_fld)
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 'copy_time_step_data'
       call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)

@@ -134,6 +134,7 @@
       use sph_mhd_rst_IO_control
       use input_control_sph_MHD
       use output_viz_file_control
+      use sph_radial_grad_4_magne
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -149,7 +150,10 @@
      &   (i_step, MHD_files%org_rj_file_IO, MHD_files%fst_file_IO,      &
      &    MHD_step%rst_step, SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld,    &
      &    MHD_step%init_d)
-
+      call extend_by_potential_with_j                                   &
+     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_B,            &
+     &    SPH_MHD%ipol%base%i_magne, SPH_MHD%ipol%base%i_current,       &
+     &    SPH_MHD%fld)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
