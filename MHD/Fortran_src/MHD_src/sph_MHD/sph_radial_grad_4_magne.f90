@@ -164,6 +164,7 @@
 !
 !
       if((is_magne*is_current) .eq. 0) return
+      write(*,*) 'Potential field!'
 !      Extend potential field
       call ext_outside_potential_with_j                                 &
      &   (sph_bc_B%kr_out, sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,       &
