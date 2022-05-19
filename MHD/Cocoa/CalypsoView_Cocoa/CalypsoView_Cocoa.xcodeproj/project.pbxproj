@@ -178,7 +178,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1804E5C2125F025100EC8EAA /* CalypsoView.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = CalypsoView.icns; sourceTree = "<group>"; };
@@ -319,6 +318,8 @@
 		18B885EE24E618040077BA16 /* set_each_isoline_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_each_isoline_to_buf.h; sourceTree = "<group>"; };
 		18B885F024E618290077BA16 /* set_hex_tube_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_hex_tube_to_buf.h; sourceTree = "<group>"; };
 		18B885F124E618290077BA16 /* set_hex_tube_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_hex_tube_to_buf.c; sourceTree = "<group>"; };
+		18BB23782834569700F48A60 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		18BB23792834569700F48A60 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		18CE99DA23DB7BB6005D8886 /* draw_messages_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_messages_gl.c; sourceTree = "<group>"; };
 		18CE99DB23DB7BB7005D8886 /* draw_messages_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_messages_gl.h; sourceTree = "<group>"; };
 		18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vartex_array_object_gl.c; sourceTree = "<group>"; };
@@ -484,7 +485,6 @@
 		18F56FC723720B270029D20D /* m_kemoview_fline_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_kemoview_fline_menu.c; sourceTree = "<group>"; };
 		18F6DAF515D993F7006F4600 /* set_each_psf_parameters.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_each_psf_parameters.c; sourceTree = "<group>"; };
 		18F6DAF715D99417006F4600 /* set_each_psf_parameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = set_each_psf_parameters.h; sourceTree = "<group>"; };
-		18F9051415DDEA45001368FA /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		18FC007417EE0B7100B5F684 /* select_read_psf_viewer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = select_read_psf_viewer_c.c; sourceTree = "<group>"; };
 		18FC007617EE0E9800B5F684 /* select_read_psf_viewer_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = select_read_psf_viewer_c.h; sourceTree = "<group>"; };
 		18FC007717EF4D6200B5F684 /* read_psf_vtk_data_gz_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = read_psf_vtk_data_gz_c.c; sourceTree = "<group>"; };
@@ -984,13 +984,13 @@
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CalypsoView_Cocoa" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
+				ja,
+				fr,
+				en,
+				de,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Kemoview_Cocoa */;
 			projectDirPath = "";
@@ -1187,7 +1187,7 @@
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				089C165DFE840E0CC02AAC07 /* English */,
+				18BB23782834569700F48A60 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1195,7 +1195,7 @@
 		18F9051315DDEA45001368FA /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				18F9051415DDEA45001368FA /* English */,
+				18BB23792834569700F48A60 /* en */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";

@@ -215,17 +215,15 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !      Extend potential field
-      call ext_outside_potential_with_j                                 &
-     &   (sph_bc_B%kr_out, is_magne, is_current,                        &
-     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                        &
-     &    sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                    &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call ext_outside_potential_with_j                               &
+     &     (sph_bc_B%kr_out, sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,     &
+     &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r, rj_fld%n_point,  &
+     &      rj_fld%d_fld(1,is_magne), rj_fld%d_fld(1,is_current))
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
         call ext_inside_potential_with_j                                &
-     &     (sph_bc_B%kr_in, is_magne, is_current,                       &
-     &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
-     &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (sph_bc_B%kr_in, sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,      &
+     &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r, rj_fld%n_point,  &
+     &      rj_fld%d_fld(1,is_magne), rj_fld%d_fld(1,is_current))
       end if
 !
       end subroutine const_grad_bp_and_current
@@ -297,15 +295,15 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !      Extend potential field
-      call ext_outside_potential(sph_bc_B%kr_out, is_magne,             &
-     &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
-     &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      call ext_outside_potential(sph_bc_B%kr_out,                       &
+     &    sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                        &
+     &    sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                    &
+     &    rj_fld%n_point, rj_fld%d_fld(1,is_magne))
       if(sph_bc_B%iflag_icb .eq. iflag_sph_insulator) then
-        call ext_inside_potential(sph_bc_B%kr_in, is_magne,             &
+        call ext_inside_potential(sph_bc_B%kr_in,                       &
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      rj_fld%n_point, rj_fld%d_fld(1,is_magne))
       end if
 !
       end subroutine const_grad_poloidal_magne

@@ -131,7 +131,7 @@ static int read_gz_psf_connect_data(struct psf_data *viz_s){
 
 
 static void read_gz_viz_phys_data(struct psf_data *viz_s){
-	int iflag, i, j, itmp, iread, nread;
+	int i, j, itmp, iread, nread;
 	char buf[LENGTHBUF];    /* array for reading line */
 	int num_word[1], nchara[1], lbuf[1];
 	
