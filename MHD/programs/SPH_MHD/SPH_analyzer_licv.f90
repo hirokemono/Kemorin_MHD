@@ -216,13 +216,6 @@
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph(SPH_model,                        &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
-!*
-      if(lead_field_data_flag(i_step, MHD_step)) then
-        if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-        call s_lead_fields_4_sph_mhd(SPH_WK%monitor, SPH_WK%r_2nd,      &
-     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
-     &      SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
-      end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  output restart data --------------
