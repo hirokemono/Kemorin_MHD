@@ -264,6 +264,7 @@
           d_current(inod,1) = zero
           d_current(inod,2) = zero
           d_current(inod,3) = zero
+          write(*,*) 'd_magne(inod,1)', d_magne(inod,1:2)
         end do
 !$omp end do nowait
       end do
