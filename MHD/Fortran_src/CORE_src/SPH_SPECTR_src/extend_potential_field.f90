@@ -247,6 +247,7 @@
       integer(kind = kint) :: j, l_gl, k
 !
 !
+      write(*,*) 'kr_out', kr_out+1, nidx_rj(1)
 !$omp parallel private(k,ratio)
       do k = kr_out+1, nidx_rj(1)
         ratio = radius_1d_rj_r(kr_out) * a_r_1d_rj_r(k)
