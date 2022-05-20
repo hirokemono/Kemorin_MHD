@@ -267,7 +267,7 @@
       call allocate_radial_itp_tbl(nri_new, r_itp)
 !
       do k = 1, nri_new
-        if(r_new(k) .lt. r_org(1)) then
+        if(r_new(k) .lt. (r_org(1)-TINY)) then
           r_itp%k_old2new_in(k) =    0
           r_itp%k_old2new_out(k) =   1
           r_itp%coef_old2new_in(k) = -1.0d0
@@ -279,7 +279,7 @@
           r_itp%k_old2new_in(k) =    nri_org - 1
           r_itp%k_old2new_out(k) =   nri_org
           r_itp%coef_old2new_in(k) = 0.0d0
-        else if(r_new(k) .gt. r_org(nri_org)) then
+        else if(r_new(k) .gt. (r_org(nri_org)+TINY)) then
           r_itp%k_old2new_in(k) =    nri_org
           r_itp%k_old2new_out(k) =   nri_org + 1
           r_itp%coef_old2new_in(k) = -1.0d0
