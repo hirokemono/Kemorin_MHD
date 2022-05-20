@@ -299,16 +299,16 @@
       end do
 !
       r_itp%kr_inner_domain = 1
-      do k = nri_new, 1, -1
-        if(r_new(k) .lt. r_org(1)) then
-          r_itp%kr_inner_domain = k + 1
+      do k = 1, nri_new
+        if(abs(r_new(k) - r_org(1)) .lt. TINY) then
+          r_itp%kr_inner_domain = k
           exit
         end if
       end do
       r_itp%kr_outer_domain = nri_new
-      do k = 1, nri_new
-        if(r_new(k) .gt. r_org(nri_org)) then
-          r_itp%kr_outer_domain = k - 1
+      do k = nri_new, 1, -1
+        if(abs(r_new(k) - r_org(nri_org)) .lt. TINY) then
+          r_itp%kr_outer_domain = k
           exit
         end if
       end do

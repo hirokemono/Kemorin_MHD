@@ -247,7 +247,6 @@
       integer(kind = kint) :: j, l_gl, k
 !
 !
-      write(*,*) 'kr_out', kr_out+1, nidx_rj(1)
 !$omp parallel private(k,ratio)
       do k = kr_out+1, nidx_rj(1)
         ratio = radius_1d_rj_r(kr_out) * a_r_1d_rj_r(k)
@@ -264,7 +263,6 @@
           d_current(inod,1) = zero
           d_current(inod,2) = zero
           d_current(inod,3) = zero
-          write(*,*) 'd_magne(inod,1)', d_magne(inod,1:2)
         end do
 !$omp end do nowait
       end do
