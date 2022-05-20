@@ -86,10 +86,10 @@
 !
         call const_picked_sph_address(izero, sph_params%l_truncation,   &
      &      sph_rj, gauss_list, gauss_coef)
-!
       else
         gauss_coef%num_sph_mode = 0
         call alloc_pick_sph_monitor(gauss_coef)
+        call alloc_pickup_sph_spec_local(nprocs, gauss_coef)
         call dealloc_pick_sph_mode(gauss_list)
       end if
 !
