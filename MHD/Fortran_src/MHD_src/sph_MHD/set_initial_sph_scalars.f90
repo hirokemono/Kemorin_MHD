@@ -238,7 +238,7 @@
           inod = j + (k-1) * sph_rj%nidx_rj(2)
 !
           d_rj(inod,is_temp) = (one-three*xr**2+three*xr**4-xr**6)      &
-     &                            * 0.1d0 * six / (sqrt(pi))
+     &                            * 1.0d-6 * six / (sqrt(pi))
         end do
       end do
 !
