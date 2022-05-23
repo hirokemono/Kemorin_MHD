@@ -94,6 +94,7 @@
       use cal_momentum_eq_explicit
       use sph_mhd_rst_IO_control
       use set_reference_sph_mhd
+      use init_sph_MHD_elapsed_label
 !
         integer(kind=kint ) :: istep, iflag_finish
 !
@@ -133,6 +134,7 @@
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
+      call write_resolution_data(SPH_MHD1%sph)
       call output_elapsed_times
 !
       call calypso_MPI_barrier

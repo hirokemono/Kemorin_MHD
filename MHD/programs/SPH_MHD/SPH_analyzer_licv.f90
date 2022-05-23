@@ -141,12 +141,14 @@
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
-      if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
-      call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,             &
-     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
-     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                 &
-     &    SPH_MHD%fld, SR_sig, SR_r)
+      call nonlinear(SPH_WK%r_2nd, SPH_model, SPH_WK%trans_p,           &
+     &               SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
+!      if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
+!      call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,            &
+!     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                    &
+!     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,             &
+!     &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                &
+!     &    SPH_MHD%fld, SR_sig, SR_r)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -204,11 +206,13 @@
      &    SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_MHD%fld)
 !*
 !*  ----------------lead nonlinear term ... ----------
-        call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,           &
-     &     SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                    &
-     &     SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,             &
-     &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                &
-     &     SPH_MHD%fld, SR_sig, SR_r)
+      call nonlinear(SPH_WK%r_2nd, SPH_model, SPH_WK%trans_p,           &
+     &               SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
+!        call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,          &
+!     &     SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                   &
+!     &     SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,            &
+!     &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,               &
+!     &     SPH_MHD%fld, SR_sig, SR_r)
 !
 !* ----  Update fields after time evolution ------------------------
 !*
