@@ -220,7 +220,7 @@
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !*
-      subroutine licv_exp(r_2nd, SPH_model, trans_p,                    &
+      subroutine licv_exp(r_2nd, SPH_model, trans_p,                   &
      &                     WK, SPH_MHD, SR_sig, SR_r)
 !
       use cal_inner_core_rotation
@@ -228,7 +228,6 @@
       use cal_nonlinear_sph_MHD
       use sum_rotation_of_forces
       use rot_self_buoyancies_sph
-      use copy_nodal_fields
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
@@ -262,23 +261,10 @@
      &    WK%cor_rlm, SPH_MHD%ipol, SPH_MHD%fld, SR_sig, SR_r)
 !
 !   ----  Lead advection of reference field
-!      call add_ref_advect_sph_MHD                                      &
-!     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_model%MHD_prop,&
-!     &    trans_p%leg, SPH_model%ref_temp, SPH_model%ref_comp,         &
-!     &    SPH_MHD%ipol, SPH_MHD%fld)
-!
-      if(SPH_MHD%ipol%forces%i_h_advect .gt. 0) then
-        call clear_field_data(SPH_MHD%fld, n_scalar,                    &
-     &                        SPH_MHD%ipol%forces%i_h_advect)
-      end if
-      if(SPH_MHD%ipol%forces%i_c_advect .gt. 0) then
-        call clear_field_data(SPH_MHD%fld, n_scalar,                    &
-     &                        SPH_MHD%ipol%forces%i_c_advect)
-      end if
-      if(SPH_MHD%ipol%exp_work%i_forces .gt. 0) then
-        call clear_field_data(SPH_MHD%fld, n_vector,                    &
-     &                        SPH_MHD%ipol%exp_work%i_forces)
-      end if
+      call add_ref_advect_sph_MHD                                       &
+     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_model%MHD_prop, &
+     &    trans_p%leg, SPH_model%ref_temp, SPH_model%ref_comp,          &
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
@@ -291,8 +277,8 @@
       if(SPH_model%MHD_prop%fl_prop%iflag_scheme .eq. id_no_evolution)  &
      &      return
 !
-      if(iflag_debug .gt. 0) write(*,*) 'licv_forces_to_explicit'
-      call licv_forces_to_explicit(SPH_model%MHD_prop%fl_prop,          &
+      if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
+      call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,           &
      &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
 !
       end subroutine licv_exp
