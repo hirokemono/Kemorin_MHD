@@ -84,7 +84,10 @@
         d_rj(inod,is_field) = sol_00(kr)
       end do
 !$omp end parallel do
-      d_rj(inod_rj_center,is_field) = sol_00(0)
+!
+      if(inod_rj_center .eq. 0) then
+        d_rj(inod_rj_center,is_field) = sol_00(0)
+      end if
 !
 !       write(*,*) 'kr, average Solution'
 !       do kr = 0, nri
