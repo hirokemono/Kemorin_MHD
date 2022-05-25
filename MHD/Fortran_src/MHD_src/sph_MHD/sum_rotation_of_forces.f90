@@ -121,51 +121,8 @@
 !
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
-!
-      subroutine licv_forces_to_explicit                                &
-     &         (fl_prop, ipol_exp, ipol_rot_frc, rj_fld)
-!
-      use copy_nodal_fields
-      use cal_vorticity_terms_adams
-!
-      type(fluid_property), intent(in) :: fl_prop
-      type(explicit_term_address), intent(in) :: ipol_exp
-      type(base_force_address), intent(in) :: ipol_rot_frc
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      call clear_field_data                                             &
-     &   (rj_fld, n_vector, ipol_exp%i_forces)
-!
-!$omp parallel
-      if(fl_prop%iflag_4_coriolis) then
-        call add_each_force_to_rot_forces                               &
-     &     (ipol_exp%i_forces, ipol_rot_frc%i_Coriolis,                 &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-      if(fl_prop%iflag_4_lorentz) then
-        call add_each_force_to_rot_forces                               &
-     &     (ipol_exp%i_forces, ipol_rot_frc%i_lorentz,                  &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-!
-      if(fl_prop%iflag_4_gravity) then
-        call add_buoyancy_to_vort_force                                 &
-     &     (ipol_exp%i_forces, ipol_rot_frc%i_buoyancy,                 &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-      if(fl_prop%iflag_4_composit_buo) then
-        call add_buoyancy_to_vort_force                                 &
-     &     (ipol_exp%i_forces, ipol_rot_frc%i_comp_buo,                 &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-!$omp end parallel
-!
-      end subroutine licv_forces_to_explicit
-!
-!*   ------------------------------------------------------------------
 !*
-      subroutine licv_forces_to_explicit_org                            &
+      subroutine licv_forces_to_explicit                                &
      &         (fl_prop, ipol_exp, ipol_rot_frc, rj_fld)
 !
       use m_phys_constants
@@ -196,7 +153,7 @@
 !$omp end parallel
 !
 !
-      end subroutine licv_forces_to_explicit_org
+      end subroutine licv_forces_to_explicit
 !*
 !*   ------------------------------------------------------------------
 !
