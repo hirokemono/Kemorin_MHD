@@ -484,11 +484,11 @@ begin fluid_control
       begin low_temp_ctl
         depth         1.5384615384615384
         temperature   0.0d0
-      end
+      end low_temp_ctl
       begin high_temp_ctl
         depth         0.5384615384615384
         temperature   1.0d0
-      end
+      end high_temp_ctl
 !
       stratified_ctl            0
 !      begin takepiro_model_ctl

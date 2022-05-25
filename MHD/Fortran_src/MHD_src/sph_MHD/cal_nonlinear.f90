@@ -220,73 +220,7 @@
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !*
-      subroutine licv_exp(r_2nd, SPH_model, trans_p,                   &
-     &                     WK, SPH_MHD, SR_sig, SR_r)
-!
-      use cal_inner_core_rotation
-!
-      use cal_nonlinear_sph_MHD
-      use sum_rotation_of_forces
-      use rot_self_buoyancies_sph
-!
-      use m_work_time
-      use m_elapsed_labels_4_MHD
-!
-      type(fdm_matrices), intent(in) :: r_2nd
-      type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(SPH_MHD_model_data), intent(in) :: SPH_model
-!
-      type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-!
-!
-!   ----  lead rottion of buoyancies
-      if(SPH_model%MHD_prop%fl_prop%iflag_scheme                        &
-     &                         .gt. id_no_evolution) then
-      if(iflag_debug.gt.0) write(*,*) 'sel_rot_self_buoyancy_sph'
-        call sel_rot_self_buoyancy_sph(SPH_MHD%sph%sph_rj,              &
-     &      SPH_MHD%ipol%base, SPH_MHD%ipol%rot_forces,                 &
-     &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
-     &      SPH_MHD%fld)
-      end if
-!
-!   ----  lead nonlinear terms by phesdo spectrum
-      if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
-      call nonlinear_by_pseudo_sph                                      &
-     &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,     &
-     &    WK%gt_cor, WK%trns_MHD, WK%WK_leg, WK%WK_FFTs_MHD,            &
-     &    WK%cor_rlm, SPH_MHD%ipol, SPH_MHD%fld, SR_sig, SR_r)
-!
-!   ----  Lead advection of reference field
-      call add_ref_advect_sph_MHD                                       &
-     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_model%MHD_prop, &
-     &    trans_p%leg, SPH_model%ref_temp, SPH_model%ref_comp,          &
-     &    SPH_MHD%ipol, SPH_MHD%fld)
-!
-!*  ----  copy coriolis term for inner core rotation
-!*
-      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+8)
-      call copy_icore_rot_to_tor_coriolis                               &
-     &   (SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%sph%sph_rj,            &
-     &    SPH_MHD%ipol%forces, SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
-      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
-!
-      if(SPH_model%MHD_prop%fl_prop%iflag_scheme .eq. id_no_evolution)  &
-     &      return
-!
-      if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
-      call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,           &
-     &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
-!
-      end subroutine licv_exp
-!*
-!*   ------------------------------------------------------------------
-!*   ------------------------------------------------------------------
-!*
-      subroutine licv_exp_org(ref_temp, ref_comp, MHD_prop, sph_MHD_bc, &
+      subroutine licv_exp(ref_temp, ref_comp, MHD_prop, sph_MHD_bc,     &
      &          sph, comms_sph, omega_sph, trans_p, ipol, WK,           &
      &          rj_fld, SR_sig, SR_r)
 !
@@ -349,7 +283,7 @@
      &    ipol%exp_work, ipol%rot_forces, rj_fld)
 !
 !
-      end subroutine licv_exp_org
+      end subroutine licv_exp
 !*
 !*   ------------------------------------------------------------------
 !
