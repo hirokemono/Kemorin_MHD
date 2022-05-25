@@ -275,7 +275,7 @@
       end if
 !
 !
-      call add_ref_advect_sph_MHD                                       &
+      call add_ref_advect_sph_licv                                      &
      &   (sph%sph_rj, sph_MHD_bc, MHD_prop,                             &
      &    trans_p%leg, ref_temp, ref_comp, ipol, rj_fld)
 !

@@ -353,4 +353,120 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine add_ref_advect_sph_licv(sph_rj, sph_MHD_bc, MHD_prop,  &
+     &          leg, ref_temp, ref_comp, ipol, rj_fld)
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(legendre_4_sph_trans), intent(in) :: leg
+      type(phys_address), intent(in) :: ipol
+!
+      type(reference_field), intent(in) :: ref_temp
+      type(reference_field), intent(in) :: ref_comp
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+      real(kind = kreal) :: temp00_l(0:sph_rj%nidx_rj(1),2)
+      real(kind = kreal) :: temp00(0:sph_rj%nidx_rj(1),2)
+!
+!   ----  Lead advection of reference field
+        call add_reference_advect_sph(sph_MHD_bc%sph_bc_T,              &
+     &      MHD_prop%ht_prop, MHD_prop%ref_param_T,                     &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
+     &      ipol%forces%i_h_advect, ipol%base%i_velo,                   &
+     &      ref_temp%t_rj, rj_fld)
+        call cal_degree0_advect_sph                                     &
+     &    (sph_MHD_bc%sph_bc_T, MHD_prop%ht_prop, MHD_prop%ref_param_T, &
+     &     sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,            &
+     &     sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,               &
+     &     ipol%forces%i_h_flux, ipol%forces%i_h_advect,                &
+     &     ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                 &
+     &     ipol%base%i_velo, temp00_l, temp00, rj_fld)
+!
+        call add_reference_advect_sph(sph_MHD_bc%sph_bc_C,              &
+     &      MHD_prop%cp_prop, MHD_prop%ref_param_C,                     &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
+     &      ipol%forces%i_c_advect, ipol%base%i_velo,                   &
+     &      ref_comp%t_rj, rj_fld)
+        call cal_degree0_advect_sph                                     &
+     &    (sph_MHD_bc%sph_bc_C, MHD_prop%cp_prop, MHD_prop%ref_param_C, &
+     &     sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,            &
+     &     sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,               &
+     &     ipol%forces%i_c_flux, ipol%forces%i_c_advect,                &
+     &     ipol%base%i_light, ipol%grad_fld%i_grad_composit,            &
+     &     ipol%base%i_velo, temp00_l, temp00, rj_fld)
+!
+      end subroutine add_ref_advect_sph_licv
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_degree0_advect_sph                                 &
+     &         (sph_bc_S, property, ref_param_S,                        &
+     &          idx_rj_degree_zero, inod_rj_center, nidx_rj,            &
+     &          ar_1d_rj, g_sph_rj, is_h_flux, is_h_advect,             &
+     &          is_temp, is_grad_temp, is_velo,                         &
+     &          temp00_l, temp00, rj_fld)
+!
+      use calypso_mpi
+      use calypso_mpi_real
+      use transfer_to_long_integers
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: inod_rj_center
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: is_velo
+      integer(kind = kint), intent(in) :: is_temp, is_grad_temp
+      integer(kind = kint), intent(in) :: is_h_flux, is_h_advect
+      real(kind = kreal), intent(in) :: g_sph_rj(nidx_rj(2),13)
+      real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
+      type(reference_scalar_param), intent(in) :: ref_param_S
+      type(sph_boundary_type), intent(in) :: sph_bc_S
+      type(scalar_property), intent(in) :: property
+!
+      real(kind = kreal), intent(inout) :: temp00_l(0:nidx_rj(1),0:1)
+      real(kind = kreal), intent(inout) :: temp00(0:nidx_rj(1),0:1)
+      type(phys_data), intent(inout) :: rj_fld
+!
+      integer(kind= kint) :: ist, ied, inod, j, k
+!
+!
+      if (ref_param_S%iflag_reference .eq. id_sphere_ref_temp) return
+      if(idx_rj_degree_zero .gt. 0) then
+        do k = 1, nidx_rj(1)
+          inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
+          temp00_l(k,0) = rj_fld%d_fld(inod,is_temp)
+          temp00_l(k,1) = rj_fld%d_fld(inod,is_grad_temp)
+        end do
+        if(inod_rj_center .gt. 0) then
+          temp00_l(k,0) = rj_fld%d_fld(inod_rj_center,is_temp)
+          temp00_l(k,1) = zero
+        end if
+      else
+        temp00_l(0:nidx_rj(1),0:1) = zero
+      end if
+      call calypso_mpi_allreduce_real(temp00_l(0,0), temp00(0,0),       &
+     &    cast_long(2*nidx_rj(1)+2), MPI_SUM)
+!
+!
+      ist = (sph_bc_S%kr_in-1) * nidx_rj(2) + 1
+      ied =  sph_bc_S%kr_out * nidx_rj(2)
+!$omp parallel do private (inod,j,k)
+      do inod = ist, ied
+        j = mod((inod-1),nidx_rj(2)) + 1
+        k = 1 + (inod- j) / nidx_rj(2)
+!
+        rj_fld%d_fld(inod,is_h_flux)                                    &
+     &           = property%coef_advect * g_sph_rj(j,3) * ar_1d_rj(k,2) &
+     &            * temp00(k,0) * rj_fld%d_fld(inod,is_velo)
+        rj_fld%d_fld(inod,is_h_advect)                                  &
+     &           = property%coef_advect * g_sph_rj(j,3) * ar_1d_rj(k,2) &
+     &            * temp00(k,1) * rj_fld%d_fld(inod,is_velo)
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_degree0_advect_sph
+!
+!-----------------------------------------------------------------------
+!
       end module cal_nonlinear_sph_MHD
