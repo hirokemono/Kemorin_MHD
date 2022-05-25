@@ -126,9 +126,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_scalar_sph                          &
-     &         (mat_name, dt, sph_params, sph_rj, r_2nd, property,      &
-     &          sph_bc, fdm2_center, g_sph_rj, band_s_evo)
+      subroutine const_radial_mat_4_scalar_sph(mat_name, coef_advect,   &
+     &          dt, sph_params, sph_rj, r_2nd, property, sph_bc,        &
+     &          fdm2_center, g_sph_rj, band_s_evo)
 !
       use m_ludcmp_3band
       use center_sph_matrices
@@ -143,6 +143,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
+      real(kind = kreal), intent(in) :: coef_advect
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: dt
       character(len=kchara), intent(in) :: mat_name

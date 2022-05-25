@@ -70,10 +70,8 @@
      &   (dt, sph%sph_params, sph%sph_rj, r_2nd,                        &
      &    MHD_prop, sph_MHD_bc, leg%g_sph_rj, sph_MHD_mat)
 !
-      if(sph%sph_rj%inod_rj_center .gt. 0) then
-        call const_radial_mat_sph_w_center                              &
-     &     (dt, sph%sph_rj, MHD_prop, sph_MHD_bc, sph_MHD_mat)
-      end if
+      call const_radial_mat_sph_w_center                                &
+     &   (dt, sph%sph_rj, MHD_prop, sph_MHD_bc, sph_MHD_mat)
 !
       end subroutine const_radial_mat_sph_mhd
 !
@@ -153,22 +151,38 @@
      &      g_sph_rj, sph_MHD_mat%band_p_poisson)
       end if
 !
-      write(mat_name,'(a)') 'Temperature_evolution'
-      call const_radial_mat_4_scalar_sph                                &
-     &   (mat_name, dt, sph_params, sph_rj, r_2nd, MHD_prop%ht_prop,    &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
-     &    g_sph_rj, sph_MHD_mat%band_temp_evo)
-!
       call const_radial_mat_4_magne_sph                                 &
      &   (dt, sph_rj, r_2nd, MHD_prop%cd_prop,                          &
      &    sph_MHD_bc%sph_bc_B, sph_MHD_bc%fdm2_center,                  &
      &    g_sph_rj, sph_MHD_mat%band_bp_evo, sph_MHD_mat%band_bt_evo)
 !
+      write(mat_name,'(a)') 'Temperature_evolution'
+      call const_radial_mat_4_scalar_sph                                &
+     &   (mat_name, MHD_prop%ht_prop%coef_advect, dt,                   &
+     &    sph_params, sph_rj, r_2nd, MHD_prop%ht_prop,                  &
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
+     &    g_sph_rj, sph_MHD_mat%band_temp_evo)
+      if(sph_rj%idx_rj_degree_zero .gt. 0) then
+        write(mat_name,'(a)') 'Temperature_poisson'
+        call const_radial_mat_4_scalar_sph(mat_name, zero, dt,          &
+     &      sph_params, sph_rj, r_2nd, MHD_prop%ht_prop,                &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                &
+     &      g_sph_rj, sph_MHD_mat%band_t_poisson)
+      end if
+!
       write(mat_name,'(a)') 'Composition_evolution'
       call const_radial_mat_4_scalar_sph                                &
-     &   (mat_name, dt, sph_params, sph_rj, r_2nd, MHD_prop%cp_prop,    &
+     &   (mat_name, MHD_prop%cp_prop%coef_advect, dt,                   &
+     &    sph_params, sph_rj, r_2nd, MHD_prop%cp_prop,                  &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
      &    g_sph_rj, sph_MHD_mat%band_comp_evo)
+      if(sph_rj%idx_rj_degree_zero .gt. 0) then
+        write(mat_name,'(a)') 'Composition_evolution'
+        call const_radial_mat_4_scalar_sph(mat_name, zero, dt,          &
+     &      sph_params, sph_rj, r_2nd, MHD_prop%cp_prop,                &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                &
+     &      g_sph_rj, sph_MHD_mat%band_c_poisson)
+      end if
 !
       end subroutine const_radial_matrices_sph
 !
@@ -189,25 +203,43 @@
       character(len=kchara) :: mat_name
 !
 !
+      if(sph_rj%idx_rj_degree_zero .eq. 0) return
+!
       call alloc_average_w_center(sph_rj, sph_MHD_mat)
 !
-      write(mat_name,'(a)') 'average_pressure_w_center'
-      call const_radial_mat_press00_sph                                 &
-     &   (mat_name, sph_rj, MHD_prop%fl_prop,                           &
-     &    sph_MHD_bc%sph_bc_U, sph_MHD_bc%fdm2_center,                  &
-     &    sph_MHD_mat%band_p_poisson, sph_MHD_mat%band_p00_poisson)
+      if(sph_rj%inod_rj_center .gt. 0) then
+        write(mat_name,'(a)') 'average_pressure_w_center'
+        call const_radial_mat_press00_sph                               &
+     &     (mat_name, sph_rj, MHD_prop%fl_prop,                         &
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%fdm2_center,                &
+     &      sph_MHD_mat%band_p_poisson, sph_MHD_mat%band_p00_poisson)
 !
-      write(mat_name,'(a)') 'average_temperature_w_center'
-      call const_radial_mat_scalar00_sph                                &
-     &   (mat_name, dt, sph_rj, MHD_prop%ht_prop,                       &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
-     &    sph_MHD_mat%band_temp_evo, sph_MHD_mat%band_temp00_evo)
+        write(mat_name,'(a)') 'average_temperature_w_center'
+        call const_radial_mat_scalar00_sph                              &
+     &     (mat_name, dt, sph_rj, MHD_prop%ht_prop,                     &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                &
+     &      sph_MHD_mat%band_temp_evo, sph_MHD_mat%band_t_poisson,      &
+     &      sph_MHD_mat%band_temp00_evo, sph_MHD_mat%band_t00_poisson)
 !
-      write(mat_name,'(a)') 'average_composition_w_center'
-      call const_radial_mat_scalar00_sph                                &
-     &   (mat_name, dt, sph_rj, MHD_prop%cp_prop,                       &
-     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
-     &    sph_MHD_mat%band_comp_evo, sph_MHD_mat%band_comp00_evo)
+        write(mat_name,'(a)') 'average_composition_w_center'
+        call const_radial_mat_scalar00_sph                              &
+     &     (mat_name, dt, sph_rj, MHD_prop%cp_prop,                     &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                &
+     &      sph_MHD_mat%band_comp_evo, sph_MHD_mat%band_c_poisson,      &
+     &      sph_MHD_mat%band_comp00_evo, sph_MHD_mat%band_c00_poisson)
+      else
+        write(mat_name,'(a)') 'average_temperature'
+        call const_rmat_poisson00_sph                                   &
+     &     (mat_name, sph_rj, MHD_prop%ht_prop,                         &
+     &      sph_MHD_mat%band_t_poisson, sph_MHD_mat%band_t00_poisson)
+!
+        write(mat_name,'(a)') 'average_composition'
+        call const_rmat_poisson00_sph                                   &
+     &     (mat_name, sph_rj, MHD_prop%cp_prop,                         &
+     &      sph_MHD_mat%band_c_poisson, sph_MHD_mat%band_c00_poisson)
+      end if
+      call dealloc_band_mat_sph(sph_MHD_mat%band_t_poisson)
+      call dealloc_band_mat_sph(sph_MHD_mat%band_c_poisson)
 !
       end subroutine const_radial_mat_sph_w_center
 !
