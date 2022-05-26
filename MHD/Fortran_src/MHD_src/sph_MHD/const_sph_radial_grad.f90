@@ -83,12 +83,12 @@
      &    g_sph_rj, r_2nd%fdm(1)%dmat,                                  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_ICB_radial_grad_scalar                                   &
-     &   (sph_rj, sph_bc, bcs_S%ICB_Sspec, fdm2_center, g_sph_rj,       &
-     &    is_fld, is_grad, rj_fld)
+      call sel_ICB_radial_grad_scalar(sph_rj, sph_bc,                   &
+     &    bcs_S%ICB_Sspec, fdm2_center, g_sph_rj, is_fld, is_grad,      &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_CMB_radial_grad_scalar                                   &
-     &   (sph_rj, sph_bc, bcs_S%CMB_Sspec, g_sph_rj,                    &
-     &    is_fld, is_grad, rj_fld)
+     &   (sph_rj, sph_bc, bcs_S%CMB_Sspec, g_sph_rj, is_fld, is_grad,   &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !
       call normalize_sph_average_grad(is_grad,                          &

@@ -90,10 +90,12 @@
 !
       call sel_ICB_grad_vp_and_vorticity                                &
      &   (sph_rj, r_2nd, sph_bc_U, bcs_U%ICB_Vspec, fdm2_free_ICB,      &
-     &    g_sph_rj, is_velo, is_vort, rj_fld)
+     &    g_sph_rj, is_velo, is_vort,                                   &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_CMB_grad_vp_and_vorticity                                &
      &   (sph_rj, sph_bc_U, bcs_U%CMB_Vspec, fdm2_free_CMB,             &
-     &    g_sph_rj, is_velo, is_vort, rj_fld)
+     &    g_sph_rj, is_velo, is_vort,                                   &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_diff_pol_and_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
      &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
@@ -124,10 +126,10 @@
 !
       call sel_ICB_grad_poloidal_moment                                 &
      &   (sph_rj, r_2nd, sph_bc_U, bcs_U%ICB_Vspec, fdm2_free_ICB,      &
-     &    is_fld, rj_fld)
+     &    is_fld, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_CMB_grad_poloidal_moment                                 &
      &   (sph_rj, sph_bc_U, bcs_U%CMB_Vspec, fdm2_free_CMB,             &
-     &    is_fld, rj_fld)
+     &    is_fld, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_diff_poloidal2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
      &    sph_rj%nidx_rj, r_2nd%fdm(1)%dmat, is_fld,                    &

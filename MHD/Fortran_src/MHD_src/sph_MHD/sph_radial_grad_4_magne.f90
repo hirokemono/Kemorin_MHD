@@ -84,12 +84,12 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_ICB_grad_bp_and_current                                  &
-     &   (sph_rj, r_2nd, sph_bc_B, bcs_B%ICB_Vspec, g_sph_rj,           &
-     &    is_magne, is_current, rj_fld)
-      call sel_CMB_grad_bp_and_current                                  &
-     &   (sph_rj, sph_bc_B, bcs_B%CMB_Vspec, g_sph_rj,                  &
-     &    is_magne, is_current, rj_fld)
+      call sel_ICB_grad_bp_and_current(sph_rj, r_2nd, sph_bc_B,         &
+     &    bcs_B%ICB_Vspec, g_sph_rj, is_magne, is_current,              &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      call sel_CMB_grad_bp_and_current(sph_rj, sph_bc_B,                &
+     &    bcs_B%CMB_Vspec, g_sph_rj, is_magne, is_current,              &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_sph_diff_pol_and_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
      &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
@@ -125,10 +125,10 @@
 !
       call sel_ICB_grad_poloidal_magne                                  &
      &   (sph_rj, r_2nd, sph_bc_B, bcs_B%ICB_Vspec, g_sph_rj,           &
-     &    is_magne, rj_fld)
+     &    is_magne, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call sel_CMB_grad_poloidal_magne                                  &
      &    (sph_rj, sph_bc_B, bcs_B%CMB_Vspec, g_sph_rj,                 &
-     &     is_magne, rj_fld)
+     &     is_magne, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !
       call cal_sph_diff_poloidal2(sph_bc_B%kr_in, sph_bc_B%kr_out,      &
