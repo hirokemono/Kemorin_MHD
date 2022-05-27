@@ -51,7 +51,10 @@
         sol_00(kr) = d_rj(inod,is_field)
       end do
 !$omp end parallel do
-      sol_00(0) = d_rj(inod_rj_center,is_field)
+!
+      if(inod_rj_center .eq. 0) then
+        sol_00(0) = d_rj(inod_rj_center,is_field)
+      end if
 !
 !       write(*,*) 'kr, Average RHS'
 !       do kr = 0, nri
