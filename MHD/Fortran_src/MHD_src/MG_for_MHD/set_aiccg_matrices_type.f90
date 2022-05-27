@@ -81,7 +81,6 @@
       use t_surface_group_normals
       use t_nodal_bc_data
       use t_surface_bc_data_MHD
-      use t_coefs_element_4_MHD
       use t_jacobians
       use t_MHD_mass_matrices
       use t_work_FEM_integration

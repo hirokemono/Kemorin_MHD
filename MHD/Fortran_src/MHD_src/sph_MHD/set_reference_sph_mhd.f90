@@ -184,9 +184,6 @@
           d_rj(inod,is_temp) = d_rj(inod,is_temp) - reftemp_rj(k,0)
           d_rj(inod,is_grad_t) = d_rj(inod,is_grad_t)                   &
      &                 - two*reftemp_rj(k,1) * radius_1d_rj_r(k)**2
-          d_rj(inod,ids_grad_t) = d_rj(inod,ids_grad_t)                 &
-     &                 - (reftemp_rj(k,2) * radius_1d_rj_r(k)           &
-     &                  + two*reftemp_rj(k,1)) * two*radius_1d_rj_r(k)
         end do
       end if
 !
@@ -238,9 +235,6 @@
           d_rj(inod,is_temp) = d_rj(inod,is_temp) + reftemp_rj(k,0)
           d_rj(inod,is_grad_t) = d_rj(inod,is_grad_part_t)              &
      &                 + two*reftemp_rj(k,1) * radius_1d_rj_r(k)**2
-          d_rj(inod,ids_grad_t) = d_rj(inod,ids_grad_part_t)            &
-     &                 + (reftemp_rj(k,2) * radius_1d_rj_r(k)           &
-     &                  + two*reftemp_rj(k,1)) * two*radius_1d_rj_r(k)
         end do
       end if
 !
