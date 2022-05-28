@@ -139,7 +139,6 @@
       subroutine set_delta_r_4_sph_mhd(sph_params, sph_rj)
 !
       use set_radius_func_noequi
-      use set_reference_temp_sph
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_shell_parameters), intent(in) :: sph_params
