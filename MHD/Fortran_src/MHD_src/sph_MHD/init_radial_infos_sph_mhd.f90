@@ -9,9 +9,8 @@
 !!        by finite difference method
 !!
 !!@verbatim
-!!      subroutine init_r_infos_sph_mhd_evo                             &
-!!     &         (r_2nd, bc_IO, sph_grps, MHD_BC, ipol, sph, omega_sph, &
-!!     &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
+!!      subroutine init_r_infos_sph_mhd_evo(r_2nd, bc_IO, sph_grps,     &
+!!     &          MHD_BC, ipol, sph, omega_sph, MHD_prop, sph_MHD_bc)
 !!      subroutine init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph,   &
 !!     &                                MHD_prop, omega_sph, sph_MHD_bc)
 !!      subroutine init_reference_scalars(sph, ipol, ref_temp, ref_comp,&
@@ -66,9 +65,8 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_r_infos_sph_mhd_evo                               &
-     &         (r_2nd, bc_IO, sph_grps, MHD_BC, ipol, sph, omega_sph,   &
-     &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
+      subroutine init_r_infos_sph_mhd_evo(r_2nd, bc_IO, sph_grps,       &
+     &          MHD_BC, ipol, sph, omega_sph, MHD_prop, sph_MHD_bc)
 !
       use calypso_mpi
       use second_fdm_node_coefs
@@ -82,10 +80,8 @@
       type(sph_grids), intent(in) :: sph
 !
       type(sph_rotation), intent(inout) :: omega_sph
-      type(reference_field), intent(inout) :: ref_temp, ref_comp
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
-      type(phys_data), intent(inout) :: rj_fld
 !
 !
       call init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph, MHD_prop, &
@@ -98,10 +94,6 @@
       call set_material_property                                        &
      &   (sph%sph_params%radius_CMB, sph%sph_params%radius_ICB,         &
      &    ipol, MHD_prop)
-!
-      if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
-      call init_reference_scalars(sph, ipol, ref_temp, ref_comp,        &
-     &                            rj_fld, MHD_prop, sph_MHD_bc)
 !
       end subroutine init_r_infos_sph_mhd_evo
 !
