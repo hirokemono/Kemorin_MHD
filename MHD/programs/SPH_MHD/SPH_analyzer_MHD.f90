@@ -104,16 +104,18 @@
      &   SPH_MHD%groups, SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph,   &
      &   SPH_model%omega_sph, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
-      if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
-      call init_reference_scalars(SPH_MHD%sph, SPH_MHD%ipol,            &
-     &    SPH_model%ref_temp, SPH_model%ref_comp, SPH_MHD%fld,          &
-     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
-!
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD(SPH_model, iphys, SPH_WK%trans_p,     &
      &    SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
+!
+!  -------------------------------
+!
+      if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
+      call init_reference_scalars(SPH_MHD%sph, SPH_MHD%ipol,            &
+     &    SPH_model%ref_temp, SPH_model%ref_comp, SPH_MHD%fld,          &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
 !  -------------------------------
 !
