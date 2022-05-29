@@ -84,7 +84,7 @@
      &          nidx_rj, r_1d_rj, ar_1d_rj, reftemp_rj)
 !
       real (kind = kreal), intent(in) :: low_temp, high_temp
-      real (kind = kreal), intent(inout) :: depth_top, depth_bottom
+      real (kind = kreal), intent(in) :: depth_top, depth_bottom
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
       real(kind=kreal), intent(in) :: r_1d_rj(nidx_rj(1))
