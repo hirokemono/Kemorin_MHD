@@ -48,12 +48,8 @@
 !
 !>        Structure of band matrices for temperature evolution
         type(band_matrices_type) :: band_temp_evo
-!>        Structure of band matrices for stable temperature
-        type(band_matrices_type) :: band_t_poisson
 !>        Structure of band matrices for composition evolution
         type(band_matrices_type) :: band_comp_evo
-!>        Structure of band matrices for stable composition
-        type(band_matrices_type) :: band_c_poisson
 !
 !
 !>        Structure of band matrices for pressure poisson

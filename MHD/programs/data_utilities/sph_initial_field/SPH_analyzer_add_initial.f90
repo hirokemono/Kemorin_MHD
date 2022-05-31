@@ -84,7 +84,7 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_add_initial_field'
-      call SPH_add_initial_field(SPH_model1, SPH_MHD1)
+      call SPH_add_initial_field(SPH_model1, SPH_MHD1, SPH_WK1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call reset_elapse_4_init_sph_mhd
@@ -94,7 +94,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_add_initial_field(SPH_model, SPH_MHD)
+      subroutine SPH_add_initial_field(SPH_model, SPH_MHD, SPH_WK)
 !
       use set_control_sph_mhd
       use check_dependency_for_MHD
@@ -110,16 +110,35 @@
       use sph_mhd_rst_IO_control
       use input_control_sph_MHD
       use sph_radial_grad_4_magne
+      use schmidt_poly_on_rtm_grid
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !   Allocate spectr field data
 !
       call init_sph_MHD_field_data                                      &
      &   (SPH_MHD%sph, SPH_MHD%fld, SPH_MHD%ipol)
 !
+      if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
+      call init_r_infos_sph_mhd_evo(SPH_model%bc_IO, SPH_MHD%groups,    &
+     &   SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph, SPH_WK%r_2nd,     &
+     &   SPH_model%omega_sph, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
+!
+      call alloc_schmidt_normalize(SPH_MHD%sph%sph_rlm%nidx_rlm(2),     &
+     &    SPH_MHD%sph%sph_rj%nidx_rj(2), SPH_WK%trans_p%leg)
+      call copy_sph_normalization_2_rlm(SPH_MHD%sph%sph_rlm,            &
+     &    SPH_WK%trans_p%leg%g_sph_rlm)
+      call copy_sph_normalization_2_rj(SPH_MHD%sph%sph_rj,              &
+     &    SPH_WK%trans_p%leg%g_sph_rj)
+!
 ! ---------------------------------
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_radial_mat_sph_reftemp'
+      call const_radial_mat_sph_reftemp(SPH_model%MHD_prop,             &
+     &    SPH_model%sph_MHD_bc, SPH_MHD%sph,                            &
+     &    SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%MHD_mats)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd'
       call init_r_infos_sph_mhd(SPH_model%bc_IO, SPH_MHD%groups,        &

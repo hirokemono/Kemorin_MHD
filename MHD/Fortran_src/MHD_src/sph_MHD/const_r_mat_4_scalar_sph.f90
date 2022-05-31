@@ -9,8 +9,8 @@
 !!      subroutine const_radial_mat_4_press_sph                         &
 !!     &         (sph_rj, r_2nd, fl_prop, sph_bc_U, fdm2_center,        &
 !!     &          g_sph_rj, band_p_poisson)
-!!      subroutine const_radial_mat_4_scalar_sph                        &
-!!     &         (mat_name, dt, sph_params, sph_rj, r_2nd, property,    &
+!!      subroutine const_radial_mat_4_scalar_sph(mat_name, coef_advect, &
+!!     &          dt, sph_params, sph_rj, r_2nd, property,              &
 !!     &          sph_bc, fdm2_center, g_sph_rj, band_s_evo)
 !!        type(scalar_property), intent(in) :: property
 !!        type(sph_shell_parameters), intent(in) :: sph_params
@@ -126,8 +126,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_scalar_sph                          &
-     &         (mat_name, dt, sph_params, sph_rj, r_2nd, property,      &
+      subroutine const_radial_mat_4_scalar_sph(mat_name, coef_advect,   &
+     &          dt, sph_params, sph_rj, r_2nd, property,                &
      &          sph_bc, fdm2_center, g_sph_rj, band_s_evo)
 !
       use m_ludcmp_3band
@@ -145,6 +145,7 @@
 !
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: dt
+      real(kind = kreal), intent(in) :: coef_advect
       character(len=kchara), intent(in) :: mat_name
 !
       type(band_matrices_type), intent(inout) :: band_s_evo
@@ -154,11 +155,10 @@
 !
 !
       write(band_s_evo%mat_name,'(a)') trim(mat_name)
-      if(property%iflag_scheme .lt. id_Crank_nicolson) return
       call alloc_band_mat_sph(ithree, sph_rj, band_s_evo)
       call set_unit_on_diag(band_s_evo)
 !
-      if(property%coef_advect .eq. zero) then
+      if(coef_advect .eq. zero) then
         coef = one
         call set_unit_mat_4_poisson                                     &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &

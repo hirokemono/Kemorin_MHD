@@ -111,8 +111,8 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
-      call init_r_infos_sph_mhd_evo(SPH_WK%r_2nd, SPH_model%bc_IO,      &
-     &   SPH_MHD%groups, SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph,   &
+      call init_r_infos_sph_mhd_evo(SPH_model%bc_IO, SPH_MHD%groups,    &
+     &   SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph, SPH_WK%r_2nd,     &
      &   SPH_model%omega_sph, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
 !  -------------------------------
@@ -127,6 +127,11 @@
      &    SPH_model%MHD_prop, SPH_WK%trans_p, SPH_SGS%dynamic)
 !
 ! ---------------------------------
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_radial_mat_sph_reftemp'
+      call const_radial_mat_sph_reftemp(SPH_model%MHD_prop,             &
+     &    SPH_model%sph_MHD_bc, SPH_MHD%sph,                            &
+     &    SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%MHD_mats)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
       call init_reference_scalars(SPH_MHD%sph, SPH_MHD%ipol,            &

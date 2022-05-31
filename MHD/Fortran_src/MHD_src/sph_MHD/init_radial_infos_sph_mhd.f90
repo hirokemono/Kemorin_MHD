@@ -9,18 +9,18 @@
 !!        by finite difference method
 !!
 !!@verbatim
-!!      subroutine init_r_infos_sph_mhd_evo(r_2nd, bc_IO, sph_grps,     &
-!!     &          MHD_BC, ipol, sph, omega_sph, MHD_prop, sph_MHD_bc)
+!!      subroutine init_r_infos_sph_mhd_evo(bc_IO, sph_grps, MHD_BC,    &
+!!     &          ipol, sph, r_2nd, omega_sph, MHD_prop, sph_MHD_bc)
 !!      subroutine init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph,   &
 !!     &                                MHD_prop, omega_sph, sph_MHD_bc)
 !!      subroutine init_reference_scalars(sph, ipol, ref_temp, ref_comp,&
 !!     &                                  rj_fld, MHD_prop, sph_MHD_bc)
-!!        type(fdm_matrices), intent(inout) :: r_2nd
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(phys_address), intent(in) :: ipol
 !!        type(sph_grids), intent(in) :: sph
+!!        type(fdm_matrices), intent(inout) :: r_2nd
 !!        type(sph_rotation), intent(inout) :: omega_sph
 !!        type(reference_field), intent(inout) :: ref_temp, ref_comp
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -65,20 +65,20 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_r_infos_sph_mhd_evo(r_2nd, bc_IO, sph_grps,       &
-     &          MHD_BC, ipol, sph, omega_sph, MHD_prop, sph_MHD_bc)
+      subroutine init_r_infos_sph_mhd_evo(bc_IO, sph_grps, MHD_BC,      &
+     &          ipol, sph, r_2nd, omega_sph, MHD_prop, sph_MHD_bc)
 !
       use calypso_mpi
       use second_fdm_node_coefs
       use material_property
 !
-      type(fdm_matrices), intent(inout) :: r_2nd
       type(boundary_spectra), intent(in) :: bc_IO
       type(sph_group_data), intent(in) :: sph_grps
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(phys_address), intent(in) :: ipol
       type(sph_grids), intent(in) :: sph
 !
+      type(fdm_matrices), intent(inout) :: r_2nd
       type(sph_rotation), intent(inout) :: omega_sph
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
