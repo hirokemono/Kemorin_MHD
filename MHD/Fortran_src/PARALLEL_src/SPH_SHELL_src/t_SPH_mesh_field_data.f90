@@ -39,6 +39,7 @@
       use t_spheric_group
       use t_phys_address
       use t_phys_data
+      use t_radial_references
 !
       use t_sph_grid_maker_in_sim
       use t_file_IO_parameter
@@ -60,6 +61,8 @@
         type(phys_address) :: ipol
 !>        Structure for field data
         type(phys_data) :: fld
+!>        Structure for reference field data
+        type(radial_reference) :: ref_field
 !
 !>        Structure to check and construct spherical shell mesh
         type(sph_grid_maker_in_sim) :: sph_maker

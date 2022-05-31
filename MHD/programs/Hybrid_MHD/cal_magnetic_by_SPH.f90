@@ -300,6 +300,7 @@
       use spherical_SRs_N
       use copy_spectr_4_sph_trans
       use copy_nodal_fld_4_sph_trans
+      use sph_update_after_evolution
 !
       type(conductive_property), intent(in) :: cd_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
