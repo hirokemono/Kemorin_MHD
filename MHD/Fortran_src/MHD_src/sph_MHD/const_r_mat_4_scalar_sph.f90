@@ -234,4 +234,82 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine const_radial_mat_poisson_fixS(mat_name,                &
+     &          sph_params, sph_rj, r_2nd, property,                    &
+     &          sph_bc, fdm2_center, g_sph_rj, band_s_evo)
+!
+      use m_ludcmp_3band
+      use center_sph_matrices
+      use set_radial_mat_sph
+      use set_sph_scalar_mat_bc
+      use check_sph_radial_mat
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(scalar_property), intent(in) :: property
+      type(sph_boundary_type), intent(in) :: sph_bc
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      character(len=kchara), intent(in) :: mat_name
+!
+      type(band_matrices_type), intent(inout) :: band_s_evo
+!
+      real(kind = kreal), allocatable :: r_coef(:)
+!
+!
+      write(band_s_evo%mat_name,'(a)') trim(mat_name)
+      call alloc_band_mat_sph(ithree, sph_rj, band_s_evo)
+      call set_unit_on_diag(band_s_evo)
+!
+        call set_unit_mat_4_poisson                                     &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &      sph_bc%kr_in, sph_bc%kr_out, band_s_evo%mat)
+!
+      allocate(r_coef(sph_rj%nidx_rj(1)))
+!$omp parallel workshare
+      r_coef(1:sph_rj%nidx_rj(1)) = one
+!$omp end parallel workshare
+!
+      if(property%ICB_diffusie_reduction .lt. one) then
+        r_coef(sph_params%nlayer_ICB) = property%ICB_diffusie_reduction
+        if(my_rank .eq. 0) write(*,*) 'reduction of diffusivity at',    &
+     &    sph_params%nlayer_ICB, ' to ', r_coef(sph_params%nlayer_ICB)
+      end if
+!
+!
+      call add_scalar_poisson_mat_sph                                   &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
+     &    g_sph_rj, sph_bc%kr_in, sph_bc%kr_out, r_coef(1),             &
+     &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, band_s_evo%mat)
+!
+      if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
+     &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
+        call add_scalar_poisson_mat_ctr1                                &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
+     &      sph_bc%r_ICB, fdm2_center%dmat_fix_fld, r_coef(1),          &
+     &      band_s_evo%mat)
+      else
+        call set_fix_fld_icb_poisson_mat                                &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &      sph_bc%kr_in, band_s_evo%mat)
+      end if
+!
+        call set_fix_fld_cmb_poisson_mat                                &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
+     &      sph_bc%kr_out, band_s_evo%mat)
+      deallocate(r_coef)
+!
+      call ludcmp_3band_mul_t                                           &
+     &   (np_smp, sph_rj%istack_rj_j_smp, band_s_evo)
+!
+      if(i_debug .eq. iflag_full_msg) then
+        call check_radial_band_mat(my_rank, sph_rj, band_s_evo)
+      end if
+!
+      end subroutine const_radial_mat_poisson_fixS
+!
+! -----------------------------------------------------------------------
+!
       end module const_r_mat_4_scalar_sph
