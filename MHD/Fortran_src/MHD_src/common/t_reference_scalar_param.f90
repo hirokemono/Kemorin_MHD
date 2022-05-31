@@ -167,7 +167,9 @@
 !
       iflag = low_temp_ctl%depth%iflag*low_temp_ctl%value%iflag
       if (iflag .eq. 0) then
-        if (ref_param%iflag_reference .eq. id_no_ref_temp) then
+        if(   ref_param%iflag_reference .eq. id_no_ref_temp             &
+     &   .or. ref_param%iflag_reference .eq. id_numerical_solution      &
+     &     ) then
           ref_param%low_value  =  0.0d0
           ref_param%depth_top  =  0.0d0
         else
@@ -182,7 +184,9 @@
 !
       iflag = high_temp_ctl%depth%iflag*high_temp_ctl%value%iflag
       if (iflag .eq. 0) then
-        if (ref_param%iflag_reference .eq. id_no_ref_temp) then
+        if(   ref_param%iflag_reference .eq. id_no_ref_temp             &
+     &   .or. ref_param%iflag_reference .eq. id_numerical_solution      &
+     &     ) then
           ref_param%high_value =  0.0d0
           ref_param%depth_bottom =  0.0d0
         else
