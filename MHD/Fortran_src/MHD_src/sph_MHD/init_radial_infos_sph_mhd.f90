@@ -226,11 +226,16 @@
      &    sph_rj%nidx_rj, sph_params%radius_ICB, sph_params%radius_CMB, &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    sph_rj%radius_1d_rj_r, reftemp%t_rj)
-!!        call adjust_sph_temp_bc_by_reftemp                            &
-!!     &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),             &
-!!     &      reftemp%t_rj, sph_bc_S, bcs_S%ICB_Sspec, bcs_S%CMB_Sspec, &
-!!     &      bcs_S%ICB_Sevo, bcs_S%CMB_Sevo)
+        call adjust_sph_temp_bc_by_reftemp                              &
+     &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),               &
+     &      reftemp%t_rj, sph_bc_S, bcs_S%ICB_Sspec, bcs_S%CMB_Sspec,   &
+     &      bcs_S%ICB_Sevo, bcs_S%CMB_Sevo)
 !
+      else if(ref_param%iflag_reference                                 &
+     &                             .eq. id_numerical_solution) then
+        call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
+     &      ref_param%depth_bottom, sph_rj%nidx_rj(1),                  &
+     &      sph_params%radius_ICB, sph_params%radius_CMB, reftemp%t_rj)
       else
         call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
      &      ref_param%depth_bottom, sph_rj%nidx_rj(1),                  &

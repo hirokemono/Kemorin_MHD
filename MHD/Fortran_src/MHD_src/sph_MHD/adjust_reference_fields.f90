@@ -162,8 +162,10 @@
 !
 !
 !
-      if    (ref_param%iflag_reference .ne. id_sphere_ref_temp          &
-     & .and. ref_param%iflag_reference .ne. id_takepiro_temp) return
+      if     (ref_param%iflag_reference .ne. id_sphere_ref_temp         &
+     &  .and. ref_param%iflag_reference .ne. id_takepiro_temp           &
+     &  .and. ref_param%iflag_reference .ne. id_numerical_solution      &
+     &   ) return
 !
       call chenge_temp_to_per_temp_sph(sph_rj%idx_rj_degree_zero,       &
      &    sph_rj%nidx_rj, sph_rj%radius_1d_rj_r, reference%t_rj,        &
@@ -192,8 +194,10 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if    (ref_param%iflag_reference .ne. id_sphere_ref_temp          &
-     & .and. ref_param%iflag_reference .ne. id_takepiro_temp) return
+      if     (ref_param%iflag_reference .ne. id_sphere_ref_temp         &
+     &  .and. ref_param%iflag_reference .ne. id_takepiro_temp           &
+     &  .and. ref_param%iflag_reference .ne. id_numerical_solution      &
+     &   ) return
 !
       call transfer_per_temp_to_temp_sph(sph_rj%idx_rj_degree_zero,     &
      &    sph_rj%nidx_rj, sph_rj%radius_1d_rj_r, reference%t_rj,        &

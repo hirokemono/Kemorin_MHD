@@ -334,7 +334,10 @@
       integer(kind= kint) :: ist, ied, inod, j, k
 !
 !
-      if (ref_param_S%iflag_reference .ne. id_sphere_ref_temp) return
+      if     (ref_param_S%iflag_reference .ne. id_sphere_ref_temp       &
+     &  .and. ref_param_S%iflag_reference .ne. id_takepiro_temp         &
+     &  .and. ref_param_S%iflag_reference .ne. id_numerical_solution    &
+     &   ) return
 !
       ist = (sph_bc_S%kr_in-1) * nidx_rj(2) + 1
       ied =  sph_bc_S%kr_out * nidx_rj(2)

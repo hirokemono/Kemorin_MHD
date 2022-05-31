@@ -44,38 +44,43 @@
 !
 ! set reference temperature (for spherical shell)
 !
-      if ( ref_param%iflag_reference .eq. id_sphere_ref_temp) then
+      if(ref_param%iflag_reference .eq. id_sphere_ref_temp) then
         call set_sph_shell_reftemp                                      &
      &     (ref_param%low_value, ref_param%depth_top,                   &
      &      ref_param%high_value, ref_param%depth_bottom,               &
      &      node%numnod, fluid%numnod_fld,                              &
      &      fluid%inod_fld, node%rr, node%a_r,                          &
      &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
-      end if
 !
-      if ( ref_param%iflag_reference .eq. id_linear_r_ref_temp) then
+      else if(ref_param%iflag_reference .eq. id_linear_r_ref_temp) then
         call set_linear_r_reftemp                                       &
      &     (ref_param%low_value, ref_param%depth_top,                   &
      &      ref_param%high_value, ref_param%depth_bottom,               &
      &      node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,     &
      &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
-      end if
 !
-!
-      if (ref_param%iflag_reference .ge. 1                              &
-     &     .and. ref_param%iflag_reference .le. 3) then
+      else if(ref_param%iflag_reference .ge. 1                          &
+     &  .and. ref_param%iflag_reference .le. 3) then
         call set_linear_reftemp(ref_param%iflag_reference,              &
      &      ref_param%low_value, ref_param%depth_top,                   &
      &      ref_param%high_value, ref_param%depth_bottom,               &
      &      node%numnod, fluid%numnod_fld, fluid%inod_fld, node%xx,     &
      &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
-      end if
 !
-      if (ref_param%iflag_reference .eq. id_takepiro_temp) then
+      else if(ref_param%iflag_reference .eq. id_takepiro_temp) then
         call set_takepiro_temp(takepiro%stratified_sigma,               &
      &     takepiro%stratified_width, takepiro%stratified_outer_r,      &
      &     node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,      &
      &     nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
+!
+      else if(ref_param%iflag_reference                                 &
+     &                             .eq. id_numerical_solution) then
+!        call set_sph_shell_reftemp                                     &
+!     &     (ref_param%low_value, ref_param%depth_top,                  &
+!     &      ref_param%high_value, ref_param%depth_bottom,              &
+!     &      node%numnod, fluid%numnod_fld,                             &
+!     &      fluid%inod_fld, node%rr, node%a_r,                         &
+!     &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
       end if
 !
       end subroutine set_reference_temp
