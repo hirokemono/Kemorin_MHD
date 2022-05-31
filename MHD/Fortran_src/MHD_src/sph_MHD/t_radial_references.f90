@@ -25,7 +25,6 @@
       use m_precision
       use m_constants
 !
-      use t_spheric_parameter
       use t_spheric_rj_data
       use t_phys_data
       use t_phys_address
@@ -62,29 +61,31 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_diffusive_profiles                               &
-     &         (sph, MHD_prop, sph_MHD_bc, r_2nd, trans_p,              &
-     &          sph_MHD_mat, ipol, rj_fld, ref_field)
+     &         (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd, trans_p,   &
+     &          band_s00_poisson, diffusie_reduction_ICB, i_source,     &
+     &          rj_fld, ref_field)
 !
-      type(sph_grids), intent(in) :: sph
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(phys_address), intent(in) :: ipol
+      type(sph_boundary_type), intent(in) :: sph_bc_S
+      type(sph_scalar_boundary_data), intent(in) :: bcs_S
+      type(fdm2_center_mat), intent(in) :: fdm2_center
       type(phys_data), intent(in) :: rj_fld
+      type(band_matrix_type), intent(in) :: band_s00_poisson
 !
-      type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
+      integer(kind = kint), intent(in) :: i_source
+      real(kind = kreal), intent(in) :: diffusie_reduction_ICB
+!
       type(radial_reference), intent(inout) :: ref_field
 !
       integer(kind = kint) :: k
 !
-      call alloc_radial_reference(sph%sph_rj, ref_field)
+      call alloc_radial_reference(sph_rj, ref_field)
 !
-      if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
-        call cal_sol_diffusive_profile(sph%sph_rj, r_2nd, trans_p%leg,  &
-     &      MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,    &
-     &      sph_MHD_bc%fdm2_center, sph_MHD_mat%band_t00_poisson,       &
-     &      ipol%base%i_heat_source, rj_fld, sph_MHD_mat%x00_w_center,  &
+        call cal_sol_diffusive_profile(sph_rj, r_2nd, trans_p%leg,      &
+     &      sph_bc_S, bcs_S, fdm2_center, band_s00_poisson,             &
+     &      diffusie_reduction_ICB, i_source, rj_fld,                   &
      &      ref_field%ref_local, ref_field%ref_temp)
 !
         if(my_rank .eq. 0) then
@@ -93,34 +94,12 @@
      &         'Id, radius, reference_temperature, reference_grad_temp'
               write(52,'(i6,1p3E25.15e3)')                              &
      &             0, zero, ref_field%ref_temp(0,0:1)
-            do k = 1, sph%sph_rj%nidx_rj(1)
+            do k = 1, sph_rj%nidx_rj(1)
               write(52,'(i6,1p3E25.15e3)') k,                           &
-     &          sph%sph_rj%radius_1d_rj_r(k), ref_field%ref_temp(k,0:1)
+     &          sph_rj%radius_1d_rj_r(k), ref_field%ref_temp(k,0:1)
             end do
           close(52)
         end if
-      end if
-!
-      if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call cal_sol_diffusive_profile(sph%sph_rj, r_2nd, trans_p%leg,  &
-     &      MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,    &
-     &      sph_MHD_bc%fdm2_center, sph_MHD_mat%band_c00_poisson,       &
-     &      ipol%base%i_light_source, rj_fld, sph_MHD_mat%x00_w_center, &
-     &      ref_field%ref_local, ref_field%ref_comp)
-!
-        if(my_rank .eq. 0) then
-          open(52,file='reference_comp.dat')
-            write(52,'(a)')                                             &
-     &         'Id, radius, reference_composition, reference_grad_comp'
-              write(52,'(i6,1p3E25.15e3)')                              &
-     &             0, zero, ref_field%ref_comp(0,0:1)
-            do k = 1, sph%sph_rj%nidx_rj(1)
-              write(52,'(i6,1p3E25.15e3)') k,                           &
-     &          sph%sph_rj%radius_1d_rj_r(k), ref_field%ref_comp(k,0:1)
-            end do
-          close(52)
-        end if
-      end if
 !
       end subroutine const_diffusive_profiles
 !
@@ -162,9 +141,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_diffusive_profile                              &
-     &         (sph_rj, r_2nd, leg, property, sph_bc_S, bcs_S,          &
-     &          fdm2_center, band_s00_poisson, is_src, rj_fld,          &
-     &          x00_w_center, ref_local, ref_scalar)
+     &         (sph_rj, r_2nd, leg, sph_bc_S, bcs_S,          &
+     &          fdm2_center, band_s00_poisson, diffusie_reduction_ICB, is_src, rj_fld,          &
+     &          ref_local, ref_scalar)
 !
       use calypso_mpi_real
       use copy_field_smp
@@ -181,12 +160,10 @@
       type(sph_scalar_boundary_data), intent(in) :: bcs_S
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(band_matrix_type), intent(in) :: band_s00_poisson
-      type(scalar_property), intent(in) :: property
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: is_src
+      real(kind = kreal), intent(in) :: diffusie_reduction_ICB
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: x00_w_center(0:sph_rj%nidx_rj(1))
       real(kind = kreal), intent(inout)                                 &
      &                   :: ref_scalar(0:sph_rj%nidx_rj(1),0:1)
       real(kind = kreal), intent(inout)                                 &
@@ -194,8 +171,12 @@
 !
       integer :: k
       integer(kind = kint_gl) :: num64
+      real(kind = kreal), allocatable :: x00(:)
       type(phys_data) :: tmp_fld
 !
+!
+      allocate(x00(0:sph_rj%nidx_rj(1)))
+      x00(0:sph_rj%nidx_rj(1)) = 0.0d0
 !
       tmp_fld%num_phys = 3
       call alloc_phys_name(tmp_fld)
@@ -228,7 +209,7 @@
      &   (sph_rj, sph_bc_S, bcs_S%CMB_Sspec, zero, one, one, one,       &
      &    ifive, rj_fld%n_point, tmp_fld%ntot_phys, tmp_fld%d_fld)
       call set_ICB_scalar_sph_crank(sph_rj, sph_bc_S, bcs_S%ICB_Sspec,  &
-     &    zero, one, property%ICB_diffusie_reduction, one, one,         &
+     &    zero, one, diffusie_reduction_ICB, one, one,                  &
      &    ifive, rj_fld%n_point, tmp_fld%ntot_phys, tmp_fld%d_fld)
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
@@ -236,15 +217,14 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
      &      ifive, rj_fld%n_point, tmp_fld%ntot_phys, tmp_fld%d_fld,    &
-     &      x00_w_center)
+     &      x00)
 !
-        call lubksb_3band_ctr(band_s00_poisson, x00_w_center)
+        call lubksb_3band_ctr(band_s00_poisson, x00)
 !
         call copy_degree0_comps_from_sol                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
-     &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
-     &      x00_w_center, ione, rj_fld%n_point, tmp_fld%ntot_phys,      &
-     &      tmp_fld%d_fld)
+     &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero, x00,      &
+     &      ione, rj_fld%n_point, tmp_fld%ntot_phys, tmp_fld%d_fld)
 !      end if
 !
         call fill_scalar_at_external                                    &
@@ -277,6 +257,7 @@
       end if
       call dealloc_phys_data(tmp_fld)
       call dealloc_phys_name(tmp_fld)
+      deallocate(x00)
 !
 !$omp parallel workshare
       ref_scalar(0:sph_rj%nidx_rj(1),0:1) = 0.0d0

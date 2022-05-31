@@ -109,6 +109,13 @@
 !
 ! ---------------------------------
 !
+      if(iflag_debug.gt.0) write(*,*)' read_sph_initial_data_control'
+      call read_sph_initial_data_control                                &
+     &   (MHD_files, SPH_model, SPH_MHD%sph, SPH_MHD%ipol, MHD_step,    &
+     &    SPH_MHD%fld, sph_fst_IO)
+!
+!  -------------------------------
+!
       if (iflag_debug.gt.0) write(*,*) 'const_radial_mat_sph_reftemp'
       call const_radial_mat_sph_reftemp(SPH_model%MHD_prop,             &
      &    SPH_model%sph_MHD_bc, SPH_MHD%sph,                            &
@@ -116,6 +123,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
       call init_reference_scalars(SPH_MHD%sph, SPH_MHD%ipol,            &
+     &    SPH_WK%r_2nd, SPH_WK%trans_p, SPH_WK%MHD_mats,                &
      &    SPH_model%ref_temp, SPH_model%ref_comp, SPH_MHD%fld,          &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !

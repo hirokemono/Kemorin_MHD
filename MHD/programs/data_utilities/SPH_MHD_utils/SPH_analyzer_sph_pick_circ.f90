@@ -15,10 +15,11 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_sph_pick_circle(MHD_files, iphys, SPH_model,&
-!!     &          SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat)
+!!     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -65,7 +66,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_sph_pick_circle(MHD_files, iphys, SPH_model,  &
-     &          SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat)
+     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat)
 !
       use t_sph_boundary_input_data
 !
@@ -91,6 +92,7 @@
       type(phys_address), intent(in) :: iphys
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
+      type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(circle_fld_maker), intent(inout) :: cdat
@@ -126,6 +128,12 @@
      &   (SPH_SGS%SGS_par, SPH_MHD%sph, SPH_MHD%groups,                 &
      &    SPH_model%MHD_prop, SPH_WK%trans_p, SPH_SGS%dynamic)
 !
+!  -------------------------------
+!
+      if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
+      call read_alloc_sph_restart_data(MHD_files%fst_file_IO,           &
+     &    MHD_step%init_d, SPH_MHD%fld, MHD_step%rst_step)
+!
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'const_radial_mat_sph_reftemp'
@@ -135,6 +143,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
       call init_reference_scalars(SPH_MHD%sph, SPH_MHD%ipol,            &
+     &    SPH_WK%r_2nd, SPH_WK%trans_p, SPH_WK%MHD_mats,                &
      &    SPH_model%ref_temp, SPH_model%ref_comp, SPH_MHD%fld,          &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !

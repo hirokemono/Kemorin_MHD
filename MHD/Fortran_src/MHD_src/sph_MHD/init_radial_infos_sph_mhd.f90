@@ -54,6 +54,8 @@
       use m_machine_parameter
       use t_phys_address
       use t_phys_data
+      use t_work_4_sph_trans
+      use t_radial_references
 !
       implicit none
 !
@@ -154,11 +156,16 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_reference_scalars(sph, ipol, ref_temp, ref_comp,  &
-     &                                  rj_fld, MHD_prop, sph_MHD_bc)
+      subroutine init_reference_scalars(sph, ipol, r_2nd, trans_p, sph_MHD_mat,  &
+     &           ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
+!
+      use t_radial_matrices_sph_MHD
 !
       type(phys_address), intent(in) :: ipol
       type(sph_grids), intent(in) :: sph
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(MHD_radial_matrices), intent(in) :: sph_MHD_mat
 !
       type(reference_field), intent(inout) :: ref_temp, ref_comp
       type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -167,40 +174,55 @@
 !
 !
       call init_reference_scalar(MHD_prop%takepito_T,                   &
-     &    sph%sph_params, sph%sph_rj,                                   &
+     &    sph%sph_params, sph%sph_rj, r_2nd, trans_p,                   &
+     &    sph_MHD_mat%band_t00_poisson,                                 &
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
+     &    MHD_prop%ht_prop%ICB_diffusie_reduction,                      &
      &    ipol%base%i_ref_t, ipol%grad_fld%i_grad_ref_t,                &
-     &    MHD_prop%ref_param_T, ref_temp, rj_fld,                       &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T)
+     &    ipol%base%i_heat_source, MHD_prop%ref_param_T,                &
+     &    ref_temp, rj_fld, sph_MHD_bc%bcs_T)
       call init_reference_scalar(MHD_prop%takepito_C,                   &
-     &    sph%sph_params, sph%sph_rj,                                   &
+     &    sph%sph_params, sph%sph_rj, r_2nd, trans_p,                   &
+     &    sph_MHD_mat%band_c00_poisson,                                 &
+     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
+     &    MHD_prop%cp_prop%ICB_diffusie_reduction,                      &
      &    ipol%base%i_ref_c, ipol%grad_fld%i_grad_ref_c,                &
-     &    MHD_prop%ref_param_C, ref_comp, rj_fld,                       &
-     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C)
+     &    ipol%base%i_light_source, MHD_prop%ref_param_C,               &
+     &     ref_comp, rj_fld, sph_MHD_bc%bcs_C)
 !
       end subroutine init_reference_scalars
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_reference_scalar                                  &
-     &         (takepiro, sph_params, sph_rj, i_ref, i_gref,            &
-     &          ref_param, reftemp, rj_fld, sph_bc_S, bcs_S)
+      subroutine init_reference_scalar(takepiro, sph_params, sph_rj,    &
+     &          r_2nd, trans_p, band_s00_poisson,                       &
+     &    sph_bc_S, fdm2_center, diffusie_reduction_ICB, &
+     &          i_ref, i_gref, i_source, ref_param, reftemp, rj_fld, bcs_S)
 !
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
       use t_reference_scalar_param
+      use t_sph_matrix
       use set_reference_sph_mhd
       use set_reference_temp_sph
 !
-      integer(kind = kint), intent(in) :: i_ref, i_gref
+      integer(kind = kint), intent(in) :: i_ref, i_gref, i_source
       type(takepiro_model_param), intent(in) :: takepiro
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(sph_boundary_type), intent(in) :: sph_bc_S
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+      type(band_matrix_type), intent(in) :: band_s00_poisson
+      real(kind = kreal), intent(in) :: diffusie_reduction_ICB
 !
       type(reference_scalar_param), intent(inout) :: ref_param
       type(reference_field), intent(inout) :: reftemp
       type(sph_scalar_boundary_data), intent(inout) :: bcs_S
       type(phys_data), intent(inout) :: rj_fld
+!
+      type(radial_reference) :: ref_field
 !
 !      Set reference temperature and adjust boundary conditions
 !
@@ -232,9 +254,10 @@
 !
       else if(ref_param%iflag_reference                                 &
      &                             .eq. id_numerical_solution) then
-        call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
-     &      ref_param%depth_bottom, sph_rj%nidx_rj(1),                  &
-     &      sph_params%radius_ICB, sph_params%radius_CMB, reftemp%t_rj)
+        call const_diffusive_profiles                                   &
+     &     (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd, trans_p,       &
+     &      band_s00_poisson, diffusie_reduction_ICB, i_source,         &
+     &      rj_fld, ref_field)
       else
         call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
      &      ref_param%depth_bottom, sph_rj%nidx_rj(1),                  &

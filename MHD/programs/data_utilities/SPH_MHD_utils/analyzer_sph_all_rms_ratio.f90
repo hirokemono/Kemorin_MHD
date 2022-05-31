@@ -86,8 +86,8 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
-      call SPH_init_sph_back_trans(MHD_files1, SPH_model1, SPH_SGS1,    &
-     &    SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
+      call SPH_init_sph_back_trans(MHD_files1, SPH_model1, MHD_step1,   &
+     &    SPH_SGS1, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----

@@ -135,6 +135,12 @@
 !
 ! ---------------------------------
 !
+      if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
+      call read_alloc_sph_restart_data(MHD_files1%fst_file_IO,          &
+     &    MHD_step1%init_d, SPH_MHD%fld, MHD_step1%rst_step)
+!
+! ---------------------------------
+!
       if (iflag_debug.gt.0) write(*,*) 'const_radial_mat_sph_reftemp'
       call const_radial_mat_sph_reftemp(SPH_model%MHD_prop,             &
      &    SPH_model%sph_MHD_bc, SPH_MHD%sph,                            &
@@ -146,14 +152,11 @@
      &    SPH_model%omega_sph, SPH_model%sph_MHD_bc)
 !
       call init_reference_scalars(SPH_MHD%sph, SPH_MHD%ipol,            &
+     &    SPH_WK%r_2nd, SPH_WK%trans_p, SPH_WK%MHD_mats,                &
      &    SPH_model%ref_temp, SPH_model%ref_comp, SPH_MHD%fld,          &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
 ! ---------------------------------
-!
-      if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
-      call read_alloc_sph_restart_data(MHD_files1%fst_file_IO,          &
-     &    MHD_step1%init_d, SPH_MHD%fld, MHD_step1%rst_step, rst_IO1)
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
       call sph_initial_spectrum(MHD_files1%fst_file_IO,                 &

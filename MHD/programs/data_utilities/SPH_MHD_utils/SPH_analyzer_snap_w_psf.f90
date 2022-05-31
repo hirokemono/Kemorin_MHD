@@ -7,11 +7,12 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_snap_psf(MHD_files, iphys,              &
-!!     &          SPH_model, SPH_MHD, SPH_WK, SR_sig, SR_r)
+!!      subroutine SPH_init_sph_snap_psf(MHD_files, iphys, SPH_model,   &
+!!     &          MHD_step, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(send_recv_status), intent(inout) :: SR_sig
@@ -52,8 +53,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_snap_psf(MHD_files, iphys,                &
-     &          SPH_model, SPH_MHD, SPH_WK, SR_sig, SR_r)
+      subroutine SPH_init_sph_snap_psf(MHD_files, iphys, SPH_model,     &
+     &          MHD_step, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !
       use m_constants
       use calypso_mpi
@@ -78,6 +79,7 @@
       type(phys_address), intent(in) :: iphys
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
+      type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(send_recv_status), intent(inout) :: SR_sig
@@ -100,6 +102,12 @@
       call init_sph_transform_MHD(SPH_model, iphys, SPH_WK%trans_p,     &
      &    SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
 !
+!  -------------------------------
+!
+      if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
+      call read_alloc_sph_restart_data(MHD_files%fst_file_IO,           &
+     &    MHD_step%init_d, SPH_MHD%fld, MHD_step%rst_step)
+!
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'const_radial_mat_sph_reftemp'
@@ -109,6 +117,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
       call init_reference_scalars(SPH_MHD%sph, SPH_MHD%ipol,            &
+     &    SPH_WK%r_2nd, SPH_WK%trans_p, SPH_WK%MHD_mats,                &
      &    SPH_model%ref_temp, SPH_model%ref_comp, SPH_MHD%fld,          &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
