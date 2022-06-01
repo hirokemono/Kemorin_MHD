@@ -35,6 +35,16 @@
 !!          Solution: is_advect
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!
+!!      subroutine set_CMB_scalar_boundary_1d                           &
+!!     &         (sph_rj, sph_bc, CMB_Sspec, rhs)
+!!      subroutine sel_CMB_radial_grad_1d_scalar                        &
+!!     &         (sph_rj, sph_bc, CMB_Sspec, d_r, grad_r)
+!!      subroutine fix_CMB_radial_grad_1d_scalar                        &
+!!     &         (sph_rj, sph_bc, d_r, grad_r)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_boundary_type), intent(in) :: sph_bc
+!!        type(sph_scalar_BC_coef), intent(in) :: CMB_Sspec
 !!@endverbatim
 !!
 !!@param sph_bc  Structure for basic boundary condition parameters
@@ -235,6 +245,85 @@
       end if
 !
       end subroutine sel_CMB_sph_scalar_advect
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_CMB_scalar_boundary_1d                             &
+     &         (sph_rj, sph_bc, CMB_Sspec, rhs)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc
+      type(sph_scalar_BC_coef), intent(in) :: CMB_Sspec
+!
+      real(kind = kreal), intent(inout) :: rhs(0:sph_rj%nidx_rj(1))
+!
+!
+!   Set RHS vector for CMB
+      if (sph_bc%iflag_cmb .eq. iflag_fixed_field                       &
+     &  .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
+        rhs(sph_bc%kr_out) = CMB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
+!      else if(sph_bc%iflag_cmb .eq. iflag_fixed_flux                   &
+!     &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
+      else
+        rhs(sph_bc%kr_out)                                              &
+     &       = (sph_bc%fdm2_fix_dr_CMB( 1,3) + two*sph_bc%r_CMB(1))     &
+     &        * CMB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
+      end if
+!
+      end subroutine set_CMB_scalar_boundary_1d
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sel_CMB_radial_grad_1d_scalar                          &
+     &         (sph_rj, sph_bc, CMB_Sspec, d_r, grad_r)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_scalar_BC_coef), intent(in) :: CMB_Sspec
+      type(sph_boundary_type), intent(in) :: sph_bc
+!
+      real(kind = kreal), intent(in) :: d_r(0:sph_rj%nidx_rj(1))
+!
+      real(kind = kreal), intent(inout) :: grad_r(0:sph_rj%nidx_rj(1))
+!
+      real(kind = kreal) :: BC0_CMB
+      integer(kind = kint) :: kr
+!
+      kr = sph_bc%kr_out
+      BC0_CMB = CMB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
+      if (sph_bc%iflag_cmb .eq. iflag_fixed_flux                        &
+     &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
+        grad_r(kr) = BC0_CMB
+!      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field                  &
+!     &   .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
+      else
+        grad_r(kr) =  sph_bc%fdm2_fix_fld_CMB(2,2) * d_r(kr-2)          &
+     &               + sph_bc%fdm2_fix_fld_CMB(1,2) * d_r(kr-1)         &
+     &               + sph_bc%fdm2_fix_fld_CMB(0,2) * BC0_CMB
+      end if
+!
+      end subroutine sel_CMB_radial_grad_1d_scalar
+!
+! -----------------------------------------------------------------------
+!
+      subroutine fix_CMB_radial_grad_1d_scalar                          &
+     &         (sph_rj, sph_bc, d_r, grad_r)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc
+!
+      real(kind = kreal), intent(in) :: d_r(0:sph_rj%nidx_rj(1))
+!
+      real(kind = kreal), intent(inout) :: grad_r(0:sph_rj%nidx_rj(1))
+!
+      integer(kind = kint) :: kr
+!
+      kr = sph_bc%kr_out
+      grad_r(kr) =  sph_bc%fdm2_fix_fld_CMB(2,2) * d_r(kr-2)            &
+     &            + sph_bc%fdm2_fix_fld_CMB(1,2) * d_r(kr-1)            &
+     &            + sph_bc%fdm2_fix_fld_CMB(0,2) * d_r(kr  )
+
+      end subroutine fix_CMB_radial_grad_1d_scalar
 !
 ! -----------------------------------------------------------------------
 !

@@ -38,6 +38,16 @@
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
+!!
+!!      subroutine set_ICB_scalar_boundary_1d                           &
+!!     &          (sph_rj, sph_bc, ICB_Sspec, rhs)
+!!      subroutine sel_ICB_radial_grad_1d_scalar                        &
+!!     &         (sph_rj, sph_bc, ICB_Sspec, fdm2_center, d_r, grad_r)
+!!      subroutine fix_ICB_radial_grad_1d_scalar                        &
+!!     &         (sph_rj, sph_bc, fdm2_center, d_r, grad_r)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_boundary_type), intent(in) :: sph_bc
+!!        type(sph_scalar_BC_coef), intent(in) :: ICB_Sspec
 !!@endverbatim
 !!
 !!@param sph_bc  Structure for basic boundary condition parameters
@@ -301,6 +311,120 @@
       end if
 !
       end subroutine sel_ICB_sph_scalar_advect
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_ICB_scalar_boundary_1d                             &
+     &          (sph_rj, sph_bc, ICB_Sspec, rhs)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc
+      type(sph_scalar_BC_coef), intent(in) :: ICB_Sspec
+!
+      real(kind = kreal), intent(inout) :: rhs(0:sph_rj%nidx_rj(1))
+!
+!
+!   Set RHS vector for ICB
+      if(sph_bc%iflag_icb .eq. iflag_sph_fill_center) return
+      if(sph_bc%iflag_icb .eq. iflag_fixed_field                        &
+     &  .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
+        rhs(sph_bc%kr_in) = ICB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
+      else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
+        rhs(0) = sph_bc%CTR_fld
+!      else if(sph_bc%iflag_icb .eq. iflag_fixed_flux                   &
+!     &    .or. sph_bc%iflag_icb .eq. iflag_evolve_flux) then
+      else
+        rhs(sph_bc%kr_in)                                               &
+     &      = (sph_bc%fdm2_fix_dr_ICB(-1,3) + two*sph_bc%r_ICB(1))      &
+     &       * ICB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
+      end if
+!
+      end subroutine set_ICB_scalar_boundary_1d
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sel_ICB_radial_grad_1d_scalar                          &
+     &         (sph_rj, sph_bc, ICB_Sspec, fdm2_center, d_r, grad_r)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+      type(sph_boundary_type), intent(in) :: sph_bc
+      type(sph_scalar_BC_coef), intent(in) :: ICB_Sspec
+      real(kind = kreal), intent(in) :: d_r(0:sph_rj%nidx_rj(1))
+!
+      real(kind = kreal), intent(inout) :: grad_r(0:sph_rj%nidx_rj(1))
+!
+      integer(kind = kint) :: kr
+      real(kind = kreal) :: BC0_ICB
+!
+!
+      if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
+        grad_r(1) =  fdm2_center%dmat_fix_fld(-1,2) * d_r(0)            &
+     &             + fdm2_center%dmat_fix_fld( 0,2) * d_r(1)            &
+     &             + fdm2_center%dmat_fix_fld( 1,2) * d_r(2)
+        grad_r(0) = zero
+      else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
+        grad_r(1) =  fdm2_center%dmat_fix_fld(-1,2) * d_r(0)            &
+     &             + fdm2_center%dmat_fix_fld( 0,2) * d_r(1)            &
+     &             + fdm2_center%dmat_fix_fld( 1,2) * d_r(2)
+!
+        grad_r(0) =  fdm2_center%dmat_fixed( 0,2) * d_r(0)              &
+     &             + fdm2_center%dmat_fixed( 1,2) * d_r(1)              &
+     &             + fdm2_center%dmat_fixed( 2,2) * d_r(2)
+      else if(sph_bc%iflag_icb .eq. iflag_fixed_flux                    &
+     &    .or. sph_bc%iflag_icb .eq. iflag_evolve_flux) then
+        grad_r(sph_bc%kr_in)                                            &
+     &            = ICB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
+        grad_r(0) = zero
+!      else if(sph_bc%iflag_icb .eq. iflag_fixed_field                  &
+!     &   .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
+      else
+        kr = sph_bc%kr_in
+        BC0_ICB = ICB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
+        grad_r(sph_bc%kr_in)                                            &
+     &       = sph_bc%fdm2_fix_fld_ICB( 0,2) * BC0_ICB                  &
+     &       + sph_bc%fdm2_fix_fld_ICB( 1,2) * d_r(kr+1)                &
+     &       + sph_bc%fdm2_fix_fld_ICB( 2,2) * d_r(kr+2)
+        grad_r(0) = zero
+      end if
+!
+      end subroutine sel_ICB_radial_grad_1d_scalar
+!
+! -----------------------------------------------------------------------
+!
+      subroutine fix_ICB_radial_grad_1d_scalar                          &
+     &         (sph_rj, sph_bc, fdm2_center, d_r, grad_r)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+      type(sph_boundary_type), intent(in) :: sph_bc
+      real(kind = kreal), intent(in) :: d_r(0:sph_rj%nidx_rj(1))
+!
+      real(kind = kreal), intent(inout) :: grad_r(0:sph_rj%nidx_rj(1))
+!
+      integer(kind = kint) :: kr
+!
+!
+      if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
+     &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
+        grad_r(1) =  fdm2_center%dmat_fix_fld(-1,2) * d_r(0)            &
+     &             + fdm2_center%dmat_fix_fld( 0,2) * d_r(1)            &
+     &             + fdm2_center%dmat_fix_fld( 1,2) * d_r(2)
+!
+        grad_r(0) =  fdm2_center%dmat_fixed( 0,2) * d_r(0)              &
+     &             + fdm2_center%dmat_fixed( 1,2) * d_r(1)              &
+     &             + fdm2_center%dmat_fixed( 2,2) * d_r(2)
+      else
+        kr = sph_bc%kr_in
+        grad_r(sph_bc%kr_in)                                            &
+     &       = sph_bc%fdm2_fix_fld_ICB( 0,2) * d_r(kr  )                &
+     &       + sph_bc%fdm2_fix_fld_ICB( 1,2) * d_r(kr+1)                &
+     &       + sph_bc%fdm2_fix_fld_ICB( 2,2) * d_r(kr+2)
+        grad_r(0) = zero
+      end if
+!
+      end subroutine fix_ICB_radial_grad_1d_scalar
 !
 ! -----------------------------------------------------------------------
 !

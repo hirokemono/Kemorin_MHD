@@ -13,8 +13,8 @@
 !!     &          ipol, sph, r_2nd, omega_sph, MHD_prop, sph_MHD_bc)
 !!      subroutine init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph,   &
 !!     &                                MHD_prop, omega_sph, sph_MHD_bc)
-!!      subroutine init_reference_scalars(sph, ipol, ref_temp, ref_comp,&
-!!     &                                  rj_fld, MHD_prop, sph_MHD_bc)
+!!      subroutine init_reference_scalars(sph, ipol, r_2nd, sph_MHD_mat,&
+!!     &           ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
@@ -156,7 +156,7 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_reference_scalars(sph, ipol, r_2nd, trans_p, sph_MHD_mat,  &
+      subroutine init_reference_scalars(sph, ipol, r_2nd, sph_MHD_mat,  &
      &           ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !
       use t_radial_matrices_sph_MHD
@@ -164,7 +164,6 @@
       type(phys_address), intent(in) :: ipol
       type(sph_grids), intent(in) :: sph
       type(fdm_matrices), intent(in) :: r_2nd
-      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(MHD_radial_matrices), intent(in) :: sph_MHD_mat
 !
       type(reference_field), intent(inout) :: ref_temp, ref_comp
@@ -174,17 +173,15 @@
 !
 !
       call init_reference_scalar(MHD_prop%takepito_T,                   &
-     &    sph%sph_params, sph%sph_rj, r_2nd, trans_p,                   &
+     &    sph%sph_params, sph%sph_rj, r_2nd,                            &
      &    rj_fld, sph_MHD_mat%band_t00_poisson,                         &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
-     &    MHD_prop%ht_prop%ICB_diffusie_reduction,                      &
      &    ipol%base%i_heat_source, MHD_prop%ref_param_T,                &
      &    ref_temp, sph_MHD_bc%bcs_T)
       call init_reference_scalar(MHD_prop%takepito_C,                   &
-     &    sph%sph_params, sph%sph_rj, r_2nd, trans_p,                   &
+     &    sph%sph_params, sph%sph_rj, r_2nd,                            &
      &    rj_fld, sph_MHD_mat%band_c00_poisson,                         &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
-     &    MHD_prop%cp_prop%ICB_diffusie_reduction,                      &
      &    ipol%base%i_light_source, MHD_prop%ref_param_C,               &
      &     ref_comp, sph_MHD_bc%bcs_C)
 !
@@ -193,8 +190,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_reference_scalar(takepiro, sph_params, sph_rj,    &
-     &          r_2nd, trans_p, rj_fld, band_s00_poisson,               &
-     &          sph_bc_S, fdm2_center, diffusie_reduction_ICB,          &
+     &          r_2nd, rj_fld, band_s00_poisson, sph_bc_S, fdm2_center, &
      &          i_source, ref_param, reftemp, bcs_S)
 !
       use t_boundary_params_sph_MHD
@@ -209,12 +205,10 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
-      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_data), intent(in) :: rj_fld
       type(sph_boundary_type), intent(in) :: sph_bc_S
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(band_matrix_type), intent(in) :: band_s00_poisson
-      real(kind = kreal), intent(in) :: diffusie_reduction_ICB
 !
       type(reference_scalar_param), intent(inout) :: ref_param
       type(reference_field), intent(inout) :: reftemp
@@ -243,9 +237,8 @@
       else if(ref_param%iflag_reference                                 &
      &                             .eq. id_numerical_solution) then
         call const_diffusive_profiles                                   &
-     &     (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd, trans_p,       &
-     &      band_s00_poisson, diffusie_reduction_ICB, i_source,         &
-     &      rj_fld, ref_field)
+     &     (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd,                &
+     &      band_s00_poisson, i_source, rj_fld, ref_field)
         reftemp%t_rj(0:sph_rj%nidx_rj(1),0:1)  &
      &    = ref_field%ref_temp(0:sph_rj%nidx_rj(1),0:1)
       else
