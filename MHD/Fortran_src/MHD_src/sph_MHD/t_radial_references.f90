@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine const_diffusive_profiles                             &
 !!     &         (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd,          &
-!!     &          band_s00_poisson, i_source, rj_fld, ref_field)
+!!     &          band_s00_poisson, i_source, rj_fld, reftemp_rj)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_boundary_type), intent(in) :: sph_bc_S
@@ -17,7 +17,6 @@
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson
-!!        type(radial_reference), intent(inout) :: ref_field
 !!@endverbatim
       module t_radial_references
 !
@@ -60,7 +59,7 @@
 !
       subroutine const_diffusive_profiles                               &
      &         (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd,            &
-     &          band_s00_poisson, i_source, rj_fld, ref_field)
+     &          band_s00_poisson, i_source, rj_fld, reftemp_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -72,18 +71,67 @@
 !
       integer(kind = kint), intent(in) :: i_source
 !
+      real(kind = kreal), intent(inout)                                 &
+     &                :: reftemp_rj(0:sph_rj%nidx_rj(1),0:1)
+!
+      real(kind = kreal), allocatable :: ref_local(:,:)
+      integer(kind = kint) :: k
+!
+!
+      allocate(ref_local(0:sph_rj%nidx_rj(1),0:1))
+!
+!$omp parallel workshare
+      ref_local(0:sph_rj%nidx_rj(1),0:1) = 0.0d0
+!$omp end parallel workshare
+!
+      call const_diffusive_profile(i_source, sph_rj, r_2nd,             &
+     &    sph_bc_S, bcs_S, fdm2_center, band_s00_poisson,               &
+     &    rj_fld, ref_local, reftemp_rj)
+      deallocate(ref_local)
+!
+        if(my_rank .eq. 0) then
+          open(52,file='reference_temp.dat')
+            write(52,'(a)')                                             &
+     &         'Id, radius, reference_temperature, reference_grad_temp'
+              write(52,'(i6,1p3E25.15e3)')                              &
+     &             0, zero, reftemp_rj(0,0:1)
+            do k = 1, sph_rj%nidx_rj(1)
+              write(52,'(i6,1p3E25.15e3)') k,                           &
+     &          sph_rj%radius_1d_rj_r(k), reftemp_rj(k,0:1)
+            end do
+          close(52)
+        end if
+!
+      end subroutine const_diffusive_profiles
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_diffusive_profile_fix_bc                               &
+     &         (sph_rj, sph_bc_S, fdm2_center, r_2nd,            &
+     &          band_s00_poisson, i_temp, i_source, rj_fld, ref_field)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(sph_boundary_type), intent(in) :: sph_bc_S
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+      type(phys_data), intent(in) :: rj_fld
+      type(band_matrix_type), intent(in) :: band_s00_poisson
+!
+      integer(kind = kint), intent(in) :: i_temp, i_source
+!
       type(radial_reference), intent(inout) :: ref_field
 !
       integer(kind = kint) :: k
 !
+!
       call alloc_radial_reference(sph_rj, ref_field)
 !
-        call const_diffusive_profile(i_source, sph_rj, r_2nd,           &
-     &      sph_bc_S, bcs_S, fdm2_center, band_s00_poisson,             &
-     &      rj_fld, ref_field%ref_local, ref_field%ref_temp)
+      call const_diffusive_profile_fixS(i_temp, i_source,               &
+     &    sph_rj, r_2nd, sph_bc_S, fdm2_center, band_s00_poisson,       &
+     &    rj_fld, ref_field%ref_local, ref_field%ref_temp)
 !
         if(my_rank .eq. 0) then
-          open(52,file='reference_temp.dat')
+          open(52,file='reference_temp_fixT.dat')
             write(52,'(a)')                                             &
      &         'Id, radius, reference_temperature, reference_grad_temp'
               write(52,'(i6,1p3E25.15e3)')                              &
@@ -95,7 +143,7 @@
           close(52)
         end if
 !
-      end subroutine const_diffusive_profiles
+      end subroutine const_diffusive_profile_fix_bc
 !
 ! -----------------------------------------------------------------------
 !
@@ -103,6 +151,7 @@
 !
       type(radial_reference), intent(inout) :: ref_field
 !
+      if(allocated(ref_field%ref_local) .eqv. .FALSE.) return
       deallocate(ref_field%ref_temp)
       deallocate(ref_field%ref_comp)
       deallocate(ref_field%ref_local)
@@ -118,6 +167,7 @@
       type(radial_reference), intent(inout) :: ref_field
 !
 !
+      if(size(ref_field%ref_local,1) .eq. sph_rj%nidx_rj(1)) return
       ref_field%nri_w_ctr = sph_rj%nidx_rj(1)
 !
       allocate(ref_field%ref_temp(0:ref_field%nri_w_ctr,0:1))
@@ -207,8 +257,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_diffusive_profile_fixS(is_scalar, is_source,     &
-     &          sph_rj, r_2nd, sph_bc, fdm2_center, rj_fld,             &
-     &          band_s00_poisson, reftemp_rj, ref_local)
+     &          sph_rj, r_2nd, sph_bc, fdm2_center, band_s00_poisson,   &
+     &          rj_fld, reftemp_rj, ref_local)
 !
       use calypso_mpi
       use calypso_mpi_real

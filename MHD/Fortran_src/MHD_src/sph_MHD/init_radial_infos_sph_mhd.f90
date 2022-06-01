@@ -214,7 +214,6 @@
       type(reference_field), intent(inout) :: reftemp
       type(sph_scalar_boundary_data), intent(inout) :: bcs_S
 !
-      type(radial_reference) :: ref_field
 !
 !      Set reference temperature and adjust boundary conditions
 !
@@ -238,9 +237,7 @@
      &                             .eq. id_numerical_solution) then
         call const_diffusive_profiles                                   &
      &     (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd,                &
-     &      band_s00_poisson, i_source, rj_fld, ref_field)
-        reftemp%t_rj(0:sph_rj%nidx_rj(1),0:1)  &
-     &    = ref_field%ref_temp(0:sph_rj%nidx_rj(1),0:1)
+     &      band_s00_poisson, i_source, rj_fld, reftemp%t_rj)
       else
         call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
      &      ref_param%depth_bottom, sph_rj%nidx_rj(1),                  &
