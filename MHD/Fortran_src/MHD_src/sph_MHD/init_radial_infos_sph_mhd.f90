@@ -160,6 +160,8 @@
       subroutine init_reference_scalars(sph, ipol, r_2nd,               &
      &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !
+      use sph_mhd_rst_IO_control
+!
       type(phys_address), intent(in) :: ipol
       type(sph_grids), intent(in) :: sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -169,22 +171,31 @@
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(phys_data), intent(inout) :: rj_fld
 !
+      type(field_IO_params)  :: file_IO
       character(len=kchara) :: mat_name
 !
+      call init_reft_rj_data(sph%sph_rj, ipol, ref_temp)
 !
       write(mat_name,'(a)') 'reference_Temperature'
       call init_reference_scalar(MHD_prop%takepito_T,                   &
      &    sph%sph_params, sph%sph_rj, r_2nd, rj_fld, MHD_prop%ht_prop,  &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center, mat_name,        &
-     &    ipol%base%i_heat_source, MHD_prop%ref_param_T,                &
-     &    ref_temp, sph_MHD_bc%bcs_T)
+     &    ipol%base%i_heat_source, MHD_prop%ref_param_T, ref_temp,      &
+     &    ref_temp%iref_base%i_temp, ref_temp%iref_grad%i_grad_temp,    &
+     &    ref_temp%iref_base%i_heat_source, ref_temp%ref_field,         &
+     &    sph_MHD_bc%bcs_T)
 !
       write(mat_name,'(a)') 'reference_Composition'
       call init_reference_scalar(MHD_prop%takepito_C,                   &
      &    sph%sph_params, sph%sph_rj, r_2nd, rj_fld, MHD_prop%cp_prop,  &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center, mat_name,        &
-     &    ipol%base%i_light_source, MHD_prop%ref_param_C,               &
-     &    ref_comp, sph_MHD_bc%bcs_C)
+     &    ipol%base%i_light_source, MHD_prop%ref_param_C, ref_comp,     &
+     &  ref_temp%iref_base%i_light, ref_temp%iref_grad%i_grad_composit, &
+     &    ref_temp%iref_base%i_light_source, ref_temp%ref_field,        &
+     &    sph_MHD_bc%bcs_C)
+!
+      file_IO%file_prefix = 'reference_fields'
+      call output_reference_field(file_IO, ref_temp%ref_field)
 !
       end subroutine init_reference_scalars
 !
@@ -192,7 +203,9 @@
 !
       subroutine init_reference_scalar(takepiro, sph_params, sph_rj,    &
      &          r_2nd, rj_fld, sc_prop, sph_bc_S, fdm2_center,          &
-     &          mat_name, i_source, ref_param, reftemp, bcs_S)
+     &          mat_name, i_source, ref_param, reftemp, &
+     &          iref_scalar, iref_grad, iref_source, ref_field,     &
+     &          bcs_S)
 !
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
@@ -205,6 +218,9 @@
 !
       character(len=kchara), intent(in) :: mat_name
       integer(kind = kint), intent(in) :: i_source
+      integer(kind = kint), intent(in) :: iref_scalar, iref_grad
+      integer(kind = kint), intent(in) :: iref_source
+!
       type(takepiro_model_param), intent(in) :: takepiro
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -216,6 +232,7 @@
 !
       type(reference_scalar_param), intent(inout) :: ref_param
       type(reference_field), intent(inout) :: reftemp
+      type(phys_data), intent(inout) :: ref_field
       type(sph_scalar_boundary_data), intent(inout) :: bcs_S
 !
       character(len=kchara) :: file_name
@@ -224,7 +241,7 @@
 !      Set reference temperature and adjust boundary conditions
 !
       if(iflag_debug .gt. 0) write(*,*) 'alloc_reft_rj_data'
-      call alloc_reft_rj_data(sph_rj%nidx_rj(1), reftemp)
+      call alloc_reft_rj_data(sph_rj, reftemp)
 !
       if (ref_param%iflag_reference .eq. id_sphere_ref_temp) then
         if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
@@ -251,6 +268,12 @@
      &      band_s00_poisson, i_source, rj_fld,                         &
      &      file_name, reftemp%t_rj)
         call dealloc_band_matrix(band_s00_poisson)
+        ref_field%d_fld(1:sph_rj%nidx_rj(1)+1,iref_scalar)   &
+     &                   = reftemp%t_rj(0:sph_rj%nidx_rj(1),0)
+        ref_field%d_fld(1:sph_rj%nidx_rj(1)+1,iref_grad)     &
+     &               = reftemp%t_rj(0:sph_rj%nidx_rj(1),1)
+!        ref_field%d_fld(1:sph_rj%nidx_rj(1),iref_source)   &
+!     &    = 
       else
         call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
      &      ref_param%depth_bottom, sph_rj%nidx_rj(1),                  &
