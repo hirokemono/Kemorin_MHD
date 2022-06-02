@@ -106,7 +106,7 @@
      &      ipol%grad_fld%i_grad_temp, mat_name,                        &
      &      ht_prop%ICB_diffusie_reduction, sph_params, sph_rj, r_2nd,  &
      &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U,                   &
-     &      sph_MHD_bc%fdm2_center, rj_fld, monitor%Nusselt)
+     &      sph_MHD_bc%fdm2_center, rj_fld, monitor%heat_Nusselt)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
       call cal_CMB_dipolarity(my_rank, rj_fld,                          &

@@ -58,7 +58,10 @@
         type(picked_spectrum_data) :: gauss_coef
 !
 !>        Structure for Nusselt number data
-        type(nusselt_number_data) :: Nusselt
+        type(nusselt_number_data) :: heat_Nusselt
+!>        Structure for Nusselt number data
+        type(nusselt_number_data) :: comp_Nusselt
+!
 !>        Structure for dipolarity data
         type(dipolarity_data) :: dip
 !>        Structure for typical scale data

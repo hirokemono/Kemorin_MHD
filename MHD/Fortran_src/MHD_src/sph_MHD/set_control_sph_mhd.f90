@@ -355,7 +355,7 @@
      &   (smonitor_ctl%g_pwr, monitor%gauss_list, monitor%gauss_coef)
 !
       call set_ctl_params_no_heat_Nu(smonitor_ctl%Nusselt_file_prefix,  &
-     &    rj_fld, monitor%Nusselt)
+     &    rj_fld, monitor%heat_Nusselt)
       call set_ctl_dipolarity_params                                    &
      &   (smonitor_ctl%fdip_ctl%fdip_file_prefix_ctl,                   &
      &    smonitor_ctl%fdip_ctl%fdip_truncation_ctl,                    &
