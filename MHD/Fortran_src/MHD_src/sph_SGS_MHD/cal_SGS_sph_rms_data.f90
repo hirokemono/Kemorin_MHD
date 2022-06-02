@@ -75,6 +75,7 @@
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
       use pickup_gauss_coefficients
+      use cal_heat_source_Nu
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -96,12 +97,13 @@
       &   ipol, ipol_LES, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
-      call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
-     &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol,              &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, Nusselt)
+        call cal_no_heat_source_Nu                                      &
+!     &     (ipol%base%i_temp, ipol%base%i_heat_source,                  &
+!     &      ipol%grad_fld%i_grad_temp,               &
+     &     (ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                &
+     &      sph_rj, sph_bc_U, rj_fld, Nusselt)
 !
-      if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
+      if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
       call cal_CMB_dipolarity(my_rank, rj_fld, pwr, dip)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'

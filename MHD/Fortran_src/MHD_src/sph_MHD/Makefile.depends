@@ -44,6 +44,8 @@ cal_geomagnetic_data.o: $(MHD_SPH_DIR)/cal_geomagnetic_data.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_grad_of_sph_vectors.o: $(MHD_SPH_DIR)/cal_grad_of_sph_vectors.f90 m_precision.o m_machine_parameter.o t_spheric_parameter.o t_spheric_rj_data.o t_phys_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_schmidt_poly_on_rtm.o t_base_field_labels.o t_grad_field_labels.o t_diff_vector_labels.o const_sph_radial_grad.o
 	$(F90) -c $(F90OPTFLAGS) $<
+cal_heat_source_Nu.o: $(MHD_SPH_DIR)/cal_heat_source_Nu.f90 m_precision.o m_constants.o t_spheric_parameter.o t_spheric_rj_data.o t_phys_data.o t_boundary_params_sph_MHD.o t_no_heat_Nusselt.o pickup_sph_spectr.o t_sph_matrix.o t_fdm_coefs.o t_coef_fdm2_MHD_boundaries.o t_radial_references.o
+	$(F90) -c $(F90OPTFLAGS) $<
 cal_inner_core_rotation.o: $(MHD_SPH_DIR)/cal_inner_core_rotation.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_phys_data.o t_boundary_params_sph_MHD.o t_sph_matrices.o t_physical_property.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_momentum_eq_explicit.o: $(MHD_SPH_DIR)/cal_momentum_eq_explicit.f90 m_precision.o t_control_parameter.o t_physical_property.o t_spheric_parameter.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_schmidt_poly_on_rtm.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o cal_vorticity_terms_adams.o cal_nonlinear_sph_MHD.o cal_explicit_terms.o explicit_scalars_sph.o
@@ -96,7 +98,7 @@ cal_sph_model_coefs.o: $(MHD_SPH_DIR)/cal_sph_model_coefs.f90 m_precision.o m_co
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_vorticity_terms_adams.o: $(MHD_SPH_DIR)/cal_vorticity_terms_adams.f90 m_precision.o m_t_step_parameter.o t_spheric_rj_data.o t_physical_property.o t_boundary_data_sph_MHD.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_explicit_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_write_sph_monitor_data.o: $(MHD_SPH_DIR)/cal_write_sph_monitor_data.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_spheric_parameter.o t_phys_data.o t_boundary_data_sph_MHD.o t_schmidt_poly_on_rtm.o t_time_data.o t_rms_4_sph_spectr.o t_sum_sph_rms_data.o t_pickup_sph_spectr_data.o t_no_heat_Nusselt.o t_CMB_dipolarity.o t_sph_typical_scales.o t_energy_label_parameters.o cal_rms_fields_by_sph.o pickup_sph_spectr_data.o pickup_gauss_coefficients.o t_solver_SR.o output_sph_pwr_volume_file.o write_picked_sph_spectr.o write_sph_gauss_coefs.o output_sph_volume_ave_file.o output_sph_pwr_layer_file.o
+cal_write_sph_monitor_data.o: $(MHD_SPH_DIR)/cal_write_sph_monitor_data.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_spheric_parameter.o t_phys_data.o t_boundary_data_sph_MHD.o t_schmidt_poly_on_rtm.o t_time_data.o t_rms_4_sph_spectr.o t_sum_sph_rms_data.o t_pickup_sph_spectr_data.o t_no_heat_Nusselt.o t_CMB_dipolarity.o t_sph_typical_scales.o t_energy_label_parameters.o cal_rms_fields_by_sph.o pickup_sph_spectr_data.o pickup_gauss_coefficients.o cal_heat_source_Nu.o t_solver_SR.o output_sph_pwr_volume_file.o write_picked_sph_spectr.o write_sph_gauss_coefs.o output_sph_volume_ave_file.o output_sph_pwr_layer_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
 center_sph_matrices.o: $(MHD_SPH_DIR)/center_sph_matrices.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

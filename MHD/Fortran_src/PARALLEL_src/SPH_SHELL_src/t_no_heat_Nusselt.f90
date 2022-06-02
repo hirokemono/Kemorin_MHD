@@ -7,6 +7,11 @@
 !>@brief  Data arrays for Nusselt number
 !!
 !!@verbatim
+!!      subroutine alloc_Nu_radial_reference(sph_rj, Nu_type)
+!!      subroutine dealloc_Nu_radial_reference(Nu_type)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(nusselt_number_data), intent(inout) :: Nu_type
+!!
 !!      subroutine set_ctl_params_no_heat_Nu                            &
 !!     &         (Nusselt_file_prefix, rj_fld, Nu_type)
 !!        type(read_character_item), intent(in) :: Nusselt_file_prefix
@@ -33,10 +38,15 @@
 !>      File ID for Nusselt number IO
       integer(kind = kint), parameter :: id_Nusselt = 23
 !
+!>        Output flag for Nusselt number IO
+      integer(kind = kint), parameter :: iflag_no_source_Nu = 1
+!>        Output flag for Nusselt number IO
+      integer(kind = kint), parameter :: iflag_source_Nu = 2
+!
 !>      Structure for Nusselt number data
       type nusselt_number_data
 !>        Output flag for Nusselt number IO
-        integer(kind = kint) :: iflag_no_source_Nu = 0
+        integer(kind = kint) :: iflag_Nusselt = 0
 !>        File prefix for Nusselt number file
         character(len = kchara) :: Nusselt_file_head = 'Nusselt'
 !
@@ -51,6 +61,12 @@
 !
 !>        Matrix to solve diffusive profile
         type(band_matrix_type) :: band_s00_poisson_fixS
+!
+        integer(kind = kint) :: nri_w_ctr
+!>        diffusive profile and derivative
+        real(kind = kreal), allocatable :: ref_global(:,:)
+!>        local diffusive profile and derivative
+        real(kind = kreal), allocatable :: ref_local(:,:)
       end type nusselt_number_data
 !
       private :: id_Nusselt
@@ -60,6 +76,42 @@
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_Nu_radial_reference(sph_rj, Nu_type)
+! 
+      use t_spheric_rj_data
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(nusselt_number_data), intent(inout) :: Nu_type
+!
+!
+      if(size(Nu_type%ref_local,1) .eq. sph_rj%nidx_rj(1)) return
+      Nu_type%nri_w_ctr = sph_rj%nidx_rj(1)
+!
+      allocate(Nu_type%ref_global(0:Nu_type%nri_w_ctr,0:1))
+      allocate(Nu_type%ref_local(0:Nu_type%nri_w_ctr,0:1))
+!
+!$omp parallel workshare
+      Nu_type%ref_global(0:Nu_type%nri_w_ctr,0:1) = 0.0d0
+      Nu_type%ref_local(0:Nu_type%nri_w_ctr,0:1) = 0.0d0
+!$omp end parallel workshare
+!
+      end subroutine alloc_Nu_radial_reference
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_Nu_radial_reference(Nu_type)
+!
+      type(nusselt_number_data), intent(inout) :: Nu_type
+!
+      if(allocated(Nu_type%ref_global) .eqv. .FALSE.) return
+      deallocate(Nu_type%ref_global)
+      deallocate(Nu_type%ref_local)
+!
+      end subroutine dealloc_Nu_radial_reference
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_params_no_heat_Nu                              &
@@ -77,25 +129,25 @@
       integer(kind = kint) :: i
 !
 !    Turn On Nusselt number if temperature gradient is there
-      Nu_type%iflag_no_source_Nu = 0
+      Nu_type%iflag_Nusselt = 0
       do i = 1, rj_fld%num_phys
         if(rj_fld%phys_name(i) .eq. grad_temp%name) then
-          Nu_type%iflag_no_source_Nu = 1
+          Nu_type%iflag_Nusselt = iflag_no_source_Nu
           exit
         end if
       end do
 !
       if(Nusselt_file_prefix%iflag .gt. 0) then
-        Nu_type%iflag_no_source_Nu = 1
+        Nu_type%iflag_Nusselt = iflag_no_source_Nu
         Nu_type%Nusselt_file_head = Nusselt_file_prefix%charavalue
       else
-        Nu_type%iflag_no_source_Nu = 0
+        Nu_type%iflag_Nusselt = 0
       end if
 !
 !    Turn Off Nusselt number if heat source is there
       do i = 1, rj_fld%num_phys
         if(rj_fld%phys_name(i) .eq. heat_source%name) then
-          Nu_type%iflag_no_source_Nu = 0
+          Nu_type%iflag_Nusselt = iflag_source_Nu
           exit
         end if
       end do
@@ -143,7 +195,7 @@
       type(nusselt_number_data), intent(in) :: Nu_type
 !
 !
-      if(Nu_type%iflag_no_source_Nu .eq. izero) return
+      if(Nu_type%iflag_Nusselt .eq. izero) return
       if(idx_rj_degree_zero .eq. izero) return
 !
       call open_no_heat_source_Nu(Nu_type)

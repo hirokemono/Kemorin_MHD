@@ -16,10 +16,11 @@
 !!      subroutine output_sph_mean_square_files                         &
 !!     &         (ene_labels, time_d, sph_params, sph_rj, pwr)
 !!
-!!      subroutine cal_write_no_heat_sourse_Nu(time_d, sph_rj,          &
-!!     &          sph_bc_U, ipol, rj_fld, Nusselt)
-!!      subroutine cal_write_dipolarity(time_d, sph_params, sph_rj, leg,&
-!!     &          ipol, rj_fld, pwr, WK_pwr, dip)
+!!      subroutine cal_write_no_heat_sourse_Nu                          &
+!!     &         (is_scalar, is_source, is_grad_s, time_d, sph_rj,      &
+!!     &          sph_bc_U, rj_fld, Nusselt)
+!!      subroutine cal_write_dipolarity(time_d, sph_params,             &
+!!     &          ipol, rj_fld, pwr, dip)
 !!      subroutine cal_write_typical_scale(time_d, rj_fld, pwr, tsl)
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_shell_parameters), intent(in) :: sph_params
@@ -71,6 +72,7 @@
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
       use pickup_gauss_coefficients
+      use cal_heat_source_Nu
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -91,10 +93,11 @@
      &   (sph_params, sph_rj, ipol, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
-      call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
-     &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol,              &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, Nusselt)
+        call cal_no_heat_source_Nu                                      &
+!     &     (ipol%base%i_temp, ipol%base%i_heat_source,                  &
+!     &      ipol%grad_fld%i_grad_temp,               &
+     &     (ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                &
+     &      sph_rj, sph_bc_U, rj_fld, Nusselt)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
       call cal_CMB_dipolarity(my_rank, rj_fld, pwr, dip)
@@ -184,25 +187,26 @@
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine cal_write_no_heat_sourse_Nu(time_d, sph_rj,            &
-     &          sph_bc_U, ipol, rj_fld, Nusselt)
+      subroutine cal_write_no_heat_sourse_Nu                            &
+     &         (is_scalar, is_source, is_grad_s, time_d, sph_rj,        &
+     &          sph_bc_U, rj_fld, Nusselt)
 !
       use pickup_gauss_coefficients
+      use cal_heat_source_Nu
+!
+      integer(kind = kint), intent(in) :: is_scalar, is_source
+      integer(kind = kint), intent(in) :: is_grad_s
 !
       type(time_data), intent(in) :: time_d
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
       type(nusselt_number_data), intent(inout) :: Nusselt
 !
 !
-      call cal_no_heat_source_Nu(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0),                         &
-     &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol,              &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,               &
-     &    Nusselt)
+      call cal_no_heat_source_Nu(is_scalar, is_grad_s,                  &
+     &    sph_rj, sph_bc_U, rj_fld, Nusselt)
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
      &    time_d%i_time_step, time_d%time, Nusselt)
 !
@@ -210,18 +214,15 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine cal_write_dipolarity(time_d, sph_params, sph_rj, leg,  &
-     &          ipol, rj_fld, pwr, WK_pwr, dip)
+      subroutine cal_write_dipolarity(time_d, sph_params,               &
+     &          ipol, rj_fld, pwr, dip)
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
       type(sph_mean_squares), intent(inout) :: pwr
-      type(sph_mean_square_work), intent(inout) :: WK_pwr
       type(dipolarity_data), intent(inout) :: dip
 !
 !

@@ -41,16 +41,6 @@
 !
       implicit none
 !
-      type radial_reference
-        integer(kind = kint) :: nri_w_ctr
-        real(kind = kreal), allocatable :: ref_temp(:,:)
-!
-        real(kind = kreal), allocatable :: ref_comp(:,:)
-        real(kind = kreal), allocatable :: ref_local(:,:)
-      end type radial_reference
-!
-      private :: alloc_radial_reference
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -106,9 +96,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_diffusive_profile_fix_bc                               &
+      subroutine const_diffusive_profile_fix_bc                  &
      &         (sph_rj, sph_bc_S, fdm2_center, r_2nd,            &
-     &          band_s00_poisson, i_temp, i_source, rj_fld, ref_field)
+     &          band_s00_poisson, i_temp, i_source, rj_fld,      &
+     &          reftemp_rj, ref_local)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -119,26 +110,27 @@
 !
       integer(kind = kint), intent(in) :: i_temp, i_source
 !
-      type(radial_reference), intent(inout) :: ref_field
+      real(kind = kreal), intent(inout)                                 &
+     &                :: reftemp_rj(0:sph_rj%nidx_rj(1),0:1)
+      real(kind = kreal), intent(inout)                                 &
+     &                :: ref_local(0:sph_rj%nidx_rj(1),0:1)
 !
       integer(kind = kint) :: k
 !
 !
-      call alloc_radial_reference(sph_rj, ref_field)
-!
       call const_diffusive_profile_fixS(i_temp, i_source,               &
      &    sph_rj, r_2nd, sph_bc_S, fdm2_center, band_s00_poisson,       &
-     &    rj_fld, ref_field%ref_local, ref_field%ref_temp)
+     &    rj_fld, ref_local, reftemp_rj)
 !
         if(my_rank .eq. 0) then
           open(52,file='reference_temp_fixT.dat')
             write(52,'(a)')                                             &
      &         'Id, radius, reference_temperature, reference_grad_temp'
               write(52,'(i6,1p3E25.15e3)')                              &
-     &             0, zero, ref_field%ref_temp(0,0:1)
+     &             0, zero, reftemp_rj(0,0:1)
             do k = 1, sph_rj%nidx_rj(1)
               write(52,'(i6,1p3E25.15e3)') k,                           &
-     &          sph_rj%radius_1d_rj_r(k), ref_field%ref_temp(k,0:1)
+     &          sph_rj%radius_1d_rj_r(k), reftemp_rj(k,0:1)
             end do
           close(52)
         end if
@@ -146,42 +138,6 @@
       end subroutine const_diffusive_profile_fix_bc
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine dealloc_radial_reference(ref_field)
-!
-      type(radial_reference), intent(inout) :: ref_field
-!
-      if(allocated(ref_field%ref_local) .eqv. .FALSE.) return
-      deallocate(ref_field%ref_temp)
-      deallocate(ref_field%ref_comp)
-      deallocate(ref_field%ref_local)
-!
-      end subroutine dealloc_radial_reference
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_radial_reference(sph_rj, ref_field)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(radial_reference), intent(inout) :: ref_field
-!
-!
-      if(size(ref_field%ref_local,1) .eq. sph_rj%nidx_rj(1)) return
-      ref_field%nri_w_ctr = sph_rj%nidx_rj(1)
-!
-      allocate(ref_field%ref_temp(0:ref_field%nri_w_ctr,0:1))
-      allocate(ref_field%ref_comp(0:ref_field%nri_w_ctr,0:1))
-      allocate(ref_field%ref_local(0:ref_field%nri_w_ctr,0:1))
-!
-!$omp parallel workshare
-      ref_field%ref_temp(0:ref_field%nri_w_ctr,0:1) = 0.0d0
-      ref_field%ref_comp(0:ref_field%nri_w_ctr,0:1) = 0.0d0
-      ref_field%ref_local(0:ref_field%nri_w_ctr,0:1) = 0.0d0
-!$omp end parallel workshare
-!
-      end subroutine alloc_radial_reference
-!
 ! -----------------------------------------------------------------------
 !
       subroutine const_diffusive_profile                                &
