@@ -102,10 +102,9 @@
        if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
         write(mat_name,'(a)') 'Diffusive_Temperature'
-        call sel_Nusselt_routine                                        &
-     &     (ipol%base%i_temp, ipol%base%i_heat_source,                  &
-     &      ipol%grad_fld%i_grad_temp, mat_name,                        &
-     &      ht_prop%diffusie_reduction_ICB, sph_params, sph_rj, r_2nd,  &
+        call sel_Nusselt_routine(ipol%base%i_temp,                      &
+     &      ipol%base%i_heat_source, ipol%grad_fld%i_grad_temp,         &
+     &      mat_name, sph_params, sph_rj, r_2nd, ht_prop,               &
      &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U,                   &
      &      sph_MHD_bc%fdm2_center, rj_fld, monitor%heat_Nusselt)
       end if
@@ -113,10 +112,9 @@
       if(monitor%comp_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
         write(mat_name,'(a)') 'Diffusive_Composition'
-        call sel_Nusselt_routine                                        &
-     &     (ipol%base%i_light, ipol%base%i_light_source,                &
-     &      ipol%grad_fld%i_grad_composit, mat_name,                    &
-     &      cp_prop%diffusie_reduction_ICB, sph_params, sph_rj, r_2nd,  &
+        call sel_Nusselt_routine(ipol%base%i_light,                     &
+     &      ipol%base%i_light_source, ipol%grad_fld%i_grad_composit,    &
+     &      mat_name, sph_params, sph_rj, r_2nd, cp_prop,               &
      &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%sph_bc_U,                   &
      &      sph_MHD_bc%fdm2_center, rj_fld, monitor%comp_Nusselt)
       end if

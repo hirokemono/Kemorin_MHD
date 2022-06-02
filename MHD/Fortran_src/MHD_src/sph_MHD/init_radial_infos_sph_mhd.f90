@@ -56,6 +56,7 @@
       use t_phys_data
       use t_work_4_sph_trans
       use t_radial_references
+      use t_physical_property
 !
       implicit none
 !
@@ -159,8 +160,6 @@
       subroutine init_reference_scalars(sph, ipol, r_2nd,               &
      &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !
-      use t_physical_property
-!
       type(phys_address), intent(in) :: ipol
       type(sph_grids), intent(in) :: sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -248,7 +247,7 @@
      &      band_s00_poisson)
         file_name = add_dat_extension(mat_name)
         call const_diffusive_profiles                                   &
-     &     (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd,                &
+     &     (sph_rj, sc_prop, sph_bc_S, bcs_S, fdm2_center, r_2nd,       &
      &      band_s00_poisson, i_source, rj_fld,                         &
      &      file_name, reftemp%t_rj)
         call dealloc_band_matrix(band_s00_poisson)
