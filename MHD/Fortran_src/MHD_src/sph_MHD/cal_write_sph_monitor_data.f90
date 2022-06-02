@@ -7,13 +7,15 @@
 !>@brief  I/O routines for mean square and averaga data
 !!
 !!@verbatim
-!!      subroutine output_rms_sph_mhd_control                           &
-!!     &         (time_d, SPH_MHD, sph_MHD_bc, leg, monitor, SR_sig)
+!!      subroutine output_rms_sph_mhd_control(time_d, SPH_MHD,          &
+!!     &          MHD_prop, sph_MHD_bc, r_2nd, leg, monitor, SR_sig)
 !!      subroutine init_rms_4_sph_spectr_4_mhd(sph, rj_fld, monitor)
-!!      subroutine output_sph_monitor_data(time_d, sph_params, sph_rj,  &
+!!      subroutine ht_prop(time_d, sph_params, sph_rj,  &
 !!     &          ipol, rj_fld, monitor, SR_sig)
 !!        type(time_data), intent(in) :: time_d
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+!!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
@@ -26,8 +28,10 @@
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!
 !!      subroutine cal_write_no_heat_sourse_Nu                          &
-!!     &         (is_scalar, is_source, is_grad_s, time_d, sph_rj,      &
-!!     &          sph_bc_U, rj_fld, Nusselt)
+!!     &         (is_scalar, is_source, is_grad_s, time_d,              &
+!!     &          mat_name, diffusie_reduction_ICB,                     &
+!!     &          sph_params, sph_rj, sph_bc_S, sph_bc_U,               &
+!!     &          fdm2_center, r_2nd,  rj_fld, Nusselt)
 !!      subroutine cal_write_dipolarity(time_d, sph_params,             &
 !!     &          ipol, rj_fld, pwr, dip)
 !!      subroutine cal_write_typical_scale(time_d, rj_fld, pwr, tsl)
@@ -69,6 +73,8 @@
       use t_CMB_dipolarity
       use t_sph_typical_scales
       use t_energy_label_parameters
+      use t_fdm_coefs
+      use t_physical_property
 !
       private :: cal_sph_monitor_data
 !
@@ -78,14 +84,16 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine output_rms_sph_mhd_control                             &
-     &         (time_d, SPH_MHD, sph_MHD_bc, leg, monitor, SR_sig)
+      subroutine output_rms_sph_mhd_control(time_d, SPH_MHD,            &
+     &          MHD_prop, sph_MHD_bc, r_2nd, leg, monitor, SR_sig)
 !
       use t_solver_SR
       use t_time_data
 !
       type(time_data), intent(in) :: time_d
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !
@@ -95,8 +103,8 @@
 !
       call cal_sph_monitor_data                                         &
      &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
-     &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_MHD%fld,          &
-     &    monitor)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, sph_MHD_bc, r_2nd, leg,   &
+     &    SPH_MHD%ipol, SPH_MHD%fld, monitor)
 !
       call output_sph_monitor_data                                      &
      &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
@@ -107,9 +115,9 @@
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine cal_sph_monitor_data                                   &
-     &         (sph_params, sph_rj, sph_bc_U, leg, ipol, rj_fld,        &
-     &          monitor)
+      subroutine cal_sph_monitor_data(sph_params, sph_rj,               &
+     &          ht_prop, cp_prop, sph_MHD_bc, r_2nd, leg,               &
+     &          ipol, rj_fld, monitor)
 !
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
@@ -118,24 +126,30 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
+      character(len=kchara) :: mat_name
+!
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell(sph_params, sph_rj, ipol, rj_fld,    &
      &    leg%g_sph_rj, monitor%pwr, monitor%WK_pwr)
 !
-      if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
-        call cal_no_heat_source_Nu                                      &
-!     &     (ipol%base%i_temp, ipol%base%i_heat_source,                  &
-!     &      ipol%grad_fld%i_grad_temp,               &
-     &     (ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                &
-     &      sph_rj, sph_bc_U, rj_fld, monitor%Nusselt)
+        if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
+        write(mat_name,'(a)') 'Diffusive_Temperature'
+        call sel_Nusselt_routine                                        &
+     &     (ipol%base%i_temp, ipol%base%i_heat_source,                  &
+     &      ipol%grad_fld%i_grad_temp, mat_name,                        &
+     &      ht_prop%ICB_diffusie_reduction, sph_params, sph_rj, r_2nd,  &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U,                   &
+     &      sph_MHD_bc%fdm2_center, rj_fld, monitor%Nusselt)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
       call cal_CMB_dipolarity(my_rank, rj_fld,                          &
@@ -221,25 +235,33 @@
 !  --------------------------------------------------------------------
 !
       subroutine cal_write_no_heat_sourse_Nu                            &
-     &         (is_scalar, is_source, is_grad_s, time_d, sph_rj,        &
-     &          sph_bc_U, rj_fld, Nusselt)
+     &         (is_scalar, is_source, is_grad_s, time_d,                &
+     &          mat_name, diffusie_reduction_ICB,                       &
+     &          sph_params, sph_rj, sph_bc_S, sph_bc_U,                 &
+     &          fdm2_center, r_2nd,  rj_fld, Nusselt)
 !
       use pickup_gauss_coefficients
       use cal_heat_source_Nu
 !
       integer(kind = kint), intent(in) :: is_scalar, is_source
       integer(kind = kint), intent(in) :: is_grad_s
+      character(len=kchara), intent(in) :: mat_name
+      real(kind = kreal), intent(in) :: diffusie_reduction_ICB
 !
       type(time_data), intent(in) :: time_d
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+      type(sph_boundary_type), intent(in) :: sph_bc_S, sph_bc_U
       type(phys_data), intent(in) :: rj_fld
 !
       type(nusselt_number_data), intent(inout) :: Nusselt
 !
 !
-      call cal_no_heat_source_Nu(is_scalar, is_grad_s,                  &
-     &    sph_rj, sph_bc_U, rj_fld, Nusselt)
+      call sel_Nusselt_routine(is_scalar, is_source, is_grad_s,         &
+     &    mat_name, diffusie_reduction_ICB, sph_params, sph_rj, r_2nd,  &
+     &    sph_bc_S, sph_bc_U, fdm2_center, rj_fld, Nusselt)
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
      &    time_d%i_time_step, time_d%time, Nusselt)
 !

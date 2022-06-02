@@ -7,11 +7,14 @@
 !> @brief  Evaluate mean square by spherical hermonics coefficients
 !!
 !!@verbatim
-!!      subroutine cal_SGS_sph_monitor_data(sph_params, sph_rj,         &
-!!     &          sph_bc_U, leg, ipol, ipol_LES, rj_fld, monitor)
+!!      subroutine cal_SGS_sph_monitor_data                             &
+!!     &         (sph_params, sph_rj, ht_prop, cp_prop, sph_MHD_bc,     &
+!!     &          r_2nd, leg, ipol, ipol_LES, rj_fld, monitor)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+!!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
@@ -40,11 +43,12 @@
 !
       use t_spheric_parameter
       use t_spheric_rj_data
+      use t_physical_property
       use t_schmidt_poly_on_rtm
       use t_phys_data
       use t_phys_address
       use t_SGS_model_addresses
-      use t_boundary_params_sph_MHD
+      use t_boundary_data_sph_MHD
       use t_rms_4_sph_spectr
       use t_sph_volume_mean_square
       use t_sum_sph_rms_data
@@ -52,6 +56,8 @@
       use t_CMB_dipolarity
       use t_sph_typical_scales
       use t_sph_mhd_monitor_data_IO
+      use t_fdm_coefs
+      use t_physical_property
 !
       implicit none
 !
@@ -63,8 +69,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_SGS_sph_monitor_data(sph_params, sph_rj,           &
-     &          sph_bc_U, leg, ipol, ipol_LES, rj_fld, monitor)
+      subroutine cal_SGS_sph_monitor_data                               &
+     &         (sph_params, sph_rj, ht_prop, cp_prop, sph_MHD_bc,       &
+     &          r_2nd, leg, ipol, ipol_LES, rj_fld, monitor)
 !
       use calypso_mpi
       use cal_rms_fields_by_sph
@@ -74,7 +81,9 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
@@ -82,18 +91,22 @@
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
+      character(len=kchara) :: mat_name
+!
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,            &
       &   ipol, ipol_LES, rj_fld, leg%g_sph_rj,                         &
       &   monitor%pwr, monitor%WK_pwr)
 !
-      if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
-        call cal_no_heat_source_Nu                                      &
-!     &     (ipol%base%i_temp, ipol%base%i_heat_source,                  &
-!     &      ipol%grad_fld%i_grad_temp,               &
-     &     (ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                &
-     &      sph_rj, sph_bc_U, rj_fld, monitor%Nusselt)
+        if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
+        write(mat_name,'(a)') 'Diffusive_Temperature'
+        call sel_Nusselt_routine                                        &
+     &     (ipol%base%i_temp, ipol%base%i_heat_source,                  &
+     &      ipol%grad_fld%i_grad_temp, mat_name,                        &
+     &      ht_prop%ICB_diffusie_reduction, sph_params, sph_rj, r_2nd,  &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U,                   &
+     &      sph_MHD_bc%fdm2_center, rj_fld, monitor%Nusselt)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
       call cal_CMB_dipolarity(my_rank, rj_fld,                          &

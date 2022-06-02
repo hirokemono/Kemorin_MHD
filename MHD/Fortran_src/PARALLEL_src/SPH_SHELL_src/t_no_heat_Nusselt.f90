@@ -86,7 +86,7 @@
       type(nusselt_number_data), intent(inout) :: Nu_type
 !
 !
-      if(size(Nu_type%ref_local,1) .eq. sph_rj%nidx_rj(1)) return
+      if(size(Nu_type%ref_global,1) .eq. sph_rj%nidx_rj(1)) return
       Nu_type%nri_w_ctr = sph_rj%nidx_rj(1)
 !
       allocate(Nu_type%ref_global(0:Nu_type%nri_w_ctr,0:1))
