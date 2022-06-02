@@ -25,6 +25,7 @@
 !
       use m_precision
       use m_constants
+      use t_sph_matrix
 !
       implicit  none
 !
@@ -47,6 +48,9 @@
         real(kind = kreal) :: Nu_ICB
 !>        Nusselt number at outer boundary
         real(kind = kreal) :: Nu_CMB
+!
+!>        Matrix to solve diffusive profile
+        type(band_matrix_type) :: band_s00_poisson_fixS
       end type nusselt_number_data
 !
       private :: id_Nusselt
