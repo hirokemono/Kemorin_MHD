@@ -146,6 +146,7 @@
       use t_coef_fdm2_MHD_boundaries
       use t_radial_references
       use const_r_mat_4_scalar_sph
+      use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: is_scalar, is_source
       integer(kind = kint), intent(in) :: is_grad_s
@@ -162,8 +163,11 @@
       type(nusselt_number_data), intent(inout) :: Nu_type
 !
       integer(kind = kint) :: inod_ICB, inod_CMB
+      character(len=kchara) :: file_name
 !
 !
+!
+      file_name = add_dat_extension(mat_name)
       if(size(Nu_type%ref_global,1) .ne. sph_rj%nidx_rj(1)) then
         call dealloc_band_matrix(Nu_type%band_s00_poisson_fixS)
         call dealloc_Nu_radial_reference(Nu_type)
@@ -176,10 +180,9 @@
       call const_diffusive_profile_fix_bc                               &
      &   (sph_rj, sph_bc_S, fdm2_center, r_2nd,                         &
      &    Nu_type%band_s00_poisson_fixS, is_scalar, is_source, rj_fld,  &
-     &    Nu_type%ref_global, Nu_type%ref_local)
+     &    file_name, Nu_type%ref_global, Nu_type%ref_local)
 !
       if(sph_rj%idx_rj_degree_zero .eq. 0) return
-!
       if(sph_bc_U%kr_in .eq. 0) then
         inod_ICB = sph_rj%inod_rj_center
         Nu_type%r_ICB_Nu = zero

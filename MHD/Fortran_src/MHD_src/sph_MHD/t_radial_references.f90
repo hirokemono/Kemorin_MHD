@@ -7,9 +7,12 @@
 !>@brief  Refelence scalar by diffusive profile
 !!
 !!@verbatim
-!!      subroutine const_diffusive_profiles                             &
-!!     &         (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd,          &
-!!     &          band_s00_poisson, i_source, rj_fld, reftemp_rj)
+!!      subroutine const_diffusive_profiles(sph_rj, sph_bc_S, bcs_S,    &
+!!     &          fdm2_center, r_2nd, band_s00_poisson,                 &
+!!     &          i_source, rj_fld, file_name, reftemp_rj)
+!!      subroutine const_diffusive_profile_fix_bc                       &
+!!     &        (sph_rj, sph_bc_S, fdm2_center, r_2nd, band_s00_poisson,&
+!!     &         i_temp, i_source, rj_fld, file_name, reftemp_local)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_boundary_type), intent(in) :: sph_bc_S
@@ -22,6 +25,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       use t_spheric_rj_data
       use t_phys_data
@@ -41,6 +45,7 @@
 !
       implicit none
 !
+      private :: write_diffusive_profile_file
       private :: const_diffusive_profile, const_diffusive_profile_fixS
 !
 ! -----------------------------------------------------------------------
@@ -49,9 +54,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_diffusive_profiles                               &
-     &         (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd,            &
-     &          band_s00_poisson, i_source, rj_fld, reftemp_rj)
+      subroutine const_diffusive_profiles(sph_rj, sph_bc_S, bcs_S,      &
+     &          fdm2_center, r_2nd, band_s00_poisson,                   &
+     &          i_source, rj_fld, file_name, reftemp_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -62,6 +67,7 @@
       type(band_matrix_type), intent(in) :: band_s00_poisson
 !
       integer(kind = kint), intent(in) :: i_source
+      character(len=kchara), intent(in) :: file_name
 !
       real(kind = kreal), intent(inout)                                 &
      &                :: reftemp_rj(0:sph_rj%nidx_rj(1),0:1)
@@ -81,27 +87,19 @@
      &    rj_fld, ref_local, reftemp_rj)
       deallocate(ref_local)
 !
-        if(my_rank .eq. 0) then
-          open(52,file='reference_temp.dat')
-            write(52,'(a)')                                             &
-     &         'Id, radius, reference_temperature, reference_grad_temp'
-              write(52,'(i6,1p3E25.15e3)')                              &
-     &             0, zero, reftemp_rj(0,0:1)
-            do k = 1, sph_rj%nidx_rj(1)
-              write(52,'(i6,1p3E25.15e3)') k,                           &
-     &          sph_rj%radius_1d_rj_r(k), reftemp_rj(k,0:1)
-            end do
-          close(52)
-        end if
+      if(iflag_debug .gt. 0) then
+        call write_diffusive_profile_file                               &
+     &     (file_name, sph_rj, reftemp_rj)
+      end if
 !
       end subroutine const_diffusive_profiles
 !
 ! -----------------------------------------------------------------------
 !
       subroutine const_diffusive_profile_fix_bc                         &
-     &         (sph_rj, sph_bc_S, fdm2_center, r_2nd,                   &
-     &          band_s00_poisson, i_temp, i_source,                     &
-     &          rj_fld, reftemp_rj, ref_local)
+     &        (sph_rj, sph_bc_S, fdm2_center, r_2nd, band_s00_poisson,  &
+     &         i_temp, i_source, rj_fld, file_name,                     &
+     &         reftemp_rj, reftemp_local)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -109,35 +107,53 @@
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(phys_data), intent(in) :: rj_fld
       type(band_matrix_type), intent(in) :: band_s00_poisson
+      character(len=kchara), intent(in) :: file_name
 !
       integer(kind = kint), intent(in) :: i_temp, i_source
 !
       real(kind = kreal), intent(inout)                                 &
      &                :: reftemp_rj(0:sph_rj%nidx_rj(1),0:1)
       real(kind = kreal), intent(inout)                                 &
-     &                :: ref_local(0:sph_rj%nidx_rj(1),0:1)
-!
-      integer(kind = kint) :: k
+     &                :: reftemp_local(0:sph_rj%nidx_rj(1),0:1)
 !
 !
       call const_diffusive_profile_fixS(i_temp, i_source,               &
      &    sph_rj, r_2nd, sph_bc_S, fdm2_center, band_s00_poisson,       &
-     &    rj_fld, ref_local, reftemp_rj)
+     &    rj_fld, reftemp_rj, reftemp_local)
 !
-        if(my_rank .eq. 0) then
-          open(52,file='reference_temp_fixT.dat')
-            write(52,'(a)')                                             &
-     &         'Id, radius, reference_temperature, reference_grad_temp'
-              write(52,'(i6,1p3E25.15e3)')                              &
-     &             0, zero, reftemp_rj(0,0:1)
-            do k = 1, sph_rj%nidx_rj(1)
-              write(52,'(i6,1p3E25.15e3)') k,                           &
-     &          sph_rj%radius_1d_rj_r(k), reftemp_rj(k,0:1)
-            end do
-          close(52)
-        end if
+      if(iflag_debug .gt. 0) then
+        call write_diffusive_profile_file(file_name, sph_rj,            &
+     &                                    reftemp_rj)
+      end if
 !
       end subroutine const_diffusive_profile_fix_bc
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine write_diffusive_profile_file(file_name, sph_rj,        &
+     &                                        reftemp_rj)
+!
+      character(len=kchara), intent(in) :: file_name
+      type(sph_rj_grid), intent(in) :: sph_rj
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                :: reftemp_rj(0:sph_rj%nidx_rj(1),0:1)
+!
+      integer(kind = kint) :: k
+!
+!
+      open(52,file=file_name, position='append')
+      write(52,'(a)')                                                   &
+     &         'Id, radius, reference_scalar, reference_grad_r'
+      write(52,'(i6,1p3E25.15e3)')  0, zero, reftemp_rj(0,0:1)
+      do k = 1, sph_rj%nidx_rj(1)
+        write(52,'(i6,1p3E25.15e3)') k, sph_rj%radius_1d_rj_r(k),       &
+     &                                  reftemp_rj(k,0:1)
+      end do
+      close(52)
+!
+      end subroutine write_diffusive_profile_file
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -229,7 +245,7 @@
 !
       subroutine const_diffusive_profile_fixS(is_scalar, is_source,     &
      &          sph_rj, r_2nd, sph_bc, fdm2_center, band_s00_poisson,   &
-     &          rj_fld, reftemp_rj, ref_local)
+     &          rj_fld, reftemp_rj, reftemp_local)
 !
       use calypso_mpi
       use calypso_mpi_real
@@ -249,7 +265,7 @@
       real(kind = kreal), intent(inout)                                 &
      &                :: reftemp_rj(0:sph_rj%nidx_rj(1),0:1)
       real(kind = kreal), intent(inout)                                 &
-     &                :: ref_local(0:sph_rj%nidx_rj(1),0:1)
+     &                :: reftemp_local(0:sph_rj%nidx_rj(1),0:1)
 !
       integer(kind = kint) :: inod
       integer(kind = kint_gl) :: num64
@@ -261,47 +277,46 @@
      &      (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                      &
      &       sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,          &
      &       is_source, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, &
-     &       ref_local(0,0))
+     &       reftemp_local(0,0))
           else
 !$omp parallel workshare
-            ref_local(0:sph_rj%nidx_rj(1),0) = 0.0d0
+            reftemp_local(0:sph_rj%nidx_rj(1),0) = 0.0d0
 !$omp end parallel workshare
         end if
 !
         if(    sph_bc%iflag_icb .eq. iflag_sph_fill_center              &
      &    .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
           inod = sph_rj%inod_rj_center
-          ref_local(0,0) = rj_fld%d_fld(inod,is_scalar)
+          reftemp_local(0,0) = rj_fld%d_fld(inod,is_scalar)
         else
           inod = sph_rj%idx_rj_degree_zero                              &
      &          + (sph_bc%kr_in-1) * sph_rj%nidx_rj(2)
-          ref_local(sph_bc%kr_in,0) = rj_fld%d_fld(inod,is_scalar)
+          reftemp_local(sph_bc%kr_in,0) = rj_fld%d_fld(inod,is_scalar)
         end if
 !
         inod = sph_rj%idx_rj_degree_zero                                &
      &        + (sph_bc%kr_out-1) * sph_rj%nidx_rj(2)
-        ref_local(sph_bc%kr_out,0) = rj_fld%d_fld(inod,is_scalar)
+        reftemp_local(sph_bc%kr_out,0) = rj_fld%d_fld(inod,is_scalar)
 !
-        call lubksb_3band_ctr(band_s00_poisson, ref_local(0,0))
+        call lubksb_3band_ctr(band_s00_poisson, reftemp_local(0,0))
         call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,     &
-     &                              sph_rj%nidx_rj(1), ref_local(0,0))
+     &      sph_rj%nidx_rj(1), reftemp_local(0,0))
 !
         call cal_sph_nod_gradient_1d(sph_bc%kr_in, sph_bc%kr_out,       &
-     &                            sph_rj%nidx_rj(1), r_2nd%fdm(1)%dmat, &
-     &                            ref_local(0,0), ref_local(0,1))
+     &      sph_rj%nidx_rj(1), r_2nd%fdm(1)%dmat,                       &
+     &      reftemp_local(0,0), reftemp_local(0,1))
 !
         call fix_ICB_radial_grad_1d_scalar(sph_rj, sph_bc, fdm2_center, &
-     &      reftemp_rj(0,0), reftemp_rj(0,1))
+     &      reftemp_local(0,0), reftemp_local(0,1))
         call fix_CMB_radial_grad_1d_scalar(sph_rj, sph_bc,              &
-     &      reftemp_rj(0,0), reftemp_rj(0,1))
-!
+     &      reftemp_local(0,0), reftemp_local(0,1))
       end if
 !
 !$omp parallel workshare
       reftemp_rj(0:sph_rj%nidx_rj(1),0:1) = 0.0d0
 !$omp end parallel workshare
       num64 = 2 * (sph_rj%nidx_rj(1) + 1)
-      call calypso_mpi_allreduce_real(ref_local, reftemp_rj,            &
+      call calypso_mpi_allreduce_real(reftemp_local, reftemp_rj,        &
      &                                num64, MPI_SUM)
 !
       end subroutine const_diffusive_profile_fixS

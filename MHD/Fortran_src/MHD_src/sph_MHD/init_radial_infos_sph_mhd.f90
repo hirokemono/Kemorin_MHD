@@ -202,6 +202,7 @@
       use set_reference_sph_mhd
       use set_reference_temp_sph
       use const_r_mat_4_scalar_sph
+      use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: mat_name
       integer(kind = kint), intent(in) :: i_source
@@ -218,6 +219,7 @@
       type(reference_field), intent(inout) :: reftemp
       type(sph_scalar_boundary_data), intent(inout) :: bcs_S
 !
+      character(len=kchara) :: file_name
       type(band_matrix_type) :: band_s00_poisson
 !
 !      Set reference temperature and adjust boundary conditions
@@ -244,9 +246,11 @@
      &     (mat_name, sc_prop%diffusie_reduction_ICB,                   &
      &      sph_params, sph_rj, r_2nd, sph_bc_S, fdm2_center,           &
      &      band_s00_poisson)
+        file_name = add_dat_extension(mat_name)
         call const_diffusive_profiles                                   &
      &     (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd,                &
-     &      band_s00_poisson, i_source, rj_fld, reftemp%t_rj)
+     &      band_s00_poisson, i_source, rj_fld,                         &
+     &      file_name, reftemp%t_rj)
         call dealloc_band_matrix(band_s00_poisson)
       else
         call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
