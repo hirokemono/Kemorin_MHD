@@ -57,17 +57,8 @@
 !
 !>        Structure of band matrices for temperature evolution
         type(band_matrix_type) :: band_temp00_evo
-!>        Structure of band matrices for temperature poisson
-        type(band_matrix_type) :: band_t00_poisson
-!>        Structure of band matrices for temperature poisson
-        type(band_matrix_type) :: band_t00_poisson_fixT
-!
 !>        Structure of band matrices for composition evolutio
         type(band_matrix_type) :: band_comp00_evo
-!>        Structure of band matrices for composition poisson
-        type(band_matrix_type) :: band_c00_poisson
-!>        Structure of band matrices for composition poisson
-        type(band_matrix_type) :: band_c00_poisson_fixC
 !
 !>       Temporal space for average with center
         real(kind = kreal), allocatable :: x00_w_center(:)

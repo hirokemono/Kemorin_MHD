@@ -9,8 +9,6 @@
 !!@verbatim
 !!      subroutine const_radial_mat_sph_mhd(dt, MHD_prop, sph_MHD_bc,   &
 !!     &          sph, r_2nd, leg, sph_MHD_mat)
-!!      subroutine const_radial_mat_sph_reftemp(MHD_prop, sph_MHD_bc,   &
-!!     &          sph, r_2nd, leg, sph_MHD_mat)
 !!      subroutine const_radial_mat_sph_snap(MHD_prop, sph_MHD_bc,      &
 !!     &          sph_rj, r_2nd, leg, sph_MHD_mat)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -76,54 +74,6 @@
      &   (dt, sph%sph_rj, MHD_prop, sph_MHD_bc, sph_MHD_mat)
 !
       end subroutine const_radial_mat_sph_mhd
-!
-! -----------------------------------------------------------------------
-!
-      subroutine const_radial_mat_sph_reftemp(MHD_prop, sph_MHD_bc,     &
-     &          sph, r_2nd, leg, sph_MHD_mat)
-!
-      use const_r_mat_4_scalar_sph
-      use const_r_mat_w_center_sph
-!
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(sph_grids), intent(in) :: sph
-      type(fdm_matrices), intent(in) :: r_2nd
-      type(legendre_4_sph_trans), intent(in) :: leg
-!
-      type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
-!
-!>        Structure of band matrices for reference
-      type(band_matrices_type) :: band_s_poisson
-      character(len=kchara) :: mat_name
-!
-!
-      if(sph%sph_rj%idx_rj_degree_zero .eq. 0) return
-!
-      write(mat_name,'(a)') 'Temperature_poisson'
-      call const_radial_mat_4_scalar_sph(mat_name, zero, one,           &
-     &    sph%sph_params, sph%sph_rj, r_2nd, MHD_prop%ht_prop,          &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
-     &    leg%g_sph_rj, band_s_poisson)
-      write(mat_name,'(a)') 'average_temperature'
-      call const_rmat_poisson00_sph(mat_name, sph%sph_rj,               &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
-     &    band_s_poisson, sph_MHD_mat%band_t00_poisson)
-      call dealloc_band_mat_sph(band_s_poisson)
-!
-!
-      write(mat_name,'(a)') 'Composition_Poisson'
-      call const_radial_mat_4_scalar_sph(mat_name, zero, one,           &
-     &    sph%sph_params, sph%sph_rj, r_2nd, MHD_prop%cp_prop,          &
-     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
-     &    leg%g_sph_rj, band_s_poisson)
-      write(mat_name,'(a)') 'average_composition'
-      call const_rmat_poisson00_sph(mat_name, sph%sph_rj,               &
-     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
-     &    band_s_poisson, sph_MHD_mat%band_c00_poisson)
-      call dealloc_band_mat_sph(band_s_poisson)
-!
-      end subroutine const_radial_mat_sph_reftemp
 !
 ! -----------------------------------------------------------------------
 !

@@ -141,11 +141,6 @@
 !
 ! ---------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_radial_mat_sph_reftemp'
-      call const_radial_mat_sph_reftemp(SPH_model%MHD_prop,             &
-     &    SPH_model%sph_MHD_bc, SPH_MHD%sph,                            &
-     &    SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%MHD_mats)
-!
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd'
       call init_r_infos_sph_mhd(SPH_model%bc_IO, SPH_MHD%groups,        &
      &    SPH_model%MHD_BC, SPH_MHD%sph, SPH_model%MHD_prop,            &

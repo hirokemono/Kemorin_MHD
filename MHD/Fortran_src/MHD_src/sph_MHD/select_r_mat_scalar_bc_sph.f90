@@ -22,7 +22,7 @@
 !!      subroutine sel_radial_mat00_scalar_bc_sph                       &
 !!     &         (sph_rj, sph_bc, fdm2_center, r_coef, band_s00_poisson)
 !!      subroutine sel_r_mat_poisson_fixBC_sph                          &
-!!     &         (sph_bc, fdm2_center, band_s00_poisson)
+!!     &         (sph_rj, sph_bc, fdm2_center, band_s00_poisson)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
@@ -164,35 +164,36 @@
 !
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_scalar_poisson_mat_fill_ctr(sph_bc%r_ICB,              &
+        call add_scalar_poisson_mat_fill_ctr                            &
+     &     (sph_rj%nidx_rj(1), sph_bc%r_ICB,                            &
      &      fdm2_center%dmat_fix_dr, fdm2_center%dmat_fix_fld,          &
-     &      one, band_s00_poisson%mat(1,0))
+     &      one, band_s00_poisson%mat)
       else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call add_scalar_poisson_mat_fix_ctr                             &
-     &     (sph_bc%r_ICB, fdm2_center%dmat_fix_fld, one,                &
-     &      band_s00_poisson%mat(1,0))
+     &     (sph_rj%nidx_rj(1), sph_bc%r_ICB, fdm2_center%dmat_fix_fld,  &
+     &      one, band_s00_poisson%mat)
       else if (sph_bc%iflag_icb .eq. iflag_fixed_flux                   &
      &    .or. sph_bc%iflag_icb .eq. iflag_evolve_flux) then
         call add_fix_flux_icb_poisson00_mat                             &
-     &     (sph_bc%kr_in, sph_bc%fdm2_fix_dr_ICB,                       &
+     &     (sph_rj%nidx_rj(1), sph_bc%kr_in, sph_bc%fdm2_fix_dr_ICB,    &
      &      r_coef(sph_bc%kr_in), band_s00_poisson%mat)
 !      else if (sph_bc%iflag_icb .eq. iflag_fixed_field                 &
 !     &    .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
       else
         call set_fix_fld_icb_poisson00_mat                              &
-     &     (sph_bc%kr_in, band_s00_poisson%mat)
+     &     (sph_rj%nidx_rj(1), sph_bc%kr_in, band_s00_poisson%mat)
       end if
 !
       if (sph_bc%iflag_cmb .eq. iflag_fixed_flux                        &
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
         call add_fix_flux_cmb_poisson00_mat                             &
-     &     (sph_bc%kr_out, sph_bc%fdm2_fix_dr_CMB,                      &
+     &     (sph_rj%nidx_rj(1), sph_bc%kr_out, sph_bc%fdm2_fix_dr_CMB,   &
      &      r_coef(sph_bc%kr_out), band_s00_poisson%mat)
 !      else if (sph_bc%iflag_cmb .eq. iflag_fixed_field                 &
 !     &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
       else
         call set_fix_fld_cmb_poisson00_mat                              &
-     &     (sph_bc%kr_out, band_s00_poisson%mat)
+     &     (sph_rj%nidx_rj(1), sph_bc%kr_out, band_s00_poisson%mat)
       end if
 !
       end subroutine sel_radial_mat00_scalar_bc_sph
@@ -200,11 +201,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_r_mat_poisson_fixBC_sph                            &
-     &         (sph_bc, fdm2_center, band_s00_poisson)
+     &         (sph_rj, sph_bc, fdm2_center, band_s00_poisson)
 !
       use center_sph_matrices
       use set_sph_scalar_mat_bc
 !
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
@@ -214,15 +216,15 @@
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
      &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call add_scalar_poisson_mat_fix_ctr                             &
-     &     (sph_bc%r_ICB, fdm2_center%dmat_fix_fld, one,                &
-     &      band_s00_poisson%mat(1,0))
+     &     (sph_rj%nidx_rj(1), sph_bc%r_ICB, fdm2_center%dmat_fix_fld,  &
+     &      one,  band_s00_poisson%mat)
       else
         call set_fix_fld_icb_poisson00_mat                              &
-     &     (sph_bc%kr_in, band_s00_poisson%mat)
+     &     (sph_rj%nidx_rj(1), sph_bc%kr_in, band_s00_poisson%mat)
       end if
 !
       call set_fix_fld_cmb_poisson00_mat                                &
-     &   (sph_bc%kr_out, band_s00_poisson%mat)
+     &   (sph_rj%nidx_rj(1), sph_bc%kr_out, band_s00_poisson%mat)
 !
       end subroutine sel_r_mat_poisson_fixBC_sph
 !
