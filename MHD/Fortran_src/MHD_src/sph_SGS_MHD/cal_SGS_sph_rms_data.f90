@@ -7,21 +7,16 @@
 !> @brief  Evaluate mean square by spherical hermonics coefficients
 !!
 !!@verbatim
-!!      subroutine cal_SGS_sph_monitor_data                             &
-!!     &         (sph_params, sph_rj, sph_bc_U, leg, ipol, ipol_LES,    &
-!!     &          rj_fld, pwr, WK_pwr, Nusselt, dip, tsl)
-!!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!      subroutine cal_SGS_sph_monitor_data(sph_params, sph_rj,         &
+!!     &          sph_bc_U, leg, ipol, ipol_LES, rj_fld, monitor)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(phys_data), intent(in) :: rj_fld
-!!        type(sph_mean_squares), intent(inout) :: pwr
-!!        type(sph_mean_square_work), intent(inout) :: WK_pwr
-!!        type(nusselt_number_data), intent(inout) :: Nusselt
-!!        type(dipolarity_data), intent(inout) :: dip
-!!        type(typical_scale_data), intent(inout) :: tsl
+!!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!      subroutine cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,    &
 !!     &          ipol, ipol_LES, rj_fld, g_sph_rj, pwr, WK_pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -56,6 +51,7 @@
       use t_no_heat_Nusselt
       use t_CMB_dipolarity
       use t_sph_typical_scales
+      use t_sph_mhd_monitor_data_IO
 !
       implicit none
 !
@@ -67,9 +63,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_SGS_sph_monitor_data                               &
-     &         (sph_params, sph_rj, sph_bc_U, leg, ipol, ipol_LES,      &
-     &          rj_fld, pwr, WK_pwr, Nusselt, dip, tsl)
+      subroutine cal_SGS_sph_monitor_data(sph_params, sph_rj,           &
+     &          sph_bc_U, leg, ipol, ipol_LES, rj_fld, monitor)
 !
       use calypso_mpi
       use cal_rms_fields_by_sph
@@ -85,29 +80,27 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
 !
-      type(sph_mean_squares), intent(inout) :: pwr
-      type(sph_mean_square_work), intent(inout) :: WK_pwr
-      type(nusselt_number_data), intent(inout) :: Nusselt
-      type(dipolarity_data), intent(inout) :: dip
-      type(typical_scale_data), intent(inout) :: tsl
+      type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,            &
-      &   ipol, ipol_LES, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
+      &   ipol, ipol_LES, rj_fld, leg%g_sph_rj,                         &
+      &   monitor%pwr, monitor%WK_pwr)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_no_heat_source_Nu'
         call cal_no_heat_source_Nu                                      &
 !     &     (ipol%base%i_temp, ipol%base%i_heat_source,                  &
 !     &      ipol%grad_fld%i_grad_temp,               &
      &     (ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                &
-     &      sph_rj, sph_bc_U, rj_fld, Nusselt)
+     &      sph_rj, sph_bc_U, rj_fld, monitor%Nusselt)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
-      call cal_CMB_dipolarity(my_rank, rj_fld, pwr, dip)
+      call cal_CMB_dipolarity(my_rank, rj_fld,                          &
+     &                        monitor%pwr, monitor%dip)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
-      call cal_typical_scales(rj_fld, pwr, tsl)
+      call cal_typical_scales(rj_fld, monitor%pwr, monitor%tsl)
 !
       end subroutine cal_SGS_sph_monitor_data
 !
