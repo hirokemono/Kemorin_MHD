@@ -9,8 +9,6 @@
 !!@verbatim
 !!      subroutine open_sph_vol_rms_file_mhd(sph, ipol, rj_fld,         &
 !!     &                                     monitor, SR_sig)
-!!      subroutine output_rms_sph_mhd_control                           &
-!!     &         (time_d, SPH_MHD, sph_MHD_bc, leg, monitor, SR_sig)
 !!      subroutine init_rms_4_sph_spectr_4_mhd(sph, rj_fld, monitor)
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(time_data), intent(in) :: time_d
@@ -136,41 +134,6 @@
       end if
 !
       end subroutine open_sph_vol_rms_file_mhd
-!
-!  --------------------------------------------------------------------
-!
-      subroutine output_rms_sph_mhd_control                             &
-     &         (time_d, SPH_MHD, sph_MHD_bc, leg, monitor, SR_sig)
-!
-      use t_solver_SR
-      use t_time_data
-      use t_boundary_data_sph_MHD
-      use m_machine_parameter
-!
-      use cal_write_sph_monitor_data
-!
-      type(time_data), intent(in) :: time_d
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(legendre_4_sph_trans), intent(in) :: leg
-      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
-!
-      type(sph_mhd_monitor_data), intent(inout) :: monitor
-      type(send_recv_status), intent(inout) :: SR_sig
-!
-!
-      call cal_sph_monitor_data                                         &
-     &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
-     &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_MHD%fld,          &
-     &    monitor%pwr, monitor%WK_pwr, monitor%Nusselt,                 &
-     &    monitor%dip, monitor%tsl)
-!
-      call output_sph_monitor_data                                      &
-     &   (monitor%ene_labels, time_d, SPH_MHD%sph%sph_params,           &
-     &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
-     &    monitor%pwr, monitor%pick_coef, monitor%gauss_coef,           &
-     &    monitor%Nusselt, monitor%dip, monitor%tsl, SR_sig)
-!
-      end subroutine output_rms_sph_mhd_control
 !
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------

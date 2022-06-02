@@ -36,7 +36,7 @@
 !
       implicit  none
 !
-      private :: cal_no_heat_source_Nu, s_cal_heat_source_Nu
+!      private :: cal_no_heat_source_Nu, s_cal_heat_source_Nu
 !
 ! -----------------------------------------------------------------------
 !
@@ -156,7 +156,7 @@
       integer(kind = kint) :: inod_ICB, inod_CMB
 !
 !
-      call alloc_radial_reference(sph_rj%nidx_rj(1), Nu_type)
+      call alloc_Nu_radial_reference(sph_rj, Nu_type)
       call const_diffusive_profile_fix_bc                               &
      &   (sph_rj, sph_bc_S, fdm2_center, r_2nd,                         &
      &    band_s00_poisson_fixS, is_scalar, is_source, rj_fld,          &

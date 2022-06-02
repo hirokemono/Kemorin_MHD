@@ -111,6 +111,7 @@
       use input_control_sph_MHD
       use set_sph_restart_IO
       use sph_SGS_mhd_monitor_data_IO
+      use cal_write_sph_monitor_data
       use sph_radial_grad_4_magne
 !
       integer(kind = kint), intent(in) :: i_step

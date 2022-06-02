@@ -185,6 +185,7 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use output_viz_file_control
+      use cal_write_sph_monitor_data
       use cal_nonlinear
 !
       integer(kind = kint), intent(in) :: i_step

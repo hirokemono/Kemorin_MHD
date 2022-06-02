@@ -189,6 +189,7 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use output_viz_file_control
+      use cal_write_sph_monitor_data
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files

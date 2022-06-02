@@ -149,6 +149,7 @@
       use sph_mhd_rst_IO_control
       use input_control_sph_MHD
       use output_viz_file_control
+      use cal_write_sph_monitor_data
       use sph_radial_grad_4_magne
 !
       integer(kind = kint), intent(in) :: i_step
