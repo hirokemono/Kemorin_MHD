@@ -169,6 +169,7 @@
      &                :: ref_local(0:sph_rj%nidx_rj(1),0:1)
 !
       integer(kind = kint_gl) :: num64
+!      integer :: k
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
         if(is_source .gt. 0) then
@@ -188,9 +189,17 @@
         call set_CMB_scalar_boundary_1d                                 &
      &     (sph_rj, sph_bc, bcs_S%CMB_Sspec, ref_local(0,0))
 !
+!        do k = 0, sph_rj%nidx_rj(1)
+!          write(*,*) k, 'RHS', ref_local(k,0)
+!        end do
+!
         call lubksb_3band_ctr(band_s00_poisson, ref_local(0,0))
 !        call s_cal_sol_reftemp_BiCGSTAB                                &
 !     &     (band_s00_poisson, ref_local(0,0))
+!
+!        do k = 0, sph_rj%nidx_rj(1)
+!          write(*,*) k, 'Solution', ref_local(k,0)
+!        end do
 !
         call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,     &
      &                               sph_rj%nidx_rj(1), ref_local(0,0))

@@ -168,6 +168,8 @@
 !
       type(band_matrix_type), intent(inout) :: band_s00_poisson
 !
+      logical :: flag_undefined = .TRUE.
+!
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_fill_ctr                            &
@@ -190,14 +192,23 @@
      &     (sph_rj%nidx_rj(1), sph_bc%kr_in, band_s00_poisson%mat)
       end if
 !
-      if (sph_bc%iflag_cmb .eq. iflag_fixed_flux                        &
+!
+      flag_undefined = .TRUE.
+      if(sph_bc%iflag_cmb .eq. iflag_fixed_flux                         &
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
-        call add_fix_flux_cmb_poisson00_mat                             &
-     &     (sph_rj%nidx_rj(1), sph_bc%kr_out, sph_bc%fdm2_fix_dr_CMB,   &
-     &      r_coef(sph_bc%kr_out), band_s00_poisson%mat)
+        if(      sph_bc%iflag_icb .eq. iflag_sph_fix_center             &
+     &      .or. sph_bc%iflag_icb .eq. iflag_fixed_field                &
+     &      .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
+          call add_fix_flux_cmb_poisson00_mat                           &
+     &       (sph_rj%nidx_rj(1), sph_bc%kr_out, sph_bc%fdm2_fix_dr_CMB, &
+     &        r_coef(sph_bc%kr_out), band_s00_poisson%mat)
+          flag_undefined = .FALSE.
+        end if
+      end if
+!
 !      else if (sph_bc%iflag_cmb .eq. iflag_fixed_field                 &
 !     &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
-      else
+      if(flag_undefined) then
         call set_fix_fld_cmb_poisson00_mat                              &
      &     (sph_rj%nidx_rj(1), sph_bc%kr_out, band_s00_poisson%mat)
       end if

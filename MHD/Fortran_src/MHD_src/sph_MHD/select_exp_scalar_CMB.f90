@@ -260,15 +260,22 @@
 !
 !
 !   Set RHS vector for CMB
-      if (sph_bc%iflag_cmb .eq. iflag_fixed_field                       &
-     &  .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
-        rhs(sph_bc%kr_out) = CMB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
-!      else if(sph_bc%iflag_cmb .eq. iflag_fixed_flux                   &
-!     &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
-      else
-        rhs(sph_bc%kr_out)                                              &
+      if(     sph_bc%iflag_cmb .eq. iflag_fixed_flux                    &
+     &   .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
+        if(      sph_bc%iflag_icb .eq. iflag_sph_fix_center             &
+     &      .or. sph_bc%iflag_icb .eq. iflag_fixed_field                &
+     &      .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
+          rhs(sph_bc%kr_out)                                            &
      &       = (sph_bc%fdm2_fix_dr_CMB( 1,3) + two*sph_bc%r_CMB(1))     &
      &        * CMB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
+        else
+          rhs(sph_bc%kr_out) = 0.0d0
+        end if
+!      else if (sph_bc%iflag_cmb .eq. iflag_fixed_field                 &
+!     &  .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
+      else
+        rhs(sph_bc%kr_out)                                              &
+     &         = CMB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
       end if
 !
       end subroutine set_CMB_scalar_boundary_1d
@@ -289,11 +296,23 @@
       real(kind = kreal) :: BC0_CMB
       integer(kind = kint) :: kr
 !
+!
       kr = sph_bc%kr_out
       BC0_CMB = CMB_Sspec%S_BC(sph_rj%idx_rj_degree_zero)
-      if (sph_bc%iflag_cmb .eq. iflag_fixed_flux                        &
+      if(      sph_bc%iflag_cmb .eq. iflag_fixed_flux                   &
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
-        grad_r(kr) = BC0_CMB
+        if(      sph_bc%iflag_icb .eq. iflag_sph_fix_center             &
+     &      .or. sph_bc%iflag_icb .eq. iflag_fixed_field                &
+     &      .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
+          grad_r(kr) = BC0_CMB
+        else
+          grad_r(kr) =  sph_bc%fdm2_fix_fld_CMB(2,2) * d_r(kr-2)        &
+     &                + sph_bc%fdm2_fix_fld_CMB(1,2) * d_r(kr-1)        &
+     &                + sph_bc%fdm2_fix_fld_CMB(0,2) * d_r(kr  )
+          write(*,*) 'Given condition:   ',  BC0_CMB
+          write(*,*) 'Numerical solution:',  grad_r(kr)
+        end if
+!
 !      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field                  &
 !     &   .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
       else
