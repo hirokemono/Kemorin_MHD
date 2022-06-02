@@ -21,6 +21,10 @@
 !!    volume_pwr_spectr_prefix     'sph_pwr_volume'
 !!
 !!    nusselt_number_prefix        'Nusselt'
+!!
+!!    heat_Nusselt_number_prefix        'Nusselt_temp'
+!!    comp_Nusselt_number_prefix        'Nusselt_comp'
+!!
 !!    typical_scale_prefix         'typical_scale'
 !!!
 !!    array volume_spectrum_ctl
@@ -91,7 +95,9 @@
         type(read_character_item) :: volume_pwr_spectr_prefix
 !
 !>        Structure for Nusselt number file prefix
-        type(read_character_item) :: Nusselt_file_prefix
+        type(read_character_item) :: heat_Nusselt_file_prefix
+!>        Structure for Nusselt number file prefix
+        type(read_character_item) :: comp_Nusselt_file_prefix
 !
 !>        Structure for typical scale file prefix
         type(read_character_item) :: typ_scale_file_prefix_ctl
@@ -125,6 +131,11 @@
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
       character(len=kchara), parameter, private                         &
      &           :: hd_typ_scale_file_head = 'typical_scale_prefix'
+!
+       character(len=kchara), parameter, private                         &
+     &    :: hd_heat_Nusselt_file_head = 'heat_Nusselt_number_prefix'
+       character(len=kchara), parameter, private                         &
+     &    :: hd_comp_Nusselt_file_head = 'comp_Nusselt_number_prefix'
 !
       private :: read_volume_spectr_ctl
       private :: append_volume_spectr_ctls
@@ -168,7 +179,13 @@
      &     (id_control, hd_vol_spec_block, smonitor_ctl, c_buf)
 !
         call read_chara_ctl_type(c_buf, hd_Nusselt_file_head,           &
-     &      smonitor_ctl%Nusselt_file_prefix)
+     &      smonitor_ctl%heat_Nusselt_file_prefix)
+!
+        call read_chara_ctl_type(c_buf, hd_heat_Nusselt_file_head,      &
+     &      smonitor_ctl%heat_Nusselt_file_prefix)
+        call read_chara_ctl_type(c_buf, hd_comp_Nusselt_file_head,      &
+     &      smonitor_ctl%comp_Nusselt_file_prefix)
+!
         call read_chara_ctl_type(c_buf, hd_typ_scale_file_head,         &
      &      smonitor_ctl%typ_scale_file_prefix_ctl)
         call read_chara_ctl_type(c_buf, hd_voume_ave_head,              &
@@ -232,7 +249,8 @@
 !
       smonitor_ctl%volume_average_prefix%iflag =     0
       smonitor_ctl%volume_pwr_spectr_prefix%iflag =  0
-      smonitor_ctl%Nusselt_file_prefix%iflag =       0
+      smonitor_ctl%heat_Nusselt_file_prefix%iflag =  0
+      smonitor_ctl%comp_Nusselt_file_prefix%iflag =  0
       smonitor_ctl%typ_scale_file_prefix_ctl%iflag = 0
 !
       if(smonitor_ctl%num_vspec_ctl .le. 0) return

@@ -99,6 +99,7 @@
       &   ipol, ipol_LES, rj_fld, leg%g_sph_rj,                         &
       &   monitor%pwr, monitor%WK_pwr)
 !
+       if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
         write(mat_name,'(a)') 'Diffusive_Temperature'
         call sel_Nusselt_routine                                        &
@@ -107,7 +108,19 @@
      &      ht_prop%ICB_diffusie_reduction, sph_params, sph_rj, r_2nd,  &
      &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U,                   &
      &      sph_MHD_bc%fdm2_center, rj_fld, monitor%heat_Nusselt)
+      end if
 !
+      if(monitor%comp_Nusselt%iflag_Nusselt .ne. 0) then
+        if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
+        write(mat_name,'(a)') 'Diffusive_Composition'
+        call sel_Nusselt_routine                                        &
+     &     (ipol%base%i_light, ipol%base%i_light_source,                &
+     &      ipol%grad_fld%i_grad_composit, mat_name,                    &
+     &      cp_prop%ICB_diffusie_reduction, sph_params, sph_rj, r_2nd,  &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%sph_bc_U,                   &
+     &      sph_MHD_bc%fdm2_center, rj_fld, monitor%comp_Nusselt)
+      end if
+!!
       if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
       call cal_CMB_dipolarity(my_rank, rj_fld,                          &
      &                        monitor%pwr, monitor%dip)
