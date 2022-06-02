@@ -19,9 +19,6 @@
 !!     &          prop, sph_bc, fdm2_center, evo_mat, band_s00_evo)
 !!      subroutine const_rmat_poisson00_sph(mat_name, sph_rj,           &
 !!     &          poisson_mat, band_s00_poisson)
-!!      subroutine const_rmat_poisson00_fixS_sph(mat_name, sph_rj,      &
-!!     &          sph_bc, fdm2_center, poisson_mat,                     &
-!!     &          band_s00_poisson_fixS)
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -157,42 +154,6 @@
       end subroutine const_rmat_poisson00_sph
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine const_rmat_poisson00_fixS_sph(mat_name, sph_rj,        &
-     &          sph_bc, fdm2_center, poisson_mat,                       &
-     &          band_s00_poisson_fixS)
-!
-      use t_sph_matrices
-      use t_sph_matrix
-!
-      character(len=kchara), intent(in) :: mat_name
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(sph_boundary_type), intent(in) :: sph_bc
-      type(fdm2_center_mat), intent(in) :: fdm2_center
-      type(band_matrices_type), intent(in) :: poisson_mat
-!
-      type(band_matrix_type), intent(inout) :: band_s00_poisson_fixS
-!
-!
-      write(band_s00_poisson_fixS%mat_name,'(2a)')                      &
-     &                              trim(mat_name), '_poisson_l0_fixS'
-      if(sph_rj%idx_rj_degree_zero .eq. 0) then
-        if(i_debug .gt. 0) write(*,*) 'copy_radial_mat_scalar00_sph'
-        call copy_radial_mat_scalar00_sph(sph_rj,                       &
-     &      poisson_mat%n_vect, poisson_mat%n_comp, poisson_mat%mat,    &
-     &      band_s00_poisson_fixS)
-      else
-        if(i_debug .gt. 0) write(*,*) 'const_radial_mat_scalar00_sph'
-        call const_rmat_scalar00_sph(sph_rj, fdm2_center,               &
-     &      iflag_sph_fix_center, sph_bc%r_ICB, zero, one,              &
-     &      poisson_mat%n_vect, poisson_mat%n_comp, poisson_mat%mat,    &
-     &      band_s00_poisson_fixS)
-      end if
-      call check_center_band_matrix(6, sph_rj, band_s00_poisson_fixS)
-!
-      end subroutine const_rmat_poisson00_fixS_sph
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine const_rmat_press00_sph                                 &
@@ -280,7 +241,7 @@
      &      coef, band_s00_evo%mat)
       else if(iflag_icb .eq. iflag_sph_fix_center) then
         call add_scalar_poisson_mat_fix_ctr(sph_rj%nidx_rj(1), r_ICB,   &
-     &      fdm2_center%dmat_fix_fld, coef, band_s00_evo%mat)
+     &      fdm2_center%dmat_fix_fld, coef, band_s00_evo%mat(1,0))
       else
         call add_scalar_poisson_mat_no_fld                              &
      &     (sph_rj%nidx_rj(1), band_s00_evo%mat)

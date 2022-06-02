@@ -13,8 +13,8 @@
 !!     &          ipol, sph, r_2nd, omega_sph, MHD_prop, sph_MHD_bc)
 !!      subroutine init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph,   &
 !!     &                                MHD_prop, omega_sph, sph_MHD_bc)
-!!      subroutine init_reference_scalars(sph, ipol, r_2nd, sph_MHD_mat,&
-!!     &           ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
+!!      subroutine init_reference_scalars(sph, ipol, r_2nd,             &
+!!     &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
@@ -41,6 +41,7 @@
 !
       use m_constants
       use m_spheric_constants
+      use m_machine_parameter
 !
       use t_control_parameter
       use t_spheric_parameter
@@ -51,7 +52,6 @@
       use t_sph_boundary_input_data
       use t_bc_data_list
       use t_boundary_data_sph_MHD
-      use m_machine_parameter
       use t_phys_address
       use t_phys_data
       use t_work_4_sph_trans
@@ -156,42 +156,44 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_reference_scalars(sph, ipol, r_2nd, sph_MHD_mat,  &
-     &           ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
+      subroutine init_reference_scalars(sph, ipol, r_2nd,               &
+     &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !
-      use t_radial_matrices_sph_MHD
+      use t_physical_property
 !
       type(phys_address), intent(in) :: ipol
       type(sph_grids), intent(in) :: sph
       type(fdm_matrices), intent(in) :: r_2nd
-      type(MHD_radial_matrices), intent(in) :: sph_MHD_mat
 !
       type(reference_field), intent(inout) :: ref_temp, ref_comp
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(phys_data), intent(inout) :: rj_fld
 !
+      character(len=kchara) :: mat_name
 !
+!
+      write(mat_name,'(a)') 'reference_Temperature'
       call init_reference_scalar(MHD_prop%takepito_T,                   &
-     &    sph%sph_params, sph%sph_rj, r_2nd,                            &
-     &    rj_fld, sph_MHD_mat%band_t00_poisson,                         &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
+     &    sph%sph_params, sph%sph_rj, r_2nd, rj_fld, MHD_prop%ht_prop,  &
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center, mat_name,        &
      &    ipol%base%i_heat_source, MHD_prop%ref_param_T,                &
      &    ref_temp, sph_MHD_bc%bcs_T)
+!
+      write(mat_name,'(a)') 'reference_Composition'
       call init_reference_scalar(MHD_prop%takepito_C,                   &
-     &    sph%sph_params, sph%sph_rj, r_2nd,                            &
-     &    rj_fld, sph_MHD_mat%band_c00_poisson,                         &
-     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
+     &    sph%sph_params, sph%sph_rj, r_2nd, rj_fld, MHD_prop%cp_prop,  &
+     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center, mat_name,        &
      &    ipol%base%i_light_source, MHD_prop%ref_param_C,               &
-     &     ref_comp, sph_MHD_bc%bcs_C)
+     &    ref_comp, sph_MHD_bc%bcs_C)
 !
       end subroutine init_reference_scalars
 !
 !  -------------------------------------------------------------------
 !
       subroutine init_reference_scalar(takepiro, sph_params, sph_rj,    &
-     &          r_2nd, rj_fld, band_s00_poisson, sph_bc_S, fdm2_center, &
-     &          i_source, ref_param, reftemp, bcs_S)
+     &          r_2nd, rj_fld, sc_prop, sph_bc_S, fdm2_center,          &
+     &          mat_name, i_source, ref_param, reftemp, bcs_S)
 !
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
@@ -199,21 +201,24 @@
       use t_sph_matrix
       use set_reference_sph_mhd
       use set_reference_temp_sph
+      use const_r_mat_4_scalar_sph
 !
+      character(len=kchara), intent(in) :: mat_name
       integer(kind = kint), intent(in) :: i_source
       type(takepiro_model_param), intent(in) :: takepiro
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(phys_data), intent(in) :: rj_fld
+      type(scalar_property), intent(in) :: sc_prop
       type(sph_boundary_type), intent(in) :: sph_bc_S
       type(fdm2_center_mat), intent(in) :: fdm2_center
-      type(band_matrix_type), intent(in) :: band_s00_poisson
 !
       type(reference_scalar_param), intent(inout) :: ref_param
       type(reference_field), intent(inout) :: reftemp
       type(sph_scalar_boundary_data), intent(inout) :: bcs_S
 !
+      type(band_matrix_type) :: band_s00_poisson
 !
 !      Set reference temperature and adjust boundary conditions
 !
@@ -235,9 +240,14 @@
      &    sph_rj%radius_1d_rj_r, reftemp%t_rj)
       else if(ref_param%iflag_reference                                 &
      &                             .eq. id_numerical_solution) then
+        call const_r_mat00_scalar_sph                                   &
+     &     (mat_name, sc_prop%ICB_diffusie_reduction,                   &
+     &      sph_params, sph_rj, r_2nd, sph_bc_S, fdm2_center,           &
+     &      band_s00_poisson)
         call const_diffusive_profiles                                   &
      &     (sph_rj, sph_bc_S, bcs_S, fdm2_center, r_2nd,                &
      &      band_s00_poisson, i_source, rj_fld, reftemp%t_rj)
+        call dealloc_band_matrix(band_s00_poisson)
       else
         call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
      &      ref_param%depth_bottom, sph_rj%nidx_rj(1),                  &

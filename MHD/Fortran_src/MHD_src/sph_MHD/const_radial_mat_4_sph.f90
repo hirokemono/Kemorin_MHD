@@ -112,18 +112,6 @@
       call dealloc_band_mat_sph(band_s_poisson)
 !
 !
-      write(mat_name,'(a)') 'Temperature_poisson'
-      call const_radial_mat_poisson_fixS(mat_name,                      &
-     &    sph%sph_params, sph%sph_rj, r_2nd, MHD_prop%ht_prop,          &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
-     &    leg%g_sph_rj, band_s_poisson)
-      write(mat_name,'(a)') 'average_temperature'
-      call const_rmat_poisson00_fixS_sph(mat_name, sph%sph_rj,          &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
-     &    band_s_poisson, sph_MHD_mat%band_t00_poisson_fixT)
-      call dealloc_band_mat_sph(band_s_poisson)
-!
-!
       write(mat_name,'(a)') 'Composition_Poisson'
       call const_radial_mat_4_scalar_sph(mat_name, zero, one,           &
      &    sph%sph_params, sph%sph_rj, r_2nd, MHD_prop%cp_prop,          &
@@ -133,17 +121,6 @@
       call const_rmat_poisson00_sph(mat_name, sph%sph_rj,               &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
      &    band_s_poisson, sph_MHD_mat%band_c00_poisson)
-      call dealloc_band_mat_sph(band_s_poisson)
-!
-      write(mat_name,'(a)') 'Composition_Poisson'
-      call const_radial_mat_poisson_fixS(mat_name,                      &
-     &    sph%sph_params, sph%sph_rj, r_2nd, MHD_prop%cp_prop,          &
-     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
-     &    leg%g_sph_rj, band_s_poisson)
-      write(mat_name,'(a)') 'average_composition'
-      call const_rmat_poisson00_fixS_sph(mat_name, sph%sph_rj,          &
-     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
-     &    band_s_poisson, sph_MHD_mat%band_c00_poisson_fixC)
       call dealloc_band_mat_sph(band_s_poisson)
 !
       end subroutine const_radial_mat_sph_reftemp
