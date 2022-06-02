@@ -89,6 +89,12 @@
      &      r_coef(sph_bc_U%kr_in), band_p_poisson%mat)
       end if
 !
+!   Boundary condition for CMB
+      call add_cmb_scalar_poisson_mat                                   &
+     &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,               &
+     &    sph_bc_U%kr_out, sph_bc_U%r_CMB, sph_bc_U%fdm2_fix_dr_CMB,    &
+     &    r_coef(sph_bc_U%kr_out), band_p_poisson%mat)
+!
       end subroutine sel_radial_mat_press_bc_sph
 !
 ! -----------------------------------------------------------------------
