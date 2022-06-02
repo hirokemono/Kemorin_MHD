@@ -33,13 +33,15 @@
       use t_physical_property
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
+      use t_coef_fdm2_MHD_boundaries
 !
       use t_fdm_coefs
-      use t_radial_matrices_sph_MHD
       use t_sph_matrix
       use t_sph_center_matrix
 !
       implicit none
+!
+      private :: const_diffusive_profile, const_diffusive_profile_fixS
 !
 ! -----------------------------------------------------------------------
 !
@@ -96,10 +98,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_diffusive_profile_fix_bc                  &
-     &         (sph_rj, sph_bc_S, fdm2_center, r_2nd,            &
-     &          band_s00_poisson, i_temp, i_source, rj_fld,      &
-     &          reftemp_rj, ref_local)
+      subroutine const_diffusive_profile_fix_bc                         &
+     &         (sph_rj, sph_bc_S, fdm2_center, r_2nd,                   &
+     &          band_s00_poisson, i_temp, i_source,                     &
+     &          rj_fld, reftemp_rj, ref_local)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -150,6 +152,7 @@
       use fill_scalar_field
       use select_exp_scalar_ICB
       use select_exp_scalar_CMB
+!      use cal_sol_reftemp_BiCGSTAB
 !
       integer(kind = kint), intent(in) :: is_source
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -186,6 +189,9 @@
      &     (sph_rj, sph_bc, bcs_S%CMB_Sspec, ref_local(0,0))
 !
         call lubksb_3band_ctr(band_s00_poisson, ref_local(0,0))
+!        call s_cal_sol_reftemp_BiCGSTAB                                &
+!     &     (band_s00_poisson, ref_local(0,0))
+!
         call fill_scalar_1d_external(sph_bc, sph_rj%inod_rj_center,     &
      &                               sph_rj%nidx_rj(1), ref_local(0,0))
 !
@@ -238,6 +244,7 @@
 !
       integer(kind = kint) :: inod
       integer(kind = kint_gl) :: num64
+!
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
         if(is_source .gt. 0) then

@@ -170,8 +170,8 @@
       r_coef(1:sph_rj%nidx_rj(1)) = coef
 !$omp end parallel workshare
 !
-      if(property%ICB_diffusie_reduction .lt. one) then
-        r_coef(sph_params%nlayer_ICB) = property%ICB_diffusie_reduction &
+      if(property%diffusie_reduction_ICB .lt. one) then
+        r_coef(sph_params%nlayer_ICB) = property%diffusie_reduction_ICB &
      &                                 * r_coef(sph_params%nlayer_ICB)
         if(my_rank .eq. 0) write(*,*) 'reduction of diffusivity at',    &
      &    sph_params%nlayer_ICB, ' to ', r_coef(sph_params%nlayer_ICB), &

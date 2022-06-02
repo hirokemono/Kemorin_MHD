@@ -180,7 +180,7 @@
         real(kind = kreal) :: coef_source = zero
 !
 !>       coefficient for diffusion reduction for ICB
-        real(kind = kreal) :: ICB_diffusie_reduction = one
+        real(kind = kreal) :: diffusie_reduction_ICB = one
 !
 !>        Force flag for advection
         logical :: iflag_4_advection = .FALSE.
