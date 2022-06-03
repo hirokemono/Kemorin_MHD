@@ -45,11 +45,9 @@
 !>        interpolation coefficients for interpolation
         real(kind = kreal), allocatable :: rcoef_inter(:,:)
 !>        Original radius
-        real(kind = kreal), allocatable :: r_org(:)
+        real(kind = kreal), allocatable :: source_radius(:)
 !
-!>        Number of component of original data
-        integer(kind = kint) :: ntot_phys_rj_itp
-!>        Original field data
+!>        Original work area for fields
         real(kind = kreal), allocatable :: d_rj_org(:,:)
       end type sph_radial_interpolate
 !

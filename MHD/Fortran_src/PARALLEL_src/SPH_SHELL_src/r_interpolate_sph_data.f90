@@ -48,10 +48,6 @@
       integer(kind = kint), allocatable :: k_inter(:,:)
       real(kind = kreal), allocatable :: rcoef_inter(:,:)
 !
-      real(kind = kreal), allocatable :: r_org(:)
-!
-      integer(kind = kint) :: ntot_phys_rj_itp
-!
       type(sph_radial_interpolate) :: r_itp
 !
       private :: allocate_original_sph_data
@@ -112,12 +108,12 @@
       subroutine allocate_original_sph_data
 !
 !
-      allocate(r_org(nri_org))
+      allocate(r_itp%source_radius(nri_org))
       allocate(k_inter(nri_org,2))
       allocate(rcoef_inter(nri_org,2))
 !
       k_inter = izero
-      r_org = zero
+      r_itp%source_radius = zero
       rcoef_inter = zero
 !
       end subroutine allocate_original_sph_data
@@ -127,7 +123,7 @@
       subroutine deallocate_original_sph_data
 !
       call dealloc_original_sph_data(r_itp)
-      deallocate(r_org)
+      deallocate(r_itp%source_radius)
       deallocate(k_inter, rcoef_inter)
 !
       end subroutine deallocate_original_sph_data
@@ -181,7 +177,7 @@
      &   (l_truncation, sph_rj, sph_file%sph_IO)
       call dealloc_rj_mode_IO(sph_file)
 !
-      call const_radial_itp_table(nri_org, r_org,                       &
+      call const_radial_itp_table(nri_org, r_itp%source_radius,         &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
      &    kr_inside, kr_outside, k_inter, rcoef_inter)
 !
@@ -340,7 +336,8 @@
       call allocate_original_sph_data
       call alloc_original_sph_data(sph_IO%numnod_sph, r_itp)
 !
-      r_org(1:r_itp%n_rj_org) = sph_IO%r_gl_1(1:r_itp%n_rj_org)
+      r_itp%source_radius(1:r_itp%n_rj_org)                             &
+     &                    = sph_IO%r_gl_1(1:r_itp%n_rj_org)
 !
       end subroutine copy_original_sph_rj_from_IO
 !
