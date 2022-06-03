@@ -78,7 +78,7 @@
      &                      'r_interpolate_sph_fld_from_IO'
         call r_interpolate_sph_fld_from_IO                              &
      &     (SPH_STR%fld_IO, SPH_MHD%sph%sph_rj,                         &
-     &      SPH_MHD%ipol, SPH_MHD%fld)
+     &      SPH_MHD%ipol, SPH_MHD%fld, SPH_STR%rj_itp)
       end if
 !
 !        call set_rj_phys_for_pol_kene(SPH_MHD%sph%sph_rj, SPH_MHD%fld)

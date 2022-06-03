@@ -124,7 +124,7 @@
      &    SPH_MHD%fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
       call init_radial_sph_interpolation(MHD_files%org_rj_file_IO,      &
-     &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj)
+     &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, SPH_WK%rj_itp)
 !
 ! ---------------------------------
 !
@@ -162,7 +162,7 @@
       call read_alloc_sph_spectr(i_step, MHD_step%ucd_step,             &
      &    MHD_files%org_rj_file_IO, MHD_files%sph_file_IO,              &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
-     &    MHD_step%init_d)
+     &    MHD_step%init_d, SPH_WK%rj_itp)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
 !* ----  Update fields after time evolution ------------------------=

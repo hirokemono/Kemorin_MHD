@@ -7,23 +7,34 @@
 !>@brief Interpolate spectr data
 !!
 !!@verbatim
-!!      subroutine copy_cmb_icb_radial_point(nlayer_ICB, nlayer_CMB)
+!!      subroutine copy_cmb_icb_radial_point(nlayer_ICB, nlayer_CMB,    &
+!!     &                                     r_itp)
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+!!        type(sph_radial_interpolate), intent(inout) :: r_itp
 !!      subroutine set_cmb_icb_radial_point                             &
-!!     &         (cmb_r_grp, icb_r_grp, radial_rj_grp)
+!!     &         (cmb_r_grp, icb_r_grp, radial_rj_grp, r_itp)
+!!        character(len = kchara), intent(in) :: cmb_r_grp, icb_r_grp
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(sph_radial_interpolate), intent(inout) :: r_itp
 !!      subroutine set_sph_magne_address(rj_fld, ipol)
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(inout) :: ipol
 !!      subroutine input_old_rj_sph_trans                               &
-!!     &         (rj_file_param, l_truncation, sph_rj)
+!!     &         (rj_file_param, l_truncation, sph_rj, r_itp)
+!!        type(field_IO_params), intent(in) :: rj_file_param
+!!        integer(kind = kint), intent(inout) :: l_truncation
+!!        type(sph_rj_grid), intent(inout) ::  sph_rj
+!!        type(sph_radial_interpolate), intent(inout) :: r_itp
 !!
 !!      subroutine r_interpolate_sph_rst_from_IO                        &
-!!     &         (fld_IO, sph_rj, ipol, rj_fld)
+!!     &         (fld_IO, sph_rj, ipol, rj_fld, r_itp)
 !!      subroutine r_interpolate_sph_fld_from_IO                        &
-!!     &         (fld_IO, sph_rj, ipol, rj_fld)
+!!     &         (fld_IO, sph_rj, ipol, rj_fld, r_itp)
+!!        type(field_IO), intent(in) :: fld_IO
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(sph_radial_interpolate), intent(inout) :: r_itp
 !!@endverbatim
 !
       module r_interpolate_sph_data
@@ -41,9 +52,6 @@
 !
       implicit  none
 !
-!
-      type(sph_radial_interpolate) :: r_itp
-!
       private :: copy_original_sph_rj_from_IO
 !
 !  -------------------------------------------------------------------
@@ -52,9 +60,11 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine copy_cmb_icb_radial_point(nlayer_ICB, nlayer_CMB)
+      subroutine copy_cmb_icb_radial_point(nlayer_ICB, nlayer_CMB,      &
+     &                                     r_itp)
 !
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(sph_radial_interpolate), intent(inout) :: r_itp
 !
 !
       r_itp%kr_source_outside = nlayer_CMB
@@ -65,12 +75,14 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_cmb_icb_radial_point                               &
-     &         (cmb_r_grp, icb_r_grp, radial_rj_grp)
+     &         (cmb_r_grp, icb_r_grp, radial_rj_grp, r_itp)
 !
       use t_group_data
 !
       character(len = kchara), intent(in) :: cmb_r_grp, icb_r_grp
       type(group_data), intent(in) :: radial_rj_grp
+!
+      type(sph_radial_interpolate), intent(inout) :: r_itp
 !
       integer(kind = kint) :: igrp, inum
 !
@@ -119,7 +131,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine input_old_rj_sph_trans                                 &
-     &         (rj_file_param, l_truncation, sph_rj)
+     &         (rj_file_param, l_truncation, sph_rj, r_itp)
 !
       use t_file_IO_parameter
       use t_spheric_data_IO
@@ -128,8 +140,10 @@
       use radial_interpolation
 !
       type(field_IO_params), intent(in) :: rj_file_param
+!
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rj_grid), intent(inout) ::  sph_rj
+      type(sph_radial_interpolate), intent(inout) :: r_itp
 !
       type(field_IO_params) :: sph_file_param
       type(sph_file_data_type) :: sph_file
@@ -141,7 +155,7 @@
       call sel_mpi_read_spectr_rj_file                                  &
      &   (nprocs, my_rank, sph_file_param, sph_file)
       call copy_original_sph_rj_from_IO                                 &
-     &   (l_truncation, sph_rj, sph_file%sph_IO)
+     &   (l_truncation, sph_rj, sph_file%sph_IO, r_itp)
       call dealloc_rj_mode_IO(sph_file)
 !
       call const_radial_itp_table                                       &
@@ -155,7 +169,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine r_interpolate_sph_rst_from_IO                          &
-     &         (fld_IO, sph_rj, ipol, rj_fld)
+     &         (fld_IO, sph_rj, ipol, rj_fld, r_itp)
 !
       use m_base_field_labels
       use m_explicit_term_labels
@@ -169,6 +183,7 @@
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(sph_radial_interpolate), intent(inout) :: r_itp
 !
       integer(kind = kint) :: i_fld, j_fld
 !
@@ -222,7 +237,7 @@
 ! -------------------------------------------------------------------
 !
       subroutine r_interpolate_sph_fld_from_IO                          &
-     &         (fld_IO, sph_rj, ipol, rj_fld)
+     &         (fld_IO, sph_rj, ipol, rj_fld, r_itp)
 !
       use t_field_data_IO
       use extend_potential_field
@@ -232,6 +247,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
+      type(sph_radial_interpolate), intent(inout) :: r_itp
 !
       integer(kind = kint) ::  i_fld, j_fld
 !
@@ -269,15 +285,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_original_sph_rj_from_IO                           &
-     &         (l_truncation, sph_rj, sph_IO)
+     &         (l_truncation, sph_rj, sph_IO, r_itp)
 !
       use m_error_IDs
       use t_node_id_spherical_IO
 !
       integer(kind = kint), intent(in) :: l_truncation
       type(sph_rj_grid), intent(in) ::  sph_rj
-!
       type(sph_IO_data), intent(in) :: sph_IO
+!
+      type(sph_radial_interpolate), intent(inout) :: r_itp
 !
 !
       if(sph_rj%irank_sph_rj(1).ne.sph_IO%sph_rank(1)                   &

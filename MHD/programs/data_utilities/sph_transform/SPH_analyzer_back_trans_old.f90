@@ -65,14 +65,15 @@
 !
       if(SPH_STR%org_rj_file_IO%iflag_IO .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_old_rj_sph_trans'
-        call input_old_rj_sph_trans(SPH_STR%org_rj_file_IO,             &
-     &      SPH_MHD%sph%sph_params%l_truncation, SPH_MHD%sph%sph_rj)
+        call input_old_rj_sph_trans                                     &
+     &    (SPH_STR%org_rj_file_IO, SPH_MHD%sph%sph_params%l_truncation, &
+     &     SPH_MHD%sph%sph_rj, SPH_STR%rj_itp)
         call set_sph_magne_address(SPH_MHD%fld, SPH_MHD%ipol)
       end if
 !
       call set_cmb_icb_radial_point                                     &
      &   (SPH_STR%cmb_radial_grp, SPH_STR%icb_radial_grp,               &
-     &    SPH_MHD%groups%radial_rj_grp)
+     &    SPH_MHD%groups%radial_rj_grp, SPH_STR%rj_itp)
 !
 !  ---- allocate spectr data
 !

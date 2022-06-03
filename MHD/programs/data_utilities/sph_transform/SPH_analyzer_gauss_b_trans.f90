@@ -63,7 +63,7 @@
       call set_sph_magne_address(SPH_MHD%fld, SPH_MHD%ipol)
       call set_cmb_icb_radial_point                                     &
      &   (SPH_STR%cmb_radial_grp, SPH_STR%icb_radial_grp,               &
-     &    SPH_MHD%groups%radial_rj_grp)
+     &    SPH_MHD%groups%radial_rj_grp, SPH_STR%rj_itp)
 !
 !  ---- allocate spectr data
 !
