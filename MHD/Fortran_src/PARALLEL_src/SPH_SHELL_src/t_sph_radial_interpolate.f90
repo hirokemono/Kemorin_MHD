@@ -34,7 +34,7 @@
 !>      Structure for radial interpolation
       type sph_radial_interpolate
 !>        Inner boundary address
-        integer(kind = kint) :: kr_inside
+        integer(kind = kint) :: kr_source_inside
 !>        Outer boundary address
         integer(kind = kint) :: kr_source_outside
 !

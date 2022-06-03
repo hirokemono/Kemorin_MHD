@@ -42,8 +42,6 @@
       implicit  none
 !
 !
-      integer(kind = kint) :: kr_inside
-!
       type(sph_radial_interpolate) :: r_itp
 !
       private :: copy_original_sph_rj_from_IO
@@ -60,7 +58,7 @@
 !
 !
       r_itp%kr_source_outside = nlayer_CMB
-      kr_inside =  nlayer_ICB
+      r_itp%kr_source_inside =  nlayer_ICB
 !
       end subroutine copy_cmb_icb_radial_point
 !
@@ -86,11 +84,11 @@
         end if
       end do
 !
-      kr_inside = 0
+      r_itp%kr_source_inside = 0
       do igrp = 1, radial_rj_grp%num_grp
         if(radial_rj_grp%grp_name(igrp) .eq. icb_r_grp) then
           inum = radial_rj_grp%istack_grp(igrp-1) + 1
-          kr_inside = radial_rj_grp%item_grp(inum)
+          r_itp%kr_source_inside = radial_rj_grp%item_grp(inum)
           exit
         end if
       end do
@@ -149,7 +147,7 @@
       call const_radial_itp_table                                       &
      &   (r_itp%nri_source, r_itp%source_radius,                        &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
-     &    kr_inside, r_itp%kr_source_outside,                           &
+     &    r_itp%kr_source_inside, r_itp%kr_source_outside,              &
      &    r_itp%k_inter, r_itp%rcoef_inter)
 !
       end subroutine input_old_rj_sph_trans
@@ -199,7 +197,7 @@
               call r_interpolate_sph_vector(i_fld, sph_rj%nidx_rj,      &
      &            rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,    &
      &            rj_fld%istack_component,                              &
-     &            kr_inside, r_itp%kr_source_outside,       &
+     &            r_itp%kr_source_inside, r_itp%kr_source_outside,      &
      &            r_itp%nri_source, r_itp%k_inter, r_itp%rcoef_inter,   &
      &            r_itp%n_rj_org, r_itp%d_rj_org, rj_fld%d_fld)
               exit
@@ -213,7 +211,7 @@
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
-        call ext_inside_potential(kr_inside,                            &
+        call ext_inside_potential(r_itp%kr_source_inside,               &
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
@@ -245,8 +243,8 @@
      &         (j_fld, fld_IO, r_itp%n_rj_org, r_itp%d_rj_org)
             call r_interpolate_sph_vector(i_fld, sph_rj%nidx_rj,        &
      &          rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,      &
-     &          rj_fld%istack_component,      &
-     &          kr_inside, r_itp%kr_source_outside,        &
+     &          rj_fld%istack_component,                                &
+     &          r_itp%kr_source_inside, r_itp%kr_source_outside,        &
      &          r_itp%nri_source, r_itp%k_inter, r_itp%rcoef_inter,     &
      &          r_itp%n_rj_org, r_itp%d_rj_org,rj_fld%d_fld)
             exit
@@ -259,7 +257,7 @@
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
-        call ext_inside_potential(kr_inside,                            &
+        call ext_inside_potential(r_itp%kr_source_inside,               &
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
