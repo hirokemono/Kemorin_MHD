@@ -38,10 +38,17 @@
 !>        Outer boundary address
         integer(kind = kint) :: kr_target_outside
 !
+!>        Innermost new radial ID within the original domain
+        integer(kind = kint) :: kr_inner_source = 0
+!>        Outmost new radial ID within the original domain
+        integer(kind = kint) :: kr_outer_source = 0
+!
 !>        Radial data number for target data
         integer(kind = kint) :: nri_target
-!>        Original radial address for interpolation
-        integer(kind = kint), allocatable :: k_inter(:,:)
+!>      Inner radial grid ID for interpolation
+        integer(kind = kint), allocatable :: k_old2new_in(:)
+!>      Outer radial grid ID for interpolation
+        integer(kind = kint), allocatable :: k_old2new_out(:)
 !>        interpolation coefficients for interpolation
         real(kind = kreal), allocatable :: coef_old2new_in(:)
 !
@@ -74,11 +81,13 @@
       if(r_itp%nri_source .gt. 0) r_itp%source_radius = zero
 !
       r_itp%nri_target = nri_target
-      allocate(r_itp%k_inter(r_itp%nri_target,2))
+      allocate(r_itp%k_old2new_in(r_itp%nri_target))
+      allocate(r_itp%k_old2new_out(r_itp%nri_target))
       allocate(r_itp%coef_old2new_in(r_itp%nri_target))
 !
       if(r_itp%nri_target .gt. 0) then
-        r_itp%k_inter = izero
+        r_itp%k_old2new_in = izero
+        r_itp%k_old2new_out = izero
         r_itp%coef_old2new_in = zero
       end if
 !
@@ -104,8 +113,8 @@
 !
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
-      deallocate(r_itp%source_radius)
-      deallocate(r_itp%k_inter, r_itp%coef_old2new_in)
+      deallocate(r_itp%source_radius, r_itp%coef_old2new_in)
+      deallocate(r_itp%k_old2new_in, r_itp%k_old2new_out)
 !
       end subroutine dealloc_radial_interpolate
 !

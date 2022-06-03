@@ -35,8 +35,8 @@
 !!     &         (nri_org, rayleigh_in, nri_tgt, rayleigh_tg)
 !!      subroutine radial_interpolation_rayleigh                        &
 !!     &         (r_itp, nri_org, rayleigh_in, nri_tgt, rayleigh_tg)
-!!      subroutine copy_from_chebyshev_trans(sph_rj, r_itp, j, i_comp,  &
-!!     &          nri_tgt, rayleigh_tg, new_phys)
+!!      subroutine copy_from_chebyshev_trans(sph_rj, kr_inner_source,   &
+!!     &          j, i_comp, nri_tgt, rayleigh_tg, new_phys)
 !!@endverbatim
 !
       module t_convert_from_rayleigh
@@ -329,17 +329,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_from_chebyshev_trans(sph_rj, r_itp, j, i_comp,    &
-     &          nri_tgt, rayleigh_tg, new_phys)
+      subroutine copy_from_chebyshev_trans(sph_rj, kr_inner_source,     &
+     &          j, i_comp, nri_tgt, rayleigh_tg, new_phys)
 !
       use t_spheric_rj_data
       use t_phys_data
-      use r_interpolate_marged_sph
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_radial_itp_data), intent(in) :: r_itp
-      integer(kind = kint), intent(in) :: i_comp, j
+      integer(kind = kint), intent(in) :: kr_inner_source
       integer(kind = kint), intent(in) :: nri_tgt
+      integer(kind = kint), intent(in) :: i_comp, j
       real(kind = kreal), intent(in) :: rayleigh_tg(nri_tgt+1,1)
 !
       type(phys_data), intent(inout) :: new_phys
@@ -348,7 +347,7 @@
 !
 !
       do k = 1, nri_tgt
-        kr = r_itp%kr_inner_domain + k - 1
+        kr = kr_inner_source + k - 1
         inod = j + (kr-1) * sph_rj%nidx_rj(2)
         new_phys%d_fld(inod,i_comp) = rayleigh_tg(k,1)
       end do

@@ -20,7 +20,7 @@ new_SPH_restart.o: $(MERGE_DIR)/new_SPH_restart.f90 m_precision.o calypso_mpi.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 parallel_assemble_sph.o: $(MERGE_DIR)/parallel_assemble_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_spheric_parameter.o t_phys_data.o t_spheric_rj_data.o r_interpolate_marged_sph.o
 	$(F90) -c $(F90OPTFLAGS) $<
-r_interpolate_marged_sph.o: $(MERGE_DIR)/r_interpolate_marged_sph.f90 m_precision.o m_constants.o calypso_mpi.o t_spheric_parameter.o t_spheric_group.o skip_comment_f.o calypso_mpi_real.o calypso_mpi_int.o transfer_to_long_integers.o
+r_interpolate_marged_sph.o: $(MERGE_DIR)/r_interpolate_marged_sph.f90 m_precision.o m_constants.o calypso_mpi.o t_spheric_parameter.o t_spheric_group.o skip_comment_f.o calypso_mpi_real.o calypso_mpi_int.o calypso_mpi_logical.o transfer_to_long_integers.o radial_interpolation.o
 	$(F90) -c $(F90OPTFLAGS) $<
 search_original_domain_node.o: $(MERGE_DIR)/search_original_domain_node.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<

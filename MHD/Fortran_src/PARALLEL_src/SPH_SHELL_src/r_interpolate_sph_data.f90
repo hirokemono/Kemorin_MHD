@@ -158,11 +158,12 @@
      &   (l_truncation, sph_rj, sph_file%sph_IO, r_itp)
       call dealloc_rj_mode_IO(sph_file)
 !
-      call const_radial_itp_table                                       &
+      call cal_radial_interpolation_coef                                &
      &   (r_itp%nri_source, r_itp%source_radius,                        &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
-     &    r_itp%kr_target_inside, r_itp%kr_target_outside,              &
-     &    r_itp%k_inter, r_itp%coef_old2new_in)
+     &    r_itp%kr_inner_source, r_itp%kr_outer_source,                 &
+     &    r_itp%k_old2new_in, r_itp%k_old2new_out,                      &
+     &    r_itp%coef_old2new_in)
 !
       end subroutine input_old_rj_sph_trans
 !
@@ -214,8 +215,8 @@
      &           (j_fld, fld_IO, r_itp%n_rj_org, r_itp%d_rj_org)
               call r_interpolate_sph_vector(sph_rj%nidx_rj,             &
      &            r_itp%kr_target_inside, r_itp%kr_target_outside,      &
-     &            r_itp%nri_target, r_itp%k_inter,                      &
-     &            r_itp%coef_old2new_in,                                &
+     &            r_itp%nri_target, r_itp%k_old2new_in,                 &
+     &            r_itp%k_old2new_out, r_itp%coef_old2new_in,           &
      &            r_itp%n_rj_org, r_itp%d_rj_org,                       &
      &            ncomp, rj_fld%n_point, rj_fld%d_fld(1,ist))
               exit
@@ -265,7 +266,8 @@
      &         (j_fld, fld_IO, r_itp%n_rj_org, r_itp%d_rj_org)
             call r_interpolate_sph_vector(sph_rj%nidx_rj,               &
      &          r_itp%kr_target_inside, r_itp%kr_target_outside,        &
-     &          r_itp%nri_target, r_itp%k_inter, r_itp%coef_old2new_in, &
+     &          r_itp%nri_target, r_itp%k_old2new_in,                   &
+     &          r_itp%k_old2new_out, r_itp%coef_old2new_in,             &
      &          r_itp%n_rj_org, r_itp%d_rj_org,                         &
      &          ncomp, rj_fld%n_point, rj_fld%d_fld(1,ist))
             exit
@@ -397,10 +399,11 @@
      &           = radial_fld_IO%d_IO(1:r_itp%n_rj_org,jst+1:jst+ncomp)
 !$omp end parallel workshare
 !
-            call interpolate_radial_field                               &
-     &        (ref_field%n_point, r_itp%k_inter, r_itp%coef_old2new_in, &
-     &         ncomp, r_itp%n_rj_org, r_itp%d_rj_org(1,1),              &
-     &         ref_field%d_fld(1,ist))
+            call interpolate_radial_field(ref_field%n_point,            &
+     &          r_itp%k_old2new_in, r_itp%k_old2new_out,                &
+     &          r_itp%coef_old2new_in, ncomp,                           &
+     &          r_itp%n_rj_org, r_itp%d_rj_org(1,1),                    &
+     &          ref_field%d_fld(1,ist))
             exit
           end if
         end do
@@ -411,13 +414,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine interpolate_radial_field                               &
-     &         (nri_new, k_inter, coef_old2new_in, ncomp,               &
-     &          n_rj_org, d_IO, d_r)
+     &         (nri_new, k_old2new_in, k_old2new_out, coef_old2new_in,  &
+     &          ncomp, n_rj_org, d_IO, d_r)
 !
       integer(kind = kint), intent(in) :: ncomp
 !
       integer(kind = kint), intent(in) :: nri_new, n_rj_org
-      integer(kind = kint), intent(in) :: k_inter(nri_new,2)
+      integer(kind = kint), intent(in) :: k_old2new_in(nri_new)
+      integer(kind = kint), intent(in) :: k_old2new_out(nri_new)
       real (kind=kreal), intent(in) :: coef_old2new_in(nri_new)
       real (kind=kreal), intent(in) :: d_IO(n_rj_org,ncomp)
 !
@@ -431,8 +435,8 @@
 !$omp do private(k,j,i1,i2)
         do k = 1, nri_new
           do j = 1, 1
-            i1 = k_inter(k,1)
-            i2 = k_inter(k,2)
+            i1 = k_old2new_in(k)
+            i2 = k_old2new_out(k)
             d_r(k,nd) = coef_old2new_in(k)*d_IO(i1,nd)                  &
      &                  + (one - coef_old2new_in(k))*d_IO(i2,nd)
           end do

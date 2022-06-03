@@ -146,7 +146,7 @@
      &       rayleigh_WK%nri_tgt+1, ierr)
 !
           call copy_from_chebyshev_trans(new_sph%sph_rj,                &
-     &        r_itp, j, i_comp,  rayleigh_WK%nri_tgt,                   &
+     &        r_itp%kr_inner_domain, j, i_comp,  rayleigh_WK%nri_tgt,   &
      &        rayleigh_WK%rayleigh_tg(1,1), new_phys)
         else if(new_phys%phys_name(i_fld) .eq. previous_momentum%name   &
      &   .or. new_phys%phys_name(i_fld) .eq.   previous_heat%name       &

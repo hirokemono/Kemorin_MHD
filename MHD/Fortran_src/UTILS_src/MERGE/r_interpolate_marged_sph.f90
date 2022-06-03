@@ -41,7 +41,7 @@
 !
       type sph_radial_itp_data
 !>      Integer flag if radial grid is same
-        integer(kind = kint) :: iflag_same_rgrid =  1
+        logical :: flag_same_rgrid =  .TRUE.
 !
 !>      Number of radial grids for new spectr data
         integer(kind = kint) :: nri_old2new =  0
@@ -179,19 +179,20 @@
 !
       use calypso_mpi_real
       use calypso_mpi_int
+      use calypso_mpi_logical
       use transfer_to_long_integers
 !
       type(sph_grids), intent(inout) :: new_sph
       type(sph_radial_itp_data), intent(inout) :: r_itp
 !
 !
-      call calypso_mpi_bcast_one_int(r_itp%iflag_same_rgrid, 0)
+      call calypso_mpi_bcast_one_logical(r_itp%flag_same_rgrid, 0)
       call calypso_mpi_bcast_one_int                                    &
      &   (new_sph%sph_rj%nidx_rj(1), 0)
-      if(my_rank .eq. 0) write(*,*) 'iflag_same_rgrid: ',               &
-     &            r_itp%iflag_same_rgrid, new_sph%sph_rj%nidx_rj(1)
+      if(my_rank .eq. 0) write(*,*) 'flag_same_rgrid: ',                &
+     &            r_itp%flag_same_rgrid, new_sph%sph_rj%nidx_rj(1)
 !
-      if(r_itp%iflag_same_rgrid .eq. 0) then
+      if(r_itp%flag_same_rgrid) return
         if(my_rank .ne. 0)  call allocate_radial_itp_tbl                &
      &                         (new_sph%sph_rj%nidx_rj(1), r_itp)
 !
@@ -205,7 +206,6 @@
      &     (r_itp%k_old2new_out, cast_long(r_itp%nri_old2new), 0)
         call calypso_mpi_bcast_real                                     &
      &     (r_itp%coef_old2new_in, cast_long(r_itp%nri_old2new), 0)
-      end if
 !
       end subroutine share_r_interpolation_tbl
 !
@@ -240,6 +240,8 @@
       subroutine sph_radial_interpolation_coef                          &
      &         (nri_org, r_org, nri_new, r_new, r_itp)
 !
+      use radial_interpolation
+!
       integer(kind = kint), intent(in) :: nri_org, nri_new
       real(kind = kreal), intent(in) :: r_org(nri_org)
       real(kind = kreal), intent(in) :: r_new(nri_org)
@@ -249,77 +251,24 @@
       real(kind = kreal) :: r_in, r_out
 !
 !
-      r_itp%iflag_same_rgrid = 1
-      if(nri_org .ne. nri_new) then
-        r_itp%iflag_same_rgrid =  0
-      else
-        do k = 1, nri_new
-          if(abs(r_new(k) - r_org(k)) .gt. 1.0E-12) then
-            r_itp%iflag_same_rgrid = 0
-            exit
-          end if
-        end do
-      end if
-!
-!      write(*,*) 'r_itp%iflag_same_rgrid', r_itp%iflag_same_rgrid
-      if(r_itp%iflag_same_rgrid .ne. 0) return
+      r_itp%flag_same_rgrid                                             &
+     &    = check_sph_same_radial_grid(nri_org, r_org, nri_new, r_new)
+      if(r_itp%flag_same_rgrid) return
 !
       call allocate_radial_itp_tbl(nri_new, r_itp)
 !
-      do k = 1, nri_new
-        if(abs(r_new(k) - r_org(1)) .lt. TINY) then
-          r_itp%k_old2new_in(k) =    1
-          r_itp%k_old2new_out(k) =   2
-          r_itp%coef_old2new_in(k) = 1.0d0
-        else if(abs(r_new(k) - r_org(nri_org)) .lt. TINY) then
-          r_itp%k_old2new_in(k) =    nri_org - 1
-          r_itp%k_old2new_out(k) =   nri_org
-          r_itp%coef_old2new_in(k) = 0.0d0
-        else if(r_new(k) .lt. r_org(1)) then
-          r_itp%k_old2new_in(k) =    0
-          r_itp%k_old2new_out(k) =   1
-          r_itp%coef_old2new_in(k) = -1.0d0
-        else if(r_new(k) .gt. r_org(nri_org)) then
-          r_itp%k_old2new_in(k) =    nri_org
-          r_itp%k_old2new_out(k) =   nri_org + 1
-          r_itp%coef_old2new_in(k) = -1.0d0
-        else
-          do kr_org = 1, nri_org
-            r_in =  r_org(kr_org-1)
-            r_out = r_org(kr_org  )
-            if(r_new(k) .ge. r_in  .and. r_new(k) .lt. r_out) then
-              r_itp%k_old2new_in(k) =  kr_org - 1
-              r_itp%k_old2new_out(k) = kr_org
-              r_itp%coef_old2new_in(k)                                  &
-     &                         = (r_out - r_new(k)) / (r_out - r_in)
-              exit
-            end if
-          end do
-        end if
-      end do
-!
-      r_itp%kr_inner_domain = 1
-      do k = 1, nri_new
-        if(abs(r_new(k) - r_org(1)) .lt. TINY) then
-          r_itp%kr_inner_domain = k
-          exit
-        end if
-      end do
-      r_itp%kr_outer_domain = nri_new
-      do k = nri_new, 1, -1
-        if(abs(r_new(k) - r_org(nri_org)) .lt. TINY) then
-          r_itp%kr_outer_domain = k
-          exit
-        end if
-      end do
+      call cal_radial_interpolation_coef                        &
+     &  (nri_org, r_org, nri_new, r_new,                       &
+     &   r_itp%kr_inner_domain, r_itp%kr_outer_domain,   &
+     &   r_itp%k_old2new_in, r_itp%k_old2new_out, r_itp%coef_old2new_in)
 !
       write(*,*) 'r_itp%kr_inner_domain', r_itp%kr_inner_domain
       write(*,*) 'r_itp%kr_outer_domain', r_itp%kr_outer_domain
       do k = 1, nri_new
-        write(*,'(i5,1pe16.8,2i5,1p3e16.8)') k, r_new(k),             &
-     &         r_itp%k_old2new_in(k), r_itp%k_old2new_out(k),         &
-     &         r_org(r_itp%k_old2new_in(k)),                          &
-     &         r_org(r_itp%k_old2new_out(k)),                         &
+        write(*,'(i5,1pe16.8,2i5,1p3e16.8)') k, r_new(k),               &
+     &         r_itp%k_old2new_in(k), r_itp%k_old2new_out(k),           &
+     &         r_org(r_itp%k_old2new_in(k)),                            &
+     &         r_org(r_itp%k_old2new_out(k)),                           &
      &         r_itp%coef_old2new_in(k)
       end do
 !

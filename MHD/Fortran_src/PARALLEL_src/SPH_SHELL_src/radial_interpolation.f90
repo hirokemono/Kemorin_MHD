@@ -1,18 +1,26 @@
-!radial_interpolation.f90
-!     module radial_interpolation
+!>@file   radial_interpolation.f90
+!!@brief  module radial_interpolation
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2012
 !
-!      Written by H. Matsui on Sep., 2011
-!
-!!      subroutine const_radial_itp_table                               &
-!!     &         (nri_org, r_org, nri_new, radius_1d_rj_r,              &
-!!     &          kr_inside, kr_outside, k_inter, coef_old2new_in)
-!!      subroutine r_interpolate_sph_vector(nidx_rj,                    &
-!!     &          kr_inside, kr_outside, nri_new, k_inter,              &
-!!     &          coef_old2new_in, n_rj_org, d_rj_org,                  &
-!!     &          ncomp, n_point, d_rj)
+!>@brief Subroutines for radial interpolation
+!!
+!!@verbatim
+!!      logical function check_sph_same_radial_grid                     &
+!!     &               (nri_org, r_org, nri_new, r_new)
+!!      subroutine cal_radial_interpolation_coef                        &
+!!     &         (nri_org, r_org, nri_new, r_new,                       &
+!!     &          kr_inner_source, kr_outer_source,                     &
+!!     &          k_old2new_in, k_old2new_out, coef_old2new_in)
+!!      subroutine r_interpolate_sph_vector                             &
+!!     &         (nidx_rj, kr_inside, kr_outside, nri_new,              &
+!!     &          k_old2new_in, k_old2new_out, coef_old2new_in,         &
+!!     &          n_rj_org, d_rj_org, ncomp, n_point, d_rj)
 !!
 !!      subroutine set_org_rj_phys_data_from_IO                         &
 !!     &          (j_fld, fld_IO, n_rj_org, d_rj_org)
+!!@endverbatim
 !
       module radial_interpolation
 !
@@ -29,67 +37,116 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine const_radial_itp_table                                 &
-     &         (nri_org, r_org, nri_new, radius_1d_rj_r,                &
-     &          kr_inside, kr_outside, k_inter, coef_old2new_in)
+      logical function check_sph_same_radial_grid                       &
+     &               (nri_org, r_org, nri_new, r_new)
 !
-      integer(kind = kint), intent(in) :: nri_new
-      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri_new)
-      integer(kind = kint), intent(in) :: nri_org
+      integer(kind = kint), intent(in) :: nri_org, nri_new
       real(kind = kreal), intent(in) :: r_org(nri_org)
+      real(kind = kreal), intent(in) :: r_new(nri_org)
 !
-      integer(kind = kint), intent(inout) :: kr_inside, kr_outside
-      integer(kind = kint), intent(inout) :: k_inter(nri_new,2)
+      logical :: flag
+!
+      integer(kind = kint) :: k
+!
+!
+      flag = .TRUE.
+      if(nri_org .ne. nri_new) then
+        flag =  .FALSE.
+      else
+        do k = 1, nri_new
+          if(abs(r_new(k) - r_org(k)) .gt. 1.0E-12) then
+            flag = .FALSE.
+            exit
+          end if
+        end do
+      end if
+      check_sph_same_radial_grid = flag
+!
+      end function check_sph_same_radial_grid
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_radial_interpolation_coef                          &
+     &         (nri_org, r_org, nri_new, r_new,                         &
+     &          kr_inner_source, kr_outer_source,                       &
+     &          k_old2new_in, k_old2new_out, coef_old2new_in)
+!
+      integer(kind = kint), intent(in) :: nri_org, nri_new
+      real(kind = kreal), intent(in) :: r_org(nri_org)
+      real(kind = kreal), intent(in) :: r_new(nri_org)
+!
+      integer(kind = kint), intent(inout) :: kr_inner_source
+      integer(kind = kint), intent(inout) :: kr_outer_source
+      integer(kind = kint), intent(inout) :: k_old2new_in(nri_new)
+      integer(kind = kint), intent(inout) :: k_old2new_out(nri_new)
       real (kind=kreal), intent(inout) :: coef_old2new_in(nri_new)
 !
-      integer(kind = kint) :: kst, k1, k2
+      integer(kind = kint) :: k, kr_org
+      real(kind = kreal) :: r_in, r_out
 !
 !
-      kst = 1
-      do k1 = 1, nri_new
-        if(radius_1d_rj_r(k1) .lt. r_org(1)) then
-          kr_inside = k1+1
-          k_inter(k1,1) = 0
-          k_inter(k1,2) = 0
-          coef_old2new_in(k1) = zero
-        else if(radius_1d_rj_r(k1) .gt. r_org(nri_org)) then
-          kr_outside = k1-1
-          exit
+      do k = 1, nri_new
+        if(abs(r_new(k) - r_org(1)) .lt. TINY) then
+          k_old2new_in(k) =    1
+          k_old2new_out(k) =   2
+          coef_old2new_in(k) = 1.0d0
+        else if(abs(r_new(k) - r_org(nri_org)) .lt. TINY) then
+          k_old2new_in(k) =    nri_org - 1
+          k_old2new_out(k) =   nri_org
+          coef_old2new_in(k) = 0.0d0
+        else if(r_new(k) .lt. r_org(1)) then
+          k_old2new_in(k) =    0
+          k_old2new_out(k) =   1
+          coef_old2new_in(k) = -1.0d0
+        else if(r_new(k) .gt. r_org(nri_org)) then
+          k_old2new_in(k) =    nri_org
+          k_old2new_out(k) =   nri_org + 1
+          coef_old2new_in(k) = -1.0d0
         else
-          do k2 = kst, nri_org-1
-            if(radius_1d_rj_r(k1).ge.r_org(k2)                          &
-     &        .and. radius_1d_rj_r(k1).le.r_org(k2+1)) then
-              k_inter(k1,1) = k2
-              k_inter(k1,2) = k2 + 1
-              coef_old2new_in(k1) = (radius_1d_rj_r(k1) - r_org(k2))    &
-     &                           / (r_org(k2+1) - r_org(k2))
-              kst = k2
+          do kr_org = 1, nri_org
+            r_in =  r_org(kr_org-1)
+            r_out = r_org(kr_org  )
+            if(r_new(k) .ge. r_in  .and. r_new(k) .lt. r_out) then
+              k_old2new_in(k) =  kr_org - 1
+              k_old2new_out(k) = kr_org
+              coef_old2new_in(k) = (r_out - r_new(k)) / (r_out - r_in)
               exit
             end if
           end do
         end if
       end do
-      do k1 = kr_outside+1, nri_new
-         k_inter(k1,1) = nri_org+1
-         k_inter(k1,2) = nri_org+1
-         coef_old2new_in(k1) = one
+!
+      kr_inner_source = 1
+      do k = 1, nri_new
+        if(abs(r_new(k) - r_org(1)) .lt. TINY) then
+          kr_inner_source = k
+          exit
+        end if
+      end do
+      kr_outer_source = nri_new
+      do k = nri_new, 1, -1
+        if(abs(r_new(k) - r_org(nri_org)) .lt. TINY) then
+          kr_outer_source = k
+          exit
+        end if
       end do
 !
-      end subroutine const_radial_itp_table
+      end subroutine cal_radial_interpolation_coef
 !
-!  -------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine r_interpolate_sph_vector(nidx_rj,                      &
-     &          kr_inside, kr_outside, nri_new, k_inter,                &
-     &          coef_old2new_in, n_rj_org, d_rj_org,                    &
-     &          ncomp, n_point, d_rj)
+      subroutine r_interpolate_sph_vector                               &
+     &         (nidx_rj, kr_inside, kr_outside, nri_new,                &
+     &          k_old2new_in, k_old2new_out, coef_old2new_in,           &
+     &          n_rj_org, d_rj_org, ncomp, n_point, d_rj)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: nidx_rj(2)
 !
       integer(kind = kint), intent(in) :: kr_inside, kr_outside
       integer(kind = kint), intent(in) :: nri_new, n_rj_org
-      integer(kind = kint), intent(in) :: k_inter(nri_new,2)
+      integer(kind = kint), intent(in) :: k_old2new_in(nri_new)
+      integer(kind = kint), intent(in) :: k_old2new_out(nri_new)
       real (kind=kreal), intent(in) :: coef_old2new_in(nri_new)
       real (kind=kreal), intent(in) :: d_rj_org(n_rj_org,6)
       integer(kind = kint), intent(in) :: n_point
@@ -114,8 +171,8 @@
         do k = kr_inside, kr_outside
           do j = 1, nidx_rj(2)
             inod = j + (k-1) * nidx_rj(2)
-            i1 = j + (k_inter(k,1)-1) * nidx_rj(2)
-            i2 = j + (k_inter(k,2)-1) * nidx_rj(2)
+            i1 = j + (k_old2new_in(k)- 1) * nidx_rj(2)
+            i2 = j + (k_old2new_out(k)-1) * nidx_rj(2)
             d_rj(inod,nd) = coef_old2new_in(k)*d_rj_org(i1,nd)          &
      &                   + (one - coef_old2new_in(k))*d_rj_org(i2,nd)
           end do

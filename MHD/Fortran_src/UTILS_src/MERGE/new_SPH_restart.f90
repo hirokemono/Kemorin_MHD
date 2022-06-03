@@ -220,13 +220,13 @@
         call share_each_field_data(ip, org_fld(ip))
 !
 !         Copy spectr data to temporal array
-        if(r_itp%iflag_same_rgrid .eq. 0) then
-          call r_itp_field_data_sph_assemble                            &
-     &       (org_sph(ip), new_sph_data%sph, r_itp, j_table(ip),        &
-     &        org_fld(ip), new_sph_data%fld)
-        else
+        if(r_itp%flag_same_rgrid) then
           call copy_field_data_sph_assemble                             &
      &       (org_sph(ip), new_sph_data%sph, j_table(ip),               &
+     &        org_fld(ip), new_sph_data%fld)
+        else
+          call r_itp_field_data_sph_assemble                            &
+     &       (org_sph(ip), new_sph_data%sph, r_itp, j_table(ip),        &
      &        org_fld(ip), new_sph_data%fld)
         end if
 !
@@ -267,7 +267,7 @@
       type(time_data), intent(inout) :: t_IO
 !
 !
-        if(r_itp%iflag_same_rgrid .eq. 0) then
+        if(r_itp%flag_same_rgrid .eqv. .FALSE.) then
 !        write(*,*) 'extend_potential_magne'
           call extend_potential_magne(new_sph_data%sph, r_itp,          &
      &                                new_sph_data%fld)

@@ -190,14 +190,15 @@
 !
         call copy_reference_radius_from_IO                              &
      &     (ref_fld_IO, refs%ref_field%n_point, radius_name, r_itp)
-        call copy_cmb_icb_radial_point                                 &
+        call copy_cmb_icb_radial_point                                  &
      &     (ione, refs%ref_field%n_point, r_itp)
-        call const_radial_itp_table                                    &
-     &     (r_itp%nri_source, r_itp%source_radius,                     &
-     &      refs%ref_field%n_point,                                    &
-     &      refs%ref_field%d_fld(1,refs%iref_radius),                  &
-     &      r_itp%kr_target_inside, r_itp%kr_target_outside,           &
-     &      r_itp%k_inter, r_itp%coef_old2new_in)
+        call cal_radial_interpolation_coef                              &
+     &     (r_itp%nri_source, r_itp%source_radius,                      &
+     &      refs%ref_field%n_point,                                     &
+     &      refs%ref_field%d_fld(1,refs%iref_radius),                   &
+     &      r_itp%kr_inner_source, r_itp%kr_outer_source,               &
+     &      r_itp%k_old2new_in, r_itp%k_old2new_out,                    &
+     &      r_itp%coef_old2new_in)
         call interepolate_reference_data                                &
      &     (radius_name, ref_fld_IO, r_itp, refs%ref_field)
 !
@@ -206,9 +207,9 @@
       do k = 1, refs%ref_field%n_point
         write(*,'(i5,1pe16.8,2i5,1p3e16.8)') k,       &
      &         refs%ref_field%d_fld(k,refs%iref_radius),  &
-     &         r_itp%k_inter(k,1:2),               &
-     &         r_itp%source_radius(r_itp%k_inter(k,1)),                          &
-     &         r_itp%source_radius(r_itp%k_inter(k,2)),                         &
+     &         r_itp%k_old2new_in(k), r_itp%k_old2new_out(k),    &
+     &         r_itp%source_radius(r_itp%k_old2new_in(k)),                          &
+     &         r_itp%source_radius(r_itp%k_old2new_out(k)),                         &
      &         r_itp%coef_old2new_in(k)
       end do
 !
