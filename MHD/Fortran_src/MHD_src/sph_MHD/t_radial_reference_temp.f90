@@ -56,7 +56,6 @@
 !
       type(reference_field), intent(inout) :: refs
 !
-      type(phys_data) :: tmp_fld
       character(len = kchara), parameter :: radius_name = 'radius'
 !
 !

@@ -48,7 +48,6 @@
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(reference_field), intent(in) :: ref_temp
-!!        type(reference_field), intent(in) :: ref_comp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(send_recv_status), intent(inout) :: SR_sig

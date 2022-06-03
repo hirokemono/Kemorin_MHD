@@ -40,7 +40,7 @@
 !!        type(base_field_address), intent(in) :: b_trns_base
 !!        type(base_force_address), intent(in) :: f_trns_frc
 !!      subroutine add_ref_advect_sph_MHD(sph_rj, sph_MHD_bc, MHD_prop, &
-!!     &          leg, ref_temp, ref_comp, ipol, rj_fld)
+!!     &          leg, ref_temp, ipol, rj_fld)
 !!       Input ::  rj_fld(1,is_fld)
 !!               is_fld = i_velo, forces%i_h_advect, forces%i_c_advect
 !!       Output :: rj_fld(1,is_fld)
@@ -51,7 +51,6 @@
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol
 !!        type(reference_field), intent(in) :: ref_temp
-!!        type(reference_field), intent(in) :: ref_comp
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine add_reference_advect_sph                             &
 !!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,           &

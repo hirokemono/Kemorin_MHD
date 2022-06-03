@@ -34,9 +34,6 @@
 !
 !>        Structure of reference temperature
         type(reference_field) :: ref_temp
-!>        Structure of reference temperature
-        type(reference_field) :: ref_comp
-!
 !
 !>        Structure of boundary condition data
         type(sph_MHD_boundary_data) :: sph_MHD_bc

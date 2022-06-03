@@ -22,7 +22,7 @@ address_sph_trans_MHD.o: $(MHD_SPH_DIR)/address_sph_trans_MHD.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 address_sph_trans_snap.o: $(MHD_SPH_DIR)/address_sph_trans_snap.f90 m_precision.o m_machine_parameter.o t_phys_data.o t_phys_address.o t_addresses_sph_transform.o add_base_field_4_sph_trns.o add_base_force_4_sph_trns.o add_prod_field_4_sph_trns.o add_diffusion_4_sph_trns.o add_diff_vect_to_sph_trans.o add_field_to_sph_trans_list.o add_energy_flux_4_sph_trns.o
 	$(F90) -c $(F90OPTFLAGS) $<
-adjust_reference_fields.o: $(MHD_SPH_DIR)/adjust_reference_fields.f90 m_precision.o m_machine_parameter.o t_SPH_MHD_model_data.o t_spheric_parameter.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_reference_scalar_param.o set_reference_sph_mhd.o copy_nodal_fields.o
+adjust_reference_fields.o: $(MHD_SPH_DIR)/adjust_reference_fields.f90 m_precision.o m_machine_parameter.o t_spheric_parameter.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_reference_scalar_param.o t_control_parameter.o t_radial_reference_temp.o set_reference_sph_mhd.o copy_nodal_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_buoyancy_flux_sph.o: $(MHD_SPH_DIR)/cal_buoyancy_flux_sph.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_phys_address.o t_spheric_rtp_data.o t_physical_property.o t_reference_scalar_param.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o
 	$(F90) -c $(F90OPTFLAGS) $<

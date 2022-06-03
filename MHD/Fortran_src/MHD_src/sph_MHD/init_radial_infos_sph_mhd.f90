@@ -14,7 +14,7 @@
 !!      subroutine init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph,   &
 !!     &                                MHD_prop, omega_sph, sph_MHD_bc)
 !!      subroutine init_reference_scalars(sph, ipol, r_2nd,             &
-!!     &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
+!!     &          ref_temp, rj_fld, MHD_prop, sph_MHD_bc)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
@@ -22,7 +22,7 @@
 !!        type(sph_grids), intent(in) :: sph
 !!        type(fdm_matrices), intent(inout) :: r_2nd
 !!        type(sph_rotation), intent(inout) :: omega_sph
-!!        type(reference_field), intent(inout) :: ref_temp, ref_comp
+!!        type(reference_field), intent(inout) :: ref_temp
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -158,7 +158,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_reference_scalars(sph, ipol, r_2nd,               &
-     &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
+     &          ref_temp, rj_fld, MHD_prop, sph_MHD_bc)
 !
       use sph_mhd_rst_IO_control
 !
@@ -166,7 +166,7 @@
       type(sph_grids), intent(in) :: sph
       type(fdm_matrices), intent(in) :: r_2nd
 !
-      type(reference_field), intent(inout) :: ref_temp, ref_comp
+      type(reference_field), intent(inout) :: ref_temp
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(phys_data), intent(inout) :: rj_fld
@@ -180,7 +180,7 @@
       call init_reference_scalar(MHD_prop%takepito_T,                   &
      &    sph%sph_params, sph%sph_rj, r_2nd, rj_fld, MHD_prop%ht_prop,  &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center, mat_name,        &
-     &    ipol%base%i_heat_source, MHD_prop%ref_param_T, ref_temp,      &
+     &    ipol%base%i_heat_source, MHD_prop%ref_param_T,                &
      &    ref_temp%iref_base%i_temp, ref_temp%iref_grad%i_grad_temp,    &
      &    ref_temp%iref_base%i_heat_source, ref_temp%ref_field,         &
      &    sph_MHD_bc%bcs_T)
@@ -189,7 +189,7 @@
       call init_reference_scalar(MHD_prop%takepito_C,                   &
      &    sph%sph_params, sph%sph_rj, r_2nd, rj_fld, MHD_prop%cp_prop,  &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center, mat_name,        &
-     &    ipol%base%i_light_source, MHD_prop%ref_param_C, ref_comp,     &
+     &    ipol%base%i_light_source, MHD_prop%ref_param_C,               &
      &  ref_temp%iref_base%i_light, ref_temp%iref_grad%i_grad_composit, &
      &    ref_temp%iref_base%i_light_source, ref_temp%ref_field,        &
      &    sph_MHD_bc%bcs_C)
@@ -203,9 +203,8 @@
 !
       subroutine init_reference_scalar(takepiro, sph_params, sph_rj,    &
      &          r_2nd, rj_fld, sc_prop, sph_bc_S, fdm2_center,          &
-     &          mat_name, i_source, ref_param, reftemp, &
-     &          iref_scalar, iref_grad, iref_source, ref_field,     &
-     &          bcs_S)
+     &          mat_name, i_source, ref_param, iref_scalar, iref_grad,  &
+     &          iref_source, ref_field, bcs_S)
 !
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
@@ -231,7 +230,6 @@
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
       type(reference_scalar_param), intent(inout) :: ref_param
-      type(reference_field), intent(inout) :: reftemp
       type(phys_data), intent(inout) :: ref_field
       type(sph_scalar_boundary_data), intent(inout) :: bcs_S
 !

@@ -9,14 +9,16 @@
 !!@verbatim
 !!      subroutine adjust_press_by_average_on_CMB                       &
 !!     &         (kr_in, kr_out, sph_rj, ipol, rj_fld)
-!!      subroutine sync_temp_by_per_temp_sph(ref_temp, ref_comp,        &
-!!     &          MHD_prop, sph_rj, ipol, rj_fld)
+!!      subroutine sync_temp_by_per_temp_sph                            &
+!!     &         (MHD_prop, refs, sph, ipol, rj_fld)
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(reference_field), intent(in) :: refs
 !!        d_rj(inod,ipol%base%i_temp):        T => \Theta = T - T0
 !!        d_rj(inod,ipol%base%i_per_temp):    \Theta = T - T0
 !!        d_rj(inod,ipol%grad_fld%i_grad_temp):      T => d \Theta / dr
 !!        d_rj(inod,ipol%grad_fld%i_grad_per_t): d \Theta / dr
 !!      subroutine trans_per_temp_to_temp_sph                           &
-!!     &         (SPH_model, sph_rj, ipol, rj_fld)
+!!     &         (MHD_prop, refs, sph, ipol, rj_fld)
 !!        d_rj(inod,ipol%base%i_temp):        \Theta = T - T0 => T
 !!        d_rj(inod,ipol%base%i_per_temp):    \Theta = T - T0
 !!        d_rj(inod,ipol%grad_fld%i_grad_temp): d \Theta / dr => dT / dr
@@ -37,12 +39,13 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_SPH_MHD_model_data
       use t_spheric_parameter
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
       use t_reference_scalar_param
+      use t_control_parameter
+      use t_radial_reference_temp
 !
       implicit  none
 !
@@ -75,28 +78,25 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sync_temp_by_per_temp_sph                              &
-     &         (SPH_model, sph_rj, ipol, rj_fld)
+     &         (MHD_prop, refs, sph, ipol, rj_fld)
 !
-      type(SPH_MHD_model_data), intent(in) :: SPH_model
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(reference_field), intent(in) :: refs
+      type(sph_grids), intent(in) ::  sph
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sync_scalar_by_pert_sph                                      &
-     &   (sph_rj, SPH_model%MHD_prop%ref_param_T,   &
-     &    SPH_model%ref_temp%iref_base%i_temp,               &
-     &    SPH_model%ref_temp%iref_grad%i_grad_temp,          &
-     &    SPH_model%ref_temp%ref_field,                     &
+      call sync_scalar_by_pert_sph(sph%sph_rj,                          &
+     &    refs%iref_base%i_temp, refs%iref_grad%i_grad_temp,            &
+     &    refs%ref_field, MHD_prop%ref_param_T,                         &
      &    ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                  &
      &    ipol%base%i_per_temp, ipol%grad_fld%i_grad_per_t, rj_fld)
 !
-      call sync_scalar_by_pert_sph                                      &
-     &   (sph_rj, SPH_model%MHD_prop%ref_param_C,   &
-     &    SPH_model%ref_temp%iref_base%i_light,           &
-     &    SPH_model%ref_temp%iref_grad%i_grad_composit,   &
-     &    SPH_model%ref_temp%ref_field,                  &
+      call sync_scalar_by_pert_sph(sph%sph_rj,                          &
+     &    refs%iref_base%i_light, refs%iref_grad%i_grad_composit,       &
+     &    refs%ref_field, MHD_prop%ref_param_C,                         &
      &    ipol%base%i_light, ipol%grad_fld%i_grad_composit,             &
      &    ipol%base%i_per_light, ipol%grad_fld%i_grad_per_c, rj_fld)
 !
@@ -105,30 +105,27 @@
 ! -----------------------------------------------------------------------
 !
       subroutine trans_per_temp_to_temp_sph                             &
-     &         (SPH_model, sph_rj, ipol, rj_fld)
+     &         (MHD_prop, refs, sph, ipol, rj_fld)
 !
       use set_reference_sph_mhd
 !
-      type(SPH_MHD_model_data), intent(in) :: SPH_model
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(reference_field), intent(in) :: refs
+      type(sph_grids), intent(in) ::  sph
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call trans_pert_to_scalar_sph                                     &
-     &   (sph_rj, SPH_model%MHD_prop%ref_param_T,            &
-     &    SPH_model%ref_temp%iref_base%i_temp,               &
-     &    SPH_model%ref_temp%iref_grad%i_grad_temp,          &
-     &    SPH_model%ref_temp%ref_field,                     &
+      call trans_pert_to_scalar_sph(sph%sph_rj,                         &
+     &    refs%iref_base%i_temp, refs%iref_grad%i_grad_temp,            &
+     &    refs%ref_field, MHD_prop%ref_param_T,                         &
      &    ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                  &
      &    ipol%base%i_per_temp, ipol%grad_fld%i_grad_per_t, rj_fld)
 !
-      call trans_pert_to_scalar_sph                                     &
-     &   (sph_rj, SPH_model%MHD_prop%ref_param_C,                 &
-     &    SPH_model%ref_temp%iref_base%i_light,           &
-     &    SPH_model%ref_temp%iref_grad%i_grad_composit,   &
-     &    SPH_model%ref_temp%ref_field,                  &
+      call trans_pert_to_scalar_sph(sph%sph_rj,                         &
+     &    refs%iref_base%i_light, refs%iref_grad%i_grad_composit,       &
+     &    refs%ref_field, MHD_prop%ref_param_C,                         &
      &    ipol%base%i_light, ipol%grad_fld%i_grad_composit,             &
      &    ipol%base%i_per_light, ipol%grad_fld%i_grad_per_c, rj_fld)
 !
@@ -138,7 +135,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sync_scalar_by_pert_sph                                &
-     &         (sph_rj, ref_param, iref_scalar, iref_grad, ref_field,   &
+     &         (sph_rj, iref_scalar, iref_grad, ref_field, ref_param,   &
      &          is_temp, is_grad_t, is_par_temp, is_grad_part_t,        &
      &          rj_fld)
 !
@@ -174,7 +171,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine trans_pert_to_scalar_sph                               &
-     &         (sph_rj, ref_param, iref_scalar, iref_grad, ref_field,   &
+     &         (sph_rj, iref_scalar, iref_grad, ref_field, ref_param,   &
      &          is_temp, is_grad_t, is_par_temp, is_grad_part_t,        &
      &          rj_fld)
 !
