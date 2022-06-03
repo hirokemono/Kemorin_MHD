@@ -284,7 +284,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine add_ref_advect_sph_MHD(sph_rj, sph_MHD_bc, MHD_prop,   &
-     &          leg, ref_temp, ref_comp, ipol, rj_fld)
+     &          leg, ref_temp, ipol, rj_fld)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -293,7 +293,6 @@
       type(phys_address), intent(in) :: ipol
 !
       type(reference_field), intent(in) :: ref_temp
-      type(reference_field), intent(in) :: ref_comp
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -303,12 +302,14 @@
      &      MHD_prop%ht_prop, MHD_prop%ref_param_T,                     &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
      &      ipol%forces%i_h_advect, ipol%base%i_velo,                   &
-     &      ref_temp%t_rj, rj_fld)
+     &      ref_temp%ref_field%d_fld(1,ref_temp%iref_grad%i_grad_temp), &
+     &      rj_fld)
         call add_reference_advect_sph(sph_MHD_bc%sph_bc_C,              &
      &      MHD_prop%cp_prop, MHD_prop%ref_param_C,                     &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
      &      ipol%forces%i_c_advect, ipol%base%i_velo,                   &
-     &      ref_comp%t_rj, rj_fld)
+     & ref_temp%ref_field%d_fld(1,ref_temp%iref_grad%i_grad_composit),  &
+     &     rj_fld)
 !
       end subroutine add_ref_advect_sph_MHD
 !
@@ -318,13 +319,13 @@
       subroutine add_reference_advect_sph                               &
      &         (sph_bc_S, property, ref_param_S,                        &
      &          nidx_rj, ar_1d_rj, g_sph_rj, is_h_advect, is_velo,      &
-     &          reftemp_rj, rj_fld)
+     &          refgrad_r, rj_fld)
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: is_h_advect, is_velo
       real(kind = kreal), intent(in) :: g_sph_rj(nidx_rj(2),13)
       real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
-      real(kind = kreal), intent(in) :: reftemp_rj(0:nidx_rj(1),0:1)
+      real(kind = kreal), intent(in) :: refgrad_r(0:nidx_rj(1))
       type(sph_boundary_type), intent(in) :: sph_bc_S
       type(scalar_property), intent(in) :: property
       type(reference_scalar_param), intent(in) :: ref_param_S
@@ -348,7 +349,7 @@
 !
         rj_fld%d_fld(inod,is_h_advect) = rj_fld%d_fld(inod,is_h_advect) &
      &           + property%coef_advect * g_sph_rj(j,3) * ar_1d_rj(k,2) &
-     &            * reftemp_rj(k,1) * rj_fld%d_fld(inod,is_velo)
+     &            * refgrad_r(k) * rj_fld%d_fld(inod,is_velo)
       end do
 !$omp end parallel do
 !

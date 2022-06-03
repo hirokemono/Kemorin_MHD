@@ -156,7 +156,7 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
-      call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,             &
+      call licv_exp(SPH_model%ref_temp,                                 &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                 &
@@ -219,7 +219,7 @@
      &    SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_MHD%fld)
 !*
 !*  ----------------lead nonlinear term ... ----------
-        call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,           &
+        call licv_exp(SPH_model%ref_temp,                               &
      &     SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                    &
      &     SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,             &
      &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                &

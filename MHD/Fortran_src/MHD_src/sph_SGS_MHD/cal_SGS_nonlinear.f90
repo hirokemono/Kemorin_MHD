@@ -155,8 +155,7 @@
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD                                       &
      &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_model%MHD_prop, &
-     &    trans_p%leg, SPH_model%ref_temp, SPH_model%ref_comp,          &
-     &    SPH_MHD%ipol, SPH_MHD%fld)
+     &    trans_p%leg, SPH_model%ref_temp, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
