@@ -7,11 +7,11 @@
 !>@brief Interpolate spectr data
 !!
 !!@verbatim
-!!      subroutine alloc_radial_interpolate(nri_source, r_itp)
+!!      subroutine alloc_radial_interpolate(nri_target, r_itp)
 !!      subroutine alloc_original_sph_data(n_rj_org, r_itp)
 !!      subroutine dealloc_radial_interpolate(r_itp)
 !!      subroutine dealloc_original_sph_data(r_itp)
-!!        integer(kind = kint), intent(in) :: nri_source
+!!        integer(kind = kint), intent(in) :: nri_target
 !!        integer(kind = kint), intent(in) :: n_rj_org
 !!        type(sph_radial_interpolate), intent(inout) :: r_itp
 !!@endverbatim
@@ -34,16 +34,19 @@
 !>      Structure for radial interpolation
       type sph_radial_interpolate
 !>        Inner boundary address
-        integer(kind = kint) :: kr_source_inside
+        integer(kind = kint) :: kr_target_inside
 !>        Outer boundary address
-        integer(kind = kint) :: kr_source_outside
+        integer(kind = kint) :: kr_target_outside
 !
-!>        Radial data number for original data
-        integer(kind = kint) :: nri_source
+!>        Radial data number for target data
+        integer(kind = kint) :: nri_target
 !>        Original radial address for interpolation
         integer(kind = kint), allocatable :: k_inter(:,:)
 !>        interpolation coefficients for interpolation
-        real(kind = kreal), allocatable :: rcoef_inter(:,:)
+        real(kind = kreal), allocatable :: coef_old2new_in(:)
+!
+!>        Radial data number for target data
+        integer(kind = kint) :: nri_source
 !>        Original radius
         real(kind = kreal), allocatable :: source_radius(:)
 !
@@ -59,21 +62,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_radial_interpolate(nri_source, r_itp)
+      subroutine alloc_radial_interpolate                               &
+     &         (nri_source, nri_target, r_itp)
 !
-      integer(kind = kint), intent(in) :: nri_source
+      integer(kind = kint), intent(in) :: nri_source, nri_target
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
 !
       r_itp%nri_source = nri_source
       allocate(r_itp%source_radius(r_itp%nri_source))
-      allocate(r_itp%k_inter(r_itp%nri_source,2))
-      allocate(r_itp%rcoef_inter(r_itp%nri_source,2))
+      if(r_itp%nri_source .gt. 0) r_itp%source_radius = zero
 !
-      if(r_itp%nri_source .gt. 0) then
+      r_itp%nri_target = nri_target
+      allocate(r_itp%k_inter(r_itp%nri_target,2))
+      allocate(r_itp%coef_old2new_in(r_itp%nri_target))
+!
+      if(r_itp%nri_target .gt. 0) then
         r_itp%k_inter = izero
-        r_itp%source_radius = zero
-        r_itp%rcoef_inter = zero
+        r_itp%coef_old2new_in = zero
       end if
 !
       end subroutine alloc_radial_interpolate
@@ -99,7 +105,7 @@
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
       deallocate(r_itp%source_radius)
-      deallocate(r_itp%k_inter, r_itp%rcoef_inter)
+      deallocate(r_itp%k_inter, r_itp%coef_old2new_in)
 !
       end subroutine dealloc_radial_interpolate
 !

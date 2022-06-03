@@ -175,6 +175,7 @@
       character(len=kchara) :: mat_name
 !
       call init_reft_rj_data(sph%sph_rj, ipol, refs)
+      call read_alloc_sph_reference_data(sph%sph_rj, ipol, rj_fld, refs)
 !
       write(mat_name,'(a)') 'reference_Temperature'
       call init_reference_scalar(MHD_prop%takepito_T,                   &
@@ -194,7 +195,7 @@
      &    refs%iref_base%i_light_source, refs%ref_field,                &
      &    sph_MHD_bc%bcs_C)
 !
-      refs%ref_output_IO%file_prefix = 'reference_fields'
+      refs%ref_output_IO%file_prefix = 'reference_fields.dat'
       call output_reference_field(refs)
 !
       end subroutine init_reference_scalars

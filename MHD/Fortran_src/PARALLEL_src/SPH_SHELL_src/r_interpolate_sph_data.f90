@@ -67,8 +67,8 @@
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
 !
-      r_itp%kr_source_outside = nlayer_CMB
-      r_itp%kr_source_inside =  nlayer_ICB
+      r_itp%kr_target_inside =  nlayer_ICB
+      r_itp%kr_target_outside = nlayer_CMB
 !
       end subroutine copy_cmb_icb_radial_point
 !
@@ -87,20 +87,20 @@
       integer(kind = kint) :: igrp, inum
 !
 !
-      r_itp%kr_source_outside = 0
+      r_itp%kr_target_outside = 0
       do igrp = 1, radial_rj_grp%num_grp
         if(radial_rj_grp%grp_name(igrp) .eq. cmb_r_grp) then
           inum = radial_rj_grp%istack_grp(igrp-1) + 1
-          r_itp%kr_source_outside = radial_rj_grp%item_grp(inum)
+          r_itp%kr_target_outside = radial_rj_grp%item_grp(inum)
           exit
         end if
       end do
 !
-      r_itp%kr_source_inside = 0
+      r_itp%kr_target_inside = 0
       do igrp = 1, radial_rj_grp%num_grp
         if(radial_rj_grp%grp_name(igrp) .eq. icb_r_grp) then
           inum = radial_rj_grp%istack_grp(igrp-1) + 1
-          r_itp%kr_source_inside = radial_rj_grp%item_grp(inum)
+          r_itp%kr_target_inside = radial_rj_grp%item_grp(inum)
           exit
         end if
       end do
@@ -161,8 +161,8 @@
       call const_radial_itp_table                                       &
      &   (r_itp%nri_source, r_itp%source_radius,                        &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
-     &    r_itp%kr_source_inside, r_itp%kr_source_outside,              &
-     &    r_itp%k_inter, r_itp%rcoef_inter)
+     &    r_itp%kr_target_inside, r_itp%kr_target_outside,              &
+     &    r_itp%k_inter, r_itp%coef_old2new_in)
 !
       end subroutine input_old_rj_sph_trans
 !
@@ -185,10 +185,10 @@
       type(phys_data), intent(inout) :: rj_fld
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
-      integer(kind = kint) :: i_fld, j_fld
+      integer(kind = kint) :: i_fld, j_fld, ist, ncomp
 !
 !
-      do i_fld = 1, rj_fld%ntot_phys
+      do i_fld = 1, rj_fld%num_phys
         do j_fld = 1, fld_IO%num_field_IO
           if(rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
             if   (rj_fld%phys_name(i_fld) .eq. velocity%name            &
@@ -207,14 +207,17 @@
      &       .or. rj_fld%phys_name(i_fld) .eq. composition_source%name  &
      &       .or. rj_fld%phys_name(i_fld) .eq. entropy_source%name      &
      &         ) then
+              ist = rj_fld%istack_component(i_fld-1) + 1
+              ncomp = rj_fld%istack_component(i_fld)                    &
+     &               - rj_fld%istack_component(i_fld-1)
               call set_org_rj_phys_data_from_IO                         &
      &           (j_fld, fld_IO, r_itp%n_rj_org, r_itp%d_rj_org)
-              call r_interpolate_sph_vector(i_fld, sph_rj%nidx_rj,      &
-     &            rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,    &
-     &            rj_fld%istack_component,                              &
-     &            r_itp%kr_source_inside, r_itp%kr_source_outside,      &
-     &            r_itp%nri_source, r_itp%k_inter, r_itp%rcoef_inter,   &
-     &            r_itp%n_rj_org, r_itp%d_rj_org, rj_fld%d_fld)
+              call r_interpolate_sph_vector(sph_rj%nidx_rj,             &
+     &            r_itp%kr_target_inside, r_itp%kr_target_outside,      &
+     &            r_itp%nri_target, r_itp%k_inter,                      &
+     &            r_itp%coef_old2new_in,                                &
+     &            r_itp%n_rj_org, r_itp%d_rj_org,                       &
+     &            ncomp, rj_fld%n_point, rj_fld%d_fld(1,ist))
               exit
             end if
           end if
@@ -222,11 +225,11 @@
       end do
 !
       if (ipol%base%i_magne .gt. 0) then
-        call ext_outside_potential(r_itp%kr_source_outside,             &
+        call ext_outside_potential(r_itp%kr_target_outside,             &
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
-        call ext_inside_potential(r_itp%kr_source_inside,               &
+        call ext_inside_potential(r_itp%kr_target_inside,               &
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
@@ -249,31 +252,33 @@
       type(phys_data), intent(inout) :: rj_fld
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
-      integer(kind = kint) ::  i_fld, j_fld
+      integer(kind = kint) ::  i_fld, j_fld, ist, ncomp
 !
 !
-      do i_fld = 1, rj_fld%ntot_phys
+      do i_fld = 1, rj_fld%num_phys
         do j_fld = 1, fld_IO%num_field_IO
           if(rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
+            ist = rj_fld%istack_component(i_fld-1) + 1
+            ncomp = rj_fld%istack_component(i_fld)                      &
+     &             - rj_fld%istack_component(i_fld-1)
             call set_org_rj_phys_data_from_IO                           &
      &         (j_fld, fld_IO, r_itp%n_rj_org, r_itp%d_rj_org)
-            call r_interpolate_sph_vector(i_fld, sph_rj%nidx_rj,        &
-     &          rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,      &
-     &          rj_fld%istack_component,                                &
-     &          r_itp%kr_source_inside, r_itp%kr_source_outside,        &
-     &          r_itp%nri_source, r_itp%k_inter, r_itp%rcoef_inter,     &
-     &          r_itp%n_rj_org, r_itp%d_rj_org,rj_fld%d_fld)
+            call r_interpolate_sph_vector(sph_rj%nidx_rj,               &
+     &          r_itp%kr_target_inside, r_itp%kr_target_outside,        &
+     &          r_itp%nri_target, r_itp%k_inter, r_itp%coef_old2new_in, &
+     &          r_itp%n_rj_org, r_itp%d_rj_org,                         &
+     &          ncomp, rj_fld%n_point, rj_fld%d_fld(1,ist))
             exit
           end if
         end do
       end do
 !
       if (ipol%base%i_magne .gt. 0) then
-        call ext_outside_potential(r_itp%kr_source_outside,             &
+        call ext_outside_potential(r_itp%kr_target_outside,             &
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
-        call ext_inside_potential(r_itp%kr_source_inside,               &
+        call ext_inside_potential(r_itp%kr_target_inside,               &
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
@@ -319,7 +324,8 @@
      &     (ierr_sph,'end point of harminics is wrong')
       end if
 !
-      call alloc_radial_interpolate(sph_IO%nidx_sph(1), r_itp)
+      call alloc_radial_interpolate                                     &
+     &   (sph_IO%nidx_sph(1), sph_rj%nidx_rj(1), r_itp)
       call alloc_original_sph_data(sph_IO%numnod_sph, r_itp)
 !
       r_itp%source_radius(1:r_itp%n_rj_org)                             &
@@ -328,5 +334,115 @@
       end subroutine copy_original_sph_rj_from_IO
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine copy_reference_radius_from_IO                          &
+     &         (radial_fld_IO, nri_target, radius_name, r_itp)
+!
+      use t_field_data_IO
+!
+      character(len = kchara), intent(in) :: radius_name
+      integer(kind = kint), intent(in) :: nri_target
+      type(field_IO), intent(in) :: radial_fld_IO
+!
+      type(sph_radial_interpolate), intent(inout) :: r_itp
+!
+      integer(kind = kint) :: i, icomp
+!
+!
+      call alloc_radial_interpolate                                     &
+     &   (radial_fld_IO%nnod_IO, nri_target, r_itp)
+      call alloc_original_sph_data(radial_fld_IO%nnod_IO,  r_itp)
+!
+      do i = 1, radial_fld_IO%num_field_IO
+        if(radial_fld_IO%fld_name(i) .eq. radius_name) then
+          icomp = radial_fld_IO%istack_comp_IO(i-1) + 1
+          r_itp%source_radius(1:r_itp%n_rj_org)                         &
+     &                  = radial_fld_IO%d_IO(1:r_itp%n_rj_org,icomp)
+          exit
+        end if
+      end do
+!
+      end subroutine copy_reference_radius_from_IO
+!
+! ----------------------------------------------------------------------
+!
+      subroutine interepolate_reference_data                            &
+     &         (radius_name, radial_fld_IO, r_itp, ref_field)
+!
+      use t_field_data_IO
+!
+      character(len = kchara), intent(in) :: radius_name
+      type(field_IO), intent(in) :: radial_fld_IO
+!
+      type(sph_radial_interpolate), intent(inout) :: r_itp
+      type(phys_data), intent(inout) :: ref_field
+!
+!
+      integer(kind = kint) :: i_fld, j_fld, ist, jst, ncomp
+!
+!
+      do i_fld = 1, ref_field%num_phys
+        if(ref_field%phys_name(i_fld) .eq. radius_name) cycle
+        do j_fld = 1, radial_fld_IO%num_field_IO
+          if(ref_field%phys_name(i_fld)    &
+     &             .eq. radial_fld_IO%fld_name(j_fld)) then
+            ref_field%iflag_update(i_fld) = 1
+            jst = radial_fld_IO%istack_comp_IO(j_fld-1)
+            ist = ref_field%istack_component(i_fld-1) + 1
+            ncomp = ref_field%istack_component(i_fld)                   &
+     &             - ref_field%istack_component(i_fld-1)
+!
+!$omp parallel workshare
+            r_itp%d_rj_org(1:r_itp%n_rj_org,1:ncomp)                    &
+     &           = radial_fld_IO%d_IO(1:r_itp%n_rj_org,jst+1:jst+ncomp)
+!$omp end parallel workshare
+!
+            call interpolate_radial_field                               &
+     &        (ref_field%n_point, r_itp%k_inter, r_itp%coef_old2new_in, &
+     &         ncomp, r_itp%n_rj_org, r_itp%d_rj_org(1,1),              &
+     &         ref_field%d_fld(1,ist))
+            exit
+          end if
+        end do
+      end do
+!
+      end subroutine interepolate_reference_data
+!
+! ----------------------------------------------------------------------
+!
+      subroutine interpolate_radial_field                               &
+     &         (nri_new, k_inter, coef_old2new_in, ncomp,               &
+     &          n_rj_org, d_IO, d_r)
+!
+      integer(kind = kint), intent(in) :: ncomp
+!
+      integer(kind = kint), intent(in) :: nri_new, n_rj_org
+      integer(kind = kint), intent(in) :: k_inter(nri_new,2)
+      real (kind=kreal), intent(in) :: coef_old2new_in(nri_new)
+      real (kind=kreal), intent(in) :: d_IO(n_rj_org,ncomp)
+!
+      real (kind=kreal), intent(inout) :: d_r(nri_new,ncomp)
+!
+      integer(kind = kint) :: k, j, nd, i1, i2
+!
+!
+!$omp parallel private(nd)
+      do nd = 1, ncomp
+!$omp do private(k,j,i1,i2)
+        do k = 1, nri_new
+          do j = 1, 1
+            i1 = k_inter(k,1)
+            i2 = k_inter(k,2)
+            d_r(k,nd) = coef_old2new_in(k)*d_IO(i1,nd)                  &
+     &                  + (one - coef_old2new_in(k))*d_IO(i2,nd)
+          end do
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
+      end subroutine interpolate_radial_field
+!
+!  -------------------------------------------------------------------
 !
       end module r_interpolate_sph_data
