@@ -7,31 +7,18 @@
 !>@brief Interpolate spectr data
 !!
 !!@verbatim
-!!      subroutine copy_cmb_icb_radial_point(nlayer_ICB, nlayer_CMB)
-!!      subroutine set_cmb_icb_radial_point                             &
-!!     &         (cmb_r_grp, icb_r_grp, radial_rj_grp)
-!!        type(group_data), intent(in) :: radial_rj_grp
-!!      subroutine set_sph_magne_address(rj_fld, ipol)
-!!        type(phys_data), intent(in) :: rj_fld
-!!        type(phys_address), intent(inout) :: ipol
-!!      subroutine input_old_rj_sph_trans                               &
-!!     &         (rj_file_param, l_truncation, sph_rj)
-!!
-!!      subroutine r_interpolate_sph_rst_from_IO                        &
-!!     &         (fld_IO, sph_rj, ipol, rj_fld)
-!!      subroutine r_interpolate_sph_fld_from_IO                        &
-!!     &         (fld_IO, sph_rj, ipol, rj_fld)
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_data), intent(inout) :: rj_fld
+!!      subroutine alloc_original_sph_data(num_org, r_itp)
+!!      subroutine dealloc_original_sph_data(r_itp)
+!!        integer(kind = kint), intent(in) :: num_org
+!!        type(sph_radial_interpolate), intent(inout) :: r_itp
 !!@endverbatim
 !
       module t_sph_radial_interpolate
 !
       use m_precision
+      use m_constants
 !
 !      use calypso_mpi
-!      use m_constants
 !      use m_machine_parameter
 !
 !      use t_spheric_rj_data
@@ -71,5 +58,28 @@
       contains
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine alloc_original_sph_data(num_org, r_itp)
+!
+      integer(kind = kint), intent(in) :: num_org
+      type(sph_radial_interpolate), intent(inout) :: r_itp
+!
+      r_itp%n_rj_org = num_org
+      allocate(r_itp%d_rj_org(r_itp%n_rj_org,6))
+      if(r_itp%n_rj_org .gt. 0) r_itp%d_rj_org = zero
+!
+      end subroutine alloc_original_sph_data
+!
+!  -------------------------------------------------------------------
+!
+      subroutine dealloc_original_sph_data(r_itp)
+!
+      type(sph_radial_interpolate), intent(inout) :: r_itp
+!
+      deallocate(r_itp%d_rj_org)
+!
+      end subroutine dealloc_original_sph_data
+!
+!  -------------------------------------------------------------------
 !
       end module t_sph_radial_interpolate
