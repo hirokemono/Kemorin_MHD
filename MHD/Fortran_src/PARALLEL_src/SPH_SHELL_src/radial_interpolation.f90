@@ -3,8 +3,6 @@
 !
 !      Written by H. Matsui on Sep., 2011
 !
-!      subroutine deallocate_original_sph_data
-!
 !!      subroutine const_radial_itp_table                               &
 !!     &         (nri_org, r_org, nri_new, radius_1d_rj_r,              &
 !!     &          kr_inside, kr_outside, k_inter, rcoef_inter)

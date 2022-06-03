@@ -42,15 +42,10 @@
       implicit  none
 !
 !
-      integer(kind = kint) :: kr_inside, kr_outside
-!
-      integer(kind = kint) :: nri_org
-      integer(kind = kint), allocatable :: k_inter(:,:)
-      real(kind = kreal), allocatable :: rcoef_inter(:,:)
+      integer(kind = kint) :: kr_inside
 !
       type(sph_radial_interpolate) :: r_itp
 !
-      private :: allocate_original_sph_data
       private :: copy_original_sph_rj_from_IO
 !
 !  -------------------------------------------------------------------
@@ -64,7 +59,7 @@
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
 !
 !
-      kr_outside = nlayer_CMB
+      r_itp%kr_source_outside = nlayer_CMB
       kr_inside =  nlayer_ICB
 !
       end subroutine copy_cmb_icb_radial_point
@@ -82,11 +77,11 @@
       integer(kind = kint) :: igrp, inum
 !
 !
-      kr_outside = 0
+      r_itp%kr_source_outside = 0
       do igrp = 1, radial_rj_grp%num_grp
         if(radial_rj_grp%grp_name(igrp) .eq. cmb_r_grp) then
           inum = radial_rj_grp%istack_grp(igrp-1) + 1
-          kr_outside = radial_rj_grp%item_grp(inum)
+          r_itp%kr_source_outside = radial_rj_grp%item_grp(inum)
           exit
         end if
       end do
@@ -101,32 +96,6 @@
       end do
 !
       end subroutine set_cmb_icb_radial_point
-!
-!  -------------------------------------------------------------------
-!  -------------------------------------------------------------------
-!
-      subroutine allocate_original_sph_data
-!
-!
-      allocate(r_itp%source_radius(nri_org))
-      allocate(k_inter(nri_org,2))
-      allocate(rcoef_inter(nri_org,2))
-!
-      k_inter = izero
-      r_itp%source_radius = zero
-      rcoef_inter = zero
-!
-      end subroutine allocate_original_sph_data
-!
-!  -------------------------------------------------------------------
-!
-      subroutine deallocate_original_sph_data
-!
-      call dealloc_original_sph_data(r_itp)
-      deallocate(r_itp%source_radius)
-      deallocate(k_inter, rcoef_inter)
-!
-      end subroutine deallocate_original_sph_data
 !
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
@@ -177,9 +146,11 @@
      &   (l_truncation, sph_rj, sph_file%sph_IO)
       call dealloc_rj_mode_IO(sph_file)
 !
-      call const_radial_itp_table(nri_org, r_itp%source_radius,         &
+      call const_radial_itp_table                                       &
+     &   (r_itp%nri_source, r_itp%source_radius,                        &
      &    sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
-     &    kr_inside, kr_outside, k_inter, rcoef_inter)
+     &    kr_inside, r_itp%kr_source_outside,                           &
+     &    r_itp%k_inter, r_itp%rcoef_inter)
 !
       end subroutine input_old_rj_sph_trans
 !
@@ -227,8 +198,9 @@
      &           (j_fld, fld_IO, r_itp%n_rj_org, r_itp%d_rj_org)
               call r_interpolate_sph_vector(i_fld, sph_rj%nidx_rj,      &
      &            rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,    &
-     &            rj_fld%istack_component, kr_inside, kr_outside,       &
-     &            nri_org, k_inter, rcoef_inter,                        &
+     &            rj_fld%istack_component,                              &
+     &            kr_inside, r_itp%kr_source_outside,       &
+     &            r_itp%nri_source, r_itp%k_inter, r_itp%rcoef_inter,   &
      &            r_itp%n_rj_org, r_itp%d_rj_org, rj_fld%d_fld)
               exit
             end if
@@ -237,7 +209,7 @@
       end do
 !
       if (ipol%base%i_magne .gt. 0) then
-        call ext_outside_potential(kr_outside,                          &
+        call ext_outside_potential(r_itp%kr_source_outside,             &
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
@@ -273,8 +245,9 @@
      &         (j_fld, fld_IO, r_itp%n_rj_org, r_itp%d_rj_org)
             call r_interpolate_sph_vector(i_fld, sph_rj%nidx_rj,        &
      &          rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,      &
-     &          rj_fld%istack_component,  kr_inside, kr_outside,        &
-     &          nri_org, k_inter, rcoef_inter,                &
+     &          rj_fld%istack_component,      &
+     &          kr_inside, r_itp%kr_source_outside,        &
+     &          r_itp%nri_source, r_itp%k_inter, r_itp%rcoef_inter,     &
      &          r_itp%n_rj_org, r_itp%d_rj_org,rj_fld%d_fld)
             exit
           end if
@@ -282,7 +255,7 @@
       end do
 !
       if (ipol%base%i_magne .gt. 0) then
-        call ext_outside_potential(kr_outside,                          &
+        call ext_outside_potential(r_itp%kr_source_outside,             &
      &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
      &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol%base%i_magne))
@@ -331,9 +304,7 @@
      &     (ierr_sph,'end point of harminics is wrong')
       end if
 !
-      nri_org =  sph_IO%nidx_sph(1)
-!
-      call allocate_original_sph_data
+      call alloc_radial_interpolate(sph_IO%nidx_sph(1), r_itp)
       call alloc_original_sph_data(sph_IO%numnod_sph, r_itp)
 !
       r_itp%source_radius(1:r_itp%n_rj_org)                             &
