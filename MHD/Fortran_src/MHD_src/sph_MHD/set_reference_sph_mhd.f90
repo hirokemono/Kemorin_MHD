@@ -19,22 +19,18 @@
 !!        type(sph_scalar_BC_evo), intent(inout) :: ICB_Sevo, CMB_Sevo
 !!
 !!      subroutine chenge_temp_to_per_temp_sph                          &
-!!     &         (idx_rj_degree_zero, inod_rj_center,                   &
-!!     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                  &
-!!     &          is_temp, is_grad_t, ids_grad_t,                       &
-!!     &          is_par_temp, is_grad_part_t, ids_grad_part_t,         &
-!!     &          n_point, ntot_phys_rj, d_rj)
+!!     &         (idx_rj_degree_zero, inod_rj_center, nnod_rj, nidx_rj, &
+!!     &          radius_1d_rj_r, reference_r, refgrad_r,               &
+!!     &          scalar_rj, grad_rj, pert_rj, grad_pert_rj)
 !!        d_rj(inod,is_tempp):        T => \Theta = T - T0
 !!        d_rj(inod,is_par_temp):    \Theta = T - T0
 !!        d_rj(inod,is_grad_t):      T => d \Theta / dr
 !!        d_rj(inod,is_grad_part_t): d \Theta / dr
 !!
 !!      subroutine transfer_per_temp_to_temp_sph                        &
-!!     &         (idx_rj_degree_zero, inod_rj_center,                   &
-!!     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                  &
-!!     &          is_temp, is_grad_t, ids_grad_t,                       &
-!!     &          is_par_temp, is_grad_part_t, ids_grad_part_t,         &
-!!     &          n_point, ntot_phys_rj, d_rj)
+!!     &         (idx_rj_degree_zero, inod_rj_center, nnod_rj, nidx_rj, &
+!!     &          radius_1d_rj_r, reference_r, refgrad_r,               &
+!!     &          scalar_rj, grad_rj, pert_rj, grad_pert_rj)
 !!        d_rj(inod,is_temp):        \Theta = T - T0 => T
 !!        d_rj(inod,is_par_temp):    \Theta = T - T0
 !!        d_rj(inod,is_grad_t):      d \Theta / dr   => dT / dr
@@ -159,25 +155,24 @@
 ! -----------------------------------------------------------------------
 !
       subroutine chenge_temp_to_per_temp_sph                            &
-     &         (idx_rj_degree_zero, inod_rj_center,                     &
-     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                    &
-     &          is_temp, is_grad_t, ids_grad_t,                         &
-     &          is_par_temp, is_grad_part_t, ids_grad_part_t,           &
-     &          n_point, ntot_phys_rj, d_rj)
+     &         (idx_rj_degree_zero, inod_rj_center, nnod_rj, nidx_rj,   &
+     &          radius_1d_rj_r, reference_r, refgrad_r,                 &
+     &          scalar_rj, grad_rj, pert_rj, grad_pert_rj)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: inod_rj_center
+      integer(kind = kint), intent(in) :: nnod_rj
       integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-!
-      integer(kind = kint), intent(in) :: is_temp, is_par_temp
-      integer(kind = kint), intent(in) :: is_grad_t, is_grad_part_t
-      integer(kind = kint), intent(in) :: ids_grad_t, ids_grad_part_t
 !
       real(kind=kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      real(kind=kreal), intent(in) :: reftemp_rj(0:nidx_rj(1),0:1)
+      real(kind=kreal), intent(in) :: reference_r(0:nidx_rj(1))
+      real(kind=kreal), intent(in) :: refgrad_r(0:nidx_rj(1))
 !
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: scalar_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: grad_rj(nnod_rj,3)
+!
+      real(kind = kreal), intent(inout) :: pert_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: grad_pert_rj(nnod_rj,3)
 !
       integer(kind = kint) :: k, inod
 !
@@ -185,24 +180,24 @@
       if (idx_rj_degree_zero .gt. 0) then
         do k = 1, nidx_rj(1)
           inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
-          d_rj(inod,is_temp) = d_rj(inod,is_temp) - reftemp_rj(k,0)
-          d_rj(inod,is_grad_t) = d_rj(inod,is_grad_t)                   &
-     &                 - two*reftemp_rj(k,1) * radius_1d_rj_r(k)**2
+          scalar_rj(inod) = scalar_rj(inod) - reference_r(k)
+          grad_rj(inod,1) = grad_rj(inod,1)                             &
+     &                 - two*refgrad_r(k) * radius_1d_rj_r(k)**2
         end do
       end if
 !
 !$omp parallel do
-      do inod = 1, n_point
-        d_rj(inod,is_par_temp) =     d_rj(inod,is_temp)
-        d_rj(inod,is_grad_part_t) =  d_rj(inod,is_grad_t)
-        d_rj(inod,ids_grad_part_t) = d_rj(inod,ids_grad_t)
+      do inod = 1, nnod_rj
+        pert_rj(inod) =        scalar_rj(inod)
+        grad_pert_rj(inod,1) = grad_rj(inod,1)
+        grad_pert_rj(inod,2) = grad_rj(inod,2)
       end do
 !$omp end parallel do
 !
       if(inod_rj_center .gt. 0) then
-        d_rj(inod_rj_center,is_temp) = d_rj(inod_rj_center,is_temp)     &
-     &                                - reftemp_rj(0,0)
-        d_rj(inod_rj_center,is_par_temp) = d_rj(inod_rj_center,is_temp)
+        scalar_rj(inod_rj_center) = scalar_rj(inod_rj_center)           &
+     &                             - reference_r(0)
+        pert_rj(inod_rj_center) =   scalar_rj(inod_rj_center)
       end if
 !
       end subroutine chenge_temp_to_per_temp_sph
@@ -210,50 +205,50 @@
 ! -----------------------------------------------------------------------
 !
       subroutine transfer_per_temp_to_temp_sph                          &
-     &         (idx_rj_degree_zero, inod_rj_center,                     &
-     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                    &
-     &          is_temp, is_grad_t, ids_grad_t,                         &
-     &          is_par_temp, is_grad_part_t, ids_grad_part_t,           &
-     &          n_point, ntot_phys_rj, d_rj)
+     &         (idx_rj_degree_zero, inod_rj_center, nnod_rj, nidx_rj,   &
+     &          radius_1d_rj_r, reference_r, refgrad_r,                 &
+     &          scalar_rj, grad_rj, pert_rj, grad_pert_rj)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: inod_rj_center
+      integer(kind = kint), intent(in) :: nnod_rj
       integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-!
-      integer(kind = kint), intent(in) :: is_temp, is_par_temp
-      integer(kind = kint), intent(in) :: is_grad_t, is_grad_part_t
-      integer(kind = kint), intent(in) :: ids_grad_t, ids_grad_part_t
 !
       real(kind=kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      real(kind=kreal), intent(in) :: reftemp_rj(0:nidx_rj(1),0:1)
+      real(kind=kreal), intent(in) :: reference_r(0:nidx_rj(1))
+      real(kind=kreal), intent(in) :: refgrad_r(0:nidx_rj(1))
 !
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: scalar_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: grad_rj(nnod_rj,3)
+!
+      real(kind = kreal), intent(inout) :: pert_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: grad_pert_rj(nnod_rj,3)
+!
 !
       integer(kind = kint) :: k, inod
 !
 !
 !$omp parallel do
-      do inod = 1, n_point
-        d_rj(inod,is_par_temp) =     d_rj(inod,is_temp)
-        d_rj(inod,is_grad_part_t) =  d_rj(inod,is_grad_t)
-        d_rj(inod,ids_grad_part_t) = d_rj(inod,ids_grad_t)
+      do inod = 1, nnod_rj
+        pert_rj(inod) =        scalar_rj(inod)
+        grad_pert_rj(inod,1) = grad_rj(inod,1)
+        grad_pert_rj(inod,2) = grad_rj(inod,2)
       end do
 !$omp end parallel do
 !
       if (idx_rj_degree_zero .gt. 0) then
         do k = 1, nidx_rj(1)
           inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
-          d_rj(inod,is_temp) = d_rj(inod,is_temp) + reftemp_rj(k,0)
-          d_rj(inod,is_grad_t) = d_rj(inod,is_grad_part_t)              &
-     &                 + two*reftemp_rj(k,1) * radius_1d_rj_r(k)**2
+          scalar_rj(inod) = scalar_rj(inod) + reference_r(k)
+          grad_rj(inod,1) = grad_pert_rj(inod,1)                        &
+     &                   + two*refgrad_r(k) * radius_1d_rj_r(k)**2
         end do
       end if
 !
       if(inod_rj_center .gt. 0) then
-        d_rj(inod_rj_center,is_par_temp) = d_rj(inod_rj_center,is_temp)
-        d_rj(inod_rj_center,is_temp) = d_rj(inod_rj_center,is_temp)     &
-     &                                + reftemp_rj(0,0)
+        pert_rj(inod_rj_center) =   scalar_rj(inod_rj_center)
+        scalar_rj(inod_rj_center) = scalar_rj(inod_rj_center)           &
+     &                              + reference_r(0)
       end if
 !
       end subroutine transfer_per_temp_to_temp_sph

@@ -83,25 +83,22 @@
 !
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: ids_grad_temp, ids_grad_pert_t
-      integer(kind = kint) :: ids_grad_comp, ids_grad_pert_c
 !
-!
-      ids_grad_temp =   ipol%grad_fld%i_grad_temp +  1
-      ids_grad_pert_t = ipol%grad_fld%i_grad_per_t + 1
       call sync_scalar_by_pert_sph                                      &
-     &   (sph_rj, SPH_model%ref_temp, SPH_model%MHD_prop%ref_param_T,   &
+     &   (sph_rj, SPH_model%MHD_prop%ref_param_T,   &
+     &    SPH_model%ref_temp%iref_base%i_temp,               &
+     &    SPH_model%ref_temp%iref_grad%i_grad_temp,          &
+     &    SPH_model%ref_temp%ref_field,                     &
      &    ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                  &
-     &    ids_grad_temp, ipol%base%i_per_temp,                          &
-     &    ipol%grad_fld%i_grad_per_t, ids_grad_pert_t, rj_fld)
+     &    ipol%base%i_per_temp, ipol%grad_fld%i_grad_per_t, rj_fld)
 !
-      ids_grad_comp =   ipol%grad_fld%i_grad_composit +  1
-      ids_grad_pert_c = ipol%grad_fld%i_grad_per_c + 1
       call sync_scalar_by_pert_sph                                      &
-     &   (sph_rj, SPH_model%ref_comp, SPH_model%MHD_prop%ref_param_C,   &
+     &   (sph_rj, SPH_model%MHD_prop%ref_param_C,   &
+     &    SPH_model%ref_temp%iref_base%i_light,           &
+     &    SPH_model%ref_temp%iref_grad%i_grad_composit,   &
+     &    SPH_model%ref_temp%ref_field,                  &
      &    ipol%base%i_light, ipol%grad_fld%i_grad_composit,             &
-     &    ids_grad_comp, ipol%base%i_per_light,                         &
-     &    ipol%grad_fld%i_grad_per_c, ids_grad_pert_c, rj_fld)
+     &    ipol%base%i_per_light, ipol%grad_fld%i_grad_per_c, rj_fld)
 !
       end subroutine sync_temp_by_per_temp_sph
 !
@@ -118,45 +115,43 @@
 !
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: ids_grad_temp, ids_grad_pert_t
-      integer(kind = kint) :: ids_grad_comp, ids_grad_pert_c
 !
-!
-      ids_grad_temp =   ipol%grad_fld%i_grad_temp +  1
-      ids_grad_pert_t = ipol%grad_fld%i_grad_per_t + 1
       call trans_pert_to_scalar_sph                                     &
-     &   (sph_rj, SPH_model%ref_temp, SPH_model%MHD_prop%ref_param_T,   &
+     &   (sph_rj, SPH_model%MHD_prop%ref_param_T,            &
+     &    SPH_model%ref_temp%iref_base%i_temp,               &
+     &    SPH_model%ref_temp%iref_grad%i_grad_temp,          &
+     &    SPH_model%ref_temp%ref_field,                     &
      &    ipol%base%i_temp, ipol%grad_fld%i_grad_temp,                  &
-     &    ids_grad_temp, ipol%base%i_per_temp,                          &
-     &    ipol%grad_fld%i_grad_per_t, ids_grad_pert_t, rj_fld)
+     &    ipol%base%i_per_temp, ipol%grad_fld%i_grad_per_t, rj_fld)
 !
-      ids_grad_comp =   ipol%grad_fld%i_grad_composit +  1
-      ids_grad_pert_c = ipol%grad_fld%i_grad_per_c + 1
       call trans_pert_to_scalar_sph                                     &
-     &   (sph_rj, SPH_model%ref_comp, SPH_model%MHD_prop%ref_param_C,   &
+     &   (sph_rj, SPH_model%MHD_prop%ref_param_C,                 &
+     &    SPH_model%ref_temp%iref_base%i_light,           &
+     &    SPH_model%ref_temp%iref_grad%i_grad_composit,   &
+     &    SPH_model%ref_temp%ref_field,                  &
      &    ipol%base%i_light, ipol%grad_fld%i_grad_composit,             &
-     &    ids_grad_comp, ipol%base%i_per_light,                         &
-     &    ipol%grad_fld%i_grad_per_c, ids_grad_pert_c, rj_fld)
+     &    ipol%base%i_per_light, ipol%grad_fld%i_grad_per_c, rj_fld)
 !
       end subroutine trans_per_temp_to_temp_sph
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sync_scalar_by_pert_sph(sph_rj, reference, ref_param,  &
-     &          is_temp, is_grad_t, ids_grad_t,                         &
-     &          is_par_temp, is_grad_part_t, ids_grad_part_t, rj_fld)
+      subroutine sync_scalar_by_pert_sph                                &
+     &         (sph_rj, ref_param, iref_scalar, iref_grad, ref_field,   &
+     &          is_temp, is_grad_t, is_par_temp, is_grad_part_t,        &
+     &          rj_fld)
 !
       use set_reference_sph_mhd
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
+      integer(kind = kint), intent(in) :: iref_scalar, iref_grad
       integer(kind = kint), intent(in) :: is_temp, is_par_temp
       integer(kind = kint), intent(in) :: is_grad_t, is_grad_part_t
-      integer(kind = kint), intent(in) :: ids_grad_t, ids_grad_part_t
 !
       type(reference_scalar_param), intent(in) :: ref_param
-      type(reference_field), intent(in) :: reference
+      type(phys_data), intent(in) :: ref_field
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -169,28 +164,29 @@
 !
       call chenge_temp_to_per_temp_sph                                  &
      &   (sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,             &
-     &    sph_rj%nidx_rj, sph_rj%radius_1d_rj_r, reference%t_rj,        &
-     &    is_temp, is_grad_t, ids_grad_t,                               &
-     &    is_par_temp, is_grad_part_t, ids_grad_part_t,                 &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nnod_rj, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,        &
+     &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad), &
+     &    rj_fld%d_fld(1,is_temp), rj_fld%d_fld(1,is_grad_t),           &
+     &    rj_fld%d_fld(1,is_par_temp), rj_fld%d_fld(1,is_grad_part_t))
 !
       end subroutine sync_scalar_by_pert_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine trans_pert_to_scalar_sph(sph_rj, reference, ref_param, &
-     &          is_temp, is_grad_t, ids_grad_t,                         &
-     &          is_par_temp, is_grad_part_t, ids_grad_part_t, rj_fld)
+      subroutine trans_pert_to_scalar_sph                               &
+     &         (sph_rj, ref_param, iref_scalar, iref_grad, ref_field,   &
+     &          is_temp, is_grad_t, is_par_temp, is_grad_part_t,        &
+     &          rj_fld)
 !
       use set_reference_sph_mhd
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(reference_scalar_param), intent(in) :: ref_param
-      type(reference_field), intent(in) :: reference
+      type(phys_data), intent(in) :: ref_field
 !
+      integer(kind = kint), intent(in) :: iref_scalar, iref_grad
       integer(kind = kint), intent(in) :: is_temp, is_par_temp
       integer(kind = kint), intent(in) :: is_grad_t, is_grad_part_t
-      integer(kind = kint), intent(in) :: ids_grad_t, ids_grad_part_t
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -202,10 +198,10 @@
 !
       call transfer_per_temp_to_temp_sph                                &
      &   (sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,             &
-     &    sph_rj%nidx_rj, sph_rj%radius_1d_rj_r, reference%t_rj,        &
-     &    is_temp, is_grad_t, ids_grad_t,                               &
-     &    is_par_temp, is_grad_part_t, ids_grad_part_t,                 &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    sph_rj%nnod_rj, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,        &
+     &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad), &
+     &    rj_fld%d_fld(1,is_temp), rj_fld%d_fld(1,is_grad_t),           &
+     &    rj_fld%d_fld(1,is_par_temp), rj_fld%d_fld(1,is_grad_part_t))
 !
       end subroutine trans_pert_to_scalar_sph
 !
