@@ -326,8 +326,8 @@
      &     (ierr_sph,'end point of harminics is wrong')
       end if
 !
-      call alloc_radial_interpolate                                     &
-     &   (sph_IO%nidx_sph(1), sph_rj%nidx_rj(1), r_itp)
+      call alloc_org_radius_interpolate(sph_IO%nidx_sph(1), r_itp)
+      call alloc_radial_interpolate(sph_rj%nidx_rj(1), r_itp)
       call alloc_original_sph_data(sph_IO%numnod_sph, r_itp)
 !
       r_itp%source_radius(1:r_itp%n_rj_org)                             &
@@ -351,8 +351,8 @@
       integer(kind = kint) :: i, icomp
 !
 !
-      call alloc_radial_interpolate                                     &
-     &   (radial_fld_IO%nnod_IO, nri_target, r_itp)
+      call alloc_org_radius_interpolate(radial_fld_IO%nnod_IO, r_itp)
+      call alloc_radial_interpolate(nri_target, r_itp)
       call alloc_original_sph_data(radial_fld_IO%nnod_IO,  r_itp)
 !
       do i = 1, radial_fld_IO%num_field_IO

@@ -44,7 +44,7 @@
         logical :: flag_same_rgrid =  .TRUE.
 !
 !>      Number of radial grids for new spectr data
-        integer(kind = kint) :: nri_old2new =  0
+        integer(kind = kint) :: nri_target =  0
 !>      Inner radial grid ID for interpolation
         integer(kind = kint), allocatable :: k_old2new_in(:)
 !>      Outer radial grid ID for interpolation
@@ -134,10 +134,10 @@
       type(sph_radial_itp_data), intent(inout) :: r_itp
 !
 !
-      r_itp%nri_old2new = nri_new
-      allocate(r_itp%k_old2new_in(r_itp%nri_old2new))
-      allocate(r_itp%k_old2new_out(r_itp%nri_old2new))
-      allocate(r_itp%coef_old2new_in(r_itp%nri_old2new))
+      r_itp%nri_target = nri_new
+      allocate(r_itp%k_old2new_in(r_itp%nri_target))
+      allocate(r_itp%k_old2new_out(r_itp%nri_target))
+      allocate(r_itp%coef_old2new_in(r_itp%nri_target))
 !
       r_itp%k_old2new_in =    0
       r_itp%k_old2new_out =   0
@@ -196,16 +196,16 @@
         if(my_rank .ne. 0)  call allocate_radial_itp_tbl                &
      &                         (new_sph%sph_rj%nidx_rj(1), r_itp)
 !
-        call calypso_mpi_bcast_one_int(r_itp%nri_old2new, 0)
+        call calypso_mpi_bcast_one_int(r_itp%nri_target, 0)
         call calypso_mpi_bcast_one_int(r_itp%kr_inner_domain, 0)
         call calypso_mpi_bcast_one_int(r_itp%kr_outer_domain, 0)
 !
         call calypso_mpi_bcast_int                                      &
-     &     (r_itp%k_old2new_in, cast_long(r_itp%nri_old2new), 0)
+     &     (r_itp%k_old2new_in, cast_long(r_itp%nri_target), 0)
         call calypso_mpi_bcast_int                                      &
-     &     (r_itp%k_old2new_out, cast_long(r_itp%nri_old2new), 0)
+     &     (r_itp%k_old2new_out, cast_long(r_itp%nri_target), 0)
         call calypso_mpi_bcast_real                                     &
-     &     (r_itp%coef_old2new_in, cast_long(r_itp%nri_old2new), 0)
+     &     (r_itp%coef_old2new_in, cast_long(r_itp%nri_target), 0)
 !
       end subroutine share_r_interpolation_tbl
 !

@@ -7,10 +7,13 @@
 !>@brief Interpolate spectr data
 !!
 !!@verbatim
+!!      subroutine alloc_org_radius_interpolate(nri_source, r_itp)
 !!      subroutine alloc_radial_interpolate(nri_target, r_itp)
 !!      subroutine alloc_original_sph_data(n_rj_org, r_itp)
+!!      subroutine dealloc_org_radius_interpolate(r_itp)
 !!      subroutine dealloc_radial_interpolate(r_itp)
 !!      subroutine dealloc_original_sph_data(r_itp)
+!!        integer(kind = kint), intent(in) :: nri_source
 !!        integer(kind = kint), intent(in) :: nri_target
 !!        integer(kind = kint), intent(in) :: n_rj_org
 !!        type(sph_radial_interpolate), intent(inout) :: r_itp
@@ -33,6 +36,9 @@
 !
 !>      Structure for radial interpolation
       type sph_radial_interpolate
+!>        Logical flag if radial grid is same
+        logical :: flag_same_rgrid =  .TRUE.
+!
 !>        Inner boundary address
         integer(kind = kint) :: kr_target_inside
 !>        Outer boundary address
@@ -69,16 +75,25 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_radial_interpolate                               &
-     &         (nri_source, nri_target, r_itp)
+      subroutine alloc_org_radius_interpolate(nri_source, r_itp)
 !
-      integer(kind = kint), intent(in) :: nri_source, nri_target
+      integer(kind = kint), intent(in) :: nri_source
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
 !
       r_itp%nri_source = nri_source
       allocate(r_itp%source_radius(r_itp%nri_source))
       if(r_itp%nri_source .gt. 0) r_itp%source_radius = zero
+!
+      end subroutine alloc_org_radius_interpolate
+!
+!  -------------------------------------------------------------------
+!
+      subroutine alloc_radial_interpolate(nri_target, r_itp)
+!
+      integer(kind = kint), intent(in) :: nri_target
+      type(sph_radial_interpolate), intent(inout) :: r_itp
+!
 !
       r_itp%nri_target = nri_target
       allocate(r_itp%k_old2new_in(r_itp%nri_target))
@@ -109,11 +124,21 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine dealloc_radial_interpolate(r_itp)
+      subroutine dealloc_org_radius_interpolate(r_itp)
 !
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
       deallocate(r_itp%source_radius, r_itp%coef_old2new_in)
+!
+      end subroutine dealloc_org_radius_interpolate
+!
+!  -------------------------------------------------------------------
+!
+      subroutine dealloc_radial_interpolate(r_itp)
+!
+      type(sph_radial_interpolate), intent(inout) :: r_itp
+!
+      deallocate(r_itp%coef_old2new_in)
       deallocate(r_itp%k_old2new_in, r_itp%k_old2new_out)
 !
       end subroutine dealloc_radial_interpolate
