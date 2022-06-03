@@ -240,22 +240,20 @@
 !
 !      Set reference temperature and adjust boundary conditions
 !
-      if(iflag_debug .gt. 0) write(*,*) 'alloc_reft_rj_data'
-      call alloc_reft_rj_data(sph_rj, reftemp)
-!
       if (ref_param%iflag_reference .eq. id_sphere_ref_temp) then
         if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
         call set_ref_temp_sph_mhd                                       &
      &   (ref_param%low_value, ref_param%depth_top,                     &
      &    ref_param%high_value, ref_param%depth_bottom,                 &
      &    sph_rj%nidx_rj, sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,       &
-     &    reftemp%t_rj)
+     &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad))
       else if(ref_param%iflag_reference .eq. id_takepiro_temp) then
         call set_stratified_sph_mhd(takepiro%stratified_sigma,          &
      &    takepiro%stratified_width, takepiro%stratified_outer_r,       &
      &    sph_rj%nidx_rj, sph_params%radius_ICB, sph_params%radius_CMB, &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_rj%radius_1d_rj_r, reftemp%t_rj)
+     &    sph_rj%radius_1d_rj_r, ref_field%d_fld(1,iref_scalar),        &
+     &    ref_field%d_fld(1,iref_grad))
       else if(ref_param%iflag_reference                                 &
      &                             .eq. id_numerical_solution) then
         call const_r_mat00_scalar_sph                                   &
@@ -266,18 +264,13 @@
         call const_diffusive_profiles                                   &
      &     (sph_rj, sc_prop, sph_bc_S, bcs_S, fdm2_center, r_2nd,       &
      &      band_s00_poisson, i_source, rj_fld,                         &
-     &      file_name, reftemp%t_rj)
+     &     ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad))
         call dealloc_band_matrix(band_s00_poisson)
-        ref_field%d_fld(1:sph_rj%nidx_rj(1)+1,iref_scalar)   &
-     &                   = reftemp%t_rj(0:sph_rj%nidx_rj(1),0)
-        ref_field%d_fld(1:sph_rj%nidx_rj(1)+1,iref_grad)     &
-     &               = reftemp%t_rj(0:sph_rj%nidx_rj(1),1)
-!        ref_field%d_fld(1:sph_rj%nidx_rj(1),iref_source)   &
-!     &    = 
       else
-        call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
-     &      ref_param%depth_bottom, sph_rj%nidx_rj(1),                  &
-     &      sph_params%radius_ICB, sph_params%radius_CMB, reftemp%t_rj)
+        call no_ref_temp_sph_mhd(sph_rj%nidx_rj(1),                     &
+     &      sph_params%radius_ICB, sph_params%radius_CMB,               &
+     &      ref_param%depth_top, ref_param%depth_bottom,                &
+     &     ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad))
       end if
 !
       if (ref_param%iflag_reference .eq. id_sphere_ref_temp             &
@@ -285,14 +278,17 @@
      & .or. ref_param%iflag_reference .eq. id_numerical_solution) then
         call adjust_sph_temp_bc_by_reftemp                              &
      &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),               &
-     &      reftemp%t_rj, sph_bc_S, bcs_S%ICB_Sspec, bcs_S%CMB_Sspec,   &
+     &     ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad),&
+     &      sph_bc_S, bcs_S%ICB_Sspec, bcs_S%CMB_Sspec,                 &
      &      bcs_S%ICB_Sevo, bcs_S%CMB_Sevo)
       end if
 !
-!      call set_reftemp_4_sph                                           &
-!     &   (sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,            &
-!     &    sph_rj%nidx_rj, reftemp%t_rj, i_ref, i_gref,                 &
-!     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!      if (i_ref*i_gref .gt. izero) then
+!        call set_reftemp_4_sph(sph_rj%idx_rj_degree_zero,              &
+!     &    sph_rj%inod_rj_center, sph_rj%nnod_rj, sph_rj%nidx_rj,       &
+!     &    ref_field%d_fld(1,iref_scalar), ref_field%d_fld(1,iref_grad),&
+!     &    rj_fld%d_fld(1,i_ref), rj_fld%d_fld(1,i_gref))
+!      end ifr
 !
       end subroutine init_reference_scalar
 !

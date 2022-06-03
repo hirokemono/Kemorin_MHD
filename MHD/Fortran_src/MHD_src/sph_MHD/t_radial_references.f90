@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine const_diffusive_profiles(sph_rj, sc_prop,            &
 !!     &          sph_bc_S, bcs_S, fdm2_center, r_2nd, band_s00_poisson,&
-!!     &          i_source, rj_fld, file_name, reftemp_rj)
+!!     &          i_source, rj_fld, reftemp_r, refgrad_r)
 !!      subroutine const_diffusive_profile_fix_bc                       &
 !!     &        (sph_rj, sc_prop, sph_bc_S, fdm2_center, r_2nd,         &
 !!     &         band_s00_poisson, i_temp, i_source, rj_fld, file_name, &
@@ -58,7 +58,7 @@
 !
       subroutine const_diffusive_profiles(sph_rj, sc_prop,              &
      &          sph_bc_S, bcs_S, fdm2_center, r_2nd, band_s00_poisson,  &
-     &          i_source, rj_fld, file_name, reftemp_rj)
+     &          i_source, rj_fld, reftemp_r, refgrad_r)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -70,10 +70,9 @@
       type(band_matrix_type), intent(in) :: band_s00_poisson
 !
       integer(kind = kint), intent(in) :: i_source
-      character(len=kchara), intent(in) :: file_name
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                :: reftemp_rj(0:sph_rj%nidx_rj(1),0:1)
+      real(kind=kreal), intent(inout) :: reftemp_r(0:sph_rj%nidx_rj(1))
+      real(kind=kreal), intent(inout) :: refgrad_r(0:sph_rj%nidx_rj(1))
 !
       real(kind = kreal), allocatable :: ref_local(:,:)
       integer(kind = kint) :: k
@@ -87,13 +86,8 @@
 !
       call const_diffusive_profile(i_source, sph_rj, r_2nd,             &
      &    sc_prop, sph_bc_S, bcs_S, fdm2_center, band_s00_poisson,      &
-     &    rj_fld, ref_local, reftemp_rj)
+     &    rj_fld, reftemp_r, refgrad_r, ref_local)
       deallocate(ref_local)
-!
-      if(iflag_debug .gt. 0) then
-        call write_diffusive_profile_file                               &
-     &     (file_name, sph_rj, reftemp_rj)
-      end if
 !
       end subroutine const_diffusive_profiles
 !
@@ -164,7 +158,8 @@
 !
       subroutine const_diffusive_profile(is_source, sph_rj, r_2nd,      &
      &          sc_prop, sph_bc, bcs_S, fdm2_center,                    &
-     &          band_s00_poisson, rj_fld, reftemp_rj, ref_local)
+     &          band_s00_poisson, rj_fld, reftemp_r, refgrad_r,         &
+     &          ref_local)
 !
       use calypso_mpi
       use calypso_mpi_real
@@ -184,8 +179,8 @@
       type(band_matrix_type), intent(in) :: band_s00_poisson
       type(phys_data), intent(in) :: rj_fld
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                :: reftemp_rj(0:sph_rj%nidx_rj(1),0:1)
+      real(kind=kreal), intent(inout) :: reftemp_r(0:sph_rj%nidx_rj(1))
+      real(kind=kreal), intent(inout) :: refgrad_r(0:sph_rj%nidx_rj(1))
       real(kind = kreal), intent(inout)                                 &
      &                :: ref_local(0:sph_rj%nidx_rj(1),0:1)
 !
@@ -243,10 +238,13 @@
       end if
 !
 !$omp parallel workshare
-      reftemp_rj(0:sph_rj%nidx_rj(1),0:1) = 0.0d0
+      reftemp_r(0:sph_rj%nidx_rj(1)) = 0.0d0
+      refgrad_r(0:sph_rj%nidx_rj(1)) = 0.0d0
 !$omp end parallel workshare
-      num64 = 2 * (sph_rj%nidx_rj(1) + 1)
-      call calypso_mpi_allreduce_real(ref_local, reftemp_rj,            &
+      num64 = sph_rj%nidx_rj(1) + 1
+      call calypso_mpi_allreduce_real(ref_local(0,0), reftemp_r,        &
+     &                                num64, MPI_SUM)
+      call calypso_mpi_allreduce_real(ref_local(0,1), refgrad_r,        &
      &                                num64, MPI_SUM)
 !
       end subroutine const_diffusive_profile

@@ -12,8 +12,6 @@
 !!          type(sph_rj_grid), intent(in) ::  sph_rj
 !!          type(phys_address), intent(in) :: ipol
 !!          type(reference_field), intent(inout) :: refs
-!!        subroutine alloc_reft_rj_data(nri_rj, ref_temp)
-!!        subroutine dealloc_reft_rj_data(ref_temp)
 !!@endverbatim
 !!
 !!@n @param my_rank process ID
@@ -31,8 +29,6 @@
 !
 !>      Structure of reference temperature
       type reference_field
-!>      Number of radial points for reference temperature
-        integer(kind = kint) :: nri_reft_rj
 !>        Address of radius
         integer(kind = kint) :: iref_radius
 !>        Address of reference field
@@ -41,9 +37,6 @@
         type(gradient_field_address) :: iref_grad
 !>        Structure of reference field (include center at the end)
         type(phys_data) :: ref_field
-!
-!>    reference temerature spectr @f$ f(r,j) @f$
-        real (kind=kreal), allocatable :: t_rj(:,:)
       end type reference_field
 !
 ! -----------------------------------------------------------------------
@@ -116,30 +109,6 @@
       end subroutine init_reft_rj_data
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine alloc_reft_rj_data(sph_rj, ref_temp)
-!
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(reference_field), intent(inout) :: ref_temp
-!
-!
-      ref_temp%nri_reft_rj = sph_rj%nidx_rj(1)
-      allocate( ref_temp%t_rj(0:ref_temp%nri_reft_rj,0:1))
-      ref_temp%t_rj =  0.0d0
-!
-      end subroutine alloc_reft_rj_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_reft_rj_data(ref_temp)
-!
-      type(reference_field), intent(inout) :: ref_temp
-!
-      deallocate( ref_temp%t_rj )
-!
-      end subroutine dealloc_reft_rj_data
-!
-!  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
       subroutine output_reference_field(file_IO, ref_fld)
