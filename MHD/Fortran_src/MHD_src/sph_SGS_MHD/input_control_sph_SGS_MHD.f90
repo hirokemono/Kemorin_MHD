@@ -80,9 +80,10 @@
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl%plt, MHD_ctl%org_plt, MHD_ctl%model_ctl,              &
      &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
-     &    MHD_files, SPH_model%bc_IO, SPH_SGS%SGS_par, SPH_SGS%dynamic, &
-     &    MHD_step, SPH_model%MHD_prop, SPH_model%MHD_BC,               &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD%sph_maker)
+     &    MHD_files, SPH_model%bc_IO, SPH_model%refs,                   &
+     &    SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,                   &
+     &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_WK%trans_p,         &
+     &    SPH_WK%trns_WK, SPH_MHD%sph_maker)
 !
       call set_control_SGS_SPH_MHD_field(MHD_ctl%model_ctl,             &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, MHD_ctl%zm_ctls,      &

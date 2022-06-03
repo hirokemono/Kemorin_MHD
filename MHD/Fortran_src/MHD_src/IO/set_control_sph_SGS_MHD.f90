@@ -12,7 +12,7 @@
 !!     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor)
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt,              &
 !!     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,  &
-!!     &          bc_IO, ref_IO, SGS_par, dynamic_SPH, MHD_step,        &
+!!     &          bc_IO, refs, SGS_par, dynamic_SPH, MHD_step,          &
 !!     &          MHD_prop, MHD_BC, trans_p, WK, sph_maker)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
@@ -25,7 +25,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(boundary_spectra), intent(inout) :: bc_IO
-!!        type(boundary_spectra), intent(inout) :: ref_IO
+!!        type(reference_field), intent(inout) :: refs
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -135,7 +135,7 @@
 !
       subroutine set_control_4_SPH_SGS_MHD(plt, org_plt,                &
      &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,    &
-     &          bc_IO, ref_IO, SGS_par, dynamic_SPH, MHD_step,          &
+     &          bc_IO, refs, SGS_par, dynamic_SPH, MHD_step,            &
      &          MHD_prop, MHD_BC, trans_p, WK, sph_maker)
 !
       use t_SGS_control_parameter
@@ -148,6 +148,7 @@
       use t_ctl_params_gen_sph_shell
       use t_SPH_mesh_field_data
       use t_sph_trans_arrays_MHD
+      use t_radial_reference_temp
 !
       use set_control_4_SGS
       use set_control_SGS_commute
@@ -166,7 +167,7 @@
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
-      type(boundary_spectra), intent(inout) :: ref_IO
+      type(reference_field), intent(inout) :: refs
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -193,8 +194,8 @@
 !
       call set_control_SGS_SPH_MHD(plt, org_plt,                        &
      &    model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,          &
-     &    bc_IO, ref_IO, MHD_step, MHD_prop, MHD_BC, trans_p,           &
-     &    WK, sph_maker)
+     &    bc_IO, refs%ref_inoput_IO, MHD_step, MHD_prop,                &
+     &    MHD_BC, trans_p, WK, sph_maker)
 !
       end subroutine set_control_4_SPH_SGS_MHD
 !
@@ -269,7 +270,7 @@
 !
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,    &
-     &          bc_IO, ref_IO, MHD_step, MHD_prop, MHD_BC,              &
+     &          bc_IO, ref_inoput_IO, MHD_step, MHD_prop, MHD_BC,       &
      &          trans_p, WK, sph_maker)
 !
       use t_spheric_parameter
@@ -306,7 +307,7 @@
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
-      type(boundary_spectra), intent(inout) :: ref_IO
+      type(field_IO_params), intent(inout) :: ref_inoput_IO
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -350,7 +351,8 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
       call s_set_control_sph_data_MHD(plt, smctl_ctl%mevo_ctl,          &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
-     &    MHD_files%fst_file_IO, bc_IO, ref_IO, trans_p, WK%WK_leg)
+     &    MHD_files%fst_file_IO, bc_IO, ref_inoput_IO,                  &
+     &    trans_p, WK%WK_leg)
 !
 !   set control parameters
 !

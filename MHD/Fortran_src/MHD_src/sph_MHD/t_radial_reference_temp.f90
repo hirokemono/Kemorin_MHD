@@ -8,10 +8,12 @@
 !!
 !!
 !!@verbatim
-!!        subroutine init_reft_rj_data(sph_rj, ipol, refs)
-!!          type(sph_rj_grid), intent(in) ::  sph_rj
-!!          type(phys_address), intent(in) :: ipol
-!!          type(reference_field), intent(inout) :: refs
+!!      subroutine init_reft_rj_data(sph_rj, ipol, refs)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol
+!!        type(reference_field), intent(inout) :: refs
+!!      subroutine output_reference_field(refs)
+!!        type(reference_field), intent(in) :: refs
 !!@endverbatim
 !!
 !!@n @param my_rank process ID
@@ -24,11 +26,17 @@
       use t_phys_address
       use t_base_field_labels
       use t_grad_field_labels
+      use t_file_IO_parameter
 !
       implicit  none
 !
 !>      Structure of reference temperature
       type reference_field
+!>        file name to read radial reference data
+        type(field_IO_params) :: ref_inoput_IO
+!>        file name to write radial reference data
+        type(field_IO_params) :: ref_output_IO
+!
 !>        Address of radius
         integer(kind = kint) :: iref_radius
 !>        Address of reference field
@@ -110,23 +118,20 @@
 ! -----------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine output_reference_field(file_IO, ref_fld)
+      subroutine output_reference_field(refs)
 !
       use calypso_mpi
       use t_time_data
       use t_field_data_IO
-      use t_file_IO_parameter
       use field_file_IO
 !
       use copy_rj_phys_data_4_IO
       use set_sph_extensions
 !
-      type(phys_data), intent(in) :: ref_fld
-      type(field_IO_params), intent(in) :: file_IO
+      type(reference_field), intent(in) :: refs
 !
       type(field_IO) :: sph_out_IO
       type(time_data) :: time_IO
-      character(len=kchara) :: file_name
 !
 !
       if(my_rank .ne. 0) return
@@ -136,14 +141,13 @@
       time_IO%dt = zero
 !
       call copy_rj_phys_name_to_IO                                      &
-     &   (ref_fld%num_phys_viz, ref_fld, sph_out_IO)
+     &   (refs%ref_field%num_phys_viz, refs%ref_field, sph_out_IO)
       call alloc_phys_data_IO(sph_out_IO)
       call copy_rj_phys_data_to_IO                                      &
-     &   (ref_fld%num_phys_viz, ref_fld, sph_out_IO)
+     &   (refs%ref_field%num_phys_viz, refs%ref_field, sph_out_IO)
 !
-      file_name = add_fst_extension(file_IO%file_prefix)
-      call write_step_field_file(file_name, my_rank,                    &
-     &                           time_IO, sph_out_IO)
+      call write_step_field_file(refs%ref_output_IO%file_prefix,        &
+     &                           my_rank, time_IO, sph_out_IO)
 !
       call dealloc_phys_data_IO(sph_out_IO)
       call dealloc_phys_name_IO(sph_out_IO)
@@ -153,7 +157,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_alloc_sph_reference_data                          &
-     &         (file_IO, rj_fld)
+     &         (refs, ref_field)
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -165,33 +169,31 @@
       use set_sph_restart_IO
       use set_sph_extensions
 !
-      type(field_IO_params), intent(in) :: file_IO
+      type(reference_field), intent(in) :: refs
 !
-      type(phys_data), intent(inout) :: rj_fld
+      type(phys_data), intent(inout) :: ref_field
 !
       type(time_data) :: time_IO
       type(field_IO) :: sph_fst_IO
-      character(len=kchara) :: file_name
       integer(kind = kint_gl) :: num64
 !
 !
-      rj_fld%iflag_update(1:rj_fld%ntot_phys) = 0
+      ref_field%iflag_update(1:ref_field%ntot_phys) = 0
       if(my_rank .eq. 0) then
+      if(refs%ref_inoput_IO%iflag_IO .eq. 0) return
+        call read_and_alloc_step_field(refs%ref_inoput_IO%file_prefix,  &
+     &                                  my_rank, time_IO, sph_fst_IO)
 !
-        file_name = add_fst_extension(file_IO%file_prefix)
-        call read_and_alloc_step_field                                  &
-     &     (file_name, my_rank, time_IO, sph_fst_IO)
-!
-        call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
+        call set_sph_restart_from_IO(sph_fst_IO, ref_field)
 !
         call dealloc_phys_data_IO(sph_fst_IO)
         call dealloc_phys_name_IO(sph_fst_IO)
       end if
 !
-      num64 = rj_fld%ntot_phys
-      call calypso_mpi_bcast_int(rj_fld%iflag_update, num64, 0)
-      num64 = rj_fld%n_point * rj_fld%ntot_phys
-      call calypso_mpi_bcast_real(rj_fld%d_fld, num64, 0)
+      num64 = ref_field%ntot_phys
+      call calypso_mpi_bcast_int(ref_field%iflag_update, num64, 0)
+      num64 = ref_field%n_point * ref_field%ntot_phys
+      call calypso_mpi_bcast_real(ref_field%d_fld, num64, 0)
 !
       end subroutine read_alloc_sph_reference_data
 !

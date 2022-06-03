@@ -194,8 +194,8 @@
      &    refs%iref_base%i_light_source, refs%ref_field,                &
      &    sph_MHD_bc%bcs_C)
 !
-      file_IO%file_prefix = 'reference_fields'
-      call output_reference_field(file_IO, refs%ref_field)
+      refs%ref_output_IO%file_prefix = 'reference_fields'
+      call output_reference_field(refs)
 !
       end subroutine init_reference_scalars
 !
