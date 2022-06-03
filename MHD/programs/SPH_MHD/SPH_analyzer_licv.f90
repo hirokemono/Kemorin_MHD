@@ -118,7 +118,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
       call init_reference_scalars                                       &
-     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_WK%r_2nd, SPH_model%ref_temp,  &
+     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_WK%r_2nd, SPH_model%refs,      &
      &    SPH_MHD%fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
 ! ---------------------------------
@@ -131,7 +131,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-     &   (SPH_model%MHD_prop, SPH_model%ref_temp,                       &
+     &   (SPH_model%MHD_prop, SPH_model%refs,                           &
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !  -------------------------------
@@ -156,8 +156,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
-      call licv_exp(SPH_model%ref_temp,                                 &
-     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
+      call licv_exp                                                     &
+     &   (SPH_model%refs, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                 &
      &    SPH_MHD%fld, SR_sig, SR_r)
@@ -219,8 +219,8 @@
      &    SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_MHD%fld)
 !*
 !*  ----------------lead nonlinear term ... ----------
-        call licv_exp(SPH_model%ref_temp,                               &
-     &     SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                    &
+        call licv_exp                                                   &
+     &    (SPH_model%refs, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,    &
      &     SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,             &
      &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,                &
      &     SPH_MHD%fld, SR_sig, SR_r)
@@ -230,7 +230,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph                                   &
-     &   (SPH_model%MHD_prop, SPH_model%ref_temp,                       &
+     &   (SPH_model%MHD_prop, SPH_model%refs,                           &
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
@@ -274,7 +274,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-     &   (SPH_model%MHD_prop, SPH_model%ref_temp,                       &
+     &   (SPH_model%MHD_prop, SPH_model%refs,                           &
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !

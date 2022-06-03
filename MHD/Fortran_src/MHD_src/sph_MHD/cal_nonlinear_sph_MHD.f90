@@ -40,7 +40,7 @@
 !!        type(base_field_address), intent(in) :: b_trns_base
 !!        type(base_force_address), intent(in) :: f_trns_frc
 !!      subroutine add_ref_advect_sph_MHD(sph_rj, sph_MHD_bc, MHD_prop, &
-!!     &          leg, ref_temp, ipol, rj_fld)
+!!     &          leg, refs, ipol, rj_fld)
 !!       Input ::  rj_fld(1,is_fld)
 !!               is_fld = i_velo, forces%i_h_advect, forces%i_c_advect
 !!       Output :: rj_fld(1,is_fld)
@@ -50,7 +50,7 @@
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol
-!!        type(reference_field), intent(in) :: ref_temp
+!!        type(reference_field), intent(in) :: refs
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine add_reference_advect_sph                             &
 !!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,           &
@@ -283,7 +283,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine add_ref_advect_sph_MHD(sph_rj, sph_MHD_bc, MHD_prop,   &
-     &          leg, ref_temp, ipol, rj_fld)
+     &          leg, refs, ipol, rj_fld)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -291,7 +291,7 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
 !
-      type(reference_field), intent(in) :: ref_temp
+      type(reference_field), intent(in) :: refs
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -301,14 +301,14 @@
      &      MHD_prop%ht_prop, MHD_prop%ref_param_T,                     &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
      &      ipol%forces%i_h_advect, ipol%base%i_velo,                   &
-     &      ref_temp%ref_field%d_fld(1,ref_temp%iref_grad%i_grad_temp), &
+     &      refs%ref_field%d_fld(1,refs%iref_grad%i_grad_temp),         &
      &      rj_fld)
         call add_reference_advect_sph(sph_MHD_bc%sph_bc_C,              &
      &      MHD_prop%cp_prop, MHD_prop%ref_param_C,                     &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
      &      ipol%forces%i_c_advect, ipol%base%i_velo,                   &
-     & ref_temp%ref_field%d_fld(1,ref_temp%iref_grad%i_grad_composit),  &
-     &     rj_fld)
+     &      refs%ref_field%d_fld(1,refs%iref_grad%i_grad_composit),     &
+     &      rj_fld)
 !
       end subroutine add_ref_advect_sph_MHD
 !

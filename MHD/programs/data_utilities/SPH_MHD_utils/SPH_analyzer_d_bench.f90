@@ -118,7 +118,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_reference_scalars'
       call init_reference_scalars                                       &
-     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_WK%r_2nd, SPH_model%ref_temp,  &
+     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_WK%r_2nd, SPH_model%refs,      &
      &    SPH_MHD%fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
@@ -178,7 +178,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-     &   (SPH_model%MHD_prop, SPH_model%ref_temp,                       &
+     &   (SPH_model%MHD_prop, SPH_model%refs,                           &
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !* obtain linear terms for starting
@@ -193,7 +193,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph                                   &
-     &   (SPH_model%MHD_prop, SPH_model%ref_temp,                       &
+     &   (SPH_model%MHD_prop, SPH_model%refs,                           &
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !*
       if(lead_field_data_flag(i_step, MHD_step1)) then

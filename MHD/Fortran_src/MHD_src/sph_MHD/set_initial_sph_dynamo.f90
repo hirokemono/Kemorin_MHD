@@ -131,17 +131,17 @@
      &   .or. iflag_restart .eq. i_rst_dbench2                          &
      &   .or. iflag_restart .eq. i_rst_dbench_qcv) then
         call sph_initial_data_4_benchmarks                              &
-     &     (SPH_model%ref_temp, sph%sph_params, sph%sph_rj,             &
+     &     (SPH_model%refs, sph%sph_params, sph%sph_rj,                 &
      &      SPH_model%MHD_prop, ipol, rj_fld)
 !
 !   set small seed magnetic field
       else if (iflag_restart .eq. i_rst_no_file) then
         call sph_initial_data_w_seed_B                                  &
-     &     (SPH_model%ref_temp, sph%sph_params, sph%sph_rj,             &
+     &     (SPH_model%refs, sph%sph_params, sph%sph_rj,                 &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                   &
      &      ipol, rj_fld)
       else if (iflag_restart .eq. i_rst_licv) then
-        call sph_initial_field_4_licv(SPH_model%ref_temp,               &
+        call sph_initial_field_4_licv(SPH_model%refs,                   &
      &      sph%sph_params, sph%sph_rj,                                 &
      &      SPH_model%MHD_prop, ipol, rj_fld)
       end if
@@ -169,7 +169,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_initial_data_4_benchmarks                          &
-     &         (ref_temp, sph_params, sph_rj, MHD_prop, ipol, rj_fld)
+     &         (refs, sph_params, sph_rj, MHD_prop, ipol, rj_fld)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -185,7 +185,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(reference_field), intent(in) :: ref_temp
+      type(reference_field), intent(in) :: refs
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -242,7 +242,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_initial_data_w_seed_B                              &
-     &         (ref_temp, sph_params, sph_rj, MHD_prop, sph_MHD_bc,     &
+     &         (refs, sph_params, sph_rj, MHD_prop, sph_MHD_bc,         &
      &          ipol, rj_fld)
 !
       use t_MHD_step_parameter
@@ -256,7 +256,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(reference_field), intent(in) :: ref_temp
+      type(reference_field), intent(in) :: refs
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -264,7 +264,7 @@
 !
         if(ipol%base%i_temp .gt. 0)  then
           call set_ini_reference_temp_sph(sph_rj, MHD_prop%ref_param_T, &
-     &        ref_temp%ref_field%d_fld(1,ref_temp%iref_base%i_temp),    &
+     &        refs%ref_field%d_fld(1,refs%iref_base%i_temp),            &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%d_fld(1,ipol%base%i_temp))
           call set_noize_scalar_sph(sph_rj,                             &
@@ -274,7 +274,7 @@
         end if
         if(ipol%base%i_light .gt. 0) then
           call set_ini_reference_temp_sph(sph_rj, MHD_prop%ref_param_C, &
-     &        ref_temp%ref_field%d_fld(1,ref_temp%iref_base%i_light),   &
+     &        refs%ref_field%d_fld(1,refs%iref_base%i_light),           &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%d_fld(1,ipol%base%i_light))
           call set_noize_scalar_sph(sph_rj,                             &
@@ -296,7 +296,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_field_4_licv(ref_temp, sph_params, sph_rj, &
+      subroutine sph_initial_field_4_licv(refs, sph_params, sph_rj,     &
      &          MHD_prop, ipol, rj_fld)
 !
       use t_MHD_step_parameter
@@ -309,14 +309,14 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(reference_field), intent(in) :: ref_temp
+      type(reference_field), intent(in) :: refs
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call set_ini_reference_temp_sph(sph_rj, MHD_prop%ref_param_T,     &
-     &    ref_temp%ref_field%d_fld(1,ref_temp%iref_base%i_temp),        &
+     &    refs%ref_field%d_fld(1,refs%iref_base%i_temp),                &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    rj_fld%d_fld(1,ipol%base%i_temp))
       call set_noize_scalar_sph(sph_rj,                                 &
