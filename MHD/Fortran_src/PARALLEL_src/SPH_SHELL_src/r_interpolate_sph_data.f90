@@ -37,6 +37,7 @@
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
+      use t_sph_radial_interpolate
 !
       implicit  none
 !
@@ -50,7 +51,8 @@
       real(kind = kreal), allocatable :: r_org(:)
 !
       integer(kind = kint) :: ntot_phys_rj_itp
-      real(kind = kreal), allocatable :: d_rj_org(:,:)
+!
+      type(sph_radial_interpolate) :: r_itp
 !
       private :: allocate_original_sph_data
       private :: copy_original_sph_rj_from_IO
@@ -114,12 +116,12 @@
       allocate(k_inter(nri_org,2))
       allocate(rcoef_inter(nri_org,2))
 !
-      allocate(d_rj_org(n_rj_org,6))
+      allocate(r_itp%d_rj_org(n_rj_org,6))
 !
       k_inter = izero
       r_org = zero
       rcoef_inter = zero
-      d_rj_org =    zero
+      if(n_rj_org .gt. 0) r_itp%d_rj_org =    zero
 !
       end subroutine allocate_original_sph_data
 !
@@ -127,7 +129,7 @@
 !
       subroutine deallocate_original_sph_data
 !
-      deallocate(r_org, d_rj_org)
+      deallocate(r_org, r_itp%d_rj_org)
       deallocate(k_inter, rcoef_inter)
 !
       end subroutine deallocate_original_sph_data
@@ -228,12 +230,12 @@
      &       .or. rj_fld%phys_name(i_fld) .eq. entropy_source%name      &
      &         ) then
               call set_org_rj_phys_data_from_IO                         &
-     &           (j_fld, fld_IO, n_rj_org, d_rj_org)
+     &           (j_fld, fld_IO, n_rj_org, r_itp%d_rj_org)
               call r_interpolate_sph_vector(i_fld, sph_rj%nidx_rj,      &
      &            rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,    &
      &            rj_fld%istack_component, kr_inside, kr_outside,       &
-     &            nri_org, k_inter, rcoef_inter, n_rj_org, d_rj_org,    &
-     &            rj_fld%d_fld)
+     &            nri_org, k_inter, rcoef_inter, n_rj_org,              &
+     &            r_itp%d_rj_org, rj_fld%d_fld)
               exit
             end if
           end if
@@ -274,12 +276,12 @@
         do j_fld = 1, fld_IO%num_field_IO
           if(rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
             call set_org_rj_phys_data_from_IO                           &
-     &         (j_fld, fld_IO, n_rj_org, d_rj_org)
+     &         (j_fld, fld_IO, n_rj_org, r_itp%d_rj_org)
             call r_interpolate_sph_vector(i_fld, sph_rj%nidx_rj,        &
      &          rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,      &
      &          rj_fld%istack_component,  kr_inside, kr_outside,        &
-     &          nri_org, k_inter, rcoef_inter, n_rj_org, d_rj_org,      &
-     &          rj_fld%d_fld)
+     &          nri_org, k_inter, rcoef_inter, n_rj_org,                &
+     &          r_itp%d_rj_org,rj_fld%d_fld)
             exit
           end if
         end do
