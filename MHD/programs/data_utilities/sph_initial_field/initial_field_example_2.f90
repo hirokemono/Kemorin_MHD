@@ -34,7 +34,7 @@
       use t_time_data
       use t_spheric_parameter
       use t_boundary_params_sph_MHD
-      use t_radial_reference_temp
+      use t_radial_reference_field
       use t_field_data_IO
 !
       implicit none

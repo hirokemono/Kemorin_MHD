@@ -166,7 +166,9 @@
       end do
 !
       if(sph_bc%iflag_icb .eq. iflag_fixed_field                        &
-     &  .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
+     &  .or. sph_bc%iflag_icb .eq. iflag_evolve_field                   &
+     &  .or. sph_bc%iflag_icb .eq. iflag_fixed_flux                     &
+     &  .or. sph_bc%iflag_icb .eq. iflag_evolve_flux) then
         if(inod_rj_center .gt. 0) d_r(0) = d_r(sph_bc%kr_in)
       end if
 !

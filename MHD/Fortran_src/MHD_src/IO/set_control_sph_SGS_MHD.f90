@@ -25,7 +25,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(boundary_spectra), intent(inout) :: bc_IO
-!!        type(reference_field), intent(inout) :: refs
+!!        type(radial_reference_field), intent(inout) :: refs
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -148,7 +148,7 @@
       use t_ctl_params_gen_sph_shell
       use t_SPH_mesh_field_data
       use t_sph_trans_arrays_MHD
-      use t_radial_reference_temp
+      use t_radial_reference_field
 !
       use set_control_4_SGS
       use set_control_SGS_commute
@@ -167,7 +167,7 @@
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
-      type(reference_field), intent(inout) :: refs
+      type(radial_reference_field), intent(inout) :: refs
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(MHD_step_param), intent(inout) :: MHD_step

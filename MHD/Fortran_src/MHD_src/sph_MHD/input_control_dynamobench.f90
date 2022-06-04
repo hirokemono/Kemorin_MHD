@@ -12,7 +12,7 @@
 !!     &           MHD_step, MHD_prop, MHD_BC, SPH_WK, cdat, bench)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(boundary_spectra), intent(inout) :: bc_IO
-!!        type(reference_field), intent(inout) :: refs
+!!        type(radial_reference_field), intent(inout) :: refs
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -50,7 +50,7 @@
       use t_flex_delta_t_data
       use t_field_4_dynamobench
       use t_work_SPH_MHD
-      use t_radial_reference_temp
+      use t_radial_reference_field
 !
       implicit none
 !
@@ -74,7 +74,7 @@
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
-      type(reference_field), intent(inout) :: refs
+      type(radial_reference_field), intent(inout) :: refs
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !

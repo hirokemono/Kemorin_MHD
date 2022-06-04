@@ -9,11 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine overwrite_each_field_by_ref                         &
-!!     &         (sph_rj, iref_source, ref_field, ipol_source, rj_fld)
+!!     &         (sph_rj, iref_source, ipol_source, ref_field, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        integer(kind = kint), intent(in) :: iref_source
-!!        type(phys_data), intent(in) :: ref_field
 !!        integer(kind = kint), intent(in) :: ipol_source
+!!        type(phys_data), intent(inout) :: ref_field
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine interpolate_reference_data_IO(radius_name,           &
 !!     &         (iref_radius, ref_fld_IO, ref_field, r_itp)
@@ -48,15 +48,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine overwrite_each_field_by_ref                           &
-     &         (sph_rj, iref_source, ref_field, ipol_source, rj_fld)
+     &         (sph_rj, iref_source, ipol_source, ref_field, rj_fld)
 !
       use fill_scalar_field
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: iref_source
-      type(phys_data), intent(in) :: ref_field
       integer(kind = kint), intent(in) :: ipol_source
 !
+      type(phys_data), intent(inout) :: ref_field
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: i
@@ -71,15 +71,23 @@
           exit
         end if
       end do
-      if(flag .eqv. .FALSE.) return
-!
-      write(*,'(3a)') 'Overwrite ',                                     &
+      if(flag .eqv. .FALSE.) then
+        write(*,'(3a)') 'Overwrite ',                                   &
      &                trim(rj_fld%phys_name(ipol_source)),              &
-     &                ' from radial field file'
-      call copy_degree0_comps_from_sol(sph_rj%nidx_rj(2),               &
-     &    sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,             &
-     &    sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_source),            &
-     &    rj_fld%n_point, rj_fld%d_fld(1,ipol_source))
+     &                ' FROM radial field file'
+        call copy_degree0_comps_from_sol(sph_rj%nidx_rj(2),             &
+     &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
+     &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_source),          &
+     &      rj_fld%n_point, rj_fld%d_fld(1,ipol_source))
+      else
+        write(*,'(3a)') 'Overwrite ',                                   &
+     &                trim(rj_fld%phys_name(ipol_source)),              &
+     &                ' TO radial field data'
+        call copy_degree0_comps_to_sol(sph_rj%nidx_rj(2),               &
+     &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
+     &      rj_fld%n_point, rj_fld%d_fld(1,ipol_source),                &
+     &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_source))
+      end if
 !
       end subroutine overwrite_each_field_by_ref
 !

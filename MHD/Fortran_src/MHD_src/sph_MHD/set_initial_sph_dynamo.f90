@@ -34,7 +34,7 @@
       use t_time_data
       use t_spheric_parameter
       use t_boundary_params_sph_MHD
-      use t_radial_reference_temp
+      use t_radial_reference_field
       use t_field_data_IO
       use t_phys_address
       use t_phys_data
@@ -253,7 +253,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(reference_field), intent(in) :: refs
+      type(radial_reference_field), intent(in) :: refs
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -306,7 +306,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(reference_field), intent(in) :: refs
+      type(radial_reference_field), intent(in) :: refs
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld

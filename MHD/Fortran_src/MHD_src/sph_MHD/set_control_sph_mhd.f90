@@ -28,7 +28,7 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(boundary_spectra), intent(inout) :: bc_IO
-!!        type(reference_field), intent(inout) :: refs
+!!        type(radial_reference_field), intent(inout) :: refs
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -71,7 +71,7 @@
       use t_bc_data_list
       use t_flex_delta_t_data
       use t_SPH_mesh_field_data
-      use t_radial_reference_temp
+      use t_radial_reference_field
 !
       implicit none
 !
@@ -196,7 +196,7 @@
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
-      type(reference_field), intent(inout) :: refs
+      type(radial_reference_field), intent(inout) :: refs
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC

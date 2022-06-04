@@ -1,5 +1,5 @@
-!>@file   t_radial_references.f90
-!!@brief  module t_radial_references
+!>@file   const_radial_references.f90
+!!@brief  module const_radial_references
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Oct., 2009
@@ -23,7 +23,7 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson
 !!@endverbatim
-      module t_radial_references
+      module const_radial_references
 !
       use m_precision
       use m_constants
@@ -335,4 +335,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module t_radial_references
+      end module const_radial_references

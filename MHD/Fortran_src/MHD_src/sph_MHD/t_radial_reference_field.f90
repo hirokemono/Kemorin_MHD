@@ -1,5 +1,5 @@
-!>@file   t_radial_reference_temp.f90
-!!@brief  module t_radial_reference_temp
+!>@file   t_radial_reference_field.f90
+!!@brief  module t_radial_reference_field
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2007
@@ -12,18 +12,18 @@
 !!      subroutine dealloc_reference_field(refs)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
-!!        type(reference_field), intent(inout) :: refs
+!!        type(radial_reference_field), intent(inout) :: refs
 !!      subroutine output_reference_field(refs)
-!!        type(reference_field), intent(in) :: refs
+!!        type(radial_reference_field), intent(in) :: refs
 !!      subroutine read_alloc_sph_reference_data(sph_rj, ipol,          &
 !!     &                                         rj_fld, refs)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        type(reference_field), intent(inout) :: refs
+!!        type(radial_reference_field), intent(inout) :: refs
 !!@endverbatim
 !
-      module t_radial_reference_temp
+      module t_radial_reference_field
 !
       use m_precision
       use m_constants
@@ -41,7 +41,7 @@
      &                        :: radius_name = 'radius'
 !
 !>      Structure of reference temperature
-      type reference_field
+      type radial_reference_field
 !>        Address of radius
         integer(kind = kint) :: iref_radius
 !>        Address of reference field
@@ -58,7 +58,7 @@
 !
 !>        Interpolation table from radial data input 
         type(sph_radial_interpolate) :: r_itp
-      end type reference_field
+      end type radial_reference_field
 !
       private :: append_reference_field_names
       private :: overwrite_sources_by_reference
@@ -74,7 +74,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
 !
-      type(reference_field), intent(inout) :: refs
+      type(radial_reference_field), intent(inout) :: refs
 !
 !
       refs%ref_field%num_phys =   0
@@ -98,7 +98,7 @@
 !
       subroutine dealloc_reference_field(refs)
 !
-      type(reference_field), intent(inout) :: refs
+      type(radial_reference_field), intent(inout) :: refs
 !
       call dealloc_phys_data(refs%ref_field)
       call dealloc_phys_name(refs%ref_field)
@@ -118,7 +118,7 @@
       use copy_rj_phys_data_4_IO
       use set_sph_extensions
 !
-      type(reference_field), intent(in) :: refs
+      type(radial_reference_field), intent(in) :: refs
 !
       type(field_IO) :: sph_out_IO
       type(time_data) :: time_IO
@@ -161,7 +161,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
-      type(reference_field), intent(inout) :: refs
+      type(radial_reference_field), intent(inout) :: refs
 !
       type(time_data) :: time_IO
       type(field_IO) :: ref_fld_IO
@@ -284,4 +284,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module t_radial_reference_temp
+      end module t_radial_reference_field

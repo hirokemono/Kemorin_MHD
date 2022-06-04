@@ -4,7 +4,7 @@ SPH_analyzer_const_initial.o: $(SPH_INITIAL_DIR)/SPH_analyzer_const_initial.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 const_sph_initial_spectr.o: $(SPH_INITIAL_DIR)/const_sph_initial_spectr.f90 m_precision.o m_constants.o t_SPH_MHD_model_data.o t_SPH_mesh_field_data.o t_file_IO_parameter.o t_boundary_data_sph_MHD.o t_field_data_IO.o m_initial_field_control.o m_MHD_step_parameter.o t_IO_step_parameter.o sph_mhd_rst_IO_control.o set_sph_restart_IO.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
-initial_field_example_2.o: $(SPH_INITIAL_DIR)/initial_field_example_2.f90 m_precision.o m_constants.o m_machine_parameter.o t_SPH_MHD_model_data.o t_SPH_mesh_field_data.o t_MHD_file_parameter.o t_IO_step_parameter.o t_time_data.o t_spheric_parameter.o t_boundary_params_sph_MHD.o t_radial_reference_temp.o t_field_data_IO.o
+initial_field_example_2.o: $(SPH_INITIAL_DIR)/initial_field_example_2.f90 m_precision.o m_constants.o m_machine_parameter.o t_SPH_MHD_model_data.o t_SPH_mesh_field_data.o t_MHD_file_parameter.o t_IO_step_parameter.o t_time_data.o t_spheric_parameter.o t_boundary_params_sph_MHD.o t_radial_reference_field.o t_field_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_add_initial_fld.o: $(SPH_INITIAL_DIR)/main_sph_add_initial_fld.f90 m_precision.o calypso_mpi.o SPH_analyzer_add_initial.o
 	$(F90) -c $(F90OPTFLAGS) $<
