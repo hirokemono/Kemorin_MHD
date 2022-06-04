@@ -248,7 +248,7 @@ t_sph_matrices.o: $(SPH_COMMDIR)/t_sph_matrices.f90 m_precision.o m_machine_para
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sph_matrix.o: $(SPH_COMMDIR)/t_sph_matrix.f90 m_precision.o m_machine_parameter.o t_spheric_rj_data.o m_ludcmp_3band.o m_ludcmp_band.o lubksb_357band.o check_sph_radial_mat.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_sph_radial_interpolate.o: $(SPH_COMMDIR)/t_sph_radial_interpolate.f90 m_precision.o m_constants.o
+t_sph_radial_interpolate.o: $(SPH_COMMDIR)/t_sph_radial_interpolate.f90 m_precision.o m_constants.o calypso_mpi_real.o calypso_mpi_int.o calypso_mpi_logical.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sph_single_FFTPACK5.o: $(SPH_COMMDIR)/t_sph_single_FFTPACK5.f90 m_precision.o m_constants.o m_machine_parameter.o m_elapsed_labels_SPH_TRNS.o calypso_mpi.o t_spheric_rtp_data.o t_sph_trans_comm_tbl.o copy_single_FFT_and_rtp.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -17,6 +17,17 @@
 !!        integer(kind = kint), intent(in) :: nri_target
 !!        integer(kind = kint), intent(in) :: n_rj_org
 !!        type(sph_radial_interpolate), intent(inout) :: r_itp
+!!
+!!      subroutine share_r_interpolation_tbl(new_nri, r_itp)
+!!        integer(kind = kint), intent(in) :: new_nri
+!!        type(sph_radial_interpolate), intent(inout) :: r_itp
+!!
+!!      subroutine check_sph_radial_interpolate                         &
+!!     &         (nri_org, r_org, nri_new, r_new, r_itp)
+!!        integer(kind = kint), intent(in) :: nri_org, nri_new
+!!        real(kind = kreal), intent(in) :: r_org(nri_org)
+!!        real(kind = kreal), intent(in) :: r_new(nri_org)
+!!        type(sph_radial_interpolate), intent(inout) :: r_itp
 !!@endverbatim
 !
       module t_sph_radial_interpolate
@@ -128,7 +139,7 @@
 !
       type(sph_radial_interpolate), intent(inout) :: r_itp
 !
-      deallocate(r_itp%source_radius, r_itp%coef_old2new_in)
+      deallocate(r_itp%source_radius)
 !
       end subroutine dealloc_org_radius_interpolate
 !
@@ -154,5 +165,64 @@
       end subroutine dealloc_original_sph_data
 !
 !  -------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine share_r_interpolation_tbl(new_nri, r_itp)
+!
+      use calypso_mpi_real
+      use calypso_mpi_int
+      use calypso_mpi_logical
+      use transfer_to_long_integers
+!
+      integer(kind = kint), intent(in) :: new_nri
+      type(sph_radial_interpolate), intent(inout) :: r_itp
+!
+!
+      call calypso_mpi_bcast_one_logical(r_itp%flag_same_rgrid, 0)
+      if(my_rank .eq. 0) write(*,*) 'flag_same_rgrid: ',                &
+     &            r_itp%flag_same_rgrid, new_nri
+!
+      if(r_itp%flag_same_rgrid) return
+      if(my_rank .ne. 0)  call alloc_radial_interpolate(new_nri, r_itp)
+!
+        call calypso_mpi_bcast_one_int(r_itp%nri_target, 0)
+        call calypso_mpi_bcast_one_int(r_itp%kr_inner_source, 0)
+        call calypso_mpi_bcast_one_int(r_itp%kr_outer_source, 0)
+!
+        call calypso_mpi_bcast_int                                      &
+     &     (r_itp%k_old2new_in, cast_long(r_itp%nri_target), 0)
+        call calypso_mpi_bcast_int                                      &
+     &     (r_itp%k_old2new_out, cast_long(r_itp%nri_target), 0)
+        call calypso_mpi_bcast_real                                     &
+     &     (r_itp%coef_old2new_in, cast_long(r_itp%nri_target), 0)
+!
+      end subroutine share_r_interpolation_tbl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_sph_radial_interpolate                           &
+     &         (nri_org, r_org, nri_new, r_new, r_itp)
+!
+      integer(kind = kint), intent(in) :: nri_org, nri_new
+      real(kind = kreal), intent(in) :: r_org(nri_org)
+      real(kind = kreal), intent(in) :: r_new(nri_org)
+      type(sph_radial_interpolate), intent(in) :: r_itp
+!
+      integer(kind = kint) :: k
+!
+!
+      write(*,*) 'r_itp%kr_inner_source', r_itp%kr_inner_source
+      write(*,*) 'r_itp%kr_outer_source', r_itp%kr_outer_source
+      do k = 1, nri_new
+        write(*,'(i5,1pe16.8,2i5,1p3e16.8)') k, r_new(k),               &
+     &         r_itp%k_old2new_in(k), r_itp%k_old2new_out(k),           &
+     &         r_org(r_itp%k_old2new_in(k)),                            &
+     &         r_org(r_itp%k_old2new_out(k)),                           &
+     &         r_itp%coef_old2new_in(k)
+      end do
+!
+      end subroutine check_sph_radial_interpolate
+!
+! -----------------------------------------------------------------------
 !
       end module t_sph_radial_interpolate

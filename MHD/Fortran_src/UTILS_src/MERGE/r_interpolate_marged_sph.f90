@@ -38,7 +38,6 @@
       implicit none
 !
       private :: sph_radial_interpolation_coef
-      private :: share_r_interpolation_tbl
       private :: set_sph_boundary_4_merge
 !
 ! -----------------------------------------------------------------------
@@ -48,6 +47,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_r_interpolate_table(org_sph, new_sph, r_itp)
+!
+      use calypso_mpi_int
 !
       type(sph_grids), intent(in) :: org_sph
 !
@@ -61,7 +62,9 @@
      &      new_sph%sph_rj%nidx_rj(1), new_sph%sph_rj%radius_1d_rj_r,   &
      &      r_itp)
       end if
-      call share_r_interpolation_tbl(new_sph, r_itp)
+      call calypso_mpi_bcast_one_int                                    &
+     &   (new_sph%sph_rj%nidx_rj(1), 0)
+      call share_r_interpolation_tbl(new_sph%sph_rj%nidx_rj(1), r_itp)
 !
       end subroutine const_r_interpolate_table
 !
@@ -123,42 +126,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine share_r_interpolation_tbl(new_sph, r_itp)
-!
-      use calypso_mpi_real
-      use calypso_mpi_int
-      use calypso_mpi_logical
-      use transfer_to_long_integers
-!
-      type(sph_grids), intent(inout) :: new_sph
-      type(sph_radial_interpolate), intent(inout) :: r_itp
-!
-!
-      call calypso_mpi_bcast_one_logical(r_itp%flag_same_rgrid, 0)
-      call calypso_mpi_bcast_one_int                                    &
-     &   (new_sph%sph_rj%nidx_rj(1), 0)
-      if(my_rank .eq. 0) write(*,*) 'flag_same_rgrid: ',                &
-     &            r_itp%flag_same_rgrid, new_sph%sph_rj%nidx_rj(1)
-!
-      if(r_itp%flag_same_rgrid) return
-        if(my_rank .ne. 0)  call alloc_radial_interpolate               &
-     &                         (new_sph%sph_rj%nidx_rj(1), r_itp)
-!
-        call calypso_mpi_bcast_one_int(r_itp%nri_target, 0)
-        call calypso_mpi_bcast_one_int(r_itp%kr_inner_source, 0)
-        call calypso_mpi_bcast_one_int(r_itp%kr_outer_source, 0)
-!
-        call calypso_mpi_bcast_int                                      &
-     &     (r_itp%k_old2new_in, cast_long(r_itp%nri_target), 0)
-        call calypso_mpi_bcast_int                                      &
-     &     (r_itp%k_old2new_out, cast_long(r_itp%nri_target), 0)
-        call calypso_mpi_bcast_real                                     &
-     &     (r_itp%coef_old2new_in, cast_long(r_itp%nri_target), 0)
-!
-      end subroutine share_r_interpolation_tbl
-!
-! -----------------------------------------------------------------------
-!
       subroutine share_ICB_and_CMB_radius                               &
      &         (nlayer_ICB_org, nlayer_CMB_org,                         &
      &          nlayer_ICB_new, nlayer_CMB_new)
@@ -211,15 +178,8 @@
      &    r_itp%k_old2new_in, r_itp%k_old2new_out,                      &
      &    r_itp%coef_old2new_in)
 !
-      write(*,*) 'r_itp%kr_inner_source', r_itp%kr_inner_source
-      write(*,*) 'r_itp%kr_outer_source', r_itp%kr_outer_source
-      do k = 1, nri_new
-        write(*,'(i5,1pe16.8,2i5,1p3e16.8)') k, r_new(k),               &
-     &         r_itp%k_old2new_in(k), r_itp%k_old2new_out(k),           &
-     &         r_org(r_itp%k_old2new_in(k)),                            &
-     &         r_org(r_itp%k_old2new_out(k)),                           &
-     &         r_itp%coef_old2new_in(k)
-      end do
+      call check_sph_radial_interpolate                                 &
+     &   (nri_org, r_org, nri_new, r_new, r_itp)
 !
       end subroutine sph_radial_interpolation_coef
 !

@@ -189,11 +189,10 @@
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
         if(is_source .gt. 0) then
-          call copy_degree0_comps_to_sol                                &
-     &      (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                      &
+          call copy_degree0_comps_to_sol(sph_rj%nidx_rj(2),             &
      &       sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,          &
-     &       is_source, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, &
-     &       ref_local(0,0))
+     &       rj_fld%n_point, rj_fld%d_fld(1,is_source),                 &
+     &       sph_rj%nidx_rj(1), ref_local(0,0))
 !$omp parallel workshare
           ref_local(0:sph_rj%nidx_rj(1),0)                              &
      &       = (sc_prop%coef_source / sc_prop%coef_diffuse)             &
@@ -282,11 +281,10 @@
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
         if(is_source .gt. 0) then
-          call copy_degree0_comps_to_sol                                &
-     &      (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                      &
+          call copy_degree0_comps_to_sol(sph_rj%nidx_rj(2),             &
      &       sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,          &
-     &       is_source, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, &
-     &       reftemp_local(0,0))
+     &       rj_fld%n_point, rj_fld%d_fld(1,is_source),                 &
+     &       sph_rj%nidx_rj(1), reftemp_local(0,0))
 !$omp parallel workshare
           reftemp_local(0:sph_rj%nidx_rj(1),0)                          &
      &       = (sc_prop%coef_source / sc_prop%coef_diffuse)             &

@@ -17,8 +17,13 @@
 !!     &         (nidx_rj, kr_inside, kr_outside, nri_new,              &
 !!     &          k_old2new_in, k_old2new_out, coef_old2new_in,         &
 !!     &          n_rj_org, d_rj_org, ncomp, n_point, d_rj)
+!!      subroutine interpolate_radial_field                             &
+!!     &         (nri_new, k_old2new_in, k_old2new_out, coef_old2new_in,&
+!!     &          ncomp, n_rj_org, d_IO, d_r)
 !!
 !!      subroutine set_org_rj_phys_data_from_IO                         &
+!!     &          (j_fld, fld_IO, n_rj_org, d_rj_org)
+!!      subroutine set_org_radius_data_from_IO                          &
 !!     &          (j_fld, fld_IO, n_rj_org, d_rj_org)
 !!@endverbatim
 !
@@ -191,8 +196,44 @@
 !
       end subroutine r_interpolate_sph_vector
 !
-!  -------------------------------------------------------------------
 ! -------------------------------------------------------------------
+!
+      subroutine interpolate_radial_field                               &
+     &         (nri_new, k_old2new_in, k_old2new_out, coef_old2new_in,  &
+     &          ncomp, n_rj_org, d_IO, d_r)
+!
+      integer(kind = kint), intent(in) :: ncomp
+!
+      integer(kind = kint), intent(in) :: nri_new, n_rj_org
+      integer(kind = kint), intent(in) :: k_old2new_in(nri_new)
+      integer(kind = kint), intent(in) :: k_old2new_out(nri_new)
+      real (kind=kreal), intent(in) :: coef_old2new_in(nri_new)
+      real (kind=kreal), intent(in) :: d_IO(n_rj_org,ncomp)
+!
+      real (kind=kreal), intent(inout) :: d_r(nri_new,ncomp)
+!
+      integer(kind = kint) :: k, j, nd, i1, i2
+!
+!
+!$omp parallel private(nd)
+      do nd = 1, ncomp
+!$omp do private(k,j,i1,i2)
+        do k = 1, nri_new
+          do j = 1, 1
+            i1 = k_old2new_in(k)
+            i2 = k_old2new_out(k)
+            d_r(k,nd) = coef_old2new_in(k) * d_IO(i1,nd)                &
+     &                 + (one - coef_old2new_in(k)) * d_IO(i2,nd)
+          end do
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
+      end subroutine interpolate_radial_field
+!
+!  -------------------------------------------------------------------
+!  -------------------------------------------------------------------
 !
       subroutine set_org_rj_phys_data_from_IO                           &
      &          (j_fld, fld_IO, n_rj_org, d_rj_org)
@@ -210,16 +251,45 @@
 !
       jst = fld_IO%istack_comp_IO(j_fld-1)
       if(fld_IO%num_comp_IO(j_fld) .eq. 3) then
+!$omp parallel workshare
         d_rj_org(1:n_rj_org,1) = fld_IO%d_IO(1:n_rj_org,jst+1)
         d_rj_org(1:n_rj_org,2) = fld_IO%d_IO(1:n_rj_org,jst+3)
         d_rj_org(1:n_rj_org,3) = fld_IO%d_IO(1:n_rj_org,jst+2)
+!$omp end parallel workshare
       else
         do nd = 1, fld_IO%num_comp_IO(j_fld)
+!$omp parallel workshare
           d_rj_org(1:n_rj_org,nd) = fld_IO%d_IO(1:n_rj_org,jst+nd)
+!$omp end parallel workshare
         end do
       end if
 !
       end subroutine set_org_rj_phys_data_from_IO
+!
+! -------------------------------------------------------------------
+!
+      subroutine set_org_radius_data_from_IO                            &
+     &          (j_fld, fld_IO, n_rj_org, d_rj_org)
+!
+      use t_field_data_IO
+!
+      integer(kind = kint), intent(in) :: j_fld
+      type(field_IO), intent(in) :: fld_IO
+!
+      integer(kind = kint), intent(in) :: n_rj_org
+      real (kind=kreal), intent(inout) :: d_rj_org(n_rj_org,6)
+!
+      integer(kind = kint) :: jst, nd
+!
+!
+      jst = fld_IO%istack_comp_IO(j_fld-1)
+      do nd = 1, fld_IO%num_comp_IO(j_fld)
+!$omp parallel workshare
+        d_rj_org(1:n_rj_org,nd) = fld_IO%d_IO(1:n_rj_org,jst+nd)
+!$omp end parallel workshare
+      end do
+!
+      end subroutine set_org_radius_data_from_IO
 !
 ! -------------------------------------------------------------------
 !
