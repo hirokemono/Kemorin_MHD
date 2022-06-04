@@ -61,6 +61,7 @@
 !
       integer(kind = kint) :: i
       logical :: flag
+      character(len=kchara) :: field_name
 !
 !
       if(ipol_source .le. 0 .and. iref_source .le. 0) return
@@ -68,20 +69,19 @@
       do i = 1, ref_field%num_phys
         if((ref_field%istack_component(i-1)+1) .eq. iref_source) then
           if(ref_field%iflag_update(i) .gt. 0) flag = .TRUE.
+          field_name = ref_field%phys_name(i)
           exit
         end if
       end do
-      if(flag .eqv. .FALSE.) then
-        write(*,'(3a)') 'Overwrite ',                                   &
-     &                trim(rj_fld%phys_name(ipol_source)),              &
+      if(flag) then
+        write(*,'(3a)') 'Overwrite ', trim(field_name),                 &
      &                ' FROM radial field file'
         call copy_degree0_comps_from_sol(sph_rj%nidx_rj(2),             &
      &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
      &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_source),          &
      &      rj_fld%n_point, rj_fld%d_fld(1,ipol_source))
       else
-        write(*,'(3a)') 'Overwrite ',                                   &
-     &                trim(rj_fld%phys_name(ipol_source)),              &
+        write(*,'(3a)') 'Overwrite ', trim(field_name),                 &
      &                ' TO radial field data'
         call copy_degree0_comps_to_sol(sph_rj%nidx_rj(2),               &
      &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &

@@ -13,6 +13,7 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(radial_reference_field), intent(inout) :: refs
+!!      subroutine set_default_reference_file_name(refs)
 !!      subroutine output_reference_field(refs)
 !!        type(radial_reference_field), intent(in) :: refs
 !!      subroutine read_alloc_sph_reference_data(sph_rj, ipol,          &
@@ -38,7 +39,10 @@
       implicit  none
 !
       character(len = kchara), parameter, private                       &
-     &                        :: radius_name = 'radius'
+     &             :: radius_name = 'radius'
+!
+      character(len = kchara), parameter, private                       &
+     &             :: default_reference_file = 'reference_fields.dat'
 !
 !>      Structure of reference temperature
       type radial_reference_field
@@ -108,6 +112,16 @@
 ! -----------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
+      subroutine set_default_reference_file_name(refs)
+!
+      type(radial_reference_field), intent(inout) :: refs
+!
+      refs%ref_output_IO%file_prefix = default_reference_file
+!
+      end subroutine set_default_reference_file_name
+!
+!  --------------------------------------------------------------------
+!
       subroutine output_reference_field(refs)
 !
       use calypso_mpi
@@ -160,6 +174,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
+!
       type(phys_data), intent(inout) :: rj_fld
       type(radial_reference_field), intent(inout) :: refs
 !
@@ -187,7 +202,7 @@
       call calypso_mpi_bcast_real(refs%ref_field%d_fld, num64, 0)
 !
       call overwrite_sources_by_reference                               &
-     &   (sph_rj, refs%iref_base, refs%ref_field, ipol%base, rj_fld)
+     &   (sph_rj, refs%iref_base, ipol%base, refs%ref_field, rj_fld)
 !
       end subroutine read_alloc_sph_reference_data
 !
@@ -254,31 +269,31 @@
 ! -----------------------------------------------------------------------
 !
       subroutine overwrite_sources_by_reference                         &
-     &         (sph_rj, iref_base, ref_field, ipol_base, rj_fld)
+     &         (sph_rj, iref_base, ipol_base, ref_field, rj_fld)
 !
       use interpolate_reference_data
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(base_field_address), intent(in) :: iref_base
-      type(phys_data), intent(in) :: ref_field
       type(base_field_address), intent(in) :: ipol_base
 !
+      type(phys_data), intent(inout) :: ref_field
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       if(sph_rj%idx_rj_degree_zero .eq. 0) return
 !
-      call overwrite_each_field_by_ref                                  &
-     &   (sph_rj, iref_base%i_heat_source, ref_field,                   &
-     &            ipol_base%i_heat_source, rj_fld)
-      call overwrite_each_field_by_ref                                  &
-     &   (sph_rj, iref_base%i_light_source, ref_field,                  &
-     &    ipol_base%i_light_source, rj_fld)
+      call overwrite_each_field_by_ref(sph_rj,                          &
+     &    iref_base%i_heat_source, ipol_base%i_heat_source,             &
+     &    ref_field, rj_fld)
+      call overwrite_each_field_by_ref(sph_rj,                          &
+     &    iref_base%i_light_source, ipol_base%i_light_source,           &
+     &    ref_field, rj_fld)
 
 !
-      call overwrite_each_field_by_ref                                  &
-     &   (sph_rj, iref_base%i_ref_density, ref_field,                   &
-     &    ipol_base%i_ref_density, rj_fld)
+      call overwrite_each_field_by_ref(sph_rj,                          &
+     &    iref_base%i_ref_density, ipol_base%i_ref_density,             &
+     &    ref_field, rj_fld)
 !
       end subroutine overwrite_sources_by_reference
 !
