@@ -61,8 +61,6 @@
       type(sph_spectr_file_param), save :: spec_evo_p1
       type(read_sph_spectr_data), save :: sph_IN_t
 !
-      character(len = kchara) :: fname_org_rms
-!
       integer :: i
 !
       call read_control_file_sph_monitor(0, tave_sph_ctl1)
@@ -71,42 +69,30 @@
 !
       do i = 1, spec_evo_p1%nfile_vol_series_file
         write(*,*) i, trim(spec_evo_p1%vol_series_prefix(i))
-        fname_org_rms                                                   &
-     &      = add_dat_extension(spec_evo_p1%vol_series_prefix(i))
-        call sph_spectr_average(fname_org_rms, izero,  .TRUE.,          &
-     &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, izero, .TRUE.,     &
+        call sph_spectr_time_ave_sdev                                   &
+     &     (spec_evo_p1%vol_series_prefix(i), .FALSE., .TRUE.,          &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
         write(*,*) i, trim(spec_evo_p1%vol_spectr_prefix(i))
-        fname_org_rms                                                   &
-     &      = add_dat_extension(spec_evo_p1%vol_spectr_prefix(i))
-        call sph_spectr_average(fname_org_rms, ione,  .TRUE.,           &
-     &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, ione,  .TRUE.,     &
+        call sph_spectr_time_ave_sdev                                   &
+     &     (spec_evo_p1%vol_spectr_prefix(i), .TRUE.,  .TRUE.,          &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
 !
       do i = 1, spec_evo_p1%nfile_layer_series_file
         write(*,*) i, trim(spec_evo_p1%layer_series_prefix(i))
-        fname_org_rms                                                   &
-     &      = add_dat_extension(spec_evo_p1%layer_series_prefix(i))
-        call sph_spectr_average(fname_org_rms, izero, .FALSE.,          &
-     &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, izero, .FALSE.,    &
+        call sph_spectr_time_ave_sdev                                   &
+     &     (spec_evo_p1%layer_series_prefix(i), .FALSE., .FALSE.,       &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
         write(*,*) i, trim(spec_evo_p1%layer_spectr_prefix(i))
-        fname_org_rms                                                   &
-     &      = add_dat_extension(spec_evo_p1%layer_spectr_prefix(i))
-        call sph_spectr_average(fname_org_rms, ione, .FALSE.,           &
-     &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, ione, .FALSE.,     &
+        call sph_spectr_time_ave_sdev                                   &
+     &     (spec_evo_p1%layer_spectr_prefix(i), .TRUE., .FALSE.,        &
      &      spec_evo_p1, sph_IN_t)
       end do
 !

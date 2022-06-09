@@ -8,13 +8,10 @@
 !> @brief Time average spherical harmonics spectrum data
 !!
 !!@verbatim
-!!      subroutine sph_spectr_average                                   &
-!!     &         (fname_org, iflag_spectr, flag_vol_ave,                &
+!!      subroutine sph_spectr_time_ave_sdev                             &
+!!     &         (file_prefix, flag_spectr, flag_vol_ave,               &
 !!     &          spec_evo_p, sph_IN)
-!!      subroutine sph_spectr_std_deviation                             &
-!!     &         (fname_org, iflag_spectr, flag_vol_ave,                &
-!!     &          spec_evo_p, sph_IN)
-!!        character(len = kchara), intent(in) :: fname_org
+!!        character(len = kchara), intent(in) :: file_prefix
 !!        logical, intent(in) :: flag_spectr, flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
@@ -39,6 +36,7 @@
       private :: id_file_rms
       private :: ave_spec_l, sigma_spec_l, spectr_pre_l
       private :: allocate_tave_sph_data, deallocate_tave_sph_data
+      private :: sph_spectr_average, sph_spectr_std_deviation
 !
 !   --------------------------------------------------------------------
 !
@@ -46,16 +44,39 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine sph_spectr_time_ave_sdev                               &
+     &         (file_prefix, flag_spectr, flag_vol_ave,                 &
+     &          spec_evo_p, sph_IN)
+!
+      use set_parallel_file_name
+!
+      character(len = kchara), intent(in) :: file_prefix
+      logical, intent(in) :: flag_spectr, flag_vol_ave
+      type(sph_spectr_file_param), intent(in) :: spec_evo_p
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+!
+      character(len = kchara) :: fname_org
+!
+      fname_org = add_dat_extension(file_prefix)
+      call sph_spectr_average                                           &
+     &   (fname_org, flag_spectr, flag_vol_ave, spec_evo_p, sph_IN)
+      call sph_spectr_std_deviation                                     &
+     &   (fname_org, flag_spectr, flag_vol_ave, spec_evo_p, sph_IN)
+!
+      end subroutine sph_spectr_time_ave_sdev
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
       subroutine sph_spectr_average                                     &
-     &         (fname_org, iflag_spectr, flag_vol_ave,                  &
+     &         (fname_org, flag_spectr, flag_vol_ave,                   &
      &          spec_evo_p, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
-      logical, intent(in) :: flag_vol_ave
-      integer(kind = kint), intent(in) :: iflag_spectr
+      logical, intent(in) :: flag_spectr, flag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
@@ -66,7 +87,7 @@
 !
       open(id_file_rms, file=fname_org)
 !
-      if(iflag_spectr .gt. 0) then
+      if(flag_spectr) then
         call select_input_sph_pwr_head(id_file_rms,                     &
      &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = sph_IN%ltr_sph
@@ -85,7 +106,7 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        if(iflag_spectr .gt. 0) then
+        if(flag_spectr) then
           call select_input_sph_pwr_data(id_file_rms,                   &
      &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         else
@@ -134,7 +155,7 @@
       call select_output_sph_pwr_head                                   &
      &   (id_file_rms, flag_vol_ave, sph_IN)
 !
-      if(iflag_spectr .gt. 0) then
+      if(flag_spectr) then
         call select_output_sph_pwr_data                                 &
      &     (id_file_rms, flag_vol_ave, sph_IN)
       else
@@ -151,15 +172,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_std_deviation                               &
-     &         (fname_org, iflag_spectr, flag_vol_ave,                  &
+     &         (fname_org, flag_spectr, flag_vol_ave,                   &
      &          spec_evo_p, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
-      logical, intent(in) :: flag_vol_ave
-      integer(kind = kint), intent(in) :: iflag_spectr
+      logical, intent(in) :: flag_spectr, flag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
@@ -172,7 +192,7 @@
       write(*,*) 'Open file ', trim(fname_org)
       open(id_file_rms, file=fname_org)
 !
-      if(iflag_spectr .gt. 0) then
+      if(flag_spectr) then
         call select_input_sph_pwr_head(id_file_rms,                     &
      &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = sph_IN%ltr_sph
@@ -190,7 +210,7 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' deviation finished. Count=  ', icou
       do
-        if(iflag_spectr .gt. 0) then
+        if(flag_spectr) then
           call select_input_sph_pwr_data(id_file_rms,                   &
      &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         else
@@ -237,7 +257,7 @@
       call select_output_sph_pwr_head                                   &
      &   (id_file_rms, flag_vol_ave, sph_IN)
 !
-      if(iflag_spectr .gt. 0) then
+      if(flag_spectr) then
         call select_output_sph_pwr_data                                 &
      &     (id_file_rms, flag_vol_ave, sph_IN)
       else
