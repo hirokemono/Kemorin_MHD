@@ -23,11 +23,11 @@
 !
       use t_CMB_dipolarity
       use t_ctl_data_tave_sph_monitor
+      use time_average_dipolarity
 !
       implicit  none
 !
       type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
-      type(dipolarity_data), save :: dip_t
 !
       real(kind = kreal) :: start_time, end_time
       character(len = kchara) :: file_prefix
@@ -36,8 +36,8 @@
       call read_control_file_sph_monitor(0, tave_sph_ctl1)
 !
       call set_control_tave_dipolarity                                  &
-     &   (dip_t%dipolarity_prefix, file_prefix, start_time, end_time)
-      call time_average_dipolarity_f                              &
+     &   (tave_sph_ctl1, file_prefix, start_time, end_time)
+      call time_average_dipolarity_f                                    &
      &   (file_prefix, start_time, end_time)
 !
       write(*,*) '***** program finished *****'
@@ -78,7 +78,7 @@
       end if
       end_time = tave_sph_ctl%end_time_ctl%realvalue
 !
-      end subroutine set_control_tave_Nu
+      end subroutine set_control_tave_dipolarity
 !
 ! -------------------------------------------------------------------
 !
