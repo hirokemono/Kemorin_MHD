@@ -78,7 +78,7 @@ sph_mean_square_IO_select.o: $(SPH_UTILS_DIR)/sph_mean_square_IO_select.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_uli_lengh_scale.o: $(SPH_UTILS_DIR)/sph_uli_lengh_scale.f90 m_precision.o m_constants.o m_sph_uli_lengh_scale.o t_read_sph_spectra.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_average_nusselt.o: $(SPH_UTILS_DIR)/t_average_nusselt.f90 m_precision.o m_constants.o t_no_heat_Nusselt.o t_ctl_data_tave_sph_monitor.o
+t_average_nusselt.o: $(SPH_UTILS_DIR)/t_average_nusselt.f90 m_precision.o t_no_heat_Nusselt.o t_ctl_data_tave_sph_monitor.o time_average_nusselt.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_average_sph_ene_spec.o: $(SPH_UTILS_DIR)/t_average_sph_ene_spec.f90 m_precision.o m_constants.o m_tave_sph_ene_spectr.o t_read_sph_spectra.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -107,5 +107,7 @@ tave_picked_gauss_coefs.o: $(SPH_UTILS_DIR)/tave_picked_gauss_coefs.f90 m_precis
 tave_picked_sph_spec_data.o: $(SPH_UTILS_DIR)/tave_picked_sph_spec_data.f90 m_precision.o m_constants.o t_picked_sph_spectr_data_IO.o t_ctl_data_tave_sph_monitor.o
 	$(F90) -c $(F90OPTFLAGS) $<
 time_average_dipolarity.o: $(SPH_UTILS_DIR)/time_average_dipolarity.f90 m_precision.o m_constants.o t_CMB_dipolarity.o t_ctl_data_tave_sph_monitor.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+time_average_nusselt.o: $(SPH_UTILS_DIR)/time_average_nusselt.f90 m_precision.o m_constants.o t_no_heat_Nusselt.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

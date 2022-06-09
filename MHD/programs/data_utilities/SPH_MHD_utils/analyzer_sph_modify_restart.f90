@@ -111,7 +111,6 @@
       use input_control_sph_MHD
       use set_sph_restart_IO
       use sph_SGS_mhd_monitor_data_IO
-      use cal_write_sph_monitor_data
       use sph_radial_grad_4_magne
 !
       integer(kind = kint), intent(in) :: i_step
@@ -156,20 +155,6 @@
      &      fst_file_IO, MHD_step%time_d, SPH_MHD%fld,                  &
      &      MHD_step%rst_step, sph_fst_IO)
       end if
-!*
-!*  -----------  lead energy data --------------
-!*
-      if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
-      if(output_IO_flag(MHD_step%time_d%i_time_step,                    &
-     &                  MHD_step%rms_step)) then
-        if(iflag_debug .gt. 0)                                          &
-     &                write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
-     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                   &
-     &      SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%monitor,           &
-     &      m_SR1%SR_sig)
-      end if
-      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine SPH_analyze_mod_restart

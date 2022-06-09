@@ -245,8 +245,8 @@
      &                write(*,*) 'output_rms_sph_SGS_mhd_control'
         call output_rms_sph_SGS_mhd_control(MHD_step%time_d, SPH_SGS,   &
      &      SPH_MHD, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,          &
-     &      SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%monitor,           &
-     &      m_SR1%SR_sig)
+     &      SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%MHD_mats,          &
+     &      SPH_WK%monitor, m_SR1%SR_sig)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)

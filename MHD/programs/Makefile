@@ -4,6 +4,8 @@
 
 PROG_DIR = $$(MHDDIR)/programs
 
+LIB_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
+
 SUBDIRS = \
 FEM_MHD \
 SPH_MHD \
@@ -18,10 +20,21 @@ Rayleigh_link \
 \
 TESTS
 
+DLIBDIRS = \
+data_utilities
+
 ifdef OPENGL_LIBS
   SUBDIRS += VIEWER
 endif
 
+LIB_PYTHON_UTILS =  \
+'$$(LIB_MESH)'
+
+LIB_FILES_PYTHON_UTILS =  \
+'$$(LIB_MESH_FILE)'
+
+MOD_PYTHONS = \
+'$$(MOD_T_AVE_NUSSELT)'
 
 
 #
@@ -81,6 +94,14 @@ target_task:
 
 
 lib_name:
+	@echo  LIB_PYTHONS=  \\           >> $(MAKENAME)
+	@echo  $(LIB_PYTHONS)             >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
+	@echo  LIB_PYTHON_UTILS=  \\           >> $(MAKENAME)
+	@echo  $(LIB_PYTHON_UTILS)             >> $(MAKENAME)
+	@echo  LIB_FILES_PYTHON_UTILS=  \\     >> $(MAKENAME)
+	@echo  $(LIB_FILES_PYTHON_UTILS)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		echo 'generate library list for ' $$dir ; \
@@ -93,6 +114,25 @@ lib_name:
 	done
 
 lib_tasks:
+	@echo '#' >> $(MAKENAME)
+	@echo '$$(LIB_PYTHONS)': '$$(MOD_PYTHONS)' \
+	'$$(LIB_FILES_PYTHON_UTILS)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' -shared -fPIC '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(LIB_PYTHONS)' \
+	'$$(MOD_PYTHONS)' \
+	'-L. $$(LIB_PYTHON_UTILS)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@for dir in $(DLIBDIRS); do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		BUILDDIR='$(BUILDDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		target_list \
+		) \
+	done
+	@echo '#' >> $(MAKENAME)
 	@for dir in Rayleigh_link; do \
 		( cd $${dir};  \
 		echo 'generate library for ' $$dir ; \
@@ -106,6 +146,9 @@ lib_tasks:
 
 
 mod_list:
+	@echo  MOD_PYTHONS=  \\     >> $(MAKENAME)
+	@echo  $(MOD_PYTHONS)       >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \

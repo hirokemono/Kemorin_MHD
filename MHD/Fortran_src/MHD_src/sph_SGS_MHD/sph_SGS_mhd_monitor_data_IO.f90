@@ -7,23 +7,25 @@
 !>@brief  I/O routines for mean square and averaga data
 !!
 !!@verbatim
-!!      subroutine open_sph_vol_rms_file_SGS_mhd                        &
-!!     &         (sph, ipol, rj_fld, monitor, SR_sig)
-!!        type(sph_grids), intent(in) :: sph
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_data), intent(inout) :: rj_fld
+!!      subroutine init_rms_sph_SGS_mhd_control(MHD_prop, sph_MHD_bc,   &
+!!     &          r_2nd, SPH_MHD, MHD_mats, monitor, SR_sig)
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(MHD_radial_matrices), intent(inout) :: MHD_mats
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!      subroutine output_rms_sph_SGS_mhd_control                       &
 !!     &         (time_d, SPH_SGS, SPH_MHD, sph_MHD_bc, r_2nd, leg,     &
-!!     &          monitor, SR_sig)
-!!      subroutine init_rms_4_sph_spectr_SGS_mhd(sph, rj_fld, monitor)
+!!     &          MHD_mats, monitor, SR_sig)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(SPH_SGS_structure), intent(in) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
+!!        type(MHD_radial_matrices), intent(in) :: MHD_mats
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
@@ -51,10 +53,96 @@
 !
       implicit none
 !
+      private :: open_sph_vol_rms_file_SGS_mhd
+!
 !  --------------------------------------------------------------------
 !
       contains
 !
+!  --------------------------------------------------------------------
+!
+      subroutine init_rms_sph_SGS_mhd_control(MHD_prop, sph_MHD_bc,     &
+     &          r_2nd, SPH_MHD, MHD_mats, monitor, SR_sig)
+!
+      use t_solver_SR
+      use t_time_data
+      use t_boundary_data_sph_MHD
+      use t_radial_matrices_sph_MHD
+!
+      use cal_heat_source_Nu
+!
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(fdm_matrices), intent(in) :: r_2nd
+!
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(MHD_radial_matrices), intent(inout) :: MHD_mats
+      type(sph_mhd_monitor_data), intent(inout) :: monitor
+      type(send_recv_status), intent(inout) :: SR_sig
+!
+      character(len=kchara) :: mat_name
+!
+!
+     if(monitor%heat_Nusselt%iflag_Nusselt .eq. iflag_source_Nu) then
+        write(mat_name,'(a)') 'Diffusive_Temperature'
+        call init_poisson_matrix_for_Nu                                 &
+     &     (mat_name, SPH_MHD%sph, r_2nd, MHD_prop%ht_prop,             &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                &
+     &      MHD_mats%band_T00_poisson_fixT, monitor%heat_Nusselt)
+      end if
+!
+     if(monitor%comp_Nusselt%iflag_Nusselt .eq. iflag_source_Nu) then
+        write(mat_name,'(a)') 'Diffusive_Composition'
+        call init_poisson_matrix_for_Nu                                 &
+     &     (mat_name, SPH_MHD%sph, r_2nd, MHD_prop%cp_prop,             &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                &
+     &      MHD_mats%band_C00_poisson_fixC, monitor%comp_Nusselt)
+      end if
+!
+      call open_sph_vol_rms_file_SGS_mhd                                &
+     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
+!
+      end subroutine init_rms_sph_SGS_mhd_control
+!
+!  --------------------------------------------------------------------
+!
+      subroutine output_rms_sph_SGS_mhd_control                         &
+     &         (time_d, SPH_SGS, SPH_MHD, MHD_prop, sph_MHD_bc,         &
+     &          r_2nd, leg, MHD_mats, monitor, SR_sig)
+!
+      use t_solver_SR
+      use t_time_data
+      use t_boundary_data_sph_MHD
+      use t_radial_matrices_sph_MHD
+      use m_machine_parameter
+!
+      use cal_write_sph_monitor_data
+      use cal_SGS_sph_rms_data
+!
+      type(time_data), intent(in) :: time_d
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(legendre_4_sph_trans), intent(in) :: leg
+      type(SPH_SGS_structure), intent(in) :: SPH_SGS
+      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
+      type(MHD_radial_matrices), intent(in) :: MHD_mats
+!
+      type(sph_mhd_monitor_data), intent(inout) :: monitor
+      type(send_recv_status), intent(inout) :: SR_sig
+!
+!
+      call cal_SGS_sph_monitor_data                                     &
+     &   (SPH_MHD%sph, MHD_prop, sph_MHD_bc, r_2nd, leg, MHD_mats,      &
+     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld, monitor)
+!
+      call output_sph_monitor_data                                      &
+     &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
+     &    SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
+!
+      end subroutine output_rms_sph_SGS_mhd_control
+!
+!  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
       subroutine open_sph_vol_rms_file_SGS_mhd                          &
@@ -68,6 +156,7 @@
 !
       use t_solver_SR
       use calypso_mpi_int
+      use init_energy_labels_sph_SGS
 !
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
@@ -79,8 +168,12 @@
       integer(kind = kint) :: iflag
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'init_rms_4_sph_spectr_SGS_mhd'
-      call init_rms_4_sph_spectr_SGS_mhd(sph, rj_fld, monitor)
+      if(iflag_debug .gt. 0) write(*,*) 'init_energy_labels_w_filter'
+      call init_energy_labels_w_filter(monitor%ene_labels)
+      call init_rms_4_sph_spectr                                        &
+     &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
+     &    monitor%pwr, monitor%WK_pwr, monitor%dip)
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 'check_sph_vol_ms_file'
       iflag = check_sph_vol_ms_file(my_rank, monitor%ene_labels,        &
@@ -111,65 +204,6 @@
       end if
 !
       end subroutine open_sph_vol_rms_file_SGS_mhd
-!
-!  --------------------------------------------------------------------
-!
-      subroutine output_rms_sph_SGS_mhd_control                         &
-     &         (time_d, SPH_SGS, SPH_MHD, MHD_prop, sph_MHD_bc,         &
-     &          r_2nd, leg, monitor, SR_sig)
-!
-      use t_solver_SR
-      use t_time_data
-      use t_boundary_data_sph_MHD
-      use m_machine_parameter
-!
-      use cal_write_sph_monitor_data
-      use cal_SGS_sph_rms_data
-!
-      type(time_data), intent(in) :: time_d
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(fdm_matrices), intent(in) :: r_2nd
-      type(legendre_4_sph_trans), intent(in) :: leg
-      type(SPH_SGS_structure), intent(in) :: SPH_SGS
-      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
-!
-      type(sph_mhd_monitor_data), intent(inout) :: monitor
-      type(send_recv_status), intent(inout) :: SR_sig
-!
-!
-      call cal_SGS_sph_monitor_data                                     &
-     &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, sph_MHD_bc, r_2nd, leg,   &
-     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld, monitor)
-!
-      call output_sph_monitor_data                                      &
-     &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
-     &    SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
-!
-      end subroutine output_rms_sph_SGS_mhd_control
-!
-!  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine init_rms_4_sph_spectr_SGS_mhd(sph, rj_fld, monitor)
-!
-      use cal_rms_fields_by_sph
-      use init_energy_labels_sph_SGS
-!
-      type(sph_grids), intent(in) :: sph
-!
-      type(phys_data), intent(inout) :: rj_fld
-      type(sph_mhd_monitor_data), intent(inout) :: monitor
-!
-!
-      if(iflag_debug .gt. 0) write(*,*) 'init_energy_labels_w_filter'
-      call init_energy_labels_w_filter(monitor%ene_labels)
-      call init_rms_4_sph_spectr                                        &
-     &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
-     &    monitor%pwr, monitor%WK_pwr, monitor%dip)
-!
-      end subroutine init_rms_4_sph_spectr_SGS_mhd
 !
 !  --------------------------------------------------------------------
 !

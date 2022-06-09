@@ -225,7 +225,8 @@ tave_picked_sph_spec_data.o
 
 MOD_T_AVE_NUSSELT = \
 t_average_nusselt.o \
-t_ctl_data_tave_sph_monitor.o
+t_ctl_data_tave_sph_monitor.o \
+time_average_nusselt.o
 
 MOD_T_AVE_DIPOLARITY = \
 time_average_dipolarity.o \
@@ -521,7 +522,7 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
+	@sed -e"s/F90OPTFLAGS/F90DLLFLAGS/g" Makefile.depends >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_UTILS_DIR)' $(SOURCES)

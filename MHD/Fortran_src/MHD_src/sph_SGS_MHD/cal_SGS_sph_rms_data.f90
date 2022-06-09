@@ -7,15 +7,14 @@
 !> @brief  Evaluate mean square by spherical hermonics coefficients
 !!
 !!@verbatim
-!!      subroutine cal_SGS_sph_monitor_data                             &
-!!     &         (sph_params, sph_rj, ht_prop, cp_prop, sph_MHD_bc,     &
-!!     &          r_2nd, leg, ipol, ipol_LES, rj_fld, monitor)
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!      subroutine cal_SGS_sph_monitor_data(sph, MHD_prop, sph_MHD_bc,  &
+!!     &          r_2nd, leg, MHD_mats, ipol, ipol_LES, rj_fld, monitor)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(MHD_radial_matrices), intent(in) :: MHD_mats
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(phys_data), intent(in) :: rj_fld
@@ -57,7 +56,8 @@
       use t_sph_typical_scales
       use t_sph_mhd_monitor_data_IO
       use t_fdm_coefs
-      use t_physical_property
+      use t_radial_matrices_sph_MHD
+      use t_sph_matrix
 !
       implicit none
 !
@@ -69,9 +69,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_SGS_sph_monitor_data                               &
-     &         (sph_params, sph_rj, ht_prop, cp_prop, sph_MHD_bc,       &
-     &          r_2nd, leg, ipol, ipol_LES, rj_fld, monitor)
+      subroutine cal_SGS_sph_monitor_data(sph, MHD_prop, sph_MHD_bc,    &
+     &          r_2nd, leg, MHD_mats, ipol, ipol_LES, rj_fld, monitor)
 !
       use calypso_mpi
       use cal_rms_fields_by_sph
@@ -79,44 +78,42 @@
       use pickup_gauss_coefficients
       use cal_heat_source_Nu
 !
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(sph_grids), intent(in) :: sph
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(MHD_radial_matrices), intent(in) :: MHD_mats
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
-      character(len=kchara) :: mat_name
-!
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
-      call cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,            &
-      &   ipol, ipol_LES, rj_fld, leg%g_sph_rj,                         &
-      &   monitor%pwr, monitor%WK_pwr)
+      call cal_mean_squre_w_SGS_in_shell                                &
+     &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
+     &   leg%g_sph_rj, monitor%pwr, monitor%WK_pwr)
 !
        if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
-        write(mat_name,'(a)') 'Diffusive_Temperature'
         call sel_Nusselt_routine(ipol%base%i_temp,                      &
      &      ipol%base%i_heat_source, ipol%grad_fld%i_grad_temp,         &
-     &      mat_name, sph_params, sph_rj, r_2nd, ht_prop,               &
+     &      sph, r_2nd, MHD_prop%ht_prop,                               &
      &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U,                   &
-     &      sph_MHD_bc%fdm2_center, rj_fld, monitor%heat_Nusselt)
+     &      sph_MHD_bc%fdm2_center, MHD_mats%band_T00_poisson_fixT,     &
+     &      rj_fld, monitor%heat_Nusselt)
       end if
 !
       if(monitor%comp_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
-        write(mat_name,'(a)') 'Diffusive_Composition'
         call sel_Nusselt_routine(ipol%base%i_light,                     &
      &      ipol%base%i_light_source, ipol%grad_fld%i_grad_composit,    &
-     &      mat_name, sph_params, sph_rj, r_2nd, cp_prop,               &
+     &      sph, r_2nd, MHD_prop%cp_prop,                               &
      &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%sph_bc_U,                   &
-     &      sph_MHD_bc%fdm2_center, rj_fld, monitor%comp_Nusselt)
+     &      sph_MHD_bc%fdm2_center, MHD_mats%band_C00_poisson_fixC,     &
+     &      rj_fld, monitor%comp_Nusselt)
       end if
 !!
       if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'

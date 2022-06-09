@@ -79,7 +79,6 @@
       use check_dependency_SGS_MHD
       use input_control_sph_MHD
       use sph_SGS_mhd_monitor_data_IO
-
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
@@ -141,10 +140,10 @@
       call init_radial_sph_interpolation(MHD_files%org_rj_file_IO,      &
      &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, SPH_WK%rj_itp)
 !*
-      if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_SGS_mhd'
-      call open_sph_vol_rms_file_SGS_mhd                                &
-     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld,                       &
-     &    SPH_WK%monitor, SR_sig)
+      if(iflag_debug .gt. 0) write(*,*) 'init_rms_sph_SGS_mhd_control'
+      call init_rms_sph_SGS_mhd_control                                 &
+     &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%r_2nd,       &
+     &    SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor, SR_sig)
 !
       end subroutine SPH_init_SGS_snap
 !
@@ -237,7 +236,8 @@
      &                write(*,*) 'output_rms_sph_SGS_mhd_control'
         call output_rms_sph_SGS_mhd_control(MHD_step%time_d, SPH_SGS,   &
      &      SPH_MHD, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,          &
-     &      SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%monitor, SR_sig)
+     &      SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%MHD_mats,          &
+     &      SPH_WK%monitor, SR_sig)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
 !

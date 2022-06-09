@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/PARALLEL_src/SPH_SHELL_src/t_no_heat_Nusselt.f90
