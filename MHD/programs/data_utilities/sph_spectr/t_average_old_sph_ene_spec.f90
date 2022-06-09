@@ -1,5 +1,5 @@
-!>@file   t_average_sph_ene_spec.f90
-!!        program t_average_sph_ene_spec
+!>@file   t_average_old_sph_ene_spec.f90
+!!        program t_average_old_sph_ene_spec
 !!
 !! @author H. Matsui
 !! @date   Programmed in  Nov., 2007
@@ -44,7 +44,7 @@
 !! -----------------------------------------------------------------
 !!@endverbatim
 !
-      program t_average_sph_ene_spec
+      program t_average_old_sph_ene_spec
 !
       use m_precision
       use m_constants
@@ -69,14 +69,14 @@
 !
       do i = 1, spec_evo_p1%nfile_vol_series_file
         write(*,*) i, trim(spec_evo_p1%vol_series_prefix(i))
-        call sph_spectr_time_ave_sdev                                   &
+        call sph_old_spectr_time_ave_sdev                               &
      &     (spec_evo_p1%vol_series_prefix(i), .FALSE., .TRUE.,          &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
       end do
 !
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
         write(*,*) i, trim(spec_evo_p1%vol_spectr_prefix(i))
-        call sph_spectr_time_ave_sdev                                   &
+        call sph_old_spectr_time_ave_sdev                               &
      &     (spec_evo_p1%vol_spectr_prefix(i), .TRUE.,  .TRUE.,          &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
       end do
@@ -84,14 +84,14 @@
 !
       do i = 1, spec_evo_p1%nfile_layer_series_file
         write(*,*) i, trim(spec_evo_p1%layer_series_prefix(i))
-        call sph_spectr_time_ave_sdev                                   &
+        call sph_old_spectr_time_ave_sdev                               &
      &     (spec_evo_p1%layer_series_prefix(i), .FALSE., .FALSE.,       &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
       end do
 !
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
         write(*,*) i, trim(spec_evo_p1%layer_spectr_prefix(i))
-        call sph_spectr_time_ave_sdev                                   &
+        call sph_old_spectr_time_ave_sdev                               &
      &     (spec_evo_p1%layer_spectr_prefix(i), .TRUE., .FALSE.,        &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
       end do
@@ -99,4 +99,4 @@
       call dealloc_spec_series_file_param(spec_evo_p1)
       stop
 !
-      end program t_average_sph_ene_spec
+      end program t_average_old_sph_ene_spec

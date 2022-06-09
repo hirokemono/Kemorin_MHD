@@ -10,10 +10,13 @@
 !!@verbatim
 !!      subroutine sph_spectr_time_ave_sdev                             &
 !!     &         (file_prefix, flag_spectr, flag_vol_ave,               &
-!!     &          spec_evo_p, sph_IN)
+!!     &          start_time, end_time, sph_IN)
+!!      subroutine sph_old_spectr_time_ave_sdev                         &
+!!     &         (file_prefix, flag_spectr, flag_vol_ave,               &
+!!     &          start_time, end_time, sph_IN)
 !!        character(len = kchara), intent(in) :: file_prefix
 !!        logical, intent(in) :: flag_spectr, flag_vol_ave
-!!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
+!!        real(kind = kreal), intent(in) :: start_time, end_time
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
@@ -22,7 +25,6 @@
       use m_precision
       use m_constants
       use t_read_sph_spectra
-      use t_ctl_param_sph_series_util
 !
       implicit none
 !
@@ -32,6 +34,9 @@
       real(kind = kreal), allocatable :: ave_spec_l(:,:,:)
       real(kind = kreal), allocatable :: sigma_spec_l(:,:,:)
       real(kind = kreal), allocatable :: spectr_pre_l(:,:,:)
+!
+      logical, parameter, private :: flag_old_format =     .TRUE.
+      logical, parameter, private :: flag_current_format = .FALSE.
 !
       private :: id_file_rms
       private :: ave_spec_l, sigma_spec_l, spectr_pre_l
@@ -46,38 +51,68 @@
 !
       subroutine sph_spectr_time_ave_sdev                               &
      &         (file_prefix, flag_spectr, flag_vol_ave,                 &
-     &          spec_evo_p, sph_IN)
+     &          start_time, end_time, sph_IN)
 !
+      use t_ctl_param_sph_series_util
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: file_prefix
       logical, intent(in) :: flag_spectr, flag_vol_ave
-      type(sph_spectr_file_param), intent(in) :: spec_evo_p
+      real(kind = kreal), intent(in) :: start_time, end_time
+!
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: fname_org
 !
       fname_org = add_dat_extension(file_prefix)
       call sph_spectr_average                                           &
-     &   (fname_org, flag_spectr, flag_vol_ave, spec_evo_p, sph_IN)
+     &   (flag_current_format, fname_org, flag_spectr, flag_vol_ave,    &
+     &    start_time, end_time, sph_IN)
       call sph_spectr_std_deviation                                     &
-     &   (fname_org, flag_spectr, flag_vol_ave, spec_evo_p, sph_IN)
+     &   (flag_current_format, fname_org, flag_spectr, flag_vol_ave,    &
+     &    start_time, end_time, sph_IN)
 !
       end subroutine sph_spectr_time_ave_sdev
+!
+!   --------------------------------------------------------------------
+!
+      subroutine sph_old_spectr_time_ave_sdev                           &
+     &         (file_prefix, flag_spectr, flag_vol_ave,                 &
+     &          start_time, end_time, sph_IN)
+!
+      use set_parallel_file_name
+!
+      character(len = kchara), intent(in) :: file_prefix
+      logical, intent(in) :: flag_spectr, flag_vol_ave
+      real(kind = kreal), intent(in) :: start_time, end_time
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+!
+      character(len = kchara) :: fname_org
+!
+      fname_org = add_dat_extension(file_prefix)
+      call sph_spectr_average                                           &
+     &   (flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
+     &    start_time, end_time, sph_IN)
+      call sph_spectr_std_deviation                                     &
+     &   (flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
+     &    start_time, end_time, sph_IN)
+!
+      end subroutine sph_old_spectr_time_ave_sdev
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_average                                     &
-     &         (fname_org, flag_spectr, flag_vol_ave,                   &
-     &          spec_evo_p, sph_IN)
+     &         (flag_old_fmt, fname_org, flag_spectr, flag_vol_ave,     &
+     &          start_time, end_time, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
-      logical, intent(in) :: flag_spectr, flag_vol_ave
-      type(sph_spectr_file_param), intent(in) :: spec_evo_p
+      logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
+      real(kind = kreal), intent(in) :: start_time, end_time
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
@@ -89,11 +124,11 @@
 !
       if(flag_spectr) then
         call select_input_sph_pwr_head(id_file_rms,                     &
-     &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
+     &      flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = sph_IN%ltr_sph
       else
         call select_input_sph_series_head(id_file_rms,                  &
-     &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
+     &      flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = 0
       end if
 !
@@ -108,15 +143,15 @@
       do
         if(flag_spectr) then
           call select_input_sph_pwr_data(id_file_rms,                   &
-     &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
+     &        flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         else
           call select_input_sph_series_data(id_file_rms,                &
-     &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
+     &        flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         end if
 !
         if(ierr .gt. 0) go to 99
 !
-        if (sph_IN%time .ge. spec_evo_p%start_time) then
+        if (sph_IN%time .ge. start_time) then
           if (ist_true .eq. -1) then
             ist_true = sph_IN%i_step
             time_ini = sph_IN%time
@@ -137,7 +172,7 @@
         write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60), &
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=   ', icou
-        if (sph_IN%time .ge. spec_evo_p%end_time) exit
+        if (sph_IN%time .ge. end_time) exit
       end do
 !
    99 continue
@@ -172,15 +207,15 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_std_deviation                               &
-     &         (fname_org, flag_spectr, flag_vol_ave,                   &
-     &          spec_evo_p, sph_IN)
+     &         (flag_old_fmt, fname_org, flag_spectr, flag_vol_ave,     &
+     &          start_time, end_time, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
-      logical, intent(in) :: flag_spectr, flag_vol_ave
-      type(sph_spectr_file_param), intent(in) :: spec_evo_p
+      logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
+      real(kind = kreal), intent(in) :: start_time, end_time
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
@@ -194,11 +229,11 @@
 !
       if(flag_spectr) then
         call select_input_sph_pwr_head(id_file_rms,                     &
-     &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
+     &      flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = sph_IN%ltr_sph
       else
         call select_input_sph_series_head(id_file_rms,                  &
-     &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
+     &      flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = 0
       end if
 !
@@ -212,15 +247,15 @@
       do
         if(flag_spectr) then
           call select_input_sph_pwr_data(id_file_rms,                   &
-     &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
+     &        flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         else
           call select_input_sph_series_data(id_file_rms,                &
-     &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
+     &        flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         end if
 !
         if(ierr .gt. 0) go to 99
 !
-        if (sph_IN%time .ge. spec_evo_p%start_time) then
+        if (sph_IN%time .ge. start_time) then
           if (ist_true .eq. -1) then
             ist_true = sph_IN%i_step
             time_ini = sph_IN%time
@@ -242,7 +277,7 @@
         write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60), &
      &       'step= ', sph_IN%i_step,                                   &
      &       ' deviation finished. Count=   ', icou
-        if (sph_IN%time .ge. spec_evo_p%end_time) exit
+        if (sph_IN%time .ge. end_time) exit
       end do
    99 continue
       write(*,*)

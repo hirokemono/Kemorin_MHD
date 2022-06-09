@@ -17,8 +17,9 @@ TARGET_DIFF_SPH_SPEC =     diff_spectr_data
 TARGET_ZM_SPH_SPEC =       zonal_mean_sph
 TARGET_T_AVE_SPEC =        t_ave_sph_spec
 TARGET_SPH_NEUTRAL =       sph_neutral_points
-TARGET_TAVE_SPH_ENE_SPEC = t_ave_sph_mean_square
-TARGET_PSUM_SPH_ENE_SPEC = part_sum_sph_mean_square
+TARGET_TAVE_SPH_ENE_SPEC =  t_ave_sph_mean_square
+TARGET_TAVE_OLD_SPH_ESPEC = t_ave_old_sph_mean_square
+TARGET_PSUM_SPH_ENE_SPEC =  part_sum_sph_mean_square
 
 TARGET_T_AVE_GAUSS_COEFS =   t_ave_gauss_coefs
 TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
@@ -177,6 +178,17 @@ simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
 cal_tave_sph_ene_spectr.o
 
+MOD_TAVE_OLD_SPH_ESPEC = \
+t_average_old_sph_ene_spec.o \
+t_read_sph_spectra.o \
+t_ctl_data_tave_sph_monitor.o \
+t_ctl_param_sph_series_util.o \
+m_tave_sph_ene_spectr.o \
+sph_mean_square_IO_select.o \
+simple_sph_spectr_head_IO.o \
+simple_sph_spectr_data_IO.o \
+cal_tave_sph_ene_spectr.o
+
 MOD_MAX_SPH_ENE = \
 maxmode_sph_ene_spec.o \
 t_read_sph_spectra.o \
@@ -273,6 +285,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_TAVE_SPH_ENE_SPEC = $$(BUILDDIR)/$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_TAVE_OLD_SPH_ESPEC = $$(BUILDDIR)/$(TARGET_TAVE_OLD_SPH_ESPEC)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_GAUSS_COEFS = $$(BUILDDIR)/$(TARGET_T_AVE_GAUSS_COEFS)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_PICK_SPH_SPEC = $$(BUILDDIR)/$(TARGET_T_AVE_PICK_SPH_SPEC)' \
@@ -300,9 +314,9 @@ target_task:
 	'$$(TARGET_PICK_SPH_SPEC)'                               \
 	'$$(TARGET_RENAME_SPH_FLD)     $$(TARGET_DIFF_SPH_SPEC)'  \
 	'$$(TARGET_ZM_SPH_SPEC)        $$(TARGET_T_AVE_SPEC)'      \
-	'$$(TARGET_SPH_NEUTRAL)        $$(TARGET_TAVE_SPH_ENE_SPEC)' \
+	'$$(TARGET_TAVE_SPH_ENE_SPEC)  $$(TARGET_TAVE_OLD_SPH_ESPEC)'  \
 	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	'$$(TARGET_T_AVE_GAUSS_COEFS)'                            \
+	'$$(TARGET_T_AVE_GAUSS_COEFS)  $$(TARGET_SPH_NEUTRAL)'        \
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
 	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'      \
 	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)'   \
@@ -398,6 +412,14 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	'$$(MOD_TAVE_SPH_ENE_SPEC)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_TAVE_OLD_SPH_ESPEC)': '$$(MOD_TAVE_OLD_SPH_ESPEC)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_TAVE_OLD_SPH_ESPEC)' \
+	'$$(MOD_TAVE_OLD_SPH_ESPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -510,6 +532,8 @@ mod_list:
 	@echo  $(MOD_SPH_NEUTRAL)        >> $(MAKENAME)
 	@echo  MOD_TAVE_SPH_ENE_SPEC=  \\  >> $(MAKENAME)
 	@echo  $(MOD_TAVE_SPH_ENE_SPEC)    >> $(MAKENAME)
+	@echo  MOD_TAVE_OLD_SPH_ESPEC= \\  >> $(MAKENAME)
+	@echo  $(MOD_TAVE_OLD_SPH_ESPEC)   >> $(MAKENAME)
 	@echo  MOD_T_AVE_GAUSS_COEFS=  \\  >> $(MAKENAME)
 	@echo  $(MOD_T_AVE_GAUSS_COEFS)    >> $(MAKENAME)
 	@echo  MOD_T_AVE_PICK_SPH=  \\     >> $(MAKENAME)
