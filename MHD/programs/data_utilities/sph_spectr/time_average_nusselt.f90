@@ -64,7 +64,7 @@
       real(kind = kreal) :: start_time, end_time
       character(len=kchara) :: file_prefix
 !
-      write(file_prefix,*) trim(c_to_fstring(cname))
+      write(file_prefix,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
       call time_average_nusselt_f(file_prefix, start_time, end_time)
@@ -101,6 +101,8 @@
 !
        Nu_t%Nusselt_file_head = trim(file_prefix)
       call open_read_no_heat_source_Nu(id_pick, Nu_t)
+      write(*,*) 'Nu_t%Nusselt_file_head: ', Nu_t%Nusselt_file_head
+      write(*,*) 'start_time: ', start_time, end_time
 !
 !       Evaluate time average
 !
@@ -134,8 +136,8 @@
         prev_Nu(1) = Nu_t%Nu_ICB
         prev_Nu(2) = Nu_t%Nu_CMB
 !
-        write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
-     &       'step= ', i_step,  ' averaging finished. Count=   ', icou
+!        write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59),&
+!     &       'step= ', i_step,  ' averaging finished. Count=   ', icou
         if(time .ge. end_time) exit
       end do
       write(*,*)
@@ -180,8 +182,8 @@
         prev_Nu(1) = (Nu_t%Nu_ICB - ave_Nu(1))**2
         prev_Nu(2) = (Nu_t%Nu_CMB - ave_Nu(2))**2
 !
-        write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
-     &       'step= ', i_step,  ' deviation finished. Count=   ', icou
+!        write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59),&
+!     &       'step= ', i_step,  ' deviation finished. Count=   ', icou
         if(time .ge. end_time) exit
       end do
       write(*,*)
@@ -200,9 +202,6 @@
       write(*,'(1p2e25.15e3)')  ave_Nu(1), sdev_Nu(1)
       write(*,'(a)') 'Average and Std. Dev. of Nu at CMB:'
       write(*,'(1p2e25.15e3)')  ave_Nu(2), sdev_Nu(2)
-!
-      write(*,*) '***** program finished *****'
-      stop
 !
       end subroutine time_average_nusselt_f
 !

@@ -63,6 +63,11 @@ endif
 
 SOURCES = $(shell ls *.f90)
 
+MOD_SPH_UTIL_DLL = \
+time_average_nusselt.o \
+time_average_dipolarity.o
+
+
 MOD_TAVE_SPH_SPEC = \
 t_spheric_data_sph_spetr.o \
 t_ctl_data_4_sph_utils.o \
@@ -225,12 +230,12 @@ tave_picked_sph_spec_data.o
 
 MOD_T_AVE_NUSSELT = \
 t_average_nusselt.o \
-t_ctl_data_tave_sph_monitor.o \
 time_average_nusselt.o
 
 MOD_T_AVE_DIPOLARITY = \
-time_average_dipolarity.o \
-t_ctl_data_tave_sph_monitor.o
+t_average_dipolarity.o \
+t_ctl_data_tave_sph_monitor.o \
+time_average_dipolarity.o
 
 MOD_SPH_ENE_CHECK = \
 compare_sph_mean_square.o
@@ -477,6 +482,9 @@ lib_name:
 	@echo  '#' >> $(MAKENAME)
 
 mod_list:
+	@echo  MOD_SPH_UTIL_DLL=  \\     >> $(MAKENAME)
+	@echo  $(MOD_SPH_UTIL_DLL)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 	@echo  MOD_SPH_ENE_SPEC=  \\     >> $(MAKENAME)
 	@echo  $(MOD_SPH_ENE_SPEC)       >> $(MAKENAME)
 	@echo  MOD_SPH_ENE_LAYER=  \\    >> $(MAKENAME)
