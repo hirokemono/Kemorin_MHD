@@ -47,9 +47,11 @@
         els_dat1%elsasser_file_prefix                                   &
      &     = tave_sph_ctl1%Elsasser_file_prefix%charavalue
       end if
-      if(tave_sph_ctl1%old_format_ctl%iflag .gt. 0                      &
-     &    .and. yes_flag(tave_sph_ctl1%old_format_ctl%charavalue)) then
-        els_dat1%iflag_old_spectr_data = 1
+!
+      els_dat1%flag_old_spectr_data = .FALSE.
+      if(tave_sph_ctl1%old_format_ctl%iflag .gt. 0) then
+        els_dat1%flag_old_spectr_data                                   &
+     &     = yes_flag(tave_sph_ctl1%old_format_ctl%charavalue)
       end if
 !
       if(tave_sph_ctl1%start_time_ctl%iflag .eq. 0) then

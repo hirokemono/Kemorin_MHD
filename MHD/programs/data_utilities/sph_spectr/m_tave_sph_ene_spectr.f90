@@ -65,11 +65,11 @@
 !
       if(iflag_spectr .gt. 0) then
         call select_input_sph_pwr_head(id_file_rms,                     &
-     &      spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN)
+     &      spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN)
         ltr = sph_IN%ltr_sph
       else
         call select_input_sph_series_head(id_file_rms,                  &
-     &      spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN)
+     &      spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN)
         ltr = 0
       end if
 !
@@ -84,10 +84,10 @@
       do
         if(iflag_spectr .gt. 0) then
           call select_input_sph_pwr_data(id_file_rms,                   &
-     &        spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN, ierr)
+     &        spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN, ierr)
         else
           call select_input_sph_series_data(id_file_rms,                &
-     &        spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN, ierr)
+     &        spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN, ierr)
         end if
 !
         if(ierr .gt. 0) go to 99
@@ -170,11 +170,11 @@
 !
       if(iflag_spectr .gt. 0) then
         call select_input_sph_pwr_head(id_file_rms,                     &
-     &      spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN)
+     &      spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN)
         ltr = sph_IN%ltr_sph
       else
         call select_input_sph_series_head(id_file_rms,                  &
-     &      spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN)
+     &      spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN)
         ltr = 0
       end if
 !
@@ -188,10 +188,10 @@
       do
         if(iflag_spectr .gt. 0) then
           call select_input_sph_pwr_data(id_file_rms,                   &
-     &        spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN, ierr)
+     &        spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN, ierr)
         else
           call select_input_sph_series_data(id_file_rms,                &
-     &        spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN, ierr)
+     &        spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN, ierr)
         end if
 !
         if(ierr .gt. 0) go to 99
