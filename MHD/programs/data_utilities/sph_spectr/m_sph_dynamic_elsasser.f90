@@ -76,6 +76,8 @@
       real(kind = kreal), parameter :: pi = four * atan(one)
       real(kind = kreal), parameter :: Lscale = 1.0
 !
+      logical, parameter, private :: vol_ave_on = .TRUE.
+!
       private :: sph_OUT1, sph_IN_l, sph_IN_m
       private :: id_file_rms_l, id_file_rms_m, id_file_lscale
       private :: sum_ene_spectr, uli_sph_length_scale
@@ -101,12 +103,12 @@
       file_name = add_dat_extension(els_dat%vol_l_spectr_file_prefix)
       open(id_file_rms_l, file=file_name)
       call select_input_sph_pwr_head(id_file_rms_l,                     &
-     &    els_dat%flag_old_spectr_data, iflag_on, sph_IN_l)
+     &    els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_l)
 !
       file_name = add_dat_extension(els_dat%vol_m_spectr_file_prefix)
       open(id_file_rms_m, file=file_name)
       call select_input_sph_pwr_head(id_file_rms_m,                     &
-     &    els_dat%flag_old_spectr_data, iflag_on, sph_IN_m)
+     &    els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_m)
 !
       do i = 1, sph_IN_l%num_labels
         if(sph_IN_l%ene_sph_spec_name(i) .eq. 'K_ene')                  &
@@ -284,7 +286,7 @@
       write(*,*) 'Save Elsasser number into  ', trim(file_name)
       open(id_file_lscale, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_lscale, iflag_on, sph_OUT1)
+     &   (id_file_lscale, vol_ave_on, sph_OUT1)
 !
       icou = 0
       ist_true = -1
@@ -293,9 +295,9 @@
      &       ' averaging finished. Count=  ', icou
       do
         call select_input_sph_pwr_data(id_file_rms_l,                   &
-     &      els_dat%flag_old_spectr_data, iflag_on, sph_IN_l, ierr)
+     &      els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_l, ierr)
         call select_input_sph_pwr_data(id_file_rms_m,                   &
-     &      els_dat%flag_old_spectr_data, iflag_on, sph_IN_m, ierr)
+     &      els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_m, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN_l%time .ge. els_dat%start_time) then
@@ -386,7 +388,7 @@
 !
 !
           call select_output_sph_series_data                            &
-     &       (id_file_lscale, iflag_on, sph_OUT1)
+     &       (id_file_lscale, vol_ave_on, sph_OUT1)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

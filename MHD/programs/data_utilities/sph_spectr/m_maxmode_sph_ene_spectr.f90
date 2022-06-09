@@ -9,7 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine sph_maximum_pwr_spectr                               &
-!!     &         (input_prefix, iflag_vol_ave, spec_evo_p, sph_IN)
+!!     &         (input_prefix, flag_vol_ave, spec_evo_p, sph_IN)
+!!        character(len = kchara), intent(in) :: input_prefix
+!!        logical, intent(in) :: flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
@@ -44,14 +46,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_maximum_pwr_spectr                                 &
-     &         (input_prefix, iflag_vol_ave, spec_evo_p, sph_IN)
+     &         (input_prefix, flag_vol_ave, spec_evo_p, sph_IN)
 !
       use t_ctl_param_sph_series_util
       use sph_mean_square_IO_select
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: input_prefix
-        integer(kind = kint), intent(in) :: iflag_vol_ave
+      logical, intent(in) :: flag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
@@ -62,19 +64,19 @@
       fname_org = add_dat_extension(input_prefix)
       open(id_file_rms_l, file=fname_org)
       call select_input_sph_pwr_head(id_file_rms_l,                     &
-     &    spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN)
+     &    spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
       write(file_name, '(a7,a)') 'maxval_', trim(fname_org)
       open(id_file_maxval, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_maxval, iflag_vol_ave, sph_OUT1)
+     &   (id_file_maxval, flag_vol_ave, sph_OUT1)
 !
       write(file_name, '(a7,a)') 'maxloc_', trim(fname_org)
       open(id_file_maxloc, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_maxloc, iflag_vol_ave, sph_OUT1)
+     &   (id_file_maxloc, flag_vol_ave, sph_OUT1)
 !
       call allocate_max_sph_data(sph_IN)
 !
@@ -85,7 +87,7 @@
      &       ' averaging finished. Count=  ', icou
       do
         call select_input_sph_pwr_data(id_file_rms_l,                   &
-     &      spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN, ierr)
+     &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
@@ -99,13 +101,13 @@
      &       (sph_IN%nri_sph, izero, sph_IN%ntot_sph_spec,              &
      &        max_spectr, sph_OUT1)
           call select_output_sph_series_data                            &
-     &       (id_file_maxval, iflag_vol_ave, sph_OUT1)
+     &       (id_file_maxval, flag_vol_ave, sph_OUT1)
 !
           call copy_ene_spectr_data_to_IO                               &
      &       (sph_IN%nri_sph, izero, sph_IN%ntot_sph_spec,              &
      &        max_degree, sph_OUT1)
           call select_output_sph_series_data                            &
-     &       (id_file_maxloc, iflag_vol_ave, sph_OUT1)
+     &       (id_file_maxloc, flag_vol_ave, sph_OUT1)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

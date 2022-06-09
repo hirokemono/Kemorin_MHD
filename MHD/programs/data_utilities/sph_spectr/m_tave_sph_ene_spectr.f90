@@ -9,11 +9,13 @@
 !!
 !!@verbatim
 !!      subroutine sph_spectr_average                                   &
-!!     &         (fname_org, iflag_spectr, iflag_vol_ave,               &
+!!     &         (fname_org, iflag_spectr, flag_vol_ave,                &
 !!     &          spec_evo_p, sph_IN)
 !!      subroutine sph_spectr_std_deviation                             &
-!!     &         (fname_org, iflag_spectr, iflag_vol_ave,               &
+!!     &         (fname_org, iflag_spectr, flag_vol_ave,                &
 !!     &          spec_evo_p, sph_IN)
+!!        character(len = kchara), intent(in) :: fname_org
+!!        logical, intent(in) :: flag_spectr, flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
@@ -45,14 +47,15 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_average                                     &
-     &         (fname_org, iflag_spectr, iflag_vol_ave,                 &
+     &         (fname_org, iflag_spectr, flag_vol_ave,                  &
      &          spec_evo_p, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
-      integer(kind = kint), intent(in) :: iflag_spectr, iflag_vol_ave
+      logical, intent(in) :: flag_vol_ave
+      integer(kind = kint), intent(in) :: iflag_spectr
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
@@ -65,11 +68,11 @@
 !
       if(iflag_spectr .gt. 0) then
         call select_input_sph_pwr_head(id_file_rms,                     &
-     &      spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN)
+     &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = sph_IN%ltr_sph
       else
         call select_input_sph_series_head(id_file_rms,                  &
-     &      spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN)
+     &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = 0
       end if
 !
@@ -84,10 +87,10 @@
       do
         if(iflag_spectr .gt. 0) then
           call select_input_sph_pwr_data(id_file_rms,                   &
-     &        spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN, ierr)
+     &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         else
           call select_input_sph_series_data(id_file_rms,                &
-     &        spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN, ierr)
+     &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         end if
 !
         if(ierr .gt. 0) go to 99
@@ -129,14 +132,14 @@
       write(file_name, '(a6,a)') 't_ave_', trim(fname_org)
       open(id_file_rms, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_rms, iflag_vol_ave, sph_IN)
+     &   (id_file_rms, flag_vol_ave, sph_IN)
 !
       if(iflag_spectr .gt. 0) then
         call select_output_sph_pwr_data                                 &
-     &     (id_file_rms, iflag_vol_ave, sph_IN)
+     &     (id_file_rms, flag_vol_ave, sph_IN)
       else
         call select_output_sph_series_data                              &
-     &     (id_file_rms, iflag_vol_ave, sph_IN)
+     &     (id_file_rms, flag_vol_ave, sph_IN)
       end if
 !
       close(id_file_rms)
@@ -148,14 +151,15 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_std_deviation                               &
-     &         (fname_org, iflag_spectr, iflag_vol_ave,                 &
+     &         (fname_org, iflag_spectr, flag_vol_ave,                  &
      &          spec_evo_p, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
-      integer(kind = kint), intent(in) :: iflag_spectr, iflag_vol_ave
+      logical, intent(in) :: flag_vol_ave
+      integer(kind = kint), intent(in) :: iflag_spectr
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
@@ -170,11 +174,11 @@
 !
       if(iflag_spectr .gt. 0) then
         call select_input_sph_pwr_head(id_file_rms,                     &
-     &      spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN)
+     &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = sph_IN%ltr_sph
       else
         call select_input_sph_series_head(id_file_rms,                  &
-     &      spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN)
+     &      spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
         ltr = 0
       end if
 !
@@ -188,10 +192,10 @@
       do
         if(iflag_spectr .gt. 0) then
           call select_input_sph_pwr_data(id_file_rms,                   &
-     &        spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN, ierr)
+     &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         else
           call select_input_sph_series_data(id_file_rms,                &
-     &        spec_evo_p%flag_old_fmt, iflag_vol_ave, sph_IN, ierr)
+     &        spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN, ierr)
         end if
 !
         if(ierr .gt. 0) go to 99
@@ -231,14 +235,14 @@
       write(file_name, '(a8,a)') 't_sigma_', trim(fname_org)
       open(id_file_rms, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_rms, iflag_vol_ave,sph_IN)
+     &   (id_file_rms, flag_vol_ave, sph_IN)
 !
       if(iflag_spectr .gt. 0) then
         call select_output_sph_pwr_data                                 &
-     &     (id_file_rms, iflag_vol_ave, sph_IN)
+     &     (id_file_rms, flag_vol_ave, sph_IN)
       else
         call select_output_sph_series_data                              &
-     &     (id_file_rms, iflag_vol_ave, sph_IN)
+     &     (id_file_rms, flag_vol_ave, sph_IN)
       end if
 !
       close(id_file_rms)

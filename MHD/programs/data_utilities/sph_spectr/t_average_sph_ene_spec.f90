@@ -73,9 +73,9 @@
         write(*,*) i, trim(spec_evo_p1%vol_series_prefix(i))
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%vol_series_prefix(i))
-        call sph_spectr_average(fname_org_rms, izero,  ione,            &
+        call sph_spectr_average(fname_org_rms, izero,  .TRUE.,          &
      &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, izero,  ione,      &
+        call sph_spectr_std_deviation(fname_org_rms, izero, .TRUE.,     &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
@@ -83,9 +83,9 @@
         write(*,*) i, trim(spec_evo_p1%vol_spectr_prefix(i))
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%vol_spectr_prefix(i))
-        call sph_spectr_average(fname_org_rms, ione,  ione,             &
+        call sph_spectr_average(fname_org_rms, ione,  .TRUE.,           &
      &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, ione,  ione,       &
+        call sph_spectr_std_deviation(fname_org_rms, ione,  .TRUE.,     &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
@@ -94,9 +94,9 @@
         write(*,*) i, trim(spec_evo_p1%layer_series_prefix(i))
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%layer_series_prefix(i))
-        call sph_spectr_average(fname_org_rms, izero, izero,            &
+        call sph_spectr_average(fname_org_rms, izero, .FALSE.,          &
      &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, izero, izero,      &
+        call sph_spectr_std_deviation(fname_org_rms, izero, .FALSE.,    &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
@@ -104,9 +104,9 @@
         write(*,*) i, trim(spec_evo_p1%layer_spectr_prefix(i))
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%layer_spectr_prefix(i))
-        call sph_spectr_average(fname_org_rms, ione, izero,             &
+        call sph_spectr_average(fname_org_rms, ione, .FALSE.,           &
      &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, ione, izero,       &
+        call sph_spectr_std_deviation(fname_org_rms, ione, .FALSE.,     &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
