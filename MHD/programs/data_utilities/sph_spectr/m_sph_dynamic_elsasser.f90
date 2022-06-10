@@ -90,6 +90,7 @@
 !
       subroutine sph_dynamic_elsasser_by_spectr(els_dat)
 !
+      use simple_sph_spectr_head_IO
       use sph_mean_square_IO_select
       use set_parallel_file_name
 !
@@ -102,13 +103,15 @@
 !
       file_name = add_dat_extension(els_dat%vol_l_spectr_file_prefix)
       open(id_file_rms_l, file=file_name)
-      call select_input_sph_pwr_head(id_file_rms_l,                     &
+      call select_input_sph_spectr_head(id_file_rms_l,                  &
      &    els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_l)
+      call check_sph_spectr_name(sph_IN_l)
 !
       file_name = add_dat_extension(els_dat%vol_m_spectr_file_prefix)
       open(id_file_rms_m, file=file_name)
-      call select_input_sph_pwr_head(id_file_rms_m,                     &
+      call select_input_sph_spectr_head(id_file_rms_m,                  &
      &    els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_m)
+      call check_sph_spectr_name(sph_IN_m)
 !
       do i = 1, sph_IN_l%num_labels
         if(sph_IN_l%ene_sph_spec_name(i) .eq. 'K_ene')                  &

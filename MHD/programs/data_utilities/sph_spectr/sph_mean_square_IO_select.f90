@@ -7,15 +7,11 @@
 !>@brief Mean sqare data
 !!
 !!@verbatim
-!!      subroutine select_input_sph_series_head                         &
-!!     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN)
 !!      subroutine select_input_sph_series_data                         &
 !!     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN, ierr)
 !!        logical, intent(in) :: flag_old_fmt, flag_vol_ave
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!
-!!      subroutine select_input_sph_pwr_head                            &
-!!     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN)
 !!      subroutine select_input_sph_pwr_data                            &
 !!     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN, ierr)
 !!        logical, intent(in) :: flag_old_fmt, flag_vol_ave
@@ -45,33 +41,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine select_input_sph_series_head                           &
-     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN)
-!
-      integer(kind = kint), intent(in) :: id_file
-      logical, intent(in) :: flag_old_fmt, flag_vol_ave
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-!
-!
-      if(flag_old_fmt) then
-        if(flag_vol_ave) then
-          call input_sph_pwr_vol_head_old(id_file, sph_IN)
-        else
-          call input_sph_pwr_layer_head_old(id_file, sph_IN)
-        end if
-!
-      else
-        if(flag_vol_ave) then
-          call input_sph_pwr_vol_head(id_file, sph_IN)
-        else
-          call input_sph_pwr_layer_head(id_file, sph_IN)
-        end if
-      end if
-!
-      end subroutine select_input_sph_series_head
-!
-!   --------------------------------------------------------------------
-!
       subroutine select_input_sph_series_data                           &
      &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN, ierr)
 !
@@ -94,33 +63,6 @@
       end subroutine select_input_sph_series_data
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine select_input_sph_pwr_head                              &
-     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN)
-!
-      integer(kind = kint), intent(in) :: id_file
-      logical, intent(in) :: flag_old_fmt, flag_vol_ave
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-!
-!
-      if(flag_old_fmt) then
-        if(flag_vol_ave) then
-          call input_sph_spectr_vol_head_old(id_file, sph_IN)
-        else
-          call input_sph_spectr_layer_head_old(id_file, sph_IN)
-        end if
-!
-      else
-        if(flag_vol_ave) then
-          call input_sph_spectr_vol_head(id_file, sph_IN)
-        else
-          call input_sph_spectr_layer_head(id_file, sph_IN)
-        end if
-      end if
-!
-      end subroutine select_input_sph_pwr_head
-!
 !   --------------------------------------------------------------------
 !
       subroutine select_input_sph_pwr_data                              &

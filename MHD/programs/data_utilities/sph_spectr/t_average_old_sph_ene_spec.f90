@@ -50,7 +50,6 @@
       use m_constants
 !
       use m_tave_sph_ene_spectr
-      use t_read_sph_spectra
       use t_ctl_data_tave_sph_monitor
       use t_ctl_param_sph_series_util
       use set_parallel_file_name
@@ -59,7 +58,6 @@
 !
       type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
       type(sph_spectr_file_param), save :: spec_evo_p1
-      type(read_sph_spectr_data), save :: sph_IN_t
 !
       integer :: i
 !
@@ -69,31 +67,31 @@
 !
       do i = 1, spec_evo_p1%nfile_vol_series_file
         write(*,*) i, trim(spec_evo_p1%vol_series_prefix(i))
-        call sph_old_spectr_time_ave_sdev                               &
+        call time_ave_sdev_sph_old_spectr                               &
      &     (spec_evo_p1%vol_series_prefix(i), .FALSE., .TRUE.,          &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
         write(*,*) i, trim(spec_evo_p1%vol_spectr_prefix(i))
-        call sph_old_spectr_time_ave_sdev                               &
+        call time_ave_sdev_sph_old_spectr                               &
      &     (spec_evo_p1%vol_spectr_prefix(i), .TRUE.,  .TRUE.,          &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
 !
       do i = 1, spec_evo_p1%nfile_layer_series_file
         write(*,*) i, trim(spec_evo_p1%layer_series_prefix(i))
-        call sph_old_spectr_time_ave_sdev                               &
+        call time_ave_sdev_sph_old_spectr                               &
      &     (spec_evo_p1%layer_series_prefix(i), .FALSE., .FALSE.,       &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
         write(*,*) i, trim(spec_evo_p1%layer_spectr_prefix(i))
-        call sph_old_spectr_time_ave_sdev                               &
+        call time_ave_sdev_sph_old_spectr                               &
      &     (spec_evo_p1%layer_spectr_prefix(i), .TRUE., .FALSE.,        &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
       call dealloc_spec_series_file_param(spec_evo_p1)

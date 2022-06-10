@@ -49,6 +49,7 @@
      &         (input_prefix, flag_vol_ave, spec_evo_p, sph_IN)
 !
       use t_ctl_param_sph_series_util
+      use simple_sph_spectr_head_IO
       use sph_mean_square_IO_select
       use set_parallel_file_name
 !
@@ -63,8 +64,9 @@
 !
       fname_org = add_dat_extension(input_prefix)
       open(id_file_rms_l, file=fname_org)
-      call select_input_sph_pwr_head(id_file_rms_l,                     &
+      call select_input_sph_spectr_head(id_file_rms_l,                  &
      &    spec_evo_p%flag_old_fmt, flag_vol_ave, sph_IN)
+      call check_sph_spectr_name(sph_IN)
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
