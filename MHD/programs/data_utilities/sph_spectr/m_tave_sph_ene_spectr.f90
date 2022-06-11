@@ -122,6 +122,34 @@
       end subroutine time_ave_sdev_sph_old_spectr
 !
 !   --------------------------------------------------------------------
+!
+      subroutine read_time_ave_sdev_sph_spectr                          &
+     &         (tave_file_prefix, sdev_file_prefix,                     &
+     &          flag_spectr, flag_vol_ave, tave_sph_IN, sdev_sph_IN)
+!
+      use t_ctl_param_sph_series_util
+      use set_parallel_file_name
+!
+      character(len = kchara), intent(in) :: tave_file_prefix
+      character(len = kchara), intent(in) :: sdev_file_prefix
+      logical, intent(in) :: flag_spectr, flag_vol_ave
+      type(read_sph_spectr_data), intent(inout) :: tave_sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sdev_sph_IN
+!
+      character(len = kchara) :: fname
+      real(kind = kreal) :: true_start, true_end
+      integer(kind = kint) :: i
+!
+      fname = add_dat_extension(tave_file_prefix)
+      call read_sph_spectr_snapshot(fname, flag_spectr, flag_vol_ave,   &
+     &                              tave_sph_IN)
+      fname = add_dat_extension(sdev_file_prefix)
+      call read_sph_spectr_snapshot(fname, flag_spectr, flag_vol_ave,   &
+     &                              sdev_sph_IN)
+!
+      end subroutine read_time_ave_sdev_sph_spectr
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_average                                     &
@@ -336,6 +364,49 @@
       close(id_file_rms)
 !
       end subroutine sph_spectr_std_deviation
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_sph_spectr_snapshot                               &
+     &         (fname_org, flag_spectr, flag_vol_ave, sph_IN)
+!
+      use simple_sph_spectr_head_IO
+      use sph_mean_square_IO_select
+!
+!
+      character(len = kchara), intent(in) :: fname_org
+      logical, intent(in) :: flag_spectr, flag_vol_ave
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+!
+      integer(kind = kint) :: ltr, ierr
+      logical, parameter :: current_fmt = .FALSE.
+!
+!  Read spectr data file
+!
+      write(*,*) 'Open file ', trim(fname_org), ' again'
+      open(id_file_rms, file=fname_org)
+!
+      if(flag_spectr) then
+        call select_input_sph_spectr_head(id_file_rms,                  &
+     &      current_fmt, flag_vol_ave, sph_IN)
+        ltr = sph_IN%ltr_sph
+      else
+        call select_input_sph_series_head(id_file_rms,                  &
+     &      current_fmt, flag_vol_ave, sph_IN)
+        ltr = 0
+      end if
+      call check_sph_spectr_name(sph_IN)
+!
+        if(flag_spectr) then
+          call select_input_sph_pwr_data(id_file_rms,                   &
+     &        current_fmt, flag_vol_ave, sph_IN, ierr)
+        else
+          call select_input_sph_series_data(id_file_rms,                &
+     &        current_fmt, flag_vol_ave, sph_IN, ierr)
+        end if
+      close(id_file_rms)
+!
+      end subroutine read_sph_spectr_snapshot
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

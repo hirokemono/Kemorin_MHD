@@ -195,7 +195,7 @@
 !
       write(*,'(a,1p2e25.15e3)') 'Start and end time:     ',            &
      &                          true_start, end_time
-      write(*,'(a)') 'Average and Std. Dev. of Nu at CMB:'
+      write(*,'(a)') 'Average and Std. Dev. of dipolarity at CMB'
       write(*,'(1p2e25.15e3)')  ave_fdip, sdev_fdip
 !
       end subroutine time_average_dipolarity_f

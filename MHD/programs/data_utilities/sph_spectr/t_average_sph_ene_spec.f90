@@ -72,20 +72,20 @@
       end do
 !
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
-        call time_ave_sph_vol_spectr_sdev_f                             &
+        call time_ave_sdev_sph_vol_spectr_f                             &
      &     (spec_evo_p1%vol_spectr_prefix(i),                           &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
 !
       do i = 1, spec_evo_p1%nfile_layer_series_file
-        call time_ave_sph_layer_pwr_sdev_f                              &
+        call time_ave_sdev_sph_layer_pwr_f                              &
      &     (spec_evo_p1%layer_series_prefix(i),                         &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
-        call time_ave_sph_layer_spec_sdev_f                             &
+        call time_ave_sdev_sph_layer_spec_f                             &
      &     (spec_evo_p1%layer_spectr_prefix(i),                         &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
