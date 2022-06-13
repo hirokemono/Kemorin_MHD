@@ -70,7 +70,8 @@
 !
       ierr = 0
       do lth = 0, sph_IN%ltr_sph
-        read(id_file,*,err=99,end=99) sph_IN%i_step, sph_IN%time, itmp, &
+        read(id_file,*,err=99,end=99)                                   &
+     &               sph_IN%i_step, sph_IN%time, sph_IN%i_mode(lth),    &
      &               sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,lth,1)
       end do
       return
@@ -121,7 +122,7 @@
       do kr = 1, sph_IN%nri_sph
         do lth = 0, sph_IN%ltr_sph
           read(id_file,*,err=99,end=99) sph_IN%i_step, sph_IN%time,     &
-     &        sph_IN%kr_sph(kr), sph_IN%r_sph(kr), itmp,                &
+     &        sph_IN%kr_sph(kr), sph_IN%r_sph(kr), sph_IN%i_mode(lth),  &
      &        sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,lth,kr)
           end do
         end do
@@ -162,7 +163,8 @@
 !
 !
       do lth = 0, sph_IN%ltr_sph
-        write(id_file,1000) sph_IN%i_step, sph_IN%time, lth,            &
+        write(id_file,1000)                                             &
+     &               sph_IN%i_step, sph_IN%time, sph_IN%i_mode(lth),    &
      &               sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,lth,1)
       end do
 !
@@ -204,7 +206,7 @@
       do kr = 1, sph_IN%nri_sph
         do lth = 0, sph_IN%ltr_sph
           write(id_file,1000) sph_IN%i_step, sph_IN%time,               &
-     &         sph_IN%kr_sph(kr), sph_IN%r_sph(kr), lth,                &
+     &         sph_IN%kr_sph(kr), sph_IN%r_sph(kr), sph_IN%i_mode(lth), &
      &         sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,lth,kr)
         end do
       end do
@@ -254,7 +256,7 @@
       do kr = 1, sph_IN%nri_sph
         do lth = 0, sph_IN%ltr_sph
           read(id_file,*,err=99,end=99) sph_IN%i_step, sph_IN%time,     &
-     &        sph_IN%kr_sph(kr), itmp,                                  &
+     &        sph_IN%kr_sph(kr), sph_IN%i_mode(lth),                    &
      &        sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,lth,kr)
         end do
       end do

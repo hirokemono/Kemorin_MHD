@@ -7,13 +7,20 @@
 !> @brief Header output for spectrum data
 !!
 !!@verbatim
-!!      subroutine select_input_sph_series_head                         &
-!!     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN)
-!!      subroutine select_input_sph_spectr_head                         &
-!!     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN)
+!!      subroutine read_sph_pwr_vol_head(id_file, sph_IN)
+!!      subroutine read_sph_pwr_layer_head(id_file, sph_IN)
 !!        integer(kind = kint), intent(in) :: id_file
-!!        logical, intent(in) :: flag_old_fmt, flag_vol_ave
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
+!!      subroutine read_sph_spectr_name                                 &
+!!     &         (id_file, nfield_sph_spec, num_labels,                 &
+!!     &          ncomp_sph_spec, ene_sph_spec_name)
+!!
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer(kind = kint), intent(in) :: nfield_sph_spec, num_labels
+!!        integer(kind = kint), intent(inout)                           &
+!!     &                     :: ncomp_sph_spec(nfield_sph_spec)
+!!        character(len = kchara), intent(inout)                        &
+!!     &                     :: ene_sph_spec_name(num_labels)
 !!
 !!      subroutine write_sph_pwr_vol_head(id_file, sph_IN)
 !!      subroutine write_sph_pwr_layer_head(id_file, sph_IN)
@@ -31,76 +38,10 @@
 !
       implicit none
 !
-      private :: read_sph_pwr_vol_head, read_sph_pwr_layer_head
-      private :: read_sph_spectr_name
-!
 !   --------------------------------------------------------------------
 !
       contains
 !
-!   --------------------------------------------------------------------
-!
-      subroutine select_input_sph_series_head                           &
-     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN)
-!
-      integer(kind = kint), intent(in) :: id_file
-      logical, intent(in) :: flag_old_fmt, flag_vol_ave
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-!
-!
-      if(flag_vol_ave) then
-        call read_sph_pwr_vol_head(id_file, sph_IN)
-        sph_IN%nri_sph = 1
-        sph_IN%num_time_labels = 2
-      else
-        call read_sph_pwr_layer_head(id_file, sph_IN)
-        if(flag_old_fmt) then
-          sph_IN%num_time_labels = 3
-        else
-          sph_IN%num_time_labels = 4
-        end if
-      end if
-!
-      call alloc_sph_espec_name(sph_IN)
-      call read_sph_spectr_name                                         &
-     &   (id_file, sph_IN%nfield_sph_spec, sph_IN%num_labels,           &
-     &    sph_IN%ncomp_sph_spec, sph_IN%ene_sph_spec_name)
-      call alloc_sph_spectr_data(izero, sph_IN)
-!
-      end subroutine select_input_sph_series_head
-!
-!   --------------------------------------------------------------------
-!
-      subroutine select_input_sph_spectr_head                           &
-     &         (id_file, flag_old_fmt, flag_vol_ave, sph_IN)
-!
-      integer(kind = kint), intent(in) :: id_file
-      logical, intent(in) :: flag_old_fmt, flag_vol_ave
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-!
-!
-      if(flag_vol_ave) then
-        call read_sph_pwr_vol_head(id_file, sph_IN)
-        sph_IN%nri_sph = 1
-        sph_IN%num_time_labels = 3
-      else
-        call read_sph_pwr_layer_head(id_file, sph_IN)
-        if(flag_old_fmt) then
-          sph_IN%num_time_labels = 4
-        else
-          sph_IN%num_time_labels = 5
-        end if
-      end if
-!
-      call alloc_sph_espec_name(sph_IN)
-      call read_sph_spectr_name                                         &
-     &   (id_file, sph_IN%nfield_sph_spec, sph_IN%num_labels,           &
-     &    sph_IN%ncomp_sph_spec, sph_IN%ene_sph_spec_name)
-      call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
-!
-      end subroutine select_input_sph_spectr_head
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_sph_pwr_vol_head(id_file, sph_IN)
@@ -244,7 +185,6 @@
 
       end subroutine read_sph_spectr_name
 !
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       end module simple_sph_spectr_head_IO

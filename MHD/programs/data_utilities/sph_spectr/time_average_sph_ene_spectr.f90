@@ -41,11 +41,6 @@
 !
       implicit  none
 !
-      logical, parameter, private :: flag_vol_ave_ON =  .TRUE.
-      logical, parameter, private :: flag_vol_ave_OFF = .FALSE.
-      logical, parameter, private :: flag_spectr_ON =   .TRUE.
-      logical, parameter, private :: flag_spectr_OFF =  .FALSE.
-!
       type(read_sph_spectr_data), save, private :: tave_sph_IN
       type(read_sph_spectr_data), save, private :: sdev_sph_IN
 !
@@ -220,6 +215,7 @@
       end subroutine load_field_labels_f
 !
 ! -------------------------------------------------------------------
+! -------------------------------------------------------------------
 !
       subroutine time_ave_sdev_sph_volume_pwr_f                         &
      &         (file_prefix, start_time, end_time)
@@ -230,8 +226,7 @@
       real(kind = kreal), intent(in) :: start_time, end_time
 !
       call time_ave_sdev_sph_spectr                                     &
-     &   (file_prefix, flag_spectr_OFF, flag_vol_ave_ON,                &
-     &    start_time, end_time)
+     &   (file_prefix, spectr_off, volume_on, start_time, end_time)
 !
       end subroutine time_ave_sdev_sph_volume_pwr_f
 !
@@ -246,8 +241,7 @@
       real(kind = kreal), intent(in) :: start_time, end_time
 !
       call time_ave_sdev_sph_spectr                                     &
-     &   (file_prefix, flag_spectr_ON, flag_vol_ave_ON,                 &
-     &    start_time, end_time)
+     &   (file_prefix, spectr_on, volume_on, start_time, end_time)
 !
       end subroutine time_ave_sdev_sph_vol_spectr_f
 !
@@ -262,8 +256,7 @@
       real(kind = kreal), intent(in) :: start_time, end_time
 !
       call time_ave_sdev_sph_spectr                                     &
-     &   (file_prefix, flag_spectr_OFF, flag_vol_ave_Off,               &
-     &    start_time, end_time)
+     &   (file_prefix, spectr_off, volume_off, start_time, end_time)
 !
       end subroutine time_ave_sdev_sph_layer_pwr_f
 !
@@ -278,8 +271,7 @@
       real(kind = kreal), intent(in) :: start_time, end_time
 !
       call time_ave_sdev_sph_spectr                                     &
-     &   (file_prefix, flag_spectr_ON, flag_vol_ave_OFF,                &
-     &    start_time, end_time)
+     &   (file_prefix, spectr_on, volume_off, start_time, end_time)
 !
       end subroutine time_ave_sdev_sph_layer_spec_f
 !
@@ -299,7 +291,7 @@
 !
       call read_time_ave_sdev_sph_spectr                                &
      &   (tave_file_prefix, sdev_file_prefix,                           &
-     &    flag_spectr_ON, flag_vol_ave_ON, tave_sph_IN, sdev_sph_IN)
+     &    spectr_on, volume_on, tave_sph_IN, sdev_sph_IN)
       l_truncation = tave_sph_IN%ltr_sph
 !
       end subroutine read_tave_sdev_sph_vol_spec_f

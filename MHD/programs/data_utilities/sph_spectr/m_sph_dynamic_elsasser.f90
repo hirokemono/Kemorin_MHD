@@ -103,14 +103,16 @@
 !
       file_name = add_dat_extension(els_dat%vol_l_spectr_file_prefix)
       open(id_file_rms_l, file=file_name)
-      call select_input_sph_spectr_head(id_file_rms_l,                  &
-     &    els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_l)
+      call select_input_sph_series_head(id_file_rms_l,                  &
+     &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
+     &    sph_IN_l)
       call check_sph_spectr_name(sph_IN_l)
 !
       file_name = add_dat_extension(els_dat%vol_m_spectr_file_prefix)
       open(id_file_rms_m, file=file_name)
-      call select_input_sph_spectr_head(id_file_rms_m,                  &
-     &    els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_m)
+      call select_input_sph_series_head(id_file_rms_m,                  &
+     &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
+     &    sph_IN_m)
       call check_sph_spectr_name(sph_IN_m)
 !
       do i = 1, sph_IN_l%num_labels
@@ -297,10 +299,12 @@
      &       'step= ', sph_IN_l%i_step,                                 &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_pwr_data(id_file_rms_l,                   &
-     &      els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_l, ierr)
-        call select_input_sph_pwr_data(id_file_rms_m,                   &
-     &      els_dat%flag_old_spectr_data, vol_ave_on, sph_IN_m, ierr)
+        call select_input_sph_series_data(id_file_rms_l,                &
+     &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
+     &      sph_IN_l, ierr)
+        call select_input_sph_series_data(id_file_rms_m,                &
+     &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
+     &      sph_IN_m, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN_l%time .ge. els_dat%start_time) then
@@ -391,7 +395,7 @@
 !
 !
           call select_output_sph_series_data                            &
-     &       (id_file_lscale, vol_ave_on, sph_OUT1)
+     &       (id_file_lscale, spectr_off, vol_ave_on, sph_OUT1)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

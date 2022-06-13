@@ -28,17 +28,19 @@ compare_sph_mean_square.o: $(SPH_UTILS_DIR)/compare_sph_mean_square.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 m_ctl_params_sph_utils.o: $(SPH_UTILS_DIR)/m_ctl_params_sph_utils.f90 m_precision.o t_step_parameter.o t_phys_data.o t_rms_4_sph_spectr.o t_pickup_sph_spectr_data.o t_file_IO_parameter.o t_IO_step_parameter.o t_VIZ_step_parameter.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o set_field_data_w_SGS.o set_control_platform_item.o set_control_platform_data.o set_control_4_pickup_sph.o t_ctl_data_4_sph_utils.o m_default_file_prefix.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_maxmode_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_maxmode_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o sph_mean_square_IO_select.o set_parallel_file_name.o
+m_maxmode_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_maxmode_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o simple_sph_spectr_head_IO.o sph_mean_square_IO_select.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_part_sum_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_part_sum_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o sph_mean_square_IO_select.o set_parallel_file_name.o
+m_part_sum_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_part_sum_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o simple_sph_spectr_head_IO.o sph_mean_square_IO_select.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_sph_dynamic_elsasser.o: $(SPH_UTILS_DIR)/m_sph_dynamic_elsasser.f90 m_precision.o m_constants.o m_phys_constants.o t_read_sph_spectra.o sph_mean_square_IO_select.o set_parallel_file_name.o
+m_read_sph_spectra_f.o: $(SPH_UTILS_DIR)/m_read_sph_spectra_f.f90 m_precision.o m_constants.o t_read_sph_spectra.o sph_mean_square_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_sph_uli_lengh_scale.o: $(SPH_UTILS_DIR)/m_sph_uli_lengh_scale.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o sph_mean_square_IO_select.o set_parallel_file_name.o
+m_sph_dynamic_elsasser.o: $(SPH_UTILS_DIR)/m_sph_dynamic_elsasser.f90 m_precision.o m_constants.o m_phys_constants.o t_read_sph_spectra.o simple_sph_spectr_head_IO.o sph_mean_square_IO_select.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_sph_uli_lengh_scale.o: $(SPH_UTILS_DIR)/m_sph_uli_lengh_scale.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o simple_sph_spectr_head_IO.o sph_mean_square_IO_select.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_spheric_data_sph_spetr.o: $(SPH_UTILS_DIR)/m_spheric_data_sph_spetr.f90 m_precision.o t_ctl_data_4_sph_utils.o t_SPH_mesh_field_data.o t_time_data.o t_field_data_IO.o t_schmidt_poly_on_rtm.o t_spheric_data_sph_spetr.o t_SPH_SGS_structure.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_tave_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_tave_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o set_parallel_file_name.o sph_mean_square_IO_select.o cal_tave_sph_ene_spectr.o
+m_tave_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_tave_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o set_parallel_file_name.o simple_sph_spectr_head_IO.o sph_mean_square_IO_select.o cal_tave_sph_ene_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_diff_sph_spectr.o: $(SPH_UTILS_DIR)/main_diff_sph_spectr.f90 m_precision.o calypso_mpi.o analyzer_diff_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -70,7 +72,7 @@ pickup_sph_mean_square_data.o: $(SPH_UTILS_DIR)/pickup_sph_mean_square_data.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 simple_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/simple_sph_spectr_data_IO.f90 m_precision.o m_constants.o t_read_sph_spectra.o write_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-simple_sph_spectr_head_IO.o: $(SPH_UTILS_DIR)/simple_sph_spectr_head_IO.f90 m_precision.o m_constants.o t_read_sph_spectra.o skip_comment_f.o
+simple_sph_spectr_head_IO.o: $(SPH_UTILS_DIR)/simple_sph_spectr_head_IO.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_dynamic_elsasser.o: $(SPH_UTILS_DIR)/sph_dynamic_elsasser.f90 m_precision.o m_constants.o m_sph_dynamic_elsasser.o t_read_sph_spectra.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o t_powers_4_coefficients.o t_list_of_dimless_numbers.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -114,6 +116,6 @@ time_average_dipolarity.o: $(SPH_UTILS_DIR)/time_average_dipolarity.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 time_average_nusselt.o: $(SPH_UTILS_DIR)/time_average_nusselt.f90 m_precision.o m_constants.o t_no_heat_Nusselt.o
 	$(F90) -c $(F90OPTFLAGS) $<
-time_average_sph_ene_spectr.o: $(SPH_UTILS_DIR)/time_average_sph_ene_spectr.f90 m_precision.o m_constants.o m_tave_sph_ene_spectr.o
+time_average_sph_ene_spectr.o: $(SPH_UTILS_DIR)/time_average_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o m_tave_sph_ene_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

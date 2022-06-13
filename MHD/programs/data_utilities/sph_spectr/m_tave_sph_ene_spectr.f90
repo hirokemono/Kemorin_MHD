@@ -170,24 +170,16 @@
 !
       character(len = kchara) :: file_name
       real(kind = kreal) :: prev_time
-      integer(kind = kint) :: i, icou, ltr, ierr, ist_true
+      integer(kind = kint) :: i, icou, ierr, ist_true
 !
 !
       write(*,*) 'Open file ', trim(fname_org)
       open(id_file_rms, file=fname_org)
-!
-      if(flag_spectr) then
-        call select_input_sph_spectr_head(id_file_rms,                  &
-     &      flag_old_fmt, flag_vol_ave, sph_IN)
-        ltr = sph_IN%ltr_sph
-      else
-        call select_input_sph_series_head(id_file_rms,                  &
-     &      flag_old_fmt, flag_vol_ave, sph_IN)
-        ltr = 0
-      end if
+      call select_input_sph_series_head(id_file_rms,                    &
+     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN)
       call check_sph_spectr_name(sph_IN)
 !
-      call alloc_tave_sph_data(ltr, sph_IN, WK_tave)
+      call alloc_tave_sph_data(sph_IN, WK_tave)
 !
       icou = 0
       ist_true = -1
@@ -196,14 +188,8 @@
 !     &       'step= ', sph_IN%i_step,                                  &
 !     &       ' averaging finished. Count=  ', icou
       do
-        if(flag_spectr) then
-          call select_input_sph_pwr_data(id_file_rms,                   &
-     &        flag_old_fmt, flag_vol_ave, sph_IN, ierr)
-        else
-          call select_input_sph_series_data(id_file_rms,                &
-     &        flag_old_fmt, flag_vol_ave, sph_IN, ierr)
-        end if
-!
+        call select_input_sph_series_data(id_file_rms, flag_old_fmt,    &
+     &      flag_spectr, flag_vol_ave, sph_IN, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. start_time) then
@@ -212,13 +198,13 @@
             true_start = sph_IN%time
 !
             call copy_ene_spectr_2_pre                                  &
-     &         (sph_IN%time, prev_time, sph_IN%nri_sph, ltr,            &
+     &         (sph_IN%time, prev_time, sph_IN%nri_sph, sph_IN%ltr_sph, &
      &          sph_IN%ntot_sph_spec, sph_IN%spectr_IO,                 &
      &          WK_tave%ave_spec_l, WK_tave%spectr_pre_l)
           else
 !
             call sum_average_ene_spectr                                 &
-     &         (sph_IN%time, prev_time, sph_IN%nri_sph, ltr,            &
+     &         (sph_IN%time, prev_time, sph_IN%nri_sph, sph_IN%ltr_sph, &
      &          sph_IN%ntot_sph_spec, sph_IN%spectr_IO,                 &
      &          WK_tave%ave_spec_l, WK_tave%spectr_pre_l)
 
@@ -241,7 +227,7 @@
 !
 !
       call divide_average_ene_spectr(sph_IN%time, true_start,           &
-     &    sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec,                    &
+     &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
      &    WK_tave%ave_spec_l, sph_IN%spectr_IO)
 !
 !  Output average
@@ -250,13 +236,8 @@
       call select_output_sph_pwr_head                                   &
      &   (id_file_rms, flag_vol_ave, sph_IN)
 !
-      if(flag_spectr) then
-        call select_output_sph_pwr_data                                 &
-     &     (id_file_rms, flag_vol_ave, sph_IN)
-      else
-        call select_output_sph_series_data                              &
-     &     (id_file_rms, flag_vol_ave, sph_IN)
-      end if
+      call select_output_sph_series_data                                &
+     &   (id_file_rms, flag_spectr, flag_vol_ave, sph_IN)
       close(id_file_rms)
 !
       call dealloc_sph_espec_data(sph_IN)
@@ -281,22 +262,14 @@
 !
       character(len = kchara) :: file_name
       real(kind = kreal) :: true_start, prev_time
-      integer(kind = kint) :: i, icou, ltr, ierr, ist_true
+      integer(kind = kint) :: i, icou, ierr, ist_true
 !
 !  Evaluate standard deviation
 !
       write(*,*) 'Open file ', trim(fname_org), ' again'
       open(id_file_rms, file=fname_org)
-!
-      if(flag_spectr) then
-        call select_input_sph_spectr_head(id_file_rms,                  &
-     &      flag_old_fmt, flag_vol_ave, sph_IN)
-        ltr = sph_IN%ltr_sph
-      else
-        call select_input_sph_series_head(id_file_rms,                  &
-     &      flag_old_fmt, flag_vol_ave, sph_IN)
-        ltr = 0
-      end if
+      call select_input_sph_series_head(id_file_rms,                    &
+     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN)
 !
       icou = 0
       ist_true = -1
@@ -306,14 +279,8 @@
 !     &       'step= ', sph_IN%i_step,                                  &
 !     &       ' deviation finished. Count=  ', icou
       do
-        if(flag_spectr) then
-          call select_input_sph_pwr_data(id_file_rms,                   &
-     &        flag_old_fmt, flag_vol_ave, sph_IN, ierr)
-        else
-          call select_input_sph_series_data(id_file_rms,                &
-     &        flag_old_fmt, flag_vol_ave, sph_IN, ierr)
-        end if
-!
+        call select_input_sph_series_data(id_file_rms, flag_old_fmt,    &
+     &      flag_spectr, flag_vol_ave, sph_IN, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. start_time) then
@@ -321,13 +288,13 @@
             ist_true = sph_IN%i_step
             true_start = sph_IN%time
             call copy_deviation_ene_2_pre(sph_IN%time, prev_time,       &
-     &          sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec,              &
+     &          sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,   &
      &          sph_IN%spectr_IO, WK_tave%ave_spec_l,                   &
      &          WK_tave%sigma_spec_l, WK_tave%spectr_pre_l)
 !
           else
             call sum_deviation_ene_spectr(sph_IN%time, prev_time,       &
-     &          sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec,              &
+     &          sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,   &
      &          sph_IN%spectr_IO, WK_tave%ave_spec_l,                   &
      &          WK_tave%sigma_spec_l, WK_tave%spectr_pre_l)
 !
@@ -345,7 +312,7 @@
       close(id_file_rms)
 !
       call divide_deviation_ene_spectr(sph_IN%time, true_start,         &
-     &    sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec,                    &
+     &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
      &    WK_tave%sigma_spec_l, sph_IN%spectr_IO)
 !
       write(file_name, '(a8,a)') 't_sigma_', trim(fname_org)
@@ -353,13 +320,8 @@
       call select_output_sph_pwr_head                                   &
      &   (id_file_rms, flag_vol_ave, sph_IN)
 !
-      if(flag_spectr) then
-        call select_output_sph_pwr_data                                 &
-     &     (id_file_rms, flag_vol_ave, sph_IN)
-      else
-        call select_output_sph_series_data                              &
-     &     (id_file_rms, flag_vol_ave, sph_IN)
-      end if
+      call select_output_sph_series_data                                &
+     &   (id_file_rms, flag_spectr, flag_vol_ave, sph_IN)
 !
       close(id_file_rms)
 !
@@ -378,7 +340,7 @@
       logical, intent(in) :: flag_spectr, flag_vol_ave
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
-      integer(kind = kint) :: ltr, ierr
+      integer(kind = kint) :: ierr
       logical, parameter :: current_fmt = .FALSE.
 !
 !  Read spectr data file
@@ -386,24 +348,12 @@
       write(*,*) 'Open file ', trim(fname_org), ' again'
       open(id_file_rms, file=fname_org)
 !
-      if(flag_spectr) then
-        call select_input_sph_spectr_head(id_file_rms,                  &
-     &      current_fmt, flag_vol_ave, sph_IN)
-        ltr = sph_IN%ltr_sph
-      else
-        call select_input_sph_series_head(id_file_rms,                  &
-     &      current_fmt, flag_vol_ave, sph_IN)
-        ltr = 0
-      end if
+      call select_input_sph_series_head(id_file_rms,                    &
+     &    current_fmt, flag_spectr, flag_vol_ave, sph_IN)
       call check_sph_spectr_name(sph_IN)
 !
-        if(flag_spectr) then
-          call select_input_sph_pwr_data(id_file_rms,                   &
-     &        current_fmt, flag_vol_ave, sph_IN, ierr)
-        else
-          call select_input_sph_series_data(id_file_rms,                &
-     &        current_fmt, flag_vol_ave, sph_IN, ierr)
-        end if
+      call select_input_sph_series_data(id_file_rms, current_fmt,       &
+     &    flag_spectr, flag_vol_ave, sph_IN, ierr)
       close(id_file_rms)
 !
       end subroutine read_sph_spectr_snapshot
@@ -411,15 +361,15 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine alloc_tave_sph_data(ltr, sph_IN, WK_tave)
+      subroutine alloc_tave_sph_data(sph_IN, WK_tave)
 !
-      integer(kind = kint), intent(in) :: ltr
       type(read_sph_spectr_data), intent(in) :: sph_IN
       type(spectr_ave_sigma_work), intent(inout) :: WK_tave
-      integer(kind = kint) :: ncomp
+      integer(kind = kint) :: ltr, ncomp
 !
 !
       ncomp = sph_IN%ntot_sph_spec
+      ltr =   sph_IN%ltr_sph
       allocate( WK_tave%ave_spec_l(ncomp,0:ltr,sph_IN%nri_sph))
       allocate( WK_tave%sigma_spec_l(ncomp,0:ltr,sph_IN%nri_sph))
       allocate( WK_tave%spectr_pre_l(ncomp,0:ltr,sph_IN%nri_sph))

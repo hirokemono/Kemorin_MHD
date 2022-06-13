@@ -71,6 +71,7 @@ simple_sph_spectr_data_IO.o \
 sph_mean_square_IO_select.o \
 cal_tave_sph_ene_spectr.o \
 m_tave_sph_ene_spectr.o \
+m_read_sph_spectra_f.o \
 time_average_sph_ene_spectr.o \
 time_average_nusselt.o \
 time_average_dipolarity.o

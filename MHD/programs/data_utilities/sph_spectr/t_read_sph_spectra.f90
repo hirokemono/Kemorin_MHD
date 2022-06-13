@@ -16,7 +16,6 @@
 !!      subroutine copy_ene_spectr_data_to_IO(nri_sph, ltr_sph, ncomp,  &
 !!     &          spectr_l, sph_OUT)
 !!@endverbatim
-!
       module t_read_sph_spectra
 !
       use m_precision
@@ -36,6 +35,7 @@
         integer(kind = kint) :: ltr_sph, nri_sph
         integer(kind = kint) :: kr_ICB, kr_CMB
         integer(kind = kint) :: kr_inner, kr_outer
+        integer(kind = kint), allocatable :: i_mode(:)
         integer(kind = kint), allocatable :: kr_sph(:)
         real(kind = kreal), allocatable :: r_sph(:)
         real(kind = kreal) :: r_inner, r_outer
@@ -44,6 +44,12 @@
         real(kind = kreal) :: time
         real(kind = kreal), allocatable :: spectr_IO(:,:,:)
       end type read_sph_spectr_data
+!
+      logical, parameter :: flag_current_fmt = .FALSE.
+      logical, parameter :: spectr_on =        .TRUE.
+      logical, parameter :: spectr_off =       .FALSE.
+      logical, parameter :: volume_on =        .TRUE.
+      logical, parameter :: volume_off =       .FALSE.
 !
 !   --------------------------------------------------------------------
 !
@@ -77,11 +83,19 @@
       allocate( sph_IN%r_sph(sph_IN%nri_sph) )
 !
       ncomp = sph_IN%ntot_sph_spec
+      allocate( sph_IN%i_mode(0:ltr) )
       allocate( sph_IN%spectr_IO(ncomp,0:ltr,sph_IN%nri_sph) )
 !
-      sph_IN%kr_sph = izero
-      sph_IN%r_sph = zero
-      sph_IN%spectr_IO =  zero
+!$omp parallel workshare
+      sph_IN%kr_sph(1:sph_IN%nri_sph) = izero
+      sph_IN%r_sph(1:sph_IN%nri_sph) = zero
+!$omp end parallel workshare
+!$omp parallel workshare
+      sph_IN%i_mode(0:ltr) = izero
+!$omp end parallel workshare
+!$omp parallel workshare
+      sph_IN%spectr_IO(1:ncomp,0:ltr,1:sph_IN%nri_sph) =  zero
+!$omp end parallel workshare
 !
       end subroutine alloc_sph_spectr_data
 !
@@ -94,7 +108,8 @@
 !
 !
       deallocate(sph_IN%ene_sph_spec_name, sph_IN%ncomp_sph_spec)
-      deallocate(sph_IN%kr_sph, sph_IN%r_sph, sph_IN%spectr_IO)
+      deallocate(sph_IN%kr_sph, sph_IN%r_sph)
+      deallocate(sph_IN%i_mode, sph_IN%spectr_IO)
 !
       end subroutine dealloc_sph_espec_data
 !
@@ -165,6 +180,8 @@
      &                 = sph_IN%kr_sph(1:sph_OUT%nri_sph)
       sph_OUT%r_sph(1:sph_OUT%nri_sph)                                  &
      &                 = sph_IN%r_sph(1:sph_OUT%nri_sph)
+      sph_OUT%i_mode(0:sph_OUT%ltr_sph)                                 &
+     &                 = sph_IN%i_mode(0:sph_OUT%ltr_sph)
 !
       end subroutine copy_read_ene_params_4_sum
 !
@@ -182,6 +199,8 @@
      &      = sph_IN%kr_sph(1:sph_OUT%nri_sph)
       sph_OUT%r_sph(1:sph_OUT%nri_sph)                                  &
      &      = sph_IN%r_sph(1:sph_OUT%nri_sph)
+      sph_OUT%i_mode(0:sph_OUT%ltr_sph)                                 &
+     &                 = sph_IN%i_mode(0:sph_OUT%ltr_sph)
 !
       end subroutine copy_read_ene_step_data
 !
