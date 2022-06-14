@@ -11,12 +11,26 @@ TARGET_SPH_ENE_CHECK =       tests/sph_ene_check
 
 SOURCES = $(shell ls *.f90)
 
+MOD_SPH_UTIL_DLL = \
+t_read_sph_spectra.o \
+simple_sph_spectr_head_IO.o \
+simple_sph_spectr_data_IO.o \
+sph_mean_square_IO_select.o \
+cal_tave_sph_ene_spectr.o \
+m_tave_sph_ene_spectr.o \
+m_read_sph_spectra_f.o \
+time_average_sph_ene_spectr.o \
+time_average_nusselt.o \
+time_average_dipolarity.o
+
+
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
 t_read_sph_spectra.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_tave_sph_ene_spectr.o \
+time_average_sph_ene_spectr.o \
 sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
@@ -28,8 +42,9 @@ t_ctl_data_tave_sph_monitor.o \
 tave_picked_sph_spec_data.o
 
 MOD_T_AVE_NUSSELT = \
+t_average_nusselt.o \
 t_ctl_data_tave_sph_monitor.o \
-t_average_nusselt.o
+time_average_nusselt.o
 
 MOD_SPH_ENE_CHECK = \
 compare_sph_mean_square.o
@@ -100,6 +115,9 @@ target_task:
 lib_name:
 
 mod_list:
+	@echo  MOD_SPH_UTIL_DLL=  \\     >> $(MAKENAME)
+	@echo  $(MOD_SPH_UTIL_DLL)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 	@echo  MOD_TAVE_SPH_ENE_SPEC=  \\  >> $(MAKENAME)
 	@echo  $(MOD_TAVE_SPH_ENE_SPEC)    >> $(MAKENAME)
 	@echo  MOD_T_AVE_PICK_SPH=  \\     >> $(MAKENAME)
@@ -110,7 +128,7 @@ mod_list:
 	@echo  $(MOD_SPH_ENE_CHECK)       >> $(MAKENAME)
 
 module:
-	@cat Makefile.depends >> $(MAKENAME)
+	@sed -e"s/F90OPTFLAGS/F90DLLFLAGS/g" Makefile.depends >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_UTILS_DIR)' $(SOURCES)

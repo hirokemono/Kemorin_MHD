@@ -9,10 +9,10 @@ SHELL           = @SHELL@
 SRCDIR = @abs_top_srcdir@
 INSTDIR= @prefix@
 #
-MHDDIR = $(SRCDIR)/MHD
-MAKEDIR= $(SRCDIR)/work
-BUILDDIR= $(SRCDIR)/bin
-PYTHONDIR= $(SRCDIR)/pythons
+MHDDIR =   $(SRCDIR)/MHD
+MAKEDIR=   $(SRCDIR)/work
+BUILDDIR=  $(SRCDIR)/bin
+PYTHONDIR= $(MHDDIR)/pythons
 
 MAKE64DIR= $(SRCDIR)/work_64
 BUILD64DIR= $(SRCDIR)/bin_64

@@ -15,6 +15,7 @@ MPIINCDIR = $(MPICHDIR)/include
 MAKEDIR= 
 BUILDDIR= 
 MHDDIR =
+PYTHONDIR =
 
 MAKENAME= $(MAKEDIR)/Makefile
 
@@ -130,15 +131,11 @@ depends:
 
 
 makemake:
-	if [ ! -d $(MAKEDIR) ]; then \
-		mkdir $(MAKEDIR); \
-	fi
-	if [ ! -d $(BUILDDIR) ]; then \
-		mkdir $(BUILDDIR); \
-	fi
-	if [ ! -d $(BUILDDIR)/tests ]; then \
-		mkdir $(BUILDDIR)/tests; \
-	fi
+	mkdir -p $(MAKEDIR)
+	mkdir -p $(BUILDDIR)
+	mkdir -p $(BUILDDIR)/tests
+	mkdir -p $(PYTHONDIR)
+	echo '#' > $(MAKENAME)
 	@echo # create module list
 	echo '#' > $(MAKENAME)
 	echo '# Makefile for Kemono Dynamo simulation' >> $(MAKENAME)
@@ -201,6 +198,7 @@ makemake:
 	@echo BUILDDIR = $(BUILDDIR) >> $(MAKENAME)
 	@echo MHDDIR =   $(MHDDIR)   >> $(MAKENAME)
 	@echo INSTDIR =  $(INSTDIR)  >> $(MAKENAME)
+	@echo PYTHONDIR= $(PYTHONDIR) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	>> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -276,6 +274,7 @@ makemake:
 	@echo 'create excecution construct list...'
 	@echo '#' >> $(MAKENAME)
 	@echo 'all: $$(PROGRAMS)' >> $(MAKENAME)
+	@echo 'pythons: $$(LIB_PYTHONS)' >> $(MAKENAME)
 	@for dir in programs ; do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -388,6 +387,7 @@ makemake:
 	@echo '	rm -f *.a *.L'     >> $(MAKENAME)
 	@echo '	rm -f *.h'         >> $(MAKENAME)
 	@echo '	rm -f GL'          >> $(MAKENAME)
+	@echo '	cd $(PYTHONDIR); make clean'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 install:

@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/sph_spectr/t_average_sph_ene_spec.f90

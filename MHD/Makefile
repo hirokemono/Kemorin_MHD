@@ -14,7 +14,8 @@ MPIRUN = $(MPIBINDIR)/mpirun
 #
 #
 
-BUILDDIR= 
+MAKEDIR=
+BUILDDIR=
 MHDDIR =
 PYTHONDIR = 
 
@@ -502,6 +503,7 @@ makemake:
 	@echo '	rm -f *.a *.L'     >> $(MAKENAME)
 	@echo '	rm -f *.h'         >> $(MAKENAME)
 	@echo '	rm -f GL'          >> $(MAKENAME)
+	@echo '	cd $(PYTHONDIR); make clean'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 clean:

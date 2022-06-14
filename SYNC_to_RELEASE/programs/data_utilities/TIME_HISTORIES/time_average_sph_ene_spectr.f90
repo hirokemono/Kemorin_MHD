@@ -1,0 +1,1 @@
+../../../../MHD/programs/data_utilities/sph_spectr/time_average_sph_ene_spectr.f90
