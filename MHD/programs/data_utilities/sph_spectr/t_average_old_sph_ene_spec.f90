@@ -66,31 +66,31 @@
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
       do i = 1, spec_evo_p1%nfile_vol_series_file
-        write(*,*) i, trim(spec_evo_p1%vol_series_prefix(i))
+        write(*,*) i, trim(spec_evo_p1%vol_series_file_name(i))
         call time_ave_sdev_sph_old_spectr                               &
-     &     (spec_evo_p1%vol_series_prefix(i), .FALSE., .TRUE.,          &
+     &     (spec_evo_p1%vol_series_file_name(i), .FALSE., .TRUE.,       &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
-        write(*,*) i, trim(spec_evo_p1%vol_spectr_prefix(i))
+        write(*,*) i, trim(spec_evo_p1%vol_spectr_file_name(i))
         call time_ave_sdev_sph_old_spectr                               &
-     &     (spec_evo_p1%vol_spectr_prefix(i), .TRUE.,  .TRUE.,          &
+     &     (spec_evo_p1%vol_spectr_file_name(i), .TRUE.,  .TRUE.,       &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
 !
       do i = 1, spec_evo_p1%nfile_layer_series_file
-        write(*,*) i, trim(spec_evo_p1%layer_series_prefix(i))
+        write(*,*) i, trim(spec_evo_p1%layer_series_file_name(i))
         call time_ave_sdev_sph_old_spectr                               &
-     &     (spec_evo_p1%layer_series_prefix(i), .FALSE., .FALSE.,       &
+     &     (spec_evo_p1%layer_series_file_name(i), .FALSE., .FALSE.,    &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
-        write(*,*) i, trim(spec_evo_p1%layer_spectr_prefix(i))
+        write(*,*) i, trim(spec_evo_p1%layer_spectr_file_name(i))
         call time_ave_sdev_sph_old_spectr                               &
-     &     (spec_evo_p1%layer_spectr_prefix(i), .TRUE., .FALSE.,        &
+     &     (spec_evo_p1%layer_spectr_file_name(i), .TRUE., .FALSE.,     &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !

@@ -31,12 +31,14 @@
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
-        call sph_maximum_pwr_spectr(spec_evo_p1%vol_spectr_prefix(i),   &
+        call sph_maximum_pwr_spectr                                     &
+     &     (spec_evo_p1%vol_spectr_file_name(i),                        &
      &      .TRUE., spec_evo_p1, sph_IN_m)
       end do
 !
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
-        call sph_maximum_pwr_spectr(spec_evo_p1%layer_spectr_prefix(i), &
+        call sph_maximum_pwr_spectr                                     &
+     &     (spec_evo_p1%layer_spectr_file_name(i),                      &
      &      .FALSE., spec_evo_p1, sph_IN_m)
       end do
 !

@@ -9,8 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine sph_maximum_pwr_spectr                               &
-!!     &         (input_prefix, flag_vol_ave, spec_evo_p, sph_IN)
-!!        character(len = kchara), intent(in) :: input_prefix
+!!     &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
+!!        character(len = kchara), intent(in) :: fname_org
 !!        logical, intent(in) :: flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
@@ -46,23 +46,21 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_maximum_pwr_spectr                                 &
-     &         (input_prefix, flag_vol_ave, spec_evo_p, sph_IN)
+     &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
 !
       use t_ctl_param_sph_series_util
       use simple_sph_spectr_head_IO
       use sph_mean_square_IO_select
-      use set_parallel_file_name
 !
-      character(len = kchara), intent(in) :: input_prefix
+      character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
-      character(len = kchara) :: fname_org, file_name
+      character(len = kchara) :: file_name
       integer(kind = kint) :: i, icou, ierr, ist_true
 !
 !
-      fname_org = add_dat_extension(input_prefix)
       open(id_file_rms_l, file=fname_org)
       call select_input_sph_series_head(id_file_rms_l,                  &
      &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave, sph_IN)

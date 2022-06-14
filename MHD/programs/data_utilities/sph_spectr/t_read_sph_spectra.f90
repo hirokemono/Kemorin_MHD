@@ -15,6 +15,14 @@
 !!      subroutine copy_read_ene_step_data(sph_IN, sph_OUT)
 !!      subroutine copy_ene_spectr_data_to_IO(nri_sph, ltr_sph, ncomp,  &
 !!     &          spectr_l, sph_OUT)
+!!        integer(kind = kint), intent(in) :: nri_sph, ltr_sph
+!!        integer(kind = kint), intent(in) :: ncomp
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: spectr_l(ncomp, 0:ltr_sph, nri_sph)
+!!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!!
+!!      subroutine check_sph_spectr_name(sph_IN)
+!!        type(read_sph_spectr_data), intent(in) :: sph_IN
 !!@endverbatim
       module t_read_sph_spectra
 !
@@ -224,6 +232,21 @@
       end subroutine copy_ene_spectr_data_to_IO
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine check_sph_spectr_name(sph_IN)
+!
+      type(read_sph_spectr_data), intent(in) :: sph_IN
+      integer(kind = kint) :: i
+!
+!
+      write(*,*) "Number of components: ", sph_IN%ntot_sph_spec
+      do i = sph_IN%num_time_labels+1, sph_IN%num_labels
+        write(*,*) trim(sph_IN%ene_sph_spec_name(i))
+      end do
+!
+      end subroutine check_sph_spectr_name
+!
 !   --------------------------------------------------------------------
 !
       end module t_read_sph_spectra

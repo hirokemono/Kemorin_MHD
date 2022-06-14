@@ -9,6 +9,9 @@
 !!@verbatim
 !!      character(len = kchara) function delete_directory_name          &
 !!     &                               (dir_file_name)
+!!        character(len=kchara), intent(in) :: dir_file_name
+!!      character(len = kchara) function exclude_extrension(file_name)
+!!        character(len = kchara), intent(in) :: file_name
 !!
 !!      character(len = kchara) function add_process_id                 &
 !!     &                               (id_rank, file_head)
@@ -88,6 +91,30 @@
       end function delete_directory_name
 !
 !-----------------------------------------------------------------------
+!
+      character(len = kchara) function exclude_extrension(file_name)
+!
+      character(len = kchara), intent(in) :: file_name
+!
+      integer(kind = kint) :: lengh_prefix, i
+      character(len=kchara) :: fmt_txt
+!
+!
+      lengh_prefix = len_trim(file_name)
+      do i = len_trim(file_name), 1, -1
+        if(file_name(i:i) .eq. '.') then
+          lengh_prefix = i - 1
+          exit
+        else if(file_name(i:i) .eq. '/') then
+          exit
+        end if
+      end do
+!
+      write(fmt_txt,'(a2,i4,a1)') '(a',lengh_prefix,')'
+      write(exclude_extrension,fmt_txt) file_name(1:lengh_prefix)
+!
+      end function exclude_extrension
+
 !-----------------------------------------------------------------------
 !
       character(len = kchara) function add_process_id                   &

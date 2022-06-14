@@ -46,8 +46,8 @@
       type nusselt_number_data
 !>        Output flag for Nusselt number IO
         integer(kind = kint) :: iflag_Nusselt = 0
-!>        File prefix for Nusselt number file
-        character(len = kchara) :: Nusselt_file_head = 'Nusselt'
+!>        File name for Nusselt number file
+        character(len = kchara) :: Nusselt_file_name = 'Nusselt,dat'
 !
 !>        Radius at inner boundary
         real(kind = kreal) :: r_ICB_Nu
@@ -117,11 +117,13 @@
       use m_grad_field_labels
       use t_phys_data
       use t_control_array_character
+      use set_parallel_file_name
 !
       type(read_character_item), intent(in) :: Nusselt_file_prefix
       type(phys_data), intent(in) :: rj_fld
       type(nusselt_number_data), intent(inout) :: Nu_type
 !
+      character(len = kchara) :: file_prfix
       integer(kind = kint) :: i
 !
 !    Turn On Nusselt number if temperature gradient is there
@@ -135,7 +137,8 @@
 !
       if(Nusselt_file_prefix%iflag .gt. 0) then
         Nu_type%iflag_Nusselt = iflag_no_source_Nu
-        Nu_type%Nusselt_file_head = Nusselt_file_prefix%charavalue
+        file_prfix = Nusselt_file_prefix%charavalue
+        Nu_type%Nusselt_file_name = add_dat_extension(file_prfix)
       else
         Nu_type%iflag_Nusselt = 0
       end if
@@ -161,8 +164,7 @@
       character(len = kchara) :: file_name
 !
 !
-      file_name = add_dat_extension(Nu_type%Nusselt_file_head)
-      open(id_Nusselt, file = file_name,                                &
+      open(id_Nusselt, file = Nu_type%Nusselt_file_name,                &
      &    form='formatted', status='old', position='append', err = 99)
       return
 !
@@ -209,20 +211,15 @@
       subroutine open_read_no_heat_source_Nu(id_pick, Nu_type)
 !
       use skip_comment_f
-      use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: id_pick
       type(nusselt_number_data), intent(inout) :: Nu_type
-!
-      character(len = kchara) :: file_name
 !
       integer(kind = kint) :: i
       character(len=255) :: tmpchara
 !
 !
-      file_name = add_dat_extension(Nu_type%Nusselt_file_head)
-      open(id_pick, file = file_name)
-!
+      open(id_pick, file = Nu_type%Nusselt_file_name)
       call skip_comment(tmpchara,id_pick)
       read(tmpchara,*) Nu_type%r_ICB_Nu, Nu_type%r_CMB_Nu
 !

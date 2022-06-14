@@ -81,17 +81,14 @@
      &              bind(c, name="open_init_volume_mean_file_f")
 !
       use sph_mean_square_IO_select
-      use set_parallel_file_name
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
-      character(len = kchara) :: file_prefix
 !
-!
-      file_prefix = c_to_fstring(input_prefix_c)
-      call check_input_sph_series_file(add_dat_extension(file_prefix),  &
-     &   flag_current_fmt, spectr_off, volume_on, sph_IN_f)
-!      call dealloc_sph_espec_data(sph_IN_f)
+      open(id_file_rms, file = c_to_fstring(input_prefix_c))
+      call select_input_sph_series_head(id_file_rms, flag_current_fmt,  &
+     &    spectr_off, volume_on, sph_IN_f)
+      call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine open_init_volume_mean_file_f
 !
@@ -101,16 +98,14 @@
      &              bind(c, name="open_init_volume_spectr_file_f")
 !
       use sph_mean_square_IO_select
-      use set_parallel_file_name
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
-      character(len = kchara) :: file_prefix
 !
-!
-      file_prefix = c_to_fstring(input_prefix_c)
-      call check_input_sph_series_file(add_dat_extension(file_prefix),  &
-     &   flag_current_fmt, spectr_on, volume_on, sph_IN_f)
+      open(id_file_rms, file = c_to_fstring(input_prefix_c))
+      call select_input_sph_series_head(id_file_rms, flag_current_fmt,  &
+     &    spectr_on, volume_on, sph_IN_f)
+      call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine open_init_volume_spectr_file_f
 !
@@ -121,16 +116,14 @@
      &              bind(c, name="check_one_layer_mean_item_f")
 !
       use sph_mean_square_IO_select
-      use set_parallel_file_name
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
-      character(len = kchara) :: file_prefix
 !
-!
-      file_prefix = c_to_fstring(input_prefix_c)
-      call check_input_sph_series_file(add_dat_extension(file_prefix),  &
-     &   flag_current_fmt, spectr_off, volume_off, sph_IN_f)
+      open(id_file_rms, file = c_to_fstring(input_prefix_c))
+      call select_input_sph_series_head(id_file_rms, flag_current_fmt,  &
+     &    spectr_off, volume_off, sph_IN_f)
+      call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine check_one_layer_mean_item_f
 !
@@ -140,16 +133,14 @@
      &              bind(c, name="check_layered_spectr_file_f")
 !
       use sph_mean_square_IO_select
-      use set_parallel_file_name
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
-      character(len = kchara) :: file_prefix
 !
-!
-      file_prefix = c_to_fstring(input_prefix_c)
-      call check_input_sph_series_file(add_dat_extension(file_prefix),  &
-     &   flag_current_fmt, spectr_on, volume_off, sph_IN_f)
+      open(id_file_rms, file = c_to_fstring(input_prefix_c))
+      call select_input_sph_series_head(id_file_rms, flag_current_fmt,  &
+     &    spectr_on, volume_off, sph_IN_f)
+      call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine check_layered_spectr_file_f
 !

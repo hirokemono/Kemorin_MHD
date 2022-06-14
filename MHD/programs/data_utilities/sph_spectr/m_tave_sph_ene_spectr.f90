@@ -9,14 +9,23 @@
 !!
 !!@verbatim
 !!      subroutine time_ave_sdev_sph_spectr                             &
-!!     &         (file_prefix, flag_spectr, flag_vol_ave,               &
+!!     &         (fname_org, flag_spectr, flag_vol_ave,                 &
 !!     &          start_time, end_time)
 !!      subroutine time_ave_sdev_sph_old_spectr                         &
-!!     &         (file_prefix, flag_spectr, flag_vol_ave,               &
+!!     &         (fname_org, flag_spectr, flag_vol_ave,                 &
 !!     &          start_time, end_time)
-!!        character(len = kchara), intent(in) :: file_prefix
+!!        character(len = kchara), intent(in) :: fname_org
 !!        logical, intent(in) :: flag_spectr, flag_vol_ave
 !!        real(kind = kreal), intent(in) :: start_time, end_time
+!!
+!!      subroutine read_time_ave_sdev_sph_spectr                        &
+!!     &         (tave_file_name, sdev_file_name,                       &
+!!     &          flag_spectr, flag_vol_ave, tave_sph_IN, sdev_sph_IN)
+!!        character(len = kchara), intent(in) :: tave_file_name
+!!        character(len = kchara), intent(in) :: sdev_file_name
+!!        logical, intent(in) :: flag_spectr, flag_vol_ave
+!!        type(read_sph_spectr_data), intent(inout) :: tave_sph_IN
+!!        type(read_sph_spectr_data), intent(inout) :: sdev_sph_IN
 !!@endverbatim
 !
       module m_tave_sph_ene_spectr
@@ -53,21 +62,19 @@
 !   --------------------------------------------------------------------
 !
       subroutine time_ave_sdev_sph_spectr                               &
-     &         (file_prefix, flag_spectr, flag_vol_ave,                 &
+     &         (fname_org, flag_spectr, flag_vol_ave,                   &
      &          start_time, end_time)
 !
       use t_ctl_param_sph_series_util
       use set_parallel_file_name
 !
-      character(len = kchara), intent(in) :: file_prefix
+      character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_spectr, flag_vol_ave
       real(kind = kreal), intent(in) :: start_time, end_time
 !
-      character(len = kchara) :: fname_org
       real(kind = kreal) :: true_start, true_end
       integer(kind = kint) :: i
 !
-      fname_org = add_dat_extension(file_prefix)
       call sph_spectr_average                                           &
      &   (flag_current_format, fname_org, flag_spectr, flag_vol_ave,    &
      &    start_time, end_time, true_start, true_end,                   &
@@ -95,19 +102,15 @@
 !   --------------------------------------------------------------------
 !
       subroutine time_ave_sdev_sph_old_spectr                           &
-     &         (file_prefix, flag_spectr, flag_vol_ave,                 &
+     &         (fname_org, flag_spectr, flag_vol_ave,                   &
      &          start_time, end_time)
 !
-      use set_parallel_file_name
-!
-      character(len = kchara), intent(in) :: file_prefix
+      character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_spectr, flag_vol_ave
       real(kind = kreal), intent(in) :: start_time, end_time
 !
-      character(len = kchara) :: fname_org
       real(kind = kreal) :: true_start, true_end
 !
-      fname_org = add_dat_extension(file_prefix)
       call sph_spectr_average                                           &
      &   (flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
      &    start_time, end_time, true_start, true_end,                   &
@@ -124,28 +127,22 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_time_ave_sdev_sph_spectr                          &
-     &         (tave_file_prefix, sdev_file_prefix,                     &
+     &         (tave_file_name, sdev_file_name,                         &
      &          flag_spectr, flag_vol_ave, tave_sph_IN, sdev_sph_IN)
 !
       use t_ctl_param_sph_series_util
-      use set_parallel_file_name
 !
-      character(len = kchara), intent(in) :: tave_file_prefix
-      character(len = kchara), intent(in) :: sdev_file_prefix
+      character(len = kchara), intent(in) :: tave_file_name
+      character(len = kchara), intent(in) :: sdev_file_name
       logical, intent(in) :: flag_spectr, flag_vol_ave
       type(read_sph_spectr_data), intent(inout) :: tave_sph_IN
       type(read_sph_spectr_data), intent(inout) :: sdev_sph_IN
 !
-      character(len = kchara) :: fname
-      real(kind = kreal) :: true_start, true_end
-      integer(kind = kint) :: i
 !
-      fname = add_dat_extension(tave_file_prefix)
-      call read_sph_spectr_snapshot(fname, flag_spectr, flag_vol_ave,   &
-     &                              tave_sph_IN)
-      fname = add_dat_extension(sdev_file_prefix)
-      call read_sph_spectr_snapshot(fname, flag_spectr, flag_vol_ave,   &
-     &                              sdev_sph_IN)
+      call read_sph_spectr_snapshot                                     &
+     &   (tave_file_name, flag_spectr, flag_vol_ave, tave_sph_IN)
+      call read_sph_spectr_snapshot                                     &
+     &   (sdev_file_name, flag_spectr, flag_vol_ave, sdev_sph_IN)
 !
       end subroutine read_time_ave_sdev_sph_spectr
 !

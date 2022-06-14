@@ -37,27 +37,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine check_input_sph_series_file(file_name, flag_old_fmt,   &
-     &          flag_spectr, flag_vol_ave, sph_IN_f)
-!
-      use simple_sph_spectr_head_IO
-!
-      character(len = kchara), intent(in) :: file_name
-      logical, intent(in) :: flag_old_fmt, flag_spectr, flag_vol_ave
-      type(read_sph_spectr_data), intent(inout) :: sph_IN_f
-!
-      integer(kind = kint) :: id_file = 31
-!
-!
-      open(id_file, file=file_name)
-      call select_input_sph_series_head(id_file, flag_old_fmt,          &
-     &    flag_spectr, flag_vol_ave, sph_IN_f)
-      call check_sph_spectr_name(sph_IN_f)
-!
-      end subroutine check_input_sph_series_file
-!
-!   --------------------------------------------------------------------
-!
       subroutine select_input_sph_series_head(id_file, flag_old_fmt,    &
      &          flag_spectr, flag_vol_ave, sph_IN)
 !

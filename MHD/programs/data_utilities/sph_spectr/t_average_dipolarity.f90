@@ -30,15 +30,15 @@
       type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
 !
       real(kind = kreal) :: start_time, end_time
-      character(len = kchara) :: file_prefix
+      character(len = kchara) :: file_name
 !
 !
       call read_control_file_sph_monitor(0, tave_sph_ctl1)
 !
       call set_control_tave_dipolarity                                  &
-     &   (tave_sph_ctl1, file_prefix, start_time, end_time)
-      call time_average_dipolarity_f                                    &
-     &   (file_prefix, start_time, end_time)
+     &   (tave_sph_ctl1, file_name, start_time, end_time)
+      call s_time_average_dipolarity                                    &
+     &   (file_name, start_time, end_time)
 !
       write(*,*) '***** program finished *****'
       stop
@@ -50,21 +50,26 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_control_tave_dipolarity                            &
-     &         (tave_sph_ctl, file_prefix, start_time, end_time)
+     &         (tave_sph_ctl, file_name, start_time, end_time)
 !
       use t_ctl_data_tave_sph_monitor
+      use set_parallel_file_name
 !
       implicit  none
 !
       type(tave_sph_monitor_ctl), intent(in) :: tave_sph_ctl
-      character(len=kchara), intent(inout) :: file_prefix
+      character(len=kchara), intent(inout) :: file_name
       real(kind = kreal), intent(inout) :: start_time, end_time
+!
+      character(len = kchara) :: file_prefix
+!
 !
       if(tave_sph_ctl%dipolarity_file_prefix%iflag .eq. 0) then
         write(*,*) 'Set File prefix for dipolarity'
         stop
       end if
       file_prefix = tave_sph_ctl%dipolarity_file_prefix%charavalue
+      file_name =   add_dat_extension(file_prefix)
 !
       if(tave_sph_ctl%start_time_ctl%iflag .eq. 0) then
         write(*,*) 'Set start time'

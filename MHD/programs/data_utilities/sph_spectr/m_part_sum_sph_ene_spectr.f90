@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine sph_part_pwr_spectr_sum                              &
 !!     &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
-!!        character(len = kchara), intent(in) :: input_prefix
+!!        character(len = kchara), intent(in) :: fname_org
 !!        logical, intent(in) :: flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
@@ -41,24 +41,25 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_part_pwr_spectr_sum                                &
-     &         (input_prefix, flag_vol_ave, spec_evo_p, sph_IN)
+     &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
 !
       use t_ctl_param_sph_series_util
       use simple_sph_spectr_head_IO
       use sph_mean_square_IO_select
       use set_parallel_file_name
 !
-      character(len = kchara), intent(in) :: input_prefix
+      character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
-      character(len = kchara) :: file_name, fname_tmp
+      character(len = kchara) :: input_prefix, file_name, fname_tmp
       integer(kind = kint) :: i, icou, ierr, ist_true
 !
 !
+      input_prefix = exclude_extrension(fname_org)
       file_name = add_dat_extension(input_prefix)
-      open(id_file_rms_l, file=file_name)
+      open(id_file_rms_l, file=fname_org)
       call select_input_sph_series_head(id_file_rms_l,                  &
      &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave, sph_IN)
       call check_sph_spectr_name(sph_IN)

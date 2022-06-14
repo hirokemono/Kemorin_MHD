@@ -49,10 +49,10 @@
       use m_precision
       use m_constants
 !
+      use m_tave_sph_ene_spectr
       use t_ctl_data_tave_sph_monitor
       use t_ctl_param_sph_series_util
       use set_parallel_file_name
-      use time_average_sph_ene_spectr
 !
       implicit none
 !
@@ -66,27 +66,29 @@
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
       do i = 1, spec_evo_p1%nfile_vol_series_file
-        call time_ave_sdev_sph_volume_pwr_f                             &
-     &     (spec_evo_p1%vol_series_prefix(i),                           &
+        call time_ave_sdev_sph_spectr                                   &
+     &     (spec_evo_p1%vol_series_file_name(i), spectr_off, volume_on, &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
-        call time_ave_sdev_sph_vol_spectr_f                             &
-     &     (spec_evo_p1%vol_spectr_prefix(i),                           &
+        call time_ave_sdev_sph_spectr                                   &
+     &     (spec_evo_p1%vol_spectr_file_name(i), spectr_on, volume_on,  &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
 !
       do i = 1, spec_evo_p1%nfile_layer_series_file
-        call time_ave_sdev_sph_layer_pwr_f                              &
-     &     (spec_evo_p1%layer_series_prefix(i),                         &
+        call time_ave_sdev_sph_spectr                                   &
+     &     (spec_evo_p1%layer_series_file_name(i),                      &
+     &      spectr_off, volume_off,                                     &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
-        call time_ave_sdev_sph_layer_spec_f                             &
-     &     (spec_evo_p1%layer_spectr_prefix(i),                         &
+        call time_ave_sdev_sph_spectr                                   &
+     &     (spec_evo_p1%layer_spectr_file_name(i),                      &
+     &      spectr_on, volume_off,                                      &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !

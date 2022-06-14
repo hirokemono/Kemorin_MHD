@@ -8,26 +8,23 @@
 !!
 !!@verbatim
 !!      integer(c_int) function                                         &
-!!    &     time_ave_sdev_sph_volume_pwr_c(cname, cstart, cend) Bind(C)
+!!    &     time_ave_sdev_sph_volume_pwr_f(cname, cstart, cend) Bind(C)
 !!      integer(c_int) function                                         &
-!!    &     time_ave_sdev_sph_vol_spectr_c(cname, cstart, cend) Bind(C)
+!!    &     time_ave_sdev_sph_vol_spectr_f(cname, cstart, cend) Bind(C)
 !!      integer(c_int) function                                         &
-!!    &     time_ave_sdev_sph_layer_pwr_c(cname, cstart, cend) Bind(C)
+!!    &     time_ave_sdev_sph_layer_pwr_f(cname, cstart, cend) Bind(C)
 !!      integer(c_int) function                                         &
-!!    &     time_ave_sdev_sph_layer_spec_c(cname, cstart, cend) Bind(C)
+!!    &     time_ave_sdev_sph_layer_spec_f(cname, cstart, cend) Bind(C)
 !!        character(1,C_char), intent(in) :: cname(*)
 !!        real(C_double), Value :: cstart, cend
 !!
-!!      subroutine time_ave_sdev_sph_volume_pwr_f                       &
-!!     &         (file_prefix, start_time, end_time)
-!!      subroutine time_ave_sdev_sph_vol_spectr_f                       &
-!!     &         (file_prefix, start_time, end_time)
-!!      subroutine time_ave_sdev_sph_layer_pwr_f                        &
-!!     &         (file_prefix, start_time, end_time)
-!!      subroutine time_ave_sdev_sph_layer_spec_f                       &
-!!     &        (file_prefix, start_time, end_time)
-!!        character(len=kchara), intent(in) :: file_prefix
-!!        real(kind = kreal), intent(in) :: start_time, end_time
+!!      subroutine load_field_labels_f                                  &
+!!     &         (l_truncation, yname, tave_spectr, sdev_spectr)        &
+!!     &          bind(c, name="load_field_labels_f")
+!!        character(1,C_char), intent(in) :: yname(*)
+!!        integer(C_int), Value :: l_truncation
+!!        real(c_double), intent(inout) ::  tave_spectr(*)
+!!        real(c_double), intent(inout) ::  sdev_spectr(*)
 !!@endverbatim
 !
       module time_average_sph_ene_spectr
@@ -74,105 +71,117 @@
 ! -------------------------------------------------------------------
 !
       integer(c_int) function                                           &
-    &     time_ave_sdev_sph_volume_pwr_c(cname, cstart, cend) Bind(C)
+    &     time_ave_sdev_sph_volume_pwr_f(cname, cstart, cend) Bind(C)
+!
+      use m_tave_sph_ene_spectr
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
 !
       real(kind = kreal) :: start_time, end_time
-      character(len=kchara) :: file_prefix
+      character(len=kchara) :: fname_org
 !
-      write(file_prefix,'(a)') trim(c_to_fstring(cname))
+      write(fname_org,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
-      call time_ave_sdev_sph_volume_pwr_f                               &
-     &   (file_prefix, start_time, end_time)
+      call time_ave_sdev_sph_spectr                                     &
+     &   (fname_org, spectr_off, volume_on, start_time, end_time)
 !
-      time_ave_sdev_sph_volume_pwr_c = 0
-      end function time_ave_sdev_sph_volume_pwr_c
+      time_ave_sdev_sph_volume_pwr_f = 0
+      end function time_ave_sdev_sph_volume_pwr_f
 !
 ! -------------------------------------------------------------------
 !
       integer(c_int) function                                           &
-    &     time_ave_sdev_sph_vol_spectr_c(cname, cstart, cend) Bind(C)
+    &     time_ave_sdev_sph_vol_spectr_f(cname, cstart, cend) Bind(C)
+!
+      use m_tave_sph_ene_spectr
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
 !
       real(kind = kreal) :: start_time, end_time
-      character(len=kchara) :: file_prefix
+      character(len=kchara) :: fname_org
 !
-      write(file_prefix,'(a)') trim(c_to_fstring(cname))
+      write(fname_org,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
-      call time_ave_sdev_sph_vol_spectr_f                               &
-     &   (file_prefix, start_time, end_time)
+      call time_ave_sdev_sph_spectr                                     &
+     &   (fname_org, spectr_on, volume_on, start_time, end_time)
 !
-      time_ave_sdev_sph_vol_spectr_c = 0
-      end function time_ave_sdev_sph_vol_spectr_c
+      time_ave_sdev_sph_vol_spectr_f = 0
+      end function time_ave_sdev_sph_vol_spectr_f
 !
 ! -------------------------------------------------------------------
 !
       integer(c_int) function                                           &
-    &     time_ave_sdev_sph_layer_pwr_c(cname, cstart, cend) Bind(C)
+    &     time_ave_sdev_sph_layer_pwr_f(cname, cstart, cend) Bind(C)
+!
+      use m_tave_sph_ene_spectr
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
 !
       real(kind = kreal) :: start_time, end_time
-      character(len=kchara) :: file_prefix
+      character(len=kchara) :: fname_org
 !
-      write(file_prefix,'(a)') trim(c_to_fstring(cname))
+      write(fname_org,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
-      call time_ave_sdev_sph_layer_pwr_f                                &
-     &   (file_prefix, start_time, end_time)
+      call time_ave_sdev_sph_spectr                                     &
+     &   (fname_org, spectr_off, volume_off, start_time, end_time)
 !
-      time_ave_sdev_sph_layer_pwr_c = 0
-      end function time_ave_sdev_sph_layer_pwr_c
+      time_ave_sdev_sph_layer_pwr_f = 0
+      end function time_ave_sdev_sph_layer_pwr_f
 !
 ! -------------------------------------------------------------------
 !
       integer(c_int) function                                           &
-    &     time_ave_sdev_sph_layer_spec_c(cname, cstart, cend) Bind(C)
+    &     time_ave_sdev_sph_layer_spec_f(cname, cstart, cend) Bind(C)
+!
+      use m_tave_sph_ene_spectr
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
 !
       real(kind = kreal) :: start_time, end_time
-      character(len=kchara) :: file_prefix
+      character(len=kchara) :: fname_org
 !
-      write(file_prefix,'(a)') trim(c_to_fstring(cname))
+      write(fname_org,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
-      call time_ave_sdev_sph_layer_spec_f                               &
-     &   (file_prefix, start_time, end_time)
+      call time_ave_sdev_sph_spectr                                     &
+     &   (fname_org, spectr_on, volume_off, start_time, end_time)
 !
-      time_ave_sdev_sph_layer_spec_c = 0
-      end function time_ave_sdev_sph_layer_spec_c
+      time_ave_sdev_sph_layer_spec_f = 0
+      end function time_ave_sdev_sph_layer_spec_f
 !
 ! -------------------------------------------------------------------
 !
-      integer(c_int) function read_tave_sdev_sph_vol_spec_c             &
+      integer(c_int) function read_tave_sdev_sph_vol_spec_f             &
     &              (tave_prefix_c, sdev_prefix_c) Bind(C)
+!
+      use m_tave_sph_ene_spectr
 !
       character(1,C_char), intent(in) :: tave_prefix_c(*)
       character(1,C_char), intent(in) :: sdev_prefix_c(*)
 !
-      character(len=kchara) :: tave_file_prefix, sdev_file_prefix
+      character(len=kchara) :: tave_file_name, sdev_file_name
       integer(kind = kint) :: l_truncation
 !
-      write(tave_file_prefix,'(a)') trim(c_to_fstring(tave_prefix_c))
-      write(sdev_file_prefix,'(a)') trim(c_to_fstring(sdev_prefix_c))
-      call read_tave_sdev_sph_vol_spec_f                                &
-     &   (tave_file_prefix, sdev_file_prefix, l_truncation)
+      write(tave_file_name,'(a)') trim(c_to_fstring(tave_prefix_c))
+      write(sdev_file_name,'(a)') trim(c_to_fstring(sdev_prefix_c))
+      call read_time_ave_sdev_sph_spectr                                &
+     &   (tave_file_name, sdev_file_name,                               &
+     &    spectr_on, volume_on, tave_sph_IN, sdev_sph_IN)
+      read_tave_sdev_sph_vol_spec_f = tave_sph_IN%ltr_sph
 !
-      read_tave_sdev_sph_vol_spec_c = l_truncation
-      end function read_tave_sdev_sph_vol_spec_c
+      end function read_tave_sdev_sph_vol_spec_f
 !
 ! -------------------------------------------------------------------
 !
-      subroutine load_field_labels_f(l_truncation, yname, tave_spectr, sdev_spectr)     &
+      subroutine load_field_labels_f                                    &
+     &         (l_truncation, yname, tave_spectr, sdev_spectr)          &
      &          bind(c, name="load_field_labels_f")
 !
       character(1,C_char), intent(in) :: yname(*)
@@ -213,88 +222,6 @@
 !      end do
 !
       end subroutine load_field_labels_f
-!
-! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
-      subroutine time_ave_sdev_sph_volume_pwr_f                         &
-     &         (file_prefix, start_time, end_time)
-!
-      use m_tave_sph_ene_spectr
-!
-      character(len = kchara), intent(in) :: file_prefix
-      real(kind = kreal), intent(in) :: start_time, end_time
-!
-      call time_ave_sdev_sph_spectr                                     &
-     &   (file_prefix, spectr_off, volume_on, start_time, end_time)
-!
-      end subroutine time_ave_sdev_sph_volume_pwr_f
-!
-! -------------------------------------------------------------------
-!
-      subroutine time_ave_sdev_sph_vol_spectr_f                         &
-     &         (file_prefix, start_time, end_time)
-!
-      use m_tave_sph_ene_spectr
-!
-      character(len = kchara), intent(in) :: file_prefix
-      real(kind = kreal), intent(in) :: start_time, end_time
-!
-      call time_ave_sdev_sph_spectr                                     &
-     &   (file_prefix, spectr_on, volume_on, start_time, end_time)
-!
-      end subroutine time_ave_sdev_sph_vol_spectr_f
-!
-! -------------------------------------------------------------------
-!
-      subroutine time_ave_sdev_sph_layer_pwr_f                          &
-     &         (file_prefix, start_time, end_time)
-!
-      use m_tave_sph_ene_spectr
-!
-      character(len = kchara), intent(in) :: file_prefix
-      real(kind = kreal), intent(in) :: start_time, end_time
-!
-      call time_ave_sdev_sph_spectr                                     &
-     &   (file_prefix, spectr_off, volume_off, start_time, end_time)
-!
-      end subroutine time_ave_sdev_sph_layer_pwr_f
-!
-! -------------------------------------------------------------------
-!
-      subroutine time_ave_sdev_sph_layer_spec_f                         &
-     &        (file_prefix, start_time, end_time)
-!
-      use m_tave_sph_ene_spectr
-!
-      character(len = kchara), intent(in) :: file_prefix
-      real(kind = kreal), intent(in) :: start_time, end_time
-!
-      call time_ave_sdev_sph_spectr                                     &
-     &   (file_prefix, spectr_on, volume_off, start_time, end_time)
-!
-      end subroutine time_ave_sdev_sph_layer_spec_f
-!
-! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
-      subroutine read_tave_sdev_sph_vol_spec_f                          &
-     &        (tave_file_prefix, sdev_file_prefix, l_truncation)
-!
-      use m_tave_sph_ene_spectr
-!
-      character(len = kchara), intent(in) :: tave_file_prefix
-      character(len = kchara), intent(in) :: sdev_file_prefix
-      integer(kind = kint), intent(inout) :: l_truncation
-!
-!
-!
-      call read_time_ave_sdev_sph_spectr                                &
-     &   (tave_file_prefix, sdev_file_prefix,                           &
-     &    spectr_on, volume_on, tave_sph_IN, sdev_sph_IN)
-      l_truncation = tave_sph_IN%ltr_sph
-!
-      end subroutine read_tave_sdev_sph_vol_spec_f
 !
 ! -------------------------------------------------------------------
 !

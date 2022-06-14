@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      integer(c_int) function                                         &
-!!    &     time_average_dipolarity_c(cname, cstart, cend) Bind(C)
+!!    &     time_average_dipolarity_f(cname, cstart, cend) Bind(C)
 !!        character(1,C_char), intent(in) :: cname(*)
 !!        real(C_double), Value :: cstart, cend
 !!
-!!      subroutine time_average_dipolarity_f                            &
-!!     &         (file_prefix, start_time, end_time)
-!!        character(len=kchara), intent(in) :: file_prefix
+!!      subroutine s_time_average_dipolarity                            &
+!!     &         (file_name, start_time, end_time)
+!!        character(len=kchara), intent(in) :: file_name
 !!        real(kind = kreal), intent(in) :: start_time, end_time
 !!@endverbatim
 !
@@ -53,7 +53,7 @@
 ! -------------------------------------------------------------------
 !
       integer(c_int) function                                           &
-    &     time_average_dipolarity_c(cname, cstart, cend) Bind(C)
+    &     time_average_dipolarity_f(cname, cstart, cend) Bind(C)
 !
       use Iso_C_binding
       use m_precision
@@ -62,30 +62,29 @@
       real(C_double), Value :: cstart, cend
 !
       real(kind = kreal) :: start_time, end_time
-      character(len=kchara) :: file_prefix
+      character(len=kchara) :: file_name
 !
-      write(file_prefix,'(a)') trim(c_to_fstring(cname))
+      write(file_name,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
-      call time_average_dipolarity_f(file_prefix, start_time, end_time)
+      call s_time_average_dipolarity(file_name, start_time, end_time)
 !
-      time_average_dipolarity_c = 0
-      end function time_average_dipolarity_c
+      time_average_dipolarity_f = 0
+      end function time_average_dipolarity_f
 !
 ! -------------------------------------------------------------------
 !
-      subroutine time_average_dipolarity_f                              &
-     &         (file_prefix, start_time, end_time)
+      subroutine s_time_average_dipolarity                              &
+     &         (file_name, start_time, end_time)
 !
       use m_precision
       use m_constants
 !
       use t_CMB_dipolarity
-      use set_parallel_file_name
 !
       implicit  none
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time
 
       type(dipolarity_data), save :: dip_t
@@ -97,13 +96,11 @@
       integer(kind = kint) :: i_step, icou, i
       real(kind = kreal) :: acou, time, prev_time, radius_CMB
       real(kind = kreal) :: true_start
-      character(len = kchara) :: file_name, tmpchara
+      character(len = kchara) :: tmpchara
 !
 !
-      dip_t%dipolarity_prefix = file_prefix
-      file_name = add_dat_extension(dip_t%dipolarity_prefix)
-!
-      open(id_dipolarity, file = file_name,                             &
+      dip_t%dipolarity_file_name = file_name
+      open(id_dipolarity, file = dip_t%dipolarity_file_name,            &
      &     form='formatted', status='old')
       read(id_dipolarity,*)  tmpchara
       read(id_dipolarity,*)  dip_t%ltr_max, radius_CMB
@@ -148,7 +145,7 @@
 !
 !       Evaluate standard deviation
 !
-      open(id_dipolarity, file = file_name,                             &
+      open(id_dipolarity, file = dip_t%dipolarity_file_name,            &
      &     form='formatted', status='old')
       read(id_dipolarity,*)  tmpchara
       read(id_dipolarity,*)  dip_t%ltr_max, radius_CMB
@@ -198,7 +195,7 @@
       write(*,'(a)') 'Average and Std. Dev. of dipolarity at CMB'
       write(*,'(1p2e25.15e3)')  ave_fdip, sdev_fdip
 !
-      end subroutine time_average_dipolarity_f
+      end subroutine s_time_average_dipolarity
 !
 ! -------------------------------------------------------------------
 !

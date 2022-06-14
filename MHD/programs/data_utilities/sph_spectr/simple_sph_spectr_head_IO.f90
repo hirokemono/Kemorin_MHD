@@ -24,7 +24,6 @@
 !!
 !!      subroutine write_sph_pwr_vol_head(id_file, sph_IN)
 !!      subroutine write_sph_pwr_layer_head(id_file, sph_IN)
-!!      subroutine check_sph_spectr_name(sph_IN)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(read_sph_spectr_data), intent(in) :: sph_IN
 !!@endverbatim
@@ -150,21 +149,6 @@
       write(id_file,*)
 !
       end subroutine write_sph_pwr_layer_head
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine check_sph_spectr_name(sph_IN)
-!
-      type(read_sph_spectr_data), intent(in) :: sph_IN
-      integer(kind = kint) :: i
-!
-!
-      do i = 1, sph_IN%num_labels
-        write(*,*) i, trim(sph_IN%ene_sph_spec_name(i))
-      end do
-!
-      end subroutine check_sph_spectr_name
 !
 !   --------------------------------------------------------------------
 !

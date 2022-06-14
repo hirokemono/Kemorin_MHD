@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      integer(c_int) function                                         &
-!!    &     time_average_nusselt_c(cname, cstart, cend) Bind(C)
+!!    &     time_average_nusselt_f(cname, cstart, cend) Bind(C)
 !!        character(1,C_char), intent(in) :: cname(*)
 !!        real(C_double), Value :: cstart, cend
 !!
-!!      subroutine time_average_nusselt_f                               &
-!!     &         (file_prefix, start_time, end_time)
-!!        character(len=kchara), intent(in) :: file_prefix
+!!      subroutine s_time_average_nusselt                               &
+!!     &         (file_name, start_time, end_time)
+!!        character(len=kchara), intent(in) :: file_name
 !!        real(kind = kreal), intent(in) :: start_time, end_time
 !!@endverbatim
 !
@@ -53,7 +53,7 @@
 ! -------------------------------------------------------------------
 !
       integer(c_int) function                                           &
-    &     time_average_nusselt_c(cname, cstart, cend) Bind(C)
+    &     time_average_nusselt_f(cname, cstart, cend) Bind(C)
 !
       use Iso_C_binding
       use m_precision
@@ -62,20 +62,20 @@
       real(C_double), Value :: cstart, cend
 !
       real(kind = kreal) :: start_time, end_time
-      character(len=kchara) :: file_prefix
+      character(len=kchara) :: file_name
 !
-      write(file_prefix,'(a)') trim(c_to_fstring(cname))
+      write(file_name,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
-      call time_average_nusselt_f(file_prefix, start_time, end_time)
+      call s_time_average_nusselt(file_name, start_time, end_time)
 !
-      time_average_nusselt_c = 0
-      end function time_average_nusselt_c
+      time_average_nusselt_f = 0
+      end function time_average_nusselt_f
 !
 ! -------------------------------------------------------------------
 !
-      subroutine time_average_nusselt_f                                 &
-     &         (file_prefix, start_time, end_time)
+      subroutine s_time_average_nusselt                                 &
+     &         (file_name, start_time, end_time)
 !
       use m_precision
       use m_constants
@@ -84,7 +84,7 @@
 !
       implicit  none
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time
 
       type(nusselt_number_data), save :: Nu_t
@@ -99,9 +99,9 @@
       real(kind = kreal) :: true_start
 !
 !
-       Nu_t%Nusselt_file_head = trim(file_prefix)
+      Nu_t%Nusselt_file_name = trim(file_name)
       call open_read_no_heat_source_Nu(id_pick, Nu_t)
-      write(*,*) 'Nu_t%Nusselt_file_head: ', Nu_t%Nusselt_file_head
+      write(*,*) 'Nu_t%Nusselt_file_name: ', Nu_t%Nusselt_file_name
       write(*,*) 'start_time: ', start_time, end_time
 !
 !       Evaluate time average
@@ -203,7 +203,7 @@
       write(*,'(a)') 'Average and Std. Dev. of Nu at CMB:'
       write(*,'(1p2e25.15e3)')  ave_Nu(2), sdev_Nu(2)
 !
-      end subroutine time_average_nusselt_f
+      end subroutine s_time_average_nusselt
 !
 ! -------------------------------------------------------------------
 !

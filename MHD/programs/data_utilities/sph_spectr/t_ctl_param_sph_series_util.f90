@@ -31,16 +31,18 @@
         integer(kind = kint) :: led = 0
 !
         integer(kind = kint) :: nfile_vol_series_file = 0
-        character(len = kchara), allocatable :: vol_series_prefix(:)
+        character(len = kchara), allocatable :: vol_series_file_name(:)
 !
         integer(kind = kint) :: nfile_vol_spectr_file = 0
-        character(len = kchara), allocatable :: vol_spectr_prefix(:)
+        character(len = kchara), allocatable :: vol_spectr_file_name(:)
 !
         integer(kind = kint) :: nfile_layer_series_file = 0
-        character(len = kchara), allocatable :: layer_series_prefix(:)
+        character(len = kchara), allocatable                            &
+     &                          :: layer_series_file_name(:)
 !
         integer(kind = kint) :: nfile_layer_sprctr_file = 0
-        character(len = kchara), allocatable :: layer_spectr_prefix(:)
+        character(len = kchara), allocatable                            &
+     &                          :: layer_spectr_file_name(:)
       end type sph_spectr_file_param
 !
       private :: alloc_vol_series_prefix,   dealloc_vol_series_prefix
@@ -58,10 +60,13 @@
 !
       use t_ctl_data_tave_sph_monitor
       use skip_comment_f
+      use set_parallel_file_name
+
 !
       type(tave_sph_monitor_ctl), intent(in) :: tave_sph_ctl
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
+      character(len = kchara) :: file_prefix
       integer(kind = kint) :: i
 !
 !
@@ -93,8 +98,9 @@
      &     (tave_sph_ctl%volume_series_file_ctl%num, spec_evo_p)
 !
         do i = 1, spec_evo_p%nfile_vol_series_file
-          spec_evo_p%vol_series_prefix(i)                               &
-     &       = tave_sph_ctl%volume_series_file_ctl%c_tbl(i)
+          file_prefix = tave_sph_ctl%volume_series_file_ctl%c_tbl(i)
+          spec_evo_p%vol_series_file_name(i)                            &
+     &                = add_dat_extension(file_prefix)
         end do
       end if
 !
@@ -103,8 +109,9 @@
      &     (tave_sph_ctl%volume_spec_file_ctl%num, spec_evo_p)
 !
         do i = 1, spec_evo_p%nfile_vol_spectr_file
-          spec_evo_p%vol_spectr_prefix(i)                               &
-     &       = tave_sph_ctl%volume_spec_file_ctl%c_tbl(i)
+          file_prefix = tave_sph_ctl%volume_spec_file_ctl%c_tbl(i)
+          spec_evo_p%vol_spectr_file_name(i)                            &
+     &                = add_dat_extension(file_prefix)
         end do
       end if
 !
@@ -113,8 +120,9 @@
      &     (tave_sph_ctl%layered_series_file_ctl%num, spec_evo_p)
 !
         do i = 1, spec_evo_p%nfile_layer_series_file
-          spec_evo_p%layer_series_prefix(i)                             &
-     &       = tave_sph_ctl%layered_series_file_ctl%c_tbl(i)
+          file_prefix = tave_sph_ctl%layered_series_file_ctl%c_tbl(i)
+          spec_evo_p%layer_series_file_name(i)                          &
+     &                = add_dat_extension(file_prefix)
         end do
       end if
 !
@@ -123,8 +131,9 @@
      &     (tave_sph_ctl%layered_spec_file_ctl%num, spec_evo_p)
 !
         do i = 1, spec_evo_p%nfile_layer_sprctr_file
-          spec_evo_p%layer_spectr_prefix(i)                             &
-     &       = tave_sph_ctl%layered_spec_file_ctl%c_tbl(i)
+          file_prefix = tave_sph_ctl%layered_spec_file_ctl%c_tbl(i)
+          spec_evo_p%layer_spectr_file_name(i)                          &
+     &                = add_dat_extension(file_prefix)
         end do
       end if
 !
@@ -151,9 +160,9 @@
       integer(kind = kint), intent(in) :: num
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
-      if(allocated(spec_evo_p%vol_series_prefix)) return
+      if(allocated(spec_evo_p%vol_series_file_name)) return
       spec_evo_p%nfile_vol_series_file = num
-      allocate(spec_evo_p%vol_series_prefix(num))
+      allocate(spec_evo_p%vol_series_file_name(num))
 !
       end subroutine alloc_vol_series_prefix
 !
@@ -164,9 +173,9 @@
       integer(kind = kint), intent(in) :: num
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
-      if(allocated(spec_evo_p%vol_spectr_prefix)) return
+      if(allocated(spec_evo_p%vol_spectr_file_name)) return
       spec_evo_p%nfile_vol_spectr_file = num
-      allocate(spec_evo_p%vol_spectr_prefix(num))
+      allocate(spec_evo_p%vol_spectr_file_name(num))
 !
       end subroutine alloc_vol_spectr_prefix
 !
@@ -177,9 +186,9 @@
       integer(kind = kint), intent(in) :: num
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
-      if(allocated(spec_evo_p%layer_series_prefix)) return
+      if(allocated(spec_evo_p%layer_series_file_name)) return
       spec_evo_p%nfile_layer_series_file = num
-      allocate(spec_evo_p%layer_series_prefix(num))
+      allocate(spec_evo_p%layer_series_file_name(num))
 !
       end subroutine alloc_layer_series_prefix
 !
@@ -190,9 +199,9 @@
       integer(kind = kint), intent(in) :: num
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
-      if(allocated(spec_evo_p%layer_spectr_prefix)) return
+      if(allocated(spec_evo_p%layer_spectr_file_name)) return
       spec_evo_p%nfile_layer_sprctr_file = num
-      allocate(spec_evo_p%layer_spectr_prefix(num))
+      allocate(spec_evo_p%layer_spectr_file_name(num))
 !
       end subroutine alloc_layer_spectr_prefix
 !
@@ -203,8 +212,9 @@
 !
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
-      if(allocated(spec_evo_p%vol_series_prefix) .eqv. .FALSE.) return
-      deallocate(spec_evo_p%vol_series_prefix)
+      if(allocated(spec_evo_p%vol_series_file_name)                     &
+     &                                    .eqv. .FALSE.) return
+      deallocate(spec_evo_p%vol_series_file_name)
 !
       end subroutine dealloc_vol_series_prefix
 !
@@ -214,8 +224,9 @@
 !
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
-      if(allocated(spec_evo_p%vol_spectr_prefix) .eqv. .FALSE.) return
-      deallocate(spec_evo_p%vol_spectr_prefix)
+      if(allocated(spec_evo_p%vol_spectr_file_name)                     &
+     &                                     .eqv. .FALSE.) return
+      deallocate(spec_evo_p%vol_spectr_file_name)
 !
       end subroutine dealloc_vol_spectr_prefix
 !
@@ -225,8 +236,9 @@
 !
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
-      if(allocated(spec_evo_p%layer_series_prefix).eqv. .FALSE.) return
-      deallocate(spec_evo_p%layer_series_prefix)
+      if(allocated(spec_evo_p%layer_series_file_name)                   &
+     &                                      .eqv. .FALSE.) return
+      deallocate(spec_evo_p%layer_series_file_name)
 !
       end subroutine dealloc_layer_series_prefix
 !
@@ -236,8 +248,9 @@
 !
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
-      if(allocated(spec_evo_p%layer_spectr_prefix).eqv. .FALSE.) return
-      deallocate(spec_evo_p%layer_spectr_prefix)
+      if(allocated(spec_evo_p%layer_spectr_file_name)                   &
+     &                                      .eqv. .FALSE.) return
+      deallocate(spec_evo_p%layer_spectr_file_name)
 !
       end subroutine dealloc_layer_spectr_prefix
 !
