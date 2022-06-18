@@ -64,7 +64,7 @@ main_zonal_mean_sph.o: $(SPH_UTILS_DIR)/main_zonal_mean_sph.f90 m_precision.o ca
 	$(F90) -c $(F90OPTFLAGS) $<
 maxmode_sph_ene_spec.o: $(SPH_UTILS_DIR)/maxmode_sph_ene_spec.f90 m_precision.o m_constants.o m_maxmode_sph_ene_spectr.o t_read_sph_spectra.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-neutral_point_by_pick_sph.o: $(SPH_UTILS_DIR)/neutral_point_by_pick_sph.f90 m_precision.o m_constants.o m_spheric_data_sph_spetr.o t_neutral_pt_by_pick_sph.o t_fdm_coefs.o t_picked_sph_spectr_data_IO.o
+neutral_point_by_pick_sph.o: $(SPH_UTILS_DIR)/neutral_point_by_pick_sph.f90 m_precision.o m_constants.o m_spheric_data_sph_spetr.o t_neutral_pt_by_pick_sph.o t_fdm_coefs.o t_picked_sph_spectr_data_IO.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 part_sum_sph_ene_spec.o: $(SPH_UTILS_DIR)/part_sum_sph_ene_spec.f90 m_precision.o m_constants.o m_part_sum_sph_ene_spectr.o t_read_sph_spectra.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -98,19 +98,21 @@ t_ctl_param_sph_data_utils.o: $(SPH_UTILS_DIR)/t_ctl_param_sph_data_utils.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_param_sph_series_util.o: $(SPH_UTILS_DIR)/t_ctl_param_sph_series_util.f90 m_precision.o m_constants.o t_ctl_data_tave_sph_monitor.o skip_comment_f.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/t_gauss_coefs_monitor_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o m_monitor_file_labels.o set_parallel_file_name.o write_field_labels.o skip_comment_f.o
+t_gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/t_gauss_coefs_monitor_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o m_monitor_file_labels.o write_field_labels.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_neutral_pt_by_pick_sph.o: $(SPH_UTILS_DIR)/t_neutral_pt_by_pick_sph.f90 m_precision.o m_constants.o t_picked_sph_spectr_data_IO.o set_radius_func_noequi.o m_base_field_labels.o t_spheric_parameter.o t_fdm_coefs.o second_fdm_node_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/t_picked_sph_spectr_data_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o m_monitor_file_labels.o write_field_labels.o set_parallel_file_name.o skip_comment_f.o spherical_harmonics.o
+t_picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/t_picked_sph_spectr_data_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o m_monitor_file_labels.o write_field_labels.o skip_comment_f.o spherical_harmonics.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_read_sph_spectra.o: $(SPH_UTILS_DIR)/t_read_sph_spectra.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_spheric_data_sph_spetr.o: $(SPH_UTILS_DIR)/t_spheric_data_sph_spetr.f90 m_precision.o t_rms_4_sph_spectr.o t_sum_sph_rms_data.o t_pickup_sph_spectr_data.o t_energy_label_parameters.o t_CMB_dipolarity.o cal_rms_fields_by_sph.o init_energy_labels_sph_SGS.o pickup_sph_coefs.o sph_mean_spectr_header_IO.o output_sph_volume_ave_file.o output_sph_pwr_volume_file.o output_sph_pwr_layer_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
-tave_picked_gauss_coefs.o: $(SPH_UTILS_DIR)/tave_picked_gauss_coefs.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o t_ctl_data_tave_sph_monitor.o
+tave_picked_gauss_coefs.o: $(SPH_UTILS_DIR)/tave_picked_gauss_coefs.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o t_ctl_data_tave_sph_monitor.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-tave_picked_sph_spec_data.o: $(SPH_UTILS_DIR)/tave_picked_sph_spec_data.f90 m_precision.o m_constants.o t_picked_sph_spectr_data_IO.o t_ctl_data_tave_sph_monitor.o
+tave_picked_sph_spec_data.o: $(SPH_UTILS_DIR)/tave_picked_sph_spec_data.f90 m_precision.o m_constants.o t_ctl_data_tave_sph_monitor.o time_ave_picked_sph_spectr.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+time_ave_picked_sph_spectr.o: $(SPH_UTILS_DIR)/time_ave_picked_sph_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_picked_sph_spectr_data_IO.o t_ctl_data_tave_sph_monitor.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 time_average_dipolarity.o: $(SPH_UTILS_DIR)/time_average_dipolarity.f90 m_precision.o m_constants.o t_CMB_dipolarity.o
 	$(F90) -c $(F90OPTFLAGS) $<

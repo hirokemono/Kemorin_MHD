@@ -20,6 +20,7 @@
 !
       use t_gauss_coefs_monitor_IO
       use t_ctl_data_tave_sph_monitor
+      use set_parallel_file_name
 !
       implicit  none
 !
@@ -33,9 +34,10 @@
       real(kind = kreal), allocatable :: sdev_gauss(:)
       real(kind = kreal), allocatable :: prev_gauss(:)
 !
-      character(len=kchara) :: tave_pick_gauss_head
-      character(len=kchara) :: trms_pick_gauss_head
-      character(len=kchara) :: sdev_pick_gauss_head
+      character(len=kchara) :: input_file_name, file_prefix
+      character(len=kchara) :: tave_pick_gauss_fname
+      character(len=kchara) :: trms_pick_gauss_fname
+      character(len=kchara) :: sdev_pick_gauss_fname
       integer(kind = kint), parameter :: id_pick = 15
 !
       integer(kind = kint) :: i_step, ierr, icou, ipick
@@ -49,8 +51,8 @@
         write(*,*) 'Set File prefix for Gauss coefficients'
         stop
       end if
-      gauss_IO%file_prefix                                              &
-     &      = tave_sph_ctl1%gauss_coefs_prefix%charavalue
+      file_prefix = tave_sph_ctl1%gauss_coefs_prefix%charavalue
+      input_file_name = add_dat_extension(file_prefix)
 !
       if(tave_sph_ctl1%start_time_ctl%iflag .eq. 0) then
         write(*,*) 'Set start time'
@@ -64,15 +66,16 @@
       end if
       end_time = tave_sph_ctl1%end_time_ctl%realvalue
 !
-      write(tave_pick_gauss_head,'(a6,a)')                              &
-        't_ave_',  trim(gauss_IO%file_prefix)
-      write(trms_pick_gauss_head,'(a6,a)')                              &
-        't_rms_',  trim(gauss_IO%file_prefix)
-      write(sdev_pick_gauss_head,'(a6,a)')                              &
-        't_sdev_', trim(gauss_IO%file_prefix)
+      write(tave_pick_gauss_fname,'(a6,a)')                             &
+     &                           't_ave_',  trim(input_file_name)
+      write(trms_pick_gauss_fname,'(a6,a)')                             &
+     &                           't_rms_',  trim(input_file_name)
+      write(sdev_pick_gauss_fname,'(a8,a)')                             &
+     &                           't_sigma_', trim(input_file_name)
 !
-!       Open Nusselt data file
+!       Open data file
 !
+      gauss_IO%gauss_coef_file_name = input_file_name
       call open_gauss_coefs_read_monitor(id_pick, gauss_IO)
 !
       allocate(ave_gauss(gauss_IO%num_mode))
@@ -147,7 +150,7 @@
      &      = ave_gauss(1:gauss_IO%num_mode)
 !$omp end parallel workshare
 !
-      gauss_IO%file_prefix = tave_pick_gauss_head
+      gauss_IO%gauss_coef_file_name = tave_pick_gauss_fname
       call write_gauss_coefs_4_monitor(0, i_step, time, gauss_IO)
 !
 !  Output time average
@@ -156,7 +159,7 @@
      &      = rms_gauss(1:gauss_IO%num_mode)
 !$omp end parallel workshare
 !
-      gauss_IO%file_prefix = trms_pick_gauss_head
+      gauss_IO%gauss_coef_file_name = trms_pick_gauss_fname
       call write_gauss_coefs_4_monitor(0, i_step, time, gauss_IO)
 !
 !  Output time average
@@ -165,7 +168,7 @@
      &      = sdev_gauss(1:gauss_IO%num_mode)
 !$omp end parallel workshare
 !
-      gauss_IO%file_prefix = sdev_pick_gauss_head
+      gauss_IO%gauss_coef_file_name = sdev_pick_gauss_fname
       call write_gauss_coefs_4_monitor(0, i_step, time, gauss_IO)
 !
       deallocate(ave_gauss, rms_gauss, sdev_gauss)

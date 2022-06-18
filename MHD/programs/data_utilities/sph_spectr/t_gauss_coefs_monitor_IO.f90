@@ -35,8 +35,9 @@
 !
 !
       type picked_gauss_coefs_IO
-!>        File prefix for spectr monitoring file
-        character(len = kchara) :: file_prefix =  'picked_gauss'
+!>        File name of GAuss coefficients monitoring file
+        character(len = kchara)                                         &
+     &               :: gauss_coef_file_name =  'picked_gauss.dat'
 !>        Radius for the gauss coefficients
         real(kind = kreal) :: radius_gauss
 !
@@ -73,20 +74,17 @@
       subroutine open_gauss_coefs_4_monitor(gauss_IO)
 !
       use m_monitor_file_labels
-      use set_parallel_file_name
       use write_field_labels
 !
       type(picked_gauss_coefs_IO), intent(in) :: gauss_IO
-      character(len = kchara) :: file_name
 !
 !
-      file_name = add_dat_extension(gauss_IO%file_prefix)
-      open(id_gauss_coef, file = file_name,                             &
+      open(id_gauss_coef, file = gauss_IO%gauss_coef_file_name,         &
      &    form='formatted', status='old', position='append', err = 99)
       return
 !
    99 continue
-      open(id_gauss_coef, file = file_name,                             &
+      open(id_gauss_coef, file = gauss_IO%gauss_coef_file_name,         &
      &    form='formatted', status='replace')
 !
 !
@@ -139,18 +137,15 @@
       subroutine open_gauss_coefs_read_monitor(id_pick, gauss_IO)
 !
       use skip_comment_f
-      use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: id_pick
       type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
 !
       integer(kind = kint) :: i
-      character(len = kchara) :: file_name
       character(len=255) :: tmpchara
 !
 !
-      file_name = add_dat_extension(gauss_IO%file_prefix)
-      open(id_pick, file = file_name)
+      open(id_pick, file = gauss_IO%gauss_coef_file_name)
 !
       gauss_IO%radius_gauss = 2.82
       call skip_comment(tmpchara,id_pick)

@@ -66,6 +66,7 @@ SOURCES = $(shell ls *.f90)
 
 MOD_SPH_UTIL_DLL = \
 t_read_sph_spectra.o \
+t_picked_sph_spectr_data_IO.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
 sph_mean_square_IO_select.o \
@@ -74,7 +75,8 @@ m_tave_sph_ene_spectr.o \
 m_read_sph_spectra_f.o \
 time_average_sph_ene_spectr.o \
 time_average_nusselt.o \
-time_average_dipolarity.o
+time_average_dipolarity.o \
+time_ave_picked_sph_spectr.o
 
 
 
@@ -248,6 +250,7 @@ tave_picked_gauss_coefs.o
 MOD_T_AVE_PICK_SPH = \
 t_ctl_data_tave_sph_monitor.o \
 t_picked_sph_spectr_data_IO.o \
+time_ave_picked_sph_spectr.o \
 tave_picked_sph_spec_data.o
 
 MOD_T_AVE_NUSSELT = \

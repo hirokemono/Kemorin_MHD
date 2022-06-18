@@ -11,6 +11,7 @@
       use t_neutral_pt_by_pick_sph
       use t_fdm_coefs
       use t_picked_sph_spectr_data_IO
+      use set_parallel_file_name
 !
       implicit  none
 !
@@ -18,7 +19,7 @@
       type(picked_spectrum_data_IO), save :: pick_IO
       type(neutral_pt_by_pick_sph), save :: ntl1
 !
-      character(len=kchara) :: evo_header
+      character(len=kchara) :: evo_header, file_name
       real(kind = kreal) :: buoyancy_ratio
 !
       integer(kind = kint), parameter :: id_pick = 15
@@ -37,7 +38,8 @@
       write(*,*) 'input start, end, increment steps'
       read(5,*) istep_start, istep_end, istep_inc
 !
-      call open_sph_spec_read(id_pick, evo_header, pick_IO)
+      file_name = add_dat_extension(evo_header)
+      call open_sph_spec_read(id_pick, file_name, pick_IO)
       call find_field_address(pick_IO, ntl1)
 !
       call read_sph_spec_monitor                                        &

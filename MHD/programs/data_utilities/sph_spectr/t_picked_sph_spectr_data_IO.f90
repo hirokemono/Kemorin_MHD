@@ -9,9 +9,9 @@
 !!@verbatim
 !!      subroutine dealloc_pick_sph_monitor_IO(picked_IO)
 !!      subroutine write_tave_sph_spec_monitor                          &
-!!     &         (file_prefix, i_step, time, true_start, picked_IO)
+!!     &         (file_name, i_step, time, true_start, picked_IO)
 !!
-!!      subroutine open_sph_spec_read(id_pick, file_prefix, picked_IO)
+!!      subroutine open_sph_spec_read(id_pick, file_name, picked_IO)
 !!      subroutine read_sph_spec_monitor                                &
 !!     &         (id_pick, i_step, time, picked_IO, ierr)
 !!@endverbatim
@@ -79,25 +79,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_tave_sph_spec_monitor                            &
-     &         (file_prefix, i_step, time, true_start, picked_IO)
+     &         (file_name, i_step, time, true_start, picked_IO)
 !
       use m_monitor_file_labels
       use write_field_labels
-      use set_parallel_file_name
 !
-      character(len = kchara), intent(in) :: file_prefix
+      character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time, true_start
 !
       type(picked_spectrum_data_IO), intent(in) :: picked_IO
 !
       integer(kind = kint) :: ipick, i_fld, l_fd
-      character(len = kchara)  :: file_name
 !
 !
       if(picked_IO%num_mode .eq. izero) return
 !
-      file_name = add_dat_extension(file_prefix)
       open(id_pick_mode, file = file_name, form='formatted',            &
      &     position='append')
 !
@@ -142,25 +139,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine open_sph_spec_read(id_pick, file_prefix, picked_IO)
+      subroutine open_sph_spec_read(id_pick, file_name, picked_IO)
 !
-      use set_parallel_file_name
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_pick
-      character(len = kchara), intent(in) :: file_prefix
+      character(len = kchara), intent(in) :: file_name
       type(picked_spectrum_data_IO), intent(inout) :: picked_IO
 !
-!
       integer(kind = kint) :: i
-!
-      character(len = kchara) :: file_name
       character(len=255) :: tmpchara
 !
 !
-      file_name = add_dat_extension(file_prefix)
       open(id_pick, file = file_name)
-!
       call skip_comment(tmpchara,id_pick)
       read(tmpchara,*,err=89) picked_IO%num_layer,                      &
      &               picked_IO%num_mode, picked_IO%ntot_pick_spectr
