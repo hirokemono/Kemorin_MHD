@@ -12,7 +12,8 @@
 !!        character(1,C_char), intent(in) :: cname(*)
 !!        real(C_double), Value :: cstart, cend
 !!      subroutine s_time_ave_picked_sph_spectr                         &
-!!     &         (file_name, start_time, end_time)
+!!     &         (flag_log, file_name, start_time, end_time)
+!!        logical, intent(in) :: flag_log
 !!        character(len=kchara), intent(in) :: file_name
 !!        real(kind = kreal), intent(in) :: start_time, end_time
 !!@endverbatim
@@ -25,6 +26,7 @@
       use m_constants
 !
       use t_read_sph_spectra
+      use t_picked_sph_spectr_data_IO
 !
       implicit  none
 !
@@ -69,7 +71,7 @@
       start_time = cstart
       end_time = cend
       call s_time_ave_picked_sph_spectr                                 &
-     &   (file_name, start_time, end_time)
+     &   (.FALSE., file_name, start_time, end_time)
 !
       time_ave_picked_sph_spectr_f = 0
       end function time_ave_picked_sph_spectr_f
@@ -78,163 +80,203 @@
 ! -------------------------------------------------------------------
 !
       subroutine s_time_ave_picked_sph_spectr                           &
-     &         (file_name, start_time, end_time)
+     &         (flag_log, file_name, start_time, end_time)
 !
       use m_precision
       use m_constants
 !
-      use t_picked_sph_spectr_data_IO
-      use t_ctl_data_tave_sph_monitor
       use set_parallel_file_name
 !
       implicit  none
 !
+      logical, intent(in) :: flag_log
       character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time
 !
-!>      Structure for control data
-      type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
-!
       type(picked_spectrum_data_IO), save :: pick_IO
-!
-      real(kind = kreal), allocatable :: prev_spec(:,:)
-      real(kind = kreal), allocatable :: ave_spec(:,:)
-      real(kind = kreal), allocatable :: rms_spec(:,:)
-      real(kind = kreal), allocatable :: sdev_spec(:,:)
+      real(kind = kreal), allocatable :: sdev_spec(:)
+      real(kind = kreal), allocatable :: ave_spec(:)
+      real(kind = kreal), allocatable :: rms_spec(:)
 !
       character(len=kchara) :: tave_fname
       character(len=kchara) :: trms_fname
       character(len=kchara) :: sdev_fname
       integer(kind = kint), parameter :: id_pick = 15
 !
-      integer(kind = kint) :: i_step, ierr, icou, i, nd
-      real(kind = kreal) :: acou, time, prev_time
+      integer(kind = kint) :: i_step, ierr, icou, i
+      real(kind = kreal) :: time, prev_time
       real(kind = kreal) :: true_start, true_end
 !
 !
       write(tave_fname,'(a6,a)') 't_ave_', trim(file_name)
-      write(trms_fname,'(a8,a)') 't_rms_', trim(file_name)
+      write(trms_fname,'(a6,a)') 't_rms_', trim(file_name)
       write(sdev_fname,'(a8,a)') 't_sigma_', trim(file_name)
 !
 !      Open picked mode file
 !
-      call open_sph_spec_read(id_pick, file_name, pick_IO)
+      write(*,*) 'Open file: ', trim(file_name)
+      open(id_pick, file = file_name)
+      call read_pick_series_head(id_pick, pick_IO)
 !
-      allocate(prev_spec(pick_IO%ntot_comp,pick_IO%ntot_pick_spectr))
-      allocate(ave_spec(pick_IO%ntot_comp,pick_IO%ntot_pick_spectr))
-      allocate(rms_spec(pick_IO%ntot_comp,pick_IO%ntot_pick_spectr))
-      allocate(sdev_spec(pick_IO%ntot_comp,pick_IO%ntot_pick_spectr))
-!
-!$omp parallel workshare
-      prev_spec =  0.0d0
-      ave_spec =   0.0d0
-      rms_spec =   0.0d0
-      sdev_spec =  0.0d0
-!$omp end parallel workshare
-!
-!       Evaluate time average
 !
       icou = 0
       true_start = start_time
       prev_time = true_start
+      true_end = true_start
+      do
+        call read_sph_spec_time                                      &
+     &     (id_pick, pick_IO, i_step, time, ierr)
+        if(ierr .gt. 0) exit
+!
+        if(time .ge. start_time) then
+!          call append_picked_sph_series(i_step, time, pick_IO)
+          if(icou .eq. 0) true_start = time
+!
+          icou = icou + 1
+          if(flag_log) then
+            write(*,'(69a1,a5,i12,a4,1pe16.8e3,a20,i12)',advance="NO")  &
+     &        (char(8),i=1,69), 'step ', i_step,                        &
+     &        ' at ', time, ' is read. count is  ', icou
+          end if
+        end if
+!
+        if(time .ge. end_time) exit
+      end do
+      true_end = time
+      rewind(id_pick)
+      write(*,*)
+      call dealloc_pick_sph_monitor_IO(pick_IO)
+!
+      call read_pick_series_head(id_pick, pick_IO)
+      call alloc_pick_sph_series(icou, pick_IO)
+!
+!       Evaluate time average
+      icou = 0
       do
         call read_sph_spec_monitor                                      &
      &     (id_pick, i_step, time, pick_IO, ierr)
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
-          if(icou .eq. 0) then
-            true_start = time
-          else
-!
-!$omp parallel
-            do i = 1, pick_IO%ntot_pick_spectr
-!$omp do
-              do nd = 1, pick_IO%ntot_comp
-                ave_spec(nd,i) = ave_spec(nd,i) + half                  &
-     &           * (pick_IO%d_pk(nd,i) + prev_spec(nd,i))               &
-     &           * (time - prev_time)
-                rms_spec(nd,i) = rms_spec(nd,i) + half                  &
-     &           * (pick_IO%d_pk(nd,i)**2 + prev_spec(nd,i)**2)         &
-     &           * (time - prev_time)
-              end do
-!$omp end do nowait
-            end do
-!$omp end parallel
-          end if
-!
-!$omp parallel
-          do i = 1, pick_IO%ntot_pick_spectr
-!$omp do
-            do nd = 1, pick_IO%ntot_comp
-              prev_spec(nd,i) = pick_IO%d_pk(nd,i)
-            end do
-!$omp end do nowait
-          end do
-!$omp end parallel
-!
           icou = icou + 1
-          write(*,*) 'step ', i_step,                                   &
-     &        ' is added for time average: count is  ', icou, time
+          call copy_to_pick_sph_series(icou, i_step, time, pick_IO)
+!
+          if(flag_log) then
+            write(*,'(69a1,a5,i12,a4,1pe16.8e3,a20,i12)',advance="NO")  &
+     &          (char(8),i=1,69), 'step ', i_step,                      &
+     &          ' at ', time, ' is read. count is  ', icou
+          end if
         end if
-        prev_time = time
 !
         if(time .ge. end_time) exit
       end do
       close(id_pick)
+      write(*,*)
 !
-      acou = one / (time - true_start)
-!$omp parallel
-      do i = 1, pick_IO%ntot_pick_spectr
-!$omp do
-        do nd = 1, pick_IO%ntot_comp
-          sdev_spec(nd,i) = rms_spec(nd,i) - ave_spec(nd,i)**2
+      allocate(ave_spec(pick_IO%ntot_data))
+      allocate(rms_spec(pick_IO%ntot_data))
+      allocate(sdev_spec(pick_IO%ntot_data))
 !
-          ave_spec(nd,i) =   ave_spec(nd,i) * acou
-          rms_spec(nd,i) =   sqrt(rms_spec(nd,i) * acou)
-          sdev_spec(nd,i) =  sqrt(sdev_spec(nd,i) * acou)
-        end do
-!$omp end do nowait
-      end do
-!$omp end parallel
+!$omp parallel workshare
+      ave_spec =   0.0d0
+      rms_spec =   0.0d0
+      sdev_spec =  0.0d0
+!$omp end parallel workshare
 !
-!    output time average
+      call cal_time_ave_picked_sph_spectr(pick_IO,                      &
+     &    ave_spec, rms_spec, sdev_spec)
 !
-      do i = 1, pick_IO%ntot_pick_spectr
-        do nd = 1, pick_IO%ntot_comp
-          pick_IO%d_pk(nd,i) = ave_spec(nd,i)
-        end do
-      end do
-!
+!$omp parallel workshare
+      pick_IO%d_pk(1:pick_IO%ntot_data)                                 &
+     &      = ave_spec(1:pick_IO%ntot_data)
+!$omp end parallel workshare
       call write_tave_sph_spec_monitor                                  &
-     &   (tave_fname, i_step, time, true_start, pick_IO)
+     &   (tave_fname, i_step, prev_time, true_start, pick_IO)
 !
 !    output RMS deviation
 !
-      do i = 1, pick_IO%ntot_pick_spectr
-        do nd = 1, pick_IO%ntot_comp
-          pick_IO%d_pk(nd,i) = rms_spec(nd,i)
-        end do
-      end do
+!$omp parallel workshare
+      pick_IO%d_pk(1:pick_IO%ntot_data)                                 &
+     &      = rms_spec(1:pick_IO%ntot_data)
+!$omp end parallel workshare
 !
       call write_tave_sph_spec_monitor                                  &
      &   (trms_fname, i_step, time, true_start, pick_IO)
 !
 !    output standard deviation
 !
-      do i = 1, pick_IO%ntot_pick_spectr
-        do nd = 1, pick_IO%ntot_comp
-          pick_IO%d_pk(nd,i) = sdev_spec(nd,i)
-        end do
-      end do
+!$omp parallel workshare
+      pick_IO%d_pk(1:pick_IO%ntot_data)                                 &
+     &      = sdev_spec(1:pick_IO%ntot_data)
+!$omp end parallel workshare
 !
       call write_tave_sph_spec_monitor                                  &
      &   (sdev_fname, i_step, time, true_start, pick_IO)
 !
       call dealloc_pick_sph_monitor_IO(pick_IO)
-      deallocate(prev_spec, ave_spec, sdev_spec)
+      call dealloc_pick_sph_series(pick_IO)
+      deallocate(ave_spec, sdev_spec, rms_spec)
 !
       end subroutine s_time_ave_picked_sph_spectr
+!
+! -------------------------------------------------------------------
+!
+!
+! -------------------------------------------------------------------
+!
+      subroutine cal_time_ave_picked_sph_spectr(pick_IO,                &
+     &          ave_spec, rms_spec, sdev_spec)
+!
+      type(picked_spectrum_data_IO), intent(in) :: pick_IO
+      real(kind = kreal), intent(inout) :: sdev_spec(pick_IO%ntot_data)
+      real(kind = kreal), intent(inout) :: ave_spec(pick_IO%ntot_data)
+      real(kind = kreal), intent(inout) :: rms_spec(pick_IO%ntot_data)
+!
+      integer(kind = kint) :: icou
+      real(kind = kreal) :: acou
+!
+!
+      acou = one / (pick_IO%d_time(pick_IO%ntot_data)                   &
+     &            - pick_IO%d_time(1))
+!
+      do icou = 1, pick_IO%n_step-1
+!$omp parallel workshare
+        ave_spec(1:pick_IO%ntot_data)                                   &
+     &          = ave_spec(1:pick_IO%ntot_data)                         &
+     &            + half * (pick_IO%d_pick(1:pick_IO%ntot_data,icou)    &
+     &                    + pick_IO%d_pick(1:pick_IO%ntot_data,icou+1)) &
+     &           * (pick_IO%d_time(icou+1) - pick_IO%d_time(icou))
+!$omp end parallel workshare
+      end do
+!$omp parallel workshare
+      ave_spec(1:pick_IO%ntot_data)                                     &
+     &     =   ave_spec(1:pick_IO%ntot_data) * acou
+!$omp end parallel workshare
+
+      do icou = 1, pick_IO%n_step-1
+!$omp parallel workshare
+        rms_spec(1:pick_IO%ntot_data)                                   &
+     &         = rms_spec(1:pick_IO%ntot_data)                          &
+     &          + half * (pick_IO%d_pick(1:pick_IO%ntot_data,icou)**2   &
+     &               + pick_IO%d_pick(1:pick_IO%ntot_data,icou+1)**2)   &
+     &          * (pick_IO%d_time(icou+1) - pick_IO%d_time(icou))
+        sdev_spec(1:pick_IO%ntot_data)                                  &
+     &         = sdev_spec(1:pick_IO%ntot_data)                         &
+     &          + half * ((pick_IO%d_pick(1:pick_IO%ntot_data,icou)     &
+     &                   - ave_spec(1:pick_IO%ntot_data))**2            &
+     &                  + (pick_IO%d_pick(1:pick_IO%ntot_data,icou+1)   &
+     &                   - ave_spec(1:pick_IO%ntot_data))**2)           &
+     &          * (pick_IO%d_time(icou+1) - pick_IO%d_time(icou))
+!$omp end parallel workshare
+      end do
+!$omp parallel workshare
+      rms_spec(1:pick_IO%ntot_data)                                     &
+     &      = sqrt(rms_spec(1:pick_IO%ntot_data) * acou)
+      sdev_spec(1:pick_IO%ntot_data)                                    &
+     &      =  sqrt(sdev_spec(1:pick_IO%ntot_data) * acou)
+!$omp end parallel workshare
+!
+      end subroutine cal_time_ave_picked_sph_spectr
 !
 ! -------------------------------------------------------------------
 !

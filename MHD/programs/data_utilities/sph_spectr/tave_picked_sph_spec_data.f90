@@ -35,7 +35,7 @@
       call set_ctl_tave_picked_sph_spectr                               &
      &   (tave_sph_ctl1, file_name, start_time, end_time)
       call s_time_ave_picked_sph_spectr                                 &
-     &   (file_name, start_time, end_time)
+     &   (.TRUE., file_name, start_time, end_time)
 !
       write(*,*) '***** program finished *****'
       stop

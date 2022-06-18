@@ -39,7 +39,8 @@
       read(5,*) istep_start, istep_end, istep_inc
 !
       file_name = add_dat_extension(evo_header)
-      call open_sph_spec_read(id_pick, file_name, pick_IO)
+      open(id_pick, file = file_name)
+      call read_pick_series_head(id_pick, pick_IO)
       call find_field_address(pick_IO, ntl1)
 !
       call read_sph_spec_monitor                                        &

@@ -202,26 +202,25 @@
 !
       type(neutral_pt_by_pick_sph), intent(inout) :: ntl
 !
-      integer(kind = kint) :: k, ipick
+      integer(kind = kint) :: k, ist
 !
       real(kind = kreal) :: r_neut
 !
 !
       if(ntl%ipick_l0m0(0) .gt. 0) then
-        ipick = ntl%ipick_l0m0(0)
-        ntl%temp00(0) = pick_IO%d_pk(ntl%icomp_temp, ipick)
-        ntl%comp00(0) = pick_IO%d_pk(ntl%icomp_light,ipick)
+        ist = (ntl%ipick_l0m0(0)-1) * pick_IO%ntot_comp
+        ntl%temp00(0) = pick_IO%d_pk(ist+ntl%icomp_temp)
+        ntl%comp00(0) = pick_IO%d_pk(ist+ntl%icomp_light)
       end if
 !
       do k = 1, pick_IO%num_layer
-        ipick = ntl%ipick_l0m0(k)
-        ntl%temp00(k) = pick_IO%d_pk(ntl%icomp_temp, ipick)
-        ntl%comp00(k) = pick_IO%d_pk(ntl%icomp_light,ipick)
+        ist = (ntl%ipick_l0m0(k)-1) * pick_IO%ntot_comp
+        ntl%temp00(k) = pick_IO%d_pk(ist+ntl%icomp_temp)
+        ntl%comp00(k) = pick_IO%d_pk(ist+ntl%icomp_light)
       end do
 !
 !
       if(ntl%ipick_l0m0(0) .gt. 0) then
-        ipick = ntl%ipick_l0m0(0)
         ntl%grad_temp00(0) = 0.0d0
         ntl%grad_comp00(0) = 0.0d0
 !
