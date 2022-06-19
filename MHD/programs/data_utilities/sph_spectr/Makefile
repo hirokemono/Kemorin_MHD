@@ -15,7 +15,7 @@ TARGET_PICK_GAUSS_COEF =   pick_gauss_coefs
 TARGET_RENAME_SPH_FLD =    rename_spectr_field
 TARGET_DIFF_SPH_SPEC =     diff_spectr_data
 TARGET_ZM_SPH_SPEC =       zonal_mean_sph
-TARGET_T_AVE_SPEC =        t_ave_sph_spec
+picked_sph_spectr_data_IO =        t_ave_sph_spec
 TARGET_SPH_NEUTRAL =       sph_neutral_points
 TARGET_TAVE_SPH_ENE_SPEC =  t_ave_sph_mean_square
 TARGET_TAVE_OLD_SPH_ESPEC = t_ave_old_sph_mean_square
@@ -69,6 +69,7 @@ t_read_sph_spectra.o \
 t_picked_sph_spectr_data_IO.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
+picked_sph_spectr_data_IO.o \
 sph_mean_square_IO_select.o \
 cal_tave_sph_ene_spectr.o \
 m_tave_sph_ene_spectr.o \
@@ -174,6 +175,7 @@ main_zonal_mean_sph.o
 MOD_SPH_NEUTRAL = \
 neutral_point_by_pick_sph.o \
 t_picked_sph_spectr_data_IO.o \
+picked_sph_spectr_data_IO.o \
 m_spheric_data_sph_spetr.o \
 t_neutral_pt_by_pick_sph.o
 
@@ -250,6 +252,7 @@ tave_picked_gauss_coefs.o
 MOD_T_AVE_PICK_SPH = \
 t_ctl_data_tave_sph_monitor.o \
 t_picked_sph_spectr_data_IO.o \
+picked_sph_spectr_data_IO.o \
 time_ave_picked_sph_spectr.o \
 tave_picked_sph_spec_data.o
 

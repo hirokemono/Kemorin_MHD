@@ -7,6 +7,8 @@
 !>@brief Top subroutines for time averaging of spectrum data
 !!
 !!@verbatim
+!!      integer(c_int) function                                         &
+!!    &     load_picked_sph_spectr_f(cname, cstart, cend) Bind(C)
 !!        integer(c_int) function                                       &
 !!      &     time_ave_picked_sph_spectr_f(cname, cstart, cend) Bind(C)
 !!        character(1,C_char), intent(in) :: cname(*)
@@ -29,6 +31,8 @@
       use t_picked_sph_spectr_data_IO
 !
       implicit  none
+!
+      type(picked_spectrum_data_IO), save, private :: pick_IO
 !
       private :: c_to_fstring
 !
@@ -55,6 +59,106 @@
       End Do
 !
       end function c_to_fstring
+!
+! -------------------------------------------------------------------
+!
+      subroutine get_picked_sph_time_f(n_step, i_step, time)            &
+     &          bind(c, name="get_picked_sph_time_f")
+!
+      integer(C_int), Value :: n_step
+      integer(C_int), intent(inout) :: i_step(n_step)
+      real(c_double), intent(inout) :: time(n_step)
+!
+      integer(kind = kint) :: i
+      character(len=kchara) :: draw_name
+!
+!$omp parallel do
+      do i = 1, n_step
+        i_step(i) = pick_IO%i_step(i)
+        time(i) =   pick_IO%d_time(i)
+      end do
+!$omp end parallel do
+!
+      end subroutine get_picked_sph_time_f
+!
+! -------------------------------------------------------------------
+!
+      subroutine get_each_picked_sph_series_f                           &
+     &         (yname, radius_id, in_degree, in_order, n_step, d_pick)  &
+     &          bind(c, name="get_each_picked_sph_series_f")
+!
+      character(1,C_char), intent(in) :: yname(*)
+      integer(C_int), Value :: radius_id, in_degree, in_order
+!
+      integer(C_int), Value :: n_step
+      real(c_double), intent(inout) :: d_pick(n_step)
+!
+      integer(kind = kint) :: i, idx, id_comp, id_mode
+      character(len=kchara) :: draw_name
+!
+      draw_name = c_to_fstring(yname)
+      write(*,*) 'draw_name', draw_name
+      id_comp = 0
+      do i = 1, pick_IO%ntot_comp
+        if(trim(draw_name) .eq. pick_IO%spectr_name(i)) then
+          id_comp = i
+          exit
+        end if
+      end do
+!
+      if(id_comp .le. 0) then
+        write(*,*) 'Input field cannot be found.', trim(draw_name)
+        return
+      end if
+!
+      id_mode = 0
+      do i = 1, pick_IO%ntot_pick_spectr
+        if(    radius_id .eq. pick_IO%idx_sph(i,1)                      &
+     &   .and. in_degree .eq. pick_IO%idx_sph(i,3)                      &
+     &   .and. in_order .eq.  pick_IO%idx_sph(i,4)) then
+          id_mode = i
+          exit
+        end if
+      end do
+!
+      if(id_mode .le. 0) then
+        write(*,*) 'Input field cannot be found.'
+        return
+      end if
+      write(*,*) 'id_mode, id_comp', id_mode, id_comp
+
+      idx = id_comp + (id_mode-1) * pick_IO%ntot_comp
+!$omp parallel do
+      do i = 1, n_step
+        d_pick(i) =   pick_IO%d_pick(idx,i)
+      end do
+!$omp end parallel do
+!
+      end subroutine get_each_picked_sph_series_f
+!
+! -------------------------------------------------------------------
+!
+      integer(c_int) function                                           &
+    &     load_picked_sph_spectr_f(cname, cstart, cend) Bind(C)
+!
+      use picked_sph_spectr_data_IO
+!
+      character(1,C_char), intent(in) :: cname(*)
+      real(C_double), Value :: cstart, cend
+!
+      real(kind = kreal) :: start_time, end_time
+      real(kind = kreal) :: true_start, true_end
+      character(len=kchara) :: file_name
+!
+      write(file_name,'(a)') trim(c_to_fstring(cname))
+      start_time = cstart
+      end_time = cend
+      call load_picked_sph_spectr_series                                &
+     &   (.FALSE., file_name, start_time, end_time,                     &
+     &    true_start, true_end, pick_IO)
+!
+      load_picked_sph_spectr_f = pick_IO%n_step
+      end function load_picked_sph_spectr_f
 !
 ! -------------------------------------------------------------------
 !
@@ -85,6 +189,7 @@
       use m_precision
       use m_constants
 !
+      use picked_sph_spectr_data_IO
       use set_parallel_file_name
 !
       implicit  none
@@ -93,7 +198,6 @@
       character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time
 !
-      type(picked_spectrum_data_IO), save :: pick_IO
       real(kind = kreal), allocatable :: sdev_spec(:)
       real(kind = kreal), allocatable :: ave_spec(:)
       real(kind = kreal), allocatable :: rms_spec(:)
@@ -112,66 +216,10 @@
       write(trms_fname,'(a6,a)') 't_rms_', trim(file_name)
       write(sdev_fname,'(a8,a)') 't_sigma_', trim(file_name)
 !
-!      Open picked mode file
-!
-      write(*,*) 'Open file: ', trim(file_name)
-      open(id_pick, file = file_name)
-      call read_pick_series_head(id_pick, pick_IO)
-!
-!
-      icou = 0
-      true_start = start_time
-      prev_time = true_start
-      true_end = true_start
-      do
-        call read_sph_spec_time                                      &
-     &     (id_pick, pick_IO, i_step, time, ierr)
-        if(ierr .gt. 0) exit
-!
-        if(time .ge. start_time) then
-!          call append_picked_sph_series(i_step, time, pick_IO)
-          if(icou .eq. 0) true_start = time
-!
-          icou = icou + 1
-          if(flag_log) then
-            write(*,'(69a1,a5,i12,a4,1pe16.8e3,a20,i12)',advance="NO")  &
-     &        (char(8),i=1,69), 'step ', i_step,                        &
-     &        ' at ', time, ' is read. count is  ', icou
-          end if
-        end if
-!
-        if(time .ge. end_time) exit
-      end do
-      true_end = time
-      rewind(id_pick)
-      write(*,*)
-      call dealloc_pick_sph_monitor_IO(pick_IO)
-!
-      call read_pick_series_head(id_pick, pick_IO)
-      call alloc_pick_sph_series(icou, pick_IO)
-!
-!       Evaluate time average
-      icou = 0
-      do
-        call read_sph_spec_monitor                                      &
-     &     (id_pick, i_step, time, pick_IO, ierr)
-        if(ierr .gt. 0) exit
-!
-        if(time .ge. start_time) then
-          icou = icou + 1
-          call copy_to_pick_sph_series(icou, i_step, time, pick_IO)
-!
-          if(flag_log) then
-            write(*,'(69a1,a5,i12,a4,1pe16.8e3,a20,i12)',advance="NO")  &
-     &          (char(8),i=1,69), 'step ', i_step,                      &
-     &          ' at ', time, ' is read. count is  ', icou
-          end if
-        end if
-!
-        if(time .ge. end_time) exit
-      end do
-      close(id_pick)
-      write(*,*)
+!      Load picked mode file
+      call load_picked_sph_spectr_series                                &
+     &   (flag_log, file_name, start_time, end_time,                    &
+     &    true_start, true_end, pick_IO)
 !
       allocate(ave_spec(pick_IO%ntot_data))
       allocate(rms_spec(pick_IO%ntot_data))
@@ -220,8 +268,6 @@
       end subroutine s_time_ave_picked_sph_spectr
 !
 ! -------------------------------------------------------------------
-!
-!
 ! -------------------------------------------------------------------
 !
       subroutine cal_time_ave_picked_sph_spectr(pick_IO,                &

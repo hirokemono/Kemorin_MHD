@@ -188,11 +188,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_radial_grad_scalars(istep, time,                   &
+      subroutine set_radial_grad_scalars(icou, istep, time,             &
      &          nri, radius_1d_rj_r, d1nod_mat_fdm_2, buo_ratio,        &
      &          pick_IO, ntl)
 !
-      integer(kind = kint), intent(in) :: istep
+      integer(kind = kint), intent(in) :: icou, istep
       real(kind = kreal), intent(in) :: time, buo_ratio
       type(picked_spectrum_data_IO), intent(in) :: pick_IO
 !
@@ -209,14 +209,14 @@
 !
       if(ntl%ipick_l0m0(0) .gt. 0) then
         ist = (ntl%ipick_l0m0(0)-1) * pick_IO%ntot_comp
-        ntl%temp00(0) = pick_IO%d_pk(ist+ntl%icomp_temp)
-        ntl%comp00(0) = pick_IO%d_pk(ist+ntl%icomp_light)
+        ntl%temp00(0) = pick_IO%d_pick(ist+ntl%icomp_temp, icou)
+        ntl%comp00(0) = pick_IO%d_pick(ist+ntl%icomp_light, icou)
       end if
 !
       do k = 1, pick_IO%num_layer
         ist = (ntl%ipick_l0m0(k)-1) * pick_IO%ntot_comp
-        ntl%temp00(k) = pick_IO%d_pk(ist+ntl%icomp_temp)
-        ntl%comp00(k) = pick_IO%d_pk(ist+ntl%icomp_light)
+        ntl%temp00(k) = pick_IO%d_pick(ist+ntl%icomp_temp, icou)
+        ntl%comp00(k) = pick_IO%d_pick(ist+ntl%icomp_light, icou)
       end do
 !
 !
