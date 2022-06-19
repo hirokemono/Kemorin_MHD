@@ -20,7 +20,7 @@
 !
       module time_ave_picked_sph_spectr
 !
-      use Iso_C_binding
+      use ISO_C_BINDING
 !
       use m_precision
       use m_constants

@@ -4,13 +4,13 @@
 
 SPH_UTILS_DIR = $$(DATA_UTILS_DIR)/TIME_HISTORIES
 
-TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
 TARGET_SPH_ENE_CHECK =       tests/sph_ene_check
 
 SOURCES = $(shell ls *.f90)
 
 MOD_SPH_UTIL_DLL = \
 t_read_sph_spectra.o \
+t_picked_sph_spectr_data_IO.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
 sph_mean_square_IO_select.o \
@@ -19,12 +19,8 @@ m_tave_sph_ene_spectr.o \
 m_read_sph_spectra_f.o \
 time_average_sph_ene_spectr.o \
 time_average_nusselt.o \
-time_average_dipolarity.o
-
-MOD_T_AVE_PICK_SPH = \
-t_picked_sph_spectr_data_IO.o \
-t_ctl_data_tave_sph_monitor.o \
-tave_picked_sph_spec_data.o
+time_average_dipolarity.o \
+time_ave_picked_sph_spectr.o
 
 MOD_SPH_ENE_CHECK = \
 compare_sph_mean_square.o
@@ -38,25 +34,13 @@ dir_list:
 	@echo 'SPH_UTILS_DIR = $(SPH_UTILS_DIR)'     >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_T_AVE_PICK_SPH_SPEC = $$(BUILDDIR)/$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	>> $(MAKENAME)
 	@echo 'TARGET_SPH_ENE_CHECK = $$(BUILDDIR)/$(TARGET_SPH_ENE_CHECK)' \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo sph_data_util: \
-	'$$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ENE_CHECK)'    >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_T_AVE_PICK_SPH_SPEC)': '$$(MOD_T_AVE_PICK_SPH)' \
-	'$$(LIB_FILES_SPH_MHD)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	'$$(MOD_T_AVE_PICK_SPH)' \
-	'-L. $$(LIBS_SPH_MHD)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
+	'$$(TARGET_SPH_ENE_CHECK)'    >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_CHECK)': '$$(MOD_SPH_ENE_CHECK)' \
 	'$$(LIB_FILES_SPH_MHD)' \
@@ -75,8 +59,6 @@ mod_list:
 	@echo  MOD_SPH_UTIL_DLL=  \\     >> $(MAKENAME)
 	@echo  $(MOD_SPH_UTIL_DLL)       >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
-	@echo  MOD_T_AVE_PICK_SPH=  \\     >> $(MAKENAME)
-	@echo  $(MOD_T_AVE_PICK_SPH)       >> $(MAKENAME)
 	@echo  MOD_SPH_ENE_CHECK=  \\     >> $(MAKENAME)
 	@echo  $(MOD_SPH_ENE_CHECK)       >> $(MAKENAME)
 

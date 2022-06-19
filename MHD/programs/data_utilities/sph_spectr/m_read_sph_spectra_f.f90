@@ -39,7 +39,7 @@
 !!@endverbatim
       module m_read_sph_spectra_f
 !
-      use Iso_C_binding
+      use ISO_C_BINDING
 !
       use m_precision
       use m_constants

@@ -55,6 +55,8 @@
       private :: alloc_tave_sph_data, dealloc_tave_sph_data
       private :: sph_spectr_average, sph_spectr_std_deviation
 !
+      private :: read_sph_spectr_snapshot
+!
 !   --------------------------------------------------------------------
 !
       contains
@@ -65,7 +67,6 @@
      &         (fname_org, flag_spectr, flag_vol_ave,                   &
      &          start_time, end_time)
 !
-      use t_ctl_param_sph_series_util
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: fname_org
@@ -129,8 +130,6 @@
       subroutine read_time_ave_sdev_sph_spectr                          &
      &         (tave_file_name, sdev_file_name,                         &
      &          flag_spectr, flag_vol_ave, tave_sph_IN, sdev_sph_IN)
-!
-      use t_ctl_param_sph_series_util
 !
       character(len = kchara), intent(in) :: tave_file_name
       character(len = kchara), intent(in) :: sdev_file_name

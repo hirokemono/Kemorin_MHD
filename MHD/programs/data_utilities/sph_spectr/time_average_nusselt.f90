@@ -32,7 +32,7 @@
 !
       function c_to_fstring(string)
 !
-      use Iso_C_binding
+      use ISO_C_BINDING
 !
       Character(1,C_char),Intent(In) :: string(*)
       Character(:,C_char),Allocatable :: c_to_fstring
@@ -55,7 +55,7 @@
       integer(c_int) function                                           &
     &     time_average_nusselt_f(cname, cstart, cend) Bind(C)
 !
-      use Iso_C_binding
+      use ISO_C_BINDING
       use m_precision
 !
       character(1,C_char), intent(in) :: cname(*)

@@ -29,7 +29,7 @@
 !
       module time_average_sph_ene_spectr
 !
-      use Iso_C_binding
+      use ISO_C_BINDING
 !
       use m_precision
       use m_constants
