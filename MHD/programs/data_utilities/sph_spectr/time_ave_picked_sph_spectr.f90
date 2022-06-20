@@ -62,6 +62,21 @@
 !
 ! -------------------------------------------------------------------
 !
+      subroutine check_picked_sph_spectr_f(cname)                       &
+     &          bind(c, name="check_picked_sph_spectr_f")
+!
+      use picked_sph_spectr_data_IO
+!
+      character(1,C_char), intent(in) :: cname(*)
+      character(len=kchara) :: file_name
+!
+      write(file_name,'(a)') trim(c_to_fstring(cname))
+      call check_picked_sph_spectr(file_name, pick_IO)
+!
+      end subroutine check_picked_sph_spectr_f
+!
+! -------------------------------------------------------------------
+!
       subroutine get_picked_sph_time_f(n_step, i_step, time)            &
      &          bind(c, name="get_picked_sph_time_f")
 !

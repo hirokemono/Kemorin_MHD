@@ -110,6 +110,53 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine check_picked_sph_spectr(file_name, picked_IO)
+!
+      character(len=kchara), intent(in) :: file_name
+!
+      type(picked_spectrum_data_IO), intent(inout) :: picked_IO
+!
+      character(len=kchara) :: tmpchara
+      integer(kind = kint) :: ierr, i
+      integer(kind = kint) :: i_start, i_end
+      real(kind = kreal) :: start_time, end_time
+!
+!
+      write(*,*) 'Open file: ', trim(file_name)
+      open(id_pick_mode, file = file_name, position='append')
+      backspace(id_pick_mode)
+      read(id_pick_mode,*) i_end, end_time
+      rewind(id_pick_mode)
+!
+      call read_pick_series_head(id_pick_mode, picked_IO)
+      call alloc_pick_sph_monitor_IO(picked_IO)
+      call read_pick_series_comp_name(id_pick_mode, picked_IO)
+
+      call read_sph_spec_monitor                                        &
+     &   (id_pick_mode, i_start, start_time, picked_IO, ierr)
+      close(id_pick_mode)
+!
+      write(*,*) 'Start step and time: ', i_start, start_time
+      write(*,*) 'End step and time: ', i_end, end_time
+!
+      write(*,*) 'Saved hermonics mode:'
+      do i = 1, picked_IO%ntot_pick_spectr, picked_IO%num_layer
+        write(*,*) i, picked_IO%idx_sph(i,3:4)
+      end do
+      write(*,*) 'Saved radial points:'
+      do i = 1, picked_IO%num_layer
+        write(*,*) i, picked_IO%idx_sph(i,1), picked_IO%radius(i)
+      end do
+      write(*,*) 'Saved field names:'
+      do i = 1, picked_IO%ntot_comp
+        write(*,*) i, trim(picked_IO%spectr_name(i))
+      end do
+      call dealloc_pick_sph_monitor_IO(picked_IO)
+!
+      end subroutine check_picked_sph_spectr
+!
+! -----------------------------------------------------------------------
+!
       subroutine load_picked_sph_spectr_series                          &
      &         (flag_log, file_name, start_time, end_time,              &
      &          true_start, true_end, picked_IO)
@@ -127,14 +174,9 @@
 !
       write(*,*) 'Open file: ', trim(file_name)
       open(id_pick_mode, file = file_name)
-      backspace(id_pick_mode)
-      read(id_pick_mode,*) i_step, time
-      write(*,*) 'End time: ', i_step, time
-      rewind(id_pick_mode)
       call read_pick_series_head(id_pick_mode, picked_IO)
-      read(id_pick_mode,*) i_step, time
-      write(*,*) 'Start time: ', i_step, time
-      backspace(id_pick_mode)
+      call alloc_pick_sph_monitor_IO(picked_IO)
+      call read_pick_series_comp_name(id_pick_mode, picked_IO)
 !
       icou = 0
       true_start = start_time
@@ -160,11 +202,10 @@
       end do
       true_end = time
       rewind(id_pick_mode)
-      write(*,*)
-!
-      call dealloc_pick_sph_monitor_IO(picked_IO)
+      if(flag_log) write(*,*)
 !
       call read_pick_series_head(id_pick_mode, picked_IO)
+      call read_pick_series_comp_name(id_pick_mode, picked_IO)
       call alloc_pick_sph_series(icou, picked_IO)
 !
 !       Evaluate time average
@@ -188,20 +229,7 @@
         if(time .ge. end_time) exit
       end do
       close(id_pick_mode)
-      write(*,*)
-!
-      write(*,*) 'Saved hermonics mode:'
-      do i = 1, picked_IO%ntot_pick_spectr, picked_IO%num_layer
-        write(*,*) i, picked_IO%idx_sph(i,3:4)
-      end do
-      write(*,*) 'Saved radial points:'
-      do i = 1, picked_IO%num_layer
-        write(*,*) i, picked_IO%idx_sph(i,1), picked_IO%radius(i)
-      end do
-      write(*,*) 'Saved field names:'
-      do i = 1, picked_IO%ntot_comp
-        write(*,*) i, trim(picked_IO%spectr_name(i))
-      end do
+      if(flag_log) write(*,*)
 !
       end subroutine load_picked_sph_spectr_series
 !
@@ -231,12 +259,22 @@
       call skip_comment(tmpchara,id_pick)
       read(tmpchara,*) picked_IO%ntot_comp
 !
-      call alloc_pick_sph_monitor_IO(picked_IO)
+      end subroutine read_pick_series_head
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_pick_series_comp_name(id_pick, picked_IO)
+!
+      integer(kind = kint), intent(in) :: id_pick
+      type(picked_spectrum_data_IO), intent(inout) :: picked_IO
+!
+      integer(kind = kint) :: i
+      character(len=kchara) :: tmpchara
 !
       read(id_pick,*) (tmpchara,i=1,6),                                 &
      &                 picked_IO%spectr_name(1:picked_IO%ntot_comp)
 !
-      end subroutine read_pick_series_head
+      end subroutine read_pick_series_comp_name
 !
 ! -----------------------------------------------------------------------
 !
