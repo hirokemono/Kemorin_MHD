@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine write_tave_sph_spec_monitor                          &
-!!     &         (file_name, i_step, time, true_start, picked_IO)
+!!     &         (file_name, i_step, end_time, true_start, picked_IO)
 !!        integer(kind = kint), intent(in) :: n_step
 !!        type(picked_spectrum_data_IO), intent(inout) :: picked_IO
 !!
@@ -50,14 +50,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_tave_sph_spec_monitor                            &
-     &         (file_name, i_step, time, true_start, picked_IO)
+     &         (file_name, i_step, end_time, true_start, picked_IO)
 !
       use m_monitor_file_labels
       use write_field_labels
 !
       character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: time, true_start
+      real(kind = kreal), intent(in) :: end_time, true_start
 !
       type(picked_spectrum_data_IO), intent(in) :: picked_IO
 !
@@ -74,7 +74,7 @@
       write(*,'(a,i16)') hd_pick_sph_num(), picked_IO%ntot_comp
 !
       write(*,'(a)')  '#   Start and end time'
-      write(*,'(1p2e25.12)')  true_Start, time
+      write(*,'(1p2e25.12)')  true_Start, end_time
 !
       write(id_pick_mode,'(a)')    '#'
       write(id_pick_mode,'(a)')    '# num_layers, num_spectr'
@@ -93,7 +93,7 @@
       do ipick = 1, picked_IO%ntot_pick_spectr
           ist = (ipick-1) * picked_IO%ntot_comp
           write(id_pick_mode,'(i16,1pe25.14e3)', advance='NO')          &
-     &               i_step, time
+     &               i_step, end_time
           write(id_pick_mode,'(i16,1pe25.14e3,2i16)', advance='NO')     &
      &            picked_IO%idx_sph(ipick,1), picked_IO%radius(ipick),  &
      &            picked_IO%idx_sph(ipick,3:4)

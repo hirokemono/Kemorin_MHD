@@ -114,7 +114,7 @@ t_read_sph_spectra.o: $(SPH_UTILS_DIR)/t_read_sph_spectra.f90 m_precision.o m_co
 	$(F90) -c $(F90OPTFLAGS) $<
 t_spheric_data_sph_spetr.o: $(SPH_UTILS_DIR)/t_spheric_data_sph_spetr.f90 m_precision.o t_rms_4_sph_spectr.o t_sum_sph_rms_data.o t_pickup_sph_spectr_data.o t_energy_label_parameters.o t_CMB_dipolarity.o cal_rms_fields_by_sph.o init_energy_labels_sph_SGS.o pickup_sph_coefs.o sph_mean_spectr_header_IO.o output_sph_volume_ave_file.o output_sph_pwr_volume_file.o output_sph_pwr_layer_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
-tave_picked_gauss_coefs.o: $(SPH_UTILS_DIR)/tave_picked_gauss_coefs.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o t_ctl_data_tave_sph_monitor.o set_parallel_file_name.o count_monitor_time_series.o
+tave_picked_gauss_coefs.o: $(SPH_UTILS_DIR)/tave_picked_gauss_coefs.f90 m_precision.o m_constants.o t_ctl_data_tave_sph_monitor.o time_average_gauss_coefs.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 tave_picked_sph_spec_data.o: $(SPH_UTILS_DIR)/tave_picked_sph_spec_data.f90 m_precision.o m_constants.o t_ctl_data_tave_sph_monitor.o time_ave_picked_sph_spectr.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -122,7 +122,7 @@ time_ave_picked_sph_spectr.o: $(SPH_UTILS_DIR)/time_ave_picked_sph_spectr.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 time_average_dipolarity.o: $(SPH_UTILS_DIR)/time_average_dipolarity.f90 m_precision.o count_monitor_time_series.o t_CMB_dipolarity.o
 	$(F90) -c $(F90OPTFLAGS) $<
-time_average_gauss_coefs.o: $(SPH_UTILS_DIR)/time_average_gauss_coefs.f90 m_precision.o
+time_average_gauss_coefs.o: $(SPH_UTILS_DIR)/time_average_gauss_coefs.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o count_monitor_time_series.o
 	$(F90) -c $(F90OPTFLAGS) $<
 time_average_nusselt.o: $(SPH_UTILS_DIR)/time_average_nusselt.f90 m_precision.o count_monitor_time_series.o t_no_heat_Nusselt.o
 	$(F90) -c $(F90OPTFLAGS) $<

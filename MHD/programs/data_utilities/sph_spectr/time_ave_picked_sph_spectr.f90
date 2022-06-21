@@ -107,7 +107,7 @@
      &      = ave_spec(1:pick_IO%ntot_data)
 !$omp end parallel workshare
       call write_tave_sph_spec_monitor                                  &
-     &   (tave_fname, i_step, prev_time, true_start, pick_IO)
+     &   (tave_fname, i_step, true_end, true_start, pick_IO)
 !
 !    output RMS deviation
 !
@@ -117,7 +117,7 @@
 !$omp end parallel workshare
 !
       call write_tave_sph_spec_monitor                                  &
-     &   (trms_fname, i_step, time, true_start, pick_IO)
+     &   (trms_fname, i_step, true_end, true_start, pick_IO)
 !
 !    output standard deviation
 !
@@ -127,7 +127,7 @@
 !$omp end parallel workshare
 !
       call write_tave_sph_spec_monitor                                  &
-     &   (sdev_fname, i_step, time, true_start, pick_IO)
+     &   (sdev_fname, i_step, true_end, true_start, pick_IO)
 !
       call dealloc_pick_sph_monitor_IO(pick_IO)
       call dealloc_pick_sph_series(pick_IO)

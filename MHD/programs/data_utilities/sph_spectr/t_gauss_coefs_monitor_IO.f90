@@ -9,7 +9,12 @@
 !!@verbatim
 !!      subroutine dealloc_gauss_coef_monitor(gauss_IO)
 !!      subroutine write_gauss_coefs_4_monitor                          &
-!!     &         (id_rank, i_step, time, gauss_IO)
+!!     &         (id_rank, file_name, i_step, time, gauss_IO)
+!!        integer, intent(in) :: id_rank
+!!        character(len=kchara), intent(in) :: file_name
+!!        integer(kind = kint), intent(in) :: i_step
+!!        real(kind = kreal), intent(in) :: time
+!!        type(picked_gauss_coefs_IO), intent(in) :: gauss_IO
 !!
 !!      subroutine open_gauss_coefs_read_monitor(id_pick, gauss_IO)
 !!      subroutine read_gauss_coefs_4_monitor(id_pick, i_step, time,    &
@@ -35,9 +40,6 @@
 !
 !
       type picked_gauss_coefs_IO
-!>        File name of GAuss coefficients monitoring file
-        character(len = kchara)                                         &
-     &               :: gauss_coef_file_name =  'picked_gauss.dat'
 !>        Radius for the gauss coefficients
         real(kind = kreal) :: radius_gauss
 !
@@ -79,20 +81,21 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine open_gauss_coefs_4_monitor(gauss_IO)
+      subroutine open_gauss_coefs_4_monitor(file_name, gauss_IO)
 !
       use m_monitor_file_labels
       use write_field_labels
 !
+      character(len=kchara), intent(in) :: file_name
       type(picked_gauss_coefs_IO), intent(in) :: gauss_IO
 !
 !
-      open(id_gauss_coef, file = gauss_IO%gauss_coef_file_name,         &
+      open(id_gauss_coef, file = file_name,                             &
      &    form='formatted', status='old', position='append', err = 99)
       return
 !
    99 continue
-      open(id_gauss_coef, file = gauss_IO%gauss_coef_file_name,         &
+      open(id_gauss_coef, file = file_name,                             &
      &    form='formatted', status='replace')
 !
 !
@@ -112,9 +115,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_gauss_coefs_4_monitor                            &
-     &         (id_rank, i_step, time, gauss_IO)
+     &         (id_rank, file_name, i_step, time, gauss_IO)
 !
       integer, intent(in) :: id_rank
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
       type(picked_gauss_coefs_IO), intent(in) :: gauss_IO
@@ -125,7 +129,7 @@
       if(gauss_IO%num_mode .eq. izero) return
       if(id_rank .gt. izero) return
 !
-      call open_gauss_coefs_4_monitor(gauss_IO)
+      call open_gauss_coefs_4_monitor(file_name, gauss_IO)
 !
       write(id_gauss_coef,'(i16,1pe23.14e3)', advance='NO')             &
      &       i_step, time
