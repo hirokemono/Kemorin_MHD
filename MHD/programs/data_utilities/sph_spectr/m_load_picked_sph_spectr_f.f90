@@ -1,5 +1,5 @@
-!>@file   load_picked_sph_spectr_f.f90
-!!@brief  module load_picked_sph_spectr_f
+!>@file   m_load_picked_sph_spectr_f.f90
+!!@brief  module m_load_picked_sph_spectr_f
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2007
@@ -33,7 +33,7 @@
 !!        integer(C_int), Value :: n_step
 !!@endverbatim
 !
-      module load_picked_sph_spectr_f
+      module m_load_picked_sph_spectr_f
 !
       use ISO_C_BINDING
 !
@@ -102,7 +102,6 @@
       real(c_double), intent(inout) :: time(n_step)
 !
       integer(kind = kint) :: i
-      character(len=kchara) :: draw_name
 !
 !$omp parallel do
       do i = 1, n_step
@@ -184,4 +183,4 @@
 !
 ! -------------------------------------------------------------------
 !
-      end module load_picked_sph_spectr_f
+      end module m_load_picked_sph_spectr_f

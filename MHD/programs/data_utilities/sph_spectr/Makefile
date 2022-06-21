@@ -73,11 +73,14 @@ t_gauss_coefs_monitor_IO.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
 picked_sph_spectr_data_IO.o \
+gauss_coefs_monitor_IO.o \
 count_monitor_time_series.o \
 sph_mean_square_IO_select.o \
 cal_tave_sph_ene_spectr.o \
 m_tave_sph_ene_spectr.o \
 m_read_sph_spectra_f.o \
+m_load_gauss_coefficients_f.o \
+m_load_picked_sph_spectr_f.o \
 time_average_sph_ene_spectr.o \
 time_average_nusselt.o \
 time_average_dipolarity.o \

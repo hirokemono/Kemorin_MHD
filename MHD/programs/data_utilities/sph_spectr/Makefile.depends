@@ -28,9 +28,13 @@ compare_sph_mean_square.o: $(SPH_UTILS_DIR)/compare_sph_mean_square.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 count_monitor_time_series.o: $(SPH_UTILS_DIR)/count_monitor_time_series.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-load_picked_sph_spectr_f.o: $(SPH_UTILS_DIR)/load_picked_sph_spectr_f.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_picked_sph_spectr_data_IO.o count_monitor_time_series.o picked_sph_spectr_data_IO.o
+gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/gauss_coefs_monitor_IO.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o count_monitor_time_series.o m_monitor_file_labels.o write_field_labels.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_ctl_params_sph_utils.o: $(SPH_UTILS_DIR)/m_ctl_params_sph_utils.f90 m_precision.o t_step_parameter.o t_phys_data.o t_rms_4_sph_spectr.o t_pickup_sph_spectr_data.o t_file_IO_parameter.o t_IO_step_parameter.o t_VIZ_step_parameter.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o set_field_data_w_SGS.o set_control_platform_item.o set_control_platform_data.o set_control_4_pickup_sph.o t_ctl_data_4_sph_utils.o m_default_file_prefix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_load_gauss_coefficients_f.o: $(SPH_UTILS_DIR)/m_load_gauss_coefficients_f.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_gauss_coefs_monitor_IO.o count_monitor_time_series.o gauss_coefs_monitor_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_load_picked_sph_spectr_f.o: $(SPH_UTILS_DIR)/m_load_picked_sph_spectr_f.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_picked_sph_spectr_data_IO.o count_monitor_time_series.o picked_sph_spectr_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_maxmode_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_maxmode_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o simple_sph_spectr_head_IO.o sph_mean_square_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -72,7 +76,7 @@ neutral_point_by_pick_sph.o: $(SPH_UTILS_DIR)/neutral_point_by_pick_sph.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 part_sum_sph_ene_spec.o: $(SPH_UTILS_DIR)/part_sum_sph_ene_spec.f90 m_precision.o m_constants.o m_part_sum_sph_ene_spectr.o t_read_sph_spectra.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o
 	$(F90) -c $(F90OPTFLAGS) $<
-picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/picked_sph_spectr_data_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o t_picked_sph_spectr_data_IO.o m_monitor_file_labels.o write_field_labels.o count_monitor_time_series.o
+picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/picked_sph_spectr_data_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o t_picked_sph_spectr_data_IO.o m_monitor_file_labels.o write_field_labels.o count_monitor_time_series.o skip_comment_f.o spherical_harmonics.o
 	$(F90) -c $(F90OPTFLAGS) $<
 pickup_sph_mean_square_data.o: $(SPH_UTILS_DIR)/pickup_sph_mean_square_data.f90 m_precision.o m_constants.o t_spheric_parameter.o t_pickup_sph_spectr_data.o t_schmidt_poly_on_rtm.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o single_pt_sph_mean_square.o cal_rms_by_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -104,11 +108,11 @@ t_ctl_param_sph_data_utils.o: $(SPH_UTILS_DIR)/t_ctl_param_sph_data_utils.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_param_sph_series_util.o: $(SPH_UTILS_DIR)/t_ctl_param_sph_series_util.f90 m_precision.o m_constants.o t_ctl_data_tave_sph_monitor.o skip_comment_f.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/t_gauss_coefs_monitor_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o m_monitor_file_labels.o write_field_labels.o count_monitor_time_series.o skip_comment_f.o
+t_gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/t_gauss_coefs_monitor_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_neutral_pt_by_pick_sph.o: $(SPH_UTILS_DIR)/t_neutral_pt_by_pick_sph.f90 m_precision.o m_constants.o t_picked_sph_spectr_data_IO.o set_radius_func_noequi.o m_base_field_labels.o t_spheric_parameter.o t_fdm_coefs.o second_fdm_node_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/t_picked_sph_spectr_data_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o skip_comment_f.o spherical_harmonics.o
+t_picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/t_picked_sph_spectr_data_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_read_sph_spectra.o: $(SPH_UTILS_DIR)/t_read_sph_spectra.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -122,7 +126,7 @@ time_ave_picked_sph_spectr.o: $(SPH_UTILS_DIR)/time_ave_picked_sph_spectr.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 time_average_dipolarity.o: $(SPH_UTILS_DIR)/time_average_dipolarity.f90 m_precision.o count_monitor_time_series.o t_CMB_dipolarity.o
 	$(F90) -c $(F90OPTFLAGS) $<
-time_average_gauss_coefs.o: $(SPH_UTILS_DIR)/time_average_gauss_coefs.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o count_monitor_time_series.o
+time_average_gauss_coefs.o: $(SPH_UTILS_DIR)/time_average_gauss_coefs.f90 m_precision.o m_constants.o t_gauss_coefs_monitor_IO.o count_monitor_time_series.o gauss_coefs_monitor_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 time_average_nusselt.o: $(SPH_UTILS_DIR)/time_average_nusselt.f90 m_precision.o count_monitor_time_series.o t_no_heat_Nusselt.o
 	$(F90) -c $(F90OPTFLAGS) $<

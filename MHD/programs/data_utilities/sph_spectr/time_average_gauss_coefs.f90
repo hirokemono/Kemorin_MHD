@@ -63,6 +63,7 @@
      &         (flag_log, input_file_name, start_time, end_time)
 !
       use count_monitor_time_series
+      use gauss_coefs_monitor_IO
 !
       logical, intent(in) :: flag_log
       character(len=kchara), intent(in) :: input_file_name
@@ -77,7 +78,7 @@
       character(len=kchara) :: trms_pick_gauss_fname
       character(len=kchara) :: sdev_pick_gauss_fname
 !
-      integer(kind = kint) :: i_step, icou
+      integer(kind = kint) :: icou
       real(kind = kreal) :: true_start, true_end
 !
 !
@@ -89,7 +90,6 @@
      &                           't_sigma_', trim(input_file_name)
 !
 !       Load gauss coefficients data
-      call check_gauss_coefs_time_series(input_file_name, gauss_IO_a)
       call load_gauss_coefs_time_series                                 &
      &   (flag_log, input_file_name, start_time, end_time,              &
      &    true_start, true_end, gauss_IO_a)
@@ -115,7 +115,7 @@
      &      = ave_gauss(1:gauss_IO_a%num_mode)
 !$omp end parallel workshare
       call write_gauss_coefs_4_monitor(0, tave_pick_gauss_fname,        &
-     &                                 i_step, true_end, gauss_IO_a)
+     &    gauss_IO_a%i_step(gauss_IO_a%n_step), true_end, gauss_IO_a)
 !
 !  Output time average
 !$omp parallel workshare
@@ -123,7 +123,7 @@
      &      = rms_gauss(1:gauss_IO_a%num_mode)
 !$omp end parallel workshare
       call write_gauss_coefs_4_monitor(0, trms_pick_gauss_fname,        &
-     &                                 i_step, true_end, gauss_IO_a)
+     &    gauss_IO_a%i_step(gauss_IO_a%n_step), true_end, gauss_IO_a)
 !
 !  Output time average
 !$omp parallel workshare
@@ -131,7 +131,7 @@
      &      = sdev_gauss(1:gauss_IO_a%num_mode)
 !$omp end parallel workshare
       call write_gauss_coefs_4_monitor(0, sdev_pick_gauss_fname,        &
-     &                                 i_step, true_end, gauss_IO_a)
+     &    gauss_IO_a%i_step(gauss_IO_a%n_step), true_end, gauss_IO_a)
 !
       deallocate(ave_gauss, rms_gauss, sdev_gauss)
       call dealloc_gauss_coef_monitor(gauss_IO_a)
