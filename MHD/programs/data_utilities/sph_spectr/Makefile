@@ -15,7 +15,7 @@ TARGET_PICK_GAUSS_COEF =   pick_gauss_coefs
 TARGET_RENAME_SPH_FLD =    rename_spectr_field
 TARGET_DIFF_SPH_SPEC =     diff_spectr_data
 TARGET_ZM_SPH_SPEC =       zonal_mean_sph
-picked_sph_spectr_data_IO =        t_ave_sph_spec
+TARGET_T_AVE_SPEC =        t_ave_sph_spec
 TARGET_SPH_NEUTRAL =       sph_neutral_points
 TARGET_TAVE_SPH_ENE_SPEC =  t_ave_sph_mean_square
 TARGET_TAVE_OLD_SPH_ESPEC = t_ave_old_sph_mean_square
@@ -34,6 +34,7 @@ TARGET_SPH_ENE_CHECK =       tests/sph_ene_check
 
 
 LIBS_SPH_UTIL =  \
+'$$(LIB_PYTHONS)' \
 '$$(LIB_VIZ)'    \
 '$$(LIB_PARA)'   \
 '$$(LIB_SOLVER)' \
@@ -46,6 +47,7 @@ LIBS_SPH_UTIL =  \
 
 
 LIB_FILES_SPH_UTIL =  \
+'$$(LIB_FILE_PYTHONS)' \
 '$$(LIB_VIZ_FILE)'    \
 '$$(LIB_PARA_FILE)'   \
 '$$(LIB_SOLVER_FILE)' \
@@ -70,6 +72,7 @@ t_picked_sph_spectr_data_IO.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
 picked_sph_spectr_data_IO.o \
+count_monitor_time_series.o \
 sph_mean_square_IO_select.o \
 cal_tave_sph_ene_spectr.o \
 m_tave_sph_ene_spectr.o \
@@ -182,26 +185,13 @@ t_neutral_pt_by_pick_sph.o
 
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
-t_read_sph_spectra.o \
 t_ctl_data_tave_sph_monitor.o \
-t_ctl_param_sph_series_util.o \
-time_average_sph_ene_spectr.o \
-m_tave_sph_ene_spectr.o \
-sph_mean_square_IO_select.o \
-simple_sph_spectr_head_IO.o \
-simple_sph_spectr_data_IO.o \
-cal_tave_sph_ene_spectr.o
+t_ctl_param_sph_series_util.o
 
 MOD_TAVE_OLD_SPH_ESPEC = \
 t_average_old_sph_ene_spec.o \
-t_read_sph_spectra.o \
 t_ctl_data_tave_sph_monitor.o \
-t_ctl_param_sph_series_util.o \
-m_tave_sph_ene_spectr.o \
-sph_mean_square_IO_select.o \
-simple_sph_spectr_head_IO.o \
-simple_sph_spectr_data_IO.o \
-cal_tave_sph_ene_spectr.o
+t_ctl_param_sph_series_util.o
 
 MOD_MAX_SPH_ENE = \
 maxmode_sph_ene_spec.o \
@@ -251,20 +241,15 @@ tave_picked_gauss_coefs.o
 
 MOD_T_AVE_PICK_SPH = \
 t_ctl_data_tave_sph_monitor.o \
-t_picked_sph_spectr_data_IO.o \
-picked_sph_spectr_data_IO.o \
-time_ave_picked_sph_spectr.o \
 tave_picked_sph_spec_data.o
 
 MOD_T_AVE_NUSSELT = \
 t_average_nusselt.o \
-t_ctl_data_tave_sph_monitor.o \
-time_average_nusselt.o
+t_ctl_data_tave_sph_monitor.o
 
 MOD_T_AVE_DIPOLARITY = \
 t_average_dipolarity.o \
-t_ctl_data_tave_sph_monitor.o \
-time_average_dipolarity.o
+t_ctl_data_tave_sph_monitor.o
 
 MOD_SPH_ENE_CHECK = \
 compare_sph_mean_square.o
@@ -336,7 +321,7 @@ target_task:
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
 	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'      \
 	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)'   \
-	'$$(TARGET_T_AVE_DIPOLARITY)'    >> $(MAKENAME)
+	'$$(TARGET_T_AVE_DIPOLARITY)   pythons'    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \

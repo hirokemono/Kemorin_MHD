@@ -116,7 +116,6 @@
 !
       type(picked_spectrum_data_IO), intent(inout) :: picked_IO
 !
-      character(len=kchara) :: tmpchara
       integer(kind = kint) :: ierr, i
       integer(kind = kint) :: i_start, i_end
       real(kind = kreal) :: start_time, end_time
@@ -161,6 +160,8 @@
      &         (flag_log, file_name, start_time, end_time,              &
      &          true_start, true_end, picked_IO)
 !
+      use count_monitor_time_series
+!
       logical, intent(in) :: flag_log
       character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time
@@ -168,8 +169,7 @@
       real(kind = kreal), intent(inout) :: true_start, true_end
       type(picked_spectrum_data_IO), intent(inout) :: picked_IO
 !
-      integer(kind = kint) :: i_step, ierr, icou, i
-      real(kind = kreal) :: time
+      integer(kind = kint) :: num_count
 !
 !
       write(*,*) 'Open file: ', trim(file_name)
@@ -178,41 +178,40 @@
       call alloc_pick_sph_monitor_IO(picked_IO)
       call read_pick_series_comp_name(id_pick_mode, picked_IO)
 !
-      icou = 0
-      true_start = start_time
-      true_end = true_start
-      do
-        call read_sph_spec_time                                         &
-     &     (id_pick_mode, picked_IO, i_step, time, ierr)
-        if(ierr .gt. 0) exit
-!
-        if(time .ge. start_time) then
-!          call append_picked_sph_series(i_step, time, picked_IO)
-          if(icou .eq. 0) true_start = time
-!
-          icou = icou + 1
-          if(flag_log) then
-            write(*,'(69a1,a5,i12,a4,1pe16.8e3,a20,i12)',advance="NO")  &
-     &        (char(8),i=1,69), 'step ', i_step,                        &
-     &        ' at ', time, ' is read. count is  ', icou
-          end if
-        end if
-!
-        if(time .ge. end_time) exit
-      end do
-      true_end = time
+      call s_count_monitor_time_series                                  &
+     &   (flag_log, id_pick_mode, picked_IO%ntot_pick_spectr,           &
+     &    start_time, end_time, true_start, true_end, num_count)
       rewind(id_pick_mode)
-      if(flag_log) write(*,*)
 !
       call read_pick_series_head(id_pick_mode, picked_IO)
       call read_pick_series_comp_name(id_pick_mode, picked_IO)
-      call alloc_pick_sph_series(icou, picked_IO)
 !
-!       Evaluate time average
+      call alloc_pick_sph_series(num_count, picked_IO)
+      call read_picked_sph_spectr_series                                &
+     &   (flag_log, id_pick_mode, start_time, end_time, picked_IO)
+      close(id_pick_mode)
+!
+      end subroutine load_picked_sph_spectr_series
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_picked_sph_spectr_series                          &
+     &         (flag_log, id_file, start_time, end_time, picked_IO)
+!
+      logical, intent(in) :: flag_log
+      integer(kind = kint), intent(in) :: id_file
+      real(kind = kreal), intent(in) :: start_time, end_time
+!
+      type(picked_spectrum_data_IO), intent(inout) :: picked_IO
+!
+      integer(kind = kint) :: i_step, ierr, icou, i
+      real(kind = kreal) :: time
+!
+!
       icou = 0
       do
         call read_sph_spec_monitor                                      &
-     &     (id_pick_mode, i_step, time, picked_IO, ierr)
+     &     (id_file, i_step, time, picked_IO, ierr)
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
@@ -228,112 +227,9 @@
 !
         if(time .ge. end_time) exit
       end do
-      close(id_pick_mode)
       if(flag_log) write(*,*)
 !
-      end subroutine load_picked_sph_spectr_series
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_pick_series_head(id_pick, picked_IO)
-!
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: id_pick
-      type(picked_spectrum_data_IO), intent(inout) :: picked_IO
-!
-      integer(kind = kint) :: i
-      character(len=kchara) :: tmpchara
-!
-!
-      call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*,err=89) picked_IO%num_layer,                      &
-     &               picked_IO%num_mode, picked_IO%ntot_pick_spectr
-      go to 10
-!
-  89  continue
-         picked_IO%ntot_pick_spectr                                     &
-     &      = picked_IO%num_mode * picked_IO%num_layer
-  10  continue
-!
-      call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*) picked_IO%ntot_comp
-!
-      end subroutine read_pick_series_head
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_pick_series_comp_name(id_pick, picked_IO)
-!
-      integer(kind = kint), intent(in) :: id_pick
-      type(picked_spectrum_data_IO), intent(inout) :: picked_IO
-!
-      integer(kind = kint) :: i
-      character(len=kchara) :: tmpchara
-!
-      read(id_pick,*) (tmpchara,i=1,6),                                 &
-     &                 picked_IO%spectr_name(1:picked_IO%ntot_comp)
-!
-      end subroutine read_pick_series_comp_name
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_sph_spec_time                                     &
-     &         (id_pick, picked_IO, i_step, time, ierr)
-!
-      type(picked_spectrum_data_IO), intent(in) :: picked_IO
-      integer(kind = kint), intent(in) :: id_pick
-      integer(kind = kint), intent(inout) :: i_step, ierr
-      real(kind = kreal), intent(inout) :: time
-!
-      integer(kind = kint) :: ipick
-!
-!
-      ierr = 0
-      do ipick = 1, picked_IO%ntot_pick_spectr
-        read(id_pick,*,err=99,end=99) i_step, time
-      end do
-      return
-!
-   99 continue
-      ierr = 1
-      return
-!
-      end subroutine read_sph_spec_time
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_sph_spec_monitor                                  &
-     &         (id_pick, i_step, time, picked_IO, ierr)
-!
-      use spherical_harmonics
-!
-      integer(kind = kint), intent(in) :: id_pick
-      integer(kind = kint), intent(inout) :: i_step, ierr
-      real(kind = kreal), intent(inout) :: time
-!
-      type(picked_spectrum_data_IO), intent(inout) :: picked_IO
-!
-      integer(kind = kint) :: l, m, ipick, ist
-!
-!
-      ierr = 0
-      do ipick = 1, picked_IO%ntot_pick_spectr
-        ist = (ipick-1) * picked_IO%ntot_comp
-        read(id_pick,*,err=99,end=99) i_step, time,                     &
-     &     picked_IO%idx_sph(ipick,1), picked_IO%radius(ipick),         &
-     &     l, m, picked_IO%d_pk(ist+1:ist+picked_IO%ntot_comp)
-        picked_IO%idx_sph(ipick,2) = get_idx_by_full_degree_order(l,m)
-        picked_IO%idx_sph(ipick,3) = l
-        picked_IO%idx_sph(ipick,4) = m
-      end do
-      return
-!
-   99 continue
-      ierr = 1
-      return
-!
-      end subroutine read_sph_spec_monitor
+      end subroutine read_picked_sph_spectr_series
 !
 ! -----------------------------------------------------------------------
 !

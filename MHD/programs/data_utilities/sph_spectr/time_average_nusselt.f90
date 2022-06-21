@@ -20,9 +20,10 @@
 !
       module time_average_nusselt
 !
-      implicit  none
+      use ISO_C_BINDING
+      use m_precision
 !
-      private :: c_to_fstring
+      implicit  none
 !
 ! -------------------------------------------------------------------
 !
@@ -30,33 +31,10 @@
 !
 ! -------------------------------------------------------------------
 !
-      function c_to_fstring(string)
-!
-      use ISO_C_BINDING
-!
-      Character(1,C_char),Intent(In) :: string(*)
-      Character(:,C_char),Allocatable :: c_to_fstring
-!
-      Integer i,len
-      len = 1
-      Do While (string(len)/=C_null_char)
-        len = len + 1
-      End Do
-      len = len - 1
-      Allocate(Character(len,C_char) :: c_to_fstring)
-      Do i=1,len
-        c_to_fstring(i:i) = string(i)
-      End Do
-!
-      end function c_to_fstring
-!
-! -------------------------------------------------------------------
-!
       integer(c_int) function                                           &
     &     time_average_nusselt_f(cname, cstart, cend) Bind(C)
 !
-      use ISO_C_BINDING
-      use m_precision
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
@@ -77,12 +55,7 @@
       subroutine s_time_average_nusselt                                 &
      &         (file_name, start_time, end_time)
 !
-      use m_precision
-      use m_constants
-!
       use t_no_heat_Nusselt
-!
-      implicit  none
 !
       character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time

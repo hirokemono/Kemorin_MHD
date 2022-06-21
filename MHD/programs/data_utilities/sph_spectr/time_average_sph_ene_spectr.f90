@@ -41,39 +41,17 @@
       type(read_sph_spectr_data), save, private :: tave_sph_IN
       type(read_sph_spectr_data), save, private :: sdev_sph_IN
 !
-      private :: c_to_fstring
-!
 ! -------------------------------------------------------------------
 !
       contains
 !
 ! -------------------------------------------------------------------
 !
-      function c_to_fstring(string)
-!
-      Character(1,C_char),Intent(In) :: string(*)
-      Character(:,C_char),Allocatable :: c_to_fstring
-!
-      Integer i,len
-      len = 1
-      Do While (string(len)/=C_null_char)
-        len = len + 1
-      End Do
-      len = len - 1
-      Allocate(Character(len,C_char) :: c_to_fstring)
-      Do i=1,len
-        c_to_fstring(i:i) = string(i)
-      End Do
-!
-      end function c_to_fstring
-!
-! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
       integer(c_int) function                                           &
     &     time_ave_sdev_sph_volume_pwr_f(cname, cstart, cend) Bind(C)
 !
       use m_tave_sph_ene_spectr
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
@@ -96,6 +74,7 @@
     &     time_ave_sdev_sph_vol_spectr_f(cname, cstart, cend) Bind(C)
 !
       use m_tave_sph_ene_spectr
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
@@ -118,6 +97,7 @@
     &     time_ave_sdev_sph_layer_pwr_f(cname, cstart, cend) Bind(C)
 !
       use m_tave_sph_ene_spectr
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
@@ -140,6 +120,7 @@
     &     time_ave_sdev_sph_layer_spec_f(cname, cstart, cend) Bind(C)
 !
       use m_tave_sph_ene_spectr
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
@@ -162,6 +143,7 @@
     &              (tave_prefix_c, sdev_prefix_c) Bind(C)
 !
       use m_tave_sph_ene_spectr
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: tave_prefix_c(*)
       character(1,C_char), intent(in) :: sdev_prefix_c(*)
@@ -183,6 +165,8 @@
       subroutine load_field_labels_f                                    &
      &         (l_truncation, yname, tave_spectr, sdev_spectr)          &
      &          bind(c, name="load_field_labels_f")
+!
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: yname(*)
       integer(C_int), Value :: l_truncation

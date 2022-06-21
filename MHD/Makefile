@@ -366,7 +366,7 @@ makemake:
 	@echo 'create excecution construct list...'
 	@echo '#' >> $(MAKENAME)
 	@echo 'all: $$(PROGRAMS) tests_with_f' >> $(MAKENAME)
-	@echo 'pythons: $$(LIB_PYTHONS)' >> $(MAKENAME)
+	@echo 'pythons: $$(LIB_FILE_PYTHONS)' >> $(MAKENAME)
 	@echo 'tests: tests_with_f' >> $(MAKENAME)
 	@echo 'tests_c: tests_with_c' >> $(MAKENAME)
 	@for dir in programs ; do \

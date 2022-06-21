@@ -56,31 +56,11 @@
 !
 ! -------------------------------------------------------------------
 !
-      function c_to_fstring(string)
-!
-      Character(1,C_char),Intent(In) :: string(*)
-      Character(:,C_char),Allocatable :: c_to_fstring
-!
-      Integer i,len
-      len = 1
-      Do While (string(len)/=C_null_char)
-        len = len + 1
-      End Do
-      len = len - 1
-      Allocate(Character(len,C_char) :: c_to_fstring)
-      Do i=1,len
-        c_to_fstring(i:i) = string(i)
-      End Do
-!
-      end function c_to_fstring
-!
-! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
       subroutine open_init_volume_mean_file_f(input_prefix_c)           &
      &              bind(c, name="open_init_volume_mean_file_f")
 !
       use sph_mean_square_IO_select
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
@@ -98,6 +78,7 @@
      &              bind(c, name="open_init_volume_spectr_file_f")
 !
       use sph_mean_square_IO_select
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
@@ -116,6 +97,7 @@
      &              bind(c, name="check_one_layer_mean_item_f")
 !
       use sph_mean_square_IO_select
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
@@ -133,6 +115,7 @@
      &              bind(c, name="check_layered_spectr_file_f")
 !
       use sph_mean_square_IO_select
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
@@ -160,6 +143,8 @@
 !
       integer(C_int) function find_monitor_field_address_f(yname)       &
      &          bind(c, name="find_monitor_field_address_f")
+!
+      use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: yname(*)
 !

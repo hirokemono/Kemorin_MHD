@@ -21,6 +21,7 @@
       use t_gauss_coefs_monitor_IO
       use t_ctl_data_tave_sph_monitor
       use set_parallel_file_name
+      use count_monitor_time_series
 !
       implicit  none
 !
@@ -38,11 +39,10 @@
       character(len=kchara) :: tave_pick_gauss_fname
       character(len=kchara) :: trms_pick_gauss_fname
       character(len=kchara) :: sdev_pick_gauss_fname
-      integer(kind = kint), parameter :: id_pick = 15
 !
       integer(kind = kint) :: i_step, ierr, icou, ipick
       real(kind = kreal) :: acou, time, prev_time
-      real(kind = kreal) :: start_time, end_time, true_start
+      real(kind = kreal) :: start_time, end_time, true_start, true_end
 !
 !
       call read_control_file_sph_monitor(0, tave_sph_ctl1)
@@ -74,75 +74,25 @@
      &                           't_sigma_', trim(input_file_name)
 !
 !       Open data file
-!
-      gauss_IO%gauss_coef_file_name = input_file_name
-      call open_gauss_coefs_read_monitor(id_pick, gauss_IO)
+      call check_gauss_coefs_time_series(input_file_name, gauss_IO)
+      call load_gauss_coefs_time_series                                 &
+     &   (.TRUE., input_file_name, start_time, end_time,                &
+     &    true_start, true_end, gauss_IO)
 !
       allocate(ave_gauss(gauss_IO%num_mode))
       allocate(rms_gauss(gauss_IO%num_mode))
       allocate(sdev_gauss(gauss_IO%num_mode))
       allocate(prev_gauss(gauss_IO%num_mode))
 !
-!$omp parallel workshare
-      ave_gauss = 0.0d0
-      rms_gauss = 0.0d0
-      sdev_gauss = 0.0d0
-      prev_gauss = 0.0d0
-!$omp end parallel workshare
+      call cal_time_ave_picked_sph_spectr                               &
+     &   (gauss_IO%n_step, gauss_IO%d_time, gauss_IO%num_mode,          &
+     &    gauss_IO%d_gauss, ave_gauss, rms_gauss, sdev_gauss)
 !
 !
-      icou = 0
-      true_start = start_time
-      prev_time =  start_time
-      do
-        call read_gauss_coefs_4_monitor                                 &
-     &     (id_pick, i_step, time, gauss_IO, ierr)
-        if(ierr .gt. 0) exit
-!
-!
-        if(time .ge. start_time) then
-          if(icou .eq. 0) then
-            true_start = time
-          else
-!$omp parallel do
-            do ipick = 1, gauss_IO%num_mode
-              ave_gauss(ipick) = ave_gauss(ipick) + half                &
-     &         * (gauss_IO%gauss_coef(ipick) + prev_gauss(ipick))       &
-     &         * (time - prev_time)
-              rms_gauss(ipick) = rms_gauss(ipick) + half                &
-     &         * (gauss_IO%gauss_coef(ipick)**2 + prev_gauss(ipick)**2) &
-     &         * (time - prev_time)
-            end do
-!$omp end parallel do
-          end if
-!
-!$omp parallel do
-          do ipick = 1, gauss_IO%num_mode
-            prev_gauss(ipick) = gauss_IO%gauss_coef(ipick)
-          end do
-!$omp end parallel do
-!
-          icou = icou + 1
-          write(*,*) 'step ', i_step,                                   &
-     &        ' is added for time average: count is  ', icou, time
-        end if
-        prev_time = time
-!
-        if(time .ge. end_time) exit
+      do icou = 1, gauss_IO%num_mode
+        write(*,*) icou, ave_gauss(icou), rms_gauss(icou),              &
+     &           sdev_gauss(icou), trim(gauss_IO%gauss_coef_name(icou))
       end do
-      close(id_pick)
-!
-      acou = one / (time - true_start)
-!$omp parallel do
-      do ipick = 1, gauss_IO%num_mode
-        sdev_gauss(ipick) = rms_gauss(ipick) - ave_gauss(ipick)**2
-!
-        ave_gauss(ipick) =  ave_gauss(ipick) * acou
-        rms_gauss(ipick) =   sqrt(rms_gauss(ipick) * acou)
-        sdev_gauss(ipick) =  sqrt(sdev_gauss(ipick) * acou)
-      end do
-!$omp end parallel do
-      call dealloc_gauss_coef_monitor(gauss_IO)
 !
 !  Output time average
 !$omp parallel workshare
@@ -172,6 +122,8 @@
       call write_gauss_coefs_4_monitor(0, i_step, time, gauss_IO)
 !
       deallocate(ave_gauss, rms_gauss, sdev_gauss)
+      call dealloc_gauss_coef_monitor(gauss_IO)
+      call dealloc_gauss_coefs_series(gauss_IO)
 !
       write(*,*) '***** program finished *****'
       stop

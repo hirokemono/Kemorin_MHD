@@ -4,7 +4,8 @@
 
 PROG_DIR = $$(MHDDIR)/programs
 
-LIB_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
+LIB_PYTHONS =      '-L$$(PYTHONDIR) -lcalypso_to_pythons'
+LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
 
 SUBDIRS = \
 FEM_MHD \
@@ -96,6 +97,8 @@ target_task:
 lib_name:
 	@echo  LIB_PYTHONS=  \\           >> $(MAKENAME)
 	@echo  $(LIB_PYTHONS)             >> $(MAKENAME)
+	@echo  LIB_FILE_PYTHONS=  \\           >> $(MAKENAME)
+	@echo  $(LIB_FILE_PYTHONS)             >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 	@echo  LIB_PYTHON_UTILS=  \\           >> $(MAKENAME)
 	@echo  $(LIB_PYTHON_UTILS)             >> $(MAKENAME)
@@ -115,10 +118,10 @@ lib_name:
 
 lib_tasks:
 	@echo '#' >> $(MAKENAME)
-	@echo '$$(LIB_PYTHONS)': '$$(MOD_PYTHONS)' \
+	@echo '$$(LIB_FILE_PYTHONS)': '$$(MOD_PYTHONS)' \
 	'$$(LIB_FILES_PYTHON_UTILS)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' -shared -fPIC '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(LIB_PYTHONS)' \
+	@echo '	''$$(F90)' -shared -fPIC '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(LIB_FILE_PYTHONS)' \
 	'$$(MOD_PYTHONS)' \
 	'-L. $$(LIB_PYTHON_UTILS)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

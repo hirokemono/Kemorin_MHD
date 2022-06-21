@@ -274,7 +274,7 @@ makemake:
 	@echo 'create excecution construct list...'
 	@echo '#' >> $(MAKENAME)
 	@echo 'all: $$(PROGRAMS)' >> $(MAKENAME)
-	@echo 'pythons: $$(LIB_PYTHONS)' >> $(MAKENAME)
+	@echo 'pythons: $$(LIB_FILE_PYTHONS)' >> $(MAKENAME)
 	@for dir in programs ; do \
 		( cd $${dir};  \
 		$(GMAKE) \
