@@ -349,7 +349,7 @@ target_task:
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
 	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'      \
 	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)'   \
-	'$$(TARGET_T_AVE_DIPOLARITY)   pythons'    >> $(MAKENAME)
+	'$$(TARGET_T_AVE_DIPOLARITY)  '    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
