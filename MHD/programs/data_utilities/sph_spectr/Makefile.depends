@@ -36,6 +36,8 @@ m_load_gauss_coefficients_f.o: $(SPH_UTILS_DIR)/m_load_gauss_coefficients_f.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 m_load_picked_sph_spectr_f.o: $(SPH_UTILS_DIR)/m_load_picked_sph_spectr_f.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_picked_sph_spectr_data_IO.o count_monitor_time_series.o picked_sph_spectr_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
+m_load_section_file_f.o: $(SPH_UTILS_DIR)/m_load_section_file_f.f90 m_precision.o m_constants.o t_psf_results.o t_time_data.o t_ucd_data.o t_file_IO_parameter.o count_monitor_time_series.o set_ucd_file_names.o
+	$(F90) -c $(F90OPTFLAGS) $<
 m_maxmode_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_maxmode_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o simple_sph_spectr_head_IO.o sph_mean_square_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_part_sum_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_part_sum_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o simple_sph_spectr_head_IO.o sph_mean_square_IO_select.o set_parallel_file_name.o

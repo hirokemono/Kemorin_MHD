@@ -81,6 +81,7 @@ m_tave_sph_ene_spectr.o \
 m_read_sph_spectra_f.o \
 m_load_gauss_coefficients_f.o \
 m_load_picked_sph_spectr_f.o \
+m_load_section_file_f.o \
 time_average_sph_ene_spectr.o \
 time_average_nusselt.o \
 time_average_dipolarity.o \

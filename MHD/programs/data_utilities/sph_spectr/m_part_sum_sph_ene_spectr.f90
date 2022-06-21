@@ -53,11 +53,12 @@
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
-      character(len = kchara) :: input_prefix, file_name, fname_tmp
+      character(len = kchara) :: input_prefix, input_extension
+      character(len = kchara) :: file_name, fname_tmp
       integer(kind = kint) :: i, icou, ierr, ist_true
 !
 !
-      input_prefix = exclude_extrension(fname_org)
+      call split_extrension(fname_org, input_prefix, input_extension)
       file_name = add_dat_extension(input_prefix)
       open(id_file_rms_l, file=fname_org)
       call select_input_sph_series_head(id_file_rms_l,                  &

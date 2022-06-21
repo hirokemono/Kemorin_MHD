@@ -19,6 +19,7 @@
       use t_ucd_data
 !
       use set_parallel_file_name
+      use set_ucd_file_names
       use ucd_IO_select
       use cal_psf_rms_aves
       use take_avarages_4_psf
@@ -36,11 +37,13 @@
       character(len=kchara) :: fname_tmp
 !
       integer(kind = kint) :: istep_start, istep_end
-      integer(kind = kint) :: istep_int
       real(kind = kreal) :: rmin, rmax
 !
       integer(kind = kint) :: istep, icou, nnod_psf, ncomp_phys
       integer(kind = kint) :: inod, nd, i
+!
+      character(len=kchara) :: input_file_name, nostep_prefix
+      integer(kind = kint) :: ifmt_psf, istep_viz
 !
       real(kind = kreal) :: acou
       real(kind = kreal), allocatable :: tave_psf(:,:)
@@ -51,12 +54,18 @@
 ! . for local 
 !  ===========
 !
-      write(*,*) 'input file prefix'
-      read(*,*) psf_file_param%file_prefix
-      psf_file_param%iflag_format = section_format_id_from_input()
+      write(*,*) 'input file name'
+      read(*,*) input_file_name
+      call viz_file_format_from_file_name(input_file_name,              &
+     &    psf_file_param%iflag_format, psf_file_param%file_prefix,      &
+     &    istep_viz)
+      write(*,*) 'input_file_name: ', trim(input_file_name)
+      write(*,*) 'nostep_prefix: ',   trim(psf_file_param%file_prefix)
+      write(*,*) 'ifmt_psf: ',        psf_file_param%iflag_format
+      write(*,*) 'istep_viz: ', istep_viz
 !
-      write(*,*) 'input istep_start, istep_end, istep_int'
-      read(*,*) istep_start, istep_end, istep_int
+      write(*,*) 'input start and end step for average'
+      read(*,*) istep_start, istep_end
 !
       write(*,*) 'input radius range'
       read(*,*) rmin, rmax
@@ -114,7 +123,7 @@
       icou = 0
       write(*,'(a,i15)', advance='NO')                                  &
      &          'read for averaging. Step:  ', istep_start
-      do istep = istep_start, istep_end, istep_int
+      do istep = istep_start, istep_end
         icou = icou + 1
         write(*,'(15a1)', advance='NO') (char(8),i=1,15)
         write(*,'(i15)', advance='NO') istep
@@ -165,7 +174,7 @@
       icou = 0
       write(*,'(a,i15)', advance='NO')                                  &
      &          'read for RMS. Step:  ', istep
-      do istep = istep_start, istep_end, istep_int
+      do istep = istep_start, istep_end
         icou = icou + 1
         write(*,'(15a1)', advance='NO') (char(8),i=1,15)
         write(*,'(i15)', advance='NO') istep

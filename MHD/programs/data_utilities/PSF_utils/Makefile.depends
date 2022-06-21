@@ -32,7 +32,7 @@ psf_fix_reynods_work.o: $(PSF_UTIL_MAINDIR)/psf_fix_reynods_work.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 psf_range_rms_aves.o: $(PSF_UTIL_MAINDIR)/psf_range_rms_aves.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o m_section_file_extensions.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o cal_psf_rms_aves.o take_avarages_4_psf.o take_normals_4_psf.o
 	$(F90) -c $(F90OPTFLAGS) $<
-psf_rms_aves.o: $(PSF_UTIL_MAINDIR)/psf_rms_aves.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o m_section_file_extensions.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o cal_psf_rms_aves.o take_avarages_4_psf.o take_normals_4_psf.o
+psf_rms_aves.o: $(PSF_UTIL_MAINDIR)/psf_rms_aves.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o m_section_file_extensions.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o set_ucd_file_names.o ucd_IO_select.o cal_psf_rms_aves.o take_avarages_4_psf.o take_normals_4_psf.o
 	$(F90) -c $(F90OPTFLAGS) $<
 section_from_psf.o: $(PSF_UTIL_MAINDIR)/section_from_psf.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o m_section_file_extensions.o set_parallel_file_name.o skip_comment_f.o m_line_from_psf.o m_psf_edge_connect.o t_time_data.o t_ucd_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

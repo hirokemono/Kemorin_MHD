@@ -10,8 +10,9 @@
 !!      character(len = kchara) function delete_directory_name          &
 !!     &                               (dir_file_name)
 !!        character(len=kchara), intent(in) :: dir_file_name
-!!      character(len = kchara) function exclude_extrension(file_name)
+!!      subroutine split_extrension(file_name, prefix, extension)
 !!        character(len = kchara), intent(in) :: file_name
+!!        character(len = kchara), intent(inout) :: prefix, extension!!
 !!
 !!      character(len = kchara) function add_process_id                 &
 !!     &                               (id_rank, file_head)
@@ -92,15 +93,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      character(len = kchara) function exclude_extrension(file_name)
+      subroutine split_extrension(file_name, prefix, extension)
 !
       character(len = kchara), intent(in) :: file_name
+      character(len = kchara), intent(inout) :: prefix, extension
 !
-      integer(kind = kint) :: lengh_prefix, i
+      integer(kind = kint) :: length_name, lengh_prefix, lengh_ext, i
       character(len=kchara) :: fmt_txt
 !
 !
-      lengh_prefix = len_trim(file_name)
+      length_name = len_trim(file_name)
+      lengh_prefix = length_name
       do i = len_trim(file_name), 1, -1
         if(file_name(i:i) .eq. '.') then
           lengh_prefix = i - 1
@@ -109,11 +112,14 @@
           exit
         end if
       end do
+      lengh_ext = length_name - lengh_prefix - 1
 !
       write(fmt_txt,'(a2,i4,a1)') '(a',lengh_prefix,')'
-      write(exclude_extrension,fmt_txt) file_name(1:lengh_prefix)
+      write(prefix,fmt_txt) file_name(1:lengh_prefix)
+      write(fmt_txt,'(a2,i4,a1)') '(a',lengh_ext,')'
+      write(extension,fmt_txt) file_name(lengh_prefix+2:length_name)
 !
-      end function exclude_extrension
+      end subroutine split_extrension
 
 !-----------------------------------------------------------------------
 !

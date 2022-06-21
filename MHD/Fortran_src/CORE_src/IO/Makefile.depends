@@ -132,7 +132,7 @@ set_ucd_data.o: $(IO_DIR)/set_ucd_data.f90 m_precision.o m_constants.o t_ucd_dat
 	$(F90) -c $(F90OPTFLAGS) $<
 set_ucd_extensions.o: $(IO_DIR)/set_ucd_extensions.f90 m_precision.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_ucd_file_names.o: $(IO_DIR)/set_ucd_file_names.f90 m_precision.o m_constants.o m_field_file_format.o delete_data_files.o set_parallel_file_name.o set_mesh_extensions.o set_ucd_extensions.o
+set_ucd_file_names.o: $(IO_DIR)/set_ucd_file_names.f90 m_precision.o m_constants.o m_field_file_format.o delete_data_files.o set_parallel_file_name.o set_mesh_extensions.o set_ucd_extensions.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 skip_comment_f.o: $(IO_DIR)/skip_comment_f.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
