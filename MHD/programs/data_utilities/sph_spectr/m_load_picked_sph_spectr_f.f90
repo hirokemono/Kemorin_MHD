@@ -174,8 +174,6 @@
       subroutine fin_picked_sph_time_series_f()                         &
      &          bind(c, name="fin_picked_sph_time_series_f")
 !
-      integer(C_int), Value :: n_step
-!
       call dealloc_pick_sph_series(pick_IO_p)
       call dealloc_pick_sph_monitor_IO(pick_IO_p)
 !
