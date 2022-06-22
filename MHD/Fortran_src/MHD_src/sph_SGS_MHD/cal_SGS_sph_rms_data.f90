@@ -48,6 +48,7 @@
       use t_phys_address
       use t_SGS_model_addresses
       use t_boundary_data_sph_MHD
+      use t_boundary_sph_spectr
       use t_rms_4_sph_spectr
       use t_sph_volume_mean_square
       use t_sum_sph_rms_data
@@ -101,7 +102,7 @@
         call sel_Nusselt_routine(ipol%base%i_temp,                      &
      &      ipol%base%i_heat_source, ipol%grad_fld%i_grad_temp,         &
      &      sph, r_2nd, MHD_prop%ht_prop,                               &
-     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U,                   &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_T, &
      &      sph_MHD_bc%fdm2_center, MHD_mats%band_T00_poisson_fixT,     &
      &      rj_fld, monitor%heat_Nusselt)
       end if
@@ -111,7 +112,7 @@
         call sel_Nusselt_routine(ipol%base%i_light,                     &
      &      ipol%base%i_light_source, ipol%grad_fld%i_grad_composit,    &
      &      sph, r_2nd, MHD_prop%cp_prop,                               &
-     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%sph_bc_U,                   &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_C, &
      &      sph_MHD_bc%fdm2_center, MHD_mats%band_C00_poisson_fixC,     &
      &      rj_fld, monitor%comp_Nusselt)
       end if

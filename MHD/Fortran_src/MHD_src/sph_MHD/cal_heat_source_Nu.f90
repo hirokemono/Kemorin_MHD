@@ -19,8 +19,8 @@
 !!        type(band_matrix_type), intent(inout) :: band_s00_poisson_fixS
 !!        type(nusselt_number_data), intent(inout) :: Nu_type
 !!      subroutine sel_Nusselt_routine(is_scalar, is_source, is_grad_s, &
-!!     &          sph, r_2nd, sc_prop, sph_bc_S, sph_bc_U, fdm2_center, &
-!!     &          band_s00_poisson_fixS, rj_fld, Nu_type)
+!!     &          sph, r_2nd, sc_prop, sph_bc_S, sph_bc_U, bcs_S,       &
+!!     &          fdm2_center, band_s00_poisson_fixS, rj_fld, Nu_type)
 !!        integer(kind = kint), intent(in) :: is_scalar, is_source
 !!        integer(kind = kint), intent(in) :: is_grad_s
 !!        type(sph_grids), intent(in) :: sph
@@ -28,6 +28,7 @@
 !!        type(scalar_property), intent(in) :: sc_prop
 !!        type(sph_boundary_type), (in) :: sph_bc_S
 !!        type(sph_boundary_type), (in) :: sph_bc_U
+!!        type(sph_scalar_boundary_data), intent(in) :: bcs_S
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson_fixS
@@ -43,6 +44,7 @@
       use t_spheric_rj_data
       use t_phys_data
       use t_boundary_params_sph_MHD
+      use t_boundary_sph_spectr
       use t_no_heat_Nusselt
       use t_physical_property
       use t_fdm_coefs
@@ -81,7 +83,7 @@
 !
       if(Nu_type%iflag_Nusselt .eq. iflag_no_source_Nu) return
         call alloc_Nu_radial_reference(sph%sph_rj, Nu_type)
-        call const_r_mat00_poisson_fixS                                 &
+        call const_r_mat00_scalar_sph                                   &
      &     (mat_name, sc_prop%diffusie_reduction_ICB,                   &
      &      sph%sph_params, sph%sph_rj, r_2nd, sph_bc_S, fdm2_center,   &
      &      band_s00_poisson_fixS)
@@ -91,8 +93,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_Nusselt_routine(is_scalar, is_source, is_grad_s,   &
-     &          sph, r_2nd, sc_prop, sph_bc_S, sph_bc_U, fdm2_center,   &
-     &          band_s00_poisson_fixS, rj_fld, Nu_type)
+     &          sph, r_2nd, sc_prop, sph_bc_S, sph_bc_U, bcs_S,         &
+     &          fdm2_center, band_s00_poisson_fixS, rj_fld, Nu_type)
 !
       use t_fdm_coefs
       use t_coef_fdm2_MHD_boundaries
@@ -105,6 +107,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(scalar_property), intent(in) :: sc_prop
       type(sph_boundary_type), intent(in) :: sph_bc_S, sph_bc_U
+      type(sph_scalar_boundary_data), intent(in) :: bcs_S
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(phys_data), intent(in) :: rj_fld
       type(band_matrix_type), intent(in) :: band_s00_poisson_fixS
@@ -118,7 +121,7 @@
      &      sph%sph_rj, sph_bc_U, rj_fld, Nu_type)
       else if(Nu_type%iflag_Nusselt .eq. iflag_source_Nu) then
         call s_cal_heat_source_Nu(is_scalar, is_source, is_grad_s,      &
-     &      sph%sph_rj, r_2nd, sc_prop, sph_bc_S, sph_bc_U,             &
+     &      sph%sph_rj, r_2nd, sc_prop, sph_bc_S, sph_bc_U, bcs_S,      &
      &      fdm2_center, rj_fld, band_s00_poisson_fixS, Nu_type)
       end if
 !!
@@ -179,7 +182,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_cal_heat_source_Nu(is_scalar, is_source, is_grad_s,  &
-     &          sph_rj, r_2nd, sc_prop, sph_bc_S, sph_bc_U,             &
+     &          sph_rj, r_2nd, sc_prop, sph_bc_S, sph_bc_U, bcs_S,      &
      &          fdm2_center, rj_fld, band_s00_poisson_fixS, Nu_type)
 !
       use t_coef_fdm2_MHD_boundaries
@@ -192,6 +195,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(scalar_property), intent(in) :: sc_prop
       type(sph_boundary_type), intent(in) :: sph_bc_S, sph_bc_U
+      type(sph_scalar_boundary_data), intent(in) :: bcs_S
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(phys_data), intent(in) :: rj_fld
       type(band_matrix_type), intent(in) :: band_s00_poisson_fixS
@@ -205,7 +209,7 @@
 !
       file_name = add_dat_extension(band_s00_poisson_fixS%mat_name)
       call const_diffusive_profile_fix_bc                               &
-     &   (sph_rj, sc_prop, sph_bc_S, fdm2_center, r_2nd,                &
+     &   (sph_rj, sc_prop, sph_bc_S, bcs_S, fdm2_center, r_2nd,         &
      &    band_s00_poisson_fixS, is_scalar, is_source, rj_fld,          &
      &    file_name, Nu_type%ref_global, Nu_type%ref_local)
 !

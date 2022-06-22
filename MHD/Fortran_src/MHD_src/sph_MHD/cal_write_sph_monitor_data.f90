@@ -34,8 +34,8 @@
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!
 !!      subroutine cal_write_no_heat_sourse_Nu                          &
-!!     &         (is_scalar, is_source, is_grad_s, time_d,              &
-!!     &          sph, sc_prop, sph_bc_S, sph_bc_U, fdm2_center, r_2nd, &
+!!     &         (is_scalar, is_source, is_grad_s, time_d, sph, sc_prop,&
+!!     &          sph_bc_S, sph_bc_U, bcs_S, fdm2_center, r_2nd,        &
 !!     &          band_s00_poisson_fixS, rj_fld, Nusselt)
 !!      subroutine cal_write_dipolarity(time_d, sph_params,             &
 !!     &          ipol, rj_fld, pwr, dip)
@@ -43,7 +43,8 @@
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_grids), intent(in) :: sph
-!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U/
+!!        type(sph_scalar_boundary_data), intent(in) :: bcs_S
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson_fixS
 !!        type(phys_address), intent(in) :: ipol
@@ -70,6 +71,7 @@
       use t_spheric_parameter
       use t_phys_data
       use t_boundary_data_sph_MHD
+      use t_boundary_sph_spectr
       use t_schmidt_poly_on_rtm
       use t_time_data
       use t_rms_4_sph_spectr
@@ -193,7 +195,7 @@
         call sel_Nusselt_routine(ipol%base%i_temp,                      &
      &      ipol%base%i_heat_source, ipol%grad_fld%i_grad_temp,         &
      &      sph, r_2nd, MHD_prop%ht_prop,                               &
-     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U,                   &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_T, &
      &      sph_MHD_bc%fdm2_center, MHD_mats%band_T00_poisson_fixT,     &
      &      rj_fld, monitor%heat_Nusselt)
       end if
@@ -203,7 +205,7 @@
         call sel_Nusselt_routine(ipol%base%i_light,                     &
      &      ipol%base%i_light_source, ipol%grad_fld%i_grad_composit,    &
      &      sph, r_2nd, MHD_prop%cp_prop,                               &
-     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%sph_bc_U,                   &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_C, &
      &      sph_MHD_bc%fdm2_center, MHD_mats%band_C00_poisson_fixC,     &
      &      rj_fld, monitor%comp_Nusselt)
       end if
@@ -299,8 +301,8 @@
 !  --------------------------------------------------------------------
 !
       subroutine cal_write_no_heat_sourse_Nu                            &
-     &         (is_scalar, is_source, is_grad_s, time_d,                &
-     &          sph, sc_prop, sph_bc_S, sph_bc_U, fdm2_center, r_2nd,   &
+     &         (is_scalar, is_source, is_grad_s, time_d, sph, sc_prop,  &
+     &          sph_bc_S, sph_bc_U, bcs_S, fdm2_center, r_2nd,          &
      &          band_s00_poisson_fixS, rj_fld, Nusselt)
 !
       use pickup_gauss_coefficients
@@ -315,6 +317,7 @@
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(scalar_property), intent(in) :: sc_prop
       type(sph_boundary_type), intent(in) :: sph_bc_S, sph_bc_U
+      type(sph_scalar_boundary_data), intent(in) :: bcs_S
       type(phys_data), intent(in) :: rj_fld
       type(band_matrix_type), intent(in) :: band_s00_poisson_fixS
 !
@@ -323,7 +326,7 @@
 !
       if(Nusselt%iflag_Nusselt .eq. 0) return
       call sel_Nusselt_routine(is_scalar, is_source, is_grad_s,         &
-     &    sph, r_2nd, sc_prop, sph_bc_S, sph_bc_U,                      &
+     &    sph, r_2nd, sc_prop, sph_bc_S, sph_bc_U, bcs_S,               &
      &    fdm2_center, band_s00_poisson_fixS, rj_fld, Nusselt)
       call write_no_heat_source_Nu(sph%sph_rj%idx_rj_degree_zero,       &
      &    time_d%i_time_step, time_d%time, Nusselt)
