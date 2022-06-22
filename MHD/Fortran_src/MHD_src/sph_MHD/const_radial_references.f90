@@ -129,7 +129,6 @@
       call const_diffusive_profile_fixS(i_temp, i_source, sph_rj,       &
      &    r_2nd, sc_prop, sph_bc_S, fdm2_center, band_s00_poisson,      &
      &    rj_fld, reftemp_rj, reftemp_local)
-      return
 !
       if(iflag_debug .gt. 0) then
         call write_diffusive_profile_file(file_name, sph_rj,            &
