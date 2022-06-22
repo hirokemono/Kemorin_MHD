@@ -13,7 +13,8 @@
 !!        type(nusselt_number_data), intent(inout) :: Nu_type
 !!
 !!      subroutine set_ctl_params_no_heat_Nu                            &
-!!     &         (Nusselt_file_prefix, rj_fld, Nu_type)
+!!     &         (source_name, Nusselt_file_prefix, rj_fld, Nu_type)
+!!        character(len = kchara) :: source_name
 !!        type(read_character_item), intent(in) :: Nusselt_file_prefix
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(nusselt_number_data), intent(inout) :: Nu_type
@@ -47,7 +48,7 @@
 !>        Output flag for Nusselt number IO
         integer(kind = kint) :: iflag_Nusselt = 0
 !>        File name for Nusselt number file
-        character(len = kchara) :: Nusselt_file_name = 'Nusselt,dat'
+        character(len = kchara) :: Nusselt_file_name = 'Nusselt.dat'
 !
 !>        Radius at inner boundary
         real(kind = kreal) :: r_ICB_Nu
@@ -111,7 +112,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_params_no_heat_Nu                              &
-     &         (Nusselt_file_prefix, rj_fld, Nu_type)
+     &         (source_name, Nusselt_file_prefix, rj_fld, Nu_type)
 !
       use m_base_field_labels
       use m_grad_field_labels
@@ -119,6 +120,7 @@
       use t_control_array_character
       use set_parallel_file_name
 !
+      character(len = kchara) :: source_name
       type(read_character_item), intent(in) :: Nusselt_file_prefix
       type(phys_data), intent(in) :: rj_fld
       type(nusselt_number_data), intent(inout) :: Nu_type
@@ -143,9 +145,9 @@
         Nu_type%iflag_Nusselt = 0
       end if
 !
-!    Turn Off Nusselt number if heat source is there
+!    Turn Off Nusselt number if heat or composition source is there
       do i = 1, rj_fld%num_phys
-        if(rj_fld%phys_name(i) .eq. heat_source%name) then
+        if(rj_fld%phys_name(i) .eq. source_name) then
           Nu_type%iflag_Nusselt = iflag_source_Nu
           exit
         end if
