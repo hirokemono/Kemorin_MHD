@@ -229,7 +229,7 @@
       if(Nu_type%ref_global(sph_bc_U%kr_in,1) .eq. zero) then
         Nu_type%Nu_ICB = -1.0d0
       else
-        Nu_type%Nu_ICB = - half*rj_fld%d_fld(inod_ICB,is_grad_s)        &
+        Nu_type%Nu_ICB =   half*rj_fld%d_fld(inod_ICB,is_grad_s)        &
      &                    * sph_rj%a_r_1d_rj_r(sph_bc_U%kr_in)**2       &
      &                    / Nu_type%ref_global(sph_bc_U%kr_in,1)
       end if
@@ -237,7 +237,7 @@
       if(Nu_type%ref_global(sph_bc_U%kr_out,1) .eq. zero) then
         Nu_type%Nu_CMB = -1.0d0
       else
-        Nu_type%Nu_CMB = - half*rj_fld%d_fld(inod_CMB,is_grad_s)        &
+        Nu_type%Nu_CMB =   half*rj_fld%d_fld(inod_CMB,is_grad_s)        &
      &                    * sph_rj%a_r_1d_rj_r(sph_bc_U%kr_out)**2      &
      &                    / Nu_type%ref_global(sph_bc_U%kr_out,1)
       end if
