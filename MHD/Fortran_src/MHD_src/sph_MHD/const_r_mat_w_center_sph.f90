@@ -241,8 +241,7 @@
      &      coef, band_s00_evo%mat)
       else if(iflag_icb .eq. iflag_sph_fix_center) then
         call add_scalar_poisson_mat_fix_ctr(sph_rj%nidx_rj(1), r_ICB,   &
-     &      fdm2_center%dmat_fixed, fdm2_center%dmat_fix_fld,           &
-     &      coef, band_s00_evo%mat(1,0))
+     &      fdm2_center%dmat_fix_fld, coef, band_s00_evo%mat(1,0))
       else
         call add_scalar_poisson_mat_no_fld                              &
      &     (sph_rj%nidx_rj(1), band_s00_evo%mat)

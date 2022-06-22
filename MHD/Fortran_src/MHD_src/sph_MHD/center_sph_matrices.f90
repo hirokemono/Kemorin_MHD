@@ -134,19 +134,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_scalar_poisson_mat_fix_ctr(nri, r_CTR1,            &
-     &          fdm2_fix_fld_ctr0, fdm2_fix_fld_ctr1, coef_p, mat00_3)
+     &          fdm2_fix_fld_ctr1, coef_p, mat00_3)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r_CTR1(0:2)
       real(kind = kreal), intent(in) :: coef_p
-      real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr0( 0:2,3)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_ctr1(-1:1,3)
 !
       real(kind = kreal), intent(inout) :: mat00_3(3,0:nri)
 !
 !
       mat00_3(2,0) = one
-      mat00_3(1,1) = mat00_3(1,1) - coef_p * fdm2_fix_fld_ctr0(2,3)
+      mat00_3(1,1) = zero
 !
       mat00_3(3,0) = mat00_3(3,0) - coef_p * (fdm2_fix_fld_ctr1(-1,3)   &
      &                     + two*r_CTR1(1) * fdm2_fix_fld_ctr1(-1,2))
