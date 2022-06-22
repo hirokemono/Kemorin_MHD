@@ -248,6 +248,11 @@
      &      time_d%i_time_step, time_d%time, monitor%heat_Nusselt)
       end if
 !
+      if(monitor%comp_Nusselt%iflag_Nusselt .ne. 0) then
+        call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,         &
+     &      time_d%i_time_step, time_d%time, monitor%comp_Nusselt)
+      end if
+!
       call write_dipolarity(my_rank, time_d%i_time_step, time_d%time,   &
      &    sph_params%radius_CMB, ipol, monitor%pwr, monitor%dip)
       call write_typical_scales(time_d%i_time_step, time_d%time,        &
