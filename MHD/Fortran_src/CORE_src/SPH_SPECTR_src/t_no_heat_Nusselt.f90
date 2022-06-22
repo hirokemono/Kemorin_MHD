@@ -148,7 +148,8 @@
 !    Turn Off Nusselt number if heat or composition source is there
       do i = 1, rj_fld%num_phys
         if(rj_fld%phys_name(i) .eq. source_name) then
-          Nu_type%iflag_Nusselt = iflag_source_Nu
+!          Nu_type%iflag_Nusselt = iflag_source_Nu
+          Nu_type%iflag_Nusselt = 0
           exit
         end if
       end do
