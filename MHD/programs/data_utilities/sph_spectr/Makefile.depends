@@ -20,7 +20,7 @@ analyzer_time_ave_sph.o: $(SPH_UTILS_DIR)/analyzer_time_ave_sph.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_zonal_mean_sph.o: $(SPH_UTILS_DIR)/analyzer_zonal_mean_sph.f90 m_precision.o m_constants.o m_machine_parameter.o m_spheric_data_sph_spetr.o calypso_mpi.o t_time_data.o t_field_data_IO.o field_IO_select.o m_ctl_params_sph_utils.o parallel_load_data_4_sph.o set_field_data_w_SGS.o copy_rj_phys_data_4_IO.o count_num_sph_smp.o cal_zonal_mean_sph_spectr.o const_global_element_ids.o
 	$(F90) -c $(F90OPTFLAGS) $<
-append_sph_monitor_files.o: $(SPH_UTILS_DIR)/append_sph_monitor_files.f90 m_precision.o m_constants.o t_ctl_data_append_sph_mntr.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o t_read_sph_spectra.o set_control_4_pickup_sph.o count_monitor_time_series.o set_parallel_file_name.o t_gauss_coefs_monitor_IO.o sph_mean_square_IO_select.o t_picked_sph_spectr_data_IO.o picked_sph_spectr_data_IO.o
+append_sph_monitor_files.o: $(SPH_UTILS_DIR)/append_sph_monitor_files.f90 m_precision.o m_constants.o t_ctl_data_append_sph_mntr.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o t_read_sph_spectra.o set_control_4_pickup_sph.o count_monitor_time_series.o set_parallel_file_name.o t_gauss_coefs_monitor_IO.o gauss_coefs_monitor_IO.o sph_mean_square_IO_select.o t_picked_sph_spectr_data_IO.o picked_sph_spectr_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_t_ave_sph_spectr_data.o: $(SPH_UTILS_DIR)/cal_t_ave_sph_spectr_data.f90 m_precision.o m_constants.o t_phys_data.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
