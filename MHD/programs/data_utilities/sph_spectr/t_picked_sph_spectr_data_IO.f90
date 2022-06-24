@@ -35,8 +35,6 @@
         integer(kind = kint) :: num_layer = 0
 !>        Number of modes of  monitoring spectrum to be evaluated
         integer(kind = kint) :: num_mode =  0
-!>        Number of modes of monitoring spectrum in each process
-        integer(kind = kint) :: ntot_pick_spectr = 0
 !>        Number of components
         integer(kind = kint) :: ntot_comp = 0
 !>        Number of data for each step
@@ -71,17 +69,18 @@
 !
       type(picked_spectrum_data_IO), intent(inout) :: picked_IO
 !
+      integer(kind = kint) :: ntot_pick_spectr
 !
-      picked_IO%ntot_data                                               &
-     &    = picked_IO%ntot_comp * picked_IO%ntot_pick_spectr
+      ntot_pick_spectr = picked_IO%num_mode * picked_IO%num_layer
+      picked_IO%ntot_data = picked_IO%ntot_comp * ntot_pick_spectr
 !
-      allocate( picked_IO%idx_sph(picked_IO%ntot_pick_spectr,4) )
-      allocate( picked_IO%radius(picked_IO%ntot_pick_spectr) )
+      allocate( picked_IO%idx_sph(ntot_pick_spectr,4) )
+      allocate( picked_IO%radius(ntot_pick_spectr) )
       allocate( picked_IO%d_pk(picked_IO%ntot_data) )
 
       allocate( picked_IO%spectr_name(picked_IO%ntot_comp) )
 !
-      if(picked_IO%ntot_pick_spectr .gt. 0) then
+      if(ntot_pick_spectr .gt. 0) then
         picked_IO%idx_sph = -1
         picked_IO%radius = 0.0d0
         picked_IO%d_pk = 0.0d0

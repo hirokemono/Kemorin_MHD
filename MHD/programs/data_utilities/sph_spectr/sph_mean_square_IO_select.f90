@@ -20,6 +20,11 @@
 !!      subroutine select_output_sph_series_data                        &
 !!     &         (id_file, flag_vol_ave, sph_IN)
 !!        type(read_sph_spectr_data), intent(in) :: sph_IN
+!!
+!!      integer(kind = kint) function lengh_spectr_data_line            &
+!!     &                   (flag_spectr, flag_vol_ave, sph_IN)
+!!        logical, intent(in) :: flag_spectr, flag_vol_ave
+!!        type(read_sph_spectr_data), intent(in) :: sph_IN
 !!@endverbatim
 !
       module sph_mean_square_IO_select
@@ -165,6 +170,33 @@
       end if
 !
       end subroutine select_output_sph_series_data
+!
+!   --------------------------------------------------------------------
+!
+      integer(kind = kint) function lengh_spectr_data_line              &
+     &                   (flag_spectr, flag_vol_ave, sph_IN)
+!
+      logical, intent(in) :: flag_spectr, flag_vol_ave
+      type(read_sph_spectr_data), intent(in) :: sph_IN
+!
+      integer(kind = kint) :: nchara_line
+!
+      if(flag_spectr) then
+        if(flag_vol_ave) then
+          nchara_line = sph_IN%ntot_sph_spec * 25 + 16+25+16
+        else
+          nchara_line = sph_IN%ntot_sph_spec * 25 + 16+25+16+25+16
+        end if
+      else
+        if(flag_vol_ave) then
+          nchara_line = sph_IN%ntot_sph_spec * 25 + 16+25
+        else
+          nchara_line = sph_IN%ntot_sph_spec * 25 + 16+25+16+25
+        end if
+      end if
+      lengh_spectr_data_line = nchara_line
+!
+      end function lengh_spectr_data_line
 !
 !   --------------------------------------------------------------------
 !

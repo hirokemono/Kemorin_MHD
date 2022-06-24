@@ -9,6 +9,8 @@ TARGET_SPH_ENE_LAYER =     ene_sph_layer
 TARGET_PICK_SPH_VOL_ENE =  pick_sph_vol_ene
 TARGET_PICK_SPH_ENE =      pick_sph_ene
 
+TARGET_APPEND_SPH_MONITORS = append_sph_monitors
+
 TARGET_PICK_SPH_SPEC =     pick_sph_spec
 TARGET_PICK_GAUSS_COEF =   pick_gauss_coefs
 
@@ -138,6 +140,21 @@ MPI_picked_sph_mean_sq_IO.o \
 analyzer_pick_rms_sph.o \
 main_pick_rms_sph.o
 
+MOD_APPEND_SPH_MONITORS = \
+append_sph_monitor_files.o \
+t_picked_sph_spectr_data_IO.o \
+t_ctl_data_tave_sph_monitor.o \
+t_ctl_data_append_sph_mntr.o \
+t_read_sph_spectra.o \
+t_gauss_coefs_monitor_IO.o \
+t_ctl_param_sph_series_util.o \
+sph_mean_square_IO_select.o \
+simple_sph_spectr_head_IO.o \
+simple_sph_spectr_data_IO.o \
+gauss_coefs_monitor_IO.o \
+picked_sph_spectr_data_IO.o \
+count_monitor_time_series.o
+
 MOD_PICK_SPH_SPEC = \
 t_ctl_data_4_sph_utils.o \
 t_spheric_data_sph_spetr.o \
@@ -261,6 +278,7 @@ tave_picked_gauss_coefs.o
 
 MOD_T_AVE_PICK_SPH = \
 t_ctl_data_tave_sph_monitor.o \
+t_ctl_param_sph_series_util.o \
 t_picked_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
 picked_sph_spectr_data_IO.o \
@@ -299,6 +317,8 @@ target_list:
 	@echo 'TARGET_PICK_SPH_ENE =     $$(BUILDDIR)/$(TARGET_PICK_SPH_ENE)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_PICK_SPH_SPEC =    $$(BUILDDIR)/$(TARGET_PICK_SPH_SPEC)' \
+	>> $(MAKENAME)
+	@echo 'TARGET_APPEND_SPH_MONITORS = $$(BUILDDIR)/$(TARGET_APPEND_SPH_MONITORS)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_PICK_GAUSS_COEF =  $$(BUILDDIR)/$(TARGET_PICK_GAUSS_COEF)' \
 	>> $(MAKENAME)
@@ -340,7 +360,7 @@ target_task:
 	@echo sph_data_util: \
 	'$$(TARGET_SPH_ENE_SPEC)       $$(TARGET_SPH_ENE_LAYER)' \
 	'$$(TARGET_PICK_SPH_VOL_ENE)   $$(TARGET_PICK_SPH_ENE)'  \
-	'$$(TARGET_PICK_SPH_SPEC)'                               \
+	'$$(TARGET_PICK_SPH_SPEC)      $$(TARGET_APPEND_SPH_MONITORS)' \
 	'$$(TARGET_RENAME_SPH_FLD)     $$(TARGET_DIFF_SPH_SPEC)'  \
 	'$$(TARGET_ZM_SPH_SPEC)        $$(TARGET_T_AVE_SPEC)'      \
 	'$$(TARGET_TAVE_SPH_ENE_SPEC)  $$(TARGET_TAVE_OLD_SPH_ESPEC)'  \
@@ -380,6 +400,14 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_PICK_SPH_ENE)' \
 	'$$(MOD_PICK_SPH_ENE)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_APPEND_SPH_MONITORS)': '$$(MOD_APPEND_SPH_MONITORS)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_APPEND_SPH_MONITORS)' \
+	'$$(MOD_APPEND_SPH_MONITORS)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -537,14 +565,16 @@ mod_list:
 	@echo  MOD_SPH_UTIL_DLL=  \\     >> $(MAKENAME)
 	@echo  $(MOD_SPH_UTIL_DLL)       >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
-	@echo  MOD_SPH_ENE_SPEC=  \\     >> $(MAKENAME)
-	@echo  $(MOD_SPH_ENE_SPEC)       >> $(MAKENAME)
-	@echo  MOD_SPH_ENE_LAYER=  \\    >> $(MAKENAME)
-	@echo  $(MOD_SPH_ENE_LAYER)      >> $(MAKENAME)
-	@echo  MOD_PICK_SPH_VOL_ENE=  \\ >> $(MAKENAME)
-	@echo  $(MOD_PICK_SPH_VOL_ENE)   >> $(MAKENAME)
-	@echo  MOD_PICK_SPH_ENE=  \\     >> $(MAKENAME)
-	@echo  $(MOD_PICK_SPH_ENE)       >> $(MAKENAME)
+	@echo  MOD_SPH_ENE_SPEC=  \\        >> $(MAKENAME)
+	@echo  $(MOD_SPH_ENE_SPEC)          >> $(MAKENAME)
+	@echo  MOD_SPH_ENE_LAYER=  \\       >> $(MAKENAME)
+	@echo  $(MOD_SPH_ENE_LAYER)         >> $(MAKENAME)
+	@echo  MOD_PICK_SPH_VOL_ENE=  \\    >> $(MAKENAME)
+	@echo  $(MOD_PICK_SPH_VOL_ENE)      >> $(MAKENAME)
+	@echo  MOD_PICK_SPH_ENE=  \\        >> $(MAKENAME)
+	@echo  $(MOD_PICK_SPH_ENE)          >> $(MAKENAME)
+	@echo  MOD_APPEND_SPH_MONITORS=  \\ >> $(MAKENAME)
+	@echo  $(MOD_APPEND_SPH_MONITORS)   >> $(MAKENAME)
 	@echo  MOD_PICK_SPH_SPEC=  \\    >> $(MAKENAME)
 	@echo  $(MOD_PICK_SPH_SPEC)      >> $(MAKENAME)
 	@echo  MOD_PICK_GAUSS_COEF=  \\  >> $(MAKENAME)

@@ -11,6 +11,12 @@
 !!     &         (file_name, i_step, end_time, true_start, picked_IO)
 !!        integer(kind = kint), intent(in) :: n_step
 !!        type(picked_spectrum_data_IO), intent(inout) :: picked_IO
+!!      subroutine write_picked_sph_snap                                &
+!!     &         (id_pick, i_step, time, picked_IO)
+!!        integer(kind = kint), intent(in) :: id_pick
+!!        integer(kind = kint), intent(in) :: i_step
+!!        real(kind = kreal), intent(in) :: time
+!!        type(picked_spectrum_data_IO), intent(in) :: picked_IO
 !!
 !!      subroutine check_picked_sph_spectr(file_name, picked_IO)
 !!      subroutine load_picked_sph_spectr_series                        &
@@ -22,6 +28,7 @@
 !!        real(kind = kreal), intent(inout) :: true_start, true_end
 !!        type(picked_spectrum_data_IO), intent(inout) :: picked_IO
 !!      subroutine read_pick_series_head(id_pick, picked_IO)
+!!      subroutine read_pick_series_comp_name(id_pick, picked_IO)
 !!      subroutine read_sph_spec_monitor                                &
 !!     &         (id_pick, i_step, time, picked_IO, ierr)
 !!@endverbatim
@@ -43,9 +50,6 @@
 !
 !>      File ID for spectrum monitor file
       integer(kind = kint), parameter :: id_pick_mode = 22
-!
-      private :: read_pick_series_head, read_pick_series_comp_name
-      private :: read_sph_spec_monitor
 !
 ! -----------------------------------------------------------------------
 !
@@ -74,7 +78,7 @@
      &     position='append')
 !
       write(*,'(a,3i16)') hd_pick_sph_head(), picked_IO%num_layer,      &
-     &        picked_IO%num_mode, picked_IO%ntot_pick_spectr
+     &        picked_IO%num_mode
       write(*,'(a,i16)') hd_pick_sph_num(), picked_IO%ntot_comp
 !
       write(*,'(a)')  '#   Start and end time'
@@ -82,8 +86,8 @@
 !
       write(id_pick_mode,'(a)')    '#'
       write(id_pick_mode,'(a)')    '# num_layers, num_spectr'
-      write(id_pick_mode,'(3i16)') picked_IO%num_layer,                 &
-     &           picked_IO%num_mode, picked_IO%ntot_pick_spectr
+      write(id_pick_mode,'(2i16)') picked_IO%num_layer,                 &
+     &                            picked_IO%num_mode
       write(id_pick_mode,'(a)')    '# number of component'
       write(id_pick_mode,'(i16)') picked_IO%ntot_comp
 !
@@ -93,24 +97,41 @@
 !
       call write_multi_labels(id_pick_mode, picked_IO%ntot_comp,        &
      &    picked_IO%spectr_name)
-!
-      do ipick = 1, picked_IO%ntot_pick_spectr
-          ist = (ipick-1) * picked_IO%ntot_comp
-          write(id_pick_mode,'(i16,1pe25.14e3)', advance='NO')          &
-     &               i_step, end_time
-          write(id_pick_mode,'(i16,1pe25.14e3,2i16)', advance='NO')     &
-     &            picked_IO%idx_sph(ipick,1), picked_IO%radius(ipick),  &
-     &            picked_IO%idx_sph(ipick,3:4)
-          do i_fld = 1, picked_IO%ntot_comp
-            write(id_pick_mode,'(1pe25.14e3)', advance='NO')            &
-     &            picked_IO%d_pk(ist+i_fld)
-          end do
-          write(id_pick_mode,'(a)') ''
-      end do
-!
+      call write_picked_sph_snap                                        &
+     &   (id_pick_mode, i_step, end_time, picked_IO)
       close(id_pick_mode)
 !
       end subroutine write_tave_sph_spec_monitor
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_picked_sph_snap                                  &
+     &         (id_pick, i_step, time, picked_IO)
+!
+      integer(kind = kint), intent(in) :: id_pick
+      integer(kind = kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: time
+!
+      type(picked_spectrum_data_IO), intent(in) :: picked_IO
+!
+      integer(kind = kint) :: ipick, i_fld, ist
+!
+!
+      do ipick = 1, picked_IO%num_layer * picked_IO%num_mode
+          ist = (ipick-1) * picked_IO%ntot_comp
+          write(id_pick,'(i16,1pe25.14e3)', advance='NO')               &
+     &               i_step, time
+          write(id_pick,'(i16,1pe25.14e3,2i16)', advance='NO')          &
+     &            picked_IO%idx_sph(ipick,1), picked_IO%radius(ipick),  &
+     &            picked_IO%idx_sph(ipick,3:4)
+          do i_fld = 1, picked_IO%ntot_comp
+            write(id_pick,'(1pe25.14e3)', advance='NO')                 &
+     &            picked_IO%d_pk(ist+i_fld)
+          end do
+          write(id_pick,'(a)') ''
+      end do
+!
+      end subroutine write_picked_sph_snap
 !
 ! -----------------------------------------------------------------------
 !
@@ -119,7 +140,7 @@
       character(len=kchara), intent(in) :: file_name
       type(picked_spectrum_data_IO), intent(inout) :: picked_IO
 !
-      integer(kind = kint) :: ierr, i
+      integer(kind = kint) :: ierr, i, j
       integer(kind = kint) :: i_start, i_end
       real(kind = kreal) :: start_time, end_time
 !
@@ -142,8 +163,9 @@
       write(*,*) 'End step and time: ', i_end, end_time
 !
       write(*,*) 'Saved hermonics mode:'
-      do i = 1, picked_IO%ntot_pick_spectr, picked_IO%num_layer
-        write(*,*) i, picked_IO%idx_sph(i,3:4)
+      do i = 1, picked_IO%num_mode
+        j = 1 + (i-1) * picked_IO%num_layer
+        write(*,*) i, picked_IO%idx_sph(j,3:4)
       end do
       write(*,*) 'Saved radial points:'
       do i = 1, picked_IO%num_layer
@@ -172,7 +194,7 @@
       real(kind = kreal), intent(inout) :: true_start, true_end
       type(picked_spectrum_data_IO), intent(inout) :: picked_IO
 !
-      integer(kind = kint) :: num_count
+      integer(kind = kint) :: num_count, num
 !
 !
       write(*,*) 'Open file: ', trim(file_name)
@@ -181,8 +203,8 @@
       call alloc_pick_sph_monitor_IO(picked_IO)
       call read_pick_series_comp_name(id_pick_mode, picked_IO)
 !
-      call s_count_monitor_time_series                                  &
-     &   (flag_log, id_pick_mode, picked_IO%ntot_pick_spectr,           &
+      num = picked_IO%num_mode * picked_IO%num_layer
+      call s_count_monitor_time_series(flag_log, id_pick_mode, num,     &
      &    start_time, end_time, true_start, true_end, num_count)
       rewind(id_pick_mode)
 !
@@ -248,14 +270,7 @@
 !
 !
       call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*,err=89) picked_IO%num_layer,                      &
-     &               picked_IO%num_mode, picked_IO%ntot_pick_spectr
-      go to 10
-!
-  89  continue
-         picked_IO%ntot_pick_spectr                                     &
-     &      = picked_IO%num_mode * picked_IO%num_layer
-  10  continue
+      read(tmpchara,*) picked_IO%num_layer, picked_IO%num_mode
 !
       call skip_comment(tmpchara,id_pick)
       read(tmpchara,*) picked_IO%ntot_comp
@@ -294,7 +309,7 @@
 !
 !
       ierr = 0
-      do ipick = 1, picked_IO%ntot_pick_spectr
+      do ipick = 1, picked_IO%num_mode * picked_IO%num_layer
         ist = (ipick-1) * picked_IO%ntot_comp
         read(id_pick,*,err=99,end=99) i_step, time,                     &
      &     picked_IO%idx_sph(ipick,1), picked_IO%radius(ipick),         &

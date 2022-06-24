@@ -10,7 +10,10 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    picked_sph_prefix        'picked_mode'
+!!    array picked_sph_prefix
+!!      picked_sph_prefix        'monitor/picked_mode'
+!!      picked_sph_prefix        'monitor/picked_mode_l2_m0c'
+!!    end array picked_sph_prefix
 !!  end time_averaging_sph_monitor
 !! -----------------------------------------------------------------
 !
@@ -20,65 +23,27 @@
       use m_constants
 !
       use t_ctl_data_tave_sph_monitor
+      use t_ctl_param_sph_series_util
       use time_ave_picked_sph_spectr
 !
       implicit  none
 !
 !>      Structure for control data
       type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
+      type(sph_spectr_file_param), save :: spec_evo_p1
 !
-      character(len=kchara) :: file_name
-      real(kind = kreal) :: start_time, end_time
-!
+      integer(kind = kint) :: i
 !
       call read_control_file_sph_monitor(0, tave_sph_ctl1)
-      call set_ctl_tave_picked_sph_spectr                               &
-     &   (tave_sph_ctl1, file_name, start_time, end_time)
-      call s_time_ave_picked_sph_spectr                                 &
-     &   (.TRUE., file_name, start_time, end_time)
+      call set_spec_series_file_and_time(tave_sph_ctl1, spec_evo_p1)
+!
+      do i = 1, spec_evo_p1%pick_spec_series%num_file
+        call s_time_ave_picked_sph_spectr                               &
+     &     (.TRUE., spec_evo_p1%pick_spec_series%evo_file_name(i),      &
+     &      spec_evo_p1%start_time, spec_evo_p1%end_time)
+      end do
 !
       write(*,*) '***** program finished *****'
       stop
-!
-! -------------------------------------------------------------------
-!
-      contains
-!
-! -------------------------------------------------------------------
-!
-      subroutine set_ctl_tave_picked_sph_spectr                         &
-     &         (tave_sph_ctl, file_name, start_time, end_time)
-!
-      use set_parallel_file_name
-!
-      type(tave_sph_monitor_ctl), intent(in) :: tave_sph_ctl
-      character(len=kchara), intent(inout) :: file_name
-      real(kind = kreal), intent(inout) :: start_time, end_time
-!
-      character(len=kchara) :: evo_header
-!
-!
-      if(tave_sph_ctl%picked_mode_head_ctl%iflag .eq. 0) then
-        write(*,*) 'Set File prefix for Gauss coefficients'
-        stop
-      end if
-      evo_header = tave_sph_ctl%picked_mode_head_ctl%charavalue
-      file_name = add_dat_extension(evo_header)
-!
-      if(tave_sph_ctl%start_time_ctl%iflag .eq. 0) then
-        write(*,*) 'Set start time'
-        stop
-      end if
-      start_time = tave_sph_ctl%start_time_ctl%realvalue
-!
-      if(tave_sph_ctl%end_time_ctl%iflag .eq. 0) then
-        write(*,*) 'Set end time'
-        stop
-      end if
-      end_time = tave_sph_ctl%end_time_ctl%realvalue
-!
-      end subroutine set_ctl_tave_picked_sph_spectr
-!
-! -------------------------------------------------------------------
 !
       end program tave_picked_sph_spec_data

@@ -167,7 +167,7 @@
       call alloc_sph_1d_index_rj(sph_rj)
       call alloc_neutral_point(pick_IO%num_layer, ntl)
 !
-      do i = 1, pick_IO%ntot_pick_spectr
+      do i = 1, pick_IO%num_mode * pick_IO%num_layer
         k = pick_IO%idx_sph(i,1)
         sph_rj%radius_1d_rj_r(k) = pick_IO%radius(i)
         if(pick_IO%idx_sph(i,2) .eq. 0) then

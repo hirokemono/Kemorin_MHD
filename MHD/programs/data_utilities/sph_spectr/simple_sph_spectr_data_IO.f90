@@ -144,11 +144,14 @@
       integer(kind = kint), intent(in) :: id_file
       type(read_sph_spectr_data), intent(in) :: sph_IN
 !
+      integer(kind = kint) :: num
+      character(len=kchara) :: fmt_txt
 !
-      write(id_file,1000) sph_IN%i_step, sph_IN%time,                   &
+!
+      write(fmt_txt,'(a16,i5,a15)') '(i16,1pE25.15e3,',                 &
+     &                  sph_IN%ntot_sph_spec, '(1p255E25.15e3))'
+      write(id_file,fmt_txt) sph_IN%i_step, sph_IN%time,                &
      &                  sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,0,1)
-!
- 1000 format(i16,1pE25.15e3,1p255E25.15e3)
 !
       end subroutine write_vol_sph_data
 !
@@ -160,15 +163,16 @@
       type(read_sph_spectr_data), intent(in) :: sph_IN
 !
       integer(kind = kint) :: lth
+      character(len=kchara) :: fmt_txt
 !
 !
+      write(fmt_txt,'(a20,i5,a15)')  '(i16,1pE25.15e3,i16,',            &
+     &                     sph_IN%ntot_sph_spec, '(1p255E25.15e3))'
       do lth = 0, sph_IN%ltr_sph
-        write(id_file,1000)                                             &
+        write(id_file,fmt_txt)                                          &
      &               sph_IN%i_step, sph_IN%time, sph_IN%i_mode(lth),    &
      &               sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,lth,1)
       end do
-!
- 1000 format(i16,1pE25.15e3,i16,1p255E25.15e3)
 !
       end subroutine write_vol_spectr_data
 !
@@ -181,15 +185,16 @@
       type(read_sph_spectr_data), intent(in) :: sph_IN
 !
       integer(kind = kint) :: kr
+      character(len=kchara) :: fmt_txt
 !
 !
+      write(fmt_txt,'(a31,i5,a15)')  '(i16,1pE25.15e3,i16,1pE25.15e3,', &
+     &                     sph_IN%ntot_sph_spec, '(1p255E25.15e3))'
       do kr = 1, sph_IN%nri_sph
-        write(id_file,1000) sph_IN%i_step, sph_IN%time,                 &
+        write(id_file,fmt_txt) sph_IN%i_step, sph_IN%time,              &
      &         sph_IN%kr_sph(kr), sph_IN%r_sph(kr),                     &
      &         sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,0,kr)
       end do
-!
- 1000 format(i16,1pE25.15e3,i16,1pE25.15e3,1p255E25.15e3)
 !
       end subroutine write_layer_sph_data
 !
@@ -201,17 +206,19 @@
       type(read_sph_spectr_data), intent(in) :: sph_IN
 !
       integer(kind = kint) :: kr, lth
+      character(len=kchara) :: fmt_txt
 !
 !
+      write(fmt_txt,'(a35,i5,a15)')                                     &
+     &            '(i16,1pE25.15e3,i16,1pE25.15e3,i16,',                &
+     &              sph_IN%ntot_sph_spec, '(1p255E25.15e3))'
       do kr = 1, sph_IN%nri_sph
         do lth = 0, sph_IN%ltr_sph
-          write(id_file,1000) sph_IN%i_step, sph_IN%time,               &
+          write(id_file,fmt_txt) sph_IN%i_step, sph_IN%time,            &
      &         sph_IN%kr_sph(kr), sph_IN%r_sph(kr), sph_IN%i_mode(lth), &
      &         sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,lth,kr)
         end do
       end do
-!
- 1000 format(i16,1pE25.15e3,i16,1pE25.15e3,i16,1p255E25.15e3)
 !
       end subroutine write_layer_spectr_data
 !

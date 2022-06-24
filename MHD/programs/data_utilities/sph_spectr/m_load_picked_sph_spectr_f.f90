@@ -145,7 +145,7 @@
       end if
 !
       id_mode = 0
-      do i = 1, pick_IO_p%ntot_pick_spectr
+      do i = 1, pick_IO_p%num_layer * pick_IO_p%num_sph_mode
         if(    radius_id .eq. pick_IO_p%idx_sph(i,1)                    &
      &   .and. in_degree .eq. pick_IO_p%idx_sph(i,3)                    &
      &   .and. in_order .eq.  pick_IO_p%idx_sph(i,4)) then

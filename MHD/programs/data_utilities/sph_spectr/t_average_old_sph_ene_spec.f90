@@ -62,35 +62,35 @@
       integer :: i
 !
       call read_control_file_sph_monitor(0, tave_sph_ctl1)
-      call set_spec_series_file_param(tave_sph_ctl1, spec_evo_p1)
+      call set_spec_series_file_and_time(tave_sph_ctl1, spec_evo_p1)
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
-      do i = 1, spec_evo_p1%nfile_vol_series_file
-        write(*,*) i, trim(spec_evo_p1%vol_series_file_name(i))
+      do i = 1, spec_evo_p1%vol_series%num_file
         call time_ave_sdev_sph_old_spectr                               &
-     &     (spec_evo_p1%vol_series_file_name(i), .FALSE., .TRUE.,       &
+     &     (spec_evo_p1%vol_series%evo_file_name(i),                    &
+     &      spectr_off, volume_on,                                      &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
-      do i = 1, spec_evo_p1%nfile_vol_spectr_file
-        write(*,*) i, trim(spec_evo_p1%vol_spectr_file_name(i))
+      do i = 1, spec_evo_p1%vol_spec_series%num_file
         call time_ave_sdev_sph_old_spectr                               &
-     &     (spec_evo_p1%vol_spectr_file_name(i), .TRUE.,  .TRUE.,       &
+     &     (spec_evo_p1%vol_spec_series%evo_file_name(i),               &
+     &      spectr_on, volume_on,                                       &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
 !
-      do i = 1, spec_evo_p1%nfile_layer_series_file
-        write(*,*) i, trim(spec_evo_p1%layer_series_file_name(i))
+      do i = 1, spec_evo_p1%layer_series%num_file
         call time_ave_sdev_sph_old_spectr                               &
-     &     (spec_evo_p1%layer_series_file_name(i), .FALSE., .FALSE.,    &
+     &     (spec_evo_p1%layer_series%evo_file_name(i),                  &
+     &      spectr_off, volume_off,                                     &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
-      do i = 1, spec_evo_p1%nfile_layer_sprctr_file
-        write(*,*) i, trim(spec_evo_p1%layer_spectr_file_name(i))
+      do i = 1, spec_evo_p1%layer_spec_series%num_file
         call time_ave_sdev_sph_old_spectr                               &
-     &     (spec_evo_p1%layer_spectr_file_name(i), .TRUE., .FALSE.,     &
+     &     (spec_evo_p1%layer_spec_series%evo_file_name(i),             &
+     &      spectr_on, volume_off,                                      &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !

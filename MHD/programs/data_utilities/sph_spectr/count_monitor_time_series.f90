@@ -11,6 +11,13 @@
 !!        Character(1,C_char), Intent(In) :: string(*)
 !!        Character(:,C_char), Allocatable :: c_to_fstring
 !!
+!!      subroutine read_write_line_text(id_read, id_write,              &
+!!     &                                nchara_line, line_text, ierr)
+!!        integer(kind = kint), intent(in) :: id_read, id_write
+!!        integer(kind = kint), intent(in) :: nchara_line
+!!        character(len = 1), intent(inout) :: line_text(nchara_line)
+!!        integer(kind = kint), intent(inout) :: ierr
+!!
 !!      subroutine s_count_monitor_time_series                          &
 !!     &         (flag_log, id_file, nitem_snap, start_time, end_time,  &
 !!     &          true_start, true_end, num_count)
@@ -66,6 +73,33 @@
       end function c_to_fstring
 !
 ! -------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine read_write_line_text(id_read, id_write,                &
+     &                                nchara_line, line_text, ierr)
+!
+      integer(kind = kint), intent(in) :: id_read, id_write
+      integer(kind = kint), intent(in) :: nchara_line
+!
+      character(len = 1), intent(inout) :: line_text(nchara_line)
+      integer(kind = kint), intent(inout) :: ierr
+!
+      character(len=kchara) :: fmt_txt
+!
+!
+      write(fmt_txt,'(a1,i5,a5)') '(', nchara_line, '(a1))'
+      ierr = 0
+      read(id_read,fmt_txt,err=99,end=99) line_text(1:nchara_line)
+      write(id_write,fmt_txt) line_text(1:nchara_line)
+      return
+!
+   99 continue
+      ierr = 1
+      return
+!
+      end subroutine read_write_line_text
+!
+!   --------------------------------------------------------------------
 !
       subroutine s_count_monitor_time_series                            &
      &         (flag_log, id_file, nitem_snap, start_time, end_time,    &

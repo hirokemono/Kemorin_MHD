@@ -37,7 +37,6 @@
       integer(kind = kint), parameter :: id_gauss_coef = 23
 !
       private :: open_gauss_coefs_4_monitor, read_gauss_coefs_series
-      private :: read_gauss_coefs_header, read_gauss_coefs_labels
       private :: read_gauss_coefs_4_monitor
 !
 ! -----------------------------------------------------------------------

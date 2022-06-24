@@ -13,7 +13,8 @@
 !!
 !!      subroutine copy_read_ene_params_4_sum(sph_IN, sph_OUT)
 !!      subroutine copy_read_ene_step_data(sph_IN, sph_OUT)
-!!      subroutine copy_ene_spectr_data_to_IO(nri_sph, ltr_sph, ncomp,  &
+!!      subroutine copy_ene_spectr_data_to_IO(sph_IN, sph_OUT)
+!!      subroutine copy_part_ene_spectr_to_IO(nri_sph, ltr_sph, ncomp,  &
 !!     &          spectr_l, sph_OUT)
 !!        integer(kind = kint), intent(in) :: nri_sph, ltr_sph
 !!        integer(kind = kint), intent(in) :: ncomp
@@ -203,18 +204,43 @@
 !
       sph_OUT%time = sph_IN%time
       sph_OUT%i_step = sph_IN%i_step
+!$omp parallel workshare
       sph_OUT%kr_sph(1:sph_OUT%nri_sph)                                 &
      &      = sph_IN%kr_sph(1:sph_OUT%nri_sph)
       sph_OUT%r_sph(1:sph_OUT%nri_sph)                                  &
      &      = sph_IN%r_sph(1:sph_OUT%nri_sph)
+!$omp end parallel workshare
+!$omp parallel workshare
       sph_OUT%i_mode(0:sph_OUT%ltr_sph)                                 &
      &                 = sph_IN%i_mode(0:sph_OUT%ltr_sph)
+!$omp end parallel workshare
 !
       end subroutine copy_read_ene_step_data
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_ene_spectr_data_to_IO(nri_sph, ltr_sph, ncomp,    &
+      subroutine copy_ene_spectr_data_to_IO(sph_IN, sph_OUT)
+!
+      type(read_sph_spectr_data), intent(in) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
+      integer(kind = kint) :: nri_sph, ltr_sph
+      integer(kind = kint) :: ncomp
+!
+!
+      nri_sph = sph_OUT%nri_sph
+      ltr_sph = sph_OUT%ltr_sph
+      ncomp = sph_OUT%ntot_sph_spec
+!$omp parallel workshare
+      sph_OUT%spectr_IO(1:ncomp,0:ltr_sph,1:nri_sph)                    &
+     &        = sph_in%spectr_IO(1:ncomp,0:ltr_sph,1:nri_sph)
+!$omp end parallel workshare
+!
+      end subroutine copy_ene_spectr_data_to_IO
+!
+!   --------------------------------------------------------------------
+!
+      subroutine copy_part_ene_spectr_to_IO(nri_sph, ltr_sph, ncomp,    &
      &          spectr_l, sph_OUT)
 !
       integer(kind = kint), intent(in) :: nri_sph, ltr_sph
@@ -229,7 +255,7 @@
      &        = spectr_l(1:ncomp,0:ltr_sph,1:nri_sph)
 !$omp end parallel workshare
 !
-      end subroutine copy_ene_spectr_data_to_IO
+      end subroutine copy_part_ene_spectr_to_IO
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

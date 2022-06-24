@@ -98,13 +98,13 @@
      &        sph_IN%spectr_IO, max_spectr, max_degree)
           icou = icou + 1
 !
-          call copy_ene_spectr_data_to_IO                               &
+          call copy_part_ene_spectr_to_IO                               &
      &       (sph_IN%nri_sph, izero, sph_IN%ntot_sph_spec,              &
      &        max_spectr, sph_OUT1)
           call select_output_sph_series_data                            &
      &       (id_file_maxval, spectr_off, flag_vol_ave, sph_OUT1)
 !
-          call copy_ene_spectr_data_to_IO                               &
+          call copy_part_ene_spectr_to_IO                               &
      &       (sph_IN%nri_sph, izero, sph_IN%ntot_sph_spec,              &
      &        max_degree, sph_OUT1)
           call select_output_sph_series_data                            &
