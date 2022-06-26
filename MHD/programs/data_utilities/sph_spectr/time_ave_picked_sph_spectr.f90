@@ -66,6 +66,7 @@
 !
       use picked_sph_spectr_data_IO
       use count_monitor_time_series
+      use set_parallel_file_name
 !
       logical, intent(in) :: flag_log
       character(len=kchara), intent(in) :: file_name
@@ -75,18 +76,24 @@
       real(kind = kreal), allocatable :: ave_spec(:)
       real(kind = kreal), allocatable :: rms_spec(:)
 !
+      character(len=kchara) :: directory, fname_no_dir, fname_tmp
       character(len=kchara) :: tave_fname
       character(len=kchara) :: trms_fname
       character(len=kchara) :: sdev_fname
       integer(kind = kint), parameter :: id_pick = 15
 !
-      integer(kind = kint) :: i_step
+      integer(kind = kint) :: i_step, i, k, nd
       real(kind = kreal) :: true_start, true_end
 !
 !
-      write(tave_fname,'(a6,a)') 't_ave_', trim(file_name)
-      write(trms_fname,'(a6,a)') 't_rms_', trim(file_name)
-      write(sdev_fname,'(a8,a)') 't_sigma_', trim(file_name)
+      call split_directory(file_name, directory, fname_no_dir)
+!
+      write(fname_tmp,'(a6,a)') 't_ave_', trim(fname_no_dir)
+      tave_fname = append_directory(directory, fname_tmp)
+      write(fname_tmp,'(a6,a)') 't_rms_', trim(fname_no_dir)
+      trms_fname = append_directory(directory, fname_tmp)
+      write(fname_tmp,'(a8,a)') 't_sigma_', trim(fname_no_dir)
+      sdev_fname = append_directory(directory, fname_tmp)
 !
 !      Load picked mode file
       if(flag_log) call check_picked_sph_spectr(file_name, pick_IO_a)

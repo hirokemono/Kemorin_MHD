@@ -13,6 +13,14 @@
 !!      subroutine split_extrension(file_name, prefix, extension)
 !!        character(len = kchara), intent(in) :: file_name
 !!        character(len = kchara), intent(inout) :: prefix, extension!!
+!!      subroutine split_directory(file_name, directory, fname_no_dir)
+!!        character(len = kchara), intent(in) :: file_name
+!!        character(len = kchara), intent(inout) :: directory
+!!        character(len = kchara), intent(inout) :: fname_no_dir
+!!      character(len = kchara) function                                &
+!!     &             append_directory(directory, fname_no_dir)
+!!        character(len = kchara), intent(in) :: directory
+!!        character(len = kchara), intent(in) :: fname_no_dir
 !!
 !!      character(len = kchara) function add_process_id                 &
 !!     &                               (id_rank, file_head)
@@ -120,7 +128,59 @@
       write(extension,fmt_txt) file_name(lengh_prefix+2:length_name)
 !
       end subroutine split_extrension
-
+!
+!-----------------------------------------------------------------------
+!
+      subroutine split_directory(file_name, directory, fname_no_dir)
+!
+      character(len = kchara), intent(in) :: file_name
+      character(len = kchara), intent(inout) :: directory
+      character(len = kchara), intent(inout) :: fname_no_dir
+!
+      integer(kind = kint) :: length_name, lengh_dir, lengh_nodir, i
+      character(len=kchara) :: fmt_txt
+!
+!
+      length_name = len_trim(file_name)
+      lengh_dir = 0
+      do i = len_trim(file_name), 1, -1
+        if(file_name(i:i) .eq. '/') then
+          lengh_dir = i-1
+          exit
+        end if
+      end do
+      lengh_nodir = length_name - lengh_dir - 1
+!
+      if(lengh_dir .le. 0) then
+        write(directory,'(a1)') char(0)
+      else
+        write(fmt_txt,'(a2,i4,a1)') '(a',lengh_dir,')'
+        write(directory,fmt_txt) file_name(1:lengh_dir)
+      end if
+      write(fmt_txt,'(a2,i4,a1)') '(a',lengh_nodir,')'
+      write(fname_no_dir,fmt_txt) file_name(lengh_dir+2:length_name)
+!
+      end subroutine split_directory
+!
+!-----------------------------------------------------------------------
+!
+      character(len = kchara) function                                  &
+     &             append_directory(directory, fname_no_dir)
+!
+      character(len = kchara), intent(in) :: directory
+      character(len = kchara), intent(in) :: fname_no_dir
+!
+!
+      if(directory(1:1) .eq. char(0)) then
+        append_directory = fname_no_dir
+      else
+        write(append_directory,'(a,a1,a)')                              &
+     &                         trim(directory), '/', trim(fname_no_dir)
+      end if
+!
+      end function append_directory
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       character(len = kchara) function add_process_id                   &
