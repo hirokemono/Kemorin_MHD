@@ -1,5 +1,5 @@
-!>@file  read_udt_from_bindary_data.f90
-!!       module read_udt_from_bindary_data
+!>@file  read_udt_from_binary_data.f90
+!!       module read_udt_from_binary_data
 !!
 !!@author H. Matsui
 !!@date   Programmed in Ma, 2015
@@ -17,7 +17,7 @@
 !!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!@endverbatim
 !
-      module read_udt_from_bindary_data
+      module read_udt_from_binary_data
 !
       use m_precision
       use m_constants
@@ -172,4 +172,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_udt_from_bindary_data
+      end module read_udt_from_binary_data

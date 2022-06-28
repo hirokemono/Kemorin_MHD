@@ -46,7 +46,7 @@
       subroutine read_alloc_psf_bin_grid(file_name, ucd_b)
 !
       use binary_IO
-      use read_udt_from_bindary_data
+      use read_udt_from_binary_data
 !
       character(len = kchara), intent(in) :: file_name
       type(ucd_data), intent(inout) :: ucd_b
@@ -68,7 +68,7 @@
       subroutine read_alloc_psf_bin_file(file_name, t_IO, ucd_b)
 !
       use binary_IO
-      use read_udt_from_bindary_data
+      use read_udt_from_binary_data
 !
       character(len = kchara), intent(in) :: file_name
       type(time_data), intent(inout) :: t_IO
@@ -92,7 +92,7 @@
       subroutine read_alloc_iso_bin_file(file_name, t_IO, ucd_b)
 !
       use binary_IO
-      use read_udt_from_bindary_data
+      use read_udt_from_binary_data
 !
       character(len = kchara), intent(in) :: file_name
       type(time_data), intent(inout) :: t_IO
@@ -121,7 +121,7 @@
       subroutine read_alloc_nostep_psf_bin_file(file_name, ucd_b)
 !
       use binary_IO
-      use read_udt_from_bindary_data
+      use read_udt_from_binary_data
 !
       character(len = kchara), intent(in) :: file_name
       type(ucd_data), intent(inout) :: ucd_b
@@ -145,7 +145,7 @@
       subroutine read_alloc_nostep_iso_bin_file(file_name, ucd_b)
 !
       use binary_IO
-      use read_udt_from_bindary_data
+      use read_udt_from_binary_data
 !
       character(len = kchara), intent(in) :: file_name
       type(ucd_data), intent(inout) :: ucd_b
@@ -173,7 +173,7 @@
       subroutine read_psf_bin_grid(file_name, ucd_b)
 !
       use binary_IO
-      use read_udt_from_bindary_data
+      use read_udt_from_binary_data
 !
       character(len = kchara), intent(in) :: file_name
       type(ucd_data), intent(inout) :: ucd_b
@@ -194,7 +194,7 @@
       subroutine read_psf_bin_file(file_name, t_IO, ucd_b)
 !
       use binary_IO
-      use read_udt_from_bindary_data
+      use read_udt_from_binary_data
 !
       character(len = kchara), intent(in) :: file_name
       type(time_data), intent(inout) :: t_IO
@@ -219,7 +219,7 @@
       subroutine read_iso_bin_file(file_name, t_IO, ucd_b)
 !
       use binary_IO
-      use read_udt_from_bindary_data
+      use read_udt_from_binary_data
 !
       character(len = kchara), intent(in) :: file_name
       type(time_data), intent(inout) :: t_IO
