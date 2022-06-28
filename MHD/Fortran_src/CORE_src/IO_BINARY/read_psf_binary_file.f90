@@ -7,18 +7,16 @@
 !> @brief read binary section file
 !!
 !!@verbatim
-!!      subroutine read_alloc_psf_bin_grid(file_name, nprocs, ucd_b)
-!!      subroutine read_alloc_psf_bin_file                              &
-!!     &         (file_name, nprocs, t_IO, ucd_b)
+!!      subroutine read_alloc_psf_bin_grid(file_name, ucd_b)
+!!      subroutine read_alloc_psf_bin_file(file_name, t_IO, ucd_b)
 !!      subroutine read_alloc_iso_bin_file(file_name, t_IO, ucd_b)
-!!      subroutine read_alloc_nostep_psf_bin_file                       &
-!!     &         (file_name, nprocs, ucd_b)
+!!      subroutine read_alloc_nostep_psf_bin_file(file_name, ucd_b)
 !!      subroutine read_alloc_nostep_iso_bin_file(file_name, ucd_b)
 !!        character(len = kchara), intent(in) :: file_name
 !!        type(ucd_data), intent(inout) :: ucd_b
 !!
 !!      subroutine read_psf_bin_grid(file_name, nprocs, ucd_b)
-!!      subroutine read_psf_bin_file(file_name, nprocs, t_IO, ucd_b)
+!!      subroutine read_psf_bin_file(file_name, t_IO, ucd_b)
 !!      subroutine read_iso_bin_file(file_name, t_IO, ucd_b)
 !!        character(len = kchara), intent(in) :: file_name
 !!        type(ucd_data), intent(inout) :: ucd_b
@@ -45,52 +43,47 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_alloc_psf_bin_grid(file_name, nprocs, ucd_b)
+      subroutine read_alloc_psf_bin_grid(file_name, ucd_b)
 !
       use binary_IO
       use read_udt_from_bindary_data
 !
-      integer, intent(inout) :: nprocs
       character(len = kchara), intent(in) :: file_name
       type(ucd_data), intent(inout) :: ucd_b
+!
+      integer :: np_read
 !
 !
       write(*,*) 'read binary section grid: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
-      call read_one_integer_b(bbuf_ucd, nprocs)
-      allocate(itmp1_mp(nprocs))
+      call read_one_integer_b(bbuf_ucd, np_read)
 !
-      call read_alloc_psf_bin_grid_data                                 &
-     &   (nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_alloc_psf_bin_grid_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
-      deallocate(itmp1_mp)
 !
       end subroutine read_alloc_psf_bin_grid
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_alloc_psf_bin_file                                &
-     &         (file_name, nprocs, t_IO, ucd_b)
+      subroutine read_alloc_psf_bin_file(file_name, t_IO, ucd_b)
 !
       use binary_IO
       use read_udt_from_bindary_data
 !
-      integer, intent(in) :: nprocs
       character(len = kchara), intent(in) :: file_name
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd_b
 !
+      integer :: np_read
+!
 !
       write(*,*) 'read binary section data: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
-      allocate(itmp1_mp(nprocs))
 !
-      call read_psf_bin_time_data(nprocs,                               &
+      call read_psf_bin_time_data(np_read,                              &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt, bbuf_ucd)
-      call read_alloc_psf_bin_field_data                                &
-     &   (nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_alloc_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
-      deallocate(itmp1_mp)
 !
       end subroutine read_alloc_psf_bin_file
 !
@@ -105,21 +98,18 @@
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd_b
 !
-      integer :: nprocs
+      integer :: np_read
 !
 !
       write(*,*) 'read binary isosurface file: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
-      call read_one_integer_b(bbuf_ucd, nprocs)
-      allocate(itmp1_mp(nprocs))
+      call read_one_integer_b(bbuf_ucd, np_read)
 !
-      call read_alloc_psf_bin_grid_data                                 &
-     &   (nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_alloc_psf_bin_grid_data(np_read, ucd_b, bbuf_ucd)
 !
-      call read_psf_bin_time_data(nprocs,                               &
+      call read_psf_bin_time_data(np_read,                              &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt, bbuf_ucd)
-      call read_alloc_psf_bin_field_data                                &
-     &   (nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_alloc_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
       deallocate(itmp1_mp)
 !
@@ -128,28 +118,23 @@
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_alloc_nostep_psf_bin_file                         &
-     &         (file_name, nprocs, ucd_b)
+      subroutine read_alloc_nostep_psf_bin_file(file_name, ucd_b)
 !
       use binary_IO
       use read_udt_from_bindary_data
 !
-      integer, intent(in) :: nprocs
       character(len = kchara), intent(in) :: file_name
       type(ucd_data), intent(inout) :: ucd_b
 !
-      integer :: nprocs2
+      integer :: np_read
 !
 !
       write(*,*) 'read binary section data: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
-      allocate(itmp1_mp(nprocs))
 !
-      call read_one_integer_b(bbuf_ucd, nprocs2)
-      if(nprocs2 .ne. nprocs) stop 'Wrong mesh and field data'
+      call read_one_integer_b(bbuf_ucd, np_read)
 !
-      call read_alloc_psf_bin_field_data                                &
-     &   (nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_alloc_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
       deallocate(itmp1_mp)
 !
@@ -165,75 +150,67 @@
       character(len = kchara), intent(in) :: file_name
       type(ucd_data), intent(inout) :: ucd_b
 !
-      integer :: nprocs, nprocs2
+      integer :: np_read, nprocs2
 !
 !
       write(*,*) 'read binary isosurface file: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
-      call read_one_integer_b(bbuf_ucd, nprocs)
-      allocate(itmp1_mp(nprocs))
+      call read_one_integer_b(bbuf_ucd, np_read)
 !
-      call read_alloc_psf_bin_grid_data                                 &
-     &   (nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_alloc_psf_bin_grid_data(np_read, ucd_b, bbuf_ucd)
 !
       call read_one_integer_b(bbuf_ucd, nprocs2)
-      if(nprocs2 .ne. nprocs) stop 'Wrong mesh and field data'
+      if(nprocs2 .ne. np_read) stop 'Wrong mesh and field data'
 !
-      call read_alloc_psf_bin_field_data                                &
-     &   (nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_alloc_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
-      deallocate(itmp1_mp)
-!
+ 
       end subroutine read_alloc_nostep_iso_bin_file
 !
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_psf_bin_grid(file_name, nprocs, ucd_b)
+      subroutine read_psf_bin_grid(file_name, ucd_b)
 !
       use binary_IO
       use read_udt_from_bindary_data
 !
-      integer, intent(inout) :: nprocs
       character(len = kchara), intent(in) :: file_name
       type(ucd_data), intent(inout) :: ucd_b
+!
+      integer :: np_read
 !
 !
       write(*,*) 'read binary section grid: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
-      call read_one_integer_b(bbuf_ucd, nprocs)
-      allocate(itmp1_mp(nprocs))
-!
-      call read_psf_bin_grid_data(nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_one_integer_b(bbuf_ucd, np_read)
+      call read_psf_bin_grid_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
-      deallocate(itmp1_mp)
 !
       end subroutine read_psf_bin_grid
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_psf_bin_file(file_name, nprocs, t_IO, ucd_b)
+      subroutine read_psf_bin_file(file_name, t_IO, ucd_b)
 !
       use binary_IO
       use read_udt_from_bindary_data
 !
-      integer, intent(in) :: nprocs
       character(len = kchara), intent(in) :: file_name
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd_b
 !
       type(binary_IO_buffer), save :: bbuf_ucd
+      integer :: np_read
 !
 !
       write(*,*) 'read binary section data: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
-      allocate(itmp1_mp(nprocs))
 !
-      call read_psf_bin_time_data(nprocs,                               &
+      call read_psf_bin_time_data(np_read,                              &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt, bbuf_ucd)
-      call read_psf_bin_field_data(nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
-      deallocate(itmp1_mp)
 !
       end subroutine read_psf_bin_file
 !
@@ -248,21 +225,19 @@
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd_b
 !
-      integer :: nprocs
+      integer :: np_read
 !
 !
       write(*,*) 'read binary isosurface file: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
-      call read_one_integer_b(bbuf_ucd, nprocs)
-      allocate(itmp1_mp(nprocs))
+      call read_one_integer_b(bbuf_ucd, np_read)
 !
-      call read_psf_bin_grid_data(nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_psf_bin_grid_data(np_read, ucd_b, bbuf_ucd)
 !
-      call read_psf_bin_time_data(nprocs,                               &
+      call read_psf_bin_time_data(np_read,                              &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt, bbuf_ucd)
-      call read_psf_bin_field_data(nprocs, ucd_b, bbuf_ucd, itmp1_mp)
+      call read_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
-      deallocate(itmp1_mp)
 !
       end subroutine read_iso_bin_file
 !
