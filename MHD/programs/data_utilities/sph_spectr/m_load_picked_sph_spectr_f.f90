@@ -115,51 +115,30 @@
 ! -------------------------------------------------------------------
 !
       subroutine get_each_picked_sph_series_f                           &
-     &         (yname, radius_id, in_degree, in_order, n_step, d_pick)  &
+     &         (yname, kr_value, l_value, m_value, n_step, d_pick)      &
      &          bind(c, name="get_each_picked_sph_series_f")
 !
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: yname(*)
-      integer(C_int), Value :: radius_id, in_degree, in_order
+      integer(C_int), Value :: kr_value, l_value, m_value
       integer(C_int), Value :: n_step
 !
       real(c_double), intent(inout) :: d_pick(n_step)
 !
+      integer(kind = kint) :: id_radius, in_degree, in_order
       integer(kind = kint) :: i, idx, id_comp, id_mode
       character(len=kchara) :: draw_name
 !
       draw_name = c_to_fstring(yname)
-      write(*,*) 'draw_name', draw_name
-      id_comp = 0
-      do i = 1, pick_IO_p%ntot_comp
-        if(trim(draw_name) .eq. pick_IO_p%spectr_name(i)) then
-          id_comp = i
-          exit
-        end if
-      end do
+      id_comp = get_each_picked_fld_address(draw_name, pick_IO_p)
 !
-      if(id_comp .le. 0) then
-        write(*,*) 'Input field cannot be found.', trim(draw_name)
-        return
-      end if
+      id_radius = kr_value
+      in_degree = l_value
+      in_order =  m_value
+      id_mode = get_each_picked_sph_address                             &
+     &        (id_radius, in_degree, in_order, pick_IO_p)
 !
-      id_mode = 0
-      do i = 1, pick_IO_p%num_layer * pick_IO_p%num_sph_mode
-        if(    radius_id .eq. pick_IO_p%idx_sph(i,1)                    &
-     &   .and. in_degree .eq. pick_IO_p%idx_sph(i,3)                    &
-     &   .and. in_order .eq.  pick_IO_p%idx_sph(i,4)) then
-          id_mode = i
-          exit
-        end if
-      end do
-!
-      if(id_mode .le. 0) then
-        write(*,*) 'Input field cannot be found.'
-        return
-      end if
-      write(*,*) 'id_mode, id_comp', id_mode, id_comp
-
       idx = id_comp + (id_mode-1) * pick_IO_p%ntot_comp
 !$omp parallel do
       do i = 1, n_step
