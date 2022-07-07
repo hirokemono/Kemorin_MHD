@@ -78,6 +78,7 @@
 !
       integer :: np_read
 !
+!
       write(*,*) 'read binary section data: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
 !
@@ -210,8 +211,8 @@
       type(ucd_data), intent(inout) :: ucd_b
 !
       type(binary_IO_buffer), save :: bbuf_ucd
-!
       integer :: np_read
+!
 !
       write(*,*) 'read binary section data: ', trim(file_name)
       call open_read_binary_file(file_name, izero, bbuf_ucd)
@@ -226,7 +227,7 @@
         stop
       end if
 !
-call read_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
+      call read_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
 !
       end subroutine read_psf_bin_file

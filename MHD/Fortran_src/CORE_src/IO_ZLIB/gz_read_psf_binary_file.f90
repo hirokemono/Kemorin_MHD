@@ -55,6 +55,7 @@
       call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
       call gz_read_one_integer_b(zbuf_ucd, np_udt)
       call gz_read_alloc_psf_bin_grid_data(np_udt, ucd_z, zbuf_ucd)
+!
       call close_gzfile_b
 !
       end subroutine gz_read_alloc_psf_bin_grid
@@ -152,6 +153,7 @@
       type(ucd_data), intent(inout) :: ucd_z
 !
       integer :: np_read
+!
 !
       call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
 !
