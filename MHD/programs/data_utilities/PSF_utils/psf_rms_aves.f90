@@ -83,6 +83,7 @@
 !      ave_psf_param%iflag_format =  psf_file_param%iflag_format
 !      rms_psf_param%iflag_format =  psf_file_param%iflag_format
 !      sdev_psf_param%iflag_format = psf_file_param%iflag_format
+!
       ave_psf_param%iflag_format =  iflag_udt_gz
       rms_psf_param%iflag_format =  iflag_udt_gz
       sdev_psf_param%iflag_format = iflag_udt_gz

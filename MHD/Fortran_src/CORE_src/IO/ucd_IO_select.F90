@@ -482,7 +482,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name, grid_name
-      integer :: np_tmp
+      integer :: np_ucd
 !
 !
       file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
@@ -510,8 +510,8 @@
       else if(ucd_param%iflag_format .eq. iflag_ucd_bin) then
         call read_iso_bin_file(file_name, t_IO, ucd)
       else if(ucd_param%iflag_format .eq. iflag_udt_bin) then
-        call read_psf_bin_grid(grid_name, np_tmp, ucd)
-        call read_psf_bin_file(file_name, np_tmp, t_IO, ucd)
+        call read_psf_bin_grid(grid_name, np_ucd, ucd)
+        call read_psf_bin_file(file_name, np_ucd, t_IO, ucd)
 !
 #ifdef ZLIB_IO
       else if (ucd_param%iflag_format .eq. iflag_vtk_gz) then
@@ -528,8 +528,8 @@
       else if (ucd_param%iflag_format .eq. iflag_ucd_bin_gz) then
         call gz_read_iso_bin_file(file_name, t_IO, ucd)
       else if (ucd_param%iflag_format .eq. iflag_udt_bin_gz) then
-        call gz_read_psf_bin_grid(grid_name, np_tmp, ucd)
-        call gz_read_psf_bin_file(file_name, np_tmp, t_IO, ucd)
+        call gz_read_psf_bin_grid(grid_name, np_ucd, ucd)
+        call gz_read_psf_bin_file(file_name, np_ucd, t_IO, ucd)
 #endif
 !
       else if (ucd_param%iflag_format .eq. iflag_udt) then

@@ -20,6 +20,17 @@
 !!        integer(kind = kint), intent(in) :: i_step
 !!        real(kind = kreal), intent(in) :: time
 !!        type(picked_spectrum_data_IO), intent(inout) :: picked_IO
+!!
+!!      integer(kind = kint) function get_each_picked_sph_address       &
+!!     &                   (id_radius, in_degree, in_order, picked_IO)
+!!        integer(kind = kint), intent(in) :: id_radius
+!!        integer(kind = kint), intent(in) :: in_degree, in_order
+!!        type(picked_spectrum_data_IO), intent(in) :: picked_IO
+!!      integer(kind = kint) function get_each_picked_sph_address       &
+!!     &                   (id_radius, in_degree, in_order, picked_IO)
+!!        integer(kind = kint), intent(in) :: id_radius
+!!        integer(kind = kint), intent(in) :: in_degree, in_order
+!!        type(picked_spectrum_data_IO), intent(in) :: picked_IO
 !!@endverbatim
 !!
       module t_picked_sph_spectr_data_IO
@@ -159,5 +170,64 @@
       end subroutine copy_to_pick_sph_series
 !
 ! -----------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      integer(kind = kint) function                                     &
+     &            get_each_picked_fld_address(fld_name, picked_IO)
+!
+      character(len=kchara), intent(in) :: fld_name
+      type(picked_spectrum_data_IO), intent(in) :: picked_IO
+!
+      integer(kind = kint) :: i
+!
+      write(*,*) 'fld_name', trim(fld_name)
+      get_each_picked_fld_address = 0
+      do i = 1, picked_IO%ntot_comp
+        if(trim(fld_name) .eq. picked_IO%spectr_name(i)) then
+          get_each_picked_fld_address = i
+          exit
+        end if
+      end do
+!
+      if(get_each_picked_fld_address .le. 0) then
+        write(*,*) 'Input field cannot be found.', trim(fld_name)
+        return
+      end if
+      write(*,*) 'get_each_picked_fld_address',                         &
+     &                   get_each_picked_fld_address
+!
+      end function get_each_picked_fld_address
+!
+! -------------------------------------------------------------------
+!
+      integer(kind = kint) function get_each_picked_sph_address         &
+     &                   (id_radius, in_degree, in_order, picked_IO)
+!
+      integer(kind = kint), intent(in) :: id_radius
+      integer(kind = kint), intent(in) :: in_degree, in_order
+      type(picked_spectrum_data_IO), intent(in) :: picked_IO
+!
+      integer(kind = kint) :: i
+!
+      get_each_picked_sph_address = 0
+      do i = 1, picked_IO%num_layer * picked_IO%num_mode
+        if(    id_radius .eq. picked_IO%idx_sph(i,1)                    &
+     &   .and. in_degree .eq. picked_IO%idx_sph(i,3)                    &
+     &   .and. in_order .eq.  picked_IO%idx_sph(i,4)) then
+          get_each_picked_sph_address = i
+          exit
+        end if
+      end do
+!
+      if(get_each_picked_sph_address .le. 0) then
+        write(*,*) 'Input field cannot be found.'
+        return
+      end if
+      write(*,*) 'get_each_picked_sph_address',                         &
+     &                   get_each_picked_sph_address
+
+      end function get_each_picked_sph_address
+!
+! -------------------------------------------------------------------
 !
       end module t_picked_sph_spectr_data_IO
