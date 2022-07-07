@@ -134,7 +134,7 @@
 !      call set_control_4_newudt                                        &
 !     &   (sec_mesh1%num_pe2, mgd_ctl5, asbl_param_p, ierr)
 
-      call sel_read_udt_param(0, asbl_param_p%istep_start,              &
+      call sel_read_udt_param(0, 1, asbl_param_p%istep_start,           &
      &    asbl_param_p%org_fld_file, fem_time_IO, fem_ucd)
 
       !write(*,*) '-----test-----'

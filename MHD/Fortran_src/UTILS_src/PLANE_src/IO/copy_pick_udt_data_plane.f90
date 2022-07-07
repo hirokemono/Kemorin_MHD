@@ -45,7 +45,7 @@
 !
 !
       ucd%nnod = ione
-      call sel_read_udt_param(0, istep_ucd, ucd_param, t_IO, ucd)
+      call sel_read_udt_param(0, 1, istep_ucd, ucd_param, t_IO, ucd)
       call deallocate_ucd_phys_data(ucd)
 !
       nod_fld%num_phys =    ucd%num_field
@@ -98,7 +98,7 @@
 !
         ucd%nnod =        mesh(ip)%node%numnod
         call sel_read_udt_file                                          &
-     &     (id_rank, istep_ucd, ucd_param, t_IO, ucd)
+     &     (id_rank, num_pe, istep_ucd, ucd_param, t_IO, ucd)
 !
         call copy_and_pick_ucd_data_merge                               &
      &         (nnod_target, nfield_target, icomp_target,               &

@@ -29,6 +29,7 @@
       type(field_IO_params), save :: fix_psf_param
       type(time_data), save :: psf_time
       type(ucd_data), save:: psf_ucd
+      integer :: np_ucd
 !
       character(len=kchara) :: psf_format
 !
@@ -71,7 +72,7 @@
       call dealloc_field_type_flags
 !
       call load_psf_data_to_link_IO                                     &
-     &   (istep_start, psf_file_param, t_IO_u, psf_u, psf_ucd)
+     &   (istep_start, psf_file_param, np_ucd, t_IO_u, psf_u, psf_ucd)
       fix_psf_param%iflag_format = psf_file_param%iflag_format
 !
       call sel_write_grd_file(-1, fix_psf_param, psf_ucd)
@@ -108,7 +109,7 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file                                          &
-     &     (-1, istep, psf_file_param, psf_time, psf_ucd)
+     &     (-1, np_ucd, istep, psf_file_param, psf_time, psf_ucd)
 !
         do inod = 1, psf_u%psf_nod%numnod
           psf_u%psf_phys%d_fld(inod,ipsf_temp)                          &

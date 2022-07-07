@@ -33,6 +33,7 @@
 !
       type(time_data), save :: psf_time
       type(ucd_data), save:: psf_ucd
+      integer :: np_ucd
 !
       character(len=kchara) :: fname_tmp
 !
@@ -79,12 +80,15 @@
       write(sdev_psf_param%file_prefix,'(a9,a)')                        &
      &                                'time_dev_', trim(fname_tmp)
 !
-      ave_psf_param%iflag_format =  psf_file_param%iflag_format
-      rms_psf_param%iflag_format =  psf_file_param%iflag_format
-      sdev_psf_param%iflag_format = psf_file_param%iflag_format
+!      ave_psf_param%iflag_format =  psf_file_param%iflag_format
+!      rms_psf_param%iflag_format =  psf_file_param%iflag_format
+!      sdev_psf_param%iflag_format = psf_file_param%iflag_format
+      ave_psf_param%iflag_format =  iflag_udt_gz
+      rms_psf_param%iflag_format =  iflag_udt_gz
+      sdev_psf_param%iflag_format = iflag_udt_gz
 !
       call load_psf_data_to_link_IO                                     &
-     &   (istep_start, psf_file_param, t_IO_u, psf_u, psf_ucd)
+     &   (istep_start, psf_file_param, np_ucd, t_IO_u, psf_u, psf_ucd)
       call alloc_psf_averages(psf_u%psf_phys, psf_average)
 !
       call sel_write_grd_file(-1, ave_psf_param, psf_ucd)
@@ -129,7 +133,7 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file                                          &
-     &     (-1, istep, psf_file_param, psf_time, psf_ucd)
+     &     (-1, np_ucd, istep, psf_file_param, psf_time, psf_ucd)
         call cal_rms_ave_4_psf(psf_u%psf_ele, psf_u%psf_phys,           &
      &     psf_normal, psf_average)
         call cal_minmax_psf                                             &
@@ -180,7 +184,7 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file                                          &
-     &     (-1, istep, psf_file_param, psf_time, psf_ucd)
+     &     (-1, np_ucd, istep, psf_file_param, psf_time, psf_ucd)
 !
 !$omp parallel
         do nd = 1, psf_u%psf_phys%ntot_phys

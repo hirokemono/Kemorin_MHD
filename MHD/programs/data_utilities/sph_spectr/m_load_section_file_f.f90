@@ -91,10 +91,11 @@
       integer(C_int), Value :: istep
       integer(C_int), intent(inout) :: numnod(1), numele(1)
       integer(kind = kint) :: istep_viz, i
+      integer :: np_ucd
 !
       istep_viz = istep
-      call load_psf_data_to_link_IO                                     &
-     &   (istep_viz, psf_file_param, time_data_p, psf_data_p, psf_ucd)
+      call load_psf_data_to_link_IO(istep_viz, psf_file_param,          &
+     &    np_ucd, time_data_p, psf_data_p, psf_ucd)
       numnod = psf_data_p%psf_nod%numnod
       numele = psf_data_p%psf_ele%numele
 !
