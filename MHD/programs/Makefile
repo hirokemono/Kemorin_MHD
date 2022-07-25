@@ -39,12 +39,6 @@ ifdef FORTRAN_C_CONNECT
   LIB_FILES_PYTHON_UTILS+=  '$$(LIB_KEMO_C_FILE)'
 endif
 
-
-
-MOD_PYTHONS = \
-'$$(MOD_SPH_UTIL_DLL)'
-
-
 #
 #  -------------------------------------------------------------------------
 #

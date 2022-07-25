@@ -4,9 +4,6 @@
 
 PROG_DIR = $$(MHDDIR)/programs
 
-LIB_PYTHONS =      '-L$$(PYTHONDIR) -lcalypso_to_pythons'
-LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
-
 SUBDIRS = \
 SPH_MHD \
 \
@@ -38,15 +35,6 @@ LIB_FILES_MESH_UTILS = \
 '$$(LIB_CALYPSO_FILE)'   \
 '$$(LIB_CALYPSO_C_FILE)'
 
-
-LIB_PYTHON_UTILS =  \
-'$$(LIB_CALYPSO)'
-
-LIB_FILES_PYTHON_UTILS =  \
-'$$(LIB_CALYPSO_FILE)'
-
-MOD_PYTHONS = \
-'$$(MOD_SPH_UTIL_DLL)'
 
 #
 #  -------------------------------------------------------------------------
@@ -97,16 +85,6 @@ target_task:
 
 
 lib_name:
-	@echo  LIB_PYTHONS=  \\           >> $(MAKENAME)
-	@echo  $(LIB_PYTHONS)             >> $(MAKENAME)
-	@echo  LIB_FILE_PYTHONS=  \\           >> $(MAKENAME)
-	@echo  $(LIB_FILE_PYTHONS)             >> $(MAKENAME)
-	@echo  '#' >> $(MAKENAME)
-	@echo  LIB_PYTHON_UTILS=  \\           >> $(MAKENAME)
-	@echo  $(LIB_PYTHON_UTILS)             >> $(MAKENAME)
-	@echo  LIB_FILES_PYTHON_UTILS=  \\     >> $(MAKENAME)
-	@echo  $(LIB_FILES_PYTHON_UTILS)       >> $(MAKENAME)
-	@echo  '#' >> $(MAKENAME)
 	@echo  LIBS_SPH_MHD=  \\          >> $(MAKENAME)
 	@echo  $(LIBS_SPH_MHD)            >> $(MAKENAME)
 	@echo  LIB_FILES_SPH_MHD=  \\     >> $(MAKENAME)
@@ -128,20 +106,8 @@ lib_name:
 	done
 
 lib_tasks:
-	@echo '#' >> $(MAKENAME)
-	@echo '$$(LIB_FILE_PYTHONS)': '$$(MOD_PYTHONS)' \
-	'$$(LIB_FILES_PYTHON_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -shared -fPIC '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(LIB_FILE_PYTHONS)' \
-	'$$(MOD_PYTHONS)' \
-	'-L. $$(LIB_PYTHON_UTILS)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-
 
 mod_list:
-	@echo  MOD_PYTHONS=  \\     >> $(MAKENAME)
-	@echo  $(MOD_PYTHONS)       >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \

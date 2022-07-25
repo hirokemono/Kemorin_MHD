@@ -36,7 +36,6 @@
       implicit none
 !
       type(binary_IO_buffer), save, private :: bbuf_ucd
-      integer(kind = kint_gl), allocatable, private :: itmp1_mp(:)
 !
 !  ---------------------------------------------------------------------
 !
@@ -121,7 +120,6 @@
      &    t_IO%i_time_step, t_IO%time, t_IO%dt, bbuf_ucd)
       call read_alloc_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
-      deallocate(itmp1_mp)
 !
       end subroutine read_alloc_iso_bin_file
 !
@@ -146,7 +144,6 @@
 !
       call read_alloc_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
-      deallocate(itmp1_mp)
 !
       end subroutine read_alloc_nostep_psf_bin_file
 !

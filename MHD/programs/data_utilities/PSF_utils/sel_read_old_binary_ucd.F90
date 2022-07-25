@@ -58,7 +58,6 @@
 !
       type(binary_IO_buffer), save, private :: bbuf_ucd
       type(buffer_4_gzip), save, private :: zbuf_ucd
-      integer(kind = kint_gl), allocatable, private :: itmp1_mp(:)
 !
 !------------------------------------------------------------------
 !
@@ -297,7 +296,6 @@
 !
       call read_psf_bin_field_data(np_read, ucd_b, bbuf_ucd)
       call close_binary_file(bbuf_ucd)
-      deallocate(itmp1_mp)
 !
       end subroutine read_nostep_iso_bin_file
 !
