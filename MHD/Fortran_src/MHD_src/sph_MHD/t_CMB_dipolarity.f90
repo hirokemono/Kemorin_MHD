@@ -200,7 +200,7 @@
       return
 !
    99 continue
-      open(id_dipolarity, file = file_name,                             &
+      open(id_dipolarity, file = dip%dipolarity_file_name,              &
      &    form='formatted', status='replace')
 !
 !
