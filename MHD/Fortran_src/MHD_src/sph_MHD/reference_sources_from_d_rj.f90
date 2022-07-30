@@ -80,7 +80,7 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: ref_local(0:sph_rj%nidx_rj(1))
 !
-      integer(kind = kint) :: k, j, i
+      integer(kind = kint) :: k, i
       integer(kind = kint_gl) :: num64
 !
 !
@@ -89,11 +89,10 @@
       end do
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
-        j = sph_rj%idx_rj_degree_zero
 !$omp parallel do private(k,i)
         do k = 1, sph_rj%nidx_rj(1)
           i = 1 + (k-1) * sph_rj%istep_rj(1)                            &
-     &          + (j-1) * sph_rj%istep_rj(2)
+     &          + (sph_rj%idx_rj_degree_zero-1) * sph_rj%istep_rj(2)
           ref_local(k) = d_rj(i)
         end do
 !$omp end parallel do
