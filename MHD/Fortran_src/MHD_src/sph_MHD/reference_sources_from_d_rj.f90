@@ -89,13 +89,11 @@
       end do
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
-!$omp parallel do private(k,i)
         do k = 1, sph_rj%nidx_rj(1)
           i = 1 + (k-1) * sph_rj%istep_rj(1)                            &
      &          + (sph_rj%idx_rj_degree_zero-1) * sph_rj%istep_rj(2)
           ref_local(k) = d_rj(i)
         end do
-!$omp end parallel do
 !
         if(sph_rj%inod_rj_center .gt. 0) then
           i = sph_rj%inod_rj_center
