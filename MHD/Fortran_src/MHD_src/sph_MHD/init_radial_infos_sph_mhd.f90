@@ -170,7 +170,10 @@
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(phys_data), intent(inout) :: rj_fld
 !
-      character(len=kchara) :: mat_name
+      character(len=kchara), parameter                                  &
+     &            :: tmat_name = 'reference_Temperature'
+      character(len=kchara), parameter                                  &
+     &            :: cmat_name = 'reference_Composition'
       logical :: flag_ref
 !
 !
@@ -179,20 +182,18 @@
       call cal_ref_sources_from_d_rj(sph, ipol, rj_fld, refs)
       call load_sph_reference_data(sph%sph_rj, ipol, rj_fld, refs)
 !
-      write(mat_name,'(a)') 'reference_Temperature'
       call init_reference_scalar                                        &
      &   (MHD_prop%takepito_T, sph%sph_params, sph%sph_rj,              &
      &    r_2nd, MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,                 &
-     &    sph_MHD_bc%fdm2_center, mat_name, MHD_prop%ref_param_T,       &
+     &    sph_MHD_bc%fdm2_center, tmat_name, MHD_prop%ref_param_T,      &
      &    refs%iref_base%i_temp, refs%iref_grad%i_grad_temp,            &
      &    refs%iref_base%i_heat_source, refs%ref_field,                 &
      &    sph_MHD_bc%bcs_T, flag_ref)
 !
-      write(mat_name,'(a)') 'reference_Composition'
       call init_reference_scalar                                        &
      &   (MHD_prop%takepito_C, sph%sph_params, sph%sph_rj,              &
      &    r_2nd, MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,                 &
-     &    sph_MHD_bc%fdm2_center, mat_name, MHD_prop%ref_param_C,       &
+     &    sph_MHD_bc%fdm2_center, cmat_name, MHD_prop%ref_param_C,      &
      &    refs%iref_base%i_light, refs%iref_grad%i_grad_composit,       &
      &    refs%iref_base%i_light_source, refs%ref_field,                &
      &    sph_MHD_bc%bcs_C, flag_ref)
