@@ -296,7 +296,7 @@
       real(kind = kreal), allocatable :: r_coef(:)
 !
 !
-      band_s00_poisson%mat_name,'(2a)')                                 &
+      write(band_s00_poisson%mat_name,'(2a)')                           &
      &                              trim(mat_name), '_poisson_l0_fixS'
       call alloc_ctr_band_mat(ithree, sph_rj, band_s00_poisson)
 !
