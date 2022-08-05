@@ -68,7 +68,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_reference_source_from_d_rj                         &
-     &         (sph_rj, d_rj, ref_source, ref_local)
+     &         (sph_rj, d_rj, ref_global, ref_local)
 !
       use calypso_mpi_real
 !
@@ -76,11 +76,11 @@
       real(kind = kreal), intent(in) :: d_rj(1:sph_rj%nnod_rj)
 !
       real(kind = kreal), intent(inout)                                 &
-     &                   :: ref_source(0:sph_rj%nidx_rj(1))
+     &                   :: ref_global(0:sph_rj%nidx_rj(1))
       real(kind = kreal), intent(inout)                                 &
      &                   :: ref_local(0:sph_rj%nidx_rj(1))
 !
-      integer(kind = kint) :: k, j, i
+      integer(kind = kint) :: k, i
       integer(kind = kint_gl) :: num64
 !
 !
@@ -89,11 +89,10 @@
       end do
 !
       if(sph_rj%idx_rj_degree_zero .gt. 0) then
-        j = sph_rj%idx_rj_degree_zero
 !$omp parallel do private(k,i)
         do k = 1, sph_rj%nidx_rj(1)
           i = 1 + (k-1) * sph_rj%istep_rj(1)                            &
-     &          + (j-1) * sph_rj%istep_rj(2)
+     &          + (sph_rj%idx_rj_degree_zero-1) * sph_rj%istep_rj(2)
           ref_local(k) = d_rj(i)
         end do
 !$omp end parallel do
@@ -107,7 +106,7 @@
       end if
 !
       num64 = sph_rj%nidx_rj(1) + 1
-      call calypso_mpi_allreduce_real(ref_local(0), ref_source(0),      &
+      call calypso_mpi_allreduce_real(ref_local(0), ref_global(0),      &
      &                                num64, MPI_SUM)
 !
       end subroutine set_reference_source_from_d_rj
