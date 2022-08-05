@@ -63,7 +63,7 @@
         call set_reference_source_from_d_rj                             &
      &     (sph%sph_rj, rj_fld%d_fld(1,icomp),                          &
      &      refs%ref_field%d_fld(1,jcomp), ref_local(0))
-      end if
+      end if
 !
       deallocate(ref_local)
 !
