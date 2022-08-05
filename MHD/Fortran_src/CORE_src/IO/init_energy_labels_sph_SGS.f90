@@ -22,11 +22,11 @@
 !
 !
       integer(kind = kint), parameter :: n_fil_ene = 4
-      character(len=kchara), parameter :: ene_lebel_w_fil(4)            &
+      character(len=kchara), parameter :: ene_label_w_fil(4)            &
      &                    = (/'K_ene     ', 'M_ene     ',               &
      &                        'filter_KE ', 'filter_ME '/)
 !
-      private :: n_fil_ene, ene_lebel_w_fil
+      private :: n_fil_ene, ene_label_w_fil
 !
 ! -----------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@
       ene_labels%field_name(3) = trim(filter_velocity%name)
       ene_labels%field_name(4) = trim(filter_magne%name)
       do i = 1, n_fil_ene
-        call add_vector_power_sph_label(ene_lebel_w_fil(i),             &
+        call add_vector_power_sph_label(ene_label_w_fil(i),             &
      &      ene_labels%label(1,i), ene_labels%label(2,i),               &
      &      ene_labels%label(3,i))
       end do
