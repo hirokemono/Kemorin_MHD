@@ -7,21 +7,17 @@
 !> @brief Time spectrum data IO for utilities
 !!
 !!@verbatim
-!!      subroutine read_volume_pwr_sph(id_file, sph_IN, ierr)
-!!      subroutine read_volume_spectr_sph(id_file, sph_IN, ierr)
-!!      subroutine read_layer_pwr_sph(id_file, sph_IN, ierr)
-!!      subroutine read_layer_spectr_sph(id_file, sph_IN, ierr)
+!!      subroutine sel_input_sph_series_data(id_file, flag_old_fmt,     &
+!!     &         flag_spectr, flag_vol_ave, sph_IN, ierr)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        logical, intent(in) :: flag_old_fmt, flag_spectr, flag_vol_ave
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
-!!
-!!      subroutine write_vol_sph_data(id_file, sph_IN)
-!!      subroutine write_vol_spectr_data(id_file, sph_IN)
-!!      subroutine write_layer_sph_data(id_file, sph_IN)
-!!      subroutine write_layer_spectr_data(id_file, sph_IN)
+!!        integer(kind = kint), intent(inout) :: ierr
+!!      subroutine select_output_sph_series_data                        &
+!!     &         (id_file, flag_spectr, flag_vol_ave, sph_IN)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        logical, intent(in) :: flag_spectr, flag_vol_ave
 !!        type(read_sph_spectr_data), intent(in) :: sph_IN
-!!
-!!      subroutine  read_layer_pwr_sph_old(id_file, sph_IN, ierr)
-!!      subroutine  read_layer_spectr_sph_old(id_file, sph_IN, ierr)
-!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module simple_sph_spectr_data_IO
@@ -32,11 +28,79 @@
 !
       implicit none
 !
+      private :: read_volume_pwr_sph,    write_vol_sph_data
+      private :: read_volume_spectr_sph, write_vol_spectr_data
+      private :: read_layer_pwr_sph,     write_layer_sph_data
+      private :: read_layer_spectr_sph,  write_layer_spectr_data
 !
 !   --------------------------------------------------------------------
 !
       contains
 !
+!   --------------------------------------------------------------------
+!
+      subroutine sel_input_sph_series_data(id_file, flag_old_fmt,       &
+     &         flag_spectr, flag_vol_ave, sph_IN, ierr)
+!
+      use old_sph_spectr_data_IO
+!
+      integer(kind = kint), intent(in) :: id_file
+      logical, intent(in) :: flag_old_fmt, flag_spectr, flag_vol_ave
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+      integer(kind = kint), intent(inout) :: ierr
+!
+!
+      if(flag_vol_ave) then
+        if(flag_spectr) then
+          call read_volume_spectr_sph(id_file, sph_IN, ierr)
+        else
+          call read_volume_pwr_sph(id_file, sph_IN, ierr)
+        end if
+      else
+        if(flag_spectr) then
+          if(flag_old_fmt) then
+            call read_layer_spectr_sph_old(id_file, sph_IN, ierr)
+          else
+            call read_layer_spectr_sph(id_file, sph_IN, ierr)
+          end if
+        else
+          if(flag_old_fmt) then
+            call read_layer_pwr_sph_old(id_file, sph_IN, ierr)
+          else
+            call read_layer_pwr_sph(id_file, sph_IN, ierr)
+          end if
+        end if
+      end if
+!
+      end subroutine sel_input_sph_series_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine select_output_sph_series_data                          &
+     &         (id_file, flag_spectr, flag_vol_ave, sph_IN)
+!
+      integer(kind = kint), intent(in) :: id_file
+      logical, intent(in) :: flag_spectr, flag_vol_ave
+      type(read_sph_spectr_data), intent(in) :: sph_IN
+!
+!
+      if(flag_spectr) then
+        if(flag_vol_ave) then
+          call write_vol_spectr_data(id_file, sph_IN)
+        else
+          call write_layer_spectr_data(id_file, sph_IN)
+        end if
+      else
+        if(flag_vol_ave) then
+          call write_vol_sph_data(id_file, sph_IN)
+        else
+          call write_layer_sph_data(id_file, sph_IN)
+        end if
+      end if
+!
+      end subroutine select_output_sph_series_data
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_volume_pwr_sph(id_file, sph_IN, ierr)
@@ -65,7 +129,7 @@
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: itmp, lth
+      integer(kind = kint) :: lth
 !
 !
       ierr = 0
@@ -115,7 +179,7 @@
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: kr, itmp, lth
+      integer(kind = kint) :: kr, lth
 !
 !
       ierr = 0
@@ -144,7 +208,6 @@
       integer(kind = kint), intent(in) :: id_file
       type(read_sph_spectr_data), intent(in) :: sph_IN
 !
-      integer(kind = kint) :: num
       character(len=kchara) :: fmt_txt
 !
 !
@@ -221,59 +284,6 @@
       end do
 !
       end subroutine write_layer_spectr_data
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine  read_layer_pwr_sph_old(id_file, sph_IN, ierr)
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-      integer(kind = kint), intent(inout) :: ierr
-!
-      integer(kind = kint) :: kr
-!
-!
-      ierr = 0
-      do kr = 1, sph_IN%nri_sph
-        read(id_file,*,err=99,end=99)                                   &
-     &      sph_IN%i_step, sph_IN%time, sph_IN%kr_sph(kr),              &
-     &      sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,0,kr)
-      end do
-      return
-!
-   99 continue
-      ierr = 1
-      return
-!
-      end subroutine read_layer_pwr_sph_old
-!
-!   --------------------------------------------------------------------
-!
-      subroutine  read_layer_spectr_sph_old(id_file, sph_IN, ierr)
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-      integer(kind = kint), intent(inout) :: ierr
-!
-      integer(kind = kint) :: kr, itmp, lth
-!
-!
-      ierr = 0
-      do kr = 1, sph_IN%nri_sph
-        do lth = 0, sph_IN%ltr_sph
-          read(id_file,*,err=99,end=99) sph_IN%i_step, sph_IN%time,     &
-     &        sph_IN%kr_sph(kr), sph_IN%i_mode(lth),                    &
-     &        sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,lth,kr)
-        end do
-      end do
-      return
-!
-   99 continue
-      ierr = 1
-      return
-!
-      end subroutine read_layer_spectr_sph_old
 !
 !   --------------------------------------------------------------------
 !

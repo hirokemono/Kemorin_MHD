@@ -154,7 +154,7 @@
      &          sph_IN, WK_tave)
 !
       use simple_sph_spectr_head_IO
-      use sph_mean_square_IO_select
+      use sph_mean_square_IO
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
@@ -247,7 +247,7 @@
      &          start_time, end_time, sph_IN, WK_tave)
 !
       use simple_sph_spectr_head_IO
-      use sph_mean_square_IO_select
+      use sph_mean_square_IO
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
@@ -329,7 +329,7 @@
      &         (fname_org, flag_spectr, flag_vol_ave, sph_IN)
 !
       use simple_sph_spectr_head_IO
-      use sph_mean_square_IO_select
+      use sph_mean_square_IO
 !
 !
       character(len = kchara), intent(in) :: fname_org

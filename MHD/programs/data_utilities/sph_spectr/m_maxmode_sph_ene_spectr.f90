@@ -50,7 +50,7 @@
 !
       use t_ctl_param_sph_series_util
       use simple_sph_spectr_head_IO
-      use sph_mean_square_IO_select
+      use sph_mean_square_IO
 !
       character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_vol_ave

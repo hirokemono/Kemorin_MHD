@@ -49,7 +49,7 @@
 !
       use t_ctl_param_sph_series_util
       use simple_sph_spectr_head_IO
-      use sph_mean_square_IO_select
+      use sph_mean_square_IO
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: fname_org

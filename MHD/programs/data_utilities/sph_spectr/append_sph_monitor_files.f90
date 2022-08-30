@@ -5,6 +5,7 @@
 !
       use m_precision
       use m_constants
+      use m_file_format_labels
       use t_ctl_data_append_sph_mntr
       use t_ctl_data_tave_sph_monitor
       use t_ctl_param_sph_series_util
@@ -23,51 +24,50 @@
       type(sph_spectr_file_param), save :: spec_evo_append
       type(sph_spectr_file_param), save :: spec_evo_target
 !
+      type(multi_flag_labels), save :: gzip_flags1
+!
       character(len=kchara) :: append_gauss_name
       character(len=kchara) :: target_gauss_name
 !
       integer(kind = kint), parameter :: id_append_file = 15
-      integer(kind = kint), parameter :: id_target_file = 16
 !
       character(len=kchara) :: file_name, file_prefix
       integer(kind = kint) :: istep_start, istep_end, i_step, ierr
       real(kind = kreal) :: start_time, end_time, time
 !
       integer(kind = kint) :: i, nd, ic, icou, ntot_pick
-      integer(kind = kint) :: iadd, imul, iflag_gauss
+      integer(kind = kint) :: iflag_gauss
 !
       call read_ctl_file_add_sph_mntr(ctl_file_name, add_mtr_ctl1)
-      call set_spec_series_file_param(add_mtr_ctl1%append_monitor_ctl,  &
-     &                                spec_evo_append)
-      call set_spec_series_file_param(add_mtr_ctl1%target_monitor_ctl,  &
-     &                                spec_evo_target)
 !
-      imul = add_mtr_ctl1%append_monitor_ctl%gauss_coefs_prefix%iflag   &
-     &      * add_mtr_ctl1%target_monitor_ctl%gauss_coefs_prefix%iflag
-      iadd = add_mtr_ctl1%append_monitor_ctl%gauss_coefs_prefix%iflag   &
-     &      + add_mtr_ctl1%target_monitor_ctl%gauss_coefs_prefix%iflag
-      if(imul .eq. 0 .and. iadd .gt. 0) then
-        write(*,*) 'Set both file prefix for Gauss coefficients'
-        stop
-      end if
-      
-      iflag_gauss = imul
+      call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags1)
+      call set_spec_series_file_param(add_mtr_ctl1%folder_to_read_ctl,  &
+     &    add_mtr_ctl1%read_monitor_file_format_ctl, gzip_flags1,       &
+     &    add_mtr_ctl1%monitor_list_ctl, spec_evo_append)
+      call set_spec_series_file_param(add_mtr_ctl1%folder_to_add_ctl,   &
+     &    dummy_item, gzip_flags1, add_mtr_ctl1%monitor_list_ctl,       &
+     &    spec_evo_target)
+!
+      iflag_gauss                                                       &
+     &    = add_mtr_ctl1%monitor_list_ctl%gauss_coefs_prefix%iflag
       if(iflag_gauss .gt. 0) then
-        file_prefix  &
-     &  = add_mtr_ctl1%append_monitor_ctl%gauss_coefs_prefix%charavalue
-        append_gauss_name = add_dat_extension(file_prefix)
-        file_prefix  &
-     &  = add_mtr_ctl1%target_monitor_ctl%gauss_coefs_prefix%charavalue
-        target_gauss_name = add_dat_extension(file_prefix)
+        call set_sph_series_file_name(add_mtr_ctl1%folder_to_read_ctl,  &
+     &     add_mtr_ctl1%read_monitor_file_format_ctl, gzip_flags1,      &
+     &     add_mtr_ctl1%monitor_list_ctl%gauss_coefs_prefix%charavalue, &
+     &     append_gauss_name)
+        call set_sph_series_file_name                                   &
+     &    (add_mtr_ctl1%folder_to_add_ctl, dummy_item, gzip_flags1,     &
+     &     add_mtr_ctl1%monitor_list_ctl%gauss_coefs_prefix%charavalue, &
+     &     target_gauss_name)
       end if
 !
 !
       call dealloc_ctl_data_add_sph_mntr(add_mtr_ctl1)
 !
-      if(iflag_gauss .gt. 0) then
-        call append_gauss_coef_file                                     &
-     &     (append_gauss_name, target_gauss_name)
-      end if
+!      if(iflag_gauss .gt. 0) then
+!        call append_gauss_coef_file                                    &
+!     &     (append_gauss_name, target_gauss_name)
+!      end if
 !
       if(spec_evo_append%vol_series%num_file                            &
      &     .ne. spec_evo_target%vol_series%num_file) then
@@ -163,7 +163,7 @@
       type(picked_gauss_coefs_IO), save :: target_gauss_IN
 !
       integer(kind = kint), parameter :: id_append_file = 15
-      integer(kind = kint), parameter :: id_target_file = 16
+      integer(kind = kint), parameter :: id_write_file = 16
 !
       integer(kind = kint) :: istep_start, istep_end, i_step, ierr
       real(kind = kreal) :: start_time, end_time, time
@@ -173,7 +173,7 @@
       character(len = 1), allocatable :: textbuf(:)
 !
 !
-        write(*,*) 'Open append file', ': ', trim(append_file_name)
+      write(*,*) 'Open file to append.'
         open(id_append_file, file=append_file_name)
         call read_gauss_coefs_header(id_append_file, append_gauss_IN)
         call alloc_gauss_coef_monitor(append_gauss_IN)
@@ -182,12 +182,12 @@
      &     (id_append_file, ione, istep_start, start_time, ierr)
         backspace(id_append_file)
 !
-        write(*,*) 'Open target file', ': ', trim(target_file_name)
-        open(id_target_file, file=target_file_name)
-        call read_gauss_coefs_header(id_target_file, target_gauss_IN)
+        write(*,*) 'Open file to write', ': ', trim(target_file_name)
+        open(id_write_file, file=target_file_name)
+        call read_gauss_coefs_header(id_write_file, target_gauss_IN)
         call alloc_gauss_coef_monitor(target_gauss_IN)
-        call read_gauss_coefs_labels(id_target_file, target_gauss_IN)
-        close(id_target_file)
+        call read_gauss_coefs_labels(id_write_file, target_gauss_IN)
+        close(id_write_file)
 !
         if(append_gauss_IN%radius_gauss                                 &
      &         .ne. target_gauss_IN%radius_gauss) then
@@ -211,9 +211,9 @@
           end if
         end do
 !
-        open(id_target_file, file=target_file_name, position='append')
-        backspace(id_target_file)
-        call read_sph_spectr_time(id_target_file, ione,                 &
+        open(id_write_file, file=target_file_name, position='append')
+        backspace(id_write_file)
+        call read_sph_spectr_time(id_write_file, ione,                  &
      &                            istep_end, end_time, ierr)
 !
         write(*,*) 'end step and time for target file',                 &
@@ -224,15 +224,15 @@
         icou = 0
         if(istep_start .le. istep_end) then
           do
-            backspace(id_target_file)
-            call read_sph_spectr_time(id_target_file, ione,             &
+            backspace(id_write_file)
+            call read_sph_spectr_time(id_write_file, ione,              &
      &                                i_step, time, ierr)
             write(*,'(78a1,a5,i12,a4,1pe16.8e3,a29,i12)',advance="NO")  &
      &          (char(8),ic=1,78), 'step ', i_step,                     &
      &          ' at ', time, ' is read. Backeward count is  ', icou
             if(i_step .lt. istep_start) exit
             if(ierr .gt. 0) exit
-            backspace(id_target_file)
+            backspace(id_write_file)
             icou = icou + 1
           end do
         end if
@@ -244,7 +244,7 @@
         icou = 0
         do
           icou = icou + 1
-          call read_write_line_text(id_append_file, id_target_file,     &
+          call read_write_line_text(id_append_file, id_write_file,      &
      &                              nchara_line, textbuf, ierr)
 !
           write(*,'(33a1,i12,a21)',advance="NO")                        &
@@ -254,7 +254,7 @@
         deallocate(textbuf)
         write(*,*)
 !
-        close(id_target_file)
+        close(id_write_file)
         close(id_append_file)
 !
         call dealloc_gauss_coef_monitor(append_gauss_IN)
@@ -268,7 +268,8 @@
      &          append_file_name, target_file_name)
 !
       use t_read_sph_spectra
-      use sph_mean_square_IO_select
+      use t_buffer_4_gzip
+      use sph_mean_square_IO
 !
       implicit none
 !
@@ -281,7 +282,7 @@
       type(read_sph_spectr_data), save :: target_sph_IN
 !
       integer(kind = kint), parameter :: id_append_file = 15
-      integer(kind = kint), parameter :: id_target_file = 16
+      integer(kind = kint), parameter :: id_write_file = 16
 !
       integer(kind = kint) :: istep_start, istep_end, i_step, ierr
       real(kind = kreal) :: start_time, end_time, time
@@ -290,51 +291,58 @@
       integer(kind = kint) :: nchara_line
       character(len = 1), allocatable :: textbuf(:)
 !
+      logical :: flag_gzip
+      type(buffer_4_gzip) :: zbuf
 !
-        write(*,*) 'Open append file', ': ', trim(append_file_name)
-        open(id_append_file, file=append_file_name)
-        call select_input_sph_series_head(id_append_file,               &
-     &      flag_current_fmt, flag_spectr, flag_vol_ave, append_sph_IN)
-        call read_sph_spectr_time(id_append_file, ione,                 &
-     &                            istep_start, start_time, ierr)
-        backspace(id_append_file)
 !
-        write(*,*) 'Open target file', ': ', trim(target_file_name)
-        open(id_target_file, file=target_file_name)
-        call select_input_sph_series_head(id_target_file,               &
-     &      flag_current_fmt, flag_spectr, flag_vol_ave, target_sph_IN)
-        close(id_target_file)
+      write(*,*) 'Open data file to append.'
+      call sel_open_read_sph_monitor_file                               &
+     &   (id_append_file, append_file_name, flag_gzip, zbuf)
+      call select_input_sph_series_head(id_append_file, flag_gzip,      &
+     &    flag_current_fmt, flag_spectr, flag_vol_ave,                  &
+     &    append_sph_IN, zbuf)
+      call select_read_sph_spectr_time(id_append_file, flag_gzip, ione, &
+     &    istep_start, start_time, zbuf, ierr)
+      call sel_close_sph_monitor_file(id_append_file, flag_gzip, zbuf)
 !
-        if(append_sph_IN%nri_sph .ne. target_sph_IN%nri_sph) then
-          write(*,*) '# of radial layer does not match',                &
-     &        append_sph_IN%nri_sph, target_sph_IN%nri_sph
+      write(*,*) 'Open target file', ': ', trim(target_file_name)
+      open(id_write_file, file=target_file_name)
+      call select_input_sph_series_head(id_write_file, (.FALSE.),       &
+     &    flag_current_fmt, flag_spectr, flag_vol_ave,                  &
+     &    target_sph_IN, zbuf)
+      close(id_write_file)
+!
+      if(append_sph_IN%nri_sph .ne. target_sph_IN%nri_sph) then
+        write(*,*) '# of radial layer does not match',                  &
+     &      append_sph_IN%nri_sph, target_sph_IN%nri_sph
+        stop
+      end if
+      if(append_sph_IN%ltr_sph .ne. target_sph_IN%ltr_sph) then
+        write(*,*) '# of truncation does not match',                    &
+     &      append_sph_IN%ltr_sph, target_sph_IN%ltr_sph
+        stop
+      end if
+      if(append_sph_IN%ntot_sph_spec                                    &
+     &      .ne. target_sph_IN%ntot_sph_spec) then
+        write(*,*) '# of components in files does not match',           &
+     &      append_sph_IN%ntot_sph_spec, target_sph_IN%ntot_sph_spec
+        stop
+      end if
+!
+      do nd = 1, target_sph_IN%ntot_sph_spec
+        if(append_sph_IN%ene_sph_spec_name(nd)                          &
+     &            .ne. target_sph_IN%ene_sph_spec_name(nd)) then
+          write(*,*) nd, '-th components in files does not match',      &
+     &            trim(append_sph_IN%ene_sph_spec_name(nd)), '    ',    &
+     &            trim(target_sph_IN%ene_sph_spec_name(nd))
           stop
         end if
-        if(append_sph_IN%ltr_sph .ne. target_sph_IN%ltr_sph) then
-          write(*,*) '# of truncation does not match',                  &
-     &        append_sph_IN%ltr_sph, target_sph_IN%ltr_sph
-          stop
-        end if
-        if(append_sph_IN%ntot_sph_spec                                  &
-     &        .ne. target_sph_IN%ntot_sph_spec) then
-          write(*,*) '# of components in files does not match',         &
-     &        append_sph_IN%ntot_sph_spec, target_sph_IN%ntot_sph_spec
-          stop
-        end if
+      end do
+      call dealloc_sph_espec_data(append_sph_IN)
 !
-        do nd = 1, target_sph_IN%ntot_sph_spec
-          if(append_sph_IN%ene_sph_spec_name(nd)                        &
-     &              .ne. target_sph_IN%ene_sph_spec_name(nd)) then
-            write(*,*) nd, '-th components in files does not match',    &
-     &              trim(append_sph_IN%ene_sph_spec_name(nd)), '    ',  &
-     &              trim(target_sph_IN%ene_sph_spec_name(nd))
-            stop
-          end if
-        end do
-!
-        open(id_target_file, file=target_file_name, position='append')
-        backspace(id_target_file)
-        call read_sph_spectr_time(id_target_file, ione,                 &
+        open(id_write_file, file=target_file_name, position='append')
+        backspace(id_write_file)
+        call read_sph_spectr_time(id_write_file, ione,                  &
      &                            istep_end, end_time, ierr)
 !
         write(*,*) 'end step and time for target file',                 &
@@ -342,12 +350,18 @@
         write(*,*) 'start step and time for append file',               &
      &          istep_start, start_time
 !
-        ntot_pick = target_sph_IN%nri_sph * (target_sph_IN%ltr_sph+1)
+        if(flag_vol_ave) then
+          ntot_pick = (target_sph_IN%ltr_sph+1)
+        else
+          ntot_pick = target_sph_IN%nri_sph * (target_sph_IN%ltr_sph+1)
+        end if
+        write(*,*) 'ntot_pick', ntot_pick, &
+     &         target_sph_IN%nri_sph, target_sph_IN%ltr_sph
         icou = 0
         if(istep_start .le. istep_end) then
           do
-            backspace(id_target_file)
-            call read_sph_spectr_time(id_target_file, ione,             &
+            backspace(id_write_file)
+            call read_sph_spectr_time(id_write_file, ione,              &
      &                                i_step, time, ierr)
             write(*,'(78a1,a5,i12,a4,1pe16.8e3,a29,i12)',advance="NO")  &
      &          (char(8),ic=1,78), 'step ', i_step,                     &
@@ -355,39 +369,43 @@
             if(i_step .lt. istep_start) exit
             if(ierr .gt. 0) exit
             do ic = 1, ntot_pick
-              backspace(id_target_file)
+              backspace(id_write_file)
             end do
             icou = icou + 1
           end do
         end if
-        write(*,*)
-        write(*,*) 'Start Append'
 !
-        nchara_line = lengh_spectr_data_line(flag_spectr,               &
+      write(*,*)
+      write(*,*) 'Open file to append again'
+      call sel_open_read_sph_monitor_file                               &
+     &   (id_append_file, append_file_name, flag_gzip, zbuf)
+      call select_input_sph_series_head(id_append_file, flag_gzip,      &
+     &    flag_current_fmt, flag_spectr, flag_vol_ave,                  &
+     &    append_sph_IN, zbuf)
+!
+      nchara_line = lengh_spectr_data_line(flag_spectr,                 &
      &                                     flag_vol_ave, target_sph_IN)
-        allocate(textbuf(nchara_line))
-        icou = 0
-        do
-          icou = icou + 1
-          do kr = 1, target_sph_IN%nri_sph
-            do lth = 0, target_sph_IN%ltr_sph
-              call read_write_line_text(id_append_file, id_target_file, &
-     &                                  nchara_line, textbuf, ierr)
-            end do
-          end do
+      allocate(textbuf(nchara_line))
 !
-          write(*,'(33a1,i12,a21)',advance="NO")                        &
+      icou = 0
+      do
+        icou = icou + 1
+        call select_copy_sph_monitor_data                               &
+     &     (id_append_file, id_write_file, flag_gzip, target_sph_IN,    &
+     &      nchara_line, textbuf, zbuf, ierr)
+        if(ierr .gt. 0) exit
+!
+        write(*,'(33a1,i12,a21)',advance="NO")                          &
      &          (char(8),ic=1,33), icou, '-th step is appended.'
-          if(ierr .gt. 0) exit
-        end do
-        deallocate(textbuf)
-        write(*,*)
+      end do
+      deallocate(textbuf)
+      write(*,*)
 !
-        close(id_target_file)
-        close(id_append_file)
+      close(id_write_file)
+      call sel_close_sph_monitor_file(id_append_file, flag_gzip, zbuf)
 !
-        call dealloc_sph_espec_data(append_sph_IN)
-        call dealloc_sph_espec_data(target_sph_IN)
+      call dealloc_sph_espec_data(append_sph_IN)
+      call dealloc_sph_espec_data(target_sph_IN)
 !
       end subroutine append_sph_mean_sq_file
 !
@@ -409,7 +427,7 @@
       type(picked_spectrum_data_IO), save :: target_pick_IO
 !
       integer(kind = kint), parameter :: id_append_file = 15
-      integer(kind = kint), parameter :: id_target_file = 16
+      integer(kind = kint), parameter :: id_write_file = 16
 !
       integer(kind = kint) :: istep_start, istep_end, i_step, ierr
       real(kind = kreal) :: start_time, end_time, time
@@ -427,11 +445,11 @@
         backspace(id_append_file)
 !
         write(*,*) 'Open target file', ': ', trim(target_file_name)
-        open(id_target_file, file=target_file_name)
-        call read_pick_series_head(id_target_file, target_pick_IO)
+        open(id_write_file, file=target_file_name)
+        call read_pick_series_head(id_write_file, target_pick_IO)
         call alloc_pick_sph_monitor_IO(target_pick_IO)
-        call read_pick_series_comp_name(id_target_file, target_pick_IO)
-        close(id_target_file)
+        call read_pick_series_comp_name(id_write_file, target_pick_IO)
+        close(id_write_file)
 !
         if(append_pick_IO%num_layer .ne. target_pick_IO%num_layer) then
           write(*,*) '# of radial layer does not match',                &
@@ -459,9 +477,9 @@
           end if
         end do
 !
-        open(id_target_file, file=target_file_name, position='append')
-        backspace(id_target_file)
-        call read_sph_spectr_time(id_target_file, ione,                 &
+        open(id_write_file, file=target_file_name, position='append')
+        backspace(id_write_file)
+        call read_sph_spectr_time(id_write_file, ione,                  &
      &                            istep_end, end_time, ierr)
         write(*,*) 'end step and time for target file',                 &
      &          istep_end, end_time
@@ -472,8 +490,8 @@
         icou = 0
         if(istep_start .le. istep_end) then
           do
-            backspace(id_target_file)
-            call read_sph_spectr_time(id_target_file, ione,             &
+            backspace(id_write_file)
+            call read_sph_spectr_time(id_write_file, ione,              &
      &                                i_step, time, ierr)
             write(*,'(78a1,a5,i12,a4,1pe16.8e3,a29,i12)',advance="NO")  &
      &          (char(8),ic=1,78), 'step ', i_step,                     &
@@ -481,7 +499,7 @@
             if(i_step .lt. istep_start) exit
             if(ierr .gt. 0) exit
             do ic = 1, ntot_pick
-              backspace(id_target_file)
+              backspace(id_write_file)
             end do
             icou = icou + 1
           end do
@@ -514,11 +532,11 @@
 !$omp end parallel workshare
 !
           call write_picked_sph_snap                                    &
-     &       (id_target_file, i_step, time, target_pick_IO)
+     &       (id_write_file, i_step, time, target_pick_IO)
         end do
         write(*,*)
 !
-        close(id_target_file)
+        close(id_write_file)
         close(id_append_file)
 !
         call dealloc_pick_sph_monitor_IO(append_pick_IO)

@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/sph_spectr/sph_mean_square_IO_select.f90

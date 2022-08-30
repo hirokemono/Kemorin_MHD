@@ -13,15 +13,15 @@
 !!      control block for pickup spherical harmonics
 !!
 !!  begin monitor_data_connect_ctl
-!!    begin append_monitor_data_ctl
+!!    folder_to_read_ctl    'no02'
+!!    folder_to_add_ctl     'monitor'
+!!
+!!    read_monitor_file_format_ctl    'gzip'
+!!
+!!    begin monitor_data_list_ctl
 !!      volume_average_prefix        'no02/sph_ave_volume'
 !!      ...
-!!    end append_monitor_data_ctl
-!!
-!!    begin target_monitor_data_ctl
-!!      volume_average_prefix        'connected/sph_ave_volume'
-!!      ...
-!!    end target_monitor_data_ctl
+!!    end monitor_data_list_ctl
 !!  begin monitor_data_connect_ctl
 !!
 !! -----------------------------------------------------------------
@@ -32,12 +32,19 @@
       use m_precision
 !
       use t_ctl_data_tave_sph_monitor
+      use t_control_array_character
 !
       implicit none
 !
       type ctl_data_add_sph_monitor
-        type(tave_sph_monitor_ctl) :: append_monitor_ctl
-        type(tave_sph_monitor_ctl) :: target_monitor_ctl
+!>        directory of time series to be read
+        type(read_character_item) :: folder_to_read_ctl
+!>        directory of time series to add
+        type(read_character_item) :: folder_to_add_ctl
+!>        file format of time series to be read
+        type(read_character_item) :: read_monitor_file_format_ctl
+!
+        type(tave_sph_monitor_ctl) :: monitor_list_ctl
 !
         integer (kind = kint) :: i_add_sph_monitor = 0
       end type ctl_data_add_sph_monitor
@@ -46,9 +53,14 @@
      &      :: hd_monitor_data_connect = 'monitor_data_connect_ctl'
 !
       character(len=kchara), parameter, private                         &
-     &      :: hd_append_monitor = 'append_monitor_data_ctl'
+     &      :: hd_folder_to_read_ctl = 'folder_to_read_ctl'
       character(len=kchara), parameter, private                         &
-     &      :: hd_target_monitor = 'target_monitor_data_ctl'
+     &      :: hd_folder_to_add_ctl = 'folder_to_add_ctl'
+      character(len=kchara), parameter, private                         &
+     &      :: hd_read_monitor_format = 'read_monitor_file_format_ctl'
+!
+      character(len=kchara), parameter, private                         &
+     &      :: hd_monitor_file_list = 'monitor_file_list_ctl'
 !
 ! -----------------------------------------------------------------------
 !
@@ -100,10 +112,16 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
-        call read_ctl_tave_sph_monitor(id_control, hd_append_monitor,   &
-     &      add_mtr_ctl%append_monitor_ctl, c_buf)
-        call read_ctl_tave_sph_monitor(id_control, hd_target_monitor,   &
-     &      add_mtr_ctl%target_monitor_ctl, c_buf)
+        call read_chara_ctl_type(c_buf, hd_folder_to_read_ctl,          &
+     &      add_mtr_ctl%folder_to_read_ctl)
+        call read_chara_ctl_type(c_buf, hd_folder_to_add_ctl,           &
+     &      add_mtr_ctl%folder_to_add_ctl)
+        call read_chara_ctl_type(c_buf, hd_read_monitor_format,         &
+     &      add_mtr_ctl%read_monitor_file_format_ctl)
+!
+        call read_ctl_tave_sph_monitor                                  &
+     &     (id_control, hd_monitor_file_list,                           &
+     &      add_mtr_ctl%monitor_list_ctl, c_buf)
       end do
       add_mtr_ctl%i_add_sph_monitor = 1
 !
@@ -118,10 +136,12 @@
       integer(kind = kint) :: i
 !
 !
+      add_mtr_ctl%folder_to_read_ctl%iflag = 0
+      add_mtr_ctl%folder_to_add_ctl%iflag = 0
+      add_mtr_ctl%read_monitor_file_format_ctl%iflag = 0
       add_mtr_ctl%i_add_sph_monitor = 0
 !
-      call dealloc_ctl_tave_sph_monitor(add_mtr_ctl%append_monitor_ctl)
-      call dealloc_ctl_tave_sph_monitor(add_mtr_ctl%target_monitor_ctl)
+      call dealloc_ctl_tave_sph_monitor(add_mtr_ctl%monitor_list_ctl)
 !
       end subroutine dealloc_ctl_data_add_sph_mntr
 !

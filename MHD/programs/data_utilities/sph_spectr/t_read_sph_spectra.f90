@@ -130,7 +130,6 @@
       type(read_sph_spectr_data), intent(in) :: sph_IN
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !
-      integer(kind = kint) :: i
 !
       sph_OUT%ltr_sph = sph_IN%ltr_sph
       sph_OUT%nri_sph = sph_IN%nri_sph
@@ -176,8 +175,6 @@
 !
       type(read_sph_spectr_data), intent(in) :: sph_IN
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
-!
-      integer(kind = kint) :: i
 !
 !
       call copy_read_ene_head_params(sph_IN, sph_OUT)

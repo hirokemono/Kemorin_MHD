@@ -91,7 +91,7 @@
       subroutine sph_dynamic_elsasser_by_spectr(els_dat)
 !
       use simple_sph_spectr_head_IO
-      use sph_mean_square_IO_select
+      use sph_mean_square_IO
       use set_parallel_file_name
 !
       type(sph_dyn_elsasser_data), intent(inout) :: els_dat

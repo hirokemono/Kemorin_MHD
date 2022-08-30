@@ -64,7 +64,7 @@ ifdef FORTRAN_C_CONNECT
   LIB_FILES_SPH_UTIL+=   '$$(LIB_KEMO_C_FILE)'
 endif
 
-SOURCES = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90 *.F90)
 
 MOD_SPH_UTIL_DLL = \
 t_read_sph_spectra.o \
@@ -72,10 +72,13 @@ t_picked_sph_spectr_data_IO.o \
 t_gauss_coefs_monitor_IO.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
+gz_spl_sph_spectr_head_IO.o \
+gz_spl_sph_spectr_data_IO.o \
+old_sph_spectr_data_IO.o \
+sph_mean_square_IO.o \
 picked_sph_spectr_data_IO.o \
 gauss_coefs_monitor_IO.o \
 count_monitor_time_series.o \
-sph_mean_square_IO_select.o \
 cal_tave_sph_ene_spectr.o \
 m_tave_sph_ene_spectr.o \
 m_read_sph_spectra_f.o \
@@ -148,9 +151,12 @@ t_ctl_data_append_sph_mntr.o \
 t_read_sph_spectra.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
-sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
+gz_spl_sph_spectr_head_IO.o \
+gz_spl_sph_spectr_data_IO.o \
+old_sph_spectr_data_IO.o \
+sph_mean_square_IO.o \
 gauss_coefs_monitor_IO.o \
 picked_sph_spectr_data_IO.o \
 count_monitor_time_series.o
@@ -211,7 +217,6 @@ t_read_sph_spectra.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_tave_sph_ene_spectr.o \
-sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
 cal_tave_sph_ene_spectr.o
@@ -220,7 +225,6 @@ MOD_TAVE_OLD_SPH_ESPEC = \
 t_average_old_sph_ene_spec.o \
 t_read_sph_spectra.o \
 m_tave_sph_ene_spectr.o \
-sph_mean_square_IO_select.o \
 cal_tave_sph_ene_spectr.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
@@ -233,7 +237,6 @@ t_read_sph_spectra.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_maxmode_sph_ene_spectr.o \
-sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o
 
@@ -243,7 +246,6 @@ t_read_sph_spectra.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_sph_uli_lengh_scale.o \
-sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o
 
@@ -253,7 +255,6 @@ t_read_sph_spectra.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_sph_dynamic_elsasser.o \
-sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o
 
@@ -263,7 +264,6 @@ t_read_sph_spectra.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_part_sum_sph_ene_spectr.o \
-sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
 part_sum_sph_ene_spec.o

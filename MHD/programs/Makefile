@@ -7,6 +7,8 @@ PROG_DIR = $$(MHDDIR)/programs
 LIB_PYTHONS =      '-L$$(PYTHONDIR) -lcalypso_to_pythons'
 LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
 
+MOD_PYTHONS = '$$(MOD_SPH_UTIL_DLL)'
+
 SUBDIRS = \
 FEM_MHD \
 SPH_MHD \

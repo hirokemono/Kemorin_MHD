@@ -69,6 +69,11 @@
           use ISO_C_BINDING
         end subroutine close_gzfile
 !  -----------------
+        function check_gzfile_eof() BIND(C, name = 'check_gzfile_eof')
+          use ISO_C_BINDING
+          integer(C_int) :: check_gzfile_eof
+        end function check_gzfile_eof
+!  -----------------
         subroutine get_one_line_from_gz                                 &
      &           (num_buffer, num_word, nchara, line_buf)               &
      &            BIND(C, name = 'get_one_line_from_gz')
