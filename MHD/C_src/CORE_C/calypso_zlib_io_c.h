@@ -32,16 +32,6 @@
 
 /* prototypes */
 
-void open_wt_rawfile(const char *file_name, int *ierr);
-void open_ad_rawfile(const char *file_name, int *ierr);
-void open_rd_rawfile(const char *file_name, int *ierr);
-void close_rawfile(void);
-
-void rawseek_go_fwd(int *ioffset, int *ierr);
-void rawread_32bit(int *iflag_swap, int *ilength, void *buf, int *lenchara);
-void rawread_64bit(int *iflag_swap, int *ilength, void *buf, int *lenchara);
-void rawwrite(int *ilength, void *buf, int *lenchara);
-
 void open_wt_gzfile(const char *gz_file_name);
 void open_ad_gzfile(const char *gz_file_name);
 void open_rd_gzfile(const char *gz_file_name);

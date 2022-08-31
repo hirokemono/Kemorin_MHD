@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "skip_comment_c.h"
-#include "calypso_zlib_io_c.h"
+#include "calypso_rawfile_io_c.h"
 #include "m_psf_data_4_viewer_c.h"
 
 struct psf_bin_work{

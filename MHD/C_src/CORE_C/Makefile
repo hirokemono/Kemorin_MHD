@@ -18,6 +18,7 @@ OBJ_KEMO_C = \
  get_ysglbitmap.o \
  write_image_2_bmp.o \
  read_image_2_bmp.o \
+ calypso_rawfile_io_c.o \
  \
  m_read_text_to_character.o \
  m_surface_mesh_4_viewer_c.o \
