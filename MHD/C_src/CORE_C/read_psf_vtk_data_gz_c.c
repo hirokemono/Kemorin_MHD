@@ -16,7 +16,7 @@ static void read_psf_vtk_node_data_gz(struct psf_data *viz_s){
 	char buf[LENGTHBUF];    /* array for reading line */
 	int num_word, nchara, lbuf = LENGTHBUF;
 	
-    num_word = skip_comment_gz_c(&lbuf, buf);
+    num_word = skip_comment_gz(&lbuf, buf);
     get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);     /* ASCII */
     get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);     /* DATASET UNSTRUCTURED_GRID */
     
@@ -187,7 +187,7 @@ static void read_psf_vtk_field_data_gz(struct psf_data *viz_s){
 	int num_word, lbuf = LENGTHBUF;
 	char buf[LENGTHBUF];    /* array for reading line */
 
-    num_word = skip_comment_gz_c(&lbuf, buf);  /* POINT_DATA  nnod_viz */
+    num_word = skip_comment_gz(&lbuf, buf);  /* POINT_DATA  nnod_viz */
 	sscanf(buf, "%10s %d", tmpchara, &vtk_tmp.nnod_vtk);
 
     vtk_tmp.vtk_fields = (vtk_fields_t *) malloc(sizeof(vtk_fields_t));

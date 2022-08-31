@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "calypso_param_c.h"
-#include "calypso_zlib_io_c.h"
+#include "calypso_zlib_io_old.h"
 
 struct BMP_data{
     int ihpixf;

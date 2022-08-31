@@ -4,7 +4,7 @@
 *********************************************************************/
 
 #include <string.h>
-#include "calypso_zlib_io_c.h"
+#include "calypso_zlib_io_old.h"
 
 FILE *fp_z;
 gzFile file_gz;
@@ -27,7 +27,7 @@ exit (EXIT_FAILURE);                                        \
     }                                                               \
 }
 
-void open_wt_gzfile_c(const char *gz_file_name){
+void open_wt_gzfile(const char *gz_file_name){
 	file_gz = gzopen(gz_file_name, GZ_WT_MODE);
 	if (file_gz == NULL){
 		fprintf(stderr, "failed to gzopen\n");
@@ -36,7 +36,7 @@ void open_wt_gzfile_c(const char *gz_file_name){
 	return;
 }
 
-void open_ad_gzfile_c(const char *gz_file_name){
+void open_ad_gzfile(const char *gz_file_name){
 	file_gz = gzopen(gz_file_name, GZ_AD_MODE);
 	if (file_gz == NULL){
 		fprintf(stderr, "failed to gzopen\n");
@@ -44,7 +44,7 @@ void open_ad_gzfile_c(const char *gz_file_name){
 	}
 	return;
 }
-void open_rd_gzfile_c(const char *gz_file_name){
+void open_rd_gzfile(const char *gz_file_name){
 	file_gz = gzopen(gz_file_name, GZ_RD_MODE);
 	if (file_gz == NULL){
 		fprintf(stderr, "failed to gzopen\n");
@@ -53,7 +53,7 @@ void open_rd_gzfile_c(const char *gz_file_name){
 	return;
 }
 
-void close_gzfile_c(void){
+void close_gzfile(void){
 	int iret;
 	
 	if ((iret = gzclose(file_gz)) != Z_OK){
@@ -64,7 +64,7 @@ void close_gzfile_c(void){
 	return;
 }
 
-int open_rd_gzfile_w_flag_c(const char *gz_file_name){
+int open_rd_gzfile_w_flag(const char *gz_file_name){
 	file_gz = gzopen(gz_file_name, GZ_RD_MODE);
 	if (file_gz == NULL){
 		fprintf(stderr, "failed to gzopen\n");
@@ -73,15 +73,15 @@ int open_rd_gzfile_w_flag_c(const char *gz_file_name){
 	return 0;
 }
 
-int rewind_gzfile_c(void){
+int rewind_gzfile(void){
     return gzrewind(file_gz);
 }
 
-int check_gzfile_eof_c(void){
+int check_gzfile_eof(void){
     return gzeof(file_gz);
 }
 
-void write_compress_txt_c(int *nchara, char *input_txt){
+void write_compress_txt(int *nchara, char *input_txt){
 	int writelen, num_txt;
 	
 	
@@ -103,7 +103,7 @@ void write_compress_txt_c(int *nchara, char *input_txt){
 	return;
 }
 
-void write_compress_txt_nolf_c(int *nchara, char *input_txt){
+void write_compress_txt_nolf(int *nchara, char *input_txt){
 	int writelen, num_txt;
 	
 	num_txt = (int) strlen(input_txt);
@@ -118,7 +118,7 @@ void write_compress_txt_nolf_c(int *nchara, char *input_txt){
 	return;
 }
 
-static void zlib_deflate_stream_init(z_stream *strm)
+static void zlib_deflate_stream_init (z_stream *strm)
 {
     strm->zalloc = Z_NULL;
     strm->zfree  = Z_NULL;
@@ -154,7 +154,7 @@ static void gzip_inflate_stream_init (z_stream *strm)
     return;
 }
 
-void zlib_defleat_once_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
+void zlib_defleat_once(const int *len_buf, const void *buf, const int *len_gzipbuf, 
                        int *len_gzipped, char *gzipbuf)
 {
     z_stream strm;
@@ -171,7 +171,7 @@ void zlib_defleat_once_c(const int *len_buf, const void *buf, const int *len_gzi
     return;
 }
 
-void zlib_defleat_begin_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
+void zlib_defleat_begin(const int *len_buf, const void *buf, const int *len_gzipbuf, 
                         int *len_gzipped, char *gzipbuf)
 {
     
@@ -185,7 +185,7 @@ void zlib_defleat_begin_c(const int *len_buf, const void *buf, const int *len_gz
     return;
 }
 
-void gzip_defleat_once_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
+void gzip_defleat_once(const int *len_buf, const void *buf, const int *len_gzipbuf, 
                        int *len_gzipped, char *gzipbuf)
 {
     z_stream strm;
@@ -202,7 +202,7 @@ void gzip_defleat_once_c(const int *len_buf, const void *buf, const int *len_gzi
     return;
 }
 
-void gzip_defleat_begin_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
+void gzip_defleat_begin(const int *len_buf, const void *buf, const int *len_gzipbuf, 
                         int *len_gzipped, char *gzipbuf)
 {
     
@@ -216,7 +216,7 @@ void gzip_defleat_begin_c(const int *len_buf, const void *buf, const int *len_gz
     return;
 }
 
-void gzip_defleat_cont_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
+void gzip_defleat_cont(const int *len_buf, const void *buf, const int *len_gzipbuf,
                        int *len_gzipped)
 {
     uInt avail_out_current;
@@ -230,7 +230,7 @@ void gzip_defleat_cont_c(const int *len_buf, const void *buf, const int *len_gzi
     return;
 }
 
-void gzip_defleat_last_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
+void gzip_defleat_last(const int *len_buf, const void *buf, const int *len_gzipbuf,
                        int *len_gzipped)
 {
     uInt avail_out_current;
@@ -246,7 +246,7 @@ void gzip_defleat_last_c(const int *len_buf, const void *buf, const int *len_gzi
     return;
 }
 
-void zlib_infleat_once_c(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf,
+void zlib_infleat_once(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
                        void *buf, int *len_gzipped)
 {
     z_stream strm;
@@ -265,7 +265,7 @@ void zlib_infleat_once_c(const int *len_gzipbuf, const char *gzipbuf, const int 
     return;
 }
 
-void zlib_infleat_begin_c(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf,
+void zlib_infleat_begin(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
                         void *buf, int *len_gzipped)
 {
     
@@ -279,7 +279,7 @@ void zlib_infleat_begin_c(const int *len_gzipbuf, const char *gzipbuf, const int
     return;
 }
 
-void gzip_infleat_once_c(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf,
+void gzip_infleat_once(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
                        void *buf, int *len_gzipped)
 {
     z_stream strm;
@@ -296,7 +296,7 @@ void gzip_infleat_once_c(const int *len_gzipbuf, const char *gzipbuf, const int 
     return;
 }
 
-void gzip_infleat_begin_c(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf,
+void gzip_infleat_begin(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
                         void *buf, int *len_gzipped)
 {
     
@@ -310,7 +310,7 @@ void gzip_infleat_begin_c(const int *len_gzipbuf, const char *gzipbuf, const int
     return;
 }
 
-void gzip_infleat_cont_c(const int *len_gzipbuf, const int *len_buf, 
+void gzip_infleat_cont(const int *len_gzipbuf, const int *len_buf, 
                        void *buf, int *len_gzipped)
 {
     uInt avail_in_current;
@@ -325,7 +325,7 @@ void gzip_infleat_cont_c(const int *len_gzipbuf, const int *len_buf,
     return;
 }
 
-void gzip_infleat_last_c(const int *len_gzipbuf, const int *len_buf,
+void gzip_infleat_last(const int *len_gzipbuf, const int *len_buf,
                        void *buf, int *len_gzipped)
 {
     uInt avail_in_current;
@@ -405,33 +405,33 @@ static void get_one_line_by_zlib(int *num_buffer, int *num_word, int *nchara, ch
 	return;
 }
 
-void gzseek_go_fwd_c(int *ioffset, int *ierr){
+void gzseek_go_fwd_f(int *ioffset, int *ierr){
     z_off_t ierr_z;
     ierr_z = gzseek(file_gz, (z_off_t) *ioffset, SEEK_CUR);
     *ierr =  (int)ierr_z;
 }
 
-void gzread_32bit_c(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
+void gzread_32bit_f(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
     *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
     *ierr = *ierr - *ilength;
     if(*iflag_swap == IFLAG_SWAP) {byte_swap_4(*ilength, textbuf);};
     return;
 }
 
-void gzread_64bit_c(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
+void gzread_64bit_f(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
     *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
     *ierr = *ierr - *ilength;
     if(*iflag_swap == IFLAG_SWAP) {byte_swap_8(*ilength, textbuf);};
     return;
 }
 
-void gzwrite_c(int *ilength, void *buf, int *ierr){
+void gzwrite_f(int *ilength, void *buf, int *ierr){
     *ierr = gzwrite(file_gz, buf, (uInt) *ilength);
     *ierr = *ierr - *ilength;
     return;
 }
 
-void get_one_line_from_gz_c(int *num_buffer, int *num_word, int *nchara, char *line_buf){
+void get_one_line_from_gz(int *num_buffer, int *num_word, int *nchara, char *line_buf){
 	
 	get_one_line_by_zlib(num_buffer, num_word, nchara, line_buf);
 	line_buf[*nchara-1] = ' ';
@@ -439,19 +439,19 @@ void get_one_line_from_gz_c(int *num_buffer, int *num_word, int *nchara, char *l
 	return;
 }
 
-int skip_comment_gz_c(int *num_buffer, char *buf){
+int skip_comment_gz(int *num_buffer, char *buf){
 	int nchara = 0, num_word = 0, icou = 0;
 	
-    get_one_line_from_gz_c(num_buffer, &num_word, &nchara, buf);
+	get_one_line_from_gz(num_buffer, &num_word, &nchara, buf);
 	while ((nchara <= 1) || (buf[0] == '!') || (buf[0] == '#') || (buf[0] == '\n')) {
-        get_one_line_from_gz_c(num_buffer, &num_word, &nchara, buf);
+		get_one_line_from_gz(num_buffer, &num_word, &nchara, buf);
 		icou = icou + 1;
 	};
 	return num_word;
 };
 
 /* compress*/
-void compress_file_c(const char *txt_file_name, const char *gz_file_name)
+void compress_file(const char *txt_file_name, const char *gz_file_name)
 {
 	z_stream z;                     /* data strucure for zlib */
 	unsigned char inbuf[INBUFSIZ];           /* input buffer */
@@ -551,7 +551,7 @@ void compress_file_c(const char *txt_file_name, const char *gz_file_name)
 }
 
 
-void decompress_file_c(const char *gz_file_name, const char *txt_file_name) /* decompress data */
+void decompress_file(const char *gz_file_name, const char *txt_file_name) /* decompress data */
 {
 	z_stream z;                     /* data strucure for zlib */
 	unsigned char inbuf[INBUFSIZ];           /* input buffer */

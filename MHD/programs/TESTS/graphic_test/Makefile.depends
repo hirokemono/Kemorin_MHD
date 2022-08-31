@@ -19,7 +19,7 @@ test_read_bmp_c.o: \
   $(MHDDIR)/programs/TESTS/graphic_test/test_read_bmp_c.c \
   $(MHDDIR)/C_src/CORE_C/read_image_2_bmp.h \
   $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
-  $(MHDDIR)/C_src/CORE_C/calypso_zlib_io_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_zlib_io_old.h \
   $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/CORE_C/write_image_2_png.h \
   $(MHDDIR)/C_src/CORE_C/write_image_2_bmp.h
@@ -28,7 +28,7 @@ test_read_gzipped_bmp_c.o: \
   $(MHDDIR)/programs/TESTS/graphic_test/test_read_gzipped_bmp_c.c \
   $(MHDDIR)/C_src/CORE_C/read_image_2_bmp.h \
   $(MHDDIR)/C_src/CORE_C/calypso_param_c.h \
-  $(MHDDIR)/C_src/CORE_C/calypso_zlib_io_c.h \
+  $(MHDDIR)/C_src/CORE_C/calypso_zlib_io_old.h \
   $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
   $(MHDDIR)/C_src/CORE_C/write_image_2_png.h \
   $(MHDDIR)/C_src/CORE_C/write_image_2_bmp.h
