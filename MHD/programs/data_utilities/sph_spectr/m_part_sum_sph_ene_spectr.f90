@@ -43,6 +43,7 @@
       subroutine sph_part_pwr_spectr_sum                                &
      &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
 !
+      use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
       use simple_sph_spectr_head_IO
       use sph_mean_square_IO
@@ -53,6 +54,8 @@
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
+      logical :: flag_gzip1
+      type(buffer_4_gzip) :: zbuf1
       character(len = kchara) :: input_prefix, input_extension
       character(len = kchara) :: file_name, fname_tmp
       integer(kind = kint) :: i, icou, ierr, ist_true
@@ -60,9 +63,11 @@
 !
       call split_extrension(fname_org, input_prefix, input_extension)
       file_name = add_dat_extension(input_prefix)
-      open(id_file_rms_l, file=fname_org)
-      call select_input_sph_series_head(id_file_rms_l,                  &
-     &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave, sph_IN)
+      call sel_open_read_sph_monitor_file(id_file_rms_l, fname_org,     &
+     &    flag_gzip1, zbuf1)
+      call select_input_sph_series_head(id_file_rms_l, flag_gzip1,      &
+     &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,             &
+     &    sph_IN, zbuf1)
       call check_sph_spectr_name(sph_IN)
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
@@ -81,9 +86,9 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_series_data(id_file_rms_l,                &
+        call select_input_sph_series_data(id_file_rms_l, flag_gzip1,    &
      &      spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,           &
-     &      sph_IN, ierr)
+     &      sph_IN, zbuf1, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
@@ -105,7 +110,7 @@
 !
    99 continue
       write(*,*)
-      close(id_file_rms_l)
+      call sel_close_sph_monitor_file(id_file_rms_l, flag_gzip1, zbuf1)
       close(id_file_rms)
 !
 !

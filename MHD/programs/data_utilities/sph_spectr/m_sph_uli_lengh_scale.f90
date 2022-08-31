@@ -47,6 +47,7 @@
       subroutine sph_uli_lengh_scale_by_spectr                          &
      &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
 !
+      use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
       use simple_sph_spectr_head_IO
       use sph_mean_square_IO
@@ -59,11 +60,15 @@
 !
       character(len = kchara) :: file_name, fname_tmp
       integer(kind = kint) :: i, icou, ierr, ist_true
+      logical :: flag_gzip1
+      type(buffer_4_gzip) :: zbuf1
 !
 !
-      open(id_file_rms_l, file=fname_org)
-      call select_input_sph_series_head(id_file_rms_l,                  &
-     &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave, sph_IN)
+      call sel_open_read_sph_monitor_file(id_file_rms_l, fname_org,     &
+     &    flag_gzip1, zbuf1)
+      call select_input_sph_series_head(id_file_rms_l, flag_gzip1,      &
+     &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,             &
+     &    sph_IN, zbuf1)
       call check_sph_spectr_name(sph_IN)
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
@@ -81,9 +86,9 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_series_data(id_file_rms_l,                &
+        call select_input_sph_series_data(id_file_rms_l, flag_gzip1,    &
      &      spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,           &
-     &      sph_IN, ierr)
+     &      sph_IN, zbuf1, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
@@ -106,7 +111,7 @@
 !
    99 continue
       write(*,*)
-      close(id_file_rms_l)
+      call sel_close_sph_monitor_file(id_file_rms_l, flag_gzip1, zbuf1)
       close(id_file_lscale)
 !
 !

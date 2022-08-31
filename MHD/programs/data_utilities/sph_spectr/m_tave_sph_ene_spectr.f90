@@ -33,6 +33,7 @@
       use m_precision
       use m_constants
       use t_read_sph_spectra
+      use t_buffer_4_gzip
 !
       implicit none
 !
@@ -153,7 +154,6 @@
      &          start_time, end_time, true_start, true_end,             &
      &          sph_IN, WK_tave)
 !
-      use simple_sph_spectr_head_IO
       use sph_mean_square_IO
       use cal_tave_sph_ene_spectr
 !
@@ -166,13 +166,16 @@
 !
       character(len = kchara) :: file_name
       real(kind = kreal) :: prev_time
-      integer(kind = kint) :: i, icou, ierr, ist_true
+      integer(kind = kint) :: icou, ierr, ist_true
+      logical :: flag_gzip1
+      type(buffer_4_gzip) :: zbuf1
 !
 !
       write(*,*) 'Open file ', trim(fname_org)
-      open(id_file_rms, file=fname_org)
-      call select_input_sph_series_head(id_file_rms,                    &
-     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN)
+      call sel_open_read_sph_monitor_file(id_file_rms, fname_org,       &
+     &    flag_gzip1, zbuf1)
+      call select_input_sph_series_head(id_file_rms, flag_gzip1,        &
+     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
       call check_sph_spectr_name(sph_IN)
 !
       call alloc_tave_sph_data(sph_IN, WK_tave)
@@ -184,8 +187,9 @@
 !     &       'step= ', sph_IN%i_step,                                  &
 !     &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_series_data(id_file_rms, flag_old_fmt,    &
-     &      flag_spectr, flag_vol_ave, sph_IN, ierr)
+        call select_input_sph_series_data(id_file_rms, flag_gzip1,      &
+     &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1,     &
+     &      ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. start_time) then
@@ -219,7 +223,7 @@
 !
    99 continue
       write(*,*)
-      close(id_file_rms)
+      call sel_close_sph_monitor_file(id_file_rms, flag_gzip1, zbuf1)
 !
 !
       call divide_average_ene_spectr(sph_IN%time, true_start,           &
@@ -246,7 +250,6 @@
      &         (flag_old_fmt, fname_org, flag_spectr, flag_vol_ave,     &
      &          start_time, end_time, sph_IN, WK_tave)
 !
-      use simple_sph_spectr_head_IO
       use sph_mean_square_IO
       use cal_tave_sph_ene_spectr
 !
@@ -256,16 +259,19 @@
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(spectr_ave_sigma_work), intent(inout) :: WK_tave
 !
+      logical :: flag_gzip1
+      type(buffer_4_gzip) :: zbuf1
       character(len = kchara) :: file_name
       real(kind = kreal) :: true_start, prev_time
-      integer(kind = kint) :: i, icou, ierr, ist_true
+      integer(kind = kint) :: icou, ierr, ist_true
 !
 !  Evaluate standard deviation
 !
       write(*,*) 'Open file ', trim(fname_org), ' again'
-      open(id_file_rms, file=fname_org)
-      call select_input_sph_series_head(id_file_rms,                    &
-     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN)
+      call sel_open_read_sph_monitor_file(id_file_rms, fname_org,       &
+     &    flag_gzip1, zbuf1)
+      call select_input_sph_series_head(id_file_rms, flag_gzip1,        &
+     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
 !
       icou = 0
       ist_true = -1
@@ -275,8 +281,9 @@
 !     &       'step= ', sph_IN%i_step,                                  &
 !     &       ' deviation finished. Count=  ', icou
       do
-        call select_input_sph_series_data(id_file_rms, flag_old_fmt,    &
-     &      flag_spectr, flag_vol_ave, sph_IN, ierr)
+        call select_input_sph_series_data(id_file_rms, flag_gzip1,      &
+     &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1,     &
+     &      ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. start_time) then
@@ -305,7 +312,7 @@
       end do
    99 continue
       write(*,*)
-      close(id_file_rms)
+      call sel_close_sph_monitor_file(id_file_rms, flag_gzip1, zbuf1)
 !
       call divide_deviation_ene_spectr(sph_IN%time, true_start,         &
      &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
@@ -318,7 +325,6 @@
 !
       call select_output_sph_series_data                                &
      &   (id_file_rms, flag_spectr, flag_vol_ave, sph_IN)
-!
       close(id_file_rms)
 !
       end subroutine sph_spectr_std_deviation
@@ -328,7 +334,6 @@
       subroutine read_sph_spectr_snapshot                               &
      &         (fname_org, flag_spectr, flag_vol_ave, sph_IN)
 !
-      use simple_sph_spectr_head_IO
       use sph_mean_square_IO
 !
 !
@@ -338,19 +343,22 @@
 !
       integer(kind = kint) :: ierr
       logical, parameter :: current_fmt = .FALSE.
+      logical :: flag_gzip1
+      type(buffer_4_gzip) :: zbuf1
 !
 !  Read spectr data file
 !
       write(*,*) 'Open file ', trim(fname_org), ' again'
-      open(id_file_rms, file=fname_org)
+      call sel_open_read_sph_monitor_file(id_file_rms, fname_org,       &
+     &    flag_gzip1, zbuf1)
 !
-      call select_input_sph_series_head(id_file_rms,                    &
-     &    current_fmt, flag_spectr, flag_vol_ave, sph_IN)
+      call select_input_sph_series_head(id_file_rms, flag_gzip1,        &
+     &    current_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
       call check_sph_spectr_name(sph_IN)
 !
-      call select_input_sph_series_data(id_file_rms, current_fmt,       &
-     &    flag_spectr, flag_vol_ave, sph_IN, ierr)
-      close(id_file_rms)
+      call select_input_sph_series_data(id_file_rms, flag_gzip1,        &
+     &    current_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1, ierr)
+      call sel_close_sph_monitor_file(id_file_rms, flag_gzip1, zbuf1)
 !
       end subroutine read_sph_spectr_snapshot
 !

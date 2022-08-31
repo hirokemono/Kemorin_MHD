@@ -19,6 +19,7 @@
       use m_constants
       use m_phys_constants
       use t_read_sph_spectra
+      use t_buffer_4_gzip
 !
       implicit none
 !
@@ -96,23 +97,27 @@
 !
       type(sph_dyn_elsasser_data), intent(inout) :: els_dat
 !
+      logical :: flag_gzip_l, flag_gzip_m
+      type(buffer_4_gzip) :: zbuf_l, zbuf_m
       character(len = kchara) :: file_name, fname_tmp
       integer(kind = kint) :: i, icou, jcou, ierr, ist_true, kcou, ifld
       real(kind = kreal) :: lscale_b
 !
 !
       file_name = add_dat_extension(els_dat%vol_l_spectr_file_prefix)
-      open(id_file_rms_l, file=file_name)
-      call select_input_sph_series_head(id_file_rms_l,                  &
+      call sel_open_read_sph_monitor_file(id_file_rms_l, file_name,     &
+     &    flag_gzip_l, zbuf_l)
+      call select_input_sph_series_head(id_file_rms_l, flag_gzip_l,     &
      &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
-     &    sph_IN_l)
+     &    sph_IN_l, zbuf_l)
       call check_sph_spectr_name(sph_IN_l)
 !
       file_name = add_dat_extension(els_dat%vol_m_spectr_file_prefix)
-      open(id_file_rms_m, file=file_name)
-      call select_input_sph_series_head(id_file_rms_m,                  &
+      call sel_open_read_sph_monitor_file(id_file_rms_m, file_name,     &
+     &    flag_gzip_m, zbuf_m)
+      call select_input_sph_series_head(id_file_rms_m, flag_gzip_m,     &
      &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
-     &    sph_IN_m)
+     &    sph_IN_m, zbuf_m)
       call check_sph_spectr_name(sph_IN_m)
 !
       do i = 1, sph_IN_l%num_labels
@@ -299,12 +304,12 @@
      &       'step= ', sph_IN_l%i_step,                                 &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_series_data(id_file_rms_l,                &
+        call select_input_sph_series_data(id_file_rms_l, flag_gzip_l,   &
      &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
-     &      sph_IN_l, ierr)
-        call select_input_sph_series_data(id_file_rms_m,                &
+     &      sph_IN_l, zbuf_l, ierr)
+        call select_input_sph_series_data(id_file_rms_m, flag_gzip_m,   &
      &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
-     &      sph_IN_m, ierr)
+     &      sph_IN_m, zbuf_m, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN_l%time .ge. els_dat%start_time) then
@@ -406,7 +411,10 @@
 !
    99 continue
       write(*,*)
-      close(id_file_rms_l)
+      call sel_close_sph_monitor_file(id_file_rms_l,                    &
+     &                                flag_gzip_l, zbuf_l)
+      call sel_close_sph_monitor_file(id_file_rms_m,                    &
+     &                                flag_gzip_m, zbuf_m)
       close(id_file_lscale)
 !
 !
