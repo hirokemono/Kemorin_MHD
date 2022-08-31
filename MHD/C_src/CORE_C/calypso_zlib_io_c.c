@@ -154,6 +154,10 @@ int open_rd_gzfile_w_flag(const char *gz_file_name){
 	return 0;
 }
 
+int rewind_gzfile(void){
+    return gzrewind(file_gz);
+}
+
 int check_gzfile_eof(void){
     return gzeof(file_gz);
 }

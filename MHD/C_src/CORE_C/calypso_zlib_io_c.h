@@ -48,6 +48,7 @@ void open_rd_gzfile(const char *gz_file_name);
 void close_gzfile(void);
 
 int open_rd_gzfile_w_flag(const char *gz_file_name);
+int rewind_gzfile(void);
 int check_gzfile_eof(void);
 
 void write_compress_txt(int *nchara, char *input_txt);
