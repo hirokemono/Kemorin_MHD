@@ -6,9 +6,7 @@
 #include <string.h>
 #include "calypso_zlib_io_c.h"
 
-FILE *fp_z;
-gzFile file_gz;
-
+gzFile file_gzz;
 z_stream strm_gl;
 
 /* The following macro calls a zlib routine and checks the return
@@ -27,46 +25,53 @@ exit (EXIT_FAILURE);                                        \
     }                                                               \
 }
 
-void open_wt_gzfile_c(const char *gz_file_name){
-	file_gz = gzopen(gz_file_name, GZ_WT_MODE);
-	if (file_gz == NULL){
-		fprintf(stderr, "failed to gzopen\n");
+static gzFile malloc_gzFile(){
+	gzFile file_gz = (gzFile) malloc(sizeof(gzFile));
+	if(file_gz == NULL){
+		printf("malloc error for gzFile structure\n");
 		exit(1);
-	}
-	return;
+	};
+	return file_gz;
 }
 
-void open_ad_gzfile_c(const char *gz_file_name){
-	file_gz = gzopen(gz_file_name, GZ_AD_MODE);
-	if (file_gz == NULL){
+void* open_wt_gzfile_c(const char *gz_file_name){
+	gzFile file_gz = malloc_gzFile();
+	if ((file_gz = gzopen(gz_file_name, GZ_WT_MODE)) == NULL){
 		fprintf(stderr, "failed to gzopen\n");
 		exit(1);
 	}
-	return;
-}
-void open_rd_gzfile_c(const char *gz_file_name){
-	file_gz = gzopen(gz_file_name, GZ_RD_MODE);
-	if (file_gz == NULL){
-		fprintf(stderr, "failed to gzopen\n");
-		exit(1);
-	}
-	return;
+    return (void *) file_gz;
 }
 
-void close_gzfile_c(void){
+void* open_ad_gzfile_c(const char *gz_file_name){
+	gzFile file_gz = malloc_gzFile();
+	if ((file_gz = gzopen(gz_file_name, GZ_AD_MODE)) == NULL){
+		fprintf(stderr, "failed to gzopen\n");
+		exit(1);
+	}
+    return (void *) file_gz;
+}
+void* open_rd_gzfile_c(const char *gz_file_name){
+	gzFile file_gz = malloc_gzFile();
+	if ((file_gz = gzopen(gz_file_name, GZ_RD_MODE)) == NULL){
+		fprintf(stderr, "failed to gzopen\n");
+		exit(1);
+	}
+    return (void *) file_gz;
+}
+
+void close_gzfile_c(void *FP_z){
 	int iret;
-	
-	if ((iret = gzclose(file_gz)) != Z_OK){
+	if ((iret = gzclose((gzFile) FP_z)) != Z_OK){
 		fprintf(stderr, "gzclose failed.\n");
 		exit(1);
 	}
-	
 	return;
 }
 
 int open_rd_gzfile_w_flag_c(const char *gz_file_name){
-	file_gz = gzopen(gz_file_name, GZ_RD_MODE);
-	if (file_gz == NULL){
+	file_gzz = gzopen(gz_file_name, GZ_RD_MODE);
+	if (file_gzz == NULL){
 		fprintf(stderr, "failed to gzopen\n");
 		return 1;
 	}
@@ -74,16 +79,15 @@ int open_rd_gzfile_w_flag_c(const char *gz_file_name){
 }
 
 int rewind_gzfile_c(void){
-    return gzrewind(file_gz);
+    return gzrewind(file_gzz);
 }
 
 int check_gzfile_eof_c(void){
-    return gzeof(file_gz);
+    return gzeof(file_gzz);
 }
 
-void write_compress_txt_c(int *nchara, char *input_txt){
+void write_compress_txt_c(void *FP_z, int *nchara, char *input_txt){
 	int writelen, num_txt;
-	
 	
 	num_txt = (int) strlen(input_txt);
 	input_txt[num_txt] =   '\n';
@@ -93,7 +97,7 @@ void write_compress_txt_c(int *nchara, char *input_txt){
 	fprintf(stderr,"nchara: %d, num_txt %d,\n",
 			*nchara, num_txt);
 	*/
-	writelen = gzwrite(file_gz, input_txt, num_txt);
+	writelen = gzwrite((gzFile) FP_z, input_txt, num_txt);
 	if (writelen != num_txt) {
 		fprintf(stderr, "failed to gzwrite\n");
 		exit(1);
@@ -108,7 +112,7 @@ void write_compress_txt_nolf_c(int *nchara, char *input_txt){
 	
 	num_txt = (int) strlen(input_txt);
 	input_txt[num_txt] = '\0';
-	writelen = gzwrite(file_gz, input_txt, num_txt);
+	writelen = gzwrite(file_gzz, input_txt, num_txt);
 	if (writelen != num_txt) {
 		fprintf(stderr, "failed to gzwrite\n");
 		exit(1);
@@ -386,9 +390,10 @@ static int count_words(int nchara_l, const char *line_buf){
 }
 
 
-static void get_one_line_by_zlib(int *num_buffer, int *num_word, int *nchara, char *line_buf){
+static void get_one_line_by_zlib(void *FP_z, int *num_buffer, int *num_word,
+								 int *nchara, char *line_buf){
 	*nchara = 0;
-	gzgets(file_gz, line_buf, *num_buffer);
+	gzgets(((gzFile) FP_z), line_buf, *num_buffer);
 	
 	*nchara = count_linechara(*num_buffer, line_buf);
 	*num_word = count_words(*nchara, line_buf);
@@ -407,44 +412,44 @@ static void get_one_line_by_zlib(int *num_buffer, int *num_word, int *nchara, ch
 
 void gzseek_go_fwd_c(int *ioffset, int *ierr){
     z_off_t ierr_z;
-    ierr_z = gzseek(file_gz, (z_off_t) *ioffset, SEEK_CUR);
+    ierr_z = gzseek(file_gzz, (z_off_t) *ioffset, SEEK_CUR);
     *ierr =  (int)ierr_z;
 }
 
 void gzread_32bit_c(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
-    *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
+    *ierr =  gzread(file_gzz, textbuf, (uInt) *ilength);
     *ierr = *ierr - *ilength;
     if(*iflag_swap == IFLAG_SWAP) {byte_swap_4(*ilength, textbuf);};
     return;
 }
 
 void gzread_64bit_c(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
-    *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
+    *ierr =  gzread(file_gzz, textbuf, (uInt) *ilength);
     *ierr = *ierr - *ilength;
     if(*iflag_swap == IFLAG_SWAP) {byte_swap_8(*ilength, textbuf);};
     return;
 }
 
 void gzwrite_c(int *ilength, void *buf, int *ierr){
-    *ierr = gzwrite(file_gz, buf, (uInt) *ilength);
+    *ierr = gzwrite(file_gzz, buf, (uInt) *ilength);
     *ierr = *ierr - *ilength;
     return;
 }
 
-void get_one_line_from_gz_c(int *num_buffer, int *num_word, int *nchara, char *line_buf){
-	
-	get_one_line_by_zlib(num_buffer, num_word, nchara, line_buf);
+void get_one_line_from_gz_c(void *FP_z, int *num_buffer, 
+							int *num_word, int *nchara, char *line_buf){
+	get_one_line_by_zlib(FP_z, num_buffer, num_word, nchara, line_buf);
 	line_buf[*nchara-1] = ' ';
 	line_buf[*nchara  ] = '\n';
 	return;
 }
 
-int skip_comment_gz_c(int *num_buffer, char *buf){
+int skip_comment_gz_c(void *FP_z, int *num_buffer, char *buf){
 	int nchara = 0, num_word = 0, icou = 0;
 	
-    get_one_line_from_gz_c(num_buffer, &num_word, &nchara, buf);
+    get_one_line_from_gz_c(FP_z, num_buffer, &num_word, &nchara, buf);
 	while ((nchara <= 1) || (buf[0] == '!') || (buf[0] == '#') || (buf[0] == '\n')) {
-        get_one_line_from_gz_c(num_buffer, &num_word, &nchara, buf);
+        get_one_line_from_gz_c(FP_z, num_buffer, &num_word, &nchara, buf);
 		icou = icou + 1;
 	};
 	return num_word;

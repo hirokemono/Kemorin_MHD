@@ -32,16 +32,16 @@
 
 /* prototypes */
 
-void open_wt_gzfile_c(const char *gz_file_name);
-void open_ad_gzfile_c(const char *gz_file_name);
-void open_rd_gzfile_c(const char *gz_file_name);
-void close_gzfile_c(void);
+void* open_wt_gzfile_c(const char *gz_file_name);
+void* open_ad_gzfile_c(const char *gz_file_name);
+void* open_rd_gzfile_c(const char *gz_file_name);
+void close_gzfile_c(void *FP_z);
 
 int open_rd_gzfile_w_flag_c(const char *gz_file_name);
 int rewind_gzfile_c(void);
 int check_gzfile_eof_c(void);
 
-void write_compress_txt_c(int *nchara, char *input_txt);
+void write_compress_txt_c(void *FP_z, int *nchara, char *input_txt);
 void write_compress_txt_nolf_c(int *nchara, char *input_txt);
 
 void gzseek_go_fwd_c(int *ioffset, int *ierr);
@@ -75,8 +75,9 @@ void gzip_infleat_cont_c(const int *len_gzipbuf, const int *len_buf,
 void gzip_infleat_last_c(const int *len_gzipbuf, const int *len_buf, 
                        void *buf, int *len_gzipped);
 
-void get_one_line_from_gz_c(int *num_buffer, int *num_word, int *nchara, char *line_buf);
-int skip_comment_gz_c(int *num_buffer, char *buf);
+void get_one_line_from_gz_c(void *FP_z, int *num_buffer, int *num_word,
+							int *nchara, char *line_buf);
+int skip_comment_gz_c(void *FP_z, int *num_buffer, char *buf);
 
 
 void compress_file_c(const char *txt_file_name, const char *gz_file_name);

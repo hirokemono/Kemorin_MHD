@@ -15,6 +15,7 @@
 
 #include "calypso_param_c.h"
 #include "numbers_to_bin_c.h"
+#include "calypso_zlib_io_c.h"
 
 
 #define Z_DEFAULT_MEMLEVEL  8

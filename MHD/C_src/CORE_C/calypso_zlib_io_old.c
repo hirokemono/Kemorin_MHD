@@ -28,12 +28,15 @@ exit (EXIT_FAILURE);                                        \
 }
 
 void open_wt_gzfile(const char *gz_file_name){
+    printf("Initial %p\n", &file_gz);
 	file_gz = gzopen(gz_file_name, GZ_WT_MODE);
 	if (file_gz == NULL){
 		fprintf(stderr, "failed to gzopen\n");
 		exit(1);
 	}
-	return;
+//    open_wt_gzfile_c(gz_file_name, (void *) &file_gz);
+    printf("Set %p\n", &file_gz);
+    return;
 }
 
 void open_ad_gzfile(const char *gz_file_name){
