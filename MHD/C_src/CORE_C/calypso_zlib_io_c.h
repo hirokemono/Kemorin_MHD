@@ -32,9 +32,9 @@
 
 /* prototypes */
 
-void* open_wt_gzfile_c(const char *gz_file_name);
-void* open_ad_gzfile_c(const char *gz_file_name);
-void* open_rd_gzfile_c(const char *gz_file_name);
+void * open_wt_gzfile_c(const char *gz_file_name);
+void * open_ad_gzfile_c(const char *gz_file_name);
+void * open_rd_gzfile_c(const char *gz_file_name);
 void close_gzfile_c(void *FP_z);
 
 int open_rd_gzfile_w_flag_c(const char *gz_file_name);
@@ -48,32 +48,6 @@ void gzseek_go_fwd_c(int *ioffset, int *ierr);
 void gzread_32bit_c(const int *iflag_swap, int *ilength, char *textbuf, int *ierr);
 void gzread_64bit_c(const int *iflag_swap, int *ilength, char *textbuf, int *ierr);
 void gzwrite_c(int *ilength, void *buf, int *ierr);
-
-void zlib_defleat_once_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
-                       int *len_gzipped, char *gzipbuf);
-void zlib_defleat_begin_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
-                        int *len_gzipped, char *gzipbuf);
-void gzip_defleat_once_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
-                       int *len_gzipped, char *gzipbuf);
-void gzip_defleat_begin_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
-                        int *len_gzipped, char *gzipbuf);
-void gzip_defleat_cont_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
-                       int *len_gzipped);
-void gzip_defleat_last_c(const int *len_buf, const void *buf, const int *len_gzipbuf,
-                       int *len_gzipped);
-
-void zlib_infleat_once_c(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf,
-                       void *buf, int *len_gzipped);
-void zlib_infleat_begin_c(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf,
-                        void *buf, int *len_gzipped);
-void gzip_infleat_once_c(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf,
-                       void *buf, int *len_gzipped);
-void gzip_infleat_begin_c(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf,
-                        void *buf, int *len_gzipped);
-void gzip_infleat_cont_c(const int *len_gzipbuf, const int *len_buf,
-                       void *buf, int *len_gzipped);
-void gzip_infleat_last_c(const int *len_gzipbuf, const int *len_buf, 
-                       void *buf, int *len_gzipped);
 
 void get_one_line_from_gz_c(void *FP_z, int *num_buffer, int *num_word,
 							int *nchara, char *line_buf);
