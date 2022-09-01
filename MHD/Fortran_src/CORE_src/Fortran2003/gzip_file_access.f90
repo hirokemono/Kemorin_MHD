@@ -74,16 +74,26 @@
           integer(C_int) :: check_gzfile_eof
         end function check_gzfile_eof
 !  -----------------
-        subroutine get_one_line_from_gz                                 &
-     &           (num_buffer, num_word, nchara, line_buf)               &
-     &            BIND(C, name = 'get_one_line_from_gz')
+        subroutine get_one_line_from_gz_c                               &
+     &           (FP_z, num_buffer, num_word, nchara, line_buf)         &
+     &            BIND(C, name = 'get_one_line_from_gz_c')
           use ISO_C_BINDING
 !
+          type(C_ptr), value :: FP_z
           integer(C_int), intent(in) :: num_buffer
           integer(C_int), intent(inout) :: num_word
           integer(C_int), intent(inout) :: nchara
           type(C_ptr), value :: line_buf
-        end subroutine get_one_line_from_gz
+        end subroutine get_one_line_from_gz_c
+!  -----------------
+        subroutine write_compress_txt_c(FP_z, nchara, line_buf)         &
+     &            BIND(C, name = 'write_compress_txt_c')
+          use ISO_C_BINDING
+!
+          type(C_ptr), value :: FP_z
+          integer(C_int), intent(in) :: nchara
+          type(C_ptr), value :: line_buf
+        end subroutine write_compress_txt_c
 !  -----------------
         subroutine write_compress_txt_nolf(nchara, line_buf)            &
      &            BIND(C, name = 'write_compress_txt_nolf')
@@ -92,9 +102,7 @@
           integer(C_int), intent(in) :: nchara
           type(C_ptr), value :: line_buf
         end subroutine write_compress_txt_nolf
-!
 !  -----------------
-!
         subroutine gzread_32bit_f(iflag_swap, ilength, buf, ierr)       &
      &            BIND(C, name = 'gzread_32bit_f')
           use ISO_C_BINDING

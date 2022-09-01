@@ -34,27 +34,6 @@
           type(C_ptr), value :: FP_z
         end subroutine close_gzfile_c
 !  -----------------
-        subroutine write_compress_txt_c(FP_z, nchara, line_buf)         &
-     &            BIND(C, name = 'write_compress_txt_c')
-          use ISO_C_BINDING
-!
-          type(C_ptr), value :: FP_z
-          integer(C_int), intent(in) :: nchara
-          type(C_ptr), value :: line_buf
-        end subroutine write_compress_txt_c
-!  -----------------
-        subroutine get_one_line_from_gz_c                               &
-     &           (FP_z, num_buffer, num_word, nchara, line_buf)         &
-     &            BIND(C, name = 'get_one_line_from_gz_c')
-          use ISO_C_BINDING
-!
-          type(C_ptr), value :: FP_z
-          integer(C_int), intent(in) :: num_buffer
-          integer(C_int), intent(inout) :: num_word
-          integer(C_int), intent(inout) :: nchara
-          type(C_ptr), value :: line_buf
-        end subroutine get_one_line_from_gz_c
-!  -----------------
       end interface
 !  -----------------
 !
@@ -143,6 +122,8 @@
 !
       subroutine write_compress_txt_ff(ptr_s, zbuf)
 !
+      use gzip_file_access
+!
       character, pointer, intent(in) :: ptr_s 
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -220,6 +201,8 @@
 !------------------------------------------------------------------
 !
       subroutine get_one_line_text_from_gzz(ptr_s, zbuf)
+!
+      use gzip_file_access
 !
       character, pointer, intent(in) :: ptr_s 
       type(buffer_4_gzip), intent(inout) :: zbuf

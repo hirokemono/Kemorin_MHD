@@ -42,7 +42,6 @@ int open_rd_gzfile_w_flag(const char *gz_file_name);
 int rewind_gzfile(void);
 int check_gzfile_eof(void);
 
-void write_compress_txt(int *nchara, char *input_txt);
 void write_compress_txt_nolf(int *nchara, char *input_txt);
 
 void gzseek_go_fwd_f(int *ioffset, int *ierr);
