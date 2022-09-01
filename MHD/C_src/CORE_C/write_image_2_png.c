@@ -214,7 +214,7 @@ void write_png_rgba_c(const char *file_prefix, const int *num_x, const int *num_
 
 
 void write_png_rgb_c(const char *file_prefix, const int *num_x, const int *num_y,
-					 const char *cimage){
+					 const unsigned char *cimage){
 	char fname[LENGTHBUF];
 	unsigned char **image;
 	png_uint_32 nx = (png_uint_32) *num_x;
@@ -227,9 +227,9 @@ void write_png_rgb_c(const char *file_prefix, const int *num_x, const int *num_y
 	for (i = 0; i < nx; i++) {
 		for (j = 0; j < ny; j++) {
 			k = (ny-j-1)*nx + i;
-			image[j][3*i  ] = (unsigned char) cimage[3*k];
-			image[j][3*i+1] = (unsigned char) cimage[3*k+1];
-			image[j][3*i+2] = (unsigned char) cimage[3*k+2];
+			image[j][3*i  ] = cimage[3*k];
+			image[j][3*i+1] = cimage[3*k+1];
+			image[j][3*i+2] = cimage[3*k+2];
 		}
 	}
 	

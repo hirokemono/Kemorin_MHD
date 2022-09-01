@@ -196,7 +196,7 @@
       FP_z = open_rd_gzfile_c(zbuf%buf_p)
       call c_f_pointer(FP_z, ptr_s)
       call unlink_text_buffer_for_zlib(zbuf)
-      write(*,'(a,Z16)') 'Open ptr_s to read', C_loc(ptr_s)
+!      write(*,'(a,Z16)') 'Open ptr_s to read', C_loc(ptr_s)
 !
       end subroutine open_rd_gzfile_aa
 !

@@ -84,7 +84,7 @@ target_task:
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo c_graphic_tests: \
-	'$$(TARGET_C_PNG_TEST)  $$(TARGET_CPSF_READ_TEST)' \
+	'$$(TARGET_C_PNG_TEST)' \
 	'$$(TARGET_CPNG_READ_TEST)  $$(TARGET_CBMP_READ_TEST)' \
 	'$$(TARGET_CBMP_GZ_TEST)' \
 	>> $(MAKENAME)
