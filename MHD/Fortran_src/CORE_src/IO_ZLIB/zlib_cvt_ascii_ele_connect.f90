@@ -31,6 +31,8 @@
 !
       implicit none
 !
+      character, pointer, save, private :: stream_ptr1
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -152,21 +154,21 @@
           call link_pointer_for_zlib_buffer                             &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
      &        ilen_line, zbuf%textbuf, zbuf)
-          call gzip_infleat_char_begin(zbuf)
+          call gzip_infleat_char_begin(stream_ptr1, zbuf)
           call read_int8_and_mul_int8_textline                          &
      &       (zbuf%textbuf(1), id_global(ist+1), nnod_4_ele, ie_tmp)
           ie(ist+1,1:nnod_4_ele)                                        &
      &            = int(ie_tmp(1:nnod_4_ele), KIND(ie(1,1)))
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_char_cont(zbuf)
+            call gzip_infleat_char_cont(stream_ptr1, zbuf)
             call read_int8_and_mul_int8_textline                        &
      &         (zbuf%textbuf(1), id_global(i), nnod_4_ele, ie_tmp)
             ie(i,1:nnod_4_ele)                                          &
      &            = int(ie_tmp(1:nnod_4_ele),KIND(ie(1,1)))
           end do
 !
-          call gzip_infleat_char_last(zbuf)
+          call gzip_infleat_char_last(stream_ptr1, zbuf)
           call read_int8_and_mul_int8_textline(zbuf%textbuf(1),         &
      &        id_global(ist+nline), nnod_4_ele, ie_tmp)
           call unlink_pointer_for_zlib_buffer(zbuf)
@@ -291,18 +293,18 @@
           call link_pointer_for_zlib_buffer                             &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
      &        ilen_line, zbuf%textbuf, zbuf)
-          call gzip_infleat_char_begin(zbuf)
+          call gzip_infleat_char_begin(stream_ptr1, zbuf)
           call read_multi_int_textline(zbuf%textbuf(1), ncomp, ie_tmp)
           ivect(ist+1,1:ncomp) = ie_tmp(1:ncomp)
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_char_cont(zbuf)
+            call gzip_infleat_char_cont(stream_ptr1, zbuf)
             call read_multi_int_textline                                &
      &         (zbuf%textbuf(1), ncomp, ie_tmp)
             ivect(i,1:ncomp) = ie_tmp(1:ncomp)
           end do
 !
-          call gzip_infleat_char_last(zbuf)
+          call gzip_infleat_char_last(stream_ptr1, zbuf)
           call read_multi_int_textline(zbuf%textbuf(1), ncomp, ie_tmp)
           call unlink_pointer_for_zlib_buffer(zbuf)
 !
@@ -399,18 +401,18 @@
       else if(nnod .gt. 0) then
         call link_pointer_for_zlib_buffer                               &
      &     (ilen_in, zbuf%gzip_buf(1), ilen_line, zbuf%textbuf, zbuf)
-        call gzip_infleat_char_begin(zbuf)
+        call gzip_infleat_char_begin(stream_ptr1, zbuf)
         call read_multi_int_textline(zbuf%textbuf(1), numdir, idx_tmp)
         idx(1,1:numdir) = idx_tmp(1:numdir)
 !
         do i = 2, nnod-1
-          call gzip_infleat_char_cont(zbuf)
+          call gzip_infleat_char_cont(stream_ptr1, zbuf)
           call read_multi_int_textline                                  &
      &       (zbuf%textbuf(1), numdir, idx_tmp)
           idx(i,1:numdir) = idx_tmp(1:numdir)
         end do
 !
-        call gzip_infleat_char_last(zbuf)
+        call gzip_infleat_char_last(stream_ptr1, zbuf)
         call read_multi_int_textline(zbuf%textbuf(1), numdir, idx_tmp)
         call unlink_pointer_for_zlib_buffer(zbuf)
 !

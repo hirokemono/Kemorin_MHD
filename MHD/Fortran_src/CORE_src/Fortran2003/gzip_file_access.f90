@@ -86,6 +86,17 @@
           type(C_ptr), value :: line_buf
         end subroutine get_one_line_from_gz_c
 !  -----------------
+        subroutine get_one_line_from_gz                                 &
+     &           (num_buffer, num_word, nchara, line_buf)               &
+     &            BIND(C, name = 'get_one_line_from_gz')
+          use ISO_C_BINDING
+!
+          integer(C_int), intent(in) :: num_buffer
+          integer(C_int), intent(inout) :: num_word
+          integer(C_int), intent(inout) :: nchara
+          type(C_ptr), value :: line_buf
+        end subroutine get_one_line_from_gz
+!  -----------------
         subroutine write_compress_txt_c(FP_z, nchara, line_buf)         &
      &            BIND(C, name = 'write_compress_txt_c')
           use ISO_C_BINDING

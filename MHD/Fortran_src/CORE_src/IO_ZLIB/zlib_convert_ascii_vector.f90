@@ -29,6 +29,8 @@
 !
       implicit none
 !
+      character, pointer, save, private :: stream_ptr1
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -158,19 +160,19 @@
           call link_pointer_for_zlib_buffer                             &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
      &        ilen_line, zbuf%textbuf, zbuf)
-          call gzip_infleat_char_begin(zbuf)
+          call gzip_infleat_char_begin(stream_ptr1, zbuf)
           call read_int8_and_vector_textline                            &
      &       (zbuf%textbuf(1), id_global(ist+1), numdir, xx_tmp)
           xx(ist+1,1:numdir) = xx_tmp(1:numdir)
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_char_cont(zbuf)
+            call gzip_infleat_char_cont(stream_ptr1, zbuf)
             call read_int8_and_vector_textline                          &
      &         (zbuf%textbuf(1), id_global(i), numdir, xx_tmp)
             xx(i,1:numdir) = xx_tmp(1:numdir)
           end do
 !
-          call gzip_infleat_char_last(zbuf)
+          call gzip_infleat_char_last(stream_ptr1, zbuf)
           call read_int8_and_vector_textline                            &
      &       (zbuf%textbuf(1), id_global(ist+nline), numdir, xx_tmp)
           call unlink_pointer_for_zlib_buffer(zbuf)
@@ -306,17 +308,17 @@
           call link_pointer_for_zlib_buffer                             &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
      &        ilen_line, zbuf%textbuf, zbuf)
-          call gzip_infleat_char_begin(zbuf)
+          call gzip_infleat_char_begin(stream_ptr1, zbuf)
           call read_vector_textline(zbuf%textbuf(1), ndir, v1)
           vector(ist+1,1:ndir) = v1(1:ndir)
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_char_cont(zbuf)
+            call gzip_infleat_char_cont(stream_ptr1, zbuf)
             call read_vector_textline(zbuf%textbuf(1), ndir, v1)
             vector(i,1:ndir) = v1(1:ndir)
           end do
 !
-          call gzip_infleat_char_last(zbuf)
+          call gzip_infleat_char_last(stream_ptr1, zbuf)
           call read_vector_textline(zbuf%textbuf(1), ndir, v1)
           call unlink_pointer_for_zlib_buffer(zbuf)
 !

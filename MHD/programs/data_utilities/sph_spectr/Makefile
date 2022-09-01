@@ -209,6 +209,7 @@ count_monitor_time_series.o \
 picked_sph_spectr_data_IO.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
+old_sph_spectr_data_IO.o \
 m_spheric_data_sph_spetr.o \
 t_neutral_pt_by_pick_sph.o
 

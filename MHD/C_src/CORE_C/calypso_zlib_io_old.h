@@ -65,19 +65,6 @@ void gzip_defleat_cont(const int *len_buf, const void *buf, const int *len_gzipb
 void gzip_defleat_last(const int *len_buf, const void *buf, const int *len_gzipbuf, 
                        int *len_gzipped);
 
-void zlib_infleat_once(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf,
-                       void *buf, int *len_gzipped);
-void zlib_infleat_begin(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
-                        void *buf, int *len_gzipped);
-void gzip_infleat_once(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
-                       void *buf, int *len_gzipped);
-void gzip_infleat_begin(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
-                        void *buf, int *len_gzipped);
-void gzip_infleat_cont(const int *len_gzipbuf, const int *len_buf, 
-                       void *buf, int *len_gzipped);
-void gzip_infleat_last(const int *len_gzipbuf, const int *len_buf, 
-                       void *buf, int *len_gzipped);
-
 
 void compress_file(const char *txt_file_name, const char *gz_file_name);
 void decompress_file(const char *gz_file_name, const char *txt_file_name);
