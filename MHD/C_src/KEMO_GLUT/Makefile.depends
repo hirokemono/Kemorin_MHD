@@ -65,7 +65,6 @@ kemoview_gtk_PSF_isoline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -159,7 +158,6 @@ kemoview_gtk_PSF_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -260,7 +258,6 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -355,7 +352,6 @@ kemoview_gtk_PSF_vector_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -449,7 +445,6 @@ kemoview_gtk_axis_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -540,7 +535,6 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -635,7 +629,6 @@ kemoview_gtk_fieldline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -722,7 +715,6 @@ kemoview_gtk_fline_selectors.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -812,7 +804,6 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -932,7 +923,6 @@ kemoview_gtk_mesh_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -1031,7 +1021,6 @@ kemoview_gtk_preference_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -1128,7 +1117,6 @@ kemoview_gtk_quilt_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -1220,7 +1208,6 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
@@ -1311,7 +1298,6 @@ kemoview_gtk_viewmatrix_menu.o: \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_gz_c.h \
-  $(C_SRCDIR)/CORE_C/calypso_zlib_io_old.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/KEMO_GL/select_read_psf_viewer_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \

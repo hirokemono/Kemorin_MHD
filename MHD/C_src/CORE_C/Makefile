@@ -61,8 +61,8 @@ OBJ_KEMO_C = \
 ifdef ZLIB_LIBS
   OBJ_KEMO_C += \
  calypso_zlib_access_c.o \
- calypso_zlib_io_old.o \
- calypso_zlib_io_c.o
+ calypso_zlib_io_c.o \
+ calypso_zlib_file_io_c.o
 endif
 
 ifdef PNG_LIBS

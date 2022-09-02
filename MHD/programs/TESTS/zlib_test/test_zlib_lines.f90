@@ -27,11 +27,11 @@
           character(C_char), intent(in) :: gz_file_name(*)
         end function open_rd_gzfile_c
 !  -----------------
-        subroutine close_gzfile_c(FP_z)                 &
+        subroutine close_gzfile_c(FP_gzip)                 &
      &            BIND(C, name = 'close_gzfile_c')
           use ISO_C_BINDING
 !
-          type(C_ptr), value :: FP_z
+          type(C_ptr), value :: FP_gzip
         end subroutine close_gzfile_c
 !  -----------------
       end interface
@@ -146,13 +146,13 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
       character, pointer, intent(inout) :: ptr_s 
 !
-      type(C_ptr) :: FP_z
+      type(C_ptr) :: FP_gzip
 !
 !
       call link_text_buffer_for_zlib                                    &
      &   (kchara, add_null_character(gzip_name), zbuf)
-      FP_z = open_wt_gzfile_c(zbuf%buf_p)
-      call c_f_pointer(FP_z, ptr_s)
+      FP_gzip = open_wt_gzfile_c(zbuf%buf_p)
+      call c_f_pointer(FP_gzip, ptr_s)
       call unlink_text_buffer_for_zlib(zbuf)
 !      write(*,'(a,Z16)') 'Open ptr_s', C_loc(ptr_s)
 !
@@ -169,13 +169,13 @@
       type(buffer_4_gzip) , intent(inout):: zbuf
       character, pointer, intent(inout) :: ptr_s 
 !
-      type(C_ptr) :: FP_z
+      type(C_ptr) :: FP_gzip
 !
 !
       call link_text_buffer_for_zlib                                    &
      &   (kchara, add_null_character(gzip_name), zbuf)
-      FP_z = open_rd_gzfile_c(zbuf%buf_p)
-      call c_f_pointer(FP_z, ptr_s)
+      FP_gzip = open_rd_gzfile_c(zbuf%buf_p)
+      call c_f_pointer(FP_gzip, ptr_s)
       call unlink_text_buffer_for_zlib(zbuf)
 !      write(*,'(a,Z16)') 'Open ptr_s to read', C_loc(ptr_s)
 !
@@ -194,7 +194,7 @@
       call close_gzfile_c(C_loc(ptr_s))
       call dealloc_fixbuffer_for_zlib(zbuf)
       nullify(ptr_s)
-!      write(*,'(a,Z16)') 'FP_z close', C_loc(ptr_s)
+!      write(*,'(a,Z16)') 'FP_gzip close', C_loc(ptr_s)
 !
       end subroutine close_gzfile_aa
 !

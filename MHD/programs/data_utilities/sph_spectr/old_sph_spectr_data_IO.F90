@@ -48,7 +48,7 @@
       ierr = 0
       do kr = 1, sph_IN%nri_sph
         call get_one_line_text_from_gz(zbuf)
-        if(check_gzfile_eof() .gt. 0) then
+        if(check_gzfile_eof(ptr_s) .gt. 0) then
           ierr = -1
           return
         end if
@@ -84,7 +84,7 @@
       do kr = 1, sph_IN%nri_sph
         do lth = 0, sph_IN%ltr_sph
           call get_one_line_text_from_gz(zbuf)
-          if(check_gzfile_eof() .gt. 0) then
+          if(check_gzfile_eof(ptr_s) .gt. 0) then
             ierr = -1
             return
           end if
