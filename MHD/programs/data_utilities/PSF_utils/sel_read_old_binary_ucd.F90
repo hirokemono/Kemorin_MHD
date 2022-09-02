@@ -368,7 +368,7 @@
       integer :: np_read
 !
 !
-      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
+      call open_rd_gzfile_b(FPz_old, gzip_name, izero, zbuf_ucd)
       call gz_read_one_integer_b(FPz_old, zbuf_ucd, np_read)
 !
       call gz_read_alloc_psf_bin_fld_data                               &
@@ -391,7 +391,7 @@
       integer :: np_read, nprocs2
 !
 !
-      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
+      call open_rd_gzfile_b(FPz_old, gzip_name, izero, zbuf_ucd)
       call gz_read_one_integer_b(FPz_old, zbuf_ucd, np_read)
 !
       call gz_read_alloc_psf_bin_grid_data                              &
