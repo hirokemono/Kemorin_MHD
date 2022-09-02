@@ -25,6 +25,8 @@
 !
       implicit none
 !
+      character, pointer, save, private :: stream_ptr1
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -76,19 +78,19 @@
 !
           inod_gl = ist+1 + istack_merged_intnod
           dat_1(1:ntot_comp) = vect(ist+1,1:ntot_comp)
-          call gzip_defleat_char_begin(ilen_line,                       &
+          call gzip_defleat_char_begin(stream_ptr1, ilen_line,          &
      &        ucd_each_field(inod_gl, ntot_comp, dat_1),                &
      &        ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
           do inod = ist+2, ist+nline-1
             inod_gl =    inod + istack_merged_intnod
             dat_1(1:ntot_comp) = vect(inod,1:ntot_comp)
-            call gzip_defleat_char_cont(ilen_line,                      &
+            call gzip_defleat_char_cont(stream_ptr1, ilen_line,         &
      &          ucd_each_field(inod_gl, ntot_comp, dat_1), zbuf)
           end do
           inod_gl = ist + nline + istack_merged_intnod
           dat_1(1:ntot_comp) = vect(ist+nline,1:ntot_comp)
-          call gzip_defleat_char_last(ilen_line,                        &
+          call gzip_defleat_char_last(stream_ptr1, ilen_line,           &
      &        ucd_each_field(inod_gl, ntot_comp, dat_1), zbuf)
           ist = ist + nline
           if(ist .ge. num) exit
@@ -145,19 +147,19 @@
 !
           iele_gl = ist+1 + istack_merged_ele
           ie0(1:nnod_ele) = ie(ist+1,1:nnod_ele)
-          call gzip_defleat_char_begin(ilen_line,                       &
+          call gzip_defleat_char_begin(stream_ptr1, ilen_line,          &
      &      ucd_each_connect(iele_gl, nnod_ele, ie0),                   &
      &        ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
           do i = ist+2, ist+nline-1
             iele_gl = i + istack_merged_ele
             ie0(1:nnod_ele) = ie(i,1:nnod_ele)
-            call gzip_defleat_char_cont(ilen_line,                      &
+            call gzip_defleat_char_cont(stream_ptr1, ilen_line,         &
      &          ucd_each_connect(iele_gl, nnod_ele, ie0), zbuf)
           end do
 !
           iele_gl = ist+nline + istack_merged_ele
           ie0(1:nnod_ele) = ie(ist+nline,1:nnod_ele)
-          call gzip_defleat_char_last(ilen_line,                        &
+          call gzip_defleat_char_last(stream_ptr1, ilen_line,           &
      &        ucd_each_connect(iele_gl, nnod_ele, ie0), zbuf)
           ist = ist + nline
           if(ist .ge. nele) exit

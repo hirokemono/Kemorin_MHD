@@ -52,20 +52,6 @@ void gzwrite_f(int *ilength, void *buf, int *ierr);
 void get_one_line_from_gz(int *num_buffer, int *num_word, int *nchara, char *line_buf);
 int skip_comment_gz(int *num_buffer, char *buf);
 
-void zlib_defleat_once(const int *len_buf, const void *buf, const int *len_gzipbuf, 
-                       int *len_gzipped, char *gzipbuf);
-void zlib_defleat_begin(const int *len_buf, const void *buf, const int *len_gzipbuf, 
-                        int *len_gzipped, char *gzipbuf);
-void gzip_defleat_once(const int *len_buf, const void *buf, const int *len_gzipbuf, 
-                       int *len_gzipped, char *gzipbuf);
-void gzip_defleat_begin(const int *len_buf, const void *buf, const int *len_gzipbuf, 
-                        int *len_gzipped, char *gzipbuf);
-void gzip_defleat_cont(const int *len_buf, const void *buf, const int *len_gzipbuf, 
-                       int *len_gzipped);
-void gzip_defleat_last(const int *len_buf, const void *buf, const int *len_gzipbuf, 
-                       int *len_gzipped);
-
-
 void compress_file(const char *txt_file_name, const char *gz_file_name);
 void decompress_file(const char *gz_file_name, const char *txt_file_name);
 #endif

@@ -18,9 +18,10 @@
 !!     &         (len_gzipbuf, gzipbuf, len_buf, buf, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine gzip_infleat_char_begin(zbuf)
-!!      subroutine gzip_infleat_char_cont(zbuf)
-!!      subroutine gzip_infleat_char_last(zbuf)
+!!      subroutine gzip_infleat_char_begin(stream_ptr, zbuf)
+!!      subroutine gzip_infleat_char_cont(stream_ptr, zbuf)
+!!      subroutine gzip_infleat_char_last(stream_ptr, zbuf)
+!!        character, pointer, intent(inout) :: stream_ptr
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !

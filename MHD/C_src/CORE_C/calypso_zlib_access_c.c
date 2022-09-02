@@ -68,8 +68,9 @@ static z_stream * init_gzip_inflate_stream()
 }
 
 
-void zlib_defleat_once_c(const int *len_buf, const void *buf,
-						 const int *len_gzipbuf, int *len_gzipped, char *gzipbuf)
+void calypso_zlib_defleat_once(const int *len_buf, const void *buf,
+							   const int *len_gzipbuf, int *len_gzipped,
+							   char *gzipbuf)
 {
 	z_stream *stream_p = init_zlib_deflate_stream();
 	
@@ -85,8 +86,9 @@ void zlib_defleat_once_c(const int *len_buf, const void *buf,
     return;
 }
 
-void gzip_defleat_once_c(const int *len_buf, const void *buf,
-						 const int *len_gzipbuf, int *len_gzipped, char *gzipbuf)
+void calypso_gzip_defleat_once(const int *len_buf, const void *buf,
+							   const int *len_gzipbuf, int *len_gzipped,
+							   char *gzipbuf)
 {
 	z_stream *stream_p = init_gzip_deflate_stream_init();
     stream_p->next_in = (unsigned char *) buf;
@@ -102,8 +104,9 @@ void gzip_defleat_once_c(const int *len_buf, const void *buf,
     return;
 }
 
-void * zlib_defleat_begin_c(const int *len_buf, const void *buf, 
-							const int *len_gzipbuf, int *len_gzipped, char *gzipbuf)
+void * calypso_zlib_defleat_begin(const int *len_buf, const void *buf, 
+								  const int *len_gzipbuf, int *len_gzipped, 
+								  char *gzipbuf)
 {
 	z_stream *stream_p = init_zlib_deflate_stream();
 	
@@ -117,8 +120,9 @@ void * zlib_defleat_begin_c(const int *len_buf, const void *buf,
 	return (void *) stream_p;
 }
 
-void * gzip_defleat_begin_c(const int *len_buf, const void *buf,
-							const int *len_gzipbuf, int *len_gzipped, char *gzipbuf)
+void * calypso_gzip_defleat_begin(const int *len_buf, const void *buf,
+								  const int *len_gzipbuf, int *len_gzipped,
+								  char *gzipbuf)
 {
 	z_stream *stream_p = init_gzip_deflate_stream_init();
     stream_p->next_in = (unsigned char *) buf;
@@ -131,8 +135,9 @@ void * gzip_defleat_begin_c(const int *len_buf, const void *buf,
 	return (void *) stream_p;
 }
 
-void gzip_defleat_cont_c(void *stream_gzip, const int *len_buf, 
-						 const void *buf, const int *len_gzipbuf, int *len_gzipped)
+void calypso_gzip_defleat_cont(void *stream_gzip, const int *len_buf, 
+							   const void *buf, const int *len_gzipbuf,
+							   int *len_gzipped)
 {
 	z_stream *stream_p = (z_stream *) stream_gzip;
 /*    uInt avail_out_current = stream_p->avail_out; */
@@ -144,8 +149,9 @@ void gzip_defleat_cont_c(void *stream_gzip, const int *len_buf,
     return;
 }
 
-void gzip_defleat_last_c(void *stream_gzip, const int *len_buf, 
-						 const void *buf, const int *len_gzipbuf, int *len_gzipped)
+void calypso_gzip_defleat_last(void *stream_gzip, const int *len_buf, 
+							   const void *buf, const int *len_gzipbuf, 
+							   int *len_gzipped)
 {
 	z_stream *stream_p = (z_stream *) stream_gzip;
 /*    uInt avail_out_current = stream_p->avail_out; */
