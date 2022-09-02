@@ -83,6 +83,7 @@
 		18AA13E22494183C004A444D /* read_psf_bin_data_gz_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AA13DF2494183C004A444D /* read_psf_bin_data_gz_c.c */; };
 		18AA13E32494183C004A444D /* read_psf_bin_data_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AA13E12494183C004A444D /* read_psf_bin_data_c.c */; };
 		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
+		18B8535128C1C1AF00E570CD /* calypso_rawfile_io_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B8534F28C1C1AF00E570CD /* calypso_rawfile_io_c.c */; };
 		18B885EB24E617BB0077BA16 /* t_psf_edge_connect_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885E724E617BA0077BA16 /* t_psf_edge_connect_c.c */; };
 		18B885EC24E617BB0077BA16 /* t_surf_edge_hash_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885E924E617BB0077BA16 /* t_surf_edge_hash_c.c */; };
 		18B885EF24E618050077BA16 /* set_each_isoline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885ED24E618040077BA16 /* set_each_isoline_to_buf.c */; };
@@ -310,6 +311,8 @@
 		18AA13E02494183C004A444D /* read_psf_bin_data_gz_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = read_psf_bin_data_gz_c.h; sourceTree = "<group>"; };
 		18AA13E12494183C004A444D /* read_psf_bin_data_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = read_psf_bin_data_c.c; sourceTree = "<group>"; };
 		18B5A2711F832A8A005AF658 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		18B8534F28C1C1AF00E570CD /* calypso_rawfile_io_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = calypso_rawfile_io_c.c; sourceTree = "<group>"; };
+		18B8535028C1C1AF00E570CD /* calypso_rawfile_io_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = calypso_rawfile_io_c.h; sourceTree = "<group>"; };
 		18B885E724E617BA0077BA16 /* t_psf_edge_connect_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_psf_edge_connect_c.c; sourceTree = "<group>"; };
 		18B885E824E617BB0077BA16 /* t_psf_edge_connect_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_psf_edge_connect_c.h; sourceTree = "<group>"; };
 		18B885E924E617BB0077BA16 /* t_surf_edge_hash_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_surf_edge_hash_c.c; sourceTree = "<group>"; };
@@ -641,6 +644,8 @@
 				182174D42492F5630044ECA0 /* calypso_param_c.h */,
 				182174D32492F5630044ECA0 /* calypso_zlib_io_c.c */,
 				182174D52492F5640044ECA0 /* calypso_zlib_io_c.h */,
+				18B8534F28C1C1AF00E570CD /* calypso_rawfile_io_c.c */,
+				18B8535028C1C1AF00E570CD /* calypso_rawfile_io_c.h */,
 				1825197416A11A24006D5158 /* delete_file_c.c */,
 				1825197516A11A24006D5158 /* delete_file_c.h */,
 				18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */,
@@ -1089,6 +1094,7 @@
 				18CE99DC23DB7BB7005D8886 /* draw_messages_gl.c in Sources */,
 				185CB9B1212F593D00BB3C0B /* t_control_chara_int_IO.c in Sources */,
 				185CB9C6212F593D00BB3C0B /* t_control_int2_IO.c in Sources */,
+				18B8535128C1C1AF00E570CD /* calypso_rawfile_io_c.c in Sources */,
 				18D7E74A1562D359009B05FF /* set_surface_mesh_data.c in Sources */,
 				188C9425230DC96E00A4DB14 /* m_kemoview_mesh.c in Sources */,
 				18D7E74B1562D359009B05FF /* skip_comment_c.c in Sources */,
