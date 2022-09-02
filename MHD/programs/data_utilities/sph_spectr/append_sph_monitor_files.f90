@@ -31,11 +31,7 @@
 !
       integer(kind = kint), parameter :: id_append_file = 15
 !
-      character(len=kchara) :: file_name, file_prefix
-      integer(kind = kint) :: istep_start, istep_end, i_step, ierr
-      real(kind = kreal) :: start_time, end_time, time
-!
-      integer(kind = kint) :: i, nd, ic, icou, ntot_pick
+      integer(kind = kint) :: i, ntot_pick
       integer(kind = kint) :: iflag_gauss
 !
       call read_ctl_file_add_sph_mntr(ctl_file_name, add_mtr_ctl1)
@@ -168,7 +164,7 @@
       integer(kind = kint) :: istep_start, istep_end, i_step, ierr
       real(kind = kreal) :: start_time, end_time, time
 !
-      integer(kind = kint) :: nd, ic, icou, kr, lth
+      integer(kind = kint) :: nd, ic, icou
       integer(kind = kint) :: nchara_line
       character(len = 1), allocatable :: textbuf(:)
 !
@@ -287,27 +283,31 @@
       integer(kind = kint) :: istep_start, istep_end, i_step, ierr
       real(kind = kreal) :: start_time, end_time, time
 !
-      integer(kind = kint) :: nd, ic, icou, kr, lth
+      integer(kind = kint) :: nd, ic, icou
       integer(kind = kint) :: nchara_line
       character(len = 1), allocatable :: textbuf(:)
 !
       logical :: flag_gzip
       type(buffer_4_gzip) :: zbuf
+      character, pointer :: FPz_f1
 !
 !
       write(*,*) 'Open data file to append.'
       call sel_open_read_sph_monitor_file                               &
-     &   (id_append_file, append_file_name, flag_gzip, zbuf)
-      call select_input_sph_series_head(id_append_file, flag_gzip,      &
-     &    flag_current_fmt, flag_spectr, flag_vol_ave,                  &
+     &   (FPz_f1, id_append_file, append_file_name, flag_gzip, zbuf)
+      call select_input_sph_series_head(FPz_f1, id_append_file,         &
+     &    flag_gzip, flag_current_fmt, flag_spectr, flag_vol_ave,       &
      &    append_sph_IN, zbuf)
-      call select_read_sph_spectr_time(id_append_file, flag_gzip, ione, &
+      call select_read_sph_spectr_time                                  &
+     &   (FPz_f1, id_append_file, flag_gzip, ione,                      &
      &    istep_start, start_time, zbuf, ierr)
-      call sel_close_sph_monitor_file(id_append_file, flag_gzip, zbuf)
+      call sel_close_sph_monitor_file                                   &
+     &   (FPz_f1, id_append_file, flag_gzip, zbuf)
 !
       write(*,*) 'Open target file', ': ', trim(target_file_name)
       open(id_write_file, file=target_file_name)
-      call select_input_sph_series_head(id_write_file, (.FALSE.),       &
+      call select_input_sph_series_head                                 &
+     &   (FPz_f1, id_write_file, (.FALSE.),                             &
      &    flag_current_fmt, flag_spectr, flag_vol_ave,                  &
      &    target_sph_IN, zbuf)
       close(id_write_file)
@@ -378,9 +378,9 @@
       write(*,*)
       write(*,*) 'Open file to append again'
       call sel_open_read_sph_monitor_file                               &
-     &   (id_append_file, append_file_name, flag_gzip, zbuf)
-      call select_input_sph_series_head(id_append_file, flag_gzip,      &
-     &    flag_current_fmt, flag_spectr, flag_vol_ave,                  &
+     &   (FPz_f1, id_append_file, append_file_name, flag_gzip, zbuf)
+      call select_input_sph_series_head(FPz_f1, id_append_file,         &
+     &    flag_gzip, flag_current_fmt, flag_spectr, flag_vol_ave,       &
      &    append_sph_IN, zbuf)
 !
       nchara_line = lengh_spectr_data_line(flag_spectr,                 &
@@ -390,8 +390,8 @@
       icou = 0
       do
         icou = icou + 1
-        call select_copy_sph_monitor_data                               &
-     &     (id_append_file, id_write_file, flag_gzip, target_sph_IN,    &
+        call select_copy_sph_monitor_data(FPz_f1, id_append_file,       &
+     &      id_write_file, flag_gzip, target_sph_IN,                    &
      &      nchara_line, textbuf, zbuf, ierr)
         if(ierr .gt. 0) exit
 !
@@ -402,7 +402,8 @@
       write(*,*)
 !
       close(id_write_file)
-      call sel_close_sph_monitor_file(id_append_file, flag_gzip, zbuf)
+      call sel_close_sph_monitor_file                                   &
+     &   (FPz_f1, id_append_file, flag_gzip, zbuf)
 !
       call dealloc_sph_espec_data(append_sph_IN)
       call dealloc_sph_espec_data(target_sph_IN)

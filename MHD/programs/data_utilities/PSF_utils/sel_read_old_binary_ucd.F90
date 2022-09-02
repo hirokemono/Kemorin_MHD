@@ -58,6 +58,7 @@
 !
       type(binary_IO_buffer), save, private :: bbuf_ucd
       type(buffer_4_gzip), save, private :: zbuf_ucd
+      character, pointer, private, save :: FPz_old
 !
 !------------------------------------------------------------------
 !
@@ -314,12 +315,13 @@
 !
       integer :: np_read
 !
-      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
+      call open_rd_gzfile_b(FPz_old, gzip_name, izero, zbuf_ucd)
 !
-      call gz_read_one_integer_b(zbuf_ucd, np_read)
+      call gz_read_one_integer_b(FPz_old, zbuf_ucd, np_read)
 !
-      call gz_read_psf_bin_field_data(np_read, ucd_z, zbuf_ucd)
-      call close_gzfile_b
+      call gz_read_psf_bin_field_data                                   &
+     &   (FPz_old, np_read, ucd_z, zbuf_ucd)
+      call close_gzfile_b(FPz_old)
 !
       end subroutine gz_read_nostep_psf_bin_file
 !
@@ -337,16 +339,17 @@
       integer :: np_read, nprocs2
 !
 !
-      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
-      call gz_read_one_integer_b(zbuf_ucd, np_read)
+      call open_rd_gzfile_b(FPz_old, gzip_name, izero, zbuf_ucd)
+      call gz_read_one_integer_b(FPz_old, zbuf_ucd, np_read)
 !
-      call gz_read_psf_bin_grid_data(np_read, ucd_z, zbuf_ucd)
+      call gz_read_psf_bin_grid_data(FPz_old, np_read, ucd_z, zbuf_ucd)
 !
-      call gz_read_one_integer_b(zbuf_ucd, nprocs2)
+      call gz_read_one_integer_b(FPz_old, zbuf_ucd, nprocs2)
       if(nprocs2 .ne. np_read) stop 'Wrong mesh and field data'
 !
-      call gz_read_psf_bin_field_data(np_read, ucd_z, zbuf_ucd)
-      call close_gzfile_b
+      call gz_read_psf_bin_field_data                                   &
+     &   (FPz_old, np_read, ucd_z, zbuf_ucd)
+      call close_gzfile_b(FPz_old)
 !
       end subroutine gz_read_nostep_iso_bin_file
 !
@@ -366,10 +369,11 @@
 !
 !
       call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
-      call gz_read_one_integer_b(zbuf_ucd, np_read)
+      call gz_read_one_integer_b(FPz_old, zbuf_ucd, np_read)
 !
-      call gz_read_alloc_psf_bin_fld_data(np_read, ucd_z, zbuf_ucd)
-      call close_gzfile_b
+      call gz_read_alloc_psf_bin_fld_data                               &
+     &   (FPz_old, np_read, ucd_z, zbuf_ucd)
+      call close_gzfile_b(FPz_old)
 !
       end subroutine gz_rd_alloc_nostep_psf_b_file
 !
@@ -388,14 +392,16 @@
 !
 !
       call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
-      call gz_read_one_integer_b(zbuf_ucd, np_read)
+      call gz_read_one_integer_b(FPz_old, zbuf_ucd, np_read)
 !
-      call gz_read_alloc_psf_bin_grid_data(np_read, ucd_z, zbuf_ucd)
-      call gz_read_one_integer_b(zbuf_ucd, nprocs2)
+      call gz_read_alloc_psf_bin_grid_data                              &
+     &   (FPz_old, np_read, ucd_z, zbuf_ucd)
+      call gz_read_one_integer_b(FPz_old, zbuf_ucd, nprocs2)
       if(nprocs2 .ne. np_read) stop 'Wrong mesh and field data'
 !
-      call gz_read_alloc_psf_bin_fld_data(np_read, ucd_z, zbuf_ucd)
-      call close_gzfile_b
+      call gz_read_alloc_psf_bin_fld_data                               &
+     &   (FPz_old, np_read, ucd_z, zbuf_ucd)
+      call close_gzfile_b(FPz_old)
 !
       end subroutine gz_rd_alloc_nostep_iso_b_file
 #endif

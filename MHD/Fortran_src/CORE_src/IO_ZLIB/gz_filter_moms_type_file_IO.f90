@@ -34,6 +34,7 @@
       implicit none
 !
       type(buffer_4_gzip), private :: zbuf_mom
+      character, pointer, private, save :: FPz_mom
 !
 !-----------------------------------------------------------------------
 !
@@ -65,9 +66,10 @@
      &             trim(file_name)
       end if
 !
-      call open_rd_gzfile_a(gzip_name, zbuf_mom)
-      call gz_read_filter_moment_num(FEM_elens, FEM_moms, zbuf_mom)
-      call close_gzfile_a(zbuf_mom)
+      call open_rd_gzfile_a(FPz_mom, gzip_name, zbuf_mom)
+      call gz_read_filter_moment_num                                    &
+     &   (FPz_mom, FEM_elens, FEM_moms, zbuf_mom)
+      call close_gzfile_a(FPz_mom, zbuf_mom)
 !
       end subroutine read_num_filter_mom_t_file_gz
 !
@@ -98,10 +100,10 @@
      &             trim(file_name)
       end if
 !
-      call open_rd_gzfile_a(gzip_name, zbuf_mom)
+      call open_rd_gzfile_a(FPz_mom, gzip_name, zbuf_mom)
       call gz_read_filter_elen_data                                     &
-     &   (nnod, nele, FEM_elens, zbuf_mom, ierr)
-      call close_gzfile_a(zbuf_mom)
+     &   (FPz_mom, nnod, nele, FEM_elens, zbuf_mom, ierr)
+      call close_gzfile_a(FPz_mom, zbuf_mom)
 !
       end subroutine read_filter_elen_t_file_gz
 !
@@ -129,9 +131,9 @@
      &             trim(file_name)
       end if
 !
-      call open_wt_gzfile_a(gzip_name, zbuf_mom)
-      call gz_write_filter_elen_data(FEM_elens, zbuf_mom)
-      call close_gzfile_a(zbuf_mom)
+      call open_wt_gzfile_a(FPz_mom, gzip_name, zbuf_mom)
+      call gz_write_filter_elen_data(FPz_mom, FEM_elens, zbuf_mom)
+      call close_gzfile_a(FPz_mom, zbuf_mom)
 !
       end subroutine write_filter_elen_t_file_gz
 !
@@ -164,10 +166,10 @@
      &             trim(file_name)
       end if
 !
-      call open_rd_gzfile_a(gzip_name, zbuf_mom)
+      call open_rd_gzfile_a(FPz_mom, gzip_name, zbuf_mom)
       call gz_read_filter_moms_data                                     &
-     &   (nnod, nele, FEM_elens, FEM_moms, zbuf_mom, ierr)
-      call close_gzfile_a(zbuf_mom)
+     &   (FPz_mom, nnod, nele, FEM_elens, FEM_moms, zbuf_mom, ierr)
+      call close_gzfile_a(FPz_mom, zbuf_mom)
 !
       end subroutine read_filter_moms_t_file_gz
 !
@@ -197,9 +199,10 @@
      &             trim(file_name)
       end if
 !
-      call open_wt_gzfile_a(gzip_name, zbuf_mom)
-      call gz_write_filter_moms_data(FEM_elens, FEM_moms, zbuf_mom)
-      call close_gzfile_a(zbuf_mom)
+      call open_wt_gzfile_a(FPz_mom, gzip_name, zbuf_mom)
+      call gz_write_filter_moms_data                                    &
+     &   (FPz_mom, FEM_elens, FEM_moms, zbuf_mom)
+      call close_gzfile_a(FPz_mom, zbuf_mom)
 !
       end subroutine write_filter_moms_t_file_gz
 !

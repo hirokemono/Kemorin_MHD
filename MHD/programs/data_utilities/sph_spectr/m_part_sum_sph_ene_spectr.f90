@@ -56,6 +56,7 @@
 !
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
+      character, pointer :: FPz_f1
       character(len = kchara) :: input_prefix, input_extension
       character(len = kchara) :: file_name, fname_tmp
       integer(kind = kint) :: i, icou, ierr, ist_true
@@ -63,10 +64,10 @@
 !
       call split_extrension(fname_org, input_prefix, input_extension)
       file_name = add_dat_extension(input_prefix)
-      call sel_open_read_sph_monitor_file(id_file_rms_l, fname_org,     &
-     &    flag_gzip1, zbuf1)
-      call select_input_sph_series_head(id_file_rms_l, flag_gzip1,      &
-     &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,             &
+      call sel_open_read_sph_monitor_file(FPz_f1, id_file_rms_l,        &
+     &                                    fname_org, flag_gzip1, zbuf1)
+      call select_input_sph_series_head(FPz_f1, id_file_rms_l,          &
+     &    flag_gzip1, spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave, &
      &    sph_IN, zbuf1)
       call check_sph_spectr_name(sph_IN)
 !
@@ -86,7 +87,8 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_series_data(id_file_rms_l, flag_gzip1,    &
+        call select_input_sph_series_data                               &
+     &     (FPz_f1, id_file_rms_l, flag_gzip1,                          &
      &      spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,           &
      &      sph_IN, zbuf1, ierr)
         if(ierr .gt. 0) go to 99
@@ -110,7 +112,8 @@
 !
    99 continue
       write(*,*)
-      call sel_close_sph_monitor_file(id_file_rms_l, flag_gzip1, zbuf1)
+      call sel_close_sph_monitor_file                                   &
+     &   (FPz_f1, id_file_rms_l, flag_gzip1, zbuf1)
       close(id_file_rms)
 !
 !

@@ -37,6 +37,7 @@
       implicit none
 !
       type(buffer_4_gzip), private :: zbuf_itp
+      character, pointer, private, save :: FPz_itp
 !
 !-----------------------------------------------------------------------
 !
@@ -56,12 +57,13 @@
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !
 !
-      call open_wt_gzfile_a(gzip_name, zbuf_itp)
+      call open_wt_gzfile_a(FPz_itp, gzip_name, zbuf_itp)
 !
-      call write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf_itp)
+      call write_gz_itp_table_dest                                      &
+     &   (FPz_itp, id_rank, IO_itp_dest, zbuf_itp)
       call write_gz_itp_coefs_dest                                      &
-     &   (IO_itp_dest, IO_itp_c_dest, zbuf_itp)
-      call close_gzfile_a(zbuf_itp)
+     &   (FPz_itp, IO_itp_dest, IO_itp_c_dest, zbuf_itp)
+      call close_gzfile_a(FPz_itp, zbuf_itp)
 !
       end subroutine gz_write_itp_coefs_dest_file
 !
@@ -82,12 +84,14 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_rd_gzfile_a(gzip_name, zbuf_itp)
+      call open_rd_gzfile_a(FPz_itp, gzip_name, zbuf_itp)
 !
-      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
-      call read_gz_itp_table_dest(IO_itp_dest, zbuf_itp)
-      call read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest, zbuf_itp)
-      call close_gzfile_a(zbuf_itp)
+      call read_gz_itp_domain_dest(FPz_itp, n_rank_file,                &
+     &                             IO_itp_dest, zbuf_itp)
+      call read_gz_itp_table_dest(FPz_itp, IO_itp_dest, zbuf_itp)
+      call read_gz_itp_coefs_dest(FPz_itp, IO_itp_dest,                 &
+     &                            IO_itp_c_dest, zbuf_itp)
+      call close_gzfile_a(FPz_itp, zbuf_itp)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -110,11 +114,12 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_rd_gzfile_a(gzip_name, zbuf_itp)
+      call open_rd_gzfile_a(FPz_itp, gzip_name, zbuf_itp)
 !
-      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
-      call read_gz_itp_table_dest(IO_itp_dest, zbuf_itp)
-      call close_gzfile_a(zbuf_itp)
+      call read_gz_itp_domain_dest(FPz_itp, n_rank_file,                &
+     &                             IO_itp_dest, zbuf_itp)
+      call read_gz_itp_table_dest(FPz_itp, IO_itp_dest, zbuf_itp)
+      call close_gzfile_a(FPz_itp, zbuf_itp)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -137,10 +142,11 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_rd_gzfile_a(gzip_name, zbuf_itp)
+      call open_rd_gzfile_a(FPz_itp, gzip_name, zbuf_itp)
 !
-      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
-      call close_gzfile_a(zbuf_itp)
+      call read_gz_itp_domain_dest(FPz_itp, n_rank_file,                &
+     &                             IO_itp_dest, zbuf_itp)
+      call close_gzfile_a(FPz_itp, zbuf_itp)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file

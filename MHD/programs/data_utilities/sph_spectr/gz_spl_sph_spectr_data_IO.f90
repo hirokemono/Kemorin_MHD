@@ -7,22 +7,26 @@
 !> @brief gzipped spectr monitor data reading routines
 !!
 !!@verbatim
-!!      subroutine gz_read_sph_spectr_time(nitem_snap, i_step, time,    &
-!!     &                                   zbuf, ierr)
+!!      subroutine gz_read_sph_spectr_time(FPz_f, nitem_snap,           &
+!!     &                                   i_step, time, zbuf, ierr)
+!!        character, pointer, intent(in) :: FPz_f
 !!        integer(kind = kint), intent(in) :: id_file, nitem_snap
 !!        integer(kind = kint), intent(inout) :: i_step, ierr
 !!        real(kind = kreal), intent(inout) :: time
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
 !!      subroutine sel_gz_input_sph_series_data                         &
-!!     &         (flag_old_fmt, flag_spectr, flag_vol_ave,              &
+!!     &         (FPz_f, flag_old_fmt, flag_spectr, flag_vol_ave,       &
 !!     &          sph_IN, zbuf, ierr)
+!!        character, pointer, intent(in) :: FPz_f
 !!        logical, intent(in) :: flag_old_fmt, flag_spectr, flag_vol_ave
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        integer(kind = kint), intent(inout) :: ierr
 !!
-!!      subroutine gz_copy_spectr_monitor_data(id_ascii, zbuf, ierr)
+!!      subroutine gz_copy_spectr_monitor_data(FPz_f, id_ascii,         &
+!!     &                                       zbuf, ierr)
+!!        character, pointer, intent(in) :: FPz_f
 !!        integer(kind = kint), intent(in) :: id_ascii
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        integer(kind = kint), intent(inout) :: ierr
@@ -50,9 +54,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gz_read_sph_spectr_time(nitem_snap, i_step, time,      &
-     &                                   zbuf, ierr)
+      subroutine gz_read_sph_spectr_time(FPz_f, nitem_snap,             &
+     &                                   i_step, time, zbuf, ierr)
 !
+      character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: nitem_snap
       integer(kind = kint), intent(inout) :: i_step, ierr
       real(kind = kreal), intent(inout) :: time
@@ -63,7 +68,7 @@
 !
       ierr = 0
       do ipick = 1, nitem_snap
-        call get_one_line_text_from_gz(zbuf)
+        call get_one_line_text_from_gz(FPz_f, zbuf)
         read(zbuf%fixbuf(1),*,err=99,end=99) i_step, time
       end do
       return
@@ -77,11 +82,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_gz_input_sph_series_data                           &
-     &         (flag_old_fmt, flag_spectr, flag_vol_ave,                &
+     &         (FPz_f, flag_old_fmt, flag_spectr, flag_vol_ave,         &
      &          sph_IN, zbuf, ierr)
 !
       use old_sph_spectr_data_IO
 !
+      character, pointer, intent(in) :: FPz_f
       logical, intent(in) :: flag_old_fmt, flag_spectr, flag_vol_ave
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -90,22 +96,23 @@
 !
       if(flag_vol_ave) then
         if(flag_spectr) then
-          call gz_read_volume_spectr_sph(sph_IN, zbuf, ierr)
+          call gz_read_volume_spectr_sph(FPz_f, sph_IN, zbuf, ierr)
         else
-          call gz_read_volume_pwr_sph(sph_IN, zbuf, ierr)
+          call gz_read_volume_pwr_sph(FPz_f, sph_IN, zbuf, ierr)
         end if
       else
         if(flag_spectr) then
           if(flag_old_fmt) then
-            call gz_read_layer_spectr_sph_old(sph_IN, zbuf, ierr)
+            call gz_read_layer_spectr_sph_old(FPz_f, sph_IN,            &
+     &                                        zbuf, ierr)
           else
-            call gz_read_layer_spectr_sph(sph_IN, zbuf, ierr)
+            call gz_read_layer_spectr_sph(FPz_f, sph_IN, zbuf, ierr)
           end if
         else
           if(flag_old_fmt) then
-            call gz_read_layer_pwr_sph_old(sph_IN, zbuf, ierr)
+            call gz_read_layer_pwr_sph_old(FPz_f, sph_IN, zbuf, ierr)
           else
-            call gz_read_layer_pwr_sph(sph_IN, zbuf, ierr)
+            call gz_read_layer_pwr_sph(FPz_f, sph_IN, zbuf, ierr)
           end if
         end if
       end if
@@ -114,16 +121,18 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gz_copy_spectr_monitor_data(id_ascii, zbuf, ierr)
+      subroutine gz_copy_spectr_monitor_data(FPz_f, id_ascii,           &
+     &                                       zbuf, ierr)
 !
+      character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_ascii
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer(kind = kint), intent(inout) :: ierr
 !
 !
       ierr = 1
-      call get_one_line_text_from_gz(zbuf)
-      if(check_gzfile_eof(ptr_s) .gt. 0) return
+      call get_one_line_text_from_gz(FPz_f, zbuf)
+      if(check_gzfile_eof(FPz_f) .gt. 0) return
 !
       write(id_ascii,'(a)') zbuf%fixbuf(1)(1:zbuf%len_used-1)
       ierr = 0
@@ -133,16 +142,17 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine gz_read_volume_pwr_sph(sph_IN, zbuf, ierr)
+      subroutine gz_read_volume_pwr_sph(FPz_f, sph_IN, zbuf, ierr)
 !
+      character, pointer, intent(in) :: FPz_f
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer(kind = kint), intent(inout) :: ierr
 !
 !
       ierr = 0
-      call get_one_line_text_from_gz(zbuf)
-      if(check_gzfile_eof(ptr_s) .gt. 0) then
+      call get_one_line_text_from_gz(FPz_f, zbuf)
+      if(check_gzfile_eof(FPz_f) .gt. 0) then
         ierr = -1
         return
       end if
@@ -159,8 +169,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gz_read_volume_spectr_sph(sph_IN, zbuf, ierr)
+      subroutine gz_read_volume_spectr_sph(FPz_f, sph_IN, zbuf, ierr)
 !
+      character, pointer, intent(in) :: FPz_f
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer(kind = kint), intent(inout) :: ierr
@@ -170,8 +181,8 @@
 !
       ierr = 0
       do lth = 0, sph_IN%ltr_sph
-        call get_one_line_text_from_gz(zbuf)
-        if(check_gzfile_eof(ptr_s) .gt. 0) then
+        call get_one_line_text_from_gz(FPz_f, zbuf)
+        if(check_gzfile_eof(FPz_f) .gt. 0) then
           ierr = -1
           return
         end if
@@ -190,8 +201,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gz_read_layer_pwr_sph(sph_IN, zbuf, ierr)
+      subroutine gz_read_layer_pwr_sph(FPz_f, sph_IN, zbuf, ierr)
 !
+      character, pointer, intent(in) :: FPz_f
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer(kind = kint), intent(inout) :: ierr
@@ -201,8 +213,8 @@
 !
       ierr = 0
       do kr = 1, sph_IN%nri_sph
-        call get_one_line_text_from_gz(zbuf)
-        if(check_gzfile_eof(ptr_s) .gt. 0) then
+        call get_one_line_text_from_gz(FPz_f, zbuf)
+        if(check_gzfile_eof(FPz_f) .gt. 0) then
           ierr = -1
           return
         end if
@@ -221,8 +233,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gz_read_layer_spectr_sph(sph_IN, zbuf, ierr)
+      subroutine gz_read_layer_spectr_sph(FPz_f, sph_IN, zbuf, ierr)
 !
+      character, pointer, intent(in) :: FPz_f
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer(kind = kint), intent(inout) :: ierr
@@ -233,8 +246,8 @@
       ierr = 0
       do kr = 1, sph_IN%nri_sph
         do lth = 0, sph_IN%ltr_sph
-          call get_one_line_text_from_gz(zbuf)
-          if(check_gzfile_eof(ptr_s) .gt. 0) then
+          call get_one_line_text_from_gz(FPz_f, zbuf)
+          if(check_gzfile_eof(FPz_f) .gt. 0) then
             ierr = -1
             return
           end if

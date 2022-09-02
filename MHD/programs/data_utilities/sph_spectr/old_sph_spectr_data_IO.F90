@@ -7,13 +7,16 @@
 !> @brief Old spectrum monitor data IO for utilities
 !!
 !!@verbatim
-!!      subroutine  gz_read_layer_pwr_sph_old(sph_IN, zbuf, ierr)
-!!      subroutine  gz_read_layer_spectr_sph_old(sph_IN, zbuf, ierr)
+!!      subroutine  gz_read_layer_pwr_sph_old(FPz_f, sph_IN, zbuf, ierr)
+!!      subroutine gz_read_layer_spectr_sph_old                         &
+!!     &         (FPz_f, sph_IN, zbuf, ierr)
+!!        character, pointer, intent(in) :: FPz_f
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        integer(kind = kint), intent(inout) :: ierr
 !!      subroutine  read_layer_pwr_sph_old(id_file, sph_IN, ierr)
 !!      subroutine  read_layer_spectr_sph_old(id_file, sph_IN, ierr)
+!!        character, pointer, intent(in) :: FPz_f
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
@@ -32,12 +35,13 @@
 !   --------------------------------------------------------------------
 #ifdef ZLIB_IO
 !
-      subroutine  gz_read_layer_pwr_sph_old(sph_IN, zbuf, ierr)
+      subroutine  gz_read_layer_pwr_sph_old(FPz_f, sph_IN, zbuf, ierr)
 !
       use t_buffer_4_gzip
       use gzip_file_access
       use skip_gz_comment
 !
+      character, pointer, intent(in) :: FPz_f
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer(kind = kint), intent(inout) :: ierr
@@ -47,8 +51,8 @@
 !
       ierr = 0
       do kr = 1, sph_IN%nri_sph
-        call get_one_line_text_from_gz(zbuf)
-        if(check_gzfile_eof(ptr_s) .gt. 0) then
+        call get_one_line_text_from_gz(FPz_f, zbuf)
+        if(check_gzfile_eof(FPz_f) .gt. 0) then
           ierr = -1
           return
         end if
@@ -67,12 +71,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine  gz_read_layer_spectr_sph_old(sph_IN, zbuf, ierr)
+      subroutine gz_read_layer_spectr_sph_old                           &
+     &         (FPz_f, sph_IN, zbuf, ierr)
 !
       use t_buffer_4_gzip
       use gzip_file_access
       use skip_gz_comment
 !
+      character, pointer, intent(in) :: FPz_f
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer(kind = kint), intent(inout) :: ierr
@@ -83,8 +89,8 @@
       ierr = 0
       do kr = 1, sph_IN%nri_sph
         do lth = 0, sph_IN%ltr_sph
-          call get_one_line_text_from_gz(zbuf)
-          if(check_gzfile_eof(ptr_s) .gt. 0) then
+          call get_one_line_text_from_gz(FPz_f, zbuf)
+          if(check_gzfile_eof(FPz_f) .gt. 0) then
             ierr = -1
             return
           end if

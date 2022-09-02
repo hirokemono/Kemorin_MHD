@@ -39,6 +39,7 @@
       implicit none
 !
       type(buffer_4_gzip), private :: zbuf_itp1
+      character, pointer, private, save :: FPz_tbl
 !
       private :: gz_write_each_itp_table, gz_read_each_itp_table
 !
@@ -60,11 +61,12 @@
 !
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Write gzipped interpolation table file: ', trim(gzip_name)
-      call open_wt_gzfile_a(gzip_name, zbuf_itp1)
+      call open_wt_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
-      call gz_write_each_itp_table(id_rank, itp_tbl_IO, zbuf_itp1)
+      call gz_write_each_itp_table(FPz_tbl, id_rank,                    &
+     &                             itp_tbl_IO, zbuf_itp1)
 !
-      call close_gzfile_a(zbuf_itp1)
+      call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
       end subroutine gz_write_itp_table_file
 !
@@ -83,12 +85,14 @@
 !
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Write gzipped interpolation table file: ', trim(gzip_name)
-      call open_wt_gzfile_a(gzip_name, zbuf_itp1)
+      call open_wt_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
-      call gz_write_each_itp_table(id_rank, itp_tbl1_IO, zbuf_itp1)
-      call gz_write_each_itp_table(id_rank, itp_tbl2_IO, zbuf_itp1)
+      call gz_write_each_itp_table(FPz_tbl, id_rank,                    &
+     &                             itp_tbl1_IO, zbuf_itp1)
+      call gz_write_each_itp_table(FPz_tbl, id_rank,                    &
+     &                             itp_tbl2_IO, zbuf_itp1)
 !
-      call close_gzfile_a(zbuf_itp1)
+      call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
       end subroutine gz_write_dbl_itp_table_file
 !
@@ -110,11 +114,12 @@
       ierr = 0
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Read gzipped interpolation table file: ', trim(gzip_name)
-      call open_rd_gzfile_a(gzip_name, zbuf_itp1)
+      call open_rd_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
-      call gz_read_each_itp_table(id_rank, itp_tbl_IO, zbuf_itp1, ierr)
+      call gz_read_each_itp_table(FPz_tbl, id_rank,                     &
+     &                            itp_tbl_IO, zbuf_itp1, ierr)
 !
-      call close_gzfile_a(zbuf_itp1)
+      call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
       end subroutine gz_read_itp_table_file
 !
@@ -136,27 +141,29 @@
       ierr = 0
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Read gzipped interpolation table file: ', trim(gzip_name)
-      call open_rd_gzfile_a(gzip_name, zbuf_itp1)
+      call open_rd_gzfile_a(FPz_tbl, gzip_name, zbuf_itp1)
 !
       call gz_read_each_itp_table                                       &
-     &   (id_rank, itp_tbl1_IO, zbuf_itp1, ierr)
+     &   (FPz_tbl, id_rank, itp_tbl1_IO, zbuf_itp1, ierr)
       if(ierr .gt. 0) go to 99
 !
       call gz_read_each_itp_table                                       &
-     &   (id_rank, itp_tbl2_IO, zbuf_itp1, ierr)
+     &   (FPz_tbl, id_rank, itp_tbl2_IO, zbuf_itp1, ierr)
 !
   99  continue
-      call close_gzfile_a(zbuf_itp1)
+      call close_gzfile_a(FPz_tbl, zbuf_itp1)
 !
       end subroutine gz_read_dbl_itp_table_file
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine gz_write_each_itp_table(id_rank, itp_tbl_IO, zbuf_itp)
+      subroutine gz_write_each_itp_table                                &
+     &         (FPz_f, id_rank, itp_tbl_IO, zbuf_itp)
 !
       use gz_itp_table_data_IO
 !
+      character, pointer, intent(inout) :: FPz_f
       integer, intent(in) :: id_rank
       type(interpolate_table), intent(in) :: itp_tbl_IO
 !
@@ -164,21 +171,22 @@
 !
 !
       call write_gz_itp_table_dest                                      &
-     &   (id_rank, itp_tbl_IO%tbl_dest, zbuf_itp)
+     &   (FPz_f, id_rank, itp_tbl_IO%tbl_dest, zbuf_itp)
 !
       call write_gz_itp_table_org                                       &
-     &   (id_rank, itp_tbl_IO%tbl_org, zbuf_itp)
-      call write_gz_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
+     &   (FPz_f, id_rank, itp_tbl_IO%tbl_org, zbuf_itp)
+      call write_gz_itp_coefs_org(FPz_f, itp_tbl_IO%tbl_org, zbuf_itp)
 !
       end subroutine gz_write_each_itp_table
 !
 !-----------------------------------------------------------------------
 !
       subroutine gz_read_each_itp_table                                 &
-     &         (id_rank, itp_tbl_IO, zbuf_itp, ierr)
+     &         (FPz_f, id_rank, itp_tbl_IO, zbuf_itp, ierr)
 !
       use gz_itp_table_data_IO
 !
+      character, pointer, intent(inout) :: FPz_f
       integer, intent(in) :: id_rank
 !
       type(interpolate_table), intent(inout) :: itp_tbl_IO
@@ -190,16 +198,16 @@
 !
 !        write(*,*) 'read_gz_itp_domain_dest'
       call read_gz_itp_domain_dest                                      &
-     &   (n_rank_file, itp_tbl_IO%tbl_dest, zbuf_itp)
+     &   (FPz_f, n_rank_file, itp_tbl_IO%tbl_dest, zbuf_itp)
 !        write(*,*) 'read_gz_itp_table_dest'
-      call read_gz_itp_table_dest(itp_tbl_IO%tbl_dest, zbuf_itp)
+      call read_gz_itp_table_dest(FPz_f, itp_tbl_IO%tbl_dest, zbuf_itp)
 !
 !        write(*,*) 'read_gz_itp_domain_org'
       call read_gz_itp_domain_org                                       &
-     &   (n_rank_file, itp_tbl_IO%tbl_org, zbuf_itp)
+     &   (FPz_f, n_rank_file, itp_tbl_IO%tbl_org, zbuf_itp)
 !        write(*,*) 'read_gz_itp_coefs_org'
-      call read_gz_itp_table_org(itp_tbl_IO%tbl_org, zbuf_itp)
-      call read_gz_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
+      call read_gz_itp_table_org(FPz_f, itp_tbl_IO%tbl_org, zbuf_itp)
+      call read_gz_itp_coefs_org(FPz_f, itp_tbl_IO%tbl_org, zbuf_itp)
 !
       if(n_rank_file .ne. id_rank) ierr = n_rank_file
 !

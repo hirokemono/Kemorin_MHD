@@ -49,6 +49,7 @@
 !
       integer(kind = kint), parameter, private :: id_file_rms = 31
       type(read_sph_spectr_data), save, private :: sph_IN_f
+      character, pointer, private, save :: FPz_fsp
 !
 ! -------------------------------------------------------------------
 !
@@ -66,8 +67,8 @@
 !
 !
       open(id_file_rms, file = c_to_fstring(input_prefix_c))
-      call select_input_sph_series_head(id_file_rms, flag_current_fmt,  &
-     &    spectr_off, volume_on, sph_IN_f)
+      call select_input_sph_series_head(FPz_fsp, id_file_rms,          &
+     &    flag_current_fmt, spectr_off, volume_on, sph_IN_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine open_init_volume_mean_file_f
@@ -84,8 +85,8 @@
 !
 !
       open(id_file_rms, file = c_to_fstring(input_prefix_c))
-      call select_input_sph_series_head(id_file_rms, flag_current_fmt,  &
-     &    spectr_on, volume_on, sph_IN_f)
+      call select_input_sph_series_head(FPz_fsp, id_file_rms,           &
+     &    flag_current_fmt, spectr_on, volume_on, sph_IN_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine open_init_volume_spectr_file_f
@@ -103,7 +104,8 @@
 !
 !
       open(id_file_rms, file = c_to_fstring(input_prefix_c))
-      call select_input_sph_series_head(id_file_rms, flag_current_fmt,  &
+      call select_input_sph_series_head                                 &
+     &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_off, volume_off, sph_IN_f)
       call check_sph_spectr_name(sph_IN_f)
 !
@@ -121,7 +123,8 @@
 !
 !
       open(id_file_rms, file = c_to_fstring(input_prefix_c))
-      call select_input_sph_series_head(id_file_rms, flag_current_fmt,  &
+      call select_input_sph_series_head                                 &
+     &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_on, volume_off, sph_IN_f)
       call check_sph_spectr_name(sph_IN_f)
 !
@@ -187,7 +190,8 @@
 !
 !
       load_one_volume_mean_item_f = 0
-      call select_input_sph_series_data(id_file_rms, flag_current_fmt,  &
+      call select_input_sph_series_data                                 &
+     &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_off, volume_on, sph_IN_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_volume_mean_item_f = ierr_read
@@ -220,7 +224,8 @@
 !
 !
       load_one_volume_spectr_item_f = 0
-      call select_input_sph_series_data(id_file_rms, flag_current_fmt,  &
+      call select_input_sph_series_data                                 &
+     &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_on, volume_on, sph_IN_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_volume_spectr_item_f = ierr_read
@@ -254,7 +259,8 @@
 !
 !
       load_one_layer_mean_item_f = 0
-      call select_input_sph_series_data(id_file_rms, flag_current_fmt,  &
+      call select_input_sph_series_data                                 &
+     &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_off, volume_off, sph_IN_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_layer_mean_item_f = ierr_read
@@ -288,7 +294,8 @@
 !
 !
       load_one_layer_spectr_item_f = 0
-      call select_input_sph_series_data(id_file_rms, flag_current_fmt,  &
+      call select_input_sph_series_data                                 &
+     &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_on, volume_off, sph_IN_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_layer_spectr_item_f = ierr_read

@@ -7,26 +7,34 @@
 !> @brief gzipped data IO for interpolation
 !!
 !!@verbatim
-!!      subroutine write_gz_itp_table_org(id_rank, IO_itp_org, zbuf)
-!!      subroutine write_gz_itp_coefs_org(IO_itp_org, zbuf)
+!!      subroutine write_gz_itp_table_org                               &
+!!     &         (FPz_f, id_rank, IO_itp_org, zbuf)
+!!      subroutine write_gz_itp_coefs_org(FPz_f, IO_itp_org, zbuf)
+!!        character, pointer, intent(in) :: FPz_f
 !!        type(interpolate_table_org), intent(in) :: IO_itp_org
 !!
-!!      subroutine read_gz_itp_domain_org(n_rank, IO_itp_org, zbuf)
-!!      subroutine read_gz_itp_table_org(IO_itp_org, zbuf)
-!!      subroutine read_gz_itp_coefs_org(IO_itp_org, zbuf)
+!!      subroutine read_gz_itp_domain_org                               &
+!!     &         (FPz_f, n_rank, IO_itp_org, zbuf)
+!!      subroutine read_gz_itp_table_org(FPz_f, IO_itp_org, zbuf)
+!!      subroutine read_gz_itp_coefs_org(FPz_f, IO_itp_org, zbuf)
+!!        character, pointer, intent(in) :: FPz_f
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!
-!!      subroutine write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf)
+!!      subroutine write_gz_itp_table_dest                              &
+!!     &         (FPz_f, id_rank, IO_itp_dest, zbuf)
 !!      subroutine write_gz_itp_coefs_dest                              &
-!!     &         (IO_itp_dest, IO_itp_c_dest, zbuf)
+!!     &         (FPz_f, IO_itp_dest, IO_itp_c_dest, zbuf)
+!!        character, pointer, intent(in) :: FPz_f
 !!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine read_gz_itp_domain_dest(n_rank, IO_itp_dest, zbuf)
-!!      subroutine read_gz_itp_table_dest(IO_itp_dest, zbuf)
+!!      subroutine read_gz_itp_domain_dest                              &
+!!     &         (FPz_f, n_rank, IO_itp_dest, zbuf)
+!!      subroutine read_gz_itp_table_dest(FPz_f, IO_itp_dest, zbuf)
 !!      subroutine read_gz_itp_coefs_dest                               &
-!!     &         (IO_itp_dest, IO_itp_c_dest, zbuf)
+!!     &         (FPz_f, IO_itp_dest, IO_itp_c_dest, zbuf)
+!!        character, pointer, intent(in) :: FPz_f
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
@@ -49,12 +57,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_table_org(id_rank, IO_itp_org, zbuf)
+      subroutine write_gz_itp_table_org                                 &
+     &         (FPz_f, id_rank, IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
       use gzip_file_access
       use gz_data_IO
 !
+      character, pointer, intent(in) :: FPz_f
       integer, intent(in) :: id_rank
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
@@ -62,47 +72,48 @@
 !
 !
       zbuf%fixbuf(1) = hd_itp_export_pe() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
 !
       write(zbuf%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
       write(zbuf%fixbuf(1),'(i16,2a1)') IO_itp_org%num_dest_domain,     &
      &                                  char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
-        call write_gz_multi_int_10i8(IO_itp_org%num_dest_domain,        &
+        call write_gz_multi_int_10i8(FPz_f, IO_itp_org%num_dest_domain, &
      &      IO_itp_org%id_dest_domain, zbuf)
       else
         write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
+        call gz_write_textbuf_no_lf(FPz_f, zbuf)
       end if
 !
 !
       zbuf%fixbuf(1) = hd_itp_export_item() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
-        call write_gz_multi_int_8i16(IO_itp_org%num_dest_domain,        &
+        call write_gz_multi_int_8i16(FPz_f, IO_itp_org%num_dest_domain, &
      &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain), &
      &     zbuf)
-        call write_gz_multi_int_8i16                                    &
-     &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send, zbuf)
+        call write_gz_multi_int_8i16(FPz_f, IO_itp_org%ntot_table_org,  &
+     &                               IO_itp_org%inod_itp_send, zbuf)
       else
         write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
+        call gz_write_textbuf_no_lf(FPz_f, zbuf)
       end if
 !
       end subroutine write_gz_itp_table_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_coefs_org(IO_itp_org, zbuf)
+      subroutine write_gz_itp_coefs_org(FPz_f, IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
       use gzip_file_access
       use gz_data_IO
 !
+      character, pointer, intent(in) :: FPz_f
       type(interpolate_table_org), intent(in) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -110,11 +121,11 @@
 !
 !
       zbuf%fixbuf(1) = hd_itp_export_coef() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
-        call write_gz_multi_int_8i16                                    &
-     &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour), zbuf)
+        call write_gz_multi_int_8i16(FPz_f, ifour,                      &
+     &      IO_itp_org%istack_itp_type_org(1:ifour), zbuf)
 !
         do inod = 1, IO_itp_org%ntot_table_org
           write(zbuf%fixbuf(1),'(3i16,1p3E25.15e3,2a1)')                &
@@ -122,12 +133,12 @@
      &        IO_itp_org%iele_org_4_org(inod),                          &
      &        IO_itp_org%itype_inter_org(inod),                         &
      &        IO_itp_org%coef_inter_org(inod,1:3), char(10), char(0)
-          call gz_write_textbuf_no_lf(zbuf)
+          call gz_write_textbuf_no_lf(FPz_f, zbuf)
         end do
 !
       else
         write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
+        call gz_write_textbuf_no_lf(FPz_f, zbuf)
       end if
 !
       end subroutine write_gz_itp_coefs_org
@@ -135,24 +146,26 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_itp_domain_org(n_rank, IO_itp_org, zbuf)
+      subroutine read_gz_itp_domain_org                                 &
+     &         (FPz_f, n_rank, IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
       use gz_data_IO
       use skip_gz_comment
 !
+      character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(inout) :: n_rank
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call skip_gz_comment_int(n_rank, zbuf)
-      call skip_gz_comment_int(IO_itp_org%num_dest_domain, zbuf)
+      call skip_gz_comment_int(FPz_f, n_rank, zbuf)
+      call skip_gz_comment_int(FPz_f, IO_itp_org%num_dest_domain, zbuf)
 !
       call alloc_itp_num_org(np_smp, IO_itp_org)
       if (IO_itp_org%num_dest_domain .gt. 0) then
 !
-        call read_gz_multi_int(IO_itp_org%num_dest_domain,              &
+        call read_gz_multi_int(FPz_f, IO_itp_org%num_dest_domain,       &
      &      IO_itp_org%id_dest_domain, zbuf)
       end if
 !
@@ -160,37 +173,39 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_itp_table_org(IO_itp_org, zbuf)
+      subroutine read_gz_itp_table_org(FPz_f, IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
       use gz_data_IO
 !
+      character, pointer, intent(in) :: FPz_f
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       if (IO_itp_org%num_dest_domain .eq. 0) return
         IO_itp_org%istack_nod_tbl_org(0) = 0
-        call read_gz_multi_int(IO_itp_org%num_dest_domain,              &
+        call read_gz_multi_int(FPz_f, IO_itp_org%num_dest_domain,       &
      &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain), &
      &     zbuf)
         IO_itp_org%ntot_table_org                                       &
      &      = IO_itp_org%istack_nod_tbl_org(IO_itp_org%num_dest_domain)
 !
         call alloc_itp_table_org(IO_itp_org)
-        call read_gz_multi_int                                          &
-     &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send, zbuf)
+        call read_gz_multi_int(FPz_f, IO_itp_org%ntot_table_org,        &
+     &                         IO_itp_org%inod_itp_send, zbuf)
 !
       end subroutine read_gz_itp_table_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_itp_coefs_org(IO_itp_org, zbuf)
+      subroutine read_gz_itp_coefs_org(FPz_f, IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
       use gzip_file_access
       use gz_data_IO
 !
+      character, pointer, intent(in) :: FPz_f
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -200,11 +215,11 @@
       if (IO_itp_org%num_dest_domain .eq. 0) return
 !
         IO_itp_org%istack_itp_type_org(0) = 0
-        call read_gz_multi_int                                          &
-     &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour), zbuf)
+        call read_gz_multi_int(FPz_f, ifour,                            &
+     &      IO_itp_org%istack_itp_type_org(1:ifour), zbuf)
 !
         do inod = 1, IO_itp_org%ntot_table_org
-          call get_one_line_text_from_gz(zbuf)
+          call get_one_line_text_from_gz(FPz_f, zbuf)
           read(zbuf%fixbuf(1),*) IO_itp_org%inod_gl_dest_4_org(inod),   &
      &        IO_itp_org%iele_org_4_org(inod),                          &
      &        IO_itp_org%itype_inter_org(inod),                         &
@@ -216,12 +231,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf)
+      subroutine write_gz_itp_table_dest                                &
+     &         (FPz_f, id_rank, IO_itp_dest, zbuf)
 !
       use t_interpolate_tbl_dest
       use gzip_file_access
       use gz_data_IO
 !
+      character, pointer, intent(in) :: FPz_f
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
       integer, intent(in) :: id_rank
 !
@@ -229,36 +246,36 @@
 !
 !
       zbuf%fixbuf(1) = hd_itp_import_pe() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
 !
       write(zbuf%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
       write(zbuf%fixbuf(1),'(i16,2a1)') IO_itp_dest%num_org_domain,     &
      &                                  char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
-        call write_gz_multi_int_10i8(IO_itp_dest%num_org_domain,        &
+        call write_gz_multi_int_10i8(FPz_f, IO_itp_dest%num_org_domain, &
      &     IO_itp_dest%id_org_domain, zbuf)
       else
         write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
+        call gz_write_textbuf_no_lf(FPz_f, zbuf)
       end if
 !
 !
       zbuf%fixbuf(1) = hd_itp_import_item() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
-        call write_gz_multi_int_8i16(IO_itp_dest%num_org_domain,        &
+        call write_gz_multi_int_8i16(FPz_f, IO_itp_dest%num_org_domain, &
      &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain), &
      &   zbuf)
-        call write_gz_multi_int_8i16                                    &
-     &     (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest,  &
+        call write_gz_multi_int_8i16(FPz_f,                             &
+     &      IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest,  &
      &      zbuf)
       else
         write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
+        call gz_write_textbuf_no_lf(FPz_f, zbuf)
       end if
 !
       end subroutine write_gz_itp_table_dest
@@ -266,13 +283,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_gz_itp_coefs_dest                                &
-     &         (IO_itp_dest, IO_itp_c_dest, zbuf)
+     &         (FPz_f, IO_itp_dest, IO_itp_c_dest, zbuf)
 !
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
       use gzip_file_access
       use gz_data_IO
 !
+      character, pointer, intent(in) :: FPz_f
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !
@@ -282,11 +300,11 @@
 !
 !
       zbuf%fixbuf(1) = hd_itp_dest_coef() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_write_textbuf_no_lf(FPz_f, zbuf)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         do i = 1, IO_itp_dest%num_org_domain
-          call write_gz_multi_int_8i16(ifour,                           &
+          call write_gz_multi_int_8i16(FPz_f, ifour,                    &
      &       IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i), zbuf)
         end do
 !
@@ -297,12 +315,12 @@
      &        IO_itp_c_dest%itype_inter_dest(inod),                     &
      &        IO_itp_c_dest%coef_inter_dest(inod,1:3),                  &
      &        char(10), char(0)
-          call gz_write_textbuf_no_lf(zbuf)
+          call gz_write_textbuf_no_lf(FPz_f, zbuf)
         end do
 !
       else
         write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
+        call gz_write_textbuf_no_lf(FPz_f, zbuf)
       end if
 !
       end subroutine write_gz_itp_coefs_dest
@@ -310,24 +328,26 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_itp_domain_dest(n_rank, IO_itp_dest, zbuf)
+      subroutine read_gz_itp_domain_dest                                &
+     &         (FPz_f, n_rank, IO_itp_dest, zbuf)
 !
       use t_interpolate_tbl_dest
       use gz_data_IO
       use skip_gz_comment
 !
+      character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(inout) :: n_rank
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call skip_gz_comment_int(n_rank, zbuf)
-      call skip_gz_comment_int(IO_itp_dest%num_org_domain, zbuf)
+      call skip_gz_comment_int(FPz_f, n_rank, zbuf)
+      call skip_gz_comment_int(FPz_f, IO_itp_dest%num_org_domain, zbuf)
 !
       call alloc_itp_num_dest(IO_itp_dest)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
-        call read_gz_multi_int(IO_itp_dest%num_org_domain,              &
+        call read_gz_multi_int(FPz_f, IO_itp_dest%num_org_domain,       &
      &      IO_itp_dest%id_org_domain, zbuf)
       end if
 !
@@ -335,18 +355,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_itp_table_dest(IO_itp_dest, zbuf)
+      subroutine read_gz_itp_table_dest(FPz_f, IO_itp_dest, zbuf)
 !
       use t_interpolate_tbl_dest
       use gz_data_IO
 !
+      character, pointer, intent(in) :: FPz_f
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         IO_itp_dest%istack_nod_tbl_dest(0) = 0
-        call read_gz_multi_int(IO_itp_dest%num_org_domain,              &
+        call read_gz_multi_int(FPz_f, IO_itp_dest%num_org_domain,       &
      &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain), &
      &   zbuf)
       end if
@@ -356,22 +377,22 @@
       call alloc_itp_table_dest(IO_itp_dest)
       if(IO_itp_dest%ntot_table_dest .le. 0) return
 !
-      call read_gz_multi_int                                            &
-     &   (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest,    &
-     &    zbuf)
+      call read_gz_multi_int(FPz_f, IO_itp_dest%ntot_table_dest,        &
+                             IO_itp_dest%inod_dest_4_dest, zbuf)
 !
       end subroutine read_gz_itp_table_dest
 !
 !-----------------------------------------------------------------------
 !
       subroutine read_gz_itp_coefs_dest                                 &
-     &         (IO_itp_dest, IO_itp_c_dest, zbuf)
+     &         (FPz_f, IO_itp_dest, IO_itp_c_dest, zbuf)
 !
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
       use gzip_file_access
       use gz_data_IO
 !
+      character, pointer, intent(in) :: FPz_f
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -385,7 +406,7 @@
         IO_itp_c_dest%istack_nod_tbl_wtype_dest(0) = 0
 !
         do i = 1, IO_itp_dest%num_org_domain
-          call read_gz_multi_int(ifour,                                 &
+          call read_gz_multi_int(FPz_f, ifour,                          &
      &       IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i), zbuf)
         end do
         num = 4*IO_itp_dest%num_org_domain
@@ -395,7 +416,7 @@
         call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
-          call get_one_line_text_from_gz(zbuf)
+          call get_one_line_text_from_gz(FPz_f, zbuf)
           read(zbuf%fixbuf(1),*) IO_itp_c_dest%inod_gl_dest(inod),      &
      &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
      &        IO_itp_c_dest%itype_inter_dest(inod),                     &

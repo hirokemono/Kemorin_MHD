@@ -8,24 +8,24 @@
 !> @brief Wrapper for decompression routines by zlib
 !!
 !!@verbatim
-!!      subroutine open_wt_gzfile_f(ptr_s, gzip_name, zbuf)
-!!      subroutine open_ad_gzfile_f(ptr_s, gzip_name, zbuf)
-!!      subroutine open_rd_gzfile_f(ptr_s, gzip_name, zbuf)
-!!      subroutine close_gzfile_b(ptr_s)
-!!      integer(kind = kint) function check_gzfile_eof(ptr_s)
-!!        character, pointer, intent(in) :: ptr_s
+!!      subroutine open_wt_gzfile_f(FPz_f, gzip_name, zbuf)
+!!      subroutine open_ad_gzfile_f(FPz_f, gzip_name, zbuf)
+!!      subroutine open_rd_gzfile_f(FPz_f, gzip_name, zbuf)
+!!      subroutine close_gzfile_b(FPz_f)
+!!      integer(kind = kint) function check_gzfile_eof(FPz_f)
+!!        character, pointer, intent(in) :: FPz_f
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine get_one_line_text_from_gz(ptr_s, zbuf)
-!!      subroutine gz_write_textbuf_no_lf(ptr_s, zbuf)
-!!        character, pointer, intent(in) :: ptr_s 
+!!      subroutine get_one_line_text_from_gz(FPz_f, zbuf)
+!!      subroutine gz_write_textbuf_no_lf(FPz_f, zbuf)
+!!        character, pointer, intent(in) :: FPz_f 
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine gzread_real_f(ptr_s, num, data, zbuf)
-!!      subroutine gzread_int8_f(ptr_s, num, int8_dat, zbuf)
-!!      subroutine gzread_int4_f(ptr_s, num, int4_dat, zbuf)
-!!      subroutine gzread_chara_f(ptr_s, len_buf, textbuf, zbuf)
-!!        character, pointer, intent(in) :: ptr_s 
+!!      subroutine gzread_real_f(FPz_f, num, data, zbuf)
+!!      subroutine gzread_int8_f(FPz_f, num, int8_dat, zbuf)
+!!      subroutine gzread_int4_f(FPz_f, num, int4_dat, zbuf)
+!!      subroutine gzread_chara_f(FPz_f, len_buf, textbuf, zbuf)
+!!        character, pointer, intent(in) :: FPz_f 
 !!        integer, intent(in) :: num
 !!        real(kind = kreal), target, intent(inout) :: data(num)
 !!        integer(kind = kint_gl), intent(inout) :: int8_dat(num)
@@ -33,11 +33,11 @@
 !!        character(len=1), target, intent(in) :: textbuf(len_buf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine gzwrite_real_f(ptr_s, num, data, zbuf)
-!!      subroutine gzwrite_int8_f(ptr_s, num, int8_dat, zbuf)
-!!      subroutine gzwrite_int4_f(ptr_s, num, int4_dat, zbuf)
-!!      subroutine gzwrite_chara_f(ptr_s, len_buf, textbuf, zbuf)
-!!        character, pointer, intent(in) :: ptr_s 
+!!      subroutine gzwrite_real_f(FPz_f, num, data, zbuf)
+!!      subroutine gzwrite_int8_f(FPz_f, num, int8_dat, zbuf)
+!!      subroutine gzwrite_int4_f(FPz_f, num, int4_dat, zbuf)
+!!      subroutine gzwrite_chara_f(FPz_f, len_buf, textbuf, zbuf)
+!!        character, pointer, intent(in) :: FPz_f 
 !!        integer, intent(in) :: len_buf
 !!        character(len=1), target, intent(in) :: textbuf(len_buf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
@@ -158,11 +158,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine open_wt_gzfile_f(ptr_s, gzip_name, zbuf)
+      subroutine open_wt_gzfile_f(FPz_f, gzip_name, zbuf)
 !
       use set_parallel_file_name
 !
-      character, pointer, intent(inout) :: ptr_s
+      character, pointer, intent(inout) :: FPz_f
       character(len = kchara), intent(in) :: gzip_name
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -171,18 +171,18 @@
       call link_text_buffer_for_zlib                                    &
      &   (kchara, add_null_character(gzip_name), zbuf)
       FP_z = open_wt_gzfile_c(zbuf%buf_p)
-      call c_f_pointer(FP_z, ptr_s)
+      call c_f_pointer(FP_z, FPz_f)
       call unlink_text_buffer_for_zlib(zbuf)
 !
       end subroutine open_wt_gzfile_f
 !
 !------------------------------------------------------------------
 !
-      subroutine open_ad_gzfile_f(ptr_s, gzip_name, zbuf)
+      subroutine open_ad_gzfile_f(FPz_f, gzip_name, zbuf)
 !
       use set_parallel_file_name
 !
-      character, pointer, intent(inout) :: ptr_s
+      character, pointer, intent(inout) :: FPz_f
       character(len = kchara), intent(in) :: gzip_name
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -191,18 +191,18 @@
       call link_text_buffer_for_zlib                                    &
      &   (kchara, add_null_character(gzip_name), zbuf)
       FP_z = open_ad_gzfile_c(zbuf%buf_p)
-      call c_f_pointer(FP_z, ptr_s)
+      call c_f_pointer(FP_z, FPz_f)
       call unlink_text_buffer_for_zlib(zbuf)
 !
       end subroutine open_ad_gzfile_f
 !
 !------------------------------------------------------------------
 !
-      subroutine open_rd_gzfile_f(ptr_s, gzip_name, zbuf)
+      subroutine open_rd_gzfile_f(FPz_f, gzip_name, zbuf)
 !
       use set_parallel_file_name
 !
-      character, pointer, intent(inout) :: ptr_s
+      character, pointer, intent(inout) :: FPz_f
       character(len = kchara), intent(in) :: gzip_name
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -211,44 +211,44 @@
       call link_text_buffer_for_zlib                                    &
      &   (kchara, add_null_character(gzip_name), zbuf)
       FP_z = open_rd_gzfile_c(zbuf%buf_p)
-      call c_f_pointer(FP_z, ptr_s)
+      call c_f_pointer(FP_z, FPz_f)
       call unlink_text_buffer_for_zlib(zbuf)
 !
       end subroutine open_rd_gzfile_f
 !
 !------------------------------------------------------------------
 !
-      subroutine close_gzfile_b(ptr_s)
+      subroutine close_gzfile_b(FPz_f)
 !
-      character, pointer, intent(inout) :: ptr_s
+      character, pointer, intent(inout) :: FPz_f
 !
-      call close_gzfile_c(C_LOC(ptr_s))
-      nullify(ptr_s)
+      call close_gzfile_c(C_LOC(FPz_f))
+      nullify(FPz_f)
 !
       end subroutine close_gzfile_b
 !
 !------------------------------------------------------------------
 !
-      integer(kind = kint) function check_gzfile_eof(ptr_s)
+      integer(kind = kint) function check_gzfile_eof(FPz_f)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
 !
-      check_gzfile_eof =  check_gzfile_eof_c(C_LOC(ptr_s))
+      check_gzfile_eof =  check_gzfile_eof_c(C_LOC(FPz_f))
 !
       end function check_gzfile_eof
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine get_one_line_text_from_gz(ptr_s, zbuf)
+      subroutine get_one_line_text_from_gz(FPz_f, zbuf)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       call link_text_buffer_for_zlib                                    &
      &   (len(zbuf%fixbuf(1)), zbuf%fixbuf(1), zbuf)
-      call get_one_line_from_gz_c(C_LOC(ptr_s), zbuf%len_buf,           &
+      call get_one_line_from_gz_c(C_LOC(FPz_f), zbuf%len_buf,           &
      &    zbuf%num_word, zbuf%len_used, C_LOC(zbuf%buf_p(1)))
       call unlink_text_buffer_for_zlib(zbuf)
 !
@@ -256,15 +256,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gz_write_textbuf_no_lf(ptr_s, zbuf)
+      subroutine gz_write_textbuf_no_lf(FPz_f, zbuf)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       call link_text_buffer_for_zlib                                    &
      &   (len(zbuf%fixbuf(1)), zbuf%fixbuf(1), zbuf)
-      call write_compress_txt_nolf_c(C_LOC(ptr_s), zbuf%len_buf,        &
+      call write_compress_txt_nolf_c(C_LOC(FPz_f), zbuf%len_buf,        &
      &                               C_LOC(zbuf%buf_p(1)))
       call unlink_text_buffer_for_zlib(zbuf)
 !
@@ -273,9 +273,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine gzread_real_f(ptr_s, num, data, zbuf)
+      subroutine gzread_real_f(FPz_f, num, data, zbuf)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       integer, intent(in) :: num
       real(kind = kreal), target, intent(inout) :: data(num)
 !
@@ -283,7 +283,7 @@
 !
 !
       call link_real_buffer_for_zlib(num, data, zbuf)
-      call gzread_64bit_c(C_LOC(ptr_s), zbuf%iflag_swap,                &
+      call gzread_64bit_c(C_LOC(FPz_f), zbuf%iflag_swap,                &
      &    zbuf%len_buf, C_LOC(zbuf%dat_p(1)), zbuf%ierr_zlib)
       call unlink_real_buffer_for_zlib(zbuf)
 !
@@ -291,9 +291,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzread_int8_f(ptr_s, num, int8_dat, zbuf)
+      subroutine gzread_int8_f(FPz_f, num, int8_dat, zbuf)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       integer, intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
 !
@@ -301,7 +301,7 @@
 !
 !
       call link_int8_buffer_for_zlib(num, int8_dat, zbuf)
-      call gzread_64bit_c(C_LOC(ptr_s), zbuf%iflag_swap,                &
+      call gzread_64bit_c(C_LOC(FPz_f), zbuf%iflag_swap,                &
      &    zbuf%len_buf , C_LOC(zbuf%idat8_p(1)), zbuf%ierr_zlib)
       call unlink_int8_buffer_for_zlib(zbuf)
 !
@@ -309,9 +309,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzread_int4_f(ptr_s, num, int4_dat, zbuf)
+      subroutine gzread_int4_f(FPz_f, num, int4_dat, zbuf)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       integer, intent(in) :: num
       integer, target, intent(inout) :: int4_dat(num)
 !
@@ -319,7 +319,7 @@
 !
 !
       call link_int4_buffer_for_zlib(num, int4_dat, zbuf)
-      call gzread_32bit_c(C_LOC(ptr_s), zbuf%iflag_swap, zbuf%len_buf,  &
+      call gzread_32bit_c(C_LOC(FPz_f), zbuf%iflag_swap, zbuf%len_buf,  &
      &                    C_LOC(zbuf%idat4_p(1)), zbuf%ierr_zlib)
       call unlink_int4_buffer_for_zlib(zbuf)
 !
@@ -327,11 +327,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzread_chara_f(ptr_s, len_buf, textbuf, zbuf)
+      subroutine gzread_chara_f(FPz_f, len_buf, textbuf, zbuf)
 !
       use m_machine_parameter
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
 !
@@ -340,7 +340,7 @@
       integer(C_int), parameter :: iflag_noswap = iendian_KEEP
 !
       call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
-      call gzread_32bit_c(C_LOC(ptr_s), iflag_noswap, zbuf%len_buf,     &
+      call gzread_32bit_c(C_LOC(FPz_f), iflag_noswap, zbuf%len_buf,     &
      &                    C_LOC(zbuf%buf_p(1)), zbuf%ierr_zlib)
       call unlink_text_buffer_for_zlib(zbuf)
 !
@@ -349,9 +349,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine gzwrite_real_f(ptr_s, num, data, zbuf)
+      subroutine gzwrite_real_f(FPz_f, num, data, zbuf)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       integer, intent(in) :: num
       real(kind = kreal), target, intent(in) :: data(num)
 !
@@ -359,7 +359,7 @@
 !
 !
       call link_real_buffer_for_zlib(num, data, zbuf)
-      call gzwrite_c(C_LOC(ptr_s), zbuf%len_buf,                        &
+      call gzwrite_c(C_LOC(FPz_f), zbuf%len_buf,                        &
      &               C_LOC(zbuf%dat_p(1)), zbuf%ierr_zlib)
       call unlink_real_buffer_for_zlib(zbuf)
 !
@@ -367,9 +367,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzwrite_int8_f(ptr_s, num, int8_dat, zbuf)
+      subroutine gzwrite_int8_f(FPz_f, num, int8_dat, zbuf)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       integer, intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
@@ -377,7 +377,7 @@
 !
 !
       call link_int8_buffer_for_zlib(num, int8_dat, zbuf)
-      call gzwrite_c(C_LOC(ptr_s), zbuf%len_buf,                        &
+      call gzwrite_c(C_LOC(FPz_f), zbuf%len_buf,                        &
      &               C_LOC(zbuf%idat8_p(1)), zbuf%ierr_zlib)
       call unlink_int8_buffer_for_zlib(zbuf)
 !
@@ -385,9 +385,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzwrite_int4_f(ptr_s, num, int4_dat, zbuf)
+      subroutine gzwrite_int4_f(FPz_f, num, int4_dat, zbuf)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       integer, intent(in) :: num
       integer(kind = 4), target, intent(in) :: int4_dat(num)
 !
@@ -395,7 +395,7 @@
 !
 !
       call link_int4_buffer_for_zlib(num, int4_dat, zbuf)
-      call gzwrite_c(C_LOC(ptr_s), zbuf%len_buf,                        &
+      call gzwrite_c(C_LOC(FPz_f), zbuf%len_buf,                        &
      &               C_LOC(zbuf%idat4_p(1)), zbuf%ierr_zlib)
       call unlink_int4_buffer_for_zlib(zbuf)
 !
@@ -403,9 +403,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzwrite_chara_f(ptr_s, len_buf, textbuf, zbuf)
+      subroutine gzwrite_chara_f(FPz_f, len_buf, textbuf, zbuf)
 !
-      character, pointer, intent(in) :: ptr_s 
+      character, pointer, intent(in) :: FPz_f 
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
 !
@@ -413,7 +413,7 @@
 !
 !
       call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
-      call gzwrite_c(C_LOC(ptr_s), zbuf%len_buf,                        &
+      call gzwrite_c(C_LOC(FPz_f), zbuf%len_buf,                        &
      &               C_LOC(zbuf%buf_p(1)), zbuf%ierr_zlib)
       call unlink_text_buffer_for_zlib(zbuf)
 !
