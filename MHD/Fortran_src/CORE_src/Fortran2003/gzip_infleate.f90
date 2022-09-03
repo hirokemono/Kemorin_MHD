@@ -18,10 +18,9 @@
 !!     &         (len_gzipbuf, gzipbuf, len_buf, buf, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine gzip_infleat_char_begin(stream_ptr, zbuf)
-!!      subroutine gzip_infleat_char_cont(stream_ptr, zbuf)
-!!      subroutine gzip_infleat_char_last(stream_ptr, zbuf)
-!!        character, pointer, intent(inout) :: stream_ptr
+!!      subroutine gzip_infleat_char_begin(zbuf)
+!!      subroutine gzip_infleat_char_cont(zbuf)
+!!      subroutine gzip_infleat_char_last(zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
@@ -51,7 +50,7 @@
 !
         end subroutine calypso_gzip_infleat_once
 !  -----------------
-        type(c_ptr) function calypso_gzip_infleat_begin                 &
+        subroutine calypso_gzip_infleat_begin                           &
      &           (len_gzipbuf, gzipbuf, len_buf, buf, len_gzipped)      &
      &            BIND(C, name = 'calypso_gzip_infleat_begin')
 !
@@ -64,15 +63,14 @@
         type(C_ptr), value :: buf
         integer(C_int), intent(inout) :: len_gzipped
 !
-        end function calypso_gzip_infleat_begin
+        end subroutine calypso_gzip_infleat_begin
 !  -----------------
-        subroutine calypso_gzip_infleat_cont(stream_ptr,                &
-     &            len_gzipbuf, len_buf, buf, len_gzipped)               &
+        subroutine calypso_gzip_infleat_cont                            &
+     &           (len_gzipbuf, len_buf, buf, len_gzipped)               &
      &            BIND(C, name = 'calypso_gzip_infleat_cont')
 !
         use ISO_C_BINDING
 !
-        type(C_ptr), value :: stream_ptr
         integer(C_int), intent(in) :: len_gzipbuf
         integer(C_int), intent(in) :: len_buf
 !
@@ -81,13 +79,12 @@
 !
         end subroutine calypso_gzip_infleat_cont
 !  -----------------
-        subroutine calypso_gzip_infleat_last(stream_ptr,                &
-     &            len_gzipbuf, len_buf, buf, len_gzipped)               &
+        subroutine calypso_gzip_infleat_last                            &
+     &           (len_gzipbuf, len_buf, buf, len_gzipped)               &
      &            BIND(C, name = 'calypso_gzip_infleat_last')
 !
         use ISO_C_BINDING
 !
-        type(C_ptr), value :: stream_ptr
         integer(C_int), intent(in) :: len_gzipbuf
         integer(C_int), intent(in) :: len_buf
 !
@@ -245,47 +242,41 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_infleat_char_begin(stream_ptr, zbuf)
+      subroutine gzip_infleat_char_begin(zbuf)
 !
-      character, pointer, intent(inout) :: stream_ptr
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      type(C_ptr) :: strm_p
 !
-      strm_p = calypso_gzip_infleat_begin                               &
-     &               (zbuf%len_gzipbuf, zbuf%gzipbuf_p, zbuf%len_buf,   &
-     &                C_LOC(zbuf%buf_p(1)), zbuf%len_used)
-      call c_f_pointer(strm_p, stream_ptr)
+      call calypso_gzip_infleat_begin                                   &
+     &   (zbuf%len_gzipbuf, zbuf%gzipbuf_p, zbuf%len_buf,               &
+     &    C_LOC(zbuf%buf_p(1)), zbuf%len_used)
 !
       end subroutine gzip_infleat_char_begin
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_infleat_char_cont(stream_ptr, zbuf)
+      subroutine gzip_infleat_char_cont(zbuf)
 !
-      character, pointer, intent(in) :: stream_ptr
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       call calypso_gzip_infleat_cont                                    &
-     &   (C_LOC(stream_ptr), zbuf%len_gzipbuf, zbuf%len_buf,            &
+     &   (zbuf%len_gzipbuf, zbuf%len_buf,                               &
      &    C_LOC(zbuf%buf_p(1)), zbuf%len_used)
 !
       end subroutine gzip_infleat_char_cont
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_infleat_char_last(stream_ptr, zbuf)
+      subroutine gzip_infleat_char_last(zbuf)
 !
-      character, pointer, intent(inout) :: stream_ptr
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       call calypso_gzip_infleat_last                                    &
-     &   (C_LOC(stream_ptr), zbuf%len_gzipbuf, zbuf%len_buf,            &
+     &   (zbuf%len_gzipbuf, zbuf%len_buf,                               &
      &    C_LOC(zbuf%buf_p(1)), zbuf%len_used)
       zbuf%ilen_gzipped = zbuf%ilen_gzipped                             &
      &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
-      nullify(stream_ptr)
 !
       end subroutine gzip_infleat_char_last
 !

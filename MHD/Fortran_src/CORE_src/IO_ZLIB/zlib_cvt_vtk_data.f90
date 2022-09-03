@@ -24,8 +24,6 @@
 !
       implicit none
 !
-      character, pointer, save, private :: stream_ptr1
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -68,14 +66,14 @@
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
           call gzip_defleat_char_begin                                  &
-     &      (stream_ptr1, ilen_line, vtk_each_scalar(vect(ist+1)),      &
+     &      (ilen_line, vtk_each_scalar(vect(ist+1)),                   &
      &       ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
           do inod = ist+2, ist+nline-1
-            call gzip_defleat_char_cont(stream_ptr1, ilen_line,         &
+            call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_scalar(vect(inod)), zbuf)
           end do
-          call gzip_defleat_char_last(stream_ptr1, ilen_line,           &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_scalar(vect(ist+nline)), zbuf)
           ist = ist + nline
           if(ist .ge. num) exit
@@ -120,17 +118,17 @@
           nline = int(min((num - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-          call gzip_defleat_char_begin(stream_ptr1, ilen_line,          &
+          call gzip_defleat_char_begin(ilen_line,                       &
      &      vtk_each_vector(vect(ist+1,1),vect(ist+1,2),vect(ist+1,3)), &
      &      ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
           do inod = ist+2, ist+nline-1
-            call gzip_defleat_char_cont(stream_ptr1, ilen_line,         &
+            call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,1),vect(inod,2),vect(inod,3)),    &
      &          zbuf)
           end do
-          call gzip_defleat_char_last(stream_ptr1, ilen_line,           &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,1),vect(ist+nline,2),vect(ist+nline,3)), &
      &        zbuf)
@@ -165,13 +163,13 @@
 !
       if(num .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_char_begin(stream_ptr1, ilen_line,            &
+        call gzip_defleat_char_begin(ilen_line,                         &
      &      vtk_each_vector(vect(1,1),vect(1,2),vect(1,3)),             &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        call gzip_defleat_char_cont(stream_ptr1, ilen_line,             &
+        call gzip_defleat_char_cont(ilen_line,                          &
      &      vtk_each_vector(vect(1,2),vect(1,4),vect(1,5)),             &
      &      zbuf)
-        call gzip_defleat_char_last(stream_ptr1, ilen_line,             &
+        call gzip_defleat_char_last(ilen_line,                          &
      &      vtk_each_vector(vect(1,3),vect(1,5),vect(1,6)),             &
      &      zbuf)
 !
@@ -182,39 +180,39 @@
           nline = min((num - ist), huge_30/ilen_line)
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-          call gzip_defleat_char_begin(stream_ptr1, ilen_line,          &
+          call gzip_defleat_char_begin(ilen_line,                       &
      &      vtk_each_vector(vect(ist+1,1),vect(ist+1,2),vect(ist+1,3)), &
      &      ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
-          call gzip_defleat_char_cont(stream_ptr1, ilen_line,           &
+          call gzip_defleat_char_cont(ilen_line,                        &
      &      vtk_each_vector(vect(ist+1,2),vect(ist+1,4),vect(ist+1,5)), &
      &      zbuf)
-          call gzip_defleat_char_cont(stream_ptr1, ilen_line,           &
+          call gzip_defleat_char_cont(ilen_line,                        &
      &      vtk_each_vector(vect(ist+1,3),vect(ist+1,5),vect(ist+1,6)), &
      &      zbuf)
 !
           do inod = ist+2, ist+nline-1
-            call gzip_defleat_char_cont(stream_ptr1, ilen_line,         &
+            call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,1),vect(inod,2),vect(inod,3)),    &
      &          zbuf)
-            call gzip_defleat_char_cont(stream_ptr1, ilen_line,         &
+            call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,2),vect(inod,4),vect(inod,5)),    &
      &          zbuf)
-            call gzip_defleat_char_cont(stream_ptr1, ilen_line,         &
+            call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,3),vect(inod,5),vect(inod,6)),    &
      &          zbuf)
           end do
-          call gzip_defleat_char_cont(stream_ptr1, ilen_line,           &
+          call gzip_defleat_char_cont(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,1),vect(ist+nline,2),vect(ist+nline,3)), &
      &        zbuf)
-          call gzip_defleat_char_cont(stream_ptr1, ilen_line,           &
+          call gzip_defleat_char_cont(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,2),vect(ist+nline,4),vect(ist+nline,5)), &
      &        zbuf)
-          call gzip_defleat_char_last(stream_ptr1, ilen_line,           &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,3),vect(ist+nline,5),vect(ist+nline,6)), &
      &        zbuf)
@@ -265,17 +263,17 @@
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
           ie0(1:nnod_ele) = ie(ist+1,1:nnod_ele) - 1
-          call gzip_defleat_char_begin(stream_ptr1, ilen_line,          &
+          call gzip_defleat_char_begin(ilen_line,                       &
      &        vtk_each_connect(nnod_ele, ie0),                          &
      &        ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
           do i = ist+2, ist+nline-1
             ie0(1:nnod_ele) = ie(i,1:nnod_ele) - 1
-            call gzip_defleat_char_cont(stream_ptr1, ilen_line,         &
+            call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_connect(nnod_ele, ie0), zbuf)
           end do
 !
           ie0(1:nnod_ele) = ie(ist+nline,1:nnod_ele) - 1
-          call gzip_defleat_char_last(stream_ptr1, ilen_line,           &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_connect(nnod_ele, ie0), zbuf)
           ist = ist + nline
           if(ist .ge. nele) exit
@@ -321,14 +319,14 @@
           nline = min((nele - ist), huge_30/ilen_line)
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-          call gzip_defleat_char_begin(stream_ptr1, ilen_line,          &
+          call gzip_defleat_char_begin(ilen_line,                       &
      &        vtk_each_cell_type(icellid), ilen_in, zbuf,               &
      &        zbuf%gzip_buf(zbuf%ilen_gzipped+1))
           do i = ist+2, ist+nline-1
-            call gzip_defleat_char_cont(stream_ptr1, ilen_line,         &
+            call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_cell_type(icellid), zbuf)
           end do
-          call gzip_defleat_char_last(stream_ptr1, ilen_line,           &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_cell_type(icellid), zbuf)
           ist = ist + nline
           if(ist .ge. nele) exit

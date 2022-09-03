@@ -26,8 +26,6 @@
 !
       implicit none
 !
-      character, pointer, save, private :: stream_ptr1
-!
 !------------------------------------------------------------------
 !
        contains
@@ -84,18 +82,18 @@
      &          ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
             exit
           else
-            call gzip_defleat_char_begin(stream_ptr1, ilen_line,        &
+            call gzip_defleat_char_begin(ilen_line,                     &
      &          multi_int_textline(ncolumn, int_dat(ist+1)),            &
      &          ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_defleat_char_cont(stream_ptr1, ilen_line,       &
+              call gzip_defleat_char_cont(ilen_line,                    &
      &            multi_int_textline(ncolumn, int_dat(i)), zbuf)
             end do
 !
             nrest = nitem_2 - nitem_c
             call gzip_defleat_char_last                                 &
-     &         (stream_ptr1, len_multi_int_textline(nrest),             &
+     &         (len_multi_int_textline(nrest),                          &
      &          multi_int_textline(nrest, int_dat(ist+nitem_c+1)),      &
      &          zbuf)
             ist = ist + nitem_2
@@ -158,18 +156,18 @@
             call link_pointer_for_zlib_buffer                           &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),            &
      &          ilen_line, zbuf%textbuf, zbuf)
-            call gzip_infleat_char_begin(stream_ptr1, zbuf)
+            call gzip_infleat_char_begin(zbuf)
             call read_multi_int_textline                                &
      &         (zbuf%textbuf(1), ncolumn, int_dat(ist+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_infleat_char_cont(stream_ptr1, zbuf)
+              call gzip_infleat_char_cont(zbuf)
               call read_multi_int_textline                              &
      &           (zbuf%textbuf(1), ncolumn, int_dat(i))
             end do
 !
             nrest = nitem_2 - nitem_c
-            call gzip_infleat_char_last(stream_ptr1, zbuf)
+            call gzip_infleat_char_last(zbuf)
             call read_multi_int_textline                                &
      &         (zbuf%textbuf(1), nrest, int_dat(ist+nitem_c+1))
             call unlink_pointer_for_zlib_buffer(zbuf)
@@ -237,18 +235,18 @@
      &          ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
             exit
           else
-            call gzip_defleat_char_begin(stream_ptr1, ilen_line,        &
+            call gzip_defleat_char_begin(ilen_line,                     &
      &          mul_6digit_int_line(ncolumn, int_dat(ist+1)),           &
      &          ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_defleat_char_cont(stream_ptr1, ilen_line,       &
+              call gzip_defleat_char_cont(ilen_line,                    &
      &            mul_6digit_int_line(ncolumn, int_dat(i)), zbuf)
             end do
 !
             nrest = nitem_2 - nitem_c
             ilength = int(len_multi_6digit_line(nrest))
-            call gzip_defleat_char_last(stream_ptr1, ilength,           &
+            call gzip_defleat_char_last(ilength,                        &
      &          mul_6digit_int_line(nrest, int_dat(ist+nitem_c+1)),     &
      &          zbuf)
             ist = ist + nitem_2
@@ -314,18 +312,18 @@
             call link_pointer_for_zlib_buffer                           &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),            &
      &          ilen_line, zbuf%textbuf, zbuf)
-            call gzip_infleat_char_begin(stream_ptr1, zbuf)
+            call gzip_infleat_char_begin(zbuf)
             call read_mul_6digit_int_line                               &
      &         (zbuf%textbuf(1), ncolumn, int_dat(ist+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_infleat_char_cont(stream_ptr1, zbuf)
+              call gzip_infleat_char_cont(zbuf)
               call read_mul_6digit_int_line                             &
      &           (zbuf%textbuf(1), ncolumn, int_dat(i))
             end do
 !
             nrest = nitem_2 - nitem_c
-            call gzip_infleat_char_last(stream_ptr1, zbuf)
+            call gzip_infleat_char_last(zbuf)
             call read_mul_6digit_int_line                               &
      &         (zbuf%textbuf(1), nrest, int_dat(ist+nitem_c+1))
             call unlink_pointer_for_zlib_buffer(zbuf)
