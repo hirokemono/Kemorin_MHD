@@ -9,6 +9,16 @@
 !!
 !!@verbatim
 !!      subroutine skip_comment(character_4_read,id_file)
+!!
+!!      subroutine read_one_line_from_stream(id_file,                   &
+!!     &          lenghbuf, num_word, nchara_read, tbuf)
+!!      subroutine skip_comment_from_stream(id_file,                    &
+!!     &          lenghbuf, num_word, nchara_read, tbuf)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer(kind = kint), intent(in) :: lenghbuf
+!!        integer(kind = kint), intent(inout) :: num_word, nchara_read
+!!        character(len=lenghbuf), intent(inout) :: tbuf
+!!
 !!      subroutine count_field_by_comma(id_file, charabuf,              &
 !!     &          ncomp, field_name)
 !!      subroutine read_stack_array(character_4_read, id_file, num,     &
@@ -56,6 +66,67 @@
       return
       end subroutine skip_comment
 !
+!-----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_one_line_from_stream(id_file,                     &
+     &          lenghbuf, num_word, nchara_read, tbuf)
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: lenghbuf
+!
+      integer(kind = kint), intent(inout) :: num_word, nchara_read
+      character(len=lenghbuf), intent(inout) :: tbuf
+!
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, lenghbuf
+        read(id_file, end=99,err=99) tbuf(i:i)
+        if(tbuf(i:i) .eq. char(10)) exit
+      end do
+      nchara_read = i
+
+      num_word = 0
+      if(tbuf(1:1) .ne. char(32)) num_word = num_word + 1
+      do i = 2, nchara_read
+        if(tbuf(i-1:i-1) .eq. char(32)                                  &
+     &         .and. tbuf(i:i) .ne. char(32)) num_word = num_word + 1
+      end do
+      return
+!
+  99  continue
+      nchara_read = -1
+      num_word = -1
+!
+      end subroutine read_one_line_from_stream
+!
+! -----------------------------------------------------------------------
+!
+      subroutine skip_comment_from_stream(id_file,                      &
+     &          lenghbuf, num_word, nchara_read, tbuf)
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: lenghbuf
+!
+      integer(kind = kint), intent(inout) :: num_word, nchara_read
+      character(len=lenghbuf), intent(inout) :: tbuf
+!
+      character(len=1) :: detect_comment
+!
+  10  continue
+        call read_one_line_from_stream(id_file,                         &
+     &      lenghbuf, num_word, nchara_read, tbuf)
+
+        if(nchara_read .lt. 0) return
+        if(nchara_read .eq. 0) go to 10
+!
+        read(tbuf,*,end=10)  detect_comment
+      if(detect_comment.eq.'!' .or. detect_comment.eq.'#') go to 10
+!
+      end subroutine skip_comment_from_stream
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine count_field_by_comma(id_file, charabuf,                &
