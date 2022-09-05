@@ -43,12 +43,12 @@
 !!
 !!      subroutine select_copy_sph_monitor_data                         &
 !!     &         (FPz_f, id_read, id_write, flag_gzip,                  &
-!!     &          sph_IN, nchara_line, textbuf, zbuf, ierr)
+!!     &          n_line, nchara_line, textbuf, zbuf, ierr)
 !!        character, pointer, intent(in) :: FPz_f
 !!        integer(kind = kint), intent(in) :: id_read, id_write
+!!        integer(kind = kint), intent(in) :: n_line
 !!        integer(kind = kint), intent(in) :: nchara_line
 !!        logical, intent(in) :: flag_gzip
-!!        type(read_sph_spectr_data), intent(in) :: sph_IN
 !!        character(len = 1), intent(inout) :: textbuf(nchara_line)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        integer(kind = kint), intent(inout) :: ierr
@@ -304,7 +304,7 @@
 !
       subroutine select_copy_sph_monitor_data                           &
      &         (FPz_f, id_read, id_write, flag_gzip,                    &
-     &          sph_IN, nchara_line, textbuf, zbuf, ierr)
+     &          n_line, nchara_line, textbuf, zbuf, ierr)
 !
       use gz_spl_sph_spectr_data_IO
       use count_monitor_time_series
@@ -312,35 +312,30 @@
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_read, id_write
       integer(kind = kint), intent(in) :: nchara_line
+      integer(kind = kint), intent(in) :: n_line
       logical, intent(in) :: flag_gzip
-      type(read_sph_spectr_data), intent(in) :: sph_IN
 !
       character(len = 1), intent(inout) :: textbuf(nchara_line)
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: kr, lth
+      integer(kind = kint) :: line
 !
 !
 #ifdef ZLIB_IO
       if(flag_gzip) then
-        do kr = 1, sph_IN%nri_sph
-          do lth = 0, sph_IN%ltr_sph
-            call gz_copy_spectr_monitor_data                            &
-     &         (FPz_f, id_write, zbuf, ierr)
-            if(ierr .gt. 0) return
-          end do
+        do line = 1, n_line
+          call gz_copy_spectr_monitor_data(FPz_f, id_write, zbuf, ierr)
+          if(ierr .gt. 0) return
         end do
         return
       end if
 #endif
 !
-      do kr = 1, sph_IN%nri_sph
-        do lth = 0, sph_IN%ltr_sph
-          call read_write_line_text(id_read, id_write,                  &
-     &                              nchara_line, textbuf, ierr)
+      do line = 1, n_line
+        call read_write_line_text(id_read, id_write,                    &
+     &                            nchara_line, textbuf, ierr)
           if(ierr .gt. 0) return
-        end do
       end do
 !
       end subroutine select_copy_sph_monitor_data

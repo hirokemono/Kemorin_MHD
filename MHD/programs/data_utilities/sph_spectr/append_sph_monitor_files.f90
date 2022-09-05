@@ -283,7 +283,7 @@
       integer(kind = kint) :: istep_start, istep_end, i_step, ierr
       real(kind = kreal) :: start_time, end_time, time
 !
-      integer(kind = kint) :: nd, ic, icou
+      integer(kind = kint) :: nd, ic, icou, n_line
       integer(kind = kint) :: nchara_line
       character(len = 1), allocatable :: textbuf(:)
 !
@@ -388,11 +388,12 @@
       allocate(textbuf(nchara_line))
 !
       icou = 0
+      n_line = append_sph_IN%nri_sph * (append_sph_IN%ltr_sph + 1)
       do
         icou = icou + 1
         call select_copy_sph_monitor_data(FPz_f1, id_append_file,       &
-     &      id_write_file, flag_gzip, target_sph_IN,                    &
-     &      nchara_line, textbuf, zbuf, ierr)
+     &      id_write_file, flag_gzip, n_line, nchara_line, textbuf,     &
+     &      zbuf, ierr)
         if(ierr .gt. 0) exit
 !
         write(*,'(33a1,i12,a21)',advance="NO")                          &
