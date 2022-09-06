@@ -49,8 +49,7 @@
      &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
 !
       use t_ctl_param_sph_series_util
-      use simple_sph_spectr_head_IO
-      use simple_sph_spectr_data_IO
+      use write_sph_monitor_data
       use select_gz_stream_file_IO
       use gz_spl_sph_spectr_head_IO
       use gz_spl_sph_spectr_data_IO

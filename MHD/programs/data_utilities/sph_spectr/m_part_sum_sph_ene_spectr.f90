@@ -46,8 +46,7 @@
       use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
       use select_gz_stream_file_IO
-      use simple_sph_spectr_head_IO
-      use simple_sph_spectr_data_IO
+      use write_sph_monitor_data
       use gz_spl_sph_spectr_head_IO
       use gz_spl_sph_spectr_data_IO
       use set_parallel_file_name

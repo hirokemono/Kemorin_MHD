@@ -157,8 +157,7 @@
       use select_gz_stream_file_IO
       use gz_spl_sph_spectr_head_IO
       use gz_spl_sph_spectr_data_IO
-      use simple_sph_spectr_head_IO
-      use simple_sph_spectr_data_IO
+      use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
@@ -261,8 +260,7 @@
       use select_gz_stream_file_IO
       use gz_spl_sph_spectr_head_IO
       use gz_spl_sph_spectr_data_IO
-      use simple_sph_spectr_head_IO
-      use simple_sph_spectr_data_IO
+      use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org

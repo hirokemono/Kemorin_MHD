@@ -91,12 +91,10 @@
 !
       subroutine sph_dynamic_elsasser_by_spectr(els_dat)
 !
-      use simple_sph_spectr_head_IO
       use select_gz_stream_file_IO
       use gz_spl_sph_spectr_head_IO
       use gz_spl_sph_spectr_data_IO
-      use simple_sph_spectr_head_IO
-      use simple_sph_spectr_data_IO
+      use write_sph_monitor_data
       use set_parallel_file_name
 !
       type(sph_dyn_elsasser_data), intent(inout) :: els_dat
