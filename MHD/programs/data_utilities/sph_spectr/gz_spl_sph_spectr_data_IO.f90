@@ -7,14 +7,6 @@
 !> @brief gzipped spectr monitor data reading routines
 !!
 !!@verbatim
-!!      subroutine gz_read_sph_spectr_time(FPz_f, nitem_snap,           &
-!!     &                                   i_step, time, zbuf, ierr)
-!!        character, pointer, intent(in) :: FPz_f
-!!        integer(kind = kint), intent(in) :: id_file, nitem_snap
-!!        integer(kind = kint), intent(inout) :: i_step, ierr
-!!        real(kind = kreal), intent(inout) :: time
-!!        type(buffer_4_gzip), intent(inout) :: zbuf
-!!
 !!        subroutine sel_gz_input_sph_series_data(FPz_f, id_stream,     &
 !!     &          flag_gzip, flag_old_fmt, flag_spectr, flag_vol_ave,   &
 !!     &          sph_IN, zbuf, ierr)
@@ -55,33 +47,6 @@
       contains
 !
 !   --------------------------------------------------------------------
-!
-      subroutine gz_read_sph_spectr_time(FPz_f, nitem_snap,             &
-     &                                   i_step, time, zbuf, ierr)
-!
-      character, pointer, intent(in) :: FPz_f
-      integer(kind = kint), intent(in) :: nitem_snap
-      integer(kind = kint), intent(inout) :: i_step, ierr
-      real(kind = kreal), intent(inout) :: time
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      integer(kind = kint) :: ipick
-!
-!
-      ierr = 0
-      do ipick = 1, nitem_snap
-        call get_one_line_text_from_gz(FPz_f, zbuf)
-        read(zbuf%fixbuf(1),*,err=99,end=99) i_step, time
-      end do
-      return
-!
-   99 continue
-      ierr = 1
-      return
-!
-      end subroutine gz_read_sph_spectr_time
-!
-! -----------------------------------------------------------------------
 !
       subroutine sel_gz_input_sph_series_data(FPz_f, id_stream,         &
      &          flag_gzip, flag_old_fmt, flag_spectr, flag_vol_ave,     &
