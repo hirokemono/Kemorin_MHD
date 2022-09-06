@@ -60,7 +60,7 @@
       subroutine open_init_volume_mean_file_f(input_prefix_c)           &
      &              bind(c, name="open_init_volume_mean_file_f")
 !
-      use sph_mean_square_IO
+      use gz_spl_sph_spectr_head_IO
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
@@ -78,7 +78,7 @@
       subroutine open_init_volume_spectr_file_f(input_prefix_c)         &
      &              bind(c, name="open_init_volume_spectr_file_f")
 !
-      use sph_mean_square_IO
+      use gz_spl_sph_spectr_head_IO
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
@@ -97,7 +97,7 @@
       subroutine check_one_layer_mean_item_f(input_prefix_c)            &
      &              bind(c, name="check_one_layer_mean_item_f")
 !
-      use sph_mean_square_IO
+      use gz_spl_sph_spectr_head_IO
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
@@ -116,7 +116,7 @@
       subroutine check_layered_spectr_file_f(input_prefix_c)            &
      &              bind(c, name="check_layered_spectr_file_f")
 !
-      use sph_mean_square_IO
+      use gz_spl_sph_spectr_head_IO
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
@@ -178,7 +178,7 @@
      &             (ncomp, id_pick, i_step, time, spectr)               &
      &              bind(c, name="load_one_volume_mean_item_f")
 !
-      use sph_mean_square_IO
+      use gz_spl_sph_spectr_head_IO
 !
       integer(C_int), Value :: ncomp
       integer(C_int), intent(in) :: id_pick(ncomp)
@@ -190,7 +190,7 @@
 !
 !
       load_one_volume_mean_item_f = 0
-      call select_input_sph_series_data                                 &
+      call sel_gz_input_sph_series_data                                 &
      &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_off, volume_on, sph_IN_f, ierr_read)
       if(ierr_read .gt. 0) then
@@ -212,7 +212,7 @@
      &             (i_mode, ncomp, id_pick, i_step, time, spectr)       &
      &              bind(c, name="load_one_volume_spectr_item_f")
 !
-      use sph_mean_square_IO
+      use gz_spl_sph_spectr_head_IO
 !
       integer(C_int), Value :: ncomp, i_mode
       integer(C_int), intent(in) :: id_pick(ncomp)
@@ -224,7 +224,7 @@
 !
 !
       load_one_volume_spectr_item_f = 0
-      call select_input_sph_series_data                                 &
+      call sel_gz_input_sph_series_data                                 &
      &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_on, volume_on, sph_IN_f, ierr_read)
       if(ierr_read .gt. 0) then
@@ -247,7 +247,7 @@
      &             (id_radius, ncomp, id_pick, i_step, time, spectr)    &
      &              bind(c, name="load_one_layer_mean_item_f")
 !
-      use sph_mean_square_IO
+      use gz_spl_sph_spectr_head_IO
 !
       integer(C_int), Value :: ncomp, id_radius
       integer(C_int), intent(in) :: id_pick(ncomp)
@@ -259,7 +259,7 @@
 !
 !
       load_one_layer_mean_item_f = 0
-      call select_input_sph_series_data                                 &
+      call sel_gz_input_sph_series_data                                 &
      &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_off, volume_off, sph_IN_f, ierr_read)
       if(ierr_read .gt. 0) then
@@ -282,7 +282,7 @@
      &              i_step, time, spectr)                               &
      &              bind(c, name="load_one_layer_spectr_item_f")
 !
-      use sph_mean_square_IO
+      use gz_spl_sph_spectr_head_IO
 !
       integer(C_int), Value :: ncomp, id_radius, i_mode
       integer(C_int), intent(in) :: id_pick(ncomp)
@@ -294,7 +294,7 @@
 !
 !
       load_one_layer_spectr_item_f = 0
-      call select_input_sph_series_data                                 &
+      call sel_gz_input_sph_series_data                                 &
      &   (FPz_fsp, id_file_rms, flag_current_fmt,                       &
      &    spectr_on, volume_off, sph_IN_f, ierr_read)
       if(ierr_read .gt. 0) then

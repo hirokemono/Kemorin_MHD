@@ -7,11 +7,6 @@
 !> @brief Header output for spectrum data
 !!
 !!@verbatim
-!!      subroutine sel_read_sph_monitor_head                            &
-!!     &         (id_file, flag_vol_ave, sph_IN)
-!!        integer(kind = kint), intent(in) :: id_file
-!!        logical, intent(in) :: flag_vol_ave
-!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!      subroutine select_output_sph_pwr_head                           &
 !!     &         (id_file, flag_vol_ave, sph_IN)
 !!        integer(kind = kint), intent(in) :: id_file
@@ -38,30 +33,11 @@
 !
       implicit none
 !
-      private :: read_sph_pwr_vol_head,  read_sph_pwr_layer_head
       private :: write_sph_pwr_vol_head, write_sph_pwr_layer_head
 !
 !   --------------------------------------------------------------------
 !
       contains
-!
-!   --------------------------------------------------------------------
-!
-      subroutine sel_read_sph_monitor_head                              &
-     &         (id_file, flag_vol_ave, sph_IN)
-!
-      integer(kind = kint), intent(in) :: id_file
-      logical, intent(in) :: flag_vol_ave
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-!
-!
-      if(flag_vol_ave) then
-        call read_sph_pwr_vol_head(id_file, sph_IN)
-      else
-        call read_sph_pwr_layer_head(id_file, sph_IN)
-      end if
-!
-      end subroutine sel_read_sph_monitor_head
 !
 !   --------------------------------------------------------------------
 !
@@ -82,53 +58,6 @@
       end if
 !
       end subroutine select_output_sph_pwr_head
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_sph_pwr_vol_head(id_file, sph_IN)
-!
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-!
-      character(len=255) :: character_4_read
-!
-!
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) sph_IN%nri_sph, sph_IN%ltr_sph
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) sph_IN%kr_ICB, sph_IN%kr_CMB
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) sph_IN%kr_inner, sph_IN%r_inner
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) sph_IN%kr_outer, sph_IN%r_outer
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) sph_IN%nfield_sph_spec, sph_IN%ntot_sph_spec
-!
-      end subroutine read_sph_pwr_vol_head
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_sph_pwr_layer_head(id_file, sph_IN)
-!
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-!
-      character(len=255) :: character_4_read
-!
-!
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) sph_IN%nri_sph, sph_IN%ltr_sph
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) sph_IN%kr_ICB, sph_IN%kr_CMB
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) sph_IN%nfield_sph_spec, sph_IN%ntot_sph_spec
-!
-      end subroutine read_sph_pwr_layer_head
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -192,25 +121,6 @@
       write(id_file,*)
 !
       end subroutine write_sph_pwr_layer_head
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_sph_spectr_name                                   &
-     &         (id_file, nfield_sph_spec, num_labels,                   &
-     &          ncomp_sph_spec, ene_sph_spec_name)
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nfield_sph_spec, num_labels
-!
-      integer(kind = kint), intent(inout)                               &
-     &                     :: ncomp_sph_spec(nfield_sph_spec)
-      character(len = kchara), intent(inout)                            &
-     &                     :: ene_sph_spec_name(num_labels)
-!
-      read(id_file,*) ncomp_sph_spec(1:nfield_sph_spec)
-      read(id_file,*) ene_sph_spec_name(1:num_labels)
-
-      end subroutine read_sph_spectr_name
 !
 !   --------------------------------------------------------------------
 !

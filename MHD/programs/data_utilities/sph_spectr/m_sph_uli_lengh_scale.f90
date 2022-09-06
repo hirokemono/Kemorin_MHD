@@ -49,8 +49,11 @@
 !
       use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
+      use select_gz_stream_file_IO
       use simple_sph_spectr_head_IO
-      use sph_mean_square_IO
+      use simple_sph_spectr_data_IO
+      use gz_spl_sph_spectr_head_IO
+      use gz_spl_sph_spectr_data_IO
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: fname_org
@@ -65,7 +68,7 @@
       character, pointer :: FPz_f1
 !
 !
-      call sel_open_read_sph_monitor_file(FPz_f1, id_file_rms_l,        &
+      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms_l,          &
      &                                    fname_org, flag_gzip1, zbuf1)
       call select_input_sph_series_head                                 &
      &   (FPz_f1, id_file_rms_l, flag_gzip1,                            &
@@ -88,7 +91,7 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_series_data                               &
+        call sel_gz_input_sph_series_data                               &
      &     (FPz_f1, id_file_rms_l, flag_gzip1,                          &
      &      spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,           &
      &      sph_IN, zbuf1, ierr)
@@ -114,7 +117,7 @@
 !
    99 continue
       write(*,*)
-      call sel_close_sph_monitor_file                                   &
+      call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_file_rms_l, flag_gzip1, zbuf1)
       close(id_file_lscale)
 !

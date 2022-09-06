@@ -92,7 +92,11 @@
       subroutine sph_dynamic_elsasser_by_spectr(els_dat)
 !
       use simple_sph_spectr_head_IO
-      use sph_mean_square_IO
+      use select_gz_stream_file_IO
+      use gz_spl_sph_spectr_head_IO
+      use gz_spl_sph_spectr_data_IO
+      use simple_sph_spectr_head_IO
+      use simple_sph_spectr_data_IO
       use set_parallel_file_name
 !
       type(sph_dyn_elsasser_data), intent(inout) :: els_dat
@@ -107,7 +111,7 @@
 !
 !
       file_name = add_dat_extension(els_dat%vol_l_spectr_file_prefix)
-      call sel_open_read_sph_monitor_file(FPz_l, id_file_rms_l,         &
+      call sel_open_read_gz_stream_file(FPz_l, id_file_rms_l,           &
      &    file_name, flag_gzip_l, zbuf_l)
       call select_input_sph_series_head                                 &
      &   (FPz_l, id_file_rms_l, flag_gzip_l,                            &
@@ -116,7 +120,7 @@
       call check_sph_spectr_name(sph_IN_l)
 !
       file_name = add_dat_extension(els_dat%vol_m_spectr_file_prefix)
-      call sel_open_read_sph_monitor_file(FPz_m, id_file_rms_m,         &
+      call sel_open_read_gz_stream_file(FPz_m, id_file_rms_m,           &
      &    file_name, flag_gzip_m, zbuf_m)
       call select_input_sph_series_head                                 &
      &   (FPz_m, id_file_rms_m, flag_gzip_m,                            &
@@ -308,11 +312,11 @@
      &       'step= ', sph_IN_l%i_step,                                 &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_series_data                               &
+        call sel_gz_input_sph_series_data                               &
      &     (FPz_l, id_file_rms_l, flag_gzip_l,                          &
      &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
      &      sph_IN_l, zbuf_l, ierr)
-        call select_input_sph_series_data                               &
+        call sel_gz_input_sph_series_data                               &
      &     (FPz_m, id_file_rms_m, flag_gzip_m,                          &
      &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
      &      sph_IN_m, zbuf_m, ierr)
@@ -417,9 +421,9 @@
 !
    99 continue
       write(*,*)
-      call sel_close_sph_monitor_file(FPz_l, id_file_rms_l,             &
+      call sel_close_read_gz_stream_file(FPz_l, id_file_rms_l,          &
      &                                flag_gzip_l, zbuf_l)
-      call sel_close_sph_monitor_file(FPz_m, id_file_rms_m,             &
+      call sel_close_read_gz_stream_file(FPz_m, id_file_rms_m,          &
      &                                flag_gzip_m, zbuf_m)
       close(id_file_lscale)
 !

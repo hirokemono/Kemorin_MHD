@@ -75,7 +75,6 @@ simple_sph_spectr_data_IO.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-sph_mean_square_IO.o \
 picked_sph_spectr_data_IO.o \
 gauss_coefs_monitor_IO.o \
 count_monitor_time_series.o \
@@ -156,7 +155,6 @@ simple_sph_spectr_data_IO.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-sph_mean_square_IO.o \
 gauss_coefs_monitor_IO.o \
 picked_sph_spectr_data_IO.o \
 count_monitor_time_series.o
@@ -223,7 +221,6 @@ m_tave_sph_ene_spectr.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-sph_mean_square_IO.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
@@ -237,7 +234,6 @@ cal_tave_sph_ene_spectr.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-sph_mean_square_IO.o \
 count_monitor_time_series.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
@@ -253,7 +249,6 @@ m_maxmode_sph_ene_spectr.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-sph_mean_square_IO.o \
 count_monitor_time_series.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o
@@ -267,7 +262,6 @@ m_sph_uli_lengh_scale.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-sph_mean_square_IO.o \
 count_monitor_time_series.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o
@@ -281,7 +275,6 @@ m_sph_dynamic_elsasser.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-sph_mean_square_IO.o \
 count_monitor_time_series.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o
@@ -295,7 +288,6 @@ m_part_sum_sph_ene_spectr.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-sph_mean_square_IO.o \
 count_monitor_time_series.o \
 simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
@@ -312,7 +304,6 @@ simple_sph_spectr_data_IO.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-sph_mean_square_IO.o \
 time_average_gauss_coefs.o \
 tave_picked_gauss_coefs.o
 

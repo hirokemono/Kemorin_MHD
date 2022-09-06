@@ -148,6 +148,7 @@
 !
       use t_gauss_coefs_monitor_IO
       use gauss_coefs_monitor_IO
+      use gz_spl_sph_spectr_data_IO
 !
       implicit none
 !
@@ -167,6 +168,10 @@
       integer(kind = kint) :: nd, ic, icou
       integer(kind = kint) :: nchara_line
       character(len = 1), allocatable :: textbuf(:)
+!
+      logical :: flag_gzip
+      type(buffer_4_gzip), save :: zbuf
+      character, pointer, save  :: FPz_f1
 !
 !
       write(*,*) 'Open file to append.'
@@ -240,8 +245,8 @@
         icou = 0
         do
           icou = icou + 1
-          call read_write_line_text(id_append_file, id_write_file,      &
-     &                              nchara_line, textbuf, ierr)
+          call gz_copy_spectr_monitor_data(FPz_f1, id_append_file, id_write_file,      &
+     &                              flag_gzip, zbuf, ierr)
 !
           write(*,'(33a1,i12,a21)',advance="NO")                        &
      &          (char(8),ic=1,33), icou, '-th step is appended.'
@@ -265,7 +270,9 @@
 !
       use t_read_sph_spectra
       use t_buffer_4_gzip
-      use sph_mean_square_IO
+      use select_gz_stream_file_IO
+      use gz_spl_sph_spectr_head_IO
+      use gz_spl_sph_spectr_data_IO
 !
       implicit none
 !
@@ -280,37 +287,41 @@
       integer(kind = kint), parameter :: id_append_file = 15
       integer(kind = kint), parameter :: id_write_file = 16
 !
-      integer(kind = kint) :: istep_start, istep_end, i_step, ierr
-      real(kind = kreal) :: start_time, end_time, time
+      integer(kind = kint) :: istep_start
+      real(kind = kreal) :: start_time
 !
-      integer(kind = kint) :: nd, ic, icou, n_line
-      integer(kind = kint) :: nchara_line
-      character(len = 1), allocatable :: textbuf(:)
+      integer(kind = kint) :: nd, ic, icou, n_line, ierr
 !
       logical :: flag_gzip
-      type(buffer_4_gzip) :: zbuf
-      character, pointer :: FPz_f1
+      type(buffer_4_gzip), save :: zbuf
+      character, pointer, save  :: FPz_f1
 !
 !
       write(*,*) 'Open data file to append.'
-      call sel_open_read_sph_monitor_file                               &
+      call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_append_file, append_file_name, flag_gzip, zbuf)
       call select_input_sph_series_head(FPz_f1, id_append_file,         &
      &    flag_gzip, flag_current_fmt, flag_spectr, flag_vol_ave,       &
      &    append_sph_IN, zbuf)
-      call select_read_sph_spectr_time                                  &
-     &   (FPz_f1, id_append_file, flag_gzip, ione,                      &
-     &    istep_start, start_time, zbuf, ierr)
-      call sel_close_sph_monitor_file                                   &
+!
+      call sel_skip_comment_gz_stream                                   &
+     &   (FPz_f1, id_append_file, flag_gzip, zbuf)
+      read(zbuf%fixbuf(1),*) istep_start, start_time
+      write(*,*) 'zbuf%len_used', zbuf%num_word, zbuf%len_used
+      call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_append_file, flag_gzip, zbuf)
 !
+!
       write(*,*) 'Open target file', ': ', trim(target_file_name)
-      open(id_write_file, file=target_file_name)
-      call select_input_sph_series_head                                 &
-     &   (FPz_f1, id_write_file, (.FALSE.),                             &
-     &    flag_current_fmt, flag_spectr, flag_vol_ave,                  &
+      call sel_open_read_gz_stream_file                                 &
+     &   (FPz_f1, id_write_file, target_file_name, flag_gzip, zbuf)
+      call select_input_sph_series_head(FPz_f1, id_write_file,          &
+     &    flag_gzip, flag_current_fmt, flag_spectr, flag_vol_ave,       &
      &    target_sph_IN, zbuf)
-      close(id_write_file)
+!
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_write_file, flag_gzip, zbuf)
+!
 !
       if(append_sph_IN%nri_sph .ne. target_sph_IN%nri_sph) then
         write(*,*) '# of radial layer does not match',                  &
@@ -340,16 +351,6 @@
       end do
       call dealloc_sph_espec_data(append_sph_IN)
 !
-        open(id_write_file, file=target_file_name, position='append')
-        backspace(id_write_file)
-        call read_sph_spectr_time(id_write_file, ione,                  &
-     &                            istep_end, end_time, ierr)
-!
-        write(*,*) 'end step and time for target file',                 &
-     &          istep_end, end_time
-        write(*,*) 'start step and time for append file',               &
-     &          istep_start, start_time
-!
         if(flag_vol_ave) then
           ntot_pick = (target_sph_IN%ltr_sph+1)
         else
@@ -357,53 +358,33 @@
         end if
         write(*,*) 'ntot_pick', ntot_pick, &
      &         target_sph_IN%nri_sph, target_sph_IN%ltr_sph
-        icou = 0
-        if(istep_start .le. istep_end) then
-          do
-            backspace(id_write_file)
-            call read_sph_spectr_time(id_write_file, ione,              &
-     &                                i_step, time, ierr)
-            write(*,'(78a1,a5,i12,a4,1pe16.8e3,a29,i12)',advance="NO")  &
-     &          (char(8),ic=1,78), 'step ', i_step,                     &
-     &          ' at ', time, ' is read. Backeward count is  ', icou
-            if(i_step .lt. istep_start) exit
-            if(ierr .gt. 0) exit
-            do ic = 1, ntot_pick
-              backspace(id_write_file)
-            end do
-            icou = icou + 1
-          end do
-        end if
+!
+      call open_bwd_serch_to_append(target_file_name, id_write_file,    &
+     &    istep_start, start_time, ntot_pick)
 !
       write(*,*)
       write(*,*) 'Open file to append again'
-      call sel_open_read_sph_monitor_file                               &
+      call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_append_file, append_file_name, flag_gzip, zbuf)
+!
       call select_input_sph_series_head(FPz_f1, id_append_file,         &
      &    flag_gzip, flag_current_fmt, flag_spectr, flag_vol_ave,       &
      &    append_sph_IN, zbuf)
 !
-      nchara_line = lengh_spectr_data_line(flag_spectr,                 &
-     &                                     flag_vol_ave, target_sph_IN)
-      allocate(textbuf(nchara_line))
-!
       icou = 0
-      n_line = append_sph_IN%nri_sph * (append_sph_IN%ltr_sph + 1)
       do
         icou = icou + 1
-        call select_copy_sph_monitor_data(FPz_f1, id_append_file,       &
-     &      id_write_file, flag_gzip, n_line, nchara_line, textbuf,     &
-     &      zbuf, ierr)
+        call gz_copy_spectr_monitor_data(FPz_f1, id_append_file,        &
+     &      id_write_file, flag_gzip, zbuf, ierr)
         if(ierr .gt. 0) exit
 !
         write(*,'(33a1,i12,a21)',advance="NO")                          &
      &          (char(8),ic=1,33), icou, '-th step is appended.'
       end do
-      deallocate(textbuf)
       write(*,*)
 !
       close(id_write_file)
-      call sel_close_sph_monitor_file                                   &
+      call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_append_file, flag_gzip, zbuf)
 !
       call dealloc_sph_espec_data(append_sph_IN)
@@ -545,6 +526,54 @@
         call dealloc_pick_sph_monitor_IO(target_pick_IO)
 !
       end subroutine append_picked_spectr_file
+!
+! -----------------------------------------------------------------------
+!
+      subroutine open_bwd_serch_to_append(file_name, id_file, &
+     &    istep_start, start_time, nline_snap)
+!
+      character(len=kchara), intent(in) :: file_name
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(inout) :: nline_snap
+!
+      integer(kind = kint), intent(inout) :: istep_start
+      real(kind = kreal) , intent(inout):: start_time
+!
+      integer(kind = kint) :: i_step, istep_end, ic, ierr
+      real(kind = kreal) :: time, end_time
+!
+      integer(kind = kint) :: icou
+!
+!
+        open(id_file, file=file_name, position='append')
+        backspace(id_file)
+        call read_sph_spectr_time(id_file, ione,                        &
+     &                            istep_end, end_time, ierr)
+!
+        write(*,*) 'end step and time for target file',                 &
+     &          istep_end, end_time
+        write(*,*) 'start step and time for append file',               &
+     &          istep_start, start_time
+!
+        icou = 0
+        if(istep_start .le. istep_end) then
+          do
+            backspace(id_file)
+            call read_sph_spectr_time(id_file, ione,                    &
+     &                                i_step, time, ierr)
+            write(*,'(78a1,a5,i12,a4,1pe16.8e3,a29,i12)',advance="NO")  &
+     &          (char(8),ic=1,78), 'step ', i_step,                     &
+     &          ' at ', time, ' is read. Backeward count is  ', icou
+            if(i_step .lt. istep_start) exit
+            if(ierr .gt. 0) exit
+            do ic = 1, nline_snap
+              backspace(id_file)
+            end do
+            icou = icou + 1
+          end do
+        end if
+!
+      end subroutine  open_bwd_serch_to_append
 !
 ! -----------------------------------------------------------------------
 !

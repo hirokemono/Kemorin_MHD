@@ -119,6 +119,7 @@
 !#ifdef ZLIB_IO
       if(flag_gzip) then
         call get_one_line_text_from_gz(FPz_f, zbuf)
+        zbuf%len_used = -check_gzfile_eof(FPz_f)
         return
       end if
 !#endif

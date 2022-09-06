@@ -154,7 +154,11 @@
      &          start_time, end_time, true_start, true_end,             &
      &          sph_IN, WK_tave)
 !
-      use sph_mean_square_IO
+      use select_gz_stream_file_IO
+      use gz_spl_sph_spectr_head_IO
+      use gz_spl_sph_spectr_data_IO
+      use simple_sph_spectr_head_IO
+      use simple_sph_spectr_data_IO
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
@@ -173,7 +177,7 @@
 !
 !
       write(*,*) 'Open file ', trim(fname_org)
-      call sel_open_read_sph_monitor_file(FPz_f1, id_file_rms,          &
+      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
       call select_input_sph_series_head                                 &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
@@ -189,7 +193,7 @@
 !     &       'step= ', sph_IN%i_step,                                  &
 !     &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_series_data                               &
+        call sel_gz_input_sph_series_data                               &
      &     (FPz_f1, id_file_rms, flag_gzip1,                            &
      &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1,     &
      &      ierr)
@@ -226,7 +230,7 @@
 !
    99 continue
       write(*,*)
-      call sel_close_sph_monitor_file                                   &
+      call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
 !
@@ -254,7 +258,11 @@
      &         (flag_old_fmt, fname_org, flag_spectr, flag_vol_ave,     &
      &          start_time, end_time, sph_IN, WK_tave)
 !
-      use sph_mean_square_IO
+      use select_gz_stream_file_IO
+      use gz_spl_sph_spectr_head_IO
+      use gz_spl_sph_spectr_data_IO
+      use simple_sph_spectr_head_IO
+      use simple_sph_spectr_data_IO
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
@@ -273,7 +281,7 @@
 !  Evaluate standard deviation
 !
       write(*,*) 'Open file ', trim(fname_org), ' again'
-      call sel_open_read_sph_monitor_file(FPz_f1, id_file_rms,          &
+      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
       call select_input_sph_series_head                                 &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
@@ -287,7 +295,7 @@
 !     &       'step= ', sph_IN%i_step,                                  &
 !     &       ' deviation finished. Count=  ', icou
       do
-        call select_input_sph_series_data                               &
+        call sel_gz_input_sph_series_data                               &
      &     (FPz_f1, id_file_rms, flag_gzip1,                            &
      &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1,     &
      &      ierr)
@@ -319,7 +327,7 @@
       end do
    99 continue
       write(*,*)
-      call sel_close_sph_monitor_file                                   &
+      call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
       call divide_deviation_ene_spectr(sph_IN%time, true_start,         &
@@ -342,7 +350,9 @@
       subroutine read_sph_spectr_snapshot                               &
      &         (fname_org, flag_spectr, flag_vol_ave, sph_IN)
 !
-      use sph_mean_square_IO
+      use select_gz_stream_file_IO
+      use gz_spl_sph_spectr_head_IO
+      use gz_spl_sph_spectr_data_IO
 !
 !
       character(len = kchara), intent(in) :: fname_org
@@ -358,7 +368,7 @@
 !  Read spectr data file
 !
       write(*,*) 'Open file ', trim(fname_org), ' again'
-      call sel_open_read_sph_monitor_file(FPz_f1, id_file_rms,          &
+      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
 !
       call select_input_sph_series_head                                 &
@@ -366,10 +376,10 @@
      &    current_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
       call check_sph_spectr_name(sph_IN)
 !
-      call select_input_sph_series_data                                 &
+      call sel_gz_input_sph_series_data                                 &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    current_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1, ierr)
-      call sel_close_sph_monitor_file                                   &
+      call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
       end subroutine read_sph_spectr_snapshot
