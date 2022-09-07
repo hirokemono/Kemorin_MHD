@@ -96,7 +96,8 @@
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
-          call copy_read_ene_step_data(sph_IN, sph_OUT1)
+          sph_OUT1%time =   sph_IN%time
+          sph_OUT1%i_step = sph_IN%i_step
           call part_sum_ene_spectr(spec_evo_p%lst, spec_evo_p%led,      &
      &        sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,     &
      &        sph_IN%spectr_IO, sph_OUT1%spectr_IO)

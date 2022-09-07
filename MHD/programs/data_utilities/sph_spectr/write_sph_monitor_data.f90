@@ -112,13 +112,16 @@
       integer(kind = kint), intent(in) :: id_file
       type(read_sph_spectr_data), intent(in) :: sph_IN
 !
-      character(len=kchara) :: fmt_txt
+      integer(kind = kint) :: i
 !
 !
-      write(fmt_txt,'(a16,i5,a15)') '(i16,1pE25.15e3,',                 &
-     &                  sph_IN%ntot_sph_spec, '(1p255E25.15e3))'
-      write(id_file,fmt_txt) sph_IN%i_step, sph_IN%time,                &
-     &                  sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,0,1)
+      write(id_file,'(i16,1pE25.15e3)', ADVANCE='NO')                   &
+     &                          sph_IN%i_step, sph_IN%time
+      do i = 1, sph_IN%ntot_sph_spec
+        write(id_file,'(1pE25.15e3)', ADVANCE='NO')                     &
+     &                           sph_IN%spectr_IO(i,0,1)
+      end do
+      write(id_file,'(a)')
 !
       end subroutine write_vol_sph_data
 !

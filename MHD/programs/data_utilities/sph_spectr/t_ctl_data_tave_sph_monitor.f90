@@ -66,8 +66,8 @@
 !!    start_time_ctl     2.0
 !!    end_time_ctl       2.5
 !!  
-!!    vol_degree_spectr_prefix     'sph_pwr_volume_l'
-!!    vol_order_spectr_prefix      'sph_pwr_volume_m'
+!!    vol_degree_spectr_file_name     'sph_pwr_volume_l'
+!!    vol_order_spectr_file_name      'sph_pwr_volume_m'
 !!    old_format_flag     'Off'
 !!    elsasser_numbers_prefix      'Elsasser'
 !!
@@ -153,9 +153,9 @@
         type(read_character_item) :: gauss_coefs_prefix
 !
 !>        Structure for Elsasser number
-        type(read_character_item) :: vol_degree_spectr_prefix
+        type(read_character_item) :: vol_degree_spectr_file_name
 !>        Structure for Elsasser number
-        type(read_character_item) :: vol_order_spectr_prefix
+        type(read_character_item) :: vol_order_spectr_file_name
 !
 !>        Structure for list of dimensionless numbers
         type(dimless_control) :: dless_ctl
@@ -208,9 +208,9 @@
      &           :: hd_dipolarity_file_head = 'dipolarity_file_prefix'
 !
       character(len=kchara), parameter, private                         &
-     &           :: hd_vol_spec_l_head = 'vol_degree_spectr_prefix'
+     &           :: hd_vol_spec_l_file = 'vol_degree_spectr_file_name'
       character(len=kchara), parameter, private                         &
-     &           :: hd_vol_spec_m_head = 'vol_order_spectr_prefix'
+     &           :: hd_vol_spec_m_file = 'vol_order_spectr_file_name'
       character(len=kchara), parameter, private                         &
      &           :: hd_Elsasser_file_head = 'elsasser_numbers_prefix'
       character(len=kchara), parameter, private                         &
@@ -314,10 +314,10 @@
         call read_chara_ctl_type(c_buf, hd_Elsasser_file_head,          &
      &      tave_sph_ctl%Elsasser_file_prefix)
 !
-        call read_chara_ctl_type(c_buf, hd_vol_spec_l_head,             &
-     &      tave_sph_ctl%vol_degree_spectr_prefix)
-        call read_chara_ctl_type(c_buf, hd_vol_spec_m_head,             &
-     &      tave_sph_ctl%vol_order_spectr_prefix)
+        call read_chara_ctl_type(c_buf, hd_vol_spec_l_file,             &
+     &      tave_sph_ctl%vol_degree_spectr_file_name)
+        call read_chara_ctl_type(c_buf, hd_vol_spec_m_file,             &
+     &      tave_sph_ctl%vol_order_spectr_file_name)
 !
         call read_control_array_c1(id_control,  hd_vol_time_series,     &
      &      tave_sph_ctl%volume_series_file_ctl, c_buf)
@@ -381,8 +381,8 @@
       tave_sph_ctl%Elsasser_file_prefix%iflag = 0
       tave_sph_ctl%gauss_coefs_prefix%iflag =   0
 !
-      tave_sph_ctl%vol_degree_spectr_prefix%iflag = 0
-      tave_sph_ctl%vol_order_spectr_prefix%iflag =  0
+      tave_sph_ctl%vol_degree_spectr_file_name%iflag = 0
+      tave_sph_ctl%vol_order_spectr_file_name%iflag =  0
 !
       call dealloc_control_array_c_r(tave_sph_ctl%ME_to_KE_ctl)
       call dealloc_control_array_c_r(tave_sph_ctl%mag_Re_coefs)

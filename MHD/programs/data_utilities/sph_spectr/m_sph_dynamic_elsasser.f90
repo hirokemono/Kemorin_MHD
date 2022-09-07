@@ -25,9 +25,9 @@
 !
       type sph_dyn_elsasser_data
         character(len = kchara)                                         &
-     &               :: vol_l_spectr_file_prefix = 'ssph_pwr_volume_l'
+     &            :: vol_l_spectr_file_name = 'ssph_pwr_volume_l.dat'
         character(len = kchara)                                         &
-     &               :: vol_m_spectr_file_prefix = 'ssph_pwr_volume_m'
+     &            :: vol_m_spectr_file_name = 'ssph_pwr_volume_m.dat'
         character(len = kchara) :: elsasser_file_prefix = 'Elsasser'
 !
         logical :: flag_old_spectr_data = .FALSE.
@@ -105,21 +105,20 @@
 !
       character(len = kchara) :: file_name, fname_tmp
       integer(kind = kint) :: i, icou, jcou, ierr, ist_true, kcou, ifld
+      integer(kind = kint) :: nri_tmp
       real(kind = kreal) :: lscale_b
 !
 !
-      file_name = add_dat_extension(els_dat%vol_l_spectr_file_prefix)
       call sel_open_read_gz_stream_file(FPz_l, id_file_rms_l,           &
-     &    file_name, flag_gzip_l, zbuf_l)
+     &    els_dat%vol_l_spectr_file_name, flag_gzip_l, zbuf_l)
       call select_input_sph_series_head                                 &
      &   (FPz_l, id_file_rms_l, flag_gzip_l,                            &
      &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
      &    sph_IN_l, zbuf_l)
       call check_sph_spectr_name(sph_IN_l)
 !
-      file_name = add_dat_extension(els_dat%vol_m_spectr_file_prefix)
       call sel_open_read_gz_stream_file(FPz_m, id_file_rms_m,           &
-     &    file_name, flag_gzip_m, zbuf_m)
+     &    els_dat%vol_m_spectr_file_name, flag_gzip_m, zbuf_m)
       call select_input_sph_series_head                                 &
      &   (FPz_m, id_file_rms_m, flag_gzip_m,                            &
      &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
@@ -171,13 +170,34 @@
         call add_new_field_address(ifld, jcou, n_scalar, ist_Clength_m)
       end if
 !
+!          write(*,*) 'sph_OUT1%spectr_IO', size(sph_OUT1%spectr_IO,1)
+!          write(*,*) 'els_dat%irms_KE', els_dat%irms_KE
+!          write(*,*) 'ist_KEne', ist_KEne
+!          write(*,*) 'ist_ulength_l', ist_ulength_l
+!          write(*,*) 'ist_ulength_m', ist_ulength_m
+!          write(*,*) 'els_dat%irms_ME', els_dat%irms_ME
+!          write(*,*) 'ist_Elsasser', ist_Elsasser
+!          write(*,*) 'ist_Blength_l', ist_Blength_l
+!          write(*,*) 'ist_Blength_m', ist_Blength_m
+!          write(*,*) 'els_dat%irms_KE', els_dat%irms_KE
+!          write(*,*) 'ist_Rm', ist_Rm
+!          write(*,*) 'ist_dyn_Els', ist_dyn_Els
+!          write(*,*) 'ist_Elsasser', ist_Elsasser
+!          write(*,*) 'ist_Temp', ist_Temp
+!          write(*,*) 'els_dat%irms_T', els_dat%irms_T
+!          write(*,*) 'ist_Tlength_l', ist_Tlength_l
+!          write(*,*) 'ist_Tlength_m', ist_Tlength_m
+!          write(*,*) 'ist_Comp', ist_Comp
+!          write(*,*) 'els_dat%irms_C', els_dat%irms_C
+!          write(*,*) 'ist_Clength_l', ist_Clength_l
+!          write(*,*) 'ist_Clength_m', ist_Clength_m
+!
       sph_OUT1%nfield_sph_spec = ifld
       sph_OUT1%ntot_sph_spec = jcou
       sph_OUT1%num_labels                                               &
      &        = sph_OUT1%ntot_sph_spec + sph_OUT1%num_time_labels
 !
       call alloc_sph_espec_name(sph_OUT1)
-      call alloc_sph_spectr_data(izero, sph_OUT1)
 !
       sph_OUT1%ene_sph_spec_name(1:sph_OUT1%num_time_labels)            &
      &         = sph_IN_l%ene_sph_spec_name(1:sph_OUT1%num_time_labels)
@@ -304,11 +324,15 @@
       call select_output_sph_pwr_head                                   &
      &   (id_file_lscale, vol_ave_on, sph_OUT1)
 !
+      nri_tmp = sph_OUT1%nri_sph
+      sph_OUT1%nri_sph = 1
+      call alloc_sph_spectr_data(izero, sph_OUT1)
+!
       icou = 0
       ist_true = -1
-      write(*,'(a5,i12,a30,i12)',advance="NO")                          &
-     &       'step= ', sph_IN_l%i_step,                                 &
-     &       ' averaging finished. Count=  ', icou
+        write(*,'(a5,i12,a7,1pE23.15,a19,i12)',advance="NO")            &
+     &       'step= ', sph_IN_l%i_step, ' time= ', sph_IN_l%time,       &
+     &       ' evaluated Count=  ', icou
       do
         call sel_gz_input_sph_series_data                               &
      &     (FPz_l, id_file_rms_l, flag_gzip_l,                          &
@@ -321,7 +345,8 @@
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN_l%time .ge. els_dat%start_time) then
-          call copy_read_ene_step_data(sph_IN_l, sph_OUT1)
+          sph_OUT1%time =   sph_IN_l%time
+          sph_OUT1%i_step = sph_IN_l%i_step
           icou = icou + 1
 !
           if(els_dat%irms_KE .ge. 3) then
@@ -335,6 +360,7 @@
             sph_OUT1%spectr_IO(ist_Re,0,1)                              &
      &          = sqrt(two * sph_OUT1%spectr_IO(ist_KEne+2,0,1) )
           end if
+!
           if(els_dat%irms_ME .ge. 3) then
             call sum_ene_spectr_3(sph_IN_l, els_dat%irms_ME,            &
      &                            sph_OUT1%spectr_IO(ist_MEne,0,1))
@@ -351,23 +377,24 @@
      &          =  sph_OUT1%spectr_IO(ist_MEne+2,0,1)                   &
      &           * els_dat%coef_elsasser
           end if
+!
           if(els_dat%irms_KE .ge. 3 .and. els_dat%irms_ME .ge. 3) then
             sph_OUT1%spectr_IO(ist_Rm,0,1)                              &
      &          = sqrt(two * sph_OUT1%spectr_IO(ist_KEne+2,0,1) )       &
      &           * els_dat%mag_Re_ratio
 !
-!            lscale_b = (half*pi*Lscale)                                &
-!     &               / sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2 &
-!     &                    + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2)
-!            sph_OUT1%spectr_IO(ist_dyn_Els,0,1)                        &
-!     &          = sph_OUT1%spectr_IO(ist_Elsasser,0,1) * Lscale        &
-!     &               / sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2 &
-!     &                    + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2)
-!     &           / (sph_OUT1%spectr_IO(ist_Rm,0,1)  * lscale_b)
-            sph_OUT1%spectr_IO(ist_dyn_Els,0,1)                        &
-     &          = sph_OUT1%spectr_IO(ist_Elsasser,0,1)                 &
-     &            * sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2    &
-     &                 + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2)   &
+            lscale_b = (half*pi*Lscale)                                 &
+     &               / sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2  &
+     &                    + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2)
+            sph_OUT1%spectr_IO(ist_dyn_Els,0,1)                         &
+     &          = sph_OUT1%spectr_IO(ist_Elsasser,0,1) * Lscale         &
+     &               / sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2  &
+     &                    + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2) &
+     &           / (sph_OUT1%spectr_IO(ist_Rm,0,1)  * lscale_b)
+            sph_OUT1%spectr_IO(ist_dyn_Els,0,1)                         &
+     &          = sph_OUT1%spectr_IO(ist_Elsasser,0,1)                  &
+     &            * sqrt(sph_OUT1%spectr_IO(ist_Blength_l+2,0,1)**2     &
+     &                 + sph_OUT1%spectr_IO(ist_Blength_m+2,0,1)**2)    &
      &           / (sph_OUT1%spectr_IO(ist_Rm,0,1) * half*pi)
           end if
           if(els_dat%irms_T .ge. 1) then
@@ -405,15 +432,14 @@
      &                                 sph_IN_m%spectr_IO(1,0,1))
           end if
 !
-!
-!
           call select_output_sph_series_data                            &
      &       (id_file_lscale, spectr_off, vol_ave_on, sph_OUT1)
         end if
 !
-        write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
-     &       'step= ', sph_IN_l%i_step,                                 &
-     &       ' evaluation finished. Count=  ', icou
+        write(*,'(78a1,a5,i12,a7,1pE23.15,a19,i12)',advance="NO")       &
+     &       (char(8),i=1,78),                                          &
+     &       'step= ', sph_IN_l%i_step, ' time= ', sph_IN_l%time,       &
+     &       ' evaluated Count=  ', icou
         if (sph_IN_l%time .ge. els_dat%end_time) exit
       end do
 !

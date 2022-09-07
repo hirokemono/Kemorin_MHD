@@ -36,12 +36,12 @@
       call read_control_file_sph_elsasser(0, tave_sph_ctl1)
 !
       if(tave_sph_ctl1%Elsasser_file_prefix%iflag .gt. 0) then
-        els_dat1%vol_l_spectr_file_prefix                               &
-     &     = tave_sph_ctl1%vol_degree_spectr_prefix%charavalue
+        els_dat1%vol_l_spectr_file_name                                 &
+     &     = tave_sph_ctl1%vol_degree_spectr_file_name%charavalue
       end if
       if(tave_sph_ctl1%Elsasser_file_prefix%iflag .gt. 0) then
-        els_dat1%vol_m_spectr_file_prefix                               &
-     &     = tave_sph_ctl1%vol_order_spectr_prefix%charavalue
+        els_dat1%vol_m_spectr_file_name                                 &
+     &     = tave_sph_ctl1%vol_order_spectr_file_name%charavalue
       end if
       if(tave_sph_ctl1%Elsasser_file_prefix%iflag .gt. 0) then
         els_dat1%elsasser_file_prefix                                   &
