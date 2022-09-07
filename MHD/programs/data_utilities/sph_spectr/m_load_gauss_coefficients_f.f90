@@ -54,7 +54,7 @@
      &          bind(c, name="check_gauss_coef_series_f")
 !
       use count_monitor_time_series
-      use gauss_coefs_monitor_IO
+      use gz_gauss_coefs_monitor_IO
 !
       character(1,C_char), intent(in) :: cname(*)
       character(len=kchara) :: file_name
@@ -70,7 +70,7 @@
     &     load_gauss_coefs_series_f(cname, cstart, cend) Bind(C)
 !
       use count_monitor_time_series
-      use gauss_coefs_monitor_IO
+      use gz_gauss_coefs_monitor_IO
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
@@ -94,7 +94,7 @@
       subroutine get_gauss_coefs_time_f(n_step, i_step, time)           &
      &          bind(c, name="get_gauss_coefs_time_f")
 !
-      use gauss_coefs_monitor_IO
+      use gz_gauss_coefs_monitor_IO
 !
       integer(C_int), Value :: n_step
       integer(C_int), intent(inout) :: i_step(n_step)
@@ -117,7 +117,7 @@
      &          bind(c, name="get_each_gauss_coef_series_f")
 !
       use count_monitor_time_series
-      use gauss_coefs_monitor_IO
+      use gz_gauss_coefs_monitor_IO
 !
       character(1,C_char), intent(in) :: yname(*)
       integer(C_int), Value :: n_step

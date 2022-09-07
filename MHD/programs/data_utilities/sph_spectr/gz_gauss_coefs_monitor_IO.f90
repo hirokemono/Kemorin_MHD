@@ -1,5 +1,5 @@
-!>@file   gauss_coefs_monitor_IO.f90
-!!@brief  module gauss_coefs_monitor_IO
+!>@file   gz_gauss_coefs_monitor_IO.f90
+!!@brief  module gz_gauss_coefs_monitor_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in Dec., 2012
@@ -27,7 +27,7 @@
 !!        real(kind = kreal), intent(inout) :: true_start, true_end
 !!        type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
 !!@endverbatim
-      module gauss_coefs_monitor_IO
+      module gz_gauss_coefs_monitor_IO
 !
       use m_precision
       use m_constants
@@ -279,4 +279,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module gauss_coefs_monitor_IO
+      end module gz_gauss_coefs_monitor_IO

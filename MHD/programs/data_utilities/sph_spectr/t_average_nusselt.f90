@@ -36,7 +36,7 @@
       call set_control_tave_Nu                                          &
      &   (tave_sph_ctl1, Nu_t1, start_time, end_time)
       call s_time_average_nusselt                                       &
-     &   (Nu_t1%Nusselt_file_name, start_time, end_time)
+     &   (.TRUE., Nu_t1%Nusselt_file_name, start_time, end_time)
 !
       write(*,*) '***** program finished *****'
       stop

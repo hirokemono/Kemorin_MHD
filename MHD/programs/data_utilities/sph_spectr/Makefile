@@ -75,7 +75,8 @@ gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 picked_sph_spectr_data_IO.o \
-gauss_coefs_monitor_IO.o \
+gz_gauss_coefs_monitor_IO.o \
+gz_Nusselt_monitor_IO.o \
 count_monitor_time_series.o \
 cal_tave_sph_ene_spectr.o \
 m_tave_sph_ene_spectr.o \
@@ -155,7 +156,8 @@ write_sph_monitor_data.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-gauss_coefs_monitor_IO.o \
+gz_gauss_coefs_monitor_IO.o \
+gz_Nusselt_monitor_IO.o \
 picked_sph_spectr_data_IO.o \
 count_monitor_time_series.o
 
@@ -291,7 +293,7 @@ t_ctl_data_tave_sph_monitor.o \
 t_gauss_coefs_monitor_IO.o \
 t_read_sph_spectra.o \
 count_monitor_time_series.o \
-gauss_coefs_monitor_IO.o \
+gz_gauss_coefs_monitor_IO.o \
 write_sph_monitor_data.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
@@ -313,6 +315,7 @@ tave_picked_sph_spec_data.o
 MOD_T_AVE_NUSSELT = \
 t_average_nusselt.o \
 time_average_nusselt.o \
+gz_Nusselt_monitor_IO.o \
 count_monitor_time_series.o \
 t_ctl_data_tave_sph_monitor.o
 

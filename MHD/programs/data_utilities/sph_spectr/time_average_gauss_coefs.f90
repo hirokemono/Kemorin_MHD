@@ -63,7 +63,7 @@
      &         (flag_log, input_file_name, start_time, end_time)
 !
       use count_monitor_time_series
-      use gauss_coefs_monitor_IO
+      use gz_gauss_coefs_monitor_IO
       use write_gauss_coefs_4_monitor
 !
       logical, intent(in) :: flag_log

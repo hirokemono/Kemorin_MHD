@@ -171,7 +171,7 @@
       return
 !
    99 continue
-      open(id_Nusselt, file = Nu_type%Nusselt_file_name,                                &
+      open(id_Nusselt, file = Nu_type%Nusselt_file_name,                &
      &    form='formatted', status='replace')
 !
 !

@@ -125,7 +125,7 @@
      &             (numnod, numele, x_psf, y_psf, ie_psf)               &
      &              bind(c, name="get_xy_section_patch_f")
 !
-      use gauss_coefs_monitor_IO
+      use gz_gauss_coefs_monitor_IO
 !
       integer(C_int), Value :: numnod, numele
       real(c_double), intent(inout) :: x_psf(numnod), y_psf(numnod)
@@ -157,7 +157,7 @@
      &             (numnod, id_field, id_comp, scalar)                  &
      &              bind(c, name="get_scalar_section_data_f")
 !
-      use gauss_coefs_monitor_IO
+      use gz_gauss_coefs_monitor_IO
 !
       integer(C_int), Value :: numnod, id_field, id_comp
       real(c_double), intent(inout) :: scalar(numnod)
