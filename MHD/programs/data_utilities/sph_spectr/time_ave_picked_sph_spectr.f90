@@ -130,6 +130,7 @@
       use picked_sph_spectr_data_IO
       use count_monitor_time_series
       use set_parallel_file_name
+      use write_snap_pick_sph_spectr
 !
       logical, intent(in) :: flag_log
       character(len=kchara), intent(in) :: file_name

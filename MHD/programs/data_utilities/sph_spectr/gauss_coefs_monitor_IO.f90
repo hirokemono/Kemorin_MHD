@@ -7,18 +7,20 @@
 !>@brief  Data arrays for gauss coefficients output
 !!
 !!@verbatim
-!!      subroutine write_gauss_coefs_4_monitor                          &
-!!     &         (id_rank, file_name, i_step, time, gauss_IO)
-!!        integer, intent(in) :: id_rank
-!!        character(len=kchara), intent(in) :: file_name
-!!        integer(kind = kint), intent(in) :: i_step
-!!        real(kind = kreal), intent(in) :: time
-!!        type(picked_gauss_coefs_IO), intent(in) :: gauss_IO
+!!      character, pointer, intent(inout) :: FPz_f
+!!        integer(kind = kint), intent(in) :: id_stream
+!!        logical, intent(inout) :: flag_gzip
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!        type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
 !!
 !!      subroutine check_gauss_coefs_time_series(file_name, gauss_IO)
 !!      subroutine load_gauss_coefs_time_series                         &
 !!     &         (flag_log, file_name, start_time, end_time,            &
 !!     &          true_start, true_end, gauss_IO)
+!!      subroutine read_gauss_coefs_header(FPz_f, id_stream, flag_gzip, &
+!!     &                                   gauss_IO, zbuf)
+!!      subroutine read_gauss_coefs_labels(FPz_f, id_stream, flag_gzip, &
+!!     &                                   gauss_IO, zbuf)
 !!        logical, intent(in) :: flag_log
 !!        character(len=kchara), intent(in) :: file_name
 !!        real(kind = kreal), intent(in) :: start_time, end_time
@@ -30,13 +32,14 @@
       use m_precision
       use m_constants
       use t_gauss_coefs_monitor_IO
+      use t_buffer_4_gzip
 !
       implicit  none
 !
 !>      File ID for Gauss coefficients IO
       integer(kind = kint), parameter :: id_gauss_coef = 23
 !
-      private :: open_gauss_coefs_4_monitor, read_gauss_coefs_series
+      private :: read_gauss_coefs_series
       private :: read_gauss_coefs_4_monitor
 !
 ! -----------------------------------------------------------------------
@@ -45,64 +48,44 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_gauss_coefs_4_monitor                            &
-     &         (id_rank, file_name, i_step, time, gauss_IO)
-!
-      integer, intent(in) :: id_rank
-      character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: time
-      type(picked_gauss_coefs_IO), intent(in) :: gauss_IO
-!
-      integer(kind = kint) :: inum
-!
-!
-      if(gauss_IO%num_mode .eq. izero) return
-      if(id_rank .gt. izero) return
-!
-      call open_gauss_coefs_4_monitor(file_name, id_gauss_coef,         &
-     &                                gauss_IO)
-!
-      write(id_gauss_coef,'(i16,1pe23.14e3)', advance='NO')             &
-     &       i_step, time
-      do inum = 1, gauss_IO%num_mode
-        write(id_gauss_coef,'(1pe23.14e3)', advance='NO')               &
-     &       gauss_IO%gauss_coef(inum)
-      end do
-      write(id_gauss_coef,'(a)') ''
-!
-      close(id_gauss_coef)
-!
-      end subroutine write_gauss_coefs_4_monitor
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine check_gauss_coefs_time_series(file_name, gauss_IO)
 !
+      use select_gz_stream_file_IO
       use count_monitor_time_series
 !
       character(len=kchara), intent(in) :: file_name
       type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
+!
+      logical :: flag_gzip1
+      type(buffer_4_gzip), save :: zbuf1
+      character, pointer, save  :: FPz_f1
 !
       integer(kind = kint) :: i, ierr
       integer(kind = kint) :: i_start, i_end
       real(kind = kreal) :: start_time, end_time
 !
 !
-      write(*,*) 'Open file: ', trim(file_name)
-      open(id_gauss_coef, file = file_name, position='append')
-      backspace(id_gauss_coef)
-      call read_sph_spectr_time                                         &
-     &   (id_gauss_coef, ione, i_end, end_time, ierr)
-      rewind(id_gauss_coef)
-!
-      call read_gauss_coefs_header(id_gauss_coef, gauss_IO)
+      call sel_open_read_gz_stream_file                                 &
+     &   (FPz_f1, id_gauss_coef, file_name, flag_gzip1, zbuf1)
+      call read_gauss_coefs_header(FPz_f1, id_gauss_coef,               &
+     &                             flag_gzip1, gauss_IO, zbuf1)
       call alloc_gauss_coef_monitor(gauss_IO)
-      call read_gauss_coefs_labels(id_gauss_coef, gauss_IO)
-      call read_sph_spectr_time                                         &
-     &   (id_gauss_coef, ione, i_start, start_time, ierr)
-      close(id_gauss_coef)
+      call read_gauss_coefs_labels(FPz_f1, id_gauss_coef,               &
+     &                             flag_gzip1, gauss_IO, zbuf1)
+!
+      call sel_skip_comment_gz_stream                                   &
+     &   (FPz_f1, id_gauss_coef, flag_gzip1, zbuf1)
+      read(zbuf1%fixbuf(1),*) i_start, start_time
+!
+      do
+        call sel_skip_comment_gz_stream                                 &
+     &     (FPz_f1, id_gauss_coef, flag_gzip1, zbuf1)
+        if(zbuf1%len_used .lt. 0) exit
+        read(zbuf1%fixbuf(1),*) i_end, end_time
+      end do
+!
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_gauss_coef, flag_gzip1, zbuf1)
 !
       write(*,*) 'Start step and time: ', i_start, start_time
       write(*,*) 'End step and time: ', i_end, end_time
@@ -123,6 +106,8 @@
      &         (flag_log, file_name, start_time, end_time,              &
      &          true_start, true_end, gauss_IO)
 !
+      use gzip_file_access
+      use select_gz_stream_file_IO
       use count_monitor_time_series
 !
       logical, intent(in) :: flag_log
@@ -132,87 +117,66 @@
       real(kind = kreal), intent(inout) :: true_start, true_end
       type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
 !
-      integer(kind = kint) :: num_count
+      logical :: flag_gzip1
+      type(buffer_4_gzip), save :: zbuf1
+      character, pointer, save  :: FPz_f1
+!
+      integer(kind = kint) :: num_count, ierr
 !
 !
-      write(*,*) 'Open file: ', trim(file_name)
-      open(id_gauss_coef, file = file_name)
-!
-      call read_gauss_coefs_header(id_gauss_coef, gauss_IO)
+      call sel_open_read_gz_stream_file                                 &
+     &   (FPz_f1, id_gauss_coef, file_name, flag_gzip1, zbuf1)
+      call read_gauss_coefs_header(FPz_f1, id_gauss_coef,               &
+     &                             flag_gzip1, gauss_IO, zbuf1)
       call alloc_gauss_coef_monitor(gauss_IO)
-      call read_gauss_coefs_labels(id_gauss_coef, gauss_IO)
+      call read_gauss_coefs_labels(FPz_f1, id_gauss_coef,               &
+     &                             flag_gzip1, gauss_IO, zbuf1)
 !
       call s_count_monitor_time_series(flag_log, id_gauss_coef, ione,   &
      &    start_time, end_time, true_start, true_end, num_count)
-      rewind(id_gauss_coef)
+      ierr =  rewind_gzfile(FPz_f1)
 !
-      call read_gauss_coefs_header(id_gauss_coef, gauss_IO)
-      call read_gauss_coefs_labels(id_gauss_coef, gauss_IO)
+      call read_gauss_coefs_header(FPz_f1, id_gauss_coef,               &
+     &                             flag_gzip1, gauss_IO, zbuf1)
+      call read_gauss_coefs_labels(FPz_f1, id_gauss_coef,               &
+     &                             flag_gzip1, gauss_IO, zbuf1)
 !
       call alloc_gauss_coefs_series(num_count, gauss_IO)
-      call read_gauss_coefs_series(flag_log, id_gauss_coef,             &
-     &                             start_time, end_time, gauss_IO)
-      close(id_gauss_coef)
+      call read_gauss_coefs_series(flag_log, FPz_f1, id_gauss_coef,     &
+     &    flag_gzip1, start_time, end_time, gauss_IO, zbuf1)
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_gauss_coef, flag_gzip1, zbuf1)
 !
-      write(*,*) 'Start step and time: ', true_start, true_end, num_count
+      write(*,*) 'Start step and time: ',                               &
+     &           true_start, true_end, num_count
 !
       end subroutine load_gauss_coefs_time_series
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine open_gauss_coefs_4_monitor(file_name, id_pick,         &
-     &                                      gauss_IO)
-!
-      use m_monitor_file_labels
-      use write_field_labels
-!
-      character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: id_pick
-      type(picked_gauss_coefs_IO), intent(in) :: gauss_IO
-!
-!
-      open(id_pick, file = file_name,                                   &
-     &    form='formatted', status='old', position='append', err = 99)
-      return
-!
-   99 continue
-      open(id_pick, file = file_name,                                   &
-     &    form='formatted', status='replace')
-!
-!
-      write(id_pick,'(a)')   hd_pick_gauss_head()
-      write(id_pick,'(i16,1pe25.15e3)')                                 &
-     &     gauss_IO%num_mode, gauss_IO%radius_gauss
-!
-      write(id_pick,'(a)',advance='NO')  hd_time_label()
-!
-      call write_multi_labels(id_pick, gauss_IO%num_mode,               &
-     &    gauss_IO%gauss_coef_name)
-      write(id_pick,'(a)') ''
-!
-      end subroutine open_gauss_coefs_4_monitor
-!
-! -----------------------------------------------------------------------
-!
       subroutine read_gauss_coefs_series                                &
-     &         (flag_log, id_pick, start_time, end_time, gauss_IO)
+     &         (flag_log, FPz_f, id_stream, flag_gzip,                  &
+     &          start_time, end_time, gauss_IO, zbuf)
 !
       use count_monitor_time_series
 !
       logical, intent(in) :: flag_log
-      integer(kind = kint), intent(in) :: id_pick
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_stream
+      logical, intent(in) :: flag_gzip
       real(kind = kreal), intent(in) :: start_time, end_time
 !
       type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint) :: icou, i_step, ierr, i
       real(kind = kreal) :: time
 !
       icou = 0
       do
-        call read_gauss_coefs_4_monitor                                 &
-     &     (id_pick, i_step, time, gauss_IO, ierr)
+        call read_gauss_coefs_4_monitor(FPz_f, id_stream, flag_gzip,    &
+     &      i_step, time, gauss_IO, zbuf, ierr)
         if(ierr .gt. 0) exit
 !
         if(time .ge. start_time) then
@@ -235,56 +199,80 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_gauss_coefs_header(id_pick, gauss_IO)
+      subroutine read_gauss_coefs_header(FPz_f, id_stream, flag_gzip,   &
+     &                                   gauss_IO, zbuf)
 !
-      use skip_comment_f
+      use select_gz_stream_file_IO
 !
-      integer(kind = kint), intent(in) :: id_pick
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_stream
+      logical, intent(in) :: flag_gzip
+!
       type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      character(len=255) :: tmpchara
 !
       gauss_IO%radius_gauss = 2.82
-      call skip_comment(tmpchara,id_pick)
-      read(id_pick,*) gauss_IO%num_mode, gauss_IO%radius_gauss
+      call sel_skip_comment_gz_stream(FPz_f, id_stream,                 &
+     &                                flag_gzip, zbuf)
+      call sel_skip_comment_gz_stream(FPz_f, id_stream,                 &
+     &                                flag_gzip, zbuf)
+      read(zbuf%fixbuf(1),*) gauss_IO%num_mode, gauss_IO%radius_gauss
 !
       end subroutine read_gauss_coefs_header
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_gauss_coefs_labels(id_pick, gauss_IO)
+      subroutine read_gauss_coefs_labels(FPz_f, id_stream, flag_gzip,   &
+     &                                   gauss_IO, zbuf)
 !
-      integer(kind = kint), intent(in) :: id_pick
+      use select_gz_stream_file_IO
+!
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_stream
+      logical, intent(in) :: flag_gzip
+!
       type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint) :: i
       character(len=255) :: tmpchara
 !
-      read(id_pick,*) (tmpchara,i=1,2),                                 &
+      call sel_skip_comment_gz_stream(FPz_f, id_stream,                 &
+     &                                flag_gzip, zbuf)
+      read(zbuf%fixbuf(1),*) tmpchara, tmpchara,                        &
      &               gauss_IO%gauss_coef_name(1:gauss_IO%num_mode)
 !
       end subroutine read_gauss_coefs_labels
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_gauss_coefs_4_monitor(id_pick, i_step, time,      &
-     &                                      gauss_IO, ierr)
+      subroutine read_gauss_coefs_4_monitor                             &
+     &         (FPz_f, id_stream, flag_gzip, i_step, time,              &
+     &          gauss_IO, zbuf, ierr)
 !
-      integer(kind = kint), intent(in) :: id_pick
+      use select_gz_stream_file_IO
+!
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_stream
+      logical, intent(in) :: flag_gzip
+!
       integer(kind = kint), intent(inout) :: i_step, ierr
-!
       real(kind = kreal), intent(inout) :: time
       type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
+      ierr = 1
+      call sel_read_line_gz_stream(FPz_f, id_stream,                    &
+     &                             flag_gzip, zbuf)
+      if(zbuf%len_used .lt. 0) return
+!
+      read(zbuf%fixbuf(1),*,err=99,end=99) i_step, time,                &
+     &                   gauss_IO%gauss_coef(1:gauss_IO%num_mode)
       ierr = 0
-      read(id_pick,*,err=99,end=99) i_step, time,                       &
-     &       gauss_IO%gauss_coef(1:gauss_IO%num_mode)
-!
       return
 !
    99 continue
-      ierr = 1
       return
 !
       end subroutine read_gauss_coefs_4_monitor

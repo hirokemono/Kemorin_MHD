@@ -13,6 +13,7 @@
 !!      subroutine open_rd_gzfile_f(FPz_f, gzip_name, zbuf)
 !!      subroutine close_gzfile_b(FPz_f)
 !!      integer(kind = kint) function check_gzfile_eof(FPz_f)
+!!      integer(kind = kint) function rewind_gzfile(FPz_f)
 !!        character, pointer, intent(in) :: FPz_f
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
@@ -87,6 +88,12 @@
           use ISO_C_BINDING
           type(C_ptr), value :: FP_gzip
         end function check_gzfile_eof_c
+!  -----------------
+        integer(C_int) function rewind_gzfile_c(FP_gzip)                &
+     &                BIND(C, name = 'rewind_gzfile_c')
+          use ISO_C_BINDING
+          type(C_ptr), value :: FP_gzip
+        end function rewind_gzfile_c
 !  -----------------
         subroutine get_one_line_from_gz_c                               &
      &           (FP_gzip, num_buffer, num_word, nchara, line_buf)      &
@@ -236,6 +243,16 @@
       check_gzfile_eof =  check_gzfile_eof_c(C_LOC(FPz_f))
 !
       end function check_gzfile_eof
+!
+!------------------------------------------------------------------
+!
+      integer(kind = kint) function rewind_gzfile(FPz_f)
+!
+      character, pointer, intent(in) :: FPz_f
+!
+      rewind_gzfile =  rewind_gzfile_c(C_LOC(FPz_f))
+!
+      end function rewind_gzfile
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

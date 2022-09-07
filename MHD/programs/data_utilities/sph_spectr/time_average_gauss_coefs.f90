@@ -64,6 +64,7 @@
 !
       use count_monitor_time_series
       use gauss_coefs_monitor_IO
+      use write_gauss_coefs_4_monitor
 !
       logical, intent(in) :: flag_log
       character(len=kchara), intent(in) :: input_file_name
@@ -114,7 +115,7 @@
       gauss_IO_a%gauss_coef(1:gauss_IO_a%num_mode)                      &
      &      = ave_gauss(1:gauss_IO_a%num_mode)
 !$omp end parallel workshare
-      call write_gauss_coefs_4_monitor(0, tave_pick_gauss_fname,        &
+      call s_write_gauss_coefs_4_monitor(0, tave_pick_gauss_fname,      &
      &    gauss_IO_a%i_step(gauss_IO_a%n_step), true_end, gauss_IO_a)
 !
 !  Output time average
@@ -122,7 +123,7 @@
       gauss_IO_a%gauss_coef(1:gauss_IO_a%num_mode)                      &
      &      = rms_gauss(1:gauss_IO_a%num_mode)
 !$omp end parallel workshare
-      call write_gauss_coefs_4_monitor(0, trms_pick_gauss_fname,        &
+      call s_write_gauss_coefs_4_monitor(0, trms_pick_gauss_fname,      &
      &    gauss_IO_a%i_step(gauss_IO_a%n_step), true_end, gauss_IO_a)
 !
 !  Output time average
@@ -130,7 +131,7 @@
       gauss_IO_a%gauss_coef(1:gauss_IO_a%num_mode)                      &
      &      = sdev_gauss(1:gauss_IO_a%num_mode)
 !$omp end parallel workshare
-      call write_gauss_coefs_4_monitor(0, sdev_pick_gauss_fname,        &
+      call s_write_gauss_coefs_4_monitor(0, sdev_pick_gauss_fname,      &
      &    gauss_IO_a%i_step(gauss_IO_a%n_step), true_end, gauss_IO_a)
 !
       deallocate(ave_gauss, rms_gauss, sdev_gauss)
