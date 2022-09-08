@@ -266,7 +266,7 @@ write_sph_monitor_data.o
 MOD_SPH_DYN_ELSASSER = \
 sph_dynamic_elsasser.o \
 t_read_sph_spectra.o \
-t_ctl_data_tave_sph_monitor.o \
+t_ctl_data_get_dyn_elsasser.o \
 t_ctl_param_sph_series_util.o \
 m_sph_dynamic_elsasser.o \
 gz_spl_sph_spectr_head_IO.o \

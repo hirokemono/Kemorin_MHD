@@ -28,7 +28,7 @@
      &            :: vol_l_spectr_file_name = 'ssph_pwr_volume_l.dat'
         character(len = kchara)                                         &
      &            :: vol_m_spectr_file_name = 'ssph_pwr_volume_m.dat'
-        character(len = kchara) :: elsasser_file_prefix = 'Elsasser'
+        character(len = kchara) :: elsasser_file_name = 'Elsasser.dat'
 !
         logical :: flag_old_spectr_data = .FALSE.
 !
@@ -318,9 +318,9 @@
       end if
 !
 !
-      file_name = add_dat_extension(els_dat%elsasser_file_prefix)
-      write(*,*) 'Save Elsasser number into  ', trim(file_name)
-      open(id_file_lscale, file=file_name)
+      write(*,*) 'Save Elsasser number into  ',                         &
+     &          trim(els_dat%elsasser_file_name)
+      open(id_file_lscale, file=els_dat%elsasser_file_name)
       call select_output_sph_pwr_head                                   &
      &   (id_file_lscale, vol_ave_on, sph_OUT1)
 !
