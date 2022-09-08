@@ -11,7 +11,9 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    dipolarity_prefix    'dipolarity'
+!!    begin monitor_data_list_ctl
+!!      dipolarity_prefix    'dipolarity'
+!!    end monitor_data_list_ctl
 !!  end time_averaging_sph_monitor
 !! -----------------------------------------------------------------
 !
@@ -53,6 +55,7 @@
      &         (tave_sph_ctl, file_name, start_time, end_time)
 !
       use t_ctl_data_tave_sph_monitor
+      use t_ctl_param_sph_series_util
       use set_parallel_file_name
 !
       implicit  none
@@ -64,12 +67,16 @@
       character(len = kchara) :: file_prefix
 !
 !
-      if(tave_sph_ctl%dipolarity_file_prefix%iflag .eq. 0) then
+      if(tave_sph_ctl%monitor_list_ctl%dipolarity_file_prefix%iflag     &
+     &                                                     .eq. 0) then
         write(*,*) 'Set File prefix for dipolarity'
         stop
       end if
-      file_prefix = tave_sph_ctl%dipolarity_file_prefix%charavalue
-      file_name =   add_dat_extension(file_prefix)
+      file_prefix                                                       &
+     & =tave_sph_ctl%monitor_list_ctl%dipolarity_file_prefix%charavalue
+      call set_sph_series_file_name                                     &
+     &   (dummy_item, tave_sph_ctl%read_mnt_file_fmt_ctl,               &
+     &    file_prefix, file_name)
 !
       if(tave_sph_ctl%start_time_ctl%iflag .eq. 0) then
         write(*,*) 'Set start time'

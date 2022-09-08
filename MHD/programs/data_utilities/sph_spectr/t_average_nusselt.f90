@@ -11,7 +11,9 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    nusselt_number_prefix        'Nusselt'
+!!    begin monitor_data_list_ctl
+!!      nusselt_number_prefix        'Nusselt'
+!!    end monitor_data_list_ctl
 !!  end time_averaging_sph_monitor
 !! -----------------------------------------------------------------
 !
@@ -52,9 +54,9 @@
 !
       use t_no_heat_Nusselt
       use t_ctl_data_tave_sph_monitor
-      use set_parallel_file_name
+      use t_ctl_param_sph_series_util
 !
-      implicit  none
+      use set_parallel_file_name
 !
       type(tave_sph_monitor_ctl), intent(in) :: tave_sph_ctl
       type(nusselt_number_data), intent(inout) :: Nu_t
@@ -62,12 +64,15 @@
 !
       character(len=kchara) :: file_prefix
 !
-      if(tave_sph_ctl%Nusselt_file_prefix%iflag .eq. 0) then
+      if(tave_sph_ctl%monitor_list_ctl%Nusselt_file_prefix%iflag        &
+     &                                                  .eq. 0) then
         write(*,*) 'Set File prefix for Nusselt number'
         stop
       end if
-      file_prefix = tave_sph_ctl%Nusselt_file_prefix%charavalue
-      Nu_t%Nusselt_file_name = add_dat_extension(file_prefix)
+      call set_sph_series_file_name                                     &
+     &   (dummy_item, tave_sph_ctl%read_mnt_file_fmt_ctl,               &
+     &    tave_sph_ctl%monitor_list_ctl%Nusselt_file_prefix%charavalue, &
+     &    Nu_t%Nusselt_file_name)
 !
       if(tave_sph_ctl%start_time_ctl%iflag .eq. 0) then
         write(*,*) 'Set start time'

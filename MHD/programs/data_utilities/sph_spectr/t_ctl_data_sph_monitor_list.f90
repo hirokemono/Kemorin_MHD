@@ -9,19 +9,16 @@
 !!
 !!@verbatim
 !!      subroutine read_ctl_sph_monitor_list                            &
-!!     &         (id_control, hd_block, sph_list_ctl, c_buf)
-!!        type(sph_monitor_files_ctl), intent(inout) :: sph_list_ctl
+!!     &         (id_control, hd_block, monitor_list_ctl, c_buf)
+!!        type(sph_monitor_files_ctl), intent(inout) :: monitor_list_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine dealloc_ctl_sph_monitor_list(sph_list_ctl)
-!!        type(sph_monitor_files_ctl), intent(inout) :: sph_list_ctl
+!!      subroutine dealloc_ctl_sph_monitor_list(monitor_list_ctl)
+!!        type(sph_monitor_files_ctl), intent(inout) :: monitor_list_ctl
 !! -----------------------------------------------------------------
 !!
 !!      control block for pickup spherical harmonics
 !!
 !!  begin monitor_data_list_ctl
-!!    gzipped_flag        'Off'
-!!    old_format_flag     'Off'
-!!
 !!    array vol_integrate_prefix
 !!      vol_integrate_prefix     'sph_ave_volume'
 !!      vol_integrate_prefix     'sph_pwr_volume_s'
@@ -128,74 +125,74 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_ctl_sph_monitor_list                              &
-     &         (id_control, hd_block, sph_list_ctl, c_buf)
+     &         (id_control, hd_block, monitor_list_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      type(sph_monitor_files_ctl), intent(inout) :: sph_list_ctl
+      type(sph_monitor_files_ctl), intent(inout) :: monitor_list_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(sph_list_ctl%i_time_ave_sph  .gt. 0) return
+      if(monitor_list_ctl%i_time_ave_sph  .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_Nusselt_file_head,           &
-     &      sph_list_ctl%Nusselt_file_prefix)
+     &      monitor_list_ctl%Nusselt_file_prefix)
         call read_chara_ctl_type(c_buf, hd_dipolarity_file_head,        &
-     &      sph_list_ctl%dipolarity_file_prefix)
+     &      monitor_list_ctl%dipolarity_file_prefix)
         call read_chara_ctl_type(c_buf, hd_Elsasser_file_head,          &
-     &      sph_list_ctl%Elsasser_file_prefix)
+     &      monitor_list_ctl%Elsasser_file_prefix)
 !
         call read_control_array_c1(id_control,  hd_vol_time_series,     &
-     &      sph_list_ctl%volume_series_file_ctl, c_buf)
+     &      monitor_list_ctl%volume_series_file_ctl, c_buf)
         call read_control_array_c1(id_control, hd_vol_spec_series,      &
-     &      sph_list_ctl%volume_spec_file_ctl, c_buf)
+     &      monitor_list_ctl%volume_spec_file_ctl, c_buf)
 !
         call read_control_array_c1(id_control,  hd_layer_time_series,   &
-     &      sph_list_ctl%layered_series_file_ctl, c_buf)
+     &      monitor_list_ctl%layered_series_file_ctl, c_buf)
         call read_control_array_c1(id_control, hd_layer_spec_series,    &
-     &      sph_list_ctl%layered_spec_file_ctl, c_buf)
+     &      monitor_list_ctl%layered_spec_file_ctl, c_buf)
 !
         call read_control_array_c1(id_control, hd_picked_mode_head,     &
-     &      sph_list_ctl%picked_mode_file_ctl, c_buf)
+     &      monitor_list_ctl%picked_mode_file_ctl, c_buf)
 !
         call read_chara_ctl_type(c_buf, hd_gauss_coefs_head,            &
-     &      sph_list_ctl%gauss_coefs_prefix)
+     &      monitor_list_ctl%gauss_coefs_prefix)
       end do
-      sph_list_ctl%i_time_ave_sph = 1
+      monitor_list_ctl%i_time_ave_sph = 1
 !
       end subroutine read_ctl_sph_monitor_list
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_ctl_sph_monitor_list(sph_list_ctl)
+      subroutine dealloc_ctl_sph_monitor_list(monitor_list_ctl)
 !
-      type(sph_monitor_files_ctl), intent(inout) :: sph_list_ctl
+      type(sph_monitor_files_ctl), intent(inout) :: monitor_list_ctl
 !
-!
-      call dealloc_control_array_chara                                  &
-     &   (sph_list_ctl%volume_spec_file_ctl)
-      call dealloc_control_array_chara                                  &
-     &   (sph_list_ctl%volume_series_file_ctl)
 !
       call dealloc_control_array_chara                                  &
-     &   (sph_list_ctl%layered_spec_file_ctl)
+     &   (monitor_list_ctl%volume_spec_file_ctl)
       call dealloc_control_array_chara                                  &
-     &   (sph_list_ctl%layered_series_file_ctl)
+     &   (monitor_list_ctl%volume_series_file_ctl)
 !
       call dealloc_control_array_chara                                  &
-     &   (sph_list_ctl%picked_mode_file_ctl)
+     &   (monitor_list_ctl%layered_spec_file_ctl)
+      call dealloc_control_array_chara                                  &
+     &   (monitor_list_ctl%layered_series_file_ctl)
 !
-      sph_list_ctl%Nusselt_file_prefix%iflag =  0
-      sph_list_ctl%dipolarity_file_prefix%iflag = 0
-      sph_list_ctl%Elsasser_file_prefix%iflag = 0
-      sph_list_ctl%gauss_coefs_prefix%iflag =   0
+      call dealloc_control_array_chara                                  &
+     &   (monitor_list_ctl%picked_mode_file_ctl)
 !
-      sph_list_ctl%i_time_ave_sph = 0
+      monitor_list_ctl%Nusselt_file_prefix%iflag =  0
+      monitor_list_ctl%dipolarity_file_prefix%iflag = 0
+      monitor_list_ctl%Elsasser_file_prefix%iflag = 0
+      monitor_list_ctl%gauss_coefs_prefix%iflag =   0
+!
+      monitor_list_ctl%i_time_ave_sph = 0
 !
       end subroutine dealloc_ctl_sph_monitor_list
 !

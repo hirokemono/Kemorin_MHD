@@ -31,7 +31,7 @@
 !
       use m_precision
 !
-      use t_ctl_data_tave_sph_monitor
+      use t_ctl_data_sph_monitor_list
       use t_control_array_character
 !
       implicit none
@@ -44,7 +44,7 @@
 !>        file format of time series to be read
         type(read_character_item) :: read_monitor_fmt_ctl
 !
-        type(tave_sph_monitor_ctl) :: monitor_list_ctl
+        type(sph_monitor_files_ctl) :: monitor_list_ctl
 !
         integer (kind = kint) :: i_add_sph_monitor = 0
       end type ctl_data_add_sph_monitor
@@ -119,7 +119,7 @@
         call read_chara_ctl_type(c_buf, hd_read_monitor_format,         &
      &      add_mtr_ctl%read_monitor_fmt_ctl)
 !
-        call read_ctl_tave_sph_monitor                                  &
+        call read_ctl_sph_monitor_list                                  &
      &     (id_control, hd_monitor_file_list,                           &
      &      add_mtr_ctl%monitor_list_ctl, c_buf)
       end do
@@ -141,7 +141,7 @@
       add_mtr_ctl%read_monitor_fmt_ctl%iflag = 0
       add_mtr_ctl%i_add_sph_monitor = 0
 !
-      call dealloc_ctl_tave_sph_monitor(add_mtr_ctl%monitor_list_ctl)
+      call dealloc_ctl_sph_monitor_list(add_mtr_ctl%monitor_list_ctl)
 !
       end subroutine dealloc_ctl_data_add_sph_mntr
 !

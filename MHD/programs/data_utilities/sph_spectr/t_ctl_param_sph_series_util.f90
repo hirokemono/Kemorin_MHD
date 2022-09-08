@@ -10,10 +10,11 @@
 !!      subroutine set_spec_series_file_and_time(tave_sph_ctl,          &
 !!     &                                         spec_evo_p)
 !!      subroutine set_spec_series_file_param(folder_ctl, file_fmt_ctl, &
-!!     &                                      tave_sph_ctl, spec_evo_p)
+!!     &          monitor_list_ctl, spec_evo_p)
 !!        type(read_character_item), intent(in) :: folder_ctl
 !!        type(read_character_item), intent(in) :: file_fmt_ctl
 !!        type(tave_sph_monitor_ctl), intent(in) :: tave_sph_ctl
+!!        type(sph_monitor_files_ctl), intent(in) :: monitor_list_ctl
 !!        type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !!      subroutine dealloc_spec_series_file_param(spec_evo_p)
 !!        type(tave_sph_monitor_ctl), intent(in) :: tave_sph_ctl
@@ -75,9 +76,6 @@
       type(tave_sph_monitor_ctl), intent(in) :: tave_sph_ctl
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
-      character(len = kchara) :: file_prefix
-      integer(kind = kint) :: i
-!
 !
       if(tave_sph_ctl%start_time_ctl%iflag .eq. 0) then
         write(*,*) 'Error: Set start time'
@@ -103,38 +101,38 @@
       end if
 !
       call set_spec_series_file_param(dummy_item, dummy_item,           &
-     &                                tave_sph_ctl, spec_evo_p)
+     &    tave_sph_ctl%monitor_list_ctl, spec_evo_p)
 !
       end subroutine set_spec_series_file_and_time
 !
 !   --------------------------------------------------------------------
 !
       subroutine set_spec_series_file_param(folder_ctl, file_fmt_ctl,   &
-     &                                      tave_sph_ctl, spec_evo_p)
+     &          monitor_list_ctl, spec_evo_p)
 !
-      use t_ctl_data_tave_sph_monitor
+      use t_ctl_data_sph_monitor_list
 !
       type(read_character_item), intent(in) :: folder_ctl
       type(read_character_item), intent(in) :: file_fmt_ctl
-      type(tave_sph_monitor_ctl), intent(in) :: tave_sph_ctl
+      type(sph_monitor_files_ctl), intent(in) :: monitor_list_ctl
 !
       type(sph_spectr_file_param), intent(inout) :: spec_evo_p
 !
 !
       call set_sph_series_file_list(folder_ctl, file_fmt_ctl,           &
-     &    tave_sph_ctl%volume_series_file_ctl,                          &
+     &    monitor_list_ctl%volume_series_file_ctl,                      &
      &    spec_evo_p%vol_series)
       call set_sph_series_file_list(folder_ctl, file_fmt_ctl,           &
-     &    tave_sph_ctl%volume_spec_file_ctl,                            &
+     &    monitor_list_ctl%volume_spec_file_ctl,                        &
      &    spec_evo_p%vol_spec_series)
       call set_sph_series_file_list(folder_ctl, file_fmt_ctl,           &
-     &    tave_sph_ctl%layered_series_file_ctl,                         &
+     &    monitor_list_ctl%layered_series_file_ctl,                     &
      &    spec_evo_p%layer_series)
       call set_sph_series_file_list(folder_ctl, file_fmt_ctl,           &
-     &    tave_sph_ctl%layered_spec_file_ctl,                           &
+     &    monitor_list_ctl%layered_spec_file_ctl,                       &
      &    spec_evo_p%layer_spec_series)
       call set_sph_series_file_list(folder_ctl, file_fmt_ctl,           &
-     &    tave_sph_ctl%picked_mode_file_ctl,                            &
+     &    monitor_list_ctl%picked_mode_file_ctl,                        &
      &    spec_evo_p%pick_spec_series)
 !
       end subroutine set_spec_series_file_param
@@ -168,7 +166,6 @@
       type(ctl_array_chara), intent(in) :: file_list_ctl
       type(sph_spectr_file_list), intent(inout) :: f_list
 !
-      character(len = kchara) :: file_prefix, fname_tmp
       integer(kind = kint) :: i
 !
 !

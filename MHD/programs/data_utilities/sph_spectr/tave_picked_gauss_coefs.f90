@@ -9,7 +9,9 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    gauss_coefs_prefix        'gauss_coefs_Re'
+!!    array vol_integrate_prefix
+!!      gauss_coefs_prefix        'gauss_coefs_Re'
+!!    end monitor_data_list_ctl
 !!  end time_averaging_sph_monitor
 !! -----------------------------------------------------------------
 !
@@ -49,7 +51,7 @@
       subroutine set_control_ave_gauss(tave_sph_ctl,                    &
      &          input_file_name, start_time, end_time)
 !
-      use set_parallel_file_name
+      use t_ctl_param_sph_series_util
 !
       type(tave_sph_monitor_ctl), intent(in) :: tave_sph_ctl
       character(len=kchara), intent(inout) :: input_file_name
@@ -57,12 +59,15 @@
 !
       character(len=kchara) :: file_prefix
 !
-      if(tave_sph_ctl%gauss_coefs_prefix%iflag .eq. 0) then
+      if(tave_sph_ctl%monitor_list_ctl%gauss_coefs_prefix%iflag         &
+     &                                                 .eq. 0) then
         write(*,*) 'Set File prefix for Gauss coefficients'
         stop
       end if
-      file_prefix = tave_sph_ctl%gauss_coefs_prefix%charavalue
-      input_file_name = add_dat_extension(file_prefix)
+      call set_sph_series_file_name                                     &
+     &   (dummy_item, tave_sph_ctl%read_mnt_file_fmt_ctl,               &
+     &    tave_sph_ctl%monitor_list_ctl%gauss_coefs_prefix%charavalue,  &
+     &    input_file_name)
 !
       if(tave_sph_ctl%start_time_ctl%iflag .eq. 0) then
         write(*,*) 'Set start time'

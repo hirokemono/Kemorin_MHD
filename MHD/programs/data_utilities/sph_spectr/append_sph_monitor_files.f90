@@ -6,7 +6,7 @@
       use m_precision
       use m_constants
       use t_ctl_data_append_sph_mntr
-      use t_ctl_data_tave_sph_monitor
+      use t_ctl_data_sph_monitor_list
       use t_ctl_param_sph_series_util
       use t_read_sph_spectra
 !
@@ -33,7 +33,7 @@
 !
       integer(kind = kint), parameter :: id_append_file = 15
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i 
 !
       call read_ctl_file_add_sph_mntr(ctl_file_name, add_mtr_ctl1)
 !
@@ -182,12 +182,10 @@
       integer(kind = kint), parameter :: id_append_file = 15
       integer(kind = kint), parameter :: id_write_file = 16
 !
-      integer(kind = kint) :: istep_start, istep_end, i_step, ierr
-      real(kind = kreal) :: start_time, end_time, time
+      integer(kind = kint) :: istep_start
+      real(kind = kreal) :: start_time
 !
-      integer(kind = kint) :: nd, ic, icou
-      integer(kind = kint) :: nchara_line
-      character(len = 1), allocatable :: textbuf(:)
+      integer(kind = kint) :: nd
 !
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf1
@@ -286,12 +284,8 @@
       integer(kind = kint), parameter :: id_append_file = 15
       integer(kind = kint), parameter :: id_write_file = 16
 !
-      integer(kind = kint) :: istep_start, istep_end, i_step, ierr
-      real(kind = kreal) :: start_time, end_time, time
-!
-      integer(kind = kint) :: nd, ic, icou
-      integer(kind = kint) :: nchara_line
-      character(len = 1), allocatable :: textbuf(:)
+      integer(kind = kint) :: istep_start
+      real(kind = kreal) :: start_time
 !
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf1
@@ -374,7 +368,7 @@
       integer(kind = kint) :: istep_start
       real(kind = kreal) :: start_time
 !
-      integer(kind = kint) :: nd, ic, icou, n_line, ierr, ntot_pick
+      integer(kind = kint) :: nd, ntot_pick
 !
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf1
@@ -492,10 +486,10 @@
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
 !
-      integer(kind = kint) :: istep_start, istep_end, i_step, ierr
-      real(kind = kreal) :: start_time, end_time, time
+      integer(kind = kint) :: istep_start
+      real(kind = kreal) :: start_time
 !
-      integer(kind = kint) :: nd, ic, icou, ntot_pick, nline_snap
+      integer(kind = kint) :: nd, nline_snap
 !
 !
       write(*,*) 'Open append file', ': ', trim(append_file_name)
