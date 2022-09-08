@@ -9,7 +9,6 @@
 !!
 !!@verbatim
 !!      subroutine read_control_file_sph_monitor(my_rank, tave_sph_ctl)
-!!      subroutine read_control_file_sph_elsasser(my_rank, tave_sph_ctl)
 !!      subroutine read_ctl_tave_sph_monitor                            &
 !!        type(tave_sph_monitor_ctl), intent(inout) :: tave_sph_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
@@ -78,9 +77,6 @@
 !>        Control file name
       character(len = kchara), parameter, private                       &
      &           :: fname_ctl_tave_sph_mtr = 'control_sph_time_average'
-!>        Control file name
-      character(len = kchara), parameter, private                       &
-     &           :: fname_ctl_sph_elsasser = 'control_sph_elsasser'
 !>        Control file ID
       integer(kind = kint), parameter, private :: id_control = 11
 !
@@ -155,13 +151,6 @@
       character(len=kchara), parameter, private                         &
      &           :: hd_dipolarity_file_head = 'dipolarity_file_prefix'
 !
-      character(len=kchara), parameter, private                         &
-     &        :: hd_mag_to_kin_ratio = 'mag_to_kin_energy_ratio'
-      character(len=kchara), parameter, private                         &
-     &        :: hd_mag_reynolds_coefs = 'magnetic_Reynolds_ratio'
-      character(len=kchara), parameter, private                         &
-     &        :: hd_elsasser_coefs =   'Coefs_for_Elsasser'
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -190,31 +179,6 @@
       end if
 !
       end subroutine read_control_file_sph_monitor
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_control_file_sph_elsasser(my_rank, tave_sph_ctl)
-!
-      use skip_comment_f
-!
-      integer, intent(in) :: my_rank
-      type(tave_sph_monitor_ctl), intent(inout) :: tave_sph_ctl
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      if(my_rank .eq. 0) then
-        open(id_control, file = fname_ctl_sph_elsasser, status='old')
-        do
-          call load_one_line_from_control(id_control, c_buf1)
-          call read_ctl_tave_sph_monitor                                &
-     &       (id_control, hd_gen_elsasser, tave_sph_ctl, c_buf1)
-          if(tave_sph_ctl%i_time_ave_sph .gt. 0) exit
-        end do
-        close(id_control)
-      end if
-!
-      end subroutine read_control_file_sph_elsasser
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
