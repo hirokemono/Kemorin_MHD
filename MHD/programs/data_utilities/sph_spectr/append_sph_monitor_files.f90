@@ -5,7 +5,6 @@
 !
       use m_precision
       use m_constants
-      use m_file_format_labels
       use t_ctl_data_append_sph_mntr
       use t_ctl_data_tave_sph_monitor
       use t_ctl_param_sph_series_util
@@ -24,8 +23,6 @@
       type(sph_spectr_file_param), save :: spec_evo_append
       type(sph_spectr_file_param), save :: spec_evo_target
 !
-      type(multi_flag_labels), save :: gzip_flags1
-!
       integer(kind = kint) :: iflag_gauss
       character(len=kchara) :: append_gauss_name
       character(len=kchara) :: target_gauss_name
@@ -40,23 +37,22 @@
 !
       call read_ctl_file_add_sph_mntr(ctl_file_name, add_mtr_ctl1)
 !
-      call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags1)
       call set_spec_series_file_param(add_mtr_ctl1%folder_to_read_ctl,  &
-     &    add_mtr_ctl1%read_monitor_file_format_ctl, gzip_flags1,       &
+     &    add_mtr_ctl1%read_monitor_fmt_ctl,                            &
      &    add_mtr_ctl1%monitor_list_ctl, spec_evo_append)
       call set_spec_series_file_param(add_mtr_ctl1%folder_to_add_ctl,   &
-     &    dummy_item, gzip_flags1, add_mtr_ctl1%monitor_list_ctl,       &
+     &    dummy_item, add_mtr_ctl1%monitor_list_ctl,                    &
      &    spec_evo_target)
 !
       iflag_gauss                                                       &
      &    = add_mtr_ctl1%monitor_list_ctl%gauss_coefs_prefix%iflag
       if(iflag_gauss .gt. 0) then
         call set_sph_series_file_name(add_mtr_ctl1%folder_to_read_ctl,  &
-     &     add_mtr_ctl1%read_monitor_file_format_ctl, gzip_flags1,      &
+     &     add_mtr_ctl1%read_monitor_fmt_ctl,                           &
      &     add_mtr_ctl1%monitor_list_ctl%gauss_coefs_prefix%charavalue, &
      &     append_gauss_name)
         call set_sph_series_file_name                                   &
-     &    (add_mtr_ctl1%folder_to_add_ctl, dummy_item, gzip_flags1,     &
+     &    (add_mtr_ctl1%folder_to_add_ctl, dummy_item,                  &
      &     add_mtr_ctl1%monitor_list_ctl%gauss_coefs_prefix%charavalue, &
      &     target_gauss_name)
       end if
@@ -65,11 +61,11 @@
      &    = add_mtr_ctl1%monitor_list_ctl%Nusselt_file_prefix%iflag
       if(iflag_nusselt .gt. 0) then
         call set_sph_series_file_name(add_mtr_ctl1%folder_to_read_ctl,  &
-     &    add_mtr_ctl1%read_monitor_file_format_ctl, gzip_flags1,      &
+     &    add_mtr_ctl1%read_monitor_fmt_ctl,                            &
      &    add_mtr_ctl1%monitor_list_ctl%Nusselt_file_prefix%charavalue, &
      &    append_Nusselt_name)
         call set_sph_series_file_name                                   &
-     &   (add_mtr_ctl1%folder_to_add_ctl, dummy_item, gzip_flags1,      &
+     &   (add_mtr_ctl1%folder_to_add_ctl, dummy_item,                   &
      &    add_mtr_ctl1%monitor_list_ctl%Nusselt_file_prefix%charavalue, &
      &    target_Nusselt_name)
       end if
