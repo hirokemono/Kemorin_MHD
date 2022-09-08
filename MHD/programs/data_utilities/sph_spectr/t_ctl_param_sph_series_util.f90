@@ -100,7 +100,8 @@
         spec_evo_p%led = tave_sph_ctl%degree_range_ctl%intvalue(2)
       end if
 !
-      call set_spec_series_file_param(dummy_item, dummy_item,           &
+      call set_spec_series_file_param                                   &
+     &   (dummy_item, tave_sph_ctl%read_mnt_file_fmt_ctl,               &
      &    tave_sph_ctl%monitor_list_ctl, spec_evo_p)
 !
       end subroutine set_spec_series_file_and_time

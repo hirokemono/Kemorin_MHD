@@ -159,6 +159,7 @@
       use gz_spl_sph_spectr_data_IO
       use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
+      use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
@@ -167,9 +168,10 @@
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(spectr_ave_sigma_work), intent(inout) :: WK_tave
 !
-      character(len = kchara) :: file_name
+      character(len = kchara) :: file_name, extension
+      character(len = kchara) :: directory, fname_no_dir, fname_tmp
       real(kind = kreal) :: prev_time
-      integer(kind = kint) :: icou, ierr, ist_true
+      integer(kind = kint) :: icou, ierr, ist_true, i
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
@@ -181,16 +183,16 @@
       call select_input_sph_series_head                                 &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
-      call check_sph_spectr_name(sph_IN)
+!      call check_sph_spectr_name(sph_IN)
 !
       call alloc_tave_sph_data(sph_IN, WK_tave)
 !
       icou = 0
       ist_true = -1
       prev_time = sph_IN%time
-!      write(*,'(a6,i12,a30,i12)',advance="NO")                         &
-!     &       'step= ', sph_IN%i_step,                                  &
-!     &       ' averaging finished. Count=  ', icou
+      write(*,'(a6,i12,a30,i12)',advance="NO")                         &
+     &       'step= ', sph_IN%i_step,                                  &
+     &       ' averaging finished. Count=  ', icou
       do
         call sel_gz_input_sph_series_data                               &
      &     (FPz_f1, id_file_rms, flag_gzip1,                            &
@@ -218,9 +220,9 @@
           end if
         end if
 !
-!        write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60),&
-!     &       'step= ', sph_IN%i_step,                                  &
-!     &       ' averaging finished. Count=   ', icou
+        write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60),&
+     &       'step= ', sph_IN%i_step,                                  &
+     &       ' averaging finished. Count=   ', icou
         if (sph_IN%time .ge. end_time) then
           true_end = sph_IN%time
           exit
@@ -238,7 +240,16 @@
      &    WK_tave%ave_spec_l, sph_IN%spectr_IO)
 !
 !  Output average
-      write(file_name, '(a6,a)') 't_ave_', trim(fname_org)
+      if(flag_gzip1) then
+        call split_extrension(fname_org, fname_tmp, extension)
+      else
+        fname_tmp = fname_org
+      end if
+      call split_directory(fname_tmp, directory, fname_no_dir)
+      write(fname_tmp, '(a6,a)') 't_ave_', trim(fname_no_dir)
+      file_name = append_directory(directory, fname_tmp)
+!
+      write(*,*) 'average file_name: ', trim(file_name)
       open(id_file_rms, file=file_name)
       call select_output_sph_pwr_head                                   &
      &   (id_file_rms, flag_vol_ave, sph_IN)
@@ -262,6 +273,7 @@
       use gz_spl_sph_spectr_data_IO
       use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
+      use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
@@ -272,7 +284,8 @@
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
-      character(len = kchara) :: file_name
+      character(len = kchara) :: file_name, extension
+      character(len = kchara) :: directory, fname_no_dir, fname_tmp
       real(kind = kreal) :: true_start, prev_time
       integer(kind = kint) :: icou, ierr, ist_true
 !
@@ -332,7 +345,16 @@
      &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
      &    WK_tave%sigma_spec_l, sph_IN%spectr_IO)
 !
-      write(file_name, '(a8,a)') 't_sigma_', trim(fname_org)
+      if(flag_gzip1) then
+        call split_extrension(fname_org, fname_tmp, extension)
+      else
+        fname_tmp = fname_org
+      end if
+      call split_directory(fname_tmp, directory, fname_no_dir)
+      write(fname_tmp, '(a8,a)') 't_sigma_', trim(fname_no_dir)
+      file_name = append_directory(directory, fname_tmp)
+!
+      write(*,*) 'standard deviation file_name: ', trim(file_name)
       open(id_file_rms, file=file_name)
       call select_output_sph_pwr_head                                   &
      &   (id_file_rms, flag_vol_ave, sph_IN)
@@ -372,7 +394,7 @@
       call select_input_sph_series_head                                 &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    current_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
-      call check_sph_spectr_name(sph_IN)
+!      call check_sph_spectr_name(sph_IN)
 !
       call sel_gz_input_sph_series_data                                 &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &

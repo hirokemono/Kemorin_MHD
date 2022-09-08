@@ -136,7 +136,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(fmt_txt,'(a20,i5,a15)')  '(i16,1pE25.15e3,i16,',            &
+      write(fmt_txt,'(a20,i5,a16)')  '(i16,1pE25.15e3,i16,',            &
      &                     sph_IN%ntot_sph_spec, '(1p255E25.15e3))'
       do lth = 0, sph_IN%ltr_sph
         write(id_file,fmt_txt)                                          &
@@ -158,7 +158,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(fmt_txt,'(a31,i5,a15)')  '(i16,1pE25.15e3,i16,1pE25.15e3,', &
+      write(fmt_txt,'(a31,i5,a16)')  '(i16,1pE25.15e3,i16,1pE25.15e3,', &
      &                     sph_IN%ntot_sph_spec, '(1p255E25.15e3))'
       do kr = 1, sph_IN%nri_sph
         write(id_file,fmt_txt) sph_IN%i_step, sph_IN%time,              &
@@ -179,7 +179,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(fmt_txt,'(a35,i5,a15)')                                     &
+      write(fmt_txt,'(a35,i5,a16)')                                     &
      &            '(i16,1pE25.15e3,i16,1pE25.15e3,i16,',                &
      &              sph_IN%ntot_sph_spec, '(1p255E25.15e3))'
       do kr = 1, sph_IN%nri_sph

@@ -22,6 +22,7 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
+!!    read_monitor_file_format_ctl   'gzip'
 !!    old_format_flag     'Off'
 !!    degree_range_ctl     1   12
 !!
