@@ -160,8 +160,6 @@
      &   (FPz_f, id_stream, flag_gzip, zbuf)
       call sel_skip_comment_gz_stream                                   &
      &   (FPz_f, id_stream, flag_gzip, zbuf)
-      call sel_skip_comment_gz_stream                                   &
-     &   (FPz_f, id_stream, flag_gzip, zbuf)
       read(zbuf%fixbuf(1),*) sph_IN%nfield_sph_spec,                    &
      &    sph_IN%ntot_sph_spec
 !

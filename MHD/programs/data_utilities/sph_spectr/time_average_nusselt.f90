@@ -77,10 +77,11 @@
       real(kind = kreal) :: true_start, true_end
 !
 !       Load data
-      write(*,*) 'Nu_t%Nusselt_file_name: ', Nu_t%Nusselt_file_name
+      write(*,*) 'file_name: ', trim(file_name)
       call load_Nusselt_time_series                                     &
-     &   (flag_log, Nu_t%Nusselt_file_name, start_time, end_time,       &
+     &   (flag_log, file_name, start_time, end_time,                    &
      &    true_start, true_end, Nu_t, Nu_series)
+        write(*,*) 'aho'
 !
       call cal_time_ave_picked_sph_spectr                               &
      &   (Nu_series%n_step, Nu_series%d_time, itwo,                     &

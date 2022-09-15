@@ -132,8 +132,9 @@
       call read_gauss_coefs_labels(FPz_f1, id_gauss_coef,               &
      &                             flag_gzip1, gauss_IO, zbuf1)
 !
-      call s_count_monitor_time_series(flag_log, id_gauss_coef, ione,   &
-     &    start_time, end_time, true_start, true_end, num_count)
+      call s_count_monitor_time_series                                  &
+     &   (flag_log, FPz_f1,id_gauss_coef, flag_gzip1, ione,             &
+     &    start_time, end_time, true_start, true_end, num_count, zbuf1)
       ierr =  rewind_gzfile(FPz_f1)
 !
       call read_gauss_coefs_header(FPz_f1, id_gauss_coef,               &

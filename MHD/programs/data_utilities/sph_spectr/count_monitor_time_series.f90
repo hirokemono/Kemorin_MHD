@@ -12,15 +12,16 @@
 !!        Character(:,C_char), Allocatable :: c_to_fstring
 !!
 !!      subroutine s_count_monitor_time_series                          &
-!!     &         (flag_log, id_file, nitem_snap, start_time, end_time,  &
-!!     &          true_start, true_end, num_count)
+!!     &         (flag_log, FPz_f, id_stream, flag_gzip, nitem_snap,    &
+!!     &          start_time, end_time, true_start, true_end,           &
+!!     &          num_count, zbuf)
 !!        logical, intent(in) :: flag_log
 !!        integer(kind = kint), intent(in) :: id_file, nitem_snap
 !!        real(kind = kreal), intent(in) :: start_time, end_time
 !!        integer(kind = kint), intent(inout) :: num_count
 !!        real(kind = kreal), intent(inout) :: true_start, true_end
-!!      subroutine read_sph_spectr_time(id_file, nitem_snap,            &
-!!     &                              i_step, time, ierr)
+!!      subroutine read_ascii_sph_spectr_time(id_file, nitem_snap,      &
+!!     &                                      i_step, time, ierr)
 !!        integer(kind = kint), intent(in) :: id_file, nitem_snap
 !!        integer(kind = kint), intent(inout) :: i_step, ierr
 !!        real(kind = kreal), intent(inout) :: time
@@ -36,6 +37,7 @@
 !
       use m_precision
       use m_constants
+      use t_buffer_4_gzip
 !
       implicit  none
 !
@@ -69,15 +71,21 @@
 !   --------------------------------------------------------------------
 !
       subroutine s_count_monitor_time_series                            &
-     &         (flag_log, id_file, nitem_snap, start_time, end_time,    &
-     &          true_start, true_end, num_count)
+     &         (flag_log, FPz_f, id_stream, flag_gzip, nitem_snap,      &
+     &          start_time, end_time, true_start, true_end,             &
+     &          num_count, zbuf)
+!
+      use select_gz_stream_file_IO
 !
       logical, intent(in) :: flag_log
-      integer(kind = kint), intent(in) :: id_file, nitem_snap
+      character, pointer, intent(in) :: FPz_f
+      logical, intent(in) :: flag_gzip
+      integer(kind = kint), intent(in) :: id_stream, nitem_snap
       real(kind = kreal), intent(in) :: start_time, end_time
 !
       integer(kind = kint), intent(inout) :: num_count
       real(kind = kreal), intent(inout) :: true_start, true_end
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint) :: i_step, ierr, i
       real(kind = kreal) :: time
@@ -87,9 +95,12 @@
       true_start = start_time
       true_end = true_start
       do
-        call read_sph_spectr_time(id_file, nitem_snap,                  &
-     &                            i_step, time, ierr)
-        if(ierr .gt. 0) exit
+        do i = 1, nitem_snap
+          call sel_read_line_gz_stream(FPz_f, id_stream,                &
+     &                                 flag_gzip, zbuf)
+          if(zbuf%len_used .le. 0) go to 99
+        end do
+        read(zbuf%fixbuf(1),*,err=99) i_step, time
 !
         if(time .ge. start_time) then
           if(num_count .eq. 0) true_start = time
@@ -104,6 +115,7 @@
 !
         if(time .ge. end_time) exit
       end do
+  99  continue
       if(flag_log) write(*,*)
       true_end = time
 !
@@ -111,8 +123,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_sph_spectr_time(id_file, nitem_snap,              &
-     &                                i_step, time, ierr)
+      subroutine read_ascii_sph_spectr_time(id_file, nitem_snap,        &
+     &                                      i_step, time, ierr)
 !
       integer(kind = kint), intent(in) :: id_file, nitem_snap
       integer(kind = kint), intent(inout) :: i_step, ierr
@@ -131,7 +143,7 @@
       ierr = 1
       return
 !
-      end subroutine read_sph_spectr_time
+      end subroutine read_ascii_sph_spectr_time
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

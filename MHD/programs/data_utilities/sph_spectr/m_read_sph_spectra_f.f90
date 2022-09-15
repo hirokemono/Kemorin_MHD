@@ -110,13 +110,18 @@
       subroutine check_one_layer_mean_item_f(input_prefix_c)            &
      &              bind(c, name="check_one_layer_mean_item_f")
 !
+      use select_gz_stream_file_IO
       use gz_spl_sph_spectr_head_IO
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
+      character(len=kchara) :: file_name
 !
-      open(id_file_rms, file = c_to_fstring(input_prefix_c))
+      file_name = c_to_fstring(input_prefix_c)
+      call sel_open_read_gz_stream_file(FPz_fsp, id_file_rms,           &
+     &    file_name, flag_gzip_s, zbuf_f)
+!
       call select_input_sph_series_head                                 &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
      &    spectr_off, volume_off, sph_IN_f, zbuf_f)
@@ -129,13 +134,18 @@
       subroutine check_layered_spectr_file_f(input_prefix_c)            &
      &              bind(c, name="check_layered_spectr_file_f")
 !
+      use select_gz_stream_file_IO
       use gz_spl_sph_spectr_head_IO
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
+      character(len=kchara) :: file_name
 !
-      open(id_file_rms, file = c_to_fstring(input_prefix_c))
+      file_name = c_to_fstring(input_prefix_c)
+      call sel_open_read_gz_stream_file(FPz_fsp, id_file_rms,           &
+     &    file_name, flag_gzip_s, zbuf_f)
+!
       call select_input_sph_series_head                                 &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
      &    spectr_on, volume_off, sph_IN_f, zbuf_f)
@@ -166,25 +176,40 @@
 !
       character(1,C_char), intent(in) :: yname(*)
 !
-      integer(kind = kint) :: i
       character(len=kchara) :: draw_name
 !
-!
       draw_name = c_to_fstring(yname)
-      find_monitor_field_address_f = 0
+      find_monitor_field_address_f                                      &
+     &          = find_monitor_field_address(draw_name)
+!
+      end function find_monitor_field_address_f
+!
+! -------------------------------------------------------------------
+!
+      integer(kind = kint) function                                     &
+     &                    find_monitor_field_address(draw_name)
+!
+      use count_monitor_time_series
+!
+      character(len=kchara), intent(in) :: draw_name
+!
+      integer(kind = kint) :: i
+!
+!
+      find_monitor_field_address = 0
       do i = 1, sph_IN_f%num_labels
         if(trim(draw_name) .eq. sph_IN_f%ene_sph_spec_name(i)) then
-          find_monitor_field_address_f = i - sph_IN_f%num_time_labels
+          find_monitor_field_address = i - sph_IN_f%num_time_labels
           exit
         end if
       end do
 !
-      if(find_monitor_field_address_f .le. 0) then
+      if(find_monitor_field_address .le. 0) then
         write(*,*) 'Input field cannot be found.'
         return
       end if
 !
-      end function find_monitor_field_address_f
+      end function find_monitor_field_address
 !
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------

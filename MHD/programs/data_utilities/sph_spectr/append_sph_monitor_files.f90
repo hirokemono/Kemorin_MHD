@@ -588,8 +588,8 @@
 !
         open(id_file, file=file_name, position='append')
         backspace(id_file)
-        call read_sph_spectr_time(id_file, ione,                        &
-     &                            istep_end, end_time, ierr)
+        call read_ascii_sph_spectr_time(id_file, ione,                  &
+     &                                  istep_end, end_time, ierr)
 !
         write(*,*) 'end step and time for target file',                 &
      &          istep_end, end_time
@@ -600,8 +600,8 @@
         if(istep_start .le. istep_end) then
           do
             backspace(id_file)
-            call read_sph_spectr_time(id_file, ione,                    &
-     &                                i_step, time, ierr)
+            call read_ascii_sph_spectr_time(id_file, ione,              &
+     &                                      i_step, time, ierr)
             write(*,'(78a1,a5,i12,a4,1pe16.8e3,a29,i12)',advance="NO")  &
      &          (char(8),ic=1,78), 'step ', i_step,                     &
      &          ' at ', time, ' is read. Backeward count is  ', icou

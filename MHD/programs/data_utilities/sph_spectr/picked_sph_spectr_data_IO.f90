@@ -148,8 +148,9 @@
      &   (FPz_f1, id_pick_mode, flag_gzip1, picked_IO, zbuf1)
 !
       num = picked_IO%num_mode * picked_IO%num_layer
-      call s_count_monitor_time_series(flag_log, id_pick_mode, num,     &
-     &    start_time, end_time, true_start, true_end, num_count)
+      call s_count_monitor_time_series                                  &
+     &   (flag_log, FPz_f1, id_pick_mode, flag_gzip1, num,              &
+     &    start_time, end_time, true_start, true_end, num_count, zbuf1)
       ierr = rewind_gzfile(FPz_f1)
 !
       call read_pick_series_head(FPz_f1, id_pick_mode, flag_gzip1,      &

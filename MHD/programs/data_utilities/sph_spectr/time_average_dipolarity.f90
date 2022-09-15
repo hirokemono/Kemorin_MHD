@@ -55,7 +55,9 @@
       subroutine s_time_average_dipolarity                              &
      &         (file_name, start_time, end_time)
 !
+      use t_buffer_4_gzip
       use t_CMB_dipolarity
+      use select_gz_stream_file_IO
 !
       character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time
@@ -66,6 +68,10 @@
       real(kind = kreal) :: ave_fdip, sdev_fdip
       integer(kind = kint), parameter :: id_dipolarity = 15
 !
+      logical :: flag_gzip1
+      type(buffer_4_gzip), save :: zbuf1
+      character, pointer, save  :: FPz_f1
+!
       integer(kind = kint) :: i_step, icou, i
       real(kind = kreal) :: acou, time, prev_time, radius_CMB
       real(kind = kreal) :: true_start
@@ -73,11 +79,16 @@
 !
 !
       dip_t%dipolarity_file_name = file_name
-      open(id_dipolarity, file = dip_t%dipolarity_file_name,            &
-     &     form='formatted', status='old')
-      read(id_dipolarity,*)  tmpchara
-      read(id_dipolarity,*)  dip_t%ltr_max, radius_CMB
-      read(id_dipolarity,*)  tmpchara
+      call sel_open_read_gz_stream_file                                 &
+     &   (FPz_f1, id_dipolarity, dip_t%dipolarity_file_name,            &
+     &    flag_gzip1, zbuf1)
+!
+      call sel_skip_comment_gz_stream                                   &
+     &   (FPz_f1, id_dipolarity, flag_gzip1, zbuf1)
+      read(zbuf1%fixbuf(1),*)  dip_t%ltr_max, radius_CMB
+      call sel_skip_comment_gz_stream                                   &
+     &   (FPz_f1, id_dipolarity, flag_gzip1, zbuf1)
+      read(zbuf1%fixbuf(1),*)  tmpchara
 !
 !       Evaluate time average
 !
@@ -88,7 +99,9 @@
       write(*,'(a5,i12,a30,i12)',advance="NO")                          &
      &       'step= ', i_step,  ' averaging finished. Count=  ', icou
       do
-        read(id_dipolarity,*,err=99) i_step, time, dip_t%f_dip
+        call sel_read_line_gz_stream(FPz_f1, id_dipolarity,             &
+     &                               flag_gzip1, zbuf1)
+        read(zbuf1%fixbuf(1),*,err=99) i_step, time, dip_t%f_dip
         if(time .ge. start_time) then
 !
           if(icou .eq. 0) then
@@ -111,18 +124,24 @@
       end do
   99  continue
       write(*,*)
-      close(id_dipolarity)
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_dipolarity, flag_gzip1, zbuf1)
 !
       acou = one / (time - true_start)
       ave_fdip = ave_fdip * acou
 !
 !       Evaluate standard deviation
 !
-      open(id_dipolarity, file = dip_t%dipolarity_file_name,            &
-     &     form='formatted', status='old')
-      read(id_dipolarity,*)  tmpchara
-      read(id_dipolarity,*)  dip_t%ltr_max, radius_CMB
-      read(id_dipolarity,*)  tmpchara
+      call sel_open_read_gz_stream_file                                 &
+     &   (FPz_f1, id_dipolarity, dip_t%dipolarity_file_name,            &
+     &    flag_gzip1, zbuf1)
+!
+      call sel_skip_comment_gz_stream                                   &
+     &   (FPz_f1, id_dipolarity, flag_gzip1, zbuf1)
+      read(zbuf1%fixbuf(1),*)  dip_t%ltr_max, radius_CMB
+      call sel_skip_comment_gz_stream                                   &
+     &   (FPz_f1, id_dipolarity, flag_gzip1, zbuf1)
+      read(zbuf1%fixbuf(1),*)  tmpchara
 !
       write(*,'(a5,i12,a30,i12)',advance="NO")                          &
      &       'step= ', i_step,  ' deviation finished. Count=  ', icou
@@ -131,7 +150,9 @@
       prev_time = start_time
       sdev_fdip = 0.0d0
       do
-        read(id_dipolarity,*,err=98) i_step, time, dip_t%f_dip
+        call sel_read_line_gz_stream(FPz_f1, id_dipolarity,             &
+     &                               flag_gzip1, zbuf1)
+        read(zbuf1%fixbuf(1),*,err=99) i_step, time, dip_t%f_dip
 !
         if(time .ge. start_time) then
 !
@@ -156,7 +177,8 @@
       end do
   98  continue
       write(*,*)
-      close(id_dipolarity)
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_dipolarity, flag_gzip1, zbuf1)
 !
       acou = one / (time - true_start)
       sdev_fdip = sqrt(sdev_fdip * acou)
