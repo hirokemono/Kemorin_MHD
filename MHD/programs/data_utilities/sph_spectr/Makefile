@@ -273,11 +273,14 @@ sph_dynamic_elsasser.o \
 t_read_sph_spectra.o \
 t_ctl_data_get_dyn_elsasser.o \
 t_ctl_param_sph_series_util.o \
+t_ctl_param_dyn_elsasser.o \
+t_dyn_elsasser_address.o \
 m_sph_dynamic_elsasser.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
+cal_dyn_elsasser_by_spectr.o \
 write_sph_monitor_data.o
 
 

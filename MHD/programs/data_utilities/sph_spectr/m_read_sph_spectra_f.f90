@@ -180,26 +180,27 @@
 !
       draw_name = c_to_fstring(yname)
       find_monitor_field_address_f                                      &
-     &          = find_monitor_field_address(draw_name)
+     &          = find_monitor_field_address(draw_name, sph_IN_f)
 !
       end function find_monitor_field_address_f
 !
 ! -------------------------------------------------------------------
 !
       integer(kind = kint) function                                     &
-     &                    find_monitor_field_address(draw_name)
+     &              find_monitor_field_address(draw_name, sph_IN)
 !
       use count_monitor_time_series
 !
       character(len=kchara), intent(in) :: draw_name
+      type(read_sph_spectr_data), intent(in) :: sph_IN
 !
       integer(kind = kint) :: i
 !
 !
       find_monitor_field_address = 0
-      do i = 1, sph_IN_f%num_labels
-        if(trim(draw_name) .eq. sph_IN_f%ene_sph_spec_name(i)) then
-          find_monitor_field_address = i - sph_IN_f%num_time_labels
+      do i = 1, sph_IN%num_labels
+        if(trim(draw_name) .eq. sph_IN%ene_sph_spec_name(i)) then
+          find_monitor_field_address = i - sph_IN%num_time_labels
           exit
         end if
       end do
