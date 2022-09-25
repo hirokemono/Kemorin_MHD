@@ -31,6 +31,7 @@ TARGET_T_AVE_DIPOLARITY =    t_ave_dipolarity
 TARGET_MAX_SPH_ENE =         sph_pwr_max_mode
 TARGET_SPH_ULI_LSCALE =      sph_uli_lengscale
 TARGET_SPH_DYN_ELSASSER =    sph_dyn_elsasser
+TARGET_FIT_DIPOLE_RATIO =    sph_fitted_dipole_ratio
 
 TARGET_SPH_ENE_CHECK =       tests/sph_ene_check
 
@@ -283,6 +284,17 @@ count_monitor_time_series.o \
 cal_dyn_elsasser_by_spectr.o \
 write_sph_monitor_data.o
 
+MOD_FIT_DIPOLE_RATIO = \
+t_read_sph_spectra.o \
+gz_spl_sph_spectr_head_IO.o \
+gz_spl_sph_spectr_data_IO.o \
+old_sph_spectr_data_IO.o \
+write_sph_monitor_data.o \
+count_monitor_time_series.o \
+t_ctl_data_dipole_fit_ratio.o \
+t_ctl_param_dipole_fit.o \
+m_read_sph_spectra_f.o \
+sph_dipole_fitting.o
 
 MOD_PSUM_SPH_ENE_SPEC = \
 t_read_sph_spectra.o \
@@ -394,6 +406,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_SPH_DYN_ELSASSER = $$(BUILDDIR)/$(TARGET_SPH_DYN_ELSASSER)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_FIT_DIPOLE_RATIO = $$(BUILDDIR)/$(TARGET_FIT_DIPOLE_RATIO)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_SPH_ENE_CHECK = $$(BUILDDIR)/$(TARGET_SPH_ENE_CHECK)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_PSUM_SPH_ENE_SPEC = $$(BUILDDIR)/$(TARGET_PSUM_SPH_ENE_SPEC)' \
@@ -413,7 +427,7 @@ target_task:
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
 	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'      \
 	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)'   \
-	'$$(TARGET_T_AVE_DIPOLARITY)  '    >> $(MAKENAME)
+	'$$(TARGET_FIT_DIPOLE_RATIO)   $$(TARGET_T_AVE_DIPOLARITY)  '    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -588,6 +602,14 @@ target_task:
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_FIT_DIPOLE_RATIO)': '$$(MOD_FIT_DIPOLE_RATIO)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_FIT_DIPOLE_RATIO)' \
+	'$$(MOD_FIT_DIPOLE_RATIO)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_CHECK)': '$$(MOD_SPH_ENE_CHECK)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
@@ -647,6 +669,8 @@ mod_list:
 	@echo  $(MOD_SPH_ULI_LSCALE)       >> $(MAKENAME)
 	@echo  MOD_SPH_DYN_ELSASSER=  \\   >> $(MAKENAME)
 	@echo  $(MOD_SPH_DYN_ELSASSER)     >> $(MAKENAME)
+	@echo  MOD_FIT_DIPOLE_RATIO=  \\   >> $(MAKENAME)
+	@echo  $(MOD_FIT_DIPOLE_RATIO)     >> $(MAKENAME)
 	@echo  MOD_PSUM_SPH_ENE_SPEC=  \\  >> $(MAKENAME)
 	@echo  $(MOD_PSUM_SPH_ENE_SPEC)    >> $(MAKENAME)
 	@echo  MOD_T_AVE_NUSSELT=  \\      >> $(MAKENAME)

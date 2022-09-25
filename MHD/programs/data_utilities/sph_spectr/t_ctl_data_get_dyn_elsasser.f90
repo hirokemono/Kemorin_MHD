@@ -23,7 +23,7 @@
 !!    end_time_ctl       2.5
 !!  
 !!    old_format_flag     'Off'
-!!    vol_degree_spectr_file_name     'sph_pwr_volume_l.dat.ga'
+!!    vol_degree_spectr_file_name     'sph_pwr_volume_l.dat.gz'
 !!    vol_order_spectr_file_name      'sph_pwr_volume_m.dat.gz'
 !!    elsasser_numbers_file_name      'Elsasser.dat'
 !!
@@ -61,7 +61,7 @@
       use t_read_control_elements
       use t_control_array_character
       use t_control_array_real
-      use t_control_array_integer2
+      use t_control_array_charareal
       use t_ctl_data_dimless_numbers
 !
       implicit  none

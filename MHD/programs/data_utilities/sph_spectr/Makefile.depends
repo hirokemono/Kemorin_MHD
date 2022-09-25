@@ -94,6 +94,8 @@ picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/picked_sph_spectr_data_IO.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 pickup_sph_mean_square_data.o: $(SPH_UTILS_DIR)/pickup_sph_mean_square_data.f90 m_precision.o m_constants.o t_spheric_parameter.o t_pickup_sph_spectr_data.o t_schmidt_poly_on_rtm.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o single_pt_sph_mean_square.o cal_rms_by_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
+sph_dipole_fitting.o: $(SPH_UTILS_DIR)/sph_dipole_fitting.f90 m_precision.o m_constants.o t_ctl_data_dipole_fit_ratio.o t_ctl_param_dipole_fit.o t_read_sph_spectra.o select_gz_stream_file_IO.o gz_spl_sph_spectr_head_IO.o gz_spl_sph_spectr_data_IO.o write_sph_monitor_data.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
 sph_dynamic_elsasser.o: $(SPH_UTILS_DIR)/sph_dynamic_elsasser.f90 m_precision.o m_constants.o m_sph_dynamic_elsasser.o t_ctl_data_get_dyn_elsasser.o t_ctl_param_sph_series_util.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_uli_lengh_scale.o: $(SPH_UTILS_DIR)/sph_uli_lengh_scale.f90 m_precision.o m_constants.o m_sph_uli_lengh_scale.o t_read_sph_spectra.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o
@@ -110,13 +112,17 @@ t_ctl_data_4_sph_utils.o: $(SPH_UTILS_DIR)/t_ctl_data_4_sph_utils.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_append_sph_mntr.o: $(SPH_UTILS_DIR)/t_ctl_data_append_sph_mntr.f90 m_precision.o t_ctl_data_sph_monitor_list.o t_control_array_character.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_get_dyn_elsasser.o: $(SPH_UTILS_DIR)/t_ctl_data_get_dyn_elsasser.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer2.o t_ctl_data_dimless_numbers.o skip_comment_f.o
+t_ctl_data_dipole_fit_ratio.o: $(SPH_UTILS_DIR)/t_ctl_data_dipole_fit_ratio.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_get_dyn_elsasser.o: $(SPH_UTILS_DIR)/t_ctl_data_get_dyn_elsasser.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_charareal.o t_ctl_data_dimless_numbers.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_sph_data_utils.o: $(SPH_UTILS_DIR)/t_ctl_data_sph_data_utils.f90 m_precision.o calypso_mpi.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_array_character.o t_control_array_character2.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_sph_monitor_list.o: $(SPH_UTILS_DIR)/t_ctl_data_sph_monitor_list.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer2.o t_ctl_data_dimless_numbers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_tave_sph_monitor.o: $(SPH_UTILS_DIR)/t_ctl_data_tave_sph_monitor.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer2.o t_ctl_data_sph_monitor_list.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_param_dipole_fit.o: $(SPH_UTILS_DIR)/t_ctl_param_dipole_fit.f90 m_precision.o m_constants.o t_ctl_data_dipole_fit_ratio.o t_read_sph_spectra.o skip_comment_f.o m_read_sph_spectra_f.o approximate_to_polynomial.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_param_dyn_elsasser.o: $(SPH_UTILS_DIR)/t_ctl_param_dyn_elsasser.f90 m_precision.o m_constants.o m_phys_constants.o t_read_sph_spectra.o t_ctl_data_get_dyn_elsasser.o t_powers_4_coefficients.o t_list_of_dimless_numbers.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
