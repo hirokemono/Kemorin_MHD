@@ -224,7 +224,7 @@
      &      elsassers(iels%ist_Blength_m))
 !
         elsassers(iels%ist_Elsasser)                                    &
-     &      =  elsassers(iels%ist_MEne+2) * els_dat%coef_elsasser
+     &      = two * elsassers(iels%ist_MEne+2) * els_dat%coef_elsasser
       end if
 !
       if(els_dat%irms_KE .ge. 3 .and. els_dat%irms_ME .ge. 3) then
