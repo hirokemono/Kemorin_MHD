@@ -204,13 +204,13 @@
 !
 !
       write(id_file,'(a)')    'radial_layers, truncation'
-      write(id_file,'(3i16)') sph_IN%nri_sph, sph_IN%ltr_sph
+      write(id_file,'(2i16)') sph_IN%nri_sph, sph_IN%ltr_sph
       write(id_file,'(a)')    'ICB_id, CMB_id'
       write(id_file,'(2i16)') sph_IN%kr_ICB, sph_IN%kr_CMB
       write(id_file,'(a)')    'Lower boudary'
-      write(id_file,'(i16,1pe23.14e3)') sph_IN%kr_inner, sph_IN%r_inner
+      write(id_file,'(i16,1pe23.15e3)') sph_IN%kr_inner, sph_IN%r_inner
       write(id_file,'(a)')    'Upper boundary'
-      write(id_file,'(i16,1pe23.14e3)') sph_IN%kr_outer, sph_IN%r_outer
+      write(id_file,'(i16,1pe23.15e3)') sph_IN%kr_outer, sph_IN%r_outer
       write(id_file,'(a)')    'number of components'
       write(id_file,'(5i16)')                                           &
      &      sph_IN%nfield_sph_spec, sph_IN%ntot_sph_spec
@@ -242,7 +242,7 @@
       write(id_file,'(a)')    'ICB_id, CMB_id'
       write(id_file,'(2i16)') sph_IN%kr_ICB, sph_IN%kr_CMB
       write(id_file,'(a)')    'number of components'
-      write(id_file,'(5i16)')                                           &
+      write(id_file,'(2i16)')                                           &
      &      sph_IN%nfield_sph_spec, sph_IN%ntot_sph_spec
       write(id_file,'(16i5)')                                           &
      &      sph_IN%ncomp_sph_spec(1:sph_IN%nfield_sph_spec)

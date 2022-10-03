@@ -153,6 +153,7 @@
 !
       call skip_comment_from_stream(id_file, len(zbuf%fixbuf(1)),       &
      &    zbuf%num_word, zbuf%len_used, zbuf%fixbuf(1))
+      zbuf%fixbuf(1)(zbuf%len_used:zbuf%len_used) = char(32)
 !
       end subroutine sel_skip_comment_gz_stream
 !
