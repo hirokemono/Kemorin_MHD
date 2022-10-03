@@ -126,6 +126,7 @@
 !
       call read_one_line_from_stream(id_file, len(zbuf%fixbuf(1)),      &
      &    zbuf%num_word, zbuf%len_used, zbuf%fixbuf(1))
+      zbuf%fixbuf(1)(zbuf%len_used:zbuf%len_used) = char(32)
 !
       end subroutine sel_read_line_gz_stream
 !
