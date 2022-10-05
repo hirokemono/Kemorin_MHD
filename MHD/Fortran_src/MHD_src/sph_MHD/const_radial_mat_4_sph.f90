@@ -167,7 +167,6 @@
       end if
 !
       if(MHD_prop%ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
-!
         call const_radial_mat_4_scalar_sph                              &
      &     (temp_evo_name, MHD_prop%ht_prop%coef_advect, dt,            &
      &      sph_params, sph_rj, r_2nd, MHD_prop%ht_prop,                &
@@ -175,7 +174,7 @@
      &      g_sph_rj, sph_MHD_mat%band_temp_evo)
       end if
 !
-      if(MHD_prop%ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
+      if(MHD_prop%cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call const_radial_mat_4_scalar_sph                              &
      &     (comp_evo_name, MHD_prop%cp_prop%coef_advect, dt,            &
      &      sph_params, sph_rj, r_2nd, MHD_prop%cp_prop,                &
