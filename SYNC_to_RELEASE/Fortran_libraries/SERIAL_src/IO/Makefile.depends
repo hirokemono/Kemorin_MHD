@@ -104,6 +104,8 @@ read_udt_from_binary_data.o: $(IO_DIR)/read_udt_from_binary_data.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 rst_data_IO_by_fld.o: $(IO_DIR)/rst_data_IO_by_fld.f90 m_precision.o m_machine_parameter.o t_time_data.o t_field_data_IO.o time_data_IO.o set_parallel_file_name.o field_data_IO.o skip_comment_f.o transfer_to_long_integers.o set_restart_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
+select_gz_stream_file_IO.o: $(IO_DIR)/select_gz_stream_file_IO.F90 m_precision.o t_buffer_4_gzip.o set_parallel_file_name.o skip_comment_f.o gzip_file_access.o skip_gz_comment.o
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 set_and_cal_udt_data.o: $(IO_DIR)/set_and_cal_udt_data.f90 m_precision.o t_ucd_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_components_flags.o: $(IO_DIR)/set_components_flags.f90 m_precision.o t_field_labels.o t_multi_flag_labels.o m_component_flags.o m_more_component_flags.o skip_comment_f.o
@@ -168,9 +170,9 @@ t_control_array_chara2real.o: $(IO_DIR)/t_control_array_chara2real.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_character.o: $(IO_DIR)/t_control_array_character.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_character2.o: $(IO_DIR)/t_control_array_character2.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o m_constants.o skip_comment_f.o write_control_elements.o
+t_control_array_character2.o: $(IO_DIR)/t_control_array_character2.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o m_constants.o write_control_items.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_character3.o: $(IO_DIR)/t_control_array_character3.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
+t_control_array_character3.o: $(IO_DIR)/t_control_array_character3.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_items.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_charaint.o: $(IO_DIR)/t_control_array_charaint.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -282,7 +284,9 @@ vtk_data_to_buffer.o: $(IO_DIR)/vtk_data_to_buffer.f90 m_precision.o m_constants
 	$(F90) -c $(F90OPTFLAGS) $<
 vtk_file_IO.o: $(IO_DIR)/vtk_file_IO.f90 m_precision.o m_constants.o m_machine_parameter.o udt_to_VTK_data_IO.o t_ucd_data.o set_parallel_file_name.o set_ucd_file_names.o set_ucd_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
-write_control_elements.o: $(IO_DIR)/write_control_elements.f90 m_precision.o m_machine_parameter.o skip_comment_f.o
+write_control_elements.o: $(IO_DIR)/write_control_elements.f90 m_precision.o m_machine_parameter.o write_control_items.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_control_items.o: $(IO_DIR)/write_control_items.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 write_field_labels.o: $(IO_DIR)/write_field_labels.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

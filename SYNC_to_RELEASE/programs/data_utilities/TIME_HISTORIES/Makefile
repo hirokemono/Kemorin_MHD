@@ -9,29 +9,38 @@ TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
 TARGET_T_AVE_NUSSELT =       t_ave_nusselt
 TARGET_SPH_ENE_CHECK =       tests/sph_ene_check
 
-SOURCES = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90 *.F90)
 
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
 t_read_sph_spectra.o \
+t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_tave_sph_ene_spectr.o \
+gz_spl_sph_spectr_head_IO.o \
+gz_spl_sph_spectr_data_IO.o \
+old_sph_spectr_data_IO.o \
 write_sph_monitor_data.o \
 cal_tave_sph_ene_spectr.o
 
 MOD_T_AVE_PICK_SPH = \
+t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 t_picked_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
 picked_sph_spectr_data_IO.o \
+write_snap_pick_sph_spectr.o \
 time_ave_picked_sph_spectr.o \
 tave_picked_sph_spec_data.o
 
 MOD_T_AVE_NUSSELT = \
+t_ctl_data_sph_monitor_list.o \
+t_ctl_param_sph_series_util.o \
 t_average_nusselt.o \
 time_average_nusselt.o \
+gz_nusselt_monitor_IO.o \
 count_monitor_time_series.o \
 t_ctl_data_tave_sph_monitor.o
 
