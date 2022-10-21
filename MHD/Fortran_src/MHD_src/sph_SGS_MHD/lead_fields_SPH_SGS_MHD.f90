@@ -402,11 +402,11 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
-     &                          'forward transform for snapshot'
+     &      'forward transform for energy flux snapshot'
       call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
      &    trns_eflux%forward, WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
       if (iflag_debug.eq.1) write(*,*)                                  &
-     &                          'forward transform for SGS snapshot'
+     &      'forward transform for SGS snapshot'
       call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
      &    trns_SGS_snap%forward, WK_leg, WK_FFTs,                       &
      &    rj_fld, SR_sig, SR_r)
