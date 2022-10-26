@@ -25,6 +25,16 @@
 !!        integer(kind = kint), intent(in) :: id_file, nitem_snap
 !!        integer(kind = kint), intent(inout) :: i_step, ierr
 !!        real(kind = kreal), intent(inout) :: time
+!!
+!!      subroutine cal_time_ave_picked_sph_spectr(num_step, time, imask,&
+!!     &          num_comps, d_series, ave_spec, rms_spec, sdev_spec)
+!!        integer(kind = kint), intent(in) :: num_step, num_comps
+!!        real(kind = kreal), intent(in) :: time(num_step)
+!!        real(kind = kreal), intent(in) :: d_series(num_comps,num_step)
+!!        integer(kind = kint), intent(in) :: imask(num_step)
+!!        real(kind = kreal), intent(inout) :: sdev_spec(num_comps)
+!!        real(kind = kreal), intent(inout) :: ave_spec(num_comps)
+!!        real(kind = kreal), intent(inout) :: rms_spec(num_comps)
 !!@endverbatim
 !!
 !!@n @param  id_rank   Process ID

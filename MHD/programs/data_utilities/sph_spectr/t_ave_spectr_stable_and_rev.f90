@@ -1,5 +1,5 @@
-!>@file   t_ave_stable_and_reversal.f90
-!!        program t_ave_stable_and_reversal
+!>@file   t_ave_spectr_stable_and_rev.f90
+!!        program t_ave_spectr_stable_and_rev
 !!
 !! @author H. Matsui
 !! @date   Programmed in  Nov., 2007
@@ -19,15 +19,14 @@
 !!
 !!    stable_limit_g10_ctl     7e-3
 !!
-!!    volume_average_file_name         'sph_ave_volume'
-!!    volume_mean_square_file_name     'sph_pwr_volume_s'
+!!    volume_pwr_spectr_file_name     'sph_pwr_volume_m'
 !!    gauss_coefs_file_name           'sph_spectr/gauss_coefs'
 !!  end time_averaging_stable_rev
 !!
 !! -----------------------------------------------------------------
 !!@endverbatim
 !
-      program t_ave_stable_and_reversal
+      program t_ave_spectr_stable_and_rev
 !
       use m_precision
       use m_constants
@@ -44,7 +43,6 @@
 !>      Structure for control data
       type(tave_stable_reverse_ctl), save :: tave_svsr_ctl
 !
-      character(len=kchara) :: vave_file_name
       character(len=kchara) :: vpwr_file_name
       character(len=kchara) :: gauss_file_name
       real(kind = kreal) :: start_time, end_time, border_g10
@@ -52,14 +50,13 @@
       integer :: i
 !
       call read_ctl_file_tave_stable_rev(0, tave_svsr_ctl)
-      call set_control_ave_gauss(tave_svsr_ctl, start_time, end_time,   &
-     &    vave_file_name, vpwr_file_name, gauss_file_name,              &
-     &    border_g10)
+      call set_control_specr_gauss(tave_svsr_ctl, start_time, end_time, &
+     &    vpwr_file_name, gauss_file_name, border_g10)
       call reset_ctl_tave_stable_rev(tave_svsr_ctl)
 !
 !
-      call s_time_average_vol_stable_rev(.TRUE., start_time, end_time,  &
-     &    vave_file_name, vpwr_file_name, gauss_file_name, border_g10)
+      call s_time_average_spec_stable_rev(.TRUE., start_time, end_time, &
+     &    vpwr_file_name, gauss_file_name, border_g10)
 !
       stop
 !
@@ -69,15 +66,13 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_control_ave_gauss                                  &
+      subroutine set_control_specr_gauss                                &
      &         (tave_svsr_ctl, start_time, end_time,                    &
-     &          vave_file_name, vpwr_file_name, gauss_file_name,        &
-     &          border_g10)
+     &          vpwr_file_name, gauss_file_name, border_g10)
 !
       use t_ctl_param_sph_series_util
 !
       type(tave_stable_reverse_ctl), intent(in) :: tave_svsr_ctl
-      character(len=kchara), intent(inout) :: vave_file_name
       character(len=kchara), intent(inout) :: vpwr_file_name
       character(len=kchara), intent(inout) :: gauss_file_name
       real(kind = kreal), intent(inout) :: start_time, end_time
@@ -85,17 +80,11 @@
 !
       character(len=kchara) :: file_prefix
 !
-      if(tave_svsr_ctl%volume_average_file_ctl%iflag .eq. 0) then
-        write(*,*) 'Set File prefix for volume average data file'
+      if(tave_svsr_ctl%volume_spectr_file_ctl%iflag .eq. 0) then
+        write(*,*) 'Set File prefix for volume spectr data file'
         stop
       end if
-      vave_file_name = tave_svsr_ctl%volume_average_file_ctl%charavalue
-!
-      if(tave_svsr_ctl%volume_power_file_ctl%iflag .eq. 0) then
-        write(*,*) 'Set File prefix for volume mean square data file'
-        stop
-      end if
-      vpwr_file_name = tave_svsr_ctl%volume_power_file_ctl%charavalue
+      vpwr_file_name = tave_svsr_ctl%volume_spectr_file_ctl%charavalue
 !
       if(tave_svsr_ctl%gauss_coefs_file_ctl%iflag .eq. 0) then
         write(*,*) 'Set File prefix for Gauss coefficients'
@@ -121,14 +110,13 @@
       end if
       border_g10 = tave_svsr_ctl%stable_limit_g10_ctl%realvalue
 !
-      end subroutine set_control_ave_gauss
+      end subroutine set_control_specr_gauss
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_time_average_vol_stable_rev                          &
+      subroutine s_time_average_spec_stable_rev                         &
      &         (flag_log, start_time, end_time,                         &
-     &          vave_file_name, vpwr_file_name, gauss_file_name,        &
-     &          border_g10)
+     &          vpwr_file_name, gauss_file_name, border_g10)
 !
       use t_read_sph_spectra
 !
@@ -140,7 +128,6 @@
       use skip_comment_f
 !
       logical, intent(in) :: flag_log
-      character(len=kchara), intent(in) :: vave_file_name
       character(len=kchara), intent(in) :: vpwr_file_name
       character(len=kchara), intent(in) :: gauss_file_name
       real(kind = kreal), intent(in) :: start_time, end_time, border_g10
@@ -151,9 +138,6 @@
       integer(kind = kint), allocatable :: iflag_sta(:)
       integer(kind = kint), allocatable :: iflag_rev(:)
 !
-      real(kind = kreal), allocatable :: tave_vol_ave(:,:)
-      real(kind = kreal), allocatable :: rms_vol_ave(:,:)
-      real(kind = kreal), allocatable :: sdev_vol_ave(:,:)
       real(kind = kreal), allocatable :: tave_vol_pwr(:,:)
       real(kind = kreal), allocatable :: rms_vol_pwr(:,:)
       real(kind = kreal), allocatable :: sdev_vol_pwr(:,:)
@@ -169,8 +153,7 @@
       real(kind = kreal) :: true_start, true_end, g10_mid
 !>      Structure for gauss coeffciients
       type(picked_gauss_coefs_IO), save :: gauss_IO_a
-      type(read_sph_spectr_data), save :: sph_IN_a, sph_IN_p, sph_OUT1
-      type(read_sph_spectr_series), save :: sph_ave_series
+      type(read_sph_spectr_data), save :: sph_IN_p, sph_OUT1
       type(read_sph_spectr_series), save :: sph_pwr_series
 !
       integer(kind = kint) :: imode_g1(-1:1)
@@ -237,40 +220,21 @@
 !      end do
 !
       call load_spectr_mean_square_file                                 &
-     &   (.FALSE., vave_file_name, .FALSE., .TRUE.,                     &
-     &    start_time, end_time, true_start, true_end,                   &
-     &    sph_IN_a, sph_ave_series)
-
-      allocate(tave_vol_ave(sph_IN_a%ntot_sph_spec,2))
-      allocate(rms_vol_ave(sph_IN_a%ntot_sph_spec,2))
-      allocate(sdev_vol_ave(sph_IN_a%ntot_sph_spec,2))
-      call cal_time_ave_picked_sph_spectr                               &
-     &   (sph_ave_series%n_step, sph_ave_series%d_time, iflag_sta,      &
-     &    sph_IN_a%ntot_sph_spec, sph_ave_series%d_spectr(1,0,1,1),     &
-     &    tave_vol_ave(1,1), rms_vol_ave(1,1), sdev_vol_ave(1,1))
-      call cal_time_ave_picked_sph_spectr                               &
-     &   (sph_ave_series%n_step, sph_ave_series%d_time, iflag_rev,      &
-     &    sph_IN_a%ntot_sph_spec, sph_ave_series%d_spectr(1,0,1,1),     &
-     &    tave_vol_ave(1,2), rms_vol_ave(1,2), sdev_vol_ave(1,2))
-      call dealloc_sph_spectr_series(sph_ave_series)
-      call dealloc_sph_espec_data(sph_IN_a)
-!
-!
-      call load_spectr_mean_square_file                                 &
-     &   (.FALSE., vpwr_file_name, .FALSE., .TRUE.,                     &
+     &   (.FALSE., vpwr_file_name, .TRUE., .TRUE.,                      &
      &    start_time, end_time, true_start, true_end,                   &
      &    sph_IN_p, sph_pwr_series)
 !
-      allocate(tave_vol_pwr(sph_IN_p%ntot_sph_spec,2))
-      allocate(rms_vol_pwr(sph_IN_p%ntot_sph_spec,2))
-      allocate(sdev_vol_pwr(sph_IN_p%ntot_sph_spec,2))
+      num_ave_data = sph_IN_p%ntot_sph_spec * (sph_IN_p%ltr_sph + 1)
+      allocate(tave_vol_pwr(num_ave_data,2))
+      allocate(rms_vol_pwr(num_ave_data,2))
+      allocate(sdev_vol_pwr(num_ave_data,2))
       call cal_time_ave_picked_sph_spectr                               &
      &   (sph_pwr_series%n_step, sph_pwr_series%d_time, iflag_sta,      &
-     &    sph_IN_p%ntot_sph_spec,  sph_pwr_series%d_spectr(1,0,1,1),    &
+     &    num_ave_data,  sph_pwr_series%d_spectr(1,0,1,1),              &
      &    tave_vol_pwr(1,1), rms_vol_pwr(1,1), sdev_vol_pwr(1,1))
       call cal_time_ave_picked_sph_spectr                               &
      &   (sph_pwr_series%n_step, sph_pwr_series%d_time, iflag_rev,      &
-     &    sph_IN_p%ntot_sph_spec,  sph_pwr_series%d_spectr(1,0,1,1),    &
+     &    num_ave_data,  sph_pwr_series%d_spectr(1,0,1,1),              &
      &    tave_vol_pwr(1,2), rms_vol_pwr(1,2), sdev_vol_pwr(1,2))
 !
 !
@@ -309,144 +273,92 @@
       write(id_file_rms,'(a)')                                          &
      &          '# Step  1: average of volume mean square in reverse'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  2: R.M.S. of volume mean square in stable'
+     &          '# Step  2: average of volume average in stable'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  3: R.M.S. of volume mean square in reverse'
+     &          '# Step  3: average of volume average in reverse'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  4: s.dev. of volume mean square in stable'
+     &          '# Step  4: R.M.S. of volume mean square in stable'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  5: s.dev. of volume mean square in reverse'
-!
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  6: average of volume average in stable'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  7: average of volume average in reverse'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  8: R.M.S. of volume average in stable'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step  9: R.M.S. of volume average in reverse'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step 10: s.dev. of volume average in stable'
-      write(id_file_rms,'(a)')                                          &
-     &          '# Step 11: s.dev. of volume average in reverse'
+     &          '# Step  5: R.M.S. of volume mean square in reverse'
 !
       call select_output_sph_pwr_head(id_file_rms, .TRUE. , sph_OUT1)
 !
       sph_OUT1%time = true_end
       sph_OUT1%i_step = 0
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,1),                    &
+      call copy_moniter_spectr_to_IO                                    &
+     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, tave_vol_pwr(1,1), &
      &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
       sph_OUT1%i_step = 1
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,2),                    &
+      call copy_moniter_spectr_to_IO                                    &
+     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, tave_vol_pwr(1,2),  &
      &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
 !
       sph_OUT1%i_step = 2
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,2),                     &
+      call copy_moniter_spectr_to_IO                                    &
+     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_ave(1,2),   &
      &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
       sph_OUT1%i_step = 3
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,1),                     &
+      call copy_moniter_spectr_to_IO                                    &
+     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_pwr(1,1),   &
      &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
 !
       sph_OUT1%i_step = 4
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,1),                    &
+      call copy_moniter_spectr_to_IO                                    &
+     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, sdev_vol_pwr(1,1),  &
      &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
       sph_OUT1%i_step = 5
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,2),                    &
-     &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-!
-      sph_OUT1%i_step = 6
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,1),                    &
-     &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-      sph_OUT1%i_step = 7
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,2),                    &
-     &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-!
-      sph_OUT1%i_step = 8
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,1),                     &
-     &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-      sph_OUT1%i_step = 9
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,2),                     &
-     &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-!
-      sph_OUT1%i_step = 10
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,1),                    &
-     &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-      sph_OUT1%i_step = 11
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,2),                    &
+      call copy_moniter_spectr_to_IO                                    &
+     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, sdev_vol_pwr(1,2),  &
      &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
       close(id_file_rms)
 !
-      end subroutine s_time_average_vol_stable_rev
+      end subroutine s_time_average_spec_stable_rev
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_moniter_aves_to_IO(ntot_sph_spec, time_vol_ave,   &
+      subroutine copy_moniter_spectr_to_IO                              &
+     &         (ntot_sph_spec, ltr, time_vol_ave,                       &
      &          ntot_gauss, tave_gauss, imode_g1, sph_OUT)
 !
       use t_read_sph_spectra
 !
       integer(kind = kint), intent(in) :: imode_g1(-1:1)
-      integer(kind = kint), intent(in) :: ntot_gauss, ntot_sph_spec
+      integer(kind = kint), intent(in) :: ntot_gauss
+      integer(kind = kint), intent(in) :: ntot_sph_spec, ltr
       real(kind = kreal), intent(in) :: tave_gauss(ntot_gauss)
-      real(kind = kreal), intent(in) :: time_vol_ave(ntot_sph_spec)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: time_vol_spectr(ntot_sph_spec,0:ltr)
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !
-      sph_OUT%spectr_IO(1:ntot_sph_spec,0,1)                            &
-     &            = time_vol_ave(1:ntot_sph_spec)
-      sph_OUT%spectr_IO(ntot_sph_spec+1,0,1) = tave_gauss(imode_g1( 0))
-      sph_OUT%spectr_IO(ntot_sph_spec+2,0,1) = tave_gauss(imode_g1( 1))
-      sph_OUT%spectr_IO(ntot_sph_spec+3,0,1) = tave_gauss(imode_g1(-1))
+      sph_OUT%spectr_IO(1:ntot_sph_spec,0:ltr,1)                        &
+     &            = time_vol_spectr(1:ntot_sph_spec,0:ltr)
+      sph_OUT%spectr_IO(ntot_sph_spec+1,0:ltr,1) = zero
+      sph_OUT%spectr_IO(ntot_sph_spec+2,0:ltr,1) = zero
+      sph_OUT%spectr_IO(ntot_sph_spec+3,0:ltr,1) = zero
+      sph_OUT%spectr_IO(ntot_sph_spec+1,1,1) = tave_gauss(imode_g1( 0))
+      sph_OUT%spectr_IO(ntot_sph_spec+2,1,1) = tave_gauss(imode_g1( 1))
+      sph_OUT%spectr_IO(ntot_sph_spec+3,1,1) = tave_gauss(imode_g1(-1))
 !
-      end subroutine copy_moniter_aves_to_IO
+      end subroutine copy_moniter_spectr_to_IO
 !
 ! -------------------------------------------------------------------
 !
-      end program t_ave_stable_and_reversal
+      end program t_ave_spectr_stable_and_rev

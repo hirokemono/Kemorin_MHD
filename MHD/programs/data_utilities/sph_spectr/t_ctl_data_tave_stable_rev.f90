@@ -26,6 +26,7 @@
 !!
 !!    volume_average_file_name         'sph_ave_volume'
 !!    volume_mean_square_file_name     'sph_pwr_volume_s'
+!!    volume_pwr_spectr_file_name      'sph_pwr_volume_m'
 !!    gauss_coefs_file_name           'sph_spectr/gauss_coefs'
 !!  end time_averaging_stable_rev
 !!
@@ -59,6 +60,8 @@
         type(read_character_item) :: volume_average_file_ctl
 !>        Structure for volume mean square file name
         type(read_character_item) :: volume_power_file_ctl
+!>        Structure for volume spectr file name
+        type(read_character_item) :: volume_spectr_file_ctl
 !>        Structure for gauss coefficient file name
         type(read_character_item) :: gauss_coefs_file_ctl
 !
@@ -83,6 +86,8 @@
      &      :: hd_volume_average_file = 'volume_average_file_name'
       character(len=kchara), parameter, private                         &
      &      :: hd_volume_square_file = 'volume_mean_square_file_name'
+      character(len=kchara), parameter, private                         &
+     &      :: hd_volume_spectr_file = 'volume_pwr_spectr_file_name'
       character(len=kchara), parameter, private                         &
      &      :: hd_gauss_coefs_file = 'gauss_coefs_file_name'
 !
@@ -148,6 +153,9 @@
      &      tave_svsr_ctl%volume_average_file_ctl)
         call read_chara_ctl_type(c_buf, hd_volume_square_file,          &
      &      tave_svsr_ctl%volume_power_file_ctl)
+        call read_chara_ctl_type(c_buf, hd_volume_spectr_file,          &
+     &      tave_svsr_ctl%volume_spectr_file_ctl)
+!
         call read_chara_ctl_type(c_buf, hd_gauss_coefs_file,            &
      &      tave_svsr_ctl%gauss_coefs_file_ctl)
       end do
@@ -167,6 +175,7 @@
       tave_svsr_ctl%stable_limit_g10_ctl%iflag =     0
       tave_svsr_ctl%volume_average_file_ctl%iflag =   0
       tave_svsr_ctl%volume_power_file_ctl%iflag = 0
+      tave_svsr_ctl%volume_spectr_file_ctl%iflag = 0
       tave_svsr_ctl%gauss_coefs_file_ctl%iflag = 0
 !
       tave_svsr_ctl%i_tave_stable_reverse = 0
