@@ -292,8 +292,8 @@
       call select_output_sph_pwr_head(id_file_rms, .TRUE. , sph_OUT1)
 !
 !$omp parallel do
-      do i = 0, sph_IN_p%ltr_sph
-        sph_IN_p%i_mode(i) = i
+      do i = 0, sph_OUT1%ltr_sph
+        sph_OUT1%i_mode(i) = i
       end do
 !$omp end parallel do
       sph_OUT1%time = true_end
