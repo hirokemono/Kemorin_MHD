@@ -387,7 +387,7 @@ old_sph_spectr_data_IO.o \
 write_gauss_coefs_4_monitor.o \
 cal_tave_sph_ene_spectr.o \
 time_average_gauss_coefs.o \
-t_ave_stable_and_reversal.o
+t_ave_spectr_stable_and_rev.o
 
 MOD_SPH_ENE_CHECK = \
 compare_sph_mean_square.o

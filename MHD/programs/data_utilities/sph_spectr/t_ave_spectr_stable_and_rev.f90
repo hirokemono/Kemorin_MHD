@@ -138,6 +138,7 @@
       integer(kind = kint), allocatable :: iflag_sta(:)
       integer(kind = kint), allocatable :: iflag_rev(:)
 !
+      integer(kind = kint) :: num_ave_data
       real(kind = kreal), allocatable :: tave_vol_pwr(:,:)
       real(kind = kreal), allocatable :: rms_vol_pwr(:,:)
       real(kind = kreal), allocatable :: sdev_vol_pwr(:,:)
@@ -301,15 +302,15 @@
 !
       sph_OUT1%i_step = 2
       call copy_moniter_spectr_to_IO                                    &
-     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_ave(1,2),   &
-     &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, sph_OUT1)
+     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_pwr(1,1),   &
+     &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
       sph_OUT1%i_step = 3
       call copy_moniter_spectr_to_IO                                    &
-     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_pwr(1,1),   &
-     &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
+     &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_pwr(1,2),   &
+     &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
@@ -335,7 +336,7 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_moniter_spectr_to_IO                              &
-     &         (ntot_sph_spec, ltr, time_vol_ave,                       &
+     &         (ntot_sph_spec, ltr, time_vol_spectr,                    &
      &          ntot_gauss, tave_gauss, imode_g1, sph_OUT)
 !
       use t_read_sph_spectra
