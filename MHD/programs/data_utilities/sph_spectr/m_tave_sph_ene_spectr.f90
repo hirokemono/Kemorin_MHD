@@ -454,4 +454,94 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine load_spectr_mean_square_file                           &
+     &         (flag_old_fmt, fname_org, flag_spectr, flag_vol_ave,     &
+     &          start_time, end_time, true_start, true_end,             &
+     &          sph_IN, sph_series)
+!
+      use select_gz_stream_file_IO
+      use gz_spl_sph_spectr_head_IO
+      use gz_spl_sph_spectr_data_IO
+      use set_parallel_file_name
+      use count_monitor_time_series
+!
+      character(len = kchara), intent(in) :: fname_org
+      logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
+      real(kind = kreal), intent(in) :: start_time, end_time
+      real(kind = kreal), intent(inout) :: true_start, true_end
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+      type(read_sph_spectr_series), intent(inout) :: sph_series
+!
+      character(len = kchara) :: file_name, extension
+      character(len = kchara) :: directory, fname_no_dir, fname_tmp
+      real(kind = kreal) :: prev_time
+      integer(kind = kint) :: icou, ierr, ist_true, i, num, num_count
+      logical :: flag_gzip1
+      type(buffer_4_gzip) :: zbuf1
+      character, pointer :: FPz_f1
+!
+!
+      write(*,*) 'Open file ', trim(fname_org)
+      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
+     &                                    fname_org, flag_gzip1, zbuf1)
+      call select_input_sph_series_head                                 &
+     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
+     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
+!      call check_sph_spectr_name(sph_IN)
+!
+      num = size(sph_IN%spectr_IO,2) * size(sph_IN%spectr_IO,3)
+      if(flag_vol_ave) num = size(sph_IN%spectr_IO,2)
+      call s_count_monitor_time_series                                  &
+     &   (.TRUE., FPz_f1, id_file_rms, flag_gzip1, num,                 &
+     &    start_time, end_time, true_start, true_end, num_count, zbuf1)
+      call dealloc_sph_espec_data(sph_IN)
+!
+      if(flag_gzip1) then
+        ierr =  rewind_gzfile(FPz_f1)
+      else
+        rewind(id_file_rms)
+      end if
+!
+      call select_input_sph_series_head                                 &
+     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
+     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
+      call alloc_sph_spectr_series                                      &
+     &   (izero, sph_IN, num_count, sph_series)
+!
+      icou = 0
+      ist_true = -1
+      prev_time = sph_IN%time
+      write(*,'(a6,i12,a30,i12)',advance="NO")                         &
+     &       'step= ', sph_IN%i_step,                                  &
+     &       ' averaging finished. Count=  ', icou
+      do
+        call sel_gz_input_sph_series_data                               &
+     &     (FPz_f1, id_file_rms, flag_gzip1,                            &
+     &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1,     &
+     &      ierr)
+        if(ierr .gt. 0) go to 99
+!
+        if (sph_IN%time .ge. start_time) then
+          icou = icou + 1
+          call copy_spectr_IO_to_series(icou, izero, sph_IN, sph_series)
+        end if
+!
+        write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60),&
+     &       'step= ', sph_IN%i_step,                                  &
+     &       ' load finished. Count=   ', icou
+        if (sph_IN%time .ge. end_time) then
+          true_end = sph_IN%time
+          exit
+        end if
+      end do
+!
+   99 continue
+      write(*,*)
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
+!
+      end subroutine load_spectr_mean_square_file
+!
+! -------------------------------------------------------------------
+!
       end module m_tave_sph_ene_spectr

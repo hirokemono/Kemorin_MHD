@@ -85,6 +85,8 @@
       call set_spectr_address_4_dyn_els(sph_IN_l, els_dat)
 !
       call copy_read_ene_head_params(sph_IN_l, sph_OUT1)
+      sph_OUT1%num_time_labels = sph_OUT1%num_time_labels - 1
+!
       call set_dynamic_elsasser_address(els_dat, iels1,                 &
      &    sph_OUT1%nfield_sph_spec, sph_OUT1%ntot_sph_spec)
 !      call check_dynamic_elsasser_address(els_dat, iels1)
@@ -106,6 +108,7 @@
 !
       nri_tmp = sph_OUT1%nri_sph
       sph_OUT1%nri_sph = 1
+      sph_OUT1%nri_dat = 1
       call alloc_sph_spectr_data(izero, sph_OUT1)
 !
       icou = 0

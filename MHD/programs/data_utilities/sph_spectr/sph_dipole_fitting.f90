@@ -79,6 +79,7 @@
 !
       call init_dipole_fitting_data(sph_IN1, fit_dat1)
       call copy_read_ene_head_params(sph_IN1, sph_OUT1)
+      sph_OUT1%num_time_labels = sph_OUT1%num_time_labels - 1
 !
       sph_OUT1%nfield_sph_spec = 8
       sph_OUT1%ntot_sph_spec =   8
@@ -99,6 +100,7 @@
 !
       nri_tmp = sph_OUT1%nri_sph
       sph_OUT1%nri_sph = 1
+      sph_OUT1%nri_dat = 1
       call alloc_sph_spectr_data(izero, sph_OUT1)
 !
 !

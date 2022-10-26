@@ -145,6 +145,7 @@
       character(len=kchara) :: sdev_fname
       integer(kind = kint), parameter :: id_pick = 15
 !
+      integer(kind = kint), allocatable :: imask(:)
       integer(kind = kint) :: i_step, i, k, nd
       real(kind = kreal) :: true_start, true_end
 !
@@ -164,9 +165,12 @@
      &   (flag_log, file_name, start_time, end_time,                    &
      &    true_start, true_end, pick_IO)
 !
+      allocate(imask(pick_IO%n_step))
+      imask(1:pick_IO%n_step) = 1
+!
       call alloc_picked_t_avetage(pick_IO%ntot_data, p_ave)
       call cal_time_ave_picked_sph_spectr(pick_IO%n_step,               &
-     &    pick_IO%d_time, pick_IO%ntot_data, pick_IO%d_pick,            &
+     &    pick_IO%d_time, imask, pick_IO%ntot_data, pick_IO%d_pick,     &
      &    p_ave%ave_spec, p_ave%rms_spec, p_ave%sdev_spec)
 !
 !$omp parallel workshare

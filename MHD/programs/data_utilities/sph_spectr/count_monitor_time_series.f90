@@ -148,35 +148,41 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_time_ave_picked_sph_spectr(num_step, time,         &
+      subroutine cal_time_ave_picked_sph_spectr(num_step, time, imask,  &
      &          num_comps, d_series, ave_spec, rms_spec, sdev_spec)
 !
       integer(kind = kint), intent(in) :: num_step, num_comps
       real(kind = kreal), intent(in) :: time(num_step)
       real(kind = kreal), intent(in) :: d_series(num_comps,num_step)
+      integer(kind = kint), intent(in) :: imask(num_step)
       real(kind = kreal), intent(inout) :: sdev_spec(num_comps)
       real(kind = kreal), intent(inout) :: ave_spec(num_comps)
       real(kind = kreal), intent(inout) :: rms_spec(num_comps)
 !
       integer(kind = kint) :: icou
-      real(kind = kreal) :: acou
+      real(kind = kreal) :: acou, total_t
 !
 !
-      acou = one / (time(num_step) - time(1))
 !$omp parallel workshare
       ave_spec(1:num_comps) =   0.0d0
       rms_spec(1:num_comps) =   0.0d0
       sdev_spec(1:num_comps) =  0.0d0
 !$omp end parallel workshare
 !
+      total_t = 1.0d-99
       do icou = 1, num_step-1
 !$omp parallel workshare
+        total_t = total_t + (time(icou+1) - time(icou))                 &
+     &                     * dble(imask(icou))
         ave_spec(1:num_comps) = ave_spec(1:num_comps)                   &
      &                         + half * (d_series(1:num_comps,icou)     &
      &                                 + d_series(1:num_comps,icou+1))  &
-     &                         * (time(icou+1) - time(icou))
+     &                         * (time(icou+1) - time(icou))            &
+     &                         * dble(imask(icou))
 !$omp end parallel workshare
       end do
+      acou = one / total_t
+!
 !$omp parallel workshare
       ave_spec(1:num_comps) = ave_spec(1:num_comps) * acou
 !$omp end parallel workshare
@@ -186,19 +192,23 @@
         rms_spec(1:num_comps) = rms_spec(1:num_comps)                   &
      &                       + half * (d_series(1:num_comps,icou)**2    &
      &                               + d_series(1:num_comps,icou+1)**2) &
-     &                         * (time(icou+1) - time(icou))
+     &                         * (time(icou+1) - time(icou))            &
+     &                         * dble(imask(icou))
         sdev_spec(1:num_comps) = sdev_spec(1:num_comps)                 &
      &                       + half * ((d_series(1:num_comps,icou)      &
      &                                 - ave_spec(1:num_comps))**2      &
      &                               + (d_series(1:num_comps,icou+1)    &
      &                                 - ave_spec(1:num_comps))**2)     &
-     &                         * (time(icou+1) - time(icou))
+     &                         * (time(icou+1) - time(icou))            &
+     &                         * dble(imask(icou))
 !$omp end parallel workshare
       end do
 !$omp parallel workshare
       rms_spec(1:num_comps) =   sqrt(rms_spec(1:num_comps) * acou)
       sdev_spec(1:num_comps) =  sqrt(sdev_spec(1:num_comps) * acou)
 !$omp end parallel workshare
+!
+      write(*,*) 'Integration time: ', total_t
 !
       end subroutine cal_time_ave_picked_sph_spectr
 !

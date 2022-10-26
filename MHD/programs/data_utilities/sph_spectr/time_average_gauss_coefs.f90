@@ -74,6 +74,7 @@
       real(kind = kreal), allocatable :: rms_gauss(:)
       real(kind = kreal), allocatable :: sdev_gauss(:)
       real(kind = kreal), allocatable :: prev_gauss(:)
+      integer(kind = kint), allocatable :: imask(:)
 !
       character(len=kchara) :: tave_pick_gauss_fname
       character(len=kchara) :: trms_pick_gauss_fname
@@ -99,10 +100,13 @@
       allocate(rms_gauss(gauss_IO_a%num_mode))
       allocate(sdev_gauss(gauss_IO_a%num_mode))
       allocate(prev_gauss(gauss_IO_a%num_mode))
+      allocate(imask(gauss_IO_a%n_step))
+      imask(1:gauss_IO_a%n_step) = 1
 !
       call cal_time_ave_picked_sph_spectr                               &
-     &   (gauss_IO_a%n_step, gauss_IO_a%d_time, gauss_IO_a%num_mode,    &
-     &    gauss_IO_a%d_gauss, ave_gauss, rms_gauss, sdev_gauss)
+     &   (gauss_IO_a%n_step, gauss_IO_a%d_time, imask,                  &
+     &    gauss_IO_a%num_mode, gauss_IO_a%d_gauss, ave_gauss,           &
+     &    rms_gauss, sdev_gauss)
 !
 !
       do icou = 1, gauss_IO_a%num_mode

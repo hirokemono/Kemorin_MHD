@@ -70,6 +70,7 @@
       real(kind = kreal) :: rms_Nu(2) = 0.0d0
       real(kind = kreal) :: ave_Nu(2) = 0.0d0
       real(kind = kreal) :: sdev_Nu(2) = 0.0d0
+      integer(kind = kint), allocatable :: imask(:)
       integer(kind = kint), parameter :: id_pick = 15
 !
       integer(kind = kint) :: i_step, ierr, icou, i
@@ -83,8 +84,11 @@
      &    true_start, true_end, Nu_t, Nu_series)
         write(*,*) 'aho'
 !
+      allocate(imask(Nu_series%n_step))
+      imask(1:Nu_series%n_step) = 1
+!
       call cal_time_ave_picked_sph_spectr                               &
-     &   (Nu_series%n_step, Nu_series%d_time, itwo,                     &
+     &   (Nu_series%n_step, Nu_series%d_time, imask, itwo,              &
      &    Nu_series%Nu_numbers, ave_Nu, rms_Nu, sdev_Nu)
 !
 !    output Results
