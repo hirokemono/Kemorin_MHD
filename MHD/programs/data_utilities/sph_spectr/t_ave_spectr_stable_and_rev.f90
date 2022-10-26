@@ -230,11 +230,6 @@
       allocate(rms_vol_pwr(num_ave_data,2))
       allocate(sdev_vol_pwr(num_ave_data,2))
 !
-      write(*,*) 'sph_IN_p%spectr_IO', num_ave_data, &
-     &    (size(sph_IN_p%spectr_IO,i),i=1,3)
-      write(*,*) 'cal_time_ave_picked_sph_spectr', num_ave_data, &
-     &    sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, &
-     &    (size(sph_pwr_series%d_spectr,i),i=1,4)
       call cal_time_ave_picked_sph_spectr                               &
      &   (sph_pwr_series%n_step, sph_pwr_series%d_time, iflag_sta,      &
      &    num_ave_data,  sph_pwr_series%d_spectr(1,0,1,1),              &
@@ -245,15 +240,13 @@
      &    tave_vol_pwr(1,2), rms_vol_pwr(1,2), sdev_vol_pwr(1,2))
 !
 !
-      write(*,*) 'copy_read_ene_head_params'
       call copy_read_ene_head_params(sph_IN_p, sph_OUT1)
       sph_OUT1%nfield_sph_spec = sph_OUT1%nfield_sph_spec + 1
       sph_OUT1%ntot_sph_spec =   sph_OUT1%ntot_sph_spec + 3
 !      sph_OUT1%num_time_labels = sph_OUT1%num_time_labels
 !
       call alloc_sph_espec_name(sph_OUT1)
-!
-      call alloc_sph_spectr_data(izero, sph_OUT1)
+      call alloc_sph_spectr_data(sph_IN_p%ltr_sph, sph_OUT1)
       call copy_read_ene_name_params                                    &
      &   (sph_IN_p%nfield_sph_spec, sph_IN_p%ntot_sph_spec,             &
      &    sph_OUT1%num_time_labels, sph_IN_p, sph_OUT1)
