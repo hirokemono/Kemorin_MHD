@@ -240,10 +240,6 @@
      &   (.FALSE., vave_file_name, .FALSE., .TRUE.,                     &
      &    start_time, end_time, true_start, true_end,                   &
      &    sph_IN_a, sph_ave_series)
-      call load_spectr_mean_square_file                                 &
-     &   (.FALSE., vpwr_file_name, .FALSE., .TRUE.,                     &
-     &    start_time, end_time, true_start, true_end,                   &
-     &    sph_IN_p, sph_pwr_series)
 
       allocate(tave_vol_ave(sph_IN_a%ntot_sph_spec,2))
       allocate(rms_vol_ave(sph_IN_a%ntot_sph_spec,2))
@@ -254,19 +250,25 @@
      &    tave_vol_ave(1,1), rms_vol_ave(1,1), sdev_vol_ave(1,1))
       call cal_time_ave_picked_sph_spectr                               &
      &   (sph_ave_series%n_step, sph_ave_series%d_time, iflag_rev,      &
-     &    sph_IN_p%ntot_sph_spec, sph_ave_series%d_spectr(1,0,1,1),     &
+     &    sph_IN_a%ntot_sph_spec, sph_ave_series%d_spectr(1,0,1,1),     &
      &    tave_vol_ave(1,2), rms_vol_ave(1,2), sdev_vol_ave(1,2))
+!
+!
+      call load_spectr_mean_square_file                                 &
+     &   (.FALSE., vpwr_file_name, .FALSE., .TRUE.,                     &
+     &    start_time, end_time, true_start, true_end,                   &
+     &    sph_IN_p, sph_pwr_series)
 !
       allocate(tave_vol_pwr(sph_IN_p%ntot_sph_spec,2))
       allocate(rms_vol_pwr(sph_IN_p%ntot_sph_spec,2))
       allocate(sdev_vol_pwr(sph_IN_p%ntot_sph_spec,2))
       call cal_time_ave_picked_sph_spectr                               &
      &   (sph_pwr_series%n_step, sph_pwr_series%d_time, iflag_sta,      &
-     &    sph_IN_a%ntot_sph_spec,  sph_pwr_series%d_spectr(1,0,1,1),    &
+     &    sph_IN_p%ntot_sph_spec,  sph_pwr_series%d_spectr(1,0,1,1),    &
      &    tave_vol_pwr(1,1), rms_vol_pwr(1,1), sdev_vol_pwr(1,1))
       call cal_time_ave_picked_sph_spectr                               &
      &   (sph_pwr_series%n_step, sph_pwr_series%d_time, iflag_rev,      &
-     &    sph_IN_a%ntot_sph_spec,  sph_pwr_series%d_spectr(1,0,1,1),    &
+     &    sph_IN_p%ntot_sph_spec,  sph_pwr_series%d_spectr(1,0,1,1),    &
      &    tave_vol_pwr(1,2), rms_vol_pwr(1,2), sdev_vol_pwr(1,2))
 !
 !
@@ -305,21 +307,22 @@
       write(id_file_rms,'(a)')                                          &
      &          '# Step  1: average of volume mean square in reverse'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  2: average of volume average in stable'
+     &          '# Step  2: R.M.S. of volume mean square in stable'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  3: average of volume average in reverse'
+     &          '# Step  3: R.M.S. of volume mean square in reverse'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  4: R.M.S. of volume mean square in stable'
+     &          '# Step  4: s.dev. of volume mean square in stable'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  5: R.M.S. of volume mean square in reverse'
+     &          '# Step  5: s.dev. of volume mean square in reverse'
+!
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  6: R.M.S. of volume average in stable'
+     &          '# Step  6: average of volume average in stable'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  7: R.M.S. of volume average in reverse'
+     &          '# Step  7: average of volume average in reverse'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  8: s.dev. of volume mean square in stable'
+     &          '# Step  8: R.M.S. of volume average in stable'
       write(id_file_rms,'(a)')                                          &
-     &          '# Step  9: s.dev. of volume mean square in reverse'
+     &          '# Step  9: R.M.S. of volume average in reverse'
       write(id_file_rms,'(a)')                                          &
      &          '# Step 10: s.dev. of volume average in stable'
       write(id_file_rms,'(a)')                                          &
@@ -328,29 +331,14 @@
       call select_output_sph_pwr_head(id_file_rms, .TRUE. , sph_OUT1)
 !
       sph_OUT1%time = true_end
-!
       sph_OUT1%i_step = 0
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,1),                    &
-     &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-      sph_OUT1%i_step = 1
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,2),                    &
-     &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-      sph_OUT1%i_step = 2
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,1),                    &
      &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
-      sph_OUT1%i_step = 3
+      sph_OUT1%i_step = 1
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,2),                    &
      &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, sph_OUT1)
@@ -358,28 +346,59 @@
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
 !
-      sph_OUT1%i_step = 4
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,1),                     &
-     &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-      sph_OUT1%i_step = 5
+      sph_OUT1%i_step = 2
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,2),                     &
      &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
-      sph_OUT1%i_step = 6
+      sph_OUT1%i_step = 3
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,1),                     &
      &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
+!
+      sph_OUT1%i_step = 4
+      call copy_moniter_aves_to_IO                                      &
+     &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,1),                    &
+     &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, sph_OUT1)
+      call select_output_sph_series_data                                &
+     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+!
+      sph_OUT1%i_step = 5
+      call copy_moniter_aves_to_IO                                      &
+     &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,2),                    &
+     &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, sph_OUT1)
+      call select_output_sph_series_data                                &
+     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+!
+!
+      sph_OUT1%i_step = 6
+      call copy_moniter_aves_to_IO                                      &
+     &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,1),                    &
+     &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, sph_OUT1)
+      call select_output_sph_series_data                                &
+     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+!
       sph_OUT1%i_step = 7
+      call copy_moniter_aves_to_IO                                      &
+     &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,2),                    &
+     &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, sph_OUT1)
+      call select_output_sph_series_data                                &
+     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+!
+!
+      sph_OUT1%i_step = 8
+      call copy_moniter_aves_to_IO                                      &
+     &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,1),                     &
+     &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
+      call select_output_sph_series_data                                &
+     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+!
+      sph_OUT1%i_step = 9
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,2),                     &
      &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, sph_OUT1)
@@ -387,29 +406,16 @@
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
 !
+      sph_OUT1%i_step = 10
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,1),                    &
      &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
 !
-      sph_OUT1%i_step = 9
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,2),                    &
-     &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
-      sph_OUT1%i_step = 10
-      call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,1),                    &
-     &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
-!
       sph_OUT1%i_step = 11
       call copy_moniter_aves_to_IO                                      &
-     &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,2),                    &
+     &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,2),                    &
      &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
      &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
