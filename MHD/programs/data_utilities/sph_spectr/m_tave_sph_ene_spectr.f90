@@ -505,14 +505,20 @@
       call select_input_sph_series_head                                 &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
-      call alloc_sph_spectr_series                                      &
-     &   (izero, sph_IN, num_count, sph_series)
+!
+      if(flag_spectr) then
+        call alloc_sph_spectr_series(sph_IN%ltr_sph, sph_IN,            &
+     &                               num_count, sph_series)
+      else
+        call alloc_sph_spectr_series(izero, sph_IN,                     &
+     &                               num_count, sph_series)
+      end if
 !
       icou = 0
       ist_true = -1
       prev_time = sph_IN%time
-      write(*,'(a6,i12,a30,i12)',advance="NO")                         &
-     &       'step= ', sph_IN%i_step,                                  &
+      write(*,'(a6,i12,a30,i12)',advance="NO")                          &
+     &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
         call sel_gz_input_sph_series_data                               &
@@ -523,7 +529,13 @@
 !
         if (sph_IN%time .ge. start_time) then
           icou = icou + 1
-          call copy_spectr_IO_to_series(icou, izero, sph_IN, sph_series)
+          if(flag_spectr) then
+            call copy_spectr_IO_to_series(icou, sph_IN%ltr_sph,         &
+     &                                    sph_IN, sph_series)
+          else
+            call copy_spectr_IO_to_series(icou, izero,                  &
+     &                                    sph_IN, sph_series)
+          end if
         end if
 !
         write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60),&

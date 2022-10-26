@@ -229,6 +229,12 @@
       allocate(tave_vol_pwr(num_ave_data,2))
       allocate(rms_vol_pwr(num_ave_data,2))
       allocate(sdev_vol_pwr(num_ave_data,2))
+!
+      write(*,*) 'sph_IN_p%spectr_IO', num_ave_data, &
+     &    (size(sph_IN_p%spectr_IO,i),i=1,3)
+      write(*,*) 'cal_time_ave_picked_sph_spectr', num_ave_data, &
+     &    sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, &
+     &    (size(sph_pwr_series%d_spectr,i),i=1,4)
       call cal_time_ave_picked_sph_spectr                               &
      &   (sph_pwr_series%n_step, sph_pwr_series%d_time, iflag_sta,      &
      &    num_ave_data,  sph_pwr_series%d_spectr(1,0,1,1),              &
@@ -239,6 +245,7 @@
      &    tave_vol_pwr(1,2), rms_vol_pwr(1,2), sdev_vol_pwr(1,2))
 !
 !
+      write(*,*) 'copy_read_ene_head_params'
       call copy_read_ene_head_params(sph_IN_p, sph_OUT1)
       sph_OUT1%nfield_sph_spec = sph_OUT1%nfield_sph_spec + 1
       sph_OUT1%ntot_sph_spec =   sph_OUT1%ntot_sph_spec + 3
@@ -284,20 +291,25 @@
 !
       call select_output_sph_pwr_head(id_file_rms, .TRUE. , sph_OUT1)
 !
+!$omp parallel do
+      do i = 0, sph_IN_p%ltr_sph
+        sph_IN_p%i_mode(i) = i
+      end do
+!$omp end parallel do
       sph_OUT1%time = true_end
       sph_OUT1%i_step = 0
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, tave_vol_pwr(1,1), &
      &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &   (id_file_rms, .TRUE., .TRUE., sph_OUT1)
 !
       sph_OUT1%i_step = 1
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, tave_vol_pwr(1,2),  &
      &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &   (id_file_rms, .TRUE., .TRUE., sph_OUT1)
 !
 !
       sph_OUT1%i_step = 2
@@ -305,14 +317,14 @@
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_pwr(1,1),   &
      &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &   (id_file_rms, .TRUE., .TRUE., sph_OUT1)
 !
       sph_OUT1%i_step = 3
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_pwr(1,2),   &
      &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &   (id_file_rms, .TRUE., .TRUE., sph_OUT1)
 !
 !
       sph_OUT1%i_step = 4
