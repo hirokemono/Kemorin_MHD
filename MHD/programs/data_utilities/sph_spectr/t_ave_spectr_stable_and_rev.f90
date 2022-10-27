@@ -281,6 +281,8 @@
      &          '# Step  4: R.M.S. of volume mean square in stable'
       write(id_file_rms,'(a)')                                          &
      &          '# Step  5: R.M.S. of volume mean square in reverse'
+      write(id_file_rms,'(a,1p2e16.8e3)')                               &
+     &          '# Start and End time: ', true_start, true_end
 !
       call select_output_sph_pwr_head(id_file_rms, .TRUE. , sph_OUT1)
 !
