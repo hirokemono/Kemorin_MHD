@@ -325,14 +325,14 @@
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, sdev_vol_pwr(1,1),  &
      &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &   (id_file_rms, .TRUE., .TRUE., sph_OUT1)
 !
       sph_OUT1%i_step = 5
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, sdev_vol_pwr(1,2),  &
      &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &   (id_file_rms, .TRUE., .TRUE., sph_OUT1)
 !
       close(id_file_rms)
 !
