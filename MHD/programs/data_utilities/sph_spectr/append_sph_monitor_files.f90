@@ -351,6 +351,7 @@
       use select_gz_stream_file_IO
       use gz_spl_sph_spectr_head_IO
       use gz_spl_sph_spectr_data_IO
+      use write_sph_monitor_data
 !
       implicit none
 !
@@ -359,8 +360,8 @@
       character(len=kchara), intent(in) :: target_file_name
 !
 !
-      type(read_sph_spectr_data), save :: append_sph_IN
-      type(read_sph_spectr_data), save :: target_sph_IN
+      type(read_sph_spectr_data), save :: sph_IN
+      type(read_sph_spectr_data), save :: sph_OUT
 !
       integer(kind = kint), parameter :: id_append_file = 15
       integer(kind = kint), parameter :: id_write_file = 16
@@ -368,8 +369,10 @@
       integer(kind = kint) :: istep_start
       real(kind = kreal) :: start_time
 !
-      integer(kind = kint) :: nd, ntot_pick
+      integer(kind = kint) :: nd, ntot_pick, ierr, kr, lth, md, i, j
 !
+      integer(kind = kint), allocatable :: icomp_in_read(:)
+      logical :: fast_flag
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf1
       character, pointer, save  :: FPz_f1
@@ -380,7 +383,7 @@
      &   (FPz_f1, id_append_file, append_file_name, flag_gzip1, zbuf1)
       call select_input_sph_series_head(FPz_f1, id_append_file,         &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
-     &    append_sph_IN, zbuf1)
+     &    sph_IN, zbuf1)
 !
       call sel_skip_comment_gz_stream                                   &
      &   (FPz_f1, id_append_file, flag_gzip1, zbuf1)
@@ -395,47 +398,68 @@
      &   (FPz_f1, id_write_file, target_file_name, flag_gzip1, zbuf1)
       call select_input_sph_series_head(FPz_f1, id_write_file,          &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
-     &    target_sph_IN, zbuf1)
+     &    sph_OUT, zbuf1)
 !
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_write_file, flag_gzip1, zbuf1)
 !
 !
-      if(append_sph_IN%nri_sph .ne. target_sph_IN%nri_sph) then
+      if(sph_IN%nri_sph .ne. sph_OUT%nri_sph) then
         write(*,*) '# of radial layer does not match',                  &
-     &      append_sph_IN%nri_sph, target_sph_IN%nri_sph
+     &      sph_IN%nri_sph, sph_OUT%nri_sph
         stop
       end if
-      if(append_sph_IN%ltr_sph .ne. target_sph_IN%ltr_sph) then
+      if(sph_IN%ltr_sph .ne. sph_OUT%ltr_sph) then
         write(*,*) '# of truncation does not match',                    &
-     &      append_sph_IN%ltr_sph, target_sph_IN%ltr_sph
-        stop
-      end if
-      if(append_sph_IN%ntot_sph_spec                                    &
-     &      .ne. target_sph_IN%ntot_sph_spec) then
-        write(*,*) '# of components in files does not match',           &
-     &      append_sph_IN%ntot_sph_spec, target_sph_IN%ntot_sph_spec
+     &      sph_IN%ltr_sph, sph_OUT%ltr_sph
         stop
       end if
 !
-      do nd = 1, target_sph_IN%ntot_sph_spec
-        if(append_sph_IN%ene_sph_spec_name(nd)                          &
-     &            .ne. target_sph_IN%ene_sph_spec_name(nd)) then
-          write(*,*) nd, '-th components in files does not match',      &
-     &            trim(append_sph_IN%ene_sph_spec_name(nd)), '    ',    &
-     &            trim(target_sph_IN%ene_sph_spec_name(nd))
-          stop
-        end if
-      end do
-      call dealloc_sph_espec_data(append_sph_IN)
+      fast_flag = .TRUE.
+      if(sph_IN%ntot_sph_spec .ne. sph_OUT%ntot_sph_spec) then
+        fast_flag = .FALSE.
+      end if
 !
-        if(flag_vol_ave) then
-          ntot_pick = (target_sph_IN%ltr_sph+1)
-        else
-          ntot_pick = target_sph_IN%nri_sph * (target_sph_IN%ltr_sph+1)
-        end if
-        write(*,*) 'ntot_pick', ntot_pick,                              &
-     &         target_sph_IN%nri_sph, target_sph_IN%ltr_sph
+      if(fast_flag) then
+        do nd = 1, sph_OUT%ntot_sph_spec
+          if(sph_IN%ene_sph_spec_name(nd)                               &
+     &            .ne. sph_OUT%ene_sph_spec_name(nd)) then
+            write(*,*) nd, '-th components in files does not match',    &
+     &            trim(sph_IN%ene_sph_spec_name(nd)), '    ',           &
+     &            trim(sph_OUT%ene_sph_spec_name(nd))
+            fast_flag = .FALSE.
+            exit
+          end if
+        end do
+      end if
+!
+      if(fast_flag .eqv. .FALSE.) then
+        allocate(icomp_in_read(sph_OUT%ntot_sph_spec))
+        icomp_in_read(1:sph_OUT%ntot_sph_spec) = 0
+!
+        do j = 1, sph_OUT%ntot_sph_spec
+          nd = j + sph_OUT%num_time_labels
+          do i = 1, sph_IN%ntot_sph_spec
+            md = i + sph_IN%num_time_labels
+            if(sph_IN%ene_sph_spec_name(md)                             &
+     &            .eq. sph_OUT%ene_sph_spec_name(nd)) then
+              icomp_in_read(j) = i
+              exit
+            end if
+          end do
+        end do
+!        write(*,*) 'icomp_in_read', icomp_in_read
+      end if
+!
+      call dealloc_sph_espec_data(sph_IN)
+!
+      if(flag_vol_ave) then
+        ntot_pick = (sph_OUT%ltr_sph+1)
+      else
+        ntot_pick = sph_OUT%nri_sph * (sph_OUT%ltr_sph+1)
+      end if
+      write(*,*) 'ntot_pick', ntot_pick,                                &
+     &         sph_OUT%nri_sph, sph_OUT%ltr_sph
 !
       call open_bwd_serch_to_append(target_file_name, id_write_file,    &
      &    istep_start, start_time, ntot_pick)
@@ -446,17 +470,78 @@
 !
       call select_input_sph_series_head(FPz_f1, id_append_file,         &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
-     &    append_sph_IN, zbuf1)
+     &    sph_IN, zbuf1)
 !
-      call copy_sph_monitor_to_end(FPz_f1, id_append_file, flag_gzip1,  &
-     &                             id_write_file, ntot_pick, zbuf1)
+      if(fast_flag) then
+        write(*,*) 'Copy data as text'
+        call copy_sph_monitor_to_end                                    &
+     &     (FPz_f1, id_append_file, flag_gzip1,                         &
+     &      id_write_file, ntot_pick, zbuf1)
+      else
+        write(*,*) 'Read and select data'
+        do
+          call sel_gz_input_sph_series_data(FPz_f1, id_append_file,     &
+     &        flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,  &
+     &        sph_IN, zbuf1, ierr)
+          if(ierr .gt. 0) exit
+!
+          sph_OUT%i_step = sph_IN%i_step
+          sph_OUT%time = sph_IN%time
+          if(flag_spectr) then
+            if(flag_vol_ave) then
+              do nd = 1, sph_OUT%ntot_sph_spec
+                if(icomp_in_read(nd) .eq. 0) cycle
+                md = icomp_in_read(nd)
+                do lth = 0, sph_IN%ltr_sph
+                  sph_OUT%spectr_IO(nd,lth,1)                           &
+     &                   = sph_IN%spectr_IO(md,lth,1)
+                end do
+              end do
+            else
+              do nd = 1, sph_OUT%ntot_sph_spec
+                if(icomp_in_read(nd) .eq. 0) cycle
+                md = icomp_in_read(nd)
+                do kr = 1, sph_IN%nri_sph
+                  do lth = 0, sph_IN%ltr_sph
+                    sph_OUT%spectr_IO(nd,lth,kr)                        &
+     &                     = sph_IN%spectr_IO(md,lth,kr)
+                  end do
+                end do
+              end do
+            end if
+          else
+            if(flag_vol_ave) then
+              do nd = 1, sph_OUT%ntot_sph_spec
+                if(icomp_in_read(nd) .eq. 0) cycle
+                md = icomp_in_read(nd)
+                sph_OUT%spectr_IO(nd,0,1) = sph_IN%spectr_IO(md,0,1)
+              end do
+            else
+              do nd = 1, sph_OUT%ntot_sph_spec
+                if(icomp_in_read(nd) .eq. 0) cycle
+                md = icomp_in_read(nd)
+!$omp parallel do
+                do kr = 1, sph_IN%nri_sph
+                  sph_OUT%spectr_IO(nd,0,kr)                            &
+     &                   = sph_IN%spectr_IO(md,0,kr)
+                end do
+!$omp end parallel do
+              end do
+            end if
+          end if
+!
+          call select_output_sph_series_data                            &
+     &       (id_write_file, flag_spectr, flag_vol_ave, sph_OUT)
+        end do
+        deallocate(icomp_in_read)
+      end if
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_append_file, flag_gzip1, zbuf1)
 !
       close(id_write_file)
 !
-      call dealloc_sph_espec_data(append_sph_IN)
-      call dealloc_sph_espec_data(target_sph_IN)
+      call dealloc_sph_espec_data(sph_IN)
+      call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine append_sph_mean_sq_file
 !
@@ -476,8 +561,8 @@
       character(len=kchara), intent(in) :: target_file_name
 !
 !
-      type(picked_spectrum_data_IO), save :: append_pick_IO
-      type(picked_spectrum_data_IO), save :: target_pick_IO
+      type(picked_spectrum_data_IO), save :: read_pick_IO
+      type(picked_spectrum_data_IO), save :: write_pick_IO
 !
       integer(kind = kint), parameter :: id_append_file = 15
       integer(kind = kint), parameter :: id_write_file = 16
@@ -496,10 +581,10 @@
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_append_file, append_file_name, flag_gzip1, zbuf1)
       call read_pick_series_head(FPz_f1, id_append_file, flag_gzip1,    &
-     &                           append_pick_IO, zbuf1)
-      call alloc_pick_sph_monitor_IO(append_pick_IO)
+     &                           read_pick_IO, zbuf1)
+      call alloc_pick_sph_monitor_IO(read_pick_IO)
       call read_pick_series_comp_name                                   &
-     &   (FPz_f1, id_append_file, flag_gzip1, append_pick_IO, zbuf1)
+     &   (FPz_f1, id_append_file, flag_gzip1, read_pick_IO, zbuf1)
 !
       call sel_skip_comment_gz_stream                                   &
      &   (FPz_f1, id_append_file, flag_gzip1, zbuf1)
@@ -511,40 +596,40 @@
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_write_file, target_file_name, flag_gzip1, zbuf1)
       call read_pick_series_head(FPz_f1, id_write_file, flag_gzip1,     &
-     &                           target_pick_IO, zbuf1)
-      call alloc_pick_sph_monitor_IO(target_pick_IO)
+     &                           write_pick_IO, zbuf1)
+      call alloc_pick_sph_monitor_IO(write_pick_IO)
       call read_pick_series_comp_name                                   &
-     &   (FPz_f1, id_write_file, flag_gzip1, target_pick_IO, zbuf1)
+     &   (FPz_f1, id_write_file, flag_gzip1, write_pick_IO, zbuf1)
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_write_file, flag_gzip1, zbuf1)
 !
-      if(append_pick_IO%num_layer .ne. target_pick_IO%num_layer) then
+      if(read_pick_IO%num_layer .ne. write_pick_IO%num_layer) then
         write(*,*) '# of radial layer does not match',                  &
-     &        append_pick_IO%num_layer, target_pick_IO%num_layer
+     &        read_pick_IO%num_layer, write_pick_IO%num_layer
         stop
       end if
-      if(append_pick_IO%num_mode .ne. target_pick_IO%num_mode) then
+      if(read_pick_IO%num_mode .ne. write_pick_IO%num_mode) then
         write(*,*) '# of spherical harmonics mode does not match',      &
-     &      append_pick_IO%num_mode, target_pick_IO%num_mode
+     &      read_pick_IO%num_mode, write_pick_IO%num_mode
         stop
       end if
-      if(append_pick_IO%ntot_comp .ne. target_pick_IO%ntot_comp) then
+      if(read_pick_IO%ntot_comp .ne. write_pick_IO%ntot_comp) then
         write(*,*) '# of components in files does not match',           &
-     &      append_pick_IO%ntot_comp, target_pick_IO%ntot_comp
+     &      read_pick_IO%ntot_comp, write_pick_IO%ntot_comp
         stop
       end if
 !
-      do nd = 1, target_pick_IO%ntot_comp
-        if(append_pick_IO%spectr_name(nd)                               &
-     &            .ne. target_pick_IO%spectr_name(nd)) then
+      do nd = 1, write_pick_IO%ntot_comp
+        if(read_pick_IO%spectr_name(nd)                                 &
+     &            .ne. write_pick_IO%spectr_name(nd)) then
           write(*,*) nd, '-th components in files does not match',      &
-     &            trim(append_pick_IO%spectr_name(nd)), '    ',         &
-     &            trim(target_pick_IO%spectr_name(nd))
+     &            trim(read_pick_IO%spectr_name(nd)), '    ',           &
+     &            trim(write_pick_IO%spectr_name(nd))
           stop
         end if
       end do
 !
-      nline_snap = append_pick_IO%num_mode * append_pick_IO%num_layer
+      nline_snap = read_pick_IO%num_mode * read_pick_IO%num_layer
       call open_bwd_serch_to_append(target_file_name, id_write_file,    &
      &    istep_start, start_time, nline_snap)
 !
@@ -552,9 +637,9 @@
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_append_file, append_file_name, flag_gzip1, zbuf1)
       call read_pick_series_head(FPz_f1, id_append_file, flag_gzip1,    &
-     &                           append_pick_IO, zbuf1)
+     &                           read_pick_IO, zbuf1)
       call read_pick_series_comp_name                                   &
-     &   (FPz_f1, id_append_file, flag_gzip1, append_pick_IO, zbuf1)
+     &   (FPz_f1, id_append_file, flag_gzip1, read_pick_IO, zbuf1)
 !
       call copy_sph_monitor_to_end(FPz_f1, id_append_file, flag_gzip1,  &
      &                             id_write_file, nline_snap, zbuf1)
@@ -562,8 +647,8 @@
      &   (FPz_f1, id_append_file, flag_gzip1, zbuf1)
       close(id_write_file)
 !
-      call dealloc_pick_sph_monitor_IO(append_pick_IO)
-      call dealloc_pick_sph_monitor_IO(target_pick_IO)
+      call dealloc_pick_sph_monitor_IO(read_pick_IO)
+      call dealloc_pick_sph_monitor_IO(write_pick_IO)
 !
       end subroutine append_picked_spectr_file
 !
@@ -590,6 +675,10 @@
         backspace(id_file)
         call read_ascii_sph_spectr_time(id_file, ione,                  &
      &                                  istep_end, end_time, ierr)
+        if(ierr .gt. 0) then
+          write(*,*) 'There is no data.'
+          return
+        end if
 !
         write(*,*) 'end step and time for target file',                 &
      &          istep_end, end_time
