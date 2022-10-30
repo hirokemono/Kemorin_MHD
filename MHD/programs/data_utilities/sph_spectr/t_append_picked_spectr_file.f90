@@ -170,6 +170,14 @@
         if(ierr .gt. 0) exit
 !
         n_mode = picked_OUT%num_mode * picked_OUT%num_layer
+!$omp parallel workshare
+        picked_OUT%idx_sph(1:n_mode,1) = picked_IN%idx_sph(1:n_mode,1)
+        picked_OUT%idx_sph(1:n_mode,2) = picked_IN%idx_sph(1:n_mode,2)
+        picked_OUT%idx_sph(1:n_mode,3) = picked_IN%idx_sph(1:n_mode,3)
+        picked_OUT%idx_sph(1:n_mode,4) = picked_IN%idx_sph(1:n_mode,4)
+        picked_OUT%radius(1:n_mode) =    picked_IN%radius(1:n_mode)
+!$omp endparallel workshare
+!
         call pick_copy_monitor_data                                     &
      &     (comp_tbl, picked_IN%ntot_comp, picked_OUT%ntot_comp,        &
      &      n_mode, picked_IN%d_pk(1), picked_OUT%d_pk(1))

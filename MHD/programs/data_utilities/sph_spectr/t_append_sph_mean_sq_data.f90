@@ -173,7 +173,7 @@
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint) :: ierr, n_mode
+      integer(kind = kint) :: ierr, n_mode, i
 !
       do
         call sel_gz_input_sph_series_data(FPz_f, id_append_file,        &
@@ -183,6 +183,16 @@
 !
         sph_OUT%i_step = sph_IN%i_step
         sph_OUT%time = sph_IN%time
+        if(flag_spectr) then
+          sph_OUT%i_mode(0:sph_IN%ltr_sph)                              &
+     &               = sph_IN%i_mode(0:sph_IN%ltr_sph)
+        end if
+        if(flag_vol_ave .eqv. .FALSE.) then
+          sph_OUT%kr_sph(1:sph_IN%nri_sph)                              &
+     &               = sph_IN%kr_sph(1:sph_IN%nri_sph)
+          sph_OUT%r_sph(1:sph_IN%nri_sph)                               &
+     &               = sph_IN%r_sph(1:sph_IN%nri_sph)
+        end if
         n_mode = sel_num_sph_mean_sq_data(flag_spectr, flag_vol_ave,    &
      &                                    sph_IN)
         call pick_copy_monitor_data                                     &
