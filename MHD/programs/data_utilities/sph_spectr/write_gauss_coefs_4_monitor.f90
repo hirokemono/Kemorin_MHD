@@ -52,10 +52,10 @@
       call open_gauss_coefs_4_monitor(file_name, id_gauss_coef,         &
      &                                gauss_IO)
 !
-      write(id_gauss_coef,'(i16,1pe23.14e3)', advance='NO')             &
+      write(id_gauss_coef,'(i16,1pe23.15e3)', advance='NO')             &
      &       i_step, time
       do inum = 1, gauss_IO%num_mode
-        write(id_gauss_coef,'(1pe23.14e3)', advance='NO')               &
+        write(id_gauss_coef,'(1pe23.15e3)', advance='NO')               &
      &       gauss_IO%gauss_coef(inum)
       end do
       write(id_gauss_coef,'(a)') ''

@@ -100,6 +100,8 @@ sph_dynamic_elsasser.o: $(SPH_UTILS_DIR)/sph_dynamic_elsasser.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_uli_lengh_scale.o: $(SPH_UTILS_DIR)/sph_uli_lengh_scale.f90 m_precision.o m_constants.o m_sph_uli_lengh_scale.o t_read_sph_spectra.o t_ctl_data_tave_sph_monitor.o t_ctl_param_sph_series_util.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_append_gauss_coef_file.o: $(SPH_UTILS_DIR)/t_append_gauss_coef_file.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o t_pick_copy_monitor_data.o t_buffer_4_gzip.o t_gauss_coefs_monitor_IO.o select_gz_stream_file_IO.o gz_gauss_coefs_monitor_IO.o gz_spl_sph_spectr_data_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_append_sph_mean_sq_data.o: $(SPH_UTILS_DIR)/t_append_sph_mean_sq_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o t_pick_copy_monitor_data.o t_buffer_4_gzip.o select_gz_stream_file_IO.o gz_spl_sph_spectr_head_IO.o gz_spl_sph_spectr_data_IO.o write_sph_monitor_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ave_spectr_stable_and_rev.o: $(SPH_UTILS_DIR)/t_ave_spectr_stable_and_rev.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o set_parallel_file_name.o t_read_sph_spectra.o count_monitor_time_series.o m_tave_sph_ene_spectr.o gz_gauss_coefs_monitor_IO.o write_gauss_coefs_4_monitor.o write_sph_monitor_data.o skip_comment_f.o
@@ -144,7 +146,7 @@ t_gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/t_gauss_coefs_monitor_IO.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 t_neutral_pt_by_pick_sph.o: $(SPH_UTILS_DIR)/t_neutral_pt_by_pick_sph.f90 m_precision.o m_constants.o t_picked_sph_spectr_data_IO.o set_radius_func_noequi.o m_base_field_labels.o t_spheric_parameter.o t_fdm_coefs.o second_fdm_node_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_pick_copy_monitor_data.o: $(SPH_UTILS_DIR)/t_pick_copy_monitor_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o gz_spl_sph_spectr_data_IO.o
+t_pick_copy_monitor_data.o: $(SPH_UTILS_DIR)/t_pick_copy_monitor_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o count_monitor_time_series.o gz_spl_sph_spectr_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/t_picked_sph_spectr_data_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -13,7 +13,7 @@
 !!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_file
 !!        integer(kind = kint), intent(in) :: nline_snap
-!
+!!
 !!        integer(kind = kint), intent(inout) :: istep_start
 !!        real(kind = kreal) , intent(inout):: start_time
 !!      subroutine copy_sph_monitor_to_end(FPz_f, id_stream, flag_gzip, &
@@ -23,7 +23,7 @@
 !!        logical, intent(in) :: flag_gzip
 !!        integer(kind = kint), intent(in) :: nline_snap
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
-!!      subroutine pick_copy_vol_spectr_data                            &
+!!      subroutine pick_copy_monitor_data                               &
 !!     &         (comp_tbl, ntot_comp_in, ntot_comp_out,                &
 !!     &          n_mode, spectr_in, spectr_out)
 !!        type(monitor_field_pickup_table), intent(in) :: comp_tbl
@@ -159,7 +159,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine pick_copy_vol_spectr_data                              &
+      subroutine pick_copy_monitor_data                                 &
      &         (comp_tbl, ntot_comp_in, ntot_comp_out,                  &
      &          n_mode, spectr_in, spectr_out)
 !
@@ -183,7 +183,7 @@
 !$omp end parallel do
       end do
 !
-      end subroutine pick_copy_vol_spectr_data
+      end subroutine pick_copy_monitor_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
