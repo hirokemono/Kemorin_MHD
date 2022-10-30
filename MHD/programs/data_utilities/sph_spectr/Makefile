@@ -163,6 +163,8 @@ old_sph_spectr_data_IO.o \
 gz_gauss_coefs_monitor_IO.o \
 gz_Nusselt_monitor_IO.o \
 picked_sph_spectr_data_IO.o \
+t_pick_copy_monitor_data.o \
+t_append_sph_mean_sq_data.o \
 count_monitor_time_series.o
 
 MOD_PICK_SPH_SPEC = \
