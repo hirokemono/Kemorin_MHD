@@ -281,6 +281,8 @@
      &          '# Step  4: R.M.S. of volume mean square in stable'
       write(id_file_rms,'(a)')                                          &
      &          '# Step  5: R.M.S. of volume mean square in reverse'
+      write(id_file_rms,'(a,1p2e16.8e3)')                               &
+     &          '# Start and End time: ', true_start, true_end
 !
       call select_output_sph_pwr_head(id_file_rms, .TRUE. , sph_OUT1)
 !
@@ -325,14 +327,14 @@
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, sdev_vol_pwr(1,1),  &
      &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &   (id_file_rms, .TRUE., .TRUE., sph_OUT1)
 !
       sph_OUT1%i_step = 5
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, sdev_vol_pwr(1,2),  &
      &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, sph_OUT1)
       call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &   (id_file_rms, .TRUE., .TRUE., sph_OUT1)
 !
       close(id_file_rms)
 !
