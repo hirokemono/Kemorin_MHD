@@ -59,10 +59,10 @@
 !
       integer(kind = kint) :: ntot_pick
 !
-      type(monitor_field_pickup_table), save :: comp_tbl1
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf1
       character, pointer, save  :: FPz_f1
+      type(monitor_field_pickup_table), save :: comp_tbl1
 !
 !
       write(*,*) 'Open data file to append.'

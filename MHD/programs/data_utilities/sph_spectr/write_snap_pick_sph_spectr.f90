@@ -15,6 +15,12 @@
 !!        integer(kind = kint), intent(in) :: i_step
 !!        real(kind = kreal), intent(in) :: time
 !!        type(picked_spectrum_data_IO), intent(in) :: picked_IO
+!!      subroutine write_picked_sph_snap                                &
+!!     &         (id_pick, i_step, time, picked_IO)
+!!        integer(kind = kint), intent(in) :: id_pick
+!!        integer(kind = kint), intent(in) :: i_step
+!!        real(kind = kreal), intent(in) :: time
+!!        type(picked_spectrum_data_IO), intent(in) :: picked_IO
 !!@endverbatim
 !!
 !!@n @param  id_rank   Process ID
@@ -35,8 +41,6 @@
 !
 !>      File ID for spectrum monitor file
       integer(kind = kint), parameter :: id_pick_mode = 22
-!
-      private :: write_picked_sph_snap
 !
 ! -----------------------------------------------------------------------
 !

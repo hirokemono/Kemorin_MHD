@@ -26,6 +26,17 @@
 !!        real(kind = kreal), intent(in) :: start_time, end_time
 !!        real(kind = kreal), intent(inout) :: true_start, true_end
 !!        type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
+!!
+!!      subroutine read_gauss_coefs_4_monitor                           &
+!!     &         (FPz_f, id_stream, flag_gzip, i_step, time,            &
+!!     &          gauss_IO, zbuf, ierr)
+!!        character, pointer, intent(in) :: FPz_f
+!!        integer(kind = kint), intent(in) :: id_stream
+!!        logical, intent(in) :: flag_gzip
+!!        integer(kind = kint), intent(inout) :: i_step, ierr
+!!        real(kind = kreal), intent(inout) :: time
+!!        type(picked_gauss_coefs_IO), intent(inout) :: gauss_IO
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
       module gz_gauss_coefs_monitor_IO
 !
@@ -40,7 +51,6 @@
       integer(kind = kint), parameter :: id_gauss_coef = 23
 !
       private :: read_gauss_coefs_series
-      private :: read_gauss_coefs_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
