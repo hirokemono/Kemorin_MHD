@@ -25,6 +25,7 @@
 !!  begin colorbar_ctl
 !!    colorbar_switch_ctl    ON
 !!    colorbar_scale_ctl     ON
+!!    colorbar_position_ctl  'left' or 'bottom'
 !!    iflag_zeromarker       ON
 !!    colorbar_range     0.0   1.0
 !!    font_size_ctl         3
@@ -56,6 +57,7 @@
       type pvr_colorbar_ctl
         type(read_character_item) :: colorbar_switch_ctl
         type(read_character_item) :: colorbar_scale_ctl
+        type(read_character_item) :: colorbar_position_ctl
         type(read_character_item) :: zeromarker_flag_ctl
         type(read_integer_item) ::   font_size_ctl
         type(read_integer_item) ::   ngrid_cbar_ctl
@@ -70,23 +72,27 @@
 !
 !     3rd level for colorbar
 !
-      character(len=kchara)                                             &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_colorbar_switch = 'colorbar_switch_ctl'
-      character(len=kchara) :: hd_colorbar_scale = 'colorbar_scale_ctl'
-      character(len=kchara) :: hd_pvr_font_size = 'font_size_ctl'
-      character(len=kchara) :: hd_pvr_numgrid_cbar = 'num_grid_ctl'
-      character(len=kchara) :: hd_zeromarker_flag = 'iflag_zeromarker'
-      character(len=kchara) :: hd_cbar_range = 'colorbar_range'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_colorbar_scale = 'colorbar_scale_ctl'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_cbar_position = 'colorbar_position_ctl'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_pvr_font_size = 'font_size_ctl'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_pvr_numgrid_cbar = 'num_grid_ctl'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_zeromarker_flag = 'iflag_zeromarker'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_cbar_range = 'colorbar_range'
 !
-      character(len=kchara) :: hd_axis_switch = 'axis_label_switch'
-      character(len=kchara) :: hd_time_switch = 'time_label_switch'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_axis_switch = 'axis_label_switch'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_time_switch = 'time_label_switch'
 !
-      integer(kind = kint), parameter :: n_label_pvr_colorbar = 8
-!
-      private :: hd_colorbar_switch, hd_colorbar_scale
-      private :: hd_pvr_font_size, hd_cbar_range
-      private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
-      private :: hd_axis_switch, hd_time_switch, n_label_pvr_colorbar
+      integer(kind = kint), parameter :: n_label_pvr_colorbar = 9
 !
 !  ---------------------------------------------------------------------
 !
@@ -120,6 +126,8 @@
      &      cbar_ctl%colorbar_switch_ctl)
         call read_chara_ctl_type(c_buf, hd_colorbar_scale,              &
      &      cbar_ctl%colorbar_scale_ctl)
+        call read_chara_ctl_type(c_buf, hd_cbar_position,               &
+     &      cbar_ctl%colorbar_position_ctl)
         call read_chara_ctl_type(c_buf, hd_zeromarker_flag,             &
      &      cbar_ctl%zeromarker_flag_ctl)
 !
@@ -152,6 +160,7 @@
 !
       call bcast_ctl_type_c1(cbar_ctl%colorbar_switch_ctl)
       call bcast_ctl_type_c1(cbar_ctl%colorbar_scale_ctl)
+      call bcast_ctl_type_c1(cbar_ctl%colorbar_position_ctl)
       call bcast_ctl_type_c1(cbar_ctl%zeromarker_flag_ctl)
 !
       call bcast_ctl_type_c1(cbar_ctl%axis_switch_ctl)
@@ -170,6 +179,7 @@
 !
       cbar_ctl%colorbar_switch_ctl%iflag = 0
       cbar_ctl%colorbar_scale_ctl%iflag =  0
+      cbar_ctl%colorbar_position_ctl%iflag =  0
       cbar_ctl%font_size_ctl%iflag =       0
       cbar_ctl%ngrid_cbar_ctl%iflag =      0
       cbar_ctl%zeromarker_flag_ctl%iflag = 0
@@ -199,6 +209,8 @@
      &                    new_cbar_c%colorbar_switch_ctl)
       call copy_chara_ctl(org_cbar_c%colorbar_scale_ctl,                &
      &                    new_cbar_c%colorbar_scale_ctl)
+      call copy_chara_ctl(org_cbar_c%colorbar_position_ctl,             &
+     &                    new_cbar_c%colorbar_position_ctl)
       call copy_chara_ctl(org_cbar_c%zeromarker_flag_ctl,               &
      &                    new_cbar_c%zeromarker_flag_ctl)
 !
@@ -230,13 +242,14 @@
 !
       call set_control_labels(hd_colorbar_switch,  names( 1))
       call set_control_labels(hd_colorbar_scale,   names( 2))
-      call set_control_labels(hd_pvr_font_size,    names( 3))
-      call set_control_labels(hd_pvr_numgrid_cbar, names( 4))
-      call set_control_labels(hd_zeromarker_flag,  names( 5))
-      call set_control_labels(hd_cbar_range,       names( 6))
+      call set_control_labels(hd_cbar_position,    names( 3))
+      call set_control_labels(hd_pvr_font_size,    names( 4))
+      call set_control_labels(hd_pvr_numgrid_cbar, names( 5))
+      call set_control_labels(hd_zeromarker_flag,  names( 6))
+      call set_control_labels(hd_cbar_range,       names( 7))
 !
-      call set_control_labels(hd_axis_switch,      names( 7))
-      call set_control_labels(hd_time_switch,      names( 8))
+      call set_control_labels(hd_axis_switch,      names( 8))
+      call set_control_labels(hd_time_switch,      names( 9))
 !
       end subroutine set_label_pvr_colorbar
 !
