@@ -28,7 +28,7 @@
       integer(kind = kint), parameter, private :: BAR_WIDTH = 12
 !
       private :: draw_bottom_pvr_colorbar, gen_bottom_colormark
-      private :: draw_left_pvr_colorbar, gen_left_colormark
+      private :: draw_left_pvr_colorbar, gen_right_colormark
 !
 !  ---------------------------------------------------------------------
 !
@@ -181,15 +181,15 @@
       isleeve_bar = isleeve_bar + ithree                                &
      &                  - mod((isleeve_bar-ione),ifour) 
 !
-      call gen_left_colormark(iscale, c_minmax, npix_img,               &
+      call gen_right_colormark(iscale, c_minmax, npix_img,              &
      &    isleeve_bar, ntot_pix, iflag_opacity, dimage, color_param)
 !
       if(iflag_cbar_numeric .gt. 0) then
-        call gen_left_cbar_label(iscale, num_of_scale, c_minmax,        &
+        call gen_right_cbar_label(iscale, num_of_scale, c_minmax,       &
      &      npix_img, isleeve_bar, ntot_pix, dimage)
 !
         if(iflag_zero_mark .gt. 0) then
-          call gen_left_zero_label(iscale, c_minmax, npix_img,          &
+          call gen_right_zero_label(iscale, c_minmax, npix_img,         &
      &        isleeve_bar, ntot_pix, dimage)
         end if
       end if
@@ -281,7 +281,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gen_left_colormark                                     &
+      subroutine gen_right_colormark                                    &
      &         (iscale, c_minmax, npix_img, isleeve_bar,                &
      &          ntot_pix, iflag_opacity, dimage, color_param)
 !
@@ -307,7 +307,7 @@
       integer(kind = kint) :: ist, jst, ied, jed
 !
 !
-      call corners_4_left_colorbar                                      &
+      call corners_4_right_colorbar                                     &
      &   (iscale, npix_img, isleeve_bar, ist, jst, ied, jed)
 !
       num_of_features = color_param%num_opacity_pnt
@@ -358,7 +358,7 @@
         dimage(1:4,k) = one
       end do
 !
-      end subroutine gen_left_colormark
+      end subroutine gen_right_colormark
 !
 !  ---------------------------------------------------------------------
 !
