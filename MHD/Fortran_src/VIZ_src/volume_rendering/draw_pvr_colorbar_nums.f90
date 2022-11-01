@@ -44,6 +44,44 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine corners_4_left_colorbar                                &
+     &         (iscale, npix_img, isleeve_bar, ist, jst, ied, jed)
+!
+      integer(kind = kint), intent(in) :: iscale
+      integer(kind = kint), intent(in) :: npix_img(2)
+      integer(kind = kint), intent(in) :: isleeve_bar
+!
+      integer(kind = kint), intent(inout) :: ist, jst, ied, jed
+!
+      ist = npix_img(1) - isleeve_bar
+      ied = ist + BAR_WIDTH
+      jst = (npix_img(2) - 20) / 10 + 10 - 6*iscale
+      jed = (npix_img(2) - 20) / 10*5 + jst
+!
+      end subroutine corners_4_left_colorbar
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine corners_4_bottom_colorbar                              &
+     &         (iscale, npix_img, isleeve_bar, ist, jst, ied, jed)
+!
+      integer(kind = kint), intent(in) :: iscale
+      integer(kind = kint), intent(in) :: npix_img(2)
+      integer(kind = kint), intent(in) :: isleeve_bar
+!
+      integer(kind = kint), intent(inout) :: ist, jst, ied, jed
+!
+!
+      ist = 1.5 * isleeve_bar
+      ied = npix_img(1) - 1.5 * isleeve_bar
+      jst = 16 + 12*iscale + 20
+      jed = jst + BAR_WIDTH
+!
+      end subroutine corners_4_bottom_colorbar
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine gen_left_cbar_label(iscale, num_of_scale, c_minmax,    &
      &       npix_img, isleeve_bar, ntot_pix, dimage)
 !
@@ -61,19 +99,16 @@
       integer(kind = kint) :: start_px(2)
       character(len=NUM_LENGTH) :: numeric
 !
-      ist = npix_img(1) - isleeve_bar
-      jst = (npix_img(2) - itwo*iten) / iten + iten
-      jed = (npix_img(2) - itwo*iten) / iten*ifive + jst
-      ied = ist + BAR_WIDTH
 !
+      call corners_4_left_colorbar                                      &
+     &   (iscale, npix_img, isleeve_bar, ist, jst, ied, jed)
       do k = 1, num_of_scale
         value = (c_minmax(2)-c_minmax(1))                               &
      &         * dble(k-1) / dble(num_of_scale-1) + c_minmax(1)
 !
         rhgt = dble(jed-jst) * dble(k-1) / dble(num_of_scale-1)
         start_px(1) = ist + BAR_WIDTH + ithree
-        start_px(2) = jst - 12 * iscale / 2                             &
-     &                    + int(rhgt, KIND(start_px(1)))
+        start_px(2) = jst + int(rhgt, KIND(start_px(1)))
 !
         write(numeric,'(1pe9.2)') value
         call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,  &
@@ -105,16 +140,15 @@
       integer(kind = kint) :: start_px(2)
       character(len=NUM_LENGTH) :: numeric
 !
-      ist = npix_img(1) - isleeve_bar
-      jst = (npix_img(2) - itwo*iten) / iten + iten
-      jed = (npix_img(2) - itwo*iten) / iten*ifive + jst
-      ied = ist + BAR_WIDTH
+!
+      call corners_4_left_colorbar                                      &
+     &   (iscale, npix_img, isleeve_bar, ist, jst, ied, jed)
 !
       zero_rgb = (zero - c_minmax(1)) / (c_minmax(2) - c_minmax(1))
 !
-      rhgt = zero_rgb * dble(jed-jst) + dble(jst)
+      rhgt = zero_rgb * dble(jed-jst)
       start_px(1) = ist + BAR_WIDTH + ithree
-      start_px(2) = int(rhgt, KIND(ntot_pix))
+      start_px(2) = jst + int(rhgt, KIND(ntot_pix))
 !
       write(numeric,'(1pe9.2)') zero
       call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,    &
@@ -127,6 +161,7 @@
 !
       end subroutine gen_left_zero_label
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine gen_bottom_cbar_label(iscale, num_of_scale, c_minmax,  &
@@ -142,30 +177,30 @@
       real(kind = kreal) :: value
       real(kind = kreal) :: rhgt
       integer(kind = kint) :: i, j, k
-      integer(kind = kint) :: ist, jst, ied, jed
+      integer(kind = kint) :: ist_h, jst_h, ied_h, jed_h
       integer(kind = kint) :: start_px(2)
       character(len=NUM_LENGTH) :: numeric
 !
-      ist = npix_img(1) - isleeve_bar
-      jst = (npix_img(2) - itwo*iten) / iten + iten
-      jed = (npix_img(2) - itwo*iten) / iten*ifive + jst
-      ied = ist + BAR_WIDTH
+!
+      call corners_4_bottom_colorbar                                    &
+     &   (iscale, npix_img, isleeve_bar, ist_h, jst_h, ied_h, jed_h)
 !
       do k = 1, num_of_scale
         value = (c_minmax(2)-c_minmax(1))                               &
      &         * dble(k-1) / dble(num_of_scale-1) + c_minmax(1)
 !
-        rhgt = dble(jed-jst) * dble(k-1) / dble(num_of_scale-1)
-        start_px(1) = ist + BAR_WIDTH + ithree
-        start_px(2) = jst - 12 * iscale / 2                             &
-     &                    + int(rhgt, KIND(start_px(1)))
+        rhgt = dble(ied_h-ist_h) * dble(k-1) / dble(num_of_scale-1)
+        start_px(1) = ist_h - iscale*NUM_LENGTH*4                       &
+     &               + int(rhgt, KIND(start_px(1)))
+        start_px(2) = jst_h - 12 * iscale - 5
 !
         write(numeric,'(1pe9.2)') value
         call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,  &
      &      npix_img, ntot_pix, dimage)
 !
-        do i = ist, ied + 4
-          j = (start_px(2) * npix_img(1)) + i + 1
+        do i = jst_h-4, jed_h
+          j = (i-1) * npix_img(1)                                       &
+     &       + ist_h + int(rhgt, KIND(start_px(1)))
           dimage(1:4,j) = one
         end do
       end do
@@ -186,27 +221,28 @@
       real(kind = kreal) :: zero_rgb
       real(kind = kreal) :: rhgt
       integer(kind = kint) :: i, k
-      integer(kind = kint) :: ist, jst, ied, jed
+      integer(kind = kint) :: ist_h, jst_h, ied_h, jed_h
       integer(kind = kint) :: start_px(2)
       character(len=NUM_LENGTH) :: numeric
 !
-      ist = npix_img(1) - isleeve_bar
-      jst = (npix_img(2) - itwo*iten) / iten + iten
-      jed = (npix_img(2) - itwo*iten) / iten*ifive + jst
-      ied = ist + BAR_WIDTH
+!
+      call corners_4_bottom_colorbar                                    &
+     &   (iscale, npix_img, isleeve_bar, ist_h, jst_h, ied_h, jed_h)
 !
       zero_rgb = (zero - c_minmax(1)) / (c_minmax(2) - c_minmax(1))
 !
-      rhgt = zero_rgb * dble(jed-jst) + dble(jst)
-      start_px(1) = ist + BAR_WIDTH + ithree
-      start_px(2) = int(rhgt, KIND(ntot_pix))
+      rhgt = zero_rgb * dble(ied_h-ist_h)
+      start_px(1) = ist_h - iscale*NUM_LENGTH*4                         &
+     &             + int(rhgt, KIND(start_px(1)))
+      start_px(2) = jst_h - 12 * iscale - 5
 !
       write(numeric,'(1pe9.2)') zero
       call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,    &
      &                        npix_img, ntot_pix, dimage)
 !
-      do i = ist, ied + 4
-        k = (start_px(2) * npix_img(1)) + i + 1
+      do i = jst_h-4, jed_h
+        k = (i-1) * npix_img(1)                                         &
+     &     + ist_h + int(rhgt, KIND(start_px(1)))
         dimage(1:4,k) = one
       end do
 !
