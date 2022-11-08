@@ -25,7 +25,7 @@
 !!  begin colorbar_ctl
 !!    colorbar_switch_ctl    ON
 !!    colorbar_scale_ctl     ON
-!!    colorbar_position_ctl  'left' or 'bottom'
+!!    colorbar_position_ctl  'side' or 'bottom'
 !!    iflag_zeromarker       ON
 !!    colorbar_range     0.0   1.0
 !!    font_size_ctl         3
