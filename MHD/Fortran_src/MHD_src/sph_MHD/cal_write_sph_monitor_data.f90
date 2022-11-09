@@ -37,7 +37,7 @@
 !!     &         (is_scalar, is_source, is_grad_s, time_d, sph, sc_prop,&
 !!     &          sph_bc_S, sph_bc_U, bcs_S, fdm2_center, r_2nd,        &
 !!     &          band_s00_poisson_fixS, rj_fld, Nusselt)
-!!      subroutine cal_write_dipolarity(time_d, sph_params,             &
+!!      subroutine cal_write_dipolarity(time_d, sph_params, sph_rj,     &
 !!     &          ipol, rj_fld, pwr, dip)
 !!      subroutine cal_write_typical_scale(time_d, rj_fld, pwr, tsl)
 !!        type(energy_label_param), intent(in) :: ene_labels
@@ -255,8 +255,13 @@
      &      time_d%i_time_step, time_d%time, monitor%comp_Nusselt)
       end if
 !
-      call write_dipolarity(my_rank, time_d%i_time_step, time_d%time,   &
-     &    sph_params%radius_CMB, ipol, monitor%pwr, monitor%dip)
+      if(my_rank .eq. monitor%pwr%irank_l) then
+        call write_dipolarity(time_d%i_time_step, time_d%time,          &
+     &      sph_params%l_truncation, sph_rj%nidx_rj(1),                 &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
+     &      ipol%base%i_magne, monitor%dip)
+      end if
+!
       call write_typical_scales(time_d%i_time_step, time_d%time,        &
      &                          monitor%pwr, monitor%tsl)
 !
@@ -335,11 +340,12 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine cal_write_dipolarity(time_d, sph_params,               &
+      subroutine cal_write_dipolarity(time_d, sph_params, sph_rj,       &
      &          ipol, rj_fld, pwr, dip)
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
@@ -348,8 +354,13 @@
 !
 !
       call cal_CMB_dipolarity(my_rank, rj_fld, pwr, dip)
-      call write_dipolarity(my_rank, time_d%i_time_step, time_d%time,   &
-     &    sph_params%radius_CMB, ipol, pwr, dip)
+!
+      if(my_rank .eq. pwr%irank_l) then
+        call write_dipolarity(time_d%i_time_step, time_d%time,          &
+     &      sph_params%l_truncation, sph_rj%nidx_rj(1),                 &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
+     &      ipol%base%i_magne, dip)
+      end if
 !
       end subroutine cal_write_dipolarity
 !

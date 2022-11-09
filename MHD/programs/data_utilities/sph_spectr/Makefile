@@ -353,9 +353,12 @@ t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o
 
 MOD_T_AVE_DIPOLARITY = \
+t_CMB_dipolarity.o \
 t_average_dipolarity.o \
+t_read_sph_spectra.o \
 time_average_dipolarity.o \
 count_monitor_time_series.o \
+gz_spl_sph_spectr_head_IO.o \
 t_ctl_param_sph_series_util.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o

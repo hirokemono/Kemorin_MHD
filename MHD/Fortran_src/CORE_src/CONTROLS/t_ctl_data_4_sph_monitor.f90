@@ -245,7 +245,7 @@
       call dealloc_pick_spectr_control(smonitor_ctl%pspec_ctl)
       call dealloc_gauss_spectr_control(smonitor_ctl%g_pwr)
       call reset_mid_equator_control(smonitor_ctl%meq_ctl)
-      call reset_sph_dipolarity_ctl(smonitor_ctl%fdip_ctl)
+      call dealloc_sph_dipolarity_ctl(smonitor_ctl%fdip_ctl)
 !
       smonitor_ctl%volume_average_prefix%iflag =     0
       smonitor_ctl%volume_pwr_spectr_prefix%iflag =  0

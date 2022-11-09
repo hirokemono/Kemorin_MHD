@@ -73,6 +73,7 @@
       use sum_sph_rms_data
       use volume_average_4_sph
       use cal_ave_4_rms_vector_sph
+      use set_parallel_file_name
       use quicksort
 !
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -122,7 +123,13 @@
           deallocate(kr_tmp)
         end if
 !
-        if(dip%ltr_max .le. 0) dip%ltr_max = sph_params%l_truncation
+        do i = 1, dip%num_dip
+          if(dip%ltr_max(i).le.0 .or. dip%ltr_max(i).gt.0) then
+            dip%ltr_max(i) = sph_params%l_truncation
+            call add_index_after_name(dip%ltr_max(i), dip_ltr_label,    &
+     &                                dip%dip_name(i))
+          end if
+        end do
       end if
 !
       do i = 1, pwr%num_vol_spectr
@@ -191,6 +198,7 @@
         if(dip%iflag_dipolarity .gt. 0) then
           if(pwr%kr_4_rms(knum) .eq. sph_params%nlayer_CMB) then
             dip%krms_CMB = knum
+            dip%rdip_CMB = sph_params%radius_CMB
           end if
         end if
       end do

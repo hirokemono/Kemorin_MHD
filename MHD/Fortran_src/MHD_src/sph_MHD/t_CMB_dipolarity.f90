@@ -7,26 +7,40 @@
 !> @brief  Evaluate dipolarity at CMB
 !!
 !!@verbatim
+!!      subroutine alloc_dipolarity_data(num, dip)
+!!      subroutine dealloc_dipolarity_data(dip)
+!!        integer(kind = kint), intent(in) :: num
+!!        type(dipolarity_data), intent(inout) :: dip
+!!
 !!      subroutine set_ctl_dipolarity_params                            &
 !!     &         (fdip_file_prefix, fdip_truncation, rj_fld, dip)
 !!        type(read_character_item), intent(in) :: fdip_file_prefix
-!!        type(read_integer_item), intent(in) :: fdip_truncation
+!!        type(ctl_array_int), intent(in) :: fdip_truncation
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(dipolarity_data), intent(inout) :: dip
-!!      subroutine write_dipolarity(id_rank, i_step, time, radius_CMB,  &
-!!     &                            ipol, pwr, dip)
+!!      subroutine write_dipolarity(i_step, time, ltr, nri,             &
+!!     &                            nlayer_ICB, nlayer_CMB, i_magne, dip)
 !!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: i_step
 !!        real(kind = kreal), intent(in) :: time
-!!        real(kind = kreal), intent(in) :: radius_CMB
-!!        type(phys_address), intent(in) :: ipol
-!!        type(sph_mean_squares), intent(in) :: pwr
+!!        integer(kind = kint), intent(in) :: ltr, nri
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+!!        integer(kind = kint), intent(in) :: i_magne
 !!        type(dipolarity_data), intent(in) :: dip
 !!      subroutine cal_CMB_dipolarity(id_rank, rj_fld, pwr, dip)
 !!        integer, intent(in) :: id_rank
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_mean_squares), intent(in) :: pwr
 !!        real(kind = kreal), intent(inout) :: f_dip
+!!
+!!      subroutine open_dipolarity_file(id_file, ltr, nri,              &
+!!     &                                nlayer_ICB, nlayer_CMB, dip)
+!!      subroutine write_dipolarity_header(id_file, ltr, nri,           &
+!!     &                                   nlayer_ICB, nlayer_CMB, dip)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer(kind = kint), intent(in) :: ltr, nri
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+!!        type(dipolarity_data), intent(in) :: dip
 !!@endverbatim
 !
       module t_CMB_dipolarity
@@ -36,6 +50,7 @@
 !
       use t_phys_data
       use t_rms_4_sph_spectr
+      use t_spheric_parameter
 !
       implicit none
 !
@@ -56,21 +71,59 @@
 !
 !>        Radial address for dipolarity
         integer(kind = kint) :: krms_CMB
+!>        Radius for dipolarity
+        real(kind = kreal) :: rdip_CMB
+!
 !>        magnetic energy address
         integer(kind = kint) :: icomp_mene = 0
-!>        Truncation degree to evaluate dipolarity
-        integer(kind = kint) :: ltr_max
 !
+!>        Truncation degree to evaluate dipolarity
+        integer(kind = kint) :: num_dip
+!>        Name of each dipolarity data
+        character(len = kchara), allocatable :: dip_name(:)
+!>        Truncation degree to evaluate dipolarity
+        integer(kind = kint), allocatable :: ltr_max(:)
 !>        Dipolarity
-        real(kind = kreal) :: f_dip
+        real(kind = kreal), allocatable :: f_dip(:)
       end type dipolarity_data
 !
       integer(kind = kint), parameter, private :: id_dipolarity = 36
+      character(len = kchara), parameter                                &
+     &                        :: dip_ltr_label = 'truncation_'
 !
 ! -----------------------------------------------------------------------
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_dipolarity_data(num, dip)
+!
+      integer(kind = kint), intent(in) :: num
+      type(dipolarity_data), intent(inout) :: dip
+!
+!
+      dip%num_dip = num
+      allocate(dip%dip_name(dip%num_dip))
+      allocate(dip%ltr_max(dip%num_dip))
+      allocate(dip%f_dip(dip%num_dip))
+!
+      dip%ltr_max(1:dip%num_dip) = -1
+      dip%f_dip(1:dip%num_dip) =    0.0d0
+!
+      end subroutine alloc_dipolarity_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_dipolarity_data(dip)
+!
+      type(dipolarity_data), intent(inout) :: dip
+!
+      deallocate(dip%f_dip, dip%ltr_max, dip%dip_name)
+!
+      end subroutine dealloc_dipolarity_data
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_dipolarity_params                              &
@@ -83,11 +136,11 @@
       use set_parallel_file_name
 !
       type(read_character_item), intent(in) :: fdip_file_prefix
-      type(read_integer_item), intent(in) :: fdip_truncation
+      type(ctl_array_int), intent(in) :: fdip_truncation
       type(phys_data), intent(in) :: rj_fld
       type(dipolarity_data), intent(inout) :: dip
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, num
 !
 !    Turn On Nusselt number if temperature gradient is there
       dip%iflag_dipolarity = 0
@@ -106,35 +159,47 @@
         dip%iflag_dipolarity = 0
       end if
 !
-      dip%ltr_max = -1
-      if(fdip_truncation%iflag .gt. 0) then
-        dip%ltr_max = fdip_truncation%intvalue
+      if(dip%iflag_dipolarity .gt. 0) then
+        num = 1
+        if(fdip_truncation%num .gt. 0) then
+          num = fdip_truncation%num + 1
+        end if
+        call alloc_dipolarity_data(num, dip)
+!
+        dip%ltr_max(1) = -1
+        do i = 2, dip%num_dip
+          dip%ltr_max(i) = fdip_truncation%ivec(i-1)
+        end do
       end if
 !
       end subroutine set_ctl_dipolarity_params
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_dipolarity(id_rank, i_step, time, radius_CMB,    &
-     &                            ipol, pwr, dip)
+      subroutine write_dipolarity(i_step, time, ltr, nri,               &
+     &                            nlayer_ICB, nlayer_CMB, i_magne, dip)
 !
-      integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
-      real(kind = kreal), intent(in) :: radius_CMB
-      type(phys_address), intent(in) :: ipol
-      type(sph_mean_squares), intent(in) :: pwr
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      integer(kind = kint), intent(in) :: i_magne
       type(dipolarity_data), intent(in) :: dip
+!
+      integer(kind = kint) :: i
 !
 !
       if(dip%iflag_dipolarity .le. izero) return
-      if(ipol%base%i_magne .le. 0) return
-      if(id_rank .ne. pwr%irank_l) return
+      if(i_magne .le. 0) return
 !
-      call open_dipolarity_file(dip, radius_CMB)
+      call open_dipolarity_file(id_dipolarity, ltr, nri,                &
+     &                          nlayer_ICB, nlayer_CMB, dip)
 !
       write(id_dipolarity,'(i16,1pe23.14e3)',advance='NO') i_step, time
-      write(id_dipolarity,'(1pe23.14e3)') dip%f_dip
+      do i = 1, dip%num_dip
+        write(id_dipolarity,'(1pe23.14e3)',advance='NO') dip%f_dip(i)
+      end do
+      write(id_dipolarity,'(a)') ''
       close(id_dipolarity)
 !
       end subroutine write_dipolarity
@@ -152,12 +217,12 @@
 !
       type(dipolarity_data), intent(inout) :: dip
 !
-!>        magnetic energy at CMB
-        real(kind = kreal) :: me_cmb_d(3)
-!>        dipole component of magnetic energy at CMB
-        real(kind = kreal) :: pwr_g10
+!>      magnetic energy at CMB
+      real(kind = kreal) :: me_cmb_d
+!>      dipole component of magnetic energy at CMB
+      real(kind = kreal) :: pwr_g10
 !
-      integer(kind = kint) :: l
+      integer(kind = kint) :: i, l
 !
 !
       if(dip%iflag_dipolarity .le. izero) return
@@ -169,16 +234,16 @@
       if(id_rank .eq. pwr%irank_l) then
         pwr_g10 = pwr%shl_l(dip%krms_CMB,1,dip%icomp_mene)
 !
-        me_cmb_d(1:3) = 0.0d0
-        do l = 1, dip%ltr_max
-          me_cmb_d(1) = me_cmb_d(1)                                     &
-     &                 + pwr%shl_l(dip%krms_CMB,l,dip%icomp_mene)
-          me_cmb_d(2) = me_cmb_d(2)                                     &
-     &                 + pwr%shl_l(dip%krms_CMB,l,dip%icomp_mene)
-          me_cmb_d(3) = me_cmb_d(3)                                     &
-     &                 + pwr%shl_l(dip%krms_CMB,l,dip%icomp_mene)
+        do i = 1, dip%num_dip
+          me_cmb_d = 0.0d0
+!$omp parallel do reduction(+:me_cmb_d)
+          do l = 1, dip%ltr_max(i)
+            me_cmb_d = me_cmb_d                                         &
+     &                + pwr%shl_l(dip%krms_CMB,l,dip%icomp_mene)
+          end do
+!$omp end parallel do
+          dip%f_dip(i) = pwr_g10 / me_cmb_d
         end do
-        dip%f_dip = pwr_g10 / me_cmb_d(1)
       end if
 !
       end subroutine cal_CMB_dipolarity
@@ -186,33 +251,68 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine open_dipolarity_file(dip, radius_CMB)
+      subroutine open_dipolarity_file(id_file, ltr, nri,                &
+     &                                nlayer_ICB, nlayer_CMB, dip)
 !
       use write_field_labels
 !
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(dipolarity_data), intent(in) :: dip
-      real(kind = kreal), intent(in) :: radius_CMB
-      character(len = kchara) :: file_name
 !
 !
-      open(id_dipolarity, file = dip%dipolarity_file_name,              &
-     &    form='formatted', status='old', position='append', err = 99)
+      open(id_file, file = dip%dipolarity_file_name, form='formatted',  &
+     &     status='old', position='append', err = 99)
       return
 !
    99 continue
-      open(id_dipolarity, file = dip%dipolarity_file_name,              &
-     &    form='formatted', status='replace')
+      open(id_file, file = dip%dipolarity_file_name,                    &
+     &     form='formatted', status='replace')
 !
-!
-      write(id_dipolarity,'(a)')    '# Truncation   CMB_radius'
-      write(id_dipolarity,'(i16,1pe25.15e3)')                           &
-     &                         dip%ltr_max, radius_CMB
-!
-      write(id_dipolarity,'(a)',advance='NO')                           &
-     &    't_step    time    f_dip'
-      write(id_dipolarity,'(a)') ''
+      call write_dipolarity_header(id_file, ltr, nri,                   &
+     &                             nlayer_ICB, nlayer_CMB, dip)
 !
       end subroutine open_dipolarity_file
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_dipolarity_header(id_file, ltr, nri,             &
+     &                                   nlayer_ICB, nlayer_CMB, dip)
+!
+      use write_field_labels
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(dipolarity_data), intent(in) :: dip
+!
+      integer(kind = kint) :: i
+!
+!
+      write(id_file,'(a)') '# radial_layers, truncation'
+      write(id_file,'(3i16)') nri, ltr
+      write(id_file,'(a)')  '# ICB_id, CMB_id'
+      write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
+      write(id_file,'(a)') '# Not used'
+      write(id_file,'(i16,1pe23.14e3)')                                 &
+     &                     izero, zero
+      write(id_file,'(a)') '# Radis address and radius for dipolarity'
+      write(id_file,'(i16,1pe23.14e3)')                                 &
+     &                     dip%krms_CMB, dip%rdip_CMB
+!
+      write(id_file,'(a)')    'number of components'
+      write(id_file,'(2i16)') dip%num_dip, dip%num_dip
+      write(id_file,'(16i5)') (ione,i=1,dip%num_dip)
+!
+      write(id_file,'(a)',advance='NO') 't_step    time    '
+      do i = 1, dip%num_dip
+        write(id_file,'(a, a4)',advance='NO')                           &
+     &                                 trim(dip%dip_name(i)), '    '
+      end do
+      write(id_file,'(a)') ''
+!
+      end subroutine write_dipolarity_header
 !
 ! -----------------------------------------------------------------------
 !

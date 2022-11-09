@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine read_sph_dipolarity_ctl                              &
 !!     &         (id_control, hd_block, fdip_ctl, c_buf)
-!!      subroutine reset_sph_dipolarity_ctl(fdip_ctl)
+!!      subroutine dealloc_sph_dipolarity_ctl(fdip_ctl)
 !!
 !! -----------------------------------------------------------------
 !!
@@ -18,7 +18,10 @@
 !!
 !!  begin sph_dipolarity_ctl
 !!    dipolarity_file_prefix        'monitor/dipolarity'
-!!    dipolarity_truncation_ctl     13
+!!
+!!    array dipolarity_truncation_ctl
+!!      dipolarity_truncation_ctl     13
+!!    end array dipolarity_truncation_ctl
 !!  end sph_dipolarity_ctl
 !!
 !! -----------------------------------------------------------------
@@ -41,7 +44,7 @@
 !>        Structure for dipolarity setting
       type sph_dipolarity_control
 !>        Structure for truncation lavel for dipolarity
-        type(read_integer_item) :: fdip_truncation_ctl
+        type(ctl_array_int) :: fdip_truncation_ctl
 !
 !>        Structure for dipolarity file prefix
         type(read_character_item) :: fdip_file_prefix_ctl
@@ -81,8 +84,8 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
-        call read_integer_ctl_type(c_buf, hd_fdip_truncation,           &
-     &      fdip_ctl%fdip_truncation_ctl)
+        call read_control_array_i1(id_control, hd_fdip_truncation,      &
+     &                             fdip_ctl%fdip_truncation_ctl, c_buf)
         call read_chara_ctl_type(c_buf, hd_fdip_file_prefix,            &
      &      fdip_ctl%fdip_file_prefix_ctl)
       end do
@@ -92,17 +95,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reset_sph_dipolarity_ctl(fdip_ctl)
+      subroutine dealloc_sph_dipolarity_ctl(fdip_ctl)
 !
       type(sph_dipolarity_control), intent(inout) :: fdip_ctl
 !
 !
       fdip_ctl%i_dipolarity_ctl = 0
 !
-      fdip_ctl%fdip_truncation_ctl%iflag = 0
+      call dealloc_control_array_int(fdip_ctl%fdip_truncation_ctl)
       fdip_ctl%fdip_file_prefix_ctl%iflag = 0
 !
-      end subroutine reset_sph_dipolarity_ctl
+      end subroutine dealloc_sph_dipolarity_ctl
 !
 ! -----------------------------------------------------------------------
 !

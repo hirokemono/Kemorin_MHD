@@ -171,7 +171,7 @@
       type(sph_dipolarity_control), intent(inout) :: fdip_ctl
 !
 !
-      call bcast_ctl_type_i1(fdip_ctl%fdip_truncation_ctl)
+      call bcast_ctl_array_i1(fdip_ctl%fdip_truncation_ctl)
       call bcast_ctl_type_c1(fdip_ctl%fdip_file_prefix_ctl)
       call calypso_mpi_bcast_one_int(fdip_ctl%i_dipolarity_ctl, 0)
 !
