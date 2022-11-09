@@ -78,6 +78,7 @@
       use pickup_sph_spectr_data
       use pickup_gauss_coefficients
       use cal_heat_source_Nu
+      use cal_CMB_dipolarity
 !
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -117,9 +118,9 @@
      &      rj_fld, monitor%comp_Nusselt)
       end if
 !!
-      if(iflag_debug.gt.0)  write(*,*) 'cal_CMB_dipolarity'
-      call cal_CMB_dipolarity(my_rank, rj_fld,                          &
-     &                        monitor%pwr, monitor%dip)
+      if(iflag_debug.gt.0)  write(*,*) 's_cal_CMB_dipolarity'
+      call s_cal_CMB_dipolarity(my_rank, rj_fld,                        &
+     &                          monitor%pwr, monitor%dip)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
       call cal_typical_scales(rj_fld, monitor%pwr, monitor%tsl)

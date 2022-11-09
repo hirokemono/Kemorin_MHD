@@ -153,6 +153,8 @@
       use cal_rms_fields_by_sph
       use output_sph_pwr_volume_file
       use write_sph_gauss_coefs
+      use cal_CMB_dipolarity
+      use init_rms_4_sph_spectr
 !
       use t_solver_SR
       use calypso_mpi_int
@@ -170,9 +172,10 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_energy_labels_w_filter'
       call init_energy_labels_w_filter(monitor%ene_labels)
-      call init_rms_4_sph_spectr                                        &
-     &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
-     &    monitor%pwr, monitor%WK_pwr, monitor%dip)
+      call s_init_rms_4_sph_spectr(sph%sph_params, sph%sph_rj, rj_fld,  &
+     &    monitor%dip%iflag_dipolarity, monitor%pwr, monitor%WK_pwr)
+      call init_dipolarity_4_sph_spectr(sph%sph_params, monitor%pwr,    &
+     &                                  monitor%dip)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'check_sph_vol_ms_file'

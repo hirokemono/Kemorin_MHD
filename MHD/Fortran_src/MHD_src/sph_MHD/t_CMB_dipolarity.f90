@@ -12,12 +12,6 @@
 !!        integer(kind = kint), intent(in) :: num
 !!        type(dipolarity_data), intent(inout) :: dip
 !!
-!!      subroutine set_ctl_dipolarity_params                            &
-!!     &         (fdip_file_prefix, fdip_truncation, rj_fld, dip)
-!!        type(read_character_item), intent(in) :: fdip_file_prefix
-!!        type(ctl_array_int), intent(in) :: fdip_truncation
-!!        type(phys_data), intent(in) :: rj_fld
-!!        type(dipolarity_data), intent(inout) :: dip
 !!      subroutine write_dipolarity(i_step, time, ltr, nri,             &
 !!     &                            nlayer_ICB, nlayer_CMB, i_magne, dip)
 !!        integer, intent(in) :: id_rank
@@ -27,11 +21,6 @@
 !!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
 !!        integer(kind = kint), intent(in) :: i_magne
 !!        type(dipolarity_data), intent(in) :: dip
-!!      subroutine cal_CMB_dipolarity(id_rank, rj_fld, pwr, dip)
-!!        integer, intent(in) :: id_rank
-!!        type(phys_data), intent(in) :: rj_fld
-!!        type(sph_mean_squares), intent(in) :: pwr
-!!        real(kind = kreal), intent(inout) :: f_dip
 !!
 !!      subroutine open_dipolarity_file(id_file, ltr, nri,              &
 !!     &                                nlayer_ICB, nlayer_CMB, dip)
@@ -48,9 +37,7 @@
       use m_precision
       use m_constants
 !
-      use t_phys_data
-      use t_rms_4_sph_spectr
-      use t_spheric_parameter
+      use t_field_labels
 !
       implicit none
 !
@@ -126,56 +113,6 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_dipolarity_params                              &
-     &         (fdip_file_prefix, fdip_truncation, rj_fld, dip)
-!
-      use m_base_field_labels
-      use t_phys_data
-      use t_control_array_character
-      use t_control_array_integer
-      use set_parallel_file_name
-!
-      type(read_character_item), intent(in) :: fdip_file_prefix
-      type(ctl_array_int), intent(in) :: fdip_truncation
-      type(phys_data), intent(in) :: rj_fld
-      type(dipolarity_data), intent(inout) :: dip
-!
-      integer(kind = kint) :: i, num
-!
-!    Turn On Nusselt number if temperature gradient is there
-      dip%iflag_dipolarity = 0
-      do i = 1, rj_fld%num_phys
-        if(rj_fld%phys_name(i) .eq. magnetic_field%name) then
-          dip%iflag_dipolarity = 1
-          exit
-        end if
-      end do
-!
-      if(fdip_file_prefix%iflag .gt. 0) then
-        dip%iflag_dipolarity = 1
-        dip%dipolarity_file_name                                        &
-     &              = add_dat_extension(fdip_file_prefix%charavalue)
-      else
-        dip%iflag_dipolarity = 0
-      end if
-!
-      if(dip%iflag_dipolarity .gt. 0) then
-        num = 1
-        if(fdip_truncation%num .gt. 0) then
-          num = fdip_truncation%num + 1
-        end if
-        call alloc_dipolarity_data(num, dip)
-!
-        dip%ltr_max(1) = -1
-        do i = 2, dip%num_dip
-          dip%ltr_max(i) = fdip_truncation%ivec(i-1)
-        end do
-      end if
-!
-      end subroutine set_ctl_dipolarity_params
-!
-! -----------------------------------------------------------------------
-!
       subroutine write_dipolarity(i_step, time, ltr, nri,               &
      &                            nlayer_ICB, nlayer_CMB, i_magne, dip)
 !
@@ -203,50 +140,6 @@
       close(id_dipolarity)
 !
       end subroutine write_dipolarity
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_CMB_dipolarity(id_rank, rj_fld, pwr, dip)
-!
-      use t_spheric_parameter
-      use t_spheric_rj_data
-!
-      integer, intent(in) :: id_rank
-      type(phys_data), intent(in) :: rj_fld
-      type(sph_mean_squares), intent(in) :: pwr
-!
-      type(dipolarity_data), intent(inout) :: dip
-!
-!>      magnetic energy at CMB
-      real(kind = kreal) :: me_cmb_d
-!>      dipole component of magnetic energy at CMB
-      real(kind = kreal) :: pwr_g10
-!
-      integer(kind = kint) :: i, l
-!
-!
-      if(dip%iflag_dipolarity .le. izero) return
-!
-      if(dip%icomp_mene .le. 0)                                         &
-     &          dip%icomp_mene = find_rms_address_4_mene(pwr, rj_fld)
-      if(dip%icomp_mene .le. 0) return
-!
-      if(id_rank .eq. pwr%irank_l) then
-        pwr_g10 = pwr%shl_l(dip%krms_CMB,1,dip%icomp_mene)
-!
-        do i = 1, dip%num_dip
-          me_cmb_d = 0.0d0
-!$omp parallel do reduction(+:me_cmb_d)
-          do l = 1, dip%ltr_max(i)
-            me_cmb_d = me_cmb_d                                         &
-     &                + pwr%shl_l(dip%krms_CMB,l,dip%icomp_mene)
-          end do
-!$omp end parallel do
-          dip%f_dip(i) = pwr_g10 / me_cmb_d
-        end do
-      end if
-!
-      end subroutine cal_CMB_dipolarity
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -313,31 +206,6 @@
       write(id_file,'(a)') ''
 !
       end subroutine write_dipolarity_header
-!
-! -----------------------------------------------------------------------
-!
-      integer(kind = kint)                                              &
-     &          function find_rms_address_4_mene(pwr, rj_fld)
-!
-      use m_base_field_labels
-      use t_rms_4_sph_spectr
-!
-      type(phys_data), intent(in) :: rj_fld
-      type(sph_mean_squares), intent(in) :: pwr
-!
-      integer(kind = kint) :: j_fld, i_fld
-!
-      do j_fld = 1, pwr%num_fld_sq
-        i_fld = pwr%id_field(j_fld)
-!
-        find_rms_address_4_mene = 0
-        if(rj_fld%phys_name(i_fld) .eq. magnetic_field%name) then
-          find_rms_address_4_mene = pwr%istack_comp_sq(j_fld-1) + 1
-          exit
-        end if
-      end do
-!
-      end function find_rms_address_4_mene
 !
 ! -----------------------------------------------------------------------
 !

@@ -145,6 +145,8 @@
 !
       use t_energy_label_parameters
       use cal_rms_fields_by_sph
+      use cal_CMB_dipolarity
+      use init_rms_4_sph_spectr
 !
       type(sph_grids), intent(in) :: sph
 !
@@ -152,11 +154,12 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'init_rms_4_sph_spectr'
+      if(iflag_debug .gt. 0) write(*,*) 's_init_rms_4_sph_spectr'
       call init_energy_labels_base(monitor%ene_labels)
-      call init_rms_4_sph_spectr                                        &
-     &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
-     &    monitor%pwr, monitor%WK_pwr, monitor%dip)
+      call s_init_rms_4_sph_spectr(sph%sph_params, sph%sph_rj, rj_fld,  &
+     &    monitor%dip%iflag_dipolarity, monitor%pwr, monitor%WK_pwr)
+      call init_dipolarity_4_sph_spectr(sph%sph_params, monitor%pwr,    &
+     &                                  monitor%dip)
 !
       end subroutine init_rms_4_sph_spectr_4_mhd
 !

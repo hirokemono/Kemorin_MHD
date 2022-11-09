@@ -342,6 +342,7 @@
       use m_base_field_labels
 !
       use set_control_4_pickup_sph
+      use cal_CMB_dipolarity
 !
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(phys_data), intent(in) :: rj_fld

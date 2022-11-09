@@ -154,7 +154,7 @@ t_picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/t_picked_sph_spectr_data_IO.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 t_read_sph_spectra.o: $(SPH_UTILS_DIR)/t_read_sph_spectra.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_spheric_data_sph_spetr.o: $(SPH_UTILS_DIR)/t_spheric_data_sph_spetr.f90 m_precision.o t_rms_4_sph_spectr.o t_sum_sph_rms_data.o t_pickup_sph_spectr_data.o t_energy_label_parameters.o t_CMB_dipolarity.o cal_rms_fields_by_sph.o init_energy_labels_sph_SGS.o pickup_sph_coefs.o sph_mean_spectr_header_IO.o output_sph_volume_ave_file.o output_sph_pwr_volume_file.o output_sph_pwr_layer_file.o
+t_spheric_data_sph_spetr.o: $(SPH_UTILS_DIR)/t_spheric_data_sph_spetr.f90 m_precision.o t_rms_4_sph_spectr.o t_sum_sph_rms_data.o t_pickup_sph_spectr_data.o t_energy_label_parameters.o t_CMB_dipolarity.o cal_rms_fields_by_sph.o cal_CMB_dipolarity.o init_energy_labels_sph_SGS.o init_rms_4_sph_spectr.o pickup_sph_coefs.o sph_mean_spectr_header_IO.o output_sph_volume_ave_file.o output_sph_pwr_volume_file.o output_sph_pwr_layer_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
 tave_picked_gauss_coefs.o: $(SPH_UTILS_DIR)/tave_picked_gauss_coefs.f90 m_precision.o m_constants.o t_ctl_data_tave_sph_monitor.o time_average_gauss_coefs.o t_ctl_param_sph_series_util.o
 	$(F90) -c $(F90OPTFLAGS) $<

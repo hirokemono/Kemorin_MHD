@@ -61,7 +61,9 @@
       subroutine init_rms_4_sph_spectr_util(sph, rj_fld, monitor_s)
 !
       use cal_rms_fields_by_sph
+      use cal_CMB_dipolarity
       use init_energy_labels_sph_SGS
+      use init_rms_4_sph_spectr
 !
       type(sph_grids), intent(in) :: sph
 !
@@ -69,11 +71,10 @@
       type(sph_spectr_monitor_data), intent(inout) :: monitor_s
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'init_rms_4_sph_spectr'
+      if(iflag_debug .gt. 0) write(*,*) 's_init_rms_4_sph_spectr'
       call init_energy_labels_w_filter(monitor_s%ene_labels)
-      call init_rms_4_sph_spectr                                        &
-     &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
-     &    monitor_s%pwr, monitor_s%WK_pwr, monitor_s%dip)
+      call s_init_rms_4_sph_spectr(sph%sph_params, sph%sph_rj, rj_fld,  &
+     &    izero, monitor_s%pwr, monitor_s%WK_pwr)
 !
       end subroutine init_rms_4_sph_spectr_util
 !
