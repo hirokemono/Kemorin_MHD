@@ -228,7 +228,6 @@
       write(id_file,'(3i16)') nri, ltr
       write(id_file,'(a)')  'ICB_id, CMB_id'
       write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
-      write(id_file,'(a)') 'Radius ID and radius for inner boundary'
       write(id_file,'(a)') 'inner_boundary_ID, inner_boundary_radius'
       write(id_file,'(i16,1pe23.14e3)')                                 &
      &                     Nu_type%kr_ICB_Nu, Nu_type%r_ICB_Nu

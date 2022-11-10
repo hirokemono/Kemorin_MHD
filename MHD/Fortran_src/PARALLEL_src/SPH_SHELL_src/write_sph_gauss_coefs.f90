@@ -94,15 +94,9 @@
         else
           open(id_gauss_coef,file=file_name, status='new',              &
      &         form='formatted')
-          write(id_gauss_coef,'(a,i16,1pe25.15e3,a1,a)', ADVANCE='NO')  &
-     &          hd_pick_gauss_head(),                                   &
-     &          gauss%num_sph_mode, gauss%radius_gl(1), char(10),       &
-     &          hd_time_label()
-          do i = 1, gauss%istack_picked_spec_lc(nprocs)
-            write(id_gauss_coef,'(a,a4)', ADVANCE='NO')                 &
-     &          trim(gauss%gauss_mode_name_out(i)), '    '
-          end do
-          write(id_gauss_coef,'(a1)', ADVANCE='NO') char(10)
+          call write_sph_gauss_coefs_header(id_gauss_coef,              &
+     &        sph_params%l_truncation, sph_rj%nidx_rj(1),               &
+     &        sph_params%nlayer_ICB, sph_params%nlayer_CMB, gauss)
         end if
 !
         write(fmt_txt,'(a1,i8,a13)')                                    &
@@ -119,6 +113,48 @@
       end subroutine append_sph_gauss_coefs_file
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine write_sph_gauss_coefs_header                           &
+     &         (id_file, ltr, nri, nlayer_ICB, nlayer_CMB, gauss)
+!
+      use t_solver_SR
+      use set_parallel_file_name
+      use delete_data_files
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: gauss
+!
+      integer(kind = kint) :: i, ntot
+!
+!
+      write(id_file,'(a)') 'radial_layers, truncation'
+      write(id_file,'(3i16)') nri, ltr
+      write(id_file,'(a)')  'ICB_id, CMB_id'
+      write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
+      write(id_file,'(a)') 'Not_used, Not_used'
+      write(id_file,'(i16,1pe23.14e3)')                                 &
+     &                     izero, zero
+      write(id_file,'(a)') 'Not_used, reference_radius'
+      write(id_file,'(i16,1pe23.14e3)')                                 &
+     &                     izero, gauss%radius_gl(1)
+!
+      ntot = gauss%istack_picked_spec_lc(nprocs)
+      write(id_file,'(a)')                                              &
+     &             'number_of_gauss_coefs, number_of_gauss_coefs'
+      write(id_file,'(2i16)') ntot, ntot
+      write(id_file,'(16i5)') (ione,i=1,ntot)
+!
+      do i = 1, ntot
+        write(id_file,'(a,a4)', ADVANCE='NO')                           &
+     &        trim(gauss%gauss_mode_name_out(i)), '    '
+      end do
+      write(id_file,'(a1)', ADVANCE='NO') char(10)
+!
+      end subroutine write_sph_gauss_coefs_header
+!
 !  ---------------------------------------------------------------------
 !
       subroutine write_sph_gauss_coefes(sph_params, sph_rj,             &
