@@ -18,6 +18,8 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!      subroutine output_rms_sph_mhd_control(time_d, SPH_MHD, MHD_prop,&
 !!     &          sph_MHD_bc, r_2nd, leg, MHD_mats, monitor, SR_sig)
+!!      subroutine output_sph_monitor_data(time_d, sph_params, sph_rj,  &
+!!     &          sph_bc_U, ipol, rj_fld, monitor, SR_sig)
 !!        type(time_data), intent(in) :: time_d
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -39,11 +41,12 @@
 !!     &          band_s00_poisson_fixS, rj_fld, Nusselt)
 !!      subroutine cal_write_dipolarity(time_d, sph_params, sph_rj,     &
 !!     &          ipol, rj_fld, pwr, dip)
-!!      subroutine cal_write_typical_scale(time_d, rj_fld, pwr, tsl)
+!!      subroutine cal_write_typical_scale(time_d, sph_params, sph_rj,  &
+!!     &                                   sph_bc_U, rj_fld, pwr, tsl)
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_grids), intent(in) :: sph
-!!        type(sph_boundary_type), intent(in) :: sph_bc_U/
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_S
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson_fixS
@@ -160,7 +163,8 @@
 !
       call output_sph_monitor_data                                      &
      &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
-     &    SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
+     &    sph_MHD_bc%sph_bc_U, SPH_MHD%ipol, SPH_MHD%fld,               &
+     &    monitor, SR_sig)
 !
       end subroutine output_rms_sph_mhd_control
 !
@@ -175,6 +179,7 @@
       use pickup_gauss_coefficients
       use cal_heat_source_Nu
       use cal_CMB_dipolarity
+      use cal_typical_scale
 !
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -223,16 +228,18 @@
 !  --------------------------------------------------------------------
 !
       subroutine output_sph_monitor_data(time_d, sph_params, sph_rj,    &
-     &          ipol, rj_fld, monitor, SR_sig)
+     &          sph_bc_U, ipol, rj_fld, monitor, SR_sig)
 !
       use t_solver_SR
       use output_sph_pwr_volume_file
       use write_picked_sph_spectr
       use write_sph_gauss_coefs
+      use cal_typical_scale
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
@@ -268,7 +275,7 @@
       end if
 !
       call write_typical_scales(time_d%i_time_step, time_d%time,        &
-     &                          monitor%pwr, monitor%tsl)
+     &    sph_params, sph_rj, sph_bc_U, monitor%pwr, monitor%tsl)
 !
       call write_each_picked_specr_file                                 &
      &   (time_d, sph_rj, rj_fld, monitor%pick_coef)
@@ -375,9 +382,15 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine cal_write_typical_scale(time_d, rj_fld, pwr, tsl)
+      subroutine cal_write_typical_scale(time_d, sph_params, sph_rj,    &
+     &                                   sph_bc_U, rj_fld, pwr, tsl)
+!
+      use cal_typical_scale
 !
       type(time_data), intent(in) :: time_d
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(in) :: rj_fld
       type(sph_mean_squares), intent(in) :: pwr
 !
@@ -386,7 +399,7 @@
 !
       call cal_typical_scales(rj_fld, pwr, tsl)
       call write_typical_scales(time_d%i_time_step, time_d%time,        &
-     &                          pwr, tsl)
+     &    sph_params, sph_rj, sph_bc_U, pwr, tsl)
 !
       end subroutine cal_write_typical_scale
 !

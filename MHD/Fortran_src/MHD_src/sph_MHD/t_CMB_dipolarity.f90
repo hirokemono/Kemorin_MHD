@@ -183,18 +183,18 @@
       integer(kind = kint) :: i
 !
 !
-      write(id_file,'(a)') '# radial_layers, truncation'
+      write(id_file,'(a)') 'radial_layers, truncation'
       write(id_file,'(3i16)') nri, ltr
-      write(id_file,'(a)')  '# ICB_id, CMB_id'
+      write(id_file,'(a)')  'ICB_id, CMB_id'
       write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
-      write(id_file,'(a)') '# Not used'
+      write(id_file,'(a)') 'Not_used, Not_used'
       write(id_file,'(i16,1pe23.14e3)')                                 &
      &                     izero, zero
-      write(id_file,'(a)') '# Radius ID and radius for outer boundary'
+      write(id_file,'(a)') 'outer_boundary_ID, outer_boundary_radius'
       write(id_file,'(i16,1pe23.14e3)')                                 &
      &                     dip%krms_CMB, dip%rdip_CMB
 !
-      write(id_file,'(a)')    '# number of components'
+      write(id_file,'(a)')   'number_of_fields, number_of_components'
       write(id_file,'(2i16)') dip%num_dip, dip%num_dip
       write(id_file,'(16i5)') (ione,i=1,dip%num_dip)
 !

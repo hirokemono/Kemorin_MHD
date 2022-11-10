@@ -79,6 +79,7 @@
       use pickup_gauss_coefficients
       use cal_heat_source_Nu
       use cal_CMB_dipolarity
+      use cal_typical_scale
 !
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop

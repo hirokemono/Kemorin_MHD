@@ -224,17 +224,19 @@
       type(nusselt_number_data), intent(in) :: Nu_type
 !
 !
-      write(id_file,'(a)') '# radial_layers, truncation'
+      write(id_file,'(a)') 'radial_layers, truncation'
       write(id_file,'(3i16)') nri, ltr
-      write(id_file,'(a)')  '# ICB_id, CMB_id'
+      write(id_file,'(a)')  'ICB_id, CMB_id'
       write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
-      write(id_file,'(a)') '# Radius ID and radius for inner boundary'
-      write(id_file,'(2i16)')  Nu_type%kr_ICB_Nu, Nu_type%r_ICB_Nu
-      write(id_file,'(a)') '# Radius ID and radius for outer boundary'
+      write(id_file,'(a)') 'Radius ID and radius for inner boundary'
+      write(id_file,'(a)') 'inner_boundary_ID, inner_boundary_radius'
+      write(id_file,'(i16,1pe23.14e3)')                                 &
+     &                     Nu_type%kr_ICB_Nu, Nu_type%r_ICB_Nu
+      write(id_file,'(a)') 'outer_boundary_ID, outer_boundary_radius'
       write(id_file,'(i16,1pe23.14e3)')                                 &
      &                     Nu_type%kr_CMB_Nu, Nu_type%r_CMB_Nu
 !
-      write(id_file,'(a)')    '# number of components'
+      write(id_file,'(a)')   'number_of_fields, number_of_components'
       write(id_file,'(2i16)') itwo, itwo
       write(id_file,'(16i5)') ione, ione
 !

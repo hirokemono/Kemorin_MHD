@@ -138,7 +138,8 @@
 !
       call output_sph_monitor_data                                      &
      &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
-     &    SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
+     &    sph_MHD_bc%sph_bc_U, SPH_MHD%ipol, SPH_MHD%fld,               &
+     &    monitor, SR_sig)
 !
       end subroutine output_rms_sph_SGS_mhd_control
 !

@@ -343,6 +343,7 @@
 !
       use set_control_4_pickup_sph
       use cal_CMB_dipolarity
+      use cal_typical_scale
 !
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(phys_data), intent(in) :: rj_fld
