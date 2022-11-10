@@ -190,11 +190,11 @@
       write(id_file,'(a)') '# Not used'
       write(id_file,'(i16,1pe23.14e3)')                                 &
      &                     izero, zero
-      write(id_file,'(a)') '# Radis address and radius for dipolarity'
+      write(id_file,'(a)') '# Radius ID and radius for outer boundary'
       write(id_file,'(i16,1pe23.14e3)')                                 &
      &                     dip%krms_CMB, dip%rdip_CMB
 !
-      write(id_file,'(a)')    'number of components'
+      write(id_file,'(a)')    '# number of components'
       write(id_file,'(2i16)') dip%num_dip, dip%num_dip
       write(id_file,'(16i5)') (ione,i=1,dip%num_dip)
 !

@@ -19,12 +19,14 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(nusselt_number_data), intent(inout) :: Nu_type
 !!
-!!      subroutine write_no_heat_source_Nu(idx_rj_degree_zero,          &
-!!     &          i_step, time, Nu_type)
-!!
-!!      subroutine open_read_no_heat_source_Nu(id_pick, Nu_type)
-!!      subroutine read_no_heat_source_Nu                               &
-!!     &         (id_pick, i_step, time, Nu_type, ierr)
+!!      subroutine write_Nusselt_file(i_step, time, ltr, nri,           &
+!!     &          nlayer_ICB, nlayer_CMB, idx_rj_degree_zero, Nu_type)
+!!      subroutine write_Nu_header(id_file, ltr, nri,                   &
+!!     &                           nlayer_ICB, nlayer_CMB, Nu_type)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer(kind = kint), intent(in) :: ltr, nri
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+!!        type(nusselt_number_data), intent(in) :: Nu_type
 !!@endverbatim
 !
       module t_no_heat_Nusselt
@@ -50,6 +52,10 @@
 !>        File name for Nusselt number file
         character(len = kchara) :: Nusselt_file_name = 'Nusselt.dat'
 !
+!>        Radius ID at inner boundary
+        integer(kind = kint) :: kr_ICB_Nu
+!>        Radius ID at outer boundary
+        integer(kind = kint) :: kr_CMB_Nu
 !>        Radius at inner boundary
         real(kind = kreal) :: r_ICB_Nu
 !>        Radius at outer boundary
@@ -67,7 +73,7 @@
       end type nusselt_number_data
 !
       private :: id_Nusselt
-      private :: open_no_heat_source_Nu
+      private :: open_Nu_file
 !
 ! -----------------------------------------------------------------------
 !
@@ -158,11 +164,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine open_no_heat_source_Nu(Nu_type)
+      subroutine open_Nu_file(ltr, nri, nlayer_ICB, nlayer_CMB, Nu_type)
 !
       use set_parallel_file_name
       use write_field_labels
 !
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(nusselt_number_data), intent(in) :: Nu_type
 !
 !
@@ -174,22 +182,18 @@
       open(id_Nusselt, file = Nu_type%Nusselt_file_name,                &
      &    form='formatted', status='replace')
 !
+      call write_Nu_header(id_Nusselt, ltr, nri,                        &
+     &                     nlayer_ICB, nlayer_CMB, Nu_type)
 !
-      write(id_Nusselt,'(a)')    '# Inner_radius, Outer_radius'
-      write(id_Nusselt,'(1p2e25.15e3)')                                 &
-     &                         Nu_type%r_ICB_Nu, Nu_type%r_CMB_Nu
-!
-      write(id_Nusselt,'(a)',advance='NO')                              &
-     &    't_step    time    Nu_ICB    Nu_CMB'
-      write(id_Nusselt,'(a)') ''
-!
-      end subroutine open_no_heat_source_Nu
+      end subroutine open_Nu_file
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_no_heat_source_Nu(idx_rj_degree_zero,            &
-     &          i_step, time, Nu_type)
+      subroutine write_Nusselt_file(i_step, time, ltr, nri,             &
+     &          nlayer_ICB, nlayer_CMB, idx_rj_degree_zero, Nu_type)
 !
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: idx_rj_degree_zero, i_step
       real(kind = kreal), intent(in) :: time
       type(nusselt_number_data), intent(in) :: Nu_type
@@ -198,59 +202,47 @@
       if(Nu_type%iflag_Nusselt .eq. izero) return
       if(idx_rj_degree_zero .eq. izero) return
 !
-      call open_no_heat_source_Nu(Nu_type)
+      call open_Nu_file(ltr, nri, nlayer_ICB, nlayer_CMB, Nu_type)
 !
       write(id_Nusselt,'(i16,1p3e23.14e3)')                             &
      &       i_step, time, Nu_type%Nu_ICB, Nu_type%Nu_CMB
 !
       close(id_Nusselt)
 !
-      end subroutine write_no_heat_source_Nu
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine open_read_no_heat_source_Nu(id_pick, Nu_type)
-!
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: id_pick
-      type(nusselt_number_data), intent(inout) :: Nu_type
-!
-      integer(kind = kint) :: i
-      character(len=255) :: tmpchara
-!
-!
-      open(id_pick, file = Nu_type%Nusselt_file_name)
-      call skip_comment(tmpchara,id_pick)
-      read(tmpchara,*) Nu_type%r_ICB_Nu, Nu_type%r_CMB_Nu
-!
-      read(id_pick,*) (tmpchara,i=1,4)
-!
-      end subroutine open_read_no_heat_source_Nu
+      end subroutine write_Nusselt_file
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_no_heat_source_Nu                                 &
-     &         (id_pick, i_step, time, Nu_type, ierr)
+      subroutine write_Nu_header(id_file, ltr, nri,                     &
+     &                           nlayer_ICB, nlayer_CMB, Nu_type)
 !
-      integer(kind = kint), intent(in) :: id_pick
-      integer(kind = kint), intent(inout) :: i_step, ierr
-      real(kind = kreal), intent(inout) :: time
-      type(nusselt_number_data), intent(inout) :: Nu_type
+      use write_field_labels
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(nusselt_number_data), intent(in) :: Nu_type
 !
 !
-      ierr = 0
-      read(id_pick,*,err=99,end=99)                                     &
-     &        i_step, time, Nu_type%Nu_ICB, Nu_type%Nu_CMB
+      write(id_file,'(a)') '# radial_layers, truncation'
+      write(id_file,'(3i16)') nri, ltr
+      write(id_file,'(a)')  '# ICB_id, CMB_id'
+      write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
+      write(id_file,'(a)') '# Radius ID and radius for inner boundary'
+      write(id_file,'(2i16)')  Nu_type%kr_ICB_Nu, Nu_type%r_ICB_Nu
+      write(id_file,'(a)') '# Radius ID and radius for outer boundary'
+      write(id_file,'(i16,1pe23.14e3)')                                 &
+     &                     Nu_type%kr_CMB_Nu, Nu_type%r_CMB_Nu
 !
-      return
+      write(id_file,'(a)')    '# number of components'
+      write(id_file,'(2i16)') itwo, itwo
+      write(id_file,'(16i5)') ione, ione
 !
-   99 continue
-      ierr = 1
-      return
+      write(id_file,'(a)',advance='NO')                                 &
+     &    't_step    time    Nu_ICB    Nu_CMB'
+      write(id_file,'(a)') ''
 !
-      end subroutine read_no_heat_source_Nu
+      end subroutine write_Nu_header
 !
 ! -----------------------------------------------------------------------
 !

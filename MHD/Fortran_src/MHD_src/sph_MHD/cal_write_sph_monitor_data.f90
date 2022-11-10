@@ -247,13 +247,17 @@
      &   (monitor%ene_labels, time_d, sph_params, sph_rj, monitor%pwr)
 !
       if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
-        call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,         &
-     &      time_d%i_time_step, time_d%time, monitor%heat_Nusselt)
+        call write_Nusselt_file(time_d%i_time_step, time_d%time,        &
+     &      sph_params%l_truncation, sph_rj%nidx_rj(1),                 &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
+     &      sph_rj%idx_rj_degree_zero, monitor%heat_Nusselt)
       end if
 !
       if(monitor%comp_Nusselt%iflag_Nusselt .ne. 0) then
-        call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,         &
-     &      time_d%i_time_step, time_d%time, monitor%comp_Nusselt)
+        call write_Nusselt_file(time_d%i_time_step, time_d%time,        &
+     &      sph_params%l_truncation, sph_rj%nidx_rj(1),                 &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
+     &      sph_rj%idx_rj_degree_zero, monitor%comp_Nusselt)
       end if
 !
       if(my_rank .eq. monitor%pwr%irank_l) then
@@ -334,8 +338,10 @@
       call sel_Nusselt_routine(is_scalar, is_source, is_grad_s,         &
      &    sph, r_2nd, sc_prop, sph_bc_S, sph_bc_U, bcs_S,               &
      &    fdm2_center, band_s00_poisson_fixS, rj_fld, Nusselt)
-      call write_no_heat_source_Nu(sph%sph_rj%idx_rj_degree_zero,       &
-     &    time_d%i_time_step, time_d%time, Nusselt)
+      call write_Nusselt_file(time_d%i_time_step, time_d%time,          &
+     &    sph%sph_params%l_truncation, sph%sph_rj%nidx_rj(1),           &
+     &    sph%sph_params%nlayer_ICB, sph%sph_params%nlayer_CMB,         &
+     &    sph%sph_rj%idx_rj_degree_zero, Nusselt)
 !
       end subroutine cal_write_no_heat_sourse_Nu
 !
