@@ -120,9 +120,9 @@
           if(dip%ltr_max(i).le.0                                        &
      &            .or. dip%ltr_max(i).gt.sph_params%l_truncation) then
             dip%ltr_max(i) = sph_params%l_truncation
-            call add_index_after_name(dip%ltr_max(i), dip_ltr_label,    &
-     &                                dip%dip_name(i))
           end if
+          call add_index_after_name(dip%ltr_max(i), dip_ltr_label,      &
+     &                              dip%dip_name(i))
         end do
 !
         do knum = 1, pwr%nri_rms
