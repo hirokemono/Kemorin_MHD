@@ -207,7 +207,7 @@
       write(id_file,'(2i16)') sph_IN%nri_sph, sph_IN%ltr_sph
       write(id_file,'(a)')    'ICB_id, CMB_id'
       write(id_file,'(2i16)') sph_IN%kr_ICB, sph_IN%kr_CMB
-      write(id_file,'(a)')    'Lower boudary'
+      write(id_file,'(a)')    'Lower boundary'
       write(id_file,'(i16,1pe23.15e3)') sph_IN%kr_inner, sph_IN%r_inner
       write(id_file,'(a)')    'Upper boundary'
       write(id_file,'(i16,1pe23.15e3)') sph_IN%kr_outer, sph_IN%r_outer

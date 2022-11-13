@@ -72,7 +72,7 @@
       write(id_file,'(a)')    'ICB_id, CMB_id'
       write(id_file,'(2i16)')                                           &
      &                     sph_params%nlayer_ICB, sph_params%nlayer_CMB
-      write(id_file,'(a)')    'Lower boudary'
+      write(id_file,'(a)')    'Lower boundary'
       write(id_file,'(i16,1pe23.14e3)')                                 &
      &                     v_pwr%kr_inside, v_pwr%r_inside
       write(id_file,'(a)')    'Upper boundary'
@@ -210,11 +210,23 @@
         check_sph_vol_mean_sq_header = 1
         return
       end if
+      if(real(rtmp) .ne. real(v_pwr%r_inside)) then
+        write(*,*) 'Inner boundary radius does not match ',             &
+     &             'with the data in the file'
+        check_sph_vol_mean_sq_header = 1
+        return
+      end if
 !
       call skip_comment(character_4_read, id_file)
       read(id_file,*) kr_outer_read, rtmp
       if(kr_outer_read .ne. v_pwr%kr_outside) then
         write(*,*) 'Outer area address does not match ',                &
+     &             'with the data in the file'
+        check_sph_vol_mean_sq_header = 1
+        return
+      end if
+      if(real(rtmp) .ne. real(v_pwr%r_inside)) then
+        write(*,*) 'Inner boundary radius does not match ',             &
      &             'with the data in the file'
         check_sph_vol_mean_sq_header = 1
         return

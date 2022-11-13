@@ -126,7 +126,7 @@
       call set_rot_earth_4_sph(sph%sph_rlm, sph%sph_rj,                 &
      &    MHD_prop%fl_prop, omega_sph)
 !
-!*  ---------- boudary conditions  ---------------
+!*  ---------- boundary conditions  ---------------
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd                                             &
      &   (bc_IO, sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,    &
