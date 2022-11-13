@@ -294,6 +294,86 @@
       end function check_sph_vol_mean_sq_header
 !
 !  --------------------------------------------------------------------
+!
+      logical function error_sph_vol_mean_sq_header                     &
+     &                   (id_file, mode_label, ene_labels,              &
+     &                    sph_params, sph_rj, v_pwr)
+!
+      use write_field_labels
+      use skip_comment_f
+!
+      type(energy_label_param), intent(in) :: ene_labels
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_vol_mean_squares), intent(in) :: v_pwr
+      integer(kind = kint), intent(in) :: id_file
+      character(len = kchara), intent(in) :: mode_label
+!
+      character (len=kchara), allocatable :: pwr_label(:)
+!
+      character(len=255) :: character_4_read
+      character(len=kchara) :: label(2)
+!
+!
+      read(character_4_read, *) label(1:2)
+      error_sph_vol_mean_sq_header                                      &
+     &    = error_sph_moniter_two_int(id_file, label,                   &
+     &                  sph_rj%nidx_rj(1), sph_params%l_truncation)
+      if(error_sph_vol_mean_sq_header) return
+!
+!
+      call skip_comment(character_4_read, id_file)
+      read(character_4_read, *) label(1:2)
+      error_sph_vol_mean_sq_header                                      &
+     &    = error_sph_moniter_two_int(id_file, label,                   &
+     &                  sph_params%nlayer_ICB, sph_params%nlayer_CMB))
+      if(error_sph_vol_mean_sq_header) return
+!
+      call skip_comment(character_4_read, id_file)
+      read(character_4_read, *) label(1:2)
+      error_sph_vol_mean_sq_header                                      &
+     &    = error_sph_moniter_int_real(id_file, label,                  &
+     &                             v_pwr%kr_inside, v_pwr%r_inside))
+      if(error_sph_vol_mean_sq_header) return
+!
+      call skip_comment(character_4_read, id_file)
+      read(character_4_read, *) label(1:2)
+      error_sph_vol_mean_sq_header                                      &
+     &    = error_sph_moniter_int_real(id_file, label,                  &
+     &                             v_pwr%kr_outside, v_pwr%r_outside))
+      if(error_sph_vol_mean_sq_header) return
+!
+!
+      call skip_comment(character_4_read, id_file)
+      label(1) = 'number'
+      label(2) = 'of'
+      error_sph_vol_mean_sq_header                                      &
+     &    = error_sph_moniter_two_int(id_file, label,                   &
+     &                           v_pwr%num_fld_sq, v_pwr%ntot_comp_sq))
+      if(error_sph_vol_mean_sq_header) return
+!
+!
+      error_sph_vol_mean_sq_header                                      &
+     &    = error_sph_moniter_ncomp(id_file, v_pwr%num_fld_sq,          &
+     &                              v_pwr%num_comp_sq, v_pwr%pwr_name))
+      if(error_sph_vol_mean_sq_header) return
+!
+      allocate(pwr_label(ntot_read))
+      icou = 1
+      do i = 1, v_pwr%num_fld_sq
+        call set_sph_rms_labels(ene_labels,                             &
+     &      v_pwr%num_comp_sq(i), v_pwr%pwr_name(i), pwr_label(icou))
+        icou = icou + v_pwr%num_comp_sq(i)
+      end do
+!
+      error_sph_vol_mean_sq_header                                      &
+     &     = error_sph_moniter_items(id_file, mode_label,               &
+     &                               v_pwr%ntot_comp_sq, pwr_label)
+      deallocate(pwr_label)
+!
+      end function error_sph_vol_mean_sq_header
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_rms_labels_4_monitor                           &
@@ -322,4 +402,4 @@
 ! -----------------------------------------------------------------------
 !
       end module sph_mean_spectr_header_IO
-      
+
