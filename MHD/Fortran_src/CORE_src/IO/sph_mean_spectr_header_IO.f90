@@ -225,7 +225,7 @@
         check_sph_vol_mean_sq_header = 1
         return
       end if
-      if(real(rtmp) .ne. real(v_pwr%r_inside)) then
+      if(real(rtmp) .ne. real(v_pwr%r_outside)) then
         write(*,*) 'Inner boundary radius does not match ',             &
      &             'with the data in the file'
         check_sph_vol_mean_sq_header = 1
