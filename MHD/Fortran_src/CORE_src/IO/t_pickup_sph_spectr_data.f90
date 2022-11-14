@@ -92,6 +92,8 @@
         character(len=kchara), allocatable :: gauss_mode_name_lc(:)
 !>        Name of Gauss coefficients  (g_{l}^{m} or h_{l}^{m})
         character(len=kchara), allocatable :: gauss_mode_name_out(:)
+!>        Number of components (all to be 1)
+        integer(kind = kint), allocatable :: ncomp_gauss_out(:)
 !
 !>        Number of fields for monitoring output
 !!         @f$ f(r,\theta,\phi) @f$
@@ -229,6 +231,9 @@
       if(my_rank .eq. 0) then
         num = gauss%istack_picked_spec_lc(nprocs)
         allocate(gauss%gauss_mode_name_out(num))
+        allocate(gauss%ncomp_gauss_out(num))
+!
+        gauss%ncomp_gauss_out(num) = 1
       else
         allocate(gauss%gauss_mode_name_out(0))
       end if
@@ -243,7 +248,7 @@
 !
 !
       deallocate(gauss%gauss_mode_name_lc)
-      deallocate(gauss%gauss_mode_name_out)
+      deallocate(gauss%gauss_mode_name_out, gauss%ncomp_gauss_out)
 !
       end subroutine dealloc_gauss_coef_monitor_lc
 !

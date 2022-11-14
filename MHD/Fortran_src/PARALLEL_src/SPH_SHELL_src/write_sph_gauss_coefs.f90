@@ -18,7 +18,10 @@
 !!        type(picked_spectrum_data), intent(in) :: gauss
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!
-!!     integer(kind = kint) function check_gauss_coefs_num(gauss)
+!!     logical function error_gauss_coefs_header(sph_params, sph_rj,    &
+!!    &                                          gauss)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(picked_spectrum_data), intent(in) :: gauss
 !!@endverbatim
 !!
@@ -40,7 +43,6 @@
       integer(kind = kint), parameter, private :: id_gauss_coef = 23
 !
       private :: write_sph_gauss_coefes, picked_gauss_head
-      private :: check_gauss_coefs_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
@@ -69,7 +71,6 @@
 !
       character(len=kchara) :: file_name
       character(len=kchara) :: fmt_txt
-      integer(kind = kint) :: i
 !
 !
       if(gauss%num_sph_mode .le. 0) return
@@ -209,16 +210,21 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-     integer(kind = kint) function check_gauss_coefs_num(gauss)
+     logical function error_gauss_coefs_header(sph_params, sph_rj,      &
+    &                                          gauss)
 !
       use set_parallel_file_name
+      use check_sph_monitor_header
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(picked_spectrum_data), intent(in) :: gauss
 !!
-      character(len = kchara) :: file_name
+      character(len = kchara) :: file_name, empty_label
+      integer(kind = kint) :: ntot
 !
 !
-      check_gauss_coefs_num = 0
+      error_gauss_coefs_header = .FALSE.
       if(gauss%num_sph_mode .eq. izero) return
       if(my_rank .gt. izero) return
 !
@@ -226,7 +232,16 @@
       open(id_gauss_coef, file = file_name,                             &
      &    form='formatted', status='old', err = 99)
 !
-      check_gauss_coefs_num = check_gauss_coefs_4_monitor(gauss)
+      empty_label = 'EMPTY'
+      ntot = gauss%istack_picked_spec_lc(nprocs)
+      error_gauss_coefs_header                                          &
+     &         = error_sph_vol_monitor_head(id_gauss_coef, empty_label, &
+     &             sph_rj%nidx_rj(1), sph_params%l_truncation,          &
+     &             sph_params%nlayer_ICB, sph_params%nlayer_CMB,        &
+     &             izero, zero, izero, gauss%radius_gl(1), ntot,        &
+     &             gauss%ncomp_gauss_out, gauss%gauss_mode_name_out,    &
+     &             ntot, gauss%gauss_mode_name_out)
+!
       close(id_gauss_coef)
       return
 !
@@ -234,45 +249,7 @@
       write(*,*) 'No Gauss coefficient file'
       return
 !
-      end function check_gauss_coefs_num
-!
-! -----------------------------------------------------------------------
-!
-      integer(kind = kint)                                              &
-     &      function check_gauss_coefs_4_monitor(gauss)
-!
-      use skip_comment_f
-!
-      type(picked_spectrum_data), intent(in) :: gauss
-!
-      integer(kind = kint) :: nmode_read
-      real(kind = kreal) :: radius_read
-!
-      character(len=255) :: tmpchara
-!
-!
-      call skip_comment(tmpchara,id_gauss_coef)
-      read(id_gauss_coef,*) nmode_read, radius_read
-!      write(*,*) 'num_mode', gauss%num_sph_mode, nmode_read
-!      write(*,*) 'radius_gauss', gauss%radius_gl(1), radius_read
-      if(gauss%num_sph_mode .ne. nmode_read) then
-        write(*,*) 'Number of Gauss coefficients does not match ',      &
-     &             'with the data in the file'
-        check_gauss_coefs_4_monitor = 1
-        return
-      end if
-      if(abs(gauss%radius_gl(1) - radius_read) .gt. 1.0E-8) then
-        write(*,*) 'Radius of Gauss coefficients does not match ',      &
-     &             'with the data in the file',                         &
-     &              gauss%radius_gl(1), radius_read
-        check_gauss_coefs_4_monitor = 1
-        return
-      end if
-!
-      check_gauss_coefs_4_monitor = 0
-      return
-!
-      end function check_gauss_coefs_4_monitor
+      end function error_gauss_coefs_header
 !
 ! -----------------------------------------------------------------------
 !

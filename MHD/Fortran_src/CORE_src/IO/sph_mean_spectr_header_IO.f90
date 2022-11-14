@@ -143,12 +143,13 @@
 !
 !  --------------------------------------------------------------------
 !
-      integer(kind = kint)  function check_sph_vol_mean_sq_header       &
+      integer(kind = kint) function check_sph_vol_mean_sq_header        &
      &                   (id_file, mode_label, ene_labels,              &
      &                    sph_params, sph_rj, v_pwr)
 !
       use write_field_labels
       use skip_comment_f
+      use check_sph_monitor_header
 !
       type(energy_label_param), intent(in) :: ene_labels
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -157,221 +158,31 @@
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: mode_label
 !
-      integer(kind = kint) :: nri_read, ltr_read
-      integer(kind = kint) :: nfld_read, ntot_read
-      integer(kind = kint) :: nlayer_ICB_read, nlayer_CMB_read
-      integer(kind = kint) :: kr_inner_read, kr_outer_read
-      integer(kind = kint), allocatable :: num_read_comp(:)
-      character (len=kchara), allocatable :: read_name(:)
-!
-      character(len=255) :: character_4_read
-      character(len=kchara) :: labels(6), tmpc1, tmpc2, tmpc3
-      integer(kind = kint) :: i, nd, icou
-      real(kind = kreal) :: rtmp
+      character(len = kchara), allocatable :: pwr_label(:)
+      integer(kind = kint) :: i, icou
 !
 !
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) nri_read, ltr_read
-      if(nri_read .ne. sph_rj%nidx_rj(1)) then
-        write(*,*) 'Truncation does not match ',                        &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-!
-      if(ltr_read .ne. sph_params%l_truncation) then
-        write(*,*) 'Inner boundary address does not match ',            &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-!
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) nlayer_ICB_read, nlayer_CMB_read
-      if(nlayer_ICB_read .ne. sph_params%nlayer_ICB) then
-        write(*,*) 'Inner boundary address does not match ',            &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-!
-      if(nlayer_CMB_read .ne. sph_params%nlayer_CMB) then
-        write(*,*) 'Outer boundary address does not match ',            &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-!
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) kr_inner_read, rtmp
-      if(kr_inner_read .ne. v_pwr%kr_inside) then
-        write(*,*) 'Inner area address does not match ',                &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-      if(real(rtmp) .ne. real(v_pwr%r_inside)) then
-        write(*,*) 'Inner boundary radius does not match ',             &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-!
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) kr_outer_read, rtmp
-      if(kr_outer_read .ne. v_pwr%kr_outside) then
-        write(*,*) 'Outer area address does not match ',                &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-      if(real(rtmp) .ne. real(v_pwr%r_outside)) then
-        write(*,*) 'Inner boundary radius does not match ',             &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-!
-!
-      call skip_comment(character_4_read, id_file)
-      read(id_file,*) nfld_read, ntot_read
-      if(nfld_read .ne. v_pwr%num_fld_sq) then
-        write(*,*) 'Number of fields does not match ',                  &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-!
-      if(ntot_read .ne. v_pwr%ntot_comp_sq) then
-        write(*,*) 'total Number of components does not match ',        &
-     &             'with the data in the file'
-        check_sph_vol_mean_sq_header = 1
-        return
-      end if
-!
-!
-      allocate(num_read_comp(nfld_read))
-      allocate(read_name(ntot_read))
-!
-      read(id_file,*) num_read_comp(1:nfld_read)
-!
-      if(mode_label .ne. 'EMPTY') then
-        read(id_file,*) tmpc1, tmpc2, tmpc3, read_name(1:ntot_read)
-      else
-        read(id_file,*) tmpc1, tmpc2, read_name(1:ntot_read)
-      end if
-!
-      icou = 0
-      do i = 1, v_pwr%num_fld_sq
-        call set_sph_rms_labels(ene_labels,                             &
-     &      v_pwr%num_comp_sq(i), v_pwr%pwr_name(i), labels(1))
-!
-        if(num_read_comp(i) .ne. v_pwr%num_comp_sq(i)) then
-          write(*,*) 'Number of component for ',                        &
-     &               trim(v_pwr%pwr_name(i)),                           &
-     &               'does not match with the data file'
-          check_sph_vol_mean_sq_header = 1
-          deallocate(read_name, num_read_comp)
-          return
-        end if
-!
-        do nd = 1, v_pwr%num_comp_sq(i)
-          icou = icou + 1
-          if(read_name(icou) .ne. labels(nd)) then
-            write(*,*) 'field ', trim(labels(nd)),                      &
-     &                 ' does not match with the data file',            &
-     &                 read_name(icou), labels(nd)
-            check_sph_vol_mean_sq_header = 1
-            deallocate(read_name, num_read_comp)
-            return
-          end if
-        end do
-      end do
-!
-      deallocate(read_name, num_read_comp)
-      check_sph_vol_mean_sq_header = 0
-!
-      end function check_sph_vol_mean_sq_header
-!
-!  --------------------------------------------------------------------
-!
-      logical function error_sph_vol_mean_sq_header                     &
-     &                   (id_file, mode_label, ene_labels,              &
-     &                    sph_params, sph_rj, v_pwr)
-!
-      use write_field_labels
-      use skip_comment_f
-!
-      type(energy_label_param), intent(in) :: ene_labels
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_vol_mean_squares), intent(in) :: v_pwr
-      integer(kind = kint), intent(in) :: id_file
-      character(len = kchara), intent(in) :: mode_label
-!
-      character (len=kchara), allocatable :: pwr_label(:)
-!
-      character(len=255) :: character_4_read
-      character(len=kchara) :: label(2)
-!
-!
-      read(character_4_read, *) label(1:2)
-      error_sph_vol_mean_sq_header                                      &
-     &    = error_sph_moniter_two_int(id_file, label,                   &
-     &                  sph_rj%nidx_rj(1), sph_params%l_truncation)
-      if(error_sph_vol_mean_sq_header) return
-!
-!
-      call skip_comment(character_4_read, id_file)
-      read(character_4_read, *) label(1:2)
-      error_sph_vol_mean_sq_header                                      &
-     &    = error_sph_moniter_two_int(id_file, label,                   &
-     &                  sph_params%nlayer_ICB, sph_params%nlayer_CMB))
-      if(error_sph_vol_mean_sq_header) return
-!
-      call skip_comment(character_4_read, id_file)
-      read(character_4_read, *) label(1:2)
-      error_sph_vol_mean_sq_header                                      &
-     &    = error_sph_moniter_int_real(id_file, label,                  &
-     &                             v_pwr%kr_inside, v_pwr%r_inside))
-      if(error_sph_vol_mean_sq_header) return
-!
-      call skip_comment(character_4_read, id_file)
-      read(character_4_read, *) label(1:2)
-      error_sph_vol_mean_sq_header                                      &
-     &    = error_sph_moniter_int_real(id_file, label,                  &
-     &                             v_pwr%kr_outside, v_pwr%r_outside))
-      if(error_sph_vol_mean_sq_header) return
-!
-!
-      call skip_comment(character_4_read, id_file)
-      label(1) = 'number'
-      label(2) = 'of'
-      error_sph_vol_mean_sq_header                                      &
-     &    = error_sph_moniter_two_int(id_file, label,                   &
-     &                           v_pwr%num_fld_sq, v_pwr%ntot_comp_sq))
-      if(error_sph_vol_mean_sq_header) return
-!
-!
-      error_sph_vol_mean_sq_header                                      &
-     &    = error_sph_moniter_ncomp(id_file, v_pwr%num_fld_sq,          &
-     &                              v_pwr%num_comp_sq, v_pwr%pwr_name))
-      if(error_sph_vol_mean_sq_header) return
-!
-      allocate(pwr_label(ntot_read))
+      allocate(pwr_label(v_pwr%ntot_comp_sq))
       icou = 1
       do i = 1, v_pwr%num_fld_sq
-        call set_sph_rms_labels(ene_labels,                             &
-     &      v_pwr%num_comp_sq(i), v_pwr%pwr_name(i), pwr_label(icou))
+        call set_sph_rms_labels(ene_labels, v_pwr%num_comp_sq(i),       &
+     &                          v_pwr%pwr_name(i), pwr_label(icou))
         icou = icou + v_pwr%num_comp_sq(i)
       end do
 !
-      error_sph_vol_mean_sq_header                                      &
-     &     = error_sph_moniter_items(id_file, mode_label,               &
-     &                               v_pwr%ntot_comp_sq, pwr_label)
+      check_sph_vol_mean_sq_header = 0
+      if(error_sph_vol_monitor_head(id_file, mode_label,                &
+     &             sph_rj%nidx_rj(1), sph_params%l_truncation,          &
+     &             sph_params%nlayer_ICB, sph_params%nlayer_CMB,        &
+     &             v_pwr%kr_inside, v_pwr%r_inside,                     &
+     &             v_pwr%kr_outside, v_pwr%r_outside,                   &
+     &             v_pwr%num_fld_sq, v_pwr%num_comp_sq, v_pwr%pwr_name, &
+     &             v_pwr%ntot_comp_sq, pwr_label)) then
+        check_sph_vol_mean_sq_header = 1
+      end if
       deallocate(pwr_label)
 !
-      end function error_sph_vol_mean_sq_header
+      end function check_sph_vol_mean_sq_header
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

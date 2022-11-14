@@ -159,6 +159,7 @@
 !
       use t_solver_SR
       use calypso_mpi_int
+      use calypso_mpi_logical
       use init_energy_labels_sph_SGS
 !
       type(sph_grids), intent(in) :: sph
@@ -169,6 +170,7 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint) :: iflag
+      logical :: flag
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_energy_labels_w_filter'
@@ -190,18 +192,19 @@
      &     'Field information might be updated.')
       end if
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
+      if(iflag_debug .gt. 0) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor(sph%sph_params, sph%sph_rj,          &
      &    rj_fld, monitor%pick_list, monitor%pick_coef)
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
+      if(iflag_debug .gt. 0) write(*,*) 'init_gauss_coefs_4_monitor'
       call init_gauss_coefs_4_monitor(sph%sph_params, sph%sph_rj,       &
      &    ipol, monitor%gauss_list, monitor%gauss_coef, SR_sig)
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'check_gauss_coefs_num'
-      iflag = check_gauss_coefs_num(monitor%gauss_coef)
-      call calypso_mpi_bcast_one_int(iflag, 0)
-      if(iflag .gt. 0) then
+      if(iflag_debug .gt. 0) write(*,*) 'error_gauss_coefs_header'
+      flag = error_gauss_coefs_header(sph%sph_params, sph%sph_rj,       &
+     &                                monitor%gauss_coef)
+      call calypso_mpi_bcast_one_logical(flag, 0)
+      if(flag) then
         call calypso_mpi_barrier
         call calypso_mpi_abort(ierr_file,                               &
      &     'Field information might be updated.')
