@@ -42,7 +42,7 @@
 !
       integer(kind = kint), parameter, private :: id_gauss_coef = 23
 !
-      private :: write_sph_gauss_coefs, picked_gauss_head
+      private :: s_write_sph_gauss_coefs, picked_gauss_head
 !
 ! -----------------------------------------------------------------------
 !
@@ -84,7 +84,7 @@
         allocate(d_rj_out(0))
       end if
 !
-      call write_sph_gauss_coefs(sph_params, sph_rj, ipol, rj_fld,      &
+      call s_write_sph_gauss_coefs(sph_params, sph_rj, ipol, rj_fld,    &
      &    gauss, gauss%istack_picked_spec_lc(nprocs), d_rj_out, SR_sig)
 !
       if(my_rank .eq. 0) then
@@ -159,7 +159,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_sph_gauss_coefs(sph_params, sph_rj,              &
+      subroutine s_write_sph_gauss_coefs(sph_params, sph_rj,            &
      &          ipol, rj_fld, gauss, ntot_gauss, d_rj_out, SR_sig)
 !
       use t_solver_SR
@@ -193,7 +193,7 @@
      &    gauss%istack_picked_spec_lc(nprocs), d_rj_out, SR_sig)
       deallocate(d_rj_lc)
 !
-      end subroutine write_sph_gauss_coefs
+      end subroutine s_write_sph_gauss_coefs
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
