@@ -233,7 +233,7 @@
         allocate(gauss%gauss_mode_name_out(num))
         allocate(gauss%ncomp_gauss_out(num))
 !
-        gauss%ncomp_gauss_out(num) = 1
+        gauss%ncomp_gauss_out(1:num) = 1
       else
         allocate(gauss%gauss_mode_name_out(0))
       end if
