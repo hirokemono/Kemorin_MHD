@@ -42,7 +42,7 @@
 !
       integer(kind = kint), parameter, private :: id_gauss_coef = 23
 !
-      private :: write_sph_gauss_coefes, picked_gauss_head
+      private :: write_sph_gauss_coefs, picked_gauss_head
 !
 ! -----------------------------------------------------------------------
 !
@@ -84,7 +84,7 @@
         allocate(d_rj_out(0))
       end if
 !
-      call write_sph_gauss_coefes(sph_params, sph_rj, ipol, rj_fld,     &
+      call write_sph_gauss_coefs(sph_params, sph_rj, ipol, rj_fld,      &
      &    gauss, gauss%istack_picked_spec_lc(nprocs), d_rj_out, SR_sig)
 !
       if(my_rank .eq. 0) then
@@ -148,6 +148,7 @@
       write(id_file,'(2i16)') ntot, ntot
       write(id_file,'(16i5)') (ione,i=1,ntot)
 !
+      write(id_file,'(a)', ADVANCE='NO')  't_step    time    '
       do i = 1, ntot
         write(id_file,'(a,a4)', ADVANCE='NO')                           &
      &        trim(gauss%gauss_mode_name_out(i)), '    '
@@ -158,7 +159,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_sph_gauss_coefes(sph_params, sph_rj,             &
+      subroutine write_sph_gauss_coefs(sph_params, sph_rj,              &
      &          ipol, rj_fld, gauss, ntot_gauss, d_rj_out, SR_sig)
 !
       use t_solver_SR
@@ -192,7 +193,7 @@
      &    gauss%istack_picked_spec_lc(nprocs), d_rj_out, SR_sig)
       deallocate(d_rj_lc)
 !
-      end subroutine write_sph_gauss_coefes
+      end subroutine write_sph_gauss_coefs
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
