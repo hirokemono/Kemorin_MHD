@@ -17,14 +17,9 @@
 !!        real(kind = kreal), intent(in) :: time
 !!        type(sph_mean_squares), intent(in) :: pwr
 !!        type(typical_scale_data), intent(in) :: tsl
-!!      subroutine cal_typical_scales(rj_fld, pwr, tsl)
-!!        type(sph_rj_grid), intent(in) :: sph_rj
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_data), intent(in) :: rj_fld
-!!        real(kind = kreal), intent(in)                                &
-!!     &      :: g_sph_rj(sph_rj%nidx_rj(2),13)
-!!        type(sph_mean_square_work), intent(inout) :: WK_pwr
-!!        real(kind = kreal), intent(inout) :: f_dip
+!!      subroutine cal_typical_scales(pwr, tsl)
+!!        type(sph_mean_squares), intent(in) :: pwr
+!!        type(typical_scale_data), intent(inout) :: tsl
 !!@endverbatim
 !
       module cal_typical_scale
@@ -36,6 +31,9 @@
       use t_sph_typical_scales
       use t_field_labels
       use t_phys_data
+      use t_spheric_parameter
+      use t_spheric_rj_data
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -90,9 +88,6 @@
       subroutine write_typical_scales                                   &
      &         (i_step, time, sph_params, sph_rj, sph_bc_U, pwr, tsl)
 !
-      use t_spheric_parameter
-      use t_spheric_rj_data
-      use t_boundary_params_sph_MHD
       use t_rms_4_sph_spectr
       use t_sph_volume_mean_square
 !
@@ -130,8 +125,54 @@
       end subroutine write_typical_scales
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine cal_typical_scales(rj_fld, pwr, tsl)
+     logical function error_typical_scale_header(sph_params, sph_rj,    &
+    &                                            sph_bc_U, pwr, tsl)
+!
+      use t_rms_4_sph_spectr
+      use set_parallel_file_name
+      use check_sph_monitor_header
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_mean_squares), intent(in) :: pwr
+      type(typical_scale_data), intent(in) :: tsl
+!
+      character(len = kchara) :: file_name, empty_label
+!
+!
+      error_typical_scale_header = .FALSE.
+      if(tsl%iflag_ub_scales .le. izero) return
+      if(tsl%num_lscale .le. 0) return
+      if(my_rank .ne. pwr%v_spectr(1)%irank_m) return
+!
+      file_name = add_dat_extension(tsl%scale_prefix)
+      open(id_scale, file = file_name,                                  &
+     &    form='formatted', status='old', err = 99)
+!
+      empty_label = 'EMPTY'
+      error_typical_scale_header                                        &
+     &         = error_sph_vol_monitor_head(id_scale, empty_label,      &
+     &             sph_rj%nidx_rj(1), sph_params%l_truncation,          &
+     &             sph_params%nlayer_ICB, sph_params%nlayer_CMB,        &
+     &             sph_bc_U%kr_in, sph_bc_U%r_ICB(0),                   &
+     &             sph_bc_U%kr_out, sph_bc_U%r_CMB(0),                  &
+     &             tsl%num_lscale, tsl%ncomp_lscale, tsl%lscale_name,   &
+     &             tsl%num_lscale, tsl%lscale_name)
+      close(id_scale)
+      return
+!
+  99  continue
+      write(*,*) 'No typical scale file'
+      return
+!
+      end function error_typical_scale_header
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_typical_scales(rj_fld, pwr, tsl)
 !
       use t_rms_4_sph_spectr
 !
@@ -140,15 +181,44 @@
 !
       type(typical_scale_data), intent(inout) :: tsl
 !
+      integer(kind = kint) :: icou
+!
 !
       if(tsl%icomp_kene .le. 0)                                         &
      &          tsl%icomp_kene = find_rms_address_4_kene(pwr, rj_fld)
       if(tsl%icomp_mene .le. 0)                                         &
      &          tsl%icomp_mene = find_rms_address_4_mene(pwr, rj_fld)
 !
-      tsl%num_lscale = 0
-      if(tsl%icomp_kene .gt. 0) tsl%num_lscale = tsl%num_lscale + 3
-      if(tsl%icomp_mene .gt. 0) tsl%num_lscale = tsl%num_lscale + 3
+      icou = 0
+      if(tsl%icomp_kene .gt. 0) icou = icou + 3
+      if(tsl%icomp_mene .gt. 0) icou = icou + 3
+      call alloc_typical_scale_data(icou, tsl)
+!
+      icou = 0
+      if(tsl%icomp_kene .gt. 0) then
+        tsl%lscale_name(icou+1) = 'lscale_flow_degree'
+        tsl%lscale_name(icou+2) = 'lscale_flow_order'
+        tsl%lscale_name(icou+3) = 'lscale_flow_diff_lm'
+        icou = icou + 3
+      end if
+      if(tsl%icomp_mene .gt. 0) then
+        tsl%lscale_name(icou+1) = 'lscale_magnetic_degree'
+        tsl%lscale_name(icou+2) = 'lscale_magnetic_order'
+        tsl%lscale_name(icou+3) = 'lscale_magnetic_diff_lm'
+        icou = icou + 3
+      end if
+!
+      end subroutine init_typical_scales
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_typical_scales(pwr, tsl)
+!
+      use t_rms_4_sph_spectr
+!
+      type(sph_mean_squares), intent(in) :: pwr
+      type(typical_scale_data), intent(inout) :: tsl
+!
 !
       if(tsl%num_lscale .le. 0) return
       if(tsl%iflag_ub_scales .le. izero) return

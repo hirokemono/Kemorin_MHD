@@ -175,30 +175,18 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_energy_labels_w_filter'
       call init_energy_labels_w_filter(monitor%ene_labels)
-      call s_init_rms_4_sph_spectr(sph%sph_params, sph%sph_rj, rj_fld,  &
-     &    monitor%dip%iflag_dipolarity, monitor%pwr, monitor%WK_pwr)
+      call init_sph_spectr_data_and_file(sph, rj_fld, monitor)
+!
       call init_dipolarity_4_sph_spectr(sph%sph_params, monitor%pwr,    &
      &                                  monitor%dip)
-!
-!
-      if(iflag_debug .gt. 0) write(*,*) 'check_sph_vol_ms_file'
-      iflag = check_sph_vol_ms_file(my_rank, monitor%ene_labels,        &
-     &                              sph%sph_params, sph%sph_rj,         &
-     &                              monitor%pwr)
-      call calypso_mpi_bcast_one_int(iflag, 0)
-      if(iflag .gt. 0) then
-        call calypso_mpi_barrier
-        call calypso_mpi_abort(ierr_file,                               &
-     &     'Field information might be updated.')
-      end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor(sph%sph_params, sph%sph_rj,          &
      &    rj_fld, monitor%pick_list, monitor%pick_coef)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'init_gauss_coefs_4_monitor'
-      call init_gauss_coefs_4_monitor(sph%sph_params, sph%sph_rj,       &
-     &    ipol, monitor%gauss_list, monitor%gauss_coef, SR_sig)
+      if(iflag_debug.gt.0) write(*,*) 'init_gauss_coefs_data_and_file'
+      call init_gauss_coefs_data_and_file(sph, ipol,                    &
+     &    monitor%gauss_list, monitor%gauss_coef, SR_sig)
 !
       if(iflag_debug .gt. 0) write(*,*) 'error_gauss_coefs_header'
       flag = error_gauss_coefs_header(sph%sph_params, sph%sph_rj,       &

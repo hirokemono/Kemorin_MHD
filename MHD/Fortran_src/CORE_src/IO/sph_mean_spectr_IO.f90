@@ -7,9 +7,9 @@
 !>@brief Mean sqare data
 !!
 !!@verbatim
-!!      integer(kind = kint) function check_sph_vol_mean_sq_file        &
-!!     &                   (id_file, fname_rms, mode_label,             &
-!!     &                    ene_labels, sph_params, sph_rj, v_pwr)
+!!      logical function error_sph_vol_mean_sq_file                     &
+!!     &               (id_file, fname_rms, mode_label,                 &
+!!     &                ene_labels, sph_params, sph_rj, v_pwr)
 !!      subroutine open_sph_vol_mean_sq_file(id_file, fname_rms,        &
 !!     &          mode_label, ene_labels, sph_params, sph_rj, v_pwr)
 !!      subroutine open_sph_mean_sq_file(id_file, fname_rms, mode_label,&
@@ -53,9 +53,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function check_sph_vol_mean_sq_file          &
-     &                   (id_file, fname_rms, mode_label,               &
-     &                    ene_labels, sph_params, sph_rj, v_pwr)
+      logical function error_sph_vol_mean_sq_file                       &
+     &               (id_file, fname_rms, mode_label,                   &
+     &                ene_labels, sph_params, sph_rj, v_pwr)
 !
       use sph_mean_spectr_header_IO
 !
@@ -67,23 +67,23 @@
       type(sph_vol_mean_squares), intent(in) :: v_pwr
 !
 !
+      error_sph_vol_mean_sq_file = .FALSE.
       open(id_file, file=fname_rms, form='formatted',                   &
      &    status='old', err = 99)
 !
-      check_sph_vol_mean_sq_file                                        &
-     &         = check_sph_vol_mean_sq_header(id_file, mode_label,      &
+      error_sph_vol_mean_sq_file                                        &
+     &         = error_sph_vol_mean_sq_header(id_file, mode_label,      &
      &          ene_labels, sph_params, sph_rj, v_pwr)
       close(id_file)
 !      write(*,*) 'Checked ', trim(fname_rms),                          &
-!     &     check_sph_vol_mean_sq_file
+!     &     error_sph_vol_mean_sq_file
 !
       return
 !
    99 continue
       write(*,*) 'No mean suare file: ', trim(fname_rms)
-      check_sph_vol_mean_sq_file = 0
 !
-      end function check_sph_vol_mean_sq_file
+      end function error_sph_vol_mean_sq_file
 !
 !  --------------------------------------------------------------------
 !

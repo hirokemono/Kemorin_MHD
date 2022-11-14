@@ -70,7 +70,7 @@
       type(buffer_4_gzip), save :: zbuf1
       character, pointer, save  :: FPz_f1
 !
-      integer(kind = kint) :: i, ierr
+      integer(kind = kint) :: i
       integer(kind = kint) :: i_start, i_end
       real(kind = kreal) :: start_time, end_time
 !

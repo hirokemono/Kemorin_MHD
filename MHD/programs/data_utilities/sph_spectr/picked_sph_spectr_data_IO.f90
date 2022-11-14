@@ -65,7 +65,7 @@
       character(len=kchara), intent(in) :: file_name
       type(picked_spectrum_data_IO), intent(inout) :: picked_IO
 !
-      integer(kind = kint) :: ierr, i, j
+      integer(kind = kint) :: i, j
       integer(kind = kint) :: i_start, i_end
       real(kind = kreal) :: start_time, end_time
 !
@@ -193,7 +193,7 @@
 !
       icou = 0
       do
-        call read_sph_spec_monitor(FPz_f, id_pick_mode, flag_gzip,      &
+        call read_sph_spec_monitor(FPz_f, id_stream, flag_gzip,         &
      &      i_step, time, picked_IO, zbuf, ierr)
         if(ierr .gt. 0) exit
 !

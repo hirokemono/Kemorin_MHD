@@ -14,8 +14,8 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_mean_squares), intent(in) :: pwr
 !!
-!!      integer(kind = kint) function check_sph_vol_ms_file             &
-!!     &             (id_rank, ene_labels, sph_params, sph_rj, pwr)
+!!      logical function error_sph_vol_ms_file                          &
+!!     &               (id_rank, ene_labels, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_vol_ms_file                                &
 !!     &         (id_rank, ene_labels, time_d, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_vol_ms_spectr_file                         &
@@ -95,8 +95,8 @@
 !  --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function check_sph_vol_ms_file               &
-     &             (id_rank, ene_labels, sph_params, sph_rj, pwr)
+      logical function error_sph_vol_ms_file                            &
+     &               (id_rank, ene_labels, sph_params, sph_rj, pwr)
 !
       use set_parallel_file_name
       use sph_mean_spectr_IO
@@ -111,7 +111,7 @@
       character(len=kchara) :: fname_rms, mode_label
 !
 !
-      check_sph_vol_ms_file = 0
+      error_sph_vol_ms_file = .FALSE.
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
       if(id_rank .ne. pwr%v_spectr(1)%irank_m) return
@@ -119,11 +119,11 @@
       write(fname_rms,   '(a,a6)')                                      &
      &      trim(pwr%v_spectr(1)%fhead_rms_v), '_s.dat'
       write(mode_label,'(a)') 'EMPTY'
-      check_sph_vol_ms_file = check_sph_vol_mean_sq_file(id_file_rms,   &
+      error_sph_vol_ms_file = error_sph_vol_mean_sq_file(id_file_rms,   & 
      &                       fname_rms, mode_label, ene_labels,         &
      &                       sph_params, sph_rj, pwr%v_spectr(1))
 !
-      end function check_sph_vol_ms_file
+      end function error_sph_vol_ms_file
 !
 !  --------------------------------------------------------------------
 !

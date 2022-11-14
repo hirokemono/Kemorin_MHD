@@ -11,9 +11,9 @@
 !!     &          ene_labels, sph_params, sph_rj, v_pwr)
 !!      subroutine write_sph_mean_sq_header(id_file, mode_label,        &
 !!     &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
-!!      integer(kind = kint)  function check_sph_vol_mean_sq_header     &
-!!     &                   (id_file, mode_label, ene_labels,            &
-!!     &                    sph_params, sph_rj, v_pwr)
+!!      logical function error_sph_vol_mean_sq_header                   &
+!!     &               (id_file, mode_label, ene_labels,                &
+!!     &                sph_params, sph_rj, v_pwr)
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -143,9 +143,9 @@
 !
 !  --------------------------------------------------------------------
 !
-      integer(kind = kint) function check_sph_vol_mean_sq_header        &
-     &                   (id_file, mode_label, ene_labels,              &
-     &                    sph_params, sph_rj, v_pwr)
+      logical function error_sph_vol_mean_sq_header                     &
+     &               (id_file, mode_label, ene_labels,                  &
+     &                sph_params, sph_rj, v_pwr)
 !
       use write_field_labels
       use skip_comment_f
@@ -170,19 +170,17 @@
         icou = icou + v_pwr%num_comp_sq(i)
       end do
 !
-      check_sph_vol_mean_sq_header = 0
-      if(error_sph_vol_monitor_head(id_file, mode_label,                &
+      error_sph_vol_mean_sq_header                                      &
+     &   = error_sph_vol_monitor_head(id_file, mode_label,              &
      &             sph_rj%nidx_rj(1), sph_params%l_truncation,          &
      &             sph_params%nlayer_ICB, sph_params%nlayer_CMB,        &
      &             v_pwr%kr_inside, v_pwr%r_inside,                     &
      &             v_pwr%kr_outside, v_pwr%r_outside,                   &
      &             v_pwr%num_fld_sq, v_pwr%num_comp_sq, v_pwr%pwr_name, &
-     &             v_pwr%ntot_comp_sq, pwr_label)) then
-        check_sph_vol_mean_sq_header = 1
-      end if
+     &             v_pwr%ntot_comp_sq, pwr_label)
       deallocate(pwr_label)
 !
-      end function check_sph_vol_mean_sq_header
+      end function error_sph_vol_mean_sq_header
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

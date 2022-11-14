@@ -106,8 +106,8 @@
      &   (SPH_SGS%SGS_par, SPH_model%MHD_prop,                          &
      &    SPH_MHD%sph, SPH_MHD%fld, SPH_MHD%ipol, SPH_SGS%ipol_LES)
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr_4_mhd'
-      call init_rms_4_sph_spectr_4_mhd                                  &
+      if(iflag_debug.gt.0) write(*,*) 'init_sph_spectr_data_and_file'
+      call init_sph_spectr_data_and_file                                &
      &   (SPH_MHD%sph, SPH_MHD%fld, SPH_WK%monitor)
 !
 ! ---------------------------------

@@ -60,8 +60,6 @@
 !
       type(picked_spectrum_data_IO), intent(in) :: picked_IO
 !
-      integer(kind = kint) :: ipick, i_fld, ist
-!
 !
       if(picked_IO%num_mode .eq. izero) return
 !

@@ -221,7 +221,7 @@
      &                          monitor%pwr, monitor%dip)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
-      call cal_typical_scales(rj_fld, monitor%pwr, monitor%tsl)
+      call cal_typical_scales(monitor%pwr, monitor%tsl)
 !
       end subroutine cal_sph_monitor_data
 !
@@ -383,7 +383,7 @@
 !  --------------------------------------------------------------------
 !
       subroutine cal_write_typical_scale(time_d, sph_params, sph_rj,    &
-     &                                   sph_bc_U, rj_fld, pwr, tsl)
+     &                                   sph_bc_U, pwr, tsl)
 !
       use cal_typical_scale
 !
@@ -391,13 +391,12 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(phys_data), intent(in) :: rj_fld
       type(sph_mean_squares), intent(in) :: pwr
 !
       type(typical_scale_data), intent(inout) :: tsl
 !
 !
-      call cal_typical_scales(rj_fld, pwr, tsl)
+      call cal_typical_scales(pwr, tsl)
       call write_typical_scales(time_d%i_time_step, time_d%time,        &
      &    sph_params, sph_rj, sph_bc_U, pwr, tsl)
 !

@@ -100,6 +100,10 @@
 !
 !>        number of output component
         integer(kind = kint) :: num_lscale = 0
+!>        number of output component
+        integer(kind = kint), allocatable :: ncomp_lscale(:)
+!>        number of output component
+        character(len = kchara), allocatable :: lscale_name(:)
 !>        magnetic length scale
         real(kind = kreal) :: dl_mag
 !>        magnetic zonal length scale
@@ -119,6 +123,35 @@
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_typical_scale_data(num, tsl)
+!
+      integer(kind = kint), intent(in) :: num
+      type(typical_scale_data), intent(inout) :: tsl
+!
+      tsl%num_lscale = num
+      allocate(tsl%lscale_name(tsl%num_lscale))
+      allocate(tsl%ncomp_lscale(tsl%num_lscale))
+!
+      if(tsl%num_lscale .gt. 0) then
+        tsl%ncomp_lscale(1:tsl%num_lscale) = 1
+      end if
+!
+      end subroutine alloc_typical_scale_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_typical_scale_data(tsl)
+!
+      type(typical_scale_data), intent(inout) :: tsl
+!
+      if(allocated(tsl%ncomp_lscale) .eqv. .FALSE.) return
+      deallocate(tsl%ncomp_lscale, tsl%lscale_name)
+!
+      end subroutine dealloc_typical_scale_data
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine open_typical_scale_file                                &
@@ -182,14 +215,14 @@
 !
       write(id_file,'(a)')   'number_of_fields, number_of_components'
       write(id_file,'(2i16)') tsl%num_lscale, tsl%num_lscale
-      write(id_file,'(16i5)') (ione,i=1,tsl%num_lscale)
+      write(id_file,'(16i5)') tsl%ncomp_lscale(1:tsl%num_lscale)
 !
       write(id_file,'(a)',advance='NO')                                 &
      &    't_step    time    '
-      if(tsl%icomp_kene .gt. 0) write(id_file,'(a)',advance='NO')       &
-     &    'flow_degree  flow_order  '
-      if(tsl%icomp_mene .gt. 0) write(id_file,'(a)',advance='NO')       &
-     &    'magnetc_degree  magnetic_order'
+      do i = 1, tsl%num_lscale
+        write(id_file,'(a,a4)',advance='NO')                            &
+     &                           trim(tsl%lscale_name(i)), '    '
+      end do
       write(id_file,'(a)') ''
 !
       end subroutine write_typical_scale_header

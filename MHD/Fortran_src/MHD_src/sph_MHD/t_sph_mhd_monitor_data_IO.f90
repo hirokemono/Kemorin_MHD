@@ -38,6 +38,7 @@
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
       use t_energy_label_parameters
+      use t_boundary_params_sph_MHD
 !
       use pickup_sph_spectr_data
 !
@@ -89,12 +90,8 @@
      &                                     monitor, SR_sig)
 !
       use m_error_IDs
-      use pickup_gauss_coefficients
       use cal_rms_fields_by_sph
-      use output_sph_pwr_volume_file
-      use write_sph_gauss_coefs
-      use calypso_mpi_int
-      use calypso_mpi_logical
+      use cal_CMB_dipolarity
       use t_solver_SR
 !
       type(sph_grids), intent(in) :: sph
@@ -104,68 +101,132 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(send_recv_status), intent(inout) :: SR_sig
 !
-      integer(kind = kint) :: iflag
-      logical :: flag
 !
+      call init_energy_labels_base(monitor%ene_labels)
+      call init_sph_spectr_data_and_file(sph, rj_fld, monitor)
 !
-      call init_rms_4_sph_spectr_4_mhd(sph, rj_fld, monitor)
-!
-      if ( iflag_debug.gt.0 ) write(*,*) 'check_sph_vol_ms_file'
-      iflag = check_sph_vol_ms_file(my_rank, monitor%ene_labels,        &
-     &                              sph%sph_params, sph%sph_rj,         &
-     &                              monitor%pwr)
-      call calypso_mpi_bcast_one_int(iflag, 0)
-      if(iflag .gt. 0) then
-        call calypso_mpi_barrier
-        call calypso_mpi_abort(ierr_file,                               &
-     &     'Field information might be updated.')
-      end if
+      call init_dipolarity_4_sph_spectr(sph%sph_params, monitor%pwr,    &
+     &                                  monitor%dip)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor(sph%sph_params, sph%sph_rj,          &
      &    rj_fld, monitor%pick_list, monitor%pick_coef)
 !
-      if(iflag_debug.gt. 0) write(*,*) 'init_gauss_coefs_4_monitor'
-      call init_gauss_coefs_4_monitor(sph%sph_params, sph%sph_rj,       &
-     &    ipol, monitor%gauss_list, monitor%gauss_coef, SR_sig)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'error_gauss_coefs_header'
-      flag = error_gauss_coefs_header(sph%sph_params, sph%sph_rj,       &
-     &                                monitor%gauss_coef)
-      call calypso_mpi_bcast_one_logical(flag, 0)
-      if(flag) then
-        call calypso_mpi_barrier
-        call calypso_mpi_abort(ierr_file,                               &
-     &     'Field information might be updated.')
-      end if
+      if(iflag_debug.gt.0) write(*,*) 'init_gauss_coefs_data_and_file'
+      call init_gauss_coefs_data_and_file(sph, ipol,                    &
+     &    monitor%gauss_list, monitor%gauss_coef, SR_sig)
 !
       end subroutine open_sph_vol_rms_file_mhd
 !
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
-      subroutine init_rms_4_sph_spectr_4_mhd(sph, rj_fld, monitor)
+      subroutine init_sph_spectr_data_and_file(sph, rj_fld, monitor)
 !
+      use m_error_IDs
       use t_energy_label_parameters
       use cal_rms_fields_by_sph
-      use cal_CMB_dipolarity
       use init_rms_4_sph_spectr
+      use calypso_mpi_logical
+      use output_sph_pwr_volume_file
 !
       type(sph_grids), intent(in) :: sph
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
+      logical :: flag
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 's_init_rms_4_sph_spectr'
-      call init_energy_labels_base(monitor%ene_labels)
       call s_init_rms_4_sph_spectr(sph%sph_params, sph%sph_rj, rj_fld,  &
      &    monitor%dip%iflag_dipolarity, monitor%pwr, monitor%WK_pwr)
-      call init_dipolarity_4_sph_spectr(sph%sph_params, monitor%pwr,    &
-     &                                  monitor%dip)
 !
-      end subroutine init_rms_4_sph_spectr_4_mhd
+      if ( iflag_debug.gt.0 ) write(*,*) 'error_sph_vol_ms_file'
+      flag = error_sph_vol_ms_file(my_rank, monitor%ene_labels,         &
+     &                             sph%sph_params, sph%sph_rj,          &
+     &                             monitor%pwr)
+      call calypso_mpi_bcast_one_logical                                &
+     &  (flag, monitor%pwr%v_spectr(1)%irank_m)
+      if(flag) then
+        call calypso_mpi_barrier
+        call calypso_mpi_abort(ierr_file,                               &
+     &     'Field information might be updated.')
+      end if
+!
+      end subroutine init_sph_spectr_data_and_file
 !
 !  --------------------------------------------------------------------
+!
+      subroutine init_gauss_coefs_data_and_file                         &
+     &         (sph, ipol, gauss_list, gauss_coef, SR_sig)
+!
+      use m_error_IDs
+      use write_sph_gauss_coefs
+      use pickup_gauss_coefficients
+      use calypso_mpi_logical
+      use t_solver_SR
+!
+      type(sph_grids), intent(in) :: sph
+      type(phys_address), intent(in) :: ipol
+!
+      type(pickup_mode_list), intent(inout) :: gauss_list
+      type(picked_spectrum_data), intent(inout) :: gauss_coef
+      type(send_recv_status), intent(inout) :: SR_sig
+!
+      logical :: flag
+!
+!
+      if(iflag_debug.gt. 0) write(*,*) 'init_gauss_coefs_4_monitor'
+      call init_gauss_coefs_4_monitor(sph%sph_params, sph%sph_rj,       &
+     &    ipol, gauss_list, gauss_coef, SR_sig)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'error_gauss_coefs_header'
+      flag = error_gauss_coefs_header(sph%sph_params, sph%sph_rj,       &
+     &                                gauss_coef)
+      call calypso_mpi_bcast_one_logical(flag, 0)
+      if(flag) then
+        call calypso_mpi_barrier
+        call calypso_mpi_abort(ierr_file,                               &
+     &     'Gauss coefficient information might be updated.')
+      end if
+!
+      end subroutine init_gauss_coefs_data_and_file
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_l_scale_data_and_file                             &
+     &         (sph, sph_bc_U, rj_fld, monitor)
+!
+      use m_error_IDs
+      use cal_typical_scale
+      use calypso_mpi_logical
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(phys_data), intent(inout) :: rj_fld
+!
+      type(sph_mhd_monitor_data), intent(inout) :: monitor
+!
+      logical :: flag
+!
+!
+      if(iflag_debug.gt. 0) write(*,*) 'init_typical_scales'
+      call init_typical_scales(rj_fld, monitor%pwr, monitor%tsl)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'error_typical_scale_header'
+      flag = error_typical_scale_header(sph%sph_params, sph%sph_rj,     &
+     &                              sph_bc_U, monitor%pwr, monitor%tsl)
+      call calypso_mpi_bcast_one_logical                                &
+    &    (flag, monitor%pwr%v_spectr(1)%irank_m)
+      if(flag) then
+        call calypso_mpi_barrier
+        call calypso_mpi_abort(ierr_file,                               &
+     &     'Length scale information might be updated.')
+      end if
+!
+      end subroutine init_l_scale_data_and_file
+!
+! -----------------------------------------------------------------------
 !
       end module t_sph_mhd_monitor_data_IO

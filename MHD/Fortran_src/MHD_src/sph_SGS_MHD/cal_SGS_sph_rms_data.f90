@@ -124,7 +124,7 @@
      &                          monitor%pwr, monitor%dip)
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
-      call cal_typical_scales(rj_fld, monitor%pwr, monitor%tsl)
+      call cal_typical_scales(monitor%pwr, monitor%tsl)
 !
       end subroutine cal_SGS_sph_monitor_data
 !
