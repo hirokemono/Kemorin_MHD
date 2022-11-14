@@ -85,6 +85,7 @@
       character(len=kchara) :: label(2)
 !
 !
+      call skip_comment(character_4_read, id_file)
       read(character_4_read, *) label(1:2)
       error_sph_vol_monitor_head                                        &
      &    = error_sph_moniter_two_int(id_file, label, nri_sph, ltr_sph)
