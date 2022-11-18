@@ -69,7 +69,7 @@
 !
 !       write(*,*) 'write_sph_layer_ms_file m', id_rank
       write(fname_rms,   '(a,a6)') trim(pwr%fhead_rms_layer), '_s.dat'
-      write(mode_label,'(a)') 'radial_id  radius'
+      write(mode_label,'(a)') 'EMPTY'
       call write_sph_layer_pwr_file(fname_rms, mode_label,              &
      &    ene_labels, time_d, sph_params%l_truncation,                  &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
@@ -101,14 +101,14 @@
       if(id_rank .eq. pwr%irank_m) then
 !        write(*,*) 'write_sph_layer_spec_file m', id_rank
         write(fname_rms, '(a,a6)') trim(pwr%fhead_rms_layer), '_m.dat'
-        write(mode_label,'(a)') 'radial_id  radius  order'
+        write(mode_label,'(a)') 'order'
         call write_sph_layer_spec_file(fname_rms, mode_label,           &
      &      ene_labels, time_d, sph_params%l_truncation,                &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      pwr, pwr%shl_m)
 !
         write(fname_rms,'(a,a7)') trim(pwr%fhead_rms_layer), '_m0.dat'
-        write(mode_label,'(a)') 'radial_id  radius'
+        write(mode_label,'(a)') 'EMPTY'
         call write_sph_layer_pwr_file(fname_rms, mode_label,            &
      &      ene_labels, time_d, sph_params%l_truncation,                &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
@@ -118,7 +118,7 @@
       if(id_rank .eq. pwr%irank_l) then
 !        write(*,*) 'write_sph_layer_spec_file l', id_rank
         write(fname_rms, '(a,a6)') trim(pwr%fhead_rms_layer), '_l.dat'
-        write(mode_label,'(a)') 'radial_id  radius  degree'
+        write(mode_label,'(a)') 'degree'
         call write_sph_layer_spec_file(fname_rms, mode_label,           &
      &      ene_labels, time_d, sph_params%l_truncation,                &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
@@ -128,7 +128,7 @@
       if(id_rank .eq. pwr%irank_lm) then
 !        write(*,*) 'write_sph_layer_spec_file lm', id_rank
         write(fname_rms,'(a,a7)') trim(pwr%fhead_rms_layer), '_lm.dat'
-        write(mode_label,'(a)') 'radial_id  radius  diff_deg_order'
+        write(mode_label,'(a)') 'diff_deg_order'
         call write_sph_layer_spec_file(fname_rms, mode_label,           &
      &      ene_labels, time_d, sph_params%l_truncation,                &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &

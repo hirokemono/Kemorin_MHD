@@ -99,12 +99,12 @@
       integer(kind = kint) :: ncomp
 !
 !
-      allocate( sph_IN%kr_sph(sph_IN%nri_dat) )
-      allocate( sph_IN%r_sph(sph_IN%nri_dat) )
+      allocate(sph_IN%kr_sph(sph_IN%nri_dat))
+      allocate(sph_IN%r_sph(sph_IN%nri_dat))
 !
       ncomp = sph_IN%ntot_sph_spec
-      allocate( sph_IN%i_mode(0:ltr) )
-      allocate( sph_IN%spectr_IO(ncomp,0:ltr,sph_IN%nri_dat) )
+      allocate(sph_IN%i_mode(0:ltr))
+      allocate(sph_IN%spectr_IO(ncomp,0:ltr,sph_IN%nri_dat))
 !
 !$omp parallel workshare
       sph_IN%kr_sph(1:sph_IN%nri_dat) = izero
@@ -297,6 +297,26 @@
       end do
 !
       end subroutine check_sph_spectr_name
+!
+!   --------------------------------------------------------------------
+!
+      subroutine sph_mean_squre_header_labels(sph_IN)
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+!
+!
+      sph_IN%hdr_nri =       'radial_layers'
+      sph_IN%hdr_ltr =       'truncation'
+      sph_IN%hdr_ICB_id =    'ICB_id'
+      sph_IN%hdr_CMB_id =    'CMB_id'
+      sph_IN%hdr_kr_in =     'Lower_boundary_ID'
+      sph_IN%hdr_kr_out =    'Lower_boundary_radius'
+      sph_IN%hdr_r_in =      'Upper_boundary_ID'
+      sph_IN%hdr_r_out =     'Upper_boundary_radius'
+      sph_IN%hdr_num_field = 'Number_of_field'
+      sph_IN%hdr_num_comp =  'Number_of_components'
+!
+      end subroutine sph_mean_squre_header_labels
 !
 !   --------------------------------------------------------------------
 !

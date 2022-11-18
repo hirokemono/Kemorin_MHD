@@ -241,7 +241,7 @@
       write(id_file,'(3i16)') sph_IN%nri_sph, sph_IN%ltr_sph
       write(id_file,'(a)')    'ICB_id, CMB_id'
       write(id_file,'(2i16)') sph_IN%kr_ICB, sph_IN%kr_CMB
-      write(id_file,'(a)')    'number of components'
+      write(id_file,'(a)')  'Number_of_field, Number_of_components'
       write(id_file,'(2i16)')                                           &
      &      sph_IN%nfield_sph_spec, sph_IN%ntot_sph_spec
       write(id_file,'(16i5)')                                           &
