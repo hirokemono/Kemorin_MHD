@@ -146,6 +146,8 @@
      &         (tave_file_name, sdev_file_name,                         &
      &          flag_spectr, flag_vol_ave, tave_sph_IN, sdev_sph_IN)
 !
+      use t_read_sph_series
+!
       character(len = kchara), intent(in) :: tave_file_name
       character(len = kchara), intent(in) :: sdev_file_name
       logical, intent(in) :: flag_spectr, flag_vol_ave
@@ -459,6 +461,7 @@
      &          start_time, end_time, true_start, true_end,             &
      &          sph_IN, sph_series)
 !
+      use t_read_sph_series
       use select_gz_stream_file_IO
       use gz_spl_sph_spectr_head_IO
       use gz_spl_sph_spectr_data_IO

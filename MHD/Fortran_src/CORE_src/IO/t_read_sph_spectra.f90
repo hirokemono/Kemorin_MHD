@@ -10,12 +10,8 @@
 !!      subroutine alloc_sph_espec_name(sph_IN)
 !!      subroutine alloc_sph_spectr_data(ltr, sph_IN)
 !!      subroutine dealloc_sph_espec_data(sph_IN)
-!!      subroutine alloc_sph_spectr_series                              &
-!!     &         (ltr, sph_IN, n_step, sph_series)
-!!      subroutine dealloc_sph_spectr_series(sph_series)
-!!        integer(kind = kint), intent(in) :: n_step
-!!        type(read_sph_spectr_data), intent(in) :: sph_IN
-!!        type(read_sph_spectr_series), intent(inout) :: sph_series
+!!        integer(kind = kint), intent(in) :: ltr
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!
 !!      subroutine copy_read_ene_params_4_sum(sph_IN, sph_OUT)
 !!      subroutine copy_read_ene_step_data(sph_IN, sph_OUT)
@@ -27,11 +23,6 @@
 !!        real(kind = kreal), intent(in)                                &
 !!     &                   :: spectr_l(ncomp, 0:ltr_sph, nri_dat)
 !!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
-!!      subroutine copy_spectr_IO_to_series                             &
-!!     &          (icou, ltr, sph_IN, sph_series)
-!!        integer(kind = kint), intent(in) :: icou
-!!        type(read_sph_spectr_data), intent(in) :: sph_IN
-!!        type(read_sph_spectr_series), intent(inout) :: sph_series
 !!
 !!      subroutine check_sph_spectr_name(sph_IN)
 !!        type(read_sph_spectr_data), intent(in) :: sph_IN
@@ -45,6 +36,7 @@
 !
 !
       type read_sph_spectr_data
+        character(len = kchara) :: hdr_num_field, hdr_num_comp
         integer(kind = kint) :: nfield_sph_spec
         integer(kind = kint) :: ntot_sph_spec
         integer(kind = kint) :: num_time_labels
@@ -52,29 +44,26 @@
         integer(kind = kint), allocatable :: ncomp_sph_spec(:)
         character(len = kchara), allocatable :: ene_sph_spec_name(:)
 !
+        character(len = kchara) :: hdr_nri, hdr_ltr
         integer(kind = kint) :: ltr_sph, nri_sph, nri_dat
+!
+        character(len = kchara) :: hdr_ICB_id, hdr_CMB_id
         integer(kind = kint) :: kr_ICB, kr_CMB
+!
+        character(len = kchara) :: hdr_kr_in, hdr_kr_out
         integer(kind = kint) :: kr_inner, kr_outer
+!
+        character(len = kchara) :: hdr_r_in, hdr_r_out
+        real(kind = kreal) :: r_inner, r_outer
+!
         integer(kind = kint), allocatable :: i_mode(:)
         integer(kind = kint), allocatable :: kr_sph(:)
         real(kind = kreal), allocatable :: r_sph(:)
-        real(kind = kreal) :: r_inner, r_outer
 !
         integer(kind = kint) :: i_step
         real(kind = kreal) :: time
         real(kind = kreal), allocatable :: spectr_IO(:,:,:)
       end type read_sph_spectr_data
-!
-      type read_sph_spectr_series
-!>        Number of time series
-        integer(kind = kint) :: n_step = 0
-!>        Number of data for each step
-        integer(kind = kint), allocatable :: i_step(:)
-!>        time
-        real(kind = kreal), allocatable :: d_time(:)
-!>        spectr time series
-        real(kind = kreal), allocatable :: d_spectr(:,:,:,:)
-      end type read_sph_spectr_series
 !
       logical, parameter :: flag_current_fmt = .FALSE.
       logical, parameter :: spectr_on =        .TRUE.
@@ -131,35 +120,6 @@
       end subroutine alloc_sph_spectr_data
 !
 !   --------------------------------------------------------------------
-!
-      subroutine alloc_sph_spectr_series                                &
-     &         (ltr, sph_IN, n_step, sph_series)
-!
-      integer(kind = kint), intent(in) :: ltr, n_step
-      type(read_sph_spectr_data), intent(in) :: sph_IN
-      type(read_sph_spectr_series), intent(inout) :: sph_series
-!
-      integer(kind = kint) :: ncomp, nri
-!
-!
-      ncomp = sph_IN%ntot_sph_spec
-      nri =   sph_IN%nri_dat
-      sph_series%n_step = n_step
-      allocate( sph_series%i_step(sph_series%n_step) )
-      allocate( sph_series%d_time(sph_series%n_step) )
-      allocate( sph_series%d_spectr(ncomp,0:ltr,nri,sph_series%n_step))
-!
-!$omp parallel workshare
-      sph_series%i_step(1:sph_series%n_step) = izero
-      sph_series%d_time(1:sph_series%n_step) = zero
-!$omp end parallel workshare
-!$omp parallel workshare
-      sph_series%d_spectr(1:ncomp,0:ltr,1:nri,1:n_step) =  zero
-!$omp end parallel workshare
-!
-      end subroutine alloc_sph_spectr_series
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine dealloc_sph_espec_data(sph_IN)
@@ -172,18 +132,6 @@
       deallocate(sph_IN%i_mode, sph_IN%spectr_IO)
 !
       end subroutine dealloc_sph_espec_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_sph_spectr_series(sph_series)
-!
-      type(read_sph_spectr_series), intent(inout) :: sph_series
-!
-!
-      deallocate( sph_series%i_step, sph_series%d_time)
-      deallocate( sph_series%d_spectr)
-!
-      end subroutine dealloc_sph_spectr_series
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -206,6 +154,17 @@
       sph_OUT%nfield_sph_spec = sph_IN%nfield_sph_spec
       sph_OUT%ntot_sph_spec = sph_IN%ntot_sph_spec
       sph_OUT%num_time_labels = sph_IN%num_time_labels
+!
+      sph_OUT%hdr_num_field = sph_IN%hdr_num_field
+      sph_OUT%hdr_num_comp =  sph_IN%hdr_num_comp
+      sph_OUT%hdr_nri =    sph_IN%hdr_nri
+      sph_OUT%hdr_ltr =    sph_IN%hdr_ltr
+      sph_OUT%hdr_ICB_id = sph_IN%hdr_ICB_id
+      sph_OUT%hdr_CMB_id = sph_IN%hdr_CMB_id
+      sph_OUT%hdr_kr_in =  sph_IN%hdr_kr_in
+      sph_OUT%hdr_kr_out = sph_IN%hdr_kr_out
+      sph_OUT%hdr_r_in =   sph_IN%hdr_r_in
+      sph_OUT%hdr_r_out =  sph_IN%hdr_r_out
 !
       end subroutine copy_read_ene_head_params
 !
@@ -322,30 +281,6 @@
 !$omp end parallel workshare
 !
       end subroutine copy_part_ene_spectr_to_IO
-!
-!   --------------------------------------------------------------------
-!
-      subroutine copy_spectr_IO_to_series                               &
-     &          (icou, ltr, sph_IN, sph_series)
-!
-      integer(kind = kint), intent(in) :: icou, ltr
-      type(read_sph_spectr_data), intent(in) :: sph_IN
-      type(read_sph_spectr_series), intent(inout) :: sph_series
-!
-      integer(kind = kint) :: ncomp, nri
-!
-!
-      ncomp = sph_IN%ntot_sph_spec
-      nri =   sph_IN%nri_dat
-!
-      sph_series%i_step(icou) = sph_IN%i_step
-      sph_series%d_time(icou) = sph_IN%time
-!$omp parallel workshare
-      sph_series%d_spectr(1:ncomp,0:ltr,1:nri,icou)                     &
-     &            = sph_IN%spectr_IO(1:ncomp,0:ltr,1:nri)
-!$omp end parallel workshare
-!
-      end subroutine copy_spectr_IO_to_series
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

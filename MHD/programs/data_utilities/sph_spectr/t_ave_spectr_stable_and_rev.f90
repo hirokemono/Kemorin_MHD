@@ -119,6 +119,7 @@
      &          vpwr_file_name, gauss_file_name, border_g10)
 !
       use t_read_sph_spectra
+      use t_read_sph_series
 !
       use count_monitor_time_series
       use m_tave_sph_ene_spectr

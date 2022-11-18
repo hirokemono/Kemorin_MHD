@@ -70,9 +70,10 @@ endif
 SOURCES = $(shell ls *.f90 *.F90)
 
 MOD_SPH_UTIL_DLL = \
-t_read_sph_spectra.o \
+t_read_sph_series.o \
 t_picked_sph_spectr_data_IO.o \
 t_gauss_coefs_monitor_IO.o \
+t_read_sph_series.o \
 write_sph_monitor_data.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
@@ -153,7 +154,6 @@ t_picked_sph_spectr_data_IO.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_data_append_sph_mntr.o \
-t_read_sph_spectra.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
 write_sph_monitor_data.o \
@@ -224,7 +224,7 @@ t_neutral_pt_by_pick_sph.o
 
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
-t_read_sph_spectra.o \
+t_read_sph_series.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
@@ -238,7 +238,7 @@ cal_tave_sph_ene_spectr.o
 
 MOD_TAVE_OLD_SPH_ESPEC = \
 t_average_old_sph_ene_spec.o \
-t_read_sph_spectra.o \
+t_read_sph_series.o \
 m_tave_sph_ene_spectr.o \
 cal_tave_sph_ene_spectr.o \
 gz_spl_sph_spectr_head_IO.o \
@@ -252,7 +252,6 @@ t_ctl_param_sph_series_util.o
 
 MOD_MAX_SPH_ENE = \
 maxmode_sph_ene_spec.o \
-t_read_sph_spectra.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
@@ -265,7 +264,6 @@ write_sph_monitor_data.o
 
 MOD_SPH_ULI_LSCALE = \
 sph_uli_lengh_scale.o \
-t_read_sph_spectra.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
@@ -278,7 +276,6 @@ write_sph_monitor_data.o
 
 MOD_SPH_DYN_ELSASSER = \
 sph_dynamic_elsasser.o \
-t_read_sph_spectra.o \
 t_ctl_data_get_dyn_elsasser.o \
 t_ctl_param_sph_series_util.o \
 t_ctl_param_dyn_elsasser.o \
@@ -292,7 +289,6 @@ cal_dyn_elsasser_by_spectr.o \
 write_sph_monitor_data.o
 
 MOD_FIT_DIPOLE_RATIO = \
-t_read_sph_spectra.o \
 gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
@@ -304,7 +300,6 @@ m_read_sph_spectra_f.o \
 sph_dipole_fitting.o
 
 MOD_PSUM_SPH_ENE_SPEC = \
-t_read_sph_spectra.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
@@ -320,7 +315,6 @@ MOD_T_AVE_GAUSS_COEFS = \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_gauss_coefs_monitor_IO.o \
-t_read_sph_spectra.o \
 t_ctl_param_sph_series_util.o \
 count_monitor_time_series.o \
 gz_gauss_coefs_monitor_IO.o \
@@ -355,7 +349,6 @@ t_ctl_data_tave_sph_monitor.o
 MOD_T_AVE_DIPOLARITY = \
 t_CMB_dipolarity.o \
 t_average_dipolarity.o \
-t_read_sph_spectra.o \
 time_average_dipolarity.o \
 count_monitor_time_series.o \
 gz_spl_sph_spectr_head_IO.o \
@@ -366,8 +359,8 @@ t_ctl_data_tave_sph_monitor.o
 MOD_T_AVE_STABLE_REV = \
 t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
-t_read_sph_spectra.o \
 t_ctl_param_sph_series_util.o \
+t_read_sph_series.o \
 count_monitor_time_series.o \
 m_tave_sph_ene_spectr.o \
 gz_gauss_coefs_monitor_IO.o \
@@ -383,8 +376,8 @@ t_ave_stable_and_reversal.o
 MOD_T_AVE_STABLE_REV_SPEC = \
 t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
-t_read_sph_spectra.o \
 t_ctl_param_sph_series_util.o \
+t_read_sph_series.o \
 count_monitor_time_series.o \
 m_tave_sph_ene_spectr.o \
 gz_gauss_coefs_monitor_IO.o \
