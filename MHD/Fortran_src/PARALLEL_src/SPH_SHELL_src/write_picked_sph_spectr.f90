@@ -60,7 +60,6 @@
       integer(kind = kint) :: inum, knum
       integer(kind = kint_gl) :: num
 !
-      character(len=kchara) :: fmt_txt
       real(kind=kreal), allocatable :: d_rj_out(:)
 !
 !
@@ -76,7 +75,7 @@
         call open_eack_picked_spectr(id_pick,                           &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      izero, izero)
-        call pick_degree0_sped_4_monitor                                &
+        call pick_center_spectrum_monitor                               &
      &     (rj_fld, picked, picked%ntot_comp_rj, d_rj_out)
         write(id_pick,'(a)', ADVANCE='NO')                              &
      &     picked_each_mode_to_text                                     &
@@ -85,9 +84,6 @@
         close(id_pick)
       end if
 !
-      write(fmt_txt,'(a37,i4,a13)')                                     &
-     &         '(i16,1pe25.14e3, i16,1pe25.14e3,2i16,',                 &
-     &           picked%ntot_comp_rj, '(1pE25.14e3))'
       do inum = 1, picked%num_sph_mode_lc
         call open_eack_picked_spectr(id_pick,                           &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,         &
@@ -96,9 +92,13 @@
           call pick_single_sph_spec_4_monitor(inum, knum,               &
      &        sph_rj, rj_fld, picked, picked%ntot_comp_rj, d_rj_out)
 !
-          write(id_pick,fmt_txt) time_d%i_time_step, time_d%time,       &
-     &        picked%id_radius(knum), picked%radius_gl(knum),           &
-     &        picked%idx_out(inum,1:2), d_rj_out(1:picked%ntot_comp_rj)
+          write(id_pick,'(a)', ADVANCE='NO')                            &
+     &     picked_each_mode_to_text(time_d%i_time_step, time_d%time,    &
+     &                              picked%radius_gl(knum),             &
+     &                              picked%id_radius(knum),             &
+     &                              picked%idx_out(inum,1),             &
+     &                              picked%idx_out(inum,2),             &
+     &                              picked%ntot_comp_rj, d_rj_out)
         end do
         close(id_pick)
       end do
