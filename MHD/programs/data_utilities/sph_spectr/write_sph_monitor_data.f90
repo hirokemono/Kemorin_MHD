@@ -47,8 +47,6 @@
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !
 !
-      call sph_mean_squre_header_labels(sph_OUT)
-!
       if(flag_vol_ave) then
         call write_sph_pwr_vol_head(id_file, sph_OUT)
       else
@@ -208,9 +206,11 @@
       integer(kind = kint) :: len_tot
 !
 !
-      call len_sph_vol_spectr_header(sph_OUT, len_each, len_tot)
+      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
+     &                               len_each, len_tot)
       write(id_file,'(a)',ADVANCE='NO')                                 &
-     &       sph_vol_spectr_header_text(len_tot, len_each, sph_OUT)
+     &       sph_vol_spectr_header_text(len_tot, len_each,              &
+     &                                  sph_pwr_labels, sph_OUT)
 !
       end subroutine write_sph_pwr_vol_head
 !
@@ -227,9 +227,11 @@
       integer(kind = kint) :: len_tot
 !
 !
-      call len_sph_layer_spectr_header(sph_OUT, len_each, len_tot)
+      call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
+     &                                 len_each, len_tot)
       write(id_file,'(a)',ADVANCE='NO')                                 &
-     &      sph_layer_spectr_header_text(len_tot, len_each, sph_OUT)
+     &      sph_layer_spectr_header_text(len_tot, len_each,             &
+     &                                   sph_pwr_labels, sph_OUT)
 !
       end subroutine write_sph_pwr_layer_head
 !

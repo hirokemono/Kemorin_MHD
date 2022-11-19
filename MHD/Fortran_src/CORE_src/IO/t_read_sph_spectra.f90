@@ -75,8 +75,20 @@
      &                           hdr_ltr = 'truncation',                &
      &                           hdr_ICB_id = 'ICB_id',                 &
      &                           hdr_CMB_id = 'CMB_id',                 &
-     &                           hdr_kr_in = 'Lower_boundary_ID',       &
+     &                           hdr_kr_in =  'Lower_boundary_ID',      &
      &                           hdr_r_in =   'Lower_boundary_radius',  &
+     &                           hdr_kr_out = 'Upper_boundary_ID',      &
+     &                           hdr_r_out =  'Upper_boundary_radius',  &
+     &                           hdr_num_field = 'Number_of_field',     &
+     &                           hdr_num_comp = 'Number_of_components')
+!
+      type(sph_spectr_head_labels), parameter :: sph_dipolarity_labels  &
+     &  = sph_spectr_head_labels(hdr_nri = 'radial_layers',             &
+     &                           hdr_ltr = 'truncation',                &
+     &                           hdr_ICB_id = 'ICB_id',                 &
+     &                           hdr_CMB_id = 'CMB_id',                 &
+     &                           hdr_kr_in =  'Not_used',               &
+     &                           hdr_r_in =   'Not_used',               &
      &                           hdr_kr_out = 'Upper_boundary_ID',      &
      &                           hdr_r_out =  'Upper_boundary_radius',  &
      &                           hdr_num_field = 'Number_of_field',     &

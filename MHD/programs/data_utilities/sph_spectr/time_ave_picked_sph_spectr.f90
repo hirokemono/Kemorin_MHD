@@ -88,7 +88,7 @@
       real(c_double), intent(inout) :: r(1), ave(1), rms(1), sdev(1)
 !
       integer(kind = kint) :: id_radius, in_degree, in_order
-      integer(kind = kint) :: i, idx, id_comp, id_mode
+      integer(kind = kint) :: idx, id_comp, id_mode
       character(len=kchara) :: draw_name
 !
       draw_name = c_to_fstring(yname)
@@ -146,7 +146,6 @@
       integer(kind = kint), parameter :: id_pick = 15
 !
       integer(kind = kint), allocatable :: imask(:)
-      integer(kind = kint) :: i_step, i, k, nd
       real(kind = kreal) :: true_start, true_end
 !
 !

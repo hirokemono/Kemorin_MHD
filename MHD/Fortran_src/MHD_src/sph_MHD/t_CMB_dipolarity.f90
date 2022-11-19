@@ -173,37 +173,51 @@
       subroutine write_dipolarity_header(id_file, ltr, nri,             &
      &                                   nlayer_ICB, nlayer_CMB, dip)
 !
+      use t_read_sph_spectra
       use write_field_labels
+      use sph_power_spectr_data_text
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(dipolarity_data), intent(in) :: dip
 !
-      integer(kind = kint) :: i
+      type(read_sph_spectr_data) :: sph_OUT
+      integer(kind = kint) :: len_tot
+      integer(kind = kint) :: len_each(6)
+      integer(kind = kint) :: icou
 !
 !
-      write(id_file,'(a)') 'radial_layers, truncation'
-      write(id_file,'(3i16)') nri, ltr
-      write(id_file,'(a)')  'ICB_id, CMB_id'
-      write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
-      write(id_file,'(a)') 'Not_used, Not_used'
-      write(id_file,'(i16,1pe23.14e3)')                                 &
-     &                     izero, zero
-      write(id_file,'(a)') 'outer_boundary_ID, outer_boundary_radius'
-      write(id_file,'(i16,1pe23.14e3)')                                 &
-     &                     dip%krms_CMB, dip%rdip_CMB
+      write(*,*) 'Takotako'
+      sph_OUT%ltr_sph = ltr
+      sph_OUT%nri_sph = nri
+      sph_OUT%nri_dat = 1
+      sph_OUT%kr_ICB =  nlayer_ICB
+      sph_OUT%kr_CMB =  nlayer_CMB
+      sph_OUT%kr_inner = izero
+      sph_OUT%kr_outer = dip%krms_CMB
+      sph_OUT%r_inner =  zero
+      sph_OUT%r_outer =  dip%rdip_CMB
 !
-      write(id_file,'(a)')   'number_of_fields, number_of_components'
-      write(id_file,'(2i16)') dip%num_dip, dip%num_dip
-      write(id_file,'(16i5)') (ione,i=1,dip%num_dip)
+      sph_OUT%nfield_sph_spec = dip%num_dip
+      sph_OUT%ntot_sph_spec =   dip%num_dip
+      sph_OUT%num_time_labels = 2
+      call alloc_sph_espec_name(sph_OUT)
+      call alloc_sph_spectr_data(izero, sph_OUT)
 !
-      write(id_file,'(a)',advance='NO') 't_step    time    '
-      do i = 1, dip%num_dip
-        write(id_file,'(a, a4)',advance='NO')                           &
-     &                                 trim(dip%dip_name(i)), '    '
-      end do
-      write(id_file,'(a)') ''
+      sph_OUT%ene_sph_spec_name(1) = 't_step'
+      sph_OUT%ene_sph_spec_name(2) = 'time'
+      icou = sph_OUT%num_time_labels
+      sph_OUT%ene_sph_spec_name(icou+1:icou+dip%num_dip)                &
+     &                           = dip%dip_name(1:dip%num_dip)
+      sph_OUT%ncomp_sph_spec(1:dip%num_dip) = 1
+!
+      call len_sph_vol_spectr_header(sph_dipolarity_labels, sph_OUT,    &
+     &                               len_each, len_tot)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &       sph_vol_spectr_header_text(len_tot, len_each,              &
+     &                                  sph_dipolarity_labels, sph_OUT)
+      call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_dipolarity_header
 !
