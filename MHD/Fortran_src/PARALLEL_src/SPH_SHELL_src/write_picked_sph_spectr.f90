@@ -8,13 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine write_each_picked_specr_file                         &
-!!     &         (time_d, sph_rj, rj_fld, picked)
+!!     &         (time_d, sph_params, sph_rj, rj_fld, picked)
 !!        type(time_data), intent(in) :: time_d
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(picked_spectrum_data), intent(in) :: picked
-!!      subroutine open_eack_picked_spectr(id_pick, picked, l, m)
+!!      subroutine open_eack_picked_spectr                              &
+!!     &         (id_pick, nlayer_ICB, nlayer_CMB, picked, l, m)
 !!        integer(kind = kint), intent(in) :: id_pick, l, m
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
 !!        type(picked_spectrum_data), intent(in) :: picked
 !!
 !!      function picked_each_mode_to_text                               &
@@ -43,11 +46,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine write_each_picked_specr_file                           &
-     &         (time_d, sph_rj, rj_fld, picked)
+     &         (time_d, sph_params, sph_rj, rj_fld, picked)
 !
       use pickup_sph_spectr_data
 !
       type(time_data), intent(in) :: time_d
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(picked_spectrum_data), intent(in) :: picked
@@ -69,7 +73,9 @@
       allocate(d_rj_out(picked%ntot_comp_rj))
 !
       if(picked%idx_out(0,4) .gt. 0) then
-        call open_eack_picked_spectr(id_pick, picked, izero, izero)
+        call open_eack_picked_spectr(id_pick,                           &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
+     &      izero, izero)
         call pick_degree0_sped_4_monitor                                &
      &     (rj_fld, picked, picked%ntot_comp_rj, d_rj_out)
         write(id_pick,'(a)', ADVANCE='NO')                              &
@@ -83,7 +89,8 @@
      &         '(i16,1pe25.14e3, i16,1pe25.14e3,2i16,',                 &
      &           picked%ntot_comp_rj, '(1pE25.14e3))'
       do inum = 1, picked%num_sph_mode_lc
-        call open_eack_picked_spectr(id_pick, picked,                   &
+        call open_eack_picked_spectr(id_pick,                           &
+     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,         &
      &      picked%idx_out(inum,1), picked%idx_out(inum,2))
         do knum = 1, picked%num_layer
           call pick_single_sph_spec_4_monitor(inum, knum,               &
@@ -101,12 +108,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine open_eack_picked_spectr(id_pick, picked, l, m)
+      subroutine open_eack_picked_spectr                                &
+     &         (id_pick, nlayer_ICB, nlayer_CMB, picked, l, m)
 !
       use set_parallel_file_name
       use write_field_labels
 !
       integer(kind = kint), intent(in) :: id_pick, l, m
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
 !
       character(len = kchara) :: file_name, fname_tmp
@@ -131,13 +140,8 @@
    99 continue
       open(id_pick, file=file_name, form='formatted', status='replace')
 !
-      write(id_pick,'(a)',ADVANCE='NO')                                 &
-     &                       each_pick_sph_header_no_field(picked)
-      do i = 1, picked%ntot_comp_rj
-        write(id_pick,'(a,a4)',ADVANCE='NO')                            &
-     &                          trim(picked%spectr_name(i)), '    '
-      end do
-      write(id_pick,'(a1)',ADVANCE='NO') char(10)
+      call write_each_pick_sph_file_header                              &
+     &    (id_pick, nlayer_ICB, nlayer_CMB, picked)
 !
       end subroutine open_eack_picked_spectr
 !

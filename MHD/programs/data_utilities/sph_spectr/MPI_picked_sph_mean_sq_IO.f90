@@ -8,10 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine append_picked_sph_mean_sq_file                       &
-!!     &         (time_d, sph_rj, leg, ipol, ipol_LES, rj_fld, picked)
+!!     &         (time_d, sph_params, sph_rj, leg, ipol, ipol_LES,      &
+!!     &          rj_fld, picked)
 !!      subroutine append_picked_sph_vol_msq_file(time_d, sph_params,   &
 !!     &          sph_rj, leg, ipol, ipol_LES, rj_fld, picked)
 !!        type(time_data), intent(in) :: time_d
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol
@@ -50,12 +52,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine append_picked_sph_mean_sq_file                         &
-     &         (time_d, sph_rj, leg, ipol, ipol_LES, rj_fld, picked)
+     &         (time_d, sph_params, sph_rj, leg, ipol, ipol_LES,        &
+     &          rj_fld, picked)
 !
       use pickup_sph_mean_square_data
       use write_picked_sph_spectr
 !
       type(time_data), intent(in) :: time_d
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
@@ -78,7 +82,9 @@
       allocate(d_rj_out(picked%ntot_comp_rj))
 !
       if(picked%idx_out(0,4) .gt. 0) then
-        call open_eack_picked_spectr(id_pick, picked, izero, izero)
+        call open_eack_picked_spectr(id_pick,                           &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
+     &      izero, izero)
         call cal_rj_mean_sq_degree0_monitor(knum, sph_rj, rj_fld,       &
      &      picked, picked%ntot_comp_rj, d_rj_out)
         call convert_to_energy_sph__monitor                             &
@@ -95,7 +101,8 @@
      &         '(i16,1pe25.14e3, i16,1pe25.14e3,2i16,',                 &
      &           picked%ntot_comp_rj, '(1pE25.14e3))'
       do inum = 1, picked%num_sph_mode_lc
-        call open_eack_picked_spectr(id_pick, picked,                   &
+        call open_eack_picked_spectr(id_pick,                           &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      picked%idx_out(inum,1), picked%idx_out(inum,2))
         do knum = 1, picked%num_layer
           call cal_rj_mean_sq_spectr_monitor                            &

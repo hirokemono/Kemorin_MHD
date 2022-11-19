@@ -33,7 +33,6 @@
 !!        type(picked_spectrum_data), intent(in) :: picked
 !!
 !!      function pick_sph_header_no_field(picked)
-!!      function each_pick_sph_header_no_field(picked)
 !!        type(picked_spectrum_data), intent(in) :: picked
 !!@endverbatim
 !!
@@ -336,10 +335,36 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine write_each_pick_sph_file_header                        &
+     &         (id_file, nlayer_ICB, nlayer_CMB, picked)
+!
+      use sph_power_spectr_data_text
+      use write_field_labels
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      type(read_sph_spectr_data) :: sph_OUT
+      integer(kind = kint) :: len_each(6)
+      integer(kind = kint) :: len_tot
+!
+!
+      call dup_pick_sph_file_header(nlayer_ICB, nlayer_CMB,             &
+     &                              picked, sph_OUT)
+      call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
+     &                                 len_each, len_tot)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &      sph_layer_spectr_header_text(len_tot, len_each,             &
+     &                                   pick_spectr_labels, sph_OUT)
+      call dealloc_sph_espec_data(sph_OUT)
+!
+      end subroutine write_each_pick_sph_file_header
+!
+! -----------------------------------------------------------------------
+!
       subroutine dup_pick_sph_file_header(nlayer_ICB, nlayer_CMB,       &
      &                                    picked, sph_OUT)
-!
-      use m_time_labels
 !
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
@@ -348,19 +373,52 @@
 !
 !
       sph_OUT%ltr_sph = picked%num_sph_mode
+      call dup_pick_sph_file_header_base(nlayer_ICB, nlayer_CMB,        &
+     &                                   picked, sph_OUT)
+!
+      end subroutine dup_pick_sph_file_header
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_each_pick_sph_file_header(nlayer_ICB, nlayer_CMB,  &
+     &                                    picked, sph_OUT)
+!
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
+!
+      sph_OUT%ltr_sph = 1
+      call dup_pick_sph_file_header_base(nlayer_ICB, nlayer_CMB,        &
+     &                                   picked, sph_OUT)
+!
+      end subroutine dup_each_pick_sph_file_header
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_pick_sph_file_header_base(nlayer_ICB, nlayer_CMB,  &
+     &                                         picked, sph_OUT)
+!
+      use m_time_labels
+!
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
+      integer(kind = kint) :: i, icou
+!
       sph_OUT%nri_sph = picked%num_layer
       sph_OUT%nri_dat = picked%num_layer
       sph_OUT%kr_ICB =  nlayer_ICB
       sph_OUT%kr_CMB =  nlayer_CMB
 !
-      sph_OUT%nfield_sph_spec = pwr%num_fld_sq
-      sph_OUT%ntot_sph_spec =   pwr%ntot_comp_sq
+      sph_OUT%nfield_sph_spec = picked%num_field_rj
+      sph_OUT%ntot_sph_spec =   picked%ntot_comp_rj
       sph_OUT%num_time_labels = 6
       call alloc_sph_espec_name(sph_OUT)
       call alloc_sph_spectr_data(picked%num_sph_mode, sph_OUT)
-!
-      sph_OUT%ncomp_sph_spec(1:pwr%num_fld_sq)                          &
-     &      = pwr%num_comp_sq(1:pwr%num_fld_sq)
 !
       sph_OUT%ene_sph_spec_name(1) = fhd_t_step
       sph_OUT%ene_sph_spec_name(2) = fhd_time
@@ -368,17 +426,15 @@
       sph_OUT%ene_sph_spec_name(4) = 'Radius'
       sph_OUT%ene_sph_spec_name(5) = 'Degree'
       sph_OUT%ene_sph_spec_name(6) = 'Order'
-      if(mode_label .ne. 'EMPTY') then
-        sph_OUT%ene_sph_spec_name(sph_OUT%num_time_labels)              &
-     &                                       = trim(mode_label)
-      end if
 !
       icou = sph_OUT%num_time_labels
-      do i = 1, pwr%num_fld_sq
+      do i = 1, picked%num_field_rj
         sph_OUT%ene_sph_spec_name(icou+i) = picked%spectr_name(i)
+        sph_OUT%ncomp_sph_spec(i) = picked%istack_comp_rj(i)            &
+     &                             - picked%istack_comp_rj(i-1)
       end do
 !
-      end subroutine dup_pick_sph_file_header
+      end subroutine dup_pick_sph_file_header_base
 !
 ! -----------------------------------------------------------------------
 !
@@ -405,31 +461,6 @@
      &        hd_time_sph_label()
 !
       end function pick_sph_header_no_field
-!
-! -----------------------------------------------------------------------
-!
-      function each_pick_sph_header_no_field(picked)
-!
-      use m_monitor_file_labels
-!
-      type(picked_spectrum_data), intent(in) :: picked
-!
-      integer(kind = kint), parameter                                   &
-     &         :: ilen_h1 = ilen_pick_sph_head + 3*16 + 1
-      integer(kind = kint), parameter                                   &
-     &         :: ilen_h2 = ilen_pick_sph_num + 16 + 1
-      integer(kind = kint), parameter                                   &
-     &        :: len_head = ilen_h1 + ilen_h2 + ilen_time_sph_label
-!
-      character(len = len_head) :: each_pick_sph_header_no_field
-!
-!
-      write(each_pick_sph_header_no_field,'(a,2i16,a1,a,i16,a1,a)')     &
-     &        hd_pick_sph_head(), picked%num_layer, ione, char(10),     &
-     &        hd_pick_sph_num(), picked%ntot_comp_rj, char(10),         &
-     &        hd_time_sph_label()
-!
-      end function each_pick_sph_header_no_field
 !
 ! -----------------------------------------------------------------------
 !
