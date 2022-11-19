@@ -70,7 +70,7 @@
 !
       if(picked%idx_out(0,4) .gt. 0) then
         call open_eack_picked_spectr(id_pick, picked, izero, izero)
-        call pick_degre0_sped_4_monitor                                 &
+        call pick_degree0_sped_4_monitor                                &
      &     (rj_fld, picked, picked%ntot_comp_rj, d_rj_out)
         write(id_pick,'(a)', ADVANCE='NO')                              &
      &     picked_each_mode_to_text                                     &

@@ -50,7 +50,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_sph_vol_spectr_header(mode_label, ene_labels,     &
+      subroutine dup_sph_vol_spectr_header(mode_label, ene_labels,      &
      &          sph_params, sph_rj, v_pwr, sph_OUT)
 !
       use t_read_sph_spectra
@@ -63,6 +63,7 @@
       type(sph_vol_mean_squares), intent(in) :: v_pwr
 !
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
       integer(kind = kint) :: i, icou
 !
 !
@@ -106,11 +107,11 @@
         icou = icou + v_pwr%num_comp_sq(i)
       end do
 !
-      end subroutine copy_sph_vol_spectr_header
+      end subroutine dup_sph_vol_spectr_header
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_sph_layer_spectr_header(mode_label,               &
+      subroutine dup_sph_layer_spectr_header(mode_label,                &
      &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
 !
       use t_read_sph_spectra
@@ -149,8 +150,8 @@
 !
       sph_OUT%ene_sph_spec_name(1) = fhd_t_step
       sph_OUT%ene_sph_spec_name(2) = fhd_time
-      sph_OUT%ene_sph_spec_name(3) = 'radial_id'
-      sph_OUT%ene_sph_spec_name(4) = 'radius'
+      sph_OUT%ene_sph_spec_name(3) = 'Radius_ID'
+      sph_OUT%ene_sph_spec_name(4) = 'Radius'
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%ene_sph_spec_name(sph_OUT%num_time_labels)              &
      &                                       = trim(mode_label)
@@ -164,7 +165,7 @@
         icou = icou + pwr%num_comp_sq(i)
       end do
 !
-      end subroutine copy_sph_layer_spectr_header
+      end subroutine dup_sph_layer_spectr_header
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -188,7 +189,7 @@
       integer(kind = kint) :: len_tot
 !
 !
-      call copy_sph_vol_spectr_header(mode_label, ene_labels,           &
+      call dup_sph_vol_spectr_header(mode_label, ene_labels,            &
      &    sph_params, sph_rj, v_pwr, sph_OUT)
 !
       call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
@@ -221,7 +222,7 @@
       integer(kind = kint) :: len_tot
 !
 !
-      call copy_sph_layer_spectr_header(mode_label,                     &
+      call dup_sph_layer_spectr_header(mode_label,                      &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
 !
       call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &

@@ -170,7 +170,7 @@
         ist = 0
         if(picked%idx_out(0,4) .gt. 0) then
           ist = 1
-          call pick_degre0_sped_4_monitor                               &
+          call pick_degree0_sped_4_monitor                              &
      &       (rj_fld, picked, ntot_comp_rj, d_rj_out)
           pickedbuf(1)                                                  &
      &           = picked_each_mode_to_text                             &

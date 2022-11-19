@@ -71,8 +71,8 @@
       end type read_sph_spectr_data
 !
       type(sph_spectr_head_labels), parameter :: sph_pwr_labels         &
-     &  = sph_spectr_head_labels(hdr_nri = 'radial_layers',             &
-     &                           hdr_ltr = 'truncation',                &
+     &  = sph_spectr_head_labels(hdr_nri = 'Radial_layers',             &
+     &                           hdr_ltr = 'Truncation',                &
      &                           hdr_ICB_id = 'ICB_id',                 &
      &                           hdr_CMB_id = 'CMB_id',                 &
      &                           hdr_kr_in =  'Lower_boundary_ID',      &
