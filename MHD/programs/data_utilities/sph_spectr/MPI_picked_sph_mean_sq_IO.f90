@@ -311,4 +311,30 @@
 !
 ! -----------------------------------------------------------------------
 !
+      function pick_sph_header_no_field(picked)
+!
+      use m_monitor_file_labels
+!
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      integer(kind = kint), parameter                                   &
+     &         :: ilen_h1 = ilen_pick_sph_head + 3*16 + 1
+      integer(kind = kint), parameter                                   &
+     &         :: ilen_h2 = ilen_pick_sph_num + 16 + 1
+      integer(kind = kint), parameter                                   &
+     &        :: len_head = ilen_h1 + ilen_h2 + ilen_time_sph_label
+!
+      character(len = len_head) :: pick_sph_header_no_field
+!
+!
+      write(pick_sph_header_no_field,'(a,2i16,a1,a,i16,a1,a)')          &
+     &        hd_pick_sph_head(),                                       &
+     &        picked%num_layer, picked%num_sph_mode, char(10),          &
+     &        hd_pick_sph_num(), picked%ntot_comp_rj, char(10),         &
+     &        hd_time_sph_label()
+!
+      end function pick_sph_header_no_field
+!
+! -----------------------------------------------------------------------
+!
       end module MPI_picked_sph_mean_sq_IO
