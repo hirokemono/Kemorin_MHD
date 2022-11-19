@@ -65,8 +65,6 @@
       integer(kind = kint) :: i, icou
 !
 !
-      call sph_mean_squre_header_labels(sph_OUT)
-!
       sph_OUT%ltr_sph = sph_params%l_truncation
       sph_OUT%nri_sph = sph_rj%nidx_rj(1)
       sph_OUT%nri_dat = 1
@@ -125,8 +123,6 @@
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
       integer(kind = kint) :: i, icou
 !
-!
-      call sph_mean_squre_header_labels(sph_OUT)
 !
       sph_OUT%ltr_sph = ltr
       sph_OUT%nri_sph = pwr%nri_rms
@@ -193,9 +189,11 @@
       call copy_sph_vol_spectr_header(mode_label, ene_labels,           &
      &    sph_params, sph_rj, v_pwr, sph_OUT)
 !
-      call len_sph_vol_spectr_header(sph_OUT, len_each, len_tot)
+      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
+     &                               len_each, len_tot)
       write(id_file,'(a)',ADVANCE='NO')                                 &
-     &       sph_vol_spectr_header_text(len_tot, len_each, sph_OUT)
+     &       sph_vol_spectr_header_text(len_tot, len_each,              &
+     &                                  sph_pwr_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_sph_vol_mean_sq_header
@@ -224,9 +222,11 @@
       call copy_sph_layer_spectr_header(mode_label,                     &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
 !
-      call len_sph_layer_spectr_header(sph_OUT, len_each, len_tot)
+      call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
+     &                                 len_each, len_tot)
       write(id_file,'(a)',ADVANCE='NO')                                 &
-     &      sph_layer_spectr_header_text(len_tot, len_each, sph_OUT)
+     &      sph_layer_spectr_header_text(len_tot, len_each,             &
+     &                                   sph_pwr_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_sph_mean_sq_header

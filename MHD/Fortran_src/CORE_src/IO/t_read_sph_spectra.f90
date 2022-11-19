@@ -35,8 +35,20 @@
       implicit none
 !
 !
-      type read_sph_spectr_data
+      type sph_spectr_head_labels
+!>        Lebal of the first item (truncation, Number of radial grid)
+        character(len = kchara) :: hdr_nri, hdr_ltr
+!>        Lebal of the second item (Id of ICB and CMB)
+        character(len = kchara) :: hdr_ICB_id, hdr_CMB_id
+!>        Lebal of the third item (Inner boundary)
+        character(len = kchara) :: hdr_kr_in, hdr_r_in
+!>        Lebal of the forth item (Outer boundary)
+        character(len = kchara) :: hdr_kr_out, hdr_r_out
+!>        Lebal of the field item (Field information)
         character(len = kchara) :: hdr_num_field, hdr_num_comp
+      end type sph_spectr_head_labels
+!
+      type read_sph_spectr_data
         integer(kind = kint) :: nfield_sph_spec
         integer(kind = kint) :: ntot_sph_spec
         integer(kind = kint) :: num_time_labels
@@ -44,16 +56,9 @@
         integer(kind = kint), allocatable :: ncomp_sph_spec(:)
         character(len = kchara), allocatable :: ene_sph_spec_name(:)
 !
-        character(len = kchara) :: hdr_nri, hdr_ltr
         integer(kind = kint) :: ltr_sph, nri_sph, nri_dat
-!
-        character(len = kchara) :: hdr_ICB_id, hdr_CMB_id
         integer(kind = kint) :: kr_ICB, kr_CMB
-!
-        character(len = kchara) :: hdr_kr_in, hdr_kr_out
         integer(kind = kint) :: kr_inner, kr_outer
-!
-        character(len = kchara) :: hdr_r_in, hdr_r_out
         real(kind = kreal) :: r_inner, r_outer
 !
         integer(kind = kint), allocatable :: i_mode(:)
@@ -64,6 +69,18 @@
         real(kind = kreal) :: time
         real(kind = kreal), allocatable :: spectr_IO(:,:,:)
       end type read_sph_spectr_data
+!
+      type(sph_spectr_head_labels), parameter :: sph_pwr_labels         &
+     &  = sph_spectr_head_labels(hdr_nri = 'radial_layers',             &
+     &                           hdr_ltr = 'truncation',                &
+     &                           hdr_ICB_id = 'ICB_id',                 &
+     &                           hdr_CMB_id = 'CMB_id',                 &
+     &                           hdr_kr_in = 'Lower_boundary_ID',       &
+     &                           hdr_r_in =   'Lower_boundary_radius',  &
+     &                           hdr_kr_out = 'Upper_boundary_ID',      &
+     &                           hdr_r_out =  'Upper_boundary_radius',  &
+     &                           hdr_num_field = 'Number_of_field',     &
+     &                           hdr_num_comp = 'Number_of_components')
 !
       logical, parameter :: flag_current_fmt = .FALSE.
       logical, parameter :: spectr_on =        .TRUE.
@@ -155,18 +172,28 @@
       sph_OUT%ntot_sph_spec = sph_IN%ntot_sph_spec
       sph_OUT%num_time_labels = sph_IN%num_time_labels
 !
-      sph_OUT%hdr_num_field = sph_IN%hdr_num_field
-      sph_OUT%hdr_num_comp =  sph_IN%hdr_num_comp
-      sph_OUT%hdr_nri =    sph_IN%hdr_nri
-      sph_OUT%hdr_ltr =    sph_IN%hdr_ltr
-      sph_OUT%hdr_ICB_id = sph_IN%hdr_ICB_id
-      sph_OUT%hdr_CMB_id = sph_IN%hdr_CMB_id
-      sph_OUT%hdr_kr_in =  sph_IN%hdr_kr_in
-      sph_OUT%hdr_kr_out = sph_IN%hdr_kr_out
-      sph_OUT%hdr_r_in =   sph_IN%hdr_r_in
-      sph_OUT%hdr_r_out =  sph_IN%hdr_r_out
-!
       end subroutine copy_read_ene_head_params
+!
+!   --------------------------------------------------------------------
+!
+      subroutine copy_read_ene_head_labels(sph_lbl_IN, sph_lbl_OUT)
+!
+      type(sph_spectr_head_labels), intent(in) :: sph_lbl_IN
+      type(sph_spectr_head_labels), intent(inout) :: sph_lbl_OUT
+!
+!
+      sph_lbl_OUT%hdr_num_field = sph_lbl_IN%hdr_num_field
+      sph_lbl_OUT%hdr_num_comp =  sph_lbl_IN%hdr_num_comp
+      sph_lbl_OUT%hdr_nri =    sph_lbl_IN%hdr_nri
+      sph_lbl_OUT%hdr_ltr =    sph_lbl_IN%hdr_ltr
+      sph_lbl_OUT%hdr_ICB_id = sph_lbl_IN%hdr_ICB_id
+      sph_lbl_OUT%hdr_CMB_id = sph_lbl_IN%hdr_CMB_id
+      sph_lbl_OUT%hdr_kr_in =  sph_lbl_IN%hdr_kr_in
+      sph_lbl_OUT%hdr_kr_out = sph_lbl_IN%hdr_kr_out
+      sph_lbl_OUT%hdr_r_in =   sph_lbl_IN%hdr_r_in
+      sph_lbl_OUT%hdr_r_out =  sph_lbl_IN%hdr_r_out
+!
+      end subroutine copy_read_ene_head_labels
 !
 !   --------------------------------------------------------------------
 !
@@ -297,26 +324,6 @@
       end do
 !
       end subroutine check_sph_spectr_name
-!
-!   --------------------------------------------------------------------
-!
-      subroutine sph_mean_squre_header_labels(sph_IN)
-!
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-!
-!
-      sph_IN%hdr_nri =       'radial_layers'
-      sph_IN%hdr_ltr =       'truncation'
-      sph_IN%hdr_ICB_id =    'ICB_id'
-      sph_IN%hdr_CMB_id =    'CMB_id'
-      sph_IN%hdr_kr_in =     'Lower_boundary_ID'
-      sph_IN%hdr_kr_out =    'Lower_boundary_radius'
-      sph_IN%hdr_r_in =      'Upper_boundary_ID'
-      sph_IN%hdr_r_out =     'Upper_boundary_radius'
-      sph_IN%hdr_num_field = 'Number_of_field'
-      sph_IN%hdr_num_comp =  'Number_of_components'
-!
-      end subroutine sph_mean_squre_header_labels
 !
 !   --------------------------------------------------------------------
 !
