@@ -83,7 +83,6 @@
       real(kind = kreal), intent(inout) :: start_time, end_time
       real(kind = kreal), intent(inout) :: border_g10
 !
-      character(len=kchara) :: file_prefix
 !
       if(tave_svsr_ctl%volume_average_file_ctl%iflag .eq. 0) then
         write(*,*) 'Set File prefix for volume average data file'

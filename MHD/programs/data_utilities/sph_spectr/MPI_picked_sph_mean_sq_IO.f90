@@ -37,6 +37,7 @@
       use t_phys_data
       use t_phys_address
       use t_SGS_model_addresses
+      use t_buffer_4_gzip
 !
       implicit  none
 !
@@ -69,53 +70,68 @@
       type(picked_spectrum_data), intent(in) :: picked
 !
       integer(kind = kint), parameter :: id_pick = 17
-      integer(kind = kint) :: inum, knum
+      integer(kind = kint) :: inum, knum, line_len
       integer(kind = kint_gl) :: num
 !
-      character(len=kchara) :: fmt_txt
-      real(kind=kreal), allocatable :: d_rj_out(:)
+      real(kind=kreal), allocatable :: d_rj_out(:,:)
+      type(buffer_4_gzip) :: zbuf_p
+      logical :: zlib_flag_p = .FALSE.
 !
 !
       num = picked%istack_picked_spec_lc(my_rank+1)                     &
      &     - picked%istack_picked_spec_lc(my_rank)
       if(num .le. 0) return
 !
-      allocate(d_rj_out(picked%ntot_comp_rj))
+      allocate(d_rj_out(picked%ntot_comp_rj,picked%num_layer))
+      line_len = len(picked_each_mode_data_text                         &
+     &                           (time_d%i_time_step, time_d%time,      &
+     &                            picked%radius_gl(1),                  &
+     &                            picked%id_radius(1),                  &
+     &                            picked%idx_out(1,1),                  &
+     &                            picked%idx_out(1,2),                  &
+     &                            picked%ntot_comp_rj, d_rj_out(1,1)))
 !
       if(picked%idx_out(0,4) .gt. 0) then
-        call open_eack_picked_spectr(id_pick,                           &
+        call open_eack_picked_spectr(zlib_flag_p, id_pick,              &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
-     &      izero, izero)
+     &      izero, izero, zbuf_p)
         call cal_rj_mean_sq_degree0_monitor(knum, sph_rj, rj_fld,       &
      &      picked, picked%ntot_comp_rj, d_rj_out)
-        call convert_to_energy_sph__monitor                             &
+        call convert_to_energy_sph_monitor                              &
      &     (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
-        write(id_pick) picked_each_mode_data_text                       &
-     &         (time_d%i_time_step, time_d%time, zero, izero,           &
-     &          izero, izero, picked%ntot_comp_rj, d_rj_out)
+        call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len,   &
+     &      picked_each_mode_data_text(time_d%i_time_step, time_d%time, &
+     &                                 zero, izero, izero, izero,       &
+     &                                 picked%ntot_comp_rj,             &
+     &                                 d_rj_out(1,1)),                  &
+     &      zbuf_p)
         close(id_pick)
       end if
 !
-      write(fmt_txt,'(a37,i4,a13)')                                     &
-     &         '(i16,1pe25.14e3, i16,1pe25.14e3,2i16,',                 &
-     &           picked%ntot_comp_rj, '(1pE25.14e3))'
       do inum = 1, picked%num_sph_mode_lc
-        call open_eack_picked_spectr(id_pick,                           &
-     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
-     &      picked%idx_out(inum,1), picked%idx_out(inum,2))
         do knum = 1, picked%num_layer
           call cal_rj_mean_sq_spectr_monitor                            &
      &       (inum, knum, sph_rj, leg, rj_fld, picked,                  &
-     &        picked%ntot_comp_rj, d_rj_out)
-          call convert_to_energy_sph__monitor                           &
-     &       (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
+     &        picked%ntot_comp_rj, d_rj_out(1,knum))
+          call convert_to_energy_sph_monitor(ipol, ipol_LES, picked,    &
+     &        picked%ntot_comp_rj, d_rj_out(1,knum))
+        end do
 !
-          write(id_pick) picked_each_mode_data_text                     &
-     &                 (time_d%i_time_step, time_d%time,                &
-     &                  picked%radius_gl(knum), picked%id_radius(knum), &
-     &                  picked%idx_out(inum,1), picked%idx_out(inum,2), &
-     &                  picked%ntot_comp_rj, d_rj_out)
+        call open_eack_picked_spectr(zlib_flag_p, id_pick,              &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
+     &      picked%idx_out(inum,1), picked%idx_out(inum,2), zbuf_p)
+        do knum = 1, picked%num_layer
+          call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len, &
+     &        picked_each_mode_data_text                                &
+     &                             (time_d%i_time_step, time_d%time,    &
+     &                              picked%radius_gl(knum),             &
+     &                              picked%id_radius(knum),             &
+     &                              picked%idx_out(inum,1),             &
+     &                              picked%idx_out(inum,2),             &
+     &                              picked%ntot_comp_rj,                &
+     &                              d_rj_out(1,knum)),                  &
+     &        zbuf_p)
         end do
         close(id_pick)
       end do
@@ -226,7 +242,7 @@
      &       (sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                 &
      &        ntot_comp_rj, d_layer, d_rj_out)
-          call convert_to_energy_sph__monitor                           &
+          call convert_to_energy_sph_monitor                            &
      &       (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
            pickedbuf(icou)                                              &
      &         = picked_each_mode_data_text                             &
@@ -248,7 +264,7 @@
           call radial_integration                                       &
      &       (ione, nlayer, nlayer, sph_rj%radius_1d_rj_r(kst),         &
      &        ntot_comp_rj, d_layer(kst,1), d_rj_out)
-          call convert_to_energy_sph__monitor                           &
+          call convert_to_energy_sph_monitor                            &
      &       (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
            pickedbuf(icou)                                              &
      &         = picked_each_mode_data_text                             &
