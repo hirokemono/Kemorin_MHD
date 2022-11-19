@@ -90,8 +90,7 @@
         call convert_to_energy_sph__monitor                             &
      &     (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
-        write(id_pick,'(a)', ADVANCE='NO')                              &
-     &     picked_each_mode_to_text                                     &
+        write(id_pick) picked_each_mode_to_text                         &
      &         (time_d%i_time_step, time_d%time, zero, izero,           &
      &          izero, izero, picked%ntot_comp_rj, d_rj_out)
         close(id_pick)
@@ -111,9 +110,11 @@
           call convert_to_energy_sph__monitor                           &
      &       (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
-          write(id_pick,fmt_txt) time_d%i_time_step, time_d%time,       &
-     &        picked%id_radius(knum), picked%radius_gl(knum),           &
-     &        picked%idx_out(inum,1:2), d_rj_out(1:picked%ntot_comp_rj)
+          write(id_pick) picked_each_mode_to_text                       &
+     &                 (time_d%i_time_step, time_d%time,                &
+     &                  picked%radius_gl(knum), picked%id_radius(knum), &
+     &                  picked%idx_out(inum,1), picked%idx_out(inum,2), &
+     &                  picked%ntot_comp_rj, d_rj_out)
         end do
         close(id_pick)
       end do

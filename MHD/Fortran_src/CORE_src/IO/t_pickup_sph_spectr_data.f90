@@ -351,9 +351,8 @@
      &                                   picked, sph_OUT)
       call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
      &                                 len_each, len_tot)
-      write(id_file,'(a)',ADVANCE='NO')                                 &
-     &      sph_layer_spectr_header_text(len_tot, len_each,             &
-     &                                   pick_spectr_labels, sph_OUT)
+      write(id_file) sph_layer_spectr_header_text                       &
+     &             (len_tot, len_each, pick_spectr_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_each_pick_sph_file_header

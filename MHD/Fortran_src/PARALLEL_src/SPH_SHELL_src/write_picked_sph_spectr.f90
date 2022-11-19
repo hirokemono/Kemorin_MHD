@@ -77,10 +77,9 @@
      &      izero, izero)
         call pick_center_spectrum_monitor                               &
      &     (rj_fld, picked, picked%ntot_comp_rj, d_rj_out)
-        write(id_pick,'(a)', ADVANCE='NO')                              &
-     &     picked_each_mode_to_text                                     &
-     &         (time_d%i_time_step, time_d%time, zero, izero,           &
-     &          izero, izero, picked%ntot_comp_rj, d_rj_out)
+        write(id_pick) picked_each_mode_to_text                         &
+     &               (time_d%i_time_step, time_d%time, zero, izero,     &
+     &                izero, izero, picked%ntot_comp_rj, d_rj_out)
         close(id_pick)
       end if
 !
@@ -92,8 +91,8 @@
           call pick_single_sph_spec_4_monitor(inum, knum,               &
      &        sph_rj, rj_fld, picked, picked%ntot_comp_rj, d_rj_out)
 !
-          write(id_pick,'(a)', ADVANCE='NO')                            &
-     &     picked_each_mode_to_text(time_d%i_time_step, time_d%time,    &
+          write(id_pick) picked_each_mode_to_text                       &
+     &                             (time_d%i_time_step, time_d%time,    &
      &                              picked%radius_gl(knum),             &
      &                              picked%id_radius(knum),             &
      &                              picked%idx_out(inum,1),             &
@@ -132,13 +131,14 @@
         write(fname_tmp,'(a,a1)') trim(file_name), 'c'
       end if
       file_name = add_dat_extension(fname_tmp)
-      open(id_pick, file=file_name, form='formatted', status='old',     &
-     &     position='append', err = 99)
+      open(id_pick, file=file_name, status='old', position='append',    &
+     &     form='unformatted', ACCESS='stream', err = 99)
       return
 !
 !
    99 continue
-      open(id_pick, file=file_name, form='formatted', status='replace')
+      open(id_pick, file=file_name, status='replace',                   &
+     &     form='unformatted', ACCESS='stream')
 !
       call write_each_pick_sph_file_header                              &
      &    (id_pick, nlayer_ICB, nlayer_CMB, picked)
@@ -164,8 +164,8 @@
 !
 !
       write(fmt_txt,'(a37,i4,a17)')                                     &
-     &         '(i16,1pe25.15e3, i16,1pe25.15e3,2i16,',                 &
-     &           ntot_comp_rj, '(1pE25.15e3), a1)'
+     &         '(i16,1pe25.14e3, i16,1pe25.14e3,2i16,',                 &
+     &           ntot_comp_rj, '(1pE25.14e3), a1)'
       write(picked_each_mode_to_text,fmt_txt) i_step, time,             &
      &          kr, radius, l, m, d_rj_out(1:ntot_comp_rj), char(10)
 !
