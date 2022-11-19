@@ -54,7 +54,7 @@
 !
       len_each(1) = len_moniter_i2_head_text(sph_IN%hdr_nri,            &
      &                                       sph_IN%hdr_ltr)
-      len_each(2) =len_moniter_i2_head_text(sph_IN%hdr_ICB_id,          &
+      len_each(2) = len_moniter_i2_head_text(sph_IN%hdr_ICB_id,         &
      &                                       sph_IN%hdr_CMB_id)
       len_each(3) = len_moniter_ir_head_text(sph_IN%hdr_kr_in,          &
      &                                       sph_IN%hdr_r_in)
@@ -139,7 +139,7 @@
 !
       len_each(1) = len_moniter_i2_head_text(sph_IN%hdr_nri,            &
      &                                       sph_IN%hdr_ltr)
-      len_each(2) =len_moniter_i2_head_text(sph_IN%hdr_ICB_id,          &
+      len_each(2) = len_moniter_i2_head_text(sph_IN%hdr_ICB_id,         &
      &                                       sph_IN%hdr_CMB_id)
       len_each(3) = 0
       len_each(4) = 0
