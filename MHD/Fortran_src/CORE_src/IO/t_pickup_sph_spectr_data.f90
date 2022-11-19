@@ -347,8 +347,8 @@
       integer(kind = kint) :: len_tot
 !
 !
-      call dup_pick_sph_file_header(nlayer_ICB, nlayer_CMB,             &
-     &                              picked, sph_OUT)
+      call dup_each_pick_sph_file_header(nlayer_ICB, nlayer_CMB,        &
+     &                                   picked, sph_OUT)
       call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
      &                                 len_each, len_tot)
       write(id_file,'(a)',ADVANCE='NO')                                 &
