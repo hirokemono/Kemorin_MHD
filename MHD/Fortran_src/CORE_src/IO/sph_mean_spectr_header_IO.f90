@@ -118,33 +118,6 @@
      &       sph_vol_spectr_header_text(len_tot, len_each, sph_OUT)
       call dealloc_sph_espec_data(sph_OUT)
 !
-!      write(id_file,'(3a)')    sph_OUT%hdr_nri, ',   ', sph_OUT%hdr_ltr
-!      write(id_file,'(3i16)')  sph_OUT%nri_sph, sph_OUT%ltr_sph
-!      write(id_file,'(3a)')    sph_OUT%hdr_ICB_id, ',   ',              &
-!     &                         sph_OUT%hdr_CMB_id
-!      write(id_file,'(2i16)')  sph_OUT%kr_ICB, sph_OUT%kr_CMB
-!      write(id_file,'(3a)')    sph_OUT%hdr_kr_in, ',   ',               &
-!     &                         sph_OUT%hdr_r_in
-!      write(id_file,'(i16,1pe23.14e3)')                                 &
-!     &                     sph_OUT%kr_inner, sph_OUT%r_inner
-!      write(id_file,'(3a)')    sph_OUT%hdr_kr_out, ',   ',              &
-!     &                         sph_OUT%hdr_r_out
-!      write(id_file,'(i16,1pe23.14e3)')                                 &
-!     &                     sph_OUT%kr_outer, sph_OUT%r_outer
-!
-!      write(id_file,'(3a)')    sph_OUT%hdr_num_field, ',   ',           &
-!     &                         sph_OUT%hdr_num_comp
-!      write(id_file,'(5i16)')  sph_OUT%nfield_sph_spec,                 &
-!     &                         sph_OUT%ntot_sph_spec
-!      write(id_file,'(16i5)')                                           &
-!     &                sph_OUT%ncomp_sph_spec(1:sph_OUT%nfield_sph_spec)
-!
-!      do i = 1, sph_OUT%num_labels
-!        call write_one_label_cont(id_file,                              &
-!     &                            sph_OUT%ene_sph_spec_name(i))
-!      end do
-!      write(id_file,*)
-!
       end subroutine write_sph_vol_mean_sq_header
 !
 !  --------------------------------------------------------------------
@@ -214,26 +187,6 @@
       write(id_file,'(a)')                                              &
      &      sph_layer_spectr_header_text(len_tot, len_each, sph_OUT)
       call dealloc_sph_espec_data(sph_OUT)
-!
-!      write(id_file,'(3a)')    sph_OUT%hdr_nri, ',   ', sph_OUT%hdr_ltr
-!      write(id_file,'(3i16)')  sph_OUT%nri_sph, sph_OUT%ltr_sph
-!      write(id_file,'(3a)')    sph_OUT%hdr_ICB_id, ',   ',             &
-!     &                         sph_OUT%hdr_CMB_id
-!      write(id_file,'(2i16)')  sph_OUT%kr_ICB, sph_OUT%kr_CMB
-!
-!      write(id_file,'(3a)')    sph_OUT%hdr_num_field, ',   ',          &
-!     &                         sph_OUT%hdr_num_comp
-!      write(id_file,'(5i16)')  sph_OUT%nfield_sph_spec,                &
-!     &                         sph_OUT%ntot_sph_spec
-!      write(id_file,'(16i5)')                                          &
-!     &                sph_OUT%ncomp_sph_spec(1:sph_OUT%nfield_sph_spec)
-!
-!      do i = 1, sph_OUT%num_labels
-!        call write_one_label_cont(id_file,                             &
-!     &                            sph_OUT%ene_sph_spec_name(i))
-!      end do
-!      write(id_file,*)
-!
 !
       end subroutine write_sph_mean_sq_header
 !

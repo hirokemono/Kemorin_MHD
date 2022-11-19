@@ -134,7 +134,7 @@
 !
       len_monitor_data_ncomps_text                                      &
      &   = len_moniter_i2_head_text(label_fld, label_comp)              &
-     &    + n_field*5 + (n_field-1) / 16
+     &    + n_field*5 + (n_field-1) / 16 + 1
 !
       end function len_monitor_data_ncomps_text
 !
