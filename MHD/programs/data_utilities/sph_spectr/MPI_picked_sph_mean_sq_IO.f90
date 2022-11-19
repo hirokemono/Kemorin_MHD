@@ -57,6 +57,7 @@
 !
       use pickup_sph_mean_square_data
       use write_picked_sph_spectr
+      use sph_monitor_data_text
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -90,7 +91,7 @@
         call convert_to_energy_sph__monitor                             &
      &     (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
-        write(id_pick) picked_each_mode_to_text                         &
+        write(id_pick) picked_each_mode_data_text                       &
      &         (time_d%i_time_step, time_d%time, zero, izero,           &
      &          izero, izero, picked%ntot_comp_rj, d_rj_out)
         close(id_pick)
@@ -110,7 +111,7 @@
           call convert_to_energy_sph__monitor                           &
      &       (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
-          write(id_pick) picked_each_mode_to_text                       &
+          write(id_pick) picked_each_mode_data_text                     &
      &                 (time_d%i_time_step, time_d%time,                &
      &                  picked%radius_gl(knum), picked%id_radius(knum), &
      &                  picked%idx_out(inum,1), picked%idx_out(inum,2), &
@@ -167,6 +168,7 @@
       use radial_int_for_sph_spec
       use pickup_sph_mean_square_data
       use write_picked_sph_spectr
+      use sph_monitor_data_text
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(time_data), intent(in) :: time_d
@@ -227,7 +229,7 @@
           call convert_to_energy_sph__monitor                           &
      &       (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
            pickedbuf(icou)                                              &
-     &         = picked_each_mode_to_text                               &
+     &         = picked_each_mode_data_text                             &
      &         (time_d%i_time_step, time_d%time,                        &
      &          picked%radius_gl(knum), picked%id_radius(knum),         &
      &          picked%idx_out(1,1), picked%idx_out(1,2),               &
@@ -249,7 +251,7 @@
           call convert_to_energy_sph__monitor                           &
      &       (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
            pickedbuf(icou)                                              &
-     &         = picked_each_mode_to_text                               &
+     &         = picked_each_mode_data_text                             &
      &         (time_d%i_time_step, time_d%time,                        &
      &          picked%radius_gl(knum), picked%id_radius(knum),         &
      &          picked%idx_out(inum,1), picked%idx_out(inum,2),         &

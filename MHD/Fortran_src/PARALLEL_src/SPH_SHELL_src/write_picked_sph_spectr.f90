@@ -20,8 +20,6 @@
 !!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
 !!        type(picked_spectrum_data), intent(in) :: picked
 !!
-!!      function picked_each_mode_to_text                               &
-!!     &       (i_step, time, radius, kr, l, m, ntot_comp_rj, d_rj_out)
 !!@endverbatim
 !!
       module write_picked_sph_spectr
@@ -37,8 +35,6 @@
 !
       implicit  none
 !
-      integer, parameter, private :: len_fixed = 4*16 + 2*25 + 1
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -49,6 +45,7 @@
      &         (time_d, sph_params, sph_rj, rj_fld, picked)
 !
       use pickup_sph_spectr_data
+      use sph_monitor_data_text
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -77,7 +74,7 @@
      &      izero, izero)
         call pick_center_spectrum_monitor                               &
      &     (rj_fld, picked, picked%ntot_comp_rj, d_rj_out)
-        write(id_pick) picked_each_mode_to_text                         &
+        write(id_pick) picked_each_mode_data_text                       &
      &               (time_d%i_time_step, time_d%time, zero, izero,     &
      &                izero, izero, picked%ntot_comp_rj, d_rj_out)
         close(id_pick)
@@ -91,7 +88,7 @@
           call pick_single_sph_spec_4_monitor(inum, knum,               &
      &        sph_rj, rj_fld, picked, picked%ntot_comp_rj, d_rj_out)
 !
-          write(id_pick) picked_each_mode_to_text                       &
+          write(id_pick) picked_each_mode_data_text                     &
      &                             (time_d%i_time_step, time_d%time,    &
      &                              picked%radius_gl(knum),             &
      &                              picked%id_radius(knum),             &
@@ -146,31 +143,5 @@
       end subroutine open_eack_picked_spectr
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      function picked_each_mode_to_text                                 &
-     &       (i_step, time, radius, kr, l, m, ntot_comp_rj, d_rj_out)
-!
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: time, radius
-      integer(kind = kint), intent(in) :: kr, l, m
-      integer(kind = kint), intent(in) :: ntot_comp_rj
-      real(kind = kreal), intent(in) :: d_rj_out(ntot_comp_rj)
-!
-      character(len = len_fixed+ntot_comp_rj*25)                        &
-     &                          :: picked_each_mode_to_text
-!
-      character(len=kchara) :: fmt_txt
-!
-!
-      write(fmt_txt,'(a37,i4,a17)')                                     &
-     &         '(i16,1pe25.15e3, i16,1pe25.15e3,2i16,',                 &
-     &           ntot_comp_rj, '(1pE25.15e3), a1)'
-      write(picked_each_mode_to_text,fmt_txt) i_step, time,             &
-     &          kr, radius, l, m, d_rj_out(1:ntot_comp_rj), char(10)
-!
-      end function  picked_each_mode_to_text
-!
-! ----------------------------------------------------------------------
 !
       end module write_picked_sph_spectr
