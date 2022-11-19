@@ -53,6 +53,7 @@
 !
       use pickup_sph_spectr_data
       use sph_monitor_data_text
+      use gzip_file_access
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -65,6 +66,7 @@
 !
       real(kind=kreal), allocatable :: d_rj_out(:,:)
       type(buffer_4_gzip) :: zbuf_p
+      character, pointer :: FPz_p
       logical :: zlib_flag_p = .FALSE.
 !
 !
@@ -84,18 +86,23 @@
      &                            picked%ntot_comp_rj, d_rj_out(1,1)))
 !
       if(picked%idx_out(0,4) .gt. 0) then
-        call open_eack_picked_spectr(zlib_flag_p, id_pick,              &
+        call open_eack_picked_spectr(zlib_flag_p, FPz_p, id_pick,       &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      izero, izero, zbuf_p)
         call pick_center_spectrum_monitor                               &
      &     (rj_fld, picked, picked%ntot_comp_rj, d_rj_out(1,1))
-        call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len,   &
+        call sel_gz_write_text_buffer                                   &
+     &     (zlib_flag_p, FPz_p, id_pick, line_len,                      &
      &      picked_each_mode_data_text(time_d%i_time_step, time_d%time, &
      &                                 zero, izero, izero, izero,       &
      &                                 picked%ntot_comp_rj,             &
      &                                 d_rj_out(1,1)),                  &
      &      zbuf_p)
-        close(id_pick)
+        if(zlib_flag_p) then
+          call close_gzfile_b(FPz_p)
+        else
+          close(id_pick)
+        end if
       end if
 !
       do inum = 1, picked%num_sph_mode_lc
@@ -104,11 +111,12 @@
      &        rj_fld, picked, picked%ntot_comp_rj, d_rj_out(1,knum))
         end do
 !
-        call open_eack_picked_spectr(zlib_flag_p, id_pick,              &
+        call open_eack_picked_spectr(zlib_flag_p, FPz_p, id_pick,       &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,         &
      &      picked%idx_out(inum,1), picked%idx_out(inum,2), zbuf_p)
         do knum = 1, picked%num_layer
-          call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len, &
+          call sel_gz_write_text_buffer                                 &
+     &       (zlib_flag_p, FPz_p, id_pick, line_len,                    &
      &        picked_each_mode_data_text                                &
      &                             (time_d%i_time_step, time_d%time,    &
      &                              picked%radius_gl(knum),             &
@@ -119,7 +127,11 @@
      &                              d_rj_out(1,knum)),                  &
      &        zbuf_p)
         end do
-        close(id_pick)
+        if(zlib_flag_p) then
+          call close_gzfile_b(FPz_p)
+        else
+          close(id_pick)
+        end if
       end do
       deallocate(d_rj_out)
 !
@@ -127,12 +139,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine open_eack_picked_spectr(zlib_flag, id_file,            &
+      subroutine open_eack_picked_spectr(zlib_flag, FPz_f, id_file,     &
      &          nlayer_ICB, nlayer_CMB, picked, l, m, zbuf)
 !
       use write_field_labels
+      use gzip_file_access
 !
       logical, intent(in) :: zlib_flag
+      character, pointer, intent(inout) :: FPz_f
       integer(kind = kint), intent(in) :: id_file, l, m
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
@@ -144,17 +158,25 @@
 !
       file_name = each_picked_mode_file_name                            &
      &          (zlib_flag, picked%file_prefix, l, m)
-      open(id_file, file=file_name, status='old', position='append',    &
+      if(zlib_flag) then
+        call open_ad_gzfile_f(FPz_f, file_name, zbuf)
+      else
+        open(id_file, file=file_name, status='old', position='append',  &
      &     form='unformatted', ACCESS='stream', err = 99)
+      end if
       return
 !
 !
    99 continue
-      open(id_file, file=file_name, status='replace',                   &
-     &     form='unformatted', ACCESS='stream')
+      if(zlib_flag) then
+        call open_wt_gzfile_f(FPz_f, file_name, zbuf)
+      else
+        open(id_file, file=file_name, status='replace',                 &
+     &       form='unformatted', ACCESS='stream')
+      end if
 !
-      call write_each_pick_sph_file_header                              &
-     &    (zlib_flag, id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
+      call write_each_pick_sph_file_header(zlib_flag, FPz_f, id_file,   &
+     &    nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
       end subroutine open_eack_picked_spectr
 !
@@ -165,6 +187,7 @@
 !
       use set_parallel_file_name
       use write_field_labels
+      use gzip_file_access
 !
       logical, intent(in) :: zlib_flag
       integer(kind = kint), intent(in) :: id_file, l, m
@@ -172,6 +195,7 @@
       type(picked_spectrum_data), intent(in) :: picked
 !
       type(buffer_4_gzip) :: zbuf_p
+      character, pointer :: FPz_p
       logical :: zlib_flag_p = .FALSE.
       character(len = kchara) :: file_name
 !
@@ -189,8 +213,8 @@
       open(id_file, file=file_name, status='replace',                   &
      &     form='unformatted', ACCESS='stream')
 !
-      call write_each_pick_sph_file_header                              &
-     &   (zlib_flag_p, id_file, nlayer_ICB, nlayer_CMB, picked, zbuf_p)
+      call write_each_pick_sph_file_header(zlib_flag_p, FPz_p, id_file, &
+     &    nlayer_ICB, nlayer_CMB, picked, zbuf_p)
       close(id_file)
       error_eack_picked_spectr = .FALSE.
 !

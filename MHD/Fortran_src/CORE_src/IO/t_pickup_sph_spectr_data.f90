@@ -332,8 +332,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_each_pick_sph_file_header(zlib_flag, id_file,    &
-     &          nlayer_ICB, nlayer_CMB, picked, zbuf)
+      subroutine write_each_pick_sph_file_header(zlib_flag, FPz_f,      &
+     &          id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
       use sph_power_spectr_data_text
       use write_field_labels
@@ -342,6 +342,7 @@
       use transfer_to_long_integers
 !
       logical, intent(in) :: zlib_flag
+      character, pointer, intent(in) :: FPz_f 
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
@@ -358,7 +359,7 @@
       call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
      &                                 len_each, len_tot)
 !
-      call sel_gz_write_text_buffer(zlib_flag, id_file, len_tot,        &
+      call sel_gz_write_text_buffer(zlib_flag, FPz_f, id_file, len_tot, &
      &    sph_layer_spectr_header_text(len_tot, len_each,               &
      &                                 pick_spectr_labels, sph_OUT),    &
      &    zbuf)
@@ -368,14 +369,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_gz_write_text_buffer(zlib_flag, id_file,           &
+      subroutine sel_gz_write_text_buffer(zlib_flag, FPz_f, id_file,    &
      &                                    len_chara, textbuf, zbuf)
 !
       use t_buffer_4_gzip
       use data_convert_by_zlib
+      use gzip_file_access
       use transfer_to_long_integers
 !
       logical, intent(in) :: zlib_flag
+      character, pointer, intent(in) :: FPz_f 
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in)  :: len_chara
       character(len = len_chara), intent(in) :: textbuf
@@ -384,10 +387,14 @@
 !
 !
       if(zlib_flag) then
-        call gzip_defleate_characters_b(cast_long(len_chara),           &
-     &                                  textbuf, zbuf)
-        write(id_file) zbuf%gzip_buf(1:zbuf%ilen_gzipped)
-        call dealloc_zip_buffer(zbuf)
+        call link_text_buffer_for_zlib(len_chara, textbuf, zbuf)
+        call write_compress_txt_nolf_c(C_LOC(FPz_f), zbuf%len_buf,      &
+     &                                 C_LOC(zbuf%buf_p(1)))
+        call unlink_text_buffer_for_zlib(zbuf)
+!        call gzip_defleate_characters_b(cast_long(len_chara),           &
+!     &                                  textbuf, zbuf)
+!        write(id_file) zbuf%gzip_buf(1:zbuf%ilen_gzipped)
+!        call dealloc_zip_buffer(zbuf)
       else
         write(id_file) textbuf
       end if
