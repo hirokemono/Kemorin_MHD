@@ -174,6 +174,6 @@ write_gauss_coefs_4_monitor.o: $(SPH_UTILS_DIR)/write_gauss_coefs_4_monitor.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 write_snap_pick_sph_spectr.o: $(SPH_UTILS_DIR)/write_snap_pick_sph_spectr.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o t_picked_sph_spectr_data_IO.o t_buffer_4_gzip.o m_monitor_file_labels.o write_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-write_sph_monitor_data.o: $(SPH_UTILS_DIR)/write_sph_monitor_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o write_field_labels.o skip_comment_f.o
+write_sph_monitor_data.o: $(SPH_UTILS_DIR)/write_sph_monitor_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o write_field_labels.o sph_power_spectr_data_text.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
