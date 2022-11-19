@@ -38,6 +38,7 @@
       use m_constants
 !
       use t_field_labels
+      use t_read_sph_spectra
 !
       implicit none
 !
@@ -77,6 +78,19 @@
       integer(kind = kint), parameter, private :: id_dipolarity = 36
       character(len = kchara), parameter                                &
      &                        :: dip_ltr_label = 'truncation_'
+!
+      type(sph_spectr_head_labels), parameter, private                  &
+     &            :: sph_dipolarity_labels = sph_spectr_head_labels(    &
+     &                           hdr_nri = 'radial_layers',             &
+     &                           hdr_ltr = 'truncation',                &
+     &                           hdr_ICB_id = 'ICB_id',                 &
+     &                           hdr_CMB_id = 'CMB_id',                 &
+     &                           hdr_kr_in =  'Not_used',               &
+     &                           hdr_r_in =   'Not_used',               &
+     &                           hdr_kr_out = 'Upper_boundary_ID',      &
+     &                           hdr_r_out =  'Upper_boundary_radius',  &
+     &                           hdr_num_field = 'Number_of_field',     &
+     &                           hdr_num_comp = 'Number_of_components')
 !
 ! -----------------------------------------------------------------------
 !
@@ -173,8 +187,6 @@
       subroutine write_dipolarity_header(id_file, ltr, nri,             &
      &                                   nlayer_ICB, nlayer_CMB, dip)
 !
-      use t_read_sph_spectra
-      use write_field_labels
       use sph_power_spectr_data_text
 !
       integer(kind = kint), intent(in) :: id_file
@@ -185,10 +197,36 @@
       type(read_sph_spectr_data) :: sph_OUT
       integer(kind = kint) :: len_tot
       integer(kind = kint) :: len_each(6)
+!
+!
+      call dup_dipolarity_header_to_IO                                  &
+     &   (ltr, nri, nlayer_ICB, nlayer_CMB, dip, sph_OUT)
+!
+      call len_sph_vol_spectr_header(sph_dipolarity_labels, sph_OUT,    &
+     &                               len_each, len_tot)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &       sph_vol_spectr_header_text(len_tot, len_each,              &
+     &                                  sph_dipolarity_labels, sph_OUT)
+      call dealloc_sph_espec_data(sph_OUT)
+!
+      end subroutine write_dipolarity_header
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_dipolarity_header_to_IO                            &
+     &         (ltr, nri, nlayer_ICB, nlayer_CMB, dip, sph_OUT)
+!
+      use m_time_labels
+!
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(dipolarity_data), intent(in) :: dip
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
       integer(kind = kint) :: icou
 !
 !
-      write(*,*) 'Takotako'
       sph_OUT%ltr_sph = ltr
       sph_OUT%nri_sph = nri
       sph_OUT%nri_dat = 1
@@ -205,21 +243,14 @@
       call alloc_sph_espec_name(sph_OUT)
       call alloc_sph_spectr_data(izero, sph_OUT)
 !
-      sph_OUT%ene_sph_spec_name(1) = 't_step'
-      sph_OUT%ene_sph_spec_name(2) = 'time'
+      sph_OUT%ene_sph_spec_name(1) = fhd_t_step
+      sph_OUT%ene_sph_spec_name(2) = fhd_time
       icou = sph_OUT%num_time_labels
       sph_OUT%ene_sph_spec_name(icou+1:icou+dip%num_dip)                &
      &                           = dip%dip_name(1:dip%num_dip)
       sph_OUT%ncomp_sph_spec(1:dip%num_dip) = 1
 !
-      call len_sph_vol_spectr_header(sph_dipolarity_labels, sph_OUT,    &
-     &                               len_each, len_tot)
-      write(id_file,'(a)',ADVANCE='NO')                                 &
-     &       sph_vol_spectr_header_text(len_tot, len_each,              &
-     &                                  sph_dipolarity_labels, sph_OUT)
-      call dealloc_sph_espec_data(sph_OUT)
-!
-      end subroutine write_dipolarity_header
+      end subroutine dup_dipolarity_header_to_IO
 !
 ! -----------------------------------------------------------------------
 !

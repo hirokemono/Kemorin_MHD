@@ -216,34 +216,73 @@
       subroutine write_Nu_header(id_file, ltr, nri,                     &
      &                           nlayer_ICB, nlayer_CMB, Nu_type)
 !
-      use write_field_labels
+      use t_read_sph_spectra
+      use sph_power_spectr_data_text
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(nusselt_number_data), intent(in) :: Nu_type
 !
+      type(read_sph_spectr_data) :: sph_OUT
+      integer(kind = kint) :: len_tot
+      integer(kind = kint) :: len_each(6)
 !
-      write(id_file,'(a)') 'radial_layers, truncation'
-      write(id_file,'(3i16)') nri, ltr
-      write(id_file,'(a)')  'ICB_id, CMB_id'
-      write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
-      write(id_file,'(a)') 'inner_boundary_ID, inner_boundary_radius'
-      write(id_file,'(i16,1pe23.14e3)')                                 &
-     &                     Nu_type%kr_ICB_Nu, Nu_type%r_ICB_Nu
-      write(id_file,'(a)') 'outer_boundary_ID, outer_boundary_radius'
-      write(id_file,'(i16,1pe23.14e3)')                                 &
-     &                     Nu_type%kr_CMB_Nu, Nu_type%r_CMB_Nu
 !
-      write(id_file,'(a)')   'number_of_fields, number_of_components'
-      write(id_file,'(2i16)') itwo, itwo
-      write(id_file,'(16i5)') ione, ione
 !
-      write(id_file,'(a)',advance='NO')                                 &
-     &    't_step    time    Nu_ICB    Nu_CMB'
-      write(id_file,'(a)') ''
+      call dup_Nusselt_header_to_IO                                     &
+     &   (ltr, nri, nlayer_ICB, nlayer_CMB, Nu_type, sph_OUT)
+!
+      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
+     &                               len_each, len_tot)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &       sph_vol_spectr_header_text(len_tot, len_each,              &
+     &                                  sph_pwr_labels, sph_OUT)
+      call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_Nu_header
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_Nusselt_header_to_IO                               &
+     &         (ltr, nri, nlayer_ICB, nlayer_CMB, Nu_type, sph_OUT)
+!
+      use t_read_sph_spectra
+      use m_time_labels
+!
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(nusselt_number_data), intent(in) :: Nu_type
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
+      integer(kind = kint) :: icou, ntot
+!
+!
+      sph_OUT%ltr_sph = ltr
+      sph_OUT%nri_sph = nri
+      sph_OUT%nri_dat = 1
+      sph_OUT%kr_ICB =  nlayer_ICB
+      sph_OUT%kr_CMB =  nlayer_CMB
+      sph_OUT%kr_inner = Nu_type%kr_ICB_Nu
+      sph_OUT%kr_outer = Nu_type%kr_CMB_Nu
+      sph_OUT%r_inner =  Nu_type%r_ICB_Nu
+      sph_OUT%r_outer =  Nu_type%r_CMB_Nu
+!
+      sph_OUT%nfield_sph_spec = 2
+      sph_OUT%ntot_sph_spec =   2
+      sph_OUT%num_time_labels = 2
+      call alloc_sph_espec_name(sph_OUT)
+      call alloc_sph_spectr_data(izero, sph_OUT)
+!
+      sph_OUT%ene_sph_spec_name(1) = fhd_t_step
+      sph_OUT%ene_sph_spec_name(2) = fhd_time
+      sph_OUT%ene_sph_spec_name(3) = 'Nu_ICB'
+      sph_OUT%ene_sph_spec_name(4) = 'Nu_CMB'
+      icou = sph_OUT%num_time_labels
+      sph_OUT%ncomp_sph_spec(1:sph_OUT%nfield_sph_spec) = 1
+!
+      end subroutine dup_Nusselt_header_to_IO
 !
 ! -----------------------------------------------------------------------
 !

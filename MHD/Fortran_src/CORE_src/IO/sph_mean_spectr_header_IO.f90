@@ -54,6 +54,7 @@
      &          sph_params, sph_rj, v_pwr, sph_OUT)
 !
       use t_read_sph_spectra
+      use m_time_labels
 !
       character(len = kchara), intent(in) :: mode_label
       type(energy_label_param), intent(in) :: ene_labels
@@ -90,8 +91,8 @@
       sph_OUT%ncomp_sph_spec(1:v_pwr%num_fld_sq)                        &
      &      = v_pwr%num_comp_sq(1:v_pwr%num_fld_sq)
 !
-      sph_OUT%ene_sph_spec_name(1) = 't_step'
-      sph_OUT%ene_sph_spec_name(2) = 'time'
+      sph_OUT%ene_sph_spec_name(1) = fhd_t_step
+      sph_OUT%ene_sph_spec_name(2) = fhd_time
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%ene_sph_spec_name(sph_OUT%num_time_labels)              &
      &                                       = trim(mode_label)
@@ -113,6 +114,7 @@
      &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
 !
       use t_read_sph_spectra
+      use m_time_labels
 !
       character(len = kchara), intent(in) :: mode_label
       integer(kind = kint), intent(in) :: ltr
@@ -145,8 +147,8 @@
       sph_OUT%ncomp_sph_spec(1:pwr%num_fld_sq)                          &
      &      = pwr%num_comp_sq(1:pwr%num_fld_sq)
 !
-      sph_OUT%ene_sph_spec_name(1) = 't_step'
-      sph_OUT%ene_sph_spec_name(2) = 'time'
+      sph_OUT%ene_sph_spec_name(1) = fhd_t_step
+      sph_OUT%ene_sph_spec_name(2) = fhd_time
       sph_OUT%ene_sph_spec_name(3) = 'radial_id'
       sph_OUT%ene_sph_spec_name(4) = 'radius'
       if(mode_label .ne. 'EMPTY') then

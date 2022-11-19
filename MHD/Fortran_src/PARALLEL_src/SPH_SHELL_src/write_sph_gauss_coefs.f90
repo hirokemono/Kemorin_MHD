@@ -36,11 +36,25 @@
       use t_phys_address
       use t_phys_data
       use t_time_data
+      use t_read_sph_spectra
       use m_monitor_file_labels
 !
       implicit  none
 !
       integer(kind = kint), parameter, private :: id_gauss_coef = 23
+!
+      type(sph_spectr_head_labels), parameter, private                  &
+     &            :: gauss_coefs_labels = sph_spectr_head_labels(       &
+     &                         hdr_nri = 'radial_layers',               &
+     &                         hdr_ltr = 'truncation',                  &
+     &                         hdr_ICB_id = 'ICB_id',                   &
+     &                         hdr_CMB_id = 'CMB_id',                   &
+     &                         hdr_kr_in =  'Not_used',                 &
+     &                         hdr_r_in =   'Not_used',                 &
+     &                         hdr_kr_out = 'Not_used',                 &
+     &                         hdr_r_out =  'Reference_radius',         &
+     &                         hdr_num_field = 'Number_of_gauss_coefs', &
+     &                         hdr_num_comp = 'Number_of_gauss_coefs')
 !
       private :: s_write_sph_gauss_coefs, picked_gauss_head
 !
@@ -119,45 +133,75 @@
       subroutine write_sph_gauss_coefs_header                           &
      &         (id_file, ltr, nri, nlayer_ICB, nlayer_CMB, gauss)
 !
-      use t_solver_SR
-      use set_parallel_file_name
-      use delete_data_files
+      use write_field_labels
+      use sph_power_spectr_data_text
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: gauss
 !
-      integer(kind = kint) :: i, ntot
+      type(read_sph_spectr_data) :: sph_OUT
+      integer(kind = kint) :: len_tot
+      integer(kind = kint) :: len_each(6)
 !
 !
-      write(id_file,'(a)') 'radial_layers, truncation'
-      write(id_file,'(3i16)') nri, ltr
-      write(id_file,'(a)')  'ICB_id, CMB_id'
-      write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
-      write(id_file,'(a)') 'Not_used, Not_used'
-      write(id_file,'(i16,1pe23.14e3)')                                 &
-     &                     izero, zero
-      write(id_file,'(a)') 'Not_used, reference_radius'
-      write(id_file,'(i16,1pe23.14e3)')                                 &
-     &                     izero, gauss%radius_gl(1)
 !
-      ntot = gauss%istack_picked_spec_lc(nprocs)
-      write(id_file,'(a)')                                              &
-     &             'number_of_gauss_coefs, number_of_gauss_coefs'
-      write(id_file,'(2i16)') ntot, ntot
-      write(id_file,'(16i5)') (ione,i=1,ntot)
+      call dup_gauss_coefs_header_to_IO                                 &
+     &   (ltr, nri, nlayer_ICB, nlayer_CMB, gauss, sph_OUT)
 !
-      write(id_file,'(a)', ADVANCE='NO')  't_step    time    '
-      do i = 1, ntot
-        write(id_file,'(a,a4)', ADVANCE='NO')                           &
-     &        trim(gauss%gauss_mode_name_out(i)), '    '
-      end do
-      write(id_file,'(a1)', ADVANCE='NO') char(10)
+      call len_sph_vol_spectr_header(gauss_coefs_labels, sph_OUT,       &
+     &                               len_each, len_tot)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &       sph_vol_spectr_header_text(len_tot, len_each,              &
+     &                                  gauss_coefs_labels, sph_OUT)
+      call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_sph_gauss_coefs_header
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine dup_gauss_coefs_header_to_IO                           &
+     &         (ltr, nri, nlayer_ICB, nlayer_CMB, gauss, sph_OUT)
+!
+      use m_time_labels
+!
+      integer(kind = kint), intent(in) :: ltr, nri
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: gauss
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
+      integer(kind = kint) :: icou, ntot
+!
+!
+      sph_OUT%ltr_sph = ltr
+      sph_OUT%nri_sph = nri
+      sph_OUT%nri_dat = 1
+      sph_OUT%kr_ICB =  nlayer_ICB
+      sph_OUT%kr_CMB =  nlayer_CMB
+      sph_OUT%kr_inner = izero
+      sph_OUT%kr_outer = izero
+      sph_OUT%r_inner =  zero
+      sph_OUT%r_outer =  gauss%radius_gl(1)
+!
+      ntot = gauss%istack_picked_spec_lc(nprocs)
+      sph_OUT%nfield_sph_spec = ntot
+      sph_OUT%ntot_sph_spec =   ntot
+      sph_OUT%num_time_labels = 2
+      call alloc_sph_espec_name(sph_OUT)
+      call alloc_sph_spectr_data(izero, sph_OUT)
+!
+      sph_OUT%ene_sph_spec_name(1) = fhd_t_step
+      sph_OUT%ene_sph_spec_name(2) = fhd_time
+      icou = sph_OUT%num_time_labels
+      sph_OUT%ene_sph_spec_name(icou+1:icou+ntot)                       &
+     &                             = gauss%gauss_mode_name_out(1:ntot)
+      sph_OUT%ncomp_sph_spec(1:ntot) = 1
+!
+      end subroutine dup_gauss_coefs_header_to_IO
+!
+! -----------------------------------------------------------------------
 !
       subroutine s_write_sph_gauss_coefs(sph_params, sph_rj,            &
      &          ipol, rj_fld, gauss, ntot_gauss, d_rj_out, SR_sig)
