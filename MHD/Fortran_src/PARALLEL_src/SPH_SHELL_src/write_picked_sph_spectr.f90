@@ -35,6 +35,8 @@
 !
       implicit  none
 !
+      integer(kind = kint), parameter, private :: id_pick = 17
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -53,7 +55,6 @@
       type(phys_data), intent(in) :: rj_fld
       type(picked_spectrum_data), intent(in) :: picked
 !
-      integer(kind = kint), parameter :: id_pick = 17
       integer(kind = kint) :: inum, knum
       integer(kind = kint_gl) :: num
 !
@@ -105,20 +106,81 @@
 ! -----------------------------------------------------------------------
 !
       subroutine open_eack_picked_spectr                                &
-     &         (id_pick, nlayer_ICB, nlayer_CMB, picked, l, m)
+     &         (id_file, nlayer_ICB, nlayer_CMB, picked, l, m)
+!
+      use write_field_labels
+!
+      integer(kind = kint), intent(in) :: id_file, l, m
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      character(len = kchara) :: file_name
+!
+!
+      file_name = each_picked_mode_file_name(picked%file_prefix, l, m)
+      open(id_file, file=file_name, status='old', position='append',    &
+     &     form='unformatted', ACCESS='stream', err = 99)
+      return
+!
+!
+   99 continue
+      open(id_file, file=file_name, status='replace',                   &
+     &     form='unformatted', ACCESS='stream')
+!
+      call write_each_pick_sph_file_header                              &
+     &    (id_file, nlayer_ICB, nlayer_CMB, picked)
+!
+      end subroutine open_eack_picked_spectr
+!
+! -----------------------------------------------------------------------
+!
+      logical function error_eack_picked_spectr                         &
+     &               (id_file, nlayer_ICB, nlayer_CMB, picked, l, m)
 !
       use set_parallel_file_name
       use write_field_labels
 !
-      integer(kind = kint), intent(in) :: id_pick, l, m
+      integer(kind = kint), intent(in) :: id_file, l, m
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
+!
+      character(len = kchara) :: file_name
+!
+!
+      error_eack_picked_spectr = .TRUE.
+      file_name = each_picked_mode_file_name(picked%file_prefix, l, m)
+      open(id_file, file=file_name, status='old',                       &
+     &     form='unformatted', ACCESS='stream', err = 99)
+      error_eack_picked_spectr = .FALSE.
+      return
+!
+!
+   99 continue
+      open(id_file, file=file_name, status='replace',                   &
+     &     form='unformatted', ACCESS='stream')
+!
+      call write_each_pick_sph_file_header                              &
+     &    (id_file, nlayer_ICB, nlayer_CMB, picked)
+      close(id_file)
+      error_eack_picked_spectr = .FALSE.
+!
+      end function error_eack_picked_spectr
+!
+! -----------------------------------------------------------------------
+!
+      character(len=kchara) function                                    &
+     &                   each_picked_mode_file_name(file_prefix, l, m)
+!
+      use set_parallel_file_name
+!
+      character(len = kchara), intent(in) :: file_prefix
+      integer(kind = kint), intent(in) :: l, m
 !
       character(len = kchara) :: file_name, fname_tmp
       integer(kind = kint) :: mm, i
 !
       mm = abs(m)
-      write(fname_tmp,'(a,a2)') trim(picked%file_prefix), '_l'
+      write(fname_tmp,'(a,a2)') trim(file_prefix), '_l'
       call add_index_after_name(l, fname_tmp, file_name)
       write(fname_tmp,'(a,a2)') trim(file_name), '_m'
       call add_index_after_name(mm, fname_tmp, file_name)
@@ -127,20 +189,10 @@
       else
         write(fname_tmp,'(a,a1)') trim(file_name), 'c'
       end if
-      file_name = add_dat_extension(fname_tmp)
-      open(id_pick, file=file_name, status='old', position='append',    &
-     &     form='unformatted', ACCESS='stream', err = 99)
-      return
 !
+      each_picked_mode_file_name = add_dat_extension(fname_tmp)
 !
-   99 continue
-      open(id_pick, file=file_name, status='replace',                   &
-     &     form='unformatted', ACCESS='stream')
-!
-      call write_each_pick_sph_file_header                              &
-     &    (id_pick, nlayer_ICB, nlayer_CMB, picked)
-!
-      end subroutine open_eack_picked_spectr
+      end function each_picked_mode_file_name
 !
 ! -----------------------------------------------------------------------
 !
