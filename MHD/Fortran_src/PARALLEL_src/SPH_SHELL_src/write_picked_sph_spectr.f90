@@ -144,7 +144,6 @@
 !
       use write_field_labels
       use gzip_file_access
-      use delete_data_files
 !
       logical, intent(in) :: zlib_flag
       character, pointer, intent(inout) :: FPz_f
@@ -159,8 +158,6 @@
 !
       file_name = each_picked_mode_file_name                            &
      &          (zlib_flag, picked%file_prefix, l, m)
-      if(check_file_exist(file_name) .eqv. .FALSE.) go to 99
-!
       if(zlib_flag) then
         call open_ad_gzfile_f(FPz_f, file_name, zbuf)
       else
@@ -191,7 +188,6 @@
       use set_parallel_file_name
       use write_field_labels
       use gzip_file_access
-      use delete_data_files
 !
       logical, intent(in) :: zlib_flag
       integer(kind = kint), intent(in) :: id_file, l, m
@@ -207,8 +203,6 @@
       error_eack_picked_spectr = .TRUE.
       file_name = each_picked_mode_file_name                            &
      &          (zlib_flag, picked%file_prefix, l, m)
-      if(check_file_exist(file_name) .eqv. .FALSE.) go to 99
-!
       open(id_file, file=file_name, status='old',                       &
      &     form='unformatted', ACCESS='stream', err = 99)
       error_eack_picked_spectr = .FALSE.
