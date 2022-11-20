@@ -154,7 +154,7 @@
      &          zbuf_p)
           end if
 !
-          write(id_pick) zbuf_p%gzip_buf(zbuf_p%ilen_gzipped)
+          write(id_pick) zbuf_p%gzip_buf(1:zbuf_p%ilen_gzipped)
           call dealloc_zip_buffer(zbuf_p)
         else
           do knum = 1, picked%num_layer
