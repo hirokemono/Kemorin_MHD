@@ -38,7 +38,7 @@
      &          append_file_name, target_file_name)
 !
       use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
 !
       implicit none
@@ -50,6 +50,8 @@
 !
       type(read_sph_spectr_data), save :: sph_IN1
       type(read_sph_spectr_data), save :: sph_OUT1
+      type(sph_spectr_head_labels), save :: sph_lbl_IN1
+      type(sph_spectr_head_labels), save :: sph_lbl_OUT1
 !
       integer(kind = kint), parameter :: id_append_file = 15
       integer(kind = kint), parameter :: id_write_file = 16
@@ -68,9 +70,9 @@
       write(*,*) 'Open data file to append.'
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_append_file, append_file_name, flag_gzip1, zbuf1)
-      call select_input_sph_series_head(FPz_f1, id_append_file,         &
+      call s_select_input_sph_series_head(FPz_f1, id_append_file,       &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
-     &    sph_IN1, zbuf1)
+     &    sph_lbl_IN1, sph_IN1, zbuf1)
 !
       call sel_skip_comment_gz_stream                                   &
      &   (FPz_f1, id_append_file, flag_gzip1, zbuf1)
@@ -83,9 +85,9 @@
       write(*,*) 'Open target file', ': ', trim(target_file_name)
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_write_file, target_file_name, flag_gzip1, zbuf1)
-      call select_input_sph_series_head(FPz_f1, id_write_file,          &
+      call s_select_input_sph_series_head(FPz_f1, id_write_file,        &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
-     &    sph_OUT1, zbuf1)
+     &    sph_lbl_OUT1, sph_OUT1, zbuf1)
 !
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_write_file, flag_gzip1, zbuf1)
@@ -124,9 +126,9 @@
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_append_file, append_file_name, flag_gzip1, zbuf1)
 !
-      call select_input_sph_series_head(FPz_f1, id_append_file,         &
+      call s_select_input_sph_series_head(FPz_f1, id_append_file,       &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
-     &    sph_IN1, zbuf1)
+     &    sph_lbl_IN1, sph_IN1, zbuf1)
 !
       if(comp_tbl1%fast_flag) then
         write(*,*) 'Copy data as text'
@@ -159,7 +161,7 @@
      &          flag_gzip, flag_spectr, flag_vol_ave,                   &
      &          comp_tbl, sph_IN, sph_OUT, zbuf)
 !
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
       use write_sph_monitor_data
  !
@@ -173,7 +175,7 @@
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint) :: ierr, n_mode, i
+      integer(kind = kint) :: ierr, n_mode
 !
       do
         call sel_gz_input_sph_series_data(FPz_f, id_append_file,        &

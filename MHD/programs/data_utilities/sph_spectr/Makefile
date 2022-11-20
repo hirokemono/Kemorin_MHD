@@ -75,7 +75,6 @@ t_picked_sph_spectr_data_IO.o \
 t_gauss_coefs_monitor_IO.o \
 t_read_sph_series.o \
 write_sph_monitor_data.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 picked_sph_spectr_data_IO.o \
@@ -157,7 +156,6 @@ t_ctl_data_append_sph_mntr.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
 write_sph_monitor_data.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 gz_gauss_coefs_monitor_IO.o \
@@ -229,7 +227,6 @@ t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_tave_sph_ene_spectr.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 write_sph_monitor_data.o \
@@ -241,7 +238,6 @@ t_average_old_sph_ene_spec.o \
 t_read_sph_series.o \
 m_tave_sph_ene_spectr.o \
 cal_tave_sph_ene_spectr.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
@@ -256,7 +252,6 @@ t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_maxmode_sph_ene_spectr.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
@@ -268,7 +263,6 @@ t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_sph_uli_lengh_scale.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
@@ -281,7 +275,6 @@ t_ctl_param_sph_series_util.o \
 t_ctl_param_dyn_elsasser.o \
 t_dyn_elsasser_address.o \
 m_sph_dynamic_elsasser.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
@@ -289,7 +282,6 @@ cal_dyn_elsasser_by_spectr.o \
 write_sph_monitor_data.o
 
 MOD_FIT_DIPOLE_RATIO = \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 write_sph_monitor_data.o \
@@ -304,7 +296,6 @@ t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 m_part_sum_sph_ene_spectr.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
@@ -319,7 +310,6 @@ t_ctl_param_sph_series_util.o \
 count_monitor_time_series.o \
 gz_gauss_coefs_monitor_IO.o \
 write_sph_monitor_data.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 write_gauss_coefs_4_monitor.o \
@@ -351,7 +341,6 @@ t_CMB_dipolarity.o \
 t_average_dipolarity.o \
 time_average_dipolarity.o \
 count_monitor_time_series.o \
-gz_spl_sph_spectr_head_IO.o \
 t_ctl_param_sph_series_util.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o
@@ -365,7 +354,6 @@ count_monitor_time_series.o \
 m_tave_sph_ene_spectr.o \
 gz_gauss_coefs_monitor_IO.o \
 write_sph_monitor_data.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 write_gauss_coefs_4_monitor.o \
@@ -382,7 +370,6 @@ count_monitor_time_series.o \
 m_tave_sph_ene_spectr.o \
 gz_gauss_coefs_monitor_IO.o \
 write_sph_monitor_data.o \
-gz_spl_sph_spectr_head_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 write_gauss_coefs_4_monitor.o \

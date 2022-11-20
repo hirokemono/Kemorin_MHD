@@ -51,7 +51,7 @@
       use t_ctl_param_sph_series_util
       use write_sph_monitor_data
       use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
 !
       character(len = kchara), intent(in) :: fname_org
@@ -65,14 +65,15 @@
       type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
 !
+      type(sph_spectr_head_labels) :: sph_lbl_IN_m
 !
-      open(id_file_rms_l, file=fname_org)
+!
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_file_rms_l, fname_org, flag_gzip1, zbuf1)
-      call select_input_sph_series_head                                 &
+      call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_file_rms_l, flag_gzip1,                            &
      &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,             &
-     &    sph_IN, zbuf1)
+     &    sph_lbl_IN_m, sph_IN, zbuf1)
       call check_sph_spectr_name(sph_IN)
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)

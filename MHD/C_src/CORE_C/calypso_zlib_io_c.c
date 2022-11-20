@@ -182,6 +182,19 @@ void gzseek_go_fwd_c(void *FP_gzip, int *ioffset, int *ierr){
     *ierr =  (int)ierr_z;
 }
 
+int gztell_c(void *FP_gzip){
+    z_off_t ierr_z = gztell((gzFile) FP_gzip);
+    return (int) ierr_z;
+}
+
+int gzoffset_c(void *FP_gzip){
+    z_off_t ierr_z = gzoffset((gzFile) FP_gzip);
+    return (int) ierr_z;
+}
+
+
+
+
 void gzread_32bit_c(void *FP_gzip, const int *iflag_swap,int *ilength,
 					char *textbuf, int *ierr){
     *ierr =  gzread((gzFile) FP_gzip, textbuf, (uInt) *ilength);

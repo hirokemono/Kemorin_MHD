@@ -36,6 +36,9 @@ void write_compress_txt_c(void *FP_gzip, int *nchara, char *input_txt);
 void write_compress_txt_nolf_c(void *FP_gzip, int *nchara, char *input_txt);
 
 void gzseek_go_fwd_c(void *FP_gzip, int *ioffset, int *ierr);
+int gztell_c(void *FP_gzip);
+int gzoffset_c(void *FP_gzip);
+
 void gzread_32bit_c(void *FP_gzip, const int *iflag_swap, int *ilength,
 					char *textbuf, int *ierr);
 void gzread_64bit_c(void *FP_gzip, const int *iflag_swap, int *ilength,

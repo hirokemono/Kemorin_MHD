@@ -50,6 +50,7 @@
 !
       integer(kind = kint), parameter, private :: id_file_rms = 31
       type(read_sph_spectr_data), save, private :: sph_IN_f
+      type(sph_spectr_head_labels), save, private :: sph_lbl_IN_f
       type(buffer_4_gzip), save, private :: zbuf_f
       character, pointer, private, save :: FPz_fsp
       logical, private, save :: flag_gzip_s
@@ -65,7 +66,7 @@
 !
       use select_gz_stream_file_IO
       use count_monitor_time_series
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
@@ -74,9 +75,9 @@
       file_name = c_to_fstring(input_prefix_c)
       call sel_open_read_gz_stream_file(FPz_fsp, id_file_rms,           &
      &    file_name, flag_gzip_s, zbuf_f)
-      call select_input_sph_series_head(FPz_fsp, id_file_rms,           &
+      call s_select_input_sph_series_head(FPz_fsp, id_file_rms,         &
      &    flag_gzip_s, flag_current_fmt, spectr_off, volume_on,         &
-     &    sph_IN_f, zbuf_f)
+     &    sph_lbl_IN_f, sph_IN_f, zbuf_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine open_init_volume_mean_file_f
@@ -88,7 +89,7 @@
 !
       use select_gz_stream_file_IO
       use count_monitor_time_series
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
 !
@@ -97,9 +98,9 @@
       file_name = c_to_fstring(input_prefix_c)
       call sel_open_read_gz_stream_file(FPz_fsp, id_file_rms,           &
      &    file_name, flag_gzip_s, zbuf_f)
-      call select_input_sph_series_head(FPz_fsp, id_file_rms,           &
+      call s_select_input_sph_series_head(FPz_fsp, id_file_rms,         &
      &    flag_gzip_s, flag_current_fmt, spectr_on, volume_on,          &
-     &    sph_IN_f, zbuf_f)
+     &    sph_lbl_IN_f, sph_IN_f, zbuf_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine open_init_volume_spectr_file_f
@@ -111,7 +112,7 @@
      &              bind(c, name="check_one_layer_mean_item_f")
 !
       use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
@@ -122,9 +123,9 @@
       call sel_open_read_gz_stream_file(FPz_fsp, id_file_rms,           &
      &    file_name, flag_gzip_s, zbuf_f)
 !
-      call select_input_sph_series_head                                 &
+      call s_select_input_sph_series_head                               &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
-     &    spectr_off, volume_off, sph_IN_f, zbuf_f)
+     &    spectr_off, volume_off, sph_lbl_IN_f, sph_IN_f, zbuf_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine check_one_layer_mean_item_f
@@ -135,7 +136,7 @@
      &              bind(c, name="check_layered_spectr_file_f")
 !
       use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: input_prefix_c(*)
@@ -146,9 +147,9 @@
       call sel_open_read_gz_stream_file(FPz_fsp, id_file_rms,           &
      &    file_name, flag_gzip_s, zbuf_f)
 !
-      call select_input_sph_series_head                                 &
+      call s_select_input_sph_series_head                               &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
-     &    spectr_on, volume_off, sph_IN_f, zbuf_f)
+     &    spectr_on, volume_off, sph_lbl_IN_f, sph_IN_f, zbuf_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine check_layered_spectr_file_f

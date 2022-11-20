@@ -8,6 +8,8 @@ check_sph_monitor_header.o: $(IO_DIR)/check_sph_monitor_header.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 comm_table_IO.o: $(IO_DIR)/comm_table_IO.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
+compare_sph_monitor_header.o: $(IO_DIR)/compare_sph_monitor_header.f90 m_precision.o m_constants.o t_read_sph_spectra.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
 data_IO_to_textline.o: $(IO_DIR)/data_IO_to_textline.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 delete_data_files.o: $(IO_DIR)/delete_data_files.F90 m_precision.o m_file_format_switch.o set_parallel_file_name.o
@@ -110,7 +112,9 @@ read_bmp_image.o: $(IO_DIR)/read_bmp_image.f90 m_precision.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
 rst_data_IO_by_fld.o: $(IO_DIR)/rst_data_IO_by_fld.f90 m_precision.o m_machine_parameter.o t_time_data.o t_field_data_IO.o time_data_IO.o set_parallel_file_name.o field_data_IO.o skip_comment_f.o transfer_to_long_integers.o set_restart_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-select_gz_stream_file_IO.o: $(IO_DIR)/select_gz_stream_file_IO.F90 m_precision.o t_buffer_4_gzip.o set_parallel_file_name.o skip_comment_f.o gzip_file_access.o skip_gz_comment.o
+sel_gz_input_sph_mtr_head.o: $(IO_DIR)/sel_gz_input_sph_mtr_head.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o t_buffer_4_gzip.o select_gz_stream_file_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+select_gz_stream_file_IO.o: $(IO_DIR)/select_gz_stream_file_IO.F90 m_precision.o t_buffer_4_gzip.o set_parallel_file_name.o skip_comment_f.o gzip_file_access.o skip_gz_comment.o data_convert_by_zlib.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 set_and_cal_udt_data.o: $(IO_DIR)/set_and_cal_udt_data.f90 m_precision.o t_ucd_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -178,7 +182,7 @@ t_filter_file_data.o: $(IO_DIR)/t_filter_file_data.f90 m_precision.o m_constants
 	$(F90) -c $(F90OPTFLAGS) $<
 t_multi_flag_labels.o: $(IO_DIR)/t_multi_flag_labels.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_pickup_sph_spectr_data.o: $(IO_DIR)/t_pickup_sph_spectr_data.f90 m_precision.o m_constants.o t_read_sph_spectra.o sph_power_spectr_data_text.o write_field_labels.o t_buffer_4_gzip.o data_convert_by_zlib.o transfer_to_long_integers.o m_time_labels.o
+t_pickup_sph_spectr_data.o: $(IO_DIR)/t_pickup_sph_spectr_data.f90 m_precision.o m_constants.o t_read_sph_spectra.o sph_power_spectr_data_text.o write_field_labels.o t_buffer_4_gzip.o data_convert_by_zlib.o select_gz_stream_file_IO.o m_time_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_read_mesh_data.o: $(IO_DIR)/t_read_mesh_data.f90 m_precision.o t_comm_table.o t_geometry_data.o t_group_data.o t_surf_edge_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

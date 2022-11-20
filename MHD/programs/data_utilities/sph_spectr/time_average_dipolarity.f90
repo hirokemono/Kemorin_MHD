@@ -59,7 +59,7 @@
       use t_read_sph_spectra
       use t_CMB_dipolarity
       use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
 !
       character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time
@@ -74,7 +74,8 @@
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf1
       character, pointer, save  :: FPz_f1
-      type(read_sph_spectr_data), save :: sph_IN
+      type(read_sph_spectr_data), save :: sph_IN1
+      type(sph_spectr_head_labels), save :: sph_lbl_IN1
 !
       integer(kind = kint) :: i_step, icou, i
       real(kind = kreal) :: acou, time, prev_time, radius_CMB
@@ -86,16 +87,16 @@
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_dipolarity, dip_t%dipolarity_file_name,            &
      &    flag_gzip1, zbuf1)
-      call select_input_sph_series_head(FPz_f1, id_dipolarity,          &
+      call s_select_input_sph_series_head(FPz_f1, id_dipolarity,        &
      &    flag_gzip1, flag_current_fmt, spectr_off, volume_on,          &
-     &    sph_IN, zbuf1)
+     &    sph_lbl_IN1, sph_IN1, zbuf1)
 !
-      dip_t%krms_CMB = sph_IN%kr_outer
-      dip_t%rdip_CMB = sph_IN%r_outer
-      call alloc_dipolarity_data(sph_IN%ntot_sph_spec, dip_t)
+      dip_t%krms_CMB = sph_IN1%kr_outer
+      dip_t%rdip_CMB = sph_IN1%r_outer
+      call alloc_dipolarity_data(sph_IN1%ntot_sph_spec, dip_t)
 !
       dip_t%dip_name(1:dip_t%num_dip)                                   &
-     &        = sph_IN%ene_sph_spec_name(1:dip_t%num_dip)
+     &        = sph_IN1%ene_sph_spec_name(1:dip_t%num_dip)
       do i = 1, dip_t%num_dip
         write(tmpchara,'(a)')                                           &
      &          dip_t%dip_name(i)(len(dip_ltr_label)+1:kchara)
@@ -103,7 +104,7 @@
         write(*,*) 'Truncatin: ', dip_t%ltr_max(i),                     &
      &                           trim(dip_t%dip_name(i))
       end do
-      call dealloc_sph_espec_data(sph_IN)
+      call dealloc_sph_espec_data(sph_IN1)
 !
       allocate(prev_fdip(dip_t%num_dip))
       allocate(ave_fdip(dip_t%num_dip))
@@ -228,8 +229,8 @@
       open(id_dipolarity, file = ave_file_name,                         &
      &     form='formatted', status='replace')
       call write_dipolarity_header                                      &
-     &   (id_dipolarity, sph_IN%ltr_sph, sph_IN%nri_sph,                &
-     &    sph_IN%kr_ICB, sph_IN%kr_CMB, dip_t)
+     &   (id_dipolarity, sph_IN1%ltr_sph, sph_IN1%nri_sph,              &
+     &    sph_IN1%kr_ICB, sph_IN1%kr_CMB, dip_t)
 !
       write(id_dipolarity,'(i16,1pe23.14e3)',advance='NO') i_step, time
       do i = 1, dip_t%num_dip

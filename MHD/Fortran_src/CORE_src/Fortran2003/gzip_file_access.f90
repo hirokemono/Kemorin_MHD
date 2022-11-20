@@ -95,6 +95,18 @@
           type(C_ptr), value :: FP_gzip
         end function rewind_gzfile_c
 !  -----------------
+        integer(C_int) function gztell_c(FP_gzip)                       &
+     &                BIND(C, name = 'gztell_c')
+          use ISO_C_BINDING
+          type(C_ptr), value :: FP_gzip
+        end function gztell_c
+!  -----------------
+        integer(C_int) function gzoffset_c(FP_gzip)                     &
+     &                BIND(C, name = 'gzoffset_c')
+          use ISO_C_BINDING
+          type(C_ptr), value :: FP_gzip
+        end function gzoffset_c
+!  -----------------
         subroutine get_one_line_from_gz_c                               &
      &           (FP_gzip, num_buffer, num_word, nchara, line_buf)      &
      &            BIND(C, name = 'get_one_line_from_gz_c')

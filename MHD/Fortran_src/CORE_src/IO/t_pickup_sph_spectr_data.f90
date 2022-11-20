@@ -109,7 +109,7 @@
         character(len=kchara), allocatable :: spectr_name(:)
       end type picked_spectrum_data
 !
-      type(sph_spectr_head_labels), parameter, private                  &
+      type(sph_spectr_head_labels), parameter                           &
      &           :: pick_spectr_labels = sph_spectr_head_labels(        &
      &                           hdr_nri = 'Num_Radial_layers',         &
      &                           hdr_ltr = 'Num_spectr',                &
@@ -332,16 +332,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_each_pick_sph_file_header(zlib_flag, id_file,    &
+      subroutine write_each_pick_sph_file_header(flag_gzip, id_file,    &
      &          nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
       use sph_power_spectr_data_text
       use write_field_labels
       use t_buffer_4_gzip
       use data_convert_by_zlib
-      use transfer_to_long_integers
+      use select_gz_stream_file_IO
 !
-      logical, intent(in) :: zlib_flag
+      logical, intent(in) :: flag_gzip
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
@@ -358,40 +358,13 @@
       call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
      &                                 len_each, len_tot)
 !
-      call sel_gz_write_text_buffer(zlib_flag, id_file,                 &
+      call sel_gz_write_text_stream(flag_gzip, id_file,                 &
      &    sph_layer_spectr_header_text(len_tot, len_each,               &
      &                                 pick_spectr_labels, sph_OUT),    &
      &    zbuf)
       call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_each_pick_sph_file_header
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sel_gz_write_text_buffer(zlib_flag, id_file,           &
-     &                                    textbuf, zbuf)
-!
-      use t_buffer_4_gzip
-      use data_convert_by_zlib
-      use transfer_to_long_integers
-!
-      logical, intent(in) :: zlib_flag
-      integer(kind = kint), intent(in) :: id_file
-      character(len = *), intent(in) :: textbuf
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-!
-      if(zlib_flag) then
-        call gzip_defleate_characters_b(cast_long(len(textbuf)),        &
-     &                                  textbuf, zbuf)
-        write(id_file) zbuf%gzip_buf(1:zbuf%ilen_gzipped)
-        call dealloc_zip_buffer(zbuf)
-      else
-        write(id_file) textbuf
-      end if
-!
-      end subroutine sel_gz_write_text_buffer
 !
 ! -----------------------------------------------------------------------
 !

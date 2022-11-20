@@ -171,7 +171,7 @@
      &          sph_IN, WK_tave)
 !
       use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
       use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
@@ -191,14 +191,16 @@
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
+      type(sph_spectr_head_labels) :: sph_lbl_IN_t
 !
 !
       write(*,*) 'Open file ', trim(fname_org)
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
-      call select_input_sph_series_head                                 &
+      call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
+     &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
+     &    sph_lbl_IN_t, sph_IN, zbuf1)
 !      call check_sph_spectr_name(sph_IN)
 !
       call alloc_tave_sph_data(sph_IN, WK_tave)
@@ -285,7 +287,7 @@
      &          start_time, end_time, sph_IN, WK_tave)
 !
       use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
       use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
@@ -300,6 +302,8 @@
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
+      type(sph_spectr_head_labels) :: sph_lbl_IN_t
+!
       character(len = kchara) :: file_name, extension
       character(len = kchara) :: directory, fname_no_dir, fname_tmp
       real(kind = kreal) :: true_start, prev_time
@@ -310,9 +314,10 @@
       write(*,*) 'Open file ', trim(fname_org), ' again'
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
-      call select_input_sph_series_head                                 &
+      call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
+     &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
+     &    sph_lbl_IN_t, sph_IN, zbuf1)
 !
       icou = 0
       ist_true = -1
@@ -387,7 +392,7 @@
      &         (fname_org, flag_spectr, flag_vol_ave, sph_IN)
 !
       use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
 !
 !
@@ -400,6 +405,7 @@
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
+      type(sph_spectr_head_labels) :: sph_lbl_IN_t
 !
 !  Read spectr data file
 !
@@ -407,9 +413,10 @@
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
 !
-      call select_input_sph_series_head                                 &
+      call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    current_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
+     &    current_fmt, flag_spectr, flag_vol_ave,                       &
+     &    sph_lbl_IN_t, sph_IN, zbuf1)
 !      call check_sph_spectr_name(sph_IN)
 !
       call sel_gz_input_sph_series_data                                 &
@@ -463,7 +470,7 @@
 !
       use t_read_sph_series
       use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_head_IO
+      use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
       use set_parallel_file_name
       use count_monitor_time_series
@@ -482,14 +489,16 @@
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
+      type(sph_spectr_head_labels) :: sph_lbl_IN_t
 !
 !
       write(*,*) 'Open file ', trim(fname_org)
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
-      call select_input_sph_series_head                                 &
+      call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
+     &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
+     &    sph_lbl_IN_t, sph_IN, zbuf1)
 !      call check_sph_spectr_name(sph_IN)
 !
       num = size(sph_IN%spectr_IO,2) * size(sph_IN%spectr_IO,3)
@@ -505,9 +514,10 @@
         rewind(id_file_rms)
       end if
 !
-      call select_input_sph_series_head                                 &
+      call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
+     &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
+     &    sph_lbl_IN_t, sph_IN, zbuf1)
 !
       if(flag_spectr) then
         call alloc_sph_spectr_series(sph_IN%ltr_sph, sph_IN,            &
