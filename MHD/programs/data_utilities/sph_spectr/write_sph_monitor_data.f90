@@ -235,7 +235,7 @@
 !
       call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
      &                                 len_each, len_tot)
-      call sel_gz_write_text_buffer(zlib_flag, FPz_f, id_file, len_tot, &
+      call sel_gz_write_text_buffer_a(zlib_flag, FPz_f, id_file, len_tot, &
      &    sph_layer_spectr_header_text(len_tot, len_each,               &
      &                                 sph_pwr_labels, sph_OUT), zbuf)
 !
