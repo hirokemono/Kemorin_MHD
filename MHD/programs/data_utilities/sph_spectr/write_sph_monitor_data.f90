@@ -218,8 +218,6 @@
 !
       subroutine write_sph_pwr_layer_head(id_file, sph_OUT)
 !
-      use t_buffer_4_gzip
-      use gzip_file_access
       use sph_power_spectr_data_text
 !
       integer(kind = kint), intent(in) :: id_file
@@ -228,16 +226,12 @@
       integer(kind = kint) :: len_each(6)
       integer(kind = kint) :: len_tot
 !
-      logical :: zlib_flag = .FALSE.
-      character, pointer :: FPz_f
-      type(buffer_4_gzip) :: zbuf
-!
 !
       call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
      &                                 len_each, len_tot)
-      call sel_gz_write_text_buffer(zlib_flag, FPz_f, id_file, len_tot, &
-     &    sph_layer_spectr_header_text(len_tot, len_each,               &
-     &                                 sph_pwr_labels, sph_OUT), zbuf)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &      sph_layer_spectr_header_text(len_tot, len_each,             &
+     &                                   sph_pwr_labels, sph_OUT)
 !
       end subroutine write_sph_pwr_layer_head
 !

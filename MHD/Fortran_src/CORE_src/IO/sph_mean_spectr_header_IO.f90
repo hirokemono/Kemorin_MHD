@@ -206,11 +206,9 @@
       subroutine write_sph_mean_sq_header(id_file, mode_label,          &
      &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
 !
-      use t_buffer_4_gzip
       use t_read_sph_spectra
       use sph_power_spectr_data_text
       use write_field_labels
-      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: mode_label
@@ -223,19 +221,15 @@
       integer(kind = kint) :: len_each(6)
       integer(kind = kint) :: len_tot
 !
-      logical :: zlib_flag = .FALSE.
-      character, pointer :: FPz_f
-      type(buffer_4_gzip) :: zbuf
-!
 !
       call dup_sph_layer_spectr_header(mode_label,                      &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
 !
       call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
      &                                 len_each, len_tot)
-      call sel_gz_write_text_buffer(zlib_flag, FPz_f, id_file, len_tot, &
-     &    sph_layer_spectr_header_text(len_tot, len_each,               &
-     &                                 sph_pwr_labels, sph_OUT), zbuf)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &      sph_layer_spectr_header_text(len_tot, len_each,             &
+     &                                   sph_pwr_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_sph_mean_sq_header
