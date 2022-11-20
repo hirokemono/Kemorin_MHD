@@ -59,7 +59,6 @@
       use pickup_sph_mean_square_data
       use write_picked_sph_spectr
       use sph_monitor_data_text
-      use gzip_file_access
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -76,7 +75,6 @@
 !
       real(kind=kreal), allocatable :: d_rj_out(:,:)
       type(buffer_4_gzip) :: zbuf_p
-      character, pointer :: FPz_p
       logical :: zlib_flag_p = .FALSE.
 !
 !
@@ -94,7 +92,7 @@
      &                            picked%ntot_comp_rj, d_rj_out(1,1)))
 !
       if(picked%idx_out(0,4) .gt. 0) then
-        call open_eack_picked_spectr(zlib_flag_p, FPz_p, id_pick,       &
+        call open_eack_picked_spectr(zlib_flag_p, id_pick,              &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      izero, izero, zbuf_p)
         call cal_rj_mean_sq_degree0_monitor(knum, sph_rj, rj_fld,       &
@@ -102,18 +100,13 @@
         call convert_to_energy_sph_monitor                              &
      &     (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
-        call sel_gz_write_text_buffer                                   &
-     &     (zlib_flag_p, FPz_p, id_pick, line_len,                      &
+        call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len,   &
      &      picked_each_mode_data_text(time_d%i_time_step, time_d%time, &
      &                                 zero, izero, izero, izero,       &
      &                                 picked%ntot_comp_rj,             &
      &                                 d_rj_out(1,1)),                  &
      &      zbuf_p)
-        if(zlib_flag_p) then
-          call close_gzfile_b(FPz_p)
-        else
-          close(id_pick)
-        end if
+        close(id_pick)
       end if
 !
       do inum = 1, picked%num_sph_mode_lc
@@ -125,12 +118,11 @@
      &        picked%ntot_comp_rj, d_rj_out(1,knum))
         end do
 !
-        call open_eack_picked_spectr(zlib_flag_p, FPz_p, id_pick,       &
+        call open_eack_picked_spectr(zlib_flag_p, id_pick,              &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      picked%idx_out(inum,1), picked%idx_out(inum,2), zbuf_p)
         do knum = 1, picked%num_layer
-          call sel_gz_write_text_buffer                                 &
-     &       (zlib_flag_p, FPz_p, id_pick, line_len,                    &
+          call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len, &
      &        picked_each_mode_data_text                                &
      &                             (time_d%i_time_step, time_d%time,    &
      &                              picked%radius_gl(knum),             &
@@ -141,11 +133,7 @@
      &                              d_rj_out(1,knum)),                  &
      &        zbuf_p)
         end do
-        if(zlib_flag_p) then
-          call close_gzfile_b(FPz_p)
-        else
-          close(id_pick)
-        end if
+        close(id_pick)
       end do
       deallocate(d_rj_out)
 !
