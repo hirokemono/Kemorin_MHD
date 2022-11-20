@@ -90,7 +90,7 @@
      &      izero, izero, zbuf_p)
         call pick_center_spectrum_monitor                               &
      &     (rj_fld, picked, picked%ntot_comp_rj, d_rj_out(1,1))
-        call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len,   &
+        call sel_gz_write_text_buffer(zlib_flag_p, id_pick,             &
      &      picked_each_mode_data_text(time_d%i_time_step, time_d%time, &
      &                                 zero, izero, izero, izero,       &
      &                                 picked%ntot_comp_rj,             &

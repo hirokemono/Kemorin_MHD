@@ -358,7 +358,7 @@
       call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
      &                                 len_each, len_tot)
 !
-      call sel_gz_write_text_buffer(zlib_flag, id_file, len_tot,        &
+      call sel_gz_write_text_buffer(zlib_flag, id_file,                 &
      &    sph_layer_spectr_header_text(len_tot, len_each,               &
      &                                 pick_spectr_labels, sph_OUT),    &
      &    zbuf)
@@ -369,7 +369,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_gz_write_text_buffer(zlib_flag, id_file,           &
-     &                                    len_chara, textbuf, zbuf)
+     &                                    textbuf, zbuf)
 !
       use t_buffer_4_gzip
       use data_convert_by_zlib
@@ -377,14 +377,13 @@
 !
       logical, intent(in) :: zlib_flag
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in)  :: len_chara
-      character(len = len_chara), intent(in) :: textbuf
+      character(len = *), intent(in) :: textbuf
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       if(zlib_flag) then
-        call gzip_defleate_characters_b(cast_long(len_chara),           &
+        call gzip_defleate_characters_b(cast_long(len(textbuf)),        &
      &                                  textbuf, zbuf)
         write(id_file) zbuf%gzip_buf(1:zbuf%ilen_gzipped)
         call dealloc_zip_buffer(zbuf)

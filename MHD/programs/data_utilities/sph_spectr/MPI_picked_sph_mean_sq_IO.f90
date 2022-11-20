@@ -100,7 +100,7 @@
         call convert_to_energy_sph_monitor                              &
      &     (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
-        call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len,   &
+        call sel_gz_write_text_buffer(zlib_flag_p, id_pick,             &
      &      picked_each_mode_data_text(time_d%i_time_step, time_d%time, &
      &                                 zero, izero, izero, izero,       &
      &                                 picked%ntot_comp_rj,             &
@@ -121,18 +121,8 @@
         call open_eack_picked_spectr(zlib_flag_p, id_pick,              &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      picked%idx_out(inum,1), picked%idx_out(inum,2), zbuf_p)
-        do knum = 1, picked%num_layer
-          call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len, &
-     &        picked_each_mode_data_text                                &
-     &                             (time_d%i_time_step, time_d%time,    &
-     &                              picked%radius_gl(knum),             &
-     &                              picked%id_radius(knum),             &
-     &                              picked%idx_out(inum,1),             &
-     &                              picked%idx_out(inum,2),             &
-     &                              picked%ntot_comp_rj,                &
-     &                              d_rj_out(1,knum)),                  &
-     &        zbuf_p)
-        end do
+        call sel_gz_write_picked_spec_data(zlib_flag_p, id_pick,        &
+     &      time_d, picked, inum, d_rj_out, line_len, zbuf_p)
         close(id_pick)
       end do
       deallocate(d_rj_out)
