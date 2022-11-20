@@ -53,6 +53,7 @@
 !
       use pickup_sph_spectr_data
       use sph_monitor_data_text
+      use gzip_defleate
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -107,9 +108,42 @@
         call open_eack_picked_spectr(zlib_flag_p, id_pick,              &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,         &
      &      picked%idx_out(inum,1), picked%idx_out(inum,2), zbuf_p)
-        do knum = 1, picked%num_layer
-          call sel_gz_write_text_buffer(zlib_flag_p, id_pick, line_len, &
-     &        picked_each_mode_data_text                                &
+!
+        if(zlib_flag_p) then
+          zbuf_p%ilen_gz = int(dble(picked%num_layer*line_len)*1.01+24, &
+     &                       KIND(zbuf_p%ilen_gz))
+          call alloc_zip_buffer(zbuf_p)
+          zbuf_p%ilen_gzipped = 0
+          if(picked%num_layer .eq. 1) then
+            knum = 1
+            call gzip_defleat_char_once(line_len,                       &
+     &          picked_each_mode_data_text                              &
+     &                 (time_d%i_time_step, time_d%time,                &
+     &                  picked%radius_gl(knum), picked%id_radius(knum), &
+     &                  picked%idx_out(inum,1), picked%idx_out(inum,2), &
+     &                  picked%ntot_comp_rj, d_rj_out(1,knum)),         &
+     &          int(zbuf_p%ilen_gz), zbuf_p, zbuf_p%gzip_buf(1))
+          else
+            knum = 1
+            call gzip_defleat_char_begin(line_len,                      &
+     &          picked_each_mode_data_text                              &
+     &                 (time_d%i_time_step, time_d%time,                &
+     &                  picked%radius_gl(knum), picked%id_radius(knum), &
+     &                  picked%idx_out(inum,1), picked%idx_out(inum,2), &
+     &                  picked%ntot_comp_rj, d_rj_out(1,knum)),         &
+     &          int(zbuf_p%ilen_gz), zbuf_p, zbuf_p%gzip_buf(1))
+            do knum = 2, picked%num_layer - 1
+              call gzip_defleat_char_cont(line_len,                     &
+     &            picked_each_mode_data_text                            &
+     &                 (time_d%i_time_step, time_d%time,                &
+     &                  picked%radius_gl(knum), picked%id_radius(knum), &
+     &                  picked%idx_out(inum,1), picked%idx_out(inum,2), &
+     &                  picked%ntot_comp_rj, d_rj_out(1,knum)),         &
+     &            zbuf_p)
+            end do
+            knum = picked%num_layer
+            call gzip_defleat_char_last(line_len,                       &
+     &          picked_each_mode_data_text                              &
      &                             (time_d%i_time_step, time_d%time,    &
      &                              picked%radius_gl(knum),             &
      &                              picked%id_radius(knum),             &
@@ -117,8 +151,20 @@
      &                              picked%idx_out(inum,2),             &
      &                              picked%ntot_comp_rj,                &
      &                              d_rj_out(1,knum)),                  &
-     &        zbuf_p)
-        end do
+     &          zbuf_p)
+          end if
+!
+          write(id_pick) zbuf_p%gzip_buf(zbuf_p%ilen_gzipped)
+          call dealloc_zip_buffer(zbuf_p)
+        else
+          do knum = 1, picked%num_layer
+            write(id_pick) picked_each_mode_data_text                   &
+     &                 (time_d%i_time_step, time_d%time,                &
+     &                  picked%radius_gl(knum), picked%id_radius(knum), &
+     &                  picked%idx_out(inum,1), picked%idx_out(inum,2), &
+     &                  picked%ntot_comp_rj, d_rj_out(1,knum))
+          end do
+        end if
         close(id_pick)
       end do
       deallocate(d_rj_out)
