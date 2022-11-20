@@ -438,30 +438,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_gz_write_text_buffer(zlib_flag, FPz_f, id_file,    &
-     &                                    len_buf, textbuf, zbuf)
-!
-      logical, intent(in) :: zlib_flag
-      character, pointer, intent(in) :: FPz_f 
-      integer(kind = kint), intent(in) :: id_file
-      integer, intent(in)  :: len_buf
-      character(len = len_buf), intent(in) :: textbuf
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-!
-      if(zlib_flag) then
-        call gzwrite_chara_f(FPz_f, len_buf, textbuf, zbuf)
-!        call gzip_defleate_characters_b(cast_long(len_buf),           &
-!     &                                  textbuf, zbuf)
-!        write(id_file) zbuf%gzip_buf(1:zbuf%ilen_gzipped)
-!        call dealloc_zip_buffer(zbuf)
-      else
-        write(id_file) textbuf(1:len_buf-1)
-      end if
-!
-      end subroutine sel_gz_write_text_buffer
-!
-! -----------------------------------------------------------------------
-!
       end module gzip_file_access

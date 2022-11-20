@@ -25,6 +25,12 @@
 !!      subroutine dealloc_pick_sph_mode(list_pick)
 !!      subroutine dealloc_num_pick_layer(picked)
 !!      subroutine dealloc_pick_sph_monitor(picked)
+!!
+!!      subroutine write_pick_sph_file_header                           &
+!!     &         (id_file, nlayer_ICB, nlayer_CMB, picked)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+!!        type(picked_spectrum_data), intent(in) :: picked
 !!@endverbatim
 !!
 !!@n @param  i_step    time step
@@ -298,13 +304,41 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine write_pick_sph_file_header                             &
+     &         (id_file, nlayer_ICB, nlayer_CMB, picked)
+!
+      use sph_power_spectr_data_text
+      use write_field_labels
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      type(read_sph_spectr_data) :: sph_OUT
+      integer(kind = kint) :: len_each(6)
+      integer(kind = kint) :: len_tot
+!
+!
+      call dup_pick_sph_file_header(nlayer_ICB, nlayer_CMB,             &
+     &                              picked, sph_OUT)
+      call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
+     &                                 len_each, len_tot)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &      sph_layer_spectr_header_text(len_tot, len_each,             &
+     &                                   pick_spectr_labels, sph_OUT)
+      call dealloc_sph_espec_data(sph_OUT)
+!
+      end subroutine write_pick_sph_file_header
+!
+! -----------------------------------------------------------------------
+!
       subroutine write_each_pick_sph_file_header(zlib_flag, FPz_f,      &
      &          id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
       use sph_power_spectr_data_text
       use write_field_labels
       use t_buffer_4_gzip
-      use gzip_file_access
+      use data_convert_by_zlib
       use transfer_to_long_integers
 !
       logical, intent(in) :: zlib_flag
@@ -332,6 +366,40 @@
       call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_each_pick_sph_file_header
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sel_gz_write_text_buffer(zlib_flag, FPz_f, id_file,    &
+     &                                    len_chara, textbuf, zbuf)
+!
+      use t_buffer_4_gzip
+      use data_convert_by_zlib
+      use gzip_file_access
+      use transfer_to_long_integers
+!
+      logical, intent(in) :: zlib_flag
+      character, pointer, intent(in) :: FPz_f 
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in)  :: len_chara
+      character(len = len_chara), intent(in) :: textbuf
+!
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+!
+      if(zlib_flag) then
+        call link_text_buffer_for_zlib(len_chara, textbuf, zbuf)
+        call write_compress_txt_nolf_c(C_LOC(FPz_f), zbuf%len_buf,      &
+     &                                 C_LOC(zbuf%buf_p(1)))
+        call unlink_text_buffer_for_zlib(zbuf)
+!        call gzip_defleate_characters_b(cast_long(len_chara),           &
+!     &                                  textbuf, zbuf)
+!        write(id_file) zbuf%gzip_buf(1:zbuf%ilen_gzipped)
+!        call dealloc_zip_buffer(zbuf)
+      else
+        write(id_file) textbuf
+      end if
+!
+      end subroutine sel_gz_write_text_buffer
 !
 ! -----------------------------------------------------------------------
 !
