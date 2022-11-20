@@ -162,7 +162,7 @@
      &                                         sph_OUT%nfield_sph_spec)
       len_each(6) = len_data_names_text(sph_OUT%num_labels,             &
      &                                  sph_OUT%ene_sph_spec_name)
-      len_tot = sum(len_each(1:6))
+      len_tot = sum(len_each(1:6)) + 1
 !
       end subroutine len_sph_layer_spectr_header
 !
@@ -207,6 +207,8 @@
       textbuf(ist+1:ist+len_each(6))                                    &
      &     = monitor_data_names_text(len_each(6), sph_OUT%num_labels,   &
      &                               sph_OUT%ene_sph_spec_name)
+      textbuf(len_header:len_header) = char(0)
+!
       sph_layer_spectr_header_text = textbuf
 !
       end function sph_layer_spectr_header_text

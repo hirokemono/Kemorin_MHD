@@ -175,9 +175,10 @@
 !
       write(fmt_txt,'(a37,i4,a17)')                                     &
      &         '(i16,1pe25.15e3, i16,1pe25.15e3,2i16,',                 &
-     &           ntot_comp_rj, '(1pE25.15e3), a1)'
+     &           ntot_comp_rj, '(1pE25.15e3), 2a1)'
       write(picked_each_mode_data_text,fmt_txt) i_step, time,           &
-     &          kr, radius, l, m, d_rj_out(1:ntot_comp_rj), char(10)
+     &          kr, radius, l, m, d_rj_out(1:ntot_comp_rj),             &
+     &          char(10), char(0)
 !
       end function  picked_each_mode_data_text
 !
