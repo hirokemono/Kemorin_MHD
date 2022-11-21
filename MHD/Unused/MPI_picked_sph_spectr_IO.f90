@@ -259,4 +259,32 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine write_pick_sph_file_header                             &
+     &         (id_file, nlayer_ICB, nlayer_CMB, picked)
+!
+      use sph_power_spectr_data_text
+      use write_field_labels
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      type(read_sph_spectr_data) :: sph_OUT
+      integer(kind = kint) :: len_each(6)
+      integer(kind = kint) :: len_tot
+!
+!
+      call dup_pick_sph_file_header(nlayer_ICB, nlayer_CMB,             &
+     &                              picked, sph_OUT)
+      call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
+     &                                 len_each, len_tot)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &      sph_layer_spectr_header_text(len_tot, len_each,             &
+     &                                   pick_spectr_labels, sph_OUT)
+      call dealloc_sph_espec_data(sph_OUT)
+!
+      end subroutine write_pick_sph_file_header
+!
+! -----------------------------------------------------------------------
+!
       end module MPI_picked_sph_spectr_IO

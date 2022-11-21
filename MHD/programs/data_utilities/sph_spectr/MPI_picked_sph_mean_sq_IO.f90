@@ -57,7 +57,8 @@
      &          rj_fld, picked)
 !
       use pickup_sph_mean_square_data
-      use write_picked_sph_spectr
+      use write_each_pick_spectr_file
+      use write_pick_sph_spectr_data
       use sph_monitor_data_text
       use select_gz_stream_file_IO
 !
@@ -86,14 +87,14 @@
       allocate(d_rj_out(picked%ntot_comp_rj,picked%num_layer))
 !
       if(picked%idx_out(0,4) .gt. 0) then
-        call open_each_picked_spectr(flag_gzip_p, id_pick,              &
-     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
-     &      izero, izero, zbuf_p)
         call cal_rj_mean_sq_degree0_monitor(knum, sph_rj, rj_fld,       &
      &      picked, picked%ntot_comp_rj, d_rj_out)
         call convert_to_energy_sph_monitor                              &
      &     (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
+        call open_each_picked_spectr(izero, flag_gzip_p, id_pick,        &
+     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
+     &      zbuf_p)
         call sel_gz_write_text_stream(flag_gzip_p, id_pick,             &
      &      picked_each_mode_data_text(time_d%i_time_step, time_d%time, &
      &                                 zero, izero, izero, izero,       &
@@ -112,9 +113,9 @@
      &        picked%ntot_comp_rj, d_rj_out(1,knum))
         end do
 !
-        call open_each_picked_spectr(flag_gzip_p, id_pick,              &
+        call open_each_picked_spectr(inum, flag_gzip_p, id_pick,        &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
-     &      picked%idx_out(inum,1), picked%idx_out(inum,2), zbuf_p)
+     &      zbuf_p)
         call sel_gz_write_picked_spec_data(flag_gzip_p, id_pick,        &
      &      time_d, picked, inum, d_rj_out, zbuf_p)
         close(id_pick)

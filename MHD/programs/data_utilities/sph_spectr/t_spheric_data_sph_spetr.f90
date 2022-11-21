@@ -52,6 +52,8 @@
         type(dipolarity_data) :: dip
       end type sph_spectr_monitor_data
 !
+      private :: set_sph_rms_labels_4_monitor
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -136,5 +138,31 @@
       end subroutine write_rms_4_sph_spectr_util
 !
 !  --------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_sph_rms_labels_4_monitor                           &
+     &         (ene_labels, pwr, pick_rms)
+!
+      use t_pickup_sph_spectr_data
+      use add_direction_labels
+!
+      type(energy_label_param), intent(in) :: ene_labels
+      type(sph_mean_squares), intent(in) :: pwr
+      type(picked_spectrum_data), intent(inout) :: pick_rms
+!
+      integer(kind = kint) :: i_fld, ist, ncomp
+!
+!
+      do i_fld = 1, pwr%num_fld_sq
+        ist =   pwr%istack_comp_sq(i_fld-1)
+        ncomp = pwr%num_comp_sq(i_fld)
+        call set_sph_rms_labels(ene_labels, ncomp, pwr%pwr_name(i_fld), &
+     &      pick_rms%spectr_name(ist+1))
+      end do
+      pick_rms%ntot_comp_rj = pwr%ntot_comp_sq
+!
+      end subroutine set_sph_rms_labels_4_monitor
+!
+! -----------------------------------------------------------------------
 !
       end module t_spheric_data_sph_spetr

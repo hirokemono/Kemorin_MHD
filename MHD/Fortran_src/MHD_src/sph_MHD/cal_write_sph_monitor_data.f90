@@ -277,7 +277,7 @@
       call write_typical_scales(time_d%i_time_step, time_d%time,        &
      &    sph_params, sph_rj, sph_bc_U, monitor%pwr, monitor%tsl)
 !
-      call write_each_picked_specr_file                                 &
+      call write_picked_spectrum_files                                  &
      &   (time_d, sph_params, sph_rj, rj_fld, monitor%pick_coef)
       call append_sph_gauss_coefs_file(time_d, sph_params, sph_rj,      &
      &    ipol, rj_fld, monitor%gauss_coef, SR_sig)

@@ -100,7 +100,7 @@
 !  pickup components
 !
         t_SHR%time_d%i_time_step = i_step
-        call write_each_picked_specr_file(t_SHR%time_d,                 &
+        call write_picked_spectrum_files(t_SHR%time_d,                  &
      &      SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,           &
      &      SPH_dat_ss%fld, pick_sph_u)
       end do
