@@ -156,7 +156,7 @@
 !
 !
       write(fmt_txt,'(a20,i3,a16)')                                     &
-     &     '(i16,1pe23.14e3,i16,', ntot_rms_rj, '(1pe23.14e3),a1)'
+     &     '(i16,1pe25.15e3,i16,', ntot_rms_rj, '(1pe25.15e3),a1)'
 !
       do lm = 0, ltr
         write(id_file,fmt_txt) time_d%i_time_step, time_d%time, lm,     &
@@ -180,8 +180,8 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(fmt_txt,'(a20,i3,a16)') '(i16,1pe23.14e3,i16,',             &
-     &                        (pwr%ntot_comp_sq+1), '(1pe23.14e3),a1)'
+      write(fmt_txt,'(a20,i3,a16)') '(i16,1pe25.15e3,i16,',             &
+     &                        (pwr%ntot_comp_sq+1), '(1pe25.15e3),a1)'
       do k = 1, pwr%nri_rms
         write(id_file,fmt_txt) time_d%i_time_step, time_d%time,         &
      &                         pwr%kr_4_rms(k), pwr%r_4_rms(k),         &
@@ -208,8 +208,8 @@
 !
 !
       write(fmt_txt,'(a35,i3,a16)')                                     &
-     &     '(i16,1pe23.14e3,i16,1pe23.14e3,i16,',                       &
-     &       pwr%ntot_comp_sq, '(1pe23.14e3),a1)'
+     &     '(i16,1pe25.15e3,i16,1pe25.15e3,i16,',                       &
+     &       pwr%ntot_comp_sq, '(1pe25.15e3),a1)'
 !
       do k = 1, pwr%nri_rms
         do lm = 0, ltr

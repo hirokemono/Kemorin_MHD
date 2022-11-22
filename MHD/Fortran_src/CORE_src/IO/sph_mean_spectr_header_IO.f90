@@ -44,15 +44,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dup_sph_vol_spectr_header(mode_label, ene_labels,      &
-     &          sph_params, sph_rj, v_pwr, sph_OUT)
+      subroutine dup_sph_vol_spectr_header                              &
+     &         (mode_label, ltr, nlayer_ICB, nlayer_CMB,                &
+     &          ene_labels, sph_rj, v_pwr, sph_OUT)
 !
       use t_read_sph_spectra
       use m_time_labels
 !
       character(len = kchara), intent(in) :: mode_label
+      integer(kind = kint), intent(in) :: ltr
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(energy_label_param), intent(in) :: ene_labels
-      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_vol_mean_squares), intent(in) :: v_pwr
 !
@@ -61,11 +63,11 @@
       integer(kind = kint) :: i, icou
 !
 !
-      sph_OUT%ltr_sph = sph_params%l_truncation
+      sph_OUT%ltr_sph = ltr
       sph_OUT%nri_sph = sph_rj%nidx_rj(1)
       sph_OUT%nri_dat = 1
-      sph_OUT%kr_ICB =  sph_params%nlayer_ICB
-      sph_OUT%kr_CMB =  sph_params%nlayer_CMB
+      sph_OUT%kr_ICB =  nlayer_ICB
+      sph_OUT%kr_CMB =  nlayer_CMB
       sph_OUT%kr_inner = v_pwr%kr_inside
       sph_OUT%kr_outer = v_pwr%kr_outside
       sph_OUT%r_inner =  v_pwr%r_inside
@@ -136,7 +138,7 @@
         call alloc_sph_spectr_data(izero, sph_OUT)
       else
         call alloc_sph_espec_name(sph_OUT)
-        call alloc_sph_spectr_data(ltr, sph_OUT)
+        call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
       end if
 !
       sph_OUT%ncomp_sph_spec(1:pwr%num_fld_sq)                          &
@@ -183,8 +185,10 @@
       integer(kind = kint) :: len_tot
 !
 !
-      call dup_sph_vol_spectr_header(mode_label, ene_labels,            &
-     &    sph_params, sph_rj, v_pwr, sph_OUT)
+      call dup_sph_vol_spectr_header                                    &
+     &   (mode_label, sph_params%l_truncation,                          &
+     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
+     &    ene_labels, sph_rj, v_pwr, sph_OUT)
 !
       call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
      &                               len_each, len_tot)
