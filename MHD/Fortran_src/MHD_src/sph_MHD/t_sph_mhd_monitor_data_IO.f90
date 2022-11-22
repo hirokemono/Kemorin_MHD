@@ -92,6 +92,7 @@
       use m_error_IDs
       use cal_rms_fields_by_sph
       use cal_CMB_dipolarity
+      use write_picked_sph_spectr
       use t_solver_SR
 !
       type(sph_grids), intent(in) :: sph
@@ -111,6 +112,7 @@
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor(sph%sph_params, sph%sph_rj,          &
      &    rj_fld, monitor%pick_list, monitor%pick_coef)
+      call error_picked_spectr_files(sph%sph_params, monitor%pick_coef)
 !
       if(iflag_debug.gt.0) write(*,*) 'init_gauss_coefs_data_and_file'
       call init_gauss_coefs_data_and_file(sph, ipol,                    &

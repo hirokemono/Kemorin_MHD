@@ -154,6 +154,7 @@
       use cal_rms_fields_by_sph
       use output_sph_pwr_volume_file
       use write_sph_gauss_coefs
+      use write_picked_sph_spectr
       use cal_CMB_dipolarity
       use init_rms_4_sph_spectr
 !
@@ -183,6 +184,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor(sph%sph_params, sph%sph_rj,          &
      &    rj_fld, monitor%pick_list, monitor%pick_coef)
+      call error_picked_spectr_files(sph%sph_params, monitor%pick_coef)
 !
       if(iflag_debug.gt.0) write(*,*) 'init_gauss_coefs_data_and_file'
       call init_gauss_coefs_data_and_file(sph, ipol,                    &

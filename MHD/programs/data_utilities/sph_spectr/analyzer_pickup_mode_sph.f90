@@ -86,6 +86,9 @@
       call init_sph_spec_4_monitor                                      &
      &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
      &    SPH_dat_ss%fld, pick_list_u, pick_sph_u)
+      call error_picked_spectr_files(SPH_dat_ss%sph%sph_params,         &
+     &                               pick_sph_u)
+!
 !
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment

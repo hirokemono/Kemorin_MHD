@@ -54,7 +54,6 @@
 !
       use t_phys_data
       use pickup_sph_coefs
-      use write_picked_sph_spectr
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -96,8 +95,6 @@
       call set_sph_labels_4_monitor                                     &
      &   (rj_fld%num_phys, rj_fld%num_component,                        &
      &    rj_fld%phys_name, picked)
-!
-      call error_picked_spectr_files(sph_params, sph_rj, picked)
 !
       end subroutine init_sph_spec_4_monitor
 !

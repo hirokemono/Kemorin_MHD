@@ -9,8 +9,7 @@
 !!@verbatim
 !!      subroutine write_picked_spectrum_files                          &
 !!     &         (time_d, sph_params, sph_rj, rj_fld, picked)
-!!      subroutine error_picked_spectr_files(sph_params, sph_rj,        &
-!!     &                                     picked)
+!!      subroutine error_picked_spectr_files(sph_params, picked)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -106,8 +105,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine error_picked_spectr_files(sph_params, sph_rj,          &
-     &                                     picked)
+      subroutine error_picked_spectr_files(sph_params, picked)
 !
       use pickup_sph_spectr_data
       use sph_monitor_data_text
@@ -117,7 +115,6 @@
       use m_error_IDs
 !
       type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) :: sph_rj
       type(picked_spectrum_data), intent(in) :: picked
 !
       integer(kind = kint) :: inum, ierr_lc, ierr_gl
