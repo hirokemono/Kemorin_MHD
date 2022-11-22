@@ -164,19 +164,33 @@
       use t_rms_4_sph_spectr
 !
       use m_base_field_labels
+      use m_file_format_labels
       use skip_comment_f
+      use t_multi_flag_labels
 !
       type(pick_spectr_control), intent(in) :: pspec_ctl
       type(pickup_mode_list), intent(inout) :: pick_list
       type(picked_spectrum_data), intent(inout) :: picked_sph
 !
       integer(kind = kint) :: inum
+      character(len = kchara) :: input_flag
 !
 !   Define spectr pick up
 !
       if(pspec_ctl%picked_mode_head_ctl%iflag .gt. 0) then
         picked_sph%file_prefix                                          &
      &        = pspec_ctl%picked_mode_head_ctl%charavalue
+!
+        if(allocated(gzip_flags%flags) .eqv. .FALSE.) then
+          call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags)
+        end if
+        picked_sph%flag_gzip = .FALSE.
+        if(pspec_ctl%picked_mode_fmt_ctl%iflag .gt. 0) then
+          input_flag = pspec_ctl%picked_mode_fmt_ctl%charavalue
+          if(check_mul_flags(input_flag, gzip_flags)) then
+            picked_sph%flag_gzip = .TRUE.
+          end if
+        end if
       else
         pick_list%num_modes =  0
         pick_list%num_degree = 0

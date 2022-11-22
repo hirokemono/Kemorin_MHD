@@ -54,6 +54,8 @@
 !
 !>        Structure for picked spectr data
       type picked_spectrum_data
+!>        logical flag to use compressed data
+        logical :: flag_gzip = .FALSE.
 !>        File prefix for spectr monitoring file
         character(len = kchara) :: file_prefix =  'picked_ene_spec'
 !

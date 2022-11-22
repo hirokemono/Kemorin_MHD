@@ -91,6 +91,7 @@
       call bcast_ctl_array_i1(pspec_ctl%idx_pick_sph_m_ctl)
 !
       call bcast_ctl_type_c1(pspec_ctl%picked_mode_head_ctl)
+      call bcast_ctl_type_c1(pspec_ctl%picked_mode_fmt_ctl)
       call calypso_mpi_bcast_one_int(pspec_ctl%i_pick_sph, 0)
 !
       end subroutine bcast_pickup_spectr_ctl

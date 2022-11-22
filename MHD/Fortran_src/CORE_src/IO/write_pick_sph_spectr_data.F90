@@ -7,9 +7,8 @@
 !>@brief  Weite picked monitor spectrum data
 !!
 !!@verbatim
-!!      subroutine sel_gz_write_picked_spec_data(flag_gzip, id_file,    &
+!!      subroutine sel_gz_write_picked_spec_data(id_file,               &
 !!     &          time_d, picked, inum, d_rj_out, zbuf)
-!!        logical, intent(in) :: flag_gzip
 !!        integer(kind = kint), intent(in) :: id_file
 !!        integer(kind = kint), intent(in) :: inum
 !!        type(time_data), intent(in) :: time_d
@@ -46,13 +45,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_gz_write_picked_spec_data(flag_gzip, id_file,      &
+      subroutine sel_gz_write_picked_spec_data(id_file,                 &
      &          time_d, picked, inum, d_rj_out, zbuf)
 !
       use sph_monitor_data_text
       use gzip_defleate
 !
-      logical, intent(in) :: flag_gzip
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: inum
       type(time_data), intent(in) :: time_d
@@ -66,7 +64,7 @@
 !
 !
 #ifdef ZLIB_IO
-      if(flag_gzip) then
+      if(picked%flag_gzip) then
         call gz_write_picked_spec_data(id_file, time_d, picked,         &
      &                                 inum, d_rj_out, zbuf)
         return

@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine write_picked_spectrum_files                          &
 !!     &         (time_d, sph_params, sph_rj, rj_fld, picked)
-!!      subroutine error_picked_spectr_files                            &
-!!     &         (sph_params, sph_rj, picked)
+!!      subroutine error_picked_spectr_files(sph_params, sph_rj,        &
+!!     &                                     picked)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -60,7 +60,6 @@
 !
       real(kind=kreal), allocatable :: d_rj_out(:,:)
       type(buffer_4_gzip) :: zbuf_p
-      logical :: flag_gzip_p = .FALSE.
 !
 !
       if(picked%num_sph_mode_lc .le. 0) return
@@ -75,10 +74,10 @@
         call pick_center_spectrum_monitor                               &
      &     (rj_fld, picked, picked%ntot_comp_rj, d_rj_out(1,1))
 !
-        call open_each_picked_spectr(izero, flag_gzip_p, id_pick,       &
+        call open_each_picked_spectr(izero, id_pick,                    &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      zbuf_p)
-        call sel_gz_write_text_stream(flag_gzip_p, id_pick,             &
+        call sel_gz_write_text_stream(picked%flag_gzip, id_pick,        &
      &      picked_each_mode_data_text(time_d%i_time_step, time_d%time, &
      &                                 zero, izero, izero, izero,       &
      &                                 picked%ntot_comp_rj,             &
@@ -93,11 +92,11 @@
      &        rj_fld, picked, picked%ntot_comp_rj, d_rj_out(1,knum))
         end do
 !
-        call open_each_picked_spectr(inum, flag_gzip_p, id_pick,        &
+        call open_each_picked_spectr(inum, id_pick,                     &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      zbuf_p)
 !
-        call sel_gz_write_picked_spec_data(flag_gzip_p, id_pick,        &
+        call sel_gz_write_picked_spec_data(id_pick,                     &
      &      time_d, picked, inum, d_rj_out, zbuf_p)
         close(id_pick)
       end do
@@ -107,8 +106,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine error_picked_spectr_files                              &
-     &         (sph_params, sph_rj, picked)
+      subroutine error_picked_spectr_files(sph_params, sph_rj,          &
+     &                                     picked)
 !
       use pickup_sph_spectr_data
       use sph_monitor_data_text
@@ -124,18 +123,17 @@
       integer(kind = kint) :: inum, ierr_lc, ierr_gl
 !
       type(buffer_4_gzip) :: zbuf_p
-      logical :: flag_gzip_p = .FALSE.
 !
 !
       ierr_lc = 0
       if(picked%idx_out(0,4) .gt. 0) then
-        if(error_each_picked_spectr(izero, flag_gzip_p, id_pick,        &
+        if(error_each_picked_spectr(izero, id_pick,                     &
      &     sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,        &
      &     zbuf_p))  ierr_lc = ierr_lc + 1
       end if
 !
       do inum = 1, picked%num_sph_mode_lc
-        if(error_each_picked_spectr(inum, flag_gzip_p, id_pick,         &
+        if(error_each_picked_spectr(inum, id_pick,                      &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      zbuf_p)) ierr_lc = ierr_lc + 1
       end do

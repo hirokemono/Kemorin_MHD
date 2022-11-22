@@ -7,12 +7,11 @@
 !>@brief  Data arrays to monitoring spectrum data
 !!
 !!@verbatim
-!!      subroutine open_each_picked_spectr(inum, flag_gzip, id_file,    &
+!!      subroutine open_each_picked_spectr(inum, id_file,               &
 !!     &          nlayer_ICB, nlayer_CMB, picked, zbuf)
-!!      logical function error_each_picked_spectr(inum, flag_gzip,      &
-!!     &                id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
+!!      logical function error_each_picked_spectr(inum, id_file,        &
+!!     &                nlayer_ICB, nlayer_CMB, picked, zbuf)
 !!        integer(kind = kint), intent(in) :: inum
-!!        logical, intent(in) :: flag_gzip
 !!        integer(kind = kint), intent(in) :: id_file
 !!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
 !!        type(picked_spectrum_data), intent(in) :: picked
@@ -42,14 +41,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine open_each_picked_spectr(inum, flag_gzip, id_file,      &
+      subroutine open_each_picked_spectr(inum, id_file,                 &
      &          nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
       use write_field_labels
 !
 !
       integer(kind = kint), intent(in) :: inum
-      logical, intent(in) :: flag_gzip
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
@@ -60,7 +58,7 @@
 !
 !
       file_name = each_picked_mode_file_name                            &
-     &          (flag_gzip, picked%file_prefix,                         &
+     &          (picked%flag_gzip, picked%file_prefix,                  &
      &           picked%idx_out(inum,1), picked%idx_out(inum,2))
       open(id_file, file=file_name, status='old', position='append',    &
      &     form='unformatted', ACCESS='stream', err = 99)
@@ -72,14 +70,14 @@
      &     form='unformatted', ACCESS='stream')
 !
       call write_each_pick_sph_file_head                                &
-     &    (flag_gzip, id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
+     &    (id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
       end subroutine open_each_picked_spectr
 !
 ! -----------------------------------------------------------------------
 !
-      logical function error_each_picked_spectr(inum, flag_gzip,        &
-     &                id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
+      logical function error_each_picked_spectr(inum, id_file,          &
+     &                nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
       use set_parallel_file_name
       use write_pick_sph_spectr_data
@@ -90,7 +88,6 @@
       use compare_sph_monitor_header
 !
       integer(kind = kint), intent(in) :: inum
-      logical, intent(in) :: flag_gzip
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
@@ -106,16 +103,16 @@
 !
       error_each_picked_spectr = .FALSE.
       file_name = each_picked_mode_file_name                            &
-     &          (flag_gzip, picked%file_prefix,                         &
+     &          (picked%flag_gzip, picked%file_prefix,                  &
      &           picked%idx_out(inum,1), picked%idx_out(inum,2))
       if(check_file_exist(file_name) .eqv. .FALSE.) go to 99
 
       call sel_open_read_gz_stream_file(FPz_fp, id_file,                &
      &                                  file_name, flag_gzip1, zbuf)
-      call s_select_input_picked_sph_head(FPz_fp, id_file, flag_gzip,   &
-     &    sph_lbl_IN_p, sph_IN_p, zbuf)
+      call s_select_input_picked_sph_head(FPz_fp, id_file,              &
+     &    picked%flag_gzip, sph_lbl_IN_p, sph_IN_p, zbuf)
       call sel_close_read_gz_stream_file(FPz_fp, id_file,               &
-     &                                  flag_gzip, zbuf)
+     &                                   picked%flag_gzip, zbuf)
 !
       call dup_each_pick_sph_file_header(nlayer_ICB, nlayer_CMB,        &
      &                                   picked, sph_OUT_p)
@@ -142,7 +139,7 @@
      &     form='unformatted', ACCESS='stream')
 !
       call write_each_pick_sph_file_head                                &
-     &   (flag_gzip, id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
+     &   (id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
       close(id_file)
       error_each_picked_spectr = .FALSE.
 !
@@ -151,8 +148,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_each_pick_sph_file_head(flag_gzip, id_file,      &
-     &          nlayer_ICB, nlayer_CMB, picked, zbuf)
+      subroutine write_each_pick_sph_file_head                          &
+     &         (id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
       use sph_power_spectr_data_text
       use write_field_labels
@@ -161,7 +158,6 @@
       use data_convert_by_zlib
       use select_gz_stream_file_IO
 !
-      logical, intent(in) :: flag_gzip
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
@@ -178,7 +174,7 @@
       call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
      &                                 len_each, len_tot)
 !
-      call sel_gz_write_text_stream(flag_gzip, id_file,                 &
+      call sel_gz_write_text_stream(picked%flag_gzip, id_file,          &
      &    sph_layer_spectr_header_text(len_tot, len_each,               &
      &                                 pick_spectr_labels, sph_OUT),    &
      &    zbuf)
