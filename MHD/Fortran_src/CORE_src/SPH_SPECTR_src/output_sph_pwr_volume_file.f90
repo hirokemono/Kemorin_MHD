@@ -278,7 +278,7 @@
       call open_sph_vol_mean_sq_file(id_file_rms, fname_rms,            &
      &    mode_label, ene_labels, sph_params, sph_rj, v_pwr)
 !
-      write(id_file_rms,'(i16,1pe23.14e3,1p200e23.14e3)')               &
+      write(id_file_rms,'(i16,1pe25.15e3,1p200e25.15e3)')               &
      &                 time_d%i_time_step,                              &
      &                 time_d%time, rms_sph_v(1:v_pwr%ntot_comp_sq)
       close(id_file_rms)

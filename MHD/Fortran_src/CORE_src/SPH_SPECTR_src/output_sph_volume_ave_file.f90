@@ -71,7 +71,7 @@
      &     (id_file_rms, fname_rms, mode_label,                         &
      &      ene_labels, sph_params, sph_rj, pwr%v_spectr(i))
 !
-        write(id_file_rms,'(i15,1pe23.14e3,1p200e23.14e3)')             &
+        write(id_file_rms,'(i15,1pe25.15e3,1p200e25.15e3)')             &
      &     time_d%i_time_step, time_d%time,                             &
      &     pwr%v_spectr(i)%v_ave(1:pwr%ntot_comp_sq)
       close(id_file_rms)
