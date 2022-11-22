@@ -102,7 +102,6 @@
 !
       use t_solver_SR
       use cal_heat_source_Nu
-      use write_picked_sph_spectr
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -134,9 +133,6 @@
 !
       call open_sph_vol_rms_file_mhd                                    &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
-!
-      call error_picked_spectr_files                                    &
-     &  (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, monitor%pick_coef)
 !
       end subroutine init_rms_sph_mhd_control
 !
