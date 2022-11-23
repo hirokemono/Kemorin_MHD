@@ -70,7 +70,7 @@
       call gzip_defleat_char_begin(line_len,                            &
      &    volume_spectr_data_text(i_step, time, i_mode(0),              &
      &                            n_comp, spectr_IO(1,0)),              &
-     &    int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(0))
+     &    int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(1))
       do i = 1, ltr - 1
         call gzip_defleat_char_cont(line_len,                           &
      &      volume_spectr_data_text(i_step, time, i_mode(i),            &
@@ -123,7 +123,7 @@
         call gzip_defleat_char_begin(line_len,                          &
      &      layer_spectr_data_text(i_step, time, kr_sph(k), r_sph(k),   &
      &                            i_mode(0), n_comp, spectr_IO(1,0,k)), &
-     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(0))
+     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(1))
         do i = 1, ltr - 1
           call gzip_defleat_char_cont(line_len,                         &
      &        layer_spectr_data_text(i_step, time, kr_sph(k), r_sph(k), &
@@ -175,12 +175,12 @@
         call gzip_defleat_char_once(line_len,                          &
      &      layer_pwr_data_text(i_step, time, kr_sph(1), r_sph(1),     &
      &                               n_comp, spectr_IO(1,1)),          &
-     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(0))
+     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(1))
       else
         call gzip_defleat_char_begin(line_len,                          &
      &      layer_pwr_data_text(i_step, time, kr_sph(1), r_sph(1),      &
      &                               n_comp, spectr_IO(1,1)),           &
-     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(0))
+     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(1))
         do k = 2, nri_sph
           call gzip_defleat_char_cont(line_len,                         &
      &        layer_pwr_data_text(i_step, time, kr_sph(k), r_sph(k),    &

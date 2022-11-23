@@ -237,12 +237,12 @@
         call gzip_defleat_char_once(line_len,                           &
      &      layer_pwr_data_text(i_step, time, kr_sph(1), r_sph(1),      &
      &                               ntot_comp, spectr_IO(1,1)),        &
-     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(0))
+     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(1))
       else
         call gzip_defleat_char_begin(line_len,                          &
      &      layer_pwr_data_text(i_step, time, kr_sph(1), r_sph(1),      &
      &                               ntot_comp, spectr_IO(1,1)),        &
-     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(0))
+     &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(1))
         do k = 2, nri_sph-1
           call gzip_defleat_char_cont(line_len,                         &
      &        layer_pwr_data_text(i_step, time, kr_sph(k), r_sph(k),    &
