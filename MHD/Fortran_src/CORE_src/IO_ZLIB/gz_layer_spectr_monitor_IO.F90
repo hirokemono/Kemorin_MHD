@@ -14,7 +14,7 @@
 !!     &                   :: rms_sph(nri_sph,0:ltr,ntot_comp)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: spectr_IO(ntot_comp,0:ltr,nri_sph)
-!!      subroutine sel_gz_read_layer_mean_mtr                           &
+!!      subroutine sel_gz_read_layer_spectr_mtr                         &
 !!     &         (FPz_f, id_stream, flag_gzip, nri_sph, ltr, ntot_comp, &
 !!     &          i_step, time, kr_sph, r_sph, i_mode,                  &
 !!     &          spectr_IO, zbuf, ierr)
@@ -75,20 +75,20 @@
       integer(kind = kint) :: kr, l
 !
 !
-!!$omp parallel do private(kr,l)
+!$omp parallel do private(kr,l)
       do kr = 1, nri_sph
         do l = 0, ltr
           spectr_IO(1:ntot_comp,l,kr) = rms_sph(kr,l,1:ntot_comp)
         end do
       end do
-!!$omp end parallel do
+!$omp end parallel do
 !
       end subroutine swap_layer_spectr_to_IO
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_gz_read_layer_mean_mtr                             &
+      subroutine sel_gz_read_layer_spectr_mtr                           &
      &         (FPz_f, id_stream, flag_gzip, nri_sph, ltr, ntot_comp,   &
      &          i_step, time, kr_sph, r_sph, i_mode,                    &
      &          spectr_IO, zbuf, ierr)
@@ -132,7 +132,7 @@
    99 continue
       return
 !
-      end subroutine sel_gz_read_layer_mean_mtr
+      end subroutine sel_gz_read_layer_spectr_mtr
 !
 !   --------------------------------------------------------------------
 !  --------------------------------------------------------------------
