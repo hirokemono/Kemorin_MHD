@@ -79,10 +79,10 @@
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%num_time_labels = sph_OUT%num_time_labels + 1
         call alloc_sph_espec_name(sph_OUT)
-        call alloc_sph_spectr_data(izero, sph_OUT)
+        call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
       else
         call alloc_sph_espec_name(sph_OUT)
-        call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
+        call alloc_sph_spectr_data(izero, sph_OUT)
       end if
 !
       sph_OUT%ncomp_sph_spec(1:v_pwr%num_fld_sq)                        &
@@ -93,6 +93,12 @@
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%ene_sph_spec_name(sph_OUT%num_time_labels)              &
      &                                       = trim(mode_label)
+!
+!$omp parallel do
+        do i = 0, sph_OUT%ltr_sph
+          sph_OUT%i_mode(i) = i
+        end do
+!$omp end parallel do
       end if
 !
       icou = sph_OUT%num_time_labels
@@ -135,10 +141,10 @@
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%num_time_labels = sph_OUT%num_time_labels + 1
         call alloc_sph_espec_name(sph_OUT)
-        call alloc_sph_spectr_data(izero, sph_OUT)
+        call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
       else
         call alloc_sph_espec_name(sph_OUT)
-        call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
+        call alloc_sph_spectr_data(izero, sph_OUT)
       end if
 !
       sph_OUT%ncomp_sph_spec(1:pwr%num_fld_sq)                          &
@@ -151,6 +157,12 @@
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%ene_sph_spec_name(sph_OUT%num_time_labels)              &
      &                                       = trim(mode_label)
+!
+!$omp parallel do
+        do i = 0, sph_OUT%ltr_sph
+          sph_OUT%i_mode(i) = i
+        end do
+!$omp end parallel do
       end if
 !
       icou = sph_OUT%num_time_labels
