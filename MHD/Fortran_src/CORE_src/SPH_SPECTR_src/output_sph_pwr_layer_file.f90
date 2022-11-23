@@ -160,7 +160,7 @@
 !
       type(read_sph_spectr_data), save :: sph_OUT
       type(buffer_4_gzip), save :: zbuf_m
-      logical :: flag_gzip_m = .FALSE.
+      logical :: flag_gzip_m = .TRUE.
 !
 !
 !      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,   &
@@ -168,12 +168,14 @@
 !      call write_sph_layerd_power(id_file_rms, time_d, pwr, rms_sph)
 !     close(id_file_rms)
 !
-      write(*,*) 'takotakotkao'
       call dup_sph_layer_spectr_header(mode_label,                      &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
-
+!
+      file_name = fname_rms
+      if(flag_gzip_m) file_name = add_gzip_extension(fname_rms)
+!
       call sel_open_sph_vol_mean_sq_file(flag_gzip_m, id_file_rms,      &
-     &                                   fname_rms, sph_OUT, zbuf_m)
+     &                                      file_name, sph_OUT, zbuf_m)
       call swap_layer_mean_to_IO(pwr%nri_rms, pwr%ntot_comp_sq,         &
      &                           rms_sph, sph_OUT%spectr_IO(1,0,1))
       call sel_gz_write_layer_mean_mtr                                  &
