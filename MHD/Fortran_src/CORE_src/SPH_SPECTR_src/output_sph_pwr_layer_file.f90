@@ -144,7 +144,10 @@
      &         (fname_rms, mode_label, ene_labels, time_d,              &
      &          ltr, nlayer_ICB, nlayer_CMB, pwr, rms_sph)
 !
+      use t_read_sph_spectra
+      use t_buffer_4_gzip
       use sph_mean_spectr_IO
+      use gz_layer_mean_monitor_IO
 !
       character(len=kchara), intent(in) :: fname_rms, mode_label
       type(energy_label_param), intent(in) :: ene_labels
@@ -155,10 +158,30 @@
       real(kind = kreal), intent(in)                                    &
      &           :: rms_sph(pwr%nri_rms,pwr%ntot_comp_sq)
 !
+      type(read_sph_spectr_data), save :: sph_OUT
+      type(buffer_4_gzip), save :: zbuf_m
+      logical :: flag_gzip_m = .FALSE.
 !
-      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
-     &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
-      call write_sph_layerd_power(id_file_rms, time_d, pwr, rms_sph)
+!
+!      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,   &
+!     &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
+!      call write_sph_layerd_power(id_file_rms, time_d, pwr, rms_sph)
+!     close(id_file_rms)
+!
+      write(*,*) 'takotakotkao'
+      call dup_sph_layer_spectr_header(mode_label,                      &
+     &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
+
+      call sel_open_sph_vol_mean_sq_file(flag_gzip_m, id_file_rms,      &
+     &                                   fname_rms, sph_OUT, zbuf_m)
+      call swap_layer_mean_to_IO(pwr%nri_rms, pwr%ntot_comp_sq,         &
+     &                           rms_sph, sph_OUT%spectr_IO(1,0,1))
+      call sel_gz_write_layer_mean_mtr                                  &
+     &   (flag_gzip_m, id_file_rms, time_d%i_time_step, time_d%time,    &
+     &    pwr%nri_rms, pwr%kr_4_rms, pwr%r_4_rms,                       &
+     &    pwr%ntot_comp_sq, sph_OUT%spectr_IO(1,0,1), zbuf_m)
+      call dealloc_sph_espec_data(sph_OUT)
+!
       close(id_file_rms)
 !
       end subroutine write_sph_layer_pwr_file

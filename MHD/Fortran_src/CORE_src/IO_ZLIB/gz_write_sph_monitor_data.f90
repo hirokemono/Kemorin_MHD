@@ -33,6 +33,7 @@
 !
       use m_precision
       use m_constants
+      use t_buffer_4_gzip
 !
       implicit none
 !

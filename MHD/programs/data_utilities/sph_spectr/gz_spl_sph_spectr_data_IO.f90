@@ -192,6 +192,11 @@
       integer(kind = kint) :: kr
 !
 !
+!      call sel_gz_read_layer_mean_mtr(FPz_f, id_stream, flag_gzip,  &
+!     &    sph_IN%nri_sph, sph_IN%ntot_sph_spec,    &
+!     &    sph_IN%i_step, sph_IN%time, sph_IN%kr_sph, sph_IN%r_sph, &
+!     &    sph_IN%spectr_IO, zbuf, ierr)
+
       ierr = 1
       do kr = 1, sph_IN%nri_sph
         call sel_read_line_gz_stream(FPz_f, id_stream,                  &
