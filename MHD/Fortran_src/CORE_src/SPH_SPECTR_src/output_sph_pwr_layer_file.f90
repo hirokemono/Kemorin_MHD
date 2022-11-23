@@ -165,11 +165,6 @@
       character(len=kchara) :: file_name
 !
 !
-!      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,   &
-!     &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
-!      call write_sph_layerd_power(id_file_rms, time_d, pwr, rms_sph)
-!     close(id_file_rms)
-!
       call dup_sph_layer_spectr_header(mode_label,                      &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
 !
@@ -196,7 +191,10 @@
      &         (fname_rms, mode_label, ene_labels, time_d,              &
      &          ltr, nlayer_ICB, nlayer_CMB, pwr, rms_sph_x)
 !
+      use t_read_sph_spectra
+      use t_buffer_4_gzip
       use sph_mean_spectr_IO
+      use sph_mean_spectr_header_IO
 !
       type(energy_label_param), intent(in) :: ene_labels
       type(time_data), intent(in) :: time_d
@@ -208,11 +206,25 @@
 !
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
+      type(read_sph_spectr_data), save :: sph_OUT
+      type(buffer_4_gzip), save :: zbuf_m
+      logical :: flag_gzip_m = .TRUE.
+      character(len=kchara) :: file_name
+!
+!
       call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
       call write_sph_layer_data                                         &
      &   (id_file_rms, time_d, ltr, pwr, rms_sph_x)
       close(id_file_rms)
+!
+      call dup_sph_layer_spectr_header(mode_label,                      &
+     &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
+      write(*,*) 'sph_OUT%spectr_IO', size(sph_OUT%spectr_IO,1), &
+     &     size(sph_OUT%spectr_IO,2), size(sph_OUT%spectr_IO,3), &
+     &     pwr%nri_rms, ltr, pwr%ntot_comp_sq
+      call dealloc_sph_espec_data(sph_OUT)
+!
 !
       end subroutine write_sph_layer_spec_file
 !
