@@ -148,6 +148,7 @@
       use t_buffer_4_gzip
       use sph_mean_spectr_IO
       use gz_layer_mean_monitor_IO
+      use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: fname_rms, mode_label
       type(energy_label_param), intent(in) :: ene_labels
@@ -161,6 +162,7 @@
       type(read_sph_spectr_data), save :: sph_OUT
       type(buffer_4_gzip), save :: zbuf_m
       logical :: flag_gzip_m = .TRUE.
+      character(len=kchara) :: file_name
 !
 !
 !      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,   &
