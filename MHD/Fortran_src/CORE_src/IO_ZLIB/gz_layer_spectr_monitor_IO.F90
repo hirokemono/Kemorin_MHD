@@ -75,13 +75,13 @@
       integer(kind = kint) :: kr, l
 !
 !
-!$omp parallel do private(kr,l)
+!!$omp parallel do private(kr,l)
       do kr = 1, nri_sph
         do l = 0, ltr
           spectr_IO(1:ntot_comp,l,kr) = rms_sph(kr,l,1:ntot_comp)
         end do
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
       end subroutine swap_layer_spectr_to_IO
 !
