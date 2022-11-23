@@ -218,6 +218,7 @@
      &   (id_file_rms, time_d, ltr, pwr, rms_sph_x)
       close(id_file_rms)
 !
+      write(*,*) 'mode_label: ', trim(mode_label)
       call dup_sph_layer_spectr_header(mode_label,                      &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
       write(*,*) 'sph_OUT%spectr_IO', size(sph_OUT%spectr_IO,1), &
