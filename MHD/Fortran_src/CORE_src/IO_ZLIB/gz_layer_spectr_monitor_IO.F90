@@ -33,14 +33,13 @@
 !!        integer(kind = kint), intent(inout) :: ierr
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!      subroutine sel_gz_write_layer_spectr_mtr(flag_gzip, id_file,    &
-!!     &          i_step, time, nri_sph, kr_sph, r_sph,                 &
-!!     &          ltr, i_mode, ntot_comp, spectr_IO, zbuf)
+!!     &          i_step, time, nri_sph, kr_sph, r_sph, ltr, ntot_comp, &
+!!     &          spectr_IO, zbuf)
 !!        logical, intent(in) :: flag_gzip
 !!        integer(kind = kint), intent(in) :: id_file
 !!        integer(kind = kint), intent(in) :: i_step
 !!        integer(kind = kint), intent(in) :: nri_sph, ltr
 !!        integer(kind = kint), intent(in) :: kr_sph(nri_sph)
-!!        integer(kind = kint), intent(in) :: i_mode(0:ltr)
 !!        real(kind = kreal), intent(in) :: time
 !!        real(kind = kreal), intent(in) :: r_sph(nri_sph)
 !!        integer(kind = kint), intent(in) :: ntot_comp
@@ -139,8 +138,8 @@
 !  --------------------------------------------------------------------
 !
       subroutine sel_gz_write_layer_spectr_mtr(flag_gzip, id_file,      &
-     &          i_step, time, nri_sph, kr_sph, r_sph,                   &
-     &          ltr, i_mode, ntot_comp, spectr_IO, zbuf)
+     &          i_step, time, nri_sph, kr_sph, r_sph, ltr, ntot_comp,   &
+     &          spectr_IO, zbuf)
 !
       use sph_monitor_data_text
 !
@@ -149,7 +148,6 @@
       integer(kind = kint), intent(in) :: i_step
       integer(kind = kint), intent(in) :: nri_sph, ltr
       integer(kind = kint), intent(in) :: kr_sph(nri_sph)
-      integer(kind = kint), intent(in) :: i_mode(0:ltr)
       real(kind = kreal), intent(in) :: time
       real(kind = kreal), intent(in) :: r_sph(nri_sph)
       integer(kind = kint), intent(in) :: ntot_comp
@@ -164,7 +162,7 @@
 #ifdef ZLIB_IO
       if(flag_gzip) then
         call gz_write_layer_spectr_monitor                              &
-     &     (id_file, i_step, time, nri_sph, kr_sph, r_sph, ltr, i_mode, &
+     &     (id_file, i_step, time, nri_sph, kr_sph, r_sph, ltr,         &
      &      ntot_comp, spectr_IO, zbuf)
         return
       end if
@@ -174,7 +172,7 @@
         do l = 0, ltr
           write(id_file) layer_spectr_data_text(i_step, time,           &
      &                                          kr_sph(k), r_sph(k),    &
-     &                                          i_mode(l), ntot_comp,   &
+     &                                          l, ntot_comp,           &
      &                                          spectr_IO(1,l,k))
         end do
       end do
@@ -186,8 +184,8 @@
 !
 #ifdef ZLIB_IO
       subroutine gz_write_layer_spectr_monitor                          &
-     &         (id_file, i_step, time, nri_sph, kr_sph, r_sph,          &
-     &          ltr, i_mode, ntot_comp, spectr_IO, zbuf)
+     &         (id_file, i_step, time, nri_sph, kr_sph, r_sph, ltr,     &
+     &          ntot_comp, spectr_IO, zbuf)
 !
       use sph_monitor_data_text
       use gzip_defleate
@@ -196,7 +194,6 @@
       integer(kind = kint), intent(in) :: i_step
       integer(kind = kint), intent(in) :: nri_sph, ltr
       integer(kind = kint), intent(in) :: kr_sph(nri_sph)
-      integer(kind = kint), intent(in) :: i_mode(0:ltr)
       real(kind = kreal), intent(in) :: time
       real(kind = kreal), intent(in) :: r_sph(nri_sph)
       integer(kind = kint), intent(in) :: ntot_comp
@@ -209,7 +206,7 @@
 !
 !
       line_len = len(layer_spectr_data_text(i_step, time, kr_sph(1),    &
-     &                                    r_sph(1), i_mode(0),          &
+     &                                    r_sph(1), izero,              &
      &                                    ntot_comp, spectr_IO(1,0,1)))
       zbuf%ilen_gz = int(dble((ltr+1)*line_len)*1.01 + 24,              &
      &                   KIND(zbuf%ilen_gz))
@@ -219,18 +216,17 @@
         zbuf%ilen_gzipped = 0
         call gzip_defleat_char_begin(line_len,                          &
      &      layer_spectr_data_text(i_step, time, kr_sph(k), r_sph(k),   &
-     &                         i_mode(0), ntot_comp, spectr_IO(1,0,k)), &
+     &                             izero, ntot_comp, spectr_IO(1,0,k)), &
      &      int(zbuf%ilen_gz), zbuf, zbuf%gzip_buf(1))
         do l = 1, ltr - 1
           call gzip_defleat_char_cont(line_len,                         &
      &        layer_spectr_data_text(i_step, time, kr_sph(k), r_sph(k), &
-     &                         i_mode(l), ntot_comp, spectr_IO(1,l,k)), &
+     &                               l, ntot_comp, spectr_IO(1,l,k)),   &
      &        zbuf)
         end do
-        l = ltr
         call gzip_defleat_char_last(line_len,                           &
      &      layer_spectr_data_text(i_step, time, kr_sph(k), r_sph(k),   &
-     &                         i_mode(l), ntot_comp, spectr_IO(1,l,k)), &
+     &                             ltr, ntot_comp, spectr_IO(1,ltr,k)), &
      &      zbuf)
 !
         write(id_file) zbuf%gzip_buf(1:zbuf%ilen_gzipped)

@@ -227,7 +227,7 @@
      &                             rms_sph_x, sph_OUT%spectr_IO(1,0,1))
       call sel_gz_write_layer_spectr_mtr                                &
      &   (flag_gzip_lc, id_file_rms, time_d%i_time_step, time_d%time,   &
-     &    pwr%nri_rms, pwr%kr_4_rms, pwr%r_4_rms, ltr, sph_OUT%i_mode,  &
+     &    pwr%nri_rms, pwr%kr_4_rms, pwr%r_4_rms, ltr,                  &
      &    pwr%ntot_comp_sq, sph_OUT%spectr_IO(1,0,1), zbuf_m)
       call dealloc_sph_espec_data(sph_OUT)
       close(id_file_rms)
