@@ -22,7 +22,6 @@
 !!
 !!      subroutine write_sph_volume_data                                &
 !!     &         (id_file, time_d, ltr, ntot_rms_rj, rms_sph_x)
-!!      subroutine write_sph_layerd_power(id_file, time_d, pwr, rms_sph)
 !!      subroutine write_sph_layer_data                                 &
 !!     &         (id_file, time_d, ltr, pwr, rms_sph_x)
 !!        type(time_data), intent(in) :: time_d
@@ -164,31 +163,6 @@
       end do
 !
       end subroutine write_sph_volume_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_sph_layerd_power(id_file, time_d, pwr, rms_sph)
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(time_data), intent(in) :: time_d
-      type(sph_mean_squares), intent(in) :: pwr
-!
-      real(kind = kreal), intent(in)                                    &
-     &           :: rms_sph(pwr%nri_rms,pwr%ntot_comp_sq)
-!
-      integer(kind = kint) :: k
-      character(len=kchara) :: fmt_txt
-!
-!
-      write(fmt_txt,'(a20,i3,a16)') '(i16,1pe25.15e3,i16,',             &
-     &                        (pwr%ntot_comp_sq+1), '(1pe25.15e3),a1)'
-      do k = 1, pwr%nri_rms
-        write(id_file,fmt_txt) time_d%i_time_step, time_d%time,         &
-     &                         pwr%kr_4_rms(k), pwr%r_4_rms(k),         &
-     &                         rms_sph(k,1:pwr%ntot_comp_sq)
-      end do
-!
-      end subroutine write_sph_layerd_power
 !
 ! -----------------------------------------------------------------------
 !

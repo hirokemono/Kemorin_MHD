@@ -64,7 +64,9 @@ gz_itp_work_file_IO.o: $(ZLIB_IO_DIR)/gz_itp_work_file_IO.f90 m_precision.o m_er
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_itp_work_file_IO_b.o: $(ZLIB_IO_DIR)/gz_itp_work_file_IO_b.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_binary_IO_buffer.o t_buffer_4_gzip.o gz_itp_table_data_IO_b.o gzip_file_access.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_layer_mean_monitor_IO.o: $(ZLIB_IO_DIR)/gz_layer_mean_monitor_IO.F90 m_precision.o m_constants.o t_buffer_4_gzip.o select_gz_stream_file_IO.o t_read_sph_spectra.o sph_power_spectr_data_text.o sph_monitor_data_text.o gzip_defleate.o
+gz_layer_mean_monitor_IO.o: $(ZLIB_IO_DIR)/gz_layer_mean_monitor_IO.F90 m_precision.o m_constants.o t_buffer_4_gzip.o select_gz_stream_file_IO.o t_read_sph_spectra.o sph_power_spectr_data_text.o sel_gz_input_sph_mtr_head.o compare_sph_monitor_header.o set_parallel_file_name.o delete_data_files.o sph_monitor_data_text.o gzip_defleate.o
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
+gz_layer_spectr_monitor_IO.o: $(ZLIB_IO_DIR)/gz_layer_spectr_monitor_IO.F90 m_precision.o m_constants.o t_buffer_4_gzip.o select_gz_stream_file_IO.o sph_monitor_data_text.o gzip_defleate.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 gz_mesh_data_IO.o: $(ZLIB_IO_DIR)/gz_mesh_data_IO.f90 m_precision.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_buffer_4_gzip.o gz_domain_data_IO.o gz_node_geometry_IO.o gz_element_connect_IO.o m_fem_mesh_labels.o gzip_file_access.o gz_group_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
