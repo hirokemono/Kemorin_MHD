@@ -7,6 +7,25 @@
 !>@brief Mean sqare data
 !!
 !!@verbatim
+!!      subroutine dup_sph_vol_spectr_header                            &
+!!     &         (mode_label, ltr, nlayer_ICB, nlayer_CMB,              &
+!!     &          ene_labels, sph_rj, v_pwr, sph_OUT)
+!!        character(len = kchara), intent(in) :: mode_label
+!!        integer(kind = kint), intent(in) :: ltr
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+!!        type(energy_label_param), intent(in) :: ene_labels
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_vol_mean_squares), intent(in) :: v_pwr
+!!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!!      subroutine dup_sph_layer_spectr_header(mode_label,              &
+!!     &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
+!!        character(len = kchara), intent(in) :: mode_label
+!!        integer(kind = kint), intent(in) :: ltr
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+!!        type(energy_label_param), intent(in) :: ene_labels
+!!        type(sph_mean_squares), intent(in) :: pwr
+!!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
 !!      subroutine write_sph_vol_mean_sq_header(id_file, mode_label,    &
 !!     &          ene_labels, sph_params, sph_rj, v_pwr)
 !!      subroutine write_sph_mean_sq_header(id_file, mode_label,        &

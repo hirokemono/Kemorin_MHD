@@ -147,7 +147,9 @@
       use t_read_sph_spectra
       use t_buffer_4_gzip
       use sph_mean_spectr_IO
+      use gz_open_sph_monitor_file
       use gz_layer_mean_monitor_IO
+      use sph_mean_spectr_header_IO
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: fname_rms, mode_label
@@ -191,8 +193,9 @@
       use t_read_sph_spectra
       use t_buffer_4_gzip
       use sph_mean_spectr_IO
-      use gz_layer_mean_monitor_IO
+      use gz_open_sph_monitor_file
       use gz_layer_spectr_monitor_IO
+      use sph_mean_spectr_header_IO
       use set_parallel_file_name
 !
       type(energy_label_param), intent(in) :: ene_labels
@@ -210,12 +213,6 @@
       logical :: flag_gzip_m = .TRUE.
       logical :: flag_gzip_lc
 !
-!
-!      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,   &
-!     &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
-!      call write_sph_layer_data                                        &
-!     &   (id_file_rms, time_d, ltr, pwr, rms_sph_x)
-!      close(id_file_rms)
 !
       call dup_sph_layer_spectr_header(mode_label,                      &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)

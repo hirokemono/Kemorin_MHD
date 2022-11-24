@@ -234,7 +234,12 @@
      &         (fname_rms, mode_label, ene_labels, time_d,              &
      &          sph_params, sph_rj, v_pwr, rms_sph_x)
 !
+      use t_read_sph_spectra
+      use t_buffer_4_gzip
       use sph_mean_spectr_IO
+      use gz_open_sph_monitor_file
+      use sph_mean_spectr_header_IO
+      use gz_volume_spectr_monitor_IO
 !
       character(len=kchara), intent(in) :: fname_rms, mode_label
       type(energy_label_param), intent(in) :: ene_labels
@@ -246,12 +251,33 @@
       real(kind = kreal), intent(in)                                    &
      &      :: rms_sph_x(0:sph_params%l_truncation, v_pwr%ntot_comp_sq)
 !
+      type(read_sph_spectr_data), save :: sph_OUT
+      type(buffer_4_gzip), save :: zbuf_m
+      logical :: flag_gzip_m = .TRUE.
+      logical :: flag_gzip_lc
 !
-      call open_sph_vol_mean_sq_file(id_file_rms, fname_rms,            &
-     &    mode_label, ene_labels, sph_params, sph_rj, v_pwr)
-      call write_sph_volume_data(id_file_rms, time_d,                   &
-     &    sph_params%l_truncation, v_pwr%ntot_comp_sq, rms_sph_x)
-      close(id_file_rms)
+!
+!      call open_sph_vol_mean_sq_file(id_file_rms, fname_rms,           &
+!     &    mode_label, ene_labels, sph_params, sph_rj, v_pwr)
+!      call write_sph_volume_data(id_file_rms, time_d,                  &
+!     &    sph_params%l_truncation, v_pwr%ntot_comp_sq, rms_sph_x)
+!      close(id_file_rms)
+!
+      call dup_sph_vol_spectr_header                                    &
+     &   (mode_label, sph_params%l_truncation,                          &
+     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
+     &    ene_labels, sph_rj, v_pwr, sph_OUT)
+!
+      flag_gzip_lc = flag_gzip_m
+      call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
+     &                                   sph_OUT, zbuf_m, flag_gzip_lc)
+      call swap_volume_spectr_to_IO(sph_params%l_truncation,            &
+     &    v_pwr%ntot_comp_sq, rms_sph_x, sph_OUT%spectr_IO(1,0,1))
+      call sel_gz_write_volume_spectr_mtr                               &
+     &   (flag_gzip_lc, id_file_rms, time_d%i_time_step, time_d%time,   &
+     &    sph_params%l_truncation, v_pwr%ntot_comp_sq,                  &
+     &    sph_OUT%spectr_IO(1,0,1), zbuf_m)
+      call dealloc_sph_espec_data(sph_OUT)
 !
       end subroutine write_sph_volume_spec_file
 !
@@ -262,6 +288,8 @@
      &         (fname_rms, mode_label, ene_labels, time_d,              &
      &          sph_params, sph_rj, v_pwr, rms_sph_v)
 !
+      use t_read_sph_spectra
+      use t_buffer_4_gzip
       use set_parallel_file_name
       use sph_mean_spectr_IO
 !

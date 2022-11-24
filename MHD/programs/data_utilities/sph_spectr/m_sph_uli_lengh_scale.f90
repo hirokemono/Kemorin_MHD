@@ -60,7 +60,7 @@
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
-      character(len = kchara) :: file_name, fname_tmp
+      character(len = kchara) :: file_name
       integer(kind = kint) :: i, icou, ierr, ist_true
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1

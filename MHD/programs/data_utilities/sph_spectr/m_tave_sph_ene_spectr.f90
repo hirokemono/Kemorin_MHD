@@ -482,8 +482,6 @@
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(read_sph_spectr_series), intent(inout) :: sph_series
 !
-      character(len = kchara) :: file_name, extension
-      character(len = kchara) :: directory, fname_no_dir, fname_tmp
       real(kind = kreal) :: prev_time
       integer(kind = kint) :: icou, ierr, ist_true, i, num, num_count
       logical :: flag_gzip1
