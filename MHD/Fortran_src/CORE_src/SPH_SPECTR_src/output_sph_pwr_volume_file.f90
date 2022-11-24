@@ -257,12 +257,6 @@
       logical :: flag_gzip_lc
 !
 !
-!      call open_sph_vol_mean_sq_file(id_file_rms, fname_rms,           &
-!     &    mode_label, ene_labels, sph_params, sph_rj, v_pwr)
-!      call write_sph_volume_data(id_file_rms, time_d,                  &
-!     &    sph_params%l_truncation, v_pwr%ntot_comp_sq, rms_sph_x)
-!      close(id_file_rms)
-!
       call dup_sph_vol_spectr_header                                    &
      &   (mode_label, sph_params%l_truncation,                          &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
@@ -278,6 +272,7 @@
      &    sph_params%l_truncation, v_pwr%ntot_comp_sq,                  &
      &    sph_OUT%spectr_IO(1,0,1), zbuf_m)
       call dealloc_sph_espec_data(sph_OUT)
+      close(id_file_rms)
 !
       end subroutine write_sph_volume_spec_file
 !
@@ -291,7 +286,10 @@
       use t_read_sph_spectra
       use t_buffer_4_gzip
       use set_parallel_file_name
+      use gz_open_sph_monitor_file
       use sph_mean_spectr_IO
+      use sph_monitor_data_text
+      use select_gz_stream_file_IO
 !
       character(len=kchara), intent(in) :: fname_rms, mode_label
       type(energy_label_param), intent(in) :: ene_labels
@@ -302,13 +300,38 @@
 !
       real(kind = kreal), intent(in) :: rms_sph_v(v_pwr%ntot_comp_sq)
 !
+      type(read_sph_spectr_data), save :: sph_OUT
+      type(buffer_4_gzip), save :: zbuf_m
+      logical :: flag_gzip_m = .TRUE.
+      logical :: flag_gzip_lc
 !
-      call open_sph_vol_mean_sq_file(id_file_rms, fname_rms,            &
-     &    mode_label, ene_labels, sph_params, sph_rj, v_pwr)
 !
-      write(id_file_rms,'(i16,1pe25.15e3,1p200e25.15e3)')               &
-     &                 time_d%i_time_step,                              &
-     &                 time_d%time, rms_sph_v(1:v_pwr%ntot_comp_sq)
+!      call open_sph_vol_mean_sq_file(id_file_rms, fname_rms,           &
+!     &    mode_label, ene_labels, sph_params, sph_rj, v_pwr)
+!
+!      write(id_file_rms,'(i16,1pe25.15e3,1p200e25.15e3)')              &
+!     &                 time_d%i_time_step,                             &
+!     &                 time_d%time, rms_sph_v(1:v_pwr%ntot_comp_sq)
+
+
+      call dup_sph_vol_spectr_header                                    &
+     &   (mode_label, sph_params%l_truncation,                          &
+     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
+     &    ene_labels, sph_rj, v_pwr, sph_OUT)
+!
+      flag_gzip_lc = flag_gzip_m
+      call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
+     &                                   sph_OUT, zbuf_m, flag_gzip_lc)
+!
+!$omp parallel workshare
+      sph_OUT%spectr_IO(1:v_pwr%ntot_comp_sq,0,1)                       &
+     &                                = rms_sph_v(1:v_pwr%ntot_comp_sq)
+!$omp end parallel workshare
+!
+      call sel_gz_write_text_stream(flag_gzip_lc, id_file_rms,          &
+     &    volume_pwr_data_text(time_d%i_time_step, time_d%time,         &
+     &    v_pwr%ntot_comp_sq, sph_OUT%spectr_IO(1,0,1)), zbuf_m)
+      call dealloc_sph_espec_data(sph_OUT)
       close(id_file_rms)
 !
       end subroutine write_sph_volume_pwr_file
