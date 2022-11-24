@@ -65,10 +65,13 @@
      &   sph_IN%nfield_sph_spec, sph_IN%num_labels,                     &
      &   sph_IN%ncomp_sph_spec, sph_IN%ene_sph_spec_name, zbuf)
 !
-      if(flag_spectr .eqv. .FALSE.) sph_IN%ltr_sph = 0
       sph_IN%nri_dat = sph_IN%nri_sph
       if(flag_vol_ave) sph_IN%nri_dat = 1
-      call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN)
+      else
+        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      end if
 !
       end subroutine s_select_input_sph_series_head
 !
