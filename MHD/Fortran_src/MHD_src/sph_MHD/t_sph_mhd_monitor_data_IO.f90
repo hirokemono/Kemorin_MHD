@@ -147,7 +147,7 @@
       if ( iflag_debug.gt.0 ) write(*,*) 'error_sph_vol_ms_file'
       flag = error_sph_vol_ms_file(my_rank, monitor%ene_labels,         &
      &                             sph%sph_params, sph%sph_rj,          &
-     &                             monitor%pwr)
+     &                             monitor%pwr%v_spectr(1))
       call calypso_mpi_bcast_one_logical                                &
      &  (flag, monitor%pwr%v_spectr(1)%irank_m)
       if(flag) then
