@@ -123,9 +123,8 @@
      &                                        sph_OUT_p)
       if(error_each_picked_spectr) go to 98
       error_each_picked_spectr                                          &
-     &    = .not. cmp_sph_monitor_field_labels(sph_lbl_IN_p, sph_IN_p,  &
-     &                                        pick_spectr_labels,       &
-     &                                        sph_OUT_p)
+     &    = .not. cmp_sph_monitor_field_labels(pick_spectr_labels,      &
+     &                                        sph_IN_p, sph_OUT_p)
 !
    98 continue
       call dealloc_sph_espec_data(sph_IN_p)
