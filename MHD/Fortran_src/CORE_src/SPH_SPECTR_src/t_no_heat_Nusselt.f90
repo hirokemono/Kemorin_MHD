@@ -239,6 +239,7 @@
      &       sph_vol_spectr_header_text(len_tot, len_each,              &
      &                                  sph_pwr_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
 !
       end subroutine write_Nu_header
 !

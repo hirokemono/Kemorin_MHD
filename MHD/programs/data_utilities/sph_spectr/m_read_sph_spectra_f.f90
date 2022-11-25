@@ -165,6 +165,7 @@
       call sel_close_read_gz_stream_file                                &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, zbuf_f)
       call dealloc_sph_espec_data(sph_IN_f)
+      call dealloc_sph_espec_name(sph_IN_f)
 !
       end subroutine finalize_sph_series_file_f
 !

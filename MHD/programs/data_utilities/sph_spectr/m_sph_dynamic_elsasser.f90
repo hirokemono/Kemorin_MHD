@@ -157,8 +157,11 @@
 !
 !
       call dealloc_sph_espec_data(sph_IN_l)
+      call dealloc_sph_espec_name(sph_IN_l)
       call dealloc_sph_espec_data(sph_IN_m)
+      call dealloc_sph_espec_name(sph_IN_m)
       call dealloc_sph_espec_data(sph_OUT1)
+      call dealloc_sph_espec_name(sph_OUT1)
 !
       end subroutine sph_dynamic_elsasser_by_spectr
 !

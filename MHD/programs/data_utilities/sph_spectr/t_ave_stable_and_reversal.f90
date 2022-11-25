@@ -254,6 +254,7 @@
      &    tave_vol_ave(1,2), rms_vol_ave(1,2), sdev_vol_ave(1,2))
       call dealloc_sph_spectr_series(sph_ave_series)
       call dealloc_sph_espec_data(sph_IN_a)
+      call dealloc_sph_espec_name(sph_IN_a)
 !
 !
       call load_spectr_mean_square_file                                 &

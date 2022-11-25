@@ -238,6 +238,7 @@
      &    sph_params%l_truncation, v_pwr%ntot_comp_sq,                  &
      &    sph_OUT%spectr_IO(1,0,1), zbuf_m)
       call dealloc_sph_espec_data(sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
       close(id_file_rms)
 !
       end subroutine write_sph_volume_spec_file
@@ -290,6 +291,7 @@
      &    volume_pwr_data_text(time_d%i_time_step, time_d%time,         &
      &    v_pwr%ntot_comp_sq, sph_OUT%spectr_IO(1,0,1)), zbuf_m)
       call dealloc_sph_espec_data(sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
       close(id_file_rms)
 !
       end subroutine write_sph_volume_pwr_file
@@ -339,6 +341,7 @@
       call check_sph_vol_monitor_file(id_file_rms, fname_rms,           &
      &    sph_OUT, FPz_f, zbuf_m, flag_gzip_lc, error_sph_vol_ms_file)
       call dealloc_sph_espec_data(sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
 !
       end function error_sph_vol_ms_file
 !

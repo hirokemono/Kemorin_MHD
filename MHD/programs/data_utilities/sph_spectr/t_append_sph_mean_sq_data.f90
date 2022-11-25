@@ -110,6 +110,7 @@
      &    sph_OUT1%ene_sph_spec_name(sph_OUT1%num_time_labels+1),       &
      &    comp_tbl1)
       call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_name(sph_IN1)
 !
       if(flag_vol_ave) then
         ntot_pick = (sph_OUT1%ltr_sph+1)
@@ -149,7 +150,9 @@
       close(id_write_file)
 !
       call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_name(sph_IN1)
       call dealloc_sph_espec_data(sph_OUT1)
+      call dealloc_sph_espec_name(sph_OUT1)
 !
       end subroutine append_sph_mean_sq_file
 !

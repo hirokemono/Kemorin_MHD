@@ -145,6 +145,8 @@
       close(id_file_fitted)
 !
       call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_name(sph_IN1)
       call dealloc_sph_espec_data(sph_OUT1)
+      call dealloc_sph_espec_name(sph_OUT1)
 !
       end program sph_dipole_fitting

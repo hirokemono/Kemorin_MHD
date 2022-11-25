@@ -122,7 +122,9 @@
 !
 !
       call dealloc_sph_espec_data(sph_IN)
+      call dealloc_sph_espec_name(sph_IN)
       call dealloc_sph_espec_data(sph_OUT1)
+      call dealloc_sph_espec_name(sph_OUT1)
 !
       end subroutine sph_part_pwr_spectr_sum
 !

@@ -109,6 +109,17 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
+      subroutine dealloc_sph_espec_name(sph_IN)
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+!
+!
+      deallocate(sph_IN%ene_sph_spec_name, sph_IN%ncomp_sph_spec)
+!
+      end subroutine dealloc_sph_espec_name
+!
+!   --------------------------------------------------------------------
+!
       subroutine dealloc_sph_espec_data(sph_IN)
 !
       type(read_sph_spectr_data), intent(inout) :: sph_IN

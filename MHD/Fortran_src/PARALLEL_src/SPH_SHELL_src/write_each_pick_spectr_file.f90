@@ -128,7 +128,9 @@
 !
    98 continue
       call dealloc_sph_espec_data(sph_IN_p)
+      call dealloc_sph_espec_name(sph_IN_p)
       call dealloc_sph_espec_data(sph_OUT_p)
+      call dealloc_sph_espec_name(sph_OUT_p)
 !
       return
 !
@@ -178,6 +180,7 @@
      &                                 pick_spectr_labels, sph_OUT),    &
      &    zbuf)
       call dealloc_sph_espec_data(sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
 !
       end subroutine write_each_pick_sph_file_head
 !
