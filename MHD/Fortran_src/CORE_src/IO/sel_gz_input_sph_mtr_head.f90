@@ -67,11 +67,6 @@
 !
       sph_IN%nri_dat = sph_IN%nri_sph
       if(flag_vol_ave) sph_IN%nri_dat = 1
-      if(flag_spectr .eqv. .FALSE.) then
-        call alloc_sph_spectr_data(izero, sph_IN)
-      else
-        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
-      end if
 !
       end subroutine s_select_input_sph_series_head
 !

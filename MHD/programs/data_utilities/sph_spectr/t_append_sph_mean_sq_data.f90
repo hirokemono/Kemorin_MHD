@@ -73,6 +73,11 @@
       call s_select_input_sph_series_head(FPz_f1, id_append_file,       &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
      &    sph_lbl_IN1, sph_IN1, zbuf1)
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN1)
+      else
+        call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
+      end if
 !
       call sel_skip_comment_gz_stream                                   &
      &   (FPz_f1, id_append_file, flag_gzip1, zbuf1)
@@ -88,6 +93,11 @@
       call s_select_input_sph_series_head(FPz_f1, id_write_file,        &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
      &    sph_lbl_OUT1, sph_OUT1, zbuf1)
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN1)
+      else
+        call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
+      end if
 !
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_write_file, flag_gzip1, zbuf1)
@@ -130,6 +140,11 @@
       call s_select_input_sph_series_head(FPz_f1, id_append_file,       &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
      &    sph_lbl_IN1, sph_IN1, zbuf1)
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN1)
+      else
+        call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
+      end if
 !
       if(comp_tbl1%fast_flag) then
         write(*,*) 'Copy data as text'

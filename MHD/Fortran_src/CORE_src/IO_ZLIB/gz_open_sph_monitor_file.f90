@@ -87,10 +87,12 @@
       call s_select_input_sph_series_head                               &
      &   (FPz_f, id_stream, flag_gzip_lc, flag_current_fmt,             &
      &    spectr_off, volume_on, sph_lbl_IN_f, sph_IN_f, zbuf)
+      call alloc_sph_spectr_data(izero, sph_IN_f)
+!
       call sel_close_read_gz_stream_file(FPz_f, id_stream,              &
      &                                   flag_gzip_lc, zbuf)
-      error = .not. cmp_sph_volume_monitor_heads(sph_lbl_IN_f, sph_IN_f, &
-     &                                         sph_pwr_labels, sph_OUT)
+      error = .not. cmp_sph_volume_monitor_heads                        &
+     &            (sph_lbl_IN_f, sph_IN_f, sph_pwr_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_IN_f)
       call dealloc_sph_espec_name(sph_IN_f)
       return
@@ -206,6 +208,8 @@
       call s_select_input_sph_series_head                               &
      &   (FPz_f, id_stream, flag_gzip_lc, flag_current_fmt,             &
      &    spectr_off, volume_on, sph_lbl_IN_f, sph_IN_f, zbuf)
+      call alloc_sph_spectr_data(izero, sph_IN_f)
+!
       error = .not. cmp_sph_layer_monitor_heads(sph_lbl_IN_f, sph_IN_f, &
      &                                         sph_pwr_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_IN_f)

@@ -78,6 +78,7 @@
       call s_select_input_sph_series_head(FPz_fsp, id_file_rms,         &
      &    flag_gzip_s, flag_current_fmt, spectr_off, volume_on,         &
      &    sph_lbl_IN_f, sph_IN_f, zbuf_f)
+      call alloc_sph_spectr_data(izero, sph_IN_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine open_init_volume_mean_file_f
@@ -101,6 +102,7 @@
       call s_select_input_sph_series_head(FPz_fsp, id_file_rms,         &
      &    flag_gzip_s, flag_current_fmt, spectr_on, volume_on,          &
      &    sph_lbl_IN_f, sph_IN_f, zbuf_f)
+      call alloc_sph_spectr_data(sph_IN_f%ltr_sph, sph_IN_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine open_init_volume_spectr_file_f
@@ -126,6 +128,7 @@
       call s_select_input_sph_series_head                               &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
      &    spectr_off, volume_off, sph_lbl_IN_f, sph_IN_f, zbuf_f)
+      call alloc_sph_spectr_data(izero, sph_IN_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine check_one_layer_mean_item_f
@@ -150,6 +153,7 @@
       call s_select_input_sph_series_head                               &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
      &    spectr_on, volume_off, sph_lbl_IN_f, sph_IN_f, zbuf_f)
+      call alloc_sph_spectr_data(sph_IN_f%ltr_sph, sph_IN_f)
       call check_sph_spectr_name(sph_IN_f)
 !
       end subroutine check_layered_spectr_file_f

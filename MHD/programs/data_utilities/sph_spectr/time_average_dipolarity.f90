@@ -90,6 +90,7 @@
       call s_select_input_sph_series_head(FPz_f1, id_dipolarity,        &
      &    flag_gzip1, flag_current_fmt, spectr_off, volume_on,          &
      &    sph_lbl_IN1, sph_IN1, zbuf1)
+      call alloc_sph_spectr_data(izero, sph_IN1)
 !
       dip_t%krms_CMB = sph_IN1%kr_outer
       dip_t%rdip_CMB = sph_IN1%r_outer

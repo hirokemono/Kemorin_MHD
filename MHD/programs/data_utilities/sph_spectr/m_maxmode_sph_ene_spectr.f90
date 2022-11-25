@@ -74,6 +74,8 @@
      &   (FPz_f1, id_file_rms_l, flag_gzip1,                            &
      &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,             &
      &    sph_lbl_IN_m, sph_IN, zbuf1)
+      call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+!
       call check_sph_spectr_name(sph_IN)
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)

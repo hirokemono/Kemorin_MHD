@@ -203,7 +203,11 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
-!      call check_sph_spectr_name(sph_IN)
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN)
+      else
+        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      end if
 !
       call alloc_tave_sph_data(sph_IN, WK_tave)
 !
@@ -321,6 +325,11 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN)
+      else
+        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      end if
 !
       icou = 0
       ist_true = -1
@@ -420,7 +429,11 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    current_fmt, flag_spectr, flag_vol_ave,                       &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
-!      call check_sph_spectr_name(sph_IN)
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN)
+      else
+        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      end if
 !
       call sel_gz_input_sph_series_data                                 &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
@@ -500,7 +513,11 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
-!      call check_sph_spectr_name(sph_IN)
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN)
+      else
+        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      end if
 !
       num = size(sph_IN%spectr_IO,2) * size(sph_IN%spectr_IO,3)
       if(flag_vol_ave) num = size(sph_IN%spectr_IO,2)
@@ -520,6 +537,11 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN)
+      else
+        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      end if
 !
       if(flag_spectr) then
         call alloc_sph_spectr_series(sph_IN%ltr_sph, sph_IN,            &

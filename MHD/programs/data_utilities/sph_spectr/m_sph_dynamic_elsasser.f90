@@ -73,6 +73,7 @@
      &   (FPz_l, id_file_rms_l, flag_gzip_l,                            &
      &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
      &    sph_lbl_IN_l, sph_IN_l, zbuf_l)
+      call alloc_sph_spectr_data(sph_IN_l%ltr_sph, sph_IN_l)
       call check_sph_spectr_name(sph_IN_l)
 !
       call sel_open_read_gz_stream_file(FPz_m, id_file_rms_m,           &
@@ -81,6 +82,7 @@
      &   (FPz_m, id_file_rms_m, flag_gzip_m,                            &
      &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
      &    sph_lbl_IN_m, sph_IN_m, zbuf_m)
+      call alloc_sph_spectr_data(sph_IN_m%ltr_sph, sph_IN_m)
       call check_sph_spectr_name(sph_IN_m)
 !
       call set_spectr_address_4_dyn_els(sph_IN_l, els_dat)
