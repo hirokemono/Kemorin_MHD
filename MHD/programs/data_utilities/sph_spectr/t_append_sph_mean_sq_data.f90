@@ -73,6 +73,9 @@
       call s_select_input_sph_series_head(FPz_f1, id_append_file,       &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
      &    sph_lbl_IN1, sph_IN1, zbuf1)
+!
+      sph_IN1%nri_dat = sph_IN1%nri_sph
+      if(flag_vol_ave) sph_IN1%nri_dat = 1
       if(flag_spectr .eqv. .FALSE.) then
         call alloc_sph_spectr_data(izero, sph_IN1)
       else
@@ -93,6 +96,9 @@
       call s_select_input_sph_series_head(FPz_f1, id_write_file,        &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
      &    sph_lbl_OUT1, sph_OUT1, zbuf1)
+!
+      sph_IN1%nri_dat = sph_IN1%nri_sph
+      if(flag_vol_ave) sph_IN1%nri_dat = 1
       if(flag_spectr .eqv. .FALSE.) then
         call alloc_sph_spectr_data(izero, sph_IN1)
       else
@@ -140,6 +146,9 @@
       call s_select_input_sph_series_head(FPz_f1, id_append_file,       &
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
      &    sph_lbl_IN1, sph_IN1, zbuf1)
+!
+      sph_IN1%nri_dat = sph_IN1%nri_sph
+      if(flag_vol_ave) sph_IN1%nri_dat = 1
       if(flag_spectr .eqv. .FALSE.) then
         call alloc_sph_spectr_data(izero, sph_IN1)
       else

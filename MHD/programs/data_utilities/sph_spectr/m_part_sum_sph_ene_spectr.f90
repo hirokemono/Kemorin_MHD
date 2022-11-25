@@ -72,6 +72,9 @@
       call s_select_input_sph_series_head(FPz_f1, id_file_rms_l,        &
      &    flag_gzip1, spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave, &
      &    sph_lbl_IN_ps, sph_IN, zbuf1)
+!
+      sph_IN%nri_dat = sph_IN%nri_sph
+      if(flag_vol_ave) sph_IN%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
       call check_sph_spectr_name(sph_IN)
 !

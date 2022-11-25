@@ -73,6 +73,8 @@
      &   (FPz_l, id_file_rms_l, flag_gzip_l,                            &
      &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
      &    sph_lbl_IN_l, sph_IN_l, zbuf_l)
+!
+      sph_IN_l%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN_l%ltr_sph, sph_IN_l)
       call check_sph_spectr_name(sph_IN_l)
 !
@@ -82,6 +84,8 @@
      &   (FPz_m, id_file_rms_m, flag_gzip_m,                            &
      &    els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,          &
      &    sph_lbl_IN_m, sph_IN_m, zbuf_m)
+!
+      sph_IN_m%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN_m%ltr_sph, sph_IN_m)
       call check_sph_spectr_name(sph_IN_m)
 !

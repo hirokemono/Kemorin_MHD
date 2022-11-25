@@ -76,6 +76,8 @@
       call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_file_rms, flag_gzip1, flag_current_format,         &
      &    spectr_on, volume_off, sph_lbl_IN1, sph_IN1, zbuf1)
+!
+      sph_IN1%nri_dat = sph_IN1%nri_sph
       call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
 !      call check_sph_spectr_name(sph_IN1)
 !

@@ -65,9 +65,6 @@
      &   sph_IN%nfield_sph_spec, sph_IN%num_labels,                     &
      &   sph_IN%ncomp_sph_spec, sph_IN%ene_sph_spec_name, zbuf)
 !
-      sph_IN%nri_dat = sph_IN%nri_sph
-      if(flag_vol_ave) sph_IN%nri_dat = 1
-!
       end subroutine s_select_input_sph_series_head
 !
 !   --------------------------------------------------------------------

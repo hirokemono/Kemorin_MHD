@@ -203,6 +203,9 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
+!
+      sph_IN%nri_dat = sph_IN%nri_sph
+      if(flag_vol_ave) sph_IN%nri_dat = 1
       if(flag_spectr .eqv. .FALSE.) then
         call alloc_sph_spectr_data(izero, sph_IN)
       else
@@ -325,6 +328,9 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
+!
+      sph_IN%nri_dat = sph_IN%nri_sph
+      if(flag_vol_ave) sph_IN%nri_dat = 1
       if(flag_spectr .eqv. .FALSE.) then
         call alloc_sph_spectr_data(izero, sph_IN)
       else
@@ -429,6 +435,9 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    current_fmt, flag_spectr, flag_vol_ave,                       &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
+!
+      sph_IN%nri_dat = sph_IN%nri_sph
+      if(flag_vol_ave) sph_IN%nri_dat = 1
       if(flag_spectr .eqv. .FALSE.) then
         call alloc_sph_spectr_data(izero, sph_IN)
       else
@@ -513,6 +522,9 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
+!
+      sph_IN%nri_dat = sph_IN%nri_sph
+      if(flag_vol_ave) sph_IN%nri_dat = 1
       if(flag_spectr .eqv. .FALSE.) then
         call alloc_sph_spectr_data(izero, sph_IN)
       else
@@ -537,6 +549,9 @@
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
      &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
+!
+      sph_IN%nri_dat = sph_IN%nri_sph
+      if(flag_vol_ave) sph_IN%nri_dat = 1
       if(flag_spectr .eqv. .FALSE.) then
         call alloc_sph_spectr_data(izero, sph_IN)
       else

@@ -339,7 +339,8 @@
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    ene_labels, sph_rj, v_pwr, sph_OUT)
       call check_sph_vol_monitor_file(id_file_rms, fname_rms,           &
-     &    sph_OUT, FPz_f, zbuf_m, flag_gzip_lc, error_sph_vol_ms_file)
+     &    spectr_off, sph_OUT, FPz_f, zbuf_m, flag_gzip_lc,             &
+     &    error_sph_vol_ms_file)
       call dealloc_sph_espec_data(sph_OUT)
       call dealloc_sph_espec_name(sph_OUT)
 !
