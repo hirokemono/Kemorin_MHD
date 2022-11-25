@@ -31,22 +31,10 @@
 !
       use m_precision
       use m_constants
+      use t_sph_spectr_head_labels
 !
       implicit none
 !
-!
-      type sph_spectr_head_labels
-!>        Lebal of the first item (truncation, Number of radial grid)
-        character(len = kchara) :: hdr_nri, hdr_ltr
-!>        Lebal of the second item (Id of ICB and CMB)
-        character(len = kchara) :: hdr_ICB_id, hdr_CMB_id
-!>        Lebal of the third item (Inner boundary)
-        character(len = kchara) :: hdr_kr_in, hdr_r_in
-!>        Lebal of the forth item (Outer boundary)
-        character(len = kchara) :: hdr_kr_out, hdr_r_out
-!>        Lebal of the field item (Field information)
-        character(len = kchara) :: hdr_num_field, hdr_num_comp
-      end type sph_spectr_head_labels
 !
       type read_sph_spectr_data
         integer(kind = kint) :: nfield_sph_spec
@@ -69,24 +57,6 @@
         real(kind = kreal) :: time
         real(kind = kreal), allocatable :: spectr_IO(:,:,:)
       end type read_sph_spectr_data
-!
-      type(sph_spectr_head_labels), parameter :: sph_pwr_labels         &
-     &  = sph_spectr_head_labels(hdr_nri = 'Radial_layers',             &
-     &                           hdr_ltr = 'Truncation',                &
-     &                           hdr_ICB_id = 'ICB_id',                 &
-     &                           hdr_CMB_id = 'CMB_id',                 &
-     &                           hdr_kr_in =  'Lower_boundary_ID',      &
-     &                           hdr_r_in =   'Lower_boundary_radius',  &
-     &                           hdr_kr_out = 'Upper_boundary_ID',      &
-     &                           hdr_r_out =  'Upper_boundary_radius',  &
-     &                           hdr_num_field = 'Number_of_field',     &
-     &                           hdr_num_comp = 'Number_of_components')
-!
-      logical, parameter :: flag_current_fmt = .FALSE.
-      logical, parameter :: spectr_on =        .TRUE.
-      logical, parameter :: spectr_off =       .FALSE.
-      logical, parameter :: volume_on =        .TRUE.
-      logical, parameter :: volume_off =       .FALSE.
 !
 !   --------------------------------------------------------------------
 !
@@ -173,27 +143,6 @@
       sph_OUT%num_time_labels = sph_IN%num_time_labels
 !
       end subroutine copy_read_ene_head_params
-!
-!   --------------------------------------------------------------------
-!
-      subroutine copy_read_ene_head_labels(sph_lbl_IN, sph_lbl_OUT)
-!
-      type(sph_spectr_head_labels), intent(in) :: sph_lbl_IN
-      type(sph_spectr_head_labels), intent(inout) :: sph_lbl_OUT
-!
-!
-      sph_lbl_OUT%hdr_num_field = sph_lbl_IN%hdr_num_field
-      sph_lbl_OUT%hdr_num_comp =  sph_lbl_IN%hdr_num_comp
-      sph_lbl_OUT%hdr_nri =    sph_lbl_IN%hdr_nri
-      sph_lbl_OUT%hdr_ltr =    sph_lbl_IN%hdr_ltr
-      sph_lbl_OUT%hdr_ICB_id = sph_lbl_IN%hdr_ICB_id
-      sph_lbl_OUT%hdr_CMB_id = sph_lbl_IN%hdr_CMB_id
-      sph_lbl_OUT%hdr_kr_in =  sph_lbl_IN%hdr_kr_in
-      sph_lbl_OUT%hdr_kr_out = sph_lbl_IN%hdr_kr_out
-      sph_lbl_OUT%hdr_r_in =   sph_lbl_IN%hdr_r_in
-      sph_lbl_OUT%hdr_r_out =  sph_lbl_IN%hdr_r_out
-!
-      end subroutine copy_read_ene_head_labels
 !
 !   --------------------------------------------------------------------
 !

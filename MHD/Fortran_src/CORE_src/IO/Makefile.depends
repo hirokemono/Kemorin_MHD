@@ -8,7 +8,7 @@ check_sph_monitor_header.o: $(IO_DIR)/check_sph_monitor_header.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 comm_table_IO.o: $(IO_DIR)/comm_table_IO.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-compare_sph_monitor_header.o: $(IO_DIR)/compare_sph_monitor_header.f90 m_precision.o m_constants.o t_read_sph_spectra.o skip_comment_f.o
+compare_sph_monitor_header.o: $(IO_DIR)/compare_sph_monitor_header.f90 m_precision.o m_constants.o t_sph_spectr_head_labels.o t_read_sph_spectra.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 data_IO_to_textline.o: $(IO_DIR)/data_IO_to_textline.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -186,7 +186,9 @@ t_pickup_sph_spectr_data.o: $(IO_DIR)/t_pickup_sph_spectr_data.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_read_mesh_data.o: $(IO_DIR)/t_read_mesh_data.f90 m_precision.o t_comm_table.o t_geometry_data.o t_group_data.o t_surf_edge_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_read_sph_spectra.o: $(IO_DIR)/t_read_sph_spectra.f90 m_precision.o m_constants.o
+t_read_sph_spectra.o: $(IO_DIR)/t_read_sph_spectra.f90 m_precision.o m_constants.o t_sph_spectr_head_labels.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_sph_spectr_head_labels.o: $(IO_DIR)/t_sph_spectr_head_labels.f90 m_precision.o m_constants.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_spheric_data_IO.o: $(IO_DIR)/t_spheric_data_IO.f90 m_precision.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_spheric_group.o t_node_id_spherical_IO.o t_comm_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
