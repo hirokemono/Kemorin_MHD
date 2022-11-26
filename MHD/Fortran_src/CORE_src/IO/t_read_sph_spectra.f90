@@ -114,7 +114,7 @@
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
 !
-      deallocate(ene_sph_spec_name, sph_IN%ncomp_sph_spec)
+      deallocate(sph_IN%ene_sph_spec_name, sph_IN%ncomp_sph_spec)
 !
       end subroutine dealloc_sph_espec_name
 !
