@@ -120,9 +120,9 @@
       call sel_open_read_gz_stream_file(FPz_fp, id_file,                &
      &                                  file_name, flag_gzip_lc, zbuf)
       call s_select_input_picked_sph_head(FPz_fp, id_file,              &
-     &    picked%flag_gzip, sph_lbl_IN_p, sph_IN_p, zbuf)
+     &    flag_gzip_lc, sph_lbl_IN_p, sph_IN_p, zbuf)
       call sel_close_read_gz_stream_file(FPz_fp, id_file,               &
-     &                                   picked%flag_gzip, zbuf)
+     &                                   flag_gzip_lc, zbuf)
 !
       call dup_each_pick_sph_file_header(nlayer_ICB, nlayer_CMB,        &
      &                                   picked, sph_OUT_p)
