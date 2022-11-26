@@ -108,6 +108,7 @@
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%ene_sph_spec_name(sph_OUT%num_time_labels)              &
      &                                       = trim(mode_label)
+      end if
 !
       icou = sph_OUT%num_time_labels
       do i = 1, v_pwr%num_fld_sq

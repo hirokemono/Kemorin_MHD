@@ -163,7 +163,6 @@
 !
       type(read_sph_spectr_data), save :: sph_OUT
       type(buffer_4_gzip), save :: zbuf_m
-      logical :: flag_gzip_m = .TRUE.
       logical :: flag_gzip_lc
 !
 !
@@ -171,7 +170,7 @@
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
       call alloc_sph_spectr_data(izero, sph_OUT)
 !
-      flag_gzip_lc = flag_gzip_m
+      flag_gzip_lc = pwr%gzip_flag_rms_layer
       call sel_open_sph_layer_mean_file(id_file_rms, fname_rms,         &
      &                                   sph_OUT, zbuf_m, flag_gzip_lc)
       call swap_layer_mean_to_IO(pwr%nri_rms, pwr%ntot_comp_sq,         &
@@ -212,7 +211,6 @@
 !
       type(read_sph_spectr_data), save :: sph_OUT
       type(buffer_4_gzip), save :: zbuf_m
-      logical :: flag_gzip_m = .TRUE.
       logical :: flag_gzip_lc
 !
 !
@@ -220,9 +218,9 @@
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
       call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
 !
-       flag_gzip_lc = flag_gzip_m
+      flag_gzip_lc = pwr%gzip_flag_rms_layer
       call sel_open_sph_layer_mean_file(id_file_rms, fname_rms,         &
-     &                                   sph_OUT, zbuf_m, flag_gzip_lc)
+     &                                  sph_OUT, zbuf_m, flag_gzip_lc)
       call swap_layer_spectr_to_IO(pwr%nri_rms, ltr, pwr%ntot_comp_sq,  &
      &                             rms_sph_x, sph_OUT%spectr_IO(1,0,1))
       call sel_gz_write_layer_spectr_mtr                                &

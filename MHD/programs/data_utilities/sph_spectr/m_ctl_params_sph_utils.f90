@@ -100,7 +100,9 @@
       use set_control_platform_data
       use set_control_4_pickup_sph
 !
+      use t_multi_flag_labels
       use t_ctl_data_4_sph_utils
+      use m_file_format_labels
       use m_default_file_prefix
 !
       type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
@@ -173,6 +175,11 @@
 !
       if(spu_ctl%vol_ene_spec_head_ctl%iflag .gt. 0) then
         vol_ene_spec_head = spu_ctl%vol_ene_spec_head_ctl%charavalue
+      end if
+!
+!
+      if(allocated(gzip_flags%flags) .eqv. .FALSE.) then
+        call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags)
       end if
 !
 !   set pickup mode

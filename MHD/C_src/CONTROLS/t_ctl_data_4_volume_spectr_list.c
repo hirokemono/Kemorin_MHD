@@ -7,14 +7,15 @@
 
 #include "t_ctl_data_4_volume_spectr_list.h"
 
-#define NLBL_VOLUME_SPECTR 4
+#define NLBL_VOLUME_SPECTR 5
 
 const char label_volume_spectr_ctl[NLBL_VOLUME_SPECTR][KCHARA_C] = {
     /*[ 0]*/    {"volume_pwr_spectr_prefix"},
     /*[ 1]*/    {"volume_average_prefix"},
-    
-    /*[ 2]*/    {"inner_radius_ctl"},
-    /*[ 3]*/    {"outer_radius_ctl"}
+    /*[ 2]*/    {"volume_pwr_spectr_format"},
+
+    /*[ 3]*/    {"inner_radius_ctl"},
+    /*[ 4]*/    {"outer_radius_ctl"}
 };
 
 
@@ -41,7 +42,8 @@ struct volume_spectr_control_c * init_volume_spectr_control_c(){
 	
 	v_pwr_c->volume_spec_file_c = init_chara_ctl_item_c();
 	v_pwr_c->volume_ave_file_c = init_chara_ctl_item_c();
-	
+    v_pwr_c->volume_spec_format_c = init_chara_ctl_item_c();
+
     v_pwr_c->inner_radius_c = init_real_ctl_item_c();
     v_pwr_c->outer_radius_c = init_real_ctl_item_c();
 	
@@ -52,7 +54,8 @@ void dealloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c){
 	
     dealloc_chara_ctl_item_c(v_pwr_c->volume_spec_file_c);
 	dealloc_chara_ctl_item_c(v_pwr_c->volume_ave_file_c);
-	
+    dealloc_chara_ctl_item_c(v_pwr_c->volume_spec_format_c);
+
 	free(v_pwr_c->inner_radius_c);
 	free(v_pwr_c->outer_radius_c);
     
@@ -69,9 +72,10 @@ int read_volume_spectr_control_c(FILE *fp, char buf[LENGTHBUF], const char *labe
 		
 		read_chara_ctl_item_c(buf, label_volume_spectr_ctl[0], v_pwr_c->volume_spec_file_c);
 		read_chara_ctl_item_c(buf, label_volume_spectr_ctl[1], v_pwr_c->volume_ave_file_c);
-		
-		read_real_ctl_item_c(buf, label_volume_spectr_ctl[2], v_pwr_c->inner_radius_c);
-		read_real_ctl_item_c(buf, label_volume_spectr_ctl[3], v_pwr_c->outer_radius_c);
+        read_chara_ctl_item_c(buf, label_volume_spectr_ctl[2], v_pwr_c->volume_spec_format_c);
+
+		read_real_ctl_item_c(buf, label_volume_spectr_ctl[3], v_pwr_c->inner_radius_c);
+		read_real_ctl_item_c(buf, label_volume_spectr_ctl[4], v_pwr_c->outer_radius_c);
 	};
 	return 1;
 };
@@ -84,11 +88,13 @@ int write_volume_spectr_control_c(FILE *fp, int level, const char *label,
 				label_volume_spectr_ctl[0], v_pwr_c->volume_spec_file_c);
 	write_chara_ctl_item_c(fp, level, v_pwr_c->maxlen, 
 				label_volume_spectr_ctl[1], v_pwr_c->volume_ave_file_c);
-	
+    write_chara_ctl_item_c(fp, level, v_pwr_c->maxlen,
+                label_volume_spectr_ctl[2], v_pwr_c->volume_spec_format_c);
+
 	write_real_ctl_item_c(fp, level, v_pwr_c->maxlen, 
-				label_volume_spectr_ctl[2], v_pwr_c->inner_radius_c);
+				label_volume_spectr_ctl[3], v_pwr_c->inner_radius_c);
 	write_real_ctl_item_c(fp, level, v_pwr_c->maxlen, 
-				label_volume_spectr_ctl[3], v_pwr_c->outer_radius_c);
+				label_volume_spectr_ctl[4], v_pwr_c->outer_radius_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

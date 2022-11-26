@@ -219,7 +219,6 @@
 !
       type(read_sph_spectr_data), save :: sph_OUT
       type(buffer_4_gzip), save :: zbuf_m
-      logical :: flag_gzip_m = .TRUE.
       logical :: flag_gzip_lc
 !
 !
@@ -229,7 +228,7 @@
      &    ene_labels, sph_rj, v_pwr, sph_OUT)
       call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
 !
-      flag_gzip_lc = flag_gzip_m
+      flag_gzip_lc = v_pwr%gzip_flag_vol_spec
       call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
      &                                   sph_OUT, zbuf_m, flag_gzip_lc)
       call swap_volume_spectr_to_IO(sph_params%l_truncation,            &
@@ -270,7 +269,6 @@
 !
       type(read_sph_spectr_data), save :: sph_OUT
       type(buffer_4_gzip), save :: zbuf_m
-      logical :: flag_gzip_m = .TRUE.
       logical :: flag_gzip_lc
 !
 !
@@ -280,7 +278,7 @@
      &    ene_labels, sph_rj, v_pwr, sph_OUT)
       call alloc_sph_spectr_data(izero, sph_OUT)
 !
-      flag_gzip_lc = flag_gzip_m
+      flag_gzip_lc = v_pwr%gzip_flag_vol_spec
       call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
      &                                   sph_OUT, zbuf_m, flag_gzip_lc)
 !
@@ -323,7 +321,6 @@
       type(read_sph_spectr_data), save :: sph_OUT
       character, pointer :: FPz_f
       type(buffer_4_gzip), save :: zbuf_m
-      logical :: flag_gzip_m = .TRUE.
       logical :: flag_gzip_lc
 !
 !
@@ -332,7 +329,7 @@
 !
       if(id_rank .ne. v_pwr%irank_m) return
 !
-      flag_gzip_lc = flag_gzip_m
+      flag_gzip_lc = v_pwr%gzip_flag_vol_spec
       write(fname_rms,   '(a,a6)')                                      &
      &      trim(v_pwr%fhead_rms_v), '_s.dat'
       write(mode_label,'(a)') 'EMPTY'

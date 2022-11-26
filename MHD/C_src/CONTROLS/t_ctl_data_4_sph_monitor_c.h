@@ -36,7 +36,8 @@ struct layerd_spectr_control_c{
     int maxlen;
     
 	struct chara_ctl_item *layered_pwr_spectr_prefix_c;
-	
+    struct chara_ctl_item *layered_pwr_spectr_format_c;
+
     struct chara_ctl_item *degree_spectr_switch_c;
     struct chara_ctl_item *order_spectr_switch_c;
     struct chara_ctl_item *diff_lm_spectr_switch_c;

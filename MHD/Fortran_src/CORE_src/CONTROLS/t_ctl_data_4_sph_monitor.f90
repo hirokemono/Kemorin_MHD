@@ -88,11 +88,14 @@
 !>        Structure for dipolarity setting
         type(sph_dipolarity_control) :: fdip_ctl
 !
-!>        Structure for layered spectrum file prefix
+!>        Structure for volume average file prefix
         type(read_character_item) :: volume_average_prefix
 !
-!>        Structure for layered spectrum file prefix
+!>        Structure for volume spectrum file prefix
         type(read_character_item) :: volume_pwr_spectr_prefix
+!
+!>        Structure for volume spectrum file format
+        type(read_character_item) :: volume_pwr_spectr_format
 !
 !>        Structure for Nusselt number file prefix
         type(read_character_item) :: heat_Nusselt_file_prefix

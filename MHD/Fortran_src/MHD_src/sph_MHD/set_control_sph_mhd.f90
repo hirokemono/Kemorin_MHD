@@ -339,6 +339,8 @@
       use t_no_heat_Nusselt
       use t_CMB_dipolarity
       use t_sph_typical_scales
+      use t_multi_flag_labels
+      use m_file_format_labels
       use m_base_field_labels
 !
       use set_control_4_pickup_sph
@@ -349,6 +351,10 @@
       type(phys_data), intent(in) :: rj_fld
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
+!
+      if(allocated(gzip_flags%flags) .eqv. .FALSE.) then
+        call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags)
+      end if
 !
 !   set_pickup modes
 !
