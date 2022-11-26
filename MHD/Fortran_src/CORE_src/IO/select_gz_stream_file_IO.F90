@@ -1,5 +1,5 @@
 !>@file   select_gz_stream_file_IO.F90
-!!@brief  module skip_comment_f
+!!@brief  module select_gz_stream_file_IO
 !!
 !!@authorH.Matsui and H.Okuda
 !!@date Programmed  H. Matsui in  Sep. 2022

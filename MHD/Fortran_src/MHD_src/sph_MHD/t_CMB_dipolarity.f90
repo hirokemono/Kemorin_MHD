@@ -130,6 +130,10 @@
       subroutine write_dipolarity(i_step, time, ltr, nri,               &
      &                            nlayer_ICB, nlayer_CMB, i_magne, dip)
 !
+      use t_buffer_4_gzip
+      use sph_monitor_data_text
+      use select_gz_stream_file_IO
+!
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
       integer(kind = kint), intent(in) :: ltr, nri
@@ -137,20 +141,22 @@
       integer(kind = kint), intent(in) :: i_magne
       type(dipolarity_data), intent(in) :: dip
 !
-      integer(kind = kint) :: i
+      logical :: flag_gzip_d = .TRUE.
+      logical :: flag_gzip_lc
+      type(buffer_4_gzip) :: zbuf_d
 !
 !
       if(dip%iflag_dipolarity .le. izero) return
       if(i_magne .le. 0) return
 !
+      flag_gzip_lc = flag_gzip_d
       call open_dipolarity_file(id_dipolarity, ltr, nri,                &
-     &                          nlayer_ICB, nlayer_CMB, dip)
+     &                          nlayer_ICB, nlayer_CMB, dip,            &
+     &                          flag_gzip_lc, zbuf_d)
 !
-      write(id_dipolarity,'(i16,1pe23.14e3)',advance='NO') i_step, time
-      do i = 1, dip%num_dip
-        write(id_dipolarity,'(1pe23.14e3)',advance='NO') dip%f_dip(i)
-      end do
-      write(id_dipolarity,'(a)') ''
+      call sel_gz_write_text_stream(flag_gzip_lc, id_dipolarity,        &
+     &    volume_pwr_data_text(i_step, time, dip%num_dip, dip%f_dip),   &
+     &    zbuf_d)
       close(id_dipolarity)
 !
       end subroutine write_dipolarity
@@ -159,40 +165,56 @@
 ! -----------------------------------------------------------------------
 !
       subroutine open_dipolarity_file(id_file, ltr, nri,                &
-     &                                nlayer_ICB, nlayer_CMB, dip)
+     &          nlayer_ICB, nlayer_CMB, dip, flag_gzip_lc, zbuf)
 !
+      use t_buffer_4_gzip
       use write_field_labels
+      use gz_open_sph_monitor_file
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(dipolarity_data), intent(in) :: dip
 !
+      logical, intent(inout)  :: flag_gzip_lc
+      type(buffer_4_gzip), intent(inout)  :: zbuf
 !
-      open(id_file, file = dip%dipolarity_file_name, form='formatted',  &
-     &     status='old', position='append', err = 99)
+      character(len = kchara) :: file_name
+      logical :: flag_miss
+!
+!
+      call check_gzip_or_ascii_file(dip%dipolarity_file_name,           &
+     &                              file_name, flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
+!
+      open(id_file, file=file_name, status='old', position='append',    &
+     &     FORM='UNFORMATTED', ACCESS='STREAM')
       return
 !
    99 continue
-      open(id_file, file = dip%dipolarity_file_name,                    &
-     &     form='formatted', status='replace')
+      open(id_file, file=file_name, FORM='UNFORMATTED',ACCESS='STREAM')
 !
-      call write_dipolarity_header(id_file, ltr, nri,                   &
-     &                             nlayer_ICB, nlayer_CMB, dip)
+      call sel_write_dipolarity_header(flag_gzip_lc, id_file,           &
+     &    ltr, nri, nlayer_ICB, nlayer_CMB, dip, zbuf)
 !
       end subroutine open_dipolarity_file
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_dipolarity_header(id_file, ltr, nri,             &
-     &                                   nlayer_ICB, nlayer_CMB, dip)
+      subroutine sel_write_dipolarity_header(flag_gzip_lc, id_file,     &
+     &          nri, ltr, nlayer_ICB, nlayer_CMB, dip, zbuf)
 !
+      use t_buffer_4_gzip
       use sph_power_spectr_data_text
+      use select_gz_stream_file_IO
 !
+      logical, intent(in) :: flag_gzip_lc
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(dipolarity_data), intent(in) :: dip
+!
+      type(buffer_4_gzip), intent(inout)  :: zbuf
 !
       type(read_sph_spectr_data) :: sph_OUT
       integer(kind = kint) :: len_tot
@@ -204,13 +226,13 @@
 !
       call len_sph_vol_spectr_header(sph_dipolarity_labels, sph_OUT,    &
      &                               len_each, len_tot)
-      write(id_file,'(a)',ADVANCE='NO')                                 &
-     &       sph_vol_spectr_header_text(len_tot, len_each,              &
-     &                                  sph_dipolarity_labels, sph_OUT)
-      call dealloc_sph_espec_data(sph_OUT)
+      call sel_gz_write_text_stream(flag_gzip_lc, id_file,              &
+     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
+     &                               sph_pwr_labels, sph_OUT),          &
+     &    zbuf)
       call dealloc_sph_espec_name(sph_OUT)
 !
-      end subroutine write_dipolarity_header
+      end subroutine sel_write_dipolarity_header
 !
 ! -----------------------------------------------------------------------
 !

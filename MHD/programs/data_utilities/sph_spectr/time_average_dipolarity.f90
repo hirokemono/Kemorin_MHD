@@ -82,6 +82,7 @@
       real(kind = kreal) :: true_start
       character(len = kchara) :: tmpchara, ave_file_name
 !
+      type(buffer_4_gzip) :: zbuf_t
 !
       dip_t%dipolarity_file_name = file_name
       call sel_open_read_gz_stream_file                                 &
@@ -232,9 +233,9 @@
      &                   't_ave_', trim(dip_t%dipolarity_file_name)
       open(id_dipolarity, file = ave_file_name,                         &
      &     form='formatted', status='replace')
-      call write_dipolarity_header                                      &
-     &   (id_dipolarity, sph_IN1%ltr_sph, sph_IN1%nri_sph,              &
-     &    sph_IN1%kr_ICB, sph_IN1%kr_CMB, dip_t)
+      call sel_write_dipolarity_header                                  &
+     &   (.FALSE., id_dipolarity, sph_IN1%ltr_sph, sph_IN1%nri_sph,     &
+     &    sph_IN1%kr_ICB, sph_IN1%kr_CMB, dip_t, zbuf_t)
 !
       write(id_dipolarity,'(i16,1pe23.14e3)',advance='NO') i_step, time
       do i = 1, dip_t%num_dip

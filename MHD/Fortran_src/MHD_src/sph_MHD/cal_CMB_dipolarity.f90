@@ -17,15 +17,6 @@
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_mean_squares), intent(in) :: pwr
 !!        type(dipolarity_data), intent(inout) :: dip
-!!      subroutine write_dipolarity(i_step, time, ltr, nri,             &
-!!     &                            nlayer_ICB, nlayer_CMB, i_magne, dip)
-!!        integer, intent(in) :: id_rank
-!!        integer(kind = kint), intent(in) :: i_step
-!!        real(kind = kreal), intent(in) :: time
-!!        integer(kind = kint), intent(in) :: ltr, nri
-!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-!!        integer(kind = kint), intent(in) :: i_magne
-!!        type(dipolarity_data), intent(in) :: dip
 !!      subroutine s_cal_CMB_dipolarity(id_rank, rj_fld, pwr, dip)
 !!        integer, intent(in) :: id_rank
 !!        type(phys_data), intent(in) :: rj_fld

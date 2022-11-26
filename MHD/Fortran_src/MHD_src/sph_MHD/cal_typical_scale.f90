@@ -132,7 +132,8 @@
      &   (id_scale, sph_params%l_truncation, sph_rj%nidx_rj(1),         &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out,                              &
-     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0), tsl, flag_gzip_lc, zbuf_t)
+     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0), tsl,                    &
+     &    flag_gzip_lc, zbuf_t)
 !
       call sel_gz_write_text_stream(flag_gzip_lc, id_scale,             &
      &    volume_pwr_data_text(i_step, time, tsl%num_lscale, d_rj_out), &
