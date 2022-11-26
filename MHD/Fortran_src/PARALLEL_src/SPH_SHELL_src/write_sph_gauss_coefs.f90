@@ -306,8 +306,9 @@
 !
       call sel_open_read_gz_stream_file(FPz_fp, id_gauss_coef,          &
      &                                file_name, flag_gzip_lc, zbuf_g)
-      call s_select_input_picked_sph_head(FPz_fp, id_gauss_coef,        &
-     &    flag_gzip_lc, sph_lbl_IN_g, sph_IN_g, zbuf_g)
+      call s_select_input_sph_series_head(FPz_fp, id_gauss_coef,        &
+     &    flag_gzip_lc, flag_current_fmt, spectr_off, volume_on,        &
+     &    sph_lbl_IN_g, sph_IN_g, zbuf_g)
       call sel_close_read_gz_stream_file(FPz_fp, id_gauss_coef,         &
      &                                   flag_gzip_lc, zbuf_g)
       sph_IN_g%nri_dat = 1

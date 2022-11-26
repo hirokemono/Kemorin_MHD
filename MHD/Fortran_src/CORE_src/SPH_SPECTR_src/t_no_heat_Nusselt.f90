@@ -257,7 +257,7 @@
 !
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !
-      integer(kind = kint) :: icou, ntot
+      integer(kind = kint) :: icou
 !
 !
       sph_OUT%ltr_sph = ltr

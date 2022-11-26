@@ -9,13 +9,15 @@
 !!@verbatim
 !!      subroutine open_typical_scale_file                              &
 !!     &         (id_file, ltr, nri, nlayer_ICB, nlayer_CMB,            &
-!!     &          kr_in, kr_out, r_in, r_out, tsl)
+!!     &          kr_in, kr_out, r_in, r_out, tsl, flag_gzip_lc, zbuf)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        integer(kind = kint), intent(in) :: ltr, nri
 !!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
 !!        integer(kind = kint), intent(in) :: kr_in, kr_out
 !!        real(kind = kreal), intent(in) :: r_in, r_out
 !!        type(typical_scale_data), intent(in) :: tsl
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!        logical, intent(inout) :: flag_gzip_lc
 !!@endverbatim
 !
       module t_sph_typical_scales
@@ -116,9 +118,6 @@
         real(kind = kreal) :: dlm_kin
       end type typical_scale_data
 !
-      type(sph_spectr_head_labels), parameter, private                  &
-     &            :: typical_scale_labels = sph_spectr_head_labels
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -156,10 +155,16 @@
 !
       subroutine open_typical_scale_file                                &
      &         (id_file, ltr, nri, nlayer_ICB, nlayer_CMB,              &
-     &          kr_in, kr_out, r_in, r_out, tsl)
+     &          kr_in, kr_out, r_in, r_out, tsl, flag_gzip_lc, zbuf)
+!
+      use t_buffer_4_gzip
+      use t_read_sph_spectra
 !
       use set_parallel_file_name
       use write_field_labels
+      use sph_power_spectr_data_text
+      use select_gz_stream_file_IO
+      use gz_open_sph_monitor_file
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ltr, nri
@@ -168,7 +173,15 @@
       real(kind = kreal), intent(in) :: r_in, r_out
       type(typical_scale_data), intent(in) :: tsl
 !
-      character(len = kchara) :: file_name
+      type(buffer_4_gzip), intent(inout) :: zbuf
+      logical, intent(inout) :: flag_gzip_lc
+!
+      character(len = kchara) :: file_name, base_name
+      type(read_sph_spectr_data) :: sph_OUT
+      logical :: flag_miss
+!
+      integer(kind = kint) :: len_each(6)
+      integer(kind = kint) :: len_tot
 !
 !
       base_name = add_dat_extension(tsl%scale_prefix)
@@ -185,11 +198,11 @@
       open(id_file, file=file_name, FORM='UNFORMATTED',ACCESS='STREAM')
       call dup_typ_scale_head_params(ltr, nri, nlayer_ICB, nlayer_CMB,  &
      &    kr_in, kr_out, r_in, r_out, tsl, sph_OUT)
-      call len_sph_vol_spectr_header(sph_spectr_head_labels, sph_OUT,   &
+      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
      &                               len_each, len_tot)
       call sel_gz_write_text_stream(flag_gzip_lc, id_file,              &
      &    sph_vol_spectr_header_text(len_tot, len_each,                 &
-     &                               sph_spectr_head_labels, sph_OUT),  &
+     &                               sph_pwr_labels, sph_OUT),          &
      &    zbuf)
       call dealloc_sph_espec_name(sph_OUT)
 !
@@ -201,6 +214,8 @@
      &         (ltr, nri, nlayer_ICB, nlayer_CMB,                       &
      &          kr_in, kr_out, r_in, r_out, tsl, sph_OUT)
 !
+      use t_read_sph_spectra
+!
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: kr_in, kr_out
@@ -209,15 +224,17 @@
 !
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !
+      integer(kind = kint) :: i
+!
 !
       sph_OUT%ltr_sph = ltr
       sph_OUT%nri_sph = nri
       sph_OUT%nri_dat = 1
       sph_OUT%kr_ICB = nlayer_ICB
       sph_OUT%kr_CMB = nlayer_CMB
-      sph_OUT%kr_inner = r_in
-      sph_OUT%kr_outer = kr_in
-      sph_OUT%r_inner = kr_out
+      sph_OUT%kr_inner = kr_in
+      sph_OUT%kr_outer = kr_out
+      sph_OUT%r_inner = r_in
       sph_OUT%r_outer = r_out
       sph_OUT%nfield_sph_spec = tsl%num_lscale
       sph_OUT%ntot_sph_spec =   tsl%num_lscale
@@ -225,7 +242,7 @@
 !
       call alloc_sph_espec_name(sph_OUT)
 !
-      sph_OUT%ncomp_lscale(1:tsl%num_lscale)                            &
+      sph_OUT%ncomp_sph_spec(1:tsl%num_lscale)                          &
      &               = tsl%ncomp_lscale(1:tsl%num_lscale)
 !
       sph_OUT%ene_sph_spec_name(1) = 't_step'
