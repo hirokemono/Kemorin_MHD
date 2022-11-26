@@ -100,7 +100,7 @@
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      logical :: flag_gzip_lc
+      logical :: flag_gzip_lc, flag_miss
       character, pointer :: FPz_fp
       character(len = kchara) :: file_name, base_name
       type(read_sph_spectr_data) :: sph_IN_p, sph_OUT_p
