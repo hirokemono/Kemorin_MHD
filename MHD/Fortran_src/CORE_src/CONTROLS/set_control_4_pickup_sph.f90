@@ -79,8 +79,7 @@
       end if
 !
       pwr%v_spectr(1)%gzip_flag_vol_spec = .FALSE.
-      if(pwr%v_spectr(1)%iflag_volume_ave_sph .gt. 0                    &
-     &     .and. smonitor_ctl%volume_pwr_spectr_format%iflag.gt.0) then
+      if(smonitor_ctl%volume_pwr_spectr_format%iflag .gt. 0) then
         input_flag = smonitor_ctl%volume_pwr_spectr_format%charavalue
         if(check_mul_flags(input_flag, gzip_flags))                     &
      &                     pwr%v_spectr(1)%gzip_flag_vol_spec = .TRUE.
@@ -127,16 +126,15 @@
      &       = v_pwr_ctl(i)%volume_spec_file_ctl%charavalue
         end if
 !
-        v_spectr(j)%gzip_flag_vol_spec = .FALSE.
-        if(v_spectr(j)%iflag_volume_ave_sph .gt. 0                      &
-     &     .and. v_pwr_ctl(i)%volume_ave_file_ctl%iflag  .gt. 0) then
+        v_spectr(j)%iflag_volume_ave_sph                                &
+     &        = v_pwr_ctl(i)%volume_ave_file_ctl%iflag
+        if(v_spectr(j)%iflag_volume_ave_sph .gt. 0) then
           v_spectr(j)%fhead_ave                                         &
      &       = v_pwr_ctl(i)%volume_ave_file_ctl%charavalue
         end if
 !
         v_spectr(j)%gzip_flag_vol_spec = .FALSE.
-        if(v_spectr(j)%iflag_volume_ave_sph .gt. 0                      &
-     &     .and. v_pwr_ctl(i)%volume_spec_format_ctl%iflag .gt. 0) then
+        if(v_pwr_ctl(i)%volume_spec_format_ctl%iflag .gt. 0) then
           input_flag                                                    &
      &        = v_pwr_ctl(i)%volume_spec_format_ctl%charavalue
           if(check_mul_flags(input_flag, gzip_flags))                   &

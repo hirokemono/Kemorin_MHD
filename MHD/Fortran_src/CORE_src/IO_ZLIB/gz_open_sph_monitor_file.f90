@@ -7,6 +7,12 @@
 !> @brief Time spectrum data output routines for utilities
 !!
 !!@verbatim
+!!      subroutine check_gzip_or_ascii_file                             &
+!!     &         (base_name, file_name, flag_gzip_lc, flag_miss)
+!!        character(len = kchara), intent(in) :: base_name
+!!        character(len = kchara), intent(inout) :: file_name
+!!        logical, intent(inout) :: flag_gzip_lc, flag_miss
+!!
 !!      subroutine check_sph_vol_monitor_file(id_file, base_name,       &
 !!     &          flag_spectr, sph_OUT, zbuf, flag_gzip_lc, error)
 !!      subroutine sel_open_sph_vol_monitor_file                        &
@@ -44,6 +50,38 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine check_gzip_or_ascii_file                               &
+     &         (base_name, file_name, flag_gzip_lc, flag_miss)
+!
+      use set_parallel_file_name
+      use delete_data_files
+!
+      character(len = kchara), intent(in) :: base_name
+      character(len = kchara), intent(inout) :: file_name
+      logical, intent(inout) :: flag_gzip_lc, flag_miss
+!
+      character(len = kchara) :: gzip_name
+!
+      gzip_name = add_gzip_extension(base_name)
+      flag_miss = .TRUE.
+      if(check_file_exist(base_name)) then
+        flag_miss =    .FALSE.
+        flag_gzip_lc = .FALSE.
+      else if(check_file_exist(gzip_name)) then
+        flag_miss =    .FALSE.
+        flag_gzip_lc = .TRUE.
+      end if
+!
+      if(flag_gzip_lc) then
+        file_name = gzip_name
+      else
+        file_name = base_name
+      end if
+!
+      end subroutine check_gzip_or_ascii_file
+!
+! -----------------------------------------------------------------------
+!
       subroutine check_sph_vol_monitor_file(id_stream, base_name,       &
      &          flag_spectr, sph_OUT, FPz_f, zbuf, flag_gzip_lc, error)
 !
@@ -52,8 +90,6 @@
       use sph_power_spectr_data_text
       use sel_gz_input_sph_mtr_head
       use compare_sph_monitor_header
-      use set_parallel_file_name
-      use delete_data_files
 !
       integer(kind = kint), intent(in) :: id_stream
       character(len = kchara), intent(in) :: base_name
@@ -69,19 +105,13 @@
       integer(kind = kint) :: len_each(6)
       integer(kind = kint) :: len_tot
       character(len = kchara) :: fname, gzip_name
+      logical :: flag_miss
 !
 !
       error = .FALSE.
-      fname = base_name
-      gzip_name = add_gzip_extension(base_name)
-      if(check_file_exist(fname)) then
-        flag_gzip_lc = .FALSE.
-      else if(check_file_exist(gzip_name)) then
-        flag_gzip_lc = .TRUE.
-        fname = gzip_name
-      else
-        go to 99
-      end if
+      call check_gzip_or_ascii_file(base_name, fname,                   &
+     &                              flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
 !
       call sel_open_read_gz_stream_file(FPz_f, id_stream,               &
      &                                  fname, flag_gzip_lc, zbuf)
@@ -99,7 +129,6 @@
 !
    99 continue
 !
-      if(flag_gzip_lc) fname = add_gzip_extension(fname)
       open(id_stream, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
 !
       call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
@@ -119,8 +148,6 @@
       use t_read_sph_spectra
       use select_gz_stream_file_IO
       use sph_power_spectr_data_text
-      use set_parallel_file_name
-      use delete_data_files
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: base_name
@@ -132,18 +159,12 @@
       integer(kind = kint) :: len_each(6)
       integer(kind = kint) :: len_tot
       character(len = kchara) :: fname, gzip_name
+      logical :: flag_miss
 !
 !
-      fname = base_name
-      gzip_name = add_gzip_extension(base_name)
-      if(check_file_exist(fname)) then
-        flag_gzip_lc = .FALSE.
-      else if(check_file_exist(gzip_name)) then
-        flag_gzip_lc = .TRUE.
-        fname = gzip_name
-      else
-        go to 99
-      end if
+      call check_gzip_or_ascii_file(base_name, fname,                   &
+     &                              flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
 !
       open(id_file, file=fname, status='old', position='append',        &
      &     FORM='UNFORMATTED', ACCESS='STREAM')
@@ -151,7 +172,6 @@
 !
    99 continue
 !
-      if(flag_gzip_lc) fname = add_gzip_extension(fname)
       open(id_file, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
 !
       call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
@@ -173,8 +193,6 @@
       use sph_power_spectr_data_text
       use sel_gz_input_sph_mtr_head
       use compare_sph_monitor_header
-      use set_parallel_file_name
-      use delete_data_files
 !
       integer(kind = kint), intent(in) :: id_stream
       character(len = kchara), intent(in) :: base_name
@@ -190,19 +208,13 @@
       integer(kind = kint) :: len_each(6)
       integer(kind = kint) :: len_tot
       character(len = kchara) :: fname, gzip_name
+      logical :: flag_miss
 !
 !
       error = .FALSE.
-      fname = base_name
-      gzip_name = add_gzip_extension(base_name)
-      if(check_file_exist(fname)) then
-        flag_gzip_lc = .FALSE.
-      else if(check_file_exist(gzip_name)) then
-        flag_gzip_lc = .TRUE.
-        fname = gzip_name
-      else
-        go to 99
-      end if
+      call check_gzip_or_ascii_file(base_name, fname,                   &
+     &                              flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
 !
       call sel_open_read_gz_stream_file(FPz_f, id_stream,               &
      &                                  fname, flag_gzip_lc, zbuf)
@@ -218,7 +230,6 @@
 !
    99 continue
 !
-      if(flag_gzip_lc) fname = add_gzip_extension(fname)
       open(id_stream, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
 !
       call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
@@ -238,8 +249,6 @@
       use t_read_sph_spectra
       use select_gz_stream_file_IO
       use sph_power_spectr_data_text
-      use set_parallel_file_name
-      use delete_data_files
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: base_name
@@ -251,18 +260,13 @@
       integer(kind = kint) :: len_each(6)
       integer(kind = kint) :: len_tot
       character(len = kchara) :: fname, gzip_name
+      logical :: flag_miss
 !
 !
       fname = base_name
-      gzip_name = add_gzip_extension(base_name)
-      if(check_file_exist(fname)) then
-        flag_gzip_lc = .FALSE.
-      else if(check_file_exist(gzip_name)) then
-        flag_gzip_lc = .TRUE.
-        fname = gzip_name
-      else
-        go to 99
-      end if
+      call check_gzip_or_ascii_file(base_name, fname,                   &
+     &                              flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
 !
       open(id_file, file=fname, status='old', position='append',        &
      &     FORM='UNFORMATTED', ACCESS='STREAM')
@@ -270,7 +274,6 @@
 !
    99 continue
 !
-      if(flag_gzip_lc) fname = add_gzip_extension(fname)
       open(id_file, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
 !
       call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &

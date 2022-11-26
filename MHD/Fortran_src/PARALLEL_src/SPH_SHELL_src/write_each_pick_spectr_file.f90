@@ -45,7 +45,7 @@
      &          nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
       use write_field_labels
-!
+      use gz_open_sph_monitor_file
 !
       integer(kind = kint), intent(in) :: inum
       integer(kind = kint), intent(in) :: id_file
@@ -54,14 +54,20 @@
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      character(len = kchara) :: file_name
+      logical :: flag_gzip_lc, flag_miss
+      character(len = kchara) :: file_name, base_name
 !
 !
-      file_name = each_picked_mode_file_name                            &
-     &          (picked%flag_gzip, picked%file_prefix,                  &
-     &           picked%idx_out(inum,1), picked%idx_out(inum,2))
+      flag_gzip_lc = picked%flag_gzip
+      base_name = each_picked_mode_file_name(picked%file_prefix,        &
+     &                                       picked%idx_out(inum,1),    &
+     &                                       picked%idx_out(inum,2))
+      call check_gzip_or_ascii_file(base_name, file_name,               &
+     &                              flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
+!
       open(id_file, file=file_name, status='old', position='append',    &
-     &     form='unformatted', ACCESS='stream', err = 99)
+     &     form='unformatted', ACCESS='stream')
       return
 !
 !
@@ -94,21 +100,25 @@
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      logical :: flag_gzip1
+      logical :: flag_gzip_lc
       character, pointer :: FPz_fp
-      character(len = kchara) :: file_name
+      character(len = kchara) :: file_name, base_name
       type(read_sph_spectr_data) :: sph_IN_p, sph_OUT_p
       type(sph_spectr_head_labels) :: sph_lbl_IN_p
 !
 !
       error_each_picked_spectr = .FALSE.
-      file_name = each_picked_mode_file_name                            &
-     &          (picked%flag_gzip, picked%file_prefix,                  &
-     &           picked%idx_out(inum,1), picked%idx_out(inum,2))
+      flag_gzip_lc = picked%flag_gzip
+      base_name = each_picked_mode_file_name(picked%file_prefix,        &
+     &                                       picked%idx_out(inum,1),    &
+     &                                       picked%idx_out(inum,2))
+      file_name = each_picked_mode_file_name(picked%file_prefix,        &
+     &                                       picked%idx_out(inum,1),    &
+     &                                       picked%idx_out(inum,2))
       if(check_file_exist(file_name) .eqv. .FALSE.) go to 99
 
       call sel_open_read_gz_stream_file(FPz_fp, id_file,                &
-     &                                  file_name, flag_gzip1, zbuf)
+     &                                  file_name, flag_gzip_lc, zbuf)
       call s_select_input_picked_sph_head(FPz_fp, id_file,              &
      &    picked%flag_gzip, sph_lbl_IN_p, sph_IN_p, zbuf)
       call sel_close_read_gz_stream_file(FPz_fp, id_file,               &
@@ -187,11 +197,10 @@
 ! -----------------------------------------------------------------------
 !
       character(len=kchara) function each_picked_mode_file_name         &
-     &                             (flag_gzip, file_prefix, l, m)
+     &                             (file_prefix, l, m)
 !
       use set_parallel_file_name
 !
-      logical, intent(in) :: flag_gzip
       character(len = kchara), intent(in) :: file_prefix
       integer(kind = kint), intent(in) :: l, m
 !
@@ -209,12 +218,7 @@
         write(fname_tmp,'(a,a1)') trim(file_name), 'c'
       end if
 !
-      file_name = add_dat_extension(fname_tmp)
-      if(flag_gzip) then
-        each_picked_mode_file_name = add_gzip_extension(file_name)
-      else
-        each_picked_mode_file_name = file_name
-      end if
+      each_picked_mode_file_name = add_dat_extension(fname_tmp)
 !
       end function each_picked_mode_file_name
 !
