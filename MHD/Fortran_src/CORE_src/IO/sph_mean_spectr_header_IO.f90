@@ -25,11 +25,9 @@
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_mean_squares), intent(in) :: pwr
 !!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
-!
+!!
 !!      subroutine write_sph_vol_mean_sq_header(id_file, mode_label,    &
 !!     &          ene_labels, sph_params, sph_rj, v_pwr)
-!!      subroutine write_sph_mean_sq_header(id_file, mode_label,        &
-!!     &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
 !!      logical function error_sph_vol_mean_sq_header                   &
 !!     &               (id_file, mode_label, ene_labels,                &
 !!     &                sph_params, sph_rj, v_pwr)
@@ -98,10 +96,8 @@
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%num_time_labels = sph_OUT%num_time_labels + 1
         call alloc_sph_espec_name(sph_OUT)
-        call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
       else
         call alloc_sph_espec_name(sph_OUT)
-        call alloc_sph_spectr_data(izero, sph_OUT)
       end if
 !
       sph_OUT%ncomp_sph_spec(1:v_pwr%num_fld_sq)                        &
@@ -112,13 +108,6 @@
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%ene_sph_spec_name(sph_OUT%num_time_labels)              &
      &                                       = trim(mode_label)
-!
-!$omp parallel do
-        do i = 0, sph_OUT%ltr_sph
-          sph_OUT%i_mode(i) = i
-        end do
-!$omp end parallel do
-      end if
 !
       icou = sph_OUT%num_time_labels
       do i = 1, v_pwr%num_fld_sq
@@ -160,10 +149,8 @@
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%num_time_labels = sph_OUT%num_time_labels + 1
         call alloc_sph_espec_name(sph_OUT)
-        call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
       else
         call alloc_sph_espec_name(sph_OUT)
-        call alloc_sph_spectr_data(izero, sph_OUT)
       end if
 !
       sph_OUT%ncomp_sph_spec(1:pwr%num_fld_sq)                          &
@@ -176,12 +163,6 @@
       if(mode_label .ne. 'EMPTY') then
         sph_OUT%ene_sph_spec_name(sph_OUT%num_time_labels)              &
      &                                       = trim(mode_label)
-!
-!$omp parallel do
-        do i = 0, sph_OUT%ltr_sph
-          sph_OUT%i_mode(i) = i
-        end do
-!$omp end parallel do
       end if
 !
       icou = sph_OUT%num_time_labels
@@ -226,44 +207,9 @@
       write(id_file,'(a)',ADVANCE='NO')                                 &
      &       sph_vol_spectr_header_text(len_tot, len_each,              &
      &                                  sph_pwr_labels, sph_OUT)
-      call dealloc_sph_espec_data(sph_OUT)
       call dealloc_sph_espec_name(sph_OUT)
 !
       end subroutine write_sph_vol_mean_sq_header
-!
-!  --------------------------------------------------------------------
-!
-      subroutine write_sph_mean_sq_header(id_file, mode_label,          &
-     &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
-!
-      use t_read_sph_spectra
-      use sph_power_spectr_data_text
-      use write_field_labels
-!
-      integer(kind = kint), intent(in) :: id_file
-      character(len = kchara), intent(in) :: mode_label
-      integer(kind = kint), intent(in) :: ltr
-      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      type(energy_label_param), intent(in) :: ene_labels
-      type(sph_mean_squares), intent(in) :: pwr
-!
-      type(read_sph_spectr_data) :: sph_OUT
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-!
-!
-      call dup_sph_layer_spectr_header(mode_label,                      &
-     &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
-!
-      call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
-     &                                 len_each, len_tot)
-      write(id_file,'(a)',ADVANCE='NO')                                 &
-     &      sph_layer_spectr_header_text(len_tot, len_each,             &
-     &                                   sph_pwr_labels, sph_OUT)
-      call dealloc_sph_espec_data(sph_OUT)
-      call dealloc_sph_espec_name(sph_OUT)
-!
-      end subroutine write_sph_mean_sq_header
 !
 !  --------------------------------------------------------------------
 !

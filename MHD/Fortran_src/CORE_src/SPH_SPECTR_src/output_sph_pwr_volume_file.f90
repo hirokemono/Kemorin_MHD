@@ -227,6 +227,7 @@
      &   (mode_label, sph_params%l_truncation,                          &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    ene_labels, sph_rj, v_pwr, sph_OUT)
+      call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
 !
       flag_gzip_lc = flag_gzip_m
       call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
@@ -277,6 +278,7 @@
      &   (mode_label, sph_params%l_truncation,                          &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    ene_labels, sph_rj, v_pwr, sph_OUT)
+      call alloc_sph_spectr_data(izero, sph_OUT)
 !
       flag_gzip_lc = flag_gzip_m
       call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
@@ -341,7 +343,6 @@
       call check_sph_vol_monitor_file(id_file_rms, fname_rms,           &
      &    spectr_off, sph_OUT, FPz_f, zbuf_m, flag_gzip_lc,             &
      &    error_sph_vol_ms_file)
-      call dealloc_sph_espec_data(sph_OUT)
       call dealloc_sph_espec_name(sph_OUT)
 !
       end function error_sph_vol_ms_file

@@ -169,6 +169,7 @@
 !
       call dup_sph_layer_spectr_header(mode_label,                      &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
+      call alloc_sph_spectr_data(izero, sph_OUT)
 !
       flag_gzip_lc = flag_gzip_m
       call sel_open_sph_layer_mean_file(id_file_rms, fname_rms,         &
@@ -217,6 +218,7 @@
 !
       call dup_sph_layer_spectr_header(mode_label,                      &
      &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr, sph_OUT)
+      call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
 !
        flag_gzip_lc = flag_gzip_m
       call sel_open_sph_layer_mean_file(id_file_rms, fname_rms,         &

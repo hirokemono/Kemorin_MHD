@@ -12,8 +12,6 @@
 !!     &                ene_labels, sph_params, sph_rj, v_pwr)
 !!      subroutine open_sph_vol_mean_sq_file(id_file, fname_rms,        &
 !!     &          mode_label, ene_labels, sph_params, sph_rj, v_pwr)
-!!      subroutine open_sph_mean_sq_file(id_file, fname_rms, mode_label,&
-!!     &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -110,33 +108,6 @@
      &   (id_file, mode_label, ene_labels, sph_params, sph_rj, v_pwr)
 !
       end subroutine open_sph_vol_mean_sq_file
-!
-!  --------------------------------------------------------------------
-!
-      subroutine open_sph_mean_sq_file(id_file, fname_rms, mode_label,  &
-     &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
-!
-      use sph_mean_spectr_header_IO
-!
-      integer(kind = kint), intent(in) :: id_file
-      character(len = kchara), intent(in) :: fname_rms, mode_label
-      integer(kind = kint), intent(in) :: ltr
-      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      type(energy_label_param), intent(in) :: ene_labels
-      type(sph_mean_squares), intent(in) :: pwr
-!
-!
-      open(id_file, file=fname_rms, form='formatted',                   &
-     &    status='old', position='append', err = 99)
-      return
-!
-   99 continue
-      open(id_file, file=fname_rms, form='formatted',                   &
-     &    status='replace')
-      call write_sph_mean_sq_header(id_file, mode_label,                &
-     &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
-!
-      end subroutine open_sph_mean_sq_file
 !
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------

@@ -85,6 +85,7 @@
 !
       integer(kind = kint) :: ncomp
 !
+      integer(kind = kint) :: l
 !
       allocate(sph_IN%kr_sph(sph_IN%nri_dat))
       allocate(sph_IN%r_sph(sph_IN%nri_dat))
@@ -93,12 +94,14 @@
       allocate(sph_IN%i_mode(0:ltr))
       allocate(sph_IN%spectr_IO(ncomp,0:ltr,sph_IN%nri_dat))
 !
+!$omp parallel do
+      do l = 0, ltr
+        sph_IN%i_mode(l) = l
+      end do
+!$omp end parallel do
 !$omp parallel workshare
       sph_IN%kr_sph(1:sph_IN%nri_dat) = izero
       sph_IN%r_sph(1:sph_IN%nri_dat) = zero
-!$omp end parallel workshare
-!$omp parallel workshare
-      sph_IN%i_mode(0:ltr) = izero
 !$omp end parallel workshare
 !$omp parallel workshare
       sph_IN%spectr_IO(1:ncomp,0:ltr,1:sph_IN%nri_dat) =  zero
