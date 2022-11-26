@@ -7,7 +7,7 @@
 
 #include "t_ctl_data_4_sph_monitor_c.h"
 
-#define NLBL_SPH_MONITOR 8
+#define NLBL_SPH_MONITOR   9
 
 #define NLBL_PICK_SPECTR   5
 #define NLBL_GAUSS_SPECTR  5
@@ -25,7 +25,8 @@ const char label_sph_monitor_ctl[NLBL_SPH_MONITOR][KCHARA_C] = {
     
 	/*[ 5]*/    {"volume_average_prefix"},
     /*[ 6]*/    {"volume_pwr_spectr_prefix"},
-    /*[ 7]*/    {"nusselt_number_prefix"}
+    /*[ 7]*/    {"volume_pwr_spectr_format"},
+    /*[ 8]*/    {"nusselt_number_prefix"}
 };
 
 
@@ -477,7 +478,8 @@ void read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_chara_ctl_item_c(buf, label_sph_monitor_ctl[5], monitor_ctl->volume_average_prefix_c);
         read_chara_ctl_item_c(buf, label_sph_monitor_ctl[6], monitor_ctl->volume_pwr_spectr_prefix_c);
-        read_chara_ctl_item_c(buf, label_sph_monitor_ctl[7], monitor_ctl->Nusselt_file_prefix_c);
+        read_chara_ctl_item_c(buf, label_sph_monitor_ctl[7], monitor_ctl->volume_pwr_spectr_format_c);
+        read_chara_ctl_item_c(buf, label_sph_monitor_ctl[8], monitor_ctl->Nusselt_file_prefix_c);
 	};
     monitor_ctl->iflag_use = 1;
     return;
@@ -494,7 +496,10 @@ int write_sph_monitor_ctl_c(FILE *fp, int level, const char *label,
                                    monitor_ctl->volume_average_prefix_c);
     level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[6],
                                    monitor_ctl->volume_pwr_spectr_prefix_c);
-	level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[7],
+    level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[7],
+                                   monitor_ctl->volume_pwr_spectr_format_c);
+
+    level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[8],
                                    monitor_ctl->Nusselt_file_prefix_c);
 	
     level = write_pick_spectr_control_c(fp, level, label_sph_monitor_ctl[3], monitor_ctl->pspec_ctl_c);

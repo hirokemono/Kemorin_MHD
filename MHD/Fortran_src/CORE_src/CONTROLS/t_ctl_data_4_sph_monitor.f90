@@ -19,6 +19,7 @@
 !!  begin sph_monitor_ctl
 !!    volume_average_prefix        'sph_ave_volume'
 !!    volume_pwr_spectr_prefix     'sph_pwr_volume'
+!!    volume_pwr_spectr_format     'gzip'
 !!
 !!    nusselt_number_prefix        'Nusselt'
 !!
@@ -131,6 +132,8 @@
       character(len=kchara), parameter, private                         &
      &           :: hd_voume_rms_head = 'volume_pwr_spectr_prefix'
       character(len=kchara), parameter, private                         &
+     &           :: hd_voume_rms_format = 'volume_pwr_spectr_format'
+      character(len=kchara), parameter, private                         &
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
       character(len=kchara), parameter, private                         &
      &           :: hd_typ_scale_file_head = 'typical_scale_prefix'
@@ -195,6 +198,8 @@
      &      smonitor_ctl%volume_average_prefix)
         call read_chara_ctl_type(c_buf, hd_voume_rms_head,              &
      &      smonitor_ctl%volume_pwr_spectr_prefix)
+        call read_chara_ctl_type(c_buf, hd_voume_rms_format,            &
+     &      smonitor_ctl%volume_pwr_spectr_format)
       end do
       smonitor_ctl%i_sph_monitor = 1
 !
@@ -252,6 +257,7 @@
 !
       smonitor_ctl%volume_average_prefix%iflag =     0
       smonitor_ctl%volume_pwr_spectr_prefix%iflag =  0
+      smonitor_ctl%volume_pwr_spectr_format%iflag =  0
       smonitor_ctl%heat_Nusselt_file_prefix%iflag =  0
       smonitor_ctl%comp_Nusselt_file_prefix%iflag =  0
       smonitor_ctl%typ_scale_file_prefix_ctl%iflag = 0
