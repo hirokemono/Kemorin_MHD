@@ -76,7 +76,7 @@ sph_cutoff_filter.o: $(SPH_SPECTR_DIR)/sph_cutoff_filter.f90 m_precision.o m_con
 	$(F90) -c $(F90OPTFLAGS) $<
 t_fdm_coefs.o: $(SPH_SPECTR_DIR)/t_fdm_coefs.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_no_heat_Nusselt.o: $(SPH_SPECTR_DIR)/t_no_heat_Nusselt.f90 m_precision.o m_constants.o t_spheric_rj_data.o m_base_field_labels.o m_grad_field_labels.o t_phys_data.o t_control_array_character.o set_parallel_file_name.o write_field_labels.o t_read_sph_spectra.o sph_power_spectr_data_text.o m_time_labels.o
+t_no_heat_Nusselt.o: $(SPH_SPECTR_DIR)/t_no_heat_Nusselt.f90 m_precision.o m_constants.o t_spheric_rj_data.o m_base_field_labels.o m_grad_field_labels.o t_phys_data.o t_control_array_character.o set_parallel_file_name.o t_buffer_4_gzip.o write_field_labels.o gz_open_sph_monitor_file.o select_gz_stream_file_IO.o sph_monitor_data_text.o t_read_sph_spectra.o sph_power_spectr_data_text.o m_time_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_node_id_spherical_IO.o: $(SPH_SPECTR_DIR)/t_node_id_spherical_IO.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

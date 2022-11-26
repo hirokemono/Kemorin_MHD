@@ -164,26 +164,40 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine open_Nu_file(ltr, nri, nlayer_ICB, nlayer_CMB, Nu_type)
+      subroutine open_Nu_file                                           &
+     &         (id_file, ltr, nri, nlayer_ICB, nlayer_CMB,              &
+     &          Nu_type, flag_gzip_lc, zbuf)
 !
+      use t_buffer_4_gzip
       use set_parallel_file_name
       use write_field_labels
+      use gz_open_sph_monitor_file
 !
+      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(nusselt_number_data), intent(in) :: Nu_type
 !
+      logical, intent(inout) :: flag_gzip_lc
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      open(id_Nusselt, file = Nu_type%Nusselt_file_name,                &
-     &    form='formatted', status='old', position='append', err = 99)
+      character(len = kchara) :: file_name
+      logical :: flag_miss
+!
+!
+      call check_gzip_or_ascii_file(Nu_type%Nusselt_file_name,          &
+     &                              file_name, flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
+
+      open(id_file, file=file_name, status='old', position='append',    &
+     &     FORM='UNFORMATTED', ACCESS='STREAM')
       return
 !
    99 continue
-      open(id_Nusselt, file = Nu_type%Nusselt_file_name,                &
-     &    form='formatted', status='replace')
+      open(id_file, file=file_name, FORM='UNFORMATTED',ACCESS='STREAM')
 !
-      call write_Nu_header(id_Nusselt, ltr, nri,                        &
-     &                     nlayer_ICB, nlayer_CMB, Nu_type)
+      call sel_write_Nu_header(flag_gzip_lc, id_Nusselt, ltr, nri,      &
+     &                         nlayer_ICB, nlayer_CMB, Nu_type, zbuf)
 !
       end subroutine open_Nu_file
 !
@@ -192,37 +206,55 @@
       subroutine write_Nusselt_file(i_step, time, ltr, nri,             &
      &          nlayer_ICB, nlayer_CMB, idx_rj_degree_zero, Nu_type)
 !
+      use t_buffer_4_gzip
+      use select_gz_stream_file_IO
+      use sph_monitor_data_text
+!
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: idx_rj_degree_zero, i_step
       real(kind = kreal), intent(in) :: time
       type(nusselt_number_data), intent(in) :: Nu_type
 !
+      logical :: flag_gzip_n = .TRUE.
+      logical :: flag_gzip_lc
+      type(buffer_4_gzip) :: zbuf_n
+!
+      real(kind = kreal) :: Nu_snap(2)
+!
 !
       if(Nu_type%iflag_Nusselt .eq. izero) return
       if(idx_rj_degree_zero .eq. izero) return
 !
-      call open_Nu_file(ltr, nri, nlayer_ICB, nlayer_CMB, Nu_type)
+      Nu_snap(1) = Nu_type%Nu_ICB
+      Nu_snap(2) = Nu_type%Nu_CMB
+      flag_gzip_lc = flag_gzip_n
+      call open_Nu_file(id_Nusselt, ltr, nri, nlayer_ICB, nlayer_CMB,   &
+     &                  Nu_type, flag_gzip_lc, zbuf_n)
 !
-      write(id_Nusselt,'(i16,1p3e23.14e3)')                             &
-     &       i_step, time, Nu_type%Nu_ICB, Nu_type%Nu_CMB
-!
+      call sel_gz_write_text_stream(flag_gzip_lc, id_Nusselt,           &
+     &    volume_pwr_data_text(i_step, time, itwo, Nu_snap), zbuf_n)
       close(id_Nusselt)
 !
       end subroutine write_Nusselt_file
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_Nu_header(id_file, ltr, nri,                     &
-     &                           nlayer_ICB, nlayer_CMB, Nu_type)
+      subroutine sel_write_Nu_header(flag_gzip_lc, id_file, ltr, nri,   &
+     &          nlayer_ICB, nlayer_CMB, Nu_type, zbuf)
 !
+      use t_buffer_4_gzip
       use t_read_sph_spectra
+      use select_gz_stream_file_IO
       use sph_power_spectr_data_text
 !
+      logical, intent(in) :: flag_gzip_lc
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(nusselt_number_data), intent(in) :: Nu_type
+!
+      type(buffer_4_gzip), intent(inout)  :: zbuf
 !
       type(read_sph_spectr_data) :: sph_OUT
       integer(kind = kint) :: len_tot
@@ -235,13 +267,13 @@
 !
       call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
      &                               len_each, len_tot)
-      write(id_file,'(a)',ADVANCE='NO')                                 &
-     &       sph_vol_spectr_header_text(len_tot, len_each,              &
-     &                                  sph_pwr_labels, sph_OUT)
-      call dealloc_sph_espec_data(sph_OUT)
+      call sel_gz_write_text_stream(flag_gzip_lc, id_file,              &
+     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
+     &                               sph_pwr_labels, sph_OUT),          &
+     &    zbuf)
       call dealloc_sph_espec_name(sph_OUT)
 !
-      end subroutine write_Nu_header
+      end subroutine sel_write_Nu_header
 !
 ! -----------------------------------------------------------------------
 !
@@ -274,7 +306,6 @@
       sph_OUT%ntot_sph_spec =   2
       sph_OUT%num_time_labels = 2
       call alloc_sph_espec_name(sph_OUT)
-      call alloc_sph_spectr_data(izero, sph_OUT)
 !
       sph_OUT%ene_sph_spec_name(1) = fhd_t_step
       sph_OUT%ene_sph_spec_name(2) = fhd_time
