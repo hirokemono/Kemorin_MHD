@@ -99,10 +99,26 @@
       type(sph_mean_squares), intent(in) :: pwr
       type(typical_scale_data), intent(in) :: tsl
 !
+      real(kind=kreal), allocatable :: d_rj_out(:)
+!
 !
       if(tsl%iflag_ub_scales .le. izero) return
       if((tsl%icomp_kene + tsl%icomp_mene) .le. 0) return
       if(my_rank .ne. pwr%v_spectr(1)%irank_m) return
+!
+      allocate(d_rj_out(tsl%num_lscale))
+      icou = 0
+      if(tsl%icomp_kene .gt. 0) then
+        d_rj_out(icou+1) = tsl%dl_kin
+        d_rj_out(icou+2) = tsl%dm_kin
+        d_rj_out(icou+3) = tsl%dlm_kin
+        icou = icou + 3
+      end if
+      if(tsl%icomp_mene .gt. 0) then
+        d_rj_out(icou+1) = tsl%dl_mag
+        d_rj_out(icou+2) = tsl%dm_mag
+        d_rj_out(icou+3) = tsl%dlm_mag
+      end if
 !
       call open_typical_scale_file                                      &
      &   (id_scale, sph_params%l_truncation, sph_rj%nidx_rj(1),         &
@@ -110,17 +126,13 @@
      &    sph_bc_U%kr_in, sph_bc_U%kr_out,                              &
      &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0), tsl)
 !
-      write(id_scale,'(i16,1pe23.14e3)',advance='NO') i_step, time
-      if(tsl%icomp_kene .gt. 0) then
-         write(id_scale,'(1p3e23.14e3)',advance='NO')                   &
-     &                           tsl%dl_kin, tsl%dm_kin, tsl%dlm_kin
-      end if
-      if(tsl%icomp_mene .gt. 0) then
-         write(id_scale,'(1p3e23.14e3)',advance='NO')                   &
-     &                           tsl%dl_mag, tsl%dm_mag, tsl%dlm_kin
-      end if
-      write(id_scale,'(a)') ''
+      call sel_gz_write_text_stream(flag_gzip_lc, id_scale,             &
+     &    volume_pwr_data_text(i_step, time, tsl%num_lscale, d_rj_out), &
+     &    zbuf_m)
+      call dealloc_sph_espec_name(sph_OUT)
       close(id_scale)
+!
+      deallocate(d_rj_out)
 !
       end subroutine write_typical_scales
 !
@@ -148,24 +160,44 @@
       if(tsl%num_lscale .le. 0) return
       if(my_rank .ne. pwr%v_spectr(1)%irank_m) return
 !
-      file_name = add_dat_extension(tsl%scale_prefix)
-      open(id_scale, file = file_name,                                  &
-     &    form='formatted', status='old', err = 99)
+      base_name = add_dat_extension(tsl%scale_prefix)
+      call check_gzip_or_ascii_file(base_name, file_name,               &
+     &                              flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
 !
-      empty_label = 'EMPTY'
+      call sel_open_read_gz_stream_file(FPz_fp, id_gauss_coef,          &
+     &                                file_name, flag_gzip_lc, zbuf_g)
+      call s_select_input_picked_sph_head(FPz_fp, id_gauss_coef,        &
+     &    flag_gzip_lc, sph_lbl_IN_g, sph_IN_g, zbuf_g)
+      call sel_close_read_gz_stream_file(FPz_fp, id_gauss_coef,         &
+     &                                   flag_gzip_lc, zbuf_g)
+      sph_IN_g%nri_dat = 1
+!
+      call dup_typ_scale_head_params                                    &
+     &   (sph_params%l_truncation, sph_rj%nidx_rj(1),                   &
+     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
+     &    sph_bc_U%kr_in, sph_bc_U%kr_out,                              &
+     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0), tsl)
       error_typical_scale_header                                        &
-     &         = error_sph_vol_monitor_head(id_scale, empty_label,      &
-     &             sph_rj%nidx_rj(1), sph_params%l_truncation,          &
-     &             sph_params%nlayer_ICB, sph_params%nlayer_CMB,        &
-     &             sph_bc_U%kr_in, sph_bc_U%r_ICB(0),                   &
-     &             sph_bc_U%kr_out, sph_bc_U%r_CMB(0),                  &
-     &             tsl%num_lscale, tsl%ncomp_lscale, tsl%lscale_name,   &
-     &             tsl%num_lscale, tsl%lscale_name)
-      close(id_scale)
-      return
+     &  =  .not. cmp_sph_volume_monitor_heads(sph_lbl_IN_g, sph_IN_g,   &
+     &                                  gauss_coefs_labels, sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
+!
 !
   99  continue
       write(*,*) 'No typical scale file'
+!
+      open(id_file, file=file_name, FORM='UNFORMATTED',ACCESS='STREAM')
+      call dup_typ_scale_head_params                                    &
+     &   (id_file, ltr, nri, nlayer_ICB, nlayer_CMB,                    &
+     &          kr_in, kr_out, r_in, r_out, tsl, sph_OUT)
+      call len_sph_vol_spectr_header(sph_spectr_head_labels, sph_OUT,   &
+     &                               len_each, len_tot)
+      call sel_gz_write_text_stream(flag_gzip_lc, id_file,              &
+     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
+     &                               sph_spectr_head_labels, sph_OUT),  &
+     &    zbuf)
+      call dealloc_sph_espec_name(sph_OUT)
       return
 !
       end function error_typical_scale_header

@@ -10,9 +10,6 @@
 !!      subroutine open_typical_scale_file                              &
 !!     &         (id_file, ltr, nri, nlayer_ICB, nlayer_CMB,            &
 !!     &          kr_in, kr_out, r_in, r_out, tsl)
-!!      subroutine write_typical_scale_header                           &
-!!     &         (id_file, ltr, nri, nlayer_ICB, nlayer_CMB,            &
-!!     &          kr_in, kr_out, r_in, r_out, tsl)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        integer(kind = kint), intent(in) :: ltr, nri
 !!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
@@ -119,6 +116,9 @@
         real(kind = kreal) :: dlm_kin
       end type typical_scale_data
 !
+      type(sph_spectr_head_labels), parameter, private                  &
+     &            :: typical_scale_labels = sph_spectr_head_labels
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -171,62 +171,72 @@
       character(len = kchara) :: file_name
 !
 !
-      file_name = add_dat_extension(tsl%scale_prefix)
-      open(id_file, file = file_name,                                   &
-     &    form='formatted', status='old', position='append', err = 99)
+      base_name = add_dat_extension(tsl%scale_prefix)
+      call check_gzip_or_ascii_file(base_name, file_name,               &
+     &                              flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
+!
+      open(id_file, file=file_name, status='old', position='append',    &
+     &     FORM='UNFORMATTED', ACCESS='STREAM')
       return
 !
    99 continue
-      open(id_file, file = file_name,                                   &
-     &    form='formatted', status='replace')
-      call write_typical_scale_header                                   &
-     &   (id_file, ltr, nri, nlayer_ICB, nlayer_CMB,                    &
-     &    kr_in, kr_out, r_in, r_out, tsl)
+!
+      open(id_file, file=file_name, FORM='UNFORMATTED',ACCESS='STREAM')
+      call dup_typ_scale_head_params(ltr, nri, nlayer_ICB, nlayer_CMB,  &
+     &    kr_in, kr_out, r_in, r_out, tsl, sph_OUT)
+      call len_sph_vol_spectr_header(sph_spectr_head_labels, sph_OUT,   &
+     &                               len_each, len_tot)
+      call sel_gz_write_text_stream(flag_gzip_lc, id_file,              &
+     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
+     &                               sph_spectr_head_labels, sph_OUT),  &
+     &    zbuf)
+      call dealloc_sph_espec_name(sph_OUT)
 !
       end subroutine open_typical_scale_file
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_typical_scale_header                             &
-     &         (id_file, ltr, nri, nlayer_ICB, nlayer_CMB,              &
-     &          kr_in, kr_out, r_in, r_out, tsl)
+      subroutine dup_typ_scale_head_params                              &
+     &         (ltr, nri, nlayer_ICB, nlayer_CMB,                       &
+     &          kr_in, kr_out, r_in, r_out, tsl, sph_OUT)
 !
-      use set_parallel_file_name
-      use write_field_labels
-!
-      integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: kr_in, kr_out
       real(kind = kreal), intent(in) :: r_in, r_out
       type(typical_scale_data), intent(in) :: tsl
 !
-      integer(kind = kint) :: i
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !
 !
-      write(id_file,'(a)') 'radial_layers, truncation'
-      write(id_file,'(3i16)') nri, ltr
-      write(id_file,'(a)')  'ICB_id, CMB_id'
-      write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
-      write(id_file,'(a)') 'inner_boundary_ID, inner_boundary_radius'
-      write(id_file,'(i16,1pe23.14e3)') kr_in,  r_in
-      write(id_file,'(a)') 'outer_boundary_ID, outer_boundary_radius'
-      write(id_file,'(i16,1pe23.14e3)') kr_out, r_out
+      sph_OUT%ltr_sph = ltr
+      sph_OUT%nri_sph = nri
+      sph_OUT%nri_dat = 1
+      sph_OUT%kr_ICB = nlayer_ICB
+      sph_OUT%kr_CMB = nlayer_CMB
+      sph_OUT%kr_inner = r_in
+      sph_OUT%kr_outer = kr_in
+      sph_OUT%r_inner = kr_out
+      sph_OUT%r_outer = r_out
+      sph_OUT%nfield_sph_spec = tsl%num_lscale
+      sph_OUT%ntot_sph_spec =   tsl%num_lscale
+      sph_OUT%num_time_labels = 2
 !
-      write(id_file,'(a)')   'number_of_fields, number_of_components'
-      write(id_file,'(2i16)') tsl%num_lscale, tsl%num_lscale
-      write(id_file,'(16i5)') tsl%ncomp_lscale(1:tsl%num_lscale)
+      call alloc_sph_espec_name(sph_OUT)
 !
-      write(id_file,'(a)',advance='NO')                                 &
-     &    't_step    time    '
+      sph_OUT%ncomp_lscale(1:tsl%num_lscale)                            &
+     &               = tsl%ncomp_lscale(1:tsl%num_lscale)
+!
+      sph_OUT%ene_sph_spec_name(1) = 't_step'
+      sph_OUT%ene_sph_spec_name(2) = 'time'
       do i = 1, tsl%num_lscale
-        write(id_file,'(a,a4)',advance='NO')                            &
-     &                           trim(tsl%lscale_name(i)), '    '
+        sph_OUT%ene_sph_spec_name(i+sph_OUT%num_time_labels)            &
+     &                                        = tsl%lscale_name(i)
       end do
-      write(id_file,'(a)') ''
 !
-      end subroutine write_typical_scale_header
+      end subroutine dup_typ_scale_head_params
 !
-! -----------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
       end module t_sph_typical_scales

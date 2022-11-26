@@ -48,7 +48,7 @@
      &                           hdr_r_in =   'Lower_boundary_radius',  &
      &                           hdr_kr_out = 'Upper_boundary_ID',      &
      &                           hdr_r_out =  'Upper_boundary_radius',  &
-     &                           hdr_num_field = 'Number_of_field',     &
+     &                           hdr_num_field = 'Number_of_fields',    &
      &                           hdr_num_comp = 'Number_of_components')
 !
       logical, parameter :: flag_current_fmt = .FALSE.
