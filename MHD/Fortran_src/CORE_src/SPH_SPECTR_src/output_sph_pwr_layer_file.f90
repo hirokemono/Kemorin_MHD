@@ -180,6 +180,7 @@
      &    pwr%nri_rms, pwr%kr_4_rms, pwr%r_4_rms,                       &
      &    pwr%ntot_comp_sq, sph_OUT%spectr_IO(1,0,1), zbuf_m)
       call dealloc_sph_espec_data(sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
       close(id_file_rms)
 !
       end subroutine write_sph_layer_pwr_file
@@ -227,6 +228,7 @@
      &    pwr%nri_rms, pwr%kr_4_rms, pwr%r_4_rms, ltr,                  &
      &    pwr%ntot_comp_sq, sph_OUT%spectr_IO(1,0,1), zbuf_m)
       call dealloc_sph_espec_data(sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
       close(id_file_rms)
 !
       end subroutine write_sph_layer_spec_file

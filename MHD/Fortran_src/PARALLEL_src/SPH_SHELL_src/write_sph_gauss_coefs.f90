@@ -156,6 +156,7 @@
      &       sph_vol_spectr_header_text(len_tot, len_each,              &
      &                                  gauss_coefs_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
 !
       end subroutine write_sph_gauss_coefs_header
 !

@@ -105,6 +105,7 @@
      &                           trim(dip_t%dip_name(i))
       end do
       call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_name(sph_IN1)
 !
       allocate(prev_fdip(dip_t%num_dip))
       allocate(ave_fdip(dip_t%num_dip))

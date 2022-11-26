@@ -112,6 +112,7 @@
 !
       call dealloc_tave_sph_data(WK_tave1)
       call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_name(sph_IN1)
 !
       end subroutine time_ave_sdev_sph_spectr
 !
@@ -137,6 +138,7 @@
 !
       call dealloc_tave_sph_data(WK_tave1)
       call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_name(sph_IN1)
 !
       end subroutine time_ave_sdev_sph_old_spectr
 !
@@ -277,6 +279,7 @@
       close(id_file_rms)
 !
       call dealloc_sph_espec_data(sph_IN)
+      call dealloc_sph_espec_name(sph_IN)
 !
       end subroutine sph_spectr_average
 !
@@ -505,6 +508,7 @@
      &   (.TRUE., FPz_f1, id_file_rms, flag_gzip1, num,                 &
      &    start_time, end_time, true_start, true_end, num_count, zbuf1)
       call dealloc_sph_espec_data(sph_IN)
+      call dealloc_sph_espec_name(sph_IN)
 !
       if(flag_gzip1) then
         ierr =  rewind_gzfile(FPz_f1)

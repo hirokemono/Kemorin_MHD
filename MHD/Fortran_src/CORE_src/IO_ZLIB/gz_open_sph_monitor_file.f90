@@ -92,6 +92,7 @@
       error = .not. cmp_sph_volume_monitor_heads(sph_lbl_IN_f, sph_IN_f, &
      &                                         sph_pwr_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_IN_f)
+      call dealloc_sph_espec_name(sph_IN_f)
       return
 !
    99 continue
@@ -208,6 +209,7 @@
       error = .not. cmp_sph_layer_monitor_heads(sph_lbl_IN_f, sph_IN_f, &
      &                                         sph_pwr_labels, sph_OUT)
       call dealloc_sph_espec_data(sph_IN_f)
+      call dealloc_sph_espec_name(sph_IN_f)
       return
 !
    99 continue
