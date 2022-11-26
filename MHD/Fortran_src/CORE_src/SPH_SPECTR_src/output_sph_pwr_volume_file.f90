@@ -45,7 +45,7 @@
 !>      File ID for mean square data
       integer(kind = kint), parameter, private :: id_file_rms = 34
 !
-      private :: write_sph_volume_spec_file, write_sph_volume_pwr_file
+      private :: write_sph_volume_spec_file
 !
 !  --------------------------------------------------------------------
 !
