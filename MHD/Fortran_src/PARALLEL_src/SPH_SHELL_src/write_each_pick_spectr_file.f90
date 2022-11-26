@@ -112,10 +112,9 @@
       base_name = each_picked_mode_file_name(picked%file_prefix,        &
      &                                       picked%idx_out(inum,1),    &
      &                                       picked%idx_out(inum,2))
-      file_name = each_picked_mode_file_name(picked%file_prefix,        &
-     &                                       picked%idx_out(inum,1),    &
-     &                                       picked%idx_out(inum,2))
-      if(check_file_exist(file_name) .eqv. .FALSE.) go to 99
+      call check_gzip_or_ascii_file(base_name, file_name,               &
+     &                              flag_gzip_lc, flag_miss)
+      if(flag_miss) go to 99
 
       call sel_open_read_gz_stream_file(FPz_fp, id_file,                &
      &                                  file_name, flag_gzip_lc, zbuf)
