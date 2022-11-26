@@ -7,9 +7,6 @@
 !>@brief Mean sqare data
 !!
 !!@verbatim
-!!      logical function error_sph_vol_mean_sq_file                     &
-!!     &               (id_file, fname_rms, mode_label,                 &
-!!     &                ene_labels, sph_params, sph_rj, v_pwr)
 !!      subroutine open_sph_vol_mean_sq_file(id_file, fname_rms,        &
 !!     &          mode_label, ene_labels, sph_params, sph_rj, v_pwr)
 !!        type(energy_label_param), intent(in) :: ene_labels
@@ -49,40 +46,6 @@
       contains
 !
 ! -----------------------------------------------------------------------
-!
-      logical function error_sph_vol_mean_sq_file                       &
-     &               (id_file, fname_rms, mode_label,                   &
-     &                ene_labels, sph_params, sph_rj, v_pwr)
-!
-      use sph_mean_spectr_header_IO
-!
-      integer(kind = kint), intent(in) :: id_file
-      character(len = kchara), intent(in) :: fname_rms, mode_label
-      type(energy_label_param), intent(in) :: ene_labels
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_vol_mean_squares), intent(in) :: v_pwr
-!
-!
-      error_sph_vol_mean_sq_file = .FALSE.
-      open(id_file, file=fname_rms, form='formatted',                   &
-     &    status='old', err = 99)
-!
-      error_sph_vol_mean_sq_file                                        &
-     &         = error_sph_vol_mean_sq_header(id_file, mode_label,      &
-     &          ene_labels, sph_params, sph_rj, v_pwr)
-      close(id_file)
-!      write(*,*) 'Checked ', trim(fname_rms),                          &
-!     &     error_sph_vol_mean_sq_file
-!
-      return
-!
-   99 continue
-      write(*,*) 'No mean suare file: ', trim(fname_rms)
-!
-      end function error_sph_vol_mean_sq_file
-!
-!  --------------------------------------------------------------------
 !
       subroutine open_sph_vol_mean_sq_file(id_file, fname_rms,          &
      &          mode_label, ene_labels, sph_params, sph_rj, v_pwr)

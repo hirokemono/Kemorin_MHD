@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine open_each_picked_spectr(inum, id_file,               &
-!!     &          nlayer_ICB, nlayer_CMB, picked, zbuf)
+!!     &          nlayer_ICB, nlayer_CMB, picked, flag_gzip_lc, zbuf)
 !!      logical function error_each_picked_spectr(inum, id_file,        &
 !!     &                nlayer_ICB, nlayer_CMB, picked, zbuf)
 !!        integer(kind = kint), intent(in) :: inum
@@ -16,6 +16,7 @@
 !!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
 !!        type(picked_spectrum_data), intent(in) :: picked
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!        logical, intent(inout) :: flag_gzip_lc
 !!@endverbatim
 !!
       module write_each_pick_spectr_file
@@ -42,7 +43,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine open_each_picked_spectr(inum, id_file,                 &
-     &          nlayer_ICB, nlayer_CMB, picked, zbuf)
+     &          nlayer_ICB, nlayer_CMB, picked, flag_gzip_lc, zbuf)
 !
       use write_field_labels
       use gz_open_sph_monitor_file
@@ -53,8 +54,9 @@
       type(picked_spectrum_data), intent(in) :: picked
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
+      logical, intent(inout) :: flag_gzip_lc
 !
-      logical :: flag_gzip_lc, flag_miss
+      logical :: flag_miss
       character(len = kchara) :: file_name, base_name
 !
 !
@@ -137,9 +139,7 @@
      &                                        sph_IN_p, sph_OUT_p)
 !
    98 continue
-      call dealloc_sph_espec_data(sph_IN_p)
       call dealloc_sph_espec_name(sph_IN_p)
-      call dealloc_sph_espec_data(sph_OUT_p)
       call dealloc_sph_espec_name(sph_OUT_p)
 !
       return
@@ -189,7 +189,6 @@
      &    sph_layer_spectr_header_text(len_tot, len_each,               &
      &                                 pick_spectr_labels, sph_OUT),    &
      &    zbuf)
-      call dealloc_sph_espec_data(sph_OUT)
       call dealloc_sph_espec_name(sph_OUT)
 !
       end subroutine write_each_pick_sph_file_head

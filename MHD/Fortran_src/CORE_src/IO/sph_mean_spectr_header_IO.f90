@@ -28,9 +28,6 @@
 !!
 !!      subroutine write_sph_vol_mean_sq_header(id_file, mode_label,    &
 !!     &          ene_labels, sph_params, sph_rj, v_pwr)
-!!      logical function error_sph_vol_mean_sq_header                   &
-!!     &               (id_file, mode_label, ene_labels,                &
-!!     &                sph_params, sph_rj, v_pwr)
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -213,47 +210,6 @@
       end subroutine write_sph_vol_mean_sq_header
 !
 !  --------------------------------------------------------------------
-!
-      logical function error_sph_vol_mean_sq_header                     &
-     &               (id_file, mode_label, ene_labels,                  &
-     &                sph_params, sph_rj, v_pwr)
-!
-      use write_field_labels
-      use skip_comment_f
-      use check_sph_monitor_header
-!
-      type(energy_label_param), intent(in) :: ene_labels
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_vol_mean_squares), intent(in) :: v_pwr
-      integer(kind = kint), intent(in) :: id_file
-      character(len = kchara), intent(in) :: mode_label
-!
-      character(len = kchara), allocatable :: pwr_label(:)
-      integer(kind = kint) :: i, icou
-!
-!
-      allocate(pwr_label(v_pwr%ntot_comp_sq))
-      icou = 1
-      do i = 1, v_pwr%num_fld_sq
-        call set_sph_rms_labels(ene_labels, v_pwr%num_comp_sq(i),       &
-     &                          v_pwr%pwr_name(i), pwr_label(icou))
-        icou = icou + v_pwr%num_comp_sq(i)
-      end do
-!
-      error_sph_vol_mean_sq_header                                      &
-     &   = error_sph_vol_monitor_head(id_file, mode_label,              &
-     &             sph_rj%nidx_rj(1), sph_params%l_truncation,          &
-     &             sph_params%nlayer_ICB, sph_params%nlayer_CMB,        &
-     &             v_pwr%kr_inside, v_pwr%r_inside,                     &
-     &             v_pwr%kr_outside, v_pwr%r_outside,                   &
-     &             v_pwr%num_fld_sq, v_pwr%num_comp_sq, v_pwr%pwr_name, &
-     &             v_pwr%ntot_comp_sq, pwr_label)
-      deallocate(pwr_label)
-!
-      end function error_sph_vol_mean_sq_header
-!
-! -----------------------------------------------------------------------
 !
       end module sph_mean_spectr_header_IO
 

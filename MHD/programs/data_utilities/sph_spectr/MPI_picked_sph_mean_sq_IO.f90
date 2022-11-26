@@ -77,6 +77,7 @@
 !
       real(kind=kreal), allocatable :: d_rj_out(:,:)
       type(buffer_4_gzip) :: zbuf_p
+      logical :: flag_gzip_lc
 !
 !
       num = picked%istack_picked_spec_lc(my_rank+1)                     &
@@ -91,10 +92,11 @@
         call convert_to_energy_sph_monitor                              &
      &     (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
+        flag_gzip_lc = picked%flag_gzip
         call open_each_picked_spectr(izero, id_pick,                    &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
-     &      zbuf_p)
-        call sel_gz_write_text_stream(picked%flag_gzip, id_pick,        &
+     &      flag_gzip_lc, zbuf_p)
+        call sel_gz_write_text_stream(flag_gzip_lc, id_pick,            &
      &      picked_each_mode_data_text(time_d%i_time_step, time_d%time, &
      &                                 zero, izero, izero, izero,       &
      &                                 picked%ntot_comp_rj,             &
@@ -112,10 +114,11 @@
      &        picked%ntot_comp_rj, d_rj_out(1,knum))
         end do
 !
+        flag_gzip_lc = picked%flag_gzip
         call open_each_picked_spectr(inum, id_pick,                     &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
-     &      zbuf_p)
-        call sel_gz_write_picked_spec_data(id_pick,                     &
+     &      flag_gzip_lc, zbuf_p)
+        call sel_gz_write_picked_spec_data(flag_gzip_lc, id_pick,       &
      &      time_d, picked, inum, d_rj_out, zbuf_p)
         close(id_pick)
       end do
