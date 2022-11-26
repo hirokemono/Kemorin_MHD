@@ -523,20 +523,12 @@
      &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
      &    sph_lbl_IN_t, sph_IN, zbuf1)
 !
-      sph_IN%nri_dat = sph_IN%nri_sph
-      if(flag_vol_ave) sph_IN%nri_dat = 1
-      if(flag_spectr .eqv. .FALSE.) then
-        call alloc_sph_spectr_data(izero, sph_IN)
-      else
-        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
-      end if
-!
-      num = size(sph_IN%spectr_IO,2) * size(sph_IN%spectr_IO,3)
-      if(flag_vol_ave) num = size(sph_IN%spectr_IO,2)
+      num = sph_IN%nri_sph
+      if(flag_vol_ave) num = 1
+      if(flag_spectr)  num = num * (sph_IN%ltr_sph + 1)
       call s_count_monitor_time_series                                  &
      &   (.TRUE., FPz_f1, id_file_rms, flag_gzip1, num,                 &
      &    start_time, end_time, true_start, true_end, num_count, zbuf1)
-      call dealloc_sph_espec_data(sph_IN)
       call dealloc_sph_espec_name(sph_IN)
 !
       if(flag_gzip1) then
@@ -552,16 +544,12 @@
 !
       sph_IN%nri_dat = sph_IN%nri_sph
       if(flag_vol_ave) sph_IN%nri_dat = 1
-      if(flag_spectr .eqv. .FALSE.) then
-        call alloc_sph_spectr_data(izero, sph_IN)
-      else
-        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
-      end if
-!
       if(flag_spectr) then
+        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
         call alloc_sph_spectr_series(sph_IN%ltr_sph, sph_IN,            &
      &                               num_count, sph_series)
       else
+        call alloc_sph_spectr_data(izero, sph_IN)
         call alloc_sph_spectr_series(izero, sph_IN,                     &
      &                               num_count, sph_series)
       end if

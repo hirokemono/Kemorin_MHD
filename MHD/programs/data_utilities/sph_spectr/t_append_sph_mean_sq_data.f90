@@ -97,14 +97,6 @@
      &    flag_gzip1, flag_current_fmt, flag_spectr, flag_vol_ave,      &
      &    sph_lbl_OUT1, sph_OUT1, zbuf1)
 !
-      sph_IN1%nri_dat = sph_IN1%nri_sph
-      if(flag_vol_ave) sph_IN1%nri_dat = 1
-      if(flag_spectr .eqv. .FALSE.) then
-        call alloc_sph_spectr_data(izero, sph_IN1)
-      else
-        call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
-      end if
-!
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_write_file, flag_gzip1, zbuf1)
 !
@@ -125,7 +117,6 @@
      &    sph_IN1%ene_sph_spec_name(sph_IN1%num_time_labels+1),         &
      &    sph_OUT1%ene_sph_spec_name(sph_OUT1%num_time_labels+1),       &
      &    comp_tbl1)
-      call dealloc_sph_espec_data(sph_IN1)
       call dealloc_sph_espec_name(sph_IN1)
 !
       if(flag_vol_ave) then
