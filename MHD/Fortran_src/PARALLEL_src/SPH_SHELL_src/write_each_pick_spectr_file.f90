@@ -92,6 +92,7 @@
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use compare_sph_monitor_header
+      use gz_open_sph_monitor_file
 !
       integer(kind = kint), intent(in) :: inum
       integer(kind = kint), intent(in) :: id_file
