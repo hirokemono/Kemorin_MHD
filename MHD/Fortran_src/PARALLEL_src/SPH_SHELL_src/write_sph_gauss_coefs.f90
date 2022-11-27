@@ -298,6 +298,11 @@
       if(gauss%num_sph_mode .eq. izero) return
       if(my_rank .gt. izero) return
 !
+      call dup_gauss_coefs_header_to_IO                                 &
+     &   (sph_params%l_truncation, sph_rj%nidx_rj(1),                   &
+     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
+     &    gauss, sph_OUT_g)
+!
       flag_gzip_lc = flag_gauss_g
       base_name = add_dat_extension(gauss%file_prefix)
       call check_gzip_or_ascii_file(base_name, file_name,               &
@@ -313,13 +318,11 @@
      &                                   flag_gzip_lc, zbuf_g)
       sph_IN_g%nri_dat = 1
 !
-      call dup_gauss_coefs_header_to_IO                                 &
-     &   (sph_params%l_truncation, sph_rj%nidx_rj(1),                   &
-     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    gauss, sph_OUT_g)
       error_gauss_coefs_header                                          &
      &  =  .not. cmp_sph_volume_monitor_heads(sph_lbl_IN_g, sph_IN_g,   &
      &                                  gauss_coefs_labels, sph_OUT_g)
+      call dealloc_sph_espec_name(sph_IN_g)
+      call dealloc_sph_espec_name(sph_OUT_g)
 !
       return
 !
@@ -335,6 +338,7 @@
      &                               gauss_coefs_labels, sph_OUT_g),    &
      &    zbuf_g)
       close(id_gauss_coef)
+      call dealloc_sph_espec_name(sph_OUT_g)
       return
 !
       end function error_gauss_coefs_header
