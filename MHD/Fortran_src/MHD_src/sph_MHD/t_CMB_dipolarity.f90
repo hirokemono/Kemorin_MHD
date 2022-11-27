@@ -203,7 +203,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_write_dipolarity_header(flag_gzip_lc, id_file,     &
-     &          nri, ltr, nlayer_ICB, nlayer_CMB, dip, zbuf)
+     &          ltr, nri, nlayer_ICB, nlayer_CMB, dip, zbuf)
 !
       use t_buffer_4_gzip
       use sph_power_spectr_data_text
