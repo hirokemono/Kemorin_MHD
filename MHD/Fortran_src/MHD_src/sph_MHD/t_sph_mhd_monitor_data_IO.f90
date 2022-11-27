@@ -207,6 +207,7 @@
       use m_error_IDs
       use cal_typical_scale
       use calypso_mpi_logical
+      use write_typical_scale
 !
       type(sph_grids), intent(in) :: sph
       type(sph_boundary_type), intent(in) :: sph_bc_U

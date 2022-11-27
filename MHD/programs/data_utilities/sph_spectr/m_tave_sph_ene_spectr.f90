@@ -172,6 +172,7 @@
      &          start_time, end_time, true_start, true_end,             &
      &          sph_IN, WK_tave)
 !
+      use t_buffer_4_gzip
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
@@ -191,7 +192,7 @@
       real(kind = kreal) :: prev_time
       integer(kind = kint) :: icou, ierr, ist_true, i
       logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
+      type(buffer_4_gzip) :: zbuf1, zbuf_s
       character, pointer :: FPz_f1
       type(sph_spectr_head_labels) :: sph_lbl_IN_t
 !
@@ -279,7 +280,7 @@
       write(*,*) 'average file_name: ', trim(file_name)
       open(id_file_rms, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_rms, flag_vol_ave, sph_IN)
+     &   (.FALSE., id_file_rms, flag_vol_ave, sph_IN, zbuf_s)
 !
       call select_output_sph_series_data                                &
      &   (id_file_rms, flag_spectr, flag_vol_ave, sph_IN)
@@ -296,6 +297,7 @@
      &         (flag_old_fmt, fname_org, flag_spectr, flag_vol_ave,     &
      &          start_time, end_time, sph_IN, WK_tave)
 !
+      use t_buffer_4_gzip
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
@@ -310,7 +312,7 @@
       type(spectr_ave_sigma_work), intent(inout) :: WK_tave
 !
       logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
+      type(buffer_4_gzip) :: zbuf1, zbuf_s
       character, pointer :: FPz_f1
       type(sph_spectr_head_labels) :: sph_lbl_IN_t
 !
@@ -396,7 +398,7 @@
       write(*,*) 'standard deviation file_name: ', trim(file_name)
       open(id_file_rms, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_rms, flag_vol_ave, sph_IN)
+     &   (.FALSE., id_file_rms, flag_vol_ave, sph_IN, zbuf_s)
 !
       call select_output_sph_series_data                                &
      &   (id_file_rms, flag_spectr, flag_vol_ave, sph_IN)

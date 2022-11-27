@@ -63,7 +63,7 @@
       character(len = kchara) :: file_name
       integer(kind = kint) :: i, icou, ierr, ist_true
       logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
+      type(buffer_4_gzip) :: zbuf1, zbuf_s
       character, pointer :: FPz_f1
       type(sph_spectr_head_labels) :: sph_lbl_IN_u
 !
@@ -84,7 +84,7 @@
       write(file_name, '(a7,a)') 'lscale_', trim(fname_org)
       open(id_file_lscale, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_lscale, flag_vol_ave, sph_OUT1)
+     &   (.FALSE., id_file_lscale, flag_vol_ave, sph_OUT1, zbuf_s)
 !
       call allocate_lscale_espec_data(sph_IN)
 !

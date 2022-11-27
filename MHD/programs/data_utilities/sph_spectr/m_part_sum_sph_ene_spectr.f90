@@ -57,7 +57,7 @@
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
+      type(buffer_4_gzip) :: zbuf1, zbuf_s
       character, pointer :: FPz_f1
       type(sph_spectr_head_labels) :: sph_lbl_IN_ps
       character(len = kchara) :: input_prefix, input_extension
@@ -86,7 +86,7 @@
       file_name = add_dat_extension(fname_tmp)
       open(id_file_rms, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_rms, flag_vol_ave, sph_OUT1)
+     &   (.FALSE., id_file_rms, flag_vol_ave, sph_OUT1, zbuf_s)
 !
       icou = 0
       ist_true = -1

@@ -9,10 +9,12 @@
 !!
 !!@verbatim
 !!      subroutine select_output_sph_pwr_head                           &
-!!     &         (id_file, flag_vol_ave, sph_OUT)
+!!     &         (flag_gzip, id_file, flag_vol_ave, sph_OUT, zbuf)
+!!        logical, intent(in) :: flag_gzip
 !!        integer(kind = kint), intent(in) :: id_file
 !!        logical, intent(in) :: flag_vol_ave
-!!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!!        type(read_sph_spectr_data), intent(in) :: sph_OUT
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!      subroutine select_output_sph_series_data                        &
 !!     &         (id_file, flag_spectr, flag_vol_ave, sph_OUT)
 !!        integer(kind = kint), intent(in) :: id_file
@@ -31,7 +33,6 @@
 !
       private :: write_vol_sph_data, write_vol_spectr_data
       private :: write_layer_sph_data, write_layer_spectr_data
-      private :: write_sph_pwr_vol_head
 !
 !   --------------------------------------------------------------------
 !
@@ -40,13 +41,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine select_output_sph_pwr_head                             &
-     &         (id_file, flag_vol_ave, sph_OUT)
+     &         (flag_gzip, id_file, flag_vol_ave, sph_OUT, zbuf)
 !
+      use t_buffer_4_gzip
       use gz_open_sph_monitor_file
 !
+      logical, intent(in) :: flag_gzip
       integer(kind = kint), intent(in) :: id_file
       logical, intent(in) :: flag_vol_ave
-      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+      type(read_sph_spectr_data), intent(in) :: sph_OUT
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       if(flag_vol_ave) then

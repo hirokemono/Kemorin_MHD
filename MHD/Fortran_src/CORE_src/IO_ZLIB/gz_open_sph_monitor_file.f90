@@ -39,7 +39,7 @@
 !!     &                                  sph_OUT, zbuf)
 !!      subroutine write_sph_pwr_layer_head(flag_gzip, id_file,         &
 !!     &                                    sph_OUT, zbuf)
-!!        logical, intent(inout) :: flag_gzip
+!!        logical, intent(in) :: flag_gzip
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(read_sph_spectr_data), intent(in) :: sph_OUT
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
@@ -97,6 +97,7 @@
       use t_read_sph_spectra
       use sph_power_spectr_data_text
       use sel_gz_input_sph_mtr_head
+      use select_gz_stream_file_IO
       use compare_sph_monitor_header
 !
       integer(kind = kint), intent(in) :: id_stream
@@ -110,9 +111,7 @@
 !
       type(read_sph_spectr_data) :: sph_IN_f
       type(sph_spectr_head_labels) :: sph_lbl_IN_f
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-      character(len = kchara) :: fname, gzip_name
+      character(len = kchara) :: fname
       logical :: flag_miss
 !
 !
@@ -138,7 +137,8 @@
    99 continue
 !
       open(id_stream, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
-      call write_sph_pwr_vol_head(flag_gzip_lc, id_file, sph_OUT, zbuf)
+      call write_sph_pwr_vol_head(flag_gzip_lc, id_stream,              &
+     &                            sph_OUT, zbuf)
       close(id_stream)
 !
       end subroutine check_sph_vol_monitor_file
@@ -158,9 +158,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
       logical, intent(inout) :: flag_gzip_lc
 !
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-      character(len = kchara) :: fname, gzip_name
+      character(len = kchara) :: fname
       logical :: flag_miss
 !
 !
@@ -201,9 +199,7 @@
 !
       type(read_sph_spectr_data) :: sph_IN_f
       type(sph_spectr_head_labels) :: sph_lbl_IN_f
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-      character(len = kchara) :: fname, gzip_name
+      character(len = kchara) :: fname
       logical :: flag_miss
 !
 !
@@ -227,8 +223,8 @@
    99 continue
 !
       open(id_stream, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
-      call write_sph_pwr_layer_head(flag_gzip_lc, id_file,              &
-     &                             sph_OUT, zbuf)
+      call write_sph_pwr_layer_head(flag_gzip_lc, id_stream,            &
+     &                              sph_OUT, zbuf)
       close(id_stream)
 !
       end subroutine check_sph_layer_mean_file
@@ -248,9 +244,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
       logical, intent(inout) :: flag_gzip_lc
 !
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-      character(len = kchara) :: fname, gzip_name
+      character(len = kchara) :: fname
       logical :: flag_miss
 !
 !
@@ -278,8 +272,9 @@
      &                                  sph_OUT, zbuf)
 !
       use sph_power_spectr_data_text
+      use select_gz_stream_file_IO
 !
-      logical, intent(inout) :: flag_gzip
+      logical, intent(in) :: flag_gzip
       integer(kind = kint), intent(in) :: id_file
       type(read_sph_spectr_data), intent(in) :: sph_OUT
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -304,7 +299,7 @@
       use sph_power_spectr_data_text
       use select_gz_stream_file_IO
 !
-      logical, intent(inout) :: flag_gzip
+      logical, intent(in) :: flag_gzip
       integer(kind = kint), intent(in) :: id_file
       type(read_sph_spectr_data), intent(in) :: sph_OUT
       type(buffer_4_gzip), intent(inout) :: zbuf

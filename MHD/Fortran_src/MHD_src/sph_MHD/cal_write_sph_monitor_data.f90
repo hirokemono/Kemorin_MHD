@@ -234,7 +234,7 @@
       use output_sph_pwr_volume_file
       use write_picked_sph_spectr
       use write_sph_gauss_coefs
-      use cal_typical_scale
+      use write_typical_scale
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -386,6 +386,7 @@
      &                                   sph_bc_U, pwr, tsl)
 !
       use cal_typical_scale
+      use write_typical_scale
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params

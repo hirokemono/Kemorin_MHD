@@ -46,7 +46,7 @@ m_load_picked_sph_spectr_f.o: $(SPH_UTILS_DIR)/m_load_picked_sph_spectr_f.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 m_load_section_file_f.o: $(SPH_UTILS_DIR)/m_load_section_file_f.f90 m_precision.o m_constants.o t_psf_results.o t_time_data.o t_ucd_data.o t_file_IO_parameter.o count_monitor_time_series.o set_ucd_file_names.o gz_gauss_coefs_monitor_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_maxmode_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_maxmode_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_ctl_param_sph_series_util.o write_sph_monitor_data.o select_gz_stream_file_IO.o sel_gz_input_sph_mtr_head.o gz_spl_sph_spectr_data_IO.o
+m_maxmode_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_maxmode_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_buffer_4_gzip.o t_ctl_param_sph_series_util.o write_sph_monitor_data.o select_gz_stream_file_IO.o sel_gz_input_sph_mtr_head.o gz_spl_sph_spectr_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_part_sum_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_part_sum_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o t_buffer_4_gzip.o t_ctl_param_sph_series_util.o select_gz_stream_file_IO.o write_sph_monitor_data.o sel_gz_input_sph_mtr_head.o gz_spl_sph_spectr_data_IO.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -92,7 +92,7 @@ picked_sph_spectr_data_IO.o: $(SPH_UTILS_DIR)/picked_sph_spectr_data_IO.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 pickup_sph_mean_square_data.o: $(SPH_UTILS_DIR)/pickup_sph_mean_square_data.f90 m_precision.o m_constants.o t_spheric_parameter.o t_pickup_sph_spectr_data.o t_schmidt_poly_on_rtm.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o single_pt_sph_mean_square.o cal_rms_by_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_dipole_fitting.o: $(SPH_UTILS_DIR)/sph_dipole_fitting.f90 m_precision.o m_constants.o t_ctl_data_dipole_fit_ratio.o t_ctl_param_dipole_fit.o t_read_sph_spectra.o select_gz_stream_file_IO.o sel_gz_input_sph_mtr_head.o gz_spl_sph_spectr_data_IO.o write_sph_monitor_data.o set_parallel_file_name.o
+sph_dipole_fitting.o: $(SPH_UTILS_DIR)/sph_dipole_fitting.f90 m_precision.o m_constants.o t_buffer_4_gzip.o t_ctl_data_dipole_fit_ratio.o t_ctl_param_dipole_fit.o t_read_sph_spectra.o select_gz_stream_file_IO.o sel_gz_input_sph_mtr_head.o gz_spl_sph_spectr_data_IO.o write_sph_monitor_data.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_dynamic_elsasser.o: $(SPH_UTILS_DIR)/sph_dynamic_elsasser.f90 m_precision.o m_constants.o m_sph_dynamic_elsasser.o t_ctl_data_get_dyn_elsasser.o t_ctl_param_sph_series_util.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -104,9 +104,9 @@ t_append_picked_spectr_file.o: $(SPH_UTILS_DIR)/t_append_picked_spectr_file.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 t_append_sph_mean_sq_data.o: $(SPH_UTILS_DIR)/t_append_sph_mean_sq_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o t_pick_copy_monitor_data.o t_buffer_4_gzip.o select_gz_stream_file_IO.o sel_gz_input_sph_mtr_head.o gz_spl_sph_spectr_data_IO.o write_sph_monitor_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ave_spectr_stable_and_rev.o: $(SPH_UTILS_DIR)/t_ave_spectr_stable_and_rev.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o set_parallel_file_name.o t_read_sph_spectra.o t_read_sph_series.o count_monitor_time_series.o m_tave_sph_ene_spectr.o gz_gauss_coefs_monitor_IO.o write_gauss_coefs_4_monitor.o write_sph_monitor_data.o skip_comment_f.o
+t_ave_spectr_stable_and_rev.o: $(SPH_UTILS_DIR)/t_ave_spectr_stable_and_rev.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o set_parallel_file_name.o t_buffer_4_gzip.o t_read_sph_spectra.o t_read_sph_series.o count_monitor_time_series.o m_tave_sph_ene_spectr.o gz_gauss_coefs_monitor_IO.o write_gauss_coefs_4_monitor.o write_sph_monitor_data.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ave_stable_and_reversal.o: $(SPH_UTILS_DIR)/t_ave_stable_and_reversal.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o set_parallel_file_name.o t_read_sph_spectra.o t_read_sph_series.o count_monitor_time_series.o m_tave_sph_ene_spectr.o gz_gauss_coefs_monitor_IO.o write_gauss_coefs_4_monitor.o write_sph_monitor_data.o skip_comment_f.o
+t_ave_stable_and_reversal.o: $(SPH_UTILS_DIR)/t_ave_stable_and_reversal.f90 m_precision.o m_constants.o t_ctl_data_tave_stable_rev.o t_ctl_param_sph_series_util.o set_parallel_file_name.o t_buffer_4_gzip.o t_read_sph_spectra.o t_read_sph_series.o count_monitor_time_series.o m_tave_sph_ene_spectr.o gz_gauss_coefs_monitor_IO.o write_gauss_coefs_4_monitor.o write_sph_monitor_data.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_average_dipolarity.o: $(SPH_UTILS_DIR)/t_average_dipolarity.f90 m_precision.o m_constants.o t_CMB_dipolarity.o t_ctl_data_tave_sph_monitor.o time_average_dipolarity.o t_ctl_param_sph_series_util.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -172,6 +172,6 @@ write_gauss_coefs_4_monitor.o: $(SPH_UTILS_DIR)/write_gauss_coefs_4_monitor.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 write_snap_pick_sph_spectr.o: $(SPH_UTILS_DIR)/write_snap_pick_sph_spectr.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o t_picked_sph_spectr_data_IO.o t_buffer_4_gzip.o m_monitor_file_labels.o write_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-write_sph_monitor_data.o: $(SPH_UTILS_DIR)/write_sph_monitor_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o write_field_labels.o sph_power_spectr_data_text.o
+write_sph_monitor_data.o: $(SPH_UTILS_DIR)/write_sph_monitor_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o t_buffer_4_gzip.o gz_open_sph_monitor_file.o write_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

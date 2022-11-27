@@ -13,11 +13,6 @@
 !!        type(read_character_item), intent(in) :: typ_scale_file_fmt
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(typical_scale_data), intent(inout) :: tsl
-!!      subroutine write_typical_scales(i_step, time, pwr, tsl)
-!!        integer(kind = kint), intent(in) :: i_step
-!!        real(kind = kreal), intent(in) :: time
-!!        type(sph_mean_squares), intent(in) :: pwr
-!!        type(typical_scale_data), intent(in) :: tsl
 !!      subroutine cal_typical_scales(pwr, tsl)
 !!        type(sph_mean_squares), intent(in) :: pwr
 !!        type(typical_scale_data), intent(inout) :: tsl
@@ -40,8 +35,6 @@
 !
       private :: find_rms_address_4_kene, find_rms_address_4_mene
       private :: s_cal_typical_scale
-!
-      integer(kind = kint), parameter, private :: id_scale = 36
 !
 ! -----------------------------------------------------------------------
 !
@@ -97,154 +90,6 @@
       end subroutine set_ctl_typical_scale_params
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine write_typical_scales                                   &
-     &         (i_step, time, sph_params, sph_rj, sph_bc_U, pwr, tsl)
-!
-      use t_buffer_4_gzip
-      use t_rms_4_sph_spectr
-      use t_sph_volume_mean_square
-      use sph_monitor_data_text
-      use select_gz_stream_file_IO
-!
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: time
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_mean_squares), intent(in) :: pwr
-      type(typical_scale_data), intent(in) :: tsl
-!
-      logical :: flag_gzip_lc
-      type(buffer_4_gzip) :: zbuf_t
-      real(kind=kreal), allocatable :: d_rj_out(:)
-      integer(kind = kint) :: icou
-!
-!
-      if(tsl%iflag_ub_scales .le. izero) return
-      if((tsl%icomp_kene + tsl%icomp_mene) .le. 0) return
-      if(my_rank .ne. pwr%v_spectr(1)%irank_m) return
-!
-      allocate(d_rj_out(tsl%num_lscale))
-      icou = 0
-      if(tsl%icomp_kene .gt. 0) then
-        d_rj_out(icou+1) = tsl%dl_kin
-        d_rj_out(icou+2) = tsl%dm_kin
-        d_rj_out(icou+3) = tsl%dlm_kin
-        icou = icou + 3
-      end if
-      if(tsl%icomp_mene .gt. 0) then
-        d_rj_out(icou+1) = tsl%dl_mag
-        d_rj_out(icou+2) = tsl%dm_mag
-        d_rj_out(icou+3) = tsl%dlm_mag
-      end if
-!
-      flag_gzip_lc = tsl%flag_gzip_scale
-      call open_typical_scale_file                                      &
-     &   (id_scale, sph_params%l_truncation, sph_rj%nidx_rj(1),         &
-     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_bc_U%kr_in, sph_bc_U%kr_out,                              &
-     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0), tsl,                    &
-     &    flag_gzip_lc, zbuf_t)
-!
-      call sel_gz_write_text_stream(flag_gzip_lc, id_scale,             &
-     &    volume_pwr_data_text(i_step, time, tsl%num_lscale, d_rj_out), &
-     &    zbuf_t)
-      close(id_scale)
-!
-      deallocate(d_rj_out)
-!
-      end subroutine write_typical_scales
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-     logical function error_typical_scale_header(sph_params, sph_rj,    &
-    &                                            sph_bc_U, pwr, tsl)
-!
-      use t_buffer_4_gzip
-      use t_rms_4_sph_spectr
-      use t_read_sph_spectra
-      use set_parallel_file_name
-      use gz_open_sph_monitor_file
-      use check_sph_monitor_header
-      use compare_sph_monitor_header
-      use sph_power_spectr_data_text
-      use select_gz_stream_file_IO
-      use gz_open_sph_monitor_file
-      use sel_gz_input_sph_mtr_head
-!
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_mean_squares), intent(in) :: pwr
-      type(typical_scale_data), intent(in) :: tsl
-!
-      character(len = kchara) :: file_name, base_name
-!
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-      character, pointer:: FPz_fp
-      logical :: flag_gzip_lc, flag_miss
-      logical :: flag_gzip_t= .TRUE.
-      type(read_sph_spectr_data) :: sph_IN_t, sph_OUT_t
-      type(sph_spectr_head_labels) :: sph_lbl_IN_t
-      type(buffer_4_gzip) :: zbuf_t
-!
-!
-      error_typical_scale_header = .FALSE.
-      if(tsl%iflag_ub_scales .le. izero) return
-      if(tsl%num_lscale .le. 0) return
-      if(my_rank .ne. pwr%v_spectr(1)%irank_m) return
-!
-      flag_gzip_lc = flag_gzip_t
-      base_name = add_dat_extension(tsl%scale_prefix)
-      call check_gzip_or_ascii_file(base_name, file_name,               &
-     &                              flag_gzip_lc, flag_miss)
-      if(flag_miss) go to 99
-!
-      call sel_open_read_gz_stream_file(FPz_fp, id_scale,               &
-     &                                file_name, flag_gzip_lc, zbuf_t)
-      call s_select_input_sph_series_head(FPz_fp, id_scale,             &
-     &    flag_gzip_lc, flag_current_fmt, spectr_off, volume_on,        &
-     &    sph_lbl_IN_t, sph_IN_t, zbuf_t)
-      call sel_close_read_gz_stream_file(FPz_fp, id_scale,              &
-     &                                   flag_gzip_lc, zbuf_t)
-      sph_IN_t%nri_dat = 1
-!
-      call dup_typ_scale_head_params                                    &
-     &   (sph_params%l_truncation, sph_rj%nidx_rj(1),                   &
-     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_bc_U%kr_in, sph_bc_U%kr_out,                              &
-     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0), tsl, sph_OUT_t)
-      error_typical_scale_header                                        &
-     &  =  .not. cmp_sph_volume_monitor_heads(sph_lbl_IN_t, sph_IN_t,   &
-     &                                  sph_pwr_labels, sph_OUT_t)
-      call dealloc_sph_espec_name(sph_OUT_t)
-!
-!
-  99  continue
-      write(*,*) 'No typical scale file'
-!
-      open(id_scale, file=file_name,                                    &
-     &     FORM='UNFORMATTED',ACCESS='STREAM')
-      call dup_typ_scale_head_params                                    &
-     &   (sph_params%l_truncation, sph_rj%nidx_rj(1),                   &
-     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    sph_bc_U%kr_in, sph_bc_U%kr_out,                              &
-     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0), tsl, sph_OUT_t)
-      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT_t,         &
-     &                               len_each, len_tot)
-      call sel_gz_write_text_stream(flag_gzip_lc, id_scale,             &
-     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
-     &                              sph_pwr_labels, sph_OUT_t),         &
-     &    zbuf_t)
-      close(id_scale)
-      call dealloc_sph_espec_name(sph_OUT_t)
-      return
-!
-      end function error_typical_scale_header
-!
 ! -----------------------------------------------------------------------
 !
       subroutine init_typical_scales(rj_fld, pwr, tsl)

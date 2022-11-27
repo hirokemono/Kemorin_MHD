@@ -48,6 +48,7 @@
       subroutine sph_maximum_pwr_spectr                                 &
      &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
 !
+      use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
       use write_sph_monitor_data
       use select_gz_stream_file_IO
@@ -62,7 +63,7 @@
       character(len = kchara) :: file_name
       integer(kind = kint) :: i, icou, ierr, ist_true
       logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
+      type(buffer_4_gzip) :: zbuf1, zbuf_s
       character, pointer :: FPz_f1
 !
       type(sph_spectr_head_labels) :: sph_lbl_IN_m
@@ -86,12 +87,12 @@
       write(file_name, '(a7,a)') 'maxval_', trim(fname_org)
       open(id_file_maxval, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_maxval, flag_vol_ave, sph_OUT1)
+     &   (.FALSE., id_file_maxval, flag_vol_ave, sph_OUT1, zbuf_s)
 !
       write(file_name, '(a7,a)') 'maxloc_', trim(fname_org)
       open(id_file_maxloc, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_maxloc, flag_vol_ave, sph_OUT1)
+     &   (.FALSE., id_file_maxloc, flag_vol_ave, sph_OUT1, zbuf_s)
 !
       call allocate_max_sph_data(sph_IN)
 !

@@ -129,6 +129,7 @@
      &          vave_file_name, vpwr_file_name, gauss_file_name,        &
      &          border_g10)
 !
+      use t_buffer_4_gzip
       use t_read_sph_spectra
       use t_read_sph_series
 !
@@ -172,6 +173,8 @@
       type(read_sph_spectr_data), save :: sph_IN_a, sph_IN_p, sph_OUT1
       type(read_sph_spectr_series), save :: sph_ave_series
       type(read_sph_spectr_series), save :: sph_pwr_series
+!
+      type(buffer_4_gzip), save :: zbuf_s
 !
       integer(kind = kint) :: imode_g1(-1:1)
       character(len=kchara) :: hd_g10 = 'g1_0'
@@ -333,7 +336,8 @@
       write(id_file_rms,'(a,1p2e16.8e3)')                               &
      &          '# Start and End time: ', true_start, true_end
 !
-      call select_output_sph_pwr_head(id_file_rms, .TRUE. , sph_OUT1)
+      call select_output_sph_pwr_head(.FALSE., id_file_rms, .TRUE. ,    &
+     &                                sph_OUT1, zbuf_s)
 !
       sph_OUT1%time = true_end
       sph_OUT1%i_step = 0

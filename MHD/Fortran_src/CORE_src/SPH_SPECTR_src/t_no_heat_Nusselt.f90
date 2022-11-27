@@ -184,6 +184,7 @@
      &          Nu_type, flag_gzip_lc, zbuf)
 !
       use t_buffer_4_gzip
+      use t_read_sph_spectra
       use set_parallel_file_name
       use write_field_labels
       use gz_open_sph_monitor_file
@@ -196,6 +197,7 @@
       logical, intent(inout) :: flag_gzip_lc
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
+      type(read_sph_spectr_data) :: sph_OUT
       character(len = kchara) :: file_name
       logical :: flag_miss
 !
@@ -211,8 +213,10 @@
    99 continue
       open(id_file, file=file_name, FORM='UNFORMATTED',ACCESS='STREAM')
 !
-      call sel_write_Nu_header(flag_gzip_lc, id_Nusselt, ltr, nri,      &
-     &                         nlayer_ICB, nlayer_CMB, Nu_type, zbuf)
+      call dup_Nusselt_header_to_IO                                     &
+     &   (ltr, nri, nlayer_ICB, nlayer_CMB, Nu_type, sph_OUT)
+      call write_sph_pwr_vol_head(flag_gzip_lc, id_file, sph_OUT, zbuf)
+      call dealloc_sph_espec_name(sph_OUT)
 !
       end subroutine open_Nu_file
 !
@@ -222,6 +226,7 @@
      &          nlayer_ICB, nlayer_CMB, idx_rj_degree_zero, Nu_type)
 !
       use t_buffer_4_gzip
+      use t_read_sph_spectra
       use select_gz_stream_file_IO
       use sph_monitor_data_text
 !
@@ -251,43 +256,6 @@
       close(id_Nusselt)
 !
       end subroutine write_Nusselt_file
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sel_write_Nu_header(flag_gzip_lc, id_file, ltr, nri,   &
-     &          nlayer_ICB, nlayer_CMB, Nu_type, zbuf)
-!
-      use t_buffer_4_gzip
-      use t_read_sph_spectra
-      use select_gz_stream_file_IO
-      use sph_power_spectr_data_text
-!
-      logical, intent(in) :: flag_gzip_lc
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: ltr, nri
-      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      type(nusselt_number_data), intent(in) :: Nu_type
-!
-      type(buffer_4_gzip), intent(inout)  :: zbuf
-!
-      type(read_sph_spectr_data) :: sph_OUT
-      integer(kind = kint) :: len_tot
-      integer(kind = kint) :: len_each(6)
-!
-!
-!
-      call dup_Nusselt_header_to_IO                                     &
-     &   (ltr, nri, nlayer_ICB, nlayer_CMB, Nu_type, sph_OUT)
-!
-      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
-     &                               len_each, len_tot)
-      call sel_gz_write_text_stream(flag_gzip_lc, id_file,              &
-     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
-     &                               sph_pwr_labels, sph_OUT),          &
-     &    zbuf)
-      call dealloc_sph_espec_name(sph_OUT)
-!
-      end subroutine sel_write_Nu_header
 !
 ! -----------------------------------------------------------------------
 !

@@ -49,6 +49,7 @@
 !
       subroutine sph_dynamic_elsasser_by_spectr(els_dat)
 !
+      use t_buffer_4_gzip
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
@@ -59,7 +60,7 @@
       type(sph_dyn_elsasser_data), intent(inout) :: els_dat
 !
       logical :: flag_gzip_l, flag_gzip_m
-      type(buffer_4_gzip) :: zbuf_l, zbuf_m
+      type(buffer_4_gzip) :: zbuf_l, zbuf_m, zbuf_s
       type(sph_spectr_head_labels) :: sph_lbl_IN_l, sph_lbl_IN_m
       character, pointer :: FPz_l, FPz_m
 !
@@ -111,7 +112,7 @@
      &          trim(els_dat%elsasser_file_name)
       open(id_file_lscale, file=els_dat%elsasser_file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_lscale, vol_ave_on, sph_OUT1)
+     &   (.FALSE., id_file_lscale, vol_ave_on, sph_OUT1, zbuf_s)
 !
       nri_tmp = sph_OUT1%nri_sph
       sph_OUT1%nri_sph = 1

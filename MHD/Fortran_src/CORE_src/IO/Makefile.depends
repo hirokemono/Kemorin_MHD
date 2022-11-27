@@ -148,9 +148,7 @@ sph_file_IO_select.o: $(IO_DIR)/sph_file_IO_select.F90 m_precision.o m_file_form
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 sph_global_1d_idx_IO.o: $(IO_DIR)/sph_global_1d_idx_IO.f90 m_precision.o t_node_id_spherical_IO.o skip_comment_f.o m_sph_modes_grid_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_mean_spectr_IO.o: $(IO_DIR)/sph_mean_spectr_IO.f90 m_precision.o t_time_data.o t_spheric_parameter.o t_rms_4_sph_spectr.o t_sph_volume_mean_square.o t_energy_label_parameters.o sph_mean_spectr_header_IO.o
-	$(F90) -c $(F90OPTFLAGS) $<
-sph_mean_spectr_header_IO.o: $(IO_DIR)/sph_mean_spectr_header_IO.f90 m_precision.o t_spheric_parameter.o t_rms_4_sph_spectr.o t_sph_volume_mean_square.o t_energy_label_parameters.o t_read_sph_spectra.o m_time_labels.o sph_power_spectr_data_text.o write_field_labels.o
+sph_mean_spectr_header_IO.o: $(IO_DIR)/sph_mean_spectr_header_IO.f90 m_precision.o t_spheric_parameter.o t_rms_4_sph_spectr.o t_sph_volume_mean_square.o t_energy_label_parameters.o t_read_sph_spectra.o m_time_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_modes_grids_data_IO.o: $(IO_DIR)/sph_modes_grids_data_IO.f90 m_precision.o m_machine_parameter.o m_sph_modes_grid_labels.o t_comm_table.o t_node_id_spherical_IO.o t_spheric_group.o domain_data_IO.o spherical_model_IO.o sph_global_1d_idx_IO.o groups_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

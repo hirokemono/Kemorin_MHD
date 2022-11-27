@@ -30,6 +30,7 @@
       use m_precision
       use m_constants
 !
+      use t_buffer_4_gzip
       use t_ctl_data_dipole_fit_ratio
       use t_ctl_param_dipole_fit
       use t_read_sph_spectra
@@ -49,12 +50,13 @@
       integer(kind = kint), parameter :: id_file_fitted = 35
       logical, parameter :: flag_current_format = .FALSE.
       integer(kind = kint) :: ierr, ist_true, i, nri_tmp
-      logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
       type(read_sph_spectr_data) :: sph_IN1
       type(read_sph_spectr_data) :: sph_OUT1
       type(sph_spectr_head_labels) :: sph_lbl_IN1
+!
+      logical :: flag_gzip1
+      type(buffer_4_gzip), save :: zbuf_s, zbuf1
 !
       real(kind = kreal) :: true_start, true_end
 !
@@ -100,7 +102,7 @@
      &          trim(fit_dat1%fit_ratio_file_name)
       open(id_file_fitted, file=fit_dat1%fit_ratio_file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_fitted, vol_ave_off, sph_OUT1)
+     &   (.FALSE., id_file_fitted, vol_ave_off, sph_OUT1, zbuf_s)
 !
       nri_tmp = sph_OUT1%nri_sph
       sph_OUT1%nri_sph = 1
