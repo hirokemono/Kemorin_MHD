@@ -8,8 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_dipolarity_params                            &
-!!     &         (fdip_file_prefix, fdip_truncation, rj_fld, dip)
+!!     &         (fdip_file_prefix, fdip_file_format, fdip_truncation,  &
+!!     &          rj_fld, dip)
 !!        type(read_character_item), intent(in) :: fdip_file_prefix
+!!        type(read_character_item), intent(in) :: fdip_file_format
 !!        type(ctl_array_int), intent(in) :: fdip_truncation
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(dipolarity_data), intent(inout) :: dip
@@ -45,19 +47,24 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_dipolarity_params                              &
-     &         (fdip_file_prefix, fdip_truncation, rj_fld, dip)
+     &         (fdip_file_prefix, fdip_file_format, fdip_truncation,    &
+     &          rj_fld, dip)
 !
-      use m_base_field_labels
       use t_control_array_character
       use t_control_array_integer
+      use t_multi_flag_labels
+      use m_file_format_labels
+      use m_base_field_labels
       use set_parallel_file_name
 !
       type(read_character_item), intent(in) :: fdip_file_prefix
+      type(read_character_item), intent(in) ::  fdip_file_format
       type(ctl_array_int), intent(in) :: fdip_truncation
       type(phys_data), intent(in) :: rj_fld
       type(dipolarity_data), intent(inout) :: dip
 !
       integer(kind = kint) :: i, num
+      character(len = kchara) :: input_flag
 !
 !    Turn On Nusselt number if temperature gradient is there
       dip%iflag_dipolarity = 0
@@ -76,7 +83,14 @@
         dip%iflag_dipolarity = 0
       end if
 !
+      dip%flag_gzip_dipolarity = .TRUE.
       if(dip%iflag_dipolarity .gt. 0) then
+        if(fdip_file_format%iflag .gt. 0) then
+          input_flag = fdip_file_format%charavalue
+          if(check_mul_flags(input_flag, gzip_flags))                   &
+     &                           dip%flag_gzip_dipolarity = .TRUE.
+        end if
+!
         num = 1
         if(fdip_truncation%num .gt. 0) then
           num = fdip_truncation%num + 1

@@ -22,9 +22,12 @@
 !!    volume_pwr_spectr_format     'gzip'
 !!
 !!    nusselt_number_prefix        'Nusselt'
+!!    nusselt_number_format        'gzip'
 !!
 !!    heat_Nusselt_number_prefix        'Nusselt_temp'
 !!    comp_Nusselt_number_prefix        'Nusselt_comp'
+!!    heat_Nusselt_number_format        'gzip'
+!!    comp_Nusselt_number_format        'gzip'
 !!
 !!    typical_scale_prefix         'typical_scale'
 !!    typical_scale_format         'gzip'
@@ -104,6 +107,11 @@
 !>        Structure for Nusselt number file prefix
         type(read_character_item) :: comp_Nusselt_file_prefix
 !
+!>        Structure for Nusselt number file prefix
+        type(read_character_item) :: heat_Nusselt_file_format
+!>        Structure for Nusselt number file prefix
+        type(read_character_item) :: comp_Nusselt_file_format
+!
 !>        Structure for typical scale file prefix
         type(read_character_item) :: typ_scale_file_prefix_ctl
 !
@@ -140,14 +148,20 @@
       character(len=kchara), parameter, private                         &
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
       character(len=kchara), parameter, private                         &
+     &           :: hd_Nusselt_file_fmt = 'nusselt_number_format'
+      character(len=kchara), parameter, private                         &
      &           :: hd_typ_scale_file_head = 'typical_scale_prefix'
       character(len=kchara), parameter, private                         &
      &           :: hd_typ_scale_file_format = 'typical_scale_format'
 !
-       character(len=kchara), parameter, private                         &
+       character(len=kchara), parameter, private                        &
      &    :: hd_heat_Nusselt_file_head = 'heat_Nusselt_number_prefix'
-       character(len=kchara), parameter, private                         &
+       character(len=kchara), parameter, private                        &
      &    :: hd_comp_Nusselt_file_head = 'comp_Nusselt_number_prefix'
+       character(len=kchara), parameter, private                        &
+     &    :: hd_heat_Nusselt_file_fmt = 'heat_Nusselt_number_format'
+       character(len=kchara), parameter, private                        &
+     &    :: hd_comp_Nusselt_file_fmt = 'comp_Nusselt_number_format'
 !
       private :: read_volume_spectr_ctl
       private :: append_volume_spectr_ctls
@@ -192,11 +206,17 @@
 !
         call read_chara_ctl_type(c_buf, hd_Nusselt_file_head,           &
      &      smonitor_ctl%heat_Nusselt_file_prefix)
+        call read_chara_ctl_type(c_buf, hd_Nusselt_file_fmt,            &
+     &      smonitor_ctl%heat_Nusselt_file_format)
 !
         call read_chara_ctl_type(c_buf, hd_heat_Nusselt_file_head,      &
      &      smonitor_ctl%heat_Nusselt_file_prefix)
+        call read_chara_ctl_type(c_buf, hd_heat_Nusselt_file_fmt,       &
+     &      smonitor_ctl%heat_Nusselt_file_format)
         call read_chara_ctl_type(c_buf, hd_comp_Nusselt_file_head,      &
      &      smonitor_ctl%comp_Nusselt_file_prefix)
+        call read_chara_ctl_type(c_buf, hd_comp_Nusselt_file_fmt,       &
+     &      smonitor_ctl%comp_Nusselt_file_format)
 !
         call read_chara_ctl_type(c_buf, hd_typ_scale_file_head,         &
      &      smonitor_ctl%typ_scale_file_prefix_ctl)
@@ -267,7 +287,9 @@
       smonitor_ctl%volume_pwr_spectr_prefix%iflag =  0
       smonitor_ctl%volume_pwr_spectr_format%iflag =  0
       smonitor_ctl%heat_Nusselt_file_prefix%iflag =  0
+      smonitor_ctl%heat_Nusselt_file_format%iflag =  0
       smonitor_ctl%comp_Nusselt_file_prefix%iflag =  0
+      smonitor_ctl%comp_Nusselt_file_format%iflag =  0
       smonitor_ctl%typ_scale_file_prefix_ctl%iflag = 0
       smonitor_ctl%typ_scale_file_format_ctl%iflag = 0
 !

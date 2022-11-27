@@ -18,6 +18,7 @@
 !!
 !!  begin sph_dipolarity_ctl
 !!    dipolarity_file_prefix        'monitor/dipolarity'
+!!    dipolarity_file_format        'gzip'
 !!
 !!    array dipolarity_truncation_ctl
 !!      dipolarity_truncation_ctl     13
@@ -49,6 +50,9 @@
 !>        Structure for dipolarity file prefix
         type(read_character_item) :: fdip_file_prefix_ctl
 !
+!>        Structure for dipolarity file format
+        type(read_character_item) :: fdip_file_format_ctl
+!
         integer (kind = kint) :: i_dipolarity_ctl = 0
       end type sph_dipolarity_control
 !
@@ -59,6 +63,8 @@
      &            :: hd_fdip_truncation = 'dipolarity_truncation_ctl'
       character(len=kchara), parameter, private                         &
      &            :: hd_fdip_file_prefix = 'dipolarity_file_prefix'
+      character(len=kchara), parameter, private                         &
+     &            :: hd_fdip_file_format = 'dipolarity_file_format'
 !
 !   labels for item
 !
@@ -88,6 +94,8 @@
      &                             fdip_ctl%fdip_truncation_ctl, c_buf)
         call read_chara_ctl_type(c_buf, hd_fdip_file_prefix,            &
      &      fdip_ctl%fdip_file_prefix_ctl)
+        call read_chara_ctl_type(c_buf, hd_fdip_file_format,            &
+     &      fdip_ctl%fdip_file_format_ctl)
       end do
       fdip_ctl%i_dipolarity_ctl = 1
 !
@@ -104,6 +112,7 @@
 !
       call dealloc_control_array_int(fdip_ctl%fdip_truncation_ctl)
       fdip_ctl%fdip_file_prefix_ctl%iflag = 0
+      fdip_ctl%fdip_file_format_ctl%iflag = 0
 !
       end subroutine dealloc_sph_dipolarity_ctl
 !

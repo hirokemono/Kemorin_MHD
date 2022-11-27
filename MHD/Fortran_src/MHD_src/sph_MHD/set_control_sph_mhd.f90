@@ -370,13 +370,16 @@
 !
       call set_ctl_params_no_heat_Nu(heat_source%name,                  &
      &    smonitor_ctl%heat_nusselt_file_prefix,                        &
+     &    smonitor_ctl%heat_nusselt_file_format,                        &
      &    rj_fld, monitor%heat_Nusselt)
       call set_ctl_params_no_heat_Nu(composition_source%name,           &
      &    smonitor_ctl%comp_nusselt_file_prefix,                        &
+     &    smonitor_ctl%comp_nusselt_file_format,                        &
      &    rj_fld, monitor%comp_Nusselt)
 !
       call set_ctl_dipolarity_params                                    &
      &   (smonitor_ctl%fdip_ctl%fdip_file_prefix_ctl,                   &
+     &    smonitor_ctl%fdip_ctl%fdip_file_format_ctl,                   &
      &    smonitor_ctl%fdip_ctl%fdip_truncation_ctl,                    &
      &    rj_fld, monitor%dip)
       call set_ctl_typical_scale_params                                 &

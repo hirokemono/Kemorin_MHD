@@ -53,6 +53,8 @@
       type dipolarity_data
 !>        Integer flag for dipolarity
         integer(kind = kint) :: iflag_dipolarity = 0
+!>        compressed file flag for dipolarity
+        logical :: flag_gzip_dipolarity = .FALSE.
 !>        File prefix for dipolarity data
         character(len = kchara)                                         &
      &                 :: dipolarity_file_name = 'dipolarity.dat'
@@ -141,7 +143,6 @@
       integer(kind = kint), intent(in) :: i_magne
       type(dipolarity_data), intent(in) :: dip
 !
-      logical :: flag_gzip_d = .TRUE.
       logical :: flag_gzip_lc
       type(buffer_4_gzip) :: zbuf_d
 !
@@ -149,7 +150,7 @@
       if(dip%iflag_dipolarity .le. izero) return
       if(i_magne .le. 0) return
 !
-      flag_gzip_lc = flag_gzip_d
+      flag_gzip_lc = dip%flag_gzip_dipolarity
       call open_dipolarity_file(id_dipolarity, ltr, nri,                &
      &                          nlayer_ICB, nlayer_CMB, dip,            &
      &                          flag_gzip_lc, zbuf_d)

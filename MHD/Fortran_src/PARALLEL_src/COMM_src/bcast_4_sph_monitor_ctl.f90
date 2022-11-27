@@ -48,7 +48,9 @@
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_format)
 
       call bcast_ctl_type_c1(smonitor_ctl%heat_Nusselt_file_prefix)
+      call bcast_ctl_type_c1(smonitor_ctl%heat_Nusselt_file_format)
       call bcast_ctl_type_c1(smonitor_ctl%comp_Nusselt_file_prefix)
+      call bcast_ctl_type_c1(smonitor_ctl%comp_Nusselt_file_format)
       call bcast_ctl_type_c1(smonitor_ctl%typ_scale_file_prefix_ctl)
       call bcast_ctl_type_c1(smonitor_ctl%typ_scale_file_format_ctl)
 !
@@ -179,6 +181,7 @@
 !
       call bcast_ctl_array_i1(fdip_ctl%fdip_truncation_ctl)
       call bcast_ctl_type_c1(fdip_ctl%fdip_file_prefix_ctl)
+      call bcast_ctl_type_c1(fdip_ctl%fdip_file_format_ctl)
       call calypso_mpi_bcast_one_int(fdip_ctl%i_dipolarity_ctl, 0)
 !
       end subroutine bcast_sph_dipolarity_ctl

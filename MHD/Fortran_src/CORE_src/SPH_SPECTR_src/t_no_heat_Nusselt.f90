@@ -51,6 +51,8 @@
         integer(kind = kint) :: iflag_Nusselt = 0
 !>        File name for Nusselt number file
         character(len = kchara) :: Nusselt_file_name = 'Nusselt.dat'
+!>        File format for Nusselt number file
+        logical :: flag_gzip_Nusselt = .FALSE.
 !
 !>        Radius ID at inner boundary
         integer(kind = kint) :: kr_ICB_Nu
@@ -118,16 +120,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_params_no_heat_Nu                              &
-     &         (source_name, Nusselt_file_prefix, rj_fld, Nu_type)
+     &         (source_name, Nusselt_file_prefix, Nusselt_file_format,  &
+     &          rj_fld, Nu_type)
 !
       use m_base_field_labels
       use m_grad_field_labels
+      use m_file_format_labels
       use t_phys_data
       use t_control_array_character
+      use t_multi_flag_labels
       use set_parallel_file_name
 !
       character(len = kchara) :: source_name
       type(read_character_item), intent(in) :: Nusselt_file_prefix
+      type(read_character_item), intent(in) :: Nusselt_file_format
       type(phys_data), intent(in) :: rj_fld
       type(nusselt_number_data), intent(inout) :: Nu_type
 !
@@ -149,6 +155,15 @@
         Nu_type%Nusselt_file_name = add_dat_extension(file_prfix)
       else
         Nu_type%iflag_Nusselt = 0
+      end if
+!
+      Nu_type%flag_gzip_Nusselt = .FALSE.
+      if(Nu_type%iflag_Nusselt .gt. 0) then
+        if(Nusselt_file_format%iflag .gt. 0) then
+          file_prfix = Nusselt_file_format%charavalue
+          if(check_mul_flags(file_prfix, gzip_flags))                   &
+&                     Nu_type%flag_gzip_Nusselt = .TRUE.
+        end if
       end if
 !
 !    Turn Off Nusselt number if heat or composition source is there
@@ -216,7 +231,6 @@
       real(kind = kreal), intent(in) :: time
       type(nusselt_number_data), intent(in) :: Nu_type
 !
-      logical :: flag_gzip_n = .TRUE.
       logical :: flag_gzip_lc
       type(buffer_4_gzip) :: zbuf_n
 !
@@ -228,7 +242,7 @@
 !
       Nu_snap(1) = Nu_type%Nu_ICB
       Nu_snap(2) = Nu_type%Nu_CMB
-      flag_gzip_lc = flag_gzip_n
+      flag_gzip_lc = Nu_type%flag_gzip_Nusselt
       call open_Nu_file(id_Nusselt, ltr, nri, nlayer_ICB, nlayer_CMB,   &
      &                  Nu_type, flag_gzip_lc, zbuf_n)
 !
