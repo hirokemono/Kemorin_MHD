@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine write_picked_spectrum_files                          &
 !!     &         (time_d, sph_params, sph_rj, rj_fld, picked)
-!!      subroutine error_picked_spectr_files(sph_params, picked)
+!!      integer(kind = kint) function                                   &
+!!     &                    error_picked_spectr_files(sph_params, picked)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -107,23 +108,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine error_picked_spectr_files(sph_params, picked)
+      integer(kind = kint) function                                     &
+     &                    error_picked_spectr_files(sph_params, picked)
 !
       use pickup_sph_spectr_data
       use sph_monitor_data_text
       use select_gz_stream_file_IO
       use write_each_pick_spectr_file
-      use calypso_mpi_int
-      use m_error_IDs
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(picked_spectrum_data), intent(in) :: picked
 !
-      integer(kind = kint) :: inum, ierr_lc, ierr_gl, num
+      integer(kind = kint) :: inum, num, ierr_lc
 !
       type(buffer_4_gzip) :: zbuf_p
 !
 !
+      error_picked_spectr_files = 0
       if(picked%num_sph_mode_lc .le. 0) return
 !
       num = picked%istack_picked_spec_lc(my_rank+1)                     &
@@ -142,17 +143,9 @@
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      zbuf_p)) ierr_lc = ierr_lc + 1
       end do
+      error_picked_spectr_files = ierr_lc
 !
-      call calypso_mpi_allreduce_one_int(ierr_lc, ierr_gl, MPI_SUM)
-!
-      if(ierr_gl .eq. 0) return
-!
-      write(e_message,*) ierr_gl,                                       &
-     &      ' pickup mode files have wrong header. Check field defs.'
-      call calypso_mpi_barrier()
-      call calypso_MPI_abort(ierr_file, e_message)
-!
-      end subroutine error_picked_spectr_files
+      end function error_picked_spectr_files
 !
 ! -----------------------------------------------------------------------
 !

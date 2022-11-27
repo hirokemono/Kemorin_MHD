@@ -172,7 +172,7 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(send_recv_status), intent(inout) :: SR_sig
 !
-      integer(kind = kint) :: iflag
+      integer(kind = kint) :: iflag, ierr_lc, ierr_gl
       logical :: flag
 !
 !
@@ -186,7 +186,16 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor(sph%sph_params, sph%sph_rj,          &
      &    rj_fld, monitor%pick_list, monitor%pick_coef)
-      call error_picked_spectr_files(sph%sph_params, monitor%pick_coef)
+      ierr_lc =  error_picked_spectr_files(sph%sph_params,              &
+     &                                     monitor%pick_coef)
+!
+      call calypso_mpi_allreduce_one_int(ierr_lc, ierr_gl, MPI_SUM)
+      if(ierr_gl .gt. 0) then
+        write(e_message,*) ierr_gl,                                     &
+     &      ' pickup mode files have wrong header. Check field defs.'
+        call calypso_mpi_barrier()
+        call calypso_MPI_abort(ierr_file, e_message)
+      end if
 !
       if(iflag_debug.gt.0) write(*,*) 'init_gauss_coefs_data_and_file'
       call init_gauss_coefs_data_and_file(sph, ipol,                    &

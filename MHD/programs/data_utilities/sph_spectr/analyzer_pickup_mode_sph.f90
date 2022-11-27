@@ -74,21 +74,30 @@
 !
       subroutine evolution
 !
+      use m_error_IDs
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
       use cal_write_sph_monitor_data
       use pickup_sph_spectr_data
       use write_picked_sph_spectr
+      use calypso_mpi_int
 !
-      integer(kind = kint) :: i_step
+      integer(kind = kint) :: i_step, ierr_lc, ierr_gl
 !
 !
       call init_sph_spec_4_monitor                                      &
      &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
      &    SPH_dat_ss%fld, pick_list_u, pick_sph_u)
-      call error_picked_spectr_files(SPH_dat_ss%sph%sph_params,         &
-     &                               pick_sph_u)
+      ierr_lc =  error_picked_spectr_files(SPH_dat_ss%sph%sph_params,   &
+     &                                     pick_sph_u)
 !
+      call calypso_mpi_allreduce_one_int(ierr_lc, ierr_gl, MPI_SUM)
+      if(ierr_gl .gt. 0) then
+        write(e_message,*) ierr_gl,                                     &
+     &      ' pickup mode files have wrong header. Check field defs.'
+        call calypso_mpi_barrier()
+        call calypso_MPI_abort(ierr_file, e_message)
+      end if
 !
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
