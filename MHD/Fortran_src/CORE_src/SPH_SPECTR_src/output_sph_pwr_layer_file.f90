@@ -50,7 +50,6 @@
      &         (id_rank, ene_labels, time_d, sph_params, pwr)
 !
       use set_parallel_file_name
-      use sph_mean_spectr_IO
 !
       integer, intent(in) :: id_rank
 !
@@ -83,7 +82,6 @@
      &         (id_rank, ene_labels, time_d, sph_params, pwr)
 !
       use set_parallel_file_name
-      use sph_mean_spectr_IO
 !
       integer, intent(in) :: id_rank
 !
@@ -146,7 +144,6 @@
 !
       use t_read_sph_spectra
       use t_buffer_4_gzip
-      use sph_mean_spectr_IO
       use gz_open_sph_monitor_file
       use gz_layer_mean_monitor_IO
       use sph_mean_spectr_header_IO
@@ -193,7 +190,6 @@
 !
       use t_read_sph_spectra
       use t_buffer_4_gzip
-      use sph_mean_spectr_IO
       use gz_open_sph_monitor_file
       use gz_layer_spectr_monitor_IO
       use sph_mean_spectr_header_IO

@@ -31,7 +31,7 @@
 !
       private :: write_vol_sph_data, write_vol_spectr_data
       private :: write_layer_sph_data, write_layer_spectr_data
-      private :: write_sph_pwr_vol_head, write_sph_pwr_layer_head
+      private :: write_sph_pwr_vol_head
 !
 !   --------------------------------------------------------------------
 !
@@ -42,15 +42,18 @@
       subroutine select_output_sph_pwr_head                             &
      &         (id_file, flag_vol_ave, sph_OUT)
 !
+      use gz_open_sph_monitor_file
+!
       integer(kind = kint), intent(in) :: id_file
       logical, intent(in) :: flag_vol_ave
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !
 !
       if(flag_vol_ave) then
-        call write_sph_pwr_vol_head(id_file, sph_OUT)
+        call write_sph_pwr_vol_head(flag_gzip, id_file, sph_OUT, zbuf)
       else
-        call write_sph_pwr_layer_head(id_file, sph_OUT)
+        call write_sph_pwr_layer_head(flag_gzip, id_file,               &
+     &                                sph_OUT, zbuf)
       end if
 !
       end subroutine select_output_sph_pwr_head
@@ -191,49 +194,6 @@
       end do
 !
       end subroutine write_layer_spectr_data
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine write_sph_pwr_vol_head(id_file, sph_OUT)
-!
-      use sph_power_spectr_data_text
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(read_sph_spectr_data), intent(in) :: sph_OUT
-!
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-!
-!
-      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
-     &                               len_each, len_tot)
-      write(id_file,'(a)',ADVANCE='NO')                                 &
-     &       sph_vol_spectr_header_text(len_tot, len_each,              &
-     &                                  sph_pwr_labels, sph_OUT)
-!
-      end subroutine write_sph_pwr_vol_head
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_sph_pwr_layer_head(id_file, sph_OUT)
-!
-      use sph_power_spectr_data_text
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(read_sph_spectr_data), intent(in) :: sph_OUT
-!
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-!
-!
-      call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
-     &                                 len_each, len_tot)
-      write(id_file,'(a)',ADVANCE='NO')                                 &
-     &      sph_layer_spectr_header_text(len_tot, len_each,             &
-     &                                   sph_pwr_labels, sph_OUT)
-!
-      end subroutine write_sph_pwr_layer_head
 !
 !   --------------------------------------------------------------------
 !

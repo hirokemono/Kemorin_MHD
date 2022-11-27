@@ -34,6 +34,15 @@
 !!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        logical, intent(inout) :: flag_gzip_lc
+!!
+!!      subroutine write_sph_pwr_vol_head(flag_gzip, id_file,           &
+!!     &                                  sph_OUT, zbuf)
+!!      subroutine write_sph_pwr_layer_head(flag_gzip, id_file,         &
+!!     &                                    sph_OUT, zbuf)
+!!        logical, intent(inout) :: flag_gzip
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(read_sph_spectr_data), intent(in) :: sph_OUT
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !!
       module gz_open_sph_monitor_file
@@ -86,7 +95,6 @@
      &          flag_spectr, sph_OUT, FPz_f, zbuf, flag_gzip_lc, error)
 !
       use t_read_sph_spectra
-      use select_gz_stream_file_IO
       use sph_power_spectr_data_text
       use sel_gz_input_sph_mtr_head
       use compare_sph_monitor_header
@@ -130,12 +138,7 @@
    99 continue
 !
       open(id_stream, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
-!
-      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
-     &                               len_each, len_tot)
-      call sel_gz_write_text_stream(flag_gzip_lc, id_stream,            &
-     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
-     &                               sph_pwr_labels, sph_OUT), zbuf)
+      call write_sph_pwr_vol_head(flag_gzip_lc, id_file, sph_OUT, zbuf)
       close(id_stream)
 !
       end subroutine check_sph_vol_monitor_file
@@ -147,7 +150,6 @@
 !
       use t_read_sph_spectra
       use select_gz_stream_file_IO
-      use sph_power_spectr_data_text
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: base_name
@@ -173,12 +175,7 @@
    99 continue
 !
       open(id_file, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
-!
-      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
-     &                               len_each, len_tot)
-      call sel_gz_write_text_stream(flag_gzip_lc, id_file,              &
-     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
-     &                               sph_pwr_labels, sph_OUT), zbuf)
+      call write_sph_pwr_vol_head(flag_gzip_lc, id_file, sph_OUT, zbuf)
 !
       end subroutine sel_open_sph_vol_monitor_file
 !
@@ -190,7 +187,6 @@
 !
       use t_read_sph_spectra
       use select_gz_stream_file_IO
-      use sph_power_spectr_data_text
       use sel_gz_input_sph_mtr_head
       use compare_sph_monitor_header
 !
@@ -231,12 +227,8 @@
    99 continue
 !
       open(id_stream, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
-!
-      call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
-     &                                 len_each, len_tot)
-      call sel_gz_write_text_stream(flag_gzip_lc, id_stream,            &
-     &    sph_layer_spectr_header_text(len_tot, len_each,               &
-     &                                 sph_pwr_labels, sph_OUT), zbuf)
+      call write_sph_pwr_layer_head(flag_gzip_lc, id_file,              &
+     &                             sph_OUT, zbuf)
       close(id_stream)
 !
       end subroutine check_sph_layer_mean_file
@@ -248,7 +240,6 @@
 !
       use t_read_sph_spectra
       use select_gz_stream_file_IO
-      use sph_power_spectr_data_text
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: base_name
@@ -275,15 +266,61 @@
    99 continue
 !
       open(id_file, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
-!
-      call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
-     &                                 len_each, len_tot)
-      call sel_gz_write_text_stream(flag_gzip_lc, id_file,              &
-     &    sph_layer_spectr_header_text(len_tot, len_each,               &
-     &                                 sph_pwr_labels, sph_OUT), zbuf)
+      call write_sph_pwr_layer_head(flag_gzip_lc, id_file,              &
+     &                             sph_OUT, zbuf)
 !
       end subroutine sel_open_sph_layer_mean_file
 !
 !  --------------------------------------------------------------------
+!  --------------------------------------------------------------------
+!
+      subroutine write_sph_pwr_vol_head(flag_gzip, id_file,             &
+     &                                  sph_OUT, zbuf)
+!
+      use sph_power_spectr_data_text
+!
+      logical, intent(inout) :: flag_gzip
+      integer(kind = kint), intent(in) :: id_file
+      type(read_sph_spectr_data), intent(in) :: sph_OUT
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+      integer(kind = kint) :: len_each(6)
+      integer(kind = kint) :: len_tot
+!
+!
+      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
+     &                               len_each, len_tot)
+      call sel_gz_write_text_stream(flag_gzip, id_file,                 &
+     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
+     &                               sph_pwr_labels, sph_OUT), zbuf)
+!
+      end subroutine write_sph_pwr_vol_head
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_sph_pwr_layer_head(flag_gzip, id_file,           &
+     &                                    sph_OUT, zbuf)
+!
+      use sph_power_spectr_data_text
+      use select_gz_stream_file_IO
+!
+      logical, intent(inout) :: flag_gzip
+      integer(kind = kint), intent(in) :: id_file
+      type(read_sph_spectr_data), intent(in) :: sph_OUT
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+      integer(kind = kint) :: len_each(6)
+      integer(kind = kint) :: len_tot
+!
+!
+      call len_sph_layer_spectr_header(sph_pwr_labels, sph_OUT,         &
+     &                                 len_each, len_tot)
+      call sel_gz_write_text_stream(flag_gzip, id_file,                 &
+     &    sph_layer_spectr_header_text(len_tot, len_each,               &
+     &                                 sph_pwr_labels, sph_OUT), zbuf)
+!
+      end subroutine write_sph_pwr_layer_head
+!
+!   --------------------------------------------------------------------
 !
       end module gz_open_sph_monitor_file

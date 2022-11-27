@@ -56,7 +56,6 @@
       subroutine write_total_energy_to_screen(id_rank, time_d, pwr)
 !
       use m_base_field_labels
-      use sph_mean_spectr_IO
 !
       integer, intent(in) :: id_rank
       type(time_data), intent(in) :: time_d
@@ -97,7 +96,6 @@
      &         (id_rank, ene_labels, time_d, sph_params, sph_rj, pwr)
 !
       use set_parallel_file_name
-      use sph_mean_spectr_IO
 !
       integer, intent(in) :: id_rank
 !
@@ -133,7 +131,6 @@
      &         (id_rank, ene_labels, time_d, sph_params, sph_rj, pwr)
 !
       use set_parallel_file_name
-      use sph_mean_spectr_IO
 !
       integer, intent(in) :: id_rank
 !
@@ -202,7 +199,6 @@
 !
       use t_read_sph_spectra
       use t_buffer_4_gzip
-      use sph_mean_spectr_IO
       use gz_open_sph_monitor_file
       use sph_mean_spectr_header_IO
       use gz_volume_spectr_monitor_IO
@@ -254,7 +250,6 @@
       use t_buffer_4_gzip
       use set_parallel_file_name
       use gz_open_sph_monitor_file
-      use sph_mean_spectr_IO
       use sph_monitor_data_text
       use select_gz_stream_file_IO
 !
@@ -276,22 +271,15 @@
      &   (mode_label, sph_params%l_truncation,                          &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    ene_labels, sph_rj, v_pwr, sph_OUT)
-      call alloc_sph_spectr_data(izero, sph_OUT)
 !
       flag_gzip_lc = v_pwr%gzip_flag_vol_spec
       call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
      &                                   sph_OUT, zbuf_m, flag_gzip_lc)
-!
-!$omp parallel workshare
-      sph_OUT%spectr_IO(1:v_pwr%ntot_comp_sq,0,1)                       &
-     &                                = rms_sph_v(1:v_pwr%ntot_comp_sq)
-!$omp end parallel workshare
+      call dealloc_sph_espec_name(sph_OUT)
 !
       call sel_gz_write_text_stream(flag_gzip_lc, id_file_rms,          &
      &    volume_pwr_data_text(time_d%i_time_step, time_d%time,         &
-     &    v_pwr%ntot_comp_sq, sph_OUT%spectr_IO(1,0,1)), zbuf_m)
-      call dealloc_sph_espec_data(sph_OUT)
-      call dealloc_sph_espec_name(sph_OUT)
+     &    v_pwr%ntot_comp_sq, rms_sph_v), zbuf_m)
       close(id_file_rms)
 !
       end subroutine write_sph_volume_pwr_file
@@ -307,7 +295,6 @@
       use gz_open_sph_monitor_file
       use sph_monitor_data_text
       use set_parallel_file_name
-      use sph_mean_spectr_IO
 !
       integer, intent(in) :: id_rank
 !

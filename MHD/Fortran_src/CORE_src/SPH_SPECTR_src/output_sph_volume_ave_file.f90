@@ -45,7 +45,6 @@
       subroutine write_sph_vol_ave_file                                 &
      &         (ene_labels, time_d, sph_params, sph_rj, pwr)
 !
-      use sph_mean_spectr_IO
       use set_parallel_file_name
       use output_sph_pwr_volume_file
 !
