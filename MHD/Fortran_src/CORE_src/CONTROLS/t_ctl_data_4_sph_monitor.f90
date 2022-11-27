@@ -27,6 +27,7 @@
 !!    comp_Nusselt_number_prefix        'Nusselt_comp'
 !!
 !!    typical_scale_prefix         'typical_scale'
+!!    typical_scale_format         'gzip'
 !!!
 !!    array volume_spectrum_ctl
 !!      ...
@@ -106,6 +107,9 @@
 !>        Structure for typical scale file prefix
         type(read_character_item) :: typ_scale_file_prefix_ctl
 !
+!>        Structure for typical scale file format
+        type(read_character_item) :: typ_scale_file_format_ctl
+!
         integer (kind = kint) :: i_sph_monitor = 0
       end type sph_monitor_control
 !
@@ -137,6 +141,8 @@
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
       character(len=kchara), parameter, private                         &
      &           :: hd_typ_scale_file_head = 'typical_scale_prefix'
+      character(len=kchara), parameter, private                         &
+     &           :: hd_typ_scale_file_format = 'typical_scale_format'
 !
        character(len=kchara), parameter, private                         &
      &    :: hd_heat_Nusselt_file_head = 'heat_Nusselt_number_prefix'
@@ -194,6 +200,8 @@
 !
         call read_chara_ctl_type(c_buf, hd_typ_scale_file_head,         &
      &      smonitor_ctl%typ_scale_file_prefix_ctl)
+        call read_chara_ctl_type(c_buf, hd_typ_scale_file_format,       &
+     &      smonitor_ctl%typ_scale_file_format_ctl)
         call read_chara_ctl_type(c_buf, hd_voume_ave_head,              &
      &      smonitor_ctl%volume_average_prefix)
         call read_chara_ctl_type(c_buf, hd_voume_rms_head,              &
@@ -261,6 +269,7 @@
       smonitor_ctl%heat_Nusselt_file_prefix%iflag =  0
       smonitor_ctl%comp_Nusselt_file_prefix%iflag =  0
       smonitor_ctl%typ_scale_file_prefix_ctl%iflag = 0
+      smonitor_ctl%typ_scale_file_format_ctl%iflag = 0
 !
       if(smonitor_ctl%num_vspec_ctl .le. 0) return
 !

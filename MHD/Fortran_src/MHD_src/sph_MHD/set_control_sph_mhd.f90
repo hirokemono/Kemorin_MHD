@@ -380,7 +380,8 @@
      &    smonitor_ctl%fdip_ctl%fdip_truncation_ctl,                    &
      &    rj_fld, monitor%dip)
       call set_ctl_typical_scale_params                                 &
-     &   (smonitor_ctl%typ_scale_file_prefix_ctl, rj_fld, monitor%tsl)
+     &   (smonitor_ctl%typ_scale_file_prefix_ctl,                       &
+     &    smonitor_ctl%typ_scale_file_format_ctl, rj_fld, monitor%tsl)
 !
       end subroutine set_control_SPH_MHD_monitors
 !

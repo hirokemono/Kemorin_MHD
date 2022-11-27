@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_typical_scale_params                         &
-!!     &         (typ_scale_file_prefix, rj_fld, tsl)
-!!        type(read_character_item), intent(in) :: typ_scale_file_prefix
+!!&         (scale_file_prefix_t, typ_scale_file_fmt, rj_fld, tsl)
+!!        type(read_character_item), intent(in) :: scale_file_prefix_t
+!!        type(read_character_item), intent(in) :: typ_scale_file_fmt
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(typical_scale_data), intent(inout) :: tsl
 !!      subroutine write_typical_scales(i_step, time, pwr, tsl)
@@ -49,17 +50,21 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_typical_scale_params                           &
-     &         (typ_scale_file_prefix, rj_fld, tsl)
+     &         (scale_file_prefix_t, typ_scale_file_fmt, rj_fld, tsl)
 !
-      use m_base_field_labels
       use t_phys_data
       use t_control_array_character
+      use t_multi_flag_labels
+      use m_base_field_labels
+      use m_field_file_format_labels
 !
-      type(read_character_item), intent(in) :: typ_scale_file_prefix
+      type(read_character_item), intent(in) :: scale_file_prefix_t
+      type(read_character_item), intent(in) :: typ_scale_file_fmt
       type(phys_data), intent(in) :: rj_fld
       type(typical_scale_data), intent(inout) :: tsl
 !
       integer(kind = kint) :: i
+      character(len = kchara) :: input_flag
 !
 !    Turn On Nusselt number if temperature gradient is there
       tsl%iflag_ub_scales = 0
@@ -74,11 +79,20 @@
         end if
       end do
 !
-      if(typ_scale_file_prefix%iflag .gt. 0) then
+      if(scale_file_prefix_t%iflag .gt. 0) then
         tsl%iflag_ub_scales = 1
-        tsl%scale_prefix = typ_scale_file_prefix%charavalue
+        tsl%scale_prefix = scale_file_prefix_t%charavalue
       else
         tsl%iflag_ub_scales = 0
+      end if
+!
+      tsl%flag_gzip_scale = .FALSE.
+      if(tsl%iflag_ub_scales .gt. 0) then
+        if(typ_scale_file_fmt%iflag .gt. 0) then
+          input_flag = typ_scale_file_fmt%charavalue
+          if(check_mul_flags(input_flag, gzip_flags))                   &
+     &                           tsl%flag_gzip_scale = .TRUE.
+        end if
       end if
 !
       end subroutine set_ctl_typical_scale_params
@@ -102,7 +116,6 @@
       type(sph_mean_squares), intent(in) :: pwr
       type(typical_scale_data), intent(in) :: tsl
 !
-      logical :: flag_gzip_t = .TRUE.
       logical :: flag_gzip_lc
       type(buffer_4_gzip) :: zbuf_t
       real(kind=kreal), allocatable :: d_rj_out(:)
@@ -127,7 +140,7 @@
         d_rj_out(icou+3) = tsl%dlm_mag
       end if
 !
-      flag_gzip_lc = flag_gzip_t
+      flag_gzip_lc = tsl%flag_gzip_scale
       call open_typical_scale_file                                      &
      &   (id_scale, sph_params%l_truncation, sph_rj%nidx_rj(1),         &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &

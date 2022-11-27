@@ -91,6 +91,8 @@
         integer(kind = kint) :: iflag_ub_scales = 0
 !>        File prefix for dipolarity data
         character(len = kchara) :: scale_prefix = 'typical_scales'
+!>        gzipped flag for dipolarity data
+        logical :: flag_gzip_scale = .FALSE.
 !
 !>        kinetic energy address
         integer(kind = kint) :: icomp_kene = 0
