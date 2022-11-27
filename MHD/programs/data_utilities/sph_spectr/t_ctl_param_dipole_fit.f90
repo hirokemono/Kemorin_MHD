@@ -219,6 +219,8 @@
       integer(kind = kint) :: kr, l, lcou
 !
 !
+      me_cmb_d = 0.0d0
+      pwr_g10 = 0.0d0
       do kr = 1, sph_IN%nri_sph
         if(sph_IN%kr_sph(kr) .eq. sph_IN%kr_CMB) then
           kr_sph = sph_IN%kr_CMB

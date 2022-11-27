@@ -54,7 +54,8 @@
 !
 !
       if(flag_vol_ave) then
-        call write_sph_pwr_vol_head(flag_gzip, id_file, sph_OUT, zbuf)
+        call write_sph_pwr_vol_head(flag_gzip, id_file,                 &
+     &                              sph_pwr_labels, sph_OUT, zbuf)
       else
         call write_sph_pwr_layer_head(flag_gzip, id_file,               &
      &                                sph_OUT, zbuf)

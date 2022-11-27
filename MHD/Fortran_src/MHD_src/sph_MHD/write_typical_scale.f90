@@ -38,7 +38,7 @@
 !
       integer(kind = kint), parameter, private :: id_scale = 36
 !
-      private :: open_typical_scale_file, dup_typ_scale_head_params
+      private :: dup_typ_scale_head_params
 !
 ! -----------------------------------------------------------------------
 !
@@ -50,9 +50,12 @@
      &         (i_step, time, sph_params, sph_rj, sph_bc_U, pwr, tsl)
 !
       use t_rms_4_sph_spectr
+      use t_read_sph_spectra
       use t_sph_volume_mean_square
       use sph_monitor_data_text
       use select_gz_stream_file_IO
+      use gz_open_sph_monitor_file
+      use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
@@ -62,8 +65,10 @@
       type(sph_mean_squares), intent(in) :: pwr
       type(typical_scale_data), intent(in) :: tsl
 !
+      character(len = kchara) :: base_name
       logical :: flag_gzip_lc
       type(buffer_4_gzip) :: zbuf_t
+      type(read_sph_spectr_data) :: sph_OUT_s
       real(kind=kreal), allocatable :: d_rj_out(:)
       integer(kind = kint) :: icou
 !
@@ -86,14 +91,18 @@
         d_rj_out(icou+3) = tsl%dlm_mag
       end if
 !
-      flag_gzip_lc = tsl%flag_gzip_scale
-      call open_typical_scale_file                                      &
-     &   (id_scale, sph_params%l_truncation, sph_rj%nidx_rj(1),         &
+      call dup_typ_scale_head_params                                    &
+     &   (sph_params%l_truncation, sph_rj%nidx_rj(1),                   &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    sph_bc_U%kr_in, sph_bc_U%kr_out,                              &
-     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0), tsl,                    &
-     &    flag_gzip_lc, zbuf_t)
+     &    sph_bc_U%r_ICB(0), sph_bc_U%r_CMB(0), tsl, sph_OUT_s)
 !
+      flag_gzip_lc = tsl%flag_gzip_scale
+      base_name = add_dat_extension(tsl%scale_prefix)
+      call sel_open_sph_vol_monitor_file(id_scale, base_name,           &
+     &    sph_pwr_labels, sph_OUT_s, zbuf_t, flag_gzip_lc)
+      call dealloc_sph_espec_name(sph_OUT_s)
+
       call sel_gz_write_text_stream(flag_gzip_lc, id_scale,             &
      &    volume_pwr_data_text(i_step, time, tsl%num_lscale, d_rj_out), &
      &    zbuf_t)
@@ -104,54 +113,6 @@
       end subroutine write_typical_scales
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine open_typical_scale_file                                &
-     &         (id_file, ltr, nri, nlayer_ICB, nlayer_CMB,              &
-     &          kr_in, kr_out, r_in, r_out, tsl, flag_gzip_lc, zbuf)
-!
-      use t_read_sph_spectra
-!
-      use set_parallel_file_name
-      use write_field_labels
-      use sph_power_spectr_data_text
-      use select_gz_stream_file_IO
-      use gz_open_sph_monitor_file
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: ltr, nri
-      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: r_in, r_out
-      type(typical_scale_data), intent(in) :: tsl
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
-      logical, intent(inout) :: flag_gzip_lc
-!
-      character(len = kchara) :: file_name, base_name
-      type(read_sph_spectr_data) :: sph_OUT
-      logical :: flag_miss
-!
-!
-      base_name = add_dat_extension(tsl%scale_prefix)
-      call check_gzip_or_ascii_file(base_name, file_name,               &
-     &                              flag_gzip_lc, flag_miss)
-      if(flag_miss) go to 99
-!
-      open(id_file, file=file_name, status='old', position='append',    &
-     &     FORM='UNFORMATTED', ACCESS='STREAM')
-      return
-!
-   99 continue
-!
-      open(id_file, file=file_name, FORM='UNFORMATTED',ACCESS='STREAM')
-      call dup_typ_scale_head_params(ltr, nri, nlayer_ICB, nlayer_CMB,  &
-     &    kr_in, kr_out, r_in, r_out, tsl, sph_OUT)
-      call write_sph_pwr_vol_head(flag_gzip_lc, id_file, sph_OUT, zbuf)
-      call dealloc_sph_espec_name(sph_OUT)
-!
-      end subroutine open_typical_scale_file
-!
 ! -----------------------------------------------------------------------
 !
       logical function error_typical_scale_header(sph_params, sph_rj,   &
@@ -195,34 +156,9 @@
 !
       flag_gzip_lc = tsl%flag_gzip_scale
       base_name = add_dat_extension(tsl%scale_prefix)
-      call check_gzip_or_ascii_file(base_name, file_name,               &
-     &                              flag_gzip_lc, flag_miss)
-      if(flag_miss) go to 99
-!
-      call sel_open_read_gz_stream_file(FPz_fp, id_scale,               &
-     &                                file_name, flag_gzip_lc, zbuf_t)
-      call s_select_input_sph_series_head(FPz_fp, id_scale,             &
-     &    flag_gzip_lc, flag_current_fmt, spectr_off, volume_on,        &
-     &    sph_lbl_IN_t, sph_IN_t, zbuf_t)
-      call sel_close_read_gz_stream_file(FPz_fp, id_scale,              &
-     &                                   flag_gzip_lc, zbuf_t)
-!
-      error_typical_scale_header                                        &
-     &  =  .not. cmp_sph_volume_monitor_heads(sph_lbl_IN_t, sph_IN_t,   &
-     &                                  sph_pwr_labels, sph_OUT_t)
+      call check_sph_vol_monitor_file(base_name, sph_pwr_labels,        &
+    &     sph_OUT_t, flag_gzip_lc, error_typical_scale_header)
       call dealloc_sph_espec_name(sph_OUT_t)
-!
-!
-  99  continue
-      write(*,*) 'No typical scale file'
-!
-      open(id_scale, file=file_name,                                    &
-     &     FORM='UNFORMATTED',ACCESS='STREAM')
-      call write_sph_pwr_vol_head(flag_gzip_lc, id_scale,               &
-     &                            sph_OUT_t, zbuf_t)
-      close(id_scale)
-      call dealloc_sph_espec_name(sph_OUT_t)
-      return
 !
       end function error_typical_scale_header
 !

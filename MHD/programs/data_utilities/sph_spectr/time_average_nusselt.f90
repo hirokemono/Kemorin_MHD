@@ -73,8 +73,6 @@
       integer(kind = kint), allocatable :: imask(:)
       integer(kind = kint), parameter :: id_pick = 15
 !
-      integer(kind = kint) :: i_step, ierr, icou, i
-      real(kind = kreal) :: acou, time, prev_time
       real(kind = kreal) :: true_start, true_end
 !
 !       Load data

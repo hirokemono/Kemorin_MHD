@@ -57,7 +57,7 @@
      &                         hdr_num_field = 'Number_of_gauss_coefs', &
      &                         hdr_num_comp = 'Number_of_gauss_coefs')
 !
-      private :: s_write_sph_gauss_coefs, picked_gauss_head
+      private :: s_set_sph_gauss_coefs
 !
 ! -----------------------------------------------------------------------
 !
@@ -75,6 +75,7 @@
       use delete_data_files
       use select_gz_stream_file_IO
       use sph_monitor_data_text
+      use gz_open_sph_monitor_file
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -89,7 +90,6 @@
 !
       type(read_sph_spectr_data) :: sph_OUT
       character(len=kchara) :: file_name
-      logical :: flag_gauss_g = .TRUE.
       logical :: flag_gzip_lc
       type(buffer_4_gzip) :: zbuf_m
 !
@@ -105,20 +105,21 @@
         allocate(d_rj_out(0))
       end if
 !
-      call s_write_sph_gauss_coefs(sph_params, sph_rj, ipol, rj_fld,    &
+      call s_set_sph_gauss_coefs(sph_params, sph_rj, ipol, rj_fld,      &
      &    gauss, gauss%istack_picked_spec_lc(nprocs), d_rj_out, SR_sig)
 !
       if(my_rank .eq. 0) then
         file_name = add_dat_extension(gauss%file_prefix)
 !
-        flag_gzip_lc = flag_gauss_g
+        flag_gzip_lc = gauss%flag_gzip
         call dup_gauss_coefs_header_to_IO                               &
      &     (sph_params%l_truncation, sph_rj%nidx_rj(1),                 &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      gauss, sph_OUT)
+        call sel_open_sph_vol_monitor_file(id_gauss_coef, file_name,    &
+     &      gauss_coefs_labels, sph_OUT, zbuf_m, flag_gzip_lc)
         call dealloc_sph_espec_data(sph_OUT)
-        call sel_open_sph_gauss_coefs_file                              &
-     &     (id_gauss_coef, file_name, sph_OUT, zbuf_m, flag_gzip_lc)
+!
         call sel_gz_write_text_stream(flag_gzip_lc, id_gauss_coef,      &
      &      volume_pwr_data_text(time_d%i_time_step, time_d%time,       &
      &      gauss%istack_picked_spec_lc(nprocs), d_rj_out), zbuf_m)
@@ -173,7 +174,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_write_sph_gauss_coefs(sph_params, sph_rj,            &
+      subroutine s_set_sph_gauss_coefs(sph_params, sph_rj,              &
      &          ipol, rj_fld, gauss, ntot_gauss, d_rj_out, SR_sig)
 !
       use t_solver_SR
@@ -207,59 +208,9 @@
      &    gauss%istack_picked_spec_lc(nprocs), d_rj_out, SR_sig)
       deallocate(d_rj_lc)
 !
-      end subroutine s_write_sph_gauss_coefs
+      end subroutine s_set_sph_gauss_coefs
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      character(len = 16+25) function picked_gauss_head(i_step, time)
-!
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: time
-!
-!
-      write(picked_gauss_head,'(i16,1pe25.14e3)') i_step, time
-!
-      end function  picked_gauss_head
-!
-! ----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine sel_open_sph_gauss_coefs_file                          &
-     &         (id_file, base_name, sph_OUT, zbuf, flag_gzip_lc)
-!
-      use t_read_sph_spectra
-      use select_gz_stream_file_IO
-      use sph_power_spectr_data_text
-      use gz_open_sph_monitor_file
-!
-      integer(kind = kint), intent(in) :: id_file
-      character(len = kchara), intent(in) :: base_name
-!
-      type(read_sph_spectr_data), intent(inout) :: sph_OUT
-      type(buffer_4_gzip), intent(inout) :: zbuf
-      logical, intent(inout) :: flag_gzip_lc
-!
-      character(len = kchara) :: file_name
-      logical :: flag_miss
-!
-!
-      call check_gzip_or_ascii_file(base_name, file_name,               &
-     &                              flag_gzip_lc, flag_miss)
-      if(flag_miss) go to 99
-!
-      open(id_file, file=file_name, status='old', position='append',    &
-     &     FORM='UNFORMATTED', ACCESS='STREAM')
-      return
-!
-   99 continue
-!
-      open(id_file, file=file_name, FORM='UNFORMATTED',ACCESS='STREAM')
-      call write_gauss_coefs_header(flag_gzip_lc, id_file,              &
-     &                              sph_OUT, zbuf)
-!
-      end subroutine sel_open_sph_gauss_coefs_file
-!
 ! -----------------------------------------------------------------------
 !
      logical function error_gauss_coefs_header(sph_params, sph_rj,      &
@@ -277,13 +228,9 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(picked_spectrum_data), intent(in) :: gauss
 !!
-      character, pointer :: FPz_fp
-      type(buffer_4_gzip) :: zbuf_g
-      type(read_sph_spectr_data) :: sph_IN_g, sph_OUT_g
-      type(sph_spectr_head_labels) :: sph_lbl_IN_g
-      character(len = kchara) :: file_name, base_name
-      logical :: flag_gzip_lc, flag_miss
-      logical :: flag_gauss_g = .TRUE.
+      type(read_sph_spectr_data) :: sph_OUT_g
+      character(len = kchara) :: base_name
+      logical :: flag_gzip_lc
 !
 !
       error_gauss_coefs_header = .FALSE.
@@ -295,68 +242,14 @@
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    gauss, sph_OUT_g)
 !
-      flag_gzip_lc = flag_gauss_g
+      flag_gzip_lc = gauss%flag_gzip
       base_name = add_dat_extension(gauss%file_prefix)
-      call check_gzip_or_ascii_file(base_name, file_name,               &
-     &                              flag_gzip_lc, flag_miss)
-      if(flag_miss) go to 99
-!
-      call sel_open_read_gz_stream_file(FPz_fp, id_gauss_coef,          &
-     &                                file_name, flag_gzip_lc, zbuf_g)
-      call s_select_input_sph_series_head(FPz_fp, id_gauss_coef,        &
-     &    flag_gzip_lc, flag_current_fmt, spectr_off, volume_on,        &
-     &    sph_lbl_IN_g, sph_IN_g, zbuf_g)
-      call sel_close_read_gz_stream_file(FPz_fp, id_gauss_coef,         &
-     &                                   flag_gzip_lc, zbuf_g)
-      sph_IN_g%nri_dat = 1
-!
-      error_gauss_coefs_header                                          &
-     &  =  .not. cmp_sph_volume_monitor_heads(sph_lbl_IN_g, sph_IN_g,   &
-     &                                  gauss_coefs_labels, sph_OUT_g)
-      call dealloc_sph_espec_name(sph_IN_g)
+      call check_sph_vol_monitor_file(base_name, gauss_coefs_labels,    &
+    &     sph_OUT_g, flag_gzip_lc, error_gauss_coefs_header)
       call dealloc_sph_espec_name(sph_OUT_g)
-!
-      return
-!
-  99  continue
-      write(*,*) 'No Gauss coefficient file'
-!
-      open(id_gauss_coef, file=file_name,                               &
-     &     FORM='UNFORMATTED', ACCESS='STREAM')
-      call write_gauss_coefs_header(flag_gzip_lc, id_gauss_coef,        &
-     &                              sph_OUT_g, zbuf_g)
-      close(id_gauss_coef)
-      call dealloc_sph_espec_name(sph_OUT_g)
-      return
 !
       end function error_gauss_coefs_header
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine write_gauss_coefs_header(flag_gzip, id_file,           &
-     &                                    sph_OUT, zbuf)
-!
-      use sph_power_spectr_data_text
-      use select_gz_stream_file_IO
-!
-      logical, intent(inout) :: flag_gzip
-      integer(kind = kint), intent(in) :: id_file
-      type(read_sph_spectr_data), intent(in) :: sph_OUT
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-!
-!
-      call len_sph_vol_spectr_header(gauss_coefs_labels, sph_OUT,       &
-     &                               len_each, len_tot)
-      call sel_gz_write_text_stream(flag_gzip, id_file,                 &
-     &    sph_vol_spectr_header_text(len_tot, len_each,                 &
-     &                               gauss_coefs_labels, sph_OUT),      &
-     &    zbuf)
-!
-      end subroutine write_gauss_coefs_header
-!
-!   --------------------------------------------------------------------
 !
       end module write_sph_gauss_coefs

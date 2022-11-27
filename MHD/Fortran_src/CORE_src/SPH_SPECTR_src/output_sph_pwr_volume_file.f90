@@ -226,7 +226,7 @@
 !
       flag_gzip_lc = v_pwr%gzip_flag_vol_spec
       call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
-     &                                   sph_OUT, zbuf_m, flag_gzip_lc)
+     &    sph_pwr_labels, sph_OUT, zbuf_m, flag_gzip_lc)
       call swap_volume_spectr_to_IO(sph_params%l_truncation,            &
      &    v_pwr%ntot_comp_sq, rms_sph_x, sph_OUT%spectr_IO(1,0,1))
       call sel_gz_write_volume_spectr_mtr                               &
@@ -274,7 +274,7 @@
 !
       flag_gzip_lc = v_pwr%gzip_flag_vol_spec
       call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
-     &                                   sph_OUT, zbuf_m, flag_gzip_lc)
+     &    sph_pwr_labels, sph_OUT, zbuf_m, flag_gzip_lc)
       call dealloc_sph_espec_name(sph_OUT)
 !
       call sel_gz_write_text_stream(flag_gzip_lc, id_file_rms,          &
@@ -306,8 +306,6 @@
       character(len=kchara) :: fname_rms, mode_label
 !
       type(read_sph_spectr_data), save :: sph_OUT
-      character, pointer :: FPz_f
-      type(buffer_4_gzip), save :: zbuf_m
       logical :: flag_gzip_lc
 !
 !
@@ -324,9 +322,8 @@
      &   (mode_label, sph_params%l_truncation,                          &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    ene_labels, sph_rj, v_pwr, sph_OUT)
-      call check_sph_vol_monitor_file(id_file_rms, fname_rms,           &
-     &    spectr_off, sph_OUT, FPz_f, zbuf_m, flag_gzip_lc,             &
-     &    error_sph_vol_ms_file)
+      call check_sph_vol_monitor_file(fname_rms, sph_pwr_labels,        &
+     &    sph_OUT, flag_gzip_lc, error_sph_vol_ms_file)
       call dealloc_sph_espec_name(sph_OUT)
 !
       end function error_sph_vol_ms_file

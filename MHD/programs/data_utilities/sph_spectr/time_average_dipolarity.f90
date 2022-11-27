@@ -60,6 +60,8 @@
       use t_CMB_dipolarity
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
+      use sph_monitor_data_text
+      use gz_open_sph_monitor_file
 !
       character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time
@@ -82,7 +84,9 @@
       real(kind = kreal) :: true_start
       character(len = kchara) :: tmpchara, ave_file_name
 !
-      type(buffer_4_gzip) :: zbuf_t
+      logical :: flag_gzip_lc
+      type(read_sph_spectr_data) :: sph_OUT_d
+!
 !
       dip_t%dipolarity_file_name = file_name
       call sel_open_read_gz_stream_file                                 &
@@ -229,24 +233,22 @@
       end do
 !
 !
+      flag_gzip_lc = .FALSE.
       write(ave_file_name,'(a4,a)')                                     &
      &                   't_ave_', trim(dip_t%dipolarity_file_name)
-      open(id_dipolarity, file = ave_file_name,                         &
-     &     form='formatted', status='replace')
-      call sel_write_dipolarity_header                                  &
-     &   (.FALSE., id_dipolarity, sph_IN1%ltr_sph, sph_IN1%nri_sph,     &
-     &    sph_IN1%kr_ICB, sph_IN1%kr_CMB, dip_t, zbuf_t)
+      call dup_dipolarity_header_to_IO                                  &
+     &   (sph_IN1%ltr_sph, sph_IN1%nri_sph,                             &
+     &    sph_IN1%kr_ICB, sph_IN1%kr_CMB, dip_t, sph_OUT_d)
+      call sel_open_sph_vol_monitor_file(id_dipolarity, ave_file_name,  &
+     &    sph_dipolarity_labels, sph_OUT_d, zbuf1, flag_gzip_lc)
+      call dealloc_sph_espec_name(sph_OUT_d)
 !
-      write(id_dipolarity,'(i16,1pe23.14e3)',advance='NO') i_step, time
-      do i = 1, dip_t%num_dip
-        write(id_dipolarity,'(1pe23.14e3)',advance='NO') ave_fdip(i)
-      end do
-      write(id_dipolarity,'(a)') ''
-      write(id_dipolarity,'(i16,1pe23.14e3)',advance='NO') i_step, time
-      do i = 1, dip_t%num_dip
-        write(id_dipolarity,'(1pe23.14e3)',advance='NO') sdev_fdip(i)
-      end do
-      write(id_dipolarity,'(a)') ''
+      call sel_gz_write_text_stream(flag_gzip_lc, id_dipolarity,        &
+     &    volume_pwr_data_text(i_step, time, dip_t%num_dip, ave_fdip),  &
+     &    zbuf1)
+      call sel_gz_write_text_stream(flag_gzip_lc, id_dipolarity,        &
+     &    volume_pwr_data_text(i_step, time, dip_t%num_dip, sdev_fdip), &
+     &    zbuf1)
 !
       close(id_dipolarity)
 !
