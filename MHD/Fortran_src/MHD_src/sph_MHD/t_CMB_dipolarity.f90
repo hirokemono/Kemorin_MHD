@@ -229,7 +229,7 @@
      &                               len_each, len_tot)
       call sel_gz_write_text_stream(flag_gzip_lc, id_file,              &
      &    sph_vol_spectr_header_text(len_tot, len_each,                 &
-     &                               sph_pwr_labels, sph_OUT),          &
+     &                               sph_dipolarity_labels, sph_OUT),   &
      &    zbuf)
       call dealloc_sph_espec_name(sph_OUT)
 !
@@ -265,7 +265,6 @@
       sph_OUT%ntot_sph_spec =   dip%num_dip
       sph_OUT%num_time_labels = 2
       call alloc_sph_espec_name(sph_OUT)
-      call alloc_sph_spectr_data(izero, sph_OUT)
 !
       sph_OUT%ene_sph_spec_name(1) = fhd_t_step
       sph_OUT%ene_sph_spec_name(2) = fhd_time
