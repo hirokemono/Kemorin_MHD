@@ -25,13 +25,6 @@
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_mean_squares), intent(in) :: pwr
 !!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
-!!
-!!      subroutine write_sph_vol_mean_sq_header(id_file, mode_label,    &
-!!     &          ene_labels, sph_params, sph_rj, v_pwr)
-!!        type(energy_label_param), intent(in) :: ene_labels
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rj_grid), intent(in) :: sph_rj
-!!        type(sph_vol_mean_squares), intent(in) :: v_pwr
 !!@endverbatim
 !!
 !!@n @param istep         time step number
@@ -174,42 +167,6 @@
       end subroutine dup_sph_layer_spectr_header
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine write_sph_vol_mean_sq_header(id_file, mode_label,      &
-     &          ene_labels, sph_params, sph_rj, v_pwr)
-!
-      use t_read_sph_spectra
-      use sph_power_spectr_data_text
-      use write_field_labels
-!
-      integer(kind = kint), intent(in) :: id_file
-      character(len = kchara), intent(in) :: mode_label
-      type(energy_label_param), intent(in) :: ene_labels
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(sph_vol_mean_squares), intent(in) :: v_pwr
-!
-      type(read_sph_spectr_data) :: sph_OUT
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-!
-!
-      call dup_sph_vol_spectr_header                                    &
-     &   (mode_label, sph_params%l_truncation,                          &
-     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    ene_labels, sph_rj, v_pwr, sph_OUT)
-!
-      call len_sph_vol_spectr_header(sph_pwr_labels, sph_OUT,           &
-     &                               len_each, len_tot)
-      write(id_file,'(a)',ADVANCE='NO')                                 &
-     &       sph_vol_spectr_header_text(len_tot, len_each,              &
-     &                                  sph_pwr_labels, sph_OUT)
-      call dealloc_sph_espec_name(sph_OUT)
-!
-      end subroutine write_sph_vol_mean_sq_header
-!
-!  --------------------------------------------------------------------
 !
       end module sph_mean_spectr_header_IO
 
