@@ -323,12 +323,15 @@
 !
       use t_ctl_data_gauss_coefs
       use t_pickup_sph_spectr_data
+      use t_multi_flag_labels
+      use m_file_format_labels
 !
       type(gauss_spectr_control), intent(in) :: g_pwr
       type(pickup_mode_list), intent(inout) :: gauss_list
       type(picked_spectrum_data), intent(inout) :: gauss_coef
 !
       integer(kind = kint) :: inum
+      character(len = kchara) :: input_flag
 !
 !
 !   set pickup gauss coefficients
@@ -343,6 +346,13 @@
         call alloc_pick_sph_l(gauss_list)
         call alloc_pick_sph_m(gauss_list)
         return
+      end if
+!
+      gauss_coef%flag_gzip = .FALSE.
+      if(g_pwr%gauss_coefs_format%iflag .gt. 0) then
+        input_flag = g_pwr%gauss_coefs_format%charavalue
+        if(check_mul_flags(input_flag, gzip_flags))                     &
+     &                     gauss_coef%flag_gzip = .TRUE.
       end if
 !
       gauss_coef%num_layer = 1

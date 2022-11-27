@@ -117,6 +117,7 @@
 !
       call bcast_ctl_type_r1(g_pwr%gauss_coefs_radius_ctl)
       call bcast_ctl_type_c1(g_pwr%gauss_coefs_prefix)
+      call bcast_ctl_type_c1(g_pwr%gauss_coefs_format)
       call calypso_mpi_bcast_one_int(g_pwr%i_gauss_coef_ctl, 0)
 !
       end subroutine bcast_gauss_spectr_ctl
