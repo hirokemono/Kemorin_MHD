@@ -15,7 +15,7 @@
 !!
 !!      subroutine check_sph_vol_monitor_file(base_name, monitor_labels,&
 !!     &          sph_OUT, flag_gzip_lc, error)
-!!      subroutine check_sph_vol_monitor_file(id_file, base_name,       &
+!!      subroutine check_sph_vol_spectr_file(id_file, base_name,        &
 !!     &          flag_spectr, sph_OUT, zbuf, flag_gzip_lc, error)
 !!      subroutine sel_open_sph_vol_monitor_file(id_file, base_name,    &
 !!     &          monitor_labels, sph_OUT, zbuf, flag_gzip_lc)

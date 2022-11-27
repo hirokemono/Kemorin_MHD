@@ -119,10 +119,16 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(picked_spectrum_data), intent(in) :: picked
 !
-      integer(kind = kint) :: inum, ierr_lc, ierr_gl
+      integer(kind = kint) :: inum, ierr_lc, ierr_gl, num
 !
       type(buffer_4_gzip) :: zbuf_p
 !
+!
+      if(picked%num_sph_mode_lc .le. 0) return
+!
+      num = picked%istack_picked_spec_lc(my_rank+1)                     &
+     &     - picked%istack_picked_spec_lc(my_rank)
+      if(num .le. 0) return
 !
       ierr_lc = 0
       if(picked%idx_out(0,4) .gt. 0) then
