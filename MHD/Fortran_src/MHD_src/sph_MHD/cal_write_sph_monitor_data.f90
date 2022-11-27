@@ -131,8 +131,8 @@
      &      MHD_mats%band_C00_poisson_fixC, monitor%comp_Nusselt)
       end if
 !
-      call open_sph_vol_rms_file_mhd                                    &
-     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
+      call open_sph_vol_rms_file_mhd(SPH_MHD%sph, sph_MHD_bc%sph_bc_U,  &
+     &   SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
 !
       end subroutine init_rms_sph_mhd_control
 !

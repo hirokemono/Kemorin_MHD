@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_typical_scale_params                         &
-!!&         (scale_file_prefix_t, typ_scale_file_fmt, rj_fld, tsl)
+!!     &         (scale_file_prefix_t, typ_scale_file_fmt, rj_fld, tsl)
 !!        type(read_character_item), intent(in) :: scale_file_prefix_t
 !!        type(read_character_item), intent(in) :: typ_scale_file_fmt
 !!        type(phys_data), intent(in) :: rj_fld
@@ -80,7 +80,6 @@
       end do
 !
       if(scale_file_prefix_t%iflag .gt. 0) then
-        tsl%iflag_ub_scales = 1
         tsl%scale_prefix = scale_file_prefix_t%charavalue
       else
         tsl%iflag_ub_scales = 0

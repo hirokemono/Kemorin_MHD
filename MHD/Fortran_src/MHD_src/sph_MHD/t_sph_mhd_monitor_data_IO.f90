@@ -7,8 +7,8 @@
 !>@brief  I/O routines for mean square and averaga data
 !!
 !!@verbatim
-!!      subroutine open_sph_vol_rms_file_mhd(sph, ipol, rj_fld,         &
-!!     &                                     monitor, SR_sig)
+!!      subroutine open_sph_vol_rms_file_mhd(sph, sph_bc_U, ipol,        &
+!!     &                                     rj_fld, monitor, SR_sig)
 !!      subroutine init_rms_4_sph_spectr_4_mhd(sph, rj_fld, monitor)
 !!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(time_data), intent(in) :: time_d
@@ -86,8 +86,8 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine open_sph_vol_rms_file_mhd(sph, ipol, rj_fld,           &
-     &                                     monitor, SR_sig)
+      subroutine open_sph_vol_rms_file_mhd(sph, sph_bc_U, ipol,          &
+     &                                     rj_fld, monitor, SR_sig)
 !
       use m_error_IDs
       use cal_rms_fields_by_sph
@@ -96,6 +96,7 @@
       use t_solver_SR
 !
       type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -117,6 +118,9 @@
       if(iflag_debug.gt.0) write(*,*) 'init_gauss_coefs_data_and_file'
       call init_gauss_coefs_data_and_file(sph, ipol,                    &
      &    monitor%gauss_list, monitor%gauss_coef, SR_sig)
+!
+      call init_l_scale_data_and_file(sph, sph_bc_U,                    &
+     &                                rj_fld, monitor)
 !
       end subroutine open_sph_vol_rms_file_mhd
 !

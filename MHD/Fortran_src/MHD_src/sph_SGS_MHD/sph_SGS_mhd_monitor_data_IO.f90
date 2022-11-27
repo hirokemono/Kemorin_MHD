@@ -100,7 +100,8 @@
       end if
 !
       call open_sph_vol_rms_file_SGS_mhd                                &
-     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
+     &   (SPH_MHD%sph, sph_MHD_bc%sph_bc_U, SPH_MHD%ipol, SPH_MHD%fld,  &
+     &    monitor, SR_sig)
 !
       end subroutine init_rms_sph_SGS_mhd_control
 !
@@ -147,7 +148,7 @@
 !  --------------------------------------------------------------------
 !
       subroutine open_sph_vol_rms_file_SGS_mhd                          &
-     &         (sph, ipol, rj_fld, monitor, SR_sig)
+     &         (sph, sph_bc_U, ipol, rj_fld, monitor, SR_sig)
 !
       use m_error_IDs
       use pickup_gauss_coefficients
@@ -164,6 +165,7 @@
       use init_energy_labels_sph_SGS
 !
       type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -199,6 +201,9 @@
         call calypso_mpi_abort(ierr_file,                               &
      &     'Field information might be updated.')
       end if
+!
+      call init_l_scale_data_and_file(sph, sph_bc_U,                    &
+     &                                rj_fld, monitor)
 !
       end subroutine open_sph_vol_rms_file_SGS_mhd
 !
