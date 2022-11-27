@@ -31,7 +31,7 @@
 !!
 !!   if number of spectr_layer_ctl = 0 or negative: No output
 !!   if first item of spectr_layer_ctl[1] = -1: Output all layers
-!!    array spectr_layer_ctl  1
+!!    array spectr_layer_ctl
 !!      spectr_layer_ctl  62
 !!    end array spectr_layer_ctl
 !!

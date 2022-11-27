@@ -83,7 +83,7 @@
         dip%iflag_dipolarity = 0
       end if
 !
-      dip%flag_gzip_dipolarity = .TRUE.
+      dip%flag_gzip_dipolarity = .FALSE.
       if(dip%iflag_dipolarity .gt. 0) then
         if(fdip_file_format%iflag .gt. 0) then
           input_flag = fdip_file_format%charavalue
