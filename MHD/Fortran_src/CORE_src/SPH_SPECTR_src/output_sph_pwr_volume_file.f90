@@ -306,7 +306,7 @@
       character(len=kchara) :: fname_rms, mode_label
 !
       type(read_sph_spectr_data), save :: sph_OUT
-      logical :: flag_gzip_lc
+      logical :: flag_gzip_lc, error
 !
 !
       error_sph_vol_ms_file = .FALSE.
@@ -323,8 +323,9 @@
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    ene_labels, sph_rj, v_pwr, sph_OUT)
       call check_sph_vol_monitor_file(fname_rms, sph_pwr_labels,        &
-     &    sph_OUT, flag_gzip_lc, error_sph_vol_ms_file)
+     &    sph_OUT, flag_gzip_lc, error)
       call dealloc_sph_espec_name(sph_OUT)
+      error_sph_vol_ms_file =  error
 !
       end function error_sph_vol_ms_file
 !

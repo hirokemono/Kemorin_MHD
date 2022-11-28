@@ -86,7 +86,7 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine open_sph_vol_rms_file_mhd(sph, sph_bc_U, ipol,          &
+      subroutine open_sph_vol_rms_file_mhd(sph, sph_bc_U, ipol,         &
      &                                     rj_fld, monitor, SR_sig)
 !
       use calypso_mpi_int

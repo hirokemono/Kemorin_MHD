@@ -137,7 +137,7 @@
       character(len = kchara) :: file_name, base_name
 !
       character, pointer:: FPz_fp
-      logical :: flag_gzip_lc, flag_miss
+      logical :: flag_gzip_lc, flag_miss, error
       type(read_sph_spectr_data) :: sph_IN_t, sph_OUT_t
       type(sph_spectr_head_labels) :: sph_lbl_IN_t
       type(buffer_4_gzip) :: zbuf_t
@@ -157,8 +157,9 @@
       flag_gzip_lc = tsl%flag_gzip_scale
       base_name = add_dat_extension(tsl%scale_prefix)
       call check_sph_vol_monitor_file(base_name, sph_pwr_labels,        &
-    &     sph_OUT_t, flag_gzip_lc, error_typical_scale_header)
+    &     sph_OUT_t, flag_gzip_lc, error)
       call dealloc_sph_espec_name(sph_OUT_t)
+      error_typical_scale_header = error
 !
       end function error_typical_scale_header
 !

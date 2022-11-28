@@ -230,7 +230,7 @@
 !!
       type(read_sph_spectr_data) :: sph_OUT_g
       character(len = kchara) :: base_name
-      logical :: flag_gzip_lc
+      logical :: flag_gzip_lc, error
 !
 !
       error_gauss_coefs_header = .FALSE.
@@ -245,8 +245,9 @@
       flag_gzip_lc = gauss%flag_gzip
       base_name = add_dat_extension(gauss%file_prefix)
       call check_sph_vol_monitor_file(base_name, gauss_coefs_labels,    &
-    &     sph_OUT_g, flag_gzip_lc, error_gauss_coefs_header)
+    &     sph_OUT_g, flag_gzip_lc, error)
       call dealloc_sph_espec_name(sph_OUT_g)
+      error_gauss_coefs_header = error
 !
       end function error_gauss_coefs_header
 !
