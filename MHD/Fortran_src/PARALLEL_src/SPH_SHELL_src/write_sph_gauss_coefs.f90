@@ -118,7 +118,6 @@
      &      gauss, sph_OUT)
         call sel_open_sph_vol_monitor_file(id_gauss_coef, file_name,    &
      &      gauss_coefs_labels, sph_OUT, zbuf_m, flag_gzip_lc)
-        call dealloc_sph_espec_data(sph_OUT)
 !
         call sel_gz_write_text_stream(flag_gzip_lc, id_gauss_coef,      &
      &      volume_pwr_data_text(time_d%i_time_step, time_d%time,       &
@@ -161,7 +160,6 @@
       sph_OUT%ntot_sph_spec =   ntot
       sph_OUT%num_time_labels = 2
       call alloc_sph_espec_name(sph_OUT)
-      call alloc_sph_spectr_data(izero, sph_OUT)
 !
       sph_OUT%ene_sph_spec_name(1) = fhd_t_step
       sph_OUT%ene_sph_spec_name(2) = fhd_time

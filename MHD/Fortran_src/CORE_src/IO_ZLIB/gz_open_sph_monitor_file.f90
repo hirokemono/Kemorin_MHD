@@ -126,6 +126,8 @@
       call s_select_input_sph_series_head                               &
      &   (FPz_fp, id_stream, flag_gzip_lc, flag_current_fmt,            &
      &    spectr_off, volume_on, sph_lbl_IN_m, sph_IN_m, zbuf_m)
+      call sel_close_read_gz_stream_file(FPz_fp, id_stream,             &
+     &                                   flag_gzip_lc, zbuf_m)
 !
       error = .not. cmp_sph_volume_monitor_heads                        &
      &                (sph_lbl_IN_m, sph_IN_m, monitor_labels, sph_OUT)
