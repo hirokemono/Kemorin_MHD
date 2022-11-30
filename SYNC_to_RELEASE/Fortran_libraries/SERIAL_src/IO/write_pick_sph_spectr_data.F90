@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/CORE_src/IO/write_pick_sph_spectr_data.F90

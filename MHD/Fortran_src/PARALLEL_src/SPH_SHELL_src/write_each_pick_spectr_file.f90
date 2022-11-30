@@ -23,7 +23,6 @@
 !
       use m_precision
       use m_constants
-      use calypso_mpi
 !
       use t_spheric_parameter
       use t_pickup_sph_spectr_data

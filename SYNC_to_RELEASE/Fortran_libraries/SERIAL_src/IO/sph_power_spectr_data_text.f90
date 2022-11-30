@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/CORE_src/IO/sph_power_spectr_data_text.f90

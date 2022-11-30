@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/PARALLEL_src/SPH_SHELL_src/write_each_pick_spectr_file.f90
