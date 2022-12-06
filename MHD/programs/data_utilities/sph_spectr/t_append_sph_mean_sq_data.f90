@@ -48,8 +48,8 @@
       character(len=kchara), intent(in) :: target_file_name
 !
 !
-      type(read_sph_spectr_data), save :: sph_IN1
-      type(read_sph_spectr_data), save :: sph_OUT1
+      type(read_sph_spectr_params), save :: sph_IN1
+      type(read_sph_spectr_params), save :: sph_OUT1
       type(sph_spectr_head_labels), save :: sph_lbl_IN1
       type(sph_spectr_head_labels), save :: sph_lbl_OUT1
 !
@@ -189,8 +189,8 @@
       logical, intent(in) :: flag_gzip, flag_spectr, flag_vol_ave
       type(monitor_field_pickup_table), intent(in) :: comp_tbl
 !
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      type(read_sph_spectr_params), intent(inout) :: sph_OUT
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint) :: ierr, n_mode
@@ -230,7 +230,7 @@
      &                            (flag_spectr, flag_vol_ave, sph_IN)
 !
       logical, intent(in) :: flag_spectr, flag_vol_ave
-      type(read_sph_spectr_data), intent(in) :: sph_IN
+      type(read_sph_spectr_params), intent(in) :: sph_IN
 !
       integer(kind = kint) :: n_mode
 !

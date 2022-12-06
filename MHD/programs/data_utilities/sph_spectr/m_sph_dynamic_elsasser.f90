@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine sph_dynamic_elsasser_by_spectr                       &
 !!     &         (input_header, sph_IN)
-!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
+!!        type(read_sph_spectr_params), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module m_sph_dynamic_elsasser
@@ -31,8 +31,8 @@
 !
       integer(kind = kint), parameter :: iflag_on = 1
 !
-      type(read_sph_spectr_data), save :: sph_IN_l, sph_IN_m
-      type(read_sph_spectr_data), save :: sph_OUT1
+      type(read_sph_spectr_params), save :: sph_IN_l, sph_IN_m
+      type(read_sph_spectr_params), save :: sph_OUT1
 !
       type(dyn_elsasser_address), save :: iels1
 !

@@ -23,7 +23,7 @@
 !
       type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
       type(sph_spectr_file_param), save :: spec_evo_p1
-      type(read_sph_spectr_data), save :: sph_IN_p
+      type(read_sph_spectr_params), save :: sph_IN_p
 !
       integer :: i
 !

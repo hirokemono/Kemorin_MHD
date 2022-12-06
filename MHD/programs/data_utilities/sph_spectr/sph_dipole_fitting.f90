@@ -51,8 +51,8 @@
       logical, parameter :: flag_current_format = .FALSE.
       integer(kind = kint) :: ierr, ist_true, i, nri_tmp
       character, pointer :: FPz_f1
-      type(read_sph_spectr_data) :: sph_IN1
-      type(read_sph_spectr_data) :: sph_OUT1
+      type(read_sph_spectr_params) :: sph_IN1
+      type(read_sph_spectr_params) :: sph_OUT1
       type(sph_spectr_head_labels) :: sph_lbl_IN1
 !
       logical :: flag_gzip1

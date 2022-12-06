@@ -126,7 +126,7 @@
 !
       use m_read_sph_spectra_f
 !
-      type(read_sph_spectr_data), intent(in) :: sph_IN
+      type(read_sph_spectr_params), intent(in) :: sph_IN
       type(dipole_fit_ratio_data), intent(inout) :: fit_dat
 !
       integer(kind = kint) :: l, lcou
@@ -167,7 +167,7 @@
       subroutine set_dipole_fitting_name(sph_IN, num_labels,            &
      &          num_time_labels, ene_sph_spec_name)
 !
-      type(read_sph_spectr_data), intent(in) :: sph_IN
+      type(read_sph_spectr_params), intent(in) :: sph_IN
       integer(kind = kint), intent(in) :: num_labels, num_time_labels
 !
       character(len = kchara), intent(inout)                            &
@@ -203,7 +203,7 @@
 !
       use approximate_to_polynomial
 !
-      type(read_sph_spectr_data), intent(in) :: sph_IN
+      type(read_sph_spectr_params), intent(in) :: sph_IN
       integer(kind = kint), intent(in) :: ntot_sph_spec
 !
       integer(kind = kint), intent(inout) :: kr_sph

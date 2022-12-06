@@ -170,7 +170,8 @@
       real(kind = kreal) :: true_start, true_end, g10_mid
 !>      Structure for gauss coeffciients
       type(picked_gauss_coefs_IO), save :: gauss_IO_a
-      type(read_sph_spectr_data), save :: sph_IN_a, sph_IN_p, sph_OUT1
+      type(read_sph_spectr_params), save :: sph_IN_a, sph_IN_p
+      type(read_sph_spectr_params), save :: sph_OUT1
       type(read_sph_spectr_series), save :: sph_ave_series
       type(read_sph_spectr_series), save :: sph_pwr_series
 !
@@ -444,7 +445,7 @@
       integer(kind = kint), intent(in) :: ntot_gauss, ntot_sph_spec
       real(kind = kreal), intent(in) :: tave_gauss(ntot_gauss)
       real(kind = kreal), intent(in) :: time_vol_ave(ntot_sph_spec)
-      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+      type(read_sph_spectr_params), intent(inout) :: sph_OUT
 !
       sph_OUT%spectr_IO(1:ntot_sph_spec,0,1)                            &
      &            = time_vol_ave(1:ntot_sph_spec)

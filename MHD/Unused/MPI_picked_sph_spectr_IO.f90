@@ -269,7 +269,7 @@
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
 !
-      type(read_sph_spectr_data) :: sph_OUT
+      type(read_sph_spectr_params) :: sph_OUT
       integer(kind = kint) :: len_each(6)
       integer(kind = kint) :: len_tot
 !
@@ -293,7 +293,7 @@
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       type(picked_spectrum_data), intent(in) :: picked
 !
-      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+      type(read_sph_spectr_params), intent(inout) :: sph_OUT
 !
 !
       sph_OUT%ltr_sph = picked%num_sph_mode
