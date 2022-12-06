@@ -93,7 +93,7 @@
      &     (ipol, ipol_LES, picked, picked%ntot_comp_rj, d_rj_out)
 !
         flag_gzip_lc = picked%flag_gzip
-        call open_each_picked_spectr(izero, id_pick,                    &
+        call open_write_each_picked_spectr(izero, id_pick,              &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      flag_gzip_lc, zbuf_p)
         call sel_gz_write_text_stream(flag_gzip_lc, id_pick,            &
@@ -115,7 +115,7 @@
         end do
 !
         flag_gzip_lc = picked%flag_gzip
-        call open_each_picked_spectr(inum, id_pick,                     &
+        call open_write_each_picked_spectr(inum, id_pick,               &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB, picked,       &
      &      flag_gzip_lc, zbuf_p)
         call sel_gz_write_picked_spec_data(flag_gzip_lc, id_pick,       &

@@ -19,7 +19,7 @@ TARGET_DIFF_SPH_SPEC =     diff_spectr_data
 TARGET_ZM_SPH_SPEC =       zonal_mean_sph
 TARGET_T_AVE_SPEC =        t_ave_sph_spec
 TARGET_SPH_NEUTRAL =       sph_neutral_points
-TARGET_TAVE_SPH_ENE_SPEC =  t_ave_sph_mean_square
+TARGET_TAVE_SPH_ENE_SPEC =  t_ave_sph_monitor_data
 TARGET_TAVE_OLD_SPH_ESPEC = t_ave_old_sph_mean_square
 TARGET_PSUM_SPH_ENE_SPEC =  part_sum_sph_mean_square
 
