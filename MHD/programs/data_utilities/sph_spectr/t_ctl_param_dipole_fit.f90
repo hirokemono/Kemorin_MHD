@@ -198,15 +198,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine cal_dipole_fitting_ratio                               &
-     &         (sph_IN, spec_r_IO, ntot_sph_spec,                       &
+      subroutine cal_dipole_fitting_ratio(sph_IN, ntot_sph_spec,        &
      &          kr_sph, r_sph, dipole_ratio, fit_dat)
 !
       use approximate_to_polynomial
 !
       type(read_sph_spectr_params), intent(in) :: sph_IN
-      real(kind = kreal), intent(in)                                    &
-     & :: spec_r_IO(sph_in%ntot_sph_spec,0:sph_in%ltr_sph,sph_IN%nri_sph)
       integer(kind = kint), intent(in) :: ntot_sph_spec
 !
       integer(kind = kint), intent(inout) :: kr_sph
@@ -228,18 +225,19 @@
         if(sph_IN%kr_sph(kr) .eq. sph_IN%kr_CMB) then
           kr_sph = sph_IN%kr_CMB
           r_sph =  sph_IN%r_sph(kr)
-          pwr_g10 = spec_r_IO(fit_dat%ir_mpol,1,kr)
+          pwr_g10 = sph_IN%spectr_IO(fit_dat%ir_mpol,1,kr)
 !
           me_cmb_d = 0.0d0
           do l = 1, fit_dat%ltr_dipolarity
-            me_cmb_d = me_cmb_d + spec_r_IO(fit_dat%ir_mpol,l,kr)
+            me_cmb_d = me_cmb_d                                         &
+     &                + sph_IN%spectr_IO(fit_dat%ir_mpol,l,kr)
           end do
 !
           lcou = 0
           do l = 1, fit_dat%ltr_fit, fit_dat%increment
             lcou = lcou + 1
             fit_dat%mpol_odd_ln_CMB(lcou)                               &
-     &             = log(spec_r_IO(fit_dat%ir_mpol,l,kr))
+     &             = log(sph_IN%spectr_IO(fit_dat%ir_mpol,l,kr))
           end do
           exit
         end if
