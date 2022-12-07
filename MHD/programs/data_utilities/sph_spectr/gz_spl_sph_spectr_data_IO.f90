@@ -24,6 +24,18 @@
 !!        integer(kind = kint), intent(in) :: id_ascii
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        integer(kind = kint), intent(inout) :: ierr
+!!
+!!      subroutine gz_read_volume_pwr_sph(FPz_f, id_stream, flag_gzip,  &
+!!     &          ntot_comp, i_step, time, spectr_IO, zbuf, ierr)
+!!        character, pointer, intent(in) :: FPz_f
+!!        integer(kind = kint), intent(in) :: id_stream
+!!        logical, intent(in) :: flag_gzip
+!!        integer(kind = kint), intent(in) :: ntot_comp
+!!        integer(kind = kint), intent(inout) :: i_step
+!!        real(kind = kreal), intent(inout) :: time
+!!        real(kind = kreal), intent(inout) :: spectr_IO(ntot_comp)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!        integer(kind = kint), intent(inout) :: ierr
 !!@endverbatim
 !
       module gz_spl_sph_spectr_data_IO
@@ -38,8 +50,6 @@
 !
 !
       implicit none
-!
-      private :: gz_read_volume_pwr_sph
 !
 !   --------------------------------------------------------------------
 !
@@ -72,8 +82,9 @@
      &        sph_IN%i_step, sph_IN%time, sph_IN%i_mode,                &
      &        sph_IN%spectr_IO(1,0,1), zbuf, ierr)
         else
-          call gz_read_volume_pwr_sph(FPz_f, id_stream, flag_gzip,      &
-     &                                sph_IN, zbuf, ierr)
+          call gz_read_volume_pwr_sph(FPz_f, id_stream, flag_gzip,    &
+     &        sph_IN%ntot_sph_spec, sph_IN%i_step, sph_IN%time,       &
+     &        sph_IN%spectr_IO(1,0,1), zbuf, ierr)
         end if
       else
         if(flag_old_fmt) then
@@ -125,15 +136,19 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine gz_read_volume_pwr_sph(FPz_f, id_stream,               &
-     &          flag_gzip, sph_IN, zbuf, ierr)
+      subroutine gz_read_volume_pwr_sph(FPz_f, id_stream, flag_gzip,    &
+     &          ntot_comp, i_step, time, spectr_IO, zbuf, ierr)
 !
       use select_gz_stream_file_IO
 !
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_stream
       logical, intent(in) :: flag_gzip
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      integer(kind = kint), intent(in) :: ntot_comp
+!
+      integer(kind = kint), intent(inout) :: i_step
+      real(kind = kreal), intent(inout) :: time
+      real(kind = kreal), intent(inout) :: spectr_IO(ntot_comp)
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -142,8 +157,8 @@
       call sel_read_line_gz_stream(FPz_f, id_stream, flag_gzip, zbuf)
       if(zbuf%len_used .lt. 0) return
 !
-      read(zbuf%fixbuf(1),*,err=99) sph_IN%i_step, sph_IN%time,         &
-     &             sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,0,1)
+      read(zbuf%fixbuf(1),*,err=99) i_step, time,                       &
+     &                             spectr_IO(1:ntot_comp)
       ierr = 0
       return
 !
