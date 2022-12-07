@@ -283,7 +283,7 @@
      &   (.FALSE., id_file_rms, flag_vol_ave, sph_IN, zbuf_s)
 !
       call select_output_sph_series_data                                &
-     &   (id_file_rms, flag_spectr, flag_vol_ave, sph_IN)
+     &   (.FALSE., id_file_rms, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
       close(id_file_rms)
 !
       call dealloc_sph_espec_data(sph_IN)
@@ -401,7 +401,7 @@
      &   (.FALSE., id_file_rms, flag_vol_ave, sph_IN, zbuf_s)
 !
       call select_output_sph_series_data                                &
-     &   (id_file_rms, flag_spectr, flag_vol_ave, sph_IN)
+     &   (.FALSE., id_file_rms, flag_spectr, flag_vol_ave, sph_IN, zbuf1)
       close(id_file_rms)
 !
       end subroutine sph_spectr_std_deviation

@@ -131,7 +131,7 @@
      &        sph_OUT1%spectr_IO(1,0,1), fit_dat1)
 !
           call select_output_sph_series_data                            &
-     &       (id_file_fitted, spectr_off, vol_ave_off, sph_OUT1)
+     &       (.FALSE., id_file_fitted, spectr_off, vol_ave_off, sph_OUT1, zbuf1)
         end if
 !
         write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60), &
