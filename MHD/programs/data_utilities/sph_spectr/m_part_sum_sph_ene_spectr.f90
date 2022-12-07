@@ -13,7 +13,7 @@
 !!        character(len = kchara), intent(in) :: fname_org
 !!        logical, intent(in) :: flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
-!!        type(read_sph_spectr_params), intent(inout) :: sph_IN
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module m_part_sum_sph_ene_spectr
@@ -28,7 +28,7 @@
       integer(kind = kint), parameter :: id_file_rms =      34
       integer(kind = kint), parameter :: id_file_rms_l =    44
 !
-      type(read_sph_spectr_params), save :: sph_OUT1
+      type(read_sph_spectr_data), save :: sph_OUT1
 !
       private :: sph_OUT1
       private :: id_file_rms, id_file_rms_l
@@ -54,7 +54,7 @@
       character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1, zbuf_s

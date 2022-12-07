@@ -11,7 +11,7 @@
 !!      subroutine set_dynamic_elsasser_name(sph_IN, iels, els_dat,     &
 !!     &          num_labels, nfield_sph_spec, num_time_labels,         &
 !!     &          ncomp_sph_spec, ene_sph_spec_name)
-!!        type(read_sph_spectr_params), intent(in) :: sph_IN
+!!        type(read_sph_spectr_data), intent(in) :: sph_IN
 !!        type(dyn_elsasser_address), intent(in) :: iels
 !!        type(sph_dyn_elsasser_data), intent(in) :: els_dat
 !!        integer(kind = kint), intent(in) :: num_labels, nfield_sph_spec
@@ -23,7 +23,7 @@
 !!      subroutine cal_dynamic_elsasser_by_spectr                       &
 !!     &         (sph_IN_l, sph_IN_m, iels, els_dat,                    &
 !!     &          ntot_sph_spec, elsassers)
-!!        type(read_sph_spectr_params), intent(in) :: sph_IN_l, sph_IN_m
+!!        type(read_sph_spectr_data), intent(in) :: sph_IN_l, sph_IN_m
 !!        type(dyn_elsasser_address), intent(in) :: iels
 !!        type(sph_dyn_elsasser_data), intent(in) :: els_dat
 !!        integer(kind = kint), intent(in) :: ntot_sph_spec
@@ -55,7 +55,7 @@
      &          num_labels, nfield_sph_spec, num_time_labels,           &
      &          ncomp_sph_spec, ene_sph_spec_name)
 !
-      type(read_sph_spectr_params), intent(in) :: sph_IN
+      type(read_sph_spectr_data), intent(in) :: sph_IN
       type(dyn_elsasser_address), intent(in) :: iels
       type(sph_dyn_elsasser_data), intent(in) :: els_dat
       integer(kind = kint), intent(in) :: num_labels, nfield_sph_spec
@@ -191,7 +191,7 @@
      &         (sph_IN_l, sph_IN_m, iels, els_dat,                      &
      &          ntot_sph_spec, elsassers)
 !
-      type(read_sph_spectr_params), intent(in) :: sph_IN_l, sph_IN_m
+      type(read_sph_spectr_data), intent(in) :: sph_IN_l, sph_IN_m
       type(dyn_elsasser_address), intent(in) :: iels
       type(sph_dyn_elsasser_data), intent(in) :: els_dat
       integer(kind = kint), intent(in) :: ntot_sph_spec
@@ -288,7 +288,7 @@
 !
       subroutine sum_ene_spectr_3(sph_IN, irms_end, ene_3)
 !
-      type(read_sph_spectr_params), intent(in) :: sph_IN
+      type(read_sph_spectr_data), intent(in) :: sph_IN
       integer(kind = kint), intent(in) :: irms_end
       real(kind = kreal), intent(inout) :: ene_3(3)
 !
@@ -305,7 +305,7 @@
 !
       subroutine uli_sph_length_scale_3(sph_IN, irms_end, lscale_3)
 !
-      type(read_sph_spectr_params), intent(in) :: sph_IN
+      type(read_sph_spectr_data), intent(in) :: sph_IN
       integer(kind = kint), intent(in) :: irms_end
       real(kind = kreal), intent(inout) :: lscale_3(3)
 !

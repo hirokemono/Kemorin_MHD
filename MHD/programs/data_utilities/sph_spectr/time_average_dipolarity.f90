@@ -76,7 +76,7 @@
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf1
       character, pointer, save  :: FPz_f1
-      type(read_sph_spectr_params), save :: sph_IN1
+      type(read_sph_spectr_data), save :: sph_IN1
       type(sph_spectr_head_labels), save :: sph_lbl_IN1
 !
       integer(kind = kint) :: i_step, icou, i
@@ -85,7 +85,7 @@
       character(len = kchara) :: tmpchara, ave_file_name
 !
       logical :: flag_gzip_lc
-      type(read_sph_spectr_params) :: sph_OUT_d
+      type(read_sph_spectr_data) :: sph_OUT_d
 !
 !
       dip_t%dipolarity_file_name = file_name

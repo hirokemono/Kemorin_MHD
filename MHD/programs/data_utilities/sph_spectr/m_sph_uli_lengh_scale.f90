@@ -12,7 +12,7 @@
 !!     &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
 !!        logical, intent(in) :: flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
-!!        type(read_sph_spectr_params), intent(inout) :: sph_IN
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module m_sph_uli_lengh_scale
@@ -28,7 +28,7 @@
       integer(kind = kint), parameter :: id_file_rms_m =    37
       integer(kind = kint), parameter :: id_file_lscale =   44
 !
-      type(read_sph_spectr_params), save :: sph_OUT1
+      type(read_sph_spectr_data), save :: sph_OUT1
 !
       real(kind = kreal), allocatable :: total_msq(:,:)
       real(kind = kreal), allocatable :: spec_times_l(:,:)
@@ -58,7 +58,7 @@
       character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
       integer(kind = kint) :: i, icou, ierr, ist_true
@@ -201,7 +201,7 @@
 !
       subroutine allocate_lscale_espec_data(sph_IN)
 !
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
 !
       allocate( total_msq(sph_IN%ntot_sph_spec,sph_IN%nri_sph) )

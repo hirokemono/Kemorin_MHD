@@ -9,8 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine set_spectr_address_4_dyn_els(sph_IN, els_dat)
-!!        type(read_sph_spectr_params), intent(in) :: sph_IN
-!!        type(read_sph_spectr_params), intent(inout) :: sph_IN
+!!        type(read_sph_spectr_data), intent(in) :: sph_IN
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module t_ctl_param_dyn_elsasser
@@ -146,7 +146,7 @@
 !
       subroutine set_spectr_address_4_dyn_els(sph_IN, els_dat)
 !
-      type(read_sph_spectr_params), intent(in) :: sph_IN
+      type(read_sph_spectr_data), intent(in) :: sph_IN
       type(sph_dyn_elsasser_data), intent(inout) :: els_dat
 !
       integer(kind = kint) :: i

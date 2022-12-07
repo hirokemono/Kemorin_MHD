@@ -13,7 +13,7 @@
 !!        character(len = kchara), intent(in) :: fname_org
 !!        logical, intent(in) :: flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
-!!        type(read_sph_spectr_params), intent(inout) :: sph_IN
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module m_maxmode_sph_ene_spectr
@@ -29,7 +29,7 @@
       integer(kind = kint), parameter :: id_file_maxval =   44
       integer(kind = kint), parameter :: id_file_maxloc =   45
 !
-      type(read_sph_spectr_params), save :: sph_OUT1
+      type(read_sph_spectr_data), save :: sph_OUT1
 !
       real(kind = kreal), allocatable :: max_spectr(:,:,:)
       real(kind = kreal), allocatable :: max_degree(:,:,:)
@@ -58,7 +58,7 @@
       character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
       integer(kind = kint) :: i, icou, ierr, ist_true
@@ -199,7 +199,7 @@
 !
       subroutine allocate_max_sph_data(sph_IN)
 !
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
 !
       allocate( max_spectr(sph_IN%ntot_sph_spec,0:0,sph_IN%nri_sph) )
