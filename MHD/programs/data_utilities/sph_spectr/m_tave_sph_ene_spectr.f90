@@ -17,6 +17,15 @@
 !!        character(len = kchara), intent(in) :: fname_org
 !!        logical, intent(in) :: flag_spectr, flag_vol_ave
 !!        real(kind = kreal), intent(in) :: start_time, end_time
+!!
+!!      subroutine read_time_ave_sdev_sph_spectr                        &
+!!     &         (tave_file_name, sdev_file_name,                       &
+!!     &          flag_spectr, flag_vol_ave, tave_sph_IN, sdev_sph_IN)
+!!        character(len = kchara), intent(in) :: tave_file_name
+!!        character(len = kchara), intent(in) :: sdev_file_name
+!!        logical, intent(in) :: flag_spectr, flag_vol_ave
+!!        type(read_sph_spectr_params), intent(inout) :: tave_sph_IN
+!!        type(read_sph_spectr_params), intent(inout) :: sdev_sph_IN
 !!@endverbatim
 !
       module m_tave_sph_ene_spectr
@@ -24,7 +33,6 @@
       use m_precision
       use m_constants
       use t_read_sph_spectra
-      use t_sph_monitor_data_IO
       use t_buffer_4_gzip
 !
       implicit none
@@ -47,6 +55,8 @@
       private :: id_file_rms
       private :: alloc_tave_sph_data, dealloc_tave_sph_data
       private :: sph_spectr_average, sph_spectr_std_deviation
+!
+      private :: read_sph_spectr_snapshot
 !
 !   --------------------------------------------------------------------
 !
@@ -131,6 +141,28 @@
       call dealloc_sph_espec_name(sph_IN1)
 !
       end subroutine time_ave_sdev_sph_old_spectr
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_time_ave_sdev_sph_spectr                          &
+     &         (tave_file_name, sdev_file_name,                         &
+     &          flag_spectr, flag_vol_ave, tave_sph_IN, sdev_sph_IN)
+!
+      use t_read_sph_series
+!
+      character(len = kchara), intent(in) :: tave_file_name
+      character(len = kchara), intent(in) :: sdev_file_name
+      logical, intent(in) :: flag_spectr, flag_vol_ave
+      type(read_sph_spectr_params), intent(inout) :: tave_sph_IN
+      type(read_sph_spectr_params), intent(inout) :: sdev_sph_IN
+!
+!
+      call read_sph_spectr_snapshot                                     &
+     &   (tave_file_name, flag_spectr, flag_vol_ave, tave_sph_IN)
+      call read_sph_spectr_snapshot                                     &
+     &   (sdev_file_name, flag_spectr, flag_vol_ave, sdev_sph_IN)
+!
+      end subroutine read_time_ave_sdev_sph_spectr
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -376,153 +408,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_sph_layer_spec_snapshot                           &
-     &         (fname_org, sph_IN, l_spec_IN)
-!
-      use select_gz_stream_file_IO
-      use sel_gz_input_sph_mtr_head
-      use gz_layer_spectr_monitor_IO
-!
-!
-      character(len = kchara), intent(in) :: fname_org
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
-      type(layer_spectr_data_IO), intent(inout) :: l_spec_IN
-!
-      integer(kind = kint) :: ierr
-      logical, parameter :: current_fmt = .FALSE.
-      logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
-      character, pointer :: FPz_f1
-      type(sph_spectr_head_labels) :: sph_lbl_IN_t
-!
-!  Read spectr data file
-!
-      write(*,*) 'Open file ', trim(fname_org), ' again'
-      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
-     &                                    fname_org, flag_gzip1, zbuf1)
-!
-      call s_select_input_sph_series_head                               &
-     &  (FPz_f1, id_file_rms, flag_gzip1, current_fmt, .TRUE., .FALSE., &
-     &   sph_lbl_IN_t, sph_IN, zbuf1)
-!
-      sph_IN%nri_dat = sph_IN%nri_sph
-      call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
-      call alloc_layer_spectr_data_IO(sph_IN%ntot_sph_spec,             &
-     &    sph_IN%ltr_sph, sph_IN%nri_dat, l_spec_IN)
-!
-      call sel_gz_read_layer_spectr_mtr                                 &
-     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
-     &    sph_IN%i_step, sph_IN%time, sph_IN%kr_sph,                    &
-     &    sph_IN%r_sph, sph_IN%i_mode, l_spec_IN%spec_r_IO,             &
-     &    zbuf1, ierr)
-      call sel_close_read_gz_stream_file                                &
-     &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
-!
-      end subroutine read_sph_layer_spec_snapshot
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_sph_layer_mean_snapshot                           &
-     &         (fname_org, sph_IN, l_mean_IN)
-!
-      use select_gz_stream_file_IO
-      use sel_gz_input_sph_mtr_head
-      use gz_layer_mean_monitor_IO
-!
-!
-      character(len = kchara), intent(in) :: fname_org
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
-      type(layer_mean_data_IO), intent(inout) :: l_mean_IN
-!
-      integer(kind = kint) :: ierr
-      logical, parameter :: current_fmt = .FALSE.
-      logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
-      character, pointer :: FPz_f1
-      type(sph_spectr_head_labels) :: sph_lbl_IN_t
-!
-!  Read spectr data file
-!
-      write(*,*) 'Open file ', trim(fname_org), ' again'
-      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
-     &                                    fname_org, flag_gzip1, zbuf1)
-!
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    current_fmt, .FALSE., .FALSE., sph_lbl_IN_t, sph_IN, zbuf1)
-!
-      sph_IN%nri_dat = sph_IN%nri_sph
-      call alloc_sph_spectr_data(izero, sph_IN)
-      call alloc_layer_mean_data_IO(sph_IN%ntot_sph_spec,              &
-     &    sph_IN%nri_dat, l_mean_IN)
-!
-      call sel_gz_read_layer_mean_mtr(FPz_f1, id_file_rms, flag_gzip1,  &
-     &    sph_IN%nri_sph, sph_IN%ntot_sph_spec, sph_IN%i_step,          &
-     &    sph_IN%time, sph_IN%kr_sph, sph_IN%r_sph,                     &
-     &    l_mean_IN%sq_r_IO, zbuf1, ierr)
-      call sel_close_read_gz_stream_file                                &
-     &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
-!
-      end subroutine read_sph_layer_mean_snapshot
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_sph_volume_spec_snapshot                          &
-     &         (fname_org, sph_IN, v_spec_IN)
-!
-      use select_gz_stream_file_IO
-      use sel_gz_input_sph_mtr_head
-      use gz_volume_spectr_monitor_IO
-!
-!
-      character(len = kchara), intent(in) :: fname_org
-      type(read_sph_spectr_params), intent(inout) :: sph_IN
-      type(volume_spectr_data_IO), intent(inout) :: v_spec_IN
-!
-      integer(kind = kint) :: ierr
-      logical, parameter :: current_fmt = .FALSE.
-      logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
-      character, pointer :: FPz_f1
-      type(sph_spectr_head_labels) :: sph_lbl_IN_t
-!
-!  Read spectr data file
-!
-      write(*,*) 'Open file ', trim(fname_org), ' again'
-      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
-     &                                    fname_org, flag_gzip1, zbuf1)
-!
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    current_fmt, .TRUE., .TRUE., sph_lbl_IN_t, sph_IN, zbuf1)
-!
-      sph_IN%nri_dat = 1
-      call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
-      call alloc_volume_spectr_data_IO(sph_IN%ntot_sph_spec,            &
-     &    sph_IN%ltr_sph, v_spec_IN)
-!
-      call sel_gz_read_volume_spectr_mtr(FPz_f1, id_file_rms,           &
-     &    flag_gzip1, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,             &
-     &    sph_IN%i_step, sph_IN%time, sph_IN%i_mode,                    &
-     &    v_spec_IN%spec_v_IO, zbuf1, ierr)
-      call sel_close_read_gz_stream_file                                &
-     &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
-!
-      end subroutine read_sph_volume_spec_snapshot
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_sph_volume_mean_snapshot                          &
-     &         (fname_org, sph_IN, v_mean_IN)
+      subroutine read_sph_spectr_snapshot                               &
+     &         (fname_org, flag_spectr, flag_vol_ave, sph_IN)
 !
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
 !
+!
       character(len = kchara), intent(in) :: fname_org
+      logical, intent(in) :: flag_spectr, flag_vol_ave
       type(read_sph_spectr_params), intent(inout) :: sph_IN
-      type(volume_mean_data_IO), intent(inout) :: v_mean_IN
 !
       integer(kind = kint) :: ierr
       logical, parameter :: current_fmt = .FALSE.
@@ -539,19 +435,24 @@
 !
       call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    current_fmt, .FALSE., .TRUE., sph_lbl_IN_t, sph_IN, zbuf1)
+     &    current_fmt, flag_spectr, flag_vol_ave,                       &
+     &    sph_lbl_IN_t, sph_IN, zbuf1)
 !
-      sph_IN%nri_dat = 1
-      call alloc_sph_spectr_data(izero, sph_IN)
-      call alloc_volume_mean_data_IO(sph_IN%ntot_sph_spec, v_mean_IN)
+      sph_IN%nri_dat = sph_IN%nri_sph
+      if(flag_vol_ave) sph_IN%nri_dat = 1
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN)
+      else
+        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      end if
 !
-      call gz_read_volume_pwr_sph(FPz_f1, id_file_rms, flag_gzip1,      &
-     &    sph_IN%ntot_sph_spec, sph_IN%i_step, sph_IN%time,             &
-     &    v_mean_IN%sq_v_IO, zbuf1, ierr)
+      call sel_gz_input_sph_series_data                                 &
+     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
+     &    current_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1, ierr)
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
-      end subroutine read_sph_volume_mean_snapshot
+      end subroutine read_sph_spectr_snapshot
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

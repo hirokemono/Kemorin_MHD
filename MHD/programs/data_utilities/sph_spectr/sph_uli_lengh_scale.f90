@@ -31,15 +31,15 @@
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
       do i = 1, spec_evo_p1%vol_spec_series%num_file
-        call sph_volume_uli_lscale_by_spectr                            &
+        call sph_uli_lengh_scale_by_spectr                              &
      &     (spec_evo_p1%vol_spec_series%evo_file_name(i),               &
-     &      spec_evo_p1, sph_IN_u)
+     &      .TRUE., spec_evo_p1, sph_IN_u)
       end do
 !
       do i = 1, spec_evo_p1%layer_spec_series%num_file
-        call sph_layer_uli_lscale_by_spectr                             &
+        call sph_uli_lengh_scale_by_spectr                              &
      &     (spec_evo_p1%layer_spec_series%evo_file_name(i),             &
-     &      spec_evo_p1, sph_IN_u)
+     &      .FALSE., spec_evo_p1, sph_IN_u)
       end do
 !
       call dealloc_spec_series_file_param(spec_evo_p1)

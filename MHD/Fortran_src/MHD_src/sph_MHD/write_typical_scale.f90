@@ -134,10 +134,13 @@
       type(sph_mean_squares), intent(in) :: pwr
       type(typical_scale_data), intent(in) :: tsl
 !
-      character(len = kchara) :: base_name
+      character(len = kchara) :: file_name, base_name
 !
-      logical :: flag_gzip_lc, error
-      type(read_sph_spectr_params) :: sph_OUT_t
+      character, pointer:: FPz_fp
+      logical :: flag_gzip_lc, flag_miss, error
+      type(read_sph_spectr_params) :: sph_IN_t, sph_OUT_t
+      type(sph_spectr_head_labels) :: sph_lbl_IN_t
+      type(buffer_4_gzip) :: zbuf_t
 !
 !
       error_typical_scale_header = .FALSE.
