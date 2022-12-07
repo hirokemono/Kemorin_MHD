@@ -145,7 +145,7 @@
      &        sph_OUT1%ntot_sph_spec, sph_OUT1%spectr_IO(1,0,1))
 !
           call select_output_sph_series_data                            &
-     &       (.FALSE., id_file_lscale, spectr_off, vol_ave_on, sph_OUT1, zbuf_s)
+     &       (id_file_lscale, spectr_off, vol_ave_on, sph_OUT1)
         end if
 !
         write(*,'(78a1,a5,i12,a7,1pE23.15,a19,i12)',advance="NO")       &

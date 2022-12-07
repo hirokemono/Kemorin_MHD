@@ -109,7 +109,7 @@
           icou = icou + 1
 !
           call select_output_sph_series_data                            &
-     &       (.FALSE., id_file_rms, spectr_off, flag_vol_ave, sph_OUT1, zbuf1)
+     &       (id_file_rms, spectr_off, flag_vol_ave, sph_OUT1)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

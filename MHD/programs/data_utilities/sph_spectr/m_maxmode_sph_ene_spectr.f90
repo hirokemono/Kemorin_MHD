@@ -120,13 +120,13 @@
      &       (sph_IN%nri_sph, izero, sph_IN%ntot_sph_spec,              &
      &        max_spectr, sph_OUT1)
           call select_output_sph_series_data                            &
-     &       (.FALSE., id_file_maxval, spectr_off, flag_vol_ave, sph_OUT1, zbuf1)
+     &       (id_file_maxval, spectr_off, flag_vol_ave, sph_OUT1)
 !
           call copy_part_ene_spectr_to_IO                               &
      &       (sph_IN%nri_sph, izero, sph_IN%ntot_sph_spec,              &
      &        max_degree, sph_OUT1)
           call select_output_sph_series_data                            &
-     &       (.FALSE., id_file_maxloc, spectr_off, flag_vol_ave, sph_OUT1, zbuf1)
+     &       (id_file_maxloc, spectr_off, flag_vol_ave, sph_OUT1)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

@@ -219,7 +219,7 @@
      &     (comp_tbl, sph_IN%ntot_sph_spec, sph_OUT%ntot_sph_spec,      &
      &      n_mode, sph_IN%spectr_IO(1,0,1), sph_OUT%spectr_IO(1,0,1))
         call select_output_sph_series_data                              &
-     &     (.FALSE., id_write_file, flag_spectr, flag_vol_ave, sph_OUT, zbuf)
+     &     (id_write_file, flag_spectr, flag_vol_ave, sph_OUT)
       end do
 !
       end subroutine pick_copy_sph_pwr_data_to_end
