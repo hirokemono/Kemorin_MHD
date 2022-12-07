@@ -139,9 +139,8 @@
           icou = icou + 1
           sph_OUT1%time =   sph_IN_l%time
           sph_OUT1%i_step = sph_IN_l%i_step
-          call cal_dynamic_elsasser_by_spectr(iels1, els_dat,           &
-     &        sph_IN_l%ltr_sph, sph_IN_l%ntot_sph_spec, sph_IN_l%spectr_IO(1,0,1), &
-     &        sph_IN_m%ltr_sph, sph_IN_m%ntot_sph_spec, sph_IN_m%spectr_IO(1,0,1), &
+          call cal_dynamic_elsasser_by_spectr                           &
+     &       (sph_IN_l, sph_IN_m, iels1, els_dat,                       &
      &        sph_OUT1%ntot_sph_spec, sph_OUT1%spectr_IO(1,0,1))
 !
           call select_output_sph_series_data                            &
