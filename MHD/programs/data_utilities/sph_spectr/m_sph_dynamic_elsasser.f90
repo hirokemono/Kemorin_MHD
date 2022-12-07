@@ -22,6 +22,7 @@
       use t_buffer_4_gzip
       use t_dyn_elsasser_address
       use t_ctl_param_dyn_elsasser
+      use t_sph_monitor_data_IO
 !
       implicit none
 !
@@ -33,12 +34,14 @@
 !
       type(read_sph_spectr_params), save :: sph_IN_l, sph_IN_m
       type(read_sph_spectr_params), save :: sph_OUT1
+      type(volume_mean_data_IO), save :: v_mean_OUT1
+      type(volume_spectr_data_IO), save :: v_spec_IN_l, v_spec_IN_m
 !
       type(dyn_elsasser_address), save :: iels1
 !
       logical, parameter, private :: vol_ave_on = .TRUE.
 !
-      private :: sph_OUT1, sph_IN_l, sph_IN_m
+      private :: sph_OUT1, v_mean_OUT1, sph_IN_l, sph_IN_m
       private :: id_file_rms_l, id_file_rms_m, id_file_lscale
 !
 !   --------------------------------------------------------------------
@@ -52,7 +55,9 @@
       use t_buffer_4_gzip
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
-      use gz_spl_sph_spectr_data_IO
+      use gz_volume_spectr_monitor_IO
+      use select_gz_stream_file_IO
+      use sph_monitor_data_text
       use write_sph_monitor_data
       use set_parallel_file_name
       use cal_dyn_elsasser_by_spectr
@@ -77,6 +82,8 @@
 !
       sph_IN_l%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN_l%ltr_sph, sph_IN_l)
+      call alloc_volume_spectr_data_IO                                  &
+     &   (sph_IN_l%ntot_sph_spec, sph_IN_l%ltr_sph, v_spec_IN_l)
       call check_sph_spectr_name(sph_IN_l)
 !
       call sel_open_read_gz_stream_file(FPz_m, id_file_rms_m,           &
@@ -88,6 +95,8 @@
 !
       sph_IN_m%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN_m%ltr_sph, sph_IN_m)
+      call alloc_volume_spectr_data_IO                                  &
+     &   (sph_IN_m%ntot_sph_spec, sph_IN_m%ltr_sph, v_spec_IN_m)
       call check_sph_spectr_name(sph_IN_m)
 !
       call set_spectr_address_4_dyn_els(sph_IN_l, els_dat)
@@ -118,6 +127,8 @@
       sph_OUT1%nri_sph = 1
       sph_OUT1%nri_dat = 1
       call alloc_sph_spectr_data(izero, sph_OUT1)
+      call alloc_volume_mean_data_IO(sph_OUT1%ntot_sph_spec,            &
+     &                               v_mean_OUT1)
 !
       icou = 0
       ist_true = -1
@@ -125,14 +136,14 @@
      &       'step= ', sph_IN_l%i_step, ' time= ', sph_IN_l%time,       &
      &       ' evaluated Count=  ', icou
       do
-        call sel_gz_input_sph_series_data                               &
-     &     (FPz_l, id_file_rms_l, flag_gzip_l,                          &
-     &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
-     &      sph_IN_l, zbuf_l, ierr)
-        call sel_gz_input_sph_series_data                               &
-     &     (FPz_m, id_file_rms_m, flag_gzip_m,                          &
-     &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
-     &      sph_IN_m, zbuf_m, ierr)
+        call sel_gz_read_volume_spectr_mtr(FPz_l, id_file_rms_l,        &
+     &      flag_gzip_l, sph_IN_l%ltr_sph, sph_IN_l%ntot_sph_spec,      &
+     &      sph_IN_l%i_step, sph_IN_l%time, sph_IN_l%i_mode,            &
+     &      v_spec_IN_l%spec_v_IO, zbuf_l, ierr)
+        call sel_gz_read_volume_spectr_mtr(FPz_m, id_file_rms_m,        &
+     &      flag_gzip_m, sph_IN_m%ltr_sph, sph_IN_m%ntot_sph_spec,      &
+     &      sph_IN_m%i_step, sph_IN_m%time, sph_IN_m%i_mode,            &
+     &      v_spec_IN_m%spec_v_IO, zbuf_m, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN_l%time .ge. els_dat%start_time) then
@@ -140,12 +151,15 @@
           sph_OUT1%time =   sph_IN_l%time
           sph_OUT1%i_step = sph_IN_l%i_step
           call cal_dynamic_elsasser_by_spectr(iels1, els_dat,           &
-     &        sph_IN_l%ltr_sph, sph_IN_l%ntot_sph_spec, sph_IN_l%spectr_IO(1,0,1), &
-     &        sph_IN_m%ltr_sph, sph_IN_m%ntot_sph_spec, sph_IN_m%spectr_IO(1,0,1), &
-     &        sph_OUT1%ntot_sph_spec, sph_OUT1%spectr_IO(1,0,1))
+     &        sph_IN_l%ltr_sph, sph_IN_l%ntot_sph_spec,                 &
+     &        v_spec_IN_l%spec_v_IO,                                    &
+     &        sph_IN_m%ltr_sph, sph_IN_m%ntot_sph_spec,                 &
+     &        v_spec_IN_m%spec_v_IO,                                    &
+     &        sph_OUT1%ntot_sph_spec, v_mean_OUT1%sq_v_IO)
 !
-          call select_output_sph_series_data                            &
-     &       (.FALSE., id_file_lscale, spectr_off, vol_ave_on, sph_OUT1, zbuf_s)
+          call sel_gz_write_text_stream(.FALSE., id_file_lscale,        &
+     &        volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,      &
+     &        sph_OUT1%ntot_sph_spec, v_mean_OUT1%sq_v_IO), zbuf_s)
         end if
 !
         write(*,'(78a1,a5,i12,a7,1pE23.15,a19,i12)',advance="NO")       &
@@ -164,10 +178,13 @@
       close(id_file_lscale)
 !
 !
+      call dealloc_volume_spectr_data_IO(v_spec_IN_m)
+      call dealloc_volume_spectr_data_IO(v_spec_IN_l)
       call dealloc_sph_espec_data(sph_IN_l)
       call dealloc_sph_espec_name(sph_IN_l)
       call dealloc_sph_espec_data(sph_IN_m)
       call dealloc_sph_espec_name(sph_IN_m)
+      call dealloc_volume_mean_data_IO(v_mean_OUT1)
       call dealloc_sph_espec_data(sph_OUT1)
       call dealloc_sph_espec_name(sph_OUT1)
 !

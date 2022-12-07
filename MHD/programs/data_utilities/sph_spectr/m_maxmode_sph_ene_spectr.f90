@@ -8,7 +8,7 @@
 !> @brief Find max and minimum amplitude
 !!
 !!@verbatim
-!!      subroutine sph_maximum_pwr_spectr                               &
+!!      subroutine sph_maximum_volume_spectr                            &
 !!     &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
 !!        character(len = kchara), intent(in) :: fname_org
 !!        logical, intent(in) :: flag_vol_ave
@@ -21,6 +21,9 @@
       use m_precision
       use m_constants
       use t_read_sph_spectra
+      use t_buffer_4_gzip
+      use t_ctl_param_sph_series_util
+      use t_sph_monitor_data_IO
 !
       implicit none
 !
@@ -31,8 +34,8 @@
 !
       type(read_sph_spectr_params), save :: sph_OUT1
 !
-      real(kind = kreal), allocatable :: max_spectr(:,:,:)
-      real(kind = kreal), allocatable :: max_degree(:,:,:)
+      real(kind = kreal), allocatable :: max_spectr(:,:)
+      real(kind = kreal), allocatable :: max_degree(:,:)
 !
 !
       private :: sph_OUT1, max_spectr, max_degree
@@ -45,18 +48,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sph_maximum_pwr_spectr                                 &
-     &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
+      subroutine sph_maximum_volume_spectr                              &
+     &         (fname_org, spec_evo_p, sph_IN)
 !
-      use t_buffer_4_gzip
-      use t_ctl_param_sph_series_util
       use write_sph_monitor_data
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
-      use gz_spl_sph_spectr_data_IO
+      use gz_volume_spectr_monitor_IO
+      use sph_monitor_data_text
+      use gz_open_sph_monitor_file
 !
       character(len = kchara), intent(in) :: fname_org
-      logical, intent(in) :: flag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_params), intent(inout) :: sph_IN
 !
@@ -67,18 +69,20 @@
       character, pointer :: FPz_f1
 !
       type(sph_spectr_head_labels) :: sph_lbl_IN_m
+      type(volume_spectr_data_IO) :: v_spec_IN
 !
 !
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_file_rms_l, fname_org, flag_gzip1, zbuf1)
       call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_file_rms_l, flag_gzip1,                            &
-     &    spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,             &
+     &    spec_evo_p%flag_old_fmt, spectr_on, .TRUE.,                   &
      &    sph_lbl_IN_m, sph_IN, zbuf1)
 !
-      sph_IN%nri_dat = sph_IN%nri_sph
-      if(flag_vol_ave) sph_IN%nri_dat = 1
+      sph_IN%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      call alloc_volume_spectr_data_IO                                  &
+     &   (sph_IN%ntot_sph_spec, sph_IN%ltr_sph, v_spec_IN)
 !
       call check_sph_spectr_name(sph_IN)
 !
@@ -86,13 +90,13 @@
 !
       write(file_name, '(a7,a)') 'maxval_', trim(fname_org)
       open(id_file_maxval, file=file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_maxval, flag_vol_ave, sph_OUT1, zbuf_s)
+      call write_sph_pwr_vol_head(.FALSE., id_file_maxval,              &
+     &                            sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       write(file_name, '(a7,a)') 'maxloc_', trim(fname_org)
       open(id_file_maxloc, file=file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_maxloc, flag_vol_ave, sph_OUT1, zbuf_s)
+      call write_sph_pwr_vol_head(.FALSE., id_file_maxloc,              &
+     &                            sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       call allocate_max_sph_data(sph_IN)
 !
@@ -102,10 +106,10 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        call sel_gz_input_sph_series_data                               &
-     &     (FPz_f1, id_file_rms_l, flag_gzip1,                          &
-     &      spec_evo_p%flag_old_fmt, spectr_on, flag_vol_ave,           &
-     &      sph_IN, zbuf1, ierr)
+        call sel_gz_read_volume_spectr_mtr(FPz_f1, id_file_rms_l,       &
+     &      flag_gzip1, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,           &
+     &      sph_IN%i_step, sph_IN%time, sph_IN%i_mode,                  &
+     &      v_spec_IN%spec_v_IO, zbuf1, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
@@ -113,20 +117,15 @@
           sph_OUT1%i_step = sph_IN%i_step
           call find_dominant_scale_sph                                  &
      &       (sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,     &
-     &        sph_IN%spectr_IO, max_spectr, max_degree)
+     &        v_spec_IN%spec_v_IO(1,0), max_spectr, max_degree)
           icou = icou + 1
 !
-          call copy_part_ene_spectr_to_IO                               &
-     &       (sph_IN%nri_sph, izero, sph_IN%ntot_sph_spec,              &
-     &        max_spectr, sph_OUT1)
-          call select_output_sph_series_data                            &
-     &       (.FALSE., id_file_maxval, spectr_off, flag_vol_ave, sph_OUT1, zbuf1)
-!
-          call copy_part_ene_spectr_to_IO                               &
-     &       (sph_IN%nri_sph, izero, sph_IN%ntot_sph_spec,              &
-     &        max_degree, sph_OUT1)
-          call select_output_sph_series_data                            &
-     &       (.FALSE., id_file_maxloc, spectr_off, flag_vol_ave, sph_OUT1, zbuf1)
+          call sel_gz_write_text_stream(.FALSE., id_file_maxval,        &
+     &        volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,      &
+     &        sph_OUT1%ntot_sph_spec, max_spectr(1,1)), zbuf1)
+          call sel_gz_write_text_stream(.FALSE., id_file_maxloc,        &
+     &        volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,      &
+     &        sph_OUT1%ntot_sph_spec, max_spectr(1,1)), zbuf1)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
@@ -143,12 +142,120 @@
 !
 !
       call deallocate_max_sph_data
+      call dealloc_volume_spectr_data_IO(v_spec_IN)
       call dealloc_sph_espec_data(sph_IN)
       call dealloc_sph_espec_name(sph_IN)
       call dealloc_sph_espec_data(sph_OUT1)
       call dealloc_sph_espec_name(sph_OUT1)
 !
-      end subroutine sph_maximum_pwr_spectr
+      end subroutine sph_maximum_volume_spectr
+!
+!   --------------------------------------------------------------------
+!
+      subroutine sph_maximum_layer_spectr                               &
+     &         (fname_org, spec_evo_p, sph_IN)
+!
+      use write_sph_monitor_data
+      use select_gz_stream_file_IO
+      use sel_gz_input_sph_mtr_head
+      use gz_layer_spectr_monitor_IO
+      use gz_open_sph_monitor_file
+      use gz_spl_sph_spectr_data_IO
+      use gz_layer_mean_monitor_IO
+!
+      character(len = kchara), intent(in) :: fname_org
+      type(sph_spectr_file_param), intent(in) :: spec_evo_p
+      type(read_sph_spectr_params), intent(inout) :: sph_IN
+!
+      character(len = kchara) :: file_name
+      integer(kind = kint) :: i, icou, ierr, ist_true
+      logical :: flag_gzip1
+      type(buffer_4_gzip) :: zbuf1, zbuf_s
+      character, pointer :: FPz_f1
+!
+      type(sph_spectr_head_labels) :: sph_lbl_IN_m
+      type(layer_spectr_data_IO) :: l_spec_IN
+!
+!
+      call sel_open_read_gz_stream_file                                 &
+     &   (FPz_f1, id_file_rms_l, fname_org, flag_gzip1, zbuf1)
+      call s_select_input_sph_series_head                               &
+     &   (FPz_f1, id_file_rms_l, flag_gzip1,                            &
+     &    spec_evo_p%flag_old_fmt, spectr_on, .FALSE.,                  &
+     &    sph_lbl_IN_m, sph_IN, zbuf1)
+!
+      sph_IN%nri_dat = sph_IN%nri_sph
+      call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
+      call alloc_layer_spectr_data_IO                                   &
+     &   (sph_IN%ntot_sph_spec, sph_IN%ltr_sph, sph_IN%nri_sph,         &
+     &    l_spec_IN)
+!
+      call check_sph_spectr_name(sph_IN)
+!
+      call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
+!
+      write(file_name, '(a7,a)') 'maxval_', trim(fname_org)
+      open(id_file_maxval, file=file_name)
+      call write_sph_pwr_layer_head(.FALSE., id_file_maxval,            &
+     &                              sph_OUT1, zbuf_s)
+!
+      write(file_name, '(a7,a)') 'maxloc_', trim(fname_org)
+      open(id_file_maxloc, file=file_name)
+      call write_sph_pwr_layer_head(.FALSE., id_file_maxloc,            &
+     &                              sph_OUT1, zbuf_s)
+!
+      call allocate_max_sph_data(sph_IN)
+!
+      icou = 0
+      ist_true = -1
+      write(*,'(a5,i12,a30,i12)',advance="NO")                          &
+     &       'step= ', sph_IN%i_step,                                   &
+     &       ' averaging finished. Count=  ', icou
+      do
+        call sel_gz_input_sph_layer_spectr                              &
+     &     (FPz_f1, id_file_rms_l, flag_gzip1, spec_evo_p%flag_old_fmt, &
+     &      sph_IN, l_spec_IN, zbuf1, ierr)
+        if(ierr .gt. 0) go to 99
+!
+        if (sph_IN%time .ge. spec_evo_p%start_time) then
+          sph_OUT1%time =   sph_IN%time
+          sph_OUT1%i_step = sph_IN%i_step
+          call find_dominant_scale_sph                                  &
+     &       (sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,     &
+     &        l_spec_IN%spec_r_IO, max_spectr, max_degree)
+          icou = icou + 1
+!
+          call sel_gz_write_layer_mean_mtr(.FALSE., id_file_maxval,     &
+     &        sph_OUT1%i_step, sph_OUT1%time, sph_OUT1%nri_sph,         &
+     &        sph_OUT1%kr_sph, sph_OUT1%r_sph, sph_OUT1%ntot_sph_spec,  &
+     &        max_spectr(1,1), zbuf1)
+          call sel_gz_write_layer_mean_mtr(.FALSE., id_file_maxloc,     &
+     &        sph_OUT1%i_step, sph_OUT1%time, sph_OUT1%nri_sph,         &
+     &        sph_OUT1%kr_sph, sph_OUT1%r_sph, sph_OUT1%ntot_sph_spec,  &
+     &        max_degree(1,1), zbuf1)
+        end if
+!
+        write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
+     &       'step= ', sph_IN%i_step,                                   &
+     &       ' averaging finished. Count=   ', icou
+        if (sph_IN%time .ge. spec_evo_p%end_time) exit
+      end do
+!
+   99 continue
+      write(*,*)
+      close(id_file_rms_l)
+      close(id_file_maxval)
+      close(id_file_maxloc)
+!
+!
+      call deallocate_max_sph_data
+      call dealloc_layer_spectr_data_IO(l_spec_IN)
+      call dealloc_sph_espec_data(sph_IN)
+      call dealloc_sph_espec_name(sph_IN)
+      call dealloc_sph_espec_data(sph_OUT1)
+      call dealloc_sph_espec_name(sph_OUT1)
+!
+      end subroutine sph_maximum_layer_spectr
 !
 !   --------------------------------------------------------------------
 !
@@ -160,8 +267,8 @@
       real(kind = kreal), intent(in)                                    &
      &                   :: spectr_l(ncomp, 0:ltr_sph, nri_sph)
 !
-      real(kind = kreal), intent(inout) :: max_data(ncomp,0:0,nri_sph)
-      real(kind = kreal), intent(inout) :: max_mode(ncomp,0:0,nri_sph)
+      real(kind = kreal), intent(inout) :: max_data(ncomp,nri_sph)
+      real(kind = kreal), intent(inout) :: max_mode(ncomp,nri_sph)
 !
       integer(kind = kint) :: kr, nd, lth
 !
@@ -170,8 +277,8 @@
       do kr = 1, nri_sph
 !$omp do
         do nd = 1, ncomp
-          max_data(nd,0,kr) = spectr_l(nd,0,kr)
-          max_mode(nd,0,kr) = 0
+          max_data(nd,kr) = spectr_l(nd,0,kr)
+          max_mode(nd,kr) = 0
         end do
 !$omp end do nowait
       end do
@@ -182,9 +289,9 @@
         do kr = 1, nri_sph
 !$omp do
           do nd = 1, ncomp
-            if(spectr_l(nd,lth,kr) .gt. max_data(nd,0,kr)) then
-              max_data(nd,0,kr) = spectr_l(nd,lth,kr)
-              max_mode(nd,0,kr) = lth
+            if(spectr_l(nd,lth,kr) .gt. max_data(nd,kr)) then
+              max_data(nd,kr) = spectr_l(nd,lth,kr)
+              max_mode(nd,kr) = lth
             end if
           end do
 !$omp end do nowait
@@ -202,8 +309,8 @@
       type(read_sph_spectr_params), intent(inout) :: sph_IN
 !
 !
-      allocate( max_spectr(sph_IN%ntot_sph_spec,0:0,sph_IN%nri_sph) )
-      allocate( max_degree(sph_IN%ntot_sph_spec,0:0,sph_IN%nri_sph) )
+      allocate( max_spectr(sph_IN%ntot_sph_spec,sph_IN%nri_sph) )
+      allocate( max_degree(sph_IN%ntot_sph_spec,sph_IN%nri_sph) )
       max_spectr = 0.0d0
       max_degree = 0.0d0
 !

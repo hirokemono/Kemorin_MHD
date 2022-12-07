@@ -16,8 +16,6 @@
 !!      subroutine copy_read_ene_params_4_sum(sph_IN, sph_OUT)
 !!      subroutine copy_read_ene_step_data(sph_IN, sph_OUT)
 !!      subroutine copy_ene_spectr_data_to_IO(sph_IN, sph_OUT)
-!!      subroutine copy_part_ene_spectr_to_IO(nri_dat, ltr_sph, ncomp,  &
-!!     &          spectr_l, sph_OUT)
 !!        integer(kind = kint), intent(in) :: nri_dat, ltr_sph
 !!        integer(kind = kint), intent(in) :: ncomp
 !!        real(kind = kreal), intent(in)                                &
@@ -251,25 +249,6 @@
 !$omp end parallel workshare
 !
       end subroutine copy_ene_spectr_data_to_IO
-!
-!   --------------------------------------------------------------------
-!
-      subroutine copy_part_ene_spectr_to_IO(nri_dat, ltr_sph, ncomp,    &
-     &          spectr_l, sph_OUT)
-!
-      integer(kind = kint), intent(in) :: nri_dat, ltr_sph
-      integer(kind = kint), intent(in) :: ncomp
-      real(kind = kreal), intent(in)                                    &
-     &                   :: spectr_l(ncomp, 0:ltr_sph, nri_dat)
-      type(read_sph_spectr_params), intent(inout) :: sph_OUT
-!
-!
-!$omp parallel workshare
-      sph_OUT%spectr_IO(1:ncomp,0:ltr_sph,1:nri_dat)                    &
-     &        = spectr_l(1:ncomp,0:ltr_sph,1:nri_dat)
-!$omp end parallel workshare
-!
-      end subroutine copy_part_ene_spectr_to_IO
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
