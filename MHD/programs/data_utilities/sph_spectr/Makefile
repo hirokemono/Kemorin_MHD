@@ -23,10 +23,7 @@ TARGET_TAVE_SPH_ENE_SPEC =  t_ave_sph_monitor_data
 TARGET_TAVE_OLD_SPH_ESPEC = t_ave_old_sph_mean_square
 TARGET_PSUM_SPH_ENE_SPEC =  part_sum_sph_mean_square
 
-TARGET_T_AVE_GAUSS_COEFS =   t_ave_gauss_coefs
 TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
-TARGET_T_AVE_NUSSELT =       t_ave_nusselt
-TARGET_T_AVE_DIPOLARITY =    t_ave_dipolarity
 TARGET_T_AVE_STABLE_REV =      t_ave_stable_and_reversal
 TARGET_T_AVE_STABLE_REV_SPEC = t_ave_stable_and_rev_spectr
 
@@ -90,8 +87,6 @@ m_load_picked_sph_spectr_f.o \
 m_load_section_file_f.o \
 write_gauss_coefs_4_monitor.o \
 time_average_sph_ene_spectr.o \
-time_average_nusselt.o \
-time_average_dipolarity.o \
 time_average_gauss_coefs.o \
 write_snap_pick_sph_spectr.o \
 time_ave_picked_sph_spectr.o \
@@ -309,20 +304,6 @@ count_monitor_time_series.o \
 write_sph_monitor_data.o \
 part_sum_sph_ene_spec.o
 
-MOD_T_AVE_GAUSS_COEFS = \
-t_ctl_data_sph_monitor_list.o \
-t_ctl_data_tave_sph_monitor.o \
-t_gauss_coefs_monitor_IO.o \
-t_ctl_param_sph_series_util.o \
-count_monitor_time_series.o \
-gz_gauss_coefs_monitor_IO.o \
-write_sph_monitor_data.o \
-gz_spl_sph_spectr_data_IO.o \
-old_sph_spectr_data_IO.o \
-write_gauss_coefs_4_monitor.o \
-time_average_gauss_coefs.o \
-tave_picked_gauss_coefs.o
-
 MOD_T_AVE_PICK_SPH = \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
@@ -333,24 +314,6 @@ picked_sph_spectr_data_IO.o \
 write_snap_pick_sph_spectr.o \
 time_ave_picked_sph_spectr.o \
 tave_picked_sph_spec_data.o
-
-MOD_T_AVE_NUSSELT = \
-t_average_nusselt.o \
-time_average_nusselt.o \
-gz_Nusselt_monitor_IO.o \
-count_monitor_time_series.o \
-t_ctl_param_sph_series_util.o \
-t_ctl_data_sph_monitor_list.o \
-t_ctl_data_tave_sph_monitor.o
-
-MOD_T_AVE_DIPOLARITY = \
-t_CMB_dipolarity.o \
-t_average_dipolarity.o \
-time_average_dipolarity.o \
-count_monitor_time_series.o \
-t_ctl_param_sph_series_util.o \
-t_ctl_data_sph_monitor_list.o \
-t_ctl_data_tave_sph_monitor.o
 
 MOD_T_AVE_STABLE_REV = \
 t_ctl_data_tave_stable_rev.o \
@@ -423,13 +386,7 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_TAVE_OLD_SPH_ESPEC = $$(BUILDDIR)/$(TARGET_TAVE_OLD_SPH_ESPEC)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_T_AVE_GAUSS_COEFS = $$(BUILDDIR)/$(TARGET_T_AVE_GAUSS_COEFS)' \
-	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_PICK_SPH_SPEC = $$(BUILDDIR)/$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	>> $(MAKENAME)
-	@echo 'TARGET_T_AVE_NUSSELT = $$(BUILDDIR)/$(TARGET_T_AVE_NUSSELT)' \
-	>> $(MAKENAME)
-	@echo 'TARGET_T_AVE_DIPOLARITY = $$(BUILDDIR)/$(TARGET_T_AVE_DIPOLARITY)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_STABLE_REV = $$(BUILDDIR)/$(TARGET_T_AVE_STABLE_REV)' \
 	>> $(MAKENAME)
@@ -458,11 +415,10 @@ target_task:
 	'$$(TARGET_ZM_SPH_SPEC)        $$(TARGET_T_AVE_SPEC)'      \
 	'$$(TARGET_TAVE_SPH_ENE_SPEC)  $$(TARGET_TAVE_OLD_SPH_ESPEC)'  \
 	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	'$$(TARGET_T_AVE_GAUSS_COEFS)  $$(TARGET_SPH_NEUTRAL)'        \
+	'$$(TARGET_SPH_NEUTRAL)'        \
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
-	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'      \
+	'$$(TARGET_FIT_DIPOLE_RATIO)   $$(TARGET_SPH_ENE_CHECK)'      \
 	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)'   \
-	'$$(TARGET_FIT_DIPOLE_RATIO)   $$(TARGET_T_AVE_DIPOLARITY)  ' \
 	'$$(TARGET_T_AVE_STABLE_REV)   $$(TARGET_T_AVE_STABLE_REV_SPEC)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
@@ -574,14 +530,6 @@ target_task:
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_T_AVE_GAUSS_COEFS)': '$$(MOD_T_AVE_GAUSS_COEFS)' \
-	'$$(LIB_FILES_SPH_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_T_AVE_GAUSS_COEFS)' \
-	'$$(MOD_T_AVE_GAUSS_COEFS)' \
-	'-L. $$(LIBS_SPH_UTIL)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_T_AVE_PICK_SPH_SPEC)': '$$(MOD_T_AVE_PICK_SPH)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
@@ -595,22 +543,6 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_PSUM_SPH_ENE_SPEC)' \
 	'$$(MOD_PSUM_SPH_ENE_SPEC)' \
-	'-L. $$(LIBS_SPH_UTIL)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_T_AVE_NUSSELT)': '$$(MOD_T_AVE_NUSSELT)' \
-	'$$(LIB_FILES_SPH_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_T_AVE_NUSSELT)' \
-	'$$(MOD_T_AVE_NUSSELT)' \
-	'-L. $$(LIBS_SPH_UTIL)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_T_AVE_DIPOLARITY)': '$$(MOD_T_AVE_DIPOLARITY)' \
-	'$$(LIB_FILES_SPH_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_T_AVE_DIPOLARITY)' \
-	'$$(MOD_T_AVE_DIPOLARITY)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -711,8 +643,6 @@ mod_list:
 	@echo  $(MOD_TAVE_SPH_ENE_SPEC)       >> $(MAKENAME)
 	@echo  MOD_TAVE_OLD_SPH_ESPEC= \\     >> $(MAKENAME)
 	@echo  $(MOD_TAVE_OLD_SPH_ESPEC)      >> $(MAKENAME)
-	@echo  MOD_T_AVE_GAUSS_COEFS=  \\     >> $(MAKENAME)
-	@echo  $(MOD_T_AVE_GAUSS_COEFS)       >> $(MAKENAME)
 	@echo  MOD_T_AVE_PICK_SPH=  \\        >> $(MAKENAME)
 	@echo  $(MOD_T_AVE_PICK_SPH)          >> $(MAKENAME)
 	@echo  MOD_MAX_SPH_ENE=  \\           >> $(MAKENAME)
@@ -727,8 +657,6 @@ mod_list:
 	@echo  $(MOD_PSUM_SPH_ENE_SPEC)       >> $(MAKENAME)
 	@echo  MOD_T_AVE_NUSSELT=  \\         >> $(MAKENAME)
 	@echo  $(MOD_T_AVE_NUSSELT)           >> $(MAKENAME)
-	@echo  MOD_T_AVE_DIPOLARITY=  \\      >> $(MAKENAME)
-	@echo  $(MOD_T_AVE_DIPOLARITY)        >> $(MAKENAME)
 	@echo  MOD_T_AVE_STABLE_REV=  \\      >> $(MAKENAME)
 	@echo  $(MOD_T_AVE_STABLE_REV)        >> $(MAKENAME)
 	@echo  MOD_T_AVE_STABLE_REV_SPEC=  \\ >> $(MAKENAME)
