@@ -50,7 +50,7 @@
       integer(c_int) function                                           &
     &     time_ave_sdev_sph_volume_pwr_f(cname, cstart, cend) Bind(C)
 !
-      use m_tave_sph_ene_spectr
+      use time_ave_sph_monitor_data
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: cname(*)
@@ -62,8 +62,8 @@
       write(fname_org,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
-      call time_ave_sdev_sph_spectr                                     &
-     &   (fname_org, spectr_off, volume_on, start_time, end_time)
+      call time_ave_sdev_sph_volume_mean(fname_org,                     &
+     &                                   start_time, end_time)
 !
       time_ave_sdev_sph_volume_pwr_f = 0
       end function time_ave_sdev_sph_volume_pwr_f

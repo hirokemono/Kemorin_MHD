@@ -74,6 +74,7 @@ t_read_sph_series.o \
 t_picked_sph_spectr_data_IO.o \
 t_gauss_coefs_monitor_IO.o \
 t_read_sph_series.o \
+t_sph_volume_mean_series.o \
 write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
@@ -93,7 +94,8 @@ time_average_nusselt.o \
 time_average_dipolarity.o \
 time_average_gauss_coefs.o \
 write_snap_pick_sph_spectr.o \
-time_ave_picked_sph_spectr.o
+time_ave_picked_sph_spectr.o \
+time_ave_sph_monitor_data.o
 
 
 
@@ -226,6 +228,7 @@ t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 t_picked_sph_spectr_data_IO.o \
+t_sph_volume_mean_series.o \
 m_tave_sph_ene_spectr.o \
 time_ave_picked_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
@@ -234,7 +237,8 @@ old_sph_spectr_data_IO.o \
 write_sph_monitor_data.o \
 write_snap_pick_sph_spectr.o \
 count_monitor_time_series.o \
-cal_tave_sph_ene_spectr.o
+cal_tave_sph_ene_spectr.o \
+time_ave_sph_monitor_data.o
 
 MOD_TAVE_OLD_SPH_ESPEC = \
 t_average_old_sph_ene_spec.o \

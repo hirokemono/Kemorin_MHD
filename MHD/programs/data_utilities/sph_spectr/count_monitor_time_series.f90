@@ -117,9 +117,9 @@
 !
           num_count = num_count + 1
           if(flag_log) then
-            write(*,'(69a1,a5,i12,a4,1pe16.8e3,a20,i12)',advance="NO")  &
-     &        (char(8),i=1,69), 'step ', i_step,                        &
-     &        ' at ', time, ' is read. count is  ', num_count
+            write(*,'(65a1,a6,i12,a8,f12.6,a15,i12)',advance="NO")      &
+     &       (char(8),i=1,65), 'step= ', i_step, ', time= ', time,      &
+     &       ', Read Count:  ', num_count
           end if
         end if
 !

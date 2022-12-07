@@ -19,6 +19,7 @@
 !!     &         (FPz_f, id_file, base_name, flag_gzip, flag_miss, zbuf)
 !!      subroutine sel_close_read_gz_stream_file                        &
 !!     &         (FPz_f, id_file, flag_gzip, zbuf)
+!!      subroutine sel_redwind_gz_stream_file(FPz_f, id_file, flag_gzip)
 !!        character, pointer, intent(inout) :: FPz_f
 !!        integer(kind = kint), intent(in) :: id_file
 !!        character(len=kchara), intent(in) :: base_name
@@ -174,6 +175,29 @@
       call dealloc_fixbuffer_for_zlib(zbuf)
 !
       end subroutine sel_close_read_gz_stream_file
+!
+!   --------------------------------------------------------------------
+!
+      subroutine sel_redwind_gz_stream_file(FPz_f, id_file, flag_gzip)
+!
+      use gzip_file_access
+!
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_file
+      logical, intent(in) :: flag_gzip
+!
+      integer(kind = kint) :: ierr
+!
+!#ifdef ZLIB_IO
+      if(flag_gzip) then
+        ierr = rewind_gzfile(FPz_f)
+        return
+      end if
+!#endif
+!
+      rewind(id_file)
+!
+      end subroutine sel_redwind_gz_stream_file
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
