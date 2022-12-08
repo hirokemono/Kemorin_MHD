@@ -84,9 +84,9 @@
       end do
 !
       do i = 1, spec_evo_p1%vol_spec_series%num_file
-        call time_ave_sdev_sph_spectr                                   &
+        call time_ave_sdev_sph_spectr                              &
      &     (spec_evo_p1%vol_spec_series%evo_file_name(i),               &
-     &      spectr_on, volume_on,                                       &
+     &      spectr_on, volume_on,                                     &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !

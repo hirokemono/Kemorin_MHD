@@ -42,8 +42,11 @@
 !
       type spectr_ave_sigma_work
         real(kind = kreal), allocatable :: ave_spec_l(:,:,:)
+        real(kind = kreal), allocatable :: rms_spec_l(:,:,:)
         real(kind = kreal), allocatable :: sigma_spec_l(:,:,:)
-        real(kind = kreal), allocatable :: spectr_pre_l(:,:,:)
+        real(kind = kreal), allocatable :: ave_pre_l(:,:,:)
+        real(kind = kreal), allocatable :: rms_pre_l(:,:,:)
+        real(kind = kreal), allocatable :: sigma_pre_l(:,:,:)
       end type spectr_ave_sigma_work
 !
       logical, parameter, private :: flag_old_format =     .TRUE.
@@ -179,6 +182,10 @@
       use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
       use set_parallel_file_name
+      use gz_open_sph_monitor_file
+      use gz_volume_spectr_monitor_IO
+      use gz_layer_mean_monitor_IO
+      use gz_layer_spectr_monitor_IO
 !
       character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
@@ -197,7 +204,6 @@
       type(sph_spectr_head_labels) :: sph_lbl_IN_t
 !
 !
-      write(*,*) 'Open file ', trim(fname_org)
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
       call s_select_input_sph_series_head                               &
@@ -218,9 +224,9 @@
       icou = 0
       ist_true = -1
       prev_time = sph_IN%time
-      write(*,'(a6,i12,a30,i12)',advance="NO")                         &
-     &       'step= ', sph_IN%i_step,                                  &
-     &       ' averaging finished. Count=  ', icou
+        write(*,'(a6,i12,a8,f12.6,a15,i12)',advance="NO")               &
+     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
+     &       ', Skip Count:  ', icou
       do
         call sel_gz_input_sph_series_data                               &
      &     (FPz_f1, id_file_rms, flag_gzip1,                            &
@@ -236,21 +242,23 @@
             call copy_ene_spectr_2_pre                                  &
      &         (sph_IN%time, prev_time, sph_IN%nri_sph, sph_IN%ltr_sph, &
      &          sph_IN%ntot_sph_spec, sph_IN%spectr_IO,                 &
-     &          WK_tave%ave_spec_l, WK_tave%spectr_pre_l)
+     &          WK_tave%ave_spec_l, WK_tave%ave_pre_l,                  &
+     &          WK_tave%rms_spec_l, WK_tave%rms_pre_l)
           else
-!
             call sum_average_ene_spectr                                 &
      &         (sph_IN%time, prev_time, sph_IN%nri_sph, sph_IN%ltr_sph, &
      &          sph_IN%ntot_sph_spec, sph_IN%spectr_IO,                 &
-     &          WK_tave%ave_spec_l, WK_tave%spectr_pre_l)
-
+     &          WK_tave%ave_spec_l, WK_tave%ave_pre_l,                  &
+     &          WK_tave%rms_spec_l, WK_tave%rms_pre_l)
+!
             icou = icou + 1
           end if
         end if
 !
-        write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60),&
-     &       'step= ', sph_IN%i_step,                                  &
-     &       ' averaging finished. Count=   ', icou
+        write(*,'(65a1,a6,i12,a8,f12.6,a15,i12)',advance="NO")          &
+     &       (char(8),i=1,65),                                          &
+     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
+     &       ', Skip Count:  ', icou
         if (sph_IN%time .ge. end_time) then
           true_end = sph_IN%time
           exit
@@ -265,27 +273,72 @@
 !
       call divide_average_ene_spectr(sph_IN%time, true_start,           &
      &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
-     &    WK_tave%ave_spec_l, sph_IN%spectr_IO)
+     &    WK_tave%ave_spec_l, WK_tave%rms_spec_l)
 !
 !  Output average
-      if(flag_gzip1) then
-        call split_extrension(fname_org, fname_tmp, extension)
-      else
-        fname_tmp = fname_org
-      end if
-      call split_directory(fname_tmp, directory, fname_no_dir)
+      call split_directory(fname_org, directory, fname_no_dir)
       write(fname_tmp, '(a6,a)') 't_ave_', trim(fname_no_dir)
       file_name = append_directory(directory, fname_tmp)
 !
       write(*,*) 'average file_name: ', trim(file_name)
-      open(id_file_rms, file=file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_rms, flag_vol_ave, sph_IN, zbuf_s)
-!
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, flag_spectr, flag_vol_ave, sph_IN)
+      open(id_file_rms, file=file_name, status='replace',               &
+     &       FORM='UNFORMATTED', ACCESS='STREAM')
+      if(flag_vol_ave) then
+        call write_sph_pwr_vol_head(.FALSE., id_file_rms,               &
+     &                              sph_pwr_labels, sph_IN, zbuf_s)
+      call sel_gz_write_volume_spectr_mtr                               &
+     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
+     &    sph_IN%ltr_sph, sph_IN%ntot_sph_spec,             &
+     &    WK_tave%ave_spec_l(1,0,1), zbuf_s)
+      else
+        call write_sph_pwr_layer_head(.FALSE., id_file_rms,             &
+     &                                sph_IN, zbuf_s)
+        if(flag_spectr) then
+      call sel_gz_write_layer_spectr_mtr                                &
+     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
+     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph, sph_IN%ltr_sph, &
+     &    sph_IN%ntot_sph_spec, WK_tave%ave_spec_l(1,0,1), zbuf_s)
+        else
+      call sel_gz_write_layer_mean_mtr                                  &
+     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
+     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph,          &
+     &    sph_IN%ntot_sph_spec, WK_tave%ave_spec_l(1,0,1), zbuf_s)
+      end if
+      end if
       close(id_file_rms)
 !
+!  Output RMS
+      call split_directory(fname_org, directory, fname_no_dir)
+      write(fname_tmp, '(a6,a)') 't_rms_', trim(fname_no_dir)
+      file_name = append_directory(directory, fname_tmp)
+!
+      write(*,*) 'average file_name: ', trim(file_name)
+      open(id_file_rms, file=file_name, status='replace',               &
+     &       FORM='UNFORMATTED', ACCESS='STREAM')
+      if(flag_vol_ave) then
+        call write_sph_pwr_vol_head(.FALSE., id_file_rms,               &
+     &                              sph_pwr_labels, sph_IN, zbuf_s)
+      call sel_gz_write_volume_spectr_mtr                               &
+     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
+     &    sph_IN%ltr_sph, sph_IN%ntot_sph_spec,             &
+     &    WK_tave%rms_spec_l(1,0,1), zbuf_s)
+      else
+        call write_sph_pwr_layer_head(.FALSE., id_file_rms,             &
+     &                                sph_IN, zbuf_s)
+        if(flag_spectr) then
+      call sel_gz_write_layer_spectr_mtr                                &
+     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
+     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph, sph_IN%ltr_sph, &
+     &    sph_IN%ntot_sph_spec, WK_tave%rms_spec_l(1,0,1), zbuf_s)
+        else
+      call sel_gz_write_layer_mean_mtr                                  &
+     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
+     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph,          &
+     &    sph_IN%ntot_sph_spec, WK_tave%rms_spec_l(1,0,1), zbuf_s)
+      end if
+      end if
+      close(id_file_rms)
+
       call dealloc_sph_espec_data(sph_IN)
       call dealloc_sph_espec_name(sph_IN)
 !
@@ -304,6 +357,10 @@
       use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
       use set_parallel_file_name
+      use gz_open_sph_monitor_file
+      use gz_volume_spectr_monitor_IO
+      use gz_layer_mean_monitor_IO
+      use gz_layer_spectr_monitor_IO
 !
       character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
@@ -319,7 +376,7 @@
       character(len = kchara) :: file_name, extension
       character(len = kchara) :: directory, fname_no_dir, fname_tmp
       real(kind = kreal) :: true_start, prev_time
-      integer(kind = kint) :: icou, ierr, ist_true
+      integer(kind = kint) :: icou, ierr, ist_true, i
 !
 !  Evaluate standard deviation
 !
@@ -343,9 +400,9 @@
       ist_true = -1
       prev_time = sph_IN%time
       WK_tave%sigma_spec_l = 0.0d0
-!      write(*,'(a6,i12,a30,i12)',advance="NO")                         &
-!     &       'step= ', sph_IN%i_step,                                  &
-!     &       ' deviation finished. Count=  ', icou
+      write(*,'(a6,i12,a8,f12.6,a15,i12)',advance="NO")                 &
+     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
+     &       ', Skip Count:  ', icou
       do
         call sel_gz_input_sph_series_data                               &
      &     (FPz_f1, id_file_rms, flag_gzip1,                            &
@@ -360,21 +417,22 @@
             call copy_deviation_ene_2_pre(sph_IN%time, prev_time,       &
      &          sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,   &
      &          sph_IN%spectr_IO, WK_tave%ave_spec_l,                   &
-     &          WK_tave%sigma_spec_l, WK_tave%spectr_pre_l)
+     &          WK_tave%sigma_spec_l, WK_tave%sigma_pre_l)
 !
           else
             call sum_deviation_ene_spectr(sph_IN%time, prev_time,       &
      &          sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,   &
      &          sph_IN%spectr_IO, WK_tave%ave_spec_l,                   &
-     &          WK_tave%sigma_spec_l, WK_tave%spectr_pre_l)
+     &          WK_tave%sigma_spec_l, WK_tave%sigma_pre_l)
 !
             icou = icou + 1
           end if
         end if
 !
-!        write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60),&
-!     &       'step= ', sph_IN%i_step,                                  &
-!     &       ' deviation finished. Count=   ', icou
+        write(*,'(65a1,a6,i12,a8,f12.6,a15,i12)',advance="NO")          &
+     &       (char(8),i=1,65),                                          &
+     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
+     &       ', Skip Count:  ', icou
         if (sph_IN%time .ge. end_time) exit
       end do
    99 continue
@@ -384,24 +442,39 @@
 !
       call divide_deviation_ene_spectr(sph_IN%time, true_start,         &
      &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
-     &    WK_tave%sigma_spec_l, sph_IN%spectr_IO)
+     &    WK_tave%sigma_spec_l)
 !
-      if(flag_gzip1) then
-        call split_extrension(fname_org, fname_tmp, extension)
-      else
-        fname_tmp = fname_org
-      end if
-      call split_directory(fname_tmp, directory, fname_no_dir)
-      write(fname_tmp, '(a8,a)') 't_sigma_', trim(fname_no_dir)
+!
+!  Output Standard deviation
+      call split_directory(fname_org, directory, fname_no_dir)
+      write(fname_tmp, '(a7,a)') 't_sdev_', trim(fname_no_dir)
       file_name = append_directory(directory, fname_tmp)
 !
-      write(*,*) 'standard deviation file_name: ', trim(file_name)
-      open(id_file_rms, file=file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_rms, flag_vol_ave, sph_IN, zbuf_s)
-!
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, flag_spectr, flag_vol_ave, sph_IN)
+      write(*,*) 'Standard deviation file_name: ', trim(file_name)
+      open(id_file_rms, file=file_name, status='replace',               &
+     &       FORM='UNFORMATTED', ACCESS='STREAM')
+      if(flag_vol_ave) then
+        call write_sph_pwr_vol_head(.FALSE., id_file_rms,               &
+     &                              sph_pwr_labels, sph_IN, zbuf_s)
+      call sel_gz_write_volume_spectr_mtr                               &
+     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
+     &    sph_IN%ltr_sph, sph_IN%ntot_sph_spec,             &
+     &    WK_tave%sigma_spec_l(1,0,1), zbuf_s)
+      else
+        call write_sph_pwr_layer_head(.FALSE., id_file_rms,             &
+     &                                sph_IN, zbuf_s)
+        if(flag_spectr) then
+      call sel_gz_write_layer_spectr_mtr                                &
+     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
+     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph, sph_IN%ltr_sph, &
+     &    sph_IN%ntot_sph_spec, WK_tave%sigma_spec_l(1,0,1), zbuf_s)
+        else
+      call sel_gz_write_layer_mean_mtr                                  &
+     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
+     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph,          &
+     &    sph_IN%ntot_sph_spec, WK_tave%sigma_spec_l(1,0,1), zbuf_s)
+      end if
+      end if
       close(id_file_rms)
 !
       end subroutine sph_spectr_std_deviation
@@ -467,13 +540,21 @@
       ncomp = sph_IN%ntot_sph_spec
       ltr =   sph_IN%ltr_sph
       allocate( WK_tave%ave_spec_l(ncomp,0:ltr,sph_IN%nri_sph))
+      allocate( WK_tave%rms_spec_l(ncomp,0:ltr,sph_IN%nri_sph))
       allocate( WK_tave%sigma_spec_l(ncomp,0:ltr,sph_IN%nri_sph))
-      allocate( WK_tave%spectr_pre_l(ncomp,0:ltr,sph_IN%nri_sph))
+      allocate( WK_tave%ave_pre_l(ncomp,0:ltr,sph_IN%nri_sph))
+      allocate( WK_tave%rms_pre_l(ncomp,0:ltr,sph_IN%nri_sph))
+      allocate( WK_tave%sigma_pre_l(ncomp,0:ltr,sph_IN%nri_sph))
 !
       if(ncomp .le. 0) return
+!$omp parallel workshare
       WK_tave%ave_spec_l =  0.0d0
+      WK_tave%rms_spec_l =  0.0d0
       WK_tave%sigma_spec_l =  0.0d0
-      WK_tave%spectr_pre_l = 0.0d0
+      WK_tave%ave_pre_l = 0.0d0
+      WK_tave%rms_pre_l = 0.0d0
+      WK_tave%sigma_pre_l = 0.0d0
+!$omp end parallel workshare
 !
       end subroutine alloc_tave_sph_data
 !
@@ -483,8 +564,9 @@
 !
       type(spectr_ave_sigma_work), intent(inout) :: WK_tave
 !
-      deallocate(WK_tave%ave_spec_l, WK_tave%sigma_spec_l)
-      deallocate(WK_tave%spectr_pre_l)
+      deallocate(WK_tave%ave_spec_l,   WK_tave%ave_pre_l)
+      deallocate(WK_tave%rms_spec_l,   WK_tave%rms_pre_l)
+      deallocate(WK_tave%sigma_spec_l, WK_tave%sigma_pre_l)
 !
       end subroutine dealloc_tave_sph_data
 !
@@ -510,7 +592,8 @@
       type(read_sph_spectr_series), intent(inout) :: sph_series
 !
       real(kind = kreal) :: prev_time
-      integer(kind = kint) :: icou, ierr, ist_true, i, num, num_count
+      integer(kind = kint) :: icou, ierr, ist_true, i, num
+      integer(kind = kint) :: num_count, icou_skip
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
@@ -530,7 +613,8 @@
       if(flag_spectr)  num = num * (sph_IN%ltr_sph + 1)
       call s_count_monitor_time_series                                  &
      &   (.TRUE., FPz_f1, id_file_rms, flag_gzip1, num,                 &
-     &    start_time, end_time, true_start, true_end, num_count, zbuf1)
+     &    start_time, end_time, true_start, true_end,                   &
+     &    num_count, icou_skip, zbuf1)
       call dealloc_sph_espec_name(sph_IN)
 !
       if(flag_gzip1) then

@@ -72,6 +72,7 @@ t_picked_sph_spectr_data_IO.o \
 t_gauss_coefs_monitor_IO.o \
 t_read_sph_series.o \
 t_sph_volume_mean_series.o \
+t_sph_volume_spectr_series.o \
 write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
@@ -224,6 +225,7 @@ t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 t_picked_sph_spectr_data_IO.o \
 t_sph_volume_mean_series.o \
+t_sph_volume_spectr_series.o \
 m_tave_sph_ene_spectr.o \
 time_ave_picked_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
