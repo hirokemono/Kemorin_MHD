@@ -97,4 +97,43 @@
       call dealloc_spec_series_file_param(spec_evo_p1)
       stop
 !
+!   --------------------------------------------------------------------
+!
+      contains
+!
+!   --------------------------------------------------------------------
+!
+      subroutine time_ave_sdev_sph_old_spectr                           &
+     &         (fname_org, flag_spectr, flag_vol_ave,                   &
+     &          start_time, end_time)
+!
+      use t_read_sph_spectra
+      use m_tave_sph_ene_spectr
+!
+      character(len = kchara), intent(in) :: fname_org
+      logical, intent(in) :: flag_spectr, flag_vol_ave
+      real(kind = kreal), intent(in) :: start_time, end_time
+!
+      type(read_sph_spectr_data), save :: sph_IN1
+      type(spectr_ave_sigma_work), save :: WK_tave1
+!
+      real(kind = kreal) :: true_start, true_end
+      logical, parameter :: flag_old_format =     .TRUE.
+!
+      call sph_spectr_average                                           &
+     &   (flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
+     &    start_time, end_time, true_start, true_end,                   &
+     &    sph_IN1, WK_tave1)
+      call sph_spectr_std_deviation                                     &
+     &   (flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
+     &    start_time, end_time, sph_IN1, WK_tave1)
+!
+      call dealloc_tave_sph_data(WK_tave1)
+      call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_name(sph_IN1)
+!
+      end subroutine time_ave_sdev_sph_old_spectr
+!
+!   --------------------------------------------------------------------
+!
       end program t_average_old_sph_ene_spec

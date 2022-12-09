@@ -49,15 +49,12 @@
         real(kind = kreal), allocatable :: sigma_pre_l(:,:,:)
       end type spectr_ave_sigma_work
 !
-      logical, parameter, private :: flag_old_format =     .TRUE.
       logical, parameter, private :: flag_current_format = .FALSE.
 !
       type(read_sph_spectr_data), save, private :: sph_IN1
       type(spectr_ave_sigma_work), save, private :: WK_tave1
 !
       private :: id_file_rms
-      private :: alloc_tave_sph_data, dealloc_tave_sph_data
-      private :: sph_spectr_average, sph_spectr_std_deviation
 !
       private :: read_sph_spectr_snapshot
 !
@@ -121,32 +118,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine time_ave_sdev_sph_old_spectr                           &
-     &         (fname_org, flag_spectr, flag_vol_ave,                   &
-     &          start_time, end_time)
-!
-      character(len = kchara), intent(in) :: fname_org
-      logical, intent(in) :: flag_spectr, flag_vol_ave
-      real(kind = kreal), intent(in) :: start_time, end_time
-!
-      real(kind = kreal) :: true_start, true_end
-!
-      call sph_spectr_average                                           &
-     &   (flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
-     &    start_time, end_time, true_start, true_end,                   &
-     &    sph_IN1, WK_tave1)
-      call sph_spectr_std_deviation                                     &
-     &   (flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
-     &    start_time, end_time, sph_IN1, WK_tave1)
-!
-      call dealloc_tave_sph_data(WK_tave1)
-      call dealloc_sph_espec_data(sph_IN1)
-      call dealloc_sph_espec_name(sph_IN1)
-!
-      end subroutine time_ave_sdev_sph_old_spectr
-!
-!   --------------------------------------------------------------------
-!
       subroutine read_time_ave_sdev_sph_spectr                          &
      &         (tave_file_name, sdev_file_name,                         &
      &          flag_spectr, flag_vol_ave, tave_sph_IN, sdev_sph_IN)
@@ -197,7 +168,7 @@
       character(len = kchara) :: file_name, extension
       character(len = kchara) :: directory, fname_no_dir, fname_tmp
       real(kind = kreal) :: prev_time
-      integer(kind = kint) :: icou, ierr, ist_true, i
+      integer(kind = kint) :: icou, ierr, ist_true, i, ncomp
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1, zbuf_s
       character, pointer :: FPz_f1
@@ -221,6 +192,10 @@
 !
       call alloc_tave_sph_data(sph_IN, WK_tave)
 !
+      ncomp = sph_IN%ntot_sph_spec
+      if(flag_spectr) ncomp = ncomp * (sph_IN%ltr_sph+1)
+      if(flag_vol_ave .eqv. .FALSE.) ncomp = ncomp * sph_IN%nri_sph
+!
       icou = 0
       ist_true = -1
       prev_time = sph_IN%time
@@ -240,16 +215,14 @@
             true_start = sph_IN%time
 !
             call copy_ene_spectr_2_pre                                  &
-     &         (sph_IN%time, prev_time, sph_IN%nri_sph, sph_IN%ltr_sph, &
-     &          sph_IN%ntot_sph_spec, sph_IN%spectr_IO,                 &
-     &          WK_tave%ave_spec_l, WK_tave%ave_pre_l,                  &
-     &          WK_tave%rms_spec_l, WK_tave%rms_pre_l)
+     &         (sph_IN%time, prev_time, ncomp, sph_IN%spectr_IO(1,0,1), &
+     &          WK_tave%ave_spec_l(1,0,1), WK_tave%ave_pre_l(1,0,1),    &
+     &          WK_tave%rms_spec_l(1,0,1), WK_tave%rms_pre_l(1,0,1))
           else
-            call sum_average_ene_spectr                                 &
-     &         (sph_IN%time, prev_time, sph_IN%nri_sph, sph_IN%ltr_sph, &
-     &          sph_IN%ntot_sph_spec, sph_IN%spectr_IO,                 &
-     &          WK_tave%ave_spec_l, WK_tave%ave_pre_l,                  &
-     &          WK_tave%rms_spec_l, WK_tave%rms_pre_l)
+            call add_average_ene_spectr                                 &
+     &         (sph_IN%time, prev_time, ncomp, sph_IN%spectr_IO(1,0,1), &
+     &          WK_tave%ave_spec_l(1,0,1), WK_tave%ave_pre_l(1,0,1),    &
+     &          WK_tave%rms_spec_l(1,0,1), WK_tave%rms_pre_l(1,0,1))
 !
             icou = icou + 1
           end if
@@ -271,8 +244,7 @@
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
 !
-      call divide_average_ene_spectr(sph_IN%time, true_start,           &
-     &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
+      call divide_average_ene_spectr(sph_IN%time, true_start, ncomp,    &
      &    WK_tave%ave_spec_l, WK_tave%rms_spec_l)
 !
 !  Output average
@@ -376,7 +348,7 @@
       character(len = kchara) :: file_name, extension
       character(len = kchara) :: directory, fname_no_dir, fname_tmp
       real(kind = kreal) :: true_start, prev_time
-      integer(kind = kint) :: icou, ierr, ist_true, i
+      integer(kind = kint) :: icou, ierr, ist_true, i, ncomp
 !
 !  Evaluate standard deviation
 !
@@ -396,6 +368,10 @@
         call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
       end if
 !
+      ncomp = sph_IN%ntot_sph_spec
+      if(flag_spectr) ncomp = ncomp * (sph_IN%ltr_sph+1)
+      if(flag_vol_ave .eqv. .FALSE.) ncomp = ncomp * sph_IN%nri_sph
+!
       icou = 0
       ist_true = -1
       prev_time = sph_IN%time
@@ -414,16 +390,16 @@
           if (ist_true .eq. -1) then
             ist_true = sph_IN%i_step
             true_start = sph_IN%time
-            call copy_deviation_ene_2_pre(sph_IN%time, prev_time,       &
-     &          sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,   &
-     &          sph_IN%spectr_IO, WK_tave%ave_spec_l,                   &
-     &          WK_tave%sigma_spec_l, WK_tave%sigma_pre_l)
+            call copy_deviation_ene_2_pre                               &
+     &         (sph_IN%time, prev_time, ncomp,                          &
+     &         sph_IN%spectr_IO(1,0,1), WK_tave%ave_spec_l(1,0,1),      &
+     &         WK_tave%sigma_spec_l(1,0,1), WK_tave%sigma_pre_l(1,0,1))
 !
           else
-            call sum_deviation_ene_spectr(sph_IN%time, prev_time,       &
-     &          sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,   &
-     &          sph_IN%spectr_IO, WK_tave%ave_spec_l,                   &
-     &          WK_tave%sigma_spec_l, WK_tave%sigma_pre_l)
+            call add_deviation_ene_spectr                               &
+     &        (sph_IN%time, prev_time, ncomp,                           &
+     &         sph_IN%spectr_IO(1,0,1), WK_tave%ave_spec_l(1,0,1),      &
+     &         WK_tave%sigma_spec_l(1,0,1), WK_tave%sigma_pre_l(1,0,1))
 !
             icou = icou + 1
           end if
@@ -441,8 +417,7 @@
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
       call divide_deviation_ene_spectr(sph_IN%time, true_start,         &
-     &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
-     &    WK_tave%sigma_spec_l)
+     &                                 ncomp, WK_tave%sigma_spec_l)
 !
 !
 !  Output Standard deviation
