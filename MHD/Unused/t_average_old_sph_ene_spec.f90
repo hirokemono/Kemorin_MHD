@@ -116,7 +116,7 @@
       logical, intent(in) :: flag_spectr, flag_vol_ave
       real(kind = kreal), intent(in) :: start_time, end_time
 !
-      type(read_sph_spectr_data), save :: sph_IN1
+      type(read_sph_spectr_data), save :: sph_IN1, sph_IN2
       type(spectr_ave_sigma_work), save :: WK_tave1
 !
       character, pointer :: FPz_f1
@@ -142,15 +142,14 @@
         call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
       end if
 !
-      call alloc_tave_sph_data(sph_IN1, WK_tave)
-      call sph_spectr_average(FPz_f1, id_read1, flag_gzip1,             &
-     &    flag_old_format, flag_spectr, flag_vol_ave,                   &
-     &    start_time, end_time, true_start, true_end,                   &
-     &    sph_IN1, WK_tave1, zbuf1)
+      n_line = 1
+      if(flag_spectr) n_line = n_line * (sph_IN%ltr_sph+1)
+      if(flag_vol_ave .eqv. .FALSE.) n_line = n_line * sph_IN%nri_sph
+      call s_count_monitor_time_start                                   &
+     &   (.TRUE., FPz_f1, id_read_rms, flag_gzip1, n_line,              &
+     &    start_time, icou_skip, zbuf1)
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_read_rms, flag_gzip1, zbuf1)
-      call dealloc_sph_espec_data(sph_IN1)
-      call dealloc_sph_espec_name(sph_IN1)
 !
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_read_rms,            &
@@ -158,15 +157,25 @@
       call s_select_input_sph_series_head                               &
      &   (FPz_f1, id_read_rms, flag_gzip1,                              &
      &    flag_old_format, flag_spectr, flag_vol_ave,                   &
-     &    sph_lbl_IN1, sph_IN1, zbuf1)
+     &    sph_lbl_IN1, sph_IN2, zbuf1)
+      call dealloc_sph_espec_name(sph_IN2)
 !
-      sph_IN1%nri_dat = sph_IN1%nri_sph
-      if(flag_vol_ave) sph_IN1%nri_dat = 1
-      if(flag_spectr .eqv. .FALSE.) then
-        call alloc_sph_spectr_data(izero, sph_IN1)
-      else
-        call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
-      end if
+      call alloc_tave_sph_data(sph_IN1, WK_tave)
+      call sph_spectr_average(FPz_f1, id_read1, flag_gzip1,             &
+     &    flag_old_format, flag_spectr, flag_vol_ave,                   &
+     &    start_time, end_time, true_start, true_end,                   &
+     &    sph_IN1, WK_tave1, zbuf1)
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_read_rms, flag_gzip1, zbuf1)
+!
+!
+      call sel_open_read_gz_stream_file(FPz_f1, id_read_rms,            &
+     &                                    fname_org, flag_gzip1, zbuf1)
+      call s_select_input_sph_series_head                               &
+     &   (FPz_f1, id_read_rms, flag_gzip1,                              &
+     &    flag_old_format, flag_spectr, flag_vol_ave,                   &
+     &    sph_lbl_IN1, sph_IN2, zbuf1)
+      call dealloc_sph_espec_name(sph_IN2)
 !
       call sph_spectr_std_deviation(FPz_f1, id_read1, flag_gzip1,       &
      &    flag_old_format, flag_spectr, flag_vol_ave,                   &
