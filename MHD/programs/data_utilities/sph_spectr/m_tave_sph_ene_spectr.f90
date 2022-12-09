@@ -46,7 +46,8 @@
       implicit none
 !
 !
-      integer(kind = kint), parameter :: id_file_rms =      34
+      integer(kind = kint), parameter :: id_file_rms = 34
+      integer(kind = kint), parameter :: id_read_rms = 45
 !
       type spectr_ave_sigma_work
         real(kind = kreal), allocatable :: ave_spec_l(:,:,:)
@@ -89,7 +90,6 @@
       integer(kind = kint) :: i, num_tlabel, kr
 !
       character, pointer :: FPz_f1
-      integer(kind = kint), parameter :: id_read_rms = 45
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
 !
@@ -111,17 +111,32 @@
 !
       call alloc_tave_sph_data(sph_IN1, WK_tave1)
       call sph_spectr_average(FPz_f1, id_read_rms, flag_gzip1,          &
-     &    flag_current_format, fname_org, flag_spectr, flag_vol_ave,    &
+     &    flag_current_format, flag_spectr, flag_vol_ave,               &
      &    start_time, end_time, true_start, true_end,                   &
      &    sph_IN1, WK_tave1, zbuf1)
-      call sel_close_read_gz_stream_file                                &
-     &   (FPz_f1, id_read_rms, flag_gzip1, zbuf1)
+      call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
       call dealloc_sph_espec_data(sph_IN1)
       call dealloc_sph_espec_name(sph_IN1)
 !
-      call sph_spectr_std_deviation                                     &
-     &   (flag_current_format, fname_org, flag_spectr, flag_vol_ave,    &
-     &    start_time, end_time, sph_IN1, WK_tave1)
+!
+      call s_select_input_sph_series_head                               &
+     &   (FPz_f1, id_read_rms, flag_gzip1,                              &
+     &    flag_current_format, flag_spectr, flag_vol_ave,               &
+     &    sph_lbl_IN1, sph_IN1, zbuf1)
+!
+      sph_IN1%nri_dat = sph_IN1%nri_sph
+      if(flag_vol_ave) sph_IN1%nri_dat = 1
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN1)
+      else
+        call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
+      end if
+!
+      call sph_spectr_std_deviation(FPz_f1, id_read_rms, flag_gzip1,    &
+     &    flag_current_format, flag_spectr, flag_vol_ave,               &
+     &    start_time, end_time, sph_IN1, WK_tave1, zbuf1)
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_read_rms, flag_gzip1, zbuf1)
 !
       call output_sph_spectr_ave_rms_sdev                               &
      &   (fname_org, flag_spectr, flag_vol_ave,                         &
@@ -184,7 +199,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_average(FPz_f, id_read, flag_gzip,          &
-     &          flag_old_fmt, fname_org, flag_spectr, flag_vol_ave,     &
+     &          flag_old_fmt, flag_spectr, flag_vol_ave,                &
      &          start_time, end_time, true_start, true_end,             &
      &          sph_IN, WK_tave, zbuf_rd)
 !
@@ -201,7 +216,6 @@
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_read
       logical, intent(in) :: flag_gzip
-      character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
       real(kind = kreal), intent(in) :: start_time, end_time
       real(kind = kreal), intent(inout) :: true_start, true_end
@@ -271,9 +285,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sph_spectr_std_deviation                               &
-     &         (flag_old_fmt, fname_org, flag_spectr, flag_vol_ave,     &
-     &          start_time, end_time, sph_IN, WK_tave)
+      subroutine sph_spectr_std_deviation(FPz_f, id_read, flag_gzip,    &
+     &          flag_old_fmt, flag_spectr, flag_vol_ave,                &
+     &          start_time, end_time, sph_IN, WK_tave, zbuf_rd)
 !
       use t_buffer_4_gzip
       use select_gz_stream_file_IO
@@ -286,36 +300,19 @@
       use gz_layer_mean_monitor_IO
       use gz_layer_spectr_monitor_IO
 !
-      character(len = kchara), intent(in) :: fname_org
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_read
+      logical, intent(in) :: flag_gzip
       logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
       real(kind = kreal), intent(in) :: start_time, end_time
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(spectr_ave_sigma_work), intent(inout) :: WK_tave
-!
-      logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
-      character, pointer :: FPz_f1
+      type(buffer_4_gzip), intent(inout) :: zbuf_rd
 !
       real(kind = kreal) :: true_start, prev_time
       integer(kind = kint) :: icou, ierr, ist_true, i, ncomp
 !
 !  Evaluate standard deviation
-!
-      write(*,*) 'Open file ', trim(fname_org), ' again'
-      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
-     &                                    fname_org, flag_gzip1, zbuf1)
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
-     &    sph_lbl_IN1, sph_IN, zbuf1)
-!
-      sph_IN%nri_dat = sph_IN%nri_sph
-      if(flag_vol_ave) sph_IN%nri_dat = 1
-      if(flag_spectr .eqv. .FALSE.) then
-        call alloc_sph_spectr_data(izero, sph_IN)
-      else
-        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
-      end if
 !
       ncomp = sph_IN%ntot_sph_spec
       if(flag_spectr) ncomp = ncomp * (sph_IN%ltr_sph+1)
@@ -329,9 +326,8 @@
      &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
      &       ', Skip Count:  ', icou
       do
-        call sel_gz_input_sph_series_data                               &
-     &     (FPz_f1, id_file_rms, flag_gzip1,                            &
-     &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1,     &
+        call sel_gz_input_sph_series_data(FPz_f, id_read, flag_gzip,    &
+     &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf_rd,   &
      &      ierr)
         if(ierr .gt. 0) go to 99
 !
@@ -362,8 +358,6 @@
       end do
    99 continue
       write(*,*)
-      call sel_close_read_gz_stream_file                                &
-     &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
       call divide_deviation_ene_spectr(sph_IN%time, true_start,         &
      &                                 ncomp, WK_tave%sigma_spec_l)
