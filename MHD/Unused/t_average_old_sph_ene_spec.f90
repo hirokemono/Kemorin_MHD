@@ -109,6 +109,8 @@
 !
       use t_read_sph_spectra
       use m_tave_sph_ene_spectr
+      use select_gz_stream_file_IO
+      use sel_gz_input_sph_mtr_head
 !
       character(len = kchara), intent(in) :: fname_org
       logical, intent(in) :: flag_spectr, flag_vol_ave
@@ -117,16 +119,45 @@
       type(read_sph_spectr_data), save :: sph_IN1
       type(spectr_ave_sigma_work), save :: WK_tave1
 !
+      character, pointer :: FPz_f1
+      integer(kind = kint), parameter :: id_read_rms = 45
+      logical, intent(in) :: flag_gzip1
+      type(buffer_4_gzip), intent(inout) :: zbuf1
+!
       real(kind = kreal) :: true_start, true_end
       logical, parameter :: flag_old_format =     .TRUE.
 !
-      call sph_spectr_average                                           &
-     &   (flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
+!
+      call sel_open_read_gz_stream_file(FPz_f1, id_read_rms,            &
+     &                                    fname_org, flag_gzip1, zbuf1)
+      call s_select_input_sph_series_head                               &
+     &   (FPz_f1, id_read_rms, flag_gzip1,                              &
+     &    flag_old_format, flag_spectr, flag_vol_ave,                   &
+     &    sph_lbl_IN1, sph_IN1, zbuf1)
+!
+      sph_IN1%nri_dat = sph_IN1%nri_sph
+      if(flag_vol_ave) sph_IN1%nri_dat = 1
+      if(flag_spectr .eqv. .FALSE.) then
+        call alloc_sph_spectr_data(izero, sph_IN1)
+      else
+        call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
+      end if
+!
+      call alloc_tave_sph_data(sph_IN1, WK_tave)
+      call sph_spectr_average(FPz_f1, id_read1, flag_gzip1,             &
+     &    flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
      &    start_time, end_time, true_start, true_end,                   &
-     &    sph_IN1, WK_tave1)
+     &    sph_IN1, WK_tave1, zbuf1)
+      call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_name(sph_IN1)
+!
       call sph_spectr_std_deviation                                     &
      &   (flag_old_format, fname_org, flag_spectr, flag_vol_ave,        &
      &    start_time, end_time, sph_IN1, WK_tave1)
+      call output_sph_spectr_ave_rms_sdev                               &
+     &   (fname_org, flag_spectr, flag_vol_ave,                         &
+     &    true_start, true_end, sph_IN1, WK_tave1)
+!
 !
       call dealloc_tave_sph_data(WK_tave1)
       call dealloc_sph_espec_data(sph_IN1)
