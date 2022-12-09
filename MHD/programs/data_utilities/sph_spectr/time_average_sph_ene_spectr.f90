@@ -39,6 +39,7 @@
       implicit  none
 !
       type(read_sph_spectr_data), save, private :: tave_sph_IN
+      type(read_sph_spectr_data), save, private :: trms_sph_IN
       type(read_sph_spectr_data), save, private :: sdev_sph_IN
 !
 ! -------------------------------------------------------------------
@@ -138,22 +139,25 @@
 ! -------------------------------------------------------------------
 !
       integer(c_int) function read_tave_sdev_sph_vol_spec_f             &
-    &              (tave_prefix_c, sdev_prefix_c) Bind(C)
+    &            (tave_prefix_c, trms_prefix_c, sdev_prefix_c) Bind(C)
 !
-      use m_tave_sph_ene_spectr
+      use t_tave_sph_volume_spectr
       use count_monitor_time_series
 !
       character(1,C_char), intent(in) :: tave_prefix_c(*)
+      character(1,C_char), intent(in) :: trms_prefix_c(*)
       character(1,C_char), intent(in) :: sdev_prefix_c(*)
 !
-      character(len=kchara) :: tave_file_name, sdev_file_name
+      character(len=kchara) :: tave_file_name, trms_file_name
+      character(len=kchara) :: sdev_file_name
       integer(kind = kint) :: l_truncation
 !
       write(tave_file_name,'(a)') trim(c_to_fstring(tave_prefix_c))
+      write(trms_file_name,'(a)') trim(c_to_fstring(trms_prefix_c))
       write(sdev_file_name,'(a)') trim(c_to_fstring(sdev_prefix_c))
-      call read_time_ave_sdev_sph_spectr                                &
-     &   (tave_file_name, sdev_file_name,                               &
-     &    spectr_on, volume_on, tave_sph_IN, sdev_sph_IN)
+      call read_time_ave_sph_vol_spec                                   &
+     &   (tave_file_name, trms_file_name, sdev_file_name,               &
+     &    tave_sph_IN, trms_sph_IN, sdev_sph_IN)
       read_tave_sdev_sph_vol_spec_f = tave_sph_IN%ltr_sph
 !
       end function read_tave_sdev_sph_vol_spec_f

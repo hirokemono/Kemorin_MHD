@@ -59,6 +59,7 @@
       use count_monitor_time_series
       use time_ave_sph_monitor_data
       use time_ave_sph_volume_mean
+      use t_tave_sph_layer_mean
 !
       implicit none
 !
@@ -93,9 +94,8 @@
 !
 !
       do i = 1, spec_evo_p1%layer_series%num_file
-        call time_ave_sdev_sph_spectr                                   &
+        call time_ave_sdev_sph_layer_mean                               &
      &     (spec_evo_p1%layer_series%evo_file_name(i),                  &
-     &      spectr_off, volume_off,                                     &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
