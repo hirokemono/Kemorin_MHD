@@ -53,6 +53,7 @@
       use t_ctl_data_tave_sph_monitor
       use t_ctl_param_sph_series_util
       use t_sph_volume_mean_series
+      use t_tave_sph_volume_spectr
       use time_ave_picked_sph_spectr
       use set_parallel_file_name
       use count_monitor_time_series
@@ -85,9 +86,8 @@
       end do
 !
       do i = 1, spec_evo_p1%vol_spec_series%num_file
-        call time_ave_sdev_sph_spectr                              &
+        call time_ave_sdev_sph_vol_spec                                 &
      &     (spec_evo_p1%vol_spec_series%evo_file_name(i),               &
-     &      spectr_on, volume_on,                                     &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !

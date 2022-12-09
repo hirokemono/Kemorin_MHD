@@ -19,6 +19,28 @@
 !!        type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!
+!!      subroutine sel_read_sph_spectr_name                             &
+!!     &         (FPz_f, id_stream, flag_gzip, nfield_sph_spec,         &
+!!     &          num_labels, ncomp_sph_spec, ene_sph_spec_name, zbuf)
+!!        character, pointer, intent(in) :: FPz_f
+!!        integer(kind = kint), intent(in) :: id_stream
+!!        logical, intent(in) :: flag_gzip
+!!        integer(kind = kint), intent(in) :: nfield_sph_spec, num_labels
+!!
+!!        integer(kind = kint), intent(inout)                           &
+!!     &                     :: ncomp_sph_spec(nfield_sph_spec)
+!!        character(len = kchara), intent(inout)                        &
+!!     &                     :: ene_sph_spec_name(num_labels)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!      subroutine gz_read_sph_pwr_vol_head                             &
+!!     &         (FPz_f, id_stream, flag_gzip, sph_lbl_IN, sph_IN, zbuf)
+!!        character, pointer, intent(in) :: FPz_f
+!!        integer(kind = kint), intent(in) :: id_stream
+!!        logical, intent(in) :: flag_gzip
+!!        type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
       module sel_gz_input_sph_mtr_head
 !
@@ -31,8 +53,8 @@
 !
       implicit none
 !
-      private :: sel_read_sph_spectr_name, sel_gz_read_sph_monitor_head
-      private :: gz_read_sph_pwr_vol_head, gz_read_sph_pwr_layer_head
+      private :: sel_gz_read_sph_monitor_head
+      private :: gz_read_sph_pwr_layer_head
       private :: select_num_of_labels_4_monitor
 !
 !   --------------------------------------------------------------------

@@ -89,7 +89,6 @@
 !
       type(read_sph_spectr_data), save :: sph_IN2
       real(kind = kreal) :: true_start, true_end
-      integer(kind = kint) :: i, num_tlabel, kr
       integer(kind = kint) :: n_line, icou_skip
 !
       character, pointer :: FPz_f1
@@ -158,26 +157,8 @@
       write(*,'(a,1p2e25.15e3)') 'Start and end time:     ',            &
      &                          true_start, true_end
       if(flag_spectr .eqv. .FALSE.) then
-        num_tlabel = sph_IN1%num_time_labels
-        if(flag_vol_ave) then
-          write(*,*) 'Time_average, standard_deviation, field_name'
-          do i = 1, sph_IN1%ntot_sph_spec
-            write(*,'(1p2e23.15e3,2a)') WK_tave1%ave_spec_l(i,0,1),     &
-     &           WK_tave1%sigma_spec_l(i,0,1), '    ',                  &
-     &           trim(sph_IN1%ene_sph_spec_name(i+num_tlabel))
-          end do
-        else
-          do kr = 1, sph_IN1%nri_sph
-            write(*,*) 'Radial level: ', sph_IN1%kr_sph(kr),            &
-     &                                   sph_IN1%r_sph(kr)
-            write(*,*) 'Time_average, standard_deviation, field_name'
-            do i = 1, sph_IN1%ntot_sph_spec
-              write(*,'(1p2e23.15e3,2a)') WK_tave1%ave_spec_l(i,0,kr),  &
-     &           WK_tave1%sigma_spec_l(i,0,kr), '    ',                 &
-     &           trim(sph_IN1%ene_sph_spec_name(i+num_tlabel))
-            end do
-          end do
-        end if
+        call check_time_ave_sdev_sph_spectr                             &
+     &         (flag_vol_ave, sph_IN1, WK_tave1)
       end if
 !
       call dealloc_tave_sph_data(WK_tave1)
@@ -697,5 +678,40 @@
       end subroutine load_spectr_mean_square_file
 !
 ! -------------------------------------------------------------------
+!
+      subroutine check_time_ave_sdev_sph_spectr                         &
+     &         (flag_vol_ave, sph_IN, WK_tave)
+!
+      logical, intent(in) :: flag_vol_ave
+      type(read_sph_spectr_data), intent(in) :: sph_IN
+      type(spectr_ave_sigma_work), intent(in) :: WK_tave
+!
+      integer(kind = kint) :: i, num_tlabel, kr
+!
+!
+      num_tlabel = sph_IN%num_time_labels
+      if(flag_vol_ave) then
+        write(*,*) 'Time_average, standard_deviation, field_name'
+        do i = 1, sph_IN%ntot_sph_spec
+          write(*,'(1p2e23.15e3,2a)') WK_tave%ave_spec_l(i,0,1),      &
+     &         WK_tave%sigma_spec_l(i,0,1), '    ',                   &
+     &         trim(sph_IN%ene_sph_spec_name(i+num_tlabel))
+        end do
+      else
+        do kr = 1, sph_IN%nri_sph
+          write(*,*) 'Radial level: ', sph_IN%kr_sph(kr),             &
+     &                                 sph_IN%r_sph(kr)
+          write(*,*) 'Time_average, standard_deviation, field_name'
+          do i = 1, sph_IN%ntot_sph_spec
+            write(*,'(1p2e23.15e3,2a)') WK_tave%ave_spec_l(i,0,kr),   &
+     &         WK_tave%sigma_spec_l(i,0,kr), '    ',                  &
+     &         trim(sph_IN%ene_sph_spec_name(i+num_tlabel))
+          end do
+        end do
+      end if
+!
+      end subroutine check_time_ave_sdev_sph_spectr
+!
+!   --------------------------------------------------------------------
 !
       end module m_tave_sph_ene_spectr
