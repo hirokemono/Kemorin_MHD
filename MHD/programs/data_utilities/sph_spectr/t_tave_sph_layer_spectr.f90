@@ -95,10 +95,15 @@
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_read_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_read_rms, flag_gzip1,                              &
-     &    flag_current_format, .TRUE., .FALSE.,               &
-     &    sph_lbl_IN1, sph_IN1, zbuf1)
+!
+      sph_IN1%num_time_labels = 5
+      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
+     &                                sph_lbl_IN1, sph_IN1, zbuf1)
+!
+      call alloc_sph_espec_name(sph_IN1)
+      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
+     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
+     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
 !
       sph_IN1%nri_dat = sph_IN1%nri_sph
       call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
@@ -108,34 +113,38 @@
      &   (.TRUE., FPz_f1, id_read_rms, flag_gzip1, n_line,              &
      &    start_time, icou_skip, zbuf1)
 !
-      call alloc_tave_sph_data(sph_IN1, WK_tave1)
 !
+      call alloc_tave_sph_data(sph_IN1, WK_tave1)
       call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_read_rms, flag_gzip1,                              &
-     &    flag_current_format, .TRUE., .FALSE.,               &
-     &    sph_lbl_IN1, sph_IN2, zbuf1)
-      call dealloc_sph_espec_name(sph_IN2)
+!
+      sph_IN2%num_time_labels = sph_IN1%num_time_labels
+      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
+     &                                sph_lbl_IN1, sph_IN2, zbuf1)
+      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
+     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
+     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
 !
       call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
      &    flag_gzip1, n_line, icou_skip, zbuf1)
-      call sph_spectr_average(FPz_f1, id_read_rms, flag_gzip1,          &
-     &    flag_current_format, .TRUE., .FALSE.,               &
+      call sph_layer_spectr_average                                     &
+     &   (FPz_f1, id_read_rms, flag_gzip1, flag_current_format,         &
      &    start_time, end_time, true_start, true_end,                   &
      &    sph_IN1, WK_tave1, zbuf1)
 !
 !
       call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_read_rms, flag_gzip1,                              &
-     &    flag_current_format, .TRUE., .FALSE.,               &
-     &    sph_lbl_IN1, sph_IN2, zbuf1)
-      call dealloc_sph_espec_name(sph_IN2)
+!
+      sph_IN2%num_time_labels = sph_IN1%num_time_labels
+      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
+     &                                sph_lbl_IN1, sph_IN2, zbuf1)
+      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
+     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
+     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
 !
       call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
      &    flag_gzip1, n_line, icou_skip, zbuf1)
-      call sph_spectr_std_deviation(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    flag_current_format, .TRUE., .FALSE.,               &
+      call sph_layer_spectr_std_deviation                               &
+     &   (FPz_f1, id_read_rms, flag_gzip1, flag_current_format,         &
      &    start_time, end_time, sph_IN1, WK_tave1, zbuf1)
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_read_rms, flag_gzip1, zbuf1)
@@ -179,8 +188,8 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine sph_spectr_average(FPz_f, id_read, flag_gzip,          &
-     &          flag_old_fmt, flag_spectr, flag_vol_ave,                &
+      subroutine sph_layer_spectr_average                               &
+     &         (FPz_f, id_read, flag_gzip, flag_old_fmt,                &
      &          start_time, end_time, true_start, true_end,             &
      &          sph_IN, WK_tave, zbuf_rd)
 !
@@ -196,8 +205,7 @@
 !
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_read
-      logical, intent(in) :: flag_gzip
-      logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
+      logical, intent(in) :: flag_gzip, flag_old_fmt
       real(kind = kreal), intent(in) :: start_time, end_time
       real(kind = kreal), intent(inout) :: true_start, true_end
       type(read_sph_spectr_data), intent(inout) :: sph_IN
@@ -208,10 +216,7 @@
       integer(kind = kint) :: icou, ierr, ist_true, i, ncomp
 !
 !
-!
-      ncomp = sph_IN%ntot_sph_spec
-      if(flag_spectr) ncomp = ncomp * (sph_IN%ltr_sph+1)
-      if(flag_vol_ave .eqv. .FALSE.) ncomp = ncomp * sph_IN%nri_sph
+      ncomp = sph_IN%ntot_sph_spec * sph_IN%nri_sph*(sph_IN%ltr_sph+1)
 !
       icou = 0
       ist_true = -1
@@ -220,9 +225,12 @@
      &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
      &       ', Load Count:  ', icou
       do
-        call sel_gz_input_sph_series_data(FPz_f, id_read, flag_gzip,    &
-     &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf_rd,   &
-     &      ierr)
+        call sel_gz_input_sph_layer_spec                                &
+     &     (FPz_f, id_read, flag_gzip, flag_old_fmt,                    &
+     &      sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,       &
+     &      sph_IN%i_step, sph_IN%time, sph_IN%kr_sph,                  &
+     &      sph_IN%r_sph, sph_IN%i_mode, sph_IN%spectr_IO(1,0,1),       &
+     &      zbuf_rd, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. start_time) then
@@ -260,12 +268,12 @@
       call divide_average_ene_spectr(sph_IN%time, true_start, ncomp,    &
      &    WK_tave%ave_spec_l, WK_tave%rms_spec_l)
 !
-      end subroutine sph_spectr_average
+      end subroutine sph_layer_spectr_average
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sph_spectr_std_deviation(FPz_f, id_read, flag_gzip,    &
-     &          flag_old_fmt, flag_spectr, flag_vol_ave,                &
+      subroutine sph_layer_spectr_std_deviation                         &
+     &         (FPz_f, id_read, flag_gzip, flag_old_fmt,                &
      &          start_time, end_time, sph_IN, WK_tave, zbuf_rd)
 !
       use t_buffer_4_gzip
@@ -281,8 +289,7 @@
 !
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_read
-      logical, intent(in) :: flag_gzip
-      logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
+      logical, intent(in) :: flag_gzip, flag_old_fmt
       real(kind = kreal), intent(in) :: start_time, end_time
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       type(layer_spectr_ave_sigma_work), intent(inout) :: WK_tave
@@ -293,9 +300,7 @@
 !
 !  Evaluate standard deviation
 !
-      ncomp = sph_IN%ntot_sph_spec
-      if(flag_spectr) ncomp = ncomp * (sph_IN%ltr_sph+1)
-      if(flag_vol_ave .eqv. .FALSE.) ncomp = ncomp * sph_IN%nri_sph
+      ncomp = sph_IN%ntot_sph_spec * sph_IN%nri_sph*(sph_IN%ltr_sph+1)
 !
       icou = 0
       ist_true = -1
@@ -305,9 +310,12 @@
      &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
      &       ', Load Count:  ', icou
       do
-        call sel_gz_input_sph_series_data(FPz_f, id_read, flag_gzip,    &
-     &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf_rd,   &
-     &      ierr)
+        call sel_gz_input_sph_layer_spec                                &
+     &     (FPz_f, id_read, flag_gzip, flag_old_fmt,                    &
+     &      sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,       &
+     &      sph_IN%i_step, sph_IN%time, sph_IN%kr_sph,                  &
+     &      sph_IN%r_sph, sph_IN%i_mode, sph_IN%spectr_IO(1,0,1),       &
+     &      zbuf_rd, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. start_time) then
@@ -339,7 +347,7 @@
       call divide_deviation_ene_spectr(sph_IN%time, true_start,         &
      &                                 ncomp, WK_tave%sigma_spec_l)
 !
-      end subroutine sph_spectr_std_deviation
+      end subroutine sph_layer_spectr_std_deviation
 !
 !   --------------------------------------------------------------------
 !
@@ -502,9 +510,12 @@
         call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
       end if
 !
-      call sel_gz_input_sph_series_data                                 &
-     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    current_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1, ierr)
+      call sel_gz_input_sph_layer_spec                                  &
+     &   (FPz_f1, id_file_rms, flag_gzip1, current_fmt,                 &
+     &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
+     &    sph_IN%i_step, sph_IN%time, sph_IN%kr_sph,                    &
+     &    sph_IN%r_sph, sph_IN%i_mode, sph_IN%spectr_IO(1,0,1),         &
+     &    zbuf1, ierr)
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
@@ -554,115 +565,6 @@
       end subroutine dealloc_tave_sph_data
 !
 !   --------------------------------------------------------------------
-!
-      subroutine load_spectr_mean_square_file                           &
-     &         (flag_old_fmt, fname_org, flag_spectr, flag_vol_ave,     &
-     &          start_time, end_time, true_start, true_end,             &
-     &          sph_IN, sph_series)
-!
-      use t_read_sph_series
-      use select_gz_stream_file_IO
-      use sel_gz_input_sph_mtr_head
-      use gz_spl_sph_spectr_data_IO
-      use set_parallel_file_name
-      use count_monitor_time_series
-!
-      character(len = kchara), intent(in) :: fname_org
-      logical, intent(in) :: flag_spectr, flag_vol_ave, flag_old_fmt
-      real(kind = kreal), intent(in) :: start_time, end_time
-      real(kind = kreal), intent(inout) :: true_start, true_end
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-      type(read_sph_spectr_series), intent(inout) :: sph_series
-!
-      real(kind = kreal) :: prev_time
-      integer(kind = kint) :: icou, ierr, ist_true, i, num
-      integer(kind = kint) :: num_count, icou_skip
-      logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
-      character, pointer :: FPz_f1
-!
-!
-      write(*,*) 'Open file ', trim(fname_org)
-      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
-     &                                    fname_org, flag_gzip1, zbuf1)
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
-     &    sph_lbl_IN1, sph_IN, zbuf1)
-!
-      num = sph_IN%nri_sph
-      if(flag_vol_ave) num = 1
-      if(flag_spectr)  num = num * (sph_IN%ltr_sph + 1)
-      call s_count_monitor_time_series                                  &
-     &   (.TRUE., FPz_f1, id_file_rms, flag_gzip1, num,                 &
-     &    start_time, end_time, true_start, true_end,                   &
-     &    num_count, icou_skip, zbuf1)
-      call dealloc_sph_espec_name(sph_IN)
-!
-      if(flag_gzip1) then
-        ierr =  rewind_gzfile(FPz_f1)
-      else
-        rewind(id_file_rms)
-      end if
-!
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_file_rms, flag_gzip1,                              &
-     &    flag_old_fmt, flag_spectr, flag_vol_ave,                      &
-     &    sph_lbl_IN1, sph_IN, zbuf1)
-!
-      sph_IN%nri_dat = sph_IN%nri_sph
-      if(flag_vol_ave) sph_IN%nri_dat = 1
-      if(flag_spectr) then
-        call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
-        call alloc_sph_spectr_series(sph_IN%ltr_sph, sph_IN,            &
-     &                               num_count, sph_series)
-      else
-        call alloc_sph_spectr_data(izero, sph_IN)
-        call alloc_sph_spectr_series(izero, sph_IN,                     &
-     &                               num_count, sph_series)
-      end if
-!
-      icou = 0
-      ist_true = -1
-      prev_time = sph_IN%time
-      write(*,'(a6,i12,a30,i12)',advance="NO")                          &
-     &       'step= ', sph_IN%i_step,                                   &
-     &       ' averaging finished. Count=  ', icou
-      do
-        call sel_gz_input_sph_series_data                               &
-     &     (FPz_f1, id_file_rms, flag_gzip1,                            &
-     &      flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN, zbuf1,     &
-     &      ierr)
-        if(ierr .gt. 0) go to 99
-!
-        if (sph_IN%time .ge. start_time) then
-          icou = icou + 1
-          if(flag_spectr) then
-            call copy_spectr_IO_to_series(icou, sph_IN%ltr_sph,         &
-     &                                    sph_IN, sph_series)
-          else
-            call copy_spectr_IO_to_series(icou, izero,                  &
-     &                                    sph_IN, sph_series)
-          end if
-        end if
-!
-        write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60),&
-     &       'step= ', sph_IN%i_step,                                  &
-     &       ' load finished. Count=   ', icou
-        if (sph_IN%time .ge. end_time) then
-          true_end = sph_IN%time
-          exit
-        end if
-      end do
-!
-   99 continue
-      write(*,*)
-      call sel_close_read_gz_stream_file                                &
-     &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
-!
-      end subroutine load_spectr_mean_square_file
-!
-! -------------------------------------------------------------------
 !
       subroutine check_time_ave_sph_layer_spec(sph_IN, WK_tave)
 !
