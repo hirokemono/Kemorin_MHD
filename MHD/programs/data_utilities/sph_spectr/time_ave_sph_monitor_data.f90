@@ -69,7 +69,8 @@
      &          // '# 3rd data: Standard Deviation' // char(10)         &
      &          // '#' // char(10)
 !
-      integer(kind = kint) :: i, l, ntot
+      integer(kind = kint) :: ntot
+!      integer(kind = kint) :: i, l
       character(len = kchara) :: ave_fname, fname_tmp
       character(len = kchara) :: directory, fname_no_dir
 !

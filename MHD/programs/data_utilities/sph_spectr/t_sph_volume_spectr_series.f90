@@ -17,18 +17,6 @@
 !!        type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!        type(sph_volume_spectr_series), intent(inout) :: vs_srs
-!!
-!!      subroutine alloc_sph_volume_spec_series(n_step, ltr, ncomp,     &
-!!     &                                        vs_srs)
-!!        integer(kind = kint), intent(in) :: n_step, ltr, ncomp
-!!        type(sph_volume_spectr_series), intent(inout) :: vs_srs
-!!      subroutine copy_sph_volume_spec_series(icou, ltr_in, ntot_in,   &
-!!     &          i_step, time, spectr_IO, vs_srs)
-!!        integer(kind = kint), intent(in) :: icou, ltr_in, ntot_in
-!!        integer(kind = kint), intent(in) :: i_step
-!!        real(kind = kreal), intent(in) :: time
-!!        real(kind = kreal), intent(in) :: spectr_IO(ntot_in)
-!!        type(sph_volume_spectr_series), intent(inout) :: vs_srs
 !!@endverbatim
       module t_sph_volume_spectr_series
 !
@@ -54,6 +42,8 @@
         real(kind = kreal), allocatable :: d_time(:)
 !>        spectr time series
         real(kind = kreal), allocatable :: vspec_series(:,:,:)
+!>        spectr snap shot to loading
+        real(kind = kreal), allocatable :: vspec_snap(:,:)
       end type sph_volume_spectr_series
 !
       integer(kind = kint), parameter, private :: id_file_rms = 34
@@ -88,7 +78,6 @@
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf1
       character, pointer :: FPz_f1
-      real(kind = kreal), allocatable :: vspec_IO(:,:)
 !
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
@@ -115,11 +104,6 @@
       call alloc_sph_volume_spec_series                                 &
      &   (num_count, sph_IN%ltr_sph, sph_IN%ntot_sph_spec, vs_srs)
 !
-      allocate(vspec_IO(sph_IN%ntot_sph_spec,0:sph_IN%ltr_sph))
-!$omp parallel workshare
-      vspec_IO(1:sph_IN%ntot_sph_spec,0:sph_IN%ltr_sph) = 0.0d0
-!$omp end parallel workshare
-!
       icou = 0
       ist_true = -1
       prev_time = sph_IN%time
@@ -130,14 +114,13 @@
         call sel_gz_read_volume_spectr_mtr(FPz_f1, id_file_rms,         &
      &      flag_gzip1, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,           &
      &      sph_IN%i_step, sph_IN%time, sph_IN%i_mode,                  &
-     &      vspec_IO(1,0), zbuf1, ierr)
+     &      vs_srs%vspec_snap(1,0), zbuf1, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. start_time) then
           icou = icou + 1
           call copy_sph_volume_spec_series                              &
-     &       (icou, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,               &
-     &        sph_IN%i_step, sph_IN%time, vspec_IO, vs_srs)
+     &       (icou, sph_IN%i_step, sph_IN%time, vs_srs)
         end if
 !
         write(*,'(65a1,a6,i12,a8,f12.6,a15,i12)',advance="NO")          &
@@ -155,8 +138,6 @@
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
-      deallocate(vspec_IO)
-!
       end subroutine load_sph_volume_spec_file
 !
 !   --------------------------------------------------------------------
@@ -167,7 +148,7 @@
 !
 !
       deallocate( vs_srs%i_step, vs_srs%d_time)
-      deallocate( vs_srs%vspec_series)
+      deallocate( vs_srs%vspec_series, vs_srs%vspec_snap)
 !
       end subroutine dealloc_sph_volume_spec_series
 !
@@ -184,9 +165,10 @@
       vs_srs%ntot_comp = ncomp
       vs_srs%ltr_srs = ltr
       vs_srs%n_step = n_step
-      allocate( vs_srs%i_step(vs_srs%n_step) )
-      allocate( vs_srs%d_time(vs_srs%n_step) )
-      allocate( vs_srs%vspec_series(ncomp,0:ltr,vs_srs%n_step))
+      allocate(vs_srs%i_step(vs_srs%n_step))
+      allocate(vs_srs%d_time(vs_srs%n_step))
+      allocate(vs_srs%vspec_series(ncomp,0:ltr,vs_srs%n_step))
+      allocate(vs_srs%vspec_snap(ncomp,0:ltr))
 !
 !$omp parallel workshare
       vs_srs%i_step(1:vs_srs%n_step) = izero
@@ -195,18 +177,20 @@
 !$omp parallel workshare
       vs_srs%vspec_series(1:ncomp,0:ltr,1:vs_srs%n_step) =  zero
 !$omp end parallel workshare
+!$omp parallel workshare
+      vs_srs%vspec_snap(1:ncomp,0:ltr) =  zero
+!$omp end parallel workshare
 !
       end subroutine alloc_sph_volume_spec_series
 !
 !   --------------------------------------------------------------------
 !
-      subroutine copy_sph_volume_spec_series(icou, ltr_in, ntot_in,     &
-     &          i_step, time, spectr_IO, vs_srs)
+      subroutine copy_sph_volume_spec_series(icou, i_step, time,        &
+     &                                       vs_srs)
 !
-      integer(kind = kint), intent(in) :: icou, ltr_in, ntot_in
+      integer(kind = kint), intent(in) :: icou
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
-      real(kind = kreal), intent(in) :: spectr_IO(ntot_in,0:ltr_in)
       type(sph_volume_spectr_series), intent(inout) :: vs_srs
 !
 !
@@ -214,7 +198,7 @@
       vs_srs%d_time(icou) = time
 !$omp parallel workshare
       vs_srs%vspec_series(1:vs_srs%ntot_comp,0:vs_srs%ltr_srs,icou)     &
-     &                = spectr_IO(1:vs_srs%ntot_comp,0:vs_srs%ltr_srs)
+     &        = vs_srs%vspec_snap(1:vs_srs%ntot_comp,0:vs_srs%ltr_srs)
 !$omp end parallel workshare
 !
       end subroutine copy_sph_volume_spec_series

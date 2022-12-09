@@ -73,6 +73,7 @@ t_sph_volume_mean_series.o \
 t_sph_volume_spectr_series.o \
 t_tave_sph_volume_spectr.o \
 t_tave_sph_layer_mean.o \
+t_tave_sph_layer_spectr.o \
 write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
@@ -228,6 +229,7 @@ t_sph_volume_mean_series.o \
 t_sph_volume_spectr_series.o \
 t_tave_sph_volume_spectr.o \
 t_tave_sph_layer_mean.o \
+t_tave_sph_layer_spectr.o \
 m_tave_sph_ene_spectr.o \
 time_ave_picked_sph_spectr.o \
 picked_sph_spectr_data_IO.o \

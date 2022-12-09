@@ -95,8 +95,7 @@
       integer(c_int) function                                           &
     &     time_ave_sdev_sph_layer_pwr_f(cname, cstart, cend) Bind(C)
 !
-      use m_tave_sph_ene_spectr
-      use count_monitor_time_series
+      use t_tave_sph_layer_mean
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
@@ -107,8 +106,8 @@
       write(fname_org,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
-      call time_ave_sdev_sph_spectr                                     &
-     &   (fname_org, spectr_off, volume_off, start_time, end_time)
+      call time_ave_sdev_sph_layer_mean(fname_org,                      &
+     &                                  start_time, end_time)
 !
       time_ave_sdev_sph_layer_pwr_f = 0
       end function time_ave_sdev_sph_layer_pwr_f
@@ -118,8 +117,7 @@
       integer(c_int) function                                           &
     &     time_ave_sdev_sph_layer_spec_f(cname, cstart, cend) Bind(C)
 !
-      use m_tave_sph_ene_spectr
-      use count_monitor_time_series
+      use t_tave_sph_layer_spectr
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend
@@ -130,8 +128,8 @@
       write(fname_org,'(a)') trim(c_to_fstring(cname))
       start_time = cstart
       end_time = cend
-      call time_ave_sdev_sph_spectr                                     &
-     &   (fname_org, spectr_on, volume_off, start_time, end_time)
+      call time_ave_sdev_sph_layer_spec(fname_org,                      &
+     &                                  start_time, end_time)
 !
       time_ave_sdev_sph_layer_spec_f = 0
       end function time_ave_sdev_sph_layer_spec_f

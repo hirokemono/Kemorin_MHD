@@ -54,25 +54,18 @@
       use t_ctl_param_sph_series_util
       use t_sph_volume_mean_series
       use t_tave_sph_volume_spectr
+      use t_tave_sph_layer_mean
+      use t_tave_sph_layer_spectr
       use time_ave_picked_sph_spectr
       use set_parallel_file_name
       use count_monitor_time_series
       use time_ave_sph_monitor_data
       use time_ave_sph_volume_mean
-      use t_tave_sph_layer_mean
 !
       implicit none
 !
       type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
       type(sph_spectr_file_param), save :: spec_evo_p1
-!
-      real(kind = kreal) :: true_start, true_end
-      type(read_sph_spectr_data), save :: sph_IN1
-      type(sph_volume_mean_series), save:: vm_srs1
-      real(kind = kreal), allocatable :: ave_mean(:)
-      real(kind = kreal), allocatable :: rms_mean(:)
-      real(kind = kreal), allocatable :: sdev_mean(:)
-      integer(kind = kint), allocatable :: iflag_all(:)
 !
       integer :: i, j
 !
@@ -100,9 +93,8 @@
       end do
 !
       do i = 1, spec_evo_p1%layer_spec_series%num_file
-        call time_ave_sdev_sph_spectr                                   &
+        call time_ave_sdev_sph_layer_spec                               &
      &     (spec_evo_p1%layer_spec_series%evo_file_name(i),             &
-     &      spectr_on, volume_off,                                      &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time)
       end do
 !
