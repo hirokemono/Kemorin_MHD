@@ -82,7 +82,6 @@ gz_gauss_coefs_monitor_IO.o \
 gz_Nusselt_monitor_IO.o \
 count_monitor_time_series.o \
 cal_tave_sph_ene_spectr.o \
-m_tave_sph_ene_spectr.o \
 m_read_sph_spectra_f.o \
 m_load_gauss_coefficients_f.o \
 m_load_picked_sph_spectr_f.o \
@@ -230,7 +229,6 @@ t_sph_volume_spectr_series.o \
 t_tave_sph_volume_spectr.o \
 t_tave_sph_layer_mean.o \
 t_tave_sph_layer_spectr.o \
-m_tave_sph_ene_spectr.o \
 time_ave_picked_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
 gz_spl_sph_spectr_data_IO.o \
@@ -313,9 +311,9 @@ MOD_T_AVE_STABLE_REV = \
 t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
+t_sph_volume_mean_series.o \
 t_read_sph_series.o \
 count_monitor_time_series.o \
-m_tave_sph_ene_spectr.o \
 gz_gauss_coefs_monitor_IO.o \
 write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \
@@ -330,8 +328,8 @@ t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
 t_read_sph_series.o \
+t_sph_volume_spectr_series.o \
 count_monitor_time_series.o \
-m_tave_sph_ene_spectr.o \
 gz_gauss_coefs_monitor_IO.o \
 write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \

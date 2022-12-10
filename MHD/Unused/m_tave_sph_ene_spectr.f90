@@ -11,9 +11,6 @@
 !!      subroutine time_ave_sdev_sph_spectr                             &
 !!     &         (fname_org, flag_spectr, flag_vol_ave,                 &
 !!     &          start_time, end_time)
-!!      subroutine time_ave_sdev_sph_old_spectr                         &
-!!     &         (fname_org, flag_spectr, flag_vol_ave,                 &
-!!     &          start_time, end_time)
 !!        character(len = kchara), intent(in) :: fname_org
 !!        logical, intent(in) :: flag_spectr, flag_vol_ave
 !!        real(kind = kreal), intent(in) :: start_time, end_time

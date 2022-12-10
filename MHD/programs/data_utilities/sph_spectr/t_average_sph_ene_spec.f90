@@ -49,7 +49,6 @@
       use m_precision
       use m_constants
 !
-      use m_tave_sph_ene_spectr
       use t_ctl_data_tave_sph_monitor
       use t_ctl_param_sph_series_util
       use t_sph_volume_mean_series

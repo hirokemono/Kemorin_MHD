@@ -12,7 +12,7 @@
 !!     &         (fname_org, start_time, end_time)
 !!        character(len = kchara), intent(in) :: fname_org
 !!        real(kind = kreal), intent(in) :: start_time, end_time
-!!      subroutine read_time_ave_sdev_sph_spectr                        &
+!!      subroutine read_time_ave_sph_layer_spec                         &
 !!     &         (tave_file_name, trms_file_name, sdev_file_name,       &
 !!     &          tave_sph_IN, trms_sph_IN, sdev_sph_IN)
 !!        character(len = kchara), intent(in) :: tave_file_name
@@ -55,7 +55,7 @@
 !
       private :: id_file_rms
 !
-      private :: read_sph_spectr_snapshot
+      private :: read_sph_layer_spectr_snapshot
 !
 !   --------------------------------------------------------------------
 !
@@ -139,7 +139,7 @@
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_read_rms, flag_gzip1, zbuf1)
 !
-      call output_sph_spectr_ave_rms_sdev                               &
+      call output_sph_layer_spec_ave_sdev                               &
      &   (fname_org, true_start, true_end, sph_IN1, WK_tave1)
 !
       write(*,'(a,1p2e25.15e3)') 'Start and end time:     ',            &
@@ -154,7 +154,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_time_ave_sdev_sph_spectr                          &
+      subroutine read_time_ave_sph_layer_spec                           &
      &         (tave_file_name, trms_file_name, sdev_file_name,         &
      &          tave_sph_IN, trms_sph_IN, sdev_sph_IN)
 !
@@ -168,14 +168,14 @@
       type(read_sph_spectr_data), intent(inout) :: sdev_sph_IN
 !
 !
-      call read_sph_spectr_snapshot                                     &
+      call read_sph_layer_spectr_snapshot                               &
      &   (tave_file_name, tave_sph_IN)
-      call read_sph_spectr_snapshot                                     &
+      call read_sph_layer_spectr_snapshot                               &
      &   (trms_file_name, trms_sph_IN)
-      call read_sph_spectr_snapshot                                     &
+      call read_sph_layer_spectr_snapshot                               &
      &   (sdev_file_name, sdev_sph_IN)
 !
-      end subroutine read_time_ave_sdev_sph_spectr
+      end subroutine read_time_ave_sph_layer_spec
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -343,7 +343,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine output_sph_spectr_ave_rms_sdev                         &
+      subroutine output_sph_layer_spec_ave_sdev                         &
      &         (fname_org, true_start, true_end, sph_IN, WK_tave)
 !
       use set_parallel_file_name
@@ -417,11 +417,11 @@
      &    sph_IN%ntot_sph_spec, WK_tave%sigma_spec_l(1,0,1), zbuf_s)
       close(id_file_rms)
 !
-      end subroutine output_sph_spectr_ave_rms_sdev
+      end subroutine output_sph_layer_spec_ave_sdev
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_sph_spectr_snapshot(fname_org, sph_IN)
+      subroutine read_sph_layer_spectr_snapshot(fname_org, sph_IN)
 !
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
@@ -464,7 +464,7 @@
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
 !
-      end subroutine read_sph_spectr_snapshot
+      end subroutine read_sph_layer_spectr_snapshot
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

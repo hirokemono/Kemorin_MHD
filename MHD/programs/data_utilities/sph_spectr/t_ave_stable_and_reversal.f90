@@ -131,10 +131,9 @@
 !
       use t_buffer_4_gzip
       use t_read_sph_spectra
-      use t_read_sph_series
+      use t_sph_volume_mean_series
 !
       use count_monitor_time_series
-      use m_tave_sph_ene_spectr
       use gz_gauss_coefs_monitor_IO
       use write_gauss_coefs_4_monitor
       use write_sph_monitor_data
@@ -170,9 +169,9 @@
       real(kind = kreal) :: true_start, true_end, g10_mid
 !>      Structure for gauss coeffciients
       type(picked_gauss_coefs_IO), save :: gauss_IO_a
+      type(sph_spectr_head_labels), save :: sph_lbl_IN_a, sph_lbl_IN_p
       type(read_sph_spectr_data), save :: sph_IN_a, sph_IN_p, sph_OUT1
-      type(read_sph_spectr_series), save :: sph_ave_series
-      type(read_sph_spectr_series), save :: sph_pwr_series
+      type(sph_volume_mean_series), save :: vm_srs_a, vm_srs_p
 !
       type(buffer_4_gzip), save :: zbuf_s
 !
@@ -239,43 +238,42 @@
 !     &       sdev_gauss(icou,2), trim(gauss_IO_a%gauss_coef_name(icou))
 !      end do
 !
-      call load_spectr_mean_square_file                                 &
-     &   (.FALSE., vave_file_name, .FALSE., .TRUE.,                     &
-     &    start_time, end_time, true_start, true_end,                   &
-     &    sph_IN_a, sph_ave_series)
+      call load_sph_volume_mean_file                                    &
+     &   (vave_file_name, start_time, end_time, true_start, true_end,   &
+     &    sph_lbl_IN_a, sph_IN_a, vm_srs_a)
 
       allocate(tave_vol_ave(sph_IN_a%ntot_sph_spec,2))
       allocate(rms_vol_ave(sph_IN_a%ntot_sph_spec,2))
       allocate(sdev_vol_ave(sph_IN_a%ntot_sph_spec,2))
       call cal_time_ave_picked_sph_spectr                               &
-     &   (sph_ave_series%n_step, sph_ave_series%d_time, iflag_sta,      &
-     &    sph_IN_a%ntot_sph_spec, sph_ave_series%d_spectr(1,0,1,1),     &
+     &   (vm_srs_a%n_step, vm_srs_a%d_time, iflag_sta,                  &
+     &    sph_IN_a%ntot_sph_spec, vm_srs_a%vmean_series(1,1),           &
      &    tave_vol_ave(1,1), rms_vol_ave(1,1), sdev_vol_ave(1,1))
       call cal_time_ave_picked_sph_spectr                               &
-     &   (sph_ave_series%n_step, sph_ave_series%d_time, iflag_rev,      &
-     &    sph_IN_a%ntot_sph_spec, sph_ave_series%d_spectr(1,0,1,1),     &
+     &   (vm_srs_a%n_step, vm_srs_a%d_time, iflag_rev,                  &
+     &    sph_IN_a%ntot_sph_spec, vm_srs_a%vmean_series(1,1),           &
      &    tave_vol_ave(1,2), rms_vol_ave(1,2), sdev_vol_ave(1,2))
-      call dealloc_sph_spectr_series(sph_ave_series)
+      call dealloc_sph_volume_mean_series(vm_srs_a)
       call dealloc_sph_espec_data(sph_IN_a)
       call dealloc_sph_espec_name(sph_IN_a)
 !
 !
-      call load_spectr_mean_square_file                                 &
-     &   (.FALSE., vpwr_file_name, .FALSE., .TRUE.,                     &
-     &    start_time, end_time, true_start, true_end,                   &
-     &    sph_IN_p, sph_pwr_series)
+      call load_sph_volume_mean_file                                    &
+     &   (vpwr_file_name, start_time, end_time, true_start, true_end,   &
+     &    sph_lbl_IN_p, sph_IN_p, vm_srs_p)
 !
       allocate(tave_vol_pwr(sph_IN_p%ntot_sph_spec,2))
       allocate(rms_vol_pwr(sph_IN_p%ntot_sph_spec,2))
       allocate(sdev_vol_pwr(sph_IN_p%ntot_sph_spec,2))
       call cal_time_ave_picked_sph_spectr                               &
-     &   (sph_pwr_series%n_step, sph_pwr_series%d_time, iflag_sta,      &
-     &    sph_IN_p%ntot_sph_spec,  sph_pwr_series%d_spectr(1,0,1,1),    &
+     &   (vm_srs_p%n_step, vm_srs_p%d_time, iflag_sta,                  &
+     &    sph_IN_p%ntot_sph_spec, vm_srs_p%vmean_series(1,1),           &
      &    tave_vol_pwr(1,1), rms_vol_pwr(1,1), sdev_vol_pwr(1,1))
       call cal_time_ave_picked_sph_spectr                               &
-     &   (sph_pwr_series%n_step, sph_pwr_series%d_time, iflag_rev,      &
-     &    sph_IN_p%ntot_sph_spec,  sph_pwr_series%d_spectr(1,0,1,1),    &
+     &   (vm_srs_p%n_step, vm_srs_p%d_time, iflag_rev,                  &
+     &    sph_IN_p%ntot_sph_spec,  vm_srs_p%vmean_series(1,1),          &
      &    tave_vol_pwr(1,2), rms_vol_pwr(1,2), sdev_vol_pwr(1,2))
+      call dealloc_sph_volume_mean_series(vm_srs_p)
 !
 !
       call copy_read_ene_head_params(sph_IN_p, sph_OUT1)
