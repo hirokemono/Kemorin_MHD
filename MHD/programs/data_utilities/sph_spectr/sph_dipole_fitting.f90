@@ -116,9 +116,12 @@
      &       'step= ', sph_IN1%i_step,                                  &
      &       ' averaging finished. Count=  ', icou
       do
-        call sel_gz_input_sph_series_data                               &
+        call sel_gz_input_sph_layer_spec                                &
      &     (FPz_f1, id_file_rms, flag_gzip1, flag_current_format,       &
-     &      spectr_on, volume_off, sph_IN1, zbuf1, ierr)
+     &      sph_IN1%nri_sph, sph_IN1%ltr_sph, sph_IN1%ntot_sph_spec,    &
+     &      sph_IN1%i_step, sph_IN1%time, sph_IN1%kr_sph,               &
+     &      sph_IN1%r_sph, sph_IN1%i_mode, sph_IN1%spectr_IO(1,0,1),    &
+     &      zbuf1, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN1%time .ge. fit_dat1%start_time) then

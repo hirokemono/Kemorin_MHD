@@ -245,9 +245,9 @@
 !
 !
       load_one_volume_mean_item_f = 0
-      call sel_gz_input_sph_series_data                                 &
-     &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
-     &    spectr_off, volume_on, sph_IN_f, zbuf_f, ierr_read)
+      call gz_read_volume_pwr_sph(FPz_fsp, id_file_rms, flag_gzip_s,    &
+     &    sph_IN_f%ntot_sph_spec, sph_IN_f%i_step, sph_IN_f%time,       &
+     &    sph_IN_f%spectr_IO(1,0,1), zbuf_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_volume_mean_item_f = ierr_read
         return
@@ -267,7 +267,7 @@
      &             (i_mode, ncomp, id_pick, i_step, time, spectr)       &
      &              bind(c, name="load_one_volume_spectr_item_f")
 !
-      use gz_spl_sph_spectr_data_IO
+      use gz_volume_spectr_monitor_IO
 !
       integer(C_int), Value :: ncomp, i_mode
       integer(C_int), intent(in) :: id_pick(ncomp)
@@ -279,9 +279,10 @@
 !
 !
       load_one_volume_spectr_item_f = 0
-      call sel_gz_input_sph_series_data                                 &
-     &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
-     &    spectr_on, volume_on, sph_IN_f, zbuf_f, ierr_read)
+      call sel_gz_read_volume_spectr_mtr(FPz_fsp, id_file_rms,          &
+     &    flag_gzip_s, sph_IN_f%ltr_sph, sph_IN_f%ntot_sph_spec,        &
+     &    sph_IN_f%i_step, sph_IN_f%time, sph_IN_f%i_mode,              &
+     &    sph_IN_f%spectr_IO(1,0,1), zbuf_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_volume_spectr_item_f = ierr_read
         return
@@ -314,9 +315,11 @@
 !
 !
       load_one_layer_mean_item_f = 0
-      call sel_gz_input_sph_series_data                                 &
+      call sel_gz_input_sph_layer_mean                                  &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
-     &    spectr_off, volume_off, sph_IN_f, zbuf_f, ierr_read)
+     &    sph_IN_f%nri_sph, sph_IN_f%ntot_sph_spec, sph_IN_f%i_step,    &
+     &    sph_IN_f%time, sph_IN_f%kr_sph, sph_IN_f%r_sph,               &
+     &    sph_IN_f%spectr_IO(1,0,1), zbuf_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_layer_mean_item_f = ierr_read
         return
@@ -349,9 +352,12 @@
 !
 !
       load_one_layer_spectr_item_f = 0
-      call sel_gz_input_sph_series_data                                 &
+      call sel_gz_input_sph_layer_spec                                  &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
-     &    spectr_on, volume_off, sph_IN_f, zbuf_f, ierr_read)
+     &    sph_IN_f%nri_sph, sph_IN_f%ltr_sph, sph_IN_f%ntot_sph_spec,   &
+     &    sph_IN_f%i_step, sph_IN_f%time, sph_IN_f%kr_sph,              &
+     &    sph_IN_f%r_sph, sph_IN_f%i_mode, sph_IN_f%spectr_IO(1,0,1),   &
+     &    zbuf_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_layer_spectr_item_f = ierr_read
         return

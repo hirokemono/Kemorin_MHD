@@ -76,6 +76,9 @@ t_tave_sph_layer_mean.o \
 t_tave_sph_layer_spectr.o \
 write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \
+gz_volume_spectr_monitor_IO.o \
+gz_layer_mean_monitor_IO.o \
+gz_layer_spectr_monitor_IO.o \
 old_sph_spectr_data_IO.o \
 picked_sph_spectr_data_IO.o \
 gz_gauss_coefs_monitor_IO.o \
@@ -277,6 +280,9 @@ write_sph_monitor_data.o
 
 MOD_FIT_DIPOLE_RATIO = \
 gz_spl_sph_spectr_data_IO.o \
+gz_volume_spectr_monitor_IO.o \
+gz_layer_mean_monitor_IO.o \
+gz_layer_spectr_monitor_IO.o \
 old_sph_spectr_data_IO.o \
 write_sph_monitor_data.o \
 count_monitor_time_series.o \

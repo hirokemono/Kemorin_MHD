@@ -52,7 +52,7 @@
       use t_buffer_4_gzip
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
-      use gz_spl_sph_spectr_data_IO
+      use gz_volume_spectr_monitor_IO
       use write_sph_monitor_data
       use set_parallel_file_name
       use cal_dyn_elsasser_by_spectr
@@ -125,14 +125,14 @@
      &       'step= ', sph_IN_l%i_step, ' time= ', sph_IN_l%time,       &
      &       ' evaluated Count=  ', icou
       do
-        call sel_gz_input_sph_series_data                               &
-     &     (FPz_l, id_file_rms_l, flag_gzip_l,                          &
-     &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
-     &      sph_IN_l, zbuf_l, ierr)
-        call sel_gz_input_sph_series_data                               &
-     &     (FPz_m, id_file_rms_m, flag_gzip_m,                          &
-     &      els_dat%flag_old_spectr_data, spectr_on, vol_ave_on,        &
-     &      sph_IN_m, zbuf_m, ierr)
+        call sel_gz_read_volume_spectr_mtr(FPz_l, id_file_rms_l,        &
+     &      flag_gzip_l, sph_IN_l%ltr_sph, sph_IN_l%ntot_sph_spec,      &
+     &      sph_IN_l%i_step, sph_IN_l%time, sph_IN_l%i_mode,            &
+     &      sph_IN_l%spectr_IO(1,0,1), zbuf_l, ierr)
+        call sel_gz_read_volume_spectr_mtr(FPz_l, id_file_rms_m,        &
+     &      flag_gzip_m, sph_IN_m%ltr_sph, sph_IN_m%ntot_sph_spec,      &
+     &      sph_IN_m%i_step, sph_IN_m%time, sph_IN_m%i_mode,            &
+     &      sph_IN_m%spectr_IO(1,0,1), zbuf_m, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN_l%time .ge. els_dat%start_time) then
