@@ -58,7 +58,7 @@
      &                              sph_pwr_labels, sph_OUT, zbuf)
       else
         call write_sph_pwr_layer_head(flag_gzip, id_file,               &
-     &                                sph_OUT, zbuf)
+     &                                sph_pwr_labels, sph_OUT, zbuf)
       end if
 !
       end subroutine select_output_sph_pwr_head

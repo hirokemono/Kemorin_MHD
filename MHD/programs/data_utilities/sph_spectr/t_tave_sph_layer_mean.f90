@@ -20,15 +20,17 @@
 !!        type(read_sph_spectr_data), intent(in) :: sph_IN
 !!        type(layer_mean_ave_sigma_work), intent(in) :: WK_tave
 !!
-!!      subroutine read_time_ave_sph_layer_mean                         &
-!!     &         (tave_file_name, trms_file_name, sdev_file_name,       &
-!!     &          tave_sph_IN, trms_sph_IN, sdev_sph_IN)
-!!        character(len = kchara), intent(in) :: tave_file_name
-!!        character(len = kchara), intent(in) :: trms_file_name
-!!        character(len = kchara), intent(in) :: sdev_file_name
-!!        type(read_sph_spectr_data), intent(inout) :: tave_sph_IN
-!!        type(read_sph_spectr_data), intent(inout) :: trms_sph_IN
-!!        type(read_sph_spectr_data), intent(inout) :: sdev_sph_IN
+!!      subroutine read_time_ave_sph_layer_mean(fname_org, sph_lbl_IN,  &
+!!     &          sph_IN, tave_mean, trms_mean, sdev_mean)
+!!        character(len = kchara), intent(in) :: fname_org
+!!        type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
+!!        real(kind = kreal), intent(inout)                             &
+!!     &             :: tave_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &             :: trms_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &             :: sdev_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
 !!@endverbatim
 !
       module t_tave_sph_layer_mean
@@ -63,7 +65,6 @@
 !
       private :: id_file_rms
 !
-      private :: read_sph_layer_mean_snapshot
       private :: check_time_ave_sph_layer_mean
 !
 !   --------------------------------------------------------------------
@@ -161,26 +162,44 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_time_ave_sph_layer_mean                           &
-     &         (tave_file_name, trms_file_name, sdev_file_name,         &
-     &          tave_sph_IN, trms_sph_IN, sdev_sph_IN)
+      subroutine read_time_ave_sph_layer_mean(fname_org, sph_lbl_IN,    &
+     &          sph_IN, tave_mean, trms_mean, sdev_mean)
 !
       use t_read_sph_series
+      use set_parallel_file_name
+      use sph_layer_monitor_snap_IO
 !
-      character(len = kchara), intent(in) :: tave_file_name
-      character(len = kchara), intent(in) :: trms_file_name
-      character(len = kchara), intent(in) :: sdev_file_name
-      type(read_sph_spectr_data), intent(inout) :: tave_sph_IN
-      type(read_sph_spectr_data), intent(inout) :: trms_sph_IN
-      type(read_sph_spectr_data), intent(inout) :: sdev_sph_IN
+      character(len = kchara), intent(in) :: fname_org
+!
+      type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+      real(kind = kreal), intent(inout)                                 &
+     &             :: tave_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
+      real(kind = kreal), intent(inout)                                 &
+     &             :: trms_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
+      real(kind = kreal), intent(inout)                                 &
+     &             :: sdev_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
+!
+      character(len = kchara) :: tave_file_name, trms_file_name
+      character(len = kchara) :: sdev_file_name
+      character(len = kchara) :: directory, fname_no_dir, fname_tmp
 !
 !
-      call read_sph_layer_mean_snapshot(tave_file_name,                 &
-     &                                  sph_lbl_IN1, tave_sph_IN)
-      call read_sph_layer_mean_snapshot(trms_file_name,                 &
-     &                                  sph_lbl_IN1, trms_sph_IN)
-      call read_sph_layer_mean_snapshot(sdev_file_name,                 &
-     &                                  sph_lbl_IN1, sdev_sph_IN)
+      call split_directory(fname_org, directory, fname_no_dir)
+!
+      write(fname_tmp, '(a6,a)') 't_ave_', trim(fname_no_dir)
+      tave_file_name = append_directory(directory, fname_tmp)
+      write(fname_tmp, '(a6,a)') 't_rms_', trim(fname_no_dir)
+      trms_file_name = append_directory(directory, fname_tmp)
+      write(fname_tmp, '(a7,a)') 't_sdev_', trim(fname_no_dir)
+      sdev_file_name = append_directory(directory, fname_tmp)
+!
+      call read_sph_layer_mean_snapshot(tave_file_name, sph_lbl_IN,     &
+     &                                  sph_IN, tave_mean(1,1))
+      call read_sph_layer_mean_snapshot(trms_file_name, sph_lbl_IN,     &
+     &                                  sph_IN, trms_mean(1,1))
+      call read_sph_layer_mean_snapshot(sdev_file_name, sph_lbl_IN,     &
+     &                                  sph_IN, sdev_mean(1,1))
 !
       end subroutine read_time_ave_sph_layer_mean
 !
@@ -345,126 +364,44 @@
      &         (fname_org, true_start, true_end, sph_IN, WK_tave)
 !
       use set_parallel_file_name
-      use gz_open_sph_monitor_file
-      use gz_layer_mean_monitor_IO
+      use sph_layer_monitor_snap_IO
 !
       character(len = kchara), intent(in) :: fname_org
       real(kind = kreal), intent(in) :: true_start, true_end
       type(read_sph_spectr_data), intent(in) :: sph_IN
       type(layer_mean_ave_sigma_work), intent(in) :: WK_tave
 !
-      type(buffer_4_gzip) :: zbuf_s
+      type(buffer_4_gzip) :: zbuf1
 !
-      character(len = kchara) :: file_name, fname_tmp
-      character(len = kchara) :: directory, fname_no_dir
+      character(len = kchara) :: tave_file_name, trms_file_name
+      character(len = kchara) :: sdev_file_name
+      character(len = kchara) :: directory, fname_no_dir, fname_tmp
       character(len=2+23+25+25+1) :: comment_1
-!
 !
       write(comment_1,'(2a,a23,1p2E25.15e3,a1)') '#', char(10),         &
      &             '# Start and End time:  ', true_start, true_end,     &
      &             char(10)
 !
-!  Output average
       call split_directory(fname_org, directory, fname_no_dir)
       write(fname_tmp, '(a6,a)') 't_ave_', trim(fname_no_dir)
-      file_name = append_directory(directory, fname_tmp)
-!
-      write(*,*) 'average file_name: ', trim(file_name)
-      open(id_file_rms, file=file_name, status='replace',               &
-     &       FORM='UNFORMATTED', ACCESS='STREAM')
-      write(id_file_rms) comment_1
-      call write_sph_pwr_layer_head(.FALSE., id_file_rms,               &
-     &                              sph_IN, zbuf_s)
-      call sel_gz_write_layer_mean_mtr                                  &
-     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,             &
-     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph,                  &
-     &    sph_IN%ntot_sph_spec, WK_tave%ave_spec_l(1,1), zbuf_s)
-      close(id_file_rms)
-!
-!  Output RMS
-      call split_directory(fname_org, directory, fname_no_dir)
+      tave_file_name = append_directory(directory, fname_tmp)
       write(fname_tmp, '(a6,a)') 't_rms_', trim(fname_no_dir)
-      file_name = append_directory(directory, fname_tmp)
-!
-      write(*,*) 'R. M. S. file_name: ', trim(file_name)
-      open(id_file_rms, file=file_name, status='replace',               &
-     &       FORM='UNFORMATTED', ACCESS='STREAM')
-      write(id_file_rms) comment_1
-      call write_sph_pwr_layer_head(.FALSE., id_file_rms,               &
-     &                              sph_IN, zbuf_s)
-      call sel_gz_write_layer_mean_mtr                                  &
-     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,             &
-     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph,                  &
-     &    sph_IN%ntot_sph_spec, WK_tave%rms_spec_l(1,1), zbuf_s)
-      close(id_file_rms)
-!
-!  Output Standard deviation
-      call split_directory(fname_org, directory, fname_no_dir)
+      tave_file_name = append_directory(directory, fname_tmp)
       write(fname_tmp, '(a7,a)') 't_sdev_', trim(fname_no_dir)
-      file_name = append_directory(directory, fname_tmp)
+      sdev_file_name = append_directory(directory, fname_tmp)
 !
-      write(*,*) 'Standard deviation file_name: ', trim(file_name)
-      open(id_file_rms, file=file_name, status='replace',               &
-     &       FORM='UNFORMATTED', ACCESS='STREAM')
-      write(id_file_rms) comment_1
-      call write_sph_pwr_layer_head(.FALSE., id_file_rms,               &
-     &                              sph_IN, zbuf_s)
-      call sel_gz_write_layer_mean_mtr                                  &
-     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,             &
-     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph,                  &
-     &    sph_IN%ntot_sph_spec, WK_tave%sigma_spec_l(1,1), zbuf_s)
-      close(id_file_rms)
+!
+      call write_sph_layer_mean_snapshot                                &
+     &   (.FALSE., tave_file_name, comment_1, sph_pwr_labels, sph_IN,   &
+     &     WK_tave%ave_spec_l(1,1), zbuf1)
+      call write_sph_layer_mean_snapshot                                &
+     &   (.FALSE., trms_file_name, comment_1, sph_pwr_labels, sph_IN,   &
+     &    WK_tave%rms_spec_l(1,1), zbuf1)
+      call write_sph_layer_mean_snapshot                                &
+     &   (.FALSE., sdev_file_name, comment_1, sph_pwr_labels, sph_IN,   &
+     &    WK_tave%sigma_spec_l(1,1), zbuf1)
 !
       end subroutine output_sph_sph_mean_ave_sdev
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_sph_layer_mean_snapshot(fname_org,                &
-     &                                        sph_lbl_IN, sph_IN)
-!
-      use select_gz_stream_file_IO
-      use sel_gz_input_sph_mtr_head
-      use gz_spl_sph_spectr_data_IO
-      use gz_layer_mean_monitor_IO
-!
-!
-      character(len = kchara), intent(in) :: fname_org
-      type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-!
-      integer(kind = kint) :: ierr
-      logical, parameter :: current_fmt = .FALSE.
-      logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
-      character, pointer :: FPz_f1
-!
-!  Read spectr data file
-!
-      write(*,*) 'Open file ', trim(fname_org)
-      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
-     &                                    fname_org, flag_gzip1, zbuf1)
-!
-      sph_IN%num_time_labels = 4
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_file_rms, flag_gzip1,  &
-     &                                sph_lbl_IN, sph_IN, zbuf1)
-!
-      call alloc_sph_espec_name(sph_IN)
-      call sel_read_sph_spectr_name(FPz_f1, id_file_rms, flag_gzip1,    &
-     &   sph_IN%nfield_sph_spec, sph_IN%num_labels,                     &
-     &   sph_IN%ncomp_sph_spec, sph_IN%ene_sph_spec_name, zbuf1)
-!
-      sph_IN%nri_dat = sph_IN%nri_sph
-      call alloc_sph_spectr_data(izero, sph_IN)
-!
-      call sel_gz_input_sph_layer_mean                                  &
-     &   (FPz_f1, id_file_rms, flag_gzip1, current_fmt,                 &
-     &    sph_IN%nri_sph, sph_IN%ntot_sph_spec, sph_IN%i_step,          &
-     &    sph_IN%time, sph_IN%kr_sph, sph_IN%r_sph,                     &
-     &    sph_IN%spectr_IO(1,0,1), zbuf1, ierr)
-      call sel_close_read_gz_stream_file                                &
-     &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
-!
-      end subroutine read_sph_layer_mean_snapshot
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

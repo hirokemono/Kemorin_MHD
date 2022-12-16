@@ -394,7 +394,7 @@
      &    WK_tave%ave_spec_l(1,0,1), zbuf_s)
       else
         call write_sph_pwr_layer_head(.FALSE., id_file_rms,             &
-     &                                sph_IN, zbuf_s)
+     &                                sph_pwr_labels, sph_IN, zbuf_s)
         if(flag_spectr) then
       call sel_gz_write_layer_spectr_mtr                                &
      &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
@@ -426,7 +426,7 @@
      &    WK_tave%rms_spec_l(1,0,1), zbuf_s)
       else
         call write_sph_pwr_layer_head(.FALSE., id_file_rms,             &
-     &                                sph_IN, zbuf_s)
+     &                                sph_pwr_labels, sph_IN, zbuf_s)
         if(flag_spectr) then
       call sel_gz_write_layer_spectr_mtr                                &
      &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &
@@ -458,7 +458,7 @@
      &    WK_tave%sigma_spec_l(1,0,1), zbuf_s)
       else
         call write_sph_pwr_layer_head(.FALSE., id_file_rms,             &
-     &                                sph_IN, zbuf_s)
+     &                                sph_pwr_labels, sph_IN, zbuf_s)
         if(flag_spectr) then
       call sel_gz_write_layer_spectr_mtr                                &
      &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,   &

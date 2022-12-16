@@ -79,6 +79,7 @@ gz_spl_sph_spectr_data_IO.o \
 gz_volume_spectr_monitor_IO.o \
 gz_layer_mean_monitor_IO.o \
 gz_layer_spectr_monitor_IO.o \
+sph_layer_monitor_snap_IO.o \
 old_sph_spectr_data_IO.o \
 picked_sph_spectr_data_IO.o \
 gz_gauss_coefs_monitor_IO.o \
@@ -235,6 +236,7 @@ t_tave_sph_layer_spectr.o \
 time_ave_picked_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
 gz_spl_sph_spectr_data_IO.o \
+sph_layer_monitor_snap_IO.o \
 old_sph_spectr_data_IO.o \
 write_sph_monitor_data.o \
 write_snap_pick_sph_spectr.o \

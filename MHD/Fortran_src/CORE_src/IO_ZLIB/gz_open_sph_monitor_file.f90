@@ -35,9 +35,10 @@
 !!      subroutine write_sph_pwr_vol_head(flag_gzip, id_file,           &
 !!     &                                  sph_OUT, zbuf)
 !!      subroutine write_sph_pwr_layer_head(flag_gzip, id_file,         &
-!!     &                                    sph_OUT, zbuf)
+!!     &          monitor_labels, sph_OUT, zbuf)
 !!        logical, intent(in) :: flag_gzip
 !!        integer(kind = kint), intent(in) :: id_file
+!!        type(sph_spectr_head_labels), intent(in) :: monitor_labels
 !!        type(read_sph_spectr_data), intent(in) :: sph_OUT
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
@@ -237,7 +238,7 @@
 !
       open(id_stream, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_layer_head(flag_gzip_lc, id_stream,            &
-     &                              sph_OUT, zbuf)
+     &                              sph_pwr_labels, sph_OUT, zbuf)
       close(id_stream)
 !
       end subroutine check_sph_layer_mean_file
@@ -269,7 +270,7 @@
         open(id_file, file=fname, status='replace',                     &
      &       FORM='UNFORMATTED', ACCESS='STREAM')
         call write_sph_pwr_layer_head(flag_gzip_lc, id_file,            &
-     &                                sph_OUT, zbuf)
+     &                                sph_pwr_labels, sph_OUT, zbuf)
       else
         open(id_file, file=fname, status='old', position='append',      &
      &       FORM='UNFORMATTED', ACCESS='STREAM')
@@ -307,13 +308,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_sph_pwr_layer_head(flag_gzip, id_file,           &
-     &                                    sph_OUT, zbuf)
+     &          monitor_labels, sph_OUT, zbuf)
 !
       use sph_power_spectr_data_text
       use select_gz_stream_file_IO
 !
       logical, intent(in) :: flag_gzip
       integer(kind = kint), intent(in) :: id_file
+      type(sph_spectr_head_labels), intent(in) :: monitor_labels
       type(read_sph_spectr_data), intent(in) :: sph_OUT
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -325,7 +327,7 @@
      &                                 len_each, len_tot)
       call sel_gz_write_text_stream(flag_gzip, id_file,                 &
      &    sph_layer_spectr_header_text(len_tot, len_each,               &
-     &                                 sph_pwr_labels, sph_OUT), zbuf)
+     &                                 monitor_labels, sph_OUT), zbuf)
 !
       end subroutine write_sph_pwr_layer_head
 !

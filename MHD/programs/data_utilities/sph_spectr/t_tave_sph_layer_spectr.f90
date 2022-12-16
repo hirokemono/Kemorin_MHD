@@ -12,15 +12,20 @@
 !!     &         (fname_org, start_time, end_time)
 !!        character(len = kchara), intent(in) :: fname_org
 !!        real(kind = kreal), intent(in) :: start_time, end_time
-!!      subroutine read_time_ave_sph_layer_spec                         &
-!!     &         (tave_file_name, trms_file_name, sdev_file_name,       &
-!!     &          tave_sph_IN, trms_sph_IN, sdev_sph_IN)
-!!        character(len = kchara), intent(in) :: tave_file_name
-!!        character(len = kchara), intent(in) :: trms_file_name
-!!        character(len = kchara), intent(in) :: sdev_file_name
-!!        type(read_sph_spectr_data), intent(inout) :: tave_sph_IN
-!!        type(read_sph_spectr_data), intent(inout) :: trms_sph_IN
-!!        type(read_sph_spectr_data), intent(inout) :: sdev_sph_IN
+!!      subroutine read_time_ave_sph_layer_spec(fname_org, sph_lbl_IN,  &
+!!     &          sph_IN, tave_spectr, trms_spectr, sdev_spectr)
+!!        character(len = kchara), intent(in) :: fname_org
+!!        type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: tave_spectr(sph_IN%ntot_sph_spec,         &
+!!     &                                0:sph_IN%ltr_sph,sph_IN%nri_sph)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: trms_spectr(sph_IN%ntot_sph_spec,         &
+!!     &                                0:sph_IN%ltr_sph,sph_IN%nri_sph)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: sdev_spectr(sph_IN%ntot_sph_spec,         &
+!!     &                                0:sph_IN%ltr_sph,sph_IN%nri_sph)
 !!@endverbatim
 !
       module t_tave_sph_layer_spectr
@@ -55,8 +60,6 @@
 !
       private :: id_file_rms
 !
-      private :: read_sph_layer_spectr_snapshot
-!
 !   --------------------------------------------------------------------
 !
       contains
@@ -72,6 +75,7 @@
       use count_monitor_time_series
       use gz_open_sph_monitor_file
       use gz_layer_spectr_monitor_IO
+      use sph_layer_monitor_snap_IO
 !
 !
       character(len = kchara), intent(in) :: fname_org
@@ -83,7 +87,7 @@
 !
       character, pointer :: FPz_f1
       logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1, zbuf_wt
+      type(buffer_4_gzip) :: zbuf1
 !
       character(len = kchara) :: tave_file_name, trms_file_name
       character(len = kchara) :: sdev_file_name
@@ -163,13 +167,13 @@
 !
 !  Output average
       call write_sph_layer_spectr_snapshot(.FALSE., tave_file_name,     &
-     &    comment_1, sph_IN1, WK_tave1%ave_spec_l(1,0,1), zbuf_wt)
+     &    comment_1, sph_IN1, WK_tave1%ave_spec_l(1,0,1))
 !  Output RMS
       call write_sph_layer_spectr_snapshot(.FALSE., trms_file_name,     &
-     &    comment_1, sph_IN1, WK_tave1%rms_spec_l(1,0,1), zbuf_wt)
+     &    comment_1, sph_IN1, WK_tave1%rms_spec_l(1,0,1))
 !  Output Standard deviation
       call write_sph_layer_spectr_snapshot(.FALSE., trms_file_name,     &
-     &    comment_1, sph_IN1, WK_tave1%sigma_spec_l(1,0,1), zbuf_wt)
+     &    comment_1, sph_IN1, WK_tave1%sigma_spec_l(1,0,1))
 !
       write(*,'(a,1p2e25.15e3)') 'Start and end time:     ',            &
      &                          true_start, true_end
@@ -186,8 +190,8 @@
       subroutine read_time_ave_sph_layer_spec(fname_org, sph_lbl_IN,    &
      &          sph_IN, tave_spectr, trms_spectr, sdev_spectr)
 !
-      use t_read_sph_series
       use set_parallel_file_name
+      use sph_layer_monitor_snap_IO
 !
       character(len = kchara), intent(in) :: fname_org
 !
@@ -234,15 +238,8 @@
      &          start_time, end_time, true_start, true_end,             &
      &          sph_IN, WK_tave, zbuf_rd)
 !
-      use t_buffer_4_gzip
-      use select_gz_stream_file_IO
       use gz_spl_sph_spectr_data_IO
-      use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
-      use gz_open_sph_monitor_file
-      use gz_volume_spectr_monitor_IO
-      use gz_layer_mean_monitor_IO
-      use gz_layer_spectr_monitor_IO
 !
       integer(kind = kint), intent(in) :: id_read
       logical, intent(in) :: flag_gzip, flag_old_fmt
@@ -318,16 +315,8 @@
      &         (FPz_f, id_read, flag_gzip, flag_old_fmt,                &
      &          start_time, end_time, sph_IN, WK_tave, zbuf_rd)
 !
-      use t_buffer_4_gzip
-      use select_gz_stream_file_IO
-      use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
-      use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
-      use gz_open_sph_monitor_file
-      use gz_volume_spectr_monitor_IO
-      use gz_layer_mean_monitor_IO
-      use gz_layer_spectr_monitor_IO
 !
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_read
@@ -390,90 +379,6 @@
      &                                 ncomp, WK_tave%sigma_spec_l)
 !
       end subroutine sph_layer_spectr_std_deviation
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_sph_layer_spectr_snapshot(flag_gzip, file_name,  &
-     &          comment, sph_IN, spectr_IO, zbuf)
-!
-      use set_parallel_file_name
-      use gz_open_sph_monitor_file
-      use gz_layer_spectr_monitor_IO
-!
-      logical, intent(in) :: flag_gzip
-      character(len = kchara), intent(in) :: file_name
-      character(len = *), intent(in) :: comment
-      type(read_sph_spectr_data), intent(in) :: sph_IN
-      real(kind = kreal), intent(in)                                    &
-     &                   :: spectr_IO(sph_IN%ntot_sph_spec,             &
-     &                                0:sph_IN%ltr_sph,sph_IN%nri_sph)
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-!
-      write(*,*) 'Write file: ', trim(file_name)
-      open(id_file_rms, file=file_name, status='replace',               &
-     &       FORM='UNFORMATTED', ACCESS='STREAM')
-      write(id_file_rms) comment
-      call write_sph_pwr_layer_head(.FALSE., id_file_rms,               &
-     &                              sph_IN, zbuf)
-      call sel_gz_write_layer_spectr_mtr                                &
-     &   (.FALSE., id_file_rms, sph_IN%i_step, sph_IN%time,             &
-     &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph, sph_IN%ltr_sph,  &
-     &    sph_IN%ntot_sph_spec, spectr_IO(1,0,1), zbuf)
-      close(id_file_rms)
-!
-      end subroutine write_sph_layer_spectr_snapshot
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_sph_layer_spectr_snapshot(fname_org, sph_lbl_IN,  &
-     &                                          sph_IN, spectr_IO)
-!
-      use select_gz_stream_file_IO
-      use sel_gz_input_sph_mtr_head
-      use gz_spl_sph_spectr_data_IO
-!
-!
-      character(len = kchara), intent(in) :: fname_org
-      type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: spectr_IO(sph_IN%ntot_sph_spec,             &
-     &                                0:sph_IN%ltr_sph,sph_IN%nri_sph)
-!
-      integer(kind = kint) :: ierr
-      logical, parameter :: current_fmt = .FALSE.
-      logical :: flag_gzip1
-      character, pointer :: FPz_f1
-      type(buffer_4_gzip) :: zbuf_rd
-!
-!  Read spectr data file
-!
-      write(*,*) 'Open file: ', trim(fname_org)
-      call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
-     &                                  fname_org, flag_gzip1, zbuf_rd)
-!
-      sph_IN%num_time_labels = 5
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_file_rms, flag_gzip1,  &
-     &                                sph_lbl_IN, sph_IN, zbuf_rd)
-!
-      call alloc_sph_espec_name(sph_IN)
-      call sel_read_sph_spectr_name(FPz_f1, id_file_rms, flag_gzip1,    &
-     &   sph_IN%nfield_sph_spec, sph_IN%num_labels,                     &
-     &   sph_IN%ncomp_sph_spec, sph_IN%ene_sph_spec_name, zbuf_rd)
-!
-      sph_IN%nri_dat = sph_IN%nri_sph
-      call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
-!
-      call sel_gz_input_sph_layer_spec                                  &
-     &   (FPz_f1, id_file_rms, flag_gzip1, current_fmt,                 &
-     &    sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,         &
-     &    sph_IN%i_step, sph_IN%time, sph_IN%kr_sph,                    &
-     &    sph_IN%r_sph, sph_IN%i_mode, spectr_IO(1,0,1), zbuf_rd, ierr)
-      call sel_close_read_gz_stream_file                                &
-     &   (FPz_f1, id_file_rms, flag_gzip1, zbuf_rd)
-!
-      end subroutine read_sph_layer_spectr_snapshot
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
