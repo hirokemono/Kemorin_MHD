@@ -21,6 +21,11 @@
 !!        logical, intent(in) :: flag_spectr, flag_vol_ave
 !!        type(read_sph_spectr_data), intent(in) :: sph_OUT
 !!
+!!      subroutine write_vol_sph_data(id_file, sph_OUT, spectr_IO)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(read_sph_spectr_data), intent(in) :: sph_OUT
+!!        real(kind = kreal), intent(in)                                &
+!!     &           :: spectr_IO(sph_OUT%ntot_sph_spec)
 !!      subroutine write_vol_spectr_data(id_file, sph_OUT)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(read_sph_spectr_data), intent(in) :: sph_OUT
@@ -40,7 +45,6 @@
 !
       implicit none
 !
-      private :: write_vol_sph_data
       private :: write_layer_sph_data, write_layer_spectr_data
 !
 !   --------------------------------------------------------------------
@@ -91,7 +95,8 @@
         end if
       else
         if(flag_vol_ave) then
-          call write_vol_sph_data(id_file, sph_OUT)
+          call write_vol_sph_data(id_file, sph_OUT,     &
+     &                               sph_OUT%spectr_IO(1,0,1))
         else
           call write_layer_sph_data(id_file, sph_OUT)
         end if
@@ -123,12 +128,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine write_vol_sph_data(id_file, sph_OUT)
+      subroutine write_vol_sph_data(id_file, sph_OUT, spectr_IO)
 !
       use write_field_labels
 !
       integer(kind = kint), intent(in) :: id_file
       type(read_sph_spectr_data), intent(in) :: sph_OUT
+      real(kind = kreal), intent(in)                                    &
+     &           :: spectr_IO(sph_OUT%ntot_sph_spec)
 !
       integer(kind = kint) :: i
 !
@@ -136,8 +143,7 @@
       write(id_file,'(i16,1pE25.15e3)', ADVANCE='NO')                   &
      &                          sph_OUT%i_step, sph_OUT%time
       do i = 1, sph_OUT%ntot_sph_spec
-        write(id_file,'(1pE25.15e3)', ADVANCE='NO')                     &
-     &                           sph_OUT%spectr_IO(i,0,1)
+        write(id_file,'(1pE25.15e3)', ADVANCE='NO') spectr_IO(i)
       end do
       write(id_file,'(a)')
 !

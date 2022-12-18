@@ -172,6 +172,7 @@
       type(sph_spectr_head_labels), save :: sph_lbl_IN_a, sph_lbl_IN_p
       type(read_sph_spectr_data), save :: sph_IN_a, sph_IN_p, sph_OUT1
       type(sph_volume_mean_series), save :: vm_srs_a, vm_srs_p
+      real(kind = kreal), allocatable :: spectr_OUT(:)
 !
       type(buffer_4_gzip), save :: zbuf_s
 !
@@ -293,6 +294,11 @@
       sph_OUT1%ene_sph_spec_name(i+2) = hd_g11
       sph_OUT1%ene_sph_spec_name(i+3) = hd_h11
 !
+      allocate(spectr_OUT(sph_OUT1%ntot_sph_spec))
+!$omp parallel workshare
+      spectr_OUT(1:sph_OUT1%ntot_sph_spec) = 0.0d0
+!$omp end parallel workshare
+!
       call split_extrension(vpwr_file_name, file_name, extension)
       if(extension .eq. 'gz') then
         call split_extrension(file_name, fname_tmp, extension)
@@ -341,100 +347,89 @@
       sph_OUT1%i_step = 0
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,1),                    &
-     &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
       sph_OUT1%i_step = 1
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,2),                    &
-     &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
 !
       sph_OUT1%i_step = 2
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,1),                     &
-     &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
       sph_OUT1%i_step = 3
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,2),                     &
-     &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
 !
       sph_OUT1%i_step = 4
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,1),                    &
-     &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
       sph_OUT1%i_step = 5
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,2),                    &
-     &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
 !
       sph_OUT1%i_step = 6
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,1),                    &
-     &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
       sph_OUT1%i_step = 7
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,2),                    &
-     &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
 !
       sph_OUT1%i_step = 8
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,1),                     &
-     &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
       sph_OUT1%i_step = 9
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,2),                     &
-     &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
 !
       sph_OUT1%i_step = 10
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,1),                    &
-     &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
       sph_OUT1%i_step = 11
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,2),                    &
-     &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, sph_OUT1)
-      call select_output_sph_series_data                                &
-     &   (id_file_rms, .FALSE., .TRUE., sph_OUT1)
+     &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, spectr_OUT)
+      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
 !
       close(id_file_rms)
+      deallocate(spectr_OUT)
 !
       end subroutine s_time_average_vol_stable_rev
 !
 ! -------------------------------------------------------------------
 !
       subroutine copy_moniter_aves_to_IO(ntot_sph_spec, time_vol_ave,   &
-     &          ntot_gauss, tave_gauss, imode_g1, sph_OUT)
+     &          ntot_gauss, tave_gauss, imode_g1, spectr_OUT)
 !
       use t_read_sph_spectra
 !
@@ -442,13 +437,13 @@
       integer(kind = kint), intent(in) :: ntot_gauss, ntot_sph_spec
       real(kind = kreal), intent(in) :: tave_gauss(ntot_gauss)
       real(kind = kreal), intent(in) :: time_vol_ave(ntot_sph_spec)
-      type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !
-      sph_OUT%spectr_IO(1:ntot_sph_spec,0,1)                            &
-     &            = time_vol_ave(1:ntot_sph_spec)
-      sph_OUT%spectr_IO(ntot_sph_spec+1,0,1) = tave_gauss(imode_g1( 0))
-      sph_OUT%spectr_IO(ntot_sph_spec+2,0,1) = tave_gauss(imode_g1( 1))
-      sph_OUT%spectr_IO(ntot_sph_spec+3,0,1) = tave_gauss(imode_g1(-1))
+      real(kind = kreal), intent(inout) :: spectr_OUT(ntot_sph_spec+3)
+!
+      spectr_OUT(1:ntot_sph_spec) = time_vol_ave(1:ntot_sph_spec)
+      spectr_OUT(ntot_sph_spec+1) = tave_gauss(imode_g1( 0))
+      spectr_OUT(ntot_sph_spec+2) = tave_gauss(imode_g1( 1))
+      spectr_OUT(ntot_sph_spec+3) = tave_gauss(imode_g1(-1))
 !
       end subroutine copy_moniter_aves_to_IO
 !

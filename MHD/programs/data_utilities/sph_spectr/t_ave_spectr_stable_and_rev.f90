@@ -361,7 +361,7 @@
 !
       subroutine copy_moniter_spectr_to_IO                              &
      &         (ntot_sph_spec, ltr, time_vol_spectr,                    &
-     &          ntot_gauss, tave_gauss, imode_g1, spectr_IO)
+     &          ntot_gauss, tave_gauss, imode_g1, spectr_OUT)
 !
       use t_read_sph_spectra
 !
@@ -372,17 +372,17 @@
       real(kind = kreal), intent(in)                                    &
      &                   :: time_vol_spectr(ntot_sph_spec,0:ltr)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: spectr_IO(ntot_sph_spec,0:ltr)
+     &                   :: spectr_OUT(ntot_sph_spec+3,0:ltr)
 !
 !
-      spectr_IO(1:ntot_sph_spec,0:ltr)                                  &
+      spectr_OUT(1:ntot_sph_spec,0:ltr)                                 &
      &            = time_vol_spectr(1:ntot_sph_spec,0:ltr)
-      spectr_IO(ntot_sph_spec+1,0:ltr) = zero
-      spectr_IO(ntot_sph_spec+2,0:ltr) = zero
-      spectr_IO(ntot_sph_spec+3,0:ltr) = zero
-      spectr_IO(ntot_sph_spec+1,1) = tave_gauss(imode_g1( 0))
-      spectr_IO(ntot_sph_spec+2,1) = tave_gauss(imode_g1( 1))
-      spectr_IO(ntot_sph_spec+3,1) = tave_gauss(imode_g1(-1))
+      spectr_OUT(ntot_sph_spec+1,0:ltr) = zero
+      spectr_OUT(ntot_sph_spec+2,0:ltr) = zero
+      spectr_OUT(ntot_sph_spec+3,0:ltr) = zero
+      spectr_OUT(ntot_sph_spec+1,1) = tave_gauss(imode_g1( 0))
+      spectr_OUT(ntot_sph_spec+2,1) = tave_gauss(imode_g1( 1))
+      spectr_OUT(ntot_sph_spec+3,1) = tave_gauss(imode_g1(-1))
 !
       end subroutine copy_moniter_spectr_to_IO
 !
