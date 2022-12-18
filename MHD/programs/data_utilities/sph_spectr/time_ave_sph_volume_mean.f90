@@ -45,8 +45,7 @@
       use count_monitor_time_series
       use sph_monitor_data_text
       use set_parallel_file_name
-      use select_gz_stream_file_IO
-      use gz_open_sph_monitor_file
+      use sph_volume_monitor_snap_IO
 !'
       character(len = kchara), intent(in) :: fname_org
       real(kind = kreal), intent(in) :: start_time, end_time
@@ -62,11 +61,6 @@
       real(kind = kreal) :: true_start, true_end
 !
       character(len=2+23+25+25+1) :: comment_1
-      character(len=24+28+30+1+4), parameter :: comment_2               &
-     &          =  '# 1st data: Time average' // char(10)               &
-     &          // '# 2nd data: R.M.S. over time' // char(10)           &
-     &          // '# 3rd data: Standard Deviation' // char(10)         &
-     &          // '#' // char(10)
 !
       integer(kind = kint) :: i
       character(len = kchara) :: ave_fname, fname_tmp
@@ -103,23 +97,9 @@
       write(fname_tmp, '(a12,a)') 't_ave_sigma_', trim(fname_no_dir)
       ave_fname = append_directory(directory, fname_tmp)
 !
-      write(*,*) 'Write ASCII file: ', trim(ave_fname)
-      open(id_stream, file=ave_fname, status='replace',                 &
-     &       FORM='UNFORMATTED', ACCESS='STREAM')
-      write(id_stream) comment_1
-      write(id_stream) comment_2
-      call write_sph_pwr_vol_head(.FALSE., id_stream,                   &
-     &                            sph_lbl_IN1, sph_IN1, zbuf_m)
-      call sel_gz_write_text_stream(.FALSE., id_stream,                 &
-     &    volume_pwr_data_text(sph_IN1%i_step, sph_IN1%time,            &
-     &    vm_srs1%ntot_comp, ave_mean), zbuf_m)
-      call sel_gz_write_text_stream(.FALSE., id_stream,                 &
-     &    volume_pwr_data_text(sph_IN1%i_step, sph_IN1%time,            &
-     &    vm_srs1%ntot_comp, rms_mean), zbuf_m)
-      call sel_gz_write_text_stream(.FALSE., id_stream,                 &
-     &    volume_pwr_data_text(sph_IN1%i_step, sph_IN1%time,            &
-     &    vm_srs1%ntot_comp, sdev_mean), zbuf_m)
-      close(id_stream)
+      call write_sph_vol_mean_tave_sdev(.FALSE., ave_fname,             &
+     &    comment_1, sph_lbl_IN1, sph_IN1, vm_srs1%ntot_comp,           &
+     &    ave_mean, rms_mean, sdev_mean)
 !
       deallocate(ave_mean, rms_mean, sdev_mean, iflag_all)
       call dealloc_sph_volume_mean_series(vm_srs1)

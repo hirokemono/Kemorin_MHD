@@ -55,6 +55,9 @@
       use t_tave_sph_volume_spectr
       use t_tave_sph_layer_mean
       use t_tave_sph_layer_spectr
+      use tave_sdev_sph_layer_spec
+      use tave_sdev_sph_layer_mean
+      use tave_sdev_sph_volume_spec
       use time_ave_picked_sph_spectr
       use set_parallel_file_name
       use count_monitor_time_series

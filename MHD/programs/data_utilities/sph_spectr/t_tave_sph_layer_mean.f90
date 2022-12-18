@@ -8,29 +8,29 @@
 !> @brief Time average spherical harmonics spectrum data
 !!
 !!@verbatim
-!!      subroutine time_ave_sdev_sph_layer_mean                         &
-!!     &         (fname_org, start_time, end_time)
-!!        character(len = kchara), intent(in) :: fname_org
-!!        real(kind = kreal), intent(in) :: start_time, end_time
-!!
-!!      subroutine output_sph_sph_mean_ave_sdev                         &
-!!     &         (fname_org, true_start, true_end, sph_IN, WK_tave)
-!!        character(len = kchara), intent(in) :: fname_org
-!!        real(kind = kreal), intent(in) :: true_start, true_end
+!!      subroutine alloc_tave_sph_layer_mean(sph_IN, WK_tave)
+!!      subroutine dealloc_tave_sph_layer_mean(WK_tave)
+!!        type(read_sph_spectr_data), intent(in) :: sph_IN
+!!        type(layer_mean_ave_sigma_work), intent(inout) :: WK_tave
+!!      subroutine check_time_ave_sph_layer_mean(sph_IN, WK_tave)
 !!        type(read_sph_spectr_data), intent(in) :: sph_IN
 !!        type(layer_mean_ave_sigma_work), intent(in) :: WK_tave
 !!
-!!      subroutine read_time_ave_sph_layer_mean(fname_org, sph_lbl_IN,  &
-!!     &          sph_IN, tave_mean, trms_mean, sdev_mean)
-!!        character(len = kchara), intent(in) :: fname_org
-!!        type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
+!!      subroutine sph_layer_mean_average                               &
+!!     &         (FPz_f, id_read, flag_gzip, flag_old_fmt,              &
+!!     &          start_time, end_time, true_start, true_end,           &
+!!     &          sph_IN, WK_tave, zbuf_rd)
+!!      subroutine sph_layer_mean_std_deviation                         &
+!!     &         (FPz_f, id_read, flag_gzip, flag_old_fmt,              &
+!!     &          start_time, end_time, sph_IN, WK_tave, zbuf_rd)
+!!        character, pointer, intent(in) :: FPz_f
+!!        integer(kind = kint), intent(in) :: id_read
+!!        logical, intent(in) :: flag_gzip, flag_old_fmt
+!!        real(kind = kreal), intent(in) :: start_time, end_time
+!!        real(kind = kreal), intent(inout) :: true_start, true_end
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
-!!        real(kind = kreal), intent(inout)                             &
-!!     &             :: tave_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &             :: trms_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &             :: sdev_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
+!!        type(layer_mean_ave_sigma_work), intent(inout) :: WK_tave
+!!        type(buffer_4_gzip), intent(inout) :: zbuf_rd
 !!@endverbatim
 !
       module t_tave_sph_layer_mean
@@ -41,10 +41,6 @@
       use t_buffer_4_gzip
 !
       implicit none
-!
-!
-      integer(kind = kint), parameter :: id_file_rms = 34
-      integer(kind = kint), parameter :: id_read_rms = 45
 !
       type layer_mean_ave_sigma_work
         real(kind = kreal), allocatable :: read_spec(:,:)
@@ -57,353 +53,10 @@
         real(kind = kreal), allocatable :: sigma_pre_l(:,:)
       end type layer_mean_ave_sigma_work
 !
-      logical, parameter, private :: flag_current_format = .FALSE.
-!
-      type(read_sph_spectr_data), save, private :: sph_IN1
-      type(layer_mean_ave_sigma_work), save, private :: WK_tave1
-      type(sph_spectr_head_labels), save, private :: sph_lbl_IN1
-!
-      private :: id_file_rms
-!
-      private :: check_time_ave_sph_layer_mean
-!
 !   --------------------------------------------------------------------
 !
       contains
 !
-!   --------------------------------------------------------------------
-!
-      subroutine time_ave_sdev_sph_layer_mean                           &
-     &         (fname_org, start_time, end_time)
-!
-      use set_parallel_file_name
-      use select_gz_stream_file_IO
-      use sel_gz_input_sph_mtr_head
-      use count_monitor_time_series
-!
-      character(len = kchara), intent(in) :: fname_org
-      real(kind = kreal), intent(in) :: start_time, end_time
-!
-      type(read_sph_spectr_data), save :: sph_IN2
-      real(kind = kreal) :: true_start, true_end
-      integer(kind = kint) :: icou_skip
-!
-      character, pointer :: FPz_f1
-      logical :: flag_gzip1
-      type(buffer_4_gzip) :: zbuf1
-!
-!
-      call sel_open_read_gz_stream_file(FPz_f1, id_read_rms,            &
-     &                                    fname_org, flag_gzip1, zbuf1)
-      sph_IN1%num_time_labels = 4
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
-     &                                sph_lbl_IN1, sph_IN1, zbuf1)
-!
-      call alloc_sph_espec_name(sph_IN1)
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
-!
-      sph_IN1%nri_dat = sph_IN1%nri_sph
-      call alloc_sph_spectr_data(izero, sph_IN1)
-!
-      call s_count_monitor_time_start                                   &
-     &   (.TRUE., FPz_f1, id_read_rms, flag_gzip1, sph_IN1%nri_sph,     &
-     &    start_time, icou_skip, zbuf1)
-!
-      call alloc_tave_sph_layer_mean(sph_IN1, WK_tave1)
-!
-      call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
-      sph_IN2%num_time_labels = sph_IN1%num_time_labels
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
-     &                                sph_lbl_IN1, sph_IN2, zbuf1)
-!
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
-!
-      call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
-     &    flag_gzip1, sph_IN1%nri_sph, icou_skip, zbuf1)
-      call sph_layer_mean_average                                       &
-     &   (FPz_f1, id_read_rms, flag_gzip1, flag_current_format,         &
-     &    start_time, end_time, true_start, true_end,                   &
-     &    sph_IN1, WK_tave1, zbuf1)
-!
-!
-      call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
-      sph_IN2%num_time_labels = sph_IN1%num_time_labels
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
-     &                                sph_lbl_IN1, sph_IN2, zbuf1)
-!
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
-!
-      call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
-     &    flag_gzip1, sph_IN1%nri_sph, icou_skip, zbuf1)
-      call sph_layer_mean_std_deviation                                 &
-     &   (FPz_f1, id_read_rms, flag_gzip1, flag_current_format,         &
-     &    start_time, end_time, sph_IN1, WK_tave1, zbuf1)
-      call sel_close_read_gz_stream_file                                &
-     &   (FPz_f1, id_read_rms, flag_gzip1, zbuf1)
-!
-      call output_sph_sph_mean_ave_sdev                                 &
-     &   (fname_org, true_start, true_end, sph_IN1, WK_tave1)
-!
-      write(*,'(a,1p2e25.15e3)') 'Start and end time:     ',            &
-     &                          true_start, true_end
-!      call check_time_ave_sph_layer_mean(sph_IN1, WK_tave1)
-!
-      call dealloc_tave_sph_layer_mean(WK_tave1)
-      call dealloc_sph_espec_data(sph_IN1)
-      call dealloc_sph_espec_name(sph_IN1)
-!
-      end subroutine time_ave_sdev_sph_layer_mean
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_time_ave_sph_layer_mean(fname_org, sph_lbl_IN,    &
-     &          sph_IN, tave_mean, trms_mean, sdev_mean)
-!
-      use t_read_sph_series
-      use set_parallel_file_name
-      use sph_layer_monitor_snap_IO
-!
-      character(len = kchara), intent(in) :: fname_org
-!
-      type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-      real(kind = kreal), intent(inout)                                 &
-     &             :: tave_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
-      real(kind = kreal), intent(inout)                                 &
-     &             :: trms_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
-      real(kind = kreal), intent(inout)                                 &
-     &             :: sdev_mean(sph_IN%ntot_sph_spec,sph_IN%nri_sph)
-!
-      character(len = kchara) :: tave_file_name, trms_file_name
-      character(len = kchara) :: sdev_file_name
-      character(len = kchara) :: directory, fname_no_dir, fname_tmp
-!
-!
-      call split_directory(fname_org, directory, fname_no_dir)
-!
-      write(fname_tmp, '(a6,a)') 't_ave_', trim(fname_no_dir)
-      tave_file_name = append_directory(directory, fname_tmp)
-      write(fname_tmp, '(a6,a)') 't_rms_', trim(fname_no_dir)
-      trms_file_name = append_directory(directory, fname_tmp)
-      write(fname_tmp, '(a7,a)') 't_sdev_', trim(fname_no_dir)
-      sdev_file_name = append_directory(directory, fname_tmp)
-!
-      call read_sph_layer_mean_snapshot(tave_file_name, sph_lbl_IN,     &
-     &                                  sph_IN, tave_mean(1,1))
-      call read_sph_layer_mean_snapshot(trms_file_name, sph_lbl_IN,     &
-     &                                  sph_IN, trms_mean(1,1))
-      call read_sph_layer_mean_snapshot(sdev_file_name, sph_lbl_IN,     &
-     &                                  sph_IN, sdev_mean(1,1))
-!
-      end subroutine read_time_ave_sph_layer_mean
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine sph_layer_mean_average                                 &
-     &         (FPz_f, id_read, flag_gzip, flag_old_fmt,                &
-     &          start_time, end_time, true_start, true_end,             &
-     &          sph_IN, WK_tave, zbuf_rd)
-!
-      use t_buffer_4_gzip
-      use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_data_IO
-      use write_sph_monitor_data
-      use cal_tave_sph_ene_spectr
-      use gz_layer_mean_monitor_IO
-!
-      character, pointer, intent(in) :: FPz_f
-      integer(kind = kint), intent(in) :: id_read
-      logical, intent(in) :: flag_gzip, flag_old_fmt
-      real(kind = kreal), intent(in) :: start_time, end_time
-      real(kind = kreal), intent(inout) :: true_start, true_end
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-      type(layer_mean_ave_sigma_work), intent(inout) :: WK_tave
-      type(buffer_4_gzip), intent(inout) :: zbuf_rd
-!
-      real(kind = kreal) :: prev_time
-      integer(kind = kint) :: icou, ierr, ist_true, i, ncomp
-!
-!
-      ncomp = sph_IN%ntot_sph_spec * sph_IN%nri_sph
-!
-      icou = 0
-      ist_true = -1
-      prev_time = sph_IN%time
-        write(*,'(a6,i12,a8,f12.6,a15,i12)',advance="NO")               &
-     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
-     &       ', Load Count:  ', icou
-      do
-        call sel_gz_input_sph_layer_mean                                &
-     &     (FPz_f, id_read, flag_gzip, flag_old_fmt,                    &
-     &      sph_IN%nri_sph, sph_IN%ntot_sph_spec, sph_IN%i_step,        &
-     &      sph_IN%time, sph_IN%kr_sph, sph_IN%r_sph,                   &
-     &      WK_tave%read_spec(1,1), zbuf_rd, ierr)
-        if(ierr .gt. 0) go to 99
-!
-        if (sph_IN%time .ge. start_time) then
-          icou = icou + 1
-          if (ist_true .eq. -1) then
-            ist_true =   sph_IN%i_step
-            true_start = sph_IN%time
-!
-            call copy_ene_spectr_2_pre                                  &
-     &         (sph_IN%time, prev_time, ncomp, WK_tave%read_spec(1,1),  &
-     &          WK_tave%ave_spec_l(1,1), WK_tave%ave_pre_l(1,1),        &
-     &          WK_tave%rms_spec_l(1,1), WK_tave%rms_pre_l(1,1))
-          else
-            call add_average_ene_spectr                                 &
-     &         (sph_IN%time, prev_time, ncomp, WK_tave%read_spec(1,1),  &
-     &          WK_tave%ave_spec_l(1,1), WK_tave%ave_pre_l(1,1),        &
-     &          WK_tave%rms_spec_l(1,1), WK_tave%rms_pre_l(1,1))
-!
-          end if
-        end if
-!
-        write(*,'(65a1,a6,i12,a8,f12.6,a15,i12)',advance="NO")          &
-     &       (char(8),i=1,65),                                          &
-     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
-     &       ', Load Count:  ', icou
-        if (sph_IN%time .ge. end_time) then
-          true_end = sph_IN%time
-          exit
-        end if
-      end do
-!
-   99 continue
-      write(*,*)
-!
-      call divide_average_ene_spectr(sph_IN%time, true_start, ncomp,    &
-     &    WK_tave%ave_spec_l, WK_tave%rms_spec_l)
-!
-      end subroutine sph_layer_mean_average
-!
-!   --------------------------------------------------------------------
-!
-      subroutine sph_layer_mean_std_deviation                           &
-     &         (FPz_f, id_read, flag_gzip, flag_old_fmt,                &
-     &          start_time, end_time, sph_IN, WK_tave, zbuf_rd)
-!
-      use t_buffer_4_gzip
-      use select_gz_stream_file_IO
-      use gz_spl_sph_spectr_data_IO
-      use write_sph_monitor_data
-      use cal_tave_sph_ene_spectr
-      use gz_layer_mean_monitor_IO
-!
-      character, pointer, intent(in) :: FPz_f
-      integer(kind = kint), intent(in) :: id_read
-      logical, intent(in) :: flag_gzip, flag_old_fmt
-      real(kind = kreal), intent(in) :: start_time, end_time
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-      type(layer_mean_ave_sigma_work), intent(inout) :: WK_tave
-      type(buffer_4_gzip), intent(inout) :: zbuf_rd
-!
-      real(kind = kreal) :: true_start, prev_time
-      integer(kind = kint) :: icou, ierr, ist_true, i, ncomp
-!
-!  Evaluate standard deviation
-!
-      ncomp = sph_IN%ntot_sph_spec * sph_IN%nri_sph
-!
-      icou = 0
-      ist_true = -1
-      prev_time = sph_IN%time
-      WK_tave%sigma_spec_l = 0.0d0
-      write(*,'(a6,i12,a8,f12.6,a15,i12)',advance="NO")                 &
-     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
-     &       ', Load Count:  ', icou
-      do
-        call sel_gz_input_sph_layer_mean                                &
-     &     (FPz_f, id_read, flag_gzip, flag_old_fmt,                    &
-     &      sph_IN%nri_sph, sph_IN%ntot_sph_spec, sph_IN%i_step,        &
-     &      sph_IN%time, sph_IN%kr_sph, sph_IN%r_sph,                   &
-     &      WK_tave%read_spec(1,1), zbuf_rd, ierr)
-        if(ierr .gt. 0) go to 99
-!
-        if (sph_IN%time .ge. start_time) then
-          icou = icou + 1
-          if (ist_true .eq. -1) then
-            ist_true = sph_IN%i_step
-            true_start = sph_IN%time
-            call copy_deviation_ene_2_pre                               &
-     &         (sph_IN%time, prev_time, ncomp,                          &
-     &         WK_tave%read_spec(1,1), WK_tave%ave_spec_l(1,1),         &
-     &         WK_tave%sigma_spec_l(1,1), WK_tave%sigma_pre_l(1,1))
-          else
-            call add_deviation_ene_spectr                               &
-     &        (sph_IN%time, prev_time, ncomp,                           &
-     &         WK_tave%read_spec(1,1), WK_tave%ave_spec_l(1,1),         &
-     &         WK_tave%sigma_spec_l(1,1), WK_tave%sigma_pre_l(1,1))
-          end if
-        end if
-!
-        write(*,'(65a1,a6,i12,a8,f12.6,a15,i12)',advance="NO")          &
-     &       (char(8),i=1,65),                                          &
-     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
-     &       ', Load Count:  ', icou
-        if (sph_IN%time .ge. end_time) exit
-      end do
-   99 continue
-      write(*,*)
-!
-      call divide_deviation_ene_spectr(sph_IN%time, true_start,         &
-     &                                 ncomp, WK_tave%sigma_spec_l)
-!
-      end subroutine sph_layer_mean_std_deviation
-!
-!   --------------------------------------------------------------------
-!
-      subroutine output_sph_sph_mean_ave_sdev                           &
-     &         (fname_org, true_start, true_end, sph_IN, WK_tave)
-!
-      use set_parallel_file_name
-      use sph_layer_monitor_snap_IO
-!
-      character(len = kchara), intent(in) :: fname_org
-      real(kind = kreal), intent(in) :: true_start, true_end
-      type(read_sph_spectr_data), intent(in) :: sph_IN
-      type(layer_mean_ave_sigma_work), intent(in) :: WK_tave
-!
-      type(buffer_4_gzip) :: zbuf1
-!
-      character(len = kchara) :: tave_file_name, trms_file_name
-      character(len = kchara) :: sdev_file_name
-      character(len = kchara) :: directory, fname_no_dir, fname_tmp
-      character(len=2+23+25+25+1) :: comment_1
-!
-      write(comment_1,'(2a,a23,1p2E25.15e3,a1)') '#', char(10),         &
-     &             '# Start and End time:  ', true_start, true_end,     &
-     &             char(10)
-!
-      call split_directory(fname_org, directory, fname_no_dir)
-      write(fname_tmp, '(a6,a)') 't_ave_', trim(fname_no_dir)
-      tave_file_name = append_directory(directory, fname_tmp)
-      write(fname_tmp, '(a6,a)') 't_rms_', trim(fname_no_dir)
-      tave_file_name = append_directory(directory, fname_tmp)
-      write(fname_tmp, '(a7,a)') 't_sdev_', trim(fname_no_dir)
-      sdev_file_name = append_directory(directory, fname_tmp)
-!
-!
-      call write_sph_layer_mean_snapshot                                &
-     &   (.FALSE., tave_file_name, comment_1, sph_pwr_labels, sph_IN,   &
-     &     WK_tave%ave_spec_l(1,1), zbuf1)
-      call write_sph_layer_mean_snapshot                                &
-     &   (.FALSE., trms_file_name, comment_1, sph_pwr_labels, sph_IN,   &
-     &    WK_tave%rms_spec_l(1,1), zbuf1)
-      call write_sph_layer_mean_snapshot                                &
-     &   (.FALSE., sdev_file_name, comment_1, sph_pwr_labels, sph_IN,   &
-     &    WK_tave%sigma_spec_l(1,1), zbuf1)
-!
-      end subroutine output_sph_sph_mean_ave_sdev
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine alloc_tave_sph_layer_mean(sph_IN, WK_tave)
@@ -473,6 +126,156 @@
       end do
 !
       end subroutine check_time_ave_sph_layer_mean
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine sph_layer_mean_average                                 &
+     &         (FPz_f, id_read, flag_gzip, flag_old_fmt,                &
+     &          start_time, end_time, true_start, true_end,             &
+     &          sph_IN, WK_tave, zbuf_rd)
+!
+      use gz_spl_sph_spectr_data_IO
+      use cal_tave_sph_ene_spectr
+      use gz_layer_mean_monitor_IO
+!
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_read
+      logical, intent(in) :: flag_gzip, flag_old_fmt
+      real(kind = kreal), intent(in) :: start_time, end_time
+!
+      real(kind = kreal), intent(inout) :: true_start, true_end
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+      type(layer_mean_ave_sigma_work), intent(inout) :: WK_tave
+      type(buffer_4_gzip), intent(inout) :: zbuf_rd
+!
+      real(kind = kreal) :: prev_time
+      integer(kind = kint) :: icou, ierr, ist_true, i, ncomp
+!
+!
+      ncomp = sph_IN%ntot_sph_spec * sph_IN%nri_sph
+!
+      icou = 0
+      ist_true = -1
+      prev_time = sph_IN%time
+        write(*,'(a6,i12,a8,f12.6,a15,i12)',advance="NO")               &
+     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
+     &       ', Load Count:  ', icou
+      do
+        call sel_gz_input_sph_layer_mean                                &
+     &     (FPz_f, id_read, flag_gzip, flag_old_fmt,                    &
+     &      sph_IN%nri_sph, sph_IN%ntot_sph_spec, sph_IN%i_step,        &
+     &      sph_IN%time, sph_IN%kr_sph, sph_IN%r_sph,                   &
+     &      WK_tave%read_spec(1,1), zbuf_rd, ierr)
+        if(ierr .gt. 0) go to 99
+!
+        if (sph_IN%time .ge. start_time) then
+          icou = icou + 1
+          if (ist_true .eq. -1) then
+            ist_true =   sph_IN%i_step
+            true_start = sph_IN%time
+!
+            call copy_ene_spectr_2_pre                                  &
+     &         (sph_IN%time, prev_time, ncomp, WK_tave%read_spec(1,1),  &
+     &          WK_tave%ave_spec_l(1,1), WK_tave%ave_pre_l(1,1),        &
+     &          WK_tave%rms_spec_l(1,1), WK_tave%rms_pre_l(1,1))
+          else
+            call add_average_ene_spectr                                 &
+     &         (sph_IN%time, prev_time, ncomp, WK_tave%read_spec(1,1),  &
+     &          WK_tave%ave_spec_l(1,1), WK_tave%ave_pre_l(1,1),        &
+     &          WK_tave%rms_spec_l(1,1), WK_tave%rms_pre_l(1,1))
+!
+          end if
+        end if
+!
+        write(*,'(65a1,a6,i12,a8,f12.6,a15,i12)',advance="NO")          &
+     &       (char(8),i=1,65),                                          &
+     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
+     &       ', Load Count:  ', icou
+        if (sph_IN%time .ge. end_time) then
+          true_end = sph_IN%time
+          exit
+        end if
+      end do
+!
+   99 continue
+      write(*,*)
+!
+      call divide_average_ene_spectr(sph_IN%time, true_start, ncomp,    &
+     &    WK_tave%ave_spec_l, WK_tave%rms_spec_l)
+!
+      end subroutine sph_layer_mean_average
+!
+!   --------------------------------------------------------------------
+!
+      subroutine sph_layer_mean_std_deviation                           &
+     &         (FPz_f, id_read, flag_gzip, flag_old_fmt,                &
+     &          start_time, end_time, sph_IN, WK_tave, zbuf_rd)
+!
+      use gz_spl_sph_spectr_data_IO
+      use cal_tave_sph_ene_spectr
+      use gz_layer_mean_monitor_IO
+!
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_read
+      logical, intent(in) :: flag_gzip, flag_old_fmt
+      real(kind = kreal), intent(in) :: start_time, end_time
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+      type(layer_mean_ave_sigma_work), intent(inout) :: WK_tave
+      type(buffer_4_gzip), intent(inout) :: zbuf_rd
+!
+      real(kind = kreal) :: true_start, prev_time
+      integer(kind = kint) :: icou, ierr, ist_true, i, ncomp
+!
+!  Evaluate standard deviation
+!
+      ncomp = sph_IN%ntot_sph_spec * sph_IN%nri_sph
+!
+      icou = 0
+      ist_true = -1
+      prev_time = sph_IN%time
+      WK_tave%sigma_spec_l = 0.0d0
+      write(*,'(a6,i12,a8,f12.6,a15,i12)',advance="NO")                 &
+     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
+     &       ', Load Count:  ', icou
+      do
+        call sel_gz_input_sph_layer_mean                                &
+     &     (FPz_f, id_read, flag_gzip, flag_old_fmt,                    &
+     &      sph_IN%nri_sph, sph_IN%ntot_sph_spec, sph_IN%i_step,        &
+     &      sph_IN%time, sph_IN%kr_sph, sph_IN%r_sph,                   &
+     &      WK_tave%read_spec(1,1), zbuf_rd, ierr)
+        if(ierr .gt. 0) go to 99
+!
+        if (sph_IN%time .ge. start_time) then
+          icou = icou + 1
+          if (ist_true .eq. -1) then
+            ist_true = sph_IN%i_step
+            true_start = sph_IN%time
+            call copy_deviation_ene_2_pre                               &
+     &         (sph_IN%time, prev_time, ncomp,                          &
+     &         WK_tave%read_spec(1,1), WK_tave%ave_spec_l(1,1),         &
+     &         WK_tave%sigma_spec_l(1,1), WK_tave%sigma_pre_l(1,1))
+          else
+            call add_deviation_ene_spectr                               &
+     &        (sph_IN%time, prev_time, ncomp,                           &
+     &         WK_tave%read_spec(1,1), WK_tave%ave_spec_l(1,1),         &
+     &         WK_tave%sigma_spec_l(1,1), WK_tave%sigma_pre_l(1,1))
+          end if
+        end if
+!
+        write(*,'(65a1,a6,i12,a8,f12.6,a15,i12)',advance="NO")          &
+     &       (char(8),i=1,65),                                          &
+     &       'step= ', sph_IN%i_step, ', time= ', sph_IN%time,          &
+     &       ', Load Count:  ', icou
+        if (sph_IN%time .ge. end_time) exit
+      end do
+   99 continue
+      write(*,*)
+!
+      call divide_deviation_ene_spectr(sph_IN%time, true_start,         &
+     &                                 ncomp, WK_tave%sigma_spec_l)
+!
+      end subroutine sph_layer_mean_std_deviation
 !
 !   --------------------------------------------------------------------
 !
