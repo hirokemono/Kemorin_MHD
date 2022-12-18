@@ -20,6 +20,10 @@
 !!        integer(kind = kint), intent(in) :: id_file
 !!        logical, intent(in) :: flag_spectr, flag_vol_ave
 !!        type(read_sph_spectr_data), intent(in) :: sph_OUT
+!!
+!!      subroutine write_vol_spectr_data(id_file, sph_OUT)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(read_sph_spectr_data), intent(in) :: sph_OUT
 !!@endverbatim
 !
       module write_sph_monitor_data
@@ -31,7 +35,7 @@
 !
       implicit none
 !
-      private :: write_vol_sph_data, write_vol_spectr_data
+      private :: write_vol_sph_data
       private :: write_layer_sph_data, write_layer_spectr_data
 !
 !   --------------------------------------------------------------------

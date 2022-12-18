@@ -213,6 +213,7 @@
       real(kind = kreal), intent(in)                                    &
      &      :: rms_sph_x(0:sph_params%l_truncation, v_pwr%ntot_comp_sq)
 !
+      real(kind = kreal), allocatable :: spectr_IO(:,:)
       type(read_sph_spectr_data), save :: sph_OUT
       type(buffer_4_gzip), save :: zbuf_m
       logical :: flag_gzip_lc
@@ -223,16 +224,18 @@
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    ene_labels, sph_rj, v_pwr, sph_OUT)
       call alloc_sph_spectr_data(sph_OUT%ltr_sph, sph_OUT)
+      allocate(spectr_IO(v_pwr%ntot_comp_sq,0:sph_params%l_truncation))
 !
       flag_gzip_lc = v_pwr%gzip_flag_vol_spec
       call sel_open_sph_vol_monitor_file(id_file_rms, fname_rms,        &
      &    sph_pwr_labels, sph_OUT, zbuf_m, flag_gzip_lc)
       call swap_volume_spectr_to_IO(sph_params%l_truncation,            &
-     &    v_pwr%ntot_comp_sq, rms_sph_x, sph_OUT%spectr_IO(1,0,1))
+     &    v_pwr%ntot_comp_sq, rms_sph_x, spectr_IO(1,0))
       call sel_gz_write_volume_spectr_mtr                               &
      &   (flag_gzip_lc, id_file_rms, time_d%i_time_step, time_d%time,   &
      &    sph_params%l_truncation, v_pwr%ntot_comp_sq,                  &
-     &    sph_OUT%spectr_IO(1,0,1), zbuf_m)
+     &    spectr_IO(1,0), zbuf_m)
+      deallocate(spectr_IO)
       call dealloc_sph_espec_data(sph_OUT)
       call dealloc_sph_espec_name(sph_OUT)
       close(id_file_rms)
