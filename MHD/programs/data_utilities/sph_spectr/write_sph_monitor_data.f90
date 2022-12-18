@@ -24,6 +24,11 @@
 !!      subroutine write_vol_spectr_data(id_file, sph_OUT)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(read_sph_spectr_data), intent(in) :: sph_OUT
+!!      real(kind = kreal), intent(in)                                  &
+!!     &           :: spectr_IO(sph_OUT%ntot_sph_spec,0:sph_OUT%ltr_sph)
+!!
+!!      real(kind = kreal), intent(inout)                               &
+!!     &             :: spectr_IO(sph_IN%ntot_sph_spec, 0:sph_IN%ltr_sph)
 !!@endverbatim
 !
       module write_sph_monitor_data
@@ -79,7 +84,8 @@
 !
       if(flag_spectr) then
         if(flag_vol_ave) then
-          call write_vol_spectr_data(id_file, sph_OUT)
+          call write_vol_spectr_data(id_file, sph_OUT,     &
+     &                               sph_OUT%spectr_IO(1,0,1))
         else
           call write_layer_spectr_data(id_file, sph_OUT)
         end if
@@ -139,10 +145,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_vol_spectr_data(id_file, sph_OUT)
+      subroutine write_vol_spectr_data(id_file, sph_OUT, spectr_IO)
 !
       integer(kind = kint), intent(in) :: id_file
       type(read_sph_spectr_data), intent(in) :: sph_OUT
+      real(kind = kreal), intent(in)                                    &
+     &           :: spectr_IO(sph_OUT%ntot_sph_spec,0:sph_OUT%ltr_sph)
 !
       integer(kind = kint) :: lth
       character(len=kchara) :: fmt_txt
@@ -153,7 +161,7 @@
       do lth = 0, sph_OUT%ltr_sph
         write(id_file,fmt_txt)                                          &
      &               sph_OUT%i_step, sph_OUT%time, sph_OUT%i_mode(lth), &
-     &               sph_OUT%spectr_IO(1:sph_OUT%ntot_sph_spec,lth,1)
+     &               spectr_IO(1:sph_OUT%ntot_sph_spec,lth)
       end do
 !
       end subroutine write_vol_spectr_data

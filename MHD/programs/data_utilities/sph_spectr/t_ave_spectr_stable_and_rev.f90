@@ -158,6 +158,7 @@
       type(sph_spectr_head_labels), save :: sph_lbl_IN_p
       type(read_sph_spectr_data), save :: sph_IN_p, sph_OUT1
       type(sph_volume_spectr_series), save :: vs_srs_p
+      real(kind = kreal), allocatable :: spectr_OUT(:,:)
 !
       type(buffer_4_gzip), save :: zbuf_s
 !
@@ -260,6 +261,11 @@
       sph_OUT1%ene_sph_spec_name(i+2) = hd_g11
       sph_OUT1%ene_sph_spec_name(i+3) = hd_h11
 !
+      allocate(spectr_OUT(sph_OUT1%ntot_sph_spec,0:sph_OUT1%ltr_sph))
+!$omp parallel workshare
+      spectr_OUT(1:sph_OUT1%ntot_sph_spec,0:sph_OUT1%ltr_sph) = 0.0d0
+!$omp end parallel workshare
+!
       call split_extrension(vpwr_file_name, file_name, extension)
       if(extension .eq. 'gz') then
         call split_extrension(file_name, fname_tmp, extension)
@@ -301,47 +307,53 @@
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, tave_vol_pwr(1,1),  &
      &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1,                &
-     &    sph_OUT1%spectr_IO(1,0,1))
-      call write_vol_spectr_data(id_file_rms, sph_OUT1)
+     &    spectr_OUT(1,0))
+      call write_vol_spectr_data(id_file_rms, sph_OUT1,                 &
+     &                           spectr_OUT(1,0))
 !
       sph_OUT1%i_step = 1
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, tave_vol_pwr(1,2),  &
      &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1,                &
-     &    sph_OUT1%spectr_IO(1,0,1))
-      call write_vol_spectr_data(id_file_rms, sph_OUT1)
+     &    spectr_OUT(1,0))
+      call write_vol_spectr_data(id_file_rms, sph_OUT1,                 &
+     &                           spectr_OUT(1,0))
 !
 !
       sph_OUT1%i_step = 2
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_pwr(1,1),   &
      &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1,                &
-     &    sph_OUT1%spectr_IO(1,0,1))
-      call write_vol_spectr_data(id_file_rms, sph_OUT1)
+     &    spectr_OUT(1,0))
+      call write_vol_spectr_data(id_file_rms, sph_OUT1,                 &
+     &                           spectr_OUT(1,0))
 !
       sph_OUT1%i_step = 3
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, rms_vol_pwr(1,2),   &
      &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1,                &
-     &    sph_OUT1%spectr_IO(1,0,1))
-      call write_vol_spectr_data(id_file_rms, sph_OUT1)
+     &    spectr_OUT(1,0))
+      call write_vol_spectr_data(id_file_rms, sph_OUT1,                 &
+     &                           spectr_OUT(1,0))
 !
 !
       sph_OUT1%i_step = 4
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, sdev_vol_pwr(1,1),  &
      &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1,               &
-     &    sph_OUT1%spectr_IO(1,0,1))
-      call write_vol_spectr_data(id_file_rms, sph_OUT1)
+     &    spectr_OUT(1,0))
+      call write_vol_spectr_data(id_file_rms, sph_OUT1,                 &
+     &                           spectr_OUT(1,0))
 !
       sph_OUT1%i_step = 5
       call copy_moniter_spectr_to_IO                                    &
      &   (sph_IN_p%ntot_sph_spec, sph_IN_p%ltr_sph, sdev_vol_pwr(1,2),  &
      &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1,               &
-     &    sph_OUT1%spectr_IO(1,0,1))
-      call write_vol_spectr_data(id_file_rms, sph_OUT1)
-!
+     &    spectr_OUT(1,0))
+      call write_vol_spectr_data(id_file_rms, sph_OUT1,                 &
+     &                           spectr_OUT(1,0))
       close(id_file_rms)
+      deallocate(spectr_OUT)
 !
       end subroutine s_time_average_spec_stable_rev
 !
