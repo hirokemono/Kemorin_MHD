@@ -29,8 +29,14 @@
 !!      subroutine write_vol_spectr_data(id_file, sph_OUT)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(read_sph_spectr_data), intent(in) :: sph_OUT
-!!      real(kind = kreal), intent(in)                                  &
+!!        real(kind = kreal), intent(in)                                &
 !!     &           :: spectr_IO(sph_OUT%ntot_sph_spec,0:sph_OUT%ltr_sph)
+!!
+!!      subroutine write_layer_sph_data(id_file, sph_OUT, spectr_IO)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(read_sph_spectr_data), intent(in) :: sph_OUT
+!!        real(kind = kreal), intent(in)                                &
+!!     &           :: spectr_IO(sph_OUT%ntot_sph_spec,sph_OUT%nri_sph)
 !!
 !!      real(kind = kreal), intent(inout)                               &
 !!     &             :: spectr_IO(sph_IN%ntot_sph_spec, 0:sph_IN%ltr_sph)
@@ -45,7 +51,7 @@
 !
       implicit none
 !
-      private :: write_layer_sph_data, write_layer_spectr_data
+      private :: write_layer_spectr_data
 !
 !   --------------------------------------------------------------------
 !
@@ -98,7 +104,8 @@
           call write_vol_sph_data(id_file, sph_OUT,     &
      &                               sph_OUT%spectr_IO(1,0,1))
         else
-          call write_layer_sph_data(id_file, sph_OUT)
+          call write_layer_sph_data(id_file, sph_OUT,     &
+     &                               sph_OUT%spectr_IO(1,0,1))
         end if
       end if
 !
@@ -175,10 +182,12 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine write_layer_sph_data(id_file, sph_OUT)
+      subroutine write_layer_sph_data(id_file, sph_OUT, spectr_IO)
 !
       integer(kind = kint), intent(in) :: id_file
       type(read_sph_spectr_data), intent(in) :: sph_OUT
+      real(kind = kreal), intent(in)                                    &
+     &           :: spectr_IO(sph_OUT%ntot_sph_spec,sph_OUT%nri_sph)
 !
       integer(kind = kint) :: kr
       character(len=kchara) :: fmt_txt
@@ -189,7 +198,7 @@
       do kr = 1, sph_OUT%nri_sph
         write(id_file,fmt_txt) sph_OUT%i_step, sph_OUT%time,            &
      &         sph_OUT%kr_sph(kr), sph_OUT%r_sph(kr),                   &
-     &         sph_OUT%spectr_IO(1:sph_OUT%ntot_sph_spec,0,kr)
+     &         spectr_IO(1:sph_OUT%ntot_sph_spec,kr)
       end do
 !
       end subroutine write_layer_sph_data

@@ -54,6 +54,8 @@
       type(read_sph_spectr_data) :: sph_IN1
       type(read_sph_spectr_data) :: sph_OUT1
       type(sph_spectr_head_labels) :: sph_lbl_IN1
+      real(kind = kreal), allocatable :: spectr_IN(:,:,:)
+      real(kind = kreal), allocatable :: dipole_ratio(:)
 !
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf_s, zbuf1
@@ -83,6 +85,13 @@
       call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
 !      call check_sph_spectr_name(sph_IN1)
 !
+      allocate(spectr_IN(sph_IN1%ntot_sph_spec,                         &
+     &                   0:sph_IN1%ltr_sph,sph_IN1%nri_sph))
+!$omp parallel workshare 
+      spectr_IN(1:sph_IN1%ntot_sph_spec,                                &
+     &          0:sph_IN1%ltr_sph,1:sph_IN1%nri_sph) = 0.0d0
+!$omp end parallel workshare
+!
       call init_dipole_fitting_data(sph_IN1, fit_dat1)
       call copy_read_ene_head_params(sph_IN1, sph_OUT1)
       sph_OUT1%num_time_labels = sph_OUT1%num_time_labels - 1
@@ -109,6 +118,8 @@
       sph_OUT1%nri_dat = 1
       call alloc_sph_spectr_data(izero, sph_OUT1)
 !
+      allocate(dipole_ratio(sph_OUT1%ntot_sph_spec))
+      dipole_ratio(1:sph_OUT1%ntot_sph_spec) = 0.0d0
 !
       icou = 0
       ist_true = -1
@@ -120,8 +131,7 @@
      &     (FPz_f1, id_file_rms, flag_gzip1, flag_current_format,       &
      &      sph_IN1%nri_sph, sph_IN1%ltr_sph, sph_IN1%ntot_sph_spec,    &
      &      sph_IN1%i_step, sph_IN1%time, sph_IN1%kr_sph,               &
-     &      sph_IN1%r_sph, sph_IN1%i_mode, sph_IN1%spectr_IO(1,0,1),    &
-     &      zbuf1, ierr)
+     &      sph_IN1%r_sph, sph_IN1%i_mode, spectr_IN, zbuf1, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN1%time .ge. fit_dat1%start_time) then
@@ -129,12 +139,12 @@
           sph_OUT1%time =   sph_IN1%time
           sph_OUT1%i_step = sph_IN1%i_step
           call cal_dipole_fitting_ratio                                 &
-     &       (sph_IN1, sph_OUT1%ntot_sph_spec,                          &
+     &       (sph_IN1, spectr_IN, sph_OUT1%ntot_sph_spec,               &
      &        sph_OUT1%kr_sph(1), sph_OUT1%r_sph(1),                    &
-     &        sph_OUT1%spectr_IO(1,0,1), fit_dat1)
+     &        dipole_ratio, fit_dat1)
 !
-          call select_output_sph_series_data                            &
-     &       (id_file_fitted, spectr_off, vol_ave_off, sph_OUT1)
+          call write_layer_sph_data(id_file_fitted, sph_OUT1,           &
+     &                              dipole_ratio(1))
         end if
 !
         write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60), &
@@ -152,6 +162,8 @@
      &   (FPz_f1, id_file_rms, flag_gzip1, zbuf1)
       close(id_file_fitted)
 !
+      deallocate(dipole_ratio)
+      deallocate(spectr_IN)
       call dealloc_sph_espec_data(sph_IN1)
       call dealloc_sph_espec_name(sph_IN1)
       call dealloc_sph_espec_data(sph_OUT1)
