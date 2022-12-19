@@ -64,6 +64,10 @@
       type(sph_spectr_head_labels) :: sph_lbl_IN_l, sph_lbl_IN_m
       character, pointer :: FPz_l, FPz_m
 !
+      real(kind = kreal), allocatable :: spectr_l(:,:)
+      real(kind = kreal), allocatable :: spectr_m(:,:)
+      real(kind = kreal), allocatable :: elsassers(:)
+!
       integer(kind = kint) :: i, icou, ierr, ist_true
       integer(kind = kint) :: nri_tmp
 !
@@ -108,6 +112,21 @@
      &    sph_OUT1%ene_sph_spec_name)
 !
 !
+      allocate(spectr_l(sph_IN_l%ntot_sph_spec, 0:sph_IN_l%ltr_sph))
+      allocate(spectr_m(sph_IN_m%ntot_sph_spec, 0:sph_IN_m%ltr_sph))
+      allocate(elsassers(sph_OUT1%ntot_sph_spec))
+!
+!$omp parallel workshare
+      spectr_l(1:sph_IN_l%ntot_sph_spec, 0:sph_IN_l%ltr_sph) = 0.0d0
+!$omp end parallel workshare
+!$omp parallel workshare
+      spectr_m(1:sph_IN_m%ntot_sph_spec, 0:sph_IN_m%ltr_sph) = 0.0d0
+!$omp end parallel workshare
+!$omp parallel workshare
+      elsassers(1:sph_OUT1%ntot_sph_spec) = 0.0d0
+!$omp end parallel workshare
+!
+!
       write(*,*) 'Save Elsasser number into  ',                         &
      &          trim(els_dat%elsasser_file_name)
       open(id_file_lscale, file=els_dat%elsasser_file_name)
@@ -128,11 +147,11 @@
         call sel_gz_read_volume_spectr_mtr(FPz_l, id_file_rms_l,        &
      &      flag_gzip_l, sph_IN_l%ltr_sph, sph_IN_l%ntot_sph_spec,      &
      &      sph_IN_l%i_step, sph_IN_l%time, sph_IN_l%i_mode,            &
-     &      sph_IN_l%spectr_IO(1,0,1), zbuf_l, ierr)
+     &      spectr_l(1,0), zbuf_l, ierr)
         call sel_gz_read_volume_spectr_mtr(FPz_l, id_file_rms_m,        &
      &      flag_gzip_m, sph_IN_m%ltr_sph, sph_IN_m%ntot_sph_spec,      &
      &      sph_IN_m%i_step, sph_IN_m%time, sph_IN_m%i_mode,            &
-     &      sph_IN_m%spectr_IO(1,0,1), zbuf_m, ierr)
+     &      spectr_m(1,0), zbuf_m, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN_l%time .ge. els_dat%start_time) then
@@ -140,14 +159,11 @@
           sph_OUT1%time =   sph_IN_l%time
           sph_OUT1%i_step = sph_IN_l%i_step
           call cal_dynamic_elsasser_by_spectr(iels1, els_dat,           &
-     &        sph_IN_l%ltr_sph, sph_IN_l%ntot_sph_spec,                 &
-     &        sph_IN_l%spectr_IO(1,0,1),                                &
-     &        sph_IN_m%ltr_sph, sph_IN_m%ntot_sph_spec,                 &
-     &        sph_IN_m%spectr_IO(1,0,1),                                &
-     &        sph_OUT1%ntot_sph_spec, sph_OUT1%spectr_IO(1,0,1))
+     &        sph_IN_l%ltr_sph, sph_IN_l%ntot_sph_spec, spectr_l(1,0),  &
+     &        sph_IN_m%ltr_sph, sph_IN_m%ntot_sph_spec, spectr_m(1,0),  &
+     &        sph_OUT1%ntot_sph_spec, elsassers(1))
 !
-          call select_output_sph_series_data                            &
-     &       (id_file_lscale, spectr_off, vol_ave_on, sph_OUT1)
+          call write_vol_sph_data(id_file_lscale, sph_OUT1, elsassers)
         end if
 !
         write(*,'(78a1,a5,i12,a7,1pE23.15,a19,i12)',advance="NO")       &
@@ -166,6 +182,7 @@
       close(id_file_lscale)
 !
 !
+      deallocate(elsassers, spectr_m, spectr_l)
       call dealloc_sph_espec_data(sph_IN_l)
       call dealloc_sph_espec_name(sph_IN_l)
       call dealloc_sph_espec_data(sph_IN_m)

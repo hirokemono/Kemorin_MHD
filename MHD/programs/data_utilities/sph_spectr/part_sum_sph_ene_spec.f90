@@ -37,15 +37,15 @@
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
       do i = 1, spec_evo_p1%vol_spec_series%num_file
-        call sph_part_pwr_spectr_sum                                    &
+        call sph_part_volume_spectr_sum                                 &
      &     (spec_evo_p1%vol_spec_series%evo_file_name(i),               &
-     &      .TRUE., spec_evo_p1, sph_IN_p)
+     &      spec_evo_p1, sph_IN_p)
       end do
 !
       do i = 1, spec_evo_p1%layer_spec_series%num_file
-        call sph_part_pwr_spectr_sum                                    &
+        call sph_part_layer_spectr_sum                                  &
      &     (spec_evo_p1%layer_spec_series%evo_file_name(i),             &
-     &      .FALSE., spec_evo_p1, sph_IN_p)
+     &      spec_evo_p1, sph_IN_p)
       end do
 !
       call dealloc_spec_series_file_param(spec_evo_p1)
