@@ -69,8 +69,7 @@
         write(*,*) 'Set File prefix for Nusselt number'
         stop
       end if
-      call set_sph_series_file_name                                     &
-     &   (dummy_item, tave_sph_ctl%read_mnt_file_fmt_ctl,               &
+      call set_sph_series_file_name(dummy_item,                         &
      &    tave_sph_ctl%monitor_list_ctl%Nusselt_file_prefix%charavalue, &
      &    Nu_t%Nusselt_file_name)
 !

@@ -74,9 +74,7 @@
       end if
       file_prefix                                                       &
      & =tave_sph_ctl%monitor_list_ctl%dipolarity_file_prefix%charavalue
-      call set_sph_series_file_name                                     &
-     &   (dummy_item, tave_sph_ctl%read_mnt_file_fmt_ctl,               &
-     &    file_prefix, file_name)
+      call set_sph_series_file_name(dummy_item, file_prefix, file_name)
 !
       if(tave_sph_ctl%start_time_ctl%iflag .eq. 0) then
         write(*,*) 'Set start time'

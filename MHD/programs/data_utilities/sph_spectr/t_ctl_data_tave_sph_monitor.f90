@@ -22,7 +22,6 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    read_monitor_file_format_ctl   'gzip'
 !!    old_format_flag     'Off'
 !!    degree_range_ctl     1   12
 !!
@@ -90,8 +89,6 @@
 !>        Structure for end time
         type(read_real_item) :: end_time_ctl
 !
-!>        file format of time series to be read
-        type(read_character_item) :: read_mnt_file_fmt_ctl
 !>        Character flag for old format
         type(read_character_item) :: old_format_ctl
 !>        Range of spherical harmonics degree
@@ -116,8 +113,6 @@
      &           :: hd_old_format =   'old_format_flag'
       character(len=kchara), parameter, private                         &
      &           :: hd_degree_range = 'degree_range_ctl'
-      character(len=kchara), parameter, private                         &
-     &      :: hd_read_monitor_format = 'read_monitor_file_format_ctl'
 !
       character(len=kchara), parameter, private                         &
      &            :: hd_monitor_data_list = 'monitor_data_list_ctl'
@@ -181,9 +176,6 @@
         call read_integer2_ctl_type                                     &
      &     (c_buf, hd_degree_range, tave_sph_ctl%degree_range_ctl)
 !
-        call read_chara_ctl_type(c_buf, hd_read_monitor_format,         &
-     &      tave_sph_ctl%read_mnt_file_fmt_ctl)
-!
         call read_ctl_sph_monitor_list                                  &
      &    (id_control, hd_monitor_data_list,                            &
      &     tave_sph_ctl%monitor_list_ctl, c_buf)
@@ -203,7 +195,6 @@
       tave_sph_ctl%end_time_ctl%iflag =     0
       tave_sph_ctl%old_format_ctl%iflag =   0
       tave_sph_ctl%degree_range_ctl%iflag = 0
-      tave_sph_ctl%read_mnt_file_fmt_ctl%iflag = 0
 !
       call dealloc_ctl_sph_monitor_list(tave_sph_ctl%monitor_list_ctl)
 !

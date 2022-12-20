@@ -31,11 +31,9 @@
       call read_ctl_file_add_sph_mntr(ctl_file_name, add_mtr_ctl1)
 !
       call set_spec_series_file_param(add_mtr_ctl1%folder_to_read_ctl,  &
-     &    add_mtr_ctl1%read_monitor_fmt_ctl,                            &
      &    add_mtr_ctl1%monitor_list_ctl, spec_evo_append)
       call set_spec_series_file_param(add_mtr_ctl1%folder_to_add_ctl,   &
-     &    dummy_item, add_mtr_ctl1%monitor_list_ctl,                    &
-     &    spec_evo_target)
+     &    add_mtr_ctl1%monitor_list_ctl, spec_evo_target)
 !
 !
       call dealloc_ctl_data_add_sph_mntr(add_mtr_ctl1)

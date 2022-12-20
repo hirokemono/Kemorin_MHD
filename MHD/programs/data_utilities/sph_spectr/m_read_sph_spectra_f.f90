@@ -241,13 +241,19 @@
       real(c_double), intent(inout) :: time(1)
       real(c_double), intent(inout) :: spectr(ncomp)
 !
+      real(kind = kreal), allocatable :: spectr_IN(:)
       integer(kind = kint) :: ierr_read, i
 !
+!
+      allocate(spectr_IN(sph_IN_f%ntot_sph_spec))
+!$omp parallel workshare
+      spectr_IN(1:sph_IN_f%ntot_sph_spec) = 0.0d0
+!$omp end parallel workshare
 !
       load_one_volume_mean_item_f = 0
       call gz_read_volume_pwr_sph(FPz_fsp, id_file_rms, flag_gzip_s,    &
      &    sph_IN_f%ntot_sph_spec, sph_IN_f%i_step, sph_IN_f%time,       &
-     &    sph_IN_f%spectr_IO(1,0,1), zbuf_f, ierr_read)
+     &    spectr_IN, zbuf_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_volume_mean_item_f = ierr_read
         return
@@ -256,8 +262,9 @@
       i_step(1) = sph_IN_f%i_step
       time(1) =   sph_IN_f%time
       do i = 1, ncomp
-        spectr(i) = sph_IN_f%spectr_IO(id_pick(i),0,1)
+        spectr(i) = spectr_IN(id_pick(i))
       end do
+      deallocate(spectr_IN)
 !
       end function load_one_volume_mean_item_f
 !
@@ -275,14 +282,20 @@
       real(c_double), intent(inout) :: time(1)
       real(c_double), intent(inout) :: spectr(ncomp)
 !
+      real(kind = kreal), allocatable :: spectr_IN(:,:)
       integer(kind = kint) :: ierr_read, i
 !
+!
+      allocate(spectr_IN(sph_IN_f%ntot_sph_spec,0:sph_IN_f%ltr_sph))
+!$omp parallel workshare
+      spectr_IN(1:sph_IN_f%ntot_sph_spec,0:sph_IN_f%ltr_sph) = 0.0d0
+!$omp end parallel workshare
 !
       load_one_volume_spectr_item_f = 0
       call sel_gz_read_volume_spectr_mtr(FPz_fsp, id_file_rms,          &
      &    flag_gzip_s, sph_IN_f%ltr_sph, sph_IN_f%ntot_sph_spec,        &
      &    sph_IN_f%i_step, sph_IN_f%time, sph_IN_f%i_mode,              &
-     &    sph_IN_f%spectr_IO(1,0,1), zbuf_f, ierr_read)
+     &    spectr_IN(1,0), zbuf_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_volume_spectr_item_f = ierr_read
         return
@@ -291,8 +304,9 @@
       i_step(1) = sph_IN_f%i_step
       time(1) =   sph_IN_f%time
       do i = 1, ncomp
-        spectr(i) = sph_IN_f%spectr_IO(id_pick(i),i_mode,1)
+        spectr(i) = spectr_IN(id_pick(i),i_mode)
       end do
+      deallocate(spectr_IN)
 !
       end function load_one_volume_spectr_item_f
 !
@@ -311,15 +325,21 @@
       real(c_double), intent(inout) :: time(1)
       real(c_double), intent(inout) :: spectr(ncomp)
 !
+      real(kind = kreal), allocatable :: spectr_IN(:,:)
       integer(kind = kint) :: ierr_read, i
 !
+!
+      allocate(spectr_IN(sph_IN_f%ntot_sph_spec,sph_IN_f%nri_sph))
+!$omp parallel workshare
+      spectr_IN(1:sph_IN_f%ntot_sph_spec,1:sph_IN_f%nri_sph) = 0.0d0
+!$omp end parallel workshare
 !
       load_one_layer_mean_item_f = 0
       call sel_gz_input_sph_layer_mean                                  &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
      &    sph_IN_f%nri_sph, sph_IN_f%ntot_sph_spec, sph_IN_f%i_step,    &
      &    sph_IN_f%time, sph_IN_f%kr_sph, sph_IN_f%r_sph,               &
-     &    sph_IN_f%spectr_IO(1,0,1), zbuf_f, ierr_read)
+     &    spectr_IN(1,1), zbuf_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_layer_mean_item_f = ierr_read
         return
@@ -328,8 +348,9 @@
       i_step(1) = sph_IN_f%i_step
       time(1) =   sph_IN_f%time
       do i = 1, ncomp
-        spectr(i) = sph_IN_f%spectr_IO(id_pick(i),0,id_radius)
+        spectr(i) = spectr_IN(id_pick(i),id_radius)
       end do
+      deallocate(spectr_IN)
 !
       end function load_one_layer_mean_item_f
 !
@@ -348,15 +369,23 @@
       real(c_double), intent(inout) :: time(1)
       real(c_double), intent(inout) :: spectr(ncomp)
 !
+      real(kind = kreal), allocatable :: spectr_IN(:,:,:)
       integer(kind = kint) :: ierr_read, i
 !
+!
+      allocate(spectr_IN(sph_IN_f%ntot_sph_spec,                        &
+     &                   0:sph_IN_f%ltr_sph,sph_IN_f%nri_sph))
+!$omp parallel workshare
+      spectr_IN(1:sph_IN_f%ntot_sph_spec,                               &
+     &          0:sph_IN_f%ltr_sph,1:sph_IN_f%nri_sph) = 0.0d0
+!$omp end parallel workshare
 !
       load_one_layer_spectr_item_f = 0
       call sel_gz_input_sph_layer_spec                                  &
      &   (FPz_fsp, id_file_rms, flag_gzip_s, flag_current_fmt,          &
      &    sph_IN_f%nri_sph, sph_IN_f%ltr_sph, sph_IN_f%ntot_sph_spec,   &
      &    sph_IN_f%i_step, sph_IN_f%time, sph_IN_f%kr_sph,              &
-     &    sph_IN_f%r_sph, sph_IN_f%i_mode, sph_IN_f%spectr_IO(1,0,1),   &
+     &    sph_IN_f%r_sph, sph_IN_f%i_mode, spectr_IN(1,0,1),            &
      &    zbuf_f, ierr_read)
       if(ierr_read .gt. 0) then
         load_one_layer_spectr_item_f = ierr_read
@@ -366,8 +395,9 @@
       i_step(1) = sph_IN_f%i_step
       time(1) =   sph_IN_f%time
       do i = 1, ncomp
-        spectr(i) = sph_IN_f%spectr_IO(id_pick(i),i_mode,id_radius)
+        spectr(i) = spectr_IN(id_pick(i),i_mode,id_radius)
       end do
+      deallocate(spectr_IN)
 !
       end function load_one_layer_spectr_item_f
 !

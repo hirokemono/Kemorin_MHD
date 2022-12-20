@@ -76,11 +76,6 @@
 !
       sph_IN1%nri_dat = sph_IN1%nri_sph
       if(flag_vol_ave) sph_IN1%nri_dat = 1
-      if(flag_spectr .eqv. .FALSE.) then
-        call alloc_sph_spectr_data(izero, sph_IN1)
-      else
-        call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
-      end if
 !
       call sel_skip_comment_gz_stream                                   &
      &   (FPz_f1, id_append_file, flag_gzip1, zbuf1)
@@ -127,6 +122,16 @@
       write(*,*) 'ntot_pick', ntot_pick,                                &
      &         sph_OUT1%nri_sph, sph_OUT1%ltr_sph
 !
+      if(comp_tbl1%fast_flag .eqv. .FALSE.) then
+        sph_OUT1%nri_dat = sph_OUT1%nri_sph
+        if(flag_vol_ave) sph_OUT1%nri_dat = 1
+        if(flag_spectr .eqv. .FALSE.) then
+          call alloc_sph_spectr_data(izero, sph_OUT1)
+        else
+          call alloc_sph_spectr_data(sph_OUT1%ltr_sph, sph_OUT1)
+        end if
+      end if
+!
       call open_bwd_serch_to_append(target_file_name, id_write_file,    &
      &    istep_start, start_time, ntot_pick)
 !
@@ -166,7 +171,9 @@
 !
       call dealloc_sph_espec_data(sph_IN1)
       call dealloc_sph_espec_name(sph_IN1)
-      call dealloc_sph_espec_data(sph_OUT1)
+      if(comp_tbl1%fast_flag .eqv. .FALSE.) then
+        call dealloc_sph_espec_data(sph_OUT1)
+      end if
       call dealloc_sph_espec_name(sph_OUT1)
 !
       end subroutine append_sph_mean_sq_file

@@ -140,7 +140,6 @@
       subroutine read_time_ave_sph_layer_mean(fname_org, sph_lbl_IN,    &
      &                                        sph_IN, WK_tave)
 !
-      use t_read_sph_series
       use set_parallel_file_name
       use sph_layer_monitor_snap_IO
 !

@@ -64,8 +64,7 @@
         write(*,*) 'Set File prefix for Gauss coefficients'
         stop
       end if
-      call set_sph_series_file_name                                     &
-     &   (dummy_item, tave_sph_ctl%read_mnt_file_fmt_ctl,               &
+      call set_sph_series_file_name(dummy_item,                         &
      &    tave_sph_ctl%monitor_list_ctl%gauss_coefs_prefix%charavalue,  &
      &    input_file_name)
 !
