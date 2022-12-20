@@ -80,26 +80,6 @@
       end subroutine select_output_sph_pwr_head
 !
 !   --------------------------------------------------------------------
-!
-      subroutine read_volume_pwr_sph(id_file, sph_IN, ierr)
-!
-      integer(kind = kint), intent(in) :: id_file
-      type(read_sph_spectr_data), intent(inout) :: sph_IN
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-      ierr = 0
-      read(id_file,*,err=99,end=99) sph_IN%i_step, sph_IN%time,         &
-     &             sph_IN%spectr_IO(1:sph_IN%ntot_sph_spec,0,1)
-      return
-!
-   99 continue
-      ierr = 1
-      return
-!
-      end subroutine read_volume_pwr_sph
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine write_vol_sph_data(id_file, sph_OUT, spectr_IO)

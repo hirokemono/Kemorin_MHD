@@ -15,7 +15,6 @@
 !!
 !!      subroutine copy_read_ene_params_4_sum(sph_IN, sph_OUT)
 !!      subroutine copy_read_ene_step_data(sph_IN, sph_OUT)
-!!      subroutine copy_ene_spectr_data_to_IO(sph_IN, sph_OUT)
 !!        integer(kind = kint), intent(in) :: nri_dat, ltr_sph
 !!        integer(kind = kint), intent(in) :: ncomp
 !!        real(kind = kreal), intent(in)                                &
@@ -53,7 +52,6 @@
 !
         integer(kind = kint) :: i_step
         real(kind = kreal) :: time
-        real(kind = kreal), allocatable :: spectr_IO(:,:,:)
       end type read_sph_spectr_data
 !
 !   --------------------------------------------------------------------
@@ -90,7 +88,6 @@
 !
       ncomp = sph_IN%ntot_sph_spec
       allocate(sph_IN%i_mode(0:ltr))
-      allocate(sph_IN%spectr_IO(ncomp,0:ltr,sph_IN%nri_dat))
 !
 !$omp parallel do
       do l = 0, ltr
@@ -100,9 +97,6 @@
 !$omp parallel workshare
       sph_IN%kr_sph(1:sph_IN%nri_dat) = izero
       sph_IN%r_sph(1:sph_IN%nri_dat) = zero
-!$omp end parallel workshare
-!$omp parallel workshare
-      sph_IN%spectr_IO(1:ncomp,0:ltr,1:sph_IN%nri_dat) =  zero
 !$omp end parallel workshare
 !
       end subroutine alloc_sph_spectr_data
@@ -126,8 +120,7 @@
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
 !
-      deallocate(sph_IN%kr_sph, sph_IN%r_sph)
-      deallocate(sph_IN%i_mode, sph_IN%spectr_IO)
+      deallocate(sph_IN%kr_sph, sph_IN%r_sph, sph_IN%i_mode)
 !
       end subroutine dealloc_sph_espec_data
 !
@@ -228,27 +221,6 @@
 !$omp end parallel workshare
 !
       end subroutine copy_read_ene_step_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine copy_ene_spectr_data_to_IO(sph_IN, sph_OUT)
-!
-      type(read_sph_spectr_data), intent(in) :: sph_IN
-      type(read_sph_spectr_data), intent(inout) :: sph_OUT
-!
-      integer(kind = kint) :: nri_dat, ltr_sph
-      integer(kind = kint) :: ncomp
-!
-!
-      nri_dat = sph_OUT%nri_dat
-      ltr_sph = sph_OUT%ltr_sph
-      ncomp = sph_OUT%ntot_sph_spec
-!$omp parallel workshare
-      sph_OUT%spectr_IO(1:ncomp,0:ltr_sph,1:nri_dat)                    &
-     &        = sph_in%spectr_IO(1:ncomp,0:ltr_sph,1:nri_dat)
-!$omp end parallel workshare
-!
-      end subroutine copy_ene_spectr_data_to_IO
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

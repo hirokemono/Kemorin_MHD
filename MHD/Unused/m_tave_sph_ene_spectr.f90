@@ -707,5 +707,77 @@
       end subroutine check_time_ave_sdev_sph_spectr
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine sel_gz_input_sph_series_data(FPz_f, id_stream,         &
+     &          flag_gzip, flag_old_fmt, flag_spectr, flag_vol_ave,     &
+     &          sph_IN, zbuf, ierr)
+!
+      use old_sph_spectr_data_IO
+      use gz_volume_spectr_monitor_IO
+      use gz_layer_mean_monitor_IO
+      use gz_layer_spectr_monitor_IO
+!
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_stream
+      logical, intent(in) :: flag_gzip
+      logical, intent(in) :: flag_old_fmt, flag_spectr, flag_vol_ave
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+      type(buffer_4_gzip), intent(inout) :: zbuf
+      integer(kind = kint), intent(inout) :: ierr
+!
+!
+      if(flag_vol_ave) then
+        if(flag_spectr) then
+          call sel_gz_read_volume_spectr_mtr(FPz_f, id_stream,          &
+     &        flag_gzip, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,          &
+     &        sph_IN%i_step, sph_IN%time, sph_IN%i_mode,                &
+     &        sph_IN%spectr_IO(1,0,1), zbuf, ierr)
+        else
+          call gz_read_volume_pwr_sph(FPz_f, id_stream, flag_gzip,      &
+     &        sph_IN%ntot_sph_spec, sph_IN%i_step, sph_IN%time,         &
+     &        sph_IN%spectr_IO(1,0,1), zbuf, ierr)
+        end if
+      else
+        if(flag_spectr) then
+            call sel_gz_input_sph_layer_spec                            &
+     &         (FPz_f, id_stream, flag_gzip, flag_old_fmt,              &
+     &          sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,   &
+     &          sph_IN%i_step, sph_IN%time, sph_IN%kr_sph,              &
+     &          sph_IN%r_sph, sph_IN%i_mode, sph_IN%spectr_IO(1,0,1),   &
+     &          zbuf, ierr)
+        else
+            call sel_gz_input_sph_layer_mean                            &
+     &         (FPz_f, id_stream, flag_gzip, flag_old_fmt,              &
+     &          sph_IN%nri_sph, sph_IN%ntot_sph_spec, sph_IN%i_step,    &
+     &          sph_IN%time, sph_IN%kr_sph, sph_IN%r_sph,               &
+     &          sph_IN%spectr_IO(1,0,1), zbuf, ierr)
+        end if
+      end if
+!
+      end subroutine sel_gz_input_sph_series_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine copy_ene_spectr_data_to_IO(sph_IN, sph_OUT)
+!
+      type(read_sph_spectr_data), intent(in) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
+      integer(kind = kint) :: nri_dat, ltr_sph
+      integer(kind = kint) :: ncomp
+!
+!
+      nri_dat = sph_OUT%nri_dat
+      ltr_sph = sph_OUT%ltr_sph
+      ncomp = sph_OUT%ntot_sph_spec
+!$omp parallel workshare
+      sph_OUT%spectr_IO(1:ncomp,0:ltr_sph,1:nri_dat)                    &
+     &        = sph_in%spectr_IO(1:ncomp,0:ltr_sph,1:nri_dat)
+!$omp end parallel workshare
+!
+      end subroutine copy_ene_spectr_data_to_IO
+!
+!   --------------------------------------------------------------------
 !
       end module m_tave_sph_ene_spectr
