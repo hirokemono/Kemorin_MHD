@@ -15,11 +15,6 @@
 !!        logical, intent(in) :: flag_vol_ave
 !!        type(read_sph_spectr_data), intent(in) :: sph_OUT
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
-!!      subroutine select_output_sph_series_data                        &
-!!     &         (id_file, flag_spectr, flag_vol_ave, sph_OUT)
-!!        integer(kind = kint), intent(in) :: id_file
-!!        logical, intent(in) :: flag_spectr, flag_vol_ave
-!!        type(read_sph_spectr_data), intent(in) :: sph_OUT
 !!
 !!      subroutine write_vol_sph_data(id_file, sph_OUT, spectr_IO)
 !!        integer(kind = kint), intent(in) :: id_file
@@ -38,8 +33,12 @@
 !!        real(kind = kreal), intent(in)                                &
 !!     &           :: spectr_IO(sph_OUT%ntot_sph_spec,sph_OUT%nri_sph)
 !!
-!!      real(kind = kreal), intent(inout)                               &
-!!     &             :: spectr_IO(sph_IN%ntot_sph_spec, 0:sph_IN%ltr_sph)
+!!      subroutine write_layer_spectr_data(id_file, sph_OUT, spectr_IO)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(read_sph_spectr_data), intent(in) :: sph_OUT
+!!        real(kind = kreal), intent(in)                                &
+!!     &           :: spectr_IO(sph_OUT%ntot_sph_spec,                  &
+!!     &                        0:sph_OUT%ltr_sph,sph_OUT%nri_sph)
 !!@endverbatim
 !
       module write_sph_monitor_data
@@ -50,8 +49,6 @@
       use t_read_sph_spectra
 !
       implicit none
-!
-      private :: write_layer_spectr_data
 !
 !   --------------------------------------------------------------------
 !
@@ -82,36 +79,6 @@
 !
       end subroutine select_output_sph_pwr_head
 !
-!   --------------------------------------------------------------------
-!
-      subroutine select_output_sph_series_data                          &
-     &         (id_file, flag_spectr, flag_vol_ave, sph_OUT)
-!
-      integer(kind = kint), intent(in) :: id_file
-      logical, intent(in) :: flag_spectr, flag_vol_ave
-      type(read_sph_spectr_data), intent(in) :: sph_OUT
-!
-!
-      if(flag_spectr) then
-        if(flag_vol_ave) then
-          call write_vol_spectr_data(id_file, sph_OUT,     &
-     &                               sph_OUT%spectr_IO(1,0,1))
-        else
-          call write_layer_spectr_data(id_file, sph_OUT)
-        end if
-      else
-        if(flag_vol_ave) then
-          call write_vol_sph_data(id_file, sph_OUT,     &
-     &                               sph_OUT%spectr_IO(1,0,1))
-        else
-          call write_layer_sph_data(id_file, sph_OUT,     &
-     &                               sph_OUT%spectr_IO(1,0,1))
-        end if
-      end if
-!
-      end subroutine select_output_sph_series_data
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_volume_pwr_sph(id_file, sph_IN, ierr)
@@ -205,10 +172,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_layer_spectr_data(id_file, sph_OUT)
+      subroutine write_layer_spectr_data(id_file, sph_OUT, spectr_IO)
 !
       integer(kind = kint), intent(in) :: id_file
       type(read_sph_spectr_data), intent(in) :: sph_OUT
+      real(kind = kreal), intent(in)                                    &
+     &           :: spectr_IO(sph_OUT%ntot_sph_spec,                    &
+     &                        0:sph_OUT%ltr_sph,sph_OUT%nri_sph)
 !
       integer(kind = kint) :: kr, lth
       character(len=kchara) :: fmt_txt
@@ -221,7 +191,7 @@
         do lth = 0, sph_OUT%ltr_sph
           write(id_file,fmt_txt) sph_OUT%i_step, sph_OUT%time,          &
      &      sph_OUT%kr_sph(kr), sph_OUT%r_sph(kr), sph_OUT%i_mode(lth), &
-     &      sph_OUT%spectr_IO(1:sph_OUT%ntot_sph_spec,lth,kr)
+     &      spectr_IO(1:sph_OUT%ntot_sph_spec,lth,kr)
         end do
       end do
 !

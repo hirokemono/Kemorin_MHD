@@ -66,7 +66,7 @@
 !
       implicit none
 !
-      private :: select_num_of_labels_4_monitor
+!      private :: select_num_of_labels_4_monitor
 !
 !   --------------------------------------------------------------------
 !

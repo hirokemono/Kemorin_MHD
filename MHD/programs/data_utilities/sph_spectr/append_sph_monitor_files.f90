@@ -46,8 +46,8 @@
         stop
       end if
       do i = 1, spec_evo_target%vol_series%num_file
-        call append_sph_mean_sq_file(spectr_off, volume_on,             &
-     &      spec_evo_append%vol_series%evo_file_name(i),                &
+        call append_sph_volume_mean_file                                &
+     &     (spec_evo_append%vol_series%evo_file_name(i),                &
      &      spec_evo_target%vol_series%evo_file_name(i))
       end do
 !
@@ -59,8 +59,8 @@
         stop
       end if
       do i = 1, spec_evo_target%vol_spec_series%num_file
-        call append_sph_mean_sq_file(spectr_on, volume_on,              &
-     &      spec_evo_append%vol_spec_series%evo_file_name(i),           &
+        call append_sph_volume_spectr_file                              &
+     &     (spec_evo_append%vol_spec_series%evo_file_name(i),           &
      &      spec_evo_target%vol_spec_series%evo_file_name(i))
       end do
 !
@@ -72,8 +72,8 @@
         stop
       end if
       do i = 1, spec_evo_target%layer_series%num_file
-        call append_sph_mean_sq_file(spectr_off, volume_off,            &
-     &      spec_evo_append%layer_series%evo_file_name(i),              &
+        call append_sph_layer_mean_file                                 &
+     &     (spec_evo_append%layer_series%evo_file_name(i),              &
      &      spec_evo_target%layer_series%evo_file_name(i))
       end do
 !
@@ -85,8 +85,8 @@
         stop
       end if
       do i = 1, spec_evo_target%layer_spec_series%num_file
-        call append_sph_mean_sq_file(spectr_on, volume_off,             &
-     &      spec_evo_append%layer_spec_series%evo_file_name(i),         &
+        call append_sph_layer_spectr_file                               &
+     &     (spec_evo_append%layer_spec_series%evo_file_name(i),         &
      &      spec_evo_target%layer_spec_series%evo_file_name(i))
       end do
 !
