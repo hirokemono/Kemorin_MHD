@@ -52,6 +52,7 @@
       use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
       use select_gz_stream_file_IO
+      use gz_open_sph_monitor_file
       use write_sph_monitor_data
       use sel_gz_input_sph_mtr_head
       use gz_volume_spectr_monitor_IO
@@ -93,8 +94,8 @@
 !
       write(file_name, '(a7,a)') 'lscale_', trim(fname_org)
       open(id_file_lscale, file=file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_lscale, .TRUE., sph_OUT1, zbuf_s)
+      call write_sph_pwr_vol_head(.FALSE., id_file_lscale,              &
+     &                            sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       call allocate_lscale_espec_data(sph_IN)
 !
@@ -152,6 +153,7 @@
       use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
       use select_gz_stream_file_IO
+      use gz_open_sph_monitor_file
       use write_sph_monitor_data
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
@@ -195,8 +197,8 @@
 !
       write(file_name, '(a7,a)') 'lscale_', trim(fname_org)
       open(id_file_lscale, file=file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_lscale, .FALSE., sph_OUT1, zbuf_s)
+      call write_sph_pwr_layer_head(.FALSE., id_file_lscale,            &
+     &                              sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       call allocate_lscale_espec_data(sph_IN)
 !

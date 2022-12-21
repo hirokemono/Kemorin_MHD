@@ -8,14 +8,6 @@
 !> @brief Time spectrum data output routines for utilities
 !!
 !!@verbatim
-!!      subroutine select_output_sph_pwr_head                           &
-!!     &         (flag_gzip, id_file, flag_vol_ave, sph_OUT, zbuf)
-!!        logical, intent(in) :: flag_gzip
-!!        integer(kind = kint), intent(in) :: id_file
-!!        logical, intent(in) :: flag_vol_ave
-!!        type(read_sph_spectr_data), intent(in) :: sph_OUT
-!!        type(buffer_4_gzip), intent(inout) :: zbuf
-!!
 !!      subroutine write_vol_sph_data(id_file, sph_OUT, spectr_IO)
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(read_sph_spectr_data), intent(in) :: sph_OUT
@@ -54,32 +46,6 @@
 !
       contains
 !
-!   --------------------------------------------------------------------
-!
-      subroutine select_output_sph_pwr_head                             &
-     &         (flag_gzip, id_file, flag_vol_ave, sph_OUT, zbuf)
-!
-      use t_buffer_4_gzip
-      use gz_open_sph_monitor_file
-!
-      logical, intent(in) :: flag_gzip
-      integer(kind = kint), intent(in) :: id_file
-      logical, intent(in) :: flag_vol_ave
-      type(read_sph_spectr_data), intent(in) :: sph_OUT
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-!
-      if(flag_vol_ave) then
-        call write_sph_pwr_vol_head(flag_gzip, id_file,                 &
-     &                              sph_pwr_labels, sph_OUT, zbuf)
-      else
-        call write_sph_pwr_layer_head(flag_gzip, id_file,               &
-     &                                sph_pwr_labels, sph_OUT, zbuf)
-      end if
-!
-      end subroutine select_output_sph_pwr_head
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine write_vol_sph_data(id_file, sph_OUT, spectr_IO)

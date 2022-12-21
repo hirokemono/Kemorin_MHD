@@ -135,6 +135,7 @@
 !
       use count_monitor_time_series
       use gz_gauss_coefs_monitor_IO
+      use gz_open_sph_monitor_file
       use write_gauss_coefs_4_monitor
       use write_sph_monitor_data
       use skip_comment_f
@@ -340,8 +341,8 @@
       write(id_file_rms,'(a,1p2e16.8e3)')                               &
      &          '# Start and End time: ', true_start, true_end
 !
-      call select_output_sph_pwr_head(.FALSE., id_file_rms, .TRUE. ,    &
-     &                                sph_OUT1, zbuf_s)
+      call write_sph_pwr_vol_head(.FALSE., id_file_rms, sph_pwr_labels, &
+     &                            sph_OUT1, zbuf_s)
 !
       sph_OUT1%time = true_end
       sph_OUT1%i_step = 0

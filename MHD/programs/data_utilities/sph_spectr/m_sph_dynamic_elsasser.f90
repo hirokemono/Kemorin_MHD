@@ -53,6 +53,7 @@
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_volume_spectr_monitor_IO
+      use gz_open_sph_monitor_file
       use write_sph_monitor_data
       use set_parallel_file_name
       use cal_dyn_elsasser_by_spectr
@@ -126,8 +127,8 @@
       write(*,*) 'Save Elsasser number into  ',                         &
      &          trim(els_dat%elsasser_file_name)
       open(id_file_lscale, file=els_dat%elsasser_file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_lscale, vol_ave_on, sph_OUT1, zbuf_s)
+      call write_sph_pwr_vol_head(.FALSE., id_file_lscale,              &
+     &                            sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       nri_tmp = sph_OUT1%nri_sph
       sph_OUT1%nri_sph = 1

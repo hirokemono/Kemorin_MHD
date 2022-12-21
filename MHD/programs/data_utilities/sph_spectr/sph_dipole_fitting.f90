@@ -38,6 +38,7 @@
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
+      use gz_open_sph_monitor_file
       use write_sph_monitor_data
       use set_parallel_file_name
 !
@@ -110,8 +111,8 @@
       write(*,*) 'Save fitted dipole ratio data  ',                     &
      &          trim(fit_dat1%fit_ratio_file_name)
       open(id_file_fitted, file=fit_dat1%fit_ratio_file_name)
-      call select_output_sph_pwr_head                                   &
-     &   (.FALSE., id_file_fitted, vol_ave_off, sph_OUT1, zbuf_s)
+      call write_sph_pwr_layer_head                                     &
+     &   (.FALSE., id_file_fitted, sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       nri_tmp = sph_OUT1%nri_sph
       sph_OUT1%nri_sph = 1
