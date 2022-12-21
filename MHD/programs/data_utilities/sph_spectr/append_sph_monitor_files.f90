@@ -9,12 +9,15 @@
       use t_ctl_data_sph_monitor_list
       use t_ctl_param_sph_series_util
       use t_read_sph_spectra
-      use t_append_sph_mean_sq_data
       use t_append_picked_spectr_file
 !
       use set_control_4_pickup_sph
       use count_monitor_time_series
       use set_parallel_file_name
+      use append_sph_volume_mean
+      use append_sph_volume_spectr
+      use append_sph_layer_mean
+      use append_sph_layer_spectr
 !
       implicit none
 !
