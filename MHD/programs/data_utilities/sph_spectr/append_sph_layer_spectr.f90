@@ -67,17 +67,8 @@
       write(*,*) 'Open data file to append.'
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_read_file, append_file_name, flag_gzip1, zbuf1)
-!
-      sph_IN1%num_time_labels = 5
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_file,             &
-     &    flag_gzip1, sph_lbl_IN1, sph_IN1, zbuf1)
-!
-      call alloc_sph_espec_name(sph_IN1)
-      call sel_read_sph_spectr_name(FPz_f1, id_read_file, flag_gzip1,   &
-     &   sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                   &
-     &   sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
-!
-      sph_IN1%nri_dat = sph_IN1%nri_sph
+      call read_sph_layer_spectr_head(FPz_f1, id_read_file, flag_gzip1, &
+     &    (.FALSE.), sph_lbl_IN1, sph_IN1, zbuf1)
 !
       call sel_skip_comment_gz_stream                                   &
      &   (FPz_f1, id_read_file, flag_gzip1, zbuf1)
@@ -90,16 +81,9 @@
       write(*,*) 'Open target file', ': ', trim(target_file_name)
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_write_file, target_file_name, flag_gzip1, zbuf1)
-!
-      sph_OUT1%num_time_labels = 5
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_write_file,            &
-     &    flag_gzip1, sph_lbl_OUT1, sph_OUT1, zbuf1)
-!
-      call alloc_sph_espec_name(sph_OUT1)
-      call sel_read_sph_spectr_name(FPz_f1, id_write_file, flag_gzip1,  &
-     &   sph_OUT1%nfield_sph_spec, sph_OUT1%num_labels,                 &
-     &   sph_OUT1%ncomp_sph_spec, sph_OUT1%ene_sph_spec_name, zbuf1)
-!
+      call read_sph_layer_spectr_head                                   &
+     &   (FPz_f1, id_write_file, flag_gzip1, (.FALSE.),                 &
+     &    sph_lbl_OUT1, sph_OUT1, zbuf1)
       call sel_close_read_gz_stream_file                                &
      &   (FPz_f1, id_write_file, flag_gzip1, zbuf1)
 !
@@ -137,17 +121,9 @@
       write(*,*) 'Open file to append again'
       call sel_open_read_gz_stream_file                                 &
      &   (FPz_f1, id_read_file, append_file_name, flag_gzip1, zbuf1)
-!
-      sph_IN1%num_time_labels = 5
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_file,             &
-     &    flag_gzip1, sph_lbl_IN1, sph_IN1, zbuf1)
-!
-      call alloc_sph_espec_name(sph_IN1)
-      call sel_read_sph_spectr_name(FPz_f1, id_read_file, flag_gzip1,   &
-     &   sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                   &
-     &   sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
-!
-      sph_IN1%nri_dat = sph_IN1%nri_sph
+      call read_sph_layer_spectr_head                                   &
+     &   (FPz_f1, id_read_file, flag_gzip1, (.FALSE.),                  &
+     &    sph_lbl_IN1, sph_IN1, zbuf1)
       call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
 !
       if(comp_tbl1%fast_flag) then

@@ -73,10 +73,8 @@
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms_l,          &
      &                                    fname_org, flag_gzip1, zbuf1)
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_file_rms_l, flag_gzip1,                            &
-     &    spec_evo_p%flag_old_fmt, spectr_on, .TRUE.,                   &
-     &    sph_lbl_IN_u, sph_IN, zbuf1)
+      call read_sph_volume_spectr_head(FPz_f1, id_file_rms_l,           &
+     &    flag_gzip1, sph_lbl_IN_u, sph_IN, zbuf1)
 !
       sph_IN%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
@@ -175,10 +173,8 @@
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms_l,          &
      &                                    fname_org, flag_gzip1, zbuf1)
-      call s_select_input_sph_series_head                               &
-     &   (FPz_f1, id_file_rms_l, flag_gzip1,                            &
-     &    spec_evo_p%flag_old_fmt, spectr_on, .FALSE.,                  &
-     &    sph_lbl_IN_u, sph_IN, zbuf1)
+      call read_sph_volume_spectr_head(FPz_f1, id_file_rms_l,           &
+     &    flag_gzip1, sph_lbl_IN_u, sph_IN, zbuf1)
 !
       sph_IN%nri_dat = 1
       call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)

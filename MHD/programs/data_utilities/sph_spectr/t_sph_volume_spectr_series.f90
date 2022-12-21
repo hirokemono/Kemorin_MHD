@@ -82,8 +82,8 @@
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                  fname_org, flag_gzip1, zbuf1)
-      call input_sph_volume_spec_head(FPz_f1, id_file_rms, flag_gzip1,  &
-     &                                sph_lbl_IN, sph_IN, zbuf1)
+      call read_sph_volume_spectr_head(FPz_f1, id_file_rms, flag_gzip1, &
+     &                                 sph_lbl_IN, sph_IN, zbuf1)
 !
       num = sph_IN%ltr_sph + 1
       call s_count_monitor_time_series                                  &
@@ -93,8 +93,8 @@
       call dealloc_sph_espec_name(sph_IN)
 !
       call sel_redwind_gz_stream_file(FPz_f1, id_file_rms, flag_gzip1)
-      call input_sph_volume_spec_head(FPz_f1, id_file_rms, flag_gzip1,  &
-     &                                sph_lbl_IN, sph_IN, zbuf1)
+      call read_sph_volume_spectr_head(FPz_f1, id_file_rms, flag_gzip1, &
+     &                                 sph_lbl_IN, sph_IN, zbuf1)
       call s_skip_monitor_time_series                                   &
      &   (.TRUE., FPz_f1, id_file_rms, flag_gzip1, num,                 &
      &    icou_skip, zbuf1)

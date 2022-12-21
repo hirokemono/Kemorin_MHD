@@ -780,4 +780,91 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine s_select_input_sph_series_head(FPz_f, id_stream,       &
+     &          flag_gzip, flag_old_fmt, flag_spectr, flag_vol_ave,     &
+     &          sph_lbl_IN, sph_IN, zbuf)
+!
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_stream
+      logical, intent(in) :: flag_gzip, flag_old_fmt
+      logical, intent(in) :: flag_spectr, flag_vol_ave
+!
+      type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+!
+      call select_num_of_labels_4_monitor                               &
+     &   (flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN)
+      call sel_gz_read_sph_monitor_head(FPz_f, id_stream,               &
+     &    flag_gzip, flag_vol_ave, sph_lbl_IN, sph_IN, zbuf)
+!
+      call alloc_sph_espec_name(sph_IN)
+      call sel_read_sph_spectr_name(FPz_f, id_stream, flag_gzip,        &
+     &   sph_IN%nfield_sph_spec, sph_IN%num_labels,                     &
+     &   sph_IN%ncomp_sph_spec, sph_IN%ene_sph_spec_name, zbuf)
+!
+      end subroutine s_select_input_sph_series_head
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine sel_gz_read_sph_monitor_head(FPz_f, id_stream,         &
+     &          flag_gzip, flag_vol_ave, sph_lbl_IN, sph_IN, zbuf)
+!
+      character, pointer, intent(in) :: FPz_f
+      integer(kind = kint), intent(in) :: id_stream
+      logical, intent(in) :: flag_gzip, flag_vol_ave
+!
+      type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+!
+      if(flag_vol_ave) then
+        call gz_read_sph_pwr_vol_head(FPz_f, id_stream, flag_gzip,      &
+     &                                sph_lbl_IN, sph_IN, zbuf)
+      else
+        call gz_read_sph_pwr_layer_head(FPz_f, id_stream, flag_gzip,    &
+     &                                  sph_lbl_IN, sph_IN, zbuf)
+      end if
+!
+      end subroutine sel_gz_read_sph_monitor_head
+!
+!   --------------------------------------------------------------------
+!
+      subroutine select_num_of_labels_4_monitor                         &
+     &         (flag_old_fmt, flag_spectr, flag_vol_ave, sph_IN)
+!
+      logical, intent(in) :: flag_old_fmt, flag_spectr, flag_vol_ave
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
+!
+!
+      if(flag_vol_ave) then
+        sph_IN%nri_sph = 1
+        if(flag_spectr) then
+          sph_IN%num_time_labels = 3
+        else
+          sph_IN%num_time_labels = 2
+        end if
+      else
+        if(flag_spectr) then
+          if(flag_old_fmt) then
+            sph_IN%num_time_labels = 4
+          else
+            sph_IN%num_time_labels = 5
+          end if
+        else
+          if(flag_old_fmt) then
+            sph_IN%num_time_labels = 3
+          else
+            sph_IN%num_time_labels = 4
+          end if
+        end if
+      end if
+!
+      end subroutine select_num_of_labels_4_monitor
+!
+!   --------------------------------------------------------------------
+!
       end module m_tave_sph_ene_spectr

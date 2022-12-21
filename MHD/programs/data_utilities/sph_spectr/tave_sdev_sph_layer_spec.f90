@@ -180,6 +180,7 @@
       character(len = kchara) :: tave_file_name, trms_file_name
       character(len = kchara) :: sdev_file_name
       character(len = kchara) :: directory, fname_no_dir, fname_tmp
+      type(read_sph_spectr_data) :: sph_IN_t
 !
 !
       call split_directory(fname_org, directory, fname_no_dir)
@@ -196,11 +197,14 @@
       call alloc_tave_sph_data(sph_IN, WK_tave)
 !
       call read_sph_layer_spec_snapshot(tave_file_name, sph_lbl_IN,     &
-     &    sph_IN, WK_tave%ave_spec_l(1,0,1))
+     &    sph_IN_t, WK_tave%ave_spec_l(1,0,1))
+      call dealloc_sph_espec_name(sph_IN_t)
       call read_sph_layer_spec_snapshot(trms_file_name, sph_lbl_IN,     &
-     &    sph_IN, WK_tave%rms_spec_l(1,0,1))
+     &    sph_IN_t, WK_tave%rms_spec_l(1,0,1))
+      call dealloc_sph_espec_name(sph_IN_t)
       call read_sph_layer_spec_snapshot(sdev_file_name, sph_lbl_IN,     &
-     &    sph_IN, WK_tave%sigma_pre_l(1,0,1))
+     &    sph_IN_t, WK_tave%sigma_pre_l(1,0,1))
+      call dealloc_sph_espec_name(sph_IN_t)
 !
       end subroutine read_time_ave_sph_layer_spec
 !

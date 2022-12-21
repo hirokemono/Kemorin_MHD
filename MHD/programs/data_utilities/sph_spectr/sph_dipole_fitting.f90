@@ -77,9 +77,9 @@
       write(*,*) 'Open file ', trim(fit_dat1%layer_l_spectr_file_name)
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &    fit_dat1%layer_l_spectr_file_name, flag_gzip1, zbuf1)
-      call s_select_input_sph_series_head                               &
+      call read_sph_layer_spectr_head                                   &
      &   (FPz_f1, id_file_rms, flag_gzip1, flag_current_format,         &
-     &    spectr_on, volume_off, sph_lbl_IN1, sph_IN1, zbuf1)
+     &    sph_lbl_IN1, sph_IN1, zbuf1)
 !
       sph_IN1%nri_dat = sph_IN1%nri_sph
       call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)

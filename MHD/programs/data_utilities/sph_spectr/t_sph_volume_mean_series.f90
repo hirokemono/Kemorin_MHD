@@ -80,7 +80,7 @@
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_file_rms,            &
      &                                  fname_org, flag_gzip1, zbuf1)
-      call input_sph_volume_mean_head(FPz_f1, id_file_rms, flag_gzip1,  &
+      call read_sph_volume_mean_head(FPz_f1, id_file_rms, flag_gzip1,   &
      &                                sph_lbl_IN, sph_IN, zbuf1)
 !
       num = 1
@@ -91,7 +91,7 @@
       call dealloc_sph_espec_name(sph_IN)
 !
       call sel_redwind_gz_stream_file(FPz_f1, id_file_rms, flag_gzip1)
-      call input_sph_volume_mean_head(FPz_f1, id_file_rms, flag_gzip1,  &
+      call read_sph_volume_mean_head(FPz_f1, id_file_rms, flag_gzip1,   &
      &                                sph_lbl_IN, sph_IN, zbuf1)
 !
       sph_IN%nri_dat = 1
