@@ -57,7 +57,6 @@
 !
       type(sph_spectr_head_labels), save :: sph_lbl_IN1
       type(read_sph_spectr_data), save :: sph_IN1
-      type(read_sph_spectr_data), save :: sph_IN2
       type(layer_spectr_ave_sigma_work), save :: WK_tave1
 !
       real(kind = kreal) :: true_start, true_end
@@ -89,34 +88,21 @@
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_read_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
+      call read_sph_layer_spectr_head(FPz_f1, id_read_rms, flag_gzip1,  &
+     &    (.FALSE.), sph_lbl_IN1, sph_IN1, zbuf1)
 !
-      sph_IN1%num_time_labels = 5
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
-     &                                sph_lbl_IN1, sph_IN1, zbuf1)
-!
-      call alloc_sph_espec_name(sph_IN1)
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
-!
-      sph_IN1%nri_dat = sph_IN1%nri_sph
       call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
 !
       n_line = (sph_IN1%ltr_sph+1) * sph_IN1%nri_sph
       call s_count_monitor_time_start                                   &
      &   (.TRUE., FPz_f1, id_read_rms, flag_gzip1, n_line,              &
      &    start_time, icou_skip, zbuf1)
-!
-!
       call alloc_tave_sph_data(sph_IN1, WK_tave1)
-      call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
 !
-      sph_IN2%num_time_labels = sph_IN1%num_time_labels
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
-     &                                sph_lbl_IN1, sph_IN2, zbuf1)
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
+      call dealloc_sph_espec_name(sph_IN1)
+      call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
+      call read_sph_layer_spectr_head(FPz_f1, id_read_rms, flag_gzip1,  &
+     &    (.FALSE.), sph_lbl_IN1, sph_IN1, zbuf1)
 !
       call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
      &    flag_gzip1, n_line, icou_skip, zbuf1)
@@ -126,14 +112,10 @@
      &    sph_IN1, WK_tave1, zbuf1)
 !
 !
+      call dealloc_sph_espec_name(sph_IN1)
       call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
-!
-      sph_IN2%num_time_labels = sph_IN1%num_time_labels
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
-     &                                sph_lbl_IN1, sph_IN2, zbuf1)
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
+      call read_sph_layer_spectr_head(FPz_f1, id_read_rms, flag_gzip1,  &
+     &    (.FALSE.), sph_lbl_IN1, sph_IN1, zbuf1)
 !
       call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
      &    flag_gzip1, n_line, icou_skip, zbuf1)

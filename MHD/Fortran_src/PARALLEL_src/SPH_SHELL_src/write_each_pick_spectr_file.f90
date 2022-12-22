@@ -116,7 +116,7 @@
      &                                   flag_gzip_lc, flag_miss, zbuf)
       if(flag_miss) go to 99
 
-      call s_select_input_picked_sph_head(FPz_fp, id_file,              &
+      call read_picked_sph_head(FPz_fp, id_file,                        &
      &    flag_gzip_lc, sph_lbl_IN_p, sph_IN_p, zbuf)
       call sel_close_read_gz_stream_file(FPz_fp, id_file,               &
      &                                   flag_gzip_lc, zbuf)

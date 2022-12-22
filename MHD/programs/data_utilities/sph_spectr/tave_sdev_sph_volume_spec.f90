@@ -54,7 +54,6 @@
       character(len = kchara), intent(in) :: fname_org
       real(kind = kreal), intent(in) :: start_time, end_time
 !
-      type(read_sph_spectr_data), save :: sph_IN2
       real(kind = kreal) :: true_start, true_end
       integer(kind = kint) :: n_line, icou_skip
 !
@@ -67,18 +66,9 @@
 !
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_read_rms,            &
-     &                                    fname_org, flag_gzip1, zbuf1)
-!
-      sph_IN1%nri_sph = 1
-      sph_IN1%num_time_labels = 3
-      call gz_read_sph_pwr_vol_head(FPz_f1, id_read_rms, flag_gzip1,    &
-     &                              sph_lbl_IN1, sph_IN1, zbuf1)
-!
-      call alloc_sph_espec_name(sph_IN1)
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
-!
+     &                                  fname_org, flag_gzip1, zbuf1)
+      call read_sph_volume_spectr_head(FPz_f1, id_read_rms,             &
+     &    flag_gzip1, sph_lbl_IN1, sph_IN1, zbuf1)
       call alloc_sph_spectr_data(sph_IN1%ltr_sph, sph_IN1)
 !
       n_line = sph_IN1%ltr_sph + 1
@@ -88,15 +78,10 @@
 !
       call alloc_tave_sph_volume_spectr(sph_IN1, WK_tave1)
 !
+      call dealloc_sph_espec_name(sph_IN1)
       call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
-      sph_IN2%nri_sph =         sph_IN1%nri_sph
-      sph_IN2%num_time_labels = sph_IN1%num_time_labels
-      call gz_read_sph_pwr_vol_head(FPz_f1, id_read_rms, flag_gzip1,    &
-     &                              sph_lbl_IN1, sph_IN2, zbuf1)
-!
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
+      call read_sph_volume_spectr_head(FPz_f1, id_read_rms,             &
+     &    flag_gzip1, sph_lbl_IN1, sph_IN1, zbuf1)
 !
       call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
      &    flag_gzip1, n_line, icou_skip, zbuf1)
@@ -105,16 +90,11 @@
      &    sph_IN1, WK_tave1, zbuf1)
 !
 !
+      call dealloc_sph_espec_name(sph_IN1)
       call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
+      call read_sph_volume_spectr_head(FPz_f1, id_read_rms,             &
+     &    flag_gzip1, sph_lbl_IN1, sph_IN1, zbuf1)
 !
-      sph_IN2%nri_sph =         sph_IN1%nri_sph
-      sph_IN2%num_time_labels = sph_IN1%num_time_labels
-      call gz_read_sph_pwr_vol_head(FPz_f1, id_read_rms, flag_gzip1,    &
-     &                              sph_lbl_IN1, sph_IN2, zbuf1)
-!
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
 !
       call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
      &    flag_gzip1, n_line, icou_skip, zbuf1)
@@ -168,11 +148,16 @@
       call read_alloc_sph_vol_spec_head(tave_file_name,                 &
      &                                  sph_lbl_IN, sph_IN)
       call alloc_tave_sph_volume_spectr(sph_IN, WK_tave)
+      call dealloc_sph_espec_name(sph_IN)
 !
       call read_sph_vol_spec_snapshot(tave_file_name, sph_lbl_IN,       &
      &                                sph_IN, WK_tave%ave_spec_l)
+      call dealloc_sph_espec_name(sph_IN)
+!
       call read_sph_vol_spec_snapshot(trms_file_name, sph_lbl_IN,       &
      &                                sph_IN, WK_tave%rms_spec_l)
+      call dealloc_sph_espec_name(sph_IN)
+!
       call read_sph_vol_spec_snapshot(sdev_file_name, sph_lbl_IN,       &
      &                                sph_IN, WK_tave%sigma_pre_l)
 !

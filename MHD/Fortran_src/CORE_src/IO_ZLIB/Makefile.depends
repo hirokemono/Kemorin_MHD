@@ -138,6 +138,8 @@ m_png_file_IO.o: $(ZLIB_IO_DIR)/m_png_file_IO.f90 m_precision.o number_to_bit.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 output_image_sel_4_png.o: $(ZLIB_IO_DIR)/output_image_sel_4_png.F90 m_precision.o m_constants.o t_png_file_access.o write_bmp_image.o calypso_png_file_IO.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
+sel_gz_read_sph_mtr_header.o: $(ZLIB_IO_DIR)/sel_gz_read_sph_mtr_header.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_sph_spectra.o t_buffer_4_gzip.o select_gz_stream_file_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
 skip_gz_comment.o: $(ZLIB_IO_DIR)/skip_gz_comment.f90 m_precision.o m_constants.o m_file_format_switch.o t_buffer_4_gzip.o gzip_file_access.o
 	$(F90) -c $(F90OPTFLAGS) $<
 zlib_convert_ascii_vector.o: $(ZLIB_IO_DIR)/zlib_convert_ascii_vector.f90 m_precision.o m_constants.o t_buffer_4_gzip.o data_IO_to_textline.o gzip_defleate.o gzip_infleate.o field_data_IO.o field_data_MPI_IO.o

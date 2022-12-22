@@ -70,32 +70,19 @@
 !
       call sel_open_read_gz_stream_file(FPz_f1, id_read_rms,            &
      &                                    fname_org, flag_gzip1, zbuf1)
-      sph_IN1%num_time_labels = 4
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
-     &                                sph_lbl_IN1, sph_IN1, zbuf1)
-!
-      call alloc_sph_espec_name(sph_IN1)
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
-!
-      sph_IN1%nri_dat = sph_IN1%nri_sph
+      call read_sph_layer_mean_head(FPz_f1, id_read_rms, flag_gzip1,    &
+     &    (.FALSE.), sph_lbl_IN1, sph_IN1, zbuf1)
       call alloc_sph_spectr_data(izero, sph_IN1)
 !
       call s_count_monitor_time_start                                   &
      &   (.TRUE., FPz_f1, id_read_rms, flag_gzip1, sph_IN1%nri_sph,     &
      &    start_time, icou_skip, zbuf1)
-!
       call alloc_tave_sph_layer_mean(sph_IN1, WK_tave1)
 !
+      call dealloc_sph_espec_name(sph_IN1)
       call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
-      sph_IN2%num_time_labels = sph_IN1%num_time_labels
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
-     &                                sph_lbl_IN1, sph_IN2, zbuf1)
-!
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
+      call read_sph_layer_mean_head(FPz_f1, id_read_rms, flag_gzip1,    &
+     &    (.FALSE.), sph_lbl_IN1, sph_IN1, zbuf1)
 !
       call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
      &    flag_gzip1, sph_IN1%nri_sph, icou_skip, zbuf1)
@@ -104,15 +91,10 @@
      &    start_time, end_time, true_start, true_end,                   &
      &    sph_IN1, WK_tave1, zbuf1)
 !
-!
+      call dealloc_sph_espec_name(sph_IN1)
       call sel_redwind_gz_stream_file(FPz_f1, id_read_rms, flag_gzip1)
-      sph_IN2%num_time_labels = sph_IN1%num_time_labels
-      call gz_read_sph_pwr_layer_head(FPz_f1, id_read_rms, flag_gzip1,  &
-     &                                sph_lbl_IN1, sph_IN2, zbuf1)
-!
-      call sel_read_sph_spectr_name(FPz_f1, id_read_rms, flag_gzip1,    &
-     &    sph_IN1%nfield_sph_spec, sph_IN1%num_labels,                  &
-     &    sph_IN1%ncomp_sph_spec, sph_IN1%ene_sph_spec_name, zbuf1)
+      call read_sph_layer_mean_head(FPz_f1, id_read_rms, flag_gzip1,    &
+     &    (.FALSE.), sph_lbl_IN1, sph_IN1, zbuf1)
 !
       call s_skip_monitor_time_series(.TRUE., FPz_f1, id_read_rms,      &
      &    flag_gzip1, sph_IN1%nri_sph, icou_skip, zbuf1)
@@ -166,11 +148,16 @@
       call read_alloc_sph_layer_mean_head(tave_file_name,               &
      &                                    sph_lbl_IN, sph_IN)
       call alloc_tave_sph_layer_mean(sph_IN, WK_tave)
+      call dealloc_sph_espec_name(sph_IN)
 !
       call read_sph_layer_mean_snapshot(tave_file_name, sph_lbl_IN,     &
      &                               sph_IN, WK_tave%ave_spec_l(1,1))
+      call dealloc_sph_espec_name(sph_IN)
+!
       call read_sph_layer_mean_snapshot(trms_file_name, sph_lbl_IN,     &
      &                               sph_IN, WK_tave%rms_spec_l(1,1))
+      call dealloc_sph_espec_name(sph_IN)
+!
       call read_sph_layer_mean_snapshot(sdev_file_name, sph_lbl_IN,     &
      &                               sph_IN, WK_tave%sigma_spec_l(1,1))
 !
