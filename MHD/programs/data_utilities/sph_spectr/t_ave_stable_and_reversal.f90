@@ -136,8 +136,9 @@
       use count_monitor_time_series
       use gz_gauss_coefs_monitor_IO
       use gz_open_sph_monitor_file
+      use select_gz_stream_file_IO
       use write_gauss_coefs_4_monitor
-      use write_sph_monitor_data
+      use sph_monitor_data_text
       use skip_comment_f
 !
       logical, intent(in) :: flag_log
@@ -312,7 +313,8 @@
       file_name = append_directory(directory, fname_tmp)
 !
       write(*,*) 'average file_name: ', trim(file_name)
-      open(id_file_rms, file=file_name)
+      open(id_file_rms, file=file_name,                                 &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
       write(id_file_rms,'(a)')                                          &
      &          '# Step  0: average of volume mean square in stable'
       write(id_file_rms,'(a)')                                          &
@@ -349,78 +351,102 @@
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,1),                    &
      &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
       sph_OUT1%i_step = 1
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_pwr(1,2),                    &
      &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
 !
       sph_OUT1%i_step = 2
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,1),                     &
      &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
       sph_OUT1%i_step = 3
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_pwr(1,2),                     &
      &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
 !
       sph_OUT1%i_step = 4
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,1),                    &
      &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
       sph_OUT1%i_step = 5
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, sdev_vol_pwr(1,2),                    &
      &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
 !
       sph_OUT1%i_step = 6
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,1),                    &
      &    gauss_IO_a%num_mode, ave_gauss(1,1), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
       sph_OUT1%i_step = 7
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, tave_vol_ave(1,2),                    &
      &    gauss_IO_a%num_mode, ave_gauss(1,2), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
 !
       sph_OUT1%i_step = 8
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,1),                     &
      &    gauss_IO_a%num_mode, rms_gauss(1,1), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
       sph_OUT1%i_step = 9
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, rms_vol_ave(1,2),                     &
      &    gauss_IO_a%num_mode, rms_gauss(1,2), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
 !
       sph_OUT1%i_step = 10
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,1),                    &
      &    gauss_IO_a%num_mode, sdev_gauss(1,1), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
       sph_OUT1%i_step = 11
       call copy_moniter_aves_to_IO                                      &
      &   (sph_IN_p%ntot_sph_spec, sdev_vol_ave(1,2),                    &
      &    gauss_IO_a%num_mode, sdev_gauss(1,2), imode_g1, spectr_OUT)
-      call write_vol_sph_data(id_file_rms, sph_OUT1, spectr_OUT(1))
+      call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
+     &    volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,          &
+     &    sph_OUT1%ntot_sph_spec, spectr_OUT(1)), zbuf_s)
 !
       close(id_file_rms)
       deallocate(spectr_OUT)

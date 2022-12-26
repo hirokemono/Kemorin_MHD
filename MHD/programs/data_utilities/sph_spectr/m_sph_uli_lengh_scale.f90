@@ -12,7 +12,6 @@
 !!     &         (fname_org, spec_evo_p, sph_IN)
 !!      subroutine sph_layer_uli_lscale_by_spec                         &
 !!     &         (fname_org, spec_evo_p, sph_IN)
-!!        logical, intent(in) :: flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
@@ -53,7 +52,7 @@
       use t_ctl_param_sph_series_util
       use select_gz_stream_file_IO
       use gz_open_sph_monitor_file
-      use write_sph_monitor_data
+      use sph_monitor_data_text
       use sel_gz_input_sph_mtr_head
       use gz_volume_spectr_monitor_IO
       use set_parallel_file_name
@@ -93,7 +92,8 @@
 !$omp end parallel workshare
 !
       write(file_name, '(a7,a)') 'lscale_', trim(fname_org)
-      open(id_file_lscale, file=file_name)
+      open(id_file_lscale, file=file_name,                              &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_vol_head(.FALSE., id_file_lscale,              &
      &                            sph_pwr_labels, sph_OUT1, zbuf_s)
 !
@@ -119,8 +119,9 @@
      &        spectr_l(1,0), total_msq, spec_times_l, scale_uli(1))
           icou = icou + 1
 !
-          call write_vol_sph_data(id_file_lscale, sph_OUT1,             &
-     &                            scale_uli(1))
+          call sel_gz_write_text_stream(.FALSE., id_file_lscale,        &
+     &        volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,      &
+     &        sph_OUT1%ntot_sph_spec, scale_uli), zbuf_s)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
@@ -154,7 +155,7 @@
       use t_ctl_param_sph_series_util
       use select_gz_stream_file_IO
       use gz_open_sph_monitor_file
-      use write_sph_monitor_data
+      use gz_layer_mean_monitor_IO
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
       use set_parallel_file_name
@@ -196,7 +197,8 @@
 !$omp end parallel workshare
 !
       write(file_name, '(a7,a)') 'lscale_', trim(fname_org)
-      open(id_file_lscale, file=file_name)
+      open(id_file_lscale, file=file_name,                              &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_layer_head(.FALSE., id_file_lscale,            &
      &                              sph_pwr_labels, sph_OUT1, zbuf_s)
 !
@@ -223,8 +225,10 @@
      &        spectr_l(1,0,1), total_msq, spec_times_l, scale_uli(1,1))
           icou = icou + 1
 !
-          call write_layer_sph_data(id_file_lscale, sph_OUT1,           &
-     &                              scale_uli(1,1))
+          call sel_gz_write_layer_mean_mtr(.FALSE., id_file_lscale,     &
+     &        sph_OUT1%i_step, sph_OUT1%time, sph_OUT1%nri_sph,         &
+     &        sph_OUT1%kr_sph, sph_OUT1%r_sph, sph_OUT1%ntot_sph_spec,  &
+     &        scale_uli(1,1), zbuf_s)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

@@ -133,7 +133,6 @@
 !
       use select_gz_stream_file_IO
       use gz_volume_spectr_monitor_IO
-      use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
       use gz_open_sph_monitor_file
 !
@@ -211,7 +210,6 @@
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_volume_spectr_monitor_IO
-      use write_sph_monitor_data
       use cal_tave_sph_ene_spectr
       use gz_open_sph_monitor_file
 !

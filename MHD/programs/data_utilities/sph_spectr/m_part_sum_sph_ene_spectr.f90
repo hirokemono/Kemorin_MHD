@@ -9,11 +9,10 @@
 !!
 !!@verbatim
 !!      subroutine sph_part_volume_spectr_sum                           &
-!!     &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
+!!     &         (fname_org, spec_evo_p, sph_IN)
 !!      subroutine sph_part_layer_spectr_sum                            &
-!!     &         (fname_org, flag_vol_ave, spec_evo_p, sph_IN)
+!!     &         (fname_org, spec_evo_p, sph_IN)
 !!        character(len = kchara), intent(in) :: fname_org
-!!        logical, intent(in) :: flag_vol_ave
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
@@ -47,8 +46,8 @@
 !
       use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
+      use sph_monitor_data_text
       use select_gz_stream_file_IO
-      use write_sph_monitor_data
       use sel_gz_input_sph_mtr_head
       use gz_volume_spectr_monitor_IO
       use gz_spl_sph_spectr_data_IO
@@ -96,7 +95,8 @@
       file_name = add_int_suffix(spec_evo_p%lst, fname_tmp)
       fname_tmp = add_int_suffix(spec_evo_p%led, file_name)
       file_name = add_dat_extension(fname_tmp)
-      open(id_file_rms, file=file_name)
+      open(id_file_rms, file=file_name,                                 &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_vol_head                                       &
      &   (.FALSE., id_file_rms, sph_pwr_labels, sph_OUT1, zbuf_s)
 !
@@ -120,7 +120,9 @@
      &        spectr_IN(1,0), mean_OUT(1))
           icou = icou + 1
 !
-          call write_vol_sph_data(id_file_rms, sph_OUT1, mean_OUT)
+          call sel_gz_write_text_stream(.FALSE., id_file_rms_l,         &
+     &        volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,      &
+     &        sph_OUT1%ntot_sph_spec, mean_OUT(1)), zbuf_s)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
@@ -152,9 +154,9 @@
       use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
       use select_gz_stream_file_IO
-      use write_sph_monitor_data
       use sel_gz_input_sph_mtr_head
       use gz_layer_spectr_monitor_IO
+      use gz_layer_mean_monitor_IO
       use gz_spl_sph_spectr_data_IO
       use gz_open_sph_monitor_file
       use set_parallel_file_name
@@ -202,7 +204,8 @@
       file_name = add_int_suffix(spec_evo_p%lst, fname_tmp)
       fname_tmp = add_int_suffix(spec_evo_p%led, file_name)
       file_name = add_dat_extension(fname_tmp)
-      open(id_file_rms, file=file_name)
+      open(id_file_rms, file=file_name,                                 &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_layer_head                                     &
      &   (.FALSE., id_file_rms, sph_pwr_labels, sph_OUT1, zbuf_s)
 !
@@ -228,7 +231,10 @@
      &        spectr_IN, mean_OUT)
           icou = icou + 1
 !
-          call write_layer_sph_data(id_file_rms, sph_OUT1, mean_OUT)
+          call sel_gz_write_layer_mean_mtr(.FALSE., id_file_rms,        &
+     &        sph_OUT1%i_step, sph_OUT1%time, sph_OUT1%nri_sph,         &
+     &        sph_OUT1%kr_sph, sph_OUT1%r_sph, sph_OUT1%ntot_sph_spec,  &
+     &        mean_OUT(1,1), zbuf_s)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

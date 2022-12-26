@@ -51,7 +51,7 @@
 !
       use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
-      use write_sph_monitor_data
+      use sph_monitor_data_text
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_open_sph_monitor_file
@@ -89,12 +89,14 @@
 !$omp end parallel workshare
 !
       write(file_name, '(a7,a)') 'maxval_', trim(fname_org)
-      open(id_file_maxval, file=file_name)
+      open(id_file_maxval, file=file_name,                              &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_vol_head                                       &
      &   (.FALSE., id_file_maxval, sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       write(file_name, '(a7,a)') 'maxloc_', trim(fname_org)
-      open(id_file_maxloc, file=file_name)
+      open(id_file_maxloc, file=file_name,                              &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_vol_head                                       &
      &   (.FALSE., id_file_maxloc, sph_pwr_labels, sph_OUT1, zbuf_s)
 !
@@ -120,10 +122,12 @@
      &        spectr_IN(1,0), max_spectr, max_degree)
           icou = icou + 1
 !
-          call write_vol_sph_data(id_file_maxval, sph_OUT1,             &
-     &                            max_spectr(1,1))
-          call write_vol_sph_data(id_file_maxloc, sph_OUT1,             &
-     &                            max_degree(1,1))
+          call sel_gz_write_text_stream(.FALSE., id_file_maxval,        &
+     &        volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,      &
+     &        sph_OUT1%ntot_sph_spec, max_spectr(1,1)), zbuf_s)
+          call sel_gz_write_text_stream(.FALSE., id_file_maxloc,        &
+     &        volume_pwr_data_text(sph_OUT1%i_step, sph_OUT1%time,      &
+     &        sph_OUT1%ntot_sph_spec, max_degree(1,1)), zbuf_s)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
@@ -154,7 +158,7 @@
 !
       use t_buffer_4_gzip
       use t_ctl_param_sph_series_util
-      use write_sph_monitor_data
+      use gz_layer_mean_monitor_IO
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_open_sph_monitor_file
@@ -194,13 +198,15 @@
 !$omp end parallel workshare
 !
       write(file_name, '(a7,a)') 'maxval_', trim(fname_org)
-      open(id_file_maxval, file=file_name)
-      call write_sph_pwr_layer_head                                   &
+      open(id_file_maxval, file=file_name,                              &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
+      call write_sph_pwr_layer_head                                     &
      &   (.FALSE., id_file_maxval, sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       write(file_name, '(a7,a)') 'maxloc_', trim(fname_org)
-      open(id_file_maxloc, file=file_name)
-      call write_sph_pwr_layer_head                                   &
+      open(id_file_maxloc, file=file_name,                              &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
+      call write_sph_pwr_layer_head                                     &
      &   (.FALSE., id_file_maxloc, sph_pwr_labels, sph_OUT1, zbuf_s)
 !
       call allocate_max_sph_data(sph_IN)
@@ -226,10 +232,14 @@
      &        spectr_IN, max_spectr, max_degree)
           icou = icou + 1
 !
-          call write_layer_sph_data(id_file_maxval, sph_OUT1,           &
-     &                              max_spectr(1,1))
-          call write_layer_sph_data(id_file_maxloc, sph_OUT1,           &
-     &                              max_degree(1,1))
+          call sel_gz_write_layer_mean_mtr(.FALSE., id_file_maxval,     &
+     &        sph_OUT1%i_step, sph_OUT1%time, sph_OUT1%nri_sph,         &
+     &        sph_OUT1%kr_sph, sph_OUT1%r_sph, sph_OUT1%ntot_sph_spec,  &
+     &        max_spectr(1,1), zbuf_s)
+          call sel_gz_write_layer_mean_mtr(.FALSE., id_file_maxloc,     &
+     &        sph_OUT1%i_step, sph_OUT1%time, sph_OUT1%nri_sph,         &
+     &        sph_OUT1%kr_sph, sph_OUT1%r_sph, sph_OUT1%ntot_sph_spec,  &
+     &        max_degree(1,1), zbuf_s)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

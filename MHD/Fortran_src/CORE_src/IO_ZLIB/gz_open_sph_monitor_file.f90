@@ -10,7 +10,7 @@
 !!      subroutine check_sph_vol_monitor_file(base_name, monitor_labels,&
 !!     &          sph_OUT, flag_gzip_lc, error)
 !!      subroutine check_sph_vol_spectr_file(id_file, base_name,        &
-!!     &          flag_spectr, sph_OUT, zbuf, flag_gzip_lc, error)
+!!     &          sph_OUT, zbuf, flag_gzip_lc, error)
 !!      subroutine sel_open_sph_vol_monitor_file(id_file, base_name,    &
 !!     &          monitor_labels, sph_OUT, zbuf, flag_gzip_lc)
 !!        logical, intent(in) :: flag_gzip
@@ -22,7 +22,7 @@
 !!        logical, intent(inout) :: flag_gzip_lc
 !!
 !!      subroutine check_sph_layer_mean_file(id_file, base_name,        &
-!!     &          flag_spectr, sph_OUT, zbuf, flag_gzip_lc, error)
+!!     &          sph_OUT, zbuf, flag_gzip_lc, error)
 !!      subroutine sel_open_sph_layer_mean_file                         &
 !!     &         (id_file, fname, sph_OUT, zbuf, flag_gzip_lc)
 !!        logical, intent(in) :: flag_gzip
@@ -193,7 +193,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_sph_layer_mean_file(id_stream, base_name,        &
-     &          flag_spectr, sph_OUT, FPz_f, zbuf, flag_gzip_lc, error)
+     &          sph_OUT, FPz_f, zbuf, flag_gzip_lc, error)
 !
       use t_read_sph_spectra
       use select_gz_stream_file_IO
@@ -202,7 +202,6 @@
 !
       integer(kind = kint), intent(in) :: id_stream
       character(len = kchara), intent(in) :: base_name
-      logical, intent(in) :: flag_spectr
       type(read_sph_spectr_data), intent(in) :: sph_OUT
 !
       character, pointer, intent(inout) :: FPz_f

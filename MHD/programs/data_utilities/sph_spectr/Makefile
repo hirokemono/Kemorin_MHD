@@ -68,7 +68,6 @@ SOURCES = $(shell ls *.f90 *.F90)
 MOD_SPH_UTIL_DLL = \
 t_picked_sph_spectr_data_IO.o \
 t_gauss_coefs_monitor_IO.o \
-t_read_sph_series.o \
 t_sph_volume_mean_series.o \
 t_sph_volume_spectr_series.o \
 t_tave_sph_volume_spectr.o \
@@ -77,7 +76,6 @@ t_tave_sph_layer_spectr.o \
 tave_sdev_sph_layer_spec.o \
 tave_sdev_sph_layer_mean.o \
 tave_sdev_sph_volume_spec.o \
-write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \
 gz_volume_spectr_monitor_IO.o \
 gz_layer_mean_monitor_IO.o \
@@ -161,7 +159,6 @@ t_ctl_data_tave_sph_monitor.o \
 t_ctl_data_append_sph_mntr.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
-write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 gz_gauss_coefs_monitor_IO.o \
@@ -222,7 +219,6 @@ neutral_point_by_pick_sph.o \
 t_picked_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
 picked_sph_spectr_data_IO.o \
-write_sph_monitor_data.o \
 old_sph_spectr_data_IO.o \
 m_spheric_data_sph_spetr.o \
 t_neutral_pt_by_pick_sph.o
@@ -230,7 +226,6 @@ t_neutral_pt_by_pick_sph.o
 
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
-t_read_sph_series.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
@@ -249,7 +244,6 @@ gz_spl_sph_spectr_data_IO.o \
 sph_layer_monitor_snap_IO.o \
 sph_volume_monitor_snap_IO.o \
 old_sph_spectr_data_IO.o \
-write_sph_monitor_data.o \
 write_snap_pick_sph_spectr.o \
 count_monitor_time_series.o \
 cal_tave_sph_ene_spectr.o \
@@ -264,8 +258,7 @@ t_ctl_param_sph_series_util.o \
 m_maxmode_sph_ene_spectr.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-count_monitor_time_series.o \
-write_sph_monitor_data.o
+count_monitor_time_series.o
 
 MOD_SPH_ULI_LSCALE = \
 sph_uli_lengh_scale.o \
@@ -275,8 +268,7 @@ t_ctl_param_sph_series_util.o \
 m_sph_uli_lengh_scale.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-count_monitor_time_series.o \
-write_sph_monitor_data.o
+count_monitor_time_series.o
 
 MOD_SPH_DYN_ELSASSER = \
 sph_dynamic_elsasser.o \
@@ -288,8 +280,7 @@ m_sph_dynamic_elsasser.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
-cal_dyn_elsasser_by_spectr.o \
-write_sph_monitor_data.o
+cal_dyn_elsasser_by_spectr.o
 
 MOD_FIT_DIPOLE_RATIO = \
 gz_spl_sph_spectr_data_IO.o \
@@ -297,7 +288,6 @@ gz_volume_spectr_monitor_IO.o \
 gz_layer_mean_monitor_IO.o \
 gz_layer_spectr_monitor_IO.o \
 old_sph_spectr_data_IO.o \
-write_sph_monitor_data.o \
 count_monitor_time_series.o \
 t_ctl_data_dipole_fit_ratio.o \
 t_ctl_param_dipole_fit.o \
@@ -312,7 +302,6 @@ m_part_sum_sph_ene_spectr.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
-write_sph_monitor_data.o \
 part_sum_sph_ene_spec.o
 
 MOD_T_AVE_PICK_SPH = \
@@ -331,10 +320,8 @@ t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
 t_sph_volume_mean_series.o \
-t_read_sph_series.o \
 count_monitor_time_series.o \
 gz_gauss_coefs_monitor_IO.o \
-write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 write_gauss_coefs_4_monitor.o \
@@ -346,11 +333,9 @@ MOD_T_AVE_STABLE_REV_SPEC = \
 t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
 t_ctl_param_sph_series_util.o \
-t_read_sph_series.o \
 t_sph_volume_spectr_series.o \
 count_monitor_time_series.o \
 gz_gauss_coefs_monitor_IO.o \
-write_sph_monitor_data.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
 write_gauss_coefs_4_monitor.o \

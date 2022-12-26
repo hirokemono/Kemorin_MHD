@@ -23,6 +23,17 @@
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_mean_squares), intent(in) :: pwr
+!!
+!!      subroutine write_sph_volume_pwr_file                            &
+!!     &         (fname_rms, mode_label, ene_labels, time_d,            &
+!!     &          sph_params, sph_rj, v_pwr, rms_sph_v)
+!!        character(len=kchara), intent(in) :: fname_rms, mode_label
+!!        type(energy_label_param), intent(in) :: ene_labels
+!!        type(time_data), intent(in) :: time_d
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_vol_mean_squares), intent(in) :: v_pwr
+!!        real(kind = kreal), intent(in) :: rms_sph_v(v_pwr%ntot_comp_sq)
 !!@endverbatim
 !!
 !!@n @param id_rank       Process ID

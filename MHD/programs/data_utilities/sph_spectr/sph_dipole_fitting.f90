@@ -39,7 +39,7 @@
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
       use gz_open_sph_monitor_file
-      use write_sph_monitor_data
+      use gz_layer_mean_monitor_IO
       use set_parallel_file_name
 !
       implicit none
@@ -110,7 +110,8 @@
 !
       write(*,*) 'Save fitted dipole ratio data  ',                     &
      &          trim(fit_dat1%fit_ratio_file_name)
-      open(id_file_fitted, file=fit_dat1%fit_ratio_file_name)
+      open(id_file_fitted, file=fit_dat1%fit_ratio_file_name,           &
+     &     status='replace', FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_layer_head                                     &
      &   (.FALSE., id_file_fitted, sph_pwr_labels, sph_OUT1, zbuf_s)
 !
@@ -144,8 +145,10 @@
      &        sph_OUT1%kr_sph(1), sph_OUT1%r_sph(1),                    &
      &        dipole_ratio, fit_dat1)
 !
-          call write_layer_sph_data(id_file_fitted, sph_OUT1,           &
-     &                              dipole_ratio(1))
+          call sel_gz_write_layer_mean_mtr(.FALSE., id_file_fitted,     &
+     &        sph_OUT1%i_step, sph_OUT1%time, sph_OUT1%nri_sph,         &
+     &        sph_OUT1%kr_sph, sph_OUT1%r_sph, sph_OUT1%ntot_sph_spec,  &
+     &        dipole_ratio(1), zbuf_s)
         end if
 !
         write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60), &

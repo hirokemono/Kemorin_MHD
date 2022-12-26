@@ -20,16 +20,9 @@
 !!        character, pointer, intent(in) :: FPz_f
 !!        integer(kind = kint), intent(in) :: id_stream
 !!        logical, intent(in) :: flag_gzip, flag_old_fmt
-!!        logical, intent(in) :: flag_spectr, flag_vol_ave
 !!        type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
-!!      subroutine sel_gz_read_sph_monitor_head(FPz_f, id_stream,       &
-!!     &          flag_gzip, flag_vol_ave, sph_lbl_IN, sph_IN, zbuf)
-!!          character, pointer, intent(in) :: FPz_f
-!!          integer(kind = kint), intent(in) :: id_stream
-!!          logical, intent(in) :: flag_gzip, flag_vol_ave
-!!
 !!      subroutine sel_read_sph_spectr_name                             &
 !!     &         (FPz_f, id_stream, flag_gzip, nfield_sph_spec,         &
 !!     &          num_labels, ncomp_sph_spec, ene_sph_spec_name, zbuf)

@@ -24,7 +24,7 @@
 !
       implicit none
 !
-      private :: pick_copy_sph_vmean_to_end
+      private :: pick_copy_sph_vmean_to_end, write_vol_sph_data
 !
 ! -----------------------------------------------------------------------
 !
@@ -159,8 +159,7 @@
 !
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
-      use write_sph_monitor_data
- !
+!
       character, pointer, intent(in)  :: FPz_f
       integer(kind = kint), intent(in) :: id_read_file
       integer(kind = kint), intent(in) :: id_write_file
@@ -204,5 +203,28 @@
       end subroutine pick_copy_sph_vmean_to_end
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine write_vol_sph_data(id_file, sph_OUT, spectr_IO)
+!
+      use write_field_labels
+!
+      integer(kind = kint), intent(in) :: id_file
+      type(read_sph_spectr_data), intent(in) :: sph_OUT
+      real(kind = kreal), intent(in)                                    &
+     &           :: spectr_IO(sph_OUT%ntot_sph_spec)
+!
+      integer(kind = kint) :: i
+!
+!
+      write(id_file,'(i16,1pE25.15e3)', ADVANCE='NO')                   &
+     &                          sph_OUT%i_step, sph_OUT%time
+      do i = 1, sph_OUT%ntot_sph_spec
+        write(id_file,'(1pE25.15e3)', ADVANCE='NO') spectr_IO(i)
+      end do
+      write(id_file,'(a)')
+!
+      end subroutine write_vol_sph_data
+!
+!   --------------------------------------------------------------------
 !
       end module append_sph_volume_mean

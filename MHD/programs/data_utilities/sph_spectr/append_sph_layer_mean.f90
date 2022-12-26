@@ -24,7 +24,7 @@
 !
       implicit none
 !
-      private :: pick_copy_sph_lmean_to_end
+      private :: pick_copy_sph_lmean_to_end, write_layer_sph_data
 !
 ! -----------------------------------------------------------------------
 !
@@ -157,7 +157,6 @@
 !
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
-      use write_sph_monitor_data
  !
       character, pointer, intent(in)  :: FPz_f
       integer(kind = kint), intent(in) :: id_read_file
@@ -210,5 +209,29 @@
       end subroutine pick_copy_sph_lmean_to_end
 !
 ! -----------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine write_layer_sph_data(id_file, sph_OUT, spectr_IO)
+!
+      integer(kind = kint), intent(in) :: id_file
+      type(read_sph_spectr_data), intent(in) :: sph_OUT
+      real(kind = kreal), intent(in)                                    &
+     &           :: spectr_IO(sph_OUT%ntot_sph_spec,sph_OUT%nri_sph)
+!
+      integer(kind = kint) :: kr
+      character(len=kchara) :: fmt_txt
+!
+!
+      write(fmt_txt,'(a31,i5,a16)')  '(i16,1pE25.15e3,i16,1pE25.15e3,', &
+     &                     sph_OUT%ntot_sph_spec, '(1p255E25.15e3))'
+      do kr = 1, sph_OUT%nri_sph
+        write(id_file,fmt_txt) sph_OUT%i_step, sph_OUT%time,            &
+     &         sph_OUT%kr_sph(kr), sph_OUT%r_sph(kr),                   &
+     &         spectr_IO(1:sph_OUT%ntot_sph_spec,kr)
+      end do
+!
+      end subroutine write_layer_sph_data
+!
+!   --------------------------------------------------------------------
 !
       end module append_sph_layer_mean

@@ -11,17 +11,14 @@ SOURCES = $(shell ls *.f90 *.F90)
 
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
-t_read_sph_series.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 t_picked_sph_spectr_data_IO.o \
-m_tave_sph_ene_spectr.o \
 time_ave_picked_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
-write_sph_monitor_data.o \
 write_snap_pick_sph_spectr.o \
 count_monitor_time_series.o \
 cal_tave_sph_ene_spectr.o
