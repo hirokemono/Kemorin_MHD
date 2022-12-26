@@ -16,6 +16,10 @@ t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
 t_picked_sph_spectr_data_IO.o \
 time_ave_picked_sph_spectr.o \
+t_sph_volume_mean_series.o \
+t_sph_volume_spectr_series.o \
+t_sph_layer_mean_series.o \
+t_sph_layer_spec_series.o \
 picked_sph_spectr_data_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 old_sph_spectr_data_IO.o \
