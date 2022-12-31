@@ -15,8 +15,8 @@
 !!
 !!      subroutine sel_open_read_gz_stream_file                         &
 !!     &         (FPz_f, id_file, base_name, flag_gzip, zbuf)
-!!      subroutine sel_open_check_gz_stream_file                        &
-!!     &         (FPz_f, id_file, base_name, flag_gzip, flag_miss, zbuf)
+!!      subroutine sel_open_check_gz_stream_file(FPz_f, id_file,        &
+!!     &          base_name, flag_gzip, flag_miss, file_name, zbuf)
 !!      subroutine sel_close_read_gz_stream_file                        &
 !!     &         (FPz_f, id_file, flag_gzip, zbuf)
 !!      subroutine sel_redwind_gz_stream_file(FPz_f, id_file, flag_gzip)
@@ -24,6 +24,7 @@
 !!        integer(kind = kint), intent(in) :: id_file
 !!        character(len=kchara), intent(in) :: base_name
 !!        logical, intent(inout) :: flag_gzip, flag_miss
+!!        character(len=kchara), intent(inout) :: file_name
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
 !!      subroutine sel_read_line_gz_stream                              &
@@ -98,16 +99,18 @@
       character, pointer, intent(inout) :: FPz_f
       integer(kind = kint), intent(in) :: id_file
       character(len=kchara), intent(in) :: base_name
+!
       logical, intent(inout) :: flag_gzip
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
+      character(len=kchara) :: file_name
       logical :: flag_miss
 !
 !
-      call sel_open_check_gz_stream_file                                &
-     &   (FPz_f, id_file, base_name, flag_gzip, flag_miss, zbuf)
+      call sel_open_check_gz_stream_file(FPz_f, id_file, base_name,     &
+     &    flag_gzip, flag_miss, file_name, zbuf)
       if(flag_miss) then
-        write(*,*) trim(base_name), ' is not found. Stop.'
+        write(*,*) trim(file_name), ' is not found. Stop.'
         stop
       end if
 !
@@ -115,8 +118,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sel_open_check_gz_stream_file                          &
-     &         (FPz_f, id_file, base_name, flag_gzip, flag_miss, zbuf)
+      subroutine sel_open_check_gz_stream_file(FPz_f, id_file,          &
+     &          base_name, flag_gzip, flag_miss, file_name, zbuf)
 !
       use set_parallel_file_name
       use skip_comment_f
@@ -125,28 +128,28 @@
       character, pointer, intent(inout) :: FPz_f
       integer(kind = kint), intent(in) :: id_file
       character(len=kchara), intent(in) :: base_name
-      logical, intent(inout) :: flag_gzip, flag_miss
-      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      character(len = kchara) :: fname
+      logical, intent(inout) :: flag_gzip, flag_miss
+      character(len=kchara), intent(inout) :: file_name
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       call check_gzip_or_ascii_file                                     &
-     &   (base_name, fname, flag_gzip, flag_miss)
+     &   (base_name, file_name, flag_gzip, flag_miss)
       if(flag_miss) return
 !
       call alloc_fixbuffer_for_zlib(zbuf)
 !
 !#ifdef ZLIB_IO
       if(flag_gzip) then
-        write(*,*) 'read gzipped monitor file: ', trim(fname)
-        call open_rd_gzfile_f(FPz_f, fname, zbuf)
+        write(*,*) 'read gzipped monitor file: ', trim(file_name)
+        call open_rd_gzfile_f(FPz_f, file_name, zbuf)
         return
       end if
 !#endif
 !
-      write(*,*) 'read ASCII file as stream: ', trim(fname)
-      open(id_file, file = fname,  status='old',                        &
+      write(*,*) 'read ASCII file as stream: ', trim(file_name)
+      open(id_file, file = file_name,  status='old',                    &
      &     FORM='UNFORMATTED', ACCESS='STREAM')
 !
       end subroutine sel_open_check_gz_stream_file

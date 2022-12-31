@@ -113,7 +113,7 @@
      &                                       picked%idx_out(inum,1),    &
      &                                       picked%idx_out(inum,2))
       call sel_open_check_gz_stream_file(FPz_fp, id_file, base_name,    &
-     &                                   flag_gzip_lc, flag_miss, zbuf)
+     &    flag_gzip_lc, flag_miss, file_name, zbuf)
       if(flag_miss) go to 99
 
       call read_picked_sph_head(FPz_fp, id_file,                        &

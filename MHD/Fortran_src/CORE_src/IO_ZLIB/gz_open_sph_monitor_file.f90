@@ -81,7 +81,7 @@
 !
       error = .FALSE.
       call sel_open_check_gz_stream_file(FPz_fp, id_stream, base_name,  &
-     &    flag_gzip_lc, flag_miss, zbuf_m)
+     &    flag_gzip_lc, flag_miss, file_name, zbuf_m)
       if(flag_miss) go to 99
 !
       call read_sph_volume_mean_head(FPz_fp, id_stream, flag_gzip_lc,   &
@@ -95,9 +95,9 @@
       return
 !
   99  continue
-      write(*,*) 'No file ', trim(base_name), '. Make it.'
+      write(*,*) 'No file ', trim(file_name), '. Make it.'
 !
-      open(id_stream, file=base_name,                                   &
+      open(id_stream, file=file_name,                                   &
      &     FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_vol_head(flag_gzip_lc, id_stream,              &
      &                            monitor_labels, sph_OUT, zbuf_m)
@@ -127,13 +127,13 @@
 !
       type(read_sph_spectr_data) :: sph_IN_f
       type(sph_spectr_head_labels) :: sph_lbl_IN_f
-      character(len = kchara) :: fname
+      character(len = kchara) :: file_name
       logical :: flag_miss
 !
 !
       error = .FALSE.
       call sel_open_check_gz_stream_file(FPz_f, id_stream, base_name,   &
-     &                                   flag_gzip_lc, flag_miss, zbuf)
+     &    flag_gzip_lc, flag_miss, file_name, zbuf)
       if(flag_miss) go to 99
 !
       call read_sph_volume_spectr_head(FPz_f, id_stream, flag_gzip_lc,  &
@@ -146,9 +146,9 @@
       return
 !
    99 continue
-      write(*,*) 'No file ', trim(base_name), '. Make it.'
+      write(*,*) 'No file ', trim(file_name), '. Make it.'
 !
-      open(id_stream, file=base_name,                                   &
+      open(id_stream, file=file_name,                                   &
      &     FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_vol_head(flag_gzip_lc, id_stream,              &
      &                            sph_pwr_labels, sph_OUT, zbuf)
@@ -212,13 +212,13 @@
 !
       type(read_sph_spectr_data) :: sph_IN_f
       type(sph_spectr_head_labels) :: sph_lbl_IN_f
-      character(len = kchara) :: fname
+      character(len = kchara) :: file_name
       logical :: flag_miss
 !
 !
       error = .FALSE.
       call sel_open_check_gz_stream_file(FPz_f, id_stream, base_name,   &
-     &                                   flag_gzip_lc, flag_miss, zbuf)
+     &    flag_gzip_lc, flag_miss, file_name, zbuf)
       if(flag_miss) go to 99
 !
       call read_sph_layer_mean_head                                     &
@@ -231,9 +231,9 @@
       return
 !
    99 continue
-      write(*,*) 'No file ', trim(base_name), '. Make it.'
+      write(*,*) 'No file ', trim(file_name), '. Make it.'
 !
-      open(id_stream, file=base_name,                                   &
+      open(id_stream, file=file_name,                                   &
      &     FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_layer_head(flag_gzip_lc, id_stream,            &
      &                              sph_pwr_labels, sph_OUT, zbuf)
