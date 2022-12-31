@@ -146,8 +146,10 @@
       return
 !
    99 continue
+      write(*,*) 'No file ', trim(base_name), '. Make it.'
 !
-      open(id_stream, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
+      open(id_stream, file=base_name,                                   &
+     &     FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_vol_head(flag_gzip_lc, id_stream,              &
      &                            sph_pwr_labels, sph_OUT, zbuf)
       close(id_stream)
@@ -229,8 +231,10 @@
       return
 !
    99 continue
+      write(*,*) 'No file ', trim(base_name), '. Make it.'
 !
-      open(id_stream, file=fname, FORM='UNFORMATTED', ACCESS='STREAM')
+      open(id_stream, file=base_name,                                   &
+     &     FORM='UNFORMATTED', ACCESS='STREAM')
       call write_sph_pwr_layer_head(flag_gzip_lc, id_stream,            &
      &                              sph_pwr_labels, sph_OUT, zbuf)
       close(id_stream)
