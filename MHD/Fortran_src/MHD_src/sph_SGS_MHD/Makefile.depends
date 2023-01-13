@@ -102,7 +102,7 @@ sel_sph_SGS_nl_gradient.o: $(SGS_MHD_SPH_DIR)/sel_sph_SGS_nl_gradient.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 select_SGS_diff_adv_source.o: $(SGS_MHD_SPH_DIR)/select_SGS_diff_adv_source.f90 m_precision.o m_constants.o t_SGS_control_parameter.o t_spheric_rj_data.o t_phys_data.o cal_diff_adv_src_explicit.o SGS_diff_adv_src_explicit.o select_diff_adv_source.o
 	$(F90) -c $(F90OPTFLAGS) $<
-self_buoyancy_w_filter_sph.o: $(SGS_MHD_SPH_DIR)/self_buoyancy_w_filter_sph.f90 m_precision.o m_machine_parameter.o t_control_parameter.o t_spheric_parameter.o t_spheric_rj_data.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_boundary_params_sph_MHD.o t_physical_property.o t_reference_scalar_param.o t_base_field_labels.o t_base_force_labels.o t_grad_field_labels.o t_schmidt_poly_on_rtm.o cal_self_buoyancies_sph.o adjust_reference_fields.o rot_self_buoyancies_sph.o
+self_buoyancy_w_filter_sph.o: $(SGS_MHD_SPH_DIR)/self_buoyancy_w_filter_sph.f90 m_precision.o m_machine_parameter.o t_control_parameter.o t_spheric_parameter.o t_spheric_rj_data.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_boundary_params_sph_MHD.o t_physical_property.o t_reference_scalar_param.o t_base_field_labels.o t_base_force_labels.o t_grad_field_labels.o t_schmidt_poly_on_rtm.o cal_self_buoyancies_sph.o cal_buoyancies_sph_MHD.o adjust_reference_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_address_sph_trans_SGS.o: $(SGS_MHD_SPH_DIR)/set_address_sph_trans_SGS.f90 m_precision.o t_phys_data.o t_SGS_model_addresses.o t_sph_trans_arrays_SGS_MHD.o t_addresses_sph_transform.o address_sph_trans_dyn_simi.o t_SGS_control_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
