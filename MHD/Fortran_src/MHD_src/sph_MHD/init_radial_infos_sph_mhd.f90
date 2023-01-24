@@ -13,7 +13,7 @@
 !!     &          ipol, sph, r_2nd, omega_sph, MHD_prop, sph_MHD_bc)
 !!      subroutine init_r_infos_sph_mhd(bc_IO, sph_grps, MHD_BC, sph,   &
 !!     &                                MHD_prop, omega_sph, sph_MHD_bc)
-!!      subroutine init_reference_scalars(sph, ipol, r_2nd,             &
+!!      subroutine init_reference_fields(sph, ipol, r_2nd,              &
 !!     &          refs, rj_fld, MHD_prop, sph_MHD_bc)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_group_data), intent(in) :: sph_grps
@@ -155,7 +155,7 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_reference_scalars(sph, ipol, r_2nd,               &
+      subroutine init_reference_fields(sph, ipol, r_2nd,                &
      &          refs, rj_fld, MHD_prop, sph_MHD_bc)
 !
       use sph_mhd_rst_IO_control
@@ -203,7 +203,7 @@
       call set_default_reference_file_name(refs)
       call output_reference_field(refs)
 !
-      end subroutine init_reference_scalars
+      end subroutine init_reference_fields
 !
 !  -------------------------------------------------------------------
 !
