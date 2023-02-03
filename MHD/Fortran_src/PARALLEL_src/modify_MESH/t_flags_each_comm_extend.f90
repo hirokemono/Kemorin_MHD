@@ -148,7 +148,7 @@
         inod = nod_comm%item_import(inum)
         dist_tmp(inod) = -1.0d0
       end do
-!$omp end end parallel do
+!$omp end parallel do
 
       do inum = ist, ied
         inod = nod_comm%item_import(inum)
