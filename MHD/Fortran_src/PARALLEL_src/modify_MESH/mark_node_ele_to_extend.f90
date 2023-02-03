@@ -79,21 +79,32 @@
       real(kind= kreal), allocatable :: dist_tmp(:)
 !
 !
-      allocate(dist_tmp(node%numnod))
-!
 !$omp parallel workshare
-      mark_saved(1:nprocs)%num_marked = -1
+      mark_saved(1:nprocs)%num_marked = 0
 !$omp end parallel workshare
 !
       do ineib = 1, nod_comm%num_neib
         ip = nod_comm%id_neib(ineib) + 1
-        ist = nod_comm%istack_export(ineib-1)
-        mark_saved(ip)%num_marked = nod_comm%istack_export(ineib) - ist
-        call count_number_4_smp                                         &
-           (np_smp, ione, mark_saved(ip)%num_marked,                    &
-     &      mark_saved(ip)%istack_marked_smp, max_4_smp)
+        mark_saved(ip)%num_marked = nod_comm%istack_export(ineib)       &
+     &                           - nod_comm%istack_export(ineib-1)
+      end do
+!
+      do ip = 1, nprocs
         call alloc_mark_for_each_comm(mark_saved(ip))
 !
+        if(mark_saved(ip)%num_marked .le. 0) then
+          mark_saved(ip)%istack_marked_smp(0:np_smp) = 0
+        else
+          call count_number_4_smp                                       &
+             (np_smp, ione, mark_saved(ip)%num_marked,                  &
+     &        mark_saved(ip)%istack_marked_smp, max_4_smp)
+        end if
+      end do
+
+      allocate(dist_tmp(node%numnod))
+      do ineib = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(ineib) + 1
+        ist = nod_comm%istack_export(ineib-1)
         call init_min_dist_each_import                                  &
      &     (ineib, sleeve_exp_p, nod_comm, node, ele, neib_ele,         &
      &      sleeve_exp_WK, dist_tmp)
@@ -107,14 +118,6 @@
 !$omp end parallel do
       end do
       deallocate(dist_tmp)
-!
-      do ip = 1, nprocs
-        if(mark_saved(ip)%num_marked .eq. -1) then
-          mark_saved(ip)%num_marked = 0
-          mark_saved(ip)%istack_marked_smp(0:np_smp) = 0
-          call alloc_mark_for_each_comm(mark_saved(ip))
-        end if
-      end do
 !
       end subroutine init_min_dist_from_import
 !

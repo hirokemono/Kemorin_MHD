@@ -113,6 +113,7 @@
 !
 !  -------------------------------
 !
+      call calypso_mpi_barrier
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
       if(part_param%iflag_repart_ref .eq. i_NO_REPARTITION) then
         new_mesh%ele%first_ele_type                                     &
@@ -128,6 +129,7 @@
       end if
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
+!
 ! Increase sleeve size
       if(part_param%sleeve_exp_p%iflag_expand_mode                      &
      &                         .ne. iflag_turn_off) then
@@ -139,6 +141,7 @@
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
+        call calypso_mpi_barrier
         call sleeve_extension_for_new_mesh                              &
      &     (flag_lic_dump, part_param%sleeve_exp_p,                     &
      &      mesh, ref_vect_sleeve_ext, repart_nod_tbl,                  &

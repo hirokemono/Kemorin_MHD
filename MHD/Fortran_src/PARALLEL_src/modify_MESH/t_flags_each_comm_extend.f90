@@ -137,14 +137,19 @@
       real(kind= kreal) :: dist, dist_start
 !
 !
+!$omp parallel workshare
       dist_tmp(1:node%numnod) = 0.0d0
+!$omp end parallel workshare
 !
       ist = nod_comm%istack_import(igrp-1) + 1
       ied = nod_comm%istack_import(igrp)
+!$omp parallel do private(inum,inod)
       do inum = ist, ied
         inod = nod_comm%item_import(inum)
         dist_tmp(inod) = -1.0d0
       end do
+!$omp end end parallel do
+
       do inum = ist, ied
         inod = nod_comm%item_import(inum)
         if(dist_tmp(inod) .eq. -1.0d0) then

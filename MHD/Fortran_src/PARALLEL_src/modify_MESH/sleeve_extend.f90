@@ -158,6 +158,7 @@
      &                          ntot_import_ele
         close(id_log)
       end if
+      call calypso_mpi_barrier
 !
       call init_work_vector_sleeve_ext(org_mesh%node, ref_vect,         &
      &    repart_nod_tbl, new_mesh%nod_comm, new_mesh%node,             &
