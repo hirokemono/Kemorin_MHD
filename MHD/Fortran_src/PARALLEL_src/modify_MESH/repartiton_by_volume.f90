@@ -127,6 +127,7 @@
      &      num_mask, masking, ref_repart, d_mask, new_mesh, new_group, &
      &      repart_nod_tbl, m_SR)
       end if
+      call calypso_mpi_barrier
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
 !
