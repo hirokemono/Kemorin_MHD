@@ -303,7 +303,7 @@
      &  '# Step  4: R.M.S. of volume mean square in stable', char(10)
       write(comment_6,'(a50,a1)')                                       &
      &  '# Step  5: R.M.S. of volume mean square in reverse', char(10)
-      write(comment_7,'(a22,1p2e16.8e3)')                               &
+      write(comment_7,'(a22,1p2e16.8e3,a1)')                            &
      &  '# Start and End time: ', true_start, true_end, char(10)
 !
       call sel_gz_write_text_stream(.FALSE., id_file_rms,               &
