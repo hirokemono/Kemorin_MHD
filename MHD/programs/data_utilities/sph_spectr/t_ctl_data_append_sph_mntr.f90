@@ -20,13 +20,11 @@
 !!    folder_to_read_ctl    'no02'
 !!    folder_to_add_ctl     'monitor'
 !!
-!!    read_monitor_file_format_ctl    'gzip'
-!!
-!!    begin monitor_data_list_ctl
+!!    begin monitor_file_list_ctl
 !!      volume_average_prefix        'no02/sph_ave_volume'
 !!      ...
-!!    end monitor_data_list_ctl
-!!  begin monitor_data_connect_ctl
+!!    end monitor_file_list_ctl
+!!  end monitor_data_connect_ctl
 !!
 !! -----------------------------------------------------------------
 !!@endverbatim
@@ -37,6 +35,7 @@
 !
       use t_ctl_data_sph_monitor_list
       use t_control_array_character
+      use t_control_array_real
 !
       implicit none
 !
@@ -46,6 +45,10 @@
 !>        directory of time series to add
         type(read_character_item) :: folder_to_add_ctl
 !
+!>        End time for trim time series
+        type(read_real_item) :: end_time_ctl
+!
+!>        List of monitor file prefixes
         type(sph_monitor_files_ctl) :: monitor_list_ctl
 !
         integer (kind = kint) :: i_add_sph_monitor = 0
@@ -58,6 +61,8 @@
      &      :: hd_folder_to_read_ctl = 'folder_to_read_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_folder_to_add_ctl = 'folder_to_add_ctl'
+      character(len=kchara), parameter, private                         &
+     &      :: hd_end_time_ctl = 'end_time_ctl'
 !
       character(len=kchara), parameter, private                         &
      &      :: hd_monitor_file_list = 'monitor_file_list_ctl'
@@ -118,6 +123,8 @@
      &      add_mtr_ctl%folder_to_read_ctl)
         call read_chara_ctl_type(c_buf, hd_folder_to_add_ctl,           &
      &      add_mtr_ctl%folder_to_add_ctl)
+        call read_real_ctl_type(c_buf, hd_end_time_ctl,                 &
+     &      add_mtr_ctl%end_time_ctl)
 !
         call read_ctl_sph_monitor_list                                  &
      &     (id_control, hd_monitor_file_list,                           &
@@ -135,8 +142,9 @@
 !
 !
       add_mtr_ctl%folder_to_read_ctl%iflag = 0
-      add_mtr_ctl%folder_to_add_ctl%iflag = 0
-      add_mtr_ctl%i_add_sph_monitor = 0
+      add_mtr_ctl%folder_to_add_ctl%iflag =  0
+      add_mtr_ctl%end_time_ctl%iflag = 0
+      add_mtr_ctl%i_add_sph_monitor =  0
 !
       call dealloc_ctl_sph_monitor_list(add_mtr_ctl%monitor_list_ctl)
 !

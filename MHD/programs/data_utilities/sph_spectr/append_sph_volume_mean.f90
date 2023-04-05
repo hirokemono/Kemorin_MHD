@@ -5,7 +5,7 @@
 !! @date   Programmed in  Nov., 2020
 !!
 !!
-!> @brief Append mean square data file
+!> @brief Append volume mean square data file
 !!
 !!@verbatim
 !!      subroutine append_sph_volume_mean_file                          &

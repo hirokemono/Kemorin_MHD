@@ -10,6 +10,7 @@ TARGET_PICK_SPH_VOL_ENE =  pick_sph_vol_ene
 TARGET_PICK_SPH_ENE =      pick_sph_ene
 
 TARGET_APPEND_SPH_MONITORS = append_sph_monitors
+TARGET_TRIM_SPH_MONITORS =   trim_sph_monitors
 
 TARGET_PICK_SPH_SPEC =     pick_sph_spec
 TARGET_PICK_GAUSS_COEF =   pick_gauss_coefs
@@ -167,6 +168,28 @@ picked_sph_spectr_data_IO.o \
 t_pick_copy_monitor_data.o \
 t_append_picked_spectr_file.o \
 append_sph_volume_mean.o \
+append_sph_volume_spectr.o \
+append_sph_layer_mean.o \
+append_sph_layer_spectr.o \
+count_monitor_time_series.o
+
+MOD_TRIM_SPH_MONITORS = \
+trim_sph_monitor_files.o \
+t_picked_sph_spectr_data_IO.o \
+t_ctl_data_sph_monitor_list.o \
+t_ctl_data_tave_sph_monitor.o \
+t_ctl_data_append_sph_mntr.o \
+t_gauss_coefs_monitor_IO.o \
+t_ctl_param_sph_series_util.o \
+gz_spl_sph_spectr_data_IO.o \
+old_sph_spectr_data_IO.o \
+gz_gauss_coefs_monitor_IO.o \
+gz_Nusselt_monitor_IO.o \
+write_snap_pick_sph_spectr.o \
+picked_sph_spectr_data_IO.o \
+t_pick_copy_monitor_data.o \
+t_append_picked_spectr_file.o \
+trim_sph_volume_mean.o \
 append_sph_volume_spectr.o \
 append_sph_layer_mean.o \
 append_sph_layer_spectr.o \
@@ -354,6 +377,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_APPEND_SPH_MONITORS = $$(BUILDDIR)/$(TARGET_APPEND_SPH_MONITORS)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_TRIM_SPH_MONITORS = $$(BUILDDIR)/$(TARGET_TRIM_SPH_MONITORS)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_PICK_GAUSS_COEF =  $$(BUILDDIR)/$(TARGET_PICK_GAUSS_COEF)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_RENAME_SPH_FLD =   $$(BUILDDIR)/$(TARGET_RENAME_SPH_FLD)' \
@@ -388,17 +413,17 @@ target_list:
 
 target_task:
 	@echo sph_data_util: \
-	'$$(TARGET_SPH_ENE_SPEC)       $$(TARGET_SPH_ENE_LAYER)' \
-	'$$(TARGET_PICK_SPH_VOL_ENE)   $$(TARGET_PICK_SPH_ENE)'  \
-	'$$(TARGET_PICK_SPH_SPEC)      $$(TARGET_APPEND_SPH_MONITORS)' \
-	'$$(TARGET_RENAME_SPH_FLD)     $$(TARGET_DIFF_SPH_SPEC)'  \
-	'$$(TARGET_ZM_SPH_SPEC)        $$(TARGET_T_AVE_SPEC)'      \
-	'$$(TARGET_TAVE_SPH_ENE_SPEC)  $$(TARGET_SPH_NEUTRAL)'  \
-	'$$(TARGET_PICK_GAUSS_COEF)' \
-	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
-	'$$(TARGET_FIT_DIPOLE_RATIO)   $$(TARGET_SPH_ENE_CHECK)'      \
-	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)'   \
-	'$$(TARGET_T_AVE_STABLE_REV)   $$(TARGET_T_AVE_STABLE_REV_SPEC)' >> $(MAKENAME)
+	'$$(TARGET_SPH_ENE_SPEC)        $$(TARGET_SPH_ENE_LAYER)' \
+	'$$(TARGET_PICK_SPH_VOL_ENE)    $$(TARGET_PICK_SPH_ENE)'  \
+	'$$(TARGET_PICK_SPH_SPEC)       $$(TARGET_PICK_GAUSS_COEF)' \
+	'$$(TARGET_RENAME_SPH_FLD)      $$(TARGET_DIFF_SPH_SPEC)'  \
+	'$$(TARGET_ZM_SPH_SPEC)         $$(TARGET_T_AVE_SPEC)'      \
+	'$$(TARGET_TAVE_SPH_ENE_SPEC)   $$(TARGET_SPH_NEUTRAL)'  \
+	'$$(TARGET_APPEND_SPH_MONITORS) $$(TARGET_TRIM_SPH_MONITORS)'  \
+	'$$(TARGET_MAX_SPH_ENE)         $$(TARGET_SPH_ULI_LSCALE)'     \
+	'$$(TARGET_FIT_DIPOLE_RATIO)    $$(TARGET_SPH_ENE_CHECK)'      \
+	'$$(TARGET_PSUM_SPH_ENE_SPEC)   $$(TARGET_SPH_DYN_ELSASSER)'   \
+	'$$(TARGET_T_AVE_STABLE_REV)    $$(TARGET_T_AVE_STABLE_REV_SPEC)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -437,6 +462,14 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_APPEND_SPH_MONITORS)' \
 	'$$(MOD_APPEND_SPH_MONITORS)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_TRIM_SPH_MONITORS)': '$$(MOD_TRIM_SPH_MONITORS)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_TRIM_SPH_MONITORS)' \
+	'$$(MOD_TRIM_SPH_MONITORS)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -588,6 +621,8 @@ mod_list:
 	@echo  $(MOD_PICK_SPH_ENE)          >> $(MAKENAME)
 	@echo  MOD_APPEND_SPH_MONITORS=  \\ >> $(MAKENAME)
 	@echo  $(MOD_APPEND_SPH_MONITORS)   >> $(MAKENAME)
+	@echo  MOD_TRIM_SPH_MONITORS=  \\   >> $(MAKENAME)
+	@echo  $(MOD_TRIM_SPH_MONITORS)     >> $(MAKENAME)
 	@echo  MOD_PICK_SPH_SPEC=  \\       >> $(MAKENAME)
 	@echo  $(MOD_PICK_SPH_SPEC)         >> $(MAKENAME)
 	@echo  MOD_PICK_GAUSS_COEF=  \\     >> $(MAKENAME)

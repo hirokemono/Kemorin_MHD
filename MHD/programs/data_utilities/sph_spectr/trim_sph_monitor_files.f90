@@ -1,16 +1,16 @@
-!>@file   append_sph_monitor_files.f90
-!!        program append_sph_monitor_files
+!>@file   trim_sph_monitor_files.f90
+!!        program trim_sph_monitor_files
 !!
 !! @author H. Matsui
 !! @date   Programmed in 2012
 !!
 !!
-!> @brief Program to append spherical harmonics monitor files
+!> @brief Program to trim spherical harmonics monitor files
 !!
 !!@verbatim
 !! -----------------------------------------------------------------
 !!
-!!      control file name: control_append_monitor
+!!      control file name: control_trim_monitor
 !!
 !!  begin monitor_data_connect_ctl
 !!    folder_to_read_ctl    'no02'
@@ -47,7 +47,7 @@
 !! -----------------------------------------------------------------
 !!@endverbatim
 !
-      program append_sph_monitor_files
+      program trim_sph_monitor_files
 !
       use m_precision
       use m_constants
@@ -60,7 +60,7 @@
       use set_control_4_pickup_sph
       use count_monitor_time_series
       use set_parallel_file_name
-      use append_sph_volume_mean
+      use trim_sph_volume_mean
       use append_sph_volume_spectr
       use append_sph_layer_mean
       use append_sph_layer_spectr
@@ -68,11 +68,12 @@
       implicit none
 !
       character(len=kchara), parameter                                  &
-     &                      :: ctl_file_name = 'control_append_monitor'
+     &                      :: ctl_file_name = 'control_trim_monitor'
 !>      Structure for control data
       type(ctl_data_add_sph_monitor), save :: add_mtr_ctl1
       type(sph_spectr_file_param), save :: spec_evo_append
       type(sph_spectr_file_param), save :: spec_evo_target
+      real(kind = kreal) :: trim_end_time = 0.0d0
 !
       integer(kind = kint) :: i 
 !
@@ -84,6 +85,12 @@
       call set_spec_series_file_param(add_mtr_ctl1%folder_to_add_ctl,   &
      &    add_mtr_ctl1%monitor_list_ctl, spec_evo_target)
 !
+      if(add_mtr_ctl1%end_time_ctl%iflag .eq. 0) then
+        write(*,*) 'set end_time_ctl to trim'
+        stop
+      end if
+      trim_end_time = add_mtr_ctl1%end_time_ctl%realvalue
+!      write(*,*) 'trim_end_time', trim_end_time
 !
       call dealloc_ctl_data_add_sph_mntr(add_mtr_ctl1)
 !
@@ -94,11 +101,13 @@
      &            spec_evo_target%vol_series%num_file
         stop
       end if
+!
       do i = 1, spec_evo_target%vol_series%num_file
-        call append_sph_volume_mean_file                                &
+        call trim_sph_volume_mean_file                                  &
      &     (spec_evo_append%vol_series%evo_file_name(i),                &
-     &      spec_evo_target%vol_series%evo_file_name(i))
+     &      spec_evo_target%vol_series%evo_file_name(i), trim_end_time)
       end do
+      stop
 !
       if(spec_evo_append%vol_spec_series%num_file                       &
      &     .ne. spec_evo_target%vol_spec_series%num_file) then
@@ -159,4 +168,4 @@
       write(*,*) 'Program is done.'
       stop
 !
-      end program append_sph_monitor_files
+      end program trim_sph_monitor_files
