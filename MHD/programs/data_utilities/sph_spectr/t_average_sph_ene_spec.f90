@@ -11,34 +11,49 @@
 !!@verbatim
 !! -----------------------------------------------------------------
 !!
-!!      control block for pickup spherical harmonics
+!!      control file: control_sph_time_average
 !!
 !!  begin time_averaging_sph_monitor
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    array vol_integrate_prefix
-!!      vol_integrate_prefix     'sph_ave_volume'
-!!      vol_integrate_prefix     'sph_pwr_volume_s'
-!!      vol_integrate_prefix     'sph_pwr_volume_m0'
-!!    end array vol_integrate_prefix
+!!    old_format_flag     'Off'
+!!    degree_range_ctl     1   12
 !!
-!!    array vol_spectr_prefix
-!!      vol_spectr_prefix     'sph_pwr_volume_l'
-!!      vol_spectr_prefix     'sph_pwr_volume_m'
-!!      vol_spectr_prefix     'sph_pwr_volume_lm'
-!!    end array vol_spectr_prefix
+!!    begin monitor_data_list_ctl
+!!      array vol_integrate_prefix
+!!        vol_integrate_prefix     'sph_ave_volume'
+!!        vol_integrate_prefix     'sph_pwr_volume_s'
+!!        vol_integrate_prefix     'sph_pwr_volume_m0'
+!!      end array vol_integrate_prefix
 !!
-!!    array sph_integrate_prefix
-!!      sph_integrate_prefix     'sph_pwr_layer_s'
-!!      sph_integrate_prefix     'sph_pwr_layer_m0'
-!!    end array sph_integrate_prefix
+!!      array vol_spectr_prefix
+!!        vol_spectr_prefix     'sph_pwr_volume_l'
+!!        vol_spectr_prefix     'sph_pwr_volume_m'
+!!        vol_spectr_prefix     'sph_pwr_volume_lm'
+!!      end array vol_spectr_prefix
 !!
-!!    array layer_sph_spectr_prefix
-!!      layer_sph_spectr_prefix     'sph_pwr_layer_l'
-!!      layer_sph_spectr_prefix     'sph_pwr_layer_m'
-!!      layer_sph_spectr_prefix     'sph_pwr_layer_lm'
-!!    end array layer_sph_spectr_prefix
+!!      array sph_integrate_prefix
+!!        sph_integrate_prefix     'sph_pwr_layer_s'
+!!        sph_integrate_prefix     'sph_pwr_layer_m0'
+!!      end array sph_integrate_prefix
+!!
+!!      array layer_sph_spectr_prefix
+!!        layer_sph_spectr_prefix     'sph_pwr_layer_l'
+!!        layer_sph_spectr_prefix     'sph_pwr_layer_m'
+!!        layer_sph_spectr_prefix     'sph_pwr_layer_lm'
+!!      end array layer_sph_spectr_prefix
+!!
+!!      array picked_sph_prefix
+!!        picked_sph_prefix        'monitor/picked_mode'
+!!        picked_sph_prefix        'monitor/picked_mode_l2_m0c'
+!!      end array picked_sph_prefix
+!!
+!!      gauss_coefs_prefix           'sph_spectr/gauss_coefs'
+!!      picked_sph_prefix            'sph_spectr/picked_mode'
+!!      nusselt_number_prefix        'Nusselt'
+!!      dipolarity_file_prefix       'dipolarity'
+!!    end monitor_data_list_ctl
 !!  end time_averaging_sph_monitor
 !!
 !! -----------------------------------------------------------------

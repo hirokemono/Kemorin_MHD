@@ -1,5 +1,31 @@
-!
-!
+!>@file   t_ctl_data_append_sph_mntr.f90
+!!        module t_ctl_data_append_sph_mntr
+!!
+!! @author H. Matsui
+!! @date   Programmed in 2012
+!!
+!!
+!> @brief Program to append spherical harmonics monitor files
+!!
+!!@verbatim
+!! -----------------------------------------------------------------
+!!
+!!      control file name: control_append_monitor
+!!
+!!  begin monitor_data_connect_ctl
+!!    folder_to_read_ctl    'no02'
+!!    folder_to_add_ctl     'monitor'
+!!
+!!    read_monitor_file_format_ctl    'gzip'
+!!
+!!    begin monitor_data_list_ctl
+!!      volume_average_prefix        'no02/sph_ave_volume'
+!!      ...
+!!    end monitor_data_list_ctl
+!!  begin monitor_data_connect_ctl
+!!
+!! -----------------------------------------------------------------
+!!@endverbatim
 !
       program append_sph_monitor_files
 !

@@ -35,7 +35,7 @@ static void * open_read_psf_bin_gz_file(const char *gzip_name, struct psf_bin_wo
 static void close_read_psf_bin_gz_file(void *FP_gzip, struct psf_bin_work *psf_z_WK){
     close_gzfile_c(FP_gzip);
 	dealloc_psf_bin_work(psf_z_WK);
-	free(FP_gzip);
+/*	free(FP_gzip);*/
     return;
 };
 

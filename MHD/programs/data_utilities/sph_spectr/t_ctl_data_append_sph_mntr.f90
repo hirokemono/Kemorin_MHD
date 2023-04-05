@@ -8,6 +8,10 @@
 !> @brief control data to append monitor files
 !!
 !!@verbatim
+!!      subroutine read_ctl_file_add_sph_mntr(file_name, add_mtr_ctl)
+!!      subroutine dealloc_ctl_data_add_sph_mntr(add_mtr_ctl)
+!!        character(len=kchara), intent(in) :: file_name
+!!        type(ctl_data_add_sph_monitor), intent(inout) :: add_mtr_ctl
 !! -----------------------------------------------------------------
 !!
 !!      control block for pickup spherical harmonics
@@ -57,6 +61,8 @@
 !
       character(len=kchara), parameter, private                         &
      &      :: hd_monitor_file_list = 'monitor_file_list_ctl'
+!
+      private :: read_ctl_data_add_sph_mntr
 !
 ! -----------------------------------------------------------------------
 !
@@ -126,8 +132,6 @@
       subroutine dealloc_ctl_data_add_sph_mntr(add_mtr_ctl)
 !
       type(ctl_data_add_sph_monitor), intent(inout) :: add_mtr_ctl
-!
-      integer(kind = kint) :: i
 !
 !
       add_mtr_ctl%folder_to_read_ctl%iflag = 0
