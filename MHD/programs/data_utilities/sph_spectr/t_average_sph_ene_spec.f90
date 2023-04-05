@@ -81,12 +81,17 @@
 !
       implicit none
 !
+!>        Control file name
+      character(len = kchara), parameter                                &
+     &           :: fname_ctl_tave_sph_mtr = 'control_sph_time_average'
+!
       type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
       type(sph_spectr_file_param), save :: spec_evo_p1
 !
       integer :: i, j
 !
-      call read_control_file_sph_monitor(0, tave_sph_ctl1)
+      call read_control_file_sph_monitor(0, fname_ctl_tave_sph_mtr,     &
+     &                                   tave_sph_ctl1)
       call set_spec_series_file_and_time(tave_sph_ctl1, spec_evo_p1)
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !

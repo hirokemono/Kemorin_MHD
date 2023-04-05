@@ -22,7 +22,6 @@ TARGET_SPH_NEUTRAL =       sph_neutral_points
 TARGET_TAVE_SPH_ENE_SPEC =  t_ave_sph_monitor_data
 TARGET_PSUM_SPH_ENE_SPEC =  part_sum_sph_mean_square
 
-TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
 TARGET_T_AVE_STABLE_REV =      t_ave_stable_and_reversal
 TARGET_T_AVE_STABLE_REV_SPEC = t_ave_stable_and_rev_spectr
 
@@ -304,17 +303,6 @@ old_sph_spectr_data_IO.o \
 count_monitor_time_series.o \
 part_sum_sph_ene_spec.o
 
-MOD_T_AVE_PICK_SPH = \
-t_ctl_data_sph_monitor_list.o \
-t_ctl_data_tave_sph_monitor.o \
-t_ctl_param_sph_series_util.o \
-t_picked_sph_spectr_data_IO.o \
-count_monitor_time_series.o \
-picked_sph_spectr_data_IO.o \
-write_snap_pick_sph_spectr.o \
-time_ave_picked_sph_spectr.o \
-tave_picked_sph_spec_data.o
-
 MOD_T_AVE_STABLE_REV = \
 t_ctl_data_tave_stable_rev.o \
 t_gauss_coefs_monitor_IO.o \
@@ -380,8 +368,6 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_TAVE_SPH_ENE_SPEC = $$(BUILDDIR)/$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_T_AVE_PICK_SPH_SPEC = $$(BUILDDIR)/$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_STABLE_REV = $$(BUILDDIR)/$(TARGET_T_AVE_STABLE_REV)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_STABLE_REV_SPEC = $$(BUILDDIR)/$(TARGET_T_AVE_STABLE_REV_SPEC)' \
@@ -408,7 +394,7 @@ target_task:
 	'$$(TARGET_RENAME_SPH_FLD)     $$(TARGET_DIFF_SPH_SPEC)'  \
 	'$$(TARGET_ZM_SPH_SPEC)        $$(TARGET_T_AVE_SPEC)'      \
 	'$$(TARGET_TAVE_SPH_ENE_SPEC)  $$(TARGET_SPH_NEUTRAL)'  \
-	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
+	'$$(TARGET_PICK_GAUSS_COEF)' \
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
 	'$$(TARGET_FIT_DIPOLE_RATIO)   $$(TARGET_SPH_ENE_CHECK)'      \
 	'$$(TARGET_PSUM_SPH_ENE_SPEC)  $$(TARGET_SPH_DYN_ELSASSER)'   \
@@ -515,14 +501,6 @@ target_task:
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_T_AVE_PICK_SPH_SPEC)': '$$(MOD_T_AVE_PICK_SPH)' \
-	'$$(LIB_FILES_SPH_UTIL)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	'$$(MOD_T_AVE_PICK_SPH)' \
-	'-L. $$(LIBS_SPH_UTIL)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSUM_SPH_ENE_SPEC)': '$$(MOD_PSUM_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
@@ -626,8 +604,6 @@ mod_list:
 	@echo  $(MOD_SPH_NEUTRAL)           >> $(MAKENAME)
 	@echo  MOD_TAVE_SPH_ENE_SPEC=  \\     >> $(MAKENAME)
 	@echo  $(MOD_TAVE_SPH_ENE_SPEC)       >> $(MAKENAME)
-	@echo  MOD_T_AVE_PICK_SPH=  \\        >> $(MAKENAME)
-	@echo  $(MOD_T_AVE_PICK_SPH)          >> $(MAKENAME)
 	@echo  MOD_MAX_SPH_ENE=  \\           >> $(MAKENAME)
 	@echo  $(MOD_MAX_SPH_ENE)             >> $(MAKENAME)
 	@echo  MOD_SPH_ULI_LSCALE=  \\        >> $(MAKENAME)

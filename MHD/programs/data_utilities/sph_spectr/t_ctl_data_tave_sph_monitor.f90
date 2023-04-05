@@ -8,8 +8,10 @@
 !> @brief Monitoring section IO for Control data
 !!
 !!@verbatim
-!!      subroutine read_control_file_sph_monitor(my_rank, tave_sph_ctl)
+!!      subroutine read_control_file_sph_monitor(my_rank, file_name,    &
+!!     &                                         tave_sph_ctl)
 !!      subroutine read_ctl_tave_sph_monitor                            &
+!!        character(len=kchara), intent(in) :: file_name
 !!        type(tave_sph_monitor_ctl), intent(inout) :: tave_sph_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine dealloc_ctl_tave_sph_monitor(tave_sph_ctl)
@@ -76,9 +78,6 @@
 !
       implicit  none
 !
-!>        Control file name
-      character(len = kchara), parameter, private                       &
-     &           :: fname_ctl_tave_sph_mtr = 'control_sph_time_average'
 !>        Control file ID
       integer(kind = kint), parameter, private :: id_control = 11
 !
@@ -123,18 +122,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_file_sph_monitor(my_rank, tave_sph_ctl)
+      subroutine read_control_file_sph_monitor(my_rank, file_name,      &
+     &                                         tave_sph_ctl)
 !
       use skip_comment_f
 !
       integer, intent(in) :: my_rank
+      character(len=kchara), intent(in) :: file_name
       type(tave_sph_monitor_ctl), intent(inout) :: tave_sph_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
 !
       if(my_rank .eq. 0) then
-        open(id_control, file = fname_ctl_tave_sph_mtr, status='old')
+        open(id_control, file = file_name, status='old')
         do
           call load_one_line_from_control(id_control, c_buf1)
           call read_ctl_tave_sph_monitor                                &

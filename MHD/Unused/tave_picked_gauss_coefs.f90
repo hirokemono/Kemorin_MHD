@@ -25,6 +25,9 @@
 !
       implicit  none
 !
+!>        Control file name
+      character(len = kchara), parameter, private                       &
+     &           :: fname_ctl_tave_sph_mtr = 'control_sph_time_average'
 !>      Structure for control data
       type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
 !
@@ -32,7 +35,8 @@
       real(kind = kreal) :: start_time, end_time
 !
 !
-      call read_control_file_sph_monitor(0, tave_sph_ctl1)
+      call read_control_file_sph_monitor(0, fname_ctl_tave_sph_mtr,     &
+     &                                   tave_sph_ctl1)
       call set_control_ave_gauss(tave_sph_ctl1, input_file_name,        &
      &                           start_time, end_time)
 !
