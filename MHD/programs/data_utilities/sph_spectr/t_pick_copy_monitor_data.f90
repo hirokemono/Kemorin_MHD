@@ -143,7 +143,7 @@
       do
         icou = icou + 1
         do j = 1, nline_snap
-          call gz_copy_spectr_monitor_data(FPz_f, id_stream,            &
+          call copy_sph_monitor_line_to_text(FPz_f, id_stream,          &
      &        id_write, flag_gzip, zbuf, ierr)
           if(ierr .gt. 0) go to 99
         end do

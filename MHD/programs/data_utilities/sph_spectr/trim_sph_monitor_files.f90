@@ -107,7 +107,6 @@
      &     (spec_evo_append%vol_series%evo_file_name(i),                &
      &      spec_evo_target%vol_series%evo_file_name(i), trim_end_time)
       end do
-      stop
 !
       if(spec_evo_append%vol_spec_series%num_file                       &
      &     .ne. spec_evo_target%vol_spec_series%num_file) then
@@ -117,10 +116,12 @@
         stop
       end if
       do i = 1, spec_evo_target%vol_spec_series%num_file
-        call append_sph_volume_spectr_file                              &
+        call trim_sph_volume_spectr_file                                &
      &     (spec_evo_append%vol_spec_series%evo_file_name(i),           &
-     &      spec_evo_target%vol_spec_series%evo_file_name(i))
+     &      spec_evo_target%vol_spec_series%evo_file_name(i),           &
+     &      trim_end_time)
       end do
+      stop
 !
       if(spec_evo_append%layer_series%num_file                          &
      &     .ne. spec_evo_target%layer_series%num_file) then

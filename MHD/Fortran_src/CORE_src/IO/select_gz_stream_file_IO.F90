@@ -42,6 +42,13 @@
 !!        integer(kind = kint), intent(in) :: id_file
 !!        character(len = *), intent(in) :: textbuf
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!      subroutine sel_gz_write_text_stream_w_len(flag_gzip, id_file,   &
+!!     &                                          len64, textbuf, zbuf)
+!!        logical, intent(in) :: flag_gzip
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer(kind = kint_gl), intent(in) :: len64
+!!        character(len = len64), intent(in) :: textbuf
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
       module select_gz_stream_file_IO
@@ -289,6 +296,35 @@
       write(id_file) textbuf
 !
       end subroutine sel_gz_write_text_stream
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sel_gz_write_text_stream_w_len(flag_gzip, id_file,     &
+     &                                          len64, textbuf, zbuf)
+!
+      use data_convert_by_zlib
+      use transfer_to_long_integers
+!
+      logical, intent(in) :: flag_gzip
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint_gl), intent(in) :: len64
+      character(len = len64), intent(in) :: textbuf
+!
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+!
+!#ifdef ZLIB_IO
+      if(flag_gzip) then
+        call gzip_defleate_characters_b(len64, textbuf, zbuf)
+        write(id_file) zbuf%gzip_buf(1:zbuf%ilen_gzipped)
+        call dealloc_zip_buffer(zbuf)
+        return
+      end if
+!#endif
+!
+      write(id_file) textbuf(1:len64)
+!
+      end subroutine sel_gz_write_text_stream_w_len
 !
 ! -----------------------------------------------------------------------
 !

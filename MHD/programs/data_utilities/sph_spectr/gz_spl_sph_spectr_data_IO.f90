@@ -46,10 +46,11 @@
 !!        integer(kind = kint), intent(inout) :: ierr
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine gz_copy_spectr_monitor_data(FPz_f, id_ascii,         &
-!!     &                                       zbuf, ierr)
+!!      subroutine copy_sph_monitor_line_to_text                        &
+!!     &         (FPz_f, id_read, id_write, flag_gzip, zbuf, ierr)
 !!        character, pointer, intent(in) :: FPz_f
-!!        integer(kind = kint), intent(in) :: id_ascii
+!!        logical, intent(in) :: flag_gzip
+!!        integer(kind = kint), intent(in) :: id_read, id_write
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        integer(kind = kint), intent(inout) :: ierr
 !!
@@ -162,8 +163,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine gz_copy_spectr_monitor_data(FPz_f, id_read, id_write,  &
-     &                                       flag_gzip, zbuf, ierr)
+      subroutine copy_sph_monitor_line_to_text                          &
+     &         (FPz_f, id_read, id_write, flag_gzip, zbuf, ierr)
 !
       use select_gz_stream_file_IO
 !
@@ -181,7 +182,7 @@
       write(id_write,'(a)') zbuf%fixbuf(1)(1:zbuf%len_used-1)
       ierr = 0
 !
-      end subroutine gz_copy_spectr_monitor_data
+      end subroutine copy_sph_monitor_line_to_text
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
