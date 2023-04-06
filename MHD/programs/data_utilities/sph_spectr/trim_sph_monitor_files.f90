@@ -16,6 +16,8 @@
 !!    folder_to_read_ctl    'no02'
 !!    folder_to_add_ctl     'monitor'
 !!
+!!    end_time_ctl            468.05
+!!
 !!    begin monitor_file_list_ctl
 !!      array vol_integrate_prefix
 !!        vol_integrate_prefix     'sph_ave_volume'
@@ -60,10 +62,7 @@
       use set_control_4_pickup_sph
       use count_monitor_time_series
       use set_parallel_file_name
-      use trim_sph_volume_mean
-      use append_sph_volume_spectr
-      use append_sph_layer_mean
-      use append_sph_layer_spectr
+      use trim_each_sph_monitor_fiile
 !
       implicit none
 !

@@ -189,10 +189,7 @@ write_snap_pick_sph_spectr.o \
 picked_sph_spectr_data_IO.o \
 t_pick_copy_monitor_data.o \
 t_append_picked_spectr_file.o \
-trim_sph_volume_mean.o \
-append_sph_volume_spectr.o \
-append_sph_layer_mean.o \
-append_sph_layer_spectr.o \
+trim_each_sph_monitor_fiile.o \
 count_monitor_time_series.o
 
 MOD_PICK_SPH_SPEC = \
