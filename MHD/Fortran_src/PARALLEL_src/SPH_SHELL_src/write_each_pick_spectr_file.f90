@@ -46,7 +46,7 @@
       use sph_power_spectr_data_text
       use write_field_labels
       use select_gz_stream_file_IO
-      use gz_open_sph_monitor_file
+      use gz_open_sph_layer_mntr_file
       use write_pick_sph_spectr_data
       use data_convert_by_zlib
 !
@@ -99,7 +99,7 @@
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use compare_sph_monitor_header
-      use gz_open_sph_monitor_file
+      use gz_open_sph_layer_mntr_file
       use data_convert_by_zlib
 !
       integer(kind = kint), intent(in) :: inum

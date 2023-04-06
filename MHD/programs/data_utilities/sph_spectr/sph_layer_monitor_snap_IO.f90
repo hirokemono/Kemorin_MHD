@@ -72,7 +72,7 @@
 !
       use set_parallel_file_name
       use select_gz_stream_file_IO
-      use gz_open_sph_monitor_file
+      use gz_open_sph_layer_mntr_file
       use gz_layer_spectr_monitor_IO
 !
       logical, intent(in) :: flag_gzip
@@ -182,7 +182,7 @@
       use t_sph_spectr_head_labels
       use set_parallel_file_name
       use select_gz_stream_file_IO
-      use gz_open_sph_monitor_file
+      use gz_open_sph_layer_mntr_file
       use gz_layer_mean_monitor_IO
 !
       logical, intent(in) :: flag_gzip

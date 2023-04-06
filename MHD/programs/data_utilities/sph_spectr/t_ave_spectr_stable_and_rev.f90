@@ -124,7 +124,7 @@
 !
       use count_monitor_time_series
       use gz_gauss_coefs_monitor_IO
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
       use write_gauss_coefs_4_monitor
       use select_gz_stream_file_IO
       use gz_volume_spectr_monitor_IO

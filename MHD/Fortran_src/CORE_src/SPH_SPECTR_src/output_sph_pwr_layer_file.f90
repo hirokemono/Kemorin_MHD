@@ -144,7 +144,7 @@
 !
       use t_read_sph_spectra
       use t_buffer_4_gzip
-      use gz_open_sph_monitor_file
+      use gz_open_sph_layer_mntr_file
       use gz_layer_mean_monitor_IO
       use sph_mean_spectr_header_IO
       use set_parallel_file_name
@@ -194,7 +194,7 @@
 !
       use t_read_sph_spectra
       use t_buffer_4_gzip
-      use gz_open_sph_monitor_file
+      use gz_open_sph_layer_mntr_file
       use gz_layer_spectr_monitor_IO
       use sph_mean_spectr_header_IO
       use set_parallel_file_name

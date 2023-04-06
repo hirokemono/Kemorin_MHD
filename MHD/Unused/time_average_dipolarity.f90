@@ -61,7 +61,7 @@
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use sph_monitor_data_text
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
 !
       character(len=kchara), intent(in) :: file_name
       real(kind = kreal), intent(in) :: start_time, end_time

@@ -48,7 +48,7 @@
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use count_monitor_time_series
-      use gz_open_sph_monitor_file
+      use gz_open_sph_layer_mntr_file
       use gz_layer_spectr_monitor_IO
       use sph_layer_monitor_snap_IO
 !

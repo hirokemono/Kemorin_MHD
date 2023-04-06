@@ -54,7 +54,7 @@
       use sph_monitor_data_text
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
       use gz_volume_spectr_monitor_IO
       use gz_spl_sph_spectr_data_IO
 !
@@ -161,7 +161,7 @@
       use gz_layer_mean_monitor_IO
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
-      use gz_open_sph_monitor_file
+      use gz_open_sph_layer_mntr_file
       use gz_spl_sph_spectr_data_IO
 !
       character(len = kchara), intent(in) :: fname_org

@@ -54,7 +54,7 @@
       use t_sph_volume_mean_square
       use sph_monitor_data_text
       use select_gz_stream_file_IO
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: i_step
@@ -121,7 +121,7 @@
       use t_rms_4_sph_spectr
       use t_read_sph_spectra
       use set_parallel_file_name
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
       use check_sph_monitor_header
       use compare_sph_monitor_header
       use sph_power_spectr_data_text

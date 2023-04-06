@@ -133,7 +133,7 @@
       use t_buffer_4_gzip
       use sph_monitor_data_text
       use select_gz_stream_file_IO
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
 !
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time

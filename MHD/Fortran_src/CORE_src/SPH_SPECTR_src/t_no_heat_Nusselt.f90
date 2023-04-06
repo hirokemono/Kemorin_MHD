@@ -185,7 +185,7 @@
       use t_read_sph_spectra
       use select_gz_stream_file_IO
       use sph_monitor_data_text
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
 !
       integer(kind = kint), intent(in) :: ltr, nri
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB

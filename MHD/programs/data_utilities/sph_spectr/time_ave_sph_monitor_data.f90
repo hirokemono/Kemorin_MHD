@@ -46,7 +46,7 @@
       use sph_monitor_data_text
       use set_parallel_file_name
       use select_gz_stream_file_IO
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
       use gz_volume_spectr_monitor_IO
 !'
       character(len = kchara), intent(in) :: fname_org

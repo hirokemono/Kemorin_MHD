@@ -38,7 +38,7 @@
       use select_gz_stream_file_IO
       use sel_gz_input_sph_mtr_head
       use gz_spl_sph_spectr_data_IO
-      use gz_open_sph_monitor_file
+      use gz_open_sph_layer_mntr_file
       use gz_layer_mean_monitor_IO
       use set_parallel_file_name
 !

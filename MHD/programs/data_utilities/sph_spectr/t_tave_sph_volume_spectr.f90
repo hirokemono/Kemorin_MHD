@@ -134,7 +134,7 @@
       use select_gz_stream_file_IO
       use gz_volume_spectr_monitor_IO
       use cal_tave_sph_ene_spectr
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
 !
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_read
@@ -211,7 +211,7 @@
       use sel_gz_input_sph_mtr_head
       use gz_volume_spectr_monitor_IO
       use cal_tave_sph_ene_spectr
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
 !
       character, pointer, intent(in) :: FPz_f
       integer(kind = kint), intent(in) :: id_read

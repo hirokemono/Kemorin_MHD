@@ -75,7 +75,7 @@
       use delete_data_files
       use select_gz_stream_file_IO
       use sph_monitor_data_text
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -216,7 +216,7 @@
 !
       use set_parallel_file_name
       use check_sph_monitor_header
-      use gz_open_sph_monitor_file
+      use gz_open_sph_vol_mntr_file
       use compare_sph_monitor_header
       use sph_power_spectr_data_text
       use sel_gz_input_sph_mtr_head
