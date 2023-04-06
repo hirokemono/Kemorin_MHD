@@ -113,7 +113,6 @@
       type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
-      integer(kind = kint) :: ierr
       logical, parameter :: current_fmt = .FALSE.
       logical :: flag_gzip1
       character, pointer :: FPz_f1
@@ -180,6 +179,7 @@
       subroutine write_sph_layer_mean_snapshot(flag_gzip, file_name,    &
      &          comment, monitor_labels, sph_IN, spectr_IO)
 !
+      use t_sph_spectr_head_labels
       use set_parallel_file_name
       use select_gz_stream_file_IO
       use gz_open_sph_monitor_file
@@ -202,7 +202,7 @@
       call sel_gz_write_text_stream(flag_gzip, id_stream,               &
      &                              comment, zbuf_wt)
       call write_sph_pwr_layer_head(flag_gzip, id_stream,               &
-     &                              sph_pwr_labels, sph_IN, zbuf_wt)
+     &                              monitor_labels, sph_IN, zbuf_wt)
       call sel_gz_write_layer_mean_mtr                                  &
      &   (flag_gzip, id_stream, sph_IN%i_step, sph_IN%time,             &
      &    sph_IN%nri_sph, sph_IN%kr_sph, sph_IN%r_sph,                  &
@@ -226,7 +226,6 @@
       type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
-      integer(kind = kint) :: ierr
       logical :: flag_gzip1
       type(buffer_4_gzip) :: zbuf_rd
       character, pointer :: FPz_f1

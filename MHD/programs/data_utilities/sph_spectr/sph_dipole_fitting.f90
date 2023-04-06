@@ -61,7 +61,7 @@
       logical :: flag_gzip1
       type(buffer_4_gzip), save :: zbuf_s, zbuf1
 !
-      real(kind = kreal) :: true_start, true_end
+      real(kind = kreal) :: true_end
 !
       logical, parameter :: vol_ave_on = .TRUE.
       logical, parameter :: vol_ave_off = .FALSE.

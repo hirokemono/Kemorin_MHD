@@ -105,7 +105,6 @@
       type(sph_spectr_head_labels), intent(inout) :: sph_lbl_IN
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
-      integer(kind = kint) :: ierr
       logical :: flag_gzip1
       character, pointer :: FPz_f1
       type(buffer_4_gzip) :: zbuf_rd

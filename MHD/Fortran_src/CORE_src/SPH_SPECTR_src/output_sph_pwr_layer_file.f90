@@ -148,6 +148,7 @@
       use gz_layer_mean_monitor_IO
       use sph_mean_spectr_header_IO
       use set_parallel_file_name
+      use sph_power_spectr_data_text
 !
       character(len=kchara), intent(in) :: fname_rms, mode_label
       type(energy_label_param), intent(in) :: ene_labels
@@ -171,7 +172,7 @@
 !
       flag_gzip_lc = pwr%gzip_flag_rms_layer
       call sel_open_sph_layer_mean_file(id_file_rms, fname_rms,         &
-     &                                   sph_OUT, zbuf_m, flag_gzip_lc)
+     &    sph_pwr_labels, sph_OUT, zbuf_m, flag_gzip_lc)
       call swap_layer_mean_to_IO(pwr%nri_rms, pwr%ntot_comp_sq,         &
      &                           rms_sph, spectr_IO(1,1))
       call sel_gz_write_layer_mean_mtr                                  &
@@ -197,6 +198,7 @@
       use gz_layer_spectr_monitor_IO
       use sph_mean_spectr_header_IO
       use set_parallel_file_name
+      use sph_power_spectr_data_text
 !
       type(energy_label_param), intent(in) :: ene_labels
       type(time_data), intent(in) :: time_d
@@ -221,7 +223,7 @@
 !
       flag_gzip_lc = pwr%gzip_flag_rms_layer
       call sel_open_sph_layer_mean_file(id_file_rms, fname_rms,         &
-     &                                  sph_OUT, zbuf_m, flag_gzip_lc)
+     &    sph_pwr_labels, sph_OUT, zbuf_m, flag_gzip_lc)
       call swap_layer_spectr_to_IO(pwr%nri_rms, ltr, pwr%ntot_comp_sq,  &
      &                             rms_sph_x, spectr_IO(1,0,1))
       call sel_gz_write_layer_spectr_mtr                                &

@@ -121,7 +121,6 @@
      &      spec_evo_target%vol_spec_series%evo_file_name(i),           &
      &      trim_end_time)
       end do
-      stop
 !
       if(spec_evo_append%layer_series%num_file                          &
      &     .ne. spec_evo_target%layer_series%num_file) then
@@ -131,9 +130,10 @@
         stop
       end if
       do i = 1, spec_evo_target%layer_series%num_file
-        call append_sph_layer_mean_file                                 &
+        call trim_sph_layer_mean_file                                   &
      &     (spec_evo_append%layer_series%evo_file_name(i),              &
-     &      spec_evo_target%layer_series%evo_file_name(i))
+     &      spec_evo_target%layer_series%evo_file_name(i),              &
+     &      trim_end_time)
       end do
 !
       if(spec_evo_append%layer_spec_series%num_file                     &
@@ -144,9 +144,10 @@
         stop
       end if
       do i = 1, spec_evo_target%layer_spec_series%num_file
-        call append_sph_layer_spectr_file                               &
+        call trim_sph_layer_spectr_file                                 &
      &     (spec_evo_append%layer_spec_series%evo_file_name(i),         &
-     &      spec_evo_target%layer_spec_series%evo_file_name(i))
+     &      spec_evo_target%layer_spec_series%evo_file_name(i),         &
+     &      trim_end_time)
       end do
 !
 !
@@ -158,9 +159,10 @@
         stop
       end if
       do i = 1, spec_evo_target%pick_spec_series%num_file
-        call append_picked_spectr_file                                  &
+        call trim_picked_spectr_file                                    &
      &     (spec_evo_append%pick_spec_series%evo_file_name(i),          &
-     &      spec_evo_target%pick_spec_series%evo_file_name(i))
+     &      spec_evo_target%pick_spec_series%evo_file_name(i),          &
+     &      trim_end_time)
       end do
 !
       call dealloc_spec_series_file_param(spec_evo_append)

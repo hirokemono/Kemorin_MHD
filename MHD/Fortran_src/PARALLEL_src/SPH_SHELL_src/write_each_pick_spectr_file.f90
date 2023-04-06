@@ -33,7 +33,6 @@
       implicit  none
 !
       private :: each_picked_mode_file_name
-      private :: write_each_pick_sph_file_head
 !
 ! -----------------------------------------------------------------------
 !
@@ -44,9 +43,12 @@
       subroutine open_write_each_picked_spectr(inum, id_file,           &
      &          nlayer_ICB, nlayer_CMB, picked, flag_gzip_lc, zbuf)
 !
+      use sph_power_spectr_data_text
       use write_field_labels
       use select_gz_stream_file_IO
       use gz_open_sph_monitor_file
+      use write_pick_sph_spectr_data
+      use data_convert_by_zlib
 !
       integer(kind = kint), intent(in) :: inum
       integer(kind = kint), intent(in) :: id_file
@@ -58,6 +60,7 @@
 !
       logical :: flag_miss
       character(len = kchara) :: file_name, base_name
+      type(read_sph_spectr_data) :: sph_OUT_p
 !
 !
       flag_gzip_lc = picked%flag_gzip
@@ -70,8 +73,12 @@
       if(flag_miss) then
         open(id_file, file=file_name, status='replace',                 &
      &       form='unformatted', ACCESS='stream')
-        call write_each_pick_sph_file_head                              &
-     &      (id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
+!
+        call dup_each_pick_sph_file_header(nlayer_ICB, nlayer_CMB,      &
+     &                                     picked, sph_OUT_p)
+        call write_sph_pwr_layer_head(picked%flag_gzip, id_file,        &
+     &      pick_spectr_labels, sph_OUT_p, zbuf)
+        call dealloc_sph_espec_name(sph_OUT_p)
       else
         open(id_file, file=file_name, status='old', position='append',  &
      &       form='unformatted', ACCESS='stream')
@@ -84,6 +91,7 @@
       logical function error_each_picked_spectr(inum, id_file,          &
      &                nlayer_ICB, nlayer_CMB, picked, zbuf)
 !
+      use sph_power_spectr_data_text
       use set_parallel_file_name
       use write_pick_sph_spectr_data
       use write_field_labels
@@ -92,6 +100,7 @@
       use sel_gz_input_sph_mtr_head
       use compare_sph_monitor_header
       use gz_open_sph_monitor_file
+      use data_convert_by_zlib
 !
       integer(kind = kint), intent(in) :: inum
       integer(kind = kint), intent(in) :: id_file
@@ -144,50 +153,17 @@
       open(id_file, file=file_name, status='replace',                   &
      &     form='unformatted', ACCESS='stream')
 !
-      call write_each_pick_sph_file_head                                &
-     &   (id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
+      call dup_each_pick_sph_file_header(nlayer_ICB, nlayer_CMB,        &
+     &                                   picked, sph_OUT_p)
+      call write_sph_pwr_layer_head(picked%flag_gzip, id_file,          &
+     &    pick_spectr_labels, sph_OUT_p, zbuf)
+      call dealloc_sph_espec_name(sph_OUT_p)
       close(id_file)
       error_each_picked_spectr = .FALSE.
 !
       end function error_each_picked_spectr
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine write_each_pick_sph_file_head                          &
-     &         (id_file, nlayer_ICB, nlayer_CMB, picked, zbuf)
-!
-      use sph_power_spectr_data_text
-      use write_field_labels
-      use write_pick_sph_spectr_data
-      use t_buffer_4_gzip
-      use data_convert_by_zlib
-      use select_gz_stream_file_IO
-!
-      integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      type(picked_spectrum_data), intent(in) :: picked
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      type(read_sph_spectr_data) :: sph_OUT
-      integer(kind = kint) :: len_each(6)
-      integer(kind = kint) :: len_tot
-!
-!
-      call dup_each_pick_sph_file_header(nlayer_ICB, nlayer_CMB,        &
-     &                                   picked, sph_OUT)
-      call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
-     &                                 len_each, len_tot)
-!
-      call sel_gz_write_text_stream(picked%flag_gzip, id_file,          &
-     &    sph_layer_spectr_header_text(len_tot, len_each,               &
-     &                                 pick_spectr_labels, sph_OUT),    &
-     &    zbuf)
-      call dealloc_sph_espec_name(sph_OUT)
-!
-      end subroutine write_each_pick_sph_file_head
-!
 ! -----------------------------------------------------------------------
 !
       character(len=kchara) function each_picked_mode_file_name         &

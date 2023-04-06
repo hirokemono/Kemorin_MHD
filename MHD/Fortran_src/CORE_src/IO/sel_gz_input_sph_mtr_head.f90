@@ -194,7 +194,6 @@
      &   sph_IN%ncomp_sph_spec, sph_IN%ene_sph_spec_name, zbuf)
 !
       sph_IN%nri_dat = sph_IN%nri_sph
-      call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
 !
       end subroutine read_picked_sph_head
 !

@@ -70,7 +70,7 @@
       call read_sph_volume_mean_head(FPz_f1, id_read_file, flag_gzip1,  &
      &                               sph_lbl_IN1, sph_IN1, zbuf1)
 !
-      write(*,*) 'Open target file', ': ', trim(trimmed_file_name)
+!      write(*,*) 'Open target file', ': ', trim(trimmed_file_name)
       call sel_open_sph_vol_monitor_file                                &
      &   (id_write_file, trimmed_file_name, sph_lbl_IN1, sph_IN1,       &
      &    zbuf2, flag_gzip1)
@@ -121,7 +121,7 @@
       integer(kind = kint), parameter :: id_read_file =  15
       integer(kind = kint), parameter :: id_write_file = 16
 !
-      integer(kind = kint) :: istep
+      integer(kind = kint) :: istep, nline_snap
       real(kind = kreal) :: time
 !
       integer(kind = kint) :: ierr
@@ -140,7 +140,7 @@
       call read_sph_volume_spectr_head                                  &
      &  (FPz_f1, id_read_file, flag_gzip1, sph_lbl_IN1, sph_IN1, zbuf1)
 !
-      write(*,*) 'Open target file', ': ', trim(trimmed_file_name)
+!      write(*,*) 'Open target file', ': ', trim(trimmed_file_name)
       call sel_open_sph_vol_monitor_file                                &
      &   (id_write_file, trimmed_file_name, sph_lbl_IN1, sph_IN1,       &
      &    zbuf2, flag_gzip1)
@@ -148,9 +148,10 @@
 !
       icou = 0
       do
+        nline_snap = sph_IN1%ltr_sph + 1
         call sel_copy_sph_monitor_lines                                 &
      &     (FPz_f1, id_read_file, id_write_file, flag_gzip1,            &
-     &      trim_end_time, (sph_IN1%ltr_sph+1), zbuf1, zbuf2, ierr)
+     &      trim_end_time, nline_snap, zbuf1, zbuf2, ierr)
         if(ierr .ne. 0) exit
         icou = icou + 1
       end do
@@ -166,6 +167,222 @@
 !
       end subroutine trim_sph_volume_spectr_file
 !
+! -----------------------------------------------------------------------
+!
+      subroutine trim_sph_layer_mean_file                               &
+     &         (read_file_name, trimmed_file_name, trim_end_time)
+!
+      use sph_power_spectr_data_text
+      use select_gz_stream_file_IO
+      use sel_gz_input_sph_mtr_head
+      use gz_open_sph_monitor_file
+      use gz_spl_sph_spectr_data_IO
+!
+      implicit none
+!
+      character(len=kchara), intent(in) :: read_file_name
+      character(len=kchara), intent(in) :: trimmed_file_name
+      real(kind = kreal), intent(in) :: trim_end_time
+!
+!
+      type(read_sph_spectr_data), save :: sph_IN1
+      type(read_sph_spectr_data), save :: sph_OUT1
+      type(sph_spectr_head_labels), save :: sph_lbl_IN1
+      type(sph_spectr_head_labels), save :: sph_lbl_OUT1
+!
+      integer(kind = kint), parameter :: id_read_file =  15
+      integer(kind = kint), parameter :: id_write_file = 16
+!
+      integer(kind = kint) :: istep, nline_snap
+      real(kind = kreal) :: time
+!
+      integer(kind = kint) :: ierr
+      integer(kind = kint) :: icou = 0
+!
+      logical :: flag_gzip1
+      logical :: error
+      type(buffer_4_gzip) :: zbuf1, zbuf2
+      character, pointer, save  :: FPz_f1
+      type(monitor_field_pickup_table), save :: comp_tbl1
+!
+!
+      write(*,*) 'Open data file to append.'
+      call sel_open_read_gz_stream_file                                 &
+     &   (FPz_f1, id_read_file, read_file_name, flag_gzip1, zbuf1)
+      call read_sph_layer_mean_head(FPz_f1, id_read_file,               &
+     &    flag_gzip1, .FALSE., sph_lbl_IN1, sph_IN1, zbuf1)
+!
+!      write(*,*) 'Open target file', ': ', trim(trimmed_file_name)
+      call sel_open_sph_layer_mean_file                                 &
+     &   (id_write_file, trimmed_file_name, sph_pwr_labels,             &
+     &    sph_IN1, zbuf2, flag_gzip1)
+!
+!
+      icou = 0
+      do
+        nline_snap = sph_IN1%nri_sph
+        call sel_copy_sph_monitor_lines                                 &
+     &     (FPz_f1, id_read_file, id_write_file, flag_gzip1,            &
+     &      trim_end_time, nline_snap, zbuf1, zbuf2, ierr)
+        if(ierr .ne. 0) exit
+        icou = icou + 1
+      end do
+      write(*,*)
+      write(*,*) 'total count:',  icou
+!
+      close(id_write_file)
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_read_file, flag_gzip1, zbuf1)
+!
+      call dealloc_sph_espec_name(sph_IN1)
+      return
+!
+      end subroutine trim_sph_layer_mean_file
+!
+! -----------------------------------------------------------------------
+!
+      subroutine trim_sph_layer_spectr_file                             &
+     &         (read_file_name, trimmed_file_name, trim_end_time)
+!
+      use sph_power_spectr_data_text
+      use select_gz_stream_file_IO
+      use sel_gz_input_sph_mtr_head
+      use gz_open_sph_monitor_file
+      use gz_spl_sph_spectr_data_IO
+!
+      implicit none
+!
+      character(len=kchara), intent(in) :: read_file_name
+      character(len=kchara), intent(in) :: trimmed_file_name
+      real(kind = kreal), intent(in) :: trim_end_time
+!
+!
+      type(read_sph_spectr_data), save :: sph_IN1
+      type(read_sph_spectr_data), save :: sph_OUT1
+      type(sph_spectr_head_labels), save :: sph_lbl_IN1
+      type(sph_spectr_head_labels), save :: sph_lbl_OUT1
+!
+      integer(kind = kint), parameter :: id_read_file =  15
+      integer(kind = kint), parameter :: id_write_file = 16
+!
+      integer(kind = kint) :: istep, nline_snap
+      real(kind = kreal) :: time
+!
+      integer(kind = kint) :: ierr
+      integer(kind = kint) :: icou = 0
+!
+      logical :: flag_gzip1
+      logical :: error
+      type(buffer_4_gzip) :: zbuf1, zbuf2
+      character, pointer, save  :: FPz_f1
+      type(monitor_field_pickup_table), save :: comp_tbl1
+!
+!
+      write(*,*) 'Open data file to append.'
+      call sel_open_read_gz_stream_file                                 &
+     &   (FPz_f1, id_read_file, read_file_name, flag_gzip1, zbuf1)
+      call read_sph_layer_spectr_head(FPz_f1, id_read_file,             &
+     &    flag_gzip1, .FALSE., sph_lbl_IN1, sph_IN1, zbuf1)
+!
+!      write(*,*) 'Open target file', ': ', trim(trimmed_file_name)
+      call sel_open_sph_layer_mean_file                                 &
+     &   (id_write_file, trimmed_file_name, sph_pwr_labels,             &
+     &    sph_IN1, zbuf2, flag_gzip1)
+!
+!
+      icou = 0
+      do
+        nline_snap = sph_IN1%nri_sph * (sph_IN1%ltr_sph + 1)
+        call sel_copy_sph_monitor_lines                                 &
+     &     (FPz_f1, id_read_file, id_write_file, flag_gzip1,            &
+     &      trim_end_time, nline_snap, zbuf1, zbuf2, ierr)
+        if(ierr .ne. 0) exit
+        icou = icou + 1
+      end do
+      write(*,*)
+      write(*,*) 'total count:',  icou
+!
+      close(id_write_file)
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_read_file, flag_gzip1, zbuf1)
+!
+      call dealloc_sph_espec_name(sph_IN1)
+      return
+!
+      end subroutine trim_sph_layer_spectr_file
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine trim_picked_spectr_file                                &
+     &         (read_file_name, trimmed_file_name, trim_end_time)
+!
+      use select_gz_stream_file_IO
+      use sel_gz_input_sph_mtr_head
+      use gz_open_sph_monitor_file
+      use gz_spl_sph_spectr_data_IO
+!
+      implicit none
+!
+      character(len=kchara), intent(in) :: read_file_name
+      character(len=kchara), intent(in) :: trimmed_file_name
+      real(kind = kreal), intent(in) :: trim_end_time
+!
+!
+      type(read_sph_spectr_data), save :: sph_IN1
+      type(read_sph_spectr_data), save :: sph_OUT1
+      type(sph_spectr_head_labels), save :: sph_lbl_IN1
+      type(sph_spectr_head_labels), save :: sph_lbl_OUT1
+!
+      integer(kind = kint), parameter :: id_read_file =  15
+      integer(kind = kint), parameter :: id_write_file = 16
+!
+      integer(kind = kint) :: istep, nline_snap
+      real(kind = kreal) :: time
+!
+      integer(kind = kint) :: ierr
+      integer(kind = kint) :: icou = 0
+!
+      logical :: flag_gzip1
+      logical :: error
+      type(buffer_4_gzip) :: zbuf1, zbuf2
+      character, pointer, save  :: FPz_f1
+      type(monitor_field_pickup_table), save :: comp_tbl1
+!
+!
+      write(*,*) 'Open data file to append.'
+      call sel_open_read_gz_stream_file                                 &
+     &   (FPz_f1, id_read_file, read_file_name, flag_gzip1, zbuf1)
+      call read_picked_sph_head(FPz_f1, id_read_file,                   &
+     &    flag_gzip1, sph_lbl_IN1, sph_IN1, zbuf1)
+!
+!      write(*,*) 'Open target file', ': ', trim(trimmed_file_name)
+      call sel_open_sph_layer_mean_file                                 &
+     &   (id_write_file, trimmed_file_name, sph_lbl_IN1,                &
+     &    sph_IN1, zbuf2, flag_gzip1)
+!
+      icou = 0
+      do
+        nline_snap = sph_IN1%nri_sph * sph_IN1%ltr_sph
+        call sel_copy_sph_monitor_lines                                 &
+     &     (FPz_f1, id_read_file, id_write_file, flag_gzip1,            &
+     &      trim_end_time, nline_snap, zbuf1, zbuf2, ierr)
+        if(ierr .ne. 0) exit
+        icou = icou + 1
+      end do
+      write(*,*)
+      write(*,*) 'total count:',  icou
+!
+      close(id_write_file)
+      call sel_close_read_gz_stream_file                                &
+     &   (FPz_f1, id_read_file, flag_gzip1, zbuf1)
+!
+      call dealloc_sph_espec_name(sph_IN1)
+      return
+!
+      end subroutine trim_picked_spectr_file
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine sel_copy_sph_monitor_lines                             &
