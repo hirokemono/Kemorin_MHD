@@ -86,8 +86,7 @@
      &    sph_asbl_s%new_sph_data, new_geofem,                          &
      &    asbl_param_s%new_mesh_file)
       if(allocated(new_geofem%mesh%node%xx)) then
-        call dealloc_mesh_infomations(new_geofem%mesh,                  &
-     &                                new_geofem%group)
+        call dealloc_mesh_data(new_geofem%mesh, new_geofem%group)
       end if
 !
       call load_new_spectr_rj_data(sph_asbl_s%org_sph_array,            &

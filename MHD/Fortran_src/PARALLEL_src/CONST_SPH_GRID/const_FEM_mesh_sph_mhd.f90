@@ -96,9 +96,6 @@
       call copy_mesh_and_group                                          &
      &   (femmesh_s%mesh, femmesh_s%group, geofem%mesh, geofem%group)
       return
-      call dealloc_groups_data(femmesh_s%group)
-      call dealloc_mesh_geometry_base(femmesh_s%mesh)
-      call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
 !
       end subroutine load_FEM_mesh_4_SPH
 !
