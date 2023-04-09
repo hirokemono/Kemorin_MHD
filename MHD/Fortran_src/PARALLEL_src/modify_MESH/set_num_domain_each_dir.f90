@@ -53,6 +53,7 @@
         if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Z')               &
      &        ) ndomain_eb(3) = ndomain_section_ctl%ivec(i)
       end do
+!
       new_nprocs = ndomain_eb(1) * ndomain_eb(2) * ndomain_eb(3)
 !
       end subroutine set_control_EQ_XYZ

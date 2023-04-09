@@ -170,6 +170,7 @@
       type(volume_partioning_param), intent(inout) :: part_param
 !
       character(len = kchara) :: tmpchara
+      integer(kind = kint) :: nprocs_tmp
 !
       if(new_part_ctl%repart_table_head_ctl%iflag .le. 0) then
         part_param%trans_tbl_file%iflag_format = id_no_file
@@ -213,7 +214,7 @@
 !
       part_param%new_nprocs = nprocs
       call set_control_EQ_XYZ(new_part_ctl%ndomain_section_ctl,         &
-     &    part_param%new_nprocs, part_param%ndomain_eb)
+     &    nprocs_tmp, part_param%ndomain_eb)
 !
       if(new_part_ctl%ratio_of_grouping_ctl%iflag .eq. 0) then
         part_param%ndivide_eb(1:3) = 100 * part_param%ndomain_eb(1:3)
@@ -225,6 +226,13 @@
       if(my_rank .eq. 0) then
         write(*,*) 'ndomain_eb', part_param%ndomain_eb(1:3)
         write(*,*) 'ndivide_eb', part_param%ndivide_eb(1:3)
+!
+        if(nprocs_tmp .ne. nprocs) then
+          write(*,*)                                                    &
+     &      'Caution: # of products of new subdomains in control',      &
+     &      nprocs_tmp, 'nprocs_tmp does not match with MPI processes', &
+     &      nprocs
+        end if
       end if
 !
       end subroutine set_ctl_param_vol_grping
