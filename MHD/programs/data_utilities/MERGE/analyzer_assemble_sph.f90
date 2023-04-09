@@ -49,6 +49,7 @@
 !
       use m_error_IDs
 !
+      use t_mesh_data
       use bcast_4_assemble_sph_ctl
       use sph_file_MPI_IO_select
       use sph_file_IO_select
@@ -59,6 +60,7 @@
 !
       type(control_data_4_merge) :: mgd_ctl_s
       type(sph_grid_maker_in_sim) :: sph_org_maker_s
+      type(mesh_data) :: new_geofem
       integer(kind = kint) :: istep_in
 !
 !
@@ -79,8 +81,15 @@
 !
 !  set new spectr data
 !
-      call check_and_make_SPH_rj_mode                                   &
-     &   (asbl_param_s%new_mesh_file, sph_asbl_s%new_sph_data)
+      call load_para_SPH_and_FEM_mesh                                   &
+     &   (asbl_param_s%new_FEM_mesh_flags, asbl_param_s%new_mesh_file,  &
+     &    sph_asbl_s%new_sph_data, new_geofem,                          &
+     &    asbl_param_s%new_mesh_file)
+      if(allocated(new_geofem%mesh%node%xx)) then
+        call dealloc_mesh_infomations(new_geofem%mesh,                  &
+     &                                new_geofem%group)
+      end if
+!
       call load_new_spectr_rj_data(sph_asbl_s%org_sph_array,            &
      &    sph_asbl_s%new_sph_data, sph_asbl_s%j_table)
 !
