@@ -168,7 +168,7 @@
         if(my_rank .eq. 0) write(*,*)                                   &
      &          'No transfer table output for repartition'
       else
-        call copy_repart_tbl_to_itp_table(mesh,                  &
+        call copy_repart_tbl_to_itp_table(mesh,                         &
      &      next_tbl%neib_ele, repart_nod_tbl, itp_nod_tbl_IO)
         call sel_mpi_write_interpolate_table(my_rank,                   &
      &      part_param%trans_tbl_file, itp_nod_tbl_IO)
