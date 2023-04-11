@@ -52,21 +52,25 @@ gz_group_data_IO.o: $(ZLIB_IO_DIR)/gz_group_data_IO.f90 m_precision.o m_constant
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_groups_IO_b.o: $(ZLIB_IO_DIR)/gz_groups_IO_b.f90 m_precision.o m_machine_parameter.o t_group_data.o t_buffer_4_gzip.o binary_IO.o gz_binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_itp_table_data_IO.o: $(ZLIB_IO_DIR)/gz_itp_table_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_interpolation_data_labels.o t_buffer_4_gzip.o t_interpolate_tbl_org.o gzip_file_access.o gz_data_IO.o skip_gz_comment.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
-	$(F90) -c $(F90OPTFLAGS) $<
 gz_itp_table_dest_data_IO_b.o: $(ZLIB_IO_DIR)/gz_itp_table_dest_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_tbl_org.o t_buffer_4_gzip.o gz_binary_IO.o transfer_to_long_integers.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_itp_table_file_IO.o: $(ZLIB_IO_DIR)/gz_itp_table_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o gz_binary_IO.o skip_gz_comment.o gz_itp_table_data_IO.o
+gz_itp_table_dsst_data_IO.o: $(ZLIB_IO_DIR)/gz_itp_table_dsst_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_interpolation_data_labels.o t_buffer_4_gzip.o t_interpolate_tbl_dest.o gzip_file_access.o gz_data_IO.o t_interpolate_coefs_dest.o skip_gz_comment.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gz_itp_table_org_data_IO.o: $(ZLIB_IO_DIR)/gz_itp_table_org_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_interpolation_data_labels.o t_buffer_4_gzip.o t_interpolate_tbl_org.o gzip_file_access.o gz_data_IO.o skip_gz_comment.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_itp_table_org_data_IO_b.o: $(ZLIB_IO_DIR)/gz_itp_table_org_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_tbl_org.o t_buffer_4_gzip.o gz_binary_IO.o transfer_to_long_integers.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_itp_work_file_IO.o: $(ZLIB_IO_DIR)/gz_itp_work_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o gz_itp_table_data_IO.o gz_binary_IO.o skip_gz_comment.o
+gz_itp_work_file_IO.o: $(ZLIB_IO_DIR)/gz_itp_work_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o gz_itp_table_data_IO.o gz_binary_IO.o skip_gz_comment.o gz_itp_table_dsst_data_IO.o gz_itp_table_org_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_itp_work_file_IO_b.o: $(ZLIB_IO_DIR)/gz_itp_work_file_IO_b.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_binary_IO_buffer.o t_buffer_4_gzip.o gz_itp_table_dest_data_IO_b.o gzip_file_access.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gz_itrplte_table_data_IO.o: $(ZLIB_IO_DIR)/gz_itrplte_table_data_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o gz_binary_IO.o gz_itp_table_org_data_IO.o gz_itp_table_dsst_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_itrplte_table_data_IO_b.o: $(ZLIB_IO_DIR)/gz_itrplte_table_data_IO_b.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_binary_IO_buffer.o t_buffer_4_gzip.o gz_itp_table_org_data_IO_b.o gz_itp_table_dest_data_IO_b.o gzip_file_access.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_itrplte_table_file_IO_b.o: $(ZLIB_IO_DIR)/gz_itrplte_table_file_IO_b.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_binary_IO_buffer.o t_buffer_4_gzip.o gzip_file_access.o gz_binary_IO.o gz_itrplte_table_data_IO_b.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gz_itrplte_tbl_file_IO.o: $(ZLIB_IO_DIR)/gz_itrplte_tbl_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o gz_binary_IO.o skip_gz_comment.o gz_itrplte_table_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_layer_mean_monitor_IO.o: $(ZLIB_IO_DIR)/gz_layer_mean_monitor_IO.F90 m_precision.o m_constants.o t_buffer_4_gzip.o select_gz_stream_file_IO.o sph_monitor_data_text.o gzip_defleate.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<

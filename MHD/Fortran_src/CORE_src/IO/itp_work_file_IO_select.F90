@@ -125,7 +125,7 @@
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
-        call gz_read_itp_coefs_dest_file                                &
+        call gz_read_itp_idx_dest_file                                  &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
         call read_gz_itp_idx_dest_file_b                                &
@@ -297,7 +297,7 @@
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
-        call  gz_write_itp_coefs_dest_file                              &
+        call  gz_write_itp_idx_dest_file                                &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
         call  write_gz_itp_idx_dest_file_b                              &

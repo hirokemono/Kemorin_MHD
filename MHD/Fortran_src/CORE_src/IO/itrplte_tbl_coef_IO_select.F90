@@ -42,8 +42,6 @@
       use t_interpolate_coefs_dest
       use t_file_IO_parameter
 !
-      use gz_itp_table_file_IO
-!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -58,6 +56,7 @@
       use set_interpolate_file_name
       use itrplte_tbl_file_IO
       use itrplte_tbl_file_IO_b
+      use gz_itrplte_tbl_file_IO
       use gz_itrplte_table_file_IO_b
 !
       integer, intent(in) :: id_rank
@@ -77,7 +76,7 @@
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
-        call gz_read_itp_table_file                                     &
+        call gz_read_itp_table_coef_file_a                              &
      &     (file_name, id_rank, itp_tbl_IO, ierr)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
         call gz_read_itp_table_coef_file_b                              &
@@ -99,6 +98,7 @@
       use set_interpolate_file_name
       use itrplte_tbl_file_IO
       use itrplte_tbl_file_IO_b
+      use gz_itrplte_tbl_file_IO
       use gz_itrplte_table_file_IO_b
 !
       integer, intent(in) :: id_rank
@@ -119,7 +119,7 @@
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
-        call gz_read_dbl_itp_table_file                                 &
+        call gz_rd_dbl_itp_tbl_coef_file_a                              &
      &     (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
         call gz_rd_dbl_itp_tbl_coef_file_b                              &
@@ -142,6 +142,7 @@
       use set_interpolate_file_name
       use itrplte_tbl_file_IO
       use itrplte_tbl_file_IO_b
+      use gz_itrplte_tbl_file_IO
       use gz_itrplte_table_file_IO_b
 !
       integer, intent(in) :: id_rank
@@ -160,7 +161,8 @@
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
-        call gz_write_itp_table_file(file_name, id_rank, itp_tbl_IO)
+        call gz_write_itp_table_coef_file_a                             &
+     &     (file_name, id_rank, itp_tbl_IO)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
         call gz_write_itp_table_coef_file_b                             &
      &     (file_name, id_rank, itp_tbl_IO, ierr)
@@ -181,6 +183,7 @@
       use set_interpolate_file_name
       use itrplte_tbl_file_IO
       use itrplte_tbl_file_IO_b
+      use gz_itrplte_tbl_file_IO
       use gz_itrplte_table_file_IO_b
 !
       integer, intent(in) :: id_rank
@@ -200,7 +203,7 @@
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
-        call gz_write_dbl_itp_table_file                                &
+        call gz_wt_dbl_itp_tbl_coef_file_a                              &
      &     (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
         call gz_wt_dbl_itp_tbl_coef_file_b                              &

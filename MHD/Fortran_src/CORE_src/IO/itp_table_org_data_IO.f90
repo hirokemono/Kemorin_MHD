@@ -122,7 +122,7 @@
         write(id_file,'(4i16)') IO_itp_org%istack_itp_type_org(1:4)
 !
         do inod = 1, IO_itp_org%ntot_table_org
-          write(id_file,'(3i16)')                                       &
+          write(id_file,'(2i16)')                                       &
      &        IO_itp_org%inod_gl_dest_4_org(inod),                      &
      &        IO_itp_org%iele_org_4_org(inod)
         end do
