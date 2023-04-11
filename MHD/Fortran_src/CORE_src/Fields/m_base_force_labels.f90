@@ -17,7 +17,7 @@
 !!
 !! !!!!!  Base force names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
-!! field names 
+!! field name
 !!
 !!   pressure_gradient  [i_press_grad]:     pressure gradient    u
 !!   inertia    [i_m_advect]:        inertia (\omega \times u)
