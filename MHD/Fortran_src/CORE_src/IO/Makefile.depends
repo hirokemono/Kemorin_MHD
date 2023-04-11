@@ -28,7 +28,7 @@ element_geometry_file_IO.o: $(IO_DIR)/element_geometry_file_IO.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 element_mesh_IO_select.o: $(IO_DIR)/element_mesh_IO_select.F90 m_precision.o t_file_IO_parameter.o t_mesh_data.o m_file_format_switch.o mesh_file_name_by_param.o element_file_IO.o element_file_IO_b.o gz_element_file_IO.o gz_element_file_IO_b.o set_mesh_file_names.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
-element_refine_file_IO.o: $(IO_DIR)/element_refine_file_IO.f90 m_precision.o t_element_refinement_IO.o t_interpolate_tbl_dest.o t_interpolate_tbl_org.o t_binary_IO_buffer.o itp_table_data_IO_b.o set_parallel_file_name.o binary_IO.o itp_table_org_data_IO.o itp_table_dest_data_IO.o
+element_refine_file_IO.o: $(IO_DIR)/element_refine_file_IO.f90 m_precision.o t_element_refinement_IO.o t_interpolate_tbl_dest.o t_interpolate_tbl_org.o t_binary_IO_buffer.o set_parallel_file_name.o binary_IO.o itp_table_org_data_IO.o itp_table_dest_data_IO.o itp_table_org_data_IO_b.o itp_table_dest_data_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 endian_swaps.o: $(IO_DIR)/endian_swaps.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -60,17 +60,19 @@ init_energy_labels_sph_SGS.o: $(IO_DIR)/init_energy_labels_sph_SGS.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 itp_table_dest_data_IO.o: $(IO_DIR)/itp_table_dest_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_interpolation_data_labels.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-itp_table_file_IO.o: $(IO_DIR)/itp_table_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o itp_table_org_data_IO.o itp_table_dest_data_IO.o
-	$(F90) -c $(F90OPTFLAGS) $<
 itp_table_org_data_IO.o: $(IO_DIR)/itp_table_org_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_interpolation_data_labels.o t_interpolate_tbl_org.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 itp_work_file_IO.o: $(IO_DIR)/itp_work_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o itp_table_dest_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 itp_work_file_IO_select.o: $(IO_DIR)/itp_work_file_IO_select.F90 m_precision.o m_file_format_switch.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_file_IO_parameter.o itp_work_file_IO.o itp_work_file_IO_b.o gz_itp_work_file_IO.o gz_itp_work_file_IO_b.o set_interpolate_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
-itrplte_tbl_coef_IO_select.o: $(IO_DIR)/itrplte_tbl_coef_IO_select.F90 m_precision.o m_file_format_switch.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_file_IO_parameter.o itp_table_file_IO.o itp_table_file_IO_b.o gz_itp_table_file_IO.o gz_itp_table_file_IO_b.o set_interpolate_file_name.o
+itrplte_table_data_IO.o: $(IO_DIR)/itrplte_table_data_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o itp_table_org_data_IO.o itp_table_dest_data_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+itrplte_tbl_coef_IO_select.o: $(IO_DIR)/itrplte_tbl_coef_IO_select.F90 m_precision.o m_file_format_switch.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_file_IO_parameter.o gz_itp_table_file_IO.o gz_itp_table_file_IO_b.o set_interpolate_file_name.o itrplte_tbl_file_IO.o itrplte_tbl_file_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
-itrplte_tbl_idx_IO_select.o: $(IO_DIR)/itrplte_tbl_idx_IO_select.F90 m_precision.o m_file_format_switch.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_file_IO_parameter.o itp_table_file_IO.o itp_table_file_IO_b.o gz_itp_table_file_IO.o gz_itp_table_file_IO_b.o set_interpolate_file_name.o
+itrplte_tbl_file_IO.o: $(IO_DIR)/itrplte_tbl_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o itrplte_table_data_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+itrplte_tbl_idx_IO_select.o: $(IO_DIR)/itrplte_tbl_idx_IO_select.F90 m_precision.o m_file_format_switch.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_file_IO_parameter.o gz_itp_table_file_IO.o gz_itp_table_file_IO_b.o set_interpolate_file_name.o itrplte_tbl_file_IO.o itrplte_tbl_file_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 m_default_file_prefix.o: $(IO_DIR)/m_default_file_prefix.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

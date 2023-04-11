@@ -110,7 +110,7 @@
       file_name = set_interpolate_work_name(id_rank, table_file_IO)
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call read_itp_coefs_dest_file_b                                 &
+        call read_itp_idx_dest_file_b                                   &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !
 #ifdef ZLIB_IO
@@ -262,7 +262,7 @@
       file_name = set_interpolate_work_name(id_rank, table_file_IO)
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call  write_itp_coefs_dest_file_b                               &
+        call  write_itp_idx_dest_file_b                                 &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !
 #ifdef ZLIB_IO

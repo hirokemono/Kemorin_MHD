@@ -42,8 +42,6 @@
       use t_interpolate_coefs_dest
       use t_file_IO_parameter
 !
-      use itp_table_file_IO
-      use itp_table_file_IO_b
       use gz_itp_table_file_IO
       use gz_itp_table_file_IO_b
 !
@@ -59,6 +57,8 @@
      &          itp_tbl_IO, ierr)
 !
       use set_interpolate_file_name
+      use itrplte_tbl_file_IO
+      use itrplte_tbl_file_IO_b
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -72,7 +72,7 @@
       file_name = s_set_interpolate_file_name(id_rank, table_file_IO)
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call read_itp_table_file_b                                      &
+        call read_itp_table_coef_file_b                                 &
      &     (file_name, id_rank, itp_tbl_IO, ierr)
 !
 #ifdef ZLIB_IO
@@ -97,6 +97,8 @@
      &          itp_tbl1_IO, itp_tbl2_IO, ierr)
 !
       use set_interpolate_file_name
+      use itrplte_tbl_file_IO
+      use itrplte_tbl_file_IO_b
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -111,7 +113,7 @@
       file_name = s_set_interpolate_file_name(id_rank, table_file_IO)
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call read_dbl_itp_table_file_b                                  &
+        call read_dbl_itp_tbl_coef_file_b                               &
      &     (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
 !
 #ifdef ZLIB_IO
@@ -137,6 +139,8 @@
      &         (id_rank, table_file_IO, itp_tbl_IO)
 !
       use set_interpolate_file_name
+      use itrplte_tbl_file_IO
+      use itrplte_tbl_file_IO_b
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -149,7 +153,7 @@
       file_name = s_set_interpolate_file_name(id_rank, table_file_IO)
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call write_itp_table_file_b                                     &
+        call write_itp_table_coef_file_b                                &
      &     (file_name, id_rank, itp_tbl_IO, ierr)
 !
 #ifdef ZLIB_IO
@@ -173,6 +177,8 @@
      &         (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
 !
       use set_interpolate_file_name
+      use itrplte_tbl_file_IO
+      use itrplte_tbl_file_IO_b
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -186,7 +192,7 @@
       file_name = s_set_interpolate_file_name(id_rank, table_file_IO)
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call write_dbl_itp_table_file_b                                 &
+        call write_dbl_itp_tbl_coef_file_b                              &
      &     (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
 !
 #ifdef ZLIB_IO
