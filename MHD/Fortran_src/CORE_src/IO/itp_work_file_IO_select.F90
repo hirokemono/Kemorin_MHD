@@ -40,11 +40,6 @@
       use t_interpolate_coefs_dest
       use t_file_IO_parameter
 !
-      use itp_work_file_IO
-      use itp_work_file_IO_b
-      use gz_itp_work_file_IO
-      use gz_itp_work_file_IO_b
-!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -57,6 +52,16 @@
      &          IO_itp_dest, IO_itp_c_dest, ierr)
 !
       use set_interpolate_file_name
+      use itp_work_file_IO
+      use itp_work_file_IO_b
+      use gz_itp_work_file_IO
+      use gz_itp_work_file_IO_b
+!
+      use itp_work_file_IO
+      use itp_work_file_IO_b
+      use gz_itp_work_file_IO
+      use gz_itp_work_file_IO_b
+!
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -96,6 +101,11 @@
      &          IO_itp_dest, IO_itp_c_dest, ierr)
 !
       use set_interpolate_file_name
+      use itp_work_file_IO
+      use itp_work_file_IO_b
+      use gz_itp_work_file_IO
+      use gz_itp_work_file_IO_b
+!
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -118,7 +128,7 @@
         call gz_read_itp_coefs_dest_file                                &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
-        call read_gz_itp_coefs_dest_file_b                              &
+        call read_gz_itp_idx_dest_file_b                                &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 #endif
 !
@@ -135,6 +145,11 @@
      &         (id_rank, table_file_IO, IO_itp_dest, ierr)
 !
       use set_interpolate_file_name
+      use itp_work_file_IO
+      use itp_work_file_IO_b
+      use gz_itp_work_file_IO
+      use gz_itp_work_file_IO_b
+!
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -173,6 +188,11 @@
      &         (id_rank, table_file_IO, IO_itp_dest, ierr)
 !
       use set_interpolate_file_name
+      use itp_work_file_IO
+      use itp_work_file_IO_b
+      use gz_itp_work_file_IO
+      use gz_itp_work_file_IO_b
+!
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -211,6 +231,11 @@
      &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
 !
       use set_interpolate_file_name
+      use itp_work_file_IO
+      use itp_work_file_IO_b
+      use gz_itp_work_file_IO
+      use gz_itp_work_file_IO_b
+!
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -249,6 +274,11 @@
      &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
 !
       use set_interpolate_file_name
+      use itp_work_file_IO
+      use itp_work_file_IO_b
+      use gz_itp_work_file_IO
+      use gz_itp_work_file_IO_b
+!
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -270,7 +300,7 @@
         call  gz_write_itp_coefs_dest_file                              &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
-        call  write_gz_itp_coefs_dest_file_b                            &
+        call  write_gz_itp_idx_dest_file_b                              &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 #endif
 !
