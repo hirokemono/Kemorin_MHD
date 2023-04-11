@@ -54,7 +54,7 @@
       use MPI_itrplte_tbl_file_IO
       use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itp_table_file_IO
-      use gz_MPI_itp_table_file_IO_b
+      use gz_MPI_itrplte_tbl_file_IO_b
       use itrplte_tbl_coef_IO_select
 !
       integer, intent(in) :: id_rank, num_pe
@@ -80,7 +80,7 @@
      &     (file_name, id_rank, num_pe, itp_tbl_IO)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call read_gz_mpi_itp_table_file_b                               &
+        call gz_mpi_rd_itp_tbl_coef_file_b                              &
      &     (file_name, id_rank, num_pe, itp_tbl_IO)
 #endif
 !
@@ -105,7 +105,7 @@
       use MPI_itrplte_tbl_file_IO
       use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itp_table_file_IO
-      use gz_MPI_itp_table_file_IO_b
+      use gz_MPI_itrplte_tbl_file_IO_b
       use itrplte_tbl_coef_IO_select
 !
       integer, intent(in) :: id_rank, num_pe
@@ -132,7 +132,7 @@
      &     (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call read_gz_mpi_dbl_itp_tbl_file_b                             &
+        call gz_mpi_rd_dbl_itbl_coef_file_b                             &
      &     (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 #endif
 !
@@ -158,7 +158,7 @@
       use MPI_itrplte_tbl_file_IO
       use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itp_table_file_IO
-      use gz_MPI_itp_table_file_IO_b
+      use gz_MPI_itrplte_tbl_file_IO_b
       use itrplte_tbl_coef_IO_select
 !
       integer, intent(in) :: id_rank
@@ -180,7 +180,7 @@
         call gz_mpi_write_itp_table_file(file_name, itp_tbl_IO)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call write_gz_mpi_itp_table_file_b(file_name, itp_tbl_IO)
+        call gz_mpi_wt_itp_tbl_coef_file_b(file_name, itp_tbl_IO)
 #endif
 !
       else if(table_file_IO%iflag_format                                &
@@ -203,7 +203,7 @@
       use MPI_itrplte_tbl_file_IO
       use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itp_table_file_IO
-      use gz_MPI_itp_table_file_IO_b
+      use gz_MPI_itrplte_tbl_file_IO_b
       use itrplte_tbl_coef_IO_select
 !
       integer, intent(in) :: id_rank
@@ -228,7 +228,7 @@
      &     (file_name, itp_tbl1_IO, itp_tbl2_IO)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call write_gz_mpi_dbl_itp_tbl_file_b                            &
+        call gz_mpi_wt_dbl_itbl_coef_file_b                             &
      &     (file_name, itp_tbl1_IO, itp_tbl2_IO)
 #endif
 !

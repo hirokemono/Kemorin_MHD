@@ -127,7 +127,7 @@
      &     (file_name, IO_itp_dest, IO_itp_c_dest)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call  wrt_gz_mpi_itp_coef_dest_file_b                           &
+        call  wrt_gz_mpi_itp_idx_dest_file_b                            &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 #endif
 !
@@ -233,7 +233,7 @@
      &     (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call read_gz_mpi_itp_coef_dst_file_b                            &
+        call read_gz_mpi_itp_idx_dst_file_b                             &
      &     (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 #endif
 !
