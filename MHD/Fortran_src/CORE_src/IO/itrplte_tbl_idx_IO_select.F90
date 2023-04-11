@@ -1,5 +1,5 @@
-!>@file   itp_table_file_IO_select.f90
-!!@brief  module itp_table_file_IO_select
+!>@file   itrplte_tbl_idx_IO_select.f90
+!!@brief  module itrplte_tbl_idx_IO_select
 !!
 !!@author H. Matsui
 !!@date Programmed in Sep. 2006 (ver 1.2)
@@ -7,31 +7,28 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine sel_read_interpolate_table(id_rank, table_file_IO,   &
+!!      subroutine sel_read_itrplte_idx_tbl(id_rank, table_file_IO,     &
 !!     &          itp_tbl_IO, ierr)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
-!!      subroutine sel_read_dbl_interpolate_tbl(id_rank, table_file_IO, &
+!!      subroutine sel_read_dbl_itrplte_idx_tbl(id_rank, table_file_IO, &
 !!     &          itp_tbl1_IO, itp_tbl2_IO, ierr)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
 !!        type(interpolate_table), intent(inout) :: itp_tbl1_IO
 !!        type(interpolate_table), intent(inout) :: itp_tbl2_IO
 !!
-!!      subroutine sel_write_interpolate_table                          &
+!!      subroutine sel_write_itrplte_idx_tbl                            &
 !!     &         (id_rank, table_file_IO, itp_tbl_IO)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
 !!        type(interpolate_table), intent(in) :: itp_tbl_IO
-!!      subroutine sel_write_dbl_interpolate_tbl                        &
+!!      subroutine sel_write_dbl_itrplte_idx_t bl                       &
 !!     &         (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
 !!        type(interpolate_table), intent(in) :: itp_tbl1_IO
 !!        type(interpolate_table), intent(in) :: itp_tbl2_IO
-!!
-!!      subroutine dealloc_itp_tbl_after_write(itp_tbl_IO)
-!!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!@endverbatim
 !
-      module itp_table_file_IO_select
+      module itrplte_tbl_idx_IO_select
 !
       use m_precision
 !
@@ -55,7 +52,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_read_interpolate_table(id_rank, table_file_IO,     &
+      subroutine sel_read_itrplte_idx_tbl(id_rank, table_file_IO,       &
      &          itp_tbl_IO, ierr)
 !
       use set_interpolate_file_name
@@ -85,15 +82,15 @@
 #endif
 !
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
-        call read_itp_table_file_a                                      &
+        call read_itp_table_idx_file_a                                  &
      &     (file_name, id_rank, itp_tbl_IO, ierr)
       end if
 !
-      end subroutine sel_read_interpolate_table
+      end subroutine sel_read_itrplte_idx_tbl
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_read_dbl_interpolate_tbl(id_rank, table_file_IO,   &
+      subroutine sel_read_dbl_itrplte_idx_tbl(id_rank, table_file_IO,   &
      &          itp_tbl1_IO, itp_tbl2_IO, ierr)
 !
       use set_interpolate_file_name
@@ -124,16 +121,16 @@
 #endif
 !
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
-        call read_dbl_itp_table_file_a                                  &
+        call read_dbl_itp_tbl_idx_file_a                                &
      &     (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
       end if
 !
-      end subroutine sel_read_dbl_interpolate_tbl
+      end subroutine sel_read_dbl_itrplte_idx_tbl
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_write_interpolate_table                            &
+      subroutine sel_write_itrplte_idx_tbl                              &
      &         (id_rank, table_file_IO, itp_tbl_IO)
 !
       use set_interpolate_file_name
@@ -161,14 +158,15 @@
 #endif
 !
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
-        call write_itp_table_file_a(file_name, id_rank, itp_tbl_IO)
+        call write_itp_table_idx_file_a                                 &
+     &     (file_name, id_rank, itp_tbl_IO)
       end if
 !
-      end subroutine sel_write_interpolate_table
+      end subroutine sel_write_itrplte_idx_tbl
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_write_dbl_interpolate_tbl                          &
+      subroutine sel_write_dbl_itrplte_idx_tbl                          &
      &         (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
 !
       use set_interpolate_file_name
@@ -198,29 +196,12 @@
 #endif
 !
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
-        call write_dbl_itp_table_file_a                                 &
+        call write_dbl_itp_tbl_idx_file_a                               &
      &     (file_name, id_rank, itp_tbl1_IO, itp_tbl2_IO)
       end if
 !
-      end subroutine sel_write_dbl_interpolate_tbl
+      end subroutine sel_write_dbl_itrplte_idx_tbl
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_itp_tbl_after_write(itp_tbl_IO)
-!
-      type(interpolate_table), intent(inout) :: itp_tbl_IO
-!
-!
-      if (itp_tbl_IO%tbl_org%num_dest_domain .gt. 0) then
-        call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
-      end if
-      call dealloc_itp_num_org(itp_tbl_IO%tbl_org)
-!
-      call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
-      call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
-!
-      end subroutine dealloc_itp_tbl_after_write
-!
-!-----------------------------------------------------------------------
-!
-      end module itp_table_file_IO_select
+      end module itrplte_tbl_idx_IO_select

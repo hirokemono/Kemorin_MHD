@@ -43,7 +43,6 @@
       use MPI_itp_table_file_IO_b
       use gz_MPI_itp_table_file_IO
       use gz_MPI_itp_table_file_IO_b
-      use itp_table_file_IO_select
 !
       implicit none
 !
@@ -57,6 +56,7 @@
      &         (id_rank, num_pe, table_file_IO, itp_tbl_IO, ierr)
 !
       use set_interpolate_file_name
+      use itrplte_tbl_coef_IO_select
 !
       integer, intent(in) :: id_rank, num_pe
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -91,7 +91,7 @@
      &     (file_name, id_rank, num_pe, itp_tbl_IO)
 !
       else
-        call sel_read_interpolate_table                                 &
+        call sel_read_itrplte_coef_tbl                                  &
      &     (id_rank, table_file_IO, itp_tbl_IO, ierr)
       end if
 !
@@ -103,6 +103,7 @@
      &          table_file_IO, itp_tbl1_IO, itp_tbl2_IO, ierr)
 !
       use set_interpolate_file_name
+      use itrplte_tbl_coef_IO_select
 !
       integer, intent(in) :: id_rank, num_pe
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -138,7 +139,7 @@
      &     (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
       else
-        call sel_read_dbl_interpolate_tbl                               &
+        call sel_read_dbl_itrplte_coef_tbl                              &
      &     (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO, ierr)
       end if
 !
@@ -151,6 +152,7 @@
      &         (id_rank, table_file_IO, itp_tbl_IO)
 !
       use set_interpolate_file_name
+      use itrplte_tbl_coef_IO_select
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -179,7 +181,7 @@
         call mpi_write_itp_table_file_a(file_name, itp_tbl_IO)
 !
       else
-        call sel_write_interpolate_table                                &
+        call sel_write_itrplte_coef_tbl                                 &
      &     (id_rank, table_file_IO, itp_tbl_IO)
       end if
 !
@@ -191,6 +193,7 @@
      &         (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
 !
       use set_interpolate_file_name
+      use itrplte_tbl_coef_IO_select
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -224,7 +227,7 @@
      &     (file_name, itp_tbl1_IO, itp_tbl2_IO)
 !
       else
-        call sel_write_dbl_interpolate_tbl                              &
+        call sel_write_dbl_itrplte_coef_tbl                             &
      &     (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
       end if
 !

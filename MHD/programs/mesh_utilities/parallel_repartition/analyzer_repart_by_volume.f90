@@ -166,6 +166,7 @@
       use write_diff_4_comm_test
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
+      use itrplte_tbl_coef_IO_select
 !
       type(calypso_comm_table) :: part_nod_tbl2
       type(interpolate_table) :: itp_nod_tbl_IO

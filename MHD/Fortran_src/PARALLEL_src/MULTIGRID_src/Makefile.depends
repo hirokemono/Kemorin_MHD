@@ -4,7 +4,7 @@ MGCG33_V_cycle.o: $(MG_SRCDIR)/MGCG33_V_cycle.f90 m_precision.o m_error_IDs.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 MGCGnn_V_cycle.o: $(MG_SRCDIR)/MGCGnn_V_cycle.f90 m_precision.o m_solver_count_time.o t_interpolate_table.o t_solver_djds.o t_vector_for_solver.o m_constants.o solver_DJDSnn_struct.o calypso_mpi.o t_solver_SR.o t_comm_table.o interpolate_by_module.o m_CG_constants.o djds_matrix_calcs_nn.o cal_norm_products_nn.o
 	$(F90) -c $(F90OPTFLAGS) $<
-input_MG_data.o: $(MG_SRCDIR)/input_MG_data.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_MGCG_parameter.o t_MGCG_data.o t_file_IO_parameter.o mpi_load_mesh_data.o load_mesh_data.o element_file_IO.o m_interpolate_table_IO.o itp_table_file_IO_select.o
+input_MG_data.o: $(MG_SRCDIR)/input_MG_data.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_MGCG_parameter.o t_MGCG_data.o t_file_IO_parameter.o mpi_load_mesh_data.o load_mesh_data.o element_file_IO.o m_interpolate_table_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 solver_DJDS11_struct.o: $(MG_SRCDIR)/solver_DJDS11_struct.f90 m_precision.o t_solver_djds.o solver_DJDS.o t_solver_SR.o t_comm_table.o preconditioning_DJDS11.o
 	$(F90) -c $(F90OPTFLAGS) $<

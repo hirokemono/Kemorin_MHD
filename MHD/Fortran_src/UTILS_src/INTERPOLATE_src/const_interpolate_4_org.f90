@@ -56,7 +56,7 @@
       use m_interpolate_table_IO
 !
       use itp_work_file_IO_select
-      use itp_table_file_IO_select
+      use itrplte_tbl_coef_IO_select
       use copy_interpolate_types
 !
       integer, intent(in) :: nprocs_2nd
@@ -115,9 +115,9 @@
 !
           end if
 !
-          write(*,*) 'sel_write_interpolate_table',                     &
+          write(*,*) 'sel_write_itrplte_coef_tbl',                      &
      &              tmp_tbl_IO%file_prefix
-          call sel_write_interpolate_table                              &
+          call sel_write_itrplte_coef_tbl                               &
      &       (my_rank_2nd, gen_itp_p%itp_file_IO, itp_tbl_IO_c)
           call dealloc_itp_tbl_after_write(itp_tbl_IO_c)
         end if
@@ -134,7 +134,7 @@
 !
         itp_tbl_IO_c%tbl_org%num_dest_domain = 0
 !
-        call sel_write_interpolate_table                                &
+        call sel_write_itrplte_coef_tbl                                 &
      &     (my_rank, gen_itp_p%itp_file_IO, itp_tbl_IO_c)
         call dealloc_itp_tbl_after_write(itp_tbl_IO_c)
       end if

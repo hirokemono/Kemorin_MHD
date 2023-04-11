@@ -24,7 +24,6 @@
       use t_interpolate_tbl_dest
       use t_interpolate_tbl_org
       use t_binary_IO_buffer
-      use itp_table_data_IO
       use itp_table_data_IO_b
       use set_parallel_file_name
 !
@@ -48,6 +47,8 @@
     &           IO_itp_org, IO_itp_dest, e_ref_IO)
 !
       use binary_IO
+      use itp_table_org_data_IO
+      use itp_table_dest_data_IO
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type
@@ -108,6 +109,9 @@
 !
       subroutine write_element_refine_file(id_rank, ifile_type,         &
      &          IO_itp_org, IO_itp_dest, e_ref_IO, ierr)
+!
+      use itp_table_org_data_IO
+      use itp_table_dest_data_IO
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type

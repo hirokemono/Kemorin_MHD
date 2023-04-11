@@ -40,7 +40,6 @@
       use m_default_file_prefix
 !
       use m_file_format_switch
-      use itp_table_file_IO_select
       use set_control_platform_item
       use set_control_platform_data
       use set_control_data_4_part
