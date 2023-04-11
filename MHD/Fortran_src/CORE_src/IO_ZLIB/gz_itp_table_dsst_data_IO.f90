@@ -171,9 +171,10 @@
         end do
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
-          write(zbuf%fixbuf(1),'(2i16,2a1)')                            &
+          write(zbuf%fixbuf(1),'(3i16,2a1)')                            &
      &        IO_itp_c_dest%inod_gl_dest(inod),                         &
      &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
+     &        IO_itp_c_dest%itype_inter_dest(inod),                     &
      &        char(10), char(0)
           call gz_write_textbuf_no_lf(FPz_f, zbuf)
         end do
@@ -321,7 +322,8 @@
         do inod = 1, IO_itp_dest%ntot_table_dest
           call get_one_line_text_from_gz(FPz_f, zbuf)
           read(zbuf%fixbuf(1),*) IO_itp_c_dest%inod_gl_dest(inod),      &
-     &        IO_itp_c_dest%iele_org_4_dest(inod)
+     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
+     &        IO_itp_c_dest%itype_inter_dest(inod)
         end do
 !
       end subroutine read_gz_itp_idx_dest

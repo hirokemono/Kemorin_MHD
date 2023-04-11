@@ -21,7 +21,7 @@
 !!     &         (id_rank, table_file_IO, itp_tbl_IO)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
 !!        type(interpolate_table), intent(in) :: itp_tbl_IO
-!!      subroutine sel_write_dbl_itrplte_idx_t bl                       &
+!!      subroutine sel_write_dbl_itrplte_idx_tbl                        &
 !!     &         (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
 !!        type(interpolate_table), intent(in) :: itp_tbl1_IO

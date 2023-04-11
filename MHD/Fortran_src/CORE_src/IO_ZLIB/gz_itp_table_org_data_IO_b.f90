@@ -105,6 +105,8 @@
       call gz_write_mul_integer_b                                       &
      &  (FPz_f, num64, IO_itp_org%iele_org_4_org, zbuf)
       if(zbuf%ierr_zlib .ne. 0) return
+      call gz_write_mul_integer_b                                       &
+     &  (FPz_f, num64, IO_itp_org%itype_inter_org, zbuf)
 !
       end subroutine write_gz_itp_idx_org_b
 !
@@ -116,15 +118,8 @@
       type(interpolate_table_org), intent(in) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint_gl) :: num64
-!
 !
       if (IO_itp_org%num_dest_domain .eq. 0) return
-!
-      num64 = IO_itp_org%ntot_table_org
-      call gz_write_mul_integer_b                                       &
-     &  (FPz_f, num64, IO_itp_org%itype_inter_org, zbuf)
-      if(zbuf%ierr_zlib .ne. 0) return
 !
       call gz_write_2d_vector_b                                         &
      &   (FPz_f, cast_long(IO_itp_org%ntot_table_org),                  &
@@ -210,6 +205,9 @@
       if(zbuf%ierr_zlib .ne. 0) return
       call gz_read_mul_integer_b                                        &
      &   (FPz_f, zbuf, num64, IO_itp_org%iele_org_4_org)
+      if(zbuf%ierr_zlib .gt. 0) return
+      call gz_read_mul_integer_b                                        &
+     &   (FPz_f, zbuf, num64, IO_itp_org%itype_inter_org)
 !
       end subroutine read_gz_itp_idx_org_b
 !
@@ -221,15 +219,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
       type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
-      integer(kind = kint_gl) :: num64
-!
 !
       if (IO_itp_org%num_dest_domain .eq. 0) return
-!
-      num64 = IO_itp_org%ntot_table_org
-      call gz_read_mul_integer_b                                        &
-     &   (FPz_f, zbuf, num64, IO_itp_org%itype_inter_org)
-      if(zbuf%ierr_zlib .gt. 0) return
 !
       call gz_read_2d_vector_b                                          &
      &   (FPz_f, zbuf, cast_long(IO_itp_org%ntot_table_org), ithree,    &

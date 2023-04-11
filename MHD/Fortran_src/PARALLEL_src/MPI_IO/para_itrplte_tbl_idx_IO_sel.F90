@@ -1,5 +1,5 @@
-!>@file   parallel_itp_tbl_IO_select.F90
-!!@brief  module parallel_itp_tbl_IO_select
+!>@file   para_itrplte_tbl_idx_IO_sel.F90
+!!@brief  module para_itrplte_tbl_idx_IO_sel
 !!
 !!@author H. Matsui
 !!@date Programmed in Sep. 2006 (ver 1.2)
@@ -28,7 +28,7 @@
 !!        type(interpolate_table), intent(inout) :: itp_tbl2_IO
 !!@endverbatim
 !
-      module parallel_itp_tbl_IO_select
+      module para_itrplte_tbl_idx_IO_sel
 !
       use m_precision
 !
@@ -38,11 +38,6 @@
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
       use t_file_IO_parameter
-!
-      use MPI_itp_table_file_IO
-      use MPI_itp_table_file_IO_b
-      use gz_MPI_itp_table_file_IO
-      use gz_MPI_itp_table_file_IO_b
 !
       implicit none
 !
@@ -56,7 +51,11 @@
      &         (id_rank, num_pe, table_file_IO, itp_tbl_IO, ierr)
 !
       use set_interpolate_file_name
-      use itrplte_tbl_coef_IO_select
+      use MPI_itp_table_file_IO
+      use MPI_itrplte_tbl_file_IO_b
+      use gz_MPI_itp_table_file_IO
+      use gz_MPI_itp_table_file_IO_b
+      use itrplte_tbl_idx_IO_select
 !
       integer, intent(in) :: id_rank, num_pe
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -71,7 +70,7 @@
 !
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
-        call mpi_read_itp_table_file_b                                  &
+        call mpi_read_itp_table_idx_file_b                              &
      &     (file_name, id_rank, num_pe, itp_tbl_IO)
 !
 #ifdef ZLIB_IO
@@ -91,7 +90,7 @@
      &     (file_name, id_rank, num_pe, itp_tbl_IO)
 !
       else
-        call sel_read_itrplte_coef_tbl                                  &
+        call sel_read_itrplte_idx_tbl                                   &
      &     (id_rank, table_file_IO, itp_tbl_IO, ierr)
       end if
 !
@@ -103,7 +102,11 @@
      &          table_file_IO, itp_tbl1_IO, itp_tbl2_IO, ierr)
 !
       use set_interpolate_file_name
-      use itrplte_tbl_coef_IO_select
+      use MPI_itp_table_file_IO
+      use MPI_itrplte_tbl_file_IO_b
+      use gz_MPI_itp_table_file_IO
+      use gz_MPI_itp_table_file_IO_b
+      use itrplte_tbl_idx_IO_select
 !
       integer, intent(in) :: id_rank, num_pe
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -119,7 +122,7 @@
 !
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
-        call mpi_read_dbl_itp_tbl_file_b                                &
+        call mpi_rd_dbl_itp_tbl_idx_file_b                              &
      &     (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
 #ifdef ZLIB_IO
@@ -139,7 +142,7 @@
      &     (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
       else
-        call sel_read_dbl_itrplte_coef_tbl                              &
+        call sel_read_dbl_itrplte_idx_tbl                               &
      &     (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO, ierr)
       end if
 !
@@ -152,7 +155,11 @@
      &         (id_rank, table_file_IO, itp_tbl_IO)
 !
       use set_interpolate_file_name
-      use itrplte_tbl_coef_IO_select
+      use MPI_itp_table_file_IO
+      use MPI_itrplte_tbl_file_IO_b
+      use gz_MPI_itp_table_file_IO
+      use gz_MPI_itp_table_file_IO_b
+      use itrplte_tbl_idx_IO_select
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -165,7 +172,7 @@
 !
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
-        call mpi_write_itp_table_file_b(file_name, itp_tbl_IO)
+        call mpi_write_itp_table_idx_file_b(file_name, itp_tbl_IO)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
@@ -181,7 +188,7 @@
         call mpi_write_itp_table_file_a(file_name, itp_tbl_IO)
 !
       else
-        call sel_write_itrplte_coef_tbl                                 &
+        call sel_write_itrplte_idx_tbl                                  &
      &     (id_rank, table_file_IO, itp_tbl_IO)
       end if
 !
@@ -193,7 +200,11 @@
      &         (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
 !
       use set_interpolate_file_name
-      use itrplte_tbl_coef_IO_select
+      use MPI_itp_table_file_IO
+      use MPI_itrplte_tbl_file_IO_b
+      use gz_MPI_itp_table_file_IO
+      use gz_MPI_itp_table_file_IO_b
+      use itrplte_tbl_idx_IO_select
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -207,7 +218,7 @@
 !
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
-        call mpi_write_dbl_itp_tbl_file_b                               &
+        call mpi_wt_dbl_itp_tbl_idx_file_b                              &
      &     (file_name, itp_tbl1_IO, itp_tbl2_IO)
 !
 #ifdef ZLIB_IO
@@ -227,7 +238,7 @@
      &     (file_name, itp_tbl1_IO, itp_tbl2_IO)
 !
       else
-        call sel_write_dbl_itrplte_coef_tbl                             &
+        call sel_write_dbl_itrplte_idx_tbl                              &
      &     (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
       end if
 !
@@ -235,4 +246,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module parallel_itp_tbl_IO_select
+      end module para_itrplte_tbl_idx_IO_sel

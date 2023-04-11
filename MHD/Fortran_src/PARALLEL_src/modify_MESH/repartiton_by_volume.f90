@@ -77,7 +77,7 @@
       use parallel_FEM_mesh_init
       use mesh_repartition_by_volume
       use mesh_MPI_IO_select
-      use parallel_itp_tbl_IO_select
+      use para_itrplte_table_IO_sel
       use set_nnod_4_ele_by_type
       use copy_mesh_structures
       use copy_repart_and_itp_table
@@ -188,7 +188,7 @@
       use m_file_format_switch
 !
       use mpi_load_mesh_data
-      use parallel_itp_tbl_IO_select
+      use para_itrplte_table_IO_sel
       use copy_repart_and_itp_table
       use copy_repart_ele_and_itp_tbl
       use itrplte_tbl_coef_IO_select

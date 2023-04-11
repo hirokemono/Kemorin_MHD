@@ -156,7 +156,7 @@
       use t_work_for_comm_check
 !
       use m_file_format_switch
-      use parallel_itp_tbl_IO_select
+      use para_itrplte_table_IO_sel
       use copy_repart_and_itp_table
       use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables

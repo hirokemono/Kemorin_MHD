@@ -102,7 +102,8 @@
         do inod = 1, IO_itp_dest%ntot_table_dest
           write(id_file,'(3i16)')                                       &
      &        IO_itp_c_dest%inod_gl_dest(inod),                         &
-     &        IO_itp_c_dest%iele_org_4_dest(inod)
+     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
+     &        IO_itp_c_dest%itype_inter_dest(inod)
         end do
 !
       else
@@ -227,7 +228,8 @@
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
           read(id_file,*) IO_itp_c_dest%inod_gl_dest(inod),             &
-     &                   IO_itp_c_dest%iele_org_4_dest(inod)
+     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
+     &        IO_itp_c_dest%itype_inter_dest(inod)
         end do
 !
       end subroutine read_interpolate_idx_dest

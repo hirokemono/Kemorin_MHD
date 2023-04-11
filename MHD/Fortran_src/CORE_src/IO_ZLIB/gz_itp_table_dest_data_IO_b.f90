@@ -115,6 +115,9 @@
       if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_mul_integer_b                                       &
      &   (FPz_f, num64, IO_itp_c_dest%iele_org_4_dest, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
+      call gz_write_mul_integer_b                                       &
+     &   (FPz_f, num64, IO_itp_c_dest%itype_inter_dest, zbuf)
 !
       end subroutine write_gz_itp_idx_dest_b
 !
@@ -131,18 +134,8 @@
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint_gl) :: num64
 !
-!
-      call write_gz_itp_idx_dest_b                              &
-     &         (FPz_f, IO_itp_dest, IO_itp_c_dest, zbuf)
-      if(zbuf%ierr_zlib .ne. 0) return
       if (IO_itp_dest%num_org_domain .eq. 0) return
-!
-      num64 = IO_itp_dest%ntot_table_dest
-      call gz_write_mul_integer_b                                       &
-     &   (FPz_f, num64, IO_itp_c_dest%itype_inter_dest, zbuf)
-      if(zbuf%ierr_zlib .ne. 0) return
 !
       call gz_write_2d_vector_b                                         &
      &   (FPz_f, cast_long(IO_itp_dest%ntot_table_dest),                &
@@ -248,6 +241,9 @@
       if(zbuf%ierr_zlib .ne. 0) return
       call gz_read_mul_integer_b                                        &
      &   (FPz_f, zbuf, num64, IO_itp_c_dest%iele_org_4_dest)
+      if(zbuf%ierr_zlib .gt. 0) return
+      call gz_read_mul_integer_b                                        &
+        (FPz_f, zbuf, num64, IO_itp_c_dest%itype_inter_dest)
 !
       end subroutine read_gz_itp_idx_dest_b
 !
@@ -266,15 +262,8 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
-      integer(kind = kint_gl) :: num64
-!
 !
       if (IO_itp_dest%num_org_domain .eq. 0) return
-!
-      num64 = IO_itp_dest%ntot_table_dest
-      call gz_read_mul_integer_b                                        &
-     &   (FPz_f, zbuf, num64, IO_itp_c_dest%itype_inter_dest)
-      if(zbuf%ierr_zlib .gt. 0) return
 !
       call gz_read_2d_vector_b                                          &
      &   (FPz_f, zbuf, cast_long(IO_itp_dest%ntot_table_dest), ithree,  &

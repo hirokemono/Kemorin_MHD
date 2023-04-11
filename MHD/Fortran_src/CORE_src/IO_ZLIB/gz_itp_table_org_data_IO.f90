@@ -149,9 +149,10 @@
      &      IO_itp_org%istack_itp_type_org(1:ifour), zbuf)
 !
         do inod = 1, IO_itp_org%ntot_table_org
-          write(zbuf%fixbuf(1),'(2i16,2a1)')                            &
+          write(zbuf%fixbuf(1),'(3i16,2a1)')                            &
      &        IO_itp_org%inod_gl_dest_4_org(inod),                      &
-     &        IO_itp_org%iele_org_4_org(inod), char(10), char(0)
+     &        IO_itp_org%iele_org_4_org(inod),                          &
+     &        IO_itp_org%itype_inter_org(inod), char(10), char(0)
           call gz_write_textbuf_no_lf(FPz_f, zbuf)
         end do
 !
@@ -271,7 +272,8 @@
         do inod = 1, IO_itp_org%ntot_table_org
           call get_one_line_text_from_gz(FPz_f, zbuf)
           read(zbuf%fixbuf(1),*) IO_itp_org%inod_gl_dest_4_org(inod),   &
-     &        IO_itp_org%iele_org_4_org(inod)
+     &        IO_itp_org%iele_org_4_org(inod),                          &
+     &        IO_itp_org%itype_inter_org(inod)
         end do
 !
       end subroutine read_gz_itp_idx_org

@@ -104,11 +104,6 @@
       if(bbuf%ierr_bin .ne. 0) return
       call write_mul_integer_b                                          &
      &  (num64, IO_itp_org%itype_inter_org, bbuf)
-      if(bbuf%ierr_bin .ne. 0) return
-!
-      call write_2d_vector_b(cast_long(IO_itp_org%ntot_table_org),      &
-     &    ithree, IO_itp_org%coef_inter_org, bbuf)
-      if(bbuf%ierr_bin .ne. 0) return
 !
       end subroutine write_interpolate_idx_org_b
 !
@@ -121,29 +116,9 @@
       type(interpolate_table_org), intent(in) :: IO_itp_org
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
-      integer(kind = kint_gl) :: num64
-!
-!
-      if (IO_itp_org%num_dest_domain .eq. 0) return
-      num64 = ifive
-      call write_mul_integer_b                                          &
-     &   (num64, IO_itp_org%istack_itp_type_org(0:4), bbuf)
-      if(bbuf%ierr_bin .ne. 0) return
-!
-      num64 = IO_itp_org%ntot_table_org
-      call write_mul_int8_b                                             &
-     &  (num64, IO_itp_org%inod_gl_dest_4_org, bbuf)
-      if(bbuf%ierr_bin .ne. 0) return
-      call write_mul_integer_b                                          &
-     &  (num64, IO_itp_org%iele_org_4_org, bbuf)
-      if(bbuf%ierr_bin .ne. 0) return
-      call write_mul_integer_b                                          &
-     &  (num64, IO_itp_org%itype_inter_org, bbuf)
-      if(bbuf%ierr_bin .ne. 0) return
 !
       call write_2d_vector_b(cast_long(IO_itp_org%ntot_table_org),      &
      &    ithree, IO_itp_org%coef_inter_org, bbuf)
-      if(bbuf%ierr_bin .ne. 0) return
 !
       end subroutine write_interpolate_coefs_org_b
 !
@@ -226,6 +201,8 @@
       call read_mul_integer_b                                           &
      &   (bbuf, num64, IO_itp_org%iele_org_4_org)
       if(bbuf%ierr_bin .gt. 0) return
+      call read_mul_integer_b                                           &
+     &   (bbuf, num64, IO_itp_org%itype_inter_org)
 !
       end subroutine read_interpolate_idx_org_b
 !
@@ -238,15 +215,8 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
       type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
-      integer(kind = kint_gl) :: num64
-!
 !
       if (IO_itp_org%num_dest_domain .eq. 0) return
-!
-      num64 = IO_itp_org%ntot_table_org
-      call read_mul_integer_b                                           &
-     &   (bbuf, num64, IO_itp_org%itype_inter_org)
-      if(bbuf%ierr_bin .gt. 0) return
 !
       call read_2d_vector_b                                             &
      &   (bbuf, cast_long(IO_itp_org%ntot_table_org), ithree,           &
