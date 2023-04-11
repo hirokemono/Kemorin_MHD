@@ -253,6 +253,8 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
+      integer(kind = kint) :: num_tmp
+!
 !
       call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_node_position                                       &

@@ -57,7 +57,6 @@
 !
       subroutine mpi_write_itp_table_coef_file_a(file_name, itp_tbl_IO)
 !
-      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
       use MPI_itp_table_org_data_IO
 !
@@ -79,7 +78,6 @@
 !
       subroutine mpi_write_itp_table_idx_file_a(file_name, itp_tbl_IO)
 !
-      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -101,7 +99,6 @@
       subroutine mpi_wt_dbl_itp_tbl_coef_file_a                         &
      &         (file_name, itp_tbl1_IO, itp_tbl2_IO)
 !
-      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
       use MPI_itp_table_org_data_IO
 !
@@ -128,7 +125,6 @@
       subroutine mpi_wt_dbl_itp_tbl_idx_file_a                          &
      &         (file_name, itp_tbl1_IO, itp_tbl2_IO)
 !
-      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -152,7 +148,6 @@
       subroutine mpi_read_itp_table_coef_file_a                         &
      &         (file_name, id_rank, num_pe, itp_tbl_IO)
 !
-      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
       use MPI_itp_table_org_data_IO
 !
@@ -177,7 +172,6 @@
       subroutine mpi_read_itp_table_idx_file_a                          &
      &         (file_name, id_rank, num_pe, itp_tbl_IO)
 !
-      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -200,7 +194,6 @@
       subroutine mpi_rd_dbl_itp_tbl_coef_file_a                         &
      &         (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
-      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
       use MPI_itp_table_org_data_IO
 !
@@ -228,7 +221,6 @@
       subroutine mpi_rd_dbl_itp_tbl_idx_file_a                          &
      &         (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
-      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -253,6 +245,7 @@
 !
       subroutine mpi_write_each_itp_idx_tbl_a(IO_param, itp_tbl_IO)
 !
+      use MPI_itp_table_dest_data_IO
       use MPI_itp_table_org_data_IO
       use MPI_ascii_data_IO
 !
