@@ -123,7 +123,7 @@
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_txt_file_fmt) then
-        call  gz_mpi_wrt_itp_coefs_dest_file                            &
+        call  gz_mpi_wrt_itp_index_dest_file                            &
      &     (file_name, IO_itp_dest, IO_itp_c_dest)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
@@ -229,7 +229,7 @@
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_txt_file_fmt) then
-        call gz_mpi_read_itp_coefs_dest_file                            &
+        call gz_mpi_read_itp_index_dest_file                            &
      &     (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then

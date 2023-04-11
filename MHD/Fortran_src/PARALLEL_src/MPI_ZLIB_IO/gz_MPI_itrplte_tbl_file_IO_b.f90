@@ -57,7 +57,6 @@
 !
       subroutine gz_mpi_wt_itp_tbl_coef_file_b(gzip_name, itp_tbl_IO)
 !
-      use gz_MPI_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
       use gz_MPI_itp_tbl_org_data_IO_b
 !
@@ -81,7 +80,6 @@
 !
       subroutine gz_mpi_wt_itp_tbl_idx_file_b(gzip_name, itp_tbl_IO)
 !
-      use gz_MPI_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
       use gz_MPI_itp_tbl_org_data_IO_b
 !
@@ -106,7 +104,6 @@
       subroutine gz_mpi_wt_dbl_itbl_coef_file_b                         &
      &         (gzip_name, itp_tbl1_IO, itp_tbl2_IO)
 !
-      use gz_MPI_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
       use gz_MPI_itp_tbl_org_data_IO_b
 !
@@ -135,7 +132,6 @@
       subroutine gz_mpi_wt_dbl_itbl_idx_file_b                          &
      &         (gzip_name, itp_tbl1_IO, itp_tbl2_IO)
 !
-      use gz_MPI_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
       use gz_MPI_itp_tbl_org_data_IO_b
 !
@@ -162,7 +158,6 @@
       subroutine gz_mpi_rd_itp_tbl_coef_file_b                          &
      &          (gzip_name, id_rank, num_pe, itp_tbl_IO)
 !
-      use gz_MPI_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
       use gz_MPI_itp_tbl_org_data_IO_b
 !
@@ -189,7 +184,6 @@
       subroutine gz_mpi_rd_itp_tbl_idx_file_b                           &
      &          (gzip_name, id_rank, num_pe, itp_tbl_IO)
 !
-      use gz_MPI_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
       use gz_MPI_itp_tbl_org_data_IO_b
 !
@@ -215,7 +209,6 @@
       subroutine gz_mpi_rd_dbl_itbl_coef_file_b                         &
      &          (gzip_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
-      use gz_MPI_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
       use gz_MPI_itp_tbl_org_data_IO_b
 !
@@ -246,7 +239,6 @@
       subroutine gz_mpi_rd_dbl_itbl_idx_file_b                          &
      &          (gzip_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
-      use gz_MPI_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
       use gz_MPI_itp_tbl_org_data_IO_b
 !

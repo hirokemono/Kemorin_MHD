@@ -9,11 +9,13 @@
 !!@verbatim
 !!      subroutine gz_mpi_write_itp_domain_org(IO_param, IO_itp_org)
 !!      subroutine gz_mpi_write_itp_table_org(IO_param, IO_itp_org)
+!!      subroutine gz_mpi_write_itp_index_org(IO_param, IO_itp_org)
 !!      subroutine gz_mpi_write_itp_coefs_org(IO_param, IO_itp_org)
 !!        type(interpolate_table_org), intent(in) :: IO_itp_org
 !!
 !!      subroutine gz_mpi_read_itp_domain_org(IO_param, IO_itp_org)
 !!      subroutine gz_mpi_read_itp_table_org(IO_param, IO_itp_org)
+!!      subroutine gz_mpi_read_itp_index_org(IO_param, IO_itp_org)
 !!      subroutine gz_mpi_read_itp_coefs_org(IO_param, IO_itp_org)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
@@ -131,7 +133,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_itp_coefs_org(IO_param, IO_itp_org)
+      subroutine gz_mpi_write_itp_index_org(IO_param, IO_itp_org)
 !
       use gz_MPI_position_IO
       use gz_MPI_domain_data_IO
@@ -155,15 +157,12 @@
 !
       call gz_mpi_write_num_of_data                                     &
      &   (IO_param, IO_itp_org%ntot_table_org)
-      call gz_mpi_write_node_position                                   &
-     &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
-     &    IO_itp_org%inod_gl_dest_4_org, IO_itp_org%coef_inter_org)
 !
-      end subroutine gz_mpi_write_itp_coefs_org
+      end subroutine gz_mpi_write_itp_index_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_itp_coefs_org(IO_param, IO_itp_org)
+      subroutine gz_mpi_read_itp_index_org(IO_param, IO_itp_org)
 !
       use gz_MPI_position_IO
       use gz_MPI_domain_data_IO
@@ -192,6 +191,44 @@
      &    IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
 !
       call gz_mpi_read_num_of_data(IO_param, num_tmp)
+!
+      end subroutine gz_mpi_read_itp_index_org
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_itp_coefs_org(IO_param, IO_itp_org)
+!
+      use gz_MPI_position_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
+      use transfer_to_long_integers
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(interpolate_table_org), intent(in) :: IO_itp_org
+!
+!
+      call gz_mpi_write_node_position                                   &
+     &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
+     &    IO_itp_org%inod_gl_dest_4_org, IO_itp_org%coef_inter_org)
+!
+      end subroutine gz_mpi_write_itp_coefs_org
+!
+!-----------------------------------------------------------------------
+!
+      subroutine gz_mpi_read_itp_coefs_org(IO_param, IO_itp_org)
+!
+      use gz_MPI_position_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
+      use transfer_to_long_integers
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
+!
+!
       call gz_mpi_read_node_position                                    &
      &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
      &    IO_itp_org%inod_gl_dest_4_org, IO_itp_org%coef_inter_org)
