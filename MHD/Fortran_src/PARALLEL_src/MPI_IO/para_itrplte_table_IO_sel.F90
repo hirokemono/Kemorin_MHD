@@ -51,8 +51,8 @@
      &         (id_rank, num_pe, table_file_IO, itp_tbl_IO, ierr)
 !
       use set_interpolate_file_name
-      use MPI_itp_table_file_IO
-      use MPI_itp_table_file_IO_b
+      use MPI_itrplte_tbl_file_IO
+      use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itp_table_file_IO
       use gz_MPI_itp_table_file_IO_b
       use itrplte_tbl_coef_IO_select
@@ -70,7 +70,7 @@
 !
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
-        call mpi_read_itp_table_file_b                                  &
+        call mpi_read_itp_table_coef_file_b                             &
      &     (file_name, id_rank, num_pe, itp_tbl_IO)
 !
 #ifdef ZLIB_IO
@@ -86,7 +86,7 @@
 !
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
-        call mpi_read_itp_table_file_a                                  &
+        call mpi_read_itp_table_coef_file_a                             &
      &     (file_name, id_rank, num_pe, itp_tbl_IO)
 !
       else
@@ -102,8 +102,8 @@
      &          table_file_IO, itp_tbl1_IO, itp_tbl2_IO, ierr)
 !
       use set_interpolate_file_name
-      use MPI_itp_table_file_IO
-      use MPI_itp_table_file_IO_b
+      use MPI_itrplte_tbl_file_IO
+      use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itp_table_file_IO
       use gz_MPI_itp_table_file_IO_b
       use itrplte_tbl_coef_IO_select
@@ -122,7 +122,7 @@
 !
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
-        call mpi_read_dbl_itp_tbl_file_b                                &
+        call mpi_rd_dbl_itp_tbl_coef_file_b                             &
      &     (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
 #ifdef ZLIB_IO
@@ -138,7 +138,7 @@
 !
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
-        call mpi_read_dbl_itp_tbl_file_a                                &
+        call mpi_rd_dbl_itp_tbl_coef_file_a                             &
      &     (file_name, id_rank, num_pe, itp_tbl1_IO, itp_tbl2_IO)
 !
       else
@@ -155,8 +155,8 @@
      &         (id_rank, table_file_IO, itp_tbl_IO)
 !
       use set_interpolate_file_name
-      use MPI_itp_table_file_IO
-      use MPI_itp_table_file_IO_b
+      use MPI_itrplte_tbl_file_IO
+      use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itp_table_file_IO
       use gz_MPI_itp_table_file_IO_b
       use itrplte_tbl_coef_IO_select
@@ -172,7 +172,7 @@
 !
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
-        call mpi_write_itp_table_file_b(file_name, itp_tbl_IO)
+        call mpi_write_itp_table_coef_file_b(file_name, itp_tbl_IO)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
@@ -185,7 +185,7 @@
 !
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
-        call mpi_write_itp_table_file_a(file_name, itp_tbl_IO)
+        call mpi_write_itp_table_coef_file_a(file_name, itp_tbl_IO)
 !
       else
         call sel_write_itrplte_coef_tbl                                 &
@@ -200,8 +200,8 @@
      &         (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
 !
       use set_interpolate_file_name
-      use MPI_itp_table_file_IO
-      use MPI_itp_table_file_IO_b
+      use MPI_itrplte_tbl_file_IO
+      use MPI_itrplte_tbl_file_IO_b
       use gz_MPI_itp_table_file_IO
       use gz_MPI_itp_table_file_IO_b
       use itrplte_tbl_coef_IO_select
@@ -218,7 +218,7 @@
 !
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
-        call mpi_write_dbl_itp_tbl_file_b                               &
+        call mpi_wt_dbl_itp_tbl_coef_file_b                             &
      &     (file_name, itp_tbl1_IO, itp_tbl2_IO)
 !
 #ifdef ZLIB_IO
@@ -234,7 +234,7 @@
 !
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
-        call mpi_write_dbl_itp_tbl_file_a                               &
+        call mpi_wt_dbl_itp_tbl_coef_file_a                             &
      &     (file_name, itp_tbl1_IO, itp_tbl2_IO)
 !
       else

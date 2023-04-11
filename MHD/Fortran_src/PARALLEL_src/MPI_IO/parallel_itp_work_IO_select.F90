@@ -133,7 +133,7 @@
 !
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
-        call  mpi_wrt_itp_coefs_dest_file_a                             &
+        call  mpi_wrt_itp_index_dest_file_a                             &
      &     (file_name, IO_itp_dest, IO_itp_c_dest)
 !
       else
@@ -239,7 +239,7 @@
 !
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
-        call mpi_read_itp_coefs_dest_file_a                             &
+        call mpi_read_itp_index_dest_file_a                             &
      &     (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 !
       else
