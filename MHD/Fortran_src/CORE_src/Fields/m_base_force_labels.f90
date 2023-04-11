@@ -4,7 +4,6 @@
 !! @author H. Matsui
 !! @date   Programmed in Jan., 2020
 !!
-!!
 !> @brief Labels and addresses for basic forces
 !!
 !!@verbatim
