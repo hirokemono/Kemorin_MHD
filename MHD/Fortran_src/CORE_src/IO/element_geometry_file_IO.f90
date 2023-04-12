@@ -41,7 +41,6 @@
 !
       use m_file_format_switch
       use t_read_mesh_data
-      use set_mesh_file_names
 !
       implicit none
 !
@@ -64,6 +63,7 @@
       use comm_table_IO
       use element_data_IO
       use m_fem_mesh_labels
+      use set_element_mesh_file_names
 !
       character(len=kchara), intent(in) :: file_prefix
       integer, intent(in) :: id_rank
@@ -99,6 +99,7 @@
       use comm_table_IO
       use element_data_IO
       use m_fem_mesh_labels
+      use set_element_mesh_file_names
 !
       character(len=kchara), intent(in) :: file_prefix
       integer, intent(in) :: id_rank
@@ -134,6 +135,7 @@
       use comm_table_IO
       use element_data_IO
       use m_fem_mesh_labels
+      use set_element_mesh_file_names
 !
       character(len=kchara), intent(in) :: file_prefix
       integer, intent(in) :: id_rank
@@ -167,6 +169,7 @@
       subroutine output_surface_xyz_file                                &
      &         (id_rank, file_prefix, surf_mesh_IO)
 !
+      use set_element_mesh_file_names
       use surface_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -201,6 +204,7 @@
       subroutine output_surface_sph_file                                &
      &         (id_rank, file_prefix, surf_mesh_IO)
 !
+      use set_element_mesh_file_names
       use surface_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -232,6 +236,7 @@
       subroutine output_surface_cyl_file                                &
      &         (id_rank, file_prefix, surf_mesh_IO)
 !
+      use set_element_mesh_file_names
       use surface_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -264,6 +269,7 @@
       subroutine output_edge_xyz_file                                   &
      &         (id_rank, file_prefix, edge_mesh_IO)
 !
+      use set_element_mesh_file_names
       use edge_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -298,6 +304,7 @@
       subroutine output_edge_sph_file                                   &
      &         (id_rank, file_prefix, edge_mesh_IO)
 !
+      use set_element_mesh_file_names
       use edge_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
@@ -329,6 +336,7 @@
       subroutine output_edge_cyl_file                                   &
      &         (id_rank, file_prefix, edge_mesh_IO)
 !
+      use set_element_mesh_file_names
       use edge_data_IO
 !
       character(len=kchara), intent(in) :: file_prefix
