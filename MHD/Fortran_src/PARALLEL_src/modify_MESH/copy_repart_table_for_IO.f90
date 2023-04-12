@@ -7,6 +7,18 @@
 !>@brief copy repatition data for data IO
 !!
 !!@verbatim
+!!      subroutine repart_table_to_export_IO(part_tbl, export_IO)
+!!        type(calypso_comm_table), intent(in) :: part_tbl
+!!        type(communication_table), intent(inout) :: export_IO
+!!      subroutine export_IO_to_repart_table                            &
+!!     &         (irank_read, export_IO, part_tbl)
+!!        integer(kind= kint), intent(in) :: irank_read
+!!        type(communication_table), intent(in) :: export_IO
+!!        type(calypso_comm_table), intent(inout) :: part_tbl
+!!
+!!      subroutine repart_table_to_import_IO(part_tbl, import_IO)
+!!        type(calypso_comm_table), intent(in) :: part_tbl
+!!        type(communication_table), intent(inout) :: import_IO
 !!      subroutine import_IO_to_repart_table(import_IO, part_tbl, ierr)
 !!        type(communication_table), intent(in) :: import_IO
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
@@ -60,7 +72,6 @@
       end subroutine repart_table_to_export_IO
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !
       subroutine export_IO_to_repart_table                              &
      &         (irank_read, export_IO, part_tbl)
@@ -99,6 +110,7 @@
 !
       end subroutine export_IO_to_repart_table
 !
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine repart_table_to_import_IO(part_tbl, import_IO)

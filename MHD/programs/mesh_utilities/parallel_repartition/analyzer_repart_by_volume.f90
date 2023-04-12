@@ -139,7 +139,7 @@
 !
       call dealloc_comm_table(ele_comm1)
       call dealloc_next_nod_ele_table(next_tbl1)
-      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
+!      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
 !
       call dealloc_node_param_smp(new_fem%mesh%node)
@@ -167,10 +167,14 @@
       use parallel_FEM_mesh_init
       use load_repartition_table
 !
+      use const_repart_mesh_data
+      use compare_mesh_structures
+!
       type(calypso_comm_table) :: part_nod_tbl2
       type(calypso_comm_table) :: part_ele_tbl2
-      type(communication_table), save :: new_nod_comm2
       type(communication_table), save :: new_ele_comm2
+!
+      type(mesh_data), save :: new_fem2
 !
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
@@ -193,13 +197,40 @@
 !
 !
       call set_repart_table_from_file(part_p1%repart_p%trans_tbl_file,  &
-     &    part_nod_tbl2, part_ele_tbl2, new_nod_comm2, new_ele_comm2)
+     &    part_nod_tbl2, part_ele_tbl2, new_fem2%mesh%nod_comm, new_ele_comm2)
+!
+      call set_repart_node_position(part_nod_tbl2, fem_T%mesh%node,    &
+     &    new_fem2%mesh%nod_comm, new_fem2%mesh%node,                  &
+     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
+!
+!      call set_nod_and_ele_infos(fem_T%mesh%node, fem_T%mesh%ele)
+!      call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
+!     &                          fem_T%mesh%ele, org_ele_comm, m_SR_T)
+!
+!      call const_global_numele_list(fem_T%mesh%ele)
+!      call const_ele_comm_table(fem_T%mesh%node,                        &
+!     &    fem_T%mesh%nod_comm, fem_T%mesh%ele, T_ele_comm, m_SR_T)
+!
+!      call alloc_double_numbering(fem_T%mesh%ele%numele, element_ids)
+!      call double_numbering_4_element(fem_T%mesh%ele, org_ele_comm,     &
+!     &    element_ids, m_SR_T%SR_sig, m_SR_T%SR_i)
+!
+!      new_numele = max(maxval(part_ele_tbl2%item_import),              &
+!     &                        maxval(new_ele_comm2%item_import))
+!      call const_reparition_ele_connect                                &
+!     &   (fem_T%mesh%node%ele, part_ele_tbl2, new_ids_on_org, element_ids,              &
+!     &    new_numele, new_fem2%mesh%nod_comm, new_fem2%mesh%node,      &
+!     &    new_fem2%mesh%ele, m_SR_T%SR_sig, m_SR_T%SR_i, m_SR_T%SR_il)
+!      call dealloc_double_numbering(element_ids)
+!
+!      call set_3D_nnod_4_sfed_by_ele(new_ele%nnod_4_ele,               &
+!     &    new_surf%nnod_4_surf, new_edge%nnod_4_edge)
 !
 !
-      if(my_rank .eq. 0) write(*,*) 'check table reading...'
+      if(my_rank .eq. 0) write(*,*) 'Compare read comm tables...'
       call compare_calypso_comm_tbls(repart_nod_tbl1, part_nod_tbl2)
       call calypso_MPI_barrier
-      if(my_rank .eq. 0) write(*,*) 'check table reading end!'
+      if(my_rank .eq. 0) write(*,*) 'Compareing end!'
 !
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
@@ -207,7 +238,11 @@
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
-!
+      call compare_node_comm_types(my_rank, new_fem%mesh%nod_comm, new_fem2%mesh%nod_comm)
+      write(*,*) my_rank, 'Compare node: ',  &
+     &          compare_node_position(my_rank, new_fem%mesh%node, new_fem2%mesh%node)
+!      write(*,*) my_rank, 'Compare element: ',  &
+!     &          compare_ele_connect(my_rank, new_fem%mesh%ele, new_fem2%mesh%ele)
 !
 !
 

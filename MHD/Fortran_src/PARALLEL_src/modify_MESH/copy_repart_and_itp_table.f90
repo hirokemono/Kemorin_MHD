@@ -18,15 +18,6 @@
 !!        type(mesh_geometry), intent(in) :: org_mesh, dest_mesh
 !!        type(interpolate_table), intent(in) :: itp_info
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
-!!
-!!      subroutine copy_repart_import_to_itp_dest(part_tbl, itp_dest)
-!!        type(calypso_comm_table), intent(in) :: part_tbl
-!!        type(interpolate_table_dest), intent(inout) :: itp_dest
-!!      subroutine copy_itp_dest_to_repart_import                       &
-!!     &         (itp_dest, nnod, part_tbl)
-!!        integer(kind = kint), intent(in) :: nnod
-!!        type(interpolate_table_dest), intent(in) :: itp_dest
-!!        type(calypso_comm_table), intent(inout) :: part_tbl
 !!@endverbatim
 !
       module copy_repart_and_itp_table

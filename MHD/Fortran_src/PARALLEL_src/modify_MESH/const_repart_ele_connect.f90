@@ -24,6 +24,21 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
+!!      subroutine const_reparition_ele_connect                         &
+!!     &         (ele, ele_tbl, new_ids_on_org, element_ids,            &
+!!     &          new_numele, new_comm, new_node, new_ele,              &
+!!     &          SR_sig, SR_i, SR_il)
+!!        type(element_data), intent(in) :: ele
+!!        type(calypso_comm_table), intent(in) :: ele_tbl
+!!        type(node_ele_double_number), intent(in) :: new_ids_on_org
+!!        type(node_ele_double_number), intent(in) :: element_ids
+!!        type(communication_table), intent(in) :: new_comm
+!!        type(node_data), intent(in) :: new_node
+!!        integer(kind = kint), intent(in) :: new_numele
+!!        type(element_data), intent(inout) :: new_ele
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!@endverbatim
 !
       module const_repart_ele_connect
@@ -48,8 +63,6 @@
       use t_solver_SR_int8
 !
       implicit none
-!
-      private :: const_reparition_ele_connect
 !
 ! ----------------------------------------------------------------------
 !

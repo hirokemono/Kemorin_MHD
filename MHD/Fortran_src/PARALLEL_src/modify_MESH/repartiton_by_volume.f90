@@ -80,14 +80,12 @@
       use parallel_FEM_mesh_init
       use mesh_repartition_by_volume
       use mesh_MPI_IO_select
-      use para_itrplte_table_IO_sel
       use set_nnod_4_ele_by_type
       use copy_mesh_structures
       use copy_repart_and_itp_table
       use const_element_comm_tables
       use nod_and_ele_derived_info
       use const_same_domain_grouping
-      use itrplte_tbl_coef_IO_select
       use load_repartition_table
       use calypso_mpi_int
 !
@@ -112,7 +110,6 @@
 !
       type(mesh_SR), intent(inout) :: m_SR
 !
-      type(interpolate_table) :: itp_nod_tbl_IO
       type(communication_table) :: new_ele_comm
       type(calypso_comm_table) :: repart_ele_tbl
       integer(kind = kint) :: ierr
@@ -212,15 +209,10 @@
      &     maxval(repart_ele_tbl%item_import), &
      &     maxval(new_ele_comm%item_import), &
      &     max(maxval(repart_ele_tbl%item_import), maxval(new_ele_comm%item_import))
+!
         call output_repart_table                                        &
      &     (part_param%trans_tbl_file, repart_nod_tbl, repart_ele_tbl,  &
      &      new_mesh%nod_comm, new_ele_comm)
-!
-        call copy_repart_tbl_to_itp_table(mesh,                         &
-     &      next_tbl%neib_ele, repart_nod_tbl, itp_nod_tbl_IO)
-        call sel_mpi_write_interpolate_table(my_rank,                   &
-     &      part_param%trans_tbl_file, itp_nod_tbl_IO)
-        call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
       end if
 !
       call dealloc_calypso_comm_table(repart_ele_tbl)

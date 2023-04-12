@@ -141,7 +141,6 @@
       type(communication_table), intent(inout) :: new_ele_comm
       integer(kind = kint), intent(inout) :: ierr
 !
-!
       call export_IO_to_repart_table                                    &
      &   (irank_read, repart_IOs%nod_repart_export, nod_repart_tbl)
       call import_IO_to_repart_table(repart_IOs%nod_repart_import,      &
