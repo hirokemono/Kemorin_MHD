@@ -84,7 +84,6 @@
       use set_nnod_4_ele_by_type
       use copy_mesh_structures
       use copy_repart_and_itp_table
-      use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables
       use nod_and_ele_derived_info
       use const_same_domain_grouping
@@ -241,7 +240,6 @@
       use mpi_load_mesh_data
       use para_itrplte_table_IO_sel
       use copy_repart_and_itp_table
-      use copy_repart_ele_and_itp_tbl
       use itrplte_tbl_coef_IO_select
 !
       type(volume_partioning_param), intent(in) ::  part_param

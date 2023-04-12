@@ -104,7 +104,6 @@
 !
       use m_file_format_switch
       use copy_repart_and_itp_table
-      use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables
       use const_surface_comm_table
       use check_data_for_repartition
