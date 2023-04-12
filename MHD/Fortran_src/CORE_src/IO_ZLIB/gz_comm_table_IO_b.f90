@@ -1,5 +1,5 @@
-!>@file  gz_element_data_IO_b.f90
-!!      module gz_element_data_IO_b
+!>@file  gz_comm_table_IO_b.f90
+!!      module gz_comm_table_IO_b
 !!
 !!@author  H. Matsui
 !!@date Programmed in Oct., 2006
@@ -13,20 +13,9 @@
 !!      subroutine gz_write_comm_table_b(FPz_f, id_rank, comm_IO, zbuf)
 !!        type(communication_table), intent(in) :: comm_IO
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
-!!
-!!      subroutine gz_read_element_geometry_b                           &
-!!     &         (FPz_f, zbuf, nod_IO, sfed_IO)
-!!        type(buffer_4_gzip), intent(inout) :: zbuf
-!!        type(node_data), intent(inout) :: nod_IO
-!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
-!!      subroutine gz_write_element_geometry_b                          &
-!!     &         (FPz_f, nod_IO, sfed_IO, zbuf)
-!!        type(node_data), intent(in) :: nod_IO
-!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
-!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
-      module gz_element_data_IO_b
+      module gz_comm_table_IO_b
 !
       use m_precision
 !
@@ -108,63 +97,5 @@
       end subroutine gz_write_comm_table_b
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
 !
-      subroutine gz_read_element_geometry_b                             &
-     &         (FPz_f, zbuf, nod_IO, sfed_IO)
-!
-      use gz_node_geometry_IO_b
-!
-      character, pointer, intent(in) :: FPz_f
-      type(buffer_4_gzip), intent(inout) :: zbuf
-      type(node_data), intent(inout) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
-!
-!
-!      write(textbuf,'(a,a1)') '!', char(0)
-!      write(textbuf,'(a,a1)') '! 3.element information', char(0)
-!      write(textbuf,'(a,a1)') '!', char(0)
-!      write(textbuf,'(a,a1)') '! 3.1 center of element (position) ',   &
-!     &                       char(0)
-!      write(textbuf,'(a,a1)') '!', char(0)
-!
-      call gz_read_number_of_node_b(FPz_f, zbuf, nod_IO)
-      if(zbuf%ierr_zlib .ne. 0) return
-!
-      call gz_read_geometry_info_b(FPz_f, zbuf, nod_IO)
-      if(zbuf%ierr_zlib .ne. 0) return
-!
-!      write(textbuf,'(a,a1)') '!', char(0)
-!      write(textbuf,'(a,a1)') '! 3.2 Volume of element ', char(0)
-!      write(textbuf,'(a,a1)') '!', char(0)
-!
-      call gz_read_scalar_in_element_b(FPz_f, zbuf, nod_IO, sfed_IO)
-      if(zbuf%ierr_zlib .ne. 0) return
-!
-      end subroutine gz_read_element_geometry_b
-!
-!------------------------------------------------------------------
-!
-      subroutine gz_write_element_geometry_b                            &
-     &         (FPz_f, nod_IO, sfed_IO, zbuf)
-!
-      use gz_node_geometry_IO_b
-!
-      character, pointer, intent(in) :: FPz_f
-      type(node_data), intent(in) :: nod_IO
-      type(surf_edge_IO_data), intent(in) :: sfed_IO
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-!      textbuf = hd_ecomm_point() // char(0)
-      call gz_write_geometry_info_b(FPz_f, nod_IO, zbuf)
-      if(zbuf%ierr_zlib .ne. 0) return
-!
-!      textbuf = hd_ecomm_vol() // char(0)
-      call gz_write_scalar_in_element_b(FPz_f, nod_IO, sfed_IO, zbuf)
-      if(zbuf%ierr_zlib .ne. 0) return
-!
-      end subroutine gz_write_element_geometry_b
-!
-!------------------------------------------------------------------
-!
-      end module gz_element_data_IO_b
+      end module gz_comm_table_IO_b

@@ -61,6 +61,7 @@
       subroutine output_element_xyz_file                                &
      &         (id_rank, file_prefix, ele_mesh_IO)
 !
+      use comm_table_IO
       use element_data_IO
       use m_fem_mesh_labels
 !
@@ -95,6 +96,7 @@
       subroutine output_element_sph_file                                &
      &         (id_rank, file_prefix, ele_mesh_IO)
 !
+      use comm_table_IO
       use element_data_IO
       use m_fem_mesh_labels
 !
@@ -129,6 +131,7 @@
       subroutine output_element_cyl_file                                &
      &         (id_rank, file_prefix, ele_mesh_IO)
 !
+      use comm_table_IO
       use element_data_IO
       use m_fem_mesh_labels
 !

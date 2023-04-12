@@ -55,7 +55,7 @@
       subroutine input_element_file                                     &
      &         (id_rank, file_name, ele_mesh_IO, ierr)
 !
-      use element_data_IO
+      use comm_table_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -133,7 +133,7 @@
       subroutine output_element_file                                    &
      &         (id_rank, file_name, ele_mesh_IO)
 !
-      use element_data_IO
+      use comm_table_IO
       use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name

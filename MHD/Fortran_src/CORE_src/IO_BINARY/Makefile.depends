@@ -1,14 +1,14 @@
 binary_IO.o: $(BINARY_IO_DIR)/binary_IO.F90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_binary_IO_buffer.o set_parallel_file_name.o transfer_to_long_integers.o byte_swap_f.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
+comm_table_IO_b.o: $(BINARY_IO_DIR)/comm_table_IO_b.f90 m_precision.o t_geometry_data.o t_read_mesh_data.o t_comm_table.o t_surf_edge_IO.o t_binary_IO_buffer.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o
+	$(F90) -c $(F90OPTFLAGS) $<
 domain_data_IO_b.o: $(BINARY_IO_DIR)/domain_data_IO_b.f90 m_precision.o t_comm_table.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o m_error_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 edge_data_IO_b.o: $(BINARY_IO_DIR)/edge_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o t_binary_IO_buffer.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o element_connect_IO_b.o node_geometry_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 element_connect_IO_b.o: $(BINARY_IO_DIR)/element_connect_IO_b.f90 m_precision.o t_geometry_data.o t_surf_edge_IO.o t_read_mesh_data.o t_binary_IO_buffer.o binary_IO.o set_nnod_4_ele_by_type.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-element_data_IO_b.o: $(BINARY_IO_DIR)/element_data_IO_b.f90 m_precision.o t_geometry_data.o t_read_mesh_data.o t_comm_table.o t_surf_edge_IO.o t_binary_IO_buffer.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o node_geometry_IO_b.o
-	$(F90) -c $(F90OPTFLAGS) $<
-element_file_IO_b.o: $(BINARY_IO_DIR)/element_file_IO_b.f90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_read_mesh_data.o t_binary_IO_buffer.o set_mesh_file_names.o binary_IO.o element_data_IO_b.o surface_data_IO_b.o edge_data_IO_b.o
+element_file_IO_b.o: $(BINARY_IO_DIR)/element_file_IO_b.f90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_read_mesh_data.o t_binary_IO_buffer.o set_mesh_file_names.o binary_IO.o comm_table_IO_b.o surface_data_IO_b.o edge_data_IO_b.o node_geometry_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 field_data_IO_b.o: $(BINARY_IO_DIR)/field_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_time_data.o t_binary_IO_buffer.o binary_IO.o m_phys_constants.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<

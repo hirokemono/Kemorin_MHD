@@ -92,7 +92,8 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_calypso_comm_tbl(IO_param, comm_IO)
+      subroutine gz_mpi_read_calypso_comm_tbl                           &
+     &         (IO_param, import_IO, export_IO)
 !
       use m_fem_mesh_labels
 !
@@ -115,7 +116,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_calypso_comm_tbl(IO_param, comm_IO)
+      subroutine gz_mpi_write_calypso_comm_tbl                          &
+     &         (IO_param, import_IO, export_IO)
 !
       use m_fem_mesh_labels
 !

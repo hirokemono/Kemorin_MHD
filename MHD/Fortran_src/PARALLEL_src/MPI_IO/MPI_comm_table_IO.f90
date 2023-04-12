@@ -103,14 +103,14 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_fem_para()))
-      call mpi_read_domain_info(IO_param, comm_IO)
+      call mpi_read_domain_info(IO_param, import_IO)
       call mpi_skip_read(IO_param, len(hd_ecomm_import()))
-      call mpi_read_import_data(IO_param, comm_IO)
+      call mpi_read_import_data(IO_param, import_IO)
 !
       call mpi_skip_read(IO_param, len(hd_fem_para()))
-      call mpi_read_domain_info(IO_param, comm_IO)
+      call mpi_read_domain_info(IO_param, export_IO)
       call mpi_skip_read(IO_param, len(hd_ecomm_export()))
-      call mpi_read_export_data(IO_param, comm_IO)
+      call mpi_read_export_data(IO_param, export_IO)
 !
       end subroutine mpi_read_calypso_comm_tbl
 !
@@ -127,17 +127,17 @@
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_para()), hd_fem_para())
-      call mpi_write_domain_info(IO_param, comm_IO)
+      call mpi_write_domain_info(IO_param, import_IO)
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_ecomm_import()), hd_ecomm_import())
-      call mpi_write_import_data(IO_param, comm_IO)
+      call mpi_write_import_data(IO_param, import_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_para()), hd_fem_para())
-      call mpi_write_domain_info(IO_param, comm_IO)
+      call mpi_write_domain_info(IO_param, export_IO)
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_ecomm_export()), hd_ecomm_export())
-      call mpi_write_export_data(IO_param, comm_IO)
+      call mpi_write_export_data(IO_param, export_IO)
 !
       end subroutine mpi_write_calypso_comm_tbl
 !
