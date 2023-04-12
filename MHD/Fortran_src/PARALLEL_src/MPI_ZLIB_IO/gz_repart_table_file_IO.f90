@@ -55,6 +55,8 @@
      &                                   repart_IOs, ierr)
 !
       use gz_comm_table_IO
+      use gzip_file_access
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -66,10 +68,10 @@
      &  'Read gzipped ascii element comm file: ', trim(file_name)
 !
       call open_rd_gzfile_a(FPz_c, file_name, zbuf_c)
-      call gz_read_repart_trans_tbl(FPz_c, id_rank, zbuf_c,             &
+      call gz_read_calypso_comm_tbl(FPz_c, id_rank, zbuf_c,             &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export,   &
      &    ierr)
-      call gz_read_repart_trans_tbl(FPz_c, id_rank, zbuf_c,             &
+      call gz_read_calypso_comm_tbl(FPz_c, id_rank, zbuf_c,             &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export,   &
      &    ierr)
 !
@@ -87,6 +89,8 @@
      &         (id_rank, file_name, repart_IOs)
 !
       use gz_comm_table_IO
+      use gzip_file_access
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -97,10 +101,10 @@
      &  'Write gzipped ascii element comm file: ', trim(file_name)
 !
       call open_wt_gzfile_a(FPz_c, file_name, zbuf_c)
-      call gz_write_repart_trans_tbl(FPz_c, id_rank,                    &
+      call gz_write_calypso_comm_tbl(FPz_c, id_rank,                    &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export,   &
      &    zbuf_c)
-      call gz_write_repart_trans_tbl(FPz_c, id_rank,                    &
+      call gz_write_calypso_comm_tbl(FPz_c, id_rank,                    &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export,   &
      &    zbuf_c)
 !
@@ -118,6 +122,8 @@
      &                                     repart_IOs)
 !
       use gz_comm_table_IO_b
+      use gz_binary_IO
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -152,6 +158,8 @@
      &                                      repart_IOs)
 !
       use gz_comm_table_IO_b
+      use gz_binary_IO
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name

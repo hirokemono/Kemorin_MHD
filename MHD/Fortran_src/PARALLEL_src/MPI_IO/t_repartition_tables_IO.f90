@@ -45,6 +45,36 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine dealloc_repartition_tables_IO(repart_IOs)
+!
+      type(repartition_tables_IO), intent(inout) :: repart_IOs
+!
+!
+      call dealloc_export_table(repart_IOs%nod_repart_export)
+      call dealloc_neib_id(repart_IOs%nod_repart_export)
+!
+      call dealloc_import_table(repart_IOs%nod_repart_import)
+      call dealloc_neib_id(repart_IOs%nod_repart_import)
+!
+      call dealloc_export_table(repart_IOs%ele_repart_export)
+      call dealloc_neib_id(repart_IOs%ele_repart_export)
+!
+      call dealloc_import_table(repart_IOs%ele_repart_import)
+      call dealloc_neib_id(repart_IOs%ele_repart_import)
+!
+!
+      call dealloc_export_table(repart_IOs%nod_comm_IO)
+      call dealloc_import_table(repart_IOs%nod_comm_IO)
+      call dealloc_neib_id(repart_IOs%nod_comm_IO)
+!
+      call dealloc_export_table(repart_IOs%ele_comm_IO)
+      call dealloc_import_table(repart_IOs%ele_comm_IO)
+      call dealloc_neib_id(repart_IOs%ele_comm_IO)
+!
+      end subroutine dealloc_repartition_tables_IO
+!
+!-----------------------------------------------------------------------
+!
       subroutine copy_repart_tbl_to_repart_IOs                          &
      &         (nod_repart_tbl, ele_repart_tbl,                         &
      &          new_nod_comm, new_ele_comm, repart_IOs)

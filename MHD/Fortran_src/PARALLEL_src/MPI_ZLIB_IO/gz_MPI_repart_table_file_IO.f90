@@ -49,6 +49,7 @@
      &         (num_pe, id_rank, file_name, repart_IOs)
 !
       use gz_MPI_comm_table_IO
+      use MPI_ascii_data_IO
 !
       integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
@@ -77,6 +78,7 @@
       subroutine gz_mpi_write_repart_tbl_file(file_name, repart_IOs)
 !
       use gz_MPI_comm_table_IO
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       type(repartition_tables_IO), intent(in) :: repart_IOs
@@ -105,6 +107,7 @@
      &         (num_pe, id_rank, file_name, repart_IOs)
 !
       use gz_MPI_comm_table_IO_b
+      use MPI_ascii_data_IO
 !
       integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
@@ -133,6 +136,7 @@
       subroutine gz_mpi_write_repart_tbl_file_b(file_name, repart_IOs)
 !
       use gz_MPI_comm_table_IO_b
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
       type(repartition_tables_IO), intent(in) :: repart_IOs
@@ -147,7 +151,6 @@
       call gz_mpi_write_comm_table_b(IO_param, repart_IOs%nod_comm_IO)
       call gz_mpi_write_comm_table_b(IO_param, repart_IOs%ele_comm_IO)
       call close_mpi_file(IO_param)
-!
 !
       end subroutine gz_mpi_write_repart_tbl_file_b
 !

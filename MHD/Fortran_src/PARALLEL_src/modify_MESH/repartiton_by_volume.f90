@@ -54,6 +54,8 @@
       use t_ctl_param_sleeve_extend
       use t_mesh_SR
 !
+      implicit none
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -86,6 +88,7 @@
       use nod_and_ele_derived_info
       use const_same_domain_grouping
       use itrplte_tbl_coef_IO_select
+      use load_repartition_table
 !
       logical, intent(in) :: flag_lic_dump
       integer(kind = kint), intent(in) :: num_mask
@@ -110,6 +113,7 @@
 !
       type(interpolate_table) :: itp_nod_tbl_IO
       type(communication_table) :: new_ele_comm
+      type(calypso_comm_table) :: repart_ele_tbl
 !
 !  -------------------------------
 !
@@ -125,22 +129,20 @@
         call s_mesh_repartition_by_volume                               &
      &     (mesh, group, ele_comm, next_tbl%neib_nod, part_param,       &
      &      num_mask, masking, ref_repart, d_mask, new_mesh, new_group, &
-     &      repart_nod_tbl, m_SR)
+     &      repart_nod_tbl, repart_ele_tbl, m_SR)
       end if
       call calypso_mpi_barrier
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
+      call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
+      call const_ele_comm_table(new_mesh%node, new_mesh%nod_comm,       &
+     &                          new_mesh%ele, new_ele_comm, m_SR)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
 !
 ! Increase sleeve size
       if(part_param%sleeve_exp_p%iflag_expand_mode                      &
      &                         .ne. iflag_turn_off) then
-        call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
-!
-        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
-        call const_ele_comm_table(new_mesh%node, new_mesh%nod_comm,     &
-     &                            new_mesh%ele, new_ele_comm, m_SR)
-        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
-!
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
         call calypso_mpi_barrier
         call sleeve_extension_for_new_mesh                              &
@@ -148,8 +150,6 @@
      &      mesh, ref_vect_sleeve_ext, repart_nod_tbl,                  &
      &      new_mesh, new_group, new_ele_comm, sleeve_exp_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
-!
-        call dealloc_comm_table(new_ele_comm)
       end if
 !
 !       Output new mesh file
@@ -168,12 +168,19 @@
         if(my_rank .eq. 0) write(*,*)                                   &
      &          'No transfer table output for repartition'
       else
+        call output_repart_table                                        &
+     &     (part_param%trans_tbl_file, repart_nod_tbl, repart_ele_tbl,  &
+     &      new_mesh%nod_comm, new_ele_comm)
+!
         call copy_repart_tbl_to_itp_table(mesh,                         &
      &      next_tbl%neib_ele, repart_nod_tbl, itp_nod_tbl_IO)
         call sel_mpi_write_interpolate_table(my_rank,                   &
      &      part_param%trans_tbl_file, itp_nod_tbl_IO)
         call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
       end if
+!
+      call dealloc_comm_table(new_ele_comm)
+      call dealloc_calypso_comm_table(repart_ele_tbl)
       call calypso_MPI_barrier
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
 !
@@ -201,7 +208,7 @@
 !
       type(interpolate_table) :: itp_nod_tbl_IO
 !
-      integer(kind= kint) :: irank_read
+      integer(kind= kint) :: irank_read, ierr
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new mesh'

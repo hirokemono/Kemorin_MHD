@@ -30,7 +30,7 @@
 !
       subroutine output_repart_table                                    &
      &         (repart_file, nod_repart_tbl, ele_repart_tbl,            &
-     &          new_nod_comm, new_ele_comm, repart_IOs)
+     &          new_nod_comm, new_ele_comm)
 !
       use sel_repartition_table_IO
 !
@@ -47,13 +47,14 @@
      &   (nod_repart_tbl, ele_repart_tbl,                               &
      &    new_nod_comm, new_ele_comm, repart_IOs)
       call sel_mpi_write_repart_tbl_file(repart_file, repart_IOs)
+      call dealloc_repartition_tables_IO(repart_IOs)
 !
       end subroutine output_repart_table
 !
 !-----------------------------------------------------------------------
 !
       subroutine set_repart_table_from_file                             &
-     &         (repart_file, new_nnod, new_nele, repart_IOs,            &
+     &         (repart_file, new_nnod, new_nele,                        &
      &          nod_repart_tbl, ele_repart_tbl,                         &
      &          new_nod_comm, new_ele_comm)
 !
@@ -75,7 +76,8 @@
      &   (my_rank, new_nnod, new_nele, repart_IOs,                      &
      &    nod_repart_tbl, ele_repart_tbl,                               &
      &    new_nod_comm, new_ele_comm)
-!
+      call dealloc_repartition_tables_IO(repart_IOs)
+
       end subroutine set_repart_table_from_file
 !
 !-----------------------------------------------------------------------

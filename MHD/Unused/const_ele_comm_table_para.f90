@@ -99,8 +99,9 @@
 !
 !
       do ip = 1, nprocs
-        call dealloc_ie_gl_import( ecomm_wk%ele_comm_gl(ip) )
-        call dealloc_import_table( ecomm_wk%ele_comm_tmp(ip) )
+        call dealloc_ie_gl_import(ecomm_wk%ele_comm_gl(ip))
+        call dealloc_import_table(ecomm_wk%ele_comm_tmp(ip))
+        call dealloc_neib_id(ecomm_wk%ele_comm_tmp(ip))
       end do
       deallocate(ecomm_wk%ele_comm_gl, ecomm_wk%ele_comm_tmp)
 !
