@@ -7,6 +7,22 @@
 !>@brief Structures for repartition table IO
 !!
 !!@verbatim
+!!      subroutine output_repart_table                                  &
+!!     &         (repart_file, nod_repart_tbl, ele_repart_tbl,          &
+!!     &          new_nod_comm, new_ele_comm)
+!!        type(field_IO_params), intent(in) ::  repart_file
+!!        type(calypso_comm_table), intent(in) :: nod_repart_tbl
+!!        type(calypso_comm_table), intent(in) :: ele_repart_tbl
+!!        type(communication_table), intent(in) :: new_nod_comm
+!!        type(communication_table), intent(in) :: new_ele_comm
+!!      subroutine set_repart_table_from_file                           &
+!!     &         (repart_file, nod_repart_tbl, ele_repart_tbl,          &
+!!     &          new_nod_comm, new_ele_comm)
+!!        type(field_IO_params), intent(in) ::  repart_file
+!!        type(calypso_comm_table), intent(inout) :: nod_repart_tbl
+!!        type(calypso_comm_table), intent(inout) :: ele_repart_tbl
+!!        type(communication_table), intent(inout) :: new_nod_comm
+!!        type(communication_table), intent(inout) :: new_ele_comm
 !!@endverbatim
 !!
       module load_repartition_table
@@ -54,14 +70,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_repart_table_from_file                             &
-     &         (repart_file, new_nnod, new_nele,                        &
-     &          nod_repart_tbl, ele_repart_tbl,                         &
+     &         (repart_file, nod_repart_tbl, ele_repart_tbl,            &
      &          new_nod_comm, new_ele_comm)
 !
+      use m_error_IDs
       use sel_repartition_table_IO
 !
       type(field_IO_params), intent(in) ::  repart_file
-      integer(kind= kint), intent(in) :: new_nnod, new_nele
 !
       type(calypso_comm_table), intent(inout) :: nod_repart_tbl
       type(calypso_comm_table), intent(inout) :: ele_repart_tbl
@@ -69,15 +84,20 @@
       type(communication_table), intent(inout) :: new_ele_comm
 !
       type(repartition_tables_IO) :: repart_IOs
+      integer(kind= kint) :: ierr
 !
 !
       call sel_mpi_read_repart_tbl_file(repart_file, repart_IOs)
-      call copy_repart_IOs_to_repart_tbl                                &
-     &   (my_rank, new_nnod, new_nele, repart_IOs,                      &
+      call copy_repart_IOs_to_repart_tbl(my_rank, repart_IOs,           &
      &    nod_repart_tbl, ele_repart_tbl,                               &
-     &    new_nod_comm, new_ele_comm)
+     &    new_nod_comm, new_ele_comm, ierr)
       call dealloc_repartition_tables_IO(repart_IOs)
-
+!
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr_repart,                             &
+     &                         'Failed repatition table loading')
+      end if
+!
       end subroutine set_repart_table_from_file
 !
 !-----------------------------------------------------------------------

@@ -265,7 +265,8 @@
       end if
 !
       part_tbl%ntot_import = itp_dest%ntot_table_dest
-      call alloc_calypso_import_item(nnod, part_tbl)
+      call alloc_calypso_import_item(part_tbl)
+      call alloc_calypso_import_rev(nnod, part_tbl)
 !
 !$omp parallel do private(inum,inod)
       do inum = 1, part_tbl%ntot_import

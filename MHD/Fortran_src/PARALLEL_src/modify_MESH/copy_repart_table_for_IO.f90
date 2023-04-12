@@ -7,23 +7,10 @@
 !>@brief copy repatition data for data IO
 !!
 !!@verbatim
-!!      subroutine repart_table_to_export_IO(part_tbl, export_IO)
-!!        type(calypso_comm_table), intent(in) :: part_tbl
-!!        type(communication_table), intent(inout) :: export_IO
-!!      subroutine export_IO_to_repart_table                            &
-!!     &         (irank_read, export_IO, part_tbl)
-!!      integer(kind= kint), intent(in) :: irank_read
-!!        type(communication_table), intent(in) :: export_IO
+!!      subroutine import_IO_to_repart_table(import_IO, part_tbl, ierr)
+!!        type(communication_table), intent(in) :: import_IO
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
-!!
-!!      subroutine export_IO_to_repart_table                            &
-!!     &         (irank_read, export_IO, part_tbl)
-!!        integer(kind= kint), intent(in) :: irank_read
-!!        type(communication_table), intent(in) :: export_IO
-!!        type(calypso_comm_table), intent(inout) :: part_tbl
-!!      subroutine repart_table_to_import_IO(part_tbl, import_IO)
-!!        type(calypso_comm_table), intent(in) :: part_tbl
-!!        type(communication_table), intent(inout) :: import_IO
+!!        integer(kind = kint), intent(inout) :: ierr
 !!@endverbatim
       module copy_repart_table_for_IO
 !
@@ -148,11 +135,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine import_IO_to_repart_table(import_IO, nnod, part_tbl)
+      subroutine import_IO_to_repart_table(import_IO, part_tbl, ierr)
 !
-      integer(kind = kint), intent(in) :: nnod
       type(communication_table), intent(in) :: import_IO
       type(calypso_comm_table), intent(inout) :: part_tbl
+      integer(kind = kint), intent(inout) :: ierr
+!
+      integer(kind = kint) :: nnod_rev
 !
 !
       part_tbl%nrank_import = import_IO%num_neib
@@ -169,8 +158,7 @@
       end if
 !
       part_tbl%ntot_import = import_IO%ntot_import
-      if(nnod .ne. part_tbl%ntot_import) write(*,*) 'tako'
-      call alloc_calypso_import_item(nnod, part_tbl)
+      call alloc_calypso_import_item(part_tbl)
 !
       if(part_tbl%ntot_import .gt. 0) then
 !$omp parallel workshare
@@ -178,6 +166,10 @@
      &          =  import_IO%item_import(1:part_tbl%ntot_import)
 !$omp end parallel workshare
       end if
+!
+      nnod_rev = maxval(part_tbl%item_import)
+      call alloc_calypso_import_rev(nnod_rev, part_tbl)
+      call set_calypso_import_rev(part_tbl, ierr)
 !
       end subroutine import_IO_to_repart_table
 !

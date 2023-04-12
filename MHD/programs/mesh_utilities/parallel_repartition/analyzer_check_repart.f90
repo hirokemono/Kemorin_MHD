@@ -38,8 +38,6 @@
       type(mesh_data), save :: new_fem
       type(mesh_SR), save :: m_SR_T
 !
-      type(calypso_comm_table), save :: repart_nod_tbl1
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -105,7 +103,6 @@
       use t_work_for_comm_check
 !
       use m_file_format_switch
-      use para_itrplte_table_IO_sel
       use copy_repart_and_itp_table
       use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables
@@ -115,9 +112,14 @@
       use write_diff_4_comm_test
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
-      use itrplte_tbl_coef_IO_select
+      use load_repartition_table
 !
       type(interpolate_table) :: itp_nod_tbl_IO
+!
+      type(calypso_comm_table), save :: part_nod_tbl1
+      type(calypso_comm_table), save :: part_ele_tbl2
+      type(communication_table), save :: new_nod_comm2
+      type(communication_table), save :: new_ele_comm2
 !
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
@@ -132,16 +134,8 @@
       integer(kind = kint) :: i, ierr
 !
 !
-      call sel_mpi_read_interpolate_table                               &
-     &   (my_rank, nprocs, part_p1%repart_p%trans_tbl_file,             &
-     &    itp_nod_tbl_IO, ierr)
-!
-      irank_read = my_rank
-      call copy_itp_table_to_repart_tbl(irank_read,                     &
-     &    fem_T%mesh, new_fem%mesh, itp_nod_tbl_IO, repart_nod_tbl1)
-      call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
-      call calypso_MPI_barrier
-!
+      call set_repart_table_from_file(part_p1%repart_p%trans_tbl_file,  &
+     &    part_nod_tbl1, part_ele_tbl2, new_nod_comm2, new_ele_comm2)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
@@ -165,7 +159,7 @@
 !
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
       call node_transfer_test(fem_T%mesh%node, new_fem%mesh%node,       &
-     &    new_fem%mesh%nod_comm, repart_nod_tbl1, nod_check,            &
+     &    new_fem%mesh%nod_comm, part_nod_tbl1, nod_check,              &
      &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
 !
       call ele_send_recv_test(new_fem%mesh%ele, T_ele_comm,             &

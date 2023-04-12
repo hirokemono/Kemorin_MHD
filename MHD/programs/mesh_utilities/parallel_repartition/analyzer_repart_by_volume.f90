@@ -166,10 +166,12 @@
       use write_diff_4_comm_test
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
-      use itrplte_tbl_coef_IO_select
+      use load_repartition_table
 !
       type(calypso_comm_table) :: part_nod_tbl2
-      type(interpolate_table) :: itp_nod_tbl_IO
+      type(calypso_comm_table) :: part_ele_tbl2
+      type(communication_table), save :: new_nod_comm2
+      type(communication_table), save :: new_ele_comm2
 !
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
@@ -191,15 +193,9 @@
       end if
 !
 !
-      call sel_mpi_read_interpolate_table                               &
-     &   (my_rank, nprocs, part_p1%repart_p%trans_tbl_file,             &
-     &    itp_nod_tbl_IO, ierr)
+      call set_repart_table_from_file(part_p1%repart_p%trans_tbl_file,  &
+     &    part_nod_tbl2, part_ele_tbl2, new_nod_comm2, new_ele_comm2)
 !
-      irank_read = my_rank
-      call copy_itp_table_to_repart_tbl(irank_read,                     &
-     &    fem_T%mesh, new_fem%mesh, itp_nod_tbl_IO, part_nod_tbl2)
-      call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
-      call calypso_MPI_barrier
 !
       if(my_rank .eq. 0) write(*,*) 'check table reading...'
       call compare_calypso_comm_tbls(repart_nod_tbl1, part_nod_tbl2)
@@ -212,6 +208,10 @@
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
+!
+!
+!
+
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
       call const_global_numele_list(new_fem%mesh%ele)
       call const_ele_comm_table(new_fem%mesh%node,                      &

@@ -62,7 +62,7 @@ MPI_node_geometry_IO_b.o: $(MPI_IO_DIR)/MPI_node_geometry_IO_b.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 MPI_position_IO.o: $(MPI_IO_DIR)/MPI_position_IO.f90 m_precision.o m_constants.o t_calypso_mpi_IO_param.o MPI_ascii_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-MPI_repart_table_file_IO.o: $(MPI_IO_DIR)/MPI_repart_table_file_IO.f90 m_precision.o m_machine_parameter.o t_calypso_mpi_IO_param.o t_repartition_tables_IO.o MPI_comm_table_IO.o MPI_comm_table_IO_b.o
+MPI_repart_table_file_IO.o: $(MPI_IO_DIR)/MPI_repart_table_file_IO.f90 m_precision.o m_machine_parameter.o t_calypso_mpi_IO_param.o t_repartition_tables_IO.o MPI_comm_table_IO.o MPI_ascii_data_IO.o MPI_comm_table_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 MPI_sph_gl_1d_idx_IO.o: $(MPI_IO_DIR)/MPI_sph_gl_1d_idx_IO.f90 m_precision.o m_constants.o t_node_id_spherical_IO.o t_calypso_mpi_IO_param.o m_sph_modes_grid_labels.o MPI_domain_data_IO.o MPI_ascii_data_IO.o MPI_position_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

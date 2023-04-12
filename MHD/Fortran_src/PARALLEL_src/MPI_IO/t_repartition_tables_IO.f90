@@ -7,6 +7,26 @@
 !>@brief Structures for repartition table IO
 !!
 !!@verbatim
+!!      subroutine dealloc_repartition_tables_IO(repart_IOs)
+!!        type(repartition_tables_IO), intent(inout) :: repart_IOs
+!!      subroutine copy_repart_tbl_to_repart_IOs                        &
+!!     &         (nod_repart_tbl, ele_repart_tbl,                       &
+!!     &          new_nod_comm, new_ele_comm, repart_IOs)
+!!        type(calypso_comm_table), intent(in) :: nod_repart_tbl
+!!        type(calypso_comm_table), intent(in) :: ele_repart_tbl
+!!        type(communication_table), intent(in) :: new_nod_comm
+!!        type(communication_table), intent(in) :: new_ele_comm
+!!        type(repartition_tables_IO), intent(inout) :: repart_IOs
+!!      subroutine copy_repart_IOs_to_repart_tbl(irank_read, repart_IOs,&
+!!     &          nod_repart_tbl, ele_repart_tbl,                       &
+!!     &          new_nod_comm, new_ele_comm, ierr)
+!!        integer(kind= kint), intent(in) :: irank_read
+!!        type(repartition_tables_IO), intent(in) :: repart_IOs
+!!        type(calypso_comm_table), intent(inout) :: nod_repart_tbl
+!!        type(calypso_comm_table), intent(inout) :: ele_repart_tbl
+!!        type(communication_table), intent(inout) :: new_nod_comm
+!!        type(communication_table), intent(inout) :: new_ele_comm
+!!        integer(kind = kint), intent(inout) :: ierr
 !!@endverbatim
 !!
 !!@param id_rank  MPI rank
@@ -106,32 +126,33 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_repart_IOs_to_repart_tbl                          &
-     &         (irank_read, new_nnod, new_nele, repart_IOs,             &
+      subroutine copy_repart_IOs_to_repart_tbl(irank_read, repart_IOs,  &
      &          nod_repart_tbl, ele_repart_tbl,                         &
-     &          new_nod_comm, new_ele_comm)
+     &          new_nod_comm, new_ele_comm, ierr)
 !
       use copy_repart_table_for_IO
 !
       integer(kind= kint), intent(in) :: irank_read
-      integer(kind= kint), intent(in) :: new_nnod, new_nele
       type(repartition_tables_IO), intent(in) :: repart_IOs
 !
       type(calypso_comm_table), intent(inout) :: nod_repart_tbl
       type(calypso_comm_table), intent(inout) :: ele_repart_tbl
       type(communication_table), intent(inout) :: new_nod_comm
       type(communication_table), intent(inout) :: new_ele_comm
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       call export_IO_to_repart_table                                    &
      &   (irank_read, repart_IOs%nod_repart_export, nod_repart_tbl)
       call import_IO_to_repart_table(repart_IOs%nod_repart_import,      &
-     &    new_nnod, nod_repart_tbl)
+     &    nod_repart_tbl, ierr)
+       if(ierr .gt. 0) return
 !
       call export_IO_to_repart_table                                    &
      &   (irank_read, repart_IOs%ele_repart_export, ele_repart_tbl)
       call import_IO_to_repart_table(repart_IOs%ele_repart_import,      &
-     &    new_nele, ele_repart_tbl)
+     &    ele_repart_tbl, ierr)
+       if(ierr .gt. 0) return
 !
       call copy_comm_tbl_type(repart_IOs%nod_comm_IO, new_nod_comm)
       call copy_comm_tbl_type(repart_IOs%ele_comm_IO, new_ele_comm)

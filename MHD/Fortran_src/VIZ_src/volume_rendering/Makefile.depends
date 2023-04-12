@@ -14,7 +14,7 @@ comm_tbl_4_img_composit.o: $(PVR_DIR)/comm_tbl_4_img_composit.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 comm_tbl_4_img_output.o: $(PVR_DIR)/comm_tbl_4_img_output.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_comm_tbl_img_composit.o: $(PVR_DIR)/const_comm_tbl_img_composit.f90 m_precision.o m_constants.o calypso_mpi.o t_calypso_comm_table.o t_stencil_buffer_work.o comm_tbl_4_img_output.o calypso_mpi_int.o comm_tbl_4_img_composit.o quicksort.o
+const_comm_tbl_img_composit.o: $(PVR_DIR)/const_comm_tbl_img_composit.f90 m_precision.o m_constants.o calypso_mpi.o t_calypso_comm_table.o t_stencil_buffer_work.o comm_tbl_4_img_output.o m_error_IDs.o calypso_mpi_int.o comm_tbl_4_img_composit.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
 convert_real_rgb_2_bite.o: $(PVR_DIR)/convert_real_rgb_2_bite.f90 m_precision.o m_constants.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<

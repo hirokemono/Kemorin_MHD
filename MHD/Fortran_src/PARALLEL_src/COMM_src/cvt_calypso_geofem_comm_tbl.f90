@@ -119,7 +119,8 @@
       call s_cal_total_and_stacks                                       &
      &   (cps_tbl%nrank_import, cps_tbl%num_import, izero,              &
      &    cps_tbl%istack_import, cps_tbl%ntot_import)
-      call alloc_calypso_import_item(NP, cps_tbl)
+      call alloc_calypso_import_item(cps_tbl)
+      call alloc_calypso_import_rev(NP, cps_tbl)
 !
       call shuffle_comm_item_by_pe(nprocs, iflag_pe,                    &
      &    comm_tbl%num_neib, comm_tbl%id_neib,                          &

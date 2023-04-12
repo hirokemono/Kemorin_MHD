@@ -74,6 +74,7 @@
       use m_file_format_switch
       use m_elapsed_labels_4_REPART
       use m_work_time
+      use m_error_IDs
 !
       use sleeve_extend
       use parallel_FEM_mesh_init
@@ -89,6 +90,7 @@
       use const_same_domain_grouping
       use itrplte_tbl_coef_IO_select
       use load_repartition_table
+      use calypso_mpi_int
 !
       logical, intent(in) :: flag_lic_dump
       integer(kind = kint), intent(in) :: num_mask
@@ -114,6 +116,9 @@
       type(interpolate_table) :: itp_nod_tbl_IO
       type(communication_table) :: new_ele_comm
       type(calypso_comm_table) :: repart_ele_tbl
+      integer(kind = kint) :: ierr
+      integer :: nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new
+      integer :: nele_ele_tbl
 !
 !  -------------------------------
 !
@@ -124,7 +129,12 @@
      &     = set_cube_eletype_from_num(mesh%ele%nnod_4_ele)
         call copy_mesh_and_group(mesh, group, new_mesh, new_group)
         call const_trans_tbl_to_same_mesh(my_rank, mesh%node,           &
-     &                                    repart_nod_tbl)
+     &                                    repart_nod_tbl, ierr)
+!
+        if(ierr .gt. 0) then
+          call calypso_mpi_abort(ierr_repart,                           &
+     &                         'Failed repatition table loading')
+        end if
       else
         call s_mesh_repartition_by_volume                               &
      &     (mesh, group, ele_comm, next_tbl%neib_nod, part_param,       &
@@ -151,6 +161,13 @@
      &      new_mesh, new_group, new_ele_comm, sleeve_exp_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
       end if
+      call dealloc_comm_table(new_ele_comm)
+!
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
+      call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
+      call const_ele_comm_table(new_mesh%node, new_mesh%nod_comm,       &
+     &                          new_mesh%ele, new_ele_comm, m_SR)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
 !
 !       Output new mesh file
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
@@ -168,6 +185,34 @@
         if(my_rank .eq. 0) write(*,*)                                   &
      &          'No transfer table output for repartition'
       else
+          call calypso_mpi_reduce_one_int                               &
+     &       (mesh%node%internal_node, nnod_tot_org, MPI_SUM, 0)
+          call calypso_mpi_reduce_one_int                               &
+     &       (mesh%ele%internal_ele, nele_tot_org, MPI_SUM, 0)
+          call calypso_mpi_reduce_one_int                               &
+     &       (new_mesh%node%internal_node, nnod_tot_new, MPI_SUM, 0)
+          call calypso_mpi_reduce_one_int                               &
+     &       (new_mesh%ele%internal_ele, nele_tot_new, MPI_SUM, 0)
+          call calypso_mpi_reduce_one_int                               &
+     &       (repart_ele_tbl%ntot_import, nele_ele_tbl, MPI_SUM, 0)
+        if(my_rank .eq. 0) write(*,*) 'Total: ', &
+     &     nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new, &
+     &     nele_ele_tbl
+        write(*,*) my_rank, 'old nums: ', &
+     &             mesh%node%numnod, mesh%node%internal_node, &
+     &     repart_nod_tbl%ntot_export, mesh%nod_comm%ntot_import
+        write(*,*) my_rank, 'old element: ', &
+     &     mesh%ele%numele, mesh%ele%internal_ele, &
+     &     repart_ele_tbl%ntot_export, ele_comm%ntot_import
+        write(*,*) my_rank, 'new node: ', &
+     &     new_mesh%node%numnod, new_mesh%node%internal_node, &
+     &     repart_nod_tbl%ntot_import, new_mesh%nod_comm%ntot_import
+        write(*,*) my_rank, 'new element: ', &
+     &     new_mesh%ele%numele, new_mesh%ele%internal_ele, &
+     &     repart_ele_tbl%ntot_import, new_ele_comm%ntot_import, &
+     &     maxval(repart_ele_tbl%item_import), &
+     &     maxval(new_ele_comm%item_import), &
+     &     max(maxval(repart_ele_tbl%item_import), maxval(new_ele_comm%item_import))
         call output_repart_table                                        &
      &     (part_param%trans_tbl_file, repart_nod_tbl, repart_ele_tbl,  &
      &      new_mesh%nod_comm, new_ele_comm)
@@ -179,7 +224,6 @@
         call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
       end if
 !
-      call dealloc_comm_table(new_ele_comm)
       call dealloc_calypso_comm_table(repart_ele_tbl)
       call calypso_MPI_barrier
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
