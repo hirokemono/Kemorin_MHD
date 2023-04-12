@@ -23,16 +23,6 @@
 !!     &         (IO_param, import_IO, export_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(communication_table), intent(in) :: import_IO, export_IO
-!!
-!!      subroutine gz_mpi_read_ele_geometry_b(IO_param, nod_IO, sfed_IO)
-!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
-!!        type(node_data), intent(inout) :: nod_IO
-!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
-!!      subroutine gz_mpi_write_ele_geometry_b                          &
-!!     &         (IO_param, nod_IO, sfed_IO)
-!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
-!!        type(node_data), intent(in) :: nod_IO
-!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!@endverbatim
 !
       module gz_MPI_comm_table_IO_b
