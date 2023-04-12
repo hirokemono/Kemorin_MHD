@@ -62,7 +62,7 @@
 !
       call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
 !
-      call mpi_read_element_comm_table_b(IO_param, ele_mesh_IO%comm)
+      call mpi_read_comm_table_b(IO_param, ele_mesh_IO%comm)
 !      call mpi_read_element_geometry_b(IO_param,                       &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)
@@ -136,7 +136,7 @@
      &  'Write merged binary element comm file: ', trim(file_name)
 !
       call open_write_mpi_file_b(file_name, IO_param)
-      call mpi_write_element_comm_table_b(IO_param, ele_mesh_IO%comm)
+      call mpi_write_comm_table_b(IO_param, ele_mesh_IO%comm)
 !      call mpi_write_element_geometry_b(IO_param,                      &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)

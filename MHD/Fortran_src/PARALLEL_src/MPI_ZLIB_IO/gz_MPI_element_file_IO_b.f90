@@ -64,7 +64,7 @@
       call open_read_mpi_file                                           &
      &   (file_name, num_pe, id_rank, IO_param)
 !
-      call gz_mpi_read_ele_comm_table_b(IO_param, ele_mesh_IO%comm)
+      call gz_mpi_read_comm_table_b(IO_param, ele_mesh_IO%comm)
 !      call gz_mpi_read_ele_geometry_b(IO_param,                        &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)
@@ -143,7 +143,7 @@
 !
       call open_write_mpi_file(file_name, IO_param)
 !
-      call gz_mpi_write_ele_comm_table_b(IO_param, ele_mesh_IO%comm)
+      call gz_mpi_write_comm_table_b(IO_param, ele_mesh_IO%comm)
 !      call gz_mpi_write_ele_geometry_b(IO_param,                       &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)

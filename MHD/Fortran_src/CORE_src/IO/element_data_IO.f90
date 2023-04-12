@@ -7,11 +7,9 @@
 !>@brief Data IO routines for element data
 !!
 !!@verbatim
-!!      subroutine read_element_comm_table                              &
-!!     &         (id_file, id_rank, comm_IO, ierr)
+!!      subroutine read_comm_table(id_file, id_rank, comm_IO, ierr)
 !!        type(communication_table), intent(inout) :: comm_IO
-!!      subroutine write_element_comm_table                             &
-!!     &         (id_file, id_rank, comm_IO)
+!!      subroutine write_comm_table(id_file, id_rank, comm_IO)
 !!        type(communication_table), intent(in) :: comm_IO
 !!
 !!      subroutine read_element_geometry(id_file, nod_IO, sfed_IO)
@@ -42,8 +40,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_element_comm_table                                &
-     &         (id_file, id_rank, comm_IO, ierr)
+      subroutine read_comm_table(id_file, id_rank, comm_IO, ierr)
 !
       use m_fem_mesh_labels
       use domain_data_IO
@@ -76,12 +73,11 @@
 !
       call read_export_data(id_file, comm_IO)
 !
-      end subroutine read_element_comm_table
+      end subroutine read_comm_table
 !
 !------------------------------------------------------------------
 !
-      subroutine write_element_comm_table                               &
-     &         (id_file, id_rank, comm_IO)
+      subroutine write_comm_table(id_file, id_rank, comm_IO)
 !
       use m_fem_mesh_labels
       use domain_data_IO
@@ -91,7 +87,6 @@
       type(communication_table), intent(in) :: comm_IO
 !
 !
-      write(id_file,'(a)', advance='NO') hd_ecomm_para()
       write(id_file,'(a)', advance='NO') hd_fem_para()
       call write_domain_info(id_file, id_rank, comm_IO)
 !
@@ -101,7 +96,7 @@
       write(id_file,'(a)', advance='NO') hd_ecomm_export()
       call write_export_data(id_file, comm_IO)
 !
-      end subroutine write_element_comm_table
+      end subroutine write_comm_table
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

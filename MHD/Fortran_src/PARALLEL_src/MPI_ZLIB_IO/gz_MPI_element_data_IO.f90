@@ -7,10 +7,10 @@
 !>@brief Data IO routines for element data
 !!
 !!@verbatim
-!!      subroutine gz_mpi_read_ele_comm_table(IO_param, comm_IO)
+!!      subroutine gz_mpi_read_comm_table(IO_param, comm_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(communication_table), intent(inout) :: comm_IO
-!!      subroutine gz_mpi_write_ele_comm_table(IO_param, comm_IO)
+!!      subroutine gz_mpi_write_comm_table(IO_param, comm_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(communication_table), intent(in) :: comm_IO
 !!
@@ -47,7 +47,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_ele_comm_table(IO_param, comm_IO)
+      subroutine gz_mpi_read_comm_table(IO_param, comm_IO)
 !
       use m_fem_mesh_labels
 !
@@ -55,7 +55,6 @@
       type(communication_table), intent(inout) :: comm_IO
 !
 !
-      call gz_mpi_skip_header(IO_param, len(hd_ecomm_para()))
       call gz_mpi_skip_header(IO_param, len(hd_fem_para()))
       call gz_mpi_read_domain_info(IO_param, comm_IO)
 !
@@ -65,11 +64,11 @@
       call gz_mpi_skip_header(IO_param, len(hd_ecomm_export()))
       call gz_mpi_read_export_data(IO_param, comm_IO)
 !
-      end subroutine gz_mpi_read_ele_comm_table
+      end subroutine gz_mpi_read_comm_table
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_ele_comm_table(IO_param, comm_IO)
+      subroutine gz_mpi_write_comm_table(IO_param, comm_IO)
 !
       use m_fem_mesh_labels
 !
@@ -77,8 +76,6 @@
       type(communication_table), intent(in) :: comm_IO
 !
 !
-      call gz_mpi_write_charahead                                       &
-     &   (IO_param, len(hd_ecomm_para()), hd_ecomm_para())
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_fem_para()), hd_fem_para())
       call gz_mpi_write_domain_info(IO_param, comm_IO)
@@ -91,7 +88,7 @@
      &   (IO_param, len(hd_ecomm_export()), hd_ecomm_export())
       call gz_mpi_write_export_data(IO_param, comm_IO)
 !
-      end subroutine gz_mpi_write_ele_comm_table
+      end subroutine gz_mpi_write_comm_table
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

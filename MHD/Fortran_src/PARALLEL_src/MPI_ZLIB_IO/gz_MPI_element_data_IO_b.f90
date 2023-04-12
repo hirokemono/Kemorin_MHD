@@ -7,10 +7,10 @@
 !>@brief Data IO routines for element data
 !!
 !!@verbatim
-!!      subroutine gz_mpi_read_ele_comm_table_b(IO_param, comm_IO)
+!!      subroutine gz_mpi_read_comm_table_b(IO_param, comm_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(communication_table), intent(inout) :: comm_IO
-!!      subroutine gz_mpi_write_ele_comm_table_b(IO_param, comm_IO)
+!!      subroutine gz_mpi_write_comm_table_b(IO_param, comm_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(communication_table), intent(in) :: comm_IO
 !!
@@ -46,7 +46,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_read_ele_comm_table_b(IO_param, comm_IO)
+      subroutine gz_mpi_read_comm_table_b(IO_param, comm_IO)
 !
       use m_fem_mesh_labels
 !
@@ -59,11 +59,11 @@
       call gz_mpi_read_import_data_b(IO_param, comm_IO)
       call gz_mpi_read_export_data_b(IO_param, comm_IO)
 !
-      end subroutine gz_mpi_read_ele_comm_table_b
+      end subroutine gz_mpi_read_comm_table_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_ele_comm_table_b(IO_param, comm_IO)
+      subroutine gz_mpi_write_comm_table_b(IO_param, comm_IO)
 !
       use m_fem_mesh_labels
 !
@@ -76,7 +76,7 @@
       call gz_mpi_write_import_data_b(IO_param, comm_IO)
       call gz_mpi_write_export_data_b(IO_param, comm_IO)
 !
-      end subroutine gz_mpi_write_ele_comm_table_b
+      end subroutine gz_mpi_write_comm_table_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

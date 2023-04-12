@@ -66,7 +66,7 @@
      &  'Read gzipped ascii element comm file: ', trim(file_name)
 !
       call open_rd_gzfile_a(FPz_ele, file_name, zbuf_e)
-      call gz_read_element_comm_table                                   &
+      call gz_read_comm_table                                           &
      &   (FPz_ele, id_rank, ele_mesh_IO%comm, zbuf_e, ierr)
 !      call gz_read_element_geometry                                    &
 !     &   (FPz_ele, ele_mesh_IO%node, ele_mesh_IO%sfed, zbuf_e)
@@ -135,6 +135,7 @@
 !
       use skip_gz_comment
       use gz_element_data_IO
+      use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -145,7 +146,10 @@
      &  'Write gzipped ascii element comm file: ', trim(file_name)
 !
       call open_wt_gzfile_a(FPz_ele, file_name, zbuf_e)
-      call gz_write_element_comm_table                                  &
+!
+      zbuf_e%fixbuf(1) = hd_ecomm_para() // char(0)
+      call gz_write_textbuf_no_lf(FPz_ele, zbuf_e)
+      call gz_write_comm_table                                          &
      &   (FPz_ele, id_rank, ele_mesh_IO%comm, zbuf_e)
 !      call gz_write_element_geometry                                   &
 !     &   (FPz_ele, ele_mesh_IO%node, ele_mesh_IO%sfed, zbuf_e)

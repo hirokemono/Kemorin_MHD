@@ -67,8 +67,8 @@
      &  'Read ascii element comm file: ', trim(file_name)
 !
       open(input_file_code, file = file_name, form = 'formatted')
-      call read_element_comm_table                                      &
-     &   (input_file_code, id_rank, ele_mesh_IO%comm, ierr)
+      call read_comm_table(input_file_code, id_rank,                    &
+     &                     ele_mesh_IO%comm, ierr)
 !      call read_element_geometry(input_file_code,                      &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)
@@ -134,6 +134,7 @@
      &         (id_rank, file_name, ele_mesh_IO)
 !
       use element_data_IO
+      use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -144,8 +145,8 @@
      &  'Write ascii element comm file: ', trim(file_name)
 !
       open(input_file_code, file = file_name, form = 'formatted')
-      call write_element_comm_table                                     &
-     &   (input_file_code, id_rank, ele_mesh_IO%comm)
+      write(input_file_code,'(a)', advance='NO') hd_ecomm_para()
+      call write_comm_table(input_file_code, id_rank, ele_mesh_IO%comm)
 !      call write_element_geometry(input_file_code,                     &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)

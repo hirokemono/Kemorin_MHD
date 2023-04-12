@@ -69,8 +69,8 @@
 !
       call open_rd_gzfile_b(FPz_ele, file_name, id_rank, zbuf_ele)
       if(zbuf_ele%ierr_zlib .ne. 0) go to 99
-      call gz_read_element_comm_table_b                                 &
-     &   (FPz_ele, id_rank, zbuf_ele, ele_mesh_IO%comm)
+      call gz_read_comm_table_b(FPz_ele, id_rank,                       &
+     &                          zbuf_ele, ele_mesh_IO%comm)
       if(zbuf_ele%ierr_zlib .ne. 0) go to 99
 !      call gz_read_element_geometry_b                                  &
 !     &   (FPz_ele, zbuf_ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
@@ -161,8 +161,8 @@
      &  'Write gzipped binary element comm file: ', trim(file_name)
 !
       call open_wt_gzfile_b(FPz_ele, file_name, zbuf_ele)
-      call gz_write_element_comm_table_b                                &
-     &   (FPz_ele, id_rank, ele_mesh_IO%comm, zbuf_ele)
+      call gz_write_comm_table_b(FPz_ele, id_rank,                      &
+     &                           ele_mesh_IO%comm, zbuf_ele)
 !      call gz_write_element_geometry_b                                 &
 !     &   (FPz_ele, ele_mesh_IO%node, ele_mesh_IO%sfed, zbuf_ele)
       call close_gzfile_b(FPz_ele)

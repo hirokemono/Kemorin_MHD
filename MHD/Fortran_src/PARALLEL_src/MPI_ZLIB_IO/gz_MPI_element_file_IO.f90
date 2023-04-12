@@ -50,6 +50,7 @@
      &         (num_pe, id_rank, file_name, ele_mesh_IO, ierr)
 !
       use gz_MPI_element_data_IO
+      use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: num_pe, id_rank
@@ -64,7 +65,8 @@
       call open_read_mpi_file                                           &
      &   (file_name, num_pe, id_rank, IO_param)
 !
-      call gz_mpi_read_ele_comm_table(IO_param, ele_mesh_IO%comm)
+      call gz_mpi_skip_header(IO_param, len(hd_ecomm_para()))
+      call gz_mpi_read_comm_table(IO_param, ele_mesh_IO%comm)
 !      call gz_mpi_read_ele_geometry(IO_param,                          &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)
@@ -132,6 +134,7 @@
       subroutine gz_mpi_output_element_file(file_name, ele_mesh_IO)
 !
       use gz_MPI_element_data_IO
+      use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
@@ -143,7 +146,9 @@
 !
       call open_write_mpi_file(file_name, IO_param)
 !
-      call gz_mpi_write_ele_comm_table(IO_param, ele_mesh_IO%comm)
+      call gz_mpi_write_charahead                                       &
+     &   (IO_param, len(hd_ecomm_para()), hd_ecomm_para())
+      call gz_mpi_write_comm_table(IO_param, ele_mesh_IO%comm)
 !      call gz_mpi_write_ele_geometry(IO_param,                         &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)

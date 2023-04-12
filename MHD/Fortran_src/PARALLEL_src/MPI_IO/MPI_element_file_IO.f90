@@ -50,6 +50,7 @@
      &         (num_pe, id_rank, file_name, ele_mesh_IO, ierr)
 !
       use MPI_element_data_IO
+      use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: num_pe, id_rank
@@ -63,7 +64,8 @@
       call open_read_mpi_file                                           &
      &   (file_name, num_pe, id_rank, IO_param)
 !
-      call mpi_read_element_comm_table(IO_param, ele_mesh_IO%comm)
+      call mpi_skip_read(IO_param, len(hd_ecomm_para()))
+      call mpi_read_comm_table(IO_param, ele_mesh_IO%comm)
 !      call mpi_read_element_geometry(IO_param,                         &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)
@@ -130,6 +132,7 @@
       subroutine mpi_output_element_file(file_name, ele_mesh_IO)
 !
       use MPI_element_data_IO
+      use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name
       type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
@@ -139,7 +142,9 @@
      &  'Write merged ascii element comm file: ', trim(file_name)
 !
       call open_write_mpi_file(file_name, IO_param)
-      call mpi_write_element_comm_table(IO_param, ele_mesh_IO%comm)
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_ecomm_para()), hd_ecomm_para())
+      call mpi_write_comm_table(IO_param, ele_mesh_IO%comm)
 !      call mpi_write_element_geometry(IO_param,                        &
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)

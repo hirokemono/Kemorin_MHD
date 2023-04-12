@@ -7,10 +7,10 @@
 !>@brief Data IO routines for element data
 !!
 !!@verbatim
-!!      subroutine read_element_comm_table_b(id_rank, bbuf, comm_IO)
+!!      subroutine read_comm_table_b(id_rank, bbuf, comm_IO)
 !!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!        type(communication_table), intent(inout) :: comm_IO
-!!      subroutine write_element_comm_table_b(id_rank, comm_IO, bbuf)
+!!      subroutine write_comm_table_b(id_rank, comm_IO, bbuf)
 !!        type(communication_table), intent(in) :: comm_IO
 !!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!
@@ -43,7 +43,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_element_comm_table_b(id_rank, bbuf, comm_IO)
+      subroutine read_comm_table_b(id_rank, bbuf, comm_IO)
 !
       use m_fem_mesh_labels
       use domain_data_IO_b
@@ -63,11 +63,11 @@
       if(bbuf%ierr_bin .gt. 0) return
       call read_export_data_b(bbuf, comm_IO)
 !
-      end subroutine read_element_comm_table_b
+      end subroutine read_comm_table_b
 !
 !------------------------------------------------------------------
 !
-      subroutine write_element_comm_table_b(id_rank, comm_IO, bbuf)
+      subroutine write_comm_table_b(id_rank, comm_IO, bbuf)
 !
       use m_fem_mesh_labels
       use domain_data_IO_b
@@ -86,7 +86,7 @@
       if(bbuf%ierr_bin .ne. 0) return
       call write_export_data_b(comm_IO, bbuf)
 !
-      end subroutine write_element_comm_table_b
+      end subroutine write_comm_table_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

@@ -7,12 +7,10 @@
 !>@brief Data IO routines for element data
 !!
 !!@verbatim
-!!      subroutine gz_read_element_comm_table_b                         &
-!!     &         (FPz_f, id_rank, zbuf, comm_IO)
+!!      subroutine gz_read_comm_table_b(FPz_f, id_rank, zbuf, comm_IO)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        type(communication_table), intent(inout) :: comm_IO
-!!      subroutine gz_write_element_comm_table_b                        &
-!!     &         (FPz_f, id_rank, comm_IO, zbuf)
+!!      subroutine gz_write_comm_table_b(FPz_f, id_rank, comm_IO, zbuf)
 !!        type(communication_table), intent(in) :: comm_IO
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
@@ -46,8 +44,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_read_element_comm_table_b                           &
-     &         (FPz_f, id_rank, zbuf, comm_IO)
+      subroutine gz_read_comm_table_b(FPz_f, id_rank, zbuf, comm_IO)
 !
       use gz_domain_data_IO_b
 !
@@ -82,12 +79,11 @@
       call gz_read_export_data_b(FPz_f, zbuf, comm_IO)
       if(zbuf%ierr_zlib .ne. 0) return
 !
-      end subroutine gz_read_element_comm_table_b
+      end subroutine gz_read_comm_table_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_element_comm_table_b                          &
-     &         (FPz_f, id_rank, comm_IO, zbuf)
+      subroutine gz_write_comm_table_b(FPz_f, id_rank, comm_IO, zbuf)
 !
       use gz_domain_data_IO_b
 !
@@ -97,7 +93,6 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-!      textbuf = hd_ecomm_para() // char(0)
 !      textbuf = hd_fem_para() // char(0)
       call gz_write_domain_info_b(FPz_f, id_rank, comm_IO, zbuf)
       if(zbuf%ierr_zlib .ne. 0) return
@@ -110,7 +105,7 @@
       call gz_write_export_data_b(FPz_f, comm_IO, zbuf)
       if(zbuf%ierr_zlib .ne. 0) return
 !
-      end subroutine gz_write_element_comm_table_b
+      end subroutine gz_write_comm_table_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

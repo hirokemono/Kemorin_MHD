@@ -69,8 +69,7 @@
       bbuf_emesh%id_binary = id_read_ele
       call open_read_binary_file(file_name, id_rank, bbuf_emesh)
       if(bbuf_emesh%ierr_bin .ne. 0) goto 99
-      call read_element_comm_table_b                                    &
-     &   (id_rank, bbuf_emesh, ele_mesh_IO%comm)
+      call read_comm_table_b(id_rank, bbuf_emesh, ele_mesh_IO%comm)
       if(bbuf_emesh%ierr_bin .gt. 0) go to 99
 !      call read_element_geometry_b                                     &
 !     &   (bbuf_emesh, ele_mesh_IO%node, ele_mesh_IO%sfed)
@@ -163,8 +162,7 @@
       bbuf_emesh%id_binary = id_write_ele
       call open_write_binary_file(file_name, bbuf_emesh)
       if(bbuf_emesh%ierr_bin .gt. 0) go to 99
-      call write_element_comm_table_b                                   &
-     &   (id_rank, ele_mesh_IO%comm, bbuf_emesh)
+      call write_comm_table_b(id_rank, ele_mesh_IO%comm, bbuf_emesh)
       if(bbuf_emesh%ierr_bin .gt. 0) go to 99
 !      call write_element_geometry_b                                    &
 !     &   (ele_mesh_IO%node, ele_mesh_IO%sfed, bbuf_emesh)

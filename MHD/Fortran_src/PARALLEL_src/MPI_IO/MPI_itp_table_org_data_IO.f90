@@ -54,7 +54,7 @@
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_itp_export_pe()), hd_itp_export_pe())
-      call mpi_write_comm_table(IO_param, iten,                         &
+      call mpi_write_int_items(IO_param, iten,                          &
      &    IO_itp_org%num_dest_domain, IO_itp_org%id_dest_domain)
 !
       end subroutine mpi_write_itp_domain_org
@@ -75,7 +75,7 @@
       call mpi_read_num_of_data(IO_param, IO_itp_org%num_dest_domain)
       call alloc_itp_num_org(np_smp, IO_itp_org)
 !
-      call mpi_read_comm_table(IO_param, iten,                          &
+      call mpi_read_int_items(IO_param, iten,                           &
      &    IO_itp_org%num_dest_domain, IO_itp_org%id_dest_domain)
 !
       end subroutine mpi_read_itp_domain_org
@@ -97,7 +97,7 @@
      &   (IO_param, len(hd_itp_export_item()), hd_itp_export_item())
       call mpi_write_int_stack(IO_param, IO_itp_org%num_dest_domain,    &
      &                         IO_itp_org%istack_nod_tbl_org)
-      call mpi_write_comm_table(IO_param, iten,                         &
+      call mpi_write_int_items(IO_param, iten,                          &
      &    IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
 !
       end subroutine mpi_write_itp_table_org
@@ -124,7 +124,7 @@
 !
       call mpi_read_num_of_data(IO_param, num_tmp)
       call alloc_itp_table_org(IO_itp_org)
-      call mpi_read_comm_table(IO_param, iten,                          &
+      call mpi_read_int_items(IO_param, iten,                           &
      &    IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
 !
       end subroutine mpi_read_itp_table_org
@@ -150,9 +150,9 @@
      &                         IO_itp_org%istack_itp_type_org)
 !
       call mpi_write_num_of_data(IO_param, IO_itp_org%ntot_table_org)
-      call mpi_write_comm_table(IO_param, iten,                         &
+      call mpi_write_int_items(IO_param, iten,                          &
      &    IO_itp_org%ntot_table_org, IO_itp_org%iele_org_4_org)
-      call mpi_write_comm_table(IO_param, iten,                         &
+      call mpi_write_int_items(IO_param, iten,                          &
      &    IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
 !
       end subroutine mpi_write_itp_index_org
@@ -180,11 +180,11 @@
      &                        IO_itp_org%istack_itp_type_org, num_tmp)
 !
       call mpi_read_num_of_data(IO_param, num_tmp)
-      call mpi_read_comm_table(IO_param, iten,                          &
+      call mpi_read_int_items(IO_param, iten,                           &
      &    IO_itp_org%ntot_table_org, IO_itp_org%iele_org_4_org)
 !
       call mpi_read_num_of_data(IO_param, num_tmp)
-      call mpi_read_comm_table(IO_param, iten,                          &
+      call mpi_read_int_items(IO_param, iten,                           &
      &    IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
 !
       end subroutine mpi_read_itp_index_org
