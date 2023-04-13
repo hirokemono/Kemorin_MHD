@@ -65,6 +65,7 @@
       use const_repart_nod_and_comm
       use const_repart_ele_connect
       use redistribute_groups
+      use set_nnod_4_ele_by_type
 !
       integer(kind = kint), intent(in) :: num_mask
       type(volume_partioning_param), intent(in) ::  part_param
@@ -103,11 +104,12 @@
       call dealloc_calypso_comm_table(ext_tbl)
 !
       call s_const_repart_ele_connect                                   &
-     &   (mesh, ele_comm, repart_nod_tbl,                               &
-     &    new_ids_on_org, new_mesh%nod_comm, new_mesh%node,             &
-     &    new_mesh%ele, repart_ele_tbl, new_mesh%surf, new_mesh%edge,   &
-     &    m_SR%SR_sig, m_SR%SR_i, m_SR%SR_il)
+     &   (mesh, ele_comm, repart_nod_tbl, new_ids_on_org,               &
+     &    new_mesh%nod_comm, new_mesh%node, new_mesh%ele,               &
+     &    repart_ele_tbl, m_SR%SR_sig, m_SR%SR_i, m_SR%SR_il)
       call dealloc_double_numbering(new_ids_on_org)
+      call set_3D_nnod_4_sfed_by_ele(new_mesh%ele%nnod_4_ele,           &
+     &    new_mesh%surf%nnod_4_surf, new_mesh%edge%nnod_4_edge)
 !
       call s_redistribute_groups(mesh, group, ele_comm, new_mesh,       &
      &    repart_nod_tbl, repart_ele_tbl, new_group,                    &

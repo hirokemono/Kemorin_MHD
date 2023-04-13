@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_const_repart_ele_connect(mesh, ele_comm, part_tbl, &
 !!     &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl, &
-!!     &          new_surf, new_edge, SR_sig, SR_i, SR_il)
+!!     &          SR_sig, SR_i, SR_il)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(calypso_comm_table), intent(in) :: part_tbl
@@ -18,8 +18,6 @@
 !!        type(node_data), intent(in) :: new_node
 !!        type(calypso_comm_table), intent(inout) :: ele_tbl
 !!        type(element_data), intent(inout) :: new_ele
-!!        type(surface_data), intent(inout) :: new_surf
-!!        type(edge_data), intent(inout) :: new_edge
 !!        type(node_ele_double_number) :: element_ids
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -72,10 +70,9 @@
 !
       subroutine s_const_repart_ele_connect(mesh, ele_comm, part_tbl,   &
      &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl,   &
-     &          new_surf, new_edge, SR_sig, SR_i, SR_il)
+     &          SR_sig, SR_i, SR_il)
 !
       use ele_trans_tbl_4_repart
-      use set_nnod_4_ele_by_type
 !
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
@@ -86,8 +83,6 @@
 !
       type(calypso_comm_table), intent(inout) :: ele_tbl
       type(element_data), intent(inout) :: new_ele
-      type(surface_data), intent(inout) :: new_surf
-      type(edge_data), intent(inout) :: new_edge
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
       type(send_recv_int8_buffer), intent(inout) :: SR_il
@@ -112,9 +107,6 @@
      &   (mesh%ele, ele_tbl, new_ids_on_org, element_ids,               &
      &    new_numele, new_comm, new_node, new_ele, SR_sig, SR_i, SR_il)
       call dealloc_double_numbering(element_ids)
-!
-      call set_3D_nnod_4_sfed_by_ele(new_ele%nnod_4_ele,                &
-     &    new_surf%nnod_4_surf, new_edge%nnod_4_edge)
 !
       end subroutine s_const_repart_ele_connect
 !

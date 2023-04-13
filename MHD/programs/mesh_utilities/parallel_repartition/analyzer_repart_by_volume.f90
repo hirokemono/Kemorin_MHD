@@ -170,11 +170,14 @@
       use const_repart_mesh_data
       use compare_mesh_structures
 !
+      type(communication_table), save :: ele_comm1
+!
       type(calypso_comm_table) :: part_nod_tbl2
       type(calypso_comm_table) :: part_ele_tbl2
       type(communication_table), save :: new_ele_comm2
 !
       type(mesh_data), save :: new_fem2
+      integer(kind = kint) :: new_numele
 !
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
@@ -184,6 +187,8 @@
       type(work_for_comm_check), save :: ele_check
       type(work_for_comm_check), save :: surf_check
       type(work_for_comm_check), save :: edge_check
+!
+      type(node_ele_double_number) :: new_ids_on_org1
 !
       integer(kind = kint) :: irank_read
       integer(kind = kint) :: i, ierr
@@ -197,35 +202,27 @@
 !
 !
       call set_repart_table_from_file(part_p1%repart_p%trans_tbl_file,  &
-     &    part_nod_tbl2, part_ele_tbl2, new_fem2%mesh%nod_comm, new_ele_comm2)
+     &    part_nod_tbl2, part_ele_tbl2, new_fem2%mesh%nod_comm,         &
+     &    new_ele_comm2)
 !
-      call set_repart_node_position(part_nod_tbl2, fem_T%mesh%node,    &
-     &    new_fem2%mesh%nod_comm, new_fem2%mesh%node,                  &
+      call set_repart_node_position(part_nod_tbl2, fem_T%mesh%node,     &
+     &    new_fem2%mesh%nod_comm, new_fem2%mesh%node,                   &
      &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
 !
-!      call set_nod_and_ele_infos(fem_T%mesh%node, fem_T%mesh%ele)
-!      call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
-!     &                          fem_T%mesh%ele, org_ele_comm, m_SR_T)
 !
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
 !      call const_global_numele_list(fem_T%mesh%ele)
-!      call const_ele_comm_table(fem_T%mesh%node,                        &
-!     &    fem_T%mesh%nod_comm, fem_T%mesh%ele, T_ele_comm, m_SR_T)
+      call const_ele_comm_table(fem_T%mesh%node,                        &
+     &    fem_T%mesh%nod_comm, fem_T%mesh%ele, ele_comm1, m_SR_T)
 !
-!      call alloc_double_numbering(fem_T%mesh%ele%numele, element_ids)
-!      call double_numbering_4_element(fem_T%mesh%ele, org_ele_comm,     &
-!     &    element_ids, m_SR_T%SR_sig, m_SR_T%SR_i)
-!
-!      new_numele = max(maxval(part_ele_tbl2%item_import),              &
-!     &                        maxval(new_ele_comm2%item_import))
-!      call const_reparition_ele_connect                                &
-!     &   (fem_T%mesh%node%ele, part_ele_tbl2, new_ids_on_org, element_ids,              &
-!     &    new_numele, new_fem2%mesh%nod_comm, new_fem2%mesh%node,      &
-!     &    new_fem2%mesh%ele, m_SR_T%SR_sig, m_SR_T%SR_i, m_SR_T%SR_il)
-!      call dealloc_double_numbering(element_ids)
-!
-!      call set_3D_nnod_4_sfed_by_ele(new_ele%nnod_4_ele,               &
-!     &    new_surf%nnod_4_surf, new_edge%nnod_4_edge)
-!
+      new_numele = max(maxval(part_ele_tbl2%item_import),               &
+     &                        maxval(new_ele_comm2%item_import))
+!      call s_const_repart_ele_connect                                   &
+!     &  (fem_T%mesh, ele_comm1, part_nod_tbl2, new_ids_on_org1,         &
+!     &   new_fem2%mesh%nod_comm, new_fem2%mesh%node, new_fem2%mesh%ele, &
+!     &   part_ele_tbl2, m_SR_T%SR_sig, m_SR_T%SR_i, m_SR_T%SR_il)
+!      call dealloc_double_numbering(new_ids_on_org1)
+      call dealloc_comm_table(ele_comm1)
 !
       if(my_rank .eq. 0) write(*,*) 'Compare read comm tables...'
       call compare_calypso_comm_tbls(repart_nod_tbl1, part_nod_tbl2)
