@@ -191,7 +191,7 @@
       type(node_ele_double_number) :: new_ids_on_org1
 !
       integer(kind = kint) :: irank_read
-      integer(kind = kint) :: i, ierr
+      integer(kind = kint) :: i, ierr, icount_error
 !
 !
       if(part_p1%repart_p%trans_tbl_file%iflag_format                   &
@@ -236,10 +236,12 @@
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
       call compare_node_comm_types(my_rank, new_fem%mesh%nod_comm, new_fem2%mesh%nod_comm)
-      write(*,*) my_rank, 'Compare node: ',  &
-     &          compare_node_position(my_rank, new_fem%mesh%node, new_fem2%mesh%node)
-!      write(*,*) my_rank, 'Compare element: ',  &
-!     &          compare_ele_connect(my_rank, new_fem%mesh%ele, new_fem2%mesh%ele)
+      call compare_node_position(my_rank, new_fem%mesh%node,            &
+     &                           new_fem2%mesh%node, icount_error)
+      write(*,*) my_rank, 'Compare node: ', icount_error
+!      call compare_ele_connect(my_rank, new_fem%mesh%ele,               &
+!     &                         new_fem2%mesh%ele, icount_error)
+!      write(*,*) my_rank, 'Compare element: ', icount_error
 !
 !
 
@@ -284,6 +286,104 @@
       call output_elapsed_times
 !
       end subroutine analyze_reapart_by_vol
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine s_const_repart_ele_connect_2(org_mesh, new_mesh,       &
+     &          part_nod_tbl, m_SR)
+!
+      use t_element_double_number
+      use t_para_double_numbering
+      use t_element_double_number
+      use select_copy_from_recv
+      use solver_SR_type
+      use calypso_SR_type
+      use const_element_comm_tables
+!      use t_repart_double_numberings
+!      use ele_trans_tbl_4_repart
+!
+      type(mesh_geometry), intent(in) :: org_mesh, new_mesh
+      type(calypso_comm_table) :: part_nod_tbl
+!
+      type(mesh_SR), intent(inout) :: m_SR
+!
+      type(communication_table) :: org_ele_comm
+      type(communication_table) :: new_ele_comm
+      type(node_ele_double_number) :: inod_dbl_org
+      type(node_ele_double_number) :: iele_dbl_org
+      type(node_ele_double_number) :: inod_dbl_new
+      type(node_ele_double_number) :: iele_dbl_new
+      type(node_ele_double_number) :: inod_dbl_org_on_new
+!      type(communication_table), intent(in) :: new_comm
+!      type(node_data), intent(in) :: new_node
+!
+!      type(calypso_comm_table), intent(in) :: ele_tbl
+!      type(element_data), intent(inout) :: new_ele
+!      type(send_recv_status), intent(inout) :: SR_sig
+!      type(send_recv_int_buffer), intent(inout) :: SR_i
+!!
+!      type(node_ele_double_number) :: element_ids
+!
+      integer(kind = kint), allocatable :: num_ele_tbl_import(:)
+      integer(kind = kint) :: inod, iele, irank_org
+!
+!
+      call const_ele_comm_table(org_mesh%node, org_mesh%nod_comm,       &
+     &                          org_mesh%ele, org_ele_comm, m_SR)
+      call const_ele_comm_table(org_mesh%node, org_mesh%nod_comm,             &
+     &                          org_mesh%ele, new_ele_comm, m_SR)
+!
+      call alloc_double_numbering(org_mesh%node%numnod, inod_dbl_org)
+      call alloc_double_numbering(org_mesh%ele%numele, iele_dbl_org)
+      call set_node_ele_double_address(org_mesh%node, org_mesh%ele,     &
+     &    org_mesh%nod_comm, org_ele_comm,                              &
+     &    inod_dbl_org, iele_dbl_org, m_SR%SR_sig, m_SR%SR_i)
+!
+      call alloc_double_numbering(new_mesh%node%numnod, inod_dbl_new)
+      call alloc_double_numbering(new_mesh%ele%numele, iele_dbl_new)
+      call set_node_ele_double_address(new_mesh%node, new_mesh%ele,     &
+     &    new_mesh%nod_comm, new_ele_comm,                              &
+     &    inod_dbl_new, iele_dbl_new, m_SR%SR_sig, m_SR%SR_i)
+!
+!    Set local recieved_ids in internal node
+      call alloc_double_numbering(org_mesh%node%numnod,                 &
+     &                            inod_dbl_org_on_new)
+      call calypso_SR_type_int(iflag_import_item, part_nod_tbl,         &
+     &    org_mesh%node%numnod, org_mesh%node%internal_node,            &
+     &    inod_dbl_org%index(1), inod_dbl_org_on_new%index(1),          &
+     &    m_SR%SR_sig, m_SR%SR_i)
+      call calypso_SR_type_int(iflag_import_item, part_nod_tbl,         &
+     &    org_mesh%node%numnod, org_mesh%node%internal_node,            &
+     &    inod_dbl_org%irank(1), inod_dbl_org_on_new%irank(1),          &
+     &    m_SR%SR_sig, m_SR%SR_i)
+
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_mesh%node%numnod, new_mesh%nod_comm,                      &
+     &    m_SR%SR_sig, m_SR%SR_i, inod_dbl_org_on_new%index(1))
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_mesh%node%numnod, new_mesh%nod_comm,                      &
+     &    m_SR%SR_sig, m_SR%SR_i, inod_dbl_org_on_new%irank(1))
+!
+      return
+!
+      allocate(num_ele_tbl_import(nprocs))
+!$omp parallel workshare
+      num_ele_tbl_import(1:nprocs) = 0
+!$omp end parallel workshare
+!
+      do iele = 1, new_mesh%ele%numele
+        inod = new_mesh%ele%ie(iele,1)
+        irank_org = inod_dbl_org_on_new%irank(inod)
+        num_ele_tbl_import(irank_org+1)                                 &
+     &                = num_ele_tbl_import(irank_org+1) + 1
+      end do
+!
+      write(*,*) 'total count', new_mesh%ele%numele,                    &
+     &                         maxval(num_ele_tbl_import)
+      deallocate(num_ele_tbl_import)
+!
+      end subroutine s_const_repart_ele_connect_2
 !
 ! ----------------------------------------------------------------------
 !
