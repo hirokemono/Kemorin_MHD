@@ -11,7 +11,7 @@
 !!     &          mesh, group, ele_comm, next_tbl, num_mask, masking,   &
 !!     &          ref_repart, d_mask, ref_vect_sleeve_ext,              &
 !!     &          new_mesh, new_group, repart_nod_tbl,                  &
-!!     &          sleeve_exp_WK, m_SR)
+!!     &          sleeve_exp_WK, repart_ele_tbl, new_ele_comm, m_SR)
 !!        logical, intent(in) :: flag_lic_dump
 !!        integer(kind = kint), intent(in) :: num_mask
 !!        type(volume_partioning_param), intent(in) ::  part_param
@@ -29,6 +29,8 @@
 !!        type(mesh_groups), intent(inout) :: new_group
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
+!!        type(calypso_comm_table), intent(inout) :: repart_ele_tbl
+!!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine load_repartitoned_file                               &
 !!     &         (part_param, geofem, new_fem, repart_nod_tbl)
@@ -66,7 +68,7 @@
      &          mesh, group, ele_comm, next_tbl, num_mask, masking,     &
      &          ref_repart, d_mask, ref_vect_sleeve_ext,                &
      &          new_mesh, new_group, repart_nod_tbl,                    &
-     &          sleeve_exp_WK, m_SR)
+     &          sleeve_exp_WK, repart_ele_tbl, new_ele_comm, m_SR)
 !
       use t_next_node_ele_4_node
       use t_interpolate_table
@@ -110,8 +112,8 @@
 !
       type(mesh_SR), intent(inout) :: m_SR
 !
-      type(communication_table) :: new_ele_comm
-      type(calypso_comm_table) :: repart_ele_tbl
+      type(communication_table), intent(inout) :: new_ele_comm
+      type(calypso_comm_table), intent(inout) :: repart_ele_tbl
       integer(kind = kint) :: ierr
       integer :: nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new
       integer :: nele_ele_tbl
@@ -208,14 +210,15 @@
      &     repart_ele_tbl%ntot_import, new_ele_comm%ntot_import, &
      &     maxval(repart_ele_tbl%item_import), &
      &     maxval(new_ele_comm%item_import), &
-     &     max(maxval(repart_ele_tbl%item_import), maxval(new_ele_comm%item_import))
+     &     max(maxval(repart_ele_tbl%item_import), &
+     &     maxval(new_ele_comm%item_import))
 !
         call output_repart_table                                        &
      &     (part_param%trans_tbl_file, repart_nod_tbl, repart_ele_tbl,  &
      &      new_mesh%nod_comm, new_ele_comm)
       end if
 !
-      call dealloc_calypso_comm_table(repart_ele_tbl)
+!      call dealloc_calypso_comm_table(repart_ele_tbl)
       call calypso_MPI_barrier
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
 !

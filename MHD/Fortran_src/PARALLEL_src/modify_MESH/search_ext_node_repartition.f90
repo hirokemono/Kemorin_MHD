@@ -160,8 +160,8 @@
 !
             if(iflag .le. 0) then
               new_ele%ie(iele,k1) = 0
-              write(*,*) my_rank, 'Node cannot be found for ',         &
-     &           new_ele%iele_global(iele), iele, k1, ip, inod,        &
+              write(*,*) my_rank, 'Node cannot be found for ',          &
+     &           new_ele%iele_global(iele), iele, k1, ip, inod,         &
      &           iele_org_local(iele), iele_org_domain(iele)
               icou = icou + 1
             end if

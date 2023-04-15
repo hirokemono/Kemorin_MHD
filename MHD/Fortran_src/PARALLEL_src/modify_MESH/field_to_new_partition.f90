@@ -117,6 +117,8 @@
       type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
       type(mesh_SR), intent(inout) :: m_SR
 !
+      type(calypso_comm_table) :: repart_ele_tbl
+      type(communication_table) :: new_ele_comm
       logical :: flag
 !
 !
@@ -148,7 +150,7 @@
      &      geofem%mesh, geofem%group, ele_comm, next_tbl,              &
      &      num_mask, masking, ref_repart, d_mask, ref_vect_sleeve_ext, &
      &      new_fem%mesh, new_fem%group, repart_nod_tbl,                &
-     &      sleeve_exp_WK, m_SR)
+     &      sleeve_exp_WK, repart_ele_tbl, new_ele_comm, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !

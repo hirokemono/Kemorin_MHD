@@ -22,7 +22,7 @@
 !!
 !!      subroutine local_node_id_reverse_SR(numnod, num_neib, id_neib,  &
 !!     &         istack_import, item_import, istack_export, item_export,&
-!!     &         item_local, inod_local)
+!!     &         item_local)
 !!@endverbatim
 !!
       module reverse_SR_int
@@ -141,7 +141,7 @@
       subroutine local_node_id_reverse_SR(numnod,                       &
      &         npe_import, irank_import, istack_import, item_import,    &
      &         npe_export, irank_export, istack_export, item_export,    &
-     &         iflag_self, item_local, inod_local)
+     &         iflag_self, item_local)
 !
       use solver_SR_int
 !
@@ -162,7 +162,6 @@
 !
       integer(kind = kint), intent(inout)                               &
      &                 :: item_local(istack_export(npe_export))
-      integer(kind = kint), intent(inout) :: inod_local(numnod)
 !
       type(send_recv_status) :: iSR_sig
       integer(kind = kint) :: i, inod
@@ -175,12 +174,6 @@
      &    iSR_sig)
       call calypso_send_recv_fin(npe_import, izero, iSR_sig)
       call dealloc_SR_flag(iSR_sig)
-!
-      inod_local = 0
-      do i = 1, istack_export(npe_export)
-        inod = item_export(i)
-        inod_local(inod) = item_local(i)
-      end do
 !
       end subroutine local_node_id_reverse_SR
 !

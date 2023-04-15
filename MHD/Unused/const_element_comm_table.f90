@@ -136,7 +136,13 @@
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    izero, wk_comm%item_local, wk_comm%inod_local)
+     &    izero, wk_comm%item_local)
+     inod_local = 0
+      do i = 1, istack_export(npe_export)
+        inod = item_export(i)
+        wk_comm%inod_local(inod) = item_local(i)
+      end do
+!
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+2)
 !
 !      write(*,*) 'set_element_import_item_old', my_rank
