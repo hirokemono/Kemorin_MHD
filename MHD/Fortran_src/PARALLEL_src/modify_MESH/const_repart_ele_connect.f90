@@ -73,6 +73,7 @@
      &          SR_sig, SR_i, SR_il)
 !
       use ele_trans_tbl_4_repart
+      use compare_mesh_structures
 !
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
@@ -89,7 +90,7 @@
 !
       type(node_ele_double_number) :: element_ids
 !
-      integer(kind = kint) :: new_numele
+      integer(kind = kint) :: new_numele, icount_error
 !
 !
       call alloc_double_numbering(mesh%ele%numele, element_ids)
@@ -106,6 +107,7 @@
       call const_reparition_ele_connect                                 &
      &   (mesh%ele, ele_tbl, new_ids_on_org, element_ids,               &
      &    new_numele, new_comm, new_node, new_ele, SR_sig, SR_i, SR_il)
+!
       call dealloc_double_numbering(element_ids)
 !
       end subroutine s_const_repart_ele_connect
@@ -157,5 +159,64 @@
       end subroutine const_reparition_ele_connect
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine compare_ele_connect_2                                  &
+     &         (id_rank, org_ele, new_ele, icount_error)
+!
+      use t_geometry_data
+!
+      integer, intent(in) :: id_rank
+      type(element_data), intent(in) :: org_ele
+      type(element_data), intent(in) :: new_ele
+      integer(kind = kint), intent(inout) :: icount_error
+!
+      integer(kind = kint) :: iele, k1
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) id_rank, 'numele', org_ele%numele, new_ele%numele
+        write(*,*) id_rank, 'nnod_4_ele', org_ele%nnod_4_ele,           &
+     &                                     new_ele%nnod_4_ele
+        write(*,*) id_rank, 'first_ele_type', org_ele%first_ele_type,   &
+     &                               new_ele%first_ele_type
+      end if
+!
+      icount_error = 0
+      if(org_ele%numele .ne. new_ele%numele) then
+        write(*,*) 'Number of element is differenct: ',                 &
+     &             org_ele%numele, new_ele%numele
+        icount_error = icount_error + 1
+      end if
+      if(org_ele%nnod_4_ele .ne. new_ele%nnod_4_ele) then
+        write(*,*) 'Element type is differennt: ',                      &
+     &             org_ele%nnod_4_ele, new_ele%nnod_4_ele
+        icount_error = icount_error + 1
+      end if
+!
+      do iele = 1, org_ele%numele
+        if(org_ele%elmtyp(iele) .ne. new_ele%elmtyp(iele)) then
+          write(*,*) 'element type at ', iele, ' is differ',            &
+     &        org_ele%elmtyp(iele), new_ele%elmtyp(iele)
+          icount_error = icount_error + 1
+        end if
+      end do
+      do iele = 1, org_ele%numele
+        if(org_ele%nodelm(iele) .ne. new_ele%nodelm(iele)) then
+          write(*,*) 'number of node for ', iele, ' is differ',         &
+     &        org_ele%nodelm(iele), new_ele%nodelm(iele)
+          icount_error = icount_error + 1
+        end if
+      end do
+      do k1 = 1, org_ele%nnod_4_ele
+        do iele = 1, org_ele%numele
+          if(org_ele%ie(iele,k1) .ne. new_ele%ie(iele,k1)) then
+            icount_error = icount_error + 1
+          end if
+        end do
+      end do
+!
+      end subroutine compare_ele_connect_2
+!
+!------------------------------------------------------------------
 !
       end module const_repart_ele_connect
