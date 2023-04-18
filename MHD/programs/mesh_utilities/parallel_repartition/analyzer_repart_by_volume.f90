@@ -251,8 +251,8 @@
       call dealloc_double_numbering(new_ids_on_org1)
       call dealloc_comm_table(ele_comm1)
 
-      call compare_ele_connect_2(my_rank, new_fem%mesh%ele,             &
-     &    new_fem2%mesh%ele, new_iele_dbl1, icount_error)
+      call compare_ele_connect(my_rank, new_fem%mesh%ele,               &
+     &    new_fem2%mesh%ele, icount_error)
       write(*,*) my_rank, 'Compare element: ', icount_error
       call dealloc_double_numbering(new_iele_dbl1)
 
@@ -726,72 +726,5 @@
       end subroutine s_search_ext_node_repartition_2
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine compare_ele_connect_2                                  &
-     &         (id_rank, org_ele, new_ele, new_iele_dbl, icount_error)
-!
-      use t_geometry_data
-      use t_para_double_numbering
-      use const_repart_ele_connect
-!
-      integer, intent(in) :: id_rank
-      type(element_data), intent(in) :: org_ele
-      type(element_data), intent(in) :: new_ele
-      type(node_ele_double_number), intent(in) :: new_iele_dbl
-      integer(kind = kint), intent(inout) :: icount_error
-!
-      integer(kind = kint) :: iele, k1, num
-!
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) id_rank, 'numele', org_ele%numele, new_ele%numele
-        write(*,*) id_rank, 'nnod_4_ele', org_ele%nnod_4_ele,           &
-     &                                     new_ele%nnod_4_ele
-        write(*,*) id_rank, 'first_ele_type', org_ele%first_ele_type,   &
-     &                               new_ele%first_ele_type
-      end if
-!
-      icount_error = 0
-      if(org_ele%numele .ne. new_ele%numele) then
-        write(*,*) 'Number of element is differenct: ',                 &
-     &             org_ele%numele, new_ele%numele
-        icount_error = icount_error + 1
-      end if
-      num = min(org_ele%numele, new_ele%numele)
-!
-      if(org_ele%nnod_4_ele .ne. new_ele%nnod_4_ele) then
-        write(*,*) 'Element type is differennt: ',                      &
-     &             org_ele%nnod_4_ele, new_ele%nnod_4_ele
-        icount_error = icount_error + 1
-      end if
-!
-      do iele = 1, num
-        if(org_ele%elmtyp(iele) .ne. new_ele%elmtyp(iele)) then
-          write(*,*) 'element type at ', iele, ' is differ',            &
-     &        org_ele%elmtyp(iele), new_ele%elmtyp(iele)
-          icount_error = icount_error + 1
-        end if
-      end do
-      do iele = 1, num
-        if(org_ele%nodelm(iele) .ne. new_ele%nodelm(iele)) then
-          write(*,*) 'number of node for ', iele, ' is differ',         &
-     &        org_ele%nodelm(iele), new_ele%nodelm(iele)
-          icount_error = icount_error + 1
-        end if
-      end do
-!
-      do k1 = org_ele%nnod_4_ele, 1, -1
-        do iele = num, 1, -1
- !       do iele = 1, nele_new_no_extend
-          if(org_ele%ie(iele,k1) .ne. new_ele%ie(iele,k1)) then
-!            write(*,*) my_rank, iele, k1, org_ele%ie(iele,k1), new_ele%ie(iele,k1)
-            icount_error = icount_error + 1
-          end if
-        end do
-      end do
-!
-      end subroutine compare_ele_connect_2
-!
-!------------------------------------------------------------------
 !
       end module analyzer_repart_by_volume
