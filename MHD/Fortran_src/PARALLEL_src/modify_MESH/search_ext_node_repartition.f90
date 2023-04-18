@@ -75,6 +75,7 @@
       integer(kind = kint), allocatable :: iele_org_domain(:)
       integer(kind = kint), allocatable :: ie_domain_recv(:,:)
 !
+      integer(kind = kint), allocatable :: ie_tmp(:,:)
       integer(kind = kint), allocatable :: i4_recv(:)
 !
       integer(kind = kint), allocatable :: num_rev_import_recv(:)
@@ -84,19 +85,26 @@
       integer(kind = kint) :: namx_import
 !
       integer(kind = kint) :: ip, inod, icou, inum, ist, ied, num, knod
-      integer(kind = kint) :: iele, k1, jnum, jnod, jst, jed, knum
+      integer(kind = kint) :: iele, k1, jnum, jnod, jst, jed, knum, num_loop
 !
 !
+      allocate(ie_tmp(new_ele%numele,new_ele%nnod_4_ele))
       allocate(i4_recv(ele_tbl%ntot_import))
       allocate(ie_domain_recv(new_ele%numele,new_ele%nnod_4_ele))
 !
-      num = min(new_ele%numele, ele_tbl%ntot_import)
+!$omp parallel workshare
+      ie_tmp(1:new_ele%numele,1:new_ele%nnod_4_ele)            &
+     &   =  new_ele%ie(1:new_ele%numele,1:new_ele%nnod_4_ele)
+!$omp end parallel workshare
+      new_ele%ie(new_ele%numele,new_ele%nnod_4_ele) = 0
+!
+      num_loop = min(new_ele%numele, ele_tbl%ntot_import)
       do k1 = 1, ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
      &      i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-        ie_domain_recv(1:num,k1) = i4_recv(1:num)
+        ie_domain_recv(1:num_loop,k1) = i4_recv(1:num_loop)
 !$omp end parallel workshare
       end do
 !
@@ -107,14 +115,14 @@
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%index(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-      iele_org_local(1:num) = i4_recv(1:num)
+      iele_org_local(1:num_loop) = i4_recv(1:num_loop)
 !$omp end parallel workshare
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%irank(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-      iele_org_domain(1:num) = i4_recv(1:num)
+      iele_org_domain(1:num_loop) = i4_recv(1:num_loop)
 !$omp end parallel workshare
 !
       allocate(inod_recv(new_node%numnod))
@@ -180,11 +188,12 @@
       end do
 !
       icou = 0
-      do iele = 1, new_ele%numele
+      do iele = 1, num_loop
         do k1 = 1, new_ele%nnod_4_ele
           ip =   ie_domain_recv(iele,k1)
-          inod = new_ele%ie(iele,k1)
+          inod = ie_tmp(iele,k1)
           if(ip .eq. my_rank) then
+            new_ele%ie(iele,k1) = inod
             icount_node(inod) = icount_node(inod) + 1
           else
             knod = -1
@@ -249,6 +258,122 @@
       deallocate(icount_node)
 !
       end subroutine s_search_ext_node_repartition
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function search_repart_external_node         &
+     &                           (inod, ip, id_rank, new_comm,          &
+     &                            namx_import, istack_rev_import_recv,  &
+     &                            irev_import, irank_import_recv)
+!
+      use search_from_list
+!
+      integer(kind = kint), intent(in) :: ip, inod
+      integer(kind = kint), intent(in) :: id_rank
+!
+      type(communication_table), intent(in) :: new_comm
+      integer(kind = kint), intent(in) :: namx_import
+      integer(kind = kint), intent(in)                                  &
+     &                     :: istack_rev_import_recv(0:namx_import)
+      integer(kind = kint), intent(in)                                  &
+     &                     :: irev_import(new_comm%ntot_import)
+      integer(kind = kint), intent(in)                                  &
+     &                      :: irank_import_recv(new_comm%ntot_import)
+!
+      integer(kind = kint) :: ie_new
+!
+      integer(kind = kint) :: jnum, jst, jed, knum
+!
+!
+      if(ip .eq. id_rank) then
+        ie_new = inod
+      else
+        ie_new = 0
+        jst = istack_rev_import_recv(inod-1) + 1
+        jed = istack_rev_import_recv(inod  )
+!
+        if((jed-jst) .ge. 0) then
+          knum = search_from_sorted_data(ip, jst, jed,              &
+     &                  new_comm%ntot_import, irank_import_recv)
+          if(knum.ge.jst .and. knum.le.jed) then
+            jnum = irev_import(knum)
+            ie_new = new_comm%item_import(jnum)
+          end if
+        end if
+      end if
+      search_repart_external_node = ie_new
+!
+      end function search_repart_external_node
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_item_import_recv(new_comm, numnod_new,             &
+     &                                inod_recv, item_import_recv)
+!
+      type(communication_table), intent(in) :: new_comm
+      integer(kind = kint), intent(in) :: numnod_new
+      integer(kind = kint), intent(in) :: inod_recv(numnod_new)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: item_import_recv(new_comm%ntot_import)
+!
+      integer(kind = kint) :: jnum, jnod
+!
+!$omp parallel do private(jnum,jnod)
+      do jnum = 1, new_comm%ntot_import
+        jnod = new_comm%item_import(jnum)
+        item_import_recv(jnum) = inod_recv(jnod)
+      end do
+!$omp end parallel do
+!
+      end subroutine set_item_import_recv
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function search_repart_ext_node_old          &
+     &                            (inod, ip, id_rank, item_import_recv, &
+     &                             new_comm, ie_new)
+!
+      use search_from_list
+!
+      integer(kind = kint), intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: ip, inod
+!
+      type(communication_table), intent(in) :: new_comm
+      integer(kind = kint), intent(in)                                  &
+     &                     :: item_import_recv(new_comm%ntot_import)
+!
+      integer(kind = kint), intent(inout) :: ie_new
+!
+      integer(kind = kint) :: inum, ist, ied, jnum
+!
+!
+      if(ip .eq. id_rank) then
+        ie_new = inod
+      else
+        ie_new = 0
+        inum = search_from_list_data(ip, ione, new_comm%num_neib,  &
+     &                         new_comm%num_neib, new_comm%id_neib)
+        ist = 0
+        ied = -1
+        if(inum.ge.ione .and. inum.le.new_comm%num_neib) then
+          ist = new_comm%istack_import(inum-1) + 1
+          ied = new_comm%istack_import(inum)
+        end if
+!
+        if(ied .ge. ist) then
+          jnum = search_from_sorted_data(inod, ist, ied,           &
+     &                      new_comm%ntot_import, item_import_recv)
+!
+          if(jnum.ge.ist .and. jnum.le.ied) then
+            ie_new = new_comm%item_import(jnum)
+          end if
+        end if
+      end if
+      search_repart_ext_node_old = ie_new
+!
+      end function search_repart_ext_node_old
 !
 ! ----------------------------------------------------------------------
 !

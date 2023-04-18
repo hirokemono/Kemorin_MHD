@@ -470,6 +470,7 @@
       integer(kind = kint), allocatable :: iele_org_domain(:)
       integer(kind = kint), allocatable :: ie_domain_recv(:,:)
 !
+      integer(kind = kint), allocatable :: ie_tmp(:,:)
       integer(kind = kint), allocatable :: i4_recv(:)
 !
       integer(kind = kint), allocatable :: ie_local(:,:)
@@ -482,19 +483,26 @@
       integer(kind = kint) :: namx_import
 !
       integer(kind = kint) :: ip, inod, icou, inum, ist, ied, num, knod
-      integer(kind = kint) :: iele, k1, jnum, jnod, jst, jed, knum
+      integer(kind = kint) :: iele, k1, jnum, jnod, jst, jed, knum, num_loop
 !
 !
+      allocate(ie_tmp(new_ele%numele,new_ele%nnod_4_ele))
       allocate(i4_recv(ele_tbl%ntot_import))
       allocate(ie_domain_recv(new_ele%numele,new_ele%nnod_4_ele))
 !
-      num = min(new_ele%numele, ele_tbl%ntot_import)
+!$omp parallel workshare
+      ie_tmp(1:new_ele%numele,1:new_ele%nnod_4_ele)            &
+     &   =  new_ele%ie(1:new_ele%numele,1:new_ele%nnod_4_ele)
+!$omp end parallel workshare
+      new_ele%ie(new_ele%numele,new_ele%nnod_4_ele) = 0
+!
+      num_loop = min(new_ele%numele, ele_tbl%ntot_import)
       do k1 = 1, ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
      &      i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-        ie_domain_recv(1:num,k1) = i4_recv(1:num)
+        ie_domain_recv(1:num_loop,k1) = i4_recv(1:num_loop)
 !$omp end parallel workshare
       end do
 !
@@ -505,14 +513,14 @@
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%index(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-      iele_org_local(1:num) = i4_recv(1:num)
+      iele_org_local(1:num_loop) = i4_recv(1:num_loop)
 !$omp end parallel workshare
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%irank(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-      iele_org_domain(1:num) = i4_recv(1:num)
+      iele_org_domain(1:num_loop) = i4_recv(1:num_loop)
 !$omp end parallel workshare
 !
       allocate(inod_recv(new_node%numnod))
@@ -578,8 +586,7 @@
       end do
 !
       icou = 0
-      do iele = 1, ele_tbl%ntot_import
-!      do iele = 1, nele_new_no_extend
+      do iele = 1, num_loop
 !
         do k1 = 1, new_ele%nnod_4_ele
           ip =   ie_domain_recv(iele,k1)
