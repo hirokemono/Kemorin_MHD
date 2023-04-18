@@ -191,11 +191,11 @@
       type(work_for_comm_check), save :: surf_check
       type(work_for_comm_check), save :: edge_check
 !
-      type(node_ele_double_number) :: new_ids_on_org1
-      type(node_ele_double_number) :: new_iele_dbl1
+      type(node_ele_double_number), save :: new_ids_on_org1
+      type(node_ele_double_number), save :: new_iele_dbl1
 !
       integer(kind = kint) :: irank_read
-      integer(kind = kint) :: i, ierr, icount_error
+      integer(kind = kint) :: i, ierr, icount_error, icou, iele
 !
 !
       if(part_p1%repart_p%trans_tbl_file%iflag_format                   &
@@ -208,6 +208,12 @@
       call set_repart_table_from_file(part_p1%repart_p%trans_tbl_file,  &
      &    part_nod_tbl2, part_ele_tbl2, new_fem2%mesh%nod_comm,         &
      &    new_ele_comm2)
+!
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+      if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
+      call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
+!
 !
       call set_repart_node_position(part_nod_tbl2, fem_T%mesh%node,     &
      &    new_fem2%mesh%nod_comm, new_fem2%mesh%node,                   &
@@ -227,17 +233,22 @@
 !
       call alloc_double_numbering(new_fem%mesh%ele%numele,             &
      &                            new_iele_dbl1)
-      call double_numbering_4_element(new_fem2%mesh%ele, new_ele_comm2, &
+      call double_numbering_4_element(new_fem%mesh%ele, new_ele_comm2,  &
      &    new_iele_dbl1, m_SR_T%SR_sig, m_SR_T%SR_i)
+      icou = 0
+      do iele = 1, new_fem2%mesh%ele%numele
+        if(new_iele_dbl1%irank(iele) .eq. my_rank) icou = icou+1
+      end do
+!
+!
       new_numele = max(maxval(part_ele_tbl2%item_import),               &
      &                        maxval(new_ele_comm2%item_import))
       call s_const_repart_ele_connect_2                                 &
      &  (fem_T%mesh, ele_comm1, part_nod_tbl2, new_ids_on_org1,         &
-     &   new_fem2%mesh%nod_comm, new_fem2%mesh%node, new_iele_dbl1,     &
-     &   new_fem2%mesh%ele, part_ele_tbl2,                              &
-     &   m_SR_T%SR_sig, m_SR_T%SR_i, m_SR_T%SR_il)
+     &   new_fem2%mesh%nod_comm, new_fem2%mesh%node, new_ele_comm2,     &
+     &   new_iele_dbl1, new_fem2%mesh%ele, part_ele_tbl2,               &
+     &   m_SR_T%SR_sig, m_SR_T%SR_i, m_SR_T%SR_il, new_fem%mesh%ele)
       call dealloc_double_numbering(new_ids_on_org1)
-      call dealloc_double_numbering(new_iele_dbl1)
       call dealloc_comm_table(ele_comm1)
 !
       if(my_rank .eq. 0) write(*,*) 'Compare read comm tables...'
@@ -246,18 +257,14 @@
       if(my_rank .eq. 0) write(*,*) 'Compareing end!'
 !
 !
-      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-      if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
-      call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
-     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
-!
       call compare_node_comm_types(my_rank, new_fem%mesh%nod_comm, new_fem2%mesh%nod_comm)
       call compare_node_position(my_rank, new_fem%mesh%node,            &
      &                           new_fem2%mesh%node, icount_error)
       write(*,*) my_rank, 'Compare node: ', icount_error
       call compare_ele_connect_2(my_rank, new_fem%mesh%ele,             &
-     &                         new_fem2%mesh%ele, icount_error)
+     &    new_fem2%mesh%ele, new_iele_dbl1, icount_error)
       write(*,*) my_rank, 'Compare element: ', icount_error
+      call dealloc_double_numbering(new_iele_dbl1)
 !
 !
 
@@ -307,8 +314,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_const_repart_ele_connect_2(mesh, ele_comm, part_tbl, &
-     &          new_ids_on_org, new_comm, new_node, new_iele_dbl,       &
-     &          new_ele, ele_tbl, SR_sig, SR_i, SR_il)
+     &          new_ids_on_org, new_comm, new_node, new_ele_comm,       &
+     &          new_iele_dbl, new_ele, ele_tbl, SR_sig, SR_i, SR_il,    &
+     &          ref_ele)
 !
       use t_para_double_numbering
       use t_repart_double_numberings
@@ -320,9 +328,10 @@
       type(communication_table), intent(in) :: ele_comm
       type(calypso_comm_table), intent(in) :: part_tbl
       type(node_ele_double_number), intent(in) :: new_ids_on_org
-      type(communication_table), intent(in) :: new_comm
+      type(communication_table), intent(in) :: new_comm, new_ele_comm
       type(node_data), intent(in) :: new_node
       type(node_ele_double_number), intent(in) :: new_iele_dbl
+      type(element_data), intent(in) :: ref_ele
 !
       type(calypso_comm_table), intent(inout) :: ele_tbl
       type(element_data), intent(inout) :: new_ele
@@ -331,9 +340,14 @@
       type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       type(node_ele_double_number) :: org_iele_dbl
+      type(node_ele_double_number) :: new_inod_dbl
 !
       integer(kind = kint) :: new_numele, icount_error
 !
+!
+      call alloc_double_numbering(new_node%numnod, new_inod_dbl)
+      call set_node_double_numbering(new_node, new_comm,                &
+     &                               new_inod_dbl, SR_sig, SR_i)
 !
       call alloc_double_numbering(mesh%ele%numele, org_iele_dbl)
       call double_numbering_4_element(mesh%ele, ele_comm,               &
@@ -347,10 +361,11 @@
 !     &   (mesh, org_iele_dbl, ele_tbl, new_numele, SR_sig, SR_i)
 !
 !      new_numele = ele_tbl%ntot_import
-      new_numele = nele_new_no_extend
-      call const_reparition_ele_connect_2                               &
-     &   (mesh%ele, ele_tbl, new_ids_on_org, org_iele_dbl,              &
-     &    new_numele, new_comm, new_node, new_ele, SR_sig, SR_i, SR_il)
+      new_numele = ref_ele%numele
+      call const_reparition_ele_connect_2(mesh%ele, ele_tbl,            &
+     &    new_ids_on_org, org_iele_dbl, new_iele_dbl, new_inod_dbl,     &
+     &    new_numele, new_comm, new_node, new_ele_comm, new_ele,        &
+     &    SR_sig, SR_i, SR_il)
 !
       call dealloc_double_numbering(org_iele_dbl)
 !
@@ -360,8 +375,9 @@
 !
       subroutine const_reparition_ele_connect_2                         &
      &         (ele, ele_tbl, new_ids_on_org, org_iele_dbl,             &
-     &          new_numele, new_comm, new_node, new_ele,                &
-     &          SR_sig, SR_i, SR_il)
+     &          new_iele_dbl, new_inod_dbl, new_numele,                 &
+     &          new_comm, new_node, new_ele_comm,                       &
+     &          new_ele, SR_sig, SR_i, SR_il)
 !
       use search_ext_node_repartition
       use const_repart_mesh_data
@@ -370,8 +386,10 @@
       type(calypso_comm_table), intent(in) :: ele_tbl
       type(node_ele_double_number), intent(in) :: new_ids_on_org
       type(node_ele_double_number), intent(in) :: org_iele_dbl
+      type(node_ele_double_number), intent(in) :: new_iele_dbl
+      type(node_ele_double_number), intent(in) :: new_inod_dbl
 !
-      type(communication_table), intent(in) :: new_comm
+      type(communication_table), intent(in) :: new_comm, new_ele_comm
       type(node_data), intent(in) :: new_node
       integer(kind = kint), intent(in) :: new_numele
 !
@@ -395,9 +413,9 @@
      &    new_ids_on_org, ie_newdomain, ie_newnod, new_ele,             &
      &    SR_sig, SR_i, SR_il)
 !
-      call s_search_ext_node_repartition_2                              &
-     &   (ele, ele_tbl, org_iele_dbl, ie_newdomain,                     &
-     &    new_comm, new_node, new_ele, SR_sig, SR_i)
+      call s_search_ext_node_repartition_2(ele, ele_tbl,                &
+     &    org_iele_dbl, new_iele_dbl, new_inod_dbl, ie_newdomain,       &
+     &    new_comm, new_node, new_ele_comm, new_ele, SR_sig, SR_i)
       deallocate(ie_newnod, ie_newdomain)
 !
       end subroutine const_reparition_ele_connect_2
@@ -405,8 +423,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_search_ext_node_repartition_2                        &
-     &         (ele, ele_tbl, org_iele_dbl, ie_newdomain,               &
-     &          new_comm, new_node, new_ele, SR_sig, SR_i)
+     &         (ele, ele_tbl, org_iele_dbl, new_iele_dbl, new_inod_dbl, &
+     &          ie_newdomain, new_comm, new_node, new_ele_comm,         &
+     &          new_ele, SR_sig, SR_i)
 !
       use t_para_double_numbering
       use t_repart_double_numberings
@@ -418,9 +437,11 @@
 !
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
-      type(communication_table), intent(in) :: new_comm
+      type(communication_table), intent(in) :: new_comm, new_ele_comm
       type(node_data), intent(in) :: new_node
       type(node_ele_double_number), intent(in) :: org_iele_dbl
+      type(node_ele_double_number), intent(in) :: new_iele_dbl
+      type(node_ele_double_number), intent(in) :: new_inod_dbl
 !
       integer(kind = kint), intent(in)                                  &
      &              :: ie_newdomain(ele%numele,ele%nnod_4_ele)
@@ -438,6 +459,9 @@
       integer(kind = kint), allocatable :: ie_domain_recv(:,:)
 !
       integer(kind = kint), allocatable :: i4_recv(:)
+!
+      integer(kind = kint), allocatable :: ie_local(:,:)
+      integer(kind = kint), allocatable :: irank_e(:,:)
 !
       integer(kind = kint), allocatable :: num_rev_import_recv(:)
       integer(kind = kint), allocatable :: istack_rev_import_recv(:)
@@ -541,10 +565,103 @@
       end do
 !
       icou = 0
-      do iele = 1, new_ele%numele
+      do iele = 1, ele_tbl%ntot_import
+        if(new_iele_dbl%irank(iele) .eq. my_rank) cycle
+!
         do k1 = 1, new_ele%nnod_4_ele
           ip =   ie_domain_recv(iele,k1)
           inod = new_ele%ie(iele,k1)
+          if(ip .eq. my_rank) then
+            icount_node(inod) = icount_node(inod) + 1
+          else
+            knod = -1
+            inum = search_from_list_data(ip, ione, new_comm%num_neib,   &
+     &                             new_comm%num_neib, new_comm%id_neib)
+            if(inum.ge.ione .and. inum.le.new_comm%num_neib) then
+              ist = new_comm%istack_import(inum-1) + 1
+              ied = new_comm%istack_import(inum)
+            else
+              ist = 0
+              ied = 0
+            end if
+!
+            if(ist .gt. 0) then
+!              jnum = search_from_sorted_data(inod, ist, ied,           &
+!     &                          new_comm%ntot_import, item_import_recv)
+!
+              jst = istack_rev_import_recv(inod-1) + 1
+              jed = istack_rev_import_recv(inod  )
+              knum = search_from_sorted_data(ip, jst, jed,              &
+     &                          new_comm%ntot_import, irank_import_recv)
+!              if(jnum .ne. irev_import(knum)) &
+!              write(*,*) new_comm%item_import(jnum), ip,               &
+!     &                  jst, jed, knum, irev_import(knum),             &
+!     &                  new_comm%item_import(irev_import(knum))
+              if(knum.ge.jst .and. knum.le.jed) then
+                knod = irev_import(knum)
+                jnod = new_comm%item_import(knod)
+                new_ele%ie(iele,k1) = jnod
+                icount_node(jnod) = icount_node(jnod) + 1
+              end if
+            end if
+!
+            if(knod .le. 0) then
+              new_ele%ie(iele,k1) = 0
+              write(*,*) my_rank, 'Node cannot be found for ',         &
+     &           new_ele%iele_global(iele), iele, k1, ip, inod,        &
+     &           iele_org_local(iele), iele_org_domain(iele)
+              icou = icou + 1
+            end if
+          end if
+        end do
+      end do
+!
+      if(i_debug .gt. 0) then
+        write(*,*) my_rank, 'Missing connectivity: ', icou,             &
+     &          ' of ', new_ele%nnod_4_ele*new_ele%numele
+!
+        icou = 0
+        do inod = 1, new_node%numnod
+          if(icount_node(inod) .eq. 0) icou = icou + 1
+        end do
+        write(*,*) my_rank, 'Missing connenction: ', icou,              &
+     &          ' of ', new_node%numnod
+      end if
+!
+      deallocate(icount_node)
+!
+!
+      allocate(ie_local(new_ele%numele,new_ele%nnod_4_ele))
+      allocate(irank_e(new_ele%numele,new_ele%nnod_4_ele))
+      ie_local = 0
+      irank_e = -1
+      do k1 = 1, new_ele%nnod_4_ele
+        do iele = 1, new_ele%numele
+          if(new_iele_dbl%irank(iele) .eq. my_rank) then
+            inod = new_ele%ie(iele,k1)
+            ie_local(iele,k1) = new_inod_dbl%index(inod)
+            irank_e(iele,k1) =  new_inod_dbl%irank(inod)
+          end if
+        end do
+      end do
+!
+      do k1 = 1, new_ele%nnod_4_ele
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, ie_local(1,k1))
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, irank_e(1,k1))
+      end do
+      return
+!
+      icou = 0
+      do iele = 1, new_ele%numele
+        if(new_iele_dbl%irank(iele) .eq. my_rank) cycle
+!
+        do k1 = 1, new_ele%nnod_4_ele
+          ip =   irank_e(iele,k1)
+          inod = ie_local(iele,k1)
+          if(new_inod_dbl%irank(inod) .eq. my_rank) cycle
+!
           if(ip .eq. my_rank) then
             icount_node(inod) = icount_node(inod) + 1
           else
@@ -595,32 +712,21 @@
       deallocate(i4_recv, ie_domain_recv)
       deallocate(iele_org_local, iele_org_domain, inod_recv)
 !
-      if(i_debug .gt. 0) then
-        write(*,*) my_rank, 'Missing connectivity: ', icou,             &
-     &          ' of ', new_ele%nnod_4_ele*new_ele%numele
-!
-        icou = 0
-        do inod = 1, new_node%numnod
-          if(icount_node(inod) .eq. 0) icou = icou + 1
-        end do
-        write(*,*) my_rank, 'Missing connenction: ', icou,              &
-     &          ' of ', new_node%numnod
-      end if
-!
-      deallocate(icount_node)
-!
       end subroutine s_search_ext_node_repartition_2
 !
 ! ----------------------------------------------------------------------
 !
       subroutine compare_ele_connect_2                                  &
-     &         (id_rank, org_ele, new_ele, icount_error)
+     &         (id_rank, org_ele, new_ele, new_iele_dbl, icount_error)
 !
       use t_geometry_data
+      use t_para_double_numbering
+      use const_repart_ele_connect
 !
       integer, intent(in) :: id_rank
       type(element_data), intent(in) :: org_ele
       type(element_data), intent(in) :: new_ele
+      type(node_ele_double_number), intent(in) :: new_iele_dbl
       integer(kind = kint), intent(inout) :: icount_error
 !
       integer(kind = kint) :: iele, k1, num
@@ -664,7 +770,8 @@
       end do
 !
       do k1 = 1, org_ele%nnod_4_ele
-        do iele = 1, num
+!        do iele = 1, num
+        do iele = 1, nele_new_no_extend
           if(org_ele%ie(iele,k1) .ne. new_ele%ie(iele,k1)) then
             icount_error = icount_error + 1
           end if
