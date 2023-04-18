@@ -84,13 +84,27 @@
       integer(kind = kint), allocatable :: irev_import(:)
       integer(kind = kint) :: nmax_import
 !
-      integer(kind = kint) :: ip, inod, icou, inum, ist, ied, num, knod
-      integer(kind = kint) :: iele, k1, jnum, jnod, jst, jed, knum, num_loop
+      integer(kind = kint) :: inod, icou, iele, k1, num_loop
 !
+!
+      num_loop = min(new_ele%numele, ele_tbl%ntot_import)
+!
+      allocate(inod_recv(new_node%numnod))
 !
       allocate(ie_tmp(new_ele%numele,new_ele%nnod_4_ele))
       allocate(i4_recv(ele_tbl%ntot_import))
       allocate(ie_domain_recv(new_ele%numele,new_ele%nnod_4_ele))
+!
+      allocate(iele_org_local(new_ele%numele))
+      allocate(iele_org_domain(new_ele%numele))
+!
+!$omp parallel do
+      do inod = 1, new_node%numnod
+        inod_recv(inod) =   inod
+      end do
+!$omp end parallel do
+      call SOLVER_SEND_RECV_int_type                                    &
+     &  (new_node%numnod, new_comm, SR_sig, SR_i, inod_recv)
 !
 !$omp parallel workshare
       ie_tmp(1:new_ele%numele,1:new_ele%nnod_4_ele)            &
@@ -98,7 +112,6 @@
 !$omp end parallel workshare
       new_ele%ie(new_ele%numele,new_ele%nnod_4_ele) = 0
 !
-      num_loop = min(new_ele%numele, ele_tbl%ntot_import)
       do k1 = 1, ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
@@ -107,9 +120,6 @@
         ie_domain_recv(1:num_loop,k1) = i4_recv(1:num_loop)
 !$omp end parallel workshare
       end do
-!
-      allocate(iele_org_local(new_ele%numele))
-      allocate(iele_org_domain(new_ele%numele))
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%index(1),       &
@@ -124,17 +134,6 @@
 !$omp parallel workshare
       iele_org_domain(1:num_loop) = i4_recv(1:num_loop)
 !$omp end parallel workshare
-!
-      allocate(inod_recv(new_node%numnod))
-      allocate(icount_node(new_node%numnod))
-!$omp parallel do
-      do inod = 1, new_node%numnod
-        inod_recv(inod) =   inod
-        icount_node(inod) = 0
-      end do
-!$omp end parallel do
-      call SOLVER_SEND_RECV_int_type                                    &
-     &  (new_node%numnod, new_comm, SR_sig, SR_i, inod_recv)
 !
 !      allocate(item_import_recv(new_comm%ntot_import))
 !      call set_item_import_recv(new_comm, new_node%numnod,             &
@@ -160,6 +159,13 @@
      &    istack_rev_import_recv, new_node%numnod, inod_recv,           &
      &    num_rev_import_recv, irev_import, irank_import_recv)
 !
+!
+!
+      allocate(icount_node(new_node%numnod))
+!$omp parallel workshare
+      icount_node(1:new_node%numnod) = 0
+!$omp end parallel workshare
+!
       icou = 0
       do iele = 1, num_loop
         do k1 = 1, new_ele%nnod_4_ele
@@ -172,7 +178,8 @@
           inod = new_ele%ie(iele,k1)
           if(inod .le. 0) then
             write(*,*) my_rank, 'Node cannot be found for ',            &
-     &         new_ele%iele_global(iele), iele, k1, ip, inod,           &
+     &         new_ele%iele_global(iele), iele, k1,                     &
+     &         ie_domain_recv(iele,k1), ie_tmp(iele,k1),                &
      &         iele_org_local(iele), iele_org_domain(iele)
             icou = icou + 1
           else
@@ -201,6 +208,95 @@
       deallocate(icount_node)
 !
       end subroutine s_search_ext_node_repartition
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_works_for_ext_node_search                          &
+     &         (ele, ele_tbl, org_iele_dbl, ie_newdomain,               &
+     &          new_comm, new_node, new_ele, num_loop, inod_recv,       &
+     &          iele_org_local, iele_org_domain, ie_domain_recv,        &
+     &          ie_tmp, i4_recv, SR_sig, SR_i)
+!
+      use t_para_double_numbering
+      use t_repart_double_numberings
+      use calypso_SR_type
+      use solver_SR_type
+      use search_from_list
+      use select_copy_from_recv
+      use quicksort
+!
+      type(element_data), intent(in) :: ele
+      type(calypso_comm_table), intent(in) :: ele_tbl
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
+      type(node_ele_double_number), intent(in) :: org_iele_dbl
+!
+      integer(kind = kint), intent(in)                                  &
+     &            :: ie_newdomain(ele%numele,ele%nnod_4_ele)
+!
+      type(element_data), intent(inout) :: new_ele
+!
+      integer(kind = kint), intent(inout) :: num_loop
+      integer(kind = kint), intent(inout) :: inod_recv(new_node%numnod)
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: iele_org_local(new_ele%numele)
+      integer(kind = kint), intent(inout)                               &
+     &            :: iele_org_domain(new_ele%numele)
+      integer(kind = kint), intent(inout)                               &
+     &            :: ie_domain_recv(new_ele%numele,new_ele%nnod_4_ele)
+      integer(kind = kint), intent(inout)                               &
+     &            :: ie_tmp(new_ele%numele,new_ele%nnod_4_ele)
+!
+      integer(kind = kint), intent(inout)                               &
+     &                     :: i4_recv(ele_tbl%ntot_import)
+!
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+!
+      integer(kind = kint) :: inod, icou, iele, k1
+!
+!
+!
+!$omp parallel do
+      do inod = 1, new_node%numnod
+        inod_recv(inod) =   inod
+      end do
+!$omp end parallel do
+      call SOLVER_SEND_RECV_int_type                                    &
+     &  (new_node%numnod, new_comm, SR_sig, SR_i, inod_recv)
+!
+!$omp parallel workshare
+      ie_tmp(1:new_ele%numele,1:new_ele%nnod_4_ele)            &
+     &   =  new_ele%ie(1:new_ele%numele,1:new_ele%nnod_4_ele)
+!$omp end parallel workshare
+      new_ele%ie(new_ele%numele,new_ele%nnod_4_ele) = 0
+!
+      do k1 = 1, ele%nnod_4_ele
+        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
+     &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
+     &      i4_recv(1), SR_sig, SR_i)
+!$omp parallel workshare
+        ie_domain_recv(1:num_loop,k1) = i4_recv(1:num_loop)
+!$omp end parallel workshare
+      end do
+!
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%index(1),       &
+     &    i4_recv(1), SR_sig, SR_i)
+!$omp parallel workshare
+      iele_org_local(1:num_loop) = i4_recv(1:num_loop)
+!$omp end parallel workshare
+!
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%irank(1),       &
+     &    i4_recv(1), SR_sig, SR_i)
+!$omp parallel workshare
+      iele_org_domain(1:num_loop) = i4_recv(1:num_loop)
+!$omp end parallel workshare
+!
+      end subroutine set_works_for_ext_node_search
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

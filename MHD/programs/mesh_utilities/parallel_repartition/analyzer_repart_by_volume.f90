@@ -483,13 +483,24 @@
       integer(kind = kint), allocatable :: irev_import(:)
       integer(kind = kint) :: nmax_import
 !
-      integer(kind = kint) :: ip, inod, icou, inum, ist, ied, num, knod
-      integer(kind = kint) :: iele, k1, jnum, jnod, jst, jed, knum, num_loop
+      integer(kind = kint) :: inod, icou, iele, k1, num_loop
 !
 !
+      allocate(inod_recv(new_node%numnod))
       allocate(ie_tmp(new_ele%numele,new_ele%nnod_4_ele))
       allocate(i4_recv(ele_tbl%ntot_import))
       allocate(ie_domain_recv(new_ele%numele,new_ele%nnod_4_ele))
+!
+      allocate(iele_org_local(new_ele%numele))
+      allocate(iele_org_domain(new_ele%numele))
+!
+!$omp parallel do
+      do inod = 1, new_node%numnod
+        inod_recv(inod) =   inod
+      end do
+!$omp end parallel do
+      call SOLVER_SEND_RECV_int_type                                    &
+     &  (new_node%numnod, new_comm, SR_sig, SR_i, inod_recv)
 !
 !$omp parallel workshare
       ie_tmp(1:new_ele%numele,1:new_ele%nnod_4_ele)            &
@@ -507,9 +518,6 @@
 !$omp end parallel workshare
       end do
 !
-      allocate(iele_org_local(new_ele%numele))
-      allocate(iele_org_domain(new_ele%numele))
-!
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%index(1),       &
      &    i4_recv(1), SR_sig, SR_i)
@@ -524,16 +532,6 @@
       iele_org_domain(1:num_loop) = i4_recv(1:num_loop)
 !$omp end parallel workshare
 !
-      allocate(inod_recv(new_node%numnod))
-      allocate(icount_node(new_node%numnod))
-!$omp parallel do
-      do inod = 1, new_node%numnod
-        inod_recv(inod) =   inod
-        icount_node(inod) = 0
-      end do
-!$omp end parallel do
-      call SOLVER_SEND_RECV_int_type                                    &
-     &  (new_node%numnod, new_comm, SR_sig, SR_i, inod_recv)
 !
 !      allocate(item_import_recv(new_comm%ntot_import))
 !      call set_item_import_recv(new_comm, new_node%numnod,             &
@@ -559,6 +557,12 @@
      &    istack_rev_import_recv, new_node%numnod, inod_recv,           &
      &    num_rev_import_recv, irev_import, irank_import_recv)
 !
+!
+      allocate(icount_node(new_node%numnod))
+!$omp parallel workshare
+      icount_node(1:new_node%numnod) = 0
+!$omp end parallel workshare
+!
       icou = 0
       do iele = 1, num_loop
 !
@@ -572,7 +576,8 @@
           inod = new_ele%ie(iele,k1)
           if(inod .le. 0) then
             write(*,*) my_rank, 'Node cannot be found for ',            &
-     &         new_ele%iele_global(iele), iele, k1, ip, inod,           &
+     &         new_ele%iele_global(iele), iele, k1,                     &
+     &         ie_domain_recv(iele,k1), ie_tmp(iele,k1),                &
      &         iele_org_local(iele), iele_org_domain(iele)
             icou = icou + 1
           else
@@ -634,7 +639,8 @@
           inod = new_ele%ie(iele,k1)
           if(inod .le. 0) then
             write(*,*) my_rank, 'Node cannot be found for ',            &
-     &         new_ele%iele_global(iele), iele, k1, ip, inod,           &
+     &         new_ele%iele_global(iele), iele, k1,                     &
+     &         irank_e(iele,k1), ie_local(iele,k1),                     &
      &         iele_org_local(iele), iele_org_domain(iele)
             icou = icou + 1
           else
