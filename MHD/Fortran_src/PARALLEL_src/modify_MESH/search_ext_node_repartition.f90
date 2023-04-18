@@ -82,7 +82,7 @@
       integer(kind = kint), allocatable :: istack_rev_import_recv(:)
       integer(kind = kint), allocatable :: irank_import_recv(:)
       integer(kind = kint), allocatable :: irev_import(:)
-      integer(kind = kint) :: namx_import
+      integer(kind = kint) :: nmax_import
 !
       integer(kind = kint) :: ip, inod, icou, inum, ist, ied, num, knod
       integer(kind = kint) :: iele, k1, jnum, jnod, jst, jed, knum, num_loop
@@ -137,62 +137,35 @@
      &  (new_node%numnod, new_comm, SR_sig, SR_i, inod_recv)
 !
 !      allocate(item_import_recv(new_comm%ntot_import))
-!!$omp parallel do private(jnum,jnod)
-!      do jnum = 1, new_comm%ntot_import
-!        jnod = new_comm%item_import(jnum)
-!        item_import_recv(jnum) = inod_recv(jnod)
-!      end do
-!!$omp end parallel do
+!      call set_item_import_recv(new_comm, new_node%numnod,             &
+!     &                          inod_recv, item_import_recv)
 !
-      namx_import = maxval(inod_recv)
-      allocate(num_rev_import_recv(namx_import))
-      allocate(istack_rev_import_recv(0:namx_import))
-      istack_rev_import_recv(0:namx_import) = 0
-      num_rev_import_recv(1:namx_import) = 0
+      nmax_import = maxval(inod_recv)
+      allocate(num_rev_import_recv(nmax_import))
+      allocate(istack_rev_import_recv(0:nmax_import))
+      istack_rev_import_recv(0) = 0
+!$omp parallel workshare
+      istack_rev_import_recv(1:nmax_import) = 0
+      num_rev_import_recv(1:nmax_import) =    0
+!$omp end parallel workshare
 !
-      do jnum = 1, new_comm%ntot_import
-        jnod = new_comm%item_import(jnum)
-        inod = inod_recv(jnod)
-        num_rev_import_recv(inod) = num_rev_import_recv(inod) + 1
-      end do
+      call count_new_comm_irev_import                                   &
+     &   (new_comm, nmax_import, new_node%numnod, inod_recv,            &
+     &    num_rev_import_recv, istack_rev_import_recv)
 !
-      do inod = 1, namx_import
-        istack_rev_import_recv(inod) = istack_rev_import_recv(inod-1)   &
-     &                                + num_rev_import_recv(inod)
-      end do
       allocate(irank_import_recv(new_comm%ntot_import))
       allocate(irev_import(new_comm%ntot_import))
 !
-      num_rev_import_recv(1:namx_import) = 0
-      do ip = 1, new_comm%num_neib
-        ist = new_comm%istack_import(ip-1) + 1
-        ied = new_comm%istack_import(ip  )
-        do jnum = ist, ied
-          jnod = new_comm%item_import(jnum)
-          inod = inod_recv(jnod)
-          jst = istack_rev_import_recv(inod-1)
-          num = num_rev_import_recv(inod) + 1
-          num_rev_import_recv(inod) = num
-          irank_import_recv(jst+num) =  new_comm%id_neib(ip)
-          irev_import(jst+num) = jnum
-        end do
-      end do
-!
-      do inod = 1, namx_import
-        ist = istack_rev_import_recv(inod-1) + 1
-        ied = istack_rev_import_recv(inod  )
-        if((ied-ist) .gt. 1) then
-          call quicksort_w_index(new_comm%ntot_import,                  &
-     &        irank_import_recv, ist, ied, irev_import)
-        end if
-      end do
+      call set_new_comm_irev_import(new_comm, nmax_import,              &
+     &    istack_rev_import_recv, new_node%numnod, inod_recv,           &
+     &    num_rev_import_recv, irev_import, irank_import_recv)
 !
       icou = 0
       do iele = 1, num_loop
         do k1 = 1, new_ele%nnod_4_ele
           new_ele%ie(iele,k1) = search_repart_external_node             &
      &                       (ie_tmp(iele,k1), ie_domain_recv(iele,k1), &
-     &                        my_rank, new_comm, namx_import,           &
+     &                        my_rank, new_comm, nmax_import,           &
      &                        istack_rev_import_recv, irev_import,      &
      &                        irank_import_recv)
 !
@@ -232,9 +205,108 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
+      subroutine count_new_comm_irev_import                             &
+     &         (new_comm, nmax_import, numnod_new, inod_recv,           &
+     &          num_rev_import_recv, istack_rev_import_recv)
+!
+      use cal_minmax_and_stacks
+!
+      type(communication_table), intent(in) :: new_comm
+      integer(kind = kint), intent(in) :: numnod_new
+      integer(kind = kint), intent(in) :: inod_recv(numnod_new)
+      integer(kind = kint), intent(in) :: nmax_import
+!
+      integer(kind = kint), intent(inout)                               &
+     &                     :: num_rev_import_recv(nmax_import)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: istack_rev_import_recv(0:nmax_import)
+!
+      integer(kind = kint) :: inod, jnum, jnod, ntot_tmp
+!
+!
+      istack_rev_import_recv(0:nmax_import) = 0
+      num_rev_import_recv(1:nmax_import) = 0
+!
+      do jnum = 1, new_comm%ntot_import
+        jnod = new_comm%item_import(jnum)
+        inod = inod_recv(jnod)
+        num_rev_import_recv(inod) = num_rev_import_recv(inod) + 1
+      end do
+!
+      call s_cal_total_and_stacks(nmax_import, num_rev_import_recv,     &
+     &    izero, istack_rev_import_recv, ntot_tmp)
+!
+      do inod = 1, nmax_import
+        istack_rev_import_recv(inod) = istack_rev_import_recv(inod-1)   &
+     &                                + num_rev_import_recv(inod)
+      end do
+!
+      if(ntot_tmp .ne. new_comm%ntot_import) then
+        write(*,*) 'Wrong total number of node stack'
+      end if
+!
+      end subroutine count_new_comm_irev_import
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_new_comm_irev_import(new_comm, nmax_import,        &
+     &          istack_rev_import_recv, numnod_new, inod_recv,          &
+     &          num_rev_import_recv, irev_import, irank_import_recv)
+!
+      use quicksort
+!
+      type(communication_table), intent(in) :: new_comm
+      integer(kind = kint), intent(in) :: nmax_import
+      integer(kind = kint), intent(in)                                  &
+     &                     :: istack_rev_import_recv(0:nmax_import)
+      integer(kind = kint), intent(in) :: numnod_new
+      integer(kind = kint), intent(in) :: inod_recv(numnod_new)
+!
+      integer(kind = kint), intent(inout)                               &
+     &                     :: num_rev_import_recv(nmax_import)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: irev_import(new_comm%ntot_import)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: irank_import_recv(new_comm%ntot_import)
+!
+      integer(kind = kint) :: ip, ist, ied, inod, jnum, jnod, jst, num
+!
+!
+!$omp parallel workshare
+      num_rev_import_recv(1:nmax_import) = 0
+!$omp end parallel workshare
+!
+      do ip = 1, new_comm%num_neib
+        ist = new_comm%istack_import(ip-1) + 1
+        ied = new_comm%istack_import(ip  )
+        do jnum = ist, ied
+          jnod = new_comm%item_import(jnum)
+          inod = inod_recv(jnod)
+          jst = istack_rev_import_recv(inod-1)
+          num = num_rev_import_recv(inod) + 1
+!
+          irank_import_recv(jst+num) =  new_comm%id_neib(ip)
+          irev_import(jst+num) = jnum
+          num_rev_import_recv(inod) = num
+        end do
+      end do
+!
+      do inod = 1, nmax_import
+        ist = istack_rev_import_recv(inod-1) + 1
+        ied = istack_rev_import_recv(inod  )
+        if((ied-ist) .gt. 1) then
+          call quicksort_w_index(new_comm%ntot_import,                  &
+     &        irank_import_recv, ist, ied, irev_import)
+        end if
+      end do
+!
+      end subroutine set_new_comm_irev_import
+!
+! ----------------------------------------------------------------------
+!
       integer(kind = kint) function search_repart_external_node         &
      &                           (inod, ip, id_rank, new_comm,          &
-     &                            namx_import, istack_rev_import_recv,  &
+     &                            nmax_import, istack_rev_import_recv,  &
      &                            irev_import, irank_import_recv)
 !
       use search_from_list
@@ -243,9 +315,9 @@
       integer(kind = kint), intent(in) :: id_rank
 !
       type(communication_table), intent(in) :: new_comm
-      integer(kind = kint), intent(in) :: namx_import
+      integer(kind = kint), intent(in) :: nmax_import
       integer(kind = kint), intent(in)                                  &
-     &                     :: istack_rev_import_recv(0:namx_import)
+     &                     :: istack_rev_import_recv(0:nmax_import)
       integer(kind = kint), intent(in)                                  &
      &                     :: irev_import(new_comm%ntot_import)
       integer(kind = kint), intent(in)                                  &
