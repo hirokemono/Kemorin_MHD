@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine s_search_ext_node_repartition                        &
-!!     &         (ele, ele_tbl, element_ids, ie_newdomain,              &
+!!     &         (ele, ele_tbl, org_iele_dbl, ie_newdomain,             &
 !!     &          new_comm, new_node, new_ele, SR_sig, SR_i)
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(in) :: new_node
-!!        type(node_ele_double_number), intent(in) :: element_ids
+!!        type(node_ele_double_number), intent(in) :: org_iele_dbl
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -43,7 +43,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_search_ext_node_repartition                          &
-     &         (ele, ele_tbl, element_ids, ie_newdomain,                &
+     &         (ele, ele_tbl, org_iele_dbl, ie_newdomain,               &
      &          new_comm, new_node, new_ele, SR_sig, SR_i)
 !
       use t_para_double_numbering
@@ -58,7 +58,7 @@
       type(calypso_comm_table), intent(in) :: ele_tbl
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
-      type(node_ele_double_number), intent(in) :: element_ids
+      type(node_ele_double_number), intent(in) :: org_iele_dbl
 !
       integer(kind = kint), intent(in)                                  &
      &              :: ie_newdomain(ele%numele,ele%nnod_4_ele)
@@ -103,14 +103,14 @@
       allocate(iele_org_domain(new_ele%numele))
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, element_ids%index(1),        &
+     &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%index(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
       iele_org_local(1:new_ele%numele) = i4_recv(1:new_ele%numele)
 !$omp end parallel workshare
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, element_ids%irank(1),        &
+     &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%irank(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
       iele_org_domain(1:new_ele%numele) = i4_recv(1:new_ele%numele)

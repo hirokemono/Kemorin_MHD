@@ -323,7 +323,7 @@
 !      type(send_recv_status), intent(inout) :: SR_sig
 !      type(send_recv_int_buffer), intent(inout) :: SR_i
 !!
-!      type(node_ele_double_number) :: element_ids
+!      type(node_ele_double_number) :: org_iele_dbl
 !
       integer(kind = kint), allocatable :: num_ele_tbl_import(:)
       integer(kind = kint) :: inod, iele, irank_org

@@ -18,18 +18,18 @@
 !!        type(calypso_comm_table), intent(inout) :: ext_tbl
 !!        type(sorting_data_for_repartition), intent(inout) :: sort_nod
 !!      subroutine trim_overlapped_ele_by_repart                        &
-!!     &         (mesh, element_ids, ele_tbl, new_numele, SR_sig, SR_i)
+!!     &         (mesh, org_iele_dbl, ele_tbl, new_numele, SR_sig, SR_i)
 !!        type(mesh_geometry), intent(in) :: mesh
-!!        type(node_ele_double_number), intent(in) :: element_ids
+!!        type(node_ele_double_number), intent(in) :: org_iele_dbl
 !!        type(calypso_comm_table), intent(inout) :: ele_tbl
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!
 !!      subroutine check_push_off_redundant_ele                         &
-!!     &         (ele, ele_tbl, idx_sort2, element_ids, recv_ele_ids)
+!!     &         (ele, ele_tbl, idx_sort2, org_iele_dbl, recv_ele_ids)
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
-!!        type(node_ele_double_number), intent(in) :: element_ids
+!!        type(node_ele_double_number), intent(in) :: org_iele_dbl
 !!        type(node_ele_double_number), intent(in) :: recv_ele_ids
 !!@endverbatim
 !
@@ -160,14 +160,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine trim_overlapped_ele_by_repart                          &
-     &         (mesh, element_ids, ele_tbl, new_numele, SR_sig, SR_i)
+     &         (mesh, org_iele_dbl, ele_tbl, new_numele, SR_sig, SR_i)
 !
       use calypso_SR_type
       use select_copy_from_recv
       use sort_for_repartition
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(node_ele_double_number), intent(in) :: element_ids
+      type(node_ele_double_number), intent(in) :: org_iele_dbl
 !
       integer(kind = kint), intent(inout) :: new_numele
       type(calypso_comm_table), intent(inout) :: ele_tbl
@@ -187,10 +187,10 @@
 !    Set local in external node
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    element_ids%irank, recv_ele_ids%irank, SR_sig, SR_i)
+     &    org_iele_dbl%irank, recv_ele_ids%irank, SR_sig, SR_i)
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    element_ids%index, recv_ele_ids%index, SR_sig, SR_i)
+     &    org_iele_dbl%index, recv_ele_ids%index, SR_sig, SR_i)
 !
       call alloc_sorting_data(ele_tbl%ntot_import, sort_ele)
 !
@@ -220,7 +220,7 @@
      &    ele_tbl%item_import, ele_tbl%irev_import,                     &
      &    idx_sort2, new_numele)
 !      call check_push_off_redundant_ele(mesh%ele, ele_tbl, idx_sort2,  &
-!     &    element_ids, recv_ele_ids, SR_sig, SR_i)
+!     &    org_iele_dbl, recv_ele_ids, SR_sig, SR_i)
       call dealloc_sorting_data(sort_ele)
       call dealloc_double_numbering(recv_ele_ids)
       deallocate(idx_sort2)
@@ -231,14 +231,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine check_push_off_redundant_ele(ele, ele_tbl, idx_sort2,  &
-     &          element_ids, recv_ele_ids, SR_sig, SR_i)
+     &          org_iele_dbl, recv_ele_ids, SR_sig, SR_i)
 !
       use calypso_SR_type
       use select_copy_from_recv
 !
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
-      type(node_ele_double_number), intent(in) :: element_ids
+      type(node_ele_double_number), intent(in) :: org_iele_dbl
       type(node_ele_double_number), intent(in) :: recv_ele_ids
       integer(kind = kint), intent(in)                                  &
      &     :: idx_sort2(ele_tbl%ntot_import)
@@ -255,10 +255,10 @@
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import,                              &
-     &    element_ids%irank, recv_ele_id_2%irank, SR_sig, SR_i)
+     &    org_iele_dbl%irank, recv_ele_id_2%irank, SR_sig, SR_i)
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import,                              &
-     &    element_ids%index, recv_ele_id_2%index, SR_sig, SR_i)
+     &    org_iele_dbl%index, recv_ele_id_2%index, SR_sig, SR_i)
 !
       write(100+my_rank,*) 'recv_ele_ids', ele_tbl%ntot_import
       do icou = 1, ele_tbl%ntot_import

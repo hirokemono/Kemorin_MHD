@@ -18,18 +18,17 @@
 !!        type(node_data), intent(in) :: new_node
 !!        type(calypso_comm_table), intent(inout) :: ele_tbl
 !!        type(element_data), intent(inout) :: new_ele
-!!        type(node_ele_double_number) :: element_ids
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine const_reparition_ele_connect                         &
-!!     &         (ele, ele_tbl, new_ids_on_org, element_ids,            &
+!!     &         (ele, ele_tbl, new_ids_on_org, org_iele_dbl,           &
 !!     &          new_numele, new_comm, new_node, new_ele,              &
 !!     &          SR_sig, SR_i, SR_il)
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
 !!        type(node_ele_double_number), intent(in) :: new_ids_on_org
-!!        type(node_ele_double_number), intent(in) :: element_ids
+!!        type(node_ele_double_number), intent(in) :: org_iele_dbl
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(in) :: new_node
 !!        integer(kind = kint), intent(in) :: new_numele
@@ -88,13 +87,13 @@
       type(send_recv_int_buffer), intent(inout) :: SR_i
       type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
-      type(node_ele_double_number) :: element_ids
+      type(node_ele_double_number) :: org_iele_dbl
 !
       integer(kind = kint) :: new_numele, icount_error
 !
 !
-      call alloc_double_numbering(mesh%ele%numele, element_ids)
-      call double_numbering_4_element(mesh%ele, ele_comm, element_ids,  &
+      call alloc_double_numbering(mesh%ele%numele, org_iele_dbl)
+      call double_numbering_4_element(mesh%ele, ele_comm, org_iele_dbl, &
      &                                SR_sig, SR_i)
 !
       call const_ele_trans_tbl_for_repart                               &
@@ -102,20 +101,20 @@
 !      call check_element_transfer_tbl(mesh%ele, ele_tbl)
 !
       call trim_overlapped_ele_by_repart                                &
-     &   (mesh, element_ids, ele_tbl, new_numele, SR_sig, SR_i)
+     &   (mesh, org_iele_dbl, ele_tbl, new_numele, SR_sig, SR_i)
 !
       call const_reparition_ele_connect                                 &
-     &   (mesh%ele, ele_tbl, new_ids_on_org, element_ids,               &
+     &   (mesh%ele, ele_tbl, new_ids_on_org, org_iele_dbl,              &
      &    new_numele, new_comm, new_node, new_ele, SR_sig, SR_i, SR_il)
 !
-      call dealloc_double_numbering(element_ids)
+      call dealloc_double_numbering(org_iele_dbl)
 !
       end subroutine s_const_repart_ele_connect
 !
 ! ----------------------------------------------------------------------
 !
       subroutine const_reparition_ele_connect                           &
-     &         (ele, ele_tbl, new_ids_on_org, element_ids,              &
+     &         (ele, ele_tbl, new_ids_on_org, org_iele_dbl,             &
      &          new_numele, new_comm, new_node, new_ele,                &
      &          SR_sig, SR_i, SR_il)
 !
@@ -125,7 +124,7 @@
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
       type(node_ele_double_number), intent(in) :: new_ids_on_org
-      type(node_ele_double_number), intent(in) :: element_ids
+      type(node_ele_double_number), intent(in) :: org_iele_dbl
 !
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
@@ -152,7 +151,7 @@
      &    SR_sig, SR_i, SR_il)
 !
       call s_search_ext_node_repartition                                &
-     &   (ele, ele_tbl, element_ids, ie_newdomain,                      &
+     &   (ele, ele_tbl, org_iele_dbl, ie_newdomain,                     &
      &    new_comm, new_node, new_ele, SR_sig, SR_i)
       deallocate(ie_newnod, ie_newdomain)
 !
