@@ -35,7 +35,6 @@
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
 !
-      use gz_itp_table_data_IO
       use gz_binary_IO
 !
       implicit none
@@ -196,7 +195,7 @@
      &         (gzip_name, id_rank, IO_itp_dest, ierr)
 !
       use skip_gz_comment
-      use gz_itp_table_org_data_IO
+      use gz_itp_table_dsst_data_IO
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank

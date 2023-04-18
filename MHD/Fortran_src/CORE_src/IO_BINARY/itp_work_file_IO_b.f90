@@ -36,7 +36,6 @@
       use t_interpolate_coefs_dest
       use t_binary_IO_buffer
 !
-      use itp_table_data_IO_b
       use binary_IO
 !
       implicit none
