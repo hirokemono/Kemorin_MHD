@@ -90,12 +90,13 @@
       allocate(i4_recv(ele_tbl%ntot_import))
       allocate(ie_domain_recv(new_ele%numele,new_ele%nnod_4_ele))
 !
+      num = min(new_ele%numele, ele_tbl%ntot_import)
       do k1 = 1, ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
      &      i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-        ie_domain_recv(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
+        ie_domain_recv(1:num,k1) = i4_recv(1:num)
 !$omp end parallel workshare
       end do
 !
@@ -106,14 +107,14 @@
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%index(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-      iele_org_local(1:new_ele%numele) = i4_recv(1:new_ele%numele)
+      iele_org_local(1:num) = i4_recv(1:num)
 !$omp end parallel workshare
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%irank(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-      iele_org_domain(1:new_ele%numele) = i4_recv(1:new_ele%numele)
+      iele_org_domain(1:num) = i4_recv(1:num)
 !$omp end parallel workshare
 !
       allocate(inod_recv(new_node%numnod))

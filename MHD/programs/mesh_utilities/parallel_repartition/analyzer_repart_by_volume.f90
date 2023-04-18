@@ -433,6 +433,7 @@
       use solver_SR_type
       use search_from_list
       use select_copy_from_recv
+      use const_repart_ele_connect
       use quicksort
 !
       type(element_data), intent(in) :: ele
@@ -476,12 +477,13 @@
       allocate(i4_recv(ele_tbl%ntot_import))
       allocate(ie_domain_recv(new_ele%numele,new_ele%nnod_4_ele))
 !
+      num = min(new_ele%numele, ele_tbl%ntot_import)
       do k1 = 1, ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
      &      i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-        ie_domain_recv(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
+        ie_domain_recv(1:num,k1) = i4_recv(1:num)
 !$omp end parallel workshare
       end do
 !
@@ -492,14 +494,14 @@
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%index(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-      iele_org_local(1:new_ele%numele) = i4_recv(1:new_ele%numele)
+      iele_org_local(1:num) = i4_recv(1:num)
 !$omp end parallel workshare
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%irank(1),       &
      &    i4_recv(1), SR_sig, SR_i)
 !$omp parallel workshare
-      iele_org_domain(1:new_ele%numele) = i4_recv(1:new_ele%numele)
+      iele_org_domain(1:num) = i4_recv(1:num)
 !$omp end parallel workshare
 !
       allocate(inod_recv(new_node%numnod))
@@ -564,9 +566,15 @@
         end if
       end do
 !
+!
+!      do inum = 1, ele_tbl%ntot_import
+!        iele = 
+!      end do
+!
+!
       icou = 0
       do iele = 1, ele_tbl%ntot_import
-        if(new_iele_dbl%irank(iele) .eq. my_rank) cycle
+!      do iele = 1, nele_new_no_extend
 !
         do k1 = 1, new_ele%nnod_4_ele
           ip =   ie_domain_recv(iele,k1)
@@ -627,8 +635,6 @@
         write(*,*) my_rank, 'Missing connenction: ', icou,              &
      &          ' of ', new_node%numnod
       end if
-!
-      deallocate(icount_node)
 !
 !
       allocate(ie_local(new_ele%numele,new_ele%nnod_4_ele))
@@ -711,6 +717,7 @@
       deallocate(istack_rev_import_recv, num_rev_import_recv)
       deallocate(i4_recv, ie_domain_recv)
       deallocate(iele_org_local, iele_org_domain, inod_recv)
+      deallocate(icount_node)
 !
       end subroutine s_search_ext_node_repartition_2
 !
