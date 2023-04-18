@@ -155,6 +155,9 @@
       use t_interpolate_table
       use t_work_for_comm_check
 !
+      use t_repart_double_numberings
+      use t_para_double_numbering
+!
       use m_file_format_switch
       use para_itrplte_table_IO_sel
       use copy_repart_and_itp_table
@@ -215,13 +218,19 @@
       call const_ele_comm_table(fem_T%mesh%node,                        &
      &    fem_T%mesh%nod_comm, fem_T%mesh%ele, ele_comm1, m_SR_T)
 !
+      call alloc_double_numbering(fem_T%mesh%node%numnod,               &
+     &                            new_ids_on_org1)
+      call node_dbl_numbering_to_repart                                 &
+     &   (fem_T%mesh%nod_comm, fem_T%mesh%node, part_nod_tbl2,          &
+     &    new_ids_on_org1, m_SR_T%SR_sig, m_SR_T%SR_i)
+!
       new_numele = max(maxval(part_ele_tbl2%item_import),               &
      &                        maxval(new_ele_comm2%item_import))
-!      call s_const_repart_ele_connect                                   &
-!     &  (fem_T%mesh, ele_comm1, part_nod_tbl2, new_ids_on_org1,         &
-!     &   new_fem2%mesh%nod_comm, new_fem2%mesh%node, new_fem2%mesh%ele, &
-!     &   part_ele_tbl2, m_SR_T%SR_sig, m_SR_T%SR_i, m_SR_T%SR_il)
-!      call dealloc_double_numbering(new_ids_on_org1)
+      call s_const_repart_ele_connect_2                                 &
+     &  (fem_T%mesh, ele_comm1, part_nod_tbl2, new_ids_on_org1,         &
+     &   new_fem2%mesh%nod_comm, new_fem2%mesh%node, new_fem2%mesh%ele, &
+     &   part_ele_tbl2, m_SR_T%SR_sig, m_SR_T%SR_i, m_SR_T%SR_il)
+      call dealloc_double_numbering(new_ids_on_org1)
       call dealloc_comm_table(ele_comm1)
 !
       if(my_rank .eq. 0) write(*,*) 'Compare read comm tables...'
@@ -239,7 +248,7 @@
       call compare_node_position(my_rank, new_fem%mesh%node,            &
      &                           new_fem2%mesh%node, icount_error)
       write(*,*) my_rank, 'Compare node: ', icount_error
-!      call compare_ele_connect(my_rank, new_fem%mesh%ele,               &
+!      call compare_ele_connect_2(my_rank, new_fem%mesh%ele,               &
 !     &                         new_fem2%mesh%ele, icount_error)
 !      write(*,*) my_rank, 'Compare element: ', icount_error
 !
@@ -290,101 +299,158 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_repart_ele_connect_2(org_mesh, new_mesh,       &
-     &          part_nod_tbl, m_SR)
+      subroutine s_const_repart_ele_connect_2(mesh, ele_comm, part_tbl, &
+     &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl,   &
+     &          SR_sig, SR_i, SR_il)
 !
-      use t_element_double_number
       use t_para_double_numbering
-      use t_element_double_number
-      use select_copy_from_recv
-      use solver_SR_type
-      use calypso_SR_type
-      use const_element_comm_tables
-!      use t_repart_double_numberings
-!      use ele_trans_tbl_4_repart
+      use t_repart_double_numberings
+      use ele_trans_tbl_4_repart
+      use compare_mesh_structures
 !
-      type(mesh_geometry), intent(in) :: org_mesh, new_mesh
-      type(calypso_comm_table) :: part_nod_tbl
+      type(mesh_geometry), intent(in) :: mesh
+      type(communication_table), intent(in) :: ele_comm
+      type(calypso_comm_table), intent(in) :: part_tbl
+      type(node_ele_double_number), intent(in) :: new_ids_on_org
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
 !
-      type(mesh_SR), intent(inout) :: m_SR
+      type(calypso_comm_table), intent(inout) :: ele_tbl
+      type(element_data), intent(inout) :: new_ele
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
-      type(communication_table) :: org_ele_comm
-      type(communication_table) :: new_ele_comm
-      type(node_ele_double_number) :: inod_dbl_org
-      type(node_ele_double_number) :: iele_dbl_org
-      type(node_ele_double_number) :: inod_dbl_new
-      type(node_ele_double_number) :: iele_dbl_new
-      type(node_ele_double_number) :: inod_dbl_org_on_new
-!      type(communication_table), intent(in) :: new_comm
-!      type(node_data), intent(in) :: new_node
+      type(node_ele_double_number) :: org_iele_dbl
 !
-!      type(calypso_comm_table), intent(in) :: ele_tbl
-!      type(element_data), intent(inout) :: new_ele
-!      type(send_recv_status), intent(inout) :: SR_sig
-!      type(send_recv_int_buffer), intent(inout) :: SR_i
-!!
-!      type(node_ele_double_number) :: org_iele_dbl
-!
-      integer(kind = kint), allocatable :: num_ele_tbl_import(:)
-      integer(kind = kint) :: inod, iele, irank_org
+      integer(kind = kint) :: new_numele, icount_error
 !
 !
-      call const_ele_comm_table(org_mesh%node, org_mesh%nod_comm,       &
-     &                          org_mesh%ele, org_ele_comm, m_SR)
-      call const_ele_comm_table(org_mesh%node, org_mesh%nod_comm,             &
-     &                          org_mesh%ele, new_ele_comm, m_SR)
-!
-      call alloc_double_numbering(org_mesh%node%numnod, inod_dbl_org)
-      call alloc_double_numbering(org_mesh%ele%numele, iele_dbl_org)
-      call set_node_ele_double_address(org_mesh%node, org_mesh%ele,     &
-     &    org_mesh%nod_comm, org_ele_comm,                              &
-     &    inod_dbl_org, iele_dbl_org, m_SR%SR_sig, m_SR%SR_i)
-!
-      call alloc_double_numbering(new_mesh%node%numnod, inod_dbl_new)
-      call alloc_double_numbering(new_mesh%ele%numele, iele_dbl_new)
-      call set_node_ele_double_address(new_mesh%node, new_mesh%ele,     &
-     &    new_mesh%nod_comm, new_ele_comm,                              &
-     &    inod_dbl_new, iele_dbl_new, m_SR%SR_sig, m_SR%SR_i)
-!
-!    Set local recieved_ids in internal node
-      call alloc_double_numbering(org_mesh%node%numnod,                 &
-     &                            inod_dbl_org_on_new)
-      call calypso_SR_type_int(iflag_import_item, part_nod_tbl,         &
-     &    org_mesh%node%numnod, org_mesh%node%internal_node,            &
-     &    inod_dbl_org%index(1), inod_dbl_org_on_new%index(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-      call calypso_SR_type_int(iflag_import_item, part_nod_tbl,         &
-     &    org_mesh%node%numnod, org_mesh%node%internal_node,            &
-     &    inod_dbl_org%irank(1), inod_dbl_org_on_new%irank(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm,                      &
-     &    m_SR%SR_sig, m_SR%SR_i, inod_dbl_org_on_new%index(1))
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm,                      &
-     &    m_SR%SR_sig, m_SR%SR_i, inod_dbl_org_on_new%irank(1))
-!
+      call alloc_double_numbering(mesh%ele%numele, org_iele_dbl)
+      call double_numbering_4_element(mesh%ele, ele_comm, org_iele_dbl, &
+     &                                SR_sig, SR_i)
       return
 !
-      allocate(num_ele_tbl_import(nprocs))
-!$omp parallel workshare
-      num_ele_tbl_import(1:nprocs) = 0
-!$omp end parallel workshare
+!      call const_ele_trans_tbl_for_repart                               &
+!     &   (mesh%node, mesh%ele, part_tbl, new_ids_on_org%irank, ele_tbl)
+!      call check_element_transfer_tbl(mesh%ele, ele_tbl)
 !
-      do iele = 1, new_mesh%ele%numele
-        inod = new_mesh%ele%ie(iele,1)
-        irank_org = inod_dbl_org_on_new%irank(inod)
-        num_ele_tbl_import(irank_org+1)                                 &
-     &                = num_ele_tbl_import(irank_org+1) + 1
-      end do
+!      call trim_overlapped_ele_by_repart                                &
+!     &   (mesh, org_iele_dbl, ele_tbl, new_numele, SR_sig, SR_i)
 !
-      write(*,*) 'total count', new_mesh%ele%numele,                    &
-     &                         maxval(num_ele_tbl_import)
-      deallocate(num_ele_tbl_import)
+      call const_reparition_ele_connect_2                               &
+     &   (mesh%ele, ele_tbl, new_ids_on_org, org_iele_dbl,              &
+     &    new_numele, new_comm, new_node, new_ele, SR_sig, SR_i, SR_il)
+!
+      call dealloc_double_numbering(org_iele_dbl)
 !
       end subroutine s_const_repart_ele_connect_2
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine const_reparition_ele_connect_2                         &
+     &         (ele, ele_tbl, new_ids_on_org, org_iele_dbl,             &
+     &          new_numele, new_comm, new_node, new_ele,                &
+     &          SR_sig, SR_i, SR_il)
+!
+      use search_ext_node_repartition
+      use const_repart_mesh_data
+!
+      type(element_data), intent(in) :: ele
+      type(calypso_comm_table), intent(in) :: ele_tbl
+      type(node_ele_double_number), intent(in) :: new_ids_on_org
+      type(node_ele_double_number), intent(in) :: org_iele_dbl
+!
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
+      integer(kind = kint), intent(in) :: new_numele
+!
+      type(element_data), intent(inout) :: new_ele
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(send_recv_int8_buffer), intent(inout) :: SR_il
+!
+      integer(kind = kint), allocatable :: ie_newnod(:,:)
+      integer(kind = kint), allocatable :: ie_newdomain(:,:)
+!
+!
+      allocate(ie_newnod(ele%numele,ele%nnod_4_ele))
+      allocate(ie_newdomain(ele%numele,ele%nnod_4_ele))
+!$omp parallel workshare
+      ie_newnod(1:ele%numele,1:ele%nnod_4_ele) =    0
+      ie_newdomain(1:ele%numele,1:ele%nnod_4_ele) = 0
+!$omp end parallel workshare
+!
+      call set_repart_element_connect(new_numele, ele, ele_tbl,         &
+     &    new_ids_on_org, ie_newdomain, ie_newnod, new_ele,             &
+     &    SR_sig, SR_i, SR_il)
+!
+      call s_search_ext_node_repartition                                &
+     &   (ele, ele_tbl, org_iele_dbl, ie_newdomain,                     &
+     &    new_comm, new_node, new_ele, SR_sig, SR_i)
+      deallocate(ie_newnod, ie_newdomain)
+!
+      end subroutine const_reparition_ele_connect_2
+!
+! ----------------------------------------------------------------------
+!
+      subroutine compare_ele_connect_2                                  &
+     &         (id_rank, org_ele, new_ele, icount_error)
+!
+      use t_geometry_data
+!
+      integer, intent(in) :: id_rank
+      type(element_data), intent(in) :: org_ele
+      type(element_data), intent(in) :: new_ele
+      integer(kind = kint), intent(inout) :: icount_error
+!
+      integer(kind = kint) :: iele, k1
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) id_rank, 'numele', org_ele%numele, new_ele%numele
+        write(*,*) id_rank, 'nnod_4_ele', org_ele%nnod_4_ele,           &
+     &                                     new_ele%nnod_4_ele
+        write(*,*) id_rank, 'first_ele_type', org_ele%first_ele_type,   &
+     &                               new_ele%first_ele_type
+      end if
+!
+      icount_error = 0
+      if(org_ele%numele .ne. new_ele%numele) then
+        write(*,*) 'Number of element is differenct: ',                 &
+     &             org_ele%numele, new_ele%numele
+        icount_error = icount_error + 1
+      end if
+      if(org_ele%nnod_4_ele .ne. new_ele%nnod_4_ele) then
+        write(*,*) 'Element type is differennt: ',                      &
+     &             org_ele%nnod_4_ele, new_ele%nnod_4_ele
+        icount_error = icount_error + 1
+      end if
+!
+      do iele = 1, org_ele%numele
+        if(org_ele%elmtyp(iele) .ne. new_ele%elmtyp(iele)) then
+          write(*,*) 'element type at ', iele, ' is differ',            &
+     &        org_ele%elmtyp(iele), new_ele%elmtyp(iele)
+          icount_error = icount_error + 1
+        end if
+      end do
+      do iele = 1, org_ele%numele
+        if(org_ele%nodelm(iele) .ne. new_ele%nodelm(iele)) then
+          write(*,*) 'number of node for ', iele, ' is differ',         &
+     &        org_ele%nodelm(iele), new_ele%nodelm(iele)
+          icount_error = icount_error + 1
+        end if
+      end do
+      do k1 = 1, org_ele%nnod_4_ele
+        do iele = 1, org_ele%numele
+          if(org_ele%ie(iele,k1) .ne. new_ele%ie(iele,k1)) then
+            icount_error = icount_error + 1
+          end if
+        end do
+      end do
+!
+      end subroutine compare_ele_connect_2
+!
+!------------------------------------------------------------------
 !
       end module analyzer_repart_by_volume
