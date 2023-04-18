@@ -210,9 +210,11 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: igrp, icou, i
+      integer(kind = kint) :: igrp, icou, i, num_import_flag
 !
-      call allocate_group_flags(ele%numele, ele_tbl%ntot_import)
+!
+      num_import_flag = max(ele_tbl%ntot_import, new_ele%numele)
+      call allocate_group_flags(ele%numele, num_import_flag)
 !
       new_ele_grp%num_grp = ele_grp%num_grp
       call alloc_group_num(new_ele_grp)
@@ -225,7 +227,7 @@
 !
       do igrp = 1, ele_grp%num_grp
 !$omp parallel workshare
-        iflag_new(1:ele_tbl%ntot_import) = 0
+        iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
         call mark_org_group_repart                                      &
@@ -254,7 +256,7 @@
       do igrp = 1, ele_grp%num_grp
         icou = new_ele_grp%istack_grp(igrp-1)
 !$omp parallel workshare
-        iflag_new(1:ele_tbl%ntot_import) = 0
+        iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
         call mark_org_group_repart                                      &
@@ -295,10 +297,11 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: igrp, k1, icou, i
+      integer(kind = kint) :: igrp, k1, icou, i, num_import_flag
 !
 !
-      call allocate_group_flags(ele%numele, ele_tbl%ntot_import)
+      num_import_flag = max(ele_tbl%ntot_import, new_ele%numele)
+      call allocate_group_flags(ele%numele, num_import_flag)
 !
       new_surf_grp%num_grp = surf_grp%num_grp
       call alloc_sf_group_num(new_surf_grp)
@@ -312,7 +315,7 @@
         new_surf_grp%nitem_grp(igrp) = 0
         do k1 = 1, ele%nnod_4_ele
 !$omp parallel workshare
-          iflag_new(1:ele_tbl%ntot_import) = 0
+          iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
           call mark_org_surf_group_repart                               &
@@ -344,7 +347,7 @@
         icou = new_surf_grp%istack_grp(igrp-1)
         do k1 = 1, ele%nnod_4_ele
 !$omp parallel workshare
-          iflag_new(1:ele_tbl%ntot_import) = 0
+          iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
           call mark_org_surf_group_repart                               &

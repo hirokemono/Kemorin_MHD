@@ -240,7 +240,6 @@
         if(new_iele_dbl1%irank(iele) .eq. my_rank) icou = icou+1
       end do
 !
-!
       new_numele = max(maxval(part_ele_tbl2%item_import),               &
      &                        maxval(new_ele_comm2%item_import))
       call s_const_repart_ele_connect_2                                 &
@@ -250,13 +249,11 @@
      &   m_SR_T%SR_sig, m_SR_T%SR_i, m_SR_T%SR_il, new_fem%mesh%ele)
       call dealloc_double_numbering(new_iele_dbl1)
       call dealloc_double_numbering(new_ids_on_org1)
-      call dealloc_comm_table(ele_comm1)
 !
       if(my_rank .eq. 0) write(*,*) 'Compare read comm tables...'
       call compare_calypso_comm_tbls(repart_nod_tbl1, part_nod_tbl2)
       call calypso_MPI_barrier
       if(my_rank .eq. 0) write(*,*) 'Compareing end!'
-!
 !
       call compare_node_comm_types(my_rank, new_fem%mesh%nod_comm,      &
      &                             new_fem2%mesh%nod_comm)
@@ -266,8 +263,14 @@
       call compare_ele_connect(my_rank, new_fem%mesh%ele,               &
      &    new_fem2%mesh%ele, icount_error)
       write(*,*) my_rank, 'Compare element: ', icount_error
-
 !
+!
+      call s_redistribute_groups2(fem_T%mesh, fem_T%group, ele_comm1,  &
+     &    new_fem2%mesh, part_nod_tbl2, part_ele_tbl2, new_ele_comm2,  &
+     &    new_fem2%group, m_SR_T%SR_sig, m_SR_T%SR_i)
+      call dealloc_comm_table(ele_comm1)
+!
+      call compare_mesh_groups(my_rank, new_fem%group, new_fem2%group)
 !
 
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
@@ -725,7 +728,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_redistribute_groups2(org_mesh, org_groups, ele_comm,  &
+      subroutine s_redistribute_groups2(org_mesh, org_groups, ele_comm, &
      &          new_mesh, part_tbl, ele_tbl, new_ele_comm, new_groups, SR_sig, SR_i)
 !
       type(mesh_geometry), intent(in) :: org_mesh
@@ -837,7 +840,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine repartition_element_group2(ele, ele_grp, ele_comm,      &
+      subroutine repartition_element_group2(ele, ele_grp, ele_comm,     &
      &          ele_tbl, new_ele_comm, new_ele, new_ele_grp, SR_sig, SR_i)
 !
       use calypso_SR_type
@@ -858,9 +861,11 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: igrp, icou, i
+      integer(kind = kint) :: igrp, icou, i, num_import_flag
 !
-      call allocate_group_flags(ele%numele, ele_tbl%ntot_import)
+!
+      num_import_flag = max(ele_tbl%ntot_import, new_ele%numele)
+      call allocate_group_flags(ele%numele, num_import_flag)
 !
       new_ele_grp%num_grp = ele_grp%num_grp
       call alloc_group_num(new_ele_grp)
@@ -873,7 +878,7 @@
 !
       do igrp = 1, ele_grp%num_grp
 !$omp parallel workshare
-        iflag_new(1:ele_tbl%ntot_import) = 0
+        iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
         call mark_org_group_repart                                      &
@@ -884,6 +889,8 @@
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import,                            &
      &      iflag_org(1), iflag_new(1), SR_sig, SR_i)
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new)
 !
         icou = 0
 !$omp parallel do reduction(+:icou)
@@ -902,7 +909,7 @@
       do igrp = 1, ele_grp%num_grp
         icou = new_ele_grp%istack_grp(igrp-1)
 !$omp parallel workshare
-        iflag_new(1:ele_tbl%ntot_import) = 0
+        iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
         call mark_org_group_repart                                      &
@@ -913,6 +920,8 @@
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import,                            &
      &      iflag_org(1), iflag_new(1), SR_sig, SR_i)
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (ele%numele, new_ele_comm, SR_sig, SR_i, iflag_new)
 !
         call set_group_item_repart                                      &
      &     (new_ele%numele, iflag_new(1), new_ele_grp, icou)
@@ -944,10 +953,11 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: igrp, k1, icou, i, num_flag
+      integer(kind = kint) :: igrp, k1, icou, i, num_import_flag
 !
 !
-      call allocate_group_flags(ele%numele, ele_tbl%ntot_import)
+      num_import_flag = max(ele_tbl%ntot_import, new_ele%numele)
+      call allocate_group_flags(ele%numele, num_import_flag)
 !
       new_surf_grp%num_grp = surf_grp%num_grp
       call alloc_sf_group_num(new_surf_grp)
@@ -961,7 +971,7 @@
         new_surf_grp%nitem_grp(igrp) = 0
         do k1 = 1, ele%nnod_4_ele
 !$omp parallel workshare
-          iflag_new(1:ele_tbl%ntot_import) = 0
+          iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
           call mark_org_surf_group_repart                               &
@@ -995,7 +1005,7 @@
         icou = new_surf_grp%istack_grp(igrp-1)
         do k1 = 1, ele%nnod_4_ele
 !$omp parallel workshare
-          iflag_new(1:ele_tbl%ntot_import) = 0
+          iflag_new(1:num_import_flag) = 0
 !$omp end parallel workshare
 !
           call mark_org_surf_group_repart                               &

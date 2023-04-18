@@ -88,7 +88,7 @@
 !      call compare_mesh_type                                           &
 !     &   (my_rank, geofem%mesh%nod_comm, mesh%node, mesh%ele,          &
 !     &    femmesh_s%mesh)
-!      call compare_mesh_groups(geofem%group%nod_grp, femmesh_s%group)
+!      call compare_mesh_groups(geofem%group, femmesh_s%group)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_mesh_and_group'
       femmesh_s%mesh%ele%first_ele_type                                 &
