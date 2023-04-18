@@ -10,8 +10,8 @@
 !!      subroutine s_mesh_repartition_by_volume                         &
 !!     &         (mesh, group, ele_comm, neib_nod, part_param,          &
 !!     &          num_mask, masking, ref_repart, d_mask,                &
-!!     &          new_mesh, new_group, repart_nod_tbl, repart_ele_tbl,  &
-!!     &          m_SR)
+!!     &          new_mesh, new_group, new_ele_comm,                    &
+!!     &          repart_nod_tbl, repart_ele_tbl,  m_SR)
 !!        integer(kind = kint), intent(in) :: num_mask
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -24,6 +24,7 @@
 !!     &                     :: d_mask(mesh%node%numnod,num_mask)
 !!        type(mesh_geometry), intent(inout) :: new_mesh
 !!        type(mesh_groups), intent(inout) :: new_group
+!!        type(communication_table), intent(in) :: new_ele_comm
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !!        type(calypso_comm_table), intent(inout) :: repart_ele_tbl
 !!        type(mesh_SR), intent(inout) :: m_SR
@@ -54,8 +55,8 @@
       subroutine s_mesh_repartition_by_volume                           &
      &         (mesh, group, ele_comm, neib_nod, part_param,            &
      &          num_mask, masking, ref_repart, d_mask,                  &
-     &          new_mesh, new_group, repart_nod_tbl, repart_ele_tbl,    &
-     &          m_SR)
+     &          new_mesh, new_group, new_ele_comm,                      &
+     &          repart_nod_tbl, repart_ele_tbl,  m_SR)
 !
       use t_para_double_numbering
       use t_control_param_vol_grping
@@ -80,6 +81,7 @@
 !
       type(mesh_geometry), intent(inout) :: new_mesh
       type(mesh_groups), intent(inout) :: new_group
+      type(communication_table), intent(in) :: new_ele_comm
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
       type(calypso_comm_table), intent(inout) :: repart_ele_tbl
       type(mesh_SR), intent(inout) :: m_SR
@@ -111,7 +113,8 @@
       call set_3D_nnod_4_sfed_by_ele(new_mesh%ele%nnod_4_ele,           &
      &    new_mesh%surf%nnod_4_surf, new_mesh%edge%nnod_4_edge)
 !
-      call s_redistribute_groups(mesh, group, ele_comm, new_mesh,       &
+      call s_redistribute_groups                                        &
+     &   ((.FALSE.), mesh, group, ele_comm, new_mesh, new_ele_comm,     &
      &    repart_nod_tbl, repart_ele_tbl, new_group,                    &
      &    m_SR%SR_sig, m_SR%SR_i)
 !

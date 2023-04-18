@@ -48,6 +48,7 @@
       subroutine gz_mpi_read_repart_tbl_file                            &
      &         (num_pe, id_rank, file_name, repart_IOs)
 !
+      use m_fem_mesh_labels
       use gz_MPI_comm_table_IO
       use MPI_ascii_data_IO
 !
@@ -64,6 +65,9 @@
      &   (file_name, num_pe, id_rank, IO_param)
       call gz_mpi_read_calypso_comm_tbl(IO_param,                       &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
+!
+      call gz_mpi_skip_header(IO_param, len(hd_fem_elem()))
+      call gz_mpi_read_num_of_data(IO_param, repart_IOs%new_numele)
       call gz_mpi_read_calypso_comm_tbl(IO_param,                       &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
 !
@@ -77,6 +81,7 @@
 !
       subroutine gz_mpi_write_repart_tbl_file(file_name, repart_IOs)
 !
+      use m_fem_mesh_labels
       use gz_MPI_comm_table_IO
       use MPI_ascii_data_IO
 !
@@ -91,6 +96,10 @@
       call open_write_mpi_file(file_name, IO_param)
       call gz_mpi_write_calypso_comm_tbl(IO_param,                      &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
+!
+      call gz_mpi_write_charahead                                       &
+     &   (IO_param, len(hd_fem_elem()), hd_fem_elem())
+      call gz_mpi_write_num_of_data(IO_param, repart_IOs%new_numele)
       call gz_mpi_write_calypso_comm_tbl(IO_param,                      &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
 !
@@ -122,6 +131,8 @@
      &   (file_name, num_pe, id_rank, IO_param)
       call gz_mpi_read_calypso_comm_tbl_b(IO_param,                     &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
+!
+      call gz_mpi_read_one_integer_b(IO_param, repart_IOs%new_numele)
       call gz_mpi_read_calypso_comm_tbl_b(IO_param,                     &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
 !
@@ -145,6 +156,8 @@
       call open_write_mpi_file(file_name, IO_param)
       call gz_mpi_write_calypso_comm_tbl_b(IO_param,                    &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
+!
+      call gz_mpi_write_one_integer_b(IO_param, repart_IOs%new_numele)
       call gz_mpi_write_calypso_comm_tbl_b(IO_param,                    &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
 !

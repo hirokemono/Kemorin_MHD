@@ -71,6 +71,8 @@
       call gz_read_calypso_comm_tbl(FPz_c, id_rank, zbuf_c,             &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export,   &
      &    ierr)
+!
+      call skip_gz_comment_int(FPz_c, repart_IOs%new_numele, zbuf_c)
       call gz_read_calypso_comm_tbl(FPz_c, id_rank, zbuf_c,             &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export,   &
      &    ierr)
@@ -91,6 +93,7 @@
       use gz_comm_table_IO
       use gzip_file_access
       use skip_gz_comment
+      use m_fem_mesh_labels
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -104,6 +107,13 @@
       call gz_write_calypso_comm_tbl(FPz_c, id_rank,                    &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export,   &
      &    zbuf_c)
+!
+      zbuf_c%fixbuf(1) = hd_fem_elem() // char(0)
+      call gz_write_textbuf_no_lf(FPz_c, zbuf_c)
+      write(zbuf_c%fixbuf(1),'(i16,2a1)')                               &
+     &                        repart_IOs%new_numele, char(10), char(0)
+      call gz_write_textbuf_no_lf(FPz_c, zbuf_c)
+!
       call gz_write_calypso_comm_tbl(FPz_c, id_rank,                    &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export,   &
      &    zbuf_c)
@@ -137,6 +147,9 @@
       if(zbuf_c%ierr_zlib .ne. 0) go to 99
       call gz_read_calypso_comm_tbl_b(FPz_c, id_rank, zbuf_c,           &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
+      if(zbuf_c%ierr_zlib .ne. 0) go to 99
+!
+      call gz_read_one_integer_b(FPz_c, zbuf_c, repart_IOs%new_numele)
       if(zbuf_c%ierr_zlib .ne. 0) go to 99
       call gz_read_calypso_comm_tbl_b(FPz_c, id_rank, zbuf_c,           &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
@@ -173,6 +186,8 @@
       call gz_write_calypso_comm_tbl_b(FPz_c, id_rank,                  &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export,   &
      &    zbuf_c)
+!
+      call gz_write_one_integer_b(FPz_c, repart_IOs%new_numele, zbuf_c)
       call gz_write_calypso_comm_tbl_b(FPz_c, id_rank,                  &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export,   &
      &    zbuf_c)

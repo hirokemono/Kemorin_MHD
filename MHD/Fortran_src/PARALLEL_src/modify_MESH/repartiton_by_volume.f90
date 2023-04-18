@@ -156,7 +156,7 @@
         call s_mesh_repartition_by_volume                               &
      &     (mesh, group, ele_comm, next_tbl%neib_nod, part_param,       &
      &      num_mask, masking, ref_repart, d_mask, new_mesh, new_group, &
-     &      repart_nod_tbl, repart_ele_tbl, m_SR)
+     &      new_ele_comm, repart_nod_tbl, repart_ele_tbl, m_SR)
       end if
       call calypso_mpi_barrier
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
@@ -399,10 +399,11 @@
      &     repart_ele_tbl%ntot_import, new_ele_comm%ntot_import, &
      &     maxval(repart_ele_tbl%item_import), &
      &     maxval(new_ele_comm%item_import), &
-     &     max(maxval(repart_ele_tbl%item_import), maxval(new_ele_comm%item_import))
+     &     max(maxval(repart_ele_tbl%item_import),                      &
+     &     maxval(new_ele_comm%item_import))
 !
-        call output_repart_table                                        &
-     &     (part_param%trans_tbl_file, repart_nod_tbl, repart_ele_tbl,  &
+        call output_repart_table(part_param%trans_tbl_file,             &
+     &      new_mesh%ele%numele, repart_nod_tbl, repart_ele_tbl,        &
      &      new_mesh%nod_comm, new_ele_comm)
       end if
 !

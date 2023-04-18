@@ -7,18 +7,20 @@
 !>@brief Structures for repartition table IO
 !!
 !!@verbatim
-!!      subroutine output_repart_table                                  &
-!!     &         (repart_file, nod_repart_tbl, ele_repart_tbl,          &
+!!      subroutine output_repart_table(repart_file, new_numele,         &
+!!     &          nod_repart_tbl, ele_repart_tbl,                       &
 !!     &          new_nod_comm, new_ele_comm)
 !!        type(field_IO_params), intent(in) ::  repart_file
 !!        type(calypso_comm_table), intent(in) :: nod_repart_tbl
 !!        type(calypso_comm_table), intent(in) :: ele_repart_tbl
 !!        type(communication_table), intent(in) :: new_nod_comm
 !!        type(communication_table), intent(in) :: new_ele_comm
-!!      subroutine set_repart_table_from_file                           &
-!!     &         (repart_file, nod_repart_tbl, ele_repart_tbl,          &
+!!        integer(kind = kint), intent(in) :: new_numele
+!!      subroutine set_repart_table_from_file(repart_file,              &
+!!     &          new_numele, nod_repart_tbl, ele_repart_tbl,           &
 !!     &          new_nod_comm, new_ele_comm)
 !!        type(field_IO_params), intent(in) ::  repart_file
+!!        integer(kind = kint), intent(inout) :: new_numele
 !!        type(calypso_comm_table), intent(inout) :: nod_repart_tbl
 !!        type(calypso_comm_table), intent(inout) :: ele_repart_tbl
 !!        type(communication_table), intent(inout) :: new_nod_comm
@@ -44,12 +46,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_repart_table                                    &
-     &         (repart_file, nod_repart_tbl, ele_repart_tbl,            &
+      subroutine output_repart_table(repart_file, new_numele,           &
+     &          nod_repart_tbl, ele_repart_tbl,                         &
      &          new_nod_comm, new_ele_comm)
 !
       use sel_repartition_table_IO
 !
+      integer(kind = kint), intent(in) :: new_numele
       type(field_IO_params), intent(in) ::  repart_file
       type(calypso_comm_table), intent(in) :: nod_repart_tbl
       type(calypso_comm_table), intent(in) :: ele_repart_tbl
@@ -60,7 +63,7 @@
 !
 !
       call copy_repart_tbl_to_repart_IOs                                &
-     &   (nod_repart_tbl, ele_repart_tbl,                               &
+     &   (new_numele, nod_repart_tbl, ele_repart_tbl,                   &
      &    new_nod_comm, new_ele_comm, repart_IOs)
       call sel_mpi_write_repart_tbl_file(repart_file, repart_IOs)
       call dealloc_repartition_tables_IO(repart_IOs)
@@ -69,8 +72,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_repart_table_from_file                             &
-     &         (repart_file, nod_repart_tbl, ele_repart_tbl,            &
+      subroutine set_repart_table_from_file(repart_file,                &
+     &          new_numele, nod_repart_tbl, ele_repart_tbl,             &
      &          new_nod_comm, new_ele_comm)
 !
       use m_error_IDs
@@ -78,6 +81,7 @@
 !
       type(field_IO_params), intent(in) ::  repart_file
 !
+      integer(kind = kint), intent(inout) :: new_numele
       type(calypso_comm_table), intent(inout) :: nod_repart_tbl
       type(calypso_comm_table), intent(inout) :: ele_repart_tbl
       type(communication_table), intent(inout) :: new_nod_comm
@@ -89,7 +93,7 @@
 !
       call sel_mpi_read_repart_tbl_file(repart_file, repart_IOs)
       call copy_repart_IOs_to_repart_tbl(my_rank, repart_IOs,           &
-     &    nod_repart_tbl, ele_repart_tbl,                               &
+     &    new_numele, nod_repart_tbl, ele_repart_tbl,                   &
      &    new_nod_comm, new_ele_comm, ierr)
       call dealloc_repartition_tables_IO(repart_IOs)
 !

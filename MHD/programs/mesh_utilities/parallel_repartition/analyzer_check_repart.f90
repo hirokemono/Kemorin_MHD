@@ -130,10 +130,11 @@
       type(work_for_comm_check), save :: edge_check
 !
       integer(kind = kint) :: irank_read
-      integer(kind = kint) :: i, ierr
+      integer(kind = kint) :: i, ierr, new_numele
 !
 !
-      call set_repart_table_from_file(part_p1%repart_p%trans_tbl_file,  &
+      call set_repart_table_from_file                                   &
+     &   (part_p1%repart_p%trans_tbl_file, new_numele,                  &
      &    part_nod_tbl1, part_ele_tbl2, new_nod_comm2, new_ele_comm2)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'

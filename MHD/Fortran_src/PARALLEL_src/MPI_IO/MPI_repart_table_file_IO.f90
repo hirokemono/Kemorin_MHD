@@ -50,6 +50,7 @@
 !
       use MPI_comm_table_IO
       use MPI_ascii_data_IO
+      use m_fem_mesh_labels
 !
       integer, intent(in) :: num_pe, id_rank
       character(len=kchara), intent(in) :: file_name
@@ -63,6 +64,9 @@
      &   (file_name, num_pe, id_rank, IO_param)
       call mpi_read_calypso_comm_tbl(IO_param,                          &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
+!
+      call mpi_skip_read(IO_param, len(hd_fem_elem()))
+      call mpi_read_num_of_data(IO_param, repart_IOs%new_numele)
       call mpi_read_calypso_comm_tbl(IO_param,                          &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
 !
@@ -78,6 +82,7 @@
 !
       use MPI_comm_table_IO
       use MPI_ascii_data_IO
+      use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name
       type(repartition_tables_IO), intent(in) :: repart_IOs
@@ -89,6 +94,10 @@
       call open_write_mpi_file(file_name, IO_param)
       call mpi_write_calypso_comm_tbl(IO_param,                         &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_elem()), hd_fem_elem())
+      call mpi_write_num_of_data(IO_param, repart_IOs%new_numele)
       call mpi_write_calypso_comm_tbl(IO_param,                         &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
 !
@@ -118,6 +127,8 @@
       call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
       call mpi_read_calypso_comm_tbl_b(IO_param,                        &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
+!
+      call mpi_read_one_integer_b(IO_param, repart_IOs%new_numele)
       call mpi_read_calypso_comm_tbl_b(IO_param,                        &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
 !
@@ -144,6 +155,8 @@
       call open_write_mpi_file_b(file_name, IO_param)
       call mpi_write_calypso_comm_tbl_b(IO_param,                       &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
+!
+      call mpi_write_one_integer_b(IO_param, repart_IOs%new_numele)
       call mpi_write_calypso_comm_tbl_b(IO_param,                       &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
 !

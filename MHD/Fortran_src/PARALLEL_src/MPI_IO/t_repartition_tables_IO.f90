@@ -10,15 +10,16 @@
 !!      subroutine dealloc_repartition_tables_IO(repart_IOs)
 !!        type(repartition_tables_IO), intent(inout) :: repart_IOs
 !!      subroutine copy_repart_tbl_to_repart_IOs                        &
-!!     &         (nod_repart_tbl, ele_repart_tbl,                       &
+!!     &         (new_numele, nod_repart_tbl, ele_repart_tbl,           &
 !!     &          new_nod_comm, new_ele_comm, repart_IOs)
+!!        integer(kind = kint), intent(in) :: new_numele
 !!        type(calypso_comm_table), intent(in) :: nod_repart_tbl
 !!        type(calypso_comm_table), intent(in) :: ele_repart_tbl
 !!        type(communication_table), intent(in) :: new_nod_comm
 !!        type(communication_table), intent(in) :: new_ele_comm
 !!        type(repartition_tables_IO), intent(inout) :: repart_IOs
 !!      subroutine copy_repart_IOs_to_repart_tbl(irank_read, repart_IOs,&
-!!     &          nod_repart_tbl, ele_repart_tbl,                       &
+!!     &          new_numele, nod_repart_tbl, ele_repart_tbl,           &
 !!     &          new_nod_comm, new_ele_comm, ierr)
 !!        integer(kind= kint), intent(in) :: irank_read
 !!        type(repartition_tables_IO), intent(in) :: repart_IOs
@@ -26,6 +27,7 @@
 !!        type(calypso_comm_table), intent(inout) :: ele_repart_tbl
 !!        type(communication_table), intent(inout) :: new_nod_comm
 !!        type(communication_table), intent(inout) :: new_ele_comm
+!!        integer(kind = kint), intent(inout) :: new_numele
 !!        integer(kind = kint), intent(inout) :: ierr
 !!@endverbatim
 !!
@@ -48,6 +50,8 @@
 !>        Send table from original node address
         type(communication_table) :: nod_repart_export
 !
+!>        number of new element data
+        integer(kind = kint) :: new_numele = 0
 !>        Recieve table to repartitioned element address
         type(communication_table) :: ele_repart_import
 !>        Recieve table from original element address
@@ -96,11 +100,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_repart_tbl_to_repart_IOs                          &
-     &         (nod_repart_tbl, ele_repart_tbl,                         &
+     &         (new_numele, nod_repart_tbl, ele_repart_tbl,             &
      &          new_nod_comm, new_ele_comm, repart_IOs)
 !
       use copy_repart_table_for_IO
 !
+      integer(kind = kint), intent(in) :: new_numele
       type(calypso_comm_table), intent(in) :: nod_repart_tbl
       type(calypso_comm_table), intent(in) :: ele_repart_tbl
       type(communication_table), intent(in) :: new_nod_comm
@@ -108,6 +113,8 @@
 !
       type(repartition_tables_IO), intent(inout) :: repart_IOs
 !
+!
+      repart_IOs%new_numele = new_numele
 !
       call repart_table_to_export_IO                                    &
      &   (nod_repart_tbl, repart_IOs%nod_repart_export)
@@ -127,7 +134,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_repart_IOs_to_repart_tbl(irank_read, repart_IOs,  &
-     &          nod_repart_tbl, ele_repart_tbl,                         &
+     &          new_numele, nod_repart_tbl, ele_repart_tbl,             &
      &          new_nod_comm, new_ele_comm, ierr)
 !
       use copy_repart_table_for_IO
@@ -139,7 +146,11 @@
       type(calypso_comm_table), intent(inout) :: ele_repart_tbl
       type(communication_table), intent(inout) :: new_nod_comm
       type(communication_table), intent(inout) :: new_ele_comm
+      integer(kind = kint), intent(inout) :: new_numele
       integer(kind = kint), intent(inout) :: ierr
+!
+!
+      new_numele = repart_IOs%new_numele
 !
       call export_IO_to_repart_table                                    &
      &   (irank_read, repart_IOs%nod_repart_export, nod_repart_tbl)

@@ -56,11 +56,14 @@
      &                                repart_IOs, ierr)
 !
       use comm_table_IO
+      use skip_comment_f
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
       type(repartition_tables_IO), intent(inout) :: repart_IOs
       integer(kind = kint), intent(inout) :: ierr
+!
+      character(len=255) :: character_4_read
 !
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -71,6 +74,9 @@
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export,   &
      &    ierr)
       if(ierr .ne. 0) goto 99
+!
+      call skip_comment(character_4_read, id_file_code)
+      read(character_4_read,*) repart_IOs%new_numele
       call read_calypso_comm_tbl(id_file_code, id_rank,                 &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export,   &
      &    ierr)
@@ -92,6 +98,7 @@
       subroutine write_repart_tbl_file(id_rank, file_name, repart_IOs)
 !
       use comm_table_IO
+      use m_fem_mesh_labels
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -104,6 +111,9 @@
       open(id_file_code, file = file_name, form = 'formatted')
       call write_calypso_comm_tbl(id_file_code, id_rank,                &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
+!
+      write(id_file_code,'(a)', advance='NO') hd_fem_elem()
+      write(id_file_code,'(i16)') repart_IOs%new_numele
       call write_calypso_comm_tbl(id_file_code, id_rank,                &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
 !
@@ -121,6 +131,7 @@
       subroutine read_repart_tbl_file_b(id_rank, file_name,             &
      &                                  repart_IOs, ierr)
 !
+      use binary_IO
       use comm_table_IO_b
 !
       integer, intent(in) :: id_rank
@@ -138,6 +149,8 @@
       call read_calypso_comm_tbl_b(id_rank, bbuf_c,                     &
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export)
       if(bbuf_c%ierr_bin .ne. 0) goto 99
+!
+      call read_one_integer_b(bbuf_c, repart_IOs%new_numele)
       call read_calypso_comm_tbl_b(id_rank, bbuf_c,                     &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export)
       if(bbuf_c%ierr_bin .ne. 0) goto 99
@@ -157,6 +170,7 @@
       subroutine write_repart_tbl_file_b(id_rank, file_name,            &
      &                                   repart_IOs, ierr)
 !
+      use binary_IO
       use comm_table_IO_b
 !
       integer, intent(in) :: id_rank
@@ -176,11 +190,14 @@
      &    repart_IOs%nod_repart_import, repart_IOs%nod_repart_export,   &
      &    bbuf_c)
       if(bbuf_c%ierr_bin .gt. 0) go to 99
+!
+      call write_one_integer_b(repart_IOs%new_numele, bbuf_c)
+      if(bbuf_c%ierr_bin .gt. 0) go to 99
       call write_calypso_comm_tbl_b(id_rank,                            &
      &    repart_IOs%ele_repart_import, repart_IOs%ele_repart_export,   &
      &    bbuf_c)
-!
       if(bbuf_c%ierr_bin .gt. 0) go to 99
+!
       call write_comm_table_b(id_rank, repart_IOs%nod_comm_IO, bbuf_c)
       if(bbuf_c%ierr_bin .gt. 0) go to 99
       call write_comm_table_b(id_rank, repart_IOs%ele_comm_IO, bbuf_c)
