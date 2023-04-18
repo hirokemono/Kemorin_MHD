@@ -61,6 +61,8 @@
 !
       implicit none
 !
+      integer(kind = kint) :: nele_new_no_extend
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -106,6 +108,7 @@
       call const_reparition_ele_connect                                 &
      &   (mesh%ele, ele_tbl, new_ids_on_org, org_iele_dbl,              &
      &    new_numele, new_comm, new_node, new_ele, SR_sig, SR_i, SR_il)
+      nele_new_no_extend = new_numele
 !
       call dealloc_double_numbering(org_iele_dbl)
 !
