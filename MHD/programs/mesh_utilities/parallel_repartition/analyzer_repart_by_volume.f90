@@ -486,6 +486,8 @@
       integer(kind = kint) :: inod, icou, iele, k1, num_loop
 !
 !
+      num_loop = min(new_ele%numele, ele_tbl%ntot_import)
+!
       allocate(inod_recv(new_node%numnod))
       allocate(ie_tmp(new_ele%numele,new_ele%nnod_4_ele))
       allocate(i4_recv(ele_tbl%ntot_import))
@@ -494,48 +496,11 @@
       allocate(iele_org_local(new_ele%numele))
       allocate(iele_org_domain(new_ele%numele))
 !
-!$omp parallel do
-      do inod = 1, new_node%numnod
-        inod_recv(inod) =   inod
-      end do
-!$omp end parallel do
-      call SOLVER_SEND_RECV_int_type                                    &
-     &  (new_node%numnod, new_comm, SR_sig, SR_i, inod_recv)
-!
-!$omp parallel workshare
-      ie_tmp(1:new_ele%numele,1:new_ele%nnod_4_ele)            &
-     &   =  new_ele%ie(1:new_ele%numele,1:new_ele%nnod_4_ele)
-!$omp end parallel workshare
-      new_ele%ie(new_ele%numele,new_ele%nnod_4_ele) = 0
-!
-      num_loop = min(new_ele%numele, ele_tbl%ntot_import)
-      do k1 = 1, ele%nnod_4_ele
-        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
-     &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
-     &      i4_recv(1), SR_sig, SR_i)
-!$omp parallel workshare
-        ie_domain_recv(1:num_loop,k1) = i4_recv(1:num_loop)
-!$omp end parallel workshare
-      end do
-!
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%index(1),       &
-     &    i4_recv(1), SR_sig, SR_i)
-!$omp parallel workshare
-      iele_org_local(1:num_loop) = i4_recv(1:num_loop)
-!$omp end parallel workshare
-!
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, org_iele_dbl%irank(1),       &
-     &    i4_recv(1), SR_sig, SR_i)
-!$omp parallel workshare
-      iele_org_domain(1:num_loop) = i4_recv(1:num_loop)
-!$omp end parallel workshare
-!
-!
-!      allocate(item_import_recv(new_comm%ntot_import))
-!      call set_item_import_recv(new_comm, new_node%numnod,             &
-!     &                          inod_recv, item_import_recv)
+      call set_works_for_ext_node_search                                &
+     &   (ele, ele_tbl, org_iele_dbl, ie_newdomain,                     &
+     &    new_comm, new_node, new_ele, num_loop, inod_recv,             &
+     &    iele_org_local, iele_org_domain, ie_domain_recv,              &
+     &    ie_tmp, i4_recv, SR_sig, SR_i)
 !
       nmax_import = maxval(inod_recv)
       allocate(num_rev_import_recv(nmax_import))
