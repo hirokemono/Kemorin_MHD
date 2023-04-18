@@ -190,50 +190,20 @@
       icou = 0
       do iele = 1, num_loop
         do k1 = 1, new_ele%nnod_4_ele
-          ip =   ie_domain_recv(iele,k1)
-          inod = ie_tmp(iele,k1)
-          if(ip .eq. my_rank) then
-            new_ele%ie(iele,k1) = inod
-            icount_node(inod) = icount_node(inod) + 1
+          new_ele%ie(iele,k1) = search_repart_external_node             &
+     &                       (ie_tmp(iele,k1), ie_domain_recv(iele,k1), &
+     &                        my_rank, new_comm, namx_import,           &
+     &                        istack_rev_import_recv, irev_import,      &
+     &                        irank_import_recv)
+!
+          inod = new_ele%ie(iele,k1)
+          if(inod .le. 0) then
+            write(*,*) my_rank, 'Node cannot be found for ',            &
+     &         new_ele%iele_global(iele), iele, k1, ip, inod,           &
+     &         iele_org_local(iele), iele_org_domain(iele)
+            icou = icou + 1
           else
-            knod = -1
-            inum = search_from_list_data(ip, ione, new_comm%num_neib,   &
-     &                             new_comm%num_neib, new_comm%id_neib)
-            if(inum.ge.ione .and. inum.le.new_comm%num_neib) then
-              ist = new_comm%istack_import(inum-1) + 1
-              ied = new_comm%istack_import(inum)
-            else
-              ist = 0
-              ied = 0
-            end if
-!
-            if(ist .gt. 0) then
-!              jnum = search_from_sorted_data(inod, ist, ied,           &
-!     &                          new_comm%ntot_import, item_import_recv)
-!
-              jst = istack_rev_import_recv(inod-1) + 1
-              jed = istack_rev_import_recv(inod  )
-              knum = search_from_sorted_data(ip, jst, jed,              &
-     &                          new_comm%ntot_import, irank_import_recv)
-!              if(jnum .ne. irev_import(knum)) &
-!              write(*,*) new_comm%item_import(jnum), ip,               &
-!     &                  jst, jed, knum, irev_import(knum),             &
-!     &                  new_comm%item_import(irev_import(knum))
-              if(knum.ge.jst .and. knum.le.jed) then
-                knod = irev_import(knum)
-                jnod = new_comm%item_import(knod)
-                new_ele%ie(iele,k1) = jnod
-                icount_node(jnod) = icount_node(jnod) + 1
-              end if
-            end if
-!
-            if(knod .le. 0) then
-              new_ele%ie(iele,k1) = 0
-              write(*,*) my_rank, 'Node cannot be found for ',         &
-     &           new_ele%iele_global(iele), iele, k1, ip, inod,        &
-     &           iele_org_local(iele), iele_org_domain(iele)
-              icou = icou + 1
-            end if
+            icount_node(inod) = icount_node(inod) + 1
           end if
         end do
       end do
