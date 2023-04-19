@@ -198,7 +198,6 @@
       use solver_SR_type
       use search_from_list
       use select_copy_from_recv
-      use const_repart_ele_connect
 !
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
