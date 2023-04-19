@@ -210,7 +210,8 @@
      &    part_nod_tbl2, part_ele_tbl2, new_fem2%mesh%nod_comm,         &
      &    new_ele_comm2)
       new_fem2%mesh%ele%numele = new_numele
-      write(*,*) my_rank, 'new_fem2%mesh%ele%numele', new_fem2%mesh%ele%numele
+      write(*,*) my_rank, 'new_fem2%mesh%ele%numele',                   &
+     &                   new_fem2%mesh%ele%numele
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
