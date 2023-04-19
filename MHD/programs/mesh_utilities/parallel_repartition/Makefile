@@ -5,7 +5,7 @@
 REPARTITION_DIR = $$(MESHER_DIR)/parallel_repartition
 
 TARGET_VOLUME_REPARTITION = repartition_by_volume
-TARGET_CHECK_REPARTITION =  checkrepartition
+TARGET_CHECK_REPARTITION =  check_mesh_by_repartition
 TARGET_CHECK_REPART_MESH =  check_repart_by_mesh
 TARGET_FIELD_TO_NEWPART =   field_to_new_partition
 

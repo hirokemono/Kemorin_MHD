@@ -131,6 +131,7 @@
       use const_repart_nod_and_comm
       use const_repart_ele_connect
       use redistribute_groups
+      use set_nnod_4_ele_by_type
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
@@ -167,12 +168,15 @@
       call set_repart_node_position(part_nod_tbl, mesh%node,            &
      &    new_mesh%nod_comm, new_mesh%node,                             &
      &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_il)
+      call alloc_sph_node_geometry(new_mesh%node)
 !
 !
       call const_repart_ele_connect_by_tbl(new_numele,                  &
      &   mesh, ele_comm, part_nod_tbl, part_ele_tbl, new_ids_on_org,    &
      &   new_mesh%nod_comm, new_mesh%node, new_ele_comm, new_iele_dbl,  &
      &   new_mesh%ele, m_SR%SR_sig, m_SR%SR_i, m_SR%SR_il)
+      call set_3D_nnod_4_sfed_by_ele(new_mesh%ele%nnod_4_ele,           &
+     &    new_mesh%surf%nnod_4_surf, new_mesh%edge%nnod_4_edge)
       call dealloc_double_numbering(new_iele_dbl)
       call dealloc_double_numbering(new_ids_on_org)
 !

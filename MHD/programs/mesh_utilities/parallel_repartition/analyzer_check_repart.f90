@@ -35,7 +35,6 @@
 !
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
-      type(mesh_data), save :: new_fem
       type(mesh_SR), save :: m_SR_T
 !
 ! ----------------------------------------------------------------------
@@ -53,13 +52,6 @@
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use nod_phys_send_recv
-      use repartiton_by_volume
-      use const_element_comm_tables
-      use set_table_4_RHS_assemble
-      use int_volume_of_single_domain
-      use field_to_new_partition
-!
-!>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
 !
@@ -86,11 +78,11 @@
      &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
       if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for target'
-      call mpi_input_mesh(part_p1%repart_p%viz_mesh_file,               &
-     &                    nprocs, new_fem)
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
       end subroutine initialize_check_reapart_mesh
 !
@@ -112,12 +104,12 @@
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
       use load_repartition_table
+      use mesh_repartition_by_volume
 !
-      type(interpolate_table) :: itp_nod_tbl_IO
+      type(mesh_data), save :: new_fem
 !
-      type(calypso_comm_table), save :: part_nod_tbl1
+      type(calypso_comm_table), save :: part_nod_tbl2
       type(calypso_comm_table), save :: part_ele_tbl2
-      type(communication_table), save :: new_nod_comm2
       type(communication_table), save :: new_ele_comm2
 !
       type(communication_table), save :: T_ele_comm
@@ -135,16 +127,22 @@
 !
       call set_repart_table_from_file                                   &
      &   (part_p1%repart_p%trans_tbl_file, new_numele,                  &
-     &    part_nod_tbl1, part_ele_tbl2, new_nod_comm2, new_ele_comm2)
+     &    part_nod_tbl2, part_ele_tbl2, new_fem%mesh%nod_comm,          &
+     &    new_ele_comm2)
+      call calypso_mpi_barrier
+      new_fem%mesh%ele%numele = new_numele
+      write(*,*) my_rank, 'new_fem%mesh%ele%numele',                    &
+     &                   new_fem%mesh%ele%numele
+!
+      call const_repart_mesh_by_table(fem_T%mesh, fem_T%group,          &
+     &    part_nod_tbl2, part_ele_tbl2, new_ele_comm2,                  &
+     &    new_numele, new_fem%mesh, new_fem%group, m_SR_T)
+      call calypso_mpi_barrier
+!
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
-!
-      if(iflag_debug.gt.0) write(*,*) ' const_ele_comm_table'
-      call const_global_numele_list(new_fem%mesh%ele)
-      call const_ele_comm_table(new_fem%mesh%node,                      &
-     &    new_fem%mesh%nod_comm, new_fem%mesh%ele, T_ele_comm, m_SR_T)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_surf_comm_table'
       call const_surf_comm_table                                        &
@@ -159,10 +157,10 @@
 !
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
       call node_transfer_test(fem_T%mesh%node, new_fem%mesh%node,       &
-     &    new_fem%mesh%nod_comm, part_nod_tbl1, nod_check,              &
+     &    new_fem%mesh%nod_comm, part_nod_tbl2, nod_check,              &
      &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
 !
-      call ele_send_recv_test(new_fem%mesh%ele, T_ele_comm,             &
+      call ele_send_recv_test(new_fem%mesh%ele, new_ele_comm2,          &
      &                        ele_check, m_SR_T%SR_sig, m_SR_T%SR_r)
       call surf_send_recv_test(new_fem%mesh%surf, T_surf_comm,          &
      &                         surf_check, m_SR_T%SR_sig, m_SR_T%SR_r)
