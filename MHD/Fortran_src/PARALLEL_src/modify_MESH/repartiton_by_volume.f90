@@ -118,7 +118,7 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(communication_table) :: new_ele_comm
-      type(calypso_comm_table) :: repart_ele_tbl, repart_ele_tbl_2
+      type(calypso_comm_table) :: repart_ele_tbl
       integer(kind = kint) :: ierr
       integer :: nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new
       integer :: nele_ele_tbl
@@ -249,47 +249,6 @@
         if(num_recv_tmp(irank) .gt. 0) icou_recv = icou_recv + 1
         if(num_send_tmp(irank) .gt. 0) icou_send = icou_send + 1
       end do
-!
-      repart_ele_tbl_2%nrank_import = icou_recv
-      call alloc_calypso_import_num(repart_ele_tbl_2)
-!
-      repart_ele_tbl_2%nrank_export = icou_send
-      call alloc_calypso_export_num(repart_ele_tbl_2)
-!
-      allocate(ip_send_tmp(0:nprocs-1))
-      allocate(ip_recv_tmp(0:nprocs-1))
-      ip_send_tmp(0:nprocs-1) = -1
-      ip_recv_tmp(0:nprocs-1) = -1
-      icou_recv = 0
-      icou_send = 0
-      do ip = 1, nprocs
-        irank = mod(my_rank+ip,nprocs)
-        if(num_recv_tmp(irank) .gt. 0) then
-          icou_recv = icou_recv + 1
-          repart_ele_tbl_2%irank_import(icou_recv) = irank
-          repart_ele_tbl_2%num_import(icou_recv) = num_recv_tmp(irank)
-          ip_recv_tmp(irank) = icou_recv
-        end if
-        if(num_send_tmp(irank) .gt. 0) then
-          icou_send = icou_send + 1
-          repart_ele_tbl_2%irank_export(icou_send) = irank
-          repart_ele_tbl_2%num_export(icou_recv) = num_send_tmp(irank)
-          ip_send_tmp(irank) = icou_send
-        end if
-      end do
-      repart_ele_tbl_2%iflag_self_copy = 0
-      if(num_recv_tmp(my_rank) .gt. 0) then
-        repart_ele_tbl_2%iflag_self_copy = 1
-      end if
-!
-      call s_cal_total_and_stacks(repart_ele_tbl_2%nrank_import,        &
-     &                            repart_ele_tbl_2%num_import, izero,   &
-     &                            repart_ele_tbl_2%istack_import,       &
-     &                            repart_ele_tbl_2%ntot_import)
-      call s_cal_total_and_stacks(repart_ele_tbl_2%nrank_export,        &
-     &                            repart_ele_tbl_2%num_export, izero,   &
-     &                            repart_ele_tbl_2%istack_export,       &
-     &                            repart_ele_tbl_2%ntot_export)
 !
 !  ----------------
 !

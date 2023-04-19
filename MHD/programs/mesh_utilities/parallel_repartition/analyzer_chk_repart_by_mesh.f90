@@ -419,7 +419,6 @@
         if(num_recv_tmp(irank) .gt. 0) icou_recv = icou_recv + 1
         if(num_send_tmp(irank) .gt. 0) icou_send = icou_send + 1
       end do
-!      return
 !
       repart_ele_tbl_2%nrank_import = icou_recv
       call alloc_calypso_import_num(repart_ele_tbl_2)
@@ -461,6 +460,26 @@
      &                            repart_ele_tbl_2%num_export, izero,   &
      &                            repart_ele_tbl_2%istack_export,       &
      &                            repart_ele_tbl_2%ntot_export)
+!
+!  ----------------
+!
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
+      call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
+      call const_ele_comm_table(new_mesh%node, new_mesh%nod_comm,       &
+     &                          new_mesh%ele, new_ele_comm, m_SR)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
+!
+!       Output new mesh file
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
+      if(part_param%viz_mesh_file%iflag_format .eq. id_no_file) then
+        if(my_rank .eq. 0) write(*,*)                                   &
+     &          'No repartitioned mesh data output'
+      else
+        call sel_mpi_write_mesh_file(part_param%viz_mesh_file,          &
+     &                               new_mesh, new_group)
+      end if
+      call calypso_MPI_barrier
+      return
 !
       end subroutine s_repartiton_by_volume2
 !
