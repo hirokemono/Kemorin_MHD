@@ -288,24 +288,8 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(communication_table) :: new_ele_comm
-      type(calypso_comm_table) :: repart_ele_tbl, repart_ele_tbl_2
+      type(calypso_comm_table) :: repart_ele_tbl
       integer(kind = kint) :: ierr
-      integer :: nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new
-      integer :: nele_ele_tbl
-!
-      type(node_ele_double_number) :: inod_dbl_org, iele_dbl_org
-      type(node_ele_double_number) :: inod_dbl_new, iele_dbl_new
-      type(node_ele_double_number) :: inod_dbl_org_on_new
-      type(node_ele_double_number) :: iele_dbl_org_on_new
-      integer(kind = kint), allocatable :: ip_recv_tmp(:)
-      integer(kind = kint), allocatable :: ip_send_tmp(:)
-      integer(kind = kint), allocatable :: num_recv_tmp(:)
-      integer(kind = kint), allocatable :: num_send_tmp(:)
-      integer(kind = kint), allocatable :: iele_sort(:)
-      integer(kind = kint_gl), allocatable :: iele_gl_org(:)
-      integer(kind = kint) :: iele, ist, ied, num, ip, irank, inum
-      integer(kind = kint) :: iele_org, irank_org
-      integer(kind = kint) ::icou_recv, icou_send
 !
 !  -------------------------------
 !
@@ -349,117 +333,6 @@
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
       end if
       call calypso_mpi_barrier
-!
-!  ----------------
-!
-      call alloc_double_numbering(mesh%node%numnod, inod_dbl_org)
-      call alloc_double_numbering(mesh%ele%numele, iele_dbl_org)
-      call set_node_ele_double_address                                  &
-     &   (mesh%node, mesh%ele, mesh%nod_comm, ele_comm,                 &
-     &    inod_dbl_org, iele_dbl_org, m_SR%SR_sig, m_SR%SR_i)
-!
-      call alloc_double_numbering(new_mesh%node%numnod, inod_dbl_new)
-      call alloc_double_numbering(new_mesh%ele%numele, iele_dbl_new)
-      call set_node_ele_double_address                                  &
-     &   (new_mesh%node, new_mesh%ele, new_mesh%nod_comm, new_ele_comm, &
-     &    inod_dbl_new, iele_dbl_new, m_SR%SR_sig, m_SR%SR_i)
-!
-      call alloc_double_numbering(new_mesh%node%numnod,                 &
-     &                            inod_dbl_org_on_new)
-      call calypso_SR_type_int(iflag_import_item, repart_nod_tbl,       &
-     &    mesh%node%numnod, new_mesh%node%numnod,                       &
-     &    inod_dbl_org%index(1), inod_dbl_org_on_new%index(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-      call calypso_SR_type_int(iflag_import_item, repart_nod_tbl,       &
-     &    mesh%node%numnod, new_mesh%node%numnod,                       &
-     &    inod_dbl_org%irank(1), inod_dbl_org_on_new%irank(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm,                      &
-     &    m_SR%SR_sig, m_SR%SR_i, inod_dbl_org_on_new%index(1))
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm,                      &
-     &    m_SR%SR_sig, m_SR%SR_i, inod_dbl_org_on_new%irank(1))
-!
-      call alloc_double_numbering(new_mesh%ele%numele,                  &
-     &                            iele_dbl_org_on_new)
-      call calypso_SR_type_int(iflag_import_item, repart_ele_tbl,       &
-     &    mesh%ele%numele, new_mesh%ele%numele,                         &
-     &    iele_dbl_org%index(1), iele_dbl_org_on_new%index(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-      call calypso_SR_type_int(iflag_import_item, repart_ele_tbl,       &
-     &    mesh%ele%numele, new_mesh%ele%numele,                         &
-     &    iele_dbl_org%irank(1), iele_dbl_org_on_new%irank(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%ele%numele, new_ele_comm,                            &
-     &    m_SR%SR_sig, m_SR%SR_i, iele_dbl_org_on_new%index(1))
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%ele%numele, new_ele_comm,                            &
-     &    m_SR%SR_sig, m_SR%SR_i, iele_dbl_org_on_new%irank(1))
-      call dealloc_comm_table(new_ele_comm)
-      call calypso_mpi_barrier
-!
-      allocate(num_recv_tmp(0:nprocs-1))
-      num_recv_tmp(0:nprocs-1) = 0
-      do iele = 1, new_mesh%ele%numele
-        irank = iele_dbl_org_on_new%irank(iele)
-        num_recv_tmp(irank) = num_recv_tmp(irank) + 1
-      end do
-!
-      allocate(num_send_tmp(0:nprocs-1))
-      num_send_tmp(0:nprocs-1) = 0
-      call calypso_mpi_alltoall_one_int                                 &
-     &   (num_recv_tmp(0), num_send_tmp(0))
-!
-      icou_recv = 0
-      icou_send = 0
-      do irank = 0, nprocs-1
-        if(num_recv_tmp(irank) .gt. 0) icou_recv = icou_recv + 1
-        if(num_send_tmp(irank) .gt. 0) icou_send = icou_send + 1
-      end do
-!
-      repart_ele_tbl_2%nrank_import = icou_recv
-      call alloc_calypso_import_num(repart_ele_tbl_2)
-!
-      repart_ele_tbl_2%nrank_export = icou_send
-      call alloc_calypso_export_num(repart_ele_tbl_2)
-!
-      allocate(ip_send_tmp(0:nprocs-1))
-      allocate(ip_recv_tmp(0:nprocs-1))
-      ip_send_tmp(0:nprocs-1) = -1
-      ip_recv_tmp(0:nprocs-1) = -1
-      icou_recv = 0
-      icou_send = 0
-      do ip = 1, nprocs
-        irank = mod(my_rank+ip,nprocs)
-        if(num_recv_tmp(irank) .gt. 0) then
-          icou_recv = icou_recv + 1
-          repart_ele_tbl_2%irank_import(icou_recv) = irank
-          repart_ele_tbl_2%num_import(icou_recv) = num_recv_tmp(irank)
-          ip_recv_tmp(irank) = icou_recv
-        end if
-        if(num_send_tmp(irank) .gt. 0) then
-          icou_send = icou_send + 1
-          repart_ele_tbl_2%irank_export(icou_send) = irank
-          repart_ele_tbl_2%num_export(icou_recv) = num_send_tmp(irank)
-          ip_send_tmp(irank) = icou_send
-        end if
-      end do
-      repart_ele_tbl_2%iflag_self_copy = 0
-      if(num_recv_tmp(my_rank) .gt. 0) then
-        repart_ele_tbl_2%iflag_self_copy = 1
-      end if
-!
-      call s_cal_total_and_stacks(repart_ele_tbl_2%nrank_import,        &
-     &                            repart_ele_tbl_2%num_import, izero,   &
-     &                            repart_ele_tbl_2%istack_import,       &
-     &                            repart_ele_tbl_2%ntot_import)
-      call s_cal_total_and_stacks(repart_ele_tbl_2%nrank_export,        &
-     &                            repart_ele_tbl_2%num_export, izero,   &
-     &                            repart_ele_tbl_2%istack_export,       &
-     &                            repart_ele_tbl_2%ntot_export)
 !
 !  ----------------
 !

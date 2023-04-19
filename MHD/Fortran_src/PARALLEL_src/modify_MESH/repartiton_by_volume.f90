@@ -123,13 +123,6 @@
       integer :: nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new
       integer :: nele_ele_tbl
 !
-      integer(kind = kint), allocatable :: ip_recv_tmp(:)
-      integer(kind = kint), allocatable :: ip_send_tmp(:)
-      integer(kind = kint), allocatable :: iele_sort(:)
-      integer(kind = kint_gl), allocatable :: iele_gl_org(:)
-      integer(kind = kint) :: iele, ist, ied, num, ip, irank, inum
-      integer(kind = kint) :: iele_org, irank_org
-!
 !  -------------------------------
 !
       call calypso_mpi_barrier
