@@ -30,12 +30,18 @@
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine load_repartitoned_file                               &
-!!     &         (part_param, geofem, new_fem, repart_nod_tbl)
+!!      subroutine load_repartitoned_table_mesh(flag_repart_mesh_file,  &
+!!     &         part_param, geofem, ele_comm, new_fem, new_ele_comm,   &
+!!     &         repart_nod_tbl, repart_ele_tbl, m_SR)
+!!        logical, intent(in) :: flag_repart_mesh_file
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
+!!        type(communication_table), intent(in) :: ele_comm
 !!        type(mesh_data), intent(inout) :: new_fem
+!!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
+!!        type(calypso_comm_table), intent(inout) :: repart_ele_tbl
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module repartiton_by_volume
@@ -49,6 +55,7 @@
       use calypso_mpi
 !
       use t_mesh_data
+      use t_comm_table
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_ctl_param_sleeve_extend
@@ -237,44 +244,52 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_repartitoned_file                                 &
-     &         (part_param, geofem, new_fem, repart_nod_tbl)
+      subroutine load_repartitoned_table_mesh(flag_repart_mesh_file,    &
+     &         part_param, geofem, ele_comm, new_fem, new_ele_comm,     &
+     &         repart_nod_tbl, repart_ele_tbl, m_SR)
 !
       use t_interpolate_table
       use m_file_format_switch
 !
       use mpi_load_mesh_data
-      use para_itrplte_table_IO_sel
-      use copy_repart_and_itp_table
-      use itrplte_tbl_coef_IO_select
+      use load_repartition_table
+      use mesh_repartition_by_volume
 !
+      logical, intent(in) :: flag_repart_mesh_file
       type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: geofem
+      type(communication_table), intent(in) :: ele_comm
 !
       type(mesh_data), intent(inout) :: new_fem
+      type(communication_table), intent(inout) :: new_ele_comm
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-!
-      type(interpolate_table) :: itp_nod_tbl_IO
-!
-      integer(kind= kint) :: irank_read, ierr
+      type(calypso_comm_table), intent(inout) :: repart_ele_tbl
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new mesh'
-      call mpi_input_mesh(part_param%viz_mesh_file, nprocs, new_fem)
+      integer(kind= kint) :: new_numele
 !
-      if (iflag_debug.gt.0) write(*,*) 'sel_mpi_read_dbl_itp_table'
-      call sel_mpi_read_interpolate_table                               &
-     &   (my_rank, nprocs, part_param%trans_tbl_file,                   &
-     &    itp_nod_tbl_IO, ierr)
+!
+      if (iflag_debug.gt.0) write(*,*) 's_load_repartition_table'
+      call s_load_repartition_table                                     &
+     &   (part_param%trans_tbl_file, new_numele,                        &
+     &    repart_nod_tbl, repart_ele_tbl, new_fem%mesh%nod_comm,        &
+     &    new_ele_comm)
+      new_fem%mesh%ele%numele = new_numele
       call calypso_MPI_barrier
 !
-      irank_read = my_rank
-      call copy_itp_table_to_repart_tbl(irank_read,                     &
-     &    geofem%mesh, new_fem%mesh, itp_nod_tbl_IO, repart_nod_tbl)
-      call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
+      if(flag_repart_mesh_file) then
+        if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new mesh'
+        call mpi_input_mesh(part_param%viz_mesh_file, nprocs, new_fem)
+      else
+        call const_repart_mesh_by_table                                 &
+     &     (geofem%mesh, geofem%group, ele_comm,                        &
+     &      repart_nod_tbl, repart_ele_tbl, new_ele_comm,               &
+     &      new_numele, new_fem%mesh, new_fem%group, m_SR)
+      end if
       call calypso_MPI_barrier
 !
-      end subroutine load_repartitoned_file
+      end subroutine load_repartitoned_table_mesh
 !
 ! ----------------------------------------------------------------------
 !

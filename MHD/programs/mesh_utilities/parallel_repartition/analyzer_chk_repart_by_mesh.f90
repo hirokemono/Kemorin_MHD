@@ -35,6 +35,7 @@
 !
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
+      type(communication_table) :: ele_comm_T
       type(mesh_SR), save :: m_SR_T
 !
 ! ----------------------------------------------------------------------
@@ -103,8 +104,9 @@
       use load_repartition_table
 !
       use mpi_load_mesh_data
+      use const_element_comm_tables
       use compare_mesh_structures
-      use mesh_repartition_by_volume
+      use repartiton_by_volume
 !
       type(calypso_comm_table), save :: part_nod_tbl2
       type(calypso_comm_table), save :: part_ele_tbl2
@@ -122,15 +124,6 @@
         return
       end if
 !
-      call set_repart_table_from_file                                   &
-     &   (part_p1%repart_p%trans_tbl_file, new_numele,                  &
-     &    part_nod_tbl2, part_ele_tbl2, new_fem2%mesh%nod_comm,         &
-     &    new_ele_comm2)
-      call calypso_mpi_barrier
-      new_fem2%mesh%ele%numele = new_numele
-!      write(*,*) my_rank, 'new_fem2%mesh%ele%numele',                  &
-!     &                   new_fem2%mesh%ele%numele
-!
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(part_p1%repart_p%viz_mesh_file,               &
@@ -142,9 +135,17 @@
       call FEM_mesh_initialization(new_fem_f%mesh, new_fem_f%group,     &
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
-      call const_repart_mesh_by_table(fem_T%mesh, fem_T%group,          &
-     &    part_nod_tbl2, part_ele_tbl2, new_ele_comm2,                  &
-     &    new_numele, new_fem2%mesh, new_fem2%group, m_SR_T)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+!      call const_global_numele_list(fem_T%mesh%ele)
+      call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
+     &                          fem_T%mesh%ele, ele_comm_T, m_SR_T)
+!
+      call load_repartitoned_table_mesh((.FALSE.),                      &
+     &    part_p1%repart_p, fem_T, ele_comm_T, new_fem2, new_ele_comm2, &
+     &    part_nod_tbl2, part_ele_tbl2, m_SR_T)
+      call dealloc_comm_table(ele_comm_T)
+!
 !
       call compare_node_comm_types(my_rank, new_fem_f%mesh%nod_comm,    &
      &                             new_fem2%mesh%nod_comm)

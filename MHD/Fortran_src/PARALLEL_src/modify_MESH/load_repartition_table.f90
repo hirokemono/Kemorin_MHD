@@ -16,7 +16,7 @@
 !!        type(communication_table), intent(in) :: new_nod_comm
 !!        type(communication_table), intent(in) :: new_ele_comm
 !!        integer(kind = kint), intent(in) :: new_numele
-!!      subroutine set_repart_table_from_file(repart_file,              &
+!!      subroutine s_load_repartition_table(repart_file,                &
 !!     &          new_numele, nod_repart_tbl, ele_repart_tbl,           &
 !!     &          new_nod_comm, new_ele_comm)
 !!        type(field_IO_params), intent(in) ::  repart_file
@@ -72,7 +72,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_repart_table_from_file(repart_file,                &
+      subroutine s_load_repartition_table(repart_file,                  &
      &          new_numele, nod_repart_tbl, ele_repart_tbl,             &
      &          new_nod_comm, new_ele_comm)
 !
@@ -102,7 +102,7 @@
      &                         'Failed repatition table loading')
       end if
 !
-      end subroutine set_repart_table_from_file
+      end subroutine s_load_repartition_table
 !
 !-----------------------------------------------------------------------
 !

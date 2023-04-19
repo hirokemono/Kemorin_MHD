@@ -10,8 +10,8 @@
 !!      subroutine load_or_const_new_partition                          &
 !!     &         (flag_lic_dump, part_param, geofem, ele_comm, next_tbl,&
 !!     &          num_mask, masking, ref_repart, d_mask,                &
-!!     &          ref_vect_sleeve_ext, new_fem, repart_nod_tbl,         &
-!!     &          sleeve_exp_WK, m_SR)
+!!     &          ref_vect_sleeve_ext, new_fem, new_ele_comm,           &
+!!     &          repart_nod_tbl, repart_ele_tbl, sleeve_exp_WK, m_SR)
 !!        logical, intent(in) :: flag_lic_dump
 !!        integer(kind = kint), intent(in) :: num_mask
 !!        type(volume_partioning_param), intent(in) ::  part_param
@@ -26,7 +26,9 @@
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: ref_vect_sleeve_ext(geofem%mesh%node%numnod,3)
 !!        type(mesh_data), intent(inout) :: new_fem
+!!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
+!!        type(calypso_comm_table), intent(inout) :: repart_ele_tbl
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
@@ -88,8 +90,8 @@
       subroutine load_or_const_new_partition                            &
      &         (flag_lic_dump, part_param, geofem, ele_comm, next_tbl,  &
      &          num_mask, masking, ref_repart, d_mask,                  &
-     &          ref_vect_sleeve_ext, new_fem, repart_nod_tbl,           &
-     &          sleeve_exp_WK, m_SR)
+     &          ref_vect_sleeve_ext, new_fem, new_ele_comm,             &
+     &          repart_nod_tbl, repart_ele_tbl, sleeve_exp_WK, m_SR)
 !
       use m_work_time
       use m_elapsed_labels_4_REPART
@@ -113,31 +115,40 @@
      &           :: ref_vect_sleeve_ext(geofem%mesh%node%numnod,3)
 !
       type(mesh_data), intent(inout) :: new_fem
+      type(communication_table), intent(inout) :: new_ele_comm
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
+      type(calypso_comm_table), intent(inout) :: repart_ele_tbl
       type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
       type(mesh_SR), intent(inout) :: m_SR
 !
-      logical :: flag
+      logical :: flag, flag_m
 !
 !
       if(my_rank .eq. 0) then
         if(part_param%viz_mesh_file%iflag_format .eq. id_no_file        &
      &    .or. part_param%trans_tbl_file%iflag_format .eq. id_no_file)  &
      &   then
-        flag = .FALSE.
+          flag = .FALSE.
         else
           flag = (check_exist_mesh(my_rank, part_param%viz_mesh_file))  &
      &     .and. (check_exist_interpolate_file(my_rank,                 &
      &                                      part_param%trans_tbl_file))
         end if
+        if(part_param%viz_mesh_file%iflag_format .eq. id_no_file) then
+          flag_m = .FALSE.
+        else
+          flag_m = check_exist_mesh(my_rank, part_param%viz_mesh_file)
+        end if
       end if
       call calypso_MPI_barrier
       call calypso_mpi_bcast_one_logical(flag, 0)
+      call calypso_mpi_bcast_one_logical(flag_m, 0)
 !
       if(flag) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
-        call load_repartitoned_file(part_param, geofem, new_fem,        &
-     &                              repart_nod_tbl)
+        call load_repartitoned_table_mesh(flag_m,                       &
+     &      part_param, geofem, ele_comm, new_fem, new_ele_comm,        &
+     &      repart_nod_tbl, repart_ele_tbl, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
       else
 !

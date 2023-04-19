@@ -35,6 +35,7 @@
 !
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
+      type(communication_table), save :: ele_comm_T
       type(mesh_data), save :: new_fem
       type(mesh_SR), save :: m_SR_T
 !
@@ -64,7 +65,6 @@
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
-      type(communication_table), save :: ele_comm1
       type(jacobians_type), save :: jacobians1
       type(shape_finctions_at_points), save :: spfs1
       type(next_nod_ele_table), save :: next_tbl1
@@ -109,7 +109,7 @@
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
       call const_global_numele_list(fem_T%mesh%ele)
       call const_ele_comm_table(fem_T%mesh%node,                        &
-     &    fem_T%mesh%nod_comm, fem_T%mesh%ele, ele_comm1, m_SR_T)
+     &    fem_T%mesh%nod_comm, fem_T%mesh%ele, ele_comm_T, m_SR_T)
 !
 !  -----  Const volume of each element
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
@@ -131,13 +131,12 @@
       allocate(d_mask_org1(fem_T%mesh%node%numnod,1))
       allocate(vect_ref1(fem_T%mesh%node%numnod,3))
       call s_repartiton_by_volume((.TRUE.), part_p1%repart_p,           &
-     &    fem_T%mesh, fem_T%group, ele_comm1, next_tbl1,                &
+     &    fem_T%mesh, fem_T%group, ele_comm_T, next_tbl1,               &
      &    izero, masking1, vect_ref1(1,1), d_mask_org1, vect_ref1,      &
      &    new_fem%mesh, new_fem%group, repart_nod_tbl1,                 &
      &    sleeve_exp_WK1, m_SR_T)
       deallocate(d_mask_org1, vect_ref1, masking1)
 !
-      call dealloc_comm_table(ele_comm1)
       call dealloc_next_nod_ele_table(next_tbl1)
 !      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
@@ -162,20 +161,17 @@
       use m_file_format_switch
       use check_data_for_repartition
       use parallel_FEM_mesh_init
-      use load_repartition_table
 !
       use mpi_load_mesh_data
+      use const_element_comm_tables
       use compare_mesh_structures
-      use mesh_repartition_by_volume
-!
-      type(communication_table), save :: ele_comm1
+      use repartiton_by_volume
 !
       type(calypso_comm_table) :: part_nod_tbl2
       type(calypso_comm_table) :: part_ele_tbl2
-      type(communication_table), save :: new_ele_comm2
+      type(communication_table), save :: new_ele_comm_T
 !
       type(mesh_data), save :: new_fem2
-      integer(kind = kint) :: new_numele
 !
       integer(kind = kint) :: icount_error, icou_error_gl
 !
@@ -187,28 +183,23 @@
       end if
 !
 !
-      call set_repart_table_from_file                                   &
-     &   (part_p1%repart_p%trans_tbl_file, new_numele,                  &
-     &    part_nod_tbl2, part_ele_tbl2, new_fem2%mesh%nod_comm,         &
-     &    new_ele_comm2)
-      new_fem2%mesh%ele%numele = new_numele
-!      write(*,*) my_rank, 'new_fem2%mesh%ele%numele',                  &
-!     &                   new_fem2%mesh%ele%numele
-!
-      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-      if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
-      call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
-     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
-!
-!
-      call const_repart_mesh_by_table(fem_T%mesh, fem_T%group,          &
-     &    part_nod_tbl2, part_ele_tbl2, new_ele_comm2,                  &
-     &    new_numele, new_fem2%mesh, new_fem2%group, m_SR_T)
+      if(iflag_debug.gt.0) write(*,*) ' load_repartitoned_table_mesh'
+      call load_repartitoned_table_mesh((.FALSE.), part_p1%repart_p,    &
+     &    fem_T, ele_comm_T, new_fem2, new_ele_comm_T,                  &
+     &    part_nod_tbl2, part_ele_tbl2, m_SR_T)
+      call dealloc_comm_table(new_ele_comm_T)
+      call dealloc_comm_table(ele_comm_T)
 !
       if(my_rank .eq. 0) write(*,*) 'Compare read comm tables...'
       call compare_calypso_comm_tbls(repart_nod_tbl1, part_nod_tbl2)
       call calypso_MPI_barrier
       if(my_rank .eq. 0) write(*,*) 'Compareing end!'
+!
+!
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+      if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
+      call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
+     &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
       call compare_node_comm_types(my_rank, new_fem%mesh%nod_comm,      &
      &                             new_fem2%mesh%nod_comm)
