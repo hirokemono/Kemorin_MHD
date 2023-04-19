@@ -123,10 +123,6 @@
       integer :: nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new
       integer :: nele_ele_tbl
 !
-      type(node_ele_double_number) :: inod_dbl_org, iele_dbl_org
-      type(node_ele_double_number) :: inod_dbl_new, iele_dbl_new
-      type(node_ele_double_number) :: inod_dbl_org_on_new
-      type(node_ele_double_number) :: iele_dbl_org_on_new
       integer(kind = kint), allocatable :: ip_recv_tmp(:)
       integer(kind = kint), allocatable :: ip_send_tmp(:)
       integer(kind = kint), allocatable :: iele_sort(:)
@@ -175,56 +171,7 @@
      &      new_mesh, new_group, new_ele_comm, sleeve_exp_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
       end if
-      call calypso_mpi_barrier
 !
-!  ----------------
-!
-      call alloc_double_numbering(mesh%node%numnod, inod_dbl_org)
-      call alloc_double_numbering(mesh%ele%numele, iele_dbl_org)
-      call set_node_ele_double_address                                  &
-     &   (mesh%node, mesh%ele, mesh%nod_comm, ele_comm,                 &
-     &    inod_dbl_org, iele_dbl_org, m_SR%SR_sig, m_SR%SR_i)
-!
-      call alloc_double_numbering(new_mesh%node%numnod, inod_dbl_new)
-      call alloc_double_numbering(new_mesh%ele%numele, iele_dbl_new)
-      call set_node_ele_double_address                                  &
-     &   (new_mesh%node, new_mesh%ele, new_mesh%nod_comm, new_ele_comm, &
-     &    inod_dbl_new, iele_dbl_new, m_SR%SR_sig, m_SR%SR_i)
-!
-      call alloc_double_numbering(new_mesh%node%numnod,                 &
-     &                            inod_dbl_org_on_new)
-      call calypso_SR_type_int(iflag_import_item, repart_nod_tbl,       &
-     &    mesh%node%numnod, new_mesh%node%numnod,                       &
-     &    inod_dbl_org%index(1), inod_dbl_org_on_new%index(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-      call calypso_SR_type_int(iflag_import_item, repart_nod_tbl,       &
-     &    mesh%node%numnod, new_mesh%node%numnod,                       &
-     &    inod_dbl_org%irank(1), inod_dbl_org_on_new%irank(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm,                      &
-     &    m_SR%SR_sig, m_SR%SR_i, inod_dbl_org_on_new%index(1))
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm,                      &
-     &    m_SR%SR_sig, m_SR%SR_i, inod_dbl_org_on_new%irank(1))
-!
-      call alloc_double_numbering(new_mesh%ele%numele,                  &
-     &                            iele_dbl_org_on_new)
-      call calypso_SR_type_int(iflag_import_item, repart_ele_tbl,       &
-     &    mesh%ele%numele, new_mesh%ele%numele,                         &
-     &    iele_dbl_org%index(1), iele_dbl_org_on_new%index(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-      call calypso_SR_type_int(iflag_import_item, repart_ele_tbl,       &
-     &    mesh%ele%numele, new_mesh%ele%numele,                         &
-     &    iele_dbl_org%irank(1), iele_dbl_org_on_new%irank(1),          &
-     &    m_SR%SR_sig, m_SR%SR_i)
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%ele%numele, new_ele_comm,                            &
-     &    m_SR%SR_sig, m_SR%SR_i, iele_dbl_org_on_new%index(1))
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%ele%numele, new_ele_comm,                            &
-     &    m_SR%SR_sig, m_SR%SR_i, iele_dbl_org_on_new%irank(1))
       call dealloc_comm_table(new_ele_comm)
       call calypso_mpi_barrier
 !
