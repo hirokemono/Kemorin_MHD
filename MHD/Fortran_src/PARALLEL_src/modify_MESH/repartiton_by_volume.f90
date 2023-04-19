@@ -129,13 +129,10 @@
       type(node_ele_double_number) :: iele_dbl_org_on_new
       integer(kind = kint), allocatable :: ip_recv_tmp(:)
       integer(kind = kint), allocatable :: ip_send_tmp(:)
-      integer(kind = kint), allocatable :: num_recv_tmp(:)
-      integer(kind = kint), allocatable :: num_send_tmp(:)
       integer(kind = kint), allocatable :: iele_sort(:)
       integer(kind = kint_gl), allocatable :: iele_gl_org(:)
       integer(kind = kint) :: iele, ist, ied, num, ip, irank, inum
       integer(kind = kint) :: iele_org, irank_org
-      integer(kind = kint) ::icou_recv, icou_send
 !
 !  -------------------------------
 !
@@ -231,25 +228,6 @@
       call dealloc_comm_table(new_ele_comm)
       call calypso_mpi_barrier
 !
-      allocate(num_recv_tmp(0:nprocs-1))
-      num_recv_tmp(0:nprocs-1) = 0
-      do iele = 1, new_mesh%ele%numele
-        irank = iele_dbl_org_on_new%irank(iele)
-        num_recv_tmp(irank) = num_recv_tmp(irank) + 1
-      end do
-!
-      allocate(num_send_tmp(0:nprocs-1))
-      num_send_tmp(0:nprocs-1) = 0
-      call calypso_mpi_alltoall_one_int                                 &
-     &   (num_recv_tmp(0), num_send_tmp(0))
-!
-      icou_recv = 0
-      icou_send = 0
-      do irank = 0, nprocs-1
-        if(num_recv_tmp(irank) .gt. 0) icou_recv = icou_recv + 1
-        if(num_send_tmp(irank) .gt. 0) icou_send = icou_send + 1
-      end do
-!
 !  ----------------
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
@@ -274,6 +252,7 @@
         if(my_rank .eq. 0) write(*,*)                                   &
      &          'No transfer table output for repartition'
       else
+        if(i_debug .gt. 0) then
           call calypso_mpi_reduce_one_int                               &
      &       (mesh%node%internal_node, nnod_tot_org, MPI_SUM, 0)
           call calypso_mpi_reduce_one_int                               &
@@ -284,25 +263,26 @@
      &       (new_mesh%ele%internal_ele, nele_tot_new, MPI_SUM, 0)
           call calypso_mpi_reduce_one_int                               &
      &       (repart_ele_tbl%ntot_import, nele_ele_tbl, MPI_SUM, 0)
-        if(my_rank .eq. 0) write(*,*) 'Total: ', &
-     &     nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new, &
+          if(my_rank .eq. 0) write(*,*) 'Total: ',                      &
+     &     nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new,      &
      &     nele_ele_tbl
-        write(*,*) my_rank, 'old nums: ', &
-     &             mesh%node%numnod, mesh%node%internal_node, &
+          write(*,*) my_rank, 'old nums: ',                             &
+     &             mesh%node%numnod, mesh%node%internal_node,           &
      &     repart_nod_tbl%ntot_export, mesh%nod_comm%ntot_import
-        write(*,*) my_rank, 'old element: ', &
-     &     mesh%ele%numele, mesh%ele%internal_ele, &
+          write(*,*) my_rank, 'old element: ',                          &
+     &     mesh%ele%numele, mesh%ele%internal_ele,                      &
      &     repart_ele_tbl%ntot_export, ele_comm%ntot_import
-        write(*,*) my_rank, 'new node: ', &
-     &     new_mesh%node%numnod, new_mesh%node%internal_node, &
+          write(*,*) my_rank, 'new node: ',                             &
+     &     new_mesh%node%numnod, new_mesh%node%internal_node,           &
      &     repart_nod_tbl%ntot_import, new_mesh%nod_comm%ntot_import
-        write(*,*) my_rank, 'new element: ', &
-     &     new_mesh%ele%numele, new_mesh%ele%internal_ele, &
-     &     repart_ele_tbl%ntot_import, new_ele_comm%ntot_import, &
-     &     maxval(repart_ele_tbl%item_import), &
-     &     maxval(new_ele_comm%item_import), &
+          write(*,*) my_rank, 'new element: ',                          &
+     &     new_mesh%ele%numele, new_mesh%ele%internal_ele,              &
+     &     repart_ele_tbl%ntot_import, new_ele_comm%ntot_import,        &
+     &     maxval(repart_ele_tbl%item_import),                          &
+     &     maxval(new_ele_comm%item_import),                            &
      &     max(maxval(repart_ele_tbl%item_import),                      &
      &     maxval(new_ele_comm%item_import))
+        end if
 !
         call output_repart_table(part_param%trans_tbl_file,             &
      &      new_mesh%ele%numele, repart_nod_tbl, repart_ele_tbl,        &
