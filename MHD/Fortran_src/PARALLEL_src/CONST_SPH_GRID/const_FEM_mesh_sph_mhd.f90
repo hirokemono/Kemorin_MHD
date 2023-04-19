@@ -148,7 +148,7 @@
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'
 !!
-!        if(FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
+!        if(FEM_mesh_flags%flag_output_VMESH) then
 !          call pickup_surface_mesh(mesh_file, par_view)
 !        end if
       end if

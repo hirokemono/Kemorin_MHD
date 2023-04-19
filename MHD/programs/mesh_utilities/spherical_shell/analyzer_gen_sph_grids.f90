@@ -153,7 +153,7 @@
 !
 !  ========= Generate viewer mesh ===========================
 !
-      if(sph_files1%FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
+      if(sph_files1%FEM_mesh_flags%flag_output_VMESH) then
         if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+5)
         if(iflag_debug .gt. 0) write(*,*) 'pickup_surface_mesh'
         call pickup_surface_mesh(sph_files1%sph_file_param, para_v1)

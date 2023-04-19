@@ -60,8 +60,8 @@
 !>        Logical flag for repartitiong
         logical :: flag_repartition = .FALSE.
 !
-!>        Integer flag to output surface data
-        integer(kind = kint) :: iflag_output_SURF = 0
+!>        Logical flag to output surface data
+        logical :: flag_output_SURF = .FALSE.
 !>        Structure of mesh file IO paramters
         type(field_IO_params) :: viz_mesh_file
 !>        Structure for new field file  paramters
@@ -132,8 +132,8 @@
      &      part_param%viz_mesh_file)
       end if
 !
-      call set_FEM_surface_output_flag                                  &
-     &   (viz_repart_c%Fmesh_ctl, part_param%iflag_output_SURF)
+      part_param%flag_output_SURF                                       &
+     &     =  FEM_surface_output_switch(viz_repart_c%Fmesh_ctl)
 !
       call set_merged_ucd_file_define(viz_repart_c%viz_plt,             &
      &                                part_param%viz_ucd_file)

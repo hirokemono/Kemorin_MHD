@@ -78,7 +78,6 @@
       call set_ctl_param_vol_repart(gen_SPH_wP_c1%repart_ctl,           &
      &                              repart_p_C)
 !
-      SPH_GEN_S%sph_maker%mesh_output_flag = .TRUE.
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
 !
 !
@@ -138,8 +137,11 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
       call mpi_gen_sph_grids(SPH_GEN_S%sph_maker,                       &
      &    SPH_GEN_S%sph, SPH_GEN_S%comms, SPH_GEN_S%groups)
-      call output_sph_mesh(sph_files_S%sph_file_param,                  &
+!
+      if(SPH_GEN_S%sph_maker%mesh_output_flag) then
+        call output_sph_mesh(sph_files_S%sph_file_param,                &
      &    SPH_GEN_S%sph, SPH_GEN_S%comms, SPH_GEN_S%groups)
+      end if
 !
       if(iflag_debug.gt.0) write(*,*) 'sph_index_flags_and_params'
       call sph_index_flags_and_params                                   &
@@ -199,7 +201,8 @@
 !
 !  ========= Generate viewer mesh ===========================
 !
-      if(sph_files_S%FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
+      if(sph_files_S%FEM_mesh_flags%flag_access_FEM                     &
+              .and. sph_files_S%FEM_mesh_flags%flag_output_VMESH) then
         if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+5)
         if(iflag_debug .gt. 0) write(*,*) 'pickup_surface_mesh'
         call pickup_surface_mesh(sph_files_S%sph_file_param, para_v1)
@@ -207,7 +210,6 @@
       end if
 !
 !
-  99  continue
       call dealloc_sph_modes(SPH_GEN_S%sph, SPH_GEN_S%comms,            &
      &                       SPH_GEN_S%groups)
       call end_elapsed_time(ied_total_elapsed)

@@ -16,8 +16,8 @@
 !
 !
       type comm_test_files_param
-!>        Integer flag to output surface data
-        integer(kind = kint) :: iflag_output_SURF = 0
+!>        Logical flag to output surface data
+        logical :: flag_output_SURF = .FALSE.
 !>        Structure of mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
       end type comm_test_files_param
@@ -69,8 +69,7 @@
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_smp_def(my_rank, plt)
       call set_control_parallel_mesh(plt, T_files%mesh_file_IO)
-      call set_FEM_surface_output_flag                                  &
-     &   (Fmesh_ctl, T_files%iflag_output_SURF)
+      T_files%flag_output_SURF = FEM_surface_output_switch(Fmesh_ctl)
 !
       end subroutine set_ctl_params_4_comm_test
 !
