@@ -158,18 +158,13 @@
       use t_repart_double_numberings
       use t_para_double_numbering
 !
+      use calypso_mpi_int
       use m_file_format_switch
-      use para_itrplte_table_IO_sel
-      use copy_repart_and_itp_table
-      use const_element_comm_tables
-      use const_surface_comm_table
       use check_data_for_repartition
-      use mesh_send_recv_check
-      use write_diff_4_comm_test
-      use nod_phys_send_recv
       use parallel_FEM_mesh_init
       use load_repartition_table
 !
+      use mpi_load_mesh_data
       use compare_mesh_structures
       use mesh_repartition_by_volume
 !
@@ -182,20 +177,7 @@
       type(mesh_data), save :: new_fem2
       integer(kind = kint) :: new_numele
 !
-      type(communication_table), save :: T_ele_comm
-      type(communication_table), save :: T_surf_comm
-      type(communication_table), save :: T_edge_comm
-!
-      type(work_for_comm_check), save :: nod_check
-      type(work_for_comm_check), save :: ele_check
-      type(work_for_comm_check), save :: surf_check
-      type(work_for_comm_check), save :: edge_check
-!
-      type(node_ele_double_number), save :: new_ids_on_org1
-      type(node_ele_double_number), save :: new_iele_dbl1
-!
-      integer(kind = kint) :: irank_read
-      integer(kind = kint) :: i, ierr, icount_error, icou, iele
+      integer(kind = kint) :: icount_error, icou_error_gl
 !
 !
       if(part_p1%repart_p%trans_tbl_file%iflag_format                   &
@@ -210,8 +192,8 @@
      &    part_nod_tbl2, part_ele_tbl2, new_fem2%mesh%nod_comm,         &
      &    new_ele_comm2)
       new_fem2%mesh%ele%numele = new_numele
-      write(*,*) my_rank, 'new_fem2%mesh%ele%numele',                   &
-     &                   new_fem2%mesh%ele%numele
+!      write(*,*) my_rank, 'new_fem2%mesh%ele%numele',                  &
+!     &                   new_fem2%mesh%ele%numele
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
@@ -230,52 +212,22 @@
 !
       call compare_node_comm_types(my_rank, new_fem%mesh%nod_comm,      &
      &                             new_fem2%mesh%nod_comm)
+!
       call compare_node_position(my_rank, new_fem%mesh%node,            &
      &                           new_fem2%mesh%node, icount_error)
-      write(*,*) my_rank, 'Compare node: ', icount_error
+      call calypso_mpi_reduce_one_int                                   &
+     &   (icount_error, icou_error_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Compare node: ', icou_error_gl
+!      write(*,*) my_rank, 'Compare node: ', icount_error
+!
       call compare_ele_connect(my_rank, new_fem%mesh%ele,               &
      &    new_fem2%mesh%ele, icount_error)
-      write(*,*) my_rank, 'Compare element: ', icount_error
+      call calypso_mpi_reduce_one_int                                   &
+     &   (icount_error, icou_error_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Compare element: ', icou_error_gl
+!      write(*,*) my_rank, 'Compare element: ', icount_error
 !
       call compare_mesh_groups(my_rank, new_fem%group, new_fem2%group)
-!
-
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-      call const_global_numele_list(new_fem%mesh%ele)
-      call const_ele_comm_table(new_fem%mesh%node,                      &
-     &    new_fem%mesh%nod_comm, new_fem%mesh%ele, T_ele_comm, m_SR_T)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
-      call const_surf_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_surf_comm,        &
-     &    new_fem%mesh%surf, m_SR_T)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
-      call const_edge_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, T_edge_comm,        &
-     &    new_fem%mesh%edge, m_SR_T)
-!
-!
-      if(my_rank .eq. 0) write(*,*) 'check communication table...'
-      call node_transfer_test(fem_T%mesh%node, new_fem%mesh%node,       &
-     &    new_fem%mesh%nod_comm, repart_nod_tbl1, nod_check,            &
-     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
-!
-!
-      call ele_send_recv_test(new_fem%mesh%ele, T_ele_comm,             &
-     &                        ele_check, m_SR_T%SR_sig, m_SR_T%SR_r)
-      call surf_send_recv_test(new_fem%mesh%surf, T_surf_comm,          &
-     &                         surf_check, m_SR_T%SR_sig, m_SR_T%SR_r)
-      call edge_send_recv_test(new_fem%mesh%edge, T_edge_comm,          &
-     &                         edge_check, m_SR_T%SR_sig, m_SR_T%SR_r)
-!
-      call output_diff_mesh_comm_test(repart_test_name,                 &
-     &    nod_check, ele_check, surf_check, edge_check)
-!
-      call dealloc_ele_comm_test_IO(nod_check)
-      call dealloc_ele_comm_test_IO(ele_check)
-      call dealloc_ele_comm_test_IO(surf_check)
-      call dealloc_ele_comm_test_IO(edge_check)
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times

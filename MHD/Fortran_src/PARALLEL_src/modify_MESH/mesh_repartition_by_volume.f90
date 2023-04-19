@@ -172,7 +172,7 @@
 !
 !
       call const_repart_ele_connect_by_tbl(new_numele,                  &
-     &   mesh, ele_comm, part_nod_tbl, part_ele_tbl, new_ids_on_org,    &
+     &   mesh, ele_comm, part_ele_tbl, new_ids_on_org,                  &
      &   new_mesh%nod_comm, new_mesh%node, new_ele_comm, new_iele_dbl,  &
      &   new_mesh%ele, m_SR%SR_sig, m_SR%SR_i, m_SR%SR_il)
       call set_3D_nnod_4_sfed_by_ele(new_mesh%ele%nnod_4_ele,           &

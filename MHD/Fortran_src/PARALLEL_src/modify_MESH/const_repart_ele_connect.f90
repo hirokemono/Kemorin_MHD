@@ -11,7 +11,7 @@
 !!     &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl, &
 !!     &          SR_sig, SR_i, SR_il)
 !!      subroutine const_repart_ele_connect_by_tbl                      &
-!!     &         (new_numele, mesh, ele_comm, part_tbl, part_ele_tbl,   &
+!!     &         (new_numele, mesh, ele_comm, part_ele_tbl,             &
 !!     &          new_ids_on_org, new_comm, new_node, new_ele_comm,     &
 !!     &          new_iele_dbl, new_ele, SR_sig, SR_i, SR_il)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -103,7 +103,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_repart_ele_connect_by_tbl                        &
-     &         (new_numele, mesh, ele_comm, part_tbl, part_ele_tbl,     &
+     &         (new_numele, mesh, ele_comm, part_ele_tbl,               &
      &          new_ids_on_org, new_comm, new_node, new_ele_comm,       &
      &          new_iele_dbl, new_ele, SR_sig, SR_i, SR_il)
 !
@@ -115,7 +115,6 @@
       integer(kind = kint), intent(in) :: new_numele
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
-      type(calypso_comm_table), intent(in) :: part_tbl
       type(calypso_comm_table), intent(in) :: part_ele_tbl
       type(node_ele_double_number), intent(in) :: new_ids_on_org
       type(communication_table), intent(in) :: new_comm, new_ele_comm
