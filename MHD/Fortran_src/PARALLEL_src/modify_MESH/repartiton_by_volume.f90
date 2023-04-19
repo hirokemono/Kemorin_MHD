@@ -291,63 +291,6 @@
      &                            repart_ele_tbl_2%istack_export,       &
      &                            repart_ele_tbl_2%ntot_export)
 !
-      go to 100
-      call alloc_calypso_import_item(repart_ele_tbl_2)
-      call alloc_calypso_import_rev(new_mesh%ele%numele,                &
-     &                              repart_ele_tbl_2)
-      call alloc_calypso_export_item(repart_ele_tbl_2)
-!
-!      write(*,*) my_rank, 'repart_ele_tbl_2%ntot_import', &
-!     &  repart_ele_tbl_2%ntot_import, new_mesh%ele%numele
-!
-      allocate(iele_sort(repart_ele_tbl_2%ntot_import))
-      iele_sort(1:repart_ele_tbl_2%ntot_import) = 0
-      num_recv_tmp(0:nprocs-1) = 0
-      do iele = 1, new_mesh%ele%numele
-        iele_org =  iele_dbl_org_on_new%irank(iele)
-        irank_org = iele_dbl_org_on_new%irank(iele)
-        num_recv_tmp(irank_org) = num_recv_tmp(irank_org) + 1
-        ip = ip_recv_tmp(irank_org)
-        inum = repart_ele_tbl_2%istack_import(ip-1)                     &
-     &        + num_recv_tmp(irank_org)
-        repart_ele_tbl_2%item_import(inum) = iele
-        iele_sort(inum) = iele_org
-      end do
-!
-      do ip = 1, repart_ele_tbl_2%nrank_import
-        ist = repart_ele_tbl_2%istack_import(ip-1) + 1
-        ied = repart_ele_tbl_2%istack_import(ip  )
-        if((ied-ist) .gt. 0) then
-          call quicksort_w_index(repart_ele_tbl_2%ntot_import,          &
-     &        iele_sort, ist, ied, repart_ele_tbl_2%item_import)
-        end if
-      end do
-!
-      call calypso_mpi_barrier
-      call comm_items_send_recv                                         &
-     &   (repart_ele_tbl_2%nrank_import, repart_ele_tbl_2%irank_import, &
-     &    repart_ele_tbl_2%istack_import, iele_sort,                    &
-     &    repart_ele_tbl_2%nrank_export, repart_ele_tbl_2%irank_export, &
-     &    repart_ele_tbl_2%istack_export,                               &
-     &    repart_ele_tbl_2%iflag_self_copy,                             &
-     &    repart_ele_tbl_2%item_export, m_SR%SR_sig)
-      call calypso_mpi_barrier
-!
-      allocate(iele_gl_org(new_mesh%ele%numele))
-      iele_gl_org(1:new_mesh%ele%numele) = 0
-      call calypso_SR_type_int8(iflag_import_item, repart_ele_tbl_2,    &
-     &                          mesh%ele%numele, new_mesh%ele%numele,   &
-     &                          mesh%ele%iele_global, iele_gl_org,      &
-     &                          m_SR%SR_sig, m_SR%SR_il)
-      call calypso_mpi_barrier
-!
-
-      inum = 0
-      do iele = 1, new_mesh%ele%numele
-        if(iele_gl_org(iele) .ne. new_mesh%ele%iele_global(iele)) inum = inum+1
-      end do
-      write(*,*) my_rank, 'errror table: ', inum
- 100  continue
 !  ----------------
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
