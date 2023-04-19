@@ -7,6 +7,20 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
+!!      subroutine init_local_node_id_in_import(new_comm, numnod_new,   &
+!!     &                                        inod_recv, lcl_i)
+!!      subroutine dealloc_local_nod_id_in_import(lcl_i)
+!!        type(communication_table), intent(in) :: new_comm
+!!        integer(kind = kint), intent(in) :: numnod_new
+!!        integer(kind = kint), intent(in) :: inod_recv(numnod_new)
+!!        type(local_node_id_in_import), intent(inout) :: lcl_i
+!!
+!!      subroutine alloc_local_nod_num_in_import(numnod_new, inod_recv, &
+!!     &                                         lcl_i)
+!!      subroutine dealloc_item_import_recv(lcl_i)
+!!        integer(kind = kint), intent(in) :: numnod_new
+!!        integer(kind = kint), intent(in) :: inod_recv(numnod_new)
+!!        type(local_node_id_in_import), intent(inout) :: lcl_i
 !!@endverbatim
 !
       module t_local_node_id_in_import
@@ -19,10 +33,148 @@
 !
       implicit none
 !
+!>      Structure of local node IDs for import table
+      type local_node_id_in_import
+!>        Total number of items
+        integer(kind = kint) :: nmax_import
+!>        Number of items for each local node ID
+        integer(kind = kint), allocatable :: num_rev_import_recv(:)
+!
+!>        number of local node ID corresponding with import table
+        integer(kind = kint), allocatable :: ntot_recv
+!>        Stack for each local node ID
+        integer(kind = kint), allocatable :: istack_rev_import_recv(:)
+!>        Home process rank each local node ID
+        integer(kind = kint), allocatable :: irank_import_recv(:)
+!>        Reverse import table using local ID
+        integer(kind = kint), allocatable :: irev_import(:)
+!
+!>        local node ID corresponding with import table
+        integer(kind = kint), allocatable :: item_import_recv(:)
+      end type local_node_id_in_import
+!
+      private :: alloc_item_import_recv, set_item_import_recv
+      private :: alloc_local_nod_num_in_import
+      private :: alloc_local_nod_id_in_import
+      private :: count_new_comm_irev_import, set_new_comm_irev_import
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine init_local_node_id_in_import(new_comm, numnod_new,     &
+     &                                        inod_recv, lcl_i)
+!
+      type(communication_table), intent(in) :: new_comm
+      integer(kind = kint), intent(in) :: numnod_new
+      integer(kind = kint), intent(in) :: inod_recv(numnod_new)
+!
+      type(local_node_id_in_import), intent(inout) :: lcl_i
+!
+!
+      call alloc_local_nod_num_in_import(numnod_new, inod_recv, lcl_i)
+      call count_new_comm_irev_import(new_comm, lcl_i%nmax_import,      &
+     &    numnod_new, inod_recv, lcl_i%num_rev_import_recv,             &
+     &    lcl_i%istack_rev_import_recv)
+!
+      call alloc_local_nod_id_in_import(new_comm%ntot_import, lcl_i)
+      call set_new_comm_irev_import(new_comm, lcl_i%nmax_import,        &
+     &    lcl_i%istack_rev_import_recv, numnod_new, inod_recv,          &
+     &    lcl_i%num_rev_import_recv, lcl_i%irev_import,                 &
+     &    lcl_i%irank_import_recv)
+!
+      end subroutine init_local_node_id_in_import
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_local_nod_id_in_import(lcl_i)
+!
+      type(local_node_id_in_import), intent(inout) :: lcl_i
+!
+!
+      deallocate(lcl_i%irev_import, lcl_i%irank_import_recv)
+      deallocate(lcl_i%istack_rev_import_recv)
+      deallocate(lcl_i%num_rev_import_recv)
+!
+      end subroutine dealloc_local_nod_id_in_import
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine init_item_import_recv(new_comm, numnod_new,            &
+     &                                 inod_recv, lcl_i)
+!
+      type(communication_table), intent(in) :: new_comm
+      integer(kind = kint), intent(in) :: numnod_new
+      integer(kind = kint), intent(in) :: inod_recv(numnod_new)
+!
+      type(local_node_id_in_import), intent(inout) :: lcl_i
+!
+!
+      call alloc_item_import_recv(new_comm%ntot_import, lcl_i)
+      call set_item_import_recv(new_comm, numnod_new, inod_recv,        &
+     &                          lcl_i%item_import_recv)
+!
+      end subroutine init_item_import_recv
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_item_import_recv(lcl_i)
+!
+      type(local_node_id_in_import), intent(inout) :: lcl_i
+!
+      if(.not. allocated(lcl_i%item_import_recv)) return
+      deallocate(lcl_i%item_import_recv)
+!
+      end subroutine dealloc_item_import_recv
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_local_nod_num_in_import(numnod_new, inod_recv,   &
+     &                                         lcl_i)
+!
+      integer(kind = kint), intent(in) :: numnod_new
+      integer(kind = kint), intent(in) :: inod_recv(numnod_new)
+      type(local_node_id_in_import), intent(inout) :: lcl_i
+!
+!
+      lcl_i%nmax_import = maxval(inod_recv)
+      allocate(lcl_i%num_rev_import_recv(lcl_i%nmax_import))
+      allocate(lcl_i%istack_rev_import_recv(0:lcl_i%nmax_import))
+      lcl_i%istack_rev_import_recv(0) = 0
+      if(lcl_i%nmax_import .le. 0) return
+!
+!$omp parallel workshare
+      lcl_i%istack_rev_import_recv(1:lcl_i%nmax_import) = 0
+      lcl_i%num_rev_import_recv(1:lcl_i%nmax_import) =    0
+!$omp end parallel workshare
+!
+      end subroutine alloc_local_nod_num_in_import
+!
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_local_nod_id_in_import(ntot_import, lcl_i)
+!
+      integer(kind = kint), intent(in) :: ntot_import
+      type(local_node_id_in_import), intent(inout) :: lcl_i
+!
+!
+      lcl_i%ntot_recv = ntot_import
+      allocate(lcl_i%irank_import_recv(lcl_i%ntot_recv))
+      allocate(lcl_i%irev_import(lcl_i%ntot_recv))
+!
+      if(lcl_i%ntot_recv .lt. 0) return
+!$omp parallel workshare
+      lcl_i%irank_import_recv(1:lcl_i%ntot_recv) = 0
+      lcl_i%irev_import(1:lcl_i%ntot_recv) =       0
+!$omp end parallel workshare
+!
+      end subroutine alloc_local_nod_id_in_import
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine count_new_comm_irev_import                             &
@@ -123,52 +275,23 @@
       end subroutine set_new_comm_irev_import
 !
 ! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function search_repart_external_node         &
-     &                           (inod, ip, id_rank, new_comm,          &
-     &                            nmax_import, istack_rev_import_recv,  &
-     &                            irev_import, irank_import_recv)
-!
-      use search_from_list
-!
-      integer(kind = kint), intent(in) :: ip, inod
-      integer(kind = kint), intent(in) :: id_rank
-!
-      type(communication_table), intent(in) :: new_comm
-      integer(kind = kint), intent(in) :: nmax_import
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_rev_import_recv(0:nmax_import)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: irev_import(new_comm%ntot_import)
-      integer(kind = kint), intent(in)                                  &
-     &                      :: irank_import_recv(new_comm%ntot_import)
-!
-      integer(kind = kint) :: ie_new
-!
-      integer(kind = kint) :: jnum, jst, jed, knum
-!
-!
-      if(ip .eq. id_rank) then
-        ie_new = inod
-      else
-        ie_new = 0
-        jst = istack_rev_import_recv(inod-1) + 1
-        jed = istack_rev_import_recv(inod  )
-!
-        if((jed-jst) .ge. 0) then
-          knum = search_from_sorted_data(ip, jst, jed,              &
-     &                  new_comm%ntot_import, irank_import_recv)
-          if(knum.ge.jst .and. knum.le.jed) then
-            jnum = irev_import(knum)
-            ie_new = new_comm%item_import(jnum)
-          end if
-        end if
-      end if
-      search_repart_external_node = ie_new
-!
-      end function search_repart_external_node
-!
 ! ----------------------------------------------------------------------
+!
+      subroutine alloc_item_import_recv(ntot_import, lcl_i)
+!
+      integer(kind = kint), intent(in) :: ntot_import
+      type(local_node_id_in_import), intent(inout) :: lcl_i
+!
+      lcl_i%ntot_recv = ntot_import
+      allocate(lcl_i%item_import_recv(lcl_i%ntot_recv))
+!
+      if(lcl_i%ntot_recv .le. 0) return
+!$omp parallel workshare
+      lcl_i%item_import_recv(1:lcl_i%ntot_recv) = 0
+!$omp end parallel workshare
+!
+      end subroutine alloc_item_import_recv
+!
 ! ----------------------------------------------------------------------
 !
       subroutine set_item_import_recv(new_comm, numnod_new,             &
@@ -193,50 +316,5 @@
 !
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function search_repart_ext_node_old          &
-     &                            (inod, ip, id_rank, item_import_recv, &
-     &                             new_comm, ie_new)
-!
-      use search_from_list
-!
-      integer(kind = kint), intent(in) :: id_rank
-      integer(kind = kint), intent(in) :: ip, inod
-!
-      type(communication_table), intent(in) :: new_comm
-      integer(kind = kint), intent(in)                                  &
-     &                     :: item_import_recv(new_comm%ntot_import)
-!
-      integer(kind = kint), intent(inout) :: ie_new
-!
-      integer(kind = kint) :: inum, ist, ied, jnum
-!
-!
-      if(ip .eq. id_rank) then
-        ie_new = inod
-      else
-        ie_new = 0
-        inum = search_from_list_data(ip, ione, new_comm%num_neib,  &
-     &                         new_comm%num_neib, new_comm%id_neib)
-        ist = 0
-        ied = -1
-        if(inum.ge.ione .and. inum.le.new_comm%num_neib) then
-          ist = new_comm%istack_import(inum-1) + 1
-          ied = new_comm%istack_import(inum)
-        end if
-!
-        if(ied .ge. ist) then
-          jnum = search_from_sorted_data(inod, ist, ied,           &
-     &                      new_comm%ntot_import, item_import_recv)
-!
-          if(jnum.ge.ist .and. jnum.le.ied) then
-            ie_new = new_comm%item_import(jnum)
-          end if
-        end if
-      end if
-      search_repart_ext_node_old = ie_new
-!
-      end function search_repart_ext_node_old
-!
-! ----------------------------------------------------------------------
-!
       end module t_local_node_id_in_import
+
