@@ -10,7 +10,7 @@
 !!      subroutine s_repartiton_by_volume(flag_lic_dump, part_param,    &
 !!     &          mesh, group, ele_comm, next_tbl, num_mask, masking,   &
 !!     &          ref_repart, d_mask, ref_vect_sleeve_ext,              &
-!!     &          new_mesh, new_group, repart_nod_tbl,                  &
+!!     &          new_mesh, new_group, repart_nod_tbl, repart_ele_tbl,  &
 !!     &          sleeve_exp_WK, m_SR)
 !!        logical, intent(in) :: flag_lic_dump
 !!        integer(kind = kint), intent(in) :: num_mask
@@ -28,6 +28,7 @@
 !!        type(mesh_geometry), intent(inout) :: new_mesh
 !!        type(mesh_groups), intent(inout) :: new_group
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
+!!        type(calypso_comm_table), intent(inout) :: repart_ele_tbl
 !!        type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine load_repartitoned_table_mesh(flag_repart_mesh_file,  &
@@ -72,7 +73,7 @@
       subroutine s_repartiton_by_volume(flag_lic_dump, part_param,      &
      &          mesh, group, ele_comm, next_tbl, num_mask, masking,     &
      &          ref_repart, d_mask, ref_vect_sleeve_ext,                &
-     &          new_mesh, new_group, repart_nod_tbl,                    &
+     &          new_mesh, new_group, repart_nod_tbl, repart_ele_tbl,    &
      &          sleeve_exp_WK, m_SR)
 !
       use t_next_node_ele_4_node
@@ -120,12 +121,12 @@
       type(mesh_geometry), intent(inout) :: new_mesh
       type(mesh_groups), intent(inout) :: new_group
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
+      type(calypso_comm_table), intent(inout) :: repart_ele_tbl
       type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
 !
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(communication_table) :: new_ele_comm
-      type(calypso_comm_table) :: repart_ele_tbl
       integer(kind = kint) :: ierr
       integer :: nnod_tot_org, nele_tot_org, nnod_tot_new, nele_tot_new
       integer :: nele_ele_tbl
@@ -236,7 +237,6 @@
      &      new_mesh%nod_comm, new_ele_comm)
       end if
 !
-      call dealloc_calypso_comm_table(repart_ele_tbl)
       call calypso_MPI_barrier
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
 !

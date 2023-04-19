@@ -68,6 +68,7 @@
       type(jacobians_type), save :: jacobians1
       type(shape_finctions_at_points), save :: spfs1
       type(next_nod_ele_table), save :: next_tbl1
+      type(calypso_comm_table), save :: repart_ele_tbl1
       type(sleeve_extension_work), save :: sleeve_exp_WK1
 !
       type(masking_parameter), allocatable, target :: masking1(:)
@@ -131,10 +132,11 @@
       allocate(d_mask_org1(fem_T%mesh%node%numnod,1))
       allocate(vect_ref1(fem_T%mesh%node%numnod,3))
       call s_repartiton_by_volume((.TRUE.), part_p1%repart_p,           &
-     &    fem_T%mesh, fem_T%group, ele_comm_T, next_tbl1,               &
-     &    izero, masking1, vect_ref1(1,1), d_mask_org1, vect_ref1,      &
-     &    new_fem%mesh, new_fem%group, repart_nod_tbl1,                 &
-     &    sleeve_exp_WK1, m_SR_T)
+     &   fem_T%mesh, fem_T%group, ele_comm_T, next_tbl1,                &
+     &   izero, masking1, vect_ref1(1,1), d_mask_org1, vect_ref1,       &
+     &   new_fem%mesh, new_fem%group, repart_nod_tbl1, repart_ele_tbl1, &
+     &   sleeve_exp_WK1, m_SR_T)
+      call dealloc_calypso_comm_table(repart_ele_tbl1)
       deallocate(d_mask_org1, vect_ref1, masking1)
 !
       call dealloc_next_nod_ele_table(next_tbl1)

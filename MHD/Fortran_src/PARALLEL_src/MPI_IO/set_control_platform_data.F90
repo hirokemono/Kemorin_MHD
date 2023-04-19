@@ -186,8 +186,8 @@
       call s_mpi_abort_by_missing_zlib(sph_file_IO%file_prefix,         &
      &                                 sph_file_IO%iflag_format)
 !
-      call set_FEM_mesh_switch_4_SPH                                    &
-     &    (Fmesh_ctl, FEM_mesh_flags%iflag_access_FEM)
+      FEM_mesh_flags%flag_access_FEM                                    &
+     &      = FEM_mesh_switch_4_SPH(Fmesh_ctl)
       call set_FEM_surface_output_flag                                  &
      &    (Fmesh_ctl, FEM_mesh_flags%iflag_output_SURF)
       call set_FEM_viewer_output_flag                                   &

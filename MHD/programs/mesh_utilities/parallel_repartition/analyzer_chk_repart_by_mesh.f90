@@ -79,7 +79,6 @@
 !
       call init_nod_send_recv(fem_T%mesh,                               &
      &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
-      if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
@@ -141,6 +140,7 @@
       call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
      &                          fem_T%mesh%ele, ele_comm_T, m_SR_T)
 !
+!  --  Construct repartitioned mesh
       call load_repartitoned_table_mesh((.FALSE.),                      &
      &    part_p1%repart_p, fem_T, ele_comm_T, new_fem2, new_ele_comm2, &
      &    part_nod_tbl2, part_ele_tbl2, m_SR_T)

@@ -156,10 +156,10 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
         if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
         call s_repartiton_by_volume(flag_lic_dump, part_param,          &
-     &      geofem%mesh, geofem%group, ele_comm, next_tbl,              &
-     &      num_mask, masking, ref_repart, d_mask, ref_vect_sleeve_ext, &
-     &      new_fem%mesh, new_fem%group, repart_nod_tbl,                &
-     &      sleeve_exp_WK, m_SR)
+     &     geofem%mesh, geofem%group, ele_comm, next_tbl,               &
+     &     num_mask, masking, ref_repart, d_mask, ref_vect_sleeve_ext,  &
+     &     new_fem%mesh, new_fem%group, repart_nod_tbl, repart_ele_tbl, &
+     &     sleeve_exp_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !

@@ -29,7 +29,7 @@
 !!        type(read_character_item), intent(in) :: file_format_ctl
 !!        type(field_IO_params), intent(inout) :: file_params
 !!
-!!      subroutine set_FEM_mesh_switch_4_SPH(Fmesh_ctl, iflag_access_FEM)
+!!      logical function FEM_mesh_switch_4_SPH(Fmesh_ctl)
 !!      subroutine set_FEM_surface_output_flag                          &
 !!     &         (Fmesh_ctl, iflag_output_SURF)
 !!        type(FEM_mesh_control), intent(in) :: Fmesh_ctl
@@ -192,22 +192,21 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_FEM_mesh_switch_4_SPH(Fmesh_ctl, iflag_access_FEM)
+      logical function FEM_mesh_switch_4_SPH(Fmesh_ctl)
 !
       use skip_comment_f
 !
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl
-      integer(kind = kint), intent(inout) :: iflag_access_FEM
 !
 !
-      iflag_access_FEM = 0
+      FEM_mesh_switch_4_SPH = .FALSE.
       if(Fmesh_ctl%FEM_mesh_output_switch%iflag .gt. 0) then
         if(yes_flag(Fmesh_ctl%FEM_mesh_output_switch%charavalue)) then
-          iflag_access_FEM = 1
+          FEM_mesh_switch_4_SPH = .TRUE.
         end if
       end if
 !
-      end subroutine set_FEM_mesh_switch_4_SPH
+      end function FEM_mesh_switch_4_SPH
 !
 ! ----------------------------------------------------------------------
 !

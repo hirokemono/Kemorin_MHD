@@ -183,7 +183,7 @@
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+9)
 !
 ! Output mesh data
-      if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then
+      if(FEM_mesh_flags%flag_access_FEM) then
         call mpi_output_mesh(mesh_file, mesh, group)
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'

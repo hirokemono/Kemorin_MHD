@@ -142,7 +142,8 @@
         write(*,*) 'posisiton: ', i,   &
      &    clusters_T%cluster(3)%cluster_nod%xx(i,1:3), &
      &    clusters_T%cluster(3)%volume_grp(i), &
-     &    clusters_T%cluster(3)%istack_grouped(i)-clusters_T%cluster(3)%istack_grouped(i-1)
+     &    (clusters_T%cluster(3)%istack_grouped(i)  &
+     &      - clusters_T%cluster(3)%istack_grouped(i-1))
       end do
 !
 !
