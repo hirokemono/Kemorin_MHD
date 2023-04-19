@@ -170,9 +170,8 @@
       use parallel_FEM_mesh_init
       use load_repartition_table
 !
-      use const_repart_mesh_data
       use compare_mesh_structures
-      use redistribute_groups
+      use mesh_repartition_by_volume
 !
       type(communication_table), save :: ele_comm1
 !
@@ -219,38 +218,9 @@
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
 !
-      call set_repart_node_position(part_nod_tbl2, fem_T%mesh%node,     &
-     &    new_fem2%mesh%nod_comm, new_fem2%mesh%node,                   &
-     &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_il)
-!
-!
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-!      call const_global_numele_list(fem_T%mesh%ele)
-      call const_ele_comm_table(fem_T%mesh%node,                        &
-     &    fem_T%mesh%nod_comm, fem_T%mesh%ele, ele_comm1, m_SR_T)
-!
-      call alloc_double_numbering(fem_T%mesh%node%numnod,               &
-     &                            new_ids_on_org1)
-      call node_dbl_numbering_to_repart                                 &
-     &   (fem_T%mesh%nod_comm, fem_T%mesh%node, part_nod_tbl2,          &
-     &    new_ids_on_org1, m_SR_T%SR_sig, m_SR_T%SR_i)
-!
-      call alloc_double_numbering(new_fem2%mesh%ele%numele,             &
-     &                            new_iele_dbl1)
-      call double_numbering_4_element(new_fem2%mesh%ele, new_ele_comm2, &
-     &    new_iele_dbl1, m_SR_T%SR_sig, m_SR_T%SR_i)
-      icou = 0
-      do iele = 1, new_fem2%mesh%ele%numele
-        if(new_iele_dbl1%irank(iele) .eq. my_rank) icou = icou+1
-      end do
-!
-      call s_const_repart_ele_connect_2(new_numele,                     &
-     &   fem_T%mesh, ele_comm1, part_nod_tbl2, new_ids_on_org1,         &
-     &   new_fem2%mesh%nod_comm, new_fem2%mesh%node, new_ele_comm2,     &
-     &   new_iele_dbl1, new_fem2%mesh%ele, part_ele_tbl2,               &
-     &   m_SR_T%SR_sig, m_SR_T%SR_i, m_SR_T%SR_il)
-      call dealloc_double_numbering(new_iele_dbl1)
-      call dealloc_double_numbering(new_ids_on_org1)
+      call const_repart_mesh_by_table(fem_T%mesh, fem_T%group,          &
+     &    part_nod_tbl2, part_ele_tbl2, new_ele_comm2,                  &
+     &    new_numele, new_fem2%mesh, new_fem2%group, m_SR_T)
 !
       if(my_rank .eq. 0) write(*,*) 'Compare read comm tables...'
       call compare_calypso_comm_tbls(repart_nod_tbl1, part_nod_tbl2)
@@ -265,13 +235,6 @@
       call compare_ele_connect(my_rank, new_fem%mesh%ele,               &
      &    new_fem2%mesh%ele, icount_error)
       write(*,*) my_rank, 'Compare element: ', icount_error
-!
-!
-      call s_redistribute_groups                                        &
-     &   ((.TRUE.), fem_T%mesh, fem_T%group, ele_comm1,                 &
-     &    new_fem2%mesh, new_ele_comm2, part_nod_tbl2, part_ele_tbl2,   &
-     &    new_fem2%group, m_SR_T%SR_sig, m_SR_T%SR_i)
-      call dealloc_comm_table(ele_comm1)
 !
       call compare_mesh_groups(my_rank, new_fem%group, new_fem2%group)
 !
@@ -317,56 +280,6 @@
       call output_elapsed_times
 !
       end subroutine analyze_reapart_by_vol
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine s_const_repart_ele_connect_2                           &
-     &         (new_numele, mesh, ele_comm, part_tbl,                   &
-     &          new_ids_on_org, new_comm, new_node, new_ele_comm,       &
-     &          new_iele_dbl, new_ele, ele_tbl, SR_sig, SR_i, SR_il)
-!
-      use t_para_double_numbering
-      use t_repart_double_numberings
-      use ele_trans_tbl_4_repart
-      use compare_mesh_structures
-      use const_repart_ele_connect
-!
-      integer(kind = kint), intent(in) :: new_numele
-      type(mesh_geometry), intent(in) :: mesh
-      type(communication_table), intent(in) :: ele_comm
-      type(calypso_comm_table), intent(in) :: part_tbl
-      type(node_ele_double_number), intent(in) :: new_ids_on_org
-      type(communication_table), intent(in) :: new_comm, new_ele_comm
-      type(node_data), intent(in) :: new_node
-      type(node_ele_double_number), intent(in) :: new_iele_dbl
-!
-      type(calypso_comm_table), intent(inout) :: ele_tbl
-      type(element_data), intent(inout) :: new_ele
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_int_buffer), intent(inout) :: SR_i
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
-!
-      type(node_ele_double_number) :: org_iele_dbl
-      type(node_ele_double_number) :: new_inod_dbl
-!
-!
-      call alloc_double_numbering(new_node%numnod, new_inod_dbl)
-      call set_node_double_numbering(new_node, new_comm,                &
-     &                               new_inod_dbl, SR_sig, SR_i)
-!
-      call alloc_double_numbering(mesh%ele%numele, org_iele_dbl)
-      call double_numbering_4_element(mesh%ele, ele_comm,               &
-     &                                org_iele_dbl, SR_sig, SR_i)
-!
-      call const_ele_connect_by_trans_tbl(mesh%ele, ele_tbl,            &
-     &    new_ids_on_org, org_iele_dbl, new_iele_dbl, new_inod_dbl,     &
-     &    new_numele, new_comm, new_node, new_ele_comm, new_ele,        &
-     &    SR_sig, SR_i, SR_il)
-!
-      call dealloc_double_numbering(org_iele_dbl)
-!
-      end subroutine s_const_repart_ele_connect_2
 !
 ! ----------------------------------------------------------------------
 !

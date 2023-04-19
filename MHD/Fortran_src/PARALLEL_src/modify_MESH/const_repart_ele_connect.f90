@@ -11,16 +11,16 @@
 !!     &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl, &
 !!     &          SR_sig, SR_i, SR_il)
 !!      subroutine const_repart_ele_connect_by_tbl                      &
-!!     &         (new_numele, mesh, ele_comm, part_tbl,                 &
+!!     &         (new_numele, mesh, ele_comm, part_tbl, part_ele_tbl,   &
 !!     &          new_ids_on_org, new_comm, new_node, new_ele_comm,     &
-!!     &          new_iele_dbl, new_ele, ele_tbl, SR_sig, SR_i, SR_il)
+!!     &          new_iele_dbl, new_ele, SR_sig, SR_i, SR_il)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(calypso_comm_table), intent(in) :: part_tbl
+!!        type(calypso_comm_table), intent(in) :: part_ele_tbl
 !!        type(node_ele_double_number), intent(in) :: new_ids_on_org
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(in) :: new_node
-!!        type(calypso_comm_table), intent(inout) :: ele_tbl
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -103,9 +103,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_repart_ele_connect_by_tbl                        &
-     &         (new_numele, mesh, ele_comm, part_tbl,                   &
+     &         (new_numele, mesh, ele_comm, part_tbl, part_ele_tbl,     &
      &          new_ids_on_org, new_comm, new_node, new_ele_comm,       &
-     &          new_iele_dbl, new_ele, ele_tbl, SR_sig, SR_i, SR_il)
+     &          new_iele_dbl, new_ele, SR_sig, SR_i, SR_il)
 !
       use t_para_double_numbering
       use t_repart_double_numberings
@@ -116,12 +116,12 @@
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
       type(calypso_comm_table), intent(in) :: part_tbl
+      type(calypso_comm_table), intent(in) :: part_ele_tbl
       type(node_ele_double_number), intent(in) :: new_ids_on_org
       type(communication_table), intent(in) :: new_comm, new_ele_comm
       type(node_data), intent(in) :: new_node
       type(node_ele_double_number), intent(in) :: new_iele_dbl
 !
-      type(calypso_comm_table), intent(inout) :: ele_tbl
       type(element_data), intent(inout) :: new_ele
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -139,7 +139,7 @@
       call double_numbering_4_element(mesh%ele, ele_comm,               &
      &                                org_iele_dbl, SR_sig, SR_i)
 !
-      call const_ele_connect_by_trans_tbl(mesh%ele, ele_tbl,            &
+      call const_ele_connect_by_trans_tbl(mesh%ele, part_ele_tbl,       &
      &    new_ids_on_org, org_iele_dbl, new_iele_dbl, new_inod_dbl,     &
      &    new_numele, new_comm, new_node, new_ele_comm, new_ele,        &
      &    SR_sig, SR_i, SR_il)
