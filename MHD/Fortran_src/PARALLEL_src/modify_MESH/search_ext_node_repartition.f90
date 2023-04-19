@@ -33,6 +33,7 @@
       use t_calypso_comm_table
       use t_solver_SR
       use t_solver_SR_int
+      use t_para_double_numbering
 !
       implicit none
 !
@@ -46,7 +47,6 @@
      &         (ele, ele_tbl, org_iele_dbl, ie_newdomain,               &
      &          new_comm, new_node, new_ele, SR_sig, SR_i)
 !
-      use t_para_double_numbering
       use t_repart_double_numberings
       use calypso_SR_type
       use solver_SR_type
@@ -187,7 +187,6 @@
      &          iele_org_local, iele_org_domain, ie_domain_recv,        &
      &          ie_tmp, i4_recv, SR_sig, SR_i)
 !
-      use t_para_double_numbering
       use t_repart_double_numberings
       use calypso_SR_type
       use solver_SR_type
@@ -265,6 +264,61 @@
 !$omp end parallel workshare
 !
       end subroutine set_works_for_ext_node_search
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_dbl_index_in_ele_connect                           &
+     &          (new_ele_comm, new_inod_dbl, new_iele_dbl,              &
+     &           new_ele, ie_local, irank_e, SR_sig, SR_i)
+!
+      use solver_SR_type
+!
+      type(communication_table), intent(in) :: new_ele_comm
+      type(node_ele_double_number), intent(in) :: new_inod_dbl
+      type(node_ele_double_number), intent(in) :: new_iele_dbl
+!
+      type(element_data), intent(inout) :: new_ele
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: ie_local(new_ele%numele,new_ele%nnod_4_ele)
+      integer(kind = kint), intent(inout)                               &
+     &            :: irank_e(new_ele%numele,new_ele%nnod_4_ele)
+!
+      integer(kind = kint) :: inod, iele, k1, num_loop
+!
+!
+      do k1 = 1, new_ele%nnod_4_ele
+        call SOLVER_SEND_RECV_int_type(new_ele%numele, new_ele_comm,    &
+     &                                 SR_sig, SR_i, new_ele%ie(1,k1))
+      end do
+!
+!$omp parallel workshare
+      ie_local(1:new_ele%numele,1:new_ele%nnod_4_ele) = 0
+      irank_e(1:new_ele%numele,1:new_ele%nnod_4_ele) = -1
+!$omp end parallel workshare
+!
+!$omp parallel do private(k1,iele,inod)
+      do k1 = 1, new_ele%nnod_4_ele
+        do iele = 1, new_ele%numele
+          if(new_iele_dbl%irank(iele) .eq. my_rank) then
+            inod = new_ele%ie(iele,k1)
+            ie_local(iele,k1) = new_inod_dbl%index(inod)
+            irank_e(iele,k1) =  new_inod_dbl%irank(inod)
+          end if
+        end do
+      end do
+!$omp end parallel do
+!
+      do k1 = 1, new_ele%nnod_4_ele
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, ie_local(1,k1))
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, irank_e(1,k1))
+      end do
+!
+      end subroutine set_dbl_index_in_ele_connect
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

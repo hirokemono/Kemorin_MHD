@@ -551,44 +551,12 @@
         end do
       end do
 !
-      if(i_debug .gt. 0) then
-        write(*,*) my_rank, 'Missing connectivity: ', icou,             &
-     &          ' of ', new_ele%nnod_4_ele*new_ele%numele
-!
-        icou = 0
-        do inod = 1, new_node%numnod
-          if(icount_node(inod) .eq. 0) icou = icou + 1
-        end do
-        write(*,*) my_rank, 'Missing connenction: ', icou,              &
-     &          ' of ', new_node%numnod
-      end if
-!
-!
-      do k1 = 1, new_ele%nnod_4_ele
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, new_ele%ie(1,k1))
-      end do
-!
       allocate(ie_local(new_ele%numele,new_ele%nnod_4_ele))
       allocate(irank_e(new_ele%numele,new_ele%nnod_4_ele))
-      ie_local = 0
-      irank_e = -1
-      do k1 = 1, new_ele%nnod_4_ele
-        do iele = 1, new_ele%numele
-          if(new_iele_dbl%irank(iele) .eq. my_rank) then
-            inod = new_ele%ie(iele,k1)
-            ie_local(iele,k1) = new_inod_dbl%index(inod)
-            irank_e(iele,k1) =  new_inod_dbl%irank(inod)
-          end if
-        end do
-      end do
 !
-      do k1 = 1, new_ele%nnod_4_ele
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, ie_local(1,k1))
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, SR_sig, SR_i, irank_e(1,k1))
-      end do
+      call set_dbl_index_in_ele_connect                                 &
+     &   (new_ele_comm, new_inod_dbl, new_iele_dbl,                     &
+     &    new_ele, ie_local, irank_e, SR_sig, SR_i)
 !
       icou = 0
       do iele = 1, new_ele%numele
