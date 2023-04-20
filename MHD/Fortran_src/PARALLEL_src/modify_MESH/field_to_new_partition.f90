@@ -121,18 +121,15 @@
       type(sleeve_extension_work), intent(inout) :: sleeve_exp_WK
       type(mesh_SR), intent(inout) :: m_SR
 !
-      logical :: flag, flag_m
+      logical :: flag_t, flag_m
 !
 !
       if(my_rank .eq. 0) then
-        if(part_param%viz_mesh_file%iflag_format .eq. id_no_file        &
-     &    .or. part_param%trans_tbl_file%iflag_format .eq. id_no_file)  &
-     &   then
-          flag = .FALSE.
+        if(part_param%trans_tbl_file%iflag_format .eq. id_no_file) then
+          flag_t = .FALSE.
         else
-          flag = (check_exist_mesh(my_rank, part_param%viz_mesh_file))  &
-     &     .and. (check_exist_interpolate_file(my_rank,                 &
-     &                                      part_param%trans_tbl_file))
+          flag_t = check_exist_interpolate_file(my_rank,                &
+     &                                      part_param%trans_tbl_file)
         end if
         if(part_param%viz_mesh_file%iflag_format .eq. id_no_file) then
           flag_m = .FALSE.
@@ -144,8 +141,11 @@
       call calypso_mpi_bcast_one_logical(flag, 0)
       call calypso_mpi_bcast_one_logical(flag_m, 0)
 !
-      if(flag) then
+!
+      if(flag_t) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                       'load_repartitoned_table_mesh'
         call load_repartitoned_table_mesh(flag_m,                       &
      &      part_param, geofem, ele_comm, new_fem, new_ele_comm,        &
      &      repart_nod_tbl, repart_ele_tbl, m_SR)
