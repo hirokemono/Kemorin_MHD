@@ -205,6 +205,7 @@
 !
       use search_ext_node_repartition
       use const_repart_mesh_data
+      use solver_SR_type
 !
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
@@ -236,6 +237,8 @@
       call set_repart_element_connect(new_numele, ele, ele_tbl,         &
      &    new_ids_on_org, ie_newdomain, ie_newnod, new_ele,             &
      &    SR_sig, SR_i, SR_il)
+      call SOLVER_SEND_RECV_int8_type(new_ele%numele, new_ele_comm,     &
+     &    SR_sig, SR_il, new_ele%iele_global(1))
 !
       call search_ext_node_with_ele_comm(ele, ele_tbl,                  &
      &    org_iele_dbl, new_iele_dbl, new_inod_dbl, ie_newdomain,       &
