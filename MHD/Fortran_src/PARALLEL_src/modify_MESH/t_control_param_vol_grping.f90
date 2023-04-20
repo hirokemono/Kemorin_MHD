@@ -112,7 +112,6 @@
       use t_ctl_data_FEM_sleeve_size
       use set_control_platform_item
       use set_control_platform_data
-      use set_ctl_parallel_platform
       use parallel_ucd_IO_select
 !
       type(viz_repartition_ctl), intent(in) :: viz_repart_c
@@ -120,8 +119,6 @@
 !
       integer(kind = kint) :: ierr
 !
-!
-      call check_control_num_domains(viz_repart_c%viz_plt)
 !
       if(viz_repart_c%viz_plt%mesh_file_prefix%iflag .le. 0) then
         part_param%viz_mesh_file%iflag_format = id_no_file
@@ -145,12 +142,12 @@
      &     (viz_repart_c%new_part_ctl, part_param)
       end if
 !
-      if(part_param%new_nprocs                                          &
-     &      .ne. viz_repart_c%viz_plt%ndomain_ctl%intvalue) then
-        write(e_message,'(a)')                                          &
-     &      'Number of subdomains should be num. of original mesh'
-        call calypso_MPI_abort(ierr_P_MPI, e_message)
-      end if
+!      if(part_param%new_nprocs                                         &
+!     &      .ne. viz_repart_c%viz_plt%ndomain_ctl%intvalue) then
+!        write(e_message,'(a)')                                         &
+!     &      'Number of subdomains should be num. of original mesh'
+!        call calypso_MPI_abort(ierr_P_MPI, e_message)
+!      end if
 !
       call set_ctl_param_sleeve_extension                               &
      &   (viz_repart_c%Fsleeve_ctl, part_param%sleeve_exp_p, ierr)
