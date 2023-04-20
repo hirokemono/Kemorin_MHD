@@ -7,8 +7,14 @@
 !>@brief Control inputs for PVR view parameter
 !!
 !!@verbatim
+!!      subroutine sel_read_ctl_modelview_file                          &
+!!     &         (id_control, hd_block, mat, c_buf)
 !!      subroutine read_control_modelview_file                          &
 !!     &         (id_control, viewctl_file_name, mat)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(modeview_ctl), intent(inout) :: mat
+!!        type(buffer_for_control), intent(inout)  :: c_buf
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !
@@ -123,6 +129,32 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine sel_read_ctl_modelview_file                            &
+     &         (id_control, hd_block, mat, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(modeview_ctl), intent(inout) :: mat
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+      character(len=kchara) :: file_name
+!
+!
+      if(check_file_flag(c_buf, hd_block)) then
+        write(*,'(3a)', ADVANCE='NO')                                   &
+     &          'Read file for ', trim(hd_block), '... '
+        file_name = third_word(c_buf)
+        call read_control_modelview_file                                &
+     &     (id_control+1, file_name, mat)
+      else if(check_begin_flag(c_buf, hd_block)) then
+        write(*,*)  'Modelview control is included'
+        call read_view_transfer_ctl(id_control, hd_block, mat, c_buf)
+      end if
+!
+      end subroutine sel_read_ctl_modelview_file
+!
+!  ---------------------------------------------------------------------
+!
       subroutine read_control_modelview_file                            &
      &         (id_control, viewctl_file_name, mat)
 !
@@ -137,14 +169,14 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      write(*,*) 'Modelview control:', trim(viewctl_file_name)
+      write(*,*) 'Modelview control: ', trim(viewctl_file_name)
       open(id_control, file = viewctl_file_name, status='old')
 !
       do 
         call load_one_line_from_control(id_control, c_buf1)
         if(check_begin_flag(c_buf1, hd_view_transform)) then
           call read_view_transfer_ctl(id_control, hd_view_transform,    &
-     &        mat, c_buf1)
+     &                                mat, c_buf1)
         end if
         if(mat%i_view_transform .gt. 0) exit
       end do

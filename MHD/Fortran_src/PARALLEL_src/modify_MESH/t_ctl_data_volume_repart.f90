@@ -108,9 +108,9 @@
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
+        write(*,'(3a)', ADVANCE='NO')                                   &
+     &          'Read file for ', trim(hd_block), '... '
         file_name = third_word(c_buf)
-        write(*,'(4a)') 'Read file for ', trim(hd_block),               &
-     &                 ' from ', trim(file_name)
         call read_ctl_file_vol_repart(id_control+1, file_name,          &
      &                                hd_block, viz_repart_c)
       else if(check_begin_flag(c_buf, hd_block)) then
@@ -139,6 +139,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
+      write(*,*) 're-partition control: ', trim(file_name)
       if(my_rank .eq. 0) then
         open(id_control, file=file_name,status='old')
 !

@@ -179,29 +179,10 @@
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
-        if(check_file_flag(c_buf, hd_start_view_control)) then
-          write(*,'(3a)', ADVANCE='NO')                                 &
-     &            'Read file for ', trim(hd_start_view_control), '... '
-          movie%start_view_file_ctl = third_word(c_buf)
-          call read_control_modelview_file(id_control+2,                &
-     &        movie%start_view_file_ctl, movie%view_start_ctl)
-        else if(check_begin_flag(c_buf, hd_start_view_control)) then
-          write(*,*)  'Start modelview control is included'
-          call read_view_transfer_ctl(id_control,                       &
-     &        hd_start_view_control, movie%view_start_ctl, c_buf)
-        end if
-!
-        if(check_file_flag(c_buf, hd_end_view_control)) then
-          write(*,'(3a)', ADVANCE='NO')                                 &
-     &            'Read file for ', trim(hd_end_view_control), '... '
-          movie%end_view_file_ctl = third_word(c_buf)
-          call read_control_modelview_file(id_control+2,                &
-     &        movie%end_view_file_ctl, movie%view_end_ctl)
-        else if(check_begin_flag(c_buf, hd_end_view_control)) then
-          write(*,*)  'End modelview control is included'
-          call read_view_transfer_ctl(id_control,                       &
-     &        hd_end_view_control, movie%view_end_ctl, c_buf)
-        end if
+        call sel_read_ctl_modelview_file(id_control,                    &
+     &      hd_start_view_control, movie%view_start_ctl, c_buf)
+        call sel_read_ctl_modelview_file(id_control,                    &
+     &      hd_end_view_control, movie%view_end_ctl, c_buf)
 !
 !
         call read_chara_ctl_type(c_buf, hd_movie_format,                &

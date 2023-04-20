@@ -198,18 +198,8 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
-!
-        if(check_file_flag(c_buf, hd_view_transform)) then
-          write(*,'(3a)', ADVANCE='NO')                                 &
-     &              'Read file for ', trim(hd_view_transform), '... '
-          pvr%view_file_ctl = third_word(c_buf)
-          call read_control_modelview_file                              &
-     &       (id_control+2, pvr%view_file_ctl, pvr%mat)
-        else if(check_begin_flag(c_buf, hd_view_transform)) then
-          write(*,*) 'Modelview control is included'
-          call read_view_transfer_ctl(id_control, hd_view_transform,    &
-     &        pvr%mat, c_buf)
-        end if
+        call sel_read_ctl_modelview_file(id_control, hd_view_transform, &
+     &                                   pvr%mat, c_buf)
 !
         if(check_file_flag(c_buf, hd_lic_colordef)) then
           write(*,'(3a)', ADVANCE='NO')                                 &
