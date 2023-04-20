@@ -7,8 +7,10 @@
 !>@brief  Control data for repartitioning by volume
 !!
 !!@verbatim
-!!      subroutine read_ctl_file_vol_repart(file_name, hd_block,        &
-!!     &                                    viz_repart_c)
+!!      subroutine sel_read_ctl_file_vol_repart(id_control, hd_block,   &
+!!     &                                        viz_repart_c, c_buf)
+!!      subroutine read_ctl_file_vol_repart(id_control, file_name,      &
+!!     &                                    hd_block, viz_repart_c)
 !!      subroutine read_control_vol_repart                              &
 !!     &         (id_control, hd_block, viz_repart_c, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
@@ -61,8 +63,6 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter, private :: ctl_file_code = 11
-!
 !
 !>      Structure for new partitioning controls
       type viz_repartition_ctl
@@ -96,14 +96,42 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_file_vol_repart(file_name, hd_block,          &
-     &                                    viz_repart_c)
+      subroutine sel_read_ctl_file_vol_repart(id_control, hd_block,     &
+     &                                        viz_repart_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(viz_repartition_ctl), intent(inout) :: viz_repart_c
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+      character(len=kchara) :: file_name
+!
+!
+      if(check_file_flag(c_buf, hd_block)) then
+        file_name = third_word(c_buf)
+        write(*,'(4a)') 'Read file for ', trim(hd_block),               &
+     &                 ' from ', trim(file_name)
+        call read_ctl_file_vol_repart(id_control+1, file_name,          &
+     &                                hd_block, viz_repart_c)
+      else if(check_begin_flag(c_buf, hd_block)) then
+        write(*,*)  'Repartioning control is included'
+        call read_control_vol_repart(id_control, hd_block,              &
+     &                               viz_repart_c, c_buf)
+      end if
+!
+      end subroutine sel_read_ctl_file_vol_repart
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_ctl_file_vol_repart(id_control, file_name,        &
+     &                                    hd_block, viz_repart_c)
 !
       use calypso_mpi
       use skip_comment_f
       use bcast_4_platform_ctl
       use t_read_control_elements
 !
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
       type(viz_repartition_ctl), intent(inout) :: viz_repart_c
@@ -112,18 +140,16 @@
 !
 !
       if(my_rank .eq. 0) then
-        open(ctl_file_code, file=file_name,status='old')
+        open(id_control, file=file_name,status='old')
 !
         do
-          call load_one_line_from_control(ctl_file_code, c_buf1)
+          call load_one_line_from_control(id_control, c_buf1)
           call read_control_vol_repart                                  &
-     &       (ctl_file_code, hd_block, viz_repart_c, c_buf1)
+     &       (id_control, hd_block, viz_repart_c, c_buf1)
           if(viz_repart_c%i_viz_repartition_ctl .gt. 0) exit
         end do
-        close(ctl_file_code)
+        close(id_control)
       end if
-!
-      call bcast_control_vol_repart(viz_repart_c)
 !
       end subroutine read_ctl_file_vol_repart
 !

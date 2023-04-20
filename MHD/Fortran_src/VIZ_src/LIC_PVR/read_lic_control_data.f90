@@ -174,6 +174,10 @@
 !
         call read_control_vol_repart(id_control, hd_lic_partition,      &
      &                               lic_ctl%repart_ctl, c_buf)
+!
+        call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
+     &                                    lic_ctl%repart_ctl, c_buf)
+!
         call read_cube_noise_control_data                               &
      &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
         call read_kernel_control_data                                   &

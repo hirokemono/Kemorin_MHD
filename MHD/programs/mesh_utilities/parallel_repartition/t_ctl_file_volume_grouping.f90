@@ -133,7 +133,8 @@
      &     (id_control, hd_platform, part_tctl%plt, c_buf)
         call read_control_time_step_data                                &
      &     (id_control, hd_time_step, part_tctl%t_viz_ctl, c_buf)
-        call read_control_vol_repart(id_control, hd_viz_partition,      &
+!
+        call sel_read_ctl_file_vol_repart(id_control, hd_viz_partition, &
      &      part_tctl%viz_repart_c, c_buf)
       end do
       part_tctl%i_mesh_test_ctl = 1
