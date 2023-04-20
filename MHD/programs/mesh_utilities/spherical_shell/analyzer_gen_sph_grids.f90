@@ -138,7 +138,7 @@
 !        write(*,*) 'diff', SPH_GEN%sph%sph_rtp%idx_global_rtp(i2,1:3) - SPH_GEN%sph%sph_rtp%idx_global_rtp(i1,1:3)
 !      end if
 !
-      if(sph_files1%FEM_mesh_flags%flag_access_FEM) goto 99
+      if(.not. sph_files1%FEM_mesh_flags%flag_access_FEM) goto 99
 !
 !  ========= Generate FEM mesh ===========================
 !
