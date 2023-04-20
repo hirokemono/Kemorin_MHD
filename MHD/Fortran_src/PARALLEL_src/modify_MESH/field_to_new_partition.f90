@@ -138,7 +138,7 @@
         end if
       end if
       call calypso_MPI_barrier
-      call calypso_mpi_bcast_one_logical(flag, 0)
+      call calypso_mpi_bcast_one_logical(flag_t, 0)
       call calypso_mpi_bcast_one_logical(flag_m, 0)
 !
 !
