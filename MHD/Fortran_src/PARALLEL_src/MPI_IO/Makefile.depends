@@ -128,7 +128,7 @@ parallel_ucd_IO_select.o: $(MPI_IO_DIR)/parallel_ucd_IO_select.F90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 repart_table_file_IO.o: $(MPI_IO_DIR)/repart_table_file_IO.f90 m_precision.o m_machine_parameter.o t_binary_IO_buffer.o t_repartition_tables_IO.o comm_table_IO.o skip_comment_f.o m_fem_mesh_labels.o binary_IO.o comm_table_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sel_repartition_table_IO.o: $(MPI_IO_DIR)/sel_repartition_table_IO.F90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_file_IO_parameter.o t_repartition_tables_IO.o repart_table_file_IO.o gz_repart_table_file_IO.o MPI_repart_table_file_IO.o gz_MPI_repart_table_file_IO.o set_parallel_file_name.o
+sel_repartition_table_IO.o: $(MPI_IO_DIR)/sel_repartition_table_IO.F90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_file_IO_parameter.o t_repartition_tables_IO.o delete_data_files.o repart_table_file_IO.o gz_repart_table_file_IO.o MPI_repart_table_file_IO.o gz_MPI_repart_table_file_IO.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 set_control_platform_data.o: $(MPI_IO_DIR)/set_control_platform_data.F90 m_precision.o m_machine_parameter.o calypso_mpi.o t_ctl_data_4_platforms.o t_file_IO_parameter.o t_ctl_data_4_FEM_mesh.o m_file_format_switch.o set_control_platform_item.o m_default_file_prefix.o mpi_abort_by_missing_zlib.o sph_file_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<

@@ -45,12 +45,7 @@
       call calypso_mpi_bcast_one_int(pvr%i_pvr_ctl, 0)
 !
 !
-      call calypso_mpi_bcast_character                                  &
-     &   (pvr%view_file_ctl, cast_long(kchara), 0)
       call bcast_view_transfer_ctl(pvr%mat)
-!
-      call calypso_mpi_bcast_character                                  &
-     &   (pvr%color_file_ctl, cast_long(kchara), 0)
 !
       call bcast_pvr_isosurfs_ctl(pvr%pvr_isos_c)
       call bcast_pvr_sections_ctl(pvr%pvr_scts_c)
@@ -106,10 +101,7 @@
 !
       new_pvr%i_pvr_ctl = org_pvr%i_pvr_ctl
 !
-      new_pvr%view_file_ctl = org_pvr%view_file_ctl
       call dup_view_transfer_ctl(org_pvr%mat, new_pvr%mat)
-!
-      new_pvr%color_file_ctl = org_pvr%color_file_ctl
 !
       call dup_pvr_isosurfs_ctl(org_pvr%pvr_isos_c, new_pvr%pvr_isos_c)
       call dup_pvr_sections_ctl(org_pvr%pvr_scts_c, new_pvr%pvr_scts_c)

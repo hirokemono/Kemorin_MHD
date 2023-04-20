@@ -126,6 +126,39 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine sel_read_ctl_pvr_colormap_file                         &
+     &         (id_control, hd_block, cmap_cbar_c, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+      character(len = kchara) :: file_name
+!
+!
+      if(check_file_flag(c_buf, hd_block)) then
+        write(*,'(3a)', ADVANCE='NO')                                   &
+     &            'Read file for ', trim(hd_block), '... '
+        file_name = third_word(c_buf)
+        call read_control_pvr_colormap_file                             &
+     &     (id_control+1, file_name, hd_block, cmap_cbar_c)
+      end if
+!
+      if(cmap_cbar_c%i_cmap_cbar .eq. 0) then
+        call read_pvr_colordef_ctl(id_control, hd_colormap_file,        &
+     &      cmap_cbar_c%color, c_buf)
+        call read_pvr_colordef_ctl(id_control, hd_colormap,             &
+     &      cmap_cbar_c%color, c_buf)
+!
+        call read_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,         &
+     &      cmap_cbar_c%cbar_ctl, c_buf)
+      end if
+!
+      end subroutine sel_read_ctl_pvr_colormap_file
+!
+!  ---------------------------------------------------------------------
+!
       subroutine read_control_pvr_colormap_file                         &
      &         (id_control, color_file_name, hd_block, cmap_cbar_c)
 !

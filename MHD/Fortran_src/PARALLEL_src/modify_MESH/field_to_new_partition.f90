@@ -98,7 +98,7 @@
       use calypso_mpi_logical
       use repartiton_by_volume
       use mesh_file_name_by_param
-      use set_interpolate_file_name
+      use sel_repartition_table_IO
 !
       logical, intent(in) :: flag_lic_dump
       integer(kind = kint), intent(in) :: num_mask
@@ -128,7 +128,7 @@
         if(part_param%trans_tbl_file%iflag_format .eq. id_no_file) then
           flag_t = .FALSE.
         else
-          flag_t = check_exist_interpolate_file(my_rank,                &
+          flag_t = check_exist_repart_table_file(my_rank,               &
      &                                      part_param%trans_tbl_file)
         end if
         if(part_param%viz_mesh_file%iflag_format .eq. id_no_file) then

@@ -192,23 +192,14 @@
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(pvr%i_pvr_ctl .gt. 0) return
 !
-      pvr%view_file_ctl = 'NO_FILE'
-      pvr%color_file_ctl = 'NO_FILE'
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call sel_read_ctl_modelview_file(id_control, hd_view_transform, &
      &                                   pvr%mat, c_buf)
-!
-        if(check_file_flag(c_buf, hd_lic_colordef)) then
-          write(*,'(3a)', ADVANCE='NO')                                 &
-     &               'Read file for ', trim(hd_lic_colordef), '... '
-          pvr%color_file_ctl = third_word(c_buf)
-          call read_control_pvr_colormap_file                           &
-     &       (id_control+2, pvr%color_file_ctl, hd_lic_colordef,        &
-     &        pvr%cmap_cbar_c)
-        end if
+        call sel_read_ctl_pvr_colormap_file                             &
+     &     (id_control, hd_lic_colordef, pvr%cmap_cbar_c, c_buf)
 !
         if(pvr%cmap_cbar_c%i_cmap_cbar .eq. 0) then
           call read_pvr_colordef_ctl(id_control, hd_lic_colordef,       &

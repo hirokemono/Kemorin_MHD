@@ -7,6 +7,9 @@
 !>@brief File IO for communication table
 !!
 !!@verbatim
+!!      logical function check_exist_repart_table_file(id_rank,         &
+!!     &                                               repart_file)
+!!        integer, intent(in) :: id_rank
 !!      subroutine sel_mpi_read_repart_tbl_file(repart_file, repart_IOs)
 !!        type(field_IO_params), intent(in) ::  repart_file
 !!        type(repartition_tables_IO), intent(inout) :: repart_IOs
@@ -36,6 +39,26 @@
 !------------------------------------------------------------------
 !
        contains
+!
+!  ---------------------------------------------------------------------
+!
+      logical function check_exist_repart_table_file(id_rank,           &
+     &                                               repart_file)
+!
+      use delete_data_files
+!
+      integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  repart_file
+!
+      character(len=kchara) :: file_name
+!
+!
+      check_exist_repart_table_file = .TRUE.
+      file_name = set_repart_tbl_file_name(repart_file%file_prefix,     &
+     &                               repart_file%iflag_format, id_rank)
+      check_exist_repart_table_file = check_file_exist(file_name)
+!
+      end function check_exist_repart_table_file
 !
 !------------------------------------------------------------------
 !
@@ -147,7 +170,7 @@
       end subroutine sel_mpi_write_repart_tbl_file
 !
 !  ---------------------------------------------------------------------
-!-----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       character(len=kchara) function                                    &
      &      set_repart_tbl_file_name(file_header, itype_file, id_rank)
