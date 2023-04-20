@@ -37,9 +37,9 @@
 !!!    opacity_field       magnetic_field
 !!!    opacity_component   amplitude
 !!
-!!    begin LIC_repartition_ctl
+!!    begin viz_repartition_ctl
 !!     ...
-!!    end LIC_repartition_ctl
+!!    end viz_repartition_ctl
 !!
 !!    array masking_control    1
 !!      begin masking_control

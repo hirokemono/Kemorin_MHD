@@ -108,7 +108,7 @@
 !
 !     ----- read control data
 !
-      call read_control_new_partition(part_tctl1)
+      call read_ctl_file_new_partition(part_tctl1)
 !
       call set_control_param_repartition(part_tctl1, part_prog_p1)
 !

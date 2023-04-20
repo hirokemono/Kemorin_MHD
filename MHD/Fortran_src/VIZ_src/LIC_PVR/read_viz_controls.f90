@@ -136,18 +136,20 @@
      &       :: hd_output_fld_file_fmt = 'output_field_file_fmt_ctl'
 !
       character(len=kchara), parameter, private                         &
-     &                    :: hd_lic_partition = 'LIC_repartition_ctl'
+     &                    :: hd_viz_partition = 'viz_repartition_ctl'
 !
 !      Deprecated labels
       character(len=kchara), parameter, private                         &
      &             :: hd_psf_ctl = 'surface_rendering'
       character(len=kchara), parameter, private                         &
      &             :: hd_iso_ctl = 'isosurf_rendering'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_lic_partition = 'LIC_repartition_ctl'
 !
       integer(kind = kint), parameter, private                          &
      &                      :: n_label_vizs = 21
       integer(kind = kint), parameter, private                          &
-     &                      :: n_label_vizs_w_dep = 23
+     &                      :: n_label_vizs_w_dep = 24
 !
 !   --------------------------------------------------------------------
 !
@@ -174,6 +176,8 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
+        call read_control_vol_repart(id_control, hd_viz_partition,      &
+     &                           viz_ctls%repart_ctl, c_buf)
         call read_control_vol_repart(id_control, hd_lic_partition,      &
      &                           viz_ctls%repart_ctl, c_buf)
 !
@@ -284,10 +288,11 @@
       call set_control_labels(hd_delta_t_ucd,         names(19))
       call set_control_labels(hd_output_fld_file_fmt, names(20))
 !
-      call set_control_labels(hd_lic_partition,       names(21))
+      call set_control_labels(hd_viz_partition,       names(21))
 !
       call set_control_labels(hd_psf_ctl,             names(22))
       call set_control_labels(hd_iso_ctl,             names(23))
+      call set_control_labels(hd_lic_partition,       names(24))
 !
       end subroutine set_label_vizs
 !

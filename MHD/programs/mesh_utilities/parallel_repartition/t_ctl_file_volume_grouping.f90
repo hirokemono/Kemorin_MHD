@@ -7,7 +7,7 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine read_control_new_partition(part_tctl)
+!!      subroutine read_ctl_file_new_partition(part_tctl)
 !!      subroutine dealloc_control_new_partition(part_tctl)
 !!        type(new_patition_test_control), intent(inout) :: part_tctl
 !!
@@ -78,7 +78,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_new_partition(part_tctl)
+      subroutine read_ctl_file_new_partition(part_tctl)
 !
       use calypso_mpi
       use skip_comment_f
@@ -95,7 +95,7 @@
 !
         do
           call load_one_line_from_control(part_ctl_file_code, c_buf1)
-          call read_control_new_poartition                              &
+          call read_control_new_partition                               &
      &       (part_ctl_file_code, hd_repartition_test_ctl,              &
      &        part_tctl, c_buf1)
           if(part_tctl%i_mesh_test_ctl .gt. 0) exit
@@ -103,14 +103,14 @@
         close(part_ctl_file_code)
       end if
 !
-      call bcast_control_new_poartition(part_tctl)
+      call bcast_control_new_partition(part_tctl)
 !
-      end subroutine read_control_new_partition
+      end subroutine read_ctl_file_new_partition
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_new_poartition                            &
+      subroutine read_control_new_partition                             &
      &         (id_control, hd_block, part_tctl, c_buf)
 !
       use t_read_control_elements
@@ -138,11 +138,11 @@
       end do
       part_tctl%i_mesh_test_ctl = 1
 !
-      end subroutine read_control_new_poartition
+      end subroutine read_control_new_partition
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_control_new_poartition(part_tctl)
+      subroutine dealloc_control_new_partition(part_tctl)
 !
       type(new_patition_test_control), intent(inout) :: part_tctl
 !
@@ -153,12 +153,12 @@
       part_tctl%t_viz_ctl%i_tstep = 0
       part_tctl%i_mesh_test_ctl =   0
 !
-      end subroutine dealloc_control_new_poartition
+      end subroutine dealloc_control_new_partition
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_control_new_poartition(part_tctl)
+      subroutine bcast_control_new_partition(part_tctl)
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -175,7 +175,7 @@
 !
       call calypso_mpi_bcast_one_int(part_tctl%i_mesh_test_ctl, 0)
 !
-      end subroutine bcast_control_new_poartition
+      end subroutine bcast_control_new_partition
 !
 !   --------------------------------------------------------------------
 !

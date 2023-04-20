@@ -63,6 +63,10 @@
      &                    :: hd_viz_control = 'visual_control'
 !
       character(len=kchara), parameter, private                         &
+     &                    :: hd_viz_partition = 'viz_repartition_ctl'
+!
+!       Deplecated label
+      character(len=kchara), parameter, private                         &
      &                    :: hd_lic_partition = 'LIC_repartition_ctl'
 !
       private :: read_ctl_data_gen_sph_w_repart
@@ -151,6 +155,8 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
+        call read_control_vol_repart(id_control, hd_viz_partition,      &
+     &                               gen_SPH_wP_c%repart_ctl, c_buf)
         call read_control_vol_repart(id_control, hd_lic_partition,      &
      &                               gen_SPH_wP_c%repart_ctl, c_buf)
       end do
