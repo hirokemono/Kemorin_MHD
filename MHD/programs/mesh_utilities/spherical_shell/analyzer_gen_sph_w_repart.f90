@@ -20,6 +20,8 @@
 !
       use m_work_time
       use m_elapsed_labels_gen_SPH
+      use m_elapsed_labels_4_REPART
+      use m_work_time_4_sleeve_extend
 !
       use t_mesh_data
       use t_SPH_mesh_field_data
@@ -67,6 +69,8 @@
 ! 
       call init_elapse_time_by_TOTAL
       call elpsed_label_gen_sph_grid
+      call elpsed_label_4_repartition
+      call elpsed_label_4_sleeve_ext
 !
       call start_elapsed_time(ied_total_elapsed)
       call read_ctl_file_gen_sph_w_repart(control_file_name,            &
