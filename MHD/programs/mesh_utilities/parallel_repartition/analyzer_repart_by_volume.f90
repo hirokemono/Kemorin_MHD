@@ -52,6 +52,8 @@
       use t_next_node_ele_4_node
       use t_ctl_file_volume_grouping
       use t_const_comm_table
+      use t_jacobians
+      use t_shape_functions
 !
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
@@ -136,6 +138,7 @@
      &   izero, masking1, vect_ref1(1,1), d_mask_org1, vect_ref1,       &
      &   new_fem%mesh, new_fem%group, repart_nod_tbl1, repart_ele_tbl1, &
      &   sleeve_exp_WK1, m_SR_T)
+      return
       call dealloc_calypso_comm_table(repart_ele_tbl1)
       deallocate(d_mask_org1, vect_ref1, masking1)
 !
@@ -184,6 +187,7 @@
         return
       end if
 !
+      return
 !
       if(iflag_debug.gt.0) write(*,*) ' load_repartitoned_table_mesh'
       call load_repartitoned_table_mesh((.FALSE.), part_p1%repart_p,    &

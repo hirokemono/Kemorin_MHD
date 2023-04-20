@@ -107,9 +107,12 @@
       use t_mesh_SR
 !
       use t_next_node_ele_4_node
+      use t_jacobians
+      use t_shape_functions
       use t_ctl_param_sleeve_extend
       use t_ctl_param_masking
 !
+      use calypso_mpi_int
       use parallel_FEM_mesh_init
       use mpi_gen_sph_grids_modes
       use output_gen_sph_grid_modes
@@ -118,21 +121,31 @@
       use nod_phys_send_recv
       use const_element_comm_tables
       use set_element_id_4_node
+      use int_volume_of_single_domain
       use repartiton_by_volume
+      use compare_mesh_structures
 !
       type(mesh_data), save :: new_fem_S
       type(communication_table), save :: ele_comm_S
       type(calypso_comm_table), save :: repart_nod_tbl_S
       type(calypso_comm_table), save :: repart_ele_tbl_S
 !
+      type(mesh_data), save :: new_fem_2
+      type(communication_table), save :: new_ele_comm_2
+      type(calypso_comm_table), save :: part_nod_tbl_2
+      type(calypso_comm_table), save :: part_ele_tbl_2
+!
       type(mesh_SR), save :: m_SR_S
 !
+      type(jacobians_type), save :: jacobians_S
+      type(shape_finctions_at_points), save :: spfs_S
       type(next_nod_ele_table), save :: next_tbl_S
       type(sleeve_extension_work), save :: sleeve_exp_WKS
 !
       type(masking_parameter), allocatable, target :: masking_S(:)
       real(kind = kreal), allocatable :: d_mask_org_S(:,:)
       real(kind = kreal), allocatable :: vect_ref_S(:,:)
+      integer(kind = kint) :: icount_error, icou_error_gl
 !
 !
 !  ========= Generate spherical harmonics table ========================
@@ -176,6 +189,13 @@
         if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
         call FEM_comm_initialization(geofem_S%mesh, m_SR_S)
 !
+!  -----  Const volume of each element
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
+      call const_jacobian_and_single_vol                                &
+     &   (geofem_S%mesh, geofem_S%group, spfs_S, jacobians_S)
+      call finalize_jac_and_single_vol                                  &
+     &   (geofem_S%mesh, spfs_S, jacobians_S)
+!
         if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
         call const_global_numele_list(geofem_S%mesh%ele)
         call const_ele_comm_table(geofem_S%mesh%node,                   &
@@ -199,9 +219,40 @@
         call dealloc_calypso_comm_table(repart_nod_tbl_S)
         call dealloc_calypso_comm_table(repart_ele_tbl_S)
         call dealloc_next_nod_ele_table(next_tbl_S)
-        call dealloc_comm_table(ele_comm_S)
         call calypso_MPI_barrier
+!
+!  ========= Check table ===========================
+!
+        if(iflag_debug.gt.0) write(*,*) ' load_repartitoned_table_mesh'
+        call load_repartitoned_table_mesh((.FALSE.), repart_p_C,        &
+     &    geofem_S, ele_comm_S, new_fem_2, new_ele_comm_2,              &
+     &    part_nod_tbl_2, part_ele_tbl_2, m_SR_S)
+        call dealloc_calypso_comm_table(part_nod_tbl_2)
+        call dealloc_calypso_comm_table(part_ele_tbl_2)
+        call dealloc_comm_table(new_ele_comm_2)
+        call dealloc_comm_table(ele_comm_S)
+!
       end if
+!
+      call compare_node_comm_types(my_rank, new_fem_S%mesh%nod_comm,    &
+     &                             new_fem_2%mesh%nod_comm)
+!
+      call compare_node_position(my_rank, new_fem_S%mesh%node,          &
+     &                           new_fem_2%mesh%node, icount_error)
+      call calypso_mpi_reduce_one_int                                   &
+     &   (icount_error, icou_error_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Compare node: ', icou_error_gl
+!      write(*,*) my_rank, 'Compare node: ', icount_error
+!
+      call compare_ele_connect(my_rank, new_fem_S%mesh%ele,             &
+     &    new_fem_2%mesh%ele, icount_error)
+      call calypso_mpi_reduce_one_int                                   &
+     &   (icount_error, icou_error_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Compare element: ', icou_error_gl
+!      write(*,*) my_rank, 'Compare element: ', icount_error
+!
+      call compare_mesh_groups(my_rank, new_fem_S%group,                &
+     &                         new_fem_2%group)
 !
 !  ========= Generate viewer mesh ===========================
 !

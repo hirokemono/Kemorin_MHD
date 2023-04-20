@@ -172,17 +172,9 @@
      &      new_mesh, new_group, new_ele_comm, sleeve_exp_WK, m_SR)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
       end if
-!
-      call dealloc_comm_table(new_ele_comm)
       call calypso_mpi_barrier
 !
 !  ----------------
-!
-      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+7)
-      call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
-      call const_ele_comm_table(new_mesh%node, new_mesh%nod_comm,       &
-     &                          new_mesh%ele, new_ele_comm, m_SR)
-      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+7)
 !
 !       Output new mesh file
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
