@@ -4,7 +4,7 @@
 !! @date   Programmed in  Nov., 2007
 !!
 !
-!> @brief Time series of layerd spectr data
+!> @brief Time series of layerd spectr data 
 !!
 !!@verbatim
 !!      subroutine load_sph_layer_spec_file(fname_org, flag_old_fmt,    &
