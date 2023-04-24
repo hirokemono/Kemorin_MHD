@@ -138,9 +138,9 @@
      &   izero, masking1, vect_ref1(1,1), d_mask_org1, vect_ref1,       &
      &   new_fem%mesh, new_fem%group, repart_nod_tbl1, repart_ele_tbl1, &
      &   sleeve_exp_WK1, m_SR_T)
-      return
       call dealloc_calypso_comm_table(repart_ele_tbl1)
       deallocate(d_mask_org1, vect_ref1, masking1)
+!
 !
       call dealloc_next_nod_ele_table(next_tbl1)
 !      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)

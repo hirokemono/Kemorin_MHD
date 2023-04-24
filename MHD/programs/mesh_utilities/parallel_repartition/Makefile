@@ -9,6 +9,8 @@ TARGET_CHECK_REPARTITION =  check_mesh_by_repartition
 TARGET_CHECK_REPART_MESH =  check_repart_by_mesh
 TARGET_FIELD_TO_NEWPART =   field_to_new_partition
 
+TARGET_FIX_REPARTITION =  check_fix_by_repartition
+
 MOD_VOLUME_REPARTITION = \
 main_repart_by_volume.o \
 analyzer_repart_by_volume.o \
@@ -26,6 +28,13 @@ t_control_param_repartition.o
 MOD_CHECK_REPART_MESH = \
 main_check_repart_by_mesh.o \
 analyzer_chk_repart_by_mesh.o \
+\
+t_ctl_file_volume_grouping.o \
+t_control_param_repartition.o
+
+MOD_FIX_REPART_MESH = \
+main_fix_repart_by_mesh.o \
+analyzer_fix_repart_by_mesh.o \
 \
 t_ctl_file_volume_grouping.o \
 t_control_param_repartition.o
@@ -52,13 +61,15 @@ target_list:
 	@echo 'TARGET_VOLUME_REPARTITION = $$(BUILDDIR)/$(TARGET_VOLUME_REPARTITION)' >> $(MAKENAME)
 	@echo 'TARGET_CHECK_REPARTITION =  $$(BUILDDIR)/$(TARGET_CHECK_REPARTITION)' >> $(MAKENAME)
 	@echo 'TARGET_CHECK_REPART_MESH =  $$(BUILDDIR)/$(TARGET_CHECK_REPART_MESH)' >> $(MAKENAME)
+	@echo 'TARGET_FIX_REPARTITION =  $$(BUILDDIR)/$(TARGET_FIX_REPARTITION)' >> $(MAKENAME)
 	@echo 'TARGET_FIELD_TO_NEWPART =   $$(BUILDDIR)/$(TARGET_FIELD_TO_NEWPART)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo repartition: \
 	'$$(TARGET_VOLUME_REPARTITION) $$(TARGET_CHECK_REPARTITION)' \
-	'$$(TARGET_FIELD_TO_NEWPART)   $$(TARGET_CHECK_REPART_MESH)'  >> $(MAKENAME)
+	'$$(TARGET_FIELD_TO_NEWPART)   $$(TARGET_CHECK_REPART_MESH)' \
+	'$$(TARGET_FIX_REPARTITION)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_VOLUME_REPARTITION): $$(MOD_VOLUME_REPARTITION) $$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
@@ -84,6 +95,14 @@ target_task:
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_FIX_REPARTITION): $$(MOD_FIX_REPART_MESH) $$(LIB_FILES_MESH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FIX_REPARTITION)' \
+	'$$(MOD_FIX_REPART_MESH)' \
+	'-L. $$(LIBS_MESH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FIELD_TO_NEWPART): $$(MOD_FIELD_TO_NEWPART) $$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
@@ -104,6 +123,8 @@ mod_list:
 	@echo  $(MOD_CHECK_REPARTITION)    >> $(MAKENAME)
 	@echo  MOD_CHECK_REPART_MESH=  \\  >> $(MAKENAME)
 	@echo  $(MOD_CHECK_REPART_MESH)    >> $(MAKENAME)
+	@echo  MOD_FIX_REPART_MESH=  \\  >> $(MAKENAME)
+	@echo  $(MOD_FIX_REPART_MESH)    >> $(MAKENAME)
 	@echo  MOD_FIELD_TO_NEWPART=  \\   >> $(MAKENAME)
 	@echo  $(MOD_FIELD_TO_NEWPART)     >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
