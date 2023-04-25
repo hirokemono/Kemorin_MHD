@@ -27,6 +27,7 @@
       use t_control_param_repartition
       use t_vector_for_solver
       use t_mesh_SR
+      use m_file_format_switch
 !
       implicit none
 !
@@ -37,6 +38,8 @@
       type(mesh_data), save :: fem_T
       type(communication_table) :: ele_comm_T
       type(mesh_SR), save :: m_SR_T
+!
+      type(calypso_comm_table), save :: repart_ele_tbl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,15 +52,32 @@
       use t_next_node_ele_4_node
       use t_ctl_file_volume_grouping
       use t_const_comm_table
+      use t_jacobians
+      use t_shape_functions
 !
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use nod_phys_send_recv
       use const_element_comm_tables
+      use int_volume_of_single_domain
+      use repartiton_by_volume
+      use set_element_id_4_node
 !
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
+      type(jacobians_type), save :: jacobians1
+      type(shape_finctions_at_points), save :: spfs1
+      type(next_nod_ele_table), save :: next_tbl1
+      type(sleeve_extension_work), save :: sleeve_exp_WK1
+      type(calypso_comm_table), save :: repart_nod_tbl0
+!
+      type(mesh_data) :: new_fem0
+!
+      type(masking_parameter), allocatable, target :: masking1(:)
+      real(kind = kreal), allocatable :: d_mask_org1(:,:)
+      real(kind = kreal), allocatable :: vect_ref1(:,:)
+      integer :: id_tmp(3)
 !
 !     --------------------- 
 !
@@ -88,9 +108,46 @@
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-!      call const_global_numele_list(fem_T%mesh%ele)
+      call const_global_numele_list(fem_T%mesh%ele)
       call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
      &                          fem_T%mesh%ele, ele_comm_T, m_SR_T)
+!
+!
+!  -----  Const volume of each element
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
+      call const_jacobian_and_single_vol                                &
+     &   (fem_T%mesh, fem_T%group, spfs1, jacobians1)
+      call finalize_jac_and_single_vol                                  &
+     &   (fem_T%mesh, spfs1, jacobians1)
+!
+!  -----  Const Neighboring information
+      if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
+      call set_belonged_ele_and_next_nod                                &
+     &   (fem_T%mesh, next_tbl1%neib_ele, next_tbl1%neib_nod)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
+!
+!  -----  Re-partitioning
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
+      if(iflag_debug .gt. 0) write(*,*) 's_repartiton_by_volume'
+      allocate(masking1(0))
+      allocate(d_mask_org1(fem_T%mesh%node%numnod,1))
+      allocate(vect_ref1(fem_T%mesh%node%numnod,3))
+      id_tmp(1) = part_p1%repart_p%sleeve_exp_p%iflag_expand_mode
+      id_tmp(2) = part_p1%repart_p%viz_mesh_file%iflag_format
+      id_tmp(3) = part_p1%repart_p%trans_tbl_file%iflag_format
+      part_p1%repart_p%sleeve_exp_p%iflag_expand_mode = iflag_turn_off
+      part_p1%repart_p%viz_mesh_file%iflag_format =    id_no_file
+      part_p1%repart_p%trans_tbl_file%iflag_format =    id_no_file
+      call s_repartiton_by_volume((.TRUE.), part_p1%repart_p,           &
+     &   fem_T%mesh, fem_T%group, ele_comm_T, next_tbl1,                &
+     &   izero, masking1, vect_ref1(1,1), d_mask_org1, vect_ref1,       &
+     &   new_fem0%mesh, new_fem0%group, repart_nod_tbl0,                &
+     &   repart_ele_tbl1, sleeve_exp_WK1, m_SR_T)
+      part_p1%repart_p%sleeve_exp_p%iflag_expand_mode = id_tmp(1)
+      part_p1%repart_p%viz_mesh_file%iflag_format =     id_tmp(2)
+      part_p1%repart_p%trans_tbl_file%iflag_format =    id_tmp(3)
+      deallocate(d_mask_org1, vect_ref1, masking1)
+      call calypso_mpi_barrier
 !
       end subroutine initialize_fix_repart_by_mesh
 !
@@ -117,14 +174,13 @@
       use copy_repart_and_itp_table
       use itrplte_tbl_coef_IO_select
       use para_itrplte_table_IO_sel
+      use compare_calypso_comm_tables
 !
-      type(calypso_comm_table), save :: part_nod_tbl1
-      type(calypso_comm_table), save :: part_ele_tbl2
+      type(mesh_data), save :: new_fem2
+      type(calypso_comm_table), save :: part_nod_tbl2
       type(communication_table), save :: new_ele_comm2
 !
       type(interpolate_table), save :: itp_nod_tbl_IO
-      type(mesh_data), save :: new_fem_f, new_fem3
-      integer(kind = kint) :: new_numele
 !
       integer(kind = kint) :: icount_error, icou_error_gl, ierr
 !
@@ -135,116 +191,45 @@
         return
       end if
 !
-!  --  read geometry
+!  --  read repartitioned geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(part_p1%repart_p%viz_mesh_file,               &
-     &                    nprocs, new_fem_f)
+     &                    nprocs, new_fem2)
       call calypso_mpi_barrier
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
-      call FEM_mesh_initialization(new_fem_f%mesh, new_fem_f%group,     &
+      call FEM_mesh_initialization(new_fem2%mesh, new_fem2%group,       &
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
-      call const_ele_comm_table(new_fem_f%mesh%node,                    &
-     &    new_fem_f%mesh%nod_comm, new_fem_f%mesh%ele,                  &
+      call const_global_numele_list(new_fem2%mesh%ele)
+      call const_ele_comm_table(new_fem2%mesh%node,                     &
+     &    new_fem2%mesh%nod_comm, new_fem2%mesh%ele,                    &
      &    new_ele_comm2, m_SR_T)
-!
+      call calypso_mpi_barrier
 !
 !  --  read old interpolation table
+!
       call sel_mpi_read_interpolate_table                               &
      &   (my_rank, nprocs, part_p1%repart_p%trans_tbl_file,             &
      &    itp_nod_tbl_IO, ierr)
 !
       call copy_itp_table_to_repart_tbl(my_rank,                        &
-     &    fem_T%mesh, new_fem_f%mesh, itp_nod_tbl_IO, part_nod_tbl1)
+     &    fem_T%mesh, new_fem2%mesh, itp_nod_tbl_IO, part_nod_tbl2)
       call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
       call calypso_MPI_barrier
 !
-!  --  Construct element repartitioned mesh
-      call reconstruct_reparted_element(fem_T%mesh, ele_comm_T,         &
-     &   new_fem_f%mesh%node, new_fem_f%mesh%nod_comm, part_nod_tbl1,   &
-     &   part_ele_tbl2, m_SR_T)
+!  --  load new repartition table
 !
-!  --  Construct element repartitioned mesh
-      new_numele = new_fem_f%mesh%ele%numele
-      call const_repart_mesh_by_table                                   &
-     &   (fem_T%mesh, fem_T%group, ele_comm_T,                          &
-     &    part_nod_tbl1, part_ele_tbl2, new_ele_comm2,                  &
-     &    new_numele, new_fem3%mesh, new_fem3%group, m_SR_T)
-!
-!
-!
-      call compare_node_comm_types(my_rank, new_fem_f%mesh%nod_comm,    &
-     &                             new_fem3%mesh%nod_comm)
-!
-      call compare_node_position(my_rank, new_fem_f%mesh%node,          &
-     &                           new_fem3%mesh%node, icount_error)
-      call calypso_mpi_reduce_one_int                                   &
-     &   (icount_error, icou_error_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Compare node: ', icou_error_gl
-!      write(*,*) my_rank, 'Compare node: ', icount_error
-!
-      call compare_ele_connect(my_rank, new_fem_f%mesh%ele,             &
-     &    new_fem3%mesh%ele, icount_error)
-      call calypso_mpi_reduce_one_int                                   &
-     &   (icount_error, icou_error_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Compare element: ', icou_error_gl
-!      write(*,*) my_rank, 'Compare element: ', icount_error
-!
-      call compare_mesh_groups(my_rank, new_fem_f%group,                &
-     &                         new_fem3%group)
-!
-      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
-      call output_elapsed_times
+      if (iflag_debug.gt.0) write(*,*) 'output_repart_table'
+      call output_repart_table                                          &
+     &   (part_p1%repart_p%trans_tbl_file, new_fem2%mesh%ele%numele,    &
+     &    part_nod_tbl2, repart_ele_tbl1, new_fem2%mesh%nod_comm,       &
+     &    new_ele_comm2)
+      call calypso_MPI_barrier
 !
       end subroutine analyze_fix_repart_by_mesh
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine reconstruct_reparted_element                           &
-     &         (mesh, ele_comm, new_node, new_nod_comm, repart_nod_tbl, &
-     &          repart_ele_tbl, m_SR)
-!
-      use t_control_param_vol_grping
-      use t_repart_double_numberings
-      use t_repartition_by_volume
-!
-      use const_repart_nod_and_comm
-      use const_repart_ele_connect
-      use check_data_for_repartition
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(communication_table), intent(in) :: ele_comm
-      type(communication_table), intent(in) :: new_nod_comm
-      type(node_data), intent(in) :: new_node
-      type(calypso_comm_table), intent(in) :: repart_nod_tbl
-!
-      type(calypso_comm_table), intent(inout) :: repart_ele_tbl
-      type(mesh_SR), intent(inout) :: m_SR
-!
-      type(node_ele_double_number) :: new_ids_on_org
-      type(element_data) :: new_ele
-!
-!
-!       Re-partitioning
-      call alloc_double_numbering(mesh%node%numnod, new_ids_on_org)
-      call node_dbl_numbering_to_repart(mesh%nod_comm, mesh%node,       &
-     &    repart_nod_tbl, new_ids_on_org, m_SR%SR_sig, m_SR%SR_i)
-      call check_repart_node_transfer                                   &
-     &   (mesh%nod_comm, mesh%node, new_nod_comm, new_node,             &
-     &    repart_nod_tbl, new_ids_on_org, m_SR%SR_sig, m_SR%SR_i)
-!
-      call s_const_repart_ele_connect                                   &
-     &   (mesh, ele_comm, repart_nod_tbl, new_ids_on_org,               &
-     &    new_nod_comm, new_node, new_ele,                              &
-     &    repart_ele_tbl, m_SR%SR_sig, m_SR%SR_i, m_SR%SR_il)
-      call dealloc_double_numbering(new_ids_on_org)
-      call dealloc_ele_connect(new_ele)
-!
-!
-      end subroutine reconstruct_reparted_element
 !
 ! ----------------------------------------------------------------------
 !

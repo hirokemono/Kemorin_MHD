@@ -148,7 +148,12 @@
 !
 !
       call compare_node_comm_types(my_rank, new_fem_f%mesh%nod_comm,    &
-     &                             new_fem2%mesh%nod_comm)
+     &                            new_fem2%mesh%nod_comm, icount_error)
+      call calypso_mpi_reduce_one_int                                   &
+     &   (icount_error, icou_error_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Compare node comm table: ',        &
+      &                 icou_error_gl
+!      write(*,*) my_rank, 'Compare node comm table: ', icount_error
 !
       call compare_node_position(my_rank, new_fem_f%mesh%node,          &
      &                           new_fem2%mesh%node, icount_error)

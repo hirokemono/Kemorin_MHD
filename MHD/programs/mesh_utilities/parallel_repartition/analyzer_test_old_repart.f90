@@ -1,5 +1,5 @@
-!>@file   analyzer_repart_by_volume.f90
-!!@brief  module analyzer_repart_by_volume
+!>@file   analyzer_test_old_repart.f90
+!!@brief  module analyzer_test_old_repart
 !!
 !!@author H. Matsui
 !!@date Programmed on Oct., 2020
@@ -7,11 +7,11 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine initialize_reapart_by_vol
-!!      subroutine analyze_reapart_by_vol
+!!      subroutine initialize_fix_repart_by_mesh
+!!      subroutine analyze_fix_repart_by_mesh
 !!@endverbatim
 !
-      module analyzer_repart_by_volume
+      module analyzer_test_old_repart
 !
       use m_precision
 !
@@ -27,6 +27,7 @@
       use t_control_param_repartition
       use t_vector_for_solver
       use t_mesh_SR
+      use m_file_format_switch
 !
       implicit none
 !
@@ -35,11 +36,10 @@
 !
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
-      type(communication_table), save :: ele_comm_T
-      type(mesh_data), save :: new_fem
+      type(communication_table) :: ele_comm_T
       type(mesh_SR), save :: m_SR_T
 !
-      type(calypso_comm_table), save :: repart_nod_tbl1
+      type(calypso_comm_table), save :: repart_ele_tbl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_reapart_by_vol
+      subroutine initialize_fix_repart_by_mesh
 !
       use t_next_node_ele_4_node
       use t_ctl_file_volume_grouping
@@ -58,16 +58,10 @@
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use nod_phys_send_recv
-      use repartiton_by_volume
       use const_element_comm_tables
-      use set_element_id_4_node
       use int_volume_of_single_domain
-      use field_to_new_partition
-!
-      use t_interpolate_table
-      use copy_repart_and_itp_table
-      use itrplte_tbl_coef_IO_select
-      use para_itrplte_table_IO_sel
+      use repartiton_by_volume
+      use set_element_id_4_node
 !
 !>     Stracture for Jacobians
 !
@@ -75,14 +69,15 @@
       type(jacobians_type), save :: jacobians1
       type(shape_finctions_at_points), save :: spfs1
       type(next_nod_ele_table), save :: next_tbl1
-      type(calypso_comm_table), save :: repart_ele_tbl1
       type(sleeve_extension_work), save :: sleeve_exp_WK1
+      type(calypso_comm_table), save :: repart_nod_tbl0
+!
+      type(mesh_data) :: new_fem0
 !
       type(masking_parameter), allocatable, target :: masking1(:)
       real(kind = kreal), allocatable :: d_mask_org1(:,:)
       real(kind = kreal), allocatable :: vect_ref1(:,:)
-!
-      type(interpolate_table), save :: itp_nod_tbl_IO
+      integer :: id_tmp(3)
 !
 !     --------------------- 
 !
@@ -105,21 +100,18 @@
 !
       call init_nod_send_recv(fem_T%mesh,                               &
      &    m_SR_T%SR_sig, m_SR_T%SR_r, m_SR_T%SR_i, m_SR_T%SR_il)
-      if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
-!
-!  -------------------------------
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group,             &
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
-!
-!  -----  Const Element communication table
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
       call const_global_numele_list(fem_T%mesh%ele)
-      call const_ele_comm_table(fem_T%mesh%node,                        &
-     &    fem_T%mesh%nod_comm, fem_T%mesh%ele, ele_comm_T, m_SR_T)
+      call const_ele_comm_table(fem_T%mesh%node, fem_T%mesh%nod_comm,   &
+     &                          fem_T%mesh%ele, ele_comm_T, m_SR_T)
+!
 !
 !  -----  Const volume of each element
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
@@ -140,58 +132,63 @@
       allocate(masking1(0))
       allocate(d_mask_org1(fem_T%mesh%node%numnod,1))
       allocate(vect_ref1(fem_T%mesh%node%numnod,3))
+      id_tmp(1) = part_p1%repart_p%sleeve_exp_p%iflag_expand_mode
+      id_tmp(2) = part_p1%repart_p%viz_mesh_file%iflag_format
+      id_tmp(3) = part_p1%repart_p%trans_tbl_file%iflag_format
+      part_p1%repart_p%sleeve_exp_p%iflag_expand_mode = iflag_turn_off
+      part_p1%repart_p%viz_mesh_file%iflag_format =    id_no_file
+      part_p1%repart_p%trans_tbl_file%iflag_format =    id_no_file
       call s_repartiton_by_volume((.TRUE.), part_p1%repart_p,           &
      &   fem_T%mesh, fem_T%group, ele_comm_T, next_tbl1,                &
      &   izero, masking1, vect_ref1(1,1), d_mask_org1, vect_ref1,       &
-     &   new_fem%mesh, new_fem%group, repart_nod_tbl1, repart_ele_tbl1, &
-     &   sleeve_exp_WK1, m_SR_T)
-      call dealloc_calypso_comm_table(repart_ele_tbl1)
+     &   new_fem0%mesh, new_fem0%group, repart_nod_tbl0,                &
+     &   repart_ele_tbl1, sleeve_exp_WK1, m_SR_T)
+      part_p1%repart_p%sleeve_exp_p%iflag_expand_mode = id_tmp(1)
+      part_p1%repart_p%viz_mesh_file%iflag_format =     id_tmp(2)
+      part_p1%repart_p%trans_tbl_file%iflag_format =    id_tmp(3)
       deallocate(d_mask_org1, vect_ref1, masking1)
+      call calypso_mpi_barrier
 !
-!
-        call copy_repart_tbl_to_itp_table(fem_T%mesh,                   &
-     &      next_tbl1%neib_ele, repart_nod_tbl1, itp_nod_tbl_IO)
-        call sel_mpi_write_interpolate_table(my_rank,                   &
-     &      part_p1%repart_p%trans_tbl_file, itp_nod_tbl_IO)
-        call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
-!
-      call dealloc_next_nod_ele_table(next_tbl1)
-!      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
-      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
-!
-      call dealloc_node_param_smp(new_fem%mesh%node)
-      call dealloc_ele_param_smp(new_fem%mesh%ele)
-!
-      end subroutine initialize_reapart_by_vol
+      end subroutine initialize_fix_repart_by_mesh
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze_reapart_by_vol
+      subroutine analyze_fix_repart_by_mesh
 !
       use t_solver_SR
-      use t_interpolate_table
-      use t_work_for_comm_check
 !
       use t_repart_double_numberings
       use t_para_double_numbering
+      use t_interpolate_table
 !
       use calypso_mpi_int
       use m_file_format_switch
-      use check_data_for_repartition
       use parallel_FEM_mesh_init
+      use load_repartition_table
 !
       use mpi_load_mesh_data
       use const_element_comm_tables
       use compare_mesh_structures
       use repartiton_by_volume
-!
-      type(calypso_comm_table) :: part_nod_tbl2
-      type(calypso_comm_table) :: part_ele_tbl2
-      type(communication_table), save :: new_ele_comm_T
+      use mesh_repartition_by_volume
+      use copy_repart_and_itp_table
+      use itrplte_tbl_coef_IO_select
+      use para_itrplte_table_IO_sel
+      use compare_calypso_comm_tables
 !
       type(mesh_data), save :: new_fem2
+      type(calypso_comm_table), save :: part_nod_tbl2
+      type(communication_table), save :: new_ele_comm2
 !
-      integer(kind = kint) :: icount_error, icou_error_gl
+      integer(kind = kint), save :: new_numele
+      type(calypso_comm_table), save :: repart_nod_tbl5
+      type(calypso_comm_table), save :: repart_ele_tbl5
+      type(communication_table), save :: new_ele_comm5
+      type(mesh_data), save :: new_fem5
+!
+      type(interpolate_table), save :: itp_nod_tbl_IO
+!
+      integer(kind = kint) :: icount_error, icou_error_gl, ierr
 !
 !
       if(part_p1%repart_p%trans_tbl_file%iflag_format                   &
@@ -200,55 +197,80 @@
         return
       end if
 !
-      return
-!
-      if(iflag_debug.gt.0) write(*,*) ' load_repartitoned_table_mesh'
-      call load_repartitoned_table_mesh((.FALSE.), part_p1%repart_p,    &
-     &    fem_T, ele_comm_T, new_fem2, new_ele_comm_T,                  &
-     &    part_nod_tbl2, part_ele_tbl2, m_SR_T)
-      call dealloc_comm_table(new_ele_comm_T)
-      call dealloc_comm_table(ele_comm_T)
-!
-      if(my_rank .eq. 0) write(*,*) 'Compare read comm tables...'
-      call compare_calypso_comm_tbls(repart_nod_tbl1, part_nod_tbl2)
-      call calypso_MPI_barrier
-      if(my_rank .eq. 0) write(*,*) 'Compareing end!'
-!
+!  --  read repartitioned geometry
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(part_p1%repart_p%viz_mesh_file,               &
+     &                    nprocs, new_fem2)
+      call calypso_mpi_barrier
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug.gt.0) write(*,*)' FEM_mesh_initialization'
-      call FEM_mesh_initialization(new_fem%mesh, new_fem%group,         &
+      call FEM_mesh_initialization(new_fem2%mesh, new_fem2%group,       &
      &                             m_SR_T%SR_sig, m_SR_T%SR_i)
 !
-      call compare_node_comm_types(my_rank, new_fem%mesh%nod_comm,      &
-     &                            new_fem2%mesh%nod_comm, icount_error)
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      call const_global_numele_list(new_fem2%mesh%ele)
+      call const_ele_comm_table(new_fem2%mesh%node,                     &
+     &    new_fem2%mesh%nod_comm, new_fem2%mesh%ele,                    &
+     &    new_ele_comm2, m_SR_T)
+      call calypso_mpi_barrier
+!
+!  --  read old interpolation table
+!
+      call sel_mpi_read_interpolate_table                               &
+     &   (my_rank, nprocs, part_p1%repart_p%trans_tbl_file,             &
+     &    itp_nod_tbl_IO, ierr)
+!
+      call copy_itp_table_to_repart_tbl(my_rank,                        &
+     &    fem_T%mesh, new_fem2%mesh, itp_nod_tbl_IO, part_nod_tbl2)
+      call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
+      call calypso_MPI_barrier
+!
+!  --  load new repartition table
+!
+      if (iflag_debug.gt.0) write(*,*) 's_load_repartition_table'
+      call s_load_repartition_table                                     &
+     &   (part_p1%repart_p%trans_tbl_file, new_numele,                  &
+     &    repart_nod_tbl5, repart_ele_tbl5, new_fem5%mesh%nod_comm,     &
+     &    new_ele_comm5)
+      new_fem5%mesh%ele%numele = new_numele
+      call calypso_MPI_barrier
+!
+      call s_compare_calypso_comm_tables                                &
+     &   (my_rank, part_nod_tbl2, repart_nod_tbl5, icount_error)
+      call calypso_mpi_reduce_one_int                                   &
+     &   (icount_error, icou_error_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Compare node transfer table: ',    &
+      &                 icou_error_gl
+!      write(*,*) my_rank, 'Compare node transfer table: ', icount_error
+!
+      call s_compare_calypso_comm_tables                                &
+     &   (my_rank, repart_ele_tbl1, repart_ele_tbl5, icount_error)
+      call calypso_mpi_reduce_one_int                                   &
+     &   (icount_error, icou_error_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Compare element transfer table: ', &
+      &                 icou_error_gl
+!      write(*,*) my_rank, 'Compare ele transfer table: ', icount_error
+!
+!
+      call compare_node_comm_types(my_rank, new_fem2%mesh%nod_comm,     &
+     &                            new_fem5%mesh%nod_comm, icount_error)
       call calypso_mpi_reduce_one_int                                   &
      &   (icount_error, icou_error_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Compare node comm table: ',        &
       &                 icou_error_gl
 !      write(*,*) my_rank, 'Compare node comm table: ', icount_error
 !
-      call compare_node_position(my_rank, new_fem%mesh%node,            &
-     &                           new_fem2%mesh%node, icount_error)
+      call compare_node_comm_types(my_rank, new_ele_comm2,              &
+     &                             new_ele_comm5, icount_error)
       call calypso_mpi_reduce_one_int                                   &
      &   (icount_error, icou_error_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Compare node: ', icou_error_gl
-!      write(*,*) my_rank, 'Compare node: ', icount_error
+      if(my_rank .eq. 0) write(*,*) 'Compare element comm table: ',     &
+      &                 icou_error_gl
+!      write(*,*) my_rank, 'Compare ele comm table: ', icount_error
 !
-      call compare_ele_connect(my_rank, new_fem%mesh%ele,               &
-     &    new_fem2%mesh%ele, icount_error)
-      call calypso_mpi_reduce_one_int                                   &
-     &   (icount_error, icou_error_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Compare element: ', icou_error_gl
-!      write(*,*) my_rank, 'Compare element: ', icount_error
-!
-      call compare_mesh_groups(my_rank, new_fem%group, new_fem2%group)
-!
-      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
-      call output_elapsed_times
-!
-      end subroutine analyze_reapart_by_vol
+      end subroutine analyze_fix_repart_by_mesh
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_repart_by_volume
+      end module analyzer_test_old_repart
