@@ -28,6 +28,6 @@ single_filter_newdom.o: $(CONST_FILTER_3D_DIR)/single_filter_newdom.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 single_sorting_3dfilter.o: $(CONST_FILTER_3D_DIR)/single_sorting_3dfilter.f90 m_precision.o analyzer_sorting_3dfilter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_gen_3d_filter.o: $(CONST_FILTER_3D_DIR)/t_ctl_data_gen_3d_filter.f90 m_precision.o calypso_mpi.o t_read_control_elements.o t_ctl_data_3d_filter.o t_ctl_data_gen_filter.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o skip_comment_f.o calypso_mpi_int.o bcast_control_arrays.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o
+t_ctl_data_gen_3d_filter.o: $(CONST_FILTER_3D_DIR)/t_ctl_data_gen_3d_filter.f90 m_precision.o calypso_mpi.o t_read_control_elements.o t_ctl_data_3d_filter.o t_ctl_data_gen_filter.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o skip_comment_f.o read_ctl_data_4_platforms.o calypso_mpi_int.o bcast_control_arrays.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

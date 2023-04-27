@@ -20,8 +20,8 @@ TARGET_LINK_LIBRARIES(sph_add_initial_field calypso calypso_c fftpack.5d)
 
 
 SET(SRC_TAVE_SPH_ENE_SPEC TIME_HISTORIES/t_average_sph_ene_spec.f90 TIME_HISTORIES/t_read_sph_spectra.f90 TIME_HISTORIES/m_tave_sph_ene_spectr.f90 TIME_HISTORIES/sph_mean_square_IO_select.f90 TIME_HISTORIES/cal_tave_sph_ene_spectr.f90)
-ADD_EXECUTABLE(t_ave_sph_mean_square ${SRC_TAVE_SPH_ENE_SPEC})
-TARGET_LINK_LIBRARIES(t_ave_sph_mean_square calypso)
+ADD_EXECUTABLE(t_ave_monitor_data ${SRC_TAVE_SPH_ENE_SPEC})
+TARGET_LINK_LIBRARIES(t_ave_monitor_data calypso)
 
 SET(SRC_T_AVE_PICK_SPH TIME_HISTORIES/t_picked_sph_spectr_data_IO.f90 TIME_HISTORIES/tave_picked_sph_spec_data.f90)
 ADD_EXECUTABLE(t_ave_picked_sph_coefs ${SRC_T_AVE_PICK_SPH})
@@ -42,6 +42,6 @@ SET(SRC_VTK_CONVERT_PLUG VIZ_only/t_control_data_section_only.f90 VIZ_only/t_viz
 ADD_EXECUTABLE(field_to_VTK ${SRC_VTK_CONVERT_PLUG})
 TARGET_LINK_LIBRARIES(field_to_VTK calypso calypso_c)
 
-ADD_EXECUTABLE(psf_to_vtk VIZ_only/psf_file_to_VTK.f90)
-TARGET_LINK_LIBRARIES(psf_to_vtk calypso calypso_c)
+ADD_EXECUTABLE(section_to_vtk VIZ_only/psf_file_to_VTK.f90)
+TARGET_LINK_LIBRARIES(section_to_vtk calypso calypso_c)
 

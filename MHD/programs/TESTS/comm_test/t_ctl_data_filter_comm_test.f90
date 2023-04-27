@@ -100,6 +100,8 @@
       subroutine read_filter_comm_test_data                             &
      &         (id_control, hd_block, fc_test_ctl, c_buf)
 !
+      use read_ctl_data_4_platforms
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !

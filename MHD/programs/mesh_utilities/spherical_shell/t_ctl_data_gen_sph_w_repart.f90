@@ -110,6 +110,8 @@
       subroutine read_ctl_data_gen_sph_w_repart                         &
      &         (id_control, hd_block, gen_SPH_wP_c, c_buf)
 !
+      use read_ctl_data_4_platforms
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !

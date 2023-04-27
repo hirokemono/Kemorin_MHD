@@ -98,6 +98,7 @@
      &         (id_control, hd_block, mesh_tctl, c_buf)
 !
       use t_read_control_elements
+      use read_ctl_data_4_platforms
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control

@@ -129,6 +129,8 @@
       subroutine read_const_filter_ctl_data                             &
      &         (id_control, hd_block, filter3d_ctl, c_buf)
 !
+      use read_ctl_data_4_platforms
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !

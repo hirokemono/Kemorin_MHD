@@ -171,6 +171,7 @@
      &         (id_control, hd_block, MHD_ctl, c_buf)
 !
       use t_ctl_data_SPH_MHD_control
+      use read_ctl_data_4_platforms
       use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control

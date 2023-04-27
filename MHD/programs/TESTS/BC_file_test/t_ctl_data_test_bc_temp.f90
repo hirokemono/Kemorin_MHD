@@ -126,6 +126,7 @@
       subroutine read_test_mesh_ctl_data                                &
      &         (id_control, hd_block, bc_temp_test_ctl, c_buf)
 !
+      use read_ctl_data_4_platforms
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control

@@ -305,7 +305,9 @@
       integer(kind = kint) :: maxlen = 0
 !
 !
-      maxlen = max(maxlen, len_trim(hd_MG_METHOD))
+      if(MG_ctl%i_Multigrid_params .le. 0) return
+!
+      maxlen = len_trim(hd_MG_METHOD)
       maxlen = max(maxlen, len_trim(hd_MG_PRECOND))
       maxlen = max(maxlen, len_trim(hd_MG_residual))
       maxlen = max(maxlen, len_trim(hd_maxiter_mid))

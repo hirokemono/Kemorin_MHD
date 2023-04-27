@@ -98,9 +98,9 @@ set_surf_edge_stri_flag.o: $(REFINER_DIR)/set_surf_edge_stri_flag.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 set_surf_edge_tri_flag.o: $(REFINER_DIR)/set_surf_edge_tri_flag.f90 m_precision.o m_refine_flag_parameters.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_4_refine.o: $(REFINER_DIR)/t_control_data_4_refine.f90 m_precision.o t_ctl_data_4_platforms.o t_read_control_elements.o t_control_array_character.o t_control_array_charaint.o t_control_array_character2.o skip_comment_f.o
+t_control_data_4_refine.o: $(REFINER_DIR)/t_control_data_4_refine.f90 m_precision.o t_ctl_data_4_platforms.o t_read_control_elements.o t_control_array_character.o t_control_array_charaint.o t_control_array_character2.o skip_comment_f.o read_ctl_data_4_platforms.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_refine_para.o: $(REFINER_DIR)/t_control_data_refine_para.f90 m_precision.o t_control_array_character.o t_control_array_integer.o t_ctl_data_4_platforms.o t_control_data_4_refine.o t_read_control_elements.o skip_comment_f.o
+t_control_data_refine_para.o: $(REFINER_DIR)/t_control_data_refine_para.f90 m_precision.o t_control_array_character.o t_control_array_integer.o t_ctl_data_4_platforms.o t_control_data_4_refine.o t_read_control_elements.o skip_comment_f.o read_ctl_data_4_platforms.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_param_4_refiner.o: $(REFINER_DIR)/t_control_param_4_refiner.f90 m_precision.o t_file_IO_parameter.o m_file_format_switch.o t_control_data_4_refine.o m_default_file_prefix.o skip_comment_f.o set_control_platform_item.o
 	$(F90) -c $(F90OPTFLAGS) $<

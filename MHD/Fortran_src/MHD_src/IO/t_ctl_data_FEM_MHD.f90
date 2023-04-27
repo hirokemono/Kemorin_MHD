@@ -136,6 +136,7 @@
 !
       use calypso_mpi
       use t_ctl_data_FEM_MHD_control
+      use read_ctl_data_4_platforms
       use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control

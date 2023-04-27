@@ -125,6 +125,7 @@
      &         (id_control, hd_block, vizs_ctl, c_buf)
 !
       use skip_comment_f
+      use read_ctl_data_4_platforms
       use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control

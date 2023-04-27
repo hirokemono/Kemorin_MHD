@@ -280,7 +280,9 @@
       integer(kind = kint) :: maxlen = 0
 !
 !
-      maxlen = max(maxlen, len_trim(hd_DJDS_params))
+      if(CG_ctl%i_solver_ctl .le. 0) return
+!
+      maxlen = len_trim(hd_DJDS_params)
       maxlen = max(maxlen, len_trim(hd_Multigrid_params))
       maxlen = max(maxlen, len_trim(hd_eps))
       maxlen = max(maxlen, len_trim(hd_sigma))
@@ -331,6 +333,9 @@
       integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: maxlen = 0
+!
+!
+      if(DJDS_ctl%i_DJDS_params .le. 0) return
 !
       maxlen = max(maxlen, len_trim(hd_min_color))
       maxlen = max(maxlen, len_trim(hd_mc_color))

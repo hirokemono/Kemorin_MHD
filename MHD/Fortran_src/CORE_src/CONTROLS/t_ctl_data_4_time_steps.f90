@@ -499,7 +499,9 @@
       integer(kind = kint) :: maxlen = 0
 !
 !
-      maxlen = max(maxlen, len_trim(hd_elapsed_time))
+      if(tctl%i_tstep .le. 0) return
+!
+      maxlen = len_trim(hd_elapsed_time)
       maxlen = max(maxlen, len_trim(hd_dt))
       maxlen = max(maxlen, len_trim(hd_time_init))
       maxlen = max(maxlen, len_trim(hd_min_delta_t))

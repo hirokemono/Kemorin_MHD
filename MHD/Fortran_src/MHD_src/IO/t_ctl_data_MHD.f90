@@ -107,6 +107,7 @@
       subroutine read_sph_mhd_ctl_w_psf                                 &
      &         (id_control, hd_block, DMHD_ctl, c_buf)
 !
+      use read_ctl_data_4_platforms
       use read_surfacing_controls
 !
       integer(kind = kint), intent(in) :: id_control
@@ -157,6 +158,8 @@
 !
       subroutine read_sph_mhd_ctl_noviz                                 &
      &         (id_control, hd_block, DMHD_ctl, c_buf)
+!
+      use read_ctl_data_4_platforms
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

@@ -167,6 +167,7 @@
       subroutine read_sph_trans_control_data                            &
      &         (id_control, hd_block, spt_ctl, c_buf)
 !
+      use read_ctl_data_4_platforms
       use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control
