@@ -17,8 +17,17 @@
 !!
 !!      subroutine read_each_vol_spectr_ctl                             &
 !!     &         (id_control, hd_block, v_pwr, c_buf)
-!!      subroutine reset_volume_spectr_control(v_pwr)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(volume_spectr_control), intent(inout) :: v_pwr
+!!        type(buffer_for_control), intent(inout) :: c_buf
+!!      subroutine write_each_vol_spectr_ctl                            &
+!!     &         (id_control, hd_block, v_pwr, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(volume_spectr_control), intent(in) :: v_pwr
+!!        integer(kind = kint), intent(inout) :: level
+!!      subroutine reset_volume_spectr_control(v_pwr)
 !!        type(volume_spectr_control), intent(inout) :: v_pwr
 !!
 !! -----------------------------------------------------------------

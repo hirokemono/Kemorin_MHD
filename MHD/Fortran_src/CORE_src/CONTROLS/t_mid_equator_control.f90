@@ -12,7 +12,16 @@
 !!        type(mid_equator_control), intent(inout) :: meq_ctl
 !!      subroutine read_mid_eq_monitor_ctl                              &
 !!     &         (id_control, hd_block, meq_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(mid_equator_control), intent(inout) :: meq_ctl
+!!        type(buffer_for_control), intent(inout) :: c_buf
+!!      subroutine write_mid_eq_monitor_ctl                             &
+!!     &         (id_control, hd_block, meq_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(mid_equator_control), intent(in) :: meq_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !! -----------------------------------------------------------------
 !!
@@ -123,6 +132,47 @@
       meq_ctl%i_mid_equator_ctl = 1
 !
       end subroutine read_mid_eq_monitor_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_mid_eq_monitor_ctl                               &
+     &         (id_control, hd_block, meq_ctl, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(mid_equator_control), intent(in) :: meq_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(meq_ctl%i_mid_equator_ctl .le. 0) return
+!
+      maxlen = len_trim(hd_pick_s_ctl)
+      maxlen = max(maxlen, len_trim(hd_pick_z_ctl))
+      maxlen = max(maxlen, len_trim(hd_nphi_mid_eq))
+      maxlen = max(maxlen, len_trim(hd_circle_coord))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_pick_s_ctl, meq_ctl%pick_s_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_pick_z_ctl, meq_ctl%pick_z_ctl)
+!
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_nphi_mid_eq, meq_ctl%nphi_mid_eq_ctl)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_circle_coord, meq_ctl%pick_circle_coord_ctl)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_mid_eq_monitor_ctl
 !
 ! -----------------------------------------------------------------------
 !

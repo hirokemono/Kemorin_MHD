@@ -124,6 +124,7 @@
       use calypso_mpi
       use m_error_IDs
       use t_ctl_data_4_solvers
+      use t_ctl_data_DJDS_ordering
       use skip_comment_f
 !
       type(DJDS_control), intent(in) :: DJDS_ctl
