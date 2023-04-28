@@ -233,7 +233,7 @@
 !
       integer(c_int) function num_label_pvr_colormap_f() bind(c)
 !
-      use t_ctl_data_pvr_colormap
+      use read_ctl_data_pvr_colormap
 !
       num_label_pvr_colormap_f = num_label_pvr_colormap()
       return
@@ -243,7 +243,7 @@
 !
       subroutine set_label_pvr_colormap_f(names)  bind(c)
 !
-      use t_ctl_data_pvr_colormap
+      use read_ctl_data_pvr_colormap
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -255,7 +255,7 @@
 !
       integer(c_int) function num_label_pvr_colorbar_f() bind(c)
 !
-      use t_ctl_data_pvr_colorbar
+      use read_ctl_data_pvr_colorbar
 !
       num_label_pvr_colorbar_f = num_label_pvr_colorbar()
       return
@@ -265,7 +265,7 @@
 !
       subroutine set_label_pvr_colorbar_f(names)  bind(c)
 !
-      use t_ctl_data_pvr_colorbar
+      use read_ctl_data_pvr_colorbar
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

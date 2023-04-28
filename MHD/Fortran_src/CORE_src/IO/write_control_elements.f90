@@ -24,7 +24,7 @@
 !!     &         (id_file, level, maxlen, label, chara_data)
 !!
 !!      subroutine write_real2_ctl_item                                 &
-!!     &         (id_file, level, label, real1, real2)
+!!     &         (id_file, level, maxlen, label, real1, real2)
 !!      subroutine write_real3_ctl_item                                 &
 !!     &         (id_file, level, label, real1, real2, real3)
 !!       subroutine write_int_real_ctl_item                             &
@@ -205,7 +205,7 @@
 !
       integer(kind = kint) :: nspace0
 !
-      nspace0 = maxlen - len_trim(label)
+      nspace0 = maxlen - len_trim(label) + 4
 !
 !
       call write_space_4_parse(id_file, level)
@@ -229,7 +229,7 @@
 !
       integer(kind = kint) :: nspace0
 !
-      nspace0 = maxlen - len_trim(label)
+      nspace0 = maxlen - len_trim(label) + 4
 !
 !
       call write_space_4_parse(id_file, level)
@@ -253,7 +253,7 @@
 !
       integer(kind = kint) :: nspace0
 !
-      nspace0 = maxlen - len_trim(label)
+      nspace0 = maxlen - len_trim(label) + 4
 !
       call write_space_4_parse(id_file, level)
       call write_ctl_chara_cont(id_file, label)
@@ -266,18 +266,23 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_real2_ctl_item                                   &
-     &         (id_file, level, label, real1, real2)
+     &         (id_file, level, maxlen, label, real1, real2)
 !
       use write_control_items
 !
       integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: maxlen
       character(len=kchara), intent(in) :: label
       real(kind = kreal), intent(in) :: real1, real2
 !
+      integer(kind = kint) :: nspace0
+!
+      nspace0 = maxlen - len_trim(label) + 4
 !
       call write_space_4_parse(id_file, level)
-      write(id_file,'(a,a2,1p2E25.15e3)')                               &
-     &            trim(label), '  ', real1, real2
+      call write_ctl_chara_cont(id_file, label)
+      call write_spaces(id_file, nspace0)
+      write(id_file,'(1p2E25.15e3)') real1, real2
 !
        end subroutine write_real2_ctl_item
 !

@@ -191,7 +191,7 @@
       integer(c_int) function num_label_LIC_colormap_f()                &
      &          bind(c, name="num_label_LIC_colormap_f")
 !
-      use t_ctl_data_pvr_colormap
+      use read_ctl_data_pvr_colormap
 !
       num_label_LIC_colormap_f = num_label_LIC_colormap()
       return
@@ -202,7 +202,7 @@
       subroutine set_label_LIC_colormap_f(names)                        &
      &          bind(c, name="set_label_LIC_colormap_f")
 !
-      use t_ctl_data_pvr_colormap
+      use read_ctl_data_pvr_colormap
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

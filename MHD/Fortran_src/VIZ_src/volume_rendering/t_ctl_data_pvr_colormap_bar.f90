@@ -129,6 +129,9 @@
       subroutine sel_read_ctl_pvr_colormap_file                         &
      &         (id_control, hd_block, cmap_cbar_c, c_buf)
 !
+      use read_ctl_data_pvr_colorbar
+      use read_ctl_data_pvr_colormap
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
@@ -195,6 +198,9 @@
 !
       subroutine read_pvr_cmap_cbar                                     &
      &         (id_control, hd_block, cmap_cbar_c, c_buf)
+!
+      use read_ctl_data_pvr_colorbar
+      use read_ctl_data_pvr_colormap
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

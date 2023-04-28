@@ -180,6 +180,8 @@
       use t_control_data_pvr_area
       use read_lic_control_data
       use read_control_pvr_modelview
+      use read_ctl_data_pvr_colorbar
+      use read_ctl_data_pvr_colormap
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
