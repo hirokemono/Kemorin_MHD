@@ -189,7 +189,7 @@
 !
       integer(c_int) function num_label_pvr_area_f() bind(c)
 !
-      use t_control_data_pvr_area
+      use t_ctl_data_pvr_area
 !
       num_label_pvr_area_f = num_label_pvr_area()
       return
@@ -199,7 +199,7 @@
 !
       subroutine set_label_pvr_area_f(names)  bind(c)
 !
-      use t_control_data_pvr_area
+      use t_ctl_data_pvr_area
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -365,7 +365,7 @@
 !
       integer(c_int) function num_label_quilt_image_f() bind(c)
 !
-      use t_control_data_quilt_image
+      use t_ctl_data_quilt_image
 !
       num_label_quilt_image_f = num_label_quilt_image()
       return
@@ -375,7 +375,7 @@
 !
       subroutine set_label_quilt_image_f(names)  bind(c)
 !
-      use t_control_data_quilt_image
+      use t_ctl_data_quilt_image
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

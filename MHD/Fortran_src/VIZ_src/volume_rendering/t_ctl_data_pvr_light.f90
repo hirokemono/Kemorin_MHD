@@ -8,8 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine read_lighting_ctl(id_control, hd_block, light, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_light_ctl), intent(inout) :: light
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_lighting_ctl                                   &
+!!     &         (id_control, hd_block, light, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(pvr_light_ctl), intent(in) :: light
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine bcast_lighting_ctl(light)
 !!      subroutine reset_pvr_light_flags(light)
 !!      subroutine dealloc_pvr_light_crl(light)
@@ -112,6 +120,45 @@
       light%i_pvr_lighting = 1
 !
       end subroutine read_lighting_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_lighting_ctl                                     &
+     &         (id_control, hd_block, light, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_light_ctl), intent(in) :: light
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(light%i_pvr_lighting .le. 0) return
+!
+      maxlen = len_trim(hd_ambient)
+      maxlen = max(maxlen, len_trim(hd_diffuse))
+      maxlen = max(maxlen, len_trim(hd_specular))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_array_r3(id_control, level,                    &
+     &    hd_light_param, light%light_position_ctl)
+!
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_ambient, light%ambient_coef_ctl )
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_diffuse, light%diffuse_coef_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_specular, light%specular_coef_ctl)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_lighting_ctl
 !
 !  ---------------------------------------------------------------------
 !

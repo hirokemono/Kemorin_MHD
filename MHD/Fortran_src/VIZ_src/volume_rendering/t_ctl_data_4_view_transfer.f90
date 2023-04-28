@@ -120,13 +120,15 @@
 !
 !>    Structure for modelview marices
       type modeview_ctl
-!>      Structure of screen resolution
-        type(screen_pixel_ctl) :: pixel
-!>    Structure for projection parameters
-        type(projection_ctl) :: proj
-!>      Structure of streo view parameters
-        type(streo_view_ctl) :: streo
+!>        File name for external control file
+        character(len=kchara) :: mat_ctl_fname
 !
+!>        Structure of screen resolution
+        type(screen_pixel_ctl) :: pixel
+!>        Structure for projection parameters
+        type(projection_ctl) :: proj
+!>        Structure of streo view parameters
+        type(streo_view_ctl) :: streo
 !
 !>    Structure for opacity controls
 !!@n      modelview_mat_ctl%c1_tbl:  1st component name for matrix

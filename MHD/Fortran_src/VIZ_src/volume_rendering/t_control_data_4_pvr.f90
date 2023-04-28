@@ -93,9 +93,9 @@
       use t_ctl_data_pvr_light
       use t_control_data_pvr_sections
       use t_control_data_pvr_movie
-      use t_control_data_quilt_image
+      use t_ctl_data_quilt_image
       use t_control_data_pvr_isosurfs
-      use t_control_data_pvr_area
+      use t_ctl_data_pvr_area
       use skip_comment_f
 !
       implicit  none

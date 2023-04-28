@@ -11,7 +11,7 @@
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_real3_item), intent(inout) :: real3_item
 !!      subroutine write_real3_ctl_type                                 &
-!!     &         (id_file, level, label, real3_item)
+!!     &         (id_file, level, maxlen, label, real3_item)
 !!        type(read_real3_item), intent(in) :: real3_item
 !!      subroutine copy_real3_ctl(org_r3, new_r3)
 !!        type(read_real3_item), intent(in) :: org_r3
@@ -100,17 +100,18 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_real3_ctl_type                                   &
-     &         (id_file, level, label, real3_item)
+     &         (id_file, level, maxlen, label, real3_item)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: maxlen
       character(len=kchara), intent(in) :: label
       type(read_real3_item), intent(in) :: real3_item
 !
 !
       if(real3_item%iflag .eq. 0) return
-      call write_real3_ctl_item(id_file, level, label,                  &
+      call write_real3_ctl_item(id_file, level, maxlen, label,          &
      &    real3_item%realvalue(1), real3_item%realvalue(2),             &
      &    real3_item%realvalue(3))
 !
@@ -218,8 +219,9 @@
 !
       level = write_array_flag_for_ctl(id_control, level, label)
       do i = 1, array_r3%num
-        call write_real3_ctl_item(id_control, level, label,             &
-     &     array_r3%vec1(i), array_r3%vec2(i), array_r3%vec3(i))
+        call write_real3_ctl_item                                       &
+     &     (id_control, level, len_trim(label), label,                  &
+     &      array_r3%vec1(i), array_r3%vec2(i), array_r3%vec3(i))
       end do
       level = write_end_array_flag_for_ctl(id_control, level, label)
 !

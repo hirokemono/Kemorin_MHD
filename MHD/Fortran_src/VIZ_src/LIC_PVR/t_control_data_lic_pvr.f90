@@ -176,8 +176,8 @@
       use t_ctl_data_4_view_transfer
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_movie
-      use t_control_data_quilt_image
-      use t_control_data_pvr_area
+      use t_ctl_data_quilt_image
+      use t_ctl_data_pvr_area
       use read_lic_control_data
       use read_control_pvr_modelview
       use read_ctl_data_pvr_colorbar

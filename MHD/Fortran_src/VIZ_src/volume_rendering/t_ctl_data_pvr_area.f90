@@ -1,5 +1,5 @@
-!>@file   t_control_data_pvr_area.f90
-!!@brief  module  t_control_data_pvr_area
+!>@file   t_ctl_data_pvr_area.f90
+!!@brief  module  t_ctl_data_pvr_area
 !!
 !!@author H. Matsui
 !!@date Programmed in 2006
@@ -10,8 +10,16 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      subroutine read_pvr_render_area_ctl                             &
 !!     &         (id_control, hd_block, render_area_c, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_render_area_ctl), intent(inout) :: render_area_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_pvr_render_area_ctl                            &
+!!     &         (id_control, hd_block, render_area_c, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(pvr_render_area_ctl), intent(in) :: render_area_c
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine dup_pvr_render_area_ctl(org_rarea_c, new_rarea_c)
 !!        type(pvr_render_area_ctl), intent(in) :: org_rarea_c
 !!        type(pvr_render_area_ctl), intent(inout) :: new_rarea_c
@@ -38,7 +46,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module  t_control_data_pvr_area
+      module  t_ctl_data_pvr_area
 !
       use m_precision
       use calypso_mpi
@@ -98,6 +106,32 @@
       render_area_c%i_plot_area = 1
 !
       end subroutine read_pvr_render_area_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_pvr_render_area_ctl                              &
+     &         (id_control, hd_block, render_area_c, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_render_area_ctl), intent(in) :: render_area_c
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(render_area_c%i_plot_area .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_array_c1(id_control, level,                    &
+     &    hd_plot_grp, render_area_c%pvr_area_ctl)
+      call write_control_array_c2_r(id_control, level,                  &
+     &    hd_sf_enhanse, render_area_c%surf_enhanse_ctl)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_pvr_render_area_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -174,4 +208,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module  t_control_data_pvr_area
+      end module  t_ctl_data_pvr_area

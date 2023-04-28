@@ -195,8 +195,7 @@
       call alloc_multi_view_parameters(num_views, pvr_param)
       do i = 1, pvr_param%num_multi_views
         call s_set_pvr_modelview_matrix                                 &
-     &     (mul_mmats_c%mat_file_ctl(i)%matrices,                       &
-     &      pvr_param%multi_view(i))
+     &     (mul_mmats_c%matrices(i), pvr_param%multi_view(i))
       end do
 !
       end subroutine init_multi_view_parameters

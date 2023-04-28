@@ -1,5 +1,5 @@
-!>@file   t_control_data_quilt_image.f90
-!!@brief  module t_control_data_quilt_image
+!>@file   t_ctl_data_quilt_image.f90
+!!@brief  module t_ctl_data_quilt_image
 !!
 !!@author H. Matsui
 !!@date Programmed in 2006
@@ -10,8 +10,16 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      subroutine read_quilt_image_ctl                                 &
 !!     &         (id_control, hd_block, quilt_c, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(quilt_image_ctl), intent(inout) :: quilt_c
-!!
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_quilt_image_ctl                                &
+!!     &         (id_control, hd_block, quilt_c, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(quilt_image_ctl), intent(in) :: quilt_c
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine dup_quilt_image_ctl(org_quilt, new_quilt)
 !!        type(quilt_image_ctl), intent(in) :: org_quilt
 !!        type(quilt_image_ctl), intent(inout) :: new_quilt
@@ -45,7 +53,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module t_control_data_quilt_image
+      module t_ctl_data_quilt_image
 !
       use m_precision
       use calypso_mpi
@@ -131,6 +139,45 @@
       quilt_c%i_quilt_image = 1
 !
       end subroutine read_quilt_image_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_quilt_image_ctl                                  &
+     &         (id_control, hd_block, quilt_c, level)
+!
+      use read_control_pvr_modelview
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(quilt_image_ctl), intent(in) :: quilt_c
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(quilt_c%i_quilt_image .le. 0) return
+!
+      maxlen = len_trim(hd_quilt_mode)
+      maxlen = max(maxlen, len_trim(hd_column_row))
+      maxlen = max(maxlen, len_trim(hd_row_column))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_quilt_mode, quilt_c%quilt_mode_ctl)
+      call write_integer2_ctl_type(id_control, level, maxlen,           &
+     &    hd_column_row, quilt_c%num_column_row_ctl)
+      call write_integer2_ctl_type(id_control, level, maxlen,           &
+     &    hd_row_column, quilt_c%num_row_column_ctl)
+!
+      call write_mul_view_transfer_ctl                                  &
+     &   (id_control, hd_qview_transform, quilt_c%mul_qmats_c, level)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_quilt_image_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -223,4 +270,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module t_control_data_quilt_image
+      end module t_ctl_data_quilt_image
