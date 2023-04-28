@@ -343,7 +343,7 @@
 !
       integer(c_int) function num_label_pvr_movie_f() bind(c)
 !
-      use t_control_data_pvr_movie
+      use read_ctl_data_pvr_movie
 !
       num_label_pvr_movie_f = num_label_pvr_movie()
       return
@@ -353,7 +353,7 @@
 !
       subroutine set_label_pvr_movie_f(names)  bind(c)
 !
-      use t_control_data_pvr_movie
+      use read_ctl_data_pvr_movie
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

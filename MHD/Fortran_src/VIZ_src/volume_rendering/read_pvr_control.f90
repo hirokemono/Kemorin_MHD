@@ -99,7 +99,7 @@
       use t_ctl_data_pvr_light
       use t_control_data_pvr_sections
       use t_ctl_data_quilt_image
-      use t_control_data_pvr_movie
+      use t_ctl_data_pvr_movie
       use t_control_data_pvr_isosurfs
       use t_ctl_data_pvr_area
       use t_control_data_4_pvr
@@ -179,6 +179,7 @@
      &         (id_control, hd_block, pvr_ctl, c_buf)
 !
       use read_control_pvr_modelview
+      use read_ctl_data_pvr_movie
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

@@ -1,5 +1,5 @@
-!>@file   t_control_data_pvr_movie.f90
-!!@brief  module t_control_data_pvr_movie
+!>@file   read_ctl_data_pvr_movie.f90
+!!@brief  module read_ctl_data_pvr_movie
 !!
 !!@author H. Matsui
 !!@date Programmed in 2006
@@ -10,16 +10,16 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      subroutine read_pvr_rotation_ctl                                &
 !!     &         (id_control, hd_block, movie, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_movie_ctl), intent(inout) :: movie
-!!
-!!      subroutine dup_pvr_movie_control_flags(org_movie, new_movie)
-!!        type(pvr_movie_ctl), intent(in) :: org_movie
-!!        type(pvr_movie_ctl), intent(inout) :: new_movie
-!!      subroutine dealloc_pvr_movie_control_flags(movie)
-!!        type(pvr_movie_ctl), intent(inout) :: movie
-!!
-!!      subroutine bcast_pvr_rotation_ctl(movie)
-!!        type(pvr_movie_ctl), intent(inout) :: movie
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_pvr_rotation_ctl                               &
+!!     &         (id_control, hd_block, movie, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(pvr_movie_ctl), intent(in) :: movie
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !!      integer(kind = kint) function num_label_pvr_movie()
 !!      integer(kind = kint) function num_label_LIC_movie()
@@ -62,7 +62,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module t_control_data_pvr_movie
+      module read_ctl_data_pvr_movie
 !
       use m_precision
       use calypso_mpi
@@ -76,51 +76,14 @@
       use t_control_array_integer2
       use t_ctl_data_4_view_transfer
       use t_ctl_data_view_transfers
+      use t_ctl_data_pvr_movie
       use skip_comment_f
 !
       implicit  none
 !
 !
-      type pvr_movie_ctl
-!>        Structure of movie mode file format
-        type(read_character_item) :: movie_format_ctl
-!>        Structure of movie mode control
-        type(read_character_item) :: movie_mode_ctl
-!>        Structure of number of flame control
-        type(read_integer_item) ::   num_frames_ctl
-!>        Structure of number of columns and of image
-        type(read_int2_item) :: quilt_column_row_ctl
-!>        Structure of number of row and columns of image
-        type(read_int2_item) :: quilt_row_column_ctl
 !
-!>        Structure of rotation axis control
-        type(read_character_item) :: rotation_axis_ctl
-!
-!>        Structure of start and end of angle
-        type(read_real2_item) :: angle_range_ctl
-!>        Structure of start and end of apature
-        type(read_real2_item) :: apature_range_ctl
-!
-!>        Structure of start and end of LIC kernel peak
-        type(read_real2_item) :: LIC_kernel_peak_range_ctl
-!
-!>        file name for start modelview matrix
-        character(len=kchara) :: start_view_file_ctl
-!>        file name for end modelview matrix
-        character(len=kchara) :: end_view_file_ctl
-!>    Structure for start modelview marices
-        type(modeview_ctl) :: view_start_ctl
-!>    Structure for end modelview marices
-        type(modeview_ctl) :: view_end_ctl
-!
-!         Lists of multiple view parameters
-        type(multi_modeview_ctl) :: mul_mmats_c
-!
-!     2nd level for volume rendering
-        integer (kind=kint) :: i_pvr_rotation = 0
-      end type pvr_movie_ctl
-!
-!     3rd level for rotation
+!     3rd level for movie
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_movie_format =    'movie_format_ctl'
@@ -214,116 +177,70 @@
       end subroutine read_pvr_rotation_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine dup_pvr_movie_control_flags(org_movie, new_movie)
+      subroutine write_pvr_rotation_ctl                                 &
+     &         (id_control, hd_block, movie, level)
 !
-      use bcast_dup_view_transfer_ctl
+      use read_control_pvr_modelview
+      use write_control_elements
 !
-      type(pvr_movie_ctl), intent(in) :: org_movie
-      type(pvr_movie_ctl), intent(inout) :: new_movie
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_movie_ctl), intent(in) :: movie
 !
+      integer(kind = kint), intent(inout) :: level
 !
-      call dup_mul_view_trans_ctl(org_movie%mul_mmats_c,                &
-     &                            new_movie%mul_mmats_c)
-!
-      call copy_chara_ctl(org_movie%movie_format_ctl,                   &
-     &                    new_movie%movie_format_ctl)
-      call copy_chara_ctl(org_movie%movie_mode_ctl,                     &
-     &                    new_movie%movie_mode_ctl)
-      call copy_integer_ctl(org_movie%num_frames_ctl,                   &
-     &                      new_movie%num_frames_ctl)
-      call copy_integer2_ctl(org_movie%quilt_column_row_ctl,            &
-     &                       new_movie%quilt_column_row_ctl)
-      call copy_integer2_ctl(org_movie%quilt_row_column_ctl,            &
-     &                       new_movie%quilt_row_column_ctl)
-!
-      call copy_chara_ctl(org_movie%rotation_axis_ctl,                  &
-     &                    new_movie%rotation_axis_ctl)
-!
-      call copy_real2_ctl(org_movie%angle_range_ctl,                    &
-     &                    new_movie%angle_range_ctl)
-      call copy_real2_ctl(org_movie%apature_range_ctl,                  &
-     &                    new_movie%apature_range_ctl)
-      call copy_real2_ctl(org_movie%LIC_kernel_peak_range_ctl,          &
-     &                    new_movie%LIC_kernel_peak_range_ctl)
-!
-      new_movie%start_view_file_ctl = org_movie%start_view_file_ctl
-      new_movie%end_view_file_ctl =   org_movie%end_view_file_ctl
-      call dup_view_transfer_ctl(org_movie%view_start_ctl,              &
-     &    new_movie%view_start_ctl)
-      call dup_view_transfer_ctl(org_movie%view_end_ctl,                &
-     &    new_movie%view_end_ctl)
-!
-      new_movie%i_pvr_rotation = org_movie%i_pvr_rotation
-!
-      end subroutine dup_pvr_movie_control_flags
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_pvr_movie_control_flags(movie)
-!
-      type(pvr_movie_ctl), intent(inout) :: movie
+      integer(kind = kint) :: maxlen = 0
 !
 !
-      call dealloc_multi_modeview_ctl(movie%mul_mmats_c)
+      if(movie%i_pvr_rotation .le. 0) return
 !
-      movie%movie_format_ctl%iflag =     0
-      movie%movie_mode_ctl%iflag =       0
-      movie%num_frames_ctl%iflag =       0
-      movie%quilt_column_row_ctl%iflag = 0
-      movie%quilt_row_column_ctl%iflag = 0
-      movie%rotation_axis_ctl%iflag =    0
-      movie%angle_range_ctl%iflag =      0
-      movie%apature_range_ctl%iflag =    0
+      maxlen = len_trim(hd_movie_format)
+      maxlen = max(maxlen, len_trim(hd_movie_mode))
+      maxlen = max(maxlen, len_trim(hd_column_row))
+      maxlen = max(maxlen, len_trim(hd_row_column))
+      maxlen = max(maxlen, len_trim(hd_movie_rot_axis))
+      maxlen = max(maxlen, len_trim(hd_angle_range))
+      maxlen = max(maxlen, len_trim(hd_apature_range))
+      maxlen = max(maxlen, len_trim(hd_LIC_kernel_peak))
 !
-      movie%LIC_kernel_peak_range_ctl%iflag = 0
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-      call dealloc_view_transfer_ctl(movie%view_start_ctl)
-      call dealloc_view_transfer_ctl(movie%view_end_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_movie_format, movie%movie_format_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_movie_mode, movie%movie_mode_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_movie_num_frame, movie%num_frames_ctl)
+      call write_integer2_ctl_type(id_control, level, maxlen,           &
+     &    hd_column_row, movie%quilt_column_row_ctl)
+      call write_integer2_ctl_type(id_control, level, maxlen,           &
+     &    hd_row_column, movie%quilt_row_column_ctl)
 !
-      movie%i_pvr_rotation = 0
+      write(id_control,'(a1)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_movie_rot_axis, movie%rotation_axis_ctl)
 !
-      end subroutine dealloc_pvr_movie_control_flags
+      call sel_write_ctl_modelview_file(id_control,                     &
+     &    hd_start_view_control, movie%view_start_ctl, level)
+      call sel_write_ctl_modelview_file(id_control,                     &
+     &    hd_end_view_control, movie%view_end_ctl, level)
 !
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
+      call write_mul_view_transfer_ctl                                  &
+     &   (id_control, hd_mview_transform, movie%mul_mmats_c, level)
 !
-      subroutine bcast_pvr_rotation_ctl(movie)
+      write(id_control,'(a1)') '!'
+      call write_real2_ctl_type(id_control, level, maxlen,              &
+     &    hd_angle_range, movie%angle_range_ctl)
+      call write_real2_ctl_type(id_control, level, maxlen,              &
+     &    hd_apature_range, movie%apature_range_ctl)
+      call write_real2_ctl_type(id_control, level, maxlen,              &
+     &    hd_LIC_kernel_peak, movie%LIC_kernel_peak_range_ctl)
 !
-      use calypso_mpi
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_control_arrays
-      use bcast_dup_view_transfer_ctl
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
-      type(pvr_movie_ctl), intent(inout) :: movie
-!
-!
-      call calypso_mpi_bcast_one_int(movie%i_pvr_rotation, 0)
-!
-      call bcast_ctl_type_c1(movie%movie_format_ctl)
-      call bcast_ctl_type_c1(movie%movie_mode_ctl)
-      call bcast_ctl_type_i1(movie%num_frames_ctl)
-      call bcast_ctl_type_c1(movie%rotation_axis_ctl)
-      call bcast_ctl_type_i2(movie%quilt_column_row_ctl)
-      call bcast_ctl_type_i2(movie%quilt_row_column_ctl)
-!
-      call bcast_ctl_type_r2(movie%angle_range_ctl)
-      call bcast_ctl_type_r2(movie%apature_range_ctl)
-      call bcast_ctl_type_r2(movie%LIC_kernel_peak_range_ctl)
-!
-      call calypso_mpi_bcast_character(movie%start_view_file_ctl,       &
-     &                                 cast_long(kchara), 0)
-      call calypso_mpi_bcast_character(movie%end_view_file_ctl,         &
-     &                                 cast_long(kchara), 0)
-      call bcast_view_transfer_ctl(movie%view_start_ctl)
-      call bcast_view_transfer_ctl(movie%view_end_ctl)
-!
-      call bcast_mul_view_trans_ctl(movie%mul_mmats_c)
-!
-      end subroutine bcast_pvr_rotation_ctl
+      end subroutine write_pvr_rotation_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -394,4 +311,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module t_control_data_pvr_movie
+      end module read_ctl_data_pvr_movie

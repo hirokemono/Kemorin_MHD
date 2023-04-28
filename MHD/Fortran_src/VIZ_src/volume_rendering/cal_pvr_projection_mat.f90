@@ -10,8 +10,8 @@
 !!      subroutine set_pvr_orthogonal_params(view_param)
 !!
 !!      subroutine set_pvr_projection_matrix(view_param, projection_mat)
-!!      subroutine set_pvr_step_projection_mat(i_img, num_img,          &
-!!     &          view_param, stereo_def, projection_step)
+!!      subroutine set_pvr_step_projection_mat                          &
+!!     &         (i_img, view_param, stereo_def, projection_step)
 !!      subroutine set_pvr_projection_left_mat                          &
 !!     &          (view_param, stereo_def, projection_left)
 !!      subroutine set_pvr_projection_right_mat                         &
@@ -89,12 +89,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_pvr_step_projection_mat(i_img, num_img,            &
-     &          view_param, stereo_def, projection_step)
+      subroutine set_pvr_step_projection_mat                            &
+     &         (i_img, view_param, stereo_def, projection_step)
 !
       use set_projection_matrix
 !
-      integer(kind = kint), intent(in) :: i_img, num_img
+      integer(kind = kint), intent(in) :: i_img
       type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_stereo_parameter), intent(in) :: stereo_def
       real(kind = kreal), intent(inout) :: projection_step(4,4)
