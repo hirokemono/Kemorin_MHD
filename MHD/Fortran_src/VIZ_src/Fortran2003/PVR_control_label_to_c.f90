@@ -102,7 +102,7 @@
 !
       integer(c_int) function num_label_pvr_modelview_f() bind(c)
 !
-      use t_ctl_data_4_view_transfer
+      use read_ctl_data_view_transfer
 !
       num_label_pvr_modelview_f = num_label_pvr_modelview()
       return
@@ -133,7 +133,7 @@
 !
       subroutine set_label_pvr_modelview_f(names)  bind(c)
 !
-      use t_ctl_data_4_view_transfer
+      use read_ctl_data_view_transfer
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

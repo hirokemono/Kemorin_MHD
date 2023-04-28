@@ -142,7 +142,6 @@
       type(PVR_control_params), intent(inout) :: pvr_param
 !
       integer(kind = kint) :: num_views
-      integer(kind = kint) :: icheck_ncomp(1)
 !
 !
       if(quilt_c%mul_qmats_c%num_modelviews_c .gt. 0) then

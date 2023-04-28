@@ -111,6 +111,7 @@
      &         (id_control, hd_block, mul_mats_c, c_buf)
 !
       use read_control_pvr_modelview
+      use read_ctl_data_view_transfer
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

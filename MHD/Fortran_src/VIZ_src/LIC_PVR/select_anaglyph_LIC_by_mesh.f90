@@ -115,8 +115,8 @@
      &    repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
 !
       do i_lic = 1, pvr%num_pvr
-        call each_anaglyph_PVR_init(i_lic,                              &
-     &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+        call each_anaglyph_PVR_init                                     &
+     &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
@@ -273,8 +273,8 @@
      &     (repart_data%viz_fem%mesh%node, rep_ref_viz)
 !
         if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
-        call each_anaglyph_PVR_init(i_lic,                              &
-     &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+        call each_anaglyph_PVR_init                                     &
+     &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)

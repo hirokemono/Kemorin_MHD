@@ -9,6 +9,16 @@
 !!@verbatim
 !!      subroutine read_stereo_view_ctl                                 &
 !!     &         (id_control, hd_block, streo, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(streo_view_ctl), intent(inout) :: streo
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_stereo_view_ctl                                &
+!!     &         (id_control, hd_block, streo, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(streo_view_ctl), intent(in) :: streo
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine reset_stereo_view_ctl(streo)
 !!      subroutine bcast_stereo_view_ctl(streo)
 !!        type(streo_view_ctl), intent(inout) :: streo
@@ -107,6 +117,45 @@
       streo%i_stereo_view = 1
 !
       end subroutine read_stereo_view_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_stereo_view_ctl                                  &
+     &         (id_control, hd_block, streo, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(streo_view_ctl), intent(in) :: streo
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(streo%i_stereo_view .le. 0) return
+!
+      maxlen = len_trim(hd_focalpoint)
+      maxlen = max(maxlen, len_trim(hd_eye_separation))
+      maxlen = max(maxlen, len_trim(hd_eye_sep_angle))
+      maxlen = max(maxlen, len_trim(hd_eye_step_mode))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_focalpoint, streo%focalpoint_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_eye_separation, streo%eye_separation_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_eye_sep_angle, streo%eye_sep_angle_ctl)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_eye_step_mode, streo%step_eye_sep_angle_ctl)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_stereo_view_ctl
 !
 !  ---------------------------------------------------------------------
 !

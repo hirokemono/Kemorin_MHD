@@ -9,6 +9,16 @@
 !!@verbatim
 !!      subroutine read_image_size_ctl                                  &
 !!     &         (id_control, hd_block, pixel, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(screen_pixel_ctl), intent(inout) :: pixel
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_image_size_ctl                                 &
+!!     &         (id_control, hd_block, pixel, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(screen_pixel_ctl), intent(in) :: pixel
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine reset_image_size_ctl(pixel)
 !!      subroutine bcast_image_size_ctl(pixel)
 !!        type(screen_pixel_ctl), intent(inout) :: pixel
@@ -94,6 +104,38 @@
       pixel%i_image_size = 1
 !
       end subroutine read_image_size_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_image_size_ctl                                   &
+     &         (id_control, hd_block, pixel, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(screen_pixel_ctl), intent(in) :: pixel
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(pixel%i_image_size .le. 0) return
+!
+      maxlen = len_trim(hd_x_pixel)
+      maxlen = max(maxlen, len_trim(hd_y_pixel))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &   hd_x_pixel, pixel%num_xpixel_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &   hd_y_pixel, pixel%num_ypixel_ctl)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_image_size_ctl
 !
 !  ---------------------------------------------------------------------
 !
