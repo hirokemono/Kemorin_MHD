@@ -9,6 +9,16 @@
 !!@verbatim
 !!      subroutine read_filter_fnames_control                           &
 !!     &         (id_control, hd_block, ffile_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(filter_file_control), intent(inout) :: ffile_ctl
+!!        type(buffer_for_control), intent(inout) :: c_buf
+!!      subroutine write_filter_fnames_control                          &
+!!     &         (id_control, hd_block, ffile_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(filter_file_control), intent(in) :: ffile_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine reset_filter_fnames_control(ffile_ctl)
 !!        type(filter_file_control), intent(inout) :: ffile_ctl
 !!        type(buffer_for_control), intent(inout) :: c_buf
@@ -168,6 +178,72 @@
       ffile_ctl%i_filter_fnames = 1
 !
       end subroutine read_filter_fnames_control
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_filter_fnames_control                            &
+     &         (id_control, hd_block, ffile_ctl, level)
+!
+      use m_machine_parameter
+      use skip_comment_f
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(filter_file_control), intent(in) :: ffile_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(ffile_ctl%i_filter_fnames .le. 0) return
+!
+      maxlen = len_trim(hd_filter_head_ctl)
+      maxlen = max(maxlen, len_trim(hd_filter_coef_head_ctl))
+      maxlen = max(maxlen, len_trim(hd_filter_elen_head_ctl))
+      maxlen = max(maxlen, len_trim(hd_filter_moms_head_ctl))
+      maxlen = max(maxlen, len_trim(hd_filter_wide_head))
+      maxlen = max(maxlen, len_trim(hd_model_coef_ini_head))
+      maxlen = max(maxlen, len_trim(hd_commute_coef_ini_head))
+      maxlen = max(maxlen, len_trim(hd_filter_elen_fmt))
+      maxlen = max(maxlen, len_trim(hd_filter_3d_fmt))
+      maxlen = max(maxlen, len_trim(hd_filter_wide_fmt))
+      maxlen = max(maxlen, len_trim(hd_model_coef_rst_format))
+      maxlen = max(maxlen, len_trim(hd_commute_c_rst_format))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_filter_head_ctl, ffile_ctl%filter_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_filter_coef_head_ctl, ffile_ctl%filter_coef_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_filter_elen_head_ctl, ffile_ctl%filter_elen_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_filter_moms_head_ctl, ffile_ctl%filter_moms_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_filter_wide_head, ffile_ctl%filter_wide_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_model_coef_ini_head, ffile_ctl%model_coef_ini_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &                          hd_commute_coef_ini_head,               &
+     &                          ffile_ctl%commute_coef_ini_head_ctl)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_filter_elen_fmt, ffile_ctl%filter_elen_format)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_filter_3d_fmt, ffile_ctl%filter_3d_format)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_filter_wide_fmt, ffile_ctl%filter_wide_format)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_model_coef_rst_format, ffile_ctl%model_coef_rst_format)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_commute_c_rst_format, ffile_ctl%commute_coef_rst_format)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_filter_fnames_control
 !
 !  ---------------------------------------------------------------------
 !

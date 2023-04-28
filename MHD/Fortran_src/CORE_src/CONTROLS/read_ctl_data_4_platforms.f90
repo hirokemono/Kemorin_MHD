@@ -255,56 +255,61 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_debug_flag_ctl, plt%debug_flag_ctl)
 !
+      write(id_control,'(a1)') '!'
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_num_subdomain, plt%ndomain_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_num_smp, plt%num_smp_ctl)
 !
+      write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_mesh_header, plt%mesh_file_prefix)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_udt_header, plt%field_file_prefix)
+     &    hd_sph_files_header, plt%sph_file_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_rst_header, plt%restart_file_prefix)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_udt_header, plt%field_file_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_spectr_header, plt%spectr_field_file_prefix)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sph_files_header, plt%sph_file_prefix)
-!
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_rayleigh_spectr_dir, plt%rayleigh_spectr_dir)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_rayleigh_field_dir, plt%rayleigh_field_dir)
-!
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_coriolis_tri_int_name, plt%coriolis_int_file_name)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_bc_data_file_name, plt%bc_data_file_name_ctl)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_radial_data_file_name, plt%radial_data_file_name_ctl)
-!
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_itp_sph_to_fem, plt%interpolate_sph_to_fem_ctl)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_itp_fem_to_sph, plt%interpolate_fem_to_sph_ctl)
-!
-      write(id_control,'(a)') '!'
-      call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_mesh_file_fmt, plt%mesh_file_fmt_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_sph_files_fmt, plt%sph_file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_rst_files_fmt, plt%restart_file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_udt_files_fmt, plt%field_file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_sph_files_fmt, plt%sph_file_fmt_ctl)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_itp_files_fmt, plt%itp_file_fmt_ctl)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_spect_field_fmt, plt%spectr_field_fmt_ctl)
+!
+      write(id_control,'(a)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_bc_data_file_name, plt%bc_data_file_name_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_radial_data_file_name, plt%radial_data_file_name_ctl)
+!
+      write(id_control,'(a)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_rayleigh_spectr_dir, plt%rayleigh_spectr_dir)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_rayleigh_field_dir, plt%rayleigh_field_dir)
+!
+!
+      write(id_control,'(a)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_coriolis_tri_int_name, plt%coriolis_int_file_name)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_itp_sph_to_fem, plt%interpolate_sph_to_fem_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_itp_fem_to_sph, plt%interpolate_fem_to_sph_ctl)
+!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_coriolis_file_fmt, plt%coriolis_file_fmt_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_itp_files_fmt, plt%itp_file_fmt_ctl)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_del_org_data, plt%del_org_data_ctl)
