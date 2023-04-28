@@ -164,6 +164,8 @@
       subroutine read_parallel_shell_ctl                                &
      &         (id_control, hd_block, psph_ctl, c_buf)
 !
+      use read_ctl_data_sphere_model
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !

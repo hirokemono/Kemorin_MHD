@@ -262,19 +262,34 @@
       write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-      call write_gauss_spectr_ctl(id_control, hd_gauss_spec_block,      &
-     &                            smonitor_ctl%g_pwr, level)
-      call write_pickup_spectr_ctl(id_control, hd_pick_sph_ctl,         &
-     &                             smonitor_ctl%pspec_ctl, level)
-      call write_layerd_spectr_ctl(id_control, hd_layer_spec_block,     &
-     &                             smonitor_ctl%lp_ctl, level)
-      call write_sph_dipolarity_ctl(id_control,                         &
-     &    hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, level)
-      call write_mid_eq_monitor_ctl(id_control,                         &
-     &    hd_mid_eq_monitor_ctl, smonitor_ctl%meq_ctl, level)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_voume_ave_head, smonitor_ctl%volume_average_prefix)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_voume_rms_head, smonitor_ctl%volume_pwr_spectr_prefix)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_voume_rms_format, smonitor_ctl%volume_pwr_spectr_format)
+      write(id_control,'(a1)') '!'
 !
       call write_volume_spectr_ctl(id_control, hd_vol_spec_block,       &
      &                             smonitor_ctl, level)
+      write(id_control,'(a1)') '!'
+      call write_layerd_spectr_ctl(id_control, hd_layer_spec_block,     &
+     &                             smonitor_ctl%lp_ctl, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_pickup_spectr_ctl(id_control, hd_pick_sph_ctl,         &
+     &                             smonitor_ctl%pspec_ctl, level)
+      write(id_control,'(a1)') '!'
+      call write_gauss_spectr_ctl(id_control, hd_gauss_spec_block,      &
+     &                            smonitor_ctl%g_pwr, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_sph_dipolarity_ctl(id_control,                         &
+     &    hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_mid_eq_monitor_ctl(id_control,                         &
+     &    hd_mid_eq_monitor_ctl, smonitor_ctl%meq_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_Nusselt_file_head, smonitor_ctl%heat_Nusselt_file_prefix)
@@ -300,12 +315,6 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &                          hd_typ_scale_file_format,               &
      &                          smonitor_ctl%typ_scale_file_format_ctl)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_voume_ave_head, smonitor_ctl%volume_average_prefix)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_voume_rms_head, smonitor_ctl%volume_pwr_spectr_prefix)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_voume_rms_format, smonitor_ctl%volume_pwr_spectr_format)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
