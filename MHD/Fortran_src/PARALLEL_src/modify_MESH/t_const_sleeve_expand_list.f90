@@ -10,7 +10,7 @@
 !!      subroutine const_sleeve_expand_list                             &
 !!     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,&
 !!     &          sleeve_exp_WK, mark_saved, mark_nod, mark_ele,        &
-!!     &          SR_sig, SR_r, SR_i)
+!!     &          SR_sig, SR_r)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
@@ -24,7 +24,6 @@
 !!     &                         :: mark_ele(nod_comm%num_neib)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!@endverbatim
 !
       module t_const_sleeve_expand_list
@@ -76,7 +75,7 @@
       subroutine const_sleeve_expand_list                               &
      &         (sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,  &
      &          sleeve_exp_WK, mark_saved, mark_nod, mark_ele,          &
-     &          SR_sig, SR_r, SR_i)
+     &          SR_sig, SR_r)
 !
       use t_solver_SR
       use t_solver_SR_int
@@ -104,7 +103,6 @@
 !
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       type(work_sleeve_extend_marking), save :: marking_WK
 !

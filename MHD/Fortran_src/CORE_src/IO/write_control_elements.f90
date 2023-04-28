@@ -8,11 +8,13 @@
 !!
 !!@verbatim
 !!      integer(kind = kint) function write_begin_flag_for_ctl          &
-!!     &                            (id_file, level, label)
+!!     &                                         (id_file, level, label)
 !!      integer(kind = kint) function write_end_flag_for_ctl            &
-!!     &                            (id_file, level, label)
-!!      subroutine write_array_flag_for_ctl(id_file, level, label, num)
-!!      subroutine write_end_array_flag_for_ctl(id_file, level, label)
+!!     &                                         (id_file, level, label)
+!!      integer(kind = kint) function write_array_flag_for_ctl          &
+!!     &                                         (id_file, level, label)
+!!      integer(kind = kint) function write_end_array_flag_for_ctl      &
+!!     &                                         (id_file, level, label)
 !!
 !!      subroutine write_real_ctl_item                                  &
 !!     &         (id_file, level, maxlen, label, real_data)
@@ -56,6 +58,11 @@
 !!     &         (id_file, level, label, fname)
 !!      subroutine write_file_names_from_ctl_line                       &
 !!     &         (id_file, level, label, num, fname)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer (kind=kint), intent(in) :: num
+!!        character(len=kchara), intent(in) :: label
+!!        character(len=kchara), intent(in) :: fname(num)
+!!        integer(kind = kint), intent(inout) :: level
 !!@endverbatim
 !!
 !!@n @param  ctl_name   label for control block
@@ -105,7 +112,7 @@
 !   --------------------------------------------------------------------
 !
       integer(kind = kint) function write_begin_flag_for_ctl            &
-     &                            (id_file, level, label)
+     &                                         (id_file, level, label)
 !
       use write_control_items
 !
@@ -124,60 +131,64 @@
 !   --------------------------------------------------------------------
 !
       integer(kind = kint) function write_end_flag_for_ctl              &
-     &                            (id_file, level, label)
+     &                                         (id_file, level, label)
 !
       use write_control_items
 !
       integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
 !
+      integer(kind = kint) :: level_new
 !
-      if(level .le. 0) then
-        write_end_flag_for_ctl = level
-      else
-        write_end_flag_for_ctl = level - 1
-      end if
+      level_new = max(level-1,0)
 !
-      call write_space_4_parse(id_file, (level-1))
+      call write_space_4_parse(id_file, level_new)
       call write_ctl_chara_cont(id_file, hd_end)
       call write_ctl_chara_lf(id_file, label)
+!
+      write_end_flag_for_ctl = level_new
 !
       end function write_end_flag_for_ctl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_array_flag_for_ctl(id_file, level, label, num)
+      integer(kind = kint) function write_array_flag_for_ctl            &
+     &                                     (id_file, level, label)
 !
       use write_control_items
 !
       integer(kind = kint), intent(in) :: id_file, level
-      integer (kind=kint), intent(in) :: num
       character(len=kchara), intent(in) :: label
 !
 !
       call write_space_4_parse(id_file, level)
       call write_ctl_chara_cont(id_file, hd_array)
-      call write_ctl_chara_cont(id_file, label)
-      write(id_file,'(i6)') num
+      call write_ctl_chara_lf(id_file, label)
 !
-      end subroutine write_array_flag_for_ctl
+      end function write_array_flag_for_ctl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_end_array_flag_for_ctl(id_file, level, label)
+      integer(kind = kint) function write_end_array_flag_for_ctl        &
+     &                                         (id_file, level, label)
 !
       use write_control_items
 !
       integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
 !
+      integer(kind = kint) :: level_new
 !
-      call write_space_4_parse(id_file, level)
+      level_new = max(level-1,0)
+!
+      call write_space_4_parse(id_file, level_new)
       call write_ctl_chara_cont(id_file, hd_end)
       call write_ctl_chara_cont(id_file, hd_array)
       call write_ctl_chara_lf(id_file, label)
 !
-      end subroutine write_end_array_flag_for_ctl
+      write_end_array_flag_for_ctl = level_new
+!
+      end function write_end_array_flag_for_ctl
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -577,24 +588,25 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_file_names_from_ctl_line                         &
-     &         (id_file, level, label, num, fname)
+     &         (id_file, label, num, fname, level)
 !
       use write_control_items
 !
-      integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: id_file
       integer (kind=kint), intent(in) :: num
       character(len=kchara), intent(in) :: label
       character(len=kchara), intent(in) :: fname(num)
+      integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: i
 !
 !
-      call write_array_flag_for_ctl(id_file, level, label, num)
+      level = write_array_flag_for_ctl(id_file, level, label)
       do i = 1, num
         call write_file_name_for_ctl_line                               &
-     &     (id_file, (level+1), label, fname(i))
+     &     (id_file, level, label, fname(i))
       end do
-      call write_end_array_flag_for_ctl(id_file, level, label)
+      level = write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_file_names_from_ctl_line
 !

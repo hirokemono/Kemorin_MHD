@@ -25,7 +25,10 @@
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!      subroutine write_control_array_c2_r                             &
 !!     &         (id_control, level, label, array_c2r)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: label
 !!        type(ctl_array_c2r), intent(in) :: array_c2r
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine append_control_array_c2_r(read_c2r, array_c2r)
 !!        type(read_chara2_real_item), intent(inout) ::    read_c2r
@@ -209,9 +212,11 @@
       use skip_comment_f
       use write_control_elements
 !
-      integer(kind = kint), intent(in) :: id_control, level
+      integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: label
       type(ctl_array_c2r), intent(in) :: array_c2r
+!
+      integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: i
 !
@@ -219,13 +224,12 @@
       if(array_c2r%num .le. 0) return
       write(id_control,'(a1)') '!'
 !
-      call write_array_flag_for_ctl                                     &
-     &   (id_control, level, label, array_c2r%num)
+      level = write_array_flag_for_ctl(id_control, level, label)
       do i = 1, array_c2r%num
-        call write_chara2_real_ctl_item(id_control, (level+1), label,   &
+        call write_chara2_real_ctl_item(id_control, level, label,       &
      &     array_c2r%c1_tbl(i), array_c2r%c2_tbl(i), array_c2r%vect(i))
       end do
-      call write_end_array_flag_for_ctl(id_control, level, label)
+      level = write_end_array_flag_for_ctl(id_control, level, label)
 !
       end subroutine write_control_array_c2_r
 !

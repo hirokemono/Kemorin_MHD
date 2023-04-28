@@ -85,11 +85,11 @@
         if (output_IO_flag(istep,time_U%ucd_step) .eqv. .FALSE.) cycle
         istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
 !
-        call set_data_by_read_ucd_once(my_rank, istep_ucd,              &
-     &      first_ucd_param, FUTIL1%nod_fld, time_IO)
+        call set_data_by_read_ucd_once(istep_ucd, first_ucd_param,      &
+     &                                 FUTIL1%nod_fld, time_IO)
 !
-        call subtract_by_ucd_data                                       &
-     &     (my_rank, istep_ucd, second_ucd_param, FUTIL1%nod_fld)
+        call subtract_by_ucd_data(istep_ucd, second_ucd_param,          &
+     &                            FUTIL1%nod_fld)
 !
         call s_divide_phys_by_delta_t                                   &
      &     (time_U%time_d%dt, FUTIL1%nod_fld)

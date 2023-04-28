@@ -167,7 +167,7 @@
       character(len=kchara) :: file_name, directory, extension
       character(len=kchara) :: fname_no_dir, fname_tmp
 !
-      integer(kind = kint) :: icou
+!      integer(kind = kint) :: icou
       real(kind = kreal) :: true_start, true_end, g10_mid
 !>      Structure for gauss coeffciients
       type(picked_gauss_coefs_IO), save :: gauss_IO_a

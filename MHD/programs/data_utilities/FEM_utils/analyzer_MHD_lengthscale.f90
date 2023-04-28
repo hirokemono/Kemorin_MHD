@@ -96,8 +96,8 @@
         if(output_IO_flag(istep,time_U%ucd_step) .eqv. .FALSE.) cycle
         istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
 !
-        call set_data_by_read_ucd_once(my_rank, istep_ucd,              &
-     &      first_ucd_param, FUTIL1%nod_fld, time_IO)
+        call set_data_by_read_ucd_once(istep_ucd, first_ucd_param,      &
+     &                                 FUTIL1%nod_fld, time_IO)
 !
         call const_MHD_length_scales                                    &
      &     (FUTIL1%geofem%mesh%node, FUTIL1%iphys, FUTIL1%nod_fld,      &

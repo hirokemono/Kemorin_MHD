@@ -43,8 +43,8 @@
       integer(kind = kint) :: istep, icou, nnod_psf, ncomp_phys
       integer(kind = kint) :: inod, nd, i
 !
-      character(len=kchara) :: input_file_name, nostep_prefix
-      integer(kind = kint) :: ifmt_psf, istep_viz
+      character(len=kchara) :: input_file_name
+      integer(kind = kint) :: istep_viz
 !
       real(kind = kreal) :: acou
       real(kind = kreal), allocatable :: tave_psf(:,:)

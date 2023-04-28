@@ -330,14 +330,13 @@
       if(smonitor_ctl%num_vspec_ctl .le. 0) return
 !
       write(id_control,'(a1)') '!'
-      call write_array_flag_for_ctl(id_control, level, hd_block,     &
-     &                                 smonitor_ctl%num_vspec_ctl)
+      level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, smonitor_ctl%num_vspec_ctl
         write(id_control,'(a1)') '!'
         call write_each_vol_spectr_ctl(id_control, hd_block,            &
      &     smonitor_ctl%v_pwr(i), level)
       end do
-      call write_end_array_flag_for_ctl(id_control, level, hd_block)
+      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_volume_spectr_ctl
 !

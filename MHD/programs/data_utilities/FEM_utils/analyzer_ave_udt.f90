@@ -82,8 +82,8 @@
 !
       istep_ucd = IO_step_exc_zero_inc(time_U%init_d%i_time_step,       &
      &                                 time_U%ucd_step)
-      call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
-     &    FUTIL1%udt_file, FUTIL1%nod_fld, time_IO_FUTIL)
+      call set_data_by_read_ucd_once(istep_ucd, FUTIL1%udt_file,        &
+     &                               FUTIL1%nod_fld, time_IO_FUTIL)
 !
       icou = 1
       do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
@@ -91,8 +91,8 @@
         icou = icou + 1
 !
         istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
-        call add_ucd_to_data                                            &
-     &     (my_rank, istep_ucd, FUTIL1%udt_file, FUTIL1%nod_fld)
+        call add_ucd_to_data(istep_ucd, FUTIL1%udt_file,                &
+     &                       FUTIL1%nod_fld)
       end do
 !
       call s_divide_phys_by_num_udt(icou, FUTIL1%nod_fld)
