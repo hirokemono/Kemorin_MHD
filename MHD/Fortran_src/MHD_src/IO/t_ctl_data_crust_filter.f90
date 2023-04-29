@@ -7,8 +7,18 @@
 !> @brief Control data structure for zonal mean visualization controls
 !!
 !!@verbatim
-!!      subroutine read_crustal_filtering_ctl                       &
+!!      subroutine read_crustal_filtering_ctl                           &
 !!     &         (id_control, hd_block, crust_filter_c, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(clust_filtering_ctl), intent(inout) :: crust_filter_c
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_crustal_filtering_ctl                          &
+!!     &         (id_control, hd_block, crust_filter_c, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(clust_filtering_ctl), intent(in) :: crust_filter_c
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine bcast_crustal_filtering_ctl(crust_filter_c)
 !!      subroutine reset_crustal_filtering_ctl(crust_filter_c)
 !!
@@ -55,7 +65,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_crustal_filtering_ctl                         &
+      subroutine read_crustal_filtering_ctl                             &
      &         (id_control, hd_block, crust_filter_c, c_buf)
 !
       use t_read_control_elements
@@ -80,6 +90,37 @@
        crust_filter_c%i_crustal_filtering = 1
 !
       end subroutine read_crustal_filtering_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_crustal_filtering_ctl                            &
+     &         (id_control, hd_block, crust_filter_c, level)
+!
+      use t_read_control_elements
+      use write_control_elements
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(clust_filtering_ctl), intent(in) :: crust_filter_c
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(crust_filter_c%i_crustal_filtering .le. 0) return
+!
+      maxlen = len_trim(hd_crustal_truncation)
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &      hd_crustal_truncation, crust_filter_c%crust_truncation_ctl)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_crustal_filtering_ctl
 !
 !  ---------------------------------------------------------------------
 !
