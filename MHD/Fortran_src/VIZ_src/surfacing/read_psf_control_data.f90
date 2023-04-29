@@ -210,8 +210,8 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
+      type(psf_ctl), intent(in) :: psf_c
 !
-      type(psf_ctl), intent(inout) :: psf_c
       integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: maxlen = 0

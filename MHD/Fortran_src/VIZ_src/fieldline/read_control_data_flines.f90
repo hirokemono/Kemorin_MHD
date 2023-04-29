@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_flines.f90
-!!@brief  module read_ctl_data_flines
+!>@file   read_control_data_flines.f90
+!!@brief  module read_control_data_flines
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -36,7 +36,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_ctl_data_flines
+      module read_control_data_flines
 !
       use m_precision
       use m_constants
@@ -154,6 +154,8 @@
       subroutine write_files_4_fline_ctl                                &
      &         (id_control, hd_block, fline_ctls, level)
 !
+      use write_control_elements
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(fieldline_controls), intent(in) :: fline_ctls
@@ -161,13 +163,15 @@
 !
       integer(kind = kint) :: i
 !
-!
+      write(id_control,'(a1)') '!'
+      level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, fline_ctls%num_fline_ctl
         write(*,'(2a,i4,a)', ADVANCE='NO')                              &
      &        trim(hd_block), ' No. ', fline_ctls%num_fline_ctl, '... '
         call sel_write_fline_control(id_control, hd_block,              &
      &      fline_ctls%fline_ctl_struct(i), level)
       end do
+      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_files_4_fline_ctl
 !
@@ -226,4 +230,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_ctl_data_flines
+      end module read_control_data_flines

@@ -17,7 +17,7 @@
 !!     &         (id_control, hd_block, psf_def_c, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(psf_define_ctl), intent(inout) :: psf_def_c
+!!        type(psf_define_ctl), intent(in) :: psf_def_c
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      integer(kind = kint) function num_label_psf_define_control()
@@ -202,7 +202,7 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(psf_define_ctl), intent(inout) :: psf_def_c
+      type(psf_define_ctl), intent(in) :: psf_def_c
       integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: maxlen = 0

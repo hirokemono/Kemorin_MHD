@@ -125,7 +125,8 @@
      &         (id_control, hd_block, viz_ctls, c_buf)
 !
       use t_read_control_elements
-      use read_ctl_data_flines
+      use read_control_data_sections
+      use read_control_data_flines
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control 

@@ -122,6 +122,7 @@
       use t_read_control_elements
       use t_control_data_sections
       use read_psf_control_data
+      use read_control_data_sections
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -132,28 +133,36 @@
 !
       if(psf_ctls%num_psf_ctl .gt. 0) return
 !
-      if(check_file_flag(c_buf, hd_section)) then
+      if(check_file_flag(c_buf, hd_section)                             &
+     &     .or.  check_begin_flag(c_buf, hd_section)) then
         psf_ctls%num_psf_ctl = 1
         call alloc_psf_ctl_stract(psf_ctls)
-        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl)                    &
-     &                                  = third_word(c_buf)
 !
-        write(*,'(3a)', ADVANCE='NO') 'Read file for ',                 &
-     &                               trim(hd_section), '... '
-        call read_control_4_psf_file(id_control+2,                      &
-     &      psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),               &
-     &      psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl))
-      else if(check_begin_flag(c_buf, hd_section)) then
-        psf_ctls%num_psf_ctl = 1
-        call alloc_psf_ctl_stract(psf_ctls)
-        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl) = 'NO_FILE'
-!
-        write(*,*) 'Control for', trim(hd_section), ' is included'
-        call s_read_psf_control_data(id_control, hd_section,            &
+        call sel_read_control_4_psf_file(id_control, hd_section,        &
      &      psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)
       end if
 !
       end subroutine read_single_section_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_single_section_ctl                               &
+     &          (id_control, hd_section, psf_ctls, level)
+!
+      use t_control_data_sections
+      use read_control_data_sections
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_section
+      type(section_controls), intent(in) :: psf_ctls
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(psf_ctls%num_psf_ctl .gt. 0) return
+      call sel_write_control_4_psf_file(id_control, hd_section,         &
+     &    psf_ctls%psf_ctl_struct(1), level)
+!
+      end subroutine write_single_section_ctl
 !
 !   --------------------------------------------------------------------
 !
