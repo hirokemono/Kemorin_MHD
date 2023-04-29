@@ -16,6 +16,16 @@
 !!
 !!      subroutine read_fld_on_psf_control                              &
 !!     &         (id_control, hd_block, fld_on_psf_c, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_fld_on_psf_control                             &
+!!     &         (id_control, hd_block, fld_on_psf_c, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(field_on_psf_ctl), intent(in) :: fld_on_psf_c
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine bcast_fld_on_psf_control(fld_on_psf_c)
 !!        type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
 !!
@@ -173,6 +183,43 @@
       fld_on_psf_c%i_iso_result = 1
 !
       end subroutine read_fld_on_psf_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_fld_on_psf_control                               &
+     &         (id_control, hd_block, fld_on_psf_c, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(field_on_psf_ctl), intent(in) :: fld_on_psf_c
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(fld_on_psf_c%i_iso_result .le. 0) return
+!
+      maxlen = len_trim(hd_result_type)
+      maxlen = max(maxlen, len_trim(hd_result_value))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_result_type, fld_on_psf_c%output_type_ctl)
+!
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_result_value, fld_on_psf_c%output_value_ctl)
+!
+      write(id_control,'(a1)') '!'
+      call write_control_array_c2(id_control, level,                    &
+     &    hd_iso_result_field, fld_on_psf_c%field_output_ctl)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_fld_on_psf_control
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

@@ -121,6 +121,7 @@
 !
       use t_read_control_elements
       use t_control_data_sections
+      use read_psf_control_data
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -148,7 +149,7 @@
         psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl) = 'NO_FILE'
 !
         write(*,*) 'Control for', trim(hd_section), ' is included'
-        call read_psf_control_data(id_control, hd_section,              &
+        call s_read_psf_control_data(id_control, hd_section,            &
      &      psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)
       end if
 !

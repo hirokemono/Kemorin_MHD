@@ -8,6 +8,16 @@
 !!@verbatim
 !!      subroutine s_read_iso_control_data                              &
 !!     &         (id_control, hd_block, iso_c, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(iso_ctl), intent(inout) :: iso_c
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_iso_control_data                               &
+!!     &         (id_control, hd_block, iso_c, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(iso_ctl), intent(inout) :: iso_c
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !!      integer(kind = kint) function num_label_iso_ctl()
 !!      integer(kind = kint) function num_label_iso_ctl_w_dpl()
@@ -142,6 +152,43 @@
       iso_c%i_iso_ctl = 1
 !
       end subroutine s_read_iso_control_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_iso_control_data                                 &
+     &         (id_control, hd_block, iso_c, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(iso_ctl), intent(inout) :: iso_c
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(iso_c%i_iso_ctl .le. 0) return
+!
+      maxlen = len_trim(hd_isosurf_prefix)
+      maxlen = max(maxlen, len_trim(hd_iso_out_type))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_isosurf_prefix, iso_c%iso_file_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_iso_out_type, iso_c%iso_output_type_ctl)
+!
+      call write_iso_define_data(id_control, hd_iso_define,             &
+     &                           iso_c%iso_def_c, level)
+      call write_fld_on_psf_control(id_control, hd_field_on_iso,        &
+     &                              iso_c%fld_on_iso_c, level)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_iso_control_data
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

@@ -134,7 +134,7 @@
 !
       integer(c_int) function num_label_psf_define_control_f() bind(c)
 !
-      use t_control_data_4_psf_def
+      use read_control_data_4_psf_def
 !
       num_label_psf_define_control_f = num_label_psf_define_control()
       return
@@ -144,7 +144,7 @@
 !
       integer(c_int) function num_label_psf_ctl_w_dpl_f() bind(c)
 !
-      use t_control_data_4_psf
+      use read_psf_control_data
 !
       num_label_psf_ctl_w_dpl_f = num_label_psf_ctl_w_dpl()
       return
@@ -206,7 +206,7 @@
 !
       subroutine set_label_psf_define_control_f(names)  bind(c)
 !
-      use t_control_data_4_psf_def
+      use read_control_data_4_psf_def
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -217,7 +217,7 @@
 !
       subroutine set_label_psf_ctl_w_dpl_f(names)  bind(c)
 !
-      use t_control_data_4_psf
+      use read_psf_control_data
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

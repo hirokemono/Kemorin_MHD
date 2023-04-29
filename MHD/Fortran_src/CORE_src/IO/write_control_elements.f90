@@ -34,7 +34,7 @@
 !!      subroutine write_integer3_ctl_item                              &
 !!     &         (id_file, level, label, int1, int2, int3)
 !!       subroutine write_chara_real_ctl_item                           &
-!!     &          (id_file, level, label, chara_data, real_data)
+!!     &          (id_file, level, maxlen, label, chara_data, real_data)
 !!       subroutine write_chara_real2_ctl_item                          &
 !!     &          (id_file, level, label, chara_data, real1, real2)
 !!       subroutine write_chara2_real_ctl_item(id_file, level, maxlen,  &
@@ -164,6 +164,8 @@
       call write_space_4_parse(id_file, level)
       call write_ctl_chara_cont(id_file, hd_array)
       call write_ctl_chara_lf(id_file, label)
+!
+      write_array_flag_for_ctl = level + 1
 !
       end function write_array_flag_for_ctl
 !
@@ -372,20 +374,26 @@
 !   --------------------------------------------------------------------
 !
        subroutine write_chara_real_ctl_item                             &
-     &          (id_file, level, label, chara_data, real_data)
+     &          (id_file, level, maxlen, label, chara_data, real_data)
 !
       use write_control_items
 !
       integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: maxlen
       character(len=kchara), intent(in) :: label
       character(len=kchara), intent(in) :: chara_data
       real(kind = kreal), intent(in) :: real_data
 !
+      integer(kind = kint) :: nspace0
+!
+      nspace0 = maxlen - len_trim(label) + 4
+!
 !
       call write_space_4_parse(id_file, level)
       call write_ctl_chara_cont(id_file, label)
+      call write_spaces(id_file, nspace0)
       call write_ctl_chara_cont(id_file, chara_data)
-      write(id_file,'(1pE25.15e3)')  real_data
+      write(id_file,'(a2,1pE25.15e3)')  '  ', real_data
 !
       end subroutine write_chara_real_ctl_item
 !

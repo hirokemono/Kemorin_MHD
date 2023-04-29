@@ -162,6 +162,8 @@
       subroutine read_control_pvr_section_def                           &
      &         (id_control, fname_sect_ctl, psf_def_c)
 !
+      use read_control_data_4_psf_def
+!
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_sect_ctl
       type(psf_define_ctl), intent(inout) :: psf_def_c
@@ -174,11 +176,9 @@
 !
       do
         call load_one_line_from_control(id_control, c_buf1)
-        if(check_begin_flag(c_buf1, hd_surface_define)) then
-          call read_section_def_control(id_control, hd_surface_define,  &
-     &                                  psf_def_c, c_buf1)
-          exit
-        end if
+        if(check_end_flag(c_buf1, hd_surface_define)) exit
+        call read_section_def_control(id_control, hd_surface_define,    &
+     &                                psf_def_c, c_buf1)
       end do
 !
       close(id_control)
@@ -189,6 +189,8 @@
 !
       subroutine read_pvr_section_ctl                                   &
      &         (id_control, hd_block, pvr_sect_ctl, c_buf)
+!
+      use read_control_data_4_psf_def
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

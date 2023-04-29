@@ -97,6 +97,7 @@
      &         (id_control, hd_block, psf_ctls, c_buf)
 !
       use t_read_control_elements
+      use read_psf_control_data
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -130,7 +131,7 @@
 !
           write(*,*) 'Control for', trim(hd_block), ' No. ',            &
      &              psf_ctls%num_psf_ctl, ' is included'
-          call read_psf_control_data(id_control, hd_block,              &
+          call s_read_psf_control_data(id_control, hd_block,            &
      &        psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)
         end if
       end do
@@ -257,6 +258,7 @@
 !
       use t_read_control_elements
       use t_control_data_4_psf
+      use read_psf_control_data
 !
 !
       integer(kind = kint), intent(in) :: id_control
@@ -271,9 +273,9 @@
 !
       do
         call load_one_line_from_control(id_control, c_buf1)
-        call read_psf_control_data(id_control, hd_section_ctl,          &
+        call s_read_psf_control_data(id_control, hd_section_ctl,        &
      &      psf_ctl_struct, c_buf1)
-        call read_psf_control_data(id_control, hd_psf_ctl,              &
+        call s_read_psf_control_data(id_control, hd_psf_ctl,            &
      &      psf_ctl_struct, c_buf1)
         if(psf_ctl_struct%i_psf_ctl .gt. 0) exit
       end do
