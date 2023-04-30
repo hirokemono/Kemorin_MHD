@@ -86,7 +86,7 @@
      &      fline%fln_src(i_fln))
       end do
 !
-      call dealloc_fline_fhead_ctl(fline_ctls)
+      call dealloc_fline_ctl_struct(fline_ctls)
 !
       do i_fln = 1, fline%num_fline
         call alloc_local_data_4_fline                                   &

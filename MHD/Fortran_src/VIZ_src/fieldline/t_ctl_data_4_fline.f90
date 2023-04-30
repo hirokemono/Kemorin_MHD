@@ -81,8 +81,6 @@
 !
 !
       type fline_ctl
-        character(len = kchara) :: fline_ctl_fname
-!
         type(read_character_item) :: fline_file_head_ctl
         type(read_character_item) :: fline_output_type_ctl
 !
@@ -143,16 +141,12 @@
 !
       use calypso_mpi
       use calypso_mpi_int
-      use calypso_mpi_char
       use bcast_control_arrays
-      use transfer_to_long_integers
 !
       type(fline_ctl), intent(inout) :: fln
 !
 !
       call calypso_mpi_bcast_one_int(fln%i_vr_fline_ctl, 0)
-      call calypso_mpi_bcast_character(fln%fline_ctl_fname,             &
-     &                                 cast_long(kchara), 0)
 !
       call bcast_ctl_array_c1(fln%fline_area_grp_ctl)
 !
@@ -253,7 +247,6 @@
      &                          new_fln%seed_surface_ctl)
 !
       new_fln%i_vr_fline_ctl =  org_fln%i_vr_fline_ctl
-      new_fln%fline_ctl_fname = org_fln%fline_ctl_fname
 !
       end subroutine dup_control_4_fline
 !

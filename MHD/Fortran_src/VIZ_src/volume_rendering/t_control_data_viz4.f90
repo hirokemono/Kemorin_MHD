@@ -169,7 +169,7 @@
       call dealloc_psf_ctl_stract(viz_ctls%psf_ctls)
       call dealloc_iso_ctl_stract(viz_ctls%iso_ctls)
       call dealloc_pvr_ctl_struct(viz_ctls%pvr_ctls)
-      call dealloc_fline_fhead_ctl(viz_ctls%fline_ctls)
+      call dealloc_fline_ctl_struct(viz_ctls%fline_ctls)
 !
       call dealloc_pvr_ctl_struct(viz_ctls%pvr_anaglyph_ctls)
 !

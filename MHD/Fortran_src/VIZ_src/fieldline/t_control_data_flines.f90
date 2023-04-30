@@ -7,7 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine bcast_files_4_fline_ctl(fline_ctls)
-!!      subroutine dealloc_fline_fhead_ctl(fline_ctls)
+!!      subroutine dealloc_fline_ctl_struct(fline_ctls)
 !!      subroutine alloc_fline_ctl_struct(fline_ctls)
 !!      subroutine append_new_fline_control(fline_ctls)
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
@@ -34,12 +34,13 @@
 !
       type fieldline_controls
         integer(kind = kint) :: num_fline_ctl = 0
+        character(len = kchara), allocatable :: fname_fline_ctl(:)
         type(fline_ctl), allocatable :: fline_ctl_struct(:)
       end type fieldline_controls
 !
 !      fieldline flag
 !
-      private :: dup_control_4_flines, dealloc_cont_dat_4_flines
+      private :: dup_control_4_flines
 !
 !   --------------------------------------------------------------------
 !
@@ -63,6 +64,8 @@
 !
       if(my_rank .gt. 0)  call alloc_fline_ctl_struct(fline_ctls)
 !
+      call calypso_mpi_bcast_character(fline_ctls%fname_fline_ctl,      &
+     &    cast_long(kchara*fline_ctls%num_fline_ctl), 0)
       do i_fline = 1, fline_ctls%num_fline_ctl
         call bcast_field_line_ctl(fline_ctls%fline_ctl_struct(i_fline))
       end do
@@ -71,16 +74,22 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_fline_fhead_ctl(fline_ctls)
+      subroutine dealloc_fline_ctl_struct(fline_ctls)
 !
       type(fieldline_controls), intent(inout) :: fline_ctls
 !
-      if(allocated(fline_ctls%fline_ctl_struct)) then
-        deallocate(fline_ctls%fline_ctl_struct)
-      end if
+      integer(kind = kint) :: i
+!
+      if(allocated(fline_ctls%fline_ctl_struct) .eqv. .FALSE.) return
+!
+      do i = 1, fline_ctls%num_fline_ctl
+        call deallocate_cont_dat_fline(fline_ctls%fline_ctl_struct(i))
+      end do
+      deallocate(fline_ctls%fline_ctl_struct)
+      deallocate(fline_ctls%fname_fline_ctl)
       fline_ctls%num_fline_ctl = 0
 !
-      end subroutine dealloc_fline_fhead_ctl
+      end subroutine dealloc_fline_ctl_struct
 !
 !  ---------------------------------------------------------------------
 !
@@ -89,6 +98,7 @@
       type(fieldline_controls), intent(inout) :: fline_ctls
 !
       allocate(fline_ctls%fline_ctl_struct(fline_ctls%num_fline_ctl))
+      allocate(fline_ctls%fname_fline_ctl(fline_ctls%num_fline_ctl))
 !
       end subroutine alloc_fline_ctl_struct
 !
@@ -107,9 +117,7 @@
       call dup_control_4_flines                                         &
      &    (tmp_fline_c%num_fline_ctl, fline_ctls, tmp_fline_c)
 !
-      call dealloc_cont_dat_4_flines                                    &
-     &   (fline_ctls%num_fline_ctl, fline_ctls%fline_ctl_struct)
-      call dealloc_fline_fhead_ctl(fline_ctls)
+      call dealloc_fline_ctl_struct(fline_ctls)
 !
       fline_ctls%num_fline_ctl = tmp_fline_c%num_fline_ctl + 1
       call alloc_fline_ctl_struct(fline_ctls)
@@ -117,9 +125,7 @@
       call dup_control_4_flines                                         &
      &   (tmp_fline_c%num_fline_ctl, tmp_fline_c, fline_ctls)
 !
-      call dealloc_cont_dat_4_flines                                    &
-     &   (tmp_fline_c%num_fline_ctl, tmp_fline_c%fline_ctl_struct)
-      call dealloc_fline_fhead_ctl(tmp_fline_c)
+      call dealloc_fline_ctl_struct(tmp_fline_c)
 !
       end subroutine append_new_fline_control
 !
@@ -138,23 +144,10 @@
         call dup_control_4_fline(org_fline_ctls%fline_ctl_struct(i),    &
               new_fline_ctls%fline_ctl_struct(i))
       end do
+      new_fline_ctls%fname_fline_ctl(1:num_fline)                       &
+     &        = org_fline_ctls%fname_fline_ctl(1:num_fline)
 !
       end subroutine dup_control_4_flines
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_cont_dat_4_flines(num_fline, fln)
-!
-      integer(kind = kint), intent(in) :: num_fline
-      type(fline_ctl), intent(inout) :: fln(num_fline)
-!
-      integer(kind = kint) :: i
-!
-      do i = 1, num_fline
-        call deallocate_cont_dat_fline(fln(i))
-      end do
-!
-      end subroutine dealloc_cont_dat_4_flines
 !
 !  ---------------------------------------------------------------------
 !
