@@ -51,6 +51,8 @@
 !>        Structure for file controls
         type(platform_data_control) :: plt
 !
+!>         File name for repartition control block
+        character(len = kchara) :: fname_vol_repart_ctl
 !>        Structure for new partitioning controls
         type(viz_repartition_ctl) :: viz_repart_c
 !
@@ -137,7 +139,8 @@
      &     (id_control, hd_time_step, part_tctl%t_viz_ctl, c_buf)
 !
         call sel_read_ctl_file_vol_repart(id_control, hd_viz_partition, &
-     &      part_tctl%viz_repart_c, c_buf)
+     &      part_tctl%fname_vol_repart_ctl, part_tctl%viz_repart_c,     &
+     &      c_buf)
       end do
       part_tctl%i_mesh_test_ctl = 1
 !
@@ -165,6 +168,9 @@
 !
       use calypso_mpi
       use calypso_mpi_int
+      use calypso_mpi_char
+      use bcast_control_arrays
+      use transfer_to_long_integers
       use bcast_4_platform_ctl
       use bcast_4_time_step_ctl
 !
@@ -177,6 +183,8 @@
       call bcast_control_vol_repart(part_tctl%viz_repart_c)
 !
       call calypso_mpi_bcast_one_int(part_tctl%i_mesh_test_ctl, 0)
+      call calypso_mpi_bcast_character(part_tctl%fname_vol_repart_ctl,  &
+     &                                 cast_long(kchara), 0)
 !
       end subroutine bcast_control_new_partition
 !

@@ -68,9 +68,6 @@
 !
 !>      Structure for new partitioning controls
       type viz_repartition_ctl
-!>         File name for control block
-        character(len = kchara) :: vol_repart_ctl_fname
-!
 !>        Structure for new file controls
         type(platform_data_control) :: viz_plt
 !

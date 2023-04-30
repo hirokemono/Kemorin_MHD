@@ -99,6 +99,8 @@
 !>        Structures of LIC rendering controls
         type(lic_rendering_controls) :: lic_anaglyph_ctls
 !
+!>         File name for repartition control block
+        character(len = kchara) :: fname_vol_repart_ctl
 !>        Structure for new partitioning controls
         type(viz_repartition_ctl) :: repart_ctl
 !
@@ -144,7 +146,9 @@
       subroutine bcast_viz_controls(viz_ctls)
 !
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
+      use transfer_to_long_integers
 !
       type(visualization_controls), intent(inout) :: viz_ctls
 !
@@ -177,6 +181,8 @@
       call bcast_ctl_type_c1(viz_ctls%output_field_file_fmt_ctl)
 !
       call calypso_mpi_bcast_one_int(viz_ctls%i_viz_control, 0)
+      call calypso_mpi_bcast_character(viz_ctls%fname_vol_repart_ctl,   &
+     &                                 cast_long(kchara), 0)
 !
       end subroutine bcast_viz_controls
 !

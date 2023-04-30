@@ -180,10 +180,10 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
-        call sel_read_ctl_file_vol_repart(id_control, hd_viz_partition, &
-     &                                    viz_ctls%repart_ctl, c_buf)
-        call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
-     &                                    viz_ctls%repart_ctl, c_buf)
+      call sel_read_ctl_file_vol_repart(id_control, hd_viz_partition,   &
+     &    viz_ctls%fname_vol_repart_ctl, viz_ctls%repart_ctl, c_buf)
+      call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition,   &
+     &    viz_ctls%fname_vol_repart_ctl, viz_ctls%repart_ctl, c_buf)
 !
         call read_control_vol_repart(id_control, hd_viz_partition,      &
      &                           viz_ctls%repart_ctl, c_buf)

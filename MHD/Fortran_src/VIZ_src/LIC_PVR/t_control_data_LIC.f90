@@ -121,6 +121,9 @@
         type(read_character_item) :: normalization_type_ctl
         type(read_real_item) ::      normalization_value_ctl
 !
+!>         File name for repartition control block
+        character(len = kchara) :: fname_vol_repart_ctl
+!>         structure for repartition
         type(viz_repartition_ctl) :: repart_ctl
 !
 !     2nd level for volume rendering

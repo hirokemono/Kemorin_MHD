@@ -186,7 +186,7 @@
      &      lic_ctl%normalization_value_ctl)
 !
         call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
-     &                                    lic_ctl%repart_ctl, c_buf)
+     &      lic_ctl%fname_vol_repart_ctl, lic_ctl%repart_ctl, c_buf)
 !
         call sel_read_cube_noise_ctl_file                               &
      &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
@@ -250,7 +250,8 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_opacity_component, lic_ctl%opacity_component_ctl)
 !
-      call sel_write_ctl_file_vol_repart(id_control,                    &
+      call sel_write_ctl_file_vol_repart                                &
+     &   (id_control, lic_ctl%fname_vol_repart_ctl,                     &
      &    hd_lic_partition, lic_ctl%repart_ctl, level)
       call write_lic_masking_ctl_array                                  &
      &   (id_control, hd_masking_ctl, lic_ctl, level)

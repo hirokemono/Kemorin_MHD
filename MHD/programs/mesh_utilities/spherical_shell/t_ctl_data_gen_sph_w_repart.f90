@@ -40,6 +40,9 @@
         type(platform_data_control) :: plt
 !>        Control structure for parallel spherical shell
         type(parallel_sph_shell_control) :: psph_ctl
+!
+!>         File name for repartition control block
+        character(len = kchara) :: fname_vol_repart_ctl
 !>        Structure for new partitioning controls
         type(viz_repartition_ctl) :: repart_ctl
 !
@@ -159,8 +162,10 @@
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call sel_read_ctl_file_vol_repart(id_control, hd_viz_partition, &
+     &      gen_SPH_wP_c%fname_vol_repart_ctl,                          &
      &      gen_SPH_wP_c%repart_ctl, c_buf)
         call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
+     &      gen_SPH_wP_c%fname_vol_repart_ctl,                          &
      &      gen_SPH_wP_c%repart_ctl, c_buf)
       end do
       gen_SPH_wP_c%i_viz_control = 1
@@ -172,7 +177,10 @@
       subroutine bcast_ctl_data_gen_sph_w_repart(gen_SPH_wP_c)
 !
       use calypso_mpi_int
+      use calypso_mpi_char
+      use bcast_control_arrays
       use bcast_4_platform_ctl
+      use transfer_to_long_integers
 !
       type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
 !
@@ -183,6 +191,8 @@
 !
       call calypso_mpi_bcast_one_int(gen_SPH_wP_c%i_viz_control,  0)
       call calypso_mpi_bcast_one_int(gen_SPH_wP_c%i_sph_mesh_ctl, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (gen_SPH_wP_c%fname_vol_repart_ctl, cast_long(kchara), 0)
 !
       end subroutine bcast_ctl_data_gen_sph_w_repart
 !
