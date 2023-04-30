@@ -28,10 +28,10 @@
 !!     &                                  new_mul_mats_c)
 !!        type(multi_modeview_ctl), intent(in) :: org_mul_mats_c
 !!        type(multi_modeview_ctl), intent(inout) :: new_mul_mats_c
-!!      subroutine copy_mul_view_trans_ctl                              &
-!!     &         (num_mat, org_mat_ctl, new_mat_ctl)
-!!        type(modeview_ctl), intent(in) :: org_mat_ctl(num_mat)
-!!        type(modeview_ctl), intent(inout) :: new_mat_ctl(num_mat)
+!!       subroutine copy_mul_view_trans_ctl                             &
+!!       &         (num_mat, org_mul_mats_c, new_mul_mats_c)
+!!        type(multi_modeview_ctl), intent(in) :: org_mul_mats_c
+!!        type(multi_modeview_ctl), intent(inout) :: new_mul_mats_c
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array view_transform_ctl
 !!      file  view_transform_ctl  control_view
@@ -62,8 +62,10 @@
       type multi_modeview_ctl
 !>         Number of modelview parameter block
         integer(kind = kint) :: num_modelviews_c = 0
+!>        File name for external control file
+        character(len=kchara), allocatable :: fname_mat_ctl(:)
 !>         Lists of view parameters
-       type(modeview_ctl), allocatable :: matrices(:)
+        type(modeview_ctl), allocatable :: matrices(:)
       end type multi_modeview_ctl
 !
 !  ---------------------------------------------------------------------
@@ -80,7 +82,7 @@
      if(allocated(mul_mats_c%matrices)) then
         call dealloc_mul_view_trans_ctl                                 &
      &     (mul_mats_c%num_modelviews_c, mul_mats_c%matrices)
-        deallocate(mul_mats_c%matrices)
+        deallocate(mul_mats_c%matrices, mul_mats_c%fname_mat_ctl)
       end if
 !
       mul_mats_c%num_modelviews_c = 0
@@ -95,6 +97,7 @@
 !
 !
       allocate(mul_mats_c%matrices(mul_mats_c%num_modelviews_c))
+      allocate(mul_mats_c%fname_mat_ctl(mul_mats_c%num_modelviews_c))
 !
       end subroutine alloc_multi_modeview_ctl
 !
@@ -129,6 +132,7 @@
      &                           ' No. ', mul_mats_c%num_modelviews_c
 !
           call sel_read_ctl_modelview_file(id_control, hd_block,        &
+     &        mul_mats_c%fname_mat_ctl(mul_mats_c%num_modelviews_c),    &
      &        mul_mats_c%matrices(mul_mats_c%num_modelviews_c), c_buf)
         end if
       end do
@@ -157,8 +161,9 @@
         write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i
 !
         write(id_control,'(a1)') '!'
-        call sel_write_ctl_modelview_file(id_control, hd_block,         &
-     &                                   mul_mats_c%matrices(i), level)
+        call sel_write_ctl_modelview_file                               &
+     &     (id_control, mul_mats_c%fname_mat_ctl(i),                    &
+     &      hd_block, mul_mats_c%matrices(i), level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level, hd_block)
 !
@@ -183,12 +188,13 @@
       call calypso_mpi_bcast_one_int(mul_mats_c%num_modelviews_c, 0)
       if(mul_mats_c%num_modelviews_c .gt. 0 .and. my_rank .gt. 0) then
         num = mul_mats_c%num_modelviews_c
-        allocate(mul_mats_c%matrices(num))
+        call alloc_multi_modeview_ctl(mul_mats_c)
       end if
 !
+      call calypso_mpi_bcast_character(mul_mats_c%fname_mat_ctl,        &
+     &    cast_long(kchara*mul_mats_c%num_modelviews_c), 0)
       do i = 1, mul_mats_c%num_modelviews_c
-        call bcast_view_transfer_ctl                                    &
-     &     (mul_mats_c%matrices(i))
+        call bcast_view_transfer_ctl(mul_mats_c%matrices(i))
       end do
 !
       end subroutine bcast_mul_view_trans_ctl
@@ -206,7 +212,7 @@
       tmp_mul_qmats%num_modelviews_c = mul_mats_c%num_modelviews_c
       call alloc_multi_modeview_ctl(tmp_mul_qmats)
       call copy_mul_view_trans_ctl(tmp_mul_qmats%num_modelviews_c,      &
-     &    mul_mats_c%matrices(1), tmp_mul_qmats%matrices)
+     &                             mul_mats_c, tmp_mul_qmats)
 !
       call dealloc_multi_modeview_ctl(mul_mats_c)
 !
@@ -214,7 +220,7 @@
       call alloc_multi_modeview_ctl(mul_mats_c)
 !
       call copy_mul_view_trans_ctl(tmp_mul_qmats%num_modelviews_c,      &
-     &    tmp_mul_qmats%matrices, mul_mats_c%matrices(1))
+     &                             tmp_mul_qmats, mul_mats_c)
 !
       call dealloc_multi_modeview_ctl(tmp_mul_qmats)
 !
@@ -233,26 +239,29 @@
      &     = org_mul_mats_c%num_modelviews_c
       call alloc_multi_modeview_ctl(new_mul_mats_c)
       call copy_mul_view_trans_ctl(new_mul_mats_c%num_modelviews_c,     &
-     &   org_mul_mats_c%matrices, new_mul_mats_c%matrices)
+     &                             org_mul_mats_c, new_mul_mats_c)
 !
       end subroutine dup_mul_view_trans_ctl
 !
 !  ---------------------------------------------------------------------
 !
       subroutine copy_mul_view_trans_ctl                                &
-     &         (num_mat, org_mat_ctl, new_mat_ctl)
+     &         (num_mat, org_mul_mats_c, new_mul_mats_c)
 !
       use bcast_dup_view_transfer_ctl
 !
       integer(kind = kint), intent(in) :: num_mat
-      type(modeview_ctl), intent(in) :: org_mat_ctl(num_mat)
-      type(modeview_ctl), intent(inout) :: new_mat_ctl(num_mat)
+      type(multi_modeview_ctl), intent(in) :: org_mul_mats_c
+      type(multi_modeview_ctl), intent(inout) :: new_mul_mats_c
 !
       integer(kind = kint) :: i
 !
       do i = 1, num_mat
-        call dup_view_transfer_ctl(org_mat_ctl(i), new_mat_ctl(i))
+        call dup_view_transfer_ctl(org_mul_mats_c%matrices(i),          &
+     &                             new_mul_mats_c%matrices(i))
       end do
+      new_mul_mats_c%fname_mat_ctl(1:num_mat)                           &
+     &     = org_mul_mats_c%fname_mat_ctl(1:num_mat)
 !
       end subroutine copy_mul_view_trans_ctl
 !

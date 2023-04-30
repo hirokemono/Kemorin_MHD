@@ -103,6 +103,8 @@
 !
 !>  Structure of control data for PVR rendering
       type pvr_parameter_ctl
+!>     file name for modelview matrix
+        character(len=kchara) :: fname_mat_ctl
 !>    Structure for modelview marices
         type(modeview_ctl) :: mat
 !>    Structure for lighting

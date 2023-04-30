@@ -142,10 +142,12 @@
         if(check_end_flag(c_buf, hd_block)) exit
 !
 !
-        call sel_read_ctl_modelview_file(id_control,                    &
-     &      hd_start_view_control, movie%view_start_ctl, c_buf)
-        call sel_read_ctl_modelview_file(id_control,                    &
-     &      hd_end_view_control, movie%view_end_ctl, c_buf)
+        call sel_read_ctl_modelview_file                                &
+     &     (id_control, hd_start_view_control,                          &
+     &      movie%fname_view_start_ctl, movie%view_start_ctl, c_buf)
+        call sel_read_ctl_modelview_file                                &
+     &     (id_control, hd_end_view_control,                            &
+     &      movie%fname_view_end_ctl, movie%view_end_ctl, c_buf)
 !
 !
         call read_chara_ctl_type(c_buf, hd_movie_format,                &
@@ -222,9 +224,11 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_movie_rot_axis, movie%rotation_axis_ctl)
 !
-      call sel_write_ctl_modelview_file(id_control,                     &
+      call sel_write_ctl_modelview_file                                 &
+     &   (id_control, movie%fname_view_start_ctl,                       &
      &    hd_start_view_control, movie%view_start_ctl, level)
-      call sel_write_ctl_modelview_file(id_control,                     &
+      call sel_write_ctl_modelview_file                                 &
+     &   (id_control, movie%fname_view_end_ctl,                         &
      &    hd_end_view_control, movie%view_end_ctl, level)
 !
       call write_mul_view_transfer_ctl                                  &

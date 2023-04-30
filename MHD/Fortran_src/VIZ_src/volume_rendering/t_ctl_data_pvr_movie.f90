@@ -96,9 +96,9 @@
         type(read_real2_item) :: LIC_kernel_peak_range_ctl
 !
 !>        file name for start modelview matrix
-        character(len=kchara) :: start_view_file_ctl
+        character(len=kchara) :: fname_view_start_ctl
 !>        file name for end modelview matrix
-        character(len=kchara) :: end_view_file_ctl
+        character(len=kchara) :: fname_view_end_ctl
 !>    Structure for start modelview marices
         type(modeview_ctl) :: view_start_ctl
 !>    Structure for end modelview marices
@@ -149,8 +149,8 @@
       call copy_real2_ctl(org_movie%LIC_kernel_peak_range_ctl,          &
      &                    new_movie%LIC_kernel_peak_range_ctl)
 !
-      new_movie%start_view_file_ctl = org_movie%start_view_file_ctl
-      new_movie%end_view_file_ctl =   org_movie%end_view_file_ctl
+      new_movie%fname_view_start_ctl = org_movie%fname_view_start_ctl
+      new_movie%fname_view_end_ctl =   org_movie%fname_view_end_ctl
       call dup_view_transfer_ctl(org_movie%view_start_ctl,              &
      &    new_movie%view_start_ctl)
       call dup_view_transfer_ctl(org_movie%view_end_ctl,                &
@@ -215,9 +215,9 @@
       call bcast_ctl_type_r2(movie%apature_range_ctl)
       call bcast_ctl_type_r2(movie%LIC_kernel_peak_range_ctl)
 !
-      call calypso_mpi_bcast_character(movie%start_view_file_ctl,       &
+      call calypso_mpi_bcast_character(movie%fname_view_start_ctl,      &
      &                                 cast_long(kchara), 0)
-      call calypso_mpi_bcast_character(movie%end_view_file_ctl,         &
+      call calypso_mpi_bcast_character(movie%fname_view_end_ctl,        &
      &                                 cast_long(kchara), 0)
       call bcast_view_transfer_ctl(movie%view_start_ctl)
       call bcast_view_transfer_ctl(movie%view_end_ctl)

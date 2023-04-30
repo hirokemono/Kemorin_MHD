@@ -70,8 +70,7 @@
           call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i))
         end do
 !
-        deallocate(pvr_ctls%pvr_ctl_type)
-        deallocate(pvr_ctls%fname_pvr_ctl)
+        deallocate(pvr_ctls%pvr_ctl_type, pvr_ctls%fname_pvr_ctl)
       end if
       pvr_ctls%num_pvr_ctl = 0
 !

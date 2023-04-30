@@ -34,20 +34,15 @@
       subroutine bcast_view_transfer_ctl(mat)
 !
       use calypso_mpi_int
-      use calypso_mpi_char
       use bcast_control_arrays
       use t_ctl_data_4_screen_pixel
       use t_ctl_data_4_projection
       use t_ctl_data_4_streo_view
-      use transfer_to_long_integers
 !
       type(modeview_ctl), intent(inout) :: mat
 !
 !
       call calypso_mpi_bcast_one_int(mat%i_view_transform, 0)
-!
-      call calypso_mpi_bcast_character(mat%mat_ctl_fname,               &
-     &                                 cast_long(kchara), 0)
 !
       call bcast_ctl_array_cr(mat%lookpoint_ctl)
       call bcast_ctl_array_cr(mat%viewpoint_ctl)
@@ -82,7 +77,6 @@
 !
 !
       new_mat%i_view_transform = org_mat%i_view_transform
-      new_mat%mat_ctl_fname =    org_mat%mat_ctl_fname
 !
       call dup_control_array_c_r(org_mat%lookpoint_ctl,                 &
      &                           new_mat%lookpoint_ctl)

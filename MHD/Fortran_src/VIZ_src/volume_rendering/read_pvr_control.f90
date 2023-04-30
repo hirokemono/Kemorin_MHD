@@ -197,7 +197,7 @@
 !
 !
         call sel_read_ctl_modelview_file(id_control, hd_view_transform, &
-     &        pvr_ctl%mat, c_buf)
+     &      pvr_ctl%fname_mat_ctl, pvr_ctl%mat, c_buf)
         call sel_read_ctl_pvr_colormap_file                             &
      &     (id_control, hd_pvr_colordef, pvr_ctl%cmap_cbar_c, c_buf)
 !

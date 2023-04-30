@@ -200,7 +200,7 @@
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call sel_read_ctl_modelview_file(id_control, hd_view_transform, &
-     &                                   pvr%mat, c_buf)
+     &      pvr%fname_mat_ctl, pvr%mat, c_buf)
         call sel_read_ctl_pvr_colormap_file                             &
      &     (id_control, hd_lic_colordef, pvr%cmap_cbar_c, c_buf)
 !
