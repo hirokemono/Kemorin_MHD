@@ -1,5 +1,5 @@
-!>@file   read_control_data_sections.f90
-!!@brief  module read_control_data_sections
+!>@file   read_ctl_data_sections.f90
+!!@brief  module read_ctl_data_sections
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -37,7 +37,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_control_data_sections
+      module read_ctl_data_sections
 !
       use m_precision
 !
@@ -149,6 +149,8 @@
 !
       do
         call load_one_line_from_control(id_control, c_buf1)
+        call s_read_psf_control_data(id_control, hd_block,              &
+     &      psf_ctl_struct, c_buf1)
         call s_read_psf_control_data(id_control, hd_section_ctl,        &
      &      psf_ctl_struct, c_buf1)
         call s_read_psf_control_data(id_control, hd_psf_ctl,            &
@@ -177,6 +179,7 @@
       write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, psf_ctls%num_psf_ctl
+          write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i
           call sel_write_control_4_psf_file(id_control, hd_block,       &
      &        psf_ctls%psf_ctl_struct(i), level)
       end do
@@ -241,4 +244,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_control_data_sections
+      end module read_ctl_data_sections

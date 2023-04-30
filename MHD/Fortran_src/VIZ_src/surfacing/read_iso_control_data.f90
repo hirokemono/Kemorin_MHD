@@ -16,7 +16,7 @@
 !!     &         (id_control, hd_block, iso_c, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(iso_ctl), intent(inout) :: iso_c
+!!        type(iso_ctl), intent(in) :: iso_c
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      integer(kind = kint) function num_label_iso_ctl()
@@ -162,7 +162,7 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(iso_ctl), intent(inout) :: iso_c
+      type(iso_ctl), intent(in) :: iso_c
       integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: maxlen = 0

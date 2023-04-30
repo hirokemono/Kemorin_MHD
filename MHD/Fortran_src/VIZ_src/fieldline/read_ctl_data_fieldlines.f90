@@ -1,5 +1,5 @@
-!>@file   read_control_data_flines.f90
-!!@brief  module read_control_data_flines
+!>@file   read_ctl_data_fieldlines.f90
+!!@brief  module read_ctl_data_fieldlines
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -36,7 +36,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_control_data_flines
+      module read_ctl_data_fieldlines
 !
       use m_precision
       use m_constants
@@ -230,4 +230,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_control_data_flines
+      end module read_ctl_data_fieldlines

@@ -87,6 +87,9 @@
       implicit  none
 !
       type iso_ctl
+!>        file name for isosurface control
+        character(len = kchara) :: iso_ctl_fname
+!
 !>        Structure of isosurface define control
         type(iso_define_ctl) :: iso_def_c
 !>        Structure of fields on isosurface control
@@ -148,6 +151,7 @@
      &                    new_iso_c%iso_output_type_ctl)
 !
       new_iso_c%i_iso_ctl =       org_iso_c%i_iso_ctl
+      new_iso_c%iso_ctl_fname =   org_iso_c%iso_ctl_fname
 !
       call dup_iso_define_control                                       &
      &   (org_iso_c%iso_def_c, new_iso_c%iso_def_c)
@@ -162,12 +166,17 @@
       subroutine bcast_iso_control_data(iso_c)
 !
       use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
+      use transfer_to_long_integers
 !
       type(iso_ctl), intent(inout) :: iso_c
 !
 !
       call calypso_mpi_bcast_one_int(iso_c%i_iso_ctl, 0)
+      call calypso_mpi_bcast_character(iso_c%iso_ctl_fname,             &
+     &                                 cast_long(kchara), 0)
+!
 !
       call bcast_ctl_type_c1(iso_c%iso_file_head_ctl)
       call bcast_ctl_type_c1(iso_c%iso_file_head_ctl)
