@@ -8,7 +8,7 @@
 !!@verbatim
 !!      subroutine read_files_4_iso_ctl                                 &
 !!     &         (id_control, hd_block, iso_ctls, c_buf)
-!!      subroutine sel_read_control_4_psf_file                          &
+!!      subroutine sel_read_control_4_iso_file                          &
 !!     &         (id_control, hd_block, iso_ctl_struct, c_buf)
 !!      subroutine read_control_4_iso_file                              &
 !!     &         (id_control, hd_block, iso_ctl_struct)
@@ -86,7 +86,7 @@
           call append_new_isosurface_control(iso_ctls)
           write(*,'(3a,i4)', ADVANCE='NO') 'Control for',               &
      &        trim(hd_block), ' No. ',  iso_ctls%num_iso_ctl
-          call sel_read_control_4_psf_file(id_control, hd_block,        &
+          call sel_read_control_4_iso_file(id_control, hd_block,        &
      &        iso_ctls%iso_ctl_struct(iso_ctls%num_iso_ctl), c_buf)
         end if
       end do
@@ -95,7 +95,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sel_read_control_4_psf_file                            &
+      subroutine sel_read_control_4_iso_file                            &
      &         (id_control, hd_block, iso_ctl_struct, c_buf)
 !
       use t_read_control_elements
@@ -122,7 +122,7 @@
      &                               iso_ctl_struct, c_buf)
       end if
 !
-      end subroutine sel_read_control_4_psf_file
+      end subroutine sel_read_control_4_iso_file
 !
 !   --------------------------------------------------------------------
 !

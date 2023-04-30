@@ -91,7 +91,7 @@
       integer(c_int) function num_ctl_label_LIC_f()                     &
      &              bind(c, name="num_ctl_label_LIC_f")
 !
-      use read_lic_control_data
+      use ctl_data_LIC_IO
 !
       num_ctl_label_LIC_f = num_ctl_label_LIC()
 !
@@ -102,7 +102,7 @@
       subroutine set_ctl_label_LIC_f(labels)                            &
      &          bind(c, name="set_ctl_label_LIC_f")
 !
-      use read_lic_control_data
+      use ctl_data_LIC_IO
 !
       character(C_CHAR), intent(inout) :: labels(*)
 !

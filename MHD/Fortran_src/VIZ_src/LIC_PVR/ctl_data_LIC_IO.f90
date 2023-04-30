@@ -1,5 +1,5 @@
-!>@file   read_lic_control_data.f90
-!!@brief  module read_lic_control_data
+!>@file   ctl_data_LIC_IO.f90
+!!@brief  module ctl_data_LIC_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in 2006
@@ -67,7 +67,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_lic_control_data
+      module ctl_data_LIC_IO
 !
       use m_precision
       use calypso_mpi
@@ -132,6 +132,8 @@
       subroutine s_read_lic_control_data                                &
      &         (id_control, hd_lic_ctl, lic_ctl, c_buf)
 !
+      use ctl_file_LIC_kernel_IO
+      use ctl_file_LIC_noise_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -178,9 +180,9 @@
         call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
      &                                    lic_ctl%repart_ctl, c_buf)
 !
-        call read_cube_noise_control_data                               &
+        call sel_read_cube_noise_ctl_file                               &
      &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
-        call read_kernel_control_data                                   &
+        call sel_read_LIC_kernel_ctl_file                               &
      &     (id_control, hd_kernel, lic_ctl%kernel_ctl, c_buf)
 !
         call read_lic_masking_ctl_array                                 &
@@ -189,6 +191,71 @@
       lic_ctl%i_lic_control = 1
 !
       end subroutine s_read_lic_control_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_lic_control_data                                 &
+     &         (id_control, hd_lic_ctl, lic_ctl, c_buf)
+!
+      use ctl_file_LIC_kernel_IO
+      use ctl_file_LIC_noise_IO
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_lic_ctl
+!
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if(check_begin_flag(c_buf, hd_lic_ctl) .eqv. .FALSE.) return
+      if(lic_ctl%i_lic_control .gt. 0) return
+!
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_lic_ctl)) exit
+!
+        call read_chara_ctl_type(c_buf, hd_LIC_field,                   &
+     &                           lic_ctl%LIC_field_ctl)
+        call read_chara_ctl_type(c_buf, hd_sub_elapse_dump,             &
+     &                           lic_ctl%subdomain_elapsed_dump_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_color_field, lic_ctl%color_field_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_color_component, lic_ctl%color_component_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_opacity_field, lic_ctl%opacity_field_ctl)
+        call read_chara_ctl_type(c_buf, hd_opacity_component,           &
+     &      lic_ctl%opacity_component_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf, hd_step_size, lic_ctl%step_size_ctl)
+!
+        call read_chara_ctl_type(c_buf, hd_normalization_type,          &
+     &      lic_ctl%normalization_type_ctl)
+        call read_real_ctl_type(c_buf, hd_normalization_value,          &
+     &      lic_ctl%normalization_value_ctl)
+!
+        call read_control_vol_repart(id_control, hd_lic_partition,      &
+     &                               lic_ctl%repart_ctl, c_buf)
+!
+        call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
+     &                                    lic_ctl%repart_ctl, c_buf)
+!
+        call sel_read_cube_noise_ctl_file                               &
+     &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
+        call sel_read_LIC_kernel_ctl_file                               &
+     &     (id_control, hd_kernel, lic_ctl%kernel_ctl, c_buf)
+!
+        call read_lic_masking_ctl_array                                 &
+     &     (id_control, hd_masking_ctl, lic_ctl, c_buf)
+      end do
+      lic_ctl%i_lic_control = 1
+!
+      end subroutine write_lic_control_data
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -229,4 +296,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module read_lic_control_data
+      end module ctl_data_LIC_IO

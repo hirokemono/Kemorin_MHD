@@ -182,7 +182,7 @@
 !
       type(interpolate_table), save :: itp_nod_tbl_IO
 !
-      integer(kind = kint) :: icount_error, icou_error_gl, ierr
+      integer(kind = kint) :: ierr
 !
 !
       if(part_p1%repart_p%trans_tbl_file%iflag_format                   &

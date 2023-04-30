@@ -13,8 +13,16 @@
 !!
 !!      subroutine read_lic_masking_ctl_array                           &
 !!     &         (id_control, hd_block, lic_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_block
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_lic_masking_ctl_array                          &
+!!     &         (id_control, hd_block, lic_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_block
+!!        type(lic_parameter_ctl), intent(in) :: lic_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine add_fields_4_lic_to_fld_ctl(lic_ctl, field_ctl)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
@@ -190,6 +198,32 @@
       end do
 !
       end subroutine read_lic_masking_ctl_array
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_lic_masking_ctl_array                            &
+     &         (id_control, hd_block, lic_ctl, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_block
+      type(lic_parameter_ctl), intent(in) :: lic_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: i
+!
+!
+      write(id_control,'(a1)') '!'
+      level = write_array_flag_for_ctl(id_control, level, hd_block)
+      do i = 1, lic_ctl%num_masking_ctl
+        call write_masking_ctl_data(id_control, hd_block,               &
+     &      lic_ctl%mask_ctl(i), level)
+      end do
+      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_lic_masking_ctl_array
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -115,6 +115,7 @@
 !
       use t_read_control_elements
       use read_ctl_data_4_platforms
+      use ctl_file_volume_repart_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control

@@ -8,8 +8,18 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!      subroutine read_cube_noise_control_file(id_control, file_name,  &
-!!     &          header, noise_ctl)
+!!      subroutine read_cube_noise_control_data                         &
+!!     &         (id_control, hd_block, noise_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_block
+!!        type(cube_noise_ctl), intent(inout) :: noise_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_cube_noise_control_data                        &
+!!     &         (id_control, hd_block, noise_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_block
+!!        type(cube_noise_ctl), intent(in) :: noise_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine read_cube_noise_control_data                         &
 !!     &         (id_control, hd_lic_ctl, noise_ctl, c_buf)
@@ -27,7 +37,7 @@
 !!  begin cube_noise_ctl
 !!    noise_type             'external_file'
 !!    noise_file_prefix      'noise/noise_64'
-!!    hd_noise_file_fmt      'gzip'
+!!    noise_file_format      'gzip'
 !!
 !!    noise_resolution          256
 !!    noise_step_size            20
@@ -54,6 +64,9 @@
 !
 !
       type cube_noise_ctl
+!>         File name for control block
+        character(len = kchara) :: LIC_noise_ctl_fname
+!
 !>         Noise type name
         type(read_character_item) :: noise_type_ctl
 !>         prefix of noise file
@@ -101,50 +114,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_cube_noise_control_file(id_control, file_name,    &
-     &          header, noise_ctl)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: file_name
-      character(len = kchara), intent(in) :: header
-      type(cube_noise_ctl), intent(inout) :: noise_ctl
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      if(file_name .eq. 'NO_FILE') return
-!
-      write(*,*) 'LIC noise control file: ', trim(file_name)
-!
-      open(id_control, file=file_name, status='old')
-      do
-        call load_one_line_from_control(id_control, c_buf1)
-        call read_cube_noise_control_data                               &
-     &     (id_control, header, noise_ctl, c_buf1)
-        if(noise_ctl%i_cube_noise_control .gt. 0) exit
-      end do
-      close(id_control)
-!
-      end subroutine read_cube_noise_control_file
-!
-!  ---------------------------------------------------------------------
-!
       subroutine read_cube_noise_control_data                           &
-     &         (id_control, header, noise_ctl, c_buf)
+     &         (id_control, hd_block, noise_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: header
+      character(len = kchara), intent(in) :: hd_block
 !
       type(cube_noise_ctl), intent(inout) :: noise_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, header) .eqv. .FALSE.) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(noise_ctl%i_cube_noise_control .gt. 0) return
 !
       do
         call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, header)) exit
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_noise_type, noise_ctl%noise_type_ctl)
@@ -167,6 +152,58 @@
 !
       end subroutine read_cube_noise_control_data
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine write_cube_noise_control_data                          &
+     &         (id_control, hd_block, noise_ctl, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_block
+      type(cube_noise_ctl), intent(in) :: noise_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(noise_ctl%i_cube_noise_control .le. 0) return
+!
+      maxlen = len_trim(hd_noise_type)
+      maxlen = max(maxlen, len_trim(hd_noise_file_head))
+      maxlen = max(maxlen, len_trim(hd_noise_file_fmt))
+      maxlen = max(maxlen, len_trim(hd_noise_grid_size))
+      maxlen = max(maxlen, len_trim(hd_noise_stepping))
+      maxlen = max(maxlen, len_trim(hd_noise_cube_size))
+      maxlen = max(maxlen, len_trim(hd_noise_delta_x))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_noise_type, noise_ctl%noise_type_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_noise_file_head, noise_ctl%noise_file_name_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_noise_file_fmt, noise_ctl%noise_file_format_ctl)
+!
+      write(id_control,'(a1)') '!'
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_noise_grid_size, noise_ctl%noise_resolution_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_noise_stepping, noise_ctl%noise_stepping_ctl)
+!
+      write(id_control,'(a1)') '!'
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_noise_cube_size, noise_ctl%noise_cube_size_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_noise_delta_x, noise_ctl%noise_deltax_ctl)
+      level = write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_cube_noise_control_data
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine reset_cube_noise_control_data(noise_ctl)

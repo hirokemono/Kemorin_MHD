@@ -178,7 +178,7 @@
       use t_ctl_data_pvr_movie
       use t_ctl_data_quilt_image
       use t_ctl_data_pvr_area
-      use read_lic_control_data
+      use ctl_data_LIC_IO
       use read_control_pvr_modelview
       use read_ctl_data_pvr_colorbar
       use read_ctl_data_pvr_colormap
