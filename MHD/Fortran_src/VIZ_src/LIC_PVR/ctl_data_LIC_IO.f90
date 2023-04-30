@@ -9,9 +9,17 @@
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      subroutine s_read_lic_control_data                              &
-!!     &         (id_control, hd_lic_ctl, lic_ctl, c_buf)
+!!     &         (id_control, hd_block, lic_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_block
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_lic_control_data                               &
+!!     &         (id_control, hd_block, lic_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_block
+!!        type(lic_parameter_ctl), intent(in) :: lic_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !!      integer(kind = kint) function num_ctl_label_LIC()
 !!      subroutine set_ctl_label_LIC(names)
@@ -88,18 +96,23 @@
 !     3rd level for LIC_ctl
 !
       character(len=kchara), parameter, private                         &
-     &              :: hd_LIC_field =       'LIC_field'
-      character(len=kchara), parameter, private                         &
      &              :: hd_sub_elapse_dump = 'elapsed_time_monitor'
+!
+      character(len=kchara), parameter, private                         &
+     &              :: hd_LIC_field =       'LIC_field'
 !
       character(len=kchara), parameter, private                         &
      &              :: hd_color_field =     'color_field'
       character(len=kchara), parameter, private                         &
      &              :: hd_color_component = 'color_component'
+!
       character(len=kchara), parameter, private                         &
      &              :: hd_opacity_field =   'opacity_field'
       character(len=kchara), parameter, private                         &
      &              :: hd_opacity_component = 'opacity_component'
+!
+      character(len=kchara), parameter, private                         &
+     &             :: hd_lic_partition = 'LIC_repartition_ctl'
 !
       character(len=kchara), parameter, private                         &
      &              :: hd_masking_ctl = 'masking_control'
@@ -118,9 +131,6 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_normalization_value = 'normalization_value'
 !
-      character(len=kchara), parameter, private                         &
-     &             :: hd_lic_partition = 'LIC_repartition_ctl'
-!
       integer(kind = kint), parameter, private :: n_label_LIC = 14
 !
 !  ---------------------------------------------------------------------
@@ -130,25 +140,26 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_read_lic_control_data                                &
-     &         (id_control, hd_lic_ctl, lic_ctl, c_buf)
+     &         (id_control, hd_block, lic_ctl, c_buf)
 !
       use ctl_file_LIC_kernel_IO
       use ctl_file_LIC_noise_IO
+      use ctl_file_volume_repart_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_lic_ctl
+      character(len = kchara), intent(in) :: hd_block
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      if(check_begin_flag(c_buf, hd_lic_ctl) .eqv. .FALSE.) return
+      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(lic_ctl%i_lic_control .gt. 0) return
 !
       do
         call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_lic_ctl)) exit
+        if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_LIC_field,                   &
      &                           lic_ctl%LIC_field_ctl)
@@ -173,9 +184,6 @@
      &      lic_ctl%normalization_type_ctl)
         call read_real_ctl_type(c_buf, hd_normalization_value,          &
      &      lic_ctl%normalization_value_ctl)
-!
-        call read_control_vol_repart(id_control, hd_lic_partition,      &
-     &                               lic_ctl%repart_ctl, c_buf)
 !
         call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
      &                                    lic_ctl%repart_ctl, c_buf)
@@ -195,65 +203,75 @@
 !  ---------------------------------------------------------------------
 !
       subroutine write_lic_control_data                                 &
-     &         (id_control, hd_lic_ctl, lic_ctl, c_buf)
+     &         (id_control, hd_block, lic_ctl, level)
 !
       use ctl_file_LIC_kernel_IO
       use ctl_file_LIC_noise_IO
+      use ctl_file_volume_repart_IO
+      use write_control_elements
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_lic_ctl
+      character(len = kchara), intent(in) :: hd_block
+      type(lic_parameter_ctl), intent(in) :: lic_ctl
 !
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
 !
 !
-      if(check_begin_flag(c_buf, hd_lic_ctl) .eqv. .FALSE.) return
-      if(lic_ctl%i_lic_control .gt. 0) return
+      if(lic_ctl%i_lic_control .le. 0) return
 !
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_lic_ctl)) exit
+      maxlen = len_trim(hd_sub_elapse_dump)
+      maxlen = max(maxlen, len_trim(hd_LIC_field))
+      maxlen = max(maxlen, len_trim(hd_color_component))
+      maxlen = max(maxlen, len_trim(hd_opacity_field))
+      maxlen = max(maxlen, len_trim(hd_opacity_component))
+      maxlen = max(maxlen, len_trim(hd_vr_sample_mode))
+      maxlen = max(maxlen, len_trim(hd_step_size))
+      maxlen = max(maxlen, len_trim(hd_normalization_type))
+      maxlen = max(maxlen, len_trim(hd_normalization_value))
 !
-        call read_chara_ctl_type(c_buf, hd_LIC_field,                   &
-     &                           lic_ctl%LIC_field_ctl)
-        call read_chara_ctl_type(c_buf, hd_sub_elapse_dump,             &
-     &                           lic_ctl%subdomain_elapsed_dump_ctl)
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_color_field, lic_ctl%color_field_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_color_component, lic_ctl%color_component_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_opacity_field, lic_ctl%opacity_field_ctl)
-        call read_chara_ctl_type(c_buf, hd_opacity_component,           &
-     &      lic_ctl%opacity_component_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_sub_elapse_dump, lic_ctl%subdomain_elapsed_dump_ctl)
 !
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
-        call read_real_ctl_type                                         &
-     &     (c_buf, hd_step_size, lic_ctl%step_size_ctl)
+      write(id_control,'(a1)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_LIC_field, lic_ctl%LIC_field_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_color_field, lic_ctl%color_field_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_color_component, lic_ctl%color_component_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_opacity_field, lic_ctl%opacity_field_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_opacity_component, lic_ctl%opacity_component_ctl)
 !
-        call read_chara_ctl_type(c_buf, hd_normalization_type,          &
-     &      lic_ctl%normalization_type_ctl)
-        call read_real_ctl_type(c_buf, hd_normalization_value,          &
-     &      lic_ctl%normalization_value_ctl)
+      call sel_write_ctl_file_vol_repart(id_control,                    &
+     &    hd_lic_partition, lic_ctl%repart_ctl, level)
+      call write_lic_masking_ctl_array                                  &
+     &   (id_control, hd_masking_ctl, lic_ctl, level)
+      call sel_write_cube_noise_ctl_file                                &
+     &   (id_control, hd_cube_noise, lic_ctl%noise_ctl, level)
+      call sel_write_LIC_kernel_ctl_file                                &
+     &   (id_control, hd_kernel, lic_ctl%kernel_ctl, level)
 !
-        call read_control_vol_repart(id_control, hd_lic_partition,      &
-     &                               lic_ctl%repart_ctl, c_buf)
+      write(id_control,'(a1)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_step_size, lic_ctl%step_size_ctl)
 !
-        call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
-     &                                    lic_ctl%repart_ctl, c_buf)
+      write(id_control,'(a1)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_normalization_type, lic_ctl%normalization_type_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_normalization_value, lic_ctl%normalization_value_ctl)
 !
-        call sel_read_cube_noise_ctl_file                               &
-     &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
-        call sel_read_LIC_kernel_ctl_file                               &
-     &     (id_control, hd_kernel, lic_ctl%kernel_ctl, c_buf)
-!
-        call read_lic_masking_ctl_array                                 &
-     &     (id_control, hd_masking_ctl, lic_ctl, c_buf)
-      end do
-      lic_ctl%i_lic_control = 1
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_lic_control_data
 !
