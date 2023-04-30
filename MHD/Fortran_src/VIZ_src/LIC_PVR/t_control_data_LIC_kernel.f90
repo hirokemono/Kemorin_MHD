@@ -65,9 +65,6 @@
 !
 !
       type lic_kernel_ctl
-!>         File name for control block
-        character(len = kchara) :: LIC_kernel_ctl_fname
-!
 !>         Kernel type name
         type(read_character_item) :: kernel_type_ctl
 !

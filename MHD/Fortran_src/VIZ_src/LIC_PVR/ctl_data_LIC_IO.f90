@@ -188,10 +188,10 @@
         call sel_read_ctl_file_vol_repart(id_control, hd_lic_partition, &
      &      lic_ctl%fname_vol_repart_ctl, lic_ctl%repart_ctl, c_buf)
 !
-        call sel_read_cube_noise_ctl_file                               &
-     &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
-        call sel_read_LIC_kernel_ctl_file                               &
-     &     (id_control, hd_kernel, lic_ctl%kernel_ctl, c_buf)
+        call sel_read_cube_noise_ctl_file(id_control, hd_cube_noise,    &
+     &      lic_ctl%fname_LIC_noise_ctl, lic_ctl%noise_ctl, c_buf)
+        call sel_read_LIC_kernel_ctl_file(id_control, hd_kernel,        &
+     &      lic_ctl%fname_LIC_kernel_ctl, lic_ctl%kernel_ctl, c_buf)
 !
         call read_lic_masking_ctl_array                                 &
      &     (id_control, hd_masking_ctl, lic_ctl, c_buf)
@@ -256,9 +256,11 @@
       call write_lic_masking_ctl_array                                  &
      &   (id_control, hd_masking_ctl, lic_ctl, level)
       call sel_write_cube_noise_ctl_file                                &
-     &   (id_control, hd_cube_noise, lic_ctl%noise_ctl, level)
+     &   (id_control, lic_ctl%fname_LIC_noise_ctl,                      &
+     &    hd_cube_noise, lic_ctl%noise_ctl, level)
       call sel_write_LIC_kernel_ctl_file                                &
-     &   (id_control, hd_kernel, lic_ctl%kernel_ctl, level)
+     &   (id_control, lic_ctl%fname_LIC_kernel_ctl,                     &
+     &    hd_kernel, lic_ctl%kernel_ctl, level)
 !
       write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &

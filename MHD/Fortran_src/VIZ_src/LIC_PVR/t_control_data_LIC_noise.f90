@@ -64,9 +64,6 @@
 !
 !
       type cube_noise_ctl
-!>         File name for control block
-        character(len = kchara) :: LIC_noise_ctl_fname
-!
 !>         Noise type name
         type(read_character_item) :: noise_type_ctl
 !>         prefix of noise file

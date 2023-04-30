@@ -110,8 +110,13 @@
         integer(kind = kint) :: num_masking_ctl = 0
         type(masking_by_field_ctl), allocatable :: mask_ctl(:)
 !
+!>         File name for noise control block
+        character(len = kchara) :: fname_LIC_noise_ctl
 !>        structure of noise control
         type(cube_noise_ctl) :: noise_ctl
+!
+!>        File name for kernel control block
+        character(len = kchara) :: fname_LIC_kernel_ctl
 !>        structure of kernel control
         type(lic_kernel_ctl) :: kernel_ctl
 !

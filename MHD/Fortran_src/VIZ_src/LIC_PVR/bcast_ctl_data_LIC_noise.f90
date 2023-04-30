@@ -53,16 +53,12 @@
       subroutine bcast_cube_noise_control_data(noise_ctl)
 !
       use calypso_mpi_int
-      use calypso_mpi_char
       use bcast_control_arrays
-      use transfer_to_long_integers
 !
       type(cube_noise_ctl), intent(inout) :: noise_ctl
 !
 !
       call calypso_mpi_bcast_one_int(noise_ctl%i_cube_noise_control, 0)
-      call calypso_mpi_bcast_character(noise_ctl%LIC_noise_ctl_fname,   &
-     &                                 cast_long(kchara), 0)
 !
       call bcast_ctl_type_c1(noise_ctl%noise_type_ctl)
       call bcast_ctl_type_c1(noise_ctl%noise_file_name_ctl)
@@ -86,8 +82,6 @@
 !
       new_noise_c%i_cube_noise_control                                  &
      &     = org_noise_c%i_cube_noise_control
-      new_noise_c%LIC_noise_ctl_fname                                   &
-     &     = org_noise_c%LIC_noise_ctl_fname
 !
       call copy_chara_ctl(org_noise_c%noise_type_ctl,                   &
      &                    new_noise_c%noise_type_ctl)

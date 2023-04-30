@@ -8,18 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine sel_read_cube_noise_ctl_file                         &
-!!     &         (id_control, hd_block, noise_ctl, c_buf)
-!!      subroutine read_cube_noise_control_file(id_control, hd_block,   &
-!!     &                                        noise_ctl)
+!!     &         (id_control, hd_block, file_name, noise_ctl, c_buf)
+!!      subroutine read_cube_noise_control_file(id_control, file_name,  &
+!!     &                                        hd_block, noise_ctl)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
+!!        character(len = kchara), intent(inout) :: file_name
 !!        type(cube_noise_ctl), intent(inout) :: noise_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine sel_write_cube_noise_ctl_file                        &
-!!     &         (id_control, hd_block, noise_ctl, level)
-!!      subroutine write_cube_noise_control_file(id_control, hd_block,  &
-!!     &                                         noise_ctl)
+!!     &         (id_control, file_name, hd_block, noise_ctl, level)
+!!      subroutine write_cube_noise_control_file(id_control, file_name, &
+!!     &                                         hd_block, noise_ctl)
 !!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: file_name
 !!        character(len = kchara), intent(in) :: hd_block
 !!        type(cube_noise_ctl), intent(in) :: noise_ctl
 !!        integer(kind = kint), intent(inout) :: level
@@ -66,7 +68,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_read_cube_noise_ctl_file                           &
-     &         (id_control, hd_block, noise_ctl, c_buf)
+     &         (id_control, hd_block, file_name, noise_ctl, c_buf)
 !
       use t_read_control_elements
       use read_iso_control_data
@@ -74,18 +76,19 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
+      character(len = kchara), intent(inout) :: file_name
       type(cube_noise_ctl), intent(inout) :: noise_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
-        noise_ctl%LIC_noise_ctl_fname = third_word(c_buf)
+        file_name = third_word(c_buf)
 !
         write(*,'(a)', ADVANCE='NO') ' is read file from ... '
-        call read_cube_noise_control_file((id_control+2), hd_block,     &
-     &                                    noise_ctl)
+        call read_cube_noise_control_file((id_control+2), file_name,    &
+     &                                    hd_block, noise_ctl)
       else if(check_begin_flag(c_buf, hd_block)) then
-        noise_ctl%LIC_noise_ctl_fname = 'NO_FILE'
+        file_name = 'NO_FILE'
 !
         write(*,*) ' is included'
         call read_cube_noise_control_data(id_control, hd_block,         &
@@ -96,23 +99,22 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_cube_noise_control_file(id_control, hd_block,     &
-     &                                        noise_ctl)
+      subroutine read_cube_noise_control_file(id_control, file_name,    &
+     &                                        hd_block, noise_ctl)
 !
       integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: file_name
       character(len = kchara), intent(in) :: hd_block
       type(cube_noise_ctl), intent(inout) :: noise_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(noise_ctl%LIC_noise_ctl_fname .eq. 'NO_FILE') return
+      if(file_name .eq. 'NO_FILE') return
 !
-      write(*,*) 'LIC noise control file: ',                            &
-     &          trim(noise_ctl%LIC_noise_ctl_fname)
+      write(*,*) 'LIC noise control file: ', trim(file_name)
 !
-      open(id_control, file=noise_ctl%LIC_noise_ctl_fname,              &
-     &     status='old')
+      open(id_control, file=file_name, status='old')
       do
         call load_one_line_from_control(id_control, c_buf1)
         call read_cube_noise_control_data                               &
@@ -127,45 +129,46 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_write_cube_noise_ctl_file                          &
-     &         (id_control, hd_block, noise_ctl, level)
+     &         (id_control, file_name, hd_block, noise_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: file_name
       character(len = kchara), intent(in) :: hd_block
       type(cube_noise_ctl), intent(in) :: noise_ctl
 !
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(cmp_no_case(noise_ctl%LIC_noise_ctl_fname, 'NO_FILE')) then
+      if(cmp_no_case(file_name, 'NO_FILE')) then
         call write_cube_noise_control_data(id_control, hd_block,        &
      &                                     noise_ctl, level)
       else
         write(*,'(a)', ADVANCE='NO') ' is write file to ... '
         call write_file_name_for_ctl_line(id_control, level,            &
-     &      hd_block, noise_ctl%LIC_noise_ctl_fname)
-        call write_cube_noise_control_file((id_control+2), hd_block,    &
-     &                                     noise_ctl)
+     &                                    hd_block, file_name)
+        call write_cube_noise_control_file((id_control+2), file_name,   &
+     &                                     hd_block, noise_ctl)
       end if
 !
       end subroutine sel_write_cube_noise_ctl_file
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_cube_noise_control_file(id_control, hd_block,    &
-     &                                         noise_ctl)
+      subroutine write_cube_noise_control_file(id_control, file_name,   &
+     &                                         hd_block, noise_ctl)
 !
       integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: file_name
       character(len = kchara), intent(in) :: hd_block
       type(cube_noise_ctl), intent(in) :: noise_ctl
 !
       integer(kind = kint) :: level
 !
       level = 0
-      write(*,*) 'Write LIC noise control file: ',                      &
-     &          trim(noise_ctl%LIC_noise_ctl_fname)
-      open(id_control, file=noise_ctl%LIC_noise_ctl_fname)
+      write(*,*) 'Write LIC noise control file: ', trim(file_name)
+      open(id_control, file=file_name)
       call write_cube_noise_control_data                                &
      &     (id_control, hd_block, noise_ctl, level)
       close(id_control)

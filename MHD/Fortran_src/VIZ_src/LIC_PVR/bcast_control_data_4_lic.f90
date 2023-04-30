@@ -98,6 +98,10 @@
 !
 !
       call calypso_mpi_bcast_one_int(lic_ctl%i_lic_control, 0)
+      call calypso_mpi_bcast_character(lic_ctl%fname_LIC_kernel_ctl,    &
+     &                                 cast_long(kchara), 0)
+      call calypso_mpi_bcast_character(lic_ctl%fname_LIC_noise_ctl,     &
+     &                                 cast_long(kchara), 0)
       call calypso_mpi_bcast_character(lic_ctl%fname_vol_repart_ctl,    &
      &                                 cast_long(kchara), 0)
 !
@@ -147,6 +151,8 @@
 !
 !
       new_lic_c%i_lic_control = org_lic_c%i_lic_control
+      new_lic_c%fname_LIC_kernel_ctl = org_lic_c%fname_LIC_kernel_ctl
+      new_lic_c%fname_LIC_noise_ctl =  org_lic_c%fname_LIC_noise_ctl
       new_lic_c%fname_vol_repart_ctl = org_lic_c%fname_vol_repart_ctl
 !
       call copy_chara_ctl(org_lic_c%LIC_field_ctl,                      &
