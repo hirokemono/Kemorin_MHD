@@ -148,8 +148,8 @@
       subroutine sel_read_ctl_pvr_colormap_file                         &
      &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
 !
-      use read_ctl_data_pvr_colorbar
-      use read_ctl_data_pvr_colormap
+      use ctl_data_pvr_colorbar_IO
+      use ctl_data_pvr_colormap_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -217,8 +217,8 @@
       subroutine read_pvr_cmap_cbar                                     &
      &         (id_control, hd_block, cmap_cbar_c, c_buf)
 !
-      use read_ctl_data_pvr_colorbar
-      use read_ctl_data_pvr_colormap
+      use ctl_data_pvr_colorbar_IO
+      use ctl_data_pvr_colormap_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -248,8 +248,8 @@
       subroutine sel_write_ctl_pvr_colormap_file                        &
      &         (id_control, file_name, hd_block, cmap_cbar_c, level)
 !
-      use read_ctl_data_pvr_colorbar
-      use read_ctl_data_pvr_colormap
+      use ctl_data_pvr_colorbar_IO
+      use ctl_data_pvr_colormap_IO
       use write_control_elements
       use skip_comment_f
 !
@@ -304,8 +304,8 @@
       subroutine write_pvr_cmap_cbar(id_control, hd_block,              &
      &                               cmap_cbar_c, level)
 !
-      use read_ctl_data_pvr_colorbar
-      use read_ctl_data_pvr_colormap
+      use ctl_data_pvr_colorbar_IO
+      use ctl_data_pvr_colormap_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control

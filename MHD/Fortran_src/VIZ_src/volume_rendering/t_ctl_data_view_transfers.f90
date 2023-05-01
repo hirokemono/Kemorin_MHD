@@ -107,7 +107,7 @@
       subroutine read_mul_view_transfer_ctl                             &
      &         (id_control, hd_block, mul_mats_c, c_buf)
 !
-      use read_control_pvr_modelview
+      use ctl_file_pvr_modelview_IO
       use read_ctl_data_view_transfer
 !
       integer(kind = kint), intent(in) :: id_control
@@ -144,7 +144,7 @@
       subroutine write_mul_view_transfer_ctl                            &
      &         (id_control, hd_block, mul_mats_c, level)
 !
-      use read_control_pvr_modelview
+      use ctl_file_pvr_modelview_IO
       use read_ctl_data_view_transfer
       use write_control_elements
 !

@@ -139,7 +139,7 @@
      &         (id_control, hd_block, spu_ctl, c_buf)
 !
       use ctl_data_platforms_IO
-      use read_ctl_data_sph_monitor
+      use ctl_data_sph_monitor_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

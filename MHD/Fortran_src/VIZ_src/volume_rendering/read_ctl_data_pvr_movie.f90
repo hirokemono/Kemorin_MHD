@@ -127,7 +127,7 @@
       subroutine read_pvr_rotation_ctl                                  &
      &         (id_control, hd_block, movie, c_buf)
 !
-      use read_control_pvr_modelview
+      use ctl_file_pvr_modelview_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -183,7 +183,7 @@
       subroutine write_pvr_rotation_ctl                                 &
      &         (id_control, hd_block, movie, level)
 !
-      use read_control_pvr_modelview
+      use ctl_file_pvr_modelview_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control

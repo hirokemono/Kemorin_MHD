@@ -111,7 +111,7 @@
       subroutine read_quilt_image_ctl                                   &
      &         (id_control, hd_block, quilt_c, c_buf)
 !
-      use read_control_pvr_modelview
+      use ctl_file_pvr_modelview_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -145,7 +145,7 @@
       subroutine write_quilt_image_ctl                                  &
      &         (id_control, hd_block, quilt_c, level)
 !
-      use read_control_pvr_modelview
+      use ctl_file_pvr_modelview_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control

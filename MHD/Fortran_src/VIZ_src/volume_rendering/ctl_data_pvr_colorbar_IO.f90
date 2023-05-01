@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_pvr_colorbar.f90
-!!@brief  module read_ctl_data_pvr_colorbar
+!>@file   ctl_data_pvr_colorbar_IO.f90
+!!@brief  module ctl_data_pvr_colorbar_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in 2006
@@ -42,7 +42,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_ctl_data_pvr_colorbar
+      module ctl_data_pvr_colorbar_IO
 !
       use m_precision
       use calypso_mpi
@@ -217,4 +217,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_ctl_data_pvr_colorbar
+      end module ctl_data_pvr_colorbar_IO

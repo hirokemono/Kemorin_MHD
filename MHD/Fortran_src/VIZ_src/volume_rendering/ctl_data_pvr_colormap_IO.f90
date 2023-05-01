@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_pvr_colormap.f90
-!!@brief  module read_ctl_data_pvr_colormap
+!>@file   ctl_data_pvr_colormap_IO.f90
+!!@brief  module ctl_data_pvr_colormap_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in 2006
@@ -72,7 +72,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_ctl_data_pvr_colormap
+      module ctl_data_pvr_colormap_IO
 !
       use m_precision
       use calypso_mpi
@@ -315,4 +315,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_ctl_data_pvr_colormap
+      end module ctl_data_pvr_colormap_IO

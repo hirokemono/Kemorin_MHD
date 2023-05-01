@@ -177,7 +177,7 @@
       use t_ctl_data_SPH_MHD_control
       use ctl_file_gen_sph_shell_IO
       use ctl_data_platforms_IO
-      use read_ctl_data_sph_monitor
+      use ctl_data_sph_monitor_IO
       use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control

@@ -1,5 +1,5 @@
-!>@file   read_control_pvr_modelview.f90
-!!@brief  module read_control_pvr_modelview
+!>@file   ctl_file_pvr_modelview_IO.f90
+!!@brief  module ctl_file_pvr_modelview_IO
 !!
 !!@author  H. Matsui
 !!@date Programmed in May. 2006
@@ -121,7 +121,7 @@
 !!@endverbatim
 !!
 !
-      module read_control_pvr_modelview
+      module ctl_file_pvr_modelview_IO
 !
       use m_precision
 !
@@ -259,4 +259,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_control_pvr_modelview
+      end module ctl_file_pvr_modelview_IO

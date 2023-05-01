@@ -46,7 +46,7 @@
       subroutine bcast_pvr_controls                                     &
      &         (num_pvr_ctl, pvr_ctl, cflag_update)
 !
-      use read_control_pvr_modelview
+      use ctl_file_pvr_modelview_IO
       use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: num_pvr_ctl

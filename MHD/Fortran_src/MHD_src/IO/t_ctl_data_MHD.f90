@@ -110,7 +110,7 @@
      &         (id_control, hd_block, DMHD_ctl, c_buf)
 !
       use ctl_data_platforms_IO
-      use read_ctl_data_sph_monitor
+      use ctl_data_sph_monitor_IO
       use read_surfacing_controls
       use ctl_file_gen_sph_shell_IO
 !
@@ -164,7 +164,7 @@
      &         (id_control, hd_block, DMHD_ctl, c_buf)
 !
       use ctl_data_platforms_IO
-      use read_ctl_data_sph_monitor
+      use ctl_data_sph_monitor_IO
       use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control

@@ -178,7 +178,7 @@
       subroutine read_pvr_ctl                                           &
      &         (id_control, hd_block, pvr_ctl, c_buf)
 !
-      use read_control_pvr_modelview
+      use ctl_file_pvr_modelview_IO
       use read_ctl_data_pvr_movie
 !
       integer(kind = kint), intent(in) :: id_control

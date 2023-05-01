@@ -179,9 +179,9 @@
       use t_ctl_data_quilt_image
       use t_ctl_data_pvr_area
       use ctl_data_LIC_IO
-      use read_control_pvr_modelview
-      use read_ctl_data_pvr_colorbar
-      use read_ctl_data_pvr_colormap
+      use ctl_file_pvr_modelview_IO
+      use ctl_data_pvr_colorbar_IO
+      use ctl_data_pvr_colormap_IO
       use read_ctl_data_pvr_movie
 !
       integer(kind = kint), intent(in) :: id_control

@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_sph_monitor.f90
-!!        module read_ctl_data_sph_monitor
+!>@file   ctl_data_sph_monitor_IO.f90
+!!        module ctl_data_sph_monitor_IO
 !!
 !! @author H. Matsui
 !! @date   Programmed in 2012
@@ -70,7 +70,7 @@
 !! -----------------------------------------------------------------
 !!@endverbatim
 !
-      module read_ctl_data_sph_monitor
+      module ctl_data_sph_monitor_IO
 !
       use m_precision
 !
@@ -351,4 +351,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_ctl_data_sph_monitor
+      end module ctl_data_sph_monitor_IO
