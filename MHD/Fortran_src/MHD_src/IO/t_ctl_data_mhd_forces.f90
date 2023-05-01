@@ -12,18 +12,13 @@
 !!        type(forces_control), intent(inout) :: frc_ctl
 !!      subroutine read_gravity_ctl(id_control, hd_block, g_ctl, c_buf)
 !!        type(forces_control), intent(inout) :: g_ctl
-!!      subroutine read_coriolis_ctl                                    &
-!!     &         (id_control, hd_block, cor_ctl, c_buf)
-!!        type(coriolis_control), intent(inout) :: cor_ctl
 !!
 !!      subroutine bcast_forces_ctl(frc_ctl)
 !!      subroutine bcast_gravity_ctl(g_ctl)
-!!      subroutine bcast_coriolis_ctl(cor_ctl)
 !!
 !!      subroutine dealloc_name_force_ctl(frc_ctl)
 !!        type(forces_control), intent(inout) :: frc_ctl
 !!      subroutine dealloc_gravity_ctl(g_ctl)
-!!      subroutine dealloc_coriolis_ctl(cor_ctl)
 !!
 !!    begin forces_define
 !!!!!  define of forces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -66,9 +61,6 @@
 !!        rotation_vec  y   0.000    end
 !!        rotation_vec  z   1.000    end
 !!      end array rotation_vec
-!!
-!!      tri_sph_int_file     'rot_int.dat'
-!!      sph_int_file_format     'ascii'
 !!    end  Coriolis_define
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -115,23 +107,6 @@
         integer (kind=kint) :: i_gravity_ctl =   0
       end type gravity_control
 !
-!>      Structure for Coriolis force
-      type coriolis_control
-!>        Coliolis force modeling in FEM
-!!@n        element: Coriolis force in element
-!!@n        node:    Coriolis force at node
-        type(read_character_item) :: FEM_coriolis_model
-!>        Use implicit scheme for Coliolis force modeling in FEM
-!!@n        On: Coriolis force is solved implicitly
-        type(read_character_item) :: FEM_coriolis_implicit
-!>        Structure for rotation of system
-!!@n        system_rotation%c_tbl:  Direction of rotation vector
-!!@n        system_rotation%vect:   Amplitude of rotation vector
-        type(ctl_array_cr) :: system_rotation
-!
-        integer (kind=kint) :: i_coriolis_ctl =  0
-      end type coriolis_control
-!
 !   4th level for forces
       character(len=kchara), parameter, private                         &
      &        :: hd_num_forces =  'force_ctl'
@@ -143,14 +118,6 @@
      &        :: hd_gravity_type = 'gravity_type_ctl'
       character(len=kchara), parameter, private                         &
      &        :: hd_gravity_vect = 'gravity_vec'
-!
-!   4th level for time steps
-      character(len=kchara), parameter, private                         &
-     &        :: hd_FEM_Coriolis_model = 'FEM_Coriolis_model_ctl'
-      character(len=kchara), parameter, private                         &
-     &        :: hd_FEM_Coriolis_imp =   'FEM_Coriolis_implicit_ctl'
-      character(len=kchara), parameter, private                         &
-     &        :: hd_rotation_vec =        'rotation_vec'
 !
 !   --------------------------------------------------------------------
 !
@@ -210,36 +177,6 @@
       end subroutine read_gravity_ctl
 !
 !   --------------------------------------------------------------------
-!
-      subroutine read_coriolis_ctl                                      &
-     &         (id_control, hd_block, cor_ctl, c_buf)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(coriolis_control), intent(inout) :: cor_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(cor_ctl%i_coriolis_ctl .gt. 0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-        call read_chara_ctl_type(c_buf, hd_FEM_Coriolis_model,          &
-     &      cor_ctl%FEM_coriolis_model)
-        call read_chara_ctl_type(c_buf, hd_FEM_Coriolis_imp,            &
-     &      cor_ctl%FEM_coriolis_implicit)
-!
-        call read_control_array_c_r(id_control, hd_rotation_vec,        &
-     &      cor_ctl%system_rotation, c_buf)
-      end do
-      cor_ctl%i_coriolis_ctl = 1
-!
-      end subroutine read_coriolis_ctl
-!
-!   --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine bcast_forces_ctl(frc_ctl)
@@ -272,21 +209,6 @@
       end subroutine bcast_gravity_ctl
 !
 !   --------------------------------------------------------------------
-!
-      subroutine bcast_coriolis_ctl(cor_ctl)
-!
-      use calypso_mpi_int
-!
-      type(coriolis_control), intent(inout) :: cor_ctl
-!
-!
-      call bcast_ctl_array_cr(cor_ctl%system_rotation)
-!
-      call calypso_mpi_bcast_one_int(cor_ctl%i_coriolis_ctl, 0)
-!
-      end subroutine bcast_coriolis_ctl
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_name_force_ctl(frc_ctl)
@@ -311,18 +233,6 @@
       g_ctl%i_gravity_ctl = 0
 !
       end subroutine dealloc_gravity_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_coriolis_ctl(cor_ctl)
-!
-      type(coriolis_control), intent(inout) :: cor_ctl
-!
-!
-      call dealloc_control_array_c_r(cor_ctl%system_rotation)
-      cor_ctl%i_coriolis_ctl = 0
-!
-      end subroutine dealloc_coriolis_ctl
 !
 !   --------------------------------------------------------------------
 !

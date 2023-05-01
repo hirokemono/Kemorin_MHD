@@ -30,6 +30,7 @@
       use t_ctl_data_surf_boundary
       use t_ctl_data_mhd_normalize
       use t_ctl_data_mhd_forces
+      use t_ctl_data_coriolis_force
       use t_ctl_data_mhd_magne
       use t_ctl_data_temp_model
       use t_ctl_data_dimless_numbers

@@ -57,6 +57,7 @@
       use t_control_parameter
       use t_ctl_data_mhd_forces
       use t_ctl_data_mhd_magne
+      use t_ctl_data_coriolis_force
       use skip_comment_f
 !
       type(forces_control), intent(in) :: frc_ctl
@@ -249,6 +250,7 @@
 !
       use t_physical_property
       use t_ctl_data_mhd_forces
+      use t_ctl_data_coriolis_force
       use skip_comment_f
 !
       type(coriolis_control), intent(in) :: cor_ctl

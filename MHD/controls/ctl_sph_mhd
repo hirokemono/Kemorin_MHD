@@ -462,7 +462,6 @@ begin fluid_control
         ext_magne_vec  y     1.000   end
         ext_magne_vec  z     0.000   end
       end array
-	  tri_sph_int_file     'rot_int.dat'
     end
 !!!!!!!!! model for stratification !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
