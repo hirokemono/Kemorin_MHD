@@ -321,7 +321,7 @@
 !
       integer(c_int) function num_label_pvr_section_f() bind(c)
 !
-      use t_control_data_pvr_sections
+      use ctl_data_pvr_section_IO
 !
       num_label_pvr_section_f = num_label_pvr_section()
       return
@@ -331,7 +331,7 @@
 !
       subroutine set_label_pvr_section_f(names)  bind(c)
 !
-      use t_control_data_pvr_sections
+      use ctl_data_pvr_section_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

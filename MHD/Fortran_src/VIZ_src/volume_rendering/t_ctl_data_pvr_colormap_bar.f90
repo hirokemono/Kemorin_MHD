@@ -250,6 +250,7 @@
 !
       use read_ctl_data_pvr_colorbar
       use read_ctl_data_pvr_colormap
+      use write_control_elements
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -266,6 +267,8 @@
         call write_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,        &
      &      cmap_cbar_c%cbar_ctl, level)
       else
+        call write_file_name_for_ctl_line(id_control, level,            &
+     &                                    hd_block, file_name)
         call write_control_pvr_colormap_file                            &
      &     (id_control+1, file_name, hd_block, cmap_cbar_c)
       end if
