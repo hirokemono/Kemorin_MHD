@@ -170,7 +170,7 @@
      &         (id_control, hd_block, spt_ctl, c_buf)
 !
       use ctl_data_platforms_IO
-      use read_viz_controls
+      use ctl_data_viualiser_IO
       use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control

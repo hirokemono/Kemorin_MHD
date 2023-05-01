@@ -9,6 +9,16 @@
 !!@verbatim
 !!      subroutine read_files_4_lic_ctl                                 &
 !!     &         (id_control, hd_lic_ctl, lic_ctls, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_lic_ctl
+!!        type(lic_rendering_controls), intent(inout) :: lic_ctls
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_files_4_lic_ctl(id_control, hd_lic_ctl,        &
+!!     &          lic_ctls, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_lic_ctl
+!!        type(lic_rendering_controls), intent(in) :: lic_ctls
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine bcast_files_4_lic_ctl(lic_ctls)
 !!
 !!      subroutine add_fields_4_lics_to_fld_ctl(lic_ctls, field_ctl)

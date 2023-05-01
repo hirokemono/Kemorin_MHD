@@ -126,7 +126,7 @@
 !
       use skip_comment_f
       use ctl_data_platforms_IO
-      use read_viz_controls
+      use ctl_data_viualiser_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

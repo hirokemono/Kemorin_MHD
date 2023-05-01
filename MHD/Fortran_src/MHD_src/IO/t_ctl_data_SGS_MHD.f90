@@ -178,7 +178,7 @@
       use ctl_file_gen_sph_shell_IO
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
-      use read_viz_controls
+      use ctl_data_viualiser_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
