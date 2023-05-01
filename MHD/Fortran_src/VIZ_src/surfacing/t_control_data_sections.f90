@@ -36,10 +36,13 @@
 !
       type section_controls
         integer(kind = kint) :: num_psf_ctl = 0
+!>        External section control file names
+        character(len = kchara), allocatable :: fname_psf_ctl(:)
+!>        Structure of sections control
         type(psf_ctl), allocatable :: psf_ctl_struct(:)
       end type section_controls
 !
-      private :: dup_control_4_psfs, dealloc_cont_dat_4_psfs
+      private :: dup_control_4_psfs
 !
 !   --------------------------------------------------------------------
 !
@@ -54,6 +57,7 @@
 !
 !
       allocate(psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl))
+      allocate(psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl))
 !
       do i = 1, psf_ctls%num_psf_ctl
         call init_psf_ctl_stract(psf_ctls%psf_ctl_struct(i))
@@ -68,9 +72,15 @@
 !
       type(section_controls), intent(inout) :: psf_ctls
 !
-      if(allocated(psf_ctls%psf_ctl_struct)) then
-        deallocate(psf_ctls%psf_ctl_struct)
-      end if
+      integer(kind = kint) :: i
+!
+      if(allocated(psf_ctls%psf_ctl_struct) .eqv. .FALSE.) return
+!
+      do i = 1, psf_ctls%num_psf_ctl
+        call dealloc_cont_dat_4_psf(psf_ctls%psf_ctl_struct(i))
+      end do
+!
+      deallocate(psf_ctls%psf_ctl_struct, psf_ctls%fname_psf_ctl)
       psf_ctls%num_psf_ctl = 0
 !
       end subroutine dealloc_psf_ctl_stract
@@ -83,6 +93,8 @@
       use t_control_data_4_psf
       use calypso_mpi
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(section_controls), intent(inout) :: psf_ctls
       integer (kind=kint) :: i_psf
@@ -96,6 +108,8 @@
       do i_psf = 1, psf_ctls%num_psf_ctl
         call bcast_psf_control_data(psf_ctls%psf_ctl_struct(i_psf))
       end do
+      call calypso_mpi_bcast_character(psf_ctls%fname_psf_ctl,          &
+     &    cast_long(psf_ctls%num_psf_ctl*kchara), 0)
 !
       end subroutine bcast_files_4_psf_ctl
 !
@@ -133,8 +147,6 @@
       call dup_control_4_psfs                                           &
      &    (tmp_psf_c%num_psf_ctl, psf_ctls, tmp_psf_c)
 !
-      call dealloc_cont_dat_4_psfs                                      &
-     &   (psf_ctls%num_psf_ctl, psf_ctls%psf_ctl_struct)
       call dealloc_psf_ctl_stract(psf_ctls)
 !
       psf_ctls%num_psf_ctl = tmp_psf_c%num_psf_ctl + 1
@@ -143,8 +155,6 @@
       call dup_control_4_psfs                                           &
      &   (tmp_psf_c%num_psf_ctl, tmp_psf_c, psf_ctls)
 !
-      call dealloc_cont_dat_4_psfs                                      &
-     &   (tmp_psf_c%num_psf_ctl, tmp_psf_c%psf_ctl_struct)
       call dealloc_psf_ctl_stract(tmp_psf_c)
 !
       end subroutine append_new_section_control
@@ -164,24 +174,10 @@
         call dup_control_4_psf(org_psf_ctls%psf_ctl_struct(i),          &
             new_psf_ctls%psf_ctl_struct(i))
       end do
+      new_psf_ctls%fname_psf_ctl(1:num_psf)                             &
+     &      = org_psf_ctls%fname_psf_ctl(1:num_psf)
 !
       end subroutine dup_control_4_psfs
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_cont_dat_4_psfs(num_psf, psf_c)
-!
-      integer(kind = kint), intent(in) :: num_psf
-      type(psf_ctl), intent(inout) :: psf_c(num_psf)
-!
-      integer(kind = kint) :: i
-!
-      do i = 1, num_psf
-        call dealloc_cont_dat_4_psf(psf_c(i))
-      end do
-!
-      end subroutine dealloc_cont_dat_4_psfs
 !
 !  ---------------------------------------------------------------------
 !

@@ -136,9 +136,6 @@
 !
 !
       type psf_ctl
-!>        External section control file name
-        character(len = kchara) :: psf_ctl_fname
-!
 !>        Structure of cross section definition
         type(psf_define_ctl) :: psf_def_c
 !>        Structure of fields on isosurface control
@@ -208,7 +205,6 @@
 !
       new_psf_c%i_psf_ctl =        org_psf_c%i_psf_ctl
       new_psf_c%i_output_field =   org_psf_c%i_output_field
-      new_psf_c%psf_ctl_fname =    org_psf_c%psf_ctl_fname
 !
       end subroutine dup_control_4_psf
 !
@@ -218,18 +214,13 @@
       subroutine bcast_psf_control_data(psf_c)
 !
       use calypso_mpi_int
-      use calypso_mpi_char
       use bcast_control_arrays
-      use transfer_to_long_integers
 !
       type(psf_ctl), intent(inout) :: psf_c
 !
 !
       call calypso_mpi_bcast_one_int(psf_c%i_psf_ctl, 0)
       call calypso_mpi_bcast_one_int(psf_c%i_output_field, 0)
-!
-      call calypso_mpi_bcast_character(psf_c%psf_ctl_fname,             &
-     &                                 cast_long(kchara), 0)
 !
       call bcast_ctl_type_c1(psf_c%psf_file_head_ctl)
       call bcast_ctl_type_c1(psf_c%psf_output_type_ctl)

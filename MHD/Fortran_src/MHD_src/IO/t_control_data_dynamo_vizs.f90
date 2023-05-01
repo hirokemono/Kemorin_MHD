@@ -180,6 +180,7 @@
         call alloc_psf_ctl_stract(psf_ctls)
 !
         call sel_read_control_4_psf_file(id_control, hd_section,        &
+     &      psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),               &
      &      psf_ctls%psf_ctl_struct(psf_ctls%num_psf_ctl), c_buf)
       end if
 !
@@ -200,8 +201,9 @@
 !
 !
       if(psf_ctls%num_psf_ctl .gt. 0) return
-      call sel_write_control_4_psf_file(id_control, hd_section,         &
-     &    psf_ctls%psf_ctl_struct(1), level)
+      call sel_write_control_4_psf_file                                 &
+     &   (id_control, psf_ctls%fname_psf_ctl(1),                        &
+     &    hd_section, psf_ctls%psf_ctl_struct(1), level)
 !
       end subroutine write_single_section_ctl
 !
