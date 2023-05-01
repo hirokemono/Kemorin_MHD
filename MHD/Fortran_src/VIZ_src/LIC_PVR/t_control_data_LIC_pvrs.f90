@@ -29,7 +29,7 @@
       use m_machine_parameter
       use calypso_mpi
       use t_control_data_4_pvr
-      use t_control_data_lic_pvr
+      use t_control_data_LIC
 !
       implicit  none
 !
@@ -89,6 +89,7 @@
      &         (id_control, hd_lic_ctl, lic_ctls, c_buf)
 !
       use t_read_control_elements
+      use ctl_file_lic_pvr_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -107,32 +108,52 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_array_flag(c_buf, hd_lic_ctl)) exit
 !
-        if(check_file_flag(c_buf, hd_lic_ctl)) then
+        if(check_file_flag(c_buf, hd_lic_ctl)                           &
+     &        .or. check_begin_flag(c_buf, hd_lic_ctl)) then
           call append_new_lic_ctl_struct(lic_ctls)
-          lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl)                  &
-     &        = third_word(c_buf)
-!
-          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for ',          &
-     &        trim(hd_lic_ctl),  ' No. ', lic_ctls%num_lic_ctl, '... '
-          call read_control_lic_pvr_file(id_control+2,                  &
-     &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl), hd_lic_ctl, &
-     &        lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl),              &
-     &        lic_ctls%lic_ctl_type(lic_ctls%num_lic_ctl))
-        end if
-!
-        if(check_begin_flag(c_buf, hd_lic_ctl)) then
-          call append_new_lic_ctl_struct(lic_ctls)
-          lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl) = 'NO_FILE'
-!
-          write(*,*) 'Control for', trim(hd_lic_ctl), ' No. ',          &
-     &              lic_ctls%num_lic_ctl, ' is included'
-          call read_lic_pvr_ctl(id_control, hd_lic_ctl,                 &
+          write(*,'(3a,i4)',ADVANCE='NO') 'Control for',                &
+     &                  trim(hd_lic_ctl), ' No. ', lic_ctls%num_lic_ctl
+          call sel_read_control_lic_pvr(id_control, hd_lic_ctl,         &
+     &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl),             &
      &        lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl),              &
      &        lic_ctls%lic_ctl_type(lic_ctls%num_lic_ctl), c_buf)
         end if
       end do
 !
       end subroutine read_files_4_lic_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_files_4_lic_ctl(id_control, hd_lic_ctl,          &
+     &          lic_ctls, level)
+!
+      use t_read_control_elements
+      use ctl_file_lic_pvr_IO
+      use skip_comment_f
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_lic_ctl
+      type(lic_rendering_controls), intent(in) :: lic_ctls
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: i
+!
+!
+      if(lic_ctls%num_lic_ctl .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_array_flag_for_ctl(id_control, level, hd_lic_ctl)
+      do i = 1, lic_ctls%num_lic_ctl
+        call sel_write_control_lic_pvr                                  &
+     &     (id_control, lic_ctls%fname_lic_ctl(i), hd_lic_ctl,          &
+     &      lic_ctls%pvr_ctl_type(i), lic_ctls%lic_ctl_type(i), level)
+      end do
+      level = write_end_array_flag_for_ctl(id_control, level,           &
+     &                                     hd_lic_ctl)
+!
+      end subroutine write_files_4_lic_ctl
 !
 !   --------------------------------------------------------------------
 !

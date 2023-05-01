@@ -189,4 +189,86 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine write_viz4_controls                                    &
+     &         (id_control, hd_block, viz_ctls, level)
+!
+      use t_read_control_elements
+      use ctl_file_sections_IO
+      use ctl_file_isosurfaces_IO
+      use ctl_file_fieldlines_IO
+      use write_control_elements
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_control 
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(vis4_controls), intent(inout) :: viz_ctls
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(viz_ctls%i_viz_control .le. 0) return
+!
+      maxlen = len_trim(hd_delta_t_section)
+      maxlen = max(maxlen, len_trim(hd_i_step_section))
+      maxlen = max(maxlen, len_trim(hd_delta_t_isosurf))
+      maxlen = max(maxlen, len_trim(hd_i_step_isosurf))
+      maxlen = max(maxlen, len_trim(hd_delta_t_pvr))
+      maxlen = max(maxlen, len_trim(hd_i_step_pvr))
+      maxlen = max(maxlen, len_trim(hd_delta_t_fline))
+      maxlen = max(maxlen, len_trim(hd_i_step_fline))
+      maxlen = max(maxlen, len_trim(hd_delta_t_ucd))
+      maxlen = max(maxlen, len_trim(hd_i_step_ucd))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_delta_t_section, viz_ctls%delta_t_psf_v_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_i_step_section, viz_ctls%i_step_psf_v_ctl)
+      call write_files_4_psf_ctl(id_control, hd_section_ctl,            &
+     &                             viz_ctls%psf_ctls, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_delta_t_isosurf, viz_ctls%delta_t_iso_v_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_i_step_isosurf, viz_ctls%i_step_iso_v_ctl)
+      call write_files_4_iso_ctl(id_control, hd_isosurf_ctl,            &
+     &                           viz_ctls%iso_ctls, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_delta_t_pvr, viz_ctls%delta_t_pvr_v_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_i_step_pvr, viz_ctls%i_step_pvr_v_ctl)
+      call write_files_4_pvr_ctl(id_control, hd_pvr_ctl,                &
+     &                           viz_ctls%pvr_ctls, level)
+      call write_files_4_pvr_ctl(id_control, hd_anaglyph_pvr_ctl,       &
+     &    viz_ctls%pvr_anaglyph_ctls, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_delta_t_fline, viz_ctls%delta_t_fline_v_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_i_step_fline, viz_ctls%i_step_fline_v_ctl)
+      call write_files_4_fline_ctl(id_control, hd_fline_ctl,            &
+     &                             viz_ctls%fline_ctls, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_delta_t_ucd, viz_ctls%delta_t_ucd_v_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_i_step_ucd, viz_ctls%i_step_ucd_v_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_output_fld_file_fmt, viz_ctls%output_field_file_fmt_ctl)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_viz4_controls
+!
+!  ---------------------------------------------------------------------
+!
       end module read_four_viz_controls

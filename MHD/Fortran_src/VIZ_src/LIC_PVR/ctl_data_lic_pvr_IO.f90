@@ -1,5 +1,5 @@
-!>@file   t_control_data_lic_pvr.f90
-!!@brief  module t_control_data_lic_pvr
+!>@file   ctl_data_lic_pvr_IO.f90
+!!@brief  module ctl_data_lic_pvr_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in 2006
@@ -7,11 +7,21 @@
 !> @brief control data for parallel volume rendering
 !!
 !!@verbatim
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!      subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl, &
-!!     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
 !!      subroutine read_lic_pvr_ctl                                     &
 !!     &         (id_control, hd_block, pvr, lic_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(pvr_parameter_ctl), intent(inout) :: pvr
+!!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_lic_pvr_ctl(id_control, hd_block,              &
+!!     &                             pvr, lic_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(pvr_parameter_ctl), intent(in) :: pvr
+!!        type(lic_parameter_ctl), intent(in) :: lic_ctl
+!!        integer(kind = kint), intent(inout) :: level
+!!
 !!      subroutine dealloc_lic_count_data(pvr, lic_ctl)
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
@@ -67,7 +77,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module t_control_data_lic_pvr
+      module ctl_data_lic_pvr_IO
 !
       use m_precision
       use calypso_mpi
@@ -76,6 +86,11 @@
       use t_read_control_elements
       use t_control_data_4_pvr
       use t_control_data_LIC
+      use t_ctl_data_4_view_transfer
+      use t_control_data_pvr_isosurfs
+      use t_ctl_data_pvr_movie
+      use t_ctl_data_quilt_image
+      use t_ctl_data_pvr_area
       use skip_comment_f
 !
       implicit  none
@@ -101,15 +116,9 @@
      &             :: hd_pvr_quilt_3d = 'quilt_3d_imaging'
 !
       character(len=kchara), parameter, private                         &
-     &             :: hd_lic_control = 'LIC_ctl'
-!
-!     3rd level for surface_define
-!
-      character(len=kchara), parameter, private                         &
      &             :: hd_plot_area =   'plot_area_ctl'
-!
-!     3rd level for rotation
-!
+      character(len=kchara), parameter, private                         &
+     &             :: hd_lic_control = 'LIC_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_view_transform = 'view_transform_ctl'
       character(len=kchara), parameter, private                         &
@@ -117,9 +126,9 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_colormap =      'colormap_ctl'
       character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_colorbar =  'colorbar_ctl'
-      character(len=kchara), parameter, private                         &
      &             :: hd_pvr_lighting =  'lighting_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_pvr_colorbar =  'colorbar_ctl'
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_sections = 'section_ctl'
@@ -132,7 +141,6 @@
 !
       integer(kind = kint), parameter :: n_label_LIC_pvr = 19
 !
-!
       private :: n_label_LIC_pvr
 !
 !  ---------------------------------------------------------------------
@@ -141,43 +149,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl,   &
-     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_lic_ctl
-      character(len = kchara), intent(in) :: fname_lic_ctl
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      if(fname_lic_ctl .eq. 'NO_FILE') return
-!
-      write(*,*) 'LIC control file: ', trim(fname_lic_ctl)
-!
-      open(id_control, file=fname_lic_ctl, status='old')
-      do
-        call load_one_line_from_control(id_control, c_buf1)
-        call read_lic_pvr_ctl                                           &
-     &     (id_control, hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf1)
-        if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
-      end do
-      close(id_control)
-!
-      end subroutine read_control_lic_pvr_file
-!
-!  ---------------------------------------------------------------------
-!
       subroutine read_lic_pvr_ctl                                       &
      &         (id_control, hd_block, pvr, lic_ctl, c_buf)
 !
-      use t_ctl_data_4_view_transfer
-      use t_control_data_pvr_isosurfs
-      use t_ctl_data_pvr_movie
-      use t_ctl_data_quilt_image
-      use t_ctl_data_pvr_area
       use ctl_data_LIC_IO
       use ctl_file_pvr_modelview_IO
       use ctl_data_pvr_colorbar_IO
@@ -256,6 +230,102 @@
       end subroutine read_lic_pvr_ctl
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine write_lic_pvr_ctl(id_control, hd_block,                &
+     &                             pvr, lic_ctl, level)
+!
+      use ctl_data_LIC_IO
+      use ctl_file_pvr_modelview_IO
+      use ctl_data_pvr_colorbar_IO
+      use ctl_data_pvr_colormap_IO
+      use ctl_data_pvr_movie_IO
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_parameter_ctl), intent(in) :: pvr
+      type(lic_parameter_ctl), intent(in) :: lic_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(pvr%i_pvr_ctl .le. 0) return
+!
+      maxlen = len_trim(hd_pvr_updated)
+      maxlen = max(maxlen, len_trim(hd_lic_file_head))
+      maxlen = max(maxlen, len_trim(hd_lic_out_type))
+      maxlen = max(maxlen, len_trim(hd_pvr_monitor))
+      maxlen = max(maxlen, len_trim(hd_pvr_rgba_type))
+      maxlen = max(maxlen, len_trim(hd_pvr_maxpe_composit))
+      maxlen = max(maxlen, len_trim(hd_pvr_streo))
+      maxlen = max(maxlen, len_trim(hd_pvr_quilt_3d))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_pvr_updated, pvr%updated_ctl)
+!
+      write(id_control,'(a1)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_lic_file_head, pvr%file_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_lic_out_type, pvr%file_fmt_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_pvr_monitor, pvr%monitoring_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_pvr_rgba_type, pvr%transparent_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_pvr_maxpe_composit, pvr%maxpe_composit_ctl)
+!
+      write(id_control,'(a1)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_pvr_streo, pvr%streo_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_pvr_quilt_3d, pvr%quilt_ctl)
+!
+      write(id_control,'(a1)') '!'
+      call write_pvr_render_area_ctl(id_control, hd_plot_area,          &
+     &                               pvr%render_area_c, level)
+      call write_lic_control_data(id_control, hd_lic_control,           &
+     &                            lic_ctl, level)
+      call sel_write_ctl_modelview_file(id_control, pvr%fname_mat_ctl,  &
+     &    hd_view_transform, pvr%mat, level)
+!
+      write(id_control,'(a1)') '!'
+      call sel_write_ctl_pvr_colormap_file                              &
+     &   (id_control, pvr%fname_cmap_cbar_c, hd_lic_colordef,           &
+     &    pvr%cmap_cbar_c, level)
+!
+      if(pvr%cmap_cbar_c%i_cmap_cbar .eq. 0) then
+        call write_pvr_colordef_ctl(id_control, hd_colormap,            &
+     &                              pvr%cmap_cbar_c%color, level)
+        call write_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,        &
+     &                              pvr%cmap_cbar_c%cbar_ctl, level)
+      end if
+!
+      call write_lighting_ctl(id_control, hd_pvr_lighting,              &
+     &                        pvr%light, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_pvr_sections_ctl(id_control, hd_pvr_sections,          &
+     &                            pvr%pvr_scts_c, level)
+      call write_pvr_isosurfs_ctl(id_control, hd_pvr_isosurf,           &
+     &                            pvr%pvr_isos_c, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_quilt_image_ctl(id_control, hd_quilt_image,            &
+     &                           pvr%quilt_c, level)
+      call write_pvr_rotation_ctl(id_control, hd_pvr_movie,             &
+     &                            pvr%movie, level)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_lic_pvr_ctl
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_lic_count_data(pvr, lic_ctl)
@@ -313,4 +383,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module t_control_data_lic_pvr
+      end module ctl_data_lic_pvr_IO

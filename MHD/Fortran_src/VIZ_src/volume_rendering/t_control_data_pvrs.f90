@@ -9,6 +9,17 @@
 !!@verbatim
 !!      subroutine read_files_4_pvr_ctl                                 &
 !!     &         (id_control, hd_pvr_ctl, pvr_ctls, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_pvr_ctl
+!!        type(volume_rendering_controls), intent(inout) :: pvr_ctls
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_files_4_pvr_ctl                                &
+!!     &         (id_control, hd_pvr_ctl, pvr_ctls, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_pvr_ctl
+!!        type(volume_rendering_controls), intent(in) :: pvr_ctls
+!!        integer(kind = kint), intent(inout) :: level
+!!
 !!      subroutine bcast_files_4_pvr_ctl(pvr_ctls)
 !!      subroutine add_fields_4_pvrs_to_fld_ctl(pvr_ctl, field_ctl)
 !!        type(volume_rendering_controls), intent(in) :: pvr_ctls
@@ -144,7 +155,7 @@
      &     (id_control, pvr_ctls%fname_pvr_ctl(i),                      &
      &      hd_pvr_ctl, pvr_ctls%pvr_ctl_type(i), level)
       end do
-      level = write_end_array_flag_for_ctl(id_control, level,         &
+      level = write_end_array_flag_for_ctl(id_control, level,           &
      &                                     hd_pvr_ctl)
 !
       end subroutine write_files_4_pvr_ctl

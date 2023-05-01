@@ -39,7 +39,6 @@
 !
       use t_control_param_LIC
       use t_control_data_LIC
-      use t_control_data_lic_pvr
 !
       implicit  none
 !

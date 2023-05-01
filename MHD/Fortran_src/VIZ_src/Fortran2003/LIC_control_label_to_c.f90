@@ -66,7 +66,7 @@
       integer(c_int) function num_ctl_label_LIC_pvr_f()                 &
      &              bind(c, name="num_ctl_label_LIC_pvr_f")
 !
-      use t_control_data_lic_pvr
+      use ctl_data_lic_pvr_IO
 !
       num_ctl_label_LIC_pvr_f = num_ctl_label_LIC_pvr()
 !
@@ -77,7 +77,7 @@
       subroutine set_ctl_label_LIC_pvr_f(labels)                        &
      &          bind(c, name="set_ctl_label_LIC_pvr_f")
 !
-      use t_control_data_lic_pvr
+      use ctl_data_lic_pvr_IO
 !
       character(C_CHAR), intent(inout) :: labels(*)
 !

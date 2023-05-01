@@ -213,8 +213,6 @@
         call read_files_4_lic_ctl(id_control, hd_anaglyph_lic_ctl,      &
      &      viz_ctls%lic_anaglyph_ctls, c_buf)
 !
-!
-!
         call read_integer_ctl_type(c_buf, hd_i_step_section,            &
      &      viz_ctls%i_step_psf_v_ctl)
         call read_integer_ctl_type(c_buf, hd_i_step_isosurf,            &
