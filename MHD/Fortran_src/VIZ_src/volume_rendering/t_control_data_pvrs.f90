@@ -84,8 +84,7 @@
 !
       use t_read_control_elements
       use skip_comment_f
-      use ctl_data_each_pvr_IO
-      use set_pvr_control
+      use ctl_file_each_pvr_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_pvr_ctl
@@ -103,30 +102,52 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_array_flag(c_buf, hd_pvr_ctl)) exit
 !
-        if(check_file_flag(c_buf, hd_pvr_ctl)) then
+        if(check_file_flag(c_buf, hd_pvr_ctl)                           &
+     &     .or. check_begin_flag(c_buf, hd_pvr_ctl)) then
+          write(*,'(3a,i4)', ADVANCE='NO') 'Control for',               &
+     &                 trim(hd_pvr_ctl), ' No. ', pvr_ctls%num_pvr_ctl
           call append_new_pvr_ctl_struct(pvr_ctls)
-          pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl)                  &
-     &        = third_word(c_buf)
-!
-          write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for ',          &
-     &        trim(hd_pvr_ctl), ' No. ', pvr_ctls%num_pvr_ctl, '... '
-          call read_control_pvr_file(id_control+2,                      &
-     &        pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl), hd_pvr_ctl, &
-     &        pvr_ctls%pvr_ctl_type(pvr_ctls%num_pvr_ctl))
-        end if
-!
-        if(check_begin_flag(c_buf, hd_pvr_ctl)) then
-          call append_new_pvr_ctl_struct(pvr_ctls)
-          pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl) = 'NO_FILE'
-!
-          write(*,*) 'Control for', trim(hd_pvr_ctl), ' No. ',          &
-     &              pvr_ctls%num_pvr_ctl, ' is included'
-          call read_pvr_ctl(id_control, hd_pvr_ctl,                     &
+          call sel_read_control_pvr(id_control, hd_pvr_ctl,             &
+     &        pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl),             &
      &        pvr_ctls%pvr_ctl_type(pvr_ctls%num_pvr_ctl), c_buf)
         end if
       end do
 !
       end subroutine read_files_4_pvr_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_files_4_pvr_ctl                                  &
+     &         (id_control, hd_pvr_ctl, pvr_ctls, level)
+!
+      use t_read_control_elements
+      use skip_comment_f
+      use ctl_file_each_pvr_IO
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_pvr_ctl
+!
+      type(volume_rendering_controls), intent(in) :: pvr_ctls
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: i
+!
+      if(pvr_ctls%num_pvr_ctl .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_array_flag_for_ctl(id_control, level, hd_pvr_ctl)
+      do i = 1, pvr_ctls%num_pvr_ctl
+        write(*,'(3a,i4)', ADVANCE='NO')                                &
+     &          'Control for', trim(hd_pvr_ctl), ' No. ', i
+        call sel_write_control_pvr                                      &
+     &     (id_control, pvr_ctls%fname_pvr_ctl(i),                      &
+     &      hd_pvr_ctl, pvr_ctls%pvr_ctl_type(i), level)
+      end do
+      level = write_end_array_flag_for_ctl(id_control, level,         &
+     &                                     hd_pvr_ctl)
+!
+      end subroutine write_files_4_pvr_ctl
 !
 !   --------------------------------------------------------------------
 !

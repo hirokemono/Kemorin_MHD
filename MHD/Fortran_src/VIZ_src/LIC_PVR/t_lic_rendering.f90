@@ -102,7 +102,7 @@
      &         (id_control, lic_ctls, lic, iflag_update)
 !
       use calypso_mpi_int
-      use set_pvr_control
+      use ctl_file_each_pvr_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
