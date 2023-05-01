@@ -105,17 +105,19 @@
       type pvr_parameter_ctl
 !>     file name for modelview matrix
         character(len=kchara) :: fname_mat_ctl
-!>    Structure for modelview marices
+!>     Structure for modelview marices
         type(modeview_ctl) :: mat
-!>    Structure for lighting
+!>     Structure for lighting
         type(pvr_light_ctl) :: light
 !
-!>    Structure for colormap and colorbar
+!>     file name for colormap and colorbar
+        character(len=kchara) :: fname_cmap_cbar_c
+!>     Structure for colormap and colorbar
         type(pvr_colormap_bar_ctl) :: cmap_cbar_c
 !
-!>    Structure for image rotation
+!>     Structure for image rotation
         type(pvr_movie_ctl) :: movie
-!>    Structure of quilt image controls
+!>     Structure of quilt image controls
         type(quilt_image_ctl) :: quilt_c
 !
         type(read_character_item) :: updated_ctl

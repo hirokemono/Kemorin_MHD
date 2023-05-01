@@ -199,7 +199,8 @@
         call sel_read_ctl_modelview_file(id_control, hd_view_transform, &
      &      pvr_ctl%fname_mat_ctl, pvr_ctl%mat, c_buf)
         call sel_read_ctl_pvr_colormap_file                             &
-     &     (id_control, hd_pvr_colordef, pvr_ctl%cmap_cbar_c, c_buf)
+     &     (id_control, hd_pvr_colordef, pvr_ctl%fname_cmap_cbar_c,     &
+     &      pvr_ctl%cmap_cbar_c, c_buf)
 !
         call read_pvr_sections_ctl(id_control, hd_pvr_sections,         &
      &      pvr_ctl%pvr_scts_c, c_buf)

@@ -7,12 +7,31 @@
 !> @brief colormap control data for parallel volume rendering
 !!
 !!@verbatim
+!!      subroutine sel_read_ctl_pvr_colormap_file                       &
+!!     &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
 !!      subroutine read_control_pvr_colormap_file                       &
-!!     &         (id_control, color_file_name, hd_block, cmap_cbar_c)
-!!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
-!!
+!!     &         (id_control, file_name, hd_block, cmap_cbar_c)
 !!      subroutine read_pvr_cmap_cbar                                   &
 !!     &         (id_control, hd_block, cmap_cbar_c, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        character(len = kchara), intent(inout) :: file_name
+!!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
+!!
+!!      subroutine sel_write_ctl_pvr_colormap_file                      &
+!!     &         (id_control, file_name, hd_block, cmap_cbar_c, level)
+!!      subroutine write_control_pvr_colormap_file                      &
+!!     &         (id_control, file_name, hd_block, cmap_cbar_c)
+!!      subroutine write_pvr_cmap_cbar(id_control, hd_block,            &
+!!     &                               cmap_cbar_c, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: file_name
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(pvr_colormap_bar_ctl), intent(in) :: cmap_cbar_c
+!!        integer(kind = kint), intent(inout) :: level
+!!
 !!      subroutine deallocate_pvr_cmap_cbar(cmap_cbar_c)
 !!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
 !!
@@ -127,17 +146,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_read_ctl_pvr_colormap_file                         &
-     &         (id_control, hd_block, cmap_cbar_c, c_buf)
+     &         (id_control, hd_block, file_name, cmap_cbar_c, c_buf)
 !
       use read_ctl_data_pvr_colorbar
       use read_ctl_data_pvr_colormap
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
+      character(len = kchara), intent(inout) :: file_name
       type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
       type(buffer_for_control), intent(inout)  :: c_buf
 !
-      character(len = kchara) :: file_name
 !
 !
       if(check_file_flag(c_buf, hd_block)) then
@@ -146,9 +165,8 @@
         file_name = third_word(c_buf)
         call read_control_pvr_colormap_file                             &
      &     (id_control+1, file_name, hd_block, cmap_cbar_c)
-      end if
-!
-      if(cmap_cbar_c%i_cmap_cbar .eq. 0) then
+      else if(cmap_cbar_c%i_cmap_cbar .eq. 0) then
+        file_name = 'NO_FILE'
         call read_pvr_colordef_ctl(id_control, hd_colormap_file,        &
      &      cmap_cbar_c%color, c_buf)
         call read_pvr_colordef_ctl(id_control, hd_colormap,             &
@@ -163,23 +181,23 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_pvr_colormap_file                         &
-     &         (id_control, color_file_name, hd_block, cmap_cbar_c)
+     &         (id_control, file_name, hd_block, cmap_cbar_c)
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: color_file_name
+      character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
       type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
 !
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(color_file_name .eq. 'NO_FILE') then
+      if(file_name .eq. 'NO_FILE') then
         write(*,*)  'Colormap control is included'
         return
       end if
 !
-      write(*,*) 'Colormap control file:', trim(color_file_name)
-      open(id_control, file = color_file_name, status='old')
+      write(*,*) 'Colormap control file:', trim(file_name)
+      open(id_control, file = file_name, status='old')
 !
       do
         call load_one_line_from_control(id_control, c_buf1)
@@ -223,6 +241,90 @@
       cmap_cbar_c%i_cmap_cbar = 1
 !
       end subroutine read_pvr_cmap_cbar
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine sel_write_ctl_pvr_colormap_file                        &
+     &         (id_control, file_name, hd_block, cmap_cbar_c, level)
+!
+      use read_ctl_data_pvr_colorbar
+      use read_ctl_data_pvr_colormap
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: file_name
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_colormap_bar_ctl), intent(in) :: cmap_cbar_c
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(cmp_no_case(file_name, 'NO_FILE')) then
+        call write_pvr_colordef_ctl(id_control, hd_colormap,            &
+     &      cmap_cbar_c%color, level)
+        call write_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,        &
+     &      cmap_cbar_c%cbar_ctl, level)
+      else
+        call write_control_pvr_colormap_file                            &
+     &     (id_control+1, file_name, hd_block, cmap_cbar_c)
+      end if
+!
+      end subroutine sel_write_ctl_pvr_colormap_file
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_control_pvr_colormap_file                        &
+     &         (id_control, file_name, hd_block, cmap_cbar_c)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: file_name
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_colormap_bar_ctl), intent(in) :: cmap_cbar_c
+!
+      integer(kind = kint) :: level
+!
+!
+      if(file_name .eq. 'NO_FILE') return
+!
+      write(*,*) 'Colormap control file:', trim(file_name)
+      level = 0
+      open(id_control, file = file_name)
+      call write_pvr_cmap_cbar(id_control, hd_block,                    &
+     &                         cmap_cbar_c, level)
+      close(id_control)
+!
+      end subroutine write_control_pvr_colormap_file
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_pvr_cmap_cbar(id_control, hd_block,              &
+     &                               cmap_cbar_c, level)
+!
+      use read_ctl_data_pvr_colorbar
+      use read_ctl_data_pvr_colormap
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(pvr_colormap_bar_ctl), intent(in) :: cmap_cbar_c
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(cmap_cbar_c%i_cmap_cbar .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_pvr_colordef_ctl(id_control, hd_colormap,              &
+     &    cmap_cbar_c%color, level)
+      call write_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,          &
+     &    cmap_cbar_c%cbar_ctl, level)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_pvr_cmap_cbar
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
