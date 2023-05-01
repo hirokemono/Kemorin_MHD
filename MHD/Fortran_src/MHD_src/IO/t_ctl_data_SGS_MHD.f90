@@ -15,6 +15,8 @@
 !!      subroutine read_sph_mhd_control_data                            &
 !!     &         (id_control, hd_block, MHD_ctl, c_buf)
 !!      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
+!!      subroutine bcast_sph_mhd_control_data(MHD_ctl)
+!!      subroutine bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
 !!@endverbatim
 !
       module t_ctl_data_SGS_MHD
@@ -46,6 +48,8 @@
 !>        Control structure for new file informations
         type(platform_data_control) :: new_plt
 !
+!>        file name for parallel spherical shell control
+        character(len = kchara) :: fname_psph_ctl
 !>        Control structure for parallel spherical shell
         type(parallel_sph_shell_control) :: psph_ctl
 !
@@ -171,6 +175,7 @@
      &         (id_control, hd_block, MHD_ctl, c_buf)
 !
       use t_ctl_data_SPH_MHD_control
+      use ctl_file_gen_sph_shell_IO
       use read_ctl_data_4_platforms
       use read_ctl_data_sph_monitor
       use read_viz_controls
@@ -196,8 +201,8 @@
         call read_control_platforms                                     &
      &     (id_control, hd_new_data, MHD_ctl%new_plt, c_buf)
 !
-        call read_parallel_shell_in_MHD_ctl                             &
-     &     (id_control, hd_sph_shell, MHD_ctl%psph_ctl, c_buf)
+        call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
+     &      MHD_ctl%fname_psph_ctl, MHD_ctl%psph_ctl, c_buf)
 !
         call read_sph_sgs_mhd_model                                     &
      &     (id_control, hd_model, MHD_ctl%model_ctl, c_buf)
@@ -245,6 +250,8 @@
 !
       use t_ctl_data_SPH_MHD_control
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
@@ -265,6 +272,8 @@
       call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
       call calypso_mpi_bcast_one_int(MHD_ctl%i_mhd_ctl, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (MHD_ctl%fname_psph_ctl, cast_long(kchara), 0)
 !
       end subroutine bcast_sph_sgs_mhd_ctl_data
 !

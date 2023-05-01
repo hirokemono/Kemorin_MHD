@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_sphere_model.f90
-!!        module read_ctl_data_sphere_model
+!>@file   ctl_data_sphere_model_IO.f90
+!!        module ctl_data_sphere_model_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2007
@@ -94,7 +94,7 @@
 !! =======================================================
 !!@endverbatim
 !
-      module read_ctl_data_sphere_model
+      module ctl_data_sphere_model_IO
 !
       use m_precision
       use t_control_array_character
@@ -353,4 +353,4 @@
 !
 !   --------------------------------------------------------------------
 !
-      end module read_ctl_data_sphere_model
+      end module ctl_data_sphere_model_IO

@@ -35,6 +35,9 @@
       type sph_mesh_generation_ctl
 !>        Structure for file settings
         type(platform_data_control) :: plt
+!
+!>        file name for parallel spherical shell control
+        character(len = kchara) :: fname_psph_ctl
 !>        Control structure for parallel spherical shell
         type(parallel_sph_shell_control) :: psph_ctl
 !
@@ -94,6 +97,7 @@
      &         (id_control, hd_block, gen_SPH_ctl, c_buf)
 !
       use read_ctl_data_4_platforms
+      use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -110,8 +114,8 @@
 !
         call read_control_platforms                                     &
      &     (id_control, hd_platform, gen_SPH_ctl%plt, c_buf)
-        call read_parallel_shell_in_MHD_ctl                             &
-     &     (id_control, hd_sph_shell, gen_SPH_ctl%psph_ctl, c_buf)
+        call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
+     &      gen_SPH_ctl%fname_psph_ctl, gen_SPH_ctl%psph_ctl, c_buf)
       end do
       gen_SPH_ctl%i_sph_mesh_ctl = 1
 !
@@ -122,6 +126,8 @@
       subroutine bcast_sph_shell_define_ctl(gen_SPH_ctl)
 !
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_4_platform_ctl
 !
       type(sph_mesh_generation_ctl), intent(inout) :: gen_SPH_ctl
@@ -131,6 +137,8 @@
       call bcast_parallel_shell_ctl(gen_SPH_ctl%psph_ctl)
 !
       call calypso_mpi_bcast_one_int(gen_SPH_ctl%i_sph_mesh_ctl, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (gen_SPH_ctl%fname_psph_ctl, cast_long(kchara), 0)
 !
       end subroutine bcast_sph_shell_define_ctl
 !

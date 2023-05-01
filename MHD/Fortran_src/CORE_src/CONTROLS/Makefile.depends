@@ -1,3 +1,5 @@
+ctl_data_sphere_model_IO.o: $(CTL_DIR)/ctl_data_sphere_model_IO.f90 m_precision.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_array_charaint.o t_control_array_integer2.o t_control_array_intreal.o t_ctl_data_4_sphere_model.o m_machine_parameter.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+	$(F90) -c $(F90OPTFLAGS) $<
 m_component_flags.o: $(CTL_DIR)/m_component_flags.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_ctl_array_routine_name.o: $(CTL_DIR)/m_ctl_array_routine_name.f90 m_precision.o set_parallel_file_name.o
@@ -11,8 +13,6 @@ read_ctl_data_4_Multigrid.o: $(CTL_DIR)/read_ctl_data_4_Multigrid.f90 m_precisio
 read_ctl_data_4_platforms.o: $(CTL_DIR)/read_ctl_data_4_platforms.f90 m_precision.o m_machine_parameter.o t_control_array_character.o t_control_array_integer.o t_ctl_data_4_platforms.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 read_ctl_data_sph_monitor.o: $(CTL_DIR)/read_ctl_data_sph_monitor.f90 m_precision.o t_read_control_elements.o t_control_array_character.o t_ctl_data_sph_vol_spectr.o t_ctl_data_sph_layer_spectr.o t_ctl_data_pick_sph_spectr.o t_ctl_data_gauss_coefs.o t_mid_equator_control.o t_ctl_data_sph_dipolarity.o t_ctl_data_4_sph_monitor.o skip_comment_f.o write_control_elements.o
-	$(F90) -c $(F90OPTFLAGS) $<
-read_ctl_data_sphere_model.o: $(CTL_DIR)/read_ctl_data_sphere_model.f90 m_precision.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_array_charaint.o t_control_array_integer2.o t_control_array_intreal.o t_ctl_data_4_sphere_model.o m_machine_parameter.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_4_pickup_sph.o: $(CTL_DIR)/set_control_4_pickup_sph.f90 m_precision.o t_ctl_data_4_sph_monitor.o t_pickup_sph_spectr_data.o t_rms_4_sph_spectr.o t_multi_flag_labels.o m_file_format_labels.o skip_comment_f.o t_ctl_data_sph_layer_spectr.o t_ctl_data_pick_sph_spectr.o m_base_field_labels.o t_ctl_data_gauss_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<

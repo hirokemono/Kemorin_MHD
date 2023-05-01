@@ -36,6 +36,8 @@
 !>        Structure of mesh IO controls and sleeve informations
         type(FEM_mesh_control) :: Fmesh_ctl
 !
+!>        File name to read spherical shell control file
+        character (len = kchara) :: fname_psph_ctl
 !>        structure of parallel spherical shell data
         type(parallel_sph_shell_control) :: psph_ctl
 !
@@ -169,6 +171,7 @@
 !
       use read_ctl_data_4_platforms
       use read_viz_controls
+      use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -190,8 +193,8 @@
         call read_FEM_mesh_control                                      &
      &     (id_control, hd_FEM_mesh, spt_ctl%Fmesh_ctl, c_buf)
 !
-        call read_parallel_shell_in_MHD_ctl                              &
-     &     (id_control, hd_sph_shell, spt_ctl%psph_ctl, c_buf)
+        call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
+     &      spt_ctl%fname_psph_ctl, spt_ctl%psph_ctl, c_buf)
 !
         call read_sph_trans_model_ctl                                   &
      &     (id_control, hd_sph_trans_model, spt_ctl, c_buf)
@@ -210,6 +213,8 @@
       subroutine bcast_sph_trans_control_data(spt_ctl)
 !
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_4_field_ctl
       use bcast_4_time_step_ctl
       use bcast_4_platform_ctl
@@ -226,6 +231,8 @@
       call bcast_viz_controls(spt_ctl%viz_ctls)
 !
       call calypso_mpi_bcast_one_int(spt_ctl%i_sph_trans_ctl, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (spt_ctl%fname_psph_ctl, cast_long(kchara), 0)
 !
       end subroutine bcast_sph_trans_control_data
 !

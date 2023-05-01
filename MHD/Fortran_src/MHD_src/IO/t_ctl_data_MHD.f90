@@ -48,6 +48,8 @@
 !>        Control structure for new file informations
         type(platform_data_control) :: new_plt
 !
+!>        file name for parallel spherical shell control
+        character(len = kchara) :: fname_psph_ctl
 !>        Control structure for parallel spherical shell
         type(parallel_sph_shell_control) :: psph_ctl
 !
@@ -110,6 +112,7 @@
       use read_ctl_data_4_platforms
       use read_ctl_data_sph_monitor
       use read_surfacing_controls
+      use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -130,8 +133,8 @@
         call read_control_platforms                                     &
      &     (id_control, hd_org_data, DMHD_ctl%org_plt, c_buf)
 !
-        call read_parallel_shell_in_MHD_ctl                             &
-     &     (id_control, hd_sph_shell, DMHD_ctl%psph_ctl, c_buf)
+        call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
+     &      DMHD_ctl%fname_psph_ctl, DMHD_ctl%psph_ctl, c_buf)
 !
         call read_sph_mhd_model                                         &
      &     (id_control, hd_model, DMHD_ctl%model_ctl, c_buf)
@@ -162,6 +165,7 @@
 !
       use read_ctl_data_4_platforms
       use read_ctl_data_sph_monitor
+      use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -182,8 +186,8 @@
         call read_control_platforms                                     &
      &     (id_control, hd_org_data, DMHD_ctl%org_plt, c_buf)
 !
-        call read_parallel_shell_in_MHD_ctl                             &
-     &     (id_control, hd_sph_shell, DMHD_ctl%psph_ctl, c_buf)
+        call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
+     &      DMHD_ctl%fname_psph_ctl, DMHD_ctl%psph_ctl, c_buf)
 !
         call read_sph_mhd_model                                         &
      &     (id_control, hd_model, DMHD_ctl%model_ctl, c_buf)
@@ -218,6 +222,8 @@
       subroutine bcast_sph_mhd_ctl_data(DMHD_ctl)
 !
       use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
@@ -238,6 +244,8 @@
       call bcast_sph_monitoring_ctl(DMHD_ctl%smonitor_ctl)
 !
       call calypso_mpi_bcast_one_int(DMHD_ctl%i_mhd_ctl, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (DMHD_ctl%fname_psph_ctl, cast_long(kchara), 0)
 !
       end subroutine bcast_sph_mhd_ctl_data
 !
