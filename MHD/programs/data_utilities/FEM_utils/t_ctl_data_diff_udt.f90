@@ -162,7 +162,7 @@
       subroutine read_diff_control_data                                 &
      &         (id_control, hd_block, diff_udt_c, c_buf)
 !
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

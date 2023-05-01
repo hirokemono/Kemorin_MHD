@@ -176,7 +176,7 @@
 !
       use t_ctl_data_SPH_MHD_control
       use ctl_file_gen_sph_shell_IO
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use read_ctl_data_sph_monitor
       use read_viz_controls
 !

@@ -166,7 +166,7 @@
        subroutine read_merge_control_data                               &
       &         (id_control, hd_block, mgd_ctl, c_buf)
 !
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control

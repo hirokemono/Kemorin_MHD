@@ -102,7 +102,7 @@
      &         (id_control, hd_block, viz_repart_c, c_buf)
 !
       use t_read_control_elements
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use ctl_data_volume_grouping_IO
       use skip_comment_f
 !
@@ -139,7 +139,7 @@
      &         (id_control, hd_block, viz_repart_c, level)
 !
       use t_read_control_elements
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use ctl_data_volume_grouping_IO
       use write_control_elements
       use skip_comment_f

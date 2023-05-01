@@ -109,7 +109,7 @@
       subroutine read_sph_mhd_ctl_w_psf                                 &
      &         (id_control, hd_block, DMHD_ctl, c_buf)
 !
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use read_ctl_data_sph_monitor
       use read_surfacing_controls
       use ctl_file_gen_sph_shell_IO
@@ -163,7 +163,7 @@
       subroutine read_sph_mhd_ctl_noviz                                 &
      &         (id_control, hd_block, DMHD_ctl, c_buf)
 !
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use read_ctl_data_sph_monitor
       use ctl_file_gen_sph_shell_IO
 !

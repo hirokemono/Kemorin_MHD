@@ -170,7 +170,7 @@
      &         (id_control, hd_block, CG_ctl, c_buf)
 !
       use t_read_control_elements
-      use read_ctl_data_4_Multigrid
+      use ctl_data_Multigrid_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -215,7 +215,7 @@
      &         (id_control, hd_block, CG_ctl, level)
 !
       use t_read_control_elements
-      use read_ctl_data_4_Multigrid
+      use ctl_data_Multigrid_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control

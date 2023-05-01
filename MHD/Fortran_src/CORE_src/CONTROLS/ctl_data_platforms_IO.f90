@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_4_platforms.f90
-!!        module read_ctl_data_4_platforms
+!>@file   ctl_data_platforms_IO.f90
+!!        module ctl_data_platforms_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2007
@@ -55,7 +55,7 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !!
-      module read_ctl_data_4_platforms
+      module ctl_data_platforms_IO
 !
       use m_precision
       use m_machine_parameter
@@ -320,4 +320,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module  read_ctl_data_4_platforms
+      end module  ctl_data_platforms_IO

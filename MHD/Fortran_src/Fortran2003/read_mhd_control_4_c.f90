@@ -36,7 +36,7 @@
      &          bind(C, NAME = 'c_write_control_sph_SGS_MHD')
 !
       use calypso_mpi
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use read_ctl_data_4_time_steps
 !
       character(len=kchara), parameter                                  &

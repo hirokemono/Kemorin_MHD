@@ -80,7 +80,7 @@ set_simple_filters.o: $(FILTER_3D_MATDIR)/set_simple_filters.f90 m_precision.o m
 	$(F90) -c $(F90OPTFLAGS) $<
 sorting_by_filtering_area.o: $(FILTER_3D_MATDIR)/sorting_by_filtering_area.f90 m_precision.o m_constants.o calypso_mpi.o t_filter_coefficients.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_newdomain_filter.o: $(FILTER_3D_MATDIR)/t_ctl_data_newdomain_filter.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o t_ctl_data_3d_filter.o skip_comment_f.o read_ctl_data_4_platforms.o calypso_mpi_int.o bcast_control_arrays.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o
+t_ctl_data_newdomain_filter.o: $(FILTER_3D_MATDIR)/t_ctl_data_newdomain_filter.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o t_ctl_data_3d_filter.o skip_comment_f.o ctl_data_platforms_IO.o calypso_mpi_int.o bcast_control_arrays.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_param_newdom_filter.o: $(FILTER_3D_MATDIR)/t_ctl_param_newdom_filter.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o m_default_file_prefix.o t_ctl_data_3d_filter.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o set_control_platform_item.o set_control_platform_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

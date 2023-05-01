@@ -169,7 +169,7 @@
       subroutine read_sph_trans_control_data                            &
      &         (id_control, hd_block, spt_ctl, c_buf)
 !
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use read_viz_controls
       use ctl_file_gen_sph_shell_IO
 !

@@ -116,7 +116,7 @@
      &         (id_control, hd_block, part_tctl, c_buf)
 !
       use t_read_control_elements
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use ctl_file_volume_repart_IO
       use skip_comment_f
 !

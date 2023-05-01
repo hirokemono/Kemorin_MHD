@@ -133,7 +133,7 @@
       subroutine read_control_4_add_egrp_data                           &
      &         (id_control, hd_block, addgrp_c, c_buf)
 !
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

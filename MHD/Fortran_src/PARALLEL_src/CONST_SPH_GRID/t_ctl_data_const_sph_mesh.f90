@@ -96,7 +96,7 @@
       subroutine read_sph_shell_define_ctl                              &
      &         (id_control, hd_block, gen_SPH_ctl, c_buf)
 !
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control

@@ -101,7 +101,7 @@
       subroutine read_test_comm_ctl_data                                &
      &         (id_control, hd_block, comm_tctl, c_buf)
 !
-      use read_ctl_data_4_platforms
+      use ctl_data_platforms_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control

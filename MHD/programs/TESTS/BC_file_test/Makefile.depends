@@ -6,6 +6,6 @@ m_ctl_params_test_bc_temp.o: $(BC_FILE_TEST_DIR)/m_ctl_params_test_bc_temp.f90 m
 	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_bc_temp.o: $(BC_FILE_TEST_DIR)/main_sph_bc_temp.f90 m_precision.o calypso_mpi.o analyzer_sph_bc_temp.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_test_bc_temp.o: $(BC_FILE_TEST_DIR)/t_ctl_data_test_bc_temp.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_control_array_integer.o t_control_array_character.o skip_comment_f.o read_ctl_data_4_platforms.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_control_arrays.o
+t_ctl_data_test_bc_temp.o: $(BC_FILE_TEST_DIR)/t_ctl_data_test_bc_temp.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_control_array_integer.o t_control_array_character.o skip_comment_f.o ctl_data_platforms_IO.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

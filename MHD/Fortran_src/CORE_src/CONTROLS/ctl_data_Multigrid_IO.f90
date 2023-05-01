@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_4_Multigrid.f90
-!!        module read_ctl_data_4_Multigrid
+!>@file   ctl_data_Multigrid_IO.f90
+!!        module ctl_data_Multigrid_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2007
@@ -91,7 +91,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_ctl_data_4_Multigrid
+      module ctl_data_Multigrid_IO
 !
       use m_precision
       use m_machine_parameter
@@ -281,4 +281,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module  read_ctl_data_4_Multigrid
+      end module  ctl_data_Multigrid_IO

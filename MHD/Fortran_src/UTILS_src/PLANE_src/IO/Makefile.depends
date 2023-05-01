@@ -24,7 +24,7 @@ set_read_geometry_2_merge.o: $(PLANE_IO_DIR)/set_read_geometry_2_merge.f90 m_pre
 	$(F90) -c $(F90OPTFLAGS) $<
 set_spectr_file_name.o: $(PLANE_IO_DIR)/set_spectr_file_name.f90 m_precision.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_4_cub_kemo.o: $(PLANE_IO_DIR)/t_ctl_data_4_cub_kemo.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o t_ctl_data_4_plane_model.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o skip_comment_f.o read_ctl_data_4_platforms.o
+t_ctl_data_4_cub_kemo.o: $(PLANE_IO_DIR)/t_ctl_data_4_cub_kemo.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o t_ctl_data_4_plane_model.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o skip_comment_f.o ctl_data_platforms_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_4_plane_model.o: $(PLANE_IO_DIR)/t_ctl_data_4_plane_model.f90 m_precision.o m_machine_parameter.o t_control_array_character.o t_control_array_integer.o t_control_array_real3.o t_control_array_integer3.o t_control_array_character3.o t_read_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
