@@ -111,7 +111,7 @@
 !
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
-      use read_surfacing_controls
+      use control_data_surfacing_IO
       use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control

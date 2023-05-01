@@ -95,7 +95,7 @@
       subroutine read_pvr_section_ctl                                   &
      &         (id_control, hd_block, pvr_sect_ctl, c_buf)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -124,7 +124,7 @@
       subroutine write_pvr_section_ctl                                  &
      &         (id_control, hd_block, pvr_sect_ctl, level)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -157,7 +157,7 @@
       subroutine sel_read_ctl_pvr_section_def(id_control, hd_block,     &
      &          fname_sect_ctl, psf_def_c, c_buf)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -185,7 +185,7 @@
       subroutine read_ctl_file_pvr_section_def                          &
      &         (id_control, fname_sect_ctl, hd_block, psf_def_c)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_sect_ctl
@@ -215,7 +215,7 @@
       subroutine sel_write_ctl_pvr_section_def(id_control, hd_block,    &
      &          fname_sect_ctl, psf_def_c, level)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
       use write_control_elements
       use skip_comment_f
 !
@@ -243,7 +243,7 @@
       subroutine write_ctl_file_pvr_section_def                         &
      &         (id_control, fname_sect_ctl, hd_block, psf_def_c)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_sect_ctl

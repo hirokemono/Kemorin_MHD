@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_sections.f90
-!!@brief  module read_ctl_data_sections
+!>@file   ctl_file_sections_IO.f90
+!!@brief  module ctl_file_sections_IO
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -39,7 +39,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_ctl_data_sections
+      module ctl_file_sections_IO
 !
       use m_precision
 !
@@ -67,7 +67,7 @@
      &         (id_control, hd_block, psf_ctls, c_buf)
 !
       use t_read_control_elements
-      use read_psf_control_data
+      use ctl_data_section_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -104,7 +104,7 @@
      &          file_name, psf_ctl_struct, c_buf)
 !
       use t_read_control_elements
-      use read_psf_control_data
+      use ctl_data_section_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -137,7 +137,7 @@
 !
       use t_read_control_elements
       use t_control_data_4_psf
-      use read_psf_control_data
+      use ctl_data_section_IO
 !
 !
       integer(kind = kint), intent(in) :: id_control
@@ -199,7 +199,7 @@
 !
       use t_read_control_elements
       use write_control_elements
-      use read_psf_control_data
+      use ctl_data_section_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -229,7 +229,7 @@
 !
       use t_read_control_elements
       use t_control_data_4_psf
-      use read_psf_control_data
+      use ctl_data_section_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
@@ -250,4 +250,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_ctl_data_sections
+      end module ctl_file_sections_IO

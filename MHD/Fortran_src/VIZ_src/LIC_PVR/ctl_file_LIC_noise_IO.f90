@@ -71,7 +71,7 @@
      &         (id_control, hd_block, file_name, noise_ctl, c_buf)
 !
       use t_read_control_elements
-      use read_iso_control_data
+      use ctl_data_isosurface_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control

@@ -125,8 +125,8 @@
      &         (id_control, hd_block, viz_ctls, c_buf)
 !
       use t_read_control_elements
-      use read_ctl_data_sections
-      use read_ctl_data_isosurfaces
+      use ctl_file_sections_IO
+      use ctl_file_isosurfaces_IO
       use ctl_file_fieldlines_IO
       use skip_comment_f
 !

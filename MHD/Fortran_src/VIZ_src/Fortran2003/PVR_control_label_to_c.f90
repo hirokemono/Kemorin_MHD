@@ -70,7 +70,7 @@
 !
       integer(c_int) function num_label_pvr_ctl_f() bind(c)
 !
-      use read_pvr_control
+      use ctl_data_each_pvr_IO
 !
       num_label_pvr_ctl_f = num_label_pvr_ctl()
       return
@@ -80,7 +80,7 @@
 !
       integer(c_int) function num_label_pvr_ctl_w_dup_f() bind(c)
 !
-      use read_pvr_control
+      use ctl_data_each_pvr_IO
 !
       num_label_pvr_ctl_w_dup_f = num_label_pvr_ctl_w_dup()
       return
@@ -90,7 +90,7 @@
 !
       subroutine set_label_pvr_ctl_w_dup_f(names)  bind(c)
 !
-      use read_pvr_control
+      use ctl_data_each_pvr_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -299,7 +299,7 @@
 !
       integer(c_int) function num_label_pvr_isosurface_f() bind(c)
 !
-      use t_control_data_pvr_isosurfs
+      use t_ctl_data_pvr_isosurface
 !
       num_label_pvr_isosurface_f = num_label_pvr_isosurface()
       return
@@ -309,7 +309,7 @@
 !
       subroutine set_label_pvr_isosurface_f(names)  bind(c)
 !
-      use t_control_data_pvr_isosurfs
+      use t_ctl_data_pvr_isosurface
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

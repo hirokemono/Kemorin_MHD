@@ -1,5 +1,5 @@
-!>@file   read_control_data_4_psf_def.f90
-!!@brief  module read_control_data_4_psf_def
+!>@file   ctl_data_section_def_IO.f90
+!!@brief  module ctl_data_section_def_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in May. 2006
@@ -107,7 +107,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_control_data_4_psf_def
+      module ctl_data_section_def_IO
 !
       use m_precision
 !
@@ -274,4 +274,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_control_data_4_psf_def
+      end module ctl_data_section_def_IO

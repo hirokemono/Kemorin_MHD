@@ -162,8 +162,8 @@
 !
       use t_read_control_elements
       use t_control_data_sections
-      use read_psf_control_data
-      use read_ctl_data_sections
+      use ctl_data_section_IO
+      use ctl_file_sections_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -192,7 +192,7 @@
      &          (id_control, hd_section, psf_ctls, level)
 !
       use t_control_data_sections
-      use read_ctl_data_sections
+      use ctl_file_sections_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_section

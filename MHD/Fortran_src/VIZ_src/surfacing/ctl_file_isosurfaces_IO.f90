@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_isosurfaces.f90
-!!@brief  module read_ctl_data_isosurfaces
+!>@file   ctl_file_isosurfaces_IO.f90
+!!@brief  module ctl_file_isosurfaces_IO
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -39,7 +39,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_ctl_data_isosurfaces
+      module ctl_file_isosurfaces_IO
 !
       use m_precision
 !
@@ -66,7 +66,7 @@
      &         (id_control, hd_block, iso_ctls, c_buf)
 !
       use t_read_control_elements
-      use read_iso_control_data
+      use ctl_data_isosurface_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -102,7 +102,7 @@
      &          file_name, iso_ctl_struct, c_buf)
 !
       use t_read_control_elements
-      use read_iso_control_data
+      use ctl_data_isosurface_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -135,7 +135,7 @@
 !
       use t_read_control_elements
       use t_control_data_4_iso
-      use read_iso_control_data
+      use ctl_data_isosurface_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
@@ -196,7 +196,7 @@
 !
       use t_read_control_elements
       use write_control_elements
-      use read_iso_control_data
+      use ctl_data_isosurface_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -226,7 +226,7 @@
 !
       use t_read_control_elements
       use t_control_data_4_iso
-      use read_iso_control_data
+      use ctl_data_isosurface_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
@@ -247,4 +247,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_ctl_data_isosurfaces
+      end module ctl_file_isosurfaces_IO

@@ -84,7 +84,7 @@
 !
       use t_read_control_elements
       use skip_comment_f
-      use read_pvr_control
+      use ctl_data_each_pvr_IO
       use set_pvr_control
 !
       integer(kind = kint), intent(in) :: id_control

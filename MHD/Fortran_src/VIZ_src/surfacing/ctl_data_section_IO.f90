@@ -1,5 +1,5 @@
-!>@file   read_psf_control_data.f90
-!!@brief  module read_psf_control_data
+!>@file   ctl_data_section_IO.f90
+!!@brief  module ctl_data_section_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in May. 2006
@@ -121,7 +121,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_psf_control_data
+      module ctl_data_section_IO
 !
       use m_precision
 !
@@ -168,7 +168,7 @@
       subroutine s_read_psf_control_data                                &
      &         (id_control, hd_block, psf_c, c_buf)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -205,7 +205,7 @@
       subroutine write_psf_control_data                                 &
      &         (id_control, hd_block, psf_c, level)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -282,4 +282,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_psf_control_data
+      end module ctl_data_section_IO

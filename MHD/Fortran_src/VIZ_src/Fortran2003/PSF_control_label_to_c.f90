@@ -48,7 +48,7 @@
 !
       integer(c_int) function num_label_iso_ctl_f() bind(c)
 !
-      use read_iso_control_data
+      use ctl_data_isosurface_IO
 !
       num_label_iso_ctl_f = num_label_iso_ctl()
       return
@@ -58,7 +58,7 @@
 !
       integer(c_int) function num_label_iso_ctl_w_dpl_f() bind(c)
 !
-      use read_iso_control_data
+      use ctl_data_isosurface_IO
 !
       num_label_iso_ctl_w_dpl_f = num_label_iso_ctl_w_dpl()
       return
@@ -89,7 +89,7 @@
 !
       subroutine set_label_iso_ctl_w_dpl_f(names)  bind(c)
 !
-      use read_iso_control_data
+      use ctl_data_isosurface_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -134,7 +134,7 @@
 !
       integer(c_int) function num_label_psf_define_control_f() bind(c)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
 !
       num_label_psf_define_control_f = num_label_psf_define_control()
       return
@@ -144,7 +144,7 @@
 !
       integer(c_int) function num_label_psf_ctl_w_dpl_f() bind(c)
 !
-      use read_psf_control_data
+      use ctl_data_section_IO
 !
       num_label_psf_ctl_w_dpl_f = num_label_psf_ctl_w_dpl()
       return
@@ -206,7 +206,7 @@
 !
       subroutine set_label_psf_define_control_f(names)  bind(c)
 !
-      use read_control_data_4_psf_def
+      use ctl_data_section_def_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -217,7 +217,7 @@
 !
       subroutine set_label_psf_ctl_w_dpl_f(names)  bind(c)
 !
-      use read_psf_control_data
+      use ctl_data_section_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

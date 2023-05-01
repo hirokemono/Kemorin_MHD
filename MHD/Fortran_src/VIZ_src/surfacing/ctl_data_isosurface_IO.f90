@@ -1,5 +1,5 @@
-!>@file   read_iso_control_data.f90
-!!@brief  module read_iso_control_data
+!>@file   ctl_data_isosurface_IO.f90
+!!@brief  module ctl_data_isosurface_IO
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -74,7 +74,7 @@
 !!    isosurf_value:  value for isosurface
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@endverbatim
 !
-      module read_iso_control_data
+      module ctl_data_isosurface_IO
 !
       use m_precision
 !
@@ -236,4 +236,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_iso_control_data
+      end module ctl_data_isosurface_IO

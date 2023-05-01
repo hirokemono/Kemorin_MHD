@@ -229,7 +229,7 @@
       subroutine read_control_pvr_file(id_control, fname_pvr_ctl,       &
      &          hd_pvr_ctl, pvr_ctl_type)
 !
-      use read_pvr_control
+      use ctl_data_each_pvr_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_pvr_ctl
@@ -257,7 +257,7 @@
       subroutine read_control_pvr_update                                &
      &         (id_control, fname_pvr_ctl, hd_pvr_ctl, pvr_ctl_type)
 !
-      use read_pvr_control
+      use ctl_data_each_pvr_IO
       use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: id_control

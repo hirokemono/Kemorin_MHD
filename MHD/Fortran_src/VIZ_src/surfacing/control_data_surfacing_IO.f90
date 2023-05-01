@@ -1,5 +1,5 @@
-!>@file   read_surfacing_controls.f90
-!!@brief  module read_surfacing_controls
+!>@file   control_data_surfacing_IO.f90
+!!@brief  module control_data_surfacing_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2011
@@ -9,6 +9,16 @@
 !!@verbatim
 !!      subroutine s_read_surfacing_controls                            &
 !!     &         (id_control, hd_block, surfacing_ctls, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control 
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(surfacing_controls), intent(inout) :: surfacing_ctls
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_surfacing_controls                             &
+!!     &         (id_control, hd_block, surfacing_ctls, level)
+!!        integer(kind = kint), intent(in) :: id_control 
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(surfacing_controls), intent(in) :: surfacing_ctls
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !!      integer(kind = kint) function num_label_surfacings()
 !!      subroutine set_label_surfacings(names)
@@ -33,7 +43,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_surfacing_controls
+      module control_data_surfacing_IO
 !
       use m_precision
       use m_machine_parameter
@@ -84,8 +94,8 @@
      &         (id_control, hd_block, surfacing_ctls, c_buf)
 !
       use t_read_control_elements
-      use read_ctl_data_sections
-      use read_ctl_data_isosurfaces
+      use ctl_file_sections_IO
+      use ctl_file_isosurfaces_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control 
@@ -129,6 +139,65 @@
       end subroutine s_read_surfacing_controls
 !
 !   --------------------------------------------------------------------
+!
+      subroutine write_surfacing_controls                               &
+     &         (id_control, hd_block, surfacing_ctls, level)
+!
+      use t_read_control_elements
+      use ctl_file_sections_IO
+      use ctl_file_isosurfaces_IO
+      use write_control_elements
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_control 
+      character(len=kchara), intent(in) :: hd_block
+      type(surfacing_controls), intent(in) :: surfacing_ctls
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      if(surfacing_ctls%i_surfacing_control .le. 0) return
+!
+      maxlen = len_trim(hd_delta_t_section)
+      maxlen = max(maxlen, len_trim(hd_i_step_section))
+      maxlen = max(maxlen, len_trim(hd_delta_t_isosurf))
+      maxlen = max(maxlen, len_trim(hd_i_step_isosurf))
+      maxlen = max(maxlen, len_trim(hd_delta_t_ucd))
+      maxlen = max(maxlen, len_trim(hd_i_step_ucd))
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_delta_t_section, surfacing_ctls%delta_t_psf_s_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_i_step_section, surfacing_ctls%i_step_psf_s_ctl)
+      call write_files_4_psf_ctl(id_control,                            &
+     &    hd_section_ctl, surfacing_ctls%psf_s_ctls, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_delta_t_isosurf, surfacing_ctls%delta_t_iso_s_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_i_step_isosurf, surfacing_ctls%i_step_iso_s_ctl)
+      call write_files_4_iso_ctl(id_control,                            &
+     &    hd_isosurf_ctl, surfacing_ctls%iso_s_ctls, level)
+!
+      write(id_control,'(a1)') '!'
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_delta_t_ucd, surfacing_ctls%delta_t_ucd_s_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_i_step_ucd, surfacing_ctls%i_step_ucd_s_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_output_fld_file_fmt, surfacing_ctls%output_ucd_fmt_s_ctl)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_surfacing_controls
+!
+!   --------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function num_label_surfacings()
@@ -160,4 +229,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_surfacing_controls
+      end module control_data_surfacing_IO
