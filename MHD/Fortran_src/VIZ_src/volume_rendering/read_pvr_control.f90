@@ -179,7 +179,7 @@
      &         (id_control, hd_block, pvr_ctl, c_buf)
 !
       use ctl_file_pvr_modelview_IO
-      use read_ctl_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

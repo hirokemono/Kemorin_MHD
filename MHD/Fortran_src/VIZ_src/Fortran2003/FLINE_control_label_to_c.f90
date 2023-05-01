@@ -33,7 +33,7 @@
 !
       integer(c_int) function num_label_fline_ctl_f() bind(c)
 !
-      use read_field_line_ctl
+      use ctl_data_field_line_IO
 !
       num_label_fline_ctl_f = num_label_fline_ctl()
       return
@@ -74,7 +74,7 @@
 !
       subroutine set_label_fline_ctl_f(names)  bind(c)
 !
-      use read_field_line_ctl
+      use ctl_data_field_line_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

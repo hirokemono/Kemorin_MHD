@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_fieldlines.f90
-!!@brief  module read_ctl_data_fieldlines
+!>@file   ctl_file_fieldlines_IO.f90
+!!@brief  module ctl_file_fieldlines_IO
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -38,13 +38,13 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_ctl_data_fieldlines
+      module ctl_file_fieldlines_IO
 !
       use m_precision
       use m_constants
 !
       use m_machine_parameter
-      use t_ctl_data_4_fline
+      use t_ctl_data_field_line
       use t_control_data_flines
 !
       implicit  none
@@ -60,7 +60,7 @@
 !
       use t_read_control_elements
       use skip_comment_f
-      use read_field_line_ctl
+      use ctl_data_field_line_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -97,7 +97,7 @@
       subroutine sel_read_fline_control(id_control, hd_block,           &
      &          file_name, fline_ctl_struct, c_buf)
 !
-      use read_field_line_ctl
+      use ctl_data_field_line_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -127,7 +127,7 @@
       subroutine read_fline_control_file(id_control, file_name,         &
      &                                   hd_block, fline_ctl_struct)
 !
-      use read_field_line_ctl
+      use ctl_data_field_line_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
@@ -184,7 +184,7 @@
       subroutine sel_write_fline_control(id_control, file_name,         &
      &          hd_block, fline_ctl_struct, level)
 !
-      use read_field_line_ctl
+      use ctl_data_field_line_IO
       use write_control_elements
       use skip_comment_f
 !
@@ -214,7 +214,7 @@
       subroutine write_fline_control_file(id_control, file_name,        &
      &                                    hd_block, fline_ctl_struct)
 !
-      use read_field_line_ctl
+      use ctl_data_field_line_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
@@ -235,4 +235,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module read_ctl_data_fieldlines
+      end module ctl_file_fieldlines_IO

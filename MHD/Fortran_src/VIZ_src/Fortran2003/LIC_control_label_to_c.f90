@@ -215,7 +215,7 @@
       integer(c_int) function num_label_LIC_movie_f()                   &
      &              bind(c, name="num_label_LIC_movie_f")
 !
-      use read_ctl_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       num_label_LIC_movie_f = num_label_LIC_movie()
 !
@@ -226,7 +226,7 @@
       subroutine set_label_LIC_movie_f(labels)                          &
      &          bind(c, name="set_label_LIC_movie_f")
 !
-      use read_ctl_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       character(C_CHAR), intent(inout) :: labels(*)
 !

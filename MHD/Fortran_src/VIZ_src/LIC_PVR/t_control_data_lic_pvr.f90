@@ -182,7 +182,7 @@
       use ctl_file_pvr_modelview_IO
       use ctl_data_pvr_colorbar_IO
       use ctl_data_pvr_colormap_IO
-      use read_ctl_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_pvr_movie.f90
-!!@brief  module read_ctl_data_pvr_movie
+!>@file   ctl_data_pvr_movie_IO.f90
+!!@brief  module ctl_data_pvr_movie_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in 2006
@@ -62,7 +62,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module read_ctl_data_pvr_movie
+      module ctl_data_pvr_movie_IO
 !
       use m_precision
       use calypso_mpi
@@ -315,4 +315,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module read_ctl_data_pvr_movie
+      end module ctl_data_pvr_movie_IO

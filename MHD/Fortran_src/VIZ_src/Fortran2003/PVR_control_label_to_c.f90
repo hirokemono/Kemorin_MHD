@@ -102,7 +102,7 @@
 !
       integer(c_int) function num_label_pvr_modelview_f() bind(c)
 !
-      use read_ctl_data_view_transfer
+      use ctl_data_view_transfer_IO
 !
       num_label_pvr_modelview_f = num_label_pvr_modelview()
       return
@@ -133,7 +133,7 @@
 !
       subroutine set_label_pvr_modelview_f(names)  bind(c)
 !
-      use read_ctl_data_view_transfer
+      use ctl_data_view_transfer_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -343,7 +343,7 @@
 !
       integer(c_int) function num_label_pvr_movie_f() bind(c)
 !
-      use read_ctl_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       num_label_pvr_movie_f = num_label_pvr_movie()
       return
@@ -353,7 +353,7 @@
 !
       subroutine set_label_pvr_movie_f(names)  bind(c)
 !
-      use read_ctl_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

@@ -1,5 +1,5 @@
-!>@file   t_ctl_data_4_fline.f90
-!!@brief  module t_ctl_data_4_fline
+!>@file   t_ctl_data_field_line.f90
+!!@brief  module t_ctl_data_field_line
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -64,7 +64,7 @@
 !!  ---------------------------------------------------------------------
 !!@endverbatim
 !
-      module t_ctl_data_4_fline
+      module t_ctl_data_field_line
 !
       use m_precision
 !
@@ -280,4 +280,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module t_ctl_data_4_fline
+      end module t_ctl_data_field_line

@@ -145,7 +145,7 @@
       subroutine sel_read_ctl_modelview_file                            &
      &         (id_control, hd_block, file_name, mat, c_buf)
 !
-      use read_ctl_data_view_transfer
+      use ctl_data_view_transfer_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -173,7 +173,7 @@
      &         (id_control, file_name, hd_block, mat, level)
 !
       use skip_comment_f
-      use read_ctl_data_view_transfer
+      use ctl_data_view_transfer_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
@@ -205,7 +205,7 @@
       use calypso_mpi
       use m_error_IDs
       use skip_comment_f
-      use read_ctl_data_view_transfer
+      use ctl_data_view_transfer_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
@@ -238,7 +238,7 @@
       subroutine write_control_modelview_file(id_control, file_name,    &
      &                                        mat)
 !
-      use read_ctl_data_view_transfer
+      use ctl_data_view_transfer_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name

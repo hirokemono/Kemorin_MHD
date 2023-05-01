@@ -1,5 +1,5 @@
-!>@file   read_field_line_ctl.f90
-!!@brief  module read_field_line_ctl
+!>@file   ctl_data_field_line_IO.f90
+!!@brief  module ctl_data_field_line_IO
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -64,12 +64,12 @@
 !!  ---------------------------------------------------------------------
 !!@endverbatim
 !
-      module read_field_line_ctl
+      module ctl_data_field_line_IO
 !
       use m_precision
 !
       use m_machine_parameter
-      use t_ctl_data_4_fline
+      use t_ctl_data_field_line
       use t_read_control_elements
       use t_control_array_integer
       use t_control_array_character
@@ -290,4 +290,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module read_field_line_ctl
+      end module ctl_data_field_line_IO

@@ -1,5 +1,5 @@
-!>@file   read_ctl_data_view_transfer.f90
-!!@brief  module read_ctl_data_view_transfer
+!>@file   ctl_data_view_transfer_IO.f90
+!!@brief  module ctl_data_view_transfer_IO
 !!
 !!@author  H. Matsui
 !!@date Programmed in May. 2006
@@ -111,7 +111,7 @@
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
-      module read_ctl_data_view_transfer
+      module ctl_data_view_transfer_IO
 !
       use m_precision
 !
@@ -315,4 +315,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module read_ctl_data_view_transfer
+      end module ctl_data_view_transfer_IO
