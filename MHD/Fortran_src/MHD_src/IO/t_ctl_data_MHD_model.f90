@@ -131,6 +131,8 @@
 !
       use ctl_data_temp_model_IO
       use ctl_data_comp_model_IO
+      use ctl_data_node_boundary_IO
+      use ctl_data_surf_boundary_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
