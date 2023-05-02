@@ -14,7 +14,7 @@
 !!        type(layering_control), intent(inout) :: elayer_ctl
 !!        type(buffer_for_control), intent(inout) :: c_buf
 !!      subroutine write_ele_layers_control                             &
-!!     &         (id_control, hd_block, elayer_ctl, c_buf)
+!!     &         (id_control, hd_block, elayer_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(layering_control), intent(in) :: elayer_ctl

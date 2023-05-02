@@ -19,7 +19,7 @@
 !!     &         (id_control, hd_block, refc_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(reference_temperature_ctl), intent(inout) :: refc_ctl
+!!        type(reference_temperature_ctl), intent(in) :: refc_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!!!!!!!! model for stratification !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -155,8 +155,8 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
+      type(reference_temperature_ctl), intent(in) :: refc_ctl
 !
-      type(reference_temperature_ctl), intent(inout) :: refc_ctl
       integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: maxlen = 0

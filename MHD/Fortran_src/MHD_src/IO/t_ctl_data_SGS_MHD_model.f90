@@ -13,6 +13,16 @@
 !!@verbatim
 !!      subroutine read_sph_sgs_mhd_model                               &
 !!     &         (id_control, hd_block, model_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(mhd_model_control), intent(inout) :: model_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_sph_sgs_mhd_model                              &
+!!     &         (id_control, hd_block, model_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(mhd_model_control), intent(in) :: model_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine bcast_sph_sgs_mhd_model(model_ctl)
 !!      subroutine dealloc_sph_sgs_mhd_model(model_ctl)
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -98,14 +108,16 @@
      &      :: hd_bc_4_node =          'bc_4_node'
       character(len=kchara), parameter, private                         &
      &      :: hd_boundary_condition = 'boundary_condition'
+      character(len=kchara), parameter, private                         &
+     &      :: hd_bc_4_surf =    'bc_4_surface'
 !
+      character(len=kchara), parameter, private                         &
+     &      :: hd_forces_ctl =   'forces_define'
       character(len=kchara), parameter, private                         &
      &      :: hd_dimless_ctl =  'dimensionless_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_coef_term_ctl ='coefficients_ctl'
 !
-      character(len=kchara), parameter, private                         &
-     &      :: hd_forces_ctl =   'forces_define'
       character(len=kchara), parameter, private                         &
      &      :: hd_gravity_ctl =  'gravity_define'
       character(len=kchara), parameter, private                         &
@@ -114,7 +126,7 @@
       character(len=kchara), parameter, private                         &
      &      :: hd_induction_ctl =  'magnetic_induciton_ctl'
       character(len=kchara), parameter, private                         &
-     &      :: hd_magneto_ctl =  'Magneto_convection_def'
+     &      :: hd_magneto_cv_ctl =  'Magneto_convection_def'
       character(len=kchara), parameter, private                         &
      &      :: hd_bscale_ctl =   'magnetic_field_scale_ctl'
 !
@@ -122,8 +134,6 @@
      &      :: hd_temp_def =     'temperature_define'
       character(len=kchara), parameter, private                         &
      &      :: hd_comp_def =     'composition_define'
-      character(len=kchara), parameter, private                         &
-     &      :: hd_bc_4_surf =    'bc_4_surface'
 !
       character(len=kchara), parameter, private                         &
      &      :: hd_sgs_ctl = 'SGS_control'
@@ -137,11 +147,11 @@
       subroutine read_sph_sgs_mhd_model                                 &
      &         (id_control, hd_block, model_ctl, c_buf)
 !
-      use read_ctl_data_SGS_model
       use ctl_data_temp_model_IO
       use ctl_data_comp_model_IO
       use ctl_data_node_boundary_IO
       use ctl_data_surf_boundary_IO
+      use ctl_data_SGS_model_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -166,11 +176,11 @@
      &     (id_control, hd_layers_ctl, model_ctl%earea_ctl, c_buf)
 !
         call read_bc_4_node_ctl(id_control, hd_boundary_condition,      &
-     &      model_ctl%nbc_ctl, c_buf)
+     &                          model_ctl%nbc_ctl, c_buf)
         call read_bc_4_node_ctl(id_control, hd_bc_4_node,               &
-     &      model_ctl%nbc_ctl, c_buf)
-        call read_bc_4_surf_ctl                                         &
-     &     (id_control, hd_bc_4_surf, model_ctl%sbc_ctl, c_buf)
+     &                          model_ctl%nbc_ctl, c_buf)
+        call read_bc_4_surf_ctl(id_control, hd_bc_4_surf,               &
+     &                          model_ctl%sbc_ctl, c_buf)
 !
         call read_forces_ctl                                            &
      &     (id_control, hd_forces_ctl, model_ctl%frc_ctl, c_buf)
@@ -183,8 +193,8 @@
      &     (id_control, hd_gravity_ctl, model_ctl%g_ctl, c_buf)
         call read_coriolis_ctl                                          &
      &     (id_control, hd_coriolis_ctl, model_ctl%cor_ctl, c_buf)
-        call read_magneto_ctl                                           &
-     &     (id_control, hd_magneto_ctl, model_ctl%mcv_ctl, c_buf)
+        call read_magneto_cv_ctl                                        &
+     &     (id_control, hd_magneto_cv_ctl, model_ctl%mcv_ctl, c_buf)
         call read_magnetic_scale_ctl                                    &
      &     (id_control, hd_bscale_ctl, model_ctl%bscale_ctl, c_buf)
         call read_reftemp_ctl                                           &
@@ -195,12 +205,76 @@
         call read_sgs_ctl                                               &
      &     (id_control, hd_sgs_ctl, model_ctl%sgs_ctl, c_buf)
 !
-        call read_magneto_ctl                                           &
+        call read_magneto_cv_ctl                                        &
      &     (id_control, hd_induction_ctl, model_ctl%mcv_ctl, c_buf)
       end do
       model_ctl%i_model = 1
 !
       end subroutine read_sph_sgs_mhd_model
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_sph_sgs_mhd_model                                &
+     &         (id_control, hd_block, model_ctl, level)
+!
+      use ctl_data_temp_model_IO
+      use ctl_data_comp_model_IO
+      use ctl_data_node_boundary_IO
+      use ctl_data_surf_boundary_IO
+      use ctl_data_SGS_model_IO
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(mhd_model_control), intent(in) :: model_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(model_ctl%i_model .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_phys_data_control                                    &
+     &   (id_control, hd_phys_values, model_ctl%fld_ctl, level)
+!
+      call write_mhd_time_evo_ctl                                     &
+     &   (id_control, hd_time_evo, model_ctl%evo_ctl, level)
+      call write_mhd_layer_ctl                                        &
+     &   (id_control, hd_layers_ctl, model_ctl%earea_ctl, level)
+!
+      call write_bc_4_node_ctl(id_control, hd_boundary_condition,     &
+     &                         model_ctl%nbc_ctl, level)
+      call write_bc_4_surf_ctl(id_control, hd_bc_4_surf,              &
+     &                         model_ctl%sbc_ctl, level)
+!
+      call write_forces_ctl                                           &
+     &   (id_control, hd_forces_ctl, model_ctl%frc_ctl, level)
+      call write_dimless_ctl                                          &
+     &   (id_control, hd_dimless_ctl, model_ctl%dless_ctl, level)
+      call write_coef_term_ctl                                        &
+     &   (id_control, hd_coef_term_ctl, model_ctl%eqs_ctl, level)
+!
+      call write_gravity_ctl                                          &
+     &   (id_control, hd_gravity_ctl, model_ctl%g_ctl, level)
+      call write_coriolis_ctl                                         &
+     &   (id_control, hd_coriolis_ctl, model_ctl%cor_ctl, level)
+      call write_magneto_cv_ctl                                       &
+     &   (id_control, hd_magneto_cv_ctl, model_ctl%mcv_ctl, level)
+      call write_magnetic_scale_ctl                                   &
+     &   (id_control, hd_bscale_ctl, model_ctl%bscale_ctl, level)
+      call write_reftemp_ctl                                          &
+     &   (id_control, hd_temp_def, model_ctl%reft_ctl, level)
+      call write_refcomp_ctl                                          &
+     &   (id_control, hd_comp_def, model_ctl%refc_ctl, level)
+!
+      call write_sgs_ctl                                              &
+     &   (id_control, hd_sgs_ctl, model_ctl%sgs_ctl, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_sph_sgs_mhd_model
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

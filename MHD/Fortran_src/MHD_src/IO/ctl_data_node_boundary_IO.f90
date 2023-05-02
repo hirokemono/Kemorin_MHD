@@ -18,7 +18,7 @@
 !!     &         (id_control, hd_block, nbc_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(node_bc_control), intent(inout) :: nbc_ctl
+!!        type(node_bc_control), intent(in) :: nbc_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !! ------------------------------------------------------------------
@@ -200,8 +200,8 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
+      type(node_bc_control), intent(in) :: nbc_ctl
 !
-      type(node_bc_control), intent(inout) :: nbc_ctl
       integer(kind = kint), intent(inout) :: level
 !
 !

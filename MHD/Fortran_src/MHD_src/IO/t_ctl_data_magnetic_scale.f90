@@ -18,7 +18,7 @@
 !!     &         (id_control, hd_block, bscale_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(magnetic_field_scale_control), intent(inout) :: bscale_ctl
+!!        type(magnetic_field_scale_control), intent(in) :: bscale_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!      subroutine dealloc_magnetic_scale_ctl(bscale_ctl)
 !!        type(magnetic_field_scale_control), intent(inout) :: bscale_ctl
@@ -103,8 +103,8 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
+      type(magnetic_field_scale_control), intent(in) :: bscale_ctl
 !
-      type(magnetic_field_scale_control), intent(inout) :: bscale_ctl
       integer(kind = kint), intent(inout) :: level
 !
 !

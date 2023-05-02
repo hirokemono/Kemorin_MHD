@@ -8,17 +8,17 @@
 !> @brief Control data for magnetic field controls
 !!
 !!@verbatim
-!!      subroutine read_magneto_ctl                                     &
+!!      subroutine read_magneto_cv_ctl                                  &
 !!     &         (id_control, hd_block, mcv_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(magneto_convection_control), intent(inout) :: mcv_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_magneto_ctl                                    &
+!!      subroutine write_magneto_cv_ctl                                 &
 !!     &         (id_control, hd_block, mcv_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(magneto_convection_control), intent(inout) :: mcv_ctl
+!!        type(magneto_convection_control), intent(in) :: mcv_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine dealloc_magneto_ctl(mcv_ctl)
@@ -100,7 +100,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_magneto_ctl                                       &
+      subroutine read_magneto_cv_ctl                                    &
      &         (id_control, hd_block, mcv_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
@@ -126,19 +126,19 @@
       end do
       mcv_ctl%i_magneto_ctl = 1
 !
-      end subroutine read_magneto_ctl
+      end subroutine read_magneto_cv_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_magneto_ctl                                      &
+      subroutine write_magneto_cv_ctl                                   &
      &         (id_control, hd_block, mcv_ctl, level)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
+      type(magneto_convection_control), intent(in) :: mcv_ctl
 !
-      type(magneto_convection_control), intent(inout) :: mcv_ctl
       integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: maxlen = 0
@@ -158,7 +158,7 @@
      &    hd_filetered_induction, mcv_ctl%filterd_induction_ctl)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
-      end subroutine write_magneto_ctl
+      end subroutine write_magneto_cv_ctl
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
