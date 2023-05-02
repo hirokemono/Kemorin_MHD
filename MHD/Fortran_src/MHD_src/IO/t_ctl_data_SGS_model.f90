@@ -82,6 +82,7 @@
       use t_control_array_integer
       use t_control_array_character
       use t_ctl_data_SGS_filter
+      use t_ctl_SGS_3d_filter
       use t_ctl_data_filter_files
       use t_ctl_data_ele_layering
 !

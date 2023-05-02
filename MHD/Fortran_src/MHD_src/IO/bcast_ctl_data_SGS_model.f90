@@ -21,8 +21,6 @@
       use m_precision
 !
       use calypso_mpi
-      use t_ctl_data_SGS_model
-      use t_ctl_data_SGS_filter
 !
       implicit  none
 !
@@ -36,6 +34,7 @@
 !
       subroutine bcast_sgs_ctl(sgs_ctl)
 !
+      use t_ctl_data_SGS_model
       use calypso_mpi_int
       use bcast_4_filter_files_ctl
       use bcast_control_arrays
@@ -143,6 +142,8 @@
 !
       subroutine bcast_3d_filtering_ctl(s3df_ctl)
 !
+      use t_ctl_SGS_3d_filter
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
@@ -156,12 +157,16 @@
       call bcast_ctl_type_c1(s3df_ctl%induction_filter_ctl)
       call bcast_ctl_type_c1(s3df_ctl%compostion_filter_ctl)
 !
+      call calypso_mpi_bcast_one_int(s3df_ctl%i_SGS_3d_filter_ctl, 0)
+!
       end subroutine bcast_3d_filtering_ctl
 !
 !   --------------------------------------------------------------------
 !
       subroutine bcast_control_4_SGS_filter(sphf_ctl)
 !
+      use t_ctl_data_SGS_filter
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
@@ -177,19 +182,19 @@
       call bcast_ctl_type_i1(sphf_ctl%first_reference_ctl)
       call bcast_ctl_type_i1(sphf_ctl%second_reference_ctl)
 !
-        write(*,*) my_rank, 'sphf_ctl%sph_filter_type_ctl',  &
+        write(*,*) my_rank, 'sphf_ctl%sph_filter_type_ctl',             &
      &     sphf_ctl%sph_filter_type_ctl%charavalue
-        write(*,*) my_rank, 'sphf_ctl%radial_filter_type_ctl',   &
+        write(*,*) my_rank, 'sphf_ctl%radial_filter_type_ctl',          &
      &     sphf_ctl%radial_filter_type_ctl%charavalue
-        write(*,*) my_rank, 'sphf_ctl%maximum_moments_ctl',   &
+        write(*,*) my_rank, 'sphf_ctl%maximum_moments_ctl',             &
      &     sphf_ctl%maximum_moments_ctl%intvalue
-        write(*,*) my_rank, 'sphf_ctl%sphere_filter_width_ctl',   &
+        write(*,*) my_rank, 'sphf_ctl%sphere_filter_width_ctl',         &
      &     sphf_ctl%sphere_filter_width_ctl%realvalue
-        write(*,*) my_rank, 'sphf_ctl%radial_filter_width_ctl',   &
+        write(*,*) my_rank, 'sphf_ctl%radial_filter_width_ctl',         &
      &     sphf_ctl%radial_filter_width_ctl%realvalue
-        write(*,*) my_rank, 'sphf_ctl%first_reference_ctl',   &
+        write(*,*) my_rank, 'sphf_ctl%first_reference_ctl',             &
      &     sphf_ctl%first_reference_ctl%intvalue
-        write(*,*) my_rank, 'sphf_ctl%second_reference_ctl',   &
+        write(*,*) my_rank, 'sphf_ctl%second_reference_ctl',            &
      &     sphf_ctl%second_reference_ctl%intvalue
 !
       end subroutine bcast_control_4_SGS_filter

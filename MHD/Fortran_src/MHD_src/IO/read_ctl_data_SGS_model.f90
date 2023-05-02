@@ -206,8 +206,6 @@
       character(len=kchara), parameter :: hd_commutation_fld            &
      &                        = 'commutation_ctl'
 !
-      integer (kind=kint) :: i_3d_filtering =   0
-!
       character(len=kchara) :: hd_SGS_terms =  'SGS_terms_ctl'
       character(len=kchara) :: hd_sph_filter =  'sph_filter_ctl'
 !
@@ -263,8 +261,8 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
-        call read_3d_filtering_ctl(id_control, hd_3d_filtering,         &
-     &      i_3d_filtering, sgs_ctl%s3df_ctl, c_buf)
+        call read_3d_filtering_ctl                                      &
+     &     (id_control, hd_3d_filtering, sgs_ctl%s3df_ctl, c_buf)
         call read_filter_fnames_control                                 &
      &     (id_control, hd_filter_fnames, sgs_ctl%ffile_ctl, c_buf)
         call read_ele_layers_control(id_control, hd_dynamic_layers,     &
@@ -383,14 +381,13 @@
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
-      integer(kind = kint) :: iflag = 0
       type(sph_filter_ctl_type) :: read_sfil_c
 !
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
       if(sgs_ctl%num_sph_filter_ctl .gt. 0) return
-      iflag = 0
       sgs_ctl%num_sph_filter_ctl = 0
+      read_sfil_c%i_sph_filter_ctl = 0
       call alloc_sph_filter_ctl(sgs_ctl)
 !
       do
@@ -398,10 +395,9 @@
         if(check_end_array_flag(c_buf, hd_block)) exit
 !
         call read_control_4_SGS_filter(id_control, hd_block,            &
-     &      iflag, read_sfil_c, c_buf)
-        if(iflag .gt. 0) then
+     &                                 read_sfil_c, c_buf)
+        if(read_sfil_c%i_sph_filter_ctl .gt. 0) then
           call append_SGS_filter_ctls(read_sfil_c, sgs_ctl)
-          iflag = 0
         end if
       end do
 !
