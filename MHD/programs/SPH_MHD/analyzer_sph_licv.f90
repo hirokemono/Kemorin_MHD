@@ -48,8 +48,8 @@
 !
       subroutine initialize_sph_licv
 !
-      use t_ctl_data_sph_MHD_psf
       use init_sph_MHD_elapsed_label
+      use bcast_control_sph_MHD
       use input_control_sph_MHD
 !
 !
@@ -63,7 +63,7 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
+      call load_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
       call input_control_4_SPH_MHD_nosnap                               &
      &   (MHD_files1, DNS_MHD_ctl1, MHD_step1, SPH_model1,              &

@@ -11,12 +11,6 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl)
-!!        character(len=kchara), intent(in) :: file_name
-!!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!!      subroutine write_control_file_sph_SGS_MHD(file_name, MHD_ctl)
-!!        character(len=kchara), intent(in) :: file_name
-!!        type(sph_sgs_mhd_control), intent(in) :: MHD_ctl
 !!      subroutine read_sph_mhd_control_data                            &
 !!     &         (id_control, hd_block, MHD_ctl, c_buf)
 !!         integer(kind = kint), intent(in) :: id_control
@@ -30,11 +24,6 @@
 !!        type(sph_sgs_mhd_control), intent(in) :: MHD_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_sph_mhd_control_data(MHD_ctl)
-!!      subroutine bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
-!!         type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!!
-!!      subroutine dealloc_sph_mhd_control_data(MHD_ctl)
 !!      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !!         type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!@endverbatim
@@ -43,7 +32,6 @@
 !
       use m_precision
 !
-      use calypso_mpi
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_platforms
@@ -57,8 +45,6 @@
 !
       implicit none
 !
-!
-      integer(kind=kint), parameter :: ctl_file_code = 11
 !
       type sph_sgs_mhd_control
 !>        Structure for file settings
@@ -91,108 +77,38 @@
         integer (kind=kint) :: i_mhd_ctl = 0
       end type sph_sgs_mhd_control
 !
-!   Top level of label
-!
-      character(len=kchara) :: hd_mhd_ctl = 'MHD_control'
-!
 !   2nd level for MHD
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_platform = 'data_files_def'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_org_data = 'org_data_files_def'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_new_data = 'new_data_files_def'
-      character(len=kchara), parameter                                  &
-     &      :: hd_sph_shell = 'spherical_shell_ctl'
-      character(len=kchara), parameter :: hd_model =   'model'
-      character(len=kchara), parameter :: hd_control = 'control'
-      character(len=kchara), parameter                                  &
-     &                     :: hd_pick_sph = 'sph_monitor_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_monitor_data = 'monitor_data_ctl'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_sph_shell = 'spherical_shell_ctl'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_model =   'model'
+      character(len=kchara), parameter , private                        &
+     &                    :: hd_control = 'control'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_pick_sph = 'sph_monitor_ctl'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_monitor_data = 'monitor_data_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
 !
 !>      Here is the old label
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
-!
-      private :: ctl_file_code, hd_mhd_ctl
-      private :: hd_viz_control, hd_dynamo_viz_ctl, hd_zm_viz_ctl
-!
-      private :: read_sph_mhd_control_data
-      private :: bcast_sph_mhd_control_data
-      private :: bcast_sph_sgs_mhd_ctl_data
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl)
-!
-      use t_ctl_data_SPH_MHD_control
-      use viz_step_ctls_to_time_ctl
-!
-      character(len=kchara), intent(in) :: file_name
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      if(my_rank .eq. 0) then
-        open(ctl_file_code, file = file_name, status='old' )
-!
-        do
-          call load_one_line_from_control(ctl_file_code, c_buf1)
-          call read_sph_mhd_control_data                                &
-     &       (ctl_file_code, hd_mhd_ctl, MHD_ctl, c_buf1)
-          if(MHD_ctl%i_mhd_ctl .gt. 0) exit
-        end do
-        close(ctl_file_code)
-!
-        call s_viz_step_ctls_to_time_ctl                                &
-     &     (MHD_ctl%viz_ctls, MHD_ctl%smctl_ctl%tctl)
-        call add_fields_4_vizs_to_fld_ctl(MHD_ctl%viz_ctls,             &
-     &      MHD_ctl%model_ctl%fld_ctl%field_ctl)
-      end if
-!
-      call bcast_sph_mhd_control_data(MHD_ctl)
-!
-      end subroutine read_control_4_sph_SGS_MHD
-!
-! ----------------------------------------------------------------------
-!
-      subroutine write_control_file_sph_SGS_MHD(file_name, MHD_ctl)
-!
-      use delete_data_files
-!
-      character(len=kchara), intent(in) :: file_name
-      type(sph_sgs_mhd_control), intent(in) :: MHD_ctl
-!
-      integer(kind = kint) :: level1
-!
-!
-      if(check_file_exist(file_name)) then
-        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
-        read(*,*)
-      end if
-!
-      write(*,*) 'Write MHD control file: ', trim(file_name)
-      level1 = 0
-      open(ctl_file_code, file = file_name)
-      call write_sph_mhd_control_data                                   &
-     &   (ctl_file_code, hd_mhd_ctl, MHD_ctl, level1)
-      close(ctl_file_code)
-!
-      end subroutine write_control_file_sph_SGS_MHD
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine read_sph_mhd_control_data                              &
@@ -304,73 +220,6 @@
       end subroutine write_sph_mhd_control_data
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_sph_mhd_control_data(MHD_ctl)
-!
-      use bcast_4_platform_ctl
-!
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!
-!
-      call bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
-      call bcast_ctl_data_4_platform(MHD_ctl%new_plt)
-!
-      call bcast_viz_controls(MHD_ctl%viz_ctls)
-      call bcast_dynamo_viz_control(MHD_ctl%zm_ctls)
-!
-      end subroutine bcast_sph_mhd_control_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
-!
-      use t_ctl_data_SPH_MHD_control
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_4_platform_ctl
-      use bcast_4_field_ctl
-      use bcast_4_sph_monitor_ctl
-      use bcast_4_sphere_ctl
-!
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!
-!
-      call bcast_ctl_data_4_platform(MHD_ctl%plt)
-      call bcast_ctl_data_4_platform(MHD_ctl%org_plt)
-!
-      call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl)
-      call bcast_sph_mhd_control(MHD_ctl%smctl_ctl)
-!
-      call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
-!
-      call bcast_monitor_data_ctl(MHD_ctl%nmtr_ctl)
-      call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
-!
-      call calypso_mpi_bcast_one_int(MHD_ctl%i_mhd_ctl, 0)
-      call calypso_mpi_bcast_character                                  &
-     &   (MHD_ctl%fname_psph_ctl, cast_long(kchara), 0)
-!
-      end subroutine bcast_sph_sgs_mhd_ctl_data
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_sph_mhd_control_data(MHD_ctl)
-!
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!
-!
-      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
-      call reset_control_platforms(MHD_ctl%new_plt)
-!
-      call dealloc_viz_controls(MHD_ctl%viz_ctls)
-      call dealloc_dynamo_viz_control(MHD_ctl%zm_ctls)
-!
-      end subroutine dealloc_sph_mhd_control_data
-!
-!   --------------------------------------------------------------------
 !
       subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
@@ -381,6 +230,7 @@
 !
       call reset_control_platforms(MHD_ctl%plt)
       call reset_control_platforms(MHD_ctl%org_plt)
+      call reset_control_platforms(MHD_ctl%new_plt)
 !
       call dealloc_sph_sgs_mhd_model(MHD_ctl%model_ctl)
       call reset_sph_mhd_control(MHD_ctl%smctl_ctl)
@@ -389,6 +239,9 @@
 !
       call dealloc_monitor_data_ctl(MHD_ctl%nmtr_ctl)
       call dealloc_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
+!
+      call dealloc_viz_controls(MHD_ctl%viz_ctls)
+      call dealloc_dynamo_viz_control(MHD_ctl%zm_ctls)
 !
       MHD_ctl%i_mhd_ctl = 0
 !

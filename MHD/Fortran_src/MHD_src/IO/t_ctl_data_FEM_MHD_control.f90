@@ -13,7 +13,19 @@
 !!@verbatim
 !!      subroutine read_fem_mhd_control                                 &
 !!     &         (id_control, hd_block, fmctl_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_fem_mhd_control                                &
+!!     &         (id_control, hd_block, fmctl_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(fem_mhd_control_control), intent(in) :: fmctl_ctl
+!!        integer(kind = kint), intent(inout) :: level
+!!
 !!      subroutine bcast_fem_mhd_control(fmctl_ctl)
+!!      subroutine dealloc_fem_mhd_control(fmctl_ctl)
 !!        type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
 !!@endverbatim
 !
@@ -108,6 +120,43 @@
       end subroutine read_fem_mhd_control
 !
 !   --------------------------------------------------------------------
+!
+      subroutine write_fem_mhd_control                                  &
+     &         (id_control, hd_block, fmctl_ctl, level)
+!
+      use ctl_data_4_time_steps_IO
+      use ctl_data_mhd_evo_scheme_IO
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(fem_mhd_control_control), intent(in) :: fmctl_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(fmctl_ctl%i_control .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_time_step_data                                 &
+     &   (id_control, hd_time_step, fmctl_ctl%tctl, level)
+      call write_restart_ctl                                            &
+     &   (id_control, hd_restart_file, fmctl_ctl%mrst_ctl, level)
+      call write_control_fem_int_points                                 &
+     &   (id_control, hd_int_points, fmctl_ctl%fint_ctl, level)
+!
+      call write_CG_solver_param_ctl                                    &
+     &   (id_control, hd_solver_ctl, fmctl_ctl%CG_ctl, level)
+      call write_time_loop_ctl                                          &
+     &   (id_control, hd_time_loop, fmctl_ctl%mevo_ctl, level)
+!
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_fem_mhd_control
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine bcast_fem_mhd_control(fmctl_ctl)
@@ -130,6 +179,29 @@
       call calypso_mpi_bcast_one_int(fmctl_ctl%i_control, 0)
 !
       end subroutine bcast_fem_mhd_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_fem_mhd_control(fmctl_ctl)
+!
+      use calypso_mpi_int
+      use bcast_4_time_step_ctl
+      use bcast_4_solver_ctl
+      use bcast_4_fem_int_pts_ctl
+!
+      type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
+!
+!
+      call reset_restart_ctl(fmctl_ctl%mrst_ctl)
+      call reset_time_loop_ctl(fmctl_ctl%mevo_ctl)
+      call reset_ctl_data_4_time_step(fmctl_ctl%tctl)
+!
+      call dealloc_CG_solver_param_ctl(fmctl_ctl%CG_ctl)
+      call reset_control_fem_int_points(fmctl_ctl%fint_ctl)
+!
+      fmctl_ctl%i_control = 0
+!
+      end subroutine dealloc_fem_mhd_control
 !
 !   --------------------------------------------------------------------
 !

@@ -58,6 +58,7 @@
       use init_sph_MHD_elapsed_label
       use parallel_load_data_4_sph
       use input_control_sph_MHD
+      use bcast_control_sph_SGS_MHD
       use nod_phys_send_recv
 !
       type(phys_data), save :: nod_fld_c
@@ -72,8 +73,8 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_SGS_MHD'
-      call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'load_control_sph_SGS_MHD'
+      call load_control_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &

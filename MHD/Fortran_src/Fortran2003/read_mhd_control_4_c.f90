@@ -20,11 +20,9 @@
       subroutine c_read_control_sph_SGS_MHD()                           &
      &          bind(C, NAME = 'c_read_control_sph_SGS_MHD')
 !
-      use calypso_mpi
+      use ctl_file_SGS_MHD_IO
 !
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
-!
-      call calypso_MPI_init
 !
       call read_control_4_sph_SGS_MHD(MHD_ctl_name, MHD_ctl)
 !
@@ -68,13 +66,13 @@
 !
       use calypso_mpi
       use t_ctl_data_SGS_MHD
-      use t_ctl_data_sph_MHD_psf
+      use bcast_control_sph_MHD
 !
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
 !
       call calypso_MPI_init
 !
-      call read_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl)
+      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl)
       call calypso_MPI_finalize
 !
       end subroutine c_read_control_sph_MHD

@@ -1,5 +1,5 @@
-!>@file   t_ctl_data_sph_MHD_psf.f90
-!!@brief  module t_ctl_data_sph_MHD_psf
+!>@file   ctl_file_sph_MHD_IO.f90
+!!@brief  module ctl_file_sph_MHD_IO
 !!
 !!@author H. Matsui
 !>@brief   Control read routine
@@ -13,17 +13,21 @@
 !!@verbatim
 !!      subroutine read_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
 !!      subroutine read_control_4_sph_MHD_noviz(file_name, DMHD_ctl)
+!!        character(len=kchara), intent(in) :: file_name
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!!      subroutine write_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
+!!      subroutine write_control_4_sph_MHD_noviz(file_name, DMHD_ctl)
+!!        character(len=kchara), intent(in) :: file_name
+!!        type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
 !!@endverbatim
 !
-      module t_ctl_data_sph_MHD_psf
+      module ctl_file_sph_MHD_IO
 !
       use m_precision
 !
-      use t_ctl_data_MHD
       use m_machine_parameter
+      use t_ctl_data_MHD
       use t_read_control_elements
-      use calypso_mpi
       use skip_comment_f
 !
       implicit none
@@ -53,24 +57,20 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-        open(ctl_file_code, file = file_name, status='old' )
+      open(ctl_file_code, file = file_name, status='old' )
 !
-        do
-          call load_one_line_from_control(ctl_file_code, c_buf1)
-          call read_sph_mhd_ctl_w_psf                                   &
-     &       (ctl_file_code, hd_mhd_ctl, DMHD_ctl, c_buf1)
-          if(DMHD_ctl%i_mhd_ctl .gt. 0) exit
-        end do
-        close(ctl_file_code)
+      do
+        call load_one_line_from_control(ctl_file_code, c_buf1)
+        call read_sph_mhd_ctl_w_psf                                     &
+     &     (ctl_file_code, hd_mhd_ctl, DMHD_ctl, c_buf1)
+        if(DMHD_ctl%i_mhd_ctl .gt. 0) exit
+      end do
+      close(ctl_file_code)
 !
-        call section_step_ctls_to_time_ctl(DMHD_ctl%surfacing_ctls,     &
-     &                                     DMHD_ctl%smctl_ctl%tctl)
-        call add_fields_4_scts_to_fld_ctl(DMHD_ctl%surfacing_ctls,      &
-     &      DMHD_ctl%model_ctl%fld_ctl%field_ctl)
-      end if
-!
-      call bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
+      call section_step_ctls_to_time_ctl(DMHD_ctl%surfacing_ctls,       &
+     &                                   DMHD_ctl%smctl_ctl%tctl)
+      call add_fields_4_scts_to_fld_ctl(DMHD_ctl%surfacing_ctls,        &
+     &    DMHD_ctl%model_ctl%fld_ctl%field_ctl)
 !
       end subroutine read_control_4_sph_MHD_w_psf
 !
@@ -84,19 +84,15 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-        open(ctl_file_code, file = file_name, status='old' )
+      open(ctl_file_code, file = file_name, status='old' )
 !
-        do
-          call load_one_line_from_control(ctl_file_code, c_buf1)
-          call read_sph_mhd_ctl_noviz                                   &
-     &       (ctl_file_code, hd_mhd_ctl, DMHD_ctl, c_buf1)
-          if(DMHD_ctl%i_mhd_ctl .gt. 0) exit
-        end do
-        close(ctl_file_code)
-      end if
-!
-      call bcast_sph_mhd_ctl_data(DMHD_ctl)
+      do
+        call load_one_line_from_control(ctl_file_code, c_buf1)
+        call read_sph_mhd_ctl_noviz                                     &
+     &     (ctl_file_code, hd_mhd_ctl, DMHD_ctl, c_buf1)
+        if(DMHD_ctl%i_mhd_ctl .gt. 0) exit
+      end do
+      close(ctl_file_code)
 !
       end subroutine read_control_4_sph_MHD_noviz
 !
@@ -108,7 +104,7 @@
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
 !
       integer(kind = kint) :: level1
 !
@@ -134,7 +130,7 @@
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
 !
       integer(kind = kint) :: level1
 !
@@ -155,4 +151,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module t_ctl_data_sph_MHD_psf
+      end module ctl_file_sph_MHD_IO

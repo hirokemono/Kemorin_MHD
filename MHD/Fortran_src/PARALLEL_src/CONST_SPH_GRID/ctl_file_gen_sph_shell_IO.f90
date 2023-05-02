@@ -173,6 +173,8 @@
       subroutine write_ctl_file_gen_shell_grids(id_control, file_name,  &
      &                                          hd_block, psph_ctl)
 !
+      use delete_data_files
+!
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
@@ -180,6 +182,11 @@
 !
       integer(kind = kint) :: level
 !
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
 !
       write(*,*) 'Spherical shell resolution file: ', trim(file_name)
       level = 0

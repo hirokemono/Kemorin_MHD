@@ -28,8 +28,6 @@
 !!        type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
-!!      subroutine bcast_sph_mhd_ctl_data(DMHD_ctl)
 !!      subroutine dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
 !!@endverbatim
@@ -310,52 +308,6 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_mhd_ctl_noviz
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
-!
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
-!
-!
-      call bcast_sph_mhd_ctl_data(DMHD_ctl)
-      call bcast_surfacing_controls(DMHD_ctl%surfacing_ctls)
-      call bcast_dynamo_viz_control(DMHD_ctl%zm_ctls)
-!
-      end subroutine bcast_sph_mhd_ctl_w_psf
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_sph_mhd_ctl_data(DMHD_ctl)
-!
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_4_platform_ctl
-      use bcast_4_field_ctl
-      use bcast_4_sph_monitor_ctl
-      use bcast_4_sphere_ctl
-!
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
-!
-!
-      call bcast_ctl_data_4_platform(DMHD_ctl%plt)
-      call bcast_ctl_data_4_platform(DMHD_ctl%org_plt)
-!
-      call bcast_sph_mhd_model(DMHD_ctl%model_ctl)
-      call bcast_sph_mhd_control(DMHD_ctl%smctl_ctl)
-!
-      call bcast_parallel_shell_ctl(DMHD_ctl%psph_ctl)
-!
-      call bcast_monitor_data_ctl(DMHD_ctl%nmtr_ctl)
-      call bcast_sph_monitoring_ctl(DMHD_ctl%smonitor_ctl)
-!
-      call calypso_mpi_bcast_one_int(DMHD_ctl%i_mhd_ctl, 0)
-      call calypso_mpi_bcast_character                                  &
-     &   (DMHD_ctl%fname_psph_ctl, cast_long(kchara), 0)
-!
-      end subroutine bcast_sph_mhd_ctl_data
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

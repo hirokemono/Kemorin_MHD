@@ -54,6 +54,7 @@
 !
       use m_elapsed_labels_4_REPART
       use input_control_sph_SGS_MHD
+      use bcast_control_sph_SGS_MHD
       use FEM_to_VIZ_bridge
 !
 !
@@ -69,8 +70,8 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      if(iflag_debug.eq.1) write(*,*) 'read_control_4_sph_SGS_MHD'
-      call read_control_4_sph_SGS_MHD(MHD_ctl_name, MHD_ctl1)
+      if(iflag_debug.eq.1) write(*,*) 'load_control_sph_SGS_MHD'
+      call load_control_sph_SGS_MHD(MHD_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo                                 &

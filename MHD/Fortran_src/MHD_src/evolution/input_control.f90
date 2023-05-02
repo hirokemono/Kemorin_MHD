@@ -95,6 +95,7 @@
       use node_monitor_IO
       use set_field_data_w_SGS
       use set_nodal_field_name
+      use bcast_control_FEM_MHD
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -113,8 +114,8 @@
       type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
-      call read_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl, viz_ctls)
+      if (iflag_debug.eq.1) write(*,*) 'load_control_4_fem_MHD'
+      call load_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
@@ -152,6 +153,7 @@
       use node_monitor_IO
       use set_field_data_w_SGS
       use set_nodal_field_name
+      use bcast_control_FEM_MHD
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
@@ -171,8 +173,8 @@
       type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
-      call read_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl, viz_ctls)
+      if (iflag_debug.eq.1) write(*,*) 'load_control_4_fem_MHD'
+      call load_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &

@@ -72,7 +72,6 @@
       use t_control_array_real
       use t_ctl_data_temp_model
       use skip_comment_f
-      use bcast_control_arrays
 !
       implicit  none
 !

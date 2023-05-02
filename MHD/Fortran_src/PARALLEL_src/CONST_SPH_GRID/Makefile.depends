@@ -28,7 +28,7 @@ copy_para_sph_global_params.o: $(SPH_GRID_SRCDIR)/copy_para_sph_global_params.f9
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_sph_1d_global_index.o: $(SPH_GRID_SRCDIR)/copy_sph_1d_global_index.f90 m_precision.o m_constants.o t_spheric_rtp_data.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_spheric_rj_data.o t_spheric_global_ranks.o t_sph_1d_global_index.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ctl_file_gen_sph_shell_IO.o: $(SPH_GRID_SRCDIR)/ctl_file_gen_sph_shell_IO.f90 m_precision.o m_constants.o m_machine_parameter.o skip_comment_f.o t_read_control_elements.o t_ctl_data_4_FEM_mesh.o t_ctl_data_4_sphere_model.o t_ctl_data_4_divide_sphere.o t_ctl_data_gen_sph_shell.o write_control_elements.o
+ctl_file_gen_sph_shell_IO.o: $(SPH_GRID_SRCDIR)/ctl_file_gen_sph_shell_IO.f90 m_precision.o m_constants.o m_machine_parameter.o skip_comment_f.o t_read_control_elements.o t_ctl_data_4_FEM_mesh.o t_ctl_data_4_sphere_model.o t_ctl_data_4_divide_sphere.o t_ctl_data_gen_sph_shell.o write_control_elements.o delete_data_files.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gen_sph_grids_modes.o: $(SPH_GRID_SRCDIR)/gen_sph_grids_modes.f90 m_precision.o m_machine_parameter.o t_const_spherical_grid.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o copy_sph_1d_global_index.o set_local_sphere_param.o set_local_sphere_by_global.o t_spheric_rtm_data.o set_comm_table_rtm_rlm.o
 	$(F90) -c $(F90OPTFLAGS) $<

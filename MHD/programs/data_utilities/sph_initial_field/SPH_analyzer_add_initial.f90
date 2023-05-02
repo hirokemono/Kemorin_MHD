@@ -52,10 +52,10 @@
 !
       subroutine initialize_add_sph_initial
 !
-      use t_ctl_data_sph_MHD_psf
       use set_control_sph_mhd
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
+      use bcast_control_sph_MHD
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -67,8 +67,8 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
-      call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'load_control_4_sph_MHD_noviz'
+      call load_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init                                &
