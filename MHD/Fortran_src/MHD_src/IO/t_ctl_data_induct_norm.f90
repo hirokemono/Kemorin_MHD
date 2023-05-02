@@ -18,9 +18,8 @@
 !!     &         (id_control, hd_block, induct_ctl, level)
 !!         integer(kind = kint), intent(in) :: id_control
 !!         character(len=kchara), intent(in) :: hd_block
-!!         type(induction_equation_control), intent(inout) :: induct_ctl
+!!         type(induction_equation_control), intent(in) :: induct_ctl
 !!         integer(kind = kint), intent(inout) :: level
-!!      subroutine bcast_induction_ctl(induct_ctl)
 !!      subroutine dealloc_induction_ctl(induct_ctl)
 !!        type(induction_equation_control), intent(inout) :: induct_ctl
 !!
@@ -139,8 +138,8 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
+      type(induction_equation_control), intent(in) :: induct_ctl
 !
-      type(induction_equation_control), intent(inout) :: induct_ctl
       integer(kind = kint), intent(inout) :: level
 !
 !
@@ -160,25 +159,6 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_induction_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_induction_ctl(induct_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(induction_equation_control), intent(inout) :: induct_ctl
-!
-!
-      call bcast_ctl_array_cr(induct_ctl%coef_4_magne_evo)
-      call bcast_ctl_array_cr(induct_ctl%coef_4_mag_potential)
-      call bcast_ctl_array_cr(induct_ctl%coef_4_mag_diffuse)
-      call bcast_ctl_array_cr(induct_ctl%coef_4_induction)
-!
-      call calypso_mpi_bcast_one_int(induct_ctl%i_induct_ctl, 0)
-!
-      end subroutine bcast_induction_ctl
 !
 !   --------------------------------------------------------------------
 !

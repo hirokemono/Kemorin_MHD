@@ -26,6 +26,7 @@
       use t_read_control_elements
       use t_ctl_data_4_fields
       use t_ctl_data_mhd_evolution
+      use t_ctl_data_mhd_evo_area
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
       use t_ctl_data_mhd_normalize
@@ -33,6 +34,7 @@
       use t_ctl_data_coriolis_force
       use t_ctl_data_gravity
       use t_ctl_data_mhd_magne
+      use t_ctl_data_magnetic_scale
       use t_ctl_data_temp_model
       use t_ctl_data_SGS_model
       use t_ctl_data_dimless_numbers
@@ -207,6 +209,7 @@
 !
       use calypso_mpi_int
       use bcast_4_field_ctl
+      use bcast_ctl_data_mhd_forces
       use bcast_ctl_data_SGS_model
 !
       type(mhd_model_control), intent(inout) :: model_ctl

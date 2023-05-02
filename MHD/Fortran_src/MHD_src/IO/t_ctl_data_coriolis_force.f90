@@ -21,7 +21,6 @@
 !!        type(coriolis_control), intent(in) :: cor_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_coriolis_ctl(cor_ctl)
 !!      subroutine dealloc_coriolis_ctl(cor_ctl)
 !!        type(coriolis_control), intent(inout) :: cor_ctl
 !!
@@ -49,9 +48,7 @@
       use t_read_control_elements
       use t_control_array_character
       use t_control_array_charareal
-      use calypso_mpi
       use skip_comment_f
-      use bcast_control_arrays
 !
       implicit  none
 !
@@ -151,21 +148,6 @@
       end subroutine write_coriolis_ctl
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine bcast_coriolis_ctl(cor_ctl)
-!
-      use calypso_mpi_int
-!
-      type(coriolis_control), intent(inout) :: cor_ctl
-!
-!
-      call bcast_ctl_array_cr(cor_ctl%system_rotation)
-!
-      call calypso_mpi_bcast_one_int(cor_ctl%i_coriolis_ctl, 0)
-!
-      end subroutine bcast_coriolis_ctl
-!
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_coriolis_ctl(cor_ctl)

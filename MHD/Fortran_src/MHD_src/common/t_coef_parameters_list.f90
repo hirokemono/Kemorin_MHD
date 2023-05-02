@@ -187,6 +187,7 @@
      &         (bscale_ctl, MHD_coef_list)
 !
       use t_ctl_data_mhd_magne
+      use t_ctl_data_magnetic_scale
 !
       type(magnetic_field_scale_control), intent(in) :: bscale_ctl
       type(coef_parameters_list), intent(inout) :: MHD_coef_list

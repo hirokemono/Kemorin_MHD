@@ -27,10 +27,8 @@
 !!        type(heat_equation_control), intent(in) :: comp_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_thermal_ctl(heat_ctl)
 !!      subroutine dealloc_thermal_ctl(heat_ctl)
 !!        type(heat_equation_control), intent(inout) :: heat_ctl
-!!        type(heat_equation_control), intent(inout) :: comp_ctl
 !!
 !!   --------------------------------------------------------------------
 !! example of control block
@@ -248,25 +246,6 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_composition_eq_ctl
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_thermal_ctl(heat_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(heat_equation_control), intent(inout) :: heat_ctl
-!
-!
-      call bcast_ctl_array_cr(heat_ctl%coef_4_adv_flux)
-      call bcast_ctl_array_cr(heat_ctl%coef_4_diffuse)
-      call bcast_ctl_array_cr(heat_ctl%coef_4_source)
-!
-      call calypso_mpi_bcast_one_int(heat_ctl%i_diff_adv, 0)
-!
-      end subroutine bcast_thermal_ctl
 !
 ! -----------------------------------------------------------------------
 !

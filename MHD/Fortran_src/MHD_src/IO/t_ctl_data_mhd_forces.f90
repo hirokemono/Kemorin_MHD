@@ -20,7 +20,6 @@
 !!        type(forces_control), intent(in) :: frc_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_forces_ctl(frc_ctl)
 !!      subroutine dealloc_name_force_ctl(frc_ctl)
 !!        type(forces_control), intent(inout) :: frc_ctl
 !!
@@ -48,9 +47,7 @@
       use t_read_control_elements
       use t_control_array_character
       use t_control_array_charareal
-      use calypso_mpi
       use skip_comment_f
-      use bcast_control_arrays
 !
       implicit  none
 !
@@ -122,23 +119,7 @@
 !
       end subroutine write_forces_ctl
 !
-!   --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
-!
-      subroutine bcast_forces_ctl(frc_ctl)
-!
-      use calypso_mpi_int
-!
-      type(forces_control), intent(inout) :: frc_ctl
-!
-!
-      call bcast_ctl_array_c1(frc_ctl%force_names)
-!
-      call calypso_mpi_bcast_one_int(frc_ctl%i_forces_ctl, 0)
-!
-      end subroutine bcast_forces_ctl
-!
-!   --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_name_force_ctl(frc_ctl)

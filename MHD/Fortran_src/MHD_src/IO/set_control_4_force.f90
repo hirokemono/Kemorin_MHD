@@ -178,6 +178,7 @@
 !
       subroutine set_control_4_gravity(g_ctl, fl_prop)
 !
+      use calypso_mpi
       use t_physical_property
       use t_ctl_data_gravity
       use skip_comment_f
@@ -303,6 +304,7 @@
 !
       subroutine set_control_4_induction(mcv_ctl, cd_prop)
 !
+      use calypso_mpi
       use t_physical_property
       use t_ctl_data_mhd_magne
       use skip_comment_f

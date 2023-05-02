@@ -8,7 +8,6 @@
 !!@n        Modified by H. Matsui on Oct., 2007
 !!
 !!@verbatim
-!!      subroutine bcast_ref_scalar_ctl(refs_ctl)
 !!      subroutine reset_ref_scalar_ctl(refs_ctl)
 !!        type(reference_temperature_ctl), intent(inout) :: refs_ctl
 !!
@@ -111,7 +110,7 @@
         integer (kind=kint) :: i_temp_def = 0
       end type reference_temperature_ctl
 !
-      private :: bcast_ref_value_ctl, reset_ref_value_ctl
+      private :: reset_ref_value_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -119,52 +118,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_ref_scalar_ctl(refs_ctl)
-!
-      use calypso_mpi_int
-!
-      type(reference_temperature_ctl), intent(inout) :: refs_ctl
-!
-!
-      call bcast_ref_value_ctl(refs_ctl%low_ctl)
-      call bcast_ref_value_ctl(refs_ctl%high_ctl)
-      call bcast_takepiro_ctl(refs_ctl%takepiro_ctl)
-!
-      call bcast_ctl_type_c1(refs_ctl%filterd_advect_ctl)
-      call bcast_ctl_type_c1(refs_ctl%reference_ctl)
-      call bcast_ctl_type_c1(refs_ctl%stratified_ctl)
-!
-      call bcast_ctl_type_r1(refs_ctl%ICB_diffuse_reduction_ctl)
-!
-      call calypso_mpi_bcast_one_int(refs_ctl%i_temp_def, 0)
-!
-      end subroutine bcast_ref_scalar_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_ref_value_ctl(ref_ctl)
-!
-      use calypso_mpi_int
-!
-      type(reference_point_control), intent(inout) :: ref_ctl
-!
-!
-      call bcast_ctl_type_r1(ref_ctl%depth)
-      call bcast_ctl_type_r1(ref_ctl%value)
-!
-      call calypso_mpi_bcast_one_int(ref_ctl%i_referenced, 0)
-!
-      end subroutine bcast_ref_value_ctl
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
       subroutine reset_ref_scalar_ctl(refs_ctl)
 !
-      use calypso_mpi_int
-!
       type(reference_temperature_ctl), intent(inout) :: refs_ctl
-!
 !
       call reset_ref_value_ctl(refs_ctl%low_ctl)
       call reset_ref_value_ctl(refs_ctl%high_ctl)

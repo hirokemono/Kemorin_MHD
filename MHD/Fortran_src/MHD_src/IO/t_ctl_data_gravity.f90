@@ -19,7 +19,6 @@
 !!        type(gravity_control), intent(in) :: g_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_gravity_ctl(g_ctl)
 !!      subroutine dealloc_gravity_ctl(g_ctl)
 !!        type(forces_control), intent(inout) :: g_ctl
 !!
@@ -51,9 +50,7 @@
       use t_read_control_elements
       use t_control_array_character
       use t_control_array_charareal
-      use calypso_mpi
       use skip_comment_f
-      use bcast_control_arrays
 !
       implicit  none
 !
@@ -150,24 +147,7 @@
 !
       end subroutine write_gravity_ctl
 !
-!   --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
-!
-      subroutine bcast_gravity_ctl(g_ctl)
-!
-      use calypso_mpi_int
-!
-      type(gravity_control), intent(inout) :: g_ctl
-!
-!
-      call bcast_ctl_array_cr(g_ctl%gravity_vector)
-      call bcast_ctl_type_c1(g_ctl%gravity)
-!
-      call calypso_mpi_bcast_one_int(g_ctl%i_gravity_ctl, 0)
-!
-      end subroutine bcast_gravity_ctl
-!
-!   --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_gravity_ctl(g_ctl)
