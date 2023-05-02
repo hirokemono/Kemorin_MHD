@@ -26,6 +26,7 @@
       use t_read_control_elements
       use t_ctl_data_4_time_steps
       use t_ctl_data_mhd_evo_scheme
+      use t_ctl_data_mhd_restart
 !
       use skip_comment_f
 !
@@ -60,6 +61,8 @@
 !
       subroutine read_sph_mhd_control                                   &
      &         (id_control, hd_block, smctl_ctl, c_buf)
+!
+      use ctl_data_mhd_evo_scheme_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
