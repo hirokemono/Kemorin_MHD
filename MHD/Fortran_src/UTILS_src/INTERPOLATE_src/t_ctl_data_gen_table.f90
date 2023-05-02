@@ -371,6 +371,8 @@
       subroutine read_itaration_model_ctl                               &
      &         (id_control, hd_block, gtbl_ctl, c_buf)
 !
+      use ctl_data_4_time_steps_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !

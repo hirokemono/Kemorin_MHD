@@ -15,6 +15,18 @@
 !!     &         (id_control, hd_block, DMHD_ctl, c_buf)
 !!      subroutine read_sph_mhd_ctl_noviz                               &
 !!     &         (id_control, hd_block, DMHD_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_sph_mhd_ctl_w_psf                              &
+!!     &         (id_control, hd_block, DMHD_ctl, level)
+!!      subroutine write_sph_mhd_ctl_noviz                              &
+!!     &         (id_control, hd_block, DMHD_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
 !!      subroutine bcast_sph_mhd_ctl_data(DMHD_ctl)
@@ -206,6 +218,102 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
+      subroutine write_sph_mhd_ctl_w_psf                                &
+     &         (id_control, hd_block, DMHD_ctl, level)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_sph_monitor_IO
+      use control_data_surfacing_IO
+      use ctl_file_gen_sph_shell_IO
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(DMHD_ctl%i_mhd_ctl .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_platforms                                      &
+     &   (id_control, hd_platform, DMHD_ctl%plt, level)
+      call write_control_platforms                                      &
+     &   (id_control, hd_org_data, DMHD_ctl%org_plt, level)
+!
+      call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
+     &    DMHD_ctl%fname_psph_ctl, DMHD_ctl%psph_ctl, level)
+!
+      call write_sph_mhd_model                                          &
+     &   (id_control, hd_model, DMHD_ctl%model_ctl, level)
+      call write_sph_mhd_control                                        &
+     &   (id_control, hd_control, DMHD_ctl%smctl_ctl, level)
+!
+      call write_monitor_data_ctl                                       &
+     &   (id_control, hd_monitor_data, DMHD_ctl%nmtr_ctl, level)
+      call write_sph_monitoring_ctl                                     &
+     &   (id_control, hd_pick_sph, DMHD_ctl%smonitor_ctl, level)
+!
+      call write_surfacing_controls                                     &
+     &   (id_control, hd_viz_ctl, DMHD_ctl%surfacing_ctls, level)
+!
+      call write_dynamo_viz_control                                     &
+     &   (id_control, hd_dynamo_viz_ctl, DMHD_ctl%zm_ctls, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_sph_mhd_ctl_w_psf
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_sph_mhd_ctl_noviz                                &
+     &         (id_control, hd_block, DMHD_ctl, level)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_sph_monitor_IO
+      use ctl_file_gen_sph_shell_IO
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(DMHD_ctl%i_mhd_ctl .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_platforms                                      &
+     &   (id_control, hd_platform, DMHD_ctl%plt, level)
+      call write_control_platforms                                      &
+     &   (id_control, hd_org_data, DMHD_ctl%org_plt, level)
+!
+      call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
+     &    DMHD_ctl%fname_psph_ctl, DMHD_ctl%psph_ctl, level)
+!
+      call write_sph_mhd_model                                          &
+     &   (id_control, hd_model, DMHD_ctl%model_ctl, level)
+      call write_sph_mhd_control                                        &
+     &   (id_control, hd_control, DMHD_ctl%smctl_ctl, level)
+!
+      call write_monitor_data_ctl                                       &
+     &   (id_control, hd_monitor_data, DMHD_ctl%nmtr_ctl, level)
+      call write_sph_monitoring_ctl                                     &
+     &   (id_control, hd_pick_sph, DMHD_ctl%smonitor_ctl, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_sph_mhd_ctl_noviz
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
       subroutine bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
 !
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
@@ -250,16 +358,36 @@
       end subroutine bcast_sph_mhd_ctl_data
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_sph_mhd_ctl_w_psf(DMHD_ctl)
+!
+      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!
+!
+      call dealloc_sph_mhd_ctl_data(DMHD_ctl)
+      call dealloc_surfacing_controls(DMHD_ctl%surfacing_ctls)
+      call dealloc_dynamo_viz_control(DMHD_ctl%zm_ctls)
+!
+      end subroutine dealloc_sph_mhd_ctl_w_psf
+!
+!   --------------------------------------------------------------------
 !
       subroutine dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
 !
 !
-      call dealloc_monitor_data_ctl(DMHD_ctl%nmtr_ctl)
-      call dealloc_parallel_shell_ctl(DMHD_ctl%psph_ctl)
-      call dealloc_sph_monitoring_ctl(DMHD_ctl%smonitor_ctl)
+      call reset_control_platforms(DMHD_ctl%plt)
+      call reset_control_platforms(DMHD_ctl%org_plt)
+!
       call dealloc_sph_mhd_model(DMHD_ctl%model_ctl)
+      call reset_sph_mhd_control(DMHD_ctl%smctl_ctl)
+!
+      call dealloc_parallel_shell_ctl(DMHD_ctl%psph_ctl)
+!
+      call dealloc_monitor_data_ctl(DMHD_ctl%nmtr_ctl)
+      call dealloc_sph_monitoring_ctl(DMHD_ctl%smonitor_ctl)
 !
       DMHD_ctl%i_mhd_ctl = 0
 !

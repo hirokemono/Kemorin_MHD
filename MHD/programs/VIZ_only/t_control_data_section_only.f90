@@ -126,6 +126,7 @@
 !
       use skip_comment_f
       use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
       use control_data_surfacing_IO
 !
       integer(kind = kint), intent(in) :: id_control
@@ -177,8 +178,6 @@
 !   --------------------------------------------------------------------
 !
       subroutine dealloc_section_control_data(sec_viz_ctl)
-!
-      use bcast_4_time_step_ctl
 !
       type(control_data_section_only), intent(inout) :: sec_viz_ctl
 !

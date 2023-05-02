@@ -125,6 +125,7 @@
 !
       use skip_comment_f
       use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
       use ctl_data_four_vizs_IO
 !
       integer(kind = kint), intent(in) :: id_control
@@ -177,8 +178,6 @@
 !   --------------------------------------------------------------------
 !
       subroutine dealloc_four_vizs_control_data(viz4_c)
-!
-      use bcast_4_time_step_ctl
 !
       type(control_data_four_vizs), intent(inout) :: viz4_c
 !

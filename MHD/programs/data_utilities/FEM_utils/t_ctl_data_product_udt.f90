@@ -277,6 +277,8 @@
       subroutine read_product_model_ctl                                 &
      &         (id_control, hd_block, prod_ctl, c_buf)
 !
+      use ctl_data_4_time_steps_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !

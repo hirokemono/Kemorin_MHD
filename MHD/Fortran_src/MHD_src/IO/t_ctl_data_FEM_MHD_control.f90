@@ -74,6 +74,7 @@
       subroutine read_fem_mhd_control                                   &
      &         (id_control, hd_block, fmctl_ctl, c_buf)
 !
+      use ctl_data_4_time_steps_IO
       use ctl_data_mhd_evo_scheme_IO
 !
       integer(kind = kint), intent(in) :: id_control

@@ -11,11 +11,21 @@
 !!     &         (id_control, hd_block, file_name, psph_ctl, c_buf)
 !!      subroutine read_ctl_file_gen_shell_grids(id_control, file_name, &
 !!     &                                         hd_block, psph_ctl)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        character(len = kchara), intent(inout) :: file_name
+!!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
 !!      subroutine sel_write_ctl_gen_shell_grids                        &
 !!     &         (id_control, file_name, hd_block, psph_ctl, level)
 !!      subroutine write_ctl_file_gen_shell_grids(id_control, file_name,&
 !!     &                                          hd_block, psph_ctl)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: file_name
+!!        character(len = kchara), intent(in) :: hd_block
+!!        type(parallel_sph_shell_control), intent(in) :: psph_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !! =======================================================
 !!    example of control section
 !!
@@ -140,7 +150,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len = kchara), intent(in) :: hd_block
-      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+      type(parallel_sph_shell_control), intent(in) :: psph_ctl
 !
       integer(kind = kint), intent(inout) :: level
 !
@@ -166,7 +176,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
-      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+      type(parallel_sph_shell_control), intent(in) :: psph_ctl
 !
       integer(kind = kint) :: level
 !

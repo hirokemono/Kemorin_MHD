@@ -18,6 +18,7 @@
       module bcast_4_platform_ctl
 !
       use m_precision
+      use calypso_mpi
 !
 !  ---------------------------------------------------------------------
 !

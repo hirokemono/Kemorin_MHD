@@ -19,7 +19,9 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine bcast_dynamo_viz_control(viz_ctls)
+!!      subroutine bcast_dynamo_viz_control(zm_ctls)
+!!      subroutine dealloc_dynamo_viz_control(zm_ctls)
+!!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin dynamo_vizs_control
@@ -153,6 +155,19 @@
       call bcast_crustal_filtering_ctl(zm_ctls%crust_filter_ctl)
 !
       end subroutine bcast_dynamo_viz_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_dynamo_viz_control(zm_ctls)
+!
+      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+!
+!
+      call dealloc_psf_ctl_stract(zm_ctls%zm_psf_ctls)
+      call dealloc_psf_ctl_stract(zm_ctls%zRMS_psf_ctls)
+      call reset_crustal_filtering_ctl(zm_ctls%crust_filter_ctl)
+!
+      end subroutine dealloc_dynamo_viz_control
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

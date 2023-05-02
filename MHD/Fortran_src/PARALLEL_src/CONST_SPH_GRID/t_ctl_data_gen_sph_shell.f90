@@ -24,6 +24,7 @@
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine bcast_parallel_shell_ctl(psph_ctl)
+!!      subroutine dealloc_parallel_shell_ctl(psph_ctl)
 !!        type(platform_data_control), intent(inout) :: plt
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !!

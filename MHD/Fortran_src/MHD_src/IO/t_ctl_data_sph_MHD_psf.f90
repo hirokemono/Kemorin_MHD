@@ -101,5 +101,58 @@
       end subroutine read_control_4_sph_MHD_noviz
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine write_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
+!
+      use delete_data_files
+!
+      character(len=kchara), intent(in) :: file_name
+      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!
+      integer(kind = kint) :: level1
+!
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      write(*,*) 'Write MHD control file: ', trim(file_name)
+      open(ctl_file_code, file = file_name)
+      level1 = 0
+      call write_sph_mhd_ctl_w_psf                                      &
+     &   (ctl_file_code, hd_mhd_ctl, DMHD_ctl, level1)
+      close(ctl_file_code)
+!
+      end subroutine write_control_4_sph_MHD_w_psf
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_control_4_sph_MHD_noviz(file_name, DMHD_ctl)
+!
+      use delete_data_files
+!
+      character(len=kchara), intent(in) :: file_name
+      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!
+      integer(kind = kint) :: level1
+!
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      write(*,*) 'Write MHD control file: ', trim(file_name)
+      open(ctl_file_code, file = file_name)
+      level1 = 0
+      call write_sph_mhd_ctl_noviz                                      &
+     &   (ctl_file_code, hd_mhd_ctl, DMHD_ctl, level1)
+      close(ctl_file_code)
+!
+      end subroutine write_control_4_sph_MHD_noviz
+!
+! ----------------------------------------------------------------------
 !
       end module t_ctl_data_sph_MHD_psf

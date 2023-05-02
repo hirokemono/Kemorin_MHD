@@ -37,7 +37,7 @@
 !
       use calypso_mpi
       use ctl_data_platforms_IO
-      use read_ctl_data_4_time_steps
+      use ctl_data_4_time_steps_IO
 !
       character(len=kchara), parameter                                  &
      &                      :: MHD_ctl_name = 'control_MHD_dup'
