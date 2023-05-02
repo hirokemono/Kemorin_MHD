@@ -31,6 +31,7 @@
       use t_ctl_data_mhd_normalize
       use t_ctl_data_mhd_forces
       use t_ctl_data_coriolis_force
+      use t_ctl_data_gravity
       use t_ctl_data_mhd_magne
       use t_ctl_data_temp_model
       use t_ctl_data_dimless_numbers
@@ -127,6 +128,9 @@
 !
       subroutine read_sph_mhd_model                                     &
      &         (id_control, hd_block, Dmodel_ctl, c_buf)
+!
+      use ctl_data_temp_model_IO
+      use ctl_data_comp_model_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

@@ -216,6 +216,7 @@
 !
       use calypso_mpi
       use t_ctl_data_temp_model
+      use t_ctl_data_stratified_model
       use t_control_array_character
 !
       type(read_character_item), intent(in) :: stratified_ctl

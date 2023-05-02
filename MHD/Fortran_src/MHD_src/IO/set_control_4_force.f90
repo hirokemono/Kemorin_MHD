@@ -57,6 +57,7 @@
       use t_control_parameter
       use t_ctl_data_mhd_forces
       use t_ctl_data_mhd_magne
+      use t_ctl_data_gravity
       use t_ctl_data_coriolis_force
       use skip_comment_f
 !
@@ -178,7 +179,7 @@
       subroutine set_control_4_gravity(g_ctl, fl_prop)
 !
       use t_physical_property
-      use t_ctl_data_mhd_forces
+      use t_ctl_data_gravity
       use skip_comment_f
 !
       type(gravity_control), intent(in) :: g_ctl
