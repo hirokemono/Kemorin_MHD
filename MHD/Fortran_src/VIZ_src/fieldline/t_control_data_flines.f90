@@ -6,7 +6,6 @@
 !>@brief control data for cross sections
 !!
 !!@verbatim
-!!      subroutine bcast_files_4_fline_ctl(fline_ctls)
 !!      subroutine dealloc_fline_ctl_struct(fline_ctls)
 !!      subroutine alloc_fline_ctl_struct(fline_ctls)
 !!      subroutine append_new_fline_control(fline_ctls)
@@ -47,32 +46,6 @@
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine bcast_files_4_fline_ctl(fline_ctls)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-!
-      type(fieldline_controls), intent(inout) :: fline_ctls
-      integer (kind=kint) :: i_fline
-!
-!
-      call calypso_mpi_bcast_one_int(fline_ctls%num_fline_ctl, 0)
-      if(fline_ctls%num_fline_ctl .le. 0) return
-!
-      if(my_rank .gt. 0)  call alloc_fline_ctl_struct(fline_ctls)
-!
-      call calypso_mpi_bcast_character(fline_ctls%fname_fline_ctl,      &
-     &    cast_long(kchara*fline_ctls%num_fline_ctl), 0)
-      do i_fline = 1, fline_ctls%num_fline_ctl
-        call bcast_field_line_ctl(fline_ctls%fline_ctl_struct(i_fline))
-      end do
-!
-      end subroutine bcast_files_4_fline_ctl
-!
-!   --------------------------------------------------------------------
 !
       subroutine dealloc_fline_ctl_struct(fline_ctls)
 !

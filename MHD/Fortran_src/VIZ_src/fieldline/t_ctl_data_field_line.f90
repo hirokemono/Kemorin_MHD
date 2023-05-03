@@ -7,8 +7,6 @@
 !!
 !!@verbatim
 !!      subroutine deallocate_cont_dat_fline(fln)
-!!
-!!      subroutine bcast_field_line_ctl(fln)
 !!      subroutine reset_fline_control_flags(fln)
 !!        type(fline_ctl), intent(inout) :: fln
 !!
@@ -75,7 +73,6 @@
       use t_control_array_integer2
       use t_control_array_real3
       use skip_comment_f
-      use calypso_mpi
 !
       implicit  none
 !
@@ -134,41 +131,6 @@
       call reset_fline_control_flags(fln)
 !
       end subroutine deallocate_cont_dat_fline
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_field_line_ctl(fln)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(fline_ctl), intent(inout) :: fln
-!
-!
-      call calypso_mpi_bcast_one_int(fln%i_vr_fline_ctl, 0)
-!
-      call bcast_ctl_array_c1(fln%fline_area_grp_ctl)
-!
-      call bcast_ctl_array_r3(fln%seed_point_ctl)
-      call bcast_ctl_array_i2(fln%seed_surface_ctl)
-!
-!
-      call bcast_ctl_type_c1(fln%fline_file_head_ctl)
-      call bcast_ctl_type_c1(fln%fline_output_type_ctl)
-!
-      call bcast_ctl_type_c1(fln%fline_field_ctl )
-      call bcast_ctl_type_c1(fln%fline_color_field_ctl )
-      call bcast_ctl_type_c1(fln%fline_color_comp_ctl )
-      call bcast_ctl_type_c1(fln%starting_type_ctl )
-      call bcast_ctl_type_c1(fln%start_surf_grp_ctl )
-      call bcast_ctl_type_c1(fln%selection_type_ctl )
-      call bcast_ctl_type_c1(fln%line_direction_ctl )
-!
-      call bcast_ctl_type_i1(fln%num_fieldline_ctl)
-      call bcast_ctl_type_i1(fln%max_line_stepping_ctl)
-!
-      end subroutine bcast_field_line_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

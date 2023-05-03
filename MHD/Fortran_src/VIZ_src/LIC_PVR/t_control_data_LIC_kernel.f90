@@ -25,12 +25,11 @@
 !!      subroutine copy_kernel_control_data(org_kernel_c, new_kernel_c)
 !!        type(lic_kernel_ctl), intent(in) :: org_kernel_c
 !!        type(lic_kernel_ctl), intent(inout) :: new_kernel_c
-!!      subroutine bcast_kernel_control_data(kernel_ctl)
-!!        type(lic_kernel_ctl), intent(inout) :: kernel_ctl
 !!
 !!      integer(kind = kint) function num_ctl_label_LIC_kernel()
 !!      subroutine set_ctl_label_LIC_kernel(names)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      List of flags  (Not used currently)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      List of flags  (Not used currently)
 !!    kernel_type:             'gaussian' or 'triangle'
 !!    trace_length_mode:       'length'  or  'element_count'
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -52,7 +51,6 @@
       module t_control_data_LIC_kernel
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -205,43 +203,19 @@
       type(lic_kernel_ctl), intent(inout) :: kernel_ctl
 !
 !
-      kernel_ctl%kernel_type_ctl%iflag =       0
+      kernel_ctl%kernel_type_ctl%iflag =        0
       kernel_ctl%kernel_resolution_ctl%iflag =  0
       kernel_ctl%kernel_sigma_ctl%iflag =  0
       kernel_ctl%kernel_peak_ctl%iflag =   0
       kernel_ctl%half_length_ctl%iflag =   0
       kernel_ctl%trace_length_mode_ctl%iflag = 0
-      kernel_ctl%max_trace_count_ctl%iflag =       0
+      kernel_ctl%max_trace_count_ctl%iflag =   0
 !
       kernel_ctl%i_kernel_control = 0
 !
       end subroutine reset_kernel_control_data
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_kernel_control_data(kernel_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(lic_kernel_ctl), intent(inout) :: kernel_ctl
-!
-!
-      call calypso_mpi_bcast_one_int(kernel_ctl%i_kernel_control, 0)
-!
-      call bcast_ctl_type_c1(kernel_ctl%kernel_type_ctl)
-      call bcast_ctl_type_c1(kernel_ctl%trace_length_mode_ctl)
-!
-      call bcast_ctl_type_i1(kernel_ctl%kernel_resolution_ctl)
-      call bcast_ctl_type_i1(kernel_ctl%max_trace_count_ctl)
-!
-      call bcast_ctl_type_r1(kernel_ctl%kernel_sigma_ctl)
-      call bcast_ctl_type_r1(kernel_ctl%kernel_peak_ctl)
-      call bcast_ctl_type_r1(kernel_ctl%half_length_ctl)
-!
-      end subroutine bcast_kernel_control_data
-!
 !  ---------------------------------------------------------------------
 !
       subroutine copy_kernel_control_data(org_kernel_c, new_kernel_c)

@@ -8,11 +8,10 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
-!!        type(lic_parameter_ctl), intent(in) :: org_lic_c
-!!        type(lic_parameter_ctl), intent(inout) :: new_lic_c
 !!      subroutine bcast_lic_control_data(lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!!      subroutine bcast_kernel_control_data(kernel_ctl)
+!!        type(lic_kernel_ctl), intent(inout) :: kernel_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags
 !!
@@ -65,8 +64,10 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use t_control_data_LIC
+!
       implicit  none
+!
+      private :: bcast_kernel_control_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -76,6 +77,7 @@
 !
       subroutine bcast_lic_control_data(lic_ctl)
 !
+      use t_control_data_LIC
       use t_read_control_elements
       use t_control_array_character
       use t_control_array_real
@@ -134,66 +136,28 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
+      subroutine bcast_kernel_control_data(kernel_ctl)
 !
-      use t_read_control_elements
-      use t_control_array_character
-      use t_control_array_real
-      use t_control_array_integer
-      use t_control_data_masking
-      use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
+      use calypso_mpi_int
+      use bcast_control_arrays
 !
-      use bcast_ctl_data_LIC_noise
-!
-      type(lic_parameter_ctl), intent(in) :: org_lic_c
-      type(lic_parameter_ctl), intent(inout) :: new_lic_c
+      type(lic_kernel_ctl), intent(inout) :: kernel_ctl
 !
 !
-      new_lic_c%i_lic_control = org_lic_c%i_lic_control
-      new_lic_c%fname_LIC_kernel_ctl = org_lic_c%fname_LIC_kernel_ctl
-      new_lic_c%fname_LIC_noise_ctl =  org_lic_c%fname_LIC_noise_ctl
-      new_lic_c%fname_vol_repart_ctl = org_lic_c%fname_vol_repart_ctl
+      call calypso_mpi_bcast_one_int(kernel_ctl%i_kernel_control, 0)
 !
-      call copy_chara_ctl(org_lic_c%LIC_field_ctl,                      &
-     &                    new_lic_c%LIC_field_ctl)
-      call copy_chara_ctl(org_lic_c%subdomain_elapsed_dump_ctl,         &
-     &                    new_lic_c%subdomain_elapsed_dump_ctl)
+      call bcast_ctl_type_c1(kernel_ctl%kernel_type_ctl)
+      call bcast_ctl_type_c1(kernel_ctl%trace_length_mode_ctl)
 !
-      call copy_chara_ctl(org_lic_c%color_field_ctl,                    &
-     &                    new_lic_c%color_field_ctl)
-      call copy_chara_ctl(org_lic_c%color_component_ctl,                &
-     &                    new_lic_c%color_component_ctl)
-      call copy_chara_ctl(org_lic_c%opacity_field_ctl,                  &
-     &                    new_lic_c%opacity_field_ctl)
-      call copy_chara_ctl(org_lic_c%opacity_component_ctl,              &
-     &                    new_lic_c%opacity_component_ctl)
+      call bcast_ctl_type_i1(kernel_ctl%kernel_resolution_ctl)
+      call bcast_ctl_type_i1(kernel_ctl%max_trace_count_ctl)
 !
-      call copy_chara_ctl(org_lic_c%vr_sample_mode_ctl,                 &
-     &                    new_lic_c%vr_sample_mode_ctl)
-      call copy_real_ctl(org_lic_c%step_size_ctl,                       &
-     &                   new_lic_c%step_size_ctl)
+      call bcast_ctl_type_r1(kernel_ctl%kernel_sigma_ctl)
+      call bcast_ctl_type_r1(kernel_ctl%kernel_peak_ctl)
+      call bcast_ctl_type_r1(kernel_ctl%half_length_ctl)
 !
-      call copy_chara_ctl(org_lic_c%normalization_type_ctl,             &
-     &                    new_lic_c%normalization_type_ctl)
-      call copy_real_ctl(org_lic_c%normalization_value_ctl,             &
-     &                    new_lic_c%normalization_value_ctl)
-!
-      call copy_cube_noise_control_data(org_lic_c%noise_ctl,            &
-     &                                  new_lic_c%noise_ctl)
-      call copy_kernel_control_data(org_lic_c%kernel_ctl,               &
-     &                              new_lic_c%kernel_ctl)
-      call dup_control_vol_repart(org_lic_c%repart_ctl,                 &
-     &                            new_lic_c%repart_ctl)
-!
-      new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
-      if(new_lic_c%num_masking_ctl .gt. 0) then
-        allocate(new_lic_c%mask_ctl(new_lic_c%num_masking_ctl))
-        call dup_masking_ctls(org_lic_c%num_masking_ctl,                &
-     &      org_lic_c%mask_ctl, new_lic_c%mask_ctl)
-      end if
-!
-      end subroutine dup_lic_control_data
+      end subroutine bcast_kernel_control_data
 !
 !  ---------------------------------------------------------------------
 !
