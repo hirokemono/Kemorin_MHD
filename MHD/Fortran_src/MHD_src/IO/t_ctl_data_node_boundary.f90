@@ -8,7 +8,6 @@
 !!@n        Modified by H. Matsui on Oct., 2007
 !!
 !!@verbatim
-!!      subroutine bcast_bc_4_node_ctl(nbc_ctl)
 !!      subroutine dealloc_bc_4_node_ctl(nbc_ctl)
 !!        type(node_bc_control), intent(inout) :: nbc_ctl
 !!
@@ -173,29 +172,6 @@
       contains
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine bcast_bc_4_node_ctl(nbc_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(node_bc_control), intent(inout) :: nbc_ctl
-!
-!
-      call bcast_ctl_array_c2r(nbc_ctl%node_bc_T_ctl)
-      call bcast_ctl_array_c2r(nbc_ctl%node_bc_U_ctl)
-      call bcast_ctl_array_c2r(nbc_ctl%node_bc_P_ctl)
-      call bcast_ctl_array_c2r(nbc_ctl%node_bc_C_ctl)
-      call bcast_ctl_array_c2r(nbc_ctl%node_bc_B_ctl)
-      call bcast_ctl_array_c2r(nbc_ctl%node_bc_MP_ctl)
-      call bcast_ctl_array_c2r(nbc_ctl%node_bc_A_ctl)
-      call bcast_ctl_array_c2r(nbc_ctl%node_bc_J_ctl)
-!
-      call calypso_mpi_bcast_one_int(nbc_ctl%i_bc_4_node, 0)
-!
-      end subroutine bcast_bc_4_node_ctl
-!
-!   --------------------------------------------------------------------
 !
       subroutine dealloc_bc_4_node_ctl(nbc_ctl)
 !

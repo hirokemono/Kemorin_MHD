@@ -8,8 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine s_read_viz4_controls(id_control, viz_ctls, c_buf)
+!!       integer(kind = kint), intent(in) :: id_control
+!!       character(len=kchara), intent(in) :: hd_block
 !!       type(vis4_controls), intent(inout) :: viz_ctls
 !!       type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_viz4_controls                                  &
+!!     &         (id_control, hd_block, viz_ctls, level)
+!!       integer(kind = kint), intent(in) :: id_control
+!!       character(len=kchara), intent(in) :: hd_block
+!!       type(vis4_controls), intent(in) :: viz_ctls
+!!       integer(kind = kint), intent(inout) :: level
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin visual_control
 !!    array  cross_section_ctl
@@ -201,8 +209,8 @@
 !
       integer(kind = kint), intent(in) :: id_control 
       character(len=kchara), intent(in) :: hd_block
+      type(vis4_controls), intent(in) :: viz_ctls
 !
-      type(vis4_controls), intent(inout) :: viz_ctls
       integer(kind = kint), intent(inout) :: level
 !
       integer(kind = kint) :: maxlen = 0

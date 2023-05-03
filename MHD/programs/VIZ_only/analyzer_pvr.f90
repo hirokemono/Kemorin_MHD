@@ -47,6 +47,7 @@
 !
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use bcast_control_four_vizs
       use volume_rendering
 !
       integer(kind = kint) :: ierr
@@ -59,8 +60,8 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     read controls
-      if (iflag_debug.gt.0) write(*,*) 'read_control_file_four_vizs'
-      call read_control_file_four_vizs(pvr_ctl3)
+      if (iflag_debug.gt.0) write(*,*) 'load_control_file_four_vizs'
+      call load_control_file_four_vizs(pvr_ctl3)
       call set_ctl_params_four_vizs(pvr_ctl3, FEM_viz3, t_VIZ3, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !

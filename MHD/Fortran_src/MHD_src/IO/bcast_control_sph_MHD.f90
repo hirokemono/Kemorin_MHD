@@ -76,6 +76,9 @@
 !
       subroutine bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
 !
+      use bcast_ctl_sph_mhd_control
+      use bcast_ctl_data_surfacings
+!
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
 !
 !
@@ -97,6 +100,7 @@
       use bcast_4_sph_monitor_ctl
       use bcast_4_sphere_ctl
       use bcast_monitor_data_ctl
+      use bcast_ctl_sph_mhd_control
 !
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
 !
@@ -125,6 +129,7 @@
 !
       use t_ctl_data_MHD_model
       use calypso_mpi_int
+      use bcast_ctl_data_mhd_evo
       use bcast_ctl_data_mhd_forces
       use bcast_4_field_ctl
 !

@@ -150,6 +150,7 @@
       use bcast_control_arrays
       use bcast_section_control_data
       use bcast_ctl_data_field_line
+      use bcast_ctl_data_vol_repart
       use transfer_to_long_integers
 !
       type(visualization_controls), intent(inout) :: viz_ctls

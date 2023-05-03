@@ -35,6 +35,8 @@
 !!        type(induction_equation_control), intent(inout) :: induct_ctl
 !!      subroutine bcast_ref_value_ctl(ref_ctl)
 !!        type(reference_point_control), intent(inout) :: ref_ctl
+!!      subroutine bcast_takepiro_ctl(takepiro_ctl)
+!!        type(takepiro_model_control), intent(inout) :: takepiro_ctl
 !!@endverbatim
 !
       module bcast_ctl_data_mhd_forces
@@ -47,6 +49,7 @@
 !
       private :: bcast_thermal_ctl, bcast_momentum_ctl
       private :: bcast_induction_ctl, bcast_ref_value_ctl
+      private :: bcast_takepiro_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -82,7 +85,6 @@
 !
       type(dimless_control), intent(inout) :: dless_ctl
 !
-!
       call bcast_ctl_array_cr(dless_ctl%dimless)
       call calypso_mpi_bcast_one_int(dless_ctl%i_dimless_ctl, 0)
 !
@@ -98,9 +100,7 @@
 !
       type(forces_control), intent(inout) :: frc_ctl
 !
-!
       call bcast_ctl_array_c1(frc_ctl%force_names)
-!
       call calypso_mpi_bcast_one_int(frc_ctl%i_forces_ctl, 0)
 !
       end subroutine bcast_forces_ctl
@@ -118,7 +118,6 @@
 !
       call bcast_ctl_array_cr(g_ctl%gravity_vector)
       call bcast_ctl_type_c1(g_ctl%gravity)
-!
       call calypso_mpi_bcast_one_int(g_ctl%i_gravity_ctl, 0)
 !
       end subroutine bcast_gravity_ctl
@@ -133,9 +132,7 @@
 !
       type(coriolis_control), intent(inout) :: cor_ctl
 !
-!
       call bcast_ctl_array_cr(cor_ctl%system_rotation)
-!
       call calypso_mpi_bcast_one_int(cor_ctl%i_coriolis_ctl, 0)
 !
       end subroutine bcast_coriolis_ctl
@@ -193,9 +190,7 @@
       call bcast_ctl_type_c1(refs_ctl%filterd_advect_ctl)
       call bcast_ctl_type_c1(refs_ctl%reference_ctl)
       call bcast_ctl_type_c1(refs_ctl%stratified_ctl)
-!
       call bcast_ctl_type_r1(refs_ctl%ICB_diffuse_reduction_ctl)
-!
       call calypso_mpi_bcast_one_int(refs_ctl%i_temp_def, 0)
 !
       end subroutine bcast_ref_scalar_ctl
@@ -210,7 +205,6 @@
       use bcast_control_arrays
 !
       type(heat_equation_control), intent(inout) :: heat_ctl
-!
 !
       call bcast_ctl_array_cr(heat_ctl%coef_4_adv_flux)
       call bcast_ctl_array_cr(heat_ctl%coef_4_diffuse)
@@ -254,7 +248,6 @@
 !
       type(induction_equation_control), intent(inout) :: induct_ctl
 !
-!
       call bcast_ctl_array_cr(induct_ctl%coef_4_magne_evo)
       call bcast_ctl_array_cr(induct_ctl%coef_4_mag_potential)
       call bcast_ctl_array_cr(induct_ctl%coef_4_mag_diffuse)
@@ -274,13 +267,28 @@
 !
       type(reference_point_control), intent(inout) :: ref_ctl
 !
-!
       call bcast_ctl_type_r1(ref_ctl%depth)
       call bcast_ctl_type_r1(ref_ctl%value)
-!
       call calypso_mpi_bcast_one_int(ref_ctl%i_referenced, 0)
 !
       end subroutine bcast_ref_value_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_takepiro_ctl(takepiro_ctl)
+!
+      use t_ctl_data_stratified_model
+      use calypso_mpi_int
+      use bcast_control_arrays
+!
+      type(takepiro_model_control), intent(inout) :: takepiro_ctl
+!
+      call bcast_ctl_type_r1(takepiro_ctl%stratified_sigma_ctl)
+      call bcast_ctl_type_r1(takepiro_ctl%stratified_width_ctl)
+      call bcast_ctl_type_r1(takepiro_ctl%stratified_outer_r_ctl)
+      call calypso_mpi_bcast_one_int(takepiro_ctl%i_takepiro_t_ctl, 0)
+!
+      end subroutine bcast_takepiro_ctl
 !
 !   --------------------------------------------------------------------
 !

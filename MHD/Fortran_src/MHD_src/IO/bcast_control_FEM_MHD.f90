@@ -92,6 +92,7 @@
       use bcast_4_time_step_ctl
       use bcast_4_solver_ctl
       use bcast_4_fem_int_pts_ctl
+      use bcast_ctl_data_mhd_time_rst
 !
       type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
 !

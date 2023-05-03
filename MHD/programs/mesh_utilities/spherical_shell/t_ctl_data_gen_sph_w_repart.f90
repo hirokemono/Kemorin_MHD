@@ -185,6 +185,7 @@
       use bcast_control_arrays
       use bcast_4_platform_ctl
       use bcast_4_sphere_ctl
+      use bcast_ctl_data_vol_repart
       use transfer_to_long_integers
 !
       type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c

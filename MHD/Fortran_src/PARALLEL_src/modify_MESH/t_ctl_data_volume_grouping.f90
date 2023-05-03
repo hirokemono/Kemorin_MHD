@@ -11,7 +11,6 @@
 !!      subroutine dealloc_repart_masking_ctl(new_part_ctl)
 !!        type(new_patition_control), intent(inout) :: new_part_ctl
 !!      subroutine dealloc_ctl_data_new_decomp(new_part_ctl)
-!!      subroutine bcast_ctl_data_new_decomp(new_part_ctl)
 !!        type(new_patition_control), intent(inout) :: new_part_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine dup_ctl_data_new_decomp(org_new_part_c,              &
@@ -181,43 +180,6 @@
       new_part_ctl%i_new_patition_ctl = 0
 !
       end subroutine dealloc_ctl_data_new_decomp
-!
-! -----------------------------------------------------------------------
-!
-      subroutine bcast_ctl_data_new_decomp(new_part_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-      use bcast_masking_control_data
-!
-      type(new_patition_control), intent(inout) :: new_part_ctl
-!
-      integer(kind = kint) :: i
-!
-      call bcast_ctl_type_c1(new_part_ctl%repart_table_head_ctl)
-      call bcast_ctl_type_c1(new_part_ctl%repart_table_fmt_ctl)
-!
-      call bcast_ctl_array_ci(new_part_ctl%ndomain_section_ctl)
-      call bcast_ctl_type_c1(new_part_ctl%partition_reference_ctl)
-      call bcast_ctl_type_c1(new_part_ctl%trace_count_head_ctl)
-      call bcast_ctl_type_c1(new_part_ctl%trace_count_fmt_ctl)
-      call bcast_ctl_type_c1(new_part_ctl%masking_switch_ctl)
-      call bcast_ctl_type_r1(new_part_ctl%power_of_volume_ctl)
-      call bcast_ctl_type_r1(new_part_ctl%masking_weight_ctl)
-      call bcast_ctl_type_r1(new_part_ctl%weight_to_previous_ctl)
-      call bcast_ctl_type_i1(new_part_ctl%sleeve_level_ctl)
-      call bcast_ctl_type_i1(new_part_ctl%ratio_of_grouping_ctl)
-!
-      call calypso_mpi_bcast_one_int(new_part_ctl%num_masking_ctl, 0)
-      if(my_rank .ne. 0) call alloc_repart_masking_ctl(new_part_ctl)
-      do i = 1, new_part_ctl%num_masking_ctl
-        call bcast_masking_ctl_data(new_part_ctl%mask_ctl(i))
-      end do
-!
-      call calypso_mpi_bcast_one_int                                    &
-     &   (new_part_ctl%i_new_patition_ctl, 0)
-!
-      end subroutine bcast_ctl_data_new_decomp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -21,7 +21,6 @@
 !!        type(viz_repartition_ctl), intent(in) :: viz_repart_c
 !!        integer(kind = kint), intent(inout) :: level
 !!      subroutine dealloc_control_vol_repart(viz_repart_c)
-!!      subroutine bcast_control_vol_repart(viz_repart_c)
 !!        type(viz_repartition_ctl), intent(inout) :: viz_repart_c
 !!      subroutine dup_control_vol_repart(org_viz_repart_c,             &
 !!     &                                  new_viz_repart_c)
@@ -186,28 +185,6 @@
       end subroutine dealloc_control_vol_repart
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_control_vol_repart(viz_repart_c)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-!
-      type(viz_repartition_ctl), intent(inout) :: viz_repart_c
-!
-!
-      call bcast_ctl_data_4_platform(viz_repart_c%viz_plt)
-!
-      call bcast_FEM_mesh_control(viz_repart_c%Fmesh_ctl)
-      call bcast_ctl_data_new_decomp(viz_repart_c%new_part_ctl)
-      call bcast_FEM_sleeve_control(viz_repart_c%Fsleeve_ctl)
-!
-      call calypso_mpi_bcast_one_int                                    &
-     &   (viz_repart_c%i_viz_repartition_ctl, 0)
-!
-      end subroutine bcast_control_vol_repart
-!
 !   --------------------------------------------------------------------
 !
       subroutine dup_control_vol_repart(org_viz_repart_c,              &

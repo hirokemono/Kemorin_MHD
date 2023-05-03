@@ -138,9 +138,6 @@
 !
       subroutine reset_control_fem_int_points(fint_ctl)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
       type(fem_intergration_control), intent(inout) :: fint_ctl
 !
 !
