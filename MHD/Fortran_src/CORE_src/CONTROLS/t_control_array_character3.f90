@@ -122,7 +122,7 @@
         maxlen(i) = len_trim(chara3_item%charavalue(i))                 &
      &           + iflag_divide(chara3_item%charavalue(i))
       end do
-      call write_character3_ctl_item(id_file, level, label, maxlen,     &
+      call write_character3_ctl_item(id_file, level, maxlen, label,     &
      &    chara3_item%charavalue(1), chara3_item%charavalue(2),         &
      &    chara3_item%charavalue(3))
 !
@@ -231,7 +231,7 @@
       level = write_array_flag_for_ctl(id_control, level, label)
       do i = 1, array_c3%num
         call write_character3_ctl_item                                  &
-     &     (id_control, level, label, maxlen,                           &
+     &     (id_control, level, maxlen, label,                           &
      &      array_c3%c1_tbl(i), array_c3%c2_tbl(i), array_c3%c3_tbl(i))
       end do
       level = write_end_array_flag_for_ctl(id_control, level, label)

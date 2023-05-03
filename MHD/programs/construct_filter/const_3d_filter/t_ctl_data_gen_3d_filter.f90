@@ -19,6 +19,7 @@
       use t_ctl_data_gen_filter
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
+      use t_ctl_data_org_filter_fname
       use skip_comment_f
 !
       implicit  none
@@ -130,6 +131,8 @@
      &         (id_control, hd_block, filter3d_ctl, c_buf)
 !
       use ctl_data_platforms_IO
+      use ctl_data_gen_filter_IO
+      use ctl_data_3d_filter_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -168,12 +171,54 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine write_const_filter_ctl_data                            &
+     &         (id_control, hd_block, filter3d_ctl, level)
+!
+      use ctl_data_platforms_IO
+      use ctl_data_gen_filter_IO
+      use ctl_data_3d_filter_IO
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(filter3d_ctl%i_filter_control .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_platforms(id_control, hd_platform,             &
+     &   filter3d_ctl%gen_filter_plt, level)
+!
+      call write_filter_param_ctl(id_control, hd_filter_param_ctl,      &
+     &    filter3d_ctl%gen_f_ctl, level)
+      call write_filter_fnames_control(id_control, hd_filter_fnames,    &
+     &    filter3d_ctl%fil3_ctl%ffile_3d_ctl, level)
+!
+      call write_filter_area_ctl(id_control, hd_filter_area_ctl,        &
+     &    filter3d_ctl%fil3_ctl, level)
+      call write_element_size_ctl(id_control, hd_deltax_ctl,            &
+     &   filter3d_ctl%fil3_ctl, level)
+      call write_org_filter_fnames_ctl                                  &
+     &   (id_control, hd_org_filter_fnames,                             &
+     &    filter3d_ctl%org_fil_files_ctl, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_const_filter_ctl_data
+!
+!   --------------------------------------------------------------------
+!
       subroutine bcast_const_filter_ctl_data(filter3d_ctl)
 !
       use calypso_mpi_int
       use bcast_control_arrays
       use bcast_4_platform_ctl
       use bcast_4_filter_files_ctl
+      use bcast_ctl_data_3d_filter
+      use bcast_ctl_data_gen_filter
 !
       type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
 !

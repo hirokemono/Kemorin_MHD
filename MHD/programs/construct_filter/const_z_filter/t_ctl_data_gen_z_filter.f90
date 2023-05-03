@@ -101,6 +101,7 @@
      &         (id_control, hd_block, z_filter_ctl, c_buf)
 !
       use skip_comment_f
+      use ctl_data_gen_filter_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -138,6 +139,7 @@
 !
       use calypso_mpi_int
       use bcast_control_arrays
+      use bcast_ctl_data_gen_filter
 !
       type(ctl_data_gen_z_filter), intent(inout) :: z_filter_ctl
 !

@@ -115,7 +115,7 @@
      &     = max_len_of_charaarray(ione, chara2_item%charavalue(1))
 !
       if(chara2_item%iflag .eq. 0) return
-      call write_character2_ctl_item(id_file, level, label, maxlen,     &
+      call write_character2_ctl_item(id_file, level, maxlen, label,     &
      &    chara2_item%charavalue(1), chara2_item%charavalue(2))
 !
        end subroutine write_character2_ctl_type
@@ -220,8 +220,8 @@
 !
       level = write_array_flag_for_ctl(id_control, level, label)
       do i = 1, array_c2%num
-        call write_character2_ctl_item(id_control, level, label,        &
-     &      maxlen, array_c2%c1_tbl(i), array_c2%c2_tbl(i))
+        call write_character2_ctl_item(id_control, level, maxlen,       &
+     &      label, array_c2%c1_tbl(i), array_c2%c2_tbl(i))
       end do
       level = write_end_array_flag_for_ctl(id_control, level, label)
 !

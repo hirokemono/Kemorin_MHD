@@ -1,32 +1,31 @@
-!t_ctl_data_newdomain_filter.f90
-!      module t_ctl_data_newdomain_filter
+!>@file   t_ctl_data_newdomain_filter.f90
+!!@brief  module t_ctl_data_newdomain_filter
+!!
+!!@author  H. Matsui
+!!@date Programmed in May. 2006
 !
-!      subroutine read_control_filter_newdomain(newd_fil_ctl)
-!
-!      begin org_filter_filtes_ctl
-!        org_filter_file_header       'org/filter_node'
-!        org_filter_elength_header    'org/filter_elength'
-!        org_filter_moment_header     'org/filter_moms'
-!        org_filter_coefs_header      'org/filter_coef'
-!      end
-!
-!      Written by H. Matsui on Apr., 2008
+!>@brief Control inputs for PVR projection and streo parameter
+!!
+!!@verbatim
+!!      subroutine read_control_filter_newdomain(file_name,             &
+!!     &                                         newd_fil_ctl)
+!!      subroutine write_control_filter_newdomain(file_name,            &
+!!     &                                          newd_fil_ctl)
+!!@endverbatim
 !
       module t_ctl_data_newdomain_filter
 !
       use m_precision
-      use calypso_mpi
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
       use t_ctl_data_3d_filter
+      use t_ctl_data_org_filter_fname
 !
       implicit  none
 !
       integer(kind = kint), parameter :: id_filter_ctl_file = 11
-      character(len = kchara), parameter                                &
-     &             :: fname_trans_flt_ctl = "ctl_new_domain_filter"
 !
       type ctl_data_newdomain_filter
         type(platform_data_control) :: org_filter_plt
@@ -41,26 +40,23 @@
 !
 !     Top level
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter , private                        &
      &         :: hd_filter_newdomain_ctl = 'change_filter_domain_ctl'
 !
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter , private                        &
      &                    :: hd_platform = 'data_files_def'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter , private                        &
      &                    :: hd_new_data = 'new_data_files_def'
-      character(len=kchara), parameter :: hd_filter_fnames              &
-     &                        = 'filter_files_def'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter , private                        &
+     &                    :: hd_filter_fnames = 'filter_files_def'
+      character(len=kchara), parameter , private                        &
      &         :: hd_org_filter_fnames =  'orginal_filter_files_ctl'
 !
-      private :: hd_platform, hd_new_data, hd_org_filter_fnames
-      private :: hd_filter_fnames
-!
-      private :: id_filter_ctl_file, fname_trans_flt_ctl
-      private :: hd_filter_newdomain_ctl
+      private :: id_filter_ctl_file
       private :: read_ctl_filter_newdomain_data
+      private :: write_ctl_filter_newdomain_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -68,32 +64,55 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_filter_newdomain(newd_fil_ctl)
+      subroutine read_control_filter_newdomain(file_name,               &
+     &                                         newd_fil_ctl)
 !
       use skip_comment_f
 !
+      character(len = kchara), intent(in) :: file_name
       type(ctl_data_newdomain_filter), intent(inout) :: newd_fil_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-        open(id_filter_ctl_file, file=fname_trans_flt_ctl,              &
-     &       status='old')
+      open(id_filter_ctl_file, file=file_name, status='old')
 !
-        do
-          call load_one_line_from_control(id_filter_ctl_file, c_buf1)
-          call read_ctl_filter_newdomain_data(id_filter_ctl_file,       &
-     &        hd_filter_newdomain_ctl, newd_fil_ctl, c_buf1)
-          if(newd_fil_ctl%i_filter_newdomain_ctl .gt. 0) exit
-        end do
-        close(id_filter_ctl_file)
-      end if
-!
-      call bcast_ctl_filter_newdomain_data(newd_fil_ctl)
+      do
+        call load_one_line_from_control(id_filter_ctl_file, c_buf1)
+        call read_ctl_filter_newdomain_data(id_filter_ctl_file,         &
+     &      hd_filter_newdomain_ctl, newd_fil_ctl, c_buf1)
+        if(newd_fil_ctl%i_filter_newdomain_ctl .gt. 0) exit
+      end do
+      close(id_filter_ctl_file)
 !
       end subroutine read_control_filter_newdomain
 !
+!   --------------------------------------------------------------------
+!
+      subroutine write_control_filter_newdomain(file_name,             &
+     &                                          newd_fil_ctl)
+!
+      use delete_data_files
+!
+      character(len = kchara), intent(in) :: file_name
+      type(ctl_data_newdomain_filter), intent(in) :: newd_fil_ctl
+!
+      integer(kind = kint) :: level1
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      open(id_filter_ctl_file, file=file_name)
+      level1 = 0
+      call write_ctl_filter_newdomain_data(id_filter_ctl_file,          &
+     &    hd_filter_newdomain_ctl, newd_fil_ctl, level1)
+      close(id_filter_ctl_file)
+!
+      end subroutine write_control_filter_newdomain
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_ctl_filter_newdomain_data                         &
@@ -133,28 +152,39 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_ctl_filter_newdomain_data(newd_fil_ctl)
+      subroutine write_ctl_filter_newdomain_data                        &
+     &         (id_control, hd_block, newd_fil_ctl, level)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
-      use bcast_4_platform_ctl
-      use bcast_4_filter_files_ctl
+      use ctl_data_platforms_IO
+      use skip_comment_f
+      use write_control_elements
 !
-      type(ctl_data_newdomain_filter), intent(inout) :: newd_fil_ctl
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(ctl_data_newdomain_filter), intent(in) :: newd_fil_ctl
+      integer(kind = kint), intent(inout) :: level
 !
 !
-      call bcast_ctl_data_4_platform(newd_fil_ctl%org_filter_plt)
-      call bcast_ctl_data_4_platform(newd_fil_ctl%new_filter_plt)
-      call bcast_filter_fnames_control(newd_fil_ctl%ffile_ndom_ctl)
-      call bcast_org_filter_fnames_ctl                                  &
-     &   (newd_fil_ctl%org_filter_file_ctls)
+      if(newd_fil_ctl%i_filter_newdomain_ctl .le. 0) return
 !
-      call calypso_mpi_bcast_one_int                                    &
-     &   (newd_fil_ctl%i_filter_newdomain_ctl, 0)
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-      end subroutine bcast_ctl_filter_newdomain_data
+      call write_control_platforms(id_control, hd_platform,             &
+     &    newd_fil_ctl%org_filter_plt, level)
+      call write_control_platforms(id_control, hd_new_data,             &
+     &    newd_fil_ctl%new_filter_plt, level)
+      call write_filter_fnames_control                                  &
+     &   (id_control, hd_filter_fnames,                                 &
+     &    newd_fil_ctl%ffile_ndom_ctl, level)
+      call write_org_filter_fnames_ctl                                  &
+     &   (id_control, hd_org_filter_fnames,                             &
+     &    newd_fil_ctl%org_filter_file_ctls, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
-!  ---------------------------------------------------------------------
+      end subroutine write_ctl_filter_newdomain_data
+!
+!   --------------------------------------------------------------------
 !
       subroutine reset_ctl_filter_newdomain_data(newd_fil_ctl)
 !
