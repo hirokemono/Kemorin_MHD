@@ -110,7 +110,7 @@ t_control_data_4_iso.o: $(PSF_SECTION_DIR)/t_control_data_4_iso.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_4_iso_def.o: $(PSF_SECTION_DIR)/t_control_data_4_iso_def.f90 m_precision.o m_constants.o m_machine_parameter.o skip_comment_f.o t_read_control_elements.o t_control_array_real.o t_control_array_character.o t_control_data_4_fld_on_psf.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_4_psf.o: $(PSF_SECTION_DIR)/t_control_data_4_psf.f90 m_precision.o m_constants.o m_machine_parameter.o skip_comment_f.o t_read_control_elements.o t_control_array_real.o t_control_array_character.o t_control_array_charareal.o t_control_array_character2.o t_control_data_4_psf_def.o t_control_data_4_fld_on_psf.o calypso_mpi.o calypso_mpi_int.o bcast_control_arrays.o t_control_array_character3.o add_nodal_fields_ctl.o
+t_control_data_4_psf.o: $(PSF_SECTION_DIR)/t_control_data_4_psf.f90 m_precision.o m_constants.o m_machine_parameter.o skip_comment_f.o t_read_control_elements.o t_control_array_real.o t_control_array_character.o t_control_array_charareal.o t_control_array_character2.o t_control_data_4_psf_def.o t_control_data_4_fld_on_psf.o calypso_mpi.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_4_psf_def.o: $(PSF_SECTION_DIR)/t_control_data_4_psf_def.f90 m_precision.o m_constants.o m_machine_parameter.o skip_comment_f.o t_read_control_elements.o t_control_array_real.o t_control_array_character.o t_control_array_charareal.o
 	$(F90) -c $(F90OPTFLAGS) $<

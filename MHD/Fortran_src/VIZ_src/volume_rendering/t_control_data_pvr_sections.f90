@@ -21,8 +21,6 @@
 !!        type(pvr_sections_ctl), intent(in) :: pvr_scts_c
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_pvr_sections_ctl(pvr_scts_c)
-!!
 !!      subroutine append_new_pvr_section_ctl(pvr_scts_c)
 !!        type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
 !!      subroutine dup_pvr_sections_ctl(org_pvr_scts_c, new_pvr_scts_c)
@@ -52,7 +50,6 @@
       module t_control_data_pvr_sections
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -176,32 +173,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_pvr_sections_ctl(pvr_scts_c)
-!
-      use bcast_control_arrays
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-!
-      type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
-!
-      integer(kind = kint) :: i
-!
-!
-      call calypso_mpi_bcast_one_int(pvr_scts_c%num_pvr_sect_ctl, 0)
-      if(pvr_scts_c%num_pvr_sect_ctl .gt. 0 .and. my_rank .gt. 0) then
-        allocate(pvr_scts_c%pvr_sect_ctl(pvr_scts_c%num_pvr_sect_ctl))
-      end if
-!
-      do i = 1, pvr_scts_c%num_pvr_sect_ctl
-        call bcast_pvr_section_ctl(pvr_scts_c%pvr_sect_ctl(i))
-      end do
-!
-      end subroutine bcast_pvr_sections_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine copy_pvr_sections_ctl                                  &
      &         (num_pvr_sect, org_pvr_scts_c, new_pvr_scts_c)
 !
@@ -218,7 +189,6 @@
 !
       end subroutine copy_pvr_sections_ctl
 !
-!  ---------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine append_new_pvr_section_ctl(pvr_scts_c)

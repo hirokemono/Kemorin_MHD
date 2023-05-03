@@ -7,7 +7,6 @@
 !> @brief control data for parallel volume rendering
 !!
 !!@verbatim
-!!      subroutine bcast_pvr_section_ctl(pvr_scts_c)
 !!      subroutine dup_pvr_section_ctl(org_pvr_sect_c, new_pvr_sect_c)
 !!        type(pvr_section_ctl), intent(in) :: org_pvr_sect_c
 !!        type(pvr_section_ctl), intent(inout) :: new_pvr_sect_c
@@ -29,7 +28,6 @@
       module t_ctl_data_pvr_section
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -54,28 +52,6 @@
       contains
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine bcast_pvr_section_ctl(pvr_scts_c)
-!
-      use bcast_control_arrays
-      use bcast_section_control_data
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-!
-      type(pvr_section_ctl), intent(inout) :: pvr_scts_c
-!
-!
-      call calypso_mpi_bcast_one_int(pvr_scts_c%i_pvr_sect_ctl, 0)
-      call calypso_mpi_bcast_character                                  &
-     &   (pvr_scts_c%fname_sect_ctl, cast_long(kchara), 0)
-!
-      call bcast_section_def_control(pvr_scts_c%psf_def_c)
-      call bcast_ctl_type_r1(pvr_scts_c%opacity_ctl)
-!
-      end subroutine bcast_pvr_section_ctl
-!
-!  ---------------------------------------------------------------------
 !
       subroutine dup_pvr_section_ctl(org_pvr_sect_c, new_pvr_sect_c)
 !

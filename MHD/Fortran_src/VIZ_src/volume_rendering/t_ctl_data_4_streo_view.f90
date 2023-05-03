@@ -20,7 +20,6 @@
 !!        type(streo_view_ctl), intent(in) :: streo
 !!        integer(kind = kint), intent(inout) :: level
 !!      subroutine reset_stereo_view_ctl(streo)
-!!      subroutine bcast_stereo_view_ctl(streo)
 !!        type(streo_view_ctl), intent(inout) :: streo
 !!      subroutine copy_stereo_view_ctl(org_streo, new_streo)
 !!        type(streo_view_ctl), intent(in) :: org_streo
@@ -45,7 +44,6 @@
       module t_ctl_data_4_streo_view
 !
       use m_precision
-      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
@@ -172,25 +170,6 @@
       streo%i_stereo_view = 0
 !
       end subroutine reset_stereo_view_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_stereo_view_ctl(streo)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(streo_view_ctl), intent(inout) :: streo
-!
-!
-      call calypso_mpi_bcast_one_int(streo%i_stereo_view, 0)
-!
-      call bcast_ctl_type_r1(streo%focalpoint_ctl)
-      call bcast_ctl_type_r1(streo%eye_separation_ctl)
-      call bcast_ctl_type_r1(streo%eye_sep_angle_ctl)
-      call bcast_ctl_type_c1(streo%step_eye_sep_angle_ctl)
-!
-      end subroutine bcast_stereo_view_ctl
 !
 !  ---------------------------------------------------------------------
 !

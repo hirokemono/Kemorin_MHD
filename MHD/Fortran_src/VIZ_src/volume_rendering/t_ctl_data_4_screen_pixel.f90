@@ -20,8 +20,6 @@
 !!        type(screen_pixel_ctl), intent(in) :: pixel
 !!        integer(kind = kint), intent(inout) :: level
 !!      subroutine reset_image_size_ctl(pixel)
-!!      subroutine bcast_image_size_ctl(pixel)
-!!        type(screen_pixel_ctl), intent(inout) :: pixel
 !!      subroutine copy_image_size_ctl(org_pixel, new_pixel)
 !!        type(screen_pixel_ctl), intent(in) :: org_pixel
 !!        type(screen_pixel_ctl), intent(inout) :: new_pixel
@@ -43,7 +41,6 @@
       module t_ctl_data_4_screen_pixel
 !
       use m_precision
-      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
@@ -150,23 +147,6 @@
       pixel%i_image_size =  0
 !
       end subroutine reset_image_size_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_image_size_ctl(pixel)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(screen_pixel_ctl), intent(inout) :: pixel
-!
-!
-      call calypso_mpi_bcast_one_int(pixel%i_image_size, 0)
-!
-      call bcast_ctl_type_i1(pixel%num_xpixel_ctl)
-      call bcast_ctl_type_i1(pixel%num_ypixel_ctl)
-!
-      end subroutine bcast_image_size_ctl
 !
 !  ---------------------------------------------------------------------
 !

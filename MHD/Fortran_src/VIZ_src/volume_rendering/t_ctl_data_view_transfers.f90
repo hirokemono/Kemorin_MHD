@@ -7,6 +7,7 @@
 !>@brief Control inputs for multiple PVR view parameter
 !!
 !!@verbatim
+!!      subroutine alloc_multi_modeview_ctl(mul_mats_c)
 !!      subroutine dealloc_multi_modeview_ctl(mul_mats_c)
 !!      subroutine read_mul_view_transfer_ctl                           &
 !!     &         (id_control, hd_block, mul_mats_c, c_buf)
@@ -18,9 +19,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(multi_modeview_ctl), intent(in) :: mul_mats_c
 !!        integer(kind = kint), intent(inout) :: level
-!!
-!!      subroutine bcast_mul_view_trans_ctl(mul_mats_c)
-!!        type(multi_modeview_ctl), intent(inout) :: mul_mats_c
 !!
 !!      subroutine append_mul_view_trans_ctl(mul_mats_c)
 !!        type(multi_modeview_ctl), intent(inout) :: mul_mats_c
@@ -47,7 +45,6 @@
       module t_ctl_data_view_transfers
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -172,36 +169,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_mul_view_trans_ctl(mul_mats_c)
-!
-      use bcast_control_arrays
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_dup_view_transfer_ctl
-!
-      type(multi_modeview_ctl), intent(inout) :: mul_mats_c
-!
-      integer(kind = kint) :: i, num
-!
-!
-      call calypso_mpi_bcast_one_int(mul_mats_c%num_modelviews_c, 0)
-      if(mul_mats_c%num_modelviews_c .gt. 0 .and. my_rank .gt. 0) then
-        num = mul_mats_c%num_modelviews_c
-        call alloc_multi_modeview_ctl(mul_mats_c)
-      end if
-!
-      call calypso_mpi_bcast_character(mul_mats_c%fname_mat_ctl,        &
-     &    cast_long(kchara*mul_mats_c%num_modelviews_c), 0)
-      do i = 1, mul_mats_c%num_modelviews_c
-        call bcast_view_transfer_ctl(mul_mats_c%matrices(i))
-      end do
-!
-      end subroutine bcast_mul_view_trans_ctl
-!
-!  ---------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine append_mul_view_trans_ctl(mul_mats_c)
 !
       type(multi_modeview_ctl), intent(inout) :: mul_mats_c
@@ -247,8 +214,6 @@
 !
       subroutine copy_mul_view_trans_ctl                                &
      &         (num_mat, org_mul_mats_c, new_mul_mats_c)
-!
-      use bcast_dup_view_transfer_ctl
 !
       integer(kind = kint), intent(in) :: num_mat
       type(multi_modeview_ctl), intent(in) :: org_mul_mats_c

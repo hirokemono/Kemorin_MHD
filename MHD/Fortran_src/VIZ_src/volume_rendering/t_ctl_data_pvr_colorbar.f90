@@ -7,7 +7,6 @@
 !> @brief colormap control data for parallel volume rendering
 !!
 !!@verbatim
-!!      subroutine bcast_pvr_colorbar_ctl(cbar_ctl)
 !!      subroutine reset_pvr_colorbar_ctl_flags(cbar_ctl)
 !!        type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !!      subroutine copy_pvr_colorbar_ctl(org_cbar_c, new_cbar_c)
@@ -36,7 +35,6 @@
       module t_ctl_data_pvr_colorbar
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -47,7 +45,6 @@
       use skip_comment_f
 !
       implicit  none
-!
 !
       type pvr_colorbar_ctl
         type(read_character_item) :: colorbar_switch_ctl
@@ -68,33 +65,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_colorbar_ctl(cbar_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
-!
-!
-      call calypso_mpi_bcast_one_int(cbar_ctl%i_pvr_colorbar, 0)
-!
-      call bcast_ctl_type_i1(cbar_ctl%font_size_ctl)
-      call bcast_ctl_type_i1(cbar_ctl%ngrid_cbar_ctl)
-!
-      call bcast_ctl_type_c1(cbar_ctl%colorbar_switch_ctl)
-      call bcast_ctl_type_c1(cbar_ctl%colorbar_scale_ctl)
-      call bcast_ctl_type_c1(cbar_ctl%colorbar_position_ctl)
-      call bcast_ctl_type_c1(cbar_ctl%zeromarker_flag_ctl)
-!
-      call bcast_ctl_type_c1(cbar_ctl%axis_switch_ctl)
-      call bcast_ctl_type_c1(cbar_ctl%time_switch_ctl)
-!
-      call bcast_ctl_type_r2(cbar_ctl%cbar_range_ctl)
-!
-      end subroutine bcast_pvr_colorbar_ctl
 !
 !  ---------------------------------------------------------------------
 !

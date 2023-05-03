@@ -25,8 +25,6 @@
 !!        type(pvr_render_area_ctl), intent(inout) :: new_rarea_c
 !!      subroutine dealloc_pvr_render_area_ctl(render_area_c)
 !!        type(pvr_render_area_ctl), intent(inout) :: render_area_c
-!!      subroutine bcast_pvr_render_area_ctl(render_area_c)
-!!        type(pvr_render_area_ctl), intent(inout) :: render_area_c
 !!
 !!      integer(kind = kint) function num_label_pvr_area()
 !!      subroutine set_label_pvr_area(names)
@@ -49,7 +47,6 @@
       module  t_ctl_data_pvr_area
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -166,24 +163,6 @@
       render_area_c%i_plot_area = 0
 !
       end subroutine dealloc_pvr_render_area_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_render_area_ctl(render_area_c)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(pvr_render_area_ctl), intent(inout) :: render_area_c
-!
-!
-      call calypso_mpi_bcast_one_int(render_area_c%i_plot_area, 0)
-!
-      call bcast_ctl_array_c1(render_area_c%pvr_area_ctl)
-      call bcast_ctl_array_c2r(render_area_c%surf_enhanse_ctl)
-!
-      end subroutine bcast_pvr_render_area_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

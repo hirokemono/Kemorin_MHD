@@ -36,7 +36,9 @@
       use calypso_mpi_int
       use calypso_mpi_char
       use bcast_control_arrays
-      use bcast_dup_view_transfer_ctl
+      use bcast_pvr_color_ctl
+      use bcast_ctl_data_view_trans
+      use bcast_ctl_data_pvr_surfaces
       use transfer_to_long_integers
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr
@@ -59,7 +61,7 @@
       call bcast_pvr_colordef_ctl(pvr%cmap_cbar_c%color)
 !
       call bcast_quilt_image_ctl(pvr%quilt_c)
-      call bcast_pvr_rotation_ctl(pvr%movie)
+      call bcast_pvr_moving_view_ctl(pvr%movie)
       call bcast_pvr_render_area_ctl(pvr%render_area_c)
 !
       call bcast_ctl_type_c1(pvr%updated_ctl)
@@ -96,8 +98,8 @@
 !
       subroutine dup_pvr_ctl(org_pvr, new_pvr)
 !
+      use t_ctl_data_4_view_transfer
       use bcast_control_arrays
-      use bcast_dup_view_transfer_ctl
 !
       type(pvr_parameter_ctl), intent(in) :: org_pvr
       type(pvr_parameter_ctl), intent(inout) :: new_pvr

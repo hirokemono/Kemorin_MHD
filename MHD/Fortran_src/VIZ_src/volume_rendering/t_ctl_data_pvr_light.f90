@@ -18,7 +18,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(pvr_light_ctl), intent(in) :: light
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine bcast_lighting_ctl(light)
 !!      subroutine reset_pvr_light_flags(light)
 !!      subroutine dealloc_pvr_light_crl(light)
 !!        type(pvr_light_ctl), intent(inout) :: light
@@ -48,7 +47,6 @@
       module t_ctl_data_pvr_light
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -161,25 +159,6 @@
       end subroutine write_lighting_ctl
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine bcast_lighting_ctl(light)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(pvr_light_ctl), intent(inout) :: light
-!
-!
-      call calypso_mpi_bcast_one_int(light%i_pvr_lighting, 0)
-!
-      call bcast_ctl_array_r3(light%light_position_ctl)
-!
-      call bcast_ctl_type_r1(light%ambient_coef_ctl )
-      call bcast_ctl_type_r1(light%diffuse_coef_ctl )
-      call bcast_ctl_type_r1(light%specular_coef_ctl)
-!
-      end subroutine bcast_lighting_ctl
-!
 !  ---------------------------------------------------------------------
 !
       subroutine reset_pvr_light_flags(light)

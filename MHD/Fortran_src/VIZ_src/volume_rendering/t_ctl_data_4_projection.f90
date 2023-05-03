@@ -20,7 +20,6 @@
 !!        type(projection_ctl), intent(in) :: proj
 !!        integer(kind = kint), intent(inout) :: level
 !!      subroutine reset_projection_view_ctl(proj)
-!!      subroutine bcast_projection_mat_ctl(proj)
 !!        type(projection_ctl), intent(inout) :: proj
 !!      subroutine copy_projection_mat_ctl(org_proj, new_proj)
 !!        type(projection_ctl), intent(in) :: org_proj
@@ -45,7 +44,6 @@
       module t_ctl_data_4_projection
 !
       use m_precision
-      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
@@ -170,25 +168,6 @@
       proj%i_project_mat = 0
 !
       end subroutine reset_projection_view_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_projection_mat_ctl(proj)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(projection_ctl), intent(inout) :: proj
-!
-!
-      call calypso_mpi_bcast_one_int(proj%i_project_mat, 0)
-!
-      call bcast_ctl_type_r1(proj%perspective_angle_ctl)
-      call bcast_ctl_type_r1(proj%perspective_xy_ratio_ctl)
-      call bcast_ctl_type_r1(proj%perspective_near_ctl)
-      call bcast_ctl_type_r1(proj%perspective_far_ctl)
-!
-      end subroutine bcast_projection_mat_ctl
 !
 !  ---------------------------------------------------------------------
 !

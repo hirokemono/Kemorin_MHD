@@ -14,8 +14,6 @@
 !!      subroutine dealloc_pvr_movie_control_flags(movie)
 !!        type(pvr_movie_ctl), intent(inout) :: movie
 !!
-!!      subroutine bcast_pvr_rotation_ctl(movie)
-!!        type(pvr_movie_ctl), intent(inout) :: movie
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    Avaiable parameters for movie_format_ctl:
 !!        BMP, PNG, QUILT
@@ -56,7 +54,6 @@
       module t_ctl_data_pvr_movie
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -118,8 +115,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dup_pvr_movie_control_flags(org_movie, new_movie)
-!
-      use bcast_dup_view_transfer_ctl
 !
       type(pvr_movie_ctl), intent(in) :: org_movie
       type(pvr_movie_ctl), intent(inout) :: new_movie
@@ -186,45 +181,6 @@
       movie%i_pvr_rotation = 0
 !
       end subroutine dealloc_pvr_movie_control_flags
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_rotation_ctl(movie)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_control_arrays
-      use bcast_dup_view_transfer_ctl
-!
-      type(pvr_movie_ctl), intent(inout) :: movie
-!
-!
-      call calypso_mpi_bcast_one_int(movie%i_pvr_rotation, 0)
-!
-      call bcast_ctl_type_c1(movie%movie_format_ctl)
-      call bcast_ctl_type_c1(movie%movie_mode_ctl)
-      call bcast_ctl_type_i1(movie%num_frames_ctl)
-      call bcast_ctl_type_c1(movie%rotation_axis_ctl)
-      call bcast_ctl_type_i2(movie%quilt_column_row_ctl)
-      call bcast_ctl_type_i2(movie%quilt_row_column_ctl)
-!
-      call bcast_ctl_type_r2(movie%angle_range_ctl)
-      call bcast_ctl_type_r2(movie%apature_range_ctl)
-      call bcast_ctl_type_r2(movie%LIC_kernel_peak_range_ctl)
-!
-      call calypso_mpi_bcast_character(movie%fname_view_start_ctl,      &
-     &                                 cast_long(kchara), 0)
-      call calypso_mpi_bcast_character(movie%fname_view_end_ctl,        &
-     &                                 cast_long(kchara), 0)
-      call bcast_view_transfer_ctl(movie%view_start_ctl)
-      call bcast_view_transfer_ctl(movie%view_end_ctl)
-!
-      call bcast_mul_view_trans_ctl(movie%mul_mmats_c)
-!
-      end subroutine bcast_pvr_rotation_ctl
 !
 !  ---------------------------------------------------------------------
 !

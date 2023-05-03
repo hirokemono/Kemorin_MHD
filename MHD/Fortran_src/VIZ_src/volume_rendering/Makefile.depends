@@ -2,9 +2,13 @@ FEM_to_VIZ_bridge.o: $(PVR_DIR)/FEM_to_VIZ_bridge.f90 m_precision.o m_machine_pa
 	$(F90) -c $(F90OPTFLAGS) $<
 anaglyph_volume_rendering.o: $(PVR_DIR)/anaglyph_volume_rendering.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_work_time.o m_elapsed_labels_4_VIZ.o t_mesh_data.o t_phys_data.o t_jacobians.o t_volume_rendering.o t_surf_grp_list_each_surf.o t_rendering_vr_image.o t_control_params_4_pvr.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_pvr_field_data.o t_geometries_in_pvr_screen.o t_control_data_pvrs.o t_mesh_SR.o t_control_data_pvr_sections.o set_pvr_control.o rendering_and_image_nums.o each_anaglyph_PVR.o cal_pvr_modelview_mat.o write_PVR_image.o rendering_streo_vr_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
-bcast_control_data_4_pvr.o: $(PVR_DIR)/bcast_control_data_4_pvr.f90 m_precision.o calypso_mpi.o t_control_data_4_pvr.o calypso_mpi_int.o calypso_mpi_char.o bcast_control_arrays.o bcast_dup_view_transfer_ctl.o transfer_to_long_integers.o
+bcast_control_data_4_pvr.o: $(PVR_DIR)/bcast_control_data_4_pvr.f90 m_precision.o calypso_mpi.o t_control_data_4_pvr.o calypso_mpi_int.o calypso_mpi_char.o bcast_control_arrays.o bcast_pvr_color_ctl.o bcast_ctl_data_view_trans.o bcast_ctl_data_pvr_surfaces.o transfer_to_long_integers.o t_ctl_data_4_view_transfer.o
 	$(F90) -c $(F90OPTFLAGS) $<
-bcast_dup_view_transfer_ctl.o: $(PVR_DIR)/bcast_dup_view_transfer_ctl.f90 m_precision.o calypso_mpi.o m_constants.o t_ctl_data_4_view_transfer.o calypso_mpi_int.o bcast_control_arrays.o t_ctl_data_4_screen_pixel.o t_ctl_data_4_projection.o t_ctl_data_4_streo_view.o
+bcast_ctl_data_pvr_surfaces.o: $(PVR_DIR)/bcast_ctl_data_pvr_surfaces.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_data_pvr_sections.o bcast_control_arrays.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o t_control_data_pvr_isosurfs.o t_ctl_data_pvr_section.o bcast_section_control_data.o t_ctl_data_pvr_isosurface.o
+	$(F90) -c $(F90OPTFLAGS) $<
+bcast_ctl_data_view_trans.o: $(PVR_DIR)/bcast_ctl_data_view_trans.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_ctl_data_pvr_movie.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o bcast_control_arrays.o t_ctl_data_quilt_image.o t_ctl_data_view_transfers.o t_ctl_data_4_view_transfer.o t_ctl_data_4_screen_pixel.o t_ctl_data_4_projection.o t_ctl_data_4_streo_view.o
+	$(F90) -c $(F90OPTFLAGS) $<
+bcast_pvr_color_ctl.o: $(PVR_DIR)/bcast_pvr_color_ctl.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_ctl_data_pvr_colormap.o calypso_mpi_int.o bcast_control_arrays.o t_ctl_data_pvr_light.o t_ctl_data_pvr_colorbar.o t_ctl_data_pvr_area.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_pvr_modelview_mat.o: $(PVR_DIR)/cal_pvr_modelview_mat.f90 m_precision.o m_constants.o m_machine_parameter.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_control_params_stereo_pvr.o t_surf_grp_4_pvr_domain.o cal_inverse_small_matrix.o cal_matrix_vector_smp.o transform_mat_operations.o mag_of_field_smp.o cal_products_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -102,9 +106,9 @@ t_VIZ_mesh_field.o: $(PVR_DIR)/t_VIZ_mesh_field.f90 m_precision.o m_machine_para
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_4_pvr.o: $(PVR_DIR)/t_control_data_4_pvr.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_array_integer.o t_control_array_character.o t_control_array_chara2real.o t_ctl_data_pvr_colormap_bar.o t_ctl_data_pvr_light.o t_control_data_pvr_sections.o t_ctl_data_pvr_movie.o t_ctl_data_quilt_image.o t_control_data_pvr_isosurfs.o t_ctl_data_pvr_area.o skip_comment_f.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_pvr_isosurfs.o: $(PVR_DIR)/t_control_data_pvr_isosurfs.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_ctl_data_pvr_isosurface.o skip_comment_f.o write_control_elements.o calypso_mpi_int.o bcast_control_arrays.o
+t_control_data_pvr_isosurfs.o: $(PVR_DIR)/t_control_data_pvr_isosurfs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_ctl_data_pvr_isosurface.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_pvr_sections.o: $(PVR_DIR)/t_control_data_pvr_sections.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf_def.o t_control_array_real.o t_control_array_character.o t_control_array_chara2real.o t_ctl_data_pvr_section.o skip_comment_f.o ctl_data_pvr_section_IO.o write_control_elements.o bcast_control_arrays.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o
+t_control_data_pvr_sections.o: $(PVR_DIR)/t_control_data_pvr_sections.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf_def.o t_control_array_real.o t_control_array_character.o t_control_array_chara2real.o t_ctl_data_pvr_section.o skip_comment_f.o ctl_data_pvr_section_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_pvrs.o: $(PVR_DIR)/t_control_data_pvrs.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_data_4_pvr.o t_read_control_elements.o skip_comment_f.o ctl_file_each_pvr_IO.o write_control_elements.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o bcast_control_data_4_pvr.o t_control_array_character3.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -114,33 +118,33 @@ t_control_params_4_pvr.o: $(PVR_DIR)/t_control_params_4_pvr.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_params_stereo_pvr.o: $(PVR_DIR)/t_control_params_stereo_pvr.f90 m_precision.o m_constants.o t_control_data_4_pvr.o set_area_4_viz.o skip_comment_f.o t_ctl_data_quilt_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_4_projection.o: $(PVR_DIR)/t_ctl_data_4_projection.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o skip_comment_f.o write_control_elements.o calypso_mpi_int.o bcast_control_arrays.o
+t_ctl_data_4_projection.o: $(PVR_DIR)/t_ctl_data_4_projection.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_4_screen_pixel.o: $(PVR_DIR)/t_ctl_data_4_screen_pixel.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_integer.o skip_comment_f.o write_control_elements.o calypso_mpi_int.o bcast_control_arrays.o
+t_ctl_data_4_screen_pixel.o: $(PVR_DIR)/t_ctl_data_4_screen_pixel.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_integer.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_4_streo_view.o: $(PVR_DIR)/t_ctl_data_4_streo_view.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o skip_comment_f.o write_control_elements.o calypso_mpi_int.o bcast_control_arrays.o
+t_ctl_data_4_streo_view.o: $(PVR_DIR)/t_ctl_data_4_streo_view.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_4_view_transfer.o: $(PVR_DIR)/t_ctl_data_4_view_transfer.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o t_control_array_charareal.o t_control_array_chara2real.o t_ctl_data_4_screen_pixel.o t_ctl_data_4_projection.o t_ctl_data_4_streo_view.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_area.o: $(PVR_DIR)/t_ctl_data_pvr_area.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_chara2real.o skip_comment_f.o write_control_elements.o calypso_mpi_int.o bcast_control_arrays.o
+t_ctl_data_pvr_area.o: $(PVR_DIR)/t_ctl_data_pvr_area.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_chara2real.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_colorbar.o: $(PVR_DIR)/t_ctl_data_pvr_colorbar.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_array_character.o t_control_array_integer.o t_control_array_real2.o skip_comment_f.o calypso_mpi_int.o bcast_control_arrays.o
+t_ctl_data_pvr_colorbar.o: $(PVR_DIR)/t_ctl_data_pvr_colorbar.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_array_character.o t_control_array_integer.o t_control_array_real2.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_colormap.o: $(PVR_DIR)/t_ctl_data_pvr_colormap.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_array_character.o t_control_array_real.o t_control_array_real2.o t_control_array_real3.o skip_comment_f.o calypso_mpi_int.o bcast_control_arrays.o
+t_ctl_data_pvr_colormap.o: $(PVR_DIR)/t_ctl_data_pvr_colormap.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_array_character.o t_control_array_real.o t_control_array_real2.o t_control_array_real3.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_colormap_bar.o: $(PVR_DIR)/t_ctl_data_pvr_colormap_bar.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_pvr_colormap.o t_ctl_data_pvr_colorbar.o skip_comment_f.o bcast_control_arrays.o ctl_data_pvr_colorbar_IO.o ctl_data_pvr_colormap_IO.o write_control_elements.o
+t_ctl_data_pvr_colormap_bar.o: $(PVR_DIR)/t_ctl_data_pvr_colormap_bar.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_pvr_colormap.o t_ctl_data_pvr_colorbar.o skip_comment_f.o ctl_data_pvr_colorbar_IO.o ctl_data_pvr_colormap_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_isosurface.o: $(PVR_DIR)/t_ctl_data_pvr_isosurface.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o skip_comment_f.o write_control_elements.o calypso_mpi_int.o bcast_control_arrays.o
+t_ctl_data_pvr_isosurface.o: $(PVR_DIR)/t_ctl_data_pvr_isosurface.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_light.o: $(PVR_DIR)/t_ctl_data_pvr_light.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o t_control_array_real3.o skip_comment_f.o write_control_elements.o calypso_mpi_int.o bcast_control_arrays.o
+t_ctl_data_pvr_light.o: $(PVR_DIR)/t_ctl_data_pvr_light.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o t_control_array_real3.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_movie.o: $(PVR_DIR)/t_ctl_data_pvr_movie.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf.o t_control_array_character.o t_control_array_integer.o t_control_array_real2.o t_control_array_integer2.o t_ctl_data_4_view_transfer.o t_ctl_data_view_transfers.o skip_comment_f.o bcast_dup_view_transfer_ctl.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o bcast_control_arrays.o
+t_ctl_data_pvr_movie.o: $(PVR_DIR)/t_ctl_data_pvr_movie.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf.o t_control_array_character.o t_control_array_integer.o t_control_array_real2.o t_control_array_integer2.o t_ctl_data_4_view_transfer.o t_ctl_data_view_transfers.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_section.o: $(PVR_DIR)/t_ctl_data_pvr_section.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf_def.o t_control_array_real.o t_control_array_character.o t_control_array_chara2real.o skip_comment_f.o bcast_control_arrays.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o
+t_ctl_data_pvr_section.o: $(PVR_DIR)/t_ctl_data_pvr_section.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf_def.o t_control_array_real.o t_control_array_character.o t_control_array_chara2real.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_quilt_image.o: $(PVR_DIR)/t_ctl_data_quilt_image.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_integer.o t_control_array_integer2.o t_control_array_real2.o t_ctl_data_view_transfers.o skip_comment_f.o ctl_file_pvr_modelview_IO.o write_control_elements.o bcast_dup_view_transfer_ctl.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o bcast_control_arrays.o
+t_ctl_data_quilt_image.o: $(PVR_DIR)/t_ctl_data_quilt_image.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_integer.o t_control_array_integer2.o t_control_array_real2.o t_ctl_data_view_transfers.o skip_comment_f.o ctl_file_pvr_modelview_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_view_transfers.o: $(PVR_DIR)/t_ctl_data_view_transfers.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_ctl_data_4_view_transfer.o skip_comment_f.o ctl_file_pvr_modelview_IO.o ctl_data_view_transfer_IO.o write_control_elements.o bcast_control_arrays.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o bcast_dup_view_transfer_ctl.o
+t_ctl_data_view_transfers.o: $(PVR_DIR)/t_ctl_data_view_transfers.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_ctl_data_4_view_transfer.o skip_comment_f.o ctl_file_pvr_modelview_IO.o ctl_data_view_transfer_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_four_visualizers.o: $(PVR_DIR)/t_four_visualizers.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_VIZ_step_parameter.o t_time_data.o t_mesh_data.o t_comm_table.o t_phys_data.o t_next_node_ele_4_node.o t_VIZ_mesh_field.o t_mesh_SR.o t_control_data_viz4.o t_cross_section.o t_isosurface.o t_volume_rendering.o t_fieldline.o volume_rendering.o anaglyph_volume_rendering.o
 	$(F90) -c $(F90OPTFLAGS) $<

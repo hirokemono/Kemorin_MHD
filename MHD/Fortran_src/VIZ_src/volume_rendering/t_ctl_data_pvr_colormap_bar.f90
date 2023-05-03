@@ -106,14 +106,12 @@
       module t_ctl_data_pvr_colormap_bar
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_pvr_colormap
       use t_ctl_data_pvr_colorbar
       use skip_comment_f
-      use bcast_control_arrays
 !
       implicit  none
 !

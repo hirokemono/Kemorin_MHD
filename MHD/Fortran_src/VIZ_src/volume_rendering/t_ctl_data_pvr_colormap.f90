@@ -64,7 +64,6 @@
       module t_ctl_data_pvr_colormap
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -116,39 +115,6 @@
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_colordef_ctl(color)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(pvr_colormap_ctl), intent(inout) :: color
-!
-!
-      call calypso_mpi_bcast_one_int(color%i_pvr_colordef, 0)
-!
-      call bcast_ctl_array_r2(color%colortbl_ctl)
-      call bcast_ctl_array_r2(color%linear_opacity_ctl)
-!
-      call bcast_ctl_array_r3(color%step_opacity_ctl)
-!
-      call bcast_ctl_type_c1(color%lic_color_fld_ctl)
-      call bcast_ctl_type_c1(color%lic_color_comp_ctl)
-      call bcast_ctl_type_c1(color%lic_opacity_fld_ctl)
-      call bcast_ctl_type_c1(color%lic_opacity_comp_ctl)
-!
-      call bcast_ctl_type_c1(color%colormap_mode_ctl)
-      call bcast_ctl_type_c1(color%data_mapping_ctl)
-      call bcast_ctl_type_c1(color%opacity_style_ctl)
-!
-      call bcast_ctl_type_r1(color%range_min_ctl)
-      call bcast_ctl_type_r1(color%range_max_ctl)
-      call bcast_ctl_type_r1(color%fix_opacity_ctl)
-!
-      end subroutine bcast_pvr_colordef_ctl
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine reset_pvr_colormap_flags(color)

@@ -26,9 +26,6 @@
 !!      subroutine reset_quilt_image_ctl(quilt_c)
 !!        type(quilt_image_ctl), intent(inout) :: quilt_c
 !!
-!!      subroutine bcast_quilt_image_ctl(quilt_c)
-!!        type(quilt_image_ctl), intent(inout) :: quilt_c
-!!
 !!      integer(kind = kint) function num_label_quilt_image()
 !!      subroutine set_label_quilt_image(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -56,7 +53,6 @@
       module t_ctl_data_quilt_image
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -184,8 +180,6 @@
 !
       subroutine dup_quilt_image_ctl(org_quilt, new_quilt)
 !
-      use bcast_dup_view_transfer_ctl
-!
       type(quilt_image_ctl), intent(in) :: org_quilt
       type(quilt_image_ctl), intent(inout) :: new_quilt
 !
@@ -220,30 +214,6 @@
       quilt_c%i_quilt_image = 0
 !
       end subroutine reset_quilt_image_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_quilt_image_ctl(quilt_c)
-!
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_control_arrays
-      use bcast_dup_view_transfer_ctl
-!
-      type(quilt_image_ctl), intent(inout) :: quilt_c
-!
-!
-      call calypso_mpi_bcast_one_int(quilt_c%i_quilt_image, 0)
-!
-      call bcast_ctl_type_c1(quilt_c%quilt_mode_ctl)
-      call bcast_ctl_type_i2(quilt_c%num_column_row_ctl)
-      call bcast_ctl_type_i2(quilt_c%num_row_column_ctl)
-!
-      call bcast_mul_view_trans_ctl(quilt_c%mul_qmats_c)
-!
-      end subroutine bcast_quilt_image_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

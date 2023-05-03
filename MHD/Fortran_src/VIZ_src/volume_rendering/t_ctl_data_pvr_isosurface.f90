@@ -24,7 +24,6 @@
 !!      subroutine dup_pvr_isosurface_ctl(org_pvr_iso_c, new_pvr_iso_c)
 !!        type(pvr_isosurf_ctl), intent(in) :: org_pvr_iso_c
 !!        type(pvr_isosurf_ctl), intent(inout) :: new_pvr_iso_c
-!!      subroutine bcast_pvr_isosurface_ctl(pvr_iso_ctl)
 !!      subroutine reset_pvr_isosurface_ctl(pvr_iso_ctl)
 !!        type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
 !!
@@ -43,7 +42,6 @@
       module t_ctl_data_pvr_isosurface
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -155,26 +153,6 @@
      &                   new_pvr_iso_c%opacity_ctl)
 !
       end subroutine dup_pvr_isosurface_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_isosurface_ctl(pvr_iso_ctl)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
-!
-!
-      call calypso_mpi_bcast_one_int(pvr_iso_ctl%i_pvr_isosurf_ctl, 0)
-      call bcast_ctl_type_c1                                            &
-     &   (pvr_iso_ctl%isosurf_type_ctl)
-      call bcast_ctl_type_r1                                            &
-     &   (pvr_iso_ctl%iso_value_ctl)
-      call bcast_ctl_type_r1(pvr_iso_ctl%opacity_ctl)
-!
-      end subroutine bcast_pvr_isosurface_ctl
 !
 !  ---------------------------------------------------------------------
 !
