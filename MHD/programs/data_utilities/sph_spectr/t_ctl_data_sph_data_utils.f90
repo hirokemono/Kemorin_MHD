@@ -7,8 +7,17 @@
 !>@brief  control data to take difference of psectr data
 !!
 !!@verbatim
-!!      subroutine read_control_file_sph_util(control_file_name, ctl)
 !!      subroutine dealloc_spectr_util_control(ctl)
+!!
+!!      subroutine read_diff_spectr_file_control                        &
+!!     &         (id_control, hd_block, file_list, c_buf)
+!!      subroutine write_diff_spectr_file_control                       &
+!!     &         (id_control, hd_block, file_list, level)
+!!      subroutine read_rename_spectr_control                           &
+!!     &         (id_control, hd_block, field_list, c_buf)
+!!      subroutine write_rename_spectr_control                          &
+!!     &         (id_control, hd_block, field_list, level)
+!
 !!
 !!  begin spectr_dat_util_ctl
 !!    begin data_files_def
@@ -37,7 +46,6 @@
       module t_ctl_data_sph_data_utils
 !
       use m_precision
-      use calypso_mpi
 !
       use t_read_control_elements
       use t_ctl_data_4_platforms
@@ -74,137 +82,29 @@
         integer(kind = kint) :: iflag = 0
       end type spectr_data_util_ctl
 !
-      character(len=kchara), parameter                                  &
-     &       :: hd_control_d_sph = 'spectr_dat_util_ctl'
-!
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_file_def = 'file_definition'
-      character(len=kchara), parameter                                  &
-     &       :: hd_rename_def = 'rename_field_ctl'
-      character(len=kchara), parameter                                  &
-     &                    :: hd_platform = 'data_files_def'
-      character(len=kchara), parameter                                  &
-     &      :: hd_time_step = 'time_step_ctl'
-!
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_org_field_prefix =     'org_sprctr_prefix'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_sub_field_prefix =     'sub_sprctr_prefix'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_out_field_prefix =     'out_sprctr_prefix'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_org_field_format =     'org_sprctr_format'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_sub_field_format =     'sub_sprctr_format'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_out_field_format =     'out_sprctr_format'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_field_to_rename =     'field_to_rename'
 !
-      private :: hd_org_field_prefix, hd_org_field_format
-      private :: hd_sub_field_prefix, hd_sub_field_format
-      private :: hd_out_field_prefix, hd_out_field_format
-      private :: hd_rename_def, hd_field_to_rename
-      private :: hd_time_step, hd_platform
-!
-      private :: read_spectr_util_control, bcast_spectr_util_control
-      private :: read_diff_spectr_file_control
-      private :: bcast_diff_spectr_file_control
       private :: reset_diff_spectr_file_control
-      private :: read_rename_spectr_control
-      private :: bcast_rename_spectr_control
       private :: dealloc_rename_spectr_control
 !
 ! -------------------------------------------------------------------
 !
       contains
-!
-! -------------------------------------------------------------------
-!
-      subroutine read_control_file_sph_util(control_file_name, ctl)
-!
-      character(len=kchara), intent(in) :: control_file_name
-      type(spectr_data_util_ctl), intent(inout) :: ctl
-!
-      integer(kind = kint), parameter :: control_file_code = 11
-      type(buffer_for_control) :: c_buf1
-!
-!
-      if(my_rank .eq. 0) then
-        open (control_file_code, file = control_file_name)
-        do
-          call load_one_line_from_control(control_file_code, c_buf1)
-          call read_spectr_util_control                                 &
-     &       (control_file_code, hd_control_d_sph, ctl, c_buf1)
-          if(ctl%iflag .gt. 0) exit
-        end do
-        close(control_file_code)
-      end if
-!
-      call bcast_spectr_util_control(ctl)
-!
-      end subroutine read_control_file_sph_util
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine read_spectr_util_control                               &
-     &         (id_control, hd_block, ctl, c_buf)
-!
-      use ctl_data_platforms_IO
-      use ctl_data_4_time_steps_IO
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(spectr_data_util_ctl), intent(inout) :: ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-!   2 begin time_step_ctl
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(ctl%iflag .gt. 0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-        call read_control_platforms                                     &
-     &     (id_control, hd_platform, ctl%plt, c_buf)
-        call read_control_time_step_data                                &
-     &     (id_control, hd_time_step, ctl%tctl, c_buf)
-        call read_diff_spectr_file_control                              &
-     &     (id_control, hd_file_def, ctl%file_list, c_buf)
-        call read_rename_spectr_control                                 &
-     &     (id_control, hd_rename_def, ctl%field_list, c_buf)
-      end do
-      ctl%iflag = 1
-!
-      end subroutine read_spectr_util_control
-!
-! -------------------------------------------------------------------
-!
-      subroutine bcast_spectr_util_control(ctl)
-!
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-      use bcast_4_time_step_ctl
-!
-      type(spectr_data_util_ctl), intent(inout) :: ctl
-!
-!
-      call bcast_diff_spectr_file_control(ctl%file_list)
-      call bcast_rename_spectr_control(ctl%field_list)
-!
-      call bcast_ctl_data_4_platform(ctl%plt)
-      call bcast_ctl_data_4_time_step(ctl%tctl)
-!
-      call calypso_mpi_bcast_one_int(ctl%iflag, 0)
-!
-      end subroutine bcast_spectr_util_control
 !
 ! -------------------------------------------------------------------
 !
@@ -259,25 +159,45 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine bcast_diff_spectr_file_control(file_list)
+      subroutine write_diff_spectr_file_control                         &
+     &         (id_control, hd_block, file_list, level)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
+      use write_control_elements
 !
-      type(diff_spectrum_ctl), intent(inout) :: file_list
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(diff_spectrum_ctl), intent(in) :: file_list
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
 !
 !
-      call bcast_ctl_type_c1(file_list%org_field_head_ctl)
-      call bcast_ctl_type_c1(file_list%sub_field_head_ctl)
-      call bcast_ctl_type_c1(file_list%out_field_head_ctl)
+      if(file_list%iflag .le. 0) return
 !
-      call bcast_ctl_type_c1(file_list%org_spec_file_fmt_ctl)
-      call bcast_ctl_type_c1(file_list%sub_spec_file_fmt_ctl)
-      call bcast_ctl_type_c1(file_list%out_spec_file_fmt_ctl)
+      maxlen = len_trim(hd_org_field_prefix)
+      maxlen = max(maxlen, len_trim(hd_sub_field_prefix))
+      maxlen = max(maxlen, len_trim(hd_out_field_prefix))
+      maxlen = max(maxlen, len_trim(hd_org_field_format))
+      maxlen = max(maxlen, len_trim(hd_sub_field_format))
+      maxlen = max(maxlen, len_trim(hd_out_field_format))
 !
-      call calypso_mpi_bcast_one_int(file_list%iflag, 0)
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_org_field_prefix, file_list%org_field_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_sub_field_prefix, file_list%sub_field_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_out_field_prefix, file_list%out_field_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_org_field_format, file_list%org_spec_file_fmt_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_sub_field_format, file_list%sub_spec_file_fmt_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_out_field_format, file_list%out_spec_file_fmt_ctl)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
-      end subroutine bcast_diff_spectr_file_control
+      end subroutine write_diff_spectr_file_control
 !
 ! -----------------------------------------------------------------------
 !
@@ -326,18 +246,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine bcast_rename_spectr_control(field_list)
+      subroutine write_rename_spectr_control                            &
+     &         (id_control, hd_block, field_list, level)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
+      use write_control_elements
 !
-      type(rename_spectr_ctl), intent(inout) :: field_list
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
 !
-      call bcast_ctl_array_c2(field_list%field_to_rename_ctl)
+      type(rename_spectr_ctl), intent(in) :: field_list
+      integer(kind = kint), intent(inout) :: level
 !
-      call calypso_mpi_bcast_one_int(field_list%iflag, 0)
 !
-      end subroutine bcast_rename_spectr_control
+      if(field_list%iflag .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      call write_control_array_c2(id_control, level,                    &
+     &    hd_field_to_rename, field_list%field_to_rename_ctl)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_rename_spectr_control
 !
 ! -----------------------------------------------------------------------
 !

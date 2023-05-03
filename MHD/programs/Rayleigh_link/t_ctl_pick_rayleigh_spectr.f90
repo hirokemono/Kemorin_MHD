@@ -168,26 +168,6 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine bcast_pick_rayleigh_ctl(pick_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(pick_rayleigh_spectr_control), intent(inout) :: pick_ctl
-!
-!
-      call bcast_ctl_type_c1(pick_ctl%picked_data_file_name)
-      call bcast_ctl_type_c1(pick_ctl%Rayleigh_rst_dir_ctl)
-      call bcast_ctl_type_i2(pick_ctl%Rayleigh_version_ctl)
-      call bcast_ctl_type_i1(pick_ctl%Rayleigh_step_ctl)
-      call bcast_ctl_array_i2(pick_ctl%idx_rayleigh_ctl)
-      call calypso_mpi_bcast_one_int                                    &
-     &    (pick_ctl%i_pick_rayleigh_spectr, 0)
-!
-      end subroutine bcast_pick_rayleigh_ctl
-!
-! -----------------------------------------------------------------------
-!
       subroutine check_pick_rayleigh_ctl(my_rank, pick_ctl)
 !
       integer, intent(in) :: my_rank

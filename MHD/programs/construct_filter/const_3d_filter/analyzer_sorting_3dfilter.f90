@@ -35,6 +35,7 @@
 !
       subroutine sort_3dfilter_init
 !
+      use bcast_ctl_data_gen_3d_filter
       use set_ctl_gen_filter
 !
 !
@@ -45,8 +46,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sort_filter'
-      call read_control_4_sort_filter(filter3d_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'load_control_4_sort_filter'
+      call load_control_4_sort_filter(filter3d_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_sort_3dfilter'
       call set_controls_sort_3dfilter                                   &

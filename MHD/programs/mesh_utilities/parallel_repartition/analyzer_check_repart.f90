@@ -50,6 +50,7 @@
       use t_ctl_file_volume_grouping
       use t_const_comm_table
 !
+      use bcast_control_volume_grping
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use nod_phys_send_recv
@@ -67,7 +68,7 @@
 !
 !     ----- read control data
 !
-      call read_ctl_file_new_partition(part_tctl1)
+      call load_ctl_file_new_partition(part_tctl1)
       call set_control_param_repartition(part_tctl1, part_p1)
 !
 !  --  read geometry

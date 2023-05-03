@@ -27,7 +27,7 @@ SOURCES = $(shell ls *.f90)
 MOD_BC_FILE_TEST = \
 t_ctl_data_test_bc_temp.o \
 m_ctl_params_test_bc_temp.o \
-\
+bcast_ctl_data_test_bc_temp.o \
 const_sph_boundary_temp.o \
 \
 analyzer_sph_bc_temp.o \

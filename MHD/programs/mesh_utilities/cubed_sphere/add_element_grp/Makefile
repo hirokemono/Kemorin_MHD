@@ -15,6 +15,7 @@ m_add_ele_grp_parameter.o \
 m_work_4_add_egrp_sph.o \
 \
 analyzer_add_ele_group.o \
+bcast_control_add_ele_grp.o \
 set_control_add_2d_egrp.o \
 set_new_2d_element_group.o \
 set_ele_grp2_by_2d.o \

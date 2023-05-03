@@ -1,6 +1,8 @@
 add_elegrp_sph.o: $(ELE_GRP_SPH_DIR)/add_elegrp_sph.f90 m_precision.o calypso_mpi.o analyzer_add_ele_group.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_add_ele_group.o: $(ELE_GRP_SPH_DIR)/analyzer_add_ele_group.f90 m_precision.o m_constants.o m_machine_parameter.o t_mesh_data.o t_control_data_add_ele_grp.o calypso_mpi.o m_add_ele_grp_parameter.o m_work_4_add_egrp_sph.o mpi_load_mesh_data.o const_mesh_information.o set_control_add_2d_egrp.o set_ele_grp2_by_2d.o set_new_2d_element_group.o
+analyzer_add_ele_group.o: $(ELE_GRP_SPH_DIR)/analyzer_add_ele_group.f90 m_precision.o m_constants.o m_machine_parameter.o t_mesh_data.o t_control_data_add_ele_grp.o calypso_mpi.o m_add_ele_grp_parameter.o m_work_4_add_egrp_sph.o bcast_control_add_ele_grp.o mpi_load_mesh_data.o const_mesh_information.o set_control_add_2d_egrp.o set_ele_grp2_by_2d.o set_new_2d_element_group.o
+	$(F90) -c $(F90OPTFLAGS) $<
+bcast_control_add_ele_grp.o: $(ELE_GRP_SPH_DIR)/bcast_control_add_ele_grp.f90 m_precision.o calypso_mpi.o t_control_data_add_ele_grp.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_add_ele_grp_parameter.o: $(ELE_GRP_SPH_DIR)/m_add_ele_grp_parameter.f90 m_precision.o t_file_IO_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -14,6 +16,6 @@ set_new_2d_element_group.o: $(ELE_GRP_SPH_DIR)/set_new_2d_element_group.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 start_end_4_2d_ele_grping.o: $(ELE_GRP_SPH_DIR)/start_end_4_2d_ele_grping.f90 m_precision.o m_constants.o m_geometry_constants.o m_work_4_add_egrp_sph.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_add_ele_grp.o: $(ELE_GRP_SPH_DIR)/t_control_data_add_ele_grp.f90 m_precision.o calypso_mpi.o t_read_control_elements.o t_ctl_data_4_platforms.o t_control_array_character.o t_control_array_charareal2.o skip_comment_f.o ctl_data_platforms_IO.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_control_arrays.o
+t_control_data_add_ele_grp.o: $(ELE_GRP_SPH_DIR)/t_control_data_add_ele_grp.f90 m_precision.o t_read_control_elements.o t_ctl_data_4_platforms.o t_control_array_character.o t_control_array_charareal2.o skip_comment_f.o ctl_data_platforms_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

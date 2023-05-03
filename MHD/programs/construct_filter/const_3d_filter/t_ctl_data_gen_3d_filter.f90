@@ -13,7 +13,6 @@
       module t_ctl_data_gen_3d_filter
 !
       use m_precision
-      use calypso_mpi
       use t_read_control_elements
       use t_ctl_data_3d_filter
       use t_ctl_data_gen_filter
@@ -26,10 +25,6 @@
 !
 !
       integer(kind = kint), parameter :: filter_ctl_file_code = 11
-      character(len = kchara), parameter                                &
-     &                        :: fname_filter_ctl = "ctl_filter"
-      character(len = kchara), parameter                                &
-     &                        :: fname_sort_flt_ctl = "ctl_sort_filter"
 !
 !
       type ctl_data_gen_3d_filter
@@ -75,52 +70,45 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_gen_filter(filter3d_ctl)
+      subroutine read_control_4_gen_filter(file_name, filter3d_ctl)
 !
+      character(len=kchara), intent(in) :: file_name
       type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-        open(filter_ctl_file_code, file=fname_filter_ctl, status='old')
+      open(filter_ctl_file_code, file=file_name, status='old')
 !
-        do
-          call load_one_line_from_control(filter_ctl_file_code, c_buf1)
-          call read_const_filter_ctl_data(filter_ctl_file_code,         &
-     &        hd_filter_control, filter3d_ctl, c_buf1)
-          if(filter3d_ctl%i_filter_control .gt. 0) exit
-        end do
-        close(filter_ctl_file_code)
-      end if
-!
-      call bcast_const_filter_ctl_data(filter3d_ctl)
+      do
+        call load_one_line_from_control(filter_ctl_file_code, c_buf1)
+        call read_const_filter_ctl_data(filter_ctl_file_code,           &
+     &      hd_filter_control, filter3d_ctl, c_buf1)
+        if(filter3d_ctl%i_filter_control .gt. 0) exit
+      end do
+      close(filter_ctl_file_code)
 !
       end subroutine read_control_4_gen_filter
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_sort_filter(filter3d_ctl)
+      subroutine read_control_4_sort_filter(file_name, filter3d_ctl)
 !
+      character(len=kchara), intent(in) :: file_name
       type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-        open(filter_ctl_file_code, file=fname_sort_flt_ctl,             &
-     &       status='old')
+      open(filter_ctl_file_code, file=file_name, status='old')
 !
-        do
-          call load_one_line_from_control(filter_ctl_file_code, c_buf1)
-          call read_const_filter_ctl_data(filter_ctl_file_code,         &
-     &        hd_filter_control, filter3d_ctl, c_buf1)
-          if(filter3d_ctl%i_filter_control .gt. 0) exit
-        end do
-        close(filter_ctl_file_code)
-      end if
-!
-      call bcast_const_filter_ctl_data(filter3d_ctl)
+      do
+        call load_one_line_from_control(filter_ctl_file_code, c_buf1)
+        call read_const_filter_ctl_data(filter_ctl_file_code,           &
+     &      hd_filter_control, filter3d_ctl, c_buf1)
+        if(filter3d_ctl%i_filter_control .gt. 0) exit
+      end do
+      close(filter_ctl_file_code)
 !
       end subroutine read_control_4_sort_filter
 !
@@ -210,33 +198,6 @@
       end subroutine write_const_filter_ctl_data
 !
 !   --------------------------------------------------------------------
-!
-      subroutine bcast_const_filter_ctl_data(filter3d_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-      use bcast_4_platform_ctl
-      use bcast_4_filter_files_ctl
-      use bcast_ctl_data_3d_filter
-      use bcast_ctl_data_gen_filter
-!
-      type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
-!
-!
-      call bcast_ctl_data_4_platform(filter3d_ctl%gen_filter_plt)
-      call bcast_filter_param_ctl(filter3d_ctl%gen_f_ctl)
-!
-      call bcast_filter_fnames_control                                  &
-     &   (filter3d_ctl%fil3_ctl%ffile_3d_ctl)
-      call bcast_filter_area_ctl(filter3d_ctl%fil3_ctl)
-      call bcast_element_size_ctl(filter3d_ctl%fil3_ctl)
-      call bcast_org_filter_fnames_ctl(filter3d_ctl%org_fil_files_ctl)
-!
-      call calypso_mpi_bcast_one_int(filter3d_ctl%i_filter_control, 0)
-!
-      end subroutine bcast_const_filter_ctl_data
-!
-!  ---------------------------------------------------------------------
 !
       subroutine dealloc_const_filter_ctl_data(filter3d_ctl)
 !

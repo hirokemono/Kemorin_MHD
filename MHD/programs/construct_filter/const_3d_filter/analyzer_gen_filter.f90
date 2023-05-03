@@ -78,6 +78,7 @@
       use parallel_edge_information
       use cal_1d_moments_4_fliter
 !
+      use bcast_ctl_data_gen_3d_filter
       use set_element_data_4_IO
       use set_surface_data_4_IO
       use set_edge_data_4_IO
@@ -102,8 +103,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_filter'
-      call read_control_4_gen_filter(filter3d_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'load_control_4_gen_filter'
+      call load_control_4_gen_filter(filter3d_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
       call set_controls_gen_3dfilter(filter3d_ctl1, FEM_elen_f,         &

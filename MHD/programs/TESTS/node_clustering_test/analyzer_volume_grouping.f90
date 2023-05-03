@@ -57,6 +57,7 @@
       use t_fem_gauss_int_coefs
       use t_next_node_ele_4_node
 !
+      use bcast_control_volume_grping
       use mpi_load_mesh_data
       use mesh_file_IO
       use copy_mesh_structures
@@ -108,7 +109,7 @@
 !
 !     ----- read control data
 !
-      call read_ctl_file_new_partition(part_tctl1)
+      call load_ctl_file_new_partition(part_tctl1)
 !
       call set_control_param_repartition(part_tctl1, part_prog_p1)
 !
