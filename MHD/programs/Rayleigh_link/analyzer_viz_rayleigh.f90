@@ -53,6 +53,7 @@
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use FEM_to_VIZ_bridge
+      use bcast_control_rayleigh_vizs
 !
       integer(kind = kint) :: ierr
 !
@@ -64,8 +65,8 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'read_ctl_file_rayleigh_viz'
-      call read_ctl_file_rayleigh_viz(rayleigh_vizs_ctl1)
+      if (iflag_debug.gt.0) write(*,*) 'load_ctl_file_rayleigh_viz'
+      call load_ctl_file_rayleigh_viz(rayleigh_vizs_ctl1)
       call set_ctl_params_rayleigh_viz(rayleigh_vizs_ctl1,              &
      &    t_VIZ_r, FEM_Rayleigh1, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)

@@ -130,7 +130,7 @@
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
-      type(control_data_section_only), intent(inout) :: sec_viz_ctl
+      type(control_data_section_only), intent(in) :: sec_viz_ctl
 !
       integer(kind = kint) :: level1
 !

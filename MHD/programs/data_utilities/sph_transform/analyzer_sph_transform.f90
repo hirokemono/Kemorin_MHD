@@ -37,6 +37,7 @@
       subroutine initialize_sph_transform
 !
       use t_SPH_mesh_field_data
+      use bcast_ctl_data_4_sph_trans
 !
 !
       call init_elapse_time_by_TOTAL
@@ -44,8 +45,8 @@
 !     --------------------- 
 !
 ! ----   read controls
-      if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'
-      call read_control_data_sph_trans(spt_ctl1)
+      if (iflag_debug.gt.0) write(*,*) 'load_control_data_sph_trans'
+      call load_control_data_sph_trans(spt_ctl1)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_transform'
       call set_control_4_sph_transform                                  &

@@ -41,7 +41,8 @@ analyzer_viz.o \
 FEM_analyzer_viz.o \
 t_FEM_mesh_field_4_viz.o \
 t_control_data_all_vizs.o \
-t_field_list_for_vizs.o
+t_field_list_for_vizs.o \
+bcast_control_data_all_vizs.o
 
 MOD_PSF_PLUG = \
 main_surface_rendering.o \
@@ -96,7 +97,8 @@ analyzer_lic.o \
 FEM_analyzer_viz.o \
 t_FEM_mesh_field_4_viz.o \
 t_control_data_all_vizs.o \
-t_field_list_for_vizs.o
+t_field_list_for_vizs.o \
+bcast_control_data_all_vizs.o
 
 #
 #  -------------------------------------------------------------------------

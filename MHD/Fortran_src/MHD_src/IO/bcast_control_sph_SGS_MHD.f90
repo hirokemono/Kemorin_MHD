@@ -66,6 +66,7 @@
       use bcast_ctl_SGS_MHD_model
       use bcast_monitor_data_ctl
       use bcast_ctl_sph_mhd_control
+      use bcast_control_data_vizs
 !
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !

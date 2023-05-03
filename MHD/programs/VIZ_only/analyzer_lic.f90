@@ -52,6 +52,7 @@
       use m_work_time_4_sleeve_extend
       use FEM_to_VIZ_bridge
       use lic_rendering_test
+      use bcast_control_data_all_vizs
 !
       integer(kind = kint) :: ierr
 !
@@ -65,8 +66,8 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
-      call read_control_file_vizs(vizs_ctl1)
+      if (iflag_debug.gt.0) write(*,*) 'load_control_file_vizs'
+      call load_control_file_vizs(vizs_ctl1)
       call set_control_params_4_viz(vizs_ctl1, FEM_viz1, t_VIZ1, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !

@@ -60,7 +60,7 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
+      if (iflag_debug.gt.0) write(*,*) 'load_control_file_four_vizs'
       call load_control_file_four_vizs(vizs_ctl4)
       call set_ctl_params_four_vizs(vizs_ctl4, FEM_viz4, t_VIZ4, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
