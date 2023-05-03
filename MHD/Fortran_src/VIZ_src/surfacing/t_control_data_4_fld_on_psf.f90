@@ -26,11 +26,8 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(field_on_psf_ctl), intent(in) :: fld_on_psf_c
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine bcast_fld_on_psf_control(fld_on_psf_c)
-!!        type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
 !!
-!!      subroutine add_fields_on_psf_to_fld_ctl                         &
-!!     &         (my_rank, fld_on_psf_c, field_ctl)
+!!      subroutine add_fields_on_psf_to_fld_ctl(fld_on_psf_c, field_ctl)
 !!        type(field_on_psf_ctl), intent(in) :: fld_on_psf_c
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!
@@ -57,7 +54,8 @@
 !!           x, y, z, radial, elevation, azimuth, cylinder_r
 !!           norm, vector, tensor, spherical_vector, cylindrical_vector
 !!    result_value: (Original name: specified_color)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@endverbatim
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
 !
       module t_control_data_4_fld_on_psf
 !
@@ -222,35 +220,13 @@
       end subroutine write_fld_on_psf_control
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_fld_on_psf_control(fld_on_psf_c)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
-!
-!
-      call bcast_ctl_type_r1(fld_on_psf_c%output_value_ctl)
-      call bcast_ctl_type_c1(fld_on_psf_c%output_type_ctl)
-      call bcast_ctl_array_c2(fld_on_psf_c%field_output_ctl)
-!
-      call calypso_mpi_bcast_one_int(fld_on_psf_c%i_iso_result, 0)
-!
-      end subroutine bcast_fld_on_psf_control
-!
-!   --------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine add_fields_on_psf_to_fld_ctl                           &
-     &         (my_rank, fld_on_psf_c, field_ctl)
+      subroutine add_fields_on_psf_to_fld_ctl(fld_on_psf_c, field_ctl)
 !
       use t_control_array_character3
       use add_nodal_fields_ctl
 !
-      integer, intent(in) :: my_rank
       type(field_on_psf_ctl), intent(in) :: fld_on_psf_c
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
@@ -258,8 +234,8 @@
 !
 !
       do i_fld = 1, fld_on_psf_c%field_output_ctl%num
-        call add_viz_name_ctl(my_rank,                                  &
-     &      fld_on_psf_c%field_output_ctl%c1_tbl(i_fld), field_ctl)
+        call add_viz_name_ctl                                           &
+     &     (fld_on_psf_c%field_output_ctl%c1_tbl(i_fld), field_ctl)
       end do
 !
       end subroutine add_fields_on_psf_to_fld_ctl

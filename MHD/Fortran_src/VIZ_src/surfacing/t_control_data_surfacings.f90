@@ -92,6 +92,7 @@
 !
       use calypso_mpi_int
       use bcast_control_arrays
+      use bcast_section_control_data
 !
       type(surfacing_controls), intent(inout) :: surfacing_ctls
 !

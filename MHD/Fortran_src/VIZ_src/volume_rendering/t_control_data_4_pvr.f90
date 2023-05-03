@@ -208,7 +208,7 @@
 !
       if(pvr_ctl%pvr_field_ctl%iflag .gt. 0) then
         call add_viz_name_ctl                                           &
-     &     (my_rank, pvr_ctl%pvr_field_ctl%charavalue, field_ctl)
+     &     (pvr_ctl%pvr_field_ctl%charavalue, field_ctl)
       end if
 !
       end subroutine add_field_4_pvr_to_fld_ctl

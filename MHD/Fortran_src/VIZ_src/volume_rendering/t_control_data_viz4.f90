@@ -130,6 +130,7 @@
 !
       use calypso_mpi_int
       use bcast_control_arrays
+      use bcast_section_control_data
 !
       type(vis4_controls), intent(inout) :: viz_ctls
 !

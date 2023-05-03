@@ -36,6 +36,7 @@
       use transfer_to_long_integers
       use t_ctl_data_gen_sph_shell
       use bcast_4_platform_ctl
+      use bcast_4_sphere_ctl
       use bcast_control_arrays
 !
       type(control_data_4_merge), intent(inout) :: mgd_ctl

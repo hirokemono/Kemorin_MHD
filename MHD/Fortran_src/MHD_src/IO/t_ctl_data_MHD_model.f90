@@ -24,7 +24,6 @@
 !!        type(mhd_DNS_model_control), intent(in) :: Dmodel_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_sph_mhd_model(Dmodel_ctl)
 !!      subroutine dealloc_sph_mhd_model(Dmodel_ctl)
 !!        type(mhd_DNS_model_control), intent(inout) :: Dmodel_ctl
 !!@endverbatim
@@ -264,38 +263,6 @@
       end subroutine write_sph_mhd_model
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_sph_mhd_model(Dmodel_ctl)
-!
-      use calypso_mpi_int
-      use bcast_ctl_data_mhd_forces
-      use bcast_4_field_ctl
-!
-      type(mhd_DNS_model_control), intent(inout) :: Dmodel_ctl
-!
-!
-      call bcast_phys_data_ctl(Dmodel_ctl%fld_ctl)
-      call bcast_mhd_time_evo_ctl(Dmodel_ctl%evo_ctl)
-      call bcast_mhd_layer_ctl(Dmodel_ctl%earea_ctl)
-!
-      call bcast_bc_4_node_ctl(Dmodel_ctl%nbc_ctl)
-      call bcast_bc_4_surf_ctl(Dmodel_ctl%sbc_ctl)
-!
-      call bcast_dimless_ctl(Dmodel_ctl%dless_ctl)
-      call bcast_coef_term_ctl(Dmodel_ctl%eqs_ctl)
-      call bcast_forces_ctl(Dmodel_ctl%frc_ctl)
-      call bcast_gravity_ctl(Dmodel_ctl%g_ctl)
-      call bcast_coriolis_ctl(Dmodel_ctl%cor_ctl)
-      call bcast_magneto_ctl(Dmodel_ctl%mcv_ctl)
-      call bcast_magnetic_scale_ctl(Dmodel_ctl%bscale_ctl)
-      call bcast_ref_scalar_ctl(Dmodel_ctl%reft_ctl)
-      call bcast_ref_scalar_ctl(Dmodel_ctl%refc_ctl)
-!
-      call calypso_mpi_bcast_one_int(Dmodel_ctl%i_model, 0)
-!
-      end subroutine bcast_sph_mhd_model
-!
 !   --------------------------------------------------------------------
 !
       subroutine dealloc_sph_mhd_model(Dmodel_ctl)

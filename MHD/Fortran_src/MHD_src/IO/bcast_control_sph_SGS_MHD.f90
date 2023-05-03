@@ -63,6 +63,8 @@
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
       use bcast_4_sphere_ctl
+      use bcast_ctl_SGS_MHD_model
+      use bcast_monitor_data_ctl
 !
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !
@@ -76,7 +78,7 @@
       call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl)
       call bcast_sph_mhd_control(MHD_ctl%smctl_ctl)
 !
-      call bcast_monitor_data_ctl(MHD_ctl%nmtr_ctl)
+      call bcast_node_monitor_data_ctl(MHD_ctl%nmtr_ctl)
       call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
       call bcast_viz_controls(MHD_ctl%viz_ctls)

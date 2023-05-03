@@ -129,6 +129,7 @@
       use calypso_mpi_char
       use transfer_to_long_integers
       use bcast_4_platform_ctl
+      use bcast_4_sphere_ctl
 !
       type(sph_mesh_generation_ctl), intent(inout) :: gen_SPH_ctl
 !

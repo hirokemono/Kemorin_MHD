@@ -142,8 +142,6 @@
 !
       subroutine reset_crustal_filtering_ctl(crust_filter_c)
 !
-      use bcast_control_arrays
-!
       type(clust_filtering_ctl), intent(inout) :: crust_filter_c
 !
 !

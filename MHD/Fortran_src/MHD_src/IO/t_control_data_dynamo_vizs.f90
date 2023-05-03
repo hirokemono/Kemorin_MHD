@@ -147,6 +147,8 @@
 !
       subroutine bcast_dynamo_viz_control(zm_ctls)
 !
+      use bcast_section_control_data
+!
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !
 !

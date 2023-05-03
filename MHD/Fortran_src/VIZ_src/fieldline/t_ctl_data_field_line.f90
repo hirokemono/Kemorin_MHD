@@ -266,13 +266,12 @@
 !
       if(fline_ctl_struct%fline_field_ctl%iflag .gt. 0) then
         call add_viz_name_ctl                                           &
-     &     (my_rank, fline_ctl_struct%fline_field_ctl%charavalue,       &
-     &      field_ctl)
+     &     (fline_ctl_struct%fline_field_ctl%charavalue, field_ctl)
       end if
 !
       if(fline_ctl_struct%fline_color_field_ctl%iflag .gt. 0) then
         call add_viz_name_ctl                                           &
-     &     (my_rank, fline_ctl_struct%fline_color_field_ctl%charavalue, &
+     &     (fline_ctl_struct%fline_color_field_ctl%charavalue,          &
      &      field_ctl)
       end if
 !

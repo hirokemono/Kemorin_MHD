@@ -148,6 +148,7 @@
       use calypso_mpi_int
       use calypso_mpi_char
       use bcast_control_arrays
+      use bcast_section_control_data
       use transfer_to_long_integers
 !
       type(visualization_controls), intent(inout) :: viz_ctls

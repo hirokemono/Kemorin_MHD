@@ -249,17 +249,17 @@
 !
       if(lic_ctl%LIC_field_ctl%iflag .gt. 0) then
         call add_viz_name_ctl                                           &
-     &     (my_rank, lic_ctl%LIC_field_ctl%charavalue, field_ctl)
+     &     (lic_ctl%LIC_field_ctl%charavalue, field_ctl)
       end if
 !
       if(lic_ctl%color_field_ctl%iflag .gt. 0) then
         call add_viz_name_ctl                                           &
-     &     (my_rank, lic_ctl%color_field_ctl%charavalue, field_ctl)
+     &     (lic_ctl%color_field_ctl%charavalue, field_ctl)
       end if
 !
       if(lic_ctl%opacity_field_ctl%iflag .gt. 0) then
         call add_viz_name_ctl                                           &
-     &     (my_rank, lic_ctl%opacity_field_ctl%charavalue, field_ctl)
+     &     (lic_ctl%opacity_field_ctl%charavalue, field_ctl)
       end if
 !
       do i_fld = 1, lic_ctl%num_masking_ctl

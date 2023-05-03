@@ -9,9 +9,6 @@
 !!      subroutine alloc_psf_ctl_stract(psf_ctls)
 !!      subroutine dealloc_psf_ctl_stract(psf_ctls)
 !!
-!!      subroutine bcast_files_4_psf_ctl(psf_ctls)
-!!        type(section_controls), intent(inout) :: psf_ctls
-!!
 !!      subroutine append_new_section_control(psf_ctls)
 !!        type(section_controls), intent(inout) :: psf_ctls
 !!      subroutine add_fields_4_psfs_to_fld_ctl(psf_ctls, field_ctl)
@@ -86,33 +83,6 @@
       end subroutine dealloc_psf_ctl_stract
 !
 !  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_files_4_psf_ctl(psf_ctls)
-!
-      use t_control_data_4_psf
-      use calypso_mpi
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-!
-      type(section_controls), intent(inout) :: psf_ctls
-      integer (kind=kint) :: i_psf
-!
-!
-      call calypso_mpi_bcast_one_int(psf_ctls%num_psf_ctl, 0)
-      if(psf_ctls%num_psf_ctl .le. 0) return
-!
-      if(my_rank .gt. 0) call alloc_psf_ctl_stract(psf_ctls)
-!
-      do i_psf = 1, psf_ctls%num_psf_ctl
-        call bcast_psf_control_data(psf_ctls%psf_ctl_struct(i_psf))
-      end do
-      call calypso_mpi_bcast_character(psf_ctls%fname_psf_ctl,          &
-     &    cast_long(psf_ctls%num_psf_ctl*kchara), 0)
-!
-      end subroutine bcast_files_4_psf_ctl
-!
 !   --------------------------------------------------------------------
 !
       subroutine add_fields_4_psfs_to_fld_ctl(psf_ctls, field_ctl)

@@ -27,7 +27,7 @@
 !
       implicit none
 !
-      private :: bcast_fem_mhd_ctl_data
+      private :: bcast_fem_mhd_ctl_data, bcast_fem_mhd_control_ctl
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,6 +63,8 @@
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
       use bcast_4_sphere_ctl
+      use bcast_ctl_SGS_MHD_model
+      use bcast_monitor_data_ctl
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
@@ -72,15 +74,38 @@
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%org_plt)
 !
       call bcast_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
-      call bcast_fem_mhd_control(FEM_MHD_ctl%fmctl_ctl)
+      call bcast_fem_mhd_control_ctl(FEM_MHD_ctl%fmctl_ctl)
 !
-      call bcast_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
+      call bcast_node_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
 !
       call bcast_viz_controls(viz_ctls)
 !
       call calypso_mpi_bcast_one_int(FEM_MHD_ctl%i_mhd_ctl, 0)
 !
       end subroutine bcast_fem_mhd_ctl_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_fem_mhd_control_ctl(fmctl_ctl)
+!
+      use calypso_mpi_int
+      use bcast_4_time_step_ctl
+      use bcast_4_solver_ctl
+      use bcast_4_fem_int_pts_ctl
+!
+      type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
+!
+!
+      call bcast_restart_ctl(fmctl_ctl%mrst_ctl)
+      call bcast_time_loop_ctl(fmctl_ctl%mevo_ctl)
+      call bcast_ctl_data_4_time_step(fmctl_ctl%tctl)
+!
+      call bcast_CG_solver_param_ctl(fmctl_ctl%CG_ctl)
+      call bcast_control_fem_int_points(fmctl_ctl%fint_ctl)
+!
+      call calypso_mpi_bcast_one_int(fmctl_ctl%i_control, 0)
+!
+      end subroutine bcast_fem_mhd_control_ctl
 !
 !   --------------------------------------------------------------------
 !

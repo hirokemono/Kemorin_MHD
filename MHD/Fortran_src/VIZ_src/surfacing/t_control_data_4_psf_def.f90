@@ -13,9 +13,6 @@
 !!      subroutine dup_control_4_psf_def(org_psf_def_c, new_psf_def_c)
 !!        type(psf_define_ctl), intent(in) :: org_psf_def_c
 !!        type(psf_define_ctl), intent(inout) :: new_psf_def_c
-!!
-!!      subroutine bcast_section_def_control(psf_def_c)
-!!        type(psf_define_ctl), intent(inout) :: psf_def_c
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!! example of control for Kemo's surface rendering
 !!
@@ -258,33 +255,5 @@
       end subroutine dup_control_4_psf_def
 !
 !  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_section_def_control(psf_def_c)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(psf_define_ctl), intent(inout) :: psf_def_c
-!
-!
-      call calypso_mpi_bcast_one_int(psf_def_c%i_surface_define, 0)
-!
-      call bcast_ctl_array_cr(psf_def_c%psf_coefs_ctl)
-      call bcast_ctl_array_cr(psf_def_c%psf_center_ctl)
-      call bcast_ctl_array_cr(psf_def_c%psf_normal_ctl)
-      call bcast_ctl_array_cr(psf_def_c%psf_axis_ctl)
-!
-      call bcast_ctl_array_c1(psf_def_c%psf_area_ctl)
-!
-      call bcast_ctl_type_r1(psf_def_c%radius_psf_ctl)
-!
-      call bcast_ctl_type_c1(psf_def_c%section_method_ctl)
-      call bcast_ctl_type_c1(psf_def_c%psf_group_name_ctl)
-!
-      end subroutine bcast_section_def_control
-!
-!   --------------------------------------------------------------------
 !
       end module t_control_data_4_psf_def

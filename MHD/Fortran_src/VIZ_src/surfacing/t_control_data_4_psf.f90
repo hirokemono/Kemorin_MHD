@@ -14,8 +14,6 @@
 !!        type(psf_ctl), intent(in) :: org_psf_c
 !!        type(psf_ctl), intent(inout) :: new_psf_c
 !!
-!!      subroutine bcast_psf_control_data(psf_c)
-!!        type(psf_ctl), intent(inout) :: psf_c
 !!      subroutine add_fields_4_psf_to_fld_ctl(psf_c, field_ctl)
 !!        type(psf_ctl), intent(in) :: psf_c
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
@@ -209,27 +207,6 @@
       end subroutine dup_control_4_psf
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_psf_control_data(psf_c)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(psf_ctl), intent(inout) :: psf_c
-!
-!
-      call calypso_mpi_bcast_one_int(psf_c%i_psf_ctl, 0)
-      call calypso_mpi_bcast_one_int(psf_c%i_output_field, 0)
-!
-      call bcast_ctl_type_c1(psf_c%psf_file_head_ctl)
-      call bcast_ctl_type_c1(psf_c%psf_output_type_ctl)
-!
-      call bcast_section_def_control(psf_c%psf_def_c)
-      call bcast_fld_on_psf_control(psf_c%fld_on_psf_c)
-!
-      end subroutine bcast_psf_control_data
-!
 !   --------------------------------------------------------------------
 !
       subroutine add_fields_4_psf_to_fld_ctl(psf_c, field_ctl)
@@ -241,8 +218,7 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      call add_fields_on_psf_to_fld_ctl(my_rank, psf_c%fld_on_psf_c,    &
-     &                                  field_ctl)
+      call add_fields_on_psf_to_fld_ctl(psf_c%fld_on_psf_c, field_ctl)
 !
       end subroutine add_fields_4_psf_to_fld_ctl
 !

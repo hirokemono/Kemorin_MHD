@@ -23,7 +23,6 @@
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_parallel_shell_ctl(psph_ctl)
 !!      subroutine dealloc_parallel_shell_ctl(psph_ctl)
 !!        type(platform_data_control), intent(inout) :: plt
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
@@ -170,34 +169,7 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_parallel_shell_ctl(psph_ctl)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use bcast_4_sphere_ctl
-      use bcast_4_platform_ctl
-!
-      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
-!
-!
-      call calypso_mpi_bcast_one_int(psph_ctl%iflag_sph_shell, 0)
-      call calypso_mpi_bcast_one_int(psph_ctl%ifile_sph_shell, 0)
-!
-      if(psph_ctl%iflag_sph_shell .eq. 0) return
-!
-      call bcast_FEM_mesh_control(psph_ctl%Fmesh_ctl)
-      call bcast_ctl_4_shell_define(psph_ctl%spctl)
-      call bcast_ctl_ndomain_4_shell(psph_ctl%sdctl)
-!
-      end subroutine bcast_parallel_shell_ctl
-!
-! -----------------------------------------------------------------------
-!
       subroutine dealloc_parallel_shell_ctl(psph_ctl)
-!
-      use calypso_mpi
-      use bcast_4_sphere_ctl
-      use bcast_4_platform_ctl
 !
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !

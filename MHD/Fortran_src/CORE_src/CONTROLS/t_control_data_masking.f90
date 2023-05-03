@@ -251,7 +251,7 @@
 !
       if(mask_ctl%field_name_ctl%iflag .eq. 0) return
       call add_viz_name_ctl                                             &
-     &   (my_rank, mask_ctl%field_name_ctl%charavalue, field_ctl)
+     &   (mask_ctl%field_name_ctl%charavalue, field_ctl)
 !
       end subroutine add_mask_field_to_fld_ctl
 !

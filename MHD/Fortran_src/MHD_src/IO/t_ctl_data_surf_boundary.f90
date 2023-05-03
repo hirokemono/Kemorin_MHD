@@ -202,8 +202,6 @@
 !
       subroutine dealloc_bc_4_surf_ctl(sbc_ctl)
 !
-      use bcast_control_arrays
-!
       type(surf_bc_control), intent(inout) :: sbc_ctl
 !
 !

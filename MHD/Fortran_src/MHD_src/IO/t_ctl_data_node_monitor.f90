@@ -20,7 +20,6 @@
 !!        type(node_monitor_control), intent(in) :: nmtr_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_monitor_data_ctl(nmtr_ctl)
 !!      subroutine dealloc_monitor_data_ctl(nmtr_ctl)
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
 !!
@@ -148,24 +147,6 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_monitor_data_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_monitor_data_ctl(nmtr_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(node_monitor_control), intent(inout) :: nmtr_ctl
-!
-!
-      call bcast_ctl_array_c1(nmtr_ctl%group_4_monitor_ctl)
-      call bcast_ctl_array_r3(nmtr_ctl%xx_4_monitor_ctl)
-      call bcast_ctl_array_i2(nmtr_ctl%node_4_monitor_ctl)
-!
-      call calypso_mpi_bcast_one_int(nmtr_ctl%i_monitor_data, 0)
-!
-      end subroutine bcast_monitor_data_ctl
 !
 !   --------------------------------------------------------------------
 !
