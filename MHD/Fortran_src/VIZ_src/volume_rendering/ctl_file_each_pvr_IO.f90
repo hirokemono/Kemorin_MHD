@@ -58,7 +58,7 @@
       if(check_file_flag(c_buf, hd_pvr_ctl)) then
         fname_pvr_ctl = third_word(c_buf)
 !
-        write(*,'(a)', ADVANCE='NO') 'is read from... '
+        write(*,'(a)', ADVANCE='NO') ' is ... '
         call read_control_pvr_file(id_control+2, fname_pvr_ctl,         &
      &                             hd_pvr_ctl, pvr_ctl_type)
       else if(check_begin_flag(c_buf, hd_pvr_ctl)) then
@@ -85,7 +85,7 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      write(*,*) 'PVR control:  ', trim(fname_pvr_ctl)
+      write(*,*) 'read file ', trim(fname_pvr_ctl)
 !
       open(id_control, file=fname_pvr_ctl, status='old')
       do
