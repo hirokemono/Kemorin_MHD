@@ -12,9 +12,11 @@
 !!@n        Modified by H. Matsui on Apr., 2023
 !!
 !!@verbatim
-!!      subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl)
+!!      subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl,       &
+!!     &                                      viz_ctls)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+!!        type(visualization_controls), intent(inout) :: viz_ctls
 !!@endverbatim
 !
       module bcast_control_sph_SGS_MHD
@@ -24,6 +26,7 @@
       use calypso_mpi
       use m_machine_parameter
       use t_ctl_data_SGS_MHD
+      use t_control_data_vizs
 !
       implicit none
 !
@@ -35,19 +38,23 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl)
+      subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl,         &
+     &                                      viz_ctls)
 !
       use ctl_file_SGS_MHD_IO
+      use bcast_control_data_vizs
 !
       character(len=kchara), intent(in) :: file_name
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
       if(my_rank .eq. 0) then
-        call read_control_4_sph_SGS_MHD(file_name, MHD_ctl)
+        call read_control_4_sph_SGS_MHD(file_name, MHD_ctl, viz_ctls)
       end if
 !
       call bcast_sph_mhd_control_data(MHD_ctl)
+      call bcast_viz_controls(viz_ctls)
 !
       end subroutine s_load_control_sph_SGS_MHD
 !
@@ -67,7 +74,6 @@
       use bcast_ctl_SGS_MHD_model
       use bcast_monitor_data_ctl
       use bcast_ctl_sph_mhd_control
-      use bcast_control_data_vizs
 !
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !
@@ -85,7 +91,6 @@
       call bcast_node_monitor_data_ctl(MHD_ctl%nmtr_ctl)
       call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
-      call bcast_viz_controls(MHD_ctl%viz_ctls)
       call bcast_dynamo_viz_control(MHD_ctl%zm_ctls)
 !
       call calypso_mpi_bcast_character                                  &

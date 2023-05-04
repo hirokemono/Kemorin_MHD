@@ -4,11 +4,13 @@
       use iso_c_binding
       use t_ctl_data_SGS_MHD
       use t_ctl_data_MHD
+      use t_control_data_vizs
 !
       implicit none
 !
-      type(sph_sgs_mhd_control) :: MHD_ctl
+      type(sph_sgs_mhd_control) :: MHD_ctl_C
       type(DNS_mhd_simulation_control) :: DNS_MHD_ctl
+      type(visualization_controls), intent(inout) :: viz_ctls_C
       integer(kind = kint), parameter :: id_ctl = 11
 !
 !  ---------------------------------------------------------------------
@@ -24,7 +26,8 @@
 !
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
 !
-      call read_control_4_sph_SGS_MHD(MHD_ctl_name, MHD_ctl)
+      call read_control_4_sph_SGS_MHD(MHD_ctl_name,                     &
+     &    MHD_ctl_C, viz_ctls_C)
 !
       end subroutine c_read_control_sph_SGS_MHD
 !

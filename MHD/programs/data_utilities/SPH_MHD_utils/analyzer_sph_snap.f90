@@ -25,6 +25,7 @@
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
       use t_ctl_data_SGS_MHD
+      use t_control_data_dynamo_vizs
       use t_step_parameter
       use t_visualizer
       use t_SPH_MHD_zonal_mean_viz
@@ -42,8 +43,9 @@
       character(len=kchara), parameter                                  &
      &                      :: snap_ctl_name = 'control_snapshot'
 !>      Control struture for MHD simulation
-      type(sph_sgs_mhd_control), save :: MHD_ctl1
-      private :: ctl_file_code, snap_ctl_name, MHD_ctl1
+      type(sph_sgs_mhd_control), save, private :: MHD_ctl1
+!>        Structures of visualization controls
+      type(visualization_controls), save, private :: viz_ctls_M
 !
       real (kind=kreal), private  ::  total_start
 !
@@ -75,7 +77,8 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 's_load_control_sph_SGS_MHD'
-      call s_load_control_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
+      call s_load_control_sph_SGS_MHD(snap_ctl_name, MHD_ctl1,          &
+     &                                viz_ctls_M)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo                                 &
@@ -107,7 +110,7 @@
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(MHD_step1%viz_step, FEM_d1%geofem,            &
-     &    FEM_d1%field, VIZ_DAT1, MHD_ctl1%viz_ctls, vizs1, m_SR1)
+     &    FEM_d1%field, VIZ_DAT1, viz_ctls_M, vizs1, m_SR1)
       call init_zonal_mean_sections(MHD_step1%viz_step, FEM_d1%geofem,  &
      &    VIZ_DAT1%edge_comm, FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1,  &
      &    m_SR1%SR_sig, m_SR1%SR_il)
@@ -305,7 +308,7 @@
 !*
       do
         call check_PVR_update(ctl_file_code,                            &
-     &      MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr, iflag_redraw)
+     &      viz_ctls_M%pvr_ctls, vizs1%pvr, iflag_redraw)
         call calypso_mpi_barrier
 !
         if(iflag_redraw .eq. IFLAG_TERMINATE) then
@@ -320,9 +323,9 @@
 !
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call read_ctl_pvr_files_4_update                              &
-     &       (ctl_file_code, MHD_ctl1%viz_ctls%pvr_ctls)
+     &       (ctl_file_code, viz_ctls_M%pvr_ctls)
           call PVR_initialize(MHD_step1%viz_step%PVR_t%increment,       &
-     &        FEM_d1%geofem, FEM_d1%field, MHD_ctl1%viz_ctls%pvr_ctls,  &
+     &        FEM_d1%geofem, FEM_d1%field, viz_ctls_M%pvr_ctls,         &
      &        vizs1%pvr, m_SR1)
           call PVR_visualize                                            &
      &       (MHD_step1%viz_step%istep_pvr, MHD_step1%time_d%time,      &

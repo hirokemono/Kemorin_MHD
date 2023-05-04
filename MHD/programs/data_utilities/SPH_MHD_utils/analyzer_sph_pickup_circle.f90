@@ -24,6 +24,7 @@
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
       use t_ctl_data_SGS_MHD
+      use t_control_data_dynamo_vizs
       use t_field_on_circle
       use t_spheric_parameter
       use t_file_IO_parameter
@@ -38,8 +39,9 @@
       character(len=kchara), parameter                                  &
      &                      :: snap_ctl_name = 'control_snapshot'
 !>      Control struture for MHD simulation
-      type(sph_sgs_mhd_control), save :: MHD_ctl1
-      private :: snap_ctl_name, MHD_ctl1
+      type(sph_sgs_mhd_control), save, private :: MHD_ctl1
+!>        Structures of visualization controls
+      type(visualization_controls), save, private :: viz_ctls_M
 !
       type(sph_grid_maker_in_sim), save, private :: sph_maker1
       type(circle_fld_maker), save, private :: cdat1
@@ -74,7 +76,10 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 's_load_control_sph_SGS_MHD'
-      call s_load_control_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
+      call s_load_control_sph_SGS_MHD(snap_ctl_name, MHD_ctl1,          &
+     &                                viz_ctls_M)
+      call dealloc_sph_SGS_MHD_viz_ctl(MHD_ctl1, viz_ctls_M)
+
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
