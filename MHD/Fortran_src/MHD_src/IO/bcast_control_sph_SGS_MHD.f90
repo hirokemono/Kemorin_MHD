@@ -12,7 +12,7 @@
 !!@n        Modified by H. Matsui on Apr., 2023
 !!
 !!@verbatim
-!!      subroutine load_control_sph_SGS_MHD(file_name, MHD_ctl)
+!!      subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!@endverbatim
@@ -35,7 +35,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_control_sph_SGS_MHD(file_name, MHD_ctl)
+      subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl)
 !
       use ctl_file_SGS_MHD_IO
 !
@@ -49,7 +49,7 @@
 !
       call bcast_sph_mhd_control_data(MHD_ctl)
 !
-      end subroutine load_control_sph_SGS_MHD
+      end subroutine s_load_control_sph_SGS_MHD
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

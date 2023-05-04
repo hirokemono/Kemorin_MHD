@@ -73,8 +73,8 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      if (iflag_debug.eq.1) write(*,*) 'load_control_sph_SGS_MHD'
-      call load_control_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 's_load_control_sph_SGS_MHD'
+      call s_load_control_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &

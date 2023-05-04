@@ -89,13 +89,13 @@
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, MHD_ctl%zm_ctls,      &
      &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD%sph,             &
      &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor)
+      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_w_LIC'
       call load_para_SPH_and_FEM_w_LIC                                  &
      &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
      &    SPH_MHD, FEM_dat%geofem, MHD_files%mesh_file_IO)
-      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
       call sph_boundary_IO_control                                      &
      &   (SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_model%bc_IO)

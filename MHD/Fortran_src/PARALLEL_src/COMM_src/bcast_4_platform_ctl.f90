@@ -92,4 +92,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module  bcast_4_platform_ctl
+      end module bcast_4_platform_ctl

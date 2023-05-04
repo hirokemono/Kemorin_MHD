@@ -228,7 +228,7 @@
 !
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !
-      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl%new_plt)
+      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
       call dealloc_viz_controls(MHD_ctl%viz_ctls)
       call dealloc_dynamo_viz_control(MHD_ctl%zm_ctls)
 !

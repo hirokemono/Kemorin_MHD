@@ -193,9 +193,8 @@
 !   set parameters for data files
 !
       call set_control_SGS_SPH_MHD(plt, org_plt,                        &
-     &    model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,          &
-     &    bc_IO, refs%ref_input_IO, MHD_step, MHD_prop,                 &
-     &    MHD_BC, trans_p, WK, sph_maker)
+     &    model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files, bc_IO,   &
+     &    refs, MHD_step, MHD_prop, MHD_BC, trans_p, WK, sph_maker)
 !
       end subroutine set_control_4_SPH_SGS_MHD
 !
@@ -270,7 +269,7 @@
 !
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,    &
-     &          bc_IO, ref_input_IO, MHD_step, MHD_prop, MHD_BC,        &
+     &          bc_IO, refs, MHD_step, MHD_prop, MHD_BC,                &
      &          trans_p, WK, sph_maker)
 !
       use t_spheric_parameter
@@ -284,6 +283,7 @@
       use t_work_4_sph_trans
       use t_sph_trans_arrays_MHD
       use t_coef_parameters_list
+      use t_radial_reference_field
 !
       use gen_sph_grids_modes
       use set_control_platform_item
@@ -307,7 +307,7 @@
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
-      type(field_IO_params), intent(inout) :: ref_input_IO
+      type(radial_reference_field), intent(inout) :: refs
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -351,7 +351,7 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
       call s_set_control_sph_data_MHD(plt, smctl_ctl%mevo_ctl,          &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
-     &    MHD_files%fst_file_IO, bc_IO, ref_input_IO,                   &
+     &    MHD_files%fst_file_IO, bc_IO, refs%ref_input_IO,              &
      &    trans_p, WK%WK_leg)
 !
 !   set control parameters
