@@ -88,7 +88,7 @@
         if(check_file_flag(c_buf, hd_block)                             &
      &      .or. check_begin_flag(c_buf, hd_block)) then
           call append_new_section_control(psf_ctls)
-          write(*,'(3a,i4)', ADVANCE='NO') 'Control for',               &
+          write(*,'(3a,i4)', ADVANCE='NO') 'Control for ',              &
      &        trim(hd_block), ' No. ',  psf_ctls%num_psf_ctl
           call sel_read_control_4_psf_file(id_control, hd_block,        &
      &        psf_ctls%fname_psf_ctl(psf_ctls%num_psf_ctl),             &

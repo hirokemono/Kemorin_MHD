@@ -86,7 +86,7 @@
         if(check_file_flag(c_buf, hd_block)                             &
      &      .or. check_begin_flag(c_buf, hd_block)) then
           call append_new_isosurface_control(iso_ctls)
-          write(*,'(3a,i4)', ADVANCE='NO') 'Control for',               &
+          write(*,'(3a,i4)', ADVANCE='NO') 'Control for ',              &
      &        trim(hd_block), ' No. ',  iso_ctls%num_iso_ctl
           call sel_read_control_4_iso_file(id_control, hd_block,        &
      &        iso_ctls%fname_iso_ctl(iso_ctls%num_iso_ctl),             &
