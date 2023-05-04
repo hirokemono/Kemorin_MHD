@@ -34,7 +34,7 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_platforms
-      use t_ctl_data_SGS_MHD_model
+      use t_ctl_data_MHD_model
       use t_ctl_data_FEM_MHD_control
       use t_ctl_data_SGS_model
       use t_ctl_data_4_sph_monitor
@@ -173,6 +173,7 @@
      &          FEM_MHD_ctl, viz_ctls, c_buf)
 !
       use calypso_mpi
+      use ctl_data_SGS_MHD_model_IO
       use ctl_data_platforms_IO
       use ctl_data_viualiser_IO
 !
@@ -216,6 +217,7 @@
      &          FEM_MHD_ctl, viz_ctls, level)
 !
       use calypso_mpi
+      use ctl_data_SGS_MHD_model_IO
       use ctl_data_platforms_IO
       use ctl_data_viualiser_IO
       use write_control_elements
@@ -263,8 +265,8 @@
       call reset_control_platforms(FEM_MHD_ctl%plt)
       call reset_control_platforms(FEM_MHD_ctl%org_plt)
 !
-      call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl,             &
-     &                               FEM_MHD_ctl%sgs_ctl)
+      call dealloc_sgs_ctl(FEM_MHD_ctl%sgs_ctl)
+      call dealloc_sph_mhd_model(FEM_MHD_ctl%model_ctl)
       call dealloc_fem_mhd_control(FEM_MHD_ctl%fmctl_ctl)
 !
       call dealloc_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)

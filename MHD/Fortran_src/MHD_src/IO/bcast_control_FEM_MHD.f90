@@ -63,6 +63,7 @@
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
       use bcast_4_sphere_ctl
+      use bcast_ctl_MHD_model
       use bcast_ctl_SGS_MHD_model
       use bcast_monitor_data_ctl
       use bcast_control_data_vizs
@@ -74,8 +75,8 @@
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%plt)
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%org_plt)
 !
-      call bcast_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl,               &
-     &                             FEM_MHD_ctl%sgs_ctl)
+      call bcast_sgs_ctl(FEM_MHD_ctl%sgs_ctl)
+      call bcast_ctl_data_MHD_model(FEM_MHD_ctl%model_ctl)
       call bcast_fem_mhd_control_ctl(FEM_MHD_ctl%fmctl_ctl)
 !
       call bcast_node_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)

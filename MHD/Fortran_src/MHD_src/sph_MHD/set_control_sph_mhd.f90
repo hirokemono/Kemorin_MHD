@@ -8,19 +8,19 @@
 !!
 !!@verbatim
 !!      subroutine set_control_SPH_MHD_w_viz                            &
-!!     &         (Dmodel_ctl, psph_ctl, smonitor_ctl, zm_ctls,          &
+!!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls,           &
 !!     &          MHD_prop, sph, rj_fld, nod_fld, monitor)
-!!      subroutine set_control_SPH_MHD_noviz(Dmodel_ctl, smonitor_ctl,  &
+!!      subroutine set_control_SPH_MHD_noviz(model_ctl, smonitor_ctl,   &
 !!     &          MHD_prop, rj_fld, monitor)
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
-!!     &          Dmodel_ctl, smctl_ctl, nmtr_ctl, psph_ctl,            &
+!!     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl,             &
 !!     &          MHD_files, bc_IO, refs, MHD_step, MHD_prop, MHD_BC,   &
 !!     &          trans_p, WK, sph_maker)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
-!!        type(mhd_DNS_model_control), intent(in) :: Dmodel_ctl
+!!        type(mhd_model_control), intent(in) :: model_ctl
 !!        type(sph_mhd_control_control), intent(in) :: smctl_ctl
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        type(node_monitor_control), intent(in) :: nmtr_ctl
@@ -82,7 +82,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SPH_MHD_w_viz                              &
-     &         (Dmodel_ctl, psph_ctl, smonitor_ctl, zm_ctls,            &
+     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls,             &
      &          MHD_prop, sph, rj_fld, nod_fld, monitor)
 !
       use t_phys_data
@@ -95,7 +95,7 @@
       use node_monitor_IO
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(mhd_DNS_model_control), intent(inout) :: Dmodel_ctl
+      type(mhd_model_control), intent(inout) :: model_ctl
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
@@ -110,12 +110,12 @@
 !       set nodal field list
       if (iflag_debug.gt.0) write(*,*) 's_set_control_field_data'
       call s_set_control_field_data                                     &
-     &   (Dmodel_ctl%fld_ctl%field_ctl, nod_fld, ierr)
+     &   (model_ctl%fld_ctl%field_ctl, nod_fld, ierr)
 !
 !       set spectr field list
       if (iflag_debug.gt.0) write(*,*) 'set_control_sph_mhd_fields'
       call set_control_sph_mhd_fields                                   &
-     &   (MHD_prop, Dmodel_ctl%fld_ctl%field_ctl, rj_fld)
+     &   (MHD_prop, model_ctl%fld_ctl%field_ctl, rj_fld)
 !
 !   set_pickup modes
       call set_control_SPH_MHD_monitors(smonitor_ctl, rj_fld, monitor)
@@ -131,7 +131,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_SPH_MHD_noviz(Dmodel_ctl, smonitor_ctl,    &
+      subroutine set_control_SPH_MHD_noviz(model_ctl, smonitor_ctl,     &
      &          MHD_prop, rj_fld, monitor)
 !
       use t_phys_data
@@ -140,7 +140,7 @@
       use set_control_sph_data_MHD
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(mhd_DNS_model_control), intent(inout) :: Dmodel_ctl
+      type(mhd_model_control), intent(inout) :: model_ctl
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mhd_monitor_data), intent(inout) :: monitor
@@ -149,7 +149,7 @@
 !       set spectr field list
       if (iflag_debug.gt.0) write(*,*) 'set_control_sph_mhd_fields'
       call set_control_sph_mhd_fields                                   &
-     &   (MHD_prop, Dmodel_ctl%fld_ctl%field_ctl, rj_fld)
+     &   (MHD_prop, model_ctl%fld_ctl%field_ctl, rj_fld)
 !
 !   set_pickup modes
       call set_control_SPH_MHD_monitors(smonitor_ctl, rj_fld, monitor)
@@ -160,7 +160,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
-     &          Dmodel_ctl, smctl_ctl, nmtr_ctl, psph_ctl,              &
+     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl,               &
      &          MHD_files, bc_IO, refs, MHD_step, MHD_prop, MHD_BC,     &
      &          trans_p, WK, SPH_MHD)
 !
@@ -190,7 +190,7 @@
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
 !
-      type(mhd_DNS_model_control), intent(in) :: Dmodel_ctl
+      type(mhd_model_control), intent(in) :: model_ctl
       type(sph_mhd_control_control), intent(in) :: smctl_ctl
       type(node_monitor_control), intent(in) :: nmtr_ctl
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
@@ -220,8 +220,8 @@
       call set_control_org_sph_files(org_plt, MHD_files)
 !
       call s_set_control_4_model                                        &
-     &    (Dmodel_ctl%reft_ctl, Dmodel_ctl%refc_ctl,                    &
-     &     smctl_ctl%mevo_ctl, Dmodel_ctl%evo_ctl, nmtr_ctl, MHD_prop)
+     &    (model_ctl%reft_ctl, model_ctl%refc_ctl,                      &
+     &     smctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
 !
 !   set spherical shell parameters
 !
@@ -232,8 +232,8 @@
 !   set forces
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
-      call s_set_control_4_force(Dmodel_ctl%frc_ctl, Dmodel_ctl%g_ctl,  &
-     &    Dmodel_ctl%cor_ctl, Dmodel_ctl%mcv_ctl, MHD_prop)
+      call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, MHD_prop)
 !
 !   set parameters for general information
 !
@@ -248,16 +248,16 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_normalize'
       call set_control_4_normalize                                      &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
-     &    MHD_prop%cp_prop, Dmodel_ctl%dless_ctl, Dmodel_ctl%eqs_ctl,   &
+     &    MHD_prop%cp_prop, model_ctl%dless_ctl, model_ctl%eqs_ctl,     &
      &    MHD_prop%MHD_coef_list)
 !
       call set_coefs_4_magnetic_scale                                   &
-     &   (Dmodel_ctl%bscale_ctl, MHD_prop%MHD_coef_list)
+     &   (model_ctl%bscale_ctl, MHD_prop%MHD_coef_list)
 !
 !   set boundary conditions
 !
       call set_control_SPH_MHD_bcs                                      &
-     &   (MHD_prop, Dmodel_ctl%nbc_ctl, Dmodel_ctl%sbc_ctl, MHD_BC)
+     &   (MHD_prop, model_ctl%nbc_ctl, model_ctl%sbc_ctl, MHD_BC)
 !
 !   set control parameters
 !

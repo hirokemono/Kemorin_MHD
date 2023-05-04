@@ -64,7 +64,7 @@
         type(parallel_sph_shell_control) :: psph_ctl
 !
 !>        Control structure for MHD/model
-        type(mhd_DNS_model_control) :: model_ctl
+        type(mhd_model_control) :: model_ctl
 !>        Control structure for MHD/control
         type(sph_mhd_control_control) :: smctl_ctl
 !
@@ -121,6 +121,7 @@
 !
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
+      use ctl_data_MHD_model_IO
       use control_data_surfacing_IO
       use ctl_file_gen_sph_shell_IO
 !
@@ -175,6 +176,7 @@
 !
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
+      use ctl_data_MHD_model_IO
       use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control
@@ -221,6 +223,7 @@
 !
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
+      use ctl_data_MHD_model_IO
       use control_data_surfacing_IO
       use ctl_file_gen_sph_shell_IO
 !
@@ -272,6 +275,7 @@
 !
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
+      use ctl_data_MHD_model_IO
       use ctl_file_gen_sph_shell_IO
 !
       use write_control_elements

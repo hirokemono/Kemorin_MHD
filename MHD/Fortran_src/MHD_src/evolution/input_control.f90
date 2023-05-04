@@ -124,8 +124,8 @@
      &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
      &    nod_fld, ele_fld)
-      call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl,             &
-     &                               FEM_MHD_ctl%sgs_ctl)
+      call dealloc_sgs_ctl(FEM_MHD_ctl%sgs_ctl)
+      call dealloc_sph_mhd_model(FEM_MHD_ctl%model_ctl)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(MHD_files%mesh_file_IO, nprocs, femmesh)
@@ -184,8 +184,8 @@
      &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
      &    nod_fld, ele_fld)
-      call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl,             &
-     &                               FEM_MHD_ctl%sgs_ctl)
+      call dealloc_sgs_ctl(FEM_MHD_ctl%sgs_ctl)
+      call dealloc_sph_mhd_model(FEM_MHD_ctl%model_ctl)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh                                               &

@@ -63,6 +63,7 @@
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
       use bcast_4_sphere_ctl
+      use bcast_ctl_MHD_model
       use bcast_ctl_SGS_MHD_model
       use bcast_monitor_data_ctl
       use bcast_ctl_sph_mhd_control
@@ -77,8 +78,8 @@
 !
       call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
 !
-      call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl,                   &
-     &                             MHD_ctl%sgs_ctl)
+      call bcast_sgs_ctl(MHD_ctl%sgs_ctl)
+      call bcast_ctl_data_MHD_model(MHD_ctl%model_ctl)
       call bcast_sph_mhd_control(MHD_ctl%smctl_ctl)
 !
       call bcast_node_monitor_data_ctl(MHD_ctl%nmtr_ctl)

@@ -1,5 +1,5 @@
-!>@file   t_ctl_data_SGS_MHD_model.f90
-!!@brief  module t_ctl_data_SGS_MHD_model
+!>@file   ctl_data_MHD_model_IO.f90
+!!@brief  module ctl_data_MHD_model_IO
 !!
 !!@author H. Matsui
 !>@brief   Control read routine
@@ -11,26 +11,24 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_sph_sgs_mhd_model                               &
-!!     &         (id_control, hd_block, model_ctl, sgs_ctl, c_buf)
+!!      subroutine read_sph_mhd_model                                   &
+!!     &         (id_control, hd_block, model_ctl, c_buf)
+!!      subroutine read_sph_mhd_model_items(id_control, model_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_model_control), intent(inout) :: model_ctl
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_sph_sgs_mhd_model                              &
-!!     &         (id_control, hd_block, model_ctl, sgs_ctl, level)
+!!      subroutine write_sph_mhd_model                                  &
+!!     &         (id_control, hd_block, model_ctl, level)
+!!      subroutine write_sph_mhd_model_items                            &
+!!     &         (id_control, model_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_model_control), intent(in) :: model_ctl
-!!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine dealloc_sph_sgs_mhd_model(model_ctl, sgs_ctl)
-!!        type(mhd_model_control), intent(inout) :: model_ctl
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!@endverbatim
 !
-      module t_ctl_data_SGS_MHD_model
+      module ctl_data_MHD_model_IO
 !
       use m_precision
 !
@@ -48,53 +46,15 @@
       use t_ctl_data_mhd_magne
       use t_ctl_data_magnetic_scale
       use t_ctl_data_temp_model
-      use t_ctl_data_SGS_model
       use t_ctl_data_dimless_numbers
+      use t_ctl_data_MHD_model
 !
       use skip_comment_f
 !
       implicit none
 !
-      type mhd_model_control
-!>        Structure for field information control
-        type(field_control) :: fld_ctl
-!
-!>        Structure for evolution fields control
-        type(mhd_evolution_control) :: evo_ctl
-!>        Structure for domain area controls
-        type(mhd_evo_area_control) :: earea_ctl
-!
-!>        Structure for nodal boundary conditions
-        type(node_bc_control) :: nbc_ctl
-!>        Structure for surface boundary conditions
-        type(surf_bc_control) :: sbc_ctl
-!
-!>        Structure for list of dimensionless numbers
-        type(dimless_control) :: dless_ctl
-!>        Structure for coefficients of governing equations
-        type(equations_control) :: eqs_ctl
-!
-!>        Structure for force list
-        type(forces_control) :: frc_ctl
-!>        Structure for gravity definistion
-        type(gravity_control) :: g_ctl
-!>        Structure for Coriolis force
-        type(coriolis_control) :: cor_ctl
-!>        Structure for Coriolis force
-        type(magneto_convection_control) :: mcv_ctl
-!>        Structure for magnetic field scaling
-        type(magnetic_field_scale_control) :: bscale_ctl
-!
-!>        Structures for reference tempearature
-        type(reference_temperature_ctl) :: reft_ctl
-!>        Structures for reference composition
-        type(reference_temperature_ctl) :: refc_ctl
-!
-        integer (kind=kint) :: i_model = 0
-      end type mhd_model_control
 !
 !    label for entry of group
-!
 !
       character(len=kchara), parameter, private                         &
      &      :: hd_phys_values =  'phys_values_ctl'
@@ -135,29 +95,19 @@
       character(len=kchara), parameter, private                         &
      &      :: hd_comp_def =     'composition_define'
 !
-      character(len=kchara), parameter, private                         &
-     &      :: hd_sgs_ctl = 'SGS_control'
-!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_sph_sgs_mhd_model                                 &
-     &         (id_control, hd_block, model_ctl, sgs_ctl, c_buf)
-!
-      use ctl_data_temp_model_IO
-      use ctl_data_comp_model_IO
-      use ctl_data_node_boundary_IO
-      use ctl_data_surf_boundary_IO
-      use ctl_data_SGS_model_IO
+      subroutine read_sph_mhd_model                                     &
+     &         (id_control, hd_block, model_ctl, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       type(mhd_model_control), intent(inout) :: model_ctl
-      type(SGS_model_control), intent(inout) :: sgs_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -166,6 +116,50 @@
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_sph_mhd_model_items(id_control, model_ctl, c_buf)
+      end do
+      model_ctl%i_model = 1
+!
+      end subroutine read_sph_mhd_model
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_sph_mhd_model                                    &
+     &         (id_control, hd_block, model_ctl, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(mhd_model_control), intent(in) :: model_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(model_ctl%i_model .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+      call write_sph_mhd_model_items(id_control, model_ctl, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_sph_mhd_model
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine read_sph_mhd_model_items(id_control, model_ctl, c_buf)
+!
+      use ctl_data_temp_model_IO
+      use ctl_data_comp_model_IO
+      use ctl_data_node_boundary_IO
+      use ctl_data_surf_boundary_IO
+!
+      integer(kind = kint), intent(in) :: id_control
+!
+      type(mhd_model_control), intent(inout) :: model_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
         call read_phys_data_control                                     &
@@ -206,110 +200,60 @@
         call read_magneto_cv_ctl                                        &
      &     (id_control, hd_induction_ctl, model_ctl%mcv_ctl, c_buf)
 !
-        call read_sgs_ctl                                               &
-     &     (id_control, hd_sgs_ctl, sgs_ctl, c_buf)
-      end do
-      model_ctl%i_model = 1
-!
-      end subroutine read_sph_sgs_mhd_model
+      end subroutine read_sph_mhd_model_items
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_sph_sgs_mhd_model                                &
-     &         (id_control, hd_block, model_ctl, sgs_ctl, level)
+      subroutine write_sph_mhd_model_items                              &
+     &         (id_control, model_ctl, level)
 !
       use ctl_data_temp_model_IO
       use ctl_data_comp_model_IO
       use ctl_data_node_boundary_IO
       use ctl_data_surf_boundary_IO
-      use ctl_data_SGS_model_IO
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
       type(mhd_model_control), intent(in) :: model_ctl
-      type(SGS_model_control), intent(in) :: sgs_ctl
-!
       integer(kind = kint), intent(inout) :: level
 !
 !
-      if(model_ctl%i_model .le. 0) return
-!
-      write(id_control,'(a1)') '!'
-      level = write_begin_flag_for_ctl(id_control, level, hd_block)
-!
-      call write_phys_data_control                                    &
+      call write_phys_data_control                                      &
      &   (id_control, hd_phys_values, model_ctl%fld_ctl, level)
 !
-      call write_mhd_time_evo_ctl                                     &
+      call write_mhd_time_evo_ctl                                       &
      &   (id_control, hd_time_evo, model_ctl%evo_ctl, level)
-      call write_mhd_layer_ctl                                        &
+      call write_mhd_layer_ctl                                          &
      &   (id_control, hd_layers_ctl, model_ctl%earea_ctl, level)
 !
-      call write_bc_4_node_ctl(id_control, hd_boundary_condition,     &
+      call write_bc_4_node_ctl(id_control, hd_boundary_condition,       &
      &                         model_ctl%nbc_ctl, level)
-      call write_bc_4_surf_ctl(id_control, hd_bc_4_surf,              &
+      call write_bc_4_surf_ctl(id_control, hd_bc_4_surf,                &
      &                         model_ctl%sbc_ctl, level)
 !
-      call write_forces_ctl                                           &
+      call write_forces_ctl                                             &
      &   (id_control, hd_forces_ctl, model_ctl%frc_ctl, level)
-      call write_dimless_ctl                                          &
+      call write_dimless_ctl                                            &
      &   (id_control, hd_dimless_ctl, model_ctl%dless_ctl, level)
-      call write_coef_term_ctl                                        &
+      call write_coef_term_ctl                                          &
      &   (id_control, hd_coef_term_ctl, model_ctl%eqs_ctl, level)
 !
-      call write_gravity_ctl                                          &
+      call write_gravity_ctl                                            &
      &   (id_control, hd_gravity_ctl, model_ctl%g_ctl, level)
-      call write_coriolis_ctl                                         &
+      call write_coriolis_ctl                                           &
      &   (id_control, hd_coriolis_ctl, model_ctl%cor_ctl, level)
-      call write_magneto_cv_ctl                                       &
+      call write_magneto_cv_ctl                                         &
      &   (id_control, hd_magneto_cv_ctl, model_ctl%mcv_ctl, level)
-      call write_magnetic_scale_ctl                                   &
+      call write_magnetic_scale_ctl                                     &
      &   (id_control, hd_bscale_ctl, model_ctl%bscale_ctl, level)
-      call write_reftemp_ctl                                          &
+      call write_reftemp_ctl                                            &
      &   (id_control, hd_temp_def, model_ctl%reft_ctl, level)
-      call write_refcomp_ctl                                          &
+      call write_refcomp_ctl                                            &
      &   (id_control, hd_comp_def, model_ctl%refc_ctl, level)
 !
-      call write_sgs_ctl                                              &
-     &   (id_control, hd_sgs_ctl, sgs_ctl, level)
-      level =  write_end_flag_for_ctl(id_control, level, hd_block)
-!
-      end subroutine write_sph_sgs_mhd_model
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_sph_sgs_mhd_model(model_ctl, sgs_ctl)
-!
-      use bcast_4_field_ctl
-!
-      type(mhd_model_control), intent(inout) :: model_ctl
-      type(SGS_model_control), intent(inout) :: sgs_ctl
-!
-!
-      call dealloc_phys_control(model_ctl%fld_ctl)
-      call dealloc_t_evo_name_ctl(model_ctl%evo_ctl)
-      call dealloc_ele_area_grp_ctl(model_ctl%earea_ctl)
-!
-      call dealloc_bc_4_node_ctl(model_ctl%nbc_ctl)
-      call dealloc_bc_4_surf_ctl(model_ctl%sbc_ctl)
-!
-      call dealloc_dimless_ctl(model_ctl%dless_ctl)
-      call dealloc_coef_term_ctl(model_ctl%eqs_ctl)
-      call dealloc_name_force_ctl(model_ctl%frc_ctl)
-      call dealloc_gravity_ctl(model_ctl%g_ctl)
-      call dealloc_coriolis_ctl(model_ctl%cor_ctl)
-      call dealloc_magneto_ctl(model_ctl%mcv_ctl)
-      call dealloc_magnetic_scale_ctl(model_ctl%bscale_ctl)
-!
-      call dealloc_sgs_ctl(sgs_ctl)
-!
-      model_ctl%i_model = 0
-!
-      end subroutine dealloc_sph_sgs_mhd_model
+      end subroutine write_sph_mhd_model_items
 !
 !   --------------------------------------------------------------------
 !
-      end module t_ctl_data_SGS_MHD_model
+      end module ctl_data_MHD_model_IO

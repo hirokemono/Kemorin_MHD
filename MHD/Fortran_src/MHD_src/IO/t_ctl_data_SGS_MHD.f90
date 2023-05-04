@@ -36,7 +36,7 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_platforms
-      use t_ctl_data_SGS_MHD_model
+      use t_ctl_data_MHD_model
       use t_ctl_data_SPH_MHD_control
       use t_ctl_data_SGS_model
       use t_ctl_data_4_sph_monitor
@@ -122,6 +122,7 @@
       use ctl_file_gen_sph_shell_IO
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
+      use ctl_data_SGS_MHD_model_IO
       use ctl_data_viualiser_IO
 !
       integer(kind = kint), intent(in) :: id_control
@@ -176,6 +177,7 @@
      &         (id_control, hd_block, MHD_ctl, level)
 !
       use t_ctl_data_SPH_MHD_control
+      use ctl_data_SGS_MHD_model_IO
       use ctl_file_gen_sph_shell_IO
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
@@ -251,8 +253,8 @@
       call reset_control_platforms(MHD_ctl%plt)
       call reset_control_platforms(MHD_ctl%org_plt)
 !
-      call dealloc_sph_sgs_mhd_model(MHD_ctl%model_ctl,                 &
-     &                               MHD_ctl%sgs_ctl)
+      call dealloc_sgs_ctl(MHD_ctl%sgs_ctl)
+      call dealloc_sph_mhd_model(MHD_ctl%model_ctl)
       call reset_sph_mhd_control(MHD_ctl%smctl_ctl)
 !
       call dealloc_parallel_shell_ctl(MHD_ctl%psph_ctl)
