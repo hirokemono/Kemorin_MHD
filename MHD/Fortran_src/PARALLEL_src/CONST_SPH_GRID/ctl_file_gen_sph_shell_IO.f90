@@ -125,6 +125,7 @@
       open(id_control, file = file_name)
 !
       do
+        if(psph_ctl%iflag_sph_shell .gt. 0) exit
         call load_one_line_from_control(id_control, c_buf1)
         if(check_end_flag(c_buf1, hd_block)) exit
 !
