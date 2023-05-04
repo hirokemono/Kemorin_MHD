@@ -17,6 +17,7 @@
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
+!!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!@endverbatim
 !
       module bcast_control_sph_SGS_MHD
@@ -27,6 +28,7 @@
       use m_machine_parameter
       use t_ctl_data_SGS_MHD
       use t_control_data_vizs
+      use t_control_data_dynamo_vizs
 !
       implicit none
 !
@@ -39,22 +41,26 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl,         &
-     &                                      viz_ctls)
+     &                                      viz_ctls, zm_ctls)
 !
       use ctl_file_SGS_MHD_IO
+      use bcast_ctl_sph_mhd_control
       use bcast_control_data_vizs
 !
       character(len=kchara), intent(in) :: file_name
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
+      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !
 !
       if(my_rank .eq. 0) then
-        call read_control_4_sph_SGS_MHD(file_name, MHD_ctl, viz_ctls)
+        call read_control_4_sph_SGS_MHD(file_name, MHD_ctl,             &
+     &                                  viz_ctls, zm_ctls)
       end if
 !
       call bcast_sph_mhd_control_data(MHD_ctl)
       call bcast_viz_controls(viz_ctls)
+      call bcast_dynamo_viz_control(zm_ctls)
 !
       end subroutine s_load_control_sph_SGS_MHD
 !
@@ -90,8 +96,6 @@
 !
       call bcast_node_monitor_data_ctl(MHD_ctl%nmtr_ctl)
       call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
-!
-      call bcast_dynamo_viz_control(MHD_ctl%zm_ctls)
 !
       call calypso_mpi_bcast_character                                  &
      &   (MHD_ctl%fname_psph_ctl, cast_long(kchara), 0)

@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine input_control_SPH_SGS_dynamo                         &
-!!     &         (MHD_files, MHD_ctl, MHD_step, SPH_model,              &
+!!     &         (MHD_files, MHD_ctl, zm_ctls, MHD_step, SPH_model,     &
 !!     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+!!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -42,6 +43,7 @@
       use t_bc_data_list
       use t_SPH_SGS_structure
       use t_flex_delta_t_data
+      use t_control_data_dynamo_vizs
       use t_work_SPH_MHD
 !
       implicit none
@@ -53,7 +55,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_SPH_SGS_dynamo                           &
-     &         (MHD_files, MHD_ctl, MHD_step, SPH_model,                &
+     &         (MHD_files, MHD_ctl, zm_ctls, MHD_step, SPH_model,       &
      &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !
       use m_error_IDs
@@ -66,6 +68,7 @@
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -86,7 +89,7 @@
      &    SPH_WK%trns_WK, SPH_MHD%sph_maker)
 !
       call set_control_SGS_SPH_MHD_field(MHD_ctl%model_ctl,             &
-     &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, MHD_ctl%zm_ctls,      &
+     &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, zm_ctls,              &
      &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD%sph,             &
      &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)

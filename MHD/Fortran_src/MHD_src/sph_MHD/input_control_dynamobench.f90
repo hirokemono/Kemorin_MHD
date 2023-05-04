@@ -8,13 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine input_control_SPH_dynamobench                        &
-!!     &          (MHD_files, bc_IO, refs, DMHD_ctl, SPH_MHD, nod_fld,  &
-!!     &           MHD_step, MHD_prop, MHD_BC, SPH_WK, cdat, bench)
+!!     &          (MHD_files, bc_IO, refs, MHD_ctl, zm_ctls,            &
+!!     &           SPH_MHD, nod_fld, MHD_step, MHD_prop, MHD_BC,        &
+!!     &           SPH_WK, cdat, bench)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(boundary_spectra), intent(inout) :: bc_IO
 !!        type(radial_reference_field), intent(inout) :: refs
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!!        type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -63,10 +65,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_SPH_dynamobench                          &
-     &          (MHD_files, bc_IO, refs, DMHD_ctl, SPH_MHD, nod_fld,    &
-     &           MHD_step, MHD_prop, MHD_BC, SPH_WK, cdat, bench)
+     &          (MHD_files, bc_IO, refs, MHD_ctl, zm_ctls,              &
+     &           SPH_MHD, nod_fld, MHD_step, MHD_prop, MHD_BC,          &
+     &           SPH_WK, cdat, bench)
 !
       use t_ctl_data_MHD
+      use t_control_data_dynamo_vizs
       use t_field_on_circle
       use set_control_sph_mhd
       use set_control_sph_data_MHD
@@ -75,8 +79,9 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
       type(radial_reference_field), intent(inout) :: refs
-      type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !
       type(phys_data), intent(inout) :: nod_fld
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -89,18 +94,18 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%model_ctl,           &
-     &    DMHD_ctl%smctl_ctl, DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl,     &
+     &   (MHD_ctl%plt, MHD_ctl%org_plt, MHD_ctl%model_ctl,              &
+     &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
      &    MHD_files, bc_IO, refs, MHD_step, MHD_prop, MHD_BC,           &
      &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
 !
-      call set_control_SPH_MHD_w_viz(DMHD_ctl%model_ctl,                &
-     &    DMHD_ctl%psph_ctl, DMHD_ctl%smonitor_ctl, DMHD_ctl%zm_ctls,   &
+      call set_control_SPH_MHD_w_viz(MHD_ctl%model_ctl,                 &
+     &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, zm_ctls,              &
      &    MHD_prop, SPH_MHD%sph, SPH_MHD%fld, nod_fld, SPH_WK%monitor)
 !
       call set_ctl_params_dynamobench                                   &
-     &   (DMHD_ctl%model_ctl%fld_ctl%field_ctl,                         &
-     &    DMHD_ctl%smonitor_ctl%meq_ctl, cdat%circle, cdat%d_circle,    &
+     &   (MHD_ctl%model_ctl%fld_ctl%field_ctl,                          &
+     &    MHD_ctl%smonitor_ctl%meq_ctl, cdat%circle, cdat%d_circle,     &
      &    bench)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_sph_mesh'
@@ -109,7 +114,7 @@
       call sph_index_flags_and_params                                   &
      &   (SPH_MHD%groups, SPH_MHD%sph, SPH_MHD%comms)
 !
-      call dealloc_sph_mhd_ctl_data(DMHD_ctl)
+      call dealloc_sph_mhd_ctl_data(MHD_ctl)
 !
       end subroutine input_control_SPH_dynamobench
 !
