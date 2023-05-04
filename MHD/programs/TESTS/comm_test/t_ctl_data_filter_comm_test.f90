@@ -25,7 +25,6 @@
 !
       use m_precision
 !
-      use calypso_mpi
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_platforms
@@ -36,8 +35,6 @@
 !
 !
       integer(kind = kint), parameter :: test_mest_ctl_file_code = 11
-      character(len = kchara), parameter                                &
-     &               :: fname_test_mesh_ctl = "ctl_filter_comm_test"
 !
       type ctl_data_filter_comm_test
         type(platform_data_control) :: f_comm_plt
@@ -60,7 +57,7 @@
 !
       private :: hd_filter_test_ctl, hd_platform, hd_filter_fnames
 !
-      private :: test_mest_ctl_file_code, fname_test_mesh_ctl
+      private :: test_mest_ctl_file_code
       private :: read_filter_comm_test_data
 !
 !   --------------------------------------------------------------------
@@ -69,28 +66,24 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_filter_comm_test(fc_test_ctl)
+      subroutine read_control_filter_comm_test(file_name, fc_test_ctl)
 !
+      character(len=kchara), intent(in) :: file_name
       type(ctl_data_filter_comm_test), intent(inout) :: fc_test_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-       open(test_mest_ctl_file_code, file = fname_test_mesh_ctl,        &
-     &      status='old')
+      open(test_mest_ctl_file_code, file = file_name, status='old')
 !
-       do
-          call load_one_line_from_control                               &
-     &       (test_mest_ctl_file_code, c_buf1)
-          call read_filter_comm_test_data(test_mest_ctl_file_code,      &
-     &        hd_filter_test_ctl, fc_test_ctl, c_buf1)
-          if(fc_test_ctl%i_filter_test_ctl.gt.0) exit
-        end do
-        close(test_mest_ctl_file_code)
-      end if
-!
-      call bcast_filter_comm_test_data(fc_test_ctl)
+      do
+        call load_one_line_from_control                                 &
+     &     (test_mest_ctl_file_code, c_buf1)
+        call read_filter_comm_test_data(test_mest_ctl_file_code,        &
+     &      hd_filter_test_ctl, fc_test_ctl, c_buf1)
+        if(fc_test_ctl%i_filter_test_ctl.gt.0) exit
+      end do
+      close(test_mest_ctl_file_code)
 !
       end subroutine read_control_filter_comm_test
 !
@@ -123,24 +116,6 @@
       fc_test_ctl%i_filter_test_ctl = 1
 !
       end subroutine read_filter_comm_test_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_filter_comm_test_data(fc_test_ctl)
-!
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-      use bcast_4_filter_files_ctl
-!
-      type(ctl_data_filter_comm_test), intent(inout) :: fc_test_ctl
-!
-!
-      call bcast_ctl_data_4_platform(fc_test_ctl%f_comm_plt)
-      call bcast_filter_fnames_control(fc_test_ctl%ffile_ctest_ctl)
-!
-      call calypso_mpi_bcast_one_int(fc_test_ctl%i_filter_test_ctl, 0)
-!
-      end subroutine bcast_filter_comm_test_data
 !
 !   --------------------------------------------------------------------
 !

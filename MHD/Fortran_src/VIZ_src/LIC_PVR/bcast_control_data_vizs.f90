@@ -20,6 +20,8 @@
 !
       implicit  none
 !
+      private :: bcast_files_4_lic_ctl
+!
 !   --------------------------------------------------------------------
 !
       contains
@@ -34,6 +36,7 @@
       use bcast_section_control_data
       use bcast_ctl_data_field_line
       use bcast_ctl_data_vol_repart
+      use bcast_control_data_pvrs
       use transfer_to_long_integers
 !
       type(visualization_controls), intent(inout) :: viz_ctls
@@ -73,5 +76,28 @@
       end subroutine bcast_viz_controls
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine bcast_files_4_lic_ctl(lic_ctls)
+!
+      use t_control_data_LIC_pvrs
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
+      use bcast_control_data_4_pvr
+!
+      type(lic_rendering_controls), intent(inout) :: lic_ctls
+!
+!
+      call calypso_mpi_bcast_one_int(lic_ctls%num_lic_ctl, 0)
+      if(lic_ctls%num_lic_ctl .le. 0) return
+!
+      if(my_rank .gt. 0)  call alloc_lic_ctl_struct(lic_ctls)
+!
+      call calypso_mpi_bcast_character(lic_ctls%fname_lic_ctl,          &
+     &    cast_long(kchara*lic_ctls%num_lic_ctl), 0)
+!
+      end subroutine bcast_files_4_lic_ctl
+!
+!   --------------------------------------------------------------------
 !
       end module bcast_control_data_vizs

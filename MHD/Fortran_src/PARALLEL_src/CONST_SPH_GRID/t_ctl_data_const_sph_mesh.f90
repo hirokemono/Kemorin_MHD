@@ -69,23 +69,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_control_4_const_shell(file_name, gen_SPH_ctl)
-!
-      use calypso_mpi
-      character(len=kchara), intent(in) :: file_name
-      type(sph_mesh_generation_ctl), intent(inout) :: gen_SPH_ctl
-!
-!
-      if(my_rank .eq. 0) then
-        call read_control_4_const_shell(file_name, gen_SPH_ctl)
-      end if
-!
-      call bcast_sph_shell_define_ctl(gen_SPH_ctl)
-!
-      end subroutine load_control_4_const_shell
-!
-! ----------------------------------------------------------------------
-!
       subroutine read_control_4_const_shell(file_name, gen_SPH_ctl)
 !
       character(len=kchara), intent(in) :: file_name
@@ -192,28 +175,5 @@
       end subroutine write_sph_shell_define_ctl
 !
 !   --------------------------------------------------------------------
-!
-      subroutine bcast_sph_shell_define_ctl(gen_SPH_ctl)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_4_platform_ctl
-      use bcast_4_sphere_ctl
-!
-      type(sph_mesh_generation_ctl), intent(inout) :: gen_SPH_ctl
-!
-!
-      call bcast_ctl_data_4_platform(gen_SPH_ctl%plt)
-      call bcast_parallel_shell_ctl(gen_SPH_ctl%psph_ctl)
-!
-      call calypso_mpi_bcast_one_int(gen_SPH_ctl%i_sph_mesh_ctl, 0)
-      call calypso_mpi_bcast_character                                  &
-     &   (gen_SPH_ctl%fname_psph_ctl, cast_long(kchara), 0)
-!
-      end subroutine bcast_sph_shell_define_ctl
-!
-! ----------------------------------------------------------------------
 !
       end module t_ctl_data_const_sph_mesh

@@ -7,6 +7,7 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
+!!      subroutine alloc_lic_ctl_struct(lic_ctls)
 !!      subroutine read_files_4_lic_ctl                                 &
 !!     &         (id_control, hd_lic_ctl, lic_ctls, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -19,7 +20,6 @@
 !!        character(len = kchara), intent(in) :: hd_lic_ctl
 !!        type(lic_rendering_controls), intent(in) :: lic_ctls
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine bcast_files_4_lic_ctl(lic_ctls)
 !!
 !!      subroutine add_fields_4_lics_to_fld_ctl(lic_ctls, field_ctl)
 !!        type(lic_rendering_controls), intent(in) :: lic_ctls
@@ -37,7 +37,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use calypso_mpi
       use t_control_data_4_pvr
       use t_control_data_LIC
 !
@@ -50,7 +49,6 @@
         type(lic_parameter_ctl), allocatable :: lic_ctl_type(:)
       end type lic_rendering_controls
 !
-      private :: alloc_lic_ctl_struct
 !
 !   --------------------------------------------------------------------
 !
@@ -164,28 +162,6 @@
      &                                     hd_lic_ctl)
 !
       end subroutine write_files_4_lic_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_files_4_lic_ctl(lic_ctls)
-!
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_control_data_4_pvr
-!
-      type(lic_rendering_controls), intent(inout) :: lic_ctls
-!
-!
-      call calypso_mpi_bcast_one_int(lic_ctls%num_lic_ctl, 0)
-      if(lic_ctls%num_lic_ctl .le. 0) return
-!
-      if(my_rank .gt. 0)  call alloc_lic_ctl_struct(lic_ctls)
-!
-      call calypso_mpi_bcast_character(lic_ctls%fname_lic_ctl,          &
-     &    cast_long(kchara*lic_ctls%num_lic_ctl), 0)
-!
-      end subroutine bcast_files_4_lic_ctl
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

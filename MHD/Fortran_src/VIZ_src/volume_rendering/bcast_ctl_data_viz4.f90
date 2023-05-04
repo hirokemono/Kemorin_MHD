@@ -32,6 +32,7 @@
       use bcast_control_arrays
       use bcast_section_control_data
       use bcast_ctl_data_field_line
+      use bcast_control_data_pvrs
 !
       type(vis4_controls), intent(inout) :: viz_ctls
 !

@@ -65,6 +65,7 @@
       subroutine init_gen_sph_grid_t
 !
       use m_error_IDs
+      use bcast_ctl_file_const_sph
 !
       integer(kind = kint) :: ierr = 0
 !
@@ -73,7 +74,7 @@
       call elpsed_label_gen_sph_grid
 !
       call start_elapsed_time(ied_total_elapsed)
-      call read_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
+      call load_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
      &    sph_files1, sph_maker_G, ierr)

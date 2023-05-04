@@ -53,6 +53,7 @@
       subroutine init_test_sph
 !
       use t_ctl_params_gen_sph_shell
+      use bcast_ctl_file_const_sph
       use cmp_trans_sph_tests
       use set_control_platform_item
 !
@@ -73,7 +74,7 @@
 !     --------------------- 
 !
       call turn_off_debug_flag_by_ctl(my_rank, SPH_TEST_ctl%plt)
-      call read_control_4_const_shell(control_file_name, SPH_TEST_ctl)
+      call load_control_4_const_shell(control_file_name, SPH_TEST_ctl)
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, SPH_TEST_ctl%plt, SPH_TEST_ctl%psph_ctl,             &
      &    test_sph_files, SPH_T%sph_maker, ierr)

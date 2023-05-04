@@ -36,14 +36,15 @@
       use m_machine_parameter
       use t_ctl_data_comm_test
 !
+      use bcast_ctl_data_comm_test
       use set_surface_data_4_IO
       use set_edge_data_4_IO
 !
       type(comm_test_control), intent(inout) :: comm_tctl
       type(comm_test_files_param), intent(inout) ::  T_files
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_comm_test'
-      call read_control_4_comm_test(comm_tctl)
+      if (iflag_debug.eq.1) write(*,*) 'load_control_4_comm_test'
+      call load_control_4_comm_test(comm_tctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
       call set_ctl_params_4_comm_test                                   &

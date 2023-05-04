@@ -7,6 +7,7 @@
 !>@brief structure of control data for multiple PVRs
 !!
 !!@verbatim
+!!      subroutine alloc_pvr_ctl_struct(pvr_ctls)
 !!      subroutine read_files_4_pvr_ctl                                 &
 !!     &         (id_control, hd_pvr_ctl, pvr_ctls, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -20,7 +21,6 @@
 !!        type(volume_rendering_controls), intent(in) :: pvr_ctls
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_files_4_pvr_ctl(pvr_ctls)
 !!      subroutine add_fields_4_pvrs_to_fld_ctl(pvr_ctl, field_ctl)
 !!        type(volume_rendering_controls), intent(in) :: pvr_ctls
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
@@ -37,7 +37,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use calypso_mpi
       use t_control_data_4_pvr
 !
       implicit  none
@@ -48,7 +47,6 @@
         type(pvr_parameter_ctl), allocatable :: pvr_ctl_type(:)
       end type volume_rendering_controls
 !
-      private :: alloc_pvr_ctl_struct
       private :: append_new_pvr_ctl_struct, dup_pvr_ctl_struct
 !
 !   --------------------------------------------------------------------
@@ -158,28 +156,6 @@
      &                                     hd_pvr_ctl)
 !
       end subroutine write_files_4_pvr_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_files_4_pvr_ctl(pvr_ctls)
-!
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_control_data_4_pvr
-!
-      type(volume_rendering_controls), intent(inout) :: pvr_ctls
-!
-!
-      call calypso_mpi_bcast_one_int(pvr_ctls%num_pvr_ctl, 0)
-      if(pvr_ctls%num_pvr_ctl .le. 0) return
-!
-      if(my_rank .gt. 0)  call alloc_pvr_ctl_struct(pvr_ctls)
-!
-      call calypso_mpi_bcast_character(pvr_ctls%fname_pvr_ctl,          &
-     &    cast_long(kchara*pvr_ctls%num_pvr_ctl), 0)
-!
-      end subroutine bcast_files_4_pvr_ctl
 !
 !   --------------------------------------------------------------------
 !

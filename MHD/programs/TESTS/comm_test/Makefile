@@ -27,6 +27,7 @@ SOURCES = $(shell ls *.f90)
 
 MOD_COMM_TEST = \
 t_ctl_data_comm_test.o \
+bcast_ctl_data_comm_test.o \
 send_recv_loop_tests.o \
 mesh_send_recv_test.o \
 \
