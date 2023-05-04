@@ -25,6 +25,7 @@
       use m_MHD_step_parameter
       use t_SPH_mesh_field_data
       use t_ctl_data_MHD
+      use t_control_data_surfacings
       use t_MHD_file_parameter
       use t_SPH_mesh_field_data
       use t_field_data_IO

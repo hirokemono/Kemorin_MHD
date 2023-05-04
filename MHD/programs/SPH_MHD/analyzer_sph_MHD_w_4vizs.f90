@@ -24,6 +24,7 @@
       use m_MHD_step_parameter
       use t_SPH_mesh_field_data
       use t_ctl_data_MHD
+      use t_control_data_surfacings
       use t_viz_sections
       use t_SPH_MHD_zonal_mean_viz
       use t_sph_trans_arrays_MHD
@@ -39,8 +40,10 @@
 !>      File name for control file
       character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
 !>      Control struture for MHD simulation
-      type(DNS_mhd_simulation_control), save :: DNS_MHD_ctl1
-      private :: MHD_ctl_name, DNS_MHD_ctl1
+      type(DNS_mhd_simulation_control), save, private :: DNS_MHD_ctl1
+!>        Structures of visualization controls
+      type(surfacing_controls), save, private :: surfacing_ctls_M
+      private :: MHD_ctl_name
 !
 !>      Structure of spectr grid and data
       type(SPH_mesh_field_data), save, private :: SPH_MHD1
@@ -73,7 +76,8 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_sph_MHD_w_psf'
-      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl1)
+      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl1,     &
+     &                                  surfacing_ctls_M)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_MHD_psf'
       call input_control_SPH_MHD_psf                                    &
@@ -103,7 +107,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
       call init_visualize_surface                                       &
      &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M, FEM_d1%field, &
-     &    DNS_MHD_ctl1%surfacing_ctls, viz_psfs1, m_SR1)
+     &    surfacing_ctls_M, viz_psfs1, m_SR1)
 !
       call init_zonal_mean_sections(MHD_step1%viz_step, FEM_d1%geofem,  &
      &    edge_comm_M, FEM_d1%field, DNS_MHD_ctl1%zm_ctls, zmeans1,     &

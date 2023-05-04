@@ -26,6 +26,7 @@
 !
       use t_SPH_mesh_field_data
       use t_ctl_data_MHD
+      use t_control_data_surfacings
       use t_sph_trans_arrays_MHD
       use t_comm_table
       use t_mesh_SR

@@ -69,7 +69,7 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_sph_MHD_w_psf'
-      call load_control_4_sph_MHD_w_psf(snap_ctl_name, DNS_MHD_ctl1)
+      call load_control_4_sph_MHD_noviz(snap_ctl_name, DNS_MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_MHD_psf'
       call input_control_SPH_MHD_psf                                    &

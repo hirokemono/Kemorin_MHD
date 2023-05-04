@@ -24,6 +24,7 @@
       use m_SPH_MHD_model_data
       use t_SPH_mesh_field_data
       use t_ctl_data_MHD
+      use t_control_data_surfacings
       use t_field_on_circle
       use t_field_4_dynamobench
       use t_step_parameter

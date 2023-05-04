@@ -11,23 +11,28 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_sph_mhd_ctl_w_psf                               &
-!!     &         (id_control, hd_block, DMHD_ctl, c_buf)
+!!      subroutine read_sph_mhd_ctl_w_psf(id_control, hd_block,         &
+!!     &          DMHD_ctl, surfacing_ctls, c_buf)
 !!      subroutine read_sph_mhd_ctl_noviz                               &
 !!     &         (id_control, hd_block, DMHD_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!!        type(surfacing_controls), intent(inout) :: surfacing_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_sph_mhd_ctl_w_psf                              &
-!!     &         (id_control, hd_block, DMHD_ctl, level)
+!!      subroutine write_sph_mhd_ctl_w_psf(id_control, hd_block,        &
+!!     &          DMHD_ctl, surfacing_ctls, level)
 !!      subroutine write_sph_mhd_ctl_noviz                              &
 !!     &         (id_control, hd_block, DMHD_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
+!!        type(surfacing_controls), intent(in) :: surfacing_ctls
 !!        integer(kind = kint), intent(inout) :: level
 !!
+!!      subroutine dealloc_sph_mhd_ctl_w_psf(DMHD_ctl, surfacing_ctls)
+!!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!!        type(surfacing_controls), intent(inout) :: surfacing_ctls
 !!      subroutine dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
 !!@endverbatim
@@ -44,7 +49,6 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
-      use t_control_data_surfacings
       use t_control_data_dynamo_vizs
 !
       implicit none
@@ -72,9 +76,6 @@
         type(sph_monitor_control) :: smonitor_ctl
 !>        Structure for monitoring plave list
         type(node_monitor_control) :: nmtr_ctl
-!
-!>        Structures of visualization controls
-        type(surfacing_controls) :: surfacing_ctls
 !
 !>        Structures of zonal mean controls
         type(sph_dynamo_viz_controls) :: zm_ctls
@@ -116,9 +117,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_sph_mhd_ctl_w_psf                                 &
-     &         (id_control, hd_block, DMHD_ctl, c_buf)
+      subroutine read_sph_mhd_ctl_w_psf(id_control, hd_block,           &
+     &          DMHD_ctl, surfacing_ctls, c_buf)
 !
+      use t_control_data_surfacings
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
       use ctl_data_MHD_model_IO
@@ -129,6 +131,7 @@
       character(len=kchara), intent(in) :: hd_block
 !
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      type(surfacing_controls), intent(inout) :: surfacing_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -158,7 +161,7 @@
      &     (id_control, hd_pick_sph, DMHD_ctl%smonitor_ctl, c_buf)
 !
         call s_read_surfacing_controls                                  &
-     &     (id_control, hd_viz_ctl, DMHD_ctl%surfacing_ctls, c_buf)
+     &     (id_control, hd_viz_ctl, surfacing_ctls, c_buf)
 !
         call read_dynamo_viz_control                                    &
      &     (id_control, hd_dynamo_viz_ctl, DMHD_ctl%zm_ctls, c_buf)
@@ -218,9 +221,10 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine write_sph_mhd_ctl_w_psf                                &
-     &         (id_control, hd_block, DMHD_ctl, level)
+      subroutine write_sph_mhd_ctl_w_psf(id_control, hd_block,          &
+     &          DMHD_ctl, surfacing_ctls, level)
 !
+      use t_control_data_surfacings
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
       use ctl_data_MHD_model_IO
@@ -232,6 +236,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
+      type(surfacing_controls), intent(in) :: surfacing_ctls
 !
       integer(kind = kint), intent(inout) :: level
 !
@@ -260,7 +265,7 @@
      &   (id_control, hd_pick_sph, DMHD_ctl%smonitor_ctl, level)
 !
       call write_surfacing_controls                                     &
-     &   (id_control, hd_viz_ctl, DMHD_ctl%surfacing_ctls, level)
+     &   (id_control, hd_viz_ctl, surfacing_ctls, level)
 !
       call write_dynamo_viz_control                                     &
      &   (id_control, hd_dynamo_viz_ctl, DMHD_ctl%zm_ctls, level)
@@ -316,13 +321,15 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_sph_mhd_ctl_w_psf(DMHD_ctl)
+      subroutine dealloc_sph_mhd_ctl_w_psf(DMHD_ctl, surfacing_ctls)
+!
+      use t_control_data_surfacings
 !
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      type(surfacing_controls), intent(inout) :: surfacing_ctls
 !
 !
-      call dealloc_sph_mhd_ctl_data(DMHD_ctl)
-      call dealloc_surfacing_controls(DMHD_ctl%surfacing_ctls)
+      call dealloc_surfacing_controls(surfacing_ctls)
       call dealloc_dynamo_viz_control(DMHD_ctl%zm_ctls)
 !
       end subroutine dealloc_sph_mhd_ctl_w_psf

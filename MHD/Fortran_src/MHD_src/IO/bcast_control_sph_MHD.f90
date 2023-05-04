@@ -12,10 +12,12 @@
 !!@n        Modified by H. Matsui on Apr., 2023
 !!
 !!@verbatim
-!!      subroutine load_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
+!!      subroutine load_control_4_sph_MHD_w_psf(file_name, DMHD_ctl,    &
+!!     &                                        surfacing_ctls)
 !!      subroutine load_control_4_sph_MHD_noviz(file_name, DMHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+!!        type(surfacing_controls), intent(inout) :: surfacing_ctls
 !!@endverbatim
 !
       module bcast_control_sph_MHD
@@ -36,19 +38,25 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
+      subroutine load_control_4_sph_MHD_w_psf(file_name, DMHD_ctl,      &
+     &                                        surfacing_ctls)
 !
+      use t_control_data_surfacings
       use ctl_file_sph_MHD_IO
+      use bcast_ctl_data_surfacings
 !
       character(len=kchara), intent(in) :: file_name
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      type(surfacing_controls), intent(inout) :: surfacing_ctls
 !
 !
       if(my_rank .eq. 0) then
-        call read_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
+        call read_control_4_sph_MHD_w_psf(file_name, DMHD_ctl,          &
+     &                                    surfacing_ctls)
       end if
 !
       call bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
+      call bcast_surfacing_controls(surfacing_ctls)
 !
       end subroutine load_control_4_sph_MHD_w_psf
 !
@@ -76,13 +84,11 @@
       subroutine bcast_sph_mhd_ctl_w_psf(DMHD_ctl)
 !
       use bcast_ctl_sph_mhd_control
-      use bcast_ctl_data_surfacings
 !
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
 !
 !
       call bcast_sph_mhd_ctl_data(DMHD_ctl)
-      call bcast_surfacing_controls(DMHD_ctl%surfacing_ctls)
       call bcast_dynamo_viz_control(DMHD_ctl%zm_ctls)
 !
       end subroutine bcast_sph_mhd_ctl_w_psf

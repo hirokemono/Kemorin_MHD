@@ -15,10 +15,13 @@
 !!      subroutine read_control_4_sph_MHD_noviz(file_name, DMHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
-!!      subroutine write_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
+!!        type(surfacing_controls), intent(inout) :: surfacing_ctls
+!!      subroutine write_control_4_sph_MHD_w_psf(file_name, DMHD_ctl,   &
+!!     &                                         surfacing_ctls)
 !!      subroutine write_control_4_sph_MHD_noviz(file_name, DMHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
+!!        type(surfacing_controls), intent(in) :: surfacing_ctls
 !!@endverbatim
 !
       module ctl_file_sph_MHD_IO
@@ -47,12 +50,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
+      subroutine read_control_4_sph_MHD_w_psf(file_name, DMHD_ctl,      &
+     &                                        surfacing_ctls)
 !
       use t_control_data_surfacings
 !
       character(len=kchara), intent(in) :: file_name
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
+      type(surfacing_controls), intent(inout) :: surfacing_ctls
 !
       type(buffer_for_control) :: c_buf1
 !
@@ -61,15 +66,15 @@
 !
       do
         call load_one_line_from_control(ctl_file_code, c_buf1)
-        call read_sph_mhd_ctl_w_psf                                     &
-     &     (ctl_file_code, hd_mhd_ctl, DMHD_ctl, c_buf1)
+        call read_sph_mhd_ctl_w_psf(ctl_file_code, hd_mhd_ctl,          &
+     &      DMHD_ctl, surfacing_ctls, c_buf1)
         if(DMHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(ctl_file_code)
 !
-      call section_step_ctls_to_time_ctl(DMHD_ctl%surfacing_ctls,       &
+      call section_step_ctls_to_time_ctl(surfacing_ctls,                &
      &                                   DMHD_ctl%smctl_ctl%tctl)
-      call add_fields_4_scts_to_fld_ctl(DMHD_ctl%surfacing_ctls,        &
+      call add_fields_4_scts_to_fld_ctl(surfacing_ctls,                 &
      &    DMHD_ctl%model_ctl%fld_ctl%field_ctl)
 !
       end subroutine read_control_4_sph_MHD_w_psf
@@ -99,12 +104,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine write_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
+      subroutine write_control_4_sph_MHD_w_psf(file_name, DMHD_ctl,     &
+     &                                         surfacing_ctls)
 !
+      use t_control_data_surfacings
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
       type(DNS_mhd_simulation_control), intent(in) :: DMHD_ctl
+      type(surfacing_controls), intent(in) :: surfacing_ctls
 !
       integer(kind = kint) :: level1
 !
@@ -117,8 +125,8 @@
       write(*,*) 'Write MHD control file: ', trim(file_name)
       open(ctl_file_code, file = file_name)
       level1 = 0
-      call write_sph_mhd_ctl_w_psf                                      &
-     &   (ctl_file_code, hd_mhd_ctl, DMHD_ctl, level1)
+      call write_sph_mhd_ctl_w_psf(ctl_file_code, hd_mhd_ctl,           &
+     &    DMHD_ctl, surfacing_ctls, level1)
       close(ctl_file_code)
 !
       end subroutine write_control_4_sph_MHD_w_psf

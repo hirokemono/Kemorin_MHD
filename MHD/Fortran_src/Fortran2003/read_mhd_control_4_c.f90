@@ -5,12 +5,14 @@
       use t_ctl_data_SGS_MHD
       use t_ctl_data_MHD
       use t_control_data_vizs
+      use t_control_data_surfacings
 !
       implicit none
 !
       type(sph_sgs_mhd_control) :: MHD_ctl_C
       type(DNS_mhd_simulation_control) :: DNS_MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls_C
+      type(surfacing_controls), intent(inout) :: surfacing_ctls_C
       integer(kind = kint), parameter :: id_ctl = 11
 !
 !  ---------------------------------------------------------------------
@@ -75,7 +77,8 @@
 !
       call calypso_MPI_init
 !
-      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl)
+      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl,      &
+     &                                  surfacing_ctls_C)
       call calypso_MPI_finalize
 !
       end subroutine c_read_control_sph_MHD

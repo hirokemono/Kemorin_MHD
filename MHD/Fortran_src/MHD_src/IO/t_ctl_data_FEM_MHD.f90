@@ -39,7 +39,6 @@
       use t_ctl_data_SGS_model
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
-      use t_ctl_data_gen_sph_shell
       use t_control_data_vizs
 !
       implicit none
@@ -54,9 +53,6 @@
         type(platform_data_control) :: org_plt
 !>        Control structure for new file informations
         type(platform_data_control) :: new_plt
-!
-!>        Control structure for parallel spherical shell
-        type(parallel_sph_shell_control) :: psph_ctl
 !
 !>        Control structure for MHD/model
         type(mhd_model_control) :: model_ctl
