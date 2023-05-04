@@ -77,7 +77,8 @@
 !
       call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
 !
-      call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl)
+      call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl,                   &
+     &                             MHD_ctl%sgs_ctl)
       call bcast_sph_mhd_control(MHD_ctl%smctl_ctl)
 !
       call bcast_node_monitor_data_ctl(MHD_ctl%nmtr_ctl)

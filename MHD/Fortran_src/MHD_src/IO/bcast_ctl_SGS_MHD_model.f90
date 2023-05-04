@@ -11,8 +11,9 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine bcast_sph_sgs_mhd_model(model_ctl)
+!!      subroutine bcast_sph_sgs_mhd_model(model_ctl, sgs_ctl)
 !!        type(mhd_model_control), intent(inout) :: model_ctl
+!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!@endverbatim
 !
       module bcast_ctl_SGS_MHD_model
@@ -32,15 +33,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine bcast_sph_sgs_mhd_model(model_ctl)
+      subroutine bcast_sph_sgs_mhd_model(model_ctl, sgs_ctl)
 !
       use t_ctl_data_SGS_MHD_model
+      use t_ctl_data_SGS_model
       use calypso_mpi_int
       use bcast_4_field_ctl
       use bcast_ctl_data_mhd_evo
       use bcast_ctl_data_mhd_forces
 !
       type(mhd_model_control), intent(inout) :: model_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
 !
 !
       call bcast_phys_data_ctl(model_ctl%fld_ctl)
@@ -59,7 +62,7 @@
       call bcast_magnetic_scale_ctl(model_ctl%bscale_ctl)
       call bcast_ref_scalar_ctl(model_ctl%reft_ctl)
       call bcast_ref_scalar_ctl(model_ctl%refc_ctl)
-      call bcast_sgs_ctl(model_ctl%sgs_ctl)
+      call bcast_sgs_ctl(sgs_ctl)
 !
       call calypso_mpi_bcast_one_int(model_ctl%i_model, 0)
 !

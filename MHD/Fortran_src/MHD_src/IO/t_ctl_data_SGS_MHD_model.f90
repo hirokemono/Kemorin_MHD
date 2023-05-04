@@ -12,19 +12,22 @@
 !!
 !!@verbatim
 !!      subroutine read_sph_sgs_mhd_model                               &
-!!     &         (id_control, hd_block, model_ctl, c_buf)
+!!     &         (id_control, hd_block, model_ctl, sgs_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_model_control), intent(inout) :: model_ctl
+!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_sph_sgs_mhd_model                              &
-!!     &         (id_control, hd_block, model_ctl, level)
+!!     &         (id_control, hd_block, model_ctl, sgs_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_model_control), intent(in) :: model_ctl
+!!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine dealloc_sph_sgs_mhd_model(model_ctl)
+!!      subroutine dealloc_sph_sgs_mhd_model(model_ctl, sgs_ctl)
 !!        type(mhd_model_control), intent(inout) :: model_ctl
+!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!@endverbatim
 !
       module t_ctl_data_SGS_MHD_model
@@ -86,8 +89,6 @@
         type(reference_temperature_ctl) :: reft_ctl
 !>        Structures for reference composition
         type(reference_temperature_ctl) :: refc_ctl
-!>        Structures for SGS controls
-        type(SGS_model_control) :: sgs_ctl
 !
         integer (kind=kint) :: i_model = 0
       end type mhd_model_control
@@ -144,7 +145,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_sph_sgs_mhd_model                                 &
-     &         (id_control, hd_block, model_ctl, c_buf)
+     &         (id_control, hd_block, model_ctl, sgs_ctl, c_buf)
 !
       use ctl_data_temp_model_IO
       use ctl_data_comp_model_IO
@@ -156,6 +157,7 @@
       character(len=kchara), intent(in) :: hd_block
 !
       type(mhd_model_control), intent(inout) :: model_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -201,11 +203,11 @@
         call read_refcomp_ctl                                           &
      &     (id_control, hd_comp_def, model_ctl%refc_ctl, c_buf)
 !
-        call read_sgs_ctl                                               &
-     &     (id_control, hd_sgs_ctl, model_ctl%sgs_ctl, c_buf)
-!
         call read_magneto_cv_ctl                                        &
      &     (id_control, hd_induction_ctl, model_ctl%mcv_ctl, c_buf)
+!
+        call read_sgs_ctl                                               &
+     &     (id_control, hd_sgs_ctl, sgs_ctl, c_buf)
       end do
       model_ctl%i_model = 1
 !
@@ -214,7 +216,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_sph_sgs_mhd_model                                &
-     &         (id_control, hd_block, model_ctl, level)
+     &         (id_control, hd_block, model_ctl, sgs_ctl, level)
 !
       use ctl_data_temp_model_IO
       use ctl_data_comp_model_IO
@@ -227,6 +229,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(mhd_model_control), intent(in) :: model_ctl
+      type(SGS_model_control), intent(in) :: sgs_ctl
 !
       integer(kind = kint), intent(inout) :: level
 !
@@ -270,7 +273,7 @@
      &   (id_control, hd_comp_def, model_ctl%refc_ctl, level)
 !
       call write_sgs_ctl                                              &
-     &   (id_control, hd_sgs_ctl, model_ctl%sgs_ctl, level)
+     &   (id_control, hd_sgs_ctl, sgs_ctl, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_sgs_mhd_model
@@ -278,11 +281,12 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_sph_sgs_mhd_model(model_ctl)
+      subroutine dealloc_sph_sgs_mhd_model(model_ctl, sgs_ctl)
 !
       use bcast_4_field_ctl
 !
       type(mhd_model_control), intent(inout) :: model_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
 !
 !
       call dealloc_phys_control(model_ctl%fld_ctl)
@@ -300,7 +304,7 @@
       call dealloc_magneto_ctl(model_ctl%mcv_ctl)
       call dealloc_magnetic_scale_ctl(model_ctl%bscale_ctl)
 !
-      call dealloc_sgs_ctl(model_ctl%sgs_ctl)
+      call dealloc_sgs_ctl(sgs_ctl)
 !
       model_ctl%i_model = 0
 !

@@ -38,6 +38,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_SGS_MHD_model
       use t_ctl_data_SPH_MHD_control
+      use t_ctl_data_SGS_model
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
@@ -64,6 +65,8 @@
         type(mhd_model_control) :: model_ctl
 !>        Control structure for MHD/control
         type(sph_mhd_control_control) :: smctl_ctl
+!>        Structures for SGS controls
+        type(SGS_model_control) :: sgs_ctl
 !
 !>        Structure for spectr monitoring control
         type(sph_monitor_control) :: smonitor_ctl
@@ -145,8 +148,8 @@
         call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
      &      MHD_ctl%fname_psph_ctl, MHD_ctl%psph_ctl, c_buf)
 !
-        call read_sph_sgs_mhd_model                                     &
-     &     (id_control, hd_model, MHD_ctl%model_ctl, c_buf)
+        call read_sph_sgs_mhd_model(id_control, hd_model,               &
+     &      MHD_ctl%model_ctl, MHD_ctl%sgs_ctl, c_buf)
         call read_sph_mhd_control                                       &
      &     (id_control, hd_control, MHD_ctl%smctl_ctl, c_buf)
 !
@@ -201,8 +204,8 @@
       call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
      &    MHD_ctl%fname_psph_ctl, MHD_ctl%psph_ctl, level)
 !
-      call write_sph_sgs_mhd_model                                      &
-     &   (id_control, hd_model, MHD_ctl%model_ctl, level)
+      call write_sph_sgs_mhd_model(id_control, hd_model,                &
+     &    MHD_ctl%model_ctl, MHD_ctl%sgs_ctl, level)
       call write_sph_mhd_control                                        &
      &   (id_control, hd_control, MHD_ctl%smctl_ctl, level)
 !
@@ -248,7 +251,8 @@
       call reset_control_platforms(MHD_ctl%plt)
       call reset_control_platforms(MHD_ctl%org_plt)
 !
-      call dealloc_sph_sgs_mhd_model(MHD_ctl%model_ctl)
+      call dealloc_sph_sgs_mhd_model(MHD_ctl%model_ctl,                 &
+     &                               MHD_ctl%sgs_ctl)
       call reset_sph_mhd_control(MHD_ctl%smctl_ctl)
 !
       call dealloc_parallel_shell_ctl(MHD_ctl%psph_ctl)

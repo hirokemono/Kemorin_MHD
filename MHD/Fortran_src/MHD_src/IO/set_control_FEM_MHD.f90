@@ -7,12 +7,13 @@
 !> @brief Set parameters for MHD dynamo simulation from control data
 !!
 !!@verbatim
-!!      subroutine set_control_4_FEM_MHD(plt, org_plt,                  &
+!!      subroutine set_control_4_FEM_MHD(plt, org_plt, sgs_ctl,         &
 !!     &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,            &
 !!     &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,&
 !!     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
+!!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!        type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -40,6 +41,7 @@
       use t_ctl_data_FEM_MHD_control
       use t_ctl_data_node_monitor
       use t_ctl_data_volume_repart
+      use t_ctl_data_SGS_model
       use t_bc_data_list
       use t_flex_delta_t_data
 !
@@ -54,7 +56,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_MHD(plt, org_plt,                    &
+      subroutine set_control_4_FEM_MHD(plt, org_plt, sgs_ctl,           &
      &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,              &
      &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,  &
      &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
@@ -89,6 +91,7 @@
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
+      type(SGS_model_control), intent(in) :: sgs_ctl
 !
       type(mhd_model_control), intent(inout) :: model_ctl
       type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
@@ -140,24 +143,21 @@
 !   set parameters for SGS model
 !
       call set_control_SGS_model                                        &
-     &   (model_ctl%sgs_ctl, SGS_par%model_p, SGS_par%filter_p,         &
+     &   (sgs_ctl, SGS_par%model_p, SGS_par%filter_p,                   &
      &    MHD_files%Csim_file_IO, SGS_par%i_step_sgs_coefs)
 
-      call s_set_control_SGS_commute                                    &
-     &   (SGS_par%model_p, model_ctl%sgs_ctl, SGS_par%commute_p,        &
-     &    MHD_files%Cdiff_file_IO)
-      call s_set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,           &
-     &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl,              &
-     &    SGS_par%model_p)
+      call s_set_control_SGS_commute(SGS_par%model_p, sgs_ctl,          &
+     &    SGS_par%commute_p, MHD_files%Cdiff_file_IO)
+      call s_set_control_FEM_SGS(sgs_ctl%ffile_ctl,                     &
+     &    sgs_ctl, sgs_ctl%elayer_ctl, SGS_par%model_p)
 !
 !   set parameters for filtering operation
 !
       call s_set_control_4_filtering                                    &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
-     &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
-     &    SGS_par%filter_p)
+     &    SGS_par%model_p, sgs_ctl%SGS_filter_name_ctl,                 &
+     &    sgs_ctl%ffile_ctl, sgs_ctl%s3df_ctl, SGS_par%filter_p)
 !
 !   set fields
 !

@@ -11,9 +11,9 @@
 !!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls,           &
 !!     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor)
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt,              &
-!!     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,  &
-!!     &          bc_IO, refs, SGS_par, dynamic_SPH, MHD_step,          &
-!!     &          MHD_prop, MHD_BC, trans_p, WK, sph_maker)
+!!     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, sgs_ctl,    &
+!!     &          MHD_files, bc_IO, refs, SGS_par, dynamic_SPH,         &
+!!     &          MHD_step, MHD_prop, MHD_BC, trans_p, WK, sph_maker)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(in) :: model_ctl
@@ -21,6 +21,7 @@
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!        type(node_monitor_control), intent(in) :: nmtr_ctl
 !!        type(parallel_sph_shell_control), intent(in) :: psph_ctl
+!!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
@@ -62,6 +63,7 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
+      use t_ctl_data_SGS_model
       use t_control_data_dynamo_vizs
       use t_sph_grid_maker_in_sim
       use t_bc_data_list
@@ -134,9 +136,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_4_SPH_SGS_MHD(plt, org_plt,                &
-     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,    &
-     &          bc_IO, refs, SGS_par, dynamic_SPH, MHD_step,            &
-     &          MHD_prop, MHD_BC, trans_p, WK, sph_maker)
+     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, sgs_ctl,      &
+     &          MHD_files, bc_IO, refs, SGS_par, dynamic_SPH,           &
+     &          MHD_step, MHD_prop, MHD_BC, trans_p, WK, sph_maker)
 !
       use t_SGS_control_parameter
       use t_spheric_parameter
@@ -164,6 +166,7 @@
       type(sph_mhd_control_control), intent(in) :: smctl_ctl
       type(node_monitor_control), intent(in) :: nmtr_ctl
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
+      type(SGS_model_control), intent(in) :: sgs_ctl
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
@@ -181,14 +184,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_SGS_model'
       call set_control_SGS_model                                        &
-     &   (model_ctl%sgs_ctl, SGS_par%model_p, SGS_par%filter_p,         &
+     &   (sgs_ctl, SGS_par%model_p, SGS_par%filter_p,                   &
      &    MHD_files%Csim_file_IO, SGS_par%i_step_sgs_coefs)
       call s_set_control_SGS_commute                                    &
-     &   (SGS_par%model_p, model_ctl%sgs_ctl, SGS_par%commute_p,        &
+     &   (SGS_par%model_p, sgs_ctl, SGS_par%commute_p,                  &
      &    MHD_files%Cdiff_file_IO)
 !
       call set_control_SPH_SGS_filters                                  &
-     &   (model_ctl%sgs_ctl, SGS_par%model_p, dynamic_SPH)
+     &   (sgs_ctl, SGS_par%model_p, dynamic_SPH)
 !
 !   set parameters for data files
 !

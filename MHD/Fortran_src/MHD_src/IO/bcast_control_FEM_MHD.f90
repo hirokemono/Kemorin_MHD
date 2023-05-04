@@ -74,7 +74,8 @@
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%plt)
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%org_plt)
 !
-      call bcast_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
+      call bcast_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl,               &
+     &                             FEM_MHD_ctl%sgs_ctl)
       call bcast_fem_mhd_control_ctl(FEM_MHD_ctl%fmctl_ctl)
 !
       call bcast_node_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)

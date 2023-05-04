@@ -36,6 +36,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_SGS_MHD_model
       use t_ctl_data_FEM_MHD_control
+      use t_ctl_data_SGS_model
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
@@ -61,10 +62,12 @@
         type(mhd_model_control) :: model_ctl
 !>        Control structure for MHD/control
         type(fem_mhd_control_control) :: fmctl_ctl
+!>        Structures for SGS controls
+        type(SGS_model_control) :: sgs_ctl
 !
 !>        Structure for spectr monitoring control
         type(sph_monitor_control) :: smonitor_ctl
-!>        Structure for monitoring plave list
+!>        Structure for monitoring slave list
         type(node_monitor_control) :: nmtr_ctl
 !
         integer(kind = kint) :: i_mhd_ctl = 0
@@ -193,8 +196,8 @@
         call read_control_platforms                                     &
      &     (id_control, hd_org_data, FEM_MHD_ctl%org_plt, c_buf)
 !
-        call read_sph_sgs_mhd_model                                     &
-     &     (id_control, hd_model, FEM_MHD_ctl%model_ctl, c_buf)
+        call read_sph_sgs_mhd_model(id_control, hd_model,               &
+     &      FEM_MHD_ctl%model_ctl, FEM_MHD_ctl%sgs_ctl, c_buf)
         call read_fem_mhd_control                                       &
      &     (id_control, hd_control, FEM_MHD_ctl%fmctl_ctl, c_buf)
 !
@@ -235,8 +238,8 @@
       call write_control_platforms                                      &
      &   (id_control, hd_org_data, FEM_MHD_ctl%org_plt, level)
 !
-      call write_sph_sgs_mhd_model                                      &
-     &   (id_control, hd_model, FEM_MHD_ctl%model_ctl, level)
+      call write_sph_sgs_mhd_model(id_control, hd_model,                &
+     &    FEM_MHD_ctl%model_ctl, FEM_MHD_ctl%sgs_ctl, level)
       call write_fem_mhd_control                                        &
      &   (id_control, hd_control, FEM_MHD_ctl%fmctl_ctl, level)
 !
@@ -260,7 +263,8 @@
       call reset_control_platforms(FEM_MHD_ctl%plt)
       call reset_control_platforms(FEM_MHD_ctl%org_plt)
 !
-      call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
+      call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl,             &
+     &                               FEM_MHD_ctl%sgs_ctl)
       call dealloc_fem_mhd_control(FEM_MHD_ctl%fmctl_ctl)
 !
       call dealloc_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
