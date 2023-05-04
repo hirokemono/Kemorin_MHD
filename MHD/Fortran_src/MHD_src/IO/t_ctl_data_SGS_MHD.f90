@@ -24,6 +24,7 @@
 !!        type(sph_sgs_mhd_control), intent(in) :: MHD_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
+!!      subroutine dealloc_all_sph_sgs_mhd_ctl(MHD_ctl)
 !!      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !!         type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!@endverbatim
@@ -221,6 +222,22 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine dealloc_all_sph_sgs_mhd_ctl(MHD_ctl)
+!
+      use t_ctl_data_SPH_MHD_control
+!
+      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+!
+      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl%new_plt)
+      call dealloc_viz_controls(MHD_ctl%viz_ctls)
+      call dealloc_dynamo_viz_control(MHD_ctl%zm_ctls)
+!
+      MHD_ctl%i_mhd_ctl = 0
+!
+      end subroutine dealloc_all_sph_sgs_mhd_ctl
+!
+!   --------------------------------------------------------------------
+!
       subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
       use t_ctl_data_SPH_MHD_control
@@ -230,7 +247,6 @@
 !
       call reset_control_platforms(MHD_ctl%plt)
       call reset_control_platforms(MHD_ctl%org_plt)
-      call reset_control_platforms(MHD_ctl%new_plt)
 !
       call dealloc_sph_sgs_mhd_model(MHD_ctl%model_ctl)
       call reset_sph_mhd_control(MHD_ctl%smctl_ctl)
@@ -239,9 +255,6 @@
 !
       call dealloc_monitor_data_ctl(MHD_ctl%nmtr_ctl)
       call dealloc_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
-!
-      call dealloc_viz_controls(MHD_ctl%viz_ctls)
-      call dealloc_dynamo_viz_control(MHD_ctl%zm_ctls)
 !
       MHD_ctl%i_mhd_ctl = 0
 !
