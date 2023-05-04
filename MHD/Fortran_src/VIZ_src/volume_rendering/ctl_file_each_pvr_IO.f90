@@ -17,8 +17,8 @@
 !!        character(len = kchara), intent(inout) :: fname_pvr_ctl
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine sel_write_control_pvr(id_control, fname_pvr_ctl,     &
-!!     &          hd_pvr_ctl, pvr_ctl_type, level)
+!!      subroutine sel_write_control_pvr(id_control, hd_pvr_ctl,        &
+!!     &          fname_pvr_ctl, pvr_ctl_type, level)
 !!      subroutine write_control_pvr_file(id_control, fname_pvr_ctl,    &
 !!     &          hd_pvr_ctl, pvr_ctl_type)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -132,8 +132,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_control_pvr(id_control, fname_pvr_ctl,      &
-     &          hd_pvr_ctl, pvr_ctl_type, level)
+      subroutine sel_write_control_pvr(id_control, hd_pvr_ctl,          &
+     &          fname_pvr_ctl, pvr_ctl_type, level)
 !
       use ctl_data_each_pvr_IO
       use write_control_elements

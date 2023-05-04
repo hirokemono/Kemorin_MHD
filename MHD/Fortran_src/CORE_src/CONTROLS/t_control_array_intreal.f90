@@ -11,7 +11,7 @@
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int_real_item), intent(inout) :: ir_item
 !!      subroutine write_intreal_ctl_type                               &
-!!     &         (id_file, level, label, ir_item)
+!!     &         (id_file, level, maxlen, label, ir_item)
 !!        type(read_int_real_item), intent(in) :: ir_item
 !!      subroutine copy_intreal_ctl(org_ir, new_ir)
 !!        type(read_int_real_item), intent(in) :: org_ir
@@ -100,18 +100,18 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_intreal_ctl_type                                 &
-     &         (id_file, level, label, ir_item)
+     &         (id_file, level, maxlen, label, ir_item)
 !
       use write_control_elements
 !
-      integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: id_file, level, maxlen
       character(len=kchara), intent(in) :: label
       type(read_int_real_item), intent(in) :: ir_item
 !
 !
       if(ir_item%iflag .eq. 0) return
 !
-      call write_int_real_ctl_item(id_file, level, label,               &
+      call write_int_real_ctl_item(id_file, level, maxlen, label,       &
      &    ir_item%intvalue, ir_item%realvalue)
 !
        end subroutine write_intreal_ctl_type
@@ -217,7 +217,8 @@
 !
       level = write_array_flag_for_ctl(id_control, level, label)
       do i = 1, array_ir%num
-        call write_int_real_ctl_item(id_control, level, label,          &
+        call write_int_real_ctl_item                                    &
+     &     (id_control, level, len_trim(label), label,                  &
      &      array_ir%ivec(i), array_ir%vect(i))
       end do
       level = write_end_array_flag_for_ctl(id_control, level, label)

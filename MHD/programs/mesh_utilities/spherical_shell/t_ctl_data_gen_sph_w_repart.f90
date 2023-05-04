@@ -13,6 +13,8 @@
 !!@verbatim
 !!      subroutine read_ctl_file_gen_sph_w_repart(file_name,            &
 !!     &                                          gen_SPH_wP_c)
+!!      subroutine write_ctl_file_gen_sph_w_repart(file_name,           &
+!!     &                                           gen_SPH_wP_c)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
 !!@endverbatim
@@ -22,7 +24,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use calypso_mpi
       use skip_comment_f
 !
       use t_read_control_elements
@@ -76,7 +77,8 @@
      &                    :: hd_lic_partition = 'LIC_repartition_ctl'
 !
       private :: read_ctl_data_gen_sph_w_repart
-      private :: bcast_ctl_data_gen_sph_w_repart
+      private :: read_viz_repart_ctl_only, write_viz_repart_ctl_only
+      private :: write_ctl_data_gen_sph_w_repart
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,22 +95,45 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-        open(control_file_code, file = file_name, status='old' )
+      open(control_file_code, file = file_name, status='old' )
 !
-        do
-          call load_one_line_from_control(control_file_code, c_buf1)
-          call read_ctl_data_gen_sph_w_repart                           &
-     &       (control_file_code, hd_mhd_ctl, gen_SPH_wP_c, c_buf1)
-          if(gen_SPH_wP_c%i_sph_mesh_ctl .gt. 0) exit
-        end do
+      do
+        call load_one_line_from_control(control_file_code, c_buf1)
+        call read_ctl_data_gen_sph_w_repart                             &
+     &     (control_file_code, hd_mhd_ctl, gen_SPH_wP_c, c_buf1)
+        if(gen_SPH_wP_c%i_sph_mesh_ctl .gt. 0) exit
+      end do
 !
-        close(control_file_code)
-      end if
-!
-      call bcast_ctl_data_gen_sph_w_repart(gen_SPH_wP_c)
+      close(control_file_code)
 !
       end subroutine read_ctl_file_gen_sph_w_repart
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_ctl_file_gen_sph_w_repart(file_name,             &
+     &                                           gen_SPH_wP_c)
+!
+      use delete_data_files
+!
+      character(len=kchara), intent(in) :: file_name
+      type(ctl_data_gen_sph_w_repart), intent(in) :: gen_SPH_wP_c
+!
+      integer(kind = kint) :: level1
+!
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      write(*,*) 'Write control file: ', trim(file_name)
+      level1 = 0
+      open(control_file_code, file = file_name, status='old' )
+      call write_ctl_data_gen_sph_w_repart                              &
+     &   (control_file_code, hd_mhd_ctl, gen_SPH_wP_c, level1)
+      close(control_file_code)
+!
+      end subroutine write_ctl_file_gen_sph_w_repart
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -143,6 +168,37 @@
 !
       end subroutine read_ctl_data_gen_sph_w_repart
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine write_ctl_data_gen_sph_w_repart                        &
+     &         (id_control, hd_block, gen_SPH_wP_c, level)
+!
+      use ctl_data_platforms_IO
+      use ctl_file_gen_sph_shell_IO
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(ctl_data_gen_sph_w_repart), intent(in) :: gen_SPH_wP_c
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(gen_SPH_wP_c%i_sph_mesh_ctl .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_platforms                                      &
+     &   (id_control, hd_platform, gen_SPH_wP_c%plt, level)
+      call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
+     &    gen_SPH_wP_c%fname_psph_ctl, gen_SPH_wP_c%psph_ctl, level)
+      call write_viz_repart_ctl_only(id_control, hd_viz_control,        &
+     &                               gen_SPH_wP_c, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_ctl_data_gen_sph_w_repart
+!
+!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_viz_repart_ctl_only                               &
@@ -154,7 +210,6 @@
 !
       integer(kind = kint), intent(in) :: id_control 
       character(len=kchara), intent(in) :: hd_block
-!
       type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
       type(buffer_for_control), intent(inout)  :: c_buf
 !
@@ -178,33 +233,31 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_ctl_data_gen_sph_w_repart(gen_SPH_wP_c)
+      subroutine write_viz_repart_ctl_only                              &
+     &         (id_control, hd_block, gen_SPH_wP_c, level)
 !
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use bcast_control_arrays
-      use bcast_4_platform_ctl
-      use bcast_4_sphere_ctl
-      use transfer_to_long_integers
+      use ctl_file_volume_repart_IO
+      use write_control_elements
 !
-      type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
+      integer(kind = kint), intent(in) :: id_control 
+      character(len=kchara), intent(in) :: hd_block
+      type(ctl_data_gen_sph_w_repart), intent(in) :: gen_SPH_wP_c
+      integer(kind = kint), intent(inout) :: level
 !
 !
-      call bcast_ctl_data_4_platform(gen_SPH_wP_c%plt)
-      call bcast_parallel_shell_ctl(gen_SPH_wP_c%psph_ctl)
-      call bcast_control_vol_repart(gen_SPH_wP_c%repart_ctl)
+      if(gen_SPH_wP_c%i_viz_control .le. 0) return
 !
-      call calypso_mpi_bcast_one_int(gen_SPH_wP_c%i_viz_control,  0)
-      call calypso_mpi_bcast_one_int(gen_SPH_wP_c%i_sph_mesh_ctl, 0)
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-      call calypso_mpi_bcast_character                                  &
-     &   (gen_SPH_wP_c%fname_vol_repart_ctl, cast_long(kchara), 0)
-      call calypso_mpi_bcast_character                                  &
-     &   (gen_SPH_wP_c%fname_psph_ctl, cast_long(kchara), 0)
+      call sel_write_ctl_file_vol_repart(id_control, hd_viz_partition,  &
+     &    gen_SPH_wP_c%fname_vol_repart_ctl, gen_SPH_wP_c%repart_ctl,   &
+     &    level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
-      end subroutine bcast_ctl_data_gen_sph_w_repart
+      end subroutine write_viz_repart_ctl_only
 !
-! ----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine dealloc_sph_shell_define_ctl(gen_SPH_wP_c)
 !

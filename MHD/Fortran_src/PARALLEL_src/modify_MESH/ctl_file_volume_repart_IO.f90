@@ -16,8 +16,8 @@
 !!        character(len=kchara), intent(inout) :: file_name
 !!        type(viz_repartition_ctl), intent(inout) :: viz_repart_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine sel_write_ctl_file_vol_repart(id_control, file_name, &
-!!     &          hd_block, viz_repart_c, level)
+!!      subroutine sel_write_ctl_file_vol_repart(id_control, hd_block,  &
+!!     &          file_name, viz_repart_c, level)
 !!      subroutine write_ctl_file_vol_repart(id_control, file_name,     &
 !!     &                                     hd_block, viz_repart_c)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -62,7 +62,6 @@
       use t_ctl_data_volume_repart
 !
       implicit  none
-!
 !
 !   --------------------------------------------------------------------
 !
@@ -129,8 +128,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sel_write_ctl_file_vol_repart(id_control, file_name,   &
-     &          hd_block, viz_repart_c, level)
+      subroutine sel_write_ctl_file_vol_repart(id_control, hd_block,    &
+     &          file_name, viz_repart_c, level)
 !
       use write_control_elements
 !

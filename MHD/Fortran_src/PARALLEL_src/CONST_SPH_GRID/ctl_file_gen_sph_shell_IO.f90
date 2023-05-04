@@ -18,7 +18,7 @@
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
 !!      subroutine sel_write_ctl_gen_shell_grids                        &
-!!     &         (id_control, file_name, hd_block, psph_ctl, level)
+!!     &         (id_control, hd_block, file_name, psph_ctl, level)
 !!      subroutine write_ctl_file_gen_shell_grids(id_control, file_name,&
 !!     &                                          hd_block, psph_ctl)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -144,7 +144,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine sel_write_ctl_gen_shell_grids                          &
-     &         (id_control, file_name, hd_block, psph_ctl, level)
+     &         (id_control, hd_block, file_name, psph_ctl, level)
 !
       use write_control_elements
 !

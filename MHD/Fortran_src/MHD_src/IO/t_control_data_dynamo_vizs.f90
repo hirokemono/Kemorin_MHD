@@ -19,7 +19,6 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine bcast_dynamo_viz_control(zm_ctls)
 !!      subroutine dealloc_dynamo_viz_control(zm_ctls)
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!
@@ -44,7 +43,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use calypso_mpi
       use t_control_data_sections
       use t_ctl_data_crust_filter
 !
@@ -145,21 +143,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_dynamo_viz_control(zm_ctls)
-!
-      use bcast_section_control_data
-!
-      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
-!
-!
-      call bcast_files_4_psf_ctl(zm_ctls%zm_psf_ctls)
-      call bcast_files_4_psf_ctl(zm_ctls%zRMS_psf_ctls)
-      call bcast_crustal_filtering_ctl(zm_ctls%crust_filter_ctl)
-!
-      end subroutine bcast_dynamo_viz_control
-!
-!   --------------------------------------------------------------------
-!
       subroutine dealloc_dynamo_viz_control(zm_ctls)
 !
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
@@ -218,9 +201,8 @@
 !
 !
       if(psf_ctls%num_psf_ctl .gt. 0) return
-      call sel_write_control_4_psf_file                                 &
-     &   (id_control, psf_ctls%fname_psf_ctl(1),                        &
-     &    hd_section, psf_ctls%psf_ctl_struct(1), level)
+      call sel_write_control_4_psf_file(id_control, hd_section,         &
+     &    psf_ctls%fname_psf_ctl(1), psf_ctls%psf_ctl_struct(1), level)
 !
       end subroutine write_single_section_ctl
 !

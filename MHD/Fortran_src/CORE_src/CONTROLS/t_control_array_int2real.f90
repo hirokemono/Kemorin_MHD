@@ -11,7 +11,7 @@
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int2_real_item), intent(inout) :: i2r_item
 !!      subroutine write_int2real_ctl_type                              &
-!!     &         (id_file, level, label, i2r_item)
+!!     &         (id_file, level, maxlen, label, i2r_item)
 !!        type(read_int2_real_item), intent(in) :: i2r_item
 !!      subroutine copy_int2real_ctl(org_i2r, new_i2r)
 !!        type(read_int2_real_item), intent(in) :: org_i2r
@@ -102,18 +102,18 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_int2real_ctl_type                                &
-     &         (id_file, level, label, i2r_item)
+     &         (id_file, level, maxlen, label, i2r_item)
 !
       use write_control_elements
 !
-      integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: id_file, level, maxlen
       character(len=kchara), intent(in) :: label
       type(read_int2_real_item), intent(in) :: i2r_item
 !
 !
       if(i2r_item%iflag .eq. 0) return
 !
-      call write_i2_r_ctl_item(id_file, level, label,                   &
+      call write_i2_r_ctl_item(id_file, level, maxlen, label,           &
      &    i2r_item%intvalue(1),  i2r_item%intvalue(2),                  &
      &    i2r_item%realvalue)
 !
@@ -222,7 +222,8 @@
 !
       level = write_array_flag_for_ctl(id_control, level, label)
       do i = 1, array_i2r%num
-        call write_i2_r_ctl_item(id_control, level, label,              &
+        call write_i2_r_ctl_item                                        &
+     &     (id_control, level, len_trim(label), label,                  &
      &      array_i2r%int1(i), array_i2r%int2(i), array_i2r%vect(i))
       end do
       level = write_end_array_flag_for_ctl(id_control, level, label)

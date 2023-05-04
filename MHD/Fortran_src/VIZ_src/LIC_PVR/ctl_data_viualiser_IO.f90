@@ -288,9 +288,8 @@
 !
       write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
-      call sel_write_ctl_file_vol_repart                                &
-     &   (id_control, viz_ctls%fname_vol_repart_ctl,                    &
-     &    hd_viz_partition, viz_ctls%repart_ctl, level)
+      call sel_write_ctl_file_vol_repart(id_control, hd_viz_partition,  &
+     &    viz_ctls%fname_vol_repart_ctl, viz_ctls%repart_ctl, level)
 !
       write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &

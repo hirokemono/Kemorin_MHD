@@ -22,7 +22,8 @@ MOD_GEN_SPH_W_LIC = \
 main_gen_sph_w_repart.o \
 analyzer_gen_sph_w_repart.o \
 \
-t_ctl_data_gen_sph_w_repart.o
+t_ctl_data_gen_sph_w_repart.o \
+bcast_ctl_gen_sph_repart.o
 
 MOD_CHECK_SPH_GRID = \
 main_check_sph_grids.o \

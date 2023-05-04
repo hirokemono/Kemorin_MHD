@@ -21,8 +21,8 @@
 !!
 !!      subroutine write_files_4_iso_ctl                                &
 !!     &         (id_control, hd_block, iso_ctls, level)
-!!      subroutine sel_write_control_4_iso_file(id_control, file_name,  &
-!!     &          hd_block, iso_ctl_struct, level)
+!!      subroutine sel_write_control_4_iso_file(id_control, hd_block,   &
+!!     &          file_name, iso_ctl_struct, level)
 !!      subroutine write_control_4_iso_file                             &
 !!     &         (id_control, file_name, hd_block, iso_ctl_struct)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -182,8 +182,8 @@
       do i = 1, iso_ctls%num_iso_ctl
         write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i
         call sel_write_control_4_iso_file                               &
-     &     (id_control, iso_ctls%fname_iso_ctl(i),                      &
-     &      hd_block, iso_ctls%iso_ctl_struct(i), level)
+     &     (id_control, hd_block, iso_ctls%fname_iso_ctl(i),            &
+     &      iso_ctls%iso_ctl_struct(i), level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level, hd_block)
 !
@@ -191,8 +191,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sel_write_control_4_iso_file(id_control, file_name,    &
-     &          hd_block, iso_ctl_struct, level)
+      subroutine sel_write_control_4_iso_file(id_control, hd_block,     &
+     &          file_name, iso_ctl_struct, level)
 !
       use t_read_control_elements
       use write_control_elements

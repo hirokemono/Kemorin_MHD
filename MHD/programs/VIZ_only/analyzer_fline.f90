@@ -46,6 +46,7 @@
       subroutine initialize_fline
 !
       use t_control_data_vizs
+      use bcast_control_four_vizs
 !
       integer(kind = kint) :: ierr
 !
@@ -53,7 +54,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_four_vizs'
-      call read_control_file_four_vizs(vizs_ctl6)
+      call load_control_file_four_vizs(vizs_ctl6)
       call set_ctl_params_four_vizs(vizs_ctl6, FEM_viz6, t_VIZ6, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)

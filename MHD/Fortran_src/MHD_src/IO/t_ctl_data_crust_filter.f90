@@ -19,8 +19,8 @@
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(clust_filtering_ctl), intent(in) :: crust_filter_c
 !!        integer(kind = kint), intent(inout) :: level
-!!      subroutine bcast_crustal_filtering_ctl(crust_filter_c)
 !!      subroutine reset_crustal_filtering_ctl(crust_filter_c)
+!!        type(clust_filtering_ctl), intent(inout) :: crust_filter_c
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin dynamo_vizs_control
@@ -123,22 +123,6 @@
       end subroutine write_crustal_filtering_ctl
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine bcast_crustal_filtering_ctl(crust_filter_c)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(clust_filtering_ctl), intent(inout) :: crust_filter_c
-!
-!
-      call bcast_ctl_type_i1(crust_filter_c%crust_truncation_ctl)
-      call calypso_mpi_bcast_one_int                                    &
-     &   (crust_filter_c%i_crustal_filtering, 0)
-!
-      end subroutine bcast_crustal_filtering_ctl
-!
-!   --------------------------------------------------------------------
 !
       subroutine reset_crustal_filtering_ctl(crust_filter_c)
 !

@@ -21,7 +21,6 @@
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine dealloc_ele_area_grp_ctl(earea_ctl)
-!!      subroutine bcast_mhd_layer_ctl(earea_ctl)
 !!        type(mhd_evo_area_control), intent(inout) :: earea_ctl
 !!
 !! ----------------------------------------------------------------------
@@ -146,23 +145,6 @@
       end subroutine write_mhd_layer_ctl
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_mhd_layer_ctl(earea_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(mhd_evo_area_control), intent(inout) :: earea_ctl
-!
-!
-      call bcast_ctl_array_c1(earea_ctl%evo_fluid_group_ctl)
-      call bcast_ctl_array_c1(earea_ctl%evo_conduct_group_ctl)
-!
-      call calypso_mpi_bcast_one_int(earea_ctl%i_layers_ctl, 0)
-!
-      end subroutine bcast_mhd_layer_ctl
-!
 !   --------------------------------------------------------------------
 !
       subroutine dealloc_ele_area_grp_ctl(earea_ctl)

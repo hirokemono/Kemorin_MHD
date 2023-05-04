@@ -63,6 +63,7 @@
       subroutine init_gen_sph_grids_w_repart
 !
       use m_error_IDs
+      use bcast_ctl_gen_sph_repart
 !
       integer(kind = kint) :: ierr = 0
 !
@@ -73,7 +74,7 @@
       call elpsed_label_4_sleeve_ext
 !
       call start_elapsed_time(ied_total_elapsed)
-      call read_ctl_file_gen_sph_w_repart(control_file_name,            &
+      call load_ctl_file_gen_sph_w_repart(control_file_name,            &
      &                                    gen_SPH_wP_c1)
 !
       call set_control_4_gen_shell_grids                                &

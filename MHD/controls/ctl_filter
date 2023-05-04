@@ -59,7 +59,7 @@ begin const_filter
     minimum_components        11
     ordering_list_ctl      distance_ratio
     minimum_det_ctl        1.0e+4
-    maximum_rms_ctl        2.0e+0
+    maximum_rms_coef_ctl   2.0e+0
 !
     filter_correction_mode    OFF
     fixed_points_mode         OFF

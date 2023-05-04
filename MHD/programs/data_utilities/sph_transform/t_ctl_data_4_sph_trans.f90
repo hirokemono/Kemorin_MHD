@@ -1,16 +1,31 @@
+!>@file   t_ctl_data_4_sph_trans.f90
+!!@brief  module t_ctl_data_4_sph_trans
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2011
 !
-!      module t_ctl_data_4_sph_trans
-!
-!        programmed by H.Matsui on Oct., 2007
-!
-!!      subroutine read_control_data_sph_trans(spt_ctl)
-!!      subroutine dealloc_sph_trans_control_data(spt_ctl)
+!> @brief Control data structure for visualization controls
+!!
+!!@verbatim
+!!      subroutine read_sph_trans_params_ctl                            &
+!!     &         (id_control, hd_block, spt_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
 !!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_sph_trans_params_ctl                           &
+!!     &         (id_control, hd_block, spt_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(spherical_transform_util_ctl), intent(in) :: spt_ctl
+!!        integer(kind = kint), intent(inout) :: level
+!!      subroutine reset_sph_trans_params_ctl(spt_ctl)
+!!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
+!!@endverbatim
 !
       module t_ctl_data_4_sph_trans
 !
       use m_precision
-      use calypso_mpi
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_platforms
@@ -24,9 +39,6 @@
       use skip_comment_f
 !
       implicit  none
-!
-      integer (kind = kint) :: control_file_code = 13
-      character (len = kchara) :: control_file_name='ctl_sph_transform'
 !
       type spherical_transform_util_ctl
 !>        Structure for file names
@@ -67,32 +79,6 @@
         integer(kind=kint) :: i_sph_trans_params = 0
       end type spherical_transform_util_ctl
 !
-!   Top level
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_sph_trans_ctl = 'spherical_transform'
-!
-!   1st level
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_sph_trans_model =  'model'
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_sph_trans_params = 'sph_transform_ctl'
-
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_platform = 'data_files_def'
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_org_data = 'org_data_files_def'
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_FEM_mesh = 'FEM_mesh_ctl'
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_phys_values =  'phys_values_ctl'
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_time_step = 'time_step_ctl'
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_sph_shell = 'spherical_shell_ctl'
-!
 !   2nd level
 !
       character(len=kchara), parameter, private                         &
@@ -116,206 +102,10 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_gauss_file_name = 'sph_gauss_coefs_head_ctl'
 !
-      character(len=kchara), parameter                                  &
-     &                    :: hd_viz_control = 'visual_control'
-!
-      private :: control_file_code, control_file_name
-      private :: hd_viz_control
-!
-      private :: read_sph_trans_control_data
-      private :: bcast_sph_trans_control_data
-!
-      private :: read_sph_trans_model_ctl, read_sph_trans_params_ctl
-      private :: bcast_sph_trans_model_ctl, reset_sph_trans_model_ctl
-      private :: bcast_sph_trans_params_ctl, reset_sph_trans_params_ctl
-!
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine read_control_data_sph_trans(spt_ctl)
-!
-      use viz_step_ctls_to_time_ctl
-!
-      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      if(my_rank .eq. 0) then
-        open (control_file_code, file = control_file_name)
-        do
-          call load_one_line_from_control(control_file_code, c_buf1)
-          call read_sph_trans_control_data                              &
-     &       (control_file_code, hd_sph_trans_ctl, spt_ctl, c_buf1)
-          if(spt_ctl%i_sph_trans_ctl .gt. 0) exit
-        end do
-        close(control_file_code)
-!
-        call s_viz_step_ctls_to_time_ctl                                &
-     &     (spt_ctl%viz_ctls, spt_ctl%t_ctl)
-        call add_fields_4_vizs_to_fld_ctl(spt_ctl%viz_ctls,             &
-     &      spt_ctl%fld_ctl%field_ctl)
-      end if
-!
-      call bcast_sph_trans_control_data(spt_ctl)
-!
-      end subroutine read_control_data_sph_trans
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_sph_trans_control_data                            &
-     &         (id_control, hd_block, spt_ctl, c_buf)
-!
-      use ctl_data_platforms_IO
-      use ctl_data_viualiser_IO
-      use ctl_file_gen_sph_shell_IO
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(spt_ctl%i_sph_trans_ctl .gt. 0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-        call read_control_platforms                                     &
-     &     (id_control, hd_platform, spt_ctl%plt, c_buf)
-        call read_control_platforms                                     &
-     &     (id_control, hd_org_data, spt_ctl%org_plt, c_buf)
-        call read_FEM_mesh_control                                      &
-     &     (id_control, hd_FEM_mesh, spt_ctl%Fmesh_ctl, c_buf)
-!
-        call sel_read_ctl_gen_shell_grids(id_control, hd_sph_shell,     &
-     &      spt_ctl%fname_psph_ctl, spt_ctl%psph_ctl, c_buf)
-!
-        call read_sph_trans_model_ctl                                   &
-     &     (id_control, hd_sph_trans_model, spt_ctl, c_buf)
-        call read_sph_trans_params_ctl                                  &
-     &     (id_control, hd_sph_trans_params, spt_ctl, c_buf)
-!
-        call s_read_viz_controls(id_control, hd_viz_control,            &
-     &                           spt_ctl%viz_ctls, c_buf)
-      end do
-      spt_ctl%i_sph_trans_ctl = 1
-!
-      end subroutine read_sph_trans_control_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine bcast_sph_trans_control_data(spt_ctl)
-!
-      use calypso_mpi_int
-      use calypso_mpi_char
-      use transfer_to_long_integers
-      use bcast_4_field_ctl
-      use bcast_4_time_step_ctl
-      use bcast_4_platform_ctl
-!
-      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-!
-!
-      call bcast_sph_trans_model_ctl(spt_ctl)
-      call bcast_sph_trans_params_ctl(spt_ctl)
-!
-      call bcast_ctl_data_4_platform(spt_ctl%plt)
-      call bcast_ctl_data_4_platform(spt_ctl%org_plt)
-      call bcast_FEM_mesh_control(spt_ctl%Fmesh_ctl)
-      call bcast_viz_controls(spt_ctl%viz_ctls)
-!
-      call calypso_mpi_bcast_one_int(spt_ctl%i_sph_trans_ctl, 0)
-      call calypso_mpi_bcast_character                                  &
-     &   (spt_ctl%fname_psph_ctl, cast_long(kchara), 0)
-!
-      end subroutine bcast_sph_trans_control_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_sph_trans_control_data(spt_ctl)
-!
-      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-!
-!
-      call reset_sph_trans_model_ctl(spt_ctl)
-      call reset_sph_trans_params_ctl(spt_ctl)
-!
-      call reset_control_platforms(spt_ctl%plt)
-      call reset_control_platforms(spt_ctl%org_plt)
-      call reset_FEM_mesh_control(spt_ctl%Fmesh_ctl)
-!
-      spt_ctl%i_sph_trans_ctl = 0
-!
-      end subroutine dealloc_sph_trans_control_data
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine read_sph_trans_model_ctl                               &
-     &         (id_control, hd_block, spt_ctl, c_buf)
-!
-      use ctl_data_4_time_steps_IO
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(spt_ctl%i_sph_trans_model .gt. 0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-        call read_phys_data_control                                     &
-     &     (id_control, hd_phys_values, spt_ctl%fld_ctl, c_buf)
-        call read_control_time_step_data                                &
-     &     (id_control, hd_time_step, spt_ctl%t_ctl, c_buf)
-      end do
-      spt_ctl%i_sph_trans_model = 1
-!
-      end subroutine read_sph_trans_model_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine bcast_sph_trans_model_ctl(spt_ctl)
-!
-      use calypso_mpi_int
-      use bcast_4_field_ctl
-      use bcast_4_time_step_ctl
-!
-      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-!
-!
-      call bcast_phys_data_ctl(spt_ctl%fld_ctl)
-      call bcast_ctl_data_4_time_step(spt_ctl%t_ctl)
-!
-      call calypso_mpi_bcast_one_int(spt_ctl%i_sph_trans_model, 0)
-!
-      end subroutine bcast_sph_trans_model_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine reset_sph_trans_model_ctl(spt_ctl)
-!
-      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-!
-!
-      call dealloc_phys_control(spt_ctl%fld_ctl)
-!
-      spt_ctl%i_sph_trans_model = 0
-!
-      end subroutine reset_sph_trans_model_ctl
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine read_sph_trans_params_ctl                              &
@@ -362,30 +152,59 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine bcast_sph_trans_params_ctl(spt_ctl)
+      subroutine write_sph_trans_params_ctl                             &
+     &         (id_control, hd_block, spt_ctl, level)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
+      use write_control_elements
 !
-      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(spherical_transform_util_ctl), intent(in) :: spt_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
 !
 !
-      call bcast_ctl_type_i1(spt_ctl%legendre_vector_len_ctl)
+      if(spt_ctl%i_sph_trans_params .le. 0) return
 !
-      call bcast_ctl_type_c1(spt_ctl%zm_spec_file_head_ctl)
-      call bcast_ctl_type_c1(spt_ctl%zonal_udt_head_ctl)
-      call bcast_ctl_type_c1(spt_ctl%cmb_radial_grp_ctl)
-      call bcast_ctl_type_c1(spt_ctl%icb_radial_grp_ctl)
+      maxlen = len_trim(hd_zm_sph_spec_file)
+      maxlen = max(maxlen, len_trim(hd_zm_field_file))
+      maxlen = max(maxlen, len_trim(hd_gauss_file_name))
+      maxlen = max(maxlen, len_trim(hd_cmb_grp))
+      maxlen = max(maxlen, len_trim(hd_icb_grp))
+      maxlen = max(maxlen, len_trim(hd_import_mode))
+      maxlen = max(maxlen, len_trim(hd_FFT_package))
+      maxlen = max(maxlen, len_trim(hd_sph_transform_mode))
+      maxlen = max(maxlen, len_trim(hd_legendre_vect_len))
 !
-      call bcast_ctl_type_c1(spt_ctl%Legendre_trans_loop_ctl)
-      call bcast_ctl_type_c1(spt_ctl%FFT_lib_ctl)
-      call bcast_ctl_type_c1(spt_ctl%import_mode_ctl)
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-      call bcast_ctl_type_c1(spt_ctl%gauss_sph_fhead_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_zm_sph_spec_file, spt_ctl%zm_spec_file_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_zm_field_file, spt_ctl%zonal_udt_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_gauss_file_name, spt_ctl%gauss_sph_fhead_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_icb_grp, spt_ctl%icb_radial_grp_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_cmb_grp, spt_ctl%cmb_radial_grp_ctl)
 !
-      call calypso_mpi_bcast_one_int(spt_ctl%i_sph_trans_params, 0)
+      write(id_control,'(a1)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_import_mode, spt_ctl%import_mode_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_FFT_package, spt_ctl%FFT_lib_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_sph_transform_mode, spt_ctl%Legendre_trans_loop_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    hd_legendre_vect_len, spt_ctl%legendre_vector_len_ctl)
 !
-      end subroutine bcast_sph_trans_params_ctl
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_sph_trans_params_ctl
 !
 ! -----------------------------------------------------------------------
 !

@@ -20,7 +20,6 @@
 !!        type(mhd_evolution_control), intent(in) :: evo_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_mhd_time_evo_ctl(evo_ctl)
 !!      subroutine dealloc_t_evo_name_ctl(evo_ctl)
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!
@@ -131,22 +130,6 @@
       end subroutine write_mhd_time_evo_ctl
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_mhd_time_evo_ctl(evo_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(mhd_evolution_control), intent(inout) :: evo_ctl
-!
-!
-      call bcast_ctl_array_c1(evo_ctl%t_evo_field_ctl)
-!
-      call calypso_mpi_bcast_one_int(evo_ctl%i_time_evo, 0)
-!
-      end subroutine bcast_mhd_time_evo_ctl
-!
 !   --------------------------------------------------------------------
 !
       subroutine dealloc_t_evo_name_ctl(evo_ctl)

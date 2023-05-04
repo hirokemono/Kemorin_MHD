@@ -338,16 +338,15 @@
      &    hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
 !
       write(id_control,'(a1)') '!'
-      call sel_write_ctl_modelview_file                                 &
-     &   (id_control, pvr_ctl%fname_mat_ctl,                            &
-     &    hd_view_transform, pvr_ctl%mat, level)
+      call sel_write_ctl_modelview_file(id_control, hd_view_transform,  &
+     &    pvr_ctl%fname_mat_ctl, pvr_ctl%mat, level)
       call write_pvr_render_area_ctl(id_control, hd_plot_area,          &
      &    pvr_ctl%render_area_c, level)
 !
       write(id_control,'(a1)') '!'
       call sel_write_ctl_pvr_colormap_file                              &
-     &   (id_control, pvr_ctl%fname_cmap_cbar_c,                        &
-     &    hd_colormap_file, pvr_ctl%cmap_cbar_c, level)
+     &   (id_control, hd_colormap_file, pvr_ctl%fname_cmap_cbar_c,      &
+     &    pvr_ctl%cmap_cbar_c, level)
       call write_lighting_ctl(id_control, hd_pvr_lighting,              &
      &    pvr_ctl%light, level)
 !

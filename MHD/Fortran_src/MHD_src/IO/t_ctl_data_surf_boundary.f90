@@ -176,30 +176,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_bc_4_surf_ctl(sbc_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(surf_bc_control), intent(inout) :: sbc_ctl
-!
-!
-      call bcast_ctl_array_c2r(sbc_ctl%surf_bc_HF_ctl)
-      call bcast_ctl_array_c2r(sbc_ctl%surf_bc_ST_ctl)
-      call bcast_ctl_array_c2r(sbc_ctl%surf_bc_PN_ctl)
-      call bcast_ctl_array_c2r(sbc_ctl%surf_bc_BN_ctl)
-      call bcast_ctl_array_c2r(sbc_ctl%surf_bc_JN_ctl)
-      call bcast_ctl_array_c2r(sbc_ctl%surf_bc_AN_ctl)
-      call bcast_ctl_array_c2r(sbc_ctl%surf_bc_MPN_ctl)
-      call bcast_ctl_array_c2r(sbc_ctl%surf_bc_CF_ctl)
-      call bcast_ctl_array_c2r(sbc_ctl%surf_bc_INF_ctl)
-!
-      call calypso_mpi_bcast_one_int(sbc_ctl%i_bc_4_surf, 0)
-!
-      end subroutine bcast_bc_4_surf_ctl
-!
-!   --------------------------------------------------------------------
-!
       subroutine dealloc_bc_4_surf_ctl(sbc_ctl)
 !
       type(surf_bc_control), intent(inout) :: sbc_ctl

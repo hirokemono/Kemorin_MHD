@@ -3,12 +3,21 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!      subroutine read_control_data_sph_utils
+!!      subroutine dealloc_control_data_sph_utils(spu_ctl)
+!!        type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
+!!
+!!      subroutine read_sph_trans_model_ctl                             &
+!!     &         (id_control, hd_block, spu_ctl, c_buf)
+!!      subroutine write_sph_trans_model_ctl                            &
+!!     &         (id_control, hd_block, spu_ctl, level)
+!!      subroutine read_sph_trans_params_ctl                            &
+!!     &         (id_control, hd_block, spu_ctl, c_buf)
+!!      subroutine write_sph_trans_params_ctl                           &
+!!     &         (id_control, hd_block, spu_ctl, level)
 !
       module t_ctl_data_4_sph_utils
 !
       use m_precision
-      use calypso_mpi
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_platforms
@@ -21,9 +30,6 @@
       use skip_comment_f
 !
       implicit  none
-!
-      integer (kind = kint) :: control_file_code = 13
-      character (len = kchara) :: control_file_name='ctl_sph_transform'
 !
 !>      Structure of spherical shell utilities
       type spherical_spectr_data_util_ctl
@@ -54,31 +60,14 @@
         integer(kind = kint) :: i_sph_trans_params = 0
       end type spherical_spectr_data_util_ctl
 !
-!   Top level
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_sph_trans_ctl = 'spherical_transform'
-!
-!   1st level
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_sph_trans_model =  'model'
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_sph_trans_params = 'sph_transform_ctl'
-!
-!
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_platform = 'data_files_def'
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_org_data = 'org_data_files_def'
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_FEM_mesh = 'FEM_mesh_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_phys_values =  'phys_values_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_time_step = 'time_step_ctl'
       character(len=kchara), parameter, private                         &
-     &                    :: hd_pick_sph = 'sph_monitor_ctl'
+     &            ::   hd_buo_ratio =    'buoyancy_ratio_ctl'
+      character(len=kchara), parameter, private                         &
+     &            ::   hd_thermal_buo =  'thermal_buoyancy_ctl'
 !
 !   2nd level
 !
@@ -92,112 +81,12 @@
       character(len=kchara), parameter, private                         &
      &            ::  hd_tsph_esp_file  =  'ave_ene_spec_head_ctl'
 !
-      character(len=kchara), parameter, private                         &
-     &            ::   hd_buo_ratio =    'buoyancy_ratio_ctl'
-      character(len=kchara), parameter, private                         &
-     &            ::   hd_thermal_buo =  'thermal_buoyancy_ctl'
-!
-      private :: control_file_code, control_file_name
-      private :: read_sph_utils_control_data, read_sph_trans_params_ctl
-      private :: bcast_control_data_sph_utils
-      private :: read_sph_trans_model_ctl, bcast_sph_trans_model_ctl
       private :: dealloc_sph_trans_model_ctl
-      private :: bcast_sph_trans_params_ctl, reset_sph_trans_params_ctl
+      private :: reset_sph_trans_params_ctl
 !
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_control_data_sph_utils(spu_ctl)
-!
-      type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-     if(my_rank .eq. 0) then
-        open (control_file_code, file = control_file_name)
-!
-        do
-          call load_one_line_from_control(control_file_code, c_buf1)
-          call read_sph_utils_control_data                              &
-     &       (control_file_code, hd_sph_trans_ctl, spu_ctl, c_buf1)
-          if(spu_ctl%i_sph_trans_ctl .gt. 0) exit
-        end do
-        close(control_file_code)
-      end if
-!
-      call bcast_control_data_sph_utils(spu_ctl)
-!
-      end subroutine read_control_data_sph_utils
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_sph_utils_control_data                            &
-     &         (id_control, hd_block, spu_ctl, c_buf)
-!
-      use ctl_data_platforms_IO
-      use ctl_data_sph_monitor_IO
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(spu_ctl%i_sph_trans_ctl .gt. 0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-!
-        call read_control_platforms                                     &
-     &     (id_control, hd_platform, spu_ctl%plt, c_buf)
-        call read_control_platforms                                     &
-     &     (id_control, hd_org_data, spu_ctl%org_plt, c_buf)
-        call read_FEM_mesh_control                                      &
-     &     (id_control, hd_FEM_mesh, spu_ctl%Fmesh_ctl, c_buf)
-!
-        call read_sph_trans_model_ctl                                   &
-     &     (id_control, hd_sph_trans_model, spu_ctl, c_buf)
-        call read_sph_trans_params_ctl                                  &
-     &     (id_control, hd_sph_trans_params, spu_ctl, c_buf)
-!
-        call read_sph_monitoring_ctl                                    &
-     &     (id_control, hd_pick_sph, spu_ctl%smonitor_ctl, c_buf)
-      end do
-      spu_ctl%i_sph_trans_ctl = 1
-!
-      end subroutine read_sph_utils_control_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine bcast_control_data_sph_utils(spu_ctl)
-!
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-      use bcast_4_sph_monitor_ctl
-      use bcast_control_arrays
-!
-      type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
-!
-!
-      call bcast_ctl_data_4_platform(spu_ctl%plt)
-      call bcast_ctl_data_4_platform(spu_ctl%org_plt)
-      call bcast_FEM_mesh_control(spu_ctl%Fmesh_ctl)
-!
-      call bcast_sph_monitoring_ctl(spu_ctl%smonitor_ctl)
-!
-      call bcast_sph_trans_model_ctl(spu_ctl)
-      call bcast_sph_trans_params_ctl(spu_ctl)
-!
-      call calypso_mpi_bcast_one_int(spu_ctl%i_sph_trans_ctl, 0)
-!
-      end subroutine bcast_control_data_sph_utils
 !
 ! -----------------------------------------------------------------------
 !
@@ -255,25 +144,41 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine bcast_sph_trans_model_ctl(spu_ctl)
+      subroutine write_sph_trans_model_ctl                              &
+     &         (id_control, hd_block, spu_ctl, level)
 !
-      use calypso_mpi_int
-      use bcast_4_field_ctl
-      use bcast_4_time_step_ctl
-      use bcast_control_arrays
+      use ctl_data_4_time_steps_IO
+      use write_control_elements
 !
-      type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(spherical_spectr_data_util_ctl), intent(in) :: spu_ctl
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
 !
 !
-      call bcast_ctl_type_r1(spu_ctl%buoyancy_ratio_ctl)
-      call bcast_ctl_type_r1(spu_ctl%thermal_buoyancy_ctl)
+      if(spu_ctl%i_sph_trans_model .le. 0) return
 !
-      call bcast_phys_data_ctl(spu_ctl%fld_ctl)
-      call bcast_ctl_data_4_time_step(spu_ctl%tstep_ctl)
+      maxlen = len_trim(hd_buo_ratio)
+      maxlen = max(maxlen, len_trim(hd_thermal_buo))
 !
-      call calypso_mpi_bcast_one_int(spu_ctl%i_sph_trans_model, 0)
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-      end subroutine bcast_sph_trans_model_ctl
+      call write_phys_data_control                                      &
+     &   (id_control, hd_phys_values, spu_ctl%fld_ctl, level)
+      call write_control_time_step_data                                 &
+     &   (id_control, hd_time_step, spu_ctl%tstep_ctl, level)
+!
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_buo_ratio, spu_ctl%buoyancy_ratio_ctl)
+      call write_real_ctl_type(id_control, level, maxlen,               &
+     &    hd_thermal_buo, spu_ctl%thermal_buoyancy_ctl)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_sph_trans_model_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -325,22 +230,40 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine bcast_sph_trans_params_ctl(spu_ctl)
+      subroutine write_sph_trans_params_ctl                             &
+     &         (id_control, hd_block, spu_ctl, level)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
+      use write_control_elements
 !
-      type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(spherical_spectr_data_util_ctl), intent(in) :: spu_ctl
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
 !
 !
-      call bcast_ctl_type_c1(spu_ctl%zm_spec_file_head_ctl)
-      call bcast_ctl_type_c1(spu_ctl%tave_ene_spec_head_ctl)
-      call bcast_ctl_type_c1(spu_ctl%ene_spec_head_ctl)
-      call bcast_ctl_type_c1(spu_ctl%vol_ene_spec_head_ctl)
+      if(spu_ctl%i_sph_trans_params .le. 0) return
 !
-      call calypso_mpi_bcast_one_int(spu_ctl%i_sph_trans_params, 0)
+      maxlen = len_trim(hd_ene_spec_head)
+      maxlen = max(maxlen, len_trim(hd_vol_ene_spec_head))
+      maxlen = max(maxlen, len_trim(hd_zm_sph_spec_file))
+      maxlen = max(maxlen, len_trim(hd_tsph_esp_file))
 !
-      end subroutine bcast_sph_trans_params_ctl
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_ene_spec_head, spu_ctl%ene_spec_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_vol_ene_spec_head, spu_ctl%vol_ene_spec_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_zm_sph_spec_file, spu_ctl%zm_spec_file_head_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_tsph_esp_file, spu_ctl%tave_ene_spec_head_ctl)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_sph_trans_params_ctl
 !
 ! -----------------------------------------------------------------------
 !

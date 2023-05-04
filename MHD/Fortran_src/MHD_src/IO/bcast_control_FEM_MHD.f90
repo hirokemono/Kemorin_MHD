@@ -65,6 +65,7 @@
       use bcast_4_sphere_ctl
       use bcast_ctl_SGS_MHD_model
       use bcast_monitor_data_ctl
+      use bcast_control_data_vizs
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
@@ -92,6 +93,7 @@
       use bcast_4_time_step_ctl
       use bcast_4_solver_ctl
       use bcast_4_fem_int_pts_ctl
+      use bcast_ctl_data_mhd_time_rst
 !
       type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
 !

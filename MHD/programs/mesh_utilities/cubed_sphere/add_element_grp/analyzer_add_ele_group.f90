@@ -31,6 +31,7 @@
       use calypso_mpi
       use m_add_ele_grp_parameter
       use m_work_4_add_egrp_sph
+      use bcast_control_add_ele_grp
       use mpi_load_mesh_data
       use const_mesh_information
 !
@@ -40,7 +41,7 @@
 !
 !
 !
-      call read_control_add_elegrp(addgrp_c1)
+      call load_control_add_elegrp(addgrp_c1)
       call s_set_control_add_2d_egrp(addgrp_c1)
       call dealloc_control_add_elegrp(addgrp_c1)
 !

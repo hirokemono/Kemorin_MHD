@@ -44,6 +44,7 @@
       use m_ctl_params_4_prod_udt
       use t_ctl_data_product_udt
       use t_step_parameter
+      use bcast_ctl_file_product_udt
       use product_udt_fields
 !
       type(product_udt_ctl) :: prod_udt_c1
@@ -57,8 +58,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_prod_udt'
-      call read_control_4_prod_udt(prod_udt_c1)
+      if (iflag_debug.eq.1) write(*,*) 'load_control_4_prod_udt'
+      call load_control_4_prod_udt(prod_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
       call set_ctl_params_prod_udt(prod_udt_c1%pu_plt,                  &

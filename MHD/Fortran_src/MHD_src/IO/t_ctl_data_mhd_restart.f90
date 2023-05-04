@@ -129,21 +129,6 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_restart_ctl(mr_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(mhd_restart_control), intent(inout) :: mr_ctl
-!
-!
-      call bcast_ctl_type_c1(mr_ctl%restart_flag_ctl)
-      call calypso_mpi_bcast_one_int(mr_ctl%i_restart_file, 0)
-!
-      end subroutine bcast_restart_ctl
-!
-!   --------------------------------------------------------------------
-!
       subroutine reset_restart_ctl(mr_ctl)
 !
       type(mhd_restart_control), intent(inout) :: mr_ctl

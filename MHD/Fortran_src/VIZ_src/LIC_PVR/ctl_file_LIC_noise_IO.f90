@@ -17,7 +17,7 @@
 !!        type(cube_noise_ctl), intent(inout) :: noise_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine sel_write_cube_noise_ctl_file                        &
-!!     &         (id_control, file_name, hd_block, noise_ctl, level)
+!!     &         (id_control, hd_block, file_name, noise_ctl, level)
 !!      subroutine write_cube_noise_control_file(id_control, file_name, &
 !!     &                                         hd_block, noise_ctl)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -129,7 +129,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_write_cube_noise_ctl_file                          &
-     &         (id_control, file_name, hd_block, noise_ctl, level)
+     &         (id_control, hd_block, file_name, noise_ctl, level)
 !
       use write_control_elements
 !

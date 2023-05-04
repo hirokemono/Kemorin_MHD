@@ -49,7 +49,6 @@
       use t_control_array_character
       use t_control_array_real
       use skip_comment_f
-      use bcast_control_arrays
 !
       implicit  none
 !
@@ -140,22 +139,6 @@
       end subroutine write_takepiro_ctl
 !
 !   --------------------------------------------------------------------
-!
-      subroutine bcast_takepiro_ctl(takepiro_ctl)
-!
-      use calypso_mpi_int
-!
-      type(takepiro_model_control), intent(inout) :: takepiro_ctl
-!
-!
-      call bcast_ctl_type_r1(takepiro_ctl%stratified_sigma_ctl)
-      call bcast_ctl_type_r1(takepiro_ctl%stratified_width_ctl)
-      call bcast_ctl_type_r1(takepiro_ctl%stratified_outer_r_ctl)
-!
-      call calypso_mpi_bcast_one_int(takepiro_ctl%i_takepiro_t_ctl, 0)
-!
-      end subroutine bcast_takepiro_ctl
-!
 !   --------------------------------------------------------------------
 !
       subroutine reset_takepiro_ctl(takepiro_ctl)

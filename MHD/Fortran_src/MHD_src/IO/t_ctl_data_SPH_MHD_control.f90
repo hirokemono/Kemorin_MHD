@@ -24,7 +24,6 @@
 !!        type(sph_mhd_control_control), intent(in) :: smctl_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine bcast_sph_mhd_control(smctl_ctl)
 !!      subroutine reset_sph_mhd_control(smctl_ctl)
 !!        type(sph_mhd_control_control), intent(inout) :: smctl_ctl
 !!@endverbatim
@@ -33,7 +32,6 @@
 !
       use m_precision
 !
-      use calypso_mpi
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_time_steps
@@ -135,24 +133,6 @@
       end subroutine write_sph_mhd_control
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_sph_mhd_control(smctl_ctl)
-!
-      use calypso_mpi_int
-      use bcast_4_time_step_ctl
-!
-      type(sph_mhd_control_control), intent(inout) :: smctl_ctl
-!
-!
-      call bcast_restart_ctl(smctl_ctl%mrst_ctl)
-      call bcast_time_loop_ctl(smctl_ctl%mevo_ctl)
-      call bcast_ctl_data_4_time_step(smctl_ctl%tctl)
-!
-      call calypso_mpi_bcast_one_int(smctl_ctl%i_control, 0)
-!
-      end subroutine bcast_sph_mhd_control
-!
 !   --------------------------------------------------------------------
 !
       subroutine reset_sph_mhd_control(smctl_ctl)

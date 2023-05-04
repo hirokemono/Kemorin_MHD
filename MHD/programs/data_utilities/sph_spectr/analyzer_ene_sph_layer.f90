@@ -31,6 +31,7 @@
 !
       use m_ctl_params_sph_utils
       use parallel_load_data_4_sph
+      use bcast_ctl_data_4_sph_utils
       use set_field_data_w_SGS
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
@@ -39,8 +40,8 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_utils'
-      call read_control_data_sph_utils(spu_ctl1)
+      if (iflag_debug.gt.0) write(*,*) 'load_control_data_sph_utils'
+      call load_control_data_sph_utils(spu_ctl1)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
       call set_ctl_data_4_sph_utils                                     &

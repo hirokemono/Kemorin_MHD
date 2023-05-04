@@ -47,6 +47,7 @@
       subroutine init_analyzer
 !
       use calypso_mpi
+      use bcast_ctl_data_solver_test
       use set_control_solver_test
 !
       use crs_matrix_io
@@ -54,7 +55,7 @@
 !
 !C-- CNTL DATA
 
-      call read_control_4_solver_test(solvertest_c1)
+      call load_control_4_solver_test(solvertest_c1)
       call set_ctl_params_4_solver_test                                 &
      &   (solvertest_c1, mat_crs, CG_param_t, DJDS_param_t)
 !

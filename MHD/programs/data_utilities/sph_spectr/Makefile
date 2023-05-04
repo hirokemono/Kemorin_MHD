@@ -104,6 +104,8 @@ time_ave_sph_monitor_data.o
 MOD_TAVE_SPH_SPEC = \
 t_spheric_data_sph_spetr.o \
 t_ctl_data_4_sph_utils.o \
+ctl_file_sph_utils_IO.o \
+bcast_ctl_data_4_sph_utils.o \
 m_spheric_data_sph_spetr.o \
 m_ctl_params_sph_utils.o \
 \
@@ -114,6 +116,8 @@ main_time_ave_sph.o
 MOD_SPH_ENE_SPEC = \
 t_spheric_data_sph_spetr.o \
 t_ctl_data_4_sph_utils.o \
+ctl_file_sph_utils_IO.o \
+bcast_ctl_data_4_sph_utils.o \
 m_spheric_data_sph_spetr.o \
 m_ctl_params_sph_utils.o \
 \
@@ -123,6 +127,8 @@ main_ene_sph_shell.o
 MOD_SPH_ENE_LAYER = \
 t_spheric_data_sph_spetr.o \
 t_ctl_data_4_sph_utils.o \
+ctl_file_sph_utils_IO.o \
+bcast_ctl_data_4_sph_utils.o \
 m_spheric_data_sph_spetr.o \
 m_ctl_params_sph_utils.o \
 \
@@ -132,6 +138,8 @@ main_ene_sph_layer.o
 MOD_PICK_SPH_VOL_ENE = \
 t_spheric_data_sph_spetr.o \
 t_ctl_data_4_sph_utils.o \
+ctl_file_sph_utils_IO.o \
+bcast_ctl_data_4_sph_utils.o \
 m_spheric_data_sph_spetr.o \
 m_ctl_params_sph_utils.o \
 \
@@ -143,6 +151,8 @@ main_pick_rms_vol.o
 MOD_PICK_SPH_ENE = \
 t_spheric_data_sph_spetr.o \
 t_ctl_data_4_sph_utils.o \
+ctl_file_sph_utils_IO.o \
+bcast_ctl_data_4_sph_utils.o \
 m_spheric_data_sph_spetr.o \
 m_ctl_params_sph_utils.o \
 \
@@ -194,6 +204,8 @@ count_monitor_time_series.o
 
 MOD_PICK_SPH_SPEC = \
 t_ctl_data_4_sph_utils.o \
+bcast_ctl_data_4_sph_utils.o \
+ctl_file_sph_utils_IO.o \
 t_spheric_data_sph_spetr.o \
 m_spheric_data_sph_spetr.o \
 m_ctl_params_sph_utils.o \
@@ -204,6 +216,8 @@ main_pickup_mode_sph.o
 MOD_PICK_GAUSS_COEF = \
 t_spheric_data_sph_spetr.o \
 t_ctl_data_4_sph_utils.o \
+ctl_file_sph_utils_IO.o \
+bcast_ctl_data_4_sph_utils.o \
 m_spheric_data_sph_spetr.o \
 m_ctl_params_sph_utils.o \
 \
@@ -213,6 +227,8 @@ main_pickup_gauss_coefs.o
 MOD_RENAME_SPH_FLD =  \
 t_ctl_data_sph_data_utils.o \
 t_ctl_param_sph_data_utils.o \
+ctl_file_sph_data_utils_IO.o \
+bcast_control_sph_data_util.o \
 \
 analyzer_rename_sph_field.o \
 main_rename_sph_field.o
@@ -220,6 +236,8 @@ main_rename_sph_field.o
 MOD_DIFF_SPH_SPEC =  \
 t_ctl_data_sph_data_utils.o \
 t_ctl_param_sph_data_utils.o \
+ctl_file_sph_data_utils_IO.o \
+bcast_control_sph_data_util.o \
 \
 analyzer_diff_sph_spectr.o \
 main_diff_sph_spectr.o
@@ -227,6 +245,8 @@ main_diff_sph_spectr.o
 MOD_ZM_SPH_SPEC = \
 t_spheric_data_sph_spetr.o \
 t_ctl_data_4_sph_utils.o \
+ctl_file_sph_utils_IO.o \
+bcast_ctl_data_4_sph_utils.o \
 m_spheric_data_sph_spetr.o \
 m_ctl_params_sph_utils.o \
 \
