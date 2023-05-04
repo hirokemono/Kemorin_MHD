@@ -18,8 +18,8 @@
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
 !!        type(buffer_for_control), intent(inout) :: c_buf
 !!
-!!      subroutine sel_write_control_lic_pvr(id_control, fname_lic_ctl, &
-!!     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type, level)
+!!      subroutine sel_write_control_lic_pvr(id_control, hd_lic_ctl,    &
+!!     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type, level)
 !!      subroutine write_control_lic_pvr_file(id_control, fname_lic_ctl,&
 !!     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -159,8 +159,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_control_lic_pvr(id_control, fname_lic_ctl,   &
-     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type, level)
+      subroutine sel_write_control_lic_pvr(id_control, hd_lic_ctl,      &
+     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type, level)
 !
       use ctl_data_lic_pvr_IO
       use write_control_elements

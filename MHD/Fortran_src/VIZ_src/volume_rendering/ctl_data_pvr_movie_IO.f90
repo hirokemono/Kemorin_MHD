@@ -225,11 +225,11 @@
      &    hd_movie_rot_axis, movie%rotation_axis_ctl)
 !
       call sel_write_ctl_modelview_file                                 &
-     &   (id_control, movie%fname_view_start_ctl,                       &
-     &    hd_start_view_control, movie%view_start_ctl, level)
+     &   (id_control, hd_start_view_control,                            &
+     &    movie%fname_view_start_ctl, movie%view_start_ctl, level)
       call sel_write_ctl_modelview_file                                 &
-     &   (id_control, movie%fname_view_end_ctl,                         &
-     &    hd_end_view_control, movie%view_end_ctl, level)
+     &   (id_control, hd_end_view_control,                              &
+     &    movie%fname_view_end_ctl, movie%view_end_ctl, level)
 !
       call write_mul_view_transfer_ctl                                  &
      &   (id_control, hd_mview_transform, movie%mul_mmats_c, level)

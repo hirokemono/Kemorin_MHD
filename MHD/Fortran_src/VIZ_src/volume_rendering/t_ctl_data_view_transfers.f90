@@ -158,9 +158,8 @@
         write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i
 !
         write(id_control,'(a1)') '!'
-        call sel_write_ctl_modelview_file                               &
-     &     (id_control, mul_mats_c%fname_mat_ctl(i),                    &
-     &      hd_block, mul_mats_c%matrices(i), level)
+        call sel_write_ctl_modelview_file(id_control, hd_block,         &
+     &      mul_mats_c%fname_mat_ctl(i), mul_mats_c%matrices(i), level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level, hd_block)
 !

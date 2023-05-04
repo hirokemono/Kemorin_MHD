@@ -291,12 +291,12 @@
      &                               pvr%render_area_c, level)
       call write_lic_control_data(id_control, hd_lic_control,           &
      &                            lic_ctl, level)
-      call sel_write_ctl_modelview_file(id_control, pvr%fname_mat_ctl,  &
-     &    hd_view_transform, pvr%mat, level)
+      call sel_write_ctl_modelview_file(id_control, hd_view_transform,  &
+     &    pvr%fname_mat_ctl, pvr%mat, level)
 !
       write(id_control,'(a1)') '!'
       call sel_write_ctl_pvr_colormap_file                              &
-     &   (id_control, pvr%fname_cmap_cbar_c, hd_lic_colordef,           &
+     &   (id_control, hd_lic_colordef, pvr%fname_cmap_cbar_c,           &
      &    pvr%cmap_cbar_c, level)
 !
       if(pvr%cmap_cbar_c%i_cmap_cbar .eq. 0) then

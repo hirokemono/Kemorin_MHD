@@ -21,8 +21,8 @@
 !!
 !!      subroutine write_files_4_fline_ctl(id_control, hd_block,        &
 !!     &                                   fline_ctls, level)
-!!      subroutine sel_write_fline_control(id_control, file_name,       &
-!!     &          hd_block, fline_ctl_struct, level)
+!!      subroutine sel_write_fline_control(id_control, hd_block,        &
+!!     &          file_name, fline_ctl_struct, level)
 !!      subroutine write_fline_control_file(id_control, file_name,      &
 !!     &                                    hd_block, fline_ctl_struct)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -172,7 +172,7 @@
         write(*,'(2a,i4,a)', ADVANCE='NO')                              &
      &        trim(hd_block), ' No. ', fline_ctls%num_fline_ctl, '... '
         call sel_write_fline_control                                    &
-     &     (id_control, fline_ctls%fname_fline_ctl(i), hd_block,        &
+     &     (id_control, hd_block, fline_ctls%fname_fline_ctl(i),        &
      &      fline_ctls%fline_ctl_struct(i), level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level, hd_block)
@@ -181,8 +181,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sel_write_fline_control(id_control, file_name,         &
-     &          hd_block, fline_ctl_struct, level)
+      subroutine sel_write_fline_control(id_control, hd_block,          &
+     &          file_name, fline_ctl_struct, level)
 !
       use ctl_data_field_line_IO
       use write_control_elements

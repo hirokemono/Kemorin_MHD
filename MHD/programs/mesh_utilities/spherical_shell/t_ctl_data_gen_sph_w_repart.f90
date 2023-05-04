@@ -190,9 +190,8 @@
 !
       call write_control_platforms                                      &
      &   (id_control, hd_platform, gen_SPH_wP_c%plt, level)
-      call sel_write_ctl_gen_shell_grids(id_control,                    &
-     &    gen_SPH_wP_c%fname_psph_ctl, hd_sph_shell,                    &
-     &    gen_SPH_wP_c%psph_ctl, level)
+      call sel_write_ctl_gen_shell_grids(id_control, hd_sph_shell,      &
+     &    gen_SPH_wP_c%fname_psph_ctl, gen_SPH_wP_c%psph_ctl, level)
       call write_viz_repart_ctl_only(id_control, hd_viz_control,        &
      &                               gen_SPH_wP_c, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
@@ -251,9 +250,9 @@
       write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-      call sel_write_ctl_file_vol_repart(id_control,                    &
-     &    gen_SPH_wP_c%fname_vol_repart_ctl, hd_viz_partition,          &
-     &    gen_SPH_wP_c%repart_ctl, level)
+      call sel_write_ctl_file_vol_repart(id_control, hd_viz_partition,  &
+     &    gen_SPH_wP_c%fname_vol_repart_ctl, gen_SPH_wP_c%repart_ctl,   &
+     &    level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_viz_repart_ctl_only

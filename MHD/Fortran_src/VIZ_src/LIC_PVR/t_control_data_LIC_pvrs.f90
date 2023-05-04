@@ -157,7 +157,7 @@
       level = write_array_flag_for_ctl(id_control, level, hd_lic_ctl)
       do i = 1, lic_ctls%num_lic_ctl
         call sel_write_control_lic_pvr                                  &
-     &     (id_control, lic_ctls%fname_lic_ctl(i), hd_lic_ctl,          &
+     &     (id_control, hd_lic_ctl, lic_ctls%fname_lic_ctl(i),          &
      &      lic_ctls%pvr_ctl_type(i), lic_ctls%lic_ctl_type(i), level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level,           &

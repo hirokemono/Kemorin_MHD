@@ -200,9 +200,8 @@
       call write_control_time_step_data                                 &
      &   (id_control, hd_time_step, part_tctl%t_viz_ctl, level)
 !
-      call sel_write_ctl_file_vol_repart(id_control,                    &
-     &    part_tctl%fname_vol_repart_ctl, hd_viz_partition,             &
-     &    part_tctl%viz_repart_c, level)
+      call sel_write_ctl_file_vol_repart(id_control, hd_viz_partition,  &
+     &   part_tctl%fname_vol_repart_ctl, part_tctl%viz_repart_c, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_control_new_partition

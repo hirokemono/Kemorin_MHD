@@ -21,7 +21,7 @@
 !!        type(pvr_colormap_bar_ctl), intent(inout) :: cmap_cbar_c
 !!
 !!      subroutine sel_write_ctl_pvr_colormap_file                      &
-!!     &         (id_control, file_name, hd_block, cmap_cbar_c, level)
+!!     &         (id_control, hd_block, file_name, cmap_cbar_c, level)
 !!      subroutine write_control_pvr_colormap_file                      &
 !!     &         (id_control, file_name, hd_block, cmap_cbar_c)
 !!      subroutine write_pvr_cmap_cbar(id_control, hd_block,            &
@@ -244,7 +244,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_write_ctl_pvr_colormap_file                        &
-     &         (id_control, file_name, hd_block, cmap_cbar_c, level)
+     &         (id_control, hd_block, file_name, cmap_cbar_c, level)
 !
       use ctl_data_pvr_colorbar_IO
       use ctl_data_pvr_colormap_IO

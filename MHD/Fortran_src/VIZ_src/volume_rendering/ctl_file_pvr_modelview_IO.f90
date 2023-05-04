@@ -10,7 +10,7 @@
 !!      subroutine sel_read_ctl_modelview_file                          &
 !!     &         (id_control, hd_block, file_name, mat, c_buf)
 !!      subroutine sel_write_ctl_modelview_file                         &
-!!     &         (id_control, file_name, hd_block, mat, level)
+!!     &         (id_control, hd_block, file_name, mat, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(modeview_ctl), intent(in) :: mat
@@ -170,7 +170,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_write_ctl_modelview_file                           &
-     &         (id_control, file_name, hd_block, mat, level)
+     &         (id_control, hd_block, file_name, mat, level)
 !
       use skip_comment_f
       use ctl_data_view_transfer_IO

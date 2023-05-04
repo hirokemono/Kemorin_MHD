@@ -18,7 +18,7 @@
 !!        type(lic_kernel_ctl), intent(inout) :: kernel_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine sel_write_LIC_kernel_ctl_file                        &
-!!     &         (id_control, file_name, hd_block, kernel_ctl, level)
+!!     &         (id_control, hd_block, file_name, kernel_ctl, level)
 !!      subroutine write_LIC_kernel_control_file(id_control, file_name, &
 !!     &                                          hd_block, kernel_ctl)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -131,7 +131,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_write_LIC_kernel_ctl_file                          &
-     &         (id_control, file_name, hd_block, kernel_ctl, level)
+     &         (id_control, hd_block, file_name, kernel_ctl, level)
 !
       use ctl_file_LIC_noise_IO
       use write_control_elements

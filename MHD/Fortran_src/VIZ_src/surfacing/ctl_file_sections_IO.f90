@@ -21,8 +21,8 @@
 !!
 !!      subroutine write_files_4_psf_ctl                                &
 !!     &         (id_control, hd_block, psf_ctls, level)
-!!      subroutine sel_write_control_4_psf_file(id_control, file_name,  &
-!!     &          hd_block, psf_ctl_struct, level)
+!!      subroutine sel_write_control_4_psf_file(id_control, hd_block,   &
+!!     &          file_name, psf_ctl_struct, level)
 !!      subroutine write_control_4_psf_file(id_control, file_name,      &
 !!     &                                    hd_block, psf_ctl_struct)
 !!        integer(kind = kint), intent(in) :: id_control
@@ -184,9 +184,9 @@
       level = write_array_flag_for_ctl(id_control, level, hd_block)
       do i = 1, psf_ctls%num_psf_ctl
           write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i
-          call sel_write_control_4_psf_file                             &
-     &       (id_control, psf_ctls%fname_psf_ctl(i),                    &
-     &        hd_block, psf_ctls%psf_ctl_struct(i), level)
+          call sel_write_control_4_psf_file(id_control, hd_block,       &
+     &        psf_ctls%fname_psf_ctl(i), psf_ctls%psf_ctl_struct(i),    &
+     &        level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level, hd_block)
 !
@@ -194,8 +194,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sel_write_control_4_psf_file(id_control, file_name,    &
-     &          hd_block, psf_ctl_struct, level)
+      subroutine sel_write_control_4_psf_file(id_control, hd_block,     &
+     &          file_name, psf_ctl_struct, level)
 !
       use t_read_control_elements
       use write_control_elements
