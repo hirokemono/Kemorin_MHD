@@ -16,16 +16,17 @@ SOURCES = $(shell ls *.f90)
 
 MOD_GEN_SPH_GRID = \
 main_generate_sph_grids.o \
-analyzer_gen_sph_grids.o
+analyzer_gen_sph_grids.o \
+input_control_const_shell.o
 
 MOD_GEN_SPH_W_LIC = \
-main_gen_sph_w_repart.o \
-analyzer_gen_sph_w_repart.o \
-\
 t_ctl_data_gen_sph_w_repart.o \
-bcast_ctl_gen_sph_repart.o
+input_ctl_gen_sph_w_repart.o \
+main_gen_sph_w_repart.o \
+analyzer_gen_sph_w_repart.o
 
 MOD_CHECK_SPH_GRID = \
+input_control_const_shell.o \
 main_check_sph_grids.o \
 analyzer_check_sph_grids.o
 
@@ -36,12 +37,15 @@ MOD_TEST_SPH_GRID = \
 cmp_trans_sph_indices.o \
 cmp_trans_sph_tests.o \
 \
+input_control_const_shell.o \
 analyzer_test_sph.o \
 main_test_sph.o
 
 MOD_GEN_SPH_GRID_TEST = \
+input_control_const_shell.o \
 main_generate_sph_grid_t.o \
 analyzer_gen_sph_grid_t.o
+
 
 #
 #  -------------------------------------------------------------------------

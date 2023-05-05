@@ -1,5 +1,5 @@
-!>@file   bcast_ctl_gen_sph_repart.f90
-!!@brief  module bcast_ctl_gen_sph_repart
+!>@file   input_ctl_gen_sph_w_repart.f90
+!!@brief  module input_ctl_gen_sph_w_repart
 !!
 !!@author H. Matsui
 !>@brief   Control read routine
@@ -11,13 +11,16 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine load_ctl_file_gen_sph_w_repart(file_name,            &
-!!     &                                          gen_SPH_wP_c)
+!!      subroutine s_input_ctl_gen_sph_w_repart(file_name, gen_SPH_wP_c,&
+!!     &          sph_files, sph_maker, repart_p)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
+!!        type(gen_sph_file_IO_params), intent(inout)  ::  sph_files
+!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+!!        type(volume_partioning_param), intent(inout) :: repart_p
 !!@endverbatim
 !
-      module bcast_ctl_gen_sph_repart
+      module input_ctl_gen_sph_w_repart
 !
       use m_precision
 !
@@ -35,20 +38,36 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_ctl_file_gen_sph_w_repart(file_name,              &
-     &                                          gen_SPH_wP_c)
+      subroutine s_input_ctl_gen_sph_w_repart(file_name, gen_SPH_wP_c,  &
+     &          sph_files, sph_maker, repart_p)
+!
+      use t_ctl_params_gen_sph_shell
+      use t_sph_grid_maker_in_sim
+      use t_control_param_vol_grping
+      use m_error_IDs
 !
       character(len=kchara), intent(in) :: file_name
       type(ctl_data_gen_sph_w_repart), intent(inout) :: gen_SPH_wP_c
+      type(gen_sph_file_IO_params), intent(inout)  ::  sph_files
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+      type(volume_partioning_param), intent(inout) :: repart_p
 !
+      integer(kind = kint) :: ierr = 0
 !
+!       load control file
       if(my_rank .eq. 0) then
         call read_ctl_file_gen_sph_w_repart(file_name, gen_SPH_wP_c)
       end if
-!
       call bcast_ctl_data_gen_sph_w_repart(gen_SPH_wP_c)
 !
-      end subroutine load_ctl_file_gen_sph_w_repart
+!       set control data
+      call set_control_4_gen_shell_grids                                &
+     &   (my_rank, gen_SPH_wP_c%plt, gen_SPH_wP_c%psph_ctl,             &
+     &    sph_files, sph_maker, ierr)
+      call set_ctl_param_vol_repart(gen_SPH_wP_c%repart_ctl, repart_p)
+      if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
+!
+      end subroutine s_input_ctl_gen_sph_w_repart
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,4 +100,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module bcast_ctl_gen_sph_repart
+      end module input_ctl_gen_sph_w_repart

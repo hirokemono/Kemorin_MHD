@@ -63,7 +63,7 @@
       subroutine init_gen_sph_grids_w_repart
 !
       use m_error_IDs
-      use bcast_ctl_gen_sph_repart
+      use input_ctl_gen_sph_w_repart
 !
       integer(kind = kint) :: ierr = 0
 !
@@ -74,18 +74,10 @@
       call elpsed_label_4_sleeve_ext
 !
       call start_elapsed_time(ied_total_elapsed)
-      call load_ctl_file_gen_sph_w_repart(control_file_name,            &
-     &                                    gen_SPH_wP_c1)
-!
-      call set_control_4_gen_shell_grids                                &
-     &   (my_rank, gen_SPH_wP_c1%plt, gen_SPH_wP_c1%psph_ctl,           &
-     &    sph_files_S, SPH_GEN_S%sph_maker, ierr)
-      call set_ctl_param_vol_repart(gen_SPH_wP_c1%repart_ctl,           &
-     &                              repart_p_C)
-!
+      call s_input_ctl_gen_sph_w_repart                                 &
+     &   (control_file_name, gen_SPH_wP_c1, sph_files_S,                &
+     &    SPH_GEN_S%sph_maker, repart_p_C)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
-!
-!
 !
       if(SPH_GEN_S%sph_maker%gen_sph%s3d_ranks%ndomain_sph              &
      &     .ne. nprocs) then

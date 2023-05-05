@@ -1,5 +1,5 @@
-!>@file   bcast_ctl_file_const_sph.f90
-!!@brief  module bcast_ctl_file_const_sph
+!>@file   input_control_const_shell.f90
+!!@brief  module input_control_const_shell
 !!
 !!@author H. Matsui
 !>@brief   Control read routine
@@ -11,15 +11,15 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine load_control_4_const_shell(file_name, gen_SPH_ctl)
+!!      subroutine s_input_control_const_shell(file_name, gen_SPH_ctl,  &
+!!     &                                       sph_files, sph_maker)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(sph_mesh_generation_ctl), intent(inout) :: gen_SPH_ctl
-!!      subroutine write_control_4_const_shell(file_name, gen_SPH_ctl)
-!!        character(len=kchara), intent(in) :: file_name
-!!        type(sph_mesh_generation_ctl), intent(in) :: gen_SPH_ctl
+!!        type(gen_sph_file_IO_params), intent(inout)  ::  sph_files
+!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!@endverbatim
 !
-      module bcast_ctl_file_const_sph
+      module input_control_const_shell
 !
       use m_precision
 !
@@ -31,7 +31,7 @@
       implicit none
 !
 !
-      private :: bcast_sph_shell_define_ctl
+      private :: bcast_sph_shell_construct_ctl
 !
 ! ----------------------------------------------------------------------
 !
@@ -39,24 +39,39 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_control_4_const_shell(file_name, gen_SPH_ctl)
+      subroutine s_input_control_const_shell(file_name, gen_SPH_ctl,    &
+     &                                       sph_files, sph_maker)
+!
+      use t_ctl_params_gen_sph_shell
+      use t_sph_grid_maker_in_sim
+      use m_error_IDs
 !
       character(len=kchara), intent(in) :: file_name
       type(sph_mesh_generation_ctl), intent(inout) :: gen_SPH_ctl
+      type(gen_sph_file_IO_params), intent(inout)  ::  sph_files
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+!
+      integer(kind = kint) :: ierr = 0
 !
 !
+!       load control file
       if(my_rank .eq. 0) then
         call read_control_4_const_shell(file_name, gen_SPH_ctl)
       end if
+      call bcast_sph_shell_construct_ctl(gen_SPH_ctl)
 !
-      call bcast_sph_shell_define_ctl(gen_SPH_ctl)
+!       set control data
+      call set_control_4_gen_shell_grids                                &
+     &   (my_rank, gen_SPH_ctl%plt, gen_SPH_ctl%psph_ctl,               &
+     &    sph_files, sph_maker, ierr)
+      if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
 !
-      end subroutine load_control_4_const_shell
+      end subroutine s_input_control_const_shell
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine bcast_sph_shell_define_ctl(gen_SPH_ctl)
+      subroutine bcast_sph_shell_construct_ctl(gen_SPH_ctl)
 !
       use calypso_mpi_int
       use calypso_mpi_char
@@ -74,8 +89,8 @@
       call calypso_mpi_bcast_character                                  &
      &   (gen_SPH_ctl%fname_psph_ctl, cast_long(kchara), 0)
 !
-      end subroutine bcast_sph_shell_define_ctl
+      end subroutine bcast_sph_shell_construct_ctl
 !
 ! ----------------------------------------------------------------------
 !
-      end module bcast_ctl_file_const_sph
+      end module input_control_const_shell
