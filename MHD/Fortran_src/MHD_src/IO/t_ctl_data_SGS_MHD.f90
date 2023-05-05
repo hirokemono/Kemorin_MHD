@@ -12,30 +12,25 @@
 !!
 !!@verbatim
 !!      subroutine read_sph_mhd_control_data(id_control, hd_block,      &
-!!     &         MHD_ctl, sgs_ctl, viz_ctls, zm_ctls, c_buf)
+!!     &         MHD_ctl, add_SSMHD_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
-!!        type(visualization_controls), intent(inout) :: viz_ctls
-!!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+!!        type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_sph_mhd_control_data(id_control, hd_block,     &
-!!     &          MHD_ctl, sgs_ctl, viz_ctls, zm_ctls, c_buf)
+!!     &          MHD_ctl, add_SSMHD_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(in) :: MHD_ctl
-!!        type(SGS_model_control), intent(in) :: sgs_ctl
-!!        type(visualization_controls), intent(in) :: viz_ctls
-!!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+!!        type(add_sgs_sph_mhd_ctl), intent(in) :: add_SSMHD_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine dealloc_sph_SGS_MHD_viz_ctl(viz_ctls, zm_ctls)
-!!        type(visualization_controls), intent(inout) :: viz_ctls
-!!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
-!!      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, sgs_ctl)
-!!        type(visualization_controls), intent(inout) :: viz_ctls
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
+!!      subroutine dealloc_sph_SGS_MHD_viz_ctl(add_SSMHD_ctl)
+!!        type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
+!!      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !!@endverbatim
 !
       module t_ctl_data_SGS_MHD
@@ -52,7 +47,22 @@
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
 !
+      use t_ctl_data_SGS_model
+      use t_control_data_vizs
+      use t_control_data_dynamo_vizs
+!
       implicit none
+!
+!>      Additional structures for spherical SGS MHD dynamo
+      type add_sgs_sph_mhd_ctl
+!>        Structures for SGS controls
+        type(SGS_model_control) :: sgs_ctl
+!
+!>        Structures of visualization controls
+        type(visualization_controls) :: viz_ctls
+!>        Structures of zonal mean controls
+        type(sph_dynamo_viz_controls) :: zm_ctls
+      end type add_sgs_sph_mhd_ctl
 !
 !   2nd level for MHD
 !
@@ -89,12 +99,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_sph_mhd_control_data(id_control, hd_block,        &
-     &         MHD_ctl, sgs_ctl, viz_ctls, zm_ctls, c_buf)
+     &         MHD_ctl, add_SSMHD_ctl, c_buf)
 !
       use t_ctl_data_SPH_MHD_control
-      use t_ctl_data_SGS_model
-      use t_control_data_vizs
-      use t_control_data_dynamo_vizs
       use ctl_file_gen_sph_shell_IO
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
@@ -105,9 +112,7 @@
       character(len=kchara), intent(in) :: hd_block
 !
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(SGS_model_control), intent(inout) :: sgs_ctl
-      type(visualization_controls), intent(inout) :: viz_ctls
-      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+      type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -129,7 +134,7 @@
      &      MHD_ctl%fname_psph_ctl, MHD_ctl%psph_ctl, c_buf)
 !
         call read_sph_sgs_mhd_model(id_control, hd_model,               &
-     &      MHD_ctl%model_ctl, sgs_ctl, c_buf)
+     &      MHD_ctl%model_ctl, add_SSMHD_ctl%sgs_ctl, c_buf)
         call read_sph_mhd_control                                       &
      &     (id_control, hd_control, MHD_ctl%smctl_ctl, c_buf)
 !
@@ -139,12 +144,12 @@
      &     (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, c_buf)
 !
         call s_read_viz_controls(id_control, hd_viz_ctl,                &
-     &                           viz_ctls, c_buf)
+     &                           add_SSMHD_ctl%viz_ctls, c_buf)
 !
-        call read_dynamo_viz_control                                    &
-     &     (id_control, hd_dynamo_viz_ctl, zm_ctls, c_buf)
-        call read_dynamo_viz_control                                    &
-     &     (id_control, hd_zm_viz_ctl, zm_ctls, c_buf)
+        call read_dynamo_viz_control(id_control, hd_dynamo_viz_ctl,     &
+     &                               add_SSMHD_ctl%zm_ctls, c_buf)
+        call read_dynamo_viz_control(id_control, hd_zm_viz_ctl,         &
+     &                               add_SSMHD_ctl%zm_ctls, c_buf)
       end do
       MHD_ctl%i_mhd_ctl = 1
 !
@@ -153,12 +158,9 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_sph_mhd_control_data(id_control, hd_block,       &
-     &          MHD_ctl, sgs_ctl, viz_ctls, zm_ctls, level)
+     &          MHD_ctl, add_SSMHD_ctl, level)
 !
       use t_ctl_data_SPH_MHD_control
-      use t_ctl_data_SGS_model
-      use t_control_data_vizs
-      use t_control_data_dynamo_vizs
       use ctl_data_SGS_MHD_model_IO
       use ctl_file_gen_sph_shell_IO
       use ctl_data_platforms_IO
@@ -170,9 +172,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(mhd_simulation_control), intent(in) :: MHD_ctl
-      type(SGS_model_control), intent(in) :: sgs_ctl
-      type(visualization_controls), intent(in) :: viz_ctls
-      type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+      type(add_sgs_sph_mhd_ctl), intent(in) :: add_SSMHD_ctl
 !
       integer(kind = kint), intent(inout) :: level
 !
@@ -192,7 +192,7 @@
      &    MHD_ctl%fname_psph_ctl, MHD_ctl%psph_ctl, level)
 !
       call write_sph_sgs_mhd_model(id_control, hd_model,                &
-     &    MHD_ctl%model_ctl, sgs_ctl, level)
+     &    MHD_ctl%model_ctl, add_SSMHD_ctl%sgs_ctl, level)
       call write_sph_mhd_control                                        &
      &   (id_control, hd_control, MHD_ctl%smctl_ctl, level)
 !
@@ -202,53 +202,34 @@
      &   (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, level)
 !
       call write_viz_controls(id_control, hd_viz_ctl,                   &
-     &                        viz_ctls, level)
+     &                        add_SSMHD_ctl%viz_ctls, level)
       call write_dynamo_viz_control                                     &
-     &   (id_control, hd_dynamo_viz_ctl, zm_ctls, level)
+     &   (id_control, hd_dynamo_viz_ctl, add_SSMHD_ctl%zm_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_sph_mhd_control_data
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_sph_SGS_MHD_viz_ctl(viz_ctls, zm_ctls)
+      subroutine dealloc_sph_SGS_MHD_viz_ctl(add_SSMHD_ctl)
 !
-      use t_control_data_vizs
-      use t_control_data_dynamo_vizs
+      type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !
-      type(visualization_controls), intent(inout) :: viz_ctls
-      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
-!
-      call dealloc_viz_controls(viz_ctls)
-      call dealloc_dynamo_viz_control(zm_ctls)
+      call dealloc_viz_controls(add_SSMHD_ctl%viz_ctls)
+      call dealloc_dynamo_viz_control(add_SSMHD_ctl%zm_ctls)
 !
       end subroutine dealloc_sph_SGS_MHD_viz_ctl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, sgs_ctl)
-!
-      use t_ctl_data_SGS_model
-      use t_ctl_data_SPH_MHD_control
+      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(SGS_model_control), intent(inout) :: sgs_ctl
+      type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !
 !
-      call dealloc_sgs_ctl(sgs_ctl)
-!
-      call reset_control_platforms(MHD_ctl%plt)
-      call reset_control_platforms(MHD_ctl%org_plt)
-!
-      call dealloc_sph_mhd_model(MHD_ctl%model_ctl)
-      call reset_sph_mhd_control(MHD_ctl%smctl_ctl)
-!
-      call dealloc_parallel_shell_ctl(MHD_ctl%psph_ctl)
-!
-      call dealloc_monitor_data_ctl(MHD_ctl%nmtr_ctl)
-      call dealloc_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
-!
-      MHD_ctl%i_mhd_ctl = 0
+      call dealloc_sgs_ctl(add_SSMHD_ctl%sgs_ctl)
+      call dealloc_sph_mhd_ctl_data(MHD_ctl)
 !
       end subroutine dealloc_sph_sgs_mhd_ctl_data
 !

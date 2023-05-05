@@ -13,12 +13,10 @@
 !!
 !!@verbatim
 !!      subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl,       &
-!!     &          sgs_ctl, viz_ctls, zm_ctls)
+!!     &                                      add_SSMHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(visualization_controls), intent(inout) :: viz_ctls
-!!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+!!        type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !!@endverbatim
 !
       module bcast_control_sph_SGS_MHD
@@ -29,7 +27,6 @@
       use m_machine_parameter
       use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
-      use t_ctl_data_SGS_model
       use t_control_data_vizs
       use t_control_data_dynamo_vizs
 !
@@ -44,7 +41,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl,         &
-     &          sgs_ctl, viz_ctls, zm_ctls)
+     &                                      add_SSMHD_ctl)
 !
       use ctl_file_SGS_MHD_IO
       use bcast_ctl_SGS_MHD_model
@@ -53,20 +50,18 @@
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(SGS_model_control), intent(inout) :: sgs_ctl
-      type(visualization_controls), intent(inout) :: viz_ctls
-      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+      type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !
 !
       if(my_rank .eq. 0) then
-        call read_control_4_sph_SGS_MHD(file_name, MHD_ctl, sgs_ctl,    &
-     &                                  viz_ctls, zm_ctls)
+        call read_control_4_sph_SGS_MHD                                 &
+     &     (file_name, MHD_ctl, add_SSMHD_ctl)
       end if
 !
       call bcast_sph_mhd_control_data(MHD_ctl)
-      call bcast_sgs_ctl(sgs_ctl)
-      call bcast_viz_controls(viz_ctls)
-      call bcast_dynamo_viz_control(zm_ctls)
+      call bcast_sgs_ctl(add_SSMHD_ctl%sgs_ctl)
+      call bcast_viz_controls(add_SSMHD_ctl%viz_ctls)
+      call bcast_dynamo_viz_control(add_SSMHD_ctl%zm_ctls)
 !
       end subroutine s_load_control_sph_SGS_MHD
 !

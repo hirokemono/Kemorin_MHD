@@ -23,11 +23,8 @@
       use m_MHD_step_parameter
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
-      use t_ctl_data_SGS_model
       use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
-      use t_control_data_vizs
-      use t_control_data_dynamo_vizs
       use t_step_parameter
       use t_SPH_mesh_field_data
       use t_visualizer
@@ -43,12 +40,8 @@
      &                      :: back_ctl_name = 'control_sph_back_trans'
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save, private :: MHD_ctl1
-!>        Structures for SGS controls
-      type(SGS_model_control), save, private :: sgs_ctl_M
-!>        Structures of visualization controls
-      type(visualization_controls), save, private :: viz_ctls_M
-!>        Structures of zonal mean controls
-      type(sph_dynamo_viz_controls), save, private :: zm_ctls_M
+!>        Additional structures for spherical SGS MHD dynamo
+      type(add_sgs_sph_mhd_ctl), save, private :: add_SSMHD_ctl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -75,12 +68,12 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 's_load_control_sph_SGS_MHD'
       call s_load_control_sph_SGS_MHD(back_ctl_name, MHD_ctl1,          &
-     &    sgs_ctl_M, viz_ctls_M, zm_ctls_M)
+     &                                add_SSMHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo                                 &
-     &   (MHD_files1, MHD_ctl1, sgs_ctl_M, zm_ctls_M, MHD_step1,        &
-     &    SPH_model1, SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1)
+     &   (MHD_files1, MHD_ctl1, add_SSMHD_ctl1,                         &
+     &    MHD_step1, SPH_model1, SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -106,11 +99,12 @@
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(MHD_step1%viz_step, FEM_d1%geofem,            &
-     &    FEM_d1%field, VIZ_DAT1, viz_ctls_M, vizs1, m_SR1)
+     &    FEM_d1%field, VIZ_DAT1, add_SSMHD_ctl1%viz_ctls,              &
+     &    vizs1, m_SR1)
       call init_zonal_mean_sections(MHD_step1%viz_step, FEM_d1%geofem,  &
-     &    VIZ_DAT1%edge_comm, FEM_d1%field, zm_ctls_M, zmeans1,  &
-     &    m_SR1%SR_sig, m_SR1%SR_il)
-      call dealloc_sph_SGS_MHD_viz_ctl(viz_ctls_M, zm_ctls_M)
+     &    VIZ_DAT1%edge_comm, FEM_d1%field, add_SSMHD_ctl1%zm_ctls,     &
+     &    zmeans1, m_SR1%SR_sig, m_SR1%SR_il)
+      call dealloc_sph_SGS_MHD_viz_ctl(add_SSMHD_ctl1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier

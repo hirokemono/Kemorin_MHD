@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine input_control_SPH_SGS_dynamo                         &
-!!     &         (MHD_files, MHD_ctl, sgs_ctl, zm_ctls, MHD_step,       &
+!!     &         (MHD_files, MHD_ctl, add_SSMHD_ctl, MHD_step,          &
 !!     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
-!!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+!!        type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -56,14 +55,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_SPH_SGS_dynamo                           &
-     &         (MHD_files, MHD_ctl, sgs_ctl, zm_ctls, MHD_step,         &
+     &         (MHD_files, MHD_ctl, add_SSMHD_ctl, MHD_step,            &
      &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !
       use m_error_IDs
 !
       use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
-      use t_ctl_data_SGS_model
       use set_control_sph_SGS_MHD
       use sph_file_IO_select
       use set_control_4_SPH_to_FEM
@@ -71,8 +69,7 @@
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(SGS_model_control), intent(inout) :: sgs_ctl
-      type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+      type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -87,16 +84,17 @@
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl%plt, MHD_ctl%org_plt, MHD_ctl%model_ctl,              &
      &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
-     &    sgs_ctl, MHD_files, SPH_model%bc_IO, SPH_model%refs,          &
-     &    SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,                   &
+     &    add_SSMHD_ctl%sgs_ctl, MHD_files, SPH_model%bc_IO,            &
+     &    SPH_model%refs, SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,   &
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_WK%trans_p,         &
      &    SPH_WK%trns_WK, SPH_MHD%sph_maker)
 !
-      call set_control_SGS_SPH_MHD_field(MHD_ctl%model_ctl,             &
-     &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, zm_ctls,              &
+      call set_control_SGS_SPH_MHD_field                                &
+     &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl,                          &
+     &    MHD_ctl%smonitor_ctl, add_SSMHD_ctl%zm_ctls,                  &
      &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD%sph,             &
      &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor)
-      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, SGS_ctl)
+      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_w_LIC'
