@@ -19,6 +19,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_sort_flt_ctl = "ctl_sort_filter"
+!
       type(ctl_data_gen_3d_filter), save :: filter3d_ctl1
       type(ctl_params_4_gen_filter), save :: gfil_p1
       type(field_IO_params), save ::  mesh_filter_file
@@ -47,7 +50,11 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_sort_filter'
-      call load_control_4_sort_filter(filter3d_ctl1)
+      if(my_rank .eq. 0) then
+        call read_control_4_sort_filter(fname_sort_flt_ctl,             &
+     &                                  filter3d_ctl1)
+      end if
+      call bcast_const_filter_ctl_data(filter3d_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_sort_3dfilter'
       call set_controls_sort_3dfilter                                   &

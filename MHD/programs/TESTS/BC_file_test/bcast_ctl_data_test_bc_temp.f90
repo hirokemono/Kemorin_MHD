@@ -4,7 +4,7 @@
 !      Written by H. Matsui on July, 2006
 !      Mmodified by H. Matsui on June, 2007
 !
-!!      subroutine load_control_4_bc_temp(bc_temp_test_ctl)
+!!      subroutine bcast_test_mesh_ctl_data(bc_temp_test_ctl)
 !!        type(ctl_data_bc_temp_test), intent(inout) :: bc_temp_test_ctl
 !!
 !!   --------------------------------------------------------------------
@@ -37,10 +37,6 @@
 !
       implicit  none
 !
-      character(len = kchara), parameter                                &
-     &                        :: fname_test_mesh_ctl = "ctl_bc_temp"
-!
-      private :: bcast_test_mesh_ctl_data
       private :: bcast_ctl_data_4_temp_nod_bc
 !
 !   --------------------------------------------------------------------
@@ -48,25 +44,6 @@
       contains
 !
 !   --------------------------------------------------------------------
-!
-      subroutine load_control_4_bc_temp(bc_temp_test_ctl)
-!
-      use skip_comment_f
-!
-      type(ctl_data_bc_temp_test), intent(inout) :: bc_temp_test_ctl
-!
-!
-      if(my_rank .eq. 0) then
-        call read_control_4_bc_temp(fname_test_mesh_ctl,                &
-     &                              bc_temp_test_ctl)
-      end if
-!
-      call bcast_test_mesh_ctl_data(bc_temp_test_ctl)
-!
-      end subroutine load_control_4_bc_temp
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
       subroutine bcast_test_mesh_ctl_data(bc_temp_test_ctl)
 !

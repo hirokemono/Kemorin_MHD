@@ -28,6 +28,7 @@ copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
 ctl_data_sph_trans_IO.o \
 bcast_ctl_data_4_sph_trans.o \
+input_controls_sph_trans.o \
 sph_transfer_all_field.o
 
 

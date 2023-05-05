@@ -14,6 +14,8 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_test_mesh_ctl = "ctl_mesh"
 !
       type comm_test_files_param
 !>        Logical flag to output surface data
@@ -43,8 +45,12 @@
       type(comm_test_control), intent(inout) :: comm_tctl
       type(comm_test_files_param), intent(inout) ::  T_files
 !
-      if (iflag_debug.eq.1) write(*,*) 'load_control_4_comm_test'
-      call load_control_4_comm_test(comm_tctl)
+!
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_comm_test'
+      if(my_rank .eq. 0) then
+        call read_control_4_comm_test(fname_test_mesh_ctl, comm_tctl)
+      end if
+      call bcast_test_comm_ctl_data(comm_tctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
       call set_ctl_params_4_comm_test                                   &

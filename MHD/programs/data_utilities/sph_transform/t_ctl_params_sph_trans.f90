@@ -1,9 +1,13 @@
-!t_ctl_params_sph_trans.f90
-!      module t_ctl_params_sph_trans
+!>@file   t_ctl_params_sph_trans.f90
+!!@brief  module t_ctl_params_sph_trans
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2007
 !
-!        programmed by H.Matsui on Oct., 2007
-!
-!!      subroutine set_control_4_sph_transform(spt_ctl, time_STR,       &
+!>@brief  Control data of node monitoring
+!!
+!!@verbatim
+!!      subroutine set_control_sph_fwd_trans(spt_ctl, time_STR,         &
 !!     &          SPH_TRNS, FEM_STR, SPH_STR)
 !!      subroutine s_set_ctl_data_4_sph_trans(spt_ctl, time_STR,        &
 !!     &          SPH_TRNS, FEM_STR, SPH_STR)
@@ -14,6 +18,7 @@
 !!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
 !!        type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_TRNS
+!!@endverbatim
 !
       module t_ctl_params_sph_trans
 !
@@ -53,7 +58,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_transform(spt_ctl, time_STR,         &
+      subroutine set_control_sph_fwd_trans(spt_ctl, time_STR,           &
      &          SPH_TRNS, FEM_STR, SPH_STR)
 !
       use t_work_4_sph_trans
@@ -80,6 +85,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank, spt_ctl%plt)
       call set_control_smp_def(my_rank, spt_ctl%plt)
+!
       call set_control_sph_mesh(spt_ctl%plt, spt_ctl%Fmesh_ctl,         &
      &    SPH_STR%sph_file_param, FEM_STR%mesh_file_IO,                 &
      &    SPH_STR%sph_file_IO, SPH_STR%FEM_mesh_flags)
@@ -148,7 +154,7 @@
      &    SPH_TRNS%sph_maker, ierr)
       call dealloc_phys_control(spt_ctl%fld_ctl)
 !
-      end subroutine set_control_4_sph_transform
+      end subroutine set_control_sph_fwd_trans
 !
 ! -----------------------------------------------------------------------
 !
@@ -187,6 +193,7 @@
       call set_control_restart_file_def                                 &
      &   (spt_ctl%plt, SPH_STR%fst_file_IO)
       call set_merged_ucd_file_define(spt_ctl%plt, FEM_STR%ucd_file_IO)
+!
       call set_ctl_parallel_file_w_def(def_org_sph_rj_head,             &
      &    spt_ctl%org_plt%mesh_file_prefix,                             &
      &    spt_ctl%org_plt%mesh_file_fmt_ctl, SPH_STR%org_rj_file_IO)

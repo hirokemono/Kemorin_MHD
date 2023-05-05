@@ -3,11 +3,8 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine load_control_4_gen_filter(filter3d_ctl)
-!!      subroutine load_control_4_sort_filter(filter3d_ctl)
-!!      subroutine dealloc_const_filter_ctl_data(fil3_ctl)
+!!      subroutine bcast_const_filter_ctl_data(filter3d_ctl)
 !!        type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
-!!        type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
 !!
 !
       module bcast_ctl_data_gen_3d_filter
@@ -19,54 +16,10 @@
 !
       implicit  none
 !
-!
-      character(len = kchara), parameter                                &
-     &                        :: fname_filter_ctl = "ctl_filter"
-      character(len = kchara), parameter                                &
-     &                        :: fname_sort_flt_ctl = "ctl_sort_filter"
-!
-      private :: bcast_const_filter_ctl_data
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine load_control_4_gen_filter(filter3d_ctl)
-!
-      type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      if(my_rank .eq. 0) then
-        call read_control_4_gen_filter(fname_filter_ctl, filter3d_ctl)
-      end if
-!
-      call bcast_const_filter_ctl_data(filter3d_ctl)
-!
-      end subroutine load_control_4_gen_filter
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine load_control_4_sort_filter(filter3d_ctl)
-!
-      type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
-!
-      type(buffer_for_control) :: c_buf1
-!
-!
-      if(my_rank .eq. 0) then
-        call read_control_4_sort_filter(fname_sort_flt_ctl,             &
-     &                                  filter3d_ctl)
-      end if
-!
-      call bcast_const_filter_ctl_data(filter3d_ctl)
-!
-      end subroutine load_control_4_sort_filter
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine bcast_const_filter_ctl_data(filter3d_ctl)

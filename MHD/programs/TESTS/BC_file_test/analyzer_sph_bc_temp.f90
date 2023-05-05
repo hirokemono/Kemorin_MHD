@@ -24,7 +24,9 @@
 !
       implicit none
 !
-      type(ctl_data_bc_temp_test), save :: bc_temp_test_ctl1
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_test_mesh_ctl = "ctl_bc_temp"
+!
       type(field_IO_params), save ::  mesh_file_TEC
       type(mesh_data), save :: femmesh
       type(IO_boundary), save :: IO_bc_t
@@ -43,7 +45,6 @@
       subroutine initilize_bc_temp
 !
       use m_ctl_params_test_bc_temp
-      use bcast_ctl_data_test_bc_temp
       use mpi_load_mesh_data
       use const_mesh_information
       use parallel_edge_information
@@ -51,11 +52,8 @@
 !
 !     ----- read control data
 !
-      if (iflag_debug.gt.0) write(*,*) 'load_control_4_bc_temp'
-      call load_control_4_bc_temp(bc_temp_test_ctl1)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_sph_bc_temp'
-      call set_ctl_params_sph_bc_temp(bc_temp_test_ctl1, mesh_file_TEC)
+      if (iflag_debug.gt.0) write(*,*) 'input_control_bc_temp'
+      call input_control_bc_temp(fname_test_mesh_ctl, mesh_file_TEC)
 !
 !  --  read geometry
 !

@@ -21,7 +21,9 @@
 !
       implicit none
 !
-      type(ctl_data_solver_test), save :: solvertest_c1
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_stest_ctl = "ctl_solver_test"
+!
       type(communication_table), save :: nod_comm
       type(node_data), save :: node
       type(CRS_matrix_connect), save :: tbl_crs
@@ -47,19 +49,13 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use bcast_ctl_data_solver_test
-      use set_control_solver_test
-!
+      use input_control_solver_test
       use crs_matrix_io
 !
-!
 !C-- CNTL DATA
-
-      call load_control_4_solver_test(solvertest_c1)
-      call set_ctl_params_4_solver_test                                 &
-     &   (solvertest_c1, mat_crs, CG_param_t, DJDS_param_t)
-!
-!C 
+      call s_input_control_solver_test                                  &
+     &   (fname_stest_ctl, mat_crs, CG_param_t, DJDS_param_t)
+!C
 !C +-------------+
 !C | MATRIX file |
 !C +-------------+

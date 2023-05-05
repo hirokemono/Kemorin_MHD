@@ -1,14 +1,19 @@
-!m_ctl_params_sph_utils.f90
-!      module m_ctl_params_sph_utils
+!>@file   m_ctl_params_sph_utils.f90
+!!@brief  module m_ctl_params_sph_utils
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2007
 !
-!        programmed by H.Matsui on Oct., 2007
-!
+!>@brief  PArameters for spectr data utilities
+!!
+!!@verbatim
 !!      subroutine set_ctl_data_4_sph_utils                             &
 !!     &         (spu_ctl, time_SHR, rj_fld, pwr)
 !!        type(spherical_spectr_data_util_ctl), intent(in) :: spu_ctl
 !!        type(time_step_param), intent(inout) :: time_SHR
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
+!!@endverbatim
 !
       module m_ctl_params_sph_utils
 !

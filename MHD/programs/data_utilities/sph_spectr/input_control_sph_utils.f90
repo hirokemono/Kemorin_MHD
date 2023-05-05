@@ -1,21 +1,28 @@
-!>@file   bcast_ctl_data_4_sph_utils.f90
-!!@brief  module bcast_ctl_data_4_sph_utils
+!>@file   input_control_sph_utils.f90
+!!@brief  module input_control_sph_utils
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
 !>@brief control data for each isosurface
 !!
 !!@verbatim
-!!      subroutine load_control_data_sph_utils(spu_ctl)
+!!      subroutine s_input_control_sph_utils                            &
+!!     &         (ctl_file_name, spu_ctl, time_SHR, rj_fld, pwr)
+!!        character(len = kchara), intent(in) :: ctl_file_name
 !!        type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
+!!        type(time_step_param), intent(inout) :: time_SHR
+!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(sph_mean_squares), intent(inout) :: pwr
 !!@verbatim
-!
-      module bcast_ctl_data_4_sph_utils
+      module input_control_sph_utils
 !
       use m_precision
       use calypso_mpi
       use m_machine_parameter
+      use t_step_parameter
       use t_ctl_data_4_sph_utils
+      use t_phys_data
+      use t_rms_4_sph_spectr
 !
       implicit  none
 !
@@ -31,19 +38,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_control_data_sph_utils(spu_ctl)
+      subroutine s_input_control_sph_utils                              &
+     &         (ctl_file_name, spu_ctl, time_SHR, rj_fld, pwr)
 !
+      use m_ctl_params_sph_utils
       use ctl_file_sph_utils_IO
 !
+      character(len = kchara), intent(in) :: ctl_file_name
       type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
+      type(time_step_param), intent(inout) :: time_SHR
+      type(phys_data), intent(inout) :: rj_fld
+      type(sph_mean_squares), intent(inout) :: pwr
+!
 !
       if(my_rank .eq. 0) then
-       call read_control_data_sph_utils(control_file_name, spu_ctl)
+       call read_control_data_sph_utils(ctl_file_name, spu_ctl)
       end if
-!
       call bcast_control_data_sph_utils(spu_ctl)
 !
-      end subroutine load_control_data_sph_utils
+      call set_ctl_data_4_sph_utils(spu_ctl, time_SHR, rj_fld, pwr)
+!
+      end subroutine s_input_control_sph_utils
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -114,4 +129,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module bcast_ctl_data_4_sph_utils
+      end module input_control_sph_utils

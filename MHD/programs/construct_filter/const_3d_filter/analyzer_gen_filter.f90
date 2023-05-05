@@ -36,6 +36,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter                                &
+     &                        :: fname_filter_ctl = "ctl_filter"
+!
 !
       type(ctl_data_gen_3d_filter), save :: filter3d_ctl1
       type(field_IO_params), save ::  mesh_filter_file
@@ -103,8 +106,11 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'load_control_4_gen_filter'
-      call load_control_4_gen_filter(filter3d_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_filter'
+      if(my_rank .eq. 0) then
+        call read_control_4_gen_filter(fname_filter_ctl, filter3d_ctl1)
+      end if
+      call bcast_const_filter_ctl_data(filter3d_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
       call set_controls_gen_3dfilter(filter3d_ctl1, FEM_elen_f,         &

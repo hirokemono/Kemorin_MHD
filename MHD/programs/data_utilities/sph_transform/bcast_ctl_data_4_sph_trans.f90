@@ -7,7 +7,7 @@
 !> @brief Control data structure for visualization controls
 !!
 !!@verbatim
-!!      subroutine load_control_data_sph_trans(spt_ctl)
+!!      subroutine bcast_sph_trans_control_data(spt_ctl)
 !!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !!@endverbatim
       module bcast_ctl_data_4_sph_trans
@@ -22,31 +22,12 @@
       character (len = kchara), parameter, private                      &
      &                :: fname_sph_trns_ctl = 'ctl_sph_transform'
 !
-      private :: bcast_sph_trans_control_data
       private :: bcast_sph_trans_model_ctl, bcast_sph_trans_params_ctl
 !
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine load_control_data_sph_trans(spt_ctl)
-!
-      use ctl_data_sph_trans_IO
-!
-      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-!
-!
-      if(my_rank .eq. 0) then
-        call read_control_data_sph_trans(fname_sph_trns_ctl, spt_ctl)
-      end if
-!
-      call bcast_sph_trans_control_data(spt_ctl)
-!
-      end subroutine load_control_data_sph_trans
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine bcast_sph_trans_control_data(spt_ctl)

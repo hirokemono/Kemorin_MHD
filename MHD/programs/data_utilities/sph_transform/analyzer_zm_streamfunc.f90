@@ -24,6 +24,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter, private                      &
+     &                :: fname_sph_trns_ctl = 'ctl_sph_transform'
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -36,7 +39,7 @@
       use t_SPH_mesh_field_data
       use m_elapsed_labels_4_VIZ
       use FEM_to_VIZ_bridge
-      use bcast_ctl_data_4_sph_trans
+      use input_controls_sph_trans
 !
 !
       call init_elapse_time_by_TOTAL
@@ -46,9 +49,8 @@
 !   ----  read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'load_control_data_sph_trans'
-      call load_control_data_sph_trans(spt_ctl1)
+      call load_control_data_sph_trans(fname_sph_trns_ctl, spt_ctl1)
       call set_ctl_data_4_zm_streamline(spt_ctl1%fld_ctl%field_ctl)
-!
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans(spt_ctl1, t_STR, SPH_TRNS,        &
      &                                FEM_STR1, SPH_STR1)
