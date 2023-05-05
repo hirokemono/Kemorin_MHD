@@ -7,16 +7,21 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine set_control_param_repartition(part_tctl, part_prog_p)
-!!        type(mesh_test_control), intent(in) :: part_tctl
+!!      subroutine input_control_new_partition(ctl_file_name,           &
+!!     &                                       part_prog_p)
+!!      subroutine input_control_field_to_repart(ctl_file_name,         &
+!!     &                                       part_prog_p, t_viz_param)
 !!        type(vol_partion_prog_param), intent(inout) :: part_prog_p
+!!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!@endverbatim
 !
       module t_control_param_repartition
 !
       use m_precision
+      use calypso_mpi
       use t_file_IO_parameter
       use t_control_param_vol_grping
+      use t_ctl_file_volume_grouping
 !
       implicit none
 !
@@ -36,13 +41,86 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine input_control_new_partition(ctl_file_name,             &
+     &                                       part_prog_p)
+!
+      character(len = kchara), intent(in) :: ctl_file_name
+      type(vol_partion_prog_param), intent(inout) :: part_prog_p
+!
+      type(new_patition_test_control) :: part_tctl
+!
+!
+      if(my_rank .eq. 0) then
+        call read_ctl_file_new_partition(ctl_file_name, part_tctl)
+      end if
+      call bcast_control_new_partition(part_tctl)
+      call set_control_param_repartition(part_tctl, part_prog_p)
+      call dealloc_control_new_partition(part_tctl)
+!
+      end subroutine input_control_new_partition
+!
+!   --------------------------------------------------------------------
+!
+      subroutine input_control_field_to_repart(ctl_file_name,           &
+     &                                       part_prog_p, t_viz_param)
+!
+      use t_VIZ_only_step_parameter
+!
+      character(len = kchara), intent(in) :: ctl_file_name
+      type(vol_partion_prog_param), intent(inout) :: part_prog_p
+      type(time_step_param_w_viz), intent(inout) :: t_viz_param
+!
+      type(new_patition_test_control) :: part_tctl
+      integer(kind = kint) :: ierr
+!
+!
+      if(my_rank .eq. 0) then
+        call read_ctl_file_new_partition(ctl_file_name, part_tctl)
+      end if
+      call bcast_control_new_partition(part_tctl)
+      call set_control_param_repartition(part_tctl, part_prog_p)
+!
+      call set_fixed_t_step_params_w_viz                                &
+     &   (part_tctl%t_viz_ctl, t_viz_param, ierr, e_message)
+      call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
+      call dealloc_control_new_partition(part_tctl)
+!
+      end subroutine input_control_field_to_repart
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_control_new_partition(part_tctl)
+!
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use bcast_control_arrays
+      use transfer_to_long_integers
+      use bcast_4_platform_ctl
+      use bcast_4_time_step_ctl
+      use bcast_ctl_data_vol_repart
+!
+      type(new_patition_test_control), intent(inout) :: part_tctl
+!
+!
+      call bcast_ctl_data_4_platform(part_tctl%plt)
+      call bcast_ctl_data_4_time_step(part_tctl%t_viz_ctl)
+!
+      call bcast_control_vol_repart(part_tctl%viz_repart_c)
+!
+      call calypso_mpi_bcast_one_int(part_tctl%i_mesh_test_ctl, 0)
+      call calypso_mpi_bcast_character(part_tctl%fname_vol_repart_ctl,  &
+     &                                 cast_long(kchara), 0)
+!
+      end subroutine bcast_control_new_partition
+!
+!   --------------------------------------------------------------------
+!
       subroutine set_control_param_repartition(part_tctl, part_prog_p)
 !
-      use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
 !
-      use t_ctl_file_volume_grouping
       use m_machine_parameter
       use m_file_format_switch
       use set_control_platform_item

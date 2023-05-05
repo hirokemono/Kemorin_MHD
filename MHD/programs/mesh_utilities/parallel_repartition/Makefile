@@ -15,7 +15,6 @@ MOD_VOLUME_REPARTITION = \
 main_repart_by_volume.o \
 analyzer_repart_by_volume.o \
 \
-bcast_control_volume_grping.o \
 t_ctl_file_volume_grouping.o \
 t_control_param_repartition.o
 
@@ -23,7 +22,6 @@ MOD_CHECK_REPARTITION = \
 main_check_repartition.o \
 analyzer_check_repart.o \
 \
-bcast_control_volume_grping.o \
 t_ctl_file_volume_grouping.o \
 t_control_param_repartition.o
 
@@ -31,7 +29,6 @@ MOD_CHECK_REPART_MESH = \
 main_check_repart_by_mesh.o \
 analyzer_chk_repart_by_mesh.o \
 \
-bcast_control_volume_grping.o \
 t_ctl_file_volume_grouping.o \
 t_control_param_repartition.o
 
@@ -39,7 +36,6 @@ MOD_FIX_REPART_MESH = \
 main_fix_repart_by_mesh.o \
 analyzer_fix_repart_by_mesh.o \
 \
-bcast_control_volume_grping.o \
 t_ctl_file_volume_grouping.o \
 t_control_param_repartition.o
 
@@ -48,7 +44,6 @@ MOD_FIELD_TO_NEWPART = \
 main_field_to_repartition.o \
 analyzer_field_to_repart.o \
 \
-bcast_control_volume_grping.o \
 t_ctl_file_volume_grouping.o \
 t_control_param_repartition.o \
 udt_to_new_partition.o

@@ -30,6 +30,8 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &               :: fname_new_part_ctl = "ctl_repartition"
       character(len=kchara), parameter                                  &
      &     :: repart_test_name = 'repart_check.dat'
 !
@@ -50,16 +52,12 @@
       use t_ctl_file_volume_grouping
       use t_const_comm_table
 !
-      use bcast_control_volume_grping
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use nod_phys_send_recv
       use const_element_comm_tables
 !
-      type(new_patition_test_control) :: part_tctl1
-!
-!     --------------------- 
-!
+!     ---------------------
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_repartition
       call elpsed_label_4_sleeve_ext
@@ -68,8 +66,7 @@
 !
 !     ----- read control data
 !
-      call load_ctl_file_new_partition(part_tctl1)
-      call set_control_param_repartition(part_tctl1, part_p1)
+      call input_control_new_partition(fname_new_part_ctl, part_p1)
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'

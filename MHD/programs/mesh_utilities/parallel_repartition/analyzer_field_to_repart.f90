@@ -33,6 +33,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &               :: fname_new_part_ctl = "ctl_repartition"
+!
       type(mesh_data), save :: fem_T
       type(communication_table) :: ele_comm_T
       type(mesh_data), save :: new_fem_T
@@ -64,7 +67,6 @@
       use t_jacobians
       use t_shape_functions
 !
-      use bcast_control_volume_grping
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use field_to_new_partition
@@ -77,7 +79,6 @@
 !
 !>     Stracture for Jacobians
 !
-      type(new_patition_test_control) :: part_tctl1
       type(next_nod_ele_table) :: next_tbl1
       type(jacobians_type) :: jacobians1
       type(shape_finctions_at_points) :: spfs1
@@ -99,13 +100,8 @@
 !
 !     ----- read control data
 !
-      call load_ctl_file_new_partition(part_tctl1)
-!
-      call set_control_param_repartition(part_tctl1, part_p1)
-      
-      call set_fixed_t_step_params_w_viz                                &
-     &   (part_tctl1%t_viz_ctl, t_VIZ_T, ierr, e_message)
-      call copy_delta_t(t_VIZ_T%init_d, t_VIZ_T%time_d)
+      call input_control_field_to_repart(fname_new_part_ctl,            &
+     &                                   part_p1, t_VIZ_T)
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
