@@ -4,16 +4,13 @@
       use iso_c_binding
       use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
-      use t_control_data_surfacings
-      use t_control_data_dynamo_vizs
+      use t_ctl_data_sph_MHD_w_psf
 !
       implicit none
 !
       type(mhd_simulation_control), save :: MHD_ctl_C
       type(add_sgs_sph_mhd_ctl), save, private :: add_SSMHD_ctl_C
-      type(mhd_simulation_control), save :: DNS_MHD_ctl
-      type(surfacing_controls), save :: surfacing_ctls_C
-      type(sph_dynamo_viz_controls), save :: zm_ctls_C
+      type(add_viz_sph_mhd_ctl), save :: add_SMHD_ctl_C
       integer(kind = kint), parameter :: id_ctl = 11
 !
 !  ---------------------------------------------------------------------
@@ -77,8 +74,8 @@
 !
       call calypso_MPI_init
 !
-      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl,      &
-     &                                  surfacing_ctls_C, zm_ctls_C)
+      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, MHD_ctl_C,        &
+     &                                  add_SMHD_ctl_C)
       call calypso_MPI_finalize
 !
       end subroutine c_read_control_sph_MHD

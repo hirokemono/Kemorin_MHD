@@ -24,8 +24,7 @@
       use m_SPH_MHD_model_data
       use t_SPH_mesh_field_data
       use t_ctl_data_MHD
-      use t_control_data_surfacings
-      use t_control_data_dynamo_vizs
+      use t_ctl_data_sph_MHD_w_psf
       use t_field_on_circle
       use t_field_4_dynamobench
       use t_step_parameter
@@ -40,10 +39,8 @@
      &                      :: snap_ctl_name = 'control_snapshot'
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save, private :: DNS_MHD_ctl1
-!>        Structures of visualization controls
-      type(surfacing_controls), save, private :: surfacing_ctls_M
-!>        Structures of zonal mean controls
-      type(sph_dynamo_viz_controls), save, private :: zm_ctls_MM
+!>      Additional structures for spherical MHD dynamo with viz module
+      type(add_viz_sph_mhd_ctl), save, private :: add_SMHD_ctl1
       private :: snap_ctl_name
 !
 !>      Structure of spectr grid and data
@@ -78,11 +75,11 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_sph_MHD_w_psf'
       call load_control_4_sph_MHD_w_psf(snap_ctl_name, DNS_MHD_ctl1,    &
-     &                                  surfacing_ctls_M, zm_ctls_MM)
+     &                                  add_SMHD_ctl1)
 
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
       call input_control_SPH_dynamobench(MHD_files1, SPH_model1%bc_IO,  &
-     &    SPH_model1%refs, DNS_MHD_ctl1, zm_ctls_MM, SPH_MHD1,          &
+     &    SPH_model1%refs, DNS_MHD_ctl1, add_SMHD_ctl1%zm_ctls, SPH_MHD1,          &
      &    FEM_d1%field, MHD_step1, SPH_model1%MHD_prop,                 &
      &    SPH_model1%MHD_BC, SPH_WK1, cdat1, bench1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)

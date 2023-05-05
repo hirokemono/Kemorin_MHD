@@ -13,12 +13,11 @@
 !!
 !!@verbatim
 !!      subroutine load_control_4_sph_MHD_w_psf(file_name, MHD_ctl,     &
-!!     &                                        surfacing_ctls, zm_ctls)
+!!     &                                        add_SMHD_ctl)
 !!      subroutine load_control_4_sph_MHD_noviz(file_name, MHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(surfacing_controls), intent(inout) :: surfacing_ctls
-!!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+!!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !!@endverbatim
 !
       module bcast_control_sph_MHD
@@ -28,6 +27,7 @@
       use calypso_mpi
       use m_machine_parameter
       use t_ctl_data_MHD
+      use t_ctl_data_sph_MHD_w_psf
 !
       implicit none
 !
@@ -40,28 +40,25 @@
 ! ----------------------------------------------------------------------
 !
       subroutine load_control_4_sph_MHD_w_psf(file_name, MHD_ctl,       &
-     &                                        surfacing_ctls, zm_ctls)
+     &                                        add_SMHD_ctl)
 !
-      use t_control_data_surfacings
-      use t_control_data_dynamo_vizs
       use ctl_file_sph_MHD_IO
       use bcast_ctl_sph_mhd_control
       use bcast_ctl_data_surfacings
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(surfacing_controls), intent(inout) :: surfacing_ctls
-      type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
+      type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !
 !
       if(my_rank .eq. 0) then
         call read_control_4_sph_MHD_w_psf(file_name, MHD_ctl,          &
-     &                                    surfacing_ctls, zm_ctls)
+     &                                    add_SMHD_ctl)
       end if
 !
       call bcast_sph_mhd_ctl_data(MHD_ctl)
-      call bcast_surfacing_controls(surfacing_ctls)
-      call bcast_dynamo_viz_control(zm_ctls)
+      call bcast_surfacing_controls(add_SMHD_ctl%surfacing_ctls)
+      call bcast_dynamo_viz_control(add_SMHD_ctl%zm_ctls)
 !
       end subroutine load_control_4_sph_MHD_w_psf
 !
