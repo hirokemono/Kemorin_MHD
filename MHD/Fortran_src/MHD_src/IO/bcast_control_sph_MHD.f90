@@ -16,7 +16,7 @@
 !!     &                                        surfacing_ctls, zm_ctls)
 !!      subroutine load_control_4_sph_MHD_noviz(file_name, MHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
-!!        type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(surfacing_controls), intent(inout) :: surfacing_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!@endverbatim
@@ -49,7 +49,7 @@
       use bcast_ctl_data_surfacings
 !
       character(len=kchara), intent(in) :: file_name
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(surfacing_controls), intent(inout) :: surfacing_ctls
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !
@@ -72,7 +72,7 @@
       use ctl_file_sph_MHD_IO
 !
       character(len=kchara), intent(in) :: file_name
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
       if(my_rank .eq. 0) then
@@ -99,7 +99,7 @@
       use bcast_ctl_sph_mhd_control
       use bcast_monitor_data_ctl
 !
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
       call bcast_ctl_data_4_platform(MHD_ctl%plt)

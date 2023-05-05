@@ -92,7 +92,7 @@
      &                    :: hd_sph_shell = 'spherical_shell_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_model =   'model'
-      character(len=kchara), parameter , private                        &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_control = 'control'
       character(len=kchara), parameter, private                         &
      &                    :: hd_pick_sph = 'sph_monitor_ctl'
@@ -100,7 +100,7 @@
      &                    :: hd_monitor_data = 'monitor_data_ctl'
 !
       character(len=kchara), parameter, private                         &
-     &                    :: hd_viz_control = 'visual_control'
+     &                    :: hd_viz_ctl = 'visual_control'
       character(len=kchara), parameter, private                         &
      &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
 !
@@ -164,7 +164,7 @@
         call read_sph_monitoring_ctl                                    &
      &     (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, c_buf)
 !
-        call s_read_viz_controls(id_control, hd_viz_control,            &
+        call s_read_viz_controls(id_control, hd_viz_ctl,                &
      &                           viz_ctls, c_buf)
 !
         call read_dynamo_viz_control                                    &
@@ -227,7 +227,7 @@
       call write_sph_monitoring_ctl                                     &
      &   (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, level)
 !
-      call write_viz_controls(id_control, hd_viz_control,               &
+      call write_viz_controls(id_control, hd_viz_ctl,                   &
      &                        viz_ctls, level)
       call write_dynamo_viz_control                                     &
      &   (id_control, hd_dynamo_viz_ctl, zm_ctls, level)

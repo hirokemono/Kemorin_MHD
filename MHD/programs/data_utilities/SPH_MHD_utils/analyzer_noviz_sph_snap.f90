@@ -43,7 +43,7 @@
       character(len=kchara), parameter, private                         &
      &                      :: snap_ctl_name = 'control_snapshot'
 !>      Control struture for MHD simulation
-      type(DNS_mhd_simulation_control), save, private :: DNS_MHD_ctl1
+      type(mhd_simulation_control), save, private :: DNS_MHD_ctl1
 !>        Structures of visualization controls
       type(surfacing_controls), save, private :: surfacing_ctls_M
 !>      Structures of zonal mean controls

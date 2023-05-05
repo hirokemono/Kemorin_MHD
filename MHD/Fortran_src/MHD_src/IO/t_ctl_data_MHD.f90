@@ -17,7 +17,7 @@
 !!     &         (id_control, hd_block, MHD_ctl, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(surfacing_controls), intent(inout) :: surfacing_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
@@ -27,17 +27,17 @@
 !!     &         (id_control, hd_block, MHD_ctl, level)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(DNS_mhd_simulation_control), intent(in) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(in) :: MHD_ctl
 !!        type(surfacing_controls), intent(in) :: surfacing_ctls
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine dealloc_sph_mhd_ctl_w_psf(surfacing_ctls, zm_ctls)
-!!        type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(surfacing_controls), intent(inout) :: surfacing_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!      subroutine dealloc_sph_mhd_ctl_data(MHD_ctl)
-!!        type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!@endverbatim
 !
       module t_ctl_data_MHD
@@ -56,7 +56,7 @@
       implicit none
 !
 !
-      type DNS_mhd_simulation_control
+      type mhd_simulation_control
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !>        Control structure for orginal file informations
@@ -80,7 +80,7 @@
         type(node_monitor_control) :: nmtr_ctl
 !
         integer (kind=kint) :: i_mhd_ctl = 0
-      end type DNS_mhd_simulation_control
+      end type mhd_simulation_control
 !
 !   2nd level for MHD
 !
@@ -97,7 +97,7 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_control = 'control'
       character(len=kchara), parameter, private                         &
-     &                     :: hd_pick_sph = 'sph_monitor_ctl'
+     &                    :: hd_pick_sph = 'sph_monitor_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_monitor_data = 'monitor_data_ctl'
 !
@@ -130,7 +130,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(surfacing_controls), intent(inout) :: surfacing_ctls
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
@@ -186,7 +186,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -237,7 +237,7 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(DNS_mhd_simulation_control), intent(in) :: MHD_ctl
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
       type(surfacing_controls), intent(in) :: surfacing_ctls
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !
@@ -291,7 +291,7 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(DNS_mhd_simulation_control), intent(in) :: MHD_ctl
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
 !
       integer(kind = kint), intent(inout) :: level
 !
@@ -343,7 +343,7 @@
 !
       subroutine dealloc_sph_mhd_ctl_data(MHD_ctl)
 !
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
       call reset_control_platforms(MHD_ctl%plt)

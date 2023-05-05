@@ -13,7 +13,7 @@
 !
       type(sph_sgs_mhd_control), save :: MHD_ctl_C
       type(SGS_model_control), save :: sgs_ctl_C
-      type(DNS_mhd_simulation_control), save :: DNS_MHD_ctl
+      type(mhd_simulation_control), save :: DNS_MHD_ctl
       type(visualization_controls), save :: viz_ctls_C
       type(surfacing_controls), save :: surfacing_ctls_C
       type(sph_dynamo_viz_controls), save :: zm_ctls_C

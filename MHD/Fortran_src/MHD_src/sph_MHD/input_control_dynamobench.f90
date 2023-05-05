@@ -15,7 +15,7 @@
 !!        type(boundary_spectra), intent(inout) :: bc_IO
 !!        type(radial_reference_field), intent(inout) :: refs
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!!        type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -79,7 +79,7 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
       type(radial_reference_field), intent(inout) :: refs
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !

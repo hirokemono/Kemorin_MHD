@@ -15,14 +15,14 @@
 !!     &         (file_name, MHD_ctl, surfacing_ctls, zm_ctls)
 !!      subroutine read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
-!!        type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(surfacing_controls), intent(inout) :: surfacing_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!      subroutine write_control_4_sph_MHD_w_psf(file_name,             &
 !!     &          MHD_ctl, surfacing_ctls, zm_ctls)
 !!      subroutine write_control_4_sph_MHD_noviz(file_name, MHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
-!!        type(DNS_mhd_simulation_control), intent(in) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(in) :: MHD_ctl
 !!        type(surfacing_controls), intent(in) :: surfacing_ctls
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!@endverbatim
@@ -60,7 +60,7 @@
       use t_control_data_dynamo_vizs
 !
       character(len=kchara), intent(in) :: file_name
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(surfacing_controls), intent(inout) :: surfacing_ctls
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !
@@ -89,7 +89,7 @@
       subroutine read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
 !
       character(len=kchara), intent(in) :: file_name
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
@@ -117,7 +117,7 @@
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
-      type(DNS_mhd_simulation_control), intent(in) :: MHD_ctl
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
       type(surfacing_controls), intent(in) :: surfacing_ctls
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !
@@ -145,7 +145,7 @@
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
-      type(DNS_mhd_simulation_control), intent(in) :: MHD_ctl
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
 !
       integer(kind = kint) :: level1
 !

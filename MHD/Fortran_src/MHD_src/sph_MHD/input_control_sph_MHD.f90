@@ -17,7 +17,7 @@
 !!     &         (MHD_files, MHD_ctl, zm_ctls, MHD_step, SPH_model,     &
 !!     &          SPH_WK, SPH_MHD, FEM_dat)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
-!!        type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -69,7 +69,7 @@
       use parallel_load_data_4_sph
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -117,7 +117,7 @@
       use set_control_4_SPH_to_FEM
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -162,7 +162,7 @@
       use set_control_4_SPH_to_FEM
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !
       type(MHD_step_param), intent(inout) :: MHD_step

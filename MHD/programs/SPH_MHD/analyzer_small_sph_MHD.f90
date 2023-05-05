@@ -37,7 +37,7 @@
 !>      File name for control file
       character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
 !>      Control struture for MHD simulation
-      type(DNS_mhd_simulation_control), save :: DNS_MHD_ctl1
+      type(mhd_simulation_control), save :: DNS_MHD_ctl1
       private :: MHD_ctl_name, DNS_MHD_ctl1
 !
 !>      Structure of spectr grid and data
