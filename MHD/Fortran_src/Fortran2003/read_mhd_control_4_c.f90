@@ -4,6 +4,7 @@
       use iso_c_binding
       use t_ctl_data_SGS_MHD
       use t_ctl_data_MHD
+      use t_ctl_data_SGS_model
       use t_control_data_vizs
       use t_control_data_surfacings
       use t_control_data_dynamo_vizs
@@ -11,6 +12,7 @@
       implicit none
 !
       type(sph_sgs_mhd_control), save :: MHD_ctl_C
+      type(SGS_model_control), save :: sgs_ctl_C
       type(DNS_mhd_simulation_control), save :: DNS_MHD_ctl
       type(visualization_controls), save :: viz_ctls_C
       type(surfacing_controls), save :: surfacing_ctls_C
@@ -31,7 +33,7 @@
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
 !
       call read_control_4_sph_SGS_MHD(MHD_ctl_name,                     &
-     &    MHD_ctl_C, viz_ctls_C, zm_ctls_C)
+     &    MHD_ctl_C, sgs_ctl_C, viz_ctls_C, zm_ctls_C)
 !
       end subroutine c_read_control_sph_SGS_MHD
 !

@@ -13,8 +13,9 @@
 !!
 !!@verbatim
 !!      subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl,       &
-!!     &                                      viz_ctls)
+!!     &          sgs_ctl, viz_ctls, zm_ctls)
 !!        character(len=kchara), intent(in) :: file_name
+!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
@@ -27,6 +28,7 @@
       use calypso_mpi
       use m_machine_parameter
       use t_ctl_data_SGS_MHD
+      use t_ctl_data_SGS_model
       use t_control_data_vizs
       use t_control_data_dynamo_vizs
 !
@@ -41,24 +43,27 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl,         &
-     &                                      viz_ctls, zm_ctls)
+     &          sgs_ctl, viz_ctls, zm_ctls)
 !
       use ctl_file_SGS_MHD_IO
+      use bcast_ctl_SGS_MHD_model
       use bcast_ctl_sph_mhd_control
       use bcast_control_data_vizs
 !
       character(len=kchara), intent(in) :: file_name
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !
 !
       if(my_rank .eq. 0) then
-        call read_control_4_sph_SGS_MHD(file_name, MHD_ctl,             &
+        call read_control_4_sph_SGS_MHD(file_name, MHD_ctl, sgs_ctl,    &
      &                                  viz_ctls, zm_ctls)
       end if
 !
       call bcast_sph_mhd_control_data(MHD_ctl)
+      call bcast_sgs_ctl(sgs_ctl)
       call bcast_viz_controls(viz_ctls)
       call bcast_dynamo_viz_control(zm_ctls)
 !
@@ -77,7 +82,6 @@
       use bcast_4_sph_monitor_ctl
       use bcast_4_sphere_ctl
       use bcast_ctl_MHD_model
-      use bcast_ctl_SGS_MHD_model
       use bcast_monitor_data_ctl
       use bcast_ctl_sph_mhd_control
 !
@@ -90,7 +94,6 @@
 !
       call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
 !
-      call bcast_sgs_ctl(MHD_ctl%sgs_ctl)
       call bcast_ctl_data_MHD_model(MHD_ctl%model_ctl)
       call bcast_sph_mhd_control(MHD_ctl%smctl_ctl)
 !

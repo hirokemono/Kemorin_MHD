@@ -24,6 +24,7 @@
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
       use t_ctl_data_SGS_MHD
+      use t_ctl_data_SGS_model
       use t_control_data_vizs
       use t_control_data_dynamo_vizs
       use t_field_on_circle
@@ -41,6 +42,8 @@
      &                      :: snap_ctl_name = 'control_snapshot'
 !>      Control struture for MHD simulation
       type(sph_sgs_mhd_control), save, private :: MHD_ctl1
+!>        Structures for SGS controls
+        type(SGS_model_control), save, private :: sgs_ctl_M
 !>        Structures of visualization controls
       type(visualization_controls), save, private :: viz_ctls_M
 !>        Structures of zonal mean controls
@@ -80,14 +83,14 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 's_load_control_sph_SGS_MHD'
       call s_load_control_sph_SGS_MHD(snap_ctl_name, MHD_ctl1,          &
-     &                                viz_ctls_M, zm_ctls_M)
+     &    sgs_ctl_M, viz_ctls_M, zm_ctls_M)
       call dealloc_sph_SGS_MHD_viz_ctl(viz_ctls_M, zm_ctls_M)
 
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl,     &
-     &    MHD_ctl1%sgs_ctl, MHD_files1, SPH_model1%bc_IO,               &
+     &    sgs_ctl_M, MHD_files1, SPH_model1%bc_IO,                      &
      &    SPH_model1%refs, SPH_SGS1%SGS_par, SPH_SGS1%dynamic,          &
      &    MHD_step1, SPH_model1%MHD_prop, SPH_model1%MHD_BC,            &
      &    SPH_WK1%trans_p, SPH_WK1%trns_WK, sph_maker1)
@@ -102,7 +105,7 @@
      &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &
      &    MHD_ctl1%smonitor_ctl%meq_ctl, cdat1%circle, cdat1%d_circle)
 !
-      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl1)
+      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl1, sgs_ctl_M)
 !
 !   Load spherical harmonics data
 !
