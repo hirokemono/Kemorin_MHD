@@ -64,11 +64,9 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      call load_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
-!
       call input_control_4_SPH_MHD_nosnap                               &
-     &   (MHD_files1, DNS_MHD_ctl1, MHD_step1, SPH_model1,              &
-     &    SPH_WK1, SPH_MHD1)
+     &   (MHD_ctl_name, MHD_files1, DNS_MHD_ctl1, MHD_step1,            &
+     &    SPH_model1,  SPH_WK1, SPH_MHD1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !

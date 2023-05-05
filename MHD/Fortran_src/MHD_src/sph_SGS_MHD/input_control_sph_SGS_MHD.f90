@@ -72,7 +72,6 @@
      &                                    add_SSMHD_ctl)
 !
       use bcast_ctl_SGS_MHD_model
-      use bcast_ctl_sph_mhd_control
       use bcast_control_sph_MHD
       use bcast_control_data_vizs
 !

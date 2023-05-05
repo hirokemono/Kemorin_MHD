@@ -7,12 +7,20 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
+!!      subroutine load_control_4_sph_MHD_w_psf(file_name, MHD_ctl,     &
+!!     &                                        add_SMHD_ctl)
+!!      subroutine load_control_4_sph_MHD_noviz(file_name, MHD_ctl)
+!!        character(len=kchara), intent(in) :: file_name
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+!!
 !!      subroutine input_control_SPH_MHD_psf                            &
 !!     &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,      &
 !!     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat)
 !!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
-!!      subroutine input_control_4_SPH_MHD_nosnap(MHD_files, MHD_ctl,   &
-!!     &          MHD_step, SPH_model, SPH_WK, SPH_MHD)
+!!      subroutine input_control_4_SPH_MHD_nosnap                       &
+!!     &         (ctl_file_name, MHD_files, MHD_ctl, MHD_step,          &
+!!     &          SPH_model, SPH_WK, SPH_MHD)
 !!
 !!      subroutine input_control_4_SPH_make_init                        &
 !!     &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,      &
@@ -63,6 +71,52 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine load_control_4_sph_MHD_w_psf(file_name, MHD_ctl,       &
+     &                                        add_SMHD_ctl)
+!
+      use t_ctl_data_MHD
+      use t_ctl_data_sph_MHD_w_psf
+      use bcast_control_sph_MHD
+      use bcast_ctl_data_surfacings
+!
+      character(len=kchara), intent(in) :: file_name
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+!
+!
+      if(my_rank .eq. 0) then
+        call read_control_4_sph_MHD_w_psf(file_name, MHD_ctl,          &
+     &                                    add_SMHD_ctl)
+      end if
+!
+      call bcast_sph_mhd_control_data(MHD_ctl)
+      call bcast_surfacing_controls(add_SMHD_ctl%surfacing_ctls)
+      call bcast_dynamo_viz_control(add_SMHD_ctl%zm_ctls)
+!
+      end subroutine load_control_4_sph_MHD_w_psf
+!
+! ----------------------------------------------------------------------
+!
+      subroutine load_control_4_sph_MHD_noviz(file_name, MHD_ctl)
+!
+      use t_ctl_data_MHD
+      use bcast_control_sph_MHD
+!
+      character(len=kchara), intent(in) :: file_name
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+!
+!
+      if(my_rank .eq. 0) then
+        call read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
+      end if
+!
+      call bcast_sph_mhd_control_data(MHD_ctl)
+!
+      end subroutine load_control_4_sph_MHD_noviz
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
       subroutine input_control_SPH_MHD_psf                              &
      &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,        &
      &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat)
@@ -76,7 +130,6 @@
       use sph_file_IO_select
       use set_control_4_SPH_to_FEM
       use parallel_load_data_4_sph
-      use bcast_control_sph_MHD
 !
       character(len=kchara), intent(in) :: ctl_file_name
       type(MHD_file_IO_params), intent(inout) :: MHD_files
@@ -128,14 +181,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_SPH_MHD_nosnap(MHD_files, MHD_ctl,     &
-     &          MHD_step, SPH_model, SPH_WK, SPH_MHD)
+      subroutine input_control_4_SPH_MHD_nosnap                         &
+     &         (ctl_file_name, MHD_files, MHD_ctl, MHD_step,            &
+     &          SPH_model, SPH_WK, SPH_MHD)
 !
       use t_ctl_data_MHD
       use set_control_sph_mhd
       use parallel_load_data_4_sph
       use set_control_4_SPH_to_FEM
 !
+      character(len=kchara), intent(in) :: ctl_file_name
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
@@ -146,6 +201,10 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
+!  Read control file
+      call load_control_4_sph_MHD_noviz(ctl_file_name, MHD_ctl)
+!
+!  Set parameters from control
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
      &   (MHD_ctl%plt, MHD_ctl%org_plt, MHD_ctl%model_ctl,              &
@@ -181,7 +240,6 @@
       use set_control_sph_mhd
       use parallel_load_data_4_sph
       use set_control_4_SPH_to_FEM
-      use bcast_control_sph_MHD
 !
       character(len=kchara), intent(in) :: ctl_file_name
       type(MHD_file_IO_params), intent(inout) :: MHD_files
@@ -245,7 +303,6 @@
       use t_field_4_dynamobench
       use set_control_sph_mhd
       use set_control_sph_data_MHD
-      use bcast_control_sph_MHD
 !
       character(len=kchara), intent(in) :: ctl_file_name
       type(MHD_file_IO_params), intent(inout) :: MHD_files
