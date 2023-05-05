@@ -12,18 +12,22 @@
 !!
 !!@verbatim
 !!      subroutine read_control_4_fem_MHD                               &
-!!     &         (file_name, FEM_MHD_ctl, viz_ctls)
+!!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!      subroutine write_control_4_fem_MHD                              &
-!!     &         (file_name, FEM_MHD_ctl, viz_ctls)
+!!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+!!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!
-!!      subroutine dealloc_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
+!!      subroutine dealloc_fem_mhd_ctl_data                             &
+!!     &        (FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!@endverbatim
 !
@@ -36,7 +40,6 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_MHD_model
       use t_ctl_data_FEM_MHD_control
-      use t_ctl_data_SGS_model
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_control_data_vizs
@@ -58,8 +61,6 @@
         type(mhd_model_control) :: model_ctl
 !>        Control structure for MHD/control
         type(fem_mhd_control_control) :: fmctl_ctl
-!>        Structures for SGS controls
-        type(SGS_model_control) :: sgs_ctl
 !
 !>        Structure for spectr monitoring control
         type(sph_monitor_control) :: smonitor_ctl
@@ -106,12 +107,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_control_4_fem_MHD                                 &
-     &         (file_name, FEM_MHD_ctl, viz_ctls)
+     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !
+      use t_ctl_data_SGS_model
       use viz_step_ctls_to_time_ctl
 !
       character(len=kchara), intent(in) :: file_name
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
 !
       type(buffer_for_control) :: c_buf1
@@ -122,7 +125,7 @@
       do
         call load_one_line_from_control(ctl_file_code, c_buf1)
         call read_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,       &
-     &      FEM_MHD_ctl, viz_ctls, c_buf1)
+     &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf1)
         if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(ctl_file_code)
@@ -137,13 +140,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_control_4_fem_MHD                                &
-     &         (file_name, FEM_MHD_ctl, viz_ctls)
+     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !
+      use t_ctl_data_SGS_model
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
-      type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
-      type(visualization_controls), intent(inout) :: viz_ctls
+      type(fem_mhd_control), intent(in) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(in) :: sgs_ctl
+      type(visualization_controls), intent(in) :: viz_ctls
 !
       integer(kind = kint) :: level1
 !
@@ -157,7 +162,7 @@
       level1 = 0
       open(ctl_file_code, file = file_name)
       call write_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,        &
-     &    FEM_MHD_ctl, viz_ctls, level1)
+     &    FEM_MHD_ctl, sgs_ctl, viz_ctls, level1)
       close(ctl_file_code)
 !
       end subroutine write_control_4_fem_MHD
@@ -166,9 +171,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_fem_mhd_control_data(id_control, hd_block,        &
-     &          FEM_MHD_ctl, viz_ctls, c_buf)
+     &          FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
 !
-      use calypso_mpi
+      use t_ctl_data_SGS_model
+!
       use ctl_data_SGS_MHD_model_IO
       use ctl_data_platforms_IO
       use ctl_data_viualiser_IO
@@ -177,6 +183,7 @@
       character(len=kchara), intent(in) :: hd_block
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
@@ -194,7 +201,7 @@
      &     (id_control, hd_org_data, FEM_MHD_ctl%org_plt, c_buf)
 !
         call read_sph_sgs_mhd_model(id_control, hd_model,               &
-     &      FEM_MHD_ctl%model_ctl, FEM_MHD_ctl%sgs_ctl, c_buf)
+     &      FEM_MHD_ctl%model_ctl, sgs_ctl, c_buf)
         call read_fem_mhd_control                                       &
      &     (id_control, hd_control, FEM_MHD_ctl%fmctl_ctl, c_buf)
 !
@@ -210,9 +217,10 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_fem_mhd_control_data(id_control, hd_block,       &
-     &          FEM_MHD_ctl, viz_ctls, level)
+     &          FEM_MHD_ctl, sgs_ctl, viz_ctls, level)
 !
-      use calypso_mpi
+      use t_ctl_data_SGS_model
+!
       use ctl_data_SGS_MHD_model_IO
       use ctl_data_platforms_IO
       use ctl_data_viualiser_IO
@@ -222,6 +230,7 @@
       character(len=kchara), intent(in) :: hd_block
 !
       type(fem_mhd_control), intent(in) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(in) :: sgs_ctl
       type(visualization_controls), intent(in) :: viz_ctls
       integer(kind = kint), intent(inout) :: level
 !
@@ -237,7 +246,7 @@
      &   (id_control, hd_org_data, FEM_MHD_ctl%org_plt, level)
 !
       call write_sph_sgs_mhd_model(id_control, hd_model,                &
-     &    FEM_MHD_ctl%model_ctl, FEM_MHD_ctl%sgs_ctl, level)
+     &    FEM_MHD_ctl%model_ctl, sgs_ctl, level)
       call write_fem_mhd_control                                        &
      &   (id_control, hd_control, FEM_MHD_ctl%fmctl_ctl, level)
 !
@@ -252,16 +261,20 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
+      subroutine dealloc_fem_mhd_ctl_data                               &
+     &        (FEM_MHD_ctl, sgs_ctl, viz_ctls)
+!
+      use t_ctl_data_SGS_model
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
+      type(SGS_model_control), intent(inout) :: sgs_ctl
 !
 !
       call reset_control_platforms(FEM_MHD_ctl%plt)
       call reset_control_platforms(FEM_MHD_ctl%org_plt)
 !
-      call dealloc_sgs_ctl(FEM_MHD_ctl%sgs_ctl)
+      call dealloc_sgs_ctl(sgs_ctl)
       call dealloc_sph_mhd_model(FEM_MHD_ctl%model_ctl)
       call dealloc_fem_mhd_control(FEM_MHD_ctl%fmctl_ctl)
 !

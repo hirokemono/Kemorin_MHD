@@ -36,27 +36,35 @@
 ! ----------------------------------------------------------------------
 !
       subroutine load_control_4_fem_MHD                                 &
-     &         (file_name, FEM_MHD_ctl, viz_ctls)
+     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !
       use t_ctl_data_FEM_MHD
+      use t_ctl_data_SGS_model
+      use t_control_data_vizs
+      use bcast_ctl_SGS_MHD_model
+      use bcast_control_data_vizs
 !
       character(len=kchara), intent(in) :: file_name
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
       if(my_rank .eq. 0) then
-        call read_control_4_fem_MHD(file_name, FEM_MHD_ctl, viz_ctls)
+        call read_control_4_fem_MHD(file_name,                          &
+     &      FEM_MHD_ctl, sgs_ctl, viz_ctls)
       end if
 !
-      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
+      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
+      call bcast_sgs_ctl(sgs_ctl)
+      call bcast_viz_controls(viz_ctls)
 !
       end subroutine load_control_4_fem_MHD
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
+      subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
 !
       use calypso_mpi_int
       use bcast_4_platform_ctl
@@ -64,24 +72,18 @@
       use bcast_4_sph_monitor_ctl
       use bcast_4_sphere_ctl
       use bcast_ctl_MHD_model
-      use bcast_ctl_SGS_MHD_model
       use bcast_monitor_data_ctl
-      use bcast_control_data_vizs
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
-      type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%plt)
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%org_plt)
 !
-      call bcast_sgs_ctl(FEM_MHD_ctl%sgs_ctl)
       call bcast_ctl_data_MHD_model(FEM_MHD_ctl%model_ctl)
       call bcast_fem_mhd_control_ctl(FEM_MHD_ctl%fmctl_ctl)
 !
       call bcast_node_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
-!
-      call bcast_viz_controls(viz_ctls)
 !
       call calypso_mpi_bcast_one_int(FEM_MHD_ctl%i_mhd_ctl, 0)
 !

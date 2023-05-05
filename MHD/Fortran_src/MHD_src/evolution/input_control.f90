@@ -59,6 +59,7 @@
       use t_phys_data
       use t_field_data_IO
       use t_ctl_data_FEM_MHD
+      use t_ctl_data_SGS_model
       use t_FEM_MHD_solvers
       use t_bc_data_list
       use t_flex_delta_t_data
@@ -72,9 +73,10 @@
      &                      :: snap_ctl_name = 'control_snapshot'
 !
 !>      Control struture for MHD simulation
-      type(fem_mhd_control), save :: FEM_MHD_ctl
+      type(fem_mhd_control), save, private :: FEM_MHD_ctl1
+!>      Structures for SGS controls
+      type(SGS_model_control), save, private :: sgs_ctl_F
 !
-      private :: FEM_MHD_ctl
       private :: input_meshes_4_MHD, boundary_file_IO_control
       private :: input_MG_mesh_4_FEM_MHD
 !
@@ -115,17 +117,18 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_fem_MHD'
-      call load_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl, viz_ctls)
+      call load_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl1,           &
+     &                            sgs_ctl_F, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD(FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt,  &
-     &    FEM_MHD_ctl%sgs_ctl, FEM_MHD_ctl%model_ctl,                   &
-     &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl,                  &
+      call set_control_4_FEM_MHD(FEM_MHD_ctl1%plt,                      &
+     &    FEM_MHD_ctl1%org_plt, sgs_ctl_F, FEM_MHD_ctl1%model_ctl,      &
+     &    FEM_MHD_ctl1%fmctl_ctl, FEM_MHD_ctl1%nmtr_ctl,                &
      &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
      &    nod_fld, ele_fld)
-      call dealloc_sgs_ctl(FEM_MHD_ctl%sgs_ctl)
-      call dealloc_sph_mhd_model(FEM_MHD_ctl%model_ctl)
+      call dealloc_sgs_ctl(sgs_ctl_F)
+      call dealloc_sph_mhd_model(FEM_MHD_ctl1%model_ctl)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(MHD_files%mesh_file_IO, nprocs, femmesh)
@@ -175,17 +178,18 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_fem_MHD'
-      call load_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl, viz_ctls)
+      call load_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl1,          &
+     &                            sgs_ctl_F, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD(FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt,  &
-     &    FEM_MHD_ctl%sgs_ctl, FEM_MHD_ctl%model_ctl,                   &
-     &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl,                  &
+      call set_control_4_FEM_MHD(FEM_MHD_ctl1%plt,                      &
+     &    FEM_MHD_ctl1%org_plt, sgs_ctl_F, FEM_MHD_ctl1%model_ctl,      &
+     &    FEM_MHD_ctl1%fmctl_ctl, FEM_MHD_ctl1%nmtr_ctl,                &
      &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
      &    nod_fld, ele_fld)
-      call dealloc_sgs_ctl(FEM_MHD_ctl%sgs_ctl)
-      call dealloc_sph_mhd_model(FEM_MHD_ctl%model_ctl)
+      call dealloc_sgs_ctl(sgs_ctl_F)
+      call dealloc_sph_mhd_model(FEM_MHD_ctl1%model_ctl)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh                                               &
