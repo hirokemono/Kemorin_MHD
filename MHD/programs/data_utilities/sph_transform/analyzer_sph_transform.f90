@@ -47,7 +47,6 @@
 ! ----   read controls
       if (iflag_debug.gt.0) write(*,*) 'load_control_data_sph_trans'
       call load_control_data_sph_trans(spt_ctl1)
-!
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_transform'
       call set_control_4_sph_transform                                  &
      &   (spt_ctl1, t_STR, SPH_TRNS, FEM_STR1, SPH_STR1)

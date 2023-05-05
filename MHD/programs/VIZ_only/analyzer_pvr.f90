@@ -23,6 +23,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_viz_ctl = "control_viz"
+!
 !>         Structure for time stepping parameters
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ3
@@ -47,7 +50,7 @@
 !
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
-      use bcast_control_four_vizs
+      use input_control_four_vizs
       use volume_rendering
 !
       integer(kind = kint) :: ierr
@@ -59,11 +62,10 @@
 
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
-!     read controls
-      if (iflag_debug.gt.0) write(*,*) 'load_control_file_four_vizs'
-      call load_control_file_four_vizs(pvr_ctl3)
-      call set_ctl_params_four_vizs(pvr_ctl3, FEM_viz3, t_VIZ3, ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
+!  Load controls
+      if (iflag_debug.gt.0) write(*,*) 's_inoput_control_four_vizs'
+      call s_input_control_four_vizs(fname_viz_ctl, pvr_ctl3,           &
+     &                               FEM_viz3, t_VIZ3)
 !
 !  FEM Initialization
       call FEM_initialize_four_vizs(t_VIZ3%init_d, t_VIZ3%ucd_step,     &

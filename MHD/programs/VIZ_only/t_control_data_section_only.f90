@@ -51,8 +51,6 @@
 !
 !
       integer(kind = kint), parameter :: viz_ctl_file_code = 11
-      character(len = kchara), parameter                                &
-     &                        :: fname_viz_ctl = "control_viz"
 !
 !>      Structure of control data for sectioning only
       type control_data_section_only

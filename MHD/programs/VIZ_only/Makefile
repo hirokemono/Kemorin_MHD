@@ -42,7 +42,7 @@ FEM_analyzer_viz.o \
 t_FEM_mesh_field_4_viz.o \
 t_control_data_all_vizs.o \
 t_field_list_for_vizs.o \
-bcast_control_data_all_vizs.o
+input_control_all_vizs.o
 
 MOD_PSF_PLUG = \
 main_surface_rendering.o \
@@ -51,7 +51,7 @@ FEM_analyzer_viz_surf.o \
 t_FEM_mesh_field_4_viz.o \
 t_control_data_section_only.o \
 t_field_list_for_vizs.o \
-bcast_control_section_only.o
+input_control_section_only.o
 
 MOD_FOUR_VIZS_PLUG =  \
 main_four_visualizations.o  \
@@ -60,7 +60,7 @@ FEM_analyzer_four_vizs.o \
 t_FEM_mesh_field_4_viz.o \
 t_control_data_four_vizs.o \
 t_field_list_for_vizs.o \
-bcast_control_four_vizs.o
+input_control_four_vizs.o
 
 MOD_PVR_PLUG =  \
 main_pvr.o  \
@@ -69,7 +69,7 @@ FEM_analyzer_four_vizs.o \
 t_FEM_mesh_field_4_viz.o \
 t_control_data_four_vizs.o \
 t_field_list_for_vizs.o \
-bcast_control_four_vizs.o
+input_control_four_vizs.o
 
 MOD_FLINE_PLUG = \
 main_fieldline.o \
@@ -78,7 +78,7 @@ FEM_analyzer_four_vizs.o \
 t_FEM_mesh_field_4_viz.o \
 t_control_data_four_vizs.o \
 t_field_list_for_vizs.o \
-bcast_control_four_vizs.o
+input_control_four_vizs.o
 
 MOD_VTK_CONVERT_PLUG = \
 main_VTK_convert.o \
@@ -88,7 +88,7 @@ t_FEM_mesh_field_4_viz.o \
 t_viz_VTK_convert.o \
 t_control_data_section_only.o \
 t_field_list_for_vizs.o \
-bcast_control_section_only.o
+input_control_section_only.o
 
 
 MOD_LIC_PLUG =  \
@@ -98,7 +98,7 @@ FEM_analyzer_viz.o \
 t_FEM_mesh_field_4_viz.o \
 t_control_data_all_vizs.o \
 t_field_list_for_vizs.o \
-bcast_control_data_all_vizs.o
+input_control_all_vizs.o
 
 #
 #  -------------------------------------------------------------------------

@@ -80,8 +80,7 @@ analyzer_rayleigh_cvt_fld.o
 
 MOD_RAYLEIGH_VIZ = \
 main_visualize_rayleigh.o \
-analyzer_viz_rayleigh.o \
-bcast_control_rayleigh_vizs.o
+analyzer_viz_rayleigh.o
 
 MOD_PICK_RAYLEIGH_SPH = \
 main_pickup_rayleigh_spectr.o

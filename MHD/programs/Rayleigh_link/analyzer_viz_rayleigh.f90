@@ -29,6 +29,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &               :: fname_viz_ctl = "control_viz_rayleigh"
+!
 !>       Structure for time stepping parameters
 !!        with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ_r
@@ -53,9 +56,7 @@
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use FEM_to_VIZ_bridge
-      use bcast_control_rayleigh_vizs
 !
-      integer(kind = kint) :: ierr
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
@@ -65,12 +66,9 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'load_ctl_file_rayleigh_viz'
-      call load_ctl_file_rayleigh_viz(rayleigh_vizs_ctl1)
-      call set_ctl_params_rayleigh_viz(rayleigh_vizs_ctl1,              &
-     &    t_VIZ_r, FEM_Rayleigh1, ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
-!
+      if (iflag_debug.gt.0) write(*,*) 'input_conrol_rayleigh_viz'
+      call input_conrol_rayleigh_viz(fname_viz_ctl, rayleigh_vizs_ctl1, &
+     &                               FEM_Rayleigh1, t_VIZ_r)
 !      call check_rayleigh_field_address(FEM_Rayleigh1%iphys_ftb)
 !
 !  FEM Initialization
