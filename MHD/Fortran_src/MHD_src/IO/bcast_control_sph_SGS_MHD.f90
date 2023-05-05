@@ -43,7 +43,6 @@
       subroutine s_load_control_sph_SGS_MHD(file_name, MHD_ctl,         &
      &                                      add_SSMHD_ctl)
 !
-      use ctl_file_SGS_MHD_IO
       use bcast_ctl_SGS_MHD_model
       use bcast_ctl_sph_mhd_control
       use bcast_control_data_vizs

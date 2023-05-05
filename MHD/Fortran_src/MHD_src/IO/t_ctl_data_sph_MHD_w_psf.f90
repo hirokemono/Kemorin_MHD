@@ -55,7 +55,7 @@
       implicit none
 !
 !
-      integer(kind = kint), parameter, private :: id_ctl_file = 11
+      integer(kind = kint), parameter, private :: id_control_file = 11
 !
 !>      Additional structures for spherical MHD dynamo with viz module
       type add_viz_sph_mhd_ctl
@@ -118,15 +118,15 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      open(id_ctl_file, file = file_name, status='old' )
+      open(id_control_file, file = file_name, status='old' )
 !
       do
-        call load_one_line_from_control(id_ctl_file, c_buf1)
-        call read_sph_mhd_ctl_w_psf(id_ctl_file, hd_mhd_ctl,            &
+        call load_one_line_from_control(id_control_file, c_buf1)
+        call read_sph_mhd_ctl_w_psf(id_control_file, hd_mhd_ctl,        &
      &      MHD_ctl, add_SMHD_ctl, c_buf1)
         if(MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
-      close(id_ctl_file)
+      close(id_control_file)
 !
       call section_step_ctls_to_time_ctl(add_SMHD_ctl%surfacing_ctls,   &
      &                                   MHD_ctl%smctl_ctl%tctl)
@@ -157,11 +157,11 @@
       end if
 !
       write(*,*) 'Write MHD control file: ', trim(file_name)
-      open(id_ctl_file, file = file_name)
+      open(id_control_file, file = file_name)
       level1 = 0
-      call write_sph_mhd_ctl_w_psf(id_ctl_file, hd_mhd_ctl,             &
+      call write_sph_mhd_ctl_w_psf(id_control_file, hd_mhd_ctl,         &
      &                             MHD_ctl, add_SMHD_ctl, level1)
-      close(id_ctl_file)
+      close(id_control_file)
 !
       end subroutine write_control_4_sph_MHD_w_psf
 !

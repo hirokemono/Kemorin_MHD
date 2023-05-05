@@ -22,8 +22,6 @@
       subroutine c_read_control_sph_SGS_MHD()                           &
      &          bind(C, NAME = 'c_read_control_sph_SGS_MHD')
 !
-      use ctl_file_SGS_MHD_IO
-!
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
 !
       call read_control_4_sph_SGS_MHD(MHD_ctl_name,                     &

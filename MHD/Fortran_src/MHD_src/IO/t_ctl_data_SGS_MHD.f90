@@ -11,15 +11,17 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_sph_mhd_control_data(id_control, hd_block,      &
-!!     &         MHD_ctl, add_SSMHD_ctl, c_buf)
+!!      subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl,       &
+!!     &                                      add_SSMHD_ctl)
+!!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_sph_mhd_control_data(id_control, hd_block,     &
-!!     &          MHD_ctl, add_SSMHD_ctl, c_buf)
+!!      subroutine write_control_file_sph_SGS_MHD(file_name, MHD_ctl,   &
+!!     &                                          add_SSMHD_ctl)
+!!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(in) :: MHD_ctl
@@ -53,6 +55,8 @@
 !
       implicit none
 !
+      integer(kind=kint), parameter, private :: id_control_file = 11
+!
 !>      Additional structures for spherical SGS MHD dynamo
       type add_sgs_sph_mhd_ctl
 !>        Structures for SGS controls
@@ -63,6 +67,10 @@
 !>        Structures of zonal mean controls
         type(sph_dynamo_viz_controls) :: zm_ctls
       end type add_sgs_sph_mhd_ctl
+!
+!   Top level of label
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_mhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
@@ -92,10 +100,73 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
 !
+      private :: read_sph_mhd_control_data, write_sph_mhd_control_data
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl,         &
+     &                                      add_SSMHD_ctl)
+!
+      use t_ctl_data_SPH_MHD_control
+      use viz_step_ctls_to_time_ctl
+!
+      character(len=kchara), intent(in) :: file_name
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
+!
+      type(buffer_for_control) :: c_buf1
+!
+!
+      open(id_control_file, file = file_name, status='old' )
+!
+      do
+        call load_one_line_from_control(id_control_file, c_buf1)
+        call read_sph_mhd_control_data(id_control_file, hd_mhd_ctl,     &
+     &      MHD_ctl, add_SSMHD_ctl, c_buf1)
+        if(MHD_ctl%i_mhd_ctl .gt. 0) exit
+      end do
+      close(id_control_file)
+!
+      call s_viz_step_ctls_to_time_ctl                                  &
+     &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%smctl_ctl%tctl)
+      call add_fields_4_vizs_to_fld_ctl                                 &
+     &   (add_SSMHD_ctl%viz_ctls, MHD_ctl%model_ctl%fld_ctl%field_ctl)
+!
+      end subroutine read_control_4_sph_SGS_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_control_file_sph_SGS_MHD(file_name, MHD_ctl,     &
+     &                                          add_SSMHD_ctl)
+!
+      use delete_data_files
+!
+      character(len=kchara), intent(in) :: file_name
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
+      type(add_sgs_sph_mhd_ctl), intent(in) :: add_SSMHD_ctl
+!
+      integer(kind = kint) :: level1
+!
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      write(*,*) 'Write MHD control file: ', trim(file_name)
+      level1 = 0
+      open(id_control_file, file = file_name)
+      call write_sph_mhd_control_data(id_control_file, hd_mhd_ctl,      &
+     &    MHD_ctl, add_SSMHD_ctl, level1)
+      close(id_control_file)
+!
+      end subroutine write_control_file_sph_SGS_MHD
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine read_sph_mhd_control_data(id_control, hd_block,        &

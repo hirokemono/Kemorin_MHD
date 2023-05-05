@@ -11,16 +11,20 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
+!!      subroutine read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
 !!      subroutine read_sph_mhd_ctl_noviz                               &
 !!     &         (id_control, hd_block, MHD_ctl, c_buf)
+!!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(surfacing_controls), intent(inout) :: surfacing_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_control_4_sph_MHD_noviz(file_name, MHD_ctl)
 !!      subroutine write_sph_mhd_ctl_noviz                              &
 !!     &         (id_control, hd_block, MHD_ctl, level)
+!!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(in) :: MHD_ctl
@@ -47,6 +51,7 @@
 !
       implicit none
 !
+      integer(kind=kint), parameter, private :: id_control_file = 11
 !
       type mhd_simulation_control
 !>        Structure for file settings
@@ -74,6 +79,11 @@
         integer (kind=kint) :: i_mhd_ctl = 0
       end type mhd_simulation_control
 !
+!   Top level of label
+!
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_mhd_ctl = 'MHD_control'
+!
 !   2nd level for MHD
 !
       character(len=kchara), parameter, private                         &
@@ -97,6 +107,56 @@
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
+!
+      character(len=kchara), intent(in) :: file_name
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+!
+      type(buffer_for_control) :: c_buf1
+!
+!
+      open(id_control_file, file = file_name, status='old' )
+!
+      do
+        call load_one_line_from_control(id_control_file, c_buf1)
+        call read_sph_mhd_ctl_noviz                                     &
+     &     (id_control_file, hd_mhd_ctl, MHD_ctl, c_buf1)
+        if(MHD_ctl%i_mhd_ctl .gt. 0) exit
+      end do
+      close(id_control_file)
+!
+      end subroutine read_control_4_sph_MHD_noviz
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine write_control_4_sph_MHD_noviz(file_name, MHD_ctl)
+!
+      use delete_data_files
+!
+      character(len=kchara), intent(in) :: file_name
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
+!
+      integer(kind = kint) :: level1
+!
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      write(*,*) 'Write MHD control file: ', trim(file_name)
+      open(id_control_file, file = file_name)
+      level1 = 0
+      call write_sph_mhd_ctl_noviz                                      &
+     &   (id_control_file, hd_mhd_ctl, MHD_ctl, level1)
+      close(id_control_file)
+!
+      end subroutine write_control_4_sph_MHD_noviz
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine read_sph_mhd_ctl_noviz                                 &

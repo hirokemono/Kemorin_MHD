@@ -42,7 +42,6 @@
       subroutine load_control_4_sph_MHD_w_psf(file_name, MHD_ctl,       &
      &                                        add_SMHD_ctl)
 !
-      use ctl_file_sph_MHD_IO
       use bcast_ctl_sph_mhd_control
       use bcast_ctl_data_surfacings
 !
@@ -65,8 +64,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine load_control_4_sph_MHD_noviz(file_name, MHD_ctl)
-!
-      use ctl_file_sph_MHD_IO
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
