@@ -56,14 +56,12 @@
 !
       use t_const_spherical_grid
       use sph_mhd_rst_IO_control
+      use input_control_sph_SGS_MHD
       use set_control_sph_SGS_MHD
       use init_sph_MHD_elapsed_label
       use parallel_load_data_4_sph
       use input_control_sph_MHD
-      use bcast_control_sph_SGS_MHD
       use nod_phys_send_recv
-!
-      type(phys_data), save :: nod_fld_c
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -76,25 +74,10 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 's_load_control_sph_SGS_MHD'
-      call s_load_control_sph_SGS_MHD(snap_ctl_name, MHD_ctl1,          &
-     &                                add_SSMHD_ctl1)
+      call input_control_sph_pick_circle(snap_ctl_name,                 &
+     &    MHD_files1, MHD_ctl1, add_SSMHD_ctl1, MHD_step1,              &
+     &    SPH_model1, SPH_WK1, SPH_SGS1, SPH_MHD1)
       call dealloc_sph_SGS_MHD_viz_ctl(add_SSMHD_ctl1)
-
-      if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
-      call set_control_4_SPH_SGS_MHD                                    &
-     &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
-     &    MHD_ctl1%smctl_ctl, MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl,     &
-     &    add_SSMHD_ctl1%sgs_ctl, MHD_files1, SPH_model1%bc_IO,         &
-     &    SPH_model1%refs, SPH_SGS1%SGS_par, SPH_SGS1%dynamic,          &
-     &    MHD_step1, SPH_model1%MHD_prop, SPH_model1%MHD_BC,            &
-     &    SPH_WK1%trans_p, SPH_WK1%trns_WK, sph_maker1)
-      call set_control_SGS_SPH_MHD_field                                &
-     &   (MHD_ctl1%model_ctl, MHD_ctl1%psph_ctl,                        &
-     &    MHD_ctl1%smonitor_ctl, add_SSMHD_ctl1%zm_ctls,                &
-     &    SPH_SGS1%SGS_par, SPH_model1%MHD_prop, SPH_MHD1%sph,          &
-     &    SPH_MHD1%fld, nod_fld_c, SPH_WK1%monitor)
-!
-      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call set_ctl_params_pick_circle                                   &
      &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &

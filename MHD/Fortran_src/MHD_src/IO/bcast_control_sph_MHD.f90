@@ -18,6 +18,8 @@
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+!!      subroutine bcast_sph_mhd_control_data(MHD_ctl)
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!@endverbatim
 !
       module bcast_control_sph_MHD
@@ -30,8 +32,6 @@
       use t_ctl_data_sph_MHD_w_psf
 !
       implicit none
-!
-      private :: bcast_sph_mhd_ctl_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@
      &                                    add_SMHD_ctl)
       end if
 !
-      call bcast_sph_mhd_ctl_data(MHD_ctl)
+      call bcast_sph_mhd_control_data(MHD_ctl)
       call bcast_surfacing_controls(add_SMHD_ctl%surfacing_ctls)
       call bcast_dynamo_viz_control(add_SMHD_ctl%zm_ctls)
 !
@@ -73,14 +73,14 @@
         call read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
       end if
 !
-      call bcast_sph_mhd_ctl_data(MHD_ctl)
+      call bcast_sph_mhd_control_data(MHD_ctl)
 !
       end subroutine load_control_4_sph_MHD_noviz
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine bcast_sph_mhd_ctl_data(MHD_ctl)
+      subroutine bcast_sph_mhd_control_data(MHD_ctl)
 !
       use calypso_mpi_int
       use calypso_mpi_char
@@ -98,6 +98,7 @@
 !
       call bcast_ctl_data_4_platform(MHD_ctl%plt)
       call bcast_ctl_data_4_platform(MHD_ctl%org_plt)
+      call bcast_ctl_data_4_platform(MHD_ctl%new_plt)
 !
       call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
 !
@@ -111,7 +112,7 @@
      &   (MHD_ctl%fname_psph_ctl, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(MHD_ctl%i_mhd_ctl, 0)
 !
-      end subroutine bcast_sph_mhd_ctl_data
+      end subroutine bcast_sph_mhd_control_data
 !
 !   --------------------------------------------------------------------
 !
