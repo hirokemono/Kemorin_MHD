@@ -15,14 +15,14 @@
 !!      subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl,       &
 !!     &          sgs_ctl, viz_ctls, zm_ctls)
 !!        character(len=kchara), intent(in) :: file_name
-!!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!      subroutine write_control_file_sph_SGS_MHD(file_name, MHD_ctl,   &
 !!     &          sgs_ctl, viz_ctls, zm_ctls)
 !!        character(len=kchara), intent(in) :: file_name
-!!        type(sph_sgs_mhd_control), intent(in) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(in) :: MHD_ctl
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(visualization_controls), intent(in) :: viz_ctls
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
@@ -34,6 +34,7 @@
 !
       use m_machine_parameter
       use t_read_control_elements
+      use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
       use t_ctl_data_SGS_model
       use t_control_data_vizs
@@ -61,7 +62,7 @@
       use viz_step_ctls_to_time_ctl
 !
       character(len=kchara), intent(in) :: file_name
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
@@ -94,7 +95,7 @@
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
-      type(sph_sgs_mhd_control), intent(in) :: MHD_ctl
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
       type(SGS_model_control), intent(in) :: sgs_ctl
       type(visualization_controls), intent(in) :: viz_ctls
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls

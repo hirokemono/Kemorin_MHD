@@ -11,7 +11,7 @@
 !!     &         (MHD_files, MHD_ctl, sgs_ctl, zm_ctls, MHD_step,       &
 !!     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
-!!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -61,6 +61,7 @@
 !
       use m_error_IDs
 !
+      use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
       use t_ctl_data_SGS_model
       use set_control_sph_SGS_MHD
@@ -69,7 +70,7 @@
       use sel_make_SPH_mesh_w_LIC
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
 !

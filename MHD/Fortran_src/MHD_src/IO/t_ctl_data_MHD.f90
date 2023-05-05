@@ -107,7 +107,7 @@
      &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
 !
 !>      Here is the old label
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
 !
 ! ----------------------------------------------------------------------

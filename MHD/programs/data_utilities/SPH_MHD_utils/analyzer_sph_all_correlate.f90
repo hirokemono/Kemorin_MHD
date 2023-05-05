@@ -23,6 +23,7 @@
       use m_SPH_MHD_model_data
       use m_MHD_step_parameter
       use m_SPH_SGS_structure
+      use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
       use t_ctl_data_SGS_model
       use t_control_data_vizs
@@ -41,9 +42,9 @@
       character(len=kchara), parameter, private                         &
      &                      :: corr_ctl_name = 'control_sph_correlate'
 !>      Control struture for MHD simulation
-      type(sph_sgs_mhd_control), save, private :: MHD_ctl1
+      type(mhd_simulation_control), save, private :: MHD_ctl1
 !>        Structures for SGS controls
-        type(SGS_model_control), save, private :: sgs_ctl_M
+      type(SGS_model_control), save, private :: sgs_ctl_M
 !>        Structures of visualization controls
       type(visualization_controls), save, private :: viz_ctls_M
 !>        Structures of zonal mean controls

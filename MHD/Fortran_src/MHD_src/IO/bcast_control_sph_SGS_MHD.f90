@@ -16,7 +16,7 @@
 !!     &          sgs_ctl, viz_ctls, zm_ctls)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
-!!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
 !!@endverbatim
@@ -27,6 +27,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
+      use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
       use t_ctl_data_SGS_model
       use t_control_data_vizs
@@ -51,7 +52,7 @@
       use bcast_control_data_vizs
 !
       character(len=kchara), intent(in) :: file_name
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
@@ -85,7 +86,7 @@
       use bcast_monitor_data_ctl
       use bcast_ctl_sph_mhd_control
 !
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
       call bcast_ctl_data_4_platform(MHD_ctl%plt)

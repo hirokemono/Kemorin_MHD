@@ -15,7 +15,7 @@
 !!     &         MHD_ctl, sgs_ctl, viz_ctls, zm_ctls, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
@@ -24,7 +24,7 @@
 !!     &          MHD_ctl, sgs_ctl, viz_ctls, zm_ctls, c_buf)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
-!!        type(sph_sgs_mhd_control), intent(in) :: MHD_ctl
+!!        type(mhd_simulation_control), intent(in) :: MHD_ctl
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(visualization_controls), intent(in) :: viz_ctls
 !!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
@@ -44,6 +44,7 @@
 !
       use m_machine_parameter
       use t_read_control_elements
+      use t_ctl_data_MHD
       use t_ctl_data_4_platforms
       use t_ctl_data_MHD_model
       use t_ctl_data_SPH_MHD_control
@@ -52,33 +53,6 @@
       use t_ctl_data_gen_sph_shell
 !
       implicit none
-!
-!
-      type sph_sgs_mhd_control
-!>        Structure for file settings
-        type(platform_data_control) :: plt
-!>        Control structure for orginal file informations
-        type(platform_data_control) :: org_plt
-!>        Control structure for new file informations
-        type(platform_data_control) :: new_plt
-!
-!>        file name for parallel spherical shell control
-        character(len = kchara) :: fname_psph_ctl
-!>        Control structure for parallel spherical shell
-        type(parallel_sph_shell_control) :: psph_ctl
-!
-!>        Control structure for MHD/model
-        type(mhd_model_control) :: model_ctl
-!>        Control structure for MHD/control
-        type(sph_mhd_control_control) :: smctl_ctl
-!
-!>        Structure for spectr monitoring control
-        type(sph_monitor_control) :: smonitor_ctl
-!>        Structure for monitoring plave list
-        type(node_monitor_control) :: nmtr_ctl
-!
-        integer (kind=kint) :: i_mhd_ctl = 0
-      end type sph_sgs_mhd_control
 !
 !   2nd level for MHD
 !
@@ -130,7 +104,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
       type(sph_dynamo_viz_controls), intent(inout) :: zm_ctls
@@ -195,7 +169,7 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(sph_sgs_mhd_control), intent(in) :: MHD_ctl
+      type(mhd_simulation_control), intent(in) :: MHD_ctl
       type(SGS_model_control), intent(in) :: sgs_ctl
       type(visualization_controls), intent(in) :: viz_ctls
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
@@ -257,7 +231,7 @@
       use t_ctl_data_SGS_model
       use t_ctl_data_SPH_MHD_control
 !
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(SGS_model_control), intent(inout) :: sgs_ctl
 !
 !

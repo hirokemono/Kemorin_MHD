@@ -2,8 +2,8 @@
       module read_mhd_control_4_c
 !
       use iso_c_binding
-      use t_ctl_data_SGS_MHD
       use t_ctl_data_MHD
+      use t_ctl_data_SGS_MHD
       use t_ctl_data_SGS_model
       use t_control_data_vizs
       use t_control_data_surfacings
@@ -11,7 +11,7 @@
 !
       implicit none
 !
-      type(sph_sgs_mhd_control), save :: MHD_ctl_C
+      type(mhd_simulation_control), save :: MHD_ctl_C
       type(SGS_model_control), save :: sgs_ctl_C
       type(mhd_simulation_control), save :: DNS_MHD_ctl
       type(visualization_controls), save :: viz_ctls_C
@@ -74,7 +74,6 @@
      &          bind(C, NAME = 'c_read_control_sph_MHD')
 !
       use calypso_mpi
-      use t_ctl_data_SGS_MHD
       use bcast_control_sph_MHD
 !
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
