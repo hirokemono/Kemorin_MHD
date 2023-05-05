@@ -5,9 +5,8 @@
 !
 !     required module for 3rd level
 !
-!!      subroutine laod_control_4_diff_udt                              &
-!!     &         (file_name, hd_block, diff_udt_c)
-!!      subroutine dealloc_diff_control_data(diff_udt_c)
+!!      subroutine bcast_diff_control_data(diff_udt_c)
+!!        type(diff_udt_ctl), intent(inout)  :: diff_udt_c
 !
       module bcast_ctl_data_diff_udt
 !
@@ -19,31 +18,12 @@
 !
       implicit  none
 !
-      private :: bcast_diff_control_data
       private :: bcast_diff_files_ctl, bcast_diff_model_ctl
 !
 !   --------------------------------------------------------------------
 !
       contains
 !
-!   --------------------------------------------------------------------
-!
-      subroutine laod_control_4_diff_udt                                &
-     &         (file_name, hd_block, diff_udt_c)
-!
-      character(len=kchara), intent(in) :: file_name, hd_block
-      type(diff_udt_ctl), intent(inout)  :: diff_udt_c
-!
-!
-      if(my_rank .eq. 0) then
-        call read_control_4_diff_udt(file_name, hd_block, diff_udt_c)
-      end if
-!
-      call bcast_diff_control_data(diff_udt_c)
-!
-      end subroutine laod_control_4_diff_udt
-!
-!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine bcast_diff_control_data(diff_udt_c)

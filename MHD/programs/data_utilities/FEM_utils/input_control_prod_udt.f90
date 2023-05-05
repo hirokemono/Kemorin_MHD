@@ -1,25 +1,24 @@
-!bcast_ctl_file_product_udt.f90
-!      module bcast_ctl_file_product_udt
+!input_control_prod_udt.f90
+!      module input_control_prod_udt
 !
 !      Written by H. Matsui on Nov., 2006
 !
-!!      subroutine load_control_4_prod_udt(prod_udt_c)
+!!      subroutine s_input_control_prod_udt(ctl_file_name, prod_udt_c,  &
+!!     &                                    futil, t_param)
+!!        character(len = kchara), intent(in) ::  ctl_file_name
 !!        type(product_udt_ctl), intent(inout) :: prod_udt_c
+!!        type(FEM_utils), intent(inout) :: futil
+!!        type(time_step_param), intent(inout) :: t_param
 !
 !
-      module bcast_ctl_file_product_udt
+      module input_control_prod_udt
 !
       use m_precision
       use calypso_mpi
       use m_machine_parameter
       use t_ctl_data_product_udt
 !
-!
       implicit  none
-!
-!
-      character(len = kchara), parameter                                &
-     &                 :: fname_prod_ctl = "ctl_prod_udt"
 !
       private :: bcast_prod_control_data
       private :: bcast_prod_files_ctl, bcast_product_model_ctl
@@ -30,20 +29,37 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine load_control_4_prod_udt(prod_udt_c)
+      subroutine s_input_control_prod_udt(ctl_file_name, prod_udt_c,    &
+     &                                    futil, t_param)
 !
+      use t_FEM_utils
+      use t_step_parameter
+      use m_ctl_params_4_prod_udt
+!
+      character(len = kchara), intent(in) ::  ctl_file_name
       type(product_udt_ctl), intent(inout) :: prod_udt_c
+      type(FEM_utils), intent(inout) :: futil
+      type(time_step_param), intent(inout) :: t_param
 !
-      type(buffer_for_control) :: c_buf1
+      integer(kind = kint) :: ierr
 !
 !
+!  Read control file
       if(my_rank .eq. 0) then
-        call read_control_4_prod_udt(fname_prod_ctl, prod_udt_c)
+        call read_control_4_prod_udt(ctl_file_name, prod_udt_c)
       end if
 !
       call bcast_prod_control_data(prod_udt_c)
 !
-      end subroutine load_control_4_prod_udt
+!  Set control data
+      if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
+      call set_ctl_params_prod_udt(prod_udt_c%pu_plt,                   &
+     &    prod_udt_c%org_pu_plt, prod_udt_c%prod_ctl,                   &
+     &    futil%mesh_file, futil%udt_file)
+      call set_fixed_time_step_params                                   &
+     &   (prod_udt_c%prod_ctl%t_pu_ctl, t_param, ierr, e_message)
+!
+      end subroutine s_input_control_prod_udt
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -107,4 +123,4 @@
 !
 !   --------------------------------------------------------------------
 !
-      end module bcast_ctl_file_product_udt
+      end module input_control_prod_udt

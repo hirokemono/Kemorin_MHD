@@ -77,13 +77,42 @@
 !>      Structures for SGS controls
       type(SGS_model_control), save, private :: sgs_ctl_F
 !
-      private :: input_meshes_4_MHD, boundary_file_IO_control
-      private :: input_MG_mesh_4_FEM_MHD
+      private :: load_control_4_fem_MHD
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine load_control_4_fem_MHD                                 &
+     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
+!
+      use t_ctl_data_FEM_MHD
+      use t_ctl_data_SGS_model
+      use t_control_data_vizs
+      use bcast_control_FEM_MHD
+      use bcast_ctl_SGS_MHD_model
+      use bcast_control_data_vizs
+!
+      character(len=kchara), intent(in) :: file_name
+      type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
+      type(visualization_controls), intent(inout) :: viz_ctls
+!
+!
+      if(my_rank .eq. 0) then
+        call read_control_4_fem_MHD(file_name,                          &
+     &      FEM_MHD_ctl, sgs_ctl, viz_ctls)
+      end if
+!
+      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
+      call bcast_sgs_ctl(sgs_ctl)
+      call bcast_viz_controls(viz_ctls)
+!
+      end subroutine load_control_4_fem_MHD
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_FEM_MHD                                &
@@ -97,7 +126,7 @@
       use node_monitor_IO
       use set_field_data_w_SGS
       use set_nodal_field_name
-      use bcast_control_FEM_MHD
+      use input_meshes_FEM_MHD
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -133,7 +162,7 @@
 !  --  load FEM mesh data
       call mpi_input_mesh(MHD_files%mesh_file_IO, nprocs, femmesh)
 !
-      call input_meshes_4_MHD(SGS_par%model_p, MHD_prop, MHD_BC,        &
+      call s_input_meshes_FEM_MHD(SGS_par%model_p, MHD_prop, MHD_BC,    &
      &    femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p,         &
      &    FEM_filters, FEM_SGS_wk%wk_filter)
 !
@@ -157,7 +186,7 @@
       use node_monitor_IO
       use set_field_data_w_SGS
       use set_nodal_field_name
-      use bcast_control_FEM_MHD
+      use input_meshes_FEM_MHD
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
@@ -195,7 +224,7 @@
       call mpi_input_mesh                                               &
      &   (MHD_files%mesh_file_IO, nprocs, femmesh)
 !
-      call input_meshes_4_MHD(SGS_par%model_p, MHD_prop,                &
+      call s_input_meshes_FEM_MHD(SGS_par%model_p, MHD_prop,            &
      &    MHD_BC, femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p, &
      &    FEM_filters, FEM_SGS_wk%wk_filter)
 !
@@ -203,127 +232,6 @@
      &   (nod_fld, num_field_monitor, ntot_comp_monitor)
 !
       end subroutine input_control_4_FEM_snap
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine input_meshes_4_MHD                                     &
-     &         (SGS_param, MHD_prop, MHD_BC, mesh, group, IO_bc,        &
-     &          filter_param, FEM_filters, wk_filter)
-!
-      use m_machine_parameter
-!
-      use set_3d_filtering_group_id
-      use read_filtering_data
-      use set_surface_data_4_IO
-      use set_edge_data_4_IO
-      use node_monitor_IO
-!
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(MHD_BC_lists), intent(in) :: MHD_BC
-!
-!
-      type(IO_boundary), intent(inout) :: IO_bc
-      type(SGS_filtering_params), intent(inout) :: filter_param
-      type(filters_on_FEM), intent(inout) :: FEM_filters
-      type(filtering_work_type), intent(inout) :: wk_filter
-!
-      integer(kind = kint) :: iflag
-!
-      if (iflag_debug .ge. iflag_routine_msg)                           &
-     &      write(*,*) 'set_local_nod_4_monitor'
-      call set_local_nod_4_monitor(mesh, group)
-!
-! ----  open data file for boundary data
-!
-      call boundary_file_IO_control(MHD_prop, MHD_BC, group, IO_bc)
-!
-! ---------------------------------
-!
-      if (iflag_debug .ge. iflag_routine_msg)                           &
-     &      write(*,*) 's_read_filtering_data'
-      call s_read_filtering_data(SGS_param, filter_param,               &
-     &    mesh%node, mesh%ele, FEM_filters, wk_filter)
-!
-      iflag = filter_param%iflag_SGS_filter
-      if     (iflag .eq. id_SGS_3D_FILTERING                            &
-     &  .or.  iflag .eq. id_SGS_3D_EZ_FILTERING                         &
-     &  .or.  iflag .eq. id_SGS_3D_SMP_FILTERING                        &
-     &  .or.  iflag .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &       write(*,*) 's_set_3d_filtering_group_id'
-        call s_set_3d_filtering_group_id                                &
-     &     (FEM_filters%filtering%filter, filter_param)
-!
-        if      (SGS_param%iflag_SGS .eq. id_SGS_similarity             &
-     &     .and. SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-          if (iflag_debug .ge. iflag_routine_msg)                       &
-     &         write(*,*) 's_set_w_filtering_group_id'
-          call copy_filter_group_param                                  &
-     &       (filter_param%whole, filter_param%whole_wide)
-          call copy_filter_group_param                                  &
-     &       (filter_param%fluid, filter_param%fluid_wide)
-        end if
-      end if
-!
-      end subroutine input_meshes_4_MHD
-!
-! ----------------------------------------------------------------------
-!
-      subroutine boundary_file_IO_control                               &
-     &         (MHD_prop, MHD_BC, group, IO_bc)
-!
-      use check_read_bc_file
-!
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(MHD_BC_lists), intent(in) :: MHD_BC
-!
-      type(mesh_groups), intent(in) ::   group
-      type(IO_boundary), intent(inout) :: IO_bc
-!
-      integer(kind = kint) :: iflag
-!
-!
-      iflag = check_read_boundary_files(MHD_prop, MHD_BC)
-      if (iflag .eq. id_no_boundary_file) return
-!
-      call read_bc_condition_file                                       &
-     &     (my_rank, group%nod_grp, group%surf_grp, IO_bc)
-!
-      end subroutine boundary_file_IO_control
-!
-!----------------------------------------------------------------------
-!----------------------------------------------------------------------
-!
-      subroutine input_MG_mesh_4_FEM_MHD(MHD_files, FEM_prm,            &
-     &          MHD_mat, MGCG_WK, MGCG_FEM)
-!
-      use m_flags_4_solvers
-      use input_MG_data
-!
-      type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
-!
-      type(MHD_MG_matrices), intent(inout) :: MHD_mat
-      type(MGCG_data), intent(inout) :: MGCG_WK
-      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
-!
-!
-      if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
-        call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_mat)
-        call input_MG_mesh                                              &
-     &     (FEM_prm%MG_file, MGCG_WK, MGCG_FEM, MHD_files%mesh_file_IO)
-        call input_MG_itp_tables(FEM_prm%MG_file, MGCG_WK, MGCG_FEM,    &
-     &      MHD_mat%MG_interpolate)
-      else
-        MGCG_WK%num_MG_level = 0
-        call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_mat)
-      end if
-!
-      end subroutine input_MG_mesh_4_FEM_MHD
 !
 ! ----------------------------------------------------------------------
 !

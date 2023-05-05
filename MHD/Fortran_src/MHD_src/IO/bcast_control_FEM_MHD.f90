@@ -11,10 +11,8 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine load_control_4_fem_MHD                               &
-!!     &         (file_name, FEM_MHD_ctl, viz_ctls)
+!!      subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
 !!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
-!!        type(visualization_controls), intent(inout) :: viz_ctls
 !!@endverbatim
 !
       module bcast_control_FEM_MHD
@@ -27,41 +25,12 @@
 !
       implicit none
 !
-      private :: bcast_fem_mhd_ctl_data, bcast_fem_mhd_control_ctl
+      private :: bcast_fem_mhd_control_ctl
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine load_control_4_fem_MHD                                 &
-     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
-!
-      use t_ctl_data_FEM_MHD
-      use t_ctl_data_SGS_model
-      use t_control_data_vizs
-      use bcast_ctl_SGS_MHD_model
-      use bcast_control_data_vizs
-!
-      character(len=kchara), intent(in) :: file_name
-      type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
-      type(SGS_model_control), intent(inout) :: sgs_ctl
-      type(visualization_controls), intent(inout) :: viz_ctls
-!
-!
-      if(my_rank .eq. 0) then
-        call read_control_4_fem_MHD(file_name,                          &
-     &      FEM_MHD_ctl, sgs_ctl, viz_ctls)
-      end if
-!
-      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
-      call bcast_sgs_ctl(sgs_ctl)
-      call bcast_viz_controls(viz_ctls)
-!
-      end subroutine load_control_4_fem_MHD
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl)

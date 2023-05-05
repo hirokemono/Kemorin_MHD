@@ -60,11 +60,33 @@
       private :: hd_diff_control, hd_ave_control
       private :: hd_corr_control, hd_med_grp_patch
 !
+      private :: laod_control_4_diff_udt
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine laod_control_4_diff_udt                                &
+     &         (file_name, hd_block, diff_udt_c)
+!
+      use bcast_ctl_data_diff_udt
+!
+      character(len=kchara), intent(in) :: file_name, hd_block
+      type(diff_udt_ctl), intent(inout)  :: diff_udt_c
+!
+!
+      if(my_rank .eq. 0) then
+        call read_control_4_diff_udt(file_name, hd_block, diff_udt_c)
+      end if
+!
+      call bcast_diff_control_data(diff_udt_c)
+!
+      end subroutine laod_control_4_diff_udt
+!
+!  ---------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
       subroutine s_input_control_udt_diff                               &
      &         (mesh_file, udt_org_param, nod_fld, time_U)

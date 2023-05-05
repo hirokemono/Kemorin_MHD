@@ -62,7 +62,7 @@ MOD_PROD_FIELDS = \
 t_FEM_utils.o \
 t_ctl_data_product_udt.o \
 m_ctl_params_4_prod_udt.o \
-bcast_ctl_file_product_udt.o \
+input_control_prod_udt.o \
 product_udt_fields.o \
 analyzer_udt_product.o \
 main_prod_udt.o
@@ -71,7 +71,7 @@ MOD_RATIO_FIELDS = \
 t_FEM_utils.o \
 t_ctl_data_product_udt.o \
 m_ctl_params_4_prod_udt.o \
-bcast_ctl_file_product_udt.o \
+input_control_prod_udt.o \
 product_udt_fields.o \
 analyzer_udt_ratio.o \
 main_ratio_udt.o
@@ -122,7 +122,7 @@ pick_point_node_monitor.o
 MOD_MHD_LENGH_SCALE = \
 t_ctl_data_product_udt.o \
 m_ctl_params_4_prod_udt.o \
-bcast_ctl_file_product_udt.o \
+input_control_prod_udt.o \
 FEM_MHD_length_scale.o \
 \
 analyzer_MHD_lengthscale.o \

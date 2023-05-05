@@ -23,6 +23,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &                 :: fname_prod_ctl = "ctl_prod_udt"
+!
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
 !>      Structure of work area for mesh communications
@@ -39,16 +42,14 @@
 !
       subroutine initialize_udt_product
 !
-      use m_ctl_params_4_prod_udt
       use t_ctl_data_product_udt
       use nod_phys_send_recv
       use load_mesh_data
       use const_mesh_information
-      use bcast_ctl_file_product_udt
+      use input_control_prod_udt
       use product_udt_fields
 !
       type(product_udt_ctl) :: prod_udt_c1
-      integer(kind = kint) :: ierr
 !
 !
       if (my_rank.eq.0) then
@@ -58,15 +59,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'load_control_4_prod_udt'
-      call load_control_4_prod_udt(prod_udt_c1)
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
-      call set_ctl_params_prod_udt(prod_udt_c1%pu_plt,                  &
-     &    prod_udt_c1%org_pu_plt, prod_udt_c1%prod_ctl,                 &
-     &    FUTIL1%mesh_file, FUTIL1%udt_file)
-      call set_fixed_time_step_params                                   &
-     &   (prod_udt_c1%prod_ctl%t_pu_ctl, time_U, ierr, e_message)
+      if (iflag_debug.eq.1) write(*,*) 's_input_control_prod_udt'
+      call s_input_control_prod_udt(fname_prod_ctl, prod_udt_c1,        &
+     &                              FUTIL1, time_U)
 !
 !     --------------------- 
 !
