@@ -8,10 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine alloc_circle_transform(ltr, circ_spec)
-!!      subroutine alloc_circle_field                                   &
-!!     &         (my_rank, mphi_rtp, nidx_global_jmax, circle, d_circle)
-!!      subroutine dealloc_circle_transform
-!!      subroutine dealloc_circle_field(my_rank, circle, d_circle)
+!!      subroutine dealloc_circle_transform(circ_spec)
 !!@endverbatim
 !!
 !!@n @param  ltr      Truncation of spherical harmonics
@@ -32,12 +29,6 @@
       use t_phys_data
 !
       implicit none
-!
-!
-!>      Use spherical coordinate for circle data
-      integer(kind = kint), parameter :: iflag_circle_sph = 1
-!>      Use Cylindrical coordinate for circle data
-      integer(kind = kint), parameter :: iflag_circle_cyl = 2
 !
 !
       type circle_transform_spetr
@@ -66,50 +57,6 @@
 !>        spectr data for Fourier transform at a circle
         real(kind = kreal), allocatable :: vcirc_rtm(:,:)
       end type circle_transform_spetr
-!
-!>      Structure to make fields on circle
-      type fields_on_circle
-!>        Flag for coordinate system for circle data
-        integer(kind = kint) :: iflag_circle_coord = iflag_circle_sph
-!
-!>        file name for field data on a circle
-        character(len=kchara) :: fname_circle_fld = 'circle_field.dat'
-!>        file name for spectr power data on a circle
-        character(len=kchara) :: fname_circle_mag                       &
-     &                        = 'circle_spec_mag.dat'
-!>        file name for spectr phase data on a circle
-        character(len=kchara) :: fname_circle_phs                       &
-     &                        = 'circle_spec_phase.dat'
-!
-!>        Number of gird points for a circle
-        integer(kind = kint) :: mphi_circle
-!>        cylindrical radius for a circle to pick
-        real(kind = kreal) :: s_circle
-!>        vartical position for a circle to pick
-        real(kind = kreal) :: z_circle
-!
-!>        Inner closest point of circle point of fluid shell
-        integer(kind = kint) :: kr_gl_rcirc_in
-!>        Outer closest point of circle point of fluid shell
-        integer(kind = kint) :: kr_gl_rcirc_out
-!>        Inner closest radius of circle point of fluid shell
-        real(kind = kreal) :: coef_gl_rcirc_in
-!>        Outer closest radius of circle point of fluid shell
-        real(kind = kreal) :: coef_gl_rcirc_out
-!
-!>        Spectr data for circle point for each domain
-        real(kind = kreal), allocatable :: d_rj_circ_lc(:,:)
-!>        Spectr data for circle point collected to 0 process
-        real(kind = kreal), allocatable :: d_rj_circle(:,:)
-!
-!>        Field data for circle point at equator
-        real(kind = kreal), allocatable :: v_rtp_circle(:,:)
-!
-!>        Spectr data for circle point collected to 0 process
-        real(kind = kreal), allocatable :: vrtm_mag(:,:)
-!>        Spectr data for circle point collected to 0 process
-        real(kind = kreal), allocatable :: vrtm_phase(:,:)
-      end type fields_on_circle
 !
 ! ----------------------------------------------------------------------
 !
@@ -142,48 +89,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_circle_field                                     &
-     &         (my_rank, mphi_rtp, nidx_global_jmax, circle, d_circle)
-!
-      integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: mphi_rtp, nidx_global_jmax
-      type(fields_on_circle), intent(inout) :: circle
-      type(phys_data), intent(inout) :: d_circle
-!
-      integer(kind = kint) :: jmax_gl, ntot
-!
-!
-      jmax_gl = nidx_global_jmax
-      ntot = d_circle%ntot_phys
-!
-      if(circle%mphi_circle .le. izero) then
-        circle%mphi_circle = mphi_rtp
-      end if
-!
-      allocate(circle%v_rtp_circle(circle%mphi_circle,6))
-      circle%v_rtp_circle = 0.0d0
-!
-      allocate( circle%vrtm_mag(0:circle%mphi_circle,ntot) )
-      allocate( circle%vrtm_phase(0:circle%mphi_circle,ntot) )
-      circle%vrtm_mag = 0.0d0
-      circle%vrtm_phase = 0.0d0
-!
-      allocate( circle%d_rj_circ_lc(0:jmax_gl,ntot) )
-      circle%d_rj_circ_lc = 0.0d0
-!
-      if(my_rank .eq. 0) then
-        allocate(circle%d_rj_circle(0:jmax_gl,ntot) )
-!
-        circle%d_rj_circle = 0.0d0
-      end if
-!
-      call alloc_phys_data(circle%mphi_circle, d_circle)
-!
-      end subroutine alloc_circle_field
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine dealloc_circle_transform(circ_spec)
 !
       type(circle_transform_spetr), intent(inout) :: circ_spec
@@ -194,26 +99,6 @@
       deallocate(circ_spec%istack_circfft_smp)
 !
       end subroutine dealloc_circle_transform
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_circle_field(my_rank, circle, d_circle)
-!
-      integer, intent(in) :: my_rank
-      type(fields_on_circle), intent(inout) :: circle
-      type(phys_data), intent(inout) :: d_circle
-!
-!
-      deallocate(circle%vrtm_mag, circle%vrtm_phase)
-      deallocate(circle%d_rj_circ_lc)
-      if(my_rank .eq. 0) then
-        deallocate(circle%d_rj_circle, circle%v_rtp_circle)
-      end if
-!
-      call dealloc_phys_data(d_circle)
-      call dealloc_phys_name(d_circle)
-!
-      end subroutine dealloc_circle_field
 !
 ! ----------------------------------------------------------------------
 !

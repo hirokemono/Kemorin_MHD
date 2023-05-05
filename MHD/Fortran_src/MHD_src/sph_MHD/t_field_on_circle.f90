@@ -28,6 +28,7 @@
 !
       use t_phys_data
       use t_circle_transform
+      use t_fields_on_circle
       use t_FFT_selector
 !
       implicit none

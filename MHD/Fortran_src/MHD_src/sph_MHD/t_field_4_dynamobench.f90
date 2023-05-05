@@ -7,6 +7,11 @@
 !>@brief  Dynamo benchmark results
 !!
 !!@verbatim
+!!      subroutine set_field_ctl_dynamobench(fld_ctl, d_circle, bench)
+!!        type(ctl_array_c3), intent(in) :: fld_ctl
+!!        type(phys_data), intent(inout) :: d_circle
+!!        type(dynamobench_monitor), intent(inout) :: bench
+!!
 !!      subroutine open_dynamobench_monitor_file                        &
 !!     &         (sph_bc_U, sph_bc_B, ipol)
 !!      subroutine output_field_4_dynamobench                           &
@@ -30,9 +35,9 @@
       implicit none
 !
 !>      file ID for benchmark output file
-      integer(kind=kint), parameter :: id_dynamobench = 41
+      integer(kind=kint), parameter, private :: id_dynamobench = 41
 !>      file name for benchmark output file
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: dynamobench_field_name = 'dynamobench_field.dat'
 !
 !
@@ -75,7 +80,6 @@
         real(kind = kreal) :: d_zero(0:4,7)
       end type dynamobench_monitor
 !
-      private :: id_dynamobench, dynamobench_field_name
       private :: open_dynamobench_monitor_file
 !
 ! ----------------------------------------------------------------------
@@ -84,58 +88,65 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine open_dynamobench_monitor_file                          &
-     &         (sph_bc_U, sph_bc_B, ipol)
+      subroutine set_field_ctl_dynamobench(fld_ctl, d_circle, bench)
 !
-      type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
-      type(phys_address), intent(in) :: ipol
+      use t_control_array_character3
+      use t_phys_data
+      use m_base_field_labels
+      use m_phys_constants
+      use skip_comment_f
+!
+      type(ctl_array_c3), intent(in) :: fld_ctl
+!
+      type(phys_data), intent(inout) :: d_circle
+      type(dynamobench_monitor), intent(inout) :: bench
+!
+      integer(kind = kint) :: ifld
 !
 !
-      open(id_dynamobench, file=dynamobench_field_name,                 &
-     &    form='formatted', status='old', position='append', err = 99)
-      return
+      do ifld = 1, fld_ctl%num
+        if(cmp_no_case(fld_ctl%c1_tbl(ifld), temperature%name))         &
+     &                                   bench%ibench_temp =   1
+        if(cmp_no_case(fld_ctl%c1_tbl(ifld), velocity%name))            &
+     &                                   bench%ibench_velo =   1
+        if(cmp_no_case(fld_ctl%c1_tbl(ifld), magnetic_field%name))      &
+     &                                   bench%ibench_magne =  1
+      end do
 !
-  99  continue
-      open(id_dynamobench, file=dynamobench_field_name)
-!
-      write(id_dynamobench,'(a)', advance='NO') 't_step    time    '
-      write(id_dynamobench,'(a)', advance='NO')                         &
-     &     'KE_pol    KE_tor    KE_total    '
-!
-      if(ipol%base%i_magne .gt. 0) then
-        write(id_dynamobench,'(a)', advance='NO')                       &
-     &     'ME_pol    ME_tor    ME_total    '
+      ifld = 0
+      if(bench%ibench_temp .gt. 0) then
+        ifld = ifld + 1
+        bench%ibench_temp = d_circle%istack_component(ifld-1) + 1
+        d_circle%phys_name(ifld) =     temperature%name
+        d_circle%num_component(ifld) = n_scalar
+        d_circle%istack_component(ifld)                                 &
+     &        = d_circle%istack_component(ifld-1) + n_scalar
       end if
-!
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        write(id_dynamobench,'(a)', advance='NO')                       &
-     &     'ME_pol_icore    ME_tor_icore    ME_total_icore    '
+      if(bench%ibench_velo .gt. 0) then
+        ifld = ifld + 1
+        bench%ibench_velo = d_circle%istack_component(ifld-1) + 1
+        d_circle%phys_name(ifld) =     velocity%name
+        d_circle%num_component(ifld) = n_vector
+        d_circle%istack_component(ifld)                                 &
+     &        = d_circle%istack_component(ifld-1) + n_vector
       end if
-!
-      if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        write(id_dynamobench,'(a)', advance='NO') 'omega_ic_z    '
+      if(bench%ibench_magne .gt. 0) then
+        ifld = ifld + 1
+        bench%ibench_magne = d_circle%istack_component(ifld-1) + 1
+        d_circle%phys_name(ifld) =     magnetic_field%name
+        d_circle%num_component(ifld) = n_vector
+        d_circle%istack_component(ifld)                                 &
+     &        = d_circle%istack_component(ifld-1) + n_vector
       end if
+      d_circle%flag_monitor = .TRUE.
+      d_circle%ntot_phys =     d_circle%istack_component(ifld)
+      d_circle%num_phys_viz =  d_circle%num_phys
+      d_circle%ntot_phys_viz = d_circle%ntot_phys
 !
-      write(*,*) 'sph_bc_U%iflag_icb', sph_bc_U%iflag_icb
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
-     &  .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        write(id_dynamobench,'(a)', advance='NO') 'MAG_torque_ic_z    '
-      end if
+      end subroutine set_field_ctl_dynamobench
 !
-      write(id_dynamobench,'(a)', advance='NO')                         &
-     &     'phi_1    phi_2    phi_3    phi_4    '
-      write(id_dynamobench,'(a)', advance='NO')                         &
-     &     'omega_vp44    omega_vt54    '
-!
-      if(ipol%base%i_magne .gt. 0) then
-        write(id_dynamobench,'(a)', advance='NO') 'B_theta    '
-      end if
-!
-      write(id_dynamobench,'(a)')  'v_phi    temp'
-!
-      end subroutine open_dynamobench_monitor_file
-!
-! ----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine output_field_4_dynamobench                             &
      &          (i_step, time, sph_MHD_bc, ipol, bench)
@@ -197,6 +208,59 @@
       close(id_dynamobench)
 !
       end subroutine output_field_4_dynamobench
+!
+! ----------------------------------------------------------------------
+!
+      subroutine open_dynamobench_monitor_file                          &
+     &         (sph_bc_U, sph_bc_B, ipol)
+!
+      type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
+      type(phys_address), intent(in) :: ipol
+!
+!
+      open(id_dynamobench, file=dynamobench_field_name,                 &
+     &    form='formatted', status='old', position='append', err = 99)
+      return
+!
+  99  continue
+      open(id_dynamobench, file=dynamobench_field_name)
+!
+      write(id_dynamobench,'(a)', advance='NO') 't_step    time    '
+      write(id_dynamobench,'(a)', advance='NO')                         &
+     &     'KE_pol    KE_tor    KE_total    '
+!
+      if(ipol%base%i_magne .gt. 0) then
+        write(id_dynamobench,'(a)', advance='NO')                       &
+     &     'ME_pol    ME_tor    ME_total    '
+      end if
+!
+      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
+        write(id_dynamobench,'(a)', advance='NO')                       &
+     &     'ME_pol_icore    ME_tor_icore    ME_total_icore    '
+      end if
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
+        write(id_dynamobench,'(a)', advance='NO') 'omega_ic_z    '
+      end if
+!
+      write(*,*) 'sph_bc_U%iflag_icb', sph_bc_U%iflag_icb
+      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
+     &  .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
+        write(id_dynamobench,'(a)', advance='NO') 'MAG_torque_ic_z    '
+      end if
+!
+      write(id_dynamobench,'(a)', advance='NO')                         &
+     &     'phi_1    phi_2    phi_3    phi_4    '
+      write(id_dynamobench,'(a)', advance='NO')                         &
+     &     'omega_vp44    omega_vt54    '
+!
+      if(ipol%base%i_magne .gt. 0) then
+        write(id_dynamobench,'(a)', advance='NO') 'B_theta    '
+      end if
+!
+      write(id_dynamobench,'(a)')  'v_phi    temp'
+!
+      end subroutine open_dynamobench_monitor_file
 !
 ! ----------------------------------------------------------------------
 !

@@ -73,7 +73,7 @@
       subroutine cal_drift_by_v44(time, circle, ibench_velo,            &
      &          t_prev, phase_vm4, phase_vm4_prev, omega_vm4)
 !
-      use t_circle_transform
+      use t_fields_on_circle
 !
       real(kind=kreal), intent(in) :: time
       type(fields_on_circle), intent(in) :: circle
@@ -119,6 +119,7 @@
 !
       use calypso_mpi
       use t_phys_data
+      use t_fields_on_circle
 !
       type(fields_on_circle), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle

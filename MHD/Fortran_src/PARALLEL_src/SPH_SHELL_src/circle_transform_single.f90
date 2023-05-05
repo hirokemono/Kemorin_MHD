@@ -29,6 +29,7 @@
       use m_machine_parameter
       use t_FFT_selector
       use t_schmidt_polynomial
+      use t_fields_on_circle
       use t_circle_transform
 !
       implicit none

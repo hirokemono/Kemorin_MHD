@@ -57,12 +57,13 @@
       use t_const_spherical_grid
       use sph_mhd_rst_IO_control
       use input_control_sph_SGS_MHD
-      use set_control_sph_SGS_MHD
       use init_sph_MHD_elapsed_label
       use parallel_load_data_4_sph
       use input_control_sph_MHD
       use nod_phys_send_recv
+      use set_field_data_w_SGS
 !
+      integer(kind = kint) :: ierr = 0
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       call init_elapse_time_by_TOTAL
@@ -79,9 +80,10 @@
      &    SPH_model1, SPH_WK1, SPH_SGS1, SPH_MHD1)
       call dealloc_sph_SGS_MHD_viz_ctl(add_SSMHD_ctl1)
 !
-      call set_ctl_params_pick_circle                                   &
-     &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &
-     &    MHD_ctl1%smonitor_ctl%meq_ctl, cdat1%circle, cdat1%d_circle)
+      call set_control_circle_def                                       &
+     &   (MHD_ctl1%smonitor_ctl%meq_ctl, cdat1%circle)
+      call set_SGS_field_ctl_by_viz                                     &
+     &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl, cdat1%d_circle, ierr)
 !
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl1, add_SSMHD_ctl1)
 !

@@ -59,7 +59,6 @@
       subroutine initialize_sph_MHD_noviz
 !
       use input_control_sph_MHD
-      use bcast_control_sph_MHD
       use FEM_to_PSF_bridge
 !
 !
@@ -73,15 +72,10 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      if (iflag_debug.eq.1) write(*,*) 'load_control_4_sph_MHD_w_psf'
-      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl1,     &
-     &                                  add_SMHD_ctl1)
-!
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_MHD_psf'
       call input_control_SPH_MHD_psf                                    &
-     &   (MHD_files1, DNS_MHD_ctl1, add_SMHD_ctl1%zm_ctls,              &
+     &   (MHD_ctl_name, MHD_files1, DNS_MHD_ctl1, add_SMHD_ctl1,        &
      &    MHD_step1, SPH_model1, SPH_WK1, SPH_MHD1, FEM_d1)
-      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !        Initialize FEM mesh data for field data IO
