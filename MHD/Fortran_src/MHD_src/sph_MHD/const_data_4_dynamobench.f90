@@ -58,8 +58,10 @@
       use t_work_4_sph_trans
 !
       use calypso_mpi
+      use calypso_mpi_real
       use cal_rms_fields_by_sph
       use global_field_4_dynamobench
+      use transfer_to_long_integers
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -73,16 +75,25 @@
       type(circle_fld_maker), intent(inout) :: cdat
       type(dynamobench_monitor), intent(inout) :: bench
 !
+      integer(kind = kint) :: irank_copy
+!
 !
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
       call mid_eq_transfer_dynamobench                                  &
      &   (time_d%time, trans_p%iflag_FFT, sph_rj, rj_fld, cdat, bench)
 !
       if(bench%ipwr_ocore .gt. 0) then
-        call copy_kin_energy_4_dbench(bench%ipwr_ocore, pwr,            &
-     &                                bench%KE_bench)
-        call copy_mag_energy_4_dbench(bench%ipwr_ocore, pwr,            &
-     &                                bench%ME_bench)
+        irank_copy = pwr%v_spectr(bench%ipwr_ocore)%irank_m
+        if(my_rank .eq. irank_copy)  then
+          call copy_kin_energy_4_dbench(bench%ipwr_ocore, pwr,          &
+     &                                  bench%KE_bench)
+          call copy_mag_energy_4_dbench(bench%ipwr_ocore, pwr,          &
+     &                                  bench%ME_bench)
+        end if
+        call calypso_mpi_bcast_real(bench%KE_bench, cast_long(ithree),  &
+     &                              irank_copy)
+        call calypso_mpi_bcast_real(bench%ME_bench, cast_long(ithree),  &
+     &                              irank_copy)
       end if
 !
       if(sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
@@ -94,8 +105,13 @@
 !
       if(sph_MHD_bc%sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         if(bench%ipwr_icore .gt. 0) then
-          call copy_mag_energy_4_dbench(bench%ipwr_icore, pwr,          &
-     &                                  bench%mene_icore)
+          irank_copy = pwr%v_spectr(bench%ipwr_ocore)%irank_m
+          if(my_rank .eq. irank_copy)  then
+            call copy_mag_energy_4_dbench(bench%ipwr_icore, pwr,        &
+     &                                    bench%mene_icore)
+          end if
+          call calypso_mpi_bcast_real(bench%mene_icore,                 &
+     &                                cast_long(ithree), irank_copy)
         end if
       end if
 !
