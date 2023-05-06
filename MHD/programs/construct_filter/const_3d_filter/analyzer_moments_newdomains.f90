@@ -17,6 +17,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &             :: fname_trans_flt_ctl = "ctl_new_domain_filter"
+!
       integer, save :: nprocs_2nd
       type(ctl_param_newdom_filter), save :: newfil_p1
 !
@@ -33,7 +36,7 @@
 !
       use t_ctl_data_newdomain_filter
       use t_ctl_param_newdom_filter
-      use bcast_control_newdom_filter
+      use input_ctl_filter_newdomain
       use const_domain_tbl_by_file
 !
       type(ctl_data_newdomain_filter) :: newd_fil_ctl1
@@ -54,16 +57,10 @@
 !
       nprocs_2nd = nprocs
 !
-!     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*) 'load_control_filter_newdomain'
-      call load_control_filter_newdomain(newd_fil_ctl1)
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain                                 &
-     &   (nprocs_2nd, newd_fil_ctl1%org_filter_plt,                     &
-     &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
-     &    newd_fil_ctl1%org_filter_file_ctls, newfil_p1, ierr)
+!     ---------------------
+      if (iflag_debug.eq.1) write(*,*) 's_input_ctl_filter_newdomain'
+      call s_input_ctl_filter_newdomain(fname_trans_flt_ctl,            &
+     &                                  nprocs_2nd, newfil_p1)
 !
       end subroutine moments_to_newdomain_init
 !
