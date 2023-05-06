@@ -374,10 +374,12 @@
       call s_set_ctl_sph_spectr_w_dbench                                &
      &   (smonitor_ctl, MHD_BC, monitor%pwr, monitor%bench)
 !   Set parameters for dynamo benchmark output
-      call set_ctl_circle_for_dbench(smonitor_ctl%dbench_ctl,           &
-     &    monitor%circ_mid_eq%circle)
-      call set_field_ctl_dynamobench(fld_ctl%field_ctl,                 &
-     &    monitor%circ_mid_eq%d_circle, monitor%bench)
+      if(monitor%bench%iflag_dynamobench .gt. 0) then
+        call set_ctl_circle_for_dbench(smonitor_ctl%dbench_ctl,         &
+     &      monitor%circ_mid_eq%circle)
+        call set_field_ctl_dynamobench(fld_ctl%field_ctl,               &
+     &      monitor%circ_mid_eq%d_circle, monitor%bench)
+      end if
 !
 !   set_pickup modes
       call set_ctl_params_pick_sph                                      &
