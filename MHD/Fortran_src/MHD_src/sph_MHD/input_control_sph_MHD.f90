@@ -16,15 +16,17 @@
 !!
 !!      subroutine input_control_SPH_MHD_psf                            &
 !!     &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,      &
-!!     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat)
+!!     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat,        &
+!!     &          cdat, bench)
 !!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !!      subroutine input_control_4_SPH_MHD_nosnap                       &
 !!     &         (ctl_file_name, MHD_files, MHD_ctl, MHD_step,          &
-!!     &          SPH_model, SPH_WK, SPH_MHD)
+!!     &          SPH_model, SPH_WK, SPH_MHD, cdat, bench)
 !!
 !!      subroutine input_control_4_SPH_make_init                        &
 !!     &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,      &
-!!     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat)
+!!     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat,        &
+!!     &          cdat, bench)
 !!        character(len=kchara), intent(in) :: ctl_file_name
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
@@ -34,11 +36,11 @@
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
+!!        type(circle_fld_maker), intent(inout) :: cdat
+!!        type(dynamobench_monitor), intent(inout) :: bench
 !!      subroutine input_control_SPH_dynamobench(ctl_file_name,         &
 !!     &          MHD_files, MHD_ctl, add_SMHD_ctl, MHD_step, SPH_model,&
 !!     &          SPH_WK, SPH_MHD, FEM_dat, cdat, bench)
-!!        type(circle_fld_maker), intent(inout) :: cdat
-!!        type(dynamobench_monitor), intent(inout) :: bench
 !!@endverbatim
 !
 !
@@ -62,6 +64,8 @@
       use t_bc_data_list
       use t_flex_delta_t_data
       use t_work_SPH_MHD
+      use t_field_on_circle
+      use t_field_4_dynamobench
 !
       implicit none
 !
@@ -119,7 +123,8 @@
 !
       subroutine input_control_SPH_MHD_psf                              &
      &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,        &
-     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat)
+     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat,          &
+     &          cdat, bench)
 !
       use t_time_data
       use t_ctl_data_MHD
@@ -142,6 +147,8 @@
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(FEM_mesh_field_data), intent(inout) :: FEM_dat
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
 !
 !  Read control file
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_sph_MHD_w_psf'
@@ -160,7 +167,7 @@
       call set_control_SPH_MHD_w_viz(MHD_ctl%model_ctl,                 &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, add_SMHD_ctl%zm_ctls, &
      &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
-     &    SPH_WK%monitor)
+     &    SPH_WK%monitor, cdat, bench)
 !
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -183,7 +190,7 @@
 !
       subroutine input_control_4_SPH_MHD_nosnap                         &
      &         (ctl_file_name, MHD_files, MHD_ctl, MHD_step,            &
-     &          SPH_model, SPH_WK, SPH_MHD)
+     &          SPH_model, SPH_WK, SPH_MHD, cdat, bench)
 !
       use t_ctl_data_MHD
       use set_control_sph_mhd
@@ -199,6 +206,8 @@
       type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
 !
 !
 !  Read control file
@@ -215,7 +224,7 @@
 !
       call set_control_SPH_MHD_noviz                                    &
      &   (MHD_ctl%model_ctl, MHD_ctl%smonitor_ctl,                      &
-     &    SPH_model%MHD_prop, SPH_MHD%fld, SPH_WK%monitor)
+     &    SPH_model%MHD_prop, SPH_MHD%fld, SPH_WK%monitor, cdat, bench)
 !
       if (iflag_debug.eq.1) write(*,*) 'check_and_make_SPH_mesh'
       call check_and_make_SPH_mesh(MHD_files%sph_file_param, SPH_MHD)
@@ -232,7 +241,8 @@
 !
       subroutine input_control_4_SPH_make_init                          &
      &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,        &
-     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat)
+     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat,          &
+     &          cdat, bench)
 !
       use t_time_data
       use t_ctl_data_MHD
@@ -252,6 +262,8 @@
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(FEM_mesh_field_data), intent(inout) :: FEM_dat
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
 !
 !  Read control file
       if (iflag_debug.eq.1) write(*,*) 'load_control_4_sph_MHD_w_psf'
@@ -270,7 +282,7 @@
       call set_control_SPH_MHD_w_viz(MHD_ctl%model_ctl,                 &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, add_SMHD_ctl%zm_ctls, &
      &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
-     &    SPH_WK%monitor)
+     &    SPH_WK%monitor, cdat, bench)
 !
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -299,8 +311,6 @@
       use t_time_data
       use t_ctl_data_MHD
       use t_ctl_data_sph_MHD_w_psf
-      use t_field_on_circle
-      use t_field_4_dynamobench
       use set_control_sph_mhd
       use set_control_sph_data_MHD
 !
@@ -336,18 +346,7 @@
       call set_control_SPH_MHD_w_viz(MHD_ctl%model_ctl,                 &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, add_SMHD_ctl%zm_ctls, &
      &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
-     &    SPH_WK%monitor)
-!
-!   Set parameters for dynamo benchmark output
-      call set_control_circle_def(MHD_ctl%smonitor_ctl%meq_ctl,         &
-     &                            cdat%circle)
-      call set_field_ctl_dynamobench                                    &
-     &   (MHD_ctl%model_ctl%fld_ctl%field_ctl, cdat%d_circle, bench)
-!
-      if (iflag_debug.eq.1) write(*,*) 'load_sph_mesh'
-      call check_and_make_SPH_mesh(MHD_files%sph_file_param, SPH_MHD)
-!
-!
+     &    SPH_WK%monitor, cdat, bench)
       call dealloc_sph_mhd_ctl_data(MHD_ctl)
 !
 !   Set initial time into time data

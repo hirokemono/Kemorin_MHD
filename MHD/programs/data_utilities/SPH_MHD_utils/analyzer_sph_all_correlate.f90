@@ -31,6 +31,8 @@
       use t_SPH_mesh_field_data
       use t_VIZ_mesh_field
       use t_mesh_SR
+      use t_field_on_circle
+      use t_field_4_dynamobench
 !
       use SPH_analyzer_back_trans
 !
@@ -42,6 +44,11 @@
       type(mhd_simulation_control), save, private :: MHD_ctl1
 !>        Additional structures for spherical SGS MHD dynamo
       type(add_sgs_sph_mhd_ctl), save, private :: add_SSMHD_ctl1
+!
+!>      Structure of field on mid-depth and equator
+      type(circle_fld_maker), save, private :: cdat4
+!>      Structure of benchmark result data
+      type(dynamobench_monitor), save, private :: bench4
 !
       private :: set_ctl_4_second_spectr_data
 !
@@ -72,7 +79,8 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo                                 &
      &   (corr_ctl_name, MHD_files1, MHD_ctl1, add_SSMHD_ctl1,          &
-     &    MHD_step1, SPH_model1, SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1)
+     &    MHD_step1, SPH_model1, SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1,   &
+     &    cdat4, bench4)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)

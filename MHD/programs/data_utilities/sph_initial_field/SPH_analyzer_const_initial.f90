@@ -30,6 +30,8 @@
       use t_MHD_file_parameter
       use t_SPH_mesh_field_data
       use t_field_data_IO
+      use t_field_on_circle
+      use t_field_4_dynamobench
 !
       implicit none
 !
@@ -45,6 +47,11 @@
       type(SPH_mesh_field_data), save, private :: SPH_MHD1
 !>      Structure of restart IO data
       type(field_IO), save, private :: rst_IO1
+!
+!>      Structure of field on mid-depth and equator
+      type(circle_fld_maker), save, private :: cdat7
+!>      Structure of benchmark result data
+      type(dynamobench_monitor), save, private :: bench7
 !
       private :: SPH_const_initial_field
 !
@@ -73,7 +80,8 @@
       if(iflag_debug .eq. 1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init                                &
      &   (MHD_ctl_name, MHD_files1, DNS_MHD_ctl1, add_SMHD_ctl1,        &
-     &    MHD_step1, SPH_model1, SPH_WK1, SPH_MHD1, FEM_d1)
+     &    MHD_step1, SPH_model1, SPH_WK1, SPH_MHD1, FEM_d1,             &
+     &    cdat7, bench7)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !        Initialize spherical transform dynamo

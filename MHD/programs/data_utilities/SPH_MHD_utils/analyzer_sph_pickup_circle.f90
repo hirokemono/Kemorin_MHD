@@ -26,6 +26,7 @@
       use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
       use t_field_on_circle
+      use t_field_4_dynamobench
       use t_spheric_parameter
       use t_file_IO_parameter
       use t_SPH_mesh_field_data
@@ -45,6 +46,8 @@
 !
       type(sph_grid_maker_in_sim), save, private :: sph_maker1
       type(circle_fld_maker), save, private :: cdat1
+      type(circle_fld_maker), save, private :: cdat0
+      type(dynamobench_monitor), save, private :: bench0
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,7 +80,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_load_control_sph_SGS_MHD'
       call input_control_sph_pick_circle(snap_ctl_name,                 &
      &    MHD_files1, MHD_ctl1, add_SSMHD_ctl1, MHD_step1,              &
-     &    SPH_model1, SPH_WK1, SPH_SGS1, SPH_MHD1)
+     &    SPH_model1, SPH_WK1, SPH_SGS1, SPH_MHD1, cdat0, bench0)
       call dealloc_sph_SGS_MHD_viz_ctl(add_SSMHD_ctl1)
 !
       call set_control_circle_def                                       &

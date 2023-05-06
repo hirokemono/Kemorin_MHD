@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine set_control_SGS_SPH_MHD_field                        &
 !!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls,           &
-!!     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor)
+!!     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor,     &
+!!     &          cdat, bench)
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt,              &
 !!     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, sgs_ctl,    &
 !!     &          MHD_files, bc_IO, refs, SGS_par, dynamic_SPH,         &
@@ -36,6 +37,8 @@
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
+!!        type(circle_fld_maker), intent(inout) :: cdat
+!!        type(dynamobench_monitor), intent(inout) :: bench
 !!@endverbatim
 !
       module set_control_sph_SGS_MHD
@@ -61,6 +64,8 @@
       use t_sph_grid_maker_in_sim
       use t_bc_data_list
       use t_flex_delta_t_data
+      use t_field_on_circle
+      use t_field_4_dynamobench
 !
       implicit none
 !
@@ -75,7 +80,8 @@
 !
       subroutine set_control_SGS_SPH_MHD_field                          &
      &         (model_ctl,  psph_ctl, smonitor_ctl, zm_ctls,            &
-     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor)
+     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor,       &
+     &          cdat, bench)
 !
       use t_SGS_control_parameter
       use t_phys_data
@@ -98,6 +104,8 @@
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
       type(sph_mhd_monitor_data), intent(inout) :: monitor
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
 !
       integer(kind = kint) :: ierr
 !
@@ -123,6 +131,11 @@
 !
       call count_field_4_monitor                                        &
      &   (rj_fld, num_field_monitor, ntot_comp_monitor)
+!
+!   Set parameters for dynamo benchmark output
+      call set_control_circle_def(smonitor_ctl%meq_ctl, cdat%circle)
+      call set_field_ctl_dynamobench(model_ctl%fld_ctl%field_ctl,       &
+     &                               cdat%d_circle, bench)
 !
       end subroutine set_control_SGS_SPH_MHD_field
 !
