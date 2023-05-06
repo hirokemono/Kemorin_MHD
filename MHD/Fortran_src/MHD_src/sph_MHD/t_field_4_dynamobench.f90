@@ -15,9 +15,9 @@
 !!      subroutine open_dynamobench_monitor_file                        &
 !!     &         (sph_bc_U, sph_bc_B, ipol)
 !!      subroutine output_field_4_dynamobench(time_d, sph_MHD_bc,       &
-!!     &                                      ipol, bench)
+!!     &                                      ipol_base, bench)
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(phys_address), intent(in) :: ipol
+!!        type(base_field_address), intent(in) :: ipol_base
 !!        type(time_data), intent(in) :: time_d
 !!        type(dynamobench_monitor), intent(in) :: bench
 !!@endverbatim
@@ -32,6 +32,7 @@
       use calypso_mpi
       use t_time_data
       use t_phys_address
+      use t_base_field_labels
       use t_boundary_data_sph_MHD
 !
       implicit none
@@ -43,6 +44,8 @@
      &      :: dynamobench_field_name = 'dynamobench_field.dat'
 !
       type dynamobench_monitor
+!>        Integer flag to get dynamo benchmark data
+        integer(kind = kint) :: iflag_dynamobench =  0
 !>        file prefix for benchmark output file
         character(len=kchara) :: benchmark_file_prefix
 !>        compress flag for benchmark output file
@@ -164,25 +167,26 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_field_4_dynamobench(time_d, sph_MHD_bc,         &
-     &                                      ipol, bench)
+     &                                      ipol_base, bench)
 !
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(phys_address), intent(in) :: ipol
+      type(base_field_address), intent(in) :: ipol_base
       type(time_data), intent(in) :: time_d
       type(dynamobench_monitor), intent(in) :: bench
 !
 !
+      if(bench%iflag_dynamobench .le. 0) return
       if(my_rank .ne. 0) return
 !
       call open_dynamobench_monitor_file                                &
-     &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol)
+     &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol_base)
 !
       write(id_dynamobench,'(i15,1pE25.15e3)', advance='NO')            &
      &     time_d%i_time_step, time_d%time
       write(id_dynamobench,'(1p3E25.15e3)', advance='NO')               &
      &     bench%KE_bench(1:3)
 !
-      if(ipol%base%i_magne .gt. 0) then
+      if(ipol_base%i_magne .gt. 0) then
         write(id_dynamobench,'(1p3E25.15e3)', advance='NO')             &
      &     bench%ME_bench(1:3)
       end if
@@ -212,7 +216,7 @@
       write(id_dynamobench,'(1p2E25.15e3)', advance='NO')               &
      &      bench%omega_vm4(1:2)
 !
-      if(ipol%base%i_magne .gt. 0) then
+      if(ipol_base%i_magne .gt. 0) then
         write(id_dynamobench,'(1p2E25.15e3)', advance='NO')             &
      &      bench%d_zero(0,bench%ibench_magne+1)
       end if
@@ -228,10 +232,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine open_dynamobench_monitor_file                          &
-     &         (sph_bc_U, sph_bc_B, ipol)
+     &         (sph_bc_U, sph_bc_B, ipol_base)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
-      type(phys_address), intent(in) :: ipol
+      type(base_field_address), intent(in) :: ipol_base
 !
 !
       open(id_dynamobench, file=dynamobench_field_name,                 &
@@ -245,7 +249,7 @@
       write(id_dynamobench,'(a)', advance='NO')                         &
      &     'KE_pol    KE_tor    KE_total    '
 !
-      if(ipol%base%i_magne .gt. 0) then
+      if(ipol_base%i_magne .gt. 0) then
         write(id_dynamobench,'(a)', advance='NO')                       &
      &     'ME_pol    ME_tor    ME_total    '
       end if
@@ -270,7 +274,7 @@
       write(id_dynamobench,'(a)', advance='NO')                         &
      &     'omega_vp44    omega_vt54    '
 !
-      if(ipol%base%i_magne .gt. 0) then
+      if(ipol_base%i_magne .gt. 0) then
         write(id_dynamobench,'(a)', advance='NO') 'B_theta    '
       end if
 !

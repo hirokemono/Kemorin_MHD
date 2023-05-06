@@ -18,15 +18,18 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!      subroutine output_rms_sph_SGS_mhd_control                       &
 !!     &         (time_d, SPH_SGS, SPH_MHD, sph_MHD_bc, r_2nd, leg,     &
-!!     &          MHD_mats, monitor, SR_sig)
+!!     &          r_2nd, trans_p, MHD_mats, monitor,                    &
+!!     &          cdat, bench, SR_sig)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(fdm_matrices), intent(in) :: r_2nd
-!!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(SPH_SGS_structure), intent(in) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(MHD_radial_matrices), intent(in) :: MHD_mats
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
+!!        type(circle_fld_maker), intent(inout) :: cdat
+!!        type(dynamobench_monitor), intent(inout) :: bench
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
@@ -40,13 +43,15 @@
       use t_control_parameter
       use t_SPH_mesh_field_data
       use t_SPH_SGS_structure
-      use t_schmidt_poly_on_rtm
+      use t_work_4_sph_trans
       use t_pickup_sph_spectr_data
       use t_no_heat_Nusselt
       use t_IO_step_parameter
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
       use t_sph_mhd_monitor_data_IO
+      use t_field_on_circle
+      use t_field_4_dynamobench
       use t_fdm_coefs
 !
       use pickup_sph_spectr_data
@@ -109,7 +114,8 @@
 !
       subroutine output_rms_sph_SGS_mhd_control                         &
      &         (time_d, SPH_SGS, SPH_MHD, MHD_prop, sph_MHD_bc,         &
-     &          r_2nd, leg, MHD_mats, monitor, SR_sig)
+     &          r_2nd, trans_p, MHD_mats, monitor,                      &
+     &          cdat, bench, SR_sig)
 !
       use t_solver_SR
       use t_time_data
@@ -124,23 +130,26 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(fdm_matrices), intent(in) :: r_2nd
-      type(legendre_4_sph_trans), intent(in) :: leg
+      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(SPH_SGS_structure), intent(in) :: SPH_SGS
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(MHD_radial_matrices), intent(in) :: MHD_mats
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       call cal_SGS_sph_monitor_data                                     &
-     &   (SPH_MHD%sph, MHD_prop, sph_MHD_bc, r_2nd, leg, MHD_mats,      &
-     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld, monitor)
+     &   (time_d, SPH_MHD%sph, MHD_prop, sph_MHD_bc, r_2nd, trans_p,    &
+     &    MHD_mats, SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld,        &
+     &    monitor, cdat, bench)
 !
       call output_sph_monitor_data                                      &
      &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
-     &    sph_MHD_bc%sph_bc_U, SPH_MHD%ipol, SPH_MHD%fld,               &
-     &    monitor, SR_sig)
+     &    sph_MHD_bc, SPH_MHD%ipol, SPH_MHD%fld,                        &
+     &    monitor, bench, SR_sig)
 !
       end subroutine output_rms_sph_SGS_mhd_control
 !
@@ -172,7 +181,7 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(send_recv_status), intent(inout) :: SR_sig
 !
-      integer(kind = kint) :: iflag, ierr_lc, ierr_gl
+      integer(kind = kint) :: ierr_lc, ierr_gl
       logical :: flag
 !
 !

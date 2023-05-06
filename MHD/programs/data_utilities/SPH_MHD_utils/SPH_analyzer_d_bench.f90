@@ -27,6 +27,7 @@
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(phys_data), intent(inout) :: cdat
+!!        type(circle_fld_maker), intent(inout) :: cdat
 !!        type(dynamobench_monitor), intent(inout) :: bench
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -150,11 +151,11 @@
       subroutine SPH_analyze_dbench(i_step, MHD_files, SPH_model,       &
      &          SPH_MHD, SPH_WK, SR_sig, SR_r, cdat, bench)
 !
+      use t_field_4_dynamobench
       use cal_sol_sph_MHD_crank
       use adjust_reference_fields
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
-      use const_data_4_dynamobench
       use input_control_sph_MHD
       use output_viz_file_control
       use cal_write_sph_monitor_data
@@ -214,17 +215,8 @@
      &                write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(MHD_step1%time_d, SPH_MHD,      &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                   &
-     &      SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%MHD_mats,          &
-     &      SPH_WK%monitor, SR_sig)
-!
-!*  -----------  lead dynamo benchmark output --------------
-!*
-        if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
-        call output_dynamobench_control                                 &
-     &     (MHD_step1%time_d, SPH_MHD%sph%sph_params,                   &
-     &      SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
-     &      SPH_MHD%ipol, SPH_MHD%fld,SPH_WK%monitor%pwr,               &
-     &      cdat, bench)
+     &      SPH_WK%r_2nd, SPH_WK%trans_p, SPH_WK%MHD_mats,              &
+     &      SPH_WK%monitor, cdat, bench, SR_sig)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)

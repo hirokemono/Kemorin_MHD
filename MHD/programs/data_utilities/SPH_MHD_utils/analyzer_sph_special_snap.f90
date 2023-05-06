@@ -47,6 +47,8 @@
       subroutine evolution_sph_special_snap
 !
       use t_MHD_step_parameter
+      use t_field_on_circle
+      use t_field_4_dynamobench
 !
       use analyzer_sph_snap
       use FEM_analyzer_sph_SGS_MHD
@@ -55,6 +57,9 @@
       use SGS_MHD_zonal_mean_viz
       use set_time_step_params
       use FEM_to_VIZ_bridge
+!
+      type(circle_fld_maker) :: cdat7
+      type(dynamobench_monitor) :: bench7
 !
 !*  -----------  set initial step data --------------
 !*
@@ -72,8 +77,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_special_snap'
         call SPH_analyze_special_snap                                   &
-     &     (MHD_step1%time_d%i_time_step,  MHD_files1, SPH_model1,      &
-     &     MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1)
+     &     (MHD_step1%time_d%i_time_step, MHD_files1, SPH_model1,       &
+     &     MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1, cdat7, bench7)
 !*
 !*  -----------  output field data --------------
 !*
@@ -146,10 +151,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_special_snap(i_step, MHD_files,            &
-     &          SPH_model, MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
+     &          SPH_model, MHD_step, SPH_SGS, SPH_MHD, SPH_WK,          &
+     &          cdat, bench)
 !
       use m_work_time
       use t_MHD_step_parameter
+      use t_field_on_circle
+      use t_field_4_dynamobench
 !
       use cal_SGS_nonlinear
       use cal_sol_sph_MHD_crank
@@ -169,6 +177,8 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
       type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !
@@ -245,8 +255,8 @@
      &                write(*,*) 'output_rms_sph_SGS_mhd_control'
         call output_rms_sph_SGS_mhd_control(MHD_step%time_d, SPH_SGS,   &
      &      SPH_MHD, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,          &
-     &      SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%MHD_mats,          &
-     &      SPH_WK%monitor, m_SR1%SR_sig)
+     &      SPH_WK%r_2nd, SPH_WK%trans_p, SPH_WK%MHD_mats,              &
+     &      SPH_WK%monitor, cdat, bench, m_SR1%SR_sig)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)

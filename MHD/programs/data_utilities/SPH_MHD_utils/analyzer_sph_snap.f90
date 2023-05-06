@@ -161,7 +161,7 @@
         call SPH_analyze_SGS_snap                                       &
      &     (MHD_step1%time_d%i_time_step, MHD_files1, SPH_model1,       &
      &      MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1,                     &
-     &      m_SR1%SR_sig, m_SR1%SR_r)
+     &      m_SR1%SR_sig, m_SR1%SR_r, cdat4, bench4)
 !*
 !*  -----------  output field data --------------
 !*
@@ -279,7 +279,7 @@
         call SPH_analyze_SGS_snap                                       &
      &     (MHD_step1%time_d%i_time_step, MHD_files1, SPH_model1,       &
      &      MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1,                     &
-     &      m_SR1%SR_sig, m_SR1%SR_r)
+     &      m_SR1%SR_sig, m_SR1%SR_r, cdat4, bench4)
 !*
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'

@@ -110,7 +110,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_mean_squre_in_shell'
         call cal_mean_squre_in_shell                                    &
      &     (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,           &
-     &      SPH_dat_ss%ipol, SPH_dat_ss%fld, leg_s%g_sph_rj,            &
+     &      SPH_dat_ss%ipol, SPH_dat_ss%fld, leg_s,                     &
      &      monitor_ss%pwr, monitor_ss%WK_pwr)
         call write_rms_4_sph_spectr_util                                &
      &     (my_rank, t_SHR%time_d, SPH_dat_ss%sph, monitor_ss)

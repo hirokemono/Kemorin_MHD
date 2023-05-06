@@ -7,8 +7,9 @@
 !> @brief  Evaluate mean square by spherical hermonics coefficients
 !!
 !!@verbatim
-!!      subroutine cal_SGS_sph_monitor_data(sph, MHD_prop, sph_MHD_bc,  &
-!!     &          r_2nd, leg, MHD_mats, ipol, ipol_LES, rj_fld, monitor)
+!!      subroutine cal_SGS_sph_monitor_data                             &
+!!     &         (time_d, sph, MHD_prop, sph_MHD_bc, r_2nd, trans_p,    &
+!!     &          MHD_mats, ipol, ipol_LES, rj_fld, monitor, cdat, bench)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -19,12 +20,15 @@
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
+!!        type(circle_fld_maker), intent(inout) :: cdat
+!!        type(dynamobench_monitor), intent(inout) :: bench
 !!      subroutine cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,    &
-!!     &          ipol, ipol_LES, rj_fld, g_sph_rj, pwr, WK_pwr)
+!!     &          ipol, ipol_LES, rj_fld, leg, pwr, WK_pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
 !!      subroutine cvt_filtered_ene_one_mode                            &
@@ -43,9 +47,10 @@
       use t_spheric_parameter
       use t_spheric_rj_data
       use t_physical_property
-      use t_schmidt_poly_on_rtm
+      use t_time_data
       use t_phys_data
       use t_phys_address
+      use t_work_4_sph_trans
       use t_SGS_model_addresses
       use t_boundary_data_sph_MHD
       use t_boundary_sph_spectr
@@ -70,9 +75,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_SGS_sph_monitor_data(sph, MHD_prop, sph_MHD_bc,    &
-     &          r_2nd, leg, MHD_mats, ipol, ipol_LES, rj_fld, monitor)
+      subroutine cal_SGS_sph_monitor_data                               &
+     &         (time_d, sph, MHD_prop, sph_MHD_bc, r_2nd, trans_p,      &
+     &          MHD_mats, ipol, ipol_LES, rj_fld, monitor, cdat, bench)
 !
+      use t_field_on_circle
+      use t_field_4_dynamobench
       use calypso_mpi
       use cal_rms_fields_by_sph
       use pickup_sph_spectr_data
@@ -80,24 +88,28 @@
       use cal_heat_source_Nu
       use cal_CMB_dipolarity
       use cal_typical_scale
+      use const_data_4_dynamobench
 !
+      type(time_data), intent(in) :: time_d
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(fdm_matrices), intent(in) :: r_2nd
-      type(legendre_4_sph_trans), intent(in) :: leg
+      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(MHD_radial_matrices), intent(in) :: MHD_mats
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
-     &   leg%g_sph_rj, monitor%pwr, monitor%WK_pwr)
+     &    trans_p%leg, monitor%pwr, monitor%WK_pwr)
 !
        if(monitor%heat_Nusselt%iflag_Nusselt .ne. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'sel_Nusselt_routine'
@@ -126,12 +138,15 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
       call cal_typical_scales(monitor%pwr, monitor%tsl)
 !
+      call const_dynamobench_data(time_d, sph%sph_params, sph%sph_rj,   &
+     &    sph_MHD_bc, trans_p, ipol, rj_fld, monitor%pwr, cdat, bench)
+!
       end subroutine cal_SGS_sph_monitor_data
 !
 !  --------------------------------------------------------------------
 !
       subroutine cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,      &
-     &          ipol, ipol_LES, rj_fld, g_sph_rj, pwr, WK_pwr)
+     &          ipol, ipol_LES, rj_fld, leg, pwr, WK_pwr)
 !
       use calypso_mpi
 !
@@ -145,7 +160,7 @@
       type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(legendre_4_sph_trans), intent(in) :: leg
 !
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
@@ -154,9 +169,9 @@
       if(pwr%ntot_comp_sq .eq. 0) return
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_SGS_sph_layerd_rms'
-      call sum_SGS_sph_layerd_rms                                       &
-     &   (sph_params%l_truncation, sph_rj, ipol, ipol_LES, g_sph_rj,    &
-     &    rj_fld, pwr%nri_rms, pwr%num_fld_sq, pwr%istack_comp_sq,      &
+      call sum_SGS_sph_layerd_rms(sph_params%l_truncation,              &
+     &    sph_rj, ipol, ipol_LES, leg%g_sph_rj, rj_fld,                 &
+     &    pwr%nri_rms, pwr%num_fld_sq, pwr%istack_comp_sq,              &
      &    pwr%id_field, pwr%kr_4_rms, pwr%num_vol_spectr,               &
      &    pwr%v_spectr, WK_pwr)
 !

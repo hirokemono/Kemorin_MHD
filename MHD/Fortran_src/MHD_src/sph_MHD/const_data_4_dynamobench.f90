@@ -7,7 +7,7 @@
 !>@brief Evaluate dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine output_dynamobench_control                           &
+!!      subroutine const_dynamobench_data                               &
 !!     &         (time_d, sph_params, sph_rj, sph_MHD_bc, trans_p, ipol,&
 !!     &          rj_fld, pwr, cdat, bench)
 !!        type(time_data), intent(in) :: time_d
@@ -38,7 +38,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_dynamobench_control                             &
+      subroutine const_dynamobench_data                                 &
      &         (time_d, sph_params, sph_rj, sph_MHD_bc, trans_p, ipol,  &
      &          rj_fld, pwr, cdat, bench)
 !
@@ -77,6 +77,8 @@
 !
       integer(kind = kint) :: irank_copy
 !
+!
+      if(bench%iflag_dynamobench .le. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
       call mid_eq_transfer_dynamobench                                  &
@@ -125,10 +127,7 @@
      &      rj_fld%d_fld, bench%m_torque_icore)
       end if
 !
-!       Output data
-      call output_field_4_dynamobench(time_d, sph_MHD_bc, ipol, bench)
-!
-      end subroutine output_dynamobench_control
+      end subroutine const_dynamobench_data
 !
 ! ----------------------------------------------------------------------
 !

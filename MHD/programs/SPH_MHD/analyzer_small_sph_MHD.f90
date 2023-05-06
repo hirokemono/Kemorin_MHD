@@ -120,7 +120,7 @@
         call SPH_analyze_MHD(MHD_step1%time_d%i_time_step,              &
      &      MHD_files1, iflag_finish, SPH_model1, MHD_step1,            &
      &      MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1,                          &
-     &      m_SR1%SR_sig, m_SR1%SR_r)
+     &      m_SR1%SR_sig, m_SR1%SR_r, cdat8, bench8)
 !
 !*  -----------  exit loop --------------
 !*

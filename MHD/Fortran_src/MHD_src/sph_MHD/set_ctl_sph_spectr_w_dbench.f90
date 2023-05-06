@@ -103,7 +103,8 @@
       bench%ipwr_ocore = 0
       bench%ipwr_icore = 0
 !
-      if(dbench_ctl%dynamobench_file_ctl%iflag .le. 0) return
+      bench%iflag_dynamobench = dbench_ctl%dynamobench_file_ctl%iflag
+      if(bench%iflag_dynamobench .le. 0) return
       bench%benchmark_file_prefix                                       &
      &                 = dbench_ctl%dynamobench_file_ctl%charavalue
       bench%ipwr_ocore = num_vspec_ctl + 2
