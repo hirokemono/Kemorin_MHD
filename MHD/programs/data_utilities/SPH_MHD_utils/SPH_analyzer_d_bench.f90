@@ -82,6 +82,7 @@
       use field_at_mid_equator
       use check_dependency_for_MHD
       use input_control_sph_MHD
+      use field_at_mid_equator
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
@@ -140,9 +141,8 @@
 !
 !* -----  find mid-equator point -----------------
 !*
-      call set_mid_equator_point_global(my_rank, SPH_WK%trans_p,        &
-     &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rtp,                  &
-     &    SPH_MHD%sph%sph_rj, cdat)
+      call init_mid_equator_point_global(my_rank, SPH_WK%trans_p,       &
+     &                                   SPH_MHD%sph, cdat)
 !
       end subroutine SPH_init_sph_dbench
 !

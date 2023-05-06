@@ -157,10 +157,8 @@
 !
 !* -----  find mid-equator point -----------------
 !
-      call const_circle_point_global                                    &
-     &   (my_rank, SPH_WK%trans_p%iflag_FFT,                            &
-     &    SPH_MHD%sph%sph_params%l_truncation, SPH_MHD%sph%sph_rtp,     &
-     &    SPH_MHD%sph%sph_rj, cdat)
+      call init_circle_point_global                                     &
+     &   (my_rank, SPH_WK%trans_p%iflag_FFT, SPH_MHD%sph, cdat)
 !
       end subroutine SPH_init_sph_pick_circle
 !

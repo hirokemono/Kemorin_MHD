@@ -100,7 +100,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
       call SPH_initialize_SGS_MHD(MHD_files1, FEM_d1%iphys, MHD_step1,  &
      &    MHD_IO1%rst_IO, SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1,      &
-     &    m_SR1%SR_sig, m_SR1%SR_r)
+     &    m_SR1%SR_sig, m_SR1%SR_r,  cdat4, bench4)
 !
 !  -------------------------------------------
 !  ----   Mesh setting for visualization -----

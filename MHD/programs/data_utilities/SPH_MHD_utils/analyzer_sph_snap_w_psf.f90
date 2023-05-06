@@ -102,7 +102,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap_psf'
       call SPH_init_sph_snap_psf(MHD_files1, FEM_d1%iphys, SPH_model1,  &
-     &    MHD_step1, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
+     &    MHD_step1, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r, cdat9, bench9)
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'

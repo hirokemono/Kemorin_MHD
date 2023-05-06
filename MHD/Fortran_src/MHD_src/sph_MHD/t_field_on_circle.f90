@@ -12,10 +12,12 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(circle_fld_maker), intent(inout) :: cdat
-!!      subroutine const_circle_point_global(my_rank, iflag_FFT,        &
-!!     &          l_truncation, sph_rtp, sph_rj, cdat)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!      subroutine init_circle_point_global(my_rank, iflag_FFT,         &
+!!     &                                    sph, cdat)
+!!      subroutine dealloc_circle_point_global(my_rank, cdat)
+!!        integer, intent(in) :: my_rank
+!!        integer(kind = kint), intent(in) :: iflag_FFT
+!!        type(sph_grids), intent(in) ::  sph
 !!        type(circle_fld_maker), intent(inout) :: cdat
 !!@endverbatim
 !
@@ -109,33 +111,44 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_circle_point_global(my_rank, iflag_FFT,          &
-     &          l_truncation, sph_rtp, sph_rj, cdat)
+      subroutine init_circle_point_global(my_rank, iflag_FFT,           &
+     &                                    sph, cdat)
 !
-      use t_spheric_rtp_data
-      use t_spheric_rj_data
+      use t_spheric_parameter
       use circle_transform_single
 !
       integer, intent(in) :: my_rank
       integer(kind = kint), intent(in) :: iflag_FFT
-      integer(kind = kint), intent(in) :: l_truncation
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_grids), intent(in) ::  sph
 !
       type(circle_fld_maker), intent(inout) :: cdat
 !
 !
-      call alloc_circle_field                                           &
-     &   (my_rank, sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2),       &
+      call alloc_circle_field(my_rank,                                  &
+     &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
      &    cdat%circle, cdat%d_circle)
-      call alloc_circle_transform(l_truncation, cdat%circ_spec)
+      call alloc_circle_transform(sph%sph_params%l_truncation,          &
+     &                            cdat%circ_spec)
       call initialize_circle_transform(iflag_FFT,                       &
      &    cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
       call set_circle_point_global                                      &
-     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
+     &   (sph%sph_rj%nidx_rj(1), sph%sph_rj%radius_1d_rj_r,             &
      &    cdat%circ_spec, cdat%circle)
 !
-      end subroutine const_circle_point_global
+      end subroutine init_circle_point_global
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_circle_point_global(my_rank, cdat)
+!
+      integer, intent(in) :: my_rank
+      type(circle_fld_maker), intent(inout) :: cdat
+!
+!
+      call dealloc_circle_field(my_rank, cdat%circle, cdat%d_circle)
+      call dealloc_circle_transform(cdat%circ_spec)
+!
+      end subroutine dealloc_circle_point_global
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

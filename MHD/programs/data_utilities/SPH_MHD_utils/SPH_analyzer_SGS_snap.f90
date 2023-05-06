@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_SGS_snap(MHD_files, iphys, SPH_model,       &
-!!     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
+!!     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat, bench)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -49,6 +49,8 @@
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
       use t_solver_SR
+      use t_field_on_circle
+      use t_field_4_dynamobench
 !
       implicit none
 !
@@ -59,7 +61,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_SGS_snap(MHD_files, iphys, SPH_model,         &
-     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
+     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat, bench)
 !
       use m_constants
       use calypso_mpi
@@ -93,6 +95,8 @@
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
 !
 !   Allocate spectr field data
 !
@@ -144,9 +148,9 @@
      &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, SPH_WK%rj_itp)
 !*
       if(iflag_debug .gt. 0) write(*,*) 'init_rms_sph_SGS_mhd_control'
-      call init_rms_sph_SGS_mhd_control                                 &
-     &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%r_2nd,       &
-     &    SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor, SR_sig)
+      call init_rms_sph_SGS_mhd_control(SPH_model%MHD_prop,             &
+     &    SPH_model%sph_MHD_bc, SPH_WK%r_2nd, SPH_WK%trans_p,           &
+     &    SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor, SR_sig, cdat, bench)
 !
       end subroutine SPH_init_SGS_snap
 !
@@ -156,8 +160,6 @@
      &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r,       &
      &          cdat, bench)
 !
-      use t_field_on_circle
-      use t_field_4_dynamobench
       use cal_SGS_nonlinear
       use cal_sol_sph_MHD_crank
       use adjust_reference_fields

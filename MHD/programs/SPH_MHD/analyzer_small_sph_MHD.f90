@@ -88,7 +88,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD(MHD_files1, SPH_model1, FEM_d1%iphys,     &
      &    MHD_step1, MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1,                 &
-     &    m_SR1%SR_sig, m_SR1%SR_r)
+     &    m_SR1%SR_sig, m_SR1%SR_r, cdat8, bench8)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call reset_elapse_4_init_sph_mhd

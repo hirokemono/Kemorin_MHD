@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_rms_sph_mhd_control(MHD_prop, sph_MHD_bc,       &
-!!     &          r_2nd, SPH_MHD, MHD_mats, monitor, SR_sig)
+!!     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig, cdat, bench)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -103,19 +103,23 @@
 !  --------------------------------------------------------------------
 !
       subroutine init_rms_sph_mhd_control(MHD_prop, sph_MHD_bc,         &
-     &          r_2nd, SPH_MHD, MHD_mats, monitor, SR_sig)
+     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig, cdat, bench)
 !
       use t_solver_SR
       use cal_heat_source_Nu
+      use field_at_mid_equator
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(fdm_matrices), intent(in) :: r_2nd
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(MHD_radial_matrices), intent(inout) :: MHD_mats
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(send_recv_status), intent(inout) :: SR_sig
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
 !
       character(len=kchara) :: mat_name
 !
@@ -138,6 +142,11 @@
 !
       call open_sph_vol_rms_file_mhd(SPH_MHD%sph, sph_MHD_bc%sph_bc_U,  &
      &   SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
+!
+      if(bench%iflag_dynamobench .gt. 0) then
+        call init_mid_equator_point_global(my_rank, trans_p,            &
+     &                                    SPH_MHD%sph, cdat)
+      end if
 !
       end subroutine init_rms_sph_mhd_control
 !
