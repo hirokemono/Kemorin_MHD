@@ -59,7 +59,6 @@
       use t_fem_gauss_int_coefs
       use t_next_node_ele_4_node
 !
-      use bcast_control_volume_grping
       use mpi_load_mesh_data
       use mesh_file_IO
       use copy_mesh_structures

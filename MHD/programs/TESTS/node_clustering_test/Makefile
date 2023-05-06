@@ -10,7 +10,6 @@ MOD_GROUPING_BY_VOLUME = \
 main_volume_grouping.o \
 analyzer_volume_grouping.o \
 \
-bcast_control_volume_grping.o \
 t_ctl_file_volume_grouping.o \
 t_control_param_repartition.o
 
