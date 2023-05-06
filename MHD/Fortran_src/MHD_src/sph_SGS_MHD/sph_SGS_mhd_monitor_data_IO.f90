@@ -8,8 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_rms_sph_SGS_mhd_control(MHD_prop, sph_MHD_bc,   &
-!!     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig,   &
-!!     &          cdat)
+!!     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -19,8 +18,7 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!      subroutine output_rms_sph_SGS_mhd_control                       &
 !!     &         (time_d, SPH_SGS, SPH_MHD, sph_MHD_bc, r_2nd, leg,     &
-!!     &          r_2nd, trans_p, MHD_mats, monitor,                    &
-!!     &          cdat, bench, SR_sig)
+!!     &          r_2nd, trans_p, MHD_mats, monitor, SR_sig)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -29,8 +27,6 @@
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(MHD_radial_matrices), intent(in) :: MHD_mats
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
-!!        type(circle_fld_maker), intent(inout) :: cdat
-!!        type(dynamobench_monitor), intent(inout) :: bench
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
@@ -51,8 +47,6 @@
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
       use t_sph_mhd_monitor_data_IO
-      use t_field_on_circle
-      use t_field_4_dynamobench
       use t_fdm_coefs
 !
       use pickup_sph_spectr_data
@@ -68,8 +62,7 @@
 !  --------------------------------------------------------------------
 !
       subroutine init_rms_sph_SGS_mhd_control(MHD_prop, sph_MHD_bc,     &
-     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig,     &
-     &          cdat, bench)
+     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig)
 !
       use t_solver_SR
       use t_time_data
@@ -88,8 +81,6 @@
       type(MHD_radial_matrices), intent(inout) :: MHD_mats
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(send_recv_status), intent(inout) :: SR_sig
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
 !
       character(len=kchara) :: mat_name
 !
@@ -114,9 +105,9 @@
      &   (SPH_MHD%sph, sph_MHD_bc%sph_bc_U, SPH_MHD%ipol, SPH_MHD%fld,  &
      &    monitor, SR_sig)
 !
-      if(bench%iflag_dynamobench .gt. 0) then
-        call init_mid_equator_point_global(my_rank, trans_p,            &
-     &                                     SPH_MHD%sph, cdat)
+      if(monitor%bench%iflag_dynamobench .gt. 0) then
+        call init_mid_equator_point_global                              &
+     &     (my_rank, trans_p, SPH_MHD%sph, monitor%circ_mid_eq)
       end if
 !
       end subroutine init_rms_sph_SGS_mhd_control
@@ -125,8 +116,7 @@
 !
       subroutine output_rms_sph_SGS_mhd_control                         &
      &         (time_d, SPH_SGS, SPH_MHD, MHD_prop, sph_MHD_bc,         &
-     &          r_2nd, trans_p, MHD_mats, monitor,                      &
-     &          cdat, bench, SR_sig)
+     &          r_2nd, trans_p, MHD_mats, monitor, SR_sig)
 !
       use t_solver_SR
       use t_time_data
@@ -147,20 +137,16 @@
       type(MHD_radial_matrices), intent(in) :: MHD_mats
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
-      call cal_SGS_sph_monitor_data                                     &
-     &   (time_d, SPH_MHD%sph, MHD_prop, sph_MHD_bc, r_2nd, trans_p,    &
-     &    MHD_mats, SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld,        &
-     &    monitor, cdat, bench)
+      call cal_SGS_sph_monitor_data(time_d, SPH_MHD%sph, MHD_prop,      &
+     &    sph_MHD_bc, r_2nd, trans_p, MHD_mats, SPH_MHD%ipol,           &
+     &    SPH_SGS%ipol_LES, SPH_MHD%fld, monitor)
 !
       call output_sph_monitor_data                                      &
      &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
-     &    sph_MHD_bc, SPH_MHD%ipol, SPH_MHD%fld,                        &
-     &    monitor, bench, SR_sig)
+     &    sph_MHD_bc, SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
 !
       end subroutine output_rms_sph_SGS_mhd_control
 !

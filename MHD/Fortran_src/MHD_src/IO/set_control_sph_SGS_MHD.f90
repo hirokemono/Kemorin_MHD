@@ -9,8 +9,7 @@
 !!@verbatim
 !!      subroutine set_control_SGS_SPH_MHD_field                        &
 !!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls,           &
-!!     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor,     &
-!!     &          cdat, bench)
+!!     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor)
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt,              &
 !!     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, sgs_ctl,    &
 !!     &          MHD_files, bc_IO, refs, SGS_par, dynamic_SPH,         &
@@ -37,8 +36,6 @@
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
-!!        type(circle_fld_maker), intent(inout) :: cdat
-!!        type(dynamobench_monitor), intent(inout) :: bench
 !!@endverbatim
 !
       module set_control_sph_SGS_MHD
@@ -64,8 +61,6 @@
       use t_sph_grid_maker_in_sim
       use t_bc_data_list
       use t_flex_delta_t_data
-      use t_field_on_circle
-      use t_field_4_dynamobench
 !
       implicit none
 !
@@ -80,8 +75,7 @@
 !
       subroutine set_control_SGS_SPH_MHD_field                          &
      &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, SGS_par,    &
-     &          MHD_prop, MHD_BC, sph, rj_fld, nod_fld, monitor,        &
-     &          cdat, bench)
+     &          MHD_prop, MHD_BC, sph, rj_fld, nod_fld, monitor)
 !
       use t_SGS_control_parameter
       use t_phys_data
@@ -105,8 +99,6 @@
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
       type(sph_mhd_monitor_data), intent(inout) :: monitor
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
 !
       integer(kind = kint) :: ierr
 !
@@ -123,7 +115,7 @@
 !
 !   set_pickup modes
       call set_control_SPH_MHD_monitors                                 &
-     &  (smonitor_ctl, model_ctl%fld_ctl, MHD_BC, rj_fld, monitor, cdat, bench)
+     &  (smonitor_ctl, model_ctl%fld_ctl, MHD_BC, rj_fld, monitor)
       call set_crustal_filtering_control                                &
      &   (zm_ctls%crust_filter_ctl, monitor)
 !

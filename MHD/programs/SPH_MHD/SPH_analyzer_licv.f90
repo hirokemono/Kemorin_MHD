@@ -3,7 +3,7 @@
 !
 !!      subroutine SPH_initialize_linear_conv(MHD_files, iphys,         &
 !!     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD,             &
-!!     &          SPH_WK, SR_sig, SR_r, cdat, bench)
+!!     &          SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -15,7 +15,7 @@
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine SPH_analyze_linear_conv(i_step, MHD_files,           &
 !!     &          iflag_finish, SPH_model, MHD_step, sph_fst_IO,        &
-!!     &          SPH_MHD, SPH_WK, SR_sig, SR_r, bench)
+!!     &          SPH_MHD, SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -24,8 +24,6 @@
 !!        type(field_IO), intent(inout) :: sph_fst_IO
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(circle_fld_maker), intent(inout) :: cdat
-!!        type(dynamobench_monitor), intent(inout) :: bench
 !
 !      Written by H. Matsui
 !
@@ -56,7 +54,7 @@
 !
       subroutine SPH_initialize_linear_conv(MHD_files, iphys,           &
      &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD,               &
-     &          SPH_WK, SR_sig, SR_r, cdat, bench)
+     &          SPH_WK, SR_sig, SR_r)
 !
       use calypso_mpi
       use m_constants
@@ -92,8 +90,6 @@
       type(field_IO), intent(inout) :: sph_fst_IO
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
 !
 !   Allocate spectr field data
 !
@@ -173,7 +169,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_rms_sph_mhd_control'
       call init_rms_sph_mhd_control(SPH_model%MHD_prop,                 &
      &   SPH_model%sph_MHD_bc, SPH_WK%r_2nd, SPH_WK%trans_p,            &
-     &    SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor, SR_sig, cdat, bench)
+     &    SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor, SR_sig)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine SPH_initialize_linear_conv
@@ -183,7 +179,7 @@
 !
       subroutine SPH_analyze_linear_conv(i_step, MHD_files,             &
      &          iflag_finish, SPH_model, MHD_step, sph_fst_IO,          &
-     &          SPH_MHD, SPH_WK, SR_sig, SR_r, cdat, bench)
+     &          SPH_MHD, SPH_WK, SR_sig, SR_r)
 !
       use t_field_4_dynamobench
       use calypso_mpi_real
@@ -203,8 +199,6 @@
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-      type(dynamobench_monitor), intent(inout) :: bench
-      type(circle_fld_maker), intent(inout) :: cdat
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(field_IO), intent(inout) :: sph_fst_IO
       type(send_recv_status), intent(inout) :: SR_sig
@@ -277,9 +271,8 @@
       if(output_IO_flag(i_step, MHD_step%rms_step)) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
-     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                   &
-     &      SPH_WK%r_2nd, SPH_WK%trans_p, SPH_WK%MHD_mats,              &
-     &      SPH_WK%monitor, cdat, bench, SR_sig)
+     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%r_2nd,     &
+     &      SPH_WK%trans_p, SPH_WK%MHD_mats, SPH_WK%monitor, SR_sig)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
 !

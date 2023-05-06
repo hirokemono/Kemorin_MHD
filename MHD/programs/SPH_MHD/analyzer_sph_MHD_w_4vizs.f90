@@ -30,8 +30,6 @@
       use t_sph_trans_arrays_MHD
       use t_comm_table
       use t_mesh_SR
-      use t_field_on_circle
-      use t_field_4_dynamobench
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
@@ -53,11 +51,6 @@
       type(surfacing_modules), save, private :: viz_psfs1
 !>      Structure of edge communication table
       type(communication_table), save, private :: edge_comm_M
-!
-!>      Structure of field on mid-depth and equator
-      type(circle_fld_maker), save, private :: cdat9
-!>      Structure of benchmark result data
-      type(dynamobench_monitor), save, private :: bench9
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,8 +77,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_MHD_psf'
       call input_control_SPH_MHD_psf                                    &
      &   (MHD_ctl_name, MHD_files1, DNS_MHD_ctl1, add_SMHD_ctl1,        &
-     &    MHD_step1, SPH_model1, SPH_WK1, SPH_MHD1, FEM_d1,             &
-     &    cdat9, bench9)
+     &    MHD_step1, SPH_model1, SPH_WK1, SPH_MHD1, FEM_d1)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !        Initialize FEM mesh data for field data IO
@@ -102,7 +94,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD(MHD_files1, SPH_model1, FEM_d1%iphys,     &
      &    MHD_step1, MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1,                 &
-     &    m_SR1%SR_sig, m_SR1%SR_r, cdat9, bench9)
+     &    m_SR1%SR_sig, m_SR1%SR_r)
 !
 !        Initialize visualization
 !
@@ -153,9 +145,8 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
         call SPH_analyze_MHD(MHD_step1%time_d%i_time_step,              &
-     &      MHD_files1, iflag_finish, SPH_model1, MHD_step1,            &
-     &      MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1,                          &
-     &      m_SR1%SR_sig, m_SR1%SR_r, cdat9, bench9)
+     &     MHD_files1, iflag_finish, SPH_model1, MHD_step1,             &
+     &     MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
 !*
 !*  -----------  output field data --------------
 !*

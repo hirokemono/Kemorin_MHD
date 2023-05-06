@@ -9,9 +9,9 @@
 !!@verbatim
 !!      subroutine set_control_SPH_MHD_w_viz                            &
 !!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, MHD_prop, &
-!!     &          MHD_BC, sph, rj_fld, nod_fld, monitor, cdat, bench)
+!!     &          MHD_BC, sph, rj_fld, nod_fld, monitor)
 !!      subroutine set_control_SPH_MHD_noviz(model_ctl, smonitor_ctl,   &
-!!     &          MHD_prop, MHD_BC, rj_fld, monitor, cdat, bench)
+!!     &          MHD_prop, MHD_BC, rj_fld, monitor)
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
@@ -36,8 +36,6 @@
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!!        type(circle_fld_maker), intent(inout) :: cdat
-!!        type(dynamobench_monitor), intent(inout) :: bench
 !!      subroutine set_control_SPH_MHD_bcs                              &
 !!     &         (MHD_prop, nbc_ctl, sbc_ctl, MHD_BC)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -75,8 +73,6 @@
       use t_flex_delta_t_data
       use t_SPH_mesh_field_data
       use t_radial_reference_field
-      use t_field_on_circle
-      use t_field_4_dynamobench
 !
       implicit none
 !
@@ -88,7 +84,7 @@
 !
       subroutine set_control_SPH_MHD_w_viz                              &
      &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, MHD_prop,   &
-     &          MHD_BC, sph, rj_fld, nod_fld, monitor, cdat, bench)
+     &          MHD_BC, sph, rj_fld, nod_fld, monitor)
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
@@ -110,8 +106,6 @@
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
       type(sph_mhd_monitor_data), intent(inout) :: monitor
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
 !
       integer(kind = kint) :: ierr
 !
@@ -128,8 +122,7 @@
 !
 !   set_pickup modes
       call set_control_SPH_MHD_monitors                                 &
-     &   (smonitor_ctl, model_ctl%fld_ctl, MHD_BC,                      &
-     &    rj_fld, monitor, cdat, bench)
+     &   (smonitor_ctl, model_ctl%fld_ctl, MHD_BC, rj_fld, monitor)
       call set_crustal_filtering_control                                &
      &   (zm_ctls%crust_filter_ctl, monitor)
 !
@@ -142,7 +135,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SPH_MHD_noviz(model_ctl, smonitor_ctl,     &
-     &          MHD_prop, MHD_BC, rj_fld, monitor, cdat, bench)
+     &          MHD_prop, MHD_BC, rj_fld, monitor)
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
@@ -155,8 +148,6 @@
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mhd_monitor_data), intent(inout) :: monitor
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
 !
 !
 !       set spectr field list
@@ -166,8 +157,7 @@
 !
 !   set_pickup modes
       call set_control_SPH_MHD_monitors                                 &
-     &   (smonitor_ctl, model_ctl%fld_ctl, MHD_BC,                      &
-     &    rj_fld, monitor, cdat, bench)
+     &   (smonitor_ctl, model_ctl%fld_ctl, MHD_BC, rj_fld, monitor)
 !
       end subroutine set_control_SPH_MHD_noviz
 !
@@ -347,13 +337,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SPH_MHD_monitors(smonitor_ctl, fld_ctl,    &
-     &          MHD_BC, rj_fld, monitor, cdat, bench)
+     &                                        MHD_BC, rj_fld, monitor)
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
       use t_no_heat_Nusselt
       use t_CMB_dipolarity
       use t_sph_typical_scales
+      use t_field_on_circle
+      use t_field_4_dynamobench
       use t_multi_flag_labels
       use m_file_format_labels
       use m_base_field_labels
@@ -370,8 +362,6 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
 !
 !
       if(allocated(gzip_flags%flags) .eqv. .FALSE.) then
@@ -382,12 +372,12 @@
       call set_ctl_params_layered_spectr                                &
      &   (smonitor_ctl%lp_ctl, monitor%pwr)
       call s_set_ctl_sph_spectr_w_dbench                                &
-     &   (smonitor_ctl, MHD_BC, monitor%pwr, bench)
+     &   (smonitor_ctl, MHD_BC, monitor%pwr, monitor%bench)
 !   Set parameters for dynamo benchmark output
       call set_ctl_circle_for_dbench(smonitor_ctl%dbench_ctl,           &
-     &                               cdat%circle)
+     &    monitor%circ_mid_eq%circle)
       call set_field_ctl_dynamobench(fld_ctl%field_ctl,                 &
-     &                               cdat%d_circle, bench)
+     &    monitor%circ_mid_eq%d_circle, monitor%bench)
 !
 !   set_pickup modes
       call set_ctl_params_pick_sph                                      &

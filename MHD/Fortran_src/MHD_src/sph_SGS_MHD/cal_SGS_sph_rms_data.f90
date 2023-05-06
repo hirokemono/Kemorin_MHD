@@ -77,7 +77,7 @@
 !
       subroutine cal_SGS_sph_monitor_data                               &
      &         (time_d, sph, MHD_prop, sph_MHD_bc, r_2nd, trans_p,      &
-     &          MHD_mats, ipol, ipol_LES, rj_fld, monitor, cdat, bench)
+     &          MHD_mats, ipol, ipol_LES, rj_fld, monitor)
 !
       use t_field_on_circle
       use t_field_4_dynamobench
@@ -102,8 +102,6 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
@@ -138,8 +136,9 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_typical_scales'
       call cal_typical_scales(monitor%pwr, monitor%tsl)
 !
-      call const_dynamobench_data(time_d, sph%sph_params, sph%sph_rj,   &
-     &    sph_MHD_bc, trans_p, ipol, rj_fld, monitor%pwr, cdat, bench)
+      call const_dynamobench_data                                       &
+     &  (time_d, sph%sph_params, sph%sph_rj, sph_MHD_bc, trans_p, ipol, &
+     &   rj_fld, monitor%pwr, monitor%circ_mid_eq, monitor%bench)
 !
       end subroutine cal_SGS_sph_monitor_data
 !

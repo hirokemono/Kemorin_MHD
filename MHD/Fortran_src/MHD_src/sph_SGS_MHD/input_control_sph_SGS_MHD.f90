@@ -19,7 +19,7 @@
 !!     &          cdat, bench)
 !!      subroutine input_control_sph_pick_circle(ctl_file_name,         &
 !!     &          MHD_files, MHD_ctl, add_SSMHD_ctl, MHD_step,          &
-!!     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD, cdat, bench)
+!!     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD)
 !!        character(len=kchara), intent(in) :: ctl_file_name
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
@@ -30,8 +30,6 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
-!!        type(circle_fld_maker), intent(inout) :: cdat
-!!        type(dynamobench_monitor), intent(inout) :: bench
 !!@endverbatim
 !
 !
@@ -60,8 +58,6 @@
       use t_flex_delta_t_data
       use t_control_data_dynamo_vizs
       use t_work_SPH_MHD
-      use t_field_on_circle
-      use t_field_4_dynamobench
 !
       implicit none
 !
@@ -101,8 +97,7 @@
 !
       subroutine input_control_SPH_SGS_dynamo(ctl_file_name,            &
      &          MHD_files, MHD_ctl, add_SSMHD_ctl, MHD_step,            &
-     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD, FEM_dat,           &
-     &          cdat, bench)
+     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !
       use m_error_IDs
 !
@@ -124,8 +119,6 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(FEM_mesh_field_data), intent(inout) :: FEM_dat
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
 !
 !  Read control file
       if(iflag_debug.eq.1) write(*,*) 'load_control_sph_SGS_MHD'
@@ -146,7 +139,7 @@
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
      &    add_SSMHD_ctl%zm_ctls, SPH_SGS%SGS_par, SPH_model%MHD_prop,   &
      &    SPH_model%MHD_BC, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,    &
-     &    SPH_WK%monitor, cdat, bench)
+     &    SPH_WK%monitor)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !
 !  Load spherical shell table
@@ -168,7 +161,7 @@
 !
       subroutine input_control_sph_pick_circle(ctl_file_name,           &
      &          MHD_files, MHD_ctl, add_SSMHD_ctl, MHD_step,            &
-     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD, cdat, bench)
+     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD)
 !
       use m_error_IDs
 !
@@ -187,8 +180,6 @@
 !
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
 !
        type(phys_data), save :: nod_fld_c
 !
@@ -211,7 +202,7 @@
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
      &    add_SSMHD_ctl%zm_ctls, SPH_SGS%SGS_par, SPH_model%MHD_prop,   &
      &    SPH_model%MHD_BC, SPH_MHD%sph, SPH_MHD%fld, nod_fld_c,        &
-     &    SPH_WK%monitor, cdat, bench)
+     &    SPH_WK%monitor)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !
 !   Set initial time into time data
