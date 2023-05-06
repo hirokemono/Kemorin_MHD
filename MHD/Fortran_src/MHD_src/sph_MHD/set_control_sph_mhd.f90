@@ -125,6 +125,10 @@
 !
 !   set_pickup modes
       call set_control_SPH_MHD_monitors(smonitor_ctl, rj_fld, monitor)
+!   Set parameters for dynamo benchmark output
+      call set_control_circle_def(smonitor_ctl%meq_ctl, cdat%circle)
+      call set_field_ctl_dynamobench(model_ctl%fld_ctl%field_ctl,       &
+     &                               cdat%d_circle, bench)
 !
       call set_crustal_filtering_control                                &
      &   (zm_ctls%crust_filter_ctl, monitor)
@@ -132,11 +136,6 @@
       call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)
       call count_field_4_monitor                                        &
      &   (rj_fld, num_field_monitor, ntot_comp_monitor)
-!
-!   Set parameters for dynamo benchmark output
-      call set_control_circle_def(smonitor_ctl%meq_ctl, cdat%circle)
-      call set_field_ctl_dynamobench(model_ctl%fld_ctl%field_ctl,       &
-     &                               cdat%d_circle, bench)
 !
       end subroutine set_control_SPH_MHD_w_viz
 !
@@ -166,7 +165,6 @@
 !
 !   set_pickup modes
       call set_control_SPH_MHD_monitors(smonitor_ctl, rj_fld, monitor)
-!
 !   Set parameters for dynamo benchmark output
       call set_control_circle_def(smonitor_ctl%meq_ctl, cdat%circle)
       call set_field_ctl_dynamobench(model_ctl%fld_ctl%field_ctl,       &
