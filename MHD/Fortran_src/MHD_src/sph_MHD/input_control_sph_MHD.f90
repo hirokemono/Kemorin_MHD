@@ -338,15 +338,15 @@
      &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
      &    SPH_WK%monitor)
 !
-      if (iflag_debug.eq.1) write(*,*) 'load_sph_mesh'
-      call check_and_make_SPH_mesh(MHD_files%sph_file_param, SPH_MHD)
-!
-!
 !   Set parameters for dynamo benchmark output
       call set_control_circle_def(MHD_ctl%smonitor_ctl%meq_ctl,         &
      &                            cdat%circle)
       call set_field_ctl_dynamobench                                    &
      &   (MHD_ctl%model_ctl%fld_ctl%field_ctl, cdat%d_circle, bench)
+!
+      if (iflag_debug.eq.1) write(*,*) 'load_sph_mesh'
+      call check_and_make_SPH_mesh(MHD_files%sph_file_param, SPH_MHD)
+!
 !
       call dealloc_sph_mhd_ctl_data(MHD_ctl)
 !
