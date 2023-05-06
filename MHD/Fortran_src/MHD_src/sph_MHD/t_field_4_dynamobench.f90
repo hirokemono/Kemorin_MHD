@@ -7,7 +7,8 @@
 !>@brief  Dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine set_field_ctl_dynamobench(fld_ctl, d_circle, bench)
+!!      subroutine init_circle_field_name_dbench(fld_ctl,               &
+!!     &                                         d_circle, bench)
 !!        type(ctl_array_c3), intent(in) :: fld_ctl
 !!        type(phys_data), intent(inout) :: d_circle
 !!        type(dynamobench_monitor), intent(inout) :: bench
@@ -106,7 +107,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_field_ctl_dynamobench(fld_ctl, d_circle, bench)
+      subroutine init_circle_field_name_dbench(fld_ctl,                 &
+     &                                         d_circle, bench)
 !
       use t_control_array_character3
       use t_phys_data
@@ -122,14 +124,27 @@
       integer(kind = kint) :: ifld
 !
 !
+      d_circle%num_phys = 0
       do ifld = 1, fld_ctl%num
-        if(cmp_no_case(fld_ctl%c1_tbl(ifld), temperature%name))         &
-     &                                   bench%ibench_temp =   1
-        if(cmp_no_case(fld_ctl%c1_tbl(ifld), velocity%name))            &
-     &                                   bench%ibench_velo =   1
-        if(cmp_no_case(fld_ctl%c1_tbl(ifld), magnetic_field%name))      &
-     &                                   bench%ibench_magne =  1
+        if(cmp_no_case(fld_ctl%c1_tbl(ifld), temperature%name)) then
+          d_circle%num_phys = d_circle%num_phys + 1
+          exit
+        end if
       end do
+      do ifld = 1, fld_ctl%num
+        if(cmp_no_case(fld_ctl%c1_tbl(ifld), velocity%name)) then
+          d_circle%num_phys = d_circle%num_phys + 1
+          exit
+        end if
+      end do
+      do ifld = 1, fld_ctl%num
+        if(cmp_no_case(fld_ctl%c1_tbl(ifld), magnetic_field%name)) then
+          d_circle%num_phys = d_circle%num_phys + 1
+          exit
+        end if
+      end do
+!
+      call  alloc_phys_name(d_circle)
 !
       ifld = 0
       if(bench%ibench_temp .gt. 0) then
@@ -161,7 +176,7 @@
       d_circle%num_phys_viz =  d_circle%num_phys
       d_circle%ntot_phys_viz = d_circle%ntot_phys
 !
-      end subroutine set_field_ctl_dynamobench
+      end subroutine init_circle_field_name_dbench
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

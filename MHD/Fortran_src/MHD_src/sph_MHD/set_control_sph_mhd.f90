@@ -377,7 +377,7 @@
       if(monitor%bench%iflag_dynamobench .gt. 0) then
         call set_ctl_circle_for_dbench(smonitor_ctl%dbench_ctl,         &
      &      monitor%circ_mid_eq%circle)
-        call set_field_ctl_dynamobench(fld_ctl%field_ctl,               &
+        call init_circle_field_name_dbench(fld_ctl%field_ctl,           &
      &      monitor%circ_mid_eq%d_circle, monitor%bench)
       end if
 !
