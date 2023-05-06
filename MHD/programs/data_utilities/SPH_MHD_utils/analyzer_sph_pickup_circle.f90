@@ -44,7 +44,6 @@
 !>        Additional structures for spherical SGS MHD dynamo
       type(add_sgs_sph_mhd_ctl), save, private :: add_SSMHD_ctl1
 !
-      type(sph_grid_maker_in_sim), save, private :: sph_maker1
       type(circle_fld_maker), save, private :: cdat1
       type(circle_fld_maker), save, private :: cdat0
       type(dynamobench_monitor), save, private :: bench0

@@ -1,10 +1,5 @@
-!SPH_analyzer_sph_pick_circ.f90
-!     module SPH_analyzer_sph_pick_circ
-!
-!      Written by H. Matsui
-!
-!>@file   SPH_analyzer_d_bench.f90
-!!        module SPH_analyzer_d_bench
+!>@file   SPH_analyzer_sph_pick_circ.f90
+!!        module SPH_analyzer_sph_pick_circ
 !!
 !!@author H. Matsui
 !!@date   Programmed in 2012
