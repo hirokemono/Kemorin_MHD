@@ -157,6 +157,7 @@
       use const_data_4_dynamobench
       use input_control_sph_MHD
       use output_viz_file_control
+      use cal_write_sph_monitor_data
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -204,18 +205,27 @@
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
-!*  -----------  lead mid-equator field --------------
+!*  -----------  lead energy data --------------
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
-      if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
-      call s_const_data_4_dynamobench                                   &
-     &   (MHD_step1%time_d%time, SPH_MHD%sph%sph_params,                &
-     &    SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_WK%trans_p,     &
-     &    SPH_MHD%ipol, SPH_MHD%fld, cdat, SPH_WK%monitor%pwr,          &
-     &    bench, SPH_WK%monitor%WK_pwr)
-      call output_field_4_dynamobench(i_step, MHD_step1%time_d%time,    &
-     &   SPH_model%sph_MHD_bc, SPH_MHD%ipol, bench)
+      if(output_IO_flag(i_step, MHD_step1%rms_step)) then
+        if(iflag_debug .gt. 0)                                          &
+     &                write(*,*) 'output_rms_sph_mhd_control'
+        call output_rms_sph_mhd_control(MHD_step1%time_d, SPH_MHD,      &
+     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                   &
+     &      SPH_WK%r_2nd, SPH_WK%trans_p%leg, SPH_WK%MHD_mats,          &
+     &      SPH_WK%monitor, SR_sig)
+!
+!*  -----------  lead dynamo benchmark output --------------
+!*
+        if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
+        call output_dynamobench_control                                 &
+     &     (MHD_step1%time_d, SPH_MHD%sph%sph_params,                   &
+     &      SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
+     &      SPH_MHD%ipol, SPH_MHD%fld,SPH_WK%monitor%pwr,               &
+     &      cdat, bench)
+      end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !

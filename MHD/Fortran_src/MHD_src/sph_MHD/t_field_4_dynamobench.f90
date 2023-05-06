@@ -14,10 +14,11 @@
 !!
 !!      subroutine open_dynamobench_monitor_file                        &
 !!     &         (sph_bc_U, sph_bc_B, ipol)
-!!      subroutine output_field_4_dynamobench                           &
-!!     &          (i_step, time, sph_bc_U, sph_bc_B, ipol, bench)
+!!      subroutine output_field_4_dynamobench(time_d, sph_MHD_bc,       &
+!!     &                                      ipol, bench)
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(phys_address), intent(in) :: ipol
+!!        type(time_data), intent(in) :: time_d
 !!        type(dynamobench_monitor), intent(in) :: bench
 !!@endverbatim
 !!
@@ -29,6 +30,7 @@
       use m_precision
       use m_constants
       use calypso_mpi
+      use t_time_data
       use t_phys_address
       use t_boundary_data_sph_MHD
 !
@@ -161,13 +163,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_field_4_dynamobench                             &
-     &          (i_step, time, sph_MHD_bc, ipol, bench)
+      subroutine output_field_4_dynamobench(time_d, sph_MHD_bc,         &
+     &                                      ipol, bench)
 !
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(phys_address), intent(in) :: ipol
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: time
+      type(time_data), intent(in) :: time_d
       type(dynamobench_monitor), intent(in) :: bench
 !
 !
@@ -177,7 +178,7 @@
      &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol)
 !
       write(id_dynamobench,'(i15,1pE25.15e3)', advance='NO')            &
-     &     i_step, time
+     &     time_d%i_time_step, time_d%time
       write(id_dynamobench,'(1p3E25.15e3)', advance='NO')               &
      &     bench%KE_bench(1:3)
 !

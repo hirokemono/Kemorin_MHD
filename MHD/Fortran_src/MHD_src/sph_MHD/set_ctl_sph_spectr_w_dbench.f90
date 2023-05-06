@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine s_set_ctl_sph_spectr_w_dbench                        &
-!!     &         (smonitor_ctl, dbench_ctl, MHD_BC, pwr, bench)
+!!     &         (smonitor_ctl, MHD_BC, pwr, bench)
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(sph_mean_squares), intent(inout) :: pwr

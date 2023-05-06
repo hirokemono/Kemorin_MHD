@@ -346,8 +346,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_SPH_MHD_monitors                           &
-     &         (smonitor_ctl, fld_ctl, MHD_BC, rj_fld, monitor, cdat, bench)
+      subroutine set_control_SPH_MHD_monitors(smonitor_ctl, fld_ctl,    &
+     &          MHD_BC, rj_fld, monitor, cdat, bench)
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
