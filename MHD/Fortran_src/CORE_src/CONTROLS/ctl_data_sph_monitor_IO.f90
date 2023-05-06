@@ -65,6 +65,10 @@
 !!    begin sph_dipolarity_ctl
 !!      ...
 !!    end sph_dipolarity_ctl
+!!
+!!    begin dynamo_benchmark_data_ctl
+!!      ...
+!!    end dynamo_benchmark_data_ctl
 !!  end sph_monitor_ctl
 !!
 !! -----------------------------------------------------------------
