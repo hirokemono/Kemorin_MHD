@@ -152,9 +152,10 @@
 !   find local point for dynamobench
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_field_4_dynamobench'
-      call cal_field_4_dynamobench(cdat%circle, cdat%d_circle,          &
+      call cal_field_4_dynamobench                                      &
+     &   (time, bench%t_prev, cdat%circle, cdat%d_circle,               &
      &    bench%ibench_velo, bench%phi_zero, bench%phi_prev,            &
-     &    bench%d_zero)
+     &    bench%phase_vr, bench%ave_phase_vr, bench%d_zero)
 !
       end subroutine mid_eq_transfer_dynamobench
 !

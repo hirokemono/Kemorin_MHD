@@ -61,6 +61,10 @@
 !>        longitude where @f$ u_[r} = 0, \partial_{\phi} u_{r} > 0 @f$
 !!        at previous monitoring
         real(kind = kreal) :: phi_prev(4) = (/zero,zero,zero,zero/)
+!>        drift phase velocity for @f$v_r = 0 @f$
+        real(kind = kreal) :: phase_vr(4) = (/zero,zero,zero,zero/)
+!>        drift phase velocity for @f$v_r = 0 @f$
+        real(kind = kreal) :: ave_phase_vr = 0.0d0
 !>        mangetic energy in inner core
         real(kind = kreal) :: mene_icore(3)
 !>        rotation rate for inner core
@@ -193,6 +197,8 @@
 !
       write(id_dynamobench,'(1p4E25.15e3)', advance='NO')               &
      &      bench%phi_zero(1:4)
+      write(id_dynamobench,'(1pE25.15e3)', advance='NO')                &
+     &      bench%ave_phase_vr
       write(id_dynamobench,'(1p2E25.15e3)', advance='NO')               &
      &      bench%omega_vm4(1:2)
 !
@@ -250,7 +256,7 @@
       end if
 !
       write(id_dynamobench,'(a)', advance='NO')                         &
-     &     'phi_1    phi_2    phi_3    phi_4    '
+     &     'phi_1    phi_2    phi_3    phi_4    Average_drift_vr    '
       write(id_dynamobench,'(a)', advance='NO')                         &
      &     'omega_vp44    omega_vt54    '
 !

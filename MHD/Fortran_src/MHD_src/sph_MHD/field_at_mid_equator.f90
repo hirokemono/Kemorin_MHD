@@ -18,8 +18,9 @@
 !!
 !!      subroutine cal_drift_by_v44(time, circle, ibench_velo,          &
 !!     &          t_prev, phase_vm4, phase_vm4_prev, omega_vm4)
-!!      subroutine cal_field_4_dynamobench(circle, d_circle,            &
-!!     &          ibench_velo, phi_zero, phi_prev, d_zero)
+!!      subroutine cal_field_4_dynamobench                              &
+!!     &         (time, t_prev, circle, d_circle, ibench_velo,          &
+!!     &          phi_zero, phi_prev, drift, ave_drift, d_zero)
 !!@endverbatim
 !
       module field_at_mid_equator
@@ -114,23 +115,27 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_field_4_dynamobench(circle, d_circle,              &
-     &          ibench_velo, phi_zero, phi_prev, d_zero)
+      subroutine cal_field_4_dynamobench                                &
+     &         (time, t_prev, circle, d_circle, ibench_velo,            &
+     &          phi_zero, phi_prev, drift, ave_drift, d_zero)
 !
       use calypso_mpi
       use t_phys_data
       use t_fields_on_circle
 !
+      real(kind=kreal), intent(in) :: time, t_prev
       type(fields_on_circle), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
       integer(kind = kint), intent(in) :: ibench_velo
 !
       real(kind = kreal), intent(inout) :: phi_zero(4), phi_prev(4)
+      real(kind = kreal), intent(inout) :: drift(4), ave_drift
       real(kind = kreal), intent(inout) :: d_zero(0:4,7)
 !
       integer(kind = kint) :: nd, mphi, mp_next, icou
-      real(kind = kreal) :: coef
+      real(kind = kreal) :: coef, pi
 !
+      pi = four*atan(one)
 !
       icou = 0
       do mphi = 1, circle%mphi_circle
@@ -142,7 +147,7 @@
      &          / (d_circle%d_fld(mp_next,ibench_velo)                  &
      &              - d_circle%d_fld(mphi,ibench_velo))
 !
-          phi_zero(icou) = two*four*atan(one)                           &
+          phi_zero(icou) = two*pi                                       &
      &                * (dble(mphi) - coef) / dble(circle%mphi_circle)
           do nd = 1, 7
             d_zero(icou,nd) = coef * d_circle%d_fld(mphi,nd)            &
@@ -153,8 +158,16 @@
         end if
       end do
 !
+      drift(1:4) = (phi_zero(1:4) - phi_prev(1:4))
+      do icou = 1, 4
+        if(drift(icou) .lt. -pi) drift(icou) = drift(icou) + two*pi
+        if(drift(icou) .gt.  pi) drift(icou) = drift(icou) - two*pi
+      end do
+!
+      drift(1:4) = drift(1:4) / (t_prev - time)
       phi_prev(1:4) = phi_zero(1:4)
 !
+      ave_drift = quad * (drift(1) + drift(2) + drift(3) + drift(4))
       do nd = 1, 7
         d_zero(0,nd) = quad * (d_zero(1,nd) + d_zero(2,nd)              &
      &                       + d_zero(3,nd) + d_zero(4,nd))
