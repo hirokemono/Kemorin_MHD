@@ -47,6 +47,7 @@
 !
       use set_parallel_file_name
       use output_sph_pwr_volume_file
+      use skip_comment_f
 !
 !
       type(energy_label_param), intent(in) :: ene_labels
@@ -65,6 +66,7 @@
       do i = 1, pwr%num_vol_spectr
         if(pwr%v_spectr(i)%iflag_volume_ave_sph .eq. 0)  cycle
 !
+        if(cmp_no_case(pwr%v_spectr(i)%fhead_ave, 'NO_FILE')) cycle
         fname_rms = add_dat_extension(pwr%v_spectr(i)%fhead_ave)
         write(mode_label,'(a)') 'EMPTY'
         call write_sph_volume_pwr_file(fname_rms, mode_label,           &

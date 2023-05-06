@@ -107,6 +107,7 @@
      &         (id_rank, ene_labels, time_d, sph_params, sph_rj, pwr)
 !
       use set_parallel_file_name
+      use skip_comment_f
 !
       integer, intent(in) :: id_rank
 !
@@ -124,6 +125,7 @@
 !
       do i = 1, pwr%num_vol_spectr
         if(id_rank .eq. pwr%v_spectr(i)%irank_m)  then
+          if(cmp_no_case(pwr%v_spectr(i)%fhead_rms_v, 'NO_FILE')) cycle
 !          write(*,*) 'write_sph_volume_pwr_file', id_rank, i
           write(fname_rms,   '(a,a6)')                                  &
      &      trim(pwr%v_spectr(i)%fhead_rms_v), '_s.dat'
@@ -142,6 +144,7 @@
      &         (id_rank, ene_labels, time_d, sph_params, sph_rj, pwr)
 !
       use set_parallel_file_name
+      use skip_comment_f
 !
       integer, intent(in) :: id_rank
 !
@@ -162,6 +165,7 @@
         if(pwr%v_spectr(i)%iflag_volume_rms_spec .eq. 0)  cycle
 !
         if(id_rank .eq. pwr%v_spectr(i)%irank_l) then
+          if(cmp_no_case(pwr%v_spectr(i)%fhead_rms_v, 'NO_FILE')) cycle
 !          write(*,*) 'write_sph_vol_ms_spectr_file l', id_rank, i
           write(fname_rms, '(a,a6)')                                    &
      &         trim(pwr%v_spectr(i)%fhead_rms_v), '_l.dat'
@@ -170,8 +174,13 @@
      &       (fname_rms, mode_label, ene_labels, time_d,                &
      &        sph_params, sph_rj, pwr%v_spectr(i), pwr%v_spectr(i)%v_l)
         end if
+      end do
+!
+      do i = 1, pwr%num_vol_spectr
+        if(pwr%v_spectr(i)%iflag_volume_rms_spec .eq. 0)  cycle
 !
         if(id_rank .eq. pwr%v_spectr(i)%irank_lm) then
+          if(cmp_no_case(pwr%v_spectr(i)%fhead_rms_v, 'NO_FILE')) cycle
 !          write(*,*) 'write_sph_vol_ms_spectr_file lm', id_rank, i
           write(fname_rms, '(a,a7)')                                    &
      &       trim(pwr%v_spectr(i)%fhead_rms_v), '_lm.dat'
@@ -180,8 +189,13 @@
      &      (fname_rms, mode_label, ene_labels, time_d,                 &
      &       sph_params, sph_rj, pwr%v_spectr(i), pwr%v_spectr(i)%v_lm)
         end if
+      end do
+!
+      do i = 1, pwr%num_vol_spectr
+        if(pwr%v_spectr(i)%iflag_volume_rms_spec .eq. 0)  cycle
 !
         if(id_rank .eq. pwr%v_spectr(i)%irank_m) then
+          if(cmp_no_case(pwr%v_spectr(i)%fhead_rms_v, 'NO_FILE')) cycle
 !          write(*,*) 'write_sph_vol_ms_spectr_file m', id_rank, i
            write(fname_rms,'(a,a6)')                                    &
      &       trim(pwr%v_spectr(i)%fhead_rms_v), '_m.dat'

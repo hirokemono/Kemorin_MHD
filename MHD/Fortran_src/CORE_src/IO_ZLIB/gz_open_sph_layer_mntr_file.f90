@@ -152,8 +152,6 @@
      &          monitor_labels, sph_OUT, zbuf, flag_gzip_lc)
 !
       use select_gz_stream_file_IO
-      use set_parallel_file_name
-      use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: base_name
@@ -163,14 +161,11 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
       logical, intent(inout) :: flag_gzip_lc
 !
-      character(len = kchara) :: fname, prefix, extension
+      character(len = kchara) :: fname
       logical :: flag_miss
 !
 !
       fname = base_name
-      call split_extrension(base_name, prefix, extension)
-      if(cmp_no_case(prefix, 'NO_FILE')) return
-!
       call check_gzip_or_ascii_file(base_name, fname,                   &
      &                              flag_gzip_lc, flag_miss)
 !
