@@ -27,6 +27,7 @@
       private :: bcast_pickup_spectr_ctl, bcast_gauss_spectr_ctl
       private :: bcast_each_vol_spectr_ctl, bcast_layerd_spectr_ctl
       private :: bcast_mid_eq_monitor_ctl, bcast_sph_dipolarity_ctl
+      private :: bcast_ctl_data_dynamobench
 !
 ! -----------------------------------------------------------------------
 !
@@ -61,6 +62,7 @@
 !
       call bcast_sph_dipolarity_ctl(smonitor_ctl%fdip_ctl)
       call bcast_mid_eq_monitor_ctl(smonitor_ctl%meq_ctl)
+      call bcast_ctl_data_dynamobench(smonitor_ctl%dbench_ctl)
 !
 !
       call calypso_mpi_bcast_one_int(smonitor_ctl%num_vspec_ctl, 0)
@@ -193,7 +195,7 @@
       subroutine bcast_mid_eq_monitor_ctl(meq_ctl)
 !
       use calypso_mpi_int
-      use t_mid_equator_control
+      use t_ctl_data_mid_equator
 !
       type(mid_equator_control), intent(inout) :: meq_ctl
 !
@@ -207,6 +209,24 @@
       call calypso_mpi_bcast_one_int(meq_ctl%i_mid_equator_ctl, 0)
 !
       end subroutine bcast_mid_eq_monitor_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine bcast_ctl_data_dynamobench(dbench_ctl)
+!
+      use calypso_mpi_int
+      use t_ctl_data_dynamobench
+!
+      type(dynamobench_control), intent(inout) :: dbench_ctl
+!
+!
+      call bcast_ctl_type_i1(dbench_ctl%nphi_mid_eq_ctl)
+      call bcast_ctl_type_c1(dbench_ctl%dynamobench_file_ctl)
+      call bcast_ctl_type_c1(dbench_ctl%dynamobench_format_ctl)
+!
+      call calypso_mpi_bcast_one_int(dbench_ctl%i_dynamobench_ctl, 0)
+!
+      end subroutine bcast_ctl_data_dynamobench
 !
 ! -----------------------------------------------------------------------
 !

@@ -25,7 +25,7 @@
 !
       real(kind = kreal) :: start_time, end_time
       real(kind = kreal) :: true_start, true_end
-      integer(kind = kint) :: i_step, ierr, icou
+      integer(kind = kint) :: i_step, icou
       real(kind = kreal) :: time
 !
 !

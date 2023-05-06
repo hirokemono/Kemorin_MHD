@@ -74,7 +74,8 @@
       use t_ctl_data_sph_layer_spectr
       use t_ctl_data_pick_sph_spectr
       use t_ctl_data_gauss_coefs
-      use t_mid_equator_control
+      use t_ctl_data_mid_equator
+      use t_ctl_data_dynamobench
       use t_ctl_data_sph_dipolarity
       use skip_comment_f
 !
@@ -92,7 +93,11 @@
 !>        Structure for spectr data pickup
         type(pick_spectr_control) :: pspec_ctl
 !
+!>        Structure for data on a surface
         type(mid_equator_control) :: meq_ctl
+!
+!>        Structure for dynamo benchmark output
+        type(dynamobench_control) :: dbench_ctl
 !
 !>        Structure for dipolarity setting
         type(sph_dipolarity_control) :: fdip_ctl
@@ -144,6 +149,7 @@
       call dealloc_pick_spectr_control(smonitor_ctl%pspec_ctl)
       call dealloc_gauss_spectr_control(smonitor_ctl%g_pwr)
       call reset_mid_equator_control(smonitor_ctl%meq_ctl)
+      call reset_ctl_data_dynamobench(smonitor_ctl%dbench_ctl)
       call dealloc_sph_dipolarity_ctl(smonitor_ctl%fdip_ctl)
 !
       smonitor_ctl%volume_average_prefix%iflag =     0

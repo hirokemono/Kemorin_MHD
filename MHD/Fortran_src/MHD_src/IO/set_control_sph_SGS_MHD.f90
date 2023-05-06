@@ -79,8 +79,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SGS_SPH_MHD_field                          &
-     &         (model_ctl,  psph_ctl, smonitor_ctl, zm_ctls,            &
-     &          SGS_par, MHD_prop, sph, rj_fld, nod_fld, monitor,       &
+     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, SGS_par,    &
+     &          MHD_prop, MHD_BC, sph, rj_fld, nod_fld, monitor,        &
      &          cdat, bench)
 !
       use t_SGS_control_parameter
@@ -100,6 +100,7 @@
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
+      type(MHD_BC_lists), intent(in) :: MHD_BC
       type(sph_grids), intent(inout) :: sph
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
@@ -121,15 +122,10 @@
      &    model_ctl%fld_ctl%field_ctl, rj_fld)
 !
 !   set_pickup modes
-      call set_control_SPH_MHD_monitors(smonitor_ctl, rj_fld, monitor)
-!   Set parameters for dynamo benchmark output
-      call set_control_circle_def(smonitor_ctl%meq_ctl, cdat%circle)
-      call set_field_ctl_dynamobench(model_ctl%fld_ctl%field_ctl,       &
-     &                               cdat%d_circle, bench)
-!
+      call set_control_SPH_MHD_monitors                                 &
+     &  (smonitor_ctl, model_ctl%fld_ctl, MHD_BC, rj_fld, monitor, cdat, bench)
       call set_crustal_filtering_control                                &
      &   (zm_ctls%crust_filter_ctl, monitor)
-!
 !
       call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)
 !

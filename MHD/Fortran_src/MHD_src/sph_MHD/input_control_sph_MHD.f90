@@ -166,8 +166,8 @@
 !
       call set_control_SPH_MHD_w_viz(MHD_ctl%model_ctl,                 &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, add_SMHD_ctl%zm_ctls, &
-     &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
-     &    SPH_WK%monitor, cdat, bench)
+     &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_MHD%sph,            &
+     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, cdat, bench)
 !
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -223,8 +223,8 @@
      &    SPH_WK%trns_WK, SPH_MHD)
 !
       call set_control_SPH_MHD_noviz                                    &
-     &   (MHD_ctl%model_ctl, MHD_ctl%smonitor_ctl,                      &
-     &    SPH_model%MHD_prop, SPH_MHD%fld, SPH_WK%monitor, cdat, bench)
+     &   (MHD_ctl%model_ctl, MHD_ctl%smonitor_ctl, SPH_model%MHD_prop,  &
+     &    SPH_model%MHD_BC, SPH_MHD%fld, SPH_WK%monitor, cdat, bench)
 !
       if (iflag_debug.eq.1) write(*,*) 'check_and_make_SPH_mesh'
       call check_and_make_SPH_mesh(MHD_files%sph_file_param, SPH_MHD)
@@ -281,8 +281,8 @@
 !
       call set_control_SPH_MHD_w_viz(MHD_ctl%model_ctl,                 &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, add_SMHD_ctl%zm_ctls, &
-     &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
-     &    SPH_WK%monitor, cdat, bench)
+     &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_MHD%sph,            &
+     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, cdat, bench)
 !
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -345,8 +345,8 @@
 !
       call set_control_SPH_MHD_w_viz(MHD_ctl%model_ctl,                 &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, add_SMHD_ctl%zm_ctls, &
-     &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
-     &    SPH_WK%monitor, cdat, bench)
+     &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_MHD%sph,            &
+     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, cdat, bench)
       call dealloc_sph_mhd_ctl_data(MHD_ctl)
 !
 !   Set initial time into time data

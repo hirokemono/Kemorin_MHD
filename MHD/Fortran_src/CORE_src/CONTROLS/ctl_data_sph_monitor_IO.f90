@@ -80,7 +80,7 @@
       use t_ctl_data_sph_layer_spectr
       use t_ctl_data_pick_sph_spectr
       use t_ctl_data_gauss_coefs
-      use t_mid_equator_control
+      use t_ctl_data_mid_equator
       use t_ctl_data_sph_dipolarity
       use t_ctl_data_4_sph_monitor
       use skip_comment_f
@@ -101,6 +101,8 @@
      &            :: hd_sph_dipolarity_ctl = 'sph_dipolarity_ctl'
       character(len=kchara), parameter, private                         &
      &            :: hd_mid_eq_monitor_ctl = 'mid_equator_monitor_ctl'
+      character(len=kchara), parameter, private                         &
+     &            :: hd_dynamobench_ctl = 'dynamo_benchmark_data_ctl'
 !
 !   labels for item
 !
@@ -162,6 +164,8 @@
      &      hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, c_buf)
         call read_mid_eq_monitor_ctl(id_control, hd_mid_eq_monitor_ctl, &
      &      smonitor_ctl%meq_ctl, c_buf)
+        call read_ctl_data_dynamobench(id_control, hd_dynamobench_ctl,  &
+     &      smonitor_ctl%dbench_ctl, c_buf)
 !
         call read_volume_spectr_ctl                                     &
      &     (id_control, hd_vol_spec_block, smonitor_ctl, c_buf)
@@ -287,10 +291,6 @@
       call write_sph_dipolarity_ctl(id_control,                         &
      &    hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, level)
 !
-      write(id_control,'(a1)') '!'
-      call write_mid_eq_monitor_ctl(id_control,                         &
-     &    hd_mid_eq_monitor_ctl, smonitor_ctl%meq_ctl, level)
-!
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_Nusselt_file_head, smonitor_ctl%heat_Nusselt_file_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -315,6 +315,11 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &                          hd_typ_scale_file_format,               &
      &                          smonitor_ctl%typ_scale_file_format_ctl)
+!
+      call write_mid_eq_monitor_ctl(id_control,                         &
+     &    hd_mid_eq_monitor_ctl, smonitor_ctl%meq_ctl, level)
+      call write_ctl_data_dynamobench(id_control,                       &
+     &    hd_dynamobench_ctl, smonitor_ctl%dbench_ctl, level)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

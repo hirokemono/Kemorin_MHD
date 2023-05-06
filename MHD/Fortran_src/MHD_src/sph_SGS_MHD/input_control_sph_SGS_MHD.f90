@@ -143,10 +143,10 @@
      &    SPH_WK%trns_WK, SPH_MHD%sph_maker)
 !
       call set_control_SGS_SPH_MHD_field                                &
-     &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl,                          &
-     &    MHD_ctl%smonitor_ctl, add_SSMHD_ctl%zm_ctls,                  &
-     &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD%sph,             &
-     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, cdat, bench)
+     &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
+     &    add_SSMHD_ctl%zm_ctls, SPH_SGS%SGS_par, SPH_model%MHD_prop,   &
+     &    SPH_model%MHD_BC, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,    &
+     &    SPH_WK%monitor, cdat, bench)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !
 !  Load spherical shell table
@@ -208,10 +208,10 @@
      &    SPH_WK%trns_WK, SPH_MHD%sph_maker)
 !
       call set_control_SGS_SPH_MHD_field                                &
-     &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl,                          &
-     &    MHD_ctl%smonitor_ctl, add_SSMHD_ctl%zm_ctls,                  &
-     &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD%sph,             &
-     &    SPH_MHD%fld, nod_fld_c, SPH_WK%monitor, cdat, bench)
+     &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
+     &    add_SSMHD_ctl%zm_ctls, SPH_SGS%SGS_par, SPH_model%MHD_prop,   &
+     &    SPH_model%MHD_BC, SPH_MHD%sph, SPH_MHD%fld, nod_fld_c,        &
+     &    SPH_WK%monitor, cdat, bench)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !
 !   Set initial time into time data

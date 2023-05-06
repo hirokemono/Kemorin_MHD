@@ -40,8 +40,17 @@
       character(len=kchara), parameter, private                         &
      &      :: dynamobench_field_name = 'dynamobench_field.dat'
 !
-!
       type dynamobench_monitor
+!>        file prefix for benchmark output file
+        character(len=kchara) :: benchmark_file_prefix
+!>        compress flag for benchmark output file
+        logical :: gzip_flag_bench = .FALSE.
+!
+!>        Address of volume monitor data for outer core
+        integer(kind = kint) :: ipwr_ocore =  0
+!>        Address of volume monitor data for inner core
+        integer(kind = kint) :: ipwr_icore =  0
+!
 !>        temperature address for spherical transform at equator
         integer(kind = kint) :: ibench_temp =  1
 !>        velocity address for spherical transform at equator

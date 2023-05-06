@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine set_control_SPH_MHD_w_viz                            &
-!!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls,           &
-!!     &          MHD_prop, sph, rj_fld, nod_fld, monitor, cdat, bench)
+!!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, MHD_prop, &
+!!     &          MHD_BC, sph, rj_fld, nod_fld, monitor, cdat, bench)
 !!      subroutine set_control_SPH_MHD_noviz(model_ctl, smonitor_ctl,   &
-!!     &          MHD_prop, rj_fld, monitor, cdat, bench)
+!!     &          MHD_prop, MHD_BC, rj_fld, monitor, cdat, bench)
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
@@ -25,6 +25,7 @@
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        type(node_monitor_control), intent(in) :: nmtr_ctl
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+!!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(boundary_spectra), intent(inout) :: bc_IO
@@ -44,7 +45,7 @@
 !!        type(surf_bc_control), intent(in) :: sbc_ctl
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!      subroutine set_control_SPH_MHD_monitors                         &
-!!     &         (smonitor_ctl, rj_fld, monitor)
+!!     &         (smonitor_ctl, fld_ctl, rj_fld, monitor)
 !!      subroutine set_crustal_filtering_control                        &
 !!     &         (crust_truncation_c, monitor)
 !!        type(phys_data), intent(in) :: crust_truncation_c
@@ -86,8 +87,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SPH_MHD_w_viz                              &
-     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls,             &
-     &          MHD_prop, sph, rj_fld, nod_fld, monitor, cdat, bench)
+     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, MHD_prop,   &
+     &          MHD_BC, sph, rj_fld, nod_fld, monitor, cdat, bench)
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
@@ -103,6 +104,8 @@
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+      type(MHD_BC_lists), intent(in) :: MHD_BC
+!
       type(sph_grids), intent(inout) :: sph
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
@@ -124,12 +127,9 @@
      &   (MHD_prop, model_ctl%fld_ctl%field_ctl, rj_fld)
 !
 !   set_pickup modes
-      call set_control_SPH_MHD_monitors(smonitor_ctl, rj_fld, monitor)
-!   Set parameters for dynamo benchmark output
-      call set_control_circle_def(smonitor_ctl%meq_ctl, cdat%circle)
-      call set_field_ctl_dynamobench(model_ctl%fld_ctl%field_ctl,       &
-     &                               cdat%d_circle, bench)
-!
+      call set_control_SPH_MHD_monitors                                 &
+     &   (smonitor_ctl, model_ctl%fld_ctl, MHD_BC,                      &
+     &    rj_fld, monitor, cdat, bench)
       call set_crustal_filtering_control                                &
      &   (zm_ctls%crust_filter_ctl, monitor)
 !
@@ -142,7 +142,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SPH_MHD_noviz(model_ctl, smonitor_ctl,     &
-     &          MHD_prop, rj_fld, monitor, cdat, bench)
+     &          MHD_prop, MHD_BC, rj_fld, monitor, cdat, bench)
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
@@ -152,6 +152,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(mhd_model_control), intent(inout) :: model_ctl
       type(sph_monitor_control), intent(in) :: smonitor_ctl
+      type(MHD_BC_lists), intent(in) :: MHD_BC
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(circle_fld_maker), intent(inout) :: cdat
@@ -164,11 +165,9 @@
      &   (MHD_prop, model_ctl%fld_ctl%field_ctl, rj_fld)
 !
 !   set_pickup modes
-      call set_control_SPH_MHD_monitors(smonitor_ctl, rj_fld, monitor)
-!   Set parameters for dynamo benchmark output
-      call set_control_circle_def(smonitor_ctl%meq_ctl, cdat%circle)
-      call set_field_ctl_dynamobench(model_ctl%fld_ctl%field_ctl,       &
-     &                               cdat%d_circle, bench)
+      call set_control_SPH_MHD_monitors                                 &
+     &   (smonitor_ctl, model_ctl%fld_ctl, MHD_BC,                      &
+     &    rj_fld, monitor, cdat, bench)
 !
       end subroutine set_control_SPH_MHD_noviz
 !
@@ -348,7 +347,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SPH_MHD_monitors                           &
-     &         (smonitor_ctl, rj_fld, monitor)
+     &         (smonitor_ctl, fld_ctl, MHD_BC, rj_fld, monitor, cdat, bench)
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
@@ -360,24 +359,37 @@
       use m_base_field_labels
 !
       use set_control_4_pickup_sph
+      use set_control_sph_spectr
+      use set_ctl_sph_spectr_w_dbench
       use cal_CMB_dipolarity
       use cal_typical_scale
 !
       type(sph_monitor_control), intent(in) :: smonitor_ctl
+      type(field_control), intent(in) :: fld_ctl
+      type(MHD_BC_lists), intent(in) :: MHD_BC
       type(phys_data), intent(in) :: rj_fld
+!
       type(sph_mhd_monitor_data), intent(inout) :: monitor
+      type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
 !
 !
       if(allocated(gzip_flags%flags) .eqv. .FALSE.) then
         call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags)
       end if
 !
-!   set_pickup modes
-!
+!   Set spectr monitor
       call set_ctl_params_layered_spectr                                &
      &   (smonitor_ctl%lp_ctl, monitor%pwr)
-      call set_ctl_params_sph_spectr(smonitor_ctl, monitor%pwr)
+      call s_set_ctl_sph_spectr_w_dbench                                &
+     &   (smonitor_ctl, MHD_BC, monitor%pwr, bench)
+!   Set parameters for dynamo benchmark output
+      call set_ctl_circle_for_dbench(smonitor_ctl%dbench_ctl,           &
+     &                               cdat%circle)
+      call set_field_ctl_dynamobench(fld_ctl%field_ctl,                 &
+     &                               cdat%d_circle, bench)
 !
+!   set_pickup modes
       call set_ctl_params_pick_sph                                      &
      &   (smonitor_ctl%pspec_ctl, monitor%pick_list, monitor%pick_coef)
 !

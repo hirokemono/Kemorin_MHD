@@ -46,7 +46,7 @@
       use t_read_control_elements
       use t_control_array_character
       use t_ctl_data_sph_vol_spectr
-      use t_mid_equator_control
+      use t_ctl_data_mid_equator
       use skip_comment_f
 !
       implicit  none

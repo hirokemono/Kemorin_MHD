@@ -7,6 +7,13 @@
 !>@brief  spherical transform at a specific circle at @f$(r, theta)@f$
 !!
 !!@verbatim
+!!      subroutine set_control_circle_def(meq_ctl, circle)
+!!         type(mid_equator_control), intent(in) :: meq_ctl
+!!         type(fields_on_circle), intent(inout) :: circle
+!!      subroutine set_ctl_circle_for_dbench(dbench_ctl, circle)
+!!         type(dynamobench_control), intent(in) :: dbench_ctl
+!!        type(fields_on_circle), intent(inout) :: circle
+!!
 !!      subroutine alloc_circle_field                                   &
 !!     &         (my_rank, mphi_rtp, nidx_global_jmax, circle, d_circle)
 !!      subroutine dealloc_circle_field(my_rank, circle, d_circle)
@@ -89,7 +96,7 @@
 !
       subroutine set_control_circle_def(meq_ctl, circle)
 !
-      use t_mid_equator_control
+      use t_ctl_data_mid_equator
       use t_control_array_character3
       use skip_comment_f
 !
@@ -127,6 +134,29 @@
       end if
 !
       end subroutine set_control_circle_def
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_ctl_circle_for_dbench(dbench_ctl, circle)
+!
+      use t_ctl_data_dynamobench
+      use t_control_array_character3
+      use skip_comment_f
+!
+      type(dynamobench_control), intent(in) :: dbench_ctl
+      type(fields_on_circle), intent(inout) :: circle
+!
+!
+      circle%iflag_circle_coord = iflag_circle_sph
+      circle%mphi_circle = -1
+      if(dbench_ctl%nphi_mid_eq_ctl%iflag .gt. 0) then
+        circle%mphi_circle = dbench_ctl%nphi_mid_eq_ctl%intvalue
+      end if
+!
+      circle%s_circle = 7.0d0/13.0d0 + 0.5d0
+      circle%z_circle = 0.0d0
+!
+      end subroutine set_ctl_circle_for_dbench
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

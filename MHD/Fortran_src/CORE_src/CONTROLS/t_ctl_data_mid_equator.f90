@@ -1,5 +1,5 @@
-!>@file   t_mid_equator_control.f90
-!!        module t_mid_equator_control
+!>@file   t_ctl_data_mid_equator.f90
+!!        module t_ctl_data_mid_equator
 !!
 !! @author H. Matsui
 !! @date   Programmed in 2012
@@ -37,7 +37,7 @@
 !! -----------------------------------------------------------------
 !!@endverbatim
 !
-      module t_mid_equator_control
+      module t_ctl_data_mid_equator
 !
       use m_precision
 !
@@ -68,17 +68,14 @@
 !
 !   labels for item
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &            :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &            :: hd_pick_s_ctl = 'pick_cylindrical_radius_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &            :: hd_pick_z_ctl =  'pick_vertical_position_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &            :: hd_circle_coord = 'pick_circle_coord_ctl'
-!
-      private :: hd_nphi_mid_eq, hd_pick_s_ctl, hd_pick_z_ctl
-      private :: hd_circle_coord
 !
 ! -----------------------------------------------------------------------
 !
@@ -159,6 +156,9 @@
       write(id_control,'(a1)') '!'
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_circle_coord, meq_ctl%pick_circle_coord_ctl)
+!
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_pick_s_ctl, meq_ctl%pick_s_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -167,13 +167,10 @@
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_nphi_mid_eq, meq_ctl%nphi_mid_eq_ctl)
 !
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_circle_coord, meq_ctl%pick_circle_coord_ctl)
-!
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_mid_eq_monitor_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      end module t_mid_equator_control
+      end module t_ctl_data_mid_equator
