@@ -135,14 +135,7 @@
       character(len = kchara) :: input_flag
 !
 !
-      bench%ipwr_ocore = 0
-      bench%ipwr_icore = 0
-!
-      bench%iflag_dynamobench = dbench_ctl%dynamobench_file_ctl%iflag
       if(bench%iflag_dynamobench .le. 0) return
-      bench%benchmark_file_prefix                                       &
-     &                 = dbench_ctl%dynamobench_file_ctl%charavalue
-      bench%ipwr_ocore = num_vspec_ctl + 2
 !
       bench%gzip_flag_bench = .FALSE.
       if(dbench_ctl%dynamobench_format_ctl%iflag .gt. 0) then
@@ -168,7 +161,6 @@
      &                                 MHD_BC%velo_BC%surf_BC)          &
      &    .eqv. .FALSE.) return 
 !
-      bench%ipwr_icore = num_vspec_ctl + 3
       v_spectr(bench%ipwr_icore)%iflag_volume_rms_spec = 1
       v_spectr(bench%ipwr_icore)%fhead_rms_v = 'NO_FILE'
       v_spectr(bench%ipwr_icore)%gzip_flag_vol_spec = .FALSE.

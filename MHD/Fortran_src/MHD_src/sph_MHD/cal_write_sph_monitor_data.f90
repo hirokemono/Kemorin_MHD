@@ -301,8 +301,6 @@
      &   (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc,                &
      &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore),               &
      &    time_d, monitor%bench)
-      call output_field_4_dynamobench(time_d, sph_MHD_bc,               &
-     &                                ipol%base, monitor%bench)
 !
       end subroutine output_sph_monitor_data
 !

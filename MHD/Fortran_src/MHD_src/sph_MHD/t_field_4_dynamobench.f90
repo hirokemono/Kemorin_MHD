@@ -17,15 +17,6 @@
 !!        type(ctl_array_c3), intent(in) :: fld_ctl
 !!        type(phys_data), intent(inout) :: d_circle
 !!        type(dynamobench_monitor), intent(inout) :: bench
-!!
-!!      subroutine open_dynamobench_monitor_file                        &
-!!     &         (sph_bc_U, sph_bc_B, ipol)
-!!      subroutine output_field_4_dynamobench(time_d, sph_MHD_bc,       &
-!!     &                                      ipol_base, bench)
-!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(base_field_address), intent(in) :: ipol_base
-!!        type(time_data), intent(in) :: time_d
-!!        type(dynamobench_monitor), intent(in) :: bench
 !!@endverbatim
 !!
 !!@param i_step   time step
@@ -43,17 +34,13 @@
 !
       implicit none
 !
-!>      file ID for benchmark output file
-      integer(kind=kint), parameter, private :: id_dynamobench = 41
-!>      file name for benchmark output file
-      character(len=kchara), parameter, private                         &
-     &      :: dynamobench_field_name = 'dynamobench_field.dat'
-!
       type dynamobench_monitor
 !>        Integer flag to get dynamo benchmark data
         integer(kind = kint) :: iflag_dynamobench =  0
 !>        file prefix for benchmark output file
         character(len=kchara) :: benchmark_file_prefix
+!>        file prefix for detailed benchmark output file
+        character(len=kchara) :: detail_bench_file_prefix
 !>        compress flag for benchmark output file
         logical :: gzip_flag_bench = .FALSE.
 !
@@ -107,8 +94,6 @@
 !>        Array for data output
         real(kind = kreal), allocatable :: data_out(:)
       end type dynamobench_monitor
-!
-      private :: open_dynamobench_monitor_file
 !
 ! ----------------------------------------------------------------------
 !
@@ -212,125 +197,5 @@
       end subroutine init_circle_field_name_dbench
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine output_field_4_dynamobench(time_d, sph_MHD_bc,         &
-     &                                      ipol_base, bench)
-!
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(base_field_address), intent(in) :: ipol_base
-      type(time_data), intent(in) :: time_d
-      type(dynamobench_monitor), intent(in) :: bench
-!
-!
-      if(bench%iflag_dynamobench .le. 0) return
-      if(my_rank .ne. 0) return
-!
-!
-      call open_dynamobench_monitor_file                                &
-     &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol_base)
-!
-      write(id_dynamobench,'(i15,1pE25.15e3)', advance='NO')            &
-     &     time_d%i_time_step, time_d%time
-      write(id_dynamobench,'(1p3E25.15e3)', advance='NO')               &
-     &     bench%KE_bench(1:3)
-!
-      if(ipol_base%i_magne .gt. 0) then
-        write(id_dynamobench,'(1p3E25.15e3)', advance='NO')             &
-     &     bench%ME_bench(1:3)
-      end if
-!
-!
-      if(sph_MHD_bc%sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        write(id_dynamobench,'(1p3E25.15e3)', advance='NO')             &
-     &     bench%mene_icore(1:3)
-      end if
-!
-      if(sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        write(id_dynamobench,'(1pE25.15e3)', advance='NO')              &
-     &     bench%rotate_icore(0)
-      end if
-!
-      if(sph_MHD_bc%sph_bc_B%iflag_icb .eq. iflag_sph_fill_center       &
-     &   .and. sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic)   &
-     & then
-        write(id_dynamobench,'(1pE25.15e3)', advance='NO')              &
-     &     bench%m_torque_icore(0)
-      end if
-!
-      write(id_dynamobench,'(1p4E25.15e3)', advance='NO')               &
-     &      bench%phi_zero(1:4)
-      write(id_dynamobench,'(1pE25.15e3)', advance='NO')                &
-     &      bench%ave_phase_vr
-      write(id_dynamobench,'(1p2E25.15e3)', advance='NO')               &
-     &      bench%omega_vm4(1:2)
-!
-      if(ipol_base%i_magne .gt. 0) then
-        write(id_dynamobench,'(1p2E25.15e3)', advance='NO')             &
-     &      bench%d_zero(0,bench%ibench_magne+1)
-      end if
-!
-      write(id_dynamobench,'(1p2E25.15e3)')                             &
-     &     bench%d_zero(0,bench%ibench_velo+2),                         &
-     &     bench%d_zero(0,bench%ibench_temp)
-!
-      close(id_dynamobench)
-!
-      end subroutine output_field_4_dynamobench
-!
-! ----------------------------------------------------------------------
-!
-      subroutine open_dynamobench_monitor_file                          &
-     &         (sph_bc_U, sph_bc_B, ipol_base)
-!
-      type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
-      type(base_field_address), intent(in) :: ipol_base
-!
-!
-      open(id_dynamobench, file=dynamobench_field_name,                 &
-     &    form='formatted', status='old', position='append', err = 99)
-      return
-!
-  99  continue
-      open(id_dynamobench, file=dynamobench_field_name)
-!
-      write(id_dynamobench,'(a)', advance='NO') 't_step    time    '
-      write(id_dynamobench,'(a)', advance='NO')                         &
-     &     'KE_pol    KE_tor    KE_total    '
-!
-      if(ipol_base%i_magne .gt. 0) then
-        write(id_dynamobench,'(a)', advance='NO')                       &
-     &     'ME_pol    ME_tor    ME_total    '
-      end if
-!
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        write(id_dynamobench,'(a)', advance='NO')                       &
-     &     'ME_pol_icore    ME_tor_icore    ME_total_icore    '
-      end if
-!
-      if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        write(id_dynamobench,'(a)', advance='NO') 'omega_ic_z    '
-      end if
-!
-      write(*,*) 'sph_bc_U%iflag_icb', sph_bc_U%iflag_icb
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
-     &  .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        write(id_dynamobench,'(a)', advance='NO') 'MAG_torque_ic_z    '
-      end if
-!
-      write(id_dynamobench,'(a)', advance='NO')                         &
-     &     'phi_1    phi_2    phi_3    phi_4    Average_drift_vr    '
-      write(id_dynamobench,'(a)', advance='NO')                         &
-     &     'omega_vp44    omega_vt54    '
-!
-      if(ipol_base%i_magne .gt. 0) then
-        write(id_dynamobench,'(a)', advance='NO') 'B_theta    '
-      end if
-!
-      write(id_dynamobench,'(a)')  'v_phi    temp'
-!
-      end subroutine open_dynamobench_monitor_file
-!
-! ----------------------------------------------------------------------
 !
       end module t_field_4_dynamobench
