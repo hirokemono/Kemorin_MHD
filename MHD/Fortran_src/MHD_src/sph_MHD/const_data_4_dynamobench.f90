@@ -168,6 +168,7 @@
      &   (time, bench%t_prev, cdat%circle, cdat%d_circle,               &
      &    bench%ibench_velo, bench%phi_zero, bench%phi_prev,            &
      &    bench%phase_vr, bench%ave_phase_vr, bench%d_zero)
+      bench%t_prev = time
 !
       end subroutine mid_eq_transfer_dynamobench
 !

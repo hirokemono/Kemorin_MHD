@@ -104,10 +104,13 @@
       phase_vm4(1) = atan2(vp44s,vp44c)
       phase_vm4(2) = atan2(vt54s,vt54c)
 !
-      omega_vm4(1:2) = quad * (phase_vm4(1:2) - phase_vm4_prev(1:2))    &
+      if(t_prev .eq. time) then
+        omega_vm4(1:2) = 0.0d0
+      else
+        omega_vm4(1:2) = quad * (phase_vm4(1:2) - phase_vm4_prev(1:2))  &
      &                / (time - t_prev)
+      end if
 !
-      t_prev = time
       phase_vm4_prev(1:2) = phase_vm4(1:2)
 !
       end subroutine cal_drift_by_v44
@@ -163,7 +166,11 @@
         if(drift(icou) .gt.  pi) drift(icou) = drift(icou) - two*pi
       end do
 !
-      drift(1:4) = drift(1:4) / (t_prev - time)
+      if(t_prev .eq. time) then
+        drift(1:4)  = 0.0d0
+      else
+        drift(1:4) = drift(1:4) / (t_prev - time)
+      end if
       phi_prev(1:4) = phi_zero(1:4)
 !
       ave_drift = quad * (drift(1) + drift(2) + drift(3) + drift(4))
