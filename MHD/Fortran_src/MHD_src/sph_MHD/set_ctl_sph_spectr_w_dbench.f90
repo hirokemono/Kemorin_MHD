@@ -95,10 +95,21 @@
       bench%ipwr_ocore = 0
       bench%ipwr_icore = 0
 !
-      bench%iflag_dynamobench = dbench_ctl%dynamobench_file_ctl%iflag
+      bench%iflag_dynamobench = dbench_ctl%dynamobench_file_ctl%iflag   &
+     &                       + dbench_ctl%dbecch_detail_file_ctl%iflag
+      bench%benchmark_file_prefix =   'NO_FILE'
+      bench%detail_bench_file_prefix = 'NO_FILE'
+!
       if(bench%iflag_dynamobench .le. 0) return
-      bench%benchmark_file_prefix                                       &
-     &                 = dbench_ctl%dynamobench_file_ctl%charavalue
+!
+      if(dbench_ctl%dynamobench_file_ctl%iflag .gt. 0) then
+        bench%benchmark_file_prefix                                     &
+     &               = dbench_ctl%dynamobench_file_ctl%charavalue
+      end if
+      if(dbench_ctl%dbecch_detail_file_ctl%iflag .gt. 0) then
+        bench%detail_bench_file_prefix                                  &
+     &               = dbench_ctl%dbecch_detail_file_ctl%charavalue
+      end if
       bench%ipwr_ocore = num_vspec_ctl + 2
       num_vspec = num_vspec + 1
 !

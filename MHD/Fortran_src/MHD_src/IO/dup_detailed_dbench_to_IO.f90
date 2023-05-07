@@ -1,5 +1,5 @@
-!>@file   dup_dynamobench_data_to_IO.f90
-!!@brief  module dup_dynamobench_data_to_IO
+!>@file   dup_detailed_dbench_to_IO.f90
+!!@brief  module dup_detailed_dbench_to_IO
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui in June., 2011
@@ -7,10 +7,10 @@
 !>@brief  Dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine write_dynamobench_file                               &
+!!      subroutine write_detailed_dbench_file                           &
 !!     &         (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, &
 !!     &          time_d, bench)
-!!      subroutine dup_dynamobench_header_to_IO                         &
+!!      subroutine dup_detail_dbench_header_to_IO                       &
 !!     &         (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr,          &
 !!     &          sph_OUT, bench)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
@@ -21,7 +21,7 @@
 !!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !!        type(time_data), intent(in) :: time_d
 !!        type(dynamobench_monitor), intent(inout) :: bench
-!!      subroutine dup_dynamobench_monitor_data(sph_bc_U, sph_bc_B,     &
+!!      subroutine dup_detail_dbench_monitor_name(sph_bc_U, sph_bc_B,   &
 !!     &                                        ipol_base, bench)
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
 !!        type(base_field_address), intent(in) :: ipol_base
@@ -31,7 +31,7 @@
 !!@param i_step   time step
 !!@param time     time
 !
-      module dup_dynamobench_data_to_IO
+      module dup_detailed_dbench_to_IO
 !
       use m_precision
       use m_constants
@@ -51,8 +51,8 @@
 !
       integer(kind = kint), parameter, private :: id_dbench = 36
 !
-      private :: count_dynamobench_monitor_name
-      private :: copy_dynamobench_monitor_name
+      private :: cnt_detail_dbench_monitor_name
+      private :: copy_detail_dbench_monitor_name
 !
       type(sph_spectr_head_labels), parameter                           &
      &            :: sph_dnamobench_labels = sph_spectr_head_labels(    &
@@ -73,7 +73,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_dynamobench_file                                 &
+      subroutine write_detailed_dbench_file                             &
      &         (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr,   &
      &          time_d, bench)
 !
@@ -101,11 +101,12 @@
 !
 !
       if(bench%iflag_dynamobench .le. izero) return
+      if(bench%detail_bench_file_prefix .eq. 'NO_FILE') return
       if(my_rank .ne. 0) return
 !
-      call dup_dynamobench_header_to_IO                                 &
+      call dup_detail_dbench_header_to_IO                               &
      &   (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, sph_OUT_d, bench)
-      call dup_dynamobench_monitor_data                                 &
+      call dup_detail_dbench_monitor_name                               &
      &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base, bench)
 !
       flag_gzip_lc = bench%gzip_flag_bench
@@ -116,16 +117,16 @@
 !
       call sel_gz_write_text_stream(flag_gzip_lc, id_dbench,            &
      &    volume_pwr_data_text(time_d%i_time_step, time_d%time,         &
-     &                         bench%num_out, bench%data_out),          &
+     &                         bench%num_detail, bench%detail_out),     &
      &    zbuf_d)
       close(id_dbench)
       call dealloc_dbench_output_data(bench)
 !
-      end subroutine write_dynamobench_file
+      end subroutine write_detailed_dbench_file
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dup_dynamobench_header_to_IO                           &
+      subroutine dup_detail_dbench_header_to_IO                         &
      &         (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr,            &
      &          sph_OUT, bench)
 !
@@ -151,25 +152,25 @@
       sph_OUT%r_inner =  v_pwr%r_inside
       sph_OUT%r_outer =  v_pwr%r_outside
 !
-      call count_dynamobench_monitor_name                               &
+      call cnt_detail_dbench_monitor_name                               &
      &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base,          &
      &    sph_OUT%nfield_sph_spec, sph_OUT%ntot_sph_spec)
 !
       sph_OUT%num_time_labels = 2
       call alloc_sph_espec_name(sph_OUT)
-      call copy_dynamobench_monitor_name                                &
+      call copy_detail_dbench_monitor_name                              &
      &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base,          &
      &    sph_OUT%nfield_sph_spec, sph_OUT%num_labels,                  &
      &    sph_OUT%ncomp_sph_spec, sph_OUT%ene_sph_spec_name)
 !
-      call alloc_dbench_output_data(sph_OUT%ntot_sph_spec, bench)
+      call alloc_detail_dbench_out_data(sph_OUT%ntot_sph_spec, bench)
 !
-      end subroutine dup_dynamobench_header_to_IO
+      end subroutine dup_detail_dbench_header_to_IO
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dup_dynamobench_monitor_data(sph_bc_U, sph_bc_B,       &
-     &                                        ipol_base, bench)
+      subroutine dup_detail_dbench_monitor_name(sph_bc_U, sph_bc_B,     &
+     &                                          ipol_base, bench)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
       type(base_field_address), intent(in) :: ipol_base
@@ -178,50 +179,50 @@
       integer(kind = kint) :: jcou
 !
       jcou = 0
-      bench%data_out(jcou+1) = bench%KE_bench(1)
-      jcou = jcou + 1
+      bench%detail_out(jcou+1:jcou+3) = bench%KE_bench(1:3)
+      jcou = jcou + 3
 !
       if(ipol_base%i_magne .gt. 0) then
-        bench%data_out(jcou+1) = bench%ME_bench(3)
-        jcou = jcou + 1
+        bench%detail_out(jcou+1:jcou+3) = bench%ME_bench(1:3)
+        jcou = jcou + 3
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        bench%data_out(jcou+1) = bench%mene_icore(3)
-        jcou = jcou + 1
+        bench%detail_out(jcou+1:jcou+3) = bench%mene_icore(1:3)
+        jcou = jcou + 3
       end if
-!
-      if(ipol_base%i_magne .gt. 0) then
-        bench%data_out(jcou+1) = bench%d_zero(0,bench%ibench_magne+1)
-        jcou = jcou + 1
-      end if
-!
-      bench%data_out(jcou+1) = bench%d_zero(0,bench%ibench_velo+2)
-      bench%data_out(jcou+2) = bench%d_zero(0,bench%ibench_temp)
-      jcou = jcou + 3
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        bench%data_out(jcou+1) = bench%rotate_icore(0)
+        bench%detail_out(jcou+1) = bench%rotate_icore(0)
         jcou = jcou + 1
       end if
 !
 !      write(*,*) 'sph_bc_U%iflag_icb', sph_bc_U%iflag_icb
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
      &    .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        bench%data_out(jcou+1) = bench%m_torque_icore(0)
+        bench%detail_out(jcou+1) = bench%m_torque_icore(0)
         jcou = jcou + 1
       end if
 !
-      bench%data_out(jcou+1) = bench%ave_phase_vr
-      bench%data_out(jcou+2:jcou+3) = bench%omega_vm4(1:2)
-      jcou = jcou + 3
+      bench%detail_out(jcou+1:jcou+4) = bench%phi_zero(1:4)
+      bench%detail_out(jcou+5) = bench%ave_phase_vr
+      bench%detail_out(jcou+6:jcou+7) = bench%omega_vm4(1:2)
+      jcou = jcou + 7
 !
-      end subroutine dup_dynamobench_monitor_data
+      if(ipol_base%i_magne .gt. 0) then
+        bench%detail_out(jcou+1) = bench%d_zero(0,bench%ibench_magne+1)
+        jcou = jcou + 1
+      end if
+!
+      bench%detail_out(jcou+1) = bench%d_zero(0,bench%ibench_velo+2)
+      bench%detail_out(jcou+2) = bench%d_zero(0,bench%ibench_temp)
+!
+      end subroutine dup_detail_dbench_monitor_name
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_dynamobench_monitor_name(sph_bc_U, sph_bc_B,    &
+      subroutine cnt_detail_dbench_monitor_name(sph_bc_U, sph_bc_B,    &
      &         ipol_base, nfield_sph_spec, ntot_sph_spec)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
@@ -230,17 +231,17 @@
       integer(kind = kint), intent(inout) :: ntot_sph_spec
 !
 !
-      nfield_sph_spec =  1 + 3 + 2
-      ntot_sph_spec =    1 + 3 + 2
+      nfield_sph_spec =  1 + 7 + 2
+      ntot_sph_spec =    3 + 7 + 2
 !
       if(ipol_base%i_magne .gt. 0) then
         nfield_sph_spec = nfield_sph_spec + 1 + 1
-        ntot_sph_spec =   ntot_sph_spec + 1 + 1
+        ntot_sph_spec =   ntot_sph_spec + 3 + 1
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         nfield_sph_spec = nfield_sph_spec + 1
-        ntot_sph_spec =   ntot_sph_spec + 1
+        ntot_sph_spec =   ntot_sph_spec + 3
       end if
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
@@ -255,11 +256,11 @@
         ntot_sph_spec =   ntot_sph_spec + 1
       end if
 !
-      end subroutine count_dynamobench_monitor_name
+      end subroutine cnt_detail_dbench_monitor_name
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_dynamobench_monitor_name                          &
+      subroutine copy_detail_dbench_monitor_name                        &
      &         (sph_bc_U, sph_bc_B, ipol_base,                          &
      &          nfield_sph_spec, num_labels,                            &
      &          ncomp_sph_spec, ene_sph_spec_name)
@@ -282,24 +283,67 @@
       ene_sph_spec_name(2) = fhd_time
       jcou = 2
 !
-      ncomp_sph_spec(icou+1) = 1
-      ene_sph_spec_name(jcou+1) = 'KE_total'
+      ncomp_sph_spec(icou+1) = 3
+      ene_sph_spec_name(jcou+1) = 'KE_pol'
+      ene_sph_spec_name(jcou+2) = 'KE_tor'
+      ene_sph_spec_name(jcou+3) = 'KE_total'
       icou = icou + 1
       jcou = jcou + ncomp_sph_spec(icou)
 !
       if(ipol_base%i_magne .gt. 0) then
-        ncomp_sph_spec(icou+1) = 1
-        ene_sph_spec_name(jcou+1) = 'ME_total'
+        ncomp_sph_spec(icou+1) = 3
+        ene_sph_spec_name(jcou+1) = 'ME_pol'
+        ene_sph_spec_name(jcou+2) = 'ME_tor'
+        ene_sph_spec_name(jcou+3) = 'ME_total'
         icou = icou + 1
         jcou = jcou + ncomp_sph_spec(icou)
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        ncomp_sph_spec(icou+1) = 1
-        ene_sph_spec_name(jcou+1) = 'ME_total_icore'
+        ncomp_sph_spec(icou+1) = 3
+        ene_sph_spec_name(jcou+1) = 'ME_pol_icore'
+        ene_sph_spec_name(jcou+2) = 'ME_tor_icore'
+        ene_sph_spec_name(jcou+3) = 'ME_total_icore'
         icou = icou + 1
         jcou = jcou + ncomp_sph_spec(icou)
       end if
+!
+      if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
+        ncomp_sph_spec(icou+1) = 1
+        ene_sph_spec_name(jcou+1) = 'omega_ic_z'
+        icou = icou + 1
+        jcou = jcou + ncomp_sph_spec(icou)
+      end if
+!
+!      write(*,*) 'sph_bc_U%iflag_icb', sph_bc_U%iflag_icb
+      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
+     &    .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
+        ncomp_sph_spec(icou+1) = 1
+        ene_sph_spec_name(jcou+1) = 'MAG_torque_ic_z'
+        icou = icou + 1
+        jcou = jcou + ncomp_sph_spec(icou)
+      end if
+!
+      do i = 1,  4
+        ncomp_sph_spec(icou+1) = 1
+        write(ene_sph_spec_name(jcou+1),'(a4,i1)')  'phi_', i
+        icou = icou + 1
+        jcou = jcou + ncomp_sph_spec(icou)
+      end do
+      ncomp_sph_spec(icou+1) = 1
+      ene_sph_spec_name(jcou+1) = 'Average_drift_vr'
+      icou = icou + 1
+      jcou = jcou + ncomp_sph_spec(icou)
+!
+      ncomp_sph_spec(icou+1) = 1
+      ene_sph_spec_name(jcou+1) = 'omega_vp44'
+      icou = icou + 1
+      jcou = jcou + ncomp_sph_spec(icou)
+!
+      ncomp_sph_spec(icou+1) = 1
+      ene_sph_spec_name(jcou+1) = 'omega_vt54'
+      icou = icou + 1
+      jcou = jcou + ncomp_sph_spec(icou)
 !
       if(ipol_base%i_magne .gt. 0) then
         ncomp_sph_spec(icou+1) = 1
@@ -318,39 +362,8 @@
       icou = icou + 1
       jcou = jcou + ncomp_sph_spec(icou)
 !
-      if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        ncomp_sph_spec(icou+1) = 1
-        ene_sph_spec_name(jcou+1) = 'omega_ic_z'
-        icou = icou + 1
-        jcou = jcou + ncomp_sph_spec(icou)
-      end if
-!
-!      write(*,*) 'sph_bc_U%iflag_icb', sph_bc_U%iflag_icb
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
-     &    .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        ncomp_sph_spec(icou+1) = 1
-        ene_sph_spec_name(jcou+1) = 'MAG_torque_ic_z'
-        icou = icou + 1
-        jcou = jcou + ncomp_sph_spec(icou)
-      end if
-!
-      ncomp_sph_spec(icou+1) = 1
-      ene_sph_spec_name(jcou+1) = 'Average_drift_vr'
-      icou = icou + 1
-      jcou = jcou + ncomp_sph_spec(icou)
-!
-      ncomp_sph_spec(icou+1) = 1
-      ene_sph_spec_name(jcou+1) = 'omega_vp44'
-      icou = icou + 1
-      jcou = jcou + ncomp_sph_spec(icou)
-!
-      ncomp_sph_spec(icou+1) = 1
-      ene_sph_spec_name(jcou+1) = 'omega_vt54'
-      icou = icou + 1
-      jcou = jcou + ncomp_sph_spec(icou)
-!
-      end subroutine copy_dynamobench_monitor_name
+      end subroutine copy_detail_dbench_monitor_name
 !
 ! ----------------------------------------------------------------------
 !
-      end module dup_dynamobench_data_to_IO
+      end module dup_detailed_dbench_to_IO

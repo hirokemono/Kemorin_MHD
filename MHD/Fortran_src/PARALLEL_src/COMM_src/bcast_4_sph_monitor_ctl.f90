@@ -222,6 +222,7 @@
 !
       call bcast_ctl_type_i1(dbench_ctl%nphi_mid_eq_ctl)
       call bcast_ctl_type_c1(dbench_ctl%dynamobench_file_ctl)
+      call bcast_ctl_type_c1(dbench_ctl%dbecch_detail_file_ctl)
       call bcast_ctl_type_c1(dbench_ctl%dynamobench_format_ctl)
 !
       call calypso_mpi_bcast_one_int(dbench_ctl%i_dynamobench_ctl, 0)

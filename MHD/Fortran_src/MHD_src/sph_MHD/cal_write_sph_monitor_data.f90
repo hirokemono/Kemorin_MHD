@@ -249,6 +249,7 @@
       use write_sph_gauss_coefs
       use write_typical_scale
       use dup_dynamobench_data_to_IO
+      use dup_detailed_dbench_to_IO
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -298,6 +299,10 @@
      &    ipol, rj_fld, monitor%gauss_coef, SR_sig)
 !
       call write_dynamobench_file                                       &
+     &   (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc,                &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore),               &
+     &    time_d, monitor%bench)
+      call write_detailed_dbench_file                                   &
      &   (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc,                &
      &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore),               &
      &    time_d, monitor%bench)

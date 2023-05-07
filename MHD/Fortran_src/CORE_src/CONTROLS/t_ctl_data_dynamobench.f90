@@ -29,6 +29,7 @@
 !!
 !!  begin dynamo_benchmark_data_ctl
 !!    dynamo_benchmark_file_prefix  'monitor/dynamobench'
+!!    benchmark_detail_file_prefix  'monitor/dynamobench'
 !!    dynamo_benchmark_file_format  'gzip'
 !!    nphi_mid_eq_ctl                500
 !!  end dynamo_benchmark_data_ctl
@@ -51,7 +52,9 @@
       type dynamobench_control
 !>        Structure for dynanmo benchmark data output
         type(read_character_item) :: dynamobench_file_ctl
-!>        Structure for dynanmo benchmark data output
+!>        Structure for detailed dynanmo benchmark data output
+        type(read_character_item) :: dbecch_detail_file_ctl
+!!>        Structure for dynanmo benchmark data output
         type(read_character_item) :: dynamobench_format_ctl
 !>        Structure for Number of zonal points for benchamek check
         type(read_integer_item) :: nphi_mid_eq_ctl
@@ -64,6 +67,8 @@
 !
       character(len=kchara), parameter, private                         &
      &            :: hd_dbench_prefix = 'dynamo_benchmark_file_prefix'
+      character(len=kchara), parameter, private                         &
+     &            :: hd_detail_prefix = 'benchmark_detail_file_prefix'
       character(len=kchara), parameter, private                         &
      &            :: hd_dbench_format = 'dynamo_benchmark_file_format'
       character(len=kchara), parameter, private                         &
@@ -108,6 +113,8 @@
 !
         call read_chara_ctl_type(c_buf, hd_dbench_prefix,               &
      &      dbench_ctl%dynamobench_file_ctl)
+        call read_chara_ctl_type(c_buf, hd_detail_prefix,               &
+     &      dbench_ctl%dbecch_detail_file_ctl)
         call read_chara_ctl_type(c_buf, hd_dbench_format,               &
      &      dbench_ctl%dynamobench_format_ctl)
         call read_integer_ctl_type(c_buf, hd_nphi_mid_eq,               &
@@ -136,6 +143,7 @@
       if(dbench_ctl%i_dynamobench_ctl .le. 0) return
 !
       maxlen = len_trim(hd_dbench_prefix)
+      maxlen = max(maxlen, len_trim(hd_detail_prefix))
       maxlen = max(maxlen, len_trim(hd_dbench_format))
       maxlen = max(maxlen, len_trim(hd_nphi_mid_eq))
 !
@@ -144,6 +152,8 @@
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_dbench_prefix, dbench_ctl%dynamobench_file_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_detail_prefix, dbench_ctl%dbecch_detail_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_dbench_format, dbench_ctl%dynamobench_format_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &

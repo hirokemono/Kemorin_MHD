@@ -8,8 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine alloc_dbench_output_data(num_out, bench)
+!!      subroutine alloc_detail_dbench_out_data(num_detail, bench)
 !!      subroutine dealloc_dbench_output_data(bench)
+!!      subroutine dealloc_detail_dbench_out_data(bench)
 !!        integer(kind = kint), intent(in) :: num_out
+!!        integer(kind = kint), intent(in) :: num_detail
 !!        type(dynamobench_monitor), intent(inout) :: bench
 !!
 !!      subroutine init_circle_field_name_dbench(fld_ctl,               &
@@ -93,6 +96,10 @@
         integer(kind = kint) :: num_out
 !>        Array for data output
         real(kind = kreal), allocatable :: data_out(:)
+!
+        integer(kind = kint) :: num_detail
+!>        Array for data output
+        real(kind = kreal), allocatable :: detail_out(:)
       end type dynamobench_monitor
 !
 ! ----------------------------------------------------------------------
@@ -114,6 +121,19 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine alloc_detail_dbench_out_data(num_detail, bench)
+!
+      integer(kind = kint), intent(in) :: num_detail
+      type(dynamobench_monitor), intent(inout) :: bench
+!
+      bench%num_detail = num_detail
+      allocate(bench%detail_out(num_detail))
+      if(num_detail .gt. 0) bench%data_out(1:num_detail) = 0.0d0
+!
+      end subroutine alloc_detail_dbench_out_data
+!
+! ----------------------------------------------------------------------
+!
       subroutine dealloc_dbench_output_data(bench)
 !
       type(dynamobench_monitor), intent(inout) :: bench
@@ -122,6 +142,17 @@
       deallocate(bench%data_out)
 !
       end subroutine dealloc_dbench_output_data
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_detail_dbench_out_data(bench)
+!
+      type(dynamobench_monitor), intent(inout) :: bench
+!
+      if(allocated(bench%detail_out) .eqv. .FALSE.) return
+      deallocate(bench%detail_out)
+!
+      end subroutine dealloc_detail_dbench_out_data
 !
 ! ----------------------------------------------------------------------
 !
