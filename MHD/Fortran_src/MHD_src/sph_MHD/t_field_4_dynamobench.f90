@@ -7,6 +7,11 @@
 !>@brief  Dynamo benchmark results
 !!
 !!@verbatim
+!!      subroutine alloc_dbench_output_data(num_out, bench)
+!!      subroutine dealloc_dbench_output_data(bench)
+!!        integer(kind = kint), intent(in) :: num_out
+!!        type(dynamobench_monitor), intent(inout) :: bench
+!!
 !!      subroutine init_circle_field_name_dbench(fld_ctl,               &
 !!     &                                         d_circle, bench)
 !!        type(ctl_array_c3), intent(in) :: fld_ctl
@@ -97,6 +102,10 @@
 !
 !>        local point data
         real(kind = kreal) :: d_zero(0:4,7)
+!
+        integer(kind = kint) :: num_out
+!>        Array for data output
+        real(kind = kreal), allocatable :: data_out(:)
       end type dynamobench_monitor
 !
       private :: open_dynamobench_monitor_file
@@ -104,6 +113,30 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_dbench_output_data(num_out, bench)
+!
+      integer(kind = kint), intent(in) :: num_out
+      type(dynamobench_monitor), intent(inout) :: bench
+!
+      bench%num_out = num_out
+      allocate(bench%data_out(num_out))
+      if(num_out .gt. 0) bench%data_out(1:num_out) = 0.0d0
+!
+      end subroutine alloc_dbench_output_data
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_dbench_output_data(bench)
+!
+      type(dynamobench_monitor), intent(inout) :: bench
+!
+      if(allocated(bench%data_out) .eqv. .FALSE.) return
+      deallocate(bench%data_out)
+!
+      end subroutine dealloc_dbench_output_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -192,6 +225,7 @@
 !
       if(bench%iflag_dynamobench .le. 0) return
       if(my_rank .ne. 0) return
+!
 !
       call open_dynamobench_monitor_file                                &
      &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol_base)
