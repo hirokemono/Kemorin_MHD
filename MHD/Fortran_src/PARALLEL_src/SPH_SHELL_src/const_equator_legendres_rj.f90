@@ -99,13 +99,17 @@
      &   P_eq, dPdt_eq, Ps_eq, dPsdt_eq)
       deallocate(P_eq, dPdt_eq)
 !
-      call eq_leg_fwd_trans_vector_sym                                  &
-     &   (sph_rtm, sph_rlm, comms_sph%comm_rlm, trans_p%idx_trns,       &
+!$omp parallel workshare
+      SR_r%WS(1:SR_r%n_WS) = 0.0d0
+!$omp end parallel workshare
+      call eq_leg_fwd_trans_vector_sym(sph_rtm, sph_rlm,                &
+     &    comms_sph%comm_rlm, trans_p%idx_trns, trans_p%leg%g_sph_rlm,  &
      &    Ps_eq, dPsdt_eq, SR_r%n_WS, SR_r%WS(1))
-      call eq_leg_fwd_trans_scalar_sym                                  &
-     &   (sph_rtm, sph_rlm, comms_sph%comm_rlm, trans_p%idx_trns,       &
+      call eq_leg_fwd_trans_scalar_sym(sph_rtm, sph_rlm,                &
+     &    comms_sph%comm_rlm, trans_p%idx_trns,                         &
      &    Ps_eq, SR_r%n_WS, SR_r%WS(1))
       deallocate(Ps_eq, dPsdt_eq)
+!
 !
       call calypso_sph_comm_N(ifour,                                    &
      &    comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig, SR_r)
@@ -115,7 +119,7 @@
      &   (trans_p%iflag_SPH_recv, ifour, ione,   ione,                  &
      &    comms_sph%comm_rj, SR_r%n_WR, SR_r%WR(1), Pvec_rj)
       call sel_sph_rj_scalar_from_recv                                  &
-     &   (trans_p%iflag_SPH_recv, ifour, ithree, ithree,                &
+     &   (trans_p%iflag_SPH_recv, ifour, ifour, ifour,                  &
      &    comms_sph%comm_rj, SR_r%n_WR, SR_r%WR(1), Pvec_rj)
 !
       end subroutine s_const_equator_legendres_rj
@@ -123,7 +127,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine eq_leg_fwd_trans_vector_sym                            &
-     &         (sph_rtm, sph_rlm, comm_rlm, idx_trns,                   &
+     &         (sph_rtm, sph_rlm, comm_rlm, idx_trns, g_sph_rlm,        &
      &          Ps_eq, dPsdt_eq, n_WS, WS)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -131,6 +135,8 @@
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(index_4_sph_trans), intent(in) :: idx_trns
       real(kind = kreal), intent(in) :: Ps_eq(sph_rlm%nidx_rlm(2))
+      real(kind = kreal), intent(in)                                    &
+     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
       real(kind = kreal), intent(in) :: dPsdt_eq(sph_rlm%nidx_rlm(2))
       integer(kind = kint), intent(in) :: n_WS
 !
@@ -141,7 +147,7 @@
       integer(kind = kint) :: mp_rlm, ie_send, io_send
       integer(kind = kint) :: jst, nj_rlm, jj, je_rlm, jo_rlm
       integer(kind = kint) :: nle_rtm, nlo_rtm, n_jk_e, n_jk_o
-      real(kind = kreal) :: gme, gmo
+      real(kind = kreal) :: gme, gmo, g3e, g3o
 !
 !
 !$omp parallel workshare
@@ -153,7 +159,7 @@
 !$omp parallel do schedule(static)                                      &
 !$omp             private(ip,kst,ked,jj,k_rlm,je_rlm,jo_rlm,            &
 !$omp&                    mp_rlm,jst,nj_rlm,n_jk_e,n_jk_o,              &
-!$omp&                    ie_rlm,io_rlm,ie_send,io_send,gme,gmo)
+!$omp&                    ie_rlm,io_rlm,ie_send,io_send,gme,gmo,g3e,g3o)
       do ip = 1, np_smp
         kst = sph_rlm%istack_rlm_kr_smp(ip-1) + 1
         ked = sph_rlm%istack_rlm_kr_smp(ip  )
@@ -175,23 +181,21 @@
               io_rlm = 1 + (jo_rlm-1) * sph_rlm%istep_rlm(2)            &
      &                   + (k_rlm-1)  * sph_rlm%istep_rlm(1)
 !
+              g3e = g_sph_rlm(je_rlm,3)
+              g3o = g_sph_rlm(jo_rlm,3)
               gme = dble(sph_rlm%idx_gl_1d_rlm_j(je_rlm,3))
               gmo = dble(sph_rlm%idx_gl_1d_rlm_j(jo_rlm,3))
 !
               ie_send = (comm_rlm%irev_sr(ie_rlm) - 1) * 4
               io_send = (comm_rlm%irev_sr(io_rlm) - 1) * 4
 !
-              WS(ie_send+1) = WS(ie_send+1) + Ps_eq(jj+jst)
-              WS(ie_send+2) = WS(ie_send+2)                             &
-     &                       + (dPsdt_eq(jj+jst) - Ps_eq(jj+jst)*gme)
-              WS(ie_send+3) = WS(ie_send+3)                             &
-     &                       - (Ps_eq(jj+jst)*gme + dPsdt_eq(jj+jst))
+              WS(ie_send+1) =   Ps_eq(jj+jst)*g3e
+              WS(ie_send+2) = - Ps_eq(jj+jst)*gme
+              WS(ie_send+3) =   dPsdt_eq(jj+jst)
 !
-              WS(io_send+1) = WS(io_send+1) + Ps_eq(jj+jst+n_jk_e)
-              WS(io_send+2) = WS(io_send+2) + (dPsdt_eq(jj+jst+n_jk_e)  &
-     &                                     - Ps_eq(jj+jst+n_jk_e)*gmo)
-              WS(io_send+3) = WS(io_send+3) - (Ps_eq(jj+jst+n_jk_e)*gmo &
-     &                                     + dPsdt_eq(jj+jst+n_jk_e))
+              WS(io_send+1) =   Ps_eq(jj+jst+n_jk_e)*g3o
+              WS(io_send+2) = - Ps_eq(jj+jst+n_jk_e)*gmo
+              WS(io_send+3) =   dPsdt_eq(jj+jst+n_jk_e)
             end do
 !
 !   the last even l-m
@@ -199,15 +203,14 @@
               je_rlm = 2*jj + jst - 1
               ie_rlm = 1 + (je_rlm-1) * sph_rlm%istep_rlm(2)            &
      &                   + (k_rlm-1) *  sph_rlm%istep_rlm(1)
+              g3e = g_sph_rlm(je_rlm,3)
               gme = dble(sph_rlm%idx_gl_1d_rlm_j(je_rlm,3))
 !
               ie_send = (comm_rlm%irev_sr(ie_rlm) - 1) * 4
 !
-              WS(ie_send+1) = WS(ie_send+1) + Ps_eq(jj+jst)
-              WS(ie_send+2) = WS(ie_send+2)                             &
-     &                       + (dPsdt_eq(jj+jst) - Ps_eq(jj+jst)*gme)
-              WS(ie_send+3) = WS(ie_send+3)                             &
-     &                       - (Ps_eq(jj+jst)*gme + dPsdt_eq(jj+jst))
+              WS(ie_send+1) =   Ps_eq(jj+jst)*g3e
+              WS(ie_send+2) = - Ps_eq(jj+jst)*gme
+              WS(ie_send+3) =   dPsdt_eq(jj+jst)
             end do
 !
           end do
@@ -267,8 +270,8 @@
               ie_send = 4 + (comm_rlm%irev_sr(ie_rlm) - 1) * 4
               io_send = 4 + (comm_rlm%irev_sr(io_rlm) - 1) * 4
 !
-              WS(ie_send) = WS(ie_send) + Ps_eq(jj+jst)
-              WS(io_send) = WS(io_send) + Ps_eq(jj+jst+n_jk_e)
+              WS(ie_send) = Ps_eq(jj+jst)
+              WS(io_send) = Ps_eq(jj+jst+n_jk_e)
             end do
 !
 !   the last even l-m
@@ -277,7 +280,7 @@
               ie_rlm = 1 + (je_rlm-1) * sph_rlm%istep_rlm(2)            &
      &                   + (k_rlm-1) *  sph_rlm%istep_rlm(1)
               ie_send = 4 + (comm_rlm%irev_sr(ie_rlm) - 1) * 4
-              WS(ie_send) = WS(ie_send) + Ps_eq(jj+jst)
+              WS(ie_send) = Ps_eq(jj+jst)
             end do
           end do
         end do
