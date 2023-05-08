@@ -164,17 +164,21 @@
       cdat%Pvec_rj%ntot_phys_viz = cdat%Pvec_rj%ntot_phys
       call alloc_phys_data(sph%sph_rj%nnod_rj, cdat%Pvec_rj)
 !
-      write(80,*)                                                       &
-     &     'my_rank, j_local, j, l, m, Pvec_1, Pvec_2, Pvec_3, Pvec_4'
       do ip = 1, nprocs
         call calypso_mpi_barrier
         if(ip-1 .ne. my_rank) cycle
 !
+        open(80,file='eq_leg.dat', position='APPEND')
+        if(ip.eq. 1) then
+           write(80,*)                                                  &
+     &      'my_rank, j_local, j, l, m, Pvec_1, Pvec_2, Pvec_3, Pvec_4'
+        end if
         do j = 1, sph%sph_rj%nidx_rj(2)
           inod = 1 + (j-1) * sph%sph_rj%istep_rj(2)
           write(80,*) my_rank, j, sph%sph_rj%idx_gl_1d_rj_j(j,1:3),     &
      &              cdat%Pvec_rj%d_fld(inod,1:4)
         end do
+       close(80)
       end do
 !
       call s_const_equator_legendres_rj                                 &
