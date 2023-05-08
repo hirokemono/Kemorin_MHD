@@ -164,6 +164,10 @@
       cdat%Pvec_rj%ntot_phys_viz = cdat%Pvec_rj%ntot_phys
       call alloc_phys_data(sph%sph_rj%nnod_rj, cdat%Pvec_rj)
 !
+      call s_const_equator_legendres_rj                                 &
+     &   (sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,         &
+     &    comms_sph, trans_p, cdat%Pvec_rj, SR_sig, SR_r)
+!
       do ip = 1, nprocs
         call calypso_mpi_barrier
         if(ip-1 .ne. my_rank) cycle
@@ -180,10 +184,6 @@
         end do
        close(80)
       end do
-!
-      call s_const_equator_legendres_rj                                 &
-     &   (sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,         &
-     &    comms_sph, trans_p, cdat%Pvec_rj, SR_sig, SR_r)
 !
       call initialize_circle_transform(trans_p%iflag_FFT,               &
      &    cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
