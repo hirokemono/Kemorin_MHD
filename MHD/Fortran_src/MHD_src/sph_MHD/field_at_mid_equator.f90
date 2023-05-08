@@ -39,17 +39,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_mid_equator_point_global(my_rank, trans_p, sph,   &
-     &                                         cdat)
+      subroutine init_mid_equator_point_global                          &
+     &         (sph, comms_sph, trans_p, cdat, SR_sig, SR_r)
 !
       use t_work_4_sph_trans
       use t_spheric_parameter
+      use t_sph_trans_comm_tbl
+      use t_solver_SR
 !
-      integer, intent(in) :: my_rank
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(sph_grids), intent(in) ::  sph
+      type(sph_comm_tables), intent(in) :: comms_sph
 !
       type(circle_fld_maker), intent(inout) :: cdat
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind = kint) :: kr_ICB, kr_CMB
       real(kind = kreal) :: r_MID
@@ -62,8 +66,8 @@
 !
       cdat%circle%s_circle = r_MID
       cdat%circle%z_circle = zero
-      call init_circle_point_global(my_rank, trans_p%iflag_FFT,         &
-     &                              sph, cdat)
+      call init_circle_point_global(sph, comms_sph,  &
+     &                              trans_p, cdat, SR_sig, SR_r)
 !
       end subroutine init_mid_equator_point_global
 !

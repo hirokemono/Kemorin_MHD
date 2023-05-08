@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine init_rms_sph_mhd_control(MHD_prop, sph_MHD_bc,       &
-!!     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig)
+!!     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor,           &
+!!     &          SR_sig, SR_r)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -16,6 +17,7 @@
 !!        type(MHD_radial_matrices), intent(inout) :: MHD_mats
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine output_rms_sph_mhd_control(time_d, SPH_MHD, MHD_prop,&
 !!     &          sph_MHD_bc, r_2nd, trans_p, MHD_mats, monitor, SR_sig)
 !!      subroutine output_sph_monitor_data(time_d, sph_params, sph_rj,  &
@@ -98,7 +100,8 @@
 !  --------------------------------------------------------------------
 !
       subroutine init_rms_sph_mhd_control(MHD_prop, sph_MHD_bc,         &
-     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig)
+     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor,             &
+     &          SR_sig, SR_r)
 !
       use t_solver_SR
       use cal_heat_source_Nu
@@ -113,6 +116,7 @@
       type(MHD_radial_matrices), intent(inout) :: MHD_mats
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       character(len=kchara) :: mat_name
 !
@@ -137,8 +141,8 @@
      &   SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
 !
       if(monitor%bench%iflag_dynamobench .gt. 0) then
-        call init_mid_equator_point_global                              &
-     &     (my_rank, trans_p, SPH_MHD%sph, monitor%circ_mid_eq)
+        call init_mid_equator_point_global(SPH_MHD%sph, SPH_MHD%comms,  &
+     &      trans_p, monitor%circ_mid_eq, SR_sig, SR_r)
       end if
 !
       end subroutine init_rms_sph_mhd_control

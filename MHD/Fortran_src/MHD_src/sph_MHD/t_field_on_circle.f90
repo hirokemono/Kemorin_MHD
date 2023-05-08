@@ -12,13 +12,17 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(circle_fld_maker), intent(inout) :: cdat
-!!      subroutine init_circle_point_global(my_rank, iflag_FFT,         &
-!!     &                                    sph, cdat)
+!!      subroutine init_circle_point_global(iflag_FFT, sph, comms_sph,  &
+!!     &          trans_p, cdat, SR_sig, SR_r)
 !!      subroutine dealloc_circle_point_global(my_rank, cdat)
 !!        integer, intent(in) :: my_rank
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(sph_grids), intent(in) ::  sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(circle_fld_maker), intent(inout) :: cdat
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module t_field_on_circle
@@ -45,6 +49,13 @@
 !>        Working structure for Fourier transform at mid-depth equator
 !!@n      (Save attribute is necessary for Hitachi compiler for SR16000)
         type(working_FFTs) :: WK_circle_fft
+!
+!>        Legendre polynomials at equator in sph_rj configuration
+!!              Pvec_rj%d_fld(:,1) :: P_l^m
+!!              Pvec_rj%d_fld(:,2) :: d P_l^m / d theta
+!!              Pvec_rj%d_fld(:,3) :: P_l^m
+!!              Pvec_rj%d_fld(:,4) :: P_l^m
+        type(phys_data) :: Pvec_rj
       end type circle_fld_maker
 !
       private :: collect_spectr_for_circle, set_circle_point_global
@@ -111,25 +122,66 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine init_circle_point_global(my_rank, iflag_FFT,           &
-     &                                    sph, cdat)
+      subroutine init_circle_point_global(sph, comms_sph, trans_p,      &
+     &                                    cdat, SR_sig, SR_r)
 !
+      use calypso_mpi
       use t_spheric_parameter
+      use t_sph_trans_comm_tbl
+      use t_work_4_sph_trans
+      use t_solver_SR
       use circle_transform_single
+      use const_equator_legendres_rj
 !
-      integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_grids), intent(in) ::  sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(circle_fld_maker), intent(inout) :: cdat
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
+      integer :: ip, j, inod
 !
       call alloc_circle_field(my_rank,                                  &
      &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
      &    cdat%circle, cdat%d_circle)
       call alloc_circle_transform(sph%sph_params%l_truncation,          &
      &                            cdat%circ_spec)
-      call initialize_circle_transform(iflag_FFT,                       &
+!
+      cdat%Pvec_rj%num_phys =  2
+      call  alloc_phys_name(cdat%Pvec_rj)
+      cdat%Pvec_rj%phys_name(1) = 'P_vector'
+      cdat%Pvec_rj%phys_name(2) = 'P_scalar'
+      cdat%Pvec_rj%istack_component(0) = 0
+      cdat%Pvec_rj%num_component(1) =    3
+      cdat%Pvec_rj%istack_component(1) = 3
+      cdat%Pvec_rj%num_component(2) =    1
+      cdat%Pvec_rj%istack_component(2) = 4
+!
+      cdat%Pvec_rj%ntot_phys = 4
+      cdat%Pvec_rj%num_phys_viz =  cdat%Pvec_rj%num_phys
+      cdat%Pvec_rj%ntot_phys_viz = cdat%Pvec_rj%ntot_phys
+      call alloc_phys_data(sph%sph_rj%nnod_rj, cdat%Pvec_rj)
+!
+      write(80,*)                                                       &
+     &     'my_rank, j_local, j, l, m, Pvec_1, Pvec_2, Pvec_3, Pvec_4'
+      do ip = 1, nprocs
+        call calypso_mpi_barrier
+        if(ip-1 .ne. my_rank) cycle
+!
+        do j = 1, sph%sph_rj%nidx_rj(2)
+          inod = 1 + (j-1) * sph%sph_rj%istep_rj(2)
+          write(80,*) my_rank, j, sph%sph_rj%idx_gl_1d_rj_j(j,1:3),     &
+     &              cdat%Pvec_rj%d_fld(inod,1:4)
+        end do
+      end do
+!
+      call s_const_equator_legendres_rj                                 &
+     &   (sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,         &
+     &    comms_sph, trans_p, cdat%Pvec_rj, SR_sig, SR_r)
+!
+      call initialize_circle_transform(trans_p%iflag_FFT,               &
      &    cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
       call set_circle_point_global                                      &
      &   (sph%sph_rj%nidx_rj(1), sph%sph_rj%radius_1d_rj_r,             &

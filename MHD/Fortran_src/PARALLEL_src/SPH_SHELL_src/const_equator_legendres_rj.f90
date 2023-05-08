@@ -8,12 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine s_const_equator_legendres_rj                         &
-!!     &         (sph_rj, sph_rlm, sph_rtm, idx_trns, Ps_eq, dPsdt_eq)
+!!     &         (sph_params, sph_rj, sph_rlm, sph_rtm, comms_sph,      &
+!!     &          trans_p, Pvec_rj, SR_sig, SR_r)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
-!!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        real(kind = kreal), intent(inout) :: Pvec_rj(sph_rj%nnod_rj,4)
+!!         type(send_recv_status), intent(inout) :: SR_sig
+!!         type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module const_equator_legendres_rj
@@ -29,6 +34,7 @@
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
+      use t_phys_data
       use t_work_4_sph_trans
       use t_solver_SR
 !
@@ -46,25 +52,21 @@
 !
       subroutine s_const_equator_legendres_rj                           &
      &         (sph_params, sph_rj, sph_rlm, sph_rtm, comms_sph,        &
-     &          idx_trns, trans_p, n_WR, n_WS, WR, WS,                  &
-     &          Pvec_rj, SR_sig, SR_r)
+     &          trans_p, Pvec_rj, SR_sig, SR_r)
 !
       use calypso_mpi
       use set_legendre_matrices
+      use spherical_SRs_N
+      use copy_spectr_4_sph_trans
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tables), intent(in) :: comms_sph
-      type(index_4_sph_trans), intent(in) :: idx_trns
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      integer(kind = kint), intent(in) :: n_WR, n_WS
 !
-      real(kind = kreal), intent(inout) :: Pvec_rj(sph_rj%nnod_rj,4)
-!
-      real (kind=kreal), intent(inout):: WR(n_WR)
-      real (kind=kreal), intent(inout):: WS(n_WS)
+      type(phys_data), intent(inout) :: Pvec_rj
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
@@ -89,30 +91,32 @@
 !$omp end parallel workshare
 !
       call set_equator_lagende(sph_params%l_truncation,                 &
-     &    sph_rtm, sph_rlm, idx_trns, P_eq, dPdt_eq)
+     &    sph_rtm, sph_rlm, trans_p%idx_trns, P_eq, dPdt_eq)
 !
       call set_equator_legendre_lj                                      &
-     &   (sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2),                     &
-     &    idx_trns%lstack_rlm, idx_trns%lstack_even_rlm,                &
-     &    P_eq, dPdt_eq, Ps_eq, dPsdt_eq)
+     &  (sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2),                      &
+     &   trans_p%idx_trns%lstack_rlm, trans_p%idx_trns%lstack_even_rlm, &
+     &   P_eq, dPdt_eq, Ps_eq, dPsdt_eq)
       deallocate(P_eq, dPdt_eq)
 !
       call eq_leg_fwd_trans_vector_sym                                  &
-     &   (sph_rtm, sph_rlm, comms_sph%comm_rlm, idx_trns,               &
-     &    Ps_eq, dPsdt_eq, n_WS, WS)
+     &   (sph_rtm, sph_rlm, comms_sph%comm_rlm, trans_p%idx_trns,       &
+     &    Ps_eq, dPsdt_eq, SR_r%n_WS, SR_r%WS(1))
       call eq_leg_fwd_trans_scalar_sym                                  &
-     &   (sph_rtm, sph_rlm, comms_sph%comm_rlm, idx_trns,               &
-     &    Ps_eq, n_WS, WS)
+     &   (sph_rtm, sph_rlm, comms_sph%comm_rlm, trans_p%idx_trns,       &
+     &    Ps_eq, SR_r%n_WS, SR_r%WS(1))
       deallocate(Ps_eq, dPsdt_eq)
 !
       call calypso_sph_comm_N(ifour,                                    &
      &    comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig, SR_r)
       call finish_send_recv_sph(comms_sph%comm_rlm, SR_sig)
 !
-      call sel_sph_rj_vector_from_recv(trans_p%iflag_SPH_recv, ifour,   &
-     &    ione,   ione,  comms_sph%comm_rj, n_WR, WR, Pvec_rj)
-      call sel_sph_rj_scalar_from_recv(trans_p%iflag_SPH_recv, ifour,   &
-     &    ithree, ithree, comms_sph%comm_rj, n_WR, WR, Pvec_rj)
+      call sel_sph_rj_vector_from_recv                                  &
+     &   (trans_p%iflag_SPH_recv, ifour, ione,   ione,                  &
+     &    comms_sph%comm_rj, SR_r%n_WR, SR_r%WR(1), Pvec_rj)
+      call sel_sph_rj_scalar_from_recv                                  &
+     &   (trans_p%iflag_SPH_recv, ifour, ithree, ithree,                &
+     &    comms_sph%comm_rj, SR_r%n_WR, SR_r%WR(1), Pvec_rj)
 !
       end subroutine s_const_equator_legendres_rj
 !

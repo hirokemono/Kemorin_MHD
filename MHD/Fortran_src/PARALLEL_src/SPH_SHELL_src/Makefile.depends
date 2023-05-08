@@ -24,7 +24,7 @@ circle_transform_single.o: $(SPH_COMMDIR)/circle_transform_single.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 compare_sph_with_IO.o: $(SPH_COMMDIR)/compare_sph_with_IO.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_file_IO_parameter.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_spheric_group.o t_spheric_data_IO.o t_const_spherical_grid.o t_sph_local_parameter.o sph_file_MPI_IO_select.o set_loaded_data_4_sph.o load_data_for_sph_IO.o copy_sph_comm_table_4_IO.o copy_sph_rtp_node_4_IO.o set_group_types_4_IO.o copy_sph_rj_mode_4_IO.o copy_sph_rtm_node_4_IO.o copy_sph_rlm_mode_4_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_equator_legendres_rj.o: $(SPH_COMMDIR)/const_equator_legendres_rj.f90 m_precision.o m_machine_parameter.o m_constants.o t_legendre_work_sym_matmul.o t_spheric_parameter.o t_spheric_rj_data.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o set_legendre_matrices.o set_vr_rtm_for_leg_vecprod.o cal_sp_rlm_by_vecprod.o schmidt_fix_m.o
+const_equator_legendres_rj.o: $(SPH_COMMDIR)/const_equator_legendres_rj.f90 m_precision.o m_machine_parameter.o m_constants.o t_legendre_work_sym_matmul.o t_spheric_parameter.o t_spheric_rj_data.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_solver_SR.o calypso_mpi.o set_legendre_matrices.o schmidt_fix_m.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_field_4_sph_trans.o: $(SPH_COMMDIR)/copy_field_4_sph_trans.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
