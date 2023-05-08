@@ -9,16 +9,19 @@
 !!@verbatim
 !!      subroutine s_const_equator_legendres_rj                         &
 !!     &         (sph_params, sph_rj, sph_rlm, sph_rtm, comms_sph,      &
-!!     &          trans_p, Pvec_rj, SR_sig, SR_r)
+!!     &          trans_p, P_circ, dPdt_circ, SR_sig, SR_r)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        real(kind = kreal), intent(inout) :: Pvec_rj(sph_rj%nnod_rj,4)
-!!         type(send_recv_status), intent(inout) :: SR_sig
-!!         type(send_recv_real_buffer), intent(inout) :: SR_r
+!!        real(kind = kreal), intent(inout)                             &
+!!       &                   :: P_circ(sph_rj%nidx_rj(2))
+!!        real(kind = kreal), intent(inout)                             &
+!!       &                   :: dPdt_circ(sph_rj%nidx_rj(2))
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module const_equator_legendres_rj
@@ -42,7 +45,6 @@
 !
       private :: set_equator_lagende, set_equator_legendre_lj
       private :: eq_leg_fwd_trans_vector_sym
-      private :: eq_leg_fwd_trans_scalar_sym
 !
 ! -----------------------------------------------------------------------
 !
@@ -51,14 +53,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_const_equator_legendres_rj                           &
-     &         (sph_params, sph_rj, sph_rlm, sph_rtm, comms_sph,        &
-     &          trans_p, Pvec_rj, SR_sig, SR_r)
+     &         (colat, sph_params, sph_rj, sph_rlm, sph_rtm,            &
+     &          comms_sph, trans_p, P_circ, dPdt_circ, SR_sig, SR_r)
 !
       use calypso_mpi
       use set_legendre_matrices
       use spherical_SRs_N
       use copy_spectr_4_sph_trans
 !
+      real(kind = kreal), intent(in) :: colat
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -66,15 +69,25 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
-      type(phys_data), intent(inout) :: Pvec_rj
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: P_circ(sph_rj%nidx_rj(2))
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: dPdt_circ(sph_rj%nidx_rj(2))
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!>        Legendre polynomials at equator in sph_rj configuration
+!!              Pvec_rj%d_fld(:,1) :: P_l^m
+!!              Pvec_rj%d_fld(:,2) :: d P_l^m / d theta
+      type(phys_data) :: Pvec_rj
 !
       real(kind = kreal), allocatable :: P_eq(:)
       real(kind = kreal), allocatable :: dPdt_eq(:)
 !
       real(kind = kreal), allocatable :: Ps_eq(:)
       real(kind = kreal), allocatable :: dPsdt_eq(:)
+!
+      integer(kind = kint) :: i, j
 !
       allocate( P_eq(sph_rlm%nidx_rlm(2)) )
       allocate( dPdt_eq(sph_rlm%nidx_rlm(2)) )
@@ -90,7 +103,19 @@
       dPsdt_eq(1:sph_rlm%nidx_rlm(2)) = 0.0d0
 !$omp end parallel workshare
 !
-      call set_equator_lagende(sph_params%l_truncation,                 &
+      Pvec_rj%num_phys =  1
+      call  alloc_phys_name(Pvec_rj)
+      Pvec_rj%phys_name(1) = 'P_vector'
+      Pvec_rj%istack_component(0) = 0
+      Pvec_rj%num_component(1) =    n_vector
+      Pvec_rj%istack_component(1) = n_vector
+!
+      Pvec_rj%ntot_phys = Pvec_rj%istack_component(1)
+      Pvec_rj%num_phys_viz =  Pvec_rj%num_phys
+      Pvec_rj%ntot_phys_viz = Pvec_rj%ntot_phys
+      call alloc_phys_data(sph_rj%nnod_rj, Pvec_rj)
+!
+      call set_equator_lagende(colat, sph_params%l_truncation,          &
      &    sph_rtm, sph_rlm, trans_p%idx_trns, P_eq, dPdt_eq)
 !
       call set_equator_legendre_lj                                      &
@@ -99,15 +124,9 @@
      &   P_eq, dPdt_eq, Ps_eq, dPsdt_eq)
       deallocate(P_eq, dPdt_eq)
 !
-!$omp parallel workshare
-      SR_r%WS(1:SR_r%n_WS) = 0.0d0
-!$omp end parallel workshare
       call eq_leg_fwd_trans_vector_sym(sph_rtm, sph_rlm,                &
-     &    comms_sph%comm_rlm, trans_p%idx_trns, trans_p%leg%g_sph_rlm,  &
-     &    Ps_eq, dPsdt_eq, SR_r%n_WS, SR_r%WS(1))
-      call eq_leg_fwd_trans_scalar_sym(sph_rtm, sph_rlm,                &
-     &    comms_sph%comm_rlm, trans_p%idx_trns,                         &
-     &    Ps_eq, SR_r%n_WS, SR_r%WS(1))
+     &    comms_sph%comm_rlm, trans_p%idx_trns, Ps_eq, dPsdt_eq,        &
+     &    SR_r%n_WS, SR_r%WS(1))
       deallocate(Ps_eq, dPsdt_eq)
 !
 !
@@ -118,53 +137,51 @@
       call sel_sph_rj_vector_from_recv                                  &
      &   (trans_p%iflag_SPH_recv, ifour, ione,   ione,                  &
      &    comms_sph%comm_rj, SR_r%n_WR, SR_r%WR(1), Pvec_rj)
-      call sel_sph_rj_scalar_from_recv                                  &
-     &   (trans_p%iflag_SPH_recv, ifour, ifour, ifour,                  &
-     &    comms_sph%comm_rj, SR_r%n_WR, SR_r%WR(1), Pvec_rj)
+!
+!$omp parallel do private(j,i)
+      do j = 1, sph_rj%nidx_rj(2)
+        i = 1 +(j-1) * sph_rj%istep_rj(2)
+        P_circ(j) =    Pvec_rj%d_fld(i,1)
+        dPdt_circ(j) = Pvec_rj%d_fld(i,2)
+      end do
+!$omp end parallel do
+      call dealloc_phys_data(Pvec_rj)
+      call dealloc_phys_name(Pvec_rj)
 !
       end subroutine s_const_equator_legendres_rj
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine eq_leg_fwd_trans_vector_sym                            &
-     &         (sph_rtm, sph_rlm, comm_rlm, idx_trns, g_sph_rlm,        &
-     &          Ps_eq, dPsdt_eq, n_WS, WS)
+      subroutine eq_leg_fwd_trans_vector_sym(sph_rtm, sph_rlm,          &
+     &          comm_rlm, idx_trns, Ps_eq, dPsdt_eq, n_WS, WS)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(index_4_sph_trans), intent(in) :: idx_trns
       real(kind = kreal), intent(in) :: Ps_eq(sph_rlm%nidx_rlm(2))
-      real(kind = kreal), intent(in)                                    &
-     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
       real(kind = kreal), intent(in) :: dPsdt_eq(sph_rlm%nidx_rlm(2))
       integer(kind = kint), intent(in) :: n_WS
 !
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      integer(kind = kint) :: ip, kst, ked, k_rlm, ie_rlm, io_rlm
+      integer(kind = kint) :: k_rlm, ie_rlm, io_rlm
       integer(kind = kint) :: mp_rlm, ie_send, io_send
       integer(kind = kint) :: jst, nj_rlm, jj, je_rlm, jo_rlm
       integer(kind = kint) :: nle_rtm, nlo_rtm, n_jk_e, n_jk_o
-      real(kind = kreal) :: gme, gmo, g3e, g3o
 !
 !
 !$omp parallel workshare
-      WS(1:4*comm_rlm%ntot_item_sr) = 0.0d0
+      WS(1:n_vector*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
-!$omp parallel do schedule(static)                                      &
-!$omp             private(ip,kst,ked,jj,k_rlm,je_rlm,jo_rlm,            &
-!$omp&                    mp_rlm,jst,nj_rlm,n_jk_e,n_jk_o,              &
-!$omp&                    ie_rlm,io_rlm,ie_send,io_send,gme,gmo,g3e,g3o)
-      do ip = 1, np_smp
-        kst = sph_rlm%istack_rlm_kr_smp(ip-1) + 1
-        ked = sph_rlm%istack_rlm_kr_smp(ip  )
-        do k_rlm = kst, ked
-!
+      k_rlm = 1
+!$omp parallel do schedule(static) private(jj,je_rlm,jo_rlm,mp_rlm,jst, &
+!$omp&                                   nj_rlm,n_jk_e,n_jk_o,          &
+!$omp&                                   ie_rlm,io_rlm,ie_send,io_send)
           do mp_rlm = 1, sph_rtm%nidx_rtm(3)
             jst = idx_trns%lstack_rlm(mp_rlm-1)
             nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
@@ -180,22 +197,16 @@
      &                   + (k_rlm-1) *  sph_rlm%istep_rlm(1)
               io_rlm = 1 + (jo_rlm-1) * sph_rlm%istep_rlm(2)            &
      &                   + (k_rlm-1)  * sph_rlm%istep_rlm(1)
+              ie_send = (comm_rlm%irev_sr(ie_rlm) - 1) * n_vector
+              io_send = (comm_rlm%irev_sr(io_rlm) - 1) * n_vector
 !
-              g3e = g_sph_rlm(je_rlm,3)
-              g3o = g_sph_rlm(jo_rlm,3)
-              gme = dble(sph_rlm%idx_gl_1d_rlm_j(je_rlm,3))
-              gmo = dble(sph_rlm%idx_gl_1d_rlm_j(jo_rlm,3))
+              WS(ie_send+1) = Ps_eq(jj+jst)
+              WS(ie_send+2) = dPsdt_eq(jj+jst)
+              WS(ie_send+3) = zero
 !
-              ie_send = (comm_rlm%irev_sr(ie_rlm) - 1) * 4
-              io_send = (comm_rlm%irev_sr(io_rlm) - 1) * 4
-!
-              WS(ie_send+1) =   Ps_eq(jj+jst)*g3e
-              WS(ie_send+2) = - Ps_eq(jj+jst)*gme
-              WS(ie_send+3) =   dPsdt_eq(jj+jst)
-!
-              WS(io_send+1) =   Ps_eq(jj+jst+n_jk_e)*g3o
-              WS(io_send+2) = - Ps_eq(jj+jst+n_jk_e)*gmo
-              WS(io_send+3) =   dPsdt_eq(jj+jst+n_jk_e)
+              WS(io_send+1) = Ps_eq(jj+jst+n_jk_e)
+              WS(io_send+2) = dPsdt_eq(jj+jst+n_jk_e)
+              WS(io_send+3) = zero
             end do
 !
 !   the last even l-m
@@ -203,91 +214,17 @@
               je_rlm = 2*jj + jst - 1
               ie_rlm = 1 + (je_rlm-1) * sph_rlm%istep_rlm(2)            &
      &                   + (k_rlm-1) *  sph_rlm%istep_rlm(1)
-              g3e = g_sph_rlm(je_rlm,3)
-              gme = dble(sph_rlm%idx_gl_1d_rlm_j(je_rlm,3))
+              ie_send = (comm_rlm%irev_sr(ie_rlm) - 1) * n_vector
 !
-              ie_send = (comm_rlm%irev_sr(ie_rlm) - 1) * 4
-!
-              WS(ie_send+1) =   Ps_eq(jj+jst)*g3e
-              WS(ie_send+2) = - Ps_eq(jj+jst)*gme
-              WS(ie_send+3) =   dPsdt_eq(jj+jst)
+              WS(ie_send+1) = Ps_eq(jj+jst)
+              WS(ie_send+2) = dPsdt_eq(jj+jst)
+              WS(ie_send+3) = zero
             end do
 !
           end do
-        end do
-      end do
 !$omp end parallel do
 !
       end subroutine eq_leg_fwd_trans_vector_sym
-!
-! -----------------------------------------------------------------------
-!
-      subroutine eq_leg_fwd_trans_scalar_sym(sph_rtm, sph_rlm,          &
-     &          comm_rlm, idx_trns, Ps_eq, n_WS, WS)
-!
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(sph_comm_tbl), intent(in) :: comm_rlm
-      type(index_4_sph_trans), intent(in) :: idx_trns
-      real(kind = kreal), intent(in) :: Ps_eq(sph_rlm%nidx_rlm(2))
-      integer(kind = kint), intent(in) :: n_WS
-!
-      real (kind=kreal), intent(inout):: WS(n_WS)
-!
-!
-      integer(kind = kint) :: ip, kst, ked, k_rlm
-      integer(kind = kint) :: nle_rtm, nlo_rtm, je_rlm, jo_rlm
-      integer(kind = kint) :: ie_rlm, io_rlm, ie_send, io_send
-      integer(kind = kint) :: mp_rlm, jst, nj_rlm, jj, n_jk_e, n_jk_o
-!
-!
-      nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
-      nlo_rtm = sph_rtm%nidx_rtm(2) / 2
-!$omp parallel do schedule(static)                                      &
-!$omp&            private(ip,kst,ked,jj,k_rlm,mp_rlm,n_jk_e,n_jk_o,     &
-!$omp&                    jst,nj_rlm,ie_rlm,io_rlm,je_rlm,jo_rlm,       &
-!$omp&                    ie_send,io_send)
-      do ip = 1, np_smp
-        kst = sph_rlm%istack_rlm_kr_smp(ip-1) + 1
-        ked = sph_rlm%istack_rlm_kr_smp(ip  )
-        do k_rlm = kst, ked
-          do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-            jst = idx_trns%lstack_rlm(mp_rlm-1)
-            nj_rlm = idx_trns%lstack_rlm(mp_rlm)                        &
-     &              - idx_trns%lstack_rlm(mp_rlm-1)
-            n_jk_e = (nj_rlm+1) / 2
-            n_jk_o =  nj_rlm - n_jk_e
-!    even l-m
-!    odd  l-m
-            do jj = 1, nj_rlm/2
-              je_rlm = 2*jj + jst - 1
-              jo_rlm = 2*jj + jst
-!
-              ie_rlm = 1 + (je_rlm-1) * sph_rlm%istep_rlm(2)            &
-     &                   + (k_rlm-1) *  sph_rlm%istep_rlm(1)
-              io_rlm = 1 + (jo_rlm-1) * sph_rlm%istep_rlm(2)            &
-     &                   + (k_rlm-1) *  sph_rlm%istep_rlm(1)
-              ie_send = 4 + (comm_rlm%irev_sr(ie_rlm) - 1) * 4
-              io_send = 4 + (comm_rlm%irev_sr(io_rlm) - 1) * 4
-!
-              WS(ie_send) = Ps_eq(jj+jst)
-              WS(io_send) = Ps_eq(jj+jst+n_jk_e)
-            end do
-!
-!   the last even l-m
-            do jj = nj_rlm/2+1, (nj_rlm+1)/2
-              je_rlm = 2*jj + jst - 1
-              ie_rlm = 1 + (je_rlm-1) * sph_rlm%istep_rlm(2)            &
-     &                   + (k_rlm-1) *  sph_rlm%istep_rlm(1)
-              ie_send = 4 + (comm_rlm%irev_sr(ie_rlm) - 1) * 4
-              WS(ie_send) = Ps_eq(jj+jst)
-            end do
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine eq_leg_fwd_trans_scalar_sym
 !
 ! -----------------------------------------------------------------------
 !
@@ -333,35 +270,32 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_equator_lagende(l_truncation, sph_rtm, sph_rlm,    &
+      subroutine set_equator_lagende(colat, ltr, sph_rtm, sph_rlm,      &
      &                               idx_trns, P_eq, dPdt_eq)
 !
       use schmidt_fix_m
 !
+      integer(kind = kint), intent(in) :: ltr
+      real(kind = kreal), intent(in) :: colat
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(index_4_sph_trans), intent(in) :: idx_trns
-!
-      integer(kind = kint), intent(in) :: l_truncation
 !
       real(kind= kreal), intent(inout) :: P_eq(sph_rlm%nidx_rlm(2))
       real(kind= kreal), intent(inout) :: dPdt_eq(sph_rlm%nidx_rlm(2))
 !
       integer(kind = kint) :: j, l, m, mm, jj
       integer(kind = kint) :: jst, jed
-      real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
-      real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
-      real(kind = kreal) :: df_m(0:l_truncation+2)
-      real(kind = kreal) :: colat_eq
-!
-      colat_eq = two * atan(one)
+      real(kind = kreal) :: p_m(0:ltr), dp_m(0:ltr)
+      real(kind = kreal) :: pmp1(0:ltr), pmn1(0:ltr)
+      real(kind = kreal) :: df_m(0:ltr+2)
 !
 !$omp parallel do private(j,l,m,mm,jj,jst,jed,p_m,dp_m,pmn1,pmp1,df_m)
       do m = 1, sph_rtm%nidx_rtm(3)
         mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
         jst = idx_trns%lstack_rlm(m-1) + 1
         jed = idx_trns%lstack_rlm(m)
-        call schmidt_legendres_m(l_truncation, mm, colat_eq,            &
+        call schmidt_legendres_m(ltr, mm, colat,                        &
      &                           p_m, dp_m, pmn1, pmp1, df_m)
 !
         do j = jst, jed

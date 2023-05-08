@@ -53,9 +53,8 @@
 !>        Legendre polynomials at equator in sph_rj configuration
 !!              Pvec_rj%d_fld(:,1) :: P_l^m
 !!              Pvec_rj%d_fld(:,2) :: d P_l^m / d theta
-!!              Pvec_rj%d_fld(:,3) :: P_l^m
-!!              Pvec_rj%d_fld(:,4) :: P_l^m
-        type(phys_data) :: Pvec_rj
+        real(kind = kreal), allocatable :: P_circ(:)
+        real(kind = kreal), allocatable :: dPdt_circ(:)
       end type circle_fld_maker
 !
       private :: collect_spectr_for_circle, set_circle_point_global
@@ -141,7 +140,10 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
-      integer :: ip, j, inod
+      integer :: ip, j
+      real(kind = kreal) :: colat_eq
+!
+      colat_eq = two * atan(one)
 !
       call alloc_circle_field(my_rank,                                  &
      &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
@@ -149,38 +151,29 @@
       call alloc_circle_transform(sph%sph_params%l_truncation,          &
      &                            cdat%circ_spec)
 !
-      cdat%Pvec_rj%num_phys =  2
-      call  alloc_phys_name(cdat%Pvec_rj)
-      cdat%Pvec_rj%phys_name(1) = 'P_vector'
-      cdat%Pvec_rj%phys_name(2) = 'P_scalar'
-      cdat%Pvec_rj%istack_component(0) = 0
-      cdat%Pvec_rj%num_component(1) =    3
-      cdat%Pvec_rj%istack_component(1) = 3
-      cdat%Pvec_rj%num_component(2) =    1
-      cdat%Pvec_rj%istack_component(2) = 4
+      allocate(cdat%P_circ(sph%sph_rj%nidx_rj(2)))
+      allocate(cdat%dPdt_circ(sph%sph_rj%nidx_rj(2)))
+!$omp parallel workshare
+      cdat%P_circ(1:sph%sph_rj%nidx_rj(2)) =    0.0d0
+      cdat%dPdt_circ(1:sph%sph_rj%nidx_rj(2)) = 0.0d0
+!$omp end parallel workshare
 !
-      cdat%Pvec_rj%ntot_phys = 4
-      cdat%Pvec_rj%num_phys_viz =  cdat%Pvec_rj%num_phys
-      cdat%Pvec_rj%ntot_phys_viz = cdat%Pvec_rj%ntot_phys
-      call alloc_phys_data(sph%sph_rj%nnod_rj, cdat%Pvec_rj)
-!
-      call s_const_equator_legendres_rj                                 &
-     &   (sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,         &
-     &    comms_sph, trans_p, cdat%Pvec_rj, SR_sig, SR_r)
+      call s_const_equator_legendres_rj(colat_eq,                       &
+     &   sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,          &
+     &   comms_sph, trans_p, cdat%P_circ, cdat%dPdt_circ, SR_sig, SR_r)
 !
       do ip = 1, nprocs
         call calypso_mpi_barrier
         if(ip-1 .ne. my_rank) cycle
-!
+
         open(80,file='eq_leg.dat', position='APPEND')
         if(ip.eq. 1) then
-           write(80,*)                                                  &
+           write(80,*)                                                 &
      &      'my_rank, j_local, j, l, m, Pvec_1, Pvec_2, Pvec_3, Pvec_4'
         end if
         do j = 1, sph%sph_rj%nidx_rj(2)
-          inod = 1 + (j-1) * sph%sph_rj%istep_rj(2)
-          write(80,*) my_rank, j, sph%sph_rj%idx_gl_1d_rj_j(j,1:3),     &
-     &              cdat%Pvec_rj%d_fld(inod,1:4)
+          write(80,*) my_rank, j, sph%sph_rj%idx_gl_1d_rj_j(j,1:3),    &
+     &              cdat%P_circ(j), cdat%dPdt_circ(j)
         end do
        close(80)
       end do
