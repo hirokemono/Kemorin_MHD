@@ -130,13 +130,12 @@
       deallocate(Ps_eq, dPsdt_eq)
 !
 !
-      call calypso_sph_comm_N(ifour,                                    &
+      call calypso_sph_comm_N(ithree,                                   &
      &    comms_sph%comm_rlm, comms_sph%comm_rj, SR_sig, SR_r)
       call finish_send_recv_sph(comms_sph%comm_rlm, SR_sig)
 !
-      call sel_sph_rj_vector_from_recv                                  &
-     &   (trans_p%iflag_SPH_recv, ifour, ione,   ione,                  &
-     &    comms_sph%comm_rj, SR_r%n_WR, SR_r%WR(1), Pvec_rj)
+      call sel_sph_rj_vector_from_recv(trans_p%iflag_SPH_recv, ithree,  &
+     &   ione, ione, comms_sph%comm_rj, SR_r%n_WR, SR_r%WR(1), Pvec_rj)
 !
 !$omp parallel do private(j,i)
       do j = 1, sph_rj%nidx_rj(2)

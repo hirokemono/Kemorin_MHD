@@ -275,7 +275,7 @@
         open(80,file='eq_leg.dat', position='APPEND')
         if(ip.eq. 1) then
            write(80,*)                                                 &
-     &      'my_rank, j_local, j, l, m, Pvec_1, Pvec_2, Pvec_3, Pvec_4'
+     &      'my_rank, j_local, j, l, m, Pvec_1, Pvec_2'
         end if
         do j = 1, sph%sph_rj%nidx_rj(2)
           write(80,*) my_rank, j, sph%sph_rj%idx_gl_1d_rj_j(j,1:3),    &

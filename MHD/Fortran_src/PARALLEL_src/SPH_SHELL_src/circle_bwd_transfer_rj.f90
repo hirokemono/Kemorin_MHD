@@ -7,21 +7,23 @@
 !>@brief  forward Legendre transform considering symmetry
 !!
 !!@verbatim
-!!      subroutine s_const_equator_legendres_rj                         &
-!!     &         (sph_params, sph_rj, sph_rlm, sph_rtm, comms_sph,      &
-!!     &          trans_p, P_circ, dPdt_circ, SR_sig, SR_r)
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rj_grid), intent(in) :: sph_rj
-!!        type(sph_rlm_grid), intent(in) :: sph_rlm
-!!        type(sph_rtm_grid), intent(in) :: sph_rtm
-!!        type(sph_comm_tables), intent(in) :: comms_sph
-!!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        real(kind = kreal), intent(inout)                             &
-!!       &                   :: P_circ(sph_rj%nidx_rj(2))
-!!        real(kind = kreal), intent(inout)                             &
-!!       &                   :: dPdt_circ(sph_rj%nidx_rj(2))
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!      subroutine s_circle_bwd_transfer_rj                             &
+!!     &         (iflag_FFT, colat, sph_rj, ntot_comp, d_rj, circle,    &
+!!     &          circ_spec, P_circ, dPdt_circ, d_circle, istack_rj_cmp,&
+!!     &          WK_circle_fft)
+!!        integer(kind = kint), intent(in) :: iflag_FFT
+!!        real(kind = kreal), intent(in) :: colat
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        integer(kind = kint), intent(in) :: ntot_comp
+!!        real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj,ntot_comp)
+!!        real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
+!!        real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
+!!        type(fields_on_circle), intent(inout) :: circle
+!!        type(phys_data), intent(inout) :: d_circle
+!!        integer(kind = kint), intent(in)                                  &
+!!       &                     :: istack_rj_cmp(0:d_circle%num_phys)
+!!        type(circle_transform_spetr), intent(inout) :: circ_spec
+!!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!@endverbatim
       module circle_bwd_transfer_rj
 !
@@ -50,7 +52,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_circle_bwd_transfer_rj                               &
-     &         (iflag_FFT, colat, sph_rj, ntot_comp, d_rj, circle,      &
+     &         (iflag_FFT, colat, sph_rj, ntot_comp, rj_fld, circle,      &
      &          circ_spec, P_circ, dPdt_circ, d_circle, istack_rj_cmp,  &
      &          WK_circle_fft)
 !
@@ -60,7 +62,7 @@
       real(kind = kreal), intent(in) :: colat
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in) :: ntot_comp
-      real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj,ntot_comp)
+      type(phys_data), intent(in) :: rj_fld
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       type(fields_on_circle), intent(inout) :: circle
@@ -78,20 +80,20 @@
         icomp_c =  1 + d_circle%istack_component(ifld-1)
         if(d_circle%num_component(ifld) .eq. n_sym_tensor) then
 !          call circle_bwd_leg_trans_sym_tensor(colat, sph_rj,          &
-!     &       circle, circ_spec, P_circ, dPdt_circ, d_rj(1,icomp_rj),   &
+!     &       circle, circ_spec, P_circ, dPdt_circ, rj_fld%d_fld(1,icomp_rj),   &
 !     &        circ_spec%vcirc_lc(-circ_spec%ltr_circle,icomp_c))
           do nd = 0, 5
             call circle_bwd_leg_trans_scalar                            &
-     &         (sph_rj, circle, circ_spec, P_circ, d_rj(1,icomp_rj),    &
+     &         (sph_rj, circle, circ_spec, P_circ, rj_fld%d_fld(1,icomp_rj),    &
      &          circ_spec%vcirc_lc(-circ_spec%ltr_circle,icomp_c+nd))
           end do
         else if(d_circle%num_component(ifld) .eq. n_vector) then
           call circle_bwd_leg_trans_vector(colat, sph_rj,               &
-     &        circle, circ_spec, P_circ, dPdt_circ, d_rj(1,icomp_rj),   &
+     &        circle, circ_spec, P_circ, dPdt_circ, rj_fld%d_fld(1,icomp_rj),   &
      &        circ_spec%vcirc_lc(-circ_spec%ltr_circle,icomp_c))
         else
           call circle_bwd_leg_trans_scalar                              &
-     &       (sph_rj, circle, circ_spec, P_circ, d_rj(1,icomp_rj),      &
+     &       (sph_rj, circle, circ_spec, P_circ, rj_fld%d_fld(1,icomp_rj),      &
      &        circ_spec%vcirc_lc(-circ_spec%ltr_circle,icomp_c))
         end if
       end do
