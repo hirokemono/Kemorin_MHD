@@ -175,19 +175,19 @@
         do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
           write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
         end do
+        i = cdat%trns_dbench%b_trns%base%i_magne
+        write(60,*) 'j, magne_new', ipol%base%i_magne, i
+        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
+          write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
+        end do
+!
+        i = cdat%trns_dbench%b_trns%base%i_temp
+        write(60,*) 'j, temp_new', ipol%base%i_temp, i
+        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
+        write(60,*) j, cdat%leg_crc%d_circ_gl(j,i)
+        end do
       end if
 !
-      i = cdat%trns_dbench%b_trns%base%i_magne
-      write(60,*) 'j, magne_new', ipol%base%i_magne, i
-      do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
-        write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
-      end do
-!
-      i = cdat%trns_dbench%b_trns%base%i_temp
-      write(60,*) 'j, temp_new', ipol%base%i_temp, i
-      do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
-        write(60,*) j, cdat%leg_crc%d_circ_gl(j,i)
-      end do
 !
       deallocate(cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
 !
