@@ -63,6 +63,9 @@
         real(kind = kreal), allocatable :: dPdt_circ(:)
 !
         integer(kind = kint), allocatable :: ipol_circle_trns(:)
+!
+        real(kind = kreal), allocatable :: d_circ_gl(:,:)
+        real(kind = kreal), allocatable :: d_circ_lc(:,:)
       end type leg_circle
 !
       type circle_fld_maker

@@ -52,11 +52,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_circle_bwd_transfer_rj                               &
-     &         (iflag_FFT, colat, sph_rj, ntot_comp, rj_fld, circle,      &
+     &         (iflag_FFT, colat, sph_rj, ntot_comp, rj_fld, circle,    &
      &          circ_spec, P_circ, dPdt_circ, d_circle, istack_rj_cmp,  &
-     &          WK_circle_fft)
+     &          d_circ_lc, WK_circle_fft)
 !
+      use calypso_mpi_real
       use transfer_to_long_integers
+      use cal_circle_transform
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       real(kind = kreal), intent(in) :: colat
@@ -69,68 +71,204 @@
       type(phys_data), intent(inout) :: d_circle
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_rj_cmp(0:d_circle%num_phys)
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(in) :: circ_spec
+      real(kind = kreal), intent(inout)                                 &
+     &      :: d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
+     &                   d_circle%ntot_phys)
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
       integer(kind = kint_gl) :: num64
-      integer(kind = kint) :: ifld, icomp_c, icomp_rj, nd
+      integer(kind = kint) :: ifld, icomp_c, icomp_rj, num_comp
 !
-      do ifld = 1, d_circle%num_phys
-        icomp_rj = 1 + istack_rj_cmp(ifld-1)
-        icomp_c =  1 + d_circle%istack_component(ifld-1)
-        if(d_circle%num_component(ifld) .eq. n_sym_tensor) then
-!          call circle_bwd_leg_trans_sym_tensor(colat, sph_rj,          &
-!     &       circle, circ_spec, P_circ, dPdt_circ, rj_fld%d_fld(1,icomp_rj),   &
-!     &        circ_spec%vcirc_lc(-circ_spec%ltr_circle,icomp_c))
-          do nd = 0, 5
-            call circle_bwd_leg_trans_scalar                            &
-     &         (sph_rj, circle, circ_spec, P_circ, rj_fld%d_fld(1,icomp_rj),    &
-     &          circ_spec%vcirc_lc(-circ_spec%ltr_circle,icomp_c+nd))
-          end do
-        else if(d_circle%num_component(ifld) .eq. n_vector) then
-          call circle_bwd_leg_trans_vector(colat, sph_rj,               &
-     &        circle, circ_spec, P_circ, dPdt_circ, rj_fld%d_fld(1,icomp_rj),   &
-     &        circ_spec%vcirc_lc(-circ_spec%ltr_circle,icomp_c))
-        else
-          call circle_bwd_leg_trans_scalar                              &
-     &       (sph_rj, circle, circ_spec, P_circ, rj_fld%d_fld(1,icomp_rj),      &
-     &        circ_spec%vcirc_lc(-circ_spec%ltr_circle,icomp_c))
-        end if
-      end do
+!      num64 = cast_long(ntot_comp * (2*circ_spec%ltr_circle+1))
+!      call calypso_mpi_reduce_real                                     &
+!     &   (circ_spec%vcirc_lc(-circ_spec%ltr_circle,1),                 &
+!     &    circ_spec%vcirc_rtm(-circ_spec%ltr_circle,1),                &
+!     &    num64, MPI_SUM, 0)
 !
-      num64 = cast_long(ntot_comp * (2*circ_spec%ltr_circle+1))
-      call calypso_mpi_reduce_real                                      &
-     &   (circ_spec%vcirc_lc(-circ_spec%ltr_circle,1),                  &
-     &    circ_spec%vcirc_rtm(-circ_spec%ltr_circle,1),                 &
-     &    num64, MPI_SUM, 0)
+!      call cal_circle_spectrum_vector                                   &
+!     &   (d_circle%ntot_phys, circ_spec%ltr_circle, d_circle,           &
+!     &    circle%mphi_circle, circle%vrtm_mag, circle%vrtm_phase)
+!      call copy_circle_spectrum_4_fft                                   &
+!     &  (d_circle%ntot_phys, circ_spec%ltr_circle, circ_spec%vcirc_rtm, &
+!     &   circle%mphi_circle, circle%v_rtp_circle(1,1))
 !
-      call cal_circle_spectrum_vector                                   &
-     &   (d_circle%ntot_phys, circ_spec%ltr_circle, d_circle,           &
-     &    circle%mphi_circle, circle%vrtm_mag, circle%vrtm_phase)
-      call copy_circle_spectrum_4_fft                                   &
-     &  (d_circle%ntot_phys, circ_spec%ltr_circle, circ_spec%vcirc_rtm, &
-     &   circle%mphi_circle, circle%v_rtp_circle(1,1))
-!
-      call backward_FFT_select(iflag_FFT, np_smp,                       &
-     &    circ_spec%istack_circfft_smp, d_circle%ntot_phys,             &
-     &    circle%mphi_circle, circle%v_rtp_circle(1,1),                 &
-     &    WK_circle_fft)
+!      call backward_FFT_select(iflag_FFT, np_smp,                       &
+!     &    circ_spec%istack_circfft_smp, d_circle%ntot_phys,             &
+!     &    circle%mphi_circle, circle%v_rtp_circle(1,1),                 &
+!     &    WK_circle_fft)
 !
       end subroutine s_circle_bwd_transfer_rj
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine dbench_leg_bwd_trans_rj                                &
+     &         (sph_rj, rj_fld, ipol, b_trns,                           &
+     &          circle, circ_spec, d_circle, P_circ, dPdt_circ,         &
+     &          d_circ_gl, d_circ_lc)
+!
+      use calypso_mpi_real
+      use transfer_to_long_integers
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_data), intent(in) :: rj_fld
+      type(phys_address), intent(in) :: ipol
+      type(phys_address), intent(in) :: b_trns
+      real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
+      real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
+      type(fields_on_circle), intent(in) :: circle
+      type(phys_data), intent(in) :: d_circle
+      type(circle_transform_spetr), intent(inout) :: circ_spec
+!
+      real(kind = kreal), intent(inout)                                 &
+     &      :: d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
+     &                   d_circle%ntot_phys)
+      real(kind = kreal), intent(inout)                                 &
+     &      :: d_circ_gl(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
+     &                   d_circle%ntot_phys)
+!
+      integer(kind = kint_gl) :: num64
+!
+!
+      call each_circle_leg_bwd_trans_rj                                 &
+     &   (n_vector, ipol%base%i_velo, b_trns%base%i_velo,               &
+     &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
+     &    d_circle%ntot_phys, d_circ_lc)
+      call each_circle_leg_bwd_trans_rj                                 &
+     &   (n_vector, ipol%base%i_magne, b_trns%base%i_magne,             &
+     &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
+     &    d_circle%ntot_phys, d_circ_lc)
+      call each_circle_leg_bwd_trans_rj                                 &
+     &   (n_scalar, ipol%base%i_temp, b_trns%base%i_temp,               &
+     &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
+     &    d_circle%ntot_phys, d_circ_lc)
+      call each_circle_leg_bwd_trans_rj                                 &
+     &   (n_scalar, ipol%base%i_light, b_trns%base%i_light,             &
+     &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
+     &    d_circle%ntot_phys, d_circ_lc)
+!
+      num64                                                             &
+     &  = cast_long(d_circle%ntot_phys * (2*circ_spec%ltr_circle+1))
+      call calypso_mpi_reduce_real                                      &
+     &   (d_circ_lc(-circ_spec%ltr_circle,1),                           &
+     &    d_circ_gl(-circ_spec%ltr_circle,1), num64, MPI_SUM, 0)
+!
+      end subroutine dbench_leg_bwd_trans_rj
+!
+! ----------------------------------------------------------------------
+!
+      subroutine circle_leg_bwd_trans_rj                                &
+     &         (sph_rj, rj_fld, nod_fld, ipol_circle_trns,              &
+     &          circle, circ_spec, d_circle, P_circ, dPdt_circ,         &
+     &          d_circ_gl, d_circ_lc)
+!
+      use calypso_mpi_real
+      use transfer_to_long_integers
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_data), intent(in) :: rj_fld
+      type(phys_data), intent(in) :: nod_fld
+      type(circle_transform_spetr), intent(in) :: circ_spec
+      integer(kind = kint), intent(in)                                  &
+     &                      :: ipol_circle_trns(nod_fld%num_phys_viz)
+      real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
+      real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
+      type(fields_on_circle), intent(in) :: circle
+      type(phys_data), intent(in) :: d_circle
+!
+      real(kind = kreal), intent(inout)                                 &
+     &      :: d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
+     &                   d_circle%ntot_phys)
+      real(kind = kreal), intent(inout)                                 &
+     &      :: d_circ_gl(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
+     &                   d_circle%ntot_phys)
+!
+      integer(kind = kint) :: i_fld, num_comp, i_trns
+      integer(kind = kint_gl) :: num64
+!
+!
+      do i_fld = 1, nod_fld%num_phys_viz
+        num_comp = nod_fld%istack_component(i_fld)                      &
+     &            - nod_fld%istack_component(i_fld-1)
+        i_trns = nod_fld%istack_component(i_fld-1) + 1
+        call each_circle_leg_bwd_trans_rj                               &
+     &     (num_comp, ipol_circle_trns(i_fld), i_trns,                  &
+     &      sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,       &
+     &      d_circle%ntot_phys, d_circ_lc)
+      end do
+!
+      num64                                                             &
+     &  = cast_long(d_circle%ntot_phys * (2*circ_spec%ltr_circle+1))
+      call calypso_mpi_reduce_real                                      &
+     &   (d_circ_lc(-circ_spec%ltr_circle,1),                           &
+     &    d_circ_gl(-circ_spec%ltr_circle,1), num64, MPI_SUM, 0)
+!
+      end subroutine circle_leg_bwd_trans_rj
+!
+! ----------------------------------------------------------------------
+!
+      subroutine each_circle_leg_bwd_trans_rj                           &
+     &         (num_comp, ipol_rj, i_trns, sph_rj, rj_fld,              &
+     &          circle, circ_spec, P_circ, dPdt_circ,                   &
+     &          ntot_comp, d_circ_lc)
+!
+      use transfer_to_long_integers
+!
+      integer(kind = kint), intent(in) :: num_comp
+      integer(kind = kint), intent(in) :: ipol_rj, i_trns
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_data), intent(in) :: rj_fld
+      real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
+      real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
+      type(fields_on_circle), intent(in) :: circle
+      type(circle_transform_spetr), intent(in) :: circ_spec
+      integer(kind = kint), intent(in) :: ntot_comp
+!
+      real(kind = kreal), intent(inout)                                 &
+     &      :: d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
+     &                   ntot_comp)
+!
+      integer(kind = kint) :: nd
+!
+!
+      if((ipol_rj*i_trns) .le. 0) return
+      if(num_comp .eq. n_sym_tensor) then
+!          call circle_bwd_leg_trans_sym_tensor        &
+!     &       (sph_rj, circle, circ_spec%ltr_circle,                    &
+!     &        circ_spec%ar_circle, circ_spec%ar2_circle,               &
+!     &        P_circ, dPdt_circ, rj_fld%d_fld(1,ipol_rj),              &
+!     &        d_circ_lc(-circ_spec%ltr_circle,i_trns))
+        do nd = 0, 5
+          call circle_bwd_leg_trans_scalar(sph_rj, circle,              &
+     &        circ_spec%ltr_circle, P_circ, rj_fld%d_fld(1,ipol_rj),    &
+     &        d_circ_lc(-circ_spec%ltr_circle,i_trns+nd))
+        end do
+      else if(num_comp .eq. n_vector) then
+        call circle_bwd_leg_trans_vector                                &
+     &     (sph_rj, circle, circ_spec%ltr_circle,                       &
+     &      circ_spec%ar_circle, circ_spec%ar2_circle,                  &
+     &      P_circ, dPdt_circ, rj_fld%d_fld(1,ipol_rj),                 &
+     &      d_circ_lc(-circ_spec%ltr_circle,i_trns))
+      else
+        call circle_bwd_leg_trans_scalar(sph_rj, circle,                &
+     &      circ_spec%ltr_circle, P_circ, rj_fld%d_fld(1,ipol_rj),      &
+     &      d_circ_lc(-circ_spec%ltr_circle,i_trns))
+      end if
+!
+      end subroutine each_circle_leg_bwd_trans_rj
+!
+! ----------------------------------------------------------------------
+!
       subroutine circle_bwd_leg_trans_scalar                            &
-     &         (sph_rj, circle, circ_spec, P_circ, d_rj, scl_circ)
+     &         (sph_rj, circle, ltr, P_circ, d_rj, scl_circ)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fields_on_circle), intent(in) :: circle
-      type(circle_transform_spetr), intent(in) :: circ_spec
+      integer(kind = kint), intent(in) :: ltr
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &        :: scl_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle)
+      real(kind = kreal), intent(inout) :: scl_circ(-ltr:ltr)
 !
       real(kind = kreal) :: c_in, c_out
       real(kind = kreal) :: d_mid
@@ -152,30 +290,28 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine circle_bwd_leg_trans_vector(colat, sph_rj,             &
-     &          circle, circ_spec, P_circ, dPdt_circ, d_rj, vec_circ)
+      subroutine circle_bwd_leg_trans_vector(sph_rj, circle,            &
+     &          ltr, ar_circle, ar2_circle, P_circ, dPdt_circ,          &
+     &          d_rj, vec_circ)
 !
-      real(kind = kreal), intent(in) :: colat
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fields_on_circle), intent(in) :: circle
-      type(circle_transform_spetr), intent(in) :: circ_spec
+      integer(kind = kint), intent(in) :: ltr
+      real(kind = kreal), intent(in) :: ar_circle, ar2_circle
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj,3)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &        :: vec_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,3)
+      real(kind = kreal), intent(inout) :: vec_circ(-ltr:ltr,3)
 !
-      real(kind = kreal) :: ar1, ar2, c_in, c_out
+      real(kind = kreal) :: c_in, c_out
       real(kind = kreal) :: g3, asin_t, dydp_circ
       real(kind = kreal) :: d_mid(3)
       integer(kind = kint) :: i_in, i_out, j, l, m
 !
-      ar1 = circ_spec%ar_circle
-      ar2 = circ_spec%ar2_circle
       c_in =  circle%coef_gl_rcirc_in
       c_out = circle%coef_gl_rcirc_out
-      asin_t = one / sin(colat)
+      asin_t = one / sin(circle%colat_circle)
       do j = 1, sph_rj%nidx_rj(2)
         i_in =  1 + (circle%kr_gl_rcirc_in-1 ) * sph_rj%istep_rj(1)     &
      &            + (j-1) * sph_rj%istep_rj(2)
@@ -199,47 +335,39 @@
       end do
 !
 !$mop parallel workshare
-      vec_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,1)            &
-     &  = vec_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,1)        &
-     &   * circ_spec%ar2_circle
-      vec_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,2)            &
-     &  = vec_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,1)        &
-     &   * circ_spec%ar_circle
-      vec_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,3)            &
-     &  = vec_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,1)        &
-     &   * circ_spec%ar_circle
+      vec_circ(-ltr:ltr,1) = vec_circ(-ltr:ltr,1) * ar2_circle
+      vec_circ(-ltr:ltr,2) = vec_circ(-ltr:ltr,1) * ar_circle
+      vec_circ(-ltr:ltr,3) = vec_circ(-ltr:ltr,1) * ar_circle
 !$mop end parallel workshare
 !
       end subroutine circle_bwd_leg_trans_vector
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine circle_bwd_leg_trans_sym_tensor(colat, sph_rj,         &
-     &          circle, circ_spec, P_circ, dPdt_circ, d_rj, tsr_circ)
+      subroutine circle_bwd_leg_trans_sym_tensor(sph_rj, circle,        &
+     &          ltr, ar_circle, ar2_circle,                             &
+     &          P_circ, dPdt_circ, d_rj, tsr_circ)
 !
-      real(kind = kreal), intent(in) :: colat
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fields_on_circle), intent(in) :: circle
-      type(circle_transform_spetr), intent(in) :: circ_spec
+      integer(kind = kint), intent(in) :: ltr
+      real(kind = kreal), intent(in) :: ar_circle, ar2_circle
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj,6)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &        :: tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,6)
+      real(kind = kreal), intent(inout) :: tsr_circ(-ltr:ltr,6)
 !
-      real(kind = kreal) :: ar1, ar2, c_in, c_out
+      real(kind = kreal) :: c_in, c_out
       real(kind = kreal) :: g3, asin_t, cos_t, dydp_circ
       real(kind = kreal) :: atdydt_circ, d2ydp2_circ, d2ydtdp_circ
       real(kind = kreal) :: d_mid(6)
       integer(kind = kint) :: i_in, i_out, j, l, m
 !
-      ar1 = circ_spec%ar_circle
-      ar2 = circ_spec%ar2_circle
       c_in =  circle%coef_gl_rcirc_in
       c_out = circle%coef_gl_rcirc_out
-      asin_t = one / sin(colat)
-      cos_t =  cos(colat)
+      asin_t = one / sin(circle%colat_circle)
+      cos_t =  cos(circle%colat_circle)
       do j = 1, sph_rj%nidx_rj(2)
         i_in =  1 + (circle%kr_gl_rcirc_in-1 ) * sph_rj%istep_rj(1)     &
      &            + (j-1) * sph_rj%istep_rj(2)
@@ -283,24 +411,12 @@
       end do
 !
 !$mop parallel workshare
-      tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,1)            &
-     &  = tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,1)        &
-     &   * circ_spec%ar2_circle
-      tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,2)            &
-     &  = tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,1)        &
-     &   * circ_spec%ar_circle
-      tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,3)            &
-     &  = tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,1)        &
-     &   * circ_spec%ar_circle
-      tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,4)            &
-     &  = tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,4)        &
-     &   * circ_spec%ar2_circle
-      tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,5)            &
-     &  = tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,5)        &
-     &   * circ_spec%ar2_circle
-      tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,6)            &
-     &  = tsr_circ(-circ_spec%ltr_circle:circ_spec%ltr_circle,6)        &
-     &   * circ_spec%ar2_circle
+      tsr_circ(-ltr:ltr,1) = tsr_circ(-ltr:ltr,1) * ar2_circle
+      tsr_circ(-ltr:ltr,2) = tsr_circ(-ltr:ltr,1) * ar_circle
+      tsr_circ(-ltr:ltr,3) = tsr_circ(-ltr:ltr,1) * ar_circle
+      tsr_circ(-ltr:ltr,4) = tsr_circ(-ltr:ltr,4) * ar2_circle
+      tsr_circ(-ltr:ltr,5) = tsr_circ(-ltr:ltr,5) * ar2_circle
+      tsr_circ(-ltr:ltr,6) = tsr_circ(-ltr:ltr,6) * ar2_circle
 !$mop end parallel workshare
 !
       end subroutine circle_bwd_leg_trans_sym_tensor

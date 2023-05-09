@@ -108,6 +108,7 @@
       type(circle_transform_spetr), intent(inout) :: circ_spec
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
+      integer ::  j
 !
       call circle_lag_transfer_vector                                   &
      &   (circ_spec%ltr_circle, circ_spec%jmax_circle,                  &
@@ -115,6 +116,11 @@
      &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
      &    circ_spec%jmax_circle, circle%d_rj_circle(0,ifld),            &
      &    circ_spec%vcirc_rtm)
+!
+      write(*,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
+      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
+        write(*,*) j, circ_spec%vcirc_rtm(j,1:3)
+      end do
 !
       if(circle%iflag_circle_coord .eq. iflag_circle_cyl) then
         call overwrt_circle_sph_vect_2_cyl(circ_spec%theta_circle,      &

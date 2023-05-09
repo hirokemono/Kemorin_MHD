@@ -81,8 +81,8 @@
       if(bench%iflag_dynamobench .le. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
-      call mid_eq_transfer_dynamobench                                  &
-     &   (time_d%time, trans_p%iflag_FFT, sph_rj, rj_fld, cdat, bench)
+      call mid_eq_transfer_dynamobench(time_d%time, trans_p%iflag_FFT,  &
+     &    sph_rj, rj_fld, ipol, cdat, bench)
 !
       if(bench%ipwr_ocore .gt. 0) then
         irank_copy = pwr%v_spectr(bench%ipwr_ocore)%irank_m
@@ -132,28 +132,66 @@
 ! ----------------------------------------------------------------------
 !
       subroutine mid_eq_transfer_dynamobench                            &
-     &         (time, iflag_FFT, sph_rj, rj_fld, cdat, bench)
+     &         (time, iflag_FFT, sph_rj, rj_fld, ipol, cdat, bench)
 !
       use calypso_mpi
       use t_field_on_circle
       use t_spheric_rj_data
       use t_phys_data
+      use t_phys_address
       use t_circle_transform
-      use field_at_mid_equator
       use t_field_4_dynamobench
+!
+      use field_at_mid_equator
+      use circle_bwd_transfer_rj
 !
       real(kind=kreal), intent(in) :: time
       integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
+      type(phys_address), intent(in) :: ipol
       type(circle_fld_maker), intent(inout) :: cdat
       type(dynamobench_monitor), intent(inout) :: bench
 !
+      integer :: i, j
 !    spherical transfer
 !
       call sph_transfer_on_circle(iflag_FFT, sph_rj, rj_fld, cdat)
 !
+!
+      allocate(cdat%leg_crc%d_circ_gl(-cdat%circ_spec%ltr_circle:cdat%circ_spec%ltr_circle,    &
+     &                   cdat%d_circle%ntot_phys))
+      allocate(cdat%leg_crc%d_circ_lc(-cdat%circ_spec%ltr_circle:cdat%circ_spec%ltr_circle,    &
+     &                   cdat%d_circle%ntot_phys))
+!
+      call dbench_leg_bwd_trans_rj(sph_rj, rj_fld, ipol,                &
+     &    cdat%trns_dbench%b_trns, cdat%circle, cdat%circ_spec,         &
+     &    cdat%d_circle, cdat%leg_crc%P_circ, cdat%leg_crc%dPdt_circ,   &
+     &    cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
+!
+      deallocate(cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
+!
       if(my_rank .gt. 0) return
+!
+      i = cdat%trns_dbench%b_trns%base%i_velo
+      write(*,*) 'j, velo_new', ipol%base%i_velo, i
+      do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
+        write(*,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
+      end do
+!
+      i = cdat%trns_dbench%b_trns%base%i_magne
+      write(*,*) 'j, magne_new', ipol%base%i_magne, i
+      do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
+        write(*,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
+      end do
+!
+      i = cdat%trns_dbench%b_trns%base%i_temp
+      write(*,*) 'j, temp_new', ipol%base%i_temp, i
+      do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
+        write(*,*) j, cdat%leg_crc%d_circ_gl(j,i)
+      end do
+!
+!
 !
 !   Evaluate drift frequencty by velocity 
 !
