@@ -65,7 +65,8 @@
       real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       type(fields_on_circle), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
-      integer(kind = kint), intent(in) :: istack_rj_cmp(0:d_circle%num_phys)
+      integer(kind = kint), intent(in)                                  &
+     &                     :: istack_rj_cmp(0:d_circle%num_phys)
       type(circle_transform_spetr), intent(inout) :: circ_spec
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !

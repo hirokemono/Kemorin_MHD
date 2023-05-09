@@ -106,6 +106,7 @@
       mul_circle%num_circles = max(num_circle, 0)
       allocate(mul_circle%circle(mul_circle%num_circles))
       allocate(mul_circle%d_circles(mul_circle%num_circles))
+      allocate(mul_circle%leg_crc(mul_circle%num_circles))
 !
       end subroutine alloc_mul_fields_on_circle
 !
@@ -116,6 +117,7 @@
       type(mul_fields_on_circle), intent(inout) :: mul_circle
 !
       deallocate(mul_circle%circle, mul_circle%d_circles)
+      deallocate(mul_circle%leg_crc)
 !
       end subroutine dealloc_mul_fields_on_circle
 !
