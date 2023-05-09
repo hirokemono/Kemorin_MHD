@@ -97,19 +97,19 @@
      &   (rj_fld, ipol, cdat%iphys_circle, cdat%trns_dbench)
 !     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      if(my_rank .ne. 0) return
-      write(*,*) 'Velocity',     ipol%base%i_velo, &
-     &              cdat%iphys_circle%base%i_velo,   &
-     &        cdat%trns_dbench%b_trns%base%i_velo
-      write(*,*) 'Magnetic',     ipol%base%i_magne, &
-     &              cdat%iphys_circle%base%i_magne,   &
-     &        cdat%trns_dbench%b_trns%base%i_magne
-      write(*,*) 'Temperature',  ipol%base%i_temp, &
-     &              cdat%iphys_circle%base%i_temp,   &
-     &        cdat%trns_dbench%b_trns%base%i_temp
-      write(*,*) 'Composition',  ipol%base%i_light, &
-     &              cdat%iphys_circle%base%i_light,   &
-     &        cdat%trns_dbench%b_trns%base%i_light
+!      if(my_rank .ne. 0) return
+!      write(*,*) 'Velocity',     ipol%base%i_velo,                     &
+!     &              cdat%iphys_circle%base%i_velo,                     &
+!     &        cdat%trns_dbench%b_trns%base%i_velo
+!      write(*,*) 'Magnetic',     ipol%base%i_magne,                    &
+!     &              cdat%iphys_circle%base%i_magne,                    &
+!     &        cdat%trns_dbench%b_trns%base%i_magne
+!      write(*,*) 'Temperature',  ipol%base%i_temp,                     &
+!     &              cdat%iphys_circle%base%i_temp,                     &
+!     &        cdat%trns_dbench%b_trns%base%i_temp
+!      write(*,*) 'Composition',  ipol%base%i_light,                    &
+!     &              cdat%iphys_circle%base%i_light,                    &
+!     &        cdat%trns_dbench%b_trns%base%i_light
 !
       end subroutine init_mid_equator_point_global
 !
