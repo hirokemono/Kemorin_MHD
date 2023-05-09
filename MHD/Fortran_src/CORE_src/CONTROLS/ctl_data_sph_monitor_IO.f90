@@ -58,9 +58,9 @@
 !!      ...
 !!    end   pickup_spectr_ctl
 !!
-!!    begin mid_equator_monitor_ctl
+!!    array mid_equator_monitor_ctl
 !!      ...
-!!    end   mid_equator_monitor_ctl
+!!    array mid_equator_monitor_ctl
 !!
 !!    begin sph_dipolarity_ctl
 !!      ...
