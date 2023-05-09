@@ -71,8 +71,7 @@
 !
       cdat%circle%s_circle = r_MID
       cdat%circle%z_circle = zero
-      call init_circle_point_global(my_rank, trans_p%iflag_FFT,         &
-     &                              sph, cdat)
+      call init_circle_point_global(sph, trans_p, cdat)
 !
 !
       i_fld = 1

@@ -21,13 +21,20 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(circle_fld_maker), intent(inout) :: cdat
-!!      subroutine init_circle_point_global(my_rank, iflag_FFT,         &
-!!     &                                    sph, cdat)
+!!      subroutine init_circle_point_global(sph, trans_p, cdat)
 !!      subroutine dealloc_circle_point_global(my_rank, cdat)
 !!        integer, intent(in) :: my_rank
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(sph_grids), intent(in) ::  sph
 !!        type(circle_fld_maker), intent(inout) :: cdat
+!!
+!!      subroutine init_legendre_on_circle(colat_circle, sph, comms_sph,&
+!!     &          trans_p, leg_crc, SR_sig, SR_r)
+!!        type(sph_grids), intent(in) ::  sph
+!!        real(kind = kreal), intent(in) :: colat_circle
+!!        type(leg_circle), intent(inout) :: leg_crc
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
       module t_field_on_circle
@@ -47,6 +54,15 @@
       implicit none
 !
 !
+      type leg_circle
+!>        Colatitude of the circle
+        real(kind = kreal) :: colat
+!>        Legendre polynomial of the circle
+        real(kind = kreal), allocatable :: P_circ(:)
+!>        difference of the Legendre polynomial of the circle
+        real(kind = kreal), allocatable :: dPdt_circ(:)
+      end type leg_circle
+!
       type circle_fld_maker
         type(circle_transform_spetr) :: circ_spec
 !>        Structure to make fields on circle
@@ -60,12 +76,18 @@
         type(phys_address) :: iphys_circle
 !>        Address list for transform
         type(address_4_sph_trans) :: trns_dbench
+!
+!>        Legendre polynomials at specific latitude
+        type(leg_circle) :: leg_crc
       end type circle_fld_maker
 !
       type mul_fields_on_circle
         integer(kind = kint) :: num_circles = 0
         type(fields_on_circle), allocatable :: circle(:)
+!>         Structure of field data on circle
         type(phys_data), allocatable :: d_circles(:)
+!>        Legendre polynomials at specific latitude
+        type(leg_circle), allocatable :: leg_crc(:)
       end type mul_fields_on_circle
 !
       private :: collect_spectr_for_circle, set_circle_point_global
@@ -180,15 +202,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine init_circle_point_global(my_rank, iflag_FFT,           &
-     &                                    sph, cdat)
+      subroutine init_circle_point_global(sph, trans_p, cdat)
 !
+      use calypso_mpi
       use t_spheric_parameter
+      use t_work_4_sph_trans
       use circle_transform_single
 !
-      integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_grids), intent(in) ::  sph
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(circle_fld_maker), intent(inout) :: cdat
 !
@@ -198,13 +220,69 @@
      &    cdat%circle, cdat%d_circle)
       call alloc_circle_transform(sph%sph_params%l_truncation,          &
      &                            cdat%circ_spec)
-      call initialize_circle_transform(iflag_FFT,                       &
+      call initialize_circle_transform(trans_p%iflag_FFT,               &
      &    cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
       call set_circle_point_global                                      &
      &   (sph%sph_rj%nidx_rj(1), sph%sph_rj%radius_1d_rj_r,             &
      &    cdat%circ_spec, cdat%circle)
 !
       end subroutine init_circle_point_global
+!
+! ----------------------------------------------------------------------
+!
+      subroutine init_legendre_on_circle(colat_circle, sph, comms_sph,  &
+     &          trans_p, leg_crc, SR_sig, SR_r)
+!
+      use calypso_mpi
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
+      use t_work_4_sph_trans
+      use t_solver_SR
+      use circle_transform_single
+      use const_equator_legendres_rj
+!
+      type(sph_grids), intent(in) ::  sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+      real(kind = kreal), intent(in) :: colat_circle
+!
+      type(leg_circle), intent(inout) :: leg_crc
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+      integer(kind = kint) :: ip, j
+!
+      allocate(leg_crc%P_circ(sph%sph_rj%nidx_rj(2)))
+      allocate(leg_crc%dPdt_circ(sph%sph_rj%nidx_rj(2)))
+!$omp parallel workshare
+      leg_crc%P_circ(1:sph%sph_rj%nidx_rj(2)) =    0.0d0
+      leg_crc%dPdt_circ(1:sph%sph_rj%nidx_rj(2)) = 0.0d0
+!$omp end parallel workshare
+!
+!
+      leg_crc%colat = colat_circle
+      call s_const_equator_legendres_rj(leg_crc%colat,                  &
+     &    sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,         &
+     &    comms_sph, trans_p, leg_crc%P_circ, leg_crc%dPdt_circ,        &
+     &    SR_sig, SR_r)
+!
+      do ip = 1, nprocs
+        call calypso_mpi_barrier
+        if(ip-1 .ne. my_rank) cycle
+
+        open(80,file='eq_leg.dat', position='APPEND')
+        if(ip.eq. 1) then
+           write(80,*)                                                 &
+     &      'my_rank, j_local, j, l, m, Pvec_1, Pvec_2, Pvec_3, Pvec_4'
+        end if
+        do j = 1, sph%sph_rj%nidx_rj(2)
+          write(80,*) my_rank, j, sph%sph_rj%idx_gl_1d_rj_j(j,1:3),    &
+     &              leg_crc%P_circ(j), leg_crc%dPdt_circ(j)
+        end do
+       close(80)
+      end do
+!
+      end subroutine init_legendre_on_circle
 !
 ! ----------------------------------------------------------------------
 !

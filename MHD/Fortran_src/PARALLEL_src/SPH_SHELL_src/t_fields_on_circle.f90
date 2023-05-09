@@ -64,6 +64,10 @@
         real(kind = kreal) :: s_circle
 !>        vartical position for a circle to pick
         real(kind = kreal) :: z_circle
+!>        radius for a circle to pick
+        real(kind = kreal) :: r_circle
+!>        colatitude for a circle to pick
+        real(kind = kreal) :: colat_circle
 !
 !>        Inner closest point of circle point of fluid shell
         integer(kind = kint) :: kr_gl_rcirc_in
@@ -133,6 +137,9 @@
         circle%z_circle = meq_ctl%pick_z_ctl%realvalue
       end if
 !
+      circle%r_circle = sqrt(circle%s_circle + circle%z_circle**2)
+      circle%colat_circle = acos(circle%z_circle / circle%r_circle)
+!
       end subroutine set_control_circle_def
 !
 ! -----------------------------------------------------------------------
@@ -155,6 +162,8 @@
 !
       circle%s_circle = 7.0d0/13.0d0 + 0.5d0
       circle%z_circle = 0.0d0
+      circle%r_circle = circle%s_circle
+      circle%colat_circle = acos(0.0d0)
 !
       end subroutine set_ctl_circle_for_dbench
 !

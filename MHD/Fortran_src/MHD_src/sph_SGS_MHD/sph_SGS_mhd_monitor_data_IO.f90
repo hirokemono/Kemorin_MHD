@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine init_rms_sph_SGS_mhd_control(MHD_prop, sph_MHD_bc,   &
-!!     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig)
+!!     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor,           &
+!!     &          SR_sig, SR_r)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -16,6 +17,7 @@
 !!        type(MHD_radial_matrices), intent(inout) :: MHD_mats
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine output_rms_sph_SGS_mhd_control                       &
 !!     &         (time_d, SPH_SGS, SPH_MHD, sph_MHD_bc, r_2nd, leg,     &
 !!     &          r_2nd, trans_p, MHD_mats, monitor, SR_sig)
@@ -62,7 +64,8 @@
 !  --------------------------------------------------------------------
 !
       subroutine init_rms_sph_SGS_mhd_control(MHD_prop, sph_MHD_bc,     &
-     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor, SR_sig)
+     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor,             &
+     &          SR_sig, SR_r)
 !
       use t_solver_SR
       use t_time_data
@@ -81,8 +84,10 @@
       type(MHD_radial_matrices), intent(inout) :: MHD_mats
       type(sph_mhd_monitor_data), intent(inout) :: monitor
       type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       character(len=kchara) :: mat_name
+      integer(kind = kint) :: i
 !
 !
      if(monitor%heat_Nusselt%iflag_Nusselt .eq. iflag_source_Nu) then
@@ -109,7 +114,18 @@
         call init_mid_equator_point_global                              &
      &     (trans_p, SPH_MHD%sph, SPH_MHD%fld, SPH_MHD%ipol,            &
      &      monitor%circ_mid_eq)
+        call init_legendre_on_circle                                    &
+     &     (monitor%circ_mid_eq%circle%colat_circle,                    &
+     &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
+     &      monitor%circ_mid_eq%leg_crc, SR_sig, SR_r)
       end if
+!
+      do i = 1, monitor%mul_circle%num_circles
+        call init_legendre_on_circle                                    &
+     &     (monitor%mul_circle%circle(i)%colat_circle,                  &
+     &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
+     &      monitor%mul_circle%leg_crc(i), SR_sig, SR_r)
+      end do
 !
       end subroutine init_rms_sph_SGS_mhd_control
 !
