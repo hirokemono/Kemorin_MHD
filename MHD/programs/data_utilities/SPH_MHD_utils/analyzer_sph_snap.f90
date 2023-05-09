@@ -91,7 +91,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
       call SPH_init_SGS_snap                                            &
-     &   (MHD_files1, FEM_d1%iphys, SPH_model1, MHD_step1, SPH_SGS1,    &
+     &   (MHD_files1, FEM_d1, SPH_model1, MHD_step1, SPH_SGS1,          &
      &    SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
 !
 !  -------------------------------------------

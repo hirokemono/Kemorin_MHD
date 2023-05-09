@@ -1,11 +1,11 @@
 !
 !     module SPH_analyzer_licv
 !
-!!      subroutine SPH_initialize_linear_conv(MHD_files, iphys,         &
+!!      subroutine SPH_initialize_linear_conv(MHD_files, FEM_dat,       &
 !!     &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD,             &
 !!     &          SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(phys_address), intent(in) :: iphys
+!!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -38,6 +38,7 @@
       use t_MHD_file_parameter
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
+      use t_FEM_mesh_field_data
       use t_control_parameter
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
@@ -52,7 +53,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_linear_conv(MHD_files, iphys,           &
+      subroutine SPH_initialize_linear_conv(MHD_files, FEM_dat,         &
      &          SPH_model, MHD_step, sph_fst_IO, SPH_MHD,               &
      &          SPH_WK, SR_sig, SR_r)
 !
@@ -81,7 +82,7 @@
       use m_work_time
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(phys_address), intent(in) :: iphys
+      type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -105,8 +106,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(SPH_model, iphys, SPH_WK%trans_p,     &
-     &    SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
+      call init_sph_transform_MHD(SPH_model, FEM_dat%iphys,             &
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD, SR_sig, SR_r)
 !
 ! ---------------------------------
 !
@@ -167,8 +168,9 @@
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_debug .gt. 0) write(*,*) 'init_rms_sph_mhd_control'
-      call init_rms_sph_mhd_control(SPH_model%MHD_prop,                 &
-     &   SPH_model%sph_MHD_bc, SPH_WK%r_2nd, SPH_WK%trans_p,            &
+      call init_rms_sph_mhd_control                                     &
+     &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
+     &    SPH_WK%r_2nd, SPH_WK%trans_p, FEM_dat%field,                  &
      &    SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor, SR_sig, SR_r)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !

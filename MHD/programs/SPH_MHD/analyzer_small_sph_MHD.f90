@@ -79,7 +79,7 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
-      call SPH_initialize_MHD(MHD_files1, SPH_model1, FEM_d1%iphys,     &
+      call SPH_initialize_MHD(MHD_files1, SPH_model1, FEM_d1,           &
      &    MHD_step1, MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1,                 &
      &    m_SR1%SR_sig, m_SR1%SR_r)
 !

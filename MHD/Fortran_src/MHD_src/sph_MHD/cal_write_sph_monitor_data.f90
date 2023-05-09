@@ -8,11 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine init_rms_sph_mhd_control(MHD_prop, sph_MHD_bc,       &
-!!     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor,           &
+!!     &          r_2nd, trans_p, nod_fld, SPH_MHD, MHD_mats, monitor,  &
 !!     &          SR_sig, SR_r)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!        type(phys_data), intent(in) :: nod_fld
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(MHD_radial_matrices), intent(inout) :: MHD_mats
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
@@ -100,7 +102,7 @@
 !  --------------------------------------------------------------------
 !
       subroutine init_rms_sph_mhd_control(MHD_prop, sph_MHD_bc,         &
-     &          r_2nd, trans_p, SPH_MHD, MHD_mats, monitor,             &
+     &          r_2nd, trans_p, nod_fld, SPH_MHD, MHD_mats, monitor,    &
      &          SR_sig, SR_r)
 !
       use t_solver_SR
@@ -111,6 +113,7 @@
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(phys_data), intent(in) :: nod_fld
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(MHD_radial_matrices), intent(inout) :: MHD_mats
@@ -148,7 +151,7 @@
      &     (monitor%circ_mid_eq%circle%colat_circle,                    &
      &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
      &      monitor%circ_mid_eq%leg_crc, SR_sig, SR_r)
-        call init_address_mid_eq_trans(SPH_MHD%fld, SPH_MHD%ipol,       &
+        call init_address_dbench_trans(SPH_MHD%fld, SPH_MHD%ipol,       &
      &                                 monitor%circ_mid_eq)
       end if
 !
@@ -157,6 +160,8 @@
      &     (monitor%mul_circle%circle(i)%colat_circle,                  &
      &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
      &      monitor%mul_circle%leg_crc(i), SR_sig, SR_r)
+        call set_circle_transfer_address(nod_fld, SPH_MHD%fld,          &
+     &                                   monitor%mul_circle%leg_crc(i))
       end do
 !
       end subroutine init_rms_sph_mhd_control

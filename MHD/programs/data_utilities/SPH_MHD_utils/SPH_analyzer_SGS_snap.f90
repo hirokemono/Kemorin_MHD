@@ -7,10 +7,10 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_SGS_snap(MHD_files, iphys, SPH_model,       &
+!!      subroutine SPH_init_SGS_snap(MHD_files, FEM_dat, SPH_model,     &
 !!     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(phys_address), intent(in) :: iphys
+!!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
@@ -43,6 +43,7 @@
       use t_MHD_file_parameter
       use t_SPH_SGS_structure
       use t_SPH_mesh_field_data
+      use t_FEM_mesh_field_data
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
       use t_solver_SR
@@ -55,7 +56,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_SGS_snap(MHD_files, iphys, SPH_model,         &
+      subroutine SPH_init_SGS_snap(MHD_files, FEM_dat, SPH_model,       &
      &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !
       use m_constants
@@ -81,7 +82,7 @@
       use sph_SGS_mhd_monitor_data_IO
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(phys_address), intent(in) :: iphys
+      type(FEM_mesh_field_data), intent(in) :: FEM_dat
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -108,8 +109,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
       call init_sph_transform_SGS_MHD(SPH_model, SPH_SGS%SGS_par,       &
-     &    SPH_SGS%ipol_LES, SPH_SGS%iphys_LES, iphys, SPH_WK%trans_p,   &
-     &    SPH_WK%trns_WK, SPH_SGS%trns_WK_LES, SPH_MHD, SR_sig, SR_r)
+     &    SPH_SGS%ipol_LES, SPH_SGS%iphys_LES, FEM_dat%iphys,           &
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS%trns_WK_LES,          &
+     &    SPH_MHD, SR_sig, SR_r)
 !
       call init_SGS_model_sph_mhd                                       &
      &   (SPH_SGS%SGS_par, SPH_MHD%sph, SPH_MHD%groups,                 &
@@ -143,7 +145,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_rms_sph_SGS_mhd_control'
       call init_rms_sph_SGS_mhd_control(SPH_model%MHD_prop,             &
      &    SPH_model%sph_MHD_bc, SPH_WK%r_2nd, SPH_WK%trans_p,           &
-     &    SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor, SR_sig, SR_r)
+     &    FEM_dat%field, SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor,      &
+     &    SR_sig, SR_r)
 !
       end subroutine SPH_init_SGS_snap
 !

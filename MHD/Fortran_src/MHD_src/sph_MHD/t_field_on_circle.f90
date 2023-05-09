@@ -61,6 +61,8 @@
         real(kind = kreal), allocatable :: P_circ(:)
 !>        difference of the Legendre polynomial of the circle
         real(kind = kreal), allocatable :: dPdt_circ(:)
+!
+        integer(kind = kint), allocatable :: ipol_circle_trns(:)
       end type leg_circle
 !
       type circle_fld_maker
@@ -290,7 +292,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_address_mid_eq_trans(rj_fld, ipol, cdat)
+      subroutine init_address_dbench_trans(rj_fld, ipol, cdat)
 !
       use t_phys_data
       use t_phys_address
@@ -325,7 +327,42 @@
 !     &              cdat%iphys_circle%base%i_light,                    &
 !     &        cdat%trns_dbench%b_trns%base%i_light
 !
-      end subroutine init_address_mid_eq_trans
+      end subroutine init_address_dbench_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_circle_transfer_address(nod_fld, rj_fld, leg_crc)
+!
+      type(phys_data), intent(in) :: nod_fld, rj_fld
+      type(leg_circle), intent(inout) :: leg_crc
+!
+      logical, allocatable :: flag_use(:)
+      integer(kind = kint) :: i_fld, j_fld
+!
+      allocate(leg_crc%ipol_circle_trns(1:rj_fld%num_phys))
+!$omp parallel workshare
+      leg_crc%ipol_circle_trns(1:rj_fld%num_phys) = 0
+!$omp end parallel workshare
+!
+      allocate(flag_use(1:rj_fld%num_phys))
+!$omp parallel workshare
+      flag_use(1:rj_fld%num_phys) = .FALSE.
+!$omp end parallel workshare
+      do i_fld = 1, nod_fld%num_phys_viz
+        do j_fld = 1, rj_fld%num_phys
+          if(flag_use(j_fld)) cycle
+          if(rj_fld%phys_name(j_fld)                                    &
+     &         .eq. nod_fld%phys_name(i_fld)) then
+            leg_crc%ipol_circle_trns(i_fld)                             &
+     &                      = rj_fld%istack_component(j_fld-1) + 1 
+            flag_use(j_fld) = .TRUE.
+            exit
+          end if
+        end do
+      end do
+      deallocate(flag_use)
+!
+      end subroutine set_circle_transfer_address
 !
 ! ----------------------------------------------------------------------
 !
