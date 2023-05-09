@@ -222,6 +222,8 @@ self_buoyancy_on_sphere.o: $(MHD_SPH_DIR)/self_buoyancy_on_sphere.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 set_address_all_sph_trans.o: $(MHD_SPH_DIR)/set_address_all_sph_trans.f90 m_precision.o m_phys_constants.o t_phys_data.o t_sph_trans_arrays_MHD.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
+set_address_circle_trans.o: $(MHD_SPH_DIR)/set_address_circle_trans.f90 m_precision.o m_machine_parameter.o t_phys_data.o t_phys_address.o t_sph_trans_arrays_MHD.o t_mesh_data.o t_spheric_parameter.o address_sph_trans_snap.o add_base_field_4_sph_trns.o add_field_to_sph_trans_list.o
+	$(F90) -c $(F90OPTFLAGS) $<
 set_address_sph_trans_MHD.o: $(MHD_SPH_DIR)/set_address_sph_trans_MHD.f90 m_precision.o t_sph_trans_comm_tbl.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_sph_trans_arrays_MHD.o t_control_parameter.o t_physical_property.o address_sph_trans_MHD.o copy_spectr_4_sph_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_address_sph_trans_snap.o: $(MHD_SPH_DIR)/set_address_sph_trans_snap.f90 m_precision.o m_machine_parameter.o t_phys_data.o t_phys_address.o t_sph_trans_arrays_MHD.o t_mesh_data.o t_spheric_parameter.o address_sph_trans_snap.o copy_fields_from_sph_trans.o

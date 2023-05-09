@@ -56,6 +56,8 @@
 !
 !>        spectr data for Fourier transform at a circle
         real(kind = kreal), allocatable :: vcirc_rtm(:,:)
+!>        local spectr data for Fourier transform at a circle
+        real(kind = kreal), allocatable :: vcirc_lc(:,:)
       end type circle_transform_spetr
 !
 ! ----------------------------------------------------------------------

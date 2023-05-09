@@ -93,6 +93,10 @@
         integer(kind = kint) :: num_out
 !>        Array for data output
         real(kind = kreal), allocatable :: data_out(:)
+!
+        integer(kind = kint) :: num_detail
+!>        Array for data output
+        real(kind = kreal), allocatable :: detail_out(:)
       end type dynamobench_monitor
 !
 ! ----------------------------------------------------------------------
