@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine set_addresses_circle_trans                           &
-!!     &         (d_rj, ipol, iphys, trns_dbench)
+!!     &         (d_rj, ipol, iphys, trns_dbench,                       &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_data), intent(in) :: d_rj
 !!        type(phys_address), intent(in) :: ipol, iphys
@@ -42,17 +42,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_circle_trans                             &
-     &         (d_rj, ipol, ibench, trns_dbench)
-!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+     &         (d_rj, ipol, ibench, trns_dbench,                        &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use address_sph_trans_snap
 !
       type(phys_data), intent(in) :: d_rj
       type(phys_address), intent(in) :: ipol, ibench
       type(address_4_sph_trans), intent(inout) :: trns_dbench
-!      integer(kind = kint), intent(inout) :: ncomp_sph_trans
-!      integer(kind = kint), intent(inout) :: nvector_sph_trans
-!      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
 !
       if(iflag_debug .gt. 0) then
@@ -67,14 +67,14 @@
       trns_dbench%forward%num_scalar = 0
       trns_dbench%forward%num_tensor = 0
 !
-!      call count_num_fields_each_trans(trns_dbench%backward,           &
-!     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!      call count_num_fields_each_trans(trns_dbench%forward,            &
-!     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_dbench%backward,            &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_dbench%forward,             &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
 !
       if(iflag_debug .gt. 0) then
-!        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
         write(*,*) 'nvector_rj_2_rtp ', trns_dbench%backward%num_vector
         write(*,*) 'nscalar_rj_2_rtp ', trns_dbench%backward%num_scalar
 !

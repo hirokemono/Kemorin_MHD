@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine init_mid_equator_point_global(trans_p, sph,          &
-!!     &                                         rj_fld, ipol, cdat)
+!!     &                                         ipol, cdat)
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(sph_grids), intent(in) :: sph
-!!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(in) :: ipol
 !!        type(circle_fld_maker), intent(inout) :: cdat
 !!
@@ -41,19 +40,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_mid_equator_point_global(trans_p, sph,            &
-     &                                         rj_fld, ipol, cdat)
+     &                                         ipol, cdat)
 !
       use calypso_mpi
       use t_work_4_sph_trans
       use t_spheric_parameter
-      use t_phys_data
       use t_phys_address
-!
-      use set_address_circle_trans
 !
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(sph_grids), intent(in) ::  sph
-      type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
 !
       type(circle_fld_maker), intent(inout) :: cdat
@@ -91,24 +86,6 @@
         cdat%iphys_circle%base%i_light = i_fld
         i_fld = i_fld + n_scalar
       end if
-!
-      call set_addresses_circle_trans                                   &
-     &   (rj_fld, ipol, cdat%iphys_circle, cdat%trns_dbench)
-!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!
-!      if(my_rank .ne. 0) return
-!      write(*,*) 'Velocity',     ipol%base%i_velo,                     &
-!     &              cdat%iphys_circle%base%i_velo,                     &
-!     &        cdat%trns_dbench%b_trns%base%i_velo
-!      write(*,*) 'Magnetic',     ipol%base%i_magne,                    &
-!     &              cdat%iphys_circle%base%i_magne,                    &
-!     &        cdat%trns_dbench%b_trns%base%i_magne
-!      write(*,*) 'Temperature',  ipol%base%i_temp,                     &
-!     &              cdat%iphys_circle%base%i_temp,                     &
-!     &        cdat%trns_dbench%b_trns%base%i_temp
-!      write(*,*) 'Composition',  ipol%base%i_light,                    &
-!     &              cdat%iphys_circle%base%i_light,                    &
-!     &        cdat%trns_dbench%b_trns%base%i_light
 !
       end subroutine init_mid_equator_point_global
 !

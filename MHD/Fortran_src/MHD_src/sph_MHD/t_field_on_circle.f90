@@ -79,6 +79,9 @@
 !
 !>        Legendre polynomials at specific latitude
         type(leg_circle) :: leg_crc
+        integer(kind = kint) :: ncomp_sph_trans_meq = 0
+        integer(kind = kint) :: nvec_sph_trans_meq = 0
+        integer(kind = kint) :: nscl_sph_trans_meq = 0
       end type circle_fld_maker
 !
       type mul_fields_on_circle
@@ -252,7 +255,7 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
-      integer(kind = kint) :: ip, j
+!      integer(kind = kint) :: ip, j
 !
       allocate(leg_crc%P_circ(sph%sph_rj%nidx_rj(2)))
       allocate(leg_crc%dPdt_circ(sph%sph_rj%nidx_rj(2)))
@@ -268,23 +271,61 @@
      &    comms_sph, trans_p, leg_crc%P_circ, leg_crc%dPdt_circ,        &
      &    SR_sig, SR_r)
 !
-      do ip = 1, nprocs
-        call calypso_mpi_barrier
-        if(ip-1 .ne. my_rank) cycle
-
-        open(80,file='eq_leg.dat', position='APPEND')
-        if(ip.eq. 1) then
-           write(80,*)                                                 &
-     &      'my_rank, j_local, j, l, m, Pvec_1, Pvec_2'
-        end if
-        do j = 1, sph%sph_rj%nidx_rj(2)
-          write(80,*) my_rank, j, sph%sph_rj%idx_gl_1d_rj_j(j,1:3),    &
-     &              leg_crc%P_circ(j), leg_crc%dPdt_circ(j)
-        end do
-       close(80)
-      end do
+!      do ip = 1, nprocs
+!        call calypso_mpi_barrier
+!        if(ip-1 .ne. my_rank) cycle
+!        open(80,file='eq_leg.dat', position='APPEND')
+!        if(ip.eq. 1) then
+!           write(80,*)                                                &
+!     &      'my_rank, j_local, j, l, m, Pvec_1, Pvec_2', leg_crc%colat
+!        end if
+!        do j = 1, sph%sph_rj%nidx_rj(2)
+!          write(80,*) my_rank, j, sph%sph_rj%idx_gl_1d_rj_j(j,1:3),   &
+!     &              leg_crc%P_circ(j), leg_crc%dPdt_circ(j)
+!        end do
+!       close(80)
+!      end do
 !
       end subroutine init_legendre_on_circle
+!
+! ----------------------------------------------------------------------
+!
+      subroutine init_address_mid_eq_trans(rj_fld, ipol, cdat)
+!
+      use t_phys_data
+      use t_phys_address
+!
+      use set_address_circle_trans
+!
+      type(phys_data), intent(in) :: rj_fld
+      type(phys_address), intent(in) :: ipol
+!
+      type(circle_fld_maker), intent(inout) :: cdat
+!
+!
+      cdat%ncomp_sph_trans_meq = 0
+      cdat%nvec_sph_trans_meq =  0
+      cdat%nscl_sph_trans_meq =  0
+      call set_addresses_circle_trans                                   &
+     &   (rj_fld, ipol, cdat%iphys_circle, cdat%trns_dbench,            &
+     &    cdat%ncomp_sph_trans_meq, cdat%nvec_sph_trans_meq,            &
+     &    cdat%nscl_sph_trans_meq)
+!
+!      if(my_rank .ne. 0) return
+!      write(*,*) 'Velocity',     ipol%base%i_velo,                     &
+!     &              cdat%iphys_circle%base%i_velo,                     &
+!     &        cdat%trns_dbench%b_trns%base%i_velo
+!      write(*,*) 'Magnetic',     ipol%base%i_magne,                    &
+!     &              cdat%iphys_circle%base%i_magne,                    &
+!     &        cdat%trns_dbench%b_trns%base%i_magne
+!      write(*,*) 'Temperature',  ipol%base%i_temp,                     &
+!     &              cdat%iphys_circle%base%i_temp,                     &
+!     &        cdat%trns_dbench%b_trns%base%i_temp
+!      write(*,*) 'Composition',  ipol%base%i_light,                    &
+!     &              cdat%iphys_circle%base%i_light,                    &
+!     &        cdat%trns_dbench%b_trns%base%i_light
+!
+      end subroutine init_address_mid_eq_trans
 !
 ! ----------------------------------------------------------------------
 !
