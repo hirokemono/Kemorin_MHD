@@ -107,7 +107,8 @@
 !
       if(monitor%bench%iflag_dynamobench .gt. 0) then
         call init_mid_equator_point_global                              &
-     &     (my_rank, trans_p, SPH_MHD%sph, monitor%circ_mid_eq)
+     &     (trans_p, SPH_MHD%sph, SPH_MHD%fld, SPH_MHD%ipol,            &
+     &      monitor%circ_mid_eq)
       end if
 !
       end subroutine init_rms_sph_SGS_mhd_control

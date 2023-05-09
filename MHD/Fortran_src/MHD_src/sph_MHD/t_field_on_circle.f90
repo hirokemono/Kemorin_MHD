@@ -29,6 +29,8 @@
       use m_machine_parameter
 !
       use t_phys_data
+      use t_phys_address
+      use t_sph_trans_arrays_MHD
       use t_circle_transform
       use t_fields_on_circle
       use t_FFT_selector
@@ -45,6 +47,10 @@
 !>        Working structure for Fourier transform at mid-depth equator
 !!@n      (Save attribute is necessary for Hitachi compiler for SR16000)
         type(working_FFTs) :: WK_circle_fft
+!>        Address list for circle data
+        type(phys_address) :: iphys_circle
+!>        Address list for transform
+        type(address_4_sph_trans) :: trns_dbench
       end type circle_fld_maker
 !
       private :: collect_spectr_for_circle, set_circle_point_global
