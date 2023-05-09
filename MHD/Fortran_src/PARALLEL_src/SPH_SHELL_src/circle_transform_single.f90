@@ -164,7 +164,7 @@
       type(circle_transform_spetr), intent(inout) :: circ_spec
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
-      integre :: j
+      integer :: j
 !
       call circle_lag_transfer_scalar                                   &
      &   (circ_spec%ltr_circle, circ_spec%jmax_circle,                  &

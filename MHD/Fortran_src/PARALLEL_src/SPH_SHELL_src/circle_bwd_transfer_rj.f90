@@ -274,6 +274,10 @@
       real(kind = kreal) :: d_mid
       integer(kind = kint) :: i_in, i_out, j, m
 !
+!$omp parallel workshare
+      scl_circ(-ltr:ltr) = 0.0d0
+!$omp end parallel workshare
+!
       c_in =  circle%coef_gl_rcirc_in
       c_out = circle%coef_gl_rcirc_out
       do j = 1, sph_rj%nidx_rj(2)
@@ -308,6 +312,10 @@
       real(kind = kreal) :: g3, asin_t, dydp_circ
       real(kind = kreal) :: d_mid(3)
       integer(kind = kint) :: i_in, i_out, j, l, m
+!
+!$omp parallel workshare
+      vec_circ(-ltr:ltr,1:3) = 0.0d0
+!$omp end parallel workshare
 !
       c_in =  circle%coef_gl_rcirc_in
       c_out = circle%coef_gl_rcirc_out
@@ -363,6 +371,10 @@
       real(kind = kreal) :: atdydt_circ, d2ydp2_circ, d2ydtdp_circ
       real(kind = kreal) :: d_mid(6)
       integer(kind = kint) :: i_in, i_out, j, l, m
+!
+!$omp parallel workshare
+      tsr_circ(-ltr:ltr,1:6) = 0.0d0
+!$omp end parallel workshare
 !
       c_in =  circle%coef_gl_rcirc_in
       c_out = circle%coef_gl_rcirc_out
