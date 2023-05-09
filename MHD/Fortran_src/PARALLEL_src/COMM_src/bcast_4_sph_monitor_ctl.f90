@@ -26,8 +26,8 @@
 !
       private :: bcast_pickup_spectr_ctl, bcast_gauss_spectr_ctl
       private :: bcast_each_vol_spectr_ctl, bcast_layerd_spectr_ctl
-      private :: bcast_mid_eq_monitor_ctl, bcast_sph_dipolarity_ctl
-      private :: bcast_ctl_data_dynamobench
+      private :: bcast_data_on_circles_ctl, bcast_mid_eq_monitor_ctl
+      private :: bcast_ctl_data_dynamobench, bcast_sph_dipolarity_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@
       call bcast_layerd_spectr_ctl(smonitor_ctl%lp_ctl)
 !
       call bcast_sph_dipolarity_ctl(smonitor_ctl%fdip_ctl)
-      call bcast_mid_eq_monitor_ctl(smonitor_ctl%meq_ctl)
+      call bcast_data_on_circles_ctl(smonitor_ctl%circ_ctls)
       call bcast_ctl_data_dynamobench(smonitor_ctl%dbench_ctl)
 !
 !
@@ -190,6 +190,26 @@
       end subroutine bcast_sph_dipolarity_ctl
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine bcast_data_on_circles_ctl(circ_ctls)
+!
+      use calypso_mpi_int
+      use t_ctl_data_circles
+!
+      type(data_on_circles_ctl), intent(inout) :: circ_ctls
+      integer(kind = kint) :: i
+!
+!
+      call calypso_mpi_bcast_one_int(circ_ctls%num_circ_ctl, 0)
+      if(my_rank .ne. 0) call alloc_data_on_circles_ctl(circ_ctls)
+!
+      do i = 1, circ_ctls%num_circ_ctl
+        call bcast_mid_eq_monitor_ctl(circ_ctls%meq_ctl(i))
+      end do
+!
+      end subroutine bcast_data_on_circles_ctl
+!
 ! -----------------------------------------------------------------------
 !
       subroutine bcast_mid_eq_monitor_ctl(meq_ctl)

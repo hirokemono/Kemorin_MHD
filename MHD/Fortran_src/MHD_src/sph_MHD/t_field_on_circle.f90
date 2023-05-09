@@ -7,6 +7,15 @@
 !>@brief  field data on specific circle at (s,z)
 !!
 !!@verbatim
+!!      subroutine alloc_mul_fields_on_circle(num_circle, mul_circle)
+!!      subroutine dealloc_mul_fields_on_circle(mul_circle)
+!!        integer(kind = kint), intent(in) :: num_circle
+!!        type(mul_fields_on_circle), intent(inout) :: mul_circle
+!!      subroutine set_control_circles_def(circ_ctls, nod_fld,          &
+!!     &                                   mul_circle)
+!!        type(data_on_circles_ctl), intent(in) :: circ_ctls
+!!        type(mul_fields_on_circle), intent(inout) :: mul_circle
+!!
 !!      subroutine sph_transfer_on_circle                               &
 !!     &         (iflag_FFT, sph_rj, rj_fld, cdat)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -53,12 +62,66 @@
         type(address_4_sph_trans) :: trns_dbench
       end type circle_fld_maker
 !
+      type mul_fields_on_circle
+        integer(kind = kint) :: num_circles = 0
+        type(fields_on_circle), allocatable :: circle(:)
+        type(phys_data), allocatable :: d_circles(:)
+      end type mul_fields_on_circle
+!
       private :: collect_spectr_for_circle, set_circle_point_global
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_mul_fields_on_circle(num_circle, mul_circle)
+!
+      integer(kind = kint), intent(in) :: num_circle
+      type(mul_fields_on_circle), intent(inout) :: mul_circle
+!
+      mul_circle%num_circles = max(num_circle, 0)
+      allocate(mul_circle%circle(mul_circle%num_circles))
+      allocate(mul_circle%d_circles(mul_circle%num_circles))
+!
+      end subroutine alloc_mul_fields_on_circle
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_mul_fields_on_circle(mul_circle)
+!
+      type(mul_fields_on_circle), intent(inout) :: mul_circle
+!
+      deallocate(mul_circle%circle, mul_circle%d_circles)
+!
+      end subroutine dealloc_mul_fields_on_circle
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_control_circles_def(circ_ctls, nod_fld,            &
+     &                                   mul_circle)
+!
+      use t_ctl_data_circles
+!
+      type(data_on_circles_ctl), intent(in) :: circ_ctls
+      type(phys_data), intent(in) :: nod_fld
+      type(mul_fields_on_circle), intent(inout) :: mul_circle
+!
+      integer(kind = kint) :: i
+!
+      call alloc_mul_fields_on_circle(circ_ctls%num_circ_ctl,           &
+     &                                mul_circle)
+!
+      do i = 1, mul_circle%num_circles
+        call set_control_circle_def(circ_ctls%meq_ctl(i),               &
+     &                              mul_circle%circle(i))
+        call dup_phys_name(nod_fld, mul_circle%d_circles(i))
+      end do
+!
+      end subroutine set_control_circles_def
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine sph_transfer_on_circle                                 &

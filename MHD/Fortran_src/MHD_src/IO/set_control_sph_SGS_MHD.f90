@@ -61,6 +61,7 @@
       use t_sph_grid_maker_in_sim
       use t_bc_data_list
       use t_flex_delta_t_data
+      use t_field_on_circle
 !
       implicit none
 !
@@ -116,6 +117,9 @@
 !   set_pickup modes
       call set_control_SPH_MHD_monitors                                 &
      &  (smonitor_ctl, model_ctl%fld_ctl, MHD_BC, rj_fld, monitor)
+      call set_control_circles_def(smonitor_ctl%circ_ctls, nod_fld,     &
+     &                             monitor%mul_circle)
+!
       call set_crustal_filtering_control                                &
      &   (zm_ctls%crust_filter_ctl, monitor)
 !

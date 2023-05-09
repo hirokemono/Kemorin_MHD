@@ -23,6 +23,9 @@
 !!        type(mid_equator_control), intent(in) :: meq_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
+!!      subroutine dup_mid_equator_control(org_meq_ctl, new_meq_ctl)
+!!        type(mid_equator_control), intent(in) :: org_meq_ctl
+!!        type(mid_equator_control), intent(inout) :: new_meq_ctl
 !! -----------------------------------------------------------------
 !!
 !!      control block for pickup spherical harmonics
@@ -94,6 +97,25 @@
       meq_ctl%i_mid_equator_ctl =   0
 !
       end subroutine reset_mid_equator_control
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_mid_equator_control(org_meq_ctl, new_meq_ctl)
+!
+      type(mid_equator_control), intent(in) :: org_meq_ctl
+      type(mid_equator_control), intent(inout) :: new_meq_ctl
+!
+      call copy_chara_ctl(org_meq_ctl%pick_circle_coord_ctl,            &
+     &                    new_meq_ctl%pick_circle_coord_ctl)
+      call copy_integer_ctl(org_meq_ctl%nphi_mid_eq_ctl,                &
+     &                      new_meq_ctl%nphi_mid_eq_ctl)
+      call copy_real_ctl(org_meq_ctl%pick_s_ctl,                        &
+     &                   new_meq_ctl%pick_s_ctl)
+      call copy_real_ctl(org_meq_ctl%pick_z_ctl,                        &
+     &                   new_meq_ctl%pick_z_ctl)
+      new_meq_ctl%i_mid_equator_ctl = org_meq_ctl%i_mid_equator_ctl
+!
+      end subroutine dup_mid_equator_control
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

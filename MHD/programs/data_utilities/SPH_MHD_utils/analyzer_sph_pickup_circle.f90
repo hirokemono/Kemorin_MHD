@@ -79,11 +79,6 @@
      &    SPH_model1, SPH_WK1, SPH_SGS1, SPH_MHD1)
       call dealloc_sph_SGS_MHD_viz_ctl(add_SSMHD_ctl1)
 !
-      call set_control_circle_def                                       &
-     &   (MHD_ctl1%smonitor_ctl%meq_ctl, cdat1%circle)
-      call set_SGS_field_ctl_by_viz                                     &
-     &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl, cdat1%d_circle, ierr)
-!
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl1, add_SSMHD_ctl1)
 !
 !   Load spherical harmonics data

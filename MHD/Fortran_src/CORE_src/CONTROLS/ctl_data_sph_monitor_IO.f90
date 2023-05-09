@@ -166,10 +166,10 @@
      &                              smonitor_ctl%lp_ctl, c_buf)
         call read_sph_dipolarity_ctl(id_control,                        &
      &      hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, c_buf)
-        call read_mid_eq_monitor_ctl(id_control, hd_mid_eq_monitor_ctl, &
-     &      smonitor_ctl%meq_ctl, c_buf)
-        call read_ctl_data_dynamobench(id_control, hd_dynamobench_ctl,  &
-     &      smonitor_ctl%dbench_ctl, c_buf)
+        call read_ctl_data_dynamobench(id_control,                      &
+     &      hd_dynamobench_ctl, smonitor_ctl%dbench_ctl, c_buf)
+        call read_data_on_circles_ctl(id_control,                       &
+     &      hd_mid_eq_monitor_ctl, smonitor_ctl%circ_ctls, c_buf)
 !
         call read_volume_spectr_ctl                                     &
      &     (id_control, hd_vol_spec_block, smonitor_ctl, c_buf)
@@ -320,10 +320,10 @@
      &                          hd_typ_scale_file_format,               &
      &                          smonitor_ctl%typ_scale_file_format_ctl)
 !
-      call write_mid_eq_monitor_ctl(id_control,                         &
-     &    hd_mid_eq_monitor_ctl, smonitor_ctl%meq_ctl, level)
       call write_ctl_data_dynamobench(id_control,                       &
      &    hd_dynamobench_ctl, smonitor_ctl%dbench_ctl, level)
+      call write_data_on_circles_ctl(id_control,                        &
+     &    hd_mid_eq_monitor_ctl, smonitor_ctl%circ_ctls, level)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

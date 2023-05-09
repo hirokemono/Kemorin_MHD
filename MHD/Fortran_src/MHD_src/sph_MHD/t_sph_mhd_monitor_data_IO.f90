@@ -85,6 +85,9 @@
         type(circle_fld_maker) :: circ_mid_eq
 !>        Data for dynamo benchmark
         type(dynamobench_monitor) :: bench
+!
+!>        Data on circles
+        type(mul_fields_on_circle) :: mul_circle
       end type sph_mhd_monitor_data
 !
 !  --------------------------------------------------------------------
