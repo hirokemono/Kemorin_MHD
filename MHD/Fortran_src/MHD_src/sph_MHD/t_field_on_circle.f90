@@ -33,9 +33,11 @@
       use m_machine_parameter
 !
       use t_phys_data
+      use t_phys_address
       use t_circle_transform
       use t_fields_on_circle
       use t_FFT_selector
+      use t_sph_trans_arrays_MHD
 !
       implicit none
 !
@@ -49,6 +51,11 @@
 !>        Working structure for Fourier transform at mid-depth equator
 !!@n      (Save attribute is necessary for Hitachi compiler for SR16000)
         type(working_FFTs) :: WK_circle_fft
+!
+!>        addresses of field for circle data
+        type(phys_address) :: iphys_circle
+!>        strucutre of spherical transform data addresses
+        type(address_4_sph_trans) :: trns_dbench
 !
 !>        Legendre polynomials at equator in sph_rj configuration
 !!              Pvec_rj%d_fld(:,1) :: P_l^m
@@ -149,7 +156,7 @@
      &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
      &    cdat%circle, cdat%d_circle)
       call alloc_circle_transform(sph%sph_params%l_truncation,          &
-     &                            cdat%circ_spec)
+     &    cdat%d_circle%ntot_phys, cdat%circ_spec)
 !
       allocate(cdat%P_circ(sph%sph_rj%nidx_rj(2)))
       allocate(cdat%dPdt_circ(sph%sph_rj%nidx_rj(2)))

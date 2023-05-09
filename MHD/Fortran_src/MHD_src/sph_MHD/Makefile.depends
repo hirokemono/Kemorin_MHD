@@ -162,7 +162,7 @@ div_self_buoyancies_sph.o: $(MHD_SPH_DIR)/div_self_buoyancies_sph.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 explicit_scalars_sph.o: $(MHD_SPH_DIR)/explicit_scalars_sph.f90 m_precision.o t_spheric_parameter.o t_spheric_rj_data.o t_boundary_data_sph_MHD.o t_physical_property.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_explicit_term_labels.o t_phys_data.o select_diff_adv_source.o cal_inner_core_rotation.o
 	$(F90) -c $(F90OPTFLAGS) $<
-field_at_mid_equator.o: $(MHD_SPH_DIR)/field_at_mid_equator.f90 m_precision.o m_constants.o m_machine_parameter.o t_field_on_circle.o t_circle_transform.o t_work_4_sph_trans.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_solver_SR.o t_fields_on_circle.o calypso_mpi.o t_phys_data.o
+field_at_mid_equator.o: $(MHD_SPH_DIR)/field_at_mid_equator.f90 m_precision.o m_constants.o m_machine_parameter.o t_field_on_circle.o t_circle_transform.o t_work_4_sph_trans.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_phys_data.o t_phys_address.o t_solver_SR.o set_address_circle_trans.o t_fields_on_circle.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fill_scalar_field.o: $(MHD_SPH_DIR)/fill_scalar_field.f90 m_precision.o m_constants.o t_boundary_params_sph_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -221,6 +221,8 @@ select_r_mat_scalar_bc_sph.o: $(MHD_SPH_DIR)/select_r_mat_scalar_bc_sph.f90 m_pr
 self_buoyancy_on_sphere.o: $(MHD_SPH_DIR)/self_buoyancy_on_sphere.f90 m_precision.o m_constants.o m_machine_parameter.o t_reference_scalar_param.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_address_all_sph_trans.o: $(MHD_SPH_DIR)/set_address_all_sph_trans.f90 m_precision.o m_phys_constants.o t_phys_data.o t_sph_trans_arrays_MHD.o add_field_to_sph_trans_list.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_address_circle_trans.o: $(MHD_SPH_DIR)/set_address_circle_trans.f90 m_precision.o m_machine_parameter.o t_phys_data.o t_phys_address.o t_sph_trans_arrays_MHD.o t_mesh_data.o t_spheric_parameter.o address_sph_trans_snap.o add_base_field_4_sph_trns.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_address_sph_trans_MHD.o: $(MHD_SPH_DIR)/set_address_sph_trans_MHD.f90 m_precision.o t_sph_trans_comm_tbl.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_sph_trans_arrays_MHD.o t_control_parameter.o t_physical_property.o address_sph_trans_MHD.o copy_spectr_4_sph_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -344,7 +346,7 @@ t_each_sph_boundary_IO_data.o: $(MHD_SPH_DIR)/t_each_sph_boundary_IO_data.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_field_4_dynamobench.o: $(MHD_SPH_DIR)/t_field_4_dynamobench.f90 m_precision.o m_constants.o calypso_mpi.o t_time_data.o t_phys_address.o t_base_field_labels.o t_boundary_data_sph_MHD.o t_control_array_character3.o t_phys_data.o m_base_field_labels.o m_phys_constants.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_field_on_circle.o: $(MHD_SPH_DIR)/t_field_on_circle.f90 m_precision.o m_constants.o m_machine_parameter.o t_phys_data.o t_circle_transform.o t_fields_on_circle.o t_FFT_selector.o calypso_mpi.o m_phys_constants.o t_spheric_rj_data.o circle_transform_single.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_solver_SR.o const_equator_legendres_rj.o calypso_mpi_real.o
+t_field_on_circle.o: $(MHD_SPH_DIR)/t_field_on_circle.f90 m_precision.o m_constants.o m_machine_parameter.o t_phys_data.o t_phys_address.o t_circle_transform.o t_fields_on_circle.o t_FFT_selector.o t_sph_trans_arrays_MHD.o calypso_mpi.o m_phys_constants.o t_spheric_rj_data.o circle_transform_single.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_solver_SR.o const_equator_legendres_rj.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_gaunt_coriolis_rlm.o: $(MHD_SPH_DIR)/t_gaunt_coriolis_rlm.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

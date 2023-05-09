@@ -56,6 +56,8 @@
 !
 !>        spectr data for Fourier transform at a circle
         real(kind = kreal), allocatable :: vcirc_rtm(:,:)
+!>        local spectr data for Fourier transform at a circle
+        real(kind = kreal), allocatable :: vcirc_lc(:,:)
       end type circle_transform_spetr
 !
 ! ----------------------------------------------------------------------
@@ -64,9 +66,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_circle_transform(ltr, circ_spec)
+      subroutine alloc_circle_transform(ltr, ntot_comp, circ_spec)
 !
-      integer(kind = kint), intent(in) :: ltr
+      integer(kind = kint), intent(in) :: ltr, ntot_comp
       type(circle_transform_spetr), intent(inout) :: circ_spec
 !
 !
@@ -78,8 +80,10 @@
       circ_spec%P_circle =    zero
       circ_spec%dPdt_circle = zero
 !
-      allocate(circ_spec%vcirc_rtm(-ltr:ltr,3))
+      allocate(circ_spec%vcirc_rtm(-ltr:ltr,ntot_comp))
+      allocate(circ_spec%vcirc_lc(-ltr:ltr,ntot_comp))
       circ_spec%vcirc_rtm = zero
+      circ_spec%vcirc_lc =  zero
 !
       allocate(circ_spec%istack_circfft_smp(0:np_smp))
       circ_spec%istack_circfft_smp(0) =        0
@@ -95,7 +99,7 @@
 !
 !
       deallocate(circ_spec%P_circle, circ_spec%dPdt_circle)
-      deallocate(circ_spec%vcirc_rtm)
+      deallocate(circ_spec%vcirc_rtm, circ_spec%vcirc_lc)
       deallocate(circ_spec%istack_circfft_smp)
 !
       end subroutine dealloc_circle_transform

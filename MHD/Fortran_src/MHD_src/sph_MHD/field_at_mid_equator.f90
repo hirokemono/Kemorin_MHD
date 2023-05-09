@@ -7,11 +7,12 @@
 !>@brief  data at mid-depth of the shell at equator for dynamo benchmark
 !!
 !!@verbatim
-!!      subroutine init_mid_equator_point_global(my_rank, trans_p, sph, &
-!!     &                                         cdat)
+!!      subroutine init_mid_equator_point_global                        &
+!!     &         (sph, comms_sph, ipol, d_rj, trans_p,                  &
+!!     &          cdat, SR_sig, SR_r)
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(sph_grids), intent(in) :: sph
-!!        type(phys_data), intent(in) :: rj_fld
+!!        type(phys_data), intent(in) :: d_rj
 !!        type(circle_fld_maker), intent(inout) :: cdat
 !!
 !!      subroutine cal_drift_by_v44(time, circle, ibench_velo,          &
@@ -40,16 +41,23 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_mid_equator_point_global                          &
-     &         (sph, comms_sph, trans_p, cdat, SR_sig, SR_r)
+     &         (sph, comms_sph, ipol, d_rj, trans_p,                    &
+     &          cdat, SR_sig, SR_r)
 !
       use t_work_4_sph_trans
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_phys_data
+      use t_phys_address
       use t_solver_SR
+!
+      use set_address_circle_trans
 !
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(sph_grids), intent(in) ::  sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(phys_data), intent(in) :: d_rj
+      type(phys_address) :: ipol
 !
       type(circle_fld_maker), intent(inout) :: cdat
       type(send_recv_status), intent(inout) :: SR_sig
@@ -58,6 +66,7 @@
       integer(kind = kint) :: kr_ICB, kr_CMB
       real(kind = kreal) :: r_MID
 !
+      integer(kind = kint) :: i_fld
 !
       kr_ICB = sph%sph_params%nlayer_ICB
       kr_CMB = sph%sph_params%nlayer_CMB
@@ -66,8 +75,30 @@
 !
       cdat%circle%s_circle = r_MID
       cdat%circle%z_circle = zero
-      call init_circle_point_global(sph, comms_sph,  &
+      call init_circle_point_global(sph, comms_sph,                     &
      &                              trans_p, cdat, SR_sig, SR_r)
+!
+      i_fld = 1
+      if(ipol%base%i_velo .gt. 0) then
+        cdat%iphys_circle%base%i_velo = i_fld
+        i_fld = i_fld + n_vector
+      end if
+      if(ipol%base%i_magne .gt. 0) then
+        cdat%iphys_circle%base%i_magne = i_fld
+        i_fld = i_fld + n_vector
+      end if
+      if(ipol%base%i_magne .gt. 0) then
+        cdat%iphys_circle%base%i_temp = i_fld
+        i_fld = i_fld + n_scalar
+      end if
+      if(ipol%base%i_magne .gt. 0) then
+        cdat%iphys_circle%base%i_light = i_fld
+        i_fld = i_fld + n_scalar
+      end if
+!
+      call set_addresses_circle_trans                                   &
+     &   (d_rj, ipol, cdat%iphys_circle, cdat%trns_dbench)
+!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       end subroutine init_mid_equator_point_global
 !

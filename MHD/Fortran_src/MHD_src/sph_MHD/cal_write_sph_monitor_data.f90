@@ -141,7 +141,8 @@
      &   SPH_MHD%ipol, SPH_MHD%fld, monitor, SR_sig)
 !
       if(monitor%bench%iflag_dynamobench .gt. 0) then
-        call init_mid_equator_point_global(SPH_MHD%sph, SPH_MHD%comms,  &
+        call init_mid_equator_point_global                              &
+     &     (SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%ipol, SPH_MHD%fld,      &
      &      trans_p, monitor%circ_mid_eq, SR_sig, SR_r)
       end if
 !

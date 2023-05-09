@@ -38,7 +38,6 @@
       type(legendre_polynomials), save :: leg_c
 !
       private :: leg_c
-      private :: alloc_circle_transform
 !
 ! ----------------------------------------------------------------------
 !
