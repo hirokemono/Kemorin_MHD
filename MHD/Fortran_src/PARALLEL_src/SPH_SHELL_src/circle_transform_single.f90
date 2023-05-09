@@ -117,9 +117,9 @@
      &    circ_spec%jmax_circle, circle%d_rj_circle(0,ifld),            &
      &    circ_spec%vcirc_rtm)
 !
-      write(*,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
+      write(61,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
       do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-        write(*,*) j, circ_spec%vcirc_rtm(j,1:3)
+        write(61,*) j, circ_spec%vcirc_rtm(j,1:3)
       end do
 !
       if(circle%iflag_circle_coord .eq. iflag_circle_cyl) then
