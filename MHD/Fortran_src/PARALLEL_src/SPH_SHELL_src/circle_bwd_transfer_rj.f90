@@ -336,8 +336,8 @@
 !
 !$mop parallel workshare
       vec_circ(-ltr:ltr,1) = vec_circ(-ltr:ltr,1) * ar2_circle
-      vec_circ(-ltr:ltr,2) = vec_circ(-ltr:ltr,1) * ar_circle
-      vec_circ(-ltr:ltr,3) = vec_circ(-ltr:ltr,1) * ar_circle
+      vec_circ(-ltr:ltr,2) = vec_circ(-ltr:ltr,2) * ar_circle
+      vec_circ(-ltr:ltr,3) = vec_circ(-ltr:ltr,3) * ar_circle
 !$mop end parallel workshare
 !
       end subroutine circle_bwd_leg_trans_vector
@@ -412,8 +412,8 @@
 !
 !$mop parallel workshare
       tsr_circ(-ltr:ltr,1) = tsr_circ(-ltr:ltr,1) * ar2_circle
-      tsr_circ(-ltr:ltr,2) = tsr_circ(-ltr:ltr,1) * ar_circle
-      tsr_circ(-ltr:ltr,3) = tsr_circ(-ltr:ltr,1) * ar_circle
+      tsr_circ(-ltr:ltr,2) = tsr_circ(-ltr:ltr,2) * ar_circle
+      tsr_circ(-ltr:ltr,3) = tsr_circ(-ltr:ltr,3) * ar_circle
       tsr_circ(-ltr:ltr,4) = tsr_circ(-ltr:ltr,4) * ar2_circle
       tsr_circ(-ltr:ltr,5) = tsr_circ(-ltr:ltr,5) * ar2_circle
       tsr_circ(-ltr:ltr,6) = tsr_circ(-ltr:ltr,6) * ar2_circle

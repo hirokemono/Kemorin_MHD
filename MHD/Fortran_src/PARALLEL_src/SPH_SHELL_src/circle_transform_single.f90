@@ -170,6 +170,11 @@
      &    circ_spec%P_circle, circ_spec%jmax_circle,                    &
      &    circle%d_rj_circle(0,ifld), circ_spec%vcirc_rtm)
 !
+      write(61,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
+      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
+        write(61,*) j, circ_spec%vcirc_rtm(j,1)
+      end do
+!
       call cal_circle_spectrum_vector                                   &
      &   (ione, circ_spec%ltr_circle, circ_spec%vcirc_rtm,              &
      &    circle%mphi_circle, circle%vrtm_mag(0,ifld),                  &
