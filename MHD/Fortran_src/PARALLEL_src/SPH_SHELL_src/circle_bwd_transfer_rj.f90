@@ -328,18 +328,28 @@
         l = sph_rj%idx_gl_1d_rj_j(j,2)
         m = sph_rj%idx_gl_1d_rj_j(j,3)
         g3 = dble(l * (l+1))
-        dydp_circ = - dble(m) * asin_t * P_circ(j)
         d_mid(1) = (c_in*d_rj(i_in,1) + c_out*d_rj(i_out,1))
         d_mid(2) = (c_in*d_rj(i_in,2) + c_out*d_rj(i_out,2))
         d_mid(3) = (c_in*d_rj(i_in,3) + c_out*d_rj(i_out,3))
 !
         vec_circ( m,1) = vec_circ( m,1) + g3 * P_circ(j) * d_mid(1)
+        vec_circ( m,2) = vec_circ( m,2) + dPdt_circ(j) *   d_mid(2)
+        vec_circ( m,3) = vec_circ( m,3) - dPdt_circ(j) *   d_mid(3)
+      end do
 !
-        vec_circ( m,2) = vec_circ( m,2) + dPdt_circ(j) * d_mid(2)
-        vec_circ(-m,3) = vec_circ(-m,3) + dydp_circ *    d_mid(3)
+      do j = 1, sph_rj%nidx_rj(2)
+        i_in =  1 + (circle%kr_gl_rcirc_in-1 ) * sph_rj%istep_rj(1)     &
+     &            + (j-1) * sph_rj%istep_rj(2)
+        i_out = 1 + (circle%kr_gl_rcirc_out-1) * sph_rj%istep_rj(1)     &
+     &            + (j-1) * sph_rj%istep_rj(2)
+        l = sph_rj%idx_gl_1d_rj_j(j,2)
+        m = sph_rj%idx_gl_1d_rj_j(j,3)
+        dydp_circ = - dble(m) * asin_t * P_circ(j)
+        d_mid(2) = (c_in*d_rj(i_in,2) + c_out*d_rj(i_out,2))
+        d_mid(3) = (c_in*d_rj(i_in,3) + c_out*d_rj(i_out,3))
 !
-        vec_circ(-m,2) = vec_circ(-m,2) + dydp_circ *    d_mid(2)
-        vec_circ( m,3) = vec_circ( m,3) - dPdt_circ(j) * d_mid(3)
+        vec_circ(-m,2) = vec_circ(-m,2) + dydp_circ *    d_mid(3)
+        vec_circ(-m,3) = vec_circ(-m,3) + dydp_circ *    d_mid(2)
       end do
 !
 !$mop parallel workshare
@@ -404,9 +414,6 @@
         tsr_circ( m,1) = tsr_circ( m,1) + g3 * P_circ(j) * d_mid(1)
 !
         tsr_circ( m,2) = tsr_circ( m,2) + dPdt_circ(j) * d_mid(2)
-        tsr_circ(-m,3) = tsr_circ(-m,3) + dydp_circ *    d_mid(3)
-!
-        tsr_circ(-m,2) = tsr_circ(-m,2) + dydp_circ *    d_mid(2)
         tsr_circ( m,3) = tsr_circ( m,3) - dPdt_circ(j) * d_mid(3)
 !
         tsr_circ( m,4) = tsr_circ( m,4) + g3 * P_circ(j) * d_mid(4)
@@ -414,12 +421,35 @@
         tsr_circ( m,5) = tsr_circ( m,5)                                 &
      &                  - (g3*P_circ(j) + atdydt_circ + d2ydp2_circ)    &
      &                   * d_mid(5)
-        tsr_circ(-m,6) = tsr_circ(-m,6) + d2ydtdp_circ * d_mid(5)
-!
-        tsr_circ(-m,5) = tsr_circ(-m,5) - d2ydtdp_circ * d_mid(6)
         tsr_circ( m,6) = tsr_circ( m,6)                                 &
      &                  - (g3*P_circ(j) + atdydt_circ + d2ydp2_circ)    &
-     &                   * d_mid(5)
+     &                   * d_mid(6)
+      end do
+!
+      do j = 1, sph_rj%nidx_rj(2)
+        i_in =  1 + (circle%kr_gl_rcirc_in-1 ) * sph_rj%istep_rj(1)     &
+     &            + (j-1) * sph_rj%istep_rj(2)
+        i_out = 1 + (circle%kr_gl_rcirc_out-1) * sph_rj%istep_rj(1)     &
+     &            + (j-1) * sph_rj%istep_rj(2)
+        l = sph_rj%idx_gl_1d_rj_j(j,2)
+        m = sph_rj%idx_gl_1d_rj_j(j,3)
+        g3 = dble(l * (l+1))
+        dydp_circ =   - dble(m) * asin_t * P_circ(j)
+        atdydt_circ =   two * cos_t*asin_t * dPdt_circ(j)
+        d2ydp2_circ = - two * (dble(m)*asin_t)**2 * P_circ(j)
+        d2ydtdp_circ = - two * dble(m) * asin_t                         &
+     &                  * (dPdt_circ(j) - cos_t*asin_t * P_circ(j))
+!
+        d_mid(2) = (c_in*d_rj(i_in,2) + c_out*d_rj(i_out,2))
+        d_mid(3) = (c_in*d_rj(i_in,3) + c_out*d_rj(i_out,3))
+        d_mid(5) = (c_in*d_rj(i_in,3) + c_out*d_rj(i_out,5))
+        d_mid(6) = (c_in*d_rj(i_in,3) + c_out*d_rj(i_out,6))
+!
+        tsr_circ(-m,2) = tsr_circ(-m,2) + dydp_circ *    d_mid(3)
+        tsr_circ(-m,3) = tsr_circ(-m,3) + dydp_circ *    d_mid(2)
+!
+        tsr_circ(-m,5) = tsr_circ(-m,5) - d2ydtdp_circ * d_mid(6)
+        tsr_circ(-m,6) = tsr_circ(-m,6) + d2ydtdp_circ * d_mid(5)
       end do
 !
 !$mop parallel workshare
