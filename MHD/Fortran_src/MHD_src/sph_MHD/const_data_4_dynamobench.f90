@@ -169,15 +169,17 @@
      &    cdat%d_circle, cdat%leg_crc%P_circ, cdat%leg_crc%dPdt_circ,   &
      &    cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
 !
+      if(my_rank .eq. 0) then
+        i = cdat%trns_dbench%b_trns%base%i_velo
+        write(*,*) 'j, velo_new', ipol%base%i_velo, i
+        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
+          write(*,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
+        end do
+      end if
+!
       deallocate(cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
 !
       if(my_rank .gt. 0) return
-!
-      i = cdat%trns_dbench%b_trns%base%i_velo
-      write(*,*) 'j, velo_new', ipol%base%i_velo, i
-      do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
-        write(*,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
-      end do
 !
       i = cdat%trns_dbench%b_trns%base%i_magne
       write(*,*) 'j, magne_new', ipol%base%i_magne, i
