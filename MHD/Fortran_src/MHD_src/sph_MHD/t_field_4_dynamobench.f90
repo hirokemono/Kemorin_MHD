@@ -7,11 +7,6 @@
 !>@brief  Dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine alloc_dbench_output_data(num_out, bench)
-!!      subroutine dealloc_dbench_output_data(bench)
-!!        integer(kind = kint), intent(in) :: num_out
-!!        type(dynamobench_monitor), intent(inout) :: bench
-!!
 !!      subroutine init_circle_field_name_dbench(fld_ctl,               &
 !!     &                                         d_circle, bench)
 !!        type(ctl_array_c3), intent(in) :: fld_ctl
@@ -84,14 +79,6 @@
 !>        local point data
         real(kind = kreal), allocatable :: d_zero(:,:)
 !
-        integer(kind = kint) :: num_out
-!>        Array for data output
-        real(kind = kreal), allocatable :: data_out(:)
-!
-        integer(kind = kint) :: num_detail
-!>        Array for data output
-        real(kind = kreal), allocatable :: detail_out(:)
-!
 !>        Address list for circle data
         type(base_field_address) :: iphys_dbench
       end type dynamobench_monitor
@@ -127,30 +114,6 @@
       end subroutine dealloc_dynamobench_monitor
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_dbench_output_data(num_out, bench)
-!
-      integer(kind = kint), intent(in) :: num_out
-      type(dynamobench_monitor), intent(inout) :: bench
-!
-      bench%num_out = num_out
-      allocate(bench%data_out(num_out))
-      if(num_out .gt. 0) bench%data_out(1:num_out) = 0.0d0
-!
-      end subroutine alloc_dbench_output_data
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_dbench_output_data(bench)
-!
-      type(dynamobench_monitor), intent(inout) :: bench
-!
-      if(allocated(bench%data_out) .eqv. .FALSE.) return
-      deallocate(bench%data_out)
-!
-      end subroutine dealloc_dbench_output_data
-!
 ! ----------------------------------------------------------------------
 !
       subroutine init_circle_field_name_dbench(ipol, d_circle, bench)

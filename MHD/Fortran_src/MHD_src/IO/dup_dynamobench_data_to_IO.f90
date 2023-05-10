@@ -16,12 +16,12 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(sph_vol_mean_squares), intent(in) :: v_pwr
 !!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
-!!        type(dynamobench_monitor), intent(inout) :: bench
+!!        type(dynamobench_monitor), intent(in) :: bench
 !!      subroutine dup_dynamobench_monitor_data(sph_bc_U, sph_bc_B,     &
-!!     &                                        ipol_base, bench)
+!!     &          ipol_base, bench, num_out, data_out)
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
 !!        type(base_field_address), intent(in) :: ipol_base
-!!        type(dynamobench_monitor), intent(inout) :: bench
+!!        type(dynamobench_monitor), intent(in) :: bench
 !!@endverbatim
 !!
 !!@param i_step   time step
@@ -88,21 +88,26 @@
       type(time_data), intent(in) :: time_d
 !
 !      type(read_sph_spectr_data), intent(inout) :: sph_OUT
-      type(dynamobench_monitor), intent(inout) :: bench
+      type(dynamobench_monitor), intent(in) :: bench
 !
       logical :: flag_gzip_lc
       character(len = kchara) :: file_name
       type(buffer_4_gzip) :: zbuf_d
       type(read_sph_spectr_data) :: sph_OUT_d
 !
+      real(kind = kreal), allocatable :: data_out(:)
+!
 !
       if(bench%iflag_dynamobench .le. izero) return
       if(my_rank .ne. 0) return
 !
       call dup_dynamobench_header_to_IO                                 &
-     &   (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, sph_OUT_d, bench)
+     &   (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, sph_OUT_d)
+!
+      allocate(data_out(sph_OUT_d%ntot_sph_spec))
       call dup_dynamobench_monitor_data                                 &
-     &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base, bench)
+     &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base, bench,   &
+     &    sph_OUT_d%ntot_sph_spec, data_out)
 !
       flag_gzip_lc = bench%gzip_flag_bench
       file_name = add_dat_extension(bench%benchmark_file_prefix)
@@ -112,18 +117,17 @@
 !
       call sel_gz_write_text_stream(flag_gzip_lc, id_dbench,            &
      &    volume_pwr_data_text(time_d%i_time_step, time_d%time,         &
-     &                         bench%num_out, bench%data_out),          &
+     &                         sph_OUT_d%ntot_sph_spec, data_out),      &
      &    zbuf_d)
       close(id_dbench)
-      call dealloc_dbench_output_data(bench)
+      deallocate(data_out)
 !
       end subroutine write_dynamobench_file
 !
 ! ----------------------------------------------------------------------
 !
       subroutine dup_dynamobench_header_to_IO                           &
-     &         (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr,            &
-     &          sph_OUT, bench)
+     &         (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, sph_OUT)
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -132,7 +136,6 @@
       type(sph_vol_mean_squares), intent(in) :: v_pwr
 !
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
-      type(dynamobench_monitor), intent(inout) :: bench
 !
 !
       if(allocated(sph_OUT%ene_sph_spec_name)) return
@@ -158,64 +161,61 @@
      &    sph_OUT%nfield_sph_spec, sph_OUT%num_labels,                  &
      &    sph_OUT%ncomp_sph_spec, sph_OUT%ene_sph_spec_name)
 !
-      call alloc_dbench_output_data(sph_OUT%ntot_sph_spec, bench)
-!
       end subroutine dup_dynamobench_header_to_IO
 !
 ! ----------------------------------------------------------------------
 !
       subroutine dup_dynamobench_monitor_data(sph_bc_U, sph_bc_B,       &
-     &                                        ipol_base, bench)
+     &          ipol_base, bench, num_out, data_out)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
       type(base_field_address), intent(in) :: ipol_base
-      type(dynamobench_monitor), intent(inout) :: bench
+      type(dynamobench_monitor), intent(in) :: bench
+!
+      integer(kind = kint), intent(in) :: num_out
+      real(kind = kreal), intent(inout) :: data_out(num_out)
 !
       integer(kind = kint) :: jcou
 !
       jcou = 0
-      bench%data_out(jcou+1:jcou+3) = bench%KE_bench(1:3)
+      data_out(jcou+1:jcou+3) = bench%KE_bench(1:3)
       jcou = jcou + 3
 !
       if(ipol_base%i_magne .gt. 0) then
-        bench%data_out(jcou+1:jcou+3) = bench%ME_bench(1:3)
+        data_out(jcou+1:jcou+3) = bench%ME_bench(1:3)
         jcou = jcou + 3
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
-        bench%data_out(jcou+1:jcou+3) = bench%mene_icore(1:3)
+        data_out(jcou+1:jcou+3) = bench%mene_icore(1:3)
         jcou = jcou + 3
       end if
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        bench%data_out(jcou+1) = bench%rotate_icore(0)
+        data_out(jcou+1) = bench%rotate_icore(0)
         jcou = jcou + 1
       end if
 !
 !      write(*,*) 'sph_bc_U%iflag_icb', sph_bc_U%iflag_icb
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
      &    .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        bench%data_out(jcou+1) = bench%m_torque_icore(0)
+        data_out(jcou+1) = bench%m_torque_icore(0)
         jcou = jcou + 1
       end if
 !
-      bench%data_out(jcou+1:jcou+4) = bench%phi_zero(1:4)
-      bench%data_out(jcou+5) = bench%ave_phase_vr
-      bench%data_out(jcou+6:jcou+7) = bench%omega_vm4(1:2)
+      data_out(jcou+1:jcou+4) = bench%phi_zero(1:4)
+      data_out(jcou+5) = bench%ave_phase_vr
+      data_out(jcou+6:jcou+7) = bench%omega_vm4(1:2)
       jcou = jcou + 7
 !
       if(ipol_base%i_magne .gt. 0) then
-        bench%data_out(jcou+1)                                          &
-     &       = bench%d_zero(0,bench%iphys_dbench%i_magne+1)
+        data_out(jcou+1) = bench%d_zero(0,bench%iphys_dbench%i_magne+1)
         jcou = jcou + 1
       end if
 !
-      bench%detail_out(jcou+1)                                          &
-     &       = bench%d_zero(0,bench%iphys_dbench%i_velo+2)
-      bench%detail_out(jcou+2)                                          &
-     &       = bench%d_zero(0,bench%iphys_dbench%i_temp)
-!      bench%detail_out(jcou+3)                                         &
-!     &       = bench%d_zero(0,bench%iphys_dbench%i_light)
+      data_out(jcou+1) = bench%d_zero(0,bench%iphys_dbench%i_velo+2)
+      data_out(jcou+2) = bench%d_zero(0,bench%iphys_dbench%i_temp)
+!      data_out(jcou+3) = bench%d_zero(0,bench%iphys_dbench%i_light)
 !
       end subroutine dup_dynamobench_monitor_data
 !
