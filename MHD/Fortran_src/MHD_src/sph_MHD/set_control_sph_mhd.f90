@@ -124,7 +124,7 @@
 !   set_pickup modes
       call set_control_SPH_MHD_monitors                                 &
      &   (smonitor_ctl, model_ctl%fld_ctl, MHD_BC, rj_fld, monitor)
-      call set_control_circles_def(smonitor_ctl%circ_ctls, nod_fld,     &
+      call set_control_circles_def(smonitor_ctl%circ_ctls,              &
      &                             monitor%mul_circle)
 !
       call set_crustal_filtering_control                                &

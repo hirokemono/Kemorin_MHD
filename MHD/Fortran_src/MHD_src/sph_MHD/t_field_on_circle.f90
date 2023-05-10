@@ -11,8 +11,7 @@
 !!      subroutine dealloc_mul_fields_on_circle(mul_circle)
 !!        integer(kind = kint), intent(in) :: num_circle
 !!        type(mul_fields_on_circle), intent(inout) :: mul_circle
-!!      subroutine set_control_circles_def(circ_ctls, nod_fld,          &
-!!     &                                   mul_circle)
+!!      subroutine set_control_circles_def(circ_ctls, mul_circle)
 !!        type(data_on_circles_ctl), intent(in) :: circ_ctls
 !!        type(mul_fields_on_circle), intent(inout) :: mul_circle
 !!
@@ -120,13 +119,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_circles_def(circ_ctls, nod_fld,            &
-     &                                   mul_circle)
+      subroutine set_control_circles_def(circ_ctls, mul_circle)
 !
       use t_ctl_data_circles
 !
       type(data_on_circles_ctl), intent(in) :: circ_ctls
-      type(phys_data), intent(in) :: nod_fld
       type(mul_fields_on_circle), intent(inout) :: mul_circle
 !
       integer(kind = kint) :: i
@@ -137,7 +134,6 @@
       do i = 1, mul_circle%num_circles
         call set_control_circle_def(circ_ctls%meq_ctl(i),               &
      &                              mul_circle%cdat(i)%circle)
-        call dup_phys_name(nod_fld, mul_circle%cdat(i)%d_circle)
       end do
 !
       end subroutine set_control_circles_def

@@ -162,7 +162,7 @@
         d_circle%num_phys = d_circle%num_phys + 1
       end if
 !
-      call  alloc_phys_name(d_circle)
+      call alloc_phys_name(d_circle)
 !
       ifld = 0
       if(ipol%base%i_velo .gt. 0) then
