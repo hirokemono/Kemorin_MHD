@@ -127,6 +127,8 @@
       end if
 !
       do i = 1, monitor%mul_circle%num_circles
+        call init_mid_equator_point_global                              &
+     &     (trans_p, SPH_MHD%sph, monitor%mul_circle%cdat(i))
         call init_legendre_on_circle                                    &
      &     (monitor%mul_circle%cdat(i)%circle%colat_circle,             &
      &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
