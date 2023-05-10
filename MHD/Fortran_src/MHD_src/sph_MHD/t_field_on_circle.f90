@@ -60,7 +60,9 @@
         real(kind = kreal), allocatable :: d_circ_gl(:,:)
         real(kind = kreal), allocatable :: d_circ_lc(:,:)
 !
+!>        Spectr data for circle point collected to 0 process
         real(kind = kreal), allocatable :: vrtm_mag(:,:)
+!>        Spectr data for circle point collected to 0 process
         real(kind = kreal), allocatable :: vrtm_phase(:,:)
       end type leg_circle
 !

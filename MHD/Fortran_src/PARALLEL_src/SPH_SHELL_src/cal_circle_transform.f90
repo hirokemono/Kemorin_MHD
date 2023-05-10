@@ -9,8 +9,24 @@
 !!@verbatim
 !!      subroutine copy_circle_spectrum_4_fft(numdir, ltr_circle,       &
 !!     &          vcirc_rtm, mphi_circle, v_rtp_circle)
+!!        integer(kind = kint), intent(in) :: numdir
+!!        integer(kind = kint), intent(in) :: ltr_circle
+!!        real(kind = kreal), intent(in)                                &
+!!       &                   :: vcirc_rtm(-ltr_circle:ltr_circle,numdir)
+!!        integer(kind = kint), intent(in) :: mphi_circle
+!!        real(kind = kreal), intent(inout)                             &
+!!       &                  :: v_rtp_circle(mphi_circle,numdir)
 !!      subroutine cal_circle_spectrum_vector(numdir, ltr_circle,       &
 !!     &          vcirc_rtm, mphi_circle, vrtm_mag, vrtm_phase)
+!!        integer(kind = kint), intent(in) :: numdir
+!!        integer(kind = kint), intent(in) :: ltr_circle
+!!        real(kind = kreal), intent(in)                                &
+!!       &                   :: vcirc_rtm(-ltr_circle:ltr_circle,numdir)
+!!        integer(kind = kint), intent(in) :: mphi_circle
+!!        real(kind = kreal), intent(inout)                             &
+!!       &            :: vrtm_mag(0:ltr_circle,numdir)
+!!        real(kind = kreal), intent(inout)                             &
+!!       &            :: vrtm_phase(0:ltr_circle,numdir)
 !!
 !!      subroutine overwrt_circle_sph_vect_2_cyl                        &
 !!     &         (theta_circle, ltr_circle, vcirc_rtm)
@@ -21,7 +37,7 @@
 !!@n @param  d_rj_circle(0:jmax,3)   Spectr field data
 !!@n @param  numdir   Number of components of field
 !!@n @param v_rtp_circle(mphi_circle,numdir)  Field along circle
-!!@n @param vrtm_mag(0:mphi_circle,numdir)  Amplitude of spectrum data
+!!@n @param vrtm_mag(0:ltr_circle,numdir)  Amplitude of spectrum data
 !!                                        along with the circle
 !!@n @param vrtm_phase(0:ltr_circle,numdir)    Phase of spectrum data
 !!                                        along with the circle
@@ -92,7 +108,7 @@
       integer(kind = kint), intent(in) :: mphi_circle
 !
       real(kind = kreal), intent(inout)                                 &
-     &            :: vrtm_mag(0:mphi_circle,numdir)
+     &            :: vrtm_mag(0:ltr_circle,numdir)
       real(kind = kreal), intent(inout)                                 &
      &            :: vrtm_phase(0:ltr_circle,numdir)
 !

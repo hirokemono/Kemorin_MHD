@@ -16,8 +16,6 @@
 !!@n @param  d_rj_circle(0:jmax,3)   Spectr field data
 !!@n @param  numdir   Number of components of field
 !!@n @param v_rtp_circle(mphi_circle,numdir)  Field along circle
-!!@n @param vrtm_mag(0:mphi_circle,numdir)  Amplitude of spectrum data
-!!                                        along with the circle
 !
       module t_circle_transform
 !

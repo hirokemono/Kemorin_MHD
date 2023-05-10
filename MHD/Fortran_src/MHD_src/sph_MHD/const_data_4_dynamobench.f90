@@ -161,7 +161,7 @@
       allocate(cdat%leg_crc%d_circ_lc(-cdat%circ_spec%ltr_circle:cdat%circ_spec%ltr_circle,    &
      &                   cdat%d_circle%ntot_phys))
 !
-      allocate(cdat%leg_crc%vrtm_mag(0:cdat%circle%mphi_circle,cdat%d_circle%ntot_phys_viz))
+      allocate(cdat%leg_crc%vrtm_mag(0:cdat%circ_spec%ltr_circle,cdat%d_circle%ntot_phys_viz))
       allocate(cdat%leg_crc%vrtm_phase(0:cdat%circ_spec%ltr_circle, cdat%d_circle%ntot_phys_viz))
 !
       call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,     &
@@ -261,7 +261,7 @@
       allocate(leg_crc%d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
      &                   nod_fld%ntot_phys_viz))
 !
-      allocate(leg_crc%vrtm_mag(0:circle%mphi_circle,nod_fld%ntot_phys_viz))
+      allocate(leg_crc%vrtm_mag(0:circ_spec%ltr_circle,nod_fld%ntot_phys_viz))
       allocate(leg_crc%vrtm_phase(0:circ_spec%ltr_circle, nod_fld%ntot_phys_viz))
 !
       call circle_leg_bwd_trans_rj                                      &
