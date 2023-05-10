@@ -265,19 +265,20 @@
 !
 !   Evaluate drift frequencty by velocity 
 !
-      call cal_drift_by_v44(time, sph_rj, rj_fld, ipol,   &
-     &    cdat%circle, bench%ibench_velo,       &
-     &    bench%t_prev, bench%phase_vm4, bench%phase_vm4_prev,          &
-     &    bench%omega_vm4)
+      call cal_drift_by_v44(time, sph_rj, rj_fld, ipol,                 &
+     &    cdat%circle, bench%t_prev, bench%phase_vm4,                   &
+     &    bench%phase_vm4_prev, bench%omega_vm4)
       if(my_rank .gt. 0) return
 !
 !   find local point for dynamobench
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_field_4_dynamobench'
-      call cal_field_4_dynamobench                                      &
-     &   (time, bench%t_prev, cdat%circle, cdat%d_circle,               &
-     &    bench%ibench_velo, bench%phi_zero, bench%phi_prev,            &
-     &    bench%phase_vr, bench%ave_phase_vr, bench%d_zero)
+      if(my_rank .eq. 0) then
+        call cal_field_4_dynamobench                                    &
+     &     (time, bench%t_prev, cdat%circle, cdat%d_circle,             &
+     &      bench%ibench_velo, bench%phi_zero, bench%phi_prev,          &
+     &      bench%phase_vr, bench%ave_phase_vr, bench%d_zero)
+      end if
       bench%t_prev = time
 !
       end subroutine mid_eq_transfer_dynamobench

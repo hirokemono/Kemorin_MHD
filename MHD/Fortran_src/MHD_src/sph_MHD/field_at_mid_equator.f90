@@ -14,8 +14,17 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(circle_fld_maker), intent(inout) :: cdat
 !!
-!!      subroutine cal_drift_by_v44(time, circle, ibench_velo,          &
-!!     &          t_prev, phase_vm4, phase_vm4_prev, omega_vm4)
+!!      subroutine cal_drift_by_v44(time, sph_rj, rj_fld, ipol,         &
+!!     &          circle, t_prev, phase_vm4, phase_vm4_prev, omega_vm4)
+!!        real(kind=kreal), intent(in) :: time
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(phys_address), intent(in) :: ipol
+!!        type(fields_on_circle), intent(in) :: circle
+!!        real(kind = kreal), intent(inout) :: t_prev
+!!        real(kind = kreal), intent(inout) :: phase_vm4(2)
+!!        real(kind = kreal), intent(inout) :: phase_vm4_prev(2)
+!!        real(kind = kreal), intent(inout) :: omega_vm4(2)
 !!      subroutine cal_field_4_dynamobench                              &
 !!     &         (time, t_prev, circle, d_circle, ibench_velo,          &
 !!     &          phi_zero, phi_prev, drift, ave_drift, d_zero)
@@ -68,8 +77,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_drift_by_v44(time, sph_rj, rj_fld, ipol,            &
-     &          circle, ibench_velo, t_prev, phase_vm4, phase_vm4_prev, omega_vm4)
+      subroutine cal_drift_by_v44(time, sph_rj, rj_fld, ipol,           &
+     &          circle, t_prev, phase_vm4, phase_vm4_prev, omega_vm4)
 !
       use calypso_mpi
       use calypso_mpi_real
@@ -84,7 +93,6 @@
       type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
       type(fields_on_circle), intent(in) :: circle
-      integer(kind = kint), intent(in) :: ibench_velo
 !
       real(kind = kreal), intent(inout) :: t_prev
       real(kind = kreal), intent(inout) :: phase_vm4(2)
@@ -92,8 +100,7 @@
       real(kind = kreal), intent(inout) :: omega_vm4(2)
 !
       integer(kind = kint) :: j4c, j4s, kr_in, kr_out, i_in, i_out
-      real(kind = kreal) :: vp44c, vp44s, c_in, c_out
-      real(kind = kreal) :: vt54c, vt54s
+      real(kind = kreal) :: c_in, c_out
       real(kind = kreal) :: v4_lc(4), v4_gl(4)
 !
 !
@@ -142,23 +149,8 @@
 !
       if(my_rank .ne. 0) return
 !
-      j4c = ifour*(ifour+1) + ifour
-      j4s = ifour*(ifour+1) - ifour
-      vp44c = circle%d_rj_circle(j4c,ibench_velo  )
-      vp44s = circle%d_rj_circle(j4s,ibench_velo  )
-!
-      j4c = ifive*(ifive+1) + ifour
-      j4s = ifive*(ifive+1) - ifour
-      vt54c = circle%d_rj_circle(j4c,ibench_velo+2)
-      vt54s = circle%d_rj_circle(j4s,ibench_velo+2)
-!
-      write(*,*) 'vp44c', vp44c, v4_gl(1)
-      write(*,*) 'vp44s', vp44s, v4_gl(2)
-      write(*,*) 'vt54c', vt54c, v4_gl(3)
-      write(*,*) 'vt54s', vt54s, v4_gl(4)
-!
-      phase_vm4(1) = atan2(vp44s,vp44c)
-      phase_vm4(2) = atan2(vt54s,vt54c)
+      phase_vm4(1) = atan2(v4_gl(2), v4_gl(1))
+      phase_vm4(2) = atan2(v4_gl(4), v4_gl(3))
 !
       if(t_prev .eq. time) then
         omega_vm4(1:2) = 0.0d0
