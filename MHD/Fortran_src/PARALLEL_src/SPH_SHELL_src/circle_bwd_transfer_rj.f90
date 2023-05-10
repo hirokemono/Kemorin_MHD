@@ -7,22 +7,59 @@
 !>@brief  forward Legendre transform considering symmetry
 !!
 !!@verbatim
-!!      subroutine s_circle_bwd_transfer_rj                             &
-!!     &         (iflag_FFT, colat, sph_rj, ntot_comp, d_rj, circle,    &
-!!     &          circ_spec, P_circ, dPdt_circ, d_circle, istack_rj_cmp,&
+!!      subroutine dbench_leg_bwd_trans_rj                              &
+!!     &         (iflag_FFT, sph_rj, rj_fld, ipol, iphys_dbench,        &
+!!     &          circle, circ_spec, P_circ, dPdt_circ, d_circle,       &
+!!     &          d_circ_gl, d_circ_lc, vrtm_mag, vrtm_phase,           &
 !!     &          WK_circle_fft)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
-!!        real(kind = kreal), intent(in) :: colat
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        integer(kind = kint), intent(in) :: ntot_comp
-!!        real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj,ntot_comp)
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(phys_address), intent(in) :: ipol
+!!        type(base_field_address), intent(in) :: iphys_dbench
 !!        real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
 !!        real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
-!!        type(fields_on_circle), intent(inout) :: circle
+!!        type(fields_on_circle), intent(in) :: circle
 !!        type(phys_data), intent(inout) :: d_circle
-!!        integer(kind = kint), intent(in)                                  &
-!!       &                     :: istack_rj_cmp(0:d_circle%num_phys)
 !!        type(circle_transform_spetr), intent(inout) :: circ_spec
+!!        real(kind = kreal), intent(inout)                             &
+!!       &      :: d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,&
+!!       &                   d_circle%ntot_phys)
+!!        real(kind = kreal), intent(inout)                             &
+!!       &      :: d_circ_gl(-circ_spec%ltr_circle:circ_spec%ltr_circle,&
+!!       &                   d_circle%ntot_phys)
+!!        real(kind = kreal), intent(inout)                             &
+!!       &      :: vrtm_mag(0:circle%mphi_circle,d_circle%ntot_phys)
+!!        real(kind = kreal), intent(inout)                             &
+!!       &      :: vrtm_phase(0:circle%mphi_circle,d_circle%ntot_phys)
+!!        type(working_FFTs), intent(inout) :: WK_circle_fft
+!!
+!!      subroutine circle_leg_bwd_trans_rj                              &
+!!     &         (iflag_FFT, sph_rj, rj_fld, nod_fld, ipol_circle_trns, &
+!!     &          circle, circ_spec, P_circ, dPdt_circ, d_circle,       &
+!!     &          d_circ_gl, d_circ_lc, vrtm_mag, vrtm_phase,           &
+!!     &          WK_circle_fft)
+!!        integer(kind = kint), intent(in) :: iflag_FFT
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(circle_transform_spetr), intent(in) :: circ_spec
+!!        integer(kind = kint), intent(in)                              &
+!!       &                      :: ipol_circle_trns(nod_fld%num_phys_viz)
+!!        real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
+!!        real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
+!!        type(fields_on_circle), intent(in) :: circle
+!!        type(phys_data), intent(inout) :: d_circle
+!!        real(kind = kreal), intent(inout)                             &
+!!       &      :: d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,&
+!!       &                   d_circle%ntot_phys_viz)
+!!        real(kind = kreal), intent(inout)                             &
+!!       &      :: d_circ_gl(-circ_spec%ltr_circle:circ_spec%ltr_circle,&
+!!       &                   d_circle%ntot_phys_viz)
+!!        real(kind = kreal), intent(inout)                             &
+!!       &      :: vrtm_mag(0:circle%mphi_circle,d_circle%ntot_phys)
+!!        real(kind = kreal), intent(inout)                             &
+!!       &      :: vrtm_phase(0:circle%mphi_circle,d_circle%ntot_phys)
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!@endverbatim
       module circle_bwd_transfer_rj
@@ -53,9 +90,9 @@
 !
       subroutine dbench_leg_bwd_trans_rj                                &
      &         (iflag_FFT, sph_rj, rj_fld, ipol, iphys_dbench,          &
-     &          circle, circ_spec, d_circle, P_circ, dPdt_circ,         &
+     &          circle, circ_spec, P_circ, dPdt_circ, d_circle,         &
      &          d_circ_gl, d_circ_lc, vrtm_mag, vrtm_phase,             &
-     &          v_rtp_circle, WK_circle_fft)
+     &          WK_circle_fft)
 !
       use t_base_field_labels
       use t_FFT_selector
@@ -71,7 +108,8 @@
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       type(fields_on_circle), intent(in) :: circle
-      type(phys_data), intent(in) :: d_circle
+!
+      type(phys_data), intent(inout) :: d_circle
       type(circle_transform_spetr), intent(inout) :: circ_spec
 !
       real(kind = kreal), intent(inout)                                 &
@@ -86,12 +124,10 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: vrtm_phase(0:circle%mphi_circle,d_circle%ntot_phys)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &      :: v_rtp_circle(circle%mphi_circle,d_circle%ntot_phys)
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
       integer(kind = kint_gl) :: num64
-      integer(kind = kint) :: i_fld
+      integer(kind = kint) :: i_comp
 !
 !
       call each_circle_leg_bwd_trans_rj                                 &
@@ -137,12 +173,12 @@
      &    d_circ_gl, circle%mphi_circle, vrtm_mag, vrtm_phase)
       call copy_circle_spectrum_4_fft                                   &
      &   (d_circle%ntot_phys, circ_spec%ltr_circle,                     &
-     &    d_circ_gl, circle%mphi_circle, v_rtp_circle(1,1))
+     &    d_circ_gl, circle%mphi_circle, d_circle%d_fld(1,1))
 !
-      do i_fld = 1, d_circle%ntot_phys
+      do i_comp = 1, d_circle%ntot_phys
         call backward_FFT_select                                        &
      &     (iflag_FFT, np_smp, circ_spec%istack_circfft_smp, ione,      &
-     &      circle%mphi_circle, v_rtp_circle(1,i_fld),                  &
+     &      circle%mphi_circle, d_circle%d_fld(1,i_comp),               &
      &      WK_circle_fft)
       end do
 !
@@ -152,8 +188,9 @@
 !
       subroutine circle_leg_bwd_trans_rj                                &
      &         (iflag_FFT, sph_rj, rj_fld, nod_fld, ipol_circle_trns,   &
-     &          circle, circ_spec, d_circle, P_circ, dPdt_circ,         &
-     &          d_circ_gl, d_circ_lc, vrtm_mag, vrtm_phase, v_rtp_circle, WK_circle_fft)
+     &          circle, circ_spec, P_circ, dPdt_circ, d_circle,         &
+     &          d_circ_gl, d_circ_lc, vrtm_mag, vrtm_phase,             &
+     &          WK_circle_fft)
 !
       use t_FFT_selector
       use calypso_mpi_real
@@ -170,7 +207,8 @@
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       type(fields_on_circle), intent(in) :: circle
-      type(phys_data), intent(in) :: d_circle
+!
+      type(phys_data), intent(inout) :: d_circle
 !
       real(kind = kreal), intent(inout)                                 &
      &      :: d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
@@ -184,8 +222,6 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: vrtm_phase(0:circle%mphi_circle,d_circle%ntot_phys)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &      :: v_rtp_circle(circle%mphi_circle,d_circle%ntot_phys)
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
       integer(kind = kint) :: i_fld, num_comp, i_trns
@@ -233,12 +269,12 @@
      &    d_circ_gl, circle%mphi_circle, vrtm_mag, vrtm_phase)
       call copy_circle_spectrum_4_fft                                   &
      &   (d_circle%ntot_phys, circ_spec%ltr_circle,                     &
-     &    d_circ_gl, circle%mphi_circle, v_rtp_circle(1,1))
+     &    d_circ_gl, circle%mphi_circle, d_circle%d_fld(1,1))
 !
       do i_fld = 1, d_circle%ntot_phys
         call backward_FFT_select                                        &
-     &     (iflag_FFT, np_smp, circ_spec%istack_circfft_smp, ione,      &
-     &      circle%mphi_circle, v_rtp_circle(1,i_fld), WK_circle_fft)
+     &    (iflag_FFT, np_smp, circ_spec%istack_circfft_smp, ione,       &
+     &     circle%mphi_circle, d_circle%d_fld(1,i_fld), WK_circle_fft)
       end do
 !
       end subroutine circle_leg_bwd_trans_rj

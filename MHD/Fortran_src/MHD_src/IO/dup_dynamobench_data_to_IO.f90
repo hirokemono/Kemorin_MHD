@@ -214,8 +214,10 @@
       end if
 !
       data_out(jcou+1) = bench%d_zero(0,bench%iphys_dbench%i_velo+2)
+      jcou = jcou + 1
       if(ipol_base%i_temp .gt. 0) then
         data_out(jcou+1) = bench%d_zero(0,bench%iphys_dbench%i_temp)
+        jcou = jcou + 1
       end if
       if(ipol_base%i_light .gt. 0) then
         data_out(jcou+1) = bench%d_zero(0,bench%iphys_dbench%i_light)
