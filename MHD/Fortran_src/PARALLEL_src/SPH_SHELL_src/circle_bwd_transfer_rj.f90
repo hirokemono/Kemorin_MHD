@@ -52,10 +52,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dbench_leg_bwd_trans_rj                                &
-     &         (iflag_FFT, sph_rj, rj_fld, ipol, iphys_circle,                &
+     &         (iflag_FFT, sph_rj, rj_fld, ipol, iphys_dbench,          &
      &          circle, circ_spec, d_circle, P_circ, dPdt_circ,         &
-     &          d_circ_gl, d_circ_lc, vrtm_mag, vrtm_phase, v_rtp_circle, WK_circle_fft)
+     &          d_circ_gl, d_circ_lc, vrtm_mag, vrtm_phase,             &
+     &          v_rtp_circle, WK_circle_fft)
 !
+      use t_base_field_labels
       use t_FFT_selector
       use calypso_mpi_real
       use transfer_to_long_integers
@@ -65,7 +67,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
-      type(phys_address), intent(in) :: iphys_circle
+      type(base_field_address), intent(in) :: iphys_dbench
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       type(fields_on_circle), intent(in) :: circle
@@ -93,19 +95,19 @@
 !
 !
       call each_circle_leg_bwd_trans_rj                                 &
-     &   (n_vector, ipol%base%i_velo, iphys_circle%base%i_velo,         &
+     &   (n_vector, ipol%base%i_velo, iphys_dbench%i_velo,              &
      &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
      &    d_circle%ntot_phys, d_circ_lc)
       call each_circle_leg_bwd_trans_rj                                 &
-     &   (n_vector, ipol%base%i_magne, iphys_circle%base%i_magne,       &
+     &   (n_vector, ipol%base%i_magne, iphys_dbench%i_magne,            &
      &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
      &    d_circle%ntot_phys, d_circ_lc)
       call each_circle_leg_bwd_trans_rj                                 &
-     &   (n_scalar, ipol%base%i_temp, iphys_circle%base%i_temp,         &
+     &   (n_scalar, ipol%base%i_temp, iphys_dbench%i_temp,              &
      &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
      &    d_circle%ntot_phys, d_circ_lc)
       call each_circle_leg_bwd_trans_rj                                 &
-     &   (n_scalar, ipol%base%i_light, iphys_circle%base%i_light,       &
+     &   (n_scalar, ipol%base%i_light, iphys_dbench%i_light,            &
      &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
      &    d_circle%ntot_phys, d_circ_lc)
 !
@@ -118,15 +120,15 @@
       if(my_rank .ne. 0) return
 !
       if(circle%iflag_circle_coord .eq. iflag_circle_cyl) then
-        if(iphys_circle%base%i_velo .gt. 0) then
+        if(iphys_dbench%i_velo .gt. 0) then
           call overwrt_circle_sph_vect_2_cyl                            &
      &      (circ_spec%theta_circle, circ_spec%ltr_circle,              &
-     &       d_circ_gl(-circ_spec%ltr_circle,iphys_circle%base%i_velo))
+     &       d_circ_gl(-circ_spec%ltr_circle,iphys_dbench%i_velo))
         end if
-        if(iphys_circle%base%i_magne .gt. 0) then
+        if(iphys_dbench%i_magne .gt. 0) then
           call overwrt_circle_sph_vect_2_cyl                            &
      &      (circ_spec%theta_circle, circ_spec%ltr_circle,              &
-     &       d_circ_gl(-circ_spec%ltr_circle,iphys_circle%base%i_magne))
+     &       d_circ_gl(-circ_spec%ltr_circle,iphys_dbench%i_magne))
         end if
       end if
 !

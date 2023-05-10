@@ -100,7 +100,7 @@
         real(kind = kreal), allocatable :: detail_out(:)
 !
 !>        Address list for circle data
-        type(phys_address) :: iphys_circle
+        type(base_field_address) :: iphys_dbench
       end type dynamobench_monitor
 !
 ! ----------------------------------------------------------------------
@@ -133,16 +133,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_circle_field_name_dbench(fld_ctl,                 &
-     &                                         d_circle, bench)
+      subroutine init_circle_field_name_dbench(ipol, d_circle, bench)
 !
-      use t_control_array_character3
       use t_phys_data
       use m_base_field_labels
       use m_phys_constants
       use skip_comment_f
 !
-      type(ctl_array_c3), intent(in) :: fld_ctl
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: d_circle
       type(dynamobench_monitor), intent(inout) :: bench
@@ -151,51 +149,61 @@
 !
 !
       d_circle%num_phys = 0
-      do ifld = 1, fld_ctl%num
-        if(cmp_no_case(fld_ctl%c1_tbl(ifld), temperature%name)) then
-          d_circle%num_phys = d_circle%num_phys + 1
-          exit
-        end if
-      end do
-      do ifld = 1, fld_ctl%num
-        if(cmp_no_case(fld_ctl%c1_tbl(ifld), velocity%name)) then
-          d_circle%num_phys = d_circle%num_phys + 1
-          exit
-        end if
-      end do
-      do ifld = 1, fld_ctl%num
-        if(cmp_no_case(fld_ctl%c1_tbl(ifld), magnetic_field%name)) then
-          d_circle%num_phys = d_circle%num_phys + 1
-          exit
-        end if
-      end do
+      if(ipol%base%i_velo .gt. 0) then
+        d_circle%num_phys = d_circle%num_phys + 1
+      end if
+      if(ipol%base%i_magne .gt. 0) then
+        d_circle%num_phys = d_circle%num_phys + 1
+      end if
+      if(ipol%base%i_temp .gt. 0) then
+        d_circle%num_phys = d_circle%num_phys + 1
+      end if
+      if(ipol%base%i_light .gt. 0) then
+        d_circle%num_phys = d_circle%num_phys + 1
+      end if
 !
       call  alloc_phys_name(d_circle)
 !
       ifld = 0
-      if(bench%ibench_temp .gt. 0) then
-        ifld = ifld + 1
-        bench%ibench_temp = d_circle%istack_component(ifld-1) + 1
-        d_circle%phys_name(ifld) =     temperature%name
-        d_circle%num_component(ifld) = n_scalar
-        d_circle%istack_component(ifld)                                 &
-     &        = d_circle%istack_component(ifld-1) + n_scalar
-      end if
-      if(bench%ibench_velo .gt. 0) then
+      if(ipol%base%i_velo .gt. 0) then
         ifld = ifld + 1
         bench%ibench_velo = d_circle%istack_component(ifld-1) + 1
+        bench%iphys_dbench%i_velo                                       &
+     &                    = d_circle%istack_component(ifld-1) + 1
         d_circle%phys_name(ifld) =     velocity%name
         d_circle%num_component(ifld) = n_vector
         d_circle%istack_component(ifld)                                 &
      &        = d_circle%istack_component(ifld-1) + n_vector
       end if
-      if(bench%ibench_magne .gt. 0) then
+      if(ipol%base%i_magne .gt. 0) then
         ifld = ifld + 1
         bench%ibench_magne = d_circle%istack_component(ifld-1) + 1
+        bench%iphys_dbench%i_magne                                      &
+     &                    = d_circle%istack_component(ifld-1) + 1
         d_circle%phys_name(ifld) =     magnetic_field%name
         d_circle%num_component(ifld) = n_vector
         d_circle%istack_component(ifld)                                 &
      &        = d_circle%istack_component(ifld-1) + n_vector
+      end if
+      if(ipol%base%i_temp .gt. 0) then
+        ifld = ifld + 1
+        bench%ibench_temp = d_circle%istack_component(ifld-1) + 1
+        bench%iphys_dbench%i_temp                                       &
+     &                    = d_circle%istack_component(ifld-1) + 1
+        d_circle%phys_name(ifld) =     temperature%name
+        d_circle%num_component(ifld) = n_scalar
+        d_circle%istack_component(ifld)                                 &
+     &        = d_circle%istack_component(ifld-1) + n_scalar
+      end if
+      if(ipol%base%i_light .gt. 0) then
+        ifld = ifld + 1
+!        bench%ibench_temp = d_circle%istack_component(ifld-1) + 1
+        bench%iphys_dbench%i_light                                      &
+     &                    = d_circle%istack_component(ifld-1) + 1
+        d_circle%phys_name(ifld) =     composition%name
+        d_circle%num_component(ifld) = n_scalar
+        d_circle%istack_component(ifld)                                 &
+     &        = d_circle%istack_component(ifld-1) + n_scalar
       end if
       d_circle%flag_monitor = .TRUE.
       d_circle%ntot_phys =     d_circle%istack_component(ifld)

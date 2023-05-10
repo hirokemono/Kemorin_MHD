@@ -38,40 +38,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine count_mid_equator_fld_dbench(ipol, bench)
-!
-      use t_phys_address
-      use t_field_4_dynamobench
-!
-      type(phys_address), intent(in) :: ipol
-!
-      type(dynamobench_monitor), intent(inout) :: bench
-!
-      integer(kind = kint) :: i_fld
-!
-!
-      i_fld = 1
-      if(ipol%base%i_velo .gt. 0) then
-        bench%iphys_circle%base%i_velo = i_fld
-        i_fld = i_fld + n_vector
-      end if
-      if(ipol%base%i_magne .gt. 0) then
-        bench%iphys_circle%base%i_magne = i_fld
-        i_fld = i_fld + n_vector
-      end if
-      if(ipol%base%i_temp .gt. 0) then
-        bench%iphys_circle%base%i_temp = i_fld
-        i_fld = i_fld + n_scalar
-      end if
-      if(ipol%base%i_light .gt. 0) then
-        bench%iphys_circle%base%i_light = i_fld
-        i_fld = i_fld + n_scalar
-      end if
-!
-      end subroutine count_mid_equator_fld_dbench
-!
-! ----------------------------------------------------------------------
-!
       subroutine const_dynamobench_data                                 &
      &         (time_d, sph_params, sph_rj, sph_MHD_bc, trans_p, ipol,  &
      &          rj_fld, pwr, cdat, bench)
@@ -203,26 +169,27 @@
       allocate(cdat%leg_crc%vrtm_phase(0:cdat%circle%mphi_circle, cdat%d_circle%ntot_phys_viz))
       allocate(cdat%leg_crc%v_rtp_circle(cdat%circle%mphi_circle, cdat%d_circle%ntot_phys_viz))
 !
-      call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,                &
-     &    bench%iphys_circle, cdat%circle, cdat%circ_spec,         &
+      call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,     &
+     &    bench%iphys_dbench, cdat%circle, cdat%circ_spec,              &
      &    cdat%d_circle, cdat%leg_crc%P_circ, cdat%leg_crc%dPdt_circ,   &
-     &    cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc, cdat%leg_crc%vrtm_mag, &
+     &    cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc,               &
+     &    cdat%leg_crc%vrtm_mag, &
      &    cdat%leg_crc%vrtm_phase, cdat%leg_crc%v_rtp_circle, &
      &    cdat%WK_circle_fft)
 !
 !      if(my_rank .eq. 0) then
-!        i = bench%iphys_circle%base%i_velo
+!        i = bench%iphys_dbench%i_velo
 !        write(60,*) 'j, velo_new', ipol%base%i_velo, i
 !        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
 !          write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
 !        end do
-!        i = bench%iphys_circle%base%i_magne
+!        i = bench%iphys_dbench%i_magne
 !        write(60,*) 'j, magne_new', ipol%base%i_magne, i
 !        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
 !          write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
 !        end do
 !!
-!        i = bench%iphys_circle%base%i_temp
+!        i = bench%iphys_dbench%i_temp
 !        write(60,*) 'j, temp_new', ipol%base%i_temp, i
 !        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
 !        write(60,*) j, cdat%leg_crc%d_circ_gl(j,i)
@@ -230,18 +197,18 @@
 !      end if
 !
       if(my_rank .eq. 0) then
-        i = bench%iphys_circle%base%i_velo
+        i = bench%iphys_dbench%i_velo
         write(60,*) 'j, velo_new', ipol%base%i_velo, i
         do j = 1, cdat%circle%mphi_circle
           write(60,*) j, cdat%leg_crc%v_rtp_circle(j,i:i+2)
         end do
-        i = bench%iphys_circle%base%i_magne
+        i = bench%iphys_dbench%i_magne
         write(60,*) 'j, magne_new', ipol%base%i_magne, i
         do j = 1, cdat%circle%mphi_circle
           write(60,*) j, cdat%leg_crc%v_rtp_circle(j,i:i+2)
         end do
 !!
-        i = bench%iphys_circle%base%i_temp
+        i = bench%iphys_dbench%i_temp
         write(60,*) 'j, temp_new', ipol%base%i_temp, i
         do j = 1, cdat%circle%mphi_circle
         write(60,*) j, cdat%leg_crc%v_rtp_circle(j,i)

@@ -162,7 +162,7 @@ div_self_buoyancies_sph.o: $(MHD_SPH_DIR)/div_self_buoyancies_sph.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 explicit_scalars_sph.o: $(MHD_SPH_DIR)/explicit_scalars_sph.f90 m_precision.o t_spheric_parameter.o t_spheric_rj_data.o t_boundary_data_sph_MHD.o t_physical_property.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_explicit_term_labels.o t_phys_data.o select_diff_adv_source.o cal_inner_core_rotation.o
 	$(F90) -c $(F90OPTFLAGS) $<
-field_at_mid_equator.o: $(MHD_SPH_DIR)/field_at_mid_equator.f90 m_precision.o m_constants.o m_machine_parameter.o t_field_on_circle.o t_circle_transform.o calypso_mpi.o t_work_4_sph_trans.o t_spheric_parameter.o t_fields_on_circle.o t_phys_data.o
+field_at_mid_equator.o: $(MHD_SPH_DIR)/field_at_mid_equator.f90 m_precision.o m_constants.o m_machine_parameter.o t_field_on_circle.o t_circle_transform.o calypso_mpi.o t_work_4_sph_trans.o t_spheric_parameter.o calypso_mpi_real.o t_spheric_rj_data.o t_phys_data.o t_phys_address.o t_fields_on_circle.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fill_scalar_field.o: $(MHD_SPH_DIR)/fill_scalar_field.f90 m_precision.o m_constants.o t_boundary_params_sph_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
