@@ -156,10 +156,6 @@
       integer :: i, j, n, ifld
 !
 !    spherical transfer
-!
-      call sph_transfer_on_circle(iflag_FFT, sph_rj, rj_fld, cdat)
-!
-!
       allocate(cdat%leg_crc%d_circ_gl(-cdat%circ_spec%ltr_circle:cdat%circ_spec%ltr_circle,    &
      &                   cdat%d_circle%ntot_phys))
       allocate(cdat%leg_crc%d_circ_lc(-cdat%circ_spec%ltr_circle:cdat%circ_spec%ltr_circle,    &

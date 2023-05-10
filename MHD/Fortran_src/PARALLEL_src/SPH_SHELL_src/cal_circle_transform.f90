@@ -7,12 +7,6 @@
 !>@brief  spherical transform at a specific circle at @f$(r, theta)@f$
 !!
 !!@verbatim
-!!      subroutine circle_lag_transfer_vector(ltr_circle, jmax_circle,  &
-!!     &          P_circle, dPdt_circle, ar_circle, ar2_circle,         &
-!!     &          jmax, d_rj_circle, vcirc_rtm)
-!!      subroutine circle_lag_transfer_scalar(ltr_circle, jmax_circle,  &
-!!     &          P_circle, jmax, d_rj_circle, vcirc_rtm)
-!!
 !!      subroutine copy_circle_spectrum_4_fft(numdir, ltr_circle,       &
 !!     &          vcirc_rtm, mphi_circle, v_rtp_circle)
 !!      subroutine cal_circle_spectrum_vector(numdir, ltr_circle,       &
@@ -45,86 +39,6 @@
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine circle_lag_transfer_vector(ltr_circle, jmax_circle,    &
-     &          P_circle, dPdt_circle, ar_circle, ar2_circle,           &
-     &          jmax, d_rj_circle, vcirc_rtm)
-!
-      integer(kind = kint), intent(in) :: ltr_circle
-      integer(kind = kint), intent(in) :: jmax_circle
-      real(kind = kreal), intent(in) :: ar_circle, ar2_circle
-      real(kind = kreal), intent(in) :: P_circle(0:jmax_circle)
-      real(kind = kreal), intent(in) :: dPdt_circle(0:jmax_circle)
-      integer(kind = kint), intent(in) :: jmax
-      real(kind = kreal), intent(in) :: d_rj_circle(0:jmax,3)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: vcirc_rtm(-ltr_circle:ltr_circle,3)
-!
-      integer(kind = kint) :: l, m, j
-!
-!
-      vcirc_rtm = 0.0d0
-      do l = 1, ltr_circle
-        do m = -l, l
-          j = l*(l+1) + m
-          vcirc_rtm(m,1) = vcirc_rtm(m,1) + d_rj_circle(j,1)            &
-     &                  * P_circle(j) * dble(l)*dble(l+1)
-          vcirc_rtm(m,2) = vcirc_rtm(m,2) + d_rj_circle(j,2)            &
-     &                  * dPdt_circle(j)
-          vcirc_rtm(m,3) = vcirc_rtm(m,3) - d_rj_circle(j,3)            &
-     &                  * dPdt_circle(j)
-        end do
-!
-        do m = -l, l
-          j = l*(l+1) + m
-          vcirc_rtm(-m,2) = vcirc_rtm(-m,2) + d_rj_circle(j,3)          &
-     &                   * P_circle(j) * dble(-m)
-!
-          vcirc_rtm(-m,3) = vcirc_rtm(-m,3) + d_rj_circle(j,2)          &
-     &                   * P_circle(j) * dble(-m)
-        end do
-      end do
-!
-      do m = -ltr_circle, ltr_circle
-        vcirc_rtm(m,1) = vcirc_rtm(m,1) * ar2_circle
-        vcirc_rtm(m,2) = vcirc_rtm(m,2) * ar_circle
-        vcirc_rtm(m,3) = vcirc_rtm(m,3) * ar_circle
-      end do
-!
-      end subroutine circle_lag_transfer_vector
-!
-! ----------------------------------------------------------------------
-!
-      subroutine circle_lag_transfer_scalar(ltr_circle, jmax_circle,    &
-     &          P_circle, jmax, d_rj_circle, vcirc_rtm)
-!
-      integer(kind = kint), intent(in) :: ltr_circle
-      integer(kind = kint), intent(in) :: jmax_circle
-      real(kind = kreal), intent(in) :: P_circle(0:jmax_circle)
-      integer(kind = kint), intent(in) :: jmax
-      real(kind = kreal), intent(in) :: d_rj_circle(0:jmax)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: vcirc_rtm(-ltr_circle:ltr_circle,3)
-!
-      integer(kind = kint) :: l, m, j
-!
-!
-      vcirc_rtm = 0.0d0
-      vcirc_rtm(0,1) = d_rj_circle(0)
-      do l = 1, ltr_circle
-        do m = -l, l
-          j = l*(l+1) + m
-          vcirc_rtm(m,1) = vcirc_rtm(m,1) + d_rj_circle(j)              &
-     &                    * P_circle(j)
-        end do
-      end do
-!
-      end subroutine circle_lag_transfer_scalar
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine copy_circle_spectrum_4_fft(numdir, ltr_circle,         &

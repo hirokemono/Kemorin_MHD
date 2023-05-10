@@ -7,9 +7,11 @@
 !>@brief  spherical transform at a specific circle at @f$(r, theta)@f$
 !!
 !!@verbatim
-!!      subroutine initialize_circle_transform                          &
-!!     &          (iflag_FFT, circle, circ_spec, WK_circle_fft)
-!!
+!!      subroutine sph_transfer_on_circle                               &
+!!     &         (iflag_FFT, sph_rj, rj_fld, cdat)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(circle_fld_maker), intent(inout) :: cdat
 !!      subroutine circle_transfer_vector                               &
 !!     &         (iflag_FFT, ifld, circle, circ_spec, WK_circle_fft)
 !!      subroutine circle_transfer_scalar                               &
@@ -19,6 +21,11 @@
 !!        type(fields_on_circle), intent(inout) :: circle
 !!        type(circle_transform_spetr), intent(inout) :: circ_spec
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
+!!      subroutine circle_lag_transfer_scalar(ltr_circle, jmax_circle,  &
+!!     &          P_circle, jmax, d_rj_circle, vcirc_rtm)
+!!      subroutine circle_lag_transfer_vector(ltr_circle, jmax_circle,  &
+!!     &          P_circle, dPdt_circle, ar_circle, ar2_circle,         &
+!!     &          jmax, d_rj_circle, vcirc_rtm)
 !!@endverbatim
 !!
 !
@@ -46,54 +53,60 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_circle_transform                            &
-     &          (iflag_FFT, circle, circ_spec, WK_circle_fft)
+      subroutine sph_transfer_on_circle                                 &
+     &         (iflag_FFT, sph_rj, rj_fld, cdat)
 !
       use calypso_mpi
+      use m_phys_constants
+!
+      use t_spheric_rj_data
+      use t_phys_data
+!
+      use circle_transform_single
 !
       integer(kind = kint), intent(in) :: iflag_FFT
-      type(fields_on_circle), intent(in) :: circle
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_data), intent(in) :: rj_fld
 !
-      type(circle_transform_spetr), intent(inout) :: circ_spec
-      type(working_FFTs), intent(inout) :: WK_circle_fft
+      type(circle_fld_maker), intent(inout) :: cdat
 !
-      integer(kind = kint) :: l, m, mm, j
-!
-!
-      circ_spec%r_circle                                                &
-     &      = sqrt(circle%s_circle**2 + circle%z_circle**2)
-      circ_spec%theta_circle                                            &
-     &      = acos(circle%z_circle / circ_spec%r_circle)
-!
-      circ_spec%ar_circle = one / circ_spec%r_circle
-      circ_spec%ar2_circle = circ_spec%ar_circle**2
+      integer(kind = kint) :: ifld, icomp, m, nd
 !
 !
-      call alloc_schmidt_polynomial(circ_spec%ltr_circle, leg_c)
-      call dschmidt(circ_spec%theta_circle, leg_c)
+      call collect_spectr_for_circle(sph_rj%nidx_rj(2),                 &
+     &    sph_rj%nidx_global_rj, sph_rj%idx_gl_1d_rj_j,                 &
+     &    rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,            &
+     &    rj_fld%istack_component, rj_fld%phys_name, rj_fld%d_fld,      &
+     &    cdat%d_circle, cdat%circle)
 !
-      do l = 1, circ_spec%ltr_circle
-        do m = -l, l
-          j = l*(l+1) + m
-          mm = abs(m)
-          circ_spec%P_circle(j) =    leg_c%p(mm,l)
-          circ_spec%dPdt_circle(j) = leg_c%dp(mm,l)
-        end do
-      end do
-!
-      call dealloc_schmidt_polynomial(leg_c)
+!    spherical transfer
 !
       if(my_rank .gt. 0) return
 !
-      write(*,*) 'np_smp', np_smp
-      write(*,*) 'istack_circfft_smp', circ_spec%istack_circfft_smp
-      write(*,*) 'mphi_circle', circle%mphi_circle
-      call initialize_FFT_select                                        &
-     &   (my_rank, iflag_FFT, np_smp, circ_spec%istack_circfft_smp,     &
-     &    circle%mphi_circle, WK_circle_fft)
+      do ifld = 1, cdat%d_circle%num_phys_viz
+        icomp =  cdat%d_circle%istack_component(ifld-1) + 1
+        if(cdat%d_circle%num_component(ifld) .eq. n_sym_tensor) then
+          call circle_transfer_sym_tensor(iflag_FFT, icomp,             &
+     &        cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
+        else if(cdat%d_circle%num_component(ifld) .eq. n_vector) then
+          call circle_transfer_vector(iflag_FFT, icomp,                 &
+     &        cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
+        else
+          call circle_transfer_scalar(iflag_FFT, icomp,                 &
+     &        cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
+        end if
 !
-      end subroutine initialize_circle_transform
+        do nd = 1, cdat%d_circle%num_component(ifld)
+          do m = 1, cdat%circle%mphi_circle
+            cdat%d_circle%d_fld(m,icomp+nd-1)                           &
+     &         = cdat%circle%v_rtp_circle(m,nd)
+          end do
+        end do
+      end do
 !
+      end subroutine sph_transfer_on_circle
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine circle_transfer_vector                                 &
@@ -213,6 +226,85 @@
       end do
 !
       end subroutine circle_transfer_sym_tensor
+!
+! ----------------------------------------------------------------------
+!
+      subroutine circle_lag_transfer_scalar(ltr_circle, jmax_circle,    &
+     &          P_circle, jmax, d_rj_circle, vcirc_rtm)
+!
+      integer(kind = kint), intent(in) :: ltr_circle
+      integer(kind = kint), intent(in) :: jmax_circle
+      real(kind = kreal), intent(in) :: P_circle(0:jmax_circle)
+      integer(kind = kint), intent(in) :: jmax
+      real(kind = kreal), intent(in) :: d_rj_circle(0:jmax)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: vcirc_rtm(-ltr_circle:ltr_circle,3)
+!
+      integer(kind = kint) :: l, m, j
+!
+!
+      vcirc_rtm = 0.0d0
+      vcirc_rtm(0,1) = d_rj_circle(0)
+      do l = 1, ltr_circle
+        do m = -l, l
+          j = l*(l+1) + m
+          vcirc_rtm(m,1) = vcirc_rtm(m,1) + d_rj_circle(j)              &
+     &                    * P_circle(j)
+        end do
+      end do
+!
+      end subroutine circle_lag_transfer_scalar
+!
+! ----------------------------------------------------------------------
+!
+      subroutine circle_lag_transfer_vector(ltr_circle, jmax_circle,    &
+     &          P_circle, dPdt_circle, ar_circle, ar2_circle,           &
+     &          jmax, d_rj_circle, vcirc_rtm)
+!
+      integer(kind = kint), intent(in) :: ltr_circle
+      integer(kind = kint), intent(in) :: jmax_circle
+      real(kind = kreal), intent(in) :: ar_circle, ar2_circle
+      real(kind = kreal), intent(in) :: P_circle(0:jmax_circle)
+      real(kind = kreal), intent(in) :: dPdt_circle(0:jmax_circle)
+      integer(kind = kint), intent(in) :: jmax
+      real(kind = kreal), intent(in) :: d_rj_circle(0:jmax,3)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: vcirc_rtm(-ltr_circle:ltr_circle,3)
+!
+      integer(kind = kint) :: l, m, j
+!
+!
+      vcirc_rtm = 0.0d0
+      do l = 1, ltr_circle
+        do m = -l, l
+          j = l*(l+1) + m
+          vcirc_rtm(m,1) = vcirc_rtm(m,1) + d_rj_circle(j,1)            &
+     &                  * P_circle(j) * dble(l)*dble(l+1)
+          vcirc_rtm(m,2) = vcirc_rtm(m,2) + d_rj_circle(j,2)            &
+     &                  * dPdt_circle(j)
+          vcirc_rtm(m,3) = vcirc_rtm(m,3) - d_rj_circle(j,3)            &
+     &                  * dPdt_circle(j)
+        end do
+!
+        do m = -l, l
+          j = l*(l+1) + m
+          vcirc_rtm(-m,2) = vcirc_rtm(-m,2) + d_rj_circle(j,3)          &
+     &                   * P_circle(j) * dble(-m)
+!
+          vcirc_rtm(-m,3) = vcirc_rtm(-m,3) + d_rj_circle(j,2)          &
+     &                   * P_circle(j) * dble(-m)
+        end do
+      end do
+!
+      do m = -ltr_circle, ltr_circle
+        vcirc_rtm(m,1) = vcirc_rtm(m,1) * ar2_circle
+        vcirc_rtm(m,2) = vcirc_rtm(m,2) * ar_circle
+        vcirc_rtm(m,3) = vcirc_rtm(m,3) * ar_circle
+      end do
+!
+      end subroutine circle_lag_transfer_vector
 !
 ! ----------------------------------------------------------------------
 !
