@@ -68,12 +68,21 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_drift_by_v44(time, circle, ibench_velo,            &
-     &          t_prev, phase_vm4, phase_vm4_prev, omega_vm4)
+      subroutine cal_drift_by_v44(time, sph_rj, rj_fld, ipol,            &
+     &          circle, ibench_velo, t_prev, phase_vm4, phase_vm4_prev, omega_vm4)
 !
+      use calypso_mpi
+      use calypso_mpi_real
+      use t_spheric_rj_data
+      use t_phys_data
+      use t_phys_address
       use t_fields_on_circle
+      use transfer_to_long_integers
 !
       real(kind=kreal), intent(in) :: time
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_data), intent(in) :: rj_fld
+      type(phys_address), intent(in) :: ipol
       type(fields_on_circle), intent(in) :: circle
       integer(kind = kint), intent(in) :: ibench_velo
 !
@@ -82,12 +91,56 @@
       real(kind = kreal), intent(inout) :: phase_vm4_prev(2)
       real(kind = kreal), intent(inout) :: omega_vm4(2)
 !
-      integer(kind = kint) :: j4c, j4s
-      real(kind = kreal) :: vp44c, vp44s
+      integer(kind = kint) :: j4c, j4s, kr_in, kr_out, i_in, i_out
+      real(kind = kreal) :: vp44c, vp44s, c_in, c_out
       real(kind = kreal) :: vt54c, vt54s
+      real(kind = kreal) :: v4_lc(4), v4_gl(4)
 !
 !
       if(time .eq. t_prev) return
+!
+      kr_in =  circle%kr_gl_rcirc_in
+      kr_out = circle%kr_gl_rcirc_out
+      c_in =   circle%coef_gl_rcirc_in
+      c_out =  circle%coef_gl_rcirc_out
+      v4_lc(1:4) = 0.0d0
+!
+      j4c = find_local_sph_address(sph_rj, 4, 4)
+      if(j4c .gt. 0) then
+        i_in =  local_sph_node_address(sph_rj, kr_in, j4c)
+        i_out = local_sph_node_address(sph_rj, kr_out, j4c)
+        v4_lc(1) = c_in *   rj_fld%d_fld(i_in, ipol%base%i_velo)        &
+     &            + c_out * rj_fld%d_fld(i_out,ipol%base%i_velo)
+      end if
+!
+      j4s = find_local_sph_address(sph_rj, 4,-4)
+      if(j4s .gt. 0) then
+        i_in =  local_sph_node_address(sph_rj, kr_in, j4s)
+        i_out = local_sph_node_address(sph_rj, kr_out, j4s)
+        v4_lc(2) = c_in *   rj_fld%d_fld(i_in, ipol%base%i_velo)        &
+     &            + c_out * rj_fld%d_fld(i_out,ipol%base%i_velo)
+      end if
+!
+      j4c = find_local_sph_address(sph_rj, 5, 4)
+      if(j4c .gt. 0) then
+        i_in =  local_sph_node_address(sph_rj, kr_in, j4c)
+        i_out = local_sph_node_address(sph_rj, kr_out, j4c)
+        v4_lc(3) = c_in *   rj_fld%d_fld(i_in, ipol%base%i_velo+2)      &
+     &            + c_out * rj_fld%d_fld(i_out,ipol%base%i_velo+2)
+      end if
+!
+      j4s = find_local_sph_address(sph_rj, 5,-4)
+      if(j4s .gt. 0) then
+        i_in =  local_sph_node_address(sph_rj, kr_in, j4s)
+        i_out = local_sph_node_address(sph_rj, kr_out, j4s)
+        v4_lc(4) = c_in *   rj_fld%d_fld(i_in, ipol%base%i_velo+2)      &
+     &            + c_out * rj_fld%d_fld(i_out,ipol%base%i_velo+2)
+      end if
+!
+      call calypso_mpi_reduce_real                                      &
+     &   (v4_lc, v4_gl, cast_long(ifour), MPI_SUM, 0)
+!
+      if(my_rank .ne. 0) return
 !
       j4c = ifour*(ifour+1) + ifour
       j4s = ifour*(ifour+1) - ifour
@@ -98,6 +151,11 @@
       j4s = ifive*(ifive+1) - ifour
       vt54c = circle%d_rj_circle(j4c,ibench_velo+2)
       vt54s = circle%d_rj_circle(j4s,ibench_velo+2)
+!
+      write(*,*) 'vp44c', vp44c, v4_gl(1)
+      write(*,*) 'vp44s', vp44s, v4_gl(2)
+      write(*,*) 'vt54c', vt54c, v4_gl(3)
+      write(*,*) 'vt54s', vt54s, v4_gl(4)
 !
       phase_vm4(1) = atan2(vp44s,vp44c)
       phase_vm4(2) = atan2(vt54s,vt54c)

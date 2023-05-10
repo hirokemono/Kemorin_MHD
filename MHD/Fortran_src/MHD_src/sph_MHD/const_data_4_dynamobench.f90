@@ -260,15 +260,16 @@
       deallocate(cdat%leg_crc%vrtm_mag, cdat%leg_crc%vrtm_phase, cdat%leg_crc%v_rtp_circle)
       deallocate(cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
 !
-      if(my_rank .gt. 0) return
 !
 !
 !
 !   Evaluate drift frequencty by velocity 
 !
-      call cal_drift_by_v44(time, cdat%circle, bench%ibench_velo,       &
+      call cal_drift_by_v44(time, sph_rj, rj_fld, ipol,   &
+     &    cdat%circle, bench%ibench_velo,       &
      &    bench%t_prev, bench%phase_vm4, bench%phase_vm4_prev,          &
      &    bench%omega_vm4)
+      if(my_rank .gt. 0) return
 !
 !   find local point for dynamobench
 !
