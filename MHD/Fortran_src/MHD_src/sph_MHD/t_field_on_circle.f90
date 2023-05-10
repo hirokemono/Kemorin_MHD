@@ -190,7 +190,6 @@
       leg_crc%dPdt_circ(1:sph%sph_rj%nidx_rj(2)) = 0.0d0
 !$omp end parallel workshare
 !
-!
       leg_crc%colat = colat_circle
       call s_const_equator_legendres_rj(leg_crc%colat,                  &
      &    sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,         &

@@ -162,7 +162,7 @@
      &                   cdat%d_circle%ntot_phys))
 !
       allocate(cdat%leg_crc%vrtm_mag(0:cdat%circle%mphi_circle,cdat%d_circle%ntot_phys_viz))
-      allocate(cdat%leg_crc%vrtm_phase(0:cdat%circle%mphi_circle, cdat%d_circle%ntot_phys_viz))
+      allocate(cdat%leg_crc%vrtm_phase(0:cdat%circ_spec%ltr_circle, cdat%d_circle%ntot_phys_viz))
 !
       call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,     &
      &    bench%iphys_dbench, cdat%circle, cdat%circ_spec,              &
@@ -189,16 +189,16 @@
 !        end do
 !      end if
 !
-      if(my_rank .eq. 0) then
-        do ifld = 1, cdat%d_circle%num_phys_viz
-          i = cdat%d_circle%istack_component(ifld-1)
-          n = cdat%d_circle%istack_component(ifld) - i
-          write(61,*) 'j', trim(cdat%d_circle%phys_name(ifld)), ifld, i
-          do j = 1, cdat%circle%mphi_circle
-            write(61,*) j, cdat%d_circle%d_fld(j,i+1:i+n)
-          end do
-        end do
-      end if
+!      if(my_rank .eq. 0) then
+!        do ifld = 1, cdat%d_circle%num_phys_viz
+!          i = cdat%d_circle%istack_component(ifld-1)
+!          n = cdat%d_circle%istack_component(ifld) - i
+!          write(61,*) 'j', trim(cdat%d_circle%phys_name(ifld)), ifld, i
+!          do j = 1, cdat%circle%mphi_circle
+!            write(61,*) j, cdat%d_circle%d_fld(j,i+1:i+n)
+!          end do
+!        end do
+!      end if
 !
       deallocate(cdat%leg_crc%vrtm_mag, cdat%leg_crc%vrtm_phase)
       deallocate(cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
@@ -262,7 +262,7 @@
      &                   nod_fld%ntot_phys_viz))
 !
       allocate(leg_crc%vrtm_mag(0:circle%mphi_circle,nod_fld%ntot_phys_viz))
-      allocate(leg_crc%vrtm_phase(0:circle%mphi_circle, nod_fld%ntot_phys_viz))
+      allocate(leg_crc%vrtm_phase(0:circ_spec%ltr_circle, nod_fld%ntot_phys_viz))
 !
       call circle_leg_bwd_trans_rj                                      &
      &   (iflag_FFT, sph_rj, rj_fld, nod_fld, leg_crc%ipol_circle_trns, &

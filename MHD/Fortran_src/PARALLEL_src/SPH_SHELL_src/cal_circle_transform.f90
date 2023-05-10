@@ -23,7 +23,7 @@
 !!@n @param v_rtp_circle(mphi_circle,numdir)  Field along circle
 !!@n @param vrtm_mag(0:mphi_circle,numdir)  Amplitude of spectrum data
 !!                                        along with the circle
-!!@n @param vrtm_phase(0:mphi_circle,numdir)    Phase of spectrum data
+!!@n @param vrtm_phase(0:ltr_circle,numdir)    Phase of spectrum data
 !!                                        along with the circle
 !
       module cal_circle_transform
@@ -94,7 +94,7 @@
       real(kind = kreal), intent(inout)                                 &
      &            :: vrtm_mag(0:mphi_circle,numdir)
       real(kind = kreal), intent(inout)                                 &
-     &            :: vrtm_phase(0:mphi_circle,numdir)
+     &            :: vrtm_phase(0:ltr_circle,numdir)
 !
       integer(kind = kint) :: nd, m
 !

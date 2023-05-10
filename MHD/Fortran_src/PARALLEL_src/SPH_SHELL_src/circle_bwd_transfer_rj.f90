@@ -31,7 +31,7 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!       &      :: vrtm_mag(0:circle%mphi_circle,d_circle%ntot_phys)
 !!        real(kind = kreal), intent(inout)                             &
-!!       &      :: vrtm_phase(0:circle%mphi_circle,d_circle%ntot_phys)
+!!       &      :: vrtm_phase(0:circ_spec%ltr_circle,d_circle%ntot_phys)
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!
 !!      subroutine circle_leg_bwd_trans_rj                              &
@@ -59,7 +59,7 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!       &      :: vrtm_mag(0:circle%mphi_circle,d_circle%ntot_phys)
 !!        real(kind = kreal), intent(inout)                             &
-!!       &      :: vrtm_phase(0:circle%mphi_circle,d_circle%ntot_phys)
+!!       &      :: vrtm_phase(0:circ_spec%ltr_circle,d_circle%ntot_phys)
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!@endverbatim
       module circle_bwd_transfer_rj
@@ -122,7 +122,7 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: vrtm_mag(0:circle%mphi_circle,d_circle%ntot_phys)
       real(kind = kreal), intent(inout)                                 &
-     &      :: vrtm_phase(0:circle%mphi_circle,d_circle%ntot_phys)
+     &      :: vrtm_phase(0:circ_spec%ltr_circle,d_circle%ntot_phys)
 !
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
@@ -220,7 +220,7 @@
       real(kind = kreal), intent(inout)                                 &
      &      :: vrtm_mag(0:circle%mphi_circle,d_circle%ntot_phys)
       real(kind = kreal), intent(inout)                                 &
-     &      :: vrtm_phase(0:circle%mphi_circle,d_circle%ntot_phys)
+     &      :: vrtm_phase(0:circ_spec%ltr_circle,d_circle%ntot_phys)
 !
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !

@@ -133,7 +133,7 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
         call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step,      &
      &      MHD_files1, SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1,        &
-     &      m_SR1%SR_sig, m_SR1%SR_r, cdat1)
+     &      m_SR1%SR_sig, m_SR1%SR_r)
 !*
 !*  -----------  exit loop --------------
 !*

@@ -22,7 +22,7 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine SPH_analyze_pick_circle(i_step, MHD_files, SPH_model,&
-!!     &          SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat)
+!!     &          SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
@@ -160,7 +160,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_pick_circle(i_step, MHD_files, SPH_model,  &
-     &          SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat)
+     &          SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !
       use m_work_time
 !
@@ -171,7 +171,6 @@
       use sph_mhd_rst_IO_control
       use input_control_sph_MHD
       use output_viz_file_control
-      use field_on_circle_IO
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -179,7 +178,6 @@
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(work_SPH_MHD), intent(inout) :: SPH_WK
-      type(circle_fld_maker), intent(inout) :: cdat
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -233,13 +231,6 @@
      &      SR_sig, SR_r)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
-!
-!*  -----------  lead mid-equator field --------------
-!*
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      call write_field_data_on_circle(my_rank, i_step,                  &
-     &    MHD_step1%time_d%time, cdat%circle, cdat%d_circle)
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine SPH_analyze_pick_circle
 !
