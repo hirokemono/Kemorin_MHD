@@ -99,16 +99,8 @@
 !>        Array for data output
         real(kind = kreal), allocatable :: detail_out(:)
 !
-!
 !>        Address list for circle data
         type(phys_address) :: iphys_circle
-!>        Address list for transform
-        type(address_4_sph_trans) :: trns_dbench
-!
-!>        Legendre polynomials at specific latitude
-        integer(kind = kint) :: ncomp_sph_trans_meq = 0
-        integer(kind = kint) :: nvec_sph_trans_meq = 0
-        integer(kind = kint) :: nscl_sph_trans_meq = 0
       end type dynamobench_monitor
 !
 ! ----------------------------------------------------------------------

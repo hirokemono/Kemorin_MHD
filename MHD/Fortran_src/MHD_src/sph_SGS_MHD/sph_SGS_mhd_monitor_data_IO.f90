@@ -122,8 +122,6 @@
      &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
      &      monitor%circ_mid_eq%leg_crc, SR_sig, SR_r)
         call count_mid_equator_fld_dbench(SPH_MHD%ipol, monitor%bench)
-        call init_address_dbench_trans(SPH_MHD%fld, SPH_MHD%ipol,       &
-     &                                 monitor%bench)
       end if
 !
       do i = 1, monitor%mul_circle%num_circles

@@ -40,6 +40,43 @@
       contains
 !
 !-----------------------------------------------------------------------
+      subroutine init_address_dbench_trans(rj_fld, ipol, bench)
+!
+      use t_phys_data
+      use t_phys_address
+      use t_field_4_dynamobench
+!
+      type(phys_data), intent(in) :: rj_fld
+      type(phys_address), intent(in) :: ipol
+!
+      type(dynamobench_monitor), intent(inout) :: bench
+!
+!
+      bench%ncomp_sph_trans_meq = 0
+      bench%nvec_sph_trans_meq =  0
+      bench%nscl_sph_trans_meq =  0
+      call set_addresses_circle_trans                                   &
+     &   (rj_fld, ipol, bench%iphys_circle, bench%trns_dbench,          &
+     &    bench%ncomp_sph_trans_meq, bench%nvec_sph_trans_meq,          &
+     &    bench%nscl_sph_trans_meq)
+!
+!      if(my_rank .ne. 0) return
+!      write(*,*) 'Velocity',     ipol%base%i_velo,                     &
+!     &              bench%iphys_circle%base%i_velo,                    &
+!     &        bench%trns_dbench%b_trns%base%i_velo
+!      write(*,*) 'Magnetic',     ipol%base%i_magne,                    &
+!     &              bench%iphys_circle%base%i_magne,                   &
+!     &        bench%trns_dbench%b_trns%base%i_magne
+!      write(*,*) 'Temperature',  ipol%base%i_temp,                     &
+!     &              bench%iphys_circle%base%i_temp,                    &
+!     &        bench%trns_dbench%b_trns%base%i_temp
+!      write(*,*) 'Composition',  ipol%base%i_light,                    &
+!     &              bench%iphys_circle%base%i_light,                   &
+!     &        bench%trns_dbench%b_trns%base%i_light
+!
+      end subroutine init_address_dbench_trans
+!
+! ----------------------------------------------------------------------
 !
       subroutine set_addresses_circle_trans                             &
      &         (d_rj, ipol, ibench, trns_dbench,                        &
