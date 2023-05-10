@@ -48,8 +48,6 @@
 !
 !
       type leg_circle
-!>        Colatitude of the circle
-        real(kind = kreal) :: colat
 !>        Legendre polynomial of the circle
         real(kind = kreal), allocatable :: P_circ(:)
 !>        difference of the Legendre polynomial of the circle
@@ -192,8 +190,7 @@
       leg_crc%dPdt_circ(1:sph%sph_rj%nidx_rj(2)) = 0.0d0
 !$omp end parallel workshare
 !
-      leg_crc%colat = colat_circle
-      call s_const_equator_legendres_rj(leg_crc%colat,                  &
+      call s_const_equator_legendres_rj(colat_circle,                   &
      &    sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,         &
      &    comms_sph, trans_p, leg_crc%P_circ, leg_crc%dPdt_circ,        &
      &    SR_sig, SR_r)
