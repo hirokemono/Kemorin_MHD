@@ -156,55 +156,15 @@
 !      integer :: i, j, n, ifld
 !
 !    spherical transfer
-      allocate(cdat%leg_crc%d_circ_gl(-cdat%circ_spec%ltr_circle:cdat%circ_spec%ltr_circle,    &
-     &                   cdat%d_circle%ntot_phys))
-      allocate(cdat%leg_crc%d_circ_lc(-cdat%circ_spec%ltr_circle:cdat%circ_spec%ltr_circle,    &
-     &                   cdat%d_circle%ntot_phys))
+      call alloc_work_circle_transform(my_rank, cdat%d_circle,          &
+     &                                 cdat%circ_spec)
+      call dbench_leg_bwd_trans_rj                                      &
+     &   (iflag_FFT, sph_rj, rj_fld, ipol, bench%iphys_dbench,          &
+     &    cdat%circle, cdat%leg_crc%P_circ, cdat%leg_crc%dPdt_circ,     &
+     &    cdat%circ_spec, cdat%d_circle, cdat%WK_circle_fft)
 !
-      allocate(cdat%leg_crc%vrtm_mag(0:cdat%circ_spec%ltr_circle,cdat%d_circle%ntot_phys_viz))
-      allocate(cdat%leg_crc%vrtm_phase(0:cdat%circ_spec%ltr_circle, cdat%d_circle%ntot_phys_viz))
-!
-      call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,     &
-     &    bench%iphys_dbench, cdat%circle, cdat%circ_spec,              &
-     &    cdat%leg_crc%P_circ, cdat%leg_crc%dPdt_circ, cdat%d_circle,   &
-     &    cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc,               &
-     &    cdat%leg_crc%vrtm_mag, cdat%leg_crc%vrtm_phase, cdat%WK_circle_fft)
-!
-!      if(my_rank .eq. 0) then
-!        i = bench%iphys_dbench%i_velo
-!        write(60,*) 'j, velo_new', ipol%base%i_velo, i
-!        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
-!          write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
-!        end do
-!        i = bench%iphys_dbench%i_magne
-!        write(60,*) 'j, magne_new', ipol%base%i_magne, i
-!        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
-!          write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
-!        end do
-!!
-!        i = bench%iphys_dbench%i_temp
-!        write(60,*) 'j, temp_new', ipol%base%i_temp, i
-!        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
-!        write(60,*) j, cdat%leg_crc%d_circ_gl(j,i)
-!        end do
-!      end if
-!
-!      if(my_rank .eq. 0) then
-!        do ifld = 1, cdat%d_circle%num_phys_viz
-!          i = cdat%d_circle%istack_component(ifld-1)
-!          n = cdat%d_circle%istack_component(ifld) - i
-!          write(61,*) 'j', trim(cdat%d_circle%phys_name(ifld)), ifld, i
-!          do j = 1, cdat%circle%mphi_circle
-!            write(61,*) j, cdat%d_circle%d_fld(j,i+1:i+n)
-!          end do
-!        end do
-!      end if
-!
-      deallocate(cdat%leg_crc%vrtm_mag, cdat%leg_crc%vrtm_phase)
-      deallocate(cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
-!
-!
-!
+      call check_mid_eq_trans_dbench(ipol, cdat%circle, cdat%leg_crc,   &
+     &    cdat%circ_spec, cdat%d_circle, bench)
 !
 !   Evaluate drift frequencty by velocity 
 !
@@ -249,31 +209,72 @@
       type(phys_data), intent(in) :: rj_fld
       type(phys_data), intent(in) :: nod_fld
       type(fields_on_circle), intent(in) :: circle
-      type(circle_transform_spetr), intent(in) :: circ_spec
 !
       type(leg_circle), intent(inout) :: leg_crc
+      type(circle_transform_spetr), intent(inout) :: circ_spec
       type(phys_data), intent(inout) :: d_circle
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
 !
-      allocate(leg_crc%d_circ_gl(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
-     &                   nod_fld%ntot_phys_viz))
-      allocate(leg_crc%d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
-     &                   nod_fld%ntot_phys_viz))
-!
-      allocate(leg_crc%vrtm_mag(0:circ_spec%ltr_circle,nod_fld%ntot_phys_viz))
-      allocate(leg_crc%vrtm_phase(0:circ_spec%ltr_circle, nod_fld%ntot_phys_viz))
-!
+      call alloc_work_circle_transform(my_rank, d_circle, circ_spec)
       call circle_leg_bwd_trans_rj                                      &
      &   (iflag_FFT, sph_rj, rj_fld, nod_fld, leg_crc%ipol_circle_trns, &
-     &    circle, circ_spec, leg_crc%P_circ, leg_crc%dPdt_circ,         &
-     &    d_circle, leg_crc%d_circ_gl, leg_crc%d_circ_lc,               &
-     &    leg_crc%vrtm_mag, leg_crc%vrtm_phase, WK_circle_fft)
-!
-      deallocate(leg_crc%vrtm_mag, leg_crc%vrtm_phase)
-      deallocate(leg_crc%d_circ_gl, leg_crc%d_circ_lc)
+     &    circle, leg_crc%P_circ, leg_crc%dPdt_circ,                    &
+     &    circ_spec, d_circle, WK_circle_fft)
 !
       end subroutine sph_forward_trans_on_circles
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_mid_eq_trans_dbench(ipol, circle, leg_crc,       &
+     &                                     circ_spec, d_circle, bench)
+!
+      use calypso_mpi
+      use t_field_on_circle
+      use t_spheric_rj_data
+      use t_phys_data
+      use t_phys_address
+      use t_circle_transform
+      use t_field_4_dynamobench
+!
+      type(phys_address), intent(in) :: ipol
+      type(fields_on_circle), intent(in) :: circle
+      type(leg_circle), intent(in) :: leg_crc
+      type(circle_transform_spetr), intent(in) :: circ_spec
+      type(phys_data), intent(in) :: d_circle
+      type(dynamobench_monitor), intent(in) :: bench
+!
+      integer :: i, j, n, ifld
+!
+!    spherical transfer
+      if(my_rank .ne. 0) return
+      i = bench%iphys_dbench%i_velo
+      write(60,*) 'j, velo_new', ipol%base%i_velo, i
+      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
+        write(60,*) j, leg_crc%d_circ_gl(j,i:i+2)
+      end do
+      i = bench%iphys_dbench%i_magne
+      write(60,*) 'j, magne_new', ipol%base%i_magne, i
+      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
+        write(60,*) j, leg_crc%d_circ_gl(j,i:i+2)
+      end do
+!!
+      i = bench%iphys_dbench%i_temp
+      write(60,*) 'j, temp_new', ipol%base%i_temp, i
+      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
+      write(60,*) j, leg_crc%d_circ_gl(j,i)
+      end do
+!
+      do ifld = 1, d_circle%num_phys_viz
+        i = d_circle%istack_component(ifld-1)
+        n = d_circle%istack_component(ifld) - i
+        write(60,*) 'j', trim(d_circle%phys_name(ifld)), ifld, i
+        do j = 1, circle%mphi_circle
+          write(60,*) j, d_circle%d_fld(j,i+1:i+n)
+        end do
+      end do
+!
+      end subroutine check_mid_eq_trans_dbench
 !
 ! ----------------------------------------------------------------------
 !
