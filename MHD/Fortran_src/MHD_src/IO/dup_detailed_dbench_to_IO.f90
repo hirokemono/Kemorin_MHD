@@ -114,7 +114,7 @@
      &    sph_OUT_d%ntot_sph_spec, detail_out)
 !
       flag_gzip_lc = bench%gzip_flag_bench
-      file_name = add_dat_extension(bench%benchmark_file_prefix)
+      file_name = add_dat_extension(bench%detail_bench_file_prefix)
       call sel_open_sph_vol_monitor_file(id_dbench, file_name,          &
      &    sph_dnamobench_labels, sph_OUT_d, zbuf_d, flag_gzip_lc)
       call dealloc_sph_espec_name(sph_OUT_d)
