@@ -180,7 +180,8 @@
 !
       real(kind = kreal), intent(inout) :: phi_zero(4), phi_prev(4)
       real(kind = kreal), intent(inout) :: drift(4), ave_drift
-      real(kind = kreal), intent(inout) :: d_zero(0:4,7)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: d_zero(0:4,d_circle%ntot_phys)
 !
       integer(kind = kint) :: nd, mphi, mp_next, icou
       real(kind = kreal) :: coef, pi
@@ -199,7 +200,7 @@
 !
           phi_zero(icou) = two*pi                                       &
      &                * (dble(mphi) - coef) / dble(circle%mphi_circle)
-          do nd = 1, 7
+          do nd = 1, d_circle%ntot_phys
             d_zero(icou,nd) = coef * d_circle%d_fld(mphi,nd)            &
      &                     + (one - coef) * d_circle%d_fld(mp_next,nd)
           end do

@@ -150,6 +150,8 @@
      &      monitor%circ_mid_eq%d_circle, monitor%bench)
         call init_mid_equator_point_global                              &
      &     (trans_p, SPH_MHD%sph, monitor%circ_mid_eq)
+        call alloc_dynamobench_monitor(monitor%circ_mid_eq%d_circle,    &
+     &                                 monitor%bench)
         call init_legendre_on_circle                                    &
      &     (monitor%circ_mid_eq%circle%colat_circle,                    &
      &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &

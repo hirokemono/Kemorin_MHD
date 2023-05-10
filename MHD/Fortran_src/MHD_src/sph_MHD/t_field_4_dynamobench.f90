@@ -82,7 +82,7 @@
         real(kind = kreal) :: omega_vm4(2)      = (/zero,zero/)
 !
 !>        local point data
-        real(kind = kreal) :: d_zero(0:4,7)
+        real(kind = kreal), allocatable :: d_zero(:,:)
 !
         integer(kind = kint) :: num_out
 !>        Array for data output
@@ -100,6 +100,33 @@
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_dynamobench_monitor(d_circle, bench)
+!
+      use t_phys_data
+!
+      type(phys_data), intent(inout) :: d_circle
+      type(dynamobench_monitor), intent(inout) :: bench
+!
+      allocate(bench%d_zero(0:4,d_circle%ntot_phys))
+      if(d_circle%ntot_phys .le. 0) return
+      bench%d_zero(0:4,1:d_circle%ntot_phys) = 0.0d0
+!
+      end subroutine alloc_dynamobench_monitor
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_dynamobench_monitor(bench)
+!
+      type(dynamobench_monitor), intent(inout) :: bench
+!
+      if(allocated(bench%d_zero) .eqv. .FALSE.) return
+      deallocate(bench%d_zero)
+!
+      end subroutine dealloc_dynamobench_monitor
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_dbench_output_data(num_out, bench)
