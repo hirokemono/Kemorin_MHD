@@ -21,7 +21,6 @@
 !!
 !!@n @param  ltr      Truncation of spherical harmonics
 !!@n @param  jmax     Number of modes for harmonincs except for 0 degree
-!!@n @param  d_rj_circle(0:jmax,3)   Spectr field data
 !!@n @param  numdir   Number of components of field
 !!@n @param v_rtp_circle(mphi_circle,numdir)  Field along circle
 !
@@ -73,14 +72,6 @@
         real(kind = kreal) :: coef_gl_rcirc_in
 !>        Outer closest radius of circle point of fluid shell
         real(kind = kreal) :: coef_gl_rcirc_out
-!
-!>        Spectr data for circle point for each domain
-        real(kind = kreal), allocatable :: d_rj_circ_lc(:,:)
-!>        Spectr data for circle point collected to 0 process
-        real(kind = kreal), allocatable :: d_rj_circle(:,:)
-!
-!>        Field data for circle point at equator
-        real(kind = kreal), allocatable :: v_rtp_circle(:,:)
       end type fields_on_circle
 !
 ! ----------------------------------------------------------------------
@@ -178,19 +169,6 @@
       if(circle%mphi_circle .le. izero) then
         circle%mphi_circle = mphi_rtp
       end if
-!
-      allocate(circle%v_rtp_circle(circle%mphi_circle,6))
-      circle%v_rtp_circle = 0.0d0
-!
-      allocate( circle%d_rj_circ_lc(0:jmax_gl,ntot) )
-      circle%d_rj_circ_lc = 0.0d0
-!
-      if(my_rank .eq. 0) then
-        allocate(circle%d_rj_circle(0:jmax_gl,ntot) )
-!
-        circle%d_rj_circle = 0.0d0
-      end if
-!
       call alloc_phys_data(circle%mphi_circle, d_circle)
 !
       end subroutine alloc_circle_field
@@ -204,11 +182,6 @@
       type(fields_on_circle), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
 !
-!
-      deallocate(circle%d_rj_circ_lc)
-      if(my_rank .eq. 0) then
-        deallocate(circle%d_rj_circle, circle%v_rtp_circle)
-      end if
 !
       call dealloc_phys_data(d_circle)
       call dealloc_phys_name(d_circle)

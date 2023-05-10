@@ -308,4 +308,68 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine collect_spectr_for_circle                              &
+     &         (jmax, nidx_global_rj, idx_gl_1d_rj_j, nnod_rj,          &
+     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj,         &
+     &          phys_name_rj, d_rj, d_circle, circle)
+!
+      use calypso_mpi
+      use calypso_mpi_real
+!
+      integer(kind = kint), intent(in) :: nnod_rj, jmax
+      integer(kind = kint), intent(in) :: nidx_global_rj(2)
+      integer(kind = kint), intent(in) :: idx_gl_1d_rj_j(jmax,3)
+      integer(kind = kint), intent(in) :: num_phys_rj, ntot_phys_rj
+      integer(kind = kint), intent(in)                                  &
+     &                  :: istack_phys_comp_rj(0:num_phys_rj)
+      character (len=kchara), intent(in) :: phys_name_rj(num_phys_rj)
+      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+      type(phys_data), intent(in) :: d_circle
+!
+      type(fields_on_circle), intent(inout) :: circle
+!
+      integer(kind = kint) :: j, j_gl, i_in, i_ot, ncomp
+      integer(kind = kint) :: ist_comp, jst_comp, nd, ifld, jfld
+      integer(kind = kint_gl) :: num64
+!
+!
+!    pickup spectrum for circle point
+!
+      do ifld = 1, d_circle%num_phys_viz
+        ist_comp = d_circle%istack_component(ifld-1)
+        do jfld = 1, num_phys_rj
+          if(d_circle%phys_name(ifld) .eq. phys_name_rj(jfld)) then
+            jst_comp = istack_phys_comp_rj(jfld-1)
+            ncomp = istack_phys_comp_rj(jfld)                           &
+     &             - istack_phys_comp_rj(jfld-1)
+            if(iflag_debug .gt. 0) write(*,*)                           &
+     &              trim(d_circle%phys_name(ifld)), ifld, jfld, ncomp
+            do nd = 1, ncomp
+              do j = 1, jmax
+                j_gl = idx_gl_1d_rj_j(j,1)
+                i_in = j + (circle%kr_gl_rcirc_in-1) *  jmax
+                i_ot = j + (circle%kr_gl_rcirc_out-1) * jmax
+!
+                circle%d_rj_circ_lc(j_gl,ist_comp+nd)                   &
+     &            = circle%coef_gl_rcirc_in * d_rj(i_in,jst_comp+nd)    &
+     &             + circle%coef_gl_rcirc_out * d_rj(i_ot,jst_comp+nd)
+              end do
+            end do
+            exit
+          end if
+        end do
+      end do
+!
+!    collect data to rank 0
+!
+      num64 = d_circle%ntot_phys * (nidx_global_rj(2) + 1)
+      if(my_rank .eq. 0) circle%d_rj_circle =   zero
+      call calypso_mpi_reduce_real                                      &
+     &   (circle%d_rj_circ_lc(0,1), circle%d_rj_circle(0,1), num64,     &
+     &    MPI_SUM, 0)
+!
+      end subroutine collect_spectr_for_circle
+!
+! ----------------------------------------------------------------------
+!
      end module circle_transform_single

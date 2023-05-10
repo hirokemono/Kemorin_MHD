@@ -153,7 +153,7 @@
       type(circle_fld_maker), intent(inout) :: cdat
       type(dynamobench_monitor), intent(inout) :: bench
 !
-      integer :: i, j, n, ifld
+!      integer :: i, j, n, ifld
 !
 !    spherical transfer
       allocate(cdat%leg_crc%d_circ_gl(-cdat%circ_spec%ltr_circle:cdat%circ_spec%ltr_circle,    &
