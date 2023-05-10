@@ -76,6 +76,7 @@
 !
       use cal_heat_source_Nu
       use field_at_mid_equator
+      use const_data_4_dynamobench
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -115,13 +116,14 @@
 !
       if(monitor%bench%iflag_dynamobench .gt. 0) then
         call init_mid_equator_point_global                              &
-     &     (trans_p, SPH_MHD%sph, SPH_MHD%ipol, monitor%circ_mid_eq)
+     &     (trans_p, SPH_MHD%sph, monitor%circ_mid_eq)
         call init_legendre_on_circle                                    &
      &     (monitor%circ_mid_eq%circle%colat_circle,                    &
      &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
      &      monitor%circ_mid_eq%leg_crc, SR_sig, SR_r)
+        call count_mid_equator_fld_dbench(SPH_MHD%ipol, monitor%bench)
         call init_address_dbench_trans(SPH_MHD%fld, SPH_MHD%ipol,       &
-     &                                 monitor%circ_mid_eq)
+     &                                 monitor%bench)
       end if
 !
       do i = 1, monitor%mul_circle%num_circles

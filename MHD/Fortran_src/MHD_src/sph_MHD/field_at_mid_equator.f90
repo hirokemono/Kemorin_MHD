@@ -39,24 +39,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_mid_equator_point_global(trans_p, sph,            &
-     &                                         ipol, cdat)
+      subroutine init_mid_equator_point_global(trans_p, sph, cdat)
 !
       use calypso_mpi
       use t_work_4_sph_trans
       use t_spheric_parameter
-      use t_phys_address
 !
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(sph_grids), intent(in) ::  sph
-      type(phys_address), intent(in) :: ipol
+      type(sph_grids), intent(in) :: sph
 !
       type(circle_fld_maker), intent(inout) :: cdat
 !
       integer(kind = kint) :: kr_ICB, kr_CMB
       real(kind = kreal) :: r_MID
-!
-      integer(kind = kint) :: i_fld
 !
 !
       kr_ICB = sph%sph_params%nlayer_ICB
@@ -67,25 +62,6 @@
       cdat%circle%s_circle = r_MID
       cdat%circle%z_circle = zero
       call init_circle_point_global(sph, trans_p, cdat)
-!
-!
-      i_fld = 1
-      if(ipol%base%i_velo .gt. 0) then
-        cdat%iphys_circle%base%i_velo = i_fld
-        i_fld = i_fld + n_vector
-      end if
-      if(ipol%base%i_magne .gt. 0) then
-        cdat%iphys_circle%base%i_magne = i_fld
-        i_fld = i_fld + n_vector
-      end if
-      if(ipol%base%i_temp .gt. 0) then
-        cdat%iphys_circle%base%i_temp = i_fld
-        i_fld = i_fld + n_scalar
-      end if
-      if(ipol%base%i_light .gt. 0) then
-        cdat%iphys_circle%base%i_light = i_fld
-        i_fld = i_fld + n_scalar
-      end if
 !
       end subroutine init_mid_equator_point_global
 !

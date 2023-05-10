@@ -46,7 +46,6 @@
 !
       use t_phys_data
       use t_phys_address
-      use t_sph_trans_arrays_MHD
       use t_circle_transform
       use t_fields_on_circle
       use t_FFT_selector
@@ -70,6 +69,7 @@
         real(kind = kreal), allocatable :: vrtm_mag(:,:)
         real(kind = kreal), allocatable :: vrtm_phase(:,:)
         real(kind = kreal), allocatable :: v_rtp_circle(:,:)
+!
       end type leg_circle
 !
       type circle_fld_maker
@@ -78,19 +78,11 @@
         type(fields_on_circle) :: circle
 !>         Structure of field data on circle
         type(phys_data) :: d_circle
+!>        Legendre polynomials at specific latitude
+        type(leg_circle) :: leg_crc
 !>        Working structure for Fourier transform at mid-depth equator
 !!@n      (Save attribute is necessary for Hitachi compiler for SR16000)
         type(working_FFTs) :: WK_circle_fft
-!>        Address list for circle data
-        type(phys_address) :: iphys_circle
-!>        Address list for transform
-        type(address_4_sph_trans) :: trns_dbench
-!
-!>        Legendre polynomials at specific latitude
-        type(leg_circle) :: leg_crc
-        integer(kind = kint) :: ncomp_sph_trans_meq = 0
-        integer(kind = kint) :: nvec_sph_trans_meq = 0
-        integer(kind = kint) :: nscl_sph_trans_meq = 0
       end type circle_fld_maker
 !
       type mul_fields_on_circle
@@ -296,45 +288,6 @@
 !      end do
 !
       end subroutine init_legendre_on_circle
-!
-! ----------------------------------------------------------------------
-!
-      subroutine init_address_dbench_trans(rj_fld, ipol, cdat)
-!
-      use t_phys_data
-      use t_phys_address
-!
-      use set_address_circle_trans
-!
-      type(phys_data), intent(in) :: rj_fld
-      type(phys_address), intent(in) :: ipol
-!
-      type(circle_fld_maker), intent(inout) :: cdat
-!
-!
-      cdat%ncomp_sph_trans_meq = 0
-      cdat%nvec_sph_trans_meq =  0
-      cdat%nscl_sph_trans_meq =  0
-      call set_addresses_circle_trans                                   &
-     &   (rj_fld, ipol, cdat%iphys_circle, cdat%trns_dbench,            &
-     &    cdat%ncomp_sph_trans_meq, cdat%nvec_sph_trans_meq,            &
-     &    cdat%nscl_sph_trans_meq)
-!
-!      if(my_rank .ne. 0) return
-!      write(*,*) 'Velocity',     ipol%base%i_velo,                     &
-!     &              cdat%iphys_circle%base%i_velo,                     &
-!     &        cdat%trns_dbench%b_trns%base%i_velo
-!      write(*,*) 'Magnetic',     ipol%base%i_magne,                    &
-!     &              cdat%iphys_circle%base%i_magne,                    &
-!     &        cdat%trns_dbench%b_trns%base%i_magne
-!      write(*,*) 'Temperature',  ipol%base%i_temp,                     &
-!     &              cdat%iphys_circle%base%i_temp,                     &
-!     &        cdat%trns_dbench%b_trns%base%i_temp
-!      write(*,*) 'Composition',  ipol%base%i_light,                    &
-!     &              cdat%iphys_circle%base%i_light,                    &
-!     &        cdat%trns_dbench%b_trns%base%i_light
-!
-      end subroutine init_address_dbench_trans
 !
 ! ----------------------------------------------------------------------
 !
