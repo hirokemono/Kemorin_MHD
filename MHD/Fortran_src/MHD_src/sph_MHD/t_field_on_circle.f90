@@ -69,7 +69,6 @@
         real(kind = kreal), allocatable :: vrtm_mag(:,:)
         real(kind = kreal), allocatable :: vrtm_phase(:,:)
         real(kind = kreal), allocatable :: v_rtp_circle(:,:)
-!
       end type leg_circle
 !
       type circle_fld_maker
@@ -87,11 +86,8 @@
 !
       type mul_fields_on_circle
         integer(kind = kint) :: num_circles = 0
-        type(fields_on_circle), allocatable :: circle(:)
 !>         Structure of field data on circle
-        type(phys_data), allocatable :: d_circles(:)
-!>        Legendre polynomials at specific latitude
-        type(leg_circle), allocatable :: leg_crc(:)
+        type(circle_fld_maker), allocatable :: cdat(:)
       end type mul_fields_on_circle
 !
       private :: collect_spectr_for_circle, set_circle_point_global
@@ -108,9 +104,7 @@
       type(mul_fields_on_circle), intent(inout) :: mul_circle
 !
       mul_circle%num_circles = max(num_circle, 0)
-      allocate(mul_circle%circle(mul_circle%num_circles))
-      allocate(mul_circle%d_circles(mul_circle%num_circles))
-      allocate(mul_circle%leg_crc(mul_circle%num_circles))
+      allocate(mul_circle%cdat(mul_circle%num_circles))
 !
       end subroutine alloc_mul_fields_on_circle
 !
@@ -120,8 +114,7 @@
 !
       type(mul_fields_on_circle), intent(inout) :: mul_circle
 !
-      deallocate(mul_circle%circle, mul_circle%d_circles)
-      deallocate(mul_circle%leg_crc)
+      deallocate(mul_circle%cdat)
 !
       end subroutine dealloc_mul_fields_on_circle
 !
@@ -143,8 +136,8 @@
 !
       do i = 1, mul_circle%num_circles
         call set_control_circle_def(circ_ctls%meq_ctl(i),               &
-     &                              mul_circle%circle(i))
-        call dup_phys_name(nod_fld, mul_circle%d_circles(i))
+     &                              mul_circle%cdat(i)%circle)
+        call dup_phys_name(nod_fld, mul_circle%cdat(i)%d_circle)
       end do
 !
       end subroutine set_control_circles_def

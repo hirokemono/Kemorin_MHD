@@ -159,11 +159,11 @@
 !
       do i = 1, monitor%mul_circle%num_circles
         call init_legendre_on_circle                                    &
-     &     (monitor%mul_circle%circle(i)%colat_circle,                  &
+     &     (monitor%mul_circle%cdat(i)%circle%colat_circle,             &
      &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
-     &      monitor%mul_circle%leg_crc(i), SR_sig, SR_r)
+     &      monitor%mul_circle%cdat(i)%leg_crc, SR_sig, SR_r)
         call set_circle_transfer_address(nod_fld, SPH_MHD%fld,          &
-     &                                   monitor%mul_circle%leg_crc(i))
+     &      monitor%mul_circle%cdat(i)%leg_crc)
       end do
 !
       end subroutine init_rms_sph_mhd_control
