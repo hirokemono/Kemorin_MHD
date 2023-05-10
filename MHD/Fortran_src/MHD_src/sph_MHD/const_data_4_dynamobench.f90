@@ -248,10 +248,51 @@
       end subroutine mid_eq_transfer_dynamobench
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_on_circles                           &
-     &         (iflag_FFT, sph_rj, rj_fld, nod_fld,                     &
-     &          circle, circ_spec, d_circle, leg_crc, WK_circle_fft)
+     &         (time_d, sph_rj, rj_fld, trans_p, mul_circle)
+!
+      use calypso_mpi
+      use t_field_on_circle
+      use t_spheric_rj_data
+      use t_phys_data
+      use t_phys_address
+      use t_circle_transform
+      use t_field_4_dynamobench
+!
+      use calypso_mpi_real
+      use transfer_to_long_integers
+      use circle_bwd_transfer_rj
+!
+      type(time_data), intent(in) :: time_d
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_data), intent(in) :: rj_fld
+!
+      type(mul_fields_on_circle), intent(inout) :: mul_circle
+!
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, mul_circle%num_circles
+        call alloc_phys_data(mul_circle%circle(i)%mphi_circle,          &
+     &                       mul_circle%d_circles(i))
+        call sph_forward_trans_each_circle                              &
+     &     (trans_p%iflag_FFT, sph_rj, rj_fld,                          &
+     &      mul_circle%circle(i), mul_circle%circ_spec(i),              &
+     &      mul_circle%leg_crc(i), mul_circle%d_circles(i),             &
+     &      mul_circle%WK_circle_fft(i))
+        call dealloc_phys_data(mul_circle%d_circles(i))
+      end do
+!
+      end subroutine sph_forward_trans_on_circles
+!
+! ----------------------------------------------------------------------
+!
+      subroutine sph_forward_trans_each_circle                          &
+     &         (iflag_FFT, sph_rj, rj_fld,                              &
+     &          circle, circ_spec, leg_crc, d_circle, WK_circle_fft)
 !
       use calypso_mpi
       use t_field_on_circle
@@ -268,34 +309,32 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
-      type(phys_data), intent(in) :: nod_fld
       type(fields_on_circle), intent(in) :: circle
       type(circle_transform_spetr), intent(in) :: circ_spec
-      type(phys_data), intent(in) :: d_circle
 !
       type(leg_circle), intent(inout) :: leg_crc
+      type(phys_data), intent(inout) :: d_circle
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
 !
       allocate(leg_crc%d_circ_gl(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
-     &                   nod_fld%ntot_phys_viz))
+     &                   d_circle%ntot_phys_viz))
       allocate(leg_crc%d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
-     &                   nod_fld%ntot_phys_viz))
+     &                   d_circle%ntot_phys_viz))
 !
-      allocate(leg_crc%vrtm_mag(0:circle%mphi_circle,nod_fld%ntot_phys_viz))
-      allocate(leg_crc%vrtm_phase(0:circle%mphi_circle, nod_fld%ntot_phys_viz))
-      allocate(leg_crc%v_rtp_circle(circle%mphi_circle, nod_fld%ntot_phys_viz))
+      allocate(leg_crc%vrtm_mag(0:circle%mphi_circle,d_circle%ntot_phys_viz))
+      allocate(leg_crc%vrtm_phase(0:circle%mphi_circle, d_circle%ntot_phys_viz))
 !
       call circle_leg_bwd_trans_rj                                      &
-     &   (iflag_FFT, sph_rj, rj_fld, nod_fld, leg_crc%ipol_circle_trns, circle,    &
-     &    circ_spec, d_circle, leg_crc%P_circ, leg_crc%dPdt_circ,       &
-     &    leg_crc%d_circ_gl, leg_crc%d_circ_lc, leg_crc%vrtm_mag, leg_crc%vrtm_phase, leg_crc%v_rtp_circle, &
-     &    WK_circle_fft)
+     &   (iflag_FFT, sph_rj, rj_fld, leg_crc%ipol_circle_trns, circle,  &
+     &    circ_spec, leg_crc%P_circ, leg_crc%dPdt_circ,                 &
+     &    leg_crc%d_circ_gl, leg_crc%d_circ_lc, leg_crc%vrtm_mag,       &
+     &    leg_crc%vrtm_phase, d_circle, WK_circle_fft)
 !
-      deallocate(leg_crc%vrtm_mag, leg_crc%vrtm_phase, leg_crc%v_rtp_circle)
+      deallocate(leg_crc%vrtm_mag, leg_crc%vrtm_phase)
       deallocate(leg_crc%d_circ_gl, leg_crc%d_circ_lc)
 !
-      end subroutine sph_forward_trans_on_circles
+      end subroutine sph_forward_trans_each_circle
 !
 ! ----------------------------------------------------------------------
 !

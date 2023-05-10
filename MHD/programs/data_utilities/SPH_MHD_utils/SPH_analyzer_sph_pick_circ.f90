@@ -150,11 +150,6 @@
       call init_radial_sph_interpolation(MHD_files%org_rj_file_IO,      &
      &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, SPH_WK%rj_itp)
 !
-!* -----  find mid-equator point -----------------
-!
-      call init_circle_point_global                                     &
-     &   (SPH_MHD%sph, SPH_WK%trans_p, cdat)
-!
       end subroutine SPH_init_sph_pick_circle
 !
 ! ----------------------------------------------------------------------

@@ -73,6 +73,7 @@
       end type leg_circle
 !
       type circle_fld_maker
+!>         Structure of parameters on circle
         type(circle_transform_spetr) :: circ_spec
 !>        Structure to make fields on circle
         type(fields_on_circle) :: circle
@@ -96,10 +97,15 @@
       type mul_fields_on_circle
         integer(kind = kint) :: num_circles = 0
         type(fields_on_circle), allocatable :: circle(:)
+!>         Structure of parameters on circle
+        type(circle_transform_spetr), allocatable :: circ_spec(:)
 !>         Structure of field data on circle
         type(phys_data), allocatable :: d_circles(:)
 !>        Legendre polynomials at specific latitude
         type(leg_circle), allocatable :: leg_crc(:)
+!>        Working structure for Fourier transform at mid-depth equator
+!!@n      (Save attribute is necessary for Hitachi compiler for SR16000)
+        type(working_FFTs), allocatable :: WK_circle_fft(:)
       end type mul_fields_on_circle
 !
       private :: collect_spectr_for_circle, set_circle_point_global
@@ -117,8 +123,10 @@
 !
       mul_circle%num_circles = max(num_circle, 0)
       allocate(mul_circle%circle(mul_circle%num_circles))
+      allocate(mul_circle%circ_spec(mul_circle%num_circles))
       allocate(mul_circle%d_circles(mul_circle%num_circles))
       allocate(mul_circle%leg_crc(mul_circle%num_circles))
+      allocate(mul_circle%WK_circle_fft(mul_circle%num_circles))
 !
       end subroutine alloc_mul_fields_on_circle
 !
@@ -128,8 +136,9 @@
 !
       type(mul_fields_on_circle), intent(inout) :: mul_circle
 !
-      deallocate(mul_circle%circle, mul_circle%d_circles)
-      deallocate(mul_circle%leg_crc)
+      deallocate(mul_circle%circle)
+      deallocate(mul_circle%circ_spec, mul_circle%d_circles)
+      deallocate(mul_circle%leg_crc, mul_circle%WK_circle_fft)
 !
       end subroutine dealloc_mul_fields_on_circle
 !
@@ -145,6 +154,7 @@
       type(mul_fields_on_circle), intent(inout) :: mul_circle
 !
       integer(kind = kint) :: i
+!
 !
       call alloc_mul_fields_on_circle(circ_ctls%num_circ_ctl,           &
      &                                mul_circle)
@@ -216,7 +226,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine init_circle_point_global(sph, trans_p, cdat)
+      subroutine init_circle_point_global(sph, trans_p,                 &
+     &          circ_spec, circle, d_circle, WK_circle_fft)
 !
       use calypso_mpi
       use t_spheric_parameter
@@ -226,19 +237,22 @@
       type(sph_grids), intent(in) ::  sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
-      type(circle_fld_maker), intent(inout) :: cdat
+      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(fields_on_circle), intent(inout) :: circle
+      type(phys_data), intent(inout) :: d_circle
+      type(working_FFTs), intent(inout) :: WK_circle_fft
 !
 !
       call alloc_circle_field(my_rank,                                  &
      &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
-     &    cdat%circle, cdat%d_circle)
+     &    circle, d_circle)
       call alloc_circle_transform(sph%sph_params%l_truncation,          &
-     &                            cdat%circ_spec)
+     &                            circ_spec)
       call initialize_circle_transform(trans_p%iflag_FFT,               &
-     &    cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
+     &    circle, circ_spec, WK_circle_fft)
       call set_circle_point_global                                      &
      &   (sph%sph_rj%nidx_rj(1), sph%sph_rj%radius_1d_rj_r,             &
-     &    cdat%circ_spec, cdat%circle)
+     &    circ_spec, circle)
 !
       end subroutine init_circle_point_global
 !

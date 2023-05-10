@@ -125,6 +125,12 @@
       end if
 !
       do i = 1, monitor%mul_circle%num_circles
+        call init_circle_point_global(SPH_MHD%sph, trans_p,             &
+     &      monitor%mul_circle%circ_spec(i),                            &
+     &      monitor%mul_circle%circle(i),                               &
+     &      monitor%mul_circle%d_circles(i),                            &
+     &      monitor%mul_circle%WK_circle_fft(i))
+!
         call init_legendre_on_circle                                    &
      &     (monitor%mul_circle%circle(i)%colat_circle,                  &
      &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &

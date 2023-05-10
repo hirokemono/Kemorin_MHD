@@ -66,7 +66,9 @@
 !
       cdat%circle%s_circle = r_MID
       cdat%circle%z_circle = zero
-      call init_circle_point_global(sph, trans_p, cdat)
+      call init_circle_point_global                                     &
+     &   (sph, trans_p, cdat%circ_spec, cdat%circle,                    &
+     &    cdat%d_circle, cdat%WK_circle_fft)
 !
 !
       i_fld = 1

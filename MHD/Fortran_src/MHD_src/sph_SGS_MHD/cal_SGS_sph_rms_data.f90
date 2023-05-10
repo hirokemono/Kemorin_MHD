@@ -140,6 +140,9 @@
      &  (time_d, sph%sph_params, sph%sph_rj, sph_MHD_bc, trans_p, ipol, &
      &   rj_fld, monitor%pwr, monitor%circ_mid_eq, monitor%bench)
 !
+      call sph_forward_trans_on_circles                                 &
+     &  (time_d, sph%sph_rj, rj_fld, trans_p, monitor%mul_circle)
+!
       end subroutine cal_SGS_sph_monitor_data
 !
 !  --------------------------------------------------------------------
