@@ -133,7 +133,7 @@
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint), intent(in) :: ltr_circle
       real(kind = kreal), intent(in)                                    &
-     &                   :: vcirc_rtm(-ltr_circle:ltr_circle,3)
+     &                   :: vcirc_rtm(-ltr_circle:ltr_circle,numdir)
       integer(kind = kint), intent(in) :: mphi_circle
 !
       real(kind = kreal), intent(inout)                                 &
@@ -174,7 +174,7 @@
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint), intent(in) :: ltr_circle
       real(kind = kreal), intent(in)                                    &
-     &                   :: vcirc_rtm(-ltr_circle:ltr_circle,3)
+     &                   :: vcirc_rtm(-ltr_circle:ltr_circle,numdir)
       integer(kind = kint), intent(in) :: mphi_circle
 !
       real(kind = kreal), intent(inout)                                 &

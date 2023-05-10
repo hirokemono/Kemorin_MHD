@@ -117,10 +117,10 @@
      &    circ_spec%jmax_circle, circle%d_rj_circle(0,ifld),            &
      &    circ_spec%vcirc_rtm)
 !
-      write(61,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
-      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-        write(61,*) j, circ_spec%vcirc_rtm(j,1:3)
-      end do
+!      write(61,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
+!      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
+!        write(61,*) j, circ_spec%vcirc_rtm(j,1:3)
+!      end do
 !
       if(circle%iflag_circle_coord .eq. iflag_circle_cyl) then
         call overwrt_circle_sph_vect_2_cyl(circ_spec%theta_circle,      &
@@ -171,10 +171,10 @@
      &    circ_spec%P_circle, circ_spec%jmax_circle,                    &
      &    circle%d_rj_circle(0,ifld), circ_spec%vcirc_rtm)
 !
-      write(61,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
-      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-        write(61,*) j, circ_spec%vcirc_rtm(j,1)
-      end do
+!      write(61,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
+!      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
+!        write(61,*) j, circ_spec%vcirc_rtm(j,1)
+!      end do
 !
       call cal_circle_spectrum_vector                                   &
      &   (ione, circ_spec%ltr_circle, circ_spec%vcirc_rtm,              &

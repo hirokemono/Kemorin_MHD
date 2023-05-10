@@ -153,7 +153,8 @@
       type(circle_fld_maker), intent(inout) :: cdat
       type(dynamobench_monitor), intent(inout) :: bench
 !
-      integer :: i, j
+      integer :: i, j, n, ifld
+!
 !    spherical transfer
 !
       call sph_transfer_on_circle(iflag_FFT, sph_rj, rj_fld, cdat)
@@ -164,31 +165,65 @@
       allocate(cdat%leg_crc%d_circ_lc(-cdat%circ_spec%ltr_circle:cdat%circ_spec%ltr_circle,    &
      &                   cdat%d_circle%ntot_phys))
 !
-      call dbench_leg_bwd_trans_rj(sph_rj, rj_fld, ipol,                &
+      allocate(cdat%leg_crc%vrtm_mag(0:cdat%circle%mphi_circle,cdat%d_circle%ntot_phys_viz))
+      allocate(cdat%leg_crc%vrtm_phase(0:cdat%circle%mphi_circle, cdat%d_circle%ntot_phys_viz))
+      allocate(cdat%leg_crc%v_rtp_circle(cdat%circle%mphi_circle, cdat%d_circle%ntot_phys_viz))
+!
+      call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,                &
      &    cdat%trns_dbench%b_trns, cdat%circle, cdat%circ_spec,         &
      &    cdat%d_circle, cdat%leg_crc%P_circ, cdat%leg_crc%dPdt_circ,   &
-     &    cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
+     &    cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc, cdat%leg_crc%vrtm_mag, &
+     &    cdat%leg_crc%vrtm_phase, cdat%leg_crc%v_rtp_circle, &
+     &    cdat%WK_circle_fft)
+!
+!      if(my_rank .eq. 0) then
+!        i = cdat%trns_dbench%b_trns%base%i_velo
+!        write(60,*) 'j, velo_new', ipol%base%i_velo, i
+!        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
+!          write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
+!        end do
+!        i = cdat%trns_dbench%b_trns%base%i_magne
+!        write(60,*) 'j, magne_new', ipol%base%i_magne, i
+!        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
+!          write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
+!        end do
+!!
+!        i = cdat%trns_dbench%b_trns%base%i_temp
+!        write(60,*) 'j, temp_new', ipol%base%i_temp, i
+!        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
+!        write(60,*) j, cdat%leg_crc%d_circ_gl(j,i)
+!        end do
+!      end if
 !
       if(my_rank .eq. 0) then
         i = cdat%trns_dbench%b_trns%base%i_velo
         write(60,*) 'j, velo_new', ipol%base%i_velo, i
-        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
-          write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
+        do j = 1, cdat%circle%mphi_circle
+          write(60,*) j, cdat%leg_crc%v_rtp_circle(j,i:i+2)
         end do
         i = cdat%trns_dbench%b_trns%base%i_magne
         write(60,*) 'j, magne_new', ipol%base%i_magne, i
-        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
-          write(60,*) j, cdat%leg_crc%d_circ_gl(j,i:i+2)
+        do j = 1, cdat%circle%mphi_circle
+          write(60,*) j, cdat%leg_crc%v_rtp_circle(j,i:i+2)
         end do
-!
+!!
         i = cdat%trns_dbench%b_trns%base%i_temp
         write(60,*) 'j, temp_new', ipol%base%i_temp, i
-        do j = -cdat%circ_spec%ltr_circle, cdat%circ_spec%ltr_circle
-        write(60,*) j, cdat%leg_crc%d_circ_gl(j,i)
+        do j = 1, cdat%circle%mphi_circle
+        write(60,*) j, cdat%leg_crc%v_rtp_circle(j,i)
+        end do
+!
+        do ifld = 1, cdat%d_circle%num_phys_viz
+          i = cdat%d_circle%istack_component(ifld-1)
+          n = cdat%d_circle%istack_component(ifld) - i
+          write(61,*) 'j', trim(cdat%d_circle%phys_name(ifld)), ifld, i
+          do j = 1, cdat%circle%mphi_circle
+            write(61,*) j, cdat%d_circle%d_fld(j,i+1:i+n)
+          end do
         end do
       end if
 !
-!
+      deallocate(cdat%leg_crc%vrtm_mag, cdat%leg_crc%vrtm_phase, cdat%leg_crc%v_rtp_circle)
       deallocate(cdat%leg_crc%d_circ_gl, cdat%leg_crc%d_circ_lc)
 !
       if(my_rank .gt. 0) return
@@ -211,6 +246,56 @@
       bench%t_prev = time
 !
       end subroutine mid_eq_transfer_dynamobench
+!
+! ----------------------------------------------------------------------
+!
+      subroutine sph_forward_trans_on_circles                           &
+     &         (iflag_FFT, sph_rj, rj_fld, nod_fld,                     &
+     &          circle, circ_spec, d_circle, leg_crc, WK_circle_fft)
+!
+      use calypso_mpi
+      use t_field_on_circle
+      use t_spheric_rj_data
+      use t_phys_data
+      use t_phys_address
+      use t_circle_transform
+      use t_field_4_dynamobench
+!
+      use calypso_mpi_real
+      use transfer_to_long_integers
+      use circle_bwd_transfer_rj
+!
+      integer(kind = kint), intent(in) :: iflag_FFT
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_data), intent(in) :: rj_fld
+      type(phys_data), intent(in) :: nod_fld
+      type(fields_on_circle), intent(in) :: circle
+      type(circle_transform_spetr), intent(in) :: circ_spec
+      type(phys_data), intent(in) :: d_circle
+!
+      type(leg_circle), intent(inout) :: leg_crc
+      type(working_FFTs), intent(inout) :: WK_circle_fft
+!
+!
+      allocate(leg_crc%d_circ_gl(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
+     &                   nod_fld%ntot_phys_viz))
+      allocate(leg_crc%d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
+     &                   nod_fld%ntot_phys_viz))
+!
+      allocate(leg_crc%vrtm_mag(0:circle%mphi_circle,nod_fld%ntot_phys_viz))
+      allocate(leg_crc%vrtm_phase(0:circle%mphi_circle, nod_fld%ntot_phys_viz))
+      allocate(leg_crc%v_rtp_circle(circle%mphi_circle, nod_fld%ntot_phys_viz))
+!
+      call circle_leg_bwd_trans_rj                                      &
+     &   (iflag_FFT, sph_rj, rj_fld, nod_fld, leg_crc%ipol_circle_trns, circle,    &
+     &    circ_spec, d_circle, leg_crc%P_circ, leg_crc%dPdt_circ,       &
+     &    leg_crc%d_circ_gl, leg_crc%d_circ_lc, leg_crc%vrtm_mag, leg_crc%vrtm_phase, leg_crc%v_rtp_circle, &
+     &    WK_circle_fft)
+!
+      deallocate(leg_crc%vrtm_mag, leg_crc%vrtm_phase, leg_crc%v_rtp_circle)
+      deallocate(leg_crc%d_circ_gl, leg_crc%d_circ_lc)
+!
+      end subroutine sph_forward_trans_on_circles
 !
 ! ----------------------------------------------------------------------
 !

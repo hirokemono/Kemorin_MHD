@@ -66,6 +66,10 @@
 !
         real(kind = kreal), allocatable :: d_circ_gl(:,:)
         real(kind = kreal), allocatable :: d_circ_lc(:,:)
+!
+        real(kind = kreal), allocatable :: vrtm_mag(:,:)
+        real(kind = kreal), allocatable :: vrtm_phase(:,:)
+        real(kind = kreal), allocatable :: v_rtp_circle(:,:)
       end type leg_circle
 !
       type circle_fld_maker
