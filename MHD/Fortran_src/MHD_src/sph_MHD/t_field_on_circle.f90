@@ -308,7 +308,6 @@
      &          (iflag_FFT, circle, circ_spec, WK_circle_fft)
 !
       use calypso_mpi
-      use t_schmidt_polynomial
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       type(fields_on_circle), intent(in) :: circle
@@ -316,7 +315,6 @@
       type(circle_transform_spetr), intent(inout) :: circ_spec
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
-      type(legendre_polynomials), save :: leg_c
       integer(kind = kint) :: l, m, mm, j
 !
 !
@@ -327,21 +325,6 @@
 !
       circ_spec%ar_circle = one / circ_spec%r_circle
       circ_spec%ar2_circle = circ_spec%ar_circle**2
-!
-!
-      call alloc_schmidt_polynomial(circ_spec%ltr_circle, leg_c)
-      call dschmidt(circ_spec%theta_circle, leg_c)
-!
-      do l = 1, circ_spec%ltr_circle
-        do m = -l, l
-          j = l*(l+1) + m
-          mm = abs(m)
-          circ_spec%P_circle(j) =    leg_c%p(mm,l)
-          circ_spec%dPdt_circle(j) = leg_c%dp(mm,l)
-        end do
-      end do
-!
-      call dealloc_schmidt_polynomial(leg_c)
 !
       if(my_rank .gt. 0) return
 !

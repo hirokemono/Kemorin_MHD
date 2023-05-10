@@ -43,16 +43,6 @@
 !
 !>        colatitude for specific circle
         real(kind = kreal) :: theta_circle
-!
-!>        associated Lagender polynomial at circle
-        real(kind = kreal), allocatable :: P_circle(:)
-!>         @f$ dP_{l}^{m}/ d\theta @f$ at circle
-        real(kind = kreal), allocatable :: dPdt_circle(:)
-!
-!>        spectr data for Fourier transform at a circle
-        real(kind = kreal), allocatable :: vcirc_rtm(:,:)
-!>        local spectr data for Fourier transform at a circle
-        real(kind = kreal), allocatable :: vcirc_lc(:,:)
       end type circle_transform_spetr
 !
 ! ----------------------------------------------------------------------
@@ -70,14 +60,6 @@
       circ_spec%ltr_circle =  ltr
       circ_spec%jmax_circle = ltr*(ltr+2)
 !
-      allocate(circ_spec%P_circle(0:circ_spec%jmax_circle))
-      allocate(circ_spec%dPdt_circle(0:circ_spec%jmax_circle))
-      circ_spec%P_circle =    zero
-      circ_spec%dPdt_circle = zero
-!
-      allocate(circ_spec%vcirc_rtm(-ltr:ltr,3))
-      circ_spec%vcirc_rtm = zero
-!
       allocate(circ_spec%istack_circfft_smp(0:np_smp))
       circ_spec%istack_circfft_smp(0) =        0
       circ_spec%istack_circfft_smp(1:np_smp) = 1
@@ -91,8 +73,6 @@
       type(circle_transform_spetr), intent(inout) :: circ_spec
 !
 !
-      deallocate(circ_spec%P_circle, circ_spec%dPdt_circle)
-      deallocate(circ_spec%vcirc_rtm)
       deallocate(circ_spec%istack_circfft_smp)
 !
       end subroutine dealloc_circle_transform
