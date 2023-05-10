@@ -214,8 +214,12 @@
       end if
 !
       data_out(jcou+1) = bench%d_zero(0,bench%iphys_dbench%i_velo+2)
-      data_out(jcou+2) = bench%d_zero(0,bench%iphys_dbench%i_temp)
-!      data_out(jcou+3) = bench%d_zero(0,bench%iphys_dbench%i_light)
+      if(ipol_base%i_temp .gt. 0) then
+        data_out(jcou+1) = bench%d_zero(0,bench%iphys_dbench%i_temp)
+      end if
+      if(ipol_base%i_light .gt. 0) then
+        data_out(jcou+1) = bench%d_zero(0,bench%iphys_dbench%i_light)
+      end if
 !
       end subroutine dup_dynamobench_monitor_data
 !
@@ -231,12 +235,22 @@
       integer(kind = kint), intent(inout) :: ntot_sph_spec
 !
 !
-      nfield_sph_spec =  1 + 7 + 2
-      ntot_sph_spec =    3 + 7 + 2
+      nfield_sph_spec =  1 + 7 + 1
+      ntot_sph_spec =    3 + 7 + 1
 !
       if(ipol_base%i_magne .gt. 0) then
         nfield_sph_spec = nfield_sph_spec + 1 + 1
         ntot_sph_spec =   ntot_sph_spec + 3 + 1
+      end if
+!
+      if(ipol_base%i_temp .gt. 0) then
+        nfield_sph_spec = nfield_sph_spec + 1
+        ntot_sph_spec =   ntot_sph_spec + 1
+      end if
+!
+      if(ipol_base%i_light .gt. 0) then
+        nfield_sph_spec = nfield_sph_spec + 1
+        ntot_sph_spec =   ntot_sph_spec + 1
       end if
 !
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
@@ -357,10 +371,19 @@
       icou = icou + 1
       jcou = jcou + ncomp_sph_spec(icou)
 !
-      ncomp_sph_spec(icou+1) = 1
-      ene_sph_spec_name(jcou+1) = 'temperature'
-      icou = icou + 1
-      jcou = jcou + ncomp_sph_spec(icou)
+      if(ipol_base%i_temp .gt. 0) then
+        ncomp_sph_spec(icou+1) = 1
+        ene_sph_spec_name(jcou+1) = 'temperature'
+        icou = icou + 1
+        jcou = jcou + ncomp_sph_spec(icou)
+      end if
+!
+      if(ipol_base%i_light .gt. 0) then
+        ncomp_sph_spec(icou+1) = 1
+        ene_sph_spec_name(jcou+1) = 'composition'
+        icou = icou + 1
+        jcou = jcou + ncomp_sph_spec(icou)
+      end if
 !
       end subroutine copy_dynamobench_monitor_name
 !
