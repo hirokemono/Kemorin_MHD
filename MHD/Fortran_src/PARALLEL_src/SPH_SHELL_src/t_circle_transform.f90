@@ -29,8 +29,6 @@
       type circle_transform_spetr
 !>        Truncation level for spherical transform at equator
         integer(kind = kint) :: ltr_circle
-!>        Number of modes for spherical transform at equator
-        integer(kind = kint) :: jmax_circle
 !>        end address of SMP parallelization for scalar Fourier transform
         integer(kind = kint), allocatable :: istack_circfft_smp(:)
 !
@@ -58,7 +56,6 @@
 !
 !
       circ_spec%ltr_circle =  ltr
-      circ_spec%jmax_circle = ltr*(ltr+2)
 !
       allocate(circ_spec%istack_circfft_smp(0:np_smp))
       circ_spec%istack_circfft_smp(0) =        0
