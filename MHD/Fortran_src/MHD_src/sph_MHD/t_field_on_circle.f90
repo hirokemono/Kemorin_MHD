@@ -55,7 +55,9 @@
 !
         integer(kind = kint), allocatable :: ipol_circle_trns(:)
 !
+!>        global sphrical harmonics corfs on circle
         real(kind = kreal), allocatable :: d_circ_gl(:,:)
+!>        Local sphrical harmonics corfs on circle
         real(kind = kreal), allocatable :: d_circ_lc(:,:)
 !
 !>        Spectr data for circle point collected to 0 process

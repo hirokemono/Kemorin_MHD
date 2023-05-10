@@ -307,7 +307,7 @@
 !
       if((ipol_rj*i_trns) .le. 0) return
       if(num_comp .eq. n_sym_tensor) then
-!          call circle_bwd_leg_trans_sym_tensor        &
+!          call circle_bwd_leg_trans_sym_tensor                         &
 !     &       (sph_rj, circle, circ_spec%ltr_circle,                    &
 !     &        circ_spec%ar_circle, circ_spec%ar2_circle,               &
 !     &        P_circ, dPdt_circ, rj_fld%d_fld(1,ipol_rj),              &
