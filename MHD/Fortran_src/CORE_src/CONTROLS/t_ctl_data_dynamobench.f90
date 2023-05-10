@@ -28,9 +28,14 @@
 !!      control block for pickup spherical harmonics
 !!
 !!  begin dynamo_benchmark_data_ctl
-!!    dynamo_benchmark_file_prefix  'monitor/dynamobench'
-!!    dynamo_benchmark_file_format  'gzip'
-!!    nphi_mid_eq_ctl                500
+!!    dynamo_benchmark_file_prefix     'monitor/dynamobench'
+!!    dynamo_benchmark_file_format     'gzip'
+!!
+!!    detail_dynamobench_file_prefix   'monitor/detail_dbench'
+!!    dynamobench_field_prefix         'monitor/dbench_field'
+!!    dynamobench_spectr_prefix        'monitor/dbench_spectr'
+!!
+!!    nphi_mid_eq_ctl                   500
 !!  end dynamo_benchmark_data_ctl
 !!
 !! -----------------------------------------------------------------
@@ -49,10 +54,18 @@
       implicit  none
 !
       type dynamobench_control
-!>        Structure for dynanmo benchmark data output
+!>        Structure for dynanmo benchmark data file prefix
         type(read_character_item) :: dynamobench_file_ctl
-!>        Structure for dynanmo benchmark data output
+!>        Structure for dynanmo benchmark data file prefix
         type(read_character_item) :: dynamobench_format_ctl
+!
+!>        Structure for detailed dynanmo benchmark data file prefix
+        type(read_character_item) :: detailed_dbench_file_ctl
+!>        Structure for dynanmo benchmark field data file prefix
+        type(read_character_item) :: dbench_field_file_ctl
+!>        Structure for dynanmo benchmark spectr data file prefix
+        type(read_character_item) :: dbench_spectr_file_ctl
+!
 !>        Structure for Number of zonal points for benchamek check
         type(read_integer_item) :: nphi_mid_eq_ctl
 !
@@ -63,11 +76,19 @@
 !   labels for item
 !
       character(len=kchara), parameter, private                         &
-     &            :: hd_dbench_prefix = 'dynamo_benchmark_file_prefix'
+     &    :: hd_dbench_prefix = 'dynamo_benchmark_file_prefix'
       character(len=kchara), parameter, private                         &
-     &            :: hd_dbench_format = 'dynamo_benchmark_file_format'
+     &    :: hd_dbench_format = 'dynamo_benchmark_file_format'
+!
       character(len=kchara), parameter, private                         &
-     &            :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
+     &    :: hd_dbench_detail_prefix = 'detail_dynamobench_file_prefix'
+      character(len=kchara), parameter, private                         &
+     &    :: hd_dbench_field_prefix =  'dynamobench_field_prefix'
+      character(len=kchara), parameter, private                         &
+     &    :: hd_dbench_spectr_prefix = 'dynamobench_spectr_prefix'
+!
+      character(len=kchara), parameter, private                         &
+     &    :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
 !
 ! -----------------------------------------------------------------------
 !
@@ -81,6 +102,11 @@
 !
       dbench_ctl%dynamobench_file_ctl%iflag =   0
       dbench_ctl%dynamobench_format_ctl%iflag = 0
+!
+      dbench_ctl%detailed_dbench_file_ctl%iflag = 0
+      dbench_ctl%dbench_field_file_ctl%iflag =    0
+      dbench_ctl%dbench_spectr_file_ctl%iflag =   0
+!
       dbench_ctl%nphi_mid_eq_ctl%iflag = 0
 !
       dbench_ctl%i_dynamobench_ctl = 0
@@ -110,6 +136,14 @@
      &      dbench_ctl%dynamobench_file_ctl)
         call read_chara_ctl_type(c_buf, hd_dbench_format,               &
      &      dbench_ctl%dynamobench_format_ctl)
+!
+        call read_chara_ctl_type(c_buf, hd_dbench_detail_prefix,        &
+     &      dbench_ctl%detailed_dbench_file_ctl)
+        call read_chara_ctl_type(c_buf, hd_dbench_field_prefix,         &
+     &      dbench_ctl%dbench_field_file_ctl)
+        call read_chara_ctl_type(c_buf, hd_dbench_spectr_prefix,        &
+     &      dbench_ctl%dbench_spectr_file_ctl)
+!
         call read_integer_ctl_type(c_buf, hd_nphi_mid_eq,               &
      &      dbench_ctl%nphi_mid_eq_ctl)
       end do
@@ -137,6 +171,9 @@
 !
       maxlen = len_trim(hd_dbench_prefix)
       maxlen = max(maxlen, len_trim(hd_dbench_format))
+      maxlen = max(maxlen, len_trim(hd_dbench_detail_prefix))
+      maxlen = max(maxlen, len_trim(hd_dbench_field_prefix))
+      maxlen = max(maxlen, len_trim(hd_dbench_spectr_prefix))
       maxlen = max(maxlen, len_trim(hd_nphi_mid_eq))
 !
       write(id_control,'(a1)') '!'
@@ -146,6 +183,12 @@
      &    hd_dbench_prefix, dbench_ctl%dynamobench_file_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_dbench_format, dbench_ctl%dynamobench_format_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_dbench_detail_prefix, dbench_ctl%detailed_dbench_file_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_dbench_field_prefix, dbench_ctl%dbench_field_file_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_dbench_spectr_prefix, dbench_ctl%dbench_spectr_file_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_nphi_mid_eq, dbench_ctl%nphi_mid_eq_ctl)
 !

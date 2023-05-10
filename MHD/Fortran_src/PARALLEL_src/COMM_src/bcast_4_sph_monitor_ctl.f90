@@ -244,6 +244,10 @@
       call bcast_ctl_type_c1(dbench_ctl%dynamobench_file_ctl)
       call bcast_ctl_type_c1(dbench_ctl%dynamobench_format_ctl)
 !
+      call bcast_ctl_type_c1(dbench_ctl%detailed_dbench_file_ctl)
+      call bcast_ctl_type_c1(dbench_ctl%dbench_field_file_ctl)
+      call bcast_ctl_type_c1(dbench_ctl%dbench_spectr_file_ctl)
+!
       call calypso_mpi_bcast_one_int(dbench_ctl%i_dynamobench_ctl, 0)
 !
       end subroutine bcast_ctl_data_dynamobench

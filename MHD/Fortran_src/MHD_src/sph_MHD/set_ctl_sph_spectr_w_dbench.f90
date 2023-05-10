@@ -102,6 +102,24 @@
       bench%ipwr_ocore = num_vspec_ctl + 2
       num_vspec = num_vspec + 1
 !
+      bench%detail_bench_file_prefix = 'NO_FILE'
+      if(dbench_ctl%detailed_dbench_file_ctl%iflag .gt. 0) then
+        bench%detail_bench_file_prefix                                  &
+     &                 = dbench_ctl%detailed_dbench_file_ctl%charavalue
+      end if
+!
+      bench%dbench_field_file_prefix = 'NO_FILE'
+      if(dbench_ctl%dbench_field_file_ctl%iflag .gt. 0) then
+        bench%dbench_field_file_prefix                                  &
+     &                 = dbench_ctl%dbench_field_file_ctl%charavalue
+      end if
+!
+      bench%dbench_spectr_file_prefix = 'NO_FILE'
+      if(dbench_ctl%dbench_spectr_file_ctl%iflag .gt. 0) then
+        bench%dbench_spectr_file_prefix                                 &
+     &                 = dbench_ctl%dbench_spectr_file_ctl%charavalue
+      end if
+!
       if(find_conductive_inner_core_bc(MHD_BC%magne_BC%nod_BC,          &
      &                                 MHD_BC%magne_BC%surf_BC)         &
      &    .eqv. .FALSE.) return 
