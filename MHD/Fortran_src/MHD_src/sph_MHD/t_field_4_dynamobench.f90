@@ -50,13 +50,6 @@
 !>        Address of volume monitor data for inner core
         integer(kind = kint) :: ipwr_icore =  0
 !
-!>        temperature address for spherical transform at equator
-        integer(kind = kint) :: ibench_temp =  1
-!>        velocity address for spherical transform at equator
-        integer(kind = kint) :: ibench_velo =  2
-!>        magnetic field address for spherical transform at equator
-        integer(kind = kint) :: ibench_magne = 5
-!
 !>        average kinetic energy (poloidal, toroidal, total)
         real(kind = kreal) :: KE_bench(3)
 !>        average magnetic energy (poloidal, toroidal, total)
@@ -167,7 +160,6 @@
       ifld = 0
       if(ipol%base%i_velo .gt. 0) then
         ifld = ifld + 1
-        bench%ibench_velo = d_circle%istack_component(ifld-1) + 1
         bench%iphys_dbench%i_velo                                       &
      &                    = d_circle%istack_component(ifld-1) + 1
         d_circle%phys_name(ifld) =     velocity%name
@@ -177,7 +169,6 @@
       end if
       if(ipol%base%i_magne .gt. 0) then
         ifld = ifld + 1
-        bench%ibench_magne = d_circle%istack_component(ifld-1) + 1
         bench%iphys_dbench%i_magne                                      &
      &                    = d_circle%istack_component(ifld-1) + 1
         d_circle%phys_name(ifld) =     magnetic_field%name
@@ -187,7 +178,6 @@
       end if
       if(ipol%base%i_temp .gt. 0) then
         ifld = ifld + 1
-        bench%ibench_temp = d_circle%istack_component(ifld-1) + 1
         bench%iphys_dbench%i_temp                                       &
      &                    = d_circle%istack_component(ifld-1) + 1
         d_circle%phys_name(ifld) =     temperature%name
@@ -197,7 +187,6 @@
       end if
       if(ipol%base%i_light .gt. 0) then
         ifld = ifld + 1
-!        bench%ibench_temp = d_circle%istack_component(ifld-1) + 1
         bench%iphys_dbench%i_light                                      &
      &                    = d_circle%istack_component(ifld-1) + 1
         d_circle%phys_name(ifld) =     composition%name

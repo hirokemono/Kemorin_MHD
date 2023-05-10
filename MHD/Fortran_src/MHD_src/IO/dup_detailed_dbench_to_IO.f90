@@ -210,12 +210,17 @@
       jcou = jcou + 7
 !
       if(ipol_base%i_magne .gt. 0) then
-        bench%detail_out(jcou+1) = bench%d_zero(0,bench%ibench_magne+1)
+        bench%detail_out(jcou+1)                                        &
+     &       = bench%d_zero(0,bench%iphys_dbench%i_magne+1)
         jcou = jcou + 1
       end if
 !
-      bench%detail_out(jcou+1) = bench%d_zero(0,bench%ibench_velo+2)
-      bench%detail_out(jcou+2) = bench%d_zero(0,bench%ibench_temp)
+      bench%detail_out(jcou+1)                                          &
+     &       = bench%d_zero(0,bench%iphys_dbench%i_velo+2)
+      bench%detail_out(jcou+2)                                          &
+     &       = bench%d_zero(0,bench%iphys_dbench%i_temp)
+!      bench%detail_out(jcou+3)                                         &
+!     &       = bench%d_zero(0,bench%iphys_dbench%i_light)
 !
       end subroutine dup_detail_dbench_monitor_name
 !

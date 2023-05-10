@@ -237,8 +237,9 @@
 !      integer(kind = kint), allocatable :: id_test(:,:)
 !      integer(kind = kint), allocatable :: ir_test(:,:)
       integer(kind = kint_gl), allocatable :: l_test(:)
-      integer(kind = kint) :: iele, inum, iflag, iflag_gl, k1
       integer(kind = kint) :: inod_e(nnod_4_ele)
+      integer(kind = kint) :: iele, inum, iflag, iflag_gl
+!      integer(kind = kint) :: k1
 !
 !
       if(i_debug .gt. 0) write(*,*) 'Number of  ', trim(txt),           &

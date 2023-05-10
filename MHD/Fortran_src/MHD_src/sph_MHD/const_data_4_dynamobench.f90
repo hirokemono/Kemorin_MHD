@@ -243,7 +243,7 @@
       if(my_rank .eq. 0) then
         call cal_field_4_dynamobench                                    &
      &     (time, bench%t_prev, cdat%circle, cdat%d_circle,             &
-     &      bench%ibench_velo, bench%phi_zero, bench%phi_prev,          &
+     &      bench%iphys_dbench%i_velo, bench%phi_zero, bench%phi_prev,  &
      &      bench%phase_vr, bench%ave_phase_vr, bench%d_zero)
       end if
       bench%t_prev = time
