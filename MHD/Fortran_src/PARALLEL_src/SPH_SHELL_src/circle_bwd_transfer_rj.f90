@@ -16,7 +16,7 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(base_field_address), intent(in) :: iphys_dbench
 !!        type(fields_on_circle), intent(in) :: circle
-!!        type(circle_transform_spetr), intent(inout) :: leg_circ
+!!        type(circle_transform_spectr), intent(inout) :: leg_circ
 !!        type(phys_data), intent(inout) :: d_circle
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!
@@ -30,7 +30,7 @@
 !!        integer(kind = kint), intent(in)                              &
 !!       &                      :: ipol_circle_trns(nod_fld%num_phys_viz)
 !!        type(fields_on_circle), intent(in) :: circle
-!!        type(circle_transform_spetr), intent(inout) :: leg_circ
+!!        type(circle_transform_spectr), intent(inout) :: leg_circ
 !!        type(phys_data), intent(inout) :: d_circle
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!@endverbatim
@@ -78,7 +78,7 @@
       type(fields_on_circle), intent(in) :: circle
 !
       type(phys_data), intent(inout) :: d_circle
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
 !
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
@@ -170,7 +170,7 @@
      &                      :: ipol_circle_trns(nod_fld%num_phys_viz)
       type(fields_on_circle), intent(in) :: circle
 !
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
       type(phys_data), intent(inout) :: d_circle
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !

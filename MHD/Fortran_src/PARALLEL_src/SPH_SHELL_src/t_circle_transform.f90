@@ -12,7 +12,7 @@
 !!        type(sph_grids), intent(in) ::  sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(circle_transform_spetr), intent(inout) :: leg_circ
+!!        type(circle_transform_spectr), intent(inout) :: leg_circ
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
@@ -23,11 +23,11 @@
 !!        integer, intent(in) :: my_rank
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: d_circle
-!!        type(circle_transform_spetr), intent(inout) :: leg_circ
+!!        type(circle_transform_spectr), intent(inout) :: leg_circ
 !!      subroutine dealloc_circle_transform(leg_circ)
 !!      subroutine dealloc_legendre_on_circ_rj(leg_circ)
 !!      subroutine dealloc_work_circle_transform(leg_circ)
-!!        type(circle_transform_spetr), intent(inout) :: leg_circ
+!!        type(circle_transform_spectr), intent(inout) :: leg_circ
 !!@endverbatim
 !!
 !!@n @param  ltr      Truncation of spherical harmonics
@@ -45,7 +45,7 @@
       implicit none
 !
 !
-      type circle_transform_spetr
+      type circle_transform_spectr
 !>        Truncation level for spherical transform at equator
         integer(kind = kint) :: ltr_circle
 !>        end address of SMP parallelization for scalar Fourier transform
@@ -74,7 +74,7 @@
         real(kind = kreal), allocatable :: vrtm_mag(:,:)
 !>        Spectr data for circle point collected to 0 process
         real(kind = kreal), allocatable :: vrtm_phase(:,:)
-      end type circle_transform_spetr
+      end type circle_transform_spectr
 !
 ! ----------------------------------------------------------------------
 !
@@ -96,7 +96,7 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
@@ -110,7 +110,6 @@
       if(iflag_debug .gt. 0) then
         call check_legendre_on_circ_rj(sph%sph_rj, leg_circ)
       end if
-      call alloc_circle_transform(leg_circ)
 !
       end subroutine init_legendre_on_circle
 !
@@ -119,7 +118,7 @@
 !
       subroutine alloc_circle_transform(leg_circ)
 !
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
 !
 !
       allocate(leg_circ%istack_circfft_smp(0:np_smp))
@@ -135,7 +134,7 @@
       use t_spheric_rj_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
 !
 !
       allocate(leg_circ%P_circ(sph_rj%nidx_rj(2)))
@@ -154,7 +153,7 @@
 !
       integer, intent(in) :: my_rank
       type(phys_data), intent(in) :: d_circle
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
 !
       integer(kind = kint) :: ltr, ntot_comp
 !
@@ -187,7 +186,7 @@
 !
       subroutine dealloc_circle_transform(leg_circ)
 !
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
 !
 !
       deallocate(leg_circ%istack_circfft_smp)
@@ -198,7 +197,7 @@
 !
       subroutine dealloc_legendre_on_circ_rj(leg_circ)
 !
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
 !
 !
       deallocate(leg_circ%P_circ, leg_circ%dPdt_circ)
@@ -209,7 +208,7 @@
 !
       subroutine dealloc_work_circle_transform(leg_circ)
 !
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
 !
 !
       if(allocated(leg_circ%vrtm_mag) .eqv. .FALSE.) return
@@ -227,7 +226,7 @@
       use t_spheric_rj_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(circle_transform_spetr), intent(in) :: leg_circ
+      type(circle_transform_spectr), intent(in) :: leg_circ
 !
       integer(kind = kint) :: ip, j
 !

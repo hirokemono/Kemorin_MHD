@@ -19,7 +19,7 @@
 !!      subroutine circle_transfer_sym_tensor                           &
 !!     &         (iflag_FFT, ifld, circle, leg_circ, WK_circle_fft)
 !!        type(fields_on_circle), intent(inout) :: circle
-!!        type(circle_transform_spetr), intent(inout) :: leg_circ
+!!        type(circle_transform_spectr), intent(inout) :: leg_circ
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!      subroutine circle_lag_transfer_scalar(ltr_circle, jmax_circle,  &
 !!     &          P_circle, jmax, d_rj_circle, vcirc_rtm)
@@ -118,7 +118,7 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ifld
       type(fields_on_circle), intent(inout) :: circle
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
       integer ::  j
@@ -174,7 +174,7 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ifld
       type(fields_on_circle), intent(inout) :: circle
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
       integer :: j
@@ -214,7 +214,7 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ifld
       type(fields_on_circle), intent(inout) :: circle
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
       integer(kind = kint) :: nd

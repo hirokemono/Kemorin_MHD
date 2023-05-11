@@ -229,7 +229,7 @@
 !
       type(phys_address), intent(in) :: ipol
       type(fields_on_circle), intent(in) :: circle
-      type(circle_transform_spetr), intent(in) :: leg_circ
+      type(circle_transform_spectr), intent(in) :: leg_circ
       type(phys_data), intent(in) :: d_circle
       type(dynamobench_monitor), intent(in) :: bench
 !

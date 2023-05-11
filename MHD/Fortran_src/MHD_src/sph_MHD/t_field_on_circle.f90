@@ -46,17 +46,13 @@
       implicit none
 !
 !
-!      type leg_circle
-!      end type leg_circle
-!
       type circle_fld_maker
-        type(circle_transform_spetr) :: leg_circ
+!>        Legendre polynomials at specific latitude
+        type(circle_transform_spectr) :: leg_circ
 !>        Structure to make fields on circle
         type(fields_on_circle) :: circle
 !>         Structure of field data on circle
         type(phys_data) :: d_circle
-!>        Legendre polynomials at specific latitude
-!        type(leg_circle) :: leg_crc
 !>        Working structure for Fourier transform at mid-depth equator
 !!@n      (Save attribute is necessary for Hitachi compiler for SR16000)
         type(working_FFTs) :: WK_circle_fft
@@ -213,7 +209,7 @@
 !
       integer(kind = kint), intent(in) ::  nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      type(circle_transform_spetr), intent(in) :: leg_circ
+      type(circle_transform_spectr), intent(in) :: leg_circ
 !
       type(fields_on_circle), intent(inout) :: circle
 !
@@ -254,9 +250,11 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       type(fields_on_circle), intent(in) :: circle
 !
-      type(circle_transform_spetr), intent(inout) :: leg_circ
+      type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
+!
+      call alloc_circle_transform(leg_circ)
 !
       leg_circ%r_circle                                                &
      &      = sqrt(circle%s_circle**2 + circle%z_circle**2)
