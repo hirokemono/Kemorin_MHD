@@ -335,7 +335,7 @@
      &    time_d, monitor%bench)
       call write_fields_on_circle_file                                  &
      &   (my_rank, monitor%bench%dbench_field_file_prefix,              &
-     &    monitor%bench%gzip_flag_bench, sph_params, sph_rj,            &
+     &    monitor%bench%gzip_flag_bench, sph_params,                    &
      &    time_d, monitor%circ_mid_eq)
 !
       end subroutine output_sph_monitor_data
