@@ -276,6 +276,7 @@
       use write_typical_scale
       use dup_dynamobench_data_to_IO
       use dup_detailed_dbench_to_IO
+      use dup_fields_on_circle_to_IO
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -332,6 +333,10 @@
      &   (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc,                &
      &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore),               &
      &    time_d, monitor%bench)
+      call write_fields_on_circle_file                                  &
+     &   (my_rank, monitor%bench%dbench_field_file_prefix,              &
+     &    monitor%bench%gzip_flag_bench, sph_params, sph_rj,            &
+     &    time_d, monitor%circ_mid_eq)
 !
       end subroutine output_sph_monitor_data
 !

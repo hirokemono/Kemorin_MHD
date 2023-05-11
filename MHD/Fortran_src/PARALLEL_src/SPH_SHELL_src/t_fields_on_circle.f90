@@ -160,11 +160,6 @@
       type(fields_on_circle), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
 !
-      integer(kind = kint) :: jmax_gl, ntot
-!
-!
-      jmax_gl = nidx_global_jmax
-      ntot = d_circle%ntot_phys
 !
       if(circle%mphi_circle .le. izero) then
         circle%mphi_circle = mphi_rtp

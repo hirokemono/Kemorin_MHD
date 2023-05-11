@@ -58,6 +58,11 @@
         type(working_FFTs) :: WK_circle_fft
 !
         integer(kind = kint), allocatable :: ipol_circle_trns(:)
+!
+!>         Integer of zonal indexing
+        integer(kind = kint), allocatable :: mphi_list(:)
+!>         longitude
+        real(kind = kreal), allocatable :: phi_list(:)
       end type circle_fld_maker
 !
       type mul_fields_on_circle
@@ -135,11 +140,26 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
+      integer(kind = kint) :: m
+      real(kind = kreal) :: delta
+!
 !
       cdat%leg_circ%ltr_circle =  sph%sph_params%l_truncation
       call alloc_circle_field(my_rank,                                  &
      &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
      &    cdat%circle, cdat%d_circle)
+      if(my_rank.eq.0) then
+        allocate(cdat%mphi_list(cdat%circle%mphi_circle))
+        allocate(cdat%phi_list(cdat%circle%mphi_circle))
+        delta = 8.0d0 * atan(one) / dble(cdat%circle%mphi_circle)
+!$omp parallel do
+        do m = 1, cdat%circle%mphi_circle
+          cdat%mphi_list(m) = m
+          cdat%phi_list(m) = dble(m-1) * delta
+        end do
+!$omp end parallel do
+      end if
+!
       call initialize_circle_transform(trans_p%iflag_FFT,               &
      &    cdat%circle, cdat%leg_circ, cdat%WK_circle_fft)
       call set_circle_point_global                                      &

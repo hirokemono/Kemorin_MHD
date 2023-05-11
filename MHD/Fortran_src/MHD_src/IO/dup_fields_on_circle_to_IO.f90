@@ -8,23 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine write_fields_on_circle_file                          &
-!!     &         (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, &
-!!     &          time_d, bench)
-!!      subroutine dup_detail_dbench_header_to_IO                       &
-!!     &         (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, sph_OUT)
+!!     &         (my_rank, file_prefix, gzip_flag,                      &
+!!     &          sph_params, sph_rj, time_d, cdat)
+!!        integer, intent(in) :: my_rank
+!!        character(len=kchara), intent(in) :: file_prefix
+!!        logical, intent(in) :: gzip_flag
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(phys_address), intent(in) :: ipol
-!!        type(sph_vol_mean_squares), intent(in) :: v_pwr
-!!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !!        type(time_data), intent(in) :: time_d
-!!        type(dynamobench_monitor), intent(in) :: bench
-!!      subroutine dup_detail_dbench_monitor_name(sph_bc_U, sph_bc_B,   &
-!!     &          ipol_base, bench, num_out, detail_out)
-!!        type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
-!!        type(base_field_address), intent(in) :: ipol_base
-!!        type(dynamobench_monitor), intent(in) :: bench
+!!        type(circle_fld_maker), intent(in) :: cdat
 !!@endverbatim
 !!
 !!@param i_step   time step
@@ -37,36 +29,31 @@
 !
       use t_spheric_parameter
       use t_spheric_rj_data
-      use t_boundary_data_sph_MHD
-      use t_boundary_params_sph_MHD
       use t_phys_address
       use t_base_field_labels
-      use t_sph_volume_mean_square
-      use t_field_4_dynamobench
       use t_read_sph_spectra
       use t_time_data
-      use t_fields_on_circle
       use t_phys_data
+      use t_field_on_circle
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: id_dbench = 36
+      integer(kind = kint), parameter, private :: id_circle = 36
 !
       type(sph_spectr_head_labels), parameter                           &
-     &            :: sph_dnamobench_labels = sph_spectr_head_labels(    &
+     &            :: circle_field_labels = sph_spectr_head_labels(      &
      &                           hdr_nri = 'radial_layers',             &
      &                           hdr_ltr = 'truncation',                &
      &                           hdr_ICB_id = 'ICB_id',                 &
      &                           hdr_CMB_id = 'CMB_id',                 &
      &                           hdr_kr_in =  'Not_used',               &
-     &                           hdr_r_in =   'Not_used',               &
-     &                           hdr_kr_out = 'Upper_boundary_ID',      &
-     &                           hdr_r_out =  'Upper_boundary_radius',  &
+     &                           hdr_r_in =   'Cylindrical_radius',     &
+     &                           hdr_kr_out = 'Not_used',               &
+     &                           hdr_r_out =  'Height_z',               &
      &                           hdr_num_field = 'Number_of_field',     &
      &                           hdr_num_comp = 'Number_of_components')
 !
       private :: dup_field_on_circ_header_to_IO
-!      private :: copy_detail_dbench_monitor_name
 !
 ! ----------------------------------------------------------------------
 !
@@ -75,80 +62,74 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_fields_on_circle_file                            &
-     &         (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc,   &
-     &          circle, d_circle, time_d, bench)
+     &         (my_rank, file_prefix, gzip_flag,                        &
+     &          sph_params, sph_rj, time_d, cdat)
 !
       use t_buffer_4_gzip
       use set_parallel_file_name
       use sph_monitor_data_text
-      use gz_open_sph_vol_mntr_file
-      use select_gz_stream_file_IO
+      use gz_open_sph_layer_mntr_file
+      use gz_layer_mean_monitor_IO
 !
       integer, intent(in) :: my_rank
+      character(len=kchara), intent(in) :: file_prefix
+      logical, intent(in) :: gzip_flag
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(fields_on_circle), intent(in) :: circle
-      type(phys_data), intent(in) :: d_circle
       type(time_data), intent(in) :: time_d
-!
-!      type(read_sph_spectr_data), intent(inout) :: sph_OUT
-      type(dynamobench_monitor), intent(in) :: bench
+      type(circle_fld_maker), intent(in) :: cdat
 !
       logical :: flag_gzip_lc
       character(len = kchara) :: file_name
       type(buffer_4_gzip) :: zbuf_d
       type(read_sph_spectr_data) :: sph_OUT_d
 !
-      real(kind = kreal), allocatable :: detail_out(:)
+      real(kind = kreal), allocatable :: spectr_IO(:,:)
 !
 !
-      if(bench%iflag_dynamobench .le. izero) return
-      if(bench%detail_bench_file_prefix .eq. 'NO_FILE') return
+      if(file_prefix .eq. 'NO_FILE') return
       if(my_rank .ne. 0) return
 !
-      call dup_field_on_circ_header_to_IO                               &
-     &   (sph_params, sph_rj, ipol, sph_MHD_bc, circle, d_circle, sph_OUT_d)
+      call dup_field_on_circ_header_to_IO(sph_params, sph_rj,           &
+     &    cdat%circle, cdat%d_circle, sph_OUT_d)
 !
-!      allocate(detail_out(sph_OUT_d%ntot_sph_spec))
-!      call dup_detail_dbench_monitor_name                              &
-!     &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base, bench,  &
-!     &    sph_OUT_d%ntot_sph_spec, detail_out)
+      allocate(spectr_IO(cdat%d_circle%ntot_phys_viz,                   &
+     &                   cdat%circle%mphi_circle))
 !
-!      flag_gzip_lc = bench%gzip_flag_bench
-!      file_name = add_dat_extension(bench%detail_bench_file_prefix)
-!      call sel_open_sph_vol_monitor_file(id_dbench, file_name,         &
-!     &    sph_dnamobench_labels, sph_OUT_d, zbuf_d, flag_gzip_lc)
-!      call dealloc_sph_espec_name(sph_OUT_d)
+      flag_gzip_lc = gzip_flag
+      file_name = add_dat_extension(file_prefix)
+      call sel_open_sph_layer_mean_file(id_circle, file_name,           &
+     &    circle_field_labels, sph_OUT_d, zbuf_d, flag_gzip_lc)
+      call swap_layer_mean_to_IO(cdat%circle%mphi_circle,               &
+     &    cdat%d_circle%ntot_phys_viz, cdat%d_circle%d_fld,             &
+     &    spectr_IO(1,1))
+      call sel_gz_write_layer_mean_mtr                                  &
+     &   (flag_gzip_lc, id_circle, time_d%i_time_step, time_d%time,     &
+     &    cdat%circle%mphi_circle, cdat%mphi_list, cdat%phi_list,       &
+     &    cdat%d_circle%ntot_phys_viz, spectr_IO(1,1), zbuf_d)
+      close(id_circle)
 !
-!      call sel_gz_write_text_stream(flag_gzip_lc, id_dbench,           &
-!     &    volume_pwr_data_text(time_d%i_time_step, time_d%time,        &
-!     &                         sph_OUT_d%ntot_sph_spec, detail_out),   &
-!     &                         zbuf_d)
-!      close(id_dbench)
-!      deallocate(detail_out)
+      call dealloc_sph_espec_name(sph_OUT_d)
+      deallocate(spectr_IO)
 !
       end subroutine write_fields_on_circle_file
 !
 ! ----------------------------------------------------------------------
 !
       subroutine dup_field_on_circ_header_to_IO                         &
-     &         (sph_params, sph_rj, ipol, sph_MHD_bc,  &
-     &          circle, d_circle, sph_OUT)
+     &         (sph_params, sph_rj, circle, d_circle, sph_OUT)
 !
       use m_time_labels
+      use sel_comp_labels_by_coord
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(phys_address), intent(in) :: ipol
       type(fields_on_circle), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
-      character(len=kchara) :: label(6)
-      integer(kind = kint) :: ifld
+!
+      integer(kind = kint) :: ifld, ist
 !
 !
       if(allocated(sph_OUT%ene_sph_spec_name)) return
@@ -169,27 +150,26 @@
       sph_OUT%num_time_labels = 4
       call alloc_sph_espec_name(sph_OUT)
 !
+      sph_OUT%ncomp_sph_spec(1:sph_OUT%nfield_sph_spec)                 &
+     &           = d_circle%num_component(1:sph_OUT%nfield_sph_spec)
+!
       sph_OUT%ene_sph_spec_name(1) = fhd_t_step
       sph_OUT%ene_sph_spec_name(2) = fhd_time
       sph_OUT%ene_sph_spec_name(3) = 'Longitude_ID'
       sph_OUT%ene_sph_spec_name(4) = 'Longitude'
       do ifld = 1, d_circle%num_phys_viz
+        ist = d_circle%istack_component(ifld-1) + 1
         if(d_circle%num_component(ifld) .eq. n_sym_tensor) then
           call sel_coord_tensor_comp_labels(circle%iflag_circle_coord,  &
-     &        d_circle%phys_name(ifld), sph_OUT%ene_sph_spec_name(1) )
+     &        d_circle%phys_name(ifld), sph_OUT%ene_sph_spec_name(ist))
         else if(d_circle%num_component(ifld) .eq. n_vector) then
           call sel_coord_vector_comp_labels(circle%iflag_circle_coord,  &
-     &        d_circle%phys_name(ifld), sph_OUT%ene_sph_spec_name(1) )
+     &        d_circle%phys_name(ifld), sph_OUT%ene_sph_spec_name(ist))
         else
-          write(sph_OUT%ene_sph_spec_name(1),'(a)')                     &
+          write(sph_OUT%ene_sph_spec_name(ist),'(a)')                   &
      &                   trim(d_circle%phys_name(ifld))
         end if
       end do
-!
-      call copy_dynamobench_monitor_name                                &
-     &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base,          &
-     &    sph_OUT%nfield_sph_spec, sph_OUT%num_labels,                  &
-     &    sph_OUT%ncomp_sph_spec, sph_OUT%ene_sph_spec_name)
 !
       end subroutine dup_field_on_circ_header_to_IO
 !

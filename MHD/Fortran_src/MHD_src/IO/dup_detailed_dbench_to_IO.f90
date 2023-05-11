@@ -20,7 +20,7 @@
 !!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !!        type(time_data), intent(in) :: time_d
 !!        type(dynamobench_monitor), intent(in) :: bench
-!!      subroutine dup_detail_dbench_monitor_name(sph_bc_U, sph_bc_B,   &
+!!      subroutine dup_detail_dbench_monitor_data(sph_bc_U, sph_bc_B,   &
 !!     &          ipol_base, bench, num_out, detail_out)
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
 !!        type(base_field_address), intent(in) :: ipol_base
@@ -109,7 +109,7 @@
      &   (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, sph_OUT_d)
 !
       allocate(detail_out(sph_OUT_d%ntot_sph_spec))
-      call dup_detail_dbench_monitor_name                               &
+      call dup_detail_dbench_monitor_data                               &
      &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base, bench,   &
      &    sph_OUT_d%ntot_sph_spec, detail_out)
 !
@@ -169,7 +169,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dup_detail_dbench_monitor_name(sph_bc_U, sph_bc_B,     &
+      subroutine dup_detail_dbench_monitor_data(sph_bc_U, sph_bc_B,     &
      &          ipol_base, bench, num_out, detail_out)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_U, sph_bc_B
@@ -228,7 +228,7 @@
         detail_out(jcou+1) = bench%d_zero(0,bench%iphys_dbench%i_light)
       end if
 !
-      end subroutine dup_detail_dbench_monitor_name
+      end subroutine dup_detail_dbench_monitor_data
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
