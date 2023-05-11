@@ -46,6 +46,7 @@
       use t_read_sph_spectra
       use t_time_data
       use t_fields_on_circle
+      use t_phys_data
 !
       implicit none
 !
@@ -74,8 +75,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_fields_on_circle_file                            &
-     &         (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr,   &
-     &          time_d, bench)
+     &         (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc,   &
+     &          circle, d_circle, time_d, bench)
 !
       use t_buffer_4_gzip
       use set_parallel_file_name
@@ -88,7 +89,8 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(sph_vol_mean_squares), intent(in) :: v_pwr
+      type(fields_on_circle), intent(in) :: circle
+      type(phys_data), intent(in) :: d_circle
       type(time_data), intent(in) :: time_d
 !
 !      type(read_sph_spectr_data), intent(inout) :: sph_OUT
@@ -106,8 +108,8 @@
       if(bench%detail_bench_file_prefix .eq. 'NO_FILE') return
       if(my_rank .ne. 0) return
 !
-!      call dup_field_on_circ_header_to_IO                              &
-!     &   (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, sph_OUT_d)
+      call dup_field_on_circ_header_to_IO                               &
+     &   (sph_params, sph_rj, ipol, sph_MHD_bc, circle, d_circle, sph_OUT_d)
 !
 !      allocate(detail_out(sph_OUT_d%ntot_sph_spec))
 !      call dup_detail_dbench_monitor_name                              &
@@ -132,16 +134,21 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dup_field_on_circ_header_to_IO                         &
-     &         (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, circle, sph_OUT)
+     &         (sph_params, sph_rj, ipol, sph_MHD_bc,  &
+     &          circle, d_circle, sph_OUT)
+!
+      use m_time_labels
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(phys_address), intent(in) :: ipol
-      type(sph_vol_mean_squares), intent(in) :: v_pwr
       type(fields_on_circle), intent(in) :: circle
+      type(phys_data), intent(in) :: d_circle
 !
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
+      character(len=kchara) :: label(6)
+      integer(kind = kint) :: ifld
 !
 !
       if(allocated(sph_OUT%ene_sph_spec_name)) return
@@ -156,12 +163,29 @@
       sph_OUT%r_inner =  circle%s_circle
       sph_OUT%r_outer =  circle%z_circle
 !
-      call count_dynamobench_monitor_name                               &
-     &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base,          &
-     &    sph_OUT%nfield_sph_spec, sph_OUT%ntot_sph_spec)
+      sph_OUT%nfield_sph_spec = d_circle%num_phys_viz
+      sph_OUT%ntot_sph_spec =   d_circle%ntot_phys_viz
 !
-      sph_OUT%num_time_labels = 2
+      sph_OUT%num_time_labels = 4
       call alloc_sph_espec_name(sph_OUT)
+!
+      sph_OUT%ene_sph_spec_name(1) = fhd_t_step
+      sph_OUT%ene_sph_spec_name(2) = fhd_time
+      sph_OUT%ene_sph_spec_name(3) = 'Longitude_ID'
+      sph_OUT%ene_sph_spec_name(4) = 'Longitude'
+      do ifld = 1, d_circle%num_phys_viz
+        if(d_circle%num_component(ifld) .eq. n_sym_tensor) then
+          call sel_coord_tensor_comp_labels(circle%iflag_circle_coord,  &
+     &        d_circle%phys_name(ifld), sph_OUT%ene_sph_spec_name(1) )
+        else if(d_circle%num_component(ifld) .eq. n_vector) then
+          call sel_coord_vector_comp_labels(circle%iflag_circle_coord,  &
+     &        d_circle%phys_name(ifld), sph_OUT%ene_sph_spec_name(1) )
+        else
+          write(sph_OUT%ene_sph_spec_name(1),'(a)')                     &
+     &                   trim(d_circle%phys_name(ifld))
+        end if
+      end do
+!
       call copy_dynamobench_monitor_name                                &
      &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base,          &
      &    sph_OUT%nfield_sph_spec, sph_OUT%num_labels,                  &

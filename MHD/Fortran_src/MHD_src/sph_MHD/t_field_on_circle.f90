@@ -56,13 +56,14 @@
 !>        Working structure for Fourier transform at mid-depth equator
 !!@n      (Save attribute is necessary for Hitachi compiler for SR16000)
         type(working_FFTs) :: WK_circle_fft
+!
+        integer(kind = kint), allocatable :: ipol_circle_trns(:)
       end type circle_fld_maker
 !
       type mul_fields_on_circle
         integer(kind = kint) :: num_circles = 0
 !>         Structure of field data on circle
         type(circle_fld_maker), allocatable :: cdat(:)
-        integer(kind = kint), allocatable :: ipol_circle_trns(:)
       end type mul_fields_on_circle
 !
       private :: set_circle_point_global
@@ -154,18 +155,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_circle_transfer_address(nod_fld, rj_fld,           &
-     &                                       mul_circle)
+      subroutine set_circle_transfer_address(nod_fld, rj_fld, cdat)
 !
       type(phys_data), intent(in) :: nod_fld, rj_fld
-      type(mul_fields_on_circle), intent(inout) :: mul_circle
+      type(circle_fld_maker), intent(inout) :: cdat
 !
       logical, allocatable :: flag_use(:)
       integer(kind = kint) :: i_fld, j_fld
 !
-      allocate(mul_circle%ipol_circle_trns(1:rj_fld%num_phys))
+      allocate(cdat%ipol_circle_trns(1:rj_fld%num_phys))
 !$omp parallel workshare
-      mul_circle%ipol_circle_trns(1:rj_fld%num_phys) = 0
+      cdat%ipol_circle_trns(1:rj_fld%num_phys) = 0
 !$omp end parallel workshare
 !
       allocate(flag_use(1:rj_fld%num_phys))
@@ -177,7 +177,7 @@
           if(flag_use(j_fld)) cycle
           if(rj_fld%phys_name(j_fld)                                    &
      &         .eq. nod_fld%phys_name(i_fld)) then
-            mul_circle%ipol_circle_trns(i_fld)                          &
+            cdat%ipol_circle_trns(i_fld)                                &
      &                      = rj_fld%istack_component(j_fld-1) + 1 
             flag_use(j_fld) = .TRUE.
             exit
