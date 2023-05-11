@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine write_detailed_dbench_file                           &
 !!     &         (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, &
-!!     &          time_d, bench)
+!!     &          time_d, gzip_flag, gzip_flag, bench)
 !!      subroutine dup_detail_dbench_header_to_IO                       &
 !!     &         (sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr, sph_OUT)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
@@ -19,6 +19,7 @@
 !!        type(sph_vol_mean_squares), intent(in) :: v_pwr
 !!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !!        type(time_data), intent(in) :: time_d
+!!        logical, intent(in) :: gzip_flag
 !!        type(dynamobench_monitor), intent(in) :: bench
 !!      subroutine dup_detail_dbench_monitor_data(sph_bc_U, sph_bc_B,   &
 !!     &          ipol_base, bench, num_out, detail_out)
@@ -74,7 +75,7 @@
 !
       subroutine write_detailed_dbench_file                             &
      &         (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc, v_pwr,   &
-     &          time_d, bench)
+     &          time_d, gzip_flag, bench)
 !
       use t_buffer_4_gzip
       use set_parallel_file_name
@@ -90,9 +91,10 @@
       type(sph_vol_mean_squares), intent(in) :: v_pwr
       type(time_data), intent(in) :: time_d
 !
-!      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+      logical, intent(in) :: gzip_flag
       type(dynamobench_monitor), intent(in) :: bench
 !
+!      type(read_sph_spectr_data), intent(inout) :: sph_OUT
       logical :: flag_gzip_lc
       character(len = kchara) :: file_name
       type(buffer_4_gzip) :: zbuf_d
@@ -113,7 +115,7 @@
      &   (sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, ipol%base, bench,   &
      &    sph_OUT_d%ntot_sph_spec, detail_out)
 !
-      flag_gzip_lc = bench%gzip_flag_bench
+      flag_gzip_lc = gzip_flag
       file_name = add_dat_extension(bench%detail_bench_file_prefix)
       call sel_open_sph_vol_monitor_file(id_dbench, file_name,          &
      &    sph_dnamobench_labels, sph_OUT_d, zbuf_d, flag_gzip_lc)

@@ -14,9 +14,8 @@
 !!         type(dynamobench_control), intent(in) :: dbench_ctl
 !!        type(fields_on_circle), intent(inout) :: circle
 !!
-!!      subroutine alloc_circle_field                                   &
-!!     &         (my_rank, mphi_rtp, nidx_global_jmax, circle, d_circle)
-!!      subroutine dealloc_circle_field(my_rank, circle, d_circle)
+!!      subroutine alloc_circle_field(mphi_rtp, circle, d_circle)
+!!      subroutine dealloc_circle_field(circle, d_circle)
 !!@endverbatim
 !!
 !!@n @param  ltr      Truncation of spherical harmonics
@@ -41,17 +40,15 @@
 !
 !>      Structure to make fields on circle
       type fields_on_circle
+!>        file name for field data on a circle
+        character(len=kchara) :: circle_field_file_prefix
+!>        file name for spectr power data on a circle
+        character(len=kchara) :: circle_spectr_file_prefix
+!>        compress flag for benchmark output file
+        logical :: gzip_flag_circle = .FALSE.
+!
 !>        Flag for coordinate system for circle data
         integer(kind = kint) :: iflag_circle_coord = iflag_circle_sph
-!
-!>        file name for field data on a circle
-        character(len=kchara) :: fname_circle_fld = 'circle_field.dat'
-!>        file name for spectr power data on a circle
-        character(len=kchara) :: fname_circle_mag                       &
-     &                        = 'circle_spec_mag.dat'
-!>        file name for spectr phase data on a circle
-        character(len=kchara) :: fname_circle_phs                       &
-     &                        = 'circle_spec_phase.dat'
 !
 !>        Number of gird points for a circle
         integer(kind = kint) :: mphi_circle
@@ -84,12 +81,35 @@
 !
       use t_ctl_data_mid_equator
       use t_control_array_character3
+      use t_multi_flag_labels
+      use m_file_format_labels
       use skip_comment_f
 !
       type(mid_equator_control), intent(in) :: meq_ctl
       type(fields_on_circle), intent(inout) :: circle
 !
       character(len = kchara) :: tmpchara
+!
+!
+!
+      circle%circle_field_file_prefix = 'NO_FILE'
+      if(meq_ctl%circle_field_file_ctl%iflag .gt. 0) then
+        circle%circle_field_file_prefix                                 &
+     &                 = meq_ctl%circle_field_file_ctl%charavalue
+      end if
+!
+      circle%circle_spectr_file_prefix = 'NO_FILE'
+      if(meq_ctl%circle_spectr_file_ctl%iflag .gt. 0) then
+        circle%circle_spectr_file_prefix                                &
+     &                 = meq_ctl%circle_spectr_file_ctl%charavalue
+      end if
+!
+      circle%gzip_flag_circle = .FALSE.
+      if(meq_ctl%circle_file_format_ctl%iflag .gt. 0) then
+        tmpchara = meq_ctl%circle_file_format_ctl%charavalue
+        if(check_mul_flags(tmpchara, gzip_flags))                       &
+     &                     circle%gzip_flag_circle = .TRUE.
+      end if
 !
 !
       circle%iflag_circle_coord = iflag_circle_sph
@@ -152,11 +172,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_circle_field                                     &
-     &         (my_rank, mphi_rtp, nidx_global_jmax, circle, d_circle)
+      subroutine alloc_circle_field(mphi_rtp, circle, d_circle)
 !
-      integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: mphi_rtp, nidx_global_jmax
+      integer(kind = kint), intent(in) :: mphi_rtp
       type(fields_on_circle), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
 !
@@ -171,10 +189,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_circle_field(my_rank, circle, d_circle)
+      subroutine dealloc_circle_field(d_circle)
 !
-      integer, intent(in) :: my_rank
-      type(fields_on_circle), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
 !
 !

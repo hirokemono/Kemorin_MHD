@@ -272,8 +272,7 @@
       call alloc_phys_name(d_circle)
       write(*,*) 'alloc_circle_field'
       call alloc_circle_field                                           &
-     &   (my_rank, sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2),       &
-     &    circle, d_circle)
+     &   (sph_rtp%nidx_rtp(3), circle, d_circle)
 !
       d_circle%num_component = 1
 !

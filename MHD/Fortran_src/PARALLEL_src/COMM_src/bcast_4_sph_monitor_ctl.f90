@@ -226,6 +226,10 @@
       call bcast_ctl_type_i1(meq_ctl%nphi_mid_eq_ctl)
 !
       call bcast_ctl_type_c1(meq_ctl%pick_circle_coord_ctl)
+!
+      call bcast_ctl_type_c1(meq_ctl%circle_field_file_ctl)
+      call bcast_ctl_type_c1(meq_ctl%circle_spectr_file_ctl)
+      call bcast_ctl_type_c1(meq_ctl%circle_file_format_ctl)
       call calypso_mpi_bcast_one_int(meq_ctl%i_mid_equator_ctl, 0)
 !
       end subroutine bcast_mid_eq_monitor_ctl

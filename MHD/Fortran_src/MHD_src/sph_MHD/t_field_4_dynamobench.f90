@@ -35,15 +35,9 @@
         integer(kind = kint) :: iflag_dynamobench =  0
 !>        file prefix for benchmark output file
         character(len=kchara) :: benchmark_file_prefix
-!>        compress flag for benchmark output file
-        logical :: gzip_flag_bench = .FALSE.
 !
 !>        file prefix for detailed benchmark output file
         character(len=kchara) :: detail_bench_file_prefix
-!>        file prefix for benchmark field data file
-        character(len=kchara) :: dbench_field_file_prefix
-!>        file prefix for benchmark field spectr file
-        character(len=kchara) :: dbench_spectr_file_prefix
 !
 !>        Address of volume monitor data for outer core
         integer(kind = kint) :: ipwr_ocore =  0

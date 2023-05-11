@@ -23,8 +23,7 @@
 !!        type(circle_fld_maker), intent(inout) :: cdat
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!      subroutine dealloc_circle_point_global(my_rank, cdat)
-!!        integer, intent(in) :: my_rank
+!!      subroutine dealloc_circle_point_global(cdat)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(sph_grids), intent(in) ::  sph
 !!        type(circle_fld_maker), intent(inout) :: cdat
@@ -145,9 +144,8 @@
 !
 !
       cdat%leg_circ%ltr_circle =  sph%sph_params%l_truncation
-      call alloc_circle_field(my_rank,                                  &
-     &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
-     &    cdat%circle, cdat%d_circle)
+      call alloc_circle_field                                           &
+     &   (sph%sph_rtp%nidx_rtp(3), cdat%circle, cdat%d_circle)
       if(my_rank.eq.0) then
         allocate(cdat%mphi_list(cdat%circle%mphi_circle))
         allocate(cdat%phi_list(cdat%circle%mphi_circle))
@@ -210,13 +208,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_circle_point_global(my_rank, cdat)
+      subroutine dealloc_circle_point_global(cdat)
 !
-      integer, intent(in) :: my_rank
       type(circle_fld_maker), intent(inout) :: cdat
 !
 !
-      call dealloc_circle_field(my_rank, cdat%circle, cdat%d_circle)
+      call dealloc_circle_field(cdat%d_circle)
       call dealloc_circle_transform(cdat%leg_circ)
 !
       end subroutine dealloc_circle_point_global

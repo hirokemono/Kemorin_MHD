@@ -9,10 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine s_set_ctl_sph_spectr_w_dbench                        &
-!!     &         (smonitor_ctl, MHD_BC, pwr, bench)
+!!     &         (smonitor_ctl, MHD_BC, pwr, circle, bench)
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(sph_mean_squares), intent(inout) :: pwr
+!!        type(fields_on_circle), intent(inout) :: circle
 !!        type(dynamobench_monitor), intent(inout) :: bench
 !!@endverbatim
       module set_ctl_sph_spectr_w_dbench
@@ -22,6 +23,7 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_dynamobench
       use t_field_4_dynamobench
+      use t_fields_on_circle
       use t_rms_4_sph_spectr
       use t_bc_data_list
 !
@@ -39,7 +41,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_ctl_sph_spectr_w_dbench                          &
-     &         (smonitor_ctl, MHD_BC, pwr, bench)
+     &         (smonitor_ctl, MHD_BC, pwr, circle, bench)
 !
       use set_control_sph_spectr
 !
@@ -47,6 +49,7 @@
       type(MHD_BC_lists), intent(in) :: MHD_BC
 !
       type(sph_mean_squares), intent(inout) :: pwr
+      type(fields_on_circle), intent(inout) :: circle
       type(dynamobench_monitor), intent(inout) :: bench
 !
       integer(kind = kint) :: num_vspec, inum
@@ -55,7 +58,7 @@
       num_vspec = 1
       call cnt_ctl_params_v_spec_w_dbench                               &
      &   (smonitor_ctl%num_vspec_ctl, smonitor_ctl%dbench_ctl, MHD_BC,  &
-     &    num_vspec, bench)
+     &    num_vspec, circle, bench)
       if(smonitor_ctl%num_vspec_ctl .gt. 0) then
         num_vspec = smonitor_ctl%num_vspec_ctl + num_vspec
       end if
@@ -68,8 +71,7 @@
      &                                     pwr%v_spectr(inum+1))
       end do
       call add_ctl_params_v_spec_w_dbench                               &
-     &   (smonitor_ctl%num_vspec_ctl, smonitor_ctl%dbench_ctl, MHD_BC,  &
-     &    pwr%num_vol_spectr, pwr%v_spectr, bench)
+     &   (MHD_BC, pwr%num_vol_spectr, pwr%v_spectr, bench)
 !
       end subroutine s_set_ctl_sph_spectr_w_dbench
 !
@@ -77,7 +79,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cnt_ctl_params_v_spec_w_dbench                         &
-     &         (num_vspec_ctl, dbench_ctl, MHD_BC, num_vspec, bench)
+     &         (num_vspec_ctl, dbench_ctl, MHD_BC, num_vspec,           &
+     &          circle, bench)
 !
       use t_sph_volume_mean_square
       use t_multi_flag_labels
@@ -89,7 +92,10 @@
       integer(kind = kint), intent(in) :: num_vspec_ctl
 !
       integer(kind = kint), intent(inout) :: num_vspec
+      type(fields_on_circle), intent(inout) :: circle
       type(dynamobench_monitor), intent(inout) :: bench
+!
+      character(len = kchara) :: input_flag
 !
 !
       bench%ipwr_ocore = 0
@@ -108,16 +114,23 @@
      &                 = dbench_ctl%detailed_dbench_file_ctl%charavalue
       end if
 !
-      bench%dbench_field_file_prefix = 'NO_FILE'
+      circle%circle_field_file_prefix = 'NO_FILE'
       if(dbench_ctl%dbench_field_file_ctl%iflag .gt. 0) then
-        bench%dbench_field_file_prefix                                  &
+        circle%circle_field_file_prefix                                 &
      &                 = dbench_ctl%dbench_field_file_ctl%charavalue
       end if
 !
-      bench%dbench_spectr_file_prefix = 'NO_FILE'
+      circle%circle_spectr_file_prefix = 'NO_FILE'
       if(dbench_ctl%dbench_spectr_file_ctl%iflag .gt. 0) then
-        bench%dbench_spectr_file_prefix                                 &
+        circle%circle_spectr_file_prefix                                &
      &                 = dbench_ctl%dbench_spectr_file_ctl%charavalue
+      end if
+!
+      circle%gzip_flag_circle = .FALSE.
+      if(dbench_ctl%dynamobench_format_ctl%iflag .gt. 0) then
+        input_flag = dbench_ctl%dynamobench_format_ctl%charavalue
+        if(check_mul_flags(input_flag, gzip_flags))                     &
+     &                     circle%gzip_flag_circle = .TRUE.
       end if
 !
       if(find_conductive_inner_core_bc(MHD_BC%magne_BC%nod_BC,          &
@@ -135,32 +148,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_ctl_params_v_spec_w_dbench                         &
-     &         (num_vspec_ctl, dbench_ctl, MHD_BC, num_vspec,           &
-     &          v_spectr, bench)
+     &         (MHD_BC, num_vspec, v_spectr, bench)
 !
       use t_sph_volume_mean_square
       use t_multi_flag_labels
       use m_file_format_labels
       use skip_comment_f
 !
-      type(dynamobench_control), intent(in) :: dbench_ctl
       type(MHD_BC_lists), intent(in) :: MHD_BC
-      integer(kind = kint), intent(in) :: num_vspec_ctl
       integer(kind = kint), intent(in) :: num_vspec
       type(sph_vol_mean_squares), intent(inout) :: v_spectr(num_vspec)
       type(dynamobench_monitor), intent(inout) :: bench
 !
-      character(len = kchara) :: input_flag
-!
 !
       if(bench%iflag_dynamobench .le. 0) return
-!
-      bench%gzip_flag_bench = .FALSE.
-      if(dbench_ctl%dynamobench_format_ctl%iflag .gt. 0) then
-        input_flag = dbench_ctl%dynamobench_format_ctl%charavalue
-        if(check_mul_flags(input_flag, gzip_flags))                     &
-     &                     bench%gzip_flag_bench = .TRUE.
-      end if
 !
       v_spectr(bench%ipwr_ocore)%iflag_volume_rms_spec = 1
       v_spectr(bench%ipwr_ocore)%fhead_rms_v = 'NO_FILE'

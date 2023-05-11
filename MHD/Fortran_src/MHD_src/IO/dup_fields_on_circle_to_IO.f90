@@ -59,13 +59,11 @@
 !
       subroutine write_monitors_on_circle_file(my_rank,                 &
      &          circ_field_file_prefix, circ_spectr_file_prefix,        &
-     &          circ_phase_file_prefix, gzip_flag, sph_params,          &
-     &          time_d, cdat)
+     &          gzip_flag, sph_params, time_d, cdat)
 !
       integer, intent(in) :: my_rank
       character(len=kchara), intent(in) :: circ_field_file_prefix
       character(len=kchara), intent(in) :: circ_spectr_file_prefix
-      character(len=kchara), intent(in) :: circ_phase_file_prefix
       logical, intent(in) :: gzip_flag
       type(sph_shell_parameters), intent(in) :: sph_params
       type(time_data), intent(in) :: time_d
@@ -81,7 +79,7 @@
      &   (my_rank, circ_spectr_file_prefix, gzip_flag, sph_params,      &
      &    time_d, cdat)
       call write_phase_on_circle_file                                   &
-     &   (my_rank, circ_phase_file_prefix, gzip_flag, sph_params,       &
+     &   (my_rank, circ_spectr_file_prefix, gzip_flag, sph_params,      &
      &    time_d, cdat)
 !
       end subroutine write_monitors_on_circle_file

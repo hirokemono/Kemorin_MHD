@@ -34,6 +34,15 @@
 !
       implicit none
 !
+!>        file name for field data on a circle
+        character(len=kchara) :: fname_circle_fld = 'circle_field.dat'
+!>        file name for spectr power data on a circle
+        character(len=kchara) :: fname_circle_mag                       &
+     &                        = 'circle_spec_mag.dat'
+!>        file name for spectr phase data on a circle
+        character(len=kchara) :: fname_circle_phs                       &
+     &                        = 'circle_spec_phase.dat'
+!
 !>      file name for field data on a circle
       character(len=kchara) :: fname_tave_circle_fld                    &
      &                        = 'tave_circle_field.dat'

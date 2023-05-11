@@ -56,7 +56,7 @@
    99 continue
 !
       call close_field_data_on_circle(0)
-      call dealloc_circle_field(0, cdat_a%circle, cdat_a%d_circle)
+      call dealloc_circle_field(cdat_a%d_circle)
       call divide_average_circle_field                                  &
      &   (icou, cdat_a%circle, cdat_a%d_circle)
 !
@@ -97,7 +97,7 @@
       call copy_deviation_circle_field(cdat_a%circle, cdat_a%d_circle)
       call write_field_data_on_circle                                   &
      &   (0, istep, time, cdat_a%circle, cdat_a%d_circle)
-      call dealloc_circle_field(0, cdat_a%circle, cdat_a%d_circle)
+      call dealloc_circle_field(cdat_a%d_circle)
 !
       stop 'Finished'
       end program t_ave_sph_picked_circle
