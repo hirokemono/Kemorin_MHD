@@ -212,8 +212,10 @@
       type(phys_data), intent(inout) :: new_fld
       integer(kind = kint) :: i
 !
-      new_fld%num_phys =  org_fld%num_phys
-      new_fld%ntot_phys = org_fld%ntot_phys
+      new_fld%num_phys =      org_fld%num_phys
+      new_fld%ntot_phys =     org_fld%ntot_phys
+      new_fld%num_phys_viz =  org_fld%num_phys_viz
+      new_fld%ntot_phys_viz = org_fld%ntot_phys_viz
       call alloc_phys_name(new_fld)
 !
       new_fld%istack_component(0) = 0
