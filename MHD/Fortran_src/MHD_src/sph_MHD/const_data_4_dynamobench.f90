@@ -158,13 +158,12 @@
 !    spherical transfer
       call alloc_work_circle_transform(my_rank, cdat%d_circle,          &
      &                                 cdat%circ_spec)
-      call dbench_leg_bwd_trans_rj                                      &
-     &   (iflag_FFT, sph_rj, rj_fld, ipol, bench%iphys_dbench,          &
-     &    cdat%circle, cdat%leg_crc%P_circ, cdat%leg_crc%dPdt_circ,     &
-     &    cdat%circ_spec, cdat%d_circle, cdat%WK_circle_fft)
+      call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,     &
+     &    bench%iphys_dbench, cdat%circle, cdat%circ_spec,              &
+     &    cdat%d_circle, cdat%WK_circle_fft)
 !
-      call check_mid_eq_trans_dbench(ipol, cdat%circle, cdat%leg_crc,   &
-     &    cdat%circ_spec, cdat%d_circle, bench)
+      call check_mid_eq_trans_dbench(ipol, cdat%circle, cdat%circ_spec, &
+     &                               cdat%d_circle, bench)
 !
 !   Evaluate drift frequencty by velocity 
 !
@@ -219,15 +218,14 @@
       call alloc_work_circle_transform(my_rank, d_circle, circ_spec)
       call circle_leg_bwd_trans_rj                                      &
      &   (iflag_FFT, sph_rj, rj_fld, nod_fld, leg_crc%ipol_circle_trns, &
-     &    circle, leg_crc%P_circ, leg_crc%dPdt_circ,                    &
-     &    circ_spec, d_circle, WK_circle_fft)
+     &    circle, circ_spec, d_circle, WK_circle_fft)
 !
       end subroutine sph_forward_trans_on_circles
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_mid_eq_trans_dbench(ipol, circle, leg_crc,       &
-     &                                     circ_spec, d_circle, bench)
+      subroutine check_mid_eq_trans_dbench(ipol, circle, circ_spec,     &
+     &                                     d_circle, bench)
 !
       use calypso_mpi
       use t_field_on_circle
@@ -239,7 +237,6 @@
 !
       type(phys_address), intent(in) :: ipol
       type(fields_on_circle), intent(in) :: circle
-      type(leg_circle), intent(in) :: leg_crc
       type(circle_transform_spetr), intent(in) :: circ_spec
       type(phys_data), intent(in) :: d_circle
       type(dynamobench_monitor), intent(in) :: bench
@@ -251,18 +248,18 @@
       i = bench%iphys_dbench%i_velo
       write(60,*) 'j, velo_new', ipol%base%i_velo, i
       do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-        write(60,*) j, leg_crc%d_circ_gl(j,i:i+2)
+        write(60,*) j, circ_spec%d_circ_gl(j,i:i+2)
       end do
       i = bench%iphys_dbench%i_magne
       write(60,*) 'j, magne_new', ipol%base%i_magne, i
       do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-        write(60,*) j, leg_crc%d_circ_gl(j,i:i+2)
+        write(60,*) j, circ_spec%d_circ_gl(j,i:i+2)
       end do
 !!
       i = bench%iphys_dbench%i_temp
       write(60,*) 'j, temp_new', ipol%base%i_temp, i
       do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-      write(60,*) j, leg_crc%d_circ_gl(j,i)
+      write(60,*) j, circ_spec%d_circ_gl(j,i)
       end do
 !
       do ifld = 1, d_circle%num_phys_viz

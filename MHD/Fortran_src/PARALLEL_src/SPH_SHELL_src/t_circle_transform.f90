@@ -7,8 +7,27 @@
 !>@brief  spherical transform at a specific circle at @f$(r, theta)@f$
 !!
 !!@verbatim
+!!      subroutine init_legendre_on_circle(sph, comms_sph, trans_p,     &
+!!     &                                   circ_spec, SR_sig, SR_r)
+!!        type(sph_grids), intent(in) ::  sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!        type(circle_transform_spetr), intent(inout) :: circ_spec
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!
 !!      subroutine alloc_circle_transform(ltr, circ_spec)
+!!      subroutine alloc_legendre_on_circ_rj(sph_rj, circ_spec)
+!!      subroutine alloc_work_circle_transform                          &
+!!     &         (my_rank, d_circle, circ_spec)
+!!        integer, intent(in) :: my_rank
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(phys_data), intent(in) :: d_circle
+!!        type(circle_transform_spetr), intent(inout) :: circ_spec
 !!      subroutine dealloc_circle_transform(circ_spec)
+!!      subroutine dealloc_legendre_on_circ_rj(circ_spec)
+!!      subroutine dealloc_work_circle_transform(circ_spec)
+!!        type(circle_transform_spetr), intent(inout) :: circ_spec
 !!@endverbatim
 !!
 !!@n @param  ltr      Truncation of spherical harmonics
@@ -41,6 +60,10 @@
 !
 !>        colatitude for specific circle
         real(kind = kreal) :: theta_circle
+!>        Legendre polynomial of the circle
+        real(kind = kreal), allocatable :: P_circ(:)
+!>        difference of the Legendre polynomial of the circle
+        real(kind = kreal), allocatable :: dPdt_circ(:)
 !
 !>        global sphrical harmonics corfs on circle
         real(kind = kreal), allocatable :: d_circ_gl(:,:)
@@ -59,6 +82,40 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine init_legendre_on_circle(sph, comms_sph, trans_p,       &
+     &                                   circ_spec, SR_sig, SR_r)
+!
+      use calypso_mpi
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
+      use t_work_4_sph_trans
+      use t_solver_SR
+      use const_equator_legendres_rj
+!
+      type(sph_grids), intent(in) ::  sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+!
+      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!
+      call alloc_legendre_on_circ_rj(sph%sph_rj, circ_spec)
+      call s_const_equator_legendres_rj(circ_spec%theta_circle,         &
+     &    sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,         &
+     &    comms_sph, trans_p, circ_spec%P_circ, circ_spec%dPdt_circ,    &
+     &    SR_sig, SR_r)
+!
+      if(iflag_debug .gt. 0) then
+        call check_legendre_on_circ_rj(sph%sph_rj, circ_spec)
+      end if
+!
+      end subroutine init_legendre_on_circle
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
       subroutine alloc_circle_transform(ltr, circ_spec)
 !
       integer(kind = kint), intent(in) :: ltr
@@ -72,6 +129,25 @@
       circ_spec%istack_circfft_smp(1:np_smp) = 1
 !
       end subroutine alloc_circle_transform
+!
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_legendre_on_circ_rj(sph_rj, circ_spec)
+!
+      use t_spheric_rj_data
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(circle_transform_spetr), intent(inout) :: circ_spec
+!
+!
+      allocate(circ_spec%P_circ(sph_rj%nidx_rj(2)))
+      allocate(circ_spec%dPdt_circ(sph_rj%nidx_rj(2)))
+!$omp parallel workshare
+      circ_spec%P_circ(1:sph_rj%nidx_rj(2)) =    0.0d0
+      circ_spec%dPdt_circ(1:sph_rj%nidx_rj(2)) = 0.0d0
+!$omp end parallel workshare
+!
+      end subroutine alloc_legendre_on_circ_rj
 !
 ! ----------------------------------------------------------------------
 !
@@ -122,6 +198,17 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine dealloc_legendre_on_circ_rj(circ_spec)
+!
+      type(circle_transform_spetr), intent(inout) :: circ_spec
+!
+!
+      deallocate(circ_spec%P_circ, circ_spec%dPdt_circ)
+!
+      end subroutine dealloc_legendre_on_circ_rj
+!
+! ----------------------------------------------------------------------
+!
       subroutine dealloc_work_circle_transform(circ_spec)
 !
       type(circle_transform_spetr), intent(inout) :: circ_spec
@@ -132,6 +219,36 @@
       deallocate(circ_spec%d_circ_gl, circ_spec%d_circ_lc)
 !
       end subroutine dealloc_work_circle_transform
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine check_legendre_on_circ_rj(sph_rj, circ_spec)
+!
+      use calypso_mpi
+      use t_spheric_rj_data
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(circle_transform_spetr), intent(in) :: circ_spec
+!
+      integer(kind = kint) :: ip, j
+!
+      do ip = 1, nprocs
+        call calypso_mpi_barrier
+        if(ip-1 .ne. my_rank) cycle
+        open(80,file='eq_leg.dat', position='APPEND')
+        if(ip.eq. 1) then
+           write(80,*) 'my_rank, j_local, j, l, m, Pvec_1, Pvec_2',     &
+     &                circ_spec%theta_circle
+        end if
+        do j = 1, sph_rj%nidx_rj(2)
+          write(80,*) my_rank, j, sph_rj%idx_gl_1d_rj_j(j,1:3),         &
+     &              circ_spec%P_circ(j), circ_spec%dPdt_circ(j)
+        end do
+        close(80)
+      end do
+!
+      end subroutine check_legendre_on_circ_rj
 !
 ! ----------------------------------------------------------------------
 !

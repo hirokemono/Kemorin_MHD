@@ -9,15 +9,12 @@
 !!@verbatim
 !!      subroutine dbench_leg_bwd_trans_rj                              &
 !!     &         (iflag_FFT, sph_rj, rj_fld, ipol, iphys_dbench,        &
-!!     &          circle, P_circ, dPdt_circ, circ_spec, d_circle,       &
-!!     &          WK_circle_fft)
+!!     &          circle, circ_spec, d_circle, WK_circle_fft)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(in) :: ipol
 !!        type(base_field_address), intent(in) :: iphys_dbench
-!!        real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
-!!        real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
 !!        type(fields_on_circle), intent(in) :: circle
 !!        type(circle_transform_spetr), intent(inout) :: circ_spec
 !!        type(phys_data), intent(inout) :: d_circle
@@ -25,16 +22,13 @@
 !!
 !!      subroutine circle_leg_bwd_trans_rj                              &
 !!     &         (iflag_FFT, sph_rj, rj_fld, nod_fld, ipol_circle_trns, &
-!!     &          circle, P_circ, dPdt_circ, circ_spec, d_circle,       &
-!!     &          WK_circle_fft)
+!!     &          circle, circ_spec, d_circle, WK_circle_fft)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_data), intent(in) :: nod_fld
 !!        integer(kind = kint), intent(in)                              &
 !!       &                      :: ipol_circle_trns(nod_fld%num_phys_viz)
-!!        real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
-!!        real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
 !!        type(fields_on_circle), intent(in) :: circle
 !!        type(circle_transform_spetr), intent(inout) :: circ_spec
 !!        type(phys_data), intent(inout) :: d_circle
@@ -68,8 +62,7 @@
 !
       subroutine dbench_leg_bwd_trans_rj                                &
      &         (iflag_FFT, sph_rj, rj_fld, ipol, iphys_dbench,          &
-     &          circle, P_circ, dPdt_circ, circ_spec, d_circle,         &
-     &          WK_circle_fft)
+     &          circle, circ_spec, d_circle, WK_circle_fft)
 !
       use t_base_field_labels
       use t_FFT_selector
@@ -82,8 +75,6 @@
       type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
       type(base_field_address), intent(in) :: iphys_dbench
-      real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
-      real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       type(fields_on_circle), intent(in) :: circle
 !
       type(phys_data), intent(inout) :: d_circle
@@ -97,19 +88,27 @@
 !
       call each_circle_leg_bwd_trans_rj                                 &
      &   (n_vector, ipol%base%i_velo, iphys_dbench%i_velo,              &
-     &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
+     &    sph_rj, rj_fld, circle, circ_spec%ltr_circle,                 &
+     &    circ_spec%P_circ, circ_spec%dPdt_circ,                        &
+     &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
      &    d_circle%ntot_phys, circ_spec%d_circ_lc)
       call each_circle_leg_bwd_trans_rj                                 &
      &   (n_vector, ipol%base%i_magne, iphys_dbench%i_magne,            &
-     &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
+     &    sph_rj, rj_fld, circle, circ_spec%ltr_circle,                 &
+     &    circ_spec%P_circ, circ_spec%dPdt_circ,                        &
+     &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
      &    d_circle%ntot_phys, circ_spec%d_circ_lc)
       call each_circle_leg_bwd_trans_rj                                 &
      &   (n_scalar, ipol%base%i_temp, iphys_dbench%i_temp,              &
-     &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
+     &    sph_rj, rj_fld, circle, circ_spec%ltr_circle,                 &
+     &    circ_spec%P_circ, circ_spec%dPdt_circ,                        &
+     &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
      &    d_circle%ntot_phys, circ_spec%d_circ_lc)
       call each_circle_leg_bwd_trans_rj                                 &
      &   (n_scalar, ipol%base%i_light, iphys_dbench%i_light,            &
-     &    sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,         &
+     &    sph_rj, rj_fld, circle, circ_spec%ltr_circle,                 &
+     &    circ_spec%P_circ, circ_spec%dPdt_circ,                        &
+     &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
      &    d_circle%ntot_phys, circ_spec%d_circ_lc)
 !
       num64                                                             &
@@ -156,8 +155,7 @@
 !
       subroutine circle_leg_bwd_trans_rj                                &
      &         (iflag_FFT, sph_rj, rj_fld, nod_fld, ipol_circle_trns,   &
-     &          circle, P_circ, dPdt_circ, circ_spec, d_circle,         &
-     &          WK_circle_fft)
+     &          circle, circ_spec, d_circle, WK_circle_fft)
 !
       use t_FFT_selector
       use calypso_mpi_real
@@ -170,8 +168,6 @@
       type(phys_data), intent(in) :: nod_fld
       integer(kind = kint), intent(in)                                  &
      &                      :: ipol_circle_trns(nod_fld%num_phys_viz)
-      real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
-      real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       type(fields_on_circle), intent(in) :: circle
 !
       type(circle_transform_spetr), intent(inout) :: circ_spec
@@ -188,7 +184,9 @@
         i_trns = nod_fld%istack_component(i_fld-1) + 1
         call each_circle_leg_bwd_trans_rj                               &
      &     (num_comp, ipol_circle_trns(i_fld), i_trns,                  &
-     &      sph_rj, rj_fld, circle, circ_spec, P_circ, dPdt_circ,       &
+     &      sph_rj, rj_fld, circle, circ_spec%ltr_circle,               &
+     &      circ_spec%P_circ, circ_spec%dPdt_circ,                      &
+     &      circ_spec%ar_circle, circ_spec%ar2_circle,                  &
      &      d_circle%ntot_phys, circ_spec%d_circ_lc)
       end do
 !
@@ -237,8 +235,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine each_circle_leg_bwd_trans_rj                           &
-     &         (num_comp, ipol_rj, i_trns, sph_rj, rj_fld,              &
-     &          circle, circ_spec, P_circ, dPdt_circ,                   &
+     &         (num_comp, ipol_rj, i_trns, sph_rj, rj_fld, circle,      &
+     &          ltr_circ, P_circ, dPdt_circ, ar_circle, ar2_circle,     &
      &          ntot_comp, d_circ_lc)
 !
       use transfer_to_long_integers
@@ -247,41 +245,37 @@
       integer(kind = kint), intent(in) :: ipol_rj, i_trns
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
+      integer(kind = kint), intent(in) :: ltr_circ
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
+      real(kind = kreal), intent(in) :: ar_circle, ar2_circle
       type(fields_on_circle), intent(in) :: circle
-      type(circle_transform_spetr), intent(in) :: circ_spec
       integer(kind = kint), intent(in) :: ntot_comp
 !
       real(kind = kreal), intent(inout)                                 &
-     &      :: d_circ_lc(-circ_spec%ltr_circle:circ_spec%ltr_circle,    &
-     &                   ntot_comp)
+     &                     :: d_circ_lc(-ltr_circ:ltr_circ, ntot_comp)
 !
       integer(kind = kint) :: i_fld, nd
 !
 !
       if((ipol_rj*i_trns) .le. 0) return
       if(num_comp .eq. n_sym_tensor) then
-!          call circle_bwd_leg_trans_sym_tensor                         &
-!     &       (sph_rj, circle, circ_spec%ltr_circle,                    &
-!     &        circ_spec%ar_circle, circ_spec%ar2_circle,               &
-!     &        P_circ, dPdt_circ, rj_fld%d_fld(1,ipol_rj),              &
-!     &        d_circ_lc(-circ_spec%ltr_circle,i_trns))
+!          call circle_bwd_leg_trans_sym_tensor(sph_rj, circle,         &
+!     &        ltr_circ, ar_circle, ar2_circle, P_circ, dPdt_circ,      &
+!     &        rj_fld%d_fld(1,ipol_rj), d_circ_lc(-ltr_circ,i_trns))
         do nd = 0, 5
-          call circle_bwd_leg_trans_scalar(sph_rj, circle,              &
-     &        circ_spec%ltr_circle, P_circ, rj_fld%d_fld(1,ipol_rj),    &
-     &        d_circ_lc(-circ_spec%ltr_circle,i_trns+nd))
+          call circle_bwd_leg_trans_scalar(sph_rj, circle, ltr_circ,    &
+     &        P_circ, rj_fld%d_fld(1,ipol_rj),                          &
+     &        d_circ_lc(-ltr_circ,i_trns+nd))
         end do
       else if(num_comp .eq. n_vector) then
-        call circle_bwd_leg_trans_vector                                &
-     &     (sph_rj, circle, circ_spec%ltr_circle,                       &
-     &      circ_spec%ar_circle, circ_spec%ar2_circle,                  &
-     &      P_circ, dPdt_circ, rj_fld%d_fld(1,ipol_rj),                 &
-     &      d_circ_lc(-circ_spec%ltr_circle,i_trns))
+        call circle_bwd_leg_trans_vector(sph_rj, circle, ltr_circ,      &
+     &      ar_circle, ar2_circle, P_circ, dPdt_circ,                   &
+     &      rj_fld%d_fld(1,ipol_rj), d_circ_lc(-ltr_circ,i_trns))
       else
-        call circle_bwd_leg_trans_scalar(sph_rj, circle,                &
-     &      circ_spec%ltr_circle, P_circ, rj_fld%d_fld(1,ipol_rj),      &
-     &      d_circ_lc(-circ_spec%ltr_circle,i_trns))
+        call circle_bwd_leg_trans_scalar(sph_rj, circle, ltr_circ,      &
+     &      P_circ, rj_fld%d_fld(1,ipol_rj),                            &
+     &      d_circ_lc(-ltr_circ,i_trns))
       end if
 !
       end subroutine each_circle_leg_bwd_trans_rj

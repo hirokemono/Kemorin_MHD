@@ -117,25 +117,21 @@
       if(monitor%bench%iflag_dynamobench .gt. 0) then
         call init_circle_field_name_dbench(SPH_MHD%ipol,                &
      &      monitor%circ_mid_eq%d_circle, monitor%bench)
-        call init_mid_equator_point_global                              &
-     &     (trans_p, SPH_MHD%sph, monitor%circ_mid_eq)
+        call init_mid_equator_point_global(SPH_MHD%sph,                 &
+     &                                     monitor%circ_mid_eq)
+        call init_circle_point_global                                   &
+     &     (SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
+     &      monitor%circ_mid_eq, SR_sig, SR_r)
         call alloc_dynamobench_monitor(monitor%circ_mid_eq%d_circle,    &
      &                                 monitor%bench)
-        call init_legendre_on_circle                                    &
-     &     (monitor%circ_mid_eq%circle%colat_circle,                    &
-     &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
-     &      monitor%circ_mid_eq%leg_crc, SR_sig, SR_r)
       end if
 !
       do i = 1, monitor%mul_circle%num_circles
         call dup_phys_name                                              &
      &     (nod_fld, monitor%mul_circle%cdat(i)%d_circle)
-        call init_mid_equator_point_global                              &
-     &     (trans_p, SPH_MHD%sph, monitor%mul_circle%cdat(i))
-        call init_legendre_on_circle                                    &
-     &     (monitor%mul_circle%cdat(i)%circle%colat_circle,             &
-     &      SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
-     &      monitor%mul_circle%cdat(i)%leg_crc, SR_sig, SR_r)
+        call init_circle_point_global                                   &
+     &     (SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
+     &      monitor%mul_circle%cdat(i), SR_sig, SR_r)
         call set_circle_transfer_address(nod_fld, SPH_MHD%fld,          &
      &      monitor%mul_circle%cdat(i)%leg_crc)
       end do

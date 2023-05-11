@@ -10,7 +10,7 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_sph_pick_circle(MHD_files, iphys, SPH_model,&
-!!     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat)
+!!     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -18,7 +18,6 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
-!!        type(circle_fld_maker), intent(inout) :: cdat
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine SPH_analyze_pick_circle(i_step, MHD_files, SPH_model,&
@@ -61,7 +60,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_sph_pick_circle(MHD_files, iphys, SPH_model,  &
-     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r, cdat)
+     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK, SR_sig, SR_r)
 !
       use t_sph_boundary_input_data
 !
@@ -90,7 +89,6 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-      type(circle_fld_maker), intent(inout) :: cdat
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -149,11 +147,6 @@
 !
       call init_radial_sph_interpolation(MHD_files%org_rj_file_IO,      &
      &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, SPH_WK%rj_itp)
-!
-!* -----  find mid-equator point -----------------
-!
-      call init_circle_point_global                                     &
-     &   (SPH_MHD%sph, SPH_WK%trans_p, cdat)
 !
       end subroutine SPH_init_sph_pick_circle
 !

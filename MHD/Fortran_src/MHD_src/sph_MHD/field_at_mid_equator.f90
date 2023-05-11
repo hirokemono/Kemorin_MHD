@@ -7,9 +7,7 @@
 !>@brief  data at mid-depth of the shell at equator for dynamo benchmark
 !!
 !!@verbatim
-!!      subroutine init_mid_equator_point_global(trans_p, sph,          &
-!!     &                                         ipol, cdat)
-!!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!      subroutine init_mid_equator_point_global(sph, cdat)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(phys_address), intent(in) :: ipol
 !!        type(circle_fld_maker), intent(inout) :: cdat
@@ -48,15 +46,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_mid_equator_point_global(trans_p, sph, cdat)
+      subroutine init_mid_equator_point_global(sph, cdat)
 !
-      use calypso_mpi
-      use t_work_4_sph_trans
       use t_spheric_parameter
 !
-      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(sph_grids), intent(in) :: sph
-!
       type(circle_fld_maker), intent(inout) :: cdat
 !
       integer(kind = kint) :: kr_ICB, kr_CMB
@@ -70,7 +64,6 @@
 !
       cdat%circle%s_circle = r_MID
       cdat%circle%z_circle = zero
-      call init_circle_point_global(sph, trans_p, cdat)
 !
       end subroutine init_mid_equator_point_global
 !
