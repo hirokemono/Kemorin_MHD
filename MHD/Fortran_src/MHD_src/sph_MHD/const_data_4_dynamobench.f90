@@ -184,7 +184,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_on_circles(iflag_FFT,                &
-     &          sph_rj, rj_fld, cdat)
+     &          sph_rj, rj_fld, num_circles, cdat)
 !
       use calypso_mpi
       use t_field_on_circle
@@ -201,13 +201,18 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
+      integer(kind = kint), intent(in) :: num_circles
 !
-      type(circle_fld_maker), intent(inout) :: cdat
+      type(circle_fld_maker), intent(inout) :: cdat(num_circles)
+!
+      integer(kind = kint) :: i
 !
 !
-      call circle_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld,           &
-     &    cdat%ipol_circle_trns, cdat%circle, cdat%leg_circ,            &
-     &    cdat%d_circle, cdat%WK_circle_fft)
+      do i = 1, num_circles
+        call circle_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld,         &
+     &    cdat(i)%ipol_circle_trns, cdat(i)%circle, cdat(i)%leg_circ,   &
+     &    cdat(i)%d_circle, cdat(i)%WK_circle_fft)
+      end do
 !
       end subroutine sph_forward_trans_on_circles
 !

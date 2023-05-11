@@ -229,8 +229,6 @@
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
-      integer(kind = kint) :: i
-!
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell(sph%sph_params, sph%sph_rj, ipol,    &
@@ -267,10 +265,9 @@
      &  (time_d, sph%sph_params, sph%sph_rj, sph_MHD_bc, trans_p,       &
      &   ipol, rj_fld, monitor%pwr, monitor%circ_mid_eq, monitor%bench)
 !
-      do i = 1, monitor%mul_circle%num_circles
-        call sph_forward_trans_on_circles(trans_p%iflag_FFT,            &
-     &     sph%sph_rj, rj_fld, monitor%mul_circle%cdat(i))
-      end do
+      call sph_forward_trans_on_circles(trans_p%iflag_FFT,              &
+     &    sph%sph_rj, rj_fld,  monitor%mul_circle%num_circles,          &
+     &    monitor%mul_circle%cdat(1))
 !
       end subroutine cal_sph_monitor_data
 !
