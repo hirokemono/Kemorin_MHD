@@ -219,12 +219,15 @@
       call alloc_phys_name(new_fld)
 !
       new_fld%istack_component(0) = 0
+!$omp parallel do
       do i = 1, new_fld%num_phys
-        new_fld%phys_name(i) =      org_fld%phys_name(i)
-        new_fld%num_component(i) =  org_fld%num_component(i)
-        new_fld%iorder_eletype(i) = org_fld%iorder_eletype(i)
-        new_fld%flag_monitor(i) =   org_fld%flag_monitor(i)
+        new_fld%phys_name(i) =         org_fld%phys_name(i)
+        new_fld%num_component(i) =     org_fld%num_component(i)
+        new_fld%istack_component(i) =  org_fld%istack_component(i)
+        new_fld%iorder_eletype(i) =    org_fld%iorder_eletype(i)
+        new_fld%flag_monitor(i) =      org_fld%flag_monitor(i)
       end do
+!$omp end parallel do
 !
       end subroutine dup_phys_name
 !
