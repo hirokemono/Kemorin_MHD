@@ -333,16 +333,10 @@
      &   (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc,                &
      &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore),               &
      &    time_d, monitor%bench)
-      call write_fields_on_circle_file                                  &
-     &   (my_rank, monitor%bench%dbench_field_file_prefix,              &
-     &    monitor%bench%gzip_flag_bench, sph_params,                    &
-     &    time_d, monitor%circ_mid_eq)
-      call write_spectr_on_circle_file                                  &
-     &   (my_rank, monitor%bench%dbench_spectr_file_prefix,             &
-     &    monitor%bench%gzip_flag_bench, sph_params,                    &
-     &    time_d, monitor%circ_mid_eq)
-      call write_phase_on_circle_file                                   &
-     &   (my_rank, monitor%bench%dbench_spectr_file_prefix,             &
+      call write_monitors_on_circle_file(my_rank,                       &
+     &    monitor%bench%dbench_field_file_prefix,                       &
+     &    monitor%bench%dbench_spectr_file_prefix,                      &
+     &    monitor%bench%dbench_spectr_file_prefix,                      &
      &    monitor%bench%gzip_flag_bench, sph_params,                    &
      &    time_d, monitor%circ_mid_eq)
 !

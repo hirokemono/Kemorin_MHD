@@ -57,6 +57,37 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine write_monitors_on_circle_file(my_rank,                 &
+     &          circ_field_file_prefix, circ_spectr_file_prefix,        &
+     &          circ_phase_file_prefix, gzip_flag, sph_params,          &
+     &          time_d, cdat)
+!
+      integer, intent(in) :: my_rank
+      character(len=kchara), intent(in) :: circ_field_file_prefix
+      character(len=kchara), intent(in) :: circ_spectr_file_prefix
+      character(len=kchara), intent(in) :: circ_phase_file_prefix
+      logical, intent(in) :: gzip_flag
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(time_data), intent(in) :: time_d
+      type(circle_fld_maker), intent(in) :: cdat
+!
+!
+      if(my_rank .ne. 0) return
+!
+      call write_fields_on_circle_file                                  &
+     &   (my_rank, circ_field_file_prefix, gzip_flag, sph_params,       &
+     &    time_d, cdat)
+      call write_spectr_on_circle_file                                  &
+     &   (my_rank, circ_spectr_file_prefix, gzip_flag, sph_params,      &
+     &    time_d, cdat)
+      call write_phase_on_circle_file                                   &
+     &   (my_rank, circ_phase_file_prefix, gzip_flag, sph_params,       &
+     &    time_d, cdat)
+!
+      end subroutine write_monitors_on_circle_file
+!
+! ----------------------------------------------------------------------
+!
       subroutine write_fields_on_circle_file                            &
      &         (my_rank, file_prefix, gzip_flag,                        &
      &          sph_params, time_d, cdat)
@@ -86,7 +117,7 @@
       if(my_rank .ne. 0) return
 !
       call dup_field_on_circ_header_to_IO(sph_params,                   &
-     &    cdat%circle, cdat%d_circle, sph_OUT_d)
+     &    cdat%leg_circ, cdat%circle, cdat%d_circle, sph_OUT_d)
 !
       allocate(spectr_IO(cdat%d_circle%ntot_phys_viz,                   &
      &                   cdat%circle%mphi_circle))
@@ -141,7 +172,7 @@
       if(my_rank .ne. 0) return
 !
       call dup_spectr_on_circ_header_to_IO(sph_params,                  &
-     &    cdat%circle, cdat%d_circle, sph_OUT_d)
+     &    cdat%leg_circ, cdat%circle, cdat%d_circle, sph_OUT_d)
 !
       allocate(spectr_IO(cdat%d_circle%ntot_phys_viz,                   &
      &                   0:cdat%leg_circ%ltr_circle))
@@ -197,7 +228,7 @@
       if(my_rank .ne. 0) return
 !
       call dup_spectr_on_circ_header_to_IO(sph_params,                  &
-     &    cdat%circle, cdat%d_circle, sph_OUT_d)
+     &    cdat%leg_circ, cdat%circle, cdat%d_circle, sph_OUT_d)
 !
       allocate(spectr_IO(cdat%d_circle%ntot_phys_viz,                   &
      &                   0:cdat%leg_circ%ltr_circle))
@@ -226,12 +257,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dup_field_on_circ_header_to_IO                         &
-     &         (sph_params, circle, d_circle, sph_OUT)
+     &         (sph_params, leg_circ, circle, d_circle, sph_OUT)
 !
       use m_time_labels
       use sel_comp_labels_by_coord
 !
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(circle_transform_spectr) :: leg_circ
       type(fields_on_circle), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
@@ -242,7 +274,7 @@
 !
       if(allocated(sph_OUT%ene_sph_spec_name)) return
 !
-      sph_OUT%ltr_sph = sph_params%l_truncation
+      sph_OUT%ltr_sph = leg_circ%ltr_circle
       sph_OUT%nri_sph = circle%mphi_circle
       sph_OUT%nri_dat = 1
       sph_OUT%kr_ICB =  sph_params%nlayer_ICB
@@ -285,12 +317,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dup_spectr_on_circ_header_to_IO                        &
-     &         (sph_params, circle, d_circle, sph_OUT)
+     &         (sph_params, leg_circ, circle, d_circle, sph_OUT)
 !
       use m_time_labels
       use sel_comp_labels_by_coord
 !
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(circle_transform_spectr) :: leg_circ
       type(fields_on_circle), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
@@ -301,7 +334,7 @@
 !
       if(allocated(sph_OUT%ene_sph_spec_name)) return
 !
-      sph_OUT%ltr_sph = sph_params%l_truncation
+      sph_OUT%ltr_sph = leg_circ%ltr_circle
       sph_OUT%nri_sph = circle%mphi_circle
       sph_OUT%nri_dat = 1
       sph_OUT%kr_ICB =  sph_params%nlayer_ICB
