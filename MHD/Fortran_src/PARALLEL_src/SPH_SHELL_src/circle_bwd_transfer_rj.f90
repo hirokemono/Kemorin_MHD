@@ -136,7 +136,7 @@
 !
       call cal_circle_spectrum_vector                                   &
      &   (d_circle%ntot_phys, leg_circ%ltr_circle, leg_circ%d_circ_gl,  &
-     &    circle%mphi_circle, leg_circ%vrtm_mag, leg_circ%vrtm_phase)
+     &    leg_circ%vrtm_mag, leg_circ%vrtm_phase)
       call copy_circle_spectrum_4_fft                                   &
      &   (d_circle%ntot_phys, leg_circ%ltr_circle,                      &
      &    leg_circ%d_circ_gl, circle%mphi_circle, d_circle%d_fld(1,1))
@@ -217,7 +217,7 @@
 !
       call cal_circle_spectrum_vector                                   &
      &   (d_circle%ntot_phys, leg_circ%ltr_circle, leg_circ%d_circ_gl,  &
-     &    circle%mphi_circle, leg_circ%vrtm_mag, leg_circ%vrtm_phase)
+     &    leg_circ%vrtm_mag, leg_circ%vrtm_phase)
       call copy_circle_spectrum_4_fft                                   &
      &   (d_circle%ntot_phys, leg_circ%ltr_circle,                      &
      &    leg_circ%d_circ_gl, circle%mphi_circle, d_circle%d_fld(1,1))

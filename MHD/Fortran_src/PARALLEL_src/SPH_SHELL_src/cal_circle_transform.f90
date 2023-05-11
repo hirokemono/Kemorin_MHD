@@ -17,12 +17,11 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!       &                  :: v_rtp_circle(mphi_circle,numdir)
 !!      subroutine cal_circle_spectrum_vector(numdir, ltr_circle,       &
-!!     &          vcirc_rtm, mphi_circle, vrtm_mag, vrtm_phase)
+!!     &          vcirc_rtm, vrtm_mag, vrtm_phase)
 !!        integer(kind = kint), intent(in) :: numdir
 !!        integer(kind = kint), intent(in) :: ltr_circle
 !!        real(kind = kreal), intent(in)                                &
 !!       &                   :: vcirc_rtm(-ltr_circle:ltr_circle,numdir)
-!!        integer(kind = kint), intent(in) :: mphi_circle
 !!        real(kind = kreal), intent(inout)                             &
 !!       &            :: vrtm_mag(0:ltr_circle,numdir)
 !!        real(kind = kreal), intent(inout)                             &
@@ -68,43 +67,42 @@
       real(kind = kreal), intent(inout)                                 &
      &                  :: v_rtp_circle(mphi_circle,numdir)
 !
-      integer(kind = kint) :: nd, m
+      integer(kind = kint) :: nd, m, ncou
 !
 !
-      v_rtp_circle = 0.0d0
+!$omp parallel workshare
+      v_rtp_circle(1:mphi_circle,1:numdir) = 0.0d0
+!$omp end parallel workshare
 !
+      ncou = min(ltr_circle,mphi_circle/2)
 !$omp parallel do private(nd,m)
       do nd = 1, numdir
-        do m = 1, ltr_circle-1
+        v_rtp_circle(1,nd) = vcirc_rtm(0,nd)
+        do m = 1, ncou-1
           v_rtp_circle(2*m+1,nd) = vcirc_rtm( m,nd)
           v_rtp_circle(2*m+2,nd) = vcirc_rtm(-m,nd)
         end do
-      end do
-!$omp end parallel do
-!
-      do nd = 1, numdir
-        v_rtp_circle(1,nd) = vcirc_rtm(0,nd)
 !
         if(ltr_circle .eq. (mphi_circle/2)) then
           v_rtp_circle(2,nd) = vcirc_rtm(ltr_circle,nd)
-        else
+        else if(ltr_circle .le. (mphi_circle/2)) then
           v_rtp_circle(2*ltr_circle+1,nd) = vcirc_rtm( ltr_circle,nd)
           v_rtp_circle(2*ltr_circle+2,nd) = vcirc_rtm(-ltr_circle,nd)
         end if
       end do
+!$omp end parallel do
 !
       end subroutine copy_circle_spectrum_4_fft
 !
 ! ----------------------------------------------------------------------
 !
       subroutine cal_circle_spectrum_vector(numdir, ltr_circle,         &
-     &          vcirc_rtm, mphi_circle, vrtm_mag, vrtm_phase)
+     &          vcirc_rtm, vrtm_mag, vrtm_phase)
 !
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint), intent(in) :: ltr_circle
       real(kind = kreal), intent(in)                                    &
      &                   :: vcirc_rtm(-ltr_circle:ltr_circle,numdir)
-      integer(kind = kint), intent(in) :: mphi_circle
 !
       real(kind = kreal), intent(inout)                                 &
      &            :: vrtm_mag(0:ltr_circle,numdir)
@@ -127,15 +125,10 @@
         vrtm_mag(0,nd) = abs(vcirc_rtm(0,nd))
         vrtm_phase(0,nd) = zero
 !
-        if(ltr_circle .eq. (mphi_circle/2)) then
-          vrtm_mag(ltr_circle,nd) = abs(vcirc_rtm(ltr_circle,nd))
-          vrtm_phase(ltr_circle,nd) = zero
-        else
-          vrtm_mag(ltr_circle,nd) = sqrt(vcirc_rtm(-ltr_circle,nd)**2   &
-     &                                 + vcirc_rtm( ltr_circle,nd)**2)
-          vrtm_phase(ltr_circle,nd) = atan2(vcirc_rtm(-ltr_circle,nd),  &
-     &                                      vcirc_rtm( ltr_circle,nd))
-        end if
+        vrtm_mag(ltr_circle,nd) = sqrt(vcirc_rtm(-ltr_circle,nd)**2     &
+     &                               + vcirc_rtm( ltr_circle,nd)**2)
+        vrtm_phase(ltr_circle,nd) = atan2(vcirc_rtm(-ltr_circle,nd),    &
+     &                                    vcirc_rtm( ltr_circle,nd))
       end do
 !
       end subroutine cal_circle_spectrum_vector
