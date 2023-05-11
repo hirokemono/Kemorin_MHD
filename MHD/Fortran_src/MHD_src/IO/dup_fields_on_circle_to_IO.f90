@@ -113,6 +113,116 @@
       end subroutine write_fields_on_circle_file
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine write_spectr_on_circle_file                            &
+     &         (my_rank, file_prefix, gzip_flag,                        &
+     &          sph_params, time_d, cdat)
+!
+      use t_buffer_4_gzip
+      use set_parallel_file_name
+      use sph_monitor_data_text
+      use gz_open_sph_layer_mntr_file
+      use gz_volume_spectr_monitor_IO
+!
+      integer, intent(in) :: my_rank
+      character(len=kchara), intent(in) :: file_prefix
+      logical, intent(in) :: gzip_flag
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(time_data), intent(in) :: time_d
+      type(circle_fld_maker), intent(in) :: cdat
+!
+      logical :: flag_gzip_lc
+      character(len = kchara) :: file_name
+      type(buffer_4_gzip) :: zbuf_d
+      type(read_sph_spectr_data) :: sph_OUT_d
+!
+      real(kind = kreal), allocatable :: spectr_IO(:,:)
+!
+!
+      if(file_prefix .eq. 'NO_FILE') return
+      if(my_rank .ne. 0) return
+!
+      call dup_field_on_circ_header_to_IO(sph_params,                   &
+     &    cdat%circle, cdat%d_circle, sph_OUT_d)
+!
+      allocate(spectr_IO(cdat%d_circle%ntot_phys_viz,                   &
+     &                   0:cdat%leg_circ%ltr_circle))
+!
+      flag_gzip_lc = gzip_flag
+      file_name = add_dat_extension(file_prefix)
+      call sel_open_sph_fld_on_circle_file                              &
+     &   (id_circle, file_name, circle_field_labels, cdat%circle,       &
+     &    sph_OUT_d, zbuf_d, flag_gzip_lc)
+      call swap_volume_spectr_to_IO(cdat%leg_circ%ltr_circle,           &
+     &    cdat%d_circle%ntot_phys_viz, cdat%leg_circ%vrtm_mag,          &
+     &    spectr_IO(1,0))
+      call sel_gz_write_volume_spectr_mtr                               &
+     &   (flag_gzip_lc, id_circle, time_d%i_time_step, time_d%time,     &
+     &    cdat%leg_circ%ltr_circle, cdat%d_circle%ntot_phys_viz,        &
+     &    spectr_IO(1,0), zbuf_d)
+      close(id_circle)
+!
+      call dealloc_sph_espec_name(sph_OUT_d)
+      deallocate(spectr_IO)
+!
+      end subroutine write_spectr_on_circle_file
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_phase_on_circle_file                             &
+     &         (my_rank, file_prefix, gzip_flag,                        &
+     &          sph_params, time_d, cdat)
+!
+      use t_buffer_4_gzip
+      use set_parallel_file_name
+      use sph_monitor_data_text
+      use gz_open_sph_layer_mntr_file
+      use gz_volume_spectr_monitor_IO
+!
+      integer, intent(in) :: my_rank
+      character(len=kchara), intent(in) :: file_prefix
+      logical, intent(in) :: gzip_flag
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(time_data), intent(in) :: time_d
+      type(circle_fld_maker), intent(in) :: cdat
+!
+      logical :: flag_gzip_lc
+      character(len = kchara) :: file_name
+      type(buffer_4_gzip) :: zbuf_d
+      type(read_sph_spectr_data) :: sph_OUT_d
+!
+      real(kind = kreal), allocatable :: spectr_IO(:,:)
+!
+!
+      if(file_prefix .eq. 'NO_FILE') return
+      if(my_rank .ne. 0) return
+!
+      call dup_field_on_circ_header_to_IO(sph_params,                   &
+     &    cdat%circle, cdat%d_circle, sph_OUT_d)
+!
+      allocate(spectr_IO(cdat%d_circle%ntot_phys_viz,                   &
+     &                   0:cdat%leg_circ%ltr_circle))
+!
+      flag_gzip_lc = gzip_flag
+      file_name = add_dat_extension(file_prefix)
+      call sel_open_sph_fld_on_circle_file                              &
+     &   (id_circle, file_name, circle_field_labels, cdat%circle,       &
+     &    sph_OUT_d, zbuf_d, flag_gzip_lc)
+      call swap_volume_spectr_to_IO(cdat%leg_circ%ltr_circle,           &
+     &    cdat%d_circle%ntot_phys_viz, cdat%leg_circ%vrtm_phase,        &
+     &    spectr_IO(1,0))
+      call sel_gz_write_volume_spectr_mtr                               &
+     &   (flag_gzip_lc, id_circle, time_d%i_time_step, time_d%time,     &
+     &    cdat%leg_circ%ltr_circle, cdat%d_circle%ntot_phys_viz,        &
+     &    spectr_IO(1,0), zbuf_d)
+      close(id_circle)
+!
+      call dealloc_sph_espec_name(sph_OUT_d)
+      deallocate(spectr_IO)
+!
+      end subroutine write_phase_on_circle_file
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine dup_field_on_circ_header_to_IO                         &
@@ -263,7 +373,7 @@
      &                                         sph_OUT%nfield_sph_spec)
       len_each(6) = len_data_names_text(sph_OUT%num_labels,             &
      &                                  sph_OUT%ene_sph_spec_name)
-      len_tot = 4 + len_line + sum(len_each(1:6))
+      len_tot = 4 + 4*len_line + sum(len_each(1:6))
 !
       end subroutine len_sph_field_on_circle_header
 !
