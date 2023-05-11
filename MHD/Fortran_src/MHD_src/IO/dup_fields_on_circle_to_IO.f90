@@ -51,8 +51,6 @@
      &                           hdr_num_field = 'Number_of_field',     &
      &                           hdr_num_comp = 'Number_of_components')
 !
-      private :: dup_field_on_circ_header_to_IO
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -142,7 +140,7 @@
       if(file_prefix .eq. 'NO_FILE') return
       if(my_rank .ne. 0) return
 !
-      call dup_field_on_circ_header_to_IO(sph_params,                   &
+      call dup_spectr_on_circ_header_to_IO(sph_params,                  &
      &    cdat%circle, cdat%d_circle, sph_OUT_d)
 !
       allocate(spectr_IO(cdat%d_circle%ntot_phys_viz,                   &
@@ -198,7 +196,7 @@
       if(file_prefix .eq. 'NO_FILE') return
       if(my_rank .ne. 0) return
 !
-      call dup_field_on_circ_header_to_IO(sph_params,                   &
+      call dup_spectr_on_circ_header_to_IO(sph_params,                  &
      &    cdat%circle, cdat%d_circle, sph_OUT_d)
 !
       allocate(spectr_IO(cdat%d_circle%ntot_phys_viz,                   &
@@ -269,7 +267,7 @@
       sph_OUT%ene_sph_spec_name(4) = 'Longitude'
       do ifld = 1, d_circle%num_phys_viz
         ist = d_circle%istack_component(ifld-1)                         &
-     &       + sph_OUT%num_time_labels
+     &       + 1 + sph_OUT%num_time_labels
         if(d_circle%num_component(ifld) .eq. n_sym_tensor) then
           call sel_coord_tensor_comp_labels(circle%iflag_circle_coord,  &
      &        d_circle%phys_name(ifld), sph_OUT%ene_sph_spec_name(ist))
@@ -283,6 +281,64 @@
       end do
 !
       end subroutine dup_field_on_circ_header_to_IO
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dup_spectr_on_circ_header_to_IO                        &
+     &         (sph_params, circle, d_circle, sph_OUT)
+!
+      use m_time_labels
+      use sel_comp_labels_by_coord
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(fields_on_circle), intent(in) :: circle
+      type(phys_data), intent(in) :: d_circle
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
+      integer(kind = kint) :: ifld, ist
+!
+!
+      if(allocated(sph_OUT%ene_sph_spec_name)) return
+!
+      sph_OUT%ltr_sph = sph_params%l_truncation
+      sph_OUT%nri_sph = circle%mphi_circle
+      sph_OUT%nri_dat = 1
+      sph_OUT%kr_ICB =  sph_params%nlayer_ICB
+      sph_OUT%kr_CMB =  sph_params%nlayer_CMB
+      sph_OUT%kr_inner = izero
+      sph_OUT%kr_outer = izero
+      sph_OUT%r_inner =  circle%s_circle
+      sph_OUT%r_outer =  circle%z_circle
+!
+      sph_OUT%nfield_sph_spec = d_circle%num_phys_viz
+      sph_OUT%ntot_sph_spec =   d_circle%ntot_phys_viz
+!
+      sph_OUT%num_time_labels = 3
+      call alloc_sph_espec_name(sph_OUT)
+!
+      sph_OUT%ncomp_sph_spec(1:sph_OUT%nfield_sph_spec)                 &
+     &           = d_circle%num_component(1:sph_OUT%nfield_sph_spec)
+!
+      sph_OUT%ene_sph_spec_name(1) = fhd_t_step
+      sph_OUT%ene_sph_spec_name(2) = fhd_time
+      sph_OUT%ene_sph_spec_name(3) = 'wave_number'
+      do ifld = 1, d_circle%num_phys_viz
+        ist = d_circle%istack_component(ifld-1)                         &
+     &       + 1 + sph_OUT%num_time_labels
+        if(d_circle%num_component(ifld) .eq. n_sym_tensor) then
+          call sel_coord_tensor_comp_labels(circle%iflag_circle_coord,  &
+     &        d_circle%phys_name(ifld), sph_OUT%ene_sph_spec_name(ist))
+        else if(d_circle%num_component(ifld) .eq. n_vector) then
+          call sel_coord_vector_comp_labels(circle%iflag_circle_coord,  &
+     &        d_circle%phys_name(ifld), sph_OUT%ene_sph_spec_name(ist))
+        else
+          write(sph_OUT%ene_sph_spec_name(ist),'(a)')                   &
+     &                   trim(d_circle%phys_name(ifld))
+        end if
+      end do
+!
+      end subroutine dup_spectr_on_circ_header_to_IO
 !
 ! ----------------------------------------------------------------------
 !
