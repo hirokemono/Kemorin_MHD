@@ -132,7 +132,7 @@
       type(circle_fld_maker), intent(in) :: cdat
 !
       logical :: flag_gzip_lc
-      character(len = kchara) :: file_name
+      character(len = kchara) :: file_name, fname_tmp
       type(buffer_4_gzip) :: zbuf_d
       type(read_sph_spectr_data) :: sph_OUT_d
 !
@@ -149,7 +149,8 @@
      &                   0:cdat%leg_circ%ltr_circle))
 !
       flag_gzip_lc = gzip_flag
-      file_name = add_dat_extension(file_prefix)
+      write(fname_tmp,'(a,a4)') trim(file_prefix), "_pwr"
+      file_name = add_dat_extension(fname_tmp)
       call sel_open_sph_fld_on_circle_file                              &
      &   (id_circle, file_name, circle_field_labels, cdat%circle,       &
      &    sph_OUT_d, zbuf_d, flag_gzip_lc)
@@ -187,7 +188,7 @@
       type(circle_fld_maker), intent(in) :: cdat
 !
       logical :: flag_gzip_lc
-      character(len = kchara) :: file_name
+      character(len = kchara) :: file_name, fname_tmp
       type(buffer_4_gzip) :: zbuf_d
       type(read_sph_spectr_data) :: sph_OUT_d
 !
@@ -204,7 +205,8 @@
      &                   0:cdat%leg_circ%ltr_circle))
 !
       flag_gzip_lc = gzip_flag
-      file_name = add_dat_extension(file_prefix)
+      write(fname_tmp,'(a,a6)') trim(file_prefix), "_phase"
+      file_name = add_dat_extension(fname_tmp)
       call sel_open_sph_fld_on_circle_file                              &
      &   (id_circle, file_name, circle_field_labels, cdat%circle,       &
      &    sph_OUT_d, zbuf_d, flag_gzip_lc)
