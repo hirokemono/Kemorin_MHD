@@ -1,5 +1,5 @@
-!>@file   t_fields_on_circle.f90
-!!@brief  module t_fields_on_circle
+!>@file   t_sph_circle_parameters.f90
+!!@brief  module t_sph_circle_parameters
 !!
 !!@author H. Matsui
 !!@date Programmed on June., 2013
@@ -9,10 +9,10 @@
 !!@verbatim
 !!      subroutine set_control_circle_def(meq_ctl, circle)
 !!         type(mid_equator_control), intent(in) :: meq_ctl
-!!         type(fields_on_circle), intent(inout) :: circle
+!!         type(circle_parameters), intent(inout) :: circle
 !!      subroutine set_ctl_circle_for_dbench(dbench_ctl, circle)
 !!         type(dynamobench_control), intent(in) :: dbench_ctl
-!!        type(fields_on_circle), intent(inout) :: circle
+!!        type(circle_parameters), intent(inout) :: circle
 !!
 !!      subroutine alloc_circle_field(mphi_rtp, circle, d_circle)
 !!      subroutine dealloc_circle_field(circle, d_circle)
@@ -23,7 +23,7 @@
 !!@n @param  numdir   Number of components of field
 !!@n @param v_rtp_circle(mphi_circle,numdir)  Field along circle
 !
-      module t_fields_on_circle
+      module t_sph_circle_parameters
 !
       use m_precision
       use m_constants
@@ -39,7 +39,7 @@
       integer(kind = kint), parameter :: iflag_circle_cyl = 2
 !
 !>      Structure to make fields on circle
-      type fields_on_circle
+      type circle_parameters
 !>        file name for field data on a circle
         character(len=kchara) :: circle_field_file_prefix
 !>        file name for spectr power data on a circle
@@ -69,7 +69,7 @@
         real(kind = kreal) :: coef_gl_rcirc_in
 !>        Outer closest radius of circle point of fluid shell
         real(kind = kreal) :: coef_gl_rcirc_out
-      end type fields_on_circle
+      end type circle_parameters
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,7 +86,7 @@
       use skip_comment_f
 !
       type(mid_equator_control), intent(in) :: meq_ctl
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
 !
       character(len = kchara) :: tmpchara
 !
@@ -153,7 +153,7 @@
       use skip_comment_f
 !
       type(dynamobench_control), intent(in) :: dbench_ctl
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
 !
 !
       circle%iflag_circle_coord = iflag_circle_sph
@@ -175,7 +175,7 @@
       subroutine alloc_circle_field(mphi_rtp, circle, d_circle)
 !
       integer(kind = kint), intent(in) :: mphi_rtp
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
 !
 !
@@ -201,4 +201,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-     end module t_fields_on_circle
+     end module t_sph_circle_parameters

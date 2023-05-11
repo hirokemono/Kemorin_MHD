@@ -18,7 +18,7 @@
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(in) :: ipol
-!!        type(fields_on_circle), intent(in) :: circle
+!!        type(circle_parameters), intent(in) :: circle
 !!        real(kind = kreal), intent(inout) :: t_prev
 !!        real(kind = kreal), intent(inout) :: phase_vm4(2)
 !!        real(kind = kreal), intent(inout) :: phase_vm4_prev(2)
@@ -78,14 +78,14 @@
       use t_spheric_rj_data
       use t_phys_data
       use t_phys_address
-      use t_fields_on_circle
+      use t_sph_circle_parameters
       use transfer_to_long_integers
 !
       real(kind=kreal), intent(in) :: time
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
 !
       real(kind = kreal), intent(inout) :: t_prev
       real(kind = kreal), intent(inout) :: phase_vm4(2)
@@ -164,10 +164,10 @@
 !
       use calypso_mpi
       use t_phys_data
-      use t_fields_on_circle
+      use t_sph_circle_parameters
 !
       real(kind=kreal), intent(in) :: time, t_prev
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
       integer(kind = kint), intent(in) :: ibench_velo
 !

@@ -15,7 +15,6 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(in) :: ipol
 !!        type(base_field_address), intent(in) :: iphys_dbench
-!!        type(fields_on_circle), intent(in) :: circle
 !!        type(circle_transform_spectr), intent(inout) :: leg_circ
 !!        type(phys_data), intent(inout) :: d_circle
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft

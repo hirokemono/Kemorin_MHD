@@ -19,7 +19,7 @@
 !!        real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
 !!        real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
 !!        real(kind = kreal), intent(in) :: ar_circle, ar2_circle
-!!        type(fields_on_circle), intent(in) :: circle
+!!        type(circle_parameters), intent(in) :: circle
 !!        integer(kind = kint), intent(in) :: ntot_comp
 !!      real(kind = kreal), intent(inout)                               &
 !!     &                     :: d_circ_lc(-ltr_circ:ltr_circ, ntot_comp)
@@ -34,7 +34,7 @@
 !
       use t_spheric_rj_data
       use t_phys_data
-      use t_fields_on_circle
+      use t_sph_circle_parameters
       use t_FFT_selector
       use t_field_on_circle
 !
@@ -65,7 +65,7 @@
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: dPdt_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: ar_circle, ar2_circle
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       integer(kind = kint), intent(in) :: ntot_comp
 !
       real(kind = kreal), intent(inout)                                 &
@@ -102,7 +102,7 @@
      &         (sph_rj, circle, ltr, P_circ, d_rj, scl_circ)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       integer(kind = kint), intent(in) :: ltr
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
       real(kind = kreal), intent(in) :: d_rj(sph_rj%nnod_rj)
@@ -138,7 +138,7 @@
      &          d_rj, vec_circ)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       integer(kind = kint), intent(in) :: ltr
       real(kind = kreal), intent(in) :: ar_circle, ar2_circle
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))
@@ -206,7 +206,7 @@
      &          P_circ, dPdt_circ, d_rj, tsr_circ)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       integer(kind = kint), intent(in) :: ltr
       real(kind = kreal), intent(in) :: ar_circle, ar2_circle
       real(kind = kreal), intent(in) :: P_circ(sph_rj%nidx_rj(2))

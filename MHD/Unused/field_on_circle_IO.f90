@@ -16,8 +16,8 @@
 !!     &         (my_rank, sph_rtp, sph_rj, circle, d_circle)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(fields_on_circle), intent(inout) :: circle
-!!        type(fields_on_circle), intent(inout) :: d_circle
+!!        type(circle_parameters), intent(inout) :: circle
+!!        type(phys_data), intent(inout) :: d_circle
 !!      subroutine close_field_data_on_circle(my_rank)
 !!@endverbatim
 !
@@ -29,7 +29,7 @@
       use m_machine_parameter
 !
       use t_phys_data
-      use t_fields_on_circle
+      use t_sph_circle_parameters
 !
       implicit none
 !
@@ -56,7 +56,7 @@
       integer, intent(in) :: my_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       character(len=kchara) :: fmt_txt
@@ -98,7 +98,7 @@
 !
       integer(kind = kint), intent(inout) :: i_step, ierr
       real(kind = kreal), intent(inout) :: time
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
 !
       integer(kind = kint) :: mphi, itmp
@@ -134,7 +134,7 @@
       use sel_comp_labels_by_coord
       use write_field_labels
 !
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       integer(kind = kint) :: ifld
@@ -243,7 +243,7 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
 !
       character(len=255) :: tmpchara

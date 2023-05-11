@@ -18,7 +18,7 @@
 !!     &         (iflag_FFT, ifld, circle, leg_circ, WK_circle_fft)
 !!      subroutine circle_transfer_sym_tensor                           &
 !!     &         (iflag_FFT, ifld, circle, leg_circ, WK_circle_fft)
-!!        type(fields_on_circle), intent(inout) :: circle
+!!        type(circle_parameters), intent(inout) :: circle
 !!        type(circle_transform_spectr), intent(inout) :: leg_circ
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!      subroutine circle_lag_transfer_scalar(ltr_circle, jmax_circle,  &
@@ -36,7 +36,7 @@
       use m_machine_parameter
       use t_FFT_selector
       use t_schmidt_polynomial
-      use t_fields_on_circle
+      use t_sph_circle_parameters
       use t_circle_transform
 !
       implicit none
@@ -117,7 +117,7 @@
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ifld
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
@@ -172,7 +172,7 @@
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ifld
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
@@ -211,7 +211,7 @@
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ifld
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
@@ -324,7 +324,7 @@
       real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
       type(phys_data), intent(in) :: d_circle
 !
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
 !
       integer(kind = kint) :: j, j_gl, i_in, i_ot, ncomp
       integer(kind = kint) :: ist_comp, jst_comp, nd, ifld, jfld

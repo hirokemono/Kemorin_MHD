@@ -13,7 +13,7 @@
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(sph_mean_squares), intent(inout) :: pwr
-!!        type(fields_on_circle), intent(inout) :: circle
+!!        type(circle_parameters), intent(inout) :: circle
 !!        type(dynamobench_monitor), intent(inout) :: bench
 !!@endverbatim
       module set_ctl_sph_spectr_w_dbench
@@ -23,7 +23,7 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_dynamobench
       use t_field_4_dynamobench
-      use t_fields_on_circle
+      use t_sph_circle_parameters
       use t_rms_4_sph_spectr
       use t_bc_data_list
 !
@@ -49,7 +49,7 @@
       type(MHD_BC_lists), intent(in) :: MHD_BC
 !
       type(sph_mean_squares), intent(inout) :: pwr
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(dynamobench_monitor), intent(inout) :: bench
 !
       integer(kind = kint) :: num_vspec, inum
@@ -92,7 +92,7 @@
       integer(kind = kint), intent(in) :: num_vspec_ctl
 !
       integer(kind = kint), intent(inout) :: num_vspec
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(dynamobench_monitor), intent(inout) :: bench
 !
       character(len = kchara) :: input_flag

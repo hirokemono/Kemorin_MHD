@@ -12,7 +12,7 @@
 !!        integer(kind = kint), intent(in) :: id_file
 !!        character(len = kchara), intent(in) :: base_name
 !!        type(sph_spectr_head_labels), intent(in) :: monitor_labels
-!!        type(fields_on_circle), intent(in) :: circle
+!!        type(circle_parameters), intent(in) :: circle
 !!        type(read_sph_spectr_data), intent(inout) :: sph_OUT
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        logical, intent(inout) :: flag_gzip_lc
@@ -26,7 +26,7 @@
       use m_precision
       use m_constants
 !
-      use t_fields_on_circle
+      use t_sph_circle_parameters
       use t_sph_spectr_head_labels
       use t_read_sph_spectra
       use t_buffer_4_gzip
@@ -51,7 +51,7 @@
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: base_name
       type(sph_spectr_head_labels), intent(in) :: monitor_labels
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
 !
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -91,7 +91,7 @@
       type(sph_spectr_head_labels), intent(in) :: monitor_labels
       type(read_sph_spectr_data), intent(in) :: sph_OUT
       type(buffer_4_gzip), intent(inout) :: zbuf
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
 !
       integer(kind = kint) :: len_each(6)
       integer(kind = kint) :: len_tot, len_line
@@ -147,7 +147,7 @@
       integer(kind = kint), intent(in) :: len_each(6)
       type(sph_spectr_head_labels), intent(in) :: lbl_OUT
       type(read_sph_spectr_data), intent(in) :: sph_OUT
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
 !
       character(len = len_header) :: sph_field_on_circle_text
 !

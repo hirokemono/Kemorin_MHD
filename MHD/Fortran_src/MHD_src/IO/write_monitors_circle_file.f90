@@ -31,7 +31,7 @@
       use t_read_sph_spectra
       use t_field_on_circle
       use t_circle_transform
-      use t_fields_on_circle
+      use t_sph_circle_parameters
       use t_FFT_selector
 !
       implicit none
@@ -97,7 +97,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(time_data), intent(in) :: time_d
       type(circle_transform_spectr), intent(in) :: leg_circ
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
       integer(kind = kint), intent(in) :: mphi_list(circle%mphi_circle)
       real(kind = kreal), intent(in) :: phi_list(circle%mphi_circle)
@@ -153,7 +153,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(time_data), intent(in) :: time_d
       type(circle_transform_spectr), intent(in) :: leg_circ
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       logical :: flag_gzip_lc
@@ -209,7 +209,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(time_data), intent(in) :: time_d
       type(circle_transform_spectr), intent(in) :: leg_circ
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       logical :: flag_gzip_lc

@@ -17,7 +17,7 @@
 !!      subroutine check_mid_eq_trans_dbench(ipol, circle, leg_circ,    &
 !!     &                                     d_circle, bench)
 !!        type(phys_address), intent(in) :: ipol
-!!        type(fields_on_circle), intent(in) :: circle
+!!        type(circle_parameters), intent(in) :: circle
 !!        type(circle_transform_spectr), intent(in) :: leg_circ
 !!        type(phys_data), intent(in) :: d_circle
 !!        type(dynamobench_monitor), intent(in) :: bench
@@ -34,7 +34,7 @@
       use t_phys_data
       use t_phys_address
       use t_field_on_circle
-      use t_fields_on_circle
+      use t_sph_circle_parameters
       use t_FFT_selector
       use t_field_on_circle
 !
@@ -89,7 +89,7 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
 !
       type(circle_transform_spectr), intent(inout) :: leg_circ
       type(phys_data), intent(inout) :: d_circle

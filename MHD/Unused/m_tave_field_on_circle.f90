@@ -18,7 +18,7 @@
 !!
 !!      subroutine copy_average_circle_field(circle, d_circle)
 !!      subroutine copy_deviation_circle_field(circle, d_circle)
-!!        type(fields_on_circle), intent(inout) :: circle
+!!        type(circle_parameters), intent(inout) :: circle
 !!        type(phys_data), intent(inout) :: d_circle
 !!@endverbatim
 !
@@ -30,7 +30,7 @@
       use m_machine_parameter
 !
       use t_phys_data
-      use t_fields_on_circle
+      use t_sph_circle_parameters
 !
       implicit none
 !
@@ -89,7 +89,7 @@
 !
       subroutine allocate_tave_circle_field(circle, d_circle)
 !
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       integer(kind = kint) :: mphi, ntot_comp
@@ -130,7 +130,7 @@
 !
       subroutine sum_average_circle_field(circle, d_circle)
 !
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       integer(kind = kint) :: mphi, nd
@@ -157,7 +157,7 @@
 !
       subroutine sum_deviation_circle_field(circle, d_circle)
 !
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       integer(kind = kint) :: mphi, nd
@@ -186,7 +186,7 @@
       subroutine divide_average_circle_field(icou, circle, d_circle)
 !
       integer(kind = kint), intent(in) :: icou
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       integer(kind = kint) :: mphi, nd
@@ -214,7 +214,7 @@
       subroutine divide_deviation_circle_field(icou, circle, d_circle)
 !
       integer(kind = kint), intent(in) :: icou
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       integer(kind = kint) :: mphi, nd
@@ -242,7 +242,7 @@
 !
       subroutine copy_average_circle_field(circle, d_circle)
 !
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
 !
       integer(kind = kint) :: mphi, nd
@@ -270,7 +270,7 @@
 !
       subroutine copy_deviation_circle_field(circle, d_circle)
 !
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
 !
       integer(kind = kint) :: mphi, nd

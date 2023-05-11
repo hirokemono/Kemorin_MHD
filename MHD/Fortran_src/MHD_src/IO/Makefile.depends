@@ -76,7 +76,7 @@ output_viz_file_control.o: $(MHD_IO_DIR)/output_viz_file_control.f90 m_machine_p
 	$(F90) -c $(F90OPTFLAGS) $<
 read_filtering_data.o: $(MHD_IO_DIR)/read_filtering_data.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_SGS_control_parameter.o t_comm_table.o t_geometry_data.o t_FEM_MHD_filter_data.o m_filter_file_names.o t_filter_file_data.o filter_moment_IO_select.o copy_mesh_structures.o set_parallel_file_name.o m_error_IDs.o t_filter_elength.o m_field_file_format.o t_l_filtering_data.o filter_mom_type_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sel_open_sph_fld_on_circle.o: $(MHD_IO_DIR)/sel_open_sph_fld_on_circle.f90 m_precision.o m_constants.o t_fields_on_circle.o t_sph_spectr_head_labels.o t_read_sph_spectra.o t_buffer_4_gzip.o select_gz_stream_file_IO.o sph_power_spectr_data_text.o sph_monitor_header_text.o
+sel_open_sph_fld_on_circle.o: $(MHD_IO_DIR)/sel_open_sph_fld_on_circle.f90 m_precision.o m_constants.o t_sph_circle_parameters.o t_sph_spectr_head_labels.o t_read_sph_spectra.o t_buffer_4_gzip.o select_gz_stream_file_IO.o sph_power_spectr_data_text.o sph_monitor_header_text.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_FEM_sgs_model_coefs_IO.o: $(MHD_IO_DIR)/set_FEM_sgs_model_coefs_IO.f90 m_precision.o calypso_mpi.o m_constants.o t_ele_info_4_dynamic.o t_SGS_model_coefs.o t_time_data.o t_field_data_IO.o cal_minmax_and_stacks.o const_global_element_ids.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_SGS_control_parameter.o set_sgs_diff_model_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -208,6 +208,6 @@ write_djds_mat_MHD.o: $(MHD_IO_DIR)/write_djds_mat_MHD.f90 m_precision.o calypso
 	$(F90) -c $(F90OPTFLAGS) $<
 write_dynamo_benchmark_file.o: $(MHD_IO_DIR)/write_dynamo_benchmark_file.f90 m_precision.o m_constants.o calypso_mpi.o t_spheric_parameter.o t_spheric_rj_data.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_phys_address.o t_base_field_labels.o t_sph_volume_mean_square.o t_field_4_dynamobench.o t_read_sph_spectra.o t_time_data.o t_buffer_4_gzip.o set_parallel_file_name.o sph_monitor_data_text.o gz_open_sph_vol_mntr_file.o select_gz_stream_file_IO.o dup_dynamobench_data_to_IO.o dup_detailed_dbench_to_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-write_monitors_circle_file.o: $(MHD_IO_DIR)/write_monitors_circle_file.f90 m_precision.o m_constants.o t_spheric_parameter.o t_time_data.o t_phys_data.o t_phys_address.o t_base_field_labels.o t_read_sph_spectra.o t_field_on_circle.o t_circle_transform.o t_fields_on_circle.o t_FFT_selector.o t_buffer_4_gzip.o set_parallel_file_name.o sph_monitor_data_text.o gz_open_sph_layer_mntr_file.o gz_layer_mean_monitor_IO.o dup_fields_on_circle_to_IO.o sel_open_sph_fld_on_circle.o gz_volume_spectr_monitor_IO.o
+write_monitors_circle_file.o: $(MHD_IO_DIR)/write_monitors_circle_file.f90 m_precision.o m_constants.o t_spheric_parameter.o t_time_data.o t_phys_data.o t_phys_address.o t_base_field_labels.o t_read_sph_spectra.o t_field_on_circle.o t_circle_transform.o t_sph_circle_parameters.o t_FFT_selector.o t_buffer_4_gzip.o set_parallel_file_name.o sph_monitor_data_text.o gz_open_sph_layer_mntr_file.o gz_layer_mean_monitor_IO.o dup_fields_on_circle_to_IO.o sel_open_sph_fld_on_circle.o gz_volume_spectr_monitor_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

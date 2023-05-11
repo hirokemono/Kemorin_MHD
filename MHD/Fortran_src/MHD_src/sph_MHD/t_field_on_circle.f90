@@ -39,7 +39,7 @@
       use t_phys_data
       use t_phys_address
       use t_circle_transform
-      use t_fields_on_circle
+      use t_sph_circle_parameters
       use t_FFT_selector
 !
       implicit none
@@ -49,7 +49,7 @@
 !>        Legendre polynomials at specific latitude
         type(circle_transform_spectr) :: leg_circ
 !>        Structure to make fields on circle
-        type(fields_on_circle) :: circle
+        type(circle_parameters) :: circle
 !>         Structure of field data on circle
         type(phys_data) :: d_circle
 !>        Working structure for Fourier transform at mid-depth equator
@@ -228,7 +228,7 @@
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
       type(circle_transform_spectr), intent(in) :: leg_circ
 !
-      type(fields_on_circle), intent(inout) :: circle
+      type(circle_parameters), intent(inout) :: circle
 !
       integer(kind = kint) :: kr
 !
@@ -265,7 +265,7 @@
       use calypso_mpi
 !
       integer(kind = kint), intent(in) :: iflag_FFT
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
 !
       type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft

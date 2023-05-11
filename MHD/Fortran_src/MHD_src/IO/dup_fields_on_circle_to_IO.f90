@@ -50,7 +50,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(circle_transform_spectr) :: leg_circ
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
@@ -110,7 +110,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(circle_transform_spectr) :: leg_circ
-      type(fields_on_circle), intent(in) :: circle
+      type(circle_parameters), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       type(read_sph_spectr_data), intent(inout) :: sph_OUT
