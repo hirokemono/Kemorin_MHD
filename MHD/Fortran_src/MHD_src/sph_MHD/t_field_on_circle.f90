@@ -139,7 +139,7 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-      circ_spec%ltr_circle =  sph%sph_params%l_truncation
+      cdat%circ_spec%ltr_circle =  sph%sph_params%l_truncation
       call alloc_circle_field(my_rank,                                  &
      &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
      &    cdat%circle, cdat%d_circle)

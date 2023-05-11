@@ -110,7 +110,7 @@
       if(iflag_debug .gt. 0) then
         call check_legendre_on_circ_rj(sph%sph_rj, circ_spec)
       end if
-      call alloc_circle_transform(cdat%circ_spec)
+      call alloc_circle_transform(circ_spec)
 !
       end subroutine init_legendre_on_circle
 !
