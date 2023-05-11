@@ -266,7 +266,7 @@
      &   ipol, rj_fld, monitor%pwr, monitor%circ_mid_eq, monitor%bench)
 !
       call sph_forward_trans_on_circles(trans_p%iflag_FFT,              &
-     &    sph%sph_rj, rj_fld,  monitor%mul_circle%num_circles,          &
+     &    sph%sph_rj, rj_fld, monitor%mul_circle%num_circles,           &
      &    monitor%mul_circle%cdat(1))
 !
       end subroutine cal_sph_monitor_data
