@@ -155,10 +155,10 @@
 !
 !    spherical transfer
       call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,     &
-     &    bench%iphys_dbench, cdat%circle, cdat%circ_spec,              &
+     &    bench%iphys_dbench, cdat%circle, cdat%leg_circ,               &
      &    cdat%d_circle, cdat%WK_circle_fft)
 !
-      call check_mid_eq_trans_dbench(ipol, cdat%circle, cdat%circ_spec, &
+      call check_mid_eq_trans_dbench(ipol, cdat%circle, cdat%leg_circ,  &
      &                               cdat%d_circle, bench)
 !
 !   Evaluate drift frequencty by velocity 
@@ -209,14 +209,14 @@
 !
 !
       call circle_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, nod_fld,  &
-     &    ipol_circle_trns, cdat%circle, cdat%circ_spec,                &
+     &    ipol_circle_trns, cdat%circle, cdat%leg_circ,                 &
      &    cdat%d_circle, cdat%WK_circle_fft)
 !
       end subroutine sph_forward_trans_on_circles
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_mid_eq_trans_dbench(ipol, circle, circ_spec,     &
+      subroutine check_mid_eq_trans_dbench(ipol, circle, leg_circ,      &
      &                                     d_circle, bench)
 !
       use calypso_mpi
@@ -229,7 +229,7 @@
 !
       type(phys_address), intent(in) :: ipol
       type(fields_on_circle), intent(in) :: circle
-      type(circle_transform_spetr), intent(in) :: circ_spec
+      type(circle_transform_spetr), intent(in) :: leg_circ
       type(phys_data), intent(in) :: d_circle
       type(dynamobench_monitor), intent(in) :: bench
 !
@@ -239,19 +239,19 @@
       if(my_rank .ne. 0) return
       i = bench%iphys_dbench%i_velo
       write(60,*) 'j, velo_new', ipol%base%i_velo, i
-      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-        write(60,*) j, circ_spec%d_circ_gl(j,i:i+2)
+      do j = -leg_circ%ltr_circle, leg_circ%ltr_circle
+        write(60,*) j, leg_circ%d_circ_gl(j,i:i+2)
       end do
       i = bench%iphys_dbench%i_magne
       write(60,*) 'j, magne_new', ipol%base%i_magne, i
-      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-        write(60,*) j, circ_spec%d_circ_gl(j,i:i+2)
+      do j = -leg_circ%ltr_circle, leg_circ%ltr_circle
+        write(60,*) j, leg_circ%d_circ_gl(j,i:i+2)
       end do
 !!
       i = bench%iphys_dbench%i_temp
       write(60,*) 'j, temp_new', ipol%base%i_temp, i
-      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-      write(60,*) j, circ_spec%d_circ_gl(j,i)
+      do j = -leg_circ%ltr_circle, leg_circ%ltr_circle
+      write(60,*) j, leg_circ%d_circ_gl(j,i)
       end do
 !
       do ifld = 1, d_circle%num_phys_viz

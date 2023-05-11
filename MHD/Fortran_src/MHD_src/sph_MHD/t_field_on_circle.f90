@@ -50,7 +50,7 @@
 !      end type leg_circle
 !
       type circle_fld_maker
-        type(circle_transform_spetr) :: circ_spec
+        type(circle_transform_spetr) :: leg_circ
 !>        Structure to make fields on circle
         type(fields_on_circle) :: circle
 !>         Structure of field data on circle
@@ -139,20 +139,20 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-      cdat%circ_spec%ltr_circle =  sph%sph_params%l_truncation
+      cdat%leg_circ%ltr_circle =  sph%sph_params%l_truncation
       call alloc_circle_field(my_rank,                                  &
      &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
      &    cdat%circle, cdat%d_circle)
       call initialize_circle_transform(trans_p%iflag_FFT,               &
-     &    cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
+     &    cdat%circle, cdat%leg_circ, cdat%WK_circle_fft)
       call set_circle_point_global                                      &
      &   (sph%sph_rj%nidx_rj(1), sph%sph_rj%radius_1d_rj_r,             &
-     &    cdat%circ_spec, cdat%circle)
+     &    cdat%leg_circ, cdat%circle)
 !
       call alloc_work_circle_transform(my_rank, cdat%d_circle,          &
-     &                                 cdat%circ_spec)
+     &                                 cdat%leg_circ)
       call init_legendre_on_circle(sph, comms_sph, trans_p,             &
-     &                             cdat%circ_spec, SR_sig, SR_r)
+     &                             cdat%leg_circ, SR_sig, SR_r)
 !
       end subroutine init_circle_point_global
 !
@@ -201,7 +201,7 @@
 !
 !
       call dealloc_circle_field(my_rank, cdat%circle, cdat%d_circle)
-      call dealloc_circle_transform(cdat%circ_spec)
+      call dealloc_circle_transform(cdat%leg_circ)
 !
       end subroutine dealloc_circle_point_global
 !
@@ -209,11 +209,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_circle_point_global                                &
-     &         (nri, radius_1d_rj_r, circ_spec, circle)
+     &         (nri, radius_1d_rj_r, leg_circ, circle)
 !
       integer(kind = kint), intent(in) ::  nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
-      type(circle_transform_spetr), intent(in) :: circ_spec
+      type(circle_transform_spetr), intent(in) :: leg_circ
 !
       type(fields_on_circle), intent(inout) :: circle
 !
@@ -223,19 +223,19 @@
       circle%kr_gl_rcirc_in =  izero
       circle%kr_gl_rcirc_out = izero
       do kr = 1, nri - 1
-        if(radius_1d_rj_r(kr) .eq. circ_spec%r_circle) then
+        if(radius_1d_rj_r(kr) .eq. leg_circ%r_circle) then
           circle%kr_gl_rcirc_in =  kr
           circle%kr_gl_rcirc_out = izero
           circle%coef_gl_rcirc_in =  one
           circle%coef_gl_rcirc_out = zero
           exit
         end if
-        if(radius_1d_rj_r(kr) .lt. circ_spec%r_circle                   &
-     &      .and. radius_1d_rj_r(kr+1) .gt. circ_spec%r_circle) then
+        if(radius_1d_rj_r(kr) .lt. leg_circ%r_circle                    &
+     &      .and. radius_1d_rj_r(kr+1) .gt. leg_circ%r_circle) then
           circle%kr_gl_rcirc_in =  kr
           circle%kr_gl_rcirc_out = kr + 1
           circle%coef_gl_rcirc_in                                       &
-     &                   = (radius_1d_rj_r(kr+1) - circ_spec%r_circle)  &
+     &                   = (radius_1d_rj_r(kr+1) - leg_circ%r_circle)   &
      &                    / (radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr))
           circle%coef_gl_rcirc_out = one - circle%coef_gl_rcirc_in
           exit
@@ -247,34 +247,32 @@
 ! ----------------------------------------------------------------------
 !
       subroutine initialize_circle_transform                            &
-     &          (iflag_FFT, circle, circ_spec, WK_circle_fft)
+     &          (iflag_FFT, circle, leg_circ, WK_circle_fft)
 !
       use calypso_mpi
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       type(fields_on_circle), intent(in) :: circle
 !
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
-      integer(kind = kint) :: l, m, mm, j
 !
-!
-      circ_spec%r_circle                                                &
+      leg_circ%r_circle                                                &
      &      = sqrt(circle%s_circle**2 + circle%z_circle**2)
-      circ_spec%theta_circle                                            &
-     &      = acos(circle%z_circle / circ_spec%r_circle)
+      leg_circ%theta_circle                                            &
+     &      = acos(circle%z_circle / leg_circ%r_circle)
 !
-      circ_spec%ar_circle = one / circ_spec%r_circle
-      circ_spec%ar2_circle = circ_spec%ar_circle**2
+      leg_circ%ar_circle = one / leg_circ%r_circle
+      leg_circ%ar2_circle = leg_circ%ar_circle**2
 !
       if(my_rank .gt. 0) return
 !
       write(*,*) 'np_smp', np_smp
-      write(*,*) 'istack_circfft_smp', circ_spec%istack_circfft_smp
+      write(*,*) 'istack_circfft_smp', leg_circ%istack_circfft_smp
       write(*,*) 'mphi_circle', circle%mphi_circle
       call initialize_FFT_select                                        &
-     &   (my_rank, iflag_FFT, np_smp, circ_spec%istack_circfft_smp,     &
+     &   (my_rank, iflag_FFT, np_smp, leg_circ%istack_circfft_smp,      &
      &    circle%mphi_circle, WK_circle_fft)
 !
       end subroutine initialize_circle_transform

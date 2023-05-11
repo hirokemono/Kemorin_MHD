@@ -13,13 +13,13 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(circle_fld_maker), intent(inout) :: cdat
 !!      subroutine circle_transfer_vector                               &
-!!     &         (iflag_FFT, ifld, circle, circ_spec, WK_circle_fft)
+!!     &         (iflag_FFT, ifld, circle, leg_circ, WK_circle_fft)
 !!      subroutine circle_transfer_scalar                               &
-!!     &         (iflag_FFT, ifld, circle, circ_spec, WK_circle_fft)
+!!     &         (iflag_FFT, ifld, circle, leg_circ, WK_circle_fft)
 !!      subroutine circle_transfer_sym_tensor                           &
-!!     &         (iflag_FFT, ifld, circle, circ_spec, WK_circle_fft)
+!!     &         (iflag_FFT, ifld, circle, leg_circ, WK_circle_fft)
 !!        type(fields_on_circle), intent(inout) :: circle
-!!        type(circle_transform_spetr), intent(inout) :: circ_spec
+!!        type(circle_transform_spetr), intent(inout) :: leg_circ
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!      subroutine circle_lag_transfer_scalar(ltr_circle, jmax_circle,  &
 !!     &          P_circle, jmax, d_rj_circle, vcirc_rtm)
@@ -87,13 +87,13 @@
         icomp =  cdat%d_circle%istack_component(ifld-1) + 1
         if(cdat%d_circle%num_component(ifld) .eq. n_sym_tensor) then
           call circle_transfer_sym_tensor(iflag_FFT, icomp,             &
-     &        cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
+     &        cdat%circle, cdat%leg_circ, cdat%WK_circle_fft)
         else if(cdat%d_circle%num_component(ifld) .eq. n_vector) then
           call circle_transfer_vector(iflag_FFT, icomp,                 &
-     &        cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
+     &        cdat%circle, cdat%leg_circ, cdat%WK_circle_fft)
         else
           call circle_transfer_scalar(iflag_FFT, icomp,                 &
-     &        cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
+     &        cdat%circle, cdat%leg_circ, cdat%WK_circle_fft)
         end if
 !
         do nd = 1, cdat%d_circle%num_component(ifld)
@@ -110,7 +110,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine circle_transfer_vector                                 &
-     &         (iflag_FFT, ifld, circle, circ_spec, WK_circle_fft)
+     &         (iflag_FFT, ifld, circle, leg_circ, WK_circle_fft)
 !
       use m_geometry_constants
       use cal_circle_transform
@@ -118,46 +118,46 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ifld
       type(fields_on_circle), intent(inout) :: circle
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
       integer ::  j
 !
       call circle_lag_transfer_vector                                   &
-     &   (circ_spec%ltr_circle, circ_spec%jmax_circle,                  &
-     &    circ_spec%P_circle, circ_spec%dPdt_circle,                    &
-     &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
-     &    circ_spec%jmax_circle, circle%d_rj_circle(0,ifld),            &
-     &    circ_spec%vcirc_rtm)
+     &   (leg_circ%ltr_circle, leg_circ%jmax_circle,                    &
+     &    leg_circ%P_circle, leg_circ%dPdt_circle,                      &
+     &    leg_circ%ar_circle, leg_circ%ar2_circle,                      &
+     &    leg_circ%jmax_circle, circle%d_rj_circle(0,ifld),             &
+     &    leg_circ%vcirc_rtm)
 !
-!      write(61,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
-!      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-!        write(61,*) j, circ_spec%vcirc_rtm(j,1:3)
+!      write(61,*) 'j, leg_circ%vcirc_rtm(j,1:3)', ifld
+!      do j = -leg_circ%ltr_circle, leg_circ%ltr_circle
+!        write(61,*) j, leg_circ%vcirc_rtm(j,1:3)
 !      end do
 !
       if(circle%iflag_circle_coord .eq. iflag_circle_cyl) then
-        call overwrt_circle_sph_vect_2_cyl(circ_spec%theta_circle,      &
-     &      circ_spec%ltr_circle, circ_spec%vcirc_rtm)
+        call overwrt_circle_sph_vect_2_cyl(leg_circ%theta_circle,       &
+     &      leg_circ%ltr_circle, leg_circ%vcirc_rtm)
       end if
 !
       call cal_circle_spectrum_vector                                   &
-     &   (ithree, circ_spec%ltr_circle, circ_spec%vcirc_rtm,            &
+     &   (ithree, leg_circ%ltr_circle, leg_circ%vcirc_rtm,              &
      &    circle%mphi_circle, circle%vrtm_mag(0,ifld),                  &
      &    circle%vrtm_phase(0,ifld))
       call copy_circle_spectrum_4_fft                                   &
-     &   (ithree, circ_spec%ltr_circle, circ_spec%vcirc_rtm,            &
+     &   (ithree, leg_circ%ltr_circle, leg_circ%vcirc_rtm,              &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1))
 !
       call backward_FFT_select                                          &
-     &   (iflag_FFT, np_smp, circ_spec%istack_circfft_smp, ione,        &
+     &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1),                 &
      &    WK_circle_fft)
       call backward_FFT_select                                          &
-     &   (iflag_FFT, np_smp, circ_spec%istack_circfft_smp, ione,        &
+     &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,2),                 &
      &    WK_circle_fft)
       call backward_FFT_select                                          &
-     &   (iflag_FFT, np_smp, circ_spec%istack_circfft_smp, ione,        &
+     &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,3),                 &
      &    WK_circle_fft)
 !
@@ -166,7 +166,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine circle_transfer_scalar                                 &
-     &         (iflag_FFT, ifld, circle, circ_spec, WK_circle_fft)
+     &         (iflag_FFT, ifld, circle, leg_circ, WK_circle_fft)
 !
       use m_FFT_selector
       use cal_circle_transform
@@ -174,31 +174,31 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ifld
       type(fields_on_circle), intent(inout) :: circle
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
       integer :: j
 !
       call circle_lag_transfer_scalar                                   &
-     &   (circ_spec%ltr_circle, circ_spec%jmax_circle,                  &
-     &    circ_spec%P_circle, circ_spec%jmax_circle,                    &
-     &    circle%d_rj_circle(0,ifld), circ_spec%vcirc_rtm)
+     &   (leg_circ%ltr_circle, leg_circ%jmax_circle,                    &
+     &    leg_circ%P_circle, leg_circ%jmax_circle,                      &
+     &    circle%d_rj_circle(0,ifld), leg_circ%vcirc_rtm)
 !
-!      write(61,*) 'j, circ_spec%vcirc_rtm(j,1:3)', ifld
-!      do j = -circ_spec%ltr_circle, circ_spec%ltr_circle
-!        write(61,*) j, circ_spec%vcirc_rtm(j,1)
+!      write(61,*) 'j, leg_circ%vcirc_rtm(j,1:3)', ifld
+!      do j = -leg_circ%ltr_circle, leg_circ%ltr_circle
+!        write(61,*) j, leg_circ%vcirc_rtm(j,1)
 !      end do
 !
       call cal_circle_spectrum_vector                                   &
-     &   (ione, circ_spec%ltr_circle, circ_spec%vcirc_rtm,              &
+     &   (ione, leg_circ%ltr_circle, leg_circ%vcirc_rtm,                &
      &    circle%mphi_circle, circle%vrtm_mag(0,ifld),                  &
      &    circle%vrtm_phase(0,ifld))
       call copy_circle_spectrum_4_fft                                   &
-     &   (ione, circ_spec%ltr_circle, circ_spec%vcirc_rtm,              &
+     &   (ione, leg_circ%ltr_circle, leg_circ%vcirc_rtm,                &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1))
 !
       call backward_FFT_select                                          &
-     &   (iflag_FFT, np_smp, circ_spec%istack_circfft_smp, ione,        &
+     &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1),                 &
      &    WK_circle_fft)
 !
@@ -207,14 +207,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine circle_transfer_sym_tensor                             &
-     &         (iflag_FFT, ifld, circle, circ_spec, WK_circle_fft)
+     &         (iflag_FFT, ifld, circle, leg_circ, WK_circle_fft)
 !
       use m_phys_constants
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ifld
       type(fields_on_circle), intent(inout) :: circle
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
       integer(kind = kint) :: nd
@@ -222,7 +222,7 @@
 !
       do nd = 0, n_sym_tensor-1
         call circle_transfer_scalar                                     &
-     &     (iflag_FFT, ifld+nd, circle, circ_spec, WK_circle_fft)
+     &     (iflag_FFT, ifld+nd, circle, leg_circ, WK_circle_fft)
       end do
 !
       end subroutine circle_transfer_sym_tensor

@@ -9,20 +9,20 @@
 !!@verbatim
 !!      subroutine dbench_leg_bwd_trans_rj                              &
 !!     &         (iflag_FFT, sph_rj, rj_fld, ipol, iphys_dbench,        &
-!!     &          circle, circ_spec, d_circle, WK_circle_fft)
+!!     &          circle, leg_circ, d_circle, WK_circle_fft)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_address), intent(in) :: ipol
 !!        type(base_field_address), intent(in) :: iphys_dbench
 !!        type(fields_on_circle), intent(in) :: circle
-!!        type(circle_transform_spetr), intent(inout) :: circ_spec
+!!        type(circle_transform_spetr), intent(inout) :: leg_circ
 !!        type(phys_data), intent(inout) :: d_circle
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!
 !!      subroutine circle_leg_bwd_trans_rj                              &
 !!     &         (iflag_FFT, sph_rj, rj_fld, nod_fld, ipol_circle_trns, &
-!!     &          circle, circ_spec, d_circle, WK_circle_fft)
+!!     &          circle, leg_circ, d_circle, WK_circle_fft)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
@@ -30,7 +30,7 @@
 !!        integer(kind = kint), intent(in)                              &
 !!       &                      :: ipol_circle_trns(nod_fld%num_phys_viz)
 !!        type(fields_on_circle), intent(in) :: circle
-!!        type(circle_transform_spetr), intent(inout) :: circ_spec
+!!        type(circle_transform_spetr), intent(inout) :: leg_circ
 !!        type(phys_data), intent(inout) :: d_circle
 !!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!@endverbatim
@@ -62,7 +62,7 @@
 !
       subroutine dbench_leg_bwd_trans_rj                                &
      &         (iflag_FFT, sph_rj, rj_fld, ipol, iphys_dbench,          &
-     &          circle, circ_spec, d_circle, WK_circle_fft)
+     &          circle, leg_circ, d_circle, WK_circle_fft)
 !
       use t_base_field_labels
       use t_FFT_selector
@@ -78,7 +78,7 @@
       type(fields_on_circle), intent(in) :: circle
 !
       type(phys_data), intent(inout) :: d_circle
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
 !
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
@@ -88,34 +88,34 @@
 !
       call each_circle_leg_bwd_trans_rj                                 &
      &   (n_vector, ipol%base%i_velo, iphys_dbench%i_velo,              &
-     &    sph_rj, rj_fld, circle, circ_spec%ltr_circle,                 &
-     &    circ_spec%P_circ, circ_spec%dPdt_circ,                        &
-     &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
-     &    d_circle%ntot_phys, circ_spec%d_circ_lc)
+     &    sph_rj, rj_fld, circle, leg_circ%ltr_circle,                  &
+     &    leg_circ%P_circ, leg_circ%dPdt_circ,                          &
+     &    leg_circ%ar_circle, leg_circ%ar2_circle,                      &
+     &    d_circle%ntot_phys, leg_circ%d_circ_lc)
       call each_circle_leg_bwd_trans_rj                                 &
      &   (n_vector, ipol%base%i_magne, iphys_dbench%i_magne,            &
-     &    sph_rj, rj_fld, circle, circ_spec%ltr_circle,                 &
-     &    circ_spec%P_circ, circ_spec%dPdt_circ,                        &
-     &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
-     &    d_circle%ntot_phys, circ_spec%d_circ_lc)
+     &    sph_rj, rj_fld, circle, leg_circ%ltr_circle,                  &
+     &    leg_circ%P_circ, leg_circ%dPdt_circ,                          &
+     &    leg_circ%ar_circle, leg_circ%ar2_circle,                      &
+     &    d_circle%ntot_phys, leg_circ%d_circ_lc)
       call each_circle_leg_bwd_trans_rj                                 &
      &   (n_scalar, ipol%base%i_temp, iphys_dbench%i_temp,              &
-     &    sph_rj, rj_fld, circle, circ_spec%ltr_circle,                 &
-     &    circ_spec%P_circ, circ_spec%dPdt_circ,                        &
-     &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
-     &    d_circle%ntot_phys, circ_spec%d_circ_lc)
+     &    sph_rj, rj_fld, circle, leg_circ%ltr_circle,                  &
+     &    leg_circ%P_circ, leg_circ%dPdt_circ,                          &
+     &    leg_circ%ar_circle, leg_circ%ar2_circle,                      &
+     &    d_circle%ntot_phys, leg_circ%d_circ_lc)
       call each_circle_leg_bwd_trans_rj                                 &
      &   (n_scalar, ipol%base%i_light, iphys_dbench%i_light,            &
-     &    sph_rj, rj_fld, circle, circ_spec%ltr_circle,                 &
-     &    circ_spec%P_circ, circ_spec%dPdt_circ,                        &
-     &    circ_spec%ar_circle, circ_spec%ar2_circle,                    &
-     &    d_circle%ntot_phys, circ_spec%d_circ_lc)
+     &    sph_rj, rj_fld, circle, leg_circ%ltr_circle,                  &
+     &    leg_circ%P_circ, leg_circ%dPdt_circ,                          &
+     &    leg_circ%ar_circle, leg_circ%ar2_circle,                      &
+     &    d_circle%ntot_phys, leg_circ%d_circ_lc)
 !
       num64                                                             &
-     &  = cast_long(d_circle%ntot_phys * (2*circ_spec%ltr_circle+1))
+     &  = cast_long(d_circle%ntot_phys * (2*leg_circ%ltr_circle+1))
       call calypso_mpi_reduce_real                                      &
-     &   (circ_spec%d_circ_lc(-circ_spec%ltr_circle,1),                 &
-     &    circ_spec%d_circ_gl(-circ_spec%ltr_circle,1),                 &
+     &   (leg_circ%d_circ_lc(-leg_circ%ltr_circle,1),                   &
+     &    leg_circ%d_circ_gl(-leg_circ%ltr_circle,1),                   &
      &    num64, MPI_SUM, 0)
 !
       if(my_rank .ne. 0) return
@@ -124,27 +124,27 @@
         if(iphys_dbench%i_velo .gt. 0) then
           i_comp = iphys_dbench%i_velo
           call overwrt_circle_sph_vect_2_cyl                            &
-     &      (circ_spec%theta_circle, circ_spec%ltr_circle,              &
-     &       circ_spec%d_circ_gl(-circ_spec%ltr_circle,i_comp))
+     &      (leg_circ%theta_circle, leg_circ%ltr_circle,                &
+     &       leg_circ%d_circ_gl(-leg_circ%ltr_circle,i_comp))
         end if
         if(iphys_dbench%i_magne .gt. 0) then
           i_comp = iphys_dbench%i_magne
           call overwrt_circle_sph_vect_2_cyl                            &
-     &      (circ_spec%theta_circle, circ_spec%ltr_circle,              &
-     &       circ_spec%d_circ_gl(-circ_spec%ltr_circle,i_comp))
+     &      (leg_circ%theta_circle, leg_circ%ltr_circle,                &
+     &       leg_circ%d_circ_gl(-leg_circ%ltr_circle,i_comp))
         end if
       end if
 !
       call cal_circle_spectrum_vector                                   &
-     &   (d_circle%ntot_phys, circ_spec%ltr_circle, circ_spec%d_circ_gl, &
-     &    circle%mphi_circle, circ_spec%vrtm_mag, circ_spec%vrtm_phase)
+     &   (d_circle%ntot_phys, leg_circ%ltr_circle, leg_circ%d_circ_gl,  &
+     &    circle%mphi_circle, leg_circ%vrtm_mag, leg_circ%vrtm_phase)
       call copy_circle_spectrum_4_fft                                   &
-     &   (d_circle%ntot_phys, circ_spec%ltr_circle,                     &
-     &    circ_spec%d_circ_gl, circle%mphi_circle, d_circle%d_fld(1,1))
+     &   (d_circle%ntot_phys, leg_circ%ltr_circle,                      &
+     &    leg_circ%d_circ_gl, circle%mphi_circle, d_circle%d_fld(1,1))
 !
       do i_comp = 1, d_circle%ntot_phys
         call backward_FFT_select                                        &
-     &     (iflag_FFT, np_smp, circ_spec%istack_circfft_smp, ione,      &
+     &     (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,       &
      &      circle%mphi_circle, d_circle%d_fld(1,i_comp),               &
      &      WK_circle_fft)
       end do
@@ -155,7 +155,7 @@
 !
       subroutine circle_leg_bwd_trans_rj                                &
      &         (iflag_FFT, sph_rj, rj_fld, nod_fld, ipol_circle_trns,   &
-     &          circle, circ_spec, d_circle, WK_circle_fft)
+     &          circle, leg_circ, d_circle, WK_circle_fft)
 !
       use t_FFT_selector
       use calypso_mpi_real
@@ -170,7 +170,7 @@
      &                      :: ipol_circle_trns(nod_fld%num_phys_viz)
       type(fields_on_circle), intent(in) :: circle
 !
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
       type(phys_data), intent(inout) :: d_circle
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
@@ -184,17 +184,17 @@
         i_trns = nod_fld%istack_component(i_fld-1) + 1
         call each_circle_leg_bwd_trans_rj                               &
      &     (num_comp, ipol_circle_trns(i_fld), i_trns,                  &
-     &      sph_rj, rj_fld, circle, circ_spec%ltr_circle,               &
-     &      circ_spec%P_circ, circ_spec%dPdt_circ,                      &
-     &      circ_spec%ar_circle, circ_spec%ar2_circle,                  &
-     &      d_circle%ntot_phys, circ_spec%d_circ_lc)
+     &      sph_rj, rj_fld, circle, leg_circ%ltr_circle,                &
+     &      leg_circ%P_circ, leg_circ%dPdt_circ,                        &
+     &      leg_circ%ar_circle, leg_circ%ar2_circle,                    &
+     &      d_circle%ntot_phys, leg_circ%d_circ_lc)
       end do
 !
       num64                                                             &
-     &  = cast_long(d_circle%ntot_phys * (2*circ_spec%ltr_circle+1))
+     &  = cast_long(d_circle%ntot_phys * (2*leg_circ%ltr_circle+1))
       call calypso_mpi_reduce_real                                      &
-     &   (circ_spec%d_circ_lc(-circ_spec%ltr_circle,1),                 &
-     &    circ_spec%d_circ_gl(-circ_spec%ltr_circle,1),                 &
+     &   (leg_circ%d_circ_lc(-leg_circ%ltr_circle,1),                   &
+     &    leg_circ%d_circ_gl(-leg_circ%ltr_circle,1),                   &
      &    num64, MPI_SUM, 0)
 !
 !
@@ -207,26 +207,26 @@
           i_trns = nod_fld%istack_component(i_fld-1) + 1
           if(num_comp .eq. n_vector) then
             call overwrt_circle_sph_vect_2_cyl                          &
-     &         (circ_spec%theta_circle, circ_spec%ltr_circle,           &
-     &          circ_spec%d_circ_gl(-circ_spec%ltr_circle,i_trns))
+     &         (leg_circ%theta_circle, leg_circ%ltr_circle,             &
+     &          leg_circ%d_circ_gl(-leg_circ%ltr_circle,i_trns))
 !          else if(num_comp .eq. n_sym_tensor) then
 !            call overwrt_circle_sph_vect_2_cyl                         &
-!     &         (circ_spec%theta_circle, circ_spec%ltr_circle,          &
-!     &          circ_spec%d_circ_gl(-circ_spec%ltr_circle,i_trns))
+!     &         (leg_circ%theta_circle, leg_circ%ltr_circle,            &
+!     &          leg_circ%d_circ_gl(-leg_circ%ltr_circle,i_trns))
           end if
         end do
       end if
 !
       call cal_circle_spectrum_vector                                   &
-     &   (d_circle%ntot_phys, circ_spec%ltr_circle, circ_spec%d_circ_gl,          &
-     &    circle%mphi_circle, circ_spec%vrtm_mag, circ_spec%vrtm_phase)
+     &   (d_circle%ntot_phys, leg_circ%ltr_circle, leg_circ%d_circ_gl,  &
+     &    circle%mphi_circle, leg_circ%vrtm_mag, leg_circ%vrtm_phase)
       call copy_circle_spectrum_4_fft                                   &
-     &   (d_circle%ntot_phys, circ_spec%ltr_circle,                     &
-     &    circ_spec%d_circ_gl, circle%mphi_circle, d_circle%d_fld(1,1))
+     &   (d_circle%ntot_phys, leg_circ%ltr_circle,                      &
+     &    leg_circ%d_circ_gl, circle%mphi_circle, d_circle%d_fld(1,1))
 !
       do i_fld = 1, d_circle%ntot_phys
         call backward_FFT_select                                        &
-     &    (iflag_FFT, np_smp, circ_spec%istack_circfft_smp, ione,       &
+     &    (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,        &
      &     circle%mphi_circle, d_circle%d_fld(1,i_fld), WK_circle_fft)
       end do
 !

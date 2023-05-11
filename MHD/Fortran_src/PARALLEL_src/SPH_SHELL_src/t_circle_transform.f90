@@ -8,26 +8,26 @@
 !!
 !!@verbatim
 !!      subroutine init_legendre_on_circle(sph, comms_sph, trans_p,     &
-!!     &                                   circ_spec, SR_sig, SR_r)
+!!     &                                   leg_circ, SR_sig, SR_r)
 !!        type(sph_grids), intent(in) ::  sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(circle_transform_spetr), intent(inout) :: circ_spec
+!!        type(circle_transform_spetr), intent(inout) :: leg_circ
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
-!!      subroutine alloc_circle_transform(ltr, circ_spec)
-!!      subroutine alloc_legendre_on_circ_rj(sph_rj, circ_spec)
+!!      subroutine alloc_circle_transform(ltr, leg_circ)
+!!      subroutine alloc_legendre_on_circ_rj(sph_rj, leg_circ)
 !!      subroutine alloc_work_circle_transform                          &
-!!     &         (my_rank, d_circle, circ_spec)
+!!     &         (my_rank, d_circle, leg_circ)
 !!        integer, intent(in) :: my_rank
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: d_circle
-!!        type(circle_transform_spetr), intent(inout) :: circ_spec
-!!      subroutine dealloc_circle_transform(circ_spec)
-!!      subroutine dealloc_legendre_on_circ_rj(circ_spec)
-!!      subroutine dealloc_work_circle_transform(circ_spec)
-!!        type(circle_transform_spetr), intent(inout) :: circ_spec
+!!        type(circle_transform_spetr), intent(inout) :: leg_circ
+!!      subroutine dealloc_circle_transform(leg_circ)
+!!      subroutine dealloc_legendre_on_circ_rj(leg_circ)
+!!      subroutine dealloc_work_circle_transform(leg_circ)
+!!        type(circle_transform_spetr), intent(inout) :: leg_circ
 !!@endverbatim
 !!
 !!@n @param  ltr      Truncation of spherical harmonics
@@ -83,7 +83,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_legendre_on_circle(sph, comms_sph, trans_p,       &
-     &                                   circ_spec, SR_sig, SR_r)
+     &                                   leg_circ, SR_sig, SR_r)
 !
       use calypso_mpi
       use t_spheric_parameter
@@ -96,53 +96,53 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-      call alloc_legendre_on_circ_rj(sph%sph_rj, circ_spec)
-      call s_const_equator_legendres_rj(circ_spec%theta_circle,         &
+      call alloc_legendre_on_circ_rj(sph%sph_rj, leg_circ)
+      call s_const_equator_legendres_rj(leg_circ%theta_circle,          &
      &    sph%sph_params, sph%sph_rj, sph%sph_rlm, sph%sph_rtm,         &
-     &    comms_sph, trans_p, circ_spec%P_circ, circ_spec%dPdt_circ,    &
+     &    comms_sph, trans_p, leg_circ%P_circ, leg_circ%dPdt_circ,      &
      &    SR_sig, SR_r)
 !
       if(iflag_debug .gt. 0) then
-        call check_legendre_on_circ_rj(sph%sph_rj, circ_spec)
+        call check_legendre_on_circ_rj(sph%sph_rj, leg_circ)
       end if
-      call alloc_circle_transform(circ_spec)
+      call alloc_circle_transform(leg_circ)
 !
       end subroutine init_legendre_on_circle
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_circle_transform(circ_spec)
+      subroutine alloc_circle_transform(leg_circ)
 !
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
 !
 !
-      allocate(circ_spec%istack_circfft_smp(0:np_smp))
-      circ_spec%istack_circfft_smp(0) =        0
-      circ_spec%istack_circfft_smp(1:np_smp) = 1
+      allocate(leg_circ%istack_circfft_smp(0:np_smp))
+      leg_circ%istack_circfft_smp(0) =        0
+      leg_circ%istack_circfft_smp(1:np_smp) = 1
 !
       end subroutine alloc_circle_transform
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_legendre_on_circ_rj(sph_rj, circ_spec)
+      subroutine alloc_legendre_on_circ_rj(sph_rj, leg_circ)
 !
       use t_spheric_rj_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
 !
 !
-      allocate(circ_spec%P_circ(sph_rj%nidx_rj(2)))
-      allocate(circ_spec%dPdt_circ(sph_rj%nidx_rj(2)))
+      allocate(leg_circ%P_circ(sph_rj%nidx_rj(2)))
+      allocate(leg_circ%dPdt_circ(sph_rj%nidx_rj(2)))
 !$omp parallel workshare
-      circ_spec%P_circ(1:sph_rj%nidx_rj(2)) =    0.0d0
-      circ_spec%dPdt_circ(1:sph_rj%nidx_rj(2)) = 0.0d0
+      leg_circ%P_circ(1:sph_rj%nidx_rj(2)) =    0.0d0
+      leg_circ%dPdt_circ(1:sph_rj%nidx_rj(2)) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_legendre_on_circ_rj
@@ -150,34 +150,34 @@
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_work_circle_transform                            &
-     &         (my_rank, d_circle, circ_spec)
+     &         (my_rank, d_circle, leg_circ)
 !
       integer, intent(in) :: my_rank
       type(phys_data), intent(in) :: d_circle
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
 !
       integer(kind = kint) :: ltr, ntot_comp
 !
 !
       ntot_comp = d_circle%ntot_phys
-      ltr =       circ_spec%ltr_circle
-      allocate(circ_spec%d_circ_gl(-ltr:ltr, ntot_comp))
-      allocate(circ_spec%d_circ_lc(-ltr:ltr, ntot_comp))
+      ltr =       leg_circ%ltr_circle
+      allocate(leg_circ%d_circ_gl(-ltr:ltr, ntot_comp))
+      allocate(leg_circ%d_circ_lc(-ltr:ltr, ntot_comp))
 !
-      allocate(circ_spec%vrtm_mag(0:ltr,ntot_comp))
-      allocate(circ_spec%vrtm_phase(0:ltr,ntot_comp))
+      allocate(leg_circ%vrtm_mag(0:ltr,ntot_comp))
+      allocate(leg_circ%vrtm_phase(0:ltr,ntot_comp))
 !
 !
       if((ltr*ntot_comp) .le. 0) return
 !
 !$omp parallel workshare
-      circ_spec%d_circ_gl(-ltr:ltr, 1:ntot_comp) = 0.0d0
-      circ_spec%d_circ_lc(-ltr:ltr, 1:ntot_comp) = 0.0d0
+      leg_circ%d_circ_gl(-ltr:ltr, 1:ntot_comp) = 0.0d0
+      leg_circ%d_circ_lc(-ltr:ltr, 1:ntot_comp) = 0.0d0
 !$omp end parallel workshare
 !
 !$omp parallel workshare
-      circ_spec%vrtm_mag(0:ltr,1:ntot_comp) =   0.0d0
-      circ_spec%vrtm_phase(0:ltr,1:ntot_comp) = 0.0d0
+      leg_circ%vrtm_mag(0:ltr,1:ntot_comp) =   0.0d0
+      leg_circ%vrtm_phase(0:ltr,1:ntot_comp) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_work_circle_transform
@@ -185,49 +185,49 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_circle_transform(circ_spec)
+      subroutine dealloc_circle_transform(leg_circ)
 !
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
 !
 !
-      deallocate(circ_spec%istack_circfft_smp)
+      deallocate(leg_circ%istack_circfft_smp)
 !
       end subroutine dealloc_circle_transform
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_legendre_on_circ_rj(circ_spec)
+      subroutine dealloc_legendre_on_circ_rj(leg_circ)
 !
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
 !
 !
-      deallocate(circ_spec%P_circ, circ_spec%dPdt_circ)
+      deallocate(leg_circ%P_circ, leg_circ%dPdt_circ)
 !
       end subroutine dealloc_legendre_on_circ_rj
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_work_circle_transform(circ_spec)
+      subroutine dealloc_work_circle_transform(leg_circ)
 !
-      type(circle_transform_spetr), intent(inout) :: circ_spec
+      type(circle_transform_spetr), intent(inout) :: leg_circ
 !
 !
-      if(allocated(circ_spec%vrtm_mag) .eqv. .FALSE.) return
-      deallocate(circ_spec%vrtm_mag, circ_spec%vrtm_phase)
-      deallocate(circ_spec%d_circ_gl, circ_spec%d_circ_lc)
+      if(allocated(leg_circ%vrtm_mag) .eqv. .FALSE.) return
+      deallocate(leg_circ%vrtm_mag, leg_circ%vrtm_phase)
+      deallocate(leg_circ%d_circ_gl, leg_circ%d_circ_lc)
 !
       end subroutine dealloc_work_circle_transform
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_legendre_on_circ_rj(sph_rj, circ_spec)
+      subroutine check_legendre_on_circ_rj(sph_rj, leg_circ)
 !
       use calypso_mpi
       use t_spheric_rj_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(circle_transform_spetr), intent(in) :: circ_spec
+      type(circle_transform_spetr), intent(in) :: leg_circ
 !
       integer(kind = kint) :: ip, j
 !
@@ -237,11 +237,11 @@
         open(80,file='eq_leg.dat', position='APPEND')
         if(ip.eq. 1) then
            write(80,*) 'my_rank, j_local, j, l, m, Pvec_1, Pvec_2',     &
-     &                circ_spec%theta_circle
+     &                leg_circ%theta_circle
         end if
         do j = 1, sph_rj%nidx_rj(2)
           write(80,*) my_rank, j, sph_rj%idx_gl_1d_rj_j(j,1:3),         &
-     &              circ_spec%P_circ(j), circ_spec%dPdt_circ(j)
+     &              leg_circ%P_circ(j), leg_circ%dPdt_circ(j)
         end do
         close(80)
       end do
