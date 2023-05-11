@@ -113,6 +113,7 @@
       end subroutine write_fields_on_circle_file
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine dup_field_on_circ_header_to_IO                         &
      &         (sph_params, circle, d_circle, sph_OUT)
@@ -249,7 +250,7 @@
       integer(kind = kint), intent(inout)  :: len_line, len_tot
 !
 !
-      len_line = 27 + 26 + 1
+      len_line = 27 + 16 + 1
       len_each(1) = len_moniter_i2_head_text(lbl_OUT%hdr_nri,           &
      &                                       lbl_OUT%hdr_ltr)
       len_each(2) = len_moniter_i2_head_text(lbl_OUT%hdr_ICB_id,        &
