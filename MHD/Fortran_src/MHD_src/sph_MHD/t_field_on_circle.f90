@@ -46,9 +46,8 @@
       implicit none
 !
 !
-      type leg_circle
-        integer(kind = kint), allocatable :: ipol_circle_trns(:)
-      end type leg_circle
+!      type leg_circle
+!      end type leg_circle
 !
       type circle_fld_maker
         type(circle_transform_spetr) :: circ_spec
@@ -57,7 +56,7 @@
 !>         Structure of field data on circle
         type(phys_data) :: d_circle
 !>        Legendre polynomials at specific latitude
-        type(leg_circle) :: leg_crc
+!        type(leg_circle) :: leg_crc
 !>        Working structure for Fourier transform at mid-depth equator
 !!@n      (Save attribute is necessary for Hitachi compiler for SR16000)
         type(working_FFTs) :: WK_circle_fft
@@ -67,6 +66,7 @@
         integer(kind = kint) :: num_circles = 0
 !>         Structure of field data on circle
         type(circle_fld_maker), allocatable :: cdat(:)
+        integer(kind = kint), allocatable :: ipol_circle_trns(:)
       end type mul_fields_on_circle
 !
       private :: set_circle_point_global
@@ -139,11 +139,10 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
+      circ_spec%ltr_circle =  sph%sph_params%l_truncation
       call alloc_circle_field(my_rank,                                  &
      &    sph%sph_rtp%nidx_rtp(3), sph%sph_rj%nidx_global_rj(2),        &
      &    cdat%circle, cdat%d_circle)
-      call alloc_circle_transform(sph%sph_params%l_truncation,          &
-     &                            cdat%circ_spec)
       call initialize_circle_transform(trans_p%iflag_FFT,               &
      &    cdat%circle, cdat%circ_spec, cdat%WK_circle_fft)
       call set_circle_point_global                                      &
@@ -159,17 +158,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_circle_transfer_address(nod_fld, rj_fld, leg_crc)
+      subroutine set_circle_transfer_address(nod_fld, rj_fld,           &
+     &                                       mul_circle)
 !
       type(phys_data), intent(in) :: nod_fld, rj_fld
-      type(leg_circle), intent(inout) :: leg_crc
+      type(mul_fields_on_circle), intent(inout) :: mul_circle
 !
       logical, allocatable :: flag_use(:)
       integer(kind = kint) :: i_fld, j_fld
 !
-      allocate(leg_crc%ipol_circle_trns(1:rj_fld%num_phys))
+      allocate(mul_circle%ipol_circle_trns(1:rj_fld%num_phys))
 !$omp parallel workshare
-      leg_crc%ipol_circle_trns(1:rj_fld%num_phys) = 0
+      mul_circle%ipol_circle_trns(1:rj_fld%num_phys) = 0
 !$omp end parallel workshare
 !
       allocate(flag_use(1:rj_fld%num_phys))
@@ -181,7 +181,7 @@
           if(flag_use(j_fld)) cycle
           if(rj_fld%phys_name(j_fld)                                    &
      &         .eq. nod_fld%phys_name(i_fld)) then
-            leg_crc%ipol_circle_trns(i_fld)                             &
+            mul_circle%ipol_circle_trns(i_fld)                          &
      &                      = rj_fld%istack_component(j_fld-1) + 1 
             flag_use(j_fld) = .TRUE.
             exit

@@ -164,7 +164,7 @@
      &     (SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
      &      monitor%mul_circle%cdat(i), SR_sig, SR_r)
         call set_circle_transfer_address(nod_fld, SPH_MHD%fld,          &
-     &      monitor%mul_circle%cdat(i)%leg_crc)
+     &                                   monitor%mul_circle)
       end do
 !
       end subroutine init_rms_sph_mhd_control

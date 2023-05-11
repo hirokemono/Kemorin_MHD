@@ -153,11 +153,7 @@
       type(circle_fld_maker), intent(inout) :: cdat
       type(dynamobench_monitor), intent(inout) :: bench
 !
-!      integer :: i, j, n, ifld
-!
 !    spherical transfer
-      call alloc_work_circle_transform(my_rank, cdat%d_circle,          &
-     &                                 cdat%circ_spec)
       call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,     &
      &    bench%iphys_dbench, cdat%circle, cdat%circ_spec,              &
      &    cdat%d_circle, cdat%WK_circle_fft)
@@ -187,9 +183,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_forward_trans_on_circles                           &
-     &         (iflag_FFT, sph_rj, rj_fld, nod_fld,                     &
-     &          circle, circ_spec, leg_crc, d_circle, WK_circle_fft)
+      subroutine sph_forward_trans_on_circles(iflag_FFT,                &
+     &          sph_rj, rj_fld, nod_fld, ipol_circle_trns, cdat)
 !
       use calypso_mpi
       use t_field_on_circle
@@ -207,18 +202,15 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(phys_data), intent(in) :: nod_fld
-      type(fields_on_circle), intent(in) :: circle
+      integer(kind = kint), intent(in)                                  &
+     &                      :: ipol_circle_trns(nod_fld%num_phys_viz)
 !
-      type(leg_circle), intent(inout) :: leg_crc
-      type(circle_transform_spetr), intent(inout) :: circ_spec
-      type(phys_data), intent(inout) :: d_circle
-      type(working_FFTs), intent(inout) :: WK_circle_fft
+      type(circle_fld_maker), intent(inout) :: cdat
 !
 !
-      call alloc_work_circle_transform(my_rank, d_circle, circ_spec)
-      call circle_leg_bwd_trans_rj                                      &
-     &   (iflag_FFT, sph_rj, rj_fld, nod_fld, leg_crc%ipol_circle_trns, &
-     &    circle, circ_spec, d_circle, WK_circle_fft)
+      call circle_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, nod_fld,  &
+     &    ipol_circle_trns, cdat%circle, cdat%circ_spec,                &
+     &    cdat%d_circle, cdat%WK_circle_fft)
 !
       end subroutine sph_forward_trans_on_circles
 !

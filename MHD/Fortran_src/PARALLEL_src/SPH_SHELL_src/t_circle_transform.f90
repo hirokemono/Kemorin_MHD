@@ -110,19 +110,17 @@
       if(iflag_debug .gt. 0) then
         call check_legendre_on_circ_rj(sph%sph_rj, circ_spec)
       end if
+      call alloc_circle_transform(cdat%circ_spec)
 !
       end subroutine init_legendre_on_circle
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_circle_transform(ltr, circ_spec)
+      subroutine alloc_circle_transform(circ_spec)
 !
-      integer(kind = kint), intent(in) :: ltr
       type(circle_transform_spetr), intent(inout) :: circ_spec
 !
-!
-      circ_spec%ltr_circle =  ltr
 !
       allocate(circ_spec%istack_circfft_smp(0:np_smp))
       circ_spec%istack_circfft_smp(0) =        0
