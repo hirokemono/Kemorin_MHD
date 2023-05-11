@@ -17,9 +17,6 @@
 !!     &          MHD_files, MHD_ctl, add_SSMHD_ctl, MHD_step,          &
 !!     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !!     &          cdat, bench)
-!!      subroutine input_control_sph_pick_circle(ctl_file_name,         &
-!!     &          MHD_files, MHD_ctl, add_SSMHD_ctl, MHD_step,          &
-!!     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD)
 !!        character(len=kchara), intent(in) :: ctl_file_name
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
@@ -156,60 +153,6 @@
       call copy_delta_t(MHD_step%init_d, MHD_step%time_d)
 !
       end subroutine input_control_SPH_SGS_dynamo
-!
-! ----------------------------------------------------------------------
-!
-      subroutine input_control_sph_pick_circle(ctl_file_name,           &
-     &          MHD_files, MHD_ctl, add_SSMHD_ctl, MHD_step,            &
-     &          SPH_model, SPH_WK, SPH_SGS, SPH_MHD)
-!
-      use m_error_IDs
-!
-      use t_time_data
-      use set_control_sph_SGS_MHD
-      use sph_file_IO_select
-!
-      character(len=kchara), intent(in) :: ctl_file_name
-      type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(add_sgs_sph_mhd_ctl), intent(inout) :: add_SSMHD_ctl
-!
-      type(MHD_step_param), intent(inout) :: MHD_step
-      type(SPH_MHD_model_data), intent(inout) :: SPH_model
-      type(work_SPH_MHD), intent(inout) :: SPH_WK
-!
-      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
-      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-!
-       type(phys_data), save :: nod_fld_c
-!
-!  Read control file
-      if(iflag_debug.eq.1) write(*,*) 'load_control_sph_SGS_MHD'
-      call load_control_sph_SGS_MHD(ctl_file_name, MHD_ctl,             &
-     &                              add_SSMHD_ctl)
-!
-!  Set parameters from control
-      if(iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
-      call set_control_4_SPH_SGS_MHD                                    &
-     &   (MHD_ctl%plt, MHD_ctl%org_plt, MHD_ctl%model_ctl,              &
-     &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
-     &    add_SSMHD_ctl%sgs_ctl, MHD_files, SPH_model%bc_IO,            &
-     &    SPH_model%refs, SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,   &
-     &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_WK%trans_p,         &
-     &    SPH_WK%trns_WK, SPH_MHD%sph_maker)
-!
-      call set_control_SGS_SPH_MHD_field                                &
-     &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
-     &    add_SSMHD_ctl%zm_ctls, SPH_SGS%SGS_par, SPH_model%MHD_prop,   &
-     &    SPH_model%MHD_BC, SPH_MHD%sph, SPH_MHD%fld, nod_fld_c,        &
-     &    SPH_WK%monitor)
-      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
-!
-!   Set initial time into time data
-      if (iflag_debug.eq.1) write(*,*) 'copy_delta_t'
-      call copy_delta_t(MHD_step%init_d, MHD_step%time_d)
-!
-      end subroutine input_control_sph_pick_circle
 !
 ! ----------------------------------------------------------------------
 !

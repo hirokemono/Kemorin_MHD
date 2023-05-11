@@ -14,8 +14,6 @@ TARGET_SPH_PSF_SNAP =     sph_snapshot_psf
 
 TARGET_SPH_SNAP_NOVIZ =    sph_snapshot_noviz
 
-TARGET_SPH_PICK_CIRC =       sph_pick_circle
-
 TARGET_SPH_FORWARD_TRANS = sph_forward_transform
 TARGET_SPH_BACK_TRANS =    sph_backward_transform
 TARGET_SPH_ALL_CORRELATE = sph_all_correlate
@@ -82,11 +80,6 @@ main_sph_snapshot_noviz.o \
 analyzer_noviz_sph_snap.o \
 SPH_analyzer_snap_w_psf.o
 
-MOD_SPH_PICK_CIRC = \
-main_sph_pickup_cricle.o \
-analyzer_sph_pickup_circle.o \
-SPH_analyzer_sph_pick_circ.o
-
 MOD_MODIFY_SPH_INI = \
 main_sph_modify_restart.o \
 analyzer_sph_modify_restart.o \
@@ -132,7 +125,6 @@ target_list:
 	@echo 'TARGET_SPH_PSF_SNAP =   $$(BUILDDIR)/$(TARGET_SPH_PSF_SNAP)'   >> $(MAKENAME)
 	@echo 'TARGET_SPH_SP_SNAP =    $$(BUILDDIR)/$(TARGET_SPH_SP_SNAP)'    >> $(MAKENAME)
 	@echo 'TARGET_MODIFY_SPH_INI = $$(BUILDDIR)/$(TARGET_MODIFY_SPH_INI)' >> $(MAKENAME)
-	@echo 'TARGET_SPH_PICK_CIRC =  $$(BUILDDIR)/$(TARGET_SPH_PICK_CIRC)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_SNAP_NOVIZ = $$(BUILDDIR)/$(TARGET_SPH_SNAP_NOVIZ)'>> $(MAKENAME)
 	@echo 'TARGET_SPH_SNAP_BADBOY = $$(BUILDDIR)/$(TARGET_SPH_SNAP_BADBOY)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_FORWARD_TRANS =  $$(BUILDDIR)/$(TARGET_SPH_FORWARD_TRANS)' >> $(MAKENAME)
@@ -147,7 +139,6 @@ target_task:
 	 '$$(TARGET_SPH_PSF_SNAP)'   \
 	 '$$(TARGET_SPH_SP_SNAP)'    \
 	 '$$(TARGET_MODIFY_SPH_INI)' \
-	 '$$(TARGET_SPH_PICK_CIRC)'  \
 	 '$$(TARGET_SPH_SNAP_NOVIZ)' \
 	 '$$(TARGET_SPH_SNAP_BADBOY)'   \
 	 '$$(TARGET_SPH_FORWARD_TRANS)'  \
@@ -173,13 +164,6 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_SPH_SNAP_NOVIZ)' '$$(MOD_SPH_SNAP_NOVIZ_MAIN)' \
-	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_SPH_PICK_CIRC):  $$(MOD_SPH_PICK_CIRC)  $$(LIB_FILES_SPH_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_SPH_PICK_CIRC)' '$$(MOD_SPH_PICK_CIRC)' \
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
@@ -249,8 +233,6 @@ mod_list:
 	@echo  $(MOD_SPH_SNAP_NOVIZ_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_SNAP_BADBOY=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_BADBOY) >> $(MAKENAME)
-	@echo  MOD_SPH_PICK_CIRC=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_PICK_CIRC) >> $(MAKENAME)
 	@echo  MOD_MODIFY_SPH_INI=  \\ >> $(MAKENAME)
 	@echo  $(MOD_MODIFY_SPH_INI) >> $(MAKENAME)
 	@echo  MOD_SPH_FORWARD_TRANS=  \\ >> $(MAKENAME)
