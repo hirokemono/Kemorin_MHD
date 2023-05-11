@@ -21,7 +21,6 @@
 !
       use m_precision
       use m_constants
-      use calypso_mpi
       use t_time_data
       use t_phys_address
       use t_base_field_labels

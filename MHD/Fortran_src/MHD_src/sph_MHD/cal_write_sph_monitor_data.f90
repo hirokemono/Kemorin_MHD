@@ -216,6 +216,7 @@
       use cal_CMB_dipolarity
       use cal_typical_scale
       use const_data_4_dynamobench
+      use sph_fwd_trans_on_circles
 !
       type(time_data), intent(in) :: time_d
       type(sph_grids), intent(in) :: sph
@@ -281,9 +282,8 @@
       use write_picked_sph_spectr
       use write_sph_gauss_coefs
       use write_typical_scale
-      use dup_dynamobench_data_to_IO
-      use dup_detailed_dbench_to_IO
-      use dup_fields_on_circle_to_IO
+      use write_dynamo_benchmark_file
+      use write_monitors_circle_file
 !
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -334,28 +334,16 @@
       call append_sph_gauss_coefs_file(time_d, sph_params, sph_rj,      &
      &    ipol, rj_fld, monitor%gauss_coef, SR_sig)
 !
-      call write_dynamobench_file                                       &
-     &   (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc,                &
-     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore),               &
-     &    time_d, monitor%circ_mid_eq%circle%gzip_flag_circle,          &
-     &    monitor%bench)
-      call write_detailed_dbench_file                                   &
-     &   (my_rank, sph_params, sph_rj, ipol, sph_MHD_bc,                &
-     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore),               &
-     &    time_d, monitor%circ_mid_eq%circle%gzip_flag_circle,          &
-     &    monitor%bench)
-      call write_monitors_on_circle_file(my_rank,                       &
-     &    monitor%circ_mid_eq%circle%circle_field_file_prefix,          &
-     &    monitor%circ_mid_eq%circle%circle_spectr_file_prefix,         &
-     &    monitor%circ_mid_eq%circle%gzip_flag_circle, sph_params,      &
-     &    time_d, monitor%circ_mid_eq)
+      call write_dynamobench_files                                      &
+     &   (sph_params, sph_rj, ipol, sph_MHD_bc,                         &
+     &    monitor%pwr%v_spectr(monitor%bench%ipwr_ocore), time_d,       &
+     &    monitor%circ_mid_eq%circle%gzip_flag_circle, monitor%bench)
+      call write_mtr_on_circle_file(my_rank, sph_params, time_d,        &
+     &                              monitor%circ_mid_eq)
 !
       do i = 1, monitor%mul_circle%num_circles
-        call write_monitors_on_circle_file(my_rank,                     &
-     &     monitor%mul_circle%cdat(i)%circle%circle_field_file_prefix,  &
-     &     monitor%mul_circle%cdat(i)%circle%circle_spectr_file_prefix, &
-     &     monitor%mul_circle%cdat(i)%circle%gzip_flag_circle,          &
-     &     sph_params, time_d, monitor%mul_circle%cdat(i))
+        call write_mtr_on_circle_file(my_rank, sph_params, time_d,      &
+     &                                monitor%mul_circle%cdat(i))
       end do
 !
       end subroutine output_sph_monitor_data

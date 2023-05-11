@@ -207,6 +207,7 @@
      &          SGS_param, cmt_param, Csims_FEM_MHD, MHD_prop,          &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !
+      use calypso_mpi
       use t_MGCG_data
       use t_MGCG_data_4_MHD
 !

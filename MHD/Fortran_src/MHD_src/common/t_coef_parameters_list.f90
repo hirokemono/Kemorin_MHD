@@ -27,7 +27,6 @@
 !
       use m_precision
       use m_machine_parameter
-      use calypso_mpi
       use m_error_IDs
 !
       use t_physical_property
@@ -209,6 +208,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_dimensionless_numbers(dless_ctl, MHD_coef_list)
+!
+      use calypso_mpi
 !
       type(dimless_control), intent(in) :: dless_ctl
       type(coef_parameters_list), intent(inout) :: MHD_coef_list

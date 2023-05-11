@@ -7,19 +7,18 @@
 !>@brief Evaluate dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine const_dynamobench_data                               &
-!!     &         (time_d, sph_params, sph_rj, sph_MHD_bc, trans_p, ipol,&
-!!     &          rj_fld, pwr, cdat, bench)
-!!        type(time_data), intent(in) :: time_d
-!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!      subroutine dbench_leg_bwd_trans_rj                              &
+!!     &         (iflag_FFT, sph_rj, rj_fld, ipol, iphys_dbench,        &
+!!     &          circle, leg_circ, d_circle, WK_circle_fft)
+!!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(in) :: rj_fld
-!!        type(sph_mean_squares), intent(in) :: pwr
-!!        type(circle_fld_maker), intent(inout) :: cdat
-!!        type(dynamobench_monitor), intent(inout) :: bench
+!!        type(phys_address), intent(in) :: ipol
+!!        type(base_field_address), intent(in) :: iphys_dbench
+!!        type(fields_on_circle), intent(in) :: circle
+!!        type(circle_transform_spectr), intent(inout) :: leg_circ
+!!        type(phys_data), intent(inout) :: d_circle
+!!        type(working_FFTs), intent(inout) :: WK_circle_fft
 !!@endverbatim
 !
       module const_data_4_dynamobench
@@ -27,10 +26,9 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use calypso_mpi
 !
       implicit none
-!
-      private :: mid_eq_transfer_dynamobench
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,8 +55,8 @@
       use t_field_4_dynamobench
       use t_work_4_sph_trans
 !
-      use calypso_mpi
       use calypso_mpi_real
+      use sph_fwd_trans_mid_eq
       use cal_rms_fields_by_sph
       use global_field_4_dynamobench
       use transfer_to_long_integers
@@ -128,144 +126,6 @@
       end if
 !
       end subroutine const_dynamobench_data
-!
-! ----------------------------------------------------------------------
-!
-      subroutine mid_eq_transfer_dynamobench                            &
-     &         (time, iflag_FFT, sph_rj, rj_fld, ipol, cdat, bench)
-!
-      use calypso_mpi
-      use t_field_on_circle
-      use t_spheric_rj_data
-      use t_phys_data
-      use t_phys_address
-      use t_circle_transform
-      use t_field_4_dynamobench
-!
-      use field_at_mid_equator
-      use circle_bwd_transfer_rj
-!
-      real(kind=kreal), intent(in) :: time
-      integer(kind = kint), intent(in) :: iflag_FFT
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(phys_data), intent(in) :: rj_fld
-      type(phys_address), intent(in) :: ipol
-      type(circle_fld_maker), intent(inout) :: cdat
-      type(dynamobench_monitor), intent(inout) :: bench
-!
-!    spherical transfer
-      call dbench_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld, ipol,     &
-     &    bench%iphys_dbench, cdat%circle, cdat%leg_circ,               &
-     &    cdat%d_circle, cdat%WK_circle_fft)
-!
-      call check_mid_eq_trans_dbench(ipol, cdat%circle, cdat%leg_circ,  &
-     &                               cdat%d_circle, bench)
-!
-!   Evaluate drift frequencty by velocity 
-!
-      call cal_drift_by_v44(time, sph_rj, rj_fld, ipol,                 &
-     &    cdat%circle, bench%t_prev, bench%phase_vm4,                   &
-     &    bench%phase_vm4_prev, bench%omega_vm4)
-      if(my_rank .gt. 0) return
-!
-!   find local point for dynamobench
-!
-      if(iflag_debug.gt.0)  write(*,*) 'cal_field_4_dynamobench'
-      if(my_rank .eq. 0) then
-        call cal_field_4_dynamobench                                    &
-     &     (time, bench%t_prev, cdat%circle, cdat%d_circle,             &
-     &      bench%iphys_dbench%i_velo, bench%phi_zero, bench%phi_prev,  &
-     &      bench%phase_vr, bench%ave_phase_vr, bench%d_zero)
-      end if
-      bench%t_prev = time
-!
-      end subroutine mid_eq_transfer_dynamobench
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sph_forward_trans_on_circles(iflag_FFT,                &
-     &          sph_rj, rj_fld, num_circles, cdat)
-!
-      use calypso_mpi
-      use t_field_on_circle
-      use t_spheric_rj_data
-      use t_phys_data
-      use t_phys_address
-      use t_circle_transform
-      use t_field_4_dynamobench
-!
-      use calypso_mpi_real
-      use transfer_to_long_integers
-      use circle_bwd_transfer_rj
-!
-      integer(kind = kint), intent(in) :: iflag_FFT
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_data), intent(in) :: rj_fld
-      integer(kind = kint), intent(in) :: num_circles
-!
-      type(circle_fld_maker), intent(inout) :: cdat(num_circles)
-!
-      integer(kind = kint) :: i
-!
-!
-      do i = 1, num_circles
-        call circle_leg_bwd_trans_rj(iflag_FFT, sph_rj, rj_fld,         &
-     &    cdat(i)%ipol_circle_trns, cdat(i)%circle, cdat(i)%leg_circ,   &
-     &    cdat(i)%d_circle, cdat(i)%WK_circle_fft)
-      end do
-!
-      end subroutine sph_forward_trans_on_circles
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_mid_eq_trans_dbench(ipol, circle, leg_circ,      &
-     &                                     d_circle, bench)
-!
-      use calypso_mpi
-      use t_field_on_circle
-      use t_spheric_rj_data
-      use t_phys_data
-      use t_phys_address
-      use t_circle_transform
-      use t_field_4_dynamobench
-!
-      type(phys_address), intent(in) :: ipol
-      type(fields_on_circle), intent(in) :: circle
-      type(circle_transform_spectr), intent(in) :: leg_circ
-      type(phys_data), intent(in) :: d_circle
-      type(dynamobench_monitor), intent(in) :: bench
-!
-      integer :: i, j, n, ifld
-!
-!    spherical transfer
-      if(my_rank .ne. 0) return
-      i = bench%iphys_dbench%i_velo
-      write(60,*) 'j, velo_new', ipol%base%i_velo, i
-      do j = -leg_circ%ltr_circle, leg_circ%ltr_circle
-        write(60,*) j, leg_circ%d_circ_gl(j,i:i+2)
-      end do
-      i = bench%iphys_dbench%i_magne
-      write(60,*) 'j, magne_new', ipol%base%i_magne, i
-      do j = -leg_circ%ltr_circle, leg_circ%ltr_circle
-        write(60,*) j, leg_circ%d_circ_gl(j,i:i+2)
-      end do
-!!
-      i = bench%iphys_dbench%i_temp
-      write(60,*) 'j, temp_new', ipol%base%i_temp, i
-      do j = -leg_circ%ltr_circle, leg_circ%ltr_circle
-      write(60,*) j, leg_circ%d_circ_gl(j,i)
-      end do
-!
-      do ifld = 1, d_circle%num_phys_viz
-        i = d_circle%istack_component(ifld-1)
-        n = d_circle%istack_component(ifld) - i
-        write(60,*) 'j', trim(d_circle%phys_name(ifld)), ifld, i
-        do j = 1, circle%mphi_circle
-          write(60,*) j, d_circle%d_fld(j,i+1:i+n)
-        end do
-      end do
-!
-      end subroutine check_mid_eq_trans_dbench
 !
 ! ----------------------------------------------------------------------
 !

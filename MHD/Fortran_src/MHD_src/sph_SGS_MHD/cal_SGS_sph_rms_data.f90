@@ -89,6 +89,7 @@
       use cal_CMB_dipolarity
       use cal_typical_scale
       use const_data_4_dynamobench
+      use sph_fwd_trans_on_circles
 !
       type(time_data), intent(in) :: time_d
       type(sph_grids), intent(in) :: sph
