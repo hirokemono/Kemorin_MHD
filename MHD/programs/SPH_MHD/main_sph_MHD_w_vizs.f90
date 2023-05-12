@@ -1,4 +1,4 @@
-!>@file   main_sph_MHD_w_4vizs.f90
+!>@file   main_sph_MHD_w_psf.f90
 !!@brief  program kemorin_sph_MHD
 !!
 !!@author H. Matsui
@@ -13,16 +13,16 @@
       use m_precision
 !
       use calypso_mpi
-      use analyzer_sph_MHD_w_4vizs
+      use analyzer_sph_MHD_w_psf
 !
       implicit none
 !
 !
       call calypso_MPI_init
 !
-      call initialize_sph_mhd_w_4vizs
+      call initialize_sph_mhd_w_psf
 !
-      call evolution_sph_mhd_w_4vizs
+      call evolution_sph_mhd_w_psf
 !
       call calypso_MPI_finalize
 !

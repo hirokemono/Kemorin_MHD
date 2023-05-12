@@ -42,7 +42,7 @@
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save, private :: DNS_MHD_ctl1
 !>      Additional structures for spherical MHD dynamo with viz module
-      type(add_viz_sph_mhd_ctl), save, private :: add_SMHD_ctl1
+      type(add_psf_sph_mhd_ctl), save, private :: add_SMHD_ctl1
       private :: MHD_ctl_name
 !
 !>      Structure of spectr grid and data

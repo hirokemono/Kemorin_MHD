@@ -10,7 +10,7 @@
 !
       type(mhd_simulation_control), save :: MHD_ctl_C
       type(add_sgs_sph_mhd_ctl), save, private :: add_SSMHD_ctl_C
-      type(add_viz_sph_mhd_ctl), save :: add_SMHD_ctl_C
+      type(add_psf_sph_mhd_ctl), save :: add_SMHD_ctl_C
       integer(kind = kint), parameter :: id_ctl = 11
 !
 !  ---------------------------------------------------------------------

@@ -19,7 +19,7 @@
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+!!        type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine write_control_4_sph_MHD_w_psf(file_name, MHD_ctl,    &
 !!     &                                         add_SMHD_ctl)
@@ -29,11 +29,11 @@
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(in) :: MHD_ctl
-!!        type(add_viz_sph_mhd_ctl), intent(in) :: add_SMHD_ctl
+!!        type(add_psf_sph_mhd_ctl), intent(in) :: add_SMHD_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine dealloc_sph_mhd_ctl_w_psf(add_SMHD_ctl)
-!!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+!!        type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !!@endverbatim
 !
       module t_ctl_data_sph_MHD_w_psf
@@ -58,12 +58,12 @@
       integer(kind = kint), parameter, private :: id_control_file = 11
 !
 !>      Additional structures for spherical MHD dynamo with viz module
-      type add_viz_sph_mhd_ctl
+      type add_psf_sph_mhd_ctl
 !>        Structures of visualization controls
         type(surfacing_controls) :: surfacing_ctls
 !>        Structures of zonal mean controls
         type(sph_dynamo_viz_controls) :: zm_ctls
-      end type add_viz_sph_mhd_ctl
+      end type add_psf_sph_mhd_ctl
 !
 !   2nd level for MHD
 !
@@ -113,7 +113,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+      type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
@@ -146,7 +146,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(in) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(in) :: add_SMHD_ctl
+      type(add_psf_sph_mhd_ctl), intent(in) :: add_SMHD_ctl
 !
       integer(kind = kint) :: level1
 !
@@ -181,7 +181,7 @@
       character(len=kchara), intent(in) :: hd_block
 !
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+      type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -238,7 +238,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(mhd_simulation_control), intent(in) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(in) :: add_SMHD_ctl
+      type(add_psf_sph_mhd_ctl), intent(in) :: add_SMHD_ctl
 !
       integer(kind = kint), intent(inout) :: level
 !
@@ -280,7 +280,7 @@
 !
       subroutine dealloc_sph_mhd_ctl_w_psf(add_SMHD_ctl)
 !
-      type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+      type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !
 !
       call dealloc_surfacing_controls(add_SMHD_ctl%surfacing_ctls)

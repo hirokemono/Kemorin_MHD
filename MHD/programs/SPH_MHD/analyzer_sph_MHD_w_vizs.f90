@@ -1,5 +1,5 @@
-!>@file   analyzer_sph_MHD_w_4vizs.f90
-!!@brief  module analyzer_sph_MHD_w_4vizs
+!>@file   analyzer_sph_MHD_w_vizs.f90
+!!@brief  module analyzer_sph_MHD_w_vizs
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010
@@ -7,11 +7,11 @@
 !>@brief  Main loop for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine initialize_sph_mhd_w_4vizs
-!!      subroutine evolution_sph_mhd_w_4vizs
+!!      subroutine initialize_sph_mhd_w_vizs
+!!      subroutine evolution_sph_mhd_w_vizs
 !!@endverbatim
 !
-      module analyzer_sph_MHD_w_4vizs
+      module analyzer_sph_MHD_w_vizs
 !
       use m_precision
       use calypso_mpi
@@ -42,7 +42,7 @@
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save, private :: DNS_MHD_ctl1
 !>      Additional structures for spherical MHD dynamo with viz module
-      type(add_viz_sph_mhd_ctl), save, private :: add_SMHD_ctl1
+      type(add_psf_sph_mhd_ctl), save, private :: add_SMHD_ctl1
       private :: MHD_ctl_name
 !
 !>      Structure of spectr grid and data
@@ -58,7 +58,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_sph_mhd_w_4vizs
+      subroutine initialize_sph_mhd_w_vizs
 !
       use input_control_sph_MHD
       use FEM_to_PSF_bridge
@@ -111,11 +111,11 @@
       call calypso_MPI_barrier
       call reset_elapse_4_init_sph_mhd
 !
-      end subroutine initialize_sph_mhd_w_4vizs
+      end subroutine initialize_sph_mhd_w_vizs
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_sph_mhd_w_4vizs
+      subroutine evolution_sph_mhd_w_vizs
 !
       use output_viz_file_control
 !
@@ -216,8 +216,8 @@
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine evolution_sph_mhd_w_4vizs
+      end subroutine evolution_sph_mhd_w_vizs
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_sph_MHD_w_4vizs
+      end module analyzer_sph_MHD_w_vizs

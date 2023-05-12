@@ -12,12 +12,12 @@
 !!      subroutine load_control_4_sph_MHD_noviz(file_name, MHD_ctl)
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+!!        type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !!
 !!      subroutine input_control_SPH_MHD_psf                            &
 !!     &         (ctl_file_name, MHD_files, MHD_ctl, add_SMHD_ctl,      &
 !!     &          MHD_step, SPH_model, SPH_WK, SPH_MHD, FEM_dat)
-!!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+!!        type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !!      subroutine input_control_4_SPH_MHD_nosnap                       &
 !!     &         (ctl_file_name, MHD_files, MHD_ctl, MHD_step,          &
 !!     &          SPH_model, SPH_WK, SPH_MHD)
@@ -28,7 +28,7 @@
 !!        character(len=kchara), intent(in) :: ctl_file_name
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+!!        type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -76,7 +76,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+      type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !
 !
       if(my_rank .eq. 0) then
@@ -129,7 +129,7 @@
       character(len=kchara), intent(in) :: ctl_file_name
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+      type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -239,7 +239,7 @@
       character(len=kchara), intent(in) :: ctl_file_name
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
+      type(add_psf_sph_mhd_ctl), intent(inout) :: add_SMHD_ctl
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
