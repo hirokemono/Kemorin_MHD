@@ -31,7 +31,7 @@
 !!  Input example
 !!
 !!    begin stereo_view_parameter_ctl
-!!      focal_point_ctl           40.0
+!!      focal_distance_ctl       40.0
 !!      eye_separation_ctl        0.5
 !!      eye_separation_angle      35.0
 !!      eye_separation_step_by_angle     ON
@@ -72,13 +72,17 @@
       integer(kind = kint), parameter, private                          &
      &             :: n_label_pvr_streo =       4
       character(len=kchara), parameter, private                         &
-     &             :: hd_focalpoint =     'focal_point_ctl'
+     &             :: hd_focaldistance =  'focal_distance_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_eye_separation = 'eye_separation_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_eye_sep_angle = 'eye_separation_angle'
       character(len=kchara), parameter, private                         &
      &             :: hd_eye_step_mode = 'eye_separation_step_by_angle'
+!
+!       Old label
+      character(len=kchara), parameter, private                         &
+     &             :: hd_focalpoint =     'focal_point_ctl'
 !
 !  ---------------------------------------------------------------------
 !
@@ -102,8 +106,11 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
+        call read_real_ctl_type(c_buf, hd_focaldistance,                &
+     &      streo%focalpoint_ctl)
         call read_real_ctl_type(c_buf, hd_focalpoint,                   &
      &      streo%focalpoint_ctl)
+!
         call read_real_ctl_type(c_buf, hd_eye_separation,               &
      &      streo%eye_separation_ctl)
         call read_real_ctl_type(c_buf, hd_eye_sep_angle,                &
@@ -134,7 +141,7 @@
 !
       if(streo%i_stereo_view .le. 0) return
 !
-      maxlen = len_trim(hd_focalpoint)
+      maxlen = len_trim(hd_focaldistance)
       maxlen = max(maxlen, len_trim(hd_eye_separation))
       maxlen = max(maxlen, len_trim(hd_eye_sep_angle))
       maxlen = max(maxlen, len_trim(hd_eye_step_mode))
@@ -143,7 +150,7 @@
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_focalpoint, streo%focalpoint_ctl)
+     &    hd_focaldistance, streo%focalpoint_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_eye_separation, streo%eye_separation_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -208,7 +215,7 @@
      &                         :: names(n_label_pvr_streo)
 !
 !
-      call set_control_labels(hd_focalpoint,     names( 1))
+      call set_control_labels(hd_focaldistance,  names( 1))
       call set_control_labels(hd_eye_separation, names( 2))
       call set_control_labels(hd_eye_sep_angle,  names( 3))
       call set_control_labels(hd_eye_step_mode,  names( 4))

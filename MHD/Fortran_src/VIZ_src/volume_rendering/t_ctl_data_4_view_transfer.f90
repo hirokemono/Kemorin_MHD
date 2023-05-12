@@ -28,11 +28,11 @@
 !!      look_at_point_ctl  z      6.0 
 !!    end  array look_at_point_ctl
 !!
-!!    array viewpoint_ctl
-!!      viewpoint_ctl  x      3.0
-!!      viewpoint_ctl  y     -8.0
-!!      viewpoint_ctl  z      6.0 
-!!    end array viewpoint_ctl
+!!    array eye_position_ctl
+!!      eye_position_ctl  x      3.0
+!!      eye_position_ctl  y     -8.0
+!!      eye_position_ctl  z      6.0
+!!    end array eye_position_ctl
 !!
 !!    array up_direction_ctl
 !!      up_direction_ctl  x      0.0
@@ -55,11 +55,11 @@
 !!      scale_factor_vec_ctl  z      1.0
 !!    end array scale_factor_vec_ctl
 !!
-!!    array viewpoint_in_viewer_ctl
-!!      viewpoint_in_viewer_ctl  x      0.0
-!!      viewpoint_in_viewer_ctl  y      0.0
-!!      viewpoint_in_viewer_ctl  z      10.0
-!!    end array viewpoint_in_viewer_ctl
+!!    array eye_position_in_viewer_ctl
+!!      eye_position_in_viewer_ctl  x      0.0
+!!      eye_position_in_viewer_ctl  y      0.0
+!!      eye_position_in_viewer_ctl  z      10.0
+!!    end array eye_position_in_viewer_ctl
 !!
 !!    array  modelview_matrix_ctl
 !!      modelview_matrix_ctl   1  1  1.0  end
@@ -93,7 +93,7 @@
 !!    end projection_matrix_ctl
 !!
 !!    begin stereo_view_parameter_ctl
-!!      focal_point_ctl           40.0
+!!      focal_distance_ctl       40.0
 !!      eye_separation_ctl        0.5
 !!    end stereo_view_parameter_ctl
 !!

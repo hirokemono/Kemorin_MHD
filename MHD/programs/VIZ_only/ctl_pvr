@@ -69,11 +69,11 @@ begin volume_rendering   (BMP or PNG)
       y_pixel_ctl   1280
     end image_size_ctl
 !
-    array viewpoint_in_viewer_ctl  3
-      viewpoint_in_viewer_ctl   x   0.000000000000e+00 end
-      viewpoint_in_viewer_ctl   y   0.000000000000e+00 end
-      viewpoint_in_viewer_ctl   z   3.474078182490e+01 end
-    end array viewpoint_in_viewer_ctl
+    array eye_position_in_viewer_ctl  3
+          eye_position_in_viewer_ctl   x   0.000000000000e+00 end
+          eye_position_in_viewer_ctl   y   0.000000000000e+00 end
+          eye_position_in_viewer_ctl   z   3.474078182490e+01 end
+    end array eye_position_in_viewer_ctl
 !
     scale_factor_ctl      1.000000000000e+00
 !

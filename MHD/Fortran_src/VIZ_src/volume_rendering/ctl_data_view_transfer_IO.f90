@@ -38,11 +38,11 @@
 !!      look_at_point_ctl  z      6.0 
 !!    end  array look_at_point_ctl
 !!
-!!    array viewpoint_ctl
-!!      viewpoint_ctl  x      3.0
-!!      viewpoint_ctl  y     -8.0
-!!      viewpoint_ctl  z      6.0 
-!!    end array viewpoint_ctl
+!!    array eye_position_ctl
+!!      eye_position_ctl  x      3.0
+!!      eye_position_ctl  y     -8.0
+!!      eye_position_ctl  z      6.0
+!!    end array eye_position_ctl
 !!
 !!    array up_direction_ctl
 !!      up_direction_ctl  x      0.0
@@ -65,11 +65,11 @@
 !!      scale_factor_vec_ctl  z      1.0
 !!    end array scale_factor_vec_ctl
 !!
-!!    array viewpoint_in_viewer_ctl
-!!      viewpoint_in_viewer_ctl  x      0.0
-!!      viewpoint_in_viewer_ctl  y      0.0
-!!      viewpoint_in_viewer_ctl  z      10.0
-!!    end array viewpoint_in_viewer_ctl
+!!    array eye_position_in_viewer_ctl
+!!      eye_position_in_viewer_ctl  x      0.0
+!!      eye_position_in_viewer_ctl  y      0.0
+!!      eye_position_in_viewer_ctl  z      10.0
+!!    end array eye_position_in_viewer_ctl
 !!
 !!    array  modelview_matrix_ctl
 !!      modelview_matrix_ctl   1  1  1.0  end
@@ -96,14 +96,11 @@
 !!    Orthogonal view....( perspective_near_ctl = perspective_far_ctl)
 !!
 !!    begin projection_matrix_ctl
-!!      perspective_angle_ctl     10.0
-!!      perspective_xy_ratio_ctl   1.0
-!!      perspective_near_ctl       0.5
-!!      perspective_far_ctl     1000.0
+!!      ...
 !!    end projection_matrix_ctl
 !!
 !!    begin stereo_view_parameter_ctl
-!!      focal_point_ctl           40.0
+!!      focal_distance_ctl       40.0
 !!      eye_separation_ctl        0.5
 !!    end stereo_view_parameter_ctl
 !!
@@ -138,11 +135,11 @@
      &             :: hd_project_mat = 'projection_matrix_ctl'
 !
       character(len=kchara), parameter, private                         &
-     &             :: hd_look_point =  'look_at_point_ctl'
+     &             :: hd_look_point =   'look_at_point_ctl'
       character(len=kchara), parameter, private                         &
-     &             :: hd_view_point =  'viewpoint_ctl'
+     &             :: hd_eye_position = 'eye_position_ctl'
       character(len=kchara), parameter, private                         &
-     &             :: hd_up_dir =      'up_direction_ctl'
+     &             :: hd_up_dir =       'up_direction_ctl'
 !
 !
       character(len=kchara), parameter, private                         &
@@ -155,10 +152,16 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_scale_fac_dir = 'scale_factor_vec_ctl'
       character(len=kchara), parameter, private                         &
-     &             :: hd_viewpt_in_view = 'viewpoint_in_viewer_ctl'
+     &             :: hd_eye_in_view = 'eye_position_in_viewer_ctl'
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_stereo_view = 'stereo_view_parameter_ctl'
+!
+!      Old definision
+      character(len=kchara), parameter, private                         &
+     &             :: hd_view_point =  'viewpoint_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_viewpt_in_view = 'viewpoint_in_viewer_ctl'
 !
       integer(kind = kint), parameter :: n_label_pvr_modelview =  12
       private :: n_label_pvr_modelview
@@ -194,8 +197,12 @@
 !
         call read_control_array_c_r(id_control,                         &
      &      hd_look_point, mat%lookpoint_ctl, c_buf)
+!
+        call read_control_array_c_r(id_control,                         &
+     &      hd_eye_position, mat%viewpoint_ctl, c_buf)
         call read_control_array_c_r(id_control,                         &
      &      hd_view_point, mat%viewpoint_ctl, c_buf)
+!
         call read_control_array_c_r(id_control,                         &
      &      hd_up_dir, mat%up_dir_ctl, c_buf)
 !
@@ -203,6 +210,9 @@
      &      hd_view_rot_dir, mat%view_rot_vec_ctl, c_buf)
         call read_control_array_c_r(id_control,                         &
      &      hd_scale_fac_dir, mat%scale_vector_ctl, c_buf)
+!
+        call read_control_array_c_r(id_control,                         &
+     &      hd_eye_in_view, mat%viewpt_in_viewer_ctl, c_buf)
         call read_control_array_c_r(id_control,                         &
      &      hd_viewpt_in_view, mat%viewpt_in_viewer_ctl, c_buf)
 !
@@ -253,7 +263,7 @@
       call write_control_array_c_r(id_control, level,                   &
      &    hd_look_point, mat%lookpoint_ctl)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_view_point, mat%viewpoint_ctl)
+     &    hd_eye_position, mat%viewpoint_ctl)
       call write_control_array_c_r(id_control, level,                   &
      &    hd_up_dir, mat%up_dir_ctl)
 !
@@ -263,7 +273,7 @@
       call write_control_array_c_r(id_control, level,                   &
      &    hd_scale_fac_dir, mat%scale_vector_ctl)
       call write_control_array_c_r(id_control, level,                   &
-     &    hd_viewpt_in_view, mat%viewpt_in_viewer_ctl)
+     &    hd_eye_in_view, mat%viewpt_in_viewer_ctl)
 !
       call write_control_array_c2_r(id_control, level,                  &
      &    hd_model_mat, mat%modelview_mat_ctl)
@@ -297,14 +307,14 @@
       call set_control_labels(hd_image_size,   names( 1))
 !
       call set_control_labels(hd_look_point,   names( 2))
-      call set_control_labels(hd_view_point,   names( 3))
+      call set_control_labels(hd_eye_position, names( 3))
       call set_control_labels(hd_up_dir,       names( 4))
       call set_control_labels(hd_view_rot_dir, names( 5))
       call set_control_labels(hd_view_rot_deg, names( 6))
 !
       call set_control_labels(hd_scale_factor,   names( 7))
       call set_control_labels(hd_scale_fac_dir,  names( 8))
-      call set_control_labels(hd_viewpt_in_view, names( 9))
+      call set_control_labels(hd_eye_in_view,    names( 9))
 !
       call set_control_labels(hd_project_mat, names(10))
       call set_control_labels(hd_model_mat,   names(11))

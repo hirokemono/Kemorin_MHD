@@ -37,13 +37,13 @@ Check pvr_ctl_labls->label_pvr_modelview
 ctl_list->num_labels 12 
 label[0]   image_size_ctl 
 label[1]   look_at_point_ctl 
-label[2]   viewpoint_ctl 
+label[2]   eye_position_ctl
 label[3]   up_direction_ctl 
 label[4]   view_rotation_vec_ctl 
 label[5]   view_rotation_deg_ctl 
 label[6]   scale_factor_ctl 
 label[7]   scale_factor_vec_ctl 
-label[8]   viewpoint_in_viewer_ctl 
+label[8]   eye_position_in_viewer_ctl
 label[9]   projection_matrix_ctl 
 label[10]   modelview_matrix_ctl 
 label[11]   stereo_view_parameter_ctl 
@@ -63,7 +63,7 @@ label[3]   perspective_far_ctl
 
 Check pvr_ctl_labls->label_pvr_streo
 ctl_list->num_labels 2 
-label[0]   focal_point_ctl 
+label[0]   focal_distance_ctl 
 label[1]   eye_separation_ctl 
 
 Check pvr_ctl_labls->label_pvr_area
