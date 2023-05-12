@@ -52,9 +52,9 @@
 !!      ...
 !!    end   pickup_spectr_ctl
 !!
-!!    begin mid_equator_monitor_ctl
+!!    array fields_on_circle_ctl
 !!      ...
-!!    end   mid_equator_monitor_ctl
+!!    array   fields_on_circle_ctl
 !!
 !!    begin sph_dipolarity_ctl
 !!      ...

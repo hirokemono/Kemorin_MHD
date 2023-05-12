@@ -112,13 +112,13 @@
 !
       if(check_file_flag(c_buf, hd_lic_ctl)) then
         fname_lic_ctl = third_word(c_buf)
-        write(*,'(a)', ADVANCE='NO') ' is read from...'
+        write(*,'(a)', ADVANCE='NO') 'read from file: '
         call read_control_lic_pvr_file(id_control+2, fname_lic_ctl,     &
      &      hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
       else if(check_begin_flag(c_buf, hd_lic_ctl)) then
           fname_lic_ctl = 'NO_FILE'
 !
-        write(*,'(a)') ' is included'
+        write(*,'(a)') ' included'
         call read_lic_pvr_ctl(id_control, hd_lic_ctl,                   &
      &                        pvr_ctl_type, lic_ctl_type, c_buf)
       end if

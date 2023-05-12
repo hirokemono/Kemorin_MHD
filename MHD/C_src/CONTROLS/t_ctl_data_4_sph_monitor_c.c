@@ -20,7 +20,7 @@ const char label_sph_monitor_ctl[NLBL_SPH_MONITOR][KCHARA_C] = {
     
     /*[ 2]*/    {"gauss_coefficient_ctl"},
     /*[ 3]*/    {"pickup_spectr_ctl"},
-    /*[ 4]*/    {"mid_equator_monitor_ctl"},
+    /*[ 4]*/    {"fields_on_circle_ctl"},
 	
     
 	/*[ 5]*/    {"volume_average_prefix"},

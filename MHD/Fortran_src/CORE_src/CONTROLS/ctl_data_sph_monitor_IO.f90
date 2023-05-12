@@ -58,9 +58,9 @@
 !!      ...
 !!    end   pickup_spectr_ctl
 !!
-!!    array mid_equator_monitor_ctl
+!!    array fields_on_circle_ctl
 !!      ...
-!!    array mid_equator_monitor_ctl
+!!    array fields_on_circle_ctl
 !!
 !!    begin sph_dipolarity_ctl
 !!      ...
@@ -104,7 +104,7 @@
       character(len=kchara), parameter, private                         &
      &            :: hd_sph_dipolarity_ctl = 'sph_dipolarity_ctl'
       character(len=kchara), parameter, private                         &
-     &            :: hd_mid_eq_monitor_ctl = 'mid_equator_monitor_ctl'
+     &            :: hd_field_on_circle_ctl = 'fields_on_circle_ctl'
       character(len=kchara), parameter, private                         &
      &            :: hd_dynamobench_ctl = 'dynamo_benchmark_data_ctl'
 !
@@ -133,6 +133,10 @@
      &    :: hd_heat_Nusselt_file_fmt = 'heat_Nusselt_number_format'
        character(len=kchara), parameter, private                        &
      &    :: hd_comp_Nusselt_file_fmt = 'comp_Nusselt_number_format'
+!
+!     Deprecated labels
+       character(len=kchara), parameter, private                         &
+     &            :: hd_mid_eq_monitor_ctl = 'mid_equator_monitor_ctl'
 !
       private :: read_volume_spectr_ctl, write_volume_spectr_ctl
 !
@@ -168,8 +172,11 @@
      &      hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, c_buf)
         call read_ctl_data_dynamobench(id_control,                      &
      &      hd_dynamobench_ctl, smonitor_ctl%dbench_ctl, c_buf)
+!
         call read_data_on_circles_ctl(id_control,                       &
-     &      hd_mid_eq_monitor_ctl, smonitor_ctl%circ_ctls, c_buf)
+     &      hd_field_on_circle_ctl, smonitor_ctl%circ_ctls, c_buf)
+        call read_data_on_circles_ctl(id_control,                       &
+     &      hd_mid_eq_monitor_ctl,  smonitor_ctl%circ_ctls, c_buf)
 !
         call read_volume_spectr_ctl                                     &
      &     (id_control, hd_vol_spec_block, smonitor_ctl, c_buf)
@@ -323,7 +330,7 @@
       call write_ctl_data_dynamobench(id_control,                       &
      &    hd_dynamobench_ctl, smonitor_ctl%dbench_ctl, level)
       call write_data_on_circles_ctl(id_control,                        &
-     &    hd_mid_eq_monitor_ctl, smonitor_ctl%circ_ctls, level)
+     &    hd_field_on_circle_ctl, smonitor_ctl%circ_ctls, level)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !

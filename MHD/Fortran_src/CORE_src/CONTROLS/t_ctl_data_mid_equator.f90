@@ -30,7 +30,7 @@
 !!
 !!      control block for pickup spherical harmonics
 !!
-!!  begin mid_equator_monitor_ctl
+!!  begin fields_on_circle_ctl
 !!    field_on_circle_prefix         'monitor/dbench_field'
 !!    spectr_on_circle_prefix        'monitor/dbench_spectr'
 !!    field_on_circle_format         'gzip'
@@ -39,7 +39,7 @@
 !!    nphi_mid_eq_ctl               500
 !!    pick_cylindrical_radius_ctl   0.75
 !!    pick_vertical_position_ctl    0.6
-!!  end mid_equator_monitor_ctl
+!!  end fields_on_circle_ctl
 !!
 !! -----------------------------------------------------------------
 !!@endverbatim

@@ -113,7 +113,7 @@
 !
         if(check_file_flag(c_buf, hd_pvr_ctl)                           &
      &     .or. check_begin_flag(c_buf, hd_pvr_ctl)) then
-          write(*,'(3a,i4)', ADVANCE='NO') 'Control for',               &
+          write(*,'(3a,i4)', ADVANCE='NO') 'Control for ',              &
      &                 trim(hd_pvr_ctl), ' No. ', pvr_ctls%num_pvr_ctl
           call append_new_pvr_ctl_struct(pvr_ctls)
           call sel_read_control_pvr(id_control, hd_pvr_ctl,             &
@@ -148,7 +148,7 @@
       level = write_array_flag_for_ctl(id_control, level, hd_pvr_ctl)
       do i = 1, pvr_ctls%num_pvr_ctl
         write(*,'(3a,i4)', ADVANCE='NO')                                &
-     &          'Control for', trim(hd_pvr_ctl), ' No. ', i
+     &          'Control for ', trim(hd_pvr_ctl), ' No. ', i
         call sel_write_control_pvr(id_control, hd_pvr_ctl,              &
      &      pvr_ctls%fname_pvr_ctl(i), pvr_ctls%pvr_ctl_type(i), level)
       end do

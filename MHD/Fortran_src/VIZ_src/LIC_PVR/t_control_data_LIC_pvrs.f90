@@ -119,8 +119,8 @@
         if(check_file_flag(c_buf, hd_lic_ctl)                           &
      &        .or. check_begin_flag(c_buf, hd_lic_ctl)) then
           call append_new_lic_ctl_struct(lic_ctls)
-          write(*,'(3a,i4)',ADVANCE='NO') 'Control for',                &
-     &                  trim(hd_lic_ctl), ' No. ', lic_ctls%num_lic_ctl
+          write(*,'(3a,i4,a)',ADVANCE='NO') 'Control for ',             &
+     &       trim(hd_lic_ctl), ' No. ', lic_ctls%num_lic_ctl, ' is ...'
           call sel_read_control_lic_pvr(id_control, hd_lic_ctl,         &
      &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl),             &
      &        lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl),              &
