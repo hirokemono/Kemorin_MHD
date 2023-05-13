@@ -52,11 +52,6 @@
         type(MHD_IO_data) :: MHD_IO
       end type sph_SGS_MHD
 !
-!>      Control struture for MHD simulation
-      type(mhd_simulation_control), save, private :: MHD_ctl1
-!>        Additional structures for spherical SGS MHD dynamo
-      type(add_sgs_sph_mhd_ctl), save, private :: add_SSMHD_ctl1
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -71,6 +66,11 @@
 !
       character(len=kchara), intent(in) :: control_file_name
       type(sph_SGS_MHD), intent(inout) :: SSMHD
+!
+!>      Control struture for MHD simulation
+      type(mhd_simulation_control), save :: MHD_ctl1
+!>        Additional structures for spherical SGS MHD dynamo
+      type(add_sgs_sph_mhd_ctl), save :: add_SSMHD_ctl1
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
