@@ -38,7 +38,6 @@
       use m_constants
       use m_work_time
       use m_elapsed_labels_4_MHD
-      use m_MHD_step_parameter
       use t_phys_address
       use t_control_parameter
       use t_MHD_step_parameter
