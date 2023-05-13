@@ -147,9 +147,9 @@
         if(lead_field_data_flag(MHD_step1%time_d%i_time_step,           &
      &                          MHD_step1)) then
           call alloc_sph_trans_area_snap                                &
-     &       (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
+     &       (SPH_MHD1%sph, SPH_WK1%trns_WK)
           call alloc_SGS_sph_trns_area_snap                             &
-     &       (SPH_MHD1%sph%sph_rtp, SPH_SGS1%trns_WK_LES)
+     &       (SPH_MHD1%sph, SPH_SGS1%trns_WK_LES)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'

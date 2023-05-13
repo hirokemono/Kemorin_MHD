@@ -39,7 +39,6 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use m_MHD_step_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
 !
