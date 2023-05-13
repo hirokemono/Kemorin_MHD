@@ -10,9 +10,9 @@ analyzer_sph_MHD.o: $(SPH_MHD_MAINDIR)/analyzer_sph_MHD.f90 m_precision.o calyps
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_sph_MHD_noviz.o: $(SPH_MHD_MAINDIR)/analyzer_sph_MHD_noviz.f90 m_precision.o calypso_mpi.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o m_SPH_MHD_model_data.o m_MHD_step_parameter.o t_SPH_mesh_field_data.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_psf.o t_sph_trans_arrays_MHD.o t_comm_table.o t_mesh_SR.o FEM_analyzer_sph_MHD.o SPH_analyzer_MHD.o init_sph_MHD_elapsed_label.o input_control_sph_MHD.o FEM_to_PSF_bridge.o output_viz_file_control.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_sph_MHD_w_4vizs.o: $(SPH_MHD_MAINDIR)/analyzer_sph_MHD_w_4vizs.f90 m_precision.o calypso_mpi.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o m_SPH_MHD_model_data.o m_MHD_step_parameter.o t_SPH_mesh_field_data.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_psf.o t_viz_sections.o t_SPH_MHD_zonal_mean_viz.o t_sph_trans_arrays_MHD.o t_comm_table.o t_mesh_SR.o FEM_analyzer_sph_MHD.o SPH_analyzer_MHD.o init_sph_MHD_elapsed_label.o input_control_sph_MHD.o FEM_to_PSF_bridge.o output_viz_file_control.o
-	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_sph_MHD_w_psf.o: $(SPH_MHD_MAINDIR)/analyzer_sph_MHD_w_psf.f90 m_precision.o calypso_mpi.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o m_SPH_MHD_model_data.o m_MHD_step_parameter.o t_SPH_mesh_field_data.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_psf.o t_viz_sections.o t_SPH_MHD_zonal_mean_viz.o t_sph_trans_arrays_MHD.o t_comm_table.o t_mesh_SR.o FEM_analyzer_sph_MHD.o SPH_analyzer_MHD.o init_sph_MHD_elapsed_label.o input_control_sph_MHD.o FEM_to_PSF_bridge.o output_viz_file_control.o
+	$(F90) -c $(F90OPTFLAGS) $<
+analyzer_sph_MHD_w_vizs.o: $(SPH_MHD_MAINDIR)/analyzer_sph_MHD_w_vizs.f90 m_precision.o calypso_mpi.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o m_SPH_MHD_model_data.o m_MHD_step_parameter.o t_SPH_mesh_field_data.o t_ctl_data_MHD.o t_ctl_data_sph_MHD_w_psf.o t_viz_sections.o t_SPH_MHD_zonal_mean_viz.o t_sph_trans_arrays_MHD.o t_comm_table.o t_mesh_SR.o FEM_analyzer_sph_MHD.o SPH_analyzer_MHD.o init_sph_MHD_elapsed_label.o input_control_sph_MHD.o FEM_to_PSF_bridge.o output_viz_file_control.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_sph_licv.o: $(SPH_MHD_MAINDIR)/analyzer_sph_licv.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_MHD.o m_elapsed_labels_SEND_RECV.o m_SPH_MHD_model_data.o m_MHD_step_parameter.o t_SPH_mesh_field_data.o t_ctl_data_MHD.o t_control_data_surfacings.o t_mesh_SR.o SPH_analyzer_licv.o init_sph_MHD_elapsed_label.o bcast_control_sph_MHD.o input_control_sph_MHD.o cal_nonlinear.o cal_sol_sph_MHD_crank.o cal_momentum_eq_explicit.o sph_mhd_rst_IO_control.o set_reference_sph_mhd.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -22,10 +22,12 @@ main_sph_MHD_noviz.o: $(SPH_MHD_MAINDIR)/main_sph_MHD_noviz.f90 m_precision.o ca
 	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_MHD_only.o: $(SPH_MHD_MAINDIR)/main_sph_MHD_only.f90 m_precision.o calypso_mpi.o analyzer_small_sph_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
-main_sph_MHD_w_4vizs.o: $(SPH_MHD_MAINDIR)/main_sph_MHD_w_4vizs.f90 m_precision.o calypso_mpi.o analyzer_sph_MHD_w_4vizs.o
-	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_MHD_w_psf.o: $(SPH_MHD_MAINDIR)/main_sph_MHD_w_psf.f90 m_precision.o calypso_mpi.o analyzer_sph_MHD_w_psf.o
 	$(F90) -c $(F90OPTFLAGS) $<
+main_sph_MHD_w_vizs.o: $(SPH_MHD_MAINDIR)/main_sph_MHD_w_vizs.f90 m_precision.o calypso_mpi.o analyzer_sph_MHD_w_vizs.o
+	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_linear_cv.o: $(SPH_MHD_MAINDIR)/main_sph_linear_cv.f90 m_precision.o calypso_mpi.o analyzer_sph_licv.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_sph_MHD_w_vizs.o: $(SPH_MHD_MAINDIR)/t_ctl_data_sph_MHD_w_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_MHD.o t_ctl_data_MHD_model.o t_ctl_data_SPH_MHD_control.o t_ctl_data_4_sph_monitor.o t_ctl_data_node_monitor.o t_ctl_data_gen_sph_shell.o t_control_data_surfacings.o t_control_data_dynamo_vizs.o delete_data_files.o ctl_data_platforms_IO.o ctl_data_sph_monitor_IO.o ctl_data_MHD_model_IO.o control_data_surfacing_IO.o ctl_file_gen_sph_shell_IO.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
