@@ -120,7 +120,7 @@ t_control_data_pvr_sections.o: $(PVR_DIR)/t_control_data_pvr_sections.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_pvrs.o: $(PVR_DIR)/t_control_data_pvrs.f90 m_precision.o m_machine_parameter.o t_control_data_4_pvr.o t_read_control_elements.o skip_comment_f.o ctl_file_each_pvr_IO.o write_control_elements.o t_control_array_character3.o bcast_control_data_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_viz3.o: $(PVR_DIR)/t_control_data_viz3.f90 m_precision.o m_machine_parameter.o t_control_data_sections.o t_control_data_isosurfaces.o t_control_data_pvrs.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_array_character3.o
+t_control_data_viz3.o: $(PVR_DIR)/t_control_data_viz3.f90 m_precision.o m_machine_parameter.o t_control_data_sections.o t_control_data_isosurfaces.o t_control_data_pvrs.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_ctl_data_4_time_steps.o t_control_array_character3.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_viz4.o: $(PVR_DIR)/t_control_data_viz4.f90 m_precision.o m_machine_parameter.o t_control_data_sections.o t_control_data_isosurfaces.o t_control_data_pvrs.o t_control_data_flines.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_array_character3.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -181,8 +181,6 @@ t_surf_grp_4_pvr_domain.o: $(PVR_DIR)/t_surf_grp_4_pvr_domain.f90 m_precision.o 
 t_three_visualizers.o: $(PVR_DIR)/t_three_visualizers.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_VIZ_step_parameter.o t_time_data.o t_mesh_data.o t_comm_table.o t_phys_data.o t_next_node_ele_4_node.o t_VIZ_mesh_field.o t_mesh_SR.o t_control_data_viz3.o t_cross_section.o t_isosurface.o t_volume_rendering.o t_fieldline.o volume_rendering.o anaglyph_volume_rendering.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_volume_rendering.o: $(PVR_DIR)/t_volume_rendering.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_work_time.o m_elapsed_labels_4_VIZ.o t_mesh_data.o t_phys_data.o t_jacobians.o t_surf_grp_list_each_surf.o t_rendering_vr_image.o t_control_params_4_pvr.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_pvr_field_data.o t_geometries_in_pvr_screen.o t_control_data_pvrs.o each_volume_rendering.o t_control_data_pvr_sections.o set_pvr_control.o rendering_and_image_nums.o calypso_mpi_int.o ctl_file_each_pvr_IO.o skip_comment_f.o t_read_control_elements.o
-	$(F90) -c $(F90OPTFLAGS) $<
-viz3_step_ctls_to_time_ctl.o: $(PVR_DIR)/viz3_step_ctls_to_time_ctl.f90 m_precision.o m_constants.o t_control_data_viz3.o t_ctl_data_4_time_steps.o t_control_array_real.o t_control_array_character.o t_control_array_integer.o
 	$(F90) -c $(F90OPTFLAGS) $<
 viz4_step_ctls_to_time_ctl.o: $(PVR_DIR)/viz4_step_ctls_to_time_ctl.f90 m_precision.o m_constants.o t_control_data_viz4.o t_ctl_data_4_time_steps.o t_control_array_real.o t_control_array_character.o t_control_array_integer.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -11,29 +11,29 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_control_4_sph_MHD_w_psf(file_name, MHD_ctl,     &
-!!     &                                        add_VMHD_ctl)
-!!      subroutine read_sph_mhd_ctl_w_psf(id_control, hd_block,         &
+!!      subroutine read_control_4_sph_MHD_w_vizs(file_name, MHD_ctl,    &
+!!     &                                         add_VMHD_ctl)
+!!      subroutine read_sph_mhd_ctl_w_vizs(id_control, hd_block,        &
 !!     &                                  MHD_ctl, add_VMHD_ctl, c_buf)
 !!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
+!!        type(add_vizs_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
-!!      subroutine write_control_4_sph_MHD_w_psf(file_name, MHD_ctl,    &
-!!     &                                         add_VMHD_ctl)
-!!      subroutine write_sph_mhd_ctl_w_psf(id_control, hd_block,        &
+!!      subroutine write_control_4_sph_MHD_w_vizs(file_name, MHD_ctl,   &
+!!     &                                          add_VMHD_ctl)
+!!      subroutine write_sph_mhd_ctl_w_vizs(id_control, hd_block,       &
 !!     &                                   MHD_ctl, add_VMHD_ctl, level)
 !!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(mhd_simulation_control), intent(in) :: MHD_ctl
-!!        type(add_viz_sph_mhd_ctl), intent(in) :: add_VMHD_ctl
+!!        type(add_vizs_sph_mhd_ctl), intent(in) :: add_VMHD_ctl
 !!        integer(kind = kint), intent(inout) :: level
 !!
-!!      subroutine dealloc_sph_mhd_ctl_w_psf(add_VMHD_ctl)
-!!        type(add_viz_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
+!!      subroutine dealloc_sph_mhd_ctl_w_vizs(add_VMHD_ctl)
+!!        type(add_vizs_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
 !!@endverbatim
 !
       module t_ctl_data_sph_MHD_w_vizs
@@ -49,7 +49,7 @@
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
 !
-      use t_control_data_surfacings
+      use t_control_data_viz3
       use t_control_data_dynamo_vizs
 !
       implicit none
@@ -58,12 +58,12 @@
       integer(kind = kint), parameter, private :: id_control_file = 11
 !
 !>      Additional structures for spherical MHD dynamo with viz module
-      type add_viz_sph_mhd_ctl
+      type add_vizs_sph_mhd_ctl
 !>        Structures of visualization controls
-        type(surfacing_controls) :: surfacing_ctls
+        type(vis3_controls) :: viz3_ctls
 !>        Structures of zonal mean controls
         type(sph_dynamo_viz_controls) :: zm_ctls
-      end type add_viz_sph_mhd_ctl
+      end type add_vizs_sph_mhd_ctl
 !
 !   2nd level for MHD
 !
@@ -97,7 +97,7 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_zm_viz_ctl = 'zonal_mean_control'
 !
-      private :: read_sph_mhd_ctl_w_psf, write_sph_mhd_ctl_w_psf
+      private :: read_sph_mhd_ctl_w_vizs, write_sph_mhd_ctl_w_vizs
 !
 ! ----------------------------------------------------------------------
 !
@@ -105,15 +105,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_sph_MHD_w_psf(file_name, MHD_ctl,       &
-     &                                        add_VMHD_ctl)
-!
-      use t_control_data_surfacings
-      use t_control_data_dynamo_vizs
+      subroutine read_control_4_sph_MHD_w_vizs(file_name, MHD_ctl,      &
+     &                                         add_VMHD_ctl)
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
+      type(add_vizs_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
 !
       type(buffer_for_control) :: c_buf1
 !
@@ -122,31 +119,29 @@
 !
       do
         call load_one_line_from_control(id_control_file, c_buf1)
-        call read_sph_mhd_ctl_w_psf(id_control_file, hd_mhd_ctl,        &
+        call read_sph_mhd_ctl_w_vizs(id_control_file, hd_mhd_ctl,       &
      &      MHD_ctl, add_VMHD_ctl, c_buf1)
         if(MHD_ctl%i_mhd_ctl .gt. 0) exit
       end do
       close(id_control_file)
 !
-      call section_step_ctls_to_time_ctl(add_VMHD_ctl%surfacing_ctls,   &
-     &                                   MHD_ctl%smctl_ctl%tctl)
-      call add_fields_4_scts_to_fld_ctl(add_VMHD_ctl%surfacing_ctls,    &
+      call viz3_step_ctls_to_time_ctl(add_VMHD_ctl%viz3_ctls,           &
+     &                                MHD_ctl%smctl_ctl%tctl)
+      call add_fields_viz3_to_fld_ctl(add_VMHD_ctl%viz3_ctls,           &
      &    MHD_ctl%model_ctl%fld_ctl%field_ctl)
 !
-      end subroutine read_control_4_sph_MHD_w_psf
+      end subroutine read_control_4_sph_MHD_w_vizs
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_control_4_sph_MHD_w_psf(file_name, MHD_ctl,      &
-     &                                         add_VMHD_ctl)
+      subroutine write_control_4_sph_MHD_w_vizs(file_name, MHD_ctl,     &
+     &                                          add_VMHD_ctl)
 !
-      use t_control_data_surfacings
-      use t_control_data_dynamo_vizs
       use delete_data_files
 !
       character(len=kchara), intent(in) :: file_name
       type(mhd_simulation_control), intent(in) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(in) :: add_VMHD_ctl
+      type(add_vizs_sph_mhd_ctl), intent(in) :: add_VMHD_ctl
 !
       integer(kind = kint) :: level1
 !
@@ -159,29 +154,29 @@
       write(*,*) 'Write MHD control file: ', trim(file_name)
       open(id_control_file, file = file_name)
       level1 = 0
-      call write_sph_mhd_ctl_w_psf(id_control_file, hd_mhd_ctl,         &
+      call write_sph_mhd_ctl_w_vizs(id_control_file, hd_mhd_ctl,        &
      &                             MHD_ctl, add_VMHD_ctl, level1)
       close(id_control_file)
 !
-      end subroutine write_control_4_sph_MHD_w_psf
+      end subroutine write_control_4_sph_MHD_w_vizs
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine read_sph_mhd_ctl_w_psf(id_control, hd_block,           &
+      subroutine read_sph_mhd_ctl_w_vizs(id_control, hd_block,          &
      &                                  MHD_ctl, add_VMHD_ctl, c_buf)
 !
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
       use ctl_data_MHD_model_IO
-      use control_data_surfacing_IO
+      use ctl_data_three_vizs_IO
       use ctl_file_gen_sph_shell_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
+      type(add_vizs_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -210,8 +205,8 @@
         call read_sph_monitoring_ctl                                    &
      &     (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, c_buf)
 !
-        call s_read_surfacing_controls                                  &
-     &     (id_control, hd_viz_ctl, add_VMHD_ctl%surfacing_ctls, c_buf)
+        call s_read_viz3_controls                                       &
+     &     (id_control, hd_viz_ctl, add_VMHD_ctl%viz3_ctls, c_buf)
 !
         call read_dynamo_viz_control                                    &
      &     (id_control, hd_dynamo_viz_ctl, add_VMHD_ctl%zm_ctls, c_buf)
@@ -220,17 +215,17 @@
       end do
       MHD_ctl%i_mhd_ctl = 1
 !
-      end subroutine read_sph_mhd_ctl_w_psf
+      end subroutine read_sph_mhd_ctl_w_vizs
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_sph_mhd_ctl_w_psf(id_control, hd_block,          &
+      subroutine write_sph_mhd_ctl_w_vizs(id_control, hd_block,         &
      &                                   MHD_ctl, add_VMHD_ctl, level)
 !
       use ctl_data_platforms_IO
       use ctl_data_sph_monitor_IO
       use ctl_data_MHD_model_IO
-      use control_data_surfacing_IO
+      use ctl_data_three_vizs_IO
       use ctl_file_gen_sph_shell_IO
 !
       use write_control_elements
@@ -238,7 +233,7 @@
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       type(mhd_simulation_control), intent(in) :: MHD_ctl
-      type(add_viz_sph_mhd_ctl), intent(in) :: add_VMHD_ctl
+      type(add_vizs_sph_mhd_ctl), intent(in) :: add_VMHD_ctl
 !
       integer(kind = kint), intent(inout) :: level
 !
@@ -266,27 +261,27 @@
       call write_sph_monitoring_ctl                                     &
      &   (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, level)
 !
-      call write_surfacing_controls                                     &
-     &   (id_control, hd_viz_ctl, add_VMHD_ctl%surfacing_ctls, level)
+      call write_viz3_controls                                          &
+     &   (id_control, hd_viz_ctl, add_VMHD_ctl%viz3_ctls, level)
 !
       call write_dynamo_viz_control                                     &
      &   (id_control, hd_dynamo_viz_ctl, add_VMHD_ctl%zm_ctls, level)
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
-      end subroutine write_sph_mhd_ctl_w_psf
+      end subroutine write_sph_mhd_ctl_w_vizs
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_sph_mhd_ctl_w_psf(add_VMHD_ctl)
+      subroutine dealloc_sph_mhd_ctl_w_vizs(add_VMHD_ctl)
 !
-      type(add_viz_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
+      type(add_vizs_sph_mhd_ctl), intent(inout) :: add_VMHD_ctl
 !
 !
-      call dealloc_surfacing_controls(add_VMHD_ctl%surfacing_ctls)
+      call dealloc_viz3_controls(add_VMHD_ctl%viz3_ctls)
       call dealloc_dynamo_viz_control(add_VMHD_ctl%zm_ctls)
 !
-      end subroutine dealloc_sph_mhd_ctl_w_psf
+      end subroutine dealloc_sph_mhd_ctl_w_vizs
 !
 !   --------------------------------------------------------------------
 !

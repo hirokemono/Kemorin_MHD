@@ -89,7 +89,6 @@
       subroutine read_control_file_three_vizs(file_name, viz3_c)
 !
       use skip_comment_f
-      use viz3_step_ctls_to_time_ctl
 !
       character(len = kchara), intent(in) :: file_name
       type(control_data_three_vizs), intent(inout) :: viz3_c
@@ -105,8 +104,8 @@
       end do
       close(viz_ctl_file_code)
 !
-      call s_viz3_step_ctls_to_time_ctl                                 &
-     &   (viz3_c%viz3_ctl, viz3_c%t_viz_ctl)
+      call viz3_step_ctls_to_time_ctl(viz3_c%viz3_ctl,                  &
+     &                                viz3_c%t_viz_ctl)
 !
       viz3_c%viz_field_ctl%num =  0
       call alloc_control_array_c3(viz3_c%viz_field_ctl)

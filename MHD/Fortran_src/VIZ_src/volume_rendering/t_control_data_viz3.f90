@@ -11,6 +11,9 @@
 !!       type(vis3_controls), intent(inout) :: viz_ctls
 !!       type(buffer_for_control), intent(inout)  :: c_buf
 !!
+!!      subroutine viz3_step_ctls_to_time_ctl(viz3_ctls, tctl)
+!!        type(vis3_controls), intent(in) :: viz3_ctls
+!!        type(time_data_control), intent(inout) :: tctl
 !!      subroutine add_fields_viz3_to_fld_ctl(viz_ctls, field_ctl)
 !!        type(vis3_controls), intent(in) :: viz_ctls
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
@@ -129,6 +132,55 @@
       end subroutine dealloc_viz3_controls
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine viz3_step_ctls_to_time_ctl(viz3_ctls, tctl)
+!
+      use t_ctl_data_4_time_steps
+      use t_control_array_real
+      use t_control_array_character
+      use t_control_array_integer
+!
+      type(vis3_controls), intent(in) :: viz3_ctls
+      type(time_data_control), intent(inout) :: tctl
+!
+!
+      if(viz3_ctls%i_step_psf_v_ctl%iflag .gt. 0) then
+        call copy_integer_ctl                                           &
+     &     (viz3_ctls%i_step_psf_v_ctl, tctl%i_step_psf_ctl)
+      end if
+      if(viz3_ctls%i_step_iso_v_ctl%iflag .gt. 0) then
+        call copy_integer_ctl                                           &
+     &     (viz3_ctls%i_step_iso_v_ctl, tctl%i_step_iso_ctl)
+      end if
+      if(viz3_ctls%i_step_pvr_v_ctl%iflag .gt. 0) then
+        call copy_integer_ctl                                           &
+     &     (viz3_ctls%i_step_pvr_v_ctl, tctl%i_step_pvr_ctl)
+      end if
+      if(viz3_ctls%i_step_ucd_v_ctl%iflag .gt. 0) then
+        call copy_integer_ctl                                           &
+     &     (viz3_ctls%i_step_ucd_v_ctl, tctl%i_step_ucd_ctl)
+      end if
+!
+      if(viz3_ctls%delta_t_psf_v_ctl%iflag .gt. 0) then
+        call copy_real_ctl                                              &
+     &     (viz3_ctls%delta_t_psf_v_ctl, tctl%delta_t_psf_ctl)
+      end if
+      if(viz3_ctls%delta_t_iso_v_ctl%iflag .gt. 0) then
+        call copy_real_ctl                                              &
+     &     (viz3_ctls%delta_t_iso_v_ctl, tctl%delta_t_iso_ctl)
+      end if
+      if(viz3_ctls%delta_t_pvr_v_ctl%iflag .gt. 0) then
+        call copy_real_ctl                                              &
+     &     (viz3_ctls%delta_t_pvr_v_ctl, tctl%delta_t_pvr_ctl)
+      end if
+      if(viz3_ctls%delta_t_ucd_v_ctl%iflag .gt. 0) then
+        call copy_real_ctl                                              &
+     &     (viz3_ctls%delta_t_ucd_v_ctl, tctl%delta_t_field_ctl)
+      end if
+!
+      end subroutine viz3_step_ctls_to_time_ctl
+!
 !  ---------------------------------------------------------------------
 !
       subroutine add_fields_viz3_to_fld_ctl(viz_ctls, field_ctl)
