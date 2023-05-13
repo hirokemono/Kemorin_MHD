@@ -19,7 +19,7 @@
 !!        type(field_IO), intent(inout) :: sph_fst_IO
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!      subroutine SPH_analyze_SGS_MHD(i_step, MHD_files, iflag_finish, &
+!!      subroutine SPH_analyze_SGS_MHD(MHD_files, iflag_finish,         &
 !!     &          SPH_model, MHD_step, sph_fst_IO, SPH_SGS, SPH_MHD,    &
 !!     &          SPH_WK, SR_sig, SR_r)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -201,7 +201,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_SGS_MHD(i_step, MHD_files, iflag_finish,   &
+      subroutine SPH_analyze_SGS_MHD(MHD_files, iflag_finish,           &
      &          SPH_model, MHD_step, sph_fst_IO, SPH_SGS, SPH_MHD,      &
      &          SPH_WK, SR_sig, SR_r)
 !
@@ -215,7 +215,6 @@
       use output_viz_file_control
       use sph_SGS_mhd_monitor_data_IO
 !
-      integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
       integer(kind = kint), intent(inout) :: iflag_finish
@@ -234,7 +233,8 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+1)
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+2)
       if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph_SGS_MHD'
-      call sel_explicit_sph_SGS_MHD(i_step, MHD_step%time_d%dt,         &
+      call sel_explicit_sph_SGS_MHD                                     &
+     &   (MHD_step%time_d%i_time_step, MHD_step%time_d%dt,              &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_SGS, SPH_MHD)
 !*
 !*  ----------  time evolution by inplicit method ----------
@@ -252,7 +252,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+4)
-      call nonlinear_with_SGS(i_step, SPH_WK%r_2nd, SPH_model,          &
+      call nonlinear_with_SGS                                           &
+     &   (MHD_step%time_d%i_time_step, SPH_WK%r_2nd, SPH_model,         &
      &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS, SPH_MHD,             &
      &    SR_sig, SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
@@ -266,7 +267,8 @@
      &   (SPH_model%MHD_prop, SPH_model%refs,                           &
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !*
-      if(lead_field_data_flag(i_step, MHD_step)) then
+      if(lead_field_data_flag(MHD_step%time_d%i_time_step,              &
+     &                        MHD_step)) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD                                  &
      &     (SPH_SGS%SGS_par, SPH_WK%monitor, SPH_WK%r_2nd,              &
@@ -308,7 +310,8 @@
 !*  -----------  lead energy data --------------
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
-      if(output_IO_flag(i_step, MHD_step%rms_step)) then
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                    &
+     &                  MHD_step%rms_step)) then
         if(iflag_debug .gt. 0)                                          &
      &                write(*,*) 'output_rms_sph_SGS_mhd_control'
         call output_rms_sph_SGS_mhd_control(MHD_step%time_d, SPH_SGS,   &
@@ -323,7 +326,7 @@
      &   (SPH_model%MHD_prop, SPH_model%refs,                           &
      &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
-      if(i_step .ge. MHD_step%finish_d%i_end_step                       &
+      if(MHD_step%time_d%i_time_step .ge. MHD_step%finish_d%i_end_step  &
      &    .and. MHD_step%finish_d%i_end_step .gt. 0) then
         iflag_finish = 1
       end if
