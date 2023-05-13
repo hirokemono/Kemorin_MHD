@@ -135,8 +135,7 @@
 !*
         if(lead_field_data_flag(MHD_step1%time_d%i_time_step,           &
      &                          MHD_step1)) then
-          call alloc_sph_trans_area_snap                                &
-     &       (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
+          call alloc_sph_trans_area_snap(SPH_MHD1%sph, SPH_WK1%trns_WK)
 !
           if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap_psf'
           call SPH_analyze_snap_psf                                     &
