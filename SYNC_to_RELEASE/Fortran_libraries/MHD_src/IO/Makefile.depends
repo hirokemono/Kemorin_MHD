@@ -44,7 +44,7 @@ set_control_4_force.o: $(MHD_IO_DIR)/set_control_4_force.f90 m_precision.o m_con
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_4_magne.o: $(MHD_IO_DIR)/set_control_4_magne.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_physical_property.o t_control_array_chara2real.o t_bc_data_list.o set_node_group_types.o set_surface_group_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_4_model.o: $(MHD_IO_DIR)/set_control_4_model.f90 m_precision.o m_constants.o m_error_IDs.o m_machine_parameter.o t_ctl_data_mhd_evo_scheme.o t_control_parameter.o calypso_mpi.o t_ctl_data_mhd_evolution.o t_ctl_data_temp_model.o t_ctl_data_node_monitor.o t_reference_scalar_param.o m_base_field_labels.o node_monitor_IO.o t_control_array_real.o
+set_control_4_model.o: $(MHD_IO_DIR)/set_control_4_model.f90 m_precision.o m_constants.o m_error_IDs.o m_machine_parameter.o t_ctl_data_mhd_evo_scheme.o t_control_parameter.o calypso_mpi.o t_ctl_data_mhd_evolution.o t_ctl_data_temp_model.o t_reference_scalar_param.o m_base_field_labels.o t_control_array_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_4_press.o: $(MHD_IO_DIR)/set_control_4_press.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_physical_property.o t_control_array_chara2real.o t_bc_data_list.o set_node_group_types.o set_surface_group_types.o
 	$(F90) -c $(F90OPTFLAGS) $<

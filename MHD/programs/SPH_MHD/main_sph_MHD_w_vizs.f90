@@ -6,7 +6,8 @@
 !!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
 !!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
-!>@brief  Main program for MHD dynamo simulation
+!>@brief  Main program for MHD dynamo simulation with PVR module
+!!         input control file:  control_MHD
 !
       program kemorin_sph_MHD
 !
@@ -17,12 +18,16 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!>      Structure of the all data of program
+      type(sph_MHD_w_vizs), save :: SMHDVs_m
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_mhd_w_vizs
-!
-      call evolution_sph_mhd_w_vizs
+      call initialize_sph_mhd_w_vizs(MHD_ctl_name, SMHDVs_m)
+      call evolution_sph_mhd_w_vizs(SMHDVs_m)
 !
       call calypso_MPI_finalize
 !
