@@ -22,7 +22,6 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use m_elapsed_labels_SEND_RECV
-      use m_SPH_MHD_model_data
       use t_MHD_step_parameter
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data

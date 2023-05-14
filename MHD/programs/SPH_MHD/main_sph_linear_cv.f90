@@ -17,12 +17,16 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!>      Structure of the all data of program
+      type(sph_linear_convection), save :: LICV_m
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_licv
-!
-      call evolution_sph_licv
+      call initialize_sph_licv(MHD_ctl_name, LICV_m)
+      call evolution_sph_licv(LICV_m)
 !
       call  calypso_MPI_finalize
 !

@@ -33,7 +33,6 @@
       use t_FEM_mesh_field_data
       use t_ctl_data_sph_MHD_w_psf
       use t_sph_trans_arrays_MHD
-      use t_comm_table
       use t_work_SPH_MHD
       use t_mesh_SR
 !
@@ -66,10 +65,6 @@
         type(MHD_IO_data) :: MHD_IO
       end type sph_MHD_noviz
 !
-!
-!>      Structure of edge communication table
-      type(communication_table), save, private :: edge_comm_M
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -79,7 +74,7 @@
       subroutine initialize_sph_MHD_noviz(control_file_name, MHDN)
 !
       use input_control_sph_MHD
-      use FEM_to_PSF_bridge
+      use parallel_FEM_mesh_init
 !
       character(len=kchara), intent(in) :: control_file_name
       type(sph_MHD_noviz), intent(inout) :: MHDN
@@ -111,8 +106,9 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHDN%MHD_files, MHDN%MHD_step,        &
      &    MHDN%FEM_DAT, MHDN%MHD_IO, MHDN%SPH_WK%nod_mntr, MHDN%m_SR)
-      call init_FEM_to_PSF_bridge(MHDN%MHD_step%viz_step,               &
-     &    MHDN%FEM_DAT%geofem, edge_comm_M, MHDN%m_SR)
+      call FEM_mesh_initialization                                      &
+     &   (MHDN%FEM_DAT%geofem%mesh, MHDN%FEM_DAT%geofem%group,          &
+     &    MHDN%m_SR%SR_sig, MHDN%m_SR%SR_i)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
