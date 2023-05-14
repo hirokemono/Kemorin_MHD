@@ -71,7 +71,6 @@
       use initialize_4_snapshot
       use FEM_MHD_ucd_data
 !
-      use node_monitor_IO
       use open_sgs_model_coefs
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
@@ -125,7 +124,6 @@
       use chenge_step_4_dynamic
       use copy_nodal_fields
 !
-      use node_monitor_IO
       use FEM_sgs_model_coefs_IO
       use output_viz_file_control
 !
@@ -233,7 +231,7 @@
 !
       call output_monitor_control(MHD_step%flex_p%istep_max_dt,         &
      &    MHD_step%point_step, MHD_step%time_d, FEM_MHD%geofem%mesh,    &
-     &    FEM_MHD%field)
+     &    FEM_MHD%field, FEM_MHD%nod_mntr)
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs(MHD_step%flex_p%istep_max_dt,       &

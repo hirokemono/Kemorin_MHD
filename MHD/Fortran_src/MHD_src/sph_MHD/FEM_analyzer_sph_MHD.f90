@@ -10,13 +10,14 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,          &
-!!     &          geofem, nod_fld, iphys, MHD_IO, m_SR)
+!!     &          geofem, nod_fld, iphys, MHD_IO, nod_mntr, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_data), intent(inout) :: geofem
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
+!!        type(node_monitor_IO), intent(inout) :: nod_mntr
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_analyze_sph_MHD(MHD_files, geofem, nod_fld,      &
 !!     &          MHD_step, MHD_IO, m_SR)
@@ -73,15 +74,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,            &
-     &          geofem, nod_fld, iphys, MHD_IO, m_SR)
+     &          geofem, nod_fld, iphys, MHD_IO, nod_mntr, m_SR)
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
       use t_cal_max_indices
+      use t_node_monitor_IO
 !
       use set_control_field_data
       use nod_phys_send_recv
-      use node_monitor_IO
       use parallel_FEM_mesh_init
       use const_element_comm_tables
 !
@@ -91,11 +92,13 @@
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(MHD_IO_data), intent(inout) :: MHD_IO
+      type(node_monitor_IO), intent(inout) :: nod_mntr
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
-      call set_local_nod_4_monitor(geofem%mesh, geofem%group)
+      call set_local_nod_4_monitor(geofem%mesh, geofem%group,           &
+     &                             nod_mntr)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_field_data'
       call init_field_data(geofem%mesh%node%numnod, nod_fld, iphys)

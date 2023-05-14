@@ -126,7 +126,7 @@
       if(iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl%plt, MHD_ctl%org_plt, MHD_ctl%model_ctl,              &
-     &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
+     &    MHD_ctl%smctl_ctl, MHD_ctl%psph_ctl,                          &
      &    add_SSMHD_ctl%sgs_ctl, MHD_files, SPH_model%bc_IO,            &
      &    SPH_model%refs, SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,   &
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_WK%trans_p,         &
@@ -134,9 +134,10 @@
 !
       call set_control_SGS_SPH_MHD_field                                &
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
-     &    add_SSMHD_ctl%zm_ctls, SPH_SGS%SGS_par, SPH_model%MHD_prop,   &
-     &    SPH_model%MHD_BC, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,    &
-     &    SPH_WK%monitor)
+     &    add_SSMHD_ctl%zm_ctls, MHD_ctl%nmtr_ctl,                      &
+     &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_model%MHD_BC,        &
+     &    SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,                      &
+     &    SPH_WK%monitor, SPH_WK%nod_mntr)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !
 !  Load spherical shell table

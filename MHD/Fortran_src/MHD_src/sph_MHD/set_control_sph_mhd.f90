@@ -8,23 +8,26 @@
 !!
 !!@verbatim
 !!      subroutine set_control_SPH_MHD_w_viz                            &
-!!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, MHD_prop, &
-!!     &          MHD_BC, sph, rj_fld, nod_fld, monitor)
+!!     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, nmtr_ctl, &
+!!     &          MHD_prop, MHD_BC, sph, rj_fld, nod_fld,               &
+!!     &          monitor, nod_mntr)
 !!      subroutine set_control_SPH_MHD_noviz(model_ctl, smonitor_ctl,   &
 !!     &          MHD_prop, MHD_BC, rj_fld, monitor)
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
+!!        type(node_monitor_IO), intent(inout) :: nod_mntr
 !!
-!!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
-!!     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl,             &
+!!      subroutine set_control_4_SPH_MHD                                &
+!!     &         (plt, org_plt, model_ctl, smctl_ctl, psph_ctl,         &
 !!     &          MHD_files, bc_IO, refs, MHD_step, MHD_prop, MHD_BC,   &
-!!     &          trans_p, WK, sph_maker)
+!!     &          trans_p, WK, SPH_MHD)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(in) :: model_ctl
 !!        type(sph_mhd_control_control), intent(in) :: smctl_ctl
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
-!!        type(node_monitor_control), intent(in) :: nmtr_ctl
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+!!        type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+!!        type(node_monitor_control), intent(in) :: nmtr_ctl
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
@@ -35,7 +38,7 @@
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
-!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!      subroutine set_control_SPH_MHD_bcs                              &
 !!     &         (MHD_prop, nbc_ctl, sbc_ctl, MHD_BC)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -84,29 +87,32 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SPH_MHD_w_viz                              &
-     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, MHD_prop,   &
-     &          MHD_BC, sph, rj_fld, nod_fld, monitor)
+     &         (model_ctl, psph_ctl, smonitor_ctl, zm_ctls, nmtr_ctl,   &
+     &          MHD_prop, MHD_BC, sph, rj_fld, nod_fld,                 &
+     &          monitor, nod_mntr)
 !
       use t_phys_data
       use t_sph_mhd_monitor_data_IO
+      use t_node_monitor_IO
 !
       use set_control_sph_data_MHD
       use set_control_field_data
       use set_controls_4_sph_shell
       use set_nodal_field_name
-      use node_monitor_IO
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(mhd_model_control), intent(inout) :: model_ctl
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
       type(sph_dynamo_viz_controls), intent(in) :: zm_ctls
+      type(node_monitor_control), intent(in) :: nmtr_ctl
       type(MHD_BC_lists), intent(in) :: MHD_BC
 !
       type(sph_grids), intent(inout) :: sph
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
       type(sph_mhd_monitor_data), intent(inout) :: monitor
+      type(node_monitor_IO), intent(inout) :: nod_mntr
 !
       integer(kind = kint) :: ierr
 !
@@ -129,8 +135,9 @@
      &   (zm_ctls%crust_filter_ctl, monitor)
 !
       call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)
-      call count_field_4_monitor                                        &
-     &   (rj_fld, num_field_monitor, ntot_comp_monitor)
+!
+      call set_control_node_grp_monitor(nmtr_ctl, nod_mntr)
+      call count_field_4_monitor(rj_fld, nod_mntr)
 !
       end subroutine set_control_SPH_MHD_w_viz
 !
@@ -166,8 +173,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
-     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl,               &
+      subroutine set_control_4_SPH_MHD                                  &
+     &         (plt, org_plt, model_ctl, smctl_ctl, psph_ctl,           &
      &          MHD_files, bc_IO, refs, MHD_step, MHD_prop, MHD_BC,     &
      &          trans_p, WK, SPH_MHD)
 !
@@ -199,7 +206,6 @@
 !
       type(mhd_model_control), intent(in) :: model_ctl
       type(sph_mhd_control_control), intent(in) :: smctl_ctl
-      type(node_monitor_control), intent(in) :: nmtr_ctl
       type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
@@ -228,7 +234,7 @@
 !
       call s_set_control_4_model                                        &
      &    (model_ctl%reft_ctl, model_ctl%refc_ctl,                      &
-     &     smctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
+     &     smctl_ctl%mevo_ctl, model_ctl%evo_ctl, MHD_prop)
 !
 !   set spherical shell parameters
 !

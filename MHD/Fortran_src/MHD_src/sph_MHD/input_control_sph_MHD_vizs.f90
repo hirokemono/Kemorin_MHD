@@ -87,6 +87,7 @@
       use t_time_data
       use t_ctl_data_MHD
       use t_ctl_data_sph_MHD_w_vizs
+use t_node_monitor_IO
       use m_error_IDs
 !
       use set_control_sph_mhd
@@ -113,17 +114,17 @@
 !
 !  Set parameters from control
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD                                        &
-     &   (MHD_ctl%plt, MHD_ctl%org_plt, MHD_ctl%model_ctl,              &
-     &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
+      call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
+     &    MHD_ctl%model_ctl, MHD_ctl%smctl_ctl, MHD_ctl%psph_ctl,       &
      &    MHD_files, SPH_model%bc_IO, SPH_model%refs, MHD_step,         &
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_WK%trans_p,         &
      &    SPH_WK%trns_WK, SPH_MHD)
 !
-      call set_control_SPH_MHD_w_viz(MHD_ctl%model_ctl,                 &
-     &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, add_VMHD_ctl%zm_ctls, &
+      call set_control_SPH_MHD_w_viz                                    &
+     &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
+     &    add_VMHD_ctl%zm_ctls, MHD_ctl%nmtr_ctl,                       &
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_MHD%sph,            &
-     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor)
+     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, SPH_WK%nod_mntr)
 !
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'

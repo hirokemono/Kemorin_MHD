@@ -60,7 +60,7 @@ t_FEM_SGS_structure.o: $(MHD_COMMON_DIR)/t_FEM_SGS_structure.f90 m_precision.o t
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_control_parameter.o: $(MHD_COMMON_DIR)/t_FEM_control_parameter.f90 m_precision.o m_constants.o t_physical_property.o t_iccg_parameter.o t_MGCG_parameter.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_FEM_mesh_field_data.o: $(MHD_COMMON_DIR)/t_FEM_mesh_field_data.f90 m_precision.o t_mesh_data.o t_phys_data.o t_phys_address.o
+t_FEM_mesh_field_data.o: $(MHD_COMMON_DIR)/t_FEM_mesh_field_data.f90 m_precision.o t_mesh_data.o t_phys_data.o t_phys_address.o t_node_monitor_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_MHD_step_parameter.o: $(MHD_COMMON_DIR)/t_MHD_step_parameter.f90 m_precision.o t_time_data.o t_step_parameter.o t_IO_step_parameter.o t_VIZ_step_parameter.o t_flex_delta_t_parameter.o t_ctl_data_4_time_steps.o t_ctl_data_mhd_evo_scheme.o t_ctl_data_mhd_restart.o m_initial_field_control.o cal_num_digits.o skip_comment_f.o set_time_step_params.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -10,7 +10,7 @@
 !!      subroutine set_control_4_FEM_MHD(plt, org_plt, sgs_ctl,         &
 !!     &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,            &
 !!     &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,&
-!!     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+!!     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld, nod_mntr)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(SGS_model_control), intent(in) :: sgs_ctl
@@ -27,6 +27,7 @@
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!        type(phys_data), intent(inout) :: nod_fld, ele_fld
+!!        type(node_monitor_IO), intent(inout) :: nod_mntr
 !!@endverbatim
 !
       module set_control_FEM_MHD
@@ -59,7 +60,7 @@
       subroutine set_control_4_FEM_MHD(plt, org_plt, sgs_ctl,           &
      &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,              &
      &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,  &
-     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld, nod_mntr)
 !
       use calypso_mpi
       use m_default_file_prefix
@@ -69,6 +70,7 @@
       use t_MGCG_data
       use t_MGCG_data_4_MHD
       use t_coef_parameters_list
+      use t_node_monitor_IO
 !
       use set_control_platform_item
       use set_control_platform_data
@@ -106,6 +108,7 @@
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(phys_data), intent(inout) :: nod_fld, ele_fld
+      type(node_monitor_IO), intent(inout) :: nod_mntr
 !
 !
 !   set parameters for data files
@@ -124,7 +127,8 @@
 !
       call s_set_control_4_model                                        &
      &   (model_ctl%reft_ctl, model_ctl%refc_ctl,                       &
-     &    fmctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
+     &    fmctl_ctl%mevo_ctl, model_ctl%evo_ctl, MHD_prop)
+      call set_control_node_grp_monitor(nmtr_ctl, nod_mntr)
       call dealloc_monitor_data_ctl(nmtr_ctl)
 !
 !   set element groups for evolution

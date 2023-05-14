@@ -11,11 +11,11 @@
 !!@verbatim
 !!      subroutine input_control_4_FEM_MHD                              &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,             &
+!!     &          MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,   &
 !!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !!      subroutine input_control_4_FEM_snap                             &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,             &
+!!     &          MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,   &
 !!     &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -65,6 +65,7 @@
       use t_flex_delta_t_data
       use t_FEM_MHD_filter_data
       use t_work_FEM_dynamic_SGS
+      use t_node_monitor_IO
 !
       implicit none
 !
@@ -117,13 +118,12 @@
 !
       subroutine input_control_4_FEM_MHD                                &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,               &
+     &          MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,     &
      &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use skip_comment_f
-      use node_monitor_IO
       use set_field_data_w_SGS
       use set_nodal_field_name
       use input_meshes_FEM_MHD
@@ -136,6 +136,7 @@
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(phys_data), intent(inout) :: nod_fld, ele_fld
+      type(node_monitor_IO), intent(inout) :: nod_mntr
 !
       type(IO_boundary), intent(inout) :: IO_bc
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
@@ -155,7 +156,7 @@
      &    FEM_MHD_ctl1%fmctl_ctl, FEM_MHD_ctl1%nmtr_ctl,                &
      &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
-     &    nod_fld, ele_fld)
+     &    nod_fld, ele_fld, nod_mntr)
       call dealloc_sgs_ctl(sgs_ctl_F)
       call dealloc_sph_mhd_model(FEM_MHD_ctl1%model_ctl)
 !
@@ -169,8 +170,11 @@
       call input_MG_mesh_4_FEM_MHD(MHD_files, FEM_prm,                  &
      &     MHD_CG%MHD_mat,  MHD_CG%MGCG_WK,  MHD_CG%MGCG_FEM)
 !
-      call count_field_4_monitor                                        &
-     &   (nod_fld, num_field_monitor, ntot_comp_monitor)
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 'set_local_nod_4_monitor'
+      call set_local_nod_4_monitor(femmesh%mesh, femmesh%group,         &
+     &                             nod_mntr)
+      call count_field_4_monitor(nod_fld, nod_mntr)
 !
       end subroutine input_control_4_FEM_MHD
 !
@@ -178,12 +182,11 @@
 !
       subroutine input_control_4_FEM_snap                               &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, femmesh, nod_fld, ele_fld, IO_bc,               &
+     &          MHD_BC, femmesh, nod_fld, ele_fld, nod_mntr, IO_bc,     &
      &          FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
-      use node_monitor_IO
       use set_field_data_w_SGS
       use set_nodal_field_name
       use input_meshes_FEM_MHD
@@ -197,6 +200,7 @@
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(phys_data), intent(inout) :: nod_fld, ele_fld
+      type(node_monitor_IO), intent(inout) :: nod_mntr
 !
       type(IO_boundary), intent(inout) :: IO_bc
       type(filters_on_FEM), intent(inout) :: FEM_filters
@@ -216,7 +220,7 @@
      &    FEM_MHD_ctl1%fmctl_ctl, FEM_MHD_ctl1%nmtr_ctl,                &
      &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
-     &    nod_fld, ele_fld)
+     &    nod_fld, ele_fld, nod_mntr)
       call dealloc_sgs_ctl(sgs_ctl_F)
       call dealloc_sph_mhd_model(FEM_MHD_ctl1%model_ctl)
 !
@@ -228,8 +232,11 @@
      &    MHD_BC, femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p, &
      &    FEM_filters, FEM_SGS_wk%wk_filter)
 !
-      call count_field_4_monitor                                        &
-     &   (nod_fld, num_field_monitor, ntot_comp_monitor)
+      if (iflag_debug .ge. iflag_routine_msg)                           &
+     &      write(*,*) 'set_local_nod_4_monitor'
+      call set_local_nod_4_monitor(femmesh%mesh, femmesh%group,         &
+     &                             nod_mntr)
+      call count_field_4_monitor(nod_fld, nod_mntr)
 !
       end subroutine input_control_4_FEM_snap
 !

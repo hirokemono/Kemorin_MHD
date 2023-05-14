@@ -70,7 +70,6 @@
       use read_filtering_data
       use set_surface_data_4_IO
       use set_edge_data_4_IO
-      use node_monitor_IO
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(mesh_geometry), intent(in) :: mesh
@@ -85,10 +84,6 @@
       type(filtering_work_type), intent(inout) :: wk_filter
 !
       integer(kind = kint) :: iflag
-!
-      if (iflag_debug .ge. iflag_routine_msg)                           &
-     &      write(*,*) 'set_local_nod_4_monitor'
-      call set_local_nod_4_monitor(mesh, group)
 !
 ! ----  open data file for boundary data
 !

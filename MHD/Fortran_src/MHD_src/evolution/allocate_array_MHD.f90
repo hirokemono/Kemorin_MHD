@@ -63,7 +63,6 @@
 !
       use set_control_field_data
       use count_sgs_components
-      use node_monitor_IO
       use dependency_FEM_SGS_MHD
       use set_mean_square_array
 !
