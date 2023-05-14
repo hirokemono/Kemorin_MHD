@@ -81,8 +81,7 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
-     &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, MHD_IO1,           &
-     &    SPH_WK1%nod_mntr, m_SR1)
+     &    FEM_d1, MHD_IO1, SPH_WK1%nod_mntr, m_SR1)
       call init_FEM_to_PSF_bridge                                       &
      &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M, m_SR1)
 !
@@ -140,8 +139,8 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, MHD_IO1, m_SR1)
+        call FEM_analyze_sph_MHD(MHD_files1, FEM_d1, MHD_step1,         &
+     &                           MHD_IO1, m_SR1)
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
         if(lead_field_data_flag(MHD_step1%time_d%i_time_step,           &

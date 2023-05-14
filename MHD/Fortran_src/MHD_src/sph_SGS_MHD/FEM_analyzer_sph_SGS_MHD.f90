@@ -144,8 +144,8 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      call FEM_analyze_sph_MHD(MHD_files, FEM_MHD%geofem,               &
-     &                         FEM_MHD%field, MHD_step, MHD_IO, m_SR)
+      call FEM_analyze_sph_MHD(MHD_files, FEM_MHD, MHD_step,            &
+     &                         MHD_IO, m_SR)
 !
       end subroutine FEM_analyze_sph_SGS_MHD
 !

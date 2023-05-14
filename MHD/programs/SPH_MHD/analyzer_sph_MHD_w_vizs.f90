@@ -22,9 +22,11 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use m_elapsed_labels_SEND_RECV
-      use m_SPH_MHD_model_data
       use t_MHD_step_parameter
+      use t_SPH_MHD_model_data
+      use t_FEM_mesh_field_data
       use t_SPH_mesh_field_data
+      use t_work_SPH_MHD
       use t_ctl_data_MHD
       use t_ctl_data_sph_MHD_w_vizs
       use t_three_visualizers
@@ -42,8 +44,21 @@
 !
 !
       type sph_MHD_w_vizs
+!>        Parameters for spectr dynamo model
+        type(SPH_MHD_model_data) :: SPH_model
+!
 !>        Structure of time and step informations
         type(MHD_step_param) :: MHD_step
+!
+!>        Structure of FEM mesh and field structures
+        type(FEM_mesh_field_data) :: FEM_DAT
+!>        Structures of zonal mean controls
+        type(sph_zonal_mean_sectioning) :: zmeans
+!
+!>        Structures of work area for spherical shell dynamo
+        type(work_SPH_MHD) :: SPH_WK
+!>        Structure of work area for mesh communications
+        type(mesh_SR) :: m_SR
 !
 !>        Structure of file name and format for MHD
         type(MHD_file_IO_params) :: MHD_files
@@ -92,37 +107,39 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_SPH_MHD_vizs'
       call s_input_control_SPH_MHD_vizs(control_file_name,              &
      &    SMHDVs%MHD_files, DNS_MHD_ctl1, add_VMHD_ctl1,                &
-     &    SMHDVs%MHD_step, SPH_model1, SPH_WK1, SPH_MHD1, FEM_d1)
+     &    SMHDVs%MHD_step, SMHDVs%SPH_model, SMHDVs%SPH_WK,             &
+     &    SPH_MHD1, SMHDVs%FEM_DAT)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !        Initialize FEM mesh data for field data IO
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(SMHDVs%MHD_files, SMHDVs%MHD_step,    &
-     &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, SMHDVs%MHD_IO,     &
-     &    SPH_WK1%nod_mntr, m_SR1)
-      call init_FEM_to_VIZ_bridge                                       &
-     &   (SMHDVs%MHD_step%viz_step, FEM_d1%geofem, VIZ_DAT1, m_SR1)
+      call FEM_initialize_sph_MHD                                       &
+     &   (SMHDVs%MHD_files, SMHDVs%MHD_step, SMHDVs%FEM_DAT,            &
+     &    SMHDVs%MHD_IO, SMHDVs%SPH_WK%nod_mntr, SMHDVs%m_SR)
+      call init_FEM_to_VIZ_bridge(SMHDVs%MHD_step%viz_step,             &
+     &    SMHDVs%FEM_DAT%geofem, VIZ_DAT1, SMHDVs%m_SR)
 !
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
-      call SPH_initialize_MHD(SMHDVs%MHD_files, SPH_model1, FEM_d1,     &
+      call SPH_initialize_MHD                                           &
+     &   (SMHDVs%MHD_files, SMHDVs%SPH_model, SMHDVs%FEM_DAT,           &
      &    SMHDVs%MHD_step, SMHDVs%MHD_IO%rst_IO, SPH_MHD1,              &
-     &    SPH_WK1, m_SR1)
+     &    SMHDVs%SPH_WK, SMHDVs%m_SR)
 !
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_three_visualize'
       call init_three_visualize(SMHDVs%MHD_step%viz_step,               &
-     &    FEM_d1%geofem, FEM_d1%field, VIZ_DAT1,    &
-     &    add_VMHD_ctl1%viz3_ctls, three_vizs1, m_SR1)
+     &    SMHDVs%FEM_DAT%geofem, SMHDVs%FEM_DAT%field, VIZ_DAT1,        &
+     &    add_VMHD_ctl1%viz3_ctls, three_vizs1, SMHDVs%m_SR)
 !
       call init_zonal_mean_sections                                     &
-     &   (SMHDVs%MHD_step%viz_step, FEM_d1%geofem,  &
-     &    VIZ_DAT1%edge_comm, FEM_d1%field, add_VMHD_ctl1%zm_ctls,      &
-     &    zmeans1, m_SR1)
+     &   (SMHDVs%MHD_step%viz_step, SMHDVs%FEM_DAT%geofem,              &
+     &    VIZ_DAT1%edge_comm, SMHDVs%FEM_DAT%field,                     &
+     &    add_VMHD_ctl1%zm_ctls, SMHDVs%zmeans, SMHDVs%m_SR)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -159,13 +176,14 @@
 !*
         if(lead_field_data_flag(SMHDVs%MHD_step%time_d%i_time_step,     &
      &                          SMHDVs%MHD_step)) then
-          call alloc_sph_trans_area_snap(SPH_MHD1%sph, SPH_WK1%trns_WK)
+          call alloc_sph_trans_area_snap(SPH_MHD1%sph,                  &
+     &                                   SMHDVs%SPH_WK%trns_WK)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
         call SPH_analyze_MHD(SMHDVs%MHD_files, iflag_finish,            &
-     &      SPH_model1, SMHDVs%MHD_step,                                &
-     &      SMHDVs%MHD_IO%rst_IO, SPH_MHD1, SPH_WK1, m_SR1)
+     &      SMHDVs%SPH_model, SMHDVs%MHD_step, SMHDVs%MHD_IO%rst_IO,    &
+     &      SPH_MHD1, SMHDVs%SPH_WK, SMHDVs%m_SR)
 !*
 !*  -----------  output field data --------------
 !*
@@ -173,14 +191,14 @@
         if(lead_field_data_flag(SMHDVs%MHD_step%time_d%i_time_step,     &
      &                          SMHDVs%MHD_step)) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
-          call SPH_to_FEM_bridge_MHD(SPH_MHD1%sph, SPH_WK1%trns_WK,     &
-     &        FEM_d1%geofem, FEM_d1%field)
+          call SPH_to_FEM_bridge_MHD                                    &
+     &       (SPH_MHD1%sph, SMHDVs%SPH_WK%trns_WK,                      &
+     &        SMHDVs%FEM_DAT%geofem, SMHDVs%FEM_DAT%field)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(SMHDVs%MHD_files,                      &
-     &      FEM_d1%geofem, FEM_d1%field, SMHDVs%MHD_step,               &
-     &      SMHDVs%MHD_IO, m_SR1)
+        call FEM_analyze_sph_MHD(SMHDVs%MHD_files, SMHDVs%FEM_DAT,      &
+     &      SMHDVs%MHD_step, SMHDVs%MHD_IO, SMHDVs%m_SR)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -194,22 +212,24 @@
      &                            SMHDVs%MHD_step%viz_step)
           call visualize_three                                          &
      &       (SMHDVs%MHD_step%viz_step, SMHDVs%MHD_step%time_d,         &
-     &        FEM_d1%geofem, FEM_d1%field, VIZ_DAT1,   &
-     &        three_vizs1, m_SR1)
+     &        SMHDVs%FEM_DAT%geofem, SMHDVs%FEM_DAT%field, VIZ_DAT1,    &
+     &        three_vizs1, SMHDVs%m_SR)
 !*
 !*  ----------- Zonal means --------------
 !*
           if(SMHDVs%MHD_step%viz_step%istep_psf .ge. 0) then
-            call SPH_MHD_zmean_sections(SMHDVs%MHD_step%viz_step,       &
-     &          SMHDVs%MHD_step%time_d, SPH_MHD1%sph, FEM_d1%geofem,    &
-     &          SPH_WK1%trns_WK, FEM_d1%field, zmeans1, m_SR1)
+            call SPH_MHD_zmean_sections                                 &
+     &         (SMHDVs%MHD_step%viz_step, SMHDVs%MHD_step%time_d,       &
+     &          SPH_MHD1%sph, SMHDVs%FEM_DAT%geofem,                    &
+     &          SMHDVs%SPH_WK%trns_WK, SMHDVs%FEM_DAT%field,            &
+     &          SMHDVs%zmeans, SMHDVs%m_SR)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !*
         if(lead_field_data_flag(SMHDVs%MHD_step%time_d%i_time_step,     &
      &                          SMHDVs%MHD_step)) then
-          call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
+          call dealloc_sph_trans_area_snap(SMHDVs%SPH_WK%trns_WK)
         end if
 !
 !*  -----------  exit loop --------------
