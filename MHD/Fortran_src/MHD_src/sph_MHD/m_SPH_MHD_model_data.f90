@@ -27,7 +27,7 @@
       type(SPH_MHD_model_data), save :: SPH_model1
 !
 !
-!>        Structures of work area for spherical shell dynamo
+!>      Structures of work area for spherical shell dynamo
       type(work_SPH_MHD), save :: SPH_WK1
 !
 !>      Structure of FEM mesh and field structures

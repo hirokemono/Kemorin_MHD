@@ -106,7 +106,7 @@
 !
       call init_zonal_mean_sections(MHD_step1%viz_step, FEM_d1%geofem,  &
      &    edge_comm_M, FEM_d1%field, add_SMHD_ctl1%zm_ctls, zmeans1,    &
-     &    m_SR1%SR_sig, m_SR1%SR_il)
+     &    m_SR1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
