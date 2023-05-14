@@ -7,6 +7,7 @@
 !!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
 !>@brief  Main program for MHD dynamo simulation
+!!         input control file:  control_MHD
 !
       program kemorin_sph_MHD
 !
@@ -17,12 +18,16 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!>      Structure of the all data of program
+      type(sph_MHD_w_psf), save :: MHDS_m
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_mhd_w_psf
-!
-      call evolution_sph_mhd_w_psf
+      call initialize_sph_mhd_w_psf(MHD_ctl_name, MHDS_m)
+      call evolution_sph_mhd_w_psf(MHDS_m)
 !
       call calypso_MPI_finalize
 !
