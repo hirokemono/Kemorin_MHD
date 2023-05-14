@@ -83,7 +83,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
       call SPH_init_SGS_snap                                            &
      &   (MHD_files1, FEM_d1, SPH_model1, MHD_step1, SPH_SGS1,          &
-     &    SPH_MHD1, SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
+     &    SPH_MHD1, SPH_WK1, m_SR1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -116,7 +116,7 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
         call SPH_analyze_SGS_snap(MHD_step1%time_d%i_time_step,         &
      &      MHD_files1, SPH_model1, MHD_step1, SPH_SGS1, SPH_MHD1,      &
-     &      SPH_WK1, m_SR1%SR_sig, m_SR1%SR_r)
+     &      SPH_WK1, m_SR1)
 !*
 !*  -----------  exit loop --------------
 !*
