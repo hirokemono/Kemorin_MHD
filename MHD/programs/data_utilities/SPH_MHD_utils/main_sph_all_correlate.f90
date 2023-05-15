@@ -17,11 +17,13 @@
 !
       implicit none
 !
+      character(len=kchara), parameter                                  &
+     &                      :: corr_ctl_name = 'control_sph_correlate'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_all_correlate
-!
+      call initialize_sph_all_correlate(corr_ctl_name)
       call evolution_sph_all_correlate
 !
       call calypso_MPI_finalize
