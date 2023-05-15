@@ -21,14 +21,12 @@
 !
 !>      File name for control file
       character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
-!>      Structure of the all data of program
-      type(sph_MHD_noviz), save :: MHDN_m
 !
 !
       call calypso_MPI_init
 !
-      call initialize_sph_MHD_noviz(MHD_ctl_name, MHDN_m)
-      call evolution_sph_MHD_noviz(MHDN_m)
+      call initialize_sph_MHD_noviz(MHD_ctl_name)
+      call evolution_sph_MHD_noviz
 !
       call calypso_MPI_finalize
 !

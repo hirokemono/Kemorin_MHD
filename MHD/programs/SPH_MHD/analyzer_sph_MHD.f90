@@ -20,13 +20,15 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use m_elapsed_labels_SEND_RECV
+      use t_spherical_MHD
       use t_sph_SGS_MHD
-      use t_visualizer
 !
       implicit none
 !
-      type(sph_SGS_MHD), save, private :: SSMHDs
-      type(VIZ_sph_MHD), save, private :: SVIZ_m
+!>      Control struture for MHD simulation
+      type(spherical_MHD), save, private :: SSMHDs
+!>      Structure for visualization in spherical MHD
+      type(sph_SGS_MHD), save, private :: SVIZ_m
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,11 +40,13 @@
 !
       use t_ctl_data_MHD
       use t_ctl_data_SGS_MHD
+      use t_visualizer
+      use t_SPH_MHD_zonal_mean_viz
       use m_elapsed_labels_4_REPART
-      use input_control_sph_SGS_MHD
       use FEM_analyzer_sph_SGS_MHD
       use SPH_analyzer_SGS_MHD
       use FEM_to_VIZ_bridge
+      use input_control_sph_SGS_MHD
       use init_sph_MHD_elapsed_label
 !
       character(len=kchara), intent(in) :: control_file_name
@@ -69,7 +73,7 @@
       call input_control_SPH_SGS_dynamo(control_file_name,              &
      &    SSMHDs%MHD_files, MHD_ctl1, add_SSMHD_ctl1,                   &
      &    SSMHDs%MHD_step, SSMHDs%SPH_model, SSMHDs%SPH_WK,             &
-     &    SSMHDs%SPH_SGS, SSMHDs%SPH_MHD, SVIZ_m%FEM_DAT)
+     &    SVIZ_m%SPH_SGS, SSMHDs%SPH_MHD, SVIZ_m%FEM_DAT)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !    IO elapsed end
@@ -81,7 +85,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD                                   &
-     &   (SSMHDs%MHD_files, SSMHDs%MHD_step, SSMHDs%SPH_SGS%iphys_LES,  &
+     &   (SSMHDs%MHD_files, SSMHDs%MHD_step, SVIZ_m%SPH_SGS%iphys_LES,  &
      &    SSMHDs%MHD_IO, SVIZ_m%FEM_DAT, SSMHDs%SPH_WK%nod_mntr,        &
      &    SSMHDs%m_SR)
 !
@@ -90,7 +94,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
       call SPH_initialize_SGS_MHD                                       &
      &   (SSMHDs%MHD_files, SVIZ_m%FEM_DAT, SSMHDs%MHD_step,            &
-     &    SSMHDs%MHD_IO%rst_IO, SSMHDs%SPH_model, SSMHDs%SPH_SGS,       &
+     &    SSMHDs%MHD_IO%rst_IO, SSMHDs%SPH_model, SVIZ_m%SPH_SGS,       &
      &    SSMHDs%SPH_MHD, SSMHDs%SPH_WK, SSMHDs%m_SR)
 !
 !  -------------------------------------------
@@ -128,6 +132,8 @@
       use t_VIZ_step_parameter
       use t_sph_trans_arrays_MHD
       use t_sph_trans_arrays_SGS_MHD
+      use t_visualizer
+      use t_SPH_MHD_zonal_mean_viz
       use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
       use init_sph_MHD_elapsed_label
@@ -156,13 +162,13 @@
           call alloc_sph_trans_area_snap                                &
      &       (SSMHDs%SPH_MHD%sph, SSMHDs%SPH_WK%trns_WK)
           call alloc_SGS_sph_trns_area_snap                             &
-     &       (SSMHDs%SPH_MHD%sph, SSMHDs%SPH_SGS%trns_WK_LES)
+     &       (SSMHDs%SPH_MHD%sph, SVIZ_m%SPH_SGS%trns_WK_LES)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
         call SPH_analyze_SGS_MHD(SSMHDs%MHD_files, iflag_finish,        &
      &      SSMHDs%SPH_model, SSMHDs%MHD_step, SSMHDs%MHD_IO%rst_IO,    &
-     &      SSMHDs%SPH_SGS, SSMHDs%SPH_MHD,                             &
+     &      SVIZ_m%SPH_SGS, SSMHDs%SPH_MHD,                             &
      &      SSMHDs%SPH_WK, SSMHDs%m_SR)
 !*
 !*  -----------  output field data --------------
@@ -172,8 +178,8 @@
      &                          SSMHDs%MHD_step)) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
-     &       (SSMHDs%SPH_SGS%SGS_par, SSMHDs%SPH_MHD%sph,               &
-     &        SSMHDs%SPH_WK%trns_WK, SSMHDs%SPH_SGS%trns_WK_LES,        &
+     &       (SVIZ_m%SPH_SGS%SGS_par, SSMHDs%SPH_MHD%sph,               &
+     &        SSMHDs%SPH_WK%trns_WK, SVIZ_m%SPH_SGS%trns_WK_LES,        &
      &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field)
         end if
 !
@@ -202,7 +208,7 @@
             call SGS_MHD_zmean_sections(SSMHDs%MHD_step%viz_step,       &
      &          SSMHDs%MHD_step%time_d, SSMHDs%SPH_MHD%sph,             &
      &          SVIZ_m%FEM_DAT%geofem, SSMHDs%SPH_WK%trns_WK,           &
-     &          SSMHDs%SPH_SGS, SVIZ_m%FEM_DAT%field,                   &
+     &          SVIZ_m%SPH_SGS, SVIZ_m%FEM_DAT%field,                   &
      &          SVIZ_m%zmeans, SSMHDs%m_SR)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
@@ -212,7 +218,7 @@
      &                          SSMHDs%MHD_step)) then
           call dealloc_sph_trans_area_snap(SSMHDs%SPH_WK%trns_WK)
           call dealloc_SGS_sph_trns_area_snap                           &
-     &       (SSMHDs%SPH_SGS%trns_WK_LES)
+     &       (SVIZ_m%SPH_SGS%trns_WK_LES)
         end if
 !*  -----------  exit loop --------------
 !*

@@ -7,8 +7,8 @@
 !>@brief  Main loop for linear convection model in spherical shell
 !!
 !!@verbatim
-!!      subroutine initialize_sph_licv(control_file_name, LICVs)
-!!      subroutine evolution_sph_licv(LICVs)
+!!      subroutine initialize_sph_licv(control_file_name)
+!!      subroutine evolution_sph_licv
 !!@endverbatim
 !
       module analyzer_sph_licv
@@ -21,16 +21,8 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use m_elapsed_labels_SEND_RECV
-      use t_SPH_MHD_model_data
-      use t_MHD_step_parameter
-      use t_MHD_file_parameter
-      use t_SPH_mesh_field_data
+      use t_spherical_MHD
       use t_FEM_mesh_field_data
-      use t_work_SPH_MHD
-      use t_ctl_data_MHD
-      use t_control_data_surfacings
-      use t_MHD_IO_data
-      use t_mesh_SR
 !
       use SPH_analyzer_licv
 !
@@ -46,8 +38,6 @@
 !>        Structure of spectr grid and data
         type(SPH_mesh_field_data) :: SPH_MHD
 !
-!>        Structure of FEM mesh and field structures
-        type(FEM_mesh_field_data) :: FEM_DAT
 !>        Structures of work area for spherical shell dynamo
         type(work_SPH_MHD) :: SPH_WK
 !>        Structure of work area for mesh communications
@@ -59,6 +49,11 @@
         type(MHD_IO_data) :: MHD_IO
       end type sph_linear_convection
 !
+!>      Structure of the all data of program
+      type(spherical_MHD), save, private :: LICVs
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_data), save, private :: FEM_DATs
+!
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,14 +61,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_sph_licv(control_file_name, LICVs)
+      subroutine initialize_sph_licv(control_file_name)
 !
-      use init_sph_MHD_elapsed_label
-      use bcast_control_sph_MHD
+      use t_ctl_data_MHD
+      use t_SPH_mesh_field_data
       use input_control_sph_MHD
+      use set_control_sph_mhd
+      use set_control_4_SPH_to_FEM
+      use SPH_analyzer_licv
+      use init_sph_MHD_elapsed_label
 !
       character(len=kchara), intent(in) :: control_file_name
-      type(sph_linear_convection), intent(inout) :: LICVs
 !
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save :: DNS_MHD_ctl1
@@ -99,7 +97,7 @@
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_linear_conv'
-      call SPH_initialize_linear_conv(LICVs%MHD_files, LICVs%FEM_DAT,   &
+      call SPH_initialize_linear_conv(LICVs%MHD_files, FEM_DATs,        &
      &    LICVs%SPH_model, LICVs%MHD_step, LICVs%MHD_IO%rst_IO,         &
      &    LICVs%SPH_MHD, LICVs%SPH_WK, LICVs%m_SR)
       call calypso_MPI_barrier
@@ -111,15 +109,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_sph_licv(LICVs)
+      subroutine evolution_sph_licv
 !
-      use cal_nonlinear
-      use cal_sol_sph_MHD_crank
-      use cal_momentum_eq_explicit
-      use sph_mhd_rst_IO_control
-      use set_reference_sph_mhd
+      use t_time_data
+      use SPH_analyzer_licv
+      use init_sph_MHD_elapsed_label
 !
-      type(sph_linear_convection), intent(inout) :: LICVs
       integer(kind = kint) :: istep, iflag_finish
 !
 !     ---------------------
