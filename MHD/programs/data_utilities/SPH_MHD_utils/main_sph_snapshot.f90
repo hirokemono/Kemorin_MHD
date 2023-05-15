@@ -20,14 +20,12 @@
 !>      File name for control file
       character(len=kchara), parameter                                  &
      &                      :: snap_ctl_name = 'control_snapshot'
-!>      Structure of the all data of program
-      type(sph_SGS_SNAP), save :: SSNAP_m
 !
 !
       call calypso_MPI_init
 !
-      call initialize_sph_snap(snap_ctl_name, SSNAP_m)
-      call evolution_sph_snap(SSNAP_m)
+      call initialize_sph_snap(snap_ctl_name)
+      call evolution_sph_snap
 !
       call calypso_MPI_finalize
 !

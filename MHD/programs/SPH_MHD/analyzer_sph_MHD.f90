@@ -125,15 +125,14 @@
 !
       subroutine evolution_sph_mhd
 !
-      use SPH_analyzer_SGS_MHD
-      use FEM_analyzer_sph_SGS_MHD
-      use SGS_MHD_zonal_mean_viz
       use t_time_data
       use t_VIZ_step_parameter
       use t_sph_trans_arrays_MHD
       use t_sph_trans_arrays_SGS_MHD
       use t_visualizer
       use t_SPH_MHD_zonal_mean_viz
+      use SPH_analyzer_SGS_MHD
+      use SGS_MHD_zonal_mean_viz
       use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
       use init_sph_MHD_elapsed_label

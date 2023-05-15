@@ -7,9 +7,8 @@
 !>@brief  Main loop to evaluate snapshots from spectr data
 !!
 !!@verbatim
-!!      subroutine initialize_sph_snap
+!!      subroutine initialize_sph_snap(control_file_name)
 !!      subroutine evolution_sph_snap
-!!      subroutine evolution_sph_snap_badboy
 !!        character(len=kchara), intent(in) :: control_file_name
 !!        type(sph_SGS_SNAP), intent(inout) :: SSNAPs
 !!@endverbatim
@@ -23,62 +22,17 @@
       use m_elapsed_labels_4_MHD
       use m_elapsed_labels_SEND_RECV
       use m_machine_parameter
-      use t_SPH_MHD_model_data
-      use t_MHD_IO_data
-      use t_MHD_step_parameter
-      use t_MHD_file_parameter
-      use t_ctl_data_MHD
-      use t_ctl_data_SGS_MHD
-      use t_SPH_mesh_field_data
-      use t_SPH_SGS_structure
-      use t_SPH_MHD_zonal_mean_viz
-      use t_FEM_mesh_field_data
-      use t_VIZ_mesh_field
-      use t_visualizer
-      use t_sph_trans_arrays_MHD
-      use t_work_SPH_MHD
-      use t_mesh_SR
-!
-      use SPH_analyzer_SGS_snap
-      use FEM_analyzer_sph_SGS_MHD
+      use t_spherical_MHD
+      use t_sph_SGS_MHD
 !
       implicit none
 !
       integer(kind = kint), parameter :: id_ctl_file = 11
 !
-!>      Structure of the all data of program
-      type sph_SGS_SNAP
-!>        Parameters for spectr dynamo model
-        type(SPH_MHD_model_data) :: SPH_model
-!
-!>        Structure of time and step informations
-        type(MHD_step_param) :: MHD_step
-!>        Structure of spectr grid and data
-        type(SPH_mesh_field_data) :: SPH_MHD
-!>        Structures of SGS model in Spherical shell dynamo
-        type(SPH_SGS_structure) :: SPH_SGS
-!
-!>        Structure of FEM mesh and field structures
-        type(FEM_mesh_field_data) :: FEM_DAT
-!>        Structure of FEM data for visualization
-        type(VIZ_mesh_field) :: VIZ_FEM
-!>        Structures of visualizations
-        type(visualize_modules) :: VIZs
-!>        Structures of zonal mean controls
-        type(sph_zonal_mean_sectioning) :: zmeans
-!
-!>        Structures of work area for spherical shell dynamo
-        type(work_SPH_MHD) :: SPH_WK
-!>        Structure of work area for mesh communications
-        type(mesh_SR) :: m_SR
-!
-!>        Structure of file name and format for MHD
-        type(MHD_file_IO_params) :: MHD_files
-!>        Structure for data file IO
-        type(MHD_IO_data) :: MHD_IO
-!
-        real (kind=kreal)  ::  total_start
-      end type sph_SGS_SNAP
+!>      Control struture for MHD simulation
+      type(spherical_MHD), save, private :: SSNAPs
+!>      Structure for visualization in spherical MHD
+      type(sph_SGS_MHD), save, private :: SVIZ_m
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,90 +40,42 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_sph_snap(control_file_name, SSNAPs)
+      subroutine initialize_sph_snap(control_file_name)
 !
       use m_elapsed_labels_4_REPART
       use init_sph_MHD_elapsed_label
-      use input_control_sph_SGS_MHD
-      use FEM_to_VIZ_bridge
+      use initialization_sph_SGS_snap
 !
       character(len=kchara), intent(in) :: control_file_name
-      type(sph_SGS_SNAP), intent(inout) :: SSNAPs
-!
-!>      Control struture for MHD simulation
-      type(mhd_simulation_control), save :: MHD_ctl1
-!>        Additional structures for spherical SGS MHD dynamo
-      type(add_sgs_sph_mhd_ctl), save :: add_SSMHD_ctl1
-!
 !
       write(*,*) 'Simulation start: PE. ', my_rank
-      SSNAPs%total_start = MPI_WTIME()
+      SSNAPs%MHD_step%finish_d%started_time = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
 !
       call elpsed_label_4_repartition
       call elpsed_label_field_send_recv
 !
-!   Load parameter file
-!
-      if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
-      call input_control_SPH_SGS_dynamo(control_file_name,              &
-     &    SSNAPs%MHD_files, MHD_ctl1, add_SSMHD_ctl1, SSNAPs%MHD_step,  &
-     &    SSNAPs%SPH_model, SSNAPs%SPH_WK, SSNAPs%SPH_SGS,              &
-     &    SSNAPs%SPH_MHD, SSNAPs%FEM_DAT)
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
-!
-!     --------------------- 
-!
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
-      call FEM_initialize_sph_SGS_MHD(SSNAPs%MHD_files,                 &
-     &    SSNAPs%MHD_step, SSNAPs%SPH_SGS%iphys_LES, SSNAPs%MHD_IO,     &
-     &    SSNAPs%FEM_DAT, SSNAPs%SPH_WK%nod_mntr, SSNAPs%m_SR)
-!
-!        Initialize spherical transform dynamo
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
-      call SPH_init_SGS_snap(SSNAPs%MHD_files, SSNAPs%FEM_DAT,          &
-     &    SSNAPs%SPH_model, SSNAPs%MHD_step, SSNAPs%SPH_SGS,            &
-     &    SSNAPs%SPH_MHD, SSNAPs%SPH_WK, SSNAPs%m_SR)
-!
-!  -------------------------------------------
-!  ----   Mesh setting for visualization -----
-!  -------------------------------------------
-      if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
-      call init_FEM_to_VIZ_bridge(SSNAPs%MHD_step%viz_step,             &
-     &    SSNAPs%FEM_DAT%geofem, SSNAPs%VIZ_FEM, SSNAPs%m_SR)
-!
-!        Initialize visualization
-      if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(SSNAPs%MHD_step%viz_step,                     &
-     &    SSNAPs%FEM_DAT%geofem, SSNAPs%FEM_DAT%field, SSNAPs%VIZ_FEM,  &
-     &    add_SSMHD_ctl1%viz_ctls, SSNAPs%VIZs, SSNAPs%m_SR)
-      call init_zonal_mean_sections(SSNAPs%MHD_step%viz_step,           &
-     &    SSNAPs%FEM_DAT%geofem, SSNAPs%VIZ_FEM%edge_comm,              &
-     &    SSNAPs%FEM_DAT%field, add_SSMHD_ctl1%zm_ctls,                 &
-     &    SSNAPs%zmeans, SSNAPs%m_SR)
-!
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
-      call calypso_MPI_barrier
-      call reset_elapse_4_init_sph_mhd
+      call initialize_sph_SGS_snap(control_file_name, SSNAPs, SVIZ_m)
 !
       end subroutine initialize_sph_snap
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_sph_snap(SSNAPs)
+      subroutine evolution_sph_snap
 !
-      use FEM_analyzer_sph_SGS_MHD
-      use SGS_MHD_zonal_mean_viz
-      use output_viz_file_control
+      use t_time_data
+      use t_VIZ_step_parameter
+      use t_sph_trans_arrays_MHD
       use t_sph_trans_arrays_SGS_MHD
+      use t_visualizer
+      use t_SPH_MHD_zonal_mean_viz
+      use SPH_analyzer_SGS_snap
+      use FEM_analyzer_sph_SGS_MHD
+      use output_viz_file_control
+      use SGS_MHD_zonal_mean_viz
       use set_time_step_params
-      use FEM_to_VIZ_bridge
-!
-      type(sph_SGS_SNAP), intent(inout) :: SSNAPs
+      use init_sph_MHD_elapsed_label
 !
 !*  -----------  set initial step data --------------
 !*
@@ -191,13 +97,13 @@
           call alloc_sph_trans_area_snap(SSNAPs%SPH_MHD%sph,            &
      &                          SSNAPs%SPH_WK%trns_WK)
           call alloc_SGS_sph_trns_area_snap(SSNAPs%SPH_MHD%sph,         &
-     &                                      SSNAPs%SPH_SGS%trns_WK_LES)
+     &                                      SVIZ_m%SPH_SGS%trns_WK_LES)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
         call SPH_analyze_SGS_snap(SSNAPs%MHD_step%time_d%i_time_step,   &
      &      SSNAPs%MHD_files, SSNAPs%SPH_model, SSNAPs%MHD_step,        &
-     &      SSNAPs%SPH_SGS, SSNAPs%SPH_MHD, SSNAPs%SPH_WK, SSNAPs%m_SR)
+     &      SVIZ_m%SPH_SGS, SSNAPs%SPH_MHD, SSNAPs%SPH_WK, SSNAPs%m_SR)
 !*
 !*  -----------  output field data --------------
 !*
@@ -207,14 +113,14 @@
      &                          SSNAPs%MHD_step)) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
-     &       (SSNAPs%SPH_SGS%SGS_par, SSNAPs%SPH_MHD%sph,               &
-     &        SSNAPs%SPH_WK%trns_WK, SSNAPs%SPH_SGS%trns_WK_LES,        &
-     &        SSNAPs%FEM_DAT%geofem, SSNAPs%FEM_DAT%field)
+     &       (SVIZ_m%SPH_SGS%SGS_par, SSNAPs%SPH_MHD%sph,               &
+     &        SSNAPs%SPH_WK%trns_WK, SVIZ_m%SPH_SGS%trns_WK_LES,        &
+     &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
         call FEM_analyze_sph_SGS_MHD(SSNAPs%MHD_files, SSNAPs%MHD_step, &
-     &      SSNAPs%MHD_IO, SSNAPs%FEM_DAT, SSNAPs%m_SR)
+     &      SSNAPs%MHD_IO, SVIZ_m%FEM_DAT, SSNAPs%m_SR)
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !*  ----------- Visualization --------------
@@ -223,21 +129,21 @@
      &                           SSNAPs%MHD_step%viz_step)) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
-          call istep_viz_w_fix_dt(SSNAPs%MHD_step%time_d%i_time_step,         &
+          call istep_viz_w_fix_dt(SSNAPs%MHD_step%time_d%i_time_step,   &
      &                          SSNAPs%MHD_step%viz_step)
           call visualize_all                                            &
      &       (SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,         &
-     &        SSNAPs%FEM_DAT%geofem, SSNAPs%FEM_DAT%field,              &
-     &        SSNAPs%VIZ_FEM, SSNAPs%VIZs, SSNAPs%m_SR)
+     &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
+     &        SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SSNAPs%m_SR)
 !*
 !*  ----------- Zonal means --------------
 !*
           if(SSNAPs%MHD_step%viz_step%istep_psf .ge. 0) then
             call SGS_MHD_zmean_sections                                 &
      &         (SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,       &
-     &          SSNAPs%SPH_MHD%sph, SSNAPs%FEM_DAT%geofem,              &
-     &          SSNAPs%SPH_WK%trns_WK, SSNAPs%SPH_SGS,                  &
-     &          SSNAPs%FEM_DAT%field, SSNAPs%zmeans, SSNAPs%m_SR)
+     &          SSNAPs%SPH_MHD%sph, SVIZ_m%FEM_DAT%geofem,              &
+     &          SSNAPs%SPH_WK%trns_WK, SVIZ_m%SPH_SGS,                  &
+     &          SVIZ_m%FEM_DAT%field, SVIZ_m%zmeans, SSNAPs%m_SR)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
@@ -246,7 +152,7 @@
      &                          SSNAPs%MHD_step)) then
            call dealloc_sph_trans_area_snap(SSNAPs%SPH_WK%trns_WK)
            call dealloc_SGS_sph_trns_area_snap                          &
-     &        (SSNAPs%SPH_SGS%trns_WK_LES)
+     &        (SVIZ_m%SPH_SGS%trns_WK_LES)
         end if
 !
 !*  -----------  exit loop --------------
@@ -261,7 +167,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'visualize_fin'
       call visualize_fin(SSNAPs%MHD_step%viz_step,                      &
-     &                   SSNAPs%MHD_step%time_d, SSNAPs%VIZs)
+     &                   SSNAPs%MHD_step%time_d, SVIZ_m%VIZs)
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
       call FEM_finalize_sph_SGS_MHD(SSNAPs%MHD_files, SSNAPs%MHD_step,  &
      &                              SSNAPs%MHD_IO)
@@ -277,157 +183,6 @@
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
       end subroutine evolution_sph_snap
-!
-! ----------------------------------------------------------------------
-!
-      subroutine evolution_sph_snap_badboy(SSNAPs)
-!
-      use t_control_data_vizs
-      use t_volume_rendering
-      use t_sph_trans_arrays_SGS_MHD
-!
-      use calypso_mpi_real
-      use FEM_analyzer_sph_SGS_MHD
-      use output_viz_file_control
-      use FEM_to_VIZ_bridge
-      use volume_rendering
-!
-      type(sph_SGS_SNAP), intent(inout) :: SSNAPs
-!
-!>        Additional structures for spherical SGS MHD dynamo
-      type(add_sgs_sph_mhd_ctl), save :: add_SSMHD_ctl1
-!
-      integer(kind = kint) :: iflag_redraw
-      real(kind = kreal) :: total_max, total_time, total_prev
-!
-!     ---------------------
-!
-      SSNAPs%MHD_step%rms_step%increment = 0
-      SSNAPs%MHD_step%ucd_step%increment = 0
-      if(SSNAPs%MHD_step%finish_d%elapsed_time .gt. 1800.0) then
-        if (my_rank.eq.0) write(*,*) 'This code can use up to 30 min.'
-        SSNAPs%MHD_step%finish_d%elapsed_time = 1800.0
-      else if(SSNAPs%MHD_step%finish_d%elapsed_time .lt. 0.0d0) then
-        SSNAPs%MHD_step%finish_d%elapsed_time = 1800.0
-      end if
-!
-      if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
-!
-!*  ----------- Read spectr data and get field data --------------
-!*
-      if(lead_field_data_flag(SSNAPs%MHD_step%time_d%i_time_step,       &
-     &                        SSNAPs%MHD_step)) then
-        call alloc_sph_trans_area_snap(SSNAPs%SPH_MHD%sph,              &
-     &                                 SSNAPs%SPH_WK%trns_WK)
-        call alloc_SGS_sph_trns_area_snap(SSNAPs%SPH_MHD%sph,           &
-     &                                    SSNAPs%SPH_SGS%trns_WK_LES)
-!
-        SSNAPs%MHD_step%time_d%i_time_step                              &
-      &        = SSNAPs%MHD_step%init_d%i_time_step
-        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
-        call SPH_analyze_SGS_snap(SSNAPs%MHD_step%time_d%i_time_step,   &
-     &      SSNAPs%MHD_files, SSNAPs%SPH_model, SSNAPs%MHD_step,        &
-     &      SSNAPs%SPH_SGS, SSNAPs%SPH_MHD, SSNAPs%SPH_WK, SSNAPs%m_SR)
-!*
-        if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-        if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
-        call SPH_to_FEM_bridge_SGS_MHD                                  &
-     &     (SSNAPs%SPH_SGS%SGS_par, SSNAPs%SPH_MHD%sph,                 &
-     &      SSNAPs%SPH_WK%trns_WK, SSNAPs%SPH_SGS%trns_WK_LES,          &
-     &      SSNAPs%FEM_DAT%geofem, SSNAPs%FEM_DAT%field)
-        call dealloc_sph_trans_area_snap(SSNAPs%SPH_WK%trns_WK)
-        call dealloc_SGS_sph_trns_area_snap(SSNAPs%SPH_SGS%trns_WK_LES)
-!
-        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
-        call FEM_analyze_sph_SGS_MHD(SSNAPs%MHD_files, SSNAPs%MHD_step, &
-     &      SSNAPs%MHD_IO, SSNAPs%FEM_DAT, SSNAPs%m_SR)
-      end if
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
-!
-      if(iflag_vizs_w_fix_step(SSNAPs%MHD_step%time_d%i_time_step,      &
-     &                         SSNAPs%MHD_step%viz_step)) then
-        if (iflag_debug.eq.1) write(*,*) 'visualize_all'
-        if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
-        call istep_viz_w_fix_dt(SSNAPs%MHD_step%time_d%i_time_step,     &
-     &                          SSNAPs%MHD_step%viz_step)
-        call visualize_all                                              &
-     &     (SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,           &
-     &      SSNAPs%FEM_DAT%geofem, SSNAPs%FEM_DAT%field,                &
-     &      SSNAPs%VIZ_FEM, SSNAPs%VIZs, SSNAPs%m_SR)
-        call dealloc_pvr_data(SSNAPs%VIZs%pvr)
-        if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
-      end if
-!
-!*  ----------- Visualization --------------
-!*
-      do
-        call check_PVR_update                                           &
-     &     (id_ctl_file, add_SSMHD_ctl1%viz_ctls%pvr_ctls,              &
-     &      SSNAPs%VIZs%pvr, iflag_redraw)
-        call calypso_mpi_barrier
-!
-        if(iflag_redraw .eq. IFLAG_TERMINATE) then
-          if (my_rank.eq.0) write(*,*) 'end flag is recieved'
-          exit
-!
-        else if(iflag_redraw .eq. IFLAG_DRAW) then
-          if (my_rank.eq.0) then
-            write(*,*) 'visualization start!'
-            write(*,*) 'Current elapsed time: ', total_time
-          end if
-!
-          if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
-          call read_ctl_pvr_files_4_update                              &
-     &       (id_ctl_file, add_SSMHD_ctl1%viz_ctls%pvr_ctls)
-          call PVR_initialize(SSNAPs%MHD_step%viz_step%PVR_t%increment,       &
-     &        SSNAPs%FEM_DAT%geofem, SSNAPs%FEM_DAT%field,              &
-     &        add_SSMHD_ctl1%viz_ctls%pvr_ctls,                         &
-     &        SSNAPs%VIZs%pvr, SSNAPs%m_SR)
-          call PVR_visualize(SSNAPs%MHD_step%viz_step%istep_pvr,        &
-     &        SSNAPs%MHD_step%time_d%time, SSNAPs%FEM_DAT%geofem,       &
-     &        SSNAPs%VIZ_FEM%jacobians, SSNAPs%FEM_DAT%field,           &
-     &        SSNAPs%VIZs%pvr, SSNAPs%m_SR)
-          call dealloc_pvr_data(SSNAPs%VIZs%pvr)
-          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
-        end if
-!
-        total_prev = total_time
-        total_time = MPI_WTIME() - SSNAPs%total_start
-!
-        if(my_rank .eq. 0) then
-          if(int(total_time/60.0) .ne. int(total_prev/60.0)) then
-            write(*,*) int(total_time/60), 'minuts passed'
-          end if
-        end if
-!
-        if(total_time .gt. SSNAPs%MHD_step%finish_d%elapsed_time) then
-          call calypso_mpi_barrier
-          call calypso_mpi_allreduce_one_real(total_time, total_max,    &
-     &                                        MPI_MAX)
-          exit
-        end if
-      end do
-      if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
-!
-!    Loop end
-      if (iflag_debug.eq.1) write(*,*) 'visualize_fin'
-      call visualize_fin(SSNAPs%MHD_step%viz_step,                      &
-     &                   SSNAPs%MHD_step%time_d, SSNAPs%VIZs)
-      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
-      call FEM_finalize_sph_SGS_MHD(SSNAPs%MHD_files,                   &
-     &                              SSNAPs%MHD_step, SSNAPs%MHD_IO)
-!
-!      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_SGS_snap'
-!      call SPH_finalize_SGS_snap
-!
-      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
-!
-      call output_elapsed_times
-!
-      call calypso_MPI_barrier
-      if (iflag_debug.eq.1) write(*,*) 'exit evolution'
-!
-      end subroutine evolution_sph_snap_badboy
 !
 ! ----------------------------------------------------------------------
 !

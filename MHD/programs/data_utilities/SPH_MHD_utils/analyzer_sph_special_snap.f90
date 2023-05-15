@@ -8,6 +8,7 @@
 !!        including some special treatment
 !!
 !!@verbatim
+!!      subroutine initialize_sph_special_snap(control_file_name)
 !!      subroutine evolution_sph_special_snap
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!@endverbatim
@@ -17,20 +18,12 @@
       use m_precision
       use calypso_mpi
 !
-      use m_machine_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
-      use m_SPH_MHD_model_data
-      use m_SPH_SGS_structure
-      use t_mesh_data
-      use t_step_parameter
-      use t_MHD_file_parameter
-      use t_work_SPH_MHD
-      use t_viz_sections
-      use t_VIZ_mesh_field
-      use t_mesh_SR
-!
-      use analyzer_sph_snap
+      use m_elapsed_labels_SEND_RECV
+      use m_machine_parameter
+      use t_spherical_MHD
+      use t_sph_SGS_MHD
 !
       implicit none
 !
@@ -39,25 +32,53 @@
       private :: lead_special_fields_4_sph_mhd
       private :: set_special_rj_fields
 !
+!>      Control struture for MHD simulation
+      type(spherical_MHD), save, private :: SSNAPs
+!>      Structure for visualization in spherical MHD
+      type(sph_SGS_MHD), save, private :: SVIZ_m
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_sph_special_snap(SSNAPs)
+      subroutine initialize_sph_special_snap(control_file_name)
 !
-      use t_MHD_step_parameter
+      use m_elapsed_labels_4_REPART
+      use init_sph_MHD_elapsed_label
+      use initialization_sph_SGS_snap
 !
-      use analyzer_sph_snap
-      use FEM_analyzer_sph_SGS_MHD
+      character(len=kchara), intent(in) :: control_file_name
+!
+      write(*,*) 'Simulation start: PE. ', my_rank
+      SSNAPs%MHD_step%finish_d%started_time = MPI_WTIME()
+      call init_elapse_time_by_TOTAL
+      call set_sph_MHD_elapsed_label
+!
+      call elpsed_label_4_repartition
+      call elpsed_label_field_send_recv
+!
+      call initialize_sph_SGS_snap(control_file_name, SSNAPs, SVIZ_m)
+!
+      end subroutine initialize_sph_special_snap
+!
+! ----------------------------------------------------------------------
+!
+      subroutine evolution_sph_special_snap
+!
+      use t_time_data
+      use t_VIZ_step_parameter
+      use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
+      use t_visualizer
+      use t_SPH_MHD_zonal_mean_viz
       use SPH_analyzer_SGS_snap
+      use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
       use SGS_MHD_zonal_mean_viz
       use set_time_step_params
-      use FEM_to_VIZ_bridge
-!
-      type(sph_SGS_SNAP), intent(inout) :: SSNAPs
+      use init_sph_MHD_elapsed_label
 !
 !*  -----------  set initial step data --------------
 !*
@@ -77,7 +98,7 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_special_snap'
         call SPH_analyze_special_snap                                   &
      &     (SSNAPs%MHD_files, SSNAPs%SPH_model, SSNAPs%MHD_step,        &
-     &      SSNAPs%SPH_SGS, SSNAPs%SPH_MHD, SSNAPs%SPH_WK, SSNAPs%m_SR)
+     &      SVIZ_m%SPH_SGS, SSNAPs%SPH_MHD, SSNAPs%SPH_WK, SSNAPs%m_SR)
 !*
 !*  -----------  output field data --------------
 !*
@@ -87,13 +108,13 @@
           if(iflag_debug.eq.1)                                          &
      &       write(*,*) 'SPH_to_FEM_bridge_special_snap'
           call SPH_to_FEM_bridge_special_snap                           &
-     &       (SSNAPs%SPH_MHD%sph, SSNAPs%FEM_DAT%geofem,                &
-     &        SSNAPs%SPH_WK%trns_WK, SSNAPs%FEM_DAT%field)
+     &       (SSNAPs%SPH_MHD%sph, SVIZ_m%FEM_DAT%geofem,                &
+     &        SSNAPs%SPH_WK%trns_WK, SVIZ_m%FEM_DAT%field)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
         call FEM_analyze_sph_SGS_MHD(SSNAPs%MHD_files, SSNAPs%MHD_step, &
-     &      SSNAPs%MHD_IO, SSNAPs%FEM_DAT, SSNAPs%m_SR)
+     &      SSNAPs%MHD_IO, SVIZ_m%FEM_DAT, SSNAPs%m_SR)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -107,17 +128,17 @@
      &                          SSNAPs%MHD_step%viz_step)
           call visualize_all                                            &
      &       (SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,         &
-     &        SSNAPs%FEM_DAT%geofem, SSNAPs%FEM_DAT%field,              &
-     &        VIZ_DAT1, SSNAPs%VIZs, SSNAPs%m_SR)
+     &        SVIZ_m%FEM_DAT%geofem, SVIZ_m%FEM_DAT%field,              &
+     &        SVIZ_m%VIZ_FEM, SVIZ_m%VIZs, SSNAPs%m_SR)
 !*
 !*  ----------- Zonal means --------------
 !*
           if(SSNAPs%MHD_step%viz_step%istep_psf .ge. 0) then
             call SGS_MHD_zmean_sections                                 &
      &         (SSNAPs%MHD_step%viz_step, SSNAPs%MHD_step%time_d,       &
-     &          SSNAPs%SPH_MHD%sph, SSNAPs%FEM_DAT%geofem,              &
-     &          SSNAPs%SPH_WK%trns_WK, SSNAPs%SPH_SGS,                  &
-     &          SSNAPs%FEM_DAT%field, SSNAPs%zmeans, SSNAPs%m_SR)
+     &          SSNAPs%SPH_MHD%sph, SVIZ_m%FEM_DAT%geofem,              &
+     &          SSNAPs%SPH_WK%trns_WK, SVIZ_m%SPH_SGS,                  &
+     &          SVIZ_m%FEM_DAT%field, SVIZ_m%zmeans, SSNAPs%m_SR)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
@@ -134,7 +155,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'visualize_fin'
       call visualize_fin(SSNAPs%MHD_step%viz_step,                      &
-     &                   SSNAPs%MHD_step%time_d, SSNAPs%VIZs)
+     &                   SSNAPs%MHD_step%time_d, SVIZ_m%VIZs)
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
       call FEM_finalize_sph_SGS_MHD(SSNAPs%MHD_files, SSNAPs%MHD_step,  &
      &                              SSNAPs%MHD_IO)

@@ -56,6 +56,7 @@ SOURCES = $(shell ls *.f90)
 MOD_SPH_SNAP_MAIN =  \
 main_sph_snapshot.o \
 analyzer_sph_snap.o \
+initialization_sph_SGS_snap.o \
 SPH_analyzer_SGS_snap.o
 
 MOD_SPH_SNAP_VIZS_MAIN =  \
@@ -70,14 +71,15 @@ SPH_analyzer_snap_w_psf.o
 
 MOD_SPH_SNAP_BADBOY =  \
 main_sph_snap_badboy.o \
-analyzer_sph_snap.o \
+analyzer_sph_snap_badboy.o \
+initialization_sph_SGS_snap.o \
 SPH_analyzer_SGS_snap.o
 
 
 MOD_SPH_SP_SNAP_MAIN = \
 main_sph_special_snap.o \
 analyzer_sph_special_snap.o \
-analyzer_sph_snap.o \
+initialization_sph_SGS_snap.o \
 SPH_analyzer_SGS_snap.o
 
 
