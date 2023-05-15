@@ -7,6 +7,8 @@
 !!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
 !>@brief  Main program to evaluate snapshots from spectr data
+!!         with visualizers
+!!         Input ontrol file: control_snapshot
 !
       program kemorin_sph_snapshot
 !

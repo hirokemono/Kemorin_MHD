@@ -62,12 +62,12 @@ SPH_analyzer_SGS_snap.o
 MOD_SPH_SNAP_VIZS_MAIN =  \
 main_sph_snapshot_w_vizs.o \
 analyzer_sph_snap_w_vizs.o \
-SPH_analyzer_snap_w_psf.o
+SPH_analyzer_snap_w_vizs.o
 
 MOD_SPH_SNAP_PSF_MAIN =  \
 main_sph_snapshot_w_psf.o \
 analyzer_sph_snap_w_psf.o \
-SPH_analyzer_snap_w_psf.o
+SPH_analyzer_snap_w_vizs.o
 
 MOD_SPH_SNAP_BADBOY =  \
 main_sph_snap_badboy.o \
@@ -86,13 +86,15 @@ SPH_analyzer_SGS_snap.o
 MOD_SPH_SNAP_NOVIZ_MAIN =  \
 main_sph_snapshot_noviz.o \
 analyzer_noviz_sph_snap.o \
-SPH_analyzer_snap_w_psf.o
+initialize_sph_snap_noviz.o \
+SPH_analyzer_snap_w_vizs.o
 
 MOD_MODIFY_SPH_INI = \
 main_sph_modify_restart.o \
 analyzer_sph_modify_restart.o \
-analyzer_sph_snap_w_psf.o \
-SPH_analyzer_snap_w_psf.o
+analyzer_noviz_sph_snap.o \
+initialize_sph_snap_noviz.o \
+SPH_analyzer_snap_w_vizs.o
 
 MOD_SPH_FORWARD_TRANS = \
 main_sph_forward_transform.o \

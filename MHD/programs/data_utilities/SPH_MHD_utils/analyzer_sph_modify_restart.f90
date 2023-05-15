@@ -7,7 +7,9 @@
 !>@brief  Main loop to modifity spectr data for new simulation
 !!
 !!@verbatim
+!!      subroutine initialize_sph_mod_restart(control_file_name)
 !!      subroutine evolution_sph_mod_restart
+!!        character(len=kchara), intent(in) :: control_file_name
 !!@endverbatim
 !
       module analyzer_sph_modify_restart
@@ -18,20 +20,18 @@
       use m_machine_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
-      use m_SPH_MHD_model_data
-      use m_MHD_step_parameter
+      use m_elapsed_labels_SEND_RECV
       use m_phys_constants
-      use t_SPH_mesh_field_data
-      use t_step_parameter
-      use t_MHD_file_parameter
-      use t_SPH_mesh_field_data
-      use t_field_data_IO
-      use t_sph_mhd_monitor_data_IO
+      use t_spherical_MHD
+      use t_FEM_mesh_field_data
+!
 !
       implicit none
 !
-!>      Structure of spectr grid and data
-      type(SPH_mesh_field_data), save, private :: SPH_MHD1
+!>      Structure of the all data of program
+      type(spherical_MHD), save, private :: SNAPs
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_data), save, private :: FEM_DATs
 !
       private :: SPH_analyze_mod_restart, set_modify_rj_fields
 !
@@ -41,8 +41,31 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine initialize_sph_mod_restart(control_file_name)
+!
+      use m_elapsed_labels_SEND_RECV
+      use init_sph_MHD_elapsed_label
+      use initialize_sph_snap_noviz
+!
+      character(len=kchara), intent(in) :: control_file_name
+!
+!
+      write(*,*) 'Simulation start: PE. ', my_rank
+      call init_elapse_time_by_TOTAL
+      call set_sph_MHD_elapsed_label
+      call elpsed_label_field_send_recv
+!
+!   Load parameter file
+      call s_initialize_sph_snap_noviz(control_file_name,               &
+     &                                 SNAPs, FEM_DATs)
+!
+      end subroutine initialize_sph_mod_restart
+!
+! ----------------------------------------------------------------------
+!
       subroutine evolution_sph_mod_restart
 !
+      use m_elapsed_labels_SEND_RECV
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_SGS_snap
       use set_time_step_params
@@ -52,20 +75,21 @@
 !*  -----------  set initial step data --------------
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
-      call set_from_initial_step(MHD_step1%init_d, MHD_step1%time_d)
+      call set_from_initial_step(SNAPs%MHD_step%init_d,                 &
+     &                           SNAPs%MHD_step%time_d)
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        call add_one_step(MHD_step1%time_d)
-        if(output_IO_flag(MHD_step1%time_d%i_time_step,                 &
-     &                    MHD_step1%rst_step) .eqv. .FALSE.) cycle
+        call add_one_step(SNAPs%MHD_step%time_d)
+        if(output_IO_flag(SNAPs%MHD_step%time_d%i_time_step,            &
+     &                    SNAPs%MHD_step%rst_step) .eqv. .FALSE.) cycle
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
-        call SPH_analyze_mod_restart(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1%fst_file_IO, SPH_model1, MHD_files1,             &
-     &      MHD_step1, SPH_MHD1, SPH_WK1, sph_fst_IO,                   &
-     &      m_SR1%SR_sig, m_SR1%SR_r)
+        call SPH_analyze_mod_restart                                    &
+     &     (SNAPs%SPH_model, SNAPs%MHD_files, SNAPs%MHD_step,           &
+     &      SNAPs%SPH_MHD, SNAPs%SPH_WK, sph_fst_IO,                    &
+     &      SNAPs%m_SR%SR_sig, SNAPs%m_SR%SR_r)
 !*
 !*  -----------  output field data --------------
 !*
@@ -78,7 +102,7 @@
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      call FEM_finalize(SNAPs%MHD_files, SNAPs%MHD_step, SNAPs%MHD_IO)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
@@ -95,9 +119,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_mod_restart                                &
-     &         (i_step, fst_file_IO, SPH_model, MHD_files, MHD_step,    &
-     &          SPH_MHD, SPH_WK, sph_fst_IO, SR_sig, SR_r)
+      subroutine SPH_analyze_mod_restart(SPH_model, MHD_files,          &
+     &          MHD_step, SPH_MHD, SPH_WK, sph_fst_IO, SR_sig, SR_r)
 !
       use m_work_time
 !
@@ -113,8 +136,6 @@
       use sph_SGS_mhd_monitor_data_IO
       use sph_radial_grad_4_magne
 !
-      integer(kind = kint), intent(in) :: i_step
-      type(field_IO_params), intent(in) :: fst_file_IO
       type(SPH_MHD_model_data), intent(in) :: SPH_model
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -126,8 +147,8 @@
 !
 !
       MHD_files%org_rst_file_IO%iflag_format                            &
-     &    = fst_file_IO%iflag_format
-      call read_alloc_sph_rst_4_snap(i_step,                            &
+     &    = MHD_files%fst_file_IO%iflag_format
+      call read_alloc_sph_rst_4_snap(MHD_step%time_d%i_time_step,       &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
      &    MHD_step%rst_step, SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld,    &
      &    MHD_step%init_d, SPH_WK%rj_itp)
@@ -152,7 +173,7 @@
       if(output_IO_flag(MHD_step%time_d%i_time_step,                    &
      &                  MHD_step%rst_step)) then
         call output_sph_restart_control(MHD_step%time_d%i_time_step,    &
-     &      fst_file_IO, MHD_step%time_d, SPH_MHD%fld,                  &
+     &      MHD_files%fst_file_IO, MHD_step%time_d, SPH_MHD%fld,        &
      &      MHD_step%rst_step, sph_fst_IO)
       end if
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
