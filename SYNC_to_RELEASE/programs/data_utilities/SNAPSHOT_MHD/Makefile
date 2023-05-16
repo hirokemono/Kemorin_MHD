@@ -12,7 +12,7 @@ SOURCES = $(shell ls *.f90)
 MOD_SPH_SNAP_MAIN =  \
 main_sph_snapshot_w_psf.o \
 analyzer_sph_snap_w_psf.o \
-SPH_analyzer_snap_w_psf.o
+SPH_analyzer_snap_w_vizs.o
 
 #
 #  -------------------------------------------------------------------------
