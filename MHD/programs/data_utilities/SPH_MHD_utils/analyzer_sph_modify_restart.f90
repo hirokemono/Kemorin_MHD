@@ -93,8 +93,8 @@
 !*
 !*  -----------  output field data --------------
 !*
-        if(MHD_step1%time_d%i_time_step                                 &
-     &        .ge. MHD_step1%finish_d%i_end_step) exit
+        if(SNAPs%MHD_step%time_d%i_time_step                            &
+     &        .ge. SNAPs%MHD_step%finish_d%i_end_step) exit
       end do
 !
 !  time evolution end

@@ -1,5 +1,5 @@
-!>@file   t_sph_MHD.f90
-!!@brief  module t_sph_MHD
+!>@file   t_spherical_MHD.f90
+!!@brief  module t_spherical_MHD
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010

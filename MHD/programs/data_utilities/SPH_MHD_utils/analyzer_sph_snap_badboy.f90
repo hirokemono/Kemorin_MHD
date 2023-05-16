@@ -108,8 +108,8 @@
         SSNAPs%MHD_step%time_d%i_time_step                              &
       &        = SSNAPs%MHD_step%init_d%i_time_step
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
-        call SPH_analyze_SGS_snap(SSNAPs%MHD_step%time_d%i_time_step,   &
-     &      SSNAPs%MHD_files, SSNAPs%SPH_model, SSNAPs%MHD_step,        &
+        call SPH_analyze_SGS_snap                                       &
+     &     (SSNAPs%MHD_files, SSNAPs%SPH_model, SSNAPs%MHD_step,        &
      &      SVIZ_m%SPH_SGS, SSNAPs%SPH_MHD, SSNAPs%SPH_WK, SSNAPs%m_SR)
 !*
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)

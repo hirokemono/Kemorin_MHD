@@ -24,7 +24,6 @@
 !
       subroutine init_analyzer
 !
-      use m_MHD_step_parameter
       use input_control
 !
 !

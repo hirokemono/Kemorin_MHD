@@ -17,11 +17,13 @@
 !
       implicit none
 !
+      character(len=kchara), parameter                                  &
+     &                      :: snap_ctl_name = 'control_snapshot'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_forward_trans
-!
+      call initialize_sph_forward_trans(snap_ctl_name)
       call evolution_sph_forward_trans
 !
       call calypso_MPI_finalize

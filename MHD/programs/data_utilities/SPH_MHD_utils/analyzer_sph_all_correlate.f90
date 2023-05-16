@@ -70,9 +70,9 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo(control_file_name,              &
-     &    SNAPs%MHD_files, MHD_ctl1, add_SSMHD_ctl1,                    &
-     &    SNAPs%MHD_step, SNAPs%SPH_model, SNAPs%SPH_WK,                &
-     &    SVIZ_m%SPH_SGS, SNAPs%SPH_MHD, SVIZ_m%FEM_DAT)
+     &    SNAPs%MHD_files, MHD_ctl1, add_SSMHD_ctl1, SNAPs%MHD_step,    &
+     &    SNAPs%SPH_model, SNAPs%SPH_WK, SVIZ_m%SPH_SGS, SNAPs%SPH_MHD, &
+     &    SVIZ_m%FEM_DAT)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)

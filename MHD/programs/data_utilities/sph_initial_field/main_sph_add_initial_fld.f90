@@ -19,13 +19,11 @@
 !
 !>      File name for control file
       character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
-!>      Data structure for the program
-      type(SPH_add_initial), save :: sadi_p
 !
 !
       call calypso_MPI_init
 !
-      call initialize_add_sph_initial(MHD_ctl_name, sadi_p)
+      call initialize_add_sph_initial(MHD_ctl_name)
 !
       call calypso_MPI_finalize
 !

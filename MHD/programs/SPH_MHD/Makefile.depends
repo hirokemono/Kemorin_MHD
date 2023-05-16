@@ -28,6 +28,4 @@ main_sph_MHD_w_vizs.o: $(SPH_MHD_MAINDIR)/main_sph_MHD_w_vizs.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_linear_cv.o: $(SPH_MHD_MAINDIR)/main_sph_linear_cv.f90 m_precision.o calypso_mpi.o analyzer_sph_licv.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_spherical_MHD.o: $(SPH_MHD_MAINDIR)/t_spherical_MHD.f90 m_precision.o t_SPH_MHD_model_data.o t_MHD_step_parameter.o t_SPH_mesh_field_data.o t_MHD_file_parameter.o t_MHD_IO_data.o t_work_SPH_MHD.o t_mesh_SR.o
-	$(F90) -c $(F90OPTFLAGS) $<
 

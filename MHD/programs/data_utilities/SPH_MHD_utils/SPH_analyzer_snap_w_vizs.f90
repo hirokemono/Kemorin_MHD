@@ -30,7 +30,6 @@
       module SPH_analyzer_snap_w_vizs
 !
       use m_precision
-      use m_MHD_step_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
       use t_SPH_MHD_model_data

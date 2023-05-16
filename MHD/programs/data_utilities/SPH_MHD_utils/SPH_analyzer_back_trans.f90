@@ -16,8 +16,8 @@
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine SPH_analyze_back_trans(i_step, MHD_files,            &
-!!     &          SPH_SGS, MHD_step, SPH_MHD, SPH_WK, m_SR)
+!!      subroutine SPH_analyze_back_trans(MHD_files, SPH_SGS, MHD_step, &
+!!     &                                  SPH_MHD, SPH_WK, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_SGS_structure), intent(in) ::  SPH_SGS
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -125,8 +125,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_back_trans(i_step, MHD_files,              &
-     &          MHD_step, SPH_MHD, SPH_WK, m_SR)
+      subroutine SPH_analyze_back_trans(MHD_files, MHD_step, SPH_MHD,   &
+     &                                  SPH_WK, m_SR)
 !
       use t_sph_mhd_monitor_data_IO
 !
@@ -139,7 +139,6 @@
 !
       use back_sph_trans_4_all_field
 !
-      integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -147,7 +146,8 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      call read_alloc_sph_spectr(i_step, MHD_step%ucd_step,             &
+      call read_alloc_sph_spectr                                        &
+     &   (MHD_step%time_d%i_time_step, MHD_step%ucd_step,               &
      &    MHD_files%org_rj_file_IO, MHD_files%sph_file_IO,              &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
      &    MHD_step%init_d, SPH_WK%rj_itp)
