@@ -9,9 +9,10 @@ SHELL           = @SHELL@
 SRCDIR = @abs_top_srcdir@
 INSTDIR= @prefix@
 #
-MHDDIR = $(SRCDIR)/MHD
-MAKEDIR= $(SRCDIR)/work
-BUILDDIR= $(SRCDIR)/bin
+MHDDIR =   $(SRCDIR)/MHD
+MAKEDIR=   $(SRCDIR)/work
+BUILDDIR=  $(SRCDIR)/bin
+PYTHONDIR= $(MHDDIR)/pythons
 
 MAKE64DIR= $(SRCDIR)/work_64
 BUILD64DIR= $(SRCDIR)/bin_64
@@ -121,12 +122,8 @@ all: makemake makemake64
 	cd $(MAKE64DIR); $(GMAKE)
 
 $(MAKE_MOD_DEP): $(MHDDIR)/module_dependency/make_module_dependency.f90
-	if [ ! -d $(MAKEDIR) ]; then \
-		mkdir $(MAKEDIR); \
-	fi
-	if [ ! -d $(BUILDDIR) ]; then \
-		mkdir $(BUILDDIR); \
-	fi
+	mkdir -p $(MAKEDIR)
+	mkdir -p $(BUILDDIR)
 	$(F90_LOCAL) -c -o $(MAKEDIR)/make_module_dependency.o $<
 	$(F90_LOCAL) -o $@ $(MAKEDIR)/make_module_dependency.o
 
@@ -137,8 +134,9 @@ depends: $(MAKE_MOD_DEP)
 		GMAKE="$(GMAKE)" \
 		SRCDIR="$(SRCDIR)" \
 		INSTDIR="$(INSTDIR)" \
-		MAKEDIR="$(MAKE64DIR)" \
-		BUILDDIR="$(BUILD64DIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		BUILDDIR="$(BUILDDIR)" \
+		PYTHONDIR="$(PYTHONDIR)" \
 		MHDDIR="$(MHDDIR)" \
 		BLAS_LIBS="$(BLAS_LIBS)" \
 		ZLIB_CFLAGS="$(ZLIB_CFLAGS)" \
@@ -189,6 +187,7 @@ makemake: $(MAKE_MOD_DEP)
 		INSTDIR="$(INSTDIR)" \
 		MAKEDIR="$(MAKEDIR)" \
 		BUILDDIR="$(BUILDDIR)" \
+		PYTHONDIR="$(PYTHONDIR)" \
 		MHDDIR="$(MHDDIR)" \
 		MPICHDIR="$(MPICHDIR)" \
 		MPICHLIBDIR="$(MPICHLIBDIR)" \
@@ -248,6 +247,7 @@ makemake64: $(MAKE_MOD_DEP)
 		INSTDIR="$(INSTDIR)" \
 		MAKEDIR="$(MAKE64DIR)" \
 		BUILDDIR="$(BUILD64DIR)" \
+		PYTHONDIR="$(PYTHONDIR)" \
 		MHDDIR="$(MHDDIR)" \
 		MPICHDIR="$(MPICHDIR)" \
 		MPICHLIBDIR="$(MPICHLIBDIR)" \

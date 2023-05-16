@@ -41,9 +41,6 @@
       integer(kind = kint) :: i
 !
 !
-      if(ndomain_section_ctl%num .ne. 3)                                &
-     &         stop 'number of subdomain should be 3 directions'
-!
       ndomain_eb(1:3) = 1
       do i = 1, ndomain_section_ctl%num
         if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'X')               &
@@ -53,6 +50,7 @@
         if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Z')               &
      &        ) ndomain_eb(3) = ndomain_section_ctl%ivec(i)
       end do
+!
       new_nprocs = ndomain_eb(1) * ndomain_eb(2) * ndomain_eb(3)
 !
       end subroutine set_control_EQ_XYZ
@@ -71,9 +69,6 @@
 !
       integer(kind = kint) :: i
 !
-!
-        if(ndomain_section_ctl%num .ne. 3)                              &
-     &         stop 'number of subdomain should be 3 directions'
 !
         ndomain_eb(1:3) = 1
         do i = 1, ndomain_section_ctl%num

@@ -33,10 +33,15 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &               :: fname_new_part_ctl = "ctl_repartition"
+!
       type(mesh_data), save :: fem_T
       type(communication_table) :: ele_comm_T
-      type(mesh_data), save :: new_fem
-      type(calypso_comm_table), save :: repart_nod_tbl1
+      type(mesh_data), save :: new_fem_T
+      type(communication_table) :: new_ele_comm_T
+      type(calypso_comm_table), save :: repart_nod_tbl_T
+      type(calypso_comm_table), save :: repart_ele_tbl_T
 !
 !>      Structure for communicatiors for solver
       type(mesh_SR), save :: m_SR_T
@@ -74,7 +79,6 @@
 !
 !>     Stracture for Jacobians
 !
-      type(new_patition_test_control) :: part_tctl1
       type(next_nod_ele_table) :: next_tbl1
       type(jacobians_type) :: jacobians1
       type(shape_finctions_at_points) :: spfs1
@@ -96,13 +100,8 @@
 !
 !     ----- read control data
 !
-      call read_control_new_partition(part_tctl1)
-!
-      call set_control_param_repartition(part_tctl1, part_p1)
-      
-      call set_fixed_t_step_params_w_viz                                &
-     &   (part_tctl1%t_viz_ctl, t_VIZ_T, ierr, e_message)
-      call copy_delta_t(t_VIZ_T%init_d, t_VIZ_T%time_d)
+      call input_control_field_to_repart(fname_new_part_ctl,            &
+     &                                   part_p1, t_VIZ_T)
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
@@ -142,17 +141,20 @@
       allocate(d_mask_org1(fem_T%mesh%node%numnod,1))
       allocate(vect_ref1(fem_T%mesh%node%numnod,3))
       call load_or_const_new_partition                                  &
-     &   ((.TRUE.), part_p1%repart_p, fem_T, ele_comm_T, next_tbl1,     &
-     &    izero, masking1, vect_ref1(1,1), d_mask_org1, vect_ref1,      &
-     &    new_fem, repart_nod_tbl1, sleeve_exp_WK1, m_SR_T)
+     &  ((.TRUE.), part_p1%repart_p, fem_T, ele_comm_T, next_tbl1,      &
+     &   izero, masking1, vect_ref1(1,1), d_mask_org1, vect_ref1,       &
+     &   new_fem_T, new_ele_comm_T, repart_nod_tbl_T, repart_ele_tbl_T, &
+     &   sleeve_exp_WK1, m_SR_T)
+      call dealloc_comm_table(new_ele_comm_T)
       call dealloc_comm_table(ele_comm_T)
       deallocate(d_mask_org1, vect_ref1, masking1)
 !
       call dealloc_next_nod_ele_table(next_tbl1)
       call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
 !
-      call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
-      call const_global_mesh_infos(new_fem%mesh)
+      call set_nod_and_ele_infos(new_fem_T%mesh%node,                   &
+     &                           new_fem_T%mesh%ele)
+      call const_global_mesh_infos(new_fem_T%mesh)
 !
       end subroutine initialize_field_to_repart
 !
@@ -179,7 +181,7 @@
 !
 !
       call init_udt_to_new_partition(part_p1%repart_p%viz_ucd_file,     &
-     &                               new_fem%mesh, new_ucd)
+     &                               new_fem_T%mesh, new_ucd)
 !
       ist = t_VIZ_T%init_d%i_time_step
       ied = t_VIZ_T%finish_d%i_end_step
@@ -196,7 +198,7 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call udt_field_to_new_partition(iflag_import_item,              &
      &      istep_ucd, part_p1%repart_p%viz_ucd_file, t_IO,             &
-     &      new_fem%mesh, repart_nod_tbl1, org_ucd, new_ucd,            &
+     &      new_fem_T%mesh, repart_nod_tbl_T, org_ucd, new_ucd,         &
      &      m_SR_T%v_sol, m_SR_T%SR_sig, m_SR_T%SR_r)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
 !

@@ -21,7 +21,7 @@
 
 #define NLBL_COLORMAP_CTL     13
 #define NLBL_LIGHTING_CTL      4
-#define NLBL_PVR_COLORBAR_CTL  7
+#define NLBL_PVR_COLORBAR_CTL  8
 #define NLBL_CMAP_CBAR_CTL     2
 
 struct colormap_ctl_c{

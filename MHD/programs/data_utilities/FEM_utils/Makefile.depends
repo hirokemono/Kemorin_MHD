@@ -1,6 +1,6 @@
 FEM_MHD_length_scale.o: $(UCD_UTILS_DIR)/FEM_MHD_length_scale.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_phys_data.o calypso_mpi.o t_time_data.o t_ucd_data.o m_field_product_labels.o m_ctl_params_4_prod_udt.o set_and_cal_udt_data.o parallel_ucd_IO_select.o m_base_field_labels.o m_diffusion_term_labels.o mag_of_field_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_MHD_lengthscale.o: $(UCD_UTILS_DIR)/analyzer_MHD_lengthscale.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_FEM_utils.o t_VIZ_step_parameter.o t_mesh_SR.o ucd_IO_select.o FEM_MHD_length_scale.o m_ctl_params_4_prod_udt.o t_ctl_data_product_udt.o t_step_parameter.o product_udt_fields.o m_ctl_params_4_diff_udt.o output_parallel_ucd_file.o
+analyzer_MHD_lengthscale.o: $(UCD_UTILS_DIR)/analyzer_MHD_lengthscale.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_FEM_utils.o t_VIZ_step_parameter.o t_mesh_SR.o ucd_IO_select.o FEM_MHD_length_scale.o t_ctl_data_product_udt.o t_step_parameter.o input_control_prod_udt.o product_udt_fields.o m_ctl_params_4_diff_udt.o output_parallel_ucd_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_ave_udt.o: $(UCD_UTILS_DIR)/analyzer_ave_udt.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_FEM_utils.o t_mesh_SR.o input_control_udt_diff.o set_field_data_w_SGS.o m_ctl_params_4_diff_udt.o ucd_IO_select.o set_ucd_data.o divide_phys_by_delta_t.o nod_phys_send_recv.o set_ucd_data_to_type.o output_parallel_ucd_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -12,9 +12,11 @@ analyzer_udt_correlation.o: $(UCD_UTILS_DIR)/analyzer_udt_correlation.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_udt_diff.o: $(UCD_UTILS_DIR)/analyzer_udt_diff.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_FEM_utils.o t_mesh_SR.o m_phys_constants.o set_field_data_w_SGS.o input_control_udt_diff.o m_ctl_params_4_diff_udt.o set_ucd_data_to_type.o output_parallel_ucd_file.o divide_phys_by_delta_t.o nod_phys_send_recv.o ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_udt_product.o: $(UCD_UTILS_DIR)/analyzer_udt_product.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_FEM_utils.o t_step_parameter.o t_VIZ_step_parameter.o t_mesh_SR.o m_ctl_params_4_prod_udt.o t_ctl_data_product_udt.o nod_phys_send_recv.o load_mesh_data.o const_mesh_information.o product_udt_fields.o set_ucd_data.o ucd_IO_select.o output_parallel_ucd_file.o
+analyzer_udt_product.o: $(UCD_UTILS_DIR)/analyzer_udt_product.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_FEM_utils.o t_step_parameter.o t_VIZ_step_parameter.o t_mesh_SR.o t_ctl_data_product_udt.o nod_phys_send_recv.o load_mesh_data.o const_mesh_information.o input_control_prod_udt.o product_udt_fields.o m_ctl_params_4_prod_udt.o set_ucd_data.o ucd_IO_select.o output_parallel_ucd_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_udt_ratio.o: $(UCD_UTILS_DIR)/analyzer_udt_ratio.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_FEM_utils.o t_step_parameter.o t_VIZ_step_parameter.o t_mesh_SR.o m_ctl_params_4_prod_udt.o t_ctl_data_product_udt.o nod_phys_send_recv.o product_udt_fields.o set_ucd_data.o ucd_IO_select.o output_parallel_ucd_file.o
+analyzer_udt_ratio.o: $(UCD_UTILS_DIR)/analyzer_udt_ratio.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_FEM_utils.o t_step_parameter.o t_VIZ_step_parameter.o t_mesh_SR.o t_ctl_data_product_udt.o nod_phys_send_recv.o input_control_prod_udt.o product_udt_fields.o m_ctl_params_4_prod_udt.o set_ucd_data.o ucd_IO_select.o output_parallel_ucd_file.o
+	$(F90) -c $(F90OPTFLAGS) $<
+bcast_ctl_data_diff_udt.o: $(UCD_UTILS_DIR)/bcast_ctl_data_diff_udt.f90 m_precision.o m_machine_parameter.o t_ctl_data_diff_udt.o calypso_mpi.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_control_arrays.o bcast_4_field_ctl.o bcast_4_time_step_ctl.o bcast_4_filter_files_ctl.o bcast_4_fem_int_pts_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 correlation_all_layerd_data.o: $(UCD_UTILS_DIR)/correlation_all_layerd_data.f90 m_precision.o m_machine_parameter.o calypso_mpi.o m_all_layerd_correlate.o t_geometry_data.o t_phys_data.o t_jacobians.o t_jacobian_3d.o t_layering_ele_list.o t_work_layer_correlate.o cal_layerd_ave_correlate.o int_rms_ave_ele_grps.o transfer_correlate_field.o m_phys_constants.o m_volume_average_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -22,7 +24,9 @@ divide_phys_by_delta_t.o: $(UCD_UTILS_DIR)/divide_phys_by_delta_t.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 element_grouping_udt.o: $(UCD_UTILS_DIR)/element_grouping_udt.f90 m_precision.o m_constants.o m_merdional_grouping_patch.o m_ctl_params_ele_grp_udt.o m_tave_SGS_model_coefs.o m_field_file_format.o t_ctl_data_ele_grp_udt.o t_group_data.o t_time_data.o t_ucd_data.o t_psf_results.o read_layer_evo_file_header.o set_model_coef_to_med_patch.o set_ucd_data_to_type.o ucd_IO_select.o cal_psf_rms_aves.o
 	$(F90) -c $(F90OPTFLAGS) $<
-input_control_udt_diff.o: $(UCD_UTILS_DIR)/input_control_udt_diff.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_step_parameter.o t_phys_data.o t_file_IO_parameter.o t_IO_step_parameter.o t_ctl_data_diff_udt.o m_ctl_params_4_diff_udt.o set_ctl_diff_udt.o set_field_data_w_SGS.o
+input_control_prod_udt.o: $(UCD_UTILS_DIR)/input_control_prod_udt.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_ctl_data_product_udt.o t_FEM_utils.o t_step_parameter.o m_ctl_params_4_prod_udt.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_control_arrays.o bcast_4_time_step_ctl.o
+	$(F90) -c $(F90OPTFLAGS) $<
+input_control_udt_diff.o: $(UCD_UTILS_DIR)/input_control_udt_diff.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_step_parameter.o t_phys_data.o t_file_IO_parameter.o t_IO_step_parameter.o t_ctl_data_diff_udt.o bcast_ctl_data_diff_udt.o m_ctl_params_4_diff_udt.o set_ctl_diff_udt.o set_field_data_w_SGS.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_all_layerd_correlate.o: $(UCD_UTILS_DIR)/m_all_layerd_correlate.f90 m_precision.o write_field_labels.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -66,11 +70,11 @@ t_FEM_utils.o: $(UCD_UTILS_DIR)/t_FEM_utils.f90 m_precision.o t_step_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_average_m_coefs.o: $(UCD_UTILS_DIR)/t_average_m_coefs.f90 m_precision.o m_constants.o m_merdional_grouping_patch.o m_ctl_params_ele_grp_udt.o m_tave_SGS_model_coefs.o m_field_file_format.o t_ctl_data_ele_grp_udt.o t_group_data.o t_time_data.o t_ucd_data.o ucd_IO_select.o read_layer_evo_file_header.o set_model_coef_to_med_patch.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_diff_udt.o: $(UCD_UTILS_DIR)/t_ctl_data_diff_udt.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_fields.o t_ctl_data_4_time_steps.o t_ctl_data_ele_layering.o t_ctl_data_4_fem_int_pts.o t_control_array_character.o calypso_mpi.o skip_comment_f.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_control_arrays.o bcast_4_field_ctl.o bcast_4_time_step_ctl.o bcast_4_filter_files_ctl.o bcast_4_fem_int_pts_ctl.o
+t_ctl_data_diff_udt.o: $(UCD_UTILS_DIR)/t_ctl_data_diff_udt.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_fields.o t_ctl_data_4_time_steps.o t_ctl_data_ele_layering.o t_ctl_data_4_fem_int_pts.o t_control_array_character.o skip_comment_f.o ctl_data_platforms_IO.o ctl_data_4_time_steps_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_ele_grp_udt.o: $(UCD_UTILS_DIR)/t_ctl_data_ele_grp_udt.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_time_steps.o t_control_array_integer.o t_control_array_character.o skip_comment_f.o
+t_ctl_data_ele_grp_udt.o: $(UCD_UTILS_DIR)/t_ctl_data_ele_grp_udt.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_time_steps.o t_control_array_integer.o t_control_array_character.o skip_comment_f.o ctl_data_4_time_steps_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_product_udt.o: $(UCD_UTILS_DIR)/t_ctl_data_product_udt.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_array_character.o skip_comment_f.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_control_arrays.o bcast_4_time_step_ctl.o
+t_ctl_data_product_udt.o: $(UCD_UTILS_DIR)/t_ctl_data_product_udt.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_array_character.o skip_comment_f.o ctl_data_platforms_IO.o ctl_data_4_time_steps_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 transfer_correlate_field.o: $(UCD_UTILS_DIR)/transfer_correlate_field.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_phys_data.o calypso_mpi.o m_error_IDs.o m_ctl_params_4_diff_udt.o set_components_flags.o m_phys_constants.o cvt_xyz_vector_2_sph_smp.o cvt_xyz_tensor_2_sph_smp.o cvt_xyz_vector_2_cyl_smp.o cvt_xyz_tensor_2_cyl_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<

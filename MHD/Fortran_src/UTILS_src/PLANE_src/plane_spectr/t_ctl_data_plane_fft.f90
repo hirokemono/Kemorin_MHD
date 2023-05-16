@@ -131,6 +131,8 @@
       subroutine read_fft_plane_control_data                            &
      &         (id_control, hd_block, pfft_c, c_buf)
 !
+      use ctl_data_platforms_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
@@ -193,6 +195,8 @@
 !
        subroutine read_merge_step_data                                  &
      &         (id_control, hd_block, pfft_c, c_buf)
+!
+      use ctl_data_4_time_steps_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

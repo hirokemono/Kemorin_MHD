@@ -24,8 +24,6 @@
       use t_interpolate_tbl_dest
       use t_interpolate_tbl_org
       use t_binary_IO_buffer
-      use itp_table_data_IO
-      use itp_table_data_IO_b
       use set_parallel_file_name
 !
       implicit  none
@@ -48,6 +46,10 @@
     &           IO_itp_org, IO_itp_dest, e_ref_IO)
 !
       use binary_IO
+      use itp_table_org_data_IO
+      use itp_table_dest_data_IO
+      use itp_table_org_data_IO_b
+      use itp_table_dest_data_IO_b
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type
@@ -79,6 +81,8 @@
         call read_interpolate_table_org_b(bbuf_rfin, IO_itp_org)
         if(bbuf_rfin%ierr_bin .ne. 0) goto 99
 !
+        call read_interpolate_idx_org_b(bbuf_rfin, IO_itp_org)
+        if(bbuf_rfin%ierr_bin .ne. 0) goto 99
         call read_interpolate_coefs_org_b(bbuf_rfin, IO_itp_org)
         if(bbuf_rfin%ierr_bin .ne. 0) goto 99
 !
@@ -109,6 +113,11 @@
       subroutine write_element_refine_file(id_rank, ifile_type,         &
      &          IO_itp_org, IO_itp_dest, e_ref_IO, ierr)
 !
+      use itp_table_org_data_IO
+      use itp_table_dest_data_IO
+      use itp_table_org_data_IO_b
+      use itp_table_dest_data_IO_b
+!
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: ifile_type
       type(interpolate_table_org), intent(inout) :: IO_itp_org
@@ -134,6 +143,8 @@
 !
         call write_interpolate_table_org_b                              &
      &     (id_rank, IO_itp_org, bbuf_rfin)
+        if(bbuf_rfin%ierr_bin .ne. 0) go to 99
+        call write_interpolate_idx_org_b(IO_itp_org, bbuf_rfin)
         if(bbuf_rfin%ierr_bin .ne. 0) go to 99
         call write_interpolate_coefs_org_b(IO_itp_org, bbuf_rfin)
         if(bbuf_rfin%ierr_bin .ne. 0) go to 99

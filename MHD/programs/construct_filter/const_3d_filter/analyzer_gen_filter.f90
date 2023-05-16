@@ -36,6 +36,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter                                &
+     &                        :: fname_filter_ctl = "ctl_filter"
+!
 !
       type(ctl_data_gen_3d_filter), save :: filter3d_ctl1
       type(field_IO_params), save ::  mesh_filter_file
@@ -78,6 +81,7 @@
       use parallel_edge_information
       use cal_1d_moments_4_fliter
 !
+      use bcast_ctl_data_gen_3d_filter
       use set_element_data_4_IO
       use set_surface_data_4_IO
       use set_edge_data_4_IO
@@ -103,7 +107,10 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_filter'
-      call read_control_4_gen_filter(filter3d_ctl1)
+      if(my_rank .eq. 0) then
+        call read_control_4_gen_filter(fname_filter_ctl, filter3d_ctl1)
+      end if
+      call bcast_const_filter_ctl_data(filter3d_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
       call set_controls_gen_3dfilter(filter3d_ctl1, FEM_elen_f,         &

@@ -111,7 +111,7 @@
       end if
 !
       call set_med_grp_patch_ctl(psf_ctls_md%num_psf_ctl,               &
-     &     psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
+     &    psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
 !
       call SECTIONING_initialize(ione, FUTIL1%geofem, edge_comm_MG,     &
      &    FUTIL1%nod_fld, psf_ctls_md, psf_md,                          &
@@ -122,8 +122,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_med_grp_patch_ctl                                  &
-     &         (num_psf_ctl, fname_psf_ctl, psf_ctl_struct)
+      subroutine set_med_grp_patch_ctl(num_psf_ctl, fname_psf_ctl,      &
+     &                                 psf_ctl_struct)
 !
       use m_ctl_params_4_diff_udt
       use set_parallel_file_name
@@ -133,7 +133,7 @@
 !
       integer(kind = kint), intent(inout) :: num_psf_ctl
       character(len = kchara), intent(inout)                            &
-     &                         :: fname_psf_ctl(num_psf_ctl)
+     &                        :: fname_psf_ctl(num_psf_ctl)
       type(psf_ctl), intent(inout) :: psf_ctl_struct(num_psf_ctl)
 !
       integer(kind = kint) :: igrp

@@ -8,6 +8,7 @@
 !
 !>@brief  Main program to evaluate snapshots from spectr data
 !!        without visualization routines
+!!         Input control file: control_snapshot
 !
       program sph_snap_noviz
 !
@@ -18,11 +19,14 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter                                  &
+     &                      :: snap_ctl_name = 'control_snapshot'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_noviz_sph_snap
-!
+      call initialize_noviz_sph_snap(snap_ctl_name)
       call evolution_noviz_sph_snap
 !
       call calypso_MPI_finalize

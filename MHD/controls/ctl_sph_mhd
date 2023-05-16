@@ -462,13 +462,13 @@ begin fluid_control
         ext_magne_vec  y     1.000   end
         ext_magne_vec  z     0.000   end
       end array
-	  tri_sph_int_file     'rot_int.dat'
     end
 !!!!!!!!! model for stratification !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !    ref_temperature_ctl: none           (No reference of temperature)
 !                         spherical_shell ( for spherical shell model)
 !                         sph_constant_heat (for spherical shell model)
+!                         numrical_solution ( Get numerical solution)
 !                         linear_x        ( propotional to x-direction )
 !                         linear_y        ( propotional to x-direction )
 !                         linear_z        ( propotional to x-direction )

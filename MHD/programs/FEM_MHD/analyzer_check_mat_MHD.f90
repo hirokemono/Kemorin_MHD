@@ -9,13 +9,17 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_FEM_MHD_model_data
       use calypso_mpi
 !
-      use t_mesh_SR
+      use t_FEM_SGS_MHD
       use FEM_check_MHD_matrices
 !
       implicit none
+!
+!
+      type(FEM_MHD), save, private :: FMHDs
+      type(FEM_SGS_MHD), save, private ::  FSGSs
+      type(visualization_controls), save, private :: vizs_ctl_F
 !
 ! ----------------------------------------------------------------------
 !
@@ -25,23 +29,26 @@
 !
       subroutine init_analyzer
 !
-      use m_MHD_step_parameter
       use input_control
 !
 !
         write(*,*) 'Simulation start: PE. ', my_rank
 !
       call input_control_4_FEM_MHD                                      &
-     &   (MHD_files1, FEM_model1%FEM_prm, FEM_SGS1%SGS_par, MHD_step1,  &
-     &    FEM_model1%MHD_prop, FEM_model1%MHD_BC, FEM_MHD1%geofem,      &
-     &    FEM_MHD1%field, SGS_MHD_wk1%ele_fld,                          &
-     &    FEM_model1%bc_FEM_IO, FEM_SGS1%FEM_filters,                   &
-     &    SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1, vizs_ctl_F)
-      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
+     &   (FMHDs%MHD_files, FMHDs%FEM_model%FEM_prm,                     &
+     &    FSGSs%FEM_SGS%SGS_par, FMHDs%MHD_step,                        &
+     &    FMHDs%FEM_model%MHD_prop, FMHDs%FEM_model%MHD_BC,             &
+     &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
+     &    FSGSs%SGS_MHD_wk%ele_fld, FMHDs%FEM_MHD%nod_mntr,             &
+     &    FMHDs%FEM_model%bc_FEM_IO, FSGSs%FEM_SGS%FEM_filters,         &
+     &    FSGSs%SGS_MHD_wk%FEM_SGS_wk, FMHDs%MHD_CG, vizs_ctl_F)
+      call copy_delta_t(FMHDs%MHD_step%init_d, FMHDs%MHD_step%time_d)
 !
       call FEM_check_MHD_mat                                            &
-     &   (MHD_files1, flex_MHD1, MHD_step1, FEM_model1, MHD_CG1,        &
-     &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1, m_SR2)
+     &   (FMHDs%MHD_files, FMHDs%flex_MHD, FMHDs%MHD_step,              &
+     &    FMHDs%FEM_model, FMHDs%MHD_CG, FMHDs%FEM_MHD,                 &
+     &    FSGSs%FEM_SGS, FSGSs%SGS_MHD_wk, FMHDs%MHD_IO,                &
+     &    FMHDs%fem_sq, FMHDs%m_SR)
 !
       end subroutine init_analyzer
 !

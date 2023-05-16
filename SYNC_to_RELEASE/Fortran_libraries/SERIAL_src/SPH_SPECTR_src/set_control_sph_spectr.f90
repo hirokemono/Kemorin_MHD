@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/CORE_src/SPH_SPECTR_src/set_control_sph_spectr.f90

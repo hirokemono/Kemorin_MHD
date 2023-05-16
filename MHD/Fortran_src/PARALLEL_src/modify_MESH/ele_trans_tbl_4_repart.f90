@@ -40,6 +40,7 @@
       subroutine const_ele_trans_tbl_for_repart(node, ele, part_tbl,    &
      &                                          idomain_new, ele_tbl)
 !
+      use m_error_IDs
       use calypso_mpi_int
       use set_comm_tbl_to_new_part
 !
@@ -52,6 +53,7 @@
 !
       integer(kind = kint), allocatable :: num_send_ele(:)
       integer(kind = kint), allocatable :: num_recv_ele(:)
+      integer(kind = kint) :: ntot_rev, ierr
 !
 !
       allocate(num_send_ele(nprocs))
@@ -90,11 +92,17 @@
      &    ele_tbl%istack_import)
 !
       call alloc_calypso_export_item(ele_tbl)
-      call alloc_calypso_import_item                                    &
-     &   (ele_tbl%ntot_import, ele_tbl)
+      call alloc_calypso_import_item(ele_tbl)
       call set_import_item_for_repart                                   &
-     &   (ele_tbl%ntot_import, ele_tbl%ntot_import,                     &
+     &   (ele_tbl%ntot_import, ele_tbl%item_import, ntot_rev)
+!
+      call alloc_calypso_import_rev(ntot_rev, ele_tbl)
+      call set_import_rev_for_repart(ele_tbl%ntot_import, ntot_rev,     &
      &    ele_tbl%item_import, ele_tbl%irev_import)
+      if(ierr .gt. 0) then
+        call calypso_mpi_abort(ierr_repart,                             &
+     &                         'Failed repatition table loading')
+      end if
 !
       call set_import_ele_for_repart(node, ele, idomain_new,            &
      &    ele_tbl%nrank_export, ele_tbl%ntot_export,                    &

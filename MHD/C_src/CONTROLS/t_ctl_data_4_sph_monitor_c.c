@@ -7,11 +7,11 @@
 
 #include "t_ctl_data_4_sph_monitor_c.h"
 
-#define NLBL_SPH_MONITOR 8
+#define NLBL_SPH_MONITOR   9
 
 #define NLBL_PICK_SPECTR   5
 #define NLBL_GAUSS_SPECTR  5
-#define NLBL_LAYERD_SPECTR 6
+#define NLBL_LAYERD_SPECTR 7
 #define NLBL_MID_EQUATOR   4
 
 const char label_sph_monitor_ctl[NLBL_SPH_MONITOR][KCHARA_C] = {
@@ -20,12 +20,13 @@ const char label_sph_monitor_ctl[NLBL_SPH_MONITOR][KCHARA_C] = {
     
     /*[ 2]*/    {"gauss_coefficient_ctl"},
     /*[ 3]*/    {"pickup_spectr_ctl"},
-    /*[ 4]*/    {"mid_equator_monitor_ctl"},
+    /*[ 4]*/    {"fields_on_circle_ctl"},
 	
     
 	/*[ 5]*/    {"volume_average_prefix"},
     /*[ 6]*/    {"volume_pwr_spectr_prefix"},
-    /*[ 7]*/    {"nusselt_number_prefix"}
+    /*[ 7]*/    {"volume_pwr_spectr_format"},
+    /*[ 8]*/    {"nusselt_number_prefix"}
 };
 
 
@@ -49,12 +50,13 @@ const char label_gauss_spectr_ctl[NLBL_GAUSS_SPECTR][KCHARA_C] = {
 
 const char label_layerd_spectr_ctl[NLBL_LAYERD_SPECTR][KCHARA_C] = {
     /*[ 0]*/    {"layered_pwr_spectr_prefix"},
-    /*[ 1]*/    {"spectr_layer_ctl"},
+    /*[ 1]*/    {"layered_pwr_spectr_format"},
+    /*[ 2]*/    {"spectr_layer_ctl"},
     
-    /*[ 2]*/    {"degree_spectr_switch"},
-    /*[ 3]*/    {"order_spectr_switch"},
-    /*[ 4]*/    {"diff_lm_spectr_switch"},
-    /*[ 5]*/    {"axisymmetric_spectr_switch"}
+    /*[ 3]*/    {"degree_spectr_switch"},
+    /*[ 4]*/    {"order_spectr_switch"},
+    /*[ 5]*/    {"diff_lm_spectr_switch"},
+    /*[ 6]*/    {"axisymmetric_spectr_switch"}
 };
 
 const char label_mid_equator_ctl[NLBL_MID_EQUATOR][KCHARA_C] = {
@@ -267,7 +269,8 @@ struct layerd_spectr_control_c * init_layerd_spectr_control_c(){
 	};
 	
 	lp_ctl->layered_pwr_spectr_prefix_c = init_chara_ctl_item_c();
-	
+    lp_ctl->layered_pwr_spectr_format_c = init_chara_ctl_item_c();
+
 	lp_ctl->degree_spectr_switch_c = init_chara_ctl_item_c();
 	lp_ctl->order_spectr_switch_c = init_chara_ctl_item_c();
 	lp_ctl->diff_lm_spectr_switch_c = init_chara_ctl_item_c();
@@ -286,6 +289,7 @@ void dealloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl){
     dealloc_chara_ctl_item_c(lp_ctl->diff_lm_spectr_switch_c);
     dealloc_chara_ctl_item_c(lp_ctl->axis_spectr_switch_c);
 	
+    dealloc_chara_ctl_item_c(lp_ctl->layered_pwr_spectr_format_c);
 	dealloc_chara_ctl_item_c(lp_ctl->layered_pwr_spectr_prefix_c);
     free(lp_ctl);
 	return;
@@ -297,13 +301,14 @@ void read_layerd_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 		skip_comment_read_line(fp, buf);
 		
 		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[0], lp_ctl->layered_pwr_spectr_prefix_c);
+        read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[1], lp_ctl->layered_pwr_spectr_format_c);
+
+		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[3], lp_ctl->degree_spectr_switch_c);
+		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[4], lp_ctl->order_spectr_switch_c);
+		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[5], lp_ctl->diff_lm_spectr_switch_c);
+		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[6], lp_ctl->axis_spectr_switch_c);
 		
-		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[2], lp_ctl->degree_spectr_switch_c);
-		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[3], lp_ctl->order_spectr_switch_c);
-		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[4], lp_ctl->diff_lm_spectr_switch_c);
-		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[5], lp_ctl->axis_spectr_switch_c);
-		
-		read_int_clist(fp, buf, label_layerd_spectr_ctl[1], lp_ctl->idx_spec_layer_list);
+		read_int_clist(fp, buf, label_layerd_spectr_ctl[2], lp_ctl->idx_spec_layer_list);
 	};
     lp_ctl->iflag_use = 1;
     return;
@@ -318,17 +323,19 @@ int write_layerd_spectr_control_c(FILE *fp, int level, const char *label,
 	
 	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[0], lp_ctl->layered_pwr_spectr_prefix_c);
+    level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen,
+                label_layerd_spectr_ctl[1], lp_ctl->layered_pwr_spectr_format_c);
+
+	write_int_clist(fp, level, label_layerd_spectr_ctl[2], lp_ctl->idx_spec_layer_list);
 	
-	write_int_clist(fp, level, label_layerd_spectr_ctl[1], lp_ctl->idx_spec_layer_list);
-	
 	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
-				label_layerd_spectr_ctl[2], lp_ctl->degree_spectr_switch_c);
+				label_layerd_spectr_ctl[3], lp_ctl->degree_spectr_switch_c);
 	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
-				label_layerd_spectr_ctl[3], lp_ctl->order_spectr_switch_c);
+				label_layerd_spectr_ctl[4], lp_ctl->order_spectr_switch_c);
 	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
-				label_layerd_spectr_ctl[4], lp_ctl->diff_lm_spectr_switch_c);
+				label_layerd_spectr_ctl[5], lp_ctl->diff_lm_spectr_switch_c);
 	level = write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
-				label_layerd_spectr_ctl[5], lp_ctl->axis_spectr_switch_c);
+				label_layerd_spectr_ctl[6], lp_ctl->axis_spectr_switch_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -471,7 +478,8 @@ void read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_chara_ctl_item_c(buf, label_sph_monitor_ctl[5], monitor_ctl->volume_average_prefix_c);
         read_chara_ctl_item_c(buf, label_sph_monitor_ctl[6], monitor_ctl->volume_pwr_spectr_prefix_c);
-        read_chara_ctl_item_c(buf, label_sph_monitor_ctl[7], monitor_ctl->Nusselt_file_prefix_c);
+        read_chara_ctl_item_c(buf, label_sph_monitor_ctl[7], monitor_ctl->volume_pwr_spectr_format_c);
+        read_chara_ctl_item_c(buf, label_sph_monitor_ctl[8], monitor_ctl->Nusselt_file_prefix_c);
 	};
     monitor_ctl->iflag_use = 1;
     return;
@@ -488,7 +496,10 @@ int write_sph_monitor_ctl_c(FILE *fp, int level, const char *label,
                                    monitor_ctl->volume_average_prefix_c);
     level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[6],
                                    monitor_ctl->volume_pwr_spectr_prefix_c);
-	level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[7],
+    level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[7],
+                                   monitor_ctl->volume_pwr_spectr_format_c);
+
+    level = write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[8],
                                    monitor_ctl->Nusselt_file_prefix_c);
 	
     level = write_pick_spectr_control_c(fp, level, label_sph_monitor_ctl[3], monitor_ctl->pspec_ctl_c);

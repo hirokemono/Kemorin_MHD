@@ -24,19 +24,22 @@
                            iflag_format = iflag_vtk)
 !
       integer(kind = kint), parameter :: istep = 800001
+      integer :: np_ucd
       type(time_data), save :: t_IO
 !
       type(ucd_data), save :: ucd_b
       type(ucd_data), save :: ucd_z
 !
       write(*,*) 'sel_read_alloc_ucd_file ucd_b'
-      call sel_read_alloc_ucd_file(0, istep, ucd_param2, t_IO, ucd_b)
+      call sel_read_alloc_ucd_file(0, np_ucd, istep,                    &
+     &                             ucd_param2, t_IO, ucd_b)
 !
       write(*,*) 'check_read_ucd_data ucd_b'
       call check_read_ucd_data(ucd_b)
 !
       write(*,*) 'sel_read_alloc_ucd_file ucd_z'
-      call sel_read_alloc_ucd_file(0, istep, ucd_param3, t_IO, ucd_z)
+      call sel_read_alloc_ucd_file(0, np_ucd, istep,                    &
+     &                             ucd_param3, t_IO, ucd_z)
 !
       write(*,*) 'check_read_ucd_data ucd_z'
       call check_read_ucd_data(ucd_z)

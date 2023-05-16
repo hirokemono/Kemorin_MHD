@@ -88,33 +88,33 @@ void color_sym_grayscale_c(double rnorm, double *r, double *g, double *b){
 
 void color_redblue_c(double rnorm, double *r, double *g, double *b){
 	double abyss =   ZERO;
-	double blue =     0.2;
+	double blue =     0.1;
 	double white =  ONE / TWO;
-	double red =      0.8;
+	double red =      0.9;
 	double blood =    ONE;
 	
 	if (rnorm < abyss){
 		*r = ZERO;
 		*g = 0.2;
-		*b = 0.5;
+		*b = 0.8;
 	} else if (rnorm >= abyss && rnorm < blue){
 		*r = ZERO;
-		*g = blue - rnorm;
-		*b = 0.5 + 2.5 * rnorm;
+		*g = 2.0 * (blue - rnorm);
+		*b = 0.8 + 2.0 * rnorm;
 	} else if (rnorm >= blue && rnorm < white){
-		*r = (rnorm - blue) * 2.5;
-		*g = (rnorm - blue) * 2.5;
-		*b = ONE;
+		*r = (rnorm - blue) * 2.0;
+		*g = (rnorm - blue) * 2.0;
+		*b = ONE - (rnorm - blue) * 0.25;
 	} else if (rnorm >= white && rnorm < red){
-		*r = ONE;
-		*g = (red - rnorm) * 2.5;
-		*b = (red - rnorm) * 2.5;
+		*r = ONE - (red - rnorm) * 0.25;
+		*g = (red - rnorm) * 2.0;
+		*b = (red - rnorm) * 2.0;
 	} else if (rnorm >= red && rnorm < blood){
-		*r = ONE - (rnorm - red) * 2.5;
+		*r = ONE - (rnorm - red) * 2.0;
 		*g = ZERO;
 		*b = ZERO;
 	} else {
-		*r = 0.5;
+		*r = 0.8;
 		*g = ZERO;
 		*b = ZERO;
 	}

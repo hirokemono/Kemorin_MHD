@@ -25,7 +25,7 @@
 !!      subroutine extend_inner_core_scalar                             &
 !!     &         (field_name, sph, r_itp, sph_phys)
 !!        type(sph_grids), intent(in) :: sph
-!!        type(sph_radial_itp_data), intent(in) :: r_itp
+!!        type(sph_radial_interpolate), intent(in) :: r_itp
 !!        type(phys_data), intent(inout) :: sph_phys
 !!@endverbatim
 !!
@@ -127,15 +127,13 @@
 !
       subroutine extend_potential_magne(sph, r_itp, sph_phys)
 !
-      use extend_potential_field_t
-!
       use m_base_field_labels
       use t_sph_spectr_data
       use t_spheric_parameter
-      use r_interpolate_marged_sph
+      use t_sph_radial_interpolate
 !
       type(sph_grids), intent(in) :: sph
-      type(sph_radial_itp_data), intent(in) :: r_itp
+      type(sph_radial_interpolate), intent(in) :: r_itp
       type(phys_data), intent(inout) :: sph_phys
 !
       integer(kind = kint) :: is_magne
@@ -152,7 +150,7 @@
       if(is_magne .eq. 0) return
 !
       call extend_potential_magne_type(is_magne, sph_phys%ntot_phys,    &
-     &    sph, r_itp%kr_inner_domain, r_itp%kr_outer_domain,            &
+     &    sph%sph_rj, r_itp%kr_inner_source, r_itp%kr_outer_source,     &
      &    sph_phys%d_fld)
 !
       end subroutine extend_potential_magne
@@ -164,11 +162,11 @@
 !
       use t_sph_spectr_data
       use t_spheric_parameter
-      use r_interpolate_marged_sph
+      use t_sph_radial_interpolate
 !
       character(len = kchara), intent(in) :: field_name
       type(sph_grids), intent(in) :: sph
-      type(sph_radial_itp_data), intent(in) :: r_itp
+      type(sph_radial_interpolate), intent(in) :: r_itp
       type(phys_data), intent(inout) :: sph_phys
 !
 !
@@ -186,7 +184,7 @@
       if(is_field .eq. 0) return
 !
       call extend_inner_core_scl_type(is_field, sph_phys%ntot_phys,     &
-     &    sph, r_itp%kr_inner_domain, sph_phys%d_fld)
+     &    sph%sph_rj, r_itp%kr_inner_source, sph_phys%d_fld)
 !
       end subroutine extend_inner_core_scalar
 !
@@ -194,27 +192,30 @@
 ! -----------------------------------------------------------------------
 !
       subroutine extend_potential_magne_type(is_magne,  ntot_phys_rj,   &
-     &         sph, kr_inner_domain, kr_outer_domain, d_rj)
-!
-      use extend_potential_field_t
+     &         sph_rj, kr_inner_domain, kr_outer_domain, d_rj)
 !
       use t_spheric_parameter
+      use extend_potential_field
 !
-      type(sph_grids), intent(in) :: sph
+      type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: kr_outer_domain
       integer(kind = kint), intent(in) :: kr_inner_domain
       integer(kind = kint), intent(in) :: is_magne, ntot_phys_rj
       real(kind= kreal), intent(inout)                                  &
-     &                  :: d_rj(sph%sph_rj%nnod_rj,ntot_phys_rj)
+     &                  :: d_rj(sph_rj%nnod_rj,ntot_phys_rj)
 !
 !
-      if(kr_outer_domain .lt. sph%sph_rj%nidx_rj(1)) then
-        call ext_outside_potential_t(sph%sph_rj,                        &
-     &      kr_outer_domain, d_rj(1,is_magne))
+      if(kr_outer_domain .lt. sph_rj%nidx_rj(1)) then
+        call ext_outside_potential(kr_outer_domain,                     &
+     &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
+     &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
+     &      sph_rj%nnod_rj, d_rj(1,is_magne))
       end if
       if(kr_inner_domain .gt. 1) then
-        call ext_inside_potential_t(sph%sph_rj,                         &
-     &      kr_inner_domain, d_rj(1,is_magne))
+        call ext_inside_potential(kr_inner_domain,                      &
+     &      sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,                      &
+     &      sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r,                  &
+     &      sph_rj%nnod_rj, d_rj(1,is_magne))
       end if
 !
       end subroutine extend_potential_magne_type
@@ -222,20 +223,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine extend_inner_core_scl_type(is_field, ntot_phys_rj,     &
-     &          sph, kr_inner_domain, d_rj)
+     &          sph_rj, kr_inner_domain, d_rj)
 !
-      use extend_potential_field_t
+      use extend_potential_field
 !
-      type(sph_grids), intent(in) :: sph
+      type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in):: kr_inner_domain
       integer(kind = kint), intent(in) :: is_field, ntot_phys_rj
       real(kind= kreal), intent(inout)                                  &
-     &                  :: d_rj(sph%sph_rj%nnod_rj,ntot_phys_rj)
+     &                  :: d_rj(sph_rj%nnod_rj,ntot_phys_rj)
 !
 !
       if(kr_inner_domain .le. 1) return
-        call ext_inside_scalar_t(sph%sph_rj,                            &
-     &      kr_inner_domain, d_rj(1,is_field))
+      call ext_inside_scalar(kr_inner_domain,                           &
+     &                       sph_rj%nidx_rj, sph_rj%idx_gl_1d_rj_j,     &
+     &                       sph_rj%radius_1d_rj_r, sph_rj%a_r_1d_rj_r, &
+     &                       sph_rj%nnod_rj, d_rj(1,is_field))
 !
       end subroutine extend_inner_core_scl_type
 !

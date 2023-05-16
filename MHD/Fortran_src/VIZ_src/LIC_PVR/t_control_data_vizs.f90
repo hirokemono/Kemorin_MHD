@@ -7,10 +7,8 @@
 !> @brief Control data structure for visualization controls
 !!
 !!@verbatim
-!!      subroutine bcast_viz_controls(viz_ctls)
 !!      subroutine dealloc_viz_controls(viz_ctls)
 !!       type(visualization_controls), intent(inout) :: viz_ctls
-!!       type(buffer_for_control), intent(inout)  :: c_buf
 !!
 !!      subroutine add_fields_4_vizs_to_fld_ctl(viz_ctls, field_ctl)
 !!        type(visualization_controls), intent(in) :: viz_ctls
@@ -68,7 +66,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use calypso_mpi
       use t_control_data_sections
       use t_control_data_isosurfaces
       use t_control_data_pvrs
@@ -99,6 +96,8 @@
 !>        Structures of LIC rendering controls
         type(lic_rendering_controls) :: lic_anaglyph_ctls
 !
+!>         File name for repartition control block
+        character(len = kchara) :: fname_vol_repart_ctl
 !>        Structure for new partitioning controls
         type(viz_repartition_ctl) :: repart_ctl
 !
@@ -131,7 +130,6 @@
 !>   File format for field data output
         type(read_character_item) :: output_field_file_fmt_ctl
 !
-!
         integer (kind=kint) :: i_viz_control = 0
       end type visualization_controls
 !
@@ -140,47 +138,6 @@
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine bcast_viz_controls(viz_ctls)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(visualization_controls), intent(inout) :: viz_ctls
-!
-!
-      call bcast_control_vol_repart(viz_ctls%repart_ctl)
-!
-      call bcast_files_4_psf_ctl(viz_ctls%psf_ctls)
-      call bcast_files_4_iso_ctl(viz_ctls%iso_ctls)
-      call bcast_files_4_pvr_ctl(viz_ctls%pvr_ctls)
-      call bcast_files_4_fline_ctl(viz_ctls%fline_ctls)
-      call bcast_files_4_lic_ctl(viz_ctls%lic_ctls)
-!
-      call bcast_files_4_pvr_ctl(viz_ctls%pvr_anaglyph_ctls)
-      call bcast_files_4_lic_ctl(viz_ctls%lic_anaglyph_ctls)
-!
-      call bcast_ctl_type_r1(viz_ctls%delta_t_psf_v_ctl)
-      call bcast_ctl_type_r1(viz_ctls%delta_t_iso_v_ctl)
-      call bcast_ctl_type_r1(viz_ctls%delta_t_pvr_v_ctl)
-      call bcast_ctl_type_r1(viz_ctls%delta_t_fline_v_ctl)
-      call bcast_ctl_type_r1(viz_ctls%delta_t_lic_v_ctl)
-      call bcast_ctl_type_r1(viz_ctls%delta_t_ucd_v_ctl)
-!
-      call bcast_ctl_type_i1(viz_ctls%i_step_psf_v_ctl)
-      call bcast_ctl_type_i1(viz_ctls%i_step_iso_v_ctl)
-      call bcast_ctl_type_i1(viz_ctls%i_step_pvr_v_ctl)
-      call bcast_ctl_type_i1(viz_ctls%i_step_lic_v_ctl)
-      call bcast_ctl_type_i1(viz_ctls%i_step_fline_v_ctl)
-      call bcast_ctl_type_i1(viz_ctls%i_step_ucd_v_ctl)
-!
-      call bcast_ctl_type_c1(viz_ctls%output_field_file_fmt_ctl)
-!
-      call calypso_mpi_bcast_one_int(viz_ctls%i_viz_control, 0)
-!
-      end subroutine bcast_viz_controls
-!
-!   --------------------------------------------------------------------
 !
       subroutine dealloc_viz_controls(viz_ctls)
 !
@@ -192,7 +149,7 @@
       call dealloc_psf_ctl_stract(viz_ctls%psf_ctls)
       call dealloc_iso_ctl_stract(viz_ctls%iso_ctls)
       call dealloc_pvr_ctl_struct(viz_ctls%pvr_ctls)
-      call dealloc_fline_fhead_ctl(viz_ctls%fline_ctls)
+      call dealloc_fline_ctl_struct(viz_ctls%fline_ctls)
       call dealloc_lic_ctl_struct(viz_ctls%lic_ctls)
 !
       call dealloc_pvr_ctl_struct(viz_ctls%pvr_anaglyph_ctls)

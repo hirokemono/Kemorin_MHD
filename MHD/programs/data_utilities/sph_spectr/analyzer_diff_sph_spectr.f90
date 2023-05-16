@@ -59,10 +59,12 @@
 !
       subroutine evolution_diff_sph_spectr
 !
+      use bcast_control_sph_data_util
+!
       integer(kind = kint) :: istep_fld, istart, iend, increment
 !
 !
-      call read_control_file_sph_util(control_file_name, ctl1)
+      call load_control_file_sph_util(control_file_name, ctl1)
 !
       call set_control_diff_sph_field(ctl1%plt, ctl1%tctl,              &
      &    ctl1%file_list, files1, istart, iend, increment)

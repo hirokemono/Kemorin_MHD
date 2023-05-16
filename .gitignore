@@ -4,6 +4,8 @@ MHD/Cocoa/Fortran_codes/Fortran_codes.xcodeproj/
 bin/
 work/
 MHD/programs/TESTS/Doxygen_test/html/
+MHD/pythons/.ipynb_checkpoints/
+MHD/pythons/*.so
 
 *.log
 
@@ -12,7 +14,6 @@ MHD/programs/TESTS/Doxygen_test/html/
 config.status
 
 *.mod
-*.plist
 *.xcbkptlist
 
 *.xcbkptlist

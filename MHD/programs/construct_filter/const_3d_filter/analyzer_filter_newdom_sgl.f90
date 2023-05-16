@@ -22,6 +22,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &             :: fname_trans_flt_ctl = "ctl_new_domain_filter"
+!
       integer, save :: nprocs_2nd
       type(mesh_geometry), save ::    orgmesh
       type(mesh_geometry), save ::    newmesh
@@ -47,6 +50,7 @@
       use t_ctl_data_newdomain_filter
       use t_ctl_param_newdom_filter
       use const_domain_tbl_by_file
+      use input_ctl_filter_newdomain
 !
       type(ctl_data_newdomain_filter) :: newd_fil_ctl1
       integer(kind = kint) :: ierr
@@ -62,17 +66,10 @@
         write(*,*) 'element size data on new decomposition'
       end if
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_filter_newdomain'
-      call read_control_filter_newdomain(newd_fil_ctl1)
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
+      if (iflag_debug.eq.1) write(*,*) 's_input_ctl_filter_newdomain'
       nprocs_2nd = 0
-      call set_control_filter_newdomain                                 &
-     &   (nprocs_2nd, newd_fil_ctl1%org_filter_plt,                     &
-     &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
-     &    newd_fil_ctl1%org_filter_file_ctls, newfil_p1, ierr)
-      if(ierr .gt. 0) stop
-!
+      call s_input_ctl_filter_newdomain(fname_trans_flt_ctl,            &
+     &                                  nprocs_2nd, newfil_p1)
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_domain_tbl_by_file'
       call s_const_domain_tbl_by_file                                   &

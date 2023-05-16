@@ -57,6 +57,7 @@
 !
       subroutine bcast_control_DJDS_solver(DJDS_ctl)
 !
+      use t_ctl_data_DJDS_ordering
       use calypso_mpi_int
       use bcast_control_arrays
 !

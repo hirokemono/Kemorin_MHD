@@ -1,8 +1,13 @@
 !
 !      module const_cutshell_mesh
 !
-!!      subroutine s_const_reduced_geometry                             &
-!!     &         (orgmesh, org_group, newmesh, new_group)
+!!      subroutine s_const_reduced_geometry(iflag_reduce_type,          &
+!!     &          orgmesh, org_group, newmesh, new_group)
+!!        integer(kind = kint), intent(in) :: iflag_reduce_type
+!!        type(mesh_geometry), intent(in) :: orgmesh
+!!        type(mesh_groups), intent(in) :: org_group
+!!        type(mesh_geometry), intent(inout) :: newmesh
+!!        type(mesh_groups), intent(inout) :: new_group
 !
       module const_cutshell_mesh
 !
@@ -10,7 +15,6 @@
 !
       use t_mesh_data
       use t_group_data
-      use t_file_IO_parameter
 !
       use m_cutshell_nod_ele_flag
       use set_cutshell_node_data
@@ -21,11 +25,6 @@
 !
       implicit none
 !
-      integer(kind = kint) :: iflag_reduce_type = 1
-!
-      type(field_IO_params), save ::  original_mesh_file
-      type(field_IO_params), save ::  modified_mesh_file
-!
       private :: select_northern_hemisphere, select_cut_shell
       private :: select_spherical_shell, select_hemispherical_shell
 !
@@ -35,9 +34,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_reduced_geometry                               &
-     &         (orgmesh, org_group, newmesh, new_group)
+      subroutine s_const_reduced_geometry(iflag_reduce_type,            &
+     &          orgmesh, org_group, newmesh, new_group)
 !
+      integer(kind = kint), intent(in) :: iflag_reduce_type
       type(mesh_geometry), intent(in) :: orgmesh
       type(mesh_groups), intent(in) :: org_group
 !

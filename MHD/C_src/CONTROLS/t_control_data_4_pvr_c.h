@@ -39,7 +39,6 @@ struct pvr_ctl_c{
 	int maxlen;
 	struct control_labels_f *label_pvr_ctl_w_dpl;
 	
-	char *view_file_ctl;
 	char *color_file_ctl;
 	
 	struct chara_ctl_item *updated_ctl;

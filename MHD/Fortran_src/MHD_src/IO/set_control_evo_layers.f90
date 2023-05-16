@@ -24,6 +24,7 @@
       use m_machine_parameter
       use t_physical_property
       use t_ctl_data_mhd_evolution
+      use t_ctl_data_mhd_evo_area
       use t_FEM_control_parameter
 !
       implicit  none

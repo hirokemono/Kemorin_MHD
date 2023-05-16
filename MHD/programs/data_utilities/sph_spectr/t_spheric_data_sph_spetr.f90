@@ -31,6 +31,7 @@
       use t_sum_sph_rms_data
       use t_pickup_sph_spectr_data
       use t_energy_label_parameters
+      use t_CMB_dipolarity
 !
       implicit none
 !
@@ -46,7 +47,12 @@
         type(sph_mean_squares) :: pwr
 !>        Work structure of mean square data
         type(sph_mean_square_work) :: WK_pwr
+!
+!>        Structure for dipolarity data
+        type(dipolarity_data) :: dip
       end type sph_spectr_monitor_data
+!
+      private :: set_sph_rms_labels_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
@@ -57,7 +63,9 @@
       subroutine init_rms_4_sph_spectr_util(sph, rj_fld, monitor_s)
 !
       use cal_rms_fields_by_sph
+      use cal_CMB_dipolarity
       use init_energy_labels_sph_SGS
+      use init_rms_4_sph_spectr
 !
       type(sph_grids), intent(in) :: sph
 !
@@ -65,11 +73,10 @@
       type(sph_spectr_monitor_data), intent(inout) :: monitor_s
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'init_rms_4_sph_spectr'
+      if(iflag_debug .gt. 0) write(*,*) 's_init_rms_4_sph_spectr'
       call init_energy_labels_w_filter(monitor_s%ene_labels)
-      call init_rms_4_sph_spectr                                        &
-     &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
-     &    monitor_s%pwr, monitor_s%WK_pwr)
+      call s_init_rms_4_sph_spectr(sph%sph_params, sph%sph_rj, rj_fld,  &
+     &    izero, monitor_s%pwr, monitor_s%WK_pwr)
 !
       end subroutine init_rms_4_sph_spectr_util
 !
@@ -105,7 +112,9 @@
       subroutine write_rms_4_sph_spectr_util                            &
      &         (my_rank, time_d, sph, monitor_s)
 !
-      use output_sph_m_square_file
+      use output_sph_volume_ave_file
+      use output_sph_pwr_volume_file
+      use output_sph_pwr_layer_file
 !
       integer, intent(in) :: my_rank
       type(time_data), intent(in) :: time_d
@@ -129,5 +138,31 @@
       end subroutine write_rms_4_sph_spectr_util
 !
 !  --------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_sph_rms_labels_4_monitor                           &
+     &         (ene_labels, pwr, pick_rms)
+!
+      use t_pickup_sph_spectr_data
+      use add_direction_labels
+!
+      type(energy_label_param), intent(in) :: ene_labels
+      type(sph_mean_squares), intent(in) :: pwr
+      type(picked_spectrum_data), intent(inout) :: pick_rms
+!
+      integer(kind = kint) :: i_fld, ist, ncomp
+!
+!
+      do i_fld = 1, pwr%num_fld_sq
+        ist =   pwr%istack_comp_sq(i_fld-1)
+        ncomp = pwr%num_comp_sq(i_fld)
+        call set_sph_rms_labels(ene_labels, ncomp, pwr%pwr_name(i_fld), &
+     &      pick_rms%spectr_name(ist+1))
+      end do
+      pick_rms%ntot_comp_rj = pwr%ntot_comp_sq
+!
+      end subroutine set_sph_rms_labels_4_monitor
+!
+! -----------------------------------------------------------------------
 !
       end module t_spheric_data_sph_spetr

@@ -114,6 +114,7 @@
       subroutine read_ctl_data_ele_grp_udt                              &
      &         (id_control, hd_block, egrp_udt_ctl, c_buf)
 !
+      use ctl_data_4_time_steps_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control

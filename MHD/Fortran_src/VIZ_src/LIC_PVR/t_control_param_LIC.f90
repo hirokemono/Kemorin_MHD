@@ -281,7 +281,6 @@ logical :: flag_LIC_elapsed_dump = .TRUE.
       type(lic_parameters), intent(in) :: lic_p
       real(kind=kreal), intent(in) :: value(lic_p%num_masking)
 !
-      integer(kind=kint) :: i,j, iFlag_inmask
 !
       lic_mask_flag                                                     &
      &    = multi_mask_flag(lic_p%num_masking, lic_p%masking, value)

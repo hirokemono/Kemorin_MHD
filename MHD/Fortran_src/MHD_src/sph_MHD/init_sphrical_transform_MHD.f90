@@ -26,7 +26,7 @@
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!      subroutine init_work_4_coriolis(sph_MHD_bc, sph, trans_p, WK)
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_grids), intent(in) :: sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!@endverbatim
@@ -105,7 +105,7 @@
      &   (SPH_MHD%fld, SPH_MHD%ipol, iphys, WK%trns_difv,               &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
-      call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
+      call alloc_sph_trans_address(SPH_MHD%sph, WK)
 !
       call init_leg_fourier_trans_MHD(SPH_MHD%sph, SPH_MHD%comms,       &
      &    ncomp_max_trans, trans_p, WK, SR_sig, SR_r)
@@ -225,7 +225,7 @@
       subroutine init_work_4_coriolis(sph_MHD_bc, sph, trans_p, WK)
 !
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(sph_grids), intent(inout) :: sph
+      type(sph_grids), intent(in) :: sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK

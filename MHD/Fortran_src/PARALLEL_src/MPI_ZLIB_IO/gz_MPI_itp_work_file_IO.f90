@@ -9,7 +9,11 @@
 !!@verbatim
 !!      subroutine gz_mpi_wrt_itp_coefs_dest_file                       &
 !!     &         (gzip_name, IO_itp_dest, IO_itp_c_dest)
+!!      subroutine gz_mpi_wrt_itp_index_dest_file                       &
+!!     &         (gzip_name, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine gz_mpi_read_itp_coefs_dest_file                      &
+!!     &        (gzip_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
+!!      subroutine gz_mpi_read_itp_index_dest_file                      &
 !!     &        (gzip_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine gz_mpi_read_itp_tbl_dest_file                        &
 !!     &         (gzip_name, id_rank, num_pe, IO_itp_dest)
@@ -43,7 +47,7 @@
       subroutine gz_mpi_wrt_itp_coefs_dest_file                         &
      &         (gzip_name, IO_itp_dest, IO_itp_c_dest)
 !
-      use gz_MPI_itp_table_data_IO
+      use gz_MPI_itp_table_dst_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: gzip_name
@@ -59,6 +63,8 @@
 !
       call gz_mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
       call gz_mpi_write_itp_table_dest(IO_param, IO_itp_dest)
+      call gz_mpi_write_itp_index_dest                                  &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call gz_mpi_write_itp_coefs_dest                                  &
      &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
@@ -67,10 +73,38 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine gz_mpi_wrt_itp_index_dest_file                         &
+     &         (gzip_name, IO_itp_dest, IO_itp_c_dest)
+!
+      use gz_MPI_itp_table_dst_data_IO
+      use gz_MPI_binary_datum_IO
+!
+      character(len=kchara), intent(in) :: gzip_name
+!
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
+!
+!
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Write binary export coefs file: ', trim(gzip_name)
+!
+      call open_write_mpi_file(gzip_name, IO_param)
+!
+      call gz_mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
+      call gz_mpi_write_itp_table_dest(IO_param, IO_itp_dest)
+      call gz_mpi_write_itp_index_dest                                  &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
+      call close_mpi_file(IO_param)
+!
+      end subroutine gz_mpi_wrt_itp_index_dest_file
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine gz_mpi_read_itp_coefs_dest_file                        &
      &        (gzip_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 !
-      use gz_MPI_itp_table_data_IO
+      use gz_MPI_itp_table_dst_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: gzip_name
@@ -88,6 +122,8 @@
 !
       call gz_mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
       call gz_mpi_read_itp_table_dest(IO_param, IO_itp_dest)
+      call gz_mpi_read_itp_index_dest                                   &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call gz_mpi_read_itp_coefs_dest                                   &
      &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
@@ -96,10 +132,39 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine gz_mpi_read_itp_index_dest_file                        &
+     &        (gzip_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
+!
+      use gz_MPI_itp_table_dst_data_IO
+      use gz_MPI_binary_datum_IO
+!
+      character(len=kchara), intent(in) :: gzip_name
+      integer, intent(in) :: id_rank, num_pe
+!
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+!
+!
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read gzipped export coefs file: ', trim(gzip_name)
+!
+      call open_read_mpi_file                                           &
+     &   (gzip_name, num_pe, id_rank, IO_param)
+!
+      call gz_mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
+      call gz_mpi_read_itp_table_dest(IO_param, IO_itp_dest)
+      call gz_mpi_read_itp_index_dest                                   &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
+      call close_mpi_file(IO_param)
+!
+      end subroutine gz_mpi_read_itp_index_dest_file
+!
+!-----------------------------------------------------------------------
+!
       subroutine gz_mpi_read_itp_tbl_dest_file                          &
      &         (gzip_name, id_rank, num_pe, IO_itp_dest)
 !
-      use gz_MPI_itp_table_data_IO
+      use gz_MPI_itp_table_dst_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: gzip_name
@@ -125,7 +190,7 @@
       subroutine gz_mpi_read_itp_dmn_dest_file                          &
      &         (gzip_name, id_rank, num_pe, IO_itp_dest)
 !
-      use gz_MPI_itp_table_data_IO
+      use gz_MPI_itp_table_dst_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: gzip_name

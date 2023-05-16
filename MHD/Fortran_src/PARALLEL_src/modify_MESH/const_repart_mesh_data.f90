@@ -126,7 +126,7 @@
       integer(kind = kint), allocatable :: i4_recv(:)
       integer(kind = kint_gl), allocatable :: i8_recv(:)
 !
-      integer(kind = kint) :: k1, iele, inod
+      integer(kind = kint) :: k1, iele, inod, num_loop
 !
 !
 !$omp parallel
@@ -148,6 +148,7 @@
       i8_recv(1:ele_tbl%ntot_import) = 0
 !$omp end parallel workshare
 !
+      num_loop = min(new_numele, ele_tbl%ntot_import)
       new_ele%numele =     new_numele
       new_ele%nnod_4_ele = ele%nnod_4_ele
       call alloc_ele_connect(new_ele)
@@ -161,7 +162,7 @@
      &    ele%numele, ele_tbl%ntot_import, ele%iele_global(1), i8_recv, &
      &    SR_sig, SR_il)
 !$omp parallel workshare
-      new_ele%iele_global(1:new_ele%numele) = i8_recv(1:new_ele%numele)
+      new_ele%iele_global(1:num_loop) = i8_recv(1:num_loop)
 !$omp end parallel workshare
 !
       do k1 = 1, ele%nnod_4_ele
@@ -169,7 +170,7 @@
      &      ele%numele, ele_tbl%ntot_import, ie_newnod(1,k1), i4_recv,  &
      &      SR_sig, SR_i)
 !$omp parallel workshare
-        new_ele%ie(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
+        new_ele%ie(1:num_loop,k1) = i4_recv(1:num_loop)
 !$omp end parallel workshare
       end do
 !

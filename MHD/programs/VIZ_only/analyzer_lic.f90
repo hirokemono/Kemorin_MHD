@@ -23,6 +23,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_viz_ctl = "control_viz"
+!
 !>         Structure for time stepping parameters
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ1
@@ -52,8 +55,7 @@
       use m_work_time_4_sleeve_extend
       use FEM_to_VIZ_bridge
       use lic_rendering_test
-!
-      integer(kind = kint) :: ierr
+      use input_control_all_vizs
 !
 !
       call init_elapse_time_by_TOTAL
@@ -63,18 +65,15 @@
       call elpsed_label_4_sleeve_ext
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
-!     read controls
-!
-      if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
-      call read_control_file_vizs(vizs_ctl1)
-      call set_control_params_4_viz(vizs_ctl1, FEM_viz1, t_VIZ1, ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
-!
+!  Load controls
+      if (iflag_debug.gt.0) write(*,*) 's_input_control_all_vizs'
+      call s_input_control_all_vizs(fname_viz_ctl, vizs_ctl1,           &
+     &                              FEM_viz1, t_VIZ1)
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
       call FEM_initialize_viz(t_VIZ1%init_d, t_VIZ1%ucd_step,           &
-     &    t_VIZ1%viz_step, FEM_viz1, m_SR11)
+     &                        FEM_viz1, m_SR11)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_FEM_to_VIZ_bridge'

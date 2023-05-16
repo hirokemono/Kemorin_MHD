@@ -83,7 +83,6 @@
       use set_normal_vectors
       use parallel_FEM_mesh_init
       use set_field_data_w_SGS
-      use node_monitor_IO
       use nod_phys_send_recv
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -97,8 +96,8 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
-      call set_local_nod_4_monitor(FEM_MHD%geofem%mesh,                 &
-     &                             FEM_MHD%geofem%group)
+      call set_local_nod_4_monitor                                      &
+     &   (FEM_MHD%geofem%mesh, FEM_MHD%geofem%group, FEM_MHD%nod_mntr)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_field_data_w_SGS'
       call init_field_data_w_SGS(FEM_MHD%geofem%mesh%node%numnod,       &
@@ -142,8 +141,8 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      call FEM_analyze_sph_MHD(MHD_files, FEM_MHD%geofem,               &
-     &                         FEM_MHD%field, MHD_step, MHD_IO, m_SR)
+      call FEM_analyze_sph_MHD(MHD_files, FEM_MHD, MHD_step,            &
+     &                         MHD_IO, m_SR)
 !
       end subroutine FEM_analyze_sph_SGS_MHD
 !

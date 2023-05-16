@@ -2,13 +2,15 @@
       module read_mhd_control_4_c
 !
       use iso_c_binding
-      use t_ctl_data_SGS_MHD
       use t_ctl_data_MHD
+      use t_ctl_data_SGS_MHD
+      use t_ctl_data_sph_MHD_w_psf
 !
       implicit none
 !
-      type(sph_sgs_mhd_control) :: MHD_ctl
-      type(DNS_mhd_simulation_control) :: DNS_MHD_ctl
+      type(mhd_simulation_control), save :: MHD_ctl_C
+      type(add_sgs_sph_mhd_ctl), save, private :: add_SSMHD_ctl_C
+      type(add_psf_sph_mhd_ctl), save :: add_SMHD_ctl_C
       integer(kind = kint), parameter :: id_ctl = 11
 !
 !  ---------------------------------------------------------------------
@@ -20,13 +22,10 @@
       subroutine c_read_control_sph_SGS_MHD()                           &
      &          bind(C, NAME = 'c_read_control_sph_SGS_MHD')
 !
-      use calypso_mpi
-!
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
 !
-      call calypso_MPI_init
-!
-      call read_control_4_sph_SGS_MHD(MHD_ctl_name, MHD_ctl)
+      call read_control_4_sph_SGS_MHD(MHD_ctl_name,                     &
+     &    MHD_ctl_C, add_SSMHD_ctl_C)
 !
       end subroutine c_read_control_sph_SGS_MHD
 !
@@ -36,6 +35,8 @@
      &          bind(C, NAME = 'c_write_control_sph_SGS_MHD')
 !
       use calypso_mpi
+      use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
 !
       character(len=kchara), parameter                                  &
      &                      :: MHD_ctl_name = 'control_MHD_dup'
@@ -65,14 +66,14 @@
      &          bind(C, NAME = 'c_read_control_sph_MHD')
 !
       use calypso_mpi
-      use t_ctl_data_SGS_MHD
-      use t_ctl_data_sph_MHD_psf
+      use bcast_control_sph_MHD
 !
       character(len=kchara), parameter :: MHD_ctl_name = 'control_MHD'
 !
       call calypso_MPI_init
 !
-      call read_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl)
+      call load_control_4_sph_MHD_w_psf(MHD_ctl_name, MHD_ctl_C,        &
+     &                                  add_SMHD_ctl_C)
       call calypso_MPI_finalize
 !
       end subroutine c_read_control_sph_MHD

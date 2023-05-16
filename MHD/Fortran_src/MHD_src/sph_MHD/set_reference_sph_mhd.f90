@@ -18,21 +18,19 @@
 !!        type(sph_scalar_BC_coef), intent(inout) :: ICB_Sspec, CMB_Sspec
 !!        type(sph_scalar_BC_evo), intent(inout) :: ICB_Sevo, CMB_Sevo
 !!
-!!      subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,      &
-!!     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                  &
-!!     &          is_temp, is_grad_t, ids_grad_t,                       &
-!!     &          is_par_temp, is_grad_part_t, ids_grad_part_t,         &
-!!     &          n_point, ntot_phys_rj, d_rj)
+!!      subroutine chenge_temp_to_per_temp_sph                          &
+!!     &         (idx_rj_degree_zero, inod_rj_center, nnod_rj, nidx_rj, &
+!!     &          radius_1d_rj_r, reference_r, refgrad_r,               &
+!!     &          scalar_rj, grad_rj, pert_rj, grad_pert_rj)
 !!        d_rj(inod,is_tempp):        T => \Theta = T - T0
 !!        d_rj(inod,is_par_temp):    \Theta = T - T0
 !!        d_rj(inod,is_grad_t):      T => d \Theta / dr
 !!        d_rj(inod,is_grad_part_t): d \Theta / dr
 !!
-!!      subroutine transfer_per_temp_to_temp_sph(idx_rj_degree_zero,    &
-!!     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                  &
-!!     &          is_temp, is_grad_t, ids_grad_t,                       &
-!!     &          is_par_temp, is_grad_part_t, ids_grad_part_t,         &
-!!     &          n_point, ntot_phys_rj, d_rj)
+!!      subroutine transfer_per_temp_to_temp_sph                        &
+!!     &         (idx_rj_degree_zero, inod_rj_center, nnod_rj, nidx_rj, &
+!!     &          radius_1d_rj_r, reference_r, refgrad_r,               &
+!!     &          scalar_rj, grad_rj, pert_rj, grad_pert_rj)
 !!        d_rj(inod,is_temp):        \Theta = T - T0 => T
 !!        d_rj(inod,is_par_temp):    \Theta = T - T0
 !!        d_rj(inod,is_grad_t):      d \Theta / dr   => dT / dr
@@ -99,15 +97,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine adjust_sph_temp_bc_by_reftemp                          &
-     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc,            &
-     &          ICB_Sspec, CMB_Sspec, ICB_Sevo, CMB_Sevo)
+     &         (idx_rj_degree_zero, nri, reftemp_r, refgrad_r,          &
+     &          sph_bc, ICB_Sspec, CMB_Sspec, ICB_Sevo, CMB_Sevo)
 !
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nri
-      real(kind=kreal), intent(in) :: reftemp_rj(nri,0:2)
+      real(kind=kreal), intent(in) :: reftemp_r(0:nri)
+      real(kind=kreal), intent(in) :: refgrad_r(0:nri)
       type(sph_boundary_type), intent(in) :: sph_bc
 !
       type(sph_scalar_BC_coef), intent(inout) :: ICB_Sspec, CMB_Sspec
@@ -121,34 +120,34 @@
 !
 !      if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
       if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
-        ICB_Sspec%S_CTR = ICB_Sspec%S_CTR - reftemp_rj(1,0)
+        ICB_Sspec%S_CTR = ICB_Sspec%S_CTR - reftemp_r(0)
       else if(sph_bc%iflag_icb .eq. iflag_evolve_flux) then
         ICB_Sevo%S_BC_mag(j) = ICB_Sevo%S_BC_mag(j)                     &
-     &                        - reftemp_rj(sph_bc%kr_in,1)
+     &                        - refgrad_r(sph_bc%kr_in)
       else if(sph_bc%iflag_icb .eq. iflag_evolve_field) then
         ICB_Sevo%S_BC_mag(j) = ICB_Sevo%S_BC_mag(j)                     &
-     &                        - reftemp_rj(sph_bc%kr_in,0)
+     &                        - reftemp_r(sph_bc%kr_in)
       else if(sph_bc%iflag_icb .eq. iflag_fixed_flux) then
         ICB_Sspec%S_BC(j) = ICB_Sspec%S_BC(j)                           &
-     &                        - reftemp_rj(sph_bc%kr_in,1)
+     &                        - refgrad_r(sph_bc%kr_in)
       else if(sph_bc%iflag_icb .eq. iflag_fixed_field) then
         ICB_Sspec%S_BC(j) = ICB_Sspec%S_BC(j)                           &
-     &                        - reftemp_rj(sph_bc%kr_in,0)
+     &                        - reftemp_r(sph_bc%kr_in)
       end if
 !
 !
       if(sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
         CMB_Sevo%S_BC_mag(j) = CMB_Sevo%S_BC_mag(j)                     &
-     &                        - reftemp_rj(sph_bc%kr_out,1)
+     &                        - refgrad_r(sph_bc%kr_out)
       else if(sph_bc%iflag_cmb .eq. iflag_evolve_field) then
         CMB_Sevo%S_BC_mag(j) = CMB_Sevo%S_BC_mag(j)                     &
-     &                        - reftemp_rj(sph_bc%kr_out,0)
+     &                        - reftemp_r(sph_bc%kr_out)
       else if(sph_bc%iflag_cmb .eq. iflag_fixed_flux) then
         CMB_Sspec%S_BC(j) = CMB_Sspec%S_BC(j)                           &
-     &                        - reftemp_rj(sph_bc%kr_out,1)
+     &                        - refgrad_r(sph_bc%kr_out)
       else if(sph_bc%iflag_cmb .eq. iflag_fixed_field) then
         CMB_Sspec%S_BC(j) = CMB_Sspec%S_BC(j)                           &
-     &                        - reftemp_rj(sph_bc%kr_out,0)
+     &                        - reftemp_r(sph_bc%kr_out)
       end if
 !
       end subroutine adjust_sph_temp_bc_by_reftemp
@@ -156,24 +155,25 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,        &
-     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                    &
-     &          is_temp, is_grad_t, ids_grad_t,                         &
-     &          is_par_temp, is_grad_part_t, ids_grad_part_t,           &
-     &          n_point, ntot_phys_rj, d_rj)
+      subroutine chenge_temp_to_per_temp_sph                            &
+     &         (idx_rj_degree_zero, inod_rj_center, nnod_rj, nidx_rj,   &
+     &          radius_1d_rj_r, reference_r, refgrad_r,                 &
+     &          scalar_rj, grad_rj, pert_rj, grad_pert_rj)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: inod_rj_center
+      integer(kind = kint), intent(in) :: nnod_rj
       integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-!
-      integer(kind = kint), intent(in) :: is_temp, is_par_temp
-      integer(kind = kint), intent(in) :: is_grad_t, is_grad_part_t
-      integer(kind = kint), intent(in) :: ids_grad_t, ids_grad_part_t
 !
       real(kind=kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:2)
+      real(kind=kreal), intent(in) :: reference_r(0:nidx_rj(1))
+      real(kind=kreal), intent(in) :: refgrad_r(0:nidx_rj(1))
 !
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: scalar_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: grad_rj(nnod_rj,3)
+!
+      real(kind = kreal), intent(inout) :: pert_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: grad_pert_rj(nnod_rj,3)
 !
       integer(kind = kint) :: k, inod
 !
@@ -181,67 +181,75 @@
       if (idx_rj_degree_zero .gt. 0) then
         do k = 1, nidx_rj(1)
           inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
-          d_rj(inod,is_temp) = d_rj(inod,is_temp) - reftemp_rj(k,0)
-          d_rj(inod,is_grad_t) = d_rj(inod,is_grad_t)                   &
-     &                 - two*reftemp_rj(k,1) * radius_1d_rj_r(k)**2
-          d_rj(inod,ids_grad_t) = d_rj(inod,ids_grad_t)                 &
-     &                 - (reftemp_rj(k,2) * radius_1d_rj_r(k)           &
-     &                  + two*reftemp_rj(k,1)) * two*radius_1d_rj_r(k)
+          scalar_rj(inod) = scalar_rj(inod) - reference_r(k)
+          grad_rj(inod,1) = grad_rj(inod,1)                             &
+     &                 - two*refgrad_r(k) * radius_1d_rj_r(k)**2
         end do
       end if
 !
 !$omp parallel do
-      do inod = 1, n_point
-        d_rj(inod,is_par_temp) =     d_rj(inod,is_temp)
-        d_rj(inod,is_grad_part_t) =  d_rj(inod,is_grad_t)
-        d_rj(inod,ids_grad_part_t) = d_rj(inod,ids_grad_t)
+      do inod = 1, nnod_rj
+        pert_rj(inod) =        scalar_rj(inod)
+        grad_pert_rj(inod,1) = grad_rj(inod,1)
+        grad_pert_rj(inod,2) = grad_rj(inod,2)
       end do
 !$omp end parallel do
+!
+      if(inod_rj_center .gt. 0) then
+        scalar_rj(inod_rj_center) = scalar_rj(inod_rj_center)           &
+     &                             - reference_r(0)
+        pert_rj(inod_rj_center) =   scalar_rj(inod_rj_center)
+      end if
 !
       end subroutine chenge_temp_to_per_temp_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine transfer_per_temp_to_temp_sph(idx_rj_degree_zero,      &
-     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                    &
-     &          is_temp, is_grad_t, ids_grad_t,                         &
-     &          is_par_temp, is_grad_part_t, ids_grad_part_t,           &
-     &          n_point, ntot_phys_rj, d_rj)
+      subroutine transfer_per_temp_to_temp_sph                          &
+     &         (idx_rj_degree_zero, inod_rj_center, nnod_rj, nidx_rj,   &
+     &          radius_1d_rj_r, reference_r, refgrad_r,                 &
+     &          scalar_rj, grad_rj, pert_rj, grad_pert_rj)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: inod_rj_center
+      integer(kind = kint), intent(in) :: nnod_rj
       integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-!
-      integer(kind = kint), intent(in) :: is_temp, is_par_temp
-      integer(kind = kint), intent(in) :: is_grad_t, is_grad_part_t
-      integer(kind = kint), intent(in) :: ids_grad_t, ids_grad_part_t
 !
       real(kind=kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:2)
+      real(kind=kreal), intent(in) :: reference_r(0:nidx_rj(1))
+      real(kind=kreal), intent(in) :: refgrad_r(0:nidx_rj(1))
 !
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: scalar_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: grad_rj(nnod_rj,3)
+!
+      real(kind = kreal), intent(inout) :: pert_rj(nnod_rj)
+      real(kind = kreal), intent(inout) :: grad_pert_rj(nnod_rj,3)
+!
 !
       integer(kind = kint) :: k, inod
 !
 !
 !$omp parallel do
-      do inod = 1, n_point
-        d_rj(inod,is_par_temp) =     d_rj(inod,is_temp)
-        d_rj(inod,is_grad_part_t) =  d_rj(inod,is_grad_t)
-        d_rj(inod,ids_grad_part_t) = d_rj(inod,ids_grad_t)
+      do inod = 1, nnod_rj
+        pert_rj(inod) =        scalar_rj(inod)
+        grad_pert_rj(inod,1) = grad_rj(inod,1)
+        grad_pert_rj(inod,2) = grad_rj(inod,2)
       end do
 !$omp end parallel do
 !
       if (idx_rj_degree_zero .gt. 0) then
         do k = 1, nidx_rj(1)
           inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
-          d_rj(inod,is_temp) = d_rj(inod,is_temp) + reftemp_rj(k,0)
-          d_rj(inod,is_grad_t) = d_rj(inod,is_grad_part_t)              &
-     &                 + two*reftemp_rj(k,1) * radius_1d_rj_r(k)**2
-          d_rj(inod,ids_grad_t) = d_rj(inod,ids_grad_part_t)            &
-     &                 + (reftemp_rj(k,2) * radius_1d_rj_r(k)           &
-     &                  + two*reftemp_rj(k,1)) * two*radius_1d_rj_r(k)
+          scalar_rj(inod) = scalar_rj(inod) + reference_r(k)
+          grad_rj(inod,1) = grad_pert_rj(inod,1)                        &
+     &                   + two*refgrad_r(k) * radius_1d_rj_r(k)**2
         end do
+      end if
+!
+      if(inod_rj_center .gt. 0) then
+        pert_rj(inod_rj_center) =   scalar_rj(inod_rj_center)
+        scalar_rj(inod_rj_center) = scalar_rj(inod_rj_center)           &
+     &                              + reference_r(0)
       end if
 !
       end subroutine transfer_per_temp_to_temp_sph

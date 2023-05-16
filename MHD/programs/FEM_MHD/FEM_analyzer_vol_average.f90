@@ -63,7 +63,6 @@
 !
       use initialize_4_snapshot
 !
-      use node_monitor_IO
       use open_sgs_model_coefs
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files

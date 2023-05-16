@@ -211,12 +211,12 @@
       if (ipol%base%i_magne .gt. 0) then
         call gauss_to_poloidal_out                                      &
      &     (sph_params%nlayer_CMB, d_gauss%ltr_w, d_gauss%r_gauss,      &
-     &      d_gauss%w_gauss, d_gauss%index_w, ipol%base%i_magne,        &
-     &      sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      d_gauss%w_gauss, d_gauss%index_w, sph_rj, rj_fld%n_point,   &
+     &      rj_fld%d_fld(1,ipol%base%i_magne))
         call gauss_to_poloidal_in                                       &
      &     (sph_params%nlayer_ICB, d_gauss%ltr_w, d_gauss%r_gauss,      &
-     &      d_gauss%w_gauss, d_gauss%index_w, ipol%base%i_magne,        &
-     &      sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      d_gauss%w_gauss, d_gauss%index_w, sph_rj, rj_fld%n_point,   &
+     &      rj_fld%d_fld(1,ipol%base%i_magne))
       end if
 !
       end subroutine set_poloidal_b_by_gauss_coefs

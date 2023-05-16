@@ -19,13 +19,14 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!
 !!      subroutine read_alloc_sph_rst_SGS_snap(i_step, rj_file_param,   &
-!!     &          MHD_files, rst_step, time_d, SPH_MHD, SPH_SGS)
+!!     &          MHD_files, rst_step, time_d, SPH_MHD, SPH_SGS, rj_itp)
 !!        type(field_IO_params), intent(in) :: rj_file_param
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(time_data), intent(inout) :: time_d
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!!        type(sph_radial_interpolate), intent(inout) :: rj_itp
 !!
 !!      subroutine set_initial_Csim_control                             &
 !!     &         (MHD_files, MHD_step, sph, comms_sph, trans_p, SGS_par,&
@@ -64,6 +65,7 @@
       use t_file_IO_parameter
       use t_field_data_IO
       use t_time_data
+      use t_sph_radial_interpolate
 !
       use sph_mhd_rst_IO_control
 !
@@ -104,13 +106,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_alloc_sph_rst_SGS_snap(i_step, rj_file_param,     &
-     &          MHD_files, rst_step, time_d, SPH_MHD, SPH_SGS)
+     &          MHD_files, rst_step, time_d, SPH_MHD, SPH_SGS, rj_itp)
 !
       use t_SGS_control_parameter
       use t_sph_filtering
       use t_SPH_SGS_structure
+      use t_sph_radial_interpolate
       use SPH_SGS_ini_model_coefs_IO
-      use r_interpolate_sph_data
 !
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: rj_file_param
@@ -120,11 +122,13 @@
       type(time_data), intent(inout) :: time_d
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+      type(sph_radial_interpolate), intent(inout) :: rj_itp
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, rj_file_param, MHD_files%fst_file_IO, rst_step,       &
-     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, time_d)
+     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, time_d,               &
+     &    rj_itp)
 !
       call read_alloc_sph_rst_Csim_snap(i_step, MHD_files,              &
      &    rst_step, time_d, SPH_SGS%SGS_par, SPH_SGS%dynamic)

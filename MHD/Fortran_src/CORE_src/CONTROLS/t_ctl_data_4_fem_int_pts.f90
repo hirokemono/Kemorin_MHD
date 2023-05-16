@@ -13,6 +13,10 @@
 !!        type(fem_intergration_control), intent(inout) :: fint_ctl
 !!      subroutine write_control_fem_int_points                         &
 !!     &         (id_control, hd_block, fint_ctl, level)
+!!        type(fem_intergration_control), intent(in) :: fint_ctl
+!!
+!!      subroutine reset_control_fem_int_points(fint_ctl)
+!!        type(fem_intergration_control), intent(inout) :: fint_ctl
 !! ----------------------------------------------------------------------
 !!
 !!    begin intg_point_num_ctl
@@ -129,6 +133,21 @@
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
       end subroutine write_control_fem_int_points
+!
+!   --------------------------------------------------------------------
+!
+      subroutine reset_control_fem_int_points(fint_ctl)
+!
+      type(fem_intergration_control), intent(inout) :: fint_ctl
+!
+!
+      fint_ctl%integration_points_ctl%iflag = 0
+      fint_ctl%intg_point_poisson_ctl%iflag = 0
+      fint_ctl%intg_point_t_evo_ctl%iflag = 0
+!
+      fint_ctl%i_int_points = 0
+!
+      end subroutine reset_control_fem_int_points
 !
 !   --------------------------------------------------------------------
 !

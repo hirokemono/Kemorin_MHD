@@ -170,6 +170,7 @@ static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work 
         psf_b_WK->ilength = (KCHARA_C-1)*sizeof(char);
         rawread_64bit_psfchara(psf_b_WK, psf_b->data_name[i]);
         psf_b->data_name[i] = trim(psf_b->data_name[i]);
+        psf_b->id_coord[i] = set_field_coordinate_flag(psf_b->data_name[i]);
     }
     psf_b->istack_comp[0] = 0;
     for(i=0;i<psf_b->nfield;i++){

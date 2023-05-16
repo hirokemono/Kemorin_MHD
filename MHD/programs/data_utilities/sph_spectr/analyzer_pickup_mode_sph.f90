@@ -19,6 +19,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter, private                      &
+     &        :: control_file_name='ctl_sph_transform'
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -30,22 +33,18 @@
       use m_ctl_params_sph_utils
       use m_legendre_transform_list
       use parallel_load_data_4_sph
+      use input_control_sph_utils
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
       use init_sph_trans
       use cal_rms_fields_by_sph
 !
-!     --------------------- 
-!
-!
+!     ---------------------
 !     read controls
-!
-      if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_utils'
-      call read_control_data_sph_utils(spu_ctl1)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils                                     &
-     &   (spu_ctl1, t_SHR, SPH_dat_ss%fld, monitor_ss%pwr)
+!     ---------------------
+      if (iflag_debug.gt.0) write(*,*) 's_input_control_sph_utils'
+      call s_input_control_sph_utils(control_file_name, spu_ctl1,       &
+     &    t_SHR, SPH_dat_ss%fld, monitor_ss%pwr)
 !
 !       set spectr grids
 !
@@ -74,18 +73,30 @@
 !
       subroutine evolution
 !
+      use m_error_IDs
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
       use cal_write_sph_monitor_data
       use pickup_sph_spectr_data
       use write_picked_sph_spectr
+      use calypso_mpi_int
 !
-      integer(kind = kint) :: i_step
+      integer(kind = kint) :: i_step, ierr_lc, ierr_gl
 !
 !
       call init_sph_spec_4_monitor                                      &
      &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
      &    SPH_dat_ss%fld, pick_list_u, pick_sph_u)
+      ierr_lc =  error_picked_spectr_files(SPH_dat_ss%sph%sph_params,   &
+     &                                     pick_sph_u)
+!
+      call calypso_mpi_allreduce_one_int(ierr_lc, ierr_gl, MPI_SUM)
+      if(ierr_gl .gt. 0) then
+        write(e_message,*) ierr_gl,                                     &
+     &      ' pickup mode files have wrong header. Check field defs.'
+        call calypso_mpi_barrier()
+        call calypso_MPI_abort(ierr_file, e_message)
+      end if
 !
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
@@ -100,8 +111,9 @@
 !  pickup components
 !
         t_SHR%time_d%i_time_step = i_step
-        call write_each_picked_specr_file(t_SHR%time_d,                 &
-     &      SPH_dat_ss%sph%sph_rj, SPH_dat_ss%fld, pick_sph_u)
+        call write_picked_spectrum_files(t_SHR%time_d,                  &
+     &      SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,           &
+     &      SPH_dat_ss%fld, pick_sph_u)
       end do
 !
       end subroutine evolution

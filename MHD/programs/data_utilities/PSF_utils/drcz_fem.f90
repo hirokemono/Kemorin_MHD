@@ -33,7 +33,7 @@
 !
       integer(kind = kint) :: id1, i_field, ist_comp
       real(kind = kreal) :: fv(2,2)
-      integer :: pgopen
+      integer :: pgopen, np_ucd
       real :: r_flame
 !*
 !*  ---------  input setting  ------------
@@ -72,7 +72,8 @@
       do istep = ist_pg, ied_pg, inc_pg
         time = dble(istep)*delta_time_pg
 !*
-        call load_psf_data(istep, psf_file_param, t_IO_u, psf_u)
+        call load_psf_data(istep, psf_file_param,                       &
+     &                     np_ucd, t_IO_u, psf_u)
         call set_psffield_id_4_plot_pg(psf_u%psf_phys)
 !
         nnod_pg =     psf_u%psf_nod%numnod

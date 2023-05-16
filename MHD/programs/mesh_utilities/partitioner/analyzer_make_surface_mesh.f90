@@ -59,7 +59,7 @@
       use t_read_mesh_data
       use t_shape_functions
 !
-      integer(kind = kint) :: iflag_output_SURF = 0
+      logical :: flag_output_SURF = .FALSE.
       type(mesh_test_control) :: mesh_tctl1
       type(field_IO_params) :: mesh_file_name
 !
@@ -81,7 +81,7 @@
 !
       call set_minimum_fem_platform                                     &
      &   (mesh_tctl1%plt, mesh_tctl1%Fmesh_ctl,                         &
-     &    mesh_file_name, iflag_output_SURF)
+     &    mesh_file_name, flag_output_SURF)
 !
 !  --  read geometry
 !

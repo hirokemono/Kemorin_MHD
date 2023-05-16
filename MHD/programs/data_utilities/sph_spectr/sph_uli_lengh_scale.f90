@@ -6,6 +6,35 @@
 !!
 !
 !> @brief Find maximum degree and order of the spectrum
+!!@verbatim
+!! -----------------------------------------------------------------
+!!
+!!      control file: control_uli_length_scale
+!!
+!!  begin time_averaging_sph_monitor
+!!    start_time_ctl     1.0
+!!    end_time_ctl       2.0
+!!
+!!    old_format_flag     'Off'
+!!    degree_range_ctl     1   12
+!!
+!!    begin monitor_data_list_ctl
+!!      array vol_spectr_prefix
+!!        vol_spectr_prefix     'sph_pwr_volume_l'
+!!        vol_spectr_prefix     'sph_pwr_volume_m'
+!!        vol_spectr_prefix     'sph_pwr_volume_lm'
+!!      end array vol_spectr_prefix
+!!
+!!      array layer_sph_spectr_prefix
+!!        layer_sph_spectr_prefix     'sph_pwr_layer_l'
+!!        layer_sph_spectr_prefix     'sph_pwr_layer_m'
+!!        layer_sph_spectr_prefix     'sph_pwr_layer_lm'
+!!      end array layer_sph_spectr_prefix
+!!    end monitor_data_list_ctl
+!!  end time_averaging_sph_monitor
+!!
+!! -----------------------------------------------------------------
+!!@endverbatim
 !
       program sph_uli_lengh_scale
 !
@@ -20,26 +49,31 @@
       implicit none
 !
 !
+!>        Control file name
+      character(len = kchara), parameter                                &
+     &           :: fname_ctl_uli_scale = 'control_uli_length_scale'
+!
       type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
       type(sph_spectr_file_param), save :: spec_evo_p1
       type(read_sph_spectr_data), save :: sph_IN_u
 !
       integer :: i
 !
-      call read_control_file_psf_compare(0, tave_sph_ctl1)
-      call set_spec_series_file_param(tave_sph_ctl1, spec_evo_p1)
+      call read_control_file_sph_monitor(0, fname_ctl_uli_scale,        &
+     &                                   tave_sph_ctl1)
+      call set_spec_series_file_and_time(tave_sph_ctl1, spec_evo_p1)
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
-      do i = 1, spec_evo_p1%nfile_vol_spectr_file
-        call sph_uli_lengh_scale_by_spectr                              &
-     &     (spec_evo_p1%vol_spectr_prefix(i),                           &
-     &      ione, spec_evo_p1, sph_IN_u)
+      do i = 1, spec_evo_p1%vol_spec_series%num_file
+        call sph_volume_uli_lscale_by_spec                              &
+     &     (spec_evo_p1%vol_spec_series%evo_file_name(i),               &
+     &      spec_evo_p1, sph_IN_u)
       end do
 !
-      do i = 1, spec_evo_p1%nfile_layer_sprctr_file
-        call sph_uli_lengh_scale_by_spectr                              &
-     &     (spec_evo_p1%layer_spectr_prefix(i),                         &
-     &      izero, spec_evo_p1, sph_IN_u)
+      do i = 1, spec_evo_p1%layer_spec_series%num_file
+        call sph_layer_uli_lscale_by_spec                               &
+     &     (spec_evo_p1%layer_spec_series%evo_file_name(i),             &
+     &      spec_evo_p1, sph_IN_u)
       end do
 !
       call dealloc_spec_series_file_param(spec_evo_p1)

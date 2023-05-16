@@ -17,7 +17,7 @@
 !!        type(lic_repartioned_mesh), intent(inout) :: repart_data
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(mesh_SR), intent(inout) :: m_SR
-!!      subroutine c(istep_lic, time, geofem, &
+!!      subroutine LIC_visualize_w_shared_mesh(istep_lic, time, geofem, &
 !!     &          nod_fld, repart_p, repart_data, pvr, lic_param, m_SR)
 !!        integer(kind = kint), intent(in) :: istep_lic
 !!        real(kind = kreal), intent(in) :: time

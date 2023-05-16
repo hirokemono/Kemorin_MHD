@@ -25,6 +25,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &             :: fname_trans_flt_ctl = "ctl_new_domain_filter"
+!
       integer, save :: nprocs_2nd
       type(mesh_geometry), save ::    orgmesh
       type(mesh_geometry), save ::    newmesh
@@ -51,6 +54,7 @@
       use const_domain_tbl_by_file
 !
       use bcast_nodes_for_trans
+      use input_ctl_filter_newdomain
 !
       type(ctl_data_newdomain_filter) :: newd_fil_ctl1
       integer(kind = kint) :: ierr
@@ -73,17 +77,10 @@
 !
       nprocs_2nd = nprocs
 !
-!     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*) 'read_control_filter_newdomain'
-      call read_control_filter_newdomain(newd_fil_ctl1)
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain                                 &
-     &   (nprocs_2nd, newd_fil_ctl1%org_filter_plt,                     &
-     &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
-     &    newd_fil_ctl1%org_filter_file_ctls, newfil_p1, ierr)
-!
+!     ---------------------
+      if (iflag_debug.eq.1) write(*,*) 's_input_ctl_filter_newdomain'
+      call s_input_ctl_filter_newdomain(fname_trans_flt_ctl,            &
+     &                                  nprocs_2nd, newfil_p1)
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
       call bcast_parallel_domain_tbl                                    &

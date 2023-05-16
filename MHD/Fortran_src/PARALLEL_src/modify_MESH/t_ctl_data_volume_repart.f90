@@ -9,12 +9,18 @@
 !!@verbatim
 !!      subroutine read_control_vol_repart                              &
 !!     &         (id_control, hd_block, viz_repart_c, c_buf)
+!!        character(len=kchara), intent(in) :: file_name
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(viz_repartition_ctl), intent(inout) :: viz_repart_c
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_control_vol_repart                             &
+!!     &         (id_control, hd_block, viz_repart_c, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len=kchara), intent(in) :: hd_block
+!!        type(viz_repartition_ctl), intent(in) :: viz_repart_c
+!!        integer(kind = kint), intent(inout) :: level
 !!      subroutine dealloc_control_vol_repart(viz_repart_c)
-!!      subroutine bcast_control_vol_repart(viz_repart_c)
 !!        type(viz_repartition_ctl), intent(inout) :: viz_repart_c
 !!      subroutine dup_control_vol_repart(org_viz_repart_c,             &
 !!     &                                  new_viz_repart_c)
@@ -58,6 +64,7 @@
 !
       implicit  none
 !
+!
 !>      Structure for new partitioning controls
       type viz_repartition_ctl
 !>        Structure for new file controls
@@ -94,6 +101,8 @@
      &         (id_control, hd_block, viz_repart_c, c_buf)
 !
       use t_read_control_elements
+      use ctl_data_platforms_IO
+      use ctl_data_volume_grouping_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -125,6 +134,42 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine write_control_vol_repart                               &
+     &         (id_control, hd_block, viz_repart_c, level)
+!
+      use t_read_control_elements
+      use ctl_data_platforms_IO
+      use ctl_data_volume_grouping_IO
+      use write_control_elements
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(viz_repartition_ctl), intent(in) :: viz_repart_c
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(viz_repart_c%i_viz_repartition_ctl .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_platforms                                      &
+     &   (id_control, hd_viz_platform, viz_repart_c%viz_plt, level)
+!
+      call write_FEM_mesh_control                                       &
+     &   (id_control, hd_FEM_mesh, viz_repart_c%Fmesh_ctl, level)
+      call write_ctl_data_new_partition(id_control, hd_new_partition,   &
+     &    viz_repart_c%new_part_ctl, level)
+      call write_FEM_sleeve_control                                     &
+     &   (id_control, hd_FEM_sleeve, viz_repart_c%Fsleeve_ctl, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_control_vol_repart
+!
+!   --------------------------------------------------------------------
+!
       subroutine dealloc_control_vol_repart(viz_repart_c)
 !
       type(viz_repartition_ctl), intent(inout) :: viz_repart_c
@@ -140,28 +185,6 @@
       end subroutine dealloc_control_vol_repart
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_control_vol_repart(viz_repart_c)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-!
-      type(viz_repartition_ctl), intent(inout) :: viz_repart_c
-!
-!
-      call bcast_ctl_data_4_platform(viz_repart_c%viz_plt)
-!
-      call bcast_FEM_mesh_control(viz_repart_c%Fmesh_ctl)
-      call bcast_ctl_data_new_decomp(viz_repart_c%new_part_ctl)
-      call bcast_FEM_sleeve_control(viz_repart_c%Fsleeve_ctl)
-!
-      call calypso_mpi_bcast_one_int                                    &
-     &   (viz_repart_c%i_viz_repartition_ctl, 0)
-!
-      end subroutine bcast_control_vol_repart
-!
 !   --------------------------------------------------------------------
 !
       subroutine dup_control_vol_repart(org_viz_repart_c,              &

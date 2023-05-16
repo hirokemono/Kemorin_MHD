@@ -13,7 +13,7 @@
       real(kind = kreal) :: xx(3)
       integer :: id_rank
       integer(kind = kint) :: inod_2_pick, i_step_MHD
-      integer(kind = kint) :: num_monitor_local
+      integer(kind = kint) :: num_pick_node_local
 !
       integer(kind = kint) :: num_fld_monitor
       integer(kind = kint) :: ntot_cmp_monitor
@@ -50,7 +50,7 @@
         nod_monitor_file_name = add_dat_extension(fname_tmp)
 !
         open(id_monitor_file, file=nod_monitor_file_name, err=98)
-        read(id_monitor_file,*) num_monitor_local
+        read(id_monitor_file,*) num_pick_node_local
         read(id_monitor_file,*) tmpchara
         read(id_monitor_file,*) tmpchara, num_fld_monitor
 !
@@ -69,7 +69,7 @@
           picked_monitor_file_name = add_dat_extension(fname_tmp2)
 !
           open(pick_monitor_file_code, file=picked_monitor_file_name)
-          write(pick_monitor_file_code,*) num_monitor_local
+          write(pick_monitor_file_code,*) num_pick_node_local
           write(pick_monitor_file_code,*) 'ID step time x y z '
           write(pick_monitor_file_code,1001)  num_fld_monitor
           write(pick_monitor_file_code,1002)                            &
@@ -94,7 +94,7 @@
         deallocate(fld_name_monitor)
 !
         do
-          do i = 1, num_monitor_local
+          do i = 1, num_pick_node_local
             read(id_monitor_file,*,end=99,err=99)                       &
      &        i_step_MHD, inod, time, xx(1:3),                          &
      &        d_nod(1:ntot_cmp_monitor)

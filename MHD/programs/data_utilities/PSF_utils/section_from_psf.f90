@@ -33,6 +33,7 @@
       character(len=kchara) :: direction
       integer(kind = kint) :: nd
       real(kind = kreal) :: xref
+      integer :: np_ucd
 !
       type(time_data), save :: line_time
       type(ucd_data), save :: line
@@ -63,7 +64,8 @@
       read(*,*) line_ucd_param%file_prefix
 !
       do istep = istep_start, istep_end, istep_int
-        call load_psf_data(istep, psf_file_param, t_IO_u, psf_u)
+        call load_psf_data(istep, psf_file_param,                       &
+     &                     np_ucd, t_IO_u, psf_u)
         call find_psf_edges(psf_u%psf_ele)
         call pick_psf_by_sections                                       &
      &     (nd, xref, psf_u%psf_nod, psf_u%psf_ele,                     &

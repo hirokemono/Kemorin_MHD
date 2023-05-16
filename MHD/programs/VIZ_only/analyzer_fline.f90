@@ -23,6 +23,9 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_viz_ctl = "control_viz"
+!
 !>         Structure for time stepping parameters
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ6
@@ -46,17 +49,14 @@
       subroutine initialize_fline
 !
       use t_control_data_vizs
+      use input_control_four_vizs
 !
       integer(kind = kint) :: ierr
 !
-!     read controls
-!
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_four_vizs'
-      call read_control_file_four_vizs(vizs_ctl6)
-      call set_ctl_params_four_vizs(vizs_ctl6, FEM_viz6, t_VIZ6, ierr)
-!
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
+!       set controls
+      if (iflag_debug.gt.0) write(*,*) 's_input_control_four_vizs'
+      call s_input_control_four_vizs(fname_viz_ctl, vizs_ctl6,          &
+     &                               FEM_viz6, t_VIZ6)
 !
 !  FEM Initialization
       call FEM_initialize_four_vizs(t_VIZ6%init_d, t_VIZ6%ucd_step,     &

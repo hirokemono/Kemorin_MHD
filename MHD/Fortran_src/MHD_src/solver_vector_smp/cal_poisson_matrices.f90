@@ -58,7 +58,6 @@
       subroutine cal_scalar_diffuse_mat(ele, rhs_tbl, MG_mat_tbl,       &
      &          fem_wk, k2, dt, coef_imp, ak_d, mat11)
 !
-      use t_coefs_element_4_MHD
       use cal_diffuse_matrix
 !
       type(element_data), intent(in) :: ele
@@ -88,7 +87,6 @@
       subroutine cal_vect_diffuse_mat(ele, rhs_tbl, MG_mat_tbl,         &
      &          fem_wk, k2, dt, coef_imp, ak_d, mat33)
 !
-      use t_coefs_element_4_MHD
       use cal_diffuse_matrix
 !
       type(element_data), intent(in) :: ele
@@ -119,7 +117,6 @@
       subroutine cal_consist_coriolis_mat(ele, fl_prop,                 &
      &          rhs_tbl, MG_mat_tbl, fem_wk, k2, dt, mat33)
 !
-      use t_coefs_element_4_MHD
       use t_physical_property
       use cal_coriolis_mat33
 !

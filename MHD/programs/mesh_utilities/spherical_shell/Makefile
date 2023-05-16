@@ -5,6 +5,7 @@
 GEN_SPH_GRIDDIR = $$(MESHER_DIR)/spherical_shell
 
 TARGET_GEN_SPH_GRID =       gen_sph_grids
+TARGET_GEN_SPH_W_LIC =      gen_sph_w_repart
 
 TARGET_CHECK_SPH_GRID =     tests/check_sph_grids
 TARGET_MAKE_SPH_RADIUS =    tests/make_sph_mesh_radius
@@ -15,9 +16,17 @@ SOURCES = $(shell ls *.f90)
 
 MOD_GEN_SPH_GRID = \
 main_generate_sph_grids.o \
-analyzer_gen_sph_grids.o
+analyzer_gen_sph_grids.o \
+input_control_const_shell.o
+
+MOD_GEN_SPH_W_LIC = \
+t_ctl_data_gen_sph_w_repart.o \
+input_ctl_gen_sph_w_repart.o \
+main_gen_sph_w_repart.o \
+analyzer_gen_sph_w_repart.o
 
 MOD_CHECK_SPH_GRID = \
+input_control_const_shell.o \
 main_check_sph_grids.o \
 analyzer_check_sph_grids.o
 
@@ -28,12 +37,15 @@ MOD_TEST_SPH_GRID = \
 cmp_trans_sph_indices.o \
 cmp_trans_sph_tests.o \
 \
+input_control_const_shell.o \
 analyzer_test_sph.o \
 main_test_sph.o
 
 MOD_GEN_SPH_GRID_TEST = \
+input_control_const_shell.o \
 main_generate_sph_grid_t.o \
 analyzer_gen_sph_grid_t.o
+
 
 #
 #  -------------------------------------------------------------------------
@@ -44,6 +56,8 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_GEN_SPH_GRID =     $$(BUILDDIR)/$(TARGET_GEN_SPH_GRID)'   \
+	>> $(MAKENAME)
+	@echo 'TARGET_GEN_SPH_W_LIC =    $$(BUILDDIR)/$(TARGET_GEN_SPH_W_LIC)'   \
 	>> $(MAKENAME)
 	@echo 'TARGET_CHECK_SPH_GRID =   $$(BUILDDIR)/$(TARGET_CHECK_SPH_GRID)'   \
 	>> $(MAKENAME)
@@ -57,9 +71,9 @@ target_list:
 
 target_task:
 	@echo sph_utils:   \
-	'$$(TARGET_GEN_SPH_GRID)     $$(TARGET_CHECK_SPH_GRID)' \
+	'$$(TARGET_GEN_SPH_GRID)     $$(TARGET_GEN_SPH_W_LIC)' \
 	'$$(TARGET_MAKE_SPH_RADIUS)  $$(TARGET_TEST_SPH_GRID)'  \
-	'$$(TARGET_GEN_SPH_GRID_TEST)' >> $(MAKENAME)
+	'$$(TARGET_GEN_SPH_GRID_TEST) $$(TARGET_CHECK_SPH_GRID)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_GEN_SPH_GRID)': '$$(MOD_GEN_SPH_GRID)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
@@ -67,6 +81,15 @@ target_task:
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_GEN_SPH_GRID)' \
 	'$$(MOD_GEN_SPH_GRID)' \
+	'-L. $$(LIBS_MESH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_GEN_SPH_W_LIC)': '$$(MOD_GEN_SPH_W_LIC)' \
+	'$$(LIB_FILES_MESH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_GEN_SPH_W_LIC)' \
+	'$$(MOD_GEN_SPH_W_LIC)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -113,6 +136,8 @@ lib_name:
 mod_list:
 	@echo  MOD_GEN_SPH_GRID=  \\ >> $(MAKENAME)
 	@echo  $(MOD_GEN_SPH_GRID) >> $(MAKENAME)
+	@echo  MOD_GEN_SPH_W_LIC=  \\ >> $(MAKENAME)
+	@echo  $(MOD_GEN_SPH_W_LIC) >> $(MAKENAME)
 	@echo  MOD_CHECK_SPH_GRID=  \\ >> $(MAKENAME)
 	@echo  $(MOD_CHECK_SPH_GRID) >> $(MAKENAME)
 	@echo  MOD_MAKE_SPH_RADIUS=  \\ >> $(MAKENAME)

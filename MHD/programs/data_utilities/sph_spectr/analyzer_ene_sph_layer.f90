@@ -21,6 +21,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter, private                      &
+     &        :: control_file_name='ctl_sph_transform'
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -31,20 +34,19 @@
 !
       use m_ctl_params_sph_utils
       use parallel_load_data_4_sph
+      use input_control_sph_utils
       use set_field_data_w_SGS
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
       use schmidt_poly_on_rtm_grid
       use cal_rms_fields_by_sph
 !
+!     ---------------------
 !     read controls
-!
-      if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_utils'
-      call read_control_data_sph_utils(spu_ctl1)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils                                     &
-     &   (spu_ctl1, t_SHR, SPH_dat_ss%fld, monitor_ss%pwr)
+!     ---------------------
+      if (iflag_debug.gt.0) write(*,*) 's_input_control_sph_utils'
+      call s_input_control_sph_utils(control_file_name, spu_ctl1,       &
+     &    t_SHR, SPH_dat_ss%fld, monitor_ss%pwr)
 !
 !       set spectr grids
 !
@@ -85,8 +87,7 @@
 !
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
-      use output_sph_m_square_file
-!
+      use output_sph_pwr_layer_file
 !
       integer(kind = kint) :: i_step
 !
@@ -109,7 +110,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_mean_squre_in_shell'
         call cal_mean_squre_in_shell                                    &
      &     (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,           &
-     &      SPH_dat_ss%ipol, SPH_dat_ss%fld, leg_s%g_sph_rj,            &
+     &      SPH_dat_ss%ipol, SPH_dat_ss%fld, leg_s,                     &
      &      monitor_ss%pwr, monitor_ss%WK_pwr)
 !
         if (iflag_debug.gt.0)                                           &

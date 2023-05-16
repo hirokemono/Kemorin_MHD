@@ -145,7 +145,7 @@
 !
       use t_spheric_parameter
       use t_fdm_coefs
-      use const_fdm_coefs
+      use second_fdm_node_coefs
 !
       type(picked_spectrum_data_IO), intent(in) :: pick_IO
 !
@@ -167,7 +167,7 @@
       call alloc_sph_1d_index_rj(sph_rj)
       call alloc_neutral_point(pick_IO%num_layer, ntl)
 !
-      do i = 1, pick_IO%ntot_pick_spectr
+      do i = 1, pick_IO%num_mode * pick_IO%num_layer
         k = pick_IO%idx_sph(i,1)
         sph_rj%radius_1d_rj_r(k) = pick_IO%radius(i)
         if(pick_IO%idx_sph(i,2) .eq. 0) then
@@ -178,7 +178,7 @@
       call allocate_dr_rj_noequi(sph_rj%nidx_rj(1))
       call set_dr_for_nonequi(sph_params%nlayer_CMB,                    &
      &   sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
-      call const_2nd_fdm_matrices(sph_params, sph_rj, r_2nd)
+      call const_second_fdm_coefs(sph_params, sph_rj, r_2nd)
 !
       write(*,*) 'icomp_temp, icomp_light',                             &
      &           ntl%icomp_temp, ntl%icomp_light
@@ -188,11 +188,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_radial_grad_scalars(istep, time,                   &
+      subroutine set_radial_grad_scalars(icou, istep, time,             &
      &          nri, radius_1d_rj_r, d1nod_mat_fdm_2, buo_ratio,        &
      &          pick_IO, ntl)
 !
-      integer(kind = kint), intent(in) :: istep
+      integer(kind = kint), intent(in) :: icou, istep
       real(kind = kreal), intent(in) :: time, buo_ratio
       type(picked_spectrum_data_IO), intent(in) :: pick_IO
 !
@@ -202,26 +202,25 @@
 !
       type(neutral_pt_by_pick_sph), intent(inout) :: ntl
 !
-      integer(kind = kint) :: k, ipick
+      integer(kind = kint) :: k, ist
 !
       real(kind = kreal) :: r_neut
 !
 !
       if(ntl%ipick_l0m0(0) .gt. 0) then
-        ipick = ntl%ipick_l0m0(0)
-        ntl%temp00(0) = pick_IO%d_pk(ntl%icomp_temp, ipick)
-        ntl%comp00(0) = pick_IO%d_pk(ntl%icomp_light,ipick)
+        ist = (ntl%ipick_l0m0(0)-1) * pick_IO%ntot_comp
+        ntl%temp00(0) = pick_IO%d_pick(ist+ntl%icomp_temp, icou)
+        ntl%comp00(0) = pick_IO%d_pick(ist+ntl%icomp_light, icou)
       end if
 !
       do k = 1, pick_IO%num_layer
-        ipick = ntl%ipick_l0m0(k)
-        ntl%temp00(k) = pick_IO%d_pk(ntl%icomp_temp, ipick)
-        ntl%comp00(k) = pick_IO%d_pk(ntl%icomp_light,ipick)
+        ist = (ntl%ipick_l0m0(k)-1) * pick_IO%ntot_comp
+        ntl%temp00(k) = pick_IO%d_pick(ist+ntl%icomp_temp, icou)
+        ntl%comp00(k) = pick_IO%d_pick(ist+ntl%icomp_light, icou)
       end do
 !
 !
       if(ntl%ipick_l0m0(0) .gt. 0) then
-        ipick = ntl%ipick_l0m0(0)
         ntl%grad_temp00(0) = 0.0d0
         ntl%grad_comp00(0) = 0.0d0
 !

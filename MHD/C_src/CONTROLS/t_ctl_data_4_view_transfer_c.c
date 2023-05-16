@@ -20,7 +20,7 @@ const char label_image_size_ctl[NLBL_IMAGE_SIZE_CTL][KCHARA_C] = {
 };
 
 const char label_streo_view_ctl[NLBL_STEREO_VIEW_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"focal_point_ctl"},
+	/*[ 0]*/	{"focal_distance_ctl"},
 	/*[ 1]*/	{"eye_separation_ctl"}
 };
 
@@ -35,13 +35,13 @@ const char label_modeview_ctl[NLBL_MODELVIEW_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"image_size_ctl"},
 	
 	/*[ 1]*/	{"look_at_point_ctl"},
-	/*[ 2]*/	{"viewpoint_ctl"},
+	/*[ 2]*/	{"eye_position_ctl"},
 	/*[ 3]*/	{"up_direction_ctl"},
 	/*[ 4]*/	{"view_rotation_vec_ctl"},
 	/*[ 5]*/	{"view_rotation_deg_ctl"},
 	/*[ 6]*/	{"scale_factor_ctl"},
 	/*[ 7]*/	{"scale_factor_vec_ctl"},
-	/*[ 8]*/	{"viewpoint_in_viewer_ctl"},
+	/*[ 8]*/	{"eye_position_in_viewer_ctl"},
 	
 	/*[ 9]*/	{"projection_matrix_ctl"},
 	/*[10]*/	{"modelview_matrix_ctl"},

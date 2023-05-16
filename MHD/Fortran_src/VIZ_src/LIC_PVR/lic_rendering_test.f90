@@ -68,6 +68,7 @@
       use set_pvr_control
       use rendering_and_image_nums
       use set_lic_controls
+      use ctl_data_lic_pvr_IO
       use select_LIC_rendering
 !
       integer(kind = kint), intent(in) :: increment_lic

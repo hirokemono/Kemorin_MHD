@@ -35,7 +35,7 @@
 !
       real(kind= kreal), parameter :: xframe = 2.25, yframe = 1.125
 !
-      integer :: pgopen, id1
+      integer :: pgopen, id1, np_ucd
 !*
 !*  ---------  input setting  ------------
 !*
@@ -74,7 +74,8 @@
       do istep = ist_pg, ied_pg, inc_pg
         time = dble(istep)*delta_time_pg
 !*
-        call load_psf_data(istep, psf_file_param, t_IO_u, psf_u)
+        call load_psf_data(istep, psf_file_param,                       &
+     &                     np_ucd, t_IO_u, psf_u)
         call set_psffield_id_4_plot_pg(psf_u%psf_phys)
 !
 !     convert to map data

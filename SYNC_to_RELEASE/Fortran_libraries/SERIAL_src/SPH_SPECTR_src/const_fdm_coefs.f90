@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/CORE_src/SPH_SPECTR_src/const_fdm_coefs.f90

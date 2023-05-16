@@ -14,8 +14,10 @@ MPIRUN = $(MPIBINDIR)/mpirun
 #
 #
 
-BUILDDIR= 
+MAKEDIR=
+BUILDDIR=
 MHDDIR =
+PYTHONDIR = 
 
 MAKENAME= $(MAKEDIR)/Makefile
 
@@ -129,15 +131,11 @@ fluid:
 		fluid
 
 depends:
-	if [ ! -d $(MAKEDIR) ]; then \
-		mkdir $(MAKEDIR); \
-	fi
-	if [ ! -d $(BUILDDIR) ]; then \
-		mkdir $(BUILDDIR); \
-	fi
-	if [ ! -d $(BUILDDIR)/tests ]; then \
-		mkdir $(BUILDDIR)/tests; \
-	fi
+	mkdir -p $(MAKEDIR)
+	mkdir -p $(BUILDDIR)
+	mkdir -p $(BUILDDIR)/tests
+	mkdir -p $(PYTHONDIR)
+	
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		cd $${dir};  \
@@ -161,15 +159,11 @@ depends:
 
 
 makemake:
-	if [ ! -d $(MAKEDIR) ]; then \
-		mkdir $(MAKEDIR); \
-	fi
-	if [ ! -d $(BUILDDIR) ]; then \
-		mkdir $(BUILDDIR); \
-	fi
-	if [ ! -d $(BUILDDIR)/tests ]; then \
-		mkdir $(BUILDDIR)/tests; \
-	fi
+	mkdir -p $(MAKEDIR)
+	mkdir -p $(BUILDDIR)
+	mkdir -p $(BUILDDIR)/tests
+	mkdir -p $(PYTHONDIR)
+	
 	@echo # create module list
 	echo '#' > $(MAKENAME)
 	echo '# Makefile for Kemono Dynamo simulation' >> $(MAKENAME)
@@ -196,6 +190,7 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo 'F90OPTFLAGS = $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
 	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
+	@echo 'F90DLLFLAGS = -fPIC $$(F90OPTFLAGS)'         >> $(MAKENAME)
 	@echo 'OPTFLAGS = $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -261,10 +256,11 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo SRCDIR =   $(SRCDIR)  >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo MAKEDIR =  $(MAKEDIR)  >> $(MAKENAME)
-	@echo BUILDDIR = $(BUILDDIR) >> $(MAKENAME)
-	@echo MHDDIR =   $(MHDDIR)   >> $(MAKENAME)
-	@echo INSTDIR =  $(INSTDIR)  >> $(MAKENAME)
+	@echo MAKEDIR =  $(MAKEDIR)   >> $(MAKENAME)
+	@echo BUILDDIR = $(BUILDDIR)  >> $(MAKENAME)
+	@echo MHDDIR =   $(MHDDIR)    >> $(MAKENAME)
+	@echo INSTDIR =  $(INSTDIR)   >> $(MAKENAME)
+	@echo PYTHONDIR= $(PYTHONDIR) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	>> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -370,6 +366,7 @@ makemake:
 	@echo 'create excecution construct list...'
 	@echo '#' >> $(MAKENAME)
 	@echo 'all: $$(PROGRAMS) tests_with_f' >> $(MAKENAME)
+	@echo 'pythons: $$(LIB_FILE_PYTHONS)' >> $(MAKENAME)
 	@echo 'tests: tests_with_f' >> $(MAKENAME)
 	@echo 'tests_c: tests_with_c' >> $(MAKENAME)
 	@for dir in programs ; do \
@@ -506,6 +503,7 @@ makemake:
 	@echo '	rm -f *.a *.L'     >> $(MAKENAME)
 	@echo '	rm -f *.h'         >> $(MAKENAME)
 	@echo '	rm -f GL'          >> $(MAKENAME)
+	@echo '	cd $(PYTHONDIR); make clean'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 clean:

@@ -1,15 +1,15 @@
-!>@file   main_sph_MHD_noviz.f90
-!!@brief  program sph_MHD_noviz
+!>@file   main_sph_MHD.f90
+!!@brief  program sph_MHD
 !!
 !!@author H. Matsui
 !!@date Programmed by H. Okuda in 2000
 !!@n    Modified by H. Matsui in May, 2003 (ver 2.0)
 !!@n    Connect to vizs  by H. Matsui in July 2006 (ver 2.0)
 !
-!>@brief  Main program for MHD dynamo simulation
-!!        without cross sectioning routines
+!>@brief  Main program for MHD dynamo simulation with SGS model
+!!         input control file:  control_MHD
 !
-     program sph_MHD_noviz
+     program sph_MHD
 !
       use m_precision
 !
@@ -18,14 +18,16 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_MHD
-!
+      call initialize_sph_MHD(MHD_ctl_name)
       call evolution_sph_MHD
 !
       call calypso_MPI_finalize
 !
       stop 'Program finished'
-      end program sph_MHD_noviz
+      end program sph_MHD

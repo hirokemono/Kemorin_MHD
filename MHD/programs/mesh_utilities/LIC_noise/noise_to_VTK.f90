@@ -26,6 +26,7 @@
       use set_ucd_data_to_type
       use vtk_file_IO
       use nod_phys_send_recv
+      use ctl_file_LIC_noise_IO
       use cal_3d_noise
 !
       integer(kind = kint), parameter :: id_control = 11
@@ -52,7 +53,7 @@
       iflag_debug = 0
 !
       call  read_cube_noise_control_file(id_control, ctl_file_name,     &
-     &    hd_cube_noise, noise_c1)
+     &                                   hd_cube_noise, noise_c1)
       call set_control_3d_cube_noise(noise_c1, noise_t1)
       call sel_const_3d_cube_noise(noise_t1)
       call finalize_kemo_mt_stream

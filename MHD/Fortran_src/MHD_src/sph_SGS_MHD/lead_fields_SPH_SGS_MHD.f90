@@ -159,7 +159,7 @@
       use const_radial_forces_on_bc
       use cal_div_of_forces
       use cal_div_of_SGS_forces
-      use const_sph_radial_grad
+      use sph_radial_grad_4_velocity
       use cal_sph_rotation_of_SGS
       use cal_sph_rot_filtered_force
       use sum_rot_of_filter_forces
@@ -333,6 +333,7 @@
       use cal_SGS_buo_flux_sph_MHD
       use cal_energy_flux_w_SGS_rtp
       use cal_force_with_SGS_rj
+      use cal_geomagnetic_data
 !
       integer(kind = kint), intent(in) :: ltr_crust
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -360,6 +361,11 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
+      call cal_geomagnetic_rtp                                          &
+     &   (sph%sph_rtp, sph%sph_rj, sph_MHD_bc%sph_bc_B,                 &
+     &    trns_MHD%b_trns%base, trns_eflux%f_trns%prod_fld,             &
+     &    trns_MHD%backward%ncomp, trns_MHD%backward%fld_rtp,           &
+     &    trns_eflux%forward%ncomp, trns_eflux%forward%fld_rtp)
       call cal_sph_enegy_fluxes                                         &
      &   (ltr_crust, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,       &
      &    trans_p, ipol, trns_MHD, trns_snap, trns_difv, trns_eflux,    &
@@ -396,11 +402,11 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
-     &                          'forward transform for snapshot'
+     &      'forward transform for energy flux snapshot'
       call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
      &    trns_eflux%forward, WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
       if (iflag_debug.eq.1) write(*,*)                                  &
-     &                          'forward transform for SGS snapshot'
+     &      'forward transform for SGS snapshot'
       call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
      &    trns_SGS_snap%forward, WK_leg, WK_FFTs,                       &
      &    rj_fld, SR_sig, SR_r)

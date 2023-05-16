@@ -20,6 +20,9 @@
 !
       implicit none
 !
+      character (len = kchara), parameter, private                      &
+     &        :: control_file_name='ctl_sph_transform'
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -30,20 +33,19 @@
 !
       use m_ctl_params_sph_utils
       use parallel_load_data_4_sph
+      use input_control_sph_utils
       use set_field_data_w_SGS
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
       use schmidt_poly_on_rtm_grid
       use cal_rms_fields_by_sph
 !
-!     --------------------- 
-!
-      if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_utils'
-      call read_control_data_sph_utils(spu_ctl1)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils                                     &
-     &   (spu_ctl1, t_SHR, SPH_dat_ss%fld, monitor_ss%pwr)
+!     ---------------------
+!     read controls
+!     ---------------------
+      if (iflag_debug.gt.0) write(*,*) 's_input_control_sph_utils'
+      call s_input_control_sph_utils(control_file_name, spu_ctl1,       &
+     &    t_SHR, SPH_dat_ss%fld, monitor_ss%pwr)
 !
 !       set spectr grids
 !
@@ -109,9 +111,10 @@
         if(iflag_debug .gt. 0)                                          &
      &        write(*,*) 'append_picked_sph_mean_sq_file'
         t_SHR%time_d%i_time_step = i_step
-        call append_picked_sph_mean_sq_file                             &
-     &    (t_SHR%time_d, SPH_dat_ss%sph%sph_rj, leg_s, SPH_dat_ss%ipol, &
-     &     ipol_LES_ss, SPH_dat_ss%fld, monitor_ss%pick_rms)
+        call append_picked_sph_mean_sq_file(t_SHR%time_d,               &
+     &      SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,           &
+     &      leg_s, SPH_dat_ss%ipol, ipol_LES_ss, SPH_dat_ss%fld,        &
+     &      monitor_ss%pick_rms)
       end do
 !
       end subroutine analyze_pick_rms_sph

@@ -18,11 +18,13 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!
 !
       call calypso_MPI_init
 !
-      call initialize_sph_mhd_only
-!
+      call initialize_sph_mhd_only(MHD_ctl_name)
       call evolution_sph_mhd_only
 !
       call calypso_MPI_finalize

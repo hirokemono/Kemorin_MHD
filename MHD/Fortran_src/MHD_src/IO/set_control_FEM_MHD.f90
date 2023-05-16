@@ -7,12 +7,13 @@
 !> @brief Set parameters for MHD dynamo simulation from control data
 !!
 !!@verbatim
-!!      subroutine set_control_4_FEM_MHD(plt, org_plt,                  &
+!!      subroutine set_control_4_FEM_MHD(plt, org_plt, sgs_ctl,         &
 !!     &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,            &
 !!     &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,&
-!!     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+!!     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld, nod_mntr)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
+!!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!        type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -26,6 +27,7 @@
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!        type(phys_data), intent(inout) :: nod_fld, ele_fld
+!!        type(node_monitor_IO), intent(inout) :: nod_mntr
 !!@endverbatim
 !
       module set_control_FEM_MHD
@@ -36,10 +38,11 @@
       use t_phys_data
       use t_MHD_file_parameter
       use t_ctl_data_4_platforms
-      use t_ctl_data_SGS_MHD_model
+      use t_ctl_data_MHD_model
       use t_ctl_data_FEM_MHD_control
       use t_ctl_data_node_monitor
       use t_ctl_data_volume_repart
+      use t_ctl_data_SGS_model
       use t_bc_data_list
       use t_flex_delta_t_data
 !
@@ -54,10 +57,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_MHD(plt, org_plt,                    &
+      subroutine set_control_4_FEM_MHD(plt, org_plt, sgs_ctl,           &
      &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,              &
      &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,  &
-     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld, nod_mntr)
 !
       use calypso_mpi
       use m_default_file_prefix
@@ -66,6 +69,8 @@
       use t_SGS_control_parameter
       use t_MGCG_data
       use t_MGCG_data_4_MHD
+      use t_coef_parameters_list
+      use t_node_monitor_IO
 !
       use set_control_platform_item
       use set_control_platform_data
@@ -74,7 +79,6 @@
       use SPH_SGS_ini_model_coefs_IO
 !
       use set_control_4_force
-      use set_control_4_normalize
       use set_control_4_SGS
       use set_control_SGS_commute
       use set_control_4_filtering
@@ -89,6 +93,7 @@
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
+      type(SGS_model_control), intent(in) :: sgs_ctl
 !
       type(mhd_model_control), intent(inout) :: model_ctl
       type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
@@ -103,6 +108,7 @@
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(phys_data), intent(inout) :: nod_fld, ele_fld
+      type(node_monitor_IO), intent(inout) :: nod_mntr
 !
 !
 !   set parameters for data files
@@ -121,7 +127,8 @@
 !
       call s_set_control_4_model                                        &
      &   (model_ctl%reft_ctl, model_ctl%refc_ctl,                       &
-     &    fmctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
+     &    fmctl_ctl%mevo_ctl, model_ctl%evo_ctl, MHD_prop)
+      call set_control_node_grp_monitor(nmtr_ctl, nod_mntr)
       call dealloc_monitor_data_ctl(nmtr_ctl)
 !
 !   set element groups for evolution
@@ -140,24 +147,21 @@
 !   set parameters for SGS model
 !
       call set_control_SGS_model                                        &
-     &   (model_ctl%sgs_ctl, SGS_par%model_p, SGS_par%filter_p,         &
+     &   (sgs_ctl, SGS_par%model_p, SGS_par%filter_p,                   &
      &    MHD_files%Csim_file_IO, SGS_par%i_step_sgs_coefs)
 
-      call s_set_control_SGS_commute                                    &
-     &   (SGS_par%model_p, model_ctl%sgs_ctl, SGS_par%commute_p,        &
-     &    MHD_files%Cdiff_file_IO)
-      call s_set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,           &
-     &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl,              &
-     &    SGS_par%model_p)
+      call s_set_control_SGS_commute(SGS_par%model_p, sgs_ctl,          &
+     &    SGS_par%commute_p, MHD_files%Cdiff_file_IO)
+      call s_set_control_FEM_SGS(sgs_ctl%ffile_ctl,                     &
+     &    sgs_ctl, sgs_ctl%elayer_ctl, SGS_par%model_p)
 !
 !   set parameters for filtering operation
 !
       call s_set_control_4_filtering                                    &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
-     &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
-     &    SGS_par%filter_p)
+     &    SGS_par%model_p, sgs_ctl%SGS_filter_name_ctl,                 &
+     &    sgs_ctl%ffile_ctl, sgs_ctl%s3df_ctl, SGS_par%filter_p)
 !
 !   set fields
 !
@@ -167,10 +171,13 @@
 !
 !   set control parameters
 !
-      call s_set_control_4_normalize                                    &
+      call set_control_4_normalize                                      &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
      &    MHD_prop%cp_prop, model_ctl%dless_ctl, model_ctl%eqs_ctl,     &
      &    MHD_prop%MHD_coef_list)
+!
+      call set_coefs_4_magnetic_scale                                   &
+     &   (model_ctl%bscale_ctl, MHD_prop%MHD_coef_list)
 !
 !   set boundary conditions
 !

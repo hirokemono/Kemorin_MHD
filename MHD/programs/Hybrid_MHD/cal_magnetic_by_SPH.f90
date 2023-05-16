@@ -174,11 +174,11 @@
      &  (MHD_step1%time_d%dt, FEM_prm, SGS_par%model_p,                 &
      &   SGS_par%filter_p, mesh%nod_comm, mesh%node, mesh%ele, conduct, &
      &   MHD_prop%cd_prop, iphys, iphys_LES,                            &
-     &   SGS_MHD_wk1%iphys_ele_base, SGS_MHD_wk1%ele_fld,               &
+     &   FSGSs%SGS_MHD_wk%iphys_ele_base, FSGSs%SGS_MHD_wk%ele_fld,     &
      &   fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,           &
      &   Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iphys_elediff_vec, &
      &   Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,                 &
-     &   SGS_MHD_wk1%FEM_SGS_wk%wk_filter, mhd_fem1_wk,                 &
+     &   FSGSs%SGS_MHD_wk%FEM_SGS_wk%wk_filter, mhd_fem1_wk,            &
      &   rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                  &
      &   FEM_MHD%field, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
@@ -300,6 +300,7 @@
       use spherical_SRs_N
       use copy_spectr_4_sph_trans
       use copy_nodal_fld_4_sph_trans
+      use sph_update_after_evolution
 !
       type(conductive_property), intent(in) :: cd_prop
       type(SGS_model_control_params), intent(in) :: SGS_param

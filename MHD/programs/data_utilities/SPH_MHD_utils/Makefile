@@ -10,15 +10,14 @@ TARGET_SPH_SNAP_BADBOY =  sph_snapshot_badboy
 TARGET_SPH_SP_SNAP =    sph_special_snap
 TARGET_MODIFY_SPH_INI = sph_modify_restart
 
+<<<<<<< HEAD
 TARGET_SPH_4VIZS_SNAP =   sph_snapshot_4vizs
+=======
+TARGET_SPH_VIZS_SNAP =    sph_snapshot_vizs
+>>>>>>> refs/heads/Update_zlib_routines
 TARGET_SPH_PSF_SNAP =     sph_snapshot_psf
 
 TARGET_SPH_SNAP_NOVIZ =    sph_snapshot_noviz
-
-TARGET_SPH_D_BENCH =         sph_dynamobench
-TARGET_SPH_PICK_CIRC =       sph_pick_circle
-TARGET_TAVE_PICK_CIRCLE =    t_ave_sph_picked_circle
-
 
 TARGET_SPH_FORWARD_TRANS = sph_forward_transform
 TARGET_SPH_BACK_TRANS =    sph_backward_transform
@@ -61,55 +60,52 @@ SOURCES = $(shell ls *.f90)
 MOD_SPH_SNAP_MAIN =  \
 main_sph_snapshot.o \
 analyzer_sph_snap.o \
+initialization_sph_SGS_snap.o \
 SPH_analyzer_SGS_snap.o
 
+<<<<<<< HEAD
 MOD_SPH_SNAP_4VIZS_MAIN =  \
 main_sph_snapshot_w_4vizs.o \
 analyzer_sph_snap_w_4vizs.o \
 SPH_analyzer_snap_w_psf.o
+=======
+MOD_SPH_SNAP_VIZS_MAIN =  \
+main_sph_snapshot_w_vizs.o \
+analyzer_sph_snap_w_vizs.o \
+SPH_analyzer_snap_w_vizs.o
+>>>>>>> refs/heads/Update_zlib_routines
 
 MOD_SPH_SNAP_PSF_MAIN =  \
 main_sph_snapshot_w_psf.o \
 analyzer_sph_snap_w_psf.o \
-SPH_analyzer_snap_w_psf.o
+SPH_analyzer_snap_w_vizs.o
 
 MOD_SPH_SNAP_BADBOY =  \
 main_sph_snap_badboy.o \
-analyzer_sph_snap.o \
+analyzer_sph_snap_badboy.o \
+initialization_sph_SGS_snap.o \
 SPH_analyzer_SGS_snap.o
 
 
 MOD_SPH_SP_SNAP_MAIN = \
 main_sph_special_snap.o \
 analyzer_sph_special_snap.o \
-analyzer_sph_snap.o \
+initialization_sph_SGS_snap.o \
 SPH_analyzer_SGS_snap.o
 
 
 MOD_SPH_SNAP_NOVIZ_MAIN =  \
 main_sph_snapshot_noviz.o \
 analyzer_noviz_sph_snap.o \
-SPH_analyzer_snap_w_psf.o
-
-MOD_SPH_D_BENCH_MAIN = \
-main_sph_dynamobench.o \
-analyzer_sph_dynamobench.o \
-SPH_analyzer_d_bench.o
-
-MOD_SPH_PICK_CIRC = \
-main_sph_pickup_cricle.o \
-analyzer_sph_pickup_circle.o \
-SPH_analyzer_sph_pick_circ.o
-
-MOD_T_AVE_PICK_CIRCLE = \
-t_ave_sph_picked_circle.o \
-m_tave_field_on_circle.o
+initialize_sph_snap_noviz.o \
+SPH_analyzer_snap_w_vizs.o
 
 MOD_MODIFY_SPH_INI = \
 main_sph_modify_restart.o \
 analyzer_sph_modify_restart.o \
-analyzer_sph_snap_w_psf.o \
-SPH_analyzer_snap_w_psf.o
+analyzer_noviz_sph_snap.o \
+initialize_sph_snap_noviz.o \
+SPH_analyzer_snap_w_vizs.o
 
 MOD_SPH_FORWARD_TRANS = \
 main_sph_forward_transform.o \
@@ -147,15 +143,16 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_SPH_SNAP =       $$(BUILDDIR)/$(TARGET_SPH_SNAP)'       >> $(MAKENAME)
+<<<<<<< HEAD
 	@echo 'TARGET_SPH_4VIZS_SNAP = $$(BUILDDIR)/$(TARGET_SPH_4VIZS_SNAP)' >> $(MAKENAME)
+=======
+	@echo 'TARGET_SPH_VIZS_SNAP =  $$(BUILDDIR)/$(TARGET_SPH_VIZS_SNAP)'  >> $(MAKENAME)
+>>>>>>> refs/heads/Update_zlib_routines
 	@echo 'TARGET_SPH_PSF_SNAP =   $$(BUILDDIR)/$(TARGET_SPH_PSF_SNAP)'   >> $(MAKENAME)
 	@echo 'TARGET_SPH_SP_SNAP =    $$(BUILDDIR)/$(TARGET_SPH_SP_SNAP)'    >> $(MAKENAME)
 	@echo 'TARGET_MODIFY_SPH_INI = $$(BUILDDIR)/$(TARGET_MODIFY_SPH_INI)' >> $(MAKENAME)
-	@echo 'TARGET_SPH_D_BENCH =    $$(BUILDDIR)/$(TARGET_SPH_D_BENCH)'   >> $(MAKENAME)
-	@echo 'TARGET_SPH_PICK_CIRC =  $$(BUILDDIR)/$(TARGET_SPH_PICK_CIRC)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_SNAP_NOVIZ = $$(BUILDDIR)/$(TARGET_SPH_SNAP_NOVIZ)'>> $(MAKENAME)
 	@echo 'TARGET_SPH_SNAP_BADBOY = $$(BUILDDIR)/$(TARGET_SPH_SNAP_BADBOY)' >> $(MAKENAME)
-	@echo 'TARGET_TAVE_PICK_CIRCLE =  $$(BUILDDIR)/$(TARGET_TAVE_PICK_CIRCLE)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_FORWARD_TRANS =  $$(BUILDDIR)/$(TARGET_SPH_FORWARD_TRANS)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_BACK_TRANS =  $$(BUILDDIR)/$(TARGET_SPH_BACK_TRANS)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_ALL_CORRELATE =  $$(BUILDDIR)/$(TARGET_SPH_ALL_CORRELATE)' >> $(MAKENAME)
@@ -165,15 +162,16 @@ target_list:
 target_task:
 	@echo sph_utils: \
 	 '$$(TARGET_SPH_SNAP)'       \
+<<<<<<< HEAD
 	 '$$(TARGET_SPH_4VIZS_SNAP)' \
+=======
+	 '$$(TARGET_SPH_VIZS_SNAP)'  \
+>>>>>>> refs/heads/Update_zlib_routines
 	 '$$(TARGET_SPH_PSF_SNAP)'   \
 	 '$$(TARGET_SPH_SP_SNAP)'    \
 	 '$$(TARGET_MODIFY_SPH_INI)' \
-	 '$$(TARGET_SPH_D_BENCH)'    \
-	 '$$(TARGET_SPH_PICK_CIRC)'  \
 	 '$$(TARGET_SPH_SNAP_NOVIZ)' \
 	 '$$(TARGET_SPH_SNAP_BADBOY)'   \
-	 '$$(TARGET_TAVE_PICK_CIRCLE)'  \
 	 '$$(TARGET_SPH_FORWARD_TRANS)'  \
 	 '$$(TARGET_SPH_BACK_TRANS)'  \
 	 '$$(TARGET_SPH_ALL_CORRELATE)' \
@@ -186,6 +184,7 @@ target_task:
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
+<<<<<<< HEAD
 	@echo '$$(TARGET_SPH_4VIZS_SNAP):  $$(MOD_SPH_SNAP_4VIZS_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
@@ -201,23 +200,26 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	
 	@echo '$$(TARGET_SPH_SNAP_NOVIZ):  $$(MOD_SPH_SNAP_NOVIZ_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
+=======
+	@echo '$$(TARGET_SPH_VIZS_SNAP):  $$(MOD_SPH_SNAP_VIZS_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
+>>>>>>> refs/heads/Update_zlib_routines
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPH_VIZS_SNAP)' '$$(MOD_SPH_SNAP_VIZS_MAIN)' \
+	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_SPH_PSF_SNAP):  $$(MOD_SPH_SNAP_PSF_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPH_PSF_SNAP)' '$$(MOD_SPH_SNAP_PSF_MAIN)' \
+	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_SPH_SNAP_NOVIZ):  $$(MOD_SPH_SNAP_NOVIZ_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_SPH_SNAP_NOVIZ)' '$$(MOD_SPH_SNAP_NOVIZ_MAIN)' \
-	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_SPH_D_BENCH):  $$(MOD_SPH_D_BENCH_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_SPH_D_BENCH)' '$$(MOD_SPH_D_BENCH_MAIN)' \
-	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_SPH_PICK_CIRC):  $$(MOD_SPH_PICK_CIRC)  $$(LIB_FILES_SPH_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_SPH_PICK_CIRC)' '$$(MOD_SPH_PICK_CIRC)' \
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
@@ -239,13 +241,6 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_SPH_SNAP_BADBOY)' '$$(MOD_SPH_SNAP_BADBOY)' \
-	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_TAVE_PICK_CIRCLE):  $$(MOD_T_AVE_PICK_CIRCLE)  $$(LIB_FILES_SPH_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_TAVE_PICK_CIRCLE)' '$$(MOD_T_AVE_PICK_CIRCLE)' \
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
@@ -286,8 +281,13 @@ lib_name:
 mod_list:
 	@echo  MOD_SPH_SNAP_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_MAIN) >> $(MAKENAME)
+<<<<<<< HEAD
 	@echo  MOD_SPH_SNAP_4VIZS_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_4VIZS_MAIN) >> $(MAKENAME)
+=======
+	@echo  MOD_SPH_SNAP_VIZS_MAIN=  \\ >> $(MAKENAME)
+	@echo  $(MOD_SPH_SNAP_VIZS_MAIN) >> $(MAKENAME)
+>>>>>>> refs/heads/Update_zlib_routines
 	@echo  MOD_SPH_SNAP_PSF_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_PSF_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_SP_SNAP_MAIN=  \\ >> $(MAKENAME)
@@ -296,12 +296,6 @@ mod_list:
 	@echo  $(MOD_SPH_SNAP_NOVIZ_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_SNAP_BADBOY=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_BADBOY) >> $(MAKENAME)
-	@echo  MOD_SPH_D_BENCH_MAIN=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_D_BENCH_MAIN) >> $(MAKENAME)
-	@echo  MOD_SPH_PICK_CIRC=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_PICK_CIRC) >> $(MAKENAME)
-	@echo  MOD_T_AVE_PICK_CIRCLE=  \\ >> $(MAKENAME)
-	@echo  $(MOD_T_AVE_PICK_CIRCLE) >> $(MAKENAME)
 	@echo  MOD_MODIFY_SPH_INI=  \\ >> $(MAKENAME)
 	@echo  $(MOD_MODIFY_SPH_INI) >> $(MAKENAME)
 	@echo  MOD_SPH_FORWARD_TRANS=  \\ >> $(MAKENAME)

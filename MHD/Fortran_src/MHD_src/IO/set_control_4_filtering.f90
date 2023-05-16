@@ -47,6 +47,7 @@
       use t_physical_property
       use t_SGS_control_parameter
       use t_ctl_data_SGS_filter
+      use t_ctl_SGS_3d_filter
       use t_ctl_data_filter_files
       use t_control_array_character
       use SPH_SGS_ini_model_coefs_IO

@@ -46,18 +46,24 @@
 !>        Structure of band matrices for toroidal magnetic field
         type(band_matrices_type) :: band_bt_evo
 !
-!>        Structure of band matrices for temperature
+!>        Structure of band matrices for temperature evolution
         type(band_matrices_type) :: band_temp_evo
-!>        Structure of band matrices for composition
+!>        Structure of band matrices for composition evolution
         type(band_matrices_type) :: band_comp_evo
 !
 !
 !>        Structure of band matrices for pressure poisson
         type(band_matrix_type) :: band_p00_poisson
-!>        Structure of band matrices for pressure poisson
+!
+!>        Structure of band matrices for temperature evolution
         type(band_matrix_type) :: band_temp00_evo
-!>        Structure of band matrices for pressure poisson
+!>        Structure of band matrices for composition evolutio
         type(band_matrix_type) :: band_comp00_evo
+!
+!>        Structure of band matrices for reference temperature
+        type(band_matrix_type) :: band_T00_poisson_fixT
+!>        Structure of band matrices for reference composition
+        type(band_matrix_type) :: band_C00_poisson_fixC
 !
 !>       Temporal space for average with center
         real(kind = kreal), allocatable :: x00_w_center(:)

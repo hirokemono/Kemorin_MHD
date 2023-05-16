@@ -13,14 +13,26 @@
 !!
 !!      subroutine read_lic_masking_ctl_array                           &
 !!     &         (id_control, hd_block, lic_ctl, c_buf)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_block
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
+!!      subroutine write_lic_masking_ctl_array                          &
+!!     &         (id_control, hd_block, lic_ctl, level)
+!!        integer(kind = kint), intent(in) :: id_control
+!!        character(len = kchara), intent(in) :: hd_block
+!!        type(lic_parameter_ctl), intent(in) :: lic_ctl
+!!        integer(kind = kint), intent(inout) :: level
 !!
 !!      subroutine add_fields_4_lic_to_fld_ctl(lic_ctl, field_ctl)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!      subroutine alloc_lic_masking_ctl(lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!!
+!!      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
+!!        type(lic_parameter_ctl), intent(in) :: org_lic_c
+!!        type(lic_parameter_ctl), intent(inout) :: new_lic_c
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags
 !!
@@ -37,9 +49,9 @@
 !!!    opacity_field       magnetic_field
 !!!    opacity_component   amplitude
 !!
-!!    begin LIC_repartition_ctl
+!!    begin viz_repartition_ctl
 !!     ...
-!!    end LIC_repartition_ctl
+!!    end viz_repartition_ctl
 !!
 !!    array masking_control    1
 !!      begin masking_control
@@ -102,8 +114,13 @@
         integer(kind = kint) :: num_masking_ctl = 0
         type(masking_by_field_ctl), allocatable :: mask_ctl(:)
 !
+!>         File name for noise control block
+        character(len = kchara) :: fname_LIC_noise_ctl
 !>        structure of noise control
         type(cube_noise_ctl) :: noise_ctl
+!
+!>        File name for kernel control block
+        character(len = kchara) :: fname_LIC_kernel_ctl
 !>        structure of kernel control
         type(lic_kernel_ctl) :: kernel_ctl
 !
@@ -113,6 +130,9 @@
         type(read_character_item) :: normalization_type_ctl
         type(read_real_item) ::      normalization_value_ctl
 !
+!>         File name for repartition control block
+        character(len = kchara) :: fname_vol_repart_ctl
+!>         structure for repartition
         type(viz_repartition_ctl) :: repart_ctl
 !
 !     2nd level for volume rendering
@@ -192,6 +212,32 @@
       end subroutine read_lic_masking_ctl_array
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine write_lic_masking_ctl_array                            &
+     &         (id_control, hd_block, lic_ctl, level)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_block
+      type(lic_parameter_ctl), intent(in) :: lic_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: i
+!
+!
+      write(id_control,'(a1)') '!'
+      level = write_array_flag_for_ctl(id_control, level, hd_block)
+      do i = 1, lic_ctl%num_masking_ctl
+        call write_masking_ctl_data(id_control, hd_block,               &
+     &      lic_ctl%mask_ctl(i), level)
+      end do
+      level = write_end_array_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_lic_masking_ctl_array
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine add_fields_4_lic_to_fld_ctl(lic_ctl, field_ctl)
@@ -207,17 +253,17 @@
 !
       if(lic_ctl%LIC_field_ctl%iflag .gt. 0) then
         call add_viz_name_ctl                                           &
-     &     (my_rank, lic_ctl%LIC_field_ctl%charavalue, field_ctl)
+     &     (lic_ctl%LIC_field_ctl%charavalue, field_ctl)
       end if
 !
       if(lic_ctl%color_field_ctl%iflag .gt. 0) then
         call add_viz_name_ctl                                           &
-     &     (my_rank, lic_ctl%color_field_ctl%charavalue, field_ctl)
+     &     (lic_ctl%color_field_ctl%charavalue, field_ctl)
       end if
 !
       if(lic_ctl%opacity_field_ctl%iflag .gt. 0) then
         call add_viz_name_ctl                                           &
-     &     (my_rank, lic_ctl%opacity_field_ctl%charavalue, field_ctl)
+     &     (lic_ctl%opacity_field_ctl%charavalue, field_ctl)
       end if
 !
       do i_fld = 1, lic_ctl%num_masking_ctl
@@ -281,6 +327,70 @@
       lic_ctl%num_masking_ctl = 0
 !
       end subroutine dealloc_lic_masking_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
+!
+      use t_read_control_elements
+      use t_control_array_character
+      use t_control_array_real
+      use t_control_array_integer
+      use t_control_data_masking
+      use t_control_data_LIC_noise
+      use t_control_data_LIC_kernel
+!
+      use bcast_ctl_data_LIC_noise
+!
+      type(lic_parameter_ctl), intent(in) :: org_lic_c
+      type(lic_parameter_ctl), intent(inout) :: new_lic_c
+!
+!
+      new_lic_c%i_lic_control = org_lic_c%i_lic_control
+      new_lic_c%fname_LIC_kernel_ctl = org_lic_c%fname_LIC_kernel_ctl
+      new_lic_c%fname_LIC_noise_ctl =  org_lic_c%fname_LIC_noise_ctl
+      new_lic_c%fname_vol_repart_ctl = org_lic_c%fname_vol_repart_ctl
+!
+      call copy_chara_ctl(org_lic_c%LIC_field_ctl,                      &
+     &                    new_lic_c%LIC_field_ctl)
+      call copy_chara_ctl(org_lic_c%subdomain_elapsed_dump_ctl,         &
+     &                    new_lic_c%subdomain_elapsed_dump_ctl)
+!
+      call copy_chara_ctl(org_lic_c%color_field_ctl,                    &
+     &                    new_lic_c%color_field_ctl)
+      call copy_chara_ctl(org_lic_c%color_component_ctl,                &
+     &                    new_lic_c%color_component_ctl)
+      call copy_chara_ctl(org_lic_c%opacity_field_ctl,                  &
+     &                    new_lic_c%opacity_field_ctl)
+      call copy_chara_ctl(org_lic_c%opacity_component_ctl,              &
+     &                    new_lic_c%opacity_component_ctl)
+!
+      call copy_chara_ctl(org_lic_c%vr_sample_mode_ctl,                 &
+     &                    new_lic_c%vr_sample_mode_ctl)
+      call copy_real_ctl(org_lic_c%step_size_ctl,                       &
+     &                   new_lic_c%step_size_ctl)
+!
+      call copy_chara_ctl(org_lic_c%normalization_type_ctl,             &
+     &                    new_lic_c%normalization_type_ctl)
+      call copy_real_ctl(org_lic_c%normalization_value_ctl,             &
+     &                    new_lic_c%normalization_value_ctl)
+!
+      call copy_cube_noise_control_data(org_lic_c%noise_ctl,            &
+     &                                  new_lic_c%noise_ctl)
+      call copy_kernel_control_data(org_lic_c%kernel_ctl,               &
+     &                              new_lic_c%kernel_ctl)
+      call dup_control_vol_repart(org_lic_c%repart_ctl,                 &
+     &                            new_lic_c%repart_ctl)
+!
+      new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
+      if(new_lic_c%num_masking_ctl .gt. 0) then
+        allocate(new_lic_c%mask_ctl(new_lic_c%num_masking_ctl))
+        call dup_masking_ctls(org_lic_c%num_masking_ctl,                &
+     &      org_lic_c%mask_ctl, new_lic_c%mask_ctl)
+      end if
+!
+      end subroutine dup_lic_control_data
 !
 !  ---------------------------------------------------------------------
 !

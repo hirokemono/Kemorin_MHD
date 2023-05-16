@@ -141,6 +141,8 @@
       subroutine read_refine_control_data                               &
      &         (id_control, hd_block, refine_ctl, c_buf)
 !
+      use ctl_data_platforms_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !

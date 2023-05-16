@@ -64,6 +64,7 @@
       type(sph_group_data), intent(in) :: sph_grps
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
+!
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !

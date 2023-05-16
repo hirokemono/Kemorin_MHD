@@ -4,7 +4,7 @@
 !      Written by H. Matsui on July, 2006
 !      Mmodified by H. Matsui on June, 2007
 !
-!!      subroutine read_control_4_bc_temp(bc_temp_test_ctl)
+!!      subroutine read_control_4_bc_temp(file_name, bc_temp_test_ctl)
 !!      subroutine reset_test_mesh_ctl_data(bc_temp_test_ctl)
 !!        type(ctl_data_bc_temp_test), intent(inout) :: bc_temp_test_ctl
 !!
@@ -32,7 +32,6 @@
       module t_ctl_data_test_bc_temp
 !
       use m_precision
-      use calypso_mpi
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_platforms
@@ -43,8 +42,6 @@
 !
 !
       integer(kind = kint), parameter :: test_mest_ctl_file_code = 11
-      character(len = kchara), parameter                                &
-     &                        :: fname_test_mesh_ctl = "ctl_bc_temp"
 !
       type ctl_data_bc_temp_test
 !>      Structure for file settings
@@ -78,15 +75,13 @@
       character(len=kchara), parameter                                  &
      &                      :: hd_sph_order =  'harmonics_order_ctl'
 !
-      private :: test_mest_ctl_file_code, fname_test_mesh_ctl
+      private :: test_mest_ctl_file_code
 !
       private :: hd_platform, hd_bc_def
       private :: hd_nod_grp_t, hd_sph_degree, hd_sph_order
       private :: read_test_mesh_ctl_data
-      private :: bcast_test_mesh_ctl_data
 !
       private :: read_ctl_data_4_temp_nod_bc
-      private :: bcast_ctl_data_4_temp_nod_bc
       private :: reset_ctl_data_4_temp_nod_bc
 !
 !   --------------------------------------------------------------------
@@ -95,28 +90,24 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_bc_temp(bc_temp_test_ctl)
+      subroutine read_control_4_bc_temp(file_name, bc_temp_test_ctl)
 !
       use skip_comment_f
 !
+      character(len=kchara), intent(in) :: file_name
       type(ctl_data_bc_temp_test), intent(inout) :: bc_temp_test_ctl
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-        open(test_mest_ctl_file_code, file = fname_test_mesh_ctl,       &
-     &       status='old')
-        do
-          call load_one_line_from_control                               &
-     &       (test_mest_ctl_file_code, c_buf1)
-          call read_test_mesh_ctl_data(test_mest_ctl_file_code,         &
-     &        hd_mesh_test_ctl, bc_temp_test_ctl, c_buf1)
-          if(bc_temp_test_ctl%i_mesh_test_ctl .gt. 0) exit
-        end do
-        close(test_mest_ctl_file_code)
-      end if
-!
-      call bcast_test_mesh_ctl_data(bc_temp_test_ctl)
+      open(test_mest_ctl_file_code, file = file_name, status='old')
+      do
+        call load_one_line_from_control                                 &
+     &     (test_mest_ctl_file_code, c_buf1)
+        call read_test_mesh_ctl_data(test_mest_ctl_file_code,           &
+     &      hd_mesh_test_ctl, bc_temp_test_ctl, c_buf1)
+        if(bc_temp_test_ctl%i_mesh_test_ctl .gt. 0) exit
+      end do
+      close(test_mest_ctl_file_code)
 !
       end subroutine read_control_4_bc_temp
 !
@@ -126,6 +117,7 @@
       subroutine read_test_mesh_ctl_data                                &
      &         (id_control, hd_block, bc_temp_test_ctl, c_buf)
 !
+      use ctl_data_platforms_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
@@ -149,24 +141,6 @@
       bc_temp_test_ctl%i_mesh_test_ctl = 1
 !
       end subroutine read_test_mesh_ctl_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_test_mesh_ctl_data(bc_temp_test_ctl)
-!
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-!
-      type(ctl_data_bc_temp_test), intent(inout) :: bc_temp_test_ctl
-!
-!
-      call bcast_ctl_data_4_temp_nod_bc(bc_temp_test_ctl)
-      call bcast_ctl_data_4_platform(bc_temp_test_ctl%bc_test_plt)
-!
-      call calypso_mpi_bcast_one_int                                    &
-     &   (bc_temp_test_ctl%i_mesh_test_ctl, 0)
-!
-      end subroutine bcast_test_mesh_ctl_data
 !
 !   --------------------------------------------------------------------
 !
@@ -216,24 +190,6 @@
       bc_temp_test_ctl%i_bc_def = 1
 !
       end subroutine read_ctl_data_4_temp_nod_bc
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_ctl_data_4_temp_nod_bc(bc_temp_test_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(ctl_data_bc_temp_test), intent(inout) :: bc_temp_test_ctl
-!
-!
-      call bcast_ctl_type_c1(bc_temp_test_ctl%temp_nod_grp_name)
-      call bcast_ctl_type_i1(bc_temp_test_ctl%hermonic_degree_ctl)
-      call bcast_ctl_type_i1(bc_temp_test_ctl%hermonic_order_ctl)
-!
-      call calypso_mpi_bcast_one_int(bc_temp_test_ctl%i_bc_def, 0)
-!
-      end subroutine bcast_ctl_data_4_temp_nod_bc
 !
 !   --------------------------------------------------------------------
 !

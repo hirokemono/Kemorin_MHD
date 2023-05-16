@@ -486,7 +486,6 @@ begin MHD_control
         rotation_vec  y   0.000    end
         rotation_vec  z   1.000    end
       end array
-      tri_sph_int_file     'rot_int.dat'
     end  Coriolis_define
 !
     begin Magneto_convection_def
@@ -507,6 +506,7 @@ begin MHD_control
 !    ref_temperature_ctl: none           (No reference of temperature)
 !                         spherical_shell ( for spherical shell model)
 !                         sph_constant_heat (for spherical shell model)
+!                         numrical_solution ( Get numerical solution)
 !                         linear_x        ( propotional to x-direction )
 !                         linear_y        ( propotional to x-direction )
 !                         linear_z        ( propotional to x-direction )

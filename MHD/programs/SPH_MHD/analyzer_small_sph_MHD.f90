@@ -8,8 +8,9 @@
 !!        without visualization and snapshot routines
 !!
 !!@verbatim
-!!      subroutine initialize_sph_mhd_only
+!!      subroutine initialize_sph_mhd_only(control_file_name)
 !!      subroutine evolution_sph_mhd_only
+!!        character(len=kchara), intent(in) :: control_file_name
 !!@endverbatim
 !
 !
@@ -22,25 +23,15 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use m_elapsed_labels_SEND_RECV
-      use m_SPH_MHD_model_data
-      use m_MHD_step_parameter
-      use t_SPH_mesh_field_data
-      use t_ctl_data_MHD
-      use t_mesh_SR
-!
-      use SPH_analyzer_MHD
-      use init_sph_MHD_elapsed_label
+      use t_spherical_MHD
+      use t_FEM_mesh_field_data
 !
       implicit none
 !
-!>      File name for control file
-      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
-!>      Control struture for MHD simulation
-      type(DNS_mhd_simulation_control), save :: DNS_MHD_ctl1
-      private :: MHD_ctl_name, DNS_MHD_ctl1
-!
-!>      Structure of spectr grid and data
-      type(SPH_mesh_field_data), save, private :: SPH_MHD1
+!>      Structure of the all data of program
+      type(spherical_MHD), save, private :: MHDMs
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_data), save, private :: FEM_DATs
 !
 ! ----------------------------------------------------------------------
 !
@@ -48,15 +39,25 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialize_sph_mhd_only
+      subroutine initialize_sph_mhd_only(control_file_name)
 !
-      use t_ctl_data_sph_MHD_psf
-      use set_control_sph_mhd
+      use t_time_data
+      use t_ctl_data_MHD
+      use t_SPH_mesh_field_data
       use input_control_sph_MHD
+      use set_control_sph_mhd
+      use set_control_4_SPH_to_FEM
+      use SPH_analyzer_MHD
+      use init_sph_MHD_elapsed_label
+!
+      character(len=kchara), intent(in) :: control_file_name
+!
+!>      Control struture for MHD simulation
+      type(mhd_simulation_control), save :: DNS_MHD_ctl1
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
-      MHD_step1%finish_d%started_time = MPI_WTIME()
+      MHDMs%MHD_step%finish_d%started_time = MPI_WTIME()
       call init_elapse_time_by_TOTAL
       call set_sph_MHD_elapsed_label
       call elpsed_label_field_send_recv
@@ -65,12 +66,10 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
-!
-      call input_control_4_SPH_MHD_nosnap                               &
-     &   (MHD_files1, DNS_MHD_ctl1, MHD_step1, SPH_model1,              &
-     &    SPH_WK1, SPH_MHD1)
-      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
+      call input_control_4_SPH_MHD_nosnap(control_file_name,            &
+     &    MHDMs%MHD_files, DNS_MHD_ctl1, MHDMs%MHD_step,                &
+     &    MHDMs%SPH_model, MHDMs%SPH_WK, MHDMs%SPH_MHD)
+      call copy_delta_t(MHDMs%MHD_step%init_d, MHDMs%MHD_step%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !    precondition elaps start
@@ -80,9 +79,9 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
-      call SPH_initialize_MHD(MHD_files1, SPH_model1, FEM_d1%iphys,     &
-     &    MHD_step1, MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1,                 &
-     &    m_SR1%SR_sig, m_SR1%SR_r)
+      call SPH_initialize_MHD(MHDMs%MHD_files, MHDMs%SPH_model,         &
+     &    FEM_DATs, MHDMs%MHD_step, MHDMs%MHD_IO%rst_IO,                &
+     &    MHDMs%SPH_MHD, MHDMs%SPH_WK, MHDMs%m_SR)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call reset_elapse_4_init_sph_mhd
@@ -93,6 +92,10 @@
 !
       subroutine evolution_sph_mhd_only
 !
+      use t_time_data
+      use SPH_analyzer_MHD
+      use init_sph_MHD_elapsed_label
+!
       integer(kind = kint) :: iflag_finish
 !
 !
@@ -100,21 +103,21 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call copy_time_step_data(MHD_step1%init_d, MHD_step1%time_d)
+      call copy_time_step_data(MHDMs%MHD_step%init_d,                   &
+     &                         MHDMs%MHD_step%time_d)
       iflag_finish = 0
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        call evolve_time_data(MHD_step1%time_d)
+        call evolve_time_data(MHDMs%MHD_step%time_d)
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
-        call SPH_analyze_MHD(MHD_step1%time_d%i_time_step,              &
-     &      MHD_files1, iflag_finish, SPH_model1, MHD_step1,            &
-     &      MHD_IO1%rst_IO, SPH_MHD1, SPH_WK1,                          &
-     &      m_SR1%SR_sig, m_SR1%SR_r)
+        call SPH_analyze_MHD(MHDMs%MHD_files, iflag_finish,             &
+     &      MHDMs%SPH_model, MHDMs%MHD_step, MHDMs%MHD_IO%rst_IO,       &
+     &      MHDMs%SPH_MHD, MHDMs%SPH_WK, MHDMs%m_SR)
 !
 !*  -----------  exit loop --------------
 !*
@@ -131,7 +134,7 @@
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       if (iflag_debug.eq.1) write(*,*) 'write_resolution_data'
-      call write_resolution_data(SPH_MHD1%sph)
+      call write_resolution_data(MHDMs%SPH_MHD%sph)
       call output_elapsed_times
 !
       call calypso_MPI_barrier

@@ -13,7 +13,7 @@
       use m_work_time
       use calypso_mpi
 !
-      use t_control_data_four_vizs
+      use t_control_data_three_vizs
       use t_volume_rendering
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
@@ -23,11 +23,14 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &                        :: fname_viz_ctl = "control_viz"
+!
 !>         Structure for time stepping parameters
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ3
 !>      Structure of control data for visualization
-      type(control_data_four_vizs), save :: pvr_ctl3
+      type(control_data_three_vizs), save :: pvr_ctl3
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz3
 !>      Structure of work area for mesh communications
@@ -47,6 +50,7 @@
 !
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use input_control_three_vizs
       use volume_rendering
 !
       integer(kind = kint) :: ierr
@@ -58,11 +62,10 @@
 
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
-!     read controls
-      if (iflag_debug.gt.0) write(*,*) 'read_control_file_four_vizs'
-      call read_control_file_four_vizs(pvr_ctl3)
-      call set_ctl_params_four_vizs(pvr_ctl3, FEM_viz3, t_VIZ3, ierr)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
+!  Load controls
+      if (iflag_debug.gt.0) write(*,*) 's_inoput_control_four_vizs'
+      call s_input_control_three_vizs(fname_viz_ctl, pvr_ctl3,          &
+     &                                FEM_viz3, t_VIZ3)
 !
 !  FEM Initialization
       call FEM_initialize_four_vizs(t_VIZ3%init_d, t_VIZ3%ucd_step,     &
@@ -71,7 +74,7 @@
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
       call PVR_initialize(t_VIZ3%viz_step%PVR_t%increment,              &
-     &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz4_ctl%pvr_ctls,  &
+     &    FEM_viz3%geofem, FEM_viz3%field, pvr_ctl3%viz3_ctl%pvr_ctls,  &
      &    vizs_pvr3, m_SR13)
 !
       end subroutine initialize_pvr

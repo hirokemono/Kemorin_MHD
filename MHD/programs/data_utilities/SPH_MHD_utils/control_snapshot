@@ -364,9 +364,6 @@
         rotation_vec  y   0.000
         rotation_vec  z   1.000
       end array rotation_vec
-!
-      tri_sph_int_file        'rot_int.dat'
-      sph_int_file_format     'ascii'
     end  Coriolis_define
 !
 !!!!!!!!! model for stratification !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -513,7 +510,9 @@
   begin sph_monitor_ctl
     volume_average_prefix        'sph_ave_volume'
     volume_pwr_spectr_prefix     'sph_pwr_volume'
+
     layered_pwr_spectr_prefix    'sph_pwr_layer'
+    layered_pwr_spectr_format    'gzip'
 !
 !
 !   if num_pick_layer_ctl = 0 or negative: 

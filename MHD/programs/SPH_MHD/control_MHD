@@ -417,15 +417,13 @@ begin MHD_control
         rotation_vec  y   0.000
         rotation_vec  z   1.000
       end array rotation_vec
-!
-      tri_sph_int_file        'rot_int.dat'
-      sph_int_file_format     'ascii'
     end  Coriolis_define
 !
 !!!!!!!!! model for stratification !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !    ref_temperature_ctl: none           (No reference of temperature)
 !                         spherical_shell ( for spherical shell model)
+!                         numrical_solution ( Get numerical solution)
 !                         linear_x        ( propotional to x-direction )
 !                         linear_y        ( propotional to x-direction )
 !                         linear_z        ( propotional to x-direction )
@@ -641,6 +639,7 @@ begin MHD_control
 !
     begin layered_spectrum_ctl
       layered_pwr_spectr_prefix    'sph_pwr_layer'
+      layered_pwr_spectr_format    'gzip'
 !
       degree_spectr_switch         'On'
       order_spectr_switch          'On'

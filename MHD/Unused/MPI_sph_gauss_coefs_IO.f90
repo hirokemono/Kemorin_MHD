@@ -274,5 +274,18 @@
       end function check_gauss_coefs_4_monitor
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      character(len = 16+25) function picked_gauss_head(i_step, time)
+!
+      integer(kind = kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: time
+!
+!
+      write(picked_gauss_head,'(i16,1pe25.14e3)') i_step, time
+!
+      end function  picked_gauss_head
+!
+! ----------------------------------------------------------------------
 !
       end module MPI_sph_gauss_coefs_IO

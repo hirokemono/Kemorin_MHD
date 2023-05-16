@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/CORE_src/SPH_SPECTR_src/output_sph_m_square_file.f90

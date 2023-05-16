@@ -12,8 +12,22 @@
 !!
 !!@verbatim
 !!      subroutine read_control_4_fem_MHD                               &
-!!     &         (file_name, FEM_MHD_ctl, viz_ctls)
+!!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
+!!        character(len=kchara), intent(in) :: file_name
 !!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+!!        type(SGS_model_control), intent(inout) :: sgs_ctl
+!!        type(visualization_controls), intent(inout) :: viz_ctls
+!!      subroutine write_control_4_fem_MHD                              &
+!!     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
+!!        character(len=kchara), intent(in) :: file_name
+!!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+!!        type(SGS_model_control), intent(in) :: sgs_ctl
+!!        type(visualization_controls), intent(inout) :: viz_ctls
+!!
+!!      subroutine dealloc_fem_mhd_ctl_data                             &
+!!     &        (FEM_MHD_ctl, sgs_ctl, viz_ctls)
+!!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+!!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!@endverbatim
 !
@@ -21,15 +35,13 @@
 !
       use m_precision
 !
-      use calypso_mpi
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_platforms
-      use t_ctl_data_SGS_MHD_model
+      use t_ctl_data_MHD_model
       use t_ctl_data_FEM_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
-      use t_ctl_data_gen_sph_shell
       use t_control_data_vizs
 !
       implicit none
@@ -45,9 +57,6 @@
 !>        Control structure for new file informations
         type(platform_data_control) :: new_plt
 !
-!>        Control structure for parallel spherical shell
-        type(parallel_sph_shell_control) :: psph_ctl
-!
 !>        Control structure for MHD/model
         type(mhd_model_control) :: model_ctl
 !>        Control structure for MHD/control
@@ -55,7 +64,7 @@
 !
 !>        Structure for spectr monitoring control
         type(sph_monitor_control) :: smonitor_ctl
-!>        Structure for monitoring plave list
+!>        Structure for monitoring slave list
         type(node_monitor_control) :: nmtr_ctl
 !
         integer(kind = kint) :: i_mhd_ctl = 0
@@ -63,31 +72,33 @@
 !
 !   Top level of label
 !
-      character(len=kchara) :: hd_mhd_ctl = 'MHD_control'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_mhd_ctl = 'MHD_control'
 !
 !   2nd level for MHD
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_platform = 'data_files_def'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_org_data = 'org_data_files_def'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_new_data = 'new_data_files_def'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_sph_shell = 'spherical_shell_ctl'
-      character(len=kchara), parameter :: hd_model =   'model'
-      character(len=kchara), parameter :: hd_control = 'control'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_model =   'model'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_control = 'control'
+      character(len=kchara), parameter, private                         &
      &                     :: hd_pick_sph = 'sph_monitor_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &      :: hd_monitor_data = 'monitor_data_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
 !
-      private :: hd_mhd_ctl
-      private :: hd_viz_control
-      private :: read_fem_mhd_control_data, bcast_fem_mhd_ctl_data
+      private :: read_fem_mhd_control_data
+      private :: write_fem_mhd_control_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -96,52 +107,83 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_control_4_fem_MHD                                 &
-     &         (file_name, FEM_MHD_ctl, viz_ctls)
+     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !
+      use t_ctl_data_SGS_model
       use viz_step_ctls_to_time_ctl
 !
       character(len=kchara), intent(in) :: file_name
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
 !
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-        open(ctl_file_code, file = file_name, status='old' )
+      open(ctl_file_code, file = file_name, status='old' )
 !
-        do
-          call load_one_line_from_control(ctl_file_code, c_buf1)
-          call read_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,     &
-     &        FEM_MHD_ctl, viz_ctls, c_buf1)
-          if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
-        end do
-        close(ctl_file_code)
+      do
+        call load_one_line_from_control(ctl_file_code, c_buf1)
+        call read_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,       &
+     &      FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf1)
+        if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
+      end do
+      close(ctl_file_code)
 !
-        call s_viz_step_ctls_to_time_ctl                                &
-     &     (viz_ctls, FEM_MHD_ctl%fmctl_ctl%tctl)
-        call add_fields_4_vizs_to_fld_ctl(viz_ctls,                     &
-     &      FEM_MHD_ctl%model_ctl%fld_ctl%field_ctl)
-      end if
-!
-      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
+      call s_viz_step_ctls_to_time_ctl                                  &
+     &   (viz_ctls, FEM_MHD_ctl%fmctl_ctl%tctl)
+      call add_fields_4_vizs_to_fld_ctl(viz_ctls,                       &
+     &    FEM_MHD_ctl%model_ctl%fld_ctl%field_ctl)
 !
       end subroutine read_control_4_fem_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_control_4_fem_MHD                                &
+     &         (file_name, FEM_MHD_ctl, sgs_ctl, viz_ctls)
+!
+      use t_ctl_data_SGS_model
+      use delete_data_files
+!
+      character(len=kchara), intent(in) :: file_name
+      type(fem_mhd_control), intent(in) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(in) :: sgs_ctl
+      type(visualization_controls), intent(in) :: viz_ctls
+!
+      integer(kind = kint) :: level1
+!
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      write(*,*) 'Write MHD control file: ', trim(file_name)
+      level1 = 0
+      open(ctl_file_code, file = file_name)
+      call write_fem_mhd_control_data(ctl_file_code, hd_mhd_ctl,        &
+     &    FEM_MHD_ctl, sgs_ctl, viz_ctls, level1)
+      close(ctl_file_code)
+!
+      end subroutine write_control_4_fem_MHD
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine read_fem_mhd_control_data(id_control, hd_block,        &
-     &          FEM_MHD_ctl, viz_ctls, c_buf)
+     &          FEM_MHD_ctl, sgs_ctl, viz_ctls, c_buf)
 !
-      use calypso_mpi
-      use t_ctl_data_FEM_MHD_control
-      use read_viz_controls
+      use t_ctl_data_SGS_model
+!
+      use ctl_data_SGS_MHD_model_IO
+      use ctl_data_platforms_IO
+      use ctl_data_viualiser_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
       type(buffer_for_control), intent(inout)  :: c_buf
 !
@@ -158,8 +200,8 @@
         call read_control_platforms                                     &
      &     (id_control, hd_org_data, FEM_MHD_ctl%org_plt, c_buf)
 !
-        call read_sph_sgs_mhd_model                                     &
-     &     (id_control, hd_model, FEM_MHD_ctl%model_ctl, c_buf)
+        call read_sph_sgs_mhd_model(id_control, hd_model,               &
+     &      FEM_MHD_ctl%model_ctl, sgs_ctl, c_buf)
         call read_fem_mhd_control                                       &
      &     (id_control, hd_control, FEM_MHD_ctl%fmctl_ctl, c_buf)
 !
@@ -173,34 +215,76 @@
       end subroutine read_fem_mhd_control_data
 !
 !   --------------------------------------------------------------------
+!
+      subroutine write_fem_mhd_control_data(id_control, hd_block,       &
+     &          FEM_MHD_ctl, sgs_ctl, viz_ctls, level)
+!
+      use t_ctl_data_SGS_model
+!
+      use ctl_data_SGS_MHD_model_IO
+      use ctl_data_platforms_IO
+      use ctl_data_viualiser_IO
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(fem_mhd_control), intent(in) :: FEM_MHD_ctl
+      type(SGS_model_control), intent(in) :: sgs_ctl
+      type(visualization_controls), intent(in) :: viz_ctls
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      if(FEM_MHD_ctl%i_mhd_ctl .le. 0) return
+!
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
+!
+      call write_control_platforms                                      &
+     &   (id_control, hd_platform, FEM_MHD_ctl%plt, level)
+      call write_control_platforms                                      &
+     &   (id_control, hd_org_data, FEM_MHD_ctl%org_plt, level)
+!
+      call write_sph_sgs_mhd_model(id_control, hd_model,                &
+     &    FEM_MHD_ctl%model_ctl, sgs_ctl, level)
+      call write_fem_mhd_control                                        &
+     &   (id_control, hd_control, FEM_MHD_ctl%fmctl_ctl, level)
+!
+      call write_monitor_data_ctl(id_control, hd_monitor_data,          &
+     &                            FEM_MHD_ctl%nmtr_ctl, level)
+      call write_viz_controls(id_control, hd_viz_control,               &
+     &                         viz_ctls, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
+!
+      end subroutine write_fem_mhd_control_data
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
+      subroutine dealloc_fem_mhd_ctl_data                               &
+     &        (FEM_MHD_ctl, sgs_ctl, viz_ctls)
 !
-      use t_ctl_data_FEM_MHD_control
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-      use bcast_4_field_ctl
-      use bcast_4_sph_monitor_ctl
-      use bcast_4_sphere_ctl
+      use t_ctl_data_SGS_model
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
+      type(SGS_model_control), intent(inout) :: sgs_ctl
 !
 !
-      call bcast_ctl_data_4_platform(FEM_MHD_ctl%plt)
-      call bcast_ctl_data_4_platform(FEM_MHD_ctl%org_plt)
+      call reset_control_platforms(FEM_MHD_ctl%plt)
+      call reset_control_platforms(FEM_MHD_ctl%org_plt)
 !
-      call bcast_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
-      call bcast_fem_mhd_control(FEM_MHD_ctl%fmctl_ctl)
+      call dealloc_sgs_ctl(sgs_ctl)
+      call dealloc_sph_mhd_model(FEM_MHD_ctl%model_ctl)
+      call dealloc_fem_mhd_control(FEM_MHD_ctl%fmctl_ctl)
 !
-      call bcast_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
+      call dealloc_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
 !
-      call bcast_viz_controls(viz_ctls)
+      call dealloc_viz_controls(viz_ctls)
 !
-      call calypso_mpi_bcast_one_int(FEM_MHD_ctl%i_mhd_ctl, 0)
+      FEM_MHD_ctl%i_mhd_ctl = 0
 !
-      end subroutine bcast_fem_mhd_ctl_data
+      end subroutine dealloc_fem_mhd_ctl_data
 !
 !   --------------------------------------------------------------------
 !

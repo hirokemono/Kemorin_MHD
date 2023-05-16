@@ -60,17 +60,40 @@
       private :: hd_diff_control, hd_ave_control
       private :: hd_corr_control, hd_med_grp_patch
 !
+      private :: laod_control_4_diff_udt
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine laod_control_4_diff_udt                                &
+     &         (file_name, hd_block, diff_udt_c)
+!
+      use bcast_ctl_data_diff_udt
+!
+      character(len=kchara), intent(in) :: file_name, hd_block
+      type(diff_udt_ctl), intent(inout)  :: diff_udt_c
+!
+!
+      if(my_rank .eq. 0) then
+        call read_control_4_diff_udt(file_name, hd_block, diff_udt_c)
+      end if
+!
+      call bcast_diff_control_data(diff_udt_c)
+!
+      end subroutine laod_control_4_diff_udt
+!
+!  ---------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
       subroutine s_input_control_udt_diff                               &
      &         (mesh_file, udt_org_param, nod_fld, time_U)
 !
       use m_ctl_params_4_diff_udt
 !
+      use bcast_ctl_data_diff_udt
       use set_ctl_diff_udt
       use set_field_data_w_SGS
 !
@@ -81,8 +104,8 @@
       integer(kind = kint) :: ierr
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
-      call read_control_4_diff_udt                                      &
+      if (iflag_debug.eq.1) write(*,*) 'laod_control_4_diff_udt'
+      call laod_control_4_diff_udt                                      &
      &   (fname_diff_ctl, hd_diff_control, diff_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
@@ -109,6 +132,7 @@
 !
       use m_ctl_params_4_diff_udt
 !
+      use bcast_ctl_data_diff_udt
       use set_ctl_diff_udt
       use set_field_data_w_SGS
 !
@@ -120,8 +144,8 @@
       integer(kind = kint) :: ierr
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
-      call read_control_4_diff_udt                                      &
+      if (iflag_debug.eq.1) write(*,*) 'laod_control_4_diff_udt'
+      call laod_control_4_diff_udt                                      &
      &   (fname_ave_ctl, hd_ave_control, diff_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
@@ -146,6 +170,7 @@
       subroutine s_input_control_corr_udt                               &
      &         (mesh_file, udt_org_param, nod_fld, time_U)
 !
+      use bcast_ctl_data_diff_udt
       use m_ctl_params_4_diff_udt
 !
       use set_ctl_diff_udt
@@ -156,8 +181,8 @@
       type(time_step_param), intent(inout) :: time_U
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
-      call read_control_4_diff_udt                                      &
+      if (iflag_debug.eq.1) write(*,*) 'laod_control_4_diff_udt'
+      call laod_control_4_diff_udt                                      &
      &   (fname_corr_ctl, hd_corr_control, diff_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_correlate_udt'
@@ -175,14 +200,15 @@
 !
       use m_ctl_params_4_diff_udt
 !
+      use bcast_ctl_data_diff_udt
       use set_ctl_diff_udt
 !
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout)  :: udt_org_param
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
-      call read_control_4_diff_udt                                      &
+      if (iflag_debug.eq.1) write(*,*) 'laod_control_4_diff_udt'
+      call laod_control_4_diff_udt                                      &
      &   (fname_grp_patch_ctl, hd_med_grp_patch, diff_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'

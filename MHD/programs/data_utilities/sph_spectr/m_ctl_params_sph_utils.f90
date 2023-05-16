@@ -1,14 +1,19 @@
-!m_ctl_params_sph_utils.f90
-!      module m_ctl_params_sph_utils
+!>@file   m_ctl_params_sph_utils.f90
+!!@brief  module m_ctl_params_sph_utils
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2007
 !
-!        programmed by H.Matsui on Oct., 2007
-!
+!>@brief  PArameters for spectr data utilities
+!!
+!!@verbatim
 !!      subroutine set_ctl_data_4_sph_utils                             &
 !!     &         (spu_ctl, time_SHR, rj_fld, pwr)
 !!        type(spherical_spectr_data_util_ctl), intent(in) :: spu_ctl
 !!        type(time_step_param), intent(inout) :: time_SHR
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
+!!@endverbatim
 !
       module m_ctl_params_sph_utils
 !
@@ -99,8 +104,11 @@
       use set_control_platform_item
       use set_control_platform_data
       use set_control_4_pickup_sph
+      use set_control_sph_spectr
 !
+      use t_multi_flag_labels
       use t_ctl_data_4_sph_utils
+      use m_file_format_labels
       use m_default_file_prefix
 !
       type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
@@ -175,10 +183,16 @@
         vol_ene_spec_head = spu_ctl%vol_ene_spec_head_ctl%charavalue
       end if
 !
+!
+      if(allocated(gzip_flags%flags) .eqv. .FALSE.) then
+        call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags)
+      end if
+!
 !   set pickup mode
 !
       call set_ctl_params_layered_spectr                                &
      &   (spu_ctl%smonitor_ctl%lp_ctl, pwr)
+!
       call set_ctl_params_sph_spectr(spu_ctl%smonitor_ctl, pwr)
       call set_ctl_params_pick_sph(spu_ctl%smonitor_ctl%pspec_ctl,      &
      &    pick_list_u, pick_sph_u)

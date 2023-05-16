@@ -12,8 +12,8 @@ int main(int argc, char *argv[])
 	unsigned char *image;
 	if(argc < 3){
 		return 1;
-		printf("%Command format is \n");
-		printf("%test_read_bmp [input file header] [output file header]\n");
+		printf("Command format is \n");
+		printf("test_read_bmp [input file header] [output file header]\n");
 	};
 	
 	struct BMP_data *d_BMP = read_BMP_c(argv[1]);

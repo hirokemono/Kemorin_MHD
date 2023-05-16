@@ -112,6 +112,8 @@
       subroutine read_ref_para_itp_ctl_data                             &
      &         (id_control, hd_block, para__refine_c, c_buf)
 !
+      use ctl_data_platforms_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !

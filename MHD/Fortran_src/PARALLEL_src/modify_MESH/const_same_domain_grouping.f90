@@ -7,10 +7,12 @@
 !>@brief  Make grouping without changing
 !!
 !!@verbatim
-!!      subroutine const_trans_tbl_to_same_mesh(my_rank, node, part_tbl)
+!!      subroutine const_trans_tbl_to_same_mesh(my_rank, node,         &
+!!     &                                        part_tbl, ierr)
 !!        integer, intent(in) :: my_rank
 !!        type(node_data), intent(in) :: node
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
+!!        integer(kind = kint), intent(inout) :: ierr
 !!      subroutine const_samedomain_grp_data(my_rank, nprocs,           &
 !!     &                                     node, part_grp)
 !!        integer, intent(in) :: my_rank, nprocs
@@ -38,13 +40,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_trans_tbl_to_same_mesh(my_rank, node, part_tbl)
+      subroutine const_trans_tbl_to_same_mesh(my_rank, node,           &
+     &                                        part_tbl, ierr)
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
       type(calypso_comm_table), intent(inout) :: part_tbl
+      integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, inod, ntot_rev
 !
 !
       part_tbl%iflag_self_copy = 1
@@ -67,16 +71,19 @@
       part_tbl%num_export(1) =    node%internal_node
       part_tbl%ntot_export =      node%internal_node
 !
-      call alloc_calypso_import_item(node%numnod, part_tbl)
+      call alloc_calypso_import_item(part_tbl)
       call alloc_calypso_export_item(part_tbl)
 !
 !$omp parallel do
       do i = 1, node%internal_node
-        part_tbl%irev_import(i) = i
         part_tbl%item_import(i) = i
         part_tbl%item_export(i) = i
       end do
 !$omp end parallel do
+!
+      ntot_rev = maxval(part_tbl%item_import)
+      call alloc_calypso_import_rev(ntot_rev, part_tbl)
+      call set_calypso_import_rev(part_tbl, ierr)
 !
       end subroutine const_trans_tbl_to_same_mesh
 !

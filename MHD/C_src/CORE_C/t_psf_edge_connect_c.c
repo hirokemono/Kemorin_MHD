@@ -92,8 +92,6 @@ static void dealloc_edge_connect_psf(const long nele_viz, struct psf_edge_data_c
 };
 
 static void dealloc_edge_position_psf(struct psf_edge_data_c *psf_edge){
-	int i;
-	
 	free(psf_edge->xx_edge);
 	free(psf_edge->edge_norm);
 	free(psf_edge->edge_dir);

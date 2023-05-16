@@ -72,6 +72,7 @@
       use set_pvr_control
       use rendering_and_image_nums
       use set_lic_controls
+      use ctl_data_lic_pvr_IO
       use select_anaglyph_LIC_by_mesh
 !
       integer(kind = kint), intent(in) :: increment_lic

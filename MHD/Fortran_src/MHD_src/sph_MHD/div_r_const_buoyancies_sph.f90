@@ -75,7 +75,9 @@
 !
 !
       if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp        &
-     &  .or. ref_param_T%iflag_reference .eq. id_takepiro_temp) then
+     &  .or. ref_param_T%iflag_reference .eq. id_takepiro_temp          &
+     &  .or. ref_param_T%iflag_reference .eq. id_numerical_solution     &
+     &   ) then
         ipol_temp =  ipol_base%i_per_temp
         igrad_temp = ipol_grd%i_grad_per_t
       else
@@ -84,7 +86,9 @@
       end if
 !
       if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp        &
-     &  .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
+     &  .or. ref_param_C%iflag_reference .eq. id_takepiro_temp          &
+     &  .or. ref_param_C%iflag_reference .eq. id_numerical_solution     &
+     &   ) then
         ipol_comp =  ipol_base%i_per_light
         igrad_comp = ipol_grd%i_grad_per_c
       else

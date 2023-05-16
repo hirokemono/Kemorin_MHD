@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/PARALLEL_src/SPH_SHELL_src/init_rms_4_sph_spectr.f90

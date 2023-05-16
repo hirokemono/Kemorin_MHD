@@ -117,8 +117,8 @@
      &   (SPH_MHD%fld, ipol_LES, iphys_LES, WK_LES%trns_SGS_snap,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
-      call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
-      call alloc_SGS_sph_trans_address(SPH_MHD%sph%sph_rtp, WK_LES)
+      call alloc_sph_trans_address(SPH_MHD%sph, WK)
+      call alloc_SGS_sph_trans_address(SPH_MHD%sph, WK_LES)
 !
 !
       call init_leg_fourier_trans_SGS_MHD                               &

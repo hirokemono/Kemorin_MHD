@@ -66,7 +66,7 @@
       integer(c_int) function num_ctl_label_LIC_pvr_f()                 &
      &              bind(c, name="num_ctl_label_LIC_pvr_f")
 !
-      use t_control_data_lic_pvr
+      use ctl_data_lic_pvr_IO
 !
       num_ctl_label_LIC_pvr_f = num_ctl_label_LIC_pvr()
 !
@@ -77,7 +77,7 @@
       subroutine set_ctl_label_LIC_pvr_f(labels)                        &
      &          bind(c, name="set_ctl_label_LIC_pvr_f")
 !
-      use t_control_data_lic_pvr
+      use ctl_data_lic_pvr_IO
 !
       character(C_CHAR), intent(inout) :: labels(*)
 !
@@ -91,7 +91,7 @@
       integer(c_int) function num_ctl_label_LIC_f()                     &
      &              bind(c, name="num_ctl_label_LIC_f")
 !
-      use read_lic_control_data
+      use ctl_data_LIC_IO
 !
       num_ctl_label_LIC_f = num_ctl_label_LIC()
 !
@@ -102,7 +102,7 @@
       subroutine set_ctl_label_LIC_f(labels)                            &
      &          bind(c, name="set_ctl_label_LIC_f")
 !
-      use read_lic_control_data
+      use ctl_data_LIC_IO
 !
       character(C_CHAR), intent(inout) :: labels(*)
 !
@@ -191,7 +191,7 @@
       integer(c_int) function num_label_LIC_colormap_f()                &
      &          bind(c, name="num_label_LIC_colormap_f")
 !
-      use t_ctl_data_pvr_colormap
+      use ctl_data_pvr_colormap_IO
 !
       num_label_LIC_colormap_f = num_label_LIC_colormap()
       return
@@ -202,7 +202,7 @@
       subroutine set_label_LIC_colormap_f(names)                        &
      &          bind(c, name="set_label_LIC_colormap_f")
 !
-      use t_ctl_data_pvr_colormap
+      use ctl_data_pvr_colormap_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -215,7 +215,7 @@
       integer(c_int) function num_label_LIC_movie_f()                   &
      &              bind(c, name="num_label_LIC_movie_f")
 !
-      use t_control_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       num_label_LIC_movie_f = num_label_LIC_movie()
 !
@@ -226,7 +226,7 @@
       subroutine set_label_LIC_movie_f(labels)                          &
      &          bind(c, name="set_label_LIC_movie_f")
 !
-      use t_control_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       character(C_CHAR), intent(inout) :: labels(*)
 !

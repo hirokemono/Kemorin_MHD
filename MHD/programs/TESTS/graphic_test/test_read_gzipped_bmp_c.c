@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 	dealloc_BMP_data(d_BMP);
 	
 	pixout_BMP_c(argv[2], width, height, image);
-	write_png_rgb_c(argv[2], &width, &height, (char *) image);
+	write_png_rgb_c(argv[2], &width, &height, image);
 	
 	return 1;
 }

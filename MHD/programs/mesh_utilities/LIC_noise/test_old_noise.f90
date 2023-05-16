@@ -24,8 +24,11 @@
       use vtk_file_IO
       use nod_phys_send_recv
 !
+      implicit none
+!
       type(lic_old_noise) :: noise_p1
 !
+      integer, parameter :: id_rank = -1
       integer(kind=kint), parameter  ::   elm_type = 331
       type(ctl_param_plane_mesh), save :: cube_p1
       type(size_of_cube), save :: c_size1
@@ -37,7 +40,7 @@
       type(ucd_data) :: ucd
       type(mesh_SR), save :: m_SR_n
 !
-      integer(kind = kint) :: inod, ierr
+      integer(kind = kint) :: inod
 !
       iflag_debug = 0
       noise_p1%noise_file_name = 'noise_128_10'

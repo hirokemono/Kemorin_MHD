@@ -181,7 +181,7 @@
 !
       type(time_data) :: t_IO
       type(field_IO) :: fld_IO
-      integer(kind = kint) :: ierr, inod
+      integer(kind = kint) :: ierr
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+9)

@@ -170,7 +170,7 @@
         ist = 0
         if(picked%idx_out(0,4) .gt. 0) then
           ist = 1
-          call pick_degre0_sped_4_monitor                               &
+          call pick_center_spectrum_monitor                             &
      &       (rj_fld, picked, ntot_comp_rj, d_rj_out)
           pickedbuf(1)                                                  &
      &           = picked_each_mode_to_text                             &
@@ -222,8 +222,8 @@
 !
 !
       write(fmt_txt,'(a37,i4,a17)')                                     &
-     &         '(i16,1pe25.14e3, i16,1pe25.14e3,2i16,',                 &
-     &           ntot_comp_rj, '(1pE25.14e3), a1)'
+     &         '(i16,1pe25.15e3, i16,1pe25.15e3,2i16,',                 &
+     &           ntot_comp_rj, '(1pE25.15e3), a1)'
       write(picked_each_mode_to_text,fmt_txt) i_step, time,             &
      &          kr, radius, l, m, d_rj_out(1:ntot_comp_rj), char(10)
 !
@@ -258,5 +258,50 @@
       end subroutine write_picked_spectr_header_only
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine write_pick_sph_file_header                             &
+     &         (id_file, nlayer_ICB, nlayer_CMB, picked)
+!
+      use sph_power_spectr_data_text
+      use write_field_labels
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      type(read_sph_spectr_data) :: sph_OUT
+      integer(kind = kint) :: len_each(6)
+      integer(kind = kint) :: len_tot
+!
+!
+      call dup_pick_sph_file_header(nlayer_ICB, nlayer_CMB,             &
+     &                              picked, sph_OUT)
+      call len_sph_layer_spectr_header(pick_spectr_labels, sph_OUT,     &
+     &                                 len_each, len_tot)
+      write(id_file,'(a)',ADVANCE='NO')                                 &
+     &      sph_layer_spectr_header_text(len_tot, len_each,             &
+     &                                   pick_spectr_labels, sph_OUT)
+      call dealloc_sph_espec_name(sph_OUT)
+!
+      end subroutine write_pick_sph_file_header
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dup_pick_sph_file_header(nlayer_ICB, nlayer_CMB,       &
+     &                                    picked, sph_OUT)
+!
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(picked_spectrum_data), intent(in) :: picked
+!
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
+!
+      sph_OUT%ltr_sph = picked%num_sph_mode
+      call dup_pick_sph_file_header_base(nlayer_ICB, nlayer_CMB,        &
+     &                                   picked, sph_OUT)
+!
+      end subroutine dup_pick_sph_file_header
+!
+! -----------------------------------------------------------------------
 !
       end module MPI_picked_sph_spectr_IO

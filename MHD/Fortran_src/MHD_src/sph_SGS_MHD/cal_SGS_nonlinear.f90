@@ -115,15 +115,15 @@
 !   ----   lead rotation of buoyancies
       if(SPH_model%MHD_prop%fl_prop%iflag_scheme                        &
      &                         .gt. id_no_evolution) then
-        if(iflag_debug.gt.0) write(*,*) 'sel_rot_self_buoyancy_sph'
-        call sel_rot_self_buoyancy_sph(SPH_MHD%sph%sph_rj,              &
+        if(iflag_debug.gt.0) write(*,*) 'sel_rot_buoyancy_sph_MHD'
+        call sel_rot_buoyancy_sph_MHD(SPH_MHD%sph%sph_rj,               &
      &      SPH_MHD%ipol%base, SPH_MHD%ipol%rot_forces,                 &
      &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
      &      SPH_MHD%fld)
 !
 !   ----   lead rotation of filtered buoyancies
-        if(iflag_debug.gt.0) write(*,*) 'rot_self_filter_buoyancy_sph'
-        call rot_self_filter_buoyancy_sph                               &
+        if(iflag_debug.gt.0) write(*,*) 'sel_rot_filter_buoyancy_sph'
+        call sel_rot_filter_buoyancy_sph                                &
      &     (SPH_MHD%sph, SPH_SGS%ipol_LES, SPH_model%MHD_prop,          &
      &      SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
       end if
@@ -155,8 +155,7 @@
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD                                       &
      &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_model%MHD_prop, &
-     &    trans_p%leg, SPH_model%ref_temp, SPH_model%ref_comp,          &
-     &    SPH_MHD%ipol, SPH_MHD%fld)
+     &    trans_p%leg, SPH_model%refs, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !*  ----  copy coriolis term for inner core rotation
 !*

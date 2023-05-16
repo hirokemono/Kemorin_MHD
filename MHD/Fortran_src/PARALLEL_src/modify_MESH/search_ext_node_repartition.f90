@@ -8,13 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine s_search_ext_node_repartition                        &
-!!     &         (ele, ele_tbl, element_ids, ie_newdomain,              &
+!!     &         (ele, ele_tbl, org_iele_dbl, ie_newdomain,             &
 !!     &          new_comm, new_node, new_ele, SR_sig, SR_i)
+!!      subroutine search_ext_node_with_ele_comm                        &
+!!     &        (ele, ele_tbl, org_iele_dbl, new_iele_dbl, new_inod_dbl,&
+!!     &         ie_newdomain, new_comm, new_node, new_ele_comm,        &
+!!     &         new_ele, SR_sig, SR_i)
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
 !!        type(communication_table), intent(in) :: new_comm
+!!        type(communication_table), intent(in) :: new_ele_comm
+!!        type(node_ele_double_number), intent(in) :: org_iele_dbl
+!!        type(node_ele_double_number), intent(in) :: new_iele_dbl
+!!        type(node_ele_double_number), intent(in) :: new_inod_dbl
 !!        type(node_data), intent(in) :: new_node
-!!        type(node_ele_double_number), intent(in) :: element_ids
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -33,6 +40,10 @@
       use t_calypso_comm_table
       use t_solver_SR
       use t_solver_SR_int
+      use t_para_double_numbering
+      use t_repart_double_numberings
+      use t_local_node_id_in_import
+      use t_works_for_ext_node_search
 !
       implicit none
 !
@@ -43,21 +54,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_search_ext_node_repartition                          &
-     &         (ele, ele_tbl, element_ids, ie_newdomain,                &
+     &         (ele, ele_tbl, org_iele_dbl, ie_newdomain,               &
      &          new_comm, new_node, new_ele, SR_sig, SR_i)
 !
-      use t_para_double_numbering
-      use t_repart_double_numberings
       use calypso_SR_type
       use solver_SR_type
       use search_from_list
       use select_copy_from_recv
+      use find_external_node_4_repart
 !
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
-      type(node_ele_double_number), intent(in) :: element_ids
+      type(node_ele_double_number), intent(in) :: org_iele_dbl
 !
       integer(kind = kint), intent(in)                                  &
      &              :: ie_newdomain(ele%numele,ele%nnod_4_ele)
@@ -66,126 +76,118 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint), allocatable :: inod_recv(:)
       integer(kind = kint), allocatable :: icount_node(:)
-      integer(kind = kint), allocatable :: item_import_recv(:)
 !
-      integer(kind = kint), allocatable :: iele_org_local(:)
-      integer(kind = kint), allocatable :: iele_org_domain(:)
-      integer(kind = kint), allocatable :: ie_domain_recv(:,:)
+      type(works_for_ext_node_search), save :: wk_ext1
+      type(local_node_id_in_import), save :: lcl_1
 !
-      integer(kind = kint), allocatable :: i4_recv(:)
-!
-      integer(kind = kint) :: ip, inod, icou, inum, ist, ied
-      integer(kind = kint) :: iele, k1, jnum, jnod, iflag
+      integer(kind = kint) :: inod, icou
 !
 !
-      allocate(i4_recv(ele_tbl%ntot_import))
-      allocate(ie_domain_recv(new_ele%numele,new_ele%nnod_4_ele))
+      call alloc_works_ext_node_search(new_node, ele_tbl,               &
+     &    new_ele%numele,new_ele%nnod_4_ele, wk_ext1)
 !
-      do k1 = 1, ele%nnod_4_ele
-        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
-     &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
-     &      i4_recv(1), SR_sig, SR_i)
-!$omp parallel workshare
-        ie_domain_recv(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
-!$omp end parallel workshare
-      end do
+      call set_works_for_ext_node_search                                &
+     &   (ele, ele_tbl, org_iele_dbl, ie_newdomain,                     &
+     &    new_comm, new_node, new_ele, wk_ext1, SR_sig, SR_i)
 !
-      allocate(iele_org_local(new_ele%numele))
-      allocate(iele_org_domain(new_ele%numele))
+      call init_local_node_id_in_import(new_comm, new_node%numnod,      &
+     &                                  wk_ext1%inod_recv, lcl_1)
+!      call init_item_import_recv(new_comm, new_node%numnod,            &
+!     &                           wk_ext1%inod_recv, lcl_import)
 !
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, element_ids%index(1),        &
-     &    i4_recv(1), SR_sig, SR_i)
-!$omp parallel workshare
-      iele_org_local(1:new_ele%numele) = i4_recv(1:new_ele%numele)
-!$omp end parallel workshare
-!
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, element_ids%irank(1),        &
-     &    i4_recv(1), SR_sig, SR_i)
-!$omp parallel workshare
-      iele_org_domain(1:new_ele%numele) = i4_recv(1:new_ele%numele)
-!$omp end parallel workshare
-!
-      allocate(inod_recv(new_node%numnod))
       allocate(icount_node(new_node%numnod))
-!$omp parallel do
-      do inod = 1, new_node%numnod
-        inod_recv(inod) =   inod
-        icount_node(inod) = 0
-      end do
-!$omp end parallel do
-      call SOLVER_SEND_RECV_int_type                                    &
-     &  (new_node%numnod, new_comm, SR_sig, SR_i, inod_recv)
+!$omp parallel workshare
+      icount_node(1:new_node%numnod) = 0
+!$omp end parallel workshare
 !
-      allocate(item_import_recv(new_comm%ntot_import))
-!$omp parallel do private(jnum,jnod)
-      do jnum = 1, new_comm%ntot_import
-        jnod = new_comm%item_import(jnum)
-        item_import_recv(jnum) = inod_recv(jnod)
-      end do
-!$omp end parallel do
-!
-      icou = 0
-      do iele = 1, new_ele%numele
-        do k1 = 1, new_ele%nnod_4_ele
-          ip =   ie_domain_recv(iele,k1)
-          inod = new_ele%ie(iele,k1)
-          iflag = 0
-          if(ip .eq. my_rank) then
-            icount_node(inod) = icount_node(inod) + 1
-          else
-            inum = search_from_list_data(ip, ione, new_comm%num_neib,   &
-     &                             new_comm%num_neib, new_comm%id_neib)
-            if(inum.ge.ione .and. inum.le.new_comm%num_neib) then
-              ist = new_comm%istack_import(inum-1) + 1
-              ied = new_comm%istack_import(inum)
-            else
-              ist = 0
-              ied = 0
-            end if
-!
-            if(ist .gt. 0) then
-              jnum = search_from_sorted_data(inod, ist, ied,            &
-     &                          new_comm%ntot_import, item_import_recv)
-              if(jnum.ge.ist .and. jnum.le.ied) then
-                jnod = new_comm%item_import(jnum)
-                iflag = item_import_recv(jnum)
-                new_ele%ie(iele,k1) = jnod
-                icount_node(jnod) = icount_node(jnod) + 1
-              end if
-            end if
-!
-            if(iflag .le. 0) then
-              new_ele%ie(iele,k1) = 0
-              write(*,*) my_rank, 'Node cannot be found for ',         &
-     &           new_ele%iele_global(iele), iele, k1, ip, inod,        &
-     &           iele_org_local(iele), iele_org_domain(iele)
-              icou = icou + 1
-            end if
-          end if
-        end do
-      end do
-      deallocate(i4_recv, ie_domain_recv, item_import_recv)
-      deallocate(iele_org_local, iele_org_domain, inod_recv)
+      call find_ext_node_minimum(new_comm, wk_ext1, lcl_1,              &
+     &                           new_ele, icount_node)
+!      call dealloc_item_import_recv(lcl_import)
+      call dealloc_local_nod_id_in_import(lcl_1)
+      call dealloc_works_ext_node_search(wk_ext1)
 !
       if(i_debug .gt. 0) then
-        write(*,*) my_rank, 'Missing connectivity: ', icou,             &
-     &          ' of ', new_ele%nnod_4_ele*new_ele%numele
-!
         icou = 0
         do inod = 1, new_node%numnod
           if(icount_node(inod) .eq. 0) icou = icou + 1
         end do
-        write(*,*) my_rank, 'Missing connenction: ', icou,              &
-     &          ' of ', new_node%numnod
+        write(*,*) my_rank, 'Missing connectivity: ', icou,             &
+     &          ' of ', new_ele%nnod_4_ele*new_ele%numele
       end if
 !
       deallocate(icount_node)
 !
       end subroutine s_search_ext_node_repartition
+!
+! ----------------------------------------------------------------------
+!
+      subroutine search_ext_node_with_ele_comm                          &
+     &         (ele, ele_tbl, org_iele_dbl, new_iele_dbl, new_inod_dbl, &
+     &          ie_newdomain, new_comm, new_node, new_ele_comm,         &
+     &          new_ele, SR_sig, SR_i)
+!
+      use calypso_SR_type
+      use solver_SR_type
+      use search_from_list
+      use select_copy_from_recv
+      use find_external_node_4_repart
+!
+      type(element_data), intent(in) :: ele
+      type(calypso_comm_table), intent(in) :: ele_tbl
+      type(communication_table), intent(in) :: new_comm, new_ele_comm
+      type(node_data), intent(in) :: new_node
+      type(node_ele_double_number), intent(in) :: org_iele_dbl
+      type(node_ele_double_number), intent(in) :: new_iele_dbl
+      type(node_ele_double_number), intent(in) :: new_inod_dbl
+!
+      integer(kind = kint), intent(in)                                  &
+     &              :: ie_newdomain(ele%numele,ele%nnod_4_ele)
+!
+      type(element_data), intent(inout) :: new_ele
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+!
+      integer(kind = kint), allocatable :: icount_node(:)
+!
+      type(double_indices_connectivity), save :: conn_dbl1
+      type(works_for_ext_node_search), save :: wk_ext1
+      type(local_node_id_in_import), save :: lcl_1
+!
+!
+      call alloc_works_ext_node_search(new_node, ele_tbl,               &
+     &    new_ele%numele,new_ele%nnod_4_ele, wk_ext1)
+!
+      call set_works_for_ext_node_search                                &
+     &   (ele, ele_tbl, org_iele_dbl, ie_newdomain,                     &
+     &    new_comm, new_node, new_ele, wk_ext1, SR_sig, SR_i)
+!
+      call init_local_node_id_in_import(new_comm, new_node%numnod,      &
+     &                                  wk_ext1%inod_recv, lcl_1)
+!
+      allocate(icount_node(new_node%numnod))
+!$omp parallel workshare
+      icount_node(1:new_node%numnod) = 0
+!$omp end parallel workshare
+!
+      call find_ext_node_minimum(new_comm, wk_ext1, lcl_1,              &
+     &                           new_ele, icount_node)
+!
+      call alloc_dbl_idx_connect                                        &
+     &   (new_ele%numele, new_ele%nnod_4_ele, conn_dbl1)
+      call set_dbl_index_in_ele_connect                                 &
+     &   (new_ele_comm, new_inod_dbl, new_iele_dbl,                     &
+     &    new_ele, conn_dbl1, SR_sig, SR_i)
+!
+      call find_ext_node_full(new_iele_dbl, new_comm,                   &
+     &    conn_dbl1, wk_ext1, lcl_1, new_ele, icount_node)
+!      call dealloc_item_import_recv(lcl_import)
+      call dealloc_local_nod_id_in_import(lcl_1)
+      call dealloc_dbl_idx_connect(conn_dbl1)
+      call dealloc_works_ext_node_search(wk_ext1)
+      deallocate(icount_node)
+!
+      end subroutine search_ext_node_with_ele_comm
 !
 ! ----------------------------------------------------------------------
 !

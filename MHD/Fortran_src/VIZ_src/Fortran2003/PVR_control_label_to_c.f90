@@ -70,7 +70,7 @@
 !
       integer(c_int) function num_label_pvr_ctl_f() bind(c)
 !
-      use read_pvr_control
+      use ctl_data_each_pvr_IO
 !
       num_label_pvr_ctl_f = num_label_pvr_ctl()
       return
@@ -80,7 +80,7 @@
 !
       integer(c_int) function num_label_pvr_ctl_w_dup_f() bind(c)
 !
-      use read_pvr_control
+      use ctl_data_each_pvr_IO
 !
       num_label_pvr_ctl_w_dup_f = num_label_pvr_ctl_w_dup()
       return
@@ -90,7 +90,7 @@
 !
       subroutine set_label_pvr_ctl_w_dup_f(names)  bind(c)
 !
-      use read_pvr_control
+      use ctl_data_each_pvr_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -102,7 +102,7 @@
 !
       integer(c_int) function num_label_pvr_modelview_f() bind(c)
 !
-      use t_ctl_data_4_view_transfer
+      use ctl_data_view_transfer_IO
 !
       num_label_pvr_modelview_f = num_label_pvr_modelview()
       return
@@ -133,7 +133,7 @@
 !
       subroutine set_label_pvr_modelview_f(names)  bind(c)
 !
-      use t_ctl_data_4_view_transfer
+      use ctl_data_view_transfer_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -189,7 +189,7 @@
 !
       integer(c_int) function num_label_pvr_area_f() bind(c)
 !
-      use t_control_data_pvr_area
+      use t_ctl_data_pvr_area
 !
       num_label_pvr_area_f = num_label_pvr_area()
       return
@@ -199,7 +199,7 @@
 !
       subroutine set_label_pvr_area_f(names)  bind(c)
 !
-      use t_control_data_pvr_area
+      use t_ctl_data_pvr_area
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -233,7 +233,7 @@
 !
       integer(c_int) function num_label_pvr_colormap_f() bind(c)
 !
-      use t_ctl_data_pvr_colormap
+      use ctl_data_pvr_colormap_IO
 !
       num_label_pvr_colormap_f = num_label_pvr_colormap()
       return
@@ -243,7 +243,7 @@
 !
       subroutine set_label_pvr_colormap_f(names)  bind(c)
 !
-      use t_ctl_data_pvr_colormap
+      use ctl_data_pvr_colormap_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -255,7 +255,7 @@
 !
       integer(c_int) function num_label_pvr_colorbar_f() bind(c)
 !
-      use t_ctl_data_pvr_colorbar
+      use ctl_data_pvr_colorbar_IO
 !
       num_label_pvr_colorbar_f = num_label_pvr_colorbar()
       return
@@ -265,7 +265,7 @@
 !
       subroutine set_label_pvr_colorbar_f(names)  bind(c)
 !
-      use t_ctl_data_pvr_colorbar
+      use ctl_data_pvr_colorbar_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -299,7 +299,7 @@
 !
       integer(c_int) function num_label_pvr_isosurface_f() bind(c)
 !
-      use t_control_data_pvr_isosurfs
+      use t_ctl_data_pvr_isosurface
 !
       num_label_pvr_isosurface_f = num_label_pvr_isosurface()
       return
@@ -309,7 +309,7 @@
 !
       subroutine set_label_pvr_isosurface_f(names)  bind(c)
 !
-      use t_control_data_pvr_isosurfs
+      use t_ctl_data_pvr_isosurface
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -321,7 +321,7 @@
 !
       integer(c_int) function num_label_pvr_section_f() bind(c)
 !
-      use t_control_data_pvr_sections
+      use ctl_data_pvr_section_IO
 !
       num_label_pvr_section_f = num_label_pvr_section()
       return
@@ -331,7 +331,7 @@
 !
       subroutine set_label_pvr_section_f(names)  bind(c)
 !
-      use t_control_data_pvr_sections
+      use ctl_data_pvr_section_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -343,7 +343,7 @@
 !
       integer(c_int) function num_label_pvr_movie_f() bind(c)
 !
-      use t_control_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       num_label_pvr_movie_f = num_label_pvr_movie()
       return
@@ -353,7 +353,7 @@
 !
       subroutine set_label_pvr_movie_f(names)  bind(c)
 !
-      use t_control_data_pvr_movie
+      use ctl_data_pvr_movie_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -365,7 +365,7 @@
 !
       integer(c_int) function num_label_quilt_image_f() bind(c)
 !
-      use t_control_data_quilt_image
+      use t_ctl_data_quilt_image
 !
       num_label_quilt_image_f = num_label_quilt_image()
       return
@@ -375,7 +375,7 @@
 !
       subroutine set_label_quilt_image_f(names)  bind(c)
 !
-      use t_control_data_quilt_image
+      use t_ctl_data_quilt_image
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

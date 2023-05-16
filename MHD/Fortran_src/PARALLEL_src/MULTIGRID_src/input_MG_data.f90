@@ -62,7 +62,6 @@
      &          (MG_file, MGCG_WK, MGCG_FEM, MG_itp)
 !
       use m_interpolate_table_IO
-      use itp_table_file_IO_select
 !
       type(MGCG_file_list), intent(in) :: MG_file
       type(MGCG_data), intent(in) :: MGCG_WK

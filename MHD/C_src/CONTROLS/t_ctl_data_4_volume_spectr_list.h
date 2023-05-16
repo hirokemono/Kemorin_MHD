@@ -21,7 +21,8 @@ struct volume_spectr_control_c{
     
     struct chara_ctl_item *volume_spec_file_c;
     struct chara_ctl_item *volume_ave_file_c;
-	
+    struct chara_ctl_item *volume_spec_format_c;
+
     struct real_ctl_item *inner_radius_c;
     struct real_ctl_item *outer_radius_c;
 };

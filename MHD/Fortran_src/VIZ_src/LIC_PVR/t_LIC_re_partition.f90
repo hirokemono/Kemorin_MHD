@@ -75,8 +75,12 @@
       type lic_repartioned_mesh
 !>         Structure for mesh data for visualization
         type(mesh_data), pointer :: viz_fem
+!>         Element communication table for visualization
+        type(communication_table) :: viz_ele_comm
 !>        Transfer table to visualization mesh
         type(calypso_comm_table) :: mesh_to_viz_tbl
+!>        Transfer table to visualization elements
+        type(calypso_comm_table) :: mesh_to_viz_ele_tbl
 !
 !>        Structure for field data for LIC
         type(lic_field_data), pointer :: nod_fld_lic
@@ -298,8 +302,11 @@
      &    geofem, ele_comm, next_tbl, num_mask, masking,                &
      &    rep_ref%count_line_int, repart_data%nod_fld_lic%s_lic(1,1),   &
      &    repart_data%nod_fld_lic%v_lic,                                &
-     &    repart_data%viz_fem, repart_data%mesh_to_viz_tbl,             &
+     &    repart_data%viz_fem, repart_data%viz_ele_comm,                &
+     &    repart_data%mesh_to_viz_tbl, repart_data%mesh_to_viz_ele_tbl, &
      &    repart_data%sleeve_exp_WK, m_SR)
+      call dealloc_calypso_comm_table(repart_data%mesh_to_viz_ele_tbl)
+      call dealloc_comm_table(repart_data%viz_ele_comm)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_LIC+6)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_LIC+8)

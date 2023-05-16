@@ -18,7 +18,7 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(picked_spectrum_data), intent(in) :: picked
 !!
-!!      subroutine convert_to_energy_sph__monitor                       &
+!!      subroutine convert_to_energy_sph_monitor                        &
 !!     &         (ipol, ipol_LES, picked, ntot_comp_monitor, rms_out)
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
@@ -177,7 +177,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine convert_to_energy_sph__monitor                         &
+      subroutine convert_to_energy_sph_monitor                          &
      &         (ipol, ipol_LES, picked, ntot_comp_monitor, rms_out)
 !
       use cal_rms_by_sph_spectr
@@ -206,7 +206,7 @@
      &     (ipol_LES%dbl_filter_fld, i_fld, rms_out(jcou))
       end do
 !
-      end subroutine convert_to_energy_sph__monitor
+      end subroutine convert_to_energy_sph_monitor
 !
 ! -----------------------------------------------------------------------
 !

@@ -34,6 +34,7 @@
       integer(kind = kint), parameter :: nd = 11, id_rms = 15
       real(kind = kreal) :: xref
       real(kind = kreal) :: time
+      integer :: np_ucd
 !
 !      type(time_data), save :: line_time
       type(ucd_data), save :: line
@@ -79,7 +80,8 @@
         end do
         write(*,*) 'step is', istep, time
 !
-        call load_psf_data(istep, psf_file_param, t_IO_u, psf_u)
+        call load_psf_data(istep, psf_file_param,                       &
+     &                     np_ucd, t_IO_u, psf_u)
         call find_psf_edges(psf_u%psf_ele)
         call pick_psf_by_sections(nd, xref, psf_u%psf_nod,              &
      &      psf_u%psf_ele, psf_u%psf_phys, line)

@@ -7,8 +7,10 @@
 !> @brief Control input routine for all visualizations
 !!
 !!@verbatim
-!!      subroutine read_control_file_vizs(vizs_ctl)
+!!      subroutine read_control_file_vizs(file_name, vizs_ctl)
+!!      subroutine write_control_file_vizs(file_name, vizs_ctl)
 !!      subroutine dealloc_vizs_control_data(vizs_ctl)
+!!        character(len = kchara), intent(in) :: file_name
 !!        type(control_data_vizs), intent(inout) :: vizs_ctl
 !!
 !!   --------------------------------------------------------------------
@@ -46,7 +48,6 @@
 !
 !
       integer(kind = kint), parameter :: viz_ctl_file_code = 11
-      character(len = kchara), parameter :: fname_viz_ctl = "ctl_viz"
 !
 !>      Structure for visulization program
       type control_data_vizs
@@ -77,8 +78,8 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
 !
-      private :: viz_ctl_file_code, fname_viz_ctl
-      private :: read_vizs_control_data, bcast_vizs_control_data
+      private :: viz_ctl_file_code
+      private :: read_vizs_control_data, write_vizs_control_data
 !
 !   --------------------------------------------------------------------
 !
@@ -86,37 +87,58 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_file_vizs(vizs_ctl)
+      subroutine read_control_file_vizs(file_name, vizs_ctl)
 !
       use skip_comment_f
       use viz_step_ctls_to_time_ctl
 !
+      character(len = kchara), intent(in) :: file_name
       type(control_data_vizs), intent(inout) :: vizs_ctl
       type(buffer_for_control) :: c_buf1
 !
 !
-      if(my_rank .eq. 0) then
-        open (viz_ctl_file_code, file=fname_viz_ctl, status='old' )
-        do
-          call load_one_line_from_control(viz_ctl_file_code, c_buf1)
-          call read_vizs_control_data                                   &
-     &       (viz_ctl_file_code, hd_viz_only_file, vizs_ctl, c_buf1)
-          if(vizs_ctl%i_viz_only_file .gt. 0) exit
-        end do
-        close(viz_ctl_file_code)
+      open (viz_ctl_file_code, file=file_name, status='old' )
+      do
+        call load_one_line_from_control(viz_ctl_file_code, c_buf1)
+        call read_vizs_control_data                                     &
+     &     (viz_ctl_file_code, hd_viz_only_file, vizs_ctl, c_buf1)
+        if(vizs_ctl%i_viz_only_file .gt. 0) exit
+      end do
+      close(viz_ctl_file_code)
 !
-        call s_viz_step_ctls_to_time_ctl                                &
-     &     (vizs_ctl%viz_ctl_v, vizs_ctl%t_viz_ctl)
+      call s_viz_step_ctls_to_time_ctl                                  &
+     &   (vizs_ctl%viz_ctl_v, vizs_ctl%t_viz_ctl)
 !
-        vizs_ctl%viz_field_ctl%num =  0
-        call alloc_control_array_c3(vizs_ctl%viz_field_ctl)
-        call add_fields_4_vizs_to_fld_ctl(vizs_ctl%viz_ctl_v,           &
-     &                                    vizs_ctl%viz_field_ctl)
-      end if
-!
-      call bcast_vizs_control_data(vizs_ctl)
+      vizs_ctl%viz_field_ctl%num =  0
+      call alloc_control_array_c3(vizs_ctl%viz_field_ctl)
+      call add_fields_4_vizs_to_fld_ctl(vizs_ctl%viz_ctl_v,             &
+     &                                  vizs_ctl%viz_field_ctl)
 !
       end subroutine read_control_file_vizs
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_control_file_vizs(file_name, vizs_ctl)
+!
+      use delete_data_files
+!
+      character(len = kchara), intent(in) :: file_name
+      type(control_data_vizs), intent(inout) :: vizs_ctl
+!
+      integer(kind = kint) :: level1
+!
+      if(check_file_exist(file_name)) then
+        write(*,*) 'File ', trim(file_name), ' exist. Continue?'
+        read(*,*)
+      end if
+!
+      open (viz_ctl_file_code, file=file_name)
+      level1 = 0
+      call write_vizs_control_data                                      &
+     &   (viz_ctl_file_code, hd_viz_only_file, vizs_ctl, level1)
+      close(viz_ctl_file_code)
+!
+      end subroutine write_control_file_vizs
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -125,7 +147,9 @@
      &         (id_control, hd_block, vizs_ctl, c_buf)
 !
       use skip_comment_f
-      use read_viz_controls
+      use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
+      use ctl_data_viualiser_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -154,31 +178,42 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_vizs_control_data(vizs_ctl)
+      subroutine write_vizs_control_data                                &
+     &         (id_control, hd_block, vizs_ctl, level)
 !
-      use calypso_mpi_int
-      use bcast_4_platform_ctl
-      use bcast_4_time_step_ctl
-      use bcast_control_arrays
+      use skip_comment_f
+      use ctl_data_platforms_IO
+      use ctl_data_4_time_steps_IO
+      use ctl_data_viualiser_IO
+      use write_control_elements
 !
-      type(control_data_vizs), intent(inout) :: vizs_ctl
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+      type(control_data_vizs), intent(in) :: vizs_ctl
+!
+      integer(kind = kint), intent(inout) :: level
 !
 !
-      call bcast_ctl_array_c3(vizs_ctl%viz_field_ctl)
-      call bcast_ctl_data_4_platform(vizs_ctl%viz_plt)
-      call bcast_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
+      if(vizs_ctl%i_viz_only_file .le. 0) return
 !
-      call bcast_viz_controls(vizs_ctl%viz_ctl_v)
+      write(id_control,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
-      call calypso_mpi_bcast_one_int(vizs_ctl%i_viz_only_file, 0)
+      call write_control_platforms                                      &
+     &   (id_control, hd_platform, vizs_ctl%viz_plt, level)
+      call write_control_time_step_data                                 &
+     &   (id_control, hd_time_step, vizs_ctl%t_viz_ctl, level)
 !
-      end subroutine bcast_vizs_control_data
+      call write_viz_controls(id_control, hd_viz_control,               &
+     &                        vizs_ctl%viz_ctl_v, level)
+      level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
+      end subroutine write_vizs_control_data
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine dealloc_vizs_control_data(vizs_ctl)
-!
-      use bcast_4_time_step_ctl
 !
       type(control_data_vizs), intent(inout) :: vizs_ctl
 !
@@ -191,7 +226,6 @@
 !
       end subroutine dealloc_vizs_control_data
 !
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       end module t_control_data_all_vizs

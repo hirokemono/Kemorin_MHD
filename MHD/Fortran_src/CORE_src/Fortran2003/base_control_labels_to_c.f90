@@ -27,7 +27,7 @@
 !
       integer(c_int) function num_label_time_step_ctl_f() bind(c)
 !
-      use t_ctl_data_4_time_steps
+      use ctl_data_4_time_steps_IO
 !
       num_label_time_step_ctl_f = num_label_time_step_ctl()
       return
@@ -37,7 +37,7 @@
 !
       integer(c_int) function num_label_time_step_ctl_w_dep_f() bind(c)
 !
-      use t_ctl_data_4_time_steps
+      use ctl_data_4_time_steps_IO
 !
       num_label_time_step_ctl_w_dep_f = num_label_time_step_ctl_w_dep()
       return
@@ -47,7 +47,7 @@
 !
       subroutine set_label_time_step_ctl_f(names)  bind(c)
 !
-      use t_ctl_data_4_time_steps
+      use ctl_data_4_time_steps_IO
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

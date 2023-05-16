@@ -27,6 +27,7 @@
       use t_SPH_mesh_field_data
       use t_field_data_IO
       use t_file_IO_parameter
+      use t_sph_radial_interpolate
 !
       implicit none
 !
@@ -64,6 +65,9 @@
         type(legendre_trns_works) :: WK_leg
 !>        Structure for work area of FFTs
         type(work_for_FFTs) :: WK_FFTs
+!
+!>      Interpolation tsble in radial direction
+        type(sph_radial_interpolate) :: rj_itp
       end type SPH_for_SPH_transforms
 !
       end module t_SPH_data_4_SPH_trans

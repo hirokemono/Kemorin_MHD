@@ -1,6 +1,8 @@
 !
       program test_zlib_lines
 !
+      use ISO_C_BINDING
+!
       use m_precision
       use t_buffer_4_gzip
       use skip_gz_comment
@@ -9,63 +11,66 @@
       implicit none
 !
       integer(kind = kint) :: i,j, k(10)
-      integer(kind = 4) :: num_txt
       character(len=kchara) :: fname
       integer(kind = 4), parameter :: nbuffer = 2000
-      character(len=nbuffer) :: input_txt
       type(buffer_4_gzip) :: zbuf_test
 !
+      character, pointer, save :: FP_z1, FP_z2
 !
-      num_txt = 4096
-!      allocate( input_txt(num_txt) )
 !
       write(fname,'(a)') 'test_a.txt.gz'
-      call open_wt_gzfile_a(fname, zbuf_test)
+      call alloc_fixbuffer_for_zlib(zbuf_test)
+      call open_wt_gzfile_ff(fname, zbuf_test, FP_z1)
 
-      write(input_txt,'(a,a1)')'test data',char(0)
-      num_txt = 9
-      call write_compress_txt(nbuffer, input_txt, zbuf_test)
+      write(zbuf_test%fixbuf(1),'(a,a1)')'test data',char(0)
+      zbuf_test%len_buf = 9
+      call write_compress_txt_ff(FP_z1, zbuf_test)
 
-      write(input_txt,'(100(i9,a1))') (j,char(10),j=1,99), j, char(0)
-      num_txt = 10*100-1
-      call write_compress_txt(nbuffer, input_txt, zbuf_test)
-      call close_gzfile_a(zbuf_test)
+      write(zbuf_test%fixbuf(1),'(100(i9,a1))')                         &
+     &                           (j,char(10),j=1,99), j, char(0)
+      zbuf_test%len_buf = 10*100-1
+      call write_compress_txt_ff(FP_z1, zbuf_test)
+      call close_gzfile_aa(FP_z1, zbuf_test)
 !
 !
       write(fname,'(a)') 'test_b.txt.gz'
-      call open_wt_gzfile(fname)
+      call alloc_fixbuffer_for_zlib(zbuf_test)
+      call open_wt_gzfile_ff(fname, zbuf_test, FP_z1)
 
-      write(input_txt,'(a,a1)') 'test data', char(0)
-      num_txt = 9
-      call write_compress_txt(nbuffer, input_txt, zbuf_test)
+      write(zbuf_test%fixbuf(1),'(a,a1)') 'test data', char(0)
+      zbuf_test%len_buf = 9
+      call write_compress_txt_ff(FP_z1, zbuf_test)
 
-      num_txt = 9
+      zbuf_test%len_buf = 9
       do j = 1, 100
-        write(input_txt,'(i9,a1)') j, char(0)
-        call write_compress_txt(nbuffer, input_txt, zbuf_test)
+        write(zbuf_test%fixbuf(1),'(i9,a1)') j, char(0)
+        call write_compress_txt_ff(FP_z1, zbuf_test)
       end do
-      call close_gzfile_a(zbuf_test)
+      call close_gzfile_aa(FP_z1, zbuf_test)
+!
 !
       write(fname,'(a)') 'test_f.txt.gz'
+      call alloc_fixbuffer_for_zlib(zbuf_test)
+      call open_wt_gzfile_ff(fname, zbuf_test, FP_z1)
 !
-      write(input_txt,'(a,a1)') 'test data', char(0)
-      num_txt = 9
-      write(*,*) 'num_txt', num_txt
+      write(zbuf_test%fixbuf(1),'(a,a1)') 'test data', char(0)
+      zbuf_test%len_buf = 9
+      write(*,*) 'zbuf_test%len_buf', zbuf_test%len_buf
 
-      call open_wt_gzfile(fname)
-      call write_compress_txt(nbuffer, input_txt, zbuf_test)
+      call write_compress_txt_ff(FP_z1, zbuf_test)
 !
       do i = 1, 10
-        write(input_txt,'(10i16,a)') ((i*1000+j),j=1,10), char(0)
-        num_txt = 80
-        call write_compress_txt(nbuffer, input_txt, zbuf_test)
+        write(zbuf_test%fixbuf(1),'(10i16,a)')                          &
+     &             ((i*1000+j),j=1,10), char(0)
+        zbuf_test%len_buf = 80
+        call write_compress_txt_ff(FP_z1, zbuf_test)
 !
       end do
+      call close_gzfile_aa(FP_z1, zbuf_test)
 !
-      call close_gzfile_a(zbuf_test)
-!
-      call open_rd_gzfile_a(fname, zbuf_test)
-      call get_one_line_text_from_gz(zbuf_test)
+      call alloc_fixbuffer_for_zlib(zbuf_test)
+      call open_rd_gzfile_aa(fname, zbuf_test, FP_z2)
+      call get_one_line_text_from_gzz(FP_z2, zbuf_test)
 !
       write(*,*) 'nword',  zbuf_test%num_word
       write(*,*) 'nchara', zbuf_test%len_used
@@ -73,13 +78,116 @@
       write(*,'(a)') trim(fname)
 !
       do i = 1, 10
-        call get_one_line_text_from_gz(zbuf_test)
+        call get_one_line_text_from_gzz(FP_z2, zbuf_test)
         write(*,*) 'nword',  zbuf_test%num_word
         write(*,*) 'nchara', zbuf_test%len_used
         read(zbuf_test%fixbuf(1),*) k(1:zbuf_test%num_word)
         write(*,*) k
       end do
-      call close_gzfile_a(zbuf_test)
+      call close_gzfile_aa(FP_z2, zbuf_test)
 !
       stop
+!
+!  ---------------------------------------------------------------------
+      contains
+!  ---------------------------------------------------------------------
+!
+      subroutine write_compress_txt_ff(FPz_f, zbuf)
+!
+      use gzip_file_access
+!
+      character, pointer, intent(in) :: FPz_f 
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+!
+      call link_text_buffer_for_zlib(len(zbuf%fixbuf(1)),               &
+     &                               zbuf%fixbuf(1), zbuf)
+      call write_compress_txt_c(C_loc(FPz_f), zbuf%len_buf,             &
+     &                          C_LOC(zbuf%buf_p(1)))
+      call unlink_text_buffer_for_zlib(zbuf)
+!
+      end subroutine write_compress_txt_ff
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine open_wt_gzfile_ff(gzip_name, zbuf, FPz_f)
+!
+      use set_parallel_file_name
+!
+      character(len = kchara), intent(in) :: gzip_name
+      type(buffer_4_gzip), intent(inout) :: zbuf
+      character, pointer, intent(inout) :: FPz_f 
+!
+      type(C_ptr) :: FP_gzip
+!
+!
+      call link_text_buffer_for_zlib                                    &
+     &   (kchara, add_null_character(gzip_name), zbuf)
+      FP_gzip = open_wt_gzfile_c(zbuf%buf_p)
+      call c_f_pointer(FP_gzip, FPz_f)
+      call unlink_text_buffer_for_zlib(zbuf)
+!      write(*,'(a,Z16)') 'Open FPz_f', C_loc(FPz_f)
+!
+      end subroutine open_wt_gzfile_ff
+!
+!------------------------------------------------------------------
+!
+      subroutine open_rd_gzfile_aa(gzip_name, zbuf, FPz_f)
+!
+      use gzip_file_access
+      use set_parallel_file_name
+!
+      character(len = kchara), intent(in) :: gzip_name
+      type(buffer_4_gzip) , intent(inout):: zbuf
+      character, pointer, intent(inout) :: FPz_f 
+!
+      type(C_ptr) :: FP_gzip
+!
+!
+      call link_text_buffer_for_zlib                                    &
+     &   (kchara, add_null_character(gzip_name), zbuf)
+      FP_gzip = open_rd_gzfile_c(zbuf%buf_p)
+      call c_f_pointer(FP_gzip, FPz_f)
+      call unlink_text_buffer_for_zlib(zbuf)
+!      write(*,'(a,Z16)') 'Open FPz_f to read', C_loc(FPz_f)
+!
+      end subroutine open_rd_gzfile_aa
+!
+! ----------------------------------------------------------------------
+!
+      subroutine close_gzfile_aa(FPz_f, zbuf)
+!
+      use gzip_file_access
+!
+      character, pointer, intent(inout) :: FPz_f 
+      type(buffer_4_gzip), intent(inout):: zbuf
+!
+!
+      call close_gzfile_c(C_loc(FPz_f))
+      call dealloc_fixbuffer_for_zlib(zbuf)
+      nullify(FPz_f)
+!      write(*,'(a,Z16)') 'FP_gzip close', C_loc(FPz_f)
+!
+      end subroutine close_gzfile_aa
+!
+!------------------------------------------------------------------
+!
+      subroutine get_one_line_text_from_gzz(FPz_f, zbuf)
+!
+      use gzip_file_access
+!
+      character, pointer, intent(in) :: FPz_f 
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+!
+      call link_text_buffer_for_zlib                                    &
+     &   (len(zbuf%fixbuf(1)), zbuf%fixbuf(1), zbuf)
+      call get_one_line_from_gz_c(C_loc(FPz_f), zbuf%len_buf,           &
+     &    zbuf%num_word, zbuf%len_used, C_LOC(zbuf%buf_p(1)))
+      call unlink_text_buffer_for_zlib(zbuf)
+!
+      end subroutine get_one_line_text_from_gzz
+!
+!  ---------------------------------------------------------------------
+!
       end program test_zlib_lines

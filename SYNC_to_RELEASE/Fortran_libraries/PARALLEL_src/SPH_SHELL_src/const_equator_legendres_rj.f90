@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/PARALLEL_src/SPH_SHELL_src/const_equator_legendres_rj.f90

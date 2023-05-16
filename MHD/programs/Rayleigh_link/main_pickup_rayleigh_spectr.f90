@@ -16,6 +16,7 @@
       use t_picked_rayleigh_parameter
       use t_rayleigh_restart_IO
       use t_picked_rayleigh_spectr
+      use t_ctl_data_gauss_coefs
 !
       use rayleigh_restart_IO
       use MPI_read_rayleigh_restart
@@ -44,7 +45,7 @@
 !
       call init_picked_rayleigh_param(pick_ctl_s, pick_ra_param_s)
       ra_rst_s%i_version = pick_ctl_s%Rayleigh_version_ctl%intvalue(1)
-      call dealloc_gauss_spectr_control(pick_ctl_s)
+      call dealloc_pick_rayleigh_spectr(pick_ctl_s)
 !
       if(my_rank .eq. 0) then
         call sel_read_rayleigh_rst_params                               &
@@ -75,6 +76,27 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine bcast_pick_rayleigh_ctl(pick_ctl)
+!
+      use t_ctl_pick_rayleigh_spectr
+      use calypso_mpi_int
+      use bcast_control_arrays
+!
+      type(pick_rayleigh_spectr_control), intent(inout) :: pick_ctl
+!
+!
+      call bcast_ctl_type_c1(pick_ctl%picked_data_file_name)
+      call bcast_ctl_type_c1(pick_ctl%Rayleigh_rst_dir_ctl)
+      call bcast_ctl_type_i2(pick_ctl%Rayleigh_version_ctl)
+      call bcast_ctl_type_i1(pick_ctl%Rayleigh_step_ctl)
+      call bcast_ctl_array_i2(pick_ctl%idx_rayleigh_ctl)
+      call calypso_mpi_bcast_one_int                                    &
+     &    (pick_ctl%i_pick_rayleigh_spectr, 0)
+!
+      end subroutine bcast_pick_rayleigh_ctl
 !
 ! -----------------------------------------------------------------------
 !

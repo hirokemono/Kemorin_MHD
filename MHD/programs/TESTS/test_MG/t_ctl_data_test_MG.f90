@@ -98,6 +98,8 @@
       subroutine read_MG_test_data_ctl                                  &
      &         (id_control, hd_block, test_MG_ctl, c_buf)
 !
+      use ctl_data_platforms_IO
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
