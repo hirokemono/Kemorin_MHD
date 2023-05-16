@@ -61,6 +61,8 @@
 !>    flag for rendering element
         integer(kind = kint), allocatable :: iflag_used_ele(:)
 !
+!>    Number of surface to be enhansed
+        integer(kind = kint) :: num_enhanse
 !>    integer flag for surface boundaries
         integer(kind = kint), allocatable :: iflag_enhanse(:)
 !>    Opacity value for surface boundaries
@@ -136,11 +138,12 @@
       type(rendering_parameter), intent(inout) :: draw_param
 !
 !
+      draw_param%num_enhanse = surf_grp%num_grp
       allocate(draw_param%iflag_enhanse(surf_grp%num_grp))
       allocate(draw_param%enhansed_opacity(surf_grp%num_grp))
 !
       if(surf_grp%num_grp .gt. 0) draw_param%iflag_enhanse = 0
-      if(surf_grp%num_grp .gt. 0) draw_param%enhansed_opacity = 0
+      if(surf_grp%num_grp .gt. 0) draw_param%enhansed_opacity = 0.0d0
 !
       end subroutine alloc_iflag_pvr_boundaries
 !
