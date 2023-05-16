@@ -24,7 +24,6 @@
       character(len=kchara) :: file_prefix
       integer(kind = kint) :: inum, ist, ied, increment
 !
-!
       write(*,*) 'Input file prefix without step count'
       read(*,*) file_prefix
       write(*,*) 'Input start, end, and increment of counts'
@@ -80,9 +79,11 @@
 !
       num = bit4_to_int_little(BMP_head(3))                             &
      &     - bit4_to_int_little(BMP_head(11))
-      image%npix_x = bit4_to_int_little(BMP_head(15))
-      image%npix_y = bit4_to_int_little(BMP_head(19))
-!
+      image%npix_x = bit4_to_int_little(BMP_head(19))
+      image%npix_y = bit4_to_int_little(BMP_head(23))
+      write(*,*) 'num', num
+      write(*,*) 'image%npix_x', image%npix_x, image%npix_y
+
       allocate(imagebuf(num))
       if(flag_gzip) then
         call gz_read_mul_one_character_b(FPz_f, zbuf_b, cast_long(num), &
