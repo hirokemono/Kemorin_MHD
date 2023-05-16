@@ -11,16 +11,19 @@
       use m_precision
       use calypso_mpi
 !
-      use m_MHD_step_parameter
-      use m_FEM_MHD_model_data
       use m_work_time
       use m_elapsed_labels_SEND_RECV
       use FEM_analyzer_filtered
       use t_visualizer
       use t_VIZ_mesh_field
-      use t_mesh_SR
+      use t_FEM_SGS_MHD
 !
       implicit none
+!
+!
+      type(FEM_MHD), save, private :: FMHDs
+      type(FEM_SGS_MHD), save, private ::  FSGSs
+      type(FEM_SGS_vizs), save, private :: FMVIZs
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,25 +48,30 @@
 !     --------------------- 
 !
       call input_control_4_FEM_snap                                     &
-     &   (MHD_files1, FEM_model1%FEM_prm, FEM_SGS1%SGS_par,             &
-     &    MHD_step1, FEM_model1%MHD_prop, FEM_model1%MHD_BC,            &
-     &    FEM_MHD1%geofem, FEM_MHD1%field,SGS_MHD_wk1%ele_fld,          &
-     &    FEM_MHD1%nod_mntr, FEM_model1%bc_FEM_IO,                      &
-     &    FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1,        &
-     &    vizs_ctl_F)
-      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
+     &   (FMHDs%MHD_files, FMHDs%FEM_model%FEM_prm,                     &
+     &    FSGSs%FEM_SGS%SGS_par, FMHDs%MHD_step,                        &
+     &    FMHDs%FEM_model%MHD_prop, FMHDs%FEM_model%MHD_BC,             &
+     &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
+     &    FSGSs%SGS_MHD_wk%ele_fld, FMHDs%FEM_MHD%nod_mntr,             &
+     &    FMHDs%FEM_model%bc_FEM_IO, FSGSs%FEM_SGS%FEM_filters,         &
+     &    FSGSs%SGS_MHD_wk%FEM_SGS_wk, FMHDs%MHD_CG, FMVIZs%vizs_ctl)
+      call copy_delta_t(FMHDs%MHD_step%init_d, FMHDs%MHD_step%time_d)
 !
 !     --------------------- 
 !
       call FEM_initialize_snapshot                                      &
-     &   (MHD_files1, MHD_step1, FEM_model1, MHD_CG1%ak_MHD,            &
-     &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1, m_SR2)
+     &   (FMHDs%MHD_files, FMHDs%MHD_step, FMHDs%FEM_model,             &
+     &    FMHDs%MHD_CG%ak_MHD, FMHDs%FEM_MHD,                           &
+     &    FSGSs%FEM_SGS, FSGSs%SGS_MHD_wk, FMHDs%MHD_IO,                &
+     &    FMHDs%fem_sq, FMHDs%m_SR)
 !
-      call init_FEM_MHD_to_VIZ_bridge(MHD_step1%viz_step,               &
-     &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
-     &    FEM_MHD1%geofem, VIZ_DAT2, m_SR2)
-      call init_visualize(MHD_step1%viz_step, FEM_MHD1%geofem,          &
-     &    FEM_MHD1%field, VIZ_DAT2, vizs_ctl_F, vizs_F, m_SR2)
+      call init_FEM_MHD_to_VIZ_bridge(FMHDs%MHD_step%viz_step,          &
+     &    FSGSs%SGS_MHD_wk%fem_int%next_tbl,                            &
+     &    FSGSs%SGS_MHD_wk%fem_int%jcs, FMHDs%FEM_MHD%geofem,           &
+     &    FMVIZs%VIZ_DAT, FMHDs%m_SR)
+      call init_visualize(FMHDs%MHD_step%viz_step,                      &
+     &    FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                    &
+     &    FMVIZs%VIZ_DAT, FMVIZs%vizs_ctl, FMVIZs%VIZs, FMHDs%m_SR)
 !
       end subroutine init_analyzer
 !
@@ -79,29 +87,33 @@
       logical :: visval
 !
 !
-      do i_step = MHD_step1%init_d%i_time_step,                         &
-     &           MHD_step1%finish_d%i_end_step
+      do i_step = FMHDs%MHD_step%init_d%i_time_step,                    &
+     &           FMHDs%MHD_step%finish_d%i_end_step
 !
 !  Read and generate fields
-        call FEM_analyze_filtered(i_step, MHD_files1, FEM_model1,       &
-     &      MHD_CG1%ak_MHD, MHD_step1, FEM_SGS1, SGS_MHD_wk1,           &
-     &      FEM_MHD1, MHD_IO1%ucd, MHD_IO1, fem_sq1, m_SR2)
+        call FEM_analyze_filtered(i_step, FMHDs%MHD_files,              &
+     &      FMHDs%FEM_model, FMHDs%MHD_CG%ak_MHD, FMHDs%MHD_step,       &
+     &      FSGSs%FEM_SGS, FSGSs%SGS_MHD_wk, FMHDs%FEM_MHD,             &
+     &      FMHDs%MHD_IO%ucd, FMHDs%MHD_IO, FMHDs%fem_sq, FMHDs%m_SR)
 !
 !  Visualization
-        visval = MHD_viz_routine_flag                                   &
-     &       (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
+        visval = MHD_viz_routine_flag(FMHDs%MHD_step%flex_p,            &
+     &                                FMHDs%MHD_step%time_d,            &
+     &                                FMHDs%MHD_step%viz_step)
         if (visval) then
-          call MHD_viz_routine_step                                     &
-     &     (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
+          call MHD_viz_routine_step(FMHDs%MHD_step%flex_p,              &
+     &        FMHDs%MHD_step%time_d, FMHDs%MHD_step%viz_step)
           call visualize_all                                            &
-     &       (MHD_step1%viz_step, MHD_step1%time_d, FEM_MHD1%geofem,    &
-     &        FEM_MHD1%field, VIZ_DAT2, vizs_F, m_SR2)
+     &       (FMHDs%MHD_step%viz_step, FMHDs%MHD_step%time_d,           &
+     &        FMHDs%FEM_MHD%geofem, FMHDs%FEM_MHD%field,                &
+     &        FMVIZs%VIZ_DAT, FMVIZs%VIZs, FMHDs%m_SR)
         end if
       end do
 !
-      call visualize_fin(MHD_step1%viz_step, MHD_step1%time_d, vizs_F)
+      call visualize_fin                                                &
+     &   (FMHDs%MHD_step%viz_step, FMHDs%MHD_step%time_d, FMVIZs%VIZs)
       call FEM_finalize_snapshot                                        &
-     &   (MHD_files1, MHD_step1, MHD_IO1)
+     &   (FMHDs%MHD_files, FMHDs%MHD_step, FMHDs%MHD_IO)
 !
       call output_elapsed_times
 !
