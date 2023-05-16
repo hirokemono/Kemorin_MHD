@@ -116,13 +116,6 @@ target_task:
 	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_SPH_MHD_4VIZS): $$(MOD_SPH_MHD_4VIZS) $$(LIB_FILES_SPH_MHD)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_SPH_MHD_4VIZS)' '$$(MOD_SPH_MHD_4VIZS)' \
-	'-L. $$(LIBS_SPH_MHD)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
 	@echo '$$(TARGET_SPH_MHD_PSF): $$(MOD_SPH_MHD_PSF_MAIN) $$(LIB_FILES_SPH_MHD)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \

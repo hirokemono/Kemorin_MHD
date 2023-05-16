@@ -54,8 +54,6 @@ main_sph_snapshot.o: $(SPH_SNAPSHOT_DIR)/main_sph_snapshot.f90 m_precision.o cal
 	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_snapshot_noviz.o: $(SPH_SNAPSHOT_DIR)/main_sph_snapshot_noviz.f90 m_precision.o calypso_mpi.o analyzer_noviz_sph_snap.o
 	$(F90) -c $(F90OPTFLAGS) $<
-main_sph_snapshot_w_4vizs.o: $(SPH_SNAPSHOT_DIR)/main_sph_snapshot_w_4vizs.f90 m_precision.o calypso_mpi.o analyzer_sph_snap_w_4vizs.o
-	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_snapshot_w_psf.o: $(SPH_SNAPSHOT_DIR)/main_sph_snapshot_w_psf.f90 m_precision.o calypso_mpi.o analyzer_sph_snap_w_psf.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_sph_snapshot_w_vizs.o: $(SPH_SNAPSHOT_DIR)/main_sph_snapshot_w_vizs.f90 m_precision.o calypso_mpi.o analyzer_sph_snap_w_vizs.o
