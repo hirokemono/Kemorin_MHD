@@ -4,13 +4,8 @@
 
 SPH_MHD_MAINDIR =   $$(PROG_DIR)/SPH_MHD
 
-<<<<<<< HEAD
-TARGET_SPH_MHD =        sph_mhd
-TARGET_SPH_MHD_4VIZS =  sph_mhd_4vizs
-=======
 TARGET_SPH_SGS_MHD =    sph_mhd
 TARGET_SPH_MHD_VIZS =   sph_mhd_vizs
->>>>>>> refs/heads/Update_zlib_routines
 TARGET_SPH_MHD_PSF =    sph_mhd_psf
 TARGET_SPH_MHD_NOVIZ =  sph_mhd_noviz
 TARGET_SPH_MHD_MINI =   sph_mhd_nosnap
@@ -55,15 +50,9 @@ main_sph_MHD.o \
 analyzer_sph_MHD.o \
 SPH_analyzer_SGS_MHD.o
 
-<<<<<<< HEAD
-MOD_SPH_MHD_4VIZS =  \
-main_sph_MHD_w_4vizs.o \
-analyzer_sph_MHD_w_4vizs.o \
-=======
 MOD_SPH_MHD_VIZS_MAIN =  \
 main_sph_MHD_w_vizs.o \
 analyzer_sph_MHD_w_vizs.o \
->>>>>>> refs/heads/Update_zlib_routines
 SPH_analyzer_MHD.o
 
 MOD_SPH_MHD_PSF_MAIN =  \
@@ -96,13 +85,8 @@ dir_list:
 	@echo 'SPH_MHD_MAINDIR = $(SPH_MHD_MAINDIR)' >> $(MAKENAME)
 
 target_list:
-<<<<<<< HEAD
-	@echo 'TARGET_SPH_MHD =        $$(BUILDDIR)/$(TARGET_SPH_MHD)'  >> $(MAKENAME)
-	@echo 'TARGET_SPH_MHD_4VIZS =  $$(BUILDDIR)/$(TARGET_SPH_MHD_4VIZS)'  >> $(MAKENAME)
-=======
 	@echo 'TARGET_SPH_SGS_MHD =    $$(BUILDDIR)/$(TARGET_SPH_SGS_MHD)'  >> $(MAKENAME)
 	@echo 'TARGET_SPH_MHD_VIZS =   $$(BUILDDIR)/$(TARGET_SPH_MHD_VIZS)'  >> $(MAKENAME)
->>>>>>> refs/heads/Update_zlib_routines
 	@echo 'TARGET_SPH_MHD_PSF =    $$(BUILDDIR)/$(TARGET_SPH_MHD_PSF)'  >> $(MAKENAME)
 	@echo 'TARGET_SPH_LICV =       $$(BUILDDIR)/$(TARGET_SPH_LICV)'      >> $(MAKENAME)
 	@echo 'TARGET_SPH_MHD_MINI =   $$(BUILDDIR)/$(TARGET_SPH_MHD_MINI)'  >> $(MAKENAME)
@@ -112,13 +96,8 @@ target_list:
 target_task:
 	@echo sph_mhd: \
 	 '$$(TARGET_SPH_LICV)'       \
-<<<<<<< HEAD
-	 '$$(TARGET_SPH_MHD)'        \
-	 '$$(TARGET_SPH_MHD_4VIZS)'  \
-=======
 	 '$$(TARGET_SPH_SGS_MHD)'    \
 	 '$$(TARGET_SPH_MHD_VIZS)'    \
->>>>>>> refs/heads/Update_zlib_routines
 	 '$$(TARGET_SPH_MHD_PSF)'    \
 	 '$$(TARGET_SPH_MHD_NOVIZ)'  \
 	 '$$(TARGET_SPH_MHD_MINI)' >> $(MAKENAME)
@@ -183,17 +162,10 @@ lib_name:
 
 
 mod_list:
-<<<<<<< HEAD
-	@echo  MOD_SPH_MHD_MAIN=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_MHD_MAIN) >> $(MAKENAME)
-	@echo  MOD_SPH_MHD_4VIZS=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_MHD_4VIZS) >> $(MAKENAME)
-=======
 	@echo  MOD_SPH_SGS_MHD_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SGS_MHD_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_MHD_VIZS_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_MHD_VIZS_MAIN) >> $(MAKENAME)
->>>>>>> refs/heads/Update_zlib_routines
 	@echo  MOD_SPH_MHD_PSF_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_MHD_PSF_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_MHD_NOVIZ_MAIN=  \\ >> $(MAKENAME)
