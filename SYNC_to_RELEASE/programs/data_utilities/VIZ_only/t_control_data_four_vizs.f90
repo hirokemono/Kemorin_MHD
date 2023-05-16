@@ -1,1 +1,0 @@
-../../../../MHD/programs/VIZ_only/t_control_data_four_vizs.f90

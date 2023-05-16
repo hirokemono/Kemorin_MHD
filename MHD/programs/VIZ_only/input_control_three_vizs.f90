@@ -100,7 +100,6 @@
       subroutine set_ctl_params_three_vizs                              &
      &         (pvr_vizs_c, FEM_viz, t_viz_param, ierr)
 !
-      use t_control_data_four_vizs
       use t_VIZ_only_step_parameter
 !
       use m_file_format_switch

@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/SPH_MHD_utils/analyzer_sph_snap_w_4vizs.f90
