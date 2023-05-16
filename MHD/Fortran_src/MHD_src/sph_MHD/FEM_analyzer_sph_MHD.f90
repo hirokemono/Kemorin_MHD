@@ -10,12 +10,11 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,          &
-!!     &          FEM_MHD, MHD_IO, nod_mntr, m_SR)
+!!     &                                  FEM_MHD, MHD_IO, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
-!!        type(node_monitor_IO), intent(inout) :: nod_mntr
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_analyze_sph_MHD(MHD_files, FEM_MHD, MHD_step,    &
 !!     &                               MHD_IO, m_SR)
@@ -71,7 +70,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,            &
-     &          FEM_MHD, MHD_IO, nod_mntr, m_SR)
+     &                                  FEM_MHD, MHD_IO, m_SR)
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
@@ -88,7 +87,6 @@
 !
       type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
       type(MHD_IO_data), intent(inout) :: MHD_IO
-      type(node_monitor_IO), intent(inout) :: nod_mntr
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
@@ -98,7 +96,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
       call set_local_nod_4_monitor                                      &
-     &   (FEM_MHD%geofem%mesh, FEM_MHD%geofem%group, nod_mntr)
+     &   (FEM_MHD%geofem%mesh, FEM_MHD%geofem%group, FEM_MHD%nod_mntr)
 !
 !  -------------------------------
 !      INIT communication buffer

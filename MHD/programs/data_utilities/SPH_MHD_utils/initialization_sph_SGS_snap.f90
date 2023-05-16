@@ -70,7 +70,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD(SSNAPs%MHD_files,                 &
      &    SSNAPs%MHD_step, SVIZs%SPH_SGS%iphys_LES, SSNAPs%MHD_IO,      &
-     &    SVIZs%FEM_DAT, SSNAPs%SPH_WK%nod_mntr, SSNAPs%m_SR)
+     &    SVIZs%FEM_DAT, SSNAPs%m_SR)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'

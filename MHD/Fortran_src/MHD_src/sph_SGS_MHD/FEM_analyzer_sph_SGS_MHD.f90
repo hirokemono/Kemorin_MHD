@@ -10,13 +10,12 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_sph_SGS_MHD(MHD_files, MHD_step,      &
-!!     &          iphys_LES, MHD_IO, FEM_MHD, nod_mntr, m_SR)
+!!     &          iphys_LES, MHD_IO, FEM_MHD, m_SR)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
-!!        type(node_monitor_IO), intent(inout) :: nod_mntr
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_analyze_sph_SGS_MHD(MHD_files, MHD_step, MHD_IO, &
 !!     &                                   FEM_MHD, m_SR)
@@ -68,7 +67,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_sph_SGS_MHD(MHD_files, MHD_step,        &
-     &          iphys_LES, MHD_IO, FEM_MHD, nod_mntr, m_SR)
+     &          iphys_LES, MHD_IO, FEM_MHD, m_SR)
 !
       use t_phys_address
       use t_SGS_model_addresses
@@ -77,7 +76,6 @@
       use t_cal_max_indices
       use t_MHD_IO_data
       use t_ucd_file
-      use t_node_monitor_IO
 !
       use set_table_4_RHS_assemble
       use FEM_analyzer_sph_MHD
@@ -92,15 +90,14 @@
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
-      type(node_monitor_IO), intent(inout) :: nod_mntr
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: iflag
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
-      call set_local_nod_4_monitor(FEM_MHD%geofem%mesh,                 &
-     &                             FEM_MHD%geofem%group, nod_mntr)
+      call set_local_nod_4_monitor                                      &
+     &   (FEM_MHD%geofem%mesh, FEM_MHD%geofem%group, FEM_MHD%nod_mntr)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_field_data_w_SGS'
       call init_field_data_w_SGS(FEM_MHD%geofem%mesh%node%numnod,       &

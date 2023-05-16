@@ -156,7 +156,7 @@ use t_node_monitor_IO
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
      &    add_SMHD_ctl%zm_ctls, MHD_ctl%nmtr_ctl,                       &
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_MHD%sph,            &
-     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, SPH_WK%nod_mntr)
+     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, FEM_dat%nod_mntr)
 !
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -267,7 +267,7 @@ use t_node_monitor_IO
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
      &    add_SMHD_ctl%zm_ctls, MHD_ctl%nmtr_ctl,                       &
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_MHD%sph,            &
-     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, SPH_WK%nod_mntr)
+     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor, FEM_dat%nod_mntr)
 !
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'

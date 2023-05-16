@@ -83,9 +83,8 @@
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD                                       &
-     &   (MHDMs%MHD_files, MHDMs%MHD_step, MPSFs%FEM_DAT, MHDMs%MHD_IO, &
-     &    MHDMs%SPH_WK%nod_mntr, MHDMs%m_SR)
+      call FEM_initialize_sph_MHD(MHDMs%MHD_files, MHDMs%MHD_step,      &
+     &    MPSFs%FEM_DAT, MHDMs%MHD_IO, MHDMs%m_SR)
       call init_FEM_to_PSF_bridge(MHDMs%MHD_step%viz_step,              &
      &    MPSFs%FEM_DAT%geofem, MPSFs%edge_comm, MHDMs%m_SR)
 !

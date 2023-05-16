@@ -136,8 +136,8 @@
      &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
      &    add_SSMHD_ctl%zm_ctls, MHD_ctl%nmtr_ctl,                      &
      &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_model%MHD_BC,        &
-     &    SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,                      &
-     &    SPH_WK%monitor, SPH_WK%nod_mntr)
+     &    SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor,      &
+     &    FEM_dat%nod_mntr)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl, add_SSMHD_ctl)
 !
 !  Load spherical shell table

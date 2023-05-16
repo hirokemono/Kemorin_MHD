@@ -86,8 +86,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD                                   &
      &   (SSMHDs%MHD_files, SSMHDs%MHD_step, SVIZ_m%SPH_SGS%iphys_LES,  &
-     &    SSMHDs%MHD_IO, SVIZ_m%FEM_DAT, SSMHDs%SPH_WK%nod_mntr,        &
-     &    SSMHDs%m_SR)
+     &    SSMHDs%MHD_IO, SVIZ_m%FEM_DAT, SSMHDs%m_SR)
 !
 !        Initialize spherical transform dynamo
 !

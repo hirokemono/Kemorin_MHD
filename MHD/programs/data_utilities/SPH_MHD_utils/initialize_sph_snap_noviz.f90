@@ -71,7 +71,7 @@
 !     --------------------- 
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization                                      &
      &   (FEM_DAT%geofem%mesh, FEM_DAT%geofem%group,                    &
      &    SSNAPs%m_SR%SR_sig, SSNAPs%m_SR%SR_i)
