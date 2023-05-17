@@ -53,12 +53,12 @@ AC_CONFIG_SRCDIR([MHD/programs/SPH_MHD/main_sph_MHD.f90])
 AC_ARG_ENABLE(cocoa,
 	[  --enable-cocoa          Use Cocoa framework],[USE_Cocoa='yes'],[USE_Cocoa='no'])
 
-AC_ARG_ENABLE(fftw3,
-	[  --enable-fftw3          Use fftw3 library],[USE_fftw3='yes'],[USE_fftw3='no'])
-
 AC_ARG_ENABLE(gl,
 	[  --enable-gl             Use OpenGL for viewer],[USE_gl='yes'],[USE_gl='no'])
 
+
+AC_ARG_ENABLE(fftw3,
+    [  --with-fftw3          Use fftw3 library],[USE_fftw3='yes'],[USE_fftw3='no'])
 
 AC_ARG_WITH(libpng,
 	[  --with-libpng           Use libpng library],[USE_libpng='yes'],[USE_libpng='no'])
