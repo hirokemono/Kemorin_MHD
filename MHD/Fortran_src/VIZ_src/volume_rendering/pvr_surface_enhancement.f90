@@ -137,6 +137,7 @@
       ied = sf_grp_4_sf%istack_grp_surf(isurf  )
       if(ied .lt. ist)  return
 !
+      arccos_sf = zero
       do inum = ist, ied
         igrp = sf_grp_4_sf%igrp_4_surf(inum)
 !
@@ -151,7 +152,6 @@
      &              + norm_sf_model(3)*norm_sf_model(3))
         ratio = coef_op * size_v / norm_sf_model(3)
 !
-        arccos_sf = zero
         if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_EDGE) then
           if(abs(ratio) .gt. ONE) then
             arccos_sf = max(enhansed_opacity(igrp), arccos_sf)
