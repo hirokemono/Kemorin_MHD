@@ -57,8 +57,8 @@ AC_ARG_ENABLE(gl,
 	[  --enable-gl             Use OpenGL for viewer],[USE_gl='yes'],[USE_gl='no'])
 
 
-AC_ARG_ENABLE(fftw3,
-    [  --with-fftw3          Use fftw3 library],[USE_fftw3='yes'],[USE_fftw3='no'])
+AC_ARG_WITH(fftw3,
+    [  --with-fftw3            Use fftw3 library],[USE_fftw3='yes'],[USE_fftw3='no'])
 
 AC_ARG_WITH(libpng,
 	[  --with-libpng           Use libpng library],[USE_libpng='yes'],[USE_libpng='no'])
@@ -73,7 +73,7 @@ AC_ARG_WITH(glfw,
 AC_MSG_RESULT(enable-cocoa... "${USE_Cocoa}")
 AC_MSG_RESULT(enable-OpenGL.. "${USE_gl}")
 
-AC_MSG_RESULT(enable-fftw3... "${USE_fftw3}")
+AC_MSG_RESULT(with-fftw3...   "${USE_fftw3}")
 AC_MSG_RESULT(enable-libpng..."${USE_libpng}")
 AC_MSG_RESULT(enable-gtk...   "${USE_gtk}")
 AC_MSG_RESULT(enable-glfw...  "${USE_glfw}")
@@ -500,9 +500,9 @@ else
         AC_MSG_RESULT(    Use zlib ...           no)
 fi
 if test -n "${PNG_LIBS}"; then
-        AC_MSG_RESULT(    Use PNG output...     yes)
+        AC_MSG_RESULT(    Use libpng output...     yes)
 else
-        AC_MSG_RESULT(    Use PNG output...      no)
+        AC_MSG_RESULT(    Use libpng output...      no)
 fi
 AC_MSG_RESULT()
 if test -n "${GTK3_LIBS}"; then
