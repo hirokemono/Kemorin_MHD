@@ -81,8 +81,6 @@
      &     - bit4_to_int_little(BMP_head(11))
       image%npix_x = bit4_to_int_little(BMP_head(19))
       image%npix_y = bit4_to_int_little(BMP_head(23))
-      write(*,*) 'num', num
-      write(*,*) 'image%npix_x', image%npix_x, image%npix_y
 
       allocate(imagebuf(num))
       if(flag_gzip) then
