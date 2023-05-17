@@ -49,7 +49,7 @@
       character(len = kchara), parameter                                &
      &                        :: LABEL_REVERSE = 'reverse_surface'
       character(len = kchara), parameter                                &
-     &                        :: LABEL_REVERSE = 'reverse_surface'
+     &                        :: LABEL_BOTH =    'both_surface'
 !
       integer(kind = kint), parameter :: n_flag_pvr_isosurf_dir =   3
 !
