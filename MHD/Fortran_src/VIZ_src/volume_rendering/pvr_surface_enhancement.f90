@@ -45,7 +45,7 @@
 !
       character(len = kchara), parameter :: LABEL_EDGE = 'boarder'
       character(len = kchara), parameter                                &
-     &                        :: LABEL_FORWARD = 'both_surface'
+     &                        :: LABEL_FORWARD = 'forward_surface'
       character(len = kchara), parameter                                &
      &                        :: LABEL_REVERSE = 'reverse_surface'
       character(len = kchara), parameter                                &
