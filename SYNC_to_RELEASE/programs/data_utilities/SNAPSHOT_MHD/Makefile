@@ -4,8 +4,8 @@
 
 SPH_SNAP_MAINDIR =   $$(DATA_UTILS_DIR)/SNAPSHOT_MHD
 
-TARGET_SPH_VIZS_SNAP =  sph_snapshot_vizs
-TARGET_SPH_PSF_SNAP =   sph_snapshot
+TARGET_SPH_VIZS_SNAP =  sph_snapshot
+TARGET_SPH_PSF_SNAP =   sph_snapshot_w_psf
 
 SOURCES = $(shell ls *.f90)
 
@@ -27,13 +27,12 @@ dir_list:
 	@echo 'SPH_SNAP_MAINDIR = $(SPH_SNAP_MAINDIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_SPH_PSF_SNAP =      $$(BUILDDIR)/$(TARGET_SPH_PSF_SNAP)'>> $(MAKENAME)
+	@echo 'TARGET_SPH_PSF_SNAP =  $$(BUILDDIR)/$(TARGET_SPH_PSF_SNAP)'>> $(MAKENAME)
 	@echo 'TARGET_SPH_VIZS_SNAP = $$(BUILDDIR)/$(TARGET_SPH_VIZS_SNAP)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo sph_snapshots: \
-	 '$$(TARGET_SPH_PSF_SNAP)'    \
 	 '$$(TARGET_SPH_VIZS_SNAP)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
