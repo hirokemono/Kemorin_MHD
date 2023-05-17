@@ -256,7 +256,7 @@
             if((c_tgt(1) - draw_param%iso_value(i_iso)) .eq. zero       &
      &        .or. rflag .lt. zero) then
               grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)              &
-     &                       * draw_param%itype_isosurf(i_iso)
+     &                       * dble(draw_param%itype_isosurf(i_iso))
               call color_plane_with_light(viewpoint_vec, xx4_tgt,       &
      &            draw_param%iso_value(i_iso), grad_tgt,                &
      &            draw_param%iso_opacity(i_iso), color_param, rgba_ray)
