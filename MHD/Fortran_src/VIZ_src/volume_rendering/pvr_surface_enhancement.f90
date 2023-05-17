@@ -155,8 +155,9 @@
         if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_EDGE) then
           if(abs(ratio) .gt. ONE) then
             arccos_sf = max(enhansed_opacity(igrp), arccos_sf)
+          end if
         else if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_BOTH) then
-           arccos_sf = max(enhansed_opacity(igrp), arccos_sf)
+          arccos_sf = max(enhansed_opacity(igrp), arccos_sf)
         else if(iflag_enhanse(igrp) .eq. IFLAG_SHOW_FORWARD) then
           if(ratio .lt. zero) then
             arccos_sf = max(enhansed_opacity(igrp), arccos_sf)
