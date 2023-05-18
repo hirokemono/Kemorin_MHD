@@ -142,8 +142,7 @@
 !
       if(quilt_c%i_quilt_image .le. 0) return
 !
-      maxlen = len_trim(hd_quilt_mode)
-      maxlen = max(maxlen, len_trim(hd_column_row))
+      maxlen = len_trim(hd_column_row)
       maxlen = max(maxlen, len_trim(hd_row_column))
 !
       write(id_control,'(a1)') '!'
@@ -214,7 +213,6 @@
      &                         :: names(n_label_quilt_ctl)
 !
 !
-      call set_control_labels(hd_quilt_mode, names( 1))
       call set_control_labels(hd_column_row, names( 2))
       call set_control_labels(hd_row_column, names( 3))
       call set_control_labels(hd_qview_transform, names( 4))
