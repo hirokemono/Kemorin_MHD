@@ -190,7 +190,8 @@
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
+          call sel_write_pvr_image_file(istep_lic, -1,                  &
+     &                                  pvr%pvr_rgb(i_img))
         end do
       end do
       do i_lic = 1, pvr%num_pvr
@@ -352,7 +353,8 @@
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
         do i_img = ist_img, ied_img
-          call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_img))
+          call sel_write_pvr_image_file(istep_lic, -1,                  &
+     &                                  pvr%pvr_rgb(i_img))
         end do
       end do
 !

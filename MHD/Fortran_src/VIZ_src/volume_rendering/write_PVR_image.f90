@@ -27,7 +27,7 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
-!!      subroutine sel_write_pvr_image_file(istep_pvr, pvr_rgb)
+!!      subroutine sel_write_pvr_image_file(istep_pvr, i_rot, pvr_rgb)
 !!      subroutine sel_write_pvr_local_img(index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
@@ -152,7 +152,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_image_file(istep_pvr, pvr_rgb)
+      subroutine sel_write_pvr_image_file(istep_pvr, i_rot, pvr_rgb)
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
@@ -160,8 +160,10 @@
       use set_parallel_file_name
       use convert_real_rgb_2_bite
 !
-      integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: istep_pvr, i_rot
       type(pvr_image_type), intent(inout) :: pvr_rgb
+!
+      character(len=kchara) :: file_prefix_w_index, fname_tmp
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
@@ -169,10 +171,17 @@
       call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,            &
      &    pvr_rgb%rgba_real_gl,  pvr_rgb%rgb_chara_gl)
 !
-      write(*,*) trim(pvr_rgb%pvr_prefix), ' is written from process ', &
-     &          my_rank
-      call sel_output_image_file(pvr_rgb%id_pvr_file_type,              &
-     &    add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix),                &
+      fname_tmp = add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix)
+      if(istep_pvr .ge. 0) then
+        file_prefix_w_index = add_int_suffix(i_rot, fname_tmp)
+      else
+        file_prefix_w_index = fname_tmp
+      end if
+!
+      write(*,*) trim(file_prefix_w_index),                             &
+     &          ' is written from process ', my_rank
+      call sel_output_image_file                                        &
+     &   (pvr_rgb%id_pvr_file_type, file_prefix_w_index,                &
      &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
      &    pvr_rgb%rgb_chara_gl)
       if(pvr_rgb%iflag_monitoring .gt. 0) then

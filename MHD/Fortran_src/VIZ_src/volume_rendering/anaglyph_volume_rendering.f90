@@ -169,7 +169,8 @@
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
-        call sel_write_pvr_image_file(istep_pvr, pvr%pvr_rgb(i_pvr))
+        call sel_write_pvr_image_file(istep_pvr, -1,                    &
+     &                                pvr%pvr_rgb(i_pvr))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !

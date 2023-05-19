@@ -89,7 +89,7 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: i_rot, iflag_img_fmt
+      integer(kind = kint) :: i_rot
       type(rotation_pvr_images) :: rot_imgs1
 !
 !
@@ -103,21 +103,10 @@
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
-!
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      if(pvr_param%movie_def%iflag_movie_fmt                            &
-     &                     .eq. iflag_UNDEFINED) then
-        iflag_img_fmt = pvr_rgb%id_pvr_file_type
-      else
-        iflag_img_fmt = pvr_param%movie_def%iflag_movie_fmt
-      end if
-!
-      call set_output_rot_sequence_image(istep_pvr, iflag_img_fmt,      &
-     &    pvr_rgb%pvr_prefix, pvr_param%movie_def%num_frame,            &
-     &    pvr_param%movie_def%n_column_row_movie,                       &
-     &    rot_imgs1%rot_pvr_rgb)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
-!
+      do i_rot = 1, pvr_param%movie_def%num_frame
+        call sel_write_pvr_image_file(istep_pvr, i_rot,                 &
+     &                                rot_imgs1%rot_pvr_rgb(i_rot))
+      end do
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call dealloc_rot_pvr_image_arrays(pvr_param%movie_def, rot_imgs1)
 !
