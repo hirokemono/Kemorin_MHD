@@ -38,8 +38,6 @@
 !!  streo_imaging        YES
 !!  quilt_3d_imaging     YES
 !!!
-!!  max_pe_4_composit     32
-!!
 !!  output_field    temperature
 !!  output_component     scalar
 !!!
@@ -127,8 +125,6 @@
      &             :: hd_pvr_monitor =   'monitoring_mode'
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_rgba_type = 'image_tranceparency'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_maxpe_composit = 'max_pe_4_composit'
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_streo =    'streo_imaging'
@@ -169,8 +165,8 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_rotation =  'image_rotation_ctl'
 !
-      integer(kind = kint), parameter :: n_label_pvr_ctl =       20
-      integer(kind = kint), parameter :: n_label_pvr_ctl_w_dup = 21
+      integer(kind = kint), parameter :: n_label_pvr_ctl =       19
+      integer(kind = kint), parameter :: n_label_pvr_ctl_w_dup = 20
 !
       private :: n_label_pvr_ctl, n_label_pvr_ctl_w_dup
 !
@@ -244,9 +240,6 @@
      &     (c_buf, hd_output_field_def, pvr_ctl%pvr_field_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_output_comp_def, pvr_ctl%pvr_comp_ctl)
-!
-        call read_integer_ctl_type                                      &
-     &     (c_buf, hd_pvr_maxpe_composit, pvr_ctl%maxpe_composit_ctl)
       end do
       pvr_ctl%i_pvr_ctl = 1
 !
@@ -303,7 +296,6 @@
       maxlen = max(maxlen, len_trim(hd_pvr_out_type))
       maxlen = max(maxlen, len_trim(hd_pvr_monitor))
       maxlen = max(maxlen, len_trim(hd_pvr_rgba_type))
-      maxlen = max(maxlen, len_trim(hd_pvr_maxpe_composit))
       maxlen = max(maxlen, len_trim(hd_pvr_streo))
       maxlen = max(maxlen, len_trim(hd_pvr_quilt_3d))
       maxlen = max(maxlen, len_trim(hd_output_field_def))
@@ -324,8 +316,6 @@
      &    hd_pvr_monitor, pvr_ctl%monitoring_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_rgba_type, pvr_ctl%transparent_ctl)
-      call write_integer_ctl_type(id_control, level, maxlen,            &
-     &    hd_pvr_maxpe_composit, pvr_ctl%maxpe_composit_ctl)
 !
       write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -399,25 +389,24 @@
       call set_control_labels(hd_pvr_monitor,        names( 4))
       call set_control_labels(hd_pvr_rgba_type,      names( 5))
 !
-      call set_control_labels(hd_pvr_maxpe_composit, names( 6))
-      call set_control_labels(hd_pvr_streo,          names( 7))
-      call set_control_labels(hd_pvr_quilt_3d,       names( 8))
+      call set_control_labels(hd_pvr_streo,          names( 6))
+      call set_control_labels(hd_pvr_quilt_3d,       names( 7))
 !
-      call set_control_labels(hd_output_field_def, names( 9))
-      call set_control_labels(hd_output_comp_def,  names(10))
+      call set_control_labels(hd_output_field_def, names( 8))
+      call set_control_labels(hd_output_comp_def,  names( 9))
 !
-      call set_control_labels(hd_plot_area,      names(11))
-      call set_control_labels(hd_view_transform, names(12))
-      call set_control_labels(hd_colormap_file,   names(13))
-      call set_control_labels(hd_colormap,       names(14))
-      call set_control_labels(hd_pvr_lighting,   names(15))
-      call set_control_labels(hd_pvr_colorbar,   names(16))
+      call set_control_labels(hd_plot_area,      names(10))
+      call set_control_labels(hd_view_transform, names(11))
+      call set_control_labels(hd_colormap_file,  names(12))
+      call set_control_labels(hd_colormap,       names(13))
+      call set_control_labels(hd_pvr_lighting,   names(14))
+      call set_control_labels(hd_pvr_colorbar,   names(15))
 !
-      call set_control_labels(hd_pvr_sections, names(17))
-      call set_control_labels(hd_pvr_isosurf,  names(18))
-      call set_control_labels(hd_quilt_image,  names(19))
-      call set_control_labels(hd_pvr_movie,    names(20))
-      call set_control_labels(hd_pvr_rotation, names(21))
+      call set_control_labels(hd_pvr_sections, names(16))
+      call set_control_labels(hd_pvr_isosurf,  names(17))
+      call set_control_labels(hd_quilt_image,  names(18))
+      call set_control_labels(hd_pvr_movie,    names(19))
+      call set_control_labels(hd_pvr_rotation, names(20))
 !
       end subroutine set_label_pvr_ctl_w_dup
 !

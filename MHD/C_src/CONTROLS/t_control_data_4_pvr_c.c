@@ -96,8 +96,6 @@ struct pvr_ctl_c * init_pvr_ctl_c(){
 	pvr_c->pvr_field_ctl = init_chara_ctl_item_c();
 	pvr_c->pvr_comp_ctl = init_chara_ctl_item_c();
 	
-    pvr_c->maxpe_composit_ctl = init_int_ctl_item_c();
-
 	pvr_c->area_c = init_pvr_plot_area_ctl_c();
 	
     pvr_c->pvr_modelview_file_name = (char *)calloc(KCHARA_C, sizeof(char));
@@ -131,7 +129,6 @@ void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	
 	dealloc_chara_ctl_item_c(pvr_c->pvr_field_ctl);
 	dealloc_chara_ctl_item_c(pvr_c->pvr_comp_ctl);
-    free(pvr_c->maxpe_composit_ctl);
 	
     
 	dealloc_pvr_plot_area_ctl_c(pvr_c->area_c);
@@ -165,9 +162,6 @@ void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 						  pvr_c->monitoring_ctl);
 	read_chara_ctl_item_c(buf, pvr_c->label_pvr_ctl_w_dpl->label[ 4],
 						  pvr_c->transparent_ctl);
-	
-	read_integer_ctl_item_c(buf, pvr_c->label_pvr_ctl_w_dpl->label[ 5],
-							pvr_c->maxpe_composit_ctl);
 	
 	read_chara_ctl_item_c(buf, pvr_c->label_pvr_ctl_w_dpl->label[ 6],
 						  pvr_c->streo_ctl);
@@ -241,10 +235,6 @@ int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c){
 	level = write_chara_ctl_item_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->maxlen,
 								   pvr_c->label_pvr_ctl_w_dpl->label[ 4],
 								   pvr_c->transparent_ctl);
-	
-	level = write_integer_ctl_item_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->maxlen,
-									 pvr_c->label_pvr_ctl_w_dpl->label[ 5],
-									 pvr_c->maxpe_composit_ctl);
 	
 	level = write_chara_ctl_item_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->maxlen,
 								   pvr_c->label_pvr_ctl_w_dpl->label[ 6],
