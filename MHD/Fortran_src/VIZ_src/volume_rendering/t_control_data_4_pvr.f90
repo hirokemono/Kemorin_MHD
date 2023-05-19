@@ -28,8 +28,6 @@
 !!  streo_imaging        YES
 !!  quilt_3d_imaging     YES
 !!!
-!!  max_pe_4_composit     32
-!!
 !!  output_field    temperature
 !!  output_component     scalar
 !!!
@@ -140,8 +138,6 @@
         type(read_character_item) :: pvr_field_ctl
         type(read_character_item) :: pvr_comp_ctl
 !
-        type(read_integer_item) :: maxpe_composit_ctl
-!
         type(pvr_sections_ctl) :: pvr_scts_c
 !
 !>       constrol structure for isosurfaces in PVR
@@ -180,7 +176,6 @@
       pvr_ctl%transparent_ctl%iflag = 0
       pvr_ctl%pvr_field_ctl%iflag =   0
       pvr_ctl%pvr_comp_ctl%iflag =    0
-      pvr_ctl%maxpe_composit_ctl%iflag = 0
 !
       pvr_ctl%i_pvr_ctl = 0
 !

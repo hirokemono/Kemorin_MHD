@@ -6,14 +6,12 @@
 !>@brief Set PVR parameters from control files
 !!
 !!@verbatim
-!!      subroutine s_set_composition_pe_range(num_pe, num_pvr, pvr_ctl, &
+!!      subroutine s_set_composition_pe_range(num_pe, num_pvr,          &
 !!     &          num_pvr_images, istack_pvr_images, pvr_rgb)
 !!        type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
-!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !!      subroutine set_anaglyph_composite_pe_range                      &
-!!     &         (num_pe, num_pvr, pvr_ctl, pvr_rgb)
-!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
+!!     &         (num_pe, num_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr)
 !!@endverbatim
 !
@@ -21,7 +19,6 @@
 !
       use m_precision
 !
-      use t_control_data_4_pvr
       use t_rendering_vr_image
       use t_pvr_image_array
 !
@@ -36,12 +33,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_composition_pe_range(num_pe, num_pvr, pvr_ctl,   &
+      subroutine s_set_composition_pe_range(num_pe, num_pvr,            &
      &          num_pvr_images, istack_pvr_images, pvr_rgb)
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: num_pvr
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
 !
       integer(kind = kint), intent(in) :: num_pvr_images
       integer(kind = kint), intent(in) :: istack_pvr_images(0:num_pvr)
@@ -57,7 +53,7 @@
       allocate(irank_image_tmp(num_pvr_images))
       allocate(irank_end_tmp(num_pvr_images))
 !
-      call set_maxpe_composit_tmp(num_pe, num_pvr, pvr_ctl,             &
+      call set_maxpe_composit_tmp(num_pe, num_pvr,                      &
      &    num_pvr_images, istack_pvr_images, maxpe_composit_tmp)
 !
       call set_rank_to_write_tmp(num_pe, num_pvr_images,                &
@@ -72,11 +68,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_anaglyph_composite_pe_range                        &
-     &         (num_pe, num_pvr, pvr_ctl, pvr_rgb)
+     &         (num_pe, num_pvr, pvr_rgb)
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: num_pvr
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr)
 !
@@ -89,7 +84,7 @@
       allocate(irank_image_tmp(2*num_pvr))
       allocate(irank_end_tmp(2*num_pvr))
 !
-      call anaglyph_maxpe_composit_tmp(num_pe, num_pvr, pvr_ctl,        &
+      call anaglyph_maxpe_composit_tmp(num_pe, num_pvr,                 &
      &                                 maxpe_composit_tmp)
 !
       call set_rank_to_write_tmp(num_pe, (2*num_pvr),                   &
@@ -205,34 +200,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_maxpe_composit_tmp(num_pe, num_pvr, pvr_ctl,       &
+      subroutine set_maxpe_composit_tmp(num_pe, num_pvr,                &
      &          num_pvr_images, istack_pvr_images, maxpe_composit_tmp)
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: num_pvr
       integer(kind = kint), intent(in)                                  &
      &              :: istack_pvr_images(0:num_pvr)
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
       integer(kind = kint), intent(in) :: num_pvr_images
 !
       integer(kind = kint), intent(inout)                               &
      &              :: maxpe_composit_tmp(num_pvr_images)
 !
-      integer(kind = kint) :: i_pvr, nmax
+      integer(kind = kint) :: i_pvr
       integer(kind = kint) :: i_img, ist_img, num_img
 !
 !
       do i_pvr = 1, num_pvr
         ist_img = istack_pvr_images(i_pvr-1)
         num_img = istack_pvr_images(i_pvr  ) - ist_img
-!
-        if(pvr_ctl(i_pvr)%maxpe_composit_ctl%iflag .gt. 0) then
-          nmax = pvr_ctl(i_pvr)%maxpe_composit_ctl%intvalue
-        else
-          nmax = num_pe
-        end if
         do i_img = 1, num_img
-          maxpe_composit_tmp(i_img+ist_img) = nmax
+          maxpe_composit_tmp(i_img+ist_img) = num_pe
         end do
       end do
 !
@@ -241,26 +229,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_maxpe_composit_tmp(num_pe, num_pvr,           &
-     &          pvr_ctl, maxpe_composit_tmp)
+     &                                       maxpe_composit_tmp)
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: num_pvr
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
 !
       integer(kind = kint), intent(inout)                               &
      &              :: maxpe_composit_tmp(2*num_pvr)
 !
-      integer(kind = kint) :: i_pvr, nmax
+      integer(kind = kint) :: i_pvr
 !
 !
       do i_pvr = 1, num_pvr
-        if(pvr_ctl(i_pvr)%maxpe_composit_ctl%iflag .gt. 0) then
-          nmax = pvr_ctl(i_pvr)%maxpe_composit_ctl%intvalue
-        else
-          nmax = num_pe
-        end if
-        maxpe_composit_tmp(2+i_pvr-1) = 2*nmax
-        maxpe_composit_tmp(2+i_pvr  ) = 2*nmax
+        maxpe_composit_tmp(2+i_pvr-1) = 2*num_pe
+        maxpe_composit_tmp(2+i_pvr  ) = 2*num_pe
       end do
 !
       end subroutine anaglyph_maxpe_composit_tmp

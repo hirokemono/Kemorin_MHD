@@ -84,7 +84,7 @@ rendering_streo_vr_image.o: $(PVR_DIR)/rendering_streo_vr_image.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 set_color_4_pvr.o: $(PVR_DIR)/set_color_4_pvr.f90 m_precision.o set_rgb_colors.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_composition_pe_range.o: $(PVR_DIR)/set_composition_pe_range.f90 m_precision.o t_control_data_4_pvr.o t_rendering_vr_image.o t_pvr_image_array.o
+set_composition_pe_range.o: $(PVR_DIR)/set_composition_pe_range.f90 m_precision.o t_rendering_vr_image.o t_pvr_image_array.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_each_pvr.o: $(PVR_DIR)/set_control_each_pvr.f90 m_precision.o m_constants.o m_error_IDs.o t_control_data_4_pvr.o calypso_mpi.o set_field_comp_for_viz.o output_image_sel_4_png.o t_control_params_4_pvr.o skip_comment_f.o t_control_array_character.o t_group_data.o t_geometries_in_pvr_screen.o set_color_4_pvr.o set_rgba_4_each_pixel.o set_coefs_of_sections.o set_control_pvr_color.o t_ctl_data_pvr_area.o pvr_surface_enhancement.o set_area_4_viz.o t_control_data_pvr_sections.o t_control_data_pvr_isosurfs.o
 	$(F90) -c $(F90OPTFLAGS) $<

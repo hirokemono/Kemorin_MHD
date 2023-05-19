@@ -15,19 +15,18 @@ label[ 1]   lic_file_prefix
 label[ 2]   lic_image_format
 label[ 3]   monitoring_mode
 label[ 4]   image_tranceparency
-label[ 5]   max_pe_4_composit
-label[ 6]   streo_imaging
-label[ 7]   quilt_3d_imaging
-label[ 8]   LIC_ctl
-label[ 9]   plot_area_ctl
-label[10]   view_transform_ctl 
-label[11]   LIC_color_ctl 
-label[12]   colormap_ctl 
-label[13]   lighting_ctl 
-label[14]   colorbar_ctl 
-label[15]   section_ctl 
-label[16]   isosurface_ctl 
-label[17]   movie_mode_ctl 
+label[ 5]   streo_imaging
+label[ 6]   quilt_3d_imaging
+label[ 7]   LIC_ctl
+label[ 8]   plot_area_ctl
+label[ 9]   view_transform_ctl 
+label[10]   LIC_color_ctl 
+label[11]   colormap_ctl 
+label[12]   lighting_ctl 
+label[13]   colorbar_ctl 
+label[14]   section_ctl 
+label[15]   isosurface_ctl 
+label[16]   movie_mode_ctl 
 
 Check lic_ctl_labls->label_LIC_ctl_f
 ctl_list->num_labels 12 

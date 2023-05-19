@@ -54,8 +54,6 @@ struct pvr_ctl_c{
 	struct chara_ctl_item *pvr_field_ctl;
 	struct chara_ctl_item *pvr_comp_ctl;
 
-    struct int_ctl_item *maxpe_composit_ctl;
-
 	struct pvr_plot_area_ctl_c *area_c;
     
 	char *pvr_modelview_file_name;

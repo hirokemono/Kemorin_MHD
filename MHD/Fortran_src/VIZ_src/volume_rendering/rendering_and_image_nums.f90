@@ -127,7 +127,7 @@
       character(len = kchara) :: pvr_prefix
 !
 !
-      call s_set_composition_pe_range(num_pe, num_pvr, pvr_ctl,         &
+      call s_set_composition_pe_range(num_pe, num_pvr,                  &
      &    num_pvr_images, istack_pvr_images, pvr_rgb)
 !
       do i_pvr = 1, num_pvr
@@ -180,8 +180,7 @@
       integer(kind = kint) :: i_pvr
 !
 !
-      call set_anaglyph_composite_pe_range                              &
-     &   (num_pe, num_pvr, pvr_ctl, pvr_rgb)
+      call set_anaglyph_composite_pe_range(num_pe, num_pvr, pvr_rgb)
 !
       do i_pvr = 1, num_pvr
         call set_pvr_file_control(pvr_ctl(i_pvr),                       &
