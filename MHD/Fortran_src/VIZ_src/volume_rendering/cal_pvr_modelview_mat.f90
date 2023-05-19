@@ -172,7 +172,7 @@
 !       Shift by viewpoint
       if(view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &    modelview_mat, view_param%viewpoint, rev_eye)
+     &      modelview_mat, view_param%viewpoint, rev_eye)
       else
         rev_eye(1:3) = - view_param%viewpt_in_viewer_pvr(1:3)
       end if
