@@ -61,9 +61,7 @@
 !
       istack_pvr_images(0) = 0
       do i_pvr = 1, num_pvr
-        if(pvr_param(i_pvr)%stereo_def%flag_stereo_pvr) then
-          istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
-        else if(pvr_param(i_pvr)%stereo_def%flag_quilt) then
+        if(pvr_param(i_pvr)%stereo_def%flag_quilt) then
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1)         &
      &          + pvr_param(i_pvr)%stereo_def%n_column_row_view(1)      &
      &           * pvr_param(i_pvr)%stereo_def%n_column_row_view(2)
@@ -138,16 +136,8 @@
      &                            pvr_rgb(i)%iflag_monitoring,          &
      &                            pvr_rgb(i)%id_pvr_file_type,          &
      &                            pvr_rgb(i)%id_pvr_transparent)
+          pvr_rgb(i)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
         end do
-        if(pvr_param(i_pvr)%stereo_def%flag_stereo_pvr) then
-          pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
-          pvr_rgb(ist)%pvr_prefix = add_left_label(pvr_prefix)
-          pvr_rgb(ied)%pvr_prefix = add_right_label(pvr_prefix)
-        else
-          do i = ist, ied
-            pvr_rgb(i)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
-          end do
-        end if
       end do
 !
       if(iflag_debug .eq. 0) return

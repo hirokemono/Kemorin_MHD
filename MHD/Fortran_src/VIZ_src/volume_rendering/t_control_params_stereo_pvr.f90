@@ -25,8 +25,6 @@
 !
 !>  Stereo view parameters
       type pvr_stereo_parameter
-!>    Defined flag for stereo view
-        logical :: flag_stereo_pvr = .FALSE.
 !>    Flag to make quilt images with fixed view
         logical :: flag_quilt =      .FALSE.
 !
@@ -100,12 +98,8 @@
 !
 !
       stereo_def%num_views = 0
-      stereo_def%flag_stereo_pvr = .FALSE.
       stereo_def%flag_quilt =      .FALSE.
-      if(yes_flag(pvr_ctl%streo_ctl%charavalue)) then
-        stereo_def%flag_stereo_pvr = .TRUE.
-        stereo_def%num_views = 2
-      else if(yes_flag(pvr_ctl%quilt_ctl%charavalue)) then
+      if(yes_flag(pvr_ctl%quilt_ctl%charavalue)) then
         stereo_def%flag_quilt =      .TRUE.
       end if
 !

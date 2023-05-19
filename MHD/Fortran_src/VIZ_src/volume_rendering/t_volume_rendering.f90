@@ -117,11 +117,6 @@
       integer(kind = kint) :: i_pvr
 !
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+5)
-      call bcast_pvr_controls(pvr%num_pvr,                              &
-     &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
-!
       call alloc_pvr_data(pvr)
       do i_pvr = 1, pvr%num_pvr
         call alloc_nod_data_4_pvr                                       &
