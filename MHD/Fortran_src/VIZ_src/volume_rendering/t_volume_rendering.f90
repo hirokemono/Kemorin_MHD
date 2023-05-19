@@ -129,10 +129,9 @@
      &      pvr%field_pvr(i_pvr))
         call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
      &      pvr%pvr_param(i_pvr)%draw_param)
+        call s_set_pvr_controls(geofem%group, nod_fld,                  &
+     &      pvr_ctls%pvr_ctl_type(i_pvr), pvr%pvr_param(i_pvr))
       end do
-!
-      call s_set_pvr_controls(geofem%group, nod_fld, pvr%num_pvr,       &
-     &    pvr_ctls%pvr_ctl_type, pvr%pvr_param)
 !
       end subroutine set_from_PVR_control
 !
