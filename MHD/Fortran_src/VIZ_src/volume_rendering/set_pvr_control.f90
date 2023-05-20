@@ -139,7 +139,6 @@
      &                 ' more than number of quilt image. (Stop)'
           call calypso_mpi_abort(1,e_message)
        else
-         pvr_param%flag_mulview_quilt = .TRUE.
          call init_multi_view_parameters(num_views,                     &
      &       quilt_c%mul_qmats_c, pvr_param)
          end if

@@ -88,8 +88,6 @@
 !>        Stereo view parameters
         type(pvr_stereo_parameter) :: stereo_def
 !
-!>        Logical flag to use multi view paramter from quilt block
-        logical :: flag_mulview_quilt = .FALSE.
 !>        Logical flag to use multi view paramter from movie block
         logical :: flag_mulview_movie = .FALSE.
 !>        Number of mulitple view parameters
@@ -298,13 +296,6 @@
      &      pvr_param%movie_def, pvr_param%stereo_def,                  &
      &      pvr_param%multi_view(i_rot), screen%viewpoint_vec,          &
      &      screen%modelview_mat)
-      else if(pvr_param%flag_mulview_quilt) then
-        call set_pvr_projection_matrix(pvr_param%multi_view(i_img),     &
-     &                                 screen%projection_mat)
-        call cal_pvr_modelview_matrix(ione, i_rot, pvr_param%outline,   &
-     &      pvr_param%movie_def, pvr_param%stereo_def,                  &
-     &      pvr_param%multi_view(i_img), screen%viewpoint_vec,          &
-     &      screen%modelview_mat)
       else if(pvr_param%movie_def%iflag_movie_mode                      &
      &                                 .eq. I_LOOKINGLASS) then
         call set_pvr_step_projection_mat                                &
@@ -339,14 +330,7 @@
       type(pvr_projected_position), intent(inout) :: screen
 !
 !
-      if(pvr_param%flag_mulview_quilt) then
-        call set_pvr_projection_matrix(pvr_param%multi_view(i_img),     &
-     &                                 screen%projection_mat)
-        call cal_pvr_modelview_matrix(i_img, izero, pvr_param%outline,  &
-     &      pvr_param%movie_def, pvr_param%stereo_def,                  &
-     &      pvr_param%multi_view(i_img), screen%viewpoint_vec,          &
-     &      screen%modelview_mat)
-      else if(num_stereo .gt. 1) then
+      if(num_stereo .gt. 1) then
         call set_pvr_step_projection_mat                                &
      &     (i_img, pvr_param%multi_view(1), pvr_param%stereo_def,       &
      &      screen%projection_mat)
