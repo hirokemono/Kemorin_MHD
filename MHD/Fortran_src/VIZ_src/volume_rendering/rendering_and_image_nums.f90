@@ -10,8 +10,7 @@
 !!     &          num_pvr_rendering, num_pvr_images, istack_pvr_images)
 !!      subroutine count_num_anaglyph_and_images                        &
 !!     &         (num_pvr, num_pvr_rendering, num_pvr_images)
-!!      subroutine set_rendering_and_image_pes                          &
-!!     &         (num_pe, num_pvr, pvr_param, pvr_ctl,                  &
+!!      subroutine set_rendering_and_image_pes(num_pe, num_pvr, pvr_ctl,&
 !!     &          num_pvr_images, istack_pvr_images, pvr_rgb)
 !!      subroutine set_anaglyph_rendering_pes                           &
 !!     &         (num_pe, num_pvr, pvr_ctl, pvr_rgb)
@@ -104,8 +103,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_rendering_and_image_pes                            &
-     &         (num_pe, num_pvr, pvr_param, pvr_ctl,                    &
+      subroutine set_rendering_and_image_pes(num_pe, num_pvr, pvr_ctl,  &
      &          num_pvr_images, istack_pvr_images, pvr_rgb)
 !
       use set_composition_pe_range
@@ -115,14 +113,12 @@
       integer(kind = kint), intent(in) :: num_pvr
       integer(kind = kint), intent(in) :: num_pvr_images
 !
-      type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
 !
       integer(kind = kint), intent(in) :: istack_pvr_images(0:num_pvr)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
       integer(kind = kint) :: i_pvr, ist, ied, i
-      character(len = kchara) :: pvr_prefix
 !
 !
       call s_set_composition_pe_range(num_pe, num_pvr,                  &

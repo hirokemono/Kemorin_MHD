@@ -223,7 +223,7 @@
       call alloc_pvr_images(lic%pvr)
 !
       call set_rendering_and_image_pes(nprocs,                          &
-     &    lic%pvr%num_pvr, lic%pvr%pvr_param, lic_ctls%pvr_ctl_type,    &
+     &    lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,                       &
      &    lic%pvr%num_pvr_images, lic%pvr%istack_pvr_images,            &
      &    lic%pvr%pvr_rgb)
 !

@@ -41,25 +41,6 @@
       character(len = kchara) :: tmpchara
 !
 !
-      movie_def%iflag_movie_fmt = iflag_UNDEFINED
-      if(movie_ctl%movie_format_ctl%iflag .gt. 0) then
-        tmpchara = movie_ctl%movie_format_ctl%charavalue
-        if(cmp_no_case(tmpchara, hd_PNG)) then
-          movie_def%iflag_movie_fmt = iflag_PNG
-        else if(cmp_no_case(tmpchara, hd_BMP)) then
-          movie_def%iflag_movie_fmt = iflag_BMP
-        else if(cmp_no_case(tmpchara, hd_QUILT_BMP)) then
-          movie_def%iflag_movie_fmt = iflag_QUILT_BMP
-        else if(cmp_no_case(tmpchara, hd_QUILT_BMP_GZ)                  &
-     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ2)                 &
-     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ3)                 &
-     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ4)) then
-          movie_def%iflag_movie_fmt = iflag_QUILT_BMP_GZ
-        else
-          movie_def%iflag_movie_fmt = iflag_UNDEFINED
-        end if
-      end if
-!
       movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
       if(movie_ctl%movie_mode_ctl%iflag .gt. 0) then
         tmpchara = movie_ctl%movie_mode_ctl%charavalue
@@ -78,30 +59,10 @@
         end if
       end if
 !
-      if((movie_def%iflag_movie_fmt .eq. iflag_QUILT_BMP)               &
-     &   .or. (movie_def%iflag_movie_fmt .eq. iflag_QUILT_BMP_GZ)) then
-        if(movie_ctl%quilt_column_row_ctl%iflag .eq. 0                  &
-     &    .and. movie_ctl%quilt_row_column_ctl%iflag .eq. 0 ) then
-          movie_def%n_column_row_movie(1) =     1
-          movie_def%n_column_row_movie(2)                               &
-     &          = movie_ctl%num_frames_ctl%intvalue
-        else if(movie_ctl%quilt_column_row_ctl%iflag .gt. 0) then
-          movie_def%n_column_row_movie(1:2)                             &
-     &          = movie_ctl%quilt_column_row_ctl%intvalue(1:2)
-        else if(movie_ctl%quilt_row_column_ctl%iflag .gt. 0) then
-          movie_def%n_column_row_movie(1)                               &
-     &          = movie_ctl%quilt_row_column_ctl%intvalue(2)
-          movie_def%n_column_row_movie(2)                               &
-     &          = movie_ctl%quilt_row_column_ctl%intvalue(1)
-        end if
-        movie_def%num_frame = movie_def%n_column_row_movie(1)           &
-     &                       * movie_def%n_column_row_movie(2)
+      if(movie_ctl%num_frames_ctl%iflag .eq. 0) then
+        movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
       else
-        if(movie_ctl%num_frames_ctl%iflag .eq. 0) then
-          movie_def%iflag_movie_mode = IFLAG_NO_MOVIE
-        else
-          movie_def%num_frame = movie_ctl%num_frames_ctl%intvalue
-        end if
+        movie_def%num_frame = movie_ctl%num_frames_ctl%intvalue
       end if
 !
       if(movie_def%iflag_movie_mode .eq. I_ROTATE_MOVIE) then

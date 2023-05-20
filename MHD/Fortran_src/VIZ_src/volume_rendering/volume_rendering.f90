@@ -98,7 +98,7 @@
       call alloc_pvr_images(pvr)
 !
       call set_rendering_and_image_pes                                  &
-     &   (nprocs, pvr%num_pvr, pvr%pvr_param, pvr_ctls%pvr_ctl_type,    &
+     &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type,                   &
      &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
