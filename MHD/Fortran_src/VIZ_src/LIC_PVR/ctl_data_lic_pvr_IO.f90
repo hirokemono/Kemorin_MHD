@@ -69,9 +69,9 @@
 !!   ...
 !!  end quilt_image_ctl
 !!
-!!  begin movie_mode_ctl
+!!  begin snapshot_movie_ctl
 !!   ...
-!!  end movie_mode_ctl
+!!  end snapshot_movie_ctl
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -135,7 +135,7 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_quilt_image =  'quilt_image_ctl'
       character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_movie =    'movie_mode_ctl'
+     &             :: hd_snapshot_movie = 'snapshot_movie_ctl'
 !
       integer(kind = kint), parameter :: n_label_LIC_pvr = 18
 !
@@ -199,7 +199,7 @@
      &      pvr%render_area_c, c_buf)
         call read_quilt_image_ctl(id_control, hd_quilt_image,           &
      &      pvr%quilt_c, c_buf)
-        call read_pvr_rotation_ctl(id_control, hd_pvr_movie,            &
+        call read_pvr_rotation_ctl(id_control, hd_snapshot_movie,       &
      &      pvr%movie, c_buf)
 !
         call s_read_lic_control_data                                    &
@@ -313,7 +313,7 @@
       write(id_control,'(a1)') '!'
       call write_quilt_image_ctl(id_control, hd_quilt_image,            &
      &                           pvr%quilt_c, level)
-      call write_pvr_rotation_ctl(id_control, hd_pvr_movie,             &
+      call write_pvr_rotation_ctl(id_control, hd_snapshot_movie,        &
      &                            pvr%movie, level)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
@@ -371,7 +371,7 @@
       call set_control_labels(hd_pvr_sections,   names(15))
       call set_control_labels(hd_pvr_isosurf,    names(16))
       call set_control_labels(hd_quilt_image,    names(17))
-      call set_control_labels(hd_pvr_movie,      names(18))
+      call set_control_labels(hd_snapshot_movie, names(18))
 !
       end subroutine set_ctl_label_LIC_pvr
 !

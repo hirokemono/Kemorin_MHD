@@ -70,9 +70,9 @@
 !!   ...
 !!  end quilt_image_ctl
 !!
-!!  begin movie_mode_ctl
+!!  begin snapshot_movie_ctl
 !!   ...
-!!  end movie_mode_ctl
+!!  end snapshot_movie_ctl
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

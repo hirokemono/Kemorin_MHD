@@ -29,7 +29,7 @@ label[13]   lighting_ctl
 label[14]   colorbar_ctl 
 label[15]   section_ctl 
 label[16]   isosurface_ctl 
-label[17]   movie_mode_ctl 
+label[17]   snapshot_movie_ctl 
 label[18]   image_rotation_ctl 
 
 Check pvr_ctl_labls->label_pvr_modelview

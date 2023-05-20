@@ -67,9 +67,9 @@
 !!     ...
 !!  end array isosurface_ctl
 !!!
-!!  begin image_rotation_ctl
+!!  begin snapshot_movie_ctl
 !!   ...
-!!  end image_rotation_ctl
+!!  end snapshot_movie_ctl
 !!!
 !!end volume_rendering
 !!

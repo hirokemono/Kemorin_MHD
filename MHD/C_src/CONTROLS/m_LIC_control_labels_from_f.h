@@ -26,7 +26,7 @@ label[12]   lighting_ctl
 label[13]   colorbar_ctl 
 label[14]   section_ctl 
 label[15]   isosurface_ctl 
-label[16]   movie_mode_ctl 
+label[16]   snapshot_movie_ctl 
 
 Check lic_ctl_labls->label_LIC_ctl_f
 ctl_list->num_labels 12 

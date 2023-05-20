@@ -81,9 +81,9 @@
 !!   ...
 !!  end quilt_image_ctl
 !!!
-!!  begin movie_mode_ctl
+!!  begin snapshot_movie_ctl
 !!   ...
-!!  end movie_mode_ctl
+!!  end snapshot_movie_ctl
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -159,7 +159,7 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_quilt_image =  'quilt_image_ctl'
       character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_movie =     'movie_mode_ctl'
+     &             :: hd_snapshot_movie = 'snapshot_movie_ctl'
 !
 !       Deprecated label
       character(len=kchara), parameter, private                         &
@@ -214,7 +214,7 @@
      &                                pvr_ctl%render_area_c, c_buf)
         call read_quilt_image_ctl(id_control, hd_quilt_image,           &
      &                            pvr_ctl%quilt_c, c_buf)
-        call read_pvr_rotation_ctl(id_control, hd_pvr_movie,            &
+        call read_pvr_rotation_ctl(id_control, hd_snapshot_movie,       &
      &                              pvr_ctl%movie, c_buf)
         call read_pvr_rotation_ctl(id_control, hd_pvr_rotation,         &
      &                             pvr_ctl%movie, c_buf)
@@ -350,7 +350,7 @@
      &    pvr_ctl%pvr_isos_c, level)
       call write_quilt_image_ctl(id_control, hd_quilt_image,            &
      &    pvr_ctl%quilt_c, level)
-      call write_pvr_rotation_ctl(id_control, hd_pvr_movie,             &
+      call write_pvr_rotation_ctl(id_control, hd_snapshot_movie,        &
      &    pvr_ctl%movie, level)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
@@ -402,11 +402,11 @@
       call set_control_labels(hd_pvr_lighting,   names(14))
       call set_control_labels(hd_pvr_colorbar,   names(15))
 !
-      call set_control_labels(hd_pvr_sections, names(16))
-      call set_control_labels(hd_pvr_isosurf,  names(17))
-      call set_control_labels(hd_quilt_image,  names(18))
-      call set_control_labels(hd_pvr_movie,    names(19))
-      call set_control_labels(hd_pvr_rotation, names(20))
+      call set_control_labels(hd_pvr_sections,   names(16))
+      call set_control_labels(hd_pvr_isosurf,    names(17))
+      call set_control_labels(hd_quilt_image,    names(18))
+      call set_control_labels(hd_snapshot_movie, names(19))
+      call set_control_labels(hd_pvr_rotation,   names(20))
 !
       end subroutine set_label_pvr_ctl_w_dup
 !
