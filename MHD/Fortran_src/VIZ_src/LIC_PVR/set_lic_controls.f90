@@ -14,14 +14,15 @@
 !!     &                        :: pvr_ctl_type(num_lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout)                        &
 !!     &                        :: lic_ctl_type(num_lic_ctl)
-!!      subroutine s_set_lic_controls(group, nod_fld, num_lic,          &
-!!     &           pvr_ctl_type, lic_ctl_type, lic_param, pvr_param,    &
-!!     &           rep_ref, flag_each_repart)
+!!      subroutine s_set_lic_controls(group, nod_fld, num_lic, pvr_sort,&
+!!     &           pvr_ctl_type, lic_ctl_type, PVR_sort,                &
+!!     &           lic_param, pvr_param, rep_ref, flag_each_repart)
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
+!!        type(sort_PVRs_by_type), intent(in) :: PVR_sort
 !!        type(lic_parameters), intent(inout) :: lic_param(num_lic)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
 !!        type(lic_repart_reference), intent(inout) :: rep_ref(num_lic)
@@ -39,6 +40,7 @@
 !
       use t_control_param_LIC
       use t_control_data_LIC
+      use t_sort_PVRs_by_type
 !
       implicit  none
 !
@@ -82,8 +84,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_lic_controls(group, nod_fld, num_lic,            &
-     &           pvr_ctl_type, lic_ctl_type, lic_param, pvr_param,      &
-     &           rep_ref, flag_each_repart)
+     &           pvr_ctl_type, lic_ctl_type, PVR_sort,                  &
+     &           lic_param, pvr_param, rep_ref, flag_each_repart)
 !
       use m_error_IDs
       use t_phys_data
@@ -104,39 +106,41 @@
       type(phys_data), intent(in) :: nod_fld
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
       type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
+      type(sort_PVRs_by_type), intent(in) :: PVR_sort
 !
       type(lic_parameters), intent(inout) :: lic_param(num_lic)
       type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
       type(lic_repart_reference), intent(inout) :: rep_ref(num_lic)
       logical, intent(inout) :: flag_each_repart
 !
-      integer(kind = kint) :: i_lic
+      integer(kind = kint) :: i_ctl, i_lic
 !
 !
       flag_each_repart = .FALSE.
-      do i_lic = 1, num_lic
+      do i_ctl = 1, num_lic
+        i_lic = PVR_sort%ipvr_sorted(i_ctl)
         if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
-        call set_pvr_stereo_control(pvr_ctl_type(i_lic),                &
+        call set_pvr_stereo_control(pvr_ctl_type(i_ctl),                &
      &                              pvr_param(i_lic)%stereo_def)
-        call s_set_control_pvr_movie(pvr_ctl_type(i_lic)%movie,         &
+        call s_set_control_pvr_movie(pvr_ctl_type(i_ctl)%movie,         &
      &                               pvr_param(i_lic)%movie_def)
 !
         call set_control_lic_parameter                                  &
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      lic_ctl_type(i_lic), lic_param(i_lic), rep_ref(i_lic),      &
+     &      lic_ctl_type(i_ctl), lic_param(i_lic), rep_ref(i_lic),      &
      &      flag_each_repart)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
-     &     (pvr_ctl_type(i_lic), group%ele_grp, group%surf_grp,         &
+     &     (pvr_ctl_type(i_ctl), group%ele_grp, group%surf_grp,         &
      &      pvr_param(i_lic)%area_def, pvr_param(i_lic)%draw_param,     &
      &      pvr_param(i_lic)%color, pvr_param(i_lic)%colorbar)
         pvr_param(i_lic)%colorbar%iflag_opacity = 0
 !
 !   set transfer matrix
 !
-        call set_pvr_mul_view_params(pvr_ctl_type(i_lic)%mat,           &
-     &      pvr_ctl_type(i_lic)%quilt_c, pvr_ctl_type(i_lic)%movie,     &
+        call set_pvr_mul_view_params(pvr_ctl_type(i_ctl)%mat,           &
+     &      pvr_ctl_type(i_ctl)%quilt_c, pvr_ctl_type(i_ctl)%movie,     &
      &      pvr_param(i_lic))
       end do
 !

@@ -114,8 +114,10 @@
 !
       allocate(lic%lic_param(lic%pvr%num_pvr))
       allocate(lic%rep_ref(lic%pvr%num_pvr))
+      call s_sort_PVRs_by_type(lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,  &
+     &                         lic%PVR_sort)
       call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
+     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type, lic%PVR_sort,   &
      &    lic%lic_param, lic%pvr%pvr_param, lic%rep_ref,                &
      &    lic%flag_each_repart)
 !
@@ -124,7 +126,7 @@
       call alloc_pvr_images(lic%pvr)
 !
       call set_anaglyph_rendering_pes(nprocs, lic%pvr%num_pvr,          &
-     &    lic_ctls%pvr_ctl_type, lic%pvr%pvr_rgb)
+     &    lic_ctls%pvr_ctl_type, lic%PVR_sort, lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
@@ -133,6 +135,7 @@
      &        lic_ctls%lic_ctl_type(i_lic))
         end if
       end do
+      call dealloc_sort_PVRs_list(lic%PVR_sort)
 !
       do i_lic = 1, lic%pvr%num_pvr
         call init_each_PVR_image(ione, lic%pvr%pvr_param(i_lic),        &

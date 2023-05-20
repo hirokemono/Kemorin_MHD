@@ -53,6 +53,7 @@
       use t_pvr_field_data
       use t_geometries_in_pvr_screen
       use t_control_data_pvrs
+      use t_sort_PVRs_by_type
 !
       use each_volume_rendering
 !
@@ -91,6 +92,9 @@
         integer(kind = kint), allocatable :: istack_pvr_images(:)
 !>        Structure for PVR images
         type(pvr_image_type), allocatable :: pvr_rgb(:)
+!
+!>        Structure for PVR images
+        type(sort_PVRs_by_type) :: PVR_sort
       end type volume_rendering_module
 !
       character(len=kchara), parameter                                  &
@@ -114,7 +118,7 @@
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_ctl, i_pvr
 !
 !
       call alloc_pvr_data(pvr)
@@ -124,8 +128,12 @@
      &      pvr%field_pvr(i_pvr))
         call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
      &      pvr%pvr_param(i_pvr)%draw_param)
+      end do
+!
+      do i_ctl = 1, pvr%num_pvr
+        i_pvr = pvr%PVR_sort%ipvr_sorted(i_ctl)
         call s_set_pvr_controls(geofem%group, nod_fld,                  &
-     &      pvr_ctls%pvr_ctl_type(i_pvr), pvr%pvr_param(i_pvr))
+     &      pvr_ctls%pvr_ctl_type(i_ctl), pvr%pvr_param(i_pvr))
       end do
 !
       end subroutine set_from_PVR_control

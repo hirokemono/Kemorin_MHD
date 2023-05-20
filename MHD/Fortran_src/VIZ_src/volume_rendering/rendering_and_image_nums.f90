@@ -11,15 +11,16 @@
 !!      subroutine count_num_anaglyph_and_images                        &
 !!     &         (num_pvr, num_pvr_rendering, num_pvr_images)
 !!      subroutine set_rendering_and_image_pes(num_pe, num_pvr, pvr_ctl,&
-!!     &          num_pvr_images, istack_pvr_images, pvr_rgb)
+!!     &          pvr_sort, num_pvr_images, istack_pvr_images, pvr_rgb)
 !!      subroutine set_anaglyph_rendering_pes                           &
-!!     &         (num_pe, num_pvr, pvr_ctl, pvr_rgb)
+!!     &         (num_pe, num_pvr, pvr_ctl, PVR_sort, pvr_rgb)
 !!        integer, intent(in) :: num_pe
 !!        integer(kind = kint), intent(in) :: num_pvr
 !!        integer(kind = kint), intent(in) :: num_pvr_rendering
 !!        integer(kind = kint), intent(in) :: num_pvr_images
 !!        type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
+!!        type(sort_PVRs_by_type), intent(in) :: PVR_sort
 !!        integer(kind = kint), intent(inout)                           &
 !!       &              :: istack_pvr_images(0:num_pvr)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
@@ -33,6 +34,7 @@
       use t_control_data_4_pvr
       use t_rendering_vr_image
       use t_pvr_image_array
+      use t_sort_PVRs_by_type
 !
       implicit none
 !
@@ -104,7 +106,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_rendering_and_image_pes(num_pe, num_pvr, pvr_ctl,  &
-     &          num_pvr_images, istack_pvr_images, pvr_rgb)
+     &          PVR_sort, num_pvr_images, istack_pvr_images, pvr_rgb)
 !
       use set_composition_pe_range
       use set_parallel_file_name
@@ -114,25 +116,27 @@
       integer(kind = kint), intent(in) :: num_pvr_images
 !
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
+      type(sort_PVRs_by_type), intent(in) :: PVR_sort
 !
       integer(kind = kint), intent(in) :: istack_pvr_images(0:num_pvr)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
-      integer(kind = kint) :: i_pvr, ist, ied, i
+      integer(kind = kint) :: i_pvr, i_ctl, ist, ied, i
 !
 !
       call s_set_composition_pe_range(num_pe, num_pvr,                  &
      &    num_pvr_images, istack_pvr_images, pvr_rgb)
 !
-      do i_pvr = 1, num_pvr
+      do i_ctl = 1, num_pvr
+        i_pvr = PVR_sort%ipvr_sorted(i_ctl)
         ist = istack_pvr_images(i_pvr-1) + 1
         ied = istack_pvr_images(i_pvr  )
         do i = ist, ied
-          call set_pvr_file_control(pvr_ctl(i_pvr),                     &
+          call set_pvr_file_control(pvr_ctl(i_ctl),                     &
      &                            pvr_rgb(i)%iflag_monitoring,          &
      &                            pvr_rgb(i)%id_pvr_file_type)
           pvr_rgb(i_pvr)%id_pvr_transparent = 0
-          pvr_rgb(i)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
+          pvr_rgb(i)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_ctl))
         end do
       end do
 !
@@ -152,7 +156,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_anaglyph_rendering_pes                             &
-     &         (num_pe, num_pvr, pvr_ctl, pvr_rgb)
+     &         (num_pe, num_pvr, pvr_ctl, PVR_sort, pvr_rgb)
 !
       use set_composition_pe_range
       use set_parallel_file_name
@@ -160,20 +164,22 @@
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: num_pvr
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
+      type(sort_PVRs_by_type), intent(in) :: PVR_sort
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr)
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_ctl, i_pvr
 !
 !
       call set_anaglyph_composite_pe_range(num_pe, num_pvr, pvr_rgb)
 !
-      do i_pvr = 1, num_pvr
-        call set_pvr_file_control(pvr_ctl(i_pvr),                       &
+      do i_ctl = 1, num_pvr
+        i_pvr = PVR_sort%ipvr_sorted(i_ctl)
+        call set_pvr_file_control(pvr_ctl(i_ctl),                       &
      &                            pvr_rgb(i_pvr)%iflag_monitoring,      &
      &                            pvr_rgb(i_pvr)%id_pvr_file_type)
         pvr_rgb(i_pvr)%id_pvr_transparent = 0
-        pvr_rgb(i_pvr)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
+        pvr_rgb(i_pvr)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_ctl))
       end do
 !
 !      if(iflag_debug .eq. 0) return

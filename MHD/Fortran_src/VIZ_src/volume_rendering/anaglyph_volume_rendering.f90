@@ -89,6 +89,8 @@
      &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
 !
+      call s_sort_PVRs_by_type(pvr%num_pvr, pvr_ctls%pvr_ctl_type,      &
+     &                         pvr%PVR_sort)
       call set_from_PVR_control(geofem, nod_fld, pvr_ctls, pvr)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
@@ -97,7 +99,7 @@
       call alloc_pvr_images(pvr)
 !
       call set_anaglyph_rendering_pes(nprocs, pvr%num_pvr,              &
-     &    pvr_ctls%pvr_ctl_type, pvr%pvr_rgb)
+     &    pvr_ctls%pvr_ctl_type, pvr%PVR_sort, pvr%pvr_rgb)
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
         if(pvr_ctls%fname_pvr_ctl(i_pvr) .ne. 'NO_FILE'                 &
@@ -105,6 +107,7 @@
           call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
         end if
       end do
+      call dealloc_sort_PVRs_list(pvr%PVR_sort)
 !
 !
       call init_sf_grp_list_each_surf                                   &

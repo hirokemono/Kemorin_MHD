@@ -25,6 +25,8 @@
 !
 !>  Stereo view parameters
       type pvr_stereo_parameter
+!>    Flag to make anaglyph images with fixed view
+        logical :: flag_anaglyph =   .FALSE.
 !>    Flag to make quilt images with fixed view
         logical :: flag_quilt =      .FALSE.
 !
@@ -97,12 +99,17 @@
       type(pvr_stereo_parameter), intent(inout) :: stereo_def
 !
 !
-      stereo_def%num_views = 0
       stereo_def%flag_quilt =      .FALSE.
       if(yes_flag(pvr_ctl%quilt_ctl%charavalue)) then
         stereo_def%flag_quilt =      .TRUE.
       end if
 !
+      stereo_def%flag_anaglyph =   .FALSE.
+      if(yes_flag(pvr_ctl%anaglyph_ctl%charavalue)) then
+        stereo_def%flag_anaglyph = .TRUE.
+      end if
+!
+      stereo_def%num_views = 0
       call set_pvr_quilt_num_control(pvr_ctl%quilt_c, stereo_def)
 !
       end subroutine set_pvr_stereo_control
