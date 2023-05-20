@@ -130,8 +130,8 @@
         do i = ist, ied
           call set_pvr_file_control(pvr_ctl(i_pvr),                     &
      &                            pvr_rgb(i)%iflag_monitoring,          &
-     &                            pvr_rgb(i)%id_pvr_file_type,          &
-     &                            pvr_rgb(i)%id_pvr_transparent)
+     &                            pvr_rgb(i)%id_pvr_file_type)
+          pvr_rgb(i_pvr)%id_pvr_transparent = 0
           pvr_rgb(i)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
         end do
       end do
@@ -171,8 +171,8 @@
       do i_pvr = 1, num_pvr
         call set_pvr_file_control(pvr_ctl(i_pvr),                       &
      &                            pvr_rgb(i_pvr)%iflag_monitoring,      &
-     &                            pvr_rgb(i_pvr)%id_pvr_file_type,      &
-     &                            pvr_rgb(i_pvr)%id_pvr_transparent)
+     &                            pvr_rgb(i_pvr)%id_pvr_file_type)
+        pvr_rgb(i_pvr)%id_pvr_transparent = 0
         pvr_rgb(i_pvr)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
       end do
 !
@@ -208,7 +208,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_pvr_file_control(pvr_ctl,                          &
-     &          iflag_monitoring, id_pvr_file_type, id_pvr_transparent)
+     &          iflag_monitoring, id_pvr_file_type)
 !
       use t_control_params_4_pvr
       use set_area_4_viz
@@ -218,7 +218,6 @@
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
       integer(kind = kint), intent(inout) :: iflag_monitoring
       integer(kind = kint), intent(inout) :: id_pvr_file_type
-      integer(kind = kint), intent(inout) :: id_pvr_transparent
 !
       character(len = kchara) :: tmpchara
 !
@@ -239,17 +238,6 @@
         id_pvr_file_type = iflag_BMP
       end if
 !
-      tmpchara = pvr_ctl%transparent_ctl%charavalue
-      if     (cmp_no_case(tmpchara, 'rgba')                             &
-     &   .or. cmp_no_case(tmpchara, 'transparent')) then
-        id_pvr_transparent = 1
-      else if(cmp_no_case(tmpchara, 'rgb')                              &
-     &   .or. cmp_no_case(tmpchara, 'solid')) then
-        id_pvr_transparent = 0
-      else
-        id_pvr_transparent = 0
-      end if
-!
       iflag_monitoring = 0
       if(yes_flag(pvr_ctl%monitoring_ctl%charavalue)) then
         iflag_monitoring = 1
@@ -257,7 +245,6 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'id_pvr_file_type', id_pvr_file_type
-        write(*,*) 'id_pvr_transparent', id_pvr_transparent
       end if
 !
       end subroutine set_pvr_file_control

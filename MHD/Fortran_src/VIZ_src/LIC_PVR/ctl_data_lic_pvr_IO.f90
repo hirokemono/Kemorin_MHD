@@ -36,9 +36,9 @@
 !!  lic_file_prefix      pvr_temp
 !!  lic_image_format     PNG
 !!  monitoring_mode      YES
-!!  image_tranceparency  tranceparent
 !!
 !!  streo_imaging        YES
+!!  anaglyph_switch      NO
 !!  quilt_3d_imaging     YES
 !!!
 !!  begin LIC_ctl
@@ -105,11 +105,11 @@
      &             :: hd_lic_out_type =    'lic_image_format'
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_monitor =   'monitoring_mode'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_rgba_type = 'image_tranceparency'
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_streo =    'streo_imaging'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_anaglyph_switch = 'anaglyph_switch'
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_quilt_3d = 'quilt_3d_imaging'
 !
@@ -213,11 +213,11 @@
      &     (c_buf, hd_lic_out_type, pvr%file_fmt_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_monitor, pvr%monitoring_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_pvr_rgba_type, pvr%transparent_ctl)
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_streo, pvr%streo_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_anaglyph_switch, pvr%anaglyph_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_quilt_3d, pvr%quilt_ctl)
       end do
@@ -254,7 +254,7 @@
       maxlen = max(maxlen, len_trim(hd_lic_file_head))
       maxlen = max(maxlen, len_trim(hd_lic_out_type))
       maxlen = max(maxlen, len_trim(hd_pvr_monitor))
-      maxlen = max(maxlen, len_trim(hd_pvr_rgba_type))
+      maxlen = max(maxlen, len_trim(hd_anaglyph_switch))
       maxlen = max(maxlen, len_trim(hd_pvr_streo))
       maxlen = max(maxlen, len_trim(hd_pvr_quilt_3d))
 !
@@ -271,12 +271,12 @@
      &    hd_lic_out_type, pvr%file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_monitor, pvr%monitoring_ctl)
-      call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_pvr_rgba_type, pvr%transparent_ctl)
 !
       write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_streo, pvr%streo_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_anaglyph_switch, pvr%anaglyph_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_quilt_3d, pvr%quilt_ctl)
 !
@@ -354,10 +354,10 @@
       call set_control_labels(hd_lic_file_head,  names( 2))
       call set_control_labels(hd_lic_out_type,   names( 3))
       call set_control_labels(hd_pvr_monitor,    names( 4))
-      call set_control_labels(hd_pvr_rgba_type,  names( 5))
 !
-      call set_control_labels(hd_pvr_streo,      names( 6))
-      call set_control_labels(hd_pvr_quilt_3d,   names( 7))
+      call set_control_labels(hd_pvr_streo,       names( 5))
+      call set_control_labels(hd_anaglyph_switch, names( 6))
+      call set_control_labels(hd_pvr_quilt_3d,    names( 7))
 !
       call set_control_labels(hd_lic_control,    names( 8))
 !

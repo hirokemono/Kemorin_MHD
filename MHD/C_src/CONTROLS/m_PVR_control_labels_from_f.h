@@ -16,8 +16,8 @@ label[0]   updated_sign
 label[1]   pvr_file_head 
 label[2]   pvr_output_type 
 label[3]   monitoring_mode 
-label[4]   image_tranceparency 
-label[5]   streo_imaging 
+label[4]   streo_imaging 
+label[5]   anaglyph_switch 
 label[6]   quilt_3d_imaging
 label[7]   output_field 
 label[8]   output_component 

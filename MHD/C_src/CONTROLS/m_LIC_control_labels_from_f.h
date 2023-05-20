@@ -14,8 +14,8 @@ label[ 0]   updated_sign
 label[ 1]   lic_file_prefix
 label[ 2]   lic_image_format
 label[ 3]   monitoring_mode
-label[ 4]   image_tranceparency
-label[ 5]   streo_imaging
+label[ 4]   streo_imaging
+label[ 5]   anaglyph_switch
 label[ 6]   quilt_3d_imaging
 label[ 7]   LIC_ctl
 label[ 8]   plot_area_ctl
