@@ -154,7 +154,7 @@
       type(pvr_field_data), intent(inout) :: field_pvr
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
@@ -171,14 +171,14 @@
 !   Left eye
       call rendering_with_fixed_view(istep_pvr, time,                   &
      &    geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,            &
-     &    pvr_param, pvr_proj(1), pvr_rgb, SR_sig, SR_r)
-      call store_left_eye_image(pvr_rgb)
+     &    pvr_param, pvr_proj(1), pvr_rgb(1), SR_sig, SR_r)
+      call store_left_eye_image(pvr_rgb(1))
 !
 !   right eye
       call rendering_with_fixed_view(istep_pvr, time,                   &
      &    geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,            &
-     &    pvr_param, pvr_proj(2), pvr_rgb, SR_sig, SR_r)
-      call add_left_eye_image(pvr_rgb)
+     &    pvr_param, pvr_proj(2), pvr_rgb(1), SR_sig, SR_r)
+      call add_left_eye_image(pvr_rgb(1))
 !
       end subroutine each_PVR_anaglyph
 !

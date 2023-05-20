@@ -117,7 +117,7 @@
       do i_lic = 1, pvr%num_pvr
         call each_anaglyph_PVR_init                                     &
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
+     &      pvr%pvr_rgb(2*i_lic-1), pvr%pvr_param(i_lic),               &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
@@ -174,7 +174,7 @@
         call s_each_LIC_anaglyph(istep_lic, time, repart_data%viz_fem,  &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),              &
-     &      pvr%pvr_rgb(i_lic), rep_ref_viz, m_SR)
+     &      pvr%pvr_rgb(2*i_lic-1), rep_ref_viz, m_SR)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -184,7 +184,7 @@
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
         call sel_write_pvr_image_file(istep_lic, -1,                    &
-     &                                pvr%pvr_rgb(i_lic))
+     &                                pvr%pvr_rgb(2*i_lic-1))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
@@ -205,7 +205,7 @@
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
      &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
      &      repart_data%field_lic, lic_param(i_lic),                    &
-     &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
+     &      pvr%pvr_rgb(2*i_lic-1), pvr%pvr_param(i_lic),               &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      rep_ref_viz, m_SR)
       end do
@@ -276,7 +276,7 @@
         if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
         call each_anaglyph_PVR_init                                     &
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                   &
+     &      pvr%pvr_rgb(2*i_lic-1), pvr%pvr_param(i_lic),               &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
      &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
 !
@@ -289,7 +289,7 @@
      &       (istep_lic, time, repart_data%viz_fem,                     &
      &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
      &        pvr%pvr_param(i_lic), pvr%pvr_proj(2*i_lic-1),            &
-     &        pvr%pvr_rgb(i_lic), rep_ref_viz, m_SR)
+     &        pvr%pvr_rgb(2*i_lic-1), rep_ref_viz, m_SR)
           call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),       &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1))
           if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -297,7 +297,7 @@
           call anaglyph_lic_rendering_w_rot(istep_lic, time,            &
      &        repart_data%viz_fem, pvr%sf_grp_4_sf,                     &
      &        repart_data%field_lic, lic_param(i_lic),                  &
-     &        pvr%pvr_rgb(i_lic), pvr%pvr_param(i_lic),                 &
+     &        pvr%pvr_rgb(2*i_lic-1), pvr%pvr_param(i_lic),             &
      &        pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),            &
      &        rep_ref_viz, m_SR)
          call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
@@ -324,7 +324,7 @@
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
         call sel_write_pvr_image_file(istep_lic, -1,                    &
-     &                                pvr%pvr_rgb(i_lic))
+     &                                pvr%pvr_rgb(2*i_lic-1))
       end do
       call dealloc_lic_repart_ref(rep_ref_snap)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)

@@ -96,8 +96,7 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
       call count_num_rendering_and_images(pvr%num_pvr, pvr%pvr_param,   &
-     &    pvr%num_pvr_rendering, pvr%num_pvr_images,                    &
-     &    pvr%istack_pvr_images)
+     &    pvr%num_pvr_images, pvr%istack_pvr_images)
       call alloc_pvr_images(pvr)
 !
       call set_rendering_and_image_pes                                  &

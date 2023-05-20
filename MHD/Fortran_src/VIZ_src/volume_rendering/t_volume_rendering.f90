@@ -81,15 +81,12 @@
 !>        Domain boundary information
         type(pvr_bounds_surf_ctl), allocatable :: pvr_bound(:)
 !
-!>        Number of rendering for volume rendering
-        integer(kind = kint) :: num_pvr_rendering = 0
-!>        Structure for projection data
-        type(PVR_projection_data), allocatable :: pvr_proj(:)
-!
 !>        Number of image files for volume rendering
         integer(kind = kint) :: num_pvr_images =    0
 !>        Number of image files for volume rendering
         integer(kind = kint), allocatable :: istack_pvr_images(:)
+!>        Structure for projection data
+        type(PVR_projection_data), allocatable :: pvr_proj(:)
 !>        Structure for PVR images
         type(pvr_image_type), allocatable :: pvr_rgb(:)
 !
@@ -227,7 +224,7 @@
       type(volume_rendering_module), intent(inout) :: pvr
 !
 !
-      allocate(pvr%pvr_proj(pvr%num_pvr_rendering))
+      allocate(pvr%pvr_proj(pvr%num_pvr_images))
       allocate(pvr%pvr_rgb(pvr%num_pvr_images))
 !
       end subroutine alloc_pvr_images
@@ -274,14 +271,9 @@
 !
       do i_pvr = 1, pvr%num_pvr_images
         call dealloc_pvr_image_array(pvr%pvr_rgb(i_pvr))
-      end do
-      deallocate(pvr%pvr_rgb)
-!
-!
-      do i_pvr = 1, pvr%num_pvr_rendering
         call flush_rendering_4_fixed_view(pvr%pvr_proj(i_pvr))
       end do
-      deallocate(pvr%pvr_proj)
+      deallocate(pvr%pvr_rgb, pvr%pvr_proj)
       deallocate(pvr%istack_pvr_images)
 !
       end subroutine dealloc_pvr_and_lic_data

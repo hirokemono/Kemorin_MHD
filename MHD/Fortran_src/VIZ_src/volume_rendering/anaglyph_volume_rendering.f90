@@ -95,11 +95,12 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
       call count_num_anaglyph_and_images(pvr%num_pvr,                   &
-     &    pvr%num_pvr_rendering, pvr%num_pvr_images)
+     &    pvr%num_pvr_images, pvr%istack_pvr_images)
       call alloc_pvr_images(pvr)
 !
-      call set_anaglyph_rendering_pes(nprocs, pvr%num_pvr,              &
-     &    pvr_ctls%pvr_ctl_type, pvr%PVR_sort, pvr%pvr_rgb)
+      call set_rendering_and_image_pes                                  &
+     &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type, pvr%PVR_sort,     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
 !
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
         if(pvr_ctls%fname_pvr_ctl(i_pvr) .ne. 'NO_FILE'                 &
@@ -116,9 +117,9 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       do i_pvr = 1, pvr%num_pvr
         call init_each_PVR_image(ione, pvr%pvr_param(i_pvr),            &
-     &                           pvr%pvr_rgb(i_pvr))
+     &                           pvr%pvr_rgb(2*i_pvr-1))
         call each_anaglyph_PVR_init(geofem%mesh, geofem%group,          &
-     &      pvr%pvr_rgb(i_pvr), pvr%pvr_param(i_pvr),                   &
+     &      pvr%pvr_rgb(2*i_pvr-1), pvr%pvr_param(i_pvr),               &
      &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(2*i_pvr-1),              &
      &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
@@ -161,7 +162,7 @@
         call each_PVR_anaglyph                                          &
      &     (istep_pvr, time, geofem, jacs, nod_fld, pvr%sf_grp_4_sf,    &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(i_pvr),                &
+     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(2*i_pvr-1),            &
      &      m_SR%SR_sig, m_SR%SR_r)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
@@ -173,7 +174,7 @@
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
         call sel_write_pvr_image_file(istep_pvr, -1,                    &
-     &                                pvr%pvr_rgb(i_pvr))
+     &                                pvr%pvr_rgb(2*i_pvr-1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
@@ -186,7 +187,7 @@
 !
         call anaglyph_rendering_w_rotation(istep_pvr, time,             &
      &      geofem%mesh, geofem%group, nod_fld, jacs, pvr%sf_grp_4_sf,  &
-     &      pvr%pvr_rgb(i_pvr), pvr%field_pvr(i_pvr),                   &
+     &      pvr%pvr_rgb(2*i_pvr-1), pvr%field_pvr(i_pvr),               &
      &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
      &      pvr%pvr_proj(2*i_pvr-1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do

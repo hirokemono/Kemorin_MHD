@@ -157,7 +157,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
       type(lic_repart_reference), intent(inout) :: rep_ref_viz
       type(mesh_SR), intent(inout) :: m_SR
 !
@@ -169,16 +169,16 @@
 !   Left eye
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb,                   &
+     &    field_lic, pvr_param, pvr_proj(1), pvr_rgb(1),                &
      &    rep_ref_viz, m_SR)
-      call store_left_eye_image(pvr_rgb)
+      call store_left_eye_image(pvr_rgb(1))
 !
 !   Right eye
       call lic_rendering_with_fixed_view(istep_pvr, time,               &
      &    viz_fem%mesh, viz_fem%group, sf_grp_4_sf, lic_param,          &
-     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb,                   &
+     &    field_lic, pvr_param, pvr_proj(2), pvr_rgb(1),                &
      &    rep_ref_viz, m_SR)
-      call add_left_eye_image(pvr_rgb)
+      call add_left_eye_image(pvr_rgb(1))
 !
       end subroutine s_each_LIC_anaglyph
 !

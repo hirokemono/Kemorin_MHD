@@ -10,10 +10,7 @@
 !!     &          num_pvr_images, istack_pvr_images, pvr_rgb)
 !!        type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
-!!      subroutine set_anaglyph_composite_pe_range                      &
-!!     &         (num_pe, num_pvr, pvr_rgb)
-!!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr)
-!!@endverbatim
+!!!@endverbatim
 !
       module set_composition_pe_range
 !
@@ -58,70 +55,39 @@
 !
       call set_rank_to_write_tmp(num_pe, num_pvr_images,                &
      &    maxpe_composit_tmp, irank_image_tmp, irank_end_tmp)
-      call set_rank_to_write_images(num_pvr_images,                     &
-     &    irank_image_tmp, irank_end_tmp, pvr_rgb)
+      call set_rank_to_write_images                                     &
+     &   (num_pvr_images, irank_image_tmp, irank_end_tmp, pvr_rgb)
 !
       deallocate(irank_image_tmp, irank_end_tmp, maxpe_composit_tmp)
 !
       end subroutine s_set_composition_pe_range
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine set_anaglyph_composite_pe_range                        &
-     &         (num_pe, num_pvr, pvr_rgb)
-!
-      integer, intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: num_pvr
-!
-      type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr)
-!
-      integer(kind = kint), allocatable:: irank_image_tmp(:)
-      integer(kind = kint), allocatable:: irank_end_tmp(:)
-      integer(kind = kint), allocatable:: maxpe_composit_tmp(:)
-!
-!
-      allocate(maxpe_composit_tmp(2*num_pvr))
-      allocate(irank_image_tmp(2*num_pvr))
-      allocate(irank_end_tmp(2*num_pvr))
-!
-      call anaglyph_maxpe_composit_tmp(num_pe, num_pvr,                 &
-     &                                 maxpe_composit_tmp)
-!
-      call set_rank_to_write_tmp(num_pe, (2*num_pvr),                   &
-     &    maxpe_composit_tmp, irank_image_tmp, irank_end_tmp)
-      call anaglyph_rank_to_write_images                                &
-     &   (num_pvr, irank_image_tmp, irank_end_tmp, pvr_rgb)
-!
-      deallocate(irank_image_tmp, irank_end_tmp, maxpe_composit_tmp)
-!
-      end subroutine set_anaglyph_composite_pe_range
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_rank_to_write_tmp(num_pe, num_pvr_rendering,       &
+      subroutine set_rank_to_write_tmp(num_pe, num_pvr_images,          &
      &          maxpe_composit_tmp, irank_image_tmp, irank_end_tmp)
 !
       integer, intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: num_pvr_rendering
+      integer(kind = kint), intent(in) :: num_pvr_images
       integer(kind = kint), intent(in)                                  &
-     &              :: maxpe_composit_tmp(num_pvr_rendering)
+     &              :: maxpe_composit_tmp(num_pvr_images)
 !
       integer(kind = kint), intent(inout)                               &
-     &              :: irank_image_tmp(num_pvr_rendering)
+     &              :: irank_image_tmp(num_pvr_images)
       integer(kind = kint), intent(inout)                               &
-     &              :: irank_end_tmp(num_pvr_rendering)
+     &              :: irank_end_tmp(num_pvr_images)
 !
       integer(kind = kint) :: i_pvr, num
       real(kind = kreal) :: address
 !
 !
-      do i_pvr = 1, num_pvr_rendering
-        address = dble((i_pvr-1) * num_pe) / dble(num_pvr_rendering)
+      do i_pvr = 1, num_pvr_images
+        address = dble((i_pvr-1) * num_pe) / dble(num_pvr_images)
         irank_image_tmp(i_pvr) = aint(address)
       end do
 
-      do i_pvr = 1, num_pvr_rendering - 1 
+      do i_pvr = 1, num_pvr_images - 1
         num = irank_image_tmp(i_pvr+1) - irank_image_tmp(i_pvr)
         if(num .le. 0) then
            irank_end_tmp(i_pvr) = irank_image_tmp(i_pvr)
@@ -133,13 +99,13 @@
         end if
       end do
 !
-      num = num_pe - irank_image_tmp(num_pvr_rendering)
-      if(num .gt. maxpe_composit_tmp(num_pvr_rendering)) then
-         irank_end_tmp(num_pvr_rendering)                               &
-     &     = irank_image_tmp(num_pvr_rendering)                         &
-     &      + maxpe_composit_tmp(num_pvr_rendering) - 1
+      num = num_pe - irank_image_tmp(num_pvr_images)
+      if(num .gt. maxpe_composit_tmp(num_pvr_images)) then
+         irank_end_tmp(num_pvr_images)                                  &
+     &     = irank_image_tmp(num_pvr_images)                            &
+     &      + maxpe_composit_tmp(num_pvr_images) - 1
       else
-        irank_end_tmp(num_pvr_rendering) = num_pe - 1
+        irank_end_tmp(num_pvr_images) = num_pe - 1
       end if
 !
       end subroutine set_rank_to_write_tmp
@@ -170,33 +136,6 @@
       end do
 !
       end subroutine set_rank_to_write_images
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine anaglyph_rank_to_write_images                          &
-     &         (num_pvr, irank_image_tmp, irank_end_tmp, pvr_rgb)
-!
-      integer(kind = kint), intent(in) :: num_pvr
-      integer(kind = kint), intent(in) :: irank_image_tmp(2*num_pvr)
-      integer(kind = kint), intent(in) :: irank_end_tmp(2*num_pvr)
-!
-      type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr)
-!
-      integer(kind = kint) :: i_pvr
-!
-!
-      do i_pvr = 1, num_pvr
-        pvr_rgb(i_pvr)%irank_image_file =   irank_image_tmp(2*i_pvr-1)
-        pvr_rgb(i_pvr)%irank_end_composit = irank_end_tmp(2*i_pvr    )
-      end do
-!
-      do i_pvr = 1, num_pvr
-        pvr_rgb(i_pvr)%npe_img_composit                                 &
-     &      = pvr_rgb(i_pvr)%irank_end_composit                         &
-     &       - pvr_rgb(i_pvr)%irank_image_file + 1
-      end do
-!
-      end subroutine anaglyph_rank_to_write_images
 !
 !  ---------------------------------------------------------------------
 !
