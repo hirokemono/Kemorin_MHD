@@ -179,7 +179,7 @@
       call Kemo_Translate(modelview_mat, rev_eye)
 !
 !   Shift for stereo view
-      if(stereo_def%flag_stereo_pvr .or. stereo_def%flag_quilt) then
+      if(stereo_def%flag_quilt) then
         streo_eye(1) =  each_eye_from_middle(i_stereo, stereo_def)
         streo_eye(2:3) = zero
         call Kemo_Translate(modelview_mat, streo_eye)

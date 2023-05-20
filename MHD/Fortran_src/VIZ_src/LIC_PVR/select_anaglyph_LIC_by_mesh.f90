@@ -183,7 +183,8 @@
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
-        call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_lic))
+        call sel_write_pvr_image_file(istep_lic, -1,                    &
+     &                                pvr%pvr_rgb(i_lic))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
@@ -322,7 +323,8 @@
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
-        call sel_write_pvr_image_file(istep_lic, pvr%pvr_rgb(i_lic))
+        call sel_write_pvr_image_file(istep_lic, -1,                    &
+     &                                pvr%pvr_rgb(i_lic))
       end do
       call dealloc_lic_repart_ref(rep_ref_snap)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)

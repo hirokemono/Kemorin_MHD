@@ -137,8 +137,6 @@
 !
 !>  movie parameters
       type pvr_movie_parameter
-!>    Integer flag for movie file format
-        integer(kind = kint) :: iflag_movie_fmt = iflag_BMP
 !>    Integer flag for movie output
         integer(kind = kint) :: iflag_movie_mode = IFLAG_NO_MOVIE
 !

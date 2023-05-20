@@ -31,9 +31,14 @@
 !!      subroutine each_PVR_rendering(istep_pvr, time, num_img,         &
 !!     &          geofem, jacs, nod_fld, sf_grp_4_sf, field_pvr,        &
 !!     &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
-!!      subroutine each_PVR_rendering_w_rot(istep_pvr, time,            &
+!!      subroutine each_PVR_rendering_w_rot                             &
+!!     &         (istep_pvr, time, geofem, jacs, nod_fld, sf_grp_4_sf,  &
+!!     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
+!!     &          SR_sig, SR_r, SR_i)
+!!      subroutine each_PVR_quilt_rendering_w_rot(istep_pvr, time,      &
 !!     &          num_img, geofem, jacs, nod_fld, sf_grp_4_sf,          &
-!!     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb)
+!!     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
+!!     &          SR_sig, SR_r, SR_i)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(viz_area_parameter), intent(in) :: area_def
 !!        type(node_data), intent(in) :: node
@@ -231,12 +236,57 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_rendering_w_rot(istep_pvr, time,              &
+      subroutine each_PVR_rendering_w_rot                               &
+     &         (istep_pvr, time, geofem, jacs, nod_fld, sf_grp_4_sf,    &
+     &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
+     &          SR_sig, SR_r, SR_i)
+!
+      use cal_pvr_modelview_mat
+!
+      integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
+!
+      type(mesh_data), intent(in) :: geofem
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_type), intent(in) :: jacs
+      type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
+!
+      type(pvr_field_data), intent(inout) :: field_pvr
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
+      type(PVR_projection_data), intent(inout) :: pvr_proj
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+      type(send_recv_int_buffer), intent(inout) :: SR_i
+!
+!
+      if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+      call calypso_mpi_barrier
+      call cal_field_4_each_pvr(geofem%mesh%node, geofem%mesh%ele,      &
+     &    jacs%g_FEM, jacs%jac_3d, nod_fld,                             &
+     &    pvr_param%field_def, field_pvr)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
+      call set_default_pvr_data_params                                  &
+     &   (pvr_param%outline, pvr_param%color)
+!
+!
+      call rendering_with_rotation(istep_pvr, time,                     &
+     &    geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,            &
+     &    pvr_rgb, pvr_param, pvr_bound, pvr_proj, SR_sig, SR_r, SR_i)
+!
+      end subroutine each_PVR_rendering_w_rot
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine each_PVR_quilt_rendering_w_rot(istep_pvr, time,        &
      &          num_img, geofem, jacs, nod_fld, sf_grp_4_sf,            &
      &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
      &          SR_sig, SR_r, SR_i)
 !
       use cal_pvr_modelview_mat
+      use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
@@ -250,13 +300,13 @@
       type(pvr_field_data), intent(inout) :: field_pvr
       type(PVR_control_params), intent(inout) :: pvr_param
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_img)
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: i_img
+      integer(kind = kint) :: i_img, i_rot
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call calypso_mpi_barrier
@@ -268,15 +318,21 @@
       call set_default_pvr_data_params                                  &
      &   (pvr_param%outline, pvr_param%color)
 !
+      do i_rot = 1, pvr_param%movie_def%num_frame
+        do i_img = 1, num_img
+          call rendering_at_once(istep_pvr, time, i_img, i_rot,         &
+     &        geofem%mesh, geofem%group, sf_grp_4_sf,                   &
+     &        field_pvr, pvr_param, pvr_bound, pvr_proj(i_img),         &
+     &        pvr_rgb(i_img), SR_sig, SR_r, SR_i)
+        end do
 !
-      do i_img = 1, num_img
-        call rendering_with_rotation(istep_pvr, time,                   &
-     &      geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,          &
-     &      pvr_rgb(i_img), pvr_param, pvr_bound, pvr_proj(i_img),      &
-     &      SR_sig, SR_r, SR_i)
+        call set_output_rot_sequence_image(istep_pvr,                   &
+     &      pvr_rgb(1)%id_pvr_file_type, pvr_rgb(1)%pvr_prefix,         &
+     &      num_img, pvr_param%stereo_def%n_column_row_view,            &
+     &      pvr_rgb)
       end do
 !
-      end subroutine each_PVR_rendering_w_rot
+      end subroutine each_PVR_quilt_rendering_w_rot
 !
 !  ---------------------------------------------------------------------
 !

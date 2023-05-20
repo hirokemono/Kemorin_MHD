@@ -10,8 +10,7 @@
 !!     &          num_pvr_rendering, num_pvr_images, istack_pvr_images)
 !!      subroutine count_num_anaglyph_and_images                        &
 !!     &         (num_pvr, num_pvr_rendering, num_pvr_images)
-!!      subroutine set_rendering_and_image_pes                          &
-!!     &         (num_pe, num_pvr, pvr_param, pvr_ctl,                  &
+!!      subroutine set_rendering_and_image_pes(num_pe, num_pvr, pvr_ctl,&
 !!     &          num_pvr_images, istack_pvr_images, pvr_rgb)
 !!      subroutine set_anaglyph_rendering_pes                           &
 !!     &         (num_pe, num_pvr, pvr_ctl, pvr_rgb)
@@ -61,9 +60,7 @@
 !
       istack_pvr_images(0) = 0
       do i_pvr = 1, num_pvr
-        if(pvr_param(i_pvr)%stereo_def%flag_stereo_pvr) then
-          istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1) + 2
-        else if(pvr_param(i_pvr)%stereo_def%flag_quilt) then
+        if(pvr_param(i_pvr)%stereo_def%flag_quilt) then
           istack_pvr_images(i_pvr) = istack_pvr_images(i_pvr-1)         &
      &          + pvr_param(i_pvr)%stereo_def%n_column_row_view(1)      &
      &           * pvr_param(i_pvr)%stereo_def%n_column_row_view(2)
@@ -106,8 +103,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_rendering_and_image_pes                            &
-     &         (num_pe, num_pvr, pvr_param, pvr_ctl,                    &
+      subroutine set_rendering_and_image_pes(num_pe, num_pvr, pvr_ctl,  &
      &          num_pvr_images, istack_pvr_images, pvr_rgb)
 !
       use set_composition_pe_range
@@ -117,14 +113,12 @@
       integer(kind = kint), intent(in) :: num_pvr
       integer(kind = kint), intent(in) :: num_pvr_images
 !
-      type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
 !
       integer(kind = kint), intent(in) :: istack_pvr_images(0:num_pvr)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
       integer(kind = kint) :: i_pvr, ist, ied, i
-      character(len = kchara) :: pvr_prefix
 !
 !
       call s_set_composition_pe_range(num_pe, num_pvr,                  &
@@ -138,16 +132,8 @@
      &                            pvr_rgb(i)%iflag_monitoring,          &
      &                            pvr_rgb(i)%id_pvr_file_type,          &
      &                            pvr_rgb(i)%id_pvr_transparent)
+          pvr_rgb(i)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
         end do
-        if(pvr_param(i_pvr)%stereo_def%flag_stereo_pvr) then
-          pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
-          pvr_rgb(ist)%pvr_prefix = add_left_label(pvr_prefix)
-          pvr_rgb(ied)%pvr_prefix = add_right_label(pvr_prefix)
-        else
-          do i = ist, ied
-            pvr_rgb(i)%pvr_prefix = set_pvr_file_prefix(pvr_ctl(i_pvr))
-          end do
-        end if
       end do
 !
       if(iflag_debug .eq. 0) return

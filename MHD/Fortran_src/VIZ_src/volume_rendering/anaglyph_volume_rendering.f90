@@ -84,6 +84,11 @@
         return
       end if
 !
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+5)
+      call bcast_pvr_controls(pvr%num_pvr,                              &
+     &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
+!
       call set_from_PVR_control(geofem, nod_fld, pvr_ctls, pvr)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
@@ -164,7 +169,8 @@
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
-        call sel_write_pvr_image_file(istep_pvr, pvr%pvr_rgb(i_pvr))
+        call sel_write_pvr_image_file(istep_pvr, -1,                    &
+     &                                pvr%pvr_rgb(i_pvr))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !

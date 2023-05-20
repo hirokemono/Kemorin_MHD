@@ -8,7 +8,6 @@
 #include "t_control_data_pvr_isosurf_list.h"
 
 struct pvr_isosurf_ctl_c * init_pvr_isosurf_ctl_c(){
-	int i;
     struct pvr_isosurf_ctl_c *pvr_iso_c;
     if((pvr_iso_c = (struct pvr_isosurf_ctl_c *) malloc(sizeof(struct pvr_isosurf_ctl_c))) == NULL) {
         printf("malloc error for pvr_isosurf_ctl_c \n");

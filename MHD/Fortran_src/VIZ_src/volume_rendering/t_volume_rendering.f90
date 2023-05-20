@@ -117,11 +117,6 @@
       integer(kind = kint) :: i_pvr
 !
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+5)
-      call bcast_pvr_controls(pvr%num_pvr,                              &
-     &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
-!
       call alloc_pvr_data(pvr)
       do i_pvr = 1, pvr%num_pvr
         call alloc_nod_data_4_pvr                                       &
@@ -129,10 +124,9 @@
      &      pvr%field_pvr(i_pvr))
         call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
      &      pvr%pvr_param(i_pvr)%draw_param)
+        call s_set_pvr_controls(geofem%group, nod_fld,                  &
+     &      pvr_ctls%pvr_ctl_type(i_pvr), pvr%pvr_param(i_pvr))
       end do
-!
-      call s_set_pvr_controls(geofem%group, nod_fld, pvr%num_pvr,       &
-     &    pvr_ctls%pvr_ctl_type, pvr%pvr_param)
 !
       end subroutine set_from_PVR_control
 !
