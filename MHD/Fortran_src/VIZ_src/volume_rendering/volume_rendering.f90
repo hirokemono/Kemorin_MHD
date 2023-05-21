@@ -64,6 +64,7 @@
       use set_pvr_control
       use rendering_and_image_nums
       use each_volume_rendering
+      use each_anaglyph_PVR
 !
       integer(kind = kint), intent(in) :: increment_pvr
       type(mesh_data), intent(in) :: geofem
@@ -73,7 +74,8 @@
       type(volume_rendering_module), intent(inout) :: pvr
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_pvr, ist_img, num_img
+      integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
+      integer(kind = kint) :: ist_img, num_img
 !
 !
       pvr%num_pvr = pvr_ctls%num_pvr_ctl
@@ -91,6 +93,20 @@
 !
       call s_sort_PVRs_by_type(pvr%num_pvr, pvr_ctls%pvr_ctl_type,      &
      &                         pvr%PVR_sort)
+!
+      if(my_rank .eq. 0) then
+        do i_pvr = 0, 6
+          write(*,*) i_pvr, 'pvr%istack_PVR_modes', &
+    &       pvr%PVR_sort%istack_PVR_modes(i_pvr)
+        end do
+        do i_pvr = 1, pvr%num_pvr
+          write(*,*) i_pvr, trim(pvr_ctls%fname_pvr_ctl(i_pvr)), '  ',   &
+    &          yes_flag(pvr_ctls%pvr_ctl_type(i_pvr)%anaglyph_ctl%charavalue), '  ', &
+    &          pvr_ctls%pvr_ctl_type(i_pvr)%movie%movie_mode_ctl%iflag, &
+    &          yes_flag(pvr_ctls%pvr_ctl_type(i_pvr)%quilt_ctl%charavalue), '  ', &
+    &          pvr%PVR_sort%ipvr_sorted(i_pvr)
+        end do
+      end if
 !
       call set_from_PVR_control(geofem, nod_fld, pvr_ctls, pvr)
 !
@@ -116,16 +132,56 @@
       call init_sf_grp_list_each_surf                                   &
      &   (geofem%mesh%surf, geofem%group%surf_grp, pvr%sf_grp_4_sf)
 !
-      do i_pvr = 1, pvr%num_pvr
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(2)
+      do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call init_each_PVR_image(num_img, pvr%pvr_param(i_pvr),         &
      &                           pvr%pvr_rgb(ist_img+1))
-        call each_PVR_initialize                                        &
-     &     (i_pvr, num_img, geofem%mesh, geofem%group,                  &
+        call each_PVR_initialize(num_img, geofem%mesh, geofem%group,    &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr))
+        call init_fixed_view_and_images(num_img, geofem%mesh,           &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_pvr),               &
-     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),              &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1), m_SR)
+      end do
+!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(2) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(4)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        call init_each_PVR_image(num_img, pvr%pvr_param(i_pvr),         &
+     &                           pvr%pvr_rgb(ist_img+1))
+        call each_PVR_initialize(num_img, geofem%mesh, geofem%group,    &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr))
+      end do
+!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(5)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        call init_each_PVR_image(ione, pvr%pvr_param(i_pvr),            &
+     &                           pvr%pvr_rgb(ist_img+1))
+        call each_anaglyph_PVR_init(geofem%mesh, geofem%group,          &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
+     &      pvr%pvr_proj(ist_img+1))
+        call init_anaglyph_view_and_images(geofem%mesh,                 &
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_pvr),               &
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1), m_SR)
+      end do
+!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(5) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(6)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        call init_each_PVR_image(ione, pvr%pvr_param(i_pvr),            &
+     &                           pvr%pvr_rgb(ist_img+1))
+        call each_anaglyph_PVR_init(geofem%mesh, geofem%group,          &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
+     &      pvr%pvr_proj(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !
@@ -143,6 +199,7 @@
       use cal_pvr_modelview_mat
       use write_PVR_image
       use each_volume_rendering
+      use each_anaglyph_PVR
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
@@ -153,17 +210,16 @@
       type(volume_rendering_module), intent(inout) :: pvr
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
-      do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
-     &                                 .ne. IFLAG_NO_MOVIE) cycle
-!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(2)
+      do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call each_PVR_rendering(istep_pvr, time, num_img,               &
@@ -174,14 +230,11 @@
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
-!
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      do i_pvr = 1, pvr%num_pvr
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(1)
+      do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
-     &                                 .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) cycle
-!
         ied_img = pvr%istack_pvr_images(i_pvr  )
         do i_img = ist_img, ied_img
           call sel_write_pvr_image_file(istep_pvr, -1,                  &
@@ -189,44 +242,40 @@
         end do
       end do
 !
+!   Draw 3-D imaing
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      do i_pvr = 1, pvr%num_pvr
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(1) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(2)
+      do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
-        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
-     &                                 .ne. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) then
-          call set_output_rot_sequence_image(istep_pvr,                 &
-     &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
-     &        pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,               &
-     &        pvr%pvr_param(i_pvr)%stereo_def%n_column_row_view,        &
-     &        pvr%pvr_rgb(ist_img+1))
-        end if
+        call set_output_rot_sequence_image(istep_pvr,                   &
+     &      pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                    &
+     &      pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,                 &
+     &      pvr%pvr_param(i_pvr)%stereo_def%n_column_row_view,          &
+     &      pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
-!      generate snapshot movie images
-!
+!   Generate snapshot movie images
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
-      do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
-     &                                 .eq. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) cycle
-!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(2) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(3)
+      do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1)
-        call each_PVR_rendering_w_rot(istep_pvr, time,                  &
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        call each_PVR_rendering_w_rot(istep_pvr, time, num_img,         &
      &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
      &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),              &
      &      pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
 !
+!   Generate snapshot 3-D movie images
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
-      do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
-     &                                 .eq. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) then
-!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(3) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(4)
+      do i_pvr = ist_pvr, ied_pvr
           ist_img = pvr%istack_pvr_images(i_pvr-1)
           num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
           call each_PVR_quilt_rendering_w_rot(istep_pvr, time, num_img, &
@@ -234,7 +283,51 @@
      &       pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                &
      &       pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),             &
      &       pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
-        end if
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+!
+!  Draw anaglyph
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(5)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        call each_PVR_anaglyph                                          &
+     &     (istep_pvr, time, geofem, jacs, nod_fld, pvr%sf_grp_4_sf,    &
+     &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
+     &      m_SR%SR_sig, m_SR%SR_r)
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(5)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        ied_img = pvr%istack_pvr_images(i_pvr  )
+        do i_img = ist_img, ied_img
+          call sel_write_pvr_image_file(istep_pvr, -1,                  &
+     &                                  pvr%pvr_rgb(i_img))
+        end do
+      end do
+!
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
+!
+!      generate snapshot movie images
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(5) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(6)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        ied_img = pvr%istack_pvr_images(i_pvr  )
+        call anaglyph_rendering_w_rotation(istep_pvr, time,             &
+     &      geofem%mesh, geofem%group, nod_fld, jacs, pvr%sf_grp_4_sf,  &
+     &      pvr%pvr_rgb(ist_img+1), pvr%field_pvr(i_pvr),               &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
+     &      pvr%pvr_proj(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !

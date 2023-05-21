@@ -48,10 +48,6 @@
 !!    array  anaglyph_volume_rendering
 !!      ....
 !!    end array anaglyph_volume_rendering
-!!
-!!    array  anaglyph_LIC_rendering
-!!      ....
-!!    end array anaglyph_LIC_rendering
 !!  end  visual_control
 !
 !!    delta_t_sectioning_ctl   1.0e-3
@@ -107,11 +103,6 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_fline_ctl =  'fieldline'
 !
-      character(len=kchara), parameter, private                         &
-     &             :: hd_anaglyph_pvr_ctl = 'anaglyph_volume_rendering'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_anaglyph_lic_ctl = 'anaglyph_LIC_rendering'
-!
 !
       character(len=kchara), parameter, private                         &
      &       :: hd_i_step_section =   'i_step_sectioning_ctl'
@@ -155,9 +146,9 @@
      &             :: hd_lic_partition = 'LIC_repartition_ctl'
 !
       integer(kind = kint), parameter, private                          &
-     &                      :: n_label_vizs = 21
+     &                      :: n_label_vizs = 19
       integer(kind = kint), parameter, private                          &
-     &                      :: n_label_vizs_w_dep = 24
+     &                      :: n_label_vizs_w_dep = 22
 !
 !   --------------------------------------------------------------------
 !
@@ -205,16 +196,11 @@
 !
         call read_files_4_pvr_ctl(id_control, hd_pvr_ctl,               &
      &                            viz_ctls%pvr_ctls, c_buf)
-        call read_files_4_pvr_ctl(id_control, hd_anaglyph_pvr_ctl,      &
-     &                            viz_ctls%pvr_anaglyph_ctls, c_buf)
+        call read_files_4_lic_ctl(id_control, hd_lic_ctl,               &
+     &                            viz_ctls%lic_ctls, c_buf)
 !
         call read_files_4_fline_ctl(id_control, hd_fline_ctl,           &
      &                              viz_ctls%fline_ctls, c_buf)
-!
-        call read_files_4_lic_ctl(id_control, hd_lic_ctl,               &
-     &                            viz_ctls%lic_ctls, c_buf)
-        call read_files_4_lic_ctl(id_control, hd_anaglyph_lic_ctl,      &
-     &                            viz_ctls%lic_anaglyph_ctls, c_buf)
 !
         call read_integer_ctl_type(c_buf, hd_i_step_section,            &
      &                             viz_ctls%i_step_psf_v_ctl)
@@ -314,8 +300,6 @@
      &    hd_i_step_pvr,  viz_ctls%i_step_pvr_v_ctl)
       call write_files_4_pvr_ctl(id_control, hd_pvr_ctl,                &
      &                           viz_ctls%pvr_ctls, level)
-      call write_files_4_pvr_ctl(id_control, hd_anaglyph_pvr_ctl,       &
-     &                           viz_ctls%pvr_anaglyph_ctls, level)
 !
       write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -324,8 +308,6 @@
      &    hd_i_step_lic, viz_ctls%i_step_lic_v_ctl)
       call write_files_4_lic_ctl(id_control, hd_lic_ctl,                &
      &                           viz_ctls%lic_ctls, level)
-      call write_files_4_lic_ctl(id_control, hd_anaglyph_lic_ctl,       &
-     &                           viz_ctls%lic_anaglyph_ctls, level)
 !
       write(id_control,'(a1)') '!'
       call write_real_ctl_type(id_control, level, maxlen,               &
@@ -380,26 +362,24 @@
       call set_control_labels(hd_i_step_pvr,       names( 7))
       call set_control_labels(hd_delta_t_pvr,      names( 8))
       call set_control_labels(hd_pvr_ctl,          names( 9))
-      call set_control_labels(hd_anaglyph_pvr_ctl, names(10))
 !
-      call set_control_labels(hd_i_step_lic,       names(11))
-      call set_control_labels(hd_delta_t_lic,      names(12))
-      call set_control_labels(hd_lic_ctl,          names(13))
-      call set_control_labels(hd_anaglyph_lic_ctl, names(14))
+      call set_control_labels(hd_i_step_lic,       names(10))
+      call set_control_labels(hd_delta_t_lic,      names(11))
+      call set_control_labels(hd_lic_ctl,          names(12))
 !
-      call set_control_labels(hd_i_step_fline,   names(15))
-      call set_control_labels(hd_delta_t_fline,  names(16))
-      call set_control_labels(hd_fline_ctl,      names(17))
+      call set_control_labels(hd_i_step_fline,   names(13))
+      call set_control_labels(hd_delta_t_fline,  names(14))
+      call set_control_labels(hd_fline_ctl,      names(15))
 !
-      call set_control_labels(hd_i_step_ucd,          names(18))
-      call set_control_labels(hd_delta_t_ucd,         names(19))
-      call set_control_labels(hd_output_fld_file_fmt, names(20))
+      call set_control_labels(hd_i_step_ucd,          names(16))
+      call set_control_labels(hd_delta_t_ucd,         names(17))
+      call set_control_labels(hd_output_fld_file_fmt, names(18))
 !
-      call set_control_labels(hd_viz_partition,       names(21))
+      call set_control_labels(hd_viz_partition,       names(19))
 !
-      call set_control_labels(hd_psf_ctl,             names(22))
-      call set_control_labels(hd_iso_ctl,             names(23))
-      call set_control_labels(hd_lic_partition,       names(24))
+      call set_control_labels(hd_psf_ctl,             names(20))
+      call set_control_labels(hd_iso_ctl,             names(21))
+      call set_control_labels(hd_lic_partition,       names(22))
 !
       end subroutine set_label_vizs
 !
