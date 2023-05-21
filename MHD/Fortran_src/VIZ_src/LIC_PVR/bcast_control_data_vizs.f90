@@ -50,6 +50,9 @@
       call bcast_files_4_fline_ctl(viz_ctls%fline_ctls)
       call bcast_files_4_lic_ctl(viz_ctls%lic_ctls)
 !
+      call bcast_files_4_pvr_ctl(viz_ctls%pvr_anaglyph_ctls)
+      call bcast_files_4_lic_ctl(viz_ctls%lic_anaglyph_ctls)
+!
       call bcast_ctl_type_r1(viz_ctls%delta_t_psf_v_ctl)
       call bcast_ctl_type_r1(viz_ctls%delta_t_iso_v_ctl)
       call bcast_ctl_type_r1(viz_ctls%delta_t_pvr_v_ctl)

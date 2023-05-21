@@ -1,26 +1,27 @@
-!>@file   lic_rendering_test.f90
-!!@brief  module lic_rendering_test
+!>@file   anaglyph_lic_rendering.f90
+!!@brief  module anaglyph_lic_rendering
 !!
 !!@author  Y. Liao and H. Matsui
 !!@date Programmed in Feb., 2018
 !
-!>@brief structure of control data for multiple LIC rendering
+!>@brief structure of control data for anaglyph LIC rendering
 !!
 !!@verbatim
-!!      subroutine LIC_initialize_test(increment_lic, geofem, ele_comm, &
-!!     &          next_tbl, nod_fld, lic_ctls, repart_ctl, lic, m_SR)
-!!      subroutine LIC_visualize_test(istep_lic, time, geofem, ele_comm,&
-!!     &                              next_tb, lnod_fld, lic, m_SR)
+!!      subroutine anaglyph_LIC_initialize                              &
+!!     &         (increment_lic, geofem, ele_comm, next_tbl, nod_fld,   &
+!!     &          repart_ctl, lic_ctls, lic, m_SR)
+!!!      subroutine anaglyph_LIC_visualize(istep_lic, time,             &
+!!     &          geofem, ele_comm, next_tbl, nod_fld, lic, m_SR)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(viz_repartition_ctl), intent(in) :: repart_ctl
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
-!!        type(viz_repartition_ctl), intent(inout) :: repart_ctl
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
-      module lic_rendering_test
+      module anaglyph_lic_rendering
 !
       use m_precision
       use calypso_mpi
@@ -48,6 +49,7 @@
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_LIC_re_partition
+      use t_lic_repart_reference
       use t_control_param_LIC
       use t_mesh_SR
 !
@@ -61,28 +63,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_initialize_test(increment_lic, geofem, ele_comm,   &
-     &          next_tbl, nod_fld, lic_ctls, repart_ctl, lic, m_SR)
+      subroutine anaglyph_LIC_initialize                                &
+     &         (increment_lic, geofem, ele_comm, next_tbl, nod_fld,     &
+     &          repart_ctl, lic_ctls, lic, m_SR)
 !
       use t_control_data_pvr_sections
+      use t_surf_grp_list_each_surf
       use set_pvr_control
       use rendering_and_image_nums
       use set_lic_controls
       use ctl_data_lic_pvr_IO
-      use select_LIC_rendering
+      use select_anaglyph_LIC_by_mesh
 !
       integer(kind = kint), intent(in) :: increment_lic
       type(mesh_data), intent(in), target :: geofem
       type(communication_table), intent(in) :: ele_comm
       type(phys_data), intent(in) :: nod_fld
       type(next_nod_ele_table), intent(in) :: next_tbl
+      type(viz_repartition_ctl), intent(in) :: repart_ctl
 !
       type(lic_rendering_controls), intent(inout) :: lic_ctls
-      type(viz_repartition_ctl), intent(inout) :: repart_ctl
       type(lic_volume_rendering_module), intent(inout) :: lic
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_lic, ist_img, num_img
+      integer(kind = kint) :: i_lic
 !
 !
       lic%pvr%num_pvr = lic_ctls%num_lic_ctl
@@ -100,7 +104,6 @@
       call set_ctl_param_vol_repart(repart_ctl, lic%repart_p)
       call set_lic_repart_reference_param                               &
      &   (repart_ctl%new_part_ctl, lic%repart_p, lic%rep_ref_m)
-      call dealloc_control_vol_repart(repart_ctl)
 !
       call alloc_pvr_data(lic%pvr)
 !
@@ -118,21 +121,27 @@
      &    lic%lic_param, lic%pvr%pvr_param, lic%rep_ref,                &
      &    lic%flag_each_repart)
 !
-      call count_num_rendering_and_images                               &
-     &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
+      call count_num_anaglyph_and_images(lic%pvr%num_pvr,               &
      &    lic%pvr%num_pvr_images, lic%pvr%istack_pvr_images)
       call alloc_pvr_images(lic%pvr)
 !
-      call set_rendering_and_image_pes(nprocs,                          &
-     &    lic%pvr%num_pvr, lic_ctls%pvr_ctl_type, lic%PVR_sort,         &
+      call set_rendering_and_image_pes                                  &
+     &   (nprocs, lic%pvr%num_pvr, lic_ctls%pvr_ctl_type, lic%PVR_sort, &
      &    lic%pvr%num_pvr_images, lic%pvr%istack_pvr_images,            &
      &    lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1)
-        num_img = lic%pvr%istack_pvr_images(i_lic  ) - ist_img
-        call init_each_PVR_image(num_img, lic%pvr%pvr_param(i_lic),     &
-     &                           lic%pvr%pvr_rgb(ist_img+1))
+        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
+     &      .or. my_rank .ne. 0) then
+          call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
+     &        lic_ctls%lic_ctl_type(i_lic))
+        end if
+      end do
+      call dealloc_sort_PVRs_list(lic%PVR_sort)
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        call init_each_PVR_image(ione, lic%pvr%pvr_param(i_lic),        &
+     &                           lic%pvr%pvr_rgb(i_lic))
       end do
 !
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
@@ -146,33 +155,24 @@
         end if
       end do
 !
-      do i_lic = 1, lic%pvr%num_pvr
-        if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
-     &      .or. my_rank .ne. 0) then
-          call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
-     &        lic_ctls%lic_ctl_type(i_lic))
-        end if
-      end do
-      call dealloc_sort_PVRs_list(lic%PVR_sort)
-!
       if(lic%flag_each_repart) return
       if(lic%repart_p%iflag_repart_ref .eq. i_INT_COUNT_BASED) then
         call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(1),       &
      &                           lic%repart_p, lic%rep_ref_m)
       end if
 !
-      call LIC_initialize_w_shared_mesh(geofem, ele_comm,  next_tbl,    &
+      call LIC_anaglyph_init_shared_mesh(geofem, ele_comm, next_tbl,    &
      &    lic%repart_p, lic%rep_ref_m, lic%repart_data, lic%pvr, m_SR)
 !
-      end subroutine LIC_initialize_test
+      end subroutine anaglyph_LIC_initialize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_visualize_test(istep_lic, time, geofem, ele_comm,  &
-     &                              next_tbl, nod_fld, lic, m_SR)
+      subroutine anaglyph_LIC_visualize(istep_lic, time,                &
+     &          geofem, ele_comm, next_tbl, nod_fld, lic, m_SR)
 !
       use m_elapsed_labels_4_VIZ
-      use select_LIC_rendering
+      use select_anaglyph_LIC_by_mesh
 !
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
@@ -186,21 +186,21 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(lic%pvr%num_pvr.le.0 .or. istep_lic.le.0) return
+      if(lic%pvr%num_pvr .le. 0 .or. istep_lic.lt.0) return
 !
       if(lic%flag_each_repart) then
-        call LIC_visualize_w_each_repart(istep_lic, time,               &
+        call LIC_anaglyph_w_each_repart(istep_lic, time,                &
      &      geofem, ele_comm, next_tbl, nod_fld, lic%repart_p,          &
      &      lic%rep_ref_m, lic%repart_data, lic%pvr, lic%lic_param,     &
      &      lic%rep_ref, m_SR)
       else
-        call LIC_visualize_w_shared_mesh                                &
+        call LIC_anaglyph_w_shared_mesh                                 &
      &     (istep_lic, time, geofem, nod_fld, lic%repart_p,             &
      &      lic%repart_data, lic%pvr, lic%lic_param, m_SR)
       end if
 !
-      end subroutine LIC_visualize_test
+      end subroutine anaglyph_LIC_visualize
 !
 !  ---------------------------------------------------------------------
 !
-      end module lic_rendering_test
+      end module anaglyph_lic_rendering
