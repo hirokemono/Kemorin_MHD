@@ -100,7 +100,9 @@
      &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
-        call rendering_lic_at_once(istep_pvr, time, izero, i_rot,       &
+        call rotation_view_projection_mats(i_rot, pvr_param,            &
+     &                                     pvr_proj%screen)
+        call rendering_lic_at_once(istep_pvr, time,                     &
      &      mesh, group, sf_grp_4_sf, lic_p, field_lic, pvr_param,      &
      &      pvr_bound, pvr_proj, rot_imgs1%rot_pvr_rgb(i_rot),          &
      &      rep_ref_viz, m_SR)
@@ -140,7 +142,7 @@
       type(sf_grp_list_each_surf), intent(in) :: sf_grp_4_sf
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
-      type(pvr_image_type), intent(in) :: pvr_rgb
+      type(pvr_image_type), intent(in) :: pvr_rgb(2)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
@@ -158,21 +160,25 @@
 !
       if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
       call init_rot_pvr_image_arrays                                    &
-     &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
+     &   (pvr_param%movie_def, pvr_rgb(1), rot_imgs1)
 !
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
 !   Left eye
+        call rot_multi_view_projection_mats(ione, i_rot,                &
+     &      pvr_param, pvr_proj(1)%screen)
         call rendering_lic_at_once                                      &
-     &     (istep_pvr, time, ione, i_rot, viz_fem%mesh, viz_fem%group,  &
+     &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
      &      sf_grp_4_sf, lic_p, field_lic, pvr_param, pvr_bound,        &
      &      pvr_proj(1), rot_imgs1%rot_pvr_rgb(i_rot),                  &
      &      rep_ref_viz, m_SR)
         call store_left_eye_image(rot_imgs1%rot_pvr_rgb(i_rot))
 !
 !   Right eye
+        call rot_multi_view_projection_mats(itwo, i_rot,                &
+     &      pvr_param, pvr_proj(2)%screen)
         call rendering_lic_at_once                                      &
-     &     (istep_pvr, time, itwo, i_rot, viz_fem%mesh, viz_fem%group,  &
+     &     (istep_pvr, time, viz_fem%mesh, viz_fem%group,               &
      &      sf_grp_4_sf, lic_p, field_lic, pvr_param, pvr_bound,        &
      &      pvr_proj(2), rot_imgs1%rot_pvr_rgb(i_rot),                  &
      &      rep_ref_viz, m_SR)

@@ -139,8 +139,7 @@
         call each_PVR_initialize                                        &
      &     (i_pvr, num_img, geofem%mesh, geofem%group,                  &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_pvr),               &
-     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),              &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1), m_SR)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !

@@ -258,7 +258,9 @@
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
         do i_img = 1, num_img
-          call rendering_lic_at_once(istep_pvr, time, izero, i_rot,     &
+          call rot_multi_view_projection_mats(i_img, i_rot,             &
+     &        pvr_param, pvr_proj(i_img)%screen)
+          call rendering_lic_at_once(istep_pvr, time,                   &
      &        viz_fem%mesh, viz_fem%group, sf_grp_4_sf,                 &
      &        lic_param, field_lic, pvr_param, pvr_bound,               &
      &        pvr_proj(i_img), pvr_rgb(i_img),  rep_ref_viz, m_SR)

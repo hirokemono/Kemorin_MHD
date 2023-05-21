@@ -8,16 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine each_anaglyph_PVR_init(mesh, group, pvr_rgb,         &
-!!     &          pvr_param, pvr_bound, pvr_proj, SR_sig, SR_r, SR_i)
+!!     &          pvr_param, pvr_bound, pvr_proj, m_SR)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(pvr_image_type), intent(in) :: pvr_rgb
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!
 !!      subroutine each_PVR_anaglyph                                    &
 !!     &         (istep_pvr, time, geofem, jacs, nod_fld, sf_grp_4_sf,  &
@@ -60,8 +58,7 @@
       use t_pvr_image_array
       use t_geometries_in_pvr_screen
       use t_pvr_field_data
-      use t_solver_SR
-      use t_solver_SR_int
+      use t_mesh_SR
 !
       use set_default_pvr_params
       use set_position_pvr_screen
@@ -78,7 +75,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine each_anaglyph_PVR_init(mesh, group, pvr_rgb,           &
-     &          pvr_param, pvr_bound, pvr_proj, SR_sig, SR_r, SR_i)
+     &          pvr_param, pvr_bound, pvr_proj, m_SR)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
@@ -88,14 +85,12 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
-      type(pvr_image_type), intent(in) :: pvr_rgb
+      type(pvr_image_type), intent(in) :: pvr_rgb(2)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
+      type(mesh_SR), intent(inout) :: m_SR
 !
 !
       call alloc_iflag_pvr_used_ele(mesh%ele, pvr_param%draw_param)
@@ -128,10 +123,14 @@
       if(pvr_param%movie_def%iflag_movie_mode                           &
      &                                 .ne. IFLAG_NO_MOVIE) return
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-      call set_fixed_view_and_image(ione, itwo, mesh, pvr_param,        &
-     &    pvr_rgb, pvr_bound, pvr_proj(1), SR_sig, SR_r, SR_i)
-      call set_fixed_view_and_image(itwo, itwo, mesh, pvr_param,        &
-     &    pvr_rgb, pvr_bound, pvr_proj(2), SR_sig, SR_r, SR_i)
+      call rot_multi_view_projection_mats(ione, izero, pvr_param,       &
+     &                                    pvr_proj(1)%screen)
+      call rot_multi_view_projection_mats(itwo, izero, pvr_param,       &
+     &                                    pvr_proj(2)%screen)
+      call set_fixed_view_and_image(mesh, pvr_param, pvr_rgb(1),        &
+     &                              pvr_bound, pvr_proj(1), m_SR)
+      call set_fixed_view_and_image(mesh, pvr_param, pvr_rgb(1),        &
+     &                              pvr_bound, pvr_proj(2), m_SR)
 !
       end subroutine each_anaglyph_PVR_init
 !

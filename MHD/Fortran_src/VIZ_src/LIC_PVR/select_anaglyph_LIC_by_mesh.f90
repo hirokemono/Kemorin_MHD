@@ -118,8 +118,7 @@
         call each_anaglyph_PVR_init                                     &
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(2*i_lic-1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1), m_SR)
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -277,8 +276,7 @@
         call each_anaglyph_PVR_init                                     &
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(2*i_lic-1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1),              &
-     &      m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(2*i_lic-1), m_SR)
 !
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .eq. IFLAG_NO_MOVIE) then
