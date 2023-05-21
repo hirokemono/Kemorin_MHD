@@ -172,7 +172,7 @@
      &    pvr_rgb%rgba_real_gl,  pvr_rgb%rgb_chara_gl)
 !
       fname_tmp = add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix)
-      if(istep_pvr .ge. 0) then
+      if(i_rot .ge. 0) then
         file_prefix_w_index = add_int_suffix(i_rot, fname_tmp)
       else
         file_prefix_w_index = fname_tmp
@@ -261,7 +261,7 @@
       type(pvr_image_type), intent(in) :: rot_rgb(num_img)
 !
       integer(kind = kint) :: i_rot, icou
-      character(len=kchara) :: file_tmp
+      character(len=kchara) :: file_tmp, file_tmp2
 !
 !
       quilt_d%n_image = num_img
@@ -275,7 +275,10 @@
 !
       if(iflag_img_fmt .eq. iflag_QUILT_BMP                             &
      &   .or. iflag_img_fmt .eq. iflag_QUILT_BMP_GZ) then
-        write(file_tmp,'(2a)') trim(file_prefix), '_quilt'
+        write(file_tmp2,'(2a)') trim(file_prefix), '_qs'
+        file_tmp = add_int_suffix(quilt_d%n_column_row(1), file_tmp2)
+        write(file_tmp2,'(a,a1)') trim(file_tmp), '_qs'
+        file_tmp = add_int_suffix(quilt_d%n_column_row(2), file_tmp2)
       else
         file_tmp = file_prefix
       end if
