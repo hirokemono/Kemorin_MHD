@@ -185,9 +185,7 @@
          item_tot = item_tot + 1                                        &
      &             + iele_group_id(j) - iele_group_id(k)
          ele_grp%istack_grp(item_pos) = item_tot
-!
-         call add_index_after_name                                      &
-      &     (k, group_head, ele_grp%grp_name(k+3))
+         ele_grp%grp_name(k+3) = append_index(k, group_head)
        end do
 !
        do k = 1, (c_size%nz_all-1)

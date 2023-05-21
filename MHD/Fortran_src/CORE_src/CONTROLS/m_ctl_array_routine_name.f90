@@ -126,10 +126,10 @@
       a_WK%array_type = ctl_array_struct_name(type_list)
       do j = 1, a_WK%num_item
         write(item_tmp,'(a1,a)') type_list(j:j), '_tbl_'
-        call add_index_after_name(j, item_tmp, a_WK%table_name(j))
+        a_WK%table_name(j) = append_index(j, item_tmp)
 !
         write(item_tmp,'(a)') 'maxlen_'
-        call add_index_after_name(j, item_tmp, a_WK%maxlen_name(j))
+        a_WK%maxlen_name(j) = append_index(j, item_tmp)
       end do
 !
       end subroutine set_array_table_names

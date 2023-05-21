@@ -87,8 +87,7 @@
         if (ibd .eq. 1) then
           surf_grp%grp_name(item_pos) = 'zmin_surf'
         else
-          call add_index_after_name                                     &
-      &      (ibd, zmin_head, surf_grp%grp_name(item_pos))
+          surf_grp%grp_name(item_pos) = append_index(ibd, zmin_head)
         end if
 !
 !                                                 .. zmax
@@ -104,8 +103,7 @@
         if (ibd .eq. 1) then
           surf_grp%grp_name(item_pos) = 'zmax_surf'
         else
-          call add_index_after_name                                     &
-      &      (ibd, zmax_head, surf_grp%grp_name(item_pos))
+          surf_grp%grp_name(item_pos) = append_index(ibd, zmax_head)
         end if
       end do
 !

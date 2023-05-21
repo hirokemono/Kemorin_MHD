@@ -120,7 +120,7 @@
       c_WK%item_type = ctl_item_struct_name(type_list)
       do j = 1, c_WK%num_item
         write(item_tmp,'(a1,a)') type_list(j:j), '_item_'
-        call add_index_after_name(j, item_tmp, c_WK%item_name(j))
+        c_WK%item_name(j) = append_index(j, item_tmp)
       end do
 !
       end subroutine set_item_list_names

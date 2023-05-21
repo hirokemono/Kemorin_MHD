@@ -276,9 +276,9 @@
       if(iflag_img_fmt .eq. iflag_QUILT_BMP                             &
      &   .or. iflag_img_fmt .eq. iflag_QUILT_BMP_GZ) then
         write(file_tmp2,'(2a)') trim(file_prefix), '_qs'
-        file_tmp = add_int_suffix(quilt_d%n_column_row(1), file_tmp2)
-        write(file_tmp2,'(a,a1)') trim(file_tmp), '_qs'
-        file_tmp = add_int_suffix(quilt_d%n_column_row(2), file_tmp2)
+        file_tmp = append_index(quilt_d%n_column_row(1), file_tmp2)
+        write(file_tmp2,'(a,a1)') trim(file_tmp), 'x'
+        file_tmp = append_index(quilt_d%n_column_row(2), file_tmp2)
       else
         file_tmp = file_prefix
       end if

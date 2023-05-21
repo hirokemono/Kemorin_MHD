@@ -105,7 +105,7 @@
 !
 !$omp parallel do
       do i = 0, part_grp%num_grp-1
-        call add_index_after_name(i, base_name, part_grp%grp_name(i))
+        part_grp%grp_name(i) = append_index(i, base_name)
       end do
 !$omp end parallel do
 !
