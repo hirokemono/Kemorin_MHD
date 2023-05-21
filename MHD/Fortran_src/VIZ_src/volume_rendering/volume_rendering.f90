@@ -92,6 +92,21 @@
       call s_sort_PVRs_by_type(pvr%num_pvr, pvr_ctls%pvr_ctl_type,      &
      &                         pvr%PVR_sort)
 !
+!
+      if(my_rank .eq. 0) then
+        do i_pvr = 0, 6
+          write(*,*) i_pvr, 'pvr%istack_PVR_modes', &
+    &       pvr%PVR_sort%istack_PVR_modes(i_pvr)
+        end do
+        do i_pvr = 1, pvr%num_pvr
+          write(*,*) i_pvr, trim(pvr_ctls%fname_pvr_ctl(i_pvr)), '  ',  &
+    &    yes_flag(pvr_ctls%pvr_ctl_type(i_pvr)%anaglyph_ctl%charavalue),&
+    &    '  ', pvr_ctls%pvr_ctl_type(i_pvr)%movie%movie_mode_ctl%iflag, &
+    &    yes_flag(pvr_ctls%pvr_ctl_type(i_pvr)%quilt_ctl%charavalue),   &
+    &    '  ', pvr%PVR_sort%ipvr_sorted(i_pvr)
+        end do
+      end if
+ !
       call set_from_PVR_control(geofem, nod_fld, pvr_ctls, pvr)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
@@ -153,19 +168,21 @@
       type(volume_rendering_module), intent(inout) :: pvr
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
-      do i_pvr = 1, pvr%num_pvr
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(2)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
-        ist_img = pvr%istack_pvr_images(i_pvr-1)
-        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call each_PVR_rendering(istep_pvr, time, num_img,               &
      &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
@@ -176,8 +193,11 @@
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      do i_pvr = 1, pvr%num_pvr
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(1)
+      do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) cycle
@@ -190,7 +210,9 @@
       end do
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      do i_pvr = 1, pvr%num_pvr
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(1) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(2)
+      do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
@@ -208,12 +230,14 @@
 !      generate snapshot movie images
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
-      do i_pvr = 1, pvr%num_pvr
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(2) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(3)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) cycle
 !
-        ist_img = pvr%istack_pvr_images(i_pvr-1)
         call each_PVR_rendering_w_rot(istep_pvr, time,                  &
      &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
@@ -222,13 +246,15 @@
       end do
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
-      do i_pvr = 1, pvr%num_pvr
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(3) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(4)
+      do i_pvr = ist_pvr, ied_pvr
+          ist_img = pvr%istack_pvr_images(i_pvr-1)
+          num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) then
 !
-          ist_img = pvr%istack_pvr_images(i_pvr-1)
-          num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
           call each_PVR_quilt_rendering_w_rot(istep_pvr, time, num_img, &
      &       geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                    &
      &       pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                &
