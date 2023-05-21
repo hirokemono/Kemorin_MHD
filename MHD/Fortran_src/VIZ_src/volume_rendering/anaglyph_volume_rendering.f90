@@ -149,47 +149,48 @@
       type(volume_rendering_module), intent(inout) :: pvr
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
+      integer(kind = kint) :: i_img, ist_img, num_img
 !
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
-      do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
-     &                                 .ne. IFLAG_NO_MOVIE) cycle
-!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(5)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%PVR_sort%istack_PVR_modes(4)
         call each_PVR_anaglyph                                          &
      &     (istep_pvr, time, geofem, jacs, nod_fld, pvr%sf_grp_4_sf,    &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
-     &      pvr%pvr_proj(2*i_pvr-1), pvr%pvr_rgb(2*i_pvr-1),            &
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
      &      m_SR%SR_sig, m_SR%SR_r)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
-     &                                 .ne. IFLAG_NO_MOVIE) cycle
-!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(5)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
         call sel_write_pvr_image_file(istep_pvr, -1,                    &
-     &                                pvr%pvr_rgb(2*i_pvr-1))
+     &                                pvr%pvr_rgb(ist_img+1))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
 !      generate snapshot movie images
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
-      do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
-     &                                 .eq. IFLAG_NO_MOVIE) cycle
-!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(5) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(6)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
         call anaglyph_rendering_w_rotation(istep_pvr, time,             &
      &      geofem%mesh, geofem%group, nod_fld, jacs, pvr%sf_grp_4_sf,  &
-     &      pvr%pvr_rgb(2*i_pvr-1), pvr%field_pvr(i_pvr),               &
+     &      pvr%pvr_rgb(ist_img+1), pvr%field_pvr(i_pvr),               &
      &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
-     &      pvr%pvr_proj(2*i_pvr-1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+     &      pvr%pvr_proj(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !

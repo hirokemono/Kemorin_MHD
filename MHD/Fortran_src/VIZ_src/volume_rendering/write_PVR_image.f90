@@ -31,10 +31,10 @@
 !!      subroutine sel_write_pvr_local_img(index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
-!!      subroutine set_output_rot_sequence_image(istep_pvr,             &
+!!      subroutine set_output_rot_sequence_image(istep_pvr, i_rot,      &
 !!     &          iflag_img_fmt, file_prefix, num_img, n_column_row,    &
 !!     &          rot_rgb)
-!!        integer(kind = kint), intent(in) :: istep_pvr
+!!        integer(kind = kint), intent(in) :: istep_pvr, i_rot
 !!        integer(kind = kint), intent(in) :: num_img
 !!        integer(kind = kint), intent(in) :: n_column_row(2)
 !!        integer(kind = kint), intent(in) :: iflag_img_fmt
@@ -241,7 +241,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_output_rot_sequence_image(istep_pvr,               &
+      subroutine set_output_rot_sequence_image(istep_pvr, i_rot,        &
      &          iflag_img_fmt, file_prefix, num_img, n_column_row,      &
      &          rot_rgb)
 !
@@ -253,14 +253,14 @@
       use output_image_sel_4_png
       use mpi_write_quilt_BMP_file
 !
-      integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: istep_pvr, i_rot
       integer(kind = kint), intent(in) :: num_img
       integer(kind = kint), intent(in) :: n_column_row(2)
       integer(kind = kint), intent(in) :: iflag_img_fmt
       character(len=kchara), intent(in) :: file_prefix
       type(pvr_image_type), intent(in) :: rot_rgb(num_img)
 !
-      integer(kind = kint) :: i_rot, icou
+      integer(kind = kint) :: i_img, icou
       character(len=kchara) :: file_tmp, file_tmp2
 !
 !
@@ -268,8 +268,8 @@
       quilt_d%n_column_row(1:2) = n_column_row(1:2)
 !
       icou = 0
-      do i_rot = 1, num_img
-        if(my_rank .eq. rot_rgb(i_rot)%irank_image_file) icou = icou+1
+      do i_img = 1, num_img
+        if(my_rank .eq. rot_rgb(i_img)%irank_image_file) icou = icou+1
       end do
       quilt_d%num_image_lc = icou
 !
@@ -284,10 +284,16 @@
       end if
 !
       if(istep_pvr .ge. 0) then
-        quilt_d%image_seq_prefix = add_int_suffix(istep_pvr, file_tmp)
+        file_tmp2 = add_int_suffix(istep_pvr, file_tmp)
       else
-        quilt_d%image_seq_prefix = file_tmp
+        file_tmp2 = file_tmp
       end if
+      if(i_rot .ge. 0) then
+        quilt_d%image_seq_prefix = add_int_suffix(i_rot, file_tmp2)
+      else
+        quilt_d%image_seq_prefix = file_tmp2
+      end if
+!
       quilt_d%image_seq_format = iflag_img_fmt
       quilt_d%npixel_xy(1:2) = rot_rgb(1)%num_pixels(1:2)
       call alloc_quilt_rgb_images(quilt_d)
@@ -300,14 +306,14 @@
 !
 !
       icou = 0
-      do i_rot = 1, num_img
-        if(my_rank .eq. rot_rgb(i_rot)%irank_image_file) then
+      do i_img = 1, num_img
+        if(my_rank .eq. rot_rgb(i_img)%irank_image_file) then
           icou = icou + 1
-          quilt_d%icou_each_pe(icou) = i_rot
+          quilt_d%icou_each_pe(icou) = i_img
           quilt_d%images(icou)%each_prefix                              &
-     &         = add_int_suffix(i_rot, quilt_d%image_seq_prefix)
+     &         = add_int_suffix(i_img, quilt_d%image_seq_prefix)
           call cvt_double_rgba_to_char_rgb                              &
-     &       (rot_rgb(i_rot)%num_pixel_xy, rot_rgb(i_rot)%rgba_real_gl, &
+     &       (rot_rgb(i_img)%num_pixel_xy, rot_rgb(i_img)%rgba_real_gl, &
      &        quilt_d%images(icou)%rgb(1,1,1))
         end if
       end do

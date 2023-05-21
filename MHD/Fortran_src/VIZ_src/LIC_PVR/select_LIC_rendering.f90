@@ -200,7 +200,7 @@
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_lic)%stereo_def%flag_quilt) then
-          call set_output_rot_sequence_image(istep_lic,                 &
+          call set_output_rot_sequence_image(istep_lic, -1,             &
      &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
      &        pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,               &
      &        pvr%pvr_param(i_lic)%stereo_def%n_column_row_view,        &
@@ -405,7 +405,7 @@
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_lic)%stereo_def%flag_quilt) then
-          call set_output_rot_sequence_image(istep_lic,                 &
+          call set_output_rot_sequence_image(istep_lic, -1,             &
      &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
      &        pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,               &
      &        pvr%pvr_param(i_lic)%stereo_def%n_column_row_view,        &

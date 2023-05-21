@@ -266,7 +266,7 @@
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-        call set_output_rot_sequence_image(istep_pvr,                   &
+        call set_output_rot_sequence_image(istep_pvr, i_rot,            &
      &     pvr_rgb(1)%id_pvr_file_type, pvr_rgb(1)%pvr_prefix, num_img, &
      &     pvr_param%stereo_def%n_column_row_view, pvr_rgb(1))
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)

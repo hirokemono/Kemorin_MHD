@@ -158,6 +158,7 @@
       use cal_pvr_modelview_mat
       use write_PVR_image
       use each_volume_rendering
+      use anaglyph_volume_rendering
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
@@ -169,7 +170,7 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
-      integer(kind = kint) :: i_img, ist_img, ied_img, num_img
+      integer(kind = kint) :: i_img, ist_img, num_img
 !
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
@@ -196,16 +197,15 @@
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(1)
       do i_pvr = ist_pvr, ied_pvr
-        ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) cycle
 !
-        ied_img = pvr%istack_pvr_images(i_pvr  )
-        do i_img = ist_img, ied_img
+        do i_img = 1, num_img
           call sel_write_pvr_image_file(istep_pvr, -1,                  &
-     &                                  pvr%pvr_rgb(i_img))
+     &                                  pvr%pvr_rgb(ist_img+i_img))
         end do
       end do
 !
@@ -218,7 +218,7 @@
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) then
-          call set_output_rot_sequence_image(istep_pvr,                 &
+          call set_output_rot_sequence_image(istep_pvr, -1,             &
      &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
      &        pvr%pvr_rgb(ist_img+1)%pvr_prefix, num_img,               &
      &        pvr%pvr_param(i_pvr)%stereo_def%n_column_row_view,        &
@@ -249,8 +249,8 @@
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(3) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(4)
       do i_pvr = ist_pvr, ied_pvr
-          ist_img = pvr%istack_pvr_images(i_pvr-1)
-          num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) then
@@ -263,6 +263,9 @@
         end if
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+!
+      call anaglyph_PVR_visualize(istep_pvr, time, geofem, jacs,        &
+     &                            nod_fld, pvr, m_SR)
 !
       end subroutine PVR_visualize
 !

@@ -326,7 +326,7 @@
      &        pvr_rgb(i_img), SR_sig, SR_r, SR_i)
         end do
 !
-        call set_output_rot_sequence_image(istep_pvr,                   &
+        call set_output_rot_sequence_image(istep_pvr, i_rot,            &
      &      pvr_rgb(1)%id_pvr_file_type, pvr_rgb(1)%pvr_prefix,         &
      &      num_img, pvr_param%stereo_def%n_column_row_view,            &
      &      pvr_rgb)
