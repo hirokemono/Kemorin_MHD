@@ -64,6 +64,7 @@
       use set_pvr_control
       use rendering_and_image_nums
       use each_volume_rendering
+      use each_anaglyph_PVR
 !
       integer(kind = kint), intent(in) :: increment_pvr
       type(mesh_data), intent(in) :: geofem
@@ -146,6 +147,21 @@
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(6)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        call init_each_PVR_image(ione, pvr%pvr_param(i_pvr),            &
+     &                           pvr%pvr_rgb(ist_img+1))
+        call each_anaglyph_PVR_init(geofem%mesh, geofem%group,          &
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_pvr),               &
+     &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1), m_SR)
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
+!
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)
 !
@@ -160,7 +176,7 @@
       use cal_pvr_modelview_mat
       use write_PVR_image
       use each_volume_rendering
-      use anaglyph_volume_rendering
+      use each_anaglyph_PVR
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
@@ -266,8 +282,45 @@
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
-      call anaglyph_PVR_visualize(istep_pvr, time, geofem, jacs,        &
-     &                            nod_fld, pvr, m_SR)
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(5)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%PVR_sort%istack_PVR_modes(4)
+        call each_PVR_anaglyph                                          &
+     &     (istep_pvr, time, geofem, jacs, nod_fld, pvr%sf_grp_4_sf,    &
+     &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
+     &      m_SR%SR_sig, m_SR%SR_r)
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
+!
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(5)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        call sel_write_pvr_image_file(istep_pvr, -1,                    &
+     &                                pvr%pvr_rgb(ist_img+1))
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
+!
+!      generate snapshot movie images
+!
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(5) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(6)
+      do i_pvr = ist_pvr, ied_pvr
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        call anaglyph_rendering_w_rotation(istep_pvr, time,             &
+     &      geofem%mesh, geofem%group, nod_fld, jacs, pvr%sf_grp_4_sf,  &
+     &      pvr%pvr_rgb(ist_img+1), pvr%field_pvr(i_pvr),               &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
+     &      pvr%pvr_proj(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
+      end do
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       end subroutine PVR_visualize
 !
