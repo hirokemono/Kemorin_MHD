@@ -171,13 +171,13 @@
       call rendering_with_fixed_view(istep_pvr, time,                   &
      &    geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,            &
      &    pvr_param, pvr_proj(1), pvr_rgb(1), SR_sig, SR_r)
-!      call store_left_eye_image(pvr_rgb(1))
+      call store_left_eye_image(pvr_rgb(1))
 !
 !   right eye
       call rendering_with_fixed_view(istep_pvr, time,                   &
      &    geofem%mesh, geofem%group, sf_grp_4_sf, field_pvr,            &
      &    pvr_param, pvr_proj(2), pvr_rgb(1), SR_sig, SR_r)
-!      call add_left_eye_image(pvr_rgb(1))
+      call add_left_eye_image(pvr_rgb(1))
 !
       end subroutine each_PVR_anaglyph
 !
