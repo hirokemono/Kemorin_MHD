@@ -73,7 +73,8 @@
       type(volume_rendering_module), intent(inout) :: pvr
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_pvr, ist_img, num_img
+      integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
+      integer(kind = kint) :: ist_img, num_img
 !
 !
       pvr%num_pvr = pvr_ctls%num_pvr_ctl
@@ -131,7 +132,9 @@
       call init_sf_grp_list_each_surf                                   &
      &   (geofem%mesh%surf, geofem%group%surf_grp, pvr%sf_grp_4_sf)
 !
-      do i_pvr = 1, pvr%num_pvr
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(4)
+      do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
         call init_each_PVR_image(num_img, pvr%pvr_param(i_pvr),         &
