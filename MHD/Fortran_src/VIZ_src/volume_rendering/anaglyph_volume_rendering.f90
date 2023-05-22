@@ -158,7 +158,7 @@
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(5)
       do i_pvr = ist_pvr, ied_pvr
-        ist_img = pvr%PVR_sort%istack_pvr_images(4)
+        ist_img = pvr%istack_pvr_images(i_pvr-1)
         call each_PVR_anaglyph                                          &
      &     (istep_pvr, time, geofem, jacs, nod_fld, pvr%sf_grp_4_sf,    &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &

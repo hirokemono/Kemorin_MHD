@@ -113,7 +113,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-!
       subroutine count_anaglyph_PVRs_by_type(pvr_ctl, icou_mode)
 !
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
@@ -121,8 +120,11 @@
 !
 !
       if(yes_flag(pvr_ctl%anaglyph_ctl%charavalue)) then
-        call count_quilt_PVRs_by_type                                   &
-     &     (pvr_ctl, icou_mode(5) , icou_mode(6))
+        if(pvr_ctl%movie%movie_mode_ctl%iflag .gt. 0) then
+          icou_mode(6) = icou_mode(6) + 1
+        else
+          icou_mode(5) = icou_mode(5) + 1
+        end if
       else
         if(pvr_ctl%movie%movie_mode_ctl%iflag .gt. 0) then
           call count_quilt_PVRs_by_type                                 &
@@ -167,9 +169,13 @@
 !
 !
       if(yes_flag(pvr_ctl%anaglyph_ctl%charavalue)) then
-        call find_quilt_PVRs_by_type                                    &
-     &     (pvr_ctl, istack_mode(4), istack_mode(5),                    &
-     &      icou_mode(5) , icou_mode(6), ipvr_sorted)
+        if(pvr_ctl%movie%movie_mode_ctl%iflag .gt. 0) then
+          icou_mode(6) = icou_mode(6) + 1
+          ipvr_sorted = istack_mode(5) + icou_mode(6)
+        else
+          icou_mode(5) = icou_mode(5) + 1
+          ipvr_sorted = istack_mode(4) + icou_mode(5)
+        end if
       else
         if(pvr_ctl%movie%movie_mode_ctl%iflag .gt. 0) then
           call find_quilt_PVRs_by_type                                  &
