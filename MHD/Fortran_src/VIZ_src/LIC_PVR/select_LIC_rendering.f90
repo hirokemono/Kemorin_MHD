@@ -92,6 +92,7 @@
 !
       use each_LIC_rendering
       use each_volume_rendering
+      use each_anaglyph_PVR
 !
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: ele_comm
@@ -103,7 +104,8 @@
       type(volume_rendering_module), intent(inout) :: pvr
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_lic, ist_img, num_img
+      integer(kind = kint) :: i_lic, ist_lic, ied_lic
+      integer(kind = kint) :: ist_img, num_img
 !
 !
       call LIC_init_shared_mesh(geofem, ele_comm, next_tbl,             &
@@ -112,11 +114,24 @@
      &   (repart_data%viz_fem%mesh%surf,                                &
      &    repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
 !
-      do i_lic = 1, pvr%num_pvr
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(4)
+      do i_lic = ist_lic, ied_lic
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic) - ist_img
         call each_PVR_initialize(i_lic, num_img,                        &
      &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+      end do
+!
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(6)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic) - ist_img
+        call each_anaglyph_PVR_init                                     &
+     &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
       end do
@@ -137,6 +152,7 @@
       use each_LIC_rendering
       use write_PVR_image
       use each_volume_rendering
+      use rendering_streo_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
@@ -151,14 +167,17 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(lic_repart_reference), save :: rep_ref_viz
-      integer(kind = kint) :: i_lic
+      integer(kind = kint) :: i_lic, ist_lic, ied_lic
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       call alloc_lic_repart_ref(repart_data%viz_fem%mesh%node,          &
      &                          rep_ref_viz)
-      do i_lic = 1, pvr%num_pvr
+!
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(2)
+      do i_lic = ist_lic, ied_lic
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
@@ -181,19 +200,24 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-      do i_lic = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(1)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_lic)%stereo_def%flag_quilt) cycle
 !
-        ied_img = pvr%istack_pvr_images(i_lic  )
-        do i_img = ist_img, ied_img
+        do i_img = 1, num_img
           call sel_write_pvr_image_file(istep_lic, -1,                  &
-     &                                  pvr%pvr_rgb(i_img))
+     &                                  pvr%pvr_rgb(i_img+ist_img))
         end do
       end do
-      do i_lic = 1, pvr%num_pvr
+!
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(1) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(2)
+      do i_lic = ist_lic, ied_lic
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
@@ -209,10 +233,11 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-      do i_lic = 1, pvr%num_pvr
-        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
-     &                                    .eq. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_lic)%stereo_def%flag_quilt) cycle
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(2) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(3)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic) - ist_img
 !
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
@@ -221,8 +246,6 @@
         call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
      &                          repart_data, m_SR)
 !
-        ist_img = pvr%istack_pvr_images(i_lic-1)
-        num_img = pvr%istack_pvr_images(i_lic) - ist_img
         write(*,*) 's_each_LIC_rendering_w_rot once', i_lic
         call reset_lic_count_line_int(rep_ref_viz)
         call s_each_LIC_rendering_w_rot                                 &
@@ -236,29 +259,91 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-      do i_lic = 1, pvr%num_pvr
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(3) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(4)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic) - ist_img
+        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
+     &      lic_param(i_lic), repart_data%nod_fld_lic)
+        if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
+        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
+     &                          repart_data, m_SR)
+!
+        write(*,*) 'each_LIC_quilt_rendering_w_rot once', i_lic
+        call reset_lic_count_line_int(rep_ref_viz)
+        call each_LIC_quilt_rendering_w_rot                             &
+     &     (istep_lic, time, num_img, repart_data%viz_fem,              &
+     &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
+     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
+     &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
+     &      rep_ref_viz, m_SR)
+      end do
+      call dealloc_lic_repart_ref(rep_ref_viz)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+!
+!
+!
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+      call alloc_lic_repart_ref(repart_data%viz_fem%mesh%node,          &
+     &                          rep_ref_viz)
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(5)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic) - ist_img
+        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
+     &      lic_param(i_lic), repart_data%nod_fld_lic)
+        if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
+        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
+     &                          repart_data, m_SR)
+!
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
-     &                                    .eq. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_lic)%stereo_def%flag_quilt) then
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
 !
-          if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-          call cal_field_4_each_lic(geofem%mesh%node, nod_fld,          &
-     &        lic_param(i_lic), repart_data%nod_fld_lic)
-          if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
-          call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),   &
-     &                            repart_data, m_SR)
+        if(my_rank .eq. 0) write(*,*) 's_each_LIC_anaglyph at once'
+        call reset_lic_count_line_int(rep_ref_viz)
+        call s_each_LIC_anaglyph(istep_lic, time, repart_data%viz_fem,  &
+     &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
+     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
+     &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
+      end do
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
-          ist_img = pvr%istack_pvr_images(i_lic-1)
-          num_img = pvr%istack_pvr_images(i_lic) - ist_img
-          write(*,*) 'each_LIC_quilt_rendering_w_rot once', i_lic
-          call reset_lic_count_line_int(rep_ref_viz)
-          call each_LIC_quilt_rendering_w_rot                           &
-     &       (istep_lic, time, num_img, repart_data%viz_fem,            &
-     &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
-     &        pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),               &
-     &        pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),          &
-     &        rep_ref_viz, m_SR)
-        end if
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(5)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        call sel_write_pvr_image_file(istep_lic, -1,                    &
+     &                                pvr%pvr_rgb(ist_img))
+      end do
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+!
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(5) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(6)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic) - ist_img
+!
+        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
+     &      lic_param(i_lic), repart_data%nod_fld_lic)
+        if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
+        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
+     &                          repart_data, m_SR)
+!
+        write(*,*) 'anaglyph_lic_rendering_w_rot once', i_lic
+        call reset_lic_count_line_int(rep_ref_viz)
+        call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
+     &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
+     &      repart_data%field_lic, lic_param(i_lic),                    &
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1),              &
+     &      rep_ref_viz, m_SR)
       end do
       call dealloc_lic_repart_ref(rep_ref_viz)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -280,6 +365,8 @@
       use each_LIC_rendering
       use write_PVR_image
       use each_volume_rendering
+      use rendering_streo_LIC_image
+      use each_anaglyph_PVR
       use calypso_reverse_send_recv
       use bring_back_rendering_counts
 !
@@ -300,12 +387,14 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(lic_repart_reference), save :: rep_ref_viz, rep_ref_snap
-      integer(kind = kint) :: i_lic
+      integer(kind = kint) :: i_lic, ist_lic, ied_lic
       integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
       call alloc_lic_repart_ref(geofem%mesh%node, rep_ref_snap)
-      do i_lic = 1, pvr%num_pvr
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(4)
+      do i_lic = ist_lic, ied_lic
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic) - ist_img
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
@@ -384,21 +473,26 @@
       end do
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-      do i_lic = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(1)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_lic)%stereo_def%flag_quilt) cycle
 !
         ied_img = pvr%istack_pvr_images(i_lic  )
-        do i_img = ist_img, ied_img
+        do i_img = 1, num_img
           call sel_write_pvr_image_file(istep_lic, -1,                  &
-     &                                  pvr%pvr_rgb(i_img))
+     &                                  pvr%pvr_rgb(i_img+ist_img))
         end do
       end do
 !
-      do i_lic = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_lic-1) + 1
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(1) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(2)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .ne. IFLAG_NO_MOVIE) cycle
@@ -412,6 +506,92 @@
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
       call dealloc_lic_repart_ref(rep_ref_snap)
+!
+!
+!
+!
+      call alloc_lic_repart_ref(geofem%mesh%node, rep_ref_snap)
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(6)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
+        if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+        call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
+     &      lic_param(i_lic), repart_data%nod_fld_lic)
+        if(my_rank .eq. 0) write(*,*) 'LIC_init_each_mesh'
+        call LIC_init_each_mesh(geofem, ele_comm, next_tbl, repart_p,   &
+     &      rep_ref(i_lic), rep_ref_m, lic_param(i_lic),                &
+     &      repart_data, m_SR)
+        if(iflag_debug .gt. 0) write(*,*) 'init_sf_grp_list_each_surf'
+        call init_sf_grp_list_each_surf                                 &
+     &     (repart_data%viz_fem%mesh%surf,                              &
+     &      repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
+        if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
+        call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
+     &                          repart_data, m_SR)
+!
+        call reset_lic_count_line_int(rep_ref_snap)
+        call alloc_lic_repart_ref                                       &
+     &     (repart_data%viz_fem%mesh%node, rep_ref_viz)
+!
+        if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
+        call each_anaglyph_PVR_init                                     &
+     &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+!
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
+     &                                  .eq. IFLAG_NO_MOVIE) then
+          if(my_rank .eq. 0) write(*,*)                                 &
+     &                     's_each_LIC_anaglyph each', i_lic
+          if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+          call s_each_LIC_anaglyph                                      &
+     &       (istep_lic, time, repart_data%viz_fem,                     &
+     &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
+     &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),            &
+     &        pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
+          call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),       &
+     &        pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
+          if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
+        else
+          call anaglyph_lic_rendering_w_rot(istep_lic, time,            &
+     &        repart_data%viz_fem, pvr%sf_grp_4_sf,                     &
+     &        repart_data%field_lic, lic_param(i_lic),                  &
+     &        pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),             &
+     &        pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1),            &
+     &        rep_ref_viz, m_SR)
+         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
+         call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
+         call dealloc_iflag_pvr_used_ele                                &
+     &      (pvr%pvr_param(i_lic)%draw_param)
+        end if
+!
+        if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
+     &                                   .eq. i_INT_COUNT_BASED) then
+          call bring_back_rendering_time(repart_data%mesh_to_viz_tbl,   &
+     &        rep_ref_viz, rep_ref_snap, rep_ref(i_lic), m_SR)
+        end if
+!
+        call dealloc_lic_repart_ref(rep_ref_viz)
+        call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
+        call dealloc_LIC_each_mesh                                      &
+     &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
+      end do
+!
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(5) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(6)
+      do i_lic = ist_lic, ied_lic
+        ist_img = pvr%istack_pvr_images(i_lic-1) 
+        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
+     &                                  .ne. IFLAG_NO_MOVIE) cycle
+!
+        call sel_write_pvr_image_file(istep_lic, -1,                    &
+     &                                pvr%pvr_rgb(ist_img+1))
+      end do
+      call dealloc_lic_repart_ref(rep_ref_snap)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
       end subroutine LIC_visualize_w_each_repart
 !

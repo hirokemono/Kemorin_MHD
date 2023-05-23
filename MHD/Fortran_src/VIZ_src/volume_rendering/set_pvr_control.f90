@@ -106,7 +106,7 @@
      &    pvr_param%area_def, pvr_param%draw_param,                     &
      &    pvr_param%color, pvr_param%colorbar)
 !
-!   set transfer matrix
+!   set parameters for stereo views
       call set_pvr_stereo_control(pvr_ctl_type, pvr_param%stereo_def)
       call set_pvr_mul_view_params(pvr_ctl_type%mat,                    &
      &    pvr_ctl_type%quilt_c, pvr_ctl_type%movie, pvr_param)
