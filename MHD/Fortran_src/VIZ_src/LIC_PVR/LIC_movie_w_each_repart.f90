@@ -111,7 +111,7 @@
       ied_lic = pvr%PVR_sort%istack_PVR_modes(3)
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%istack_pvr_images(i_lic-1)
-        num_img = pvr%istack_pvr_images(i_lic) - ist_img
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
@@ -132,13 +132,9 @@
      &     (repart_data%viz_fem%mesh%node, rep_ref_viz)
 !
         if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
-        call each_PVR_initialize(num_img,                               &
-     &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+        call each_PVR_initialize                                        &
+     &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
-        call init_fixed_view_and_images                                 &
-     &     (num_img, repart_data%viz_fem%mesh, pvr%pvr_rgb(ist_img+1),  &
-     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
-     &      pvr%pvr_proj(ist_img+1), m_SR)
 !
         call s_each_LIC_rendering_w_rot                                 &
      &     (istep_lic, time, repart_data%viz_fem,                       &
@@ -149,7 +145,7 @@
         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
         call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
         call dealloc_iflag_pvr_used_ele                                 &
-     &      (pvr%pvr_param(i_lic)%draw_param)
+     &     (pvr%pvr_param(i_lic)%draw_param)
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_INT_COUNT_BASED) then
@@ -162,7 +158,6 @@
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
       call dealloc_lic_repart_ref(rep_ref_snap)
 !
       end subroutine LIC_movie_visualize_each_repart
@@ -177,7 +172,6 @@
       use m_elapsed_labels_4_VIZ
       use t_surf_grp_list_each_surf
       use t_lic_field_data
-      use cal_pvr_modelview_mat
       use each_LIC_rendering
       use write_PVR_image
       use each_volume_rendering
@@ -210,7 +204,7 @@
       ied_lic = pvr%PVR_sort%istack_PVR_modes(4)
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%istack_pvr_images(i_lic-1)
-        num_img = pvr%istack_pvr_images(i_lic) - ist_img
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
@@ -231,13 +225,9 @@
      &     (repart_data%viz_fem%mesh%node, rep_ref_viz)
 !
         if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
-        call each_PVR_initialize(num_img,                               &
-     &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+        call each_PVR_initialize                                        &
+     &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
-        call init_fixed_view_and_images                                 &
-     &     (num_img, repart_data%viz_fem%mesh, pvr%pvr_rgb(ist_img+1),  &
-     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
-     &      pvr%pvr_proj(ist_img+1), m_SR)
 !
         call each_LIC_quilt_rendering_w_rot                             &
      &     (istep_lic, time, num_img, repart_data%viz_fem,              &
@@ -248,7 +238,7 @@
         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
         call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
         call dealloc_iflag_pvr_used_ele                                 &
-     &     (pvr%pvr_param(i_lic)%draw_param)
+     &      (pvr%pvr_param(i_lic)%draw_param)
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_INT_COUNT_BASED) then
@@ -262,7 +252,6 @@
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
 !
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
       call dealloc_lic_repart_ref(rep_ref_snap)
 !
       end subroutine LIC_movie_quilt_each_repart
