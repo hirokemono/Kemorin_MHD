@@ -140,8 +140,11 @@
           stereo_def%num_views = stereo_def%n_column_row_view(1)        &
      &                          * stereo_def%n_column_row_view(2)
         end if
+      else if(stereo_def%flag_anaglyph) then
+        stereo_def%n_column_row_view(1) = 2
+        stereo_def%n_column_row_view(2) = 1
+        stereo_def%num_views = 2
       end if
-!
 !
       end subroutine set_pvr_quilt_num_control
 !

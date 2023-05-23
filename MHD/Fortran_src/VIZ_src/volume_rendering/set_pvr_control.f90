@@ -88,7 +88,6 @@
       integer(kind = kint) :: icheck_ncomp(1)
 !
 !
-      call set_pvr_stereo_control(pvr_ctl_type, pvr_param%stereo_def)
       call s_set_control_pvr_movie(pvr_ctl_type%movie,                  &
      &                             pvr_param%movie_def)
 !
@@ -108,6 +107,7 @@
      &    pvr_param%color, pvr_param%colorbar)
 !
 !   set transfer matrix
+      call set_pvr_stereo_control(pvr_ctl_type, pvr_param%stereo_def)
       call set_pvr_mul_view_params(pvr_ctl_type%mat,                    &
      &    pvr_ctl_type%quilt_c, pvr_ctl_type%movie, pvr_param)
 !
