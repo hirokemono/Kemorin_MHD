@@ -78,7 +78,7 @@
       use t_lic_field_data
       use t_surf_grp_list_each_surf
       use m_elapsed_labels_4_VIZ
-      use cal_pvr_modelview_mat
+      use set_PVR_view_and_image
       use each_LIC_rendering
       use each_anaglyph_PVR
       use rendering_streo_LIC_image
@@ -131,15 +131,17 @@
         call alloc_lic_repart_ref                                       &
      &     (repart_data%viz_fem%mesh%node, rep_ref_viz)
 !
-        if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
-        call each_anaglyph_PVR_init                                     &
+        if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
+        call each_PVR_initialize                                        &
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
-     &      pvr%pvr_proj(ist_img+1))
+     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
 !
         if(my_rank .eq. 0) write(*,*)                                   &
      &                   's_each_LIC_anaglyph each', i_lic
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+        call anaglyph_PVR_view_matrices(repart_data%viz_fem%mesh,       &
+     &     pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),                &
+     &     pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
         call s_each_LIC_anaglyph                                        &
      &     (istep_lic, time, repart_data%viz_fem,                       &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
@@ -235,11 +237,10 @@
         call alloc_lic_repart_ref                                       &
      &     (repart_data%viz_fem%mesh%node, rep_ref_viz)
 !
-        if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
-        call each_anaglyph_PVR_init                                     &
+        if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
+        call each_PVR_initialize                                        &
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),                 &
-     &      pvr%pvr_proj(ist_img+1))
+     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
 !
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
      &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
@@ -250,7 +251,7 @@
         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
         call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
         call dealloc_iflag_pvr_used_ele                                 &
-     &      (pvr%pvr_param(i_lic)%draw_param)
+     &     (pvr%pvr_param(i_lic)%draw_param)
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_INT_COUNT_BASED) then
