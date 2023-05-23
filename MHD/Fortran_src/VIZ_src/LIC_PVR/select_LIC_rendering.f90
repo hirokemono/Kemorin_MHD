@@ -284,8 +284,6 @@
 !
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-      call alloc_lic_repart_ref(repart_data%viz_fem%mesh%node,          &
-     &                          rep_ref_viz)
       ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
       ied_lic = pvr%PVR_sort%istack_PVR_modes(5)
       do i_lic = ist_lic, ied_lic
