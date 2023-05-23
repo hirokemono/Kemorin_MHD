@@ -128,13 +128,6 @@
      &    lic%pvr%num_pvr_images, lic%pvr%istack_pvr_images,            &
      &    lic%pvr%pvr_rgb)
 !
-      do i_lic = 1, lic%pvr%num_pvr
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1)
-        num_img = lic%pvr%istack_pvr_images(i_lic  ) - ist_img
-        call init_each_PVR_image(num_img, lic%pvr%pvr_param(i_lic),     &
-     &                           lic%pvr%pvr_rgb(ist_img+1))
-      end do
-!
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
      &                          lic%repart_data)
 !
@@ -154,6 +147,13 @@
         end if
       end do
       call dealloc_sort_PVRs_list(lic%pvr%PVR_sort)
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        ist_img = lic%pvr%istack_pvr_images(i_lic-1)
+        num_img = lic%pvr%istack_pvr_images(i_lic  ) - ist_img
+        call init_each_PVR_image(num_img, lic%pvr%pvr_param(i_lic),     &
+     &                           lic%pvr%pvr_rgb(ist_img+1))
+      end do
 !
       if(lic%flag_each_repart) return
       if(lic%repart_p%iflag_repart_ref .eq. i_INT_COUNT_BASED) then

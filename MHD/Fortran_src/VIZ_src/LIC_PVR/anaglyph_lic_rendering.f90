@@ -139,11 +139,6 @@
       end do
       call dealloc_sort_PVRs_list(lic%pvr%PVR_sort)
 !
-      do i_lic = 1, lic%pvr%num_pvr
-        call init_each_PVR_image(ione, lic%pvr%pvr_param(i_lic),        &
-     &                           lic%pvr%pvr_rgb(i_lic))
-      end do
-!
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
      &                          lic%repart_data)
 !
@@ -153,6 +148,11 @@
           call init_lic_repart_ref(geofem%mesh, lic%pvr%pvr_rgb(i_lic), &
      &        lic%lic_param(i_lic)%each_part_p, lic%rep_ref(i_lic))
         end if
+      end do
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        call init_each_PVR_image(ione, lic%pvr%pvr_param(i_lic),        &
+     &                           lic%pvr%pvr_rgb(i_lic))
       end do
 !
       if(lic%flag_each_repart) return
