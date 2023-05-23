@@ -43,15 +43,6 @@
 !!    array  fieldline
 !!      ....
 !!    end array fieldline
-!!
-!!
-!!    array  anaglyph_volume_rendering
-!!      ....
-!!    end array anaglyph_volume_rendering
-!!
-!!    array  anaglyph_LIC_rendering
-!!      ....
-!!    end array anaglyph_LIC_rendering
 !!  end  visual_control
 !
 !!    delta_t_sectioning_ctl   1.0e-3

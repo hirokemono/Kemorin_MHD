@@ -255,7 +255,6 @@
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
      &      rep_ref_viz, m_SR)
       end do
-      call dealloc_lic_repart_ref(rep_ref_viz)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
@@ -280,7 +279,6 @@
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
      &      rep_ref_viz, m_SR)
       end do
-      call dealloc_lic_repart_ref(rep_ref_viz)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
 !

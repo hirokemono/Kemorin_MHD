@@ -110,16 +110,6 @@
       call set_pixel_on_pvr_screen(pvr_param%multi_view(1),             &
      &                             pvr_param%pixel)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
-      call set_pvr_projection_left_mat                                  &
-     &   (pvr_param%multi_view(1), pvr_param%stereo_def,                &
-     &    pvr_proj(1)%screen%projection_mat)
-      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
-      call set_pvr_projection_right_mat                                 &
-     &   (pvr_param%multi_view(1), pvr_param%stereo_def,                &
-     &    pvr_proj(2)%screen%projection_mat)
-!
-!
       if(pvr_param%movie_def%iflag_movie_mode                           &
      &                                 .ne. IFLAG_NO_MOVIE) return
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'

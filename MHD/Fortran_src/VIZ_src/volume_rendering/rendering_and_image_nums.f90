@@ -8,8 +8,6 @@
 !!@verbatim
 !!      subroutine count_num_rendering_and_images(num_pvr, pvr_param,   &
 !!     &          num_pvr_images, istack_pvr_images)
-!!      subroutine count_num_anaglyph_and_images                        &
-!!     &         (num_pvr, num_pvr_images, istack_pvr_images)
 !!      subroutine set_rendering_and_image_pes(num_pe, num_pvr, pvr_ctl,&
 !!     &          pvr_sort, num_pvr_images, istack_pvr_images, pvr_rgb)
 !!        integer, intent(in) :: num_pe
@@ -76,31 +74,6 @@
       write(*,*) my_rank, 'num_pvr_images',    istack_pvr_images
 !
       end subroutine count_num_rendering_and_images
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_num_anaglyph_and_images                          &
-     &         (num_pvr, num_pvr_images, istack_pvr_images)
-!
-      integer(kind = kint), intent(in) :: num_pvr
-!
-      integer(kind = kint), intent(inout) :: num_pvr_images
-      integer(kind = kint), intent(inout)                               &
-     &              :: istack_pvr_images(0:num_pvr)
-!
-      integer(kind = kint) :: i_pvr
-!
-!
-      num_pvr_images = (2*num_pvr)
-      do i_pvr = 1, num_pvr
-        istack_pvr_images(i_pvr) = 2*i_pvr
-      end do
-!
-      if(iflag_debug .eq. 0) return
-      write(*,*) my_rank, 'num_pvr',           num_pvr
-      write(*,*) my_rank, 'num_pvr_images',    num_pvr_images
-!
-      end subroutine count_num_anaglyph_and_images
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

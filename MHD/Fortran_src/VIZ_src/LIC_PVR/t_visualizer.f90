@@ -73,7 +73,6 @@
       use t_shape_functions
       use t_jacobians
       use volume_rendering
-      use anaglyph_volume_rendering
       use anaglyph_lic_rendering
 !
       type(VIZ_step_params), intent(in) :: viz_step
@@ -130,7 +129,6 @@
      &                         VIZ_DAT, vizs, m_SR)
 !
       use volume_rendering
-      use anaglyph_volume_rendering
       use anaglyph_lic_rendering
 !
       type(time_data), intent(in) :: time_d
