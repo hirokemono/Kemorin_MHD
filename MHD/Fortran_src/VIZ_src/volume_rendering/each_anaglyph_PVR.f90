@@ -7,16 +7,6 @@
 !>@brief Main module for each volume rendering
 !!
 !!@verbatim
-!!      subroutine each_anaglyph_PVR_init(mesh, group, pvr_rgb,         &
-!!     &          pvr_param, pvr_bound, pvr_proj, m_SR)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) :: group
-!!        type(pvr_image_type), intent(in) :: pvr_rgb
-!!        type(PVR_control_params), intent(inout) :: pvr_param
-!!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-!!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-!!        type(mesh_SR), intent(inout) :: m_SR
-!!
 !!      subroutine each_PVR_anaglyph                                    &
 !!     &         (istep_pvr, time, geofem, jacs, nod_fld, sf_grp_4_sf,  &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
@@ -71,58 +61,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine each_anaglyph_PVR_init(mesh, group, pvr_rgb,           &
-     &          pvr_param, pvr_bound, pvr_proj, m_SR)
-!
-      use t_control_data_pvr_sections
-      use set_pvr_control
-      use cal_pvr_projection_mat
-      use find_pvr_surf_domain
-      use set_iflag_for_used_ele
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
-      type(pvr_image_type), intent(in) :: pvr_rgb(2)
-!
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
-      type(mesh_SR), intent(inout) :: m_SR
-!
-!
-      call alloc_iflag_pvr_used_ele(mesh%ele, pvr_param%draw_param)
-      call s_set_iflag_for_used_ele(mesh%ele, group%ele_grp,            &
-     &    pvr_param%area_def%nele_grp_area_pvr,                         &
-     &    pvr_param%area_def%id_ele_grp_area_pvr,                       &
-     &    pvr_param%draw_param%iflag_used_ele)
-!
-      call find_each_pvr_surf_domain(mesh%ele, mesh%surf,               &
-     &                               pvr_param%draw_param, pvr_bound)
-!
-      call pvr_mesh_outline(mesh%node, pvr_param%outline)
-      call check_pvr_parameters(pvr_param%outline,                      &
-     &    pvr_param%num_multi_views, pvr_param%multi_view,              &
-     &    pvr_param%color)
-!
-      call set_pixel_on_pvr_screen(pvr_param%multi_view(1),             &
-     &                             pvr_param%pixel)
-!
-      if(pvr_param%movie_def%iflag_movie_mode                           &
-     &                                 .ne. IFLAG_NO_MOVIE) return
-      if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-      call rot_multi_view_projection_mats(ione, izero, pvr_param,       &
-     &                                    pvr_proj(1)%screen)
-      call rot_multi_view_projection_mats(itwo, izero, pvr_param,       &
-     &                                    pvr_proj(2)%screen)
-      call set_fixed_view_and_image(mesh, pvr_param, pvr_rgb(1),        &
-     &                              pvr_bound, pvr_proj(1), m_SR)
-      call set_fixed_view_and_image(mesh, pvr_param, pvr_rgb(1),        &
-     &                              pvr_bound, pvr_proj(2), m_SR)
-!
-      end subroutine each_anaglyph_PVR_init
 !
 !  ---------------------------------------------------------------------
 !

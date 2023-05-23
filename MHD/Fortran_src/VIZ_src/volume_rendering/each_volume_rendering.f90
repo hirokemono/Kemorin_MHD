@@ -8,16 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine init_each_PVR_image(num_img, pvr_param, pvr_rgb)
-!!      subroutine each_PVR_initialize(i_pvr, num_img, mesh, group,     &
-!!     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj, m_SR)
+!!      subroutine each_PVR_initialize(mesh, group,                     &
+!!     &                               pvr_param, pvr_bound)
 !!        integer(kind = kint), intent(in) :: i_pvr, num_img
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
-!!        type(pvr_image_type), intent(in) :: pvr_rgb(num_img)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-!!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
-!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine dealloc_PVR_initialize                               &
 !!     &         (num_proj, pvr_param, pvr_bound, pvr_proj)
 !!        integer(kind = kint), intent(in) :: num_proj
@@ -109,24 +106,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_initialize(i_pvr, num_img, mesh, group,       &
-     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj, m_SR)
+      subroutine each_PVR_initialize(mesh, group,                       &
+     &                               pvr_param, pvr_bound)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
-      use cal_pvr_projection_mat
       use find_pvr_surf_domain
       use set_iflag_for_used_ele
 !
-      integer(kind = kint), intent(in) :: i_pvr, num_img
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
-      type(pvr_image_type), intent(in) :: pvr_rgb(num_img)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
-      type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_img
 !
@@ -146,23 +138,6 @@
 !
       call set_pixel_on_pvr_screen(pvr_param%multi_view(1),             &
      &                             pvr_param%pixel)
-!
-      if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-      do i_img = 1, num_img
-        if(pvr_param%movie_def%iflag_movie_mode                         &
-     &                                 .ne. IFLAG_NO_MOVIE) cycle
-!
-        if(num_img .gt. 1) then
-          call rot_multi_view_projection_mats(i_img, izero, pvr_param,  &
-     &                                        pvr_proj(i_img)%screen)
-        else
-          call rotation_view_projection_mats(izero, pvr_param,          &
-     &                                       pvr_proj(1)%screen)
-        end if
-!
-        call set_fixed_view_and_image(mesh, pvr_param, pvr_rgb(i_img),  &
-     &                                pvr_bound, pvr_proj(i_img), m_SR)
-      end do
 !
       end subroutine each_PVR_initialize
 !
@@ -285,7 +260,7 @@
      &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
      &          SR_sig, SR_r, SR_i)
 !
-      use cal_pvr_modelview_mat
+      use set_PVR_view_and_image
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr

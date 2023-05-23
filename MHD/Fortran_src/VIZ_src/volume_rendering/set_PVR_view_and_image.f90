@@ -20,15 +20,6 @@
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!
-!!      subroutine set_fixed_view_and_image                             &
-!!     &         (mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj, m_SR)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(PVR_control_params), intent(in) :: pvr_param
-!!        type(pvr_image_type), intent(in) :: pvr_rgb
-!!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-!!        type(PVR_projection_data), intent(inout) :: pvr_proj
-!!        type(mesh_SR), intent(inout) :: m_SR
-!!
 !!      subroutine rotation_view_projection_mats(i_rot,                 &
 !!     &                                         pvr_param, screen)
 !!      subroutine rot_multi_view_projection_mats(i_img, i_rot,         &
@@ -38,7 +29,7 @@
 !!        type(pvr_projected_position), intent(inout) :: screen
 !!@endverbatim
 !
-      module each_volume_rendering
+      module set_PVR_view_and_image
 !
       use m_precision
       use calypso_mpi
@@ -75,7 +66,7 @@
 !
 !
       call rotation_view_projection_mats(izero, pvr_param,              &
-     &                                   pvr_proj(1)%screen)
+     &                                   pvr_proj%screen)
       call set_fixed_view_and_image(mesh, pvr_param, pvr_rgb,           &
      &                              pvr_bound, pvr_proj, m_SR)
 !
@@ -112,7 +103,6 @@
       subroutine anaglyph_PVR_view_matrices(mesh, pvr_rgb, pvr_param,   &
      &                                      pvr_bound, pvr_proj, m_SR)
 !
-      integer(kind = kint), intent(in) :: num_img
       type(mesh_geometry), intent(in) :: mesh
       type(pvr_image_type), intent(in) :: pvr_rgb
       type(PVR_control_params), intent(in) :: pvr_param
@@ -134,39 +124,6 @@
      &                              pvr_bound, pvr_proj(2), m_SR)
 !
       end subroutine anaglyph_PVR_view_matrices
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine set_fixed_view_and_image                               &
-     &         (mesh, pvr_param, pvr_rgb, pvr_bound, pvr_proj, m_SR)
-!
-      use cal_pvr_projection_mat
-      use cal_pvr_modelview_mat
-      use t_pvr_stencil_buffer
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(PVR_control_params), intent(in) :: pvr_param
-      type(pvr_image_type), intent(in) :: pvr_rgb
-!
-      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(PVR_projection_data), intent(inout) :: pvr_proj
-      type(mesh_SR), intent(inout) :: m_SR
-!
-!
-      call transfer_to_screen(mesh%node, mesh%surf,                     &
-     &    pvr_param%pixel, pvr_param%multi_view(1)%n_pvr_pixel,         &
-     &    pvr_bound, pvr_proj%screen, pvr_proj%start_fix)
-      call const_pvr_stencil_buffer                                     &
-     &   (pvr_rgb, pvr_proj%start_fix, pvr_proj%stencil,                &
-     &    m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
-!
-      call allocate_item_pvr_ray_start                                  &
-     &   (pvr_proj%start_fix%num_pvr_ray, pvr_proj%start_save)
-      call copy_item_pvr_ray_start                                      &
-     &   (pvr_proj%start_fix, pvr_proj%start_save)
-!
-      end subroutine set_fixed_view_and_image
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

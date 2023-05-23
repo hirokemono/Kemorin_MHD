@@ -93,6 +93,7 @@
       use each_LIC_rendering
       use each_volume_rendering
       use each_anaglyph_PVR
+      use set_PVR_view_and_images
 !
       type(mesh_data), intent(in) :: geofem
       type(communication_table), intent(in) :: ele_comm
@@ -104,7 +105,7 @@
       type(volume_rendering_module), intent(inout) :: pvr
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_lic, ist_lic, ied_lic
+      integer(kind = kint) :: i_lic
       integer(kind = kint) :: ist_img, num_img
 !
 !
@@ -114,27 +115,17 @@
      &   (repart_data%viz_fem%mesh%surf,                                &
      &    repart_data%viz_fem%group%surf_grp, pvr%sf_grp_4_sf)
 !
-      ist_lic = pvr%PVR_sort%istack_PVR_modes(0) + 1
-      ied_lic = pvr%PVR_sort%istack_PVR_modes(4)
-      do i_lic = ist_lic, ied_lic
-        ist_img = pvr%istack_pvr_images(i_lic-1)
-        num_img = pvr%istack_pvr_images(i_lic) - ist_img
-        call each_PVR_initialize(i_lic, num_img,                        &
-     &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+      do i_lic = 1, pvr%num_pvr
+        call each_PVR_initialize                                        &
+     &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
       end do
 !
-      ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
-      ied_lic = pvr%PVR_sort%istack_PVR_modes(6)
-      do i_lic = ist_lic, ied_lic
-        ist_img = pvr%istack_pvr_images(i_lic-1)
-        num_img = pvr%istack_pvr_images(i_lic) - ist_img
-        call each_anaglyph_PVR_init                                     &
-     &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
-      end do
+      call s_set_PVR_view_and_images                                    &
+     &   (pvr%num_pvr, pvr%num_pvr_images, pvr%istack_pvr_images,       &
+     &    repart_data%viz_fem%mesh, pvr%PVR_sort, pvr%pvr_rgb,          &
+     &    pvr%pvr_param, pvr%pvr_bound, pvr%pvr_proj, m_SR)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)
@@ -363,6 +354,8 @@
       use each_volume_rendering
       use rendering_streo_LIC_image
       use each_anaglyph_PVR
+      use set_PVR_view_and_image
+      use set_PVR_view_and_images
       use calypso_reverse_send_recv
       use bring_back_rendering_counts
 !
@@ -413,16 +406,26 @@
      &     (repart_data%viz_fem%mesh%node, rep_ref_viz)
 !
         if(my_rank .eq. 0) write(*,*) 'each_PVR_initialize'
-        call each_PVR_initialize(i_lic, num_img,                        &
-     &      repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+        call each_PVR_initialize                                        &
+     &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
+     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
 !
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .eq. IFLAG_NO_MOVIE) then
           if(my_rank .eq. 0) write(*,*)                                 &
      &                     's_each_LIC_rendering each', i_lic
           if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+          if(num_img .eq. 1) then
+            call single_PVR_view_matrices(repart_data%viz_fem%mesh,     &
+     &          pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),           &
+     &          pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+          else
+            call quilt_PVR_view_matrices                                &
+     &         (num_img, repart_data%viz_fem%mesh,                      &
+     &          pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),           &
+     &          pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+          end if
+!
           call s_each_LIC_rendering                                     &
      &       (istep_lic, time, num_img, repart_data%viz_fem,            &
      &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
@@ -532,16 +535,18 @@
      &     (repart_data%viz_fem%mesh%node, rep_ref_viz)
 !
         if(my_rank .eq. 0) write(*,*) 'each_anaglyph_PVR_init'
-        call each_anaglyph_PVR_init                                     &
+        call each_PVR_initialize                                        &
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
-     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+     &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
 !
         if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
      &                                  .eq. IFLAG_NO_MOVIE) then
           if(my_rank .eq. 0) write(*,*)                                 &
      &                     's_each_LIC_anaglyph each', i_lic
           if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+          call anaglyph_PVR_view_matrices(repart_data%viz_fem%mesh,     &
+     &       pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),              &
+     &       pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
           call s_each_LIC_anaglyph                                      &
      &       (istep_lic, time, repart_data%viz_fem,                     &
      &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &

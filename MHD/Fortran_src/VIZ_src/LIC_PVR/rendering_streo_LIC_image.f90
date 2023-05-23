@@ -71,6 +71,7 @@
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
+      use set_PVR_view_and_image
       use rendering_LIC_image
       use write_PVR_image
       use output_image_sel_4_png
@@ -131,6 +132,7 @@
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
       use set_default_pvr_params
+      use set_PVR_view_and_image
       use rendering_LIC_image
       use write_PVR_image
       use output_image_sel_4_png

@@ -83,9 +83,6 @@
 !>        Structures of LIC rendering controls
         type(lic_rendering_controls) :: lic_ctls
 !
-!>        Structures of LIC rendering controls
-        type(lic_rendering_controls) :: lic_anaglyph_ctls
-!
 !>         File name for repartition control block
         character(len = kchara) :: fname_vol_repart_ctl
 !>        Structure for new partitioning controls
@@ -142,8 +139,6 @@
       call dealloc_fline_ctl_struct(viz_ctls%fline_ctls)
       call dealloc_lic_ctl_struct(viz_ctls%lic_ctls)
 !
-      call dealloc_lic_ctl_struct(viz_ctls%lic_anaglyph_ctls)
-!
       viz_ctls%delta_t_psf_v_ctl%iflag =   0
       viz_ctls%delta_t_iso_v_ctl%iflag =   0
       viz_ctls%delta_t_pvr_v_ctl%iflag =   0
@@ -193,11 +188,6 @@
       if(viz_ctls%fline_ctls%num_fline_ctl .gt. 0) then
         call add_fields_4_flines_to_fld_ctl(viz_ctls%fline_ctls,        &
      &                                      field_ctl)
-      end if
-!
-      if(viz_ctls%lic_anaglyph_ctls%num_lic_ctl .gt. 0) then
-        call add_fields_4_lics_to_fld_ctl(viz_ctls%lic_anaglyph_ctls,   &
-     &                                    field_ctl)
       end if
 !
       end subroutine add_fields_4_vizs_to_fld_ctl

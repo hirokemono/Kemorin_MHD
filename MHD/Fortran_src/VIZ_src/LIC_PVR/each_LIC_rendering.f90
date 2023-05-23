@@ -228,7 +228,7 @@
      &          rep_ref_viz, m_SR)
 !
       use m_elapsed_labels_4_VIZ
-      use cal_pvr_modelview_mat
+      use set_PVR_view_and_image
       use rendering_LIC_image
       use rendering_streo_LIC_image
       use write_PVR_image

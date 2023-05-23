@@ -18,13 +18,6 @@
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !!      subroutine flush_rendering_4_fixed_view(pvr_proj)
 !!
-!!      subroutine rotation_view_projection_mats(i_rot,                 &
-!!     &                                         pvr_param, screen)
-!!      subroutine rot_multi_view_projection_mats(i_img, i_rot,         &
-!!     &                                          pvr_param, screen)
-!!        integer(kind = kint), intent(in) :: i_img, i_rot
-!!        type(PVR_control_params), intent(in) :: pvr_param
-!!        type(pvr_projected_position), intent(inout) :: screen
 !!      subroutine rendering_at_once(istep_pvr, time,                   &
 !!     &          mesh, group, sf_grp_4_sf, field_pvr, pvr_param,       &
 !!     &          pvr_bound, pvr_proj, pvr_rgb, SR_sig, SR_r, SR_i)
@@ -262,54 +255,6 @@
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
       end subroutine rendering_at_once
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine rotation_view_projection_mats(i_rot,                   &
-     &                                         pvr_param, screen)
-!
-      use cal_pvr_modelview_mat
-      use cal_pvr_projection_mat
-!
-      integer(kind = kint), intent(in) :: i_rot
-      type(PVR_control_params), intent(in) :: pvr_param
-!
-      type(pvr_projected_position), intent(inout) :: screen
-!
-!
-      call set_pvr_projection_matrix                                    &
-     &   (pvr_param%multi_view(1), screen%projection_mat)
-      call cal_pvr_modelview_matrix(ione, i_rot,                        &
-     &    pvr_param%outline, pvr_param%movie_def,                       &
-     &    pvr_param%stereo_def, pvr_param%multi_view(1),                &
-     &    screen%viewpoint_vec, screen%modelview_mat)
-!
-      end subroutine rotation_view_projection_mats
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine rot_multi_view_projection_mats(i_img, i_rot,           &
-     &                                          pvr_param, screen)
-!
-      use cal_pvr_modelview_mat
-      use cal_pvr_projection_mat
-!
-      integer(kind = kint), intent(in) :: i_img, i_rot
-      type(PVR_control_params), intent(in) :: pvr_param
-!
-      type(pvr_projected_position), intent(inout) :: screen
-!
-!
-      call set_pvr_step_projection_mat                                  &
-     &   (i_img, pvr_param%multi_view(1), pvr_param%stereo_def,         &
-     &    screen%projection_mat)
-      call cal_pvr_modelview_matrix(i_img, i_rot,                       &
-     &    pvr_param%outline, pvr_param%movie_def,                       &
-     &    pvr_param%stereo_def, pvr_param%multi_view(1),                &
-     &    screen%viewpoint_vec, screen%modelview_mat)
-!
-      end subroutine rot_multi_view_projection_mats
 !
 !  ---------------------------------------------------------------------
 !
