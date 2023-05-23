@@ -59,7 +59,6 @@
       use t_lic_repart_reference
       use t_control_param_LIC
       use t_mesh_SR
-      use t_sort_PVRs_by_type
 !
       use each_volume_rendering
 !
@@ -87,9 +86,6 @@
 !
 !>        Structure for LIC images
         type(volume_rendering_module) :: pvr
-!
-!>        Structure for PVR images
-        type(sort_PVRs_by_type) :: PVR_sort
       end type lic_volume_rendering_module
 !
       character(len=kchara), parameter                                  &
@@ -216,26 +212,26 @@
       allocate(lic%lic_param(lic%pvr%num_pvr))
       allocate(lic%rep_ref(lic%pvr%num_pvr))
       call s_sort_PVRs_by_type(lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,  &
-     &                         lic%PVR_sort)
+     &                         lic%pvr%PVR_sort)
 !
       if(my_rank .eq. 0) then
         do i_lic = 0, 6
           write(*,*) i_lic, 'lic%istack_PVR_modes', &
-    &       lic%PVR_sort%istack_PVR_modes(i_lic)
+    &       lic%pvr%PVR_sort%istack_PVR_modes(i_lic)
         end do
         do i_lic = 1, lic%pvr%num_pvr
           write(*,*) i_lic, trim(lic_ctls%fname_lic_ctl(i_lic)), '  ',  &
     &    yes_flag(lic_ctls%pvr_ctl_type(i_lic)%anaglyph_ctl%charavalue),&
     &    '  ', lic_ctls%pvr_ctl_type(i_lic)%movie%movie_mode_ctl%iflag, &
     &    yes_flag(lic_ctls%pvr_ctl_type(i_lic)%quilt_ctl%charavalue),   &
-    &    '  ', lic%PVR_sort%ipvr_sorted(i_lic)
+    &    '  ', lic%pvr%PVR_sort%ipvr_sorted(i_lic)
         end do
       end if
  !
       call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type, lic%PVR_sort,   &
-     &    lic%lic_param, lic%pvr%pvr_param, lic%rep_ref,                &
-     &    lic%flag_each_repart)
+     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
+     &    lic%pvr%PVR_sort, lic%lic_param, lic%pvr%pvr_param,           &
+     &    lic%rep_ref, lic%flag_each_repart)
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
@@ -243,9 +239,9 @@
       call alloc_pvr_images(lic%pvr)
 !
       call set_rendering_and_image_pes                                  &
-     &   (nprocs, lic%pvr%num_pvr, lic_ctls%pvr_ctl_type, lic%PVR_sort, &
-     &    lic%pvr%num_pvr_images, lic%pvr%istack_pvr_images,            &
-     &    lic%pvr%pvr_rgb)
+     &   (nprocs, lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,               &
+     &    lic%pvr%PVR_sort, lic%pvr%num_pvr_images,                     &
+     &    lic%pvr%istack_pvr_images, lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
@@ -254,7 +250,7 @@
      &        lic_ctls%lic_ctl_type(i_lic))
         end if
       end do
-      call dealloc_sort_PVRs_list(lic%PVR_sort)
+      call dealloc_sort_PVRs_list(lic%pvr%PVR_sort)
 !
       do i_lic = 1, lic%pvr%num_pvr
         ist_img = lic%pvr%istack_pvr_images(i_lic-1)

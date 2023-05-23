@@ -91,8 +91,6 @@
 !>        Structures of LIC rendering controls
         type(lic_rendering_controls) :: lic_ctls
 !
-!>        Structures of volume rendering controls
-        type(volume_rendering_controls) :: pvr_anaglyph_ctls
 !>        Structures of LIC rendering controls
         type(lic_rendering_controls) :: lic_anaglyph_ctls
 !
@@ -152,7 +150,6 @@
       call dealloc_fline_ctl_struct(viz_ctls%fline_ctls)
       call dealloc_lic_ctl_struct(viz_ctls%lic_ctls)
 !
-      call dealloc_pvr_ctl_struct(viz_ctls%pvr_anaglyph_ctls)
       call dealloc_lic_ctl_struct(viz_ctls%lic_anaglyph_ctls)
 !
       viz_ctls%delta_t_psf_v_ctl%iflag =   0
@@ -204,11 +201,6 @@
       if(viz_ctls%fline_ctls%num_fline_ctl .gt. 0) then
         call add_fields_4_flines_to_fld_ctl(viz_ctls%fline_ctls,        &
      &                                      field_ctl)
-      end if
-!
-      if(viz_ctls%pvr_anaglyph_ctls%num_pvr_ctl .gt. 0) then
-        call add_fields_4_pvrs_to_fld_ctl(viz_ctls%pvr_anaglyph_ctls,   &
-     &                                    field_ctl)
       end if
 !
       if(viz_ctls%lic_anaglyph_ctls%num_lic_ctl .gt. 0) then
