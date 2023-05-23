@@ -16,6 +16,7 @@
       module t_sort_PVRs_by_type
 !
       use m_precision
+      use m_constants
 !
       use t_control_data_4_pvr
 !
@@ -75,7 +76,7 @@
      &                                   PVR_sort%nPVR_modes(1:6))
       end do
 !
-      call s_cal_total_and_stacks(num_pvr, PVR_sort%nPVR_modes, izero,  &
+      call s_cal_total_and_stacks(isix, PVR_sort%nPVR_modes, izero,     &
      &    PVR_sort%istack_PVR_modes, ntot)
 !
       PVR_sort%nPVR_modes(1:6) = 0
