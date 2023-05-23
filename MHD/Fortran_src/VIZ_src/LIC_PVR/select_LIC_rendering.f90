@@ -358,6 +358,7 @@
       use set_PVR_view_and_images
       use calypso_reverse_send_recv
       use bring_back_rendering_counts
+      use LIC_movie_w_each_repart
       use LIC_anaglyph_w_each_repart
 !
       integer(kind = kint), intent(in) :: istep_lic
@@ -383,7 +384,7 @@
 !
       call alloc_lic_repart_ref(geofem%mesh%node, rep_ref_snap)
       ist_lic = pvr%PVR_sort%istack_PVR_modes(0) + 1
-      ied_lic = pvr%PVR_sort%istack_PVR_modes(4)
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(2)
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
@@ -411,54 +412,28 @@
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
 !
-        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
-     &                                  .eq. IFLAG_NO_MOVIE) then
-          if(my_rank .eq. 0) write(*,*)                                 &
-     &                     's_each_LIC_rendering each', i_lic
-          if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-          if(num_img .eq. 1) then
-            call single_PVR_view_matrices(repart_data%viz_fem%mesh,     &
-     &          pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),           &
-     &          pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
-          else
-            call quilt_PVR_view_matrices                                &
-     &         (num_img, repart_data%viz_fem%mesh,                      &
-     &          pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),           &
-     &          pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
-          end if
-!
-          call s_each_LIC_rendering                                     &
-     &       (istep_lic, time, num_img, repart_data%viz_fem,            &
-     &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
-     &        pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),            &
-     &        pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
-          call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),    &
-     &        pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
-          if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
-!
-        else if(pvr%pvr_param(i_lic)%stereo_def%flag_quilt) then
-          call each_LIC_quilt_rendering_w_rot                           &
-     &       (istep_lic, time, num_img, repart_data%viz_fem,            &
-     &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
-     &        pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),               &
-     &        pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),          &
-     &        rep_ref_viz, m_SR)
-         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
-         call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
-         call dealloc_iflag_pvr_used_ele                                &
-     &      (pvr%pvr_param(i_lic)%draw_param)
+        if(my_rank .eq. 0) write(*,*)                                   &
+     &                   's_each_LIC_rendering each', i_lic
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+        if(pvr%pvr_param(i_lic)%stereo_def%flag_quilt) then
+          call quilt_PVR_view_matrices                                  &
+     &       (num_img, repart_data%viz_fem%mesh,                        &
+     &        pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),             &
+     &        pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
         else
-          call s_each_LIC_rendering_w_rot                               &
-     &       (istep_lic, time, repart_data%viz_fem,                     &
-     &        repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic), &
-     &        pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic),               &
-     &        pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),          &
-     &        rep_ref_viz, m_SR)
-         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
-         call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
-         call dealloc_iflag_pvr_used_ele                                &
-     &      (pvr%pvr_param(i_lic)%draw_param)
+          call single_PVR_view_matrices(repart_data%viz_fem%mesh,       &
+     &        pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),             &
+     &        pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
         end if
+!
+        call s_each_LIC_rendering                                       &
+     &     (istep_lic, time, num_img, repart_data%viz_fem,              &
+     &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
+     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
+     &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
+        call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),      &
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_INT_COUNT_BASED) then
@@ -494,8 +469,6 @@
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%istack_pvr_images(i_lic-1)
         num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
-        if(pvr%pvr_param(i_lic)%movie_def%iflag_movie_mode              &
-     &                                  .ne. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_lic)%stereo_def%flag_quilt) then
           call set_output_rot_sequence_image(istep_lic, -1,             &
      &        pvr%pvr_rgb(ist_img+1)%id_pvr_file_type,                  &
@@ -507,6 +480,14 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
       call dealloc_lic_repart_ref(rep_ref_snap)
 !
+      call LIC_movie_visualize_each_repart                              &
+     &   (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,         &
+     &    repart_p, rep_ref_m, repart_data, pvr, lic_param,             &
+     &    rep_ref, m_SR)
+      call LIC_movie_quilt_each_repart                                  &
+     &   (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,         &
+     &    repart_p, rep_ref_m, repart_data, pvr, lic_param,             &
+     &    rep_ref, m_SR)
       call s_LIC_anaglyph_w_each_repart                                 &
      &   (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,         &
      &    repart_p, rep_ref_m, repart_data, pvr, lic_param,             &
