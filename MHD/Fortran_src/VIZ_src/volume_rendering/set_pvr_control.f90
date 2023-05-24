@@ -84,7 +84,6 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
 !
-      integer(kind = kint) :: i_pvr
       integer(kind = kint) :: icheck_ncomp(1)
 !
 !

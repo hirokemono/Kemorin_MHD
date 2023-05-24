@@ -9,7 +9,7 @@
 !!      subroutine count_num_rendering_and_images(num_pvr, pvr_param,   &
 !!     &          num_pvr_images, istack_pvr_images)
 !!      subroutine set_rendering_and_image_pes(num_pe, num_pvr, pvr_ctl,&
-!!     &          pvr_sort, num_pvr_images, istack_pvr_images, pvr_rgb)
+!!     &          pvr_sort, num_pvr_images, pvr_rgb)
 !!        integer, intent(in) :: num_pe
 !!        integer(kind = kint), intent(in) :: num_pvr
 !!        integer(kind = kint), intent(in) :: num_pvr_images
@@ -79,7 +79,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_rendering_and_image_pes(num_pe, num_pvr, pvr_ctl,  &
-     &          PVR_sort, num_pvr_images, istack_pvr_images, pvr_rgb)
+     &          PVR_sort, num_pvr_images, pvr_rgb)
 !
       use set_composition_pe_range
       use set_parallel_file_name
@@ -91,7 +91,6 @@
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
       type(sort_PVRs_by_type), intent(in) :: PVR_sort
 !
-      integer(kind = kint), intent(in) :: istack_pvr_images(0:num_pvr)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
       integer(kind = kint) :: i_pvr, i_ctl, ist, ied, i
@@ -99,12 +98,12 @@
 !
       call s_set_composition_pe_range                                   &
      &   (num_pe, num_pvr, PVR_sort%istack_PVR_modes,                   &
-     &    num_pvr_images, istack_pvr_images, pvr_rgb)
+     &    num_pvr_images, PVR_sort%istack_pvr_images, pvr_rgb)
 !
       do i_ctl = 1, num_pvr
         i_pvr = PVR_sort%ipvr_sorted(i_ctl)
-        ist = istack_pvr_images(i_pvr-1) + 1
-        ied = istack_pvr_images(i_pvr  )
+        ist = PVR_sort%istack_pvr_images(i_pvr-1) + 1
+        ied = PVR_sort%istack_pvr_images(i_pvr  )
         do i = ist, ied
           call set_pvr_file_control(pvr_ctl(i_ctl),                     &
      &                            pvr_rgb(i)%iflag_monitoring,          &

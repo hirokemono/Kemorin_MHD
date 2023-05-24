@@ -109,7 +109,7 @@
       ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
       ied_lic = pvr%PVR_sort%istack_PVR_modes(5)
       do i_lic = ist_lic, ied_lic
-        ist_img = pvr%istack_pvr_images(i_lic-1)
+        ist_img = pvr%PVR_sort%istack_pvr_images(i_lic-1)
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
@@ -163,7 +163,8 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       call output_PVR_images(istep_lic, pvr%num_pvr, ist_lic, ied_lic,  &
-     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
+     &    pvr%num_pvr_images, pvr%PVR_sort%istack_pvr_images,           &
+     &    pvr%pvr_rgb)
       call dealloc_lic_repart_ref(rep_ref_snap)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
@@ -210,7 +211,7 @@
       ist_lic = pvr%PVR_sort%istack_PVR_modes(5) + 1
       ied_lic = pvr%PVR_sort%istack_PVR_modes(6)
       do i_lic = ist_lic, ied_lic
-        ist_img = pvr%istack_pvr_images(i_lic-1)
+        ist_img = pvr%PVR_sort%istack_pvr_images(i_lic-1)
 !
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'

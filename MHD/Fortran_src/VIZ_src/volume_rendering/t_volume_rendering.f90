@@ -83,8 +83,6 @@
 !
 !>        Number of image files for volume rendering
         integer(kind = kint) :: num_pvr_images =    0
-!>        Number of image files for volume rendering
-        integer(kind = kint), allocatable :: istack_pvr_images(:)
 !>        Structure for projection data
         type(PVR_projection_data), allocatable :: pvr_proj(:)
 !>        Structure for PVR images
@@ -118,6 +116,7 @@
       integer(kind = kint) :: i_ctl, i_pvr
 !
 !
+      call alloc_pvr_data(pvr)
       call s_sort_PVRs_by_type(pvr%num_pvr, pvr_ctls%pvr_ctl_type,      &
      &                         pvr%PVR_sort)
 !
@@ -135,7 +134,6 @@
         end do
       end if
 !
-      call alloc_pvr_data(pvr)
       do i_pvr = 1, pvr%num_pvr
         call alloc_nod_data_4_pvr                                       &
      &     (geofem%mesh%node%numnod, geofem%mesh%ele%numele,            &
@@ -151,12 +149,12 @@
       end do
 !
       call count_num_rendering_and_images(pvr%num_pvr, pvr%pvr_param,   &
-     &    pvr%num_pvr_images, pvr%istack_pvr_images)
+     &    pvr%num_pvr_images, pvr%PVR_sort%istack_pvr_images)
       call alloc_pvr_images(pvr)
 !
       call set_rendering_and_image_pes                                  &
      &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type, pvr%PVR_sort,     &
-     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
+     &    pvr%num_pvr_images, pvr%pvr_rgb)
       call dealloc_sort_PVRs_list(pvr%PVR_sort)
 !
       end subroutine set_from_PVR_control
@@ -234,12 +232,11 @@
       type(volume_rendering_module), intent(inout) :: pvr
 !
 !
-      allocate(pvr%istack_pvr_images(0:pvr%num_pvr))
-      pvr%istack_pvr_images = 0
-!
       allocate(pvr%pvr_param(pvr%num_pvr))
       allocate(pvr%field_pvr(pvr%num_pvr))
       allocate(pvr%pvr_bound(pvr%num_pvr))
+!
+      call alloc_sort_PVRs_by_type(pvr%num_pvr, pvr%PVR_sort)
 !
       end subroutine alloc_pvr_data
 !
@@ -281,6 +278,8 @@
       integer(kind = kint) :: i_pvr
 !
 !
+      call dealloc_sort_PVRs_list(pvr%PVR_sort)
+!
       do i_pvr = 1, pvr%num_pvr
         call dealloc_iflag_pvr_boundaries                               &
      &     (pvr%pvr_param(i_pvr)%draw_param)
@@ -300,7 +299,6 @@
         call flush_rendering_4_fixed_view(pvr%pvr_proj(i_pvr))
       end do
       deallocate(pvr%pvr_rgb, pvr%pvr_proj)
-      deallocate(pvr%istack_pvr_images)
 !
       end subroutine dealloc_pvr_and_lic_data
 !

@@ -86,7 +86,7 @@
 !
       type(each_lic_trace_counts) :: l_elsp1
       integer(kind = kint) :: inum, iflag_comm
-      integer(kind = kint) :: inod, ip, ip_smp
+      integer(kind = kint) :: ip, ip_smp
 !
 #ifdef _OPENMP
       integer, external :: omp_get_thread_num

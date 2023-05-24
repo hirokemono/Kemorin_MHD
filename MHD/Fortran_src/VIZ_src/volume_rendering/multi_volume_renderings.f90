@@ -8,12 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine set_PVR_view_and_images                              &
-!!     &         (num_pvr, num_pvr_images, istack_pvr_images,           &
-!!     &          mesh, PVR_sort, pvr_rgb, pvr_param,                   &
-!!     &          pvr_bound, pvr_proj, m_SR)
+!!     &         (num_pvr, num_pvr_images, mesh, PVR_sort, pvr_rgb,     &
+!!     &          pvr_param, pvr_bound, pvr_proj, m_SR)
 !!        integer(kind = kint), intent(in) :: num_pvr, num_pvr_images
-!!        integer(kind = kint), intent(in)                              &
-!!     &                       :: istack_pvr_images(0:num_pvr)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(sort_PVRs_by_type), intent(in) :: PVR_sort
 !!        type(pvr_image_type), intent(in) :: pvr_rgb(num_pvr_images)
@@ -74,15 +71,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_PVR_view_and_images                                &
-     &         (num_pvr, num_pvr_images, istack_pvr_images,             &
-     &          mesh, PVR_sort, pvr_rgb, pvr_param,                     &
-     &          pvr_bound, pvr_proj, m_SR)
+     &         (num_pvr, num_pvr_images, mesh, PVR_sort, pvr_rgb,       &
+     &          pvr_param, pvr_bound, pvr_proj, m_SR)
 !
       use set_PVR_view_and_image
 !
       integer(kind = kint), intent(in) :: num_pvr, num_pvr_images
-      integer(kind = kint), intent(in)                                  &
-     &                       :: istack_pvr_images(0:num_pvr)
       type(mesh_geometry), intent(in) :: mesh
       type(sort_PVRs_by_type), intent(in) :: PVR_sort
       type(pvr_image_type), intent(in) :: pvr_rgb(num_pvr_images)
@@ -101,7 +95,7 @@
       ist_pvr = PVR_sort%istack_PVR_modes(0) + 1
       ied_pvr = PVR_sort%istack_PVR_modes(1)
       do i_pvr = ist_pvr, ied_pvr
-        ist_img = istack_pvr_images(i_pvr-1)
+        ist_img = PVR_sort%istack_pvr_images(i_pvr-1)
         call single_PVR_view_matrices                                   &
      &     (mesh, pvr_rgb(ist_img+1), pvr_param(i_pvr),                 &
      &      pvr_bound(i_pvr), pvr_proj(ist_img+1), m_SR)
@@ -111,8 +105,8 @@
       ist_pvr = PVR_sort%istack_PVR_modes(1) + 1
       ied_pvr = PVR_sort%istack_PVR_modes(2)
       do i_pvr = ist_pvr, ied_pvr
-        ist_img = istack_pvr_images(i_pvr-1)
-        num_img = istack_pvr_images(i_pvr  ) - ist_img
+        ist_img = PVR_sort%istack_pvr_images(i_pvr-1)
+        num_img = PVR_sort%istack_pvr_images(i_pvr  ) - ist_img
         call quilt_PVR_view_matrices                                    &
      &     (num_img, mesh, pvr_rgb(ist_img+1), pvr_param(i_pvr),        &
      &      pvr_bound(i_pvr), pvr_proj(ist_img+1), m_SR)
@@ -147,8 +141,8 @@
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(2)
       do i_pvr = ist_pvr, ied_pvr
-        ist_img = pvr%istack_pvr_images(i_pvr-1)
-        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        ist_img = pvr%PVR_sort%istack_pvr_images(i_pvr-1)
+        num_img = pvr%PVR_sort%istack_pvr_images(i_pvr  ) - ist_img
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .ne. IFLAG_NO_MOVIE) cycle
 !
@@ -188,7 +182,7 @@
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(2) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(3)
       do i_pvr = ist_pvr, ied_pvr
-        ist_img = pvr%istack_pvr_images(i_pvr-1)
+        ist_img = pvr%PVR_sort%istack_pvr_images(i_pvr-1)
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) cycle
@@ -230,8 +224,8 @@
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(3) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(4)
       do i_pvr = ist_pvr, ied_pvr
-        ist_img = pvr%istack_pvr_images(i_pvr-1)
-        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        ist_img = pvr%PVR_sort%istack_pvr_images(i_pvr-1)
+        num_img = pvr%PVR_sort%istack_pvr_images(i_pvr  ) - ist_img
         if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
      &                                 .eq. IFLAG_NO_MOVIE) cycle
         if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) then

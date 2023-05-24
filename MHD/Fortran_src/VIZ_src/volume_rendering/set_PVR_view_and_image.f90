@@ -117,8 +117,6 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_img
-!
 !
       call rot_multi_view_projection_mats(ione, izero, pvr_param,       &
      &                                    pvr_proj(1)%screen)

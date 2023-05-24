@@ -73,8 +73,7 @@
       type(volume_rendering_module), intent(inout) :: pvr
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
-      integer(kind = kint) :: ist_img, num_img
+      integer(kind = kint) :: i_pvr, ist_img, num_img
 !
 !
       pvr%num_pvr = pvr_ctls%num_pvr_ctl
@@ -107,8 +106,8 @@
       call init_sf_grp_list_each_surf                                   &
      &   (geofem%mesh%surf, geofem%group%surf_grp, pvr%sf_grp_4_sf)
       do i_pvr = 1, pvr%num_pvr
-        ist_img = pvr%istack_pvr_images(i_pvr-1)
-        num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img
+        ist_img = pvr%PVR_sort%istack_pvr_images(i_pvr-1)
+        num_img = pvr%PVR_sort%istack_pvr_images(i_pvr  ) - ist_img
         call init_each_PVR_image(num_img, pvr%pvr_param(i_pvr),         &
      &                           pvr%pvr_rgb(ist_img+1))
         call each_PVR_initialize(geofem%mesh, geofem%group,             &
@@ -116,13 +115,12 @@
       end do
 !
 !
-      call set_PVR_view_and_images                                      &
-     &   (pvr%num_pvr, pvr%num_pvr_images, pvr%istack_pvr_images,       &
+      call set_PVR_view_and_images(pvr%num_pvr, pvr%num_pvr_images,     &
      &    geofem%mesh, pvr%PVR_sort, pvr%pvr_rgb, pvr%pvr_param,        &
      &    pvr%pvr_bound, pvr%pvr_proj, m_SR)
       call PVR_anaglyph_view_and_images                                 &
-     &   (pvr%num_pvr, pvr%num_pvr_images, pvr%istack_pvr_images,       &
-     &    geofem%mesh, pvr%PVR_sort, pvr%pvr_rgb, pvr%pvr_param,        &
+     &   (pvr%num_pvr, pvr%num_pvr_images, geofem%mesh,                 &
+     &    pvr%PVR_sort, pvr%pvr_rgb, pvr%pvr_param,                     &
      &    pvr%pvr_bound, pvr%pvr_proj, m_SR)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+7)
 !
@@ -166,13 +164,14 @@
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(1)
       call output_PVR_images(istep_pvr, pvr%num_pvr, ist_pvr, ied_pvr,  &
-     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
+     &    pvr%num_pvr_images, pvr%PVR_sort%istack_pvr_images,           &
+     &    pvr%pvr_rgb)
 !
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(1) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(2)
       call output_quilt_PVR_images                                      &
      &   (istep_pvr, pvr%num_pvr, ist_pvr, ied_pvr,                     &
-     &    pvr%num_pvr_images, pvr%istack_pvr_images,                    &
+     &    pvr%num_pvr_images, pvr%PVR_sort%istack_pvr_images,           &
      &    pvr%pvr_param, pvr%pvr_rgb)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !

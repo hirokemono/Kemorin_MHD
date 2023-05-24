@@ -194,13 +194,13 @@
         return
       end if
 !
-      call bcast_lic_controls(lic%pvr%num_pvr,                          &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%pvr%cflag_update)
-!
       call set_ctl_param_vol_repart(repart_ctl, lic%repart_p)
       call set_lic_repart_reference_param                               &
      &   (repart_ctl%new_part_ctl, lic%repart_p, lic%rep_ref_m)
+!
+      call bcast_lic_controls(lic%pvr%num_pvr,                          &
+     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
+     &    lic%pvr%cflag_update)
 !
       call alloc_pvr_data(lic%pvr)
 !
@@ -218,13 +218,12 @@
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
-     &    lic%pvr%num_pvr_images, lic%pvr%istack_pvr_images)
+     &    lic%pvr%num_pvr_images, lic%pvr%PVR_sort%istack_pvr_images)
       call alloc_pvr_images(lic%pvr)
 !
       call set_rendering_and_image_pes                                  &
      &   (nprocs, lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,               &
-     &    lic%pvr%PVR_sort, lic%pvr%num_pvr_images,                     &
-     &    lic%pvr%istack_pvr_images, lic%pvr%pvr_rgb)
+     &    lic%pvr%PVR_sort, lic%pvr%num_pvr_images, lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
@@ -247,8 +246,8 @@
       end do
 !
       do i_lic = 1, lic%pvr%num_pvr
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1)
-        num_img = lic%pvr%istack_pvr_images(i_lic  ) - ist_img
+        ist_img = lic%pvr%PVR_sort%istack_pvr_images(i_lic-1)
+        num_img = lic%pvr%PVR_sort%istack_pvr_images(i_lic  ) - ist_img
         call init_each_PVR_image(num_img, lic%pvr%pvr_param(i_lic),     &
      &                           lic%pvr%pvr_rgb(ist_img+1))
       end do
@@ -267,7 +266,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_visualize(istep_lic, time, geofem, ele_comm,       &
-     &                         next_tbl,  nod_fld, lic, m_SR)
+     &                         next_tbl, nod_fld, lic, m_SR)
 !
       use m_elapsed_labels_4_VIZ
       use select_LIC_rendering

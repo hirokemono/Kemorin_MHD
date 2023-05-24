@@ -6,9 +6,10 @@
 !>@brief Set PVR parameters from control files
 !!
 !!@verbatim
-!!      subroutine s_sort_PVRs_by_type(num_pvr, pvr_ctl, PVR_sort)
+!!      subroutine alloc_sort_PVRs_by_type(num_pvr, PVR_sort)
 !!      subroutine dealloc_sort_PVRs_list(PVR_sort)
 !!      subroutine dealloc_sort_PVRs_by_type(PVR_sort)
+!!      subroutine s_sort_PVRs_by_type(num_pvr, pvr_ctl, PVR_sort)
 !!        integer(kind = kint), intent(in) :: num_pvr
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl(num_pvr)
 !!        type(sort_PVRs_by_type), intent(inout) :: PVR_sort
@@ -23,17 +24,19 @@
       implicit none
 !
       type sort_PVRs_by_type
-        integer(kind = kint), pointer :: nPVR_modes(:)
         integer(kind = kint), allocatable :: istack_PVR_modes(:)
+!>        Number of image files for volume rendering
+        integer(kind = kint), allocatable :: istack_pvr_images(:)
 !
+        integer(kind = kint), allocatable :: ipvr_sorted(:)
+!
+        integer(kind = kint), pointer :: nPVR_modes(:)
         integer(kind = kint), pointer :: nPVR_base
         integer(kind = kint), pointer :: nPVR_quilt
         integer(kind = kint), pointer :: nPVR_movie
         integer(kind = kint), pointer :: nPVR_movie_quilt
         integer(kind = kint), pointer :: nPVR_anaglyph
         integer(kind = kint), pointer :: nPVR_mov_anaglyph
-!
-        integer(kind = kint), allocatable :: ipvr_sorted(:)
       end type sort_PVRs_by_type
 !
       private :: count_anaglyph_PVRs_by_type, count_quilt_PVRs_by_type
@@ -43,6 +46,64 @@
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_sort_PVRs_by_type(num_pvr, PVR_sort)
+!
+      integer(kind = kint), intent(in) :: num_pvr
+!
+      type(sort_PVRs_by_type), intent(inout) :: PVR_sort
+!
+!
+      allocate(PVR_sort%istack_pvr_images(0:num_pvr))
+!$omp parallel workshare
+      PVR_sort%istack_pvr_images(0:num_pvr) = 0
+!$omp end parallel workshare
+!
+      allocate(PVR_sort%ipvr_sorted(num_pvr))
+!$omp parallel workshare
+      PVR_sort%ipvr_sorted(1:num_pvr) = 0
+!$omp end parallel workshare
+!
+      allocate(PVR_sort%nPVR_modes(6))
+      allocate(PVR_sort%istack_PVR_modes(0:6))
+      PVR_sort%nPVR_modes(1:6) =       0
+      PVR_sort%istack_PVR_modes(0:6) = 0
+!
+      PVR_sort%nPVR_base =>  PVR_sort%nPVR_modes(1)
+      PVR_sort%nPVR_quilt => PVR_sort%nPVR_modes(2)
+      PVR_sort%nPVR_movie => PVR_sort%nPVR_modes(3)
+      PVR_sort%nPVR_movie_quilt =>  PVR_sort%nPVR_modes(4)
+      PVR_sort%nPVR_anaglyph =>     PVR_sort%nPVR_modes(5)
+      PVR_sort%nPVR_mov_anaglyph => PVR_sort%nPVR_modes(6)
+!
+      end subroutine alloc_sort_PVRs_by_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_sort_PVRs_list(PVR_sort)
+!
+      type(sort_PVRs_by_type), intent(inout) :: PVR_sort
+!
+!
+      if(allocated(PVR_sort%ipvr_sorted) .eqv. .FALSE.) return
+      deallocate(PVR_sort%ipvr_sorted, PVR_sort%istack_pvr_images)
+!
+      end subroutine dealloc_sort_PVRs_list
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_sort_PVRs_by_type(PVR_sort)
+!
+      type(sort_PVRs_by_type), intent(inout) :: PVR_sort
+!
+!
+      if(allocated(PVR_sort%istack_PVR_modes) .eqv. .FALSE.) return
+      deallocate(PVR_sort%nPVR_modes, PVR_sort%istack_PVR_modes)
+!
+      end subroutine dealloc_sort_PVRs_by_type
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine s_sort_PVRs_by_type(num_pvr, pvr_ctl, PVR_sort)
@@ -56,20 +117,6 @@
 !
       integer(kind = kint) :: i_pvr, i, ntot
 !
-      allocate(PVR_sort%ipvr_sorted(num_pvr))
-      PVR_sort%ipvr_sorted(1:num_pvr) = 0
-!
-      allocate(PVR_sort%nPVR_modes(6))
-      allocate(PVR_sort%istack_PVR_modes(0:6))
-      PVR_sort%nPVR_modes(1:6) =       0
-      PVR_sort%istack_PVR_modes(0:6) = 0
-!
-      PVR_sort%nPVR_base =>  PVR_sort%nPVR_modes(1)
-      PVR_sort%nPVR_quilt => PVR_sort%nPVR_modes(2)
-      PVR_sort%nPVR_movie => PVR_sort%nPVR_modes(3)
-      PVR_sort%nPVR_movie_quilt =>  PVR_sort%nPVR_modes(4)
-      PVR_sort%nPVR_anaglyph =>     PVR_sort%nPVR_modes(5)
-      PVR_sort%nPVR_mov_anaglyph => PVR_sort%nPVR_modes(6)
 !
       do i_pvr = 1, num_pvr
         call count_anaglyph_PVRs_by_type(pvr_ctl(i_pvr),                &
@@ -87,30 +134,6 @@
       end do
 !
       end subroutine s_sort_PVRs_by_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_sort_PVRs_list(PVR_sort)
-!
-      type(sort_PVRs_by_type), intent(inout) :: PVR_sort
-!
-!
-      if(allocated(PVR_sort%ipvr_sorted) .eqv. .FALSE.) return
-      deallocate(PVR_sort%ipvr_sorted)
-!
-      end subroutine dealloc_sort_PVRs_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_sort_PVRs_by_type(PVR_sort)
-!
-      type(sort_PVRs_by_type), intent(inout) :: PVR_sort
-!
-!
-      if(allocated(PVR_sort%istack_PVR_modes) .eqv. .FALSE.) return
-      deallocate(PVR_sort%nPVR_modes, PVR_sort%istack_PVR_modes)
-!
-      end subroutine dealloc_sort_PVRs_by_type
 !
 !  ---------------------------------------------------------------------
 !
