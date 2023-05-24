@@ -118,6 +118,23 @@
       integer(kind = kint) :: i_ctl, i_pvr
 !
 !
+      call s_sort_PVRs_by_type(pvr%num_pvr, pvr_ctls%pvr_ctl_type,      &
+     &                         pvr%PVR_sort)
+!
+      if(iflag_debug .gt. 0) then
+        do i_pvr = 0, 6
+          write(*,*) i_pvr, 'pvr%istack_PVR_modes',                     &
+    &       pvr%PVR_sort%istack_PVR_modes(i_pvr)
+        end do
+        do i_pvr = 1, pvr%num_pvr
+          write(*,*) i_pvr, trim(pvr_ctls%fname_pvr_ctl(i_pvr)), ' ',   &
+    &    yes_flag(pvr_ctls%pvr_ctl_type(i_pvr)%anaglyph_ctl%charavalue),&
+    &    ' ', pvr_ctls%pvr_ctl_type(i_pvr)%movie%movie_mode_ctl%iflag,  &
+    &    yes_flag(pvr_ctls%pvr_ctl_type(i_pvr)%quilt_ctl%charavalue),   &
+    &    ' ', pvr%PVR_sort%ipvr_sorted(i_pvr)
+        end do
+      end if
+!
       call alloc_pvr_data(pvr)
       do i_pvr = 1, pvr%num_pvr
         call alloc_nod_data_4_pvr                                       &
@@ -132,6 +149,15 @@
         call s_set_pvr_controls(geofem%group, nod_fld,                  &
      &      pvr_ctls%pvr_ctl_type(i_ctl), pvr%pvr_param(i_pvr))
       end do
+!
+      call count_num_rendering_and_images(pvr%num_pvr, pvr%pvr_param,   &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images)
+      call alloc_pvr_images(pvr)
+!
+      call set_rendering_and_image_pes                                  &
+     &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type, pvr%PVR_sort,     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
+      call dealloc_sort_PVRs_list(pvr%PVR_sort)
 !
       end subroutine set_from_PVR_control
 !

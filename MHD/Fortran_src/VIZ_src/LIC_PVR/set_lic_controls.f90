@@ -15,14 +15,15 @@
 !!        type(lic_parameter_ctl), intent(inout)                        &
 !!     &                        :: lic_ctl_type(num_lic_ctl)
 !!      subroutine s_set_lic_controls(group, nod_fld, num_lic, pvr_sort,&
-!!     &           pvr_ctl_type, lic_ctl_type, PVR_sort,                &
+!!     &           fname_lic_ctl, pvr_ctl_type, lic_ctl_type, PVR_sort, &
 !!     &           lic_param, pvr_param, rep_ref, flag_each_repart)
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
+!!        character(len = kchara), intent(in) :: fname_lic_ctl(num_lic)
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
-!!        type(sort_PVRs_by_type), intent(in) :: PVR_sort
+!!        type(sort_PVRs_by_type), intent(inout) :: PVR_sort
 !!        type(lic_parameters), intent(inout) :: lic_param(num_lic)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
 !!        type(lic_repart_reference), intent(inout) :: rep_ref(num_lic)
@@ -84,8 +85,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_lic_controls(group, nod_fld, num_lic,            &
-     &           pvr_ctl_type, lic_ctl_type, PVR_sort,                  &
-     &           lic_param, pvr_param, rep_ref, flag_each_repart)
+     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type, PVR_sort,    &
+     &          lic_param, pvr_param, rep_ref, flag_each_repart)
 !
       use m_error_IDs
       use t_phys_data
@@ -104,10 +105,12 @@
       integer(kind = kint), intent(in) :: num_lic
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
+!
+      character(len = kchara), intent(in) :: fname_lic_ctl(num_lic)
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
       type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
-      type(sort_PVRs_by_type), intent(in) :: PVR_sort
 !
+      type(sort_PVRs_by_type), intent(inout) :: PVR_sort
       type(lic_parameters), intent(inout) :: lic_param(num_lic)
       type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
       type(lic_repart_reference), intent(inout) :: rep_ref(num_lic)
@@ -116,6 +119,22 @@
       integer(kind = kint) :: i_ctl, i_lic
 !
 !
+      call s_sort_PVRs_by_type(num_lic, pvr_ctl_type, PVR_sort)
+!
+      if(iflag_debug .gt. 0) then
+        do i_lic = 0, 6
+          write(*,*) i_lic, 'PVR_sort%istack_PVR_modes',                &
+    &       PVR_sort%istack_PVR_modes(i_lic)
+        end do
+        do i_lic = 1, num_lic
+          write(*,*) i_lic, trim(fname_lic_ctl(i_lic)), '  ',           &
+    &            yes_flag(pvr_ctl_type(i_lic)%anaglyph_ctl%charavalue), &
+    &            '  ', pvr_ctl_type(i_lic)%movie%movie_mode_ctl%iflag,  &
+    &            yes_flag(pvr_ctl_type(i_lic)%quilt_ctl%charavalue),    &
+    &            '  ', PVR_sort%ipvr_sorted(i_lic)
+        end do
+      end if
+ !
       flag_each_repart = .FALSE.
       do i_ctl = 1, num_lic
         i_lic = PVR_sort%ipvr_sorted(i_ctl)

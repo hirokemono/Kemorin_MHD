@@ -62,7 +62,6 @@
 !
       use t_control_data_pvr_sections
       use set_pvr_control
-      use rendering_and_image_nums
       use each_volume_rendering
       use each_anaglyph_PVR
       use multi_volume_renderings
@@ -93,49 +92,22 @@
      &    pvr_ctls%pvr_ctl_type, pvr%cflag_update)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+5)
 !
-      call s_sort_PVRs_by_type(pvr%num_pvr, pvr_ctls%pvr_ctl_type,      &
-     &                         pvr%PVR_sort)
-!
-!
-      if(my_rank .eq. 0) then
-        do i_pvr = 0, 6
-          write(*,*) i_pvr, 'pvr%istack_PVR_modes', &
-    &       pvr%PVR_sort%istack_PVR_modes(i_pvr)
-        end do
-        do i_pvr = 1, pvr%num_pvr
-          write(*,*) i_pvr, trim(pvr_ctls%fname_pvr_ctl(i_pvr)), '  ',  &
-    &    yes_flag(pvr_ctls%pvr_ctl_type(i_pvr)%anaglyph_ctl%charavalue),&
-    &    '  ', pvr_ctls%pvr_ctl_type(i_pvr)%movie%movie_mode_ctl%iflag, &
-    &    yes_flag(pvr_ctls%pvr_ctl_type(i_pvr)%quilt_ctl%charavalue),   &
-    &    '  ', pvr%PVR_sort%ipvr_sorted(i_pvr)
-        end do
-      end if
- !
+      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
       call set_from_PVR_control(geofem, nod_fld, pvr_ctls, pvr)
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+6)
-      call count_num_rendering_and_images(pvr%num_pvr, pvr%pvr_param,   &
-     &    pvr%num_pvr_images, pvr%istack_pvr_images)
-      call alloc_pvr_images(pvr)
-!
-      call set_rendering_and_image_pes                                  &
-     &   (nprocs, pvr%num_pvr, pvr_ctls%pvr_ctl_type, pvr%PVR_sort,     &
-     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
-!
-      do i_pvr = 1, pvr_ctls%num_pvr_ctl
-        if(pvr_ctls%fname_pvr_ctl(i_pvr) .ne. 'NO_FILE'                 &
-     &      .or. my_rank .ne. 0) then
-          call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
-        end if
-      end do
-      call dealloc_sort_PVRs_list(pvr%PVR_sort)
+      call dealloc_pvr_ctl_struct(pvr_ctls)
+      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+6)
+!      do i_pvr = 1, pvr_ctls%num_pvr_ctl
+!        if(pvr_ctls%fname_pvr_ctl(i_pvr) .ne. 'NO_FILE'                &
+!     &      .or. my_rank .ne. 0) then
+!          call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
+!        end if
+!      end do
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+7)
       call init_sf_grp_list_each_surf                                   &
      &   (geofem%mesh%surf, geofem%group%surf_grp, pvr%sf_grp_4_sf)
-!
-!
       do i_pvr = 1, pvr%num_pvr
         ist_img = pvr%istack_pvr_images(i_pvr-1)
         num_img = pvr%istack_pvr_images(i_pvr  ) - ist_img

@@ -211,27 +211,10 @@
 !
       allocate(lic%lic_param(lic%pvr%num_pvr))
       allocate(lic%rep_ref(lic%pvr%num_pvr))
-      call s_sort_PVRs_by_type(lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,  &
-     &                         lic%pvr%PVR_sort)
-!
-      if(my_rank .eq. 0) then
-        do i_lic = 0, 6
-          write(*,*) i_lic, 'lic%istack_PVR_modes', &
-    &       lic%pvr%PVR_sort%istack_PVR_modes(i_lic)
-        end do
-        do i_lic = 1, lic%pvr%num_pvr
-          write(*,*) i_lic, trim(lic_ctls%fname_lic_ctl(i_lic)), '  ',  &
-    &    yes_flag(lic_ctls%pvr_ctl_type(i_lic)%anaglyph_ctl%charavalue),&
-    &    '  ', lic_ctls%pvr_ctl_type(i_lic)%movie%movie_mode_ctl%iflag, &
-    &    yes_flag(lic_ctls%pvr_ctl_type(i_lic)%quilt_ctl%charavalue),   &
-    &    '  ', lic%pvr%PVR_sort%ipvr_sorted(i_lic)
-        end do
-      end if
- !
       call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%pvr%PVR_sort, lic%lic_param, lic%pvr%pvr_param,           &
-     &    lic%rep_ref, lic%flag_each_repart)
+     &    lic_ctls%fname_lic_ctl, lic_ctls%pvr_ctl_type,                &
+     &    lic_ctls%lic_ctl_type, lic%pvr%PVR_sort, lic%lic_param,       &
+     &    lic%pvr%pvr_param, lic%rep_ref, lic%flag_each_repart)
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &

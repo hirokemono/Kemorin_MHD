@@ -95,7 +95,6 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       real(kind = kreal) :: elapse_ray_trace_out(2)
-      integer(kind = kint) :: i, j, k, ipix
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'

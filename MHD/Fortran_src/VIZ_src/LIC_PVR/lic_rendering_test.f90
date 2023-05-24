@@ -111,12 +111,10 @@
 !
       allocate(lic%lic_param(lic%pvr%num_pvr))
       allocate(lic%rep_ref(lic%pvr%num_pvr))
-      call s_sort_PVRs_by_type(lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,  &
-     &                         lic%pvr%PVR_sort)
       call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%pvr%PVR_sort, lic%lic_param, lic%pvr%pvr_param,           &
-     &    lic%rep_ref, lic%flag_each_repart)
+     &    lic_ctls%fname_lic_ctl, lic_ctls%pvr_ctl_type,                &
+     &    lic_ctls%lic_ctl_type, lic%pvr%PVR_sort, lic%lic_param,       &
+     &    lic%pvr%pvr_param, lic%rep_ref, lic%flag_each_repart)
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
