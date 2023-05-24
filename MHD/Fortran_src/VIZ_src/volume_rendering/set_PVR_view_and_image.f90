@@ -56,6 +56,8 @@
       subroutine single_PVR_view_matrices(mesh, pvr_rgb, pvr_param,     &
      &                                    pvr_bound, pvr_proj, m_SR)
 !
+      use rendering_vr_image
+!
       type(mesh_geometry), intent(in) :: mesh
       type(pvr_image_type), intent(in) :: pvr_rgb
       type(PVR_control_params), intent(in) :: pvr_param
@@ -76,6 +78,8 @@
 !
       subroutine quilt_PVR_view_matrices(num_img, mesh,                 &
      &          pvr_rgb, pvr_param, pvr_bound, pvr_proj, m_SR)
+!
+      use rendering_vr_image
 !
       integer(kind = kint), intent(in) :: num_img
       type(mesh_geometry), intent(in) :: mesh
@@ -102,6 +106,8 @@
 !
       subroutine anaglyph_PVR_view_matrices(mesh, pvr_rgb, pvr_param,   &
      &                                      pvr_bound, pvr_proj, m_SR)
+!
+      use rendering_vr_image
 !
       type(mesh_geometry), intent(in) :: mesh
       type(pvr_image_type), intent(in) :: pvr_rgb

@@ -81,7 +81,7 @@
       type(add_sgs_sph_mhd_ctl), save :: add_SSMHD_ctl1
 !
       integer(kind = kint) :: iflag_redraw
-      real(kind = kreal) :: total_max, total_time, total_prev
+      real(kind = kreal) :: total_time
 !
 !     ---------------------
 !

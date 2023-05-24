@@ -173,6 +173,7 @@
      &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !
       use cal_pvr_modelview_mat
+      use rendering_vr_image
 !
       integer(kind = kint), intent(in) :: num_img
       integer(kind = kint), intent(in) :: istep_pvr
@@ -261,6 +262,7 @@
      &          SR_sig, SR_r, SR_i)
 !
       use set_PVR_view_and_image
+      use rendering_vr_image
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr

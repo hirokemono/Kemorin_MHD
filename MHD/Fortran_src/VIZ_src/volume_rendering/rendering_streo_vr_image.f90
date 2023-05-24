@@ -73,6 +73,7 @@
       use set_PVR_view_and_image
       use write_PVR_image
       use output_image_sel_4_png
+      use rendering_vr_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
@@ -128,6 +129,7 @@
       use set_PVR_view_and_image
       use set_default_pvr_params
       use output_image_sel_4_png
+      use rendering_vr_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time

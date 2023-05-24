@@ -147,6 +147,7 @@
       use LIC_anaglyph_w_shared_mesh
       use LIC_visualize_shared_mesh
       use multi_volume_renderings
+      use write_multi_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
@@ -217,6 +218,7 @@
       use LIC_movie_w_each_repart
       use LIC_anaglyph_w_each_repart
       use multi_volume_renderings
+      use write_multi_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time

@@ -170,6 +170,7 @@
       use cal_pvr_modelview_mat
       use multi_volume_renderings
       use anaglyph_volume_renderings
+      use write_multi_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time

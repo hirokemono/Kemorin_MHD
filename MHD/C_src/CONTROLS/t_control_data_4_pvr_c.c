@@ -13,7 +13,6 @@ const char label_pvr_head[KCHARA_C] = "volume_rendering";
 
 
 struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c(){
-	int i;
     struct pvr_plot_area_ctl_c *area_c;
     if((area_c = (struct pvr_plot_area_ctl_c *) malloc(sizeof(struct pvr_plot_area_ctl_c))) == NULL) {
         printf("malloc error for pvr_plot_area_ctl_c \n");
@@ -74,7 +73,6 @@ int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 
 
 struct pvr_ctl_c * init_pvr_ctl_c(){
-	int i;
     struct pvr_ctl_c *pvr_c;
     if((pvr_c = (struct pvr_ctl_c *) malloc(sizeof(struct pvr_ctl_c))) == NULL) {
         printf("malloc error for pvr_ctl_c \n");

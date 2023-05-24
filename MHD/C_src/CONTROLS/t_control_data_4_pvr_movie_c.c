@@ -8,7 +8,6 @@
 #include "t_control_data_4_pvr_movie_c.h"
 
 struct pvr_movie_ctl_c * init_pvr_movie_ctl_c(){
-	int i;
     struct pvr_movie_ctl_c *movie_c;
     if((movie_c = (struct pvr_movie_ctl_c *) malloc(sizeof(struct pvr_movie_ctl_c))) == NULL) {
         printf("malloc error for pvr_movie_ctl_c \n");
