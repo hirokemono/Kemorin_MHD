@@ -9,8 +9,8 @@ Labels for Fieldline module controls
 
 Check fline_ctl_lbls->label_fline_ctl
 ctl_list->num_labels 14 
-label[0]   fline_file_head 
-label[1]   fline_output_type 
+label[0]   fline_file_prefix
+label[1]   fline_output_format
 label[2]   chosen_ele_grp_ctl 
 label[3]   field_line_field_ctl 
 label[4]   coloring_field_ctl 

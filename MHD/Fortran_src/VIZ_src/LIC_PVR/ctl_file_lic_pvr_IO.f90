@@ -35,7 +35,7 @@
 !!begin volume_rendering   (BMP or PNG)
 !!  updated_sign         go
 !!  lic_file_prefix      pvr_temp
-!!  lic_image_format     PNG
+!!  lic_output_format    PNG
 !!  monitoring_mode      YES
 !!
 !!  streo_imaging        YES

@@ -34,7 +34,7 @@
 !!begin volume_rendering   (BMP or PNG)
 !!  updated_sign         go
 !!  lic_file_prefix      pvr_temp
-!!  lic_image_format     PNG
+!!  lic_output_format    PNG
 !!  monitoring_mode      YES
 !!
 !!  streo_imaging        YES
@@ -102,7 +102,7 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_lic_file_head =   'lic_file_prefix'
       character(len=kchara), parameter, private                         &
-     &             :: hd_lic_out_type =    'lic_image_format'
+     &             :: hd_lic_out_format =  'lic_output_format'
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_monitor =   'monitoring_mode'
 !
@@ -136,6 +136,10 @@
      &             :: hd_quilt_image =  'quilt_image_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_snapshot_movie = 'snapshot_movie_ctl'
+!
+!   Deprecated labels
+      character(len=kchara), parameter, private                         &
+     &             :: hd_lic_out_type =    'lic_image_format'
 !
       integer(kind = kint), parameter :: n_label_LIC_pvr = 18
 !
@@ -209,8 +213,12 @@
      &     (c_buf, hd_pvr_updated, pvr%updated_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_lic_file_head, pvr%file_head_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_lic_out_format, pvr%file_fmt_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_lic_out_type, pvr%file_fmt_ctl)
+!
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_monitor, pvr%monitoring_ctl)
 !
@@ -252,7 +260,7 @@
 !
       maxlen = len_trim(hd_pvr_updated)
       maxlen = max(maxlen, len_trim(hd_lic_file_head))
-      maxlen = max(maxlen, len_trim(hd_lic_out_type))
+      maxlen = max(maxlen, len_trim(hd_lic_out_format))
       maxlen = max(maxlen, len_trim(hd_pvr_monitor))
       maxlen = max(maxlen, len_trim(hd_anaglyph_switch))
       maxlen = max(maxlen, len_trim(hd_pvr_streo))
@@ -268,7 +276,7 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_lic_file_head, pvr%file_head_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_lic_out_type, pvr%file_fmt_ctl)
+     &    hd_lic_out_format, pvr%file_fmt_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_pvr_monitor, pvr%monitoring_ctl)
 !
@@ -352,7 +360,7 @@
       call set_control_labels(hd_pvr_updated,    names( 1))
 !
       call set_control_labels(hd_lic_file_head,  names( 2))
-      call set_control_labels(hd_lic_out_type,   names( 3))
+      call set_control_labels(hd_lic_out_format, names( 3))
       call set_control_labels(hd_pvr_monitor,    names( 4))
 !
       call set_control_labels(hd_pvr_streo,       names( 5))
