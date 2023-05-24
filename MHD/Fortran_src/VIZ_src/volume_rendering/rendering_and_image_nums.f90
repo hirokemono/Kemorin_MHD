@@ -97,7 +97,8 @@
       integer(kind = kint) :: i_pvr, i_ctl, ist, ied, i
 !
 !
-      call s_set_composition_pe_range(num_pe, num_pvr,                  &
+      call s_set_composition_pe_range                                   &
+     &   (num_pe, num_pvr, PVR_sort%istack_PVR_modes,                   &
      &    num_pvr_images, istack_pvr_images, pvr_rgb)
 !
       do i_ctl = 1, num_pvr
@@ -164,9 +165,9 @@
         id_pvr_file_type = iflag_PNG
       else if(cmp_no_case(tmpchara, hd_QUILT_BMP)) then
         id_pvr_file_type = iflag_QUILT_BMP
-      else if(cmp_no_case(tmpchara, hd_QUILT_BMP_GZ)                     &
-     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ2)                  &
-     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ3)                  &
+      else if(cmp_no_case(tmpchara, hd_QUILT_BMP_GZ)                    &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ2)                 &
+     &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ3)                 &
      &     .or. cmp_no_case(tmpchara, hd_QUILT_BMP_GZ4)) then
         id_pvr_file_type = iflag_QUILT_BMP_GZ
       else if(cmp_no_case(tmpchara, hd_BMP)) then
