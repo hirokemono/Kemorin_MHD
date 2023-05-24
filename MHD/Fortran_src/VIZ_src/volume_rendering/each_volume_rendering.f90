@@ -260,6 +260,8 @@
      &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
      &          SR_sig, SR_r, SR_i)
 !
+      use m_work_time
+      use m_elapsed_labels_4_VIZ
       use set_PVR_view_and_image
       use rendering_vr_image
       use write_PVR_image
@@ -303,11 +305,15 @@
      &        field_pvr, pvr_param, pvr_bound, pvr_proj(i_img),         &
      &        pvr_rgb(i_img), SR_sig, SR_r, SR_i)
         end do
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
         call set_output_rot_sequence_image(istep_pvr, i_rot,            &
      &      pvr_rgb(1)%id_pvr_file_type, pvr_rgb(1)%pvr_prefix,         &
      &      num_img, pvr_param%stereo_def%n_column_row_view,            &
      &      pvr_rgb)
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       end do
 !
       end subroutine each_PVR_quilt_rendering_w_rot

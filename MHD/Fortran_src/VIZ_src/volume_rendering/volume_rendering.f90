@@ -60,6 +60,8 @@
       subroutine PVR_initialize(increment_pvr, geofem, nod_fld,         &
      &                          pvr_ctls, pvr, m_SR)
 !
+      use m_work_time
+      use m_elapsed_labels_4_VIZ
       use t_control_data_pvr_sections
       use set_pvr_control
       use multi_volume_renderings
@@ -159,7 +161,6 @@
      &                           nod_fld, pvr, m_SR)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
-!
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(1)
@@ -179,21 +180,13 @@
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call PVR_movie_visualize(istep_pvr, time, geofem, jacs,           &
      &                         nod_fld, pvr, m_SR)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
 !      generate snapshot quilt movie images
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call PVR_quilt_movie_visualize(istep_pvr, time, geofem, jacs,     &
      &                               nod_fld, pvr, m_SR)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
-!
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call PVR_anaglyph_rendering(istep_pvr, time, geofem, jacs,        &
      &                            nod_fld, pvr, m_SR)
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
-!
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call PVR_movie_anaglyph_visualize(istep_pvr, time, geofem, jacs,  &
      &                                  nod_fld, pvr, m_SR)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)

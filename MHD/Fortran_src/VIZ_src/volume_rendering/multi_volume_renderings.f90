@@ -161,10 +161,7 @@
       subroutine PVR_movie_visualize(istep_pvr, time, geofem, jacs,     &
      &                               nod_fld, pvr, m_SR)
 !
-      use cal_pvr_modelview_mat
-      use write_PVR_image
       use each_volume_rendering
-      use each_anaglyph_PVR
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
@@ -178,22 +175,16 @@
       integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr, ist_img
 !
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(2) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(3)
       do i_pvr = ist_pvr, ied_pvr
         ist_img = pvr%PVR_sort%istack_pvr_images(i_pvr-1)
-        if(pvr%pvr_param(i_pvr)%movie_def%iflag_movie_mode              &
-     &                                 .eq. IFLAG_NO_MOVIE) cycle
-        if(pvr%pvr_param(i_pvr)%stereo_def%flag_quilt) cycle
-!
         call each_PVR_rendering_w_rot(istep_pvr, time,                  &
      &      geofem, jacs, nod_fld, pvr%sf_grp_4_sf,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
      &      pvr%pvr_bound(i_pvr), pvr%pvr_proj(ist_img+1),              &
      &      pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       end subroutine PVR_movie_visualize
 !
@@ -202,10 +193,7 @@
       subroutine PVR_quilt_movie_visualize(istep_pvr, time, geofem,     &
      &                                     jacs, nod_fld, pvr, m_SR)
 !
-      use cal_pvr_modelview_mat
-      use write_PVR_image
       use each_volume_rendering
-      use each_anaglyph_PVR
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
@@ -220,7 +208,6 @@
       integer(kind = kint) :: ist_img, num_img
 !
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(3) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(4)
       do i_pvr = ist_pvr, ied_pvr
@@ -237,7 +224,6 @@
      &       pvr%pvr_rgb(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
         end if
       end do
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       end subroutine PVR_quilt_movie_visualize
 !
