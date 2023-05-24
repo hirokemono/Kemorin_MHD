@@ -62,8 +62,6 @@
 !
       use t_control_data_pvr_sections
       use set_pvr_control
-      use each_volume_rendering
-      use each_anaglyph_PVR
       use multi_volume_renderings
       use anaglyph_volume_renderings
 !
