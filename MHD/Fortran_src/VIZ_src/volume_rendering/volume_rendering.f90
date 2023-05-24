@@ -195,11 +195,11 @@
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
       call output_PVR_images                                            &
-     &   (istep_pvr, pvr%num_pvr, pvr%num_pvr_images,                   &
-     &    pvr%istack_pvr_images, pvr%PVR_sort, pvr%pvr_rgb)
+     &   (istep_pvr, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(0),     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
       call output_quilt_PVR_images                                      &
-     &   (istep_pvr, pvr%num_pvr, pvr%num_pvr_images,                   &
-     &    pvr%istack_pvr_images, pvr%PVR_sort,                          &
+     &   (istep_pvr, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(1),     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images,                    &
      &    pvr%pvr_param, pvr%pvr_rgb)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !

@@ -117,7 +117,7 @@
       use set_default_pvr_params
       use set_PVR_view_and_image
       use rendering_LIC_image
-      use write_PVR_image
+      use write_multi_PVR_image
       use output_image_sel_4_png
 !
       integer(kind = kint), intent(in) :: istep_pvr
@@ -175,10 +175,8 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-      do i_rot = 1, pvr_param%movie_def%num_frame
-        call sel_write_pvr_image_file(istep_pvr, i_rot,                 &
-     &                                rot_imgs1%rot_pvr_rgb(i_rot))
-      end do
+      call output_rotation_PVR_images(istep_pvr,                        &
+     &    pvr_param%movie_def%num_frame, rot_imgs1%rot_pvr_rgb(1))
       call dealloc_rot_pvr_image_arrays(pvr_param%movie_def, rot_imgs1)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !

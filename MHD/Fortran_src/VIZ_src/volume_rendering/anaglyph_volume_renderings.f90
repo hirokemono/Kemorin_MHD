@@ -111,7 +111,7 @@
 !
       use each_volume_rendering
       use each_anaglyph_PVR
-      use write_PVR_image
+      use write_multi_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
@@ -140,13 +140,9 @@
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      ist_pvr = pvr%PVR_sort%istack_PVR_modes(4) + 1
-      ied_pvr = pvr%PVR_sort%istack_PVR_modes(5)
-      do i_pvr = ist_pvr, ied_pvr
-        ist_img = pvr%istack_pvr_images(i_pvr-1)
-        call sel_write_pvr_image_file(istep_pvr, -1,                    &
-     &                                pvr%pvr_rgb(ist_img+1))
-      end do
+      call output_PVR_images                                            &
+     &   (istep_pvr, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(4),     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
       end subroutine PVR_anaglyph_rendering

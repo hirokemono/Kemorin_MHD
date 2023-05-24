@@ -72,7 +72,7 @@
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use rendering_streo_LIC_image
-      use write_PVR_image
+      use write_multi_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
@@ -112,13 +112,9 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-      ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
-      ied_lic = pvr%PVR_sort%istack_PVR_modes(5)
-      do i_lic = ist_lic, ied_lic
-        ist_img = pvr%istack_pvr_images(i_lic-1)
-        call sel_write_pvr_image_file(istep_lic, -1,                    &
-     &                                pvr%pvr_rgb(ist_img))
-      end do
+      call output_PVR_images                                            &
+     &   (istep_lic, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(4),     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
       end subroutine s_LIC_anaglyph_w_shared_mesh

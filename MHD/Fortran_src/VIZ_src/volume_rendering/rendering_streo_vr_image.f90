@@ -71,7 +71,7 @@
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
       use set_PVR_view_and_image
-      use write_PVR_image
+      use write_multi_PVR_image
       use output_image_sel_4_png
       use rendering_vr_image
 !
@@ -107,10 +107,8 @@
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
-      do i_rot = 1, pvr_param%movie_def%num_frame
-        call sel_write_pvr_image_file(istep_pvr, i_rot,                 &
-     &                                rot_imgs1%rot_pvr_rgb(i_rot))
-      end do
+      call output_rotation_PVR_images(istep_pvr,                        &
+     &    pvr_param%movie_def%num_frame, rot_imgs1%rot_pvr_rgb(1))
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       call dealloc_rot_pvr_image_arrays(pvr_param%movie_def, rot_imgs1)
 !
@@ -125,7 +123,7 @@
 !
       use t_rotation_pvr_images
       use m_elapsed_labels_4_VIZ
-      use write_PVR_image
+      use write_multi_PVR_image
       use set_PVR_view_and_image
       use set_default_pvr_params
       use output_image_sel_4_png
@@ -189,10 +187,8 @@
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      do i_rot = 1, pvr_param%movie_def%num_frame
-        call sel_write_pvr_image_file(istep_pvr, i_rot,                 &
-     &                                rot_imgs1%rot_pvr_rgb(i_rot))
-      end do
+      call output_rotation_PVR_images(istep_pvr,                        &
+     &    pvr_param%movie_def%num_frame, rot_imgs1%rot_pvr_rgb(1))
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)

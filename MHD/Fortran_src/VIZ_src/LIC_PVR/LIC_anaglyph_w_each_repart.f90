@@ -82,7 +82,7 @@
       use each_LIC_rendering
       use each_anaglyph_PVR
       use rendering_streo_LIC_image
-      use write_PVR_image
+      use write_multi_PVR_image
       use bring_back_rendering_counts
 !
       integer(kind = kint), intent(in) :: istep_lic
@@ -162,11 +162,9 @@
       end do
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-      do i_lic = ist_lic, ied_lic
-        ist_img = pvr%istack_pvr_images(i_lic-1)
-        call sel_write_pvr_image_file(istep_lic, -1,                    &
-     &                                pvr%pvr_rgb(ist_img+1))
-      end do
+      call output_PVR_images                                            &
+     &   (istep_lic, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(4),     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
       call dealloc_lic_repart_ref(rep_ref_snap)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !

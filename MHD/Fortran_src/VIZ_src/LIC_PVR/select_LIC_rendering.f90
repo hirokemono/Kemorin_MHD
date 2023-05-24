@@ -107,7 +107,6 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       integer(kind = kint) :: i_lic
-      integer(kind = kint) :: ist_img, num_img
 !
 !
       call LIC_init_shared_mesh(geofem, ele_comm, next_tbl,             &
@@ -162,8 +161,6 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(lic_repart_reference), save :: rep_ref_viz
-      integer(kind = kint) :: i_lic, ist_lic, ied_lic
-      integer(kind = kint) :: i_img, ist_img, ied_img, num_img
 !
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
@@ -177,11 +174,11 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       call output_PVR_images                                            &
-     &   (istep_lic, pvr%num_pvr, pvr%num_pvr_images,                   &
-     &    pvr%istack_pvr_images, pvr%PVR_sort, pvr%pvr_rgb)
+     &   (istep_lic, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(0),     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
       call output_quilt_PVR_images                                      &
-     &   (istep_lic, pvr%num_pvr, pvr%num_pvr_images,                   &
-     &    pvr%istack_pvr_images, pvr%PVR_sort,                          &
+     &   (istep_lic, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(1),     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images,                    &
      &    pvr%pvr_param, pvr%pvr_rgb)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
@@ -248,11 +245,11 @@
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       call output_PVR_images                                            &
-     &   (istep_lic, pvr%num_pvr, pvr%num_pvr_images,                   &
-     &    pvr%istack_pvr_images, pvr%PVR_sort, pvr%pvr_rgb)
+     &   (istep_lic, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(0),     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
       call output_quilt_PVR_images                                      &
-     &   (istep_lic, pvr%num_pvr, pvr%num_pvr_images,                   &
-     &    pvr%istack_pvr_images, pvr%PVR_sort,                          &
+     &   (istep_lic, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(1),     &
+     &    pvr%num_pvr_images, pvr%istack_pvr_images,                    &
      &    pvr%pvr_param, pvr%pvr_rgb)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
