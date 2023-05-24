@@ -1,5 +1,5 @@
-!>@file   LIC_anaglyph_w_each_repart.f90
-!!@brief  module LIC_anaglyph_w_each_repart
+!>@file   LIC_visualize_each_repart.f90
+!!@brief  module LIC_visualize_each_repart
 !!
 !!@author  Y. Liao and H. Matsui
 !!@date Programmed in Feb., 2018
@@ -7,11 +7,11 @@
 !>@brief structure of control data for multiple LIC rendering
 !!
 !!@verbatim
-!!      subroutine s_LIC_anaglyph_w_each_repart                         &
+!!      subroutine LIC_fixview_render_each_repart                       &
 !!     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld, &
 !!     &          repart_p, rep_ref_m, repart_data, pvr, lic_param,     &
 !!     &          rep_ref, m_SR)
-!!      subroutine LIC_movie_anaglyph_each_repart                       &
+!!      subroutine LIC_quilt_render_each_repart                         &
 !!     &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld, &
 !!     &          repart_p, rep_ref_m, repart_data, pvr, lic_param,     &
 !!     &          rep_ref, m_SR)
@@ -31,7 +31,7 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
-      module LIC_anaglyph_w_each_repart
+      module LIC_visualize_each_repart
 !
       use m_precision
       use calypso_mpi
@@ -70,19 +70,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_LIC_anaglyph_w_each_repart                           &
+      subroutine LIC_fixview_render_each_repart                         &
      &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,   &
      &          repart_p, rep_ref_m, repart_data, pvr, lic_param,       &
      &          rep_ref, m_SR)
 !
-      use t_lic_field_data
-      use t_surf_grp_list_each_surf
       use m_elapsed_labels_4_VIZ
+      use t_surf_grp_list_each_surf
+      use t_lic_field_data
       use set_PVR_view_and_image
       use each_LIC_rendering
-      use each_anaglyph_PVR
-      use rendering_streo_LIC_image
       use write_PVR_image
+      use each_volume_rendering
+      use calypso_reverse_send_recv
       use bring_back_rendering_counts
 !
       integer(kind = kint), intent(in) :: istep_lic
@@ -102,14 +102,16 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(lic_repart_reference), save :: rep_ref_viz, rep_ref_snap
-      integer(kind = kint) :: i_lic, ist_lic, ied_lic, ist_img
+      integer(kind = kint) :: i_lic, ist_lic, ied_lic
+      integer(kind = kint) :: ist_img, num_img
 !
 !
       call alloc_lic_repart_ref(geofem%mesh%node, rep_ref_snap)
-      ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
-      ied_lic = pvr%PVR_sort%istack_PVR_modes(5)
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(1)
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
@@ -135,17 +137,18 @@
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
 !
         if(my_rank .eq. 0) write(*,*)                                   &
-     &                   's_each_LIC_anaglyph each', i_lic
+     &                   's_each_LIC_rendering each', i_lic
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
-        call anaglyph_PVR_view_matrices(repart_data%viz_fem%mesh,       &
-     &     pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),                &
-     &     pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
-        call s_each_LIC_anaglyph                                        &
-     &     (istep_lic, time, repart_data%viz_fem,                       &
+        call single_PVR_view_matrices(repart_data%viz_fem%mesh,         &
+     &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+!
+        call s_each_LIC_rendering                                       &
+     &     (istep_lic, time, num_img, repart_data%viz_fem,              &
      &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
      &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
      &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
-        call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),         &
+        call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),      &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -160,33 +163,25 @@
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
-!
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-      do i_lic = ist_lic, ied_lic
-        ist_img = pvr%istack_pvr_images(i_lic-1)
-        call sel_write_pvr_image_file(istep_lic, -1,                    &
-     &                                pvr%pvr_rgb(ist_img+1))
-      end do
       call dealloc_lic_repart_ref(rep_ref_snap)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
-      end subroutine s_LIC_anaglyph_w_each_repart
+      end subroutine LIC_fixview_render_each_repart
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_movie_anaglyph_each_repart                         &
+      subroutine LIC_quilt_render_each_repart                           &
      &         (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,   &
      &          repart_p, rep_ref_m, repart_data, pvr, lic_param,       &
      &          rep_ref, m_SR)
 !
-      use t_lic_field_data
-      use t_surf_grp_list_each_surf
       use m_elapsed_labels_4_VIZ
-      use cal_pvr_modelview_mat
+      use t_surf_grp_list_each_surf
+      use t_lic_field_data
+      use set_PVR_view_and_image
       use each_LIC_rendering
-      use each_anaglyph_PVR
-      use rendering_streo_LIC_image
       use write_PVR_image
+      use each_volume_rendering
+      use calypso_reverse_send_recv
       use bring_back_rendering_counts
 !
       integer(kind = kint), intent(in) :: istep_lic
@@ -206,14 +201,16 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
       type(lic_repart_reference), save :: rep_ref_viz, rep_ref_snap
-      integer(kind = kint) :: i_lic, ist_lic, ied_lic, ist_img
+      integer(kind = kint) :: i_lic, ist_lic, ied_lic
+      integer(kind = kint) :: ist_img, num_img
 !
 !
       call alloc_lic_repart_ref(geofem%mesh%node, rep_ref_snap)
-      ist_lic = pvr%PVR_sort%istack_PVR_modes(5) + 1
-      ied_lic = pvr%PVR_sort%istack_PVR_modes(6)
+      ist_lic = pvr%PVR_sort%istack_PVR_modes(1) + 1
+      ied_lic = pvr%PVR_sort%istack_PVR_modes(2)
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%istack_pvr_images(i_lic-1)
+        num_img = pvr%istack_pvr_images(i_lic  ) - ist_img
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
@@ -238,16 +235,22 @@
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
 !
-        call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
-     &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
-     &      repart_data%field_lic, lic_param(i_lic),                    &
+        if(my_rank .eq. 0) write(*,*)                                   &
+     &                   's_each_LIC_rendering each', i_lic
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
+        call quilt_PVR_view_matrices                                    &
+     &     (num_img, repart_data%viz_fem%mesh,                          &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
-     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1),              &
-     &      rep_ref_viz, m_SR)
-        call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
-        call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
-        call dealloc_iflag_pvr_used_ele                                 &
-     &     (pvr%pvr_param(i_lic)%draw_param)
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
+!
+        call s_each_LIC_rendering                                       &
+     &     (istep_lic, time, num_img, repart_data%viz_fem,              &
+     &      repart_data%field_lic, pvr%sf_grp_4_sf, lic_param(i_lic),   &
+     &      pvr%pvr_param(i_lic), pvr%pvr_proj(ist_img+1),              &
+     &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
+        call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),      &
+     &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
+        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_INT_COUNT_BASED) then
@@ -261,10 +264,9 @@
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
       call dealloc_lic_repart_ref(rep_ref_snap)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
-      end subroutine LIC_movie_anaglyph_each_repart
+      end subroutine LIC_quilt_render_each_repart
 !
 !  ---------------------------------------------------------------------
 !
-      end module LIC_anaglyph_w_each_repart
+      end module LIC_visualize_each_repart
