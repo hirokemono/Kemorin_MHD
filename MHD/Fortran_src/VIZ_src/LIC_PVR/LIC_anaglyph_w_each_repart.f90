@@ -162,8 +162,7 @@
       end do
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
-      call output_PVR_images                                            &
-     &   (istep_lic, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(4),     &
+      call output_PVR_images(istep_lic, pvr%num_pvr, ist_lic, ied_lic,  &
      &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
       call dealloc_lic_repart_ref(rep_ref_snap)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)

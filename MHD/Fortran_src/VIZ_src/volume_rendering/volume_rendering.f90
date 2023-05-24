@@ -181,8 +181,7 @@
       type(volume_rendering_module), intent(inout) :: pvr
       type(mesh_SR), intent(inout) :: m_SR
 !
-      integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
-      integer(kind = kint) :: i_img, ist_img, num_img
+      integer(kind = kint) :: ist_pvr, ied_pvr
 !
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
@@ -194,11 +193,15 @@
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      call output_PVR_images                                            &
-     &   (istep_pvr, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(0),     &
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(0) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(1)
+      call output_PVR_images(istep_pvr, pvr%num_pvr, ist_pvr, ied_pvr,  &
      &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
+!
+      ist_pvr = pvr%PVR_sort%istack_PVR_modes(1) + 1
+      ied_pvr = pvr%PVR_sort%istack_PVR_modes(2)
       call output_quilt_PVR_images                                      &
-     &   (istep_pvr, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(1),     &
+     &   (istep_pvr, pvr%num_pvr, ist_pvr, ied_pvr,                     &
      &    pvr%num_pvr_images, pvr%istack_pvr_images,                    &
      &    pvr%pvr_param, pvr%pvr_rgb)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)

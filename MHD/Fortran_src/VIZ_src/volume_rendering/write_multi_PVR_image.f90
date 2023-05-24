@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine output_quilt_PVR_images                              &
-!!     &         (istep_pvr, num_pvr, istack_PVR_modes,                 &
+!!     &         (istep_pvr, num_pvr, ist_pvr, ied_pvr,                 &
 !!     &          num_pvr_images, istack_pvr_images, pvr_param, pvr_rgb)
 !!      subroutine output_PVR_images                                    &
-!!     &         (istep_pvr, num_pvr, istack_PVR_modes,                 &
+!!     &         (istep_pvr, num_pvr, ist_pvr, ied_pvr,                 &
 !!     &          num_pvr_images, istack_pvr_images, pvr_rgb)
 !!      subroutine output_rotation_PVR_images(istep_pvr,                &
 !!     &                                      num_frame, pvr_rgb)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        integer(kind = kint), intent(in) :: num_pvr, num_pvr_images
-!!        integer(kind = kint), intent(in) :: istack_PVR_modes(0:1)
+!!        integer(kind = kint), intent(in) :: ist_pvr, ied_pvr
 !!        integer(kind = kint), intent(in)                              &
 !!       &                     :: istack_pvr_images(0:num_pvr)
 !!        type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
@@ -45,26 +45,23 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_quilt_PVR_images                                &
-     &         (istep_pvr, num_pvr, istack_PVR_modes,                   &
+     &         (istep_pvr, num_pvr, ist_pvr, ied_pvr,                   &
      &          num_pvr_images, istack_pvr_images, pvr_param, pvr_rgb)
 !
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       integer(kind = kint), intent(in) :: num_pvr, num_pvr_images
-      integer(kind = kint), intent(in) :: istack_PVR_modes(0:1)
+      integer(kind = kint), intent(in) :: ist_pvr, ied_pvr
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_pvr_images(0:num_pvr)
 !
       type(PVR_control_params), intent(in) :: pvr_param(num_pvr)
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
-      integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
-      integer(kind = kint) :: ist_img, num_img
+      integer(kind = kint) :: i_pvr, ist_img, num_img
 !
 !
-      ist_pvr = istack_PVR_modes(0) + 1
-      ied_pvr = istack_PVR_modes(1)
       do i_pvr = ist_pvr, ied_pvr
         ist_img = istack_pvr_images(i_pvr-1)
         num_img = istack_pvr_images(i_pvr  ) - ist_img
@@ -81,25 +78,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_PVR_images                                      &
-     &         (istep_pvr, num_pvr, istack_PVR_modes,                   &
+     &         (istep_pvr, num_pvr, ist_pvr, ied_pvr,                   &
      &          num_pvr_images, istack_pvr_images, pvr_rgb)
 !
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       integer(kind = kint), intent(in) :: num_pvr, num_pvr_images
-      integer(kind = kint), intent(in) :: istack_PVR_modes(0:1)
+      integer(kind = kint), intent(in) :: ist_pvr, ied_pvr
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_pvr_images(0:num_pvr)
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
-      integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr
-      integer(kind = kint) :: i_img, ist_img, num_img
+      integer(kind = kint) :: i_pvr, i_img, ist_img, num_img
 !
 !
-      ist_pvr = istack_PVR_modes(0) + 1
-      ied_pvr = istack_PVR_modes(1)
       do i_pvr = ist_pvr, ied_pvr
         ist_img = istack_pvr_images(i_pvr-1)
         num_img = istack_pvr_images(i_pvr  ) - ist_img

@@ -120,7 +120,6 @@
       type(PVR_control_params), intent(inout) :: pvr_param
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
-      integer(kind = kint) :: i_img
 !
       call alloc_iflag_pvr_used_ele(mesh%ele, pvr_param%draw_param)
       call s_set_iflag_for_used_ele(mesh%ele, group%ele_grp,            &

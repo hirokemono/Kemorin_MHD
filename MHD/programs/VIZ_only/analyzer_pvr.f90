@@ -53,8 +53,6 @@
       use input_control_three_vizs
       use volume_rendering
 !
-      integer(kind = kint) :: ierr
-!
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
@@ -86,7 +84,7 @@
       use t_IO_step_parameter
       use volume_rendering
 !
-      integer(kind = kint) :: i_step, istep_pvr
+      integer(kind = kint) :: i_step
 !
 !
       do i_step = t_VIZ3%init_d%i_time_step, t_VIZ3%finish_d%i_end_step

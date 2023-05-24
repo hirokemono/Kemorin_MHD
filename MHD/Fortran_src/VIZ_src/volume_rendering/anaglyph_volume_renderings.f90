@@ -140,8 +140,7 @@
 !
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
-      call output_PVR_images                                            &
-     &   (istep_pvr, pvr%num_pvr, pvr%PVR_sort%istack_PVR_modes(4),     &
+      call output_PVR_images(istep_pvr, pvr%num_pvr, ist_pvr, ied_pvr,  &
      &    pvr%num_pvr_images, pvr%istack_pvr_images, pvr%pvr_rgb)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
