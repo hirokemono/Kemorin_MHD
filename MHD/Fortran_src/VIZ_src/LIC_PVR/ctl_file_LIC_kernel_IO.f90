@@ -86,13 +86,14 @@
       if(check_file_flag(c_buf, hd_block)) then
         file_name = third_word(c_buf)
 !
-        write(*,'(a)', ADVANCE='NO') ' is read file from ... '
+        write(*,'(a)', ADVANCE='NO') trim(hd_block),                    &
+     &                            ' is read file from ... '
         call read_LIC_kernel_control_file((id_control+2), file_name,    &
      &                                    hd_block, kernel_ctl)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
-        write(*,*) ' is included'
+        write(*,*) trim(hd_block), ' is included'
         call read_kernel_control_data(id_control, hd_block,             &
      &                                kernel_ctl, c_buf)
       end if
