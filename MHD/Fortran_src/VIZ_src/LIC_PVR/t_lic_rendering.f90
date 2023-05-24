@@ -204,26 +204,12 @@
 !
       call alloc_pvr_data(lic%pvr)
 !
-      do i_lic = 1, lic%pvr%num_pvr
-        call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
-     &      lic%pvr%pvr_param(i_lic)%draw_param)
-      end do
-!
       allocate(lic%lic_param(lic%pvr%num_pvr))
       allocate(lic%rep_ref(lic%pvr%num_pvr))
-      call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
-     &    lic_ctls%fname_lic_ctl, lic_ctls%pvr_ctl_type,                &
-     &    lic_ctls%lic_ctl_type, lic%pvr%PVR_sort, lic%lic_param,       &
-     &    lic%pvr%pvr_param, lic%rep_ref, lic%flag_each_repart)
-!
-      call count_num_rendering_and_images                               &
-     &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
-     &    lic%pvr%num_pvr_images, lic%pvr%PVR_sort%istack_pvr_images)
-      call alloc_pvr_images(lic%pvr)
-!
-      call set_rendering_and_image_pes                                  &
-     &   (nprocs, lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,               &
-     &    lic%pvr%PVR_sort, lic%pvr%num_pvr_images, lic%pvr%pvr_rgb)
+      call s_set_lic_controls                                           &
+     &   (geofem%group, nod_fld, lic_ctls%fname_lic_ctl,                &
+     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type, lic%lic_param,  &
+     &    lic%rep_ref, lic%pvr, lic%flag_each_repart)
 !
       do i_lic = 1, lic%pvr%num_pvr
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
@@ -232,7 +218,6 @@
      &        lic_ctls%lic_ctl_type(i_lic))
         end if
       end do
-      call dealloc_sort_PVRs_list(lic%pvr%PVR_sort)
 !
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
      &                          lic%repart_data)
