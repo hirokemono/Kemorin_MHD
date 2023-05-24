@@ -125,7 +125,6 @@
      &         (istep_lic, time, geofem, nod_fld, repart_p,             &
      &          repart_data, pvr, lic_param, rep_ref_viz, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use write_PVR_image
@@ -148,20 +147,17 @@
       integer(kind = kint) :: ist_img, num_img
 !
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       ist_lic = pvr%PVR_sort%istack_PVR_modes(2) + 1
       ied_lic = pvr%PVR_sort%istack_PVR_modes(3)
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%PVR_sort%istack_pvr_images(i_lic-1)
         num_img = pvr%PVR_sort%istack_pvr_images(i_lic) - ist_img
 !
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
      &                          repart_data, m_SR)
         call reset_lic_count_line_int(rep_ref_viz)
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         call s_each_LIC_rendering_w_rot                                 &
      &     (istep_lic, time, repart_data%viz_fem,                       &
@@ -170,7 +166,6 @@
      &      pvr%pvr_proj(ist_img+1), pvr%pvr_rgb(ist_img+1),            &
      &      rep_ref_viz, m_SR)
       end do
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       end subroutine LIC_movie_visualize_shared_mesh
 !
@@ -180,7 +175,6 @@
      &         (istep_lic, time, geofem, nod_fld, repart_p,             &
      &          repart_data, pvr, lic_param, rep_ref_viz, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use write_PVR_image
@@ -208,13 +202,11 @@
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%PVR_sort%istack_pvr_images(i_lic-1)
         num_img = pvr%PVR_sort%istack_pvr_images(i_lic) - ist_img
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
      &                          repart_data, m_SR)
         call reset_lic_count_line_int(rep_ref_viz)
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         call each_LIC_quilt_rendering_w_rot                             &
      &     (istep_lic, time, num_img, repart_data%viz_fem,              &

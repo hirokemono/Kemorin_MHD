@@ -29,6 +29,16 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(volume_rendering_module), intent(inout) :: pvr
 !!        type(mesh_SR), intent(inout) :: m_SR
+!!
+!!      subroutine PVR_movie_anaglyph_visualize                         &
+!!     &         (istep_pvr, time, geofem, jacs, nod_fld, pvr, m_SR)
+!!        integer(kind = kint), intent(in) :: istep_pvr
+!!        real(kind = kreal), intent(in) :: time
+!!        type(mesh_data), intent(in) :: geofem
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(jacobians_type), intent(in) :: jacs
+!!        type(volume_rendering_module), intent(inout) :: pvr
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
 !
       module anaglyph_volume_renderings
@@ -160,7 +170,6 @@
       integer(kind = kint) :: i_pvr, ist_pvr, ied_pvr, ist_img
 !
 !
-      if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       ist_pvr = pvr%PVR_sort%istack_PVR_modes(5) + 1
       ied_pvr = pvr%PVR_sort%istack_PVR_modes(6)
       do i_pvr = ist_pvr, ied_pvr
@@ -171,7 +180,6 @@
      &      pvr%pvr_param(i_pvr), pvr%pvr_bound(i_pvr),                 &
      &      pvr%pvr_proj(ist_img+1), m_SR%SR_sig, m_SR%SR_r, m_SR%SR_i)
       end do
-      if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
       end subroutine PVR_movie_anaglyph_visualize
 !

@@ -112,8 +112,9 @@
      &          lic_p, pvr_rgb, pvr_param, pvr_bound, pvr_proj,         &
      &          rep_ref_viz, m_SR)
 !
-      use t_rotation_pvr_images
+      use m_work_time
       use m_elapsed_labels_4_VIZ
+      use t_rotation_pvr_images
       use set_default_pvr_params
       use set_PVR_view_and_image
       use rendering_LIC_image
@@ -139,7 +140,6 @@
       type(rotation_pvr_images) :: rot_imgs1
 !
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
      &   (pvr_param%outline, pvr_param%color)
@@ -147,10 +147,8 @@
       if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
       call init_rot_pvr_image_arrays                                    &
      &   (pvr_param%movie_def, pvr_rgb(1), rot_imgs1)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_rot = 1, pvr_param%movie_def%num_frame
 !   Left eye
         call rot_multi_view_projection_mats(ione, i_rot,                &
@@ -179,6 +177,7 @@
      &    pvr_param%movie_def%num_frame, rot_imgs1%rot_pvr_rgb(1))
       call dealloc_rot_pvr_image_arrays(pvr_param%movie_def, rot_imgs1)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
 !
       end subroutine anaglyph_lic_rendering_w_rot
 !

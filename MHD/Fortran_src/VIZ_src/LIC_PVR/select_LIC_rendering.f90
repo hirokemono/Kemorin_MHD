@@ -141,6 +141,7 @@
       subroutine LIC_visualize_w_shared_mesh(istep_lic, time, geofem,   &
      &          nod_fld, repart_p, repart_data, pvr, lic_param, m_SR)
 !
+      use m_work_time
       use m_elapsed_labels_4_VIZ
       use LIC_anaglyph_w_shared_mesh
       use LIC_visualize_shared_mesh
@@ -188,22 +189,25 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
 !
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       call LIC_movie_visualize_shared_mesh                              &
      &   (istep_lic, time, geofem, nod_fld, repart_p,                   &
      &    repart_data, pvr, lic_param, rep_ref_viz, m_SR)
-!
       call LIC_movie_quilt_shared_mesh                                  &
      &   (istep_lic, time, geofem, nod_fld, repart_p,                   &
      &    repart_data, pvr, lic_param, rep_ref_viz, m_SR)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       call s_LIC_anaglyph_w_shared_mesh                                 &
      &   (istep_lic, time, geofem, nod_fld, repart_p,                   &
      &    repart_data, pvr, lic_param, rep_ref_viz, m_SR)
 !
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       call LIC_movie_anaglyph_shared_mesh                               &
      &   (istep_lic, time, geofem, nod_fld, repart_p,                   &
      &    repart_data, pvr, lic_param, rep_ref_viz, m_SR)
       call dealloc_lic_repart_ref(rep_ref_viz)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       end subroutine LIC_visualize_w_shared_mesh
 !
@@ -215,6 +219,7 @@
      &          repart_p, rep_ref_m, repart_data, pvr, lic_param,       &
      &          rep_ref, m_SR)
 !
+      use m_work_time
       use m_elapsed_labels_4_VIZ
       use LIC_visualize_each_repart
       use LIC_movie_w_each_repart
@@ -241,6 +246,7 @@
       integer(kind = kint) :: ist_lic, ied_lic
 !
 !
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       call LIC_fixview_render_each_repart                               &
      &   (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,         &
      &    repart_p, rep_ref_m, repart_data, pvr, lic_param,             &
@@ -249,6 +255,7 @@
      &   (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,         &
      &    repart_p, rep_ref_m, repart_data, pvr, lic_param,             &
      &    rep_ref, m_SR)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       ist_lic = pvr%PVR_sort%istack_PVR_modes(0) + 1
@@ -266,6 +273,7 @@
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
 !
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       call LIC_movie_visualize_each_repart                              &
      &   (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,         &
      &    repart_p, rep_ref_m, repart_data, pvr, lic_param,             &
@@ -274,15 +282,19 @@
      &   (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,         &
      &    repart_p, rep_ref_m, repart_data, pvr, lic_param,             &
      &    rep_ref, m_SR)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       call s_LIC_anaglyph_w_each_repart                                 &
      &   (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,         &
      &    repart_p, rep_ref_m, repart_data, pvr, lic_param,             &
      &    rep_ref, m_SR)
+!
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       call LIC_movie_anaglyph_each_repart                               &
      &   (istep_lic, time, geofem, ele_comm, next_tbl, nod_fld,         &
      &    repart_p, rep_ref_m, repart_data, pvr, lic_param,             &
      &    rep_ref, m_SR)
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       end subroutine LIC_visualize_w_each_repart
 !

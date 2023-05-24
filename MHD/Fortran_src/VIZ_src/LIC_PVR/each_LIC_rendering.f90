@@ -130,8 +130,9 @@
      &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
      &          rep_ref_viz, m_SR)
 !
-      use t_rotation_pvr_images
+      use m_work_time
       use m_elapsed_labels_4_VIZ
+      use t_rotation_pvr_images
       use cal_pvr_modelview_mat
       use set_default_pvr_params
       use set_PVR_view_and_image
@@ -159,7 +160,6 @@
       type(rotation_pvr_images) :: rot_imgs1
 !
 !
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
      &   (pvr_param%outline, pvr_param%color)
@@ -167,10 +167,8 @@
       if(my_rank .eq. 0) write(*,*) 'init_rot_pvr_image_arrays'
       call init_rot_pvr_image_arrays                                    &
      &   (pvr_param%movie_def, pvr_rgb, rot_imgs1)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         call rotation_view_projection_mats(i_rot, pvr_param,            &
      &                                     pvr_proj%screen)
         call rendering_lic_at_once                                      &
@@ -185,6 +183,7 @@
      &    pvr_param%movie_def%num_frame, rot_imgs1%rot_pvr_rgb(1))
       call dealloc_rot_pvr_image_arrays(pvr_param%movie_def, rot_imgs1)
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
 !
       end subroutine s_each_LIC_rendering_w_rot
 !
@@ -195,6 +194,7 @@
      &          lic_param, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
      &          rep_ref_viz, m_SR)
 !
+      use m_work_time
       use m_elapsed_labels_4_VIZ
       use set_PVR_view_and_image
       use rendering_LIC_image
@@ -221,13 +221,10 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
-      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       call set_default_pvr_data_params                                  &
      &   (pvr_param%outline, pvr_param%color)
-      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         do i_img = 1, num_img
           call rot_multi_view_projection_mats(i_img, i_rot,             &
      &        pvr_param, pvr_proj(i_img)%screen)
@@ -243,6 +240,7 @@
      &     pvr_rgb(1)%id_pvr_file_type, pvr_rgb(1)%pvr_prefix, num_img, &
      &     pvr_param%stereo_def%n_column_row_view, pvr_rgb(1))
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
+        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       end do
 !
       end subroutine each_LIC_quilt_rendering_w_rot

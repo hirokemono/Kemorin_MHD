@@ -125,7 +125,6 @@
      &          geofem, nod_fld, repart_p, repart_data, pvr,            &
      &          lic_param, rep_ref_viz, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use rendering_streo_LIC_image
@@ -152,14 +151,12 @@
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%PVR_sort%istack_pvr_images(i_lic-1)
 !
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
         if(iflag_debug .gt. 0) write(*,*) 'set_LIC_each_field'
         call set_LIC_each_field(geofem, repart_p, lic_param(i_lic),     &
      &                          repart_data, m_SR)
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         call reset_lic_count_line_int(rep_ref_viz)
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &

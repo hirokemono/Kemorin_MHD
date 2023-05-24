@@ -75,9 +75,10 @@
      &          repart_p, rep_ref_m, repart_data, pvr, lic_param,       &
      &          rep_ref, m_SR)
 !
+      use m_work_time
+      use m_elapsed_labels_4_VIZ
       use t_lic_field_data
       use t_surf_grp_list_each_surf
-      use m_elapsed_labels_4_VIZ
       use set_PVR_view_and_image
       use each_LIC_rendering
       use each_anaglyph_PVR
@@ -105,6 +106,7 @@
       integer(kind = kint) :: i_lic, ist_lic, ied_lic, ist_img
 !
 !
+      if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       call alloc_lic_repart_ref(geofem%mesh%node, rep_ref_snap)
       ist_lic = pvr%PVR_sort%istack_PVR_modes(4) + 1
       ied_lic = pvr%PVR_sort%istack_PVR_modes(5)
@@ -136,7 +138,6 @@
 !
         if(my_rank .eq. 0) write(*,*)                                   &
      &                   's_each_LIC_anaglyph each', i_lic
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         call anaglyph_PVR_view_matrices(repart_data%viz_fem%mesh,       &
      &     pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),                &
      &     pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
@@ -147,7 +148,6 @@
      &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
         call dealloc_PVR_initialize(itwo, pvr%pvr_param(i_lic),         &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_INT_COUNT_BASED) then
@@ -160,6 +160,7 @@
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
       end do
+      if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
       call output_PVR_images(istep_lic, pvr%num_pvr, ist_lic, ied_lic,  &
@@ -179,7 +180,6 @@
 !
       use t_lic_field_data
       use t_surf_grp_list_each_surf
-      use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use each_anaglyph_PVR
@@ -213,7 +213,6 @@
       do i_lic = ist_lic, ied_lic
         ist_img = pvr%PVR_sort%istack_pvr_images(i_lic-1)
 !
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
         call cal_field_4_each_lic(geofem%mesh%node, nod_fld,            &
      &      lic_param(i_lic), repart_data%nod_fld_lic)
@@ -237,7 +236,6 @@
         call each_PVR_initialize                                        &
      &     (repart_data%viz_fem%mesh, repart_data%viz_fem%group,        &
      &      pvr%pvr_param(i_lic), pvr%pvr_bound(i_lic))
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         call anaglyph_lic_rendering_w_rot(istep_lic, time,              &
      &      repart_data%viz_fem, pvr%sf_grp_4_sf,                       &
@@ -246,7 +244,6 @@
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1),              &
      &      rep_ref_viz, m_SR)
 !
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         call dealloc_pvr_surf_domain_item(pvr%pvr_bound(i_lic))
         call dealloc_pixel_position_pvr(pvr%pvr_param(i_lic)%pixel)
         call dealloc_iflag_pvr_used_ele                                 &
@@ -262,7 +259,6 @@
         call dealloc_num_sf_grp_each_surf(pvr%sf_grp_4_sf)
         call dealloc_LIC_each_mesh                                      &
      &     (repart_p, lic_param(i_lic)%each_part_p, repart_data)
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
       end do
       call dealloc_lic_repart_ref(rep_ref_snap)
 !

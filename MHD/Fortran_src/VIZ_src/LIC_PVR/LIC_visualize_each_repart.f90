@@ -75,7 +75,6 @@
      &          repart_p, rep_ref_m, repart_data, pvr, lic_param,       &
      &          rep_ref, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use t_surf_grp_list_each_surf
       use t_lic_field_data
       use set_PVR_view_and_image
@@ -138,7 +137,6 @@
 !
         if(my_rank .eq. 0) write(*,*)                                   &
      &                   's_each_LIC_rendering each', i_lic
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         call single_PVR_view_matrices(repart_data%viz_fem%mesh,         &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1), m_SR)
@@ -150,7 +148,6 @@
      &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
         call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),      &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_INT_COUNT_BASED) then
@@ -174,7 +171,6 @@
      &          repart_p, rep_ref_m, repart_data, pvr, lic_param,       &
      &          rep_ref, m_SR)
 !
-      use m_elapsed_labels_4_VIZ
       use t_surf_grp_list_each_surf
       use t_lic_field_data
       use set_PVR_view_and_image
@@ -237,7 +233,6 @@
 !
         if(my_rank .eq. 0) write(*,*)                                   &
      &                   's_each_LIC_rendering each', i_lic
-        if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
         call quilt_PVR_view_matrices                                    &
      &     (num_img, repart_data%viz_fem%mesh,                          &
      &      pvr%pvr_rgb(ist_img+1), pvr%pvr_param(i_lic),               &
@@ -250,7 +245,6 @@
      &      pvr%pvr_rgb(ist_img+1), rep_ref_viz, m_SR)
         call dealloc_PVR_initialize(num_img, pvr%pvr_param(i_lic),      &
      &      pvr%pvr_bound(i_lic), pvr%pvr_proj(ist_img+1))
-        if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
         if(lic_param(i_lic)%each_part_p%iflag_repart_ref                &
      &                                   .eq. i_INT_COUNT_BASED) then
