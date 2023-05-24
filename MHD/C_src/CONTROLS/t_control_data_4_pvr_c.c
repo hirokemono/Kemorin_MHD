@@ -13,7 +13,6 @@ const char label_pvr_head[KCHARA_C] = "volume_rendering";
 
 
 struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c(){
-	int i;
     struct pvr_plot_area_ctl_c *area_c;
     if((area_c = (struct pvr_plot_area_ctl_c *) malloc(sizeof(struct pvr_plot_area_ctl_c))) == NULL) {
         printf("malloc error for pvr_plot_area_ctl_c \n");
@@ -74,7 +73,6 @@ int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 
 
 struct pvr_ctl_c * init_pvr_ctl_c(){
-	int i;
     struct pvr_ctl_c *pvr_c;
     if((pvr_c = (struct pvr_ctl_c *) malloc(sizeof(struct pvr_ctl_c))) == NULL) {
         printf("malloc error for pvr_ctl_c \n");
@@ -88,9 +86,9 @@ struct pvr_ctl_c * init_pvr_ctl_c(){
 	pvr_c->file_head_ctl = init_chara_ctl_item_c();
 	pvr_c->file_fmt_ctl = init_chara_ctl_item_c();
 	pvr_c->monitoring_ctl = init_chara_ctl_item_c();
-	pvr_c->transparent_ctl = init_chara_ctl_item_c();
 	
 	pvr_c->streo_ctl = init_chara_ctl_item_c();
+    pvr_c->anaglyph_ctl = init_chara_ctl_item_c();
 	pvr_c->quilt_ctl = init_chara_ctl_item_c();
 	
 	pvr_c->pvr_field_ctl = init_chara_ctl_item_c();
@@ -122,9 +120,9 @@ void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	dealloc_chara_ctl_item_c(pvr_c->file_head_ctl);
 	dealloc_chara_ctl_item_c(pvr_c->file_fmt_ctl);
 	dealloc_chara_ctl_item_c(pvr_c->monitoring_ctl);
-	dealloc_chara_ctl_item_c(pvr_c->transparent_ctl);
 	
 	dealloc_chara_ctl_item_c(pvr_c->streo_ctl);
+    dealloc_chara_ctl_item_c(pvr_c->anaglyph_ctl);
 	dealloc_chara_ctl_item_c(pvr_c->quilt_ctl);
 	
 	dealloc_chara_ctl_item_c(pvr_c->pvr_field_ctl);
@@ -160,11 +158,11 @@ void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 	
 	read_chara_ctl_item_c(buf, pvr_c->label_pvr_ctl_w_dpl->label[ 3],
 						  pvr_c->monitoring_ctl);
-	read_chara_ctl_item_c(buf, pvr_c->label_pvr_ctl_w_dpl->label[ 4],
-						  pvr_c->transparent_ctl);
 	
 	read_chara_ctl_item_c(buf, pvr_c->label_pvr_ctl_w_dpl->label[ 6],
 						  pvr_c->streo_ctl);
+    read_chara_ctl_item_c(buf, pvr_c->label_pvr_ctl_w_dpl->label[ 4],
+                          pvr_c->anaglyph_ctl);
 	read_chara_ctl_item_c(buf, pvr_c->label_pvr_ctl_w_dpl->label[ 7],
 						  pvr_c->quilt_ctl);
 	
@@ -232,13 +230,13 @@ int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c){
 	level = write_chara_ctl_item_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->maxlen, 
 								   pvr_c->label_pvr_ctl_w_dpl->label[ 3],
 								   pvr_c->monitoring_ctl);
-	level = write_chara_ctl_item_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->maxlen,
-								   pvr_c->label_pvr_ctl_w_dpl->label[ 4],
-								   pvr_c->transparent_ctl);
 	
 	level = write_chara_ctl_item_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->maxlen,
 								   pvr_c->label_pvr_ctl_w_dpl->label[ 6],
 								   pvr_c->streo_ctl);
+    level = write_chara_ctl_item_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->maxlen,
+                                   pvr_c->label_pvr_ctl_w_dpl->label[ 4],
+                                   pvr_c->anaglyph_ctl);
 	level = write_chara_ctl_item_c(fp, level, pvr_c->label_pvr_ctl_w_dpl->maxlen,
 								   pvr_c->label_pvr_ctl_w_dpl->label[ 7],
 								   pvr_c->quilt_ctl);

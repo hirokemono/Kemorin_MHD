@@ -23,9 +23,9 @@
 !!  pvr_file_head        pvr_temp
 !!  pvr_output_type      PNG
 !!  monitoring_mode      YES
-!!  image_tranceparency  tranceparent
 !!
 !!  streo_imaging        YES
+!!  anaglyph_switch      NO
 !!  quilt_3d_imaging     YES
 !!!
 !!  output_field    temperature
@@ -67,9 +67,9 @@
 !!     ...
 !!  end array isosurface_ctl
 !!!
-!!  begin image_rotation_ctl
+!!  begin snapshot_movie_ctl
 !!   ...
-!!  end image_rotation_ctl
+!!  end snapshot_movie_ctl
 !!!
 !!end volume_rendering
 !!
@@ -126,9 +126,9 @@
         type(read_character_item) :: file_head_ctl
         type(read_character_item) :: file_fmt_ctl
         type(read_character_item) :: monitoring_ctl
-        type(read_character_item) :: transparent_ctl
 !
         type(read_character_item) :: streo_ctl
+        type(read_character_item) :: anaglyph_ctl
         type(read_character_item) :: quilt_ctl
 !
 !>      Structure for element group list for PVR
@@ -173,7 +173,7 @@
       pvr_ctl%updated_ctl%iflag =     0
       pvr_ctl%file_head_ctl%iflag =   0
       pvr_ctl%file_fmt_ctl%iflag =    0
-      pvr_ctl%transparent_ctl%iflag = 0
+      pvr_ctl%anaglyph_ctl%iflag =    0
       pvr_ctl%pvr_field_ctl%iflag =   0
       pvr_ctl%pvr_comp_ctl%iflag =    0
 !

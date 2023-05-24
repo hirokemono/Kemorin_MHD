@@ -264,8 +264,6 @@
       type(sph_grids), intent(inout) :: sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
-      integer(kind = kint) :: i, irev
-!
 !
       sph%sph_params%iflag_shell_mode = iflag_MESH_same
 !

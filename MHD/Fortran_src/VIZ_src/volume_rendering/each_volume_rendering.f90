@@ -8,19 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine init_each_PVR_image(num_img, pvr_param, pvr_rgb)
-!!      subroutine each_PVR_initialize(i_pvr, num_img, mesh, group,     &
-!!     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj,              &
-!!     &          SR_sig, SR_r, SR_i)
+!!      subroutine each_PVR_initialize(mesh, group,                     &
+!!     &                               pvr_param, pvr_bound)
 !!        integer(kind = kint), intent(in) :: i_pvr, num_img
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
-!!        type(pvr_image_type), intent(in) :: pvr_rgb(num_img)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-!!        type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
-!!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_real_buffer), intent(inout) :: SR_r
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!      subroutine dealloc_PVR_initialize                               &
 !!     &         (num_proj, pvr_param, pvr_bound, pvr_proj)
 !!        integer(kind = kint), intent(in) :: num_proj
@@ -78,8 +72,7 @@
       use t_pvr_image_array
       use t_geometries_in_pvr_screen
       use t_pvr_field_data
-      use t_solver_SR
-      use t_solver_SR_int
+      use t_mesh_SR
 !
       use set_default_pvr_params
       use set_position_pvr_screen
@@ -113,29 +106,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_initialize(i_pvr, num_img, mesh, group,       &
-     &          pvr_rgb, pvr_param, pvr_bound, pvr_proj,                &
-     &          SR_sig, SR_r, SR_i)
+      subroutine each_PVR_initialize(mesh, group,                       &
+     &                               pvr_param, pvr_bound)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
-      use cal_pvr_projection_mat
       use find_pvr_surf_domain
       use set_iflag_for_used_ele
 !
-      integer(kind = kint), intent(in) :: i_pvr, num_img
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
-      type(pvr_image_type), intent(in) :: pvr_rgb(num_img)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-      type(PVR_projection_data), intent(inout) :: pvr_proj(num_img)
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
-      integer(kind = kint) :: i_img
 !
       call alloc_iflag_pvr_used_ele(mesh%ele, pvr_param%draw_param)
       call s_set_iflag_for_used_ele(mesh%ele, group%ele_grp,            &
@@ -153,16 +137,6 @@
 !
       call set_pixel_on_pvr_screen(pvr_param%multi_view(1),             &
      &                             pvr_param%pixel)
-!
-      if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-      do i_img = 1, num_img
-        if(pvr_param%movie_def%iflag_movie_mode                         &
-     &                                 .ne. IFLAG_NO_MOVIE) cycle
-!
-        call set_fixed_view_and_image(i_img, num_img, mesh,             &
-     &      pvr_param, pvr_rgb(i_img), pvr_bound, pvr_proj(i_img),      &
-     &      SR_sig, SR_r, SR_i)
-      end do
 !
       end subroutine each_PVR_initialize
 !
@@ -198,6 +172,7 @@
      &          pvr_param, pvr_proj, pvr_rgb, SR_sig, SR_r)
 !
       use cal_pvr_modelview_mat
+      use rendering_vr_image
 !
       integer(kind = kint), intent(in) :: num_img
       integer(kind = kint), intent(in) :: istep_pvr
@@ -285,7 +260,8 @@
      &          field_pvr, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
      &          SR_sig, SR_r, SR_i)
 !
-      use cal_pvr_modelview_mat
+      use set_PVR_view_and_image
+      use rendering_vr_image
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
@@ -320,13 +296,15 @@
 !
       do i_rot = 1, pvr_param%movie_def%num_frame
         do i_img = 1, num_img
-          call rendering_at_once(istep_pvr, time, i_img, i_rot,         &
+          call rot_multi_view_projection_mats(i_img, i_rot,             &
+     &        pvr_param, pvr_proj(i_img)%screen)
+          call rendering_at_once(istep_pvr, time,                       &
      &        geofem%mesh, geofem%group, sf_grp_4_sf,                   &
      &        field_pvr, pvr_param, pvr_bound, pvr_proj(i_img),         &
      &        pvr_rgb(i_img), SR_sig, SR_r, SR_i)
         end do
 !
-        call set_output_rot_sequence_image(istep_pvr,                   &
+        call set_output_rot_sequence_image(istep_pvr, i_rot,            &
      &      pvr_rgb(1)%id_pvr_file_type, pvr_rgb(1)%pvr_prefix,         &
      &      num_img, pvr_param%stereo_def%n_column_row_view,            &
      &      pvr_rgb)

@@ -5,7 +5,7 @@
 begin volume_rendering   (BMP or PNG)
   pvr_file_head        pvr_temp
   pvr_output_type      PNG
-  image_tranceparency  tranceparent
+  anaglyph_switch      Off
 !
   output_field    temperature    end
   output component     scalar
@@ -134,9 +134,9 @@ begin volume_rendering   (BMP or PNG)
     axis_label_switch      ON
   end colorbar_ctl
 !
-  begin image_rotation_ctl
+  begin snapshot_movie_ctl
     hd_movie_rot_axis       z
     num_of_frames           1
-  end image_rotation_ctl
+  end snapshot_movie_ctl
 !
 end volume_rendering

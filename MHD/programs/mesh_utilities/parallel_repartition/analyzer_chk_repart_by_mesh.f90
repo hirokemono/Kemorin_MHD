@@ -108,8 +108,6 @@
       type(communication_table), save :: new_ele_comm2
 !
       type(mesh_data), save :: new_fem2, new_fem_f
-      integer(kind = kint) :: new_numele
-!
       integer(kind = kint) :: icount_error, icou_error_gl
 !
 !

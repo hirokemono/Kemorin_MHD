@@ -124,9 +124,6 @@
       type(work_for_comm_check), save :: surf_check
       type(work_for_comm_check), save :: edge_check
 !
-      integer(kind = kint) :: irank_read
-      integer(kind = kint) :: i, ierr, new_numele
-!
 !
       if(iflag_debug.gt.0) write(*,*) ' load_repartitoned_table_mesh'
       call load_repartitoned_table_mesh((.FALSE.),                      &

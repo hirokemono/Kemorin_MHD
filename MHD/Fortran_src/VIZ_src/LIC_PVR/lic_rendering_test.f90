@@ -93,46 +93,32 @@
         return
       end if
 !
-      call bcast_lic_controls(lic%pvr%num_pvr,                          &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%pvr%cflag_update)
-!
       call set_ctl_param_vol_repart(repart_ctl, lic%repart_p)
       call set_lic_repart_reference_param                               &
      &   (repart_ctl%new_part_ctl, lic%repart_p, lic%rep_ref_m)
       call dealloc_control_vol_repart(repart_ctl)
 !
-      call alloc_pvr_data(lic%pvr)
+      call bcast_lic_controls(lic%pvr%num_pvr,                          &
+     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
+     &    lic%pvr%cflag_update)
 !
-      do i_lic = 1, lic%pvr%num_pvr
-        call alloc_iflag_pvr_boundaries(geofem%group%surf_grp,          &
-     &      lic%pvr%pvr_param(i_lic)%draw_param)
-      end do
+      call alloc_pvr_data(lic%pvr)
 !
       allocate(lic%lic_param(lic%pvr%num_pvr))
       allocate(lic%rep_ref(lic%pvr%num_pvr))
-      call s_set_lic_controls(geofem%group, nod_fld, lic%pvr%num_pvr,   &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%lic_param, lic%pvr%pvr_param, lic%rep_ref,                &
-     &    lic%flag_each_repart)
+      call s_set_lic_controls                                           &
+     &   (geofem%group, nod_fld, lic_ctls%fname_lic_ctl,                &
+     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type, lic%lic_param,  &
+     &    lic%rep_ref, lic%pvr, lic%flag_each_repart)
 !
       call count_num_rendering_and_images                               &
      &   (lic%pvr%num_pvr, lic%pvr%pvr_param,                           &
-     &    lic%pvr%num_pvr_rendering, lic%pvr%num_pvr_images,            &
-     &    lic%pvr%istack_pvr_images)
+     &    lic%pvr%num_pvr_images, lic%pvr%PVR_sort%istack_pvr_images)
       call alloc_pvr_images(lic%pvr)
 !
       call set_rendering_and_image_pes(nprocs,                          &
-     &    lic%pvr%num_pvr, lic_ctls%pvr_ctl_type,                       &
-     &    lic%pvr%num_pvr_images, lic%pvr%istack_pvr_images,            &
-     &    lic%pvr%pvr_rgb)
-!
-      do i_lic = 1, lic%pvr%num_pvr
-        ist_img = lic%pvr%istack_pvr_images(i_lic-1)
-        num_img = lic%pvr%istack_pvr_images(i_lic  ) - ist_img
-        call init_each_PVR_image(num_img, lic%pvr%pvr_param(i_lic),     &
-     &                           lic%pvr%pvr_rgb(ist_img+1))
-      end do
+     &    lic%pvr%num_pvr, lic_ctls%pvr_ctl_type, lic%pvr%PVR_sort,     &
+     &    lic%pvr%num_pvr_images, lic%pvr%pvr_rgb)
 !
       call LIC_init_nodal_field(geofem, lic%pvr%num_pvr, lic%lic_param, &
      &                          lic%repart_data)
@@ -151,6 +137,14 @@
           call dealloc_lic_count_data(lic_ctls%pvr_ctl_type(i_lic),     &
      &        lic_ctls%lic_ctl_type(i_lic))
         end if
+      end do
+      call dealloc_sort_PVRs_list(lic%pvr%PVR_sort)
+!
+      do i_lic = 1, lic%pvr%num_pvr
+        ist_img = lic%pvr%PVR_sort%istack_pvr_images(i_lic-1)
+        num_img = lic%pvr%PVR_sort%istack_pvr_images(i_lic  ) - ist_img
+        call init_each_PVR_image(num_img, lic%pvr%pvr_param(i_lic),     &
+     &                           lic%pvr%pvr_rgb(ist_img+1))
       end do
 !
       if(lic%flag_each_repart) return

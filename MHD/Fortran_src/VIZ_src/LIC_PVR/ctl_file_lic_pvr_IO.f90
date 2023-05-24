@@ -37,9 +37,9 @@
 !!  lic_file_prefix      pvr_temp
 !!  lic_image_format     PNG
 !!  monitoring_mode      YES
-!!  image_tranceparency  tranceparent
 !!
 !!  streo_imaging        YES
+!!  anaglyph_switch      NO
 !!  quilt_3d_imaging     YES
 !!!
 !!  begin LIC_ctl
@@ -70,9 +70,9 @@
 !!   ...
 !!  end quilt_image_ctl
 !!
-!!  begin movie_mode_ctl
+!!  begin snapshot_movie_ctl
 !!   ...
-!!  end movie_mode_ctl
+!!  end snapshot_movie_ctl
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

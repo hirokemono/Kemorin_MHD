@@ -50,8 +50,6 @@
           movie_def%iflag_movie_mode = I_ZOOM
         else if(cmp_no_case(tmpchara, FLAG_START_END_VIEW)) then
           movie_def%iflag_movie_mode = I_START_END_VIEW
-        else if(cmp_no_case(tmpchara, FLAG_LOOKINGLASS)) then
-          movie_def%iflag_movie_mode = I_LOOKINGLASS
         else if(cmp_no_case(tmpchara, FLAG_LIC_KERNEL)) then
           movie_def%iflag_movie_mode = I_LIC_KERNEL
         else
@@ -86,16 +84,6 @@
           movie_def%angle_range(1:2)                                    &
      &          = movie_ctl%angle_range_ctl%realvalue(1:2)
         end if
-      else if(movie_def%iflag_movie_mode .eq. I_LOOKINGLASS) then
-        movie_def%id_rot_axis = 2
-!
-        movie_def%angle_range(1) =  -17.5d0
-        movie_def%angle_range(2) =   17.5d0
-        if(movie_ctl%angle_range_ctl%iflag .gt. 0) then
-          movie_def%angle_range(1:2)                                    &
-     &          = movie_ctl%angle_range_ctl%realvalue(1:2)
-        end if
-!
       else if(movie_def%iflag_movie_mode .eq. I_ZOOM) then
         if(movie_ctl%apature_range_ctl%iflag .eq. 0) then
           movie_def%iflag_movie_mode = IFLAG_NO_MOVIE

@@ -16,8 +16,8 @@ label[0]   updated_sign
 label[1]   pvr_file_head 
 label[2]   pvr_output_type 
 label[3]   monitoring_mode 
-label[4]   image_tranceparency 
-label[5]   streo_imaging 
+label[4]   streo_imaging 
+label[5]   anaglyph_switch 
 label[6]   quilt_3d_imaging
 label[7]   output_field 
 label[8]   output_component 
@@ -29,7 +29,7 @@ label[13]   lighting_ctl
 label[14]   colorbar_ctl 
 label[15]   section_ctl 
 label[16]   isosurface_ctl 
-label[17]   movie_mode_ctl 
+label[17]   snapshot_movie_ctl 
 label[18]   image_rotation_ctl 
 
 Check pvr_ctl_labls->label_pvr_modelview

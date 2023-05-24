@@ -12,9 +12,8 @@
 !!     &          field_lic, pvr_param, pvr_proj, pvr_rgb,              &
 !!     &          rep_ref_viz, m_SR)
 !!      subroutine rendering_lic_at_once(istep_pvr, time,               &
-!!     &          i_img, i_rot, mesh, group, sf_grp_4_sf, lic_p,        &
-!!     &          field_lic, pvr_param, pvr_bound, pvr_proj, pvr_rgb,   &
-!!     &          rep_ref_viz, m_SR)
+!!     &          mesh, group, sf_grp_4_sf, lic_p, field_lic, pvr_param,&
+!!     &          pvr_bound, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !!        integer(kind = kint), intent(in) :: i_img, i_rot
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        real(kind = kreal), intent(in) :: time
@@ -103,16 +102,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_lic_at_once(istep_pvr, time,                 &
-     &          i_img, i_rot, mesh, group, sf_grp_4_sf, lic_p,          &
-     &          field_lic, pvr_param, pvr_bound, pvr_proj, pvr_rgb,     &
-     &          rep_ref_viz, m_SR)
+     &          mesh, group, sf_grp_4_sf, lic_p, field_lic, pvr_param,  &
+     &          pvr_bound, pvr_proj, pvr_rgb, rep_ref_viz, m_SR)
 !
       use cal_pvr_projection_mat
       use cal_pvr_modelview_mat
       use write_LIC_image
       use t_pvr_stencil_buffer
 !
-      integer(kind = kint), intent(in) :: i_img, i_rot
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
@@ -128,9 +125,6 @@
       type(lic_repart_reference), intent(inout) :: rep_ref_viz
       type(mesh_SR), intent(inout) :: m_SR
 !
-!
-      call sel_rot_view_projection_mats(i_img, i_rot,                   &
-     &                                  pvr_param, pvr_proj%screen)
 !
       call transfer_to_screen(mesh%node, mesh%surf,                     &
      &    pvr_param%pixel, pvr_param%multi_view(1)%n_pvr_pixel,         &

@@ -84,11 +84,9 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
 !
-      integer(kind = kint) :: i_pvr
       integer(kind = kint) :: icheck_ncomp(1)
 !
 !
-      call set_pvr_stereo_control(pvr_ctl_type, pvr_param%stereo_def)
       call s_set_control_pvr_movie(pvr_ctl_type%movie,                  &
      &                             pvr_param%movie_def)
 !
@@ -107,7 +105,8 @@
      &    pvr_param%area_def, pvr_param%draw_param,                     &
      &    pvr_param%color, pvr_param%colorbar)
 !
-!   set transfer matrix
+!   set parameters for stereo views
+      call set_pvr_stereo_control(pvr_ctl_type, pvr_param%stereo_def)
       call set_pvr_mul_view_params(pvr_ctl_type%mat,                    &
      &    pvr_ctl_type%quilt_c, pvr_ctl_type%movie, pvr_param)
 !
@@ -139,7 +138,6 @@
      &                 ' more than number of quilt image. (Stop)'
           call calypso_mpi_abort(1,e_message)
        else
-         pvr_param%flag_mulview_quilt = .TRUE.
          call init_multi_view_parameters(num_views,                     &
      &       quilt_c%mul_qmats_c, pvr_param)
          end if

@@ -58,11 +58,11 @@ int read_LIC_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	
 		read_chara_ctl_item_c(buf, lic_pvr_c->label_lic_pvr->label[ 3],
 							  lic_pvr_c->pvr_c->monitoring_ctl);
-		read_chara_ctl_item_c(buf, lic_pvr_c->label_lic_pvr->label[ 4],
-							  lic_pvr_c->pvr_c->transparent_ctl);
 
 		read_chara_ctl_item_c(buf, lic_pvr_c->label_lic_pvr->label[ 6],
 							  lic_pvr_c->pvr_c->streo_ctl);
+        read_chara_ctl_item_c(buf, lic_pvr_c->label_lic_pvr->label[ 4],
+                              lic_pvr_c->pvr_c->anaglyph_ctl);
 		read_chara_ctl_item_c(buf, lic_pvr_c->label_lic_pvr->label[ 7],
 							  lic_pvr_c->pvr_c->quilt_ctl);
 	
@@ -135,13 +135,13 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
 	level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen,
 								   lic_pvr_c->label_lic_pvr->label[ 3],
 								   lic_pvr_c->pvr_c->monitoring_ctl);
-	level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen,
-								   lic_pvr_c->label_lic_pvr->label[ 4],
-								   lic_pvr_c->pvr_c->transparent_ctl);
 	
 	level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen,
 								   lic_pvr_c->label_lic_pvr->label[ 6],
 								   lic_pvr_c->pvr_c->streo_ctl);
+    level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen,
+                                   lic_pvr_c->label_lic_pvr->label[ 4],
+                                   lic_pvr_c->pvr_c->anaglyph_ctl);
 	level = write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, 
 								   lic_pvr_c->label_lic_pvr->label[ 7],
 								   lic_pvr_c->pvr_c->quilt_ctl);

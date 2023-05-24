@@ -51,8 +51,6 @@
       use t_control_data_vizs
       use input_control_four_vizs
 !
-      integer(kind = kint) :: ierr
-!
 !       set controls
       if (iflag_debug.gt.0) write(*,*) 's_input_control_four_vizs'
       call s_input_control_four_vizs(fname_viz_ctl, vizs_ctl6,          &

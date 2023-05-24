@@ -61,7 +61,7 @@
 !$omp parallel do private(iz)
       do iz = 1, part_param%ndomain_eb(3)
         write(chara_tmp,'(a,a2)') trim(base_name), '_z'
-        call add_index_after_name(iz, chara_tmp, domain_grp_name(iz))
+        domain_grp_name(iz) = append_index(iz, chara_tmp)
       end do
 !$omp end parallel do
 !
@@ -91,9 +91,9 @@
           jk = iy + (iz-1) * part_param%ndomain_eb(2)
 !
           write(chara_tmp,'(a,a2)') trim(base_name),'_y'
-          call add_index_after_name(iy, chara_tmp, domain_grp_name(jk))
+          domain_grp_name(jk) = append_index(iy, chara_tmp)
           write(chara_tmp,'(a,a2)') trim(domain_grp_name(jk)),'_z'
-          call add_index_after_name(iz, chara_tmp, domain_grp_name(jk))
+          domain_grp_name(jk) = append_index(iz, chara_tmp)
         end do
       end do
 !$omp end parallel do
@@ -126,14 +126,11 @@
             i = ix + (jk-1) * part_param%ndomain_eb(1)
 !
             write(chara_tmp,'(a,a2)') trim(base_name), '_x'
-            call add_index_after_name                                   &
-     &         (ix, chara_tmp, domain_grp_name(i))
+            domain_grp_name(i) = append_index(ix, chara_tmp)
             write(chara_tmp,'(a,a2)') trim(domain_grp_name(i)), '_y'
-            call add_index_after_name                                   &
-     &         (iy, chara_tmp, domain_grp_name(i))
+            domain_grp_name(i) = append_index(iy, chara_tmp)
             write(chara_tmp,'(a,a2)') trim(domain_grp_name(i)), '_z'
-            call add_index_after_name                                   &
-     &         (iz, chara_tmp, domain_grp_name(i))
+            domain_grp_name(i) = append_index(iz, chara_tmp)
           end do
         end do
       end do

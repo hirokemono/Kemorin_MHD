@@ -29,7 +29,7 @@
 !!    Avaiable parameters for movie_mode_ctl:
 !!        rotation, zoom, view_matrices, LIC_kernel, looking_glass
 !!
-!!  begin image_rotation_ctl
+!!  begin snapshot_movie_ctl
 !!    movie_mode_ctl       rotation
 !!    num_frames_ctl        120
 !!
@@ -50,7 +50,7 @@
 !!    apature_range           10.0  1.0
 !!
 !!    LIC_kernel_peak_range      -0.8  0.8
-!!  end image_rotation_ctl
+!!  end snapshot_movie_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    movie_mode_ctl:   view_matrices, rotation, apature, LIC_kernel
