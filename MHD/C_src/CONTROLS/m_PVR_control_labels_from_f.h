@@ -13,8 +13,8 @@ Check pvr_ctl_labls->num_label_pvr_ctl_c 19
 Check pvr_ctl_labls->label_pvr_ctl_w_dpl
 ctl_list->num_labels 20 
 label[0]   updated_sign 
-label[1]   pvr_file_head 
-label[2]   pvr_output_type 
+label[1]   pvr_file_prefix 
+label[2]   pvr_output_format 
 label[3]   monitoring_mode 
 label[4]   streo_imaging 
 label[5]   anaglyph_switch 

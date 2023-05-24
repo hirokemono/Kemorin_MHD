@@ -12,7 +12,7 @@ Check lic_ctl_labls->label_LIC_pvr_ctl_f
 ctl_list->num_labels 18 
 label[ 0]   updated_sign
 label[ 1]   lic_file_prefix
-label[ 2]   lic_image_format
+label[ 2]   lic_output_format
 label[ 3]   monitoring_mode
 label[ 4]   streo_imaging
 label[ 5]   anaglyph_switch
