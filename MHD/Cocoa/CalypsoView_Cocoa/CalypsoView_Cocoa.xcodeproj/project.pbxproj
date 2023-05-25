@@ -1228,7 +1228,7 @@
 				INFOPLIST_FILE = "CalypsoView_Cocoa-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				"OTHER_LDFLAGS[arch=*]" = "-L/opt/local/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.ucdavis.CalypsoView-Cocoa";
 				PRODUCT_NAME = CalypsoView_Cocoa;
@@ -1254,7 +1254,7 @@
 				INFOPLIST_FILE = "CalypsoView_Cocoa-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				OTHER_LDFLAGS = "-L/opt/local/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.ucdavis.CalypsoView-Cocoa";
 				PRODUCT_NAME = CalypsoView_Cocoa;
