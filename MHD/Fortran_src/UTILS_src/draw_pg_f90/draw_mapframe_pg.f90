@@ -19,6 +19,7 @@
 !*
       subroutine mapframe
 !*
+      use aitoff
       use map_projection_sph
 !
       real :: xf(181), yf(181)
@@ -45,7 +46,7 @@
           sin_t = sin(dy)
           cos_t = cos(dy)
 !*
-          call aitoff(sin_t, cos_t, dx, x_grid, y_grid)
+          call s_aitoff(sin_t, cos_t, dx, x_grid, y_grid)
           xf(ii) = real( x_grid )
           yf(ii) = real( y_grid )
         end do
@@ -63,7 +64,7 @@
         do ii = 1, 181
           dx = pi * dble(ii-1) / 90.0d0
 !*
-          call aitoff(sin_t, cos_t, dx, x_grid, y_grid)
+          call s_aitoff(sin_t, cos_t, dx, x_grid, y_grid)
           xf(ii) = real( x_grid )
           yf(ii) = real( y_grid )
         end do

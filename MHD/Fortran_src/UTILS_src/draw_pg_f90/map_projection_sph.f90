@@ -5,8 +5,7 @@
 !
 !      subroutine allocate_map_grid(num_lat, num_long)
 !      subroutine deallocate_map_grid
-!      subroutine plmap (visble, x, y, z)
-!      subroutine aitoff (sin_t, cos_t, phi, xg, yg)
+!      subroutine plmap (visble, x, y)
 !          map projection using the Hammer-Aitoff equal-area projection
 !*************************************************
 !*
@@ -73,10 +72,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine plmap (visble, x, y, z)
+      subroutine plmap (visble, x, y)
+!*
+      use aitoff
 !*
       integer(kind = kint), intent(inout) :: visble
-      real(kind = kreal), intent(in) ::    x, y, z
+      real(kind = kreal), intent(in) :: x, y
 !*
       integer(kind = kint) :: ix, iy
       real(kind = kreal) :: xg, yg
@@ -86,7 +87,7 @@
       ix = int(x, KIND(iX))
       iy = int(y, KIND(iy))
 !*
-      call aitoff (sin_theta_map(iy), cos_theta_map(iy), phi_map(ix),   &
+      call s_aitoff (sin_theta_map(iy), cos_theta_map(iy), phi_map(ix), &
      &    xg, yg)
       xg_real = real(xg)
       yg_real = real(yg)
@@ -98,26 +99,6 @@
       end if
 !*
       end subroutine plmap
-!
-! ----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-       subroutine aitoff(sin_t, cos_t, phi, xg, yg)
-!*
-      real(kind = kreal), intent(in) :: sin_t, cos_t, phi
-      real(kind = kreal), intent(inout) :: xg, yg
-!
-      real(kind = kreal) :: xl2, den
-      real(kind = kreal), parameter :: one = 1.0d0, two = 2.0d0
-      real(kind = kreal), parameter :: half = one / two
-!*
-!
-      xl2 = half * phi
-      den = sqrt( one + sin_t*sin(xl2) )
-      xg = -real( two * sin_t * cos(xl2) / den)
-      yg =  real( cos_t / den)
-!*
-      end subroutine aitoff
 !
 ! ----------------------------------------------------------------------
 !
