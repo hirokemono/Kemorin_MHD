@@ -6,6 +6,8 @@ png_IO_test.o: $(GRAPHIC_TEST_DIR)/png_IO_test.f90 transfer_to_long_integers.o b
 	$(F90) -c $(F90OPTFLAGS) $<
 png_to_bmp_f.o: $(GRAPHIC_TEST_DIR)/png_to_bmp_f.F90 t_png_file_access.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
+reverse_aitoff_test.o: $(GRAPHIC_TEST_DIR)/reverse_aitoff_test.f90 m_precision.o m_constants.o convert_real_rgb_2_bite.o calypso_png_file_IO.o aitoff.o
+	$(F90) -c $(F90OPTFLAGS) $<
 test_bmp_images.o: $(GRAPHIC_TEST_DIR)/test_bmp_images.f90 m_precision.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

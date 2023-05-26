@@ -280,7 +280,7 @@
       subroutine projection_patch_to_map
 !
       use m_constants
-      use map_projection_sph
+      use aitoff
 !
       integer(kind = kint) :: i, j
       real(kind = kreal) :: s_theta, c_theta, pi, phi_map
@@ -292,7 +292,7 @@
           s_theta = sin( rtp_map_patch(j,2,i) )
           c_theta = cos( rtp_map_patch(j,2,i) )
           phi_map = mod( (rtp_map_patch(j,3,i)+pi),(two*pi) )
-          call aitoff(s_theta, c_theta, phi_map,                        &
+          call s_aitoff(s_theta, c_theta, phi_map,                      &
      &        xy_map(1,i,j), xy_map(2,i,j) )
         end do
       end do
