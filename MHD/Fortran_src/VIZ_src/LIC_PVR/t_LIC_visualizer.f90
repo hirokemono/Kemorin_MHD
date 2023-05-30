@@ -72,11 +72,11 @@
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
+      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
       call LIC_initialize(viz_step%LIC_t%increment,                     &
      &    geofem, VIZ_DAT%ele_comm, VIZ_DAT%next_tbl, nod_fld,          &
      &    viz_ctls%repart_ctl, viz_ctls%lic_ctls, lic_v%lic, m_SR)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
+      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !
       call calypso_mpi_barrier
       call dealloc_viz_controls(viz_ctls)

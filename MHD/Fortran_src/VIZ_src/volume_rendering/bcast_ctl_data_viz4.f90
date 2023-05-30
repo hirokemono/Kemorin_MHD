@@ -39,17 +39,23 @@
 !
       call bcast_files_4_psf_ctl(viz_ctls%psf_ctls)
       call bcast_files_4_iso_ctl(viz_ctls%iso_ctls)
+      call bcast_files_4_psf_ctl(viz_ctls%map_ctls)
+!
       call bcast_files_4_pvr_ctl(viz_ctls%pvr_ctls)
       call bcast_files_4_fline_ctl(viz_ctls%fline_ctls)
 !
       call bcast_ctl_type_r1(viz_ctls%delta_t_psf_v_ctl)
       call bcast_ctl_type_r1(viz_ctls%delta_t_iso_v_ctl)
+      call bcast_ctl_type_r1(viz_ctls%delta_t_map_v_ctl)
+!
       call bcast_ctl_type_r1(viz_ctls%delta_t_pvr_v_ctl)
       call bcast_ctl_type_r1(viz_ctls%delta_t_fline_v_ctl)
       call bcast_ctl_type_r1(viz_ctls%delta_t_ucd_v_ctl)
 !
       call bcast_ctl_type_i1(viz_ctls%i_step_psf_v_ctl)
       call bcast_ctl_type_i1(viz_ctls%i_step_iso_v_ctl)
+      call bcast_ctl_type_i1(viz_ctls%i_step_map_v_ctl)
+!
       call bcast_ctl_type_i1(viz_ctls%i_step_pvr_v_ctl)
       call bcast_ctl_type_i1(viz_ctls%i_step_fline_v_ctl)
       call bcast_ctl_type_i1(viz_ctls%i_step_ucd_v_ctl)

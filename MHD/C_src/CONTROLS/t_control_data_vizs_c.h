@@ -26,6 +26,7 @@ struct visualizers_ctl_c{
     
     struct PSF_ctl_list psf_ctl_list;
     struct ISO_ctl_list iso_ctl_list;
+    struct PSF_ctl_list map_ctl_list;
     struct PVR_ctl_list pvr_ctl_list;
     struct LIC_PVR_ctl_list lic_ctl_list;
     struct FLINE_ctl_list fline_ctl_list;

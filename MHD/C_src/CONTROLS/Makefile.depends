@@ -787,7 +787,6 @@ t_ctl_data_4_view_transfer_c.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
-  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
   $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \

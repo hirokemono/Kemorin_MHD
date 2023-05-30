@@ -170,7 +170,7 @@
       use skip_comment_f
       use ctl_data_platforms_IO
       use ctl_data_4_time_steps_IO
-      use ctl_data_viualiser_IO
+      use ctl_data_visualiser_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -212,7 +212,7 @@
       use skip_comment_f
       use ctl_data_platforms_IO
       use ctl_data_4_time_steps_IO
-      use ctl_data_viualiser_IO
+      use ctl_data_visualiser_IO
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_control

@@ -1,5 +1,5 @@
-!>@file   ctl_data_viualiser_IO.f90
-!!@brief  module ctl_data_viualiser_IO
+!>@file   ctl_data_visualiser_IO.f90
+!!@brief  module ctl_data_visualiser_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2011
@@ -67,7 +67,7 @@
 !!@endverbatim
 !
 !
-      module ctl_data_viualiser_IO
+      module ctl_data_visualiser_IO
 !
       use m_precision
 !
@@ -380,4 +380,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module ctl_data_viualiser_IO
+      end module ctl_data_visualiser_IO

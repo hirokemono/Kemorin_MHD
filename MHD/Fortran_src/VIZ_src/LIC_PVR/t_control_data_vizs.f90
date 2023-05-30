@@ -23,31 +23,42 @@
 !!      ....
 !!    end array isosurface_ctl
 !!
+!!    array  map_projection_ctl
+!!      ....
+!!    end array map_projection_ctl
+!!
 !!    array  volume_rendering
 !!      ....
 !!    end array volume_rendering
-!!
-!!    array  fieldline
-!!      ....
-!!    end array fieldline
 !!
 !!    array  LIC_rendering
 !!      ....
 !!    end array LIC_rendering
 !!
-!!    delta_t_sectioning_ctl   1.0e-3
-!!    i_step_sectioning_ctl    400
-!!    delta_t_isosurface_ctl   1.0e-3
-!!    i_step_isosurface_ctl    400
-!!    delta_t_pvr_ctl          1.0e-2
-!!    i_step_pvr_ctl           400
-!!    delta_t_fline_ctl        1.0e-1
-!!    i_step_fline_ctl         400
-!!    delta_t_LIC_ctl          1.0e-1
-!!    i_step_LIC_ctl           400
-!!    delta_t_field_ctl        1.0e-3
-!!    i_step_field_ctl         800
+!!    array  fieldline
+!!      ....
+!!    end array fieldline
+!!  end  visual_control
+!!
+!!    delta_t_sectioning_ctl       1.0e-3
+!!    i_step_sectioning_ctl        400
+!!    delta_t_isosurface_ctl       1.0e-3
+!!    i_step_isosurface_ctl        400
+!!    delta_t_map_projection_ctl   1.0e-3
+!!    i_step_map_projection_ctl    400
+!!    delta_t_pvr_ctl              1.0e-2
+!!    i_step_pvr_ctl               400
+!!    delta_t_fline_ctl            1.0e-1
+!!    i_step_fline_ctl             400
+!!    delta_t_LIC_ctl              1.0e-1
+!!    i_step_LIC_ctl               400
+!!    delta_t_field_ctl            1.0e-3
+!!    i_step_field_ctl             800
 !!    output_field_file_fmt_ctl   'VTK'
+!!
+!!    begin LIC_repartition_ctl
+!!      ....
+!!    end LIC_repartition_ctl
 !!  end visual_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -76,6 +87,8 @@
         type(section_controls) :: psf_ctls
 !>        Structures of isosurface controls
         type(isosurf_controls) :: iso_ctls
+!>        Structures of map projection controls
+        type(section_controls) :: map_ctls
 !>        Structures of volume rendering controls
         type(volume_rendering_controls) :: pvr_ctls
 !>        Structures of fieldline controls
@@ -92,6 +105,8 @@
         type(read_integer_item) :: i_step_psf_v_ctl
 !>   Increment for isosurface
         type(read_integer_item) :: i_step_iso_v_ctl
+!>   Increment for map projection
+        type(read_integer_item) :: i_step_map_v_ctl
 !>   Increment for volume rendering
         type(read_integer_item) :: i_step_pvr_v_ctl
 !>   Increment for LIC rendering
@@ -105,6 +120,8 @@
         type(read_real_item) :: delta_t_psf_v_ctl
 !>   time interval for isosurface
         type(read_real_item) :: delta_t_iso_v_ctl
+!>   time interval for map projection
+        type(read_real_item) :: delta_t_map_v_ctl
 !>   time interval for volume rendering
         type(read_real_item) :: delta_t_pvr_v_ctl
 !>   time interval for LIC rendering
@@ -135,12 +152,14 @@
 !
       call dealloc_psf_ctl_stract(viz_ctls%psf_ctls)
       call dealloc_iso_ctl_stract(viz_ctls%iso_ctls)
+      call dealloc_psf_ctl_stract(viz_ctls%map_ctls)
       call dealloc_pvr_ctl_struct(viz_ctls%pvr_ctls)
       call dealloc_fline_ctl_struct(viz_ctls%fline_ctls)
       call dealloc_lic_ctl_struct(viz_ctls%lic_ctls)
 !
       viz_ctls%delta_t_psf_v_ctl%iflag =   0
       viz_ctls%delta_t_iso_v_ctl%iflag =   0
+      viz_ctls%delta_t_map_v_ctl%iflag =   0
       viz_ctls%delta_t_pvr_v_ctl%iflag =   0
       viz_ctls%delta_t_fline_v_ctl%iflag = 0
       viz_ctls%delta_t_lic_v_ctl%iflag =   0
@@ -148,6 +167,7 @@
 !
       viz_ctls%i_step_psf_v_ctl%iflag =   0
       viz_ctls%i_step_iso_v_ctl%iflag =   0
+      viz_ctls%i_step_map_v_ctl%iflag =   0
       viz_ctls%i_step_pvr_v_ctl%iflag =   0
       viz_ctls%i_step_lic_v_ctl%iflag =   0
       viz_ctls%i_step_fline_v_ctl%iflag = 0
@@ -176,6 +196,9 @@
         call add_fields_4_isos_to_fld_ctl(viz_ctls%iso_ctls, field_ctl)
       end if
 !
+      if(viz_ctls%map_ctls%num_psf_ctl .gt. 0) then
+        call add_fields_4_psfs_to_fld_ctl(viz_ctls%map_ctls, field_ctl)
+      end if
 !
       if(viz_ctls%pvr_ctls%num_pvr_ctl .gt. 0) then
         call add_fields_4_pvrs_to_fld_ctl(viz_ctls%pvr_ctls, field_ctl)
