@@ -268,7 +268,7 @@
       rgba(1:4,1:npix) = 0.0d0
 !
       call alloc_map_patch_from_1patch(psf_phys%ntot_phys, map_e1)
-      do iele = 1, psf_phys%ntot_phys
+      do iele = 1, psf_ele%numele
         call s_set_map_patch_from_1patch(iele,                          &
      &      psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie,     &
      &      psf_phys%ntot_phys, psf_phys%d_fld, map_e1%n_map_patch,     &
@@ -298,6 +298,7 @@
             rgba(2,inod_map) = map_e1%x_map_patch(k1,2,i) / ar + half
             rgba(3,inod_map) = map_e1%x_map_patch(k1,3,i) / ar + half
             rgba(4,inod_map) = one
+!
           end do
 !
         end do
