@@ -246,8 +246,12 @@
       real(kind = kreal), allocatable :: rgba(:,:)
       character(len = 1), allocatable :: cimage(:,:)
 !
-      integer(kind = kint) :: i_img, iele, i, k1
-      real(kind = kreal) :: ar
+      integer(kind = kint) :: i_img, iele, i, k1, ix, iy
+      integer(kind = kint) :: ix_min, ix_max
+      integer(kind = kint) :: iy_min, iy_mid, iy_max
+      real(kind = kreal) :: x1, x2, x_min, x_max, x_mid
+      real(kind = kreal) :: d1, d2, d_min, d_max, d_mid
+      real(kind = kreal) :: ar, ratio_ymid, ratio_ymax, ratio_x
 !
 !
       do i_img = 1, psf_phys%ntot_phys
@@ -267,11 +271,11 @@
       allocate(cimage(3,npix))
       rgba(1:4,1:npix) = 0.0d0
 !
-      call alloc_map_patch_from_1patch(psf_phys%ntot_phys, map_e1)
+      call alloc_map_patch_from_1patch(ione, map_e1)
       do iele = 1, psf_ele%numele
         call s_set_map_patch_from_1patch(iele,                          &
      &      psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie,     &
-     &      psf_phys%ntot_phys, psf_phys%d_fld, map_e1%n_map_patch,     &
+     &      ione, psf_phys%d_fld(1,i_img), map_e1%n_map_patch,          &
      &      map_e1%x_map_patch, map_e1%d_map_patch)
         call set_sph_position_4_map_patch(map_e1%n_map_patch,           &
      &      map_e1%x_map_patch, map_e1%rtp_map_patch)
@@ -298,9 +302,109 @@
             rgba(2,inod_map) = map_e1%x_map_patch(k1,2,i) / ar + half
             rgba(3,inod_map) = map_e1%x_map_patch(k1,3,i) / ar + half
             rgba(4,inod_map) = one
-!
           end do
 !
+          iy_min = int(1 + dble(nypixel-1)                              &
+     &                    * (map_e1%xy_map(2,k_ymin,i) - ymin_frame))
+          iy_mid = int(1 + dble(nypixel-1)                              &
+     &                    * (map_e1%xy_map(2,k_ymid,i) - ymin_frame))
+          iy_max = int(1 + dble(nypixel-1)                              &
+     &                    * (map_e1%xy_map(2,k_ymax,i) - ymin_frame))
+          do iy = iy_min, iy_mid
+            if(iy_mid .eq. iy_min) then
+              x1 = map_e1%xy_map(1,k_ymin,i)
+              x2 = map_e1%xy_map(1,k_ymid,i)
+              d1 = map_e1%d_map_patch(k_ymin,1,i)
+              d2 = map_e1%d_map_patch(k_ymid,1,i)
+            else
+              ratio_ymax = dble(iy-iy_min) / dble(iy_max-iy_min)
+              x1 = (one - ratio_ymid) * map_e1%xy_map(1,k_ymin,i)       &
+     &                  + ratio_ymid *  map_e1%xy_map(1,k_ymid,i)
+              x2 = (one - ratio_ymax) * map_e1%xy_map(1,k_ymin,i)       &
+     &                  + ratio_ymax *  map_e1%xy_map(1,k_ymax,i)
+              d1 = (one - ratio_ymid) * map_e1%d_map_patch(k_ymin,1,i)  &
+     &                  + ratio_ymid *  map_e1%d_map_patch(k_ymid,1,i)
+              d2 = (one - ratio_ymax) * map_e1%d_map_patch(k_ymin,1,i)  &
+     &                  + ratio_ymax *  map_e1%d_map_patch(k_ymax,1,i)
+            end if
+            if(x1 .le. x2) then
+              x_min = x1
+              x_max = x2
+              d_min = d1
+              d_max = d2
+            else
+              x_min = x2
+              x_max = x1
+              d_min = d2
+              d_max = d1
+            end if
+            ix_min = int(1 + dble(nxpixel-1)*(x_min - xmin_frame))
+            ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame))
+!
+            d_mid = d_min
+            inod_map = ix_min + (iy-1) * nxpixel
+            rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
+            rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
+            rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
+            rgba(4,inod_map) = one
+!
+            do ix = ix_min+1, ix_max
+              ratio_x = dble(ix-ix_min) / dble(ix_max-iy_min)
+              x_mid = (one - ratio_x) * x_min + ratio_x * x_max
+              d_mid = (one - ratio_x) * d_min + ratio_x * d_max
+!
+              inod_map = ix + (iy_map-1) * nxpixel
+              rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
+              rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
+              rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
+              rgba(4,inod_map) = one
+            end do
+          end do
+!
+          do iy = iy_mid+1, iy_max
+            ratio_ymid = dble(iy-iy_mid) / dble(iy_max-iy_mid)
+            ratio_ymax = dble(iy-iy_min) / dble(iy_max-iy_min)
+            x1 = (one - ratio_ymid) * map_e1%xy_map(1,k_ymid,i)         &
+     &                + ratio_ymid *  map_e1%xy_map(1,k_ymax,i)
+            x2 = (one - ratio_ymax) * map_e1%xy_map(1,k_ymin,i)         &
+     &                + ratio_ymax *  map_e1%xy_map(1,k_ymax,i)
+            d1 = (one - ratio_ymid) * map_e1%d_map_patch(k_ymid,1,i)    &
+     &                + ratio_ymid *  map_e1%d_map_patch(k_ymax,1,i)
+            d2 = (one - ratio_ymax) * map_e1%d_map_patch(k_ymin,1,i)    &
+     &                + ratio_ymax *  map_e1%d_map_patch(k_ymax,1,i)
+            if(x1 .le. x2) then
+              x_min = x1
+              x_max = x2
+              d_min = d1
+              d_max = d2
+            else
+              x_min = x2
+              x_max = x1
+              d_min = d2
+              d_max = d1
+            end if
+            ix_min = int(1 + dble(nxpixel-1)*(x_min - xmin_frame))
+            ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame))
+!
+            d_mid = d_min
+            inod_map = ix_min + (iy-1) * nxpixel
+            rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
+            rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
+            rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
+            rgba(4,inod_map) = one
+!
+            do ix = ix_min+1, ix_max
+              ratio_x = dble(ix-ix_min) / dble(ix_max-iy_min)
+              x_mid = (one - ratio_x) * x_min + ratio_x * x_max
+              d_mid = (one - ratio_x) * d_min + ratio_x * d_max
+!
+              inod_map = ix + (iy_map-1) * nxpixel
+              rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
+              rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
+              rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
+              rgba(4,inod_map) = one
+            end do
+          end do
         end do
       end do
       call dealloc_map_patch_from_1patch(map_e1)
