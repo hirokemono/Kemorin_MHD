@@ -271,6 +271,7 @@
       allocate(cimage(3,npix))
       rgba(1:4,1:npix) = 0.0d0
 !
+      i_img = 1
       call alloc_map_patch_from_1patch(ione, map_e1)
       do iele = 1, psf_ele%numele
         call s_set_map_patch_from_1patch(iele,                          &
