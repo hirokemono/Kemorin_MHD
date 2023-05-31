@@ -73,7 +73,7 @@
         call merge_write_psf_mesh                                       &
      &     (irank_draw, psf_mesh(i_psf), psf_file_IO(i_psf),            &
      &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_ele,             &
-     &      psf_out(i_psf), SR_sig)
+     &      psf_dat(i_psf)%psf_phys, psf_out(i_psf), SR_sig)
       end do
 !
       end subroutine output_map_mesh
@@ -120,7 +120,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine merge_write_psf_mesh(irank_draw, psf_mesh,             &
-     &          psf_file_IO, psf_nod, psf_ele, psf_ucd, SR_sig)
+     &          psf_file_IO, psf_nod, psf_ele, psf_phys, psf_ucd,       &
+     &          SR_sig)
 !
       use t_psf_patch_data
       use t_ucd_data
@@ -135,6 +136,7 @@
       type(field_IO_params), intent(inout) :: psf_file_IO
       type(node_data), intent(inout) ::    psf_nod
       type(element_data), intent(inout) :: psf_ele
+      type(phys_data), intent(inout) ::    psf_phys
       type(ucd_data), intent(inout) ::     psf_ucd
       type(send_recv_status), intent(inout) :: SR_sig
 !
@@ -187,6 +189,9 @@
         end if
         call sel_write_grd_file(-1, psf_file_IO, psf_ucd)
       end if
+!
+      call copy_field_name(psf_mesh%field, psf_phys)
+!
 !      call dealloc_ele_connect(psf_ele)
 !      call dealloc_node_geometry_w_sph(psf_nod)
 !
@@ -227,12 +232,11 @@
         psf_nod%numnod = int(psf_mesh%node%istack_internod(nprocs))
       end if
 !
-      call copy_field_name(psf_mesh%field, psf_phys)
       call alloc_phys_data(psf_nod%numnod, psf_phys)
 !
       do i_img = 1, psf_phys%ntot_phys
         call collect_psf_scalar(irank_draw, i_img, psf_mesh%node,       &
-     &                          psf_mesh%field, psf_phys%d_fld, SR_sig)
+     &      psf_mesh%field, psf_phys%d_fld(1,i_img), SR_sig)
         call calypso_mpi_barrier
       end do
 !
@@ -243,7 +247,7 @@
       end if
 !
       call dealloc_phys_data(psf_phys)
-      call dealloc_phys_name(psf_phys)
+!      call dealloc_phys_name(psf_phys)
 !
       end subroutine merge_write_psf_file
 !
