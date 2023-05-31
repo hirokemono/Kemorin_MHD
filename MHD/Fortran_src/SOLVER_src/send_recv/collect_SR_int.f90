@@ -131,19 +131,19 @@
         do id_rank = 0, nprocs-1
           if(id_rank .eq. my_rank) cycle
 !
-          ist = NB*istack_NP(id_rank) + 1
+          ist = NB*istack_NP(id_rank)
           num = int(NB * (istack_NP(id_rank+1) - istack_NP(id_rank)))
           if(id_rank.ne.dest_rank .and. num.gt.0) then
             icou = icou + 1
-            call MPI_IRECV(iX_dest(ist), num, CALYPSO_INTEGER, id_rank, &
-     &          0, CALYPSO_COMM, SR_sig%req2(icou), ierr_MPI)
+            call MPI_IRECV(iX_dest(ist+1), num, CALYPSO_INTEGER,        &
+     &          id_rank, 0, CALYPSO_COMM, SR_sig%req2(icou), ierr_MPI)
           end if
         end do
         if(icou .gt. 0) then
           call MPI_WAITALL                                              &
      &       (icou, SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
         end if
-        ist = NB*istack_NP(my_rank) + 1
+        ist = NB*istack_NP(my_rank)
         num = int(NB * (istack_NP(my_rank+1) - istack_NP(my_rank)))
         if(num .gt. 0) then
 !$omp parallel workshare

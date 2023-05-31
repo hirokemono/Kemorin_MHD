@@ -81,12 +81,12 @@
       if(my_rank .eq. dest_rank) then
         icou = 0
         do id_rank = 0, nprocs-1
-          ist = NB*istack_NP(id_rank) + 1
+          ist = NB*istack_NP(id_rank)
           num = int(NB * (istack_NP(id_rank+1) - istack_NP(id_rank)))
           if(num.gt.0 .and. id_rank.ne.dest_rank) then
             icou = icou + 1
-            call MPI_IRECV(X_dest(ist), num, CALYPSO_REAL, id_rank, 0,  &
-     &                     CALYPSO_COMM, SR_sig%req2(icou), ierr_MPI)
+            call MPI_IRECV(X_dest(ist+1), num, CALYPSO_REAL, id_rank,   &
+     &                    0, CALYPSO_COMM, SR_sig%req2(icou), ierr_MPI)
           end if
         end do
         if(num_recv .gt. 0) then
@@ -94,7 +94,7 @@
      &       (num_recv, SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
         end if
 !
-        ist = NB*istack_NP(my_rank) + 1
+        ist = NB*istack_NP(my_rank)
         num = int(NB * (istack_NP(my_rank+1) - istack_NP(my_rank)))
         if(num .gt. 0) then
 !$omp parallel workshare
