@@ -156,7 +156,6 @@
       if(num.gt.0 .and. my_rank.ne.dest_rank) then
         call MPI_WAITALL(1, SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
       end if
-      write(*,*) my_rank, 'collect_send_recv_int end'
 !
       end subroutine collect_send_recv_int
 !
