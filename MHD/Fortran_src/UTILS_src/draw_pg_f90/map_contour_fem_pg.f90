@@ -122,10 +122,11 @@
 !
       subroutine fill_tri_map(idisp_mode, icolor_mode, num_color_pg,    &
      &          nnod_pg, nele_pg, xx_psf, ie_psf, scalar_psf,           &
-     &          xmax, xmin)
+     &          xmax, xmin, map_e)
 !
       use rbcolor_pg
-      use set_map_from_1patch
+      use t_map_patch_from_1patch
+      use map_patch_from_1patch
 !
       integer(kind = kint), intent(in) :: idisp_mode, icolor_mode
       integer(kind = kint), intent(in) :: num_color_pg
@@ -134,6 +135,8 @@
       real(kind = kreal), intent(in) :: xx_psf(nnod_pg,3)
       real(kind = kreal), intent(in) :: scalar_psf(nnod_pg)
       real(kind = kreal), intent(in) :: xmax, xmin
+!
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint) :: iele, k1, i
       real(kind = kreal) :: s_patch
@@ -147,17 +150,20 @@
 !
         do iele = 1, nele_pg
 !
-          call set_map_patch_from_1patch(iele, nnod_pg, nele_pg,        &
-     &        xx_psf, ie_psf, scalar_psf)
-          call set_sph_position_4_map_patch
-          call projection_patch_to_map
+          call s_set_map_patch_from_1patch(iele, nnod_pg, nele_pg,      &
+     &        xx_psf, ie_psf, ione, scalar_psf(1), map_e%n_map_patch,   &
+     &        map_e%x_map_patch, map_e%d_map_patch)
+          call set_sph_position_4_map_patch(map_e%n_map_patch,          &
+     &        map_e%x_map_patch, map_e%rtp_map_patch)
+          call patch_to_aitoff(map_e%n_map_patch, map_e%rtp_map_patch,  &
+     &                         map_e%xy_map)
 !
           s_patch = zero
-          do i = 1, n_map_patch
+          do i = 1, map_e%n_map_patch
             do k1 = 1, 3
-              x_tri(k1) = real( xy_map(1,i,k1) )
-              y_tri(k1) = real( xy_map(2,i,k1) )
-              s_patch = s_patch + d_map_patch(k1,i)
+              x_tri(k1) = real( map_e%xy_map(1,i,k1) )
+              y_tri(k1) = real( map_e%xy_map(2,i,k1) )
+              s_patch = s_patch + map_e%d_map_patch(k1,1,i)
             end do
             s_patch = s_patch / three
 !
@@ -185,11 +191,12 @@
 !
       subroutine drawline_map_fem(idisp_mode, icolor_mode,              &
      &          num_color_pg, nnod_pg, nele_pg, xx_psf, ie_psf,         &
-     &          scalar_psf, ncl, xc, xmax, xmin)
+     &          scalar_psf, ncl, xc, xmax, xmin, map_e)
 !
-      use set_map_from_1patch
+      use t_map_patch_from_1patch
       use drawline_rainbow_pg
       use drawline_zero_pg
+      use map_patch_from_1patch
 !
       integer(kind = kint), intent(in) :: idisp_mode, icolor_mode
       integer(kind = kint), intent(in) :: num_color_pg
@@ -200,6 +207,8 @@
       real(kind = kreal), intent(in) :: scalar_psf(nnod_pg)
       real(kind = kreal), intent(in) :: xc(ncl)
       real(kind = kreal), intent(in) :: xmax, xmin
+!
+      type(map_patches_for_1patch), intent(inout) :: map_e
 !
       integer(kind = kint), parameter :: ie(3,1) = reshape(             &
      &                                     (/1, 2, 3/), shape=(/3,1/) )
@@ -221,17 +230,20 @@
 !
         do iele = 1, nele_pg
 !
-          call set_map_patch_from_1patch(iele, nnod_pg, nele_pg,        &
-     &        xx_psf, ie_psf, scalar_psf)
-          call set_sph_position_4_map_patch
-          call projection_patch_to_map
+          call s_set_map_patch_from_1patch(iele, nnod_pg, nele_pg,      &
+     &        xx_psf, ie_psf, ione, scalar_psf(1), map_e%n_map_patch,   &
+     &        map_e%x_map_patch, map_e%d_map_patch)
+          call set_sph_position_4_map_patch(map_e%n_map_patch,          &
+     &        map_e%x_map_patch, map_e%rtp_map_patch)
+          call patch_to_aitoff(map_e%n_map_patch, map_e%rtp_map_patch,  &
+     &                         map_e%xy_map)
 !
-          do i = 1, n_map_patch
+          do i = 1, map_e%n_map_patch
             do k1 = 1, 3
-              xg(1,k1) = real( xy_map(1,i,k1) )
-              xg(2,k1) = real( xy_map(2,i,k1) )
+              xg(1,k1) = real( map_e%xy_map(1,i,k1) )
+              xg(2,k1) = real( map_e%xy_map(2,i,k1) )
               xg(3,k1) = zero
-              sc3(k1) =  d_map_patch(k1,i)
+              sc3(k1) =  map_e%d_map_patch(k1,1,i)
             end do
             call drawline_rb1(num_color_pg, iflag_cline, ithree, ione,  &
      &           xg, ie, sc3(1), ncl, xc, xmin, xmax)

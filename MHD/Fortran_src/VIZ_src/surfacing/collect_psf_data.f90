@@ -110,8 +110,8 @@
         irank_draw = mod(i_psf,nprocs)
         call merge_write_psf_file(irank_draw, istep_psf,                &
      &      psf_file_IO(i_psf), psf_mesh(i_psf), t_IO,                  &
-     &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_phys,            &
-     &      psf_out(i_psf), SR_sig)
+     &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_ele,             &
+     &      psf_dat(i_psf)%psf_phys, psf_out(i_psf), SR_sig)
       end do
 !
       end subroutine output_map_file
@@ -203,16 +203,21 @@
 !  ---------------------------------------------------------------------
 !
       subroutine merge_write_psf_file(irank_draw, istep_psf,            &
-     &          psf_file_IO, psf_mesh, t_IO, psf_nod, psf_phys,         &
-     &          psf_ucd, SR_sig)
+     &          psf_file_IO, psf_mesh, t_IO, psf_nod, psf_ele,          &
+     &          psf_phys, psf_ucd, SR_sig)
 !
       use t_psf_patch_data
       use t_time_data
       use t_ucd_data
       use t_file_IO_parameter
+      use t_map_patch_from_1patch
+      use map_patch_from_1patch
 !
       use set_ucd_data_to_type
       use ucd_IO_select
+!
+      use convert_real_rgb_2_bite
+      use calypso_png_file_IO
 !
       integer, intent(in) :: irank_draw
       integer(kind = kint), intent(in) :: istep_psf
@@ -222,22 +227,87 @@
 !
       type(phys_data), intent(inout) :: psf_phys
       type(node_data), intent(inout) :: psf_nod
+      type(element_data), intent(inout) :: psf_ele
       type(ucd_data), intent(inout) :: psf_ucd
       type(send_recv_status), intent(inout) :: SR_sig
 !
-      integer(kind = kint) :: i_img
+      type(map_patches_for_1patch) :: map_e1
+      integer(kind = kint) :: k_ymin, k_ymid, k_ymax, k_xmin, k_xmax
+      integer(kind = kint) :: ix_map, iy_map, inod_map, npix
+!
+      integer(kind = kint), parameter :: nxpixel = 1600
+      integer(kind = kint), parameter :: nypixel = 1200
+      real(kind= kreal), parameter :: xframe = 2.4, yframe = 1.8
+      real(kind= kreal), parameter :: xmin_frame = -xframe
+      real(kind= kreal), parameter :: xmax_frame =  xframe
+      real(kind= kreal), parameter :: ymin_frame = -yframe
+      real(kind= kreal), parameter :: ymax_frame =  yframe
+!
+      real(kind = kreal), allocatable :: rgba(:,:)
+      character(len = 1), allocatable :: cimage(:,:)
+!
+      integer(kind = kint) :: i_img, iele, i, k1
+      real(kind = kreal) :: ar
 !
 !
       do i_img = 1, psf_phys%ntot_phys
         call collect_psf_scalar(irank_draw, i_img, psf_mesh%node,       &
      &      psf_mesh%field, psf_phys%d_fld(1,i_img), SR_sig)
-        call calypso_mpi_barrier
       end do
 !
       if(my_rank .eq. irank_draw) then
         call sel_write_ucd_file                                         &
      &     (-1, istep_psf, psf_file_IO, t_IO, psf_ucd)
       end if
+!
+      if(my_rank .ne. irank_draw) return
+!
+      npix = (nxpixel*nypixel)
+      allocate(rgba(4,npix))
+      allocate(cimage(3,npix))
+      rgba(1:4,1:npix) = 0.0d0
+!
+      call alloc_map_patch_from_1patch(psf_phys%ntot_phys, map_e1)
+      do iele = 1, psf_phys%ntot_phys
+        call s_set_map_patch_from_1patch(iele,                          &
+     &      psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie,     &
+     &      psf_phys%ntot_phys, psf_phys%d_fld, map_e1%n_map_patch,     &
+     &      map_e1%x_map_patch, map_e1%d_map_patch)
+        call set_sph_position_4_map_patch(map_e1%n_map_patch,           &
+     &      map_e1%x_map_patch, map_e1%rtp_map_patch)
+        call patch_to_aitoff(map_e1%n_map_patch, map_e1%rtp_map_patch,  &
+     &                       map_e1%xy_map)
+!
+        do i = 1, map_e1%n_map_patch
+          call find_map_path_orientation(map_e1%xy_map(1,1,i),          &
+     &        k_ymin, k_ymid, k_ymax, k_xmin, k_xmax)
+!
+          do k1 = 1, 3
+            ix_map = int(1 + dble(nxpixel-1)                            &
+     &                      * (map_e1%xy_map(1,k1,i) - xmin_frame)      &
+     &                      / (xmax_frame - xmin_frame))
+            iy_map = int(1 + dble(nypixel-1)                            &
+     &                      * (map_e1%xy_map(2,k1,i) - ymin_frame)      &
+     &                      / (ymax_frame - ymin_frame))
+            inod_map = ix_map + (iy_map-1) * nxpixel
+!
+            ar = sqrt(map_e1%x_map_patch(k1,1,i)**2                     &
+     &              + map_e1%x_map_patch(k1,2,i)**2                     &
+     &              + map_e1%x_map_patch(k1,3,i)**2)
+            rgba(1,inod_map) = map_e1%x_map_patch(k1,1,i) / ar + half
+            rgba(2,inod_map) = map_e1%x_map_patch(k1,2,i) / ar + half
+            rgba(3,inod_map) = map_e1%x_map_patch(k1,3,i) / ar + half
+            rgba(4,inod_map) = one
+          end do
+!
+        end do
+      end do
+      call dealloc_map_patch_from_1patch(map_e1)
+!
+      call cvt_double_rgba_to_char_rgb(npix, rgba, cimage)
+      call calypso_write_png(psf_file_IO%file_prefix, ithree,           &
+     &                       nxpixel, nypixel, cimage(1,1))
+      deallocate(rgba, cimage)
 !
 !      call dealloc_phys_data(psf_phys)
 !      call dealloc_phys_name(psf_phys)
@@ -294,7 +364,6 @@
         call collect_send_recv_N(irank_draw, ione, nnod,                &
      &                           node%xx(1,nd), node%istack_internod,   &
      &                           xx_out(1,nd), SR_sig)
-        call calypso_mpi_barrier
       end do
 !
       end subroutine collect_psf_node
@@ -323,7 +392,6 @@
         call collect_send_recv_int(irank_draw, ione, nele,              &
      &                             ele%ie(1,nd), ele%istack_interele,   &
      &                             ie_out(1,nd), SR_sig)
-        call calypso_mpi_barrier
       end do
 !
       end subroutine collect_psf_element
