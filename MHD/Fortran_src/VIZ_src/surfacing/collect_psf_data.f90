@@ -156,6 +156,7 @@
       call collect_psf_node(irank_draw, psf_mesh%node,                  &
      &                      psf_nod%xx, SR_sig)
       call set_spherical_position(psf_nod)
+      call copy_field_name(psf_mesh%field, psf_phys)
       call calypso_mpi_barrier
 !
 !$omp parallel do
@@ -183,6 +184,7 @@
       if(my_rank .eq. irank_draw) then
         call link_node_data_2_ucd(psf_nod, psf_ucd)
         call link_ele_data_2_ucd(psf_ele, psf_ucd)
+        call link_field_data_to_ucd(psf_phys, psf_ucd)
 !
         if(psf_file_IO%iflag_format .gt. iflag_single) then
           psf_file_IO%iflag_format = psf_file_IO%iflag_format           &
@@ -190,8 +192,6 @@
         end if
         call sel_write_grd_file(-1, psf_file_IO, psf_ucd)
       end if
-!
-      call copy_field_name(psf_mesh%field, psf_phys)
 !
 !      call dealloc_ele_connect(psf_ele)
 !      call dealloc_node_geometry_w_sph(psf_nod)
@@ -241,12 +241,11 @@
       end do
 !
       if(my_rank .eq. irank_draw) then
-        call link_field_data_to_ucd(psf_phys, psf_ucd)
         call sel_write_ucd_file                                         &
      &     (-1, istep_psf, psf_file_IO, t_IO, psf_ucd)
       end if
 !
-      call dealloc_phys_data(psf_phys)
+!      call dealloc_phys_data(psf_phys)
 !      call dealloc_phys_name(psf_phys)
 !
       end subroutine merge_write_psf_file
