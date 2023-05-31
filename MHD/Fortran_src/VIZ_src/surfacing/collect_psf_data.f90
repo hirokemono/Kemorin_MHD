@@ -47,8 +47,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_map_mesh                                        &
-     &         (num_psf, psf_file_IO, psf_mesh, psf_out, SR_sig)
+      subroutine output_map_mesh(num_psf, psf_mesh, psf_file_IO,        &
+     &                           psf_dat, psf_out, SR_sig)
 !
       use t_psf_patch_data
       use t_psf_results
@@ -58,20 +58,21 @@
 !
       integer(kind= kint), intent(in) :: num_psf
       type(psf_local_data), intent(in) :: psf_mesh(num_psf)
-      type(field_IO_params), intent(in) :: psf_file_IO(num_psf)
 !
+      type(field_IO_params), intent(inout) :: psf_file_IO(num_psf)
+      type(psf_results), intent(inout) :: psf_dat(num_psf)
       type(ucd_data), intent(inout) :: psf_out(num_psf)
       type(send_recv_status), intent(inout) :: SR_sig
 !
-      type(psf_results), save :: psf_dat
       integer(kind= kint) :: i_psf
       integer :: irank_draw
 !
 !
       do i_psf = 1, num_psf
         irank_draw = mod(i_psf,nprocs)
-        call merge_write_psf_mesh(irank_draw, psf_file_IO(i_psf),       &
-     &      psf_mesh(i_psf), psf_dat%psf_nod, psf_dat%psf_ele,          &
+        call merge_write_psf_mesh                                       &
+     &     (irank_draw, psf_mesh(i_psf), psf_file_IO(i_psf),            &
+     &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_ele,             &
      &      psf_out(i_psf), SR_sig)
       end do
 !
@@ -80,7 +81,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_map_file(num_psf, psf_file_IO, istep_psf,       &
-     &          time_d, psf_mesh, t_IO, psf_out, SR_sig)
+     &          time_d, psf_mesh, t_IO, psf_dat, psf_out, SR_sig)
 !
       use t_psf_patch_data
       use t_psf_results
@@ -95,10 +96,10 @@
       type(field_IO_params), intent(in) :: psf_file_IO(num_psf)
 !
       type(time_data), intent(inout) :: t_IO
+      type(psf_results), intent(inout) :: psf_dat(num_psf)
       type(ucd_data), intent(inout) :: psf_out(num_psf)
       type(send_recv_status), intent(inout) :: SR_sig
 !
-      type(psf_results), save :: psf_dat
       integer(kind= kint) :: i_psf
       integer :: irank_draw
 !
@@ -108,8 +109,9 @@
       do i_psf = 1, num_psf
         irank_draw = mod(i_psf,nprocs)
         call merge_write_psf_file(irank_draw, istep_psf,                &
-     &      psf_file_IO(i_psf), psf_mesh(i_psf), t_IO, psf_dat%psf_nod, &
-     &      psf_dat%psf_phys, psf_out(i_psf), SR_sig)
+     &      psf_file_IO(i_psf), psf_mesh(i_psf), t_IO,                  &
+     &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_phys,            &
+     &      psf_out(i_psf), SR_sig)
       end do
 !
       end subroutine output_map_file
@@ -117,8 +119,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine merge_write_psf_mesh(irank_draw, psf_file_IO,          &
-     &          psf_mesh, psf_nod, psf_ele, psf_ucd, SR_sig)
+      subroutine merge_write_psf_mesh(irank_draw, psf_mesh,             &
+     &          psf_file_IO, psf_nod, psf_ele, psf_ucd, SR_sig)
 !
       use t_psf_patch_data
       use t_ucd_data
@@ -129,8 +131,8 @@
       use ucd_IO_select
 !
       integer, intent(in) :: irank_draw
-      type(field_IO_params), intent(in) :: psf_file_IO
       type(psf_local_data), intent(in) :: psf_mesh
+      type(field_IO_params), intent(inout) :: psf_file_IO
       type(node_data), intent(inout) ::    psf_nod
       type(element_data), intent(inout) :: psf_ele
       type(ucd_data), intent(inout) ::     psf_ucd
@@ -151,6 +153,7 @@
       call collect_psf_node(irank_draw, psf_mesh%node,                  &
      &                      psf_nod%xx, SR_sig)
       call set_spherical_position(psf_nod)
+      call calypso_mpi_barrier
 !
 !$omp parallel do
       do i = 1, psf_nod%numnod
@@ -172,15 +175,20 @@
       call alloc_ele_connectivity(psf_ele)
       call collect_psf_element(irank_draw, psf_mesh%patch,              &
      &                         psf_ele%ie, SR_sig)
+      call calypso_mpi_barrier
 !
       if(my_rank .eq. irank_draw) then
         call link_node_data_2_ucd(psf_nod, psf_ucd)
         call link_ele_data_2_ucd(psf_ele, psf_ucd)
 !
-       call sel_write_grd_file(-1, psf_file_IO, psf_ucd)
+        if(psf_file_IO%iflag_format .gt. iflag_single) then
+          psf_file_IO%iflag_format = psf_file_IO%iflag_format           &
+     &                              - iflag_single
+        end if
+        call sel_write_grd_file(-1, psf_file_IO, psf_ucd)
       end if
-      call dealloc_ele_connect(psf_ele)
-      call dealloc_node_geometry_w_sph(psf_nod)
+!      call dealloc_ele_connect(psf_ele)
+!      call dealloc_node_geometry_w_sph(psf_nod)
 !
       end subroutine merge_write_psf_mesh
 !
@@ -225,12 +233,12 @@
       do i_img = 1, psf_phys%ntot_phys
         call collect_psf_scalar(irank_draw, i_img, psf_mesh%node,       &
      &                          psf_mesh%field, psf_phys%d_fld, SR_sig)
+        call calypso_mpi_barrier
       end do
 !
       if(my_rank .eq. irank_draw) then
         call link_field_data_to_ucd(psf_phys, psf_ucd)
-!
-        call sel_write_udt_file                                         &
+        call sel_write_ucd_file                                         &
      &     (-1, istep_psf, psf_file_IO, t_IO, psf_ucd)
       end if
 !
@@ -289,6 +297,7 @@
         call collect_send_recv_N(irank_draw, ione, nnod,                &
      &                           node%xx(1,nd), node%istack_internod,   &
      &                           xx_out(1,nd), SR_sig)
+        call calypso_mpi_barrier
       end do
 !
       end subroutine collect_psf_node
@@ -317,6 +326,7 @@
         call collect_send_recv_int(irank_draw, ione, nele,              &
      &                             ele%ie(1,nd), ele%istack_interele,   &
      &                             ie_out(1,nd), SR_sig)
+        call calypso_mpi_barrier
       end do
 !
       end subroutine collect_psf_element

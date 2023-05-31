@@ -31,6 +31,7 @@
       use m_precision
 !
       use t_cross_section
+      use t_psf_results
 !
       implicit  none
 !
@@ -65,6 +66,8 @@
 !>        Structure for cross sectioning output (used by master process)
 !        type(ucd_data), allocatable :: psf_out(:)
 !      end type sectioning_module
+!
+      type(psf_results), allocatable :: map_psf_dat(:)
 !
 !  ---------------------------------------------------------------------
 !
@@ -121,6 +124,7 @@
      &    psf%psf_param, psf%psf_search)
 !
 !
+      allocate(map_psf_dat(psf%num_psf))
       do i_psf = 1, psf%num_psf
         call alloc_node_param_smp(psf%psf_mesh(i_psf)%node)
         call alloc_ele_param_smp(psf%psf_mesh(i_psf)%patch)
@@ -147,8 +151,8 @@
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
 !      call output_section_mesh(psf%num_psf, psf%psf_file_IO,           &
 !     &    psf%psf_mesh, psf%psf_out)
-      call output_map_mesh(psf%num_psf, psf%psf_file_IO,                &
-     &    psf%psf_mesh, psf%psf_out, SR_sig)
+      call output_map_mesh(psf%num_psf, psf%psf_mesh, psf%psf_file_IO,  &
+     &                     map_psf_dat, psf%psf_out, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_initialize
@@ -187,7 +191,8 @@
 !      call output_section_data(psf%num_psf, psf%psf_file_IO,           &
 !     &    istep_psf, time_d, psf%psf_time_IO, psf%psf_out)
       call output_map_file(psf%num_psf, psf%psf_file_IO, istep_psf,     &
-     &    time_d, psf%psf_mesh, psf%psf_time_IO, psf%psf_out, SR_sig)
+     &    time_d, psf%psf_mesh, psf%psf_time_IO,                        &
+     &    map_psf_dat, psf%psf_out, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_visualize
