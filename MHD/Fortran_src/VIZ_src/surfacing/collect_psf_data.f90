@@ -156,7 +156,9 @@
       call collect_psf_node(irank_draw, psf_mesh%node,                  &
      &                      psf_nod%xx, SR_sig)
       call set_spherical_position(psf_nod)
+!
       call copy_field_name(psf_mesh%field, psf_phys)
+      call alloc_phys_data(psf_nod%numnod, psf_phys)
       call calypso_mpi_barrier
 !
 !$omp parallel do
@@ -225,14 +227,6 @@
 !
       integer(kind = kint) :: i_img
 !
-!
-      psf_nod%numnod = 0
-      psf_phys%ntot_phys = psf_mesh%field%ntot_phys
-      if(my_rank .eq. irank_draw) then
-        psf_nod%numnod = int(psf_mesh%node%istack_internod(nprocs))
-      end if
-!
-      call alloc_phys_data(psf_nod%numnod, psf_phys)
 !
       do i_img = 1, psf_phys%ntot_phys
         call collect_psf_scalar(irank_draw, i_img, psf_mesh%node,       &
