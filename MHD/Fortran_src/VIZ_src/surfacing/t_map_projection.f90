@@ -1,5 +1,5 @@
-!>@file   t_cross_section.f90
-!!@brief  module t_cross_section
+!>@file   t_map_projection.f90
+!!@brief  module t_map_projection
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2006
@@ -8,7 +8,7 @@
 !>@brief Structure for cross sectioning
 !!
 !!@verbatim
-!!      subroutine SECTIONING_initialize(increment_psf, geofem,         &
+!!      subroutine MAP_PROJECTION_initialize(increment_psf, geofem,     &
 !!     &          edge_comm, nod_fld, psf_ctls, psf, SR_sig, SR_il)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: edge_comm
@@ -17,76 +17,54 @@
 !!        type(sectioning_module), intent(inout) :: psf
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
-!!      subroutine SECTIONING_visualize                                 &
-!!     &         (istep_psf, time_d, geofem, nod_fld, psf)
+!!      subroutine MAP_PROJECTION_visualize                             &
+!!     &         (istep_psf, time_d, geofem, nod_fld, psf, SR_sig)
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
-!!      subroutine SECTIONING_finalize(psf)
+!!      subroutine MAP_PROJECTION_finalize(psf)
 !!        type(sectioning_module), intent(inout) :: psf
 !!@endverbatim
-!
-!
-      module t_cross_section
+      module t_map_projection
 !
       use calypso_mpi
       use m_precision
 !
-      use m_constants
-      use m_machine_parameter
-      use calypso_mpi
-!
-      use t_time_data
-      use t_mesh_data
-      use t_comm_table
-      use t_phys_data
-      use t_psf_geometry_list
-      use t_psf_patch_data
-      use t_ucd_data
-      use t_solver_SR
-      use t_solver_SR_int8
-!
-      use t_psf_case_table
-      use t_surface_group_connect
-      use t_file_IO_parameter
-      use t_control_params_4_psf
-      use t_control_data_sections
+      use t_cross_section
 !
       implicit  none
 !
-      type sectioning_module
+!      type sectioning_module
 !>        Number of sections
-        integer(kind = kint) :: num_psf = 0
+!        integer(kind = kint) :: num_psf = 0
 !
 !>        Structure of case table for isosurface
-        type(psf_cases) :: psf_case_tbls
+!        type(psf_cases) :: psf_case_tbls
 !
 !>        Structure for table for sections
-        type(sectioning_list), allocatable :: psf_list(:)
+!        type(sectioning_list), allocatable :: psf_list(:)
 !>        Structure for table for sections
-        type(grp_section_list), allocatable :: psf_grp_list(:)
+!        type(grp_section_list), allocatable :: psf_grp_list(:)
 !
 !>        Structure for search table for sections
-        type(psf_search_lists), allocatable :: psf_search(:)
+!        type(psf_search_lists), allocatable :: psf_search(:)
 !
 !>        Structure of sectioning module parameter
-        type(psf_parameters), allocatable :: psf_param(:)
+!        type(psf_parameters), allocatable :: psf_param(:)
 !>        Structure of cross sectioning parameter
-        type(section_define), allocatable  :: psf_def(:)
+!        type(section_define), allocatable  :: psf_def(:)
 !
 !>        Structure for psf patch data on local domain
-        type(psf_local_data), allocatable :: psf_mesh(:)
+!        type(psf_local_data), allocatable :: psf_mesh(:)
 !
 !>        Structure for psf time output
-        type(time_data) :: psf_time_IO
+!        type(time_data) :: psf_time_IO
 !>        Structure for psf data output
-        type(field_IO_params), allocatable :: psf_file_IO(:)
+!        type(field_IO_params), allocatable :: psf_file_IO(:)
 !
 !>        Structure for cross sectioning output (used by master process)
-        type(ucd_data), allocatable :: psf_out(:)
-      end type sectioning_module
-!
-!      private :: alloc_psf_field_type
+!        type(ucd_data), allocatable :: psf_out(:)
+!      end type sectioning_module
 !
 !  ---------------------------------------------------------------------
 !
@@ -94,7 +72,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SECTIONING_initialize(increment_psf, geofem,           &
+      subroutine MAP_PROJECTION_initialize(increment_psf, geofem,       &
      &          edge_comm, nod_fld, psf_ctls, psf, SR_sig, SR_il)
 !
       use m_work_time
@@ -107,7 +85,8 @@
       use set_const_4_sections
       use find_node_and_patch_psf
       use set_fields_for_psf
-      use output_4_psf
+      use collect_psf_data
+!      use output_4_psf
 !
       integer(kind = kint), intent(in) :: increment_psf
       type(mesh_data), intent(in) :: geofem
@@ -166,22 +145,25 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
-      call output_section_mesh(psf%num_psf, psf%psf_file_IO,            &
-     &    psf%psf_mesh, psf%psf_out)
+!      call output_section_mesh(psf%num_psf, psf%psf_file_IO,           &
+!     &    psf%psf_mesh, psf%psf_out)
+      call output_map_mesh(psf%num_psf, psf%psf_file_IO,                &
+     &    psf%psf_mesh, psf%psf_out, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
-      end subroutine SECTIONING_initialize
+      end subroutine MAP_PROJECTION_initialize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SECTIONING_visualize                                   &
-     &         (istep_psf, time_d, geofem, nod_fld, psf)
+      subroutine MAP_PROJECTION_visualize                               &
+     &         (istep_psf, time_d, geofem, nod_fld, psf, SR_sig)
 !
       use m_work_time
       use m_elapsed_labels_4_VIZ
       use set_fields_for_psf
       use set_ucd_data_to_type
-      use output_4_psf
+      use collect_psf_data
+!      use output_4_psf
 !
       integer(kind = kint), intent(in) :: istep_psf
       type(time_data), intent(in) :: time_d
@@ -189,6 +171,7 @@
       type(phys_data), intent(in) :: nod_fld
 !
       type(sectioning_module), intent(inout) :: psf
+      type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       if (psf%num_psf.le.0 .or. istep_psf.le.0) return
@@ -201,15 +184,17 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'output_section_data'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
-      call output_section_data(psf%num_psf, psf%psf_file_IO,            &
-     &    istep_psf, time_d, psf%psf_time_IO, psf%psf_out)
+!      call output_section_data(psf%num_psf, psf%psf_file_IO,           &
+!     &    istep_psf, time_d, psf%psf_time_IO, psf%psf_out)
+      call output_map_file(psf%num_psf, psf%psf_file_IO, istep_psf,     &
+     &    time_d, psf%psf_mesh, psf%psf_time_IO, psf%psf_out, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
-      end subroutine SECTIONING_visualize
+      end subroutine MAP_PROJECTION_visualize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SECTIONING_finalize(psf)
+      subroutine MAP_PROJECTION_finalize(psf)
 !
       use set_psf_iso_control
       use set_fields_for_psf
@@ -241,12 +226,12 @@
       deallocate(psf%psf_search, psf%psf_file_IO)
       deallocate(psf%psf_out, psf%psf_param)
 !
-      end subroutine SECTIONING_finalize
+      end subroutine MAP_PROJECTION_finalize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_psf_field_type(psf)
+      subroutine alloc_map_field_type(psf)
 !
       use m_field_file_format
 !
@@ -270,8 +255,8 @@
 !
       psf%psf_file_IO(1:psf%num_psf)%iflag_format = iflag_sgl_udt
 !
-      end subroutine alloc_psf_field_type
+      end subroutine alloc_map_field_type
 !
 !  ---------------------------------------------------------------------
 !
-      end module t_cross_section
+      end module t_map_projection

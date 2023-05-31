@@ -43,6 +43,7 @@
       use t_control_data_vizs
       use t_cross_section
       use t_isosurface
+      use t_map_projection
       use t_volume_rendering
       use t_fieldline
       use t_lic_rendering
@@ -96,7 +97,7 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+3)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      call SECTIONING_initialize                                        &
+      call MAP_PROJECTION_initialize                                    &
      &   (viz_step%MAP_t%increment, geofem, VIZ_DAT%edge_comm, nod_fld, &
      &    viz_ctls%map_ctls, vizs%maps, m_SR%SR_sig, m_SR%SR_il)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
@@ -156,8 +157,9 @@
 !
       if(viz_step%MAP_t%increment .gt. 0) then
         if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
-        call SECTIONING_visualize                                       &
-     &     (viz_step%istep_map, time_d, geofem, nod_fld, vizs%maps)
+        call MAP_PROJECTION_visualize                                   &
+     &     (viz_step%istep_map, time_d, geofem, nod_fld, vizs%maps,     &
+     &      m_SR%SR_sig)
         if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
       end if
 !
