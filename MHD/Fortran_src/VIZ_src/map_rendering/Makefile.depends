@@ -1,0 +1,13 @@
+bcast_maps_control_data.o: $(MAP_RENDERING_DIR)/bcast_maps_control_data.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_control_data_maps.o t_control_data_4_psf.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o bcast_section_control_data.o bcast_control_arrays.o t_control_data_4_fld_on_psf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+collect_psf_data.o: $(MAP_RENDERING_DIR)/collect_psf_data.f90 calypso_mpi.o m_precision.o t_geometry_data.o t_phys_data.o t_solver_SR.o t_psf_patch_data.o t_psf_results.o set_ucd_data_to_type.o parallel_ucd_IO_select.o ucd_IO_select.o t_ucd_data.o t_file_IO_parameter.o append_phys_data.o cal_mesh_position.o t_time_data.o t_map_patch_from_1patch.o map_patch_from_1patch.o aitoff.o convert_real_rgb_2_bite.o calypso_png_file_IO.o collect_SR_N.o m_phys_constants.o m_geometry_constants.o t_solver_SR_int.o collect_SR_int.o
+	$(F90) -c $(F90OPTFLAGS) $<
+map_patch_from_1patch.o: $(MAP_RENDERING_DIR)/map_patch_from_1patch.f90 m_precision.o m_constants.o m_phys_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_maps.o: $(MAP_RENDERING_DIR)/t_control_data_maps.f90 m_precision.o m_machine_parameter.o t_control_data_4_psf.o t_control_array_character3.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_map_patch_from_1patch.o: $(MAP_RENDERING_DIR)/t_map_patch_from_1patch.f90 m_precision.o m_constants.o m_phys_constants.o m_geometry_constants.o coordinate_converter.o aitoff.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_map_projection.o: $(MAP_RENDERING_DIR)/t_map_projection.f90 calypso_mpi.o m_precision.o t_cross_section.o t_psf_results.o t_control_data_maps.o m_work_time.o m_elapsed_labels_4_VIZ.o m_geometry_constants.o set_map_control.o search_ele_list_for_psf.o set_const_4_sections.o find_node_and_patch_psf.o set_fields_for_psf.o collect_psf_data.o set_ucd_data_to_type.o set_psf_iso_control.o m_field_file_format.o
+	$(F90) -c $(F90OPTFLAGS) $<
+
