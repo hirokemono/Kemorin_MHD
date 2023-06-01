@@ -360,7 +360,7 @@
               x_mid = (one - ratio_x) * x_min + ratio_x * x_max
               d_mid = (one - ratio_x) * d_min + ratio_x * d_max
 !
-              inod_map = ix + (iy_map-1) * nxpixel
+              inod_map = ix + (iy-1) * nxpixel
               rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
               rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
               rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
@@ -414,7 +414,7 @@
               x_mid = (one - ratio_x) * x_min + ratio_x * x_max
               d_mid = (one - ratio_x) * d_min + ratio_x * d_max
 !
-              inod_map = ix + (iy_map-1) * nxpixel
+              inod_map = ix + (iy-1) * nxpixel
               rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
               rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
               rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
