@@ -256,7 +256,7 @@
       real(kind = kreal) :: ar, ratio_ymid, ratio_ymax, ratio_x
       real(kind = kreal) :: x_pix1, x_pix2, y_pix1, y_pix2
       real(kind = kreal) :: phi_ref, theta_ref, pi
-      real(kind = kreal) :: theta1,theta2,phi1,phi2
+      real(kind = kreal) :: theta(4), phi(4)
 !
 !
       do i_img = 1, psf_phys%ntot_phys
@@ -437,9 +437,13 @@
 !
       pi = four * atan(one)
 !$omp parallel do private(i,j,x_pix1,x_pix2,y_pix1,y_pix2,ii,jj,        &
-!$omp&        inod_map,phi_ref,theta_ref,theta1,theta2,phi1,phi2)
+!$omp&        inod_map,phi_ref,theta_ref,theta,phi)
       do j = 1, nypixel-1
         do i = 1, nxpixel-1
+          if(mod(j,6).ge.3 .and. mod(i,6).lt.3) cycle
+          if(mod(j,6).lt.3 .and. mod(i,6).ge.3) cycle
+!
+!
           x_pix1 = xmin_frame + (xmax_frame - xmin_frame)               &
      &                         * dble(i-1) / dble(nxpixel-1)
           x_pix2 = xmin_frame + (xmax_frame - xmin_frame)               &
@@ -448,29 +452,30 @@
      &                         * dble(j-1) / dble(nypixel-1)
           y_pix2 = ymin_frame + (ymax_frame - ymin_frame)               &
      &                         * dble(j) / dble(nypixel-1)
-          call reverse_aitoff(x_pix1, y_pix1, theta1, phi1)
-          call reverse_aitoff(x_pix2, y_pix1, theta2, phi2)
-          call reverse_aitoff(x_pix1, y_pix1, theta1, phi2)
-          call reverse_aitoff(x_pix1, y_pix2, theta1, phi2)
+          call reverse_aitoff(x_pix1, y_pix1, theta(1), phi(1))
+          call reverse_aitoff(x_pix2, y_pix1, theta(2), phi(2))
+          call reverse_aitoff(x_pix1, y_pix2, theta(3), phi(3))
+          call reverse_aitoff(x_pix2, y_pix2, theta(4), phi(4))
 !
-          if(theta1.lt.0.0d0 .and. theta2.ge.0.0d0) then
+          if(    (theta(1)*theta(2)) .le. 0.0d0                         &
+     &      .or. (theta(1)*theta(3)) .le. 0.0d0                         &
+     &      .or. (theta(1)*theta(4)) .le. 0.0d0) then
             inod_map = i + (j-1) * nxpixel
             rgba(1,inod_map) = one
             rgba(2,inod_map) = one
             rgba(3,inod_map) = one
             rgba(4,inod_map) = one
           end if
-          if(theta1.ge.0.0d0 .and. theta2.lt.0.0d0) then
-            inod_map = i+1 + (j-1) * nxpixel
-            rgba(1,inod_map) = one
-            rgba(2,inod_map) = one
-            rgba(3,inod_map) = one
-            rgba(4,inod_map) = one
-          end if
 !
+          if(theta(1) .le. zero) cycle
+          if(theta(2) .le. zero) cycle
+          if(theta(3) .le. zero) cycle
+          if(theta(4) .le. zero) cycle
           do ii = 1, 5
-            phi_ref = pi * dble(ii) / 3.0d0
-            if(phi1.lt.phi_ref .and. phi2.ge.phi_ref) then
+            phi_ref = pi * dble(ii-3) / 3.0d0
+            if(     (phi(1)-phi_ref)*(phi(2)-phi_ref) .le. zero         &
+     &         .or. (phi(1)-phi_ref)*(phi(3)-phi_ref) .le. zero         &
+     &         .or. (phi(1)-phi_ref)*(phi(4)-phi_ref) .le. zero) then
               inod_map = i + (j-1) * nxpixel
               rgba(1,inod_map) = one
               rgba(2,inod_map) = one
@@ -485,8 +490,11 @@
           end do
 !
           do jj = 1, 5
-            theta_ref = pi * dble(ii) / 6.0d0
-            if(theta1.lt.theta_ref .and. theta2.ge.theta_ref) then
+            theta_ref = pi * dble(jj) / 6.0d0
+            if(    (theta(1)-theta_ref)*(theta(2)-theta_ref) .le. zero  &
+     &        .or. (theta(1)-theta_ref)*(theta(3)-theta_ref) .le. zero  &
+     &        .or. (theta(1)-theta_ref)*(theta(4)-theta_ref) .le. zero) &
+     &         then
               inod_map = i + (j-1) * nxpixel
               rgba(1,inod_map) = one
               rgba(2,inod_map) = one
