@@ -153,7 +153,7 @@
      &      map_ctl_struct, c_buf1)
         call s_read_map_control_data(id_control, hd_map_rendering,      &
      &      map_ctl_struct, c_buf1)
-        if(map_ctl_struct%i_psf_ctl .gt. 0) exit
+        if(map_ctl_struct%i_map_ctl .gt. 0) exit
       end do
       close(id_control)
 !

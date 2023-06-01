@@ -72,7 +72,7 @@
       type(map_ctl), intent(inout) :: map_c
 !
 !
-      call calypso_mpi_bcast_one_int(map_c%i_psf_ctl, 0)
+      call calypso_mpi_bcast_one_int(map_c%i_map_ctl, 0)
       call calypso_mpi_bcast_one_int(map_c%i_output_field, 0)
       call calypso_mpi_bcast_character(map_c%fname_mat_ctl,             &
      &                                 cast_long(kchara), 0)
@@ -83,12 +83,12 @@
       call bcast_pvr_colorbar_ctl(map_c%cmap_cbar_c%cbar_ctl)
       call bcast_pvr_colordef_ctl(map_c%cmap_cbar_c%color)
 !
-      call bcast_ctl_type_c1(map_c%psf_file_head_ctl)
-      call bcast_ctl_type_c1(map_c%psf_output_type_ctl)
+      call bcast_ctl_type_c1(map_c%map_image_prefix_ctl)
+      call bcast_ctl_type_c1(map_c%map_image_fmt_ctl)
       call bcast_ctl_type_c1(map_c%map_field_ctl)
       call bcast_ctl_type_c1(map_c%map_comp_ctl)
 !
-      call bcast_section_def_control(map_c%psf_def_c)
+      call bcast_section_def_control(map_c%map_def_c)
       call bcast_fld_on_map_control(map_c%fld_on_psf_c)
 !
       end subroutine bcast_map_control_data

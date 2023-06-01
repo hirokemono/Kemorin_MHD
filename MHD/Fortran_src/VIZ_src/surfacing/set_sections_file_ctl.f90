@@ -90,9 +90,9 @@
      &      fld_on_psf_c%field_output_ctl%num,                          &
      &      fld_on_psf_c%field_output_ctl%c1_tbl,                       &
      &      fld_on_psf_c%field_output_ctl%c2_tbl, psf_fld%num_phys,     &
-     &     psf_param%id_output, psf_param%icomp_output,                 &
-     &     psf_fld%num_component, psf_param%ncomp_org,                  &
-     &     psf_fld%phys_name)
+     &      psf_param%id_output, psf_param%icomp_output,                &
+     &      psf_fld%num_component, psf_param%ncomp_org,                 &
+     &      psf_fld%phys_name)
       end if
 !
       end subroutine set_control_4_field_on_psf

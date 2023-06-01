@@ -125,7 +125,7 @@
 !
       ierr = 0
       call s_set_sections_file_ctl(default_map_prefix,                  &
-     &    map_c%psf_file_head_ctl, map_c%psf_output_type_ctl,           &
+     &    map_c%map_image_prefix_ctl, map_c%map_image_fmt_ctl,          &
      &    psf_file_IO)
       if((psf_file_IO%iflag_format/iflag_single) .eq. 0) then
         psf_file_IO%iflag_format = psf_file_IO%iflag_format             &
@@ -141,7 +141,7 @@
       call count_control_4_field_on_psf                                 &
      &   (map_c%fld_on_psf_c, num_nod_phys, phys_nod_name, psf_fld)
       call count_control_4_psf_define                                   &
-     &   (map_c%psf_def_c, ele_grp, psf_param, ierr)
+     &   (map_c%map_def_c, ele_grp, psf_param, ierr)
 !
       end subroutine count_control_4_map
 !
@@ -169,7 +169,7 @@
 !
       call alloc_area_group_psf(psf_param)
       call set_control_psf_define                                       &
-     &   (map_c%psf_def_c, ele_grp, sf_grp, psf_param, psf_def, ierr)
+     &   (map_c%map_def_c, ele_grp, sf_grp, psf_param, psf_def, ierr)
 !
       call alloc_output_comps_psf(psf_fld%num_phys, psf_param)
       call set_control_4_field_on_psf(map_c%fld_on_psf_c,               &

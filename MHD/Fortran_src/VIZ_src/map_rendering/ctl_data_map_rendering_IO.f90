@@ -222,7 +222,7 @@
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(map_c%i_psf_ctl .gt. 0) return
+      if(map_c%i_map_ctl .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
@@ -234,22 +234,22 @@
      &      map_c%cmap_cbar_c, c_buf)
 !
         call read_section_def_control(id_control, hd_surface_define,    &
-     &                                map_c%psf_def_c, c_buf)
+     &                                map_c%map_def_c, c_buf)
 !
         call read_fld_on_psf_control(id_control, hd_output_field,       &
      &                               map_c%fld_on_psf_c, c_buf)
 !
         call read_chara_ctl_type(c_buf, hd_psf_file_prefix,             &
-     &      map_c%psf_file_head_ctl)
+     &      map_c%map_image_prefix_ctl)
         call read_chara_ctl_type(c_buf, hd_psf_out_type,                &
-     &      map_c%psf_output_type_ctl)
+     &      map_c%map_image_fmt_ctl)
 !
         call read_chara_ctl_type(c_buf, hd_map_output_field,            &
      &      map_c%map_field_ctl)
         call read_chara_ctl_type(c_buf, hd_map_output_comp,             &
      &      map_c%map_comp_ctl)
       end do
-      map_c%i_psf_ctl = 1
+      map_c%i_map_ctl = 1
 !
       end subroutine s_read_map_control_data
 !
@@ -272,7 +272,7 @@
       integer(kind = kint) :: maxlen = 0
 !
 !
-      if(map_c%i_psf_ctl .le. 0) return
+      if(map_c%i_map_ctl .le. 0) return
 !
       maxlen = len_trim(hd_psf_file_prefix)
       maxlen = max(maxlen, len_trim(hd_psf_out_type))
@@ -281,9 +281,9 @@
 !
       write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_psf_file_prefix, map_c%psf_file_head_ctl)
+     &    hd_psf_file_prefix, map_c%map_image_prefix_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_psf_out_type, map_c%psf_output_type_ctl)
+     &    hd_psf_out_type, map_c%map_image_fmt_ctl)
 !
       write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -292,7 +292,7 @@
      &    hd_map_output_comp, map_c%map_comp_ctl)
 !
       call write_section_def_control(id_control, hd_surface_define,     &
-     &                               map_c%psf_def_c, level)
+     &                               map_c%map_def_c, level)
       call write_fld_on_psf_control(id_control, hd_output_field,        &
      &                              map_c%fld_on_psf_c, level)
      !

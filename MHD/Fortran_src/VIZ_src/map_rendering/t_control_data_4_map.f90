@@ -164,14 +164,14 @@
 !
       type map_ctl
 !>        Structure of cross section definition
-        type(psf_define_ctl) :: psf_def_c
+        type(psf_define_ctl) :: map_def_c
 !>        Structure of fields on isosurface control
         type(field_on_psf_ctl) :: fld_on_psf_c
 !
 !>        Structure for file prefix
-        type(read_character_item) :: psf_file_head_ctl
+        type(read_character_item) :: map_image_prefix_ctl
 !>        Structure for data field format
-        type(read_character_item) :: psf_output_type_ctl
+        type(read_character_item) :: map_image_fmt_ctl
 !
 !>        Structure of field name for rendering
         type(read_character_item) :: map_field_ctl
@@ -189,7 +189,7 @@
         type(pvr_colormap_bar_ctl) :: cmap_cbar_c
 !
 !     Top level
-        integer (kind=kint) :: i_psf_ctl = 0
+        integer (kind=kint) :: i_map_ctl = 0
 !     2nd level for cross_section_ctl
         integer (kind=kint) :: i_output_field =   0
       end type map_ctl
@@ -204,7 +204,7 @@
 !
       type(map_ctl), intent(inout) :: map_c
 !
-      call init_psf_def_ctl_stract(map_c%psf_def_c)
+      call init_psf_def_ctl_stract(map_c%map_def_c)
       call init_fld_on_psf_control(map_c%fld_on_psf_c)
 !
       end subroutine init_map_ctl_stract
@@ -216,17 +216,17 @@
       type(map_ctl), intent(inout) :: map_c
 !
 !
-      call dealloc_cont_dat_4_psf_def(map_c%psf_def_c)
+      call dealloc_cont_dat_4_psf_def(map_c%map_def_c)
       call dealloc_fld_on_psf_control(map_c%fld_on_psf_c)
       call dealloc_view_transfer_ctl(map_c%mat)
       call deallocate_pvr_cmap_cbar(map_c%cmap_cbar_c)
 !
-      map_c%psf_file_head_ctl%iflag =   0
-      map_c%psf_output_type_ctl%iflag = 0
-      map_c%map_field_ctl%iflag =       0
-      map_c%map_comp_ctl%iflag =        0
+      map_c%map_image_prefix_ctl%iflag = 0
+      map_c%map_image_fmt_ctl%iflag =    0
+      map_c%map_field_ctl%iflag =        0
+      map_c%map_comp_ctl%iflag =         0
 !
-      map_c%i_psf_ctl =        0
+      map_c%i_map_ctl =        0
       map_c%i_output_field =   0
 !
       end subroutine dealloc_cont_dat_4_map
@@ -239,24 +239,24 @@
       type(map_ctl), intent(inout) :: new_map_c
 !
 !
-      call dup_control_4_psf_def(org_map_c%psf_def_c,                   &
-     &                           new_map_c%psf_def_c)
+      call dup_control_4_psf_def(org_map_c%map_def_c,                   &
+     &                           new_map_c%map_def_c)
       call dup_fld_on_psf_control(org_map_c%fld_on_psf_c,               &
      &                            new_map_c%fld_on_psf_c)
       call dup_view_transfer_ctl(org_map_c%mat, new_map_c%mat)
       call dup_pvr_cmap_cbar(org_map_c%cmap_cbar_c,                     &
      &                       new_map_c%cmap_cbar_c)
 !
-      call copy_chara_ctl(org_map_c%psf_file_head_ctl,                  &
-     &                    new_map_c%psf_file_head_ctl)
-      call copy_chara_ctl(org_map_c%psf_output_type_ctl,                &
-     &                    new_map_c%psf_output_type_ctl)
+      call copy_chara_ctl(org_map_c%map_image_prefix_ctl,               &
+     &                    new_map_c%map_image_prefix_ctl)
+      call copy_chara_ctl(org_map_c%map_image_fmt_ctl,                  &
+     &                    new_map_c%map_image_fmt_ctl)
       call copy_chara_ctl(org_map_c%map_field_ctl,                      &
      &                    new_map_c%map_field_ctl)
       call copy_chara_ctl(org_map_c%map_comp_ctl,                       &
      &                    new_map_c%map_comp_ctl)
 !
-      new_map_c%i_psf_ctl =        org_map_c%i_psf_ctl
+      new_map_c%i_map_ctl =        org_map_c%i_map_ctl
       new_map_c%i_output_field =   org_map_c%i_output_field
 !
       end subroutine dup_control_4_map
