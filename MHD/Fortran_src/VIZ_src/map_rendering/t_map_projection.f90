@@ -131,6 +131,9 @@
 !
 !
       allocate(map_psf_dat1(psf%num_psf))
+      allocate(view_param1(psf%num_psf))
+      allocate(color_param1(psf%num_psf))
+      allocate(cbar_param1(psf%num_psf))
       do i_psf = 1, psf%num_psf
         call alloc_node_param_smp(psf%psf_mesh(i_psf)%node)
         call alloc_ele_param_smp(psf%psf_mesh(i_psf)%patch)
