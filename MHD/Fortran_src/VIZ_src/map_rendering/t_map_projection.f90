@@ -119,6 +119,9 @@
       call alloc_psf_field_type(psf)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_map_control'
+      allocate(view_param1(psf%num_psf))
+      allocate(color_param1(psf%num_psf))
+      allocate(cbar_param1(psf%num_psf))
       call s_set_map_control(psf%num_psf, geofem%group, nod_fld,        &
      &    map_ctls, psf%psf_param, psf%psf_def,                         &
      &    psf%psf_mesh, psf%psf_file_IO,                                &
@@ -131,9 +134,6 @@
 !
 !
       allocate(map_psf_dat1(psf%num_psf))
-      allocate(view_param1(psf%num_psf))
-      allocate(color_param1(psf%num_psf))
-      allocate(cbar_param1(psf%num_psf))
       do i_psf = 1, psf%num_psf
         call alloc_node_param_smp(psf%psf_mesh(i_psf)%node)
         call alloc_ele_param_smp(psf%psf_mesh(i_psf)%patch)
