@@ -61,7 +61,7 @@
 !
 !
       do i = 1, num_psf
-        call count_control_4_psf(my_rank, map_ctls%psf_ctl_struct(i),   &
+        call count_control_4_psf(my_rank, map_ctls%map_ctl_struct(i),   &
      &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &
      &      psf_mesh(i)%field, psf_param(i), psf_file_IO(i), ierr)
 !
@@ -73,12 +73,12 @@
       do i = 1, num_psf
         call alloc_phys_name(psf_mesh(i)%field)
         call set_control_4_psf                                          &
-     &     (map_ctls%psf_ctl_struct(i), group%ele_grp, group%surf_grp,  &
+     &     (map_ctls%map_ctl_struct(i), group%ele_grp, group%surf_grp,  &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
      &      psf_mesh(i)%field,  psf_param(i), psf_def(i), ierr)
         if(ierr.gt.0) call calypso_MPI_abort(ierr, e_message)
 !
-        call dealloc_cont_dat_4_psf(map_ctls%psf_ctl_struct(i))
+        call dealloc_cont_dat_4_psf(map_ctls%map_ctl_struct(i))
 !
         call count_total_comps_4_viz(psf_mesh(i)%field)
       end do

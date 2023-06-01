@@ -174,7 +174,7 @@
         call add_fields_4_isos_to_fld_ctl(viz_ctls%iso_ctls, field_ctl)
       end if
 !
-      if(viz_ctls%i_step_map_v_ctl%iflag .gt. 0) then
+      if(viz_ctls%map_ctls%num_map_ctl .gt. 0) then
         call add_fields_4_maps_to_fld_ctl(viz_ctls%map_ctls, field_ctl)
       end if
 !

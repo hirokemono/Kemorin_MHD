@@ -73,8 +73,8 @@
 !
 !
       if(check_array_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(allocated(map_ctls%psf_ctl_struct)) return
-      map_ctls%num_psf_ctl = 0
+      if(allocated(map_ctls%map_ctl_struct)) return
+      map_ctls%num_map_ctl = 0
       call alloc_map_ctl_stract(map_ctls)
 !
       do
@@ -85,10 +85,10 @@
      &      .or. check_begin_flag(c_buf, hd_block)) then
           call append_new_map_render_control(map_ctls)
           write(*,'(3a,i4)', ADVANCE='NO') 'Control for ',              &
-     &        trim(hd_block), ' No. ',  map_ctls%num_psf_ctl
+     &        trim(hd_block), ' No. ',  map_ctls%num_map_ctl
           call sel_read_control_4_map_file(id_control, hd_block,        &
-     &        map_ctls%fname_psf_ctl(map_ctls%num_psf_ctl),             &
-     &        map_ctls%psf_ctl_struct(map_ctls%num_psf_ctl), c_buf)
+     &        map_ctls%fname_map_ctl(map_ctls%num_map_ctl),             &
+     &        map_ctls%map_ctl_struct(map_ctls%num_map_ctl), c_buf)
         end if
       end do
 !
@@ -176,10 +176,10 @@
 !
       write(id_control,'(a1)') '!'
       level = write_array_flag_for_ctl(id_control, level, hd_block)
-      do i = 1, map_ctls%num_psf_ctl
+      do i = 1, map_ctls%num_map_ctl
           write(*,'(2a,i4)', ADVANCE='NO') trim(hd_block), ' No. ', i
           call sel_write_control_4_map_file(id_control, hd_block,       &
-     &        map_ctls%fname_psf_ctl(i), map_ctls%psf_ctl_struct(i),    &
+     &        map_ctls%fname_map_ctl(i), map_ctls%map_ctl_struct(i),    &
      &        level)
       end do
       level = write_end_array_flag_for_ctl(id_control, level, hd_block)

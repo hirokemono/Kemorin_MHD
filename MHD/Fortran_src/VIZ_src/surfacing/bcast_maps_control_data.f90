@@ -42,16 +42,16 @@
       integer (kind=kint) :: i_psf
 !
 !
-      call calypso_mpi_bcast_one_int(map_ctls%num_psf_ctl, 0)
-      if(map_ctls%num_psf_ctl .le. 0) return
+      call calypso_mpi_bcast_one_int(map_ctls%num_map_ctl, 0)
+      if(map_ctls%num_map_ctl .le. 0) return
 !
       if(my_rank .gt. 0) call alloc_map_ctl_stract(map_ctls)
 !
-      do i_psf = 1, map_ctls%num_psf_ctl
-        call bcast_map_control_data(map_ctls%psf_ctl_struct(i_psf))
+      do i_psf = 1, map_ctls%num_map_ctl
+        call bcast_map_control_data(map_ctls%map_ctl_struct(i_psf))
       end do
-      call calypso_mpi_bcast_character(map_ctls%fname_psf_ctl,          &
-     &    cast_long(map_ctls%num_psf_ctl*kchara), 0)
+      call calypso_mpi_bcast_character(map_ctls%fname_map_ctl,          &
+     &    cast_long(map_ctls%num_map_ctl*kchara), 0)
 !
       end subroutine bcast_files_4_map_ctl
 !

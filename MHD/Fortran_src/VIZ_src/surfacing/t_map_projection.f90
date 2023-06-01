@@ -105,7 +105,7 @@
       integer(kind = kint) :: i_psf
 !
 !
-      psf%num_psf = map_ctls%num_psf_ctl
+      psf%num_psf = map_ctls%num_map_ctl
       if(increment_psf .le. 0) psf%num_psf = 0
       if(psf%num_psf .le. 0) return
 !
