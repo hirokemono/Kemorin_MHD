@@ -32,9 +32,9 @@
 !!      ....
 !!    end array isosurface_ctl
 !!
-!!    array  map_projection_ctl
+!!    array  map_rendering_ctl
 !!      ....
-!!    end array map_projection_ctl
+!!    end array map_rendering_ctl
 !!
 !!    array  volume_rendering
 !!      ....
@@ -98,7 +98,7 @@
       character(len=kchara), parameter, private                         &
      &             :: hd_isosurf_ctl = 'isosurface_ctl'
       character(len=kchara), parameter, private                         &
-     &             :: hd_map_projection_ctl = 'map_projection_ctl'
+     &             :: hd_map_rendering = 'map_rendering_ctl'
       character(len=kchara), parameter, private                         &
      &             :: hd_pvr_ctl = 'volume_rendering'
       character(len=kchara), parameter, private                         &
@@ -168,6 +168,7 @@
       use t_read_control_elements
       use ctl_file_sections_IO
       use ctl_file_isosurfaces_IO
+      use ctl_file_map_renderings_IO
       use ctl_file_fieldlines_IO
       use ctl_file_volume_repart_IO
       use skip_comment_f
@@ -200,7 +201,7 @@
         call read_files_4_iso_ctl(id_control, hd_isosurf_ctl,           &
      &                            viz_ctls%iso_ctls, c_buf)
 !
-        call read_files_4_psf_ctl(id_control, hd_map_projection_ctl,    &
+        call read_files_4_map_ctl(id_control, hd_map_rendering,         &
      &                            viz_ctls%map_ctls, c_buf)
 !
         call read_files_4_pvr_ctl(id_control, hd_pvr_ctl,               &
@@ -257,6 +258,7 @@
       use t_read_control_elements
       use ctl_file_sections_IO
       use ctl_file_isosurfaces_IO
+      use ctl_file_map_renderings_IO
       use ctl_file_fieldlines_IO
       use ctl_file_volume_repart_IO
       use write_control_elements
@@ -314,7 +316,7 @@
      &    hd_delta_t_map_projection, viz_ctls%delta_t_map_v_ctl)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    hd_i_step_map_projection, viz_ctls%i_step_map_v_ctl)
-      call write_files_4_psf_ctl(id_control, hd_map_projection_ctl,     &
+      call write_files_4_map_ctl(id_control, hd_map_rendering,          &
      &                           viz_ctls%map_ctls, level)
 !
       write(id_control,'(a1)') '!'
@@ -385,7 +387,7 @@
 !
       call set_control_labels(hd_i_step_map_projection,  names( 7))
       call set_control_labels(hd_delta_t_map_projection, names( 8))
-      call set_control_labels(hd_map_projection_ctl,     names( 9))
+      call set_control_labels(hd_map_rendering,          names( 9))
 !
       call set_control_labels(hd_i_step_pvr,       names(10))
       call set_control_labels(hd_delta_t_pvr,      names(11))

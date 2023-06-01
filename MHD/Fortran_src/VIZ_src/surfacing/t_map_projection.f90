@@ -9,11 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine MAP_PROJECTION_initialize(increment_psf, geofem,     &
-!!     &          edge_comm, nod_fld, psf_ctls, psf, SR_sig, SR_il)
+!!     &          edge_comm, nod_fld, map_ctls, psf, SR_sig, SR_il)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: edge_comm
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(section_controls), intent(inout) :: psf_ctls
+!!        type(map_rendering_controls), intent(inout) :: map_ctls
 !!        type(sectioning_module), intent(inout) :: psf
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
@@ -32,6 +32,7 @@
 !
       use t_cross_section
       use t_psf_results
+      use t_control_data_maps
 !
       implicit  none
 !
@@ -76,14 +77,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine MAP_PROJECTION_initialize(increment_psf, geofem,       &
-     &          edge_comm, nod_fld, psf_ctls, psf, SR_sig, SR_il)
+     &          edge_comm, nod_fld, map_ctls, psf, SR_sig, SR_il)
 !
       use m_work_time
       use m_elapsed_labels_4_VIZ
       use m_geometry_constants
 !
       use calypso_mpi
-      use set_psf_iso_control
+      use set_map_control
       use search_ele_list_for_psf
       use set_const_4_sections
       use find_node_and_patch_psf
@@ -96,7 +97,7 @@
       type(communication_table), intent(in) :: edge_comm
       type(phys_data), intent(in) :: nod_fld
 !
-      type(section_controls), intent(inout) :: psf_ctls
+      type(map_rendering_controls), intent(inout) :: map_ctls
       type(sectioning_module), intent(inout) :: psf
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int8_buffer), intent(inout) :: SR_il
@@ -104,7 +105,7 @@
       integer(kind = kint) :: i_psf
 !
 !
-      psf%num_psf = psf_ctls%num_psf_ctl
+      psf%num_psf = map_ctls%num_psf_ctl
       if(increment_psf .le. 0) psf%num_psf = 0
       if(psf%num_psf .le. 0) return
 !
@@ -113,9 +114,9 @@
       if (iflag_debug.eq.1) write(*,*) 'alloc_psf_field_type'
       call alloc_psf_field_type(psf)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
-      call set_psf_control(psf%num_psf, geofem%group, nod_fld,          &
-     &    psf_ctls, psf%psf_param, psf%psf_def,                         &
+      if (iflag_debug.eq.1) write(*,*) 's_set_map_control'
+      call s_set_map_control(psf%num_psf, geofem%group, nod_fld,        &
+     &    map_ctls, psf%psf_param, psf%psf_def,                         &
      &    psf%psf_mesh, psf%psf_file_IO)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'

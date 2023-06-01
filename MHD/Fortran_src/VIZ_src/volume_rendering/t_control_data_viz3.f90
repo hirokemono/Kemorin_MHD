@@ -52,6 +52,7 @@
       use m_machine_parameter
       use t_control_data_sections
       use t_control_data_isosurfaces
+      use t_control_data_maps
       use t_control_data_pvrs
       use t_control_array_character
       use t_control_array_real
@@ -66,7 +67,7 @@
 !>        Structures of isosurface controls
         type(isosurf_controls) :: iso_ctls
 !>        Structures of map projection controls
-        type(section_controls) :: map_ctls
+        type(map_rendering_controls) :: map_ctls
 !>        Structures of volume rendering controls
         type(volume_rendering_controls) :: pvr_ctls
 !
@@ -112,7 +113,7 @@
 !
       call dealloc_psf_ctl_stract(viz_ctls%psf_ctls)
       call dealloc_iso_ctl_stract(viz_ctls%iso_ctls)
-      call dealloc_psf_ctl_stract(viz_ctls%map_ctls)
+      call dealloc_map_ctl_stract(viz_ctls%map_ctls)
       call dealloc_pvr_ctl_struct(viz_ctls%pvr_ctls)
 !
       viz_ctls%delta_t_psf_v_ctl%iflag =   0
@@ -206,6 +207,10 @@
 !
       if(viz_ctls%iso_ctls%num_iso_ctl .gt. 0) then
         call add_fields_4_isos_to_fld_ctl(viz_ctls%iso_ctls, field_ctl)
+      end if
+!
+      if(viz_ctls%psf_ctls%num_psf_ctl .gt. 0) then
+        call add_fields_4_maps_to_fld_ctl(viz_ctls%map_ctls, field_ctl)
       end if
 !
 !

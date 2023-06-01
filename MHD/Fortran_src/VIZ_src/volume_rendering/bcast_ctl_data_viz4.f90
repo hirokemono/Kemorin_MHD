@@ -31,6 +31,7 @@
       use calypso_mpi_int
       use bcast_control_arrays
       use bcast_section_control_data
+      use bcast_maps_control_data
       use bcast_ctl_data_field_line
       use bcast_control_data_pvrs
 !
@@ -39,7 +40,7 @@
 !
       call bcast_files_4_psf_ctl(viz_ctls%psf_ctls)
       call bcast_files_4_iso_ctl(viz_ctls%iso_ctls)
-      call bcast_files_4_psf_ctl(viz_ctls%map_ctls)
+      call bcast_files_4_map_ctl(viz_ctls%map_ctls)
 !
       call bcast_files_4_pvr_ctl(viz_ctls%pvr_ctls)
       call bcast_files_4_fline_ctl(viz_ctls%fline_ctls)
