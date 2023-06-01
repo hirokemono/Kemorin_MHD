@@ -278,10 +278,12 @@
      &      psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie,     &
      &      ione, psf_phys%d_fld(1,i_img), map_e1%n_map_patch,          &
      &      map_e1%x_map_patch, map_e1%d_map_patch)
-        call set_sph_position_4_map_patch(map_e1%n_map_patch,           &
-     &      map_e1%x_map_patch, map_e1%rtp_map_patch)
-        call patch_to_aitoff(map_e1%n_map_patch, map_e1%rtp_map_patch,  &
-     &                       map_e1%xy_map)
+        do i = 1, map_e1%n_map_patch
+          call set_sph_position_4_map_patch                             &
+     &       (map_e1%x_map_patch(1,1,i), map_e1%rtp_map_patch(1,1,i))
+          call patch_to_aitoff(map_e%rtp_map_patch(1,1,i),              &
+     &                           map_e%xy_map(1,1,i))
+        end do
 !
         do i = 1, map_e1%n_map_patch
           call find_map_path_orientation(map_e1%xy_map(1,1,i),          &

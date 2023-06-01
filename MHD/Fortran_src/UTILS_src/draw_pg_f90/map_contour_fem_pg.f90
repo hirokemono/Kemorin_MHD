@@ -153,10 +153,12 @@
           call s_set_map_patch_from_1patch(iele, nnod_pg, nele_pg,      &
      &        xx_psf, ie_psf, ione, scalar_psf(1), map_e%n_map_patch,   &
      &        map_e%x_map_patch, map_e%d_map_patch)
-          call set_sph_position_4_map_patch(map_e%n_map_patch,          &
-     &        map_e%x_map_patch, map_e%rtp_map_patch)
-          call patch_to_aitoff(map_e%n_map_patch, map_e%rtp_map_patch,  &
-     &                         map_e%xy_map)
+          do i =1, map_e%n_map_patch
+            call set_sph_position_4_map_patch                           &
+     &         (map_e%x_map_patch(1,1,i), map_e%rtp_map_patch(1,1,i))
+            call patch_to_aitoff(map_e%rtp_map_patch(1,1,i),            &
+     &                           map_e%xy_map(1,1,i))
+          end do
 !
           s_patch = zero
           do i = 1, map_e%n_map_patch
@@ -233,10 +235,12 @@
           call s_set_map_patch_from_1patch(iele, nnod_pg, nele_pg,      &
      &        xx_psf, ie_psf, ione, scalar_psf(1), map_e%n_map_patch,   &
      &        map_e%x_map_patch, map_e%d_map_patch)
-          call set_sph_position_4_map_patch(map_e%n_map_patch,          &
-     &        map_e%x_map_patch, map_e%rtp_map_patch)
-          call patch_to_aitoff(map_e%n_map_patch, map_e%rtp_map_patch,  &
-     &                         map_e%xy_map)
+          do i =1, map_e%n_map_patch
+            call set_sph_position_4_map_patch                           &
+     &         (map_e%x_map_patch(1,1,i), map_e%rtp_map_patch(1,1,i))
+            call patch_to_aitoff(map_e%rtp_map_patch(1,1,i),            &
+     &                           map_e%xy_map(1,1,i))
+          end do
 !
           do i = 1, map_e%n_map_patch
             do k1 = 1, 3

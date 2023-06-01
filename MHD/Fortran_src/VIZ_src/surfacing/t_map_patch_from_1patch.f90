@@ -96,93 +96,77 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_sph_position_4_map_patch                           &
-     &         (n_map_patch, x_map_patch, rtp_map_patch)
+      subroutine set_sph_position_4_map_patch(x_map_patch,              &
+     &                                        rtp_map_patch)
 !
       use coordinate_converter
 !
-      integer(kind = kint), intent(in) :: n_map_patch
       real(kind = kreal), intent(inout)                                 &
-     &          :: x_map_patch(num_triangle,n_vector,n_map_patch)
+     &          :: x_map_patch(num_triangle,n_vector)
       real(kind = kreal), intent(inout)                                 &
-     &          :: rtp_map_patch(num_triangle,n_vector,n_map_patch)
+     &          :: rtp_map_patch(num_triangle,n_vector)
 !
-      integer(kind = kint) :: i, k1
-      real(kind = kreal) :: y_center(3)
+      integer(kind = kint) :: k1
+      real(kind = kreal) :: x_center
+      real(kind = kreal) :: y_center
       real(kind = kreal) :: ar_map(3), rs_map(3), as_map(3)
-      real(kind = kreal) :: pi, xflag, yflag
+      real(kind = kreal) :: pi, yflag
 !
 !
-      do i = 1, n_map_patch
-        if(abs(x_map_patch(1,2,i)) .lt. EPSILON) x_map_patch(1,2,i)= 0.
-        if(abs(x_map_patch(2,2,i)) .lt. EPSILON) x_map_patch(1,2,i)= 0.
-        if(abs(x_map_patch(3,2,i)) .lt. EPSILON) x_map_patch(1,2,i)= 0.
-      end do
-!
-      do i = 1, n_map_patch
-        y_center(i) = (x_map_patch(1,2,i) + x_map_patch(2,2,i)          &
-     &               + x_map_patch(3,2,i) ) / three
-      end do
+      x_center = (x_map_patch(1,1) + x_map_patch(2,1)                   &
+     &          + x_map_patch(3,1) ) / three
+      y_center = (x_map_patch(1,2) + x_map_patch(2,2)                   &
+     &          + x_map_patch(3,2) ) / three
 !
       pi = four * atan(one)
-      do i = 1, n_map_patch
-        call position_2_sph(ithree, x_map_patch, rtp_map_patch(1,1,i),  &
-     &      rtp_map_patch(1,2,i), rtp_map_patch(1,3,i),                 &
-     &      ar_map(1), rs_map(1), as_map(1))
-        rtp_map_patch(1:3,3,i)                                          &
-     &                      = mod((rtp_map_patch(1:3,3,i)+pi),(two*pi))
-      end do
+      call position_2_sph(ithree, x_map_patch, rtp_map_patch(1,1),      &
+     &                    rtp_map_patch(1,2), rtp_map_patch(1,3),       &
+     &                    ar_map(1), rs_map(1), as_map(1))
+      rtp_map_patch(1:3,3) = mod((rtp_map_patch(1:3,3)+pi),(two*pi))
 !
-      do i = 1, n_map_patch
-        xflag = x_map_patch(1,1,i) + x_map_patch(2,1,i)                 &
-     &         + x_map_patch(3,1,i)
-        yflag = x_map_patch(1,2,i) * x_map_patch(2,2,i)                 &
-     &         * x_map_patch(3,2,i)
-!
-        if(yflag.eq.zero .and. xflag.le.zero) then
-          if( y_center(i) .gt. zero) then
-            if(rtp_map_patch(1,3,i) .eq. zero) then
-               rtp_map_patch(1,3,i) = two * pi
-            end if
-            if(rtp_map_patch(2,3,i) .eq. zero) then
-               rtp_map_patch(2,3,i) = two * pi
-            end if
-            if(rtp_map_patch(3,3,i) .eq. zero) then
-               rtp_map_patch(3,3,i) = two * pi
-            end if
-          end if
-!
+      yflag = x_map_patch(1,2) * x_map_patch(2,2) * x_map_patch(3,2)
+      if(yflag.eq.zero .and. x_center.le.zero) then
+        if(y_center .le. zero) then
+          if(abs(x_map_patch(1,2)) .lt. EPSILON                         &
+     &      .and. x_map_patch(1,1).lt.zero) rtp_map_patch(1,3) = zero
+          if(abs(x_map_patch(2,2)) .lt. EPSILON                         &
+     &      .and. x_map_patch(2,1).lt.zero) rtp_map_patch(2,3) = zero
+          if(abs(x_map_patch(3,2)) .lt. EPSILON                         &
+     &      .and. x_map_patch(3,1).lt.zero) rtp_map_patch(3,3) = zero
+        else
+          if(abs(x_map_patch(1,2)) .lt. EPSILON                         &
+     &      .and. x_map_patch(1,1).lt.zero) rtp_map_patch(1,3) = two*pi
+          if(abs(x_map_patch(2,2)) .lt. EPSILON                         &
+     &      .and. x_map_patch(2,1).lt.zero) rtp_map_patch(2,3) = two*pi
+          if(abs(x_map_patch(3,2)) .lt. EPSILON                         &
+     &      .and. x_map_patch(3,1).lt.zero) rtp_map_patch(3,3) = two*pi
         end if
-      end do
+!
+      end if
 !
       end subroutine set_sph_position_4_map_patch
 !
 !-----------------------------------------------------------------------
 !
-      subroutine patch_to_aitoff(n_map_patch, rtp_map_patch, xy_map)
+      subroutine patch_to_aitoff(rtp_map_patch, xy_map)
 !
       use aitoff
 !
-      integer(kind = kint), intent(in) :: n_map_patch
       real(kind = kreal), intent(in)                                    &
-     &          :: rtp_map_patch(num_triangle,n_vector,n_map_patch)
+     &          :: rtp_map_patch(num_triangle,n_vector)
+      real(kind = kreal), intent(inout) :: xy_map(2,num_triangle)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &          :: xy_map(2,num_triangle,n_map_patch)
-!
-      integer(kind = kint) :: i, k1
+      integer(kind = kint) :: k1
       real(kind = kreal) :: s_theta, c_theta, pi, phi_map
 !
 !
       pi = four * atan(one)
-      do i = 1, n_map_patch
-        do k1 = 1, num_triangle
-          s_theta = sin(rtp_map_patch(k1,2,i))
-          c_theta = cos(rtp_map_patch(k1,2,i))
-!          phi_map = mod((rtp_map_patch(k1,3,i)+pi),(two*pi))
-          call s_aitoff(s_theta, c_theta, rtp_map_patch(k1,3,i),        &
-     &                  xy_map(1,k1,i), xy_map(2,k1,i))
-        end do
+      do k1 = 1, num_triangle
+        s_theta = sin(rtp_map_patch(k1,2))
+        c_theta = cos(rtp_map_patch(k1,2))
+!        phi_map = mod((rtp_map_patch(k1,3)+pi),(two*pi))
+        call s_aitoff(s_theta, c_theta, rtp_map_patch(k1,3),            &
+     &                xy_map(1,k1), xy_map(2,k1))
       end do
 !
       end subroutine patch_to_aitoff
