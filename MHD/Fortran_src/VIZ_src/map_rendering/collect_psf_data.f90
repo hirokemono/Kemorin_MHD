@@ -38,6 +38,8 @@
       use t_geometry_data
       use t_phys_data
       use t_solver_SR
+      use t_control_params_4_pvr
+      use t_pvr_colormap_parameter
 !
       implicit  none
 !
@@ -81,7 +83,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_map_file(num_psf, psf_file_IO, istep_psf,       &
-     &          time_d, psf_mesh, t_IO, psf_dat, psf_out, SR_sig)
+     &          time_d, psf_mesh, t_IO, psf_dat, psf_out,               &
+     &          view_param, color_param, cbar_param, SR_sig)
 !
       use t_psf_patch_data
       use t_psf_results
@@ -94,6 +97,9 @@
       type(time_data), intent(in) :: time_d
       type(psf_local_data), intent(in) :: psf_mesh(num_psf)
       type(field_IO_params), intent(in) :: psf_file_IO(num_psf)
+      type(pvr_view_parameter), intent(in):: view_param(num_psf)
+      type(pvr_colormap_parameter), intent(in) :: color_param(num_psf)
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param(num_psf)
 !
       type(time_data), intent(inout) :: t_IO
       type(psf_results), intent(inout) :: psf_dat(num_psf)
@@ -111,7 +117,8 @@
         call merge_write_psf_file(irank_draw, istep_psf,                &
      &      psf_file_IO(i_psf), psf_mesh(i_psf), t_IO,                  &
      &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_ele,             &
-     &      psf_dat(i_psf)%psf_phys, psf_out(i_psf), SR_sig)
+     &      psf_dat(i_psf)%psf_phys, psf_out(i_psf), view_param(i_psf), &
+     &      color_param(i_psf), cbar_param(i_psf), SR_sig)
       end do
 !
       end subroutine output_map_file
@@ -204,7 +211,8 @@
 !
       subroutine merge_write_psf_file(irank_draw, istep_psf,            &
      &          psf_file_IO, psf_mesh, t_IO, psf_nod, psf_ele,          &
-     &          psf_phys, psf_ucd, SR_sig)
+     &          psf_phys, psf_ucd, view_param, color_param, cbar_param, &
+     &          SR_sig)
 !
       use t_psf_patch_data
       use t_time_data
@@ -219,12 +227,17 @@
 !
       use convert_real_rgb_2_bite
       use calypso_png_file_IO
+      use set_color_4_pvr
+!      use draw_pvr_colorbar
 !
       integer, intent(in) :: irank_draw
       integer(kind = kint), intent(in) :: istep_psf
       type(psf_local_data), intent(in) :: psf_mesh
       type(field_IO_params), intent(in) :: psf_file_IO
       type(time_data), intent(in) :: t_IO
+      type(pvr_view_parameter), intent(in):: view_param
+      type(pvr_colormap_parameter), intent(in) :: color_param
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !
       type(phys_data), intent(inout) :: psf_phys
       type(node_data), intent(inout) :: psf_nod
@@ -259,10 +272,8 @@
       real(kind = kreal) :: theta(4), phi(4)
 !
 !
-      do i_img = 1, psf_phys%ntot_phys
-        call collect_psf_scalar(irank_draw, i_img, psf_mesh%node,       &
-     &      psf_mesh%field, psf_phys%d_fld(1,i_img), SR_sig)
-      end do
+      call collect_psf_scalar(irank_draw, ione, psf_mesh%node,          &
+     &    psf_mesh%field, psf_phys%d_fld(1,1), SR_sig)
 !
       if(my_rank .eq. irank_draw) then
         call sel_write_ucd_file                                         &
@@ -271,17 +282,21 @@
 !
       if(my_rank .ne. irank_draw) return
 !
+      write(*,*) 'view_param%n_pvr_pixel', view_param%n_pvr_pixel(1:2), &
+     &          nxpixel, nypixel
+!
+!
+!
       npix = (nxpixel*nypixel)
       allocate(rgba(4,npix))
       allocate(cimage(3,npix))
       rgba(1:4,1:npix) = 0.0d0
 !
-      i_img = 1
       call alloc_map_patch_from_1patch(ione, map_e1)
       do iele = 1, psf_ele%numele
         call s_set_map_patch_from_1patch(iele,                          &
      &      psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie,     &
-     &      ione, psf_phys%d_fld(1,i_img), map_e1%n_map_patch,          &
+     &      ione, psf_phys%d_fld(1,1), map_e1%n_map_patch,              &
      &      map_e1%x_map_patch, map_e1%d_map_patch)
         do i = 1, map_e1%n_map_patch
           call set_sph_position_4_map_patch                             &
@@ -302,11 +317,17 @@
      &                      * (map_e1%xy_map(2,k1,i) - ymin_frame)      &
      &                      / (ymax_frame - ymin_frame))
 !
+            inod_map = ix_map + (iy_map-1) * nxpixel
+            call value_to_rgb(color_param%id_pvr_color(2),              &
+     &                        color_param%id_pvr_color(1),              &
+     &                        color_param%num_pvr_datamap_pnt,          &
+     &                        color_param%pvr_datamap_param,            &
+     &                        psf_phys%d_fld(1,1), rgba(1,inod_map))
+!
             ar = sqrt(map_e1%x_map_patch(k1,1,i)**2                     &
      &              + map_e1%x_map_patch(k1,2,i)**2                     &
      &              + map_e1%x_map_patch(k1,3,i)**2)
             if(irank_draw .gt. 1) cycle
-            inod_map = ix_map + (iy_map-1) * nxpixel
             rgba(1,inod_map) = map_e1%x_map_patch(k1,1,i) / ar + half
             rgba(2,inod_map) = map_e1%x_map_patch(k1,2,i) / ar + half
             rgba(3,inod_map) = map_e1%x_map_patch(k1,3,i) / ar + half
@@ -357,11 +378,12 @@
      &                      / (xmax_frame - xmin_frame))
 !
             if(irank_draw .le. 1) cycle
-            d_mid = d_min
             inod_map = ix_min + (iy-1) * nxpixel
-            rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
-            rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
-            rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
+            call value_to_rgb(color_param%id_pvr_color(2),              &
+     &                        color_param%id_pvr_color(1),              &
+     &                        color_param%num_pvr_datamap_pnt,          &
+     &                        color_param%pvr_datamap_param,            &
+     &                        d_min, rgba(1,inod_map))
             rgba(4,inod_map) = one
 !
             do ix = ix_min+1, ix_max
@@ -370,9 +392,11 @@
               d_mid = (one - ratio_x) * d_min + ratio_x * d_max
 !
               inod_map = ix + (iy-1) * nxpixel
-              rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
-              rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
-              rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
+              call value_to_rgb(color_param%id_pvr_color(2),            &
+     &                          color_param%id_pvr_color(1),            &
+     &                          color_param%num_pvr_datamap_pnt,        &
+     &                          color_param%pvr_datamap_param,          &
+     &                          d_mid, rgba(1,inod_map))
               rgba(4,inod_map) = one
             end do
           end do
@@ -412,11 +436,12 @@
      &                      / (xmax_frame - xmin_frame))
 !
             if(irank_draw .le. 1) cycle
-            d_mid = d_min
             inod_map = ix_min + (iy-1) * nxpixel
-            rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
-            rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
-            rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
+            call value_to_rgb(color_param%id_pvr_color(2),              &
+     &                        color_param%id_pvr_color(1),              &
+     &                        color_param%num_pvr_datamap_pnt,          &
+     &                        color_param%pvr_datamap_param,            &
+     &                        d_min, rgba(1,inod_map))
             rgba(4,inod_map) = one
 !
             do ix = ix_min+1, ix_max
@@ -425,9 +450,11 @@
               d_mid = (one - ratio_x) * d_min + ratio_x * d_max
 !
               inod_map = ix + (iy-1) * nxpixel
-              rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
-              rgba(2,inod_map) = map_e1%x_map_patch(1,2,i) / ar + half
-              rgba(3,inod_map) = map_e1%x_map_patch(1,3,i) / ar + half
+              call value_to_rgb(color_param%id_pvr_color(2),            &
+     &                          color_param%id_pvr_color(1),            &
+     &                          color_param%num_pvr_datamap_pnt,        &
+     &                          color_param%pvr_datamap_param,          &
+     &                          d_mid, rgba(1,inod_map))
               rgba(4,inod_map) = one
             end do
           end do
@@ -511,6 +538,17 @@
       end do
 !$omp end parallel do
 !
+!      if(cbar_param%iflag_pvr_colorbar) then
+!        call set_pvr_colorbar                                         &
+!     &     (pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                 &
+!     &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
+!      end if
+!
+!      if(cbar_param%iflag_draw_time) then
+!        call set_pvr_timelabel                                        &
+!     &     (time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,           &
+!     &      cbar_param, pvr_rgb%rgba_real_gl)
+!      end if
 !
       call cvt_double_rgba_to_char_rgb(npix, rgba, cimage)
       call calypso_write_png(psf_file_IO%file_prefix, ithree,           &

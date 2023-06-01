@@ -33,6 +33,8 @@
       use t_cross_section
       use t_psf_results
       use t_control_data_maps
+      use t_control_params_4_pvr
+      use t_pvr_colormap_parameter
 !
       implicit  none
 !
@@ -68,7 +70,10 @@
 !        type(ucd_data), allocatable :: psf_out(:)
 !      end type sectioning_module
 !
-      type(psf_results), allocatable :: map_psf_dat(:)
+      type(psf_results), allocatable :: map_psf_dat1(:)
+      type(pvr_view_parameter), allocatable:: view_param1(:)
+      type(pvr_colormap_parameter), allocatable :: color_param1(:)
+      type(pvr_colorbar_parameter), allocatable :: cbar_param1(:)
 !
 !  ---------------------------------------------------------------------
 !
@@ -90,7 +95,6 @@
       use find_node_and_patch_psf
       use set_fields_for_psf
       use collect_psf_data
-!      use output_4_psf
 !
       integer(kind = kint), intent(in) :: increment_psf
       type(mesh_data), intent(in) :: geofem
@@ -117,7 +121,8 @@
       if (iflag_debug.eq.1) write(*,*) 's_set_map_control'
       call s_set_map_control(psf%num_psf, geofem%group, nod_fld,        &
      &    map_ctls, psf%psf_param, psf%psf_def,                         &
-     &    psf%psf_mesh, psf%psf_file_IO)
+     &    psf%psf_mesh, psf%psf_file_IO,                                &
+     &    view_param1, color_param1, cbar_param1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf                                   &
@@ -125,7 +130,7 @@
      &    psf%psf_param, psf%psf_search)
 !
 !
-      allocate(map_psf_dat(psf%num_psf))
+      allocate(map_psf_dat1(psf%num_psf))
       do i_psf = 1, psf%num_psf
         call alloc_node_param_smp(psf%psf_mesh(i_psf)%node)
         call alloc_ele_param_smp(psf%psf_mesh(i_psf)%patch)
@@ -150,10 +155,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
-!      call output_section_mesh(psf%num_psf, psf%psf_file_IO,           &
-!     &    psf%psf_mesh, psf%psf_out)
       call output_map_mesh(psf%num_psf, psf%psf_mesh, psf%psf_file_IO,  &
-     &                     map_psf_dat, psf%psf_out, SR_sig)
+     &                     map_psf_dat1, psf%psf_out, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_initialize
@@ -168,7 +171,6 @@
       use set_fields_for_psf
       use set_ucd_data_to_type
       use collect_psf_data
-!      use output_4_psf
 !
       integer(kind = kint), intent(in) :: istep_psf
       type(time_data), intent(in) :: time_d
@@ -189,11 +191,10 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'output_section_data'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
-!      call output_section_data(psf%num_psf, psf%psf_file_IO,           &
-!     &    istep_psf, time_d, psf%psf_time_IO, psf%psf_out)
       call output_map_file(psf%num_psf, psf%psf_file_IO, istep_psf,     &
-     &    time_d, psf%psf_mesh, psf%psf_time_IO,                        &
-     &    map_psf_dat, psf%psf_out, SR_sig)
+     &                     time_d, psf%psf_mesh, psf%psf_time_IO,       &
+     &                     map_psf_dat1, psf%psf_out, view_param1,      &
+     &                     color_param1, cbar_param1, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_visualize
