@@ -128,7 +128,6 @@
       use t_control_array_character2
       use t_control_data_4_psf_def
       use t_control_data_4_fld_on_psf
-      use calypso_mpi
 !
       implicit  none
 !

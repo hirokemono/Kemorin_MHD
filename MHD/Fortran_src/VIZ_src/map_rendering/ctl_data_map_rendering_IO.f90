@@ -30,7 +30,10 @@
 !!  begin cross_section_ctl
 !!    section_file_prefix    'psf'
 !!    psf_output_type         ucd
-!!  
+!!
+!!    output_field       magnetic_field
+!!    output_component   r
+!
 !!    begin surface_define
 !!      section_method    equation
 !!  
@@ -58,6 +61,41 @@
 !!        output_field    magnetic_field   radial   end
 !!      end  array output_field
 !!    end output_field_define
+!!
+!!    begin map_projection_ctl
+!!      begin image_size_ctl
+!!        x_pixel_ctl  640
+!!        y_pixel_ctl  480
+!!      end image_size_ctl
+!!
+!!      begin projection_matrix_ctl
+!!        perspective_xy_ratio_ctl   1.0
+!!      end projection_matrix_ctl
+!!    end map_projection_ctl
+!!
+!!    file map_color_ctl    'ctl_color_Br'
+!!    begin colormap_ctl
+!!      colormap_mode_ctl       rainbow
+!!
+!!      data_mapping_ctl   Colormap_list
+!!      array color_table_ctl
+!!        color_table_ctl    0.0   0.0
+!!        color_table_ctl    0.5   0.5
+!!        color_table_ctl    1.0   1.0
+!!      end array color_table_ctl
+!!    end   colormap_ctl
+!!
+!!    begin colorbar_ctl
+!!      colorbar_switch_ctl    ON
+!!      colorbar_position_ctl  'left' or 'bottom'
+!!      colorbar_scale_ctl     ON
+!!      iflag_zeromarker       ON
+!!      colorbar_range     0.0   1.0
+!!      font_size_ctl         3
+!!      num_grid_ctl     4
+!!!
+!!      axis_label_switch      ON
+!!    end colorbar_ctl
 !!  end  cross_section_ctl
 !!  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -150,7 +188,17 @@
       character(len=kchara), parameter, private                         &
      &                  :: hd_output_field = 'output_field_define'
 !
-      integer(kind = kint), parameter :: n_label_map_ctl = 4
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_map_output_field = 'output_field'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_map_output_comp =  'output_component'
+!
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_map_projection = 'map_projection_ctl'
+      character(len=kchara), parameter, private                         &
+     &                  :: hd_map_colormap_file =  'map_color_ctl'
+!
+      integer(kind = kint), parameter :: n_label_map_ctl = 8
       private :: n_label_map_ctl
 !
 !  ---------------------------------------------------------------------
@@ -162,6 +210,8 @@
       subroutine s_read_map_control_data                                &
      &         (id_control, hd_block, map_c, c_buf)
 !
+      use t_ctl_data_pvr_colormap_bar
+      use ctl_file_pvr_modelview_IO
       use ctl_data_section_def_IO
 !
       integer(kind = kint), intent(in) :: id_control
@@ -177,6 +227,12 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
+        call sel_read_ctl_modelview_file(id_control, hd_map_projection, &
+     &      map_c%fname_mat_ctl, map_c%mat, c_buf)
+        call sel_read_ctl_pvr_colormap_file                             &
+     &     (id_control, hd_map_colormap_file, map_c%fname_cmap_cbar_c,  &
+     &      map_c%cmap_cbar_c, c_buf)
+!
         call read_section_def_control(id_control, hd_surface_define,    &
      &                                map_c%psf_def_c, c_buf)
 !
@@ -187,6 +243,11 @@
      &      map_c%psf_file_head_ctl)
         call read_chara_ctl_type(c_buf, hd_psf_out_type,                &
      &      map_c%psf_output_type_ctl)
+!
+        call read_chara_ctl_type(c_buf, hd_map_output_field,            &
+     &      map_c%map_field_ctl)
+        call read_chara_ctl_type(c_buf, hd_map_output_comp,             &
+     &      map_c%map_comp_ctl)
       end do
       map_c%i_psf_ctl = 1
 !
@@ -197,6 +258,8 @@
       subroutine write_map_control_data                                 &
      &         (id_control, hd_block, map_c, level)
 !
+      use t_ctl_data_pvr_colormap_bar
+      use ctl_file_pvr_modelview_IO
       use ctl_data_section_def_IO
       use write_control_elements
 !
@@ -213,6 +276,8 @@
 !
       maxlen = len_trim(hd_psf_file_prefix)
       maxlen = max(maxlen, len_trim(hd_psf_out_type))
+      maxlen = max(maxlen, len_trim(hd_map_output_field))
+      maxlen = max(maxlen, len_trim(hd_map_output_comp))
 !
       write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -220,10 +285,22 @@
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    hd_psf_out_type, map_c%psf_output_type_ctl)
 !
+      write(id_control,'(a1)') '!'
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_map_output_field, map_c%map_field_ctl)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    hd_map_output_comp, map_c%map_comp_ctl)
+!
       call write_section_def_control(id_control, hd_surface_define,     &
      &                               map_c%psf_def_c, level)
       call write_fld_on_psf_control(id_control, hd_output_field,        &
      &                              map_c%fld_on_psf_c, level)
+     !
+      call sel_write_ctl_modelview_file(id_control, hd_map_projection,  &
+     &    map_c%fname_mat_ctl, map_c%mat, level)
+      call sel_write_ctl_pvr_colormap_file                              &
+     &   (id_control, hd_map_colormap_file, map_c%fname_cmap_cbar_c,    &
+     &    map_c%cmap_cbar_c, level)
 !
       level =  write_end_flag_for_ctl(id_control, level, hd_block)
 !
@@ -249,6 +326,12 @@
       call set_control_labels(hd_psf_out_type,    names( 2))
       call set_control_labels(hd_surface_define,  names( 3))
       call set_control_labels(hd_output_field,    names( 4))
+!
+      call set_control_labels(hd_map_output_field,   names( 5))
+      call set_control_labels(hd_map_output_comp,    names( 6))
+!
+      call set_control_labels(hd_map_projection,    names( 7))
+      call set_control_labels(hd_map_colormap_file, names( 8))
 !
       end subroutine set_label_map_ctl
 !

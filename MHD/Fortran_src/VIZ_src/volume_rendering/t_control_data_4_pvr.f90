@@ -135,7 +135,9 @@
 !!@n      group_4_monitor_ctl%c_tbl: Name of element group for PVR
         type(pvr_render_area_ctl) :: render_area_c
 !
+!>        Structure of field name for rendering
         type(read_character_item) :: pvr_field_ctl
+!>        Structure of component name for rendering
         type(read_character_item) :: pvr_comp_ctl
 !
         type(pvr_sections_ctl) :: pvr_scts_c
