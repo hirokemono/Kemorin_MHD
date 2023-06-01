@@ -306,18 +306,22 @@
           end do
 !
           iy_min = int(1 + dble(nypixel-1)                              &
-     &                    * (map_e1%xy_map(2,k_ymin,i) - ymin_frame))
+     &                    * (map_e1%xy_map(2,k_ymin,i) - ymin_frame)    &
+     &                      / (ymax_frame - ymin_frame))
           iy_mid = int(1 + dble(nypixel-1)                              &
-     &                    * (map_e1%xy_map(2,k_ymid,i) - ymin_frame))
+     &                    * (map_e1%xy_map(2,k_ymid,i) - ymin_frame)    &
+     &                      / (ymax_frame - ymin_frame))
           iy_max = int(1 + dble(nypixel-1)                              &
-     &                    * (map_e1%xy_map(2,k_ymax,i) - ymin_frame))
+     &                    * (map_e1%xy_map(2,k_ymax,i) - ymin_frame)    &
+     &                      / (ymax_frame - ymin_frame))
           do iy = iy_min, iy_mid
-            if(iy_mid .eq. iy_min) then
+            if(iy_max.eq.iy_min .or. iy_mid.eq.iy_min) then
               x1 = map_e1%xy_map(1,k_ymin,i)
               x2 = map_e1%xy_map(1,k_ymid,i)
               d1 = map_e1%d_map_patch(k_ymin,1,i)
               d2 = map_e1%d_map_patch(k_ymid,1,i)
             else
+              ratio_ymid = dble(iy-iy_min) / dble(iy_mid-iy_min)
               ratio_ymax = dble(iy-iy_min) / dble(iy_max-iy_min)
               x1 = (one - ratio_ymid) * map_e1%xy_map(1,k_ymin,i)       &
      &                  + ratio_ymid *  map_e1%xy_map(1,k_ymid,i)
@@ -339,8 +343,10 @@
               d_min = d2
               d_max = d1
             end if
-            ix_min = int(1 + dble(nxpixel-1)*(x_min - xmin_frame))
-            ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame))
+            ix_min = int(1 + dble(nxpixel-1)*(x_min - xmin_frame)       &
+     &                      / (xmax_frame - xmin_frame))
+            ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame)       &
+     &                      / (xmax_frame - xmin_frame))
 !
             d_mid = d_min
             inod_map = ix_min + (iy-1) * nxpixel
@@ -363,16 +369,23 @@
           end do
 !
           do iy = iy_mid+1, iy_max
-            ratio_ymid = dble(iy-iy_mid) / dble(iy_max-iy_mid)
-            ratio_ymax = dble(iy-iy_min) / dble(iy_max-iy_min)
-            x1 = (one - ratio_ymid) * map_e1%xy_map(1,k_ymid,i)         &
-     &                + ratio_ymid *  map_e1%xy_map(1,k_ymax,i)
-            x2 = (one - ratio_ymax) * map_e1%xy_map(1,k_ymin,i)         &
-     &                + ratio_ymax *  map_e1%xy_map(1,k_ymax,i)
-            d1 = (one - ratio_ymid) * map_e1%d_map_patch(k_ymid,1,i)    &
-     &                + ratio_ymid *  map_e1%d_map_patch(k_ymax,1,i)
-            d2 = (one - ratio_ymax) * map_e1%d_map_patch(k_ymin,1,i)    &
-     &                + ratio_ymax *  map_e1%d_map_patch(k_ymax,1,i)
+            if(iy_max.eq.iy_min) then
+              x1 = map_e1%xy_map(1,k_ymid,i)
+              x2 = map_e1%xy_map(1,k_ymax,i)
+              d1 = map_e1%d_map_patch(k_ymid,1,i)
+              d2 = map_e1%d_map_patch(k_ymax,1,i)
+            else
+              ratio_ymid = dble(iy-iy_mid) / dble(iy_max-iy_mid)
+              ratio_ymax = dble(iy-iy_min) / dble(iy_max-iy_min)
+              x1 = (one - ratio_ymid) * map_e1%xy_map(1,k_ymid,i)       &
+     &                  + ratio_ymid *  map_e1%xy_map(1,k_ymax,i)
+              x2 = (one - ratio_ymax) * map_e1%xy_map(1,k_ymin,i)       &
+     &                  + ratio_ymax *  map_e1%xy_map(1,k_ymax,i)
+              d1 = (one - ratio_ymid) * map_e1%d_map_patch(k_ymid,1,i)  &
+     &                  + ratio_ymid *  map_e1%d_map_patch(k_ymax,1,i)
+              d2 = (one - ratio_ymax) * map_e1%d_map_patch(k_ymin,1,i)  &
+     &                  + ratio_ymax *  map_e1%d_map_patch(k_ymax,1,i)
+            end if
             if(x1 .le. x2) then
               x_min = x1
               x_max = x2
@@ -384,8 +397,10 @@
               d_min = d2
               d_max = d1
             end if
-            ix_min = int(1 + dble(nxpixel-1)*(x_min - xmin_frame))
-            ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame))
+            ix_min = int(1 + dble(nxpixel-1)*(x_min - xmin_frame)       &
+     &                      / (xmax_frame - xmin_frame))
+            ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame)       &
+     &                      / (xmax_frame - xmin_frame))
 !
             d_mid = d_min
             inod_map = ix_min + (iy-1) * nxpixel

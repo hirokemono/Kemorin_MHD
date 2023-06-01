@@ -168,18 +168,18 @@
       real(kind = kreal), intent(inout)                                 &
      &          :: xy_map(2,num_triangle,n_map_patch)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i, k1
       real(kind = kreal) :: s_theta, c_theta, pi, phi_map
 !
 !
       pi = four * atan(one)
       do i = 1, n_map_patch
-        do j = 1, num_triangle
-          s_theta = sin(rtp_map_patch(j,2,i))
-          c_theta = cos(rtp_map_patch(j,2,i))
-          phi_map = mod((rtp_map_patch(j,3,i)+pi),(two*pi))
+        do k1 = 1, num_triangle
+          s_theta = sin(rtp_map_patch(k1,2,i))
+          c_theta = cos(rtp_map_patch(k1,2,i))
+          phi_map = mod((rtp_map_patch(k1,3,i)+pi),(two*pi))
           call s_aitoff(s_theta, c_theta, phi_map,                      &
-     &                  xy_map(1,i,j), xy_map(2,i,j))
+     &                  xy_map(1,k1,i), xy_map(2,k1,i))
         end do
       end do
 !

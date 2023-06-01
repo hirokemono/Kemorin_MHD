@@ -161,8 +161,8 @@
           s_patch = zero
           do i = 1, map_e%n_map_patch
             do k1 = 1, 3
-              x_tri(k1) = real( map_e%xy_map(1,i,k1) )
-              y_tri(k1) = real( map_e%xy_map(2,i,k1) )
+              x_tri(k1) = real( map_e%xy_map(1,k1,i) )
+              y_tri(k1) = real( map_e%xy_map(2,k1,i) )
               s_patch = s_patch + map_e%d_map_patch(k1,1,i)
             end do
             s_patch = s_patch / three
@@ -240,8 +240,8 @@
 !
           do i = 1, map_e%n_map_patch
             do k1 = 1, 3
-              xg(1,k1) = real( map_e%xy_map(1,i,k1) )
-              xg(2,k1) = real( map_e%xy_map(2,i,k1) )
+              xg(1,k1) = real( map_e%xy_map(1,k1,i) )
+              xg(2,k1) = real( map_e%xy_map(2,k1,i) )
               xg(3,k1) = zero
               sc3(k1) =  map_e%d_map_patch(k1,1,i)
             end do
