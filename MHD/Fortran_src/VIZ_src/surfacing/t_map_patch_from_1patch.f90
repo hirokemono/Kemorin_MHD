@@ -12,19 +12,16 @@
 !!        integer(kind = kint), intent(in) :: ntot_comp
 !!        type(map_patches_for_1patch), intent(inout) :: map_e
 !!
-!!      subroutine set_sph_position_4_map_patch                         &
-!!     &         (n_map_patch, x_map_patch, rtp_map_patch)
-!!        integer(kind = kint), intent(in) :: n_map_patch
+!!      subroutine set_sph_position_4_map_patch(x_map_patch,            &
+!!     &                                        rtp_map_patch)
 !!        real(kind = kreal), intent(inout)                             &
-!!     &          :: x_map_patch(num_triangle,n_vector,n_map_patch)
+!!     &          :: x_map_patch(num_triangle,n_vector)
 !!        real(kind = kreal), intent(inout)                             &
-!!     &          :: rtp_map_patch(num_triangle,n_vector,n_map_patch)
-!!      subroutine patch_to_aitoff(n_map_patch, rtp_map_patch, xy_map)
-!!        integer(kind = kint), intent(in) :: n_map_patch
+!!     &          :: rtp_map_patch(num_triangle,n_vector)
+!!      subroutine patch_to_aitoff(rtp_map_patch, xy_map)
 !!        real(kind = kreal), intent(in)                                &
-!!     &          :: rtp_map_patch(num_triangle,n_vector,n_map_patch)
-!!        real(kind = kreal), intent(inout)                             &
-!!     &          :: xy_map(2,num_triangle,n_map_patch)
+!!     &          :: rtp_map_patch(num_triangle,n_vector)
+!!        real(kind = kreal), intent(inout) :: xy_map(2,num_triangle)
 !!
 !!      subroutine find_map_path_orientation                            &
 !!     &         (xy_map, k_ymin, k_ymid, k_ymax, k_xmin, k_xmax)

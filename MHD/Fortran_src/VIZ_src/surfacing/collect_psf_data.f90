@@ -246,12 +246,16 @@
       real(kind = kreal), allocatable :: rgba(:,:)
       character(len = 1), allocatable :: cimage(:,:)
 !
-      integer(kind = kint) :: i_img, iele, i, k1, ix, iy
+      integer(kind = kint) :: ii, jj
+      integer(kind = kint) :: i_img, iele, i, j, k1, ix, iy
       integer(kind = kint) :: ix_min, ix_max
       integer(kind = kint) :: iy_min, iy_mid, iy_max
       real(kind = kreal) :: x1, x2, x_min, x_max, x_mid
       real(kind = kreal) :: d1, d2, d_min, d_max, d_mid
       real(kind = kreal) :: ar, ratio_ymid, ratio_ymax, ratio_x
+      real(kind = kreal) :: x_pix1, x_pix2, y_pix1, y_pix2
+      real(kind = kreal) :: phi_ref, theta_ref, pi
+      real(kind = kreal) :: theta1,theta2,phi1,phi2
 !
 !
       do i_img = 1, psf_phys%ntot_phys
@@ -282,7 +286,7 @@
           call set_sph_position_4_map_patch                             &
      &       (map_e1%x_map_patch(1,1,i), map_e1%rtp_map_patch(1,1,i))
           call patch_to_aitoff(map_e1%rtp_map_patch(1,1,i),             &
-     &                           map_e1%xy_map(1,1,i))
+     &                         map_e1%xy_map(1,1,i))
         end do
 !
         do i = 1, map_e1%n_map_patch
@@ -429,6 +433,75 @@
         end do
       end do
       call dealloc_map_patch_from_1patch(map_e1)
+!
+      pi = four * atan(one)
+!$omp parallel do private(i,j,x_pix1,x_pix2,y_pix1,y_pix2,ii,jj,        &
+!$omp&        inod_map,phi_ref,theta_ref,theta1,theta2,phi1,phi2)
+      do j = 1, nypixel-1
+        do i = 1, nxpixel-1
+          x_pix1 = xmin_frame + (xmax_frame - xmin_frame)               &
+     &                         * dble(i-1) / dble(nxpixel-1)
+          x_pix2 = xmin_frame + (xmax_frame - xmin_frame)               &
+     &                         * dble(i) /   dble(nxpixel-1)
+          y_pix1 = ymin_frame + (ymax_frame - ymin_frame)               &
+     &                         * dble(j-1) / dble(nypixel-1)
+          y_pix2 = ymin_frame + (ymax_frame - ymin_frame)               &
+     &                         * dble(j) / dble(nypixel-1)
+          call reverse_aitoff(x_pix1, y_pix1, theta1, phi1)
+          call reverse_aitoff(x_pix2, y_pix1, theta2, phi2)
+          call reverse_aitoff(x_pix1, y_pix1, theta1, phi2)
+          call reverse_aitoff(x_pix1, y_pix2, theta1, phi2)
+!
+          if(theta1.lt.0.0d0 .and. theta2.ge.0.0d0) then
+            inod_map = i + (j-1) * nxpixel
+            rgba(1,inod_map) = one
+            rgba(2,inod_map) = one
+            rgba(3,inod_map) = one
+            rgba(4,inod_map) = one
+          end if
+          if(theta1.ge.0.0d0 .and. theta2.lt.0.0d0) then
+            inod_map = i+1 + (j-1) * nxpixel
+            rgba(1,inod_map) = one
+            rgba(2,inod_map) = one
+            rgba(3,inod_map) = one
+            rgba(4,inod_map) = one
+          end if
+!
+          do ii = 1, 5
+            phi_ref = pi * dble(ii) / 3.0d0
+            if(phi1.lt.phi_ref .and. phi2.ge.phi_ref) then
+              inod_map = i + (j-1) * nxpixel
+              rgba(1,inod_map) = one
+              rgba(2,inod_map) = one
+              rgba(3,inod_map) = one
+              rgba(4,inod_map) = half
+              inod_map = i+1 + (j-1) * nxpixel
+              rgba(1,inod_map) = one
+              rgba(2,inod_map) = one
+              rgba(3,inod_map) = one
+              rgba(4,inod_map) = one
+            end if
+          end do
+!
+          do jj = 1, 5
+            theta_ref = pi * dble(ii) / 6.0d0
+            if(theta1.lt.theta_ref .and. theta2.ge.theta_ref) then
+              inod_map = i + (j-1) * nxpixel
+              rgba(1,inod_map) = one
+              rgba(2,inod_map) = one
+              rgba(3,inod_map) = one
+              rgba(4,inod_map) = half
+              inod_map = i + (j)   * nxpixel
+              rgba(1,inod_map) = one
+              rgba(2,inod_map) = one
+              rgba(3,inod_map) = one
+              rgba(4,inod_map) = one
+            end if
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
 !
       call cvt_double_rgba_to_char_rgb(npix, rgba, cimage)
       call calypso_write_png(psf_file_IO%file_prefix, ithree,           &
