@@ -202,7 +202,8 @@
 !
       subroutine MAP_PROJECTION_finalize(psf)
 !
-      use set_psf_iso_control
+      use set_map_control
+      use set_psf_control
       use set_fields_for_psf
       use find_node_and_patch_psf
 !

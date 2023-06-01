@@ -15,9 +15,9 @@
 !!        type(map_rendering_controls), intent(in) :: map_ctls
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!    array cross_section_ctl  1
-!!      file   cross_section_ctl   'ctl_psf_eq'
-!!    end array cross_section_ctl
+!!    array map_rendering_ctl
+!!      file   map_rendering_ctl   'ctl_map_cmb'
+!!    end array map_rendering_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
@@ -26,7 +26,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use t_control_data_4_psf
+      use t_control_data_4_map
 !
       implicit  none
 !
@@ -36,7 +36,7 @@
 !>        External section control file names
         character(len = kchara), allocatable :: fname_map_ctl(:)
 !>        Structure of sections control
-        type(psf_ctl), allocatable :: map_ctl_struct(:)
+        type(map_ctl), allocatable :: map_ctl_struct(:)
       end type map_rendering_controls
 !
       private :: dup_control_4_maps
@@ -57,7 +57,7 @@
       allocate(map_ctls%fname_map_ctl(map_ctls%num_map_ctl))
 !
       do i = 1, map_ctls%num_map_ctl
-        call init_psf_ctl_stract(map_ctls%map_ctl_struct(i))
+        call init_map_ctl_stract(map_ctls%map_ctl_struct(i))
       end do
 !
       end subroutine alloc_map_ctl_stract
@@ -74,7 +74,7 @@
       if(allocated(map_ctls%map_ctl_struct) .eqv. .FALSE.) return
 !
       do i = 1, map_ctls%num_map_ctl
-        call dealloc_cont_dat_4_psf(map_ctls%map_ctl_struct(i))
+        call dealloc_cont_dat_4_map(map_ctls%map_ctl_struct(i))
       end do
 !
       deallocate(map_ctls%map_ctl_struct, map_ctls%fname_map_ctl)
@@ -96,7 +96,7 @@
 !
 !
       do i_psf = 1, map_ctls%num_map_ctl
-        call add_fields_4_psf_to_fld_ctl                                &
+        call add_fields_4_map_to_fld_ctl                                &
      &     (map_ctls%map_ctl_struct(i_psf), field_ctl)
       end do
 !
@@ -141,7 +141,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, num_psf
-        call dup_control_4_psf(org_psf_ctls%map_ctl_struct(i),          &
+        call dup_control_4_map(org_psf_ctls%map_ctl_struct(i),          &
             new_psf_ctls%map_ctl_struct(i))
       end do
       new_psf_ctls%fname_map_ctl(1:num_psf)                             &

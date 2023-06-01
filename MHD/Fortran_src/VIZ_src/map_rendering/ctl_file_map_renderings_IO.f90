@@ -9,27 +9,27 @@
 !!      subroutine read_files_4_map_ctl                                 &
 !!     &         (id_control, hd_block, map_ctls, c_buf)
 !!      subroutine sel_read_control_4_map_file(id_control, hd_block,    &
-!!     &          file_name, psf_ctl_struct, c_buf)
+!!     &          file_name, map_ctl_struct, c_buf)
 !!      subroutine read_control_4_map_file(id_control, file_name,       &
-!!     &                                   hd_block, psf_ctl_struct)
+!!     &                                   hd_block, map_ctl_struct)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len=kchara), intent(in) :: hd_block
 !!        character(len = kchara), intent(inout) :: file_name
 !!        type(map_rendering_controls), intent(inout) :: map_ctls
-!!        type(psf_ctl), intent(inout) :: psf_ctl_struct
+!!        type(map_ctl), intent(inout) :: map_ctl_struct
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
 !!      subroutine write_files_4_map_ctl                                &
 !!     &         (id_control, hd_block, map_ctls, level)
 !!      subroutine sel_write_control_4_map_file(id_control, hd_block,   &
-!!     &          file_name, psf_ctl_struct, level)
+!!     &          file_name, map_ctl_struct, level)
 !!      subroutine write_control_4_map_file(id_control, file_name,      &
-!!     &                                    hd_block, psf_ctl_struct)
+!!     &                                    hd_block, map_ctl_struct)
 !!        integer(kind = kint), intent(in) :: id_control
 !!        character(len = kchara), intent(in) :: file_name
 !!        character(len=kchara), intent(in) :: hd_block
 !!        type(map_rendering_controls), intent(in) :: map_ctls
-!!        type(psf_ctl), intent(in) :: psf_ctl_struct
+!!        type(map_ctl), intent(in) :: map_ctl_struct
 !!        integer(kind = kint), intent(inout) :: level
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -44,7 +44,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use t_control_data_4_psf
+      use t_control_data_4_map
       use t_control_data_maps
 !
       implicit  none
@@ -97,16 +97,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine sel_read_control_4_map_file(id_control, hd_block,      &
-     &          file_name, psf_ctl_struct, c_buf)
+     &          file_name, map_ctl_struct, c_buf)
 !
       use t_read_control_elements
-      use ctl_data_section_IO
+      use ctl_data_map_rendering_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
       character(len = kchara), intent(inout) :: file_name
-      type(psf_ctl), intent(inout) :: psf_ctl_struct
+      type(map_ctl), intent(inout) :: map_ctl_struct
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
@@ -115,13 +115,13 @@
 !
         write(*,'(a)', ADVANCE='NO') ' is read file from ... '
         call read_control_4_map_file((id_control+2), file_name,         &
-     &                               hd_block, psf_ctl_struct)
+     &                               hd_block, map_ctl_struct)
       else if(check_begin_flag(c_buf, hd_block)) then
         file_name = 'NO_FILE'
 !
         write(*,*) ' is included'
-        call s_read_psf_control_data(id_control, hd_block,              &
-     &                               psf_ctl_struct, c_buf)
+        call s_read_map_control_data(id_control, hd_block,              &
+     &                               map_ctl_struct, c_buf)
       end if
 !
       end subroutine sel_read_control_4_map_file
@@ -129,17 +129,17 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_4_map_file(id_control, file_name,         &
-     &                                   hd_block, psf_ctl_struct)
+     &                                   hd_block, map_ctl_struct)
 !
       use t_read_control_elements
-      use t_control_data_4_psf
-      use ctl_data_section_IO
+      use t_control_data_4_map
+      use ctl_data_map_rendering_IO
 !
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
-      type(psf_ctl), intent(inout) :: psf_ctl_struct
+      type(map_ctl), intent(inout) :: map_ctl_struct
 !
       type(buffer_for_control) :: c_buf1
 !
@@ -149,11 +149,11 @@
 !
       do
         call load_one_line_from_control(id_control, c_buf1)
-        call s_read_psf_control_data(id_control, hd_block,              &
-     &      psf_ctl_struct, c_buf1)
-        call s_read_psf_control_data(id_control, hd_map_rendering,      &
-     &      psf_ctl_struct, c_buf1)
-        if(psf_ctl_struct%i_psf_ctl .gt. 0) exit
+        call s_read_map_control_data(id_control, hd_block,              &
+     &      map_ctl_struct, c_buf1)
+        call s_read_map_control_data(id_control, hd_map_rendering,      &
+     &      map_ctl_struct, c_buf1)
+        if(map_ctl_struct%i_psf_ctl .gt. 0) exit
       end do
       close(id_control)
 !
@@ -189,29 +189,29 @@
 !   --------------------------------------------------------------------
 !
       subroutine sel_write_control_4_map_file(id_control, hd_block,     &
-     &          file_name, psf_ctl_struct, level)
+     &          file_name, map_ctl_struct, level)
 !
       use t_read_control_elements
       use write_control_elements
-      use ctl_data_section_IO
+      use ctl_data_map_rendering_IO
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
-      type(psf_ctl), intent(in) :: psf_ctl_struct
+      type(map_ctl), intent(in) :: map_ctl_struct
       integer(kind = kint), intent(inout) :: level
 !
 !
       if(cmp_no_case(file_name, 'NO_FILE')) then
-        call write_psf_control_data(id_control, hd_block,               &
-     &                              psf_ctl_struct, level)
+        call write_map_control_data(id_control, hd_block,               &
+     &                              map_ctl_struct, level)
       else
         write(*,'(a)', ADVANCE='NO') ' is write file to ... '
         call write_file_name_for_ctl_line(id_control, level,            &
      &                                    hd_block, file_name)
         call write_control_4_map_file((id_control+2), file_name,        &
-     &                                hd_block, psf_ctl_struct)
+     &                                hd_block, map_ctl_struct)
       end if
 !
       end subroutine sel_write_control_4_map_file
@@ -219,16 +219,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_control_4_map_file(id_control, file_name,        &
-     &                                    hd_block, psf_ctl_struct)
+     &                                    hd_block, map_ctl_struct)
 !
       use t_read_control_elements
-      use t_control_data_4_psf
-      use ctl_data_section_IO
+      use t_control_data_4_map
+      use ctl_data_map_rendering_IO
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: file_name
       character(len=kchara), intent(in) :: hd_block
-      type(psf_ctl), intent(in) :: psf_ctl_struct
+      type(map_ctl), intent(in) :: map_ctl_struct
 !
       integer(kind = kint) :: level
 !
@@ -236,8 +236,8 @@
       write(*,*) 'Write section control file: ', trim(file_name)
       level = 0
       open(id_control, file=file_name)
-      call write_psf_control_data(id_control, hd_block,                 &
-     &                            psf_ctl_struct, level)
+      call write_map_control_data(id_control, hd_block,                 &
+     &                            map_ctl_struct, level)
       close(id_control)
 !
       end subroutine write_control_4_map_file

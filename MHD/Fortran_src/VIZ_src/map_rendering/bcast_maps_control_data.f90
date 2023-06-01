@@ -33,7 +33,7 @@
       subroutine bcast_files_4_map_ctl(map_ctls)
 !
       use t_control_data_maps
-      use t_control_data_4_psf
+      use t_control_data_4_map
       use calypso_mpi_int
       use calypso_mpi_char
       use transfer_to_long_integers
@@ -58,24 +58,24 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_map_control_data(psf_c)
+      subroutine bcast_map_control_data(map_c)
 !
-      use t_control_data_4_psf
+      use t_control_data_4_map
       use calypso_mpi_int
       use bcast_section_control_data
       use bcast_control_arrays
 !
-      type(psf_ctl), intent(inout) :: psf_c
+      type(map_ctl), intent(inout) :: map_c
 !
 !
-      call calypso_mpi_bcast_one_int(psf_c%i_psf_ctl, 0)
-      call calypso_mpi_bcast_one_int(psf_c%i_output_field, 0)
+      call calypso_mpi_bcast_one_int(map_c%i_psf_ctl, 0)
+      call calypso_mpi_bcast_one_int(map_c%i_output_field, 0)
 !
-      call bcast_ctl_type_c1(psf_c%psf_file_head_ctl)
-      call bcast_ctl_type_c1(psf_c%psf_output_type_ctl)
+      call bcast_ctl_type_c1(map_c%psf_file_head_ctl)
+      call bcast_ctl_type_c1(map_c%psf_output_type_ctl)
 !
-      call bcast_section_def_control(psf_c%psf_def_c)
-      call bcast_fld_on_map_control(psf_c%fld_on_psf_c)
+      call bcast_section_def_control(map_c%psf_def_c)
+      call bcast_fld_on_map_control(map_c%fld_on_psf_c)
 !
       end subroutine bcast_map_control_data
 !
