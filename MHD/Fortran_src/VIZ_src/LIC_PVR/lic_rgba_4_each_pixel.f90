@@ -37,7 +37,7 @@
      &          x4in_model, x4out_model, c_data, grad, o_data,          &
      &          color_param, avr_ray_len, rgba_pixel)
 !
-      use t_control_params_4_pvr
+      use t_pvr_colormap_parameter
       use set_color_4_pvr
       use set_rgba_4_each_pixel
 !
@@ -102,7 +102,7 @@
      &         (viewpoint_vec, x4out_model, c_data, grad, b_data,       &
      &          opa_current, color_param, rgba_pixel)
 !
-      use t_control_params_4_pvr
+      use t_pvr_colormap_parameter
       use set_color_4_pvr
       use set_rgba_4_each_pixel
 !

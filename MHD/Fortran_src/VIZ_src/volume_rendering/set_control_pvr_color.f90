@@ -24,7 +24,7 @@
       use m_error_IDs
       use calypso_mpi
 !
-      use t_control_params_4_pvr
+      use t_pvr_colormap_parameter
       use skip_comment_f
 !
       implicit  none
@@ -254,6 +254,7 @@
       subroutine set_control_pvr_colorbar(cbar_ctl, cbar_param)
 !
       use t_ctl_data_pvr_colorbar
+      use t_pvr_colormap_parameter
 !
       type(pvr_colorbar_ctl), intent(in) :: cbar_ctl
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param

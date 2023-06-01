@@ -11,8 +11,6 @@
 !!     &          n_pvr_pixel, pvr_bound, pvr_screen, pvr_start)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
-!!        type(pvr_colormap_parameter), intent(in) :: color_param
-!!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
