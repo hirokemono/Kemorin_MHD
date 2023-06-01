@@ -294,11 +294,12 @@
             iy_map = int(1 + dble(nypixel-1)                            &
      &                      * (map_e1%xy_map(2,k1,i) - ymin_frame)      &
      &                      / (ymax_frame - ymin_frame))
-            inod_map = ix_map + (iy_map-1) * nxpixel
 !
             ar = sqrt(map_e1%x_map_patch(k1,1,i)**2                     &
      &              + map_e1%x_map_patch(k1,2,i)**2                     &
      &              + map_e1%x_map_patch(k1,3,i)**2)
+            if(irank_draw .gt. 1) cycle
+            inod_map = ix_map + (iy_map-1) * nxpixel
             rgba(1,inod_map) = map_e1%x_map_patch(k1,1,i) / ar + half
             rgba(2,inod_map) = map_e1%x_map_patch(k1,2,i) / ar + half
             rgba(3,inod_map) = map_e1%x_map_patch(k1,3,i) / ar + half
@@ -348,6 +349,7 @@
             ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame)       &
      &                      / (xmax_frame - xmin_frame))
 !
+            if(irank_draw .le. 1) cycle
             d_mid = d_min
             inod_map = ix_min + (iy-1) * nxpixel
             rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
@@ -402,6 +404,7 @@
             ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame)       &
      &                      / (xmax_frame - xmin_frame))
 !
+            if(irank_draw .le. 1) cycle
             d_mid = d_min
             inod_map = ix_min + (iy-1) * nxpixel
             rgba(1,inod_map) = map_e1%x_map_patch(1,1,i) / ar + half
