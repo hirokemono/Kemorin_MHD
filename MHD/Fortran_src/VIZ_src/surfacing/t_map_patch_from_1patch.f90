@@ -135,9 +135,9 @@
 !
       do i = 1, n_map_patch
         xflag = x_map_patch(1,1,i) + x_map_patch(2,1,i)                 &
-     &         + x_map_patch(2,1,i)
+     &         + x_map_patch(3,1,i)
         yflag = x_map_patch(1,2,i) * x_map_patch(2,2,i)                 &
-     &         * x_map_patch(2,2,i)
+     &         * x_map_patch(3,2,i)
 !
         if(yflag.eq.zero .and. xflag.le.zero) then
           if( y_center(i) .gt. zero) then
