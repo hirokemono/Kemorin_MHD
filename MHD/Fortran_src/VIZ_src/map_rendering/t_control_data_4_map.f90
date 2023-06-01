@@ -48,13 +48,6 @@
 !!      end array section_area_ctl
 !!    end surface_define
 !!  
-!!    begin output_field_define
-!!      array  output_field   2
-!!        output_field    velocity         vector   end
-!!        output_field    magnetic_field   radial   end
-!!      end  array output_field
-!!    end output_field_define
-!!
 !!    begin map_projection_ctl
 !!      begin image_size_ctl
 !!        x_pixel_ctl  640
@@ -154,8 +147,6 @@
       use t_read_control_elements
       use t_control_array_character
       use t_control_data_4_psf_def
-      use t_control_data_4_fld_on_psf
-!
       use t_ctl_data_4_view_transfer
       use t_ctl_data_pvr_colormap_bar
 !
@@ -165,8 +156,6 @@
       type map_ctl
 !>        Structure of cross section definition
         type(psf_define_ctl) :: map_def_c
-!>        Structure of fields on isosurface control
-        type(field_on_psf_ctl) :: fld_on_psf_c
 !
 !>        Structure for file prefix
         type(read_character_item) :: map_image_prefix_ctl
@@ -205,7 +194,6 @@
       type(map_ctl), intent(inout) :: map_c
 !
       call init_psf_def_ctl_stract(map_c%map_def_c)
-      call init_fld_on_psf_control(map_c%fld_on_psf_c)
 !
       end subroutine init_map_ctl_stract
 !
@@ -217,7 +205,6 @@
 !
 !
       call dealloc_cont_dat_4_psf_def(map_c%map_def_c)
-      call dealloc_fld_on_psf_control(map_c%fld_on_psf_c)
       call dealloc_view_transfer_ctl(map_c%mat)
       call deallocate_pvr_cmap_cbar(map_c%cmap_cbar_c)
 !
@@ -241,8 +228,6 @@
 !
       call dup_control_4_psf_def(org_map_c%map_def_c,                   &
      &                           new_map_c%map_def_c)
-      call dup_fld_on_psf_control(org_map_c%fld_on_psf_c,               &
-     &                            new_map_c%fld_on_psf_c)
       call dup_view_transfer_ctl(org_map_c%mat, new_map_c%mat)
       call dup_pvr_cmap_cbar(org_map_c%cmap_cbar_c,                     &
      &                       new_map_c%cmap_cbar_c)
@@ -273,7 +258,10 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      call add_fields_on_psf_to_fld_ctl(map_c%fld_on_psf_c, field_ctl)
+      if(map_c%map_field_ctl%iflag .gt. 0) then
+        call add_viz_name_ctl(map_c%map_field_ctl%charavalue,           &
+     &                        field_ctl)
+      end if
 !
       end subroutine add_fields_4_map_to_fld_ctl
 !

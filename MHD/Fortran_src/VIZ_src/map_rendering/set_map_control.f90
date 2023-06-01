@@ -107,7 +107,6 @@
       use m_file_format_switch
       use set_area_4_viz
       use set_field_comp_for_viz
-      use set_sections_file_ctl
       use delete_data_files
 !
       type(group_data), intent(in) :: ele_grp
@@ -138,8 +137,6 @@
         return
       end if
 !
-      call count_control_4_field_on_psf                                 &
-     &   (map_c%fld_on_psf_c, num_nod_phys, phys_nod_name, psf_fld)
       call count_control_4_psf_define                                   &
      &   (map_c%map_def_c, ele_grp, psf_param, ierr)
 !
@@ -151,8 +148,9 @@
      &         (map_c, ele_grp, sf_grp, num_nod_phys, phys_nod_name,    &
      &          psf_fld, psf_param, psf_def, ierr)
 !
+      use calypso_mpi
       use m_error_IDs
-      use set_sections_file_ctl
+      use set_field_comp_for_viz
 !
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: sf_grp
@@ -166,14 +164,24 @@
       type(section_define), intent(inout) :: psf_def
       integer(kind = kint), intent(inout) :: ierr
 !
+      integer(kind = kint) :: ncomp, ncomp_org
+      character(len=kchara) :: tmpchara
+!
 !
       call alloc_area_group_psf(psf_param)
       call set_control_psf_define                                       &
      &   (map_c%map_def_c, ele_grp, sf_grp, psf_param, psf_def, ierr)
+      if(ierr .gt. 0) call calypso_MPI_abort(ierr_VIZ,                  &
+     &                                      'Check surface parameter')
 !
-      call alloc_output_comps_psf(psf_fld%num_phys, psf_param)
-      call set_control_4_field_on_psf(map_c%fld_on_psf_c,               &
-     &    num_nod_phys, phys_nod_name,  psf_fld, psf_param)
+      call alloc_output_comps_psf(ione, psf_param)
+!
+      call set_one_component_4_viz(num_nod_phys, phys_nod_name,         &
+     &   map_c%map_field_ctl%charavalue, map_c%map_comp_ctl%charavalue, &
+     &   psf_param%id_output(1), psf_param%icomp_output(1),             &
+     &   ncomp, psf_param%ncomp_org(1), tmpchara)
+      if(ncomp .gt. 1) call calypso_MPI_abort(ierr_VIZ,                 &
+     &                                      'set scalar for rendering')
 !
       end subroutine set_control_4_map
 !

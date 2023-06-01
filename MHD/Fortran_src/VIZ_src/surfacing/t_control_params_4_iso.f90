@@ -63,6 +63,8 @@
       subroutine set_control_iso_def(iso_def_c, ele_grp,                &
      &          num_nod_phys, phys_nod_name, iso_param, iso_def)
 !
+      use calypso_mpi
+      use m_error_IDs
       use set_area_4_viz
       use set_field_comp_for_viz
       use t_control_data_4_iso_def
@@ -84,7 +86,6 @@
       character(len=kchara) :: tmpchara
 !
 !
-!
       call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &     iso_def_c%iso_area_ctl%num, iso_def_c%iso_area_ctl%c_tbl,    &
      &     iso_param%nele_grp_area, iso_param%id_ele_grp_area)
@@ -94,6 +95,8 @@
      &    iso_def_c%isosurf_comp_ctl%charavalue,                        &
      &    iso_def%id_isosurf_data, iso_def%id_isosurf_comp,             &
      &    ncomp, ncomp_org, tmpchara)
+      if (ncomp .gt. 1) call calypso_MPI_abort(ierr_VIZ,                &
+     &                                      'set scalar for rendering')
 !
       iso_def%isosurf_value = iso_def_c%isosurf_value_ctl%realvalue
 !

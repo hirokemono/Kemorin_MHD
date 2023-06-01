@@ -22,7 +22,6 @@
       implicit  none
 !
       private :: bcast_map_control_data
-      private :: bcast_fld_on_map_control
 !
 !  ---------------------------------------------------------------------
 !
@@ -89,29 +88,8 @@
       call bcast_ctl_type_c1(map_c%map_comp_ctl)
 !
       call bcast_section_def_control(map_c%map_def_c)
-      call bcast_fld_on_map_control(map_c%fld_on_psf_c)
 !
       end subroutine bcast_map_control_data
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_fld_on_map_control(fld_on_psf_c)
-!
-      use t_control_data_4_fld_on_psf
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
-!
-!
-      call bcast_ctl_type_r1(fld_on_psf_c%output_value_ctl)
-      call bcast_ctl_type_c1(fld_on_psf_c%output_type_ctl)
-      call bcast_ctl_array_c2(fld_on_psf_c%field_output_ctl)
-!
-      call calypso_mpi_bcast_one_int(fld_on_psf_c%i_iso_result, 0)
-!
-      end subroutine bcast_fld_on_map_control
 !
 !   --------------------------------------------------------------------
 !

@@ -54,13 +54,6 @@
 !!        section_area_ctl   outer_core   end
 !!      end array section_area_ctl
 !!    end surface_define
-!!  
-!!    begin output_field_define
-!!      array  output_field   2
-!!        output_field    velocity         vector   end
-!!        output_field    magnetic_field   radial   end
-!!      end  array output_field
-!!    end output_field_define
 !!
 !!    begin map_projection_ctl
 !!      begin image_size_ctl
@@ -172,7 +165,6 @@
       use t_control_array_charareal
       use t_control_array_character2
       use t_control_data_4_psf_def
-      use t_control_data_4_fld_on_psf
       use t_control_data_4_map
       use calypso_mpi
 !
@@ -185,8 +177,6 @@
      &                  :: hd_psf_out_type =    'psf_output_type'
       character(len=kchara), parameter, private                         &
      &                  :: hd_surface_define =  'surface_define'
-      character(len=kchara), parameter, private                         &
-     &                  :: hd_output_field = 'output_field_define'
 !
       character(len=kchara), parameter, private                         &
      &                  :: hd_map_output_field = 'output_field'
@@ -198,7 +188,7 @@
       character(len=kchara), parameter, private                         &
      &                  :: hd_map_colormap_file =  'map_color_ctl'
 !
-      integer(kind = kint), parameter :: n_label_map_ctl = 8
+      integer(kind = kint), parameter :: n_label_map_ctl = 7
       private :: n_label_map_ctl
 !
 !  ---------------------------------------------------------------------
@@ -235,9 +225,6 @@
 !
         call read_section_def_control(id_control, hd_surface_define,    &
      &                                map_c%map_def_c, c_buf)
-!
-        call read_fld_on_psf_control(id_control, hd_output_field,       &
-     &                               map_c%fld_on_psf_c, c_buf)
 !
         call read_chara_ctl_type(c_buf, hd_psf_file_prefix,             &
      &      map_c%map_image_prefix_ctl)
@@ -293,9 +280,7 @@
 !
       call write_section_def_control(id_control, hd_surface_define,     &
      &                               map_c%map_def_c, level)
-      call write_fld_on_psf_control(id_control, hd_output_field,        &
-     &                              map_c%fld_on_psf_c, level)
-     !
+!
       call sel_write_ctl_modelview_file(id_control, hd_map_projection,  &
      &    map_c%fname_mat_ctl, map_c%mat, level)
       call sel_write_ctl_pvr_colormap_file                              &
@@ -325,13 +310,12 @@
       call set_control_labels(hd_psf_file_prefix, names( 1))
       call set_control_labels(hd_psf_out_type,    names( 2))
       call set_control_labels(hd_surface_define,  names( 3))
-      call set_control_labels(hd_output_field,    names( 4))
 !
-      call set_control_labels(hd_map_output_field,   names( 5))
-      call set_control_labels(hd_map_output_comp,    names( 6))
+      call set_control_labels(hd_map_output_field,   names( 4))
+      call set_control_labels(hd_map_output_comp,    names( 5))
 !
-      call set_control_labels(hd_map_projection,    names( 7))
-      call set_control_labels(hd_map_colormap_file, names( 8))
+      call set_control_labels(hd_map_projection,    names( 6))
+      call set_control_labels(hd_map_colormap_file, names( 7))
 !
       end subroutine set_label_map_ctl
 !
