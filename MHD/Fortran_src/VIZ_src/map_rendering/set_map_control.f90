@@ -107,6 +107,7 @@
       use m_file_format_switch
       use set_area_4_viz
       use set_field_comp_for_viz
+      use set_sections_file_ctl
       use delete_data_files
 !
       type(group_data), intent(in) :: ele_grp
