@@ -235,8 +235,8 @@
       integer(kind = kint) :: k_ymin, k_ymid, k_ymax, k_xmin, k_xmax
       integer(kind = kint) :: ix_map, iy_map, inod_map, npix
 !
-      integer(kind = kint), parameter :: nxpixel = 1600
-      integer(kind = kint), parameter :: nypixel = 1200
+      integer(kind = kint), parameter :: nxpixel = 3200
+      integer(kind = kint), parameter :: nypixel = 2400
       real(kind= kreal), parameter :: xframe = 2.4, yframe = 1.8
       real(kind= kreal), parameter :: xmin_frame = -xframe
       real(kind= kreal), parameter :: xmax_frame =  xframe

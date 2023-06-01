@@ -107,7 +107,7 @@
       real(kind = kreal), intent(inout)                                 &
      &          :: rtp_map_patch(num_triangle,n_vector,n_map_patch)
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, k1
       real(kind = kreal) :: y_center(3)
       real(kind = kreal) :: ar_map(3), rs_map(3), as_map(3)
       real(kind = kreal) :: pi, xflag, yflag
@@ -124,13 +124,15 @@
      &               + x_map_patch(3,2,i) ) / three
       end do
 !
+      pi = four * atan(one)
       do i = 1, n_map_patch
         call position_2_sph(ithree, x_map_patch, rtp_map_patch(1,1,i),  &
      &      rtp_map_patch(1,2,i), rtp_map_patch(1,3,i),                 &
      &      ar_map(1), rs_map(1), as_map(1))
+        rtp_map_patch(1:3,3,i)                                          &
+     &                      = mod((rtp_map_patch(1:3,3,i)+pi),(two*pi))
       end do
 !
-      pi = four * atan(one)
       do i = 1, n_map_patch
         xflag = x_map_patch(1,1,i) + x_map_patch(2,1,i)                 &
      &         + x_map_patch(2,1,i)
@@ -177,8 +179,8 @@
         do k1 = 1, num_triangle
           s_theta = sin(rtp_map_patch(k1,2,i))
           c_theta = cos(rtp_map_patch(k1,2,i))
-          phi_map = mod((rtp_map_patch(k1,3,i)+pi),(two*pi))
-          call s_aitoff(s_theta, c_theta, phi_map,                      &
+!          phi_map = mod((rtp_map_patch(k1,3,i)+pi),(two*pi))
+          call s_aitoff(s_theta, c_theta, rtp_map_patch(k1,3,i),        &
      &                  xy_map(1,k1,i), xy_map(2,k1,i))
         end do
       end do
