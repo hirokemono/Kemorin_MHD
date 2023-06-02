@@ -138,7 +138,7 @@
       call set_image_file_control(map_c%map_image_fmt_ctl,              &
      &                            psf_file_IO%iflag_format)
 !
-      if(map_c%map_image_prefix_ctl%iflag .gt. 0) then
+      if(map_c%map_image_prefix_ctl%iflag .le. 0) then
         psf_file_IO%file_prefix = default_map_prefix
       else
         psf_file_IO%file_prefix = map_c%map_image_prefix_ctl%charavalue
