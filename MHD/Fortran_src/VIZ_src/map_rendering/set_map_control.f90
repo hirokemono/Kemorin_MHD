@@ -8,20 +8,21 @@
 !>@brief Structure for parallel sectioned data
 !!
 !!@verbatim
-!!      subroutine s_set_map_control(num_psf, group, nod_fld,           &
-!!     &          map_ctls, psf_param, psf_def, psf_mesh, psf_file_IO,  &
+!!      subroutine s_set_map_control(num_map, group, nod_fld,           &
+!!     &          map_ctls, psf_param, psf_def, psf_mesh, pvr_rgb,      &
 !!     &          view_param, color_param, cbar_param)
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(map_rendering_controls), intent(inout) :: map_ctls
-!!        type(psf_parameters), intent(inout) :: psf_param(num_psf)
-!!        type(section_define), intent(inout) :: psf_def(num_psf)
-!!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
-!!        type(pvr_view_parameter), intent(inout) :: view_param(num_psf)
+!!        type(psf_parameters), intent(inout) :: psf_param(num_map)
+!!        type(section_define), intent(inout) :: psf_def(num_map)
+!!        type(psf_local_data), intent(inout) :: psf_mesh(num_map)
+!!        type(pvr_view_parameter), intent(inout) :: view_param(num_map)
 !!        type(pvr_colormap_parameter), intent(inout)                   &
-!!     &                             :: color_param(num_psf)
+!!     &                             :: color_param(num_map)
 !!        type(pvr_colorbar_parameter), intent(inout)                   &
-!!     &                             :: cbar_param(num_psf)
+!!     &                             :: cbar_param(num_map)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb(num_map)
 !!@endverbatim
 !
       module set_map_control
@@ -33,11 +34,11 @@
       use t_phys_data
       use t_control_data_maps
       use t_control_data_4_map
-      use t_file_IO_parameter
       use t_control_params_4_psf
       use t_psf_patch_data
       use t_control_params_4_pvr
       use t_pvr_colormap_parameter
+      use t_pvr_image_array
 !
       implicit none
 !
@@ -52,8 +53,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_map_control(num_psf, group, nod_fld,             &
-     &          map_ctls, psf_param, psf_def, psf_mesh, psf_file_IO,    &
+      subroutine s_set_map_control(num_map, group, nod_fld,             &
+     &          map_ctls, psf_param, psf_def, psf_mesh, pvr_rgb,        &
      &          view_param, color_param, cbar_param)
 !
       use calypso_mpi
@@ -65,34 +66,34 @@
 !
       use set_psf_control
 !
-      integer(kind= kint), intent(in) :: num_psf
+      integer(kind= kint), intent(in) :: num_map
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
 !
       type(map_rendering_controls), intent(inout) :: map_ctls
-      type(psf_parameters), intent(inout) :: psf_param(num_psf)
-      type(section_define), intent(inout) :: psf_def(num_psf)
-      type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
-      type(field_IO_params), intent(inout)  :: psf_file_IO(num_psf)
-      type(pvr_view_parameter), intent(inout) :: view_param(num_psf)
+      type(psf_parameters), intent(inout) :: psf_param(num_map)
+      type(section_define), intent(inout) :: psf_def(num_map)
+      type(psf_local_data), intent(inout) :: psf_mesh(num_map)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_map)
+      type(pvr_view_parameter), intent(inout) :: view_param(num_map)
       type(pvr_colormap_parameter), intent(inout)                       &
-     &                             :: color_param(num_psf)
+     &                             :: color_param(num_map)
       type(pvr_colorbar_parameter), intent(inout)                       &
-     &                             :: cbar_param(num_psf)
+     &                             :: cbar_param(num_map)
 !
       integer(kind = kint) :: i, ierr
 !
 !
-      do i = 1, num_psf
+      do i = 1, num_map
         call count_control_4_map(my_rank, map_ctls%map_ctl_struct(i),   &
-     &      group%ele_grp, psf_param(i), psf_file_IO(i), ierr)
+     &      group%ele_grp, psf_param(i), pvr_rgb(i), ierr)
 !
         if(ierr.gt.0) call calypso_MPI_abort(ierr, e_message)
-        call mpi_abort_by_no_zlib_in_fld(psf_file_IO(i)%file_prefix,    &
-     &                                   psf_file_IO(i)%iflag_format)
+        call mpi_abort_by_no_zlib_in_fld(pvr_rgb(i)%pvr_prefix,         &
+     &                                   pvr_rgb(i)%id_pvr_file_type)
       end do
 !
-      do i = 1, num_psf
+      do i = 1, num_map
         psf_mesh(i)%field%num_phys = 1
         call alloc_phys_name(psf_mesh(i)%field)
         call set_control_4_map                                          &
@@ -115,7 +116,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine count_control_4_map(id_rank, map_c, ele_grp,           &
-     &                               psf_param, psf_file_IO, ierr)
+     &                               psf_param, pvr_rgb, ierr)
 !
       use m_error_IDs
       use m_file_format_switch
@@ -131,21 +132,21 @@
 !
       type(map_ctl), intent(in) :: map_c
       type(psf_parameters), intent(inout) :: psf_param
-      type(field_IO_params), intent(inout) :: psf_file_IO
+      type(pvr_image_type), intent(inout) :: pvr_rgb
       integer(kind = kint), intent(inout) :: ierr
 !
 !
       ierr = 0
       call set_image_file_control(map_c%map_image_fmt_ctl,              &
-     &                            psf_file_IO%iflag_format)
+     &                            pvr_rgb%id_pvr_file_type)
 !
       if(map_c%map_image_prefix_ctl%iflag .le. 0) then
-        psf_file_IO%file_prefix = default_map_prefix
+        pvr_rgb%pvr_prefix = default_map_prefix
       else
-        psf_file_IO%file_prefix = map_c%map_image_prefix_ctl%charavalue
+        pvr_rgb%pvr_prefix = map_c%map_image_prefix_ctl%charavalue
       end if
 !
-      if(check_file_writable(id_rank, psf_file_IO%file_prefix)          &
+      if(check_file_writable(id_rank, pvr_rgb%pvr_prefix)               &
      &                                             .eqv. .FALSE.) then
         ierr = ierr_VIZ
         return

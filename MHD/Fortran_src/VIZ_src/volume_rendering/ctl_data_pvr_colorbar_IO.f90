@@ -37,6 +37,7 @@
 !!!
 !!    axis_label_switch      ON
 !!    time_label_switch      ON
+!!    map_grid_switch        ON
 !!  end colorbar_ctl
 !!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

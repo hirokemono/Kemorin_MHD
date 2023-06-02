@@ -27,6 +27,7 @@
 !!!
 !!    axis_label_switch      ON
 !!    time_label_switch      ON
+!!    map_grid_switch        ON
 !!  end colorbar_ctl
 !!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -57,7 +58,7 @@
 !
         type(read_character_item) :: axis_switch_ctl
         type(read_character_item) :: time_switch_ctl
-        type(read_character_item) :: time_switch_ctl
+        type(read_character_item) :: mapgrid_switch_ctl
 !
 !     2nd level for volume rendering
         integer(kind = kint) :: i_pvr_colorbar = 0

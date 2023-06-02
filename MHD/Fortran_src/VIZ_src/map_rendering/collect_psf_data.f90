@@ -49,65 +49,70 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_map_mesh(num_psf, psf_mesh, psf_dat, SR_sig)
+      subroutine output_map_mesh(num_map, view_param, psf_mesh,         &
+     &                           psf_dat, pvr_rgb, SR_sig)
 !
       use t_psf_patch_data
       use t_psf_results
+      use t_pvr_image_array
 !
-      integer(kind= kint), intent(in) :: num_psf
-      type(psf_local_data), intent(in) :: psf_mesh(num_psf)
+      integer(kind= kint), intent(in) :: num_map
+      type(psf_local_data), intent(in) :: psf_mesh(num_map)
+      type(pvr_view_parameter), intent(in):: view_param(num_map)
 !
-      type(psf_results), intent(inout) :: psf_dat(num_psf)
+      type(psf_results), intent(inout) :: psf_dat(num_map)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_map)
       type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind= kint) :: i_psf
-      integer :: irank_draw
 !
 !
-      do i_psf = 1, num_psf
-        irank_draw = mod(i_psf,nprocs)
-        call merge_write_psf_mesh(irank_draw, psf_mesh(i_psf),          &
+      do i_psf = 1, num_map
+        pvr_rgb(i_psf)%irank_image_file = mod(i_psf,nprocs)
+        call merge_write_psf_mesh                                       &
+     &     (pvr_rgb(i_psf)%irank_image_file, psf_mesh(i_psf),           &
      &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_ele,             &
      &      psf_dat(i_psf)%psf_phys, SR_sig)
+        call alloc_pvr_image_array(view_param(i_psf)%n_pvr_pixel,       &
+     &                             pvr_rgb(i_psf))
       end do
 !
       end subroutine output_map_mesh
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_map_file(num_psf, psf_file_IO, istep_psf,       &
-     &          time_d, psf_mesh, t_IO, psf_dat,                        &
-     &          view_param, color_param, cbar_param, SR_sig)
+      subroutine output_map_file(num_map, istep_psf, time_d,            &
+     &          psf_mesh, view_param, color_param, cbar_param,          &
+     &          t_IO, psf_dat, pvr_rgb, SR_sig)
 !
       use t_psf_patch_data
       use t_psf_results
+      use t_pvr_image_array
 !
-      integer(kind= kint), intent(in) :: num_psf
+      integer(kind= kint), intent(in) :: num_map
       integer(kind= kint), intent(in) ::  istep_psf
       type(time_data), intent(in) :: time_d
-      type(psf_local_data), intent(in) :: psf_mesh(num_psf)
-      type(field_IO_params), intent(in) :: psf_file_IO(num_psf)
-      type(pvr_view_parameter), intent(in):: view_param(num_psf)
-      type(pvr_colormap_parameter), intent(in) :: color_param(num_psf)
-      type(pvr_colorbar_parameter), intent(in) :: cbar_param(num_psf)
+      type(psf_local_data), intent(in) :: psf_mesh(num_map)
+      type(pvr_view_parameter), intent(in):: view_param(num_map)
+      type(pvr_colormap_parameter), intent(in) :: color_param(num_map)
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param(num_map)
 !
       type(time_data), intent(inout) :: t_IO
-      type(psf_results), intent(inout) :: psf_dat(num_psf)
+      type(psf_results), intent(inout) :: psf_dat(num_map)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_map)
       type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind= kint) :: i_psf
-      integer :: irank_draw
 !
 !
       call copy_time_step_size_data(time_d, t_IO)
 !
-      do i_psf = 1, num_psf
-        irank_draw = mod(i_psf,nprocs)
-        call merge_write_psf_file(irank_draw, istep_psf,                &
-     &      psf_file_IO(i_psf), psf_mesh(i_psf), t_IO,                  &
+      do i_psf = 1, num_map
+        call merge_write_psf_file(istep_psf, psf_mesh(i_psf), t_IO,     &
      &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_ele,             &
      &      psf_dat(i_psf)%psf_phys, view_param(i_psf),                 &
-     &      color_param(i_psf), cbar_param(i_psf), SR_sig)
+     &      color_param(i_psf), cbar_param(i_psf),                      &
+     &      pvr_rgb(i_psf), SR_sig)
       end do
 !
       end subroutine output_map_file
@@ -175,37 +180,30 @@
      &                         psf_ele%ie, SR_sig)
       call calypso_mpi_barrier
 !
-!      call dealloc_ele_connect(psf_ele)
-!      call dealloc_node_geometry_w_sph(psf_nod)
-!
       end subroutine merge_write_psf_mesh
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine merge_write_psf_file(irank_draw, istep_psf,            &
-     &          psf_file_IO, psf_mesh, t_IO, psf_nod, psf_ele,          &
-     &          psf_phys, view_param, color_param, cbar_param, SR_sig)
+      subroutine merge_write_psf_file                                   &
+     &         (istep_psf, psf_mesh, t_IO, psf_nod, psf_ele,            &
+     &          psf_phys, view_param, color_param, cbar_param,          &
+     &          pvr_rgb, SR_sig)
 !
       use t_psf_patch_data
       use t_time_data
       use t_file_IO_parameter
       use t_map_patch_from_1patch
-      use map_patch_from_1patch
+      use t_pvr_image_array
 !
       use set_ucd_data_to_type
       use ucd_IO_select
-      use aitoff
 !
-      use convert_real_rgb_2_bite
-      use output_image_sel_4_png
+      use write_PVR_image
       use set_parallel_file_name
-      use set_color_4_pvr
       use draw_pvr_colorbar
 !
-      integer, intent(in) :: irank_draw
       integer(kind = kint), intent(in) :: istep_psf
       type(psf_local_data), intent(in) :: psf_mesh
-      type(field_IO_params), intent(in) :: psf_file_IO
       type(time_data), intent(in) :: t_IO
       type(pvr_view_parameter), intent(in):: view_param
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -214,6 +212,7 @@
       type(phys_data), intent(inout) :: psf_phys
       type(node_data), intent(inout) :: psf_nod
       type(element_data), intent(inout) :: psf_ele
+      type(pvr_image_type), intent(inout) :: pvr_rgb
       type(send_recv_status), intent(inout) :: SR_sig
 !
       type(map_patches_for_1patch) :: map_e1
@@ -224,22 +223,17 @@
       real(kind= kreal) :: ymin_frame = -yframe
       real(kind= kreal) :: ymax_frame =  yframe
 !
-      integer(kind = kint) :: nxpixel, nypixel, npix
       real(kind = kreal), allocatable :: d_map(:)
-      real(kind = kreal), allocatable :: rgba(:,:)
-      character(len = 1), allocatable :: cimage(:,:)
 !
       real(kind = kreal) :: xtmp, ytmp
       real(kind = kreal) :: aspect
 !
 !
-      call collect_psf_scalar(irank_draw, ione, psf_mesh%node,          &
-     &    psf_mesh%field, psf_phys%d_fld(1,1), SR_sig)
+      call collect_psf_scalar(pvr_rgb%irank_image_file, ione,           &
+     &    psf_mesh%node, psf_mesh%field, psf_phys%d_fld(1,1), SR_sig)
 !
-      if(my_rank .ne. irank_draw) return
+      if(my_rank .ne. pvr_rgb%irank_image_file) return
 !
-      nxpixel = view_param%n_pvr_pixel(1)
-      nypixel = view_param%n_pvr_pixel(2)
       aspect =  view_param%perspective_xy_ratio
 !
       ytmp = xframe / aspect
@@ -256,54 +250,47 @@
         ymax_frame =  ytmp
       end if
 !
-      npix = (nxpixel*nypixel)
-      allocate(d_map(npix))
-      allocate(rgba(4,npix))
-      allocate(cimage(3,npix))
+      allocate(d_map(pvr_rgb%num_pixel_xy))
 !$omp parallel workshare
-      d_map(1:npix) = 0.0d0
-!$omp end parallel workshare
-!$omp parallel workshare
-      rgba(1:4,1:npix) = 0.0d0
+      d_map(1:pvr_rgb%num_pixel_xy) = 0.0d0
 !$omp end parallel workshare
 !
       call alloc_map_patch_from_1patch(ione, map_e1)
       call set_scalar_on_map_image                                      &
-     &   (irank_draw, psf_nod, psf_ele, psf_phys,                       &
+     &   (pvr_rgb%irank_image_file, psf_nod, psf_ele, psf_phys,         &
      &    xmin_frame, xmax_frame, ymin_frame, ymax_frame,               &
-     &    nxpixel, nypixel, npix, d_map, rgba, map_e1)
-      call map_value_to_rgb(irank_draw, color_param,                    &
-     &                      nxpixel, nypixel, npix, d_map, rgba)
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    pvr_rgb%num_pixel_xy, d_map, pvr_rgb%rgba_real_gl(1,1),       &
+     &    map_e1)
+      call map_value_to_rgb(pvr_rgb%irank_image_file, color_param,      &
+     &    pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),                 &
+     &    pvr_rgb%num_pixel_xy, d_map, pvr_rgb%rgba_real_gl)
 !
-        call draw_aitoff_map_zeroline                                   &
-     &     (irank_draw, nxpixel, nypixel, npix, d_map, rgba)
+        call draw_aitoff_map_zeroline(pvr_rgb%irank_image_file,         &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      pvr_rgb%num_pixel_xy, d_map, pvr_rgb%rgba_real_gl)
       call dealloc_map_patch_from_1patch(map_e1)
 !
       if(cbar_param%flag_draw_mapgrid) then
-        call draw_aitoff_map_frame(irank_draw,                          &
+        call draw_aitoff_map_frame(pvr_rgb%irank_image_file,            &
      &      xmin_frame, xmax_frame, ymin_frame, ymax_frame,             &
-     &      nxpixel, nypixel, npix, rgba)
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      pvr_rgb%num_pixel_xy, pvr_rgb%rgba_real_gl)
       end if
 !
       if(cbar_param%flag_pvr_colorbar) then
-        call set_pvr_colorbar(npix, view_param%n_pvr_pixel,             &
-     &                        color_param, cbar_param, rgba(1,1))
+        call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
+     &      color_param, cbar_param, pvr_rgb%rgba_real_gl(1,1))
       end if
 !
       if(cbar_param%flag_draw_time) then
-        call set_pvr_timelabel(t_IO%time, npix,view_param%n_pvr_pixel,  &
-     &                         cbar_param, rgba(1,1))
+        call set_pvr_timelabel                                          &
+     &     (t_IO%time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,        &
+     &      cbar_param, pvr_rgb%rgba_real_gl(1,1))
       end if
 !
-!
-      call cvt_double_rgba_to_char_rgb(npix, rgba(1,1), cimage)
-      call sel_output_image_file(psf_file_IO%iflag_format,              &
-     &    add_int_suffix(istep_psf, psf_file_IO%file_prefix),           &
-     &    nxpixel, nypixel, cimage(1,1))
-      deallocate(d_map, rgba, cimage)
-!
-!      call dealloc_phys_data(psf_phys)
-!      call dealloc_phys_name(psf_phys)
+      call sel_write_pvr_image_file(istep_psf, -1, pvr_rgb)
+      deallocate(d_map)
 !
       end subroutine merge_write_psf_file
 !
@@ -400,6 +387,7 @@
       use t_geometry_data
       use t_phys_data
       use t_map_patch_from_1patch
+      use map_patch_from_1patch
 !
       integer, intent(in) :: irank_draw
       type(node_data), intent(in) :: psf_nod
@@ -591,6 +579,7 @@
      &                            nxpixel, nypixel, npix, d_map, rgba)
 !
       use t_pvr_colormap_parameter
+      use set_color_4_pvr
 !
       integer, intent(in) :: irank_draw
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -625,6 +614,8 @@
       subroutine draw_aitoff_map_frame(irank_draw,                      &
      &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
      &          nxpixel, nypixel, npix, rgba)
+!
+      use aitoff
 !
       integer, intent(in) :: irank_draw
 !
