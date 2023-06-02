@@ -358,7 +358,7 @@
             rgba(4,inod_map) = one
 !
             do ix = ix_min+1, ix_max
-              ratio_x = dble(ix-ix_min) / dble(ix_max-iy_min)
+              ratio_x = dble(ix-ix_min) / dble(ix_max-ix_min)
               x_mid = (one - ratio_x) * x_min + ratio_x * x_max
               d_mid = (one - ratio_x) * d_min + ratio_x * d_max
 !
@@ -415,7 +415,7 @@
             rgba(4,inod_map) = one
 !
             do ix = ix_min+1, ix_max
-              ratio_x = dble(ix-ix_min) / dble(ix_max-iy_min)
+              ratio_x = dble(ix-ix_min) / dble(ix_max-ix_min)
               x_mid = (one - ratio_x) * x_min + ratio_x * x_max
               d_mid = (one - ratio_x) * d_min + ratio_x * d_max
 !
@@ -474,15 +474,15 @@
      &         .or. (phi(1)-phi_ref)*(phi(3)-phi_ref) .le. zero         &
      &         .or. (phi(1)-phi_ref)*(phi(4)-phi_ref) .le. zero) then
               inod_map = i + (j-1) * nxpixel
-              rgba(1,inod_map) = one
-              rgba(2,inod_map) = one
-              rgba(3,inod_map) = one
-              rgba(4,inod_map) = half
-              inod_map = i+1 + (j-1) * nxpixel
-              rgba(1,inod_map) = one
-              rgba(2,inod_map) = one
-              rgba(3,inod_map) = one
+              rgba(1,inod_map) = zero
+              rgba(2,inod_map) = zero
+              rgba(3,inod_map) = zero
               rgba(4,inod_map) = one
+!              inod_map = i+1 + (j-1) * nxpixel
+!              rgba(1,inod_map) = one
+!              rgba(2,inod_map) = one
+!              rgba(3,inod_map) = one
+!              rgba(4,inod_map) = one
             end if
           end do
 !
@@ -493,15 +493,15 @@
      &        .or. (theta(1)-theta_ref)*(theta(4)-theta_ref) .le. zero) &
      &         then
               inod_map = i + (j-1) * nxpixel
-              rgba(1,inod_map) = one
-              rgba(2,inod_map) = one
-              rgba(3,inod_map) = one
-              rgba(4,inod_map) = half
-              inod_map = i + (j)   * nxpixel
-              rgba(1,inod_map) = one
-              rgba(2,inod_map) = one
-              rgba(3,inod_map) = one
+              rgba(1,inod_map) = zero
+              rgba(2,inod_map) = zero
+              rgba(3,inod_map) = zero
               rgba(4,inod_map) = one
+!              inod_map = i + (j)   * nxpixel
+!              rgba(1,inod_map) = one
+!              rgba(2,inod_map) = one
+!              rgba(3,inod_map) = one
+!              rgba(4,inod_map) = one
             end if
           end do
         end do
