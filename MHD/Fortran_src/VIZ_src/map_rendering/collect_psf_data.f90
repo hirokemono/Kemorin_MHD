@@ -257,7 +257,8 @@
       real(kind= kreal), parameter :: ymax_frame =  yframe
 !
       integer(kind = kint) :: nxpixel, nypixel, npix
-      real(kind = kreal), allocatable :: rgba(:,:)
+      real(kind = kreal), allocatable :: d_map(:,:)
+      real(kind = kreal), allocatable :: rgba(:,:,:)
       character(len = 1), allocatable :: cimage(:,:)
 !
       integer(kind = kint) :: ii, jj
@@ -285,9 +286,15 @@
       nxpixel = view_param%n_pvr_pixel(1)
       nypixel = view_param%n_pvr_pixel(2)
       npix = (nxpixel*nypixel)
-      allocate(rgba(4,npix))
+      allocate(d_map(nxpixel,nypixel))
+      allocate(rgba(4,nxpixel,nypixel))
       allocate(cimage(3,npix))
-      rgba(1:4,1:npix) = 0.0d0
+!$omp parallel workshare
+      d_map(1:nxpixel,1:nypixel) = 0.0d0
+!$omp end parallel workshare
+!$omp parallel workshare
+      rgba(1:4,1:nxpixel,1:nypixel) = 0.0d0
+!$omp end parallel workshare
 !
       call alloc_map_patch_from_1patch(ione, map_e1)
       do iele = 1, psf_ele%numele
@@ -349,26 +356,13 @@
             ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame)       &
      &                      / (xmax_frame - xmin_frame))
 !
-            inod_map = ix_min + (iy-1) * nxpixel
-            call value_to_rgb(color_param%id_pvr_color(2),              &
-     &                        color_param%id_pvr_color(1),              &
-     &                        color_param%num_pvr_datamap_pnt,          &
-     &                        color_param%pvr_datamap_param,            &
-     &                        d_min, rgba(1,inod_map))
-            rgba(4,inod_map) = one
+            d_map(ix_min,iy) = d_min
+            rgba(4,ix_min,iy) = one
 !
             do ix = ix_min+1, ix_max
               ratio_x = dble(ix-ix_min) / dble(ix_max-ix_min)
-              x_mid = (one - ratio_x) * x_min + ratio_x * x_max
-              d_mid = (one - ratio_x) * d_min + ratio_x * d_max
-!
-              inod_map = ix + (iy-1) * nxpixel
-              call value_to_rgb(color_param%id_pvr_color(2),            &
-     &                          color_param%id_pvr_color(1),            &
-     &                          color_param%num_pvr_datamap_pnt,        &
-     &                          color_param%pvr_datamap_param,          &
-     &                          d_mid, rgba(1,inod_map))
-              rgba(4,inod_map) = one
+              d_map(ix,iy) = (one - ratio_x) * d_min + ratio_x * d_max
+              rgba(4,ix,iy) = one
             end do
           end do
 !
@@ -406,35 +400,63 @@
             ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame)       &
      &                      / (xmax_frame - xmin_frame))
 !
-            inod_map = ix_min + (iy-1) * nxpixel
-            call value_to_rgb(color_param%id_pvr_color(2),              &
-     &                        color_param%id_pvr_color(1),              &
-     &                        color_param%num_pvr_datamap_pnt,          &
-     &                        color_param%pvr_datamap_param,            &
-     &                        d_min, rgba(1,inod_map))
-            rgba(4,inod_map) = one
+            d_map(ix_min,iy) = d_min
+            rgba(4,ix_min,iy) = one
 !
             do ix = ix_min+1, ix_max
               ratio_x = dble(ix-ix_min) / dble(ix_max-ix_min)
-              x_mid = (one - ratio_x) * x_min + ratio_x * x_max
-              d_mid = (one - ratio_x) * d_min + ratio_x * d_max
-!
-              inod_map = ix + (iy-1) * nxpixel
-              call value_to_rgb(color_param%id_pvr_color(2),            &
-     &                          color_param%id_pvr_color(1),            &
-     &                          color_param%num_pvr_datamap_pnt,        &
-     &                          color_param%pvr_datamap_param,          &
-     &                          d_mid, rgba(1,inod_map))
-              rgba(4,inod_map) = one
+              d_map(ix,iy) = (one - ratio_x) * d_min + ratio_x * d_max
+              rgba(4,ix,iy) = one
             end do
           end do
         end do
       end do
+!
+!$omp parallel do private(i,j)
+      do j = 1, nypixel
+        do i = 1, nxpixel
+          if(rgba(4,i,j) .eq. zero) cycle
+!
+          call value_to_rgb(color_param%id_pvr_color(2),                &
+     &                      color_param%id_pvr_color(1),                &
+     &                      color_param%num_pvr_datamap_pnt,            &
+     &                      color_param%pvr_datamap_param,              &
+     &                      d_map(i,j), rgba(1,i,j))
+        end do
+      end do
+!$omp end parallel do
+!
+!
+!$omp parallel do private(i,j)
+      do j = 1, nypixel
+        do i = 2, nxpixel-1
+          if(rgba(4,i,j) .eq. zero) cycle
+!
+          if((d_map(i-1,j)*d_map(i+1,j)) .le. 0) then
+            rgba(1:4,i,j) = zero
+            rgba(4,  i,j) = one
+          end if
+        end do
+      end do
+!$omp end parallel do
+!$omp parallel do private(i,j)
+      do j = 2, nypixel-2
+        do i = 1, nxpixel
+          if(rgba(4,i,j) .eq. zero) cycle
+!
+          if((d_map(i,j-1)*d_map(i,j+2)) .le. 0) then
+            rgba(1:4,i,j) = zero
+            rgba(4,  i,j) = one
+          end if
+        end do
+      end do
+!$omp end parallel do
+!
       call dealloc_map_patch_from_1patch(map_e1)
 !
       pi = four * atan(one)
 !$omp parallel do private(i,j,x_pix1,x_pix2,y_pix1,y_pix2,ii,jj,        &
-!$omp&        inod_map,phi_ref,theta_ref,theta,phi)
+!$omp&                    phi_ref,theta_ref,theta,phi)
       do j = 1, nypixel-1
         do i = 1, nxpixel-1
           if(mod(j,6).ge.3 .and. mod(i,6).lt.3) cycle
@@ -457,11 +479,8 @@
           if(    (theta(1)*theta(2)) .le. 0.0d0                         &
      &      .or. (theta(1)*theta(3)) .le. 0.0d0                         &
      &      .or. (theta(1)*theta(4)) .le. 0.0d0) then
-            inod_map = i + (j-1) * nxpixel
-            rgba(1,inod_map) = one
-            rgba(2,inod_map) = one
-            rgba(3,inod_map) = one
-            rgba(4,inod_map) = one
+            rgba(1:4,i,j) = one
+            rgba(4,  i,j) = one
           end if
 !
           if(theta(1) .le. zero) cycle
@@ -473,16 +492,10 @@
             if(     (phi(1)-phi_ref)*(phi(2)-phi_ref) .le. zero         &
      &         .or. (phi(1)-phi_ref)*(phi(3)-phi_ref) .le. zero         &
      &         .or. (phi(1)-phi_ref)*(phi(4)-phi_ref) .le. zero) then
-              inod_map = i + (j-1) * nxpixel
-              rgba(1,inod_map) = zero
-              rgba(2,inod_map) = zero
-              rgba(3,inod_map) = zero
-              rgba(4,inod_map) = one
-!              inod_map = i+1 + (j-1) * nxpixel
-!              rgba(1,inod_map) = one
-!              rgba(2,inod_map) = one
-!              rgba(3,inod_map) = one
-!              rgba(4,inod_map) = one
+              rgba(1:4,i,j) = zero
+              rgba(4,  i,j) = one
+!              rgba(1:4,i+1,j) = zero
+!              rgba(4,  i+1,j) = one
             end if
           end do
 !
@@ -492,16 +505,10 @@
      &        .or. (theta(1)-theta_ref)*(theta(3)-theta_ref) .le. zero  &
      &        .or. (theta(1)-theta_ref)*(theta(4)-theta_ref) .le. zero) &
      &         then
-              inod_map = i + (j-1) * nxpixel
-              rgba(1,inod_map) = zero
-              rgba(2,inod_map) = zero
-              rgba(3,inod_map) = zero
-              rgba(4,inod_map) = one
-!              inod_map = i + (j)   * nxpixel
-!              rgba(1,inod_map) = one
-!              rgba(2,inod_map) = one
-!              rgba(3,inod_map) = one
-!              rgba(4,inod_map) = one
+              rgba(1:4,i,j) = zero
+              rgba(4,  i,j) = one
+!              rgba(1:4,i,j+1) = zero
+!              rgba(4,  i,j+1) = one
             end if
           end do
         end do
@@ -510,20 +517,20 @@
 !
       if(cbar_param%iflag_pvr_colorbar) then
         call set_pvr_colorbar(npix, view_param%n_pvr_pixel,             &
-     &                        color_param, cbar_param, rgba)
+     &                        color_param, cbar_param, rgba(1,1,1))
       end if
 !
       if(cbar_param%iflag_draw_time) then
         call set_pvr_timelabel(t_IO%time, npix,view_param%n_pvr_pixel,  &
-     &                         cbar_param, rgba)
+     &                         cbar_param, rgba(1,1,1))
       end if
 !
 !
-      call cvt_double_rgba_to_char_rgb(npix, rgba, cimage)
+      call cvt_double_rgba_to_char_rgb(npix, rgba(1,1,1), cimage)
       call sel_output_image_file(psf_file_IO%iflag_format,              &
      &    add_int_suffix(istep_psf, psf_file_IO%file_prefix),           &
      &    nxpixel, nypixel, cimage(1,1))
-      deallocate(rgba, cimage)
+      deallocate(d_map, rgba, cimage)
 !
 !      call dealloc_phys_data(psf_phys)
 !      call dealloc_phys_name(psf_phys)
