@@ -83,14 +83,14 @@
      &                           map_data(i_map))
       end do
 !
-      if(iflag_MAP_time) call start_elapsed_time(ist_elapsed_MAP+2)
+      if(iflag_MAP_time) call start_elapsed_time(ist_elapsed_MAP+1)
       do i_map = 1, num_map
         call init_merge_psf_mesh                                        &
      &     (pvr_rgb(i_map)%irank_image_file, psf_mesh(i_map),           &
      &      psf_dat(i_map)%psf_nod, psf_dat(i_map)%psf_ele,             &
      &      psf_dat(i_map)%psf_phys, SR_sig)
       end do
-      if(iflag_MAP_time) call end_elapsed_time(ist_elapsed_MAP+2)
+      if(iflag_MAP_time) call end_elapsed_time(ist_elapsed_MAP+1)
 !
       end subroutine output_map_mesh
 !

@@ -257,9 +257,9 @@
      &   (num_append, ist_elapsed_MAP, ied_elapsed_MAP)
 !
       elps1%labels(ist_elapsed_MAP+1)                                   &
-     &                    = 'Interpolate data on map   '
-      elps1%labels(ist_elapsed_MAP+2)                                   &
      &                    = 'Collect map data   '
+      elps1%labels(ist_elapsed_MAP+2)                                   &
+     &                    = 'Interpolate data on map   '
       elps1%labels(ist_elapsed_MAP+3)                                   &
      &                    = 'Output Map image   '
 !
