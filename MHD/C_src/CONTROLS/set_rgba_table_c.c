@@ -213,6 +213,7 @@ static void make_colorbar_for_ctl(const int iflag_draw_time, const int iflag_dra
     
     set_boolean_by_chara_ctl_item(iflag_draw_time, cbar_c->time_switch_ctl);
     set_boolean_by_chara_ctl_item(iflag_draw_axis, cbar_c->axis_switch_ctl);
+    set_boolean_by_chara_ctl_item(iflag_draw_axis, cbar_c->mapgrid_switch_ctl);
 	set_boolean_by_chara_ctl_item(draw_psf_cbar, cbar_c->colorbar_switch_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->colorbar_scale_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->zeromarker_flag_ctl);

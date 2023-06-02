@@ -63,7 +63,7 @@
 !>  Structure for PVR colorbar parameters
       type pvr_colorbar_parameter
 !>    Draw flag for color bar
-        logical :: iflag_pvr_colorbar =  .FALSE.
+        logical :: flag_pvr_colorbar =  .FALSE.
 !>    Bottom colorbar flag
         logical :: flag_pvr_cbar_bottom =  .FALSE.
 !>    Draw flag for color bar numbers
@@ -80,9 +80,12 @@
         real(kind = kreal) :: cbar_range(2) = (/zero,one/)
 !
 !>    Draw flag for axis label
-        logical :: iflag_pvr_axis = .FALSE.
+        logical :: flag_pvr_axis = .FALSE.
 !>    Draw flag for time label
-        logical :: iflag_draw_time = .FALSE.
+        logical :: flag_draw_time = .FALSE.
+!
+!>    Draw flag for map grid
+        logical :: flag_draw_mapgrid = .FALSE.
       end type pvr_colorbar_parameter
 !
 !  ---------------------------------------------------------------------
