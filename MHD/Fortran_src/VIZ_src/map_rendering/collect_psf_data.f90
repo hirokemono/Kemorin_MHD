@@ -459,8 +459,8 @@
               kmin = 1
               kmax = 2
             else
-              kmin = 1
-              kmax = 2
+              kmin = 2
+              kmax = 1
             end if
             ix_min = int(1 + dble(nxpixel-1)*(x(kmin) - xmin_frame)     &
      &                      / (xmax_frame - xmin_frame))
@@ -528,7 +528,6 @@
       end subroutine set_scalar_on_map_image
 !
 !  ---------------------------------------------------------------------
-!
 !
       subroutine draw_aitoff_map_zeroline                               &
      &         (irank_draw, nxpixel, nypixel, npix, d_map, rgba)
