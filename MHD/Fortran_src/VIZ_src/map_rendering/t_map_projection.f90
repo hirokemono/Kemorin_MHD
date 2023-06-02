@@ -158,8 +158,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
-      call output_map_mesh(psf%num_psf, psf%psf_mesh, psf%psf_file_IO,  &
-     &                     map_psf_dat1, psf%psf_out, SR_sig)
+      call output_map_mesh(psf%num_psf, psf%psf_mesh,                   &
+     &                     map_psf_dat1, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_initialize
@@ -196,7 +196,7 @@
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
       call output_map_file(psf%num_psf, psf%psf_file_IO, istep_psf,     &
      &                     time_d, psf%psf_mesh, psf%psf_time_IO,       &
-     &                     map_psf_dat1, psf%psf_out, view_param1,      &
+     &                     map_psf_dat1, view_param1,                   &
      &                     color_param1, cbar_param1, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !

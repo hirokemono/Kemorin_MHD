@@ -49,21 +49,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_map_mesh(num_psf, psf_mesh, psf_file_IO,        &
-     &                           psf_dat, psf_out, SR_sig)
+      subroutine output_map_mesh(num_psf, psf_mesh, psf_dat, SR_sig)
 !
       use t_psf_patch_data
       use t_psf_results
-      use set_ucd_data_to_type
-      use parallel_ucd_IO_select
-      use ucd_IO_select
 !
       integer(kind= kint), intent(in) :: num_psf
       type(psf_local_data), intent(in) :: psf_mesh(num_psf)
 !
-      type(field_IO_params), intent(inout) :: psf_file_IO(num_psf)
       type(psf_results), intent(inout) :: psf_dat(num_psf)
-      type(ucd_data), intent(inout) :: psf_out(num_psf)
       type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind= kint) :: i_psf
@@ -72,10 +66,9 @@
 !
       do i_psf = 1, num_psf
         irank_draw = mod(i_psf,nprocs)
-        call merge_write_psf_mesh                                       &
-     &     (irank_draw, psf_mesh(i_psf), psf_file_IO(i_psf),            &
+        call merge_write_psf_mesh(irank_draw, psf_mesh(i_psf),          &
      &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_ele,             &
-     &      psf_dat(i_psf)%psf_phys, psf_out(i_psf), SR_sig)
+     &      psf_dat(i_psf)%psf_phys, SR_sig)
       end do
 !
       end subroutine output_map_mesh
@@ -83,14 +76,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_map_file(num_psf, psf_file_IO, istep_psf,       &
-     &          time_d, psf_mesh, t_IO, psf_dat, psf_out,               &
+     &          time_d, psf_mesh, t_IO, psf_dat,                        &
      &          view_param, color_param, cbar_param, SR_sig)
 !
       use t_psf_patch_data
       use t_psf_results
-      use set_ucd_data_to_type
-      use parallel_ucd_IO_select
-      use ucd_IO_select
 !
       integer(kind= kint), intent(in) :: num_psf
       integer(kind= kint), intent(in) ::  istep_psf
@@ -103,7 +93,6 @@
 !
       type(time_data), intent(inout) :: t_IO
       type(psf_results), intent(inout) :: psf_dat(num_psf)
-      type(ucd_data), intent(inout) :: psf_out(num_psf)
       type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind= kint) :: i_psf
@@ -117,7 +106,7 @@
         call merge_write_psf_file(irank_draw, istep_psf,                &
      &      psf_file_IO(i_psf), psf_mesh(i_psf), t_IO,                  &
      &      psf_dat(i_psf)%psf_nod, psf_dat(i_psf)%psf_ele,             &
-     &      psf_dat(i_psf)%psf_phys, psf_out(i_psf), view_param(i_psf), &
+     &      psf_dat(i_psf)%psf_phys, view_param(i_psf),                 &
      &      color_param(i_psf), cbar_param(i_psf), SR_sig)
       end do
 !
@@ -127,11 +116,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine merge_write_psf_mesh(irank_draw, psf_mesh,             &
-     &          psf_file_IO, psf_nod, psf_ele, psf_phys, psf_ucd,       &
-     &          SR_sig)
+     &          psf_nod, psf_ele, psf_phys, SR_sig)
 !
       use t_psf_patch_data
-      use t_ucd_data
       use t_file_IO_parameter
 !
       use append_phys_data
@@ -141,11 +128,9 @@
 !
       integer, intent(in) :: irank_draw
       type(psf_local_data), intent(in) :: psf_mesh
-      type(field_IO_params), intent(inout) :: psf_file_IO
       type(node_data), intent(inout) ::    psf_nod
       type(element_data), intent(inout) :: psf_ele
       type(phys_data), intent(inout) ::    psf_phys
-      type(ucd_data), intent(inout) ::     psf_ucd
       type(send_recv_status), intent(inout) :: SR_sig
 !
       integer(kind = kint) :: i
@@ -190,18 +175,6 @@
      &                         psf_ele%ie, SR_sig)
       call calypso_mpi_barrier
 !
-      if(my_rank .eq. irank_draw) then
-        call link_node_data_2_ucd(psf_nod, psf_ucd)
-        call link_ele_data_2_ucd(psf_ele, psf_ucd)
-        call link_field_data_to_ucd(psf_phys, psf_ucd)
-!
-        if(psf_file_IO%iflag_format .gt. iflag_single) then
-          psf_file_IO%iflag_format = psf_file_IO%iflag_format           &
-     &                              - iflag_single
-        end if
-        call sel_write_grd_file(-1, psf_file_IO, psf_ucd)
-      end if
-!
 !      call dealloc_ele_connect(psf_ele)
 !      call dealloc_node_geometry_w_sph(psf_nod)
 !
@@ -211,12 +184,10 @@
 !
       subroutine merge_write_psf_file(irank_draw, istep_psf,            &
      &          psf_file_IO, psf_mesh, t_IO, psf_nod, psf_ele,          &
-     &          psf_phys, psf_ucd, view_param, color_param, cbar_param, &
-     &          SR_sig)
+     &          psf_phys, view_param, color_param, cbar_param, SR_sig)
 !
       use t_psf_patch_data
       use t_time_data
-      use t_ucd_data
       use t_file_IO_parameter
       use t_map_patch_from_1patch
       use map_patch_from_1patch
@@ -243,18 +214,18 @@
       type(phys_data), intent(inout) :: psf_phys
       type(node_data), intent(inout) :: psf_nod
       type(element_data), intent(inout) :: psf_ele
-      type(ucd_data), intent(inout) :: psf_ucd
       type(send_recv_status), intent(inout) :: SR_sig
 !
       type(map_patches_for_1patch) :: map_e1
-      integer(kind = kint) :: k_ymin, k_ymid, k_ymax, k_xmin, k_xmax
+      integer(kind = kint) :: k_ymin, k_ymid, k_ymax
       integer(kind = kint) :: ix_map, iy_map, inod_map
+      integer(kind = kint) :: kmin, kmax
 !
       real(kind= kreal), parameter :: xframe = 2.4, yframe = 1.8
-      real(kind= kreal), parameter :: xmin_frame = -xframe
-      real(kind= kreal), parameter :: xmax_frame =  xframe
-      real(kind= kreal), parameter :: ymin_frame = -yframe
-      real(kind= kreal), parameter :: ymax_frame =  yframe
+      real(kind= kreal) :: xmin_frame = -xframe
+      real(kind= kreal) :: xmax_frame =  xframe
+      real(kind= kreal) :: ymin_frame = -yframe
+      real(kind= kreal) :: ymax_frame =  yframe
 !
       integer(kind = kint) :: nxpixel, nypixel, npix
       real(kind = kreal), allocatable :: d_map(:,:)
@@ -265,26 +236,36 @@
       integer(kind = kint) :: i_img, iele, i, j, k1, ix, iy
       integer(kind = kint) :: ix_min, ix_max
       integer(kind = kint) :: iy_min, iy_mid, iy_max
-      real(kind = kreal) :: x1, x2, x_min, x_max, x_mid
-      real(kind = kreal) :: d1, d2, d_min, d_max, d_mid
-      real(kind = kreal) :: ar, ratio_ymid, ratio_ymax, ratio_x
-      real(kind = kreal) :: x_pix1, x_pix2, y_pix1, y_pix2
-      real(kind = kreal) :: phi_ref, theta_ref, pi
+      real(kind = kreal) :: x(2), d(2)
+      real(kind = kreal) :: ratio_ymid, ratio_ymax, ratio_x
+      real(kind = kreal) :: x_pix1, x_pix2, y_pix1, y_pix2, xtmp, ytmp
+      real(kind = kreal) :: phi_ref, theta_ref, pi, aspect
       real(kind = kreal) :: theta(4), phi(4)
 !
 !
       call collect_psf_scalar(irank_draw, ione, psf_mesh%node,          &
      &    psf_mesh%field, psf_phys%d_fld(1,1), SR_sig)
 !
-      if(my_rank .eq. irank_draw) then
-        call sel_write_ucd_file                                         &
-     &     (-1, istep_psf, psf_file_IO, t_IO, psf_ucd)
-      end if
-!
       if(my_rank .ne. irank_draw) return
 !
       nxpixel = view_param%n_pvr_pixel(1)
       nypixel = view_param%n_pvr_pixel(2)
+      aspect =  view_param%perspective_xy_ratio
+!
+      ytmp = xframe / aspect
+      xtmp = yframe * aspect
+      if(ytmp .le. 1.0) then
+        xmin_frame = -xtmp
+        xmax_frame =  xtmp
+        ymin_frame = -yframe
+        ymax_frame =  yframe
+      else
+        xmin_frame = -xframe
+        xmax_frame =  xframe
+        ymin_frame = -ytmp
+        ymax_frame =  ytmp
+      end if
+!
       npix = (nxpixel*nypixel)
       allocate(d_map(nxpixel,nypixel))
       allocate(rgba(4,nxpixel,nypixel))
@@ -311,7 +292,7 @@
 !
         do i = 1, map_e1%n_map_patch
           call find_map_path_orientation(map_e1%xy_map(1,1,i),          &
-     &        k_ymin, k_ymid, k_ymax, k_xmin, k_xmax)
+     &                                   k_ymin, k_ymid, k_ymax)
 !
           iy_min = int(1 + dble(nypixel-1)                              &
      &                    * (map_e1%xy_map(2,k_ymin,i) - ymin_frame)    &
@@ -324,88 +305,82 @@
      &                      / (ymax_frame - ymin_frame))
           do iy = iy_min, iy_mid
             if(iy_max.eq.iy_min .or. iy_mid.eq.iy_min) then
-              x1 = map_e1%xy_map(1,k_ymin,i)
-              x2 = map_e1%xy_map(1,k_ymid,i)
-              d1 = map_e1%d_map_patch(k_ymin,1,i)
-              d2 = map_e1%d_map_patch(k_ymid,1,i)
+              x(1) = map_e1%xy_map(1,k_ymin,i)
+              x(2) = map_e1%xy_map(1,k_ymid,i)
+              d(1) = map_e1%d_map_patch(k_ymin,1,i)
+              d(2) = map_e1%d_map_patch(k_ymid,1,i)
             else
               ratio_ymid = dble(iy-iy_min) / dble(iy_mid-iy_min)
               ratio_ymax = dble(iy-iy_min) / dble(iy_max-iy_min)
-              x1 = (one - ratio_ymid) * map_e1%xy_map(1,k_ymin,i)       &
+              x(1) = (one-ratio_ymid) * map_e1%xy_map(1,k_ymin,i)       &
      &                  + ratio_ymid *  map_e1%xy_map(1,k_ymid,i)
-              x2 = (one - ratio_ymax) * map_e1%xy_map(1,k_ymin,i)       &
+              x(2) = (one-ratio_ymax) * map_e1%xy_map(1,k_ymin,i)       &
      &                  + ratio_ymax *  map_e1%xy_map(1,k_ymax,i)
-              d1 = (one - ratio_ymid) * map_e1%d_map_patch(k_ymin,1,i)  &
+              d(1) = (one-ratio_ymid) * map_e1%d_map_patch(k_ymin,1,i)  &
      &                  + ratio_ymid *  map_e1%d_map_patch(k_ymid,1,i)
-              d2 = (one - ratio_ymax) * map_e1%d_map_patch(k_ymin,1,i)  &
+              d(2) = (one-ratio_ymax) * map_e1%d_map_patch(k_ymin,1,i)  &
      &                  + ratio_ymax *  map_e1%d_map_patch(k_ymax,1,i)
             end if
-            if(x1 .le. x2) then
-              x_min = x1
-              x_max = x2
-              d_min = d1
-              d_max = d2
+            if(x(1) .le. x(2)) then
+              kmin = 1
+              kmax = 2
             else
-              x_min = x2
-              x_max = x1
-              d_min = d2
-              d_max = d1
+              kmin = 1
+              kmax = 2
             end if
-            ix_min = int(1 + dble(nxpixel-1)*(x_min - xmin_frame)       &
+            ix_min = int(1 + dble(nxpixel-1)*(x(kmin) - xmin_frame)     &
      &                      / (xmax_frame - xmin_frame))
-            ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame)       &
+            ix_max = int(1 + dble(nxpixel-1)*(x(kmax) - xmin_frame)     &
      &                      / (xmax_frame - xmin_frame))
 !
-            d_map(ix_min,iy) = d_min
+            d_map(ix_min,iy) =  d(kmin)
             rgba(4,ix_min,iy) = one
 !
             do ix = ix_min+1, ix_max
               ratio_x = dble(ix-ix_min) / dble(ix_max-ix_min)
-              d_map(ix,iy) = (one - ratio_x) * d_min + ratio_x * d_max
+              d_map(ix,iy) = (one - ratio_x) * d(kmin)                  &
+     &                            + ratio_x *  d(kmax)
               rgba(4,ix,iy) = one
             end do
           end do
 !
           do iy = iy_mid+1, iy_max
             if(iy_max.eq.iy_min) then
-              x1 = map_e1%xy_map(1,k_ymid,i)
-              x2 = map_e1%xy_map(1,k_ymax,i)
-              d1 = map_e1%d_map_patch(k_ymid,1,i)
-              d2 = map_e1%d_map_patch(k_ymax,1,i)
+              x(1) = map_e1%xy_map(1,k_ymid,i)
+              x(2) = map_e1%xy_map(1,k_ymax,i)
+              d(1) = map_e1%d_map_patch(k_ymid,1,i)
+              d(2) = map_e1%d_map_patch(k_ymax,1,i)
             else
               ratio_ymid = dble(iy-iy_mid) / dble(iy_max-iy_mid)
               ratio_ymax = dble(iy-iy_min) / dble(iy_max-iy_min)
-              x1 = (one - ratio_ymid) * map_e1%xy_map(1,k_ymid,i)       &
+              x(1) = (one-ratio_ymid) * map_e1%xy_map(1,k_ymid,i)       &
      &                  + ratio_ymid *  map_e1%xy_map(1,k_ymax,i)
-              x2 = (one - ratio_ymax) * map_e1%xy_map(1,k_ymin,i)       &
+              x(2) = (one-ratio_ymax) * map_e1%xy_map(1,k_ymin,i)       &
      &                  + ratio_ymax *  map_e1%xy_map(1,k_ymax,i)
-              d1 = (one - ratio_ymid) * map_e1%d_map_patch(k_ymid,1,i)  &
+              d(1) = (one-ratio_ymid) * map_e1%d_map_patch(k_ymid,1,i)  &
      &                  + ratio_ymid *  map_e1%d_map_patch(k_ymax,1,i)
-              d2 = (one - ratio_ymax) * map_e1%d_map_patch(k_ymin,1,i)  &
+              d(2) = (one-ratio_ymax) * map_e1%d_map_patch(k_ymin,1,i)  &
      &                  + ratio_ymax *  map_e1%d_map_patch(k_ymax,1,i)
             end if
-            if(x1 .le. x2) then
-              x_min = x1
-              x_max = x2
-              d_min = d1
-              d_max = d2
+            if(x(1) .le. x(2)) then
+              kmin = 1
+              kmax = 2
             else
-              x_min = x2
-              x_max = x1
-              d_min = d2
-              d_max = d1
+              kmin = 2
+              kmax = 1
             end if
-            ix_min = int(1 + dble(nxpixel-1)*(x_min - xmin_frame)       &
+            ix_min = int(1 + dble(nxpixel-1)*(x(kmin) - xmin_frame)     &
      &                      / (xmax_frame - xmin_frame))
-            ix_max = int(1 + dble(nxpixel-1)*(x_max - xmin_frame)       &
+            ix_max = int(1 + dble(nxpixel-1)*(x(kmax) - xmin_frame)     &
      &                      / (xmax_frame - xmin_frame))
 !
-            d_map(ix_min,iy) = d_min
+            d_map(ix_min,iy) =  d(kmin)
             rgba(4,ix_min,iy) = one
 !
             do ix = ix_min+1, ix_max
               ratio_x = dble(ix-ix_min) / dble(ix_max-ix_min)
-              d_map(ix,iy) = (one - ratio_x) * d_min + ratio_x * d_max
+              d_map(ix,iy) = (one - ratio_x) * d(kmin)                  &
+     &                            + ratio_x *  d(kmax)
               rgba(4,ix,iy) = one
             end do
           end do
