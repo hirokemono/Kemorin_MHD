@@ -21,8 +21,8 @@
 !!!! example of control for Kemo's surface rendering
 !!
 !!  begin cross_section_ctl
-!!    section_file_prefix    'psf'
-!!    psf_output_type         ucd
+!!    map_image_prefix       'map'
+!!    map_image_format        PNG
 !!
 !!    output_field       magnetic_field
 !!    output_component   r
@@ -85,7 +85,7 @@
 !!  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  
-!!      psf_output_type:
+!!      map_image_format:
 !!           ucd, VTK
 !!
 !!    num_result_comp: number of fields

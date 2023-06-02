@@ -9,13 +9,19 @@
 !!
 !!@verbatim
 !!      subroutine s_set_map_control(num_psf, group, nod_fld,           &
-!!     &          map_ctls, psf_param, psf_def, psf_mesh, psf_file_IO)
+!!     &          map_ctls, psf_param, psf_def, psf_mesh, psf_file_IO,  &
+!!     &          view_param, color_param, cbar_param)
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(map_rendering_controls), intent(inout) :: map_ctls
 !!        type(psf_parameters), intent(inout) :: psf_param(num_psf)
 !!        type(section_define), intent(inout) :: psf_def(num_psf)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
+!!        type(pvr_view_parameter), intent(inout) :: view_param(num_psf)
+!!        type(pvr_colormap_parameter), intent(inout)                   &
+!!     &                             :: color_param(num_psf)
+!!        type(pvr_colorbar_parameter), intent(inout)                   &
+!!     &                             :: cbar_param(num_psf)
 !!@endverbatim
 !
       module set_map_control
@@ -30,6 +36,8 @@
       use t_file_IO_parameter
       use t_control_params_4_psf
       use t_psf_patch_data
+      use t_control_params_4_pvr
+      use t_pvr_colormap_parameter
 !
       implicit none
 !
@@ -45,7 +53,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_map_control(num_psf, group, nod_fld,             &
-     &          map_ctls, psf_param, psf_def, psf_mesh, psf_file_IO)
+     &          map_ctls, psf_param, psf_def, psf_mesh, psf_file_IO,    &
+     &          view_param, color_param, cbar_param)
 !
       use calypso_mpi
       use t_read_control_elements
@@ -65,14 +74,18 @@
       type(section_define), intent(inout) :: psf_def(num_psf)
       type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
       type(field_IO_params), intent(inout)  :: psf_file_IO(num_psf)
+      type(pvr_view_parameter), intent(inout) :: view_param(num_psf)
+      type(pvr_colormap_parameter), intent(inout)                       &
+     &                             :: color_param(num_psf)
+      type(pvr_colorbar_parameter), intent(inout)                       &
+     &                             :: cbar_param(num_psf)
 !
       integer(kind = kint) :: i, ierr
 !
 !
       do i = 1, num_psf
         call count_control_4_map(my_rank, map_ctls%map_ctl_struct(i),   &
-     &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &
-     &      psf_mesh(i)%field, psf_param(i), psf_file_IO(i), ierr)
+     &      group%ele_grp, psf_param(i), psf_file_IO(i), ierr)
 !
         if(ierr.gt.0) call calypso_MPI_abort(ierr, e_message)
         call mpi_abort_by_no_zlib_in_fld(psf_file_IO(i)%file_prefix,    &
@@ -80,11 +93,13 @@
       end do
 !
       do i = 1, num_psf
+        psf_mesh(i)%field%num_phys = 1
         call alloc_phys_name(psf_mesh(i)%field)
         call set_control_4_map                                          &
      &     (map_ctls%map_ctl_struct(i), group%ele_grp, group%surf_grp,  &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      psf_mesh(i)%field,  psf_param(i), psf_def(i), ierr)
+     &      psf_mesh(i)%field,  psf_param(i), psf_def(i),               &
+     &      view_param(i), color_param(i), cbar_param(i), ierr)
         if(ierr.gt.0) call calypso_MPI_abort(ierr, e_message)
 !
         call dealloc_cont_dat_4_map(map_ctls%map_ctl_struct(i))
@@ -99,13 +114,13 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_control_4_map                                    &
-     &         (id_rank, map_c, ele_grp, num_nod_phys, phys_nod_name,   &
-     &          psf_fld, psf_param, psf_file_IO, ierr)
+      subroutine count_control_4_map(id_rank, map_c, ele_grp,           &
+     &                               psf_param, psf_file_IO, ierr)
 !
       use m_error_IDs
       use m_file_format_switch
       use set_area_4_viz
+      use set_sections_file_ctl
       use set_field_comp_for_viz
       use set_sections_file_ctl
       use delete_data_files
@@ -113,23 +128,21 @@
       type(group_data), intent(in) :: ele_grp
 !
       integer, intent(in) :: id_rank
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
       type(map_ctl), intent(in) :: map_c
-      type(phys_data), intent(inout) :: psf_fld
       type(psf_parameters), intent(inout) :: psf_param
       type(field_IO_params), intent(inout) :: psf_file_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
       ierr = 0
-      call s_set_sections_file_ctl(default_map_prefix,                  &
-     &    map_c%map_image_prefix_ctl, map_c%map_image_fmt_ctl,          &
-     &    psf_file_IO)
-      if((psf_file_IO%iflag_format/iflag_single) .eq. 0) then
-        psf_file_IO%iflag_format = psf_file_IO%iflag_format             &
-     &                            + iflag_single
+      call set_image_file_control(map_c%map_image_fmt_ctl,              &
+     &                            psf_file_IO%iflag_format)
+!
+      if(map_c%map_image_prefix_ctl%iflag .le. 0) then
+        psf_file_IO%file_prefix = default_map_prefix
+      else
+        psf_file_IO%file_prefix = map_c%map_image_prefix_ctl%charavalue
       end if
 !
       if(check_file_writable(id_rank, psf_file_IO%file_prefix)          &
@@ -145,13 +158,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_map                                      &
-     &         (map_c, ele_grp, sf_grp, num_nod_phys, phys_nod_name,    &
-     &          psf_fld, psf_param, psf_def, ierr)
+      subroutine set_control_4_map(map_c, ele_grp, sf_grp,              &
+     &          num_nod_phys, phys_nod_name, psf_fld, psf_param,        &
+     &          psf_def, view_param, color_param, cbar_param, ierr)
 !
       use calypso_mpi
       use m_error_IDs
       use set_field_comp_for_viz
+      use set_pvr_modelview_matrix
+      use set_control_pvr_color
 !
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: sf_grp
@@ -163,10 +178,10 @@
       type(phys_data), intent(inout) :: psf_fld
       type(psf_parameters), intent(inout) :: psf_param
       type(section_define), intent(inout) :: psf_def
+      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_colormap_parameter), intent(inout) :: color_param
+      type(pvr_colorbar_parameter), intent(inout) :: cbar_param
       integer(kind = kint), intent(inout) :: ierr
-!
-      integer(kind = kint) :: ncomp, ncomp_org
-      character(len=kchara) :: tmpchara
 !
 !
       call alloc_area_group_psf(psf_param)
@@ -180,11 +195,45 @@
       call set_one_component_4_viz(num_nod_phys, phys_nod_name,         &
      &   map_c%map_field_ctl%charavalue, map_c%map_comp_ctl%charavalue, &
      &   psf_param%id_output(1), psf_param%icomp_output(1),             &
-     &   ncomp, psf_param%ncomp_org(1), tmpchara)
-      if(ncomp .gt. 1) call calypso_MPI_abort(ierr_VIZ,                 &
-     &                                      'set scalar for rendering')
+     &   psf_fld%num_component(1), psf_param%ncomp_org(1),              &
+     &   psf_fld%phys_name(1))
+      if(psf_fld%num_component(1) .gt. 1)                               &
+     &     call calypso_MPI_abort(ierr_VIZ, 'set scalar for rendering')
+!
+      call copy_pvr_image_size(map_c%mat%pixel, view_param)
+      call copy_pvr_perspective_matrix(map_c%mat%proj, view_param)
+!
+      call set_control_pvr_colormap(map_c%cmap_cbar_c%color,            &
+     &                              color_param)
+      call set_control_pvr_colorbar(map_c%cmap_cbar_c%cbar_ctl,         &
+     &                              cbar_param)
 !
       end subroutine set_control_4_map
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_image_file_control(file_fmt_ctl, id_pvr_file_type)
+!
+      use skip_comment_f
+      use t_control_array_character
+      use output_image_sel_4_png
+!
+      type(read_character_item), intent(in) :: file_fmt_ctl
+      integer(kind = kint), intent(inout) :: id_pvr_file_type
+!
+      character(len = kchara) :: tmpchara
+!
+!
+      tmpchara = file_fmt_ctl%charavalue
+      if(cmp_no_case(tmpchara, hd_PNG)) then
+        id_pvr_file_type = iflag_PNG
+      else if(cmp_no_case(tmpchara, hd_BMP)) then
+        id_pvr_file_type = iflag_BMP
+      else
+        id_pvr_file_type = iflag_BMP
+      end if
+!
+      end subroutine set_image_file_control
 !
 !  ---------------------------------------------------------------------
 !

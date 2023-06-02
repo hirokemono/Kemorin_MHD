@@ -21,7 +21,7 @@
 !!     &          screen_norm_pvr_domain, ray_vec4,                     &
 !!     &          ntot_tmp_pvr_ray, istack_tmp_pvr_ray_st,              &
 !!     &          ipix_start_tmp, iflag_start_tmp, istack_pvr_ray_sf,   &
-!!     &          num_pvr_ray, xi_pvr_start, xx4_pvr_ray_start)
+!!     &          num_pvr_ray, xx4_pvr_ray_start)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
 !!      subroutine check_pvr_ray_startpoint                             &
@@ -166,7 +166,7 @@
      &          screen_norm_pvr_domain, ray_vec4,                       &
      &          ntot_tmp_pvr_ray, istack_tmp_pvr_ray_st,                &
      &          ipix_start_tmp, iflag_start_tmp, istack_pvr_ray_sf,     &
-     &          num_pvr_ray, xi_pvr_start, xx4_pvr_ray_start)
+     &          num_pvr_ray, xx4_pvr_ray_start)
 !
       use cal_field_on_surf_viz
 !
@@ -196,7 +196,6 @@
      &                    :: istack_pvr_ray_sf(0:num_pvr_surf)
 !
       integer(kind = kint), intent(in) ::  num_pvr_ray
-      real(kind = kreal), intent(in) :: xi_pvr_start(2,num_pvr_ray)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: xx4_pvr_ray_start(4,num_pvr_ray)

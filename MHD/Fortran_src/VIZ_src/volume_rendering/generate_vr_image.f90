@@ -154,7 +154,7 @@
      &   pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,   &
      &   pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,           &
      &   pvr_start%istack_pvr_ray_sf, pvr_start%num_pvr_ray,            &
-     &   pvr_start%xi_pvr_start, pvr_start%xx4_pvr_ray_start)
+     &   pvr_start%xx4_pvr_ray_start)
 !
 !        if(iflag_debug .gt. 0) then
 !          call check_pvr_ray_startpoint                                &

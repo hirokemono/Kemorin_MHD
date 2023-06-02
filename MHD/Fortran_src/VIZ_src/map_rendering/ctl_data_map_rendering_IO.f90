@@ -28,12 +28,12 @@
 !!!! example of control for Kemo's surface rendering
 !!
 !!  begin cross_section_ctl
-!!    section_file_prefix    'psf'
-!!    psf_output_type         ucd
+!!    map_image_prefix       'map'
+!!    map_image_format        PNG
 !!
 !!    output_field       magnetic_field
 !!    output_component   r
-!
+!!
 !!    begin surface_define
 !!      section_method    equation
 !!  
@@ -93,8 +93,8 @@
 !!  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  
-!!      psf_output_type:
-!!           ucd, VTK
+!!      map_image_format:
+!!           BMP, png
 !!
 !!    num_result_comp: number of fields
 !!    output_field: (Original name: color_comp and color_subcomp)
@@ -172,9 +172,9 @@
 !
 !     2nd level for cross_section_ctl
       character(len=kchara), parameter, private                         &
-     &                  :: hd_psf_file_prefix = 'section_file_prefix'
+     &                  :: hd_map_image_prefix = 'map_image_prefix'
       character(len=kchara), parameter, private                         &
-     &                  :: hd_psf_out_type =    'psf_output_type'
+     &                  :: hd_map_image_format = 'map_image_format'
       character(len=kchara), parameter, private                         &
      &                  :: hd_surface_define =  'surface_define'
 !
@@ -226,9 +226,9 @@
         call read_section_def_control(id_control, hd_surface_define,    &
      &                                map_c%map_def_c, c_buf)
 !
-        call read_chara_ctl_type(c_buf, hd_psf_file_prefix,             &
+        call read_chara_ctl_type(c_buf, hd_map_image_prefix,            &
      &      map_c%map_image_prefix_ctl)
-        call read_chara_ctl_type(c_buf, hd_psf_out_type,                &
+        call read_chara_ctl_type(c_buf, hd_map_image_format,            &
      &      map_c%map_image_fmt_ctl)
 !
         call read_chara_ctl_type(c_buf, hd_map_output_field,            &
@@ -261,16 +261,16 @@
 !
       if(map_c%i_map_ctl .le. 0) return
 !
-      maxlen = len_trim(hd_psf_file_prefix)
-      maxlen = max(maxlen, len_trim(hd_psf_out_type))
+      maxlen = len_trim(hd_map_image_prefix)
+      maxlen = max(maxlen, len_trim(hd_map_image_format))
       maxlen = max(maxlen, len_trim(hd_map_output_field))
       maxlen = max(maxlen, len_trim(hd_map_output_comp))
 !
       write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_psf_file_prefix, map_c%map_image_prefix_ctl)
+     &    hd_map_image_prefix, map_c%map_image_prefix_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
-     &    hd_psf_out_type, map_c%map_image_fmt_ctl)
+     &    hd_map_image_format, map_c%map_image_fmt_ctl)
 !
       write(id_control,'(a1)') '!'
       call write_chara_ctl_type(id_control, level, maxlen,              &
@@ -307,9 +307,9 @@
      &                         :: names(n_label_map_ctl)
 !
 !
-      call set_control_labels(hd_psf_file_prefix, names( 1))
-      call set_control_labels(hd_psf_out_type,    names( 2))
-      call set_control_labels(hd_surface_define,  names( 3))
+      call set_control_labels(hd_map_image_prefix, names( 1))
+      call set_control_labels(hd_map_image_format, names( 2))
+      call set_control_labels(hd_surface_define,   names( 3))
 !
       call set_control_labels(hd_map_output_field,   names( 4))
       call set_control_labels(hd_map_output_comp,    names( 5))
