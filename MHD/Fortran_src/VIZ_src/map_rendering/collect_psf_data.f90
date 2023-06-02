@@ -226,9 +226,10 @@
       use aitoff
 !
       use convert_real_rgb_2_bite
-      use calypso_png_file_IO
+      use output_image_sel_4_png
+      use set_parallel_file_name
       use set_color_4_pvr
-!      use draw_pvr_colorbar
+      use draw_pvr_colorbar
 !
       integer, intent(in) :: irank_draw
       integer(kind = kint), intent(in) :: istep_psf
@@ -247,16 +248,15 @@
 !
       type(map_patches_for_1patch) :: map_e1
       integer(kind = kint) :: k_ymin, k_ymid, k_ymax, k_xmin, k_xmax
-      integer(kind = kint) :: ix_map, iy_map, inod_map, npix
+      integer(kind = kint) :: ix_map, iy_map, inod_map
 !
-      integer(kind = kint), parameter :: nxpixel = 3200
-      integer(kind = kint), parameter :: nypixel = 2400
       real(kind= kreal), parameter :: xframe = 2.4, yframe = 1.8
       real(kind= kreal), parameter :: xmin_frame = -xframe
       real(kind= kreal), parameter :: xmax_frame =  xframe
       real(kind= kreal), parameter :: ymin_frame = -yframe
       real(kind= kreal), parameter :: ymax_frame =  yframe
 !
+      integer(kind = kint) :: nxpixel, nypixel, npix
       real(kind = kreal), allocatable :: rgba(:,:)
       character(len = 1), allocatable :: cimage(:,:)
 !
@@ -282,11 +282,8 @@
 !
       if(my_rank .ne. irank_draw) return
 !
-      write(*,*) 'view_param%n_pvr_pixel', view_param%n_pvr_pixel(1:2), &
-     &          nxpixel, nypixel
-!
-!
-!
+      nxpixel = view_param%n_pvr_pixel(1)
+      nypixel = view_param%n_pvr_pixel(2)
       npix = (nxpixel*nypixel)
       allocate(rgba(4,npix))
       allocate(cimage(3,npix))
@@ -538,21 +535,21 @@
       end do
 !$omp end parallel do
 !
-!      if(cbar_param%iflag_pvr_colorbar) then
-!        call set_pvr_colorbar                                         &
-!     &     (pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                 &
-!     &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
-!      end if
+      if(cbar_param%iflag_pvr_colorbar) then
+        call set_pvr_colorbar(npix, view_param%n_pvr_pixel,             &
+     &                        color_param, cbar_param, rgba)
+      end if
 !
-!      if(cbar_param%iflag_draw_time) then
-!        call set_pvr_timelabel                                        &
-!     &     (time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,           &
-!     &      cbar_param, pvr_rgb%rgba_real_gl)
-!      end if
+      if(cbar_param%iflag_draw_time) then
+        call set_pvr_timelabel(t_IO%time, npix,view_param%n_pvr_pixel,  &
+     &                         cbar_param, rgba)
+      end if
+!
 !
       call cvt_double_rgba_to_char_rgb(npix, rgba, cimage)
-      call calypso_write_png(psf_file_IO%file_prefix, ithree,           &
-     &                       nxpixel, nypixel, cimage(1,1))
+      call sel_output_image_file(psf_file_IO%iflag_format,              &
+     &    add_int_suffix(istep_psf, psf_file_IO%file_prefix),           &
+     &    nxpixel, nypixel, cimage(1,1))
       deallocate(rgba, cimage)
 !
 !      call dealloc_phys_data(psf_phys)

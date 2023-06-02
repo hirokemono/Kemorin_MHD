@@ -135,12 +135,13 @@
 !
 !
       ierr = 0
-      call s_set_sections_file_ctl(default_map_prefix,                  &
-     &    map_c%map_image_prefix_ctl, map_c%map_image_fmt_ctl,          &
-     &    psf_file_IO)
-      if((psf_file_IO%iflag_format/iflag_single) .eq. 0) then
-        psf_file_IO%iflag_format = psf_file_IO%iflag_format             &
-     &                            + iflag_single
+      call set_image_file_control(map_c%map_image_fmt_ctl,              &
+     &                            psf_file_IO%iflag_format)
+!
+      if(map_c%map_image_prefix_ctl%iflag .gt. 0) then
+        psf_file_IO%file_prefix = default_map_prefix
+      else
+        psf_file_IO%file_prefix = map_c%map_image_prefix_ctl%charavalue
       end if
 !
       if(check_file_writable(id_rank, psf_file_IO%file_prefix)          &
@@ -207,6 +208,31 @@
      &                              cbar_param)
 !
       end subroutine set_control_4_map
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_image_file_control(file_fmt_ctl, id_pvr_file_type)
+!
+      use skip_comment_f
+      use t_control_array_character
+      use output_image_sel_4_png
+!
+      type(read_character_item), intent(in) :: file_fmt_ctl
+      integer(kind = kint), intent(inout) :: id_pvr_file_type
+!
+      character(len = kchara) :: tmpchara
+!
+!
+      tmpchara = file_fmt_ctl%charavalue
+      if(cmp_no_case(tmpchara, hd_PNG)) then
+        id_pvr_file_type = iflag_PNG
+      else if(cmp_no_case(tmpchara, hd_BMP)) then
+        id_pvr_file_type = iflag_BMP
+      else
+        id_pvr_file_type = iflag_BMP
+      end if
+!
+      end subroutine set_image_file_control
 !
 !  ---------------------------------------------------------------------
 !

@@ -123,7 +123,9 @@
 !
         type(read_character_item) :: updated_ctl
 !
+!>        File prefix of output image file
         type(read_character_item) :: file_head_ctl
+!>        File format of output image file
         type(read_character_item) :: file_fmt_ctl
         type(read_character_item) :: monitoring_ctl
 !
