@@ -200,8 +200,7 @@
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
       call output_map_file(psf%num_psf, istep_psf, time_d,              &
      &                     psf%psf_mesh, view_param1, color_param1,     &
-     &                     cbar_param1, psf%psf_time_IO,                &
-     &                     map_psf_dat1, map_rgb1, SR_sig)
+     &                     cbar_param1, map_psf_dat1, map_rgb1, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_visualize
