@@ -743,10 +743,9 @@
       pi = four * atan(one)
 !$omp parallel do private(i,j,x_pix1,x_pix2,y_pix1,y_pix2,ii,jj,i_img,  &
 !$omp&                    phi_ref,theta,phi)
-      do j = 1, nypixel-1
-        do i = 1, nxpixel-1
-          if(mod(j,6).ge.3 .and. mod(i,6).lt.3) cycle
-          if(mod(j,6).lt.3 .and. mod(i,6).ge.3) cycle
+      do j = 2, nypixel-1
+        do i = 2, nxpixel-1
+          if(mod(i,12).ge.6) cycle
 !
 !
           x_pix1 = xmin_frame + (xmax_frame - xmin_frame)               &
@@ -762,15 +761,19 @@
           call reverse_aitoff(x_pix1, y_pix2, theta(3), phi(3))
           call reverse_aitoff(x_pix2, y_pix2, theta(4), phi(4))
 !
-          if(    (theta(1)-theta_ref)*(theta(2)-theta_ref) .le. zero  &
-     &      .or. (theta(1)-theta_ref)*(theta(3)-theta_ref) .le. zero  &
-     &      .or. (theta(1)-theta_ref)*(theta(4)-theta_ref) .le. zero) &
+          if(    (theta(1)-theta_ref)*(theta(2)-theta_ref) .le. zero    &
+     &      .or. (theta(1)-theta_ref)*(theta(3)-theta_ref) .le. zero    &
+     &      .or. (theta(1)-theta_ref)*(theta(4)-theta_ref) .le. zero)   &
      &       then
-           i_img = i + (j-1) * nxpixel
-             rgba(1:4,i_img) = rgba_in(1:4)
+             i_img = i + (j-1) * nxpixel
+             rgba(1:3,i_img) = rgba_in(1:3)
              rgba(4,  i_img) = one
-             rgba(1:4,i_img+nxpixel) = rgba_in(1:4)
-             rgba(4,  i_img+nxpixel) = one
+             if(rgba(4,i_img-nxpixel).gt.0) then
+               rgba(1:3,i_img-nxpixel) = rgba_in(1:3)
+             end if
+             if(rgba(4,i_img+nxpixel).gt.0) then
+               rgba(1:3,i_img+nxpixel) = rgba_in(1:3)
+             end if
           end if
         end do
       end do
