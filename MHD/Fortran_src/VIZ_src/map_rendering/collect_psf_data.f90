@@ -226,7 +226,7 @@
       real(kind = kreal), allocatable :: d_map(:)
 !
       real(kind = kreal) :: xtmp, ytmp
-      real(kind = kreal) :: aspect
+      real(kind = kreal) :: aspect, pi, theta_ref
 !
 !
       call collect_psf_scalar(pvr_rgb%irank_image_file, ione,           &
@@ -270,6 +270,22 @@
      &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
      &      pvr_rgb%num_pixel_xy, d_map, pvr_rgb%rgba_real_gl)
       call dealloc_map_patch_from_1patch(map_e1)
+!
+!      if(cbar_param%flag_draw_tangent_cylinder) then
+        pi = four*atan(one)
+        theta_ref = asin(cbar_param%tangent_cylinder_radius(2)          &
+     &                 / cbar_param%tangent_cylinder_radius(1))
+        call draw_aitoff_lat_line(pvr_rgb%irank_image_file,             &
+     &      xmin_frame, xmax_frame, ymin_frame, ymax_frame,             &
+     &      theta_ref, cbar_param%tangent_cylinder_rgba,                &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      pvr_rgb%num_pixel_xy, pvr_rgb%rgba_real_gl)
+        call draw_aitoff_lat_line(pvr_rgb%irank_image_file,             &
+     &      xmin_frame, xmax_frame, ymin_frame, ymax_frame,             &
+     &      (pi-theta_ref), cbar_param%tangent_cylinder_rgba,           &
+     &      pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),               &
+     &      pvr_rgb%num_pixel_xy, pvr_rgb%rgba_real_gl)
+!      end if
 !
       if(cbar_param%flag_draw_mapgrid) then
         call draw_aitoff_map_frame(pvr_rgb%irank_image_file,            &
@@ -697,6 +713,70 @@
 !$omp end parallel do
 !
       end subroutine draw_aitoff_map_frame
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine draw_aitoff_lat_line(irank_draw,                       &
+     &          xmin_frame, xmax_frame, ymin_frame, ymax_frame,         &
+     &          theta_ref, rgba_in, nxpixel, nypixel, npix, rgba)
+!
+      use aitoff
+!
+      integer, intent(in) :: irank_draw
+!
+      real(kind= kreal), intent(in) :: xmin_frame, xmax_frame
+      real(kind= kreal), intent(in) :: ymin_frame, ymax_frame
+      integer(kind = kint), intent(in) :: nxpixel, nypixel, npix
+      real(kind = kreal), intent(in) :: theta_ref
+      real(kind = kreal), intent(in) :: rgba_in(4)
+!
+      real(kind = kreal), intent(inout) :: rgba(4,npix)
+!
+      integer(kind = kint) :: ii, jj
+      integer(kind = kint) :: i_img, i, j
+      real(kind = kreal) :: x_pix1, x_pix2, y_pix1, y_pix2
+      real(kind = kreal) :: phi_ref, pi
+      real(kind = kreal) :: theta(4), phi(4)
+!
+!
+      if(my_rank .ne. irank_draw) return
+      pi = four * atan(one)
+!$omp parallel do private(i,j,x_pix1,x_pix2,y_pix1,y_pix2,ii,jj,i_img,  &
+!$omp&                    phi_ref,theta,phi)
+      do j = 1, nypixel-1
+        do i = 1, nxpixel-1
+          if(mod(j,6).ge.3 .and. mod(i,6).lt.3) cycle
+          if(mod(j,6).lt.3 .and. mod(i,6).ge.3) cycle
+!
+!
+          x_pix1 = xmin_frame + (xmax_frame - xmin_frame)               &
+     &                         * dble(i-1) / dble(nxpixel-1)
+          x_pix2 = xmin_frame + (xmax_frame - xmin_frame)               &
+     &                         * dble(i) /   dble(nxpixel-1)
+          y_pix1 = ymin_frame + (ymax_frame - ymin_frame)               &
+     &                         * dble(j-1) / dble(nypixel-1)
+          y_pix2 = ymin_frame + (ymax_frame - ymin_frame)               &
+     &                         * dble(j) / dble(nypixel-1)
+          call reverse_aitoff(x_pix1, y_pix1, theta(1), phi(1))
+          call reverse_aitoff(x_pix2, y_pix1, theta(2), phi(2))
+          call reverse_aitoff(x_pix1, y_pix2, theta(3), phi(3))
+          call reverse_aitoff(x_pix2, y_pix2, theta(4), phi(4))
+!
+          if(    (theta(1)-theta_ref)*(theta(2)-theta_ref) .le. zero  &
+     &      .or. (theta(1)-theta_ref)*(theta(3)-theta_ref) .le. zero  &
+     &      .or. (theta(1)-theta_ref)*(theta(4)-theta_ref) .le. zero) &
+     &       then
+           i_img = i + (j-1) * nxpixel
+             rgba(1:4,i_img) = rgba_in(1:4)
+             rgba(4,  i_img) = one
+             rgba(1:4,i_img+nxpixel) = rgba_in(1:4)
+             rgba(4,  i_img+nxpixel) = one
+          end if
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine draw_aitoff_lat_line
 !
 !  ---------------------------------------------------------------------
 !
