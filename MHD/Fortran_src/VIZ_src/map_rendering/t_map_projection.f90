@@ -9,21 +9,21 @@
 !!
 !!@verbatim
 !!      subroutine MAP_PROJECTION_initialize(increment_psf, geofem,     &
-!!     &          edge_comm, nod_fld, map_ctls, psf, SR_sig, SR_il)
+!!     &          edge_comm, nod_fld, map_ctls, map, SR_sig, SR_il)
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: edge_comm
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(map_rendering_controls), intent(inout) :: map_ctls
-!!        type(sectioning_module), intent(inout) :: psf
+!!        type(map_rendering_module), intent(inout) :: map
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!      subroutine MAP_PROJECTION_visualize                             &
-!!     &         (istep_psf, time_d, geofem, nod_fld, psf, SR_sig)
+!!     &         (istep_psf, time_d, geofem, nod_fld, map, SR_sig)
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
-!!      subroutine MAP_PROJECTION_finalize(psf)
-!!        type(sectioning_module), intent(inout) :: psf
+!!      subroutine MAP_PROJECTION_finalize(map)
+!!        type(map_rendering_module), intent(inout) :: map
 !!@endverbatim
       module t_map_projection
 !
@@ -40,36 +40,42 @@
 !
       implicit  none
 !
-!      type sectioning_module
+      type map_rendering_module
 !>        Number of sections
-!        integer(kind = kint) :: num_psf = 0
+        integer(kind = kint) :: num_map = 0
 !
 !>        Structure of case table for isosurface
-!        type(psf_cases) :: psf_case_tbls
+        type(psf_cases) :: psf_case_tbls
 !
 !>        Structure for table for sections
-!        type(sectioning_list), allocatable :: psf_list(:)
+        type(sectioning_list), allocatable :: map_list(:)
 !>        Structure for table for sections
-!        type(grp_section_list), allocatable :: psf_grp_list(:)
+        type(grp_section_list), allocatable :: map_grp_list(:)
 !
 !>        Structure for search table for sections
-!        type(psf_search_lists), allocatable :: psf_search(:)
+        type(psf_search_lists), allocatable :: psf_search(:)
 !
 !>        Structure of sectioning module parameter
-!        type(psf_parameters), allocatable :: psf_param(:)
+        type(psf_parameters), allocatable :: map_param(:)
 !>        Structure of cross sectioning parameter
-!        type(section_define), allocatable  :: psf_def(:)
+        type(section_define), allocatable  :: map_def(:)
+!>        Structure of projection parameter
+        type(pvr_view_parameter), allocatable:: view_param(:)
+!>        Structure of color map parameter
+        type(pvr_colormap_parameter), allocatable :: color_param(:)
+!>        Structure of color bar parameter
+        type(pvr_colorbar_parameter), allocatable :: cbar_param(:)
 !
 !>        Structure for psf patch data on local domain
-!        type(psf_local_data), allocatable :: map_mesh(:)
-!      end type sectioning_module
+        type(psf_local_data), allocatable :: map_mesh(:)
 !
-      type(psf_results), allocatable :: map_psf_dat1(:)
-      type(pvr_view_parameter), allocatable:: view_param1(:)
-      type(pvr_colormap_parameter), allocatable :: color_param1(:)
-      type(pvr_colorbar_parameter), allocatable :: cbar_param1(:)
-      type(map_rendering_data), allocatable :: map_data1(:)
-      type(pvr_image_type), allocatable :: map_rgb1(:)
+!>        Structure of color bar parameter
+        type(psf_results), allocatable :: map_psf_dat1(:)
+!>        Structure of color bar parameter
+        type(map_rendering_data), allocatable :: map_data(:)
+!>        Structure of color bar parameter
+        type(pvr_image_type), allocatable :: map_rgb(:)
+      end type map_rendering_module
 !
 !  ---------------------------------------------------------------------
 !
@@ -78,7 +84,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine MAP_PROJECTION_initialize(increment_psf, geofem,       &
-     &          edge_comm, nod_fld, map_ctls, psf, SR_sig, SR_il)
+     &          edge_comm, nod_fld, map_ctls, map, SR_sig, SR_il)
 !
       use m_work_time
       use m_elapsed_labels_4_VIZ
@@ -98,67 +104,60 @@
       type(phys_data), intent(in) :: nod_fld
 !
       type(map_rendering_controls), intent(inout) :: map_ctls
-      type(sectioning_module), intent(inout) :: psf
+      type(map_rendering_module), intent(inout) :: map
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       integer(kind = kint) :: i_psf
 !
 !
-      psf%num_psf = map_ctls%num_map_ctl
-      if(increment_psf .le. 0) psf%num_psf = 0
-      if(psf%num_psf .le. 0) return
+      map%num_map = map_ctls%num_map_ctl
+      if(increment_psf .le. 0) map%num_map = 0
+      if(map%num_map .le. 0) return
 !
-      call init_psf_case_tables(psf%psf_case_tbls)
+      call init_psf_case_tables(map%psf_case_tbls)
 !
-      if (iflag_debug.eq.1) write(*,*) 'alloc_psf_field_type'
-      call alloc_psf_field_type(psf)
+      if (iflag_debug.eq.1) write(*,*) 'alloc_map_field_type'
+      call alloc_map_field_type(map)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_set_map_control'
-      allocate(view_param1(psf%num_psf))
-      allocate(color_param1(psf%num_psf))
-      allocate(cbar_param1(psf%num_psf))
-      allocate(map_data1(psf%num_psf))
-      allocate(map_rgb1(psf%num_psf))
-      allocate(map_psf_dat1(psf%num_psf))
-!
-      call s_set_map_control(psf%num_psf, geofem%group, nod_fld,        &
-     &    map_ctls, psf%psf_param, psf%psf_def,                         &
-     &    psf%psf_mesh, map_rgb1,                                       &
-     &    view_param1, color_param1, cbar_param1)
+      call s_set_map_control(map%num_map, geofem%group, nod_fld,        &
+     &    map_ctls, map%map_param, map%map_def,                         &
+     &    map%map_mesh, map%map_rgb, map%view_param,                    &
+     &    map%color_param, map%cbar_param)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf                                   &
-     &   (psf%num_psf, geofem%mesh, geofem%group,                       &
-     &    psf%psf_param, psf%psf_search)
+     &   (map%num_map, geofem%mesh, geofem%group,                       &
+     &    map%map_param, map%psf_search)
 !
 !
-      do i_psf = 1, psf%num_psf
-        call alloc_node_param_smp(psf%psf_mesh(i_psf)%node)
-        call alloc_ele_param_smp(psf%psf_mesh(i_psf)%patch)
+      do i_psf = 1, map%num_map
+        call alloc_node_param_smp(map%map_mesh(i_psf)%node)
+        call alloc_ele_param_smp(map%map_mesh(i_psf)%patch)
 !
         call alloc_ref_field_4_psf                                      &
-     &     (geofem%mesh%node, psf%psf_list(i_psf))
+     &     (geofem%mesh%node, map%map_list(i_psf))
       end do
 !
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+1)
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'
       call set_const_4_crossections                                     &
-     &   (psf%num_psf, psf%psf_def, geofem%mesh%node, psf%psf_list)
+     &   (map%num_map, map%map_def, geofem%mesh%node, map%map_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
-     &   (psf%num_psf, geofem%mesh, geofem%group, edge_comm,            &
-     &    psf%psf_case_tbls, psf%psf_def, psf%psf_search, psf%psf_list, &
-     &    psf%psf_grp_list, psf%psf_mesh, SR_sig, SR_il)
+     &   (map%num_map, geofem%mesh, geofem%group, edge_comm,            &
+     &    map%psf_case_tbls, map%map_def, map%psf_search, map%map_list, &
+     &    map%map_grp_list, map%map_mesh, SR_sig, SR_il)
 !
-      call alloc_psf_field_data(psf%num_psf, psf%psf_mesh)
+      call alloc_psf_field_data(map%num_map, map%map_mesh)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+1)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
-      call output_map_mesh(psf%num_psf, view_param1, cbar_param1,       &
-     &    psf%psf_mesh, map_psf_dat1, map_data1, map_rgb1, SR_sig)
+      call output_map_mesh(map%num_map, map%view_param, map%cbar_param, &
+     &    map%map_mesh, map%map_psf_dat1, map%map_data, map%map_rgb,    &
+     &    SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_initialize
@@ -166,7 +165,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine MAP_PROJECTION_visualize                               &
-     &         (istep_psf, time_d, geofem, nod_fld, psf, SR_sig)
+     &         (istep_psf, time_d, geofem, nod_fld, map, SR_sig)
 !
       use m_work_time
       use m_elapsed_labels_4_VIZ
@@ -179,84 +178,91 @@
       type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
 !
-      type(sectioning_module), intent(inout) :: psf
+      type(map_rendering_module), intent(inout) :: map
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
-      if (psf%num_psf.le.0 .or. istep_psf.le.0) return
+      if (map%num_map.le.0 .or. istep_psf.le.0) return
 !
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+2)
-      call set_field_4_psf(psf%num_psf, geofem%mesh%edge, nod_fld,      &
-     &    psf%psf_def, psf%psf_param, psf%psf_list, psf%psf_grp_list,   &
-     &    psf%psf_mesh)
+      call set_field_4_psf(map%num_map, geofem%mesh%edge, nod_fld,      &
+     &    map%map_def, map%map_param, map%map_list, map%map_grp_list,   &
+     &    map%map_mesh)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+2)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_section_data'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
-      call output_map_file(psf%num_psf, istep_psf, time_d,              &
-     &    psf%psf_mesh, view_param1, color_param1, cbar_param1,         &
-     &    map_psf_dat1, map_data1, map_rgb1, SR_sig)
+      call output_map_file(map%num_map, istep_psf, time_d,              &
+     &    map%map_mesh, map%color_param, map%cbar_param,                &
+     &    map%map_psf_dat1, map%map_data, map%map_rgb, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_visualize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine MAP_PROJECTION_finalize(psf)
+      subroutine MAP_PROJECTION_finalize(map)
 !
       use set_map_control
       use set_psf_control
       use set_fields_for_psf
       use find_node_and_patch_psf
 !
-      type(sectioning_module), intent(inout) :: psf
+      type(map_rendering_module), intent(inout) :: map
       integer(kind = kint) :: i_psf
 !
 !
-      if(psf%num_psf .le. 0) return
+      if(map%num_map .le. 0) return
 !
-      do i_psf = 1, psf%num_psf
-        call dealloc_node_param_smp(psf%psf_mesh(i_psf)%node)
-        call dealloc_ele_param_smp(psf%psf_mesh(i_psf)%patch)
+      do i_psf = 1, map%num_map
+        call dealloc_node_param_smp(map%map_mesh(i_psf)%node)
+        call dealloc_ele_param_smp(map%map_mesh(i_psf)%patch)
 !
-        call dealloc_inod_grp_psf(psf%psf_grp_list(i_psf))
-        call dealloc_coefficients_4_psf(psf%psf_def(i_psf))
-        call dealloc_pvr_image_array(map_rgb1(i_psf))
+        call dealloc_inod_grp_psf(map%map_grp_list(i_psf))
+        call dealloc_coefficients_4_psf(map%map_def(i_psf))
+        call dealloc_pvr_image_array(map%map_rgb(i_psf))
       end do
 !
       call dealloc_psf_node_and_patch                                   &
-    &    (psf%num_psf, psf%psf_list, psf%psf_mesh)
-      call dealloc_psf_field_name(psf%num_psf, psf%psf_mesh)
-      call dealloc_psf_field_data(psf%num_psf, psf%psf_mesh)
-      call dealloc_psf_case_table(psf%psf_case_tbls)
+    &    (map%num_map, map%map_list, map%map_mesh)
+      call dealloc_psf_field_name(map%num_map, map%map_mesh)
+      call dealloc_psf_field_data(map%num_map, map%map_mesh)
+      call dealloc_psf_case_table(map%psf_case_tbls)
 !
-      deallocate(psf%psf_mesh, psf%psf_list, psf%psf_grp_list)
-      deallocate(psf%psf_search)
-      deallocate(psf%psf_param)
-      deallocate(map_rgb1, map_data1)
+      deallocate(map%map_mesh, map%map_list, map%map_grp_list)
+      deallocate(map%psf_search)
+      deallocate(map%map_param)
+      deallocate(map%map_rgb, map%map_data)
 !
       end subroutine MAP_PROJECTION_finalize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_map_field_type(psf)
+      subroutine alloc_map_field_type(map)
 !
       use m_field_file_format
 !
-      type(sectioning_module), intent(inout) :: psf
+      type(map_rendering_module), intent(inout) :: map
       integer(kind = kint) :: i_psf
 !
 !
-      allocate(psf%psf_mesh(psf%num_psf))
-      allocate(psf%psf_list(psf%num_psf))
-      allocate(psf%psf_grp_list(psf%num_psf))
-      allocate(psf%psf_search(psf%num_psf))
-      allocate(psf%psf_param(psf%num_psf))
-      allocate(psf%psf_def(psf%num_psf))
+      allocate(map%map_mesh(map%num_map))
+      allocate(map%map_list(map%num_map))
+      allocate(map%map_grp_list(map%num_map))
+      allocate(map%psf_search(map%num_map))
+      allocate(map%map_param(map%num_map))
+      allocate(map%map_def(map%num_map))
 !
-      do i_psf = 1, psf%num_psf
-        call alloc_coefficients_4_psf(psf%psf_def(i_psf))
+      allocate(map%view_param(map%num_map))
+      allocate(map%color_param(map%num_map))
+      allocate(map%cbar_param(map%num_map))
+      allocate(map%map_data(map%num_map))
+      allocate(map%map_rgb(map%num_map))
+      allocate(map%map_psf_dat1(map%num_map))
+!
+      do i_psf = 1, map%num_map
+        call alloc_coefficients_4_psf(map%map_def(i_psf))
       end do
 !
       end subroutine alloc_map_field_type

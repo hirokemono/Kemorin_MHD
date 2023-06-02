@@ -54,7 +54,7 @@
       type visualize_modules
         type(sectioning_module) :: psf
         type(isosurface_module) :: iso
-        type(sectioning_module) :: maps
+        type(map_rendering_module) :: maps
         type(volume_rendering_module) :: pvr
         type(lic_volume_rendering_module) :: lic
         type(fieldline_module) :: fline

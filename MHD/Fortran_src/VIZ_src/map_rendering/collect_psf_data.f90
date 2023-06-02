@@ -97,7 +97,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_map_file(num_map, istep_psf, time_d,            &
-     &          psf_mesh, view_param, color_param, cbar_param,          &
+     &          psf_mesh, color_param, cbar_param,          &
      &          psf_dat, map_data, pvr_rgb, SR_sig)
 !
       use m_elapsed_labels_4_VIZ
@@ -112,7 +112,6 @@
       integer(kind= kint), intent(in) ::  istep_psf
       type(time_data), intent(in) :: time_d
       type(psf_local_data), intent(in) :: psf_mesh(num_map)
-      type(pvr_view_parameter), intent(in):: view_param(num_map)
       type(pvr_colormap_parameter), intent(in) :: color_param(num_map)
       type(pvr_colorbar_parameter), intent(in) :: cbar_param(num_map)
 !
@@ -134,11 +133,10 @@
 !
       if(iflag_MAP_time) call start_elapsed_time(ist_elapsed_MAP+2)
       do i_map = 1, num_map
-        call cal_map_rendering_data(istep_psf, psf_mesh(i_map), time_d, &
-     &      psf_dat(i_map)%psf_nod, psf_dat(i_map)%psf_ele,             &
-     &      psf_dat(i_map)%psf_phys, view_param(i_map),                 &
-     &      color_param(i_map), cbar_param(i_map), map_data(i_map),     &
-     &      pvr_rgb(i_map), SR_sig)
+        call cal_map_rendering_data                                     &
+     &     (time_d, psf_dat(i_map)%psf_nod, psf_dat(i_map)%psf_ele,     &
+     &      psf_dat(i_map)%psf_phys, color_param(i_map),                &
+     &      cbar_param(i_map), map_data(i_map), pvr_rgb(i_map))
       end do
       if(iflag_MAP_time) call end_elapsed_time(ist_elapsed_MAP+2)
 !

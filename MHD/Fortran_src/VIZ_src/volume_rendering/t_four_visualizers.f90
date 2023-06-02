@@ -52,7 +52,7 @@
       type four_visualize_modules
         type(sectioning_module) :: psf
         type(isosurface_module) :: iso
-        type(sectioning_module) :: maps
+        type(map_rendering_module) :: maps
         type(volume_rendering_module) :: pvr
         type(fieldline_module) :: fline
       end type four_visualize_modules

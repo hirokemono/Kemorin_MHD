@@ -52,7 +52,7 @@
       type three_visualize_modules
         type(sectioning_module) :: psf
         type(isosurface_module) :: iso
-        type(sectioning_module) :: maps
+        type(map_rendering_module) :: maps
         type(volume_rendering_module) :: pvr
       end type three_visualize_modules
 !

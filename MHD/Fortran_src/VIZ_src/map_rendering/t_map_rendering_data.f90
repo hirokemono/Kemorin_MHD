@@ -19,12 +19,8 @@
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_image_type), intent(in) :: pvr_rgb
 !!        type(map_rendering_data), intent(inout) :: map_data
-!!      subroutine cal_map_rendering_data                               &
-!!     &         (istep_psf, psf_mesh, time_d, psf_nod, psf_ele,        &
-!!     &          psf_phys, view_param, color_param, cbar_param,        &
-!!     &          map_data, pvr_rgb, SR_sig)
-!!        integer(kind = kint), intent(in) :: istep_psf
-!!        type(psf_local_data), intent(in) :: psf_mesh
+!!      subroutine cal_map_rendering_data(time_d, psf_nod, psf_ele,     &
+!!     &          psf_phys, color_param, cbar_param, map_data, pvr_rgb)
 !!        type(time_data), intent(in) :: time_d
 !!        type(pvr_view_parameter), intent(in):: view_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
@@ -34,7 +30,6 @@
 !!        type(element_data), intent(in) :: psf_ele
 !!        type(map_rendering_data), intent(inout) :: map_data
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
-!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
       module t_map_rendering_data
 !
@@ -43,7 +38,6 @@
 !
       use t_geometry_data
       use t_phys_data
-      use t_solver_SR
       use t_control_params_4_pvr
       use t_pvr_colormap_parameter
 !
@@ -109,12 +103,11 @@
       type(map_rendering_data), intent(inout) :: map_data
 !
       real(kind = kreal) :: xtmp, ytmp
-      real(kind = kreal) :: aspect, pi, theta_ref
+      real(kind = kreal) :: aspect, pi
 !
 !
       if(my_rank .ne. pvr_rgb%irank_image_file) return
 !
-      
         pi = four*atan(one)
         map_data%tangent_cylinder_theta(1)                              &
      &            = asin(cbar_param%tangent_cylinder_radius(2)          &
@@ -142,10 +135,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_map_rendering_data                                 &
-     &         (istep_psf, psf_mesh, time_d, psf_nod, psf_ele,          &
-     &          psf_phys, view_param, color_param, cbar_param,          &
-     &          map_data, pvr_rgb, SR_sig)
+      subroutine cal_map_rendering_data(time_d, psf_nod, psf_ele,       &
+     &          psf_phys, color_param, cbar_param, map_data, pvr_rgb)
 !
       use t_psf_patch_data
       use t_time_data
@@ -160,10 +151,7 @@
       use draw_lines_on_map
       use draw_pvr_colorbar
 !
-      integer(kind = kint), intent(in) :: istep_psf
-      type(psf_local_data), intent(in) :: psf_mesh
       type(time_data), intent(in) :: time_d
-      type(pvr_view_parameter), intent(in):: view_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(phys_data), intent(in) :: psf_phys
@@ -172,7 +160,6 @@
 !
       type(map_rendering_data), intent(inout) :: map_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
-      type(send_recv_status), intent(inout) :: SR_sig
 !
       type(map_patches_for_1patch) :: map_e1
 !
@@ -230,6 +217,7 @@
      &     (time_d%time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,      &
      &      cbar_param, pvr_rgb%rgba_real_gl(1,1))
       end if
+      call dealloc_scalar_on_map(map_data)
 !
       end subroutine cal_map_rendering_data
 !
