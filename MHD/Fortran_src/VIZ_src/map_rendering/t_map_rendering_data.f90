@@ -230,7 +230,6 @@
      &     (time_d%time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,      &
      &      cbar_param, pvr_rgb%rgba_real_gl(1,1))
       end if
-      call dealloc_scalar_on_map(map_data)
 !
       end subroutine cal_map_rendering_data
 !
