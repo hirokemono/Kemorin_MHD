@@ -36,6 +36,7 @@
       use t_control_params_4_pvr
       use t_pvr_colormap_parameter
       use t_pvr_image_array
+      use t_map_rendering_data
 !
       implicit  none
 !
@@ -60,21 +61,14 @@
 !        type(section_define), allocatable  :: psf_def(:)
 !
 !>        Structure for psf patch data on local domain
-!        type(psf_local_data), allocatable :: psf_mesh(:)
-!
-!>        Structure for psf time output
-!        type(time_data) :: psf_time_IO
-!>        Structure for psf data output
-!        type(field_IO_params), allocatable :: psf_file_IO(:)
-!
-!>        Structure for cross sectioning output (used by master process)
-!        type(ucd_data), allocatable :: psf_out(:)
+!        type(psf_local_data), allocatable :: map_mesh(:)
 !      end type sectioning_module
 !
       type(psf_results), allocatable :: map_psf_dat1(:)
       type(pvr_view_parameter), allocatable:: view_param1(:)
       type(pvr_colormap_parameter), allocatable :: color_param1(:)
       type(pvr_colorbar_parameter), allocatable :: cbar_param1(:)
+      type(map_rendering_data), allocatable :: map_data1(:)
       type(pvr_image_type), allocatable :: map_rgb1(:)
 !
 !  ---------------------------------------------------------------------
@@ -124,6 +118,7 @@
       allocate(view_param1(psf%num_psf))
       allocate(color_param1(psf%num_psf))
       allocate(cbar_param1(psf%num_psf))
+      allocate(map_data1(psf%num_psf))
       allocate(map_rgb1(psf%num_psf))
       allocate(map_psf_dat1(psf%num_psf))
 !
@@ -162,8 +157,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
-      call output_map_mesh(psf%num_psf, view_param1, psf%psf_mesh,      &
-     &                     map_psf_dat1, map_rgb1, SR_sig)
+      call output_map_mesh(psf%num_psf, view_param1, cbar_param1,       &
+     &    psf%psf_mesh, map_psf_dat1, map_data1, map_rgb1, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_initialize
@@ -199,8 +194,8 @@
       if (iflag_debug.eq.1) write(*,*) 'output_section_data'
       if(iflag_PSF_time) call start_elapsed_time(ist_elapsed_PSF+3)
       call output_map_file(psf%num_psf, istep_psf, time_d,              &
-     &                     psf%psf_mesh, view_param1, color_param1,     &
-     &                     cbar_param1, map_psf_dat1, map_rgb1, SR_sig)
+     &    psf%psf_mesh, view_param1, color_param1, cbar_param1,         &
+     &    map_psf_dat1, map_data1, map_rgb1, SR_sig)
       if(iflag_PSF_time) call end_elapsed_time(ist_elapsed_PSF+3)
 !
       end subroutine MAP_PROJECTION_visualize
@@ -224,8 +219,6 @@
         call dealloc_node_param_smp(psf%psf_mesh(i_psf)%node)
         call dealloc_ele_param_smp(psf%psf_mesh(i_psf)%patch)
 !
-        call disconnect_merged_ucd_mesh(psf%psf_out(i_psf))
-!
         call dealloc_inod_grp_psf(psf%psf_grp_list(i_psf))
         call dealloc_coefficients_4_psf(psf%psf_def(i_psf))
         call dealloc_pvr_image_array(map_rgb1(i_psf))
@@ -238,9 +231,9 @@
       call dealloc_psf_case_table(psf%psf_case_tbls)
 !
       deallocate(psf%psf_mesh, psf%psf_list, psf%psf_grp_list)
-      deallocate(psf%psf_search, psf%psf_file_IO)
-      deallocate(psf%psf_out, psf%psf_param)
-      deallocate(map_rgb1)
+      deallocate(psf%psf_search)
+      deallocate(psf%psf_param)
+      deallocate(map_rgb1, map_data1)
 !
       end subroutine MAP_PROJECTION_finalize
 !
@@ -262,14 +255,9 @@
       allocate(psf%psf_param(psf%num_psf))
       allocate(psf%psf_def(psf%num_psf))
 !
-      allocate(psf%psf_file_IO(psf%num_psf))
-      allocate(psf%psf_out(psf%num_psf))
-!
       do i_psf = 1, psf%num_psf
         call alloc_coefficients_4_psf(psf%psf_def(i_psf))
       end do
-!
-      psf%psf_file_IO(1:psf%num_psf)%iflag_format = iflag_sgl_udt
 !
       end subroutine alloc_map_field_type
 !
