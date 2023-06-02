@@ -207,6 +207,7 @@
      &                              color_param)
       call set_control_pvr_colorbar(map_c%cmap_cbar_c%cbar_ctl,         &
      &                              cbar_param)
+      cbar_param%iflag_opacity = 0
 !
       end subroutine set_control_4_map
 !
