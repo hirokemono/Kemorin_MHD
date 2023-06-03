@@ -77,6 +77,7 @@
 !
       if(bench%iflag_dynamobench .le. 0) return
 !
+      call calypso_mpi_barrier
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
       call mid_eq_transfer_dynamobench(time_d%time, trans_p%iflag_FFT,  &
      &    sph_rj, rj_fld, ipol, cdat, bench)
@@ -123,6 +124,7 @@
      &      ipol%forces%i_lorentz, rj_fld%n_point, rj_fld%ntot_phys,    &
      &      rj_fld%d_fld, bench%m_torque_icore)
       end if
+      call calypso_mpi_barrier
 !
       end subroutine const_dynamobench_data
 !

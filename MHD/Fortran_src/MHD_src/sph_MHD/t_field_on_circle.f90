@@ -283,9 +283,12 @@
 !
       if(my_rank .gt. 0) return
 !
-      write(*,*) 'np_smp', np_smp
-      write(*,*) 'istack_circfft_smp', leg_circ%istack_circfft_smp
-      write(*,*) 'mphi_circle', circle%mphi_circle
+      if(i_debug .gt. 0) then
+        write(*,*) 'np_smp', np_smp
+        write(*,*) 'istack_circfft_smp', leg_circ%istack_circfft_smp
+        write(*,*) 'mphi_circle', circle%mphi_circle
+      end if
+!
       call initialize_FFT_select                                        &
      &   (my_rank, iflag_FFT, np_smp, leg_circ%istack_circfft_smp,      &
      &    circle%mphi_circle, WK_circle_fft)
